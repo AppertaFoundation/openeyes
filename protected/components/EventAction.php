@@ -75,7 +75,7 @@ class EventAction
 		}
 		if ($this->type == 'button') {
 			return CHtml::htmlButton($label, $this->htmlOptions);
-		} else if ($this->type == 'link') {
+		} elseif ($this->type == 'link') {
 			return CHtml::link($label, $this->href, $this->htmlOptions);
 		}
 	}

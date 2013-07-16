@@ -19,7 +19,7 @@
 
 class SplitEventTypeElement extends BaseEventTypeElement
 {
-	// these are legacy and should be removed one switch to using the costants on the Eye model
+	// these are legacy and should be removed one switch to using the constants on the Eye model
 	const LEFT = Eye::LEFT;
 	const RIGHT = Eye::RIGHT;
 	const BOTH = Eye::BOTH;
@@ -93,7 +93,7 @@ class SplitEventTypeElement extends BaseEventTypeElement
 	{
 		if ($this->eye->id == Eye::LEFT) {
 			$this->setSideDefaultOptions('right');
-		} else if ($this->eye->id == Eye::RIGHT) {
+		} elseif ($this->eye->id == Eye::RIGHT) {
 			$this->setSideDefaultOptions('left');
 		}
 	}

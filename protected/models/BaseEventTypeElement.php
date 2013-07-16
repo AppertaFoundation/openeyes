@@ -35,7 +35,7 @@ class BaseEventTypeElement extends BaseElement
 	// Used during creation and updating of elements
 	public $required = false;
 
-	function getElementType()
+	public function getElementType()
 	{
 		if (!$this->element_type) {
 			$this->element_type = ElementType::model()->find('class_name=?', array(get_class($this)));
@@ -112,12 +112,12 @@ class BaseEventTypeElement extends BaseElement
 		}
 	}
 
-	function render($action)
+	public function render($action)
 	{
 		$this->Controller->renderPartial();
 	}
 
-	function getFormOptions($table)
+	public function getFormOptions($table)
 	{
 		$options = array();
 
@@ -156,7 +156,7 @@ class BaseEventTypeElement extends BaseElement
 		return $options;
 	}
 
-	function getSetting($key)
+	public function getSetting($key)
 	{
 		$element_type = ElementType::model()->find('class_name=?',array(get_class($this)));
 
@@ -199,7 +199,7 @@ class BaseEventTypeElement extends BaseElement
 		return $metadata->default_value;
 	}
 
-	function parseSetting($setting, $metadata)
+	public function parseSetting($setting, $metadata)
 	{
 		if (@$data = unserialize($metadata->data)) {
 			if (isset($data['model'])) {

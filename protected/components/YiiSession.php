@@ -19,12 +19,12 @@
 
 class YiiSession
 {
-	static public function get($index)
+	public static function get($index)
 	{
 		return Yii::app()->session[$index];
 	}
 
-	static public function set($index, $data, $data2='NODATAWASSENT')
+	public static function set($index, $data, $data2='NODATAWASSENT')
 	{
 		if ($data2 != 'NODATAWASSENT') {
 			$d = Yii::app()->session[$index];
@@ -35,4 +35,3 @@ class YiiSession
 		}
 	}
 }
-?>

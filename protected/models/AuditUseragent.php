@@ -21,7 +21,7 @@
  * This is the model class for table "audit_useragent".
  *
  * The followings are the available columns in table 'audit_useragent':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class AuditUseragent extends BaseActiveRecord

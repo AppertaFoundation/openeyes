@@ -29,7 +29,7 @@
  * The followings are the available model relations:
  * @property CommonOphthalmicDisorder[] $commonOphthalmicDisorders
  * @property CommonSystemicDisorder[] $commonSystemicDisorders
- * @property Diagnosis[] $diagnosises
+ * @property Specialty $specialty
  */
 class Disorder extends BaseActiveRecord
 {
@@ -45,8 +45,8 @@ class Disorder extends BaseActiveRecord
 	// the sets postfix indicate this is an array of SNOMED concepts that can be used to determine if a disorder
 	// is part of the parent SNOMED concept.
 	// For example, diabetes is indicated by both the disorder parent and associated disorders
-	static $SNOMED_DIABETES_TYPE_I_SET = array(46635009, 420868002);
-	static $SNOMED_DIABETES_TYPE_II_SET = array(44054006, 422014003);
+	public static $SNOMED_DIABETES_TYPE_I_SET = array(46635009, 420868002);
+	public static $SNOMED_DIABETES_TYPE_II_SET = array(44054006, 422014003);
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -101,7 +101,7 @@ class Disorder extends BaseActiveRecord
 		return array(
 			'commonOphthalmicDisorders' => array(self::HAS_MANY, 'CommonOphthalmicDisorder', 'disorder_id'),
 			'commonSystemicDisorders' => array(self::HAS_MANY, 'CommonSystemicDisorder', 'disorder_id'),
-			'diagnoses' => array(self::HAS_MANY, 'Diagnosis', 'disorder_id'),
+			//'diagnoses' => array(self::HAS_MANY, 'Diagnosis', 'disorder_id'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
 		);
 	}
@@ -172,9 +172,8 @@ class Disorder extends BaseActiveRecord
 
 	/*
 	 * returns boolean to indicate if the disorder is systemic (true)
-	 *
 	 */
-	public static function getSystemic()
+	public function getSystemic()
 	{
 		if ($this->specialty_id) {
 			return false;

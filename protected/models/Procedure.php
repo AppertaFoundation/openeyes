@@ -21,16 +21,15 @@
  * This is the model class for table "proc".
  *
  * The followings are the available columns in table 'proc':
- * @property string $id
+ * @property integer $id
  * @property string $term
  * @property string $short_format
  * @property integer $default_duration
  *
  * The followings are the available model relations:
- * @property ElementOperation[] $elementOperations
  * @property Subspecialty $subspecialty
- * @property SubspecialtySubsection $serviceSubsection
- * @property OpcsCode[] $opcsCodes
+ * @property SubspecialtySubsection[] $subspecialtySubsections
+ * @property Procedure[] $additional
  */
 class Procedure extends BaseActiveRecord
 {
@@ -76,10 +75,10 @@ class Procedure extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'operations' => array(self::MANY_MANY, 'ElementOperation', 'operation_procedure_assignment(proc_id, operation_id)'),
+			//'operations' => array(self::MANY_MANY, 'ElementOperation', 'operation_procedure_assignment(proc_id, operation_id)'),
 			'specialties' => array(self::MANY_MANY, 'Subspecialty', 'proc_subspecialty_assignment(proc_id, subspecialty_id)'),
 			'subspecialtySubsections' => array(self::MANY_MANY, 'SubspecialtySubsection', 'proc_subspecialty_subsection_assignment(proc_id, subspecialty_subsection_id)'),
-			'opcsCodes' => array(self::MANY_MANY, 'OpcsCode', 'procedure_opcs_assignment(proc_id, opcs_code_id)'),
+			//'opcsCodes' => array(self::MANY_MANY, 'OpcsCode', 'procedure_opcs_assignment(proc_id, opcs_code_id)'),
 			'additional' => array(self::MANY_MANY, 'Procedure', 'procedure_additional(proc_id, additional_proc_id)'),
 		);
 	}
@@ -162,7 +161,7 @@ class Procedure extends BaseActiveRecord
 
 		if ($restrict == 'unbooked') {
 			$where .= ' and unbooked = 1';
-		} else if ($restrict == 'booked') {
+		} elseif ($restrict == 'booked') {
 			$where .= ' and unbooked = 0';
 		}
 
@@ -196,7 +195,7 @@ class Procedure extends BaseActiveRecord
 		$where = '';
 		if ($restrict == 'unbooked') {
 			$where = ' and unbooked = 1';
-		} else if ($restrict == 'booked') {
+		} elseif ($restrict == 'booked') {
 			$where = ' and unbooked = 0';
 		}
 		$procedures = Yii::app()->db->createCommand()

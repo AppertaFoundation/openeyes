@@ -35,7 +35,7 @@ class MyBreadcrumbs extends CBreadcrumbs
 		$links=array();
 		if ($this->homeLink === null) {
 			$links[] = CHtml::link(Yii::t('zii','Home'),Yii::app()->homeUrl);
-		} else if ($this->homeLink !== false) {
+		} elseif ($this->homeLink !== false) {
 			$links[] = $this->homeLink;
 		}
 		foreach ($this->links as $label=>$url) {

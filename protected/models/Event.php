@@ -35,6 +35,7 @@ class Event extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
+	 * @param string $className
 	 * @return Event the static model class
 	 */
 	public static function model($className=__CLASS__)
@@ -170,7 +171,7 @@ class Event extends BaseActiveRecord
 					$dateformat = $n[3];
 
 					$text = str_replace($match,date($dateformat,strtotime($this->{$field}) + 3600 * $hours),$text);
-				} else if ($this->hasProperty($m[1][$i])) {
+				} elseif ($this->hasProperty($m[1][$i])) {
 					$text = str_replace($match,$this->{$m[1][$i]},$text);
 				}
 			}
@@ -286,7 +287,7 @@ class Event extends BaseActiveRecord
 		$properties['episode_id'] = $this->episode_id;
 		$properties['patient_id'] = $this->episode->patient_id;
 
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 
 }

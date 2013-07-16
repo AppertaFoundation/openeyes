@@ -21,7 +21,7 @@
  * This is the model class for table "audit_ipaddr".
  *
  * The followings are the available columns in table 'audit_ipaddr':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class AuditIPAddr extends BaseActiveRecord

@@ -18,10 +18,10 @@
  */
 
 /**
- * This is the model class for table "Practice".
+ * This is the model class for table "practice".
  *
- * The followings are the available columns in table 'Practice':
- * @property string $id
+ * The followings are the available columns in table 'practice':
+ * @property integer $id
  * @property string $code
  * @property string $phone
  *
@@ -80,6 +80,7 @@ class Practice extends BaseActiveRecord
 	{
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioningbody_practice_assignment(practice_id, commissioningbody_id)'),
 		);
 	}
 

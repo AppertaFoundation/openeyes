@@ -18,24 +18,20 @@
  */
 
 /**
- * This is the model class for table "firm".
+ * This is the model class for table "operative_device".
  *
- * The followings are the available columns in table 'firm':
- * @property string $id
- * @property string $service_subspecialty_assignment_id
- * @property string $pas_code
+ * The followings are the available columns in table 'operative_device':
+ * @property integer $id
  * @property string $name
  *
  * The followings are the available model relations:
- * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
- * @property FirmUserAssignment[] $firmUserAssignments
- * @property LetterPhrase[] $letterPhrases
+ * @property SiteSubspecialtyOperativeDevice $siteSubspecialtyAssignments
  */
 class OperativeDevice extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return OperativeDevice the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

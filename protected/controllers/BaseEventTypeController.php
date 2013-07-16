@@ -155,15 +155,17 @@ class BaseEventTypeController extends BaseController
 			Yii::app()->clientScript->scriptMap = $scriptMap;
 		}
 
-		return parent::beforeAction($action);;
+		return parent::beforeAction($action);
 	}
 
 	/**
 	 * Get all the elements for an event, the current module or an event_type
-	 *
-	 * @return array
+	 * @param string $action
+	 * @param int $event_type_id
+	 * @param Event $event
+	 * @return BaseEventTypeElement[]
 	 */
-	public function getDefaultElements($action, $event_type_id=false, $event=false)
+	public function getDefaultElements($action, $event_type_id = null, $event = null)
 	{
 		if (!$event && isset($this->event)) {
 			$event = $this->event;
@@ -171,7 +173,7 @@ class BaseEventTypeController extends BaseController
 
 		if (isset($event->event_type_id)) {
 			$event_type = EventType::model()->find('id = ?',array($event->event_type_id));
-		} else if ($event_type_id) {
+		} elseif ($event_type_id) {
 			$event_type = EventType::model()->find('id = ?',array($event_type_id));
 		} else {
 			$event_type = EventType::model()->find('class_name = ?',array($this->getModule()->name));
@@ -264,10 +266,12 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (is_array(Yii::app()->params['modules_disabled']) && in_array($this->event_type->class_name,Yii::app()->params['modules_disabled'])) {
-			return $this->redirect(array('/patient/episodes/'.$this->patient->id));
+			$this->redirect(array('/patient/episodes/'.$this->patient->id));
+			return;
 		}
 
 		$session = Yii::app()->session;
+		/** @var $firm Firm */
 		$firm = Firm::model()->findByPk($session['selected_firm_id']);
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
 
@@ -301,9 +305,9 @@ class BaseEventTypeController extends BaseController
 		if (!empty($_POST) && isset($_POST['cancel'])) {
 			$this->redirect(array('/patient/view/'.$this->patient->id));
 			return;
-		} else if (!empty($_POST) && !count($elements)) {
+		} elseif (!empty($_POST) && !count($elements)) {
 			$errors['Event'][] = 'No elements selected';
-		} else if (!empty($_POST)) {
+		} elseif (!empty($_POST)) {
 
 			$elements = array();
 			$element_names = array();
@@ -461,7 +465,7 @@ class BaseEventTypeController extends BaseController
 		// rights to update this event
 		if ($this->firm->serviceSubspecialtyAssignment && $this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			throw new CHttpException(403, 'The firm you are using is not associated with the subspecialty for this event.');
-		} else if (!$this->firm->serviceSubspecialtyAssignment && $this->event->episode->firm !== null) {
+		} elseif (!$this->firm->serviceSubspecialtyAssignment && $this->event->episode->firm !== null) {
 			throw new CHttpException(403, 'The firm you are using is not a support services firm.');
 		}
 
@@ -497,9 +501,9 @@ class BaseEventTypeController extends BaseController
 			// Cancel button pressed, so just bounce to view
 			$this->redirect(array('default/view/'.$this->event->id));
 			return;
-		} else if (!empty($_POST) && !count($this->getDefaultElements($this->action->id))) {
+		} elseif (!empty($_POST) && !count($this->getDefaultElements($this->action->id))) {
 			$errors['Event'][] = 'No elements selected';
-		} else if (!empty($_POST)) {
+		} elseif (!empty($_POST)) {
 
 			$elements = array();
 			$to_delete = array();
@@ -513,7 +517,7 @@ class BaseEventTypeController extends BaseController
 						// Add new element to array
 						$elements[] = new $class_name;
 					}
-				} else if ($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
+				} elseif ($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
 					// Existing element is not posted, so we need to delete it
 					$to_delete[] = $element;
 				}
@@ -760,11 +764,12 @@ class BaseEventTypeController extends BaseController
 	/**
 	 * Update elements based on arrays passed over from $_POST data
 	 *
-	 * @param array		$elements		array of SiteElementTypes
-	 * @param array		$data			$_POST data to update
-	 * @param object $event				the associated event
+	 * @param BaseEventTypeElement[] $elements
+	 * @param array $data $_POST data to update
+	 * @param Event $event the associated event
 	 *
-	 * @return boolean $success		true if all elements suceeded, false otherwise
+	 * @throws SystemException
+	 * @return bool true if all elements succeeded, false otherwise
 	 */
 	public function updateElements($elements, $data, $event)
 	{
@@ -843,6 +848,11 @@ class BaseEventTypeController extends BaseController
 	{
 	}
 
+	/**
+	 * @param Firm $firm
+	 * @param integer $patientId
+	 * @return Episode
+	 */
 	public function getEpisode($firm, $patientId)
 	{
 		if ($firm->service_subspecialty_assignment_id) {
@@ -1051,6 +1061,6 @@ class BaseEventTypeController extends BaseController
 		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
 
-		return parent::processJsVars();
+		parent::processJsVars();
 	}
 }

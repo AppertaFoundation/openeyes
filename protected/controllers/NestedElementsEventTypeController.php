@@ -132,6 +132,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 
 		$this->patient = $patient;
 		$session = Yii::app()->session;
+		/* @var $firm Firm */
 		$firm = Firm::model()->findByPk($session['selected_firm_id']);
 		$this->episode = $this->getEpisode($firm, $patient_id);
 
@@ -169,6 +170,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 
 		$this->patient = $patient;
 		$session = Yii::app()->session;
+		/* @var $firm Firm */
 		$firm = Firm::model()->findByPk($session['selected_firm_id']);
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
 
@@ -228,6 +230,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 
 		if (empty($_POST)) {
 			if (isset($event->event_type_id)) {
+				/** @var $event Event */
 				$elements = $this->getSavedElements($action, $event);
 			} else {
 				$elements = $this->getCleanDefaultElements($event_type_id);
@@ -261,6 +264,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 			$event_type_id = EventType::model()->find('class_name = ?',array($this->getModule()->name))->id;
 		}
 
+		/** @var $parent ElementType */
 		if ($event) {
 			$parent = ElementType::model()->find(array(
 					'condition' => 'class_name = :name and event_type_id = :eid',
@@ -277,6 +281,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 					),
 			));
 		}
+
 
 		$elements = array();
 		if (empty($_POST)) {
@@ -478,7 +483,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 	{
 		if ($action == 'create') {
 			$element->setDefaultOptions();
-		} else if ($action == 'update') {
+		} elseif ($action == 'update') {
 			$element->setUpdateOptions();
 		}
 	}
@@ -491,7 +496,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 		foreach ($this->getChildDefaultElements(get_class($parent), $action) as $child ) {
 			if ($action == 'create' && empty($_POST)) {
 				$child->setDefaultOptions();
-			} else if ($action == 'ElementForm') {
+			} elseif ($action == 'ElementForm') {
 				// ensure we use a property that the child element can recognise
 				$action = 'create';
 			}

@@ -20,7 +20,7 @@
 /**
  * Validator for OpenEyes fuzzy dates
  */
-class OeFuzzyDateValidator extends CValidator
+class OEFuzzyDateValidator extends CValidator
 {
 	/**
 	 * Validate a fuzzy date attribute
@@ -50,7 +50,7 @@ class OeFuzzyDateValidator extends CValidator
 			} else {
 				$this->addError($object, $attribute, 'Month is required if day is provided');
 			}
-		} else if ($_month > 12) {
+		} elseif ($_month > 12) {
 			$this->addError($object, $attribute, 'Invalid month value');
 		}
 

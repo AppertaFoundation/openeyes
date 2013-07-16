@@ -21,7 +21,7 @@
  * This is the model class for table "Gp".
  *
  * The followings are the available columns in table 'Gp':
- * @property string $id
+ * @property integer $id
  * @property string $obj_prof
  * @property string $nat_id
  *

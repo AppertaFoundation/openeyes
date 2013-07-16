@@ -43,9 +43,7 @@
  * @property Episode[] $episodes
  * @property Address[] $addresses
  * @property Address $address Primary address
- * @property HomeAddress $homeAddress Home address
- * @property CorrespondAddress $correspondAddress Correspondence address
- * @property Contact[] $contacts
+ * @property Contact[] $contactAssignments
  * @property Gp $gp
  * @property Practice $practice
  * @property Allergy[] $allergies
@@ -136,6 +134,7 @@ class Patient extends BaseActiveRecord
 			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
 			'familyHistory' => array(self::HAS_MANY, 'FamilyHistory', 'patient_id', 'order' => 'created_date'),
 			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is null'),
+			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioningbody_patient_assignment(patient_id, commissioningbody_id)'),
 		);
 	}
 
@@ -173,10 +172,11 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* Retrieves a list of models based on the current search/filter conditions.
-		* @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-		*/
-	public function search($params = false)
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @param array $params
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+	public function search($params = null)
 	{
 		if (!is_array($params)) {
 			$params = array(
@@ -576,7 +576,7 @@ class Patient extends BaseActiveRecord
 
 	public function assignAllergies($allergy_ids)
 	{
-		$add_allergy_ids = $allergy_ids;
+		$insert_allergy_ids = $allergy_ids;
 		$remove_allergy_ids = array();
 
 		// Check existing allergies
@@ -833,7 +833,7 @@ class Patient extends BaseActiveRecord
 	public function audit($target, $action, $data=null, $log=false, $properties=array())
 	{
 		$properties['patient_id'] = $this->id;
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 
 	public function getChildPrefix()
@@ -994,5 +994,46 @@ class Patient extends BaseActiveRecord
 		Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
 
 		return $episode;
+	}
+	
+	/**
+	 * get an associative array of CommissioningBody for this patient, indexed by CommissioningBodyType id.
+	 * 
+	 * @return array[string][CommissioningBody]
+	 */
+	public function getDistinctCommissioningBodiesByType()
+	{
+		$res = array();
+		$seen_bodies = array();
+		
+		foreach ($this->commissioningbodies as $body) {
+			if (in_array($body->id, $seen_bodies)) {
+				continue;
+			}
+			if (array_key_exists($body->type->id, $res)) {
+				$res[$body->type->id][] = $body;
+			}
+			else {
+				$res[$body->type->id] = array($body);
+			}
+			$seen_bodies[] = $body->id;
+		}
+		
+		if ($this->practice) {
+			foreach ($this->practice->commissioningbodies as $body) {
+				if (in_array($body->id, $seen_bodies)) {
+					continue;
+				}
+				if (array_key_exists($body->type->id, $res)) {
+					$res[$body->type->id][] = $body;
+				}
+				else {
+					$res[$body->type->id] = array($body);
+				}
+				$seen_bodies[] = $body->id;
+			}
+		}
+		
+		return $res;
 	}
 }

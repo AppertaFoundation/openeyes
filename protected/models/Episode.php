@@ -21,9 +21,9 @@
  * This is the model class for table "episode".
  *
  * The followings are the available columns in table 'episode':
- * @property string $id
- * @property string $patient_id
- * @property string $firm_id
+ * @property integer $id
+ * @property integer $patient_id
+ * @property integer $firm_id
  * @property string $start_date
  * @property string $end_date
  *
@@ -140,6 +140,9 @@ class Episode extends BaseActiveRecord
 
 	/**
 	 * Returns true if an event of the given type exists within this episode
+	 * @param integer $eventTypeId
+	 * @param Event $currentEvent
+	 * @return boolean
 	 */
 	public function hasEventOfType($eventTypeId, $currentEvent = null)
 	{
@@ -287,7 +290,7 @@ class Episode extends BaseActiveRecord
 		foreach (SecondaryDiagnosis::model()->findAll('patient_id=? and disorder_id=?',array($this->patient_id,$this->disorder_id)) as $sd) {
 			if ($this->eye_id == $sd->eye_id || ($this->eye_id == 3 && in_array($sd->eye_id,array(1,2)))) {
 				$sd->delete();
-			} else if (in_array($this->eye_id,array(1,2)) && $sd->eye_id == 3) {
+			} elseif (in_array($this->eye_id,array(1,2)) && $sd->eye_id == 3) {
 				$sd->eye_id = ($this->eye_id == 1 ? 2 : 1);
 				$sd->save();
 			}
@@ -309,6 +312,6 @@ class Episode extends BaseActiveRecord
 	{
 		$properties['episode_id'] = $this->id;
 		$properties['patient_id'] = $this->patient_id;
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 }

@@ -24,7 +24,7 @@ class RightsService
 	/**
 	 * Create a new instance of the service
 	 *
-	 * @param model $userId
+	 * @param integer $userId
 	 */
 	public function __construct($userId)
 	{
