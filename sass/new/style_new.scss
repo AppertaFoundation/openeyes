@@ -1,11 +1,88 @@
-$experimental-support-for-svg: true;
-$support-for-original-webkit-gradients: false;
+// Welcome to the OpenEyes core stylesheet.
+//
+// Please take note of the following:
+// 
+// Commenting
+// ============================
+// * Double-slash (Sass) comments will be removed in the compiled CSS.
+// * Slash-star (CSS) comments will not be removed in the compiled CSS.
+// * Use KSS style comments! The living styleguide is dependent on the correct 
+//   format of comments. (See http://warpspire.com/kss/)
+//
+// Conventions
+// ============================
+// * 4 spaces for indentation
+// * Components should be decoupled from each other
+// * Never use ID's for styling
+// * Separate rules with new lines
+// * Lower-case classnames, words separated by a hyphen
+// * Use 3 character hexadecimal notation where possible (eg #000)
+// * Avoid qualifying class names with type selectors (eg, don't do this: div.myclass)
+// * Use double-quotes, (eg: font-family: "Helvetica Neue")
+// * Never change the foundation component files
+//
+// Variables
+// ============================
+// * User variables for values
+// * Add variables to the _variables.scss and not in the component file
 
-@import "comments";
+
+// Make sure the charset is set appropriately
+@charset "UTF-8";
+
+// Compass and custom mixins
 @import "compass/css3";
 @import "compass/css3/user-interface";
 @import "mixins";
+
+// Global variables
 @import "variables";
+
+// Copyright header
+@import "copyright";
+
+// Normalize
+@import "normalize";
+
+// Foundation. Include all components, so that we have access to all the mixins, 
+// but prevent foundation classes from being created by adjusting the 
+// $include-html-*-classes variables in the _variables.scss file.
+@import
+  "foundation/components/global",
+  "foundation/components/grid",
+  "foundation/components/visibility",
+  "foundation/components/block-grid",
+  "foundation/components/type",
+  "foundation/components/buttons",
+  "foundation/components/forms",
+  "foundation/components/custom-forms",
+  "foundation/components/button-groups",
+  "foundation/components/dropdown-buttons",
+  "foundation/components/split-buttons",
+  "foundation/components/flex-video",
+  "foundation/components/section",
+  "foundation/components/top-bar",
+  "foundation/components/orbit",
+  "foundation/components/reveal",
+  "foundation/components/joyride",
+  "foundation/components/clearing",
+  "foundation/components/alert-boxes",
+  "foundation/components/breadcrumbs",
+  "foundation/components/keystrokes",
+  "foundation/components/labels",
+  "foundation/components/inline-lists",
+  "foundation/components/pagination",
+  "foundation/components/panels",
+  "foundation/components/pricing-tables",
+  "foundation/components/progress-bars",
+  "foundation/components/side-nav",
+  "foundation/components/sub-nav",
+  "foundation/components/switch",
+  "foundation/components/magellan",
+  "foundation/components/tables",
+  "foundation/components/thumbs",
+  "foundation/components/tooltips",
+  "foundation/components/dropdown";
 
 // Core
 //
