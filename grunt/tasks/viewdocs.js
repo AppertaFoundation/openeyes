@@ -1,5 +1,4 @@
 var connect = require('connect');
-var path = require('path');
 var http = require('http');
 
 module.exports = function(grunt) {
@@ -16,8 +15,6 @@ module.exports = function(grunt) {
       base: '.',
       hostname: 'localhost'
     });
-
-    startServer();
 
     // Starts a connect server to display the docs (using static and directory middleware).
     function startServer() {
@@ -41,15 +38,16 @@ module.exports = function(grunt) {
 
     // Spawn a new child process to open up the docs in a new tab in chrome.
     function openInChrome() {
+      grunt.util.spawn({
+        cmd: 'open',
+        args: [
+          '-a',
+          '/Applications/Google Chrome.app',
+          'http://' + options.hostname + ':' + options.port
+        ]
+      }, function(){});
+    }  
 
-      var cp = require('child_process').spawn('open', [
-        '-a',
-        '/Applications/Google Chrome.app',
-        'http://' + options.hostname + ':' + options.port
-      ]);
-
-      // Silently ignore errors
-      cp.on('error', function(){});
-    }        
+    startServer();          
   });
 };
