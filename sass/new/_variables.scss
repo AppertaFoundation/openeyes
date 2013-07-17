@@ -1,11 +1,24 @@
-$var1: #000000;
+// ============================================
+// OpenEyes variables
+// ============================================
+
+// Compass vars
 $experimental-support-for-svg: true;
 $support-for-original-webkit-gradients: false;
 
+// Container vars
+$container-main-bg-color: #dae6f1;
+$container-main-bg-image: image-url("_structure/gradient_bg.jpg");
+$container-main-border-color: #b3b0ae;
+$container-main-border-width: 2px;
+$container-content-bg-image: image-url("_structure/help_top_grad.jpg");
+$container-footer-bg-color: #b3b0ae;
 
-//
+
+// ============================================
 // Foundation Variables
-//
+// Note: for reference, default values are set in foundation/_global.scss
+// ============================================
 
 // The default font-size is set to 100% of the browser style sheet (usually 16px)
 // for compatibility with browser-based text zoom or user-set defaults.
@@ -33,7 +46,7 @@ $experimental: true;
 
 $default-float: left;
 
-$body-bg: #fff;
+$body-bg: #d4d1cd;
 $body-font-color: #222;
 $body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 $body-font-weight: normal;
@@ -56,7 +69,7 @@ $success-color: #5da423;
 
 // Make sure border radius matches unless we want it different.
 
-$global-radius: 3px;
+$global-radius: 5px;
 $global-rounded: 1000px;
 
 // Inset shadow shiny edges and depressions.

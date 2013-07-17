@@ -1,0 +1,15 @@
+.container {
+	&.main {
+		background: $container-main-bg-color $container-main-bg-image 0 0 no-repeat;
+		border: $container-main-border-width solid $container-main-border-color;
+		border-bottom: 0;
+		@include grid-row;
+		@include radius;
+	}
+	&.content {
+		background: $container-content-bg-image 0 bottom no-repeat;
+	}
+	&.footer {
+		background: $container-footer-bg-color;
+	}
+}

@@ -44,3 +44,7 @@ Run `grunt` in the root of the project to build the front-end.
 ### Developing Sass
 
 Run `grunt watch` in the root of the project to auto-compile the css when a sass file changes. 
+
+## TODO
+
+* Add UI tasks to vagrantfile?
