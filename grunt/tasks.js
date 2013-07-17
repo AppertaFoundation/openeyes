@@ -2,6 +2,7 @@ module.exports = function (grunt) {
 
   /* Load the viewdocs task */
   require('./tasks/viewdocs')(grunt);  
+  require('./tasks/bower')(grunt);  
 
   /* Generates the documentation. */
   grunt.registerTask('docs', 
@@ -15,7 +16,7 @@ module.exports = function (grunt) {
 
   /* The development build task. */
   grunt.registerTask('build', 
-    ['lint','compass:newstyle']
+    ['bower','lint','compass:newstyle']
   );
 
   /* The default task for running `grunt`. */
