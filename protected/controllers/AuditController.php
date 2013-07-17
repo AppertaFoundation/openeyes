@@ -45,19 +45,7 @@ class AuditController extends BaseController
 
 	public function actionIndex()
 	{
-		$actions = array();
-
-		foreach (array('add-allergy','associate-contact','change-firm','change-status','create','delete','login-failed','login-successful','logout','print','remove-allergy','reschedule','search-error','search-results','unassociate-contact','update','view') as $field) {
-			$actions[$field] = $field;
-		}
-
-		$targets = array();
-
-		foreach (array('booking','diary','episode','episode summary','event','login','logout','patient','patient summary','search','session','user','waiting list') as $field) {
-			$targets[$field] = $field;
-		}
-
-		$this->render('index',array('actions'=>$actions,'targets'=>$targets));
+		$this->render('index');
 	}
 
 	public function actionSearch() {
@@ -115,15 +103,18 @@ class AuditController extends BaseController
 		}
 
 		if (@$_REQUEST['action']) {
-			$criteria->addCondition("action='".$_REQUEST['action']."'");
+			$criteria->addCondition("action_id=:action_id");
+			$criteria->params[':action_id'] = $_REQUEST['action'];
 		}
 
 		if (@$_REQUEST['target_type']) {
-			$criteria->addCondition("target_type='".$_REQUEST['target_type']."'");
+			$criteria->addCondition("type_id=:type_id");
+			$criteria->params[':type_id'] = $_REQUEST['target_type'];
 		}
 
-		if (@$_REQUEST['event_type']) {
-			$criteria->addCondition('event_type_id='.$_REQUEST['event_type']);
+		if (@$_REQUEST['event_type_id']) {
+			$criteria->addCondition('event_type_id=:event_type_id');
+			$criteria->params[':event_type_id'] = $_REQUEST['event_type_id'];
 		}
 
 		if (@$_REQUEST['date_from']) {
@@ -148,10 +139,6 @@ class AuditController extends BaseController
 			}
 		}
 
-		if (@$_REQUEST['event_type_id']) {
-			$criteria->addCondition('event_type.id = '.$_REQUEST['event_type_id']);
-		}
-
 		!($count) && $criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
 
 		return $criteria;
@@ -160,7 +147,11 @@ class AuditController extends BaseController
 	public function getData($page=1, $id=false) {
 		$data = array();
 
-		$data['total_items'] = Audit::model()->find($this->criteria(true))->count;
+		if ($_data = Audit::model()->with('event')->find($this->criteria(true))) {
+			$data['total_items'] = $_data->count;
+		} else {
+			$data['total_items'] = 0;
+		}
 
 		$criteria = $this->criteria();
 
