@@ -9,6 +9,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-styleguide');
+  grunt.loadNpmTasks('grunt-modernizr');
 
   /* Load in custom non-packaged grunt tasks */
   require('./grunt/tasks')(grunt);  

@@ -18,6 +18,7 @@
     "grunt-contrib-jshint": "~0.6.0",
     "grunt-styleguide": "~0.2.6",
     "grunt-contrib-clean": "~0.4.1",
-    "connect": "~2.8.4"
+    "connect": "~2.8.4",
+    "grunt-modernizr": "~0.3.0"
   }
 }

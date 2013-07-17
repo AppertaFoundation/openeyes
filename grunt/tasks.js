@@ -16,7 +16,7 @@ module.exports = function (grunt) {
 
   /* The development build task. */
   grunt.registerTask('build', 
-    ['bower','lint','compass:newstyle']
+    ['bower','modernizr','lint','compass:newstyle']
   );
 
   /* The default task for running `grunt`. */

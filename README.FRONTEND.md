@@ -26,6 +26,7 @@ TODO
 4. Install compass: `sudo gem install compass`
 5. Install grunt-cli: `sudo npm install -g grunt-cli`
 6. Install nodejs modules: (ensure you are in the root of the project) `npm install`
+7. Install bower: `sudo npm install -g bower`
 
 ## Tasks
 
