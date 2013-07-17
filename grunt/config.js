@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
   return {
-    pkg: grunt.file.readJSON('package.json'),      
+    pkg: grunt.file.readJSON('package.json'),
     compass: {
       oldstyle: {
         options: {
@@ -16,6 +16,7 @@ module.exports = function(grunt) {
           sassDir: 'sass/new',
           cssDir: 'css',
           imagesPath: 'img',
+          imagesDir: 'img',
           outputStyle: 'expanded',
           noLineComments: false
         }
