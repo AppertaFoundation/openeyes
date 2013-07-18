@@ -27,6 +27,7 @@
  *
  * The followings are the available model relations:
  * @property Address $address
+ * @property CommissioningBody[] $commissioningbodies
  */
 class Practice extends BaseActiveRecord
 {
