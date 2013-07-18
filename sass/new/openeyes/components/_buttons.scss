@@ -1,3 +1,17 @@
+$oe-button-primary-bg-color-start: #107be9 !default;
+$oe-button-primary-bg-color-end: #1469bf !default;
+$oe-button-primary-shadow-opacity: 0.3 !default;
+$oe-button-primary-text-shadow-1: #105dae !default;
+$oe-button-primary-text-shadow-2: #5c0faa !default;
+$oe-button-primary-bottom-border: #105dae !default;
+$oe-button-primary-hover-bg-color-start: #118afb !default;
+$oe-button-primary-hover-bg-color-end: #1279e3 !default;
+$oe-button-primary-hover-border-color: #1974d1 !default;
+$oe-button-primary-active-bg-color-start: #145ea9 !default;
+$oe-button-primary-active-bg-color-end: #104d8b !default;
+$oe-button-primary-active-border-color: #0f467e !default;
+$oe-button-primary-padding-horiz: emCalc(40px);
+
 // Buttons
 //
 // A majority of buttons in the site are built from the same base class.
@@ -14,6 +28,29 @@
 // :active              - "Press" the button down when clicked.
 //
 // Styleguide 2.1
-.button {
-    // color: blue;
+button, .button {
+    @include button-base;
+    @include button-size;
+    @include button-style($bg: false, $radius: true);
+    @include background(linear-gradient($oe-button-primary-bg-color-start, $oe-button-primary-bg-color-end));
+    @include box-shadow(0 1px 4px rgba(0, 0, 0, $oe-button-primary-shadow-opacity));
+    border: 0;
+    border-bottom: 2px solid $oe-button-primary-bottom-border;
+    color: $button-font-color;
+    padding-left: $oe-button-primary-padding-horiz;
+    padding-right: $oe-button-primary-padding-horiz;
+    text-shadow: 1px 1px 0 $oe-button-primary-text-shadow-1, 2px 2px 0 $oe-button-primary-text-shadow-2;
+    &:hover,
+    &:focus {
+        @include background(linear-gradient($oe-button-primary-hover-bg-color-start, $oe-button-primary-hover-bg-color-end));
+        border-bottom: 2px solid $oe-button-primary-hover-border-color;
+    }
+    &:active {
+        @include background(linear-gradient($oe-button-primary-active-bg-color-start, $oe-button-primary-active-bg-color-end));
+        border-bottom: 2px solid $oe-button-primary-active-border-color;
+    }
+}
+
+button, .button {
+    @include button-size($is_input: $button-med, $padding: false);
 }

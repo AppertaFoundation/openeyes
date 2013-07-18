@@ -1,0 +1,39 @@
+$oe-form-panel-bg-color: #e2dfdb !default;
+$oe-form-panel-padding: 30px !default;
+$oe-form-panel-radius: 10px !default;
+$oe-form-panel-border-width: 2px !default;
+$oe-form-panel-border-color: #666 !default;
+$oe-form-login-margin-top: 50px !default;
+$oe-form-login-margin-bottom: 100px !default;
+$oe-form-input-radius: 3px !default;
+
+.form {
+    &.panel {
+        @include panel($oe-form-panel-bg-color, $oe-form-panel-padding);
+        @include border-radius($oe-form-panel-radius);
+        border: $oe-form-panel-border-width solid $oe-form-panel-border-color;
+    }
+    &.login {
+        margin: $oe-form-login-margin-top 0 $oe-form-login-margin-bottom 0;
+    }
+    [type=submit] {
+        margin: 0;
+    }
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea {
+    @include border-radius($oe-form-input-radius);
+}

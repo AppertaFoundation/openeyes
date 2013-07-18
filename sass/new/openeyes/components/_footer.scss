@@ -37,8 +37,8 @@ $oe-footer-logo-bg-image: image-url("_structure/openeyes_footer.png") !default;
                 $oe-footer-help-panel-padding - $oe-footer-help-list-item-bottom-margin
                 $oe-footer-help-panel-padding
             );
-            margin: 1px 0 0 0;
             @include border-radius(0 0 $oe-footer-panel-radius $oe-footer-panel-radius);
+            margin: 1px 0 0 0;
         }
         .inline-list {
             display: inline-block;

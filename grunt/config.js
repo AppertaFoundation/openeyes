@@ -25,7 +25,10 @@ module.exports = function(grunt) {
     watch: {
       sass: {
         files: 'sass/**/*.scss',
-        tasks: ['compass:newstyle']
+        tasks: ['compass:newstyle'],
+        options: {
+          livereload: true
+        }
       }
     },
     jshint: {

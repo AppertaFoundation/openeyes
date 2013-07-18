@@ -34,8 +34,8 @@
 // Variables
 // ===================================================================
 // * Use variables for all values.
-// * To avoid conclicts with foundation variables, we have to namespace our variables,
-//   thus you must prefix the variables name with 'oe-'.
+// * To avoid conlicts with foundation variables, we have to namespace our variables,
+//   thus you must prefix the variable names with 'oe-'.
 // * Add default variables values in the component file, and copy those variables
 //   into the _variables file. This allows use to create different themes in the future
 //   by simply using a different _variables file.
@@ -125,7 +125,6 @@
 // Styleguide 3
 @import "openeyes/components/type";
 
-
 // Header
 //
 // Header styles
@@ -140,9 +139,16 @@
 // Styleguide 5
 @import "openeyes/components/footer";
 
-// Components
+// Forms
+//
+// Form styles
+//
+// Styleguide 6
+@import "openeyes/components/forms";
+
+// Buttons
 //
 // Reusable components that can be used across the site.
 //
-// Styleguide 6
+// Styleguide 7
 @import "openeyes/components/buttons";
