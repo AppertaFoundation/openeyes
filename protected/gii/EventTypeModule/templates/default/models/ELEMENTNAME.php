@@ -58,12 +58,12 @@ if (isset($element)) {
  * @property Event $event
  * @property User $user
  * @property User $usermodified
-<?php if (isset($element)) foreach ($element['relations'] as $relation) {
-	echo " * @property {$relation['class']} \${$relation['name']}\n";
-}?>
+<?php if (isset($element)) { foreach ($element['relations'] as $relation) {
+		echo " * @property {$relation['class']} \${$relation['name']}\n";
+} }?>
  */
 
-class <?php if (isset($element)) { echo $element['class_name']; ?> extends BaseEventTypeElement
+class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEventTypeElement
 	public $service;
 
 	/**
