@@ -62,11 +62,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	{
 		if ($this->mode == 'create') {
 			$this->initialise(array(
-				'moduleID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) .
+				'moduleID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->abbreviation)) .
 					ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) .
 					Yii::app()->request->getQuery('Specialty[id]') .
 					preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix))),
-				'moduleShortID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) .
+				'moduleShortID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->abbreviation)) .
 					ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) .
 					Yii::app()->request->getQuery('Specialty[id]') .
 					preg_replace("/ /", "", ucfirst(strtolower($this->moduleShortSuffix))),
@@ -79,7 +79,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 			$this->initialise(array(
 				'moduleID' => $this->event_type->class_name,
-				'moduleShortID' => Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code .
+				'moduleShortID' => Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->abbreviation .
 					EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code .
 					$short_suffix,
 				'event_group' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']),
@@ -90,7 +90,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		if ($this->mode == 'update') {
 			$current_class = $this->event_type->class_name;
-			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($this->specialty->code)) . ucfirst(strtolower($this->event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
+			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($this->specialty->abbreviation)) . ucfirst(strtolower($this->event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
 			if (@$_POST['generate'] == 'Generate') {
 				$this->handleViewChanges();
 
@@ -929,7 +929,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				die("ERROR: $event_type->class_name");
 			}
 
-			$specialty_id = Specialty::model()->find('code=?',array(strtoupper($m[1])))->id;
+			$specialty_id = Specialty::model()->find('abbreviation=?',array(strtoupper($m[1])))->id;
 			$event_group_id = EventGroup::model()->find('code=?',array($m[2]))->id;
 			$event_type_name = $event_type->name;
 		} else {

@@ -38,7 +38,8 @@
  * @property User $usermodified
  */
 
-class <?php if (isset($mapping_table)) { echo $mapping_table['class']?> extends BaseActiveRecord
+class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return the static model class
