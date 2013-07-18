@@ -64,6 +64,7 @@ if (isset($element)) {
  */
 
 class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEventTypeElement
+{
 	public $service;
 
 	/**
