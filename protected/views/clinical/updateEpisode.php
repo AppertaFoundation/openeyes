@@ -54,6 +54,7 @@ if (!empty($episode)) {
 	));
 
 	// Event actions
+	$this->event_actions[] = EventAction::link('Cancel', Yii::app()->createUrl('/patient/episode/'.$episode->id), array('colour' => 'red', 'level' => 'secondary'));
 	$this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'episode_save', 'colour' => 'green'));
 	$this->renderPartial('//patient/event_actions');
 
