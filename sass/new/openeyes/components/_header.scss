@@ -2,14 +2,9 @@ $header-logo-bg-image: image-url("_structure/openeyes.png") !default;
 $header-logo-width: 240px !default;
 $header-logo-height: 70px !default;
 
-.header {
-
-}
-
 .logo {
 	background: $header-logo-bg-image no-repeat;
 	width: $header-logo-width;
 	height: $header-logo-height;
-	overflow: hidden;
-	text-indent: -9999px;
+    @include hide-text;
 }

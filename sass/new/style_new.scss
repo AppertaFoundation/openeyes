@@ -48,16 +48,16 @@
 // Compass and custom mixins
 @import "compass/css3";
 @import "compass/css3/user-interface";
-@import "mixins";
+@import "openeyes/mixins";
 
-// Global variables
-@import "variables";
+// Global variables. We use the variables file to change the site theme.
+@import "openeyes/themes/default/variables";
 
 // Copyright header
-@import "copyright";
+@import "openeyes/copyright";
 
 // Normalize
-@import "normalize";
+@import "openeyes/normalize";
 
 // Foundation. Include all components, so that we have access to all the mixins,
 // but prevent foundation classes from being created by adjusting the
@@ -107,32 +107,32 @@
 // Global base styles
 //
 // Styleguide 1
-@import "components/global";
+@import "openeyes/components/global";
 
 // Containers
 //
 // Global layout containers
 //
 // Styleguide 2
-@import "components/containers";
+@import "openeyes/components/containers";
 
 // Typography
 //
 // Global typography styles
 //
 // Styleguide 3
-@import "components/type";
+@import "openeyes/components/type";
 
 // Header
 //
 // Header styles
 //
 // Styleguide 4
-@import "components/header";
+@import "openeyes/components/header";
 
 // Components
 //
 // Reusable components that can be used across the site.
 //
 // Styleguide 5
-@import "components/buttons";
+@import "openeyes/components/buttons";

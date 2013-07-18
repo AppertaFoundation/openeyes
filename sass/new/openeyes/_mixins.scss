@@ -1,0 +1,5 @@
+// Hide text off-screen
+@mixin hide-text() {
+    overflow: hidden;
+    text-indent: -9999px;
+}
