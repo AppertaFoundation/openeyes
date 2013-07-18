@@ -1588,13 +1588,13 @@ td {
 /* Default Link Styles */
 /* line 151, ../sass/new/foundation/components/_type.scss */
 a {
-  color: #2ba6cb;
+  color: #0b59da;
   text-decoration: none;
   line-height: inherit;
 }
 /* line 157, ../sass/new/foundation/components/_type.scss */
 a:hover, a:focus {
-  color: #2795b6;
+  color: #0a4fc2;
 }
 /* line 159, ../sass/new/foundation/components/_type.scss */
 a img {
@@ -1998,13 +1998,13 @@ button, .button {
   padding-bottom: 0.8125em;
   padding-left: 1.5em;
   font-size: 1em;
-  background-color: #2ba6cb;
-  border-color: #2284a1;
+  background-color: #0b59da;
+  border-color: #0945a9;
   color: white;
 }
 /* line 123, ../sass/new/foundation/components/_buttons.scss */
 button:hover, button:focus, .button:hover, .button:focus {
-  background-color: #2284a1;
+  background-color: #0945a9;
 }
 /* line 134, ../sass/new/foundation/components/_buttons.scss */
 button:hover, button:focus, .button:hover, .button:focus {
@@ -2094,8 +2094,8 @@ button.right-align, .button.right-align {
 }
 /* line 189, ../sass/new/foundation/components/_buttons.scss */
 button.disabled, button[disabled], .button.disabled, .button[disabled] {
-  background-color: #2ba6cb;
-  border-color: #2284a1;
+  background-color: #0b59da;
+  border-color: #0945a9;
   color: white;
   cursor: default;
   opacity: 0.6;
@@ -2104,7 +2104,7 @@ button.disabled, button[disabled], .button.disabled, .button[disabled] {
 }
 /* line 123, ../sass/new/foundation/components/_buttons.scss */
 button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {
-  background-color: #2284a1;
+  background-color: #0945a9;
 }
 /* line 134, ../sass/new/foundation/components/_buttons.scss */
 button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {
@@ -2112,7 +2112,7 @@ button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[dis
 }
 /* line 147, ../sass/new/foundation/components/_buttons.scss */
 button.disabled:hover, button.disabled:focus, button[disabled]:hover, button[disabled]:focus, .button.disabled:hover, .button.disabled:focus, .button[disabled]:hover, .button[disabled]:focus {
-  background-color: #2ba6cb;
+  background-color: #0b59da;
 }
 /* line 190, ../sass/new/foundation/components/_buttons.scss */
 button.disabled.secondary, button[disabled].secondary, .button.disabled.secondary, .button[disabled].secondary {
@@ -2862,7 +2862,7 @@ small.error {
 }
 /* line 79, ../sass/new/foundation/components/_split-buttons.scss */
 .split.button span {
-  border-left-color: #1e728c;
+  border-left-color: #073b91;
 }
 /* line 116, ../sass/new/foundation/components/_split-buttons.scss */
 .split.button span {
@@ -2980,75 +2980,6 @@ kbd {
   font-family: "Consolas", "Menlo", "Courier", monospace;
   font-size: 0.875em;
   padding: 0.125em 0.25em 0em;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-}
-
-/* Panels */
-/* line 66, ../sass/new/foundation/components/_panels.scss */
-.panel {
-  border-style: solid;
-  border-width: 1px;
-  border-color: #d9d9d9;
-  margin-bottom: 1.25em;
-  padding: 1.25em;
-  background: #f2f2f2;
-}
-/* line 44, ../sass/new/foundation/components/_panels.scss */
-.panel > :first-child {
-  margin-top: 0;
-}
-/* line 45, ../sass/new/foundation/components/_panels.scss */
-.panel > :last-child {
-  margin-bottom: 0;
-}
-/* line 50, ../sass/new/foundation/components/_panels.scss */
-.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6, .panel p {
-  color: #333333;
-}
-/* line 54, ../sass/new/foundation/components/_panels.scss */
-.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 {
-  line-height: 1;
-  margin-bottom: 0.625em;
-}
-/* line 56, ../sass/new/foundation/components/_panels.scss */
-.panel h1.subheader, .panel h2.subheader, .panel h3.subheader, .panel h4.subheader, .panel h5.subheader, .panel h6.subheader {
-  line-height: 1.4;
-}
-/* line 68, ../sass/new/foundation/components/_panels.scss */
-.panel.callout {
-  border-style: solid;
-  border-width: 1px;
-  border-color: #2284a1;
-  margin-bottom: 1.25em;
-  padding: 1.25em;
-  background: #2ba6cb;
-  -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-}
-/* line 44, ../sass/new/foundation/components/_panels.scss */
-.panel.callout > :first-child {
-  margin-top: 0;
-}
-/* line 45, ../sass/new/foundation/components/_panels.scss */
-.panel.callout > :last-child {
-  margin-bottom: 0;
-}
-/* line 51, ../sass/new/foundation/components/_panels.scss */
-.panel.callout h1, .panel.callout h2, .panel.callout h3, .panel.callout h4, .panel.callout h5, .panel.callout h6, .panel.callout p {
-  color: white;
-}
-/* line 54, ../sass/new/foundation/components/_panels.scss */
-.panel.callout h1, .panel.callout h2, .panel.callout h3, .panel.callout h4, .panel.callout h5, .panel.callout h6 {
-  line-height: 1;
-  margin-bottom: 0.625em;
-}
-/* line 56, ../sass/new/foundation/components/_panels.scss */
-.panel.callout h1.subheader, .panel.callout h2.subheader, .panel.callout h3.subheader, .panel.callout h4.subheader, .panel.callout h5.subheader, .panel.callout h6.subheader {
-  line-height: 1.4;
-}
-/* line 73, ../sass/new/foundation/components/_panels.scss */
-.panel.radius {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
@@ -3469,7 +3400,7 @@ html, body {
   height: 100%;
 }
 
-/* line 8, ../sass/new/openeyes/components/_containers.scss */
+/* line 7, ../sass/new/openeyes/components/_containers.scss */
 .container {
   width: 100%;
   margin-left: auto;
@@ -3494,7 +3425,7 @@ html, body {
   clear: both;
 }
 
-/* line 16, ../sass/new/openeyes/components/_containers.scss */
+/* line 15, ../sass/new/openeyes/components/_containers.scss */
 .content {
   *zoom: 1;
   background: url('/img/_structure/help_top_grad.jpg?1373641356') 0 bottom no-repeat;
@@ -3506,21 +3437,6 @@ html, body {
 }
 /* line 122, ../sass/new/foundation/components/_global.scss */
 .content:after {
-  clear: both;
-}
-
-/* line 21, ../sass/new/openeyes/components/_containers.scss */
-.footer {
-  *zoom: 1;
-  background: #b3b0ae;
-}
-/* line 121, ../sass/new/foundation/components/_global.scss */
-.footer:before, .footer:after {
-  content: " ";
-  display: table;
-}
-/* line 122, ../sass/new/foundation/components/_global.scss */
-.footer:after {
   clear: both;
 }
 
@@ -3540,11 +3456,108 @@ h1 {
   border-radius: 0px 3px 3px 0px;
 }
 
-/* line 5, ../sass/new/openeyes/components/_header.scss */
-.logo {
+/* line 6, ../sass/new/openeyes/components/_header.scss */
+.header {
+  height: 70px;
+}
+/* line 8, ../sass/new/openeyes/components/_header.scss */
+.header .logo {
   background: url('/img/_structure/openeyes.png?1373641356') no-repeat;
   width: 240px;
   height: 70px;
   overflow: hidden;
   text-indent: -9999px;
+}
+
+/* line 15, ../sass/new/openeyes/components/_footer.scss */
+.footer {
+  *zoom: 1;
+  background: #b3b0ae url('/img/_structure/openeyes_footer.png?1373641356') no-repeat right top;
+}
+/* line 121, ../sass/new/foundation/components/_global.scss */
+.footer:before, .footer:after {
+  content: " ";
+  display: table;
+}
+/* line 122, ../sass/new/foundation/components/_global.scss */
+.footer:after {
+  clear: both;
+}
+/* line 18, ../sass/new/openeyes/components/_footer.scss */
+.footer .info {
+  font-size: 0.625em;
+  line-height: 1.5em;
+  padding-bottom: 0.3125em;
+  padding-top: 0.3125em;
+}
+/* line 23, ../sass/new/openeyes/components/_footer.scss */
+.footer .info .copyright {
+  color: #666666;
+}
+/* line 27, ../sass/new/openeyes/components/_footer.scss */
+.footer .help {
+  font-size: 0.6875em;
+  text-align: left;
+}
+@media only screen and (min-width: 768px) {
+  /* line 27, ../sass/new/openeyes/components/_footer.scss */
+  .footer .help {
+    text-align: center;
+  }
+}
+/* line 33, ../sass/new/openeyes/components/_footer.scss */
+.footer .help .panel {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #cbc6bf;
+  margin-bottom: 1.25em;
+  padding: 0.625em 0.625em 0.375em 0.625em;
+  background: #e2dfdb;
+  margin: 1px 0 0 0;
+  -webkit-border-radius: 0 0 3px 3px;
+  -moz-border-radius: 0 0 3px 3px;
+  -ms-border-radius: 0 0 3px 3px;
+  -o-border-radius: 0 0 3px 3px;
+  border-radius: 0 0 3px 3px;
+}
+/* line 44, ../sass/new/foundation/components/_panels.scss */
+.footer .help .panel > :first-child {
+  margin-top: 0;
+}
+/* line 45, ../sass/new/foundation/components/_panels.scss */
+.footer .help .panel > :last-child {
+  margin-bottom: 0;
+}
+/* line 50, ../sass/new/foundation/components/_panels.scss */
+.footer .help .panel h1, .footer .help .panel h2, .footer .help .panel h3, .footer .help .panel h4, .footer .help .panel h5, .footer .help .panel h6, .footer .help .panel p {
+  color: #333333;
+}
+/* line 54, ../sass/new/foundation/components/_panels.scss */
+.footer .help .panel h1, .footer .help .panel h2, .footer .help .panel h3, .footer .help .panel h4, .footer .help .panel h5, .footer .help .panel h6 {
+  line-height: 1;
+  margin-bottom: 0.625em;
+}
+/* line 56, ../sass/new/foundation/components/_panels.scss */
+.footer .help .panel h1.subheader, .footer .help .panel h2.subheader, .footer .help .panel h3.subheader, .footer .help .panel h4.subheader, .footer .help .panel h5.subheader, .footer .help .panel h6.subheader {
+  line-height: 1.4;
+}
+/* line 43, ../sass/new/openeyes/components/_footer.scss */
+.footer .help .inline-list {
+  display: inline-block;
+  margin: 0;
+}
+/* line 46, ../sass/new/openeyes/components/_footer.scss */
+.footer .help .inline-list li {
+  border-right: 1px solid #aaaaaa;
+  display: inline-block;
+  line-height: 1;
+  list-style: none;
+  margin: 0 1em 0.25em 0;
+  padding: 0 1em 0 0;
+}
+/* line 53, ../sass/new/openeyes/components/_footer.scss */
+.footer .help .inline-list li:last-child {
+  padding-right: 0;
+  margin-right: 0;
+  border: 0;
 }

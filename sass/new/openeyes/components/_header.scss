@@ -1,10 +1,14 @@
-$header-logo-bg-image: image-url("_structure/openeyes.png") !default;
-$header-logo-width: 240px !default;
-$header-logo-height: 70px !default;
+$oe-header-height: 70px !default;
+$oe-header-logo-bg-image: image-url("_structure/openeyes.png") !default;
+$oe-header-logo-width: 240px !default;
+$oe-header-logo-height: 70px !default;
 
-.logo {
-	background: $header-logo-bg-image no-repeat;
-	width: $header-logo-width;
-	height: $header-logo-height;
-    @include hide-text;
+.header {
+    height: $oe-header-height;
+    .logo {
+    	background: $oe-header-logo-bg-image no-repeat;
+    	width: $oe-header-logo-width;
+    	height: $oe-header-logo-height;
+        @include hide-text;
+    }
 }

@@ -1,34 +1,4 @@
 // ============================================
-// OpenEyes default theme variables
-// ============================================
-
-// Compass vars
-$experimental-support-for-svg: false; // Change to true if we want background gradient support in IE9
-$support-for-original-webkit-gradients: false;
-
-// Container vars
-$container-main-bg-color: #dae6f1;
-$container-main-bg-image: image-url("_structure/gradient_bg.jpg");
-$container-main-border-color: #b3b0ae;
-$container-main-border-width: 2px;
-$container-content-bg-image: image-url("_structure/help_top_grad.jpg");
-$container-footer-bg-color: #b3b0ae;
-
-// Header vars
-$header-logo-bg-image: image-url("_structure/openeyes.png");
-$header-logo-width: 240px;
-$header-logo-height: 70px;
-
-// Typography vars
-$h1-padding-top: 5px;
-$h1-padding-right: 15px;
-$h1-padding-bottom: 5px;
-$h1-padding-left: 55px;
-$h1-bg-gradient-left: #b4b0ae;
-$h1-bg-gradient-right: #fffdea;
-$h1-bg-gradient-width: 12px;
-
-// ============================================
 // Foundation Variables
 // Note: for reference, default values are set in foundation/_global.scss
 // ============================================
@@ -75,7 +45,7 @@ $text-direction: ltr;
 
 // Colors
 
-$primary-color: #2ba6cb;
+$primary-color: #0b59da;
 $secondary-color: #e9e9e9;
 $alert-color: #c60f13;
 $success-color: #5da423;
@@ -96,28 +66,28 @@ $global-rounded: 1000px;
 $include-html-classes: false;
 $include-print-styles: true;
 $include-html-global-classes: true;
-$include-html-inline-list-classes: $include-html-classes;
+$include-html-inline-list-classes: false;
 $include-html-type-classes: true;
 $include-html-grid-classes: true;
-$include-html-visibility-classes: $include-html-classes;
+$include-html-visibility-classes: false;
 $include-html-button-classes: true;
 $include-html-form-classes: true;
-$include-html-custom-form-classes: $include-html-classes;
-$include-html-media-classes: $include-html-classes;
-$include-html-section-classes: $include-html-classes;
-$include-html-orbit-classes: $include-html-classes;
-$include-html-reveal-classes: $include-html-classes;
-$include-html-joyride-classes: $include-html-classes;
-$include-html-clearing-classes: $include-html-classes;
-$include-html-alert-classes: $include-html-classes;
-$include-html-nav-classes: $include-html-classes;
-$include-html-top-bar-classes: $include-html-classes;
-$include-html-label-classes: $include-html-classes;
-$include-html-panel-classes: true;
-$include-html-pricing-classes: $include-html-classes;
-$include-html-progress-classes: $include-html-classes;
-$include-html-magellan-classes: $include-html-classes;
-$include-html-tooltip-classes: $include-html-classes;
+$include-html-custom-form-classes: false;
+$include-html-media-classes: false;
+$include-html-section-classes: false;
+$include-html-orbit-classes: false;
+$include-html-reveal-classes: false;
+$include-html-joyride-classes: false;
+$include-html-clearing-classes: false;
+$include-html-alert-classes: false;
+$include-html-nav-classes: false;
+$include-html-top-bar-classes: false;
+$include-html-label-classes: false;
+$include-html-panel-classes: false;
+$include-html-pricing-classes: false;
+$include-html-progress-classes: false;
+$include-html-magellan-classes: false;
+$include-html-tooltip-classes: false;
 $include-html-table-classes: true;
 
 // Media Queries
@@ -1301,3 +1271,48 @@ $h6-font-size: 1em;
 // Sticky Class
 
 // $topbar-sticky-class: ".sticky";
+
+// ============================================
+// OpenEyes default theme variables
+// ============================================
+
+// Compass vars
+$experimental-support-for-svg: false; // Change to true if we want background gradient support in IE9
+$support-for-original-webkit-gradients: false;
+
+// Container vars
+$oe-container-main-bg-color: #dae6f1;
+$oe-container-main-bg-image: image-url("_structure/gradient_bg.jpg");
+$oe-container-main-border-color: #b3b0ae;
+$oe-container-main-border-width: 2px;
+$oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg");
+
+// Header vars
+$oe-header-height: 70px;
+$oe-header-logo-bg-image: image-url("_structure/openeyes.png");
+$oe-header-logo-width: 240px;
+$oe-header-logo-height: 70px;
+
+// Footer vars
+$oe-footer-bg-color: #b3b0ae;
+$oe-footer-panel-bg-color: #e2dfdb;
+$oe-footer-panel-radius: 3px;
+$oe-footer-help-list-divider-color: #aaa;
+$oe-footer-info-logo-font-size: emCalc(10px);
+$oe-footer-info-line-height: 1.5em;
+$oe-footer-info-padding: emCalc(5px);
+$oe-footer-help-font-size: emCalc(11px);
+$oe-footer-help-panel-padding: emCalc(10px);
+$oe-footer-help-list-item-spacing: emCalc(16px);
+$oe-footer-help-list-item-bottom-margin: emCalc(4px);
+$oe-footer-copyright-color: #666;
+$oe-footer-logo-bg-image: image-url("_structure/openeyes_footer.png");
+
+// Typography vars
+$oe-h1-padding-top: 5px;
+$oe-h1-padding-right: 15px;
+$oe-h1-padding-bottom: 5px;
+$oe-h1-padding-left: 55px;
+$oe-h1-bg-gradient-left: #b4b0ae;
+$oe-h1-bg-gradient-right: #fffdea;
+$oe-h1-bg-gradient-width: 12px;

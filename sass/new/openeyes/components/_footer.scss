@@ -1,0 +1,61 @@
+$oe-footer-bg-color: #b3b0ae !default;
+$oe-footer-panel-bg-color: #e2dfdb !default;
+$oe-footer-panel-radius: 3px !default;
+$oe-footer-help-list-divider-color: #aaa !default;
+$oe-footer-info-logo-font-size: emCalc(10px) !default;
+$oe-footer-info-line-height: 1.5em !default;
+$oe-footer-info-padding: emCalc(5px) !default;
+$oe-footer-help-font-size: emCalc(11px) !default;
+$oe-footer-help-panel-padding: emCalc(10px) !default;
+$oe-footer-help-list-item-spacing: emCalc(16px) !default;
+$oe-footer-help-list-item-bottom-margin: emCalc(4px) !default;
+$oe-footer-copyright-color: #666 !default;
+$oe-footer-logo-bg-image: image-url("_structure/openeyes_footer.png") !default;
+
+.footer {
+    @include clearfix;
+    background: $oe-footer-bg-color $oe-footer-logo-bg-image no-repeat right top;
+    .info {
+        font-size: $oe-footer-info-logo-font-size;
+        line-height: $oe-footer-info-line-height;
+        padding-bottom: $oe-footer-info-padding;
+        padding-top: $oe-footer-info-padding;
+        .copyright {
+            color: $oe-footer-copyright-color;
+        }
+    }
+    .help {
+        font-size: $oe-footer-help-font-size;
+        text-align: left;
+        @media #{$small} {
+            text-align: center;
+        }
+        .panel {
+            @include panel($oe-footer-panel-bg-color,
+                $oe-footer-help-panel-padding
+                $oe-footer-help-panel-padding
+                $oe-footer-help-panel-padding - $oe-footer-help-list-item-bottom-margin
+                $oe-footer-help-panel-padding
+            );
+            margin: 1px 0 0 0;
+            @include border-radius(0 0 $oe-footer-panel-radius $oe-footer-panel-radius);
+        }
+        .inline-list {
+            display: inline-block;
+            margin: 0;
+            li {
+                border-right: 1px solid $oe-footer-help-list-divider-color;
+                display: inline-block;
+                line-height: 1;
+                list-style: none;
+                margin: 0 $oe-footer-help-list-item-spacing $oe-footer-help-list-item-bottom-margin 0;
+                padding: 0 $oe-footer-help-list-item-spacing 0 0;
+                &:last-child {
+                    padding-right: 0;
+                    margin-right: 0;
+                    border: 0;
+                }
+            }
+        }
+    }
+}
