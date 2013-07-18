@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Login extends Page
+class Login
 {
     public static $login = "//input[@id='loginform_username']";
     public static $pass = "//input[@id='loginform_password']";

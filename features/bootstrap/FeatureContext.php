@@ -6,7 +6,6 @@ use Behat\Behat\Context\ClosuredContextInterface,
     Behat\Behat\Exception\PendingException;
 use Behat\Gherkin\Node\PyStringNode,
     Behat\Gherkin\Node\TableNode;
-
 use Behat\MinkExtension\Context\MinkContext;
 
 use Behat\YiiExtension\Context\YiiAwareContextInterface;
@@ -49,7 +48,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     {
         if ($this->getSession()->getDriver() instanceof Selenium2Driver) {
             try {
-                $this->getSession()->wait(5000, "$.active == 0");
+                $this->getSession()->wait(5000, "$.active === 0");
             } catch (\Exception $e) {}
         }
     }
@@ -72,7 +71,6 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterLoginCredentialsAnd($user, $password)
     {
-        PatientViewPage::$opthDiagnosis;
         $this->fillField(Login::$login, $user );
         $this->fillField(Login::$pass, $password);
     }
@@ -166,29 +164,38 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
 
         $this->clickLink(AddingNewEvent::$addNewEventSideBar);
 
-        if ($event=="Satisfaction") {
+        if ($event==="Satisfaction") {
             $this->clickLink(AddingNewEvent::$anaestheticSatisfaction);
         }
-        if ($event=="Consent") {
+        if ($event==="Consent") {
             $this->clickLink(AddingNewEvent::$consentForm);
         }
-        if ($event=="Correspondence") {
+        if ($event==="Correspondence") {
             $this->clickLink(AddingNewEvent::$correspondence);
         }
-        if ($event=="Examination") {
+        if ($event==="Examination") {
             $this->clickLink(AddingNewEvent::$examination);
         }
-        if ($event=="OpBooking") {
+        if ($event==="OpBooking") {
             $this->clickLink(AddingNewEvent::$operationBooking);
         }
-        if ($event=="OpNote") {
+        if ($event==="OpNote") {
             $this->clickLink(AddingNewEvent::$operationNote);
         }
-        if ($event=="Phasing") {
+        if ($event==="Phasing") {
             $this->clickLink(AddingNewEvent::$phasing);
         }
-        if ($event=="Prescription") {
+        if ($event==="Prescription") {
             $this->clickLink(AddingNewEvent::$prescription);
+        }
+        if ($event==="Laser") {
+            $this->clickLink(AddingNewEvent::$laser);
+        }
+        if ($event==="Intravitreal") {
+            $this->clickLink(AddingNewEvent::$intravitreal);
+        }
+        if ($event==="Therapy") {
+            $this->clickLink(AddingNewEvent::$therapyApplication);
         }
     }
 
@@ -209,13 +216,13 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectThatItAffectsEye($eye)
     {
-        if ($eye=="Right") {
+        if ($eye==="Right") {
             $this->clickLink(PatientViewPage::$opthRighteye);
         }
-        if ($eye=="Both") {
+        if ($eye==="Both") {
             $this->clickLink(PatientViewPage::$opthBotheyes);
         }
-        if ($eye=="Left") {
+        if ($eye==="Left") {
             $this->clickLink(PatientViewPage::$opthLefteye);
         }
     }
@@ -253,16 +260,16 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function AffectsSide($side)
     {
-        if ($side=("None")) {
+        if ($side===("None")) {
             $this->clickLink(PatientViewPage::$sysNoneSide);
         }
-        if ($side=("Right")) {
+        if ($side===("Right")) {
             $this->clickLink(PatientViewPage::$sysRightSide);
         }
-        if ($side=("Both")) {
+        if ($side===("Both")) {
             $this->clickLink(PatientViewPage::$sysBothSide);
         }
-        if ($side=("Left")) {
+        if ($side===("Left")) {
             $this->clickLink(PatientViewPage::$sysLeftSide);
         }
     }
@@ -348,11 +355,11 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     {
         echo "". $this->removeMedication ." number of Medication test data items to be removed";
         while ($this->removeMedication) {
-            $this->clickLink(PatientViewPage::$removeMedicationLink);
-            $this->waitForActionToFinish();
-            $this->clickLink(PatientViewPage::$removeMedication);
-            $this->waitForActionToFinish();
-            $this->removeMedication--;
+        $this->clickLink(PatientViewPage::$removeMedicationLink);
+        $this->waitForActionToFinish();
+        $this->clickLink(PatientViewPage::$removeMedication);
+        $this->waitForActionToFinish();
+        $this->removeMedication--;
         }
     }
 
@@ -363,11 +370,11 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     {
         echo "". $this->removeAllergy ." number of Allergy test data items to be removed";
         while ($this->removeAllergy) {
-            $this->clickLink(PatientViewPage::$removeAllergyLink);
-            $this->waitForActionToFinish();
-            $this->clickLink(PatientViewPage::$removeAllergy);
-            $this->waitForActionToFinish();
-            $this->removeAllergy--;
+        $this->clickLink(PatientViewPage::$removeAllergyLink);
+        $this->waitForActionToFinish();
+        $this->clickLink(PatientViewPage::$removeAllergy);
+        $this->waitForActionToFinish();
+        $this->removeAllergy--;
         }
     }
 
@@ -378,13 +385,13 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectDiagnosisEyesOf($eye)
     {
-        if ($eye=="Right") {
+        if ($eye==="Right") {
             $this->clickLink(OperationBooking::$diagnosisRightEye);
         }
-        if ($eye=="Both") {
+        if ($eye==="Both") {
             $this->clickLink(OperationBooking::$diagnosisBothEyes);
         }
-        if ($eye=="Left") {
+        if ($eye==="Left") {
             $this->clickLink(OperationBooking::$diagnosisLeftEye);
         }
     }
@@ -402,13 +409,13 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectOperationEyesOf($opEyes)
     {
-        if ($opEyes=="Right") {
+        if ($opEyes==="Right") {
             $this->clickLink(OperationBooking::$operationRightEye);
         }
-        if ($opEyes=="Both") {
+        if ($opEyes==="Both") {
             $this->clickLink(OperationBooking::$operationBothEyes);
         }
-        if ($opEyes=="Left") {
+        if ($opEyes==="Left") {
             $this->clickLink(OperationBooking::$operationLeftEye);
         }
     }
@@ -442,19 +449,19 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAAnaestheticType($type)
     {
-        if ($type=="Topical") {
+        if ($type==="Topical") {
             $this->clickLink(OperationBooking::$anaestheticTopical);
         }
-        if ($type=="LA") {
+        if ($type==="LA") {
             $this->clickLink(OperationBooking::$anaestheticLa);
         }
-        if ($type=="LAC") {
+        if ($type==="LAC") {
             $this->clickLink(OperationBooking::$anaestheticLac);
         }
-        if ($type=="LAS") {
+        if ($type==="LAS") {
             $this->clickLink(OperationBooking::$anaestheticLas);
         }
-        if ($type=="GA") {
+        if ($type==="GA") {
             $this->clickLink(OperationBooking::$anaestheticGa);
         }
     }
@@ -1202,7 +1209,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToCloseTheBrowser()
     {
-       //To be coded - need Mink function
+       $this->Stop ();
     }
 
 }

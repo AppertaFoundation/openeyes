@@ -1,5 +1,8 @@
 @Phasing
 Feature: Create New Phasing Event
+  In order to cover every possible route throughout the site
+  As an automation tester
+  I want to build a template with supporting code for each web page
 
   Scenario Outline: Login and create a Phasing Event
 

@@ -1,5 +1,9 @@
 @NewDiagnosis
-Feature: Open Eyes Login and Patient Diagnosis Screen
+Feature: Open Eyes Login and Patient Diagnosis Screen Template
+  In order to cover every possible route throughout the site
+  As an automation tester
+  I want to build a template with supporting code for each web page
+
 
   Scenario Outline: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
