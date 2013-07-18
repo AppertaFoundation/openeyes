@@ -20,7 +20,7 @@
 ?>
 <div class="report curvybox white">
 	<div class="admin">
-		<h3 class="georgia">Edit firm</h3>
+		<h3 class="georgia"><?php echo ($firm->id ? 'Edit' : 'Add')?> firm</h3>
 		<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 		<div>
 			<?php
@@ -35,7 +35,7 @@
 			<div id="div_Firm_subspecialty_id" class="eventDetail">
 				<div class="label">Subspecialty:</div>
 				<div class="data">
-					<?php echo CHtml::dropDownList('Firm[subspecialty_id]',$firm->serviceSubspecialtyAssignment->subspecialty_id,CHtml::listData(Subspecialty::model()->findAll(array('order'=>'name')),'id','name'))?>
+					<?php echo CHtml::dropDownList('Firm[subspecialty_id]',$firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null,CHtml::listData(Subspecialty::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
 				</div>
 			</div>
 			<div id="div_Firm_consultant_id" class="eventDetail">

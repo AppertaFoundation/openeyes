@@ -153,6 +153,29 @@ class AdminController extends BaseController
 		));
 	}
 
+	public function actionAddFirm()
+	{
+		$firm = new Firm;
+
+		if (!empty($_POST)) {
+			$firm->attributes = $_POST['Firm'];
+
+			if (!$firm->validate()) {
+				$errors = $firm->getErrors();
+			} else {
+				if (!$firm->save()) {
+					throw new Exception("Unable to save firm: ".print_r($firm->getErrors(),true));
+				}
+				$this->redirect('/admin/firms/'.ceil($firm->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/editfirm',array(
+			'firm' => $firm,
+			'errors' => @$errors,
+		));
+	}
+
 	public function actionEditFirm($id)
 	{
 		if (!$firm= Firm::model()->findByPk($id)) {

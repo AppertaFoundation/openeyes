@@ -61,7 +61,7 @@ class Firm extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('service_subspecialty_assignment_id, name', 'required'),
+			array('name', 'required'),
 			array('service_subspecialty_assignment_id', 'length', 'max'=>10),
 			array('pas_code', 'length', 'max'=>4),
 			array('name', 'length', 'max'=>40),
