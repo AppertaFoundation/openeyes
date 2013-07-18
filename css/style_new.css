@@ -1553,7 +1553,7 @@ p.lead {
 /* line 115, ../sass/new/foundation/components/_type.scss */
 .subheader {
   line-height: 1.4;
-  color: #6f6f6f;
+  color: gray;
   font-weight: 300;
   margin-top: 0.2em;
   margin-bottom: 0.5em;
@@ -1624,7 +1624,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
   font-weight: bold;
   font-style: normal;
-  color: #222222;
+  color: #333333;
   text-rendering: optimizeLegibility;
   margin-top: 0.2em;
   margin-bottom: 0.5em;
@@ -1633,13 +1633,13 @@ h1, h2, h3, h4, h5, h6 {
 /* line 191, ../sass/new/foundation/components/_type.scss */
 h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
   font-size: 60%;
-  color: #6f6f6f;
+  color: gray;
   line-height: 0;
 }
 
 /* line 198, ../sass/new/foundation/components/_type.scss */
 h1 {
-  font-size: 2.125em;
+  font-size: 0.1875em;
 }
 
 /* line 199, ../sass/new/foundation/components/_type.scss */
@@ -1797,7 +1797,7 @@ blockquote {
 blockquote cite {
   display: block;
   font-size: 0.8125em;
-  color: #555555;
+  color: #666666;
 }
 /* line 319, ../sass/new/foundation/components/_type.scss */
 blockquote cite:before {
@@ -1806,14 +1806,14 @@ blockquote cite:before {
 /* line 324, ../sass/new/foundation/components/_type.scss */
 blockquote cite a,
 blockquote cite a:visited {
-  color: #555555;
+  color: #666666;
 }
 
 /* line 330, ../sass/new/foundation/components/_type.scss */
 blockquote,
 blockquote p {
   line-height: 1.6;
-  color: #6f6f6f;
+  color: gray;
 }
 
 /* Microformats */
@@ -1856,7 +1856,7 @@ blockquote p {
 
   /* line 367, ../sass/new/foundation/components/_type.scss */
   h1 {
-    font-size: 2.75em;
+    font-size: 0.8125em;
   }
 
   /* line 368, ../sass/new/foundation/components/_type.scss */
@@ -3469,11 +3469,8 @@ html, body {
   height: 100%;
 }
 
-/* line 2, ../sass/new/components/_containers.scss */
-.container.main {
-  background: #dae6f1 url('/img/_structure/gradient_bg.jpg?1374072153') 0 0 no-repeat;
-  border: 2px solid #b3b0ae;
-  border-bottom: 0;
+/* line 8, ../sass/new/components/_containers.scss */
+.container {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
@@ -3483,21 +3480,71 @@ html, body {
   *zoom: 1;
   -webkit-border-radius: 5px;
   border-radius: 5px;
+  background: #dae6f1 url('/img/_structure/gradient_bg.jpg?1374072194') 0 0 no-repeat;
+  border-bottom: 0;
+  border: 2px solid #b3b0ae;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
-.container.main:before, .container.main:after {
+.container:before, .container:after {
   content: " ";
   display: table;
 }
 /* line 122, ../sass/new/foundation/components/_global.scss */
-.container.main:after {
+.container:after {
   clear: both;
 }
-/* line 9, ../sass/new/components/_containers.scss */
-.container.content {
+
+/* line 16, ../sass/new/components/_containers.scss */
+.content {
+  *zoom: 1;
   background: url('/img/_structure/help_top_grad.jpg?1373641356') 0 bottom no-repeat;
 }
-/* line 12, ../sass/new/components/_containers.scss */
-.container.footer {
+/* line 121, ../sass/new/foundation/components/_global.scss */
+.content:before, .content:after {
+  content: " ";
+  display: table;
+}
+/* line 122, ../sass/new/foundation/components/_global.scss */
+.content:after {
+  clear: both;
+}
+
+/* line 21, ../sass/new/components/_containers.scss */
+.footer {
+  *zoom: 1;
   background: #b3b0ae;
+}
+/* line 121, ../sass/new/foundation/components/_global.scss */
+.footer:before, .footer:after {
+  content: " ";
+  display: table;
+}
+/* line 122, ../sass/new/foundation/components/_global.scss */
+.footer:after {
+  clear: both;
+}
+
+/* line 9, ../sass/new/components/_type.scss */
+h1 {
+  display: inline-block;
+  margin: 0;
+  padding: 5px 15px 5px 55px;
+  background: -webkit-linear-gradient(left, #b4b0ae 0%, #fffdea 12px);
+  background: -moz-linear-gradient(left, #b4b0ae 0%, #fffdea 12px);
+  background: -o-linear-gradient(left, #b4b0ae 0%, #fffdea 12px);
+  background: linear-gradient(left, #b4b0ae 0%, #fffdea 12px);
+  -webkit-border-radius: 0px 3px 3px 0px;
+  -moz-border-radius: 0px 3px 3px 0px;
+  -ms-border-radius: 0px 3px 3px 0px;
+  -o-border-radius: 0px 3px 3px 0px;
+  border-radius: 0px 3px 3px 0px;
+}
+
+/* line 9, ../sass/new/components/_header.scss */
+.logo {
+  background: url('/img/_structure/openeyes.png?1373641356') no-repeat;
+  width: 240px;
+  height: 70px;
+  overflow: hidden;
+  text-indent: -9999px;
 }

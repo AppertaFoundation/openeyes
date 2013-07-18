@@ -1,6 +1,6 @@
 // Example mixin
-@mixin example { 
-    .example & { 
+@mixin example {
+    .example & {
         @content;
-    }   
+    }
 }

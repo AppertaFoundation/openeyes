@@ -1,31 +1,46 @@
 // Welcome to the OpenEyes core stylesheet.
 //
-// Please take note of the following:
+// Overview
+// ===================================================================
+//
+// Most elements used throughout the system will be defined in this core stylesheet.
+// There should be few reasons to override these styles, and if we find we are doing so,
+// then we should try make the core styles more generic and adapatable rather than
+// overriding them in the module stylesheets.
 //
 // Commenting
-// ============================
+// ===================================================================
 // * Double-slash (Sass) comments will be removed in the compiled CSS.
 // * Slash-star (CSS) comments will not be removed in the compiled CSS.
 // * Use KSS style comments! The living styleguide is dependent on the correct
 //   format of comments. (See http://warpspire.com/kss/)
+// * Try to keep comments to 80 chars.
 //
 // Conventions
-// ============================
-// * 4 spaces for indentation
-// * Components should be decoupled from each other
-// * Never use ID's for styling
-// * Separate rules with new lines
-// * Lower-case classnames, words separated by a hyphen
-// * Use 3 character hexadecimal notation where possible (eg #000)
-// * Avoid qualifying class names with type selectors (eg, don't do this: div.myclass)
-// * Use double-quotes, (eg: font-family: "Helvetica Neue")
-// * Never change the foundation component files
+// ===================================================================
+// * When in doubt, follow the conventions you see used in the foundation files.
+// * 4 spaces for indentation.
+// * Components should be decoupled from each other.
+// * Never use ID's for styling.
+// * Separate rules with new lines.
+// * Lower-case classnames, words separated by a hyphen. (eg .button-dropdown).
+// * Use 3 character hexadecimal notation where possible (eg #000).
+// * Avoid qualifying class names with type selectors (eg, don't do this: div.myclass).
+// * Use double-quotes, (eg: font-family: "Helvetica Neue").
+// * Never change the foundation component files.
+// * If using Sublime Text text editor, you can use the 'SassBeautify'
+//   plugin to format your Sass.
 //
 // Variables
-// ============================
-// * User variables for values
-// * Add variables to the _variables.scss and not in the component file
+// ===================================================================
+// * Use variables for all values.
+// * Add default variables values in the component file, and copy those variables
+//   into the _variables file. This allows use to create different themes in the future
+//   by simply using a different _variables file.
 
+
+// Framework setup
+// ===================================================================
 
 // Make sure the charset is set appropriately
 @charset "UTF-8";
@@ -48,53 +63,76 @@
 // but prevent foundation classes from being created by adjusting the
 // $include-html-*-classes variables in the _variables.scss file.
 @import
-  "foundation/components/global",
-  "foundation/components/grid",
-  "foundation/components/visibility",
-  "foundation/components/block-grid",
-  "foundation/components/type",
-  "foundation/components/buttons",
-  "foundation/components/forms",
-  "foundation/components/custom-forms",
-  "foundation/components/button-groups",
-  "foundation/components/dropdown-buttons",
-  "foundation/components/split-buttons",
-  "foundation/components/flex-video",
-  "foundation/components/section",
-  "foundation/components/top-bar",
-  "foundation/components/orbit",
-  "foundation/components/reveal",
-  "foundation/components/joyride",
-  "foundation/components/clearing",
-  "foundation/components/alert-boxes",
-  "foundation/components/breadcrumbs",
-  "foundation/components/keystrokes",
-  "foundation/components/labels",
-  "foundation/components/inline-lists",
-  "foundation/components/pagination",
-  "foundation/components/panels",
-  "foundation/components/pricing-tables",
-  "foundation/components/progress-bars",
-  "foundation/components/side-nav",
-  "foundation/components/sub-nav",
-  "foundation/components/switch",
-  "foundation/components/magellan",
-  "foundation/components/tables",
-  "foundation/components/thumbs",
-  "foundation/components/tooltips",
-  "foundation/components/dropdown";
+    "foundation/components/global",
+    "foundation/components/grid",
+    "foundation/components/visibility",
+    "foundation/components/block-grid",
+    "foundation/components/type",
+    "foundation/components/buttons",
+    "foundation/components/forms",
+    "foundation/components/custom-forms",
+    "foundation/components/button-groups",
+    "foundation/components/dropdown-buttons",
+    "foundation/components/split-buttons",
+    "foundation/components/flex-video",
+    "foundation/components/section",
+    "foundation/components/top-bar",
+    "foundation/components/orbit",
+    "foundation/components/reveal",
+    "foundation/components/joyride",
+    "foundation/components/clearing",
+    "foundation/components/alert-boxes",
+    "foundation/components/breadcrumbs",
+    "foundation/components/keystrokes",
+    "foundation/components/labels",
+    "foundation/components/inline-lists",
+    "foundation/components/pagination",
+    "foundation/components/panels",
+    "foundation/components/pricing-tables",
+    "foundation/components/progress-bars",
+    "foundation/components/side-nav",
+    "foundation/components/sub-nav",
+    "foundation/components/switch",
+    "foundation/components/magellan",
+    "foundation/components/tables",
+    "foundation/components/thumbs",
+    "foundation/components/tooltips",
+    "foundation/components/dropdown";
 
-// Core
+// OpenEyes styles
+// ===================================================================
+
+// Global
 //
-// Base layout styles
+// Global base styles
 //
 // Styleguide 1
 @import "components/global";
+
+// Containers
+//
+// Global layout containers
+//
+// Styleguide 2
 @import "components/containers";
+
+// Typography
+//
+// Global typography styles
+//
+// Styleguide 3
+@import "components/type";
+
+// Header
+//
+// Header styles
+//
+// Styleguide 4
+@import "components/header";
 
 // Components
 //
 // Reusable components that can be used across the site.
 //
-// Styleguide 2
+// Styleguide 5
 @import "components/buttons";

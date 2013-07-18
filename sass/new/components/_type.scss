@@ -1,0 +1,15 @@
+$h1-padding-top: 5px !default;
+$h1-padding-right: 15px !default;
+$h1-padding-bottom: 5px !default;
+$h1-padding-left: 55px !default;
+$h1-bg-gradient-left: #b4b0ae !default;
+$h1-bg-gradient-right: #fffdea !default;
+$h1-bg-gradient-width: 12px !default;
+
+h1 {
+    display: inline-block;
+    margin: 0;
+    padding: $h1-padding-top $h1-padding-right $h1-padding-bottom $h1-padding-left;
+    @include background(linear-gradient(left, $h1-bg-gradient-left 0, $h1-bg-gradient-right $h1-bg-gradient-width));
+    @include border-radius(0px 3px 3px 0px);
+}

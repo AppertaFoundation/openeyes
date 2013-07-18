@@ -1,15 +1,24 @@
+$container-main-bg-color: #dae6f1 !default;
+$container-main-bg-image: image-url("_structure/gradient_bg.jpg") !default;
+$container-main-border-color: #b3b0ae !default;
+$container-main-border-width: 2px !default;
+$container-content-bg-image: image-url("_structure/help_top_grad.jpg") !default;
+$container-footer-bg-color: #b3b0ae !default;
+
 .container {
-	&.main {
-		background: $container-main-bg-color $container-main-bg-image 0 0 no-repeat;
-		border: $container-main-border-width solid $container-main-border-color;
-		border-bottom: 0;
-		@include grid-row;
-		@include radius;
-	}
-	&.content {
-		background: $container-content-bg-image 0 bottom no-repeat;
-	}
-	&.footer {
-		background: $container-footer-bg-color;
-	}
+    @include grid-row;
+    @include radius;
+    background: $container-main-bg-color $container-main-bg-image 0 0 no-repeat;
+    border-bottom: 0;
+    border: $container-main-border-width solid $container-main-border-color;
+}
+
+.content {
+    @include clearfix;
+    background: $container-content-bg-image 0 bottom no-repeat;
+}
+
+.footer {
+    @include clearfix;
+    background: $container-footer-bg-color;
 }
