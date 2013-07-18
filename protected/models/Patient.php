@@ -1053,5 +1053,13 @@ class Patient extends BaseActiveRecord
 				return $body;
 			}
 		}
+
+		if ($this->practice) {
+			foreach ($this->practice->commissioningbodies as $body) {
+				if ($body->type->id == $type->id) {
+					return $body;
+				}
+			}
+		}
 	}
 }
