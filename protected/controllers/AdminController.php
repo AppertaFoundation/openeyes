@@ -137,6 +137,24 @@ class AdminController extends BaseController
 		));
 	}
 
+	public function actionDeleteUsers() {
+		$result = 1;
+
+		if (!empty($_POST['users'])) {
+			foreach (User::model()->findAllByPk($_POST['users']) as $user) {
+				try {
+					if (!$user->delete()) {
+						$result = 0;
+					}
+				} catch (Exception $e) {
+					$result = 0;
+				}
+			}
+		}
+
+		echo $result;
+	}
+
 	public function actionFirms($id=false)
 	{
 		if ((integer) $id) {
@@ -787,5 +805,23 @@ class AdminController extends BaseController
 		}
 
 		echo "1";
+	}
+
+	public function actionDeleteFirms() {
+		$result = 1;
+
+		if (!empty($_POST['firms'])) {
+			foreach (Firm::model()->findAllByPk($_POST['firms']) as $firm) {
+				try {
+					if (!$firm->delete()) {
+						$result = 0;
+					}
+				} catch (Exception $e) {
+					$result = 0;
+				}
+			}
+		}
+
+		echo $result;
 	}
 }

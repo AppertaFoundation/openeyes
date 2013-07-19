@@ -1525,14 +1525,14 @@ div.pagination .selected { background-color: #0b59da; color: #fff; padding-left:
 #admin_users ul li .column_title { width: 25px; display: inline-block; }
 #admin_users ul li .column_firstname { width: 140px; display: inline-block; }
 #admin_users ul li .column_lastname { width: 140px; display: inline-block; }
-#admin_users ul li .column_role { width: 215px; display: inline-block; }
+#admin_users ul li .column_role { width: 176px; display: inline-block; }
 #admin_users ul li .column_doctor { width: 35px; display: inline-block; }
 #admin_users ul li .column_active { width: 35px; display: inline-block; }
 
 #admin_firms ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
 #admin_firms ul li .column_id { width: 15px; display: inline-block; }
 #admin_firms ul li .column_pas_code { width: 52px; display: inline-block; }
-#admin_firms ul li .column_name { width: 200px; display: inline-block; }
+#admin_firms ul li .column_name { width: 245px; display: inline-block; }
 #admin_firms ul li .column_subspecialty { width: 200px; display: inline-block; }
 #admin_firms ul li .column_consultant { width: 200px; display: inline-block; }
 

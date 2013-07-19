@@ -30,8 +30,10 @@
 		</div>
 		<div>
 			<form id="admin_firms">
+				<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 				<ul class="grid reduceheight">
 					<li class="header">
+						<span class="column_checkbox"><input type="checkbox" name="selectall" id="selectall" /></span>
 						<span class="column_id">ID</span>
 						<span class="column_pas_code">PAS code</span>
 						<span class="column_name">Name</span>
@@ -42,6 +44,7 @@
 						<?php
 						foreach ($firms['items'] as $i => $firm) {?>
 							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $firm->id?>">
+								<span class="column_checkbox"><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></span>
 								<span class="column_id"><?php echo $firm->id?></span>
 								<span class="column_pas_code"><?php echo $firm->pas_code?>&nbsp;</span>
 								<span class="column_name"><?php echo $firm->name?>&nbsp;</span>
