@@ -176,7 +176,7 @@ class PatientController extends BaseController
 		// the multiple search results view. If we are live, enforces controls over search terms.
 		if(!YII_DEBUG && !$search_terms['hos_num'] && !$search_terms['nhs_num'] && !($search_terms['first_name'] && $search_terms['last_name'])) {
 			Yii::app()->user->setFlash('warning.invalid-search', 'Please enter a valid search.');
-			$this->redirect('/');
+			$this->redirect(array('/'));
 		}
 		
 		 $search_terms = CHtml::encodeArray($search_terms);
@@ -241,7 +241,7 @@ class PatientController extends BaseController
 				$message .= 'found for your search.';
 			}
 			Yii::app()->user->setFlash('warning.no-results', $message);
-			$this->redirect('/');
+			$this->redirect(array('/'));
 		} else if($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
 				$this->redirect(array('patient/view/' . $item->id));

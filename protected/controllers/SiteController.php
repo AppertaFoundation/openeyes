@@ -77,7 +77,7 @@ class SiteController extends BaseController
 					$this->redirect(array($event_class_name.'/default/view/'.$event_id));
 				} else {
 					Yii::app()->user->setFlash('warning.search_error', 'Event ID not found');
-					$this->redirect('/');
+					$this->redirect(array('/'));
 				}
 				return;
 			}
@@ -125,7 +125,7 @@ class SiteController extends BaseController
 			}
 		}
 
-		$this->redirect('/');
+		$this->redirect(array('/'));
 	}
 
 	/**
