@@ -14,10 +14,13 @@ module.exports = function(grunt) {
       newstyle: {
         options: {
           sassDir: 'sass/new',
+          cssPath: './css',
           cssDir: 'css',
-          imagesPath: 'img',
+          imagesPath: './img',
           imagesDir: 'img',
           outputStyle: 'expanded',
+          relativeAssets: true,
+          httpPath: '',
           noLineComments: false
         }
       }
@@ -70,7 +73,7 @@ module.exports = function(grunt) {
           }
         },
         files: {
-          'docs/styleguide': 'sass/new/**/*.scss'
+          'docs/styleguide': 'sass/new/*.scss'
         }
       }
     },
@@ -81,7 +84,7 @@ module.exports = function(grunt) {
       dev: {
         options: {
           port: 9002,
-          base: 'docs'
+          base: 'docs/styleguide'
         }
       }
     },
@@ -107,6 +110,20 @@ module.exports = function(grunt) {
       },
       uglify: true,
       parseFiles: false
+    },
+    copy: {
+      docs: {
+        files: [
+          {
+            src: ['css/**/*'],
+            dest: 'docs/templates/styleguide/public/'
+          },
+          {
+            src: ['img/**/*'],
+            dest: 'docs/templates/styleguide/public/'
+          }
+        ]
+      }
     }
   };
 };

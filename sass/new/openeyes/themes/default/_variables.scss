@@ -74,7 +74,7 @@ $include-html-reveal-classes: false;
 $include-html-joyride-classes: false;
 $include-html-clearing-classes: false;
 $include-html-alert-classes: false;
-$include-html-nav-classes: false;
+$include-html-nav-classes: true;
 $include-html-top-bar-classes: false;
 $include-html-label-classes: false;
 $include-html-panel-classes: false;
@@ -115,7 +115,7 @@ $header-text-rendering: optimizeLegibility;
 
 // Heading font sizes
 
-$h1-font-size: emCalc(13px);
+$h1-font-size: emCalc(44px);
 $h2-font-size: emCalc(37px);
 $h3-font-size: emCalc(27px);
 $h4-font-size: emCalc(23px);
@@ -199,6 +199,7 @@ $oe-footer-copyright-color: #666;
 $oe-footer-logo-bg-image: image-url("_structure/openeyes_footer.png");
 
 // Typography vars
+$oe-h1-badge-font-size: emCalc(13px);
 $oe-h1-padding-top: 5px;
 $oe-h1-padding-right: 15px;
 $oe-h1-padding-bottom: 5px;

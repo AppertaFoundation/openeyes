@@ -7,7 +7,7 @@
 		<? include 'components/header.php'; ?>
 
 		<div class="content">
-			<h1>Please login</h1>
+			<h1 class="badge">Please login</h1>
 			<div class="row">
 				<div class="large-5 large-centered columns">
 					<form class="form login panel">

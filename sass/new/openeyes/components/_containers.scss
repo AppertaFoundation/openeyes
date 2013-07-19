@@ -8,7 +8,6 @@ $oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg") !defau
     @include grid-row;
     @include radius;
     background: $oe-container-main-bg-color $oe-container-main-bg-image 0 0 no-repeat;
-    border-bottom: 0;
     border: $oe-container-main-border-width solid $oe-container-main-border-color;
 }
 

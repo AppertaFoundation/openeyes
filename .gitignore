@@ -29,3 +29,5 @@ vendor
 /.sass-cache
 /node_modules
 /js/components
+/docs/templates/styleguide/public/css
+/docs/templates/styleguide/public/img

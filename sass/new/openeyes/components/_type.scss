@@ -1,3 +1,4 @@
+$oe-h1-badge-font-size: emCalc(13px) !default;
 $oe-h1-padding-top: 5px !default;
 $oe-h1-padding-right: 15px !default;
 $oe-h1-padding-bottom: 5px !default;
@@ -7,11 +8,14 @@ $oe-h1-bg-gradient-right: #fffdea !default;
 $oe-h1-bg-gradient-width: 12px !default;
 
 h1 {
-    display: inline-block;
-    margin: 0;
-    padding: $oe-h1-padding-top $oe-h1-padding-right $oe-h1-padding-bottom $oe-h1-padding-left;
-    @include background(
-        linear-gradient(left, $oe-h1-bg-gradient-left 0, $oe-h1-bg-gradient-right $oe-h1-bg-gradient-width)
-    );
-    @include border-radius(0px 3px 3px 0px);
+    &.badge {
+        display: inline-block;
+        font-size: $oe-h1-badge-font-size;
+        margin: 0;
+        padding: $oe-h1-padding-top $oe-h1-padding-right $oe-h1-padding-bottom $oe-h1-padding-left;
+        @include background(
+            linear-gradient(left, $oe-h1-bg-gradient-left 0, $oe-h1-bg-gradient-right $oe-h1-bg-gradient-width)
+        );
+        @include border-radius(0px 3px 3px 0px);
+    }
 }
