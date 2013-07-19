@@ -2868,12 +2868,12 @@ table tfoot tr td {
   line-height: 1.125em;
 }
 
-/* line 1, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_global.scss */
+/* line 7, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_global.scss */
 html, body {
   background: #d4d1cd;
 }
 
-/* line 7, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_containers.scss */
+/* line 13, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_containers.scss */
 .container {
   width: 100%;
   margin-left: auto;
@@ -2897,7 +2897,7 @@ html, body {
   clear: both;
 }
 
-/* line 14, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_containers.scss */
+/* line 25, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_containers.scss */
 .content {
   *zoom: 1;
   background: url('../img/_structure/help_top_grad.jpg?1373641356') 0 bottom no-repeat;
@@ -2912,7 +2912,7 @@ html, body {
   clear: both;
 }
 
-/* line 11, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_type.scss */
+/* line 20, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_type.scss */
 h1.badge {
   display: inline-block;
   font-size: 0.8125em;

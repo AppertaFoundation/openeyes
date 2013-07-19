@@ -4,6 +4,12 @@ $oe-container-main-border-color: #b3b0ae !default;
 $oe-container-main-border-width: 2px !default;
 $oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg") !default;
 
+// Main
+//
+// The main container wraps all content in the document and manages the main
+// background styles.
+//
+// Styleguide 2.1
 .container {
     @include grid-row;
     @include radius;
@@ -11,6 +17,11 @@ $oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg") !defau
     border: $oe-container-main-border-width solid $oe-container-main-border-color;
 }
 
+// Container
+//
+// The content container wraps around all page content.
+//
+// Styleguide 2.2
 .content {
     @include clearfix;
     background: $oe-container-content-bg-image 0 bottom no-repeat;

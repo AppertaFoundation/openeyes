@@ -1,26 +1,167 @@
-/**
- * Add styleguide documentation styles here.
- */
-
 h1 {
-    margin-top: 0;
+    margin-top: 0
 }
-
 .footer {
-    background-image: none;
+    background-image: none
 }
-
 .box {
     padding: 1em;
-    background: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,.7);
     border-radius: 5px;
+    margin: 0 0 1em 0;
 }
-
 .side-nav {
     margin: 1em 0;
     padding: .5em;
 }
-
-.box.main {
-    margin: 1em 0;
+.main {
+    margin: 1em 0
+}
+.kss-mod-list {
+    background: #fff;
+    border: solid 1px #dddddd;
+    margin-bottom: 1em;
+}
+.kss-mod-description {
+    padding-top: 1em
+}
+.kss-mod {
+    border-top: 1px solid #eee;
+    padding: 0 1em 1em 1em;
+}
+.kss-mod:first-child {
+    border: 0
+}
+.kss-mod-name span {
+    display: inline-block;
+    background: #eee;
+    padding: .5em 1em;
+    border: 1px solid #eee;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.kss-mod-overview {
+    padding: 0 0 1em 0
+}
+.kss-markup {
+    margin-bottom: 40px;
+    border: 1px solid #dddddd;
+    padding: .5em;
+    background: #fff;
+}
+.kss-depth-1>h1 {
+    font-size: 2.375em
+}
+.kss-depth-2>h1 {
+    font-size: 2.25em
+}
+.kss-depth-3>h1 {
+    font-size: 2.125em
+}
+.kss-depth-4>h1 {
+    font-size: 2em
+}
+.kss-depth-5>h1 {
+    font-size: 1.875em
+}
+.kss-depth-6>h1 {
+    font-size: 1.75em
+}
+/* Prettify styles from here */
+.pln {
+    color: #000
+}
+@media screen {
+    .str {
+        color: #080
+    }
+    .kwd {
+        color: #008
+    }
+    .com {
+        color: #800
+    }
+    .typ {
+        color: #606
+    }
+    .lit {
+        color: #066
+    }
+    .pun,
+    .opn,
+    .clo {
+        color: #660
+    }
+    .tag {
+        color: #008
+    }
+    .atn {
+        color: #606
+    }
+    .atv {
+        color: #080
+    }
+    .dec,
+    .var {
+        color: #606
+    }
+    .fun {
+        color: red
+    }
+}
+@media print,projection {
+    .str {
+        color: #060
+    }
+    .kwd {
+        color: #006;
+        font-weight: 700;
+    }
+    .com {
+        color: #600;
+        font-style: italic;
+    }
+    .typ {
+        color: #404;
+        font-weight: 700;
+    }
+    .lit {
+        color: #044
+    }
+    .pun,
+    .opn,
+    .clo {
+        color: #440
+    }
+    .tag {
+        color: #006;
+        font-weight: 700;
+    }
+    .atn {
+        color: #404
+    }
+    .atv {
+        color: #060
+    }
+}
+ol.linenums {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+li.L0,
+li.L1,
+li.L2,
+li.L3,
+li.L5,
+li.L6,
+li.L7,
+li.L8 {
+    list-style-type: none
+}
+li.L1,
+li.L3,
+li.L5,
+li.L7,
+li.L9 {
+    background: #eee
 }

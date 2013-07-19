@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" >
+<head>
 <? include 'components/head.php'; ?>
+</head>
 <body>
 	<div class="container" role="main">
 

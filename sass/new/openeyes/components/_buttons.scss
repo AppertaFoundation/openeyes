@@ -12,7 +12,7 @@ $oe-button-primary-active-bg-color-end: #104d8b !default;
 $oe-button-primary-active-border-color: #0f467e !default;
 $oe-button-primary-padding-horiz: emCalc(40px);
 
-// Buttons
+// Common buttons
 //
 // A majority of buttons in the site are built from the same base class.
 //
@@ -27,7 +27,7 @@ $oe-button-primary-padding-horiz: emCalc(40px);
 // :disabled            - Make the button change appearance to reflect it being disabled.
 // :active              - "Press" the button down when clicked.
 //
-// Styleguide 2.1
+// Styleguide 7.1
 button, .button {
     @include button-base;
     @include button-size;

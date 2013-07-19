@@ -7,6 +7,15 @@ $oe-h1-bg-gradient-left: #b4b0ae !default;
 $oe-h1-bg-gradient-right: #fffdea !default;
 $oe-h1-bg-gradient-width: 12px !default;
 
+// Headings
+//
+// Styles for generic headings used throughout the site.
+//
+// Markup:
+// <h1>Page title</h1>
+// <h1 class="badge">Page title</h1>
+//
+// Styleguide 3.1
 h1 {
     &.badge {
         display: inline-block;

@@ -4,126 +4,150 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="utf-8">
+	<meta charset="utf-8">
 
-  <title>Styleguide</title>
+	<title>OpenEyes Styleguide</title>
 
-  <meta name="description" content="">
-  <meta name="generator" content="kss-node" />
-  <meta name="viewport" content="width=device-width">
+	<meta name="description" content="">
+	<meta name="generator" content="kss-node" />
+	<meta name="viewport" content="width=device-width">
 
-  <!-- Include site stylesheets here -->
-  <link rel="stylesheet" href="public/css/style_new.css">
+	<!-- Include site stylesheets here -->
+	<link rel="stylesheet" href="public/css/style_new.css">
 
-  <!-- Include docs stylesheets here -->
-  <link rel="stylesheet" href="public/kss.css">
+	<!-- Include docs stylesheets here -->
+	<link rel="stylesheet" href="public/kss.css">
 </head>
 <body>
-  <div class="container" role="main">
+	<div class="container" role="main">
 
 		<header class="header">
-	    <div class="logo">
-	        OpenEyes
-	    </div>
+			<div class="logo">
+					OpenEyes
+			</div>
 		</header>
 
 		<div class="content">
 			<h1 class="badge">Styleguide</h1>
-	    <div class="row">
+			<div class="row">
 
-	      <!-- Docs nav
-	      ================================================== -->
-	      <div class="large-2 columns">
-	        <ul class="side-nav box">
-	          <li><a href="index.html">0.0: Overview</a></li>
-	          {{#eachRoot}}
-	            <li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
-	          {{/eachRoot}}
-	        </ul>
-	      </div>
+				<!-- Docs nav
+				================================================== -->
+				<div class="large-2 columns">
+					<ul class="side-nav box">
+						<li><a href="index.html">0.0: Overview</a></li>
+						{{#eachRoot}}
+							<li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
+						{{/eachRoot}}
+					</ul>
+				</div>
 
-	      <!-- Docs body
-	      ================================================== -->
-	      <div class="large-10 columns">
+				<!-- Docs body
+				================================================== -->
+				<div class="large-10 columns">
 
-	      	<div class="box main">
+					<div class="main">
 
-		        {{#if overview}}
-		          <!-- <p>This is an example custom KSS template. This custom template should use the stylesheets that are used by your -->
-		          <!-- site/application.</p> -->
-		          {{html overview}}
-		        {{else}}
+						{{#if overview}}
+							<!-- <p>This is an example custom KSS template. This custom template should use the stylesheets that are used by your -->
+							<!-- site/application.</p> -->
+							<div class="box">
+								{{html overview}}
+							</div>
+						{{else}}
 
-		          {{!
-		            Find each section, in order.
-		            If there's no markup or modifiers supplied, use a Markdown-only
-		            layout instead.
+							{{!
+								Find each section, in order.
+								If there's no markup or modifiers supplied, use a Markdown-only
+								layout instead.
 
-		            The "root" element comes first in this loop, and can be detected using
-		            the "#whenDepth 1" block as seen below.
-		          }}
-		          {{#eachSection rootNumber}}
-		            {{#whenDepth 1}}
-		              <h1 class="kss-title"><span class="kss-ref">{{ reference }}.0</span> - {{ header }}</h1>
-		            {{else}}
-		             <section class="kss-depth-{{ refDepth }}">
-		              <h2 class="kss-title"><span class="kss-ref">{{ reference }}</span> - {{ header }}</h2>
-		            {{/whenDepth}}
-		              {{#ifAny markup modifiers}}
-		                  <div class="kss-box">{{html description}}</div>
-		                  <table class="kss-mod-list">
-		                    <tr class="kss-mod-desc-group">
-		                      <td class="kss-mod-desc"><p>Default styling</p></td>
-		                      <td class="kss-mod-name"></td>
-		                    </tr>
-		                    <tr class="kss-mod-example">
-		                      <td colspan="2">{{modifierMarkup}}</td>
-		                    </tr>
-		                  {{#eachModifier}}
-		                    <tr class="kss-mod-desc-group">
-		                      <td class="kss-mod-desc">{{html description}}</td>
-		                      <td class="kss-mod-name"><p>{{name}}</p></td>
-		                    </tr>
-		                    <tr class="kss-mod-example">
-		                      <td colspan="2">{{modifierMarkup}}</td>
-		                    </tr>
-		                  {{/eachModifier}}
-		                  </table>
-		                  <div class="kss-markup">
-		                    <pre class="prettyprint lang-html">{{markup}}</pre>
-		                  </div>
-		              {{else}}
-		                  {{#if description}}
-		                    {{html description}}
-		                  {{/if}}
-		              {{/ifAny}}
-		            {{#whenDepth 1}} {{else}}
-		              </section>
-		            {{/whenDepth}}
-		          {{/eachSection}}
-		        {{/if}}
-		      </div>
-		    </div>
-	    </div>
-	  </div>
+								The "root" element comes first in this loop, and can be detected using
+								the "#whenDepth 1" block as seen below.
+							}}
+							{{#eachSection rootNumber}}
+								<div class="box">
+									{{#whenDepth 1}}
+										<h1 class="kss-title"><span class="kss-ref">{{ reference }}.0</span> - {{ header }}</h1>
+									{{else}}
+									 <section class="kss-depth-{{ refDepth }}">
+										<h2 class="kss-title"><span class="kss-ref">{{ reference }}</span> - {{ header }}</h2>
+									{{/whenDepth}}
+										{{#ifAny markup modifiers}}
 
-	  <footer class="footer row">
-	    <div class="large-12 columns">
-	        <div class="info">
-	            <span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
-	        </div>
-	    </div>
+
+											<div class="kss-box">{{html description}}</div>
+
+											<div class="kss-mod-list">
+												<div class="kss-mod">
+													<div class="row kss-mod-overview">
+														<div class="large-9 kss-mod-description columns">
+															Default styling
+														</div>
+														<div class="large-3 columns">
+														</div>
+													</div>
+													<div class="row">
+														<div class="large-12 columns">
+															{{modifierMarkup}}
+														</div>
+													</div>
+												</div>
+												{{#eachModifier}}
+													<div class="kss-mod">
+														<div class="row kss-mod-overview">
+															<div class="large-9 columns kss-mod-description">
+																{{html description}}
+															</div>
+															<div class="large-3 columns kss-mod-name text-right">
+																<span>{{name}}</span>
+															</div>
+														</div>
+														<div class="row">
+															<div class="large-12 columns">
+																{{modifierMarkup}}
+															</div>
+														</div>
+													</div>
+												{{/eachModifier}}
+											</div>
+											<div class="kss-markup">
+												<pre class="prettyprint lang-html">{{markup}}</pre>
+											</div>
+										{{else}}
+												{{#if description}}
+													{{html description}}
+												{{/if}}
+										{{/ifAny}}
+									{{#whenDepth 1}} {{else}}
+										</section>
+									{{/whenDepth}}
+							</div>
+							{{/eachSection}}
+						{{/if}}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer class="footer row">
+			<div class="large-12 columns">
+					<div class="info">
+							<span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
+					</div>
+			</div>
 	</footer>
-  </div>
+	</div>
 
-  <!--
-  <footer>
-    {{! This won't be included in the demo page }}
-    {{#if argv.xdemo}}<a href="http://github.com/hughsk/kss-node"><img id="kss-github" style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/30f550e0d38ceb6ef5b81500c64d970b7fb0f028/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub"></a>{{/if}}
-  </footer>
-   -->
-  <!-- SCRIPTS -->
-  <script src="public/script.js"></script>
+	<!--
+	<footer>
+		{{! This won't be included in the demo page }}
+		{{#if argv.xdemo}}<a href="http://github.com/hughsk/kss-node"><img id="kss-github" style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/30f550e0d38ceb6ef5b81500c64d970b7fb0f028/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub"></a>{{/if}}
+	</footer>
+	 -->
+	<!-- SCRIPTS -->
+	<script src="public/js/jquery-2.0.3.min.js"></script>
+	<script src="public/js/prettify.js"></script>
+	<script src="public/js/script.js"></script>
 
 </body>
 </html>
