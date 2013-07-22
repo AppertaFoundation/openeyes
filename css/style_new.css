@@ -2690,7 +2690,7 @@ h1.badge {
   margin-left: -0.75em;
 }
 
-/* line 55, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 80, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel {
   *zoom: 1;
   border-style: solid;
@@ -2740,29 +2740,29 @@ h1.badge {
 .user-panel h1.subheader, .user-panel h2.subheader, .user-panel h3.subheader, .user-panel h4.subheader, .user-panel h5.subheader, .user-panel h6.subheader {
   line-height: 1.4;
 }
-/* line 64, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 89, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation {
   margin-left: 0;
 }
-/* line 66, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 91, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation li {
   font-size: 0.8125em;
   margin: 0 0 0 0.25em;
 }
-/* line 70, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 95, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation a {
   background: #cdd9e3;
   padding: 10px 5px 3px 5px;
 }
-/* line 75, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 100, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation a.selected, .user-panel .user-navigation a:hover, .user-panel .user-navigation a:focus {
   background: white;
 }
-/* line 80, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 105, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .user-id, .user-panel .user-firm {
   font-size: 0.8125em;
 }
-/* line 83, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 108, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .row {
   clear: both;
 }
