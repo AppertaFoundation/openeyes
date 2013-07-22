@@ -47,8 +47,8 @@ $text-direction: ltr;
 
 $primary-color: #0b59da;
 $secondary-color: #e9e9e9;
-$alert-color: #c60f13;
-$success-color: #5da423;
+$alert-color: #ffe6b2;
+$success-color: #e0f2db;
 
 // Make sure border radius matches unless we want it different.
 
@@ -160,6 +160,42 @@ $button-round: $global-rounded;
 
 // We use this to set default opacity for disabled buttons.
 $button-disabled-opacity: 0.6;
+
+//
+// Alert Variables
+//
+
+// We use this to control alert padding.
+$alert-padding-top: emCalc(11px);
+$alert-padding-default-float: $alert-padding-top;
+$alert-padding-opposite-direction: $alert-padding-top + emCalc(10px);
+$alert-padding-bottom: $alert-padding-top + emCalc(1px);
+
+// We use these to control text style.
+$alert-font-weight: normal;
+$alert-font-size: emCalc(14px);
+$alert-font-color: #000;
+$alert-font-color-alt: #000;
+
+// We use this for close hover effect.
+$alert-function-factor: 10%;
+
+// We use these to control border styles.
+$alert-border-style: solid;
+$alert-border-width: 1px;
+$alert-border-color: #fc621f;
+$alert-bottom-margin: emCalc(20px);
+
+// We use these to style the close buttons
+$alert-close-color: #333;
+$alert-close-position: emCalc(5px);
+$alert-close-font-size: emCalc(22px);
+$alert-close-opacity: 0.3;
+$alert-close-opacity-hover: 0.5;
+$alert-close-padding: 5px 4px 4px;
+
+// We use this to control border radius
+$alert-radius: $global-radius;
 
 
 // ============================================

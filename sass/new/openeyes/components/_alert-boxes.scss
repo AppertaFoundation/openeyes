@@ -1,0 +1,35 @@
+$oe-alert-default-bg-color: #e2e2e2 !default;
+
+// Alert box
+//
+// Markup:
+// <div data-alert class="alert-box radius {$modifiers}">
+//  Alert! Some information the user needs to see, good or bad.
+//  <a href="#" class="close">&times;</a>
+//</div>
+//
+// .success             - Success information here
+// .alert               - Alert information here
+// .secondary           - Secondary information here
+//
+// Styleguide 9.1
+
+.alert-box {
+    @include alert($oe-alert-default-bg-color);
+    .close {
+        @include alert-close;
+    }
+    &.radius {
+        @include radius($alert-radius);
+    }
+    &.success {
+        @include alert-style($success-color);
+    }
+    &.alert {
+        @include alert-style($alert-color);
+        border-color: $alert-border-color;
+    }
+    &.secondary {
+        @include alert-style($secondary-color);
+    }
+}

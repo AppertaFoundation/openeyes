@@ -1701,7 +1701,7 @@ small {
 code {
   font-family: Consolas, "Liberation Mono", Courier, monospace;
   font-weight: bold;
-  color: #7f0a0c;
+  color: #ffcd66;
 }
 
 /* Lists */
@@ -2328,8 +2328,8 @@ fieldset legend {
 input.error,
 .error textarea,
 textarea.error {
-  border-color: #c60f13;
-  background-color: rgba(198, 15, 19, 0.1);
+  border-color: #ffe6b2;
+  background-color: rgba(255, 230, 178, 0.1);
 }
 /* line 230, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_forms.scss */
 .error input:focus,
@@ -2343,7 +2343,7 @@ textarea.error:focus {
 /* line 358, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_forms.scss */
 .error label,
 label.error {
-  color: #c60f13;
+  color: #ffe6b2;
 }
 
 /* line 361, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_forms.scss */
@@ -2355,8 +2355,8 @@ small.error {
   margin-bottom: 1em;
   font-size: 0.75em;
   font-weight: bold;
-  background: #c60f13;
-  color: white;
+  background: #ffe6b2;
+  color: #333333;
 }
 
 /* Keystroke Characters */
@@ -2504,8 +2504,8 @@ kbd {
     background: -moz-linear-gradient(top, white 0%, #f2f2f2 100%);
     background: -webkit-linear-gradient(top, white 0%, #f2f2f2 100%);
     background: linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%);
-    -webkit-box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.07), 1000px 0 0 1000px #e1f5d1, -2px 0 10px 0 rgba(0, 0, 0, 0.07), -1000px 0 0 1000px whitesmoke;
-    box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.07), 1000px 0 0 980px #e1f5d1, -2px 0 10px 0 rgba(0, 0, 0, 0.07), -1000px 0 0 1000px whitesmoke;
+    -webkit-box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.07), 1000px 0 0 1000px white, -2px 0 10px 0 rgba(0, 0, 0, 0.07), -1000px 0 0 1000px whitesmoke;
+    box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.07), 1000px 0 0 980px white, -2px 0 10px 0 rgba(0, 0, 0, 0.07), -1000px 0 0 1000px whitesmoke;
   }
   /* line 196, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_switch.scss */
   div.switch:hover span:last-child, div.switch:focus span:last-child {
@@ -2937,4 +2937,58 @@ button, .button {
   padding: 0;
   list-style: none;
   border-top-color: #e6e6e6;
+}
+
+/* line 17, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box {
+  border-style: solid;
+  border-width: 1px;
+  display: block;
+  font-weight: normal;
+  margin-bottom: 1.25em;
+  position: relative;
+  padding: 0.6875em 1.3125em 0.75em 0.6875em;
+  font-size: 0.875em;
+  background-color: #e2e2e2;
+  border-color: #c9c9c9;
+  color: black;
+}
+/* line 19, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box .close {
+  font-size: 1.375em;
+  padding: 5px 4px 4px;
+  line-height: 0;
+  position: absolute;
+  top: 0.4375em;
+  right: 0.3125em;
+  color: #333333;
+  opacity: 0.3;
+}
+/* line 81, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_alert-boxes.scss */
+.alert-box .close:hover, .alert-box .close:focus {
+  opacity: 0.5;
+}
+/* line 22, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box.radius {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 25, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box.success {
+  background-color: #e0f2db;
+  border-color: #c0e4b6;
+  color: black;
+}
+/* line 28, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box.alert {
+  background-color: #ffe6b2;
+  border-color: #ffd57f;
+  color: black;
+  border-color: #fc621f;
+}
+/* line 32, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box.secondary {
+  background-color: #e9e9e9;
+  border-color: #d0d0d0;
+  color: black;
 }
