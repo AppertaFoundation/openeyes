@@ -304,6 +304,7 @@ button.classy span.button-span-red,
 button.classy span.with-plussign		{ background: transparent url(../img/_elements/btns/plus-sign.png) no-repeat center left; padding-left:40px; }
 button.classy span.with-leftarrow		{ background: transparent url(../img/_elements/btns/left-arrow.png) no-repeat top left; padding-left:20px; }
 button.classy span.with-rightarrow		{ background: transparent url(../img/_elements/btns/right-arrow.png) no-repeat top right; padding-right:20px; }
+button.classy span.search 				{ background: transparent url(../img/_elements/btns/search.png)  no-repeat top right; }
 
 /* mini - just replace 'tall','grande' or 'venti' in button class */
 button.mini,
@@ -312,7 +313,10 @@ button.mini span,
 .event-action.primary span { padding:0 18px; }
 button.mini span.button-span,
 .event-action.primary span { display:block; height:24px; line-height:23px; } 
-button.mini span.button-span.icon-only	{ padding:0 4px; }
+button.mini span.button-span.icon-only	{ 
+	padding:0 4px;
+	width: 18px;
+}
 
 /* nano - just replace 'tall','grande' or 'venti' in button class */
 button.nano								{ height:21px; font-size:12px; width: auto; margin:0 2px; }
@@ -1525,14 +1529,14 @@ div.pagination .selected { background-color: #0b59da; color: #fff; padding-left:
 #admin_users ul li .column_title { width: 25px; display: inline-block; }
 #admin_users ul li .column_firstname { width: 140px; display: inline-block; }
 #admin_users ul li .column_lastname { width: 140px; display: inline-block; }
-#admin_users ul li .column_role { width: 176px; display: inline-block; }
+#admin_users ul li .column_role { width: 215px; display: inline-block; }
 #admin_users ul li .column_doctor { width: 35px; display: inline-block; }
 #admin_users ul li .column_active { width: 35px; display: inline-block; }
 
 #admin_firms ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
 #admin_firms ul li .column_id { width: 15px; display: inline-block; }
 #admin_firms ul li .column_pas_code { width: 52px; display: inline-block; }
-#admin_firms ul li .column_name { width: 245px; display: inline-block; }
+#admin_firms ul li .column_name { width: 200px; display: inline-block; }
 #admin_firms ul li .column_subspecialty { width: 200px; display: inline-block; }
 #admin_firms ul li .column_consultant { width: 200px; display: inline-block; }
 
