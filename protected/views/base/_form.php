@@ -61,7 +61,12 @@ if (!Yii::app()->user->isGuest) {
 		<span class="change-firm">(<a href="#">Change</a>)</span>
 	</div>
 	<div id="user_id">
-		<span>You are logged in as:</span> <a class="profileLink" href="<?php echo Yii::app()->createUrl('/profile')?>"><strong><?php echo $user->first_name?> <?php echo $user->last_name?></strong></a>
+		<span>You are logged in as:</span>
+		<?php if (Yii::app()->params['profile_user_can_edit']) {
+			echo CHtml::link("<strong>$user->first_name $user->last_name</strong>",Yii::app()->createUrl('/profile'),array('class'=>'profileLink'));
+		} else {?>
+			<strong><?php echo $user->first_name?> <?php echo $user->last_name?></strong>
+		<?php }?>
 	</div>
 </div>
 <?php } ?>

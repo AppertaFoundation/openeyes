@@ -43,13 +43,12 @@
  * @property Episode[] $episodes
  * @property Address[] $addresses
  * @property Address $address Primary address
- * @property HomeAddress $homeAddress Home address
- * @property CorrespondAddress $correspondAddress Correspondence address
- * @property Contact[] $contacts
+ * @property Contact[] $contactAssignments
  * @property Gp $gp
  * @property Practice $practice
  * @property Allergy[] $allergies
  * @property EthnicGroup $ethnic_group
+ * @property CommissioningBody[] $commissioningbodies
  */
 class Patient extends BaseActiveRecord
 {
@@ -174,10 +173,11 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* Retrieves a list of models based on the current search/filter conditions.
-		* @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-		*/
-	public function search($params = false)
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @param array $params
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+	public function search($params = null)
 	{
 		if (!is_array($params)) {
 			$params = array(
@@ -577,7 +577,7 @@ class Patient extends BaseActiveRecord
 
 	public function assignAllergies($allergy_ids)
 	{
-		$add_allergy_ids = $allergy_ids;
+		$insert_allergy_ids = $allergy_ids;
 		$remove_allergy_ids = array();
 
 		// Check existing allergies
@@ -834,7 +834,7 @@ class Patient extends BaseActiveRecord
 	public function audit($target, $action, $data=null, $log=false, $properties=array())
 	{
 		$properties['patient_id'] = $this->id;
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 
 	public function getChildPrefix()
@@ -998,7 +998,8 @@ class Patient extends BaseActiveRecord
 	}
 	
 	/**
-	 * get an associative array of CommissioningBody for this patient, indexed by CommissioningBodyType id.
+	 * get an associative array of CommissioningBody for this patient and the patient's practice
+	 * indexed by CommissioningBodyType id.
 	 * 
 	 * @return array[string][CommissioningBody]
 	 */
@@ -1031,10 +1032,34 @@ class Patient extends BaseActiveRecord
 				else {
 					$res[$body->type->id] = array($body);
 				}
+				$seen_bodies[] = $body->id;
 			}
-			$seen_bodies[] = $body->id;
 		}
 		
 		return $res;
+	}
+	
+	/**
+	 * get the CommissioningBody of the CommissioningBodyType $type
+	 * currently assumes there would only ever be one commissioning body of a given type
+	 * 
+	 * @param CommissioningBodyType $type
+	 * @return CommissioningBody
+	 */
+	public function getCommissioningBodyOfType($type)
+	{
+		foreach ($this->commissioningbodies as $body) {
+			if ($body->type->id == $type->id) {
+				return $body;
+			}
+		}
+
+		if ($this->practice) {
+			foreach ($this->practice->commissioningbodies as $body) {
+				if ($body->type->id == $type->id) {
+					return $body;
+				}
+			}
+		}
 	}
 }

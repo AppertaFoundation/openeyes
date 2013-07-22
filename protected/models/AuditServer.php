@@ -21,7 +21,7 @@
  * This is the model class for table "audit_server".
  *
  * The followings are the available columns in table 'audit_server':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class AuditServer extends BaseActiveRecord

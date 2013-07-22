@@ -21,7 +21,7 @@
  * This is the model class for table "commissioningbody_type".
  *
  * The followings are the available columns in table 'commissioningbody_type':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $shortname
  * 
@@ -30,7 +30,7 @@ class CommissioningBodyType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ContactLabel the static model class
+	 * @return CommissioningBodyType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

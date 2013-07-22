@@ -1,6 +1,7 @@
 <?php echo '<?php '; ?>
 
-class m<?php if (isset($migrationid)) { echo $migrationid; ?>_event_type_<?php echo $this->moduleID; ?> extends CDbMigration
+class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php echo $this->moduleID; ?> extends CDbMigration
+{
 	public function up()
 	{
 		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'<?php echo $this->moduleSuffix; ?>'))->queryRow();
@@ -232,4 +233,4 @@ if ($element['mode'] == 'create') {?>
 <?php }} ?>
 	}
 }
-<?php echo '?>';?>
+

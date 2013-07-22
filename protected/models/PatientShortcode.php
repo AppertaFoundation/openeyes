@@ -26,7 +26,6 @@
  *
  * The followings are the available model relations:
  * @property Event[] $events
- * @property PatientShortcodeElementTypeAssignment[] $eventTypeElementTypeAssignments
  */
 class PatientShortcode extends BaseActiveRecord
 {

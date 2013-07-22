@@ -21,7 +21,7 @@
  * This is the model class for table "episode_status".
  *
  * The followings are the available columns in table 'episode_status':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class EpisodeStatus extends BaseActiveRecord

@@ -21,12 +21,11 @@
  * This is the model class for table "event_type".
  *
  * The followings are the available columns in table 'event_type':
- * @property string $id
+ * @property integer $id
  * @property string $name
  *
  * The followings are the available model relations:
  * @property Event[] $events
- * @property EventTypeElementTypeAssignment[] $eventTypeElementTypeAssignments
  */
 class EventType extends BaseActiveRecord
 {
@@ -195,7 +194,7 @@ class EventType extends BaseActiveRecord
 		if (PatientShortcode::model()->find('code=?',array(strtolower($code)))) {
 			$n = '00';
 			while (PatientShortcode::model()->find('z'.$n)) {
-				$n = str_pad($n+1,2,'0',STR_PAD_LEFT);
+				$n = str_pad((int) $n + 1, 2, '0', STR_PAD_LEFT);
 			}
 			$code = "z$n";
 

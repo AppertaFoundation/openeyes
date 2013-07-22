@@ -31,7 +31,7 @@ if (empty($episodes)) {
 		foreach ($episode->events as $event) { ?>
 		<li><?php
 		$text = '<span class="type">' . ucfirst($event->eventType->name) .
-			'</span><span class="date"> ' . $event->NHSDate('datetime') .
+			'</span><span class="date"> ' . $event->NHSDate('created_date') .
 			'</span>';
 		echo CHtml::link($text, array('clinical/view', 'id'=>$event->id));
 		} ?>

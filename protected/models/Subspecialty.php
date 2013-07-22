@@ -21,15 +21,14 @@
  * This is the model class for table "subspecialty".
  *
  * The followings are the available columns in table 'subspecialty':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $class_name
  *
  * The followings are the available model relations:
- * @property EventTypeElementTypeAssignmentSubspecialtyAssignment[] $eventTypeElementTypeAssignmentSubspecialtyAssignments
- * @property ExamPhrase[] $examPhrases
  * @property LetterTemplate[] $letterTemplates
  * @property ServiceSubspecialtyAssignment[] $serviceSubspecialtyAssignments
+ * @property Specialty $specialty
  */
 class Subspecialty extends BaseActiveRecord
 {
@@ -74,8 +73,8 @@ class Subspecialty extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-//			'eventTypeElementTypeAssignmentSubspecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSubspecialtyAssignment', 'subspecialty_id'),
-			'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'subspecialty_id'),
+			//'eventTypeElementTypeAssignmentSubspecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSubspecialtyAssignment', 'subspecialty_id'),
+			//'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'subspecialty_id'),
 			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'subspecialty_id'),
 			'serviceSubspecialtyAssignments' => array(self::HAS_MANY, 'ServiceSubspecialtyAssignment', 'subspecialty_id'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),

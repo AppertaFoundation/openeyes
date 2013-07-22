@@ -32,6 +32,10 @@ class ProfileController extends BaseController
 
 	protected function beforeAction($action)
 	{
+		if (!Yii::app()->params['profile_user_can_edit']) {
+			$this->redirect('/');
+		}
+
 		$this->registerCssFile('profile.css', Yii::app()->createUrl("css/profile.css"));
 		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/profile.js"));
 

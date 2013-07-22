@@ -21,12 +21,12 @@
  * This is the model class for table "section".
  *
  * The followings are the available columns in table 'section':
- * @property string $id
+ * @property integer $id
  * @property string $name
- * @property string $section_type_id
+ * @property integer $section_type_id
  *
  * The followings are the available model relations:
- * @property Phrase[] $phrases
+ * @property SectionType $section_type
  */
 class Section extends BaseActiveRecord
 {
@@ -70,7 +70,7 @@ class Section extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			// 'phrase' => array(self::HAS_MANY, 'Phrase', 'section_id'),
+			//'phrase' => array(self::HAS_MANY, 'Phrase', 'section_id'),
 			'section_type' => array(self::BELONGS_TO, 'SectionType', 'section_type_id')
 		);
 	}

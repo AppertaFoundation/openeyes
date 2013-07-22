@@ -21,7 +21,7 @@
  * This is the model class for table "user_firm_preference".
  *
  * The followings are the available columns in table 'user_firm_preference':
- * @property string $id
+ * @property integer $id
  * @property integer $position
  *
  * The followings are the available model relations:

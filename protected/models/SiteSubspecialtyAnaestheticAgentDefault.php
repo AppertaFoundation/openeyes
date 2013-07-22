@@ -18,10 +18,10 @@
  */
 
 /**
- * This is the model class for table "eye".
+ * This is the model class for table "site_subspecialty_anaesthetic_agent_default".
  *
- * The followings are the available columns in table 'eye':
- * @property string $id
+ * The followings are the available columns in table 'site_subspecialty_anaesthetic_agent_default':
+ * @property integer $id
  * @property string $name
  * @property string $ShortName
  */
@@ -29,7 +29,7 @@ class SiteSubspecialtyAnaestheticAgentDefault extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return SiteSubspecialtyAnaestheticAgentDefault the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

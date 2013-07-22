@@ -21,9 +21,9 @@
  * This is the model class for table "service_subspecialty_assignment".
  *
  * The followings are the available columns in table 'service_subspecialty_assignment':
- * @property string $id
- * @property string $service_id
- * @property string $subspecialty_id
+ * @property integer $id
+ * @property integer $service_id
+ * @property integer $subspecialty_id
  *
  * The followings are the available model relations:
  * @property Firm[] $firms

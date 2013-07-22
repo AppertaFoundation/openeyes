@@ -20,17 +20,17 @@
 /**
  * This is the model class for table "commissioningbody_practice_assignment".
  *
- * The followings are the available columns in table 'firm':
- * @property string $id
- * @property string $commissioningbody_id
- * @property string $practice_id
+ * The followings are the available columns in table 'commissioningbody_practice_assignment':
+ * @property integer $id
+ * @property integer $commissioningbody_id
+ * @property integer $practice_id
  *
  */
 class CommissioningBodyPracticeAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return CommissioningBodyPracticeAssignment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

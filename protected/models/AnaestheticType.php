@@ -21,7 +21,7 @@
  * This is the model class for table "anaesthetic_type".
  *
  * The followings are the available columns in table 'anaesthetic_type':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @proptery string $code
  */
@@ -29,7 +29,7 @@ class AnaestheticType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return AnaestheticType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

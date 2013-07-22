@@ -18,7 +18,7 @@
  */
 
 /**
- * Base class for all elements
+ * Base tree class
  */
 class BaseTree extends BaseActiveRecord
 {

@@ -20,15 +20,15 @@
 /**
  * This is the model class for table "setting_field_type".
  *
- * The followings are the available columns in table 'phrase':
- * @property string $id
+ * The followings are the available columns in table 'setting_field_type':
+ * @property integer $id
  * @property string $name
  */
 class SettingFieldType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Phrase the static model class
+	 * @return SettingFieldType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

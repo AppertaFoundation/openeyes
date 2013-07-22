@@ -18,6 +18,7 @@
  */
 ?>
 <?php if ($cbs_by_type = $this->patient->getDistinctCommissioningBodiesByType()) {
+	
 	foreach (CommissioningBodyType::model()->findAll() as $cbt) {
 		if (array_key_exists($cbt->id, $cbs_by_type)) { ?>
 			<div class="whiteBox patientDetails" id="commissioning-bodies">

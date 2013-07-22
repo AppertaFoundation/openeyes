@@ -21,9 +21,9 @@
  * This is the model class for table "user_contact_assignment".
  *
  * The followings are the available columns in table 'user_contact_assignment':
- * @property string $id
- * @property string $user_id
- * @property string $contact_id
+ * @property integer $id
+ * @property integer $user_id
+ * @property integer $contact_id
  *
  * The followings are the available model relations:
  * @property Contact $contact

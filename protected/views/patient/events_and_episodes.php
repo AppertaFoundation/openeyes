@@ -27,7 +27,7 @@
 			<?php $this->renderPartial('episodes_sidebar',array('ordered_episodes' => $ordered_episodes, 'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes,'supportserviceepisodes'=>$supportserviceepisodes))?>
 			<div id="event_display">
 				<?php
-				if (count($episodes) && count($supportserviceepisodes) <1) {?>
+				if (count($episodes) <1 && count($supportserviceepisodes) <1) {?>
 					<div class="alertBox fullWidthEvent" style="margin-top: 10px;">
 						There are currently no episodes for this patient, please add a new event to open an episode.
 					</div>
