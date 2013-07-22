@@ -2,7 +2,7 @@ module.exports = {
   files: [
     '*.js',
     '*.json',
-    'grunt/**/*.js',
+    'grunt/**/*.js'
   ],
   options: {
     curly: true,

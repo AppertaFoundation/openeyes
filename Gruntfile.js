@@ -8,7 +8,7 @@ module.exports = function(grunt) {
     jshint: require('./grunt/config/jshint'),
     styleguide: require('./grunt/config/styleguide'),
     clean: require('./grunt/config/clean'),
-    viewdocs: require('./grunt/config/viewdocs'),
+    docserver: require('./grunt/config/docserver'),
     modernizr: require('./grunt/config/modernizr'),
     copy: require('./grunt/config/copy')
   });
@@ -23,32 +23,37 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-modernizr');
 
   /* Load our custom grunt tasks */
-  require('./grunt/tasks/viewdocs')(grunt);
+  require('./grunt/tasks/docserver')(grunt);
   require('./grunt/tasks/bower')(grunt);
 
-  /* Generates the documentation. */
-  grunt.registerTask('docs', [
+  grunt.registerTask('docs', 'Generates the documentation', [
     'clean:docs',
     'compass:newstyle',
     'copy:docs',
     'styleguide:dist'
   ]);
 
-  /* Checks code for syntax errors. */
-  grunt.registerTask('lint', [
+  grunt.registerTask('viewdocs', 'Spin up a connect server to view the generated documentation', [
+    'docs',
+    'docserver'
+  ]);
+
+  grunt.registerTask('lint', 'Check code for syntax errors', [
     'jshint'
   ]);
 
-  /* The development build task. */
-  grunt.registerTask('build', [
-    'bower',
-    'modernizr',
-    'lint',
+  grunt.registerTask('compile', 'Compiles the public assets', [
     'compass:newstyle'
   ]);
 
-  /* The default task for running `grunt`. */
-  grunt.registerTask('default', [
+  grunt.registerTask('build', 'The development build task', [
+    'bower',
+    'modernizr',
+    'lint',
+    'compile'
+  ]);
+
+  grunt.registerTask('default', 'The default task', [
     'build'
   ]);
 };

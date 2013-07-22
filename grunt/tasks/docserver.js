@@ -4,9 +4,13 @@ var http = require('http');
 module.exports = function(grunt) {
 
   /* Spin up a connect server to display the documentation. */
-  grunt.registerMultiTask('viewdocs', function() {
+  grunt.registerMultiTask('docserver', function() {
 
-    // A little trick to keep this task running indefinitely
+    // Ensure the docs task has been run (to ensure the documentation
+    // has been generated.)
+    this.requires(['docs']);
+
+    // Keep this task running indefinitely
     this.async();
 
     // Merge the options with default values
