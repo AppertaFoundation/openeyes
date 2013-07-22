@@ -257,6 +257,10 @@ $oe-button-primary-hover-border-color: #1974d1;
 $oe-button-primary-active-bg-color-start: #145ea9;
 $oe-button-primary-active-bg-color-end: #104d8b;
 $oe-button-primary-active-border-color: #0f467e;
+$oe-button-primary-padding-horiz: emCalc(40px);
+
+$oe-button-disabled-bg-color-start: #aaa !default;
+$oe-button-disabled-bg-color-stop: #999 !default;
 
 // Alert box styles
 $oe-alert-default-bg-color: #e2e2e2;

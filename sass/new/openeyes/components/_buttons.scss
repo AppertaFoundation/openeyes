@@ -12,6 +12,10 @@ $oe-button-primary-active-bg-color-end: #104d8b !default;
 $oe-button-primary-active-border-color: #0f467e !default;
 $oe-button-primary-padding-horiz: emCalc(40px);
 
+$oe-button-disabled-bg-color-start: #aaa !default;
+$oe-button-disabled-bg-color-stop: #999 !default;
+$oe-button-disabled-bottom-border: #999 !default;
+
 // Common buttons
 //
 // A majority of buttons in the site are built from the same base class.
@@ -22,10 +26,10 @@ $oe-button-primary-padding-horiz: emCalc(40px);
 // <input type="button" class="button {$modifiers}" value="input[type='button']"/>
 //
 // .primary             - Indicate that the button is the primary feature of this form.
-// .remove              - Indicate that the button will remove a feature, or other negative connotations.
 // :hover               - Highlight the button when hovered.
-// :disabled            - Make the button change appearance to reflect it being disabled.
+// :focus               - Highlight the button when hovered.
 // :active              - "Press" the button down when clicked.
+// .disabled            - Disabled state
 //
 // Styleguide 7.1
 button, .button {
@@ -48,6 +52,11 @@ button, .button {
     &:active {
         @include background(linear-gradient($oe-button-primary-active-bg-color-start, $oe-button-primary-active-bg-color-end));
         border-bottom: 2px solid $oe-button-primary-active-border-color;
+    }
+    &.disabled {
+        @include background(linear-gradient($oe-button-disabled-bg-color-start, $oe-button-disabled-bg-color-stop));
+        border-bottom: 2px solid $oe-button-disabled-bottom-border;
+        text-shadow: none;
     }
 }
 

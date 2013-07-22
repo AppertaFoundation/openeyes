@@ -2631,7 +2631,7 @@ html, body {
   *zoom: 1;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1374480721') 0 0 no-repeat;
+  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1374490880') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
 }
 /* line 121, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_global.scss */
@@ -2850,7 +2850,7 @@ textarea {
   border-radius: 3px;
 }
 
-/* line 31, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
+/* line 35, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
 button, .button {
   border-style: solid;
   border-width: 1px;
@@ -2884,7 +2884,7 @@ button, .button {
   padding-right: 2.5em;
   text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
 }
-/* line 44, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
+/* line 48, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
 button:hover, button:focus, .button:hover, .button:focus {
   background: -webkit-linear-gradient(#118afb, #1279e3);
   background: -moz-linear-gradient(#118afb, #1279e3);
@@ -2892,7 +2892,7 @@ button:hover, button:focus, .button:hover, .button:focus {
   background: linear-gradient(#118afb, #1279e3);
   border-bottom: 2px solid #1974d1;
 }
-/* line 48, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
+/* line 52, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
 button:active, .button:active {
   background: -webkit-linear-gradient(#145ea9, #104d8b);
   background: -moz-linear-gradient(#145ea9, #104d8b);
@@ -2900,8 +2900,17 @@ button:active, .button:active {
   background: linear-gradient(#145ea9, #104d8b);
   border-bottom: 2px solid #0f467e;
 }
+/* line 56, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
+button.disabled, .button.disabled {
+  background: -webkit-linear-gradient(#aaaaaa, #999999);
+  background: -moz-linear-gradient(#aaaaaa, #999999);
+  background: -o-linear-gradient(#aaaaaa, #999999);
+  background: linear-gradient(#aaaaaa, #999999);
+  border-bottom: 2px solid #999999;
+  text-shadow: none;
+}
 
-/* line 54, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
+/* line 63, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
 button, .button {
   padding-top: 0.5625em;
   padding-bottom: 0.5em;
