@@ -4,9 +4,9 @@ var http = require('http');
 module.exports = function(grunt) {
 
   /* Spin up a connect server to display the documentation. */
-  grunt.registerMultiTask('viewdocs', function() {   
+  grunt.registerMultiTask('viewdocs', function() {
 
-    // A little trick to keep this task running indefinitely 
+    // A little trick to keep this task running indefinitely
     this.async();
 
     // Merge the options with default values
@@ -18,7 +18,7 @@ module.exports = function(grunt) {
 
     // Starts a connect server to display the docs (using static and directory middleware).
     function startServer() {
-    
+
       var app = connect();
       app.use(connect.static(options.base));
       app.use(connect.directory(options.base));
@@ -46,8 +46,8 @@ module.exports = function(grunt) {
           'http://' + options.hostname + ':' + options.port
         ]
       }, function(){});
-    }  
+    }
 
-    startServer();          
+    startServer();
   });
 };

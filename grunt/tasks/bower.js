@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
 
-  grunt.registerTask('bower', 'Install bower packages', function() {   
+  grunt.registerTask('bower', 'Install bower packages', function() {
 
     var done = this.async();
 
