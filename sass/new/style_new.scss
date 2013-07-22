@@ -1,5 +1,6 @@
 // Welcome to the OpenEyes core stylesheet.
 //
+// ===================================================================
 // Overview
 // ===================================================================
 //
@@ -8,6 +9,7 @@
 // then we should try make the core styles more generic and adapatable rather than
 // overriding them in the module stylesheets.
 //
+// ===================================================================
 // Commenting
 // ===================================================================
 // * Double-slash (Sass) comments will be removed in the compiled CSS.
@@ -16,6 +18,7 @@
 //   format of comments. (See http://warpspire.com/kss/)
 // * Try to keep comments to 80 chars.
 //
+// ===================================================================
 // Conventions
 // ===================================================================
 // * When in doubt, follow the conventions you see used in the foundation files.
@@ -31,6 +34,7 @@
 // * If using Sublime Text text editor, you can use the 'SassBeautify'
 //   plugin to format your Sass.
 //
+// ===================================================================
 // Variables
 // ===================================================================
 // * Use variables for all values.
@@ -41,6 +45,7 @@
 //   by simply using a different _variables file.
 
 
+// ===================================================================
 // Framework setup
 // ===================================================================
 
@@ -101,6 +106,7 @@
     "foundation/components/tooltips",
     "foundation/components/dropdown";
 
+// ===================================================================
 // OpenEyes styles
 // ===================================================================
 
@@ -152,3 +158,10 @@
 //
 // Styleguide 7
 @import "openeyes/components/buttons";
+
+// Navigation
+//
+// Global navigation styles.
+//
+// Styleguide 8
+@import "openeyes/components/navigation";

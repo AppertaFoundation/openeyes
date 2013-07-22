@@ -2359,81 +2359,6 @@ small.error {
   color: white;
 }
 
-/* Breadcrumbs */
-/* line 115, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs {
-  display: block;
-  padding: 0.5625em 0.875em 0.5625em;
-  overflow: hidden;
-  margin-left: 0;
-  list-style: none;
-  border-style: solid;
-  border-width: 1px;
-  background-color: #f6f6f6;
-  border-color: gainsboro;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-}
-/* line 119, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > * {
-  margin: 0;
-  float: left;
-  font-size: 0.6875em;
-  text-transform: uppercase;
-}
-/* line 60, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > *:hover a, .breadcrumbs > *:focus a {
-  text-decoration: underline;
-}
-/* line 63, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > * a,
-.breadcrumbs > * span {
-  text-transform: uppercase;
-  color: #0b59da;
-}
-/* line 69, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > *.current {
-  cursor: default;
-  color: #333333;
-}
-/* line 72, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > *.current a {
-  cursor: default;
-  color: #333333;
-}
-/* line 78, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > *.current:hover, .breadcrumbs > *.current:hover a, .breadcrumbs > *.current:focus, .breadcrumbs > *.current:focus a {
-  text-decoration: none;
-}
-/* line 82, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > *.unavailable {
-  color: #999999;
-}
-/* line 84, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > *.unavailable a {
-  color: #999999;
-}
-/* line 89, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > *.unavailable:hover, .breadcrumbs > *.unavailable:hover a, .breadcrumbs > *.unavailable:focus,
-.breadcrumbs > *.unavailable a:focus {
-  text-decoration: none;
-  color: #999999;
-  cursor: default;
-}
-/* line 96, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > *:before {
-  content: "/";
-  color: #aaaaaa;
-  margin: 0 0.75em;
-  position: relative;
-  top: 1px;
-}
-/* line 104, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_breadcrumbs.scss */
-.breadcrumbs > *:first-child:before {
-  content: " ";
-  margin: 0;
-}
-
 /* Keystroke Characters */
 /* line 52, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_keystrokes.scss */
 .keystroke,
@@ -2449,140 +2374,6 @@ kbd {
   padding: 0.125em 0.25em 0em;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-}
-
-/* Default Pagination */
-/* line 126, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-ul.pagination {
-  display: block;
-  height: 1.5em;
-  margin-left: -0.3125em;
-}
-/* line 85, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-ul.pagination li {
-  height: 1.5em;
-  color: #222222;
-  font-size: 0.875em;
-  margin-left: 0.3125em;
-}
-/* line 91, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-ul.pagination li a {
-  display: block;
-  padding: 0.0625em 0.4375em 0.0625em;
-  color: #999999;
-}
-/* line 98, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-ul.pagination li:hover a,
-ul.pagination li a:focus {
-  background: #e6e6e6;
-}
-/* line 45, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-ul.pagination li.unavailable a {
-  cursor: default;
-  color: #999999;
-}
-/* line 50, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-ul.pagination li.unavailable:hover a, ul.pagination li.unavailable a:focus {
-  background: transparent;
-}
-/* line 57, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-ul.pagination li.current a {
-  background: #0b59da;
-  color: white;
-  font-weight: bold;
-  cursor: default;
-}
-/* line 64, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-ul.pagination li.current a:hover, ul.pagination li.current a:focus {
-  background: #0b59da;
-}
-/* line 108, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-ul.pagination li {
-  float: left;
-  display: block;
-}
-
-/* Pagination centred wrapper */
-/* line 131, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-.pagination-centered {
-  text-align: center;
-}
-/* line 108, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_pagination.scss */
-.pagination-centered ul.pagination li {
-  float: none;
-  display: inline-block;
-}
-
-/* Side Nav */
-/* line 67, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_side-nav.scss */
-.side-nav {
-  display: block;
-  margin: 0;
-  padding: 0.875em 0;
-  list-style-type: none;
-  list-style-position: inside;
-}
-/* line 39, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_side-nav.scss */
-.side-nav li {
-  margin: 0 0 0.4375em 0;
-  font-size: 0.875em;
-}
-/* line 43, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_side-nav.scss */
-.side-nav li a {
-  display: block;
-  color: #0b59da;
-}
-/* line 48, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_side-nav.scss */
-.side-nav li.active > a:first-child {
-  color: #4d4d4d;
-  font-weight: bold;
-}
-/* line 53, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_side-nav.scss */
-.side-nav li.divider {
-  border-top: 1px solid;
-  height: 0;
-  padding: 0;
-  list-style: none;
-  border-top-color: #e6e6e6;
-}
-
-/* Side Nav */
-/* line 66, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_sub-nav.scss */
-.sub-nav {
-  display: block;
-  width: auto;
-  overflow: hidden;
-  margin: -0.25em 0 1.125em;
-  padding-top: 0.25em;
-  margin-right: 0;
-  margin-left: -0.5625em;
-}
-/* line 38, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_sub-nav.scss */
-.sub-nav dt,
-.sub-nav dd {
-  float: left;
-  display: inline;
-  margin-left: 0.5625em;
-  margin-bottom: 0.625em;
-  font-weight: normal;
-  font-size: 0.875em;
-}
-/* line 46, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_sub-nav.scss */
-.sub-nav dt a,
-.sub-nav dd a {
-  color: #999999;
-  text-decoration: none;
-}
-/* line 50, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_sub-nav.scss */
-.sub-nav dt.active a,
-.sub-nav dd.active a {
-  -webkit-border-radius: 1000px;
-  border-radius: 1000px;
-  font-weight: bold;
-  background: #0b59da;
-  padding: 0.1875em 0.5625em;
-  cursor: default;
-  color: white;
 }
 
 /* Foundation Switches */
@@ -2824,50 +2615,6 @@ ul.pagination li {
     }
 }
 }
-/* Tables */
-/* line 80, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_tables.scss */
-table {
-  background: white;
-  margin-bottom: 1.25em;
-  border: solid 1px #dddddd;
-}
-/* line 42, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_tables.scss */
-table thead,
-table tfoot {
-  background: whitesmoke;
-  font-weight: bold;
-}
-/* line 48, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_tables.scss */
-table thead tr th,
-table thead tr td,
-table tfoot tr th,
-table tfoot tr td {
-  padding: 0.5em 0.625em 0.625em;
-  font-size: 0.875em;
-  color: #222222;
-  text-align: left;
-}
-/* line 59, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_tables.scss */
-table tr th,
-table tr td {
-  padding: 0.5625em 0.625em;
-  font-size: 0.875em;
-  color: #222222;
-}
-/* line 67, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_tables.scss */
-table tr.even, table tr.alt, table tr:nth-of-type(even) {
-  background: #f9f9f9;
-}
-/* line 74, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_tables.scss */
-table thead tr th,
-table tfoot tr th,
-table tbody tr td,
-table tr td,
-table tfoot tr td {
-  display: table-cell;
-  line-height: 1.125em;
-}
-
 /* line 7, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_global.scss */
 html, body {
   background: #d4d1cd;
@@ -2884,7 +2631,7 @@ html, body {
   *zoom: 1;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1374155335') 0 0 no-repeat;
+  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1374480721') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
 }
 /* line 121, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_global.scss */
@@ -3158,4 +2905,36 @@ button, .button {
   padding-top: 0.5625em;
   padding-bottom: 0.5em;
   -webkit-appearance: none;
+}
+
+/* line 6, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_navigation.scss */
+.side-nav {
+  display: block;
+  margin: 0;
+  padding: 0.875em 0;
+  list-style-type: none;
+  list-style-position: inside;
+}
+/* line 39, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_side-nav.scss */
+.side-nav li {
+  margin: 0 0 0.4375em 0;
+  font-size: 0.875em;
+}
+/* line 43, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_side-nav.scss */
+.side-nav li a {
+  display: block;
+  color: #0b59da;
+}
+/* line 48, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_side-nav.scss */
+.side-nav li.active > a:first-child {
+  color: #4d4d4d;
+  font-weight: bold;
+}
+/* line 53, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_side-nav.scss */
+.side-nav li.divider {
+  border-top: 1px solid;
+  height: 0;
+  padding: 0;
+  list-style: none;
+  border-top-color: #e6e6e6;
 }
