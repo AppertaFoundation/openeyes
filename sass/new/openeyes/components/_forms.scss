@@ -14,7 +14,8 @@ $oe-form-input-radius: 3px !default;
         border: $oe-form-panel-border-width solid $oe-form-panel-border-color;
     }
     &.login {
-        margin: $oe-form-login-margin-top 0 $oe-form-login-margin-bottom 0;
+        margin: $oe-form-login-margin-top auto $oe-form-login-margin-bottom auto;
+        max-width: 488px;
     }
     [type=submit] {
         margin: 0;

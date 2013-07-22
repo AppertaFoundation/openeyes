@@ -2820,14 +2820,15 @@ h1.badge {
 }
 /* line 16, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
 .form.login {
-  margin: 50px 0 100px 0;
+  margin: 50px auto 100px auto;
+  max-width: 488px;
 }
-/* line 19, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
+/* line 20, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
 .form [type=submit] {
   margin: 0;
 }
 
-/* line 37, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
+/* line 38, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
 input[type="text"],
 input[type="password"],
 input[type="date"],
