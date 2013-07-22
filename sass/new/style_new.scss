@@ -140,14 +140,16 @@
 
 // Footer
 //
-// Footer styles
+// The footer contains basic copyright information and links to the help documentation.
 //
 // Styleguide 5
 @import "openeyes/components/footer";
 
 // Forms
 //
-// Form styles
+// This application uses lots of different forms with many different layouts.
+// Forms must have consistant layouts throughout the application. Form layouts should use the
+// grid system, no additional styling should be required to layout a form.
 //
 // Styleguide 6
 @import "openeyes/components/forms";

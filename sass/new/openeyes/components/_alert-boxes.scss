@@ -1,6 +1,3 @@
-$oe-alert-default-bg-color: #e2e2e2 !default;
-$oe-alert-alert-bg-color: #ffe6b2 !default;
-
 // Alert box
 //
 // Markup:
@@ -14,6 +11,10 @@ $oe-alert-alert-bg-color: #ffe6b2 !default;
 // .secondary           - Secondary information here
 //
 // Styleguide 9.1
+
+// Alert box variables
+$oe-alert-default-bg-color: #e2e2e2 !default;
+$oe-alert-alert-bg-color: #ffe6b2 !default;
 
 .alert-box {
     @include alert($oe-alert-default-bg-color);

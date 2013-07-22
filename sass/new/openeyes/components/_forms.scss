@@ -1,3 +1,42 @@
+// Common forms
+//
+// Forms used throughout the application. Make note of how the form is layed out,
+// using the grid system.
+//
+// Markup:
+// <form class="form {$modifiers}">
+//     <div class="row">
+//         <div class="small-4 columns">
+//             <label for="username" class="inline">Username:</label>
+//         </div>
+//         <div class="small-8 columns">
+//             <input type="text" id="username" placeholder="Enter username...">
+//         </div>
+//     </div>
+//     <div class="row">
+//         <div class="small-4 columns">
+//             <label for="password" class="inline">Password:</label>
+//         </div>
+//         <div class="small-8 columns">
+//             <input type="password" id="password" placeholder="Enter password...">
+//         </div>
+//     </div>
+//     <div class="row text-right">
+//         <div class="small-12 columns">
+//             <button type="submit">
+//                 Login
+//             </button>
+//         </div>
+//     </div>
+// </form>
+//
+// .panel             - A fancy form panel
+// .login             - A login form
+// .panel.login       - A login form panel
+//
+// Styleguide 6.1
+
+// Forms variables
 $oe-form-panel-bg-color: #e2dfdb !default;
 $oe-form-panel-padding: 30px !default;
 $oe-form-panel-radius: 10px !default;

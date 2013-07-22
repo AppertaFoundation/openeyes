@@ -1,15 +1,16 @@
-$oe-container-main-bg-color: #dae6f1 !default;
-$oe-container-main-bg-image: image-url("_structure/gradient_bg.jpg") !default;
-$oe-container-main-border-color: #b3b0ae !default;
-$oe-container-main-border-width: 2px !default;
-$oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg") !default;
-
-// Main
+// Main container
 //
 // The main container wraps all content in the document and manages the main
 // background styles.
 //
 // Styleguide 2.1
+
+// Main container variables
+$oe-container-main-bg-color: #dae6f1 !default;
+$oe-container-main-bg-image: image-url("_structure/gradient_bg.jpg") !default;
+$oe-container-main-border-color: #b3b0ae !default;
+$oe-container-main-border-width: 2px !default;
+
 .container {
     @include grid-row;
     @include radius;
@@ -17,11 +18,15 @@ $oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg") !defau
     border: $oe-container-main-border-width solid $oe-container-main-border-color;
 }
 
-// Container
+// Container container
 //
 // The content container wraps around all page content.
 //
 // Styleguide 2.2
+
+// Content container variables
+$oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg") !default;
+
 .content {
     @include clearfix;
     background: $oe-container-content-bg-image 0 bottom no-repeat;

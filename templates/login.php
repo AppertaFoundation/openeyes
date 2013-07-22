@@ -31,7 +31,7 @@
 						</div>
 						<div class="row text-right">
 							<div class="small-12 columns">
-								<button type="submit" class="disabled">
+								<button type="submit">
 									Login
 								</button>
 							</div>

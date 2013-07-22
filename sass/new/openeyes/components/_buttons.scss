@@ -1,9 +1,28 @@
+// Common buttons
+//
+// These are the generic button styles that are used throughout the application.
+//
+// Markup:
+// <a href="#" class="button {$modifiers}">Link Button</a>
+// <button class="button {$modifiers}">Button Element</button>
+// <input type="button" class="button {$modifiers}" value="input[type='button']"/>
+//
+// .primary             - Primary button style
+// :hover               - Highlight button state
+// :focus               - Focus button state
+// :active              - Pressed button state
+// .disabled            - Disabled state
+//
+// Styleguide 7.1
+
+// Primary button variables
 $oe-button-primary-bg-color-start: #107be9 !default;
 $oe-button-primary-bg-color-end: #1469bf !default;
 $oe-button-primary-shadow-opacity: 0.3 !default;
 $oe-button-primary-text-shadow-1: #105dae !default;
 $oe-button-primary-text-shadow-2: #5c0faa !default;
 $oe-button-primary-bottom-border: #105dae !default;
+$oe-button-primary-hover-color: #fff !default;
 $oe-button-primary-hover-bg-color-start: #118afb !default;
 $oe-button-primary-hover-bg-color-end: #1279e3 !default;
 $oe-button-primary-hover-border-color: #1974d1 !default;
@@ -12,26 +31,11 @@ $oe-button-primary-active-bg-color-end: #104d8b !default;
 $oe-button-primary-active-border-color: #0f467e !default;
 $oe-button-primary-padding-horiz: emCalc(40px);
 
+// Disabled button variables
 $oe-button-disabled-bg-color-start: #aaa !default;
 $oe-button-disabled-bg-color-stop: #999 !default;
 $oe-button-disabled-bottom-border: #999 !default;
 
-// Common buttons
-//
-// A majority of buttons in the site are built from the same base class.
-//
-// Markup:
-// <a href="#" class="button {$modifiers}">Link Button</a>
-// <button class="button {$modifiers}">Button Element</button>
-// <input type="button" class="button {$modifiers}" value="input[type='button']"/>
-//
-// .primary             - Indicate that the button is the primary feature of this form.
-// :hover               - Highlight the button when hovered.
-// :focus               - Highlight the button when hovered.
-// :active              - "Press" the button down when clicked.
-// .disabled            - Disabled state
-//
-// Styleguide 7.1
 button, .button {
     @include button-base;
     @include button-size;
@@ -48,12 +52,13 @@ button, .button {
     &:focus {
         @include background(linear-gradient($oe-button-primary-hover-bg-color-start, $oe-button-primary-hover-bg-color-end));
         border-bottom: 2px solid $oe-button-primary-hover-border-color;
+        color: $oe-button-primary-hover-color;
     }
     &:active {
         @include background(linear-gradient($oe-button-primary-active-bg-color-start, $oe-button-primary-active-bg-color-end));
         border-bottom: 2px solid $oe-button-primary-active-border-color;
     }
-    &.disabled {
+    &.disabled, &[disabled] {
         @include background(linear-gradient($oe-button-disabled-bg-color-start, $oe-button-disabled-bg-color-stop));
         border-bottom: 2px solid $oe-button-disabled-bottom-border;
         text-shadow: none;

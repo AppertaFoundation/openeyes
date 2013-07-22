@@ -2,6 +2,13 @@
 //
 // A navigation component for displaying page-specifc navigation links in a sidebar.
 //
+// Markup:
+// <ul class="side-nav">
+//     <li><a href="#">Link 1</a></li>
+//     <li><a href="#">Link 2</a></li>
+//     <li><a href="#">Link 3</a></li>
+// </ul>
+//
 // Styleguide 8.1
 .side-nav {
     @include side-nav;

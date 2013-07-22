@@ -1,3 +1,18 @@
+// Main header
+//
+// The header contains the logo and (optionally) patient info, and (optionally)
+// user info.
+//
+// Markup:
+// <header class="header">
+//     <div class="logo">
+//         OpenEyes
+//     </div>
+// </header>
+//
+// Styleguide 4.1
+
+// Header variables
 $oe-header-height: 70px !default;
 $oe-header-logo-bg-image: image-url("_structure/openeyes.png") !default;
 $oe-header-logo-width: 240px !default;

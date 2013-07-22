@@ -1,12 +1,3 @@
-$oe-h1-badge-font-size: emCalc(13px) !default;
-$oe-h1-padding-top: 5px !default;
-$oe-h1-padding-right: 15px !default;
-$oe-h1-padding-bottom: 5px !default;
-$oe-h1-padding-left: 55px !default;
-$oe-h1-bg-gradient-left: #b4b0ae !default;
-$oe-h1-bg-gradient-right: #fffdea !default;
-$oe-h1-bg-gradient-width: 12px !default;
-
 // Headings
 //
 // Styles for generic headings used throughout the site.
@@ -16,6 +7,17 @@ $oe-h1-bg-gradient-width: 12px !default;
 // <h1 class="badge">Page title</h1>
 //
 // Styleguide 3.1
+
+// Heading variables
+$oe-h1-badge-font-size: emCalc(13px) !default;
+$oe-h1-padding-top: 5px !default;
+$oe-h1-padding-right: 15px !default;
+$oe-h1-padding-bottom: 5px !default;
+$oe-h1-padding-left: 55px !default;
+$oe-h1-bg-gradient-left: #b4b0ae !default;
+$oe-h1-bg-gradient-right: #fffdea !default;
+$oe-h1-bg-gradient-width: 12px !default;
+
 h1 {
     &.badge {
         display: inline-block;

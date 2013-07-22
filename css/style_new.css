@@ -1639,27 +1639,27 @@ h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
 
 /* line 198, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_type.scss */
 h1 {
-  font-size: 2.125em;
+  font-size: 1.875em;
 }
 
 /* line 199, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_type.scss */
 h2 {
-  font-size: 1.6875em;
+  font-size: 1.4375em;
 }
 
 /* line 200, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_type.scss */
 h3 {
-  font-size: 1.375em;
+  font-size: 1.125em;
 }
 
 /* line 201, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_type.scss */
 h4 {
-  font-size: 1.125em;
+  font-size: 0.875em;
 }
 
 /* line 202, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_type.scss */
 h5 {
-  font-size: 1.125em;
+  font-size: 0.9375em;
 }
 
 /* line 203, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_type.scss */
@@ -1856,22 +1856,22 @@ blockquote p {
 
   /* line 367, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_type.scss */
   h1 {
-    font-size: 2.75em;
+    font-size: 2.5em;
   }
 
   /* line 368, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_type.scss */
   h2 {
-    font-size: 2.3125em;
+    font-size: 2.0625em;
   }
 
   /* line 369, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_type.scss */
   h3 {
-    font-size: 1.6875em;
+    font-size: 1.4375em;
   }
 
   /* line 370, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_type.scss */
   h4 {
-    font-size: 1.4375em;
+    font-size: 1.1875em;
   }
 }
 /*
@@ -2620,7 +2620,7 @@ html, body {
   background: #d4d1cd;
 }
 
-/* line 13, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_containers.scss */
+/* line 14, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_containers.scss */
 .container {
   width: 100%;
   margin-left: auto;
@@ -2644,7 +2644,7 @@ html, body {
   clear: both;
 }
 
-/* line 25, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_containers.scss */
+/* line 30, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_containers.scss */
 .content {
   *zoom: 1;
   background: url('../img/_structure/help_top_grad.jpg?1373641356') 0 bottom no-repeat;
@@ -2659,7 +2659,7 @@ html, body {
   clear: both;
 }
 
-/* line 20, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_type.scss */
+/* line 22, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_type.scss */
 h1.badge {
   display: inline-block;
   font-size: 0.8125em;
@@ -2676,11 +2676,11 @@ h1.badge {
   border-radius: 0px 3px 3px 0px;
 }
 
-/* line 6, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 21, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .header {
   height: 70px;
 }
-/* line 8, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 23, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .header .logo {
   background: url('../img/_structure/openeyes.png?1373641356') no-repeat;
   width: 240px;
@@ -2689,7 +2689,7 @@ h1.badge {
   text-indent: -9999px;
 }
 
-/* line 15, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
+/* line 43, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
 .footer {
   *zoom: 1;
   background: #b3b0ae url('../img/_structure/openeyes_footer.png?1373641356') no-repeat right top;
@@ -2703,29 +2703,29 @@ h1.badge {
 .footer:after {
   clear: both;
 }
-/* line 18, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
+/* line 46, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
 .footer .info {
   font-size: 0.625em;
   line-height: 1.5em;
   padding-bottom: 0.3125em;
   padding-top: 0.3125em;
 }
-/* line 23, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
+/* line 51, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
 .footer .info .copyright {
   color: #666666;
 }
-/* line 27, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
+/* line 55, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
 .footer .help {
   font-size: 0.6875em;
   text-align: left;
 }
 @media only screen and (min-width: 768px) {
-  /* line 27, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
+  /* line 55, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
   .footer .help {
     text-align: center;
   }
 }
-/* line 33, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
+/* line 61, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
 .footer .help .panel {
   border-style: solid;
   border-width: 1px;
@@ -2761,12 +2761,12 @@ h1.badge {
 .footer .help .panel h1.subheader, .footer .help .panel h2.subheader, .footer .help .panel h3.subheader, .footer .help .panel h4.subheader, .footer .help .panel h5.subheader, .footer .help .panel h6.subheader {
   line-height: 1.4;
 }
-/* line 43, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
+/* line 71, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
 .footer .help .inline-list {
   display: inline-block;
   margin: 0;
 }
-/* line 46, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
+/* line 74, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
 .footer .help .inline-list li {
   border-right: 1px solid #aaaaaa;
   display: inline-block;
@@ -2775,14 +2775,14 @@ h1.badge {
   margin: 0 1em 0.25em 0;
   padding: 0 1em 0 0;
 }
-/* line 53, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
+/* line 81, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
 .footer .help .inline-list li:last-child {
   padding-right: 0;
   margin-right: 0;
   border: 0;
 }
 
-/* line 11, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
+/* line 50, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
 .form.panel {
   border-style: solid;
   border-width: 1px;
@@ -2818,17 +2818,17 @@ h1.badge {
 .form.panel h1.subheader, .form.panel h2.subheader, .form.panel h3.subheader, .form.panel h4.subheader, .form.panel h5.subheader, .form.panel h6.subheader {
   line-height: 1.4;
 }
-/* line 16, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
+/* line 55, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
 .form.login {
   margin: 50px auto 100px auto;
   max-width: 488px;
 }
-/* line 20, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
+/* line 59, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
 .form [type=submit] {
   margin: 0;
 }
 
-/* line 38, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
+/* line 77, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_forms.scss */
 input[type="text"],
 input[type="password"],
 input[type="date"],
@@ -2850,7 +2850,7 @@ textarea {
   border-radius: 3px;
 }
 
-/* line 35, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
+/* line 39, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
 button, .button {
   border-style: solid;
   border-width: 1px;
@@ -2884,15 +2884,16 @@ button, .button {
   padding-right: 2.5em;
   text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
 }
-/* line 48, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
+/* line 52, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
 button:hover, button:focus, .button:hover, .button:focus {
   background: -webkit-linear-gradient(#118afb, #1279e3);
   background: -moz-linear-gradient(#118afb, #1279e3);
   background: -o-linear-gradient(#118afb, #1279e3);
   background: linear-gradient(#118afb, #1279e3);
   border-bottom: 2px solid #1974d1;
+  color: white;
 }
-/* line 52, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
+/* line 57, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
 button:active, .button:active {
   background: -webkit-linear-gradient(#145ea9, #104d8b);
   background: -moz-linear-gradient(#145ea9, #104d8b);
@@ -2900,8 +2901,8 @@ button:active, .button:active {
   background: linear-gradient(#145ea9, #104d8b);
   border-bottom: 2px solid #0f467e;
 }
-/* line 56, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
-button.disabled, .button.disabled {
+/* line 61, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
+button.disabled, button[disabled], .button.disabled, .button[disabled] {
   background: -webkit-linear-gradient(#aaaaaa, #999999);
   background: -moz-linear-gradient(#aaaaaa, #999999);
   background: -o-linear-gradient(#aaaaaa, #999999);
@@ -2910,14 +2911,14 @@ button.disabled, .button.disabled {
   text-shadow: none;
 }
 
-/* line 63, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
+/* line 68, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_buttons.scss */
 button, .button {
   padding-top: 0.5625em;
   padding-bottom: 0.5em;
   -webkit-appearance: none;
 }
 
-/* line 6, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_navigation.scss */
+/* line 13, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_navigation.scss */
 .side-nav {
   display: block;
   margin: 0;
@@ -2949,7 +2950,7 @@ button, .button {
   border-top-color: #e6e6e6;
 }
 
-/* line 18, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+/* line 19, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box {
   border-style: solid;
   border-width: 1px;
@@ -2963,7 +2964,7 @@ button, .button {
   border-color: #c9c9c9;
   color: black;
 }
-/* line 20, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+/* line 21, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box .close {
   font-size: 1.375em;
   padding: 5px 4px 4px;
@@ -2978,25 +2979,25 @@ button, .button {
 .alert-box .close:hover, .alert-box .close:focus {
   opacity: 0.5;
 }
-/* line 23, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+/* line 24, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.radius {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 26, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+/* line 27, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.success {
   background-color: #e0f2db;
   border-color: #c0e4b6;
   color: black;
 }
-/* line 29, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+/* line 30, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.alert {
   background-color: #ffe6b2;
   border-color: #ffd57f;
   color: black;
   border-color: #fc621f;
 }
-/* line 33, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
+/* line 34, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.secondary {
   background-color: #e9e9e9;
   border-color: #d0d0d0;
