@@ -1,4 +1,5 @@
 $oe-alert-default-bg-color: #e2e2e2 !default;
+$oe-alert-alert-bg-color: #ffe6b2 !default;
 
 // Alert box
 //
@@ -26,7 +27,7 @@ $oe-alert-default-bg-color: #e2e2e2 !default;
         @include alert-style($success-color);
     }
     &.alert {
-        @include alert-style($alert-color);
+        @include alert-style($oe-alert-alert-bg-color);
         border-color: $alert-border-color;
     }
     &.secondary {
