@@ -137,6 +137,24 @@ class AdminController extends BaseController
 		));
 	}
 
+	public function actionDeleteUsers() {
+		$result = 1;
+
+		if (!empty($_POST['users'])) {
+			foreach (User::model()->findAllByPk($_POST['users']) as $user) {
+				try {
+					if (!$user->delete()) {
+						$result = 0;
+					}
+				} catch (Exception $e) {
+					$result = 0;
+				}
+			}
+		}
+
+		echo $result;
+	}
+
 	public function actionFirms($id=false)
 	{
 		if ((integer) $id) {
@@ -150,6 +168,29 @@ class AdminController extends BaseController
 				'model' => 'Firm',
 				'page' => $page,
 			)),
+		));
+	}
+
+	public function actionAddFirm()
+	{
+		$firm = new Firm;
+
+		if (!empty($_POST)) {
+			$firm->attributes = $_POST['Firm'];
+
+			if (!$firm->validate()) {
+				$errors = $firm->getErrors();
+			} else {
+				if (!$firm->save()) {
+					throw new Exception("Unable to save firm: ".print_r($firm->getErrors(),true));
+				}
+				$this->redirect('/admin/firms/'.ceil($firm->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/editfirm',array(
+			'firm' => $firm,
+			'errors' => @$errors,
 		));
 	}
 
@@ -289,7 +330,8 @@ class AdminController extends BaseController
 
 		if (count($contacts) == 1) {
 			foreach ($contacts as $contact) {}
-			return $this->redirect(array('/admin/editContact?contact_id='.$contact->id));
+			$this->redirect(array('/admin/editContact?contact_id='.$contact->id));
+			return;
 		}
 
 		$pages = ceil(count($contacts) / $this->items_per_page);
@@ -763,5 +805,23 @@ class AdminController extends BaseController
 		}
 
 		echo "1";
+	}
+
+	public function actionDeleteFirms() {
+		$result = 1;
+
+		if (!empty($_POST['firms'])) {
+			foreach (Firm::model()->findAllByPk($_POST['firms']) as $firm) {
+				try {
+					if (!$firm->delete()) {
+						$result = 0;
+					}
+				} catch (Exception $e) {
+					$result = 0;
+				}
+			}
+		}
+
+		echo $result;
 	}
 }

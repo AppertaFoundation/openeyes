@@ -21,7 +21,7 @@
  * This is the model class for table "site_subspecialty_drug".
  *
  * The followings are the available columns in table 'site_subspecialty_drug':
- * @property string $id
+ * @property integer $id
  * @property integer $site_id
  * @property integer $subspecialty_id
  * @property integer $drug_id

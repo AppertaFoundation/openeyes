@@ -34,7 +34,8 @@
  *
  */
 
-class <?php if (isset($defaults_table)) { echo $defaults_table['class']?> extends BaseActiveRecord
+class <?php if (isset($defaults_table)) echo $defaults_table['class']; ?> extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return the static model class
@@ -134,4 +135,3 @@ class <?php if (isset($defaults_table)) { echo $defaults_table['class']?> extend
 		return parent::beforeValidate();
 	}
 }
-<?php echo '?>';?>

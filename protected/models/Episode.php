@@ -21,9 +21,9 @@
  * This is the model class for table "episode".
  *
  * The followings are the available columns in table 'episode':
- * @property string $id
- * @property string $patient_id
- * @property string $firm_id
+ * @property integer $id
+ * @property integer $patient_id
+ * @property integer $firm_id
  * @property string $start_date
  * @property string $end_date
  *
@@ -92,7 +92,7 @@ class Episode extends BaseActiveRecord
 		return array(
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-			'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => 'datetime asc'),
+			'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => 'created_date asc'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
@@ -140,6 +140,9 @@ class Episode extends BaseActiveRecord
 
 	/**
 	 * Returns true if an event of the given type exists within this episode
+	 * @param integer $eventTypeId
+	 * @param Event $currentEvent
+	 * @return boolean
 	 */
 	public function hasEventOfType($eventTypeId, $currentEvent = null)
 	{
@@ -309,6 +312,6 @@ class Episode extends BaseActiveRecord
 	{
 		$properties['episode_id'] = $this->id;
 		$properties['patient_id'] = $this->patient_id;
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 }

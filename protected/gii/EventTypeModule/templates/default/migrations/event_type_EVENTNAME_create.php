@@ -1,6 +1,7 @@
 <?php echo '<?php '; ?>
 
-class m<?php if (isset($migrationid)) { echo $migrationid; ?>_event_type_<?php echo $this->moduleID; ?> extends CDbMigration
+class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php echo $this->moduleID; ?> extends CDbMigration
+{
 	public function up()
 	{
 		// --- EVENT TYPE ENTRIES ---
@@ -188,4 +189,4 @@ if (isset($field['extra_report'])) {?>
 		return true;
 	}
 }
-<?php echo '?>';?>
+

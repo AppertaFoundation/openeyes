@@ -21,7 +21,7 @@
  * This is the model class for table "user_site".
  *
  * The followings are the available columns in table 'user_site':
- * @property string $id
+ * @property integer $id
  * @property string $name
  *
  */

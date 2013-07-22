@@ -70,6 +70,31 @@ $(document).ready(function() {
 		}
 	});
 
+	handleButton($('#et_delete'),function(e) {
+		e.preventDefault();
+
+		var e = window.location.href.split('/');
+
+		for (var i in e) {
+			if (e[i] == 'admin') {
+				var object = e[parseInt(i)+1].replace(/s$/,'');
+			}
+		}
+
+		$.ajax({
+			'type': 'POST',
+			'url': baseUrl+'/admin/delete'+ucfirst(object)+'s',
+			'data': $('#admin_'+object+'s').serialize(),
+			'success': function(html) {
+				if (html == '1') {
+					window.location.reload();
+				} else {
+					alert("One or more "+object+"s could not be deleted as they are in use.");
+				}
+			}
+		});
+	});
+
 	handleButton($('#lookup_user'),function(e) {
 		e.preventDefault();
 

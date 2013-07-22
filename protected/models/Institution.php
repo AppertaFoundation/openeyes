@@ -21,11 +21,12 @@
  * This is the model class for table "institution".
  *
  * The followings are the available columns in table 'institution':
- * @property string $id
- * @property string $remote_id
+ * @property integer $id
+ * @property string $name
+ * @property integer $remote_id
  * @property string $short_name
- * @property string $contact_id
- * @property string $source_id
+ * @property integer $contact_id
+ * @property integer $source_id
  *
  * The followings are the available model relations:
  * @property Contact $contact
@@ -35,7 +36,7 @@ class Institution extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return Institution the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

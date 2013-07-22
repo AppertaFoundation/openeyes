@@ -61,7 +61,7 @@ if ($legacyletters && !$legacyletters->disabled && is_array($legacyepisodes)) fo
 									<?php $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/'; ?>
 									<img src="<?php echo Yii::app()->createUrl($assetpath . 'img/small.png') ?>" alt="op" width="19" height="19" />
 								</span>
-								<span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span>
+								<span class="date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
 								<?php if (!$highlight) { ?>
 								</a>
 							<?php } else { ?>

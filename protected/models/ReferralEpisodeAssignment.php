@@ -21,7 +21,7 @@
  * This is the model class for table "referral_episode_assignment".
  *
  * The followings are the available columns in table 'referral_episode_assignment':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $ShortName
  */
@@ -29,7 +29,7 @@ class ReferralEpisodeAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return ReferralEpisodeAssignment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

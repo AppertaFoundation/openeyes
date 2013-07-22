@@ -18,15 +18,16 @@
  */
 
 /**
- * This is the model class for table "Practice".
+ * This is the model class for table "practice".
  *
- * The followings are the available columns in table 'Practice':
- * @property string $id
+ * The followings are the available columns in table 'practice':
+ * @property integer $id
  * @property string $code
  * @property string $phone
  *
  * The followings are the available model relations:
  * @property Address $address
+ * @property CommissioningBody[] $commissioningbodies
  */
 class Practice extends BaseActiveRecord
 {

@@ -189,7 +189,7 @@ function getMonthNumberByShortName(m) {
  * 
  * @param a
  * @param b
- * @returns
+ * @return
  */
 function selectSort(a, b) {
 		if (a.innerHTML == rootItem) {

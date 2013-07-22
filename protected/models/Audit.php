@@ -21,28 +21,28 @@
  * This is the model class for table "audit".
  *
  * The following are the available columns in table 'audit':
- * @property string $id
- * @property string $action
+ * @property integer $id
  * @property string $target_type
- * @property string $patient_id
- * @property string $episode_id
- * @property string $event_id
- * @property string $user_id
+ * @property integer $patient_id
+ * @property integer $episode_id
+ * @property integer $event_id
+ * @property integer $user_id
  * @property string $data
  * @property string $remote_addr
  * @property string $http_user_agent
  * @property string $server_name
  * @property string $request_uri
- * @property string $site_id
- * @property string $firm_id
+ * @property integer $site_id
+ * @property integer $firm_id
  *
  * The following are the available model relations:
- * @property Patient[] $patient
- * @property Episode[] $episode
- * @property Event[] $event
- * @property User[] $user
- * @property Site[] $site
- * @property Firm[] $firm
+ * @property AuditAction $action
+ * @property Patient $patient
+ * @property Episode $episode
+ * @property Event $event
+ * @property User $user
+ * @property Site $site
+ * @property Firm $firm
  */
 class Audit extends BaseActiveRecord
 {
@@ -50,7 +50,7 @@ class Audit extends BaseActiveRecord
 
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Theatre the static model class
+	 * @return Audit the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

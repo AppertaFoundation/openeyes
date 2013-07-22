@@ -21,14 +21,14 @@
  * This is the model class for table "element_type".
  *
  * The followings are the available columns in table 'element_type':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $class_name
- * @property string $parent_element_type_id
+ * @property integer $parent_element_type_id
  *
  * The followings are the available model relations:
- * @property EventTypeElementTypeAssignment[] $eventTypeElementTypeAssignments
- * @property
+ * @property ElementType $parent_element_type
+ * @property ElementType[] $child_element_types
  */
 class ElementType extends BaseActiveRecord
 {

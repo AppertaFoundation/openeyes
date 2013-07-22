@@ -155,15 +155,17 @@ class BaseEventTypeController extends BaseController
 			Yii::app()->clientScript->scriptMap = $scriptMap;
 		}
 
-		return parent::beforeAction($action);;
+		return parent::beforeAction($action);
 	}
 
 	/**
 	 * Get all the elements for an event, the current module or an event_type
-	 *
-	 * @return array
+	 * @param string $action
+	 * @param int $event_type_id
+	 * @param Event $event
+	 * @return BaseEventTypeElement[]
 	 */
-	public function getDefaultElements($action, $event_type_id=false, $event=false)
+	public function getDefaultElements($action, $event_type_id = null, $event = null)
 	{
 		if (!$event && isset($this->event)) {
 			$event = $this->event;
@@ -264,10 +266,12 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (is_array(Yii::app()->params['modules_disabled']) && in_array($this->event_type->class_name,Yii::app()->params['modules_disabled'])) {
-			return $this->redirect(array('/patient/episodes/'.$this->patient->id));
+			$this->redirect(array('/patient/episodes/'.$this->patient->id));
+			return;
 		}
 
 		$session = Yii::app()->session;
+		/** @var $firm Firm */
 		$firm = Firm::model()->findByPk($session['selected_firm_id']);
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
 
@@ -548,8 +552,6 @@ class BaseEventTypeController extends BaseController
 
 					$this->event->audit('event','update',serialize($audit_data));
 
-					// Update event to indicate user has made a change
-					// $this->event->datetime = date("Y-m-d H:i:s");
 					$this->event->user = Yii::app()->user->id;
 					$this->event->info = $info_text;
 
@@ -762,11 +764,12 @@ class BaseEventTypeController extends BaseController
 	/**
 	 * Update elements based on arrays passed over from $_POST data
 	 *
-	 * @param array		$elements		array of SiteElementTypes
-	 * @param array		$data			$_POST data to update
-	 * @param object $event				the associated event
+	 * @param BaseEventTypeElement[] $elements
+	 * @param array $data $_POST data to update
+	 * @param Event $event the associated event
 	 *
-	 * @return boolean $success		true if all elements suceeded, false otherwise
+	 * @throws SystemException
+	 * @return bool true if all elements succeeded, false otherwise
 	 */
 	public function updateElements($elements, $data, $event)
 	{
@@ -845,6 +848,11 @@ class BaseEventTypeController extends BaseController
 	{
 	}
 
+	/**
+	 * @param Firm $firm
+	 * @param integer $patientId
+	 * @return Episode
+	 */
 	public function getEpisode($firm, $patientId)
 	{
 		if ($firm->service_subspecialty_assignment_id) {
@@ -876,15 +884,14 @@ class BaseEventTypeController extends BaseController
 		$event = new Event();
 		$event->episode_id = $episode->id;
 		$event->event_type_id = $eventTypeId;
-		$event->datetime = date("Y-m-d H:i:s");
 		$event->info = $info_text;
 
 		if (!$event->save()) {
-			OELog::log("Failed to creat new event for episode_id=$episode->id, event_type_id=$eventTypeId, datetime='$event->datetime'");
+			OELog::log("Failed to creat new event for episode_id=$episode->id, event_type_id=$eventTypeId");
 			throw new Exception('Unable to save event.');
 		}
 
-		OELog::log("Created new event for episode_id=$episode->id, event_type_id=$eventTypeId, datetime='$event->datetime'");
+		OELog::log("Created new event for episode_id=$episode->id, event_type_id=$eventTypeId");
 
 		return $event;
 	}
@@ -1054,6 +1061,6 @@ class BaseEventTypeController extends BaseController
 		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
 
-		return parent::processJsVars();
+		parent::processJsVars();
 	}
 }

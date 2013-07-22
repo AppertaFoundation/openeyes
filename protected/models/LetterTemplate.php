@@ -21,17 +21,15 @@
  * This is the model class for table "letter_template".
  *
  * The followings are the available columns in table 'letter_template':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $phrase
- * @property string $subspecialty_id
+ * @property integer $subspecialty_id
  * @property string $send_to
  * @property string $cc
  *
  * The followings are the available model relations:
- * @property ContactType $cc0
  * @property Subspecialty $subspecialty
- * @property ContactType $send_to
  */
 class LetterTemplate extends BaseActiveRecord
 {
@@ -78,9 +76,9 @@ class LetterTemplate extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'cc0' => array(self::BELONGS_TO, 'ContactType', 'cc'),
+			//'cc0' => array(self::BELONGS_TO, 'ContactType', 'cc'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-			'sendTo' => array(self::BELONGS_TO, 'ContactType', 'send_to'),
+			//'sendTo' => array(self::BELONGS_TO, 'ContactType', 'send_to'),
 		);
 	}
 

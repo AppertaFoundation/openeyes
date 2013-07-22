@@ -21,7 +21,7 @@
  * This is the model class for table "service".
  *
  * The followings are the available columns in table 'service':
- * @property string $id
+ * @property integer $id
  * @property string $name
  *
  * The followings are the available model relations:

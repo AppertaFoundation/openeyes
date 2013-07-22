@@ -18,24 +18,16 @@
  */
 
 /**
- * This is the model class for table "firm".
+ * This is the model class for table "priority".
  *
- * The followings are the available columns in table 'firm':
- * @property string $id
- * @property string $service_subspecialty_assignment_id
- * @property string $pas_code
- * @property string $name
- *
- * The followings are the available model relations:
- * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
- * @property FirmUserAssignment[] $firmUserAssignments
- * @property LetterPhrase[] $letterPhrases
+ * The followings are the available columns in table 'priority':
+ * @property integer $id
  */
 class Priority extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return Priority the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
