@@ -11,7 +11,7 @@
 		<div class="content">
 			<h1 class="badge">Please login</h1>
 			<div class="row">
-				<div class="medium-11 small-11 small-centered medium-centered columns">
+				<div class="large-11 small-11 small-centered large-centered columns">
 					<form class="form login panel">
 						<div class="row">
 							<div class="small-4 columns">

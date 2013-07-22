@@ -21,9 +21,66 @@ $oe-header-logo-height: 70px !default;
 .header {
     height: $oe-header-height;
     .logo {
-    	background: $oe-header-logo-bg-image no-repeat;
-    	width: $oe-header-logo-width;
-    	height: $oe-header-logo-height;
         @include hide-text;
+        background: $oe-header-logo-bg-image no-repeat;
+        width: $oe-header-logo-width;
+        height: $oe-header-logo-height;
+        margin-left: -1 * ($column-gutter / 2);
+    }
+}
+
+// User panel
+//
+// This panel contains the logged-in user information as well as the user-specific
+// application navigation.
+//
+// Styleguide 4.2
+
+// User panel variables
+$oe-header-user-panel-font-size: emCalc(13px) !default;
+$oe-header-user-panel-bg-image: image-url("_elements/icons/user/idcard_bg.png") !default;
+$oe-header-user-panel-bg-repeat: no-repeat !default;
+$oe-header-user-panel-bg-position: left bottom !default;
+$oe-header-user-panel-bg-color: #dae6f1 !default;
+$oe-header-user-panel-padding: 0 10px 5px 10px !default;
+
+// User panel navigation variables
+$oe-header-user-panel-navigation-font-size: $oe-header-user-panel-font-size !default;
+$oe-header-user-panel-navigation-item-margin: emCalc(4px) !default;
+$oe-header-user-panel-navigation-anchor-bg-color: #cdd9e3 !default;
+$oe-header-user-panel-navigation-anchor-padding: 10px 5px 3px 5px !default;
+$oe-header-user-panel-navigation-anchor-hover-bg-color: #fff !default;
+$oe-header-user-panel-info-font-size: $oe-header-user-panel-font-size !default;
+
+.user-panel {
+    @include clearfix;
+    @include panel($oe-header-user-panel-bg-color, $oe-header-user-panel-padding);
+    @include border-bottom-left-radius($global-radius);
+    @include border-bottom-right-radius($global-radius);
+    background-image: $oe-header-user-panel-bg-image;
+    background-repeat: $oe-header-user-panel-bg-repeat;
+    background-position: $oe-header-user-panel-bg-position;
+    border-top: 0;
+    .user-navigation {
+        margin-left: 0;
+        li {
+            font-size: $oe-header-user-panel-navigation-font-size;
+            margin: 0 0 0 $oe-header-user-panel-navigation-item-margin;
+        }
+        a {
+            background: $oe-header-user-panel-navigation-anchor-bg-color;
+            padding: $oe-header-user-panel-navigation-anchor-padding;
+            &.selected,
+            &:hover,
+            &:focus {
+                background: $oe-header-user-panel-navigation-anchor-hover-bg-color;
+            }
+        }
+    }
+    .user-id, .user-firm {
+        font-size: emCalc(13px);
+    }
+    .row {
+        clear: both;
     }
 }

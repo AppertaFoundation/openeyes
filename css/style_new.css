@@ -2682,11 +2682,89 @@ h1.badge {
 }
 /* line 23, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .header .logo {
+  overflow: hidden;
+  text-indent: -9999px;
   background: url('../img/_structure/openeyes.png?1373641356') no-repeat;
   width: 240px;
   height: 70px;
-  overflow: hidden;
-  text-indent: -9999px;
+  margin-left: -0.75em;
+}
+
+/* line 55, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.user-panel {
+  *zoom: 1;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #b5cde3;
+  margin-bottom: 1.25em;
+  padding: 0 10px 5px 10px;
+  background: #dae6f1;
+  -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background-image: url('../img/_elements/icons/user/idcard_bg.png?1373641356');
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  border-top: 0;
+}
+/* line 121, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_global.scss */
+.user-panel:before, .user-panel:after {
+  content: " ";
+  display: table;
+}
+/* line 122, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_global.scss */
+.user-panel:after {
+  clear: both;
+}
+/* line 44, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_panels.scss */
+.user-panel > :first-child {
+  margin-top: 0;
+}
+/* line 45, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_panels.scss */
+.user-panel > :last-child {
+  margin-bottom: 0;
+}
+/* line 50, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_panels.scss */
+.user-panel h1, .user-panel h2, .user-panel h3, .user-panel h4, .user-panel h5, .user-panel h6, .user-panel p {
+  color: #333333;
+}
+/* line 54, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_panels.scss */
+.user-panel h1, .user-panel h2, .user-panel h3, .user-panel h4, .user-panel h5, .user-panel h6 {
+  line-height: 1;
+  margin-bottom: 0.625em;
+}
+/* line 56, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_panels.scss */
+.user-panel h1.subheader, .user-panel h2.subheader, .user-panel h3.subheader, .user-panel h4.subheader, .user-panel h5.subheader, .user-panel h6.subheader {
+  line-height: 1.4;
+}
+/* line 64, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.user-panel .user-navigation {
+  margin-left: 0;
+}
+/* line 66, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.user-panel .user-navigation li {
+  font-size: 0.8125em;
+  margin: 0 0 0 0.25em;
+}
+/* line 70, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.user-panel .user-navigation a {
+  background: #cdd9e3;
+  padding: 10px 5px 3px 5px;
+}
+/* line 75, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.user-panel .user-navigation a.selected, .user-panel .user-navigation a:hover, .user-panel .user-navigation a:focus {
+  background: white;
+}
+/* line 80, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.user-panel .user-id, .user-panel .user-firm {
+  font-size: 0.8125em;
+}
+/* line 83, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.user-panel .row {
+  clear: both;
 }
 
 /* line 43, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
@@ -3002,4 +3080,25 @@ button, .button {
   background-color: #e9e9e9;
   border-color: #d0d0d0;
   color: black;
+}
+
+/* line 6, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_lists.scss */
+.inline-list {
+  margin: 0 auto 1.0625em auto;
+  margin-left: -1.375em;
+  margin-right: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+}
+/* line 36, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_inline-lists.scss */
+.inline-list > li {
+  list-style: none;
+  float: left;
+  margin-left: 1.375em;
+  display: block;
+}
+/* line 41, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_inline-lists.scss */
+.inline-list > li > * {
+  display: block;
 }

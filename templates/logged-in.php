@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<? include 'components/head.php'; ?>
+</head>
+<body>
+	<div class="container" role="main">
+
+		<? include 'components/header_logged_in.php'; ?>
+
+		<div class="content">
+			<h1 class="badge">Page title</h1>
+			<div style="height:400px">
+			</div>
+		</div>
+
+		<? include 'components/footer.php'; ?>
+	</div>
+</body>
+</html>
