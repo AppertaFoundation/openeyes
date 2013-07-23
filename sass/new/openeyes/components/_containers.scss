@@ -18,7 +18,7 @@ $oe-container-main-border-width: 2px !default;
     border: $oe-container-main-border-width solid $oe-container-main-border-color;
 }
 
-// Container container
+// Content container
 //
 // The content container wraps around all page content.
 //
@@ -26,8 +26,10 @@ $oe-container-main-border-width: 2px !default;
 
 // Content container variables
 $oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg") !default;
+$oe-container-content-min-height: 330px !default;
 
 .content {
     @include clearfix;
     background: $oe-container-content-bg-image 0 bottom no-repeat;
+    min-height: $oe-container-content-min-height;
 }

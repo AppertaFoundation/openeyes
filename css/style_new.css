@@ -2163,18 +2163,18 @@ blockquote p {
 /* Standard Forms */
 /* line 258, ../sass/new/foundation/components/_forms.scss */
 form {
-  margin: 0 0 1em;
+  margin: 0 0 1.125em;
 }
 
 /* Using forms within rows, we need to set some defaults */
 /* line 67, ../sass/new/foundation/components/_forms.scss */
 form .row .row {
-  margin: 0 -0.5em;
+  margin: 0 -0.5625em;
 }
 /* line 70, ../sass/new/foundation/components/_forms.scss */
 form .row .row .column,
 form .row .row .columns {
-  padding: 0 0.5em;
+  padding: 0 0.5625em;
 }
 /* line 73, ../sass/new/foundation/components/_forms.scss */
 form .row .row.collapse {
@@ -2190,7 +2190,7 @@ form .row input.column,
 form .row input.columns,
 form .row textarea.column,
 form .row textarea.columns {
-  padding-left: 0.5em;
+  padding-left: 0.5625em;
 }
 
 /* Label Styles */
@@ -2210,8 +2210,8 @@ label.right {
 }
 /* line 266, ../sass/new/foundation/components/_forms.scss */
 label.inline {
-  margin: 0 0 1em 0;
-  padding: 0.625em 0;
+  margin: 0 0 1.125em 0;
+  padding: 0.6875em 0;
 }
 
 /* Attach elements to the beginning or end of an input */
@@ -2229,8 +2229,8 @@ label.inline {
   border-width: 1px;
   overflow: hidden;
   font-size: 0.875em;
-  height: 2.3125em;
-  line-height: 2.3125em;
+  height: 2.5em;
+  line-height: 2.5em;
 }
 
 /* Adjust padding, alignment and radius if pre/post element is a button */
@@ -2403,9 +2403,9 @@ textarea {
   color: rgba(0, 0, 0, 0.75);
   display: block;
   font-size: 0.875em;
-  margin: 0 0 1em 0;
-  padding: 0.5em;
-  height: 2.3125em;
+  margin: 0 0 1.125em 0;
+  padding: 0.5625em;
+  height: 2.5em;
   width: 100%;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -2477,7 +2477,7 @@ input[type="file"],
 input[type="checkbox"],
 input[type="radio"],
 select {
-  margin: 0 0 1em 0;
+  margin: 0 0 1.125em 0;
 }
 
 /* Normalize file input width */
@@ -2531,8 +2531,8 @@ label.error {
 small.error {
   display: block;
   padding: 0.375em 0.25em;
-  margin-top: -1.3125em;
-  margin-bottom: 1em;
+  margin-top: -1.4375em;
+  margin-bottom: 1.125em;
   font-size: 0.75em;
   font-weight: bold;
   background: red;
@@ -2824,10 +2824,11 @@ html, body {
   clear: both;
 }
 
-/* line 30, ../sass/new/openeyes/components/_containers.scss */
+/* line 31, ../sass/new/openeyes/components/_containers.scss */
 .content {
   *zoom: 1;
   background: url('../img/_structure/help_top_grad.jpg?1373641356') 0 bottom no-repeat;
+  min-height: 330px;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
 .content:before, .content:after {
@@ -2865,14 +2866,14 @@ h1.badge {
 .header .logo {
   overflow: hidden;
   text-indent: -9999px;
-  background: url('../img/_structure/openeyes.png?1374583574') no-repeat;
+  background: url('../img/_structure/openeyes.png?1374590757') no-repeat;
   background-size: 100%;
   max-width: 210px;
   height: 70px;
   margin-left: -0.75em;
 }
 
-/* line 81, ../sass/new/openeyes/components/_header.scss */
+/* line 83, ../sass/new/openeyes/components/_header.scss */
 .user-panel {
   *zoom: 1;
   border-style: solid;
@@ -2886,6 +2887,7 @@ h1.badge {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
+  margin: 0;
   background-image: url('../img/_elements/icons/user/idcard_bg.png?1373641356');
   background-repeat: no-repeat;
   background-position: left bottom;
@@ -2921,8 +2923,9 @@ h1.badge {
   line-height: 1.4;
 }
 @media only screen and (min-width: 768px) {
-  /* line 81, ../sass/new/openeyes/components/_header.scss */
+  /* line 83, ../sass/new/openeyes/components/_header.scss */
   .user-panel {
+    border-top: 0;
     -webkit-border-radius: 0 0 5px 5px;
     -moz-border-radius: 0 0 5px 5px;
     -ms-border-radius: 0 0 5px 5px;
@@ -2930,35 +2933,40 @@ h1.badge {
     border-radius: 0 0 5px 5px;
   }
 }
-/* line 94, ../sass/new/openeyes/components/_header.scss */
+/* line 97, ../sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation {
   margin-left: 0;
   margin-bottom: 0.5em;
 }
-/* line 97, ../sass/new/openeyes/components/_header.scss */
+/* line 100, ../sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation li {
   font-size: 0.8125em;
   margin: 0 0 0 0.25em;
 }
-/* line 101, ../sass/new/openeyes/components/_header.scss */
+/* line 104, ../sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation a {
   background: #cdd9e3;
   padding: 0.5em 0.3125em 0.125em 0.3125em;
 }
-/* line 106, ../sass/new/openeyes/components/_header.scss */
-.user-panel .user-navigation a.selected, .user-panel .user-navigation a:hover, .user-panel .user-navigation a:focus {
+/* line 108, ../sass/new/openeyes/components/_header.scss */
+.user-panel .user-navigation a:hover, .user-panel .user-navigation a:focus {
   background: white;
 }
 /* line 111, ../sass/new/openeyes/components/_header.scss */
+.user-panel .user-navigation a.selected {
+  background: #1e55c1;
+  color: white;
+}
+/* line 117, ../sass/new/openeyes/components/_header.scss */
 .user-panel .user-id, .user-panel .user-firm {
   font-size: 0.8125em;
 }
-/* line 114, ../sass/new/openeyes/components/_header.scss */
+/* line 120, ../sass/new/openeyes/components/_header.scss */
 .user-panel .row {
   clear: both;
 }
 
-/* line 143, ../sass/new/openeyes/components/_header.scss */
+/* line 149, ../sass/new/openeyes/components/_header.scss */
 .patient-panel {
   border-style: solid;
   border-width: 1px;
@@ -3004,7 +3012,7 @@ h1.badge {
   line-height: 1.4;
 }
 @media only screen and (min-width: 768px) {
-  /* line 143, ../sass/new/openeyes/components/_header.scss */
+  /* line 149, ../sass/new/openeyes/components/_header.scss */
   .patient-panel {
     border-width: 0 2px 2px 2px;
     -webkit-border-radius: 0 0 5px 5px;
@@ -3014,29 +3022,29 @@ h1.badge {
     border-radius: 0 0 5px 5px;
   }
 }
-/* line 160, ../sass/new/openeyes/components/_header.scss */
+/* line 166, ../sass/new/openeyes/components/_header.scss */
 .patient-panel .patient-details {
   padding-bottom: 0.25em;
 }
-/* line 162, ../sass/new/openeyes/components/_header.scss */
+/* line 168, ../sass/new/openeyes/components/_header.scss */
 .patient-panel .patient-details a {
   color: black;
 }
-/* line 166, ../sass/new/openeyes/components/_header.scss */
+/* line 172, ../sass/new/openeyes/components/_header.scss */
 .patient-panel .patient-surname {
   font-size: 0.875em;
   font-weight: bold;
   text-transform: uppercase;
 }
-/* line 173, ../sass/new/openeyes/components/_header.scss */
+/* line 179, ../sass/new/openeyes/components/_header.scss */
 .patient-panel .patient-name {
   font-size: 0.8125em;
 }
-/* line 176, ../sass/new/openeyes/components/_header.scss */
+/* line 182, ../sass/new/openeyes/components/_header.scss */
 .patient-panel .hospital-number, .patient-panel .nhs-number, .patient-panel .patient-summary-anchor {
   font-size: 0.75em;
 }
-/* line 179, ../sass/new/openeyes/components/_header.scss */
+/* line 185, ../sass/new/openeyes/components/_header.scss */
 .patient-panel .nhs-number {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -3147,51 +3155,26 @@ h1.badge {
 
 /* line 50, ../sass/new/openeyes/components/_forms.scss */
 .form.panel {
-  border-style: solid;
-  border-width: 1px;
-  border-color: #cbc6bf;
-  margin-bottom: 1.25em;
-  padding: 30px;
-  background: #e2dfdb;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   -ms-border-radius: 10px;
   -o-border-radius: 10px;
   border-radius: 10px;
+  background: #e2dfdb;
+  padding: 30px;
   border: 2px solid #666666;
 }
-/* line 44, ../sass/new/foundation/components/_panels.scss */
-.form.panel > :first-child {
-  margin-top: 0;
-}
-/* line 45, ../sass/new/foundation/components/_panels.scss */
-.form.panel > :last-child {
-  margin-bottom: 0;
-}
-/* line 50, ../sass/new/foundation/components/_panels.scss */
-.form.panel h1, .form.panel h2, .form.panel h3, .form.panel h4, .form.panel h5, .form.panel h6, .form.panel p {
-  color: #333333;
-}
-/* line 54, ../sass/new/foundation/components/_panels.scss */
-.form.panel h1, .form.panel h2, .form.panel h3, .form.panel h4, .form.panel h5, .form.panel h6 {
-  line-height: 1;
-  margin-bottom: 0.625em;
-}
-/* line 56, ../sass/new/foundation/components/_panels.scss */
-.form.panel h1.subheader, .form.panel h2.subheader, .form.panel h3.subheader, .form.panel h4.subheader, .form.panel h5.subheader, .form.panel h6.subheader {
-  line-height: 1.4;
-}
-/* line 55, ../sass/new/openeyes/components/_forms.scss */
+/* line 56, ../sass/new/openeyes/components/_forms.scss */
 .form.login {
   margin: 50px auto 100px auto;
   max-width: 488px;
 }
-/* line 59, ../sass/new/openeyes/components/_forms.scss */
+/* line 60, ../sass/new/openeyes/components/_forms.scss */
 .form [type=submit] {
   margin: 0;
 }
 
-/* line 77, ../sass/new/openeyes/components/_forms.scss */
+/* line 78, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"],
 input[type="password"],
 input[type="date"],
@@ -3471,4 +3454,50 @@ button, .button {
 /* line 26, ../sass/new/openeyes/_mixins.scss */
 .icon-alerts-unconfirmed {
   background-position: 0 -85px;
+}
+
+/* line 6, ../sass/new/openeyes/components/_panels.scss */
+.panel {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #d9d9d9;
+  margin-bottom: 1.25em;
+  padding: 0.625em;
+  background: #f2f2f2;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 44, ../sass/new/foundation/components/_panels.scss */
+.panel > :first-child {
+  margin-top: 0;
+}
+/* line 45, ../sass/new/foundation/components/_panels.scss */
+.panel > :last-child {
+  margin-bottom: 0;
+}
+/* line 50, ../sass/new/foundation/components/_panels.scss */
+.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6, .panel p {
+  color: #333333;
+}
+/* line 54, ../sass/new/foundation/components/_panels.scss */
+.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 {
+  line-height: 1;
+  margin-bottom: 0.625em;
+}
+/* line 56, ../sass/new/foundation/components/_panels.scss */
+.panel h1.subheader, .panel h2.subheader, .panel h3.subheader, .panel h4.subheader, .panel h5.subheader, .panel h6.subheader {
+  line-height: 1.4;
+}
+
+/* line 18, ../sass/new/openeyes/components/_panels.scss */
+.panel.search-examples {
+  font-size: 0.8125em;
+}
+/* line 21, ../sass/new/openeyes/components/_panels.scss */
+.panel.search {
+  padding: 0.9375em 0;
+}
+/* line 23, ../sass/new/openeyes/components/_panels.scss */
+.panel.search input, .panel.search button {
+  margin: 0;
 }

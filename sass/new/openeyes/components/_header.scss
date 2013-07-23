@@ -77,18 +77,21 @@ $oe-header-user-panel-navigation-anchor-bg-color: #cdd9e3 !default;
 $oe-header-user-panel-navigation-anchor-padding: emCalc(8px) emCalc(5px) emCalc(2px) emCalc(5px) !default;
 $oe-header-user-panel-navigation-anchor-hover-bg-color: white !default;
 $oe-header-user-panel-info-font-size: $oe-header-user-panel-font-size !default;
+$oe-header-user-panel-navigation-anchor-selected-bg-color: #1e55c1 !default;
+$oe-header-user-panel-navigation-anchor-selected-color: #fff !default;
 
 .user-panel {
     @include clearfix;
     @include panel($oe-header-user-panel-bg-color, $oe-header-user-panel-padding);
     @include border-radius($global-radius);
+    margin: 0;
     background: {
         image: $oe-header-user-panel-bg-image;
         repeat: $oe-header-user-panel-bg-repeat;
         position: $oe-header-user-panel-bg-position;
     }
     @media #{$small} {
-        // border-width: 0 $oe-header-patient-panel-border-width $oe-header-patient-panel-border-width $oe-header-patient-panel-border-width;
+        border-top: 0;
         @include border-radius(0 0 $global-radius $global-radius);
     }
     .user-navigation {
@@ -101,10 +104,13 @@ $oe-header-user-panel-info-font-size: $oe-header-user-panel-font-size !default;
         a {
             background: $oe-header-user-panel-navigation-anchor-bg-color;
             padding: $oe-header-user-panel-navigation-anchor-padding;
-            &.selected,
             &:hover,
             &:focus {
                 background: $oe-header-user-panel-navigation-anchor-hover-bg-color;
+            }
+            &.selected {
+                background: $oe-header-user-panel-navigation-anchor-selected-bg-color;
+                color: $oe-header-user-panel-navigation-anchor-selected-color;
             }
         }
     }

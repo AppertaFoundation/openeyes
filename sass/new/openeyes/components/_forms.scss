@@ -48,8 +48,9 @@ $oe-form-input-radius: 3px !default;
 
 .form {
     &.panel {
-        @include panel($oe-form-panel-bg-color, $oe-form-panel-padding);
         @include border-radius($oe-form-panel-radius);
+        background: $oe-form-panel-bg-color;
+        padding: $oe-form-panel-padding;
         border: $oe-form-panel-border-width solid $oe-form-panel-border-color;
     }
     &.login {

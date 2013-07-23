@@ -1,6 +1,6 @@
 <div class="user-panel">
 	<ul class="inline-list user-navigation right">
-		<li><a href="#">Home</a></li>
+		<li><a href="#" class="selected">Home</a></li>
 		<li><a href="#">Theatre Diaries</a></li>
 		<li><a href="#">Partial bookings waiting list</a></li>
 		<li><a href="#">Logout</a></li>
