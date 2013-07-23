@@ -81,14 +81,16 @@ $oe-header-user-panel-info-font-size: $oe-header-user-panel-font-size !default;
 .user-panel {
     @include clearfix;
     @include panel($oe-header-user-panel-bg-color, $oe-header-user-panel-padding);
-    @include border-bottom-left-radius($global-radius);
-    @include border-bottom-right-radius($global-radius);
+    @include border-radius($global-radius);
     background: {
         image: $oe-header-user-panel-bg-image;
         repeat: $oe-header-user-panel-bg-repeat;
         position: $oe-header-user-panel-bg-position;
     }
-    border-top: 0;
+    @media #{$small} {
+        // border-width: 0 $oe-header-patient-panel-border-width $oe-header-patient-panel-border-width $oe-header-patient-panel-border-width;
+        @include border-radius(0 0 $global-radius $global-radius);
+    }
     .user-navigation {
         margin-left: 0;
         margin-bottom: emCalc(8px);
@@ -140,8 +142,7 @@ $oe-header-patient-nhs-number-bg-image: image-url("_elements/icons/nhs_tiny.png"
 
 .patient-panel {
     @include panel($padding:$oe-header-patient-panel-padding);
-    @include border-bottom-left-radius($global-radius);
-    @include border-bottom-right-radius($global-radius);
+    @include border-radius($global-radius);
     @include background($oe-header-patient-panel-bg-image, linear-gradient(top, $oe-header-patient-panel-bg-color-start 0%, $oe-header-patient-panel-bg-color-stop 100%));
     background: {
         repeat: no-repeat, no-repeat;
@@ -150,8 +151,12 @@ $oe-header-patient-nhs-number-bg-image: image-url("_elements/icons/nhs_tiny.png"
     border: {
         color: $oe-header-patient-panel-border-color;
         style: solid;
-        width: 0 $oe-header-patient-panel-border-width $oe-header-patient-panel-border-width $oe-header-patient-panel-border-width;
+        width: $oe-header-patient-panel-border-width;
     };
+    @media #{$small} {
+        border-width: 0 $oe-header-patient-panel-border-width $oe-header-patient-panel-border-width $oe-header-patient-panel-border-width;
+        @include border-radius(0 0 $global-radius $global-radius);
+    }
     .patient-details {
         padding-bottom: $oe-header-patient-details-padding-bottom;
         a {
