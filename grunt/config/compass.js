@@ -17,10 +17,7 @@ module.exports = {
       outputStyle: 'expanded',
       relativeAssets: true,
       httpPath: '',
-      noLineComments: false,
-      trace: true,
-      raw: false,
-      config: false
+      noLineComments: false
     }
   }
 };
