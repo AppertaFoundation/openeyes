@@ -1,0 +1,29 @@
+.icon {
+    @include hide-text;
+    display: inline-block;
+}
+
+// Alerts icons
+//
+// All the alerts icons.
+//
+// Markup:
+// <span class="icon alerts-icon {$modifiers}">Description</span>
+//
+// .alerts-icon-booked_user       - User
+// .alerts-icon-comment           - Comment
+// .alerts-icon-confirmed         - Confirmed
+// .alerts-icon-consultant        - Consultant
+// .alerts-icon-female            - Female
+// .alerts-icon-female_trans      - Female transparent
+// .alerts-icon-help              - Help
+// .alerts-icon-images            - Images
+// .alerts-icon-male              - Male
+// .alerts-icon-male_trans        - Make transparent
+// .alerts-icon-overnight         - Overnight
+// .alerts-icon-unconfirmed       - Unconfirmed
+//
+// Styleguide 12.1
+
+// Alerts icons
+@include sprite("_elements/icons/alerts/*.png", "alerts-icon", 17px, 17px);

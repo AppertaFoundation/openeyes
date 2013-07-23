@@ -44,7 +44,6 @@
 //   into the _variables file. This allows use to create different themes in the future
 //   by simply using a different _variables file.
 
-
 // ===================================================================
 // Framework setup
 // ===================================================================
@@ -52,13 +51,13 @@
 // Make sure the charset is set appropriately
 @charset "UTF-8";
 
+// Global variables. We use the variables file to change the site theme.
+@import "openeyes/themes/default/variables";
+
 // Compass and custom mixins
 @import "compass/css3";
 @import "compass/css3/user-interface";
 @import "openeyes/mixins";
-
-// Global variables. We use the variables file to change the site theme.
-@import "openeyes/themes/default/variables";
 
 // Copyright header
 @import "openeyes/copyright";
@@ -188,3 +187,10 @@
 //
 // Styleguide 11
 @import "openeyes/components/visibility";
+
+// Icons
+//
+// Icons.
+//
+// Styleguide 12
+@import "openeyes/components/icons";

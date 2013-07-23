@@ -11,14 +11,16 @@ module.exports = {
   newstyle: {
     options: {
       sassDir: 'sass/new',
-      cssPath: './css',
       cssDir: 'css',
-      imagesPath: './img',
       imagesDir: 'img',
+      generatedImagesDir: 'img/sprites',
       outputStyle: 'expanded',
       relativeAssets: true,
       httpPath: '',
-      noLineComments: false
+      noLineComments: false,
+      trace: true,
+      raw: false,
+      config: false
     }
   }
 };

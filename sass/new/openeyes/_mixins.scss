@@ -1,11 +1,30 @@
-// Hide text off-screen
+// Hide text off-screen without affecting container position.
 @mixin hide-text() {
     overflow: hidden;
     text-indent: -9999px;
 }
 
+// Hide-text off-screen by changing the container position.
 @mixin hide-text-absolutely() {
     position: absolute;
     left: -9999px;
     top: -9999px;
+}
+
+// Sprite mixin for generating sprites and associated classes.
+@mixin sprite($icons_path, $class, $width, $height) {
+
+    $icons: sprite-map($icons_path);
+
+    .#{$class} {
+        background: $icons no-repeat;
+        width: $width;
+        height: $height;
+    }
+
+    @each $i in sprite_names($icons){
+        .#{$class}-#{$i} {
+            background-position: sprite-position($icons, $i);
+        }
+    }
 }
