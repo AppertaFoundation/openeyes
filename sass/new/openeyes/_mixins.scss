@@ -3,3 +3,9 @@
     overflow: hidden;
     text-indent: -9999px;
 }
+
+@mixin hide-text-absolutely() {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+}

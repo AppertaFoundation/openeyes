@@ -51,3 +51,9 @@ columns at 3 different screen widths.
 All values used in the stylesheet are stored in variables. We use a global '_variables.scss'
 file to store the values. This allows us to easily theme the interface by simply changing the values
 of these variables.
+
+The following rules have to use ems, and thus you need to use the emCalc() function to convert pixels to ems:
+
+* margin
+* padding (unless you're offsetting a background image, then just use pixels)
+* font-size

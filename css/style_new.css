@@ -2678,7 +2678,7 @@ h1.badge {
 
 /* line 21, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .header {
-  height: 70px;
+  min-height: 70px;
 }
 /* line 23, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .header .logo {
@@ -2697,7 +2697,7 @@ h1.badge {
   border-width: 1px;
   border-color: #b5cde3;
   margin-bottom: 1.25em;
-  padding: 0 10px 5px 10px;
+  padding: 0 0.625em 0.3125em 0.625em;
   background: #dae6f1;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
@@ -2740,31 +2740,115 @@ h1.badge {
 .user-panel h1.subheader, .user-panel h2.subheader, .user-panel h3.subheader, .user-panel h4.subheader, .user-panel h5.subheader, .user-panel h6.subheader {
   line-height: 1.4;
 }
-/* line 89, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 91, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation {
   margin-left: 0;
+  margin-bottom: 0.5em;
 }
-/* line 91, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 94, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation li {
   font-size: 0.8125em;
   margin: 0 0 0 0.25em;
 }
-/* line 95, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 98, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation a {
   background: #cdd9e3;
-  padding: 10px 5px 3px 5px;
+  padding: 0.5em 0.3125em 0.125em 0.3125em;
 }
-/* line 100, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 103, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .user-navigation a.selected, .user-panel .user-navigation a:hover, .user-panel .user-navigation a:focus {
   background: white;
 }
-/* line 105, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 108, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .user-id, .user-panel .user-firm {
   font-size: 0.8125em;
 }
-/* line 108, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+/* line 111, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
 .user-panel .row {
   clear: both;
+}
+
+/* line 138, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.patient-panel {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #ffe1a4;
+  margin-bottom: 1.25em;
+  padding: 0.5625em 0.625em;
+  background: #fff2d7;
+  -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background: url('../img/_elements/icons/patient/patient-id_small.png?1373641356'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/_elements/icons/patient/patient-id_small.png?1373641356'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/_elements/icons/patient/patient-id_small.png?1373641356'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/_elements/icons/patient/patient-id_small.png?1373641356'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-repeat: no-repeat, no-repeat;
+  background-position: 98% 2px, top;
+  border-color: #ffb212;
+  border-style: solid;
+  border-width: 0 2px 2px 2px;
+}
+/* line 44, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_panels.scss */
+.patient-panel > :first-child {
+  margin-top: 0;
+}
+/* line 45, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_panels.scss */
+.patient-panel > :last-child {
+  margin-bottom: 0;
+}
+/* line 50, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_panels.scss */
+.patient-panel h1, .patient-panel h2, .patient-panel h3, .patient-panel h4, .patient-panel h5, .patient-panel h6, .patient-panel p {
+  color: #333333;
+}
+/* line 54, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_panels.scss */
+.patient-panel h1, .patient-panel h2, .patient-panel h3, .patient-panel h4, .patient-panel h5, .patient-panel h6 {
+  line-height: 1;
+  margin-bottom: 0.625em;
+}
+/* line 56, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_panels.scss */
+.patient-panel h1.subheader, .patient-panel h2.subheader, .patient-panel h3.subheader, .patient-panel h4.subheader, .patient-panel h5.subheader, .patient-panel h6.subheader {
+  line-height: 1.4;
+}
+/* line 152, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.patient-panel .patient-details {
+  padding-bottom: 0.25em;
+}
+/* line 154, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.patient-panel .patient-details a {
+  color: black;
+}
+/* line 158, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.patient-panel .patient-surname {
+  font-size: 0.875em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+/* line 165, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.patient-panel .patient-name {
+  font-size: 0.8125em;
+}
+/* line 168, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.patient-panel .hospital-number, .patient-panel .nhs-number, .patient-panel .patient-summary-anchor {
+  font-size: 0.75em;
+}
+/* line 171, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_header.scss */
+.patient-panel .nhs-number {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #107ebd;
+  background-image: url('../img/_elements/icons/nhs_tiny.png?1373641356');
+  background-position: center left;
+  background-repeat: no-repeat;
+  color: white;
+  display: inline-block;
+  padding: 0.125em 0.25em 0.125em 33px;
 }
 
 /* line 43, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_footer.scss */
@@ -3101,4 +3185,11 @@ button, .button {
 /* line 41, /Volumes/Projects/OpenEyes/sass/new/foundation/components/_inline-lists.scss */
 .inline-list > li > * {
   display: block;
+}
+
+/* line 1, /Volumes/Projects/OpenEyes/sass/new/openeyes/components/_visibility.scss */
+.hide-text {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
 }
