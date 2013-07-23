@@ -3208,68 +3208,68 @@ button, .button {
 }
 
 /* line 19, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon {
+.icon-alerts {
   background: url('../img/sprites/_elements/icons/alerts-s2668ad2600.png') no-repeat;
   width: 17px;
   height: 17px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-booked_user {
+.icon-alerts-booked_user {
   background-position: 0 -68px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-comment {
+.icon-alerts-comment {
   background-position: 0 -187px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-confirmed {
+.icon-alerts-confirmed {
   background-position: 0 -17px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-consultant {
+.icon-alerts-consultant {
   background-position: 0 -170px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-female {
+.icon-alerts-female {
   background-position: 0 -51px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-female_trans {
+.icon-alerts-female_trans {
   background-position: 0 -119px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-help {
+.icon-alerts-help {
   background-position: 0 0;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-images {
+.icon-alerts-images {
   background-position: 0 -102px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-male {
+.icon-alerts-male {
   background-position: 0 -34px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-male_trans {
+.icon-alerts-male_trans {
   background-position: 0 -136px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-overnight {
+.icon-alerts-overnight {
   background-position: 0 -153px;
 }
 
 /* line 26, ../sass/new/openeyes/_mixins.scss */
-.alerts-icon-unconfirmed {
+.icon-alerts-unconfirmed {
   background-position: 0 -85px;
 }

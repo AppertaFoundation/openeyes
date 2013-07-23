@@ -16,6 +16,7 @@
 				</span>
 				451 380 5322
 			</div>
+			<span class="icon icon-alerts icon-alerts-female_trans">Female</span>
 		</div>
 		<div class="large-6 columns text-right patient-summary-anchor">
 			<a href="#">Patient Summary</a>

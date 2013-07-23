@@ -5,25 +5,28 @@
 
 // Alerts icons
 //
-// All the alerts icons.
+// All the alerts icons. Please note: you will have to add the base '.icon' class
+// as well as the '.icon-alerts' class to the HTML element class list to make
+// use of the following alerts icons.
 //
 // Markup:
-// <span class="icon alerts-icon {$modifiers}">Description</span>
+// <span class="icon icon-alerts {$modifiers}">Description</span>
 //
-// .alerts-icon-booked_user       - User
-// .alerts-icon-comment           - Comment
-// .alerts-icon-confirmed         - Confirmed
-// .alerts-icon-consultant        - Consultant
-// .alerts-icon-female            - Female
-// .alerts-icon-female_trans      - Female transparent
-// .alerts-icon-help              - Help
-// .alerts-icon-images            - Images
-// .alerts-icon-male              - Male
-// .alerts-icon-male_trans        - Make transparent
-// .alerts-icon-overnight         - Overnight
-// .alerts-icon-unconfirmed       - Unconfirmed
+// .icon-alerts                   - The base icon-alerts class
+// .icon-alerts-booked_user       - User
+// .icon-alerts-comment           - Comment
+// .icon-alerts-confirmed         - Confirmed
+// .icon-alerts-consultant        - Consultant
+// .icon-alerts-female            - Female
+// .icon-alerts-female_trans      - Female transparent
+// .icon-alerts-help              - Help
+// .icon-alerts-images            - Images
+// .icon-alerts-male              - Male
+// .icon-alerts-male_trans        - Make transparent
+// .icon-alerts-overnight         - Overnight
+// .icon-alerts-unconfirmed       - Unconfirmed
 //
 // Styleguide 12.1
 
 // Alerts icons
-@include sprite("_elements/icons/alerts/*.png", "alerts-icon", 17px, 17px);
+@include sprite("_elements/icons/alerts/*.png", "icon-alerts", 17px, 17px);
