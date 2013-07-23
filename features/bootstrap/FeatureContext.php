@@ -11,8 +11,6 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\YiiExtension\Context\YiiAwareContextInterface;
 use Behat\Mink\Driver\Selenium2Driver;
 
-use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
-
 class FeatureContext extends MinkContext implements YiiAwareContextInterface
 
 {
