@@ -15,7 +15,7 @@
 // Header variables
 $oe-header-height: 70px !default;
 $oe-header-logo-bg-image: image-url("_structure/openeyes.png") !default;
-$oe-header-logo-width: 240px !default;
+$oe-header-logo-width: 210px !default;
 $oe-header-logo-height: 70px !default;
 
 .header {
@@ -23,7 +23,8 @@ $oe-header-logo-height: 70px !default;
     .logo {
         @include hide-text;
         background: $oe-header-logo-bg-image no-repeat;
-        width: $oe-header-logo-width;
+        background-size: 100%;
+        max-width: $oe-header-logo-width;
         height: $oe-header-logo-height;
         margin-left: -1 * $column-gutter / 2;
     }
