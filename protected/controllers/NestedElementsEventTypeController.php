@@ -195,6 +195,8 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 				'element' => $element,
 				'data' => null,
 				'form' => $form,
+				'child' => null,
+				'previous_parent_id' => $previous_id,
 			), false, true);
 		} catch (Exception $e) {
 			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
@@ -207,6 +209,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 				'data' => null,
 				'form' => $form,
 				'child' => ($element_type->parent_element_type_id > 0),
+				'previous_parent_id' => $previous_id,
 			), false, true);
 		}
 	}
@@ -250,7 +253,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 	 * @param Event $event
 	 * @return array
 	 */
-	public function getChildDefaultElements($parent_class, $action, $event_type_id = false, $event = false)
+	public function getChildDefaultElements($parent_class, $action, $event_type_id = false, $event = false, $previous_parent_id = null)
 	{
 		// determine current status to allow us to get existing child elements if appropriate
 		if (!$event && isset($this->event)) {
@@ -266,7 +269,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 
 		/** @var $parent ElementType */
 		if ($event) {
-			$parent = ElementType::model()->find(array(
+			$parent_type = ElementType::model()->find(array(
 					'condition' => 'class_name = :name and event_type_id = :eid',
 					'params' => array(
 							':name' => $parent_class,
@@ -274,7 +277,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 					),
 			));
 		} else {
-			$parent = ElementType::model()->find(array(
+			$parent_type = ElementType::model()->find(array(
 					'condition' => 'class_name = :name',
 					'params' => array(
 							':name'=>$parent_class,
@@ -287,13 +290,32 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 		if (empty($_POST)) {
 			// fresh render
 			if (isset($event->event_type_id)) {
-				$elements = $this->getSavedElements($action, $event, $parent);
+				$elements = $this->getSavedElements($action, $event, $parent_type);
+			} else if ($previous_parent_id &&
+					$parent = $parent_class::model()->findByPk($previous_parent_id)) {
+				$criteria = new CDbCriteria;
+				$criteria->compare('event_type_id',$event_type_id);
+				$criteria->order = 'display_order asc';
+				$criteria->compare('parent_element_type_id', $parent_type->id);
+				
+				$elements = array();
+				foreach (ElementType::model()->findAll($criteria) as $element_type) {
+					$pcrit = new CDBCriteria;
+					$pcrit->compare('event_id', $parent->event_id);
+					$element_class = $element_type->class_name;
+					if ($previous_element = $element_class::model()->find($pcrit)) {
+						$element = new $element_class;
+						$element->loadFromExisting($previous_element);
+						$elements[] = $element;
+					}
+				}
+				return $elements;
 			} else {
 				// just get the configured child elements for this parent
-				$elements = $this->getCleanChildDefaultElements($parent, $event_type_id);
+				$elements = $this->getCleanChildDefaultElements($parent_type, $event_type_id);
 			}
 		} else {
-			$elements = $this->getPostedElements($parent);
+			$elements = $this->getPostedElements($parent_type);
 		}
 		return $elements;
 	}
@@ -422,13 +444,14 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 	/*
 	 * returns the optional child elements
 	 */
-	public function getChildOptionalElements($parent_class, $action)
+	public function getChildOptionalElements($parent_class, $action, $previous_parent_id = null)
 	{
 		$elements = array();
 		$default_element_types = array();
-		foreach ($this->getChildDefaultElements($parent_class, $action) as $default_element) {
+		foreach ($this->getChildDefaultElements($parent_class, $action, false, false, $previous_parent_id) as $default_element) {
 			$default_element_types[] = get_class($default_element);
 		}
+		
 		if ($event = $this->event) {
 			$parent = ElementType::model()->find( array('condition' => 'class_name = :name and event_type_id = :eid', 'params' => array(':name'=>$parent_class, ':eid' => $event->event_type_id)) );
 		} else {
@@ -491,9 +514,9 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 	/*
 	 * render the default child elements for the given parent element
 	*/
-	public function renderChildDefaultElements($parent, $action, $form = false, $data = false )
+	public function renderChildDefaultElements($parent, $action, $form = false, $data = false, $previous_parent_id = null )
 	{
-		foreach ($this->getChildDefaultElements(get_class($parent), $action) as $child ) {
+		foreach ($this->getChildDefaultElements(get_class($parent), $action, false, false, $previous_parent_id) as $child ) {
 			if ($action == 'create' && empty($_POST)) {
 				$child->setDefaultOptions();
 			} elseif ($action == 'ElementForm') {
@@ -537,9 +560,9 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 	 * render the optional child elements for the given parent
 	 *
 	 */
-	public function renderChildOptionalElements($parent, $action, $form = false, $data = false)
+	public function renderChildOptionalElements($parent, $action, $form = false, $data = false, $previous_parent_id = null)
 	{
-		foreach ($this->getChildOptionalElements(get_class($parent), $action) as $element) {
+		foreach ($this->getChildOptionalElements(get_class($parent), $action, $previous_parent_id) as $element) {
 			$this->renderPartial(
 					'_optional_element',
 					array('element' => $element, 'data' => $data, 'form' => $form)

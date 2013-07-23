@@ -315,7 +315,6 @@ button.mini span.button-span,
 .event-action.primary span { display:block; height:24px; line-height:23px; } 
 button.mini span.button-span.icon-only	{ 
 	padding:0 4px;
-	width: 18px;
 }
 
 /* nano - just replace 'tall','grande' or 'venti' in button class */

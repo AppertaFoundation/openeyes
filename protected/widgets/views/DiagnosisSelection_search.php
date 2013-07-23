@@ -18,7 +18,7 @@
  */
 ?>
 		<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -', 'style' => 'margin-bottom:10px;') : $dropdownOptions) : ""?> 
-		<button class="classy blue mini" style="vertical-align: middle"><span class="button-span blue icon-only search" id="<?php echo $class . "_" . $field . "_search"?>"> </span></button>
+		<button class="classy blue mini" style="vertical-align: middle"><span class="button-span blue icon-only search" id="<?php echo $class . "_" . $field . "_search"?>" width="18px"> </span></button>
 		<br />
 		<?php
 		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
