@@ -162,7 +162,7 @@ class Site extends BaseActiveRecord
 
 		$result = array();
 
-		foreach (Site::model()->findAll($criteria) as $site) {
+		foreach (Site::model()->with('institution')->findAll($criteria) as $site) {
 			$institution = $site->institution;
 
 			$site_name = '';

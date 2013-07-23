@@ -82,6 +82,7 @@ class Firm extends BaseActiveRecord
 		return array(
 			'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
 			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'firm_id'),
+			'userFirmRights' => array(self::HAS_MANY, 'UserFirmRights', 'firm_id'),
 			'letterPhrases' => array(self::HAS_MANY, 'LetterPhrase', 'firm_id'),
 			'members' => array(self::MANY_MANY, 'User', 'firm_user_assignment(firm_id, user_id)'),
 		);

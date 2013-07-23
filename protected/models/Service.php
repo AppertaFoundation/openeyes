@@ -71,6 +71,7 @@ class Service extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'serviceSubspecialtyAssignments' => array(self::HAS_MANY, 'ServiceSubspecialtyAssignment', 'service_id'),
+			'userServiceRights' => array(self::HAS_MANY, 'UserServiceRight', 'service_id'),
 		);
 	}
 
