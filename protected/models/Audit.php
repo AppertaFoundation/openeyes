@@ -157,12 +157,15 @@ class Audit extends BaseActiveRecord
 				}
 			}
 
-			if (!$useragent = AuditUseragent::model()->find('name=?',array($_SERVER['HTTP_USER_AGENT']))) {
-				$useragent = new AuditUseragent;
-				$useragent->name = $_SERVER['HTTP_USER_AGENT'];
-				if (!$useragent->save()) {
-					throw new Exception("Unable to save user agent: ".print_r($useragent->getErrors(),true));
+			if (isset($_SERVER['HTTP_USER_AGENT'])) {
+				if (!$useragent = AuditUseragent::model()->find('name=?', array($_SERVER['HTTP_USER_AGENT']))) {
+					$useragent = new AuditUseragent;
+					$useragent->name = $_SERVER['HTTP_USER_AGENT'];
+					if (!$useragent->save()) {
+						throw new Exception("Unable to save user agent: ".print_r($useragent->getErrors(),true));
+					}
 				}
+				$this->useragent_id = $useragent->id;
 			}
 
 			if (!$server = AuditServer::model()->find('name=?',array($_SERVER['SERVER_NAME']))) {
@@ -174,7 +177,6 @@ class Audit extends BaseActiveRecord
 			}
 
 			$this->ipaddr_id = $ipaddr->id;
-			$this->useragent_id = $useragent->id;
 			$this->server_id = $server->id;
 			$this->request_uri = $_SERVER['REQUEST_URI'];
 
