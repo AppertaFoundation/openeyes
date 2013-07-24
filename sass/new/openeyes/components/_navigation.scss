@@ -13,3 +13,49 @@
 .side-nav {
     @include side-nav;
 }
+
+
+// User panel
+//
+// This panel contains the logged-in user information as well as the user-specific
+// application navigation.
+//
+// Markup:
+// <ul class="inline-list user-navigation right">
+//     <li><a href="#">Home</a></li>
+//     <li><a href="#">Theatre Diaries</a></li>
+//     <li><a href="#">Partial bookings waiting list</a></li>
+//     <li><a href="#">Logout</a></li>
+// </ul>
+//
+// Styleguide 8.2
+
+// User panel navigation variables
+$oe-user-navigation-font-size: emCalc(13px) !default;
+$oe-user-navigation-item-margin: emCalc(4px) !default;
+$oe-user-navigation-anchor-bg-color: #cdd9e3 !default;
+$oe-user-navigation-anchor-padding: emCalc(8px) emCalc(5px) emCalc(2px) emCalc(5px) !default;
+$oe-user-navigation-anchor-hover-bg-color: white !default;
+$oe-user-navigation-anchor-selected-bg-color: #1e55c1 !default;
+$oe-user-navigation-anchor-selected-color: #fff !default;
+
+.user-navigation {
+    margin-left: 0;
+    margin-bottom: emCalc(8px);
+    li {
+        font-size: $oe-user-navigation-font-size;
+        margin: 0 0 0 $oe-user-navigation-item-margin;
+    }
+    a {
+        background: $oe-user-navigation-anchor-bg-color;
+        padding: $oe-user-navigation-anchor-padding;
+        &:hover,
+        &:focus {
+            background: $oe-user-navigation-anchor-hover-bg-color;
+        }
+        &.selected {
+            background: $oe-user-navigation-anchor-selected-bg-color;
+            color: $oe-user-navigation-anchor-selected-color;
+        }
+    }
+}

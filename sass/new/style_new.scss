@@ -131,18 +131,25 @@
 // Styleguide 3
 @import "openeyes/components/type";
 
+// Lists
+//
+// Global list styles.
+//
+// Styleguide 4
+@import "openeyes/components/lists";
+
 // Header
 //
 // Header styles
 //
-// Styleguide 4
+// Styleguide 5
 @import "openeyes/components/header";
 
 // Footer
 //
 // The footer contains basic copyright information and links to the help documentation.
 //
-// Styleguide 5
+// Styleguide 6
 @import "openeyes/components/footer";
 
 // Forms
@@ -151,36 +158,29 @@
 // Forms must have consistant layouts throughout the application. Form layouts should use the
 // grid system, no additional styling should be required to layout a form.
 //
-// Styleguide 6
+// Styleguide 7
 @import "openeyes/components/forms";
 
 // Buttons
 //
 // Global button styles.
 //
-// Styleguide 7
+// Styleguide 8
 @import "openeyes/components/buttons";
 
 // Navigation
 //
 // Global navigation styles.
 //
-// Styleguide 8
+// Styleguide 9
 @import "openeyes/components/navigation";
 
 // Alerts
 //
 // Global alert styles. Alerts are used to display various messages to the user.
 //
-// Styleguide 9
-@import "openeyes/components/alert-boxes";
-
-// Lists
-//
-// Global list styles.
-//
 // Styleguide 10
-@import "openeyes/components/lists";
+@import "openeyes/components/alert-boxes";
 
 // Visibility
 //

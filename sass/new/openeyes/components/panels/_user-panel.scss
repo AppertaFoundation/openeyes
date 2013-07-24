@@ -1,0 +1,62 @@
+// User panel
+//
+// This panel contains the logged-in user information as well as the user-specific
+// application navigation.
+//
+// Markup:
+// <div class="user-panel radius">
+//     <ul class="inline-list user-navigation right">
+//         <li><a href="#">Home</a></li>
+//         <li><a href="#">Theatre Diaries</a></li>
+//         <li><a href="#">Partial bookings waiting list</a></li>
+//         <li><a href="#">Logout</a></li>
+//     </ul>
+//     <div class="row">
+//         <div class="small-4 large-4 columns">
+//             <div class="user-id">
+//                 You are logged in as:
+//                 <div class="user-name"><strong>Enoch Root</strong></div>
+//             </div>
+//         </div>
+//         <div class="small-8 large-8 columns">
+//             <div class="user-firm text-right">
+//                 Site: <strong>City Road</strong>,
+//                 Firm: <strong>Barton Keith (Glaucoma)</strong>
+//                 (<a href="#">Change</a>)
+//             </div>
+//         </div>
+//     </div>
+// </div>
+//
+// Styleguide 13.2
+
+// User panel variables
+$oe-user-panel-font-size: emCalc(13px) !default;
+$oe-user-panel-bg-image: image-url("_elements/icons/user/idcard_bg.png") !default;
+$oe-user-panel-bg-repeat: no-repeat !default;
+$oe-user-panel-bg-position: left bottom !default;
+$oe-user-panel-bg-color: #dae6f1 !default;
+$oe-user-panel-padding: 0 emCalc(10px) emCalc(5px) emCalc(10px) !default;
+
+.user-panel {
+    @include clearfix;
+    @include panel($oe-user-panel-bg-color, $oe-user-panel-padding);
+    @include border-radius($global-radius);
+    background: {
+        image: $oe-user-panel-bg-image;
+        repeat: $oe-user-panel-bg-repeat;
+        position: $oe-user-panel-bg-position;
+    }
+    margin: 0;
+    @media #{$small} {
+        border-top: 0;
+        @include border-radius(0 0 $global-radius $global-radius);
+    }
+    .user-id, .user-firm {
+        font-size: $oe-user-panel-font-size;
+        min-height: $oe-user-panel-font-size * 2;
+    }
+    .row {
+        clear: both;
+    }
+}

@@ -8,20 +8,6 @@
     @include radius;
 }
 
-// Search panels
-//
-// Styleguide 13.2
-
-$oe-panel-search-examples-font-size: emCalc(13px);
-$oe-panel-search-padding: emCalc(15px) 0;
-.panel {
-    &.search-examples {
-        font-size: $oe-panel-search-examples-font-size;
-    }
-    &.search {
-        padding: $oe-panel-search-padding;
-        input, button {
-            margin: 0;
-        }
-    }
-}
+@import "panels/user-panel";
+@import "panels/patient-panel";
+@import "panels/search-panel";
