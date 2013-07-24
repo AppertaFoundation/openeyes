@@ -6,12 +6,12 @@
 <body>
 	<div class="container" role="main">
 
-		<? include 'components/header_logged_in_no_patient.php'; ?>
+		<? include 'components/header-logged-in-no-patient.php'; ?>
 
 		<div class="content">
 			<h1 class="badge">Search</h1>
 			<div class="row">
-				<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered columns">
+				<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
 					<div class="panel search-examples">
 						Find a patient by
 						<strong>Hospital Number</strong>,
@@ -22,13 +22,13 @@
 				</div>
 			</div>
 
-			<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered columns">
+			<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
 				<form class="form search panel">
 					<div class="row">
-						<div class="large-9 medium-8 small-7 columns">
+						<div class="large-9 medium-8 small-7 column">
 							<input type="text" id="search" placeholder="Enter search...">
 						</div>
-						<div class="large-3 medium-4 small-5 columns text-right">
+						<div class="large-3 medium-4 small-5 column text-right">
 							<button type="submit">
 								Search
 							</button>

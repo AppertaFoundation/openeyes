@@ -5,6 +5,6 @@
 		</div>
 	</div>
 	<div class="large-6 medium-8 columns">
-		<? include 'user_panel.php'; ?>
+		<? include 'user-panel.php'; ?>
 	</div>
 </header>

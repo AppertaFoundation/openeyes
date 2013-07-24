@@ -6,7 +6,7 @@
 <body>
 	<div class="container" role="main">
 
-		<? include 'components/header_logged_in.php'; ?>
+		<? include 'components/header-logged-in.php'; ?>
 
 		<div class="content">
 			<h1 class="badge">Page title</h1>

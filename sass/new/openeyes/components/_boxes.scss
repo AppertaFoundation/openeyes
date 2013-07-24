@@ -1,0 +1,5 @@
+.content-box {
+    background: #dae6f1;
+    @include border-radius($global-radius);
+    margin: 20px 0;
+}

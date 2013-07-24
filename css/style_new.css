@@ -1802,7 +1802,7 @@ p aside {
 /* line 181, ../sass/new/foundation/components/_type.scss */
 h1, h2, h3, h4, h5, h6 {
   font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-  font-weight: bold;
+  font-weight: normal;
   font-style: normal;
   color: #333333;
   text-rendering: optimizeLegibility;
@@ -1819,12 +1819,12 @@ h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
 
 /* line 198, ../sass/new/foundation/components/_type.scss */
 h1 {
-  font-size: 1.875em;
+  font-size: 0.875em;
 }
 
 /* line 199, ../sass/new/foundation/components/_type.scss */
 h2 {
-  font-size: 1.4375em;
+  font-size: 0.5625em;
 }
 
 /* line 200, ../sass/new/foundation/components/_type.scss */
@@ -2036,12 +2036,12 @@ blockquote p {
 
   /* line 367, ../sass/new/foundation/components/_type.scss */
   h1 {
-    font-size: 2.5em;
+    font-size: 1.5em;
   }
 
   /* line 368, ../sass/new/foundation/components/_type.scss */
   h2 {
-    font-size: 2.0625em;
+    font-size: 1.1875em;
   }
 
   /* line 369, ../sass/new/foundation/components/_type.scss */
@@ -2196,8 +2196,8 @@ form .row textarea.columns {
 /* Label Styles */
 /* line 264, ../sass/new/foundation/components/_forms.scss */
 label {
-  font-size: 0.875em;
-  color: #4d4d4d;
+  font-size: 0.8125em;
+  color: black;
   cursor: pointer;
   display: block;
   font-weight: 500;
@@ -2228,9 +2228,9 @@ label.inline {
   border-style: solid;
   border-width: 1px;
   overflow: hidden;
-  font-size: 0.875em;
-  height: 2.5em;
-  line-height: 2.5em;
+  font-size: 0.8125em;
+  height: 2.4375em;
+  line-height: 2.4375em;
 }
 
 /* Adjust padding, alignment and radius if pre/post element is a button */
@@ -2402,7 +2402,7 @@ textarea {
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   color: rgba(0, 0, 0, 0.75);
   display: block;
-  font-size: 0.875em;
+  font-size: 0.8125em;
   margin: 0 0 1.125em 0;
   padding: 0.5625em;
   height: 2.5em;
@@ -2844,6 +2844,7 @@ html, body {
 h1.badge {
   display: inline-block;
   font-size: 0.8125em;
+  font-weight: bold;
   margin: 0 0 0.625em 0;
   padding: 5px 15px 5px 55px;
   background: -webkit-gradient(linear, 0% 50%, 12 50%, color-stop(0%, #b4b0ae), color-stop(100%, #fffdea));
@@ -2883,6 +2884,79 @@ h1.badge {
 /* line 41, ../sass/new/foundation/components/_inline-lists.scss */
 .inline-list > li > * {
   display: block;
+}
+
+/* Tables */
+/* line 2, ../sass/new/openeyes/components/_tables.scss */
+table {
+  background: white;
+  margin-bottom: 1.25em;
+  border: solid 1px #dddddd;
+  min-width: 100%;
+}
+/* line 42, ../sass/new/foundation/components/_tables.scss */
+table thead,
+table tfoot {
+  background: whitesmoke;
+  font-weight: bold;
+}
+/* line 48, ../sass/new/foundation/components/_tables.scss */
+table thead tr th,
+table thead tr td,
+table tfoot tr th,
+table tfoot tr td {
+  padding: 0.5em 0.625em 0.625em;
+  font-size: 0.875em;
+  color: #222222;
+  text-align: left;
+}
+/* line 59, ../sass/new/foundation/components/_tables.scss */
+table tr th,
+table tr td {
+  padding: 0.5625em 0.625em;
+  font-size: 0.875em;
+  color: #222222;
+}
+/* line 67, ../sass/new/foundation/components/_tables.scss */
+table tr.even, table tr.alt, table tr:nth-of-type(even) {
+  background: #f9f9f9;
+}
+/* line 74, ../sass/new/foundation/components/_tables.scss */
+table thead tr th,
+table tfoot tr th,
+table tbody tr td,
+table tr td,
+table tfoot tr td {
+  display: table-cell;
+  line-height: 1.125em;
+}
+/* line 21, ../sass/new/openeyes/components/_tables.scss */
+table input[type="text"],
+table input[type="password"],
+table input[type="date"],
+table input[type="datetime"],
+table input[type="datetime-local"],
+table input[type="month"],
+table input[type="week"],
+table input[type="email"],
+table input[type="number"],
+table input[type="search"],
+table input[type="tel"],
+table input[type="time"],
+table input[type="url"],
+table textarea,
+table select,
+table button,
+table .button {
+  margin: 0;
+}
+/* line 24, ../sass/new/openeyes/components/_tables.scss */
+table th {
+  text-align: left;
+}
+/* line 27, ../sass/new/openeyes/components/_tables.scss */
+table tfoot {
+  font-weight: normal;
 }
 
 /* line 22, ../sass/new/openeyes/components/_header.scss */
@@ -3016,12 +3090,16 @@ h1.badge {
   margin: 50px auto 100px auto;
   max-width: 488px;
 }
-/* line 60, ../sass/new/openeyes/components/_forms.scss */
+/* line 59, ../sass/new/openeyes/components/_forms.scss */
+.form.login label {
+  font-size: 0.9375em;
+}
+/* line 63, ../sass/new/openeyes/components/_forms.scss */
 .form [type=submit] {
   margin: 0;
 }
 
-/* line 78, ../sass/new/openeyes/components/_forms.scss */
+/* line 81, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"],
 input[type="password"],
 input[type="date"],
@@ -3042,8 +3120,26 @@ textarea {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
+/* line 83, ../sass/new/openeyes/components/_forms.scss */
+input[type="text"].small,
+input[type="password"].small,
+input[type="date"].small,
+input[type="datetime"].small,
+input[type="datetime-local"].small,
+input[type="month"].small,
+input[type="week"].small,
+input[type="email"].small,
+input[type="number"].small,
+input[type="search"].small,
+input[type="tel"].small,
+input[type="time"].small,
+input[type="url"].small,
+textarea.small {
+  padding: 0.1875em 0.25em;
+  height: auto;
+}
 
-/* line 39, ../sass/new/openeyes/components/_buttons.scss */
+/* line 58, ../sass/new/openeyes/components/_buttons.scss */
 button, .button {
   border-style: solid;
   border-width: 1px;
@@ -3056,12 +3152,10 @@ button, .button {
   text-decoration: none;
   text-align: center;
   display: inline-block;
-  padding-top: 0.5em;
-  padding-right: 1em;
-  padding-bottom: 0.5625em;
-  padding-left: 1em;
-  font-size: 1em;
   -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
   border-radius: 4px;
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #107be9), color-stop(100%, #1469bf));
   background: -webkit-linear-gradient(#107be9, #1469bf);
@@ -3074,45 +3168,77 @@ button, .button {
   border: 0;
   border-bottom: 2px solid #105dae;
   color: white;
-  padding-left: 2.5em;
-  padding-right: 2.5em;
+  font-size: 1em;
+  padding: 0.5em 2.5em;
   text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
 }
-/* line 52, ../sass/new/openeyes/components/_buttons.scss */
+/* line 70, ../sass/new/openeyes/components/_buttons.scss */
 button:hover, button:focus, .button:hover, .button:focus {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #118afb), color-stop(100%, #1279e3));
   background: -webkit-linear-gradient(#118afb, #1279e3);
   background: -moz-linear-gradient(#118afb, #1279e3);
   background: -o-linear-gradient(#118afb, #1279e3);
   background: linear-gradient(#118afb, #1279e3);
-  border-bottom: 2px solid #1974d1;
+  border-color: #1974d1;
   color: white;
 }
-/* line 57, ../sass/new/openeyes/components/_buttons.scss */
+/* line 75, ../sass/new/openeyes/components/_buttons.scss */
 button:active, .button:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #145ea9), color-stop(100%, #104d8b));
   background: -webkit-linear-gradient(#145ea9, #104d8b);
   background: -moz-linear-gradient(#145ea9, #104d8b);
   background: -o-linear-gradient(#145ea9, #104d8b);
   background: linear-gradient(#145ea9, #104d8b);
-  border-bottom: 2px solid #0f467e;
+  border-color: #0f467e;
 }
-/* line 61, ../sass/new/openeyes/components/_buttons.scss */
+/* line 79, ../sass/new/openeyes/components/_buttons.scss */
 button.disabled, button[disabled], .button.disabled, .button[disabled] {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #aaaaaa), color-stop(100%, #999999));
   background: -webkit-linear-gradient(#aaaaaa, #999999);
   background: -moz-linear-gradient(#aaaaaa, #999999);
   background: -o-linear-gradient(#aaaaaa, #999999);
   background: linear-gradient(#aaaaaa, #999999);
-  border-bottom: 2px solid #999999;
+  border-color: #999999;
   text-shadow: none;
 }
-
-/* line 68, ../sass/new/openeyes/components/_buttons.scss */
-button, .button {
+/* line 84, ../sass/new/openeyes/components/_buttons.scss */
+button.small, .button.small {
   padding-top: 0.5625em;
-  padding-bottom: 0.5em;
-  -webkit-appearance: none;
+  padding-right: 1.125em;
+  padding-bottom: 0.625em;
+  padding-left: 1.125em;
+  font-size: 0.8125em;
+  padding: 0.3125em 1.25em;
+  font-size: 0.8125em;
+  letter-spacing: 1px;
+}
+/* line 90, ../sass/new/openeyes/components/_buttons.scss */
+button.secondary, .button.secondary {
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #43a844), color-stop(100%, #55a256));
+  background: -webkit-linear-gradient(#43a844, #55a256);
+  background: -moz-linear-gradient(#43a844, #55a256);
+  background: -o-linear-gradient(#43a844, #55a256);
+  background: linear-gradient(#43a844, #55a256);
+  border-color: #3fa522;
+  text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
+}
+/* line 95, ../sass/new/openeyes/components/_buttons.scss */
+button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #48bd27), color-stop(100%, #3fa522));
+  background: -webkit-linear-gradient(#48bd27, #3fa522);
+  background: -moz-linear-gradient(#48bd27, #3fa522);
+  background: -o-linear-gradient(#48bd27, #3fa522);
+  background: linear-gradient(#48bd27, #3fa522);
+  border-color: #569b42;
+}
+/* line 99, ../sass/new/openeyes/components/_buttons.scss */
+button.secondary:active, .button.secondary:active {
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #458446), color-stop(100%, #396c39));
+  background: -webkit-linear-gradient(#458446, #396c39);
+  background: -moz-linear-gradient(#458446, #396c39);
+  background: -o-linear-gradient(#458446, #396c39);
+  background: linear-gradient(#458446, #396c39);
+  border-color: #336234;
 }
 
 /* line 13, ../sass/new/openeyes/components/_navigation.scss */
@@ -3224,6 +3350,17 @@ button, .button {
   background-color: #e9e9e9;
   border-color: #d0d0d0;
   color: black;
+}
+
+/* line 1, ../sass/new/openeyes/components/_boxes.scss */
+.content-box {
+  background: #dae6f1;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  margin: 20px 0;
 }
 
 /* line 1, ../sass/new/openeyes/components/_visibility.scss */
@@ -3515,4 +3652,49 @@ button, .button {
 /* line 13, ../sass/new/openeyes/components/panels/_search-panel.scss */
 .panel.search input, .panel.search button {
   margin: 0;
+}
+
+/* line 11, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+.filters-panel {
+  padding: 0;
+  border: 0;
+  margin: 0 0 0.625em 0;
+}
+/* line 15, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+.filters-panel button, .filters-panel .button {
+  margin: 0.25em 0.625em 0.375em 0;
+  vertical-align: middle;
+}
+/* line 18, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+.filters-panel button:last-child, .filters-panel .button:last-child {
+  margin-right: 0;
+}
+/* line 22, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+.filters-panel input, .filters-panel select, .filters-panel label {
+  margin: 0;
+  display: inline-block;
+}
+/* line 26, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+.filters-panel .filters-label {
+  font-size: 0.8125em;
+  font-weight: bold;
+  padding: 0.625em 0;
+}
+/* line 31, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+.filters-panel .panel-orange {
+  border: 0;
+  display: inline-block;
+  vertical-align: top;
+  margin-bottom: 0;
+  background-color: goldenrod;
+  padding: 0.3125em 0.625em;
+  margin-right: 0.3125em;
+}
+/* line 39, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+.filters-panel .panel-orange label {
+  font-weight: normal;
+}
+/* line 43, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+.filters-panel .panel-latest-letter {
+  width: 7.5em;
 }

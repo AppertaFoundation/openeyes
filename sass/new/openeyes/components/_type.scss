@@ -23,6 +23,7 @@ h1 {
     &.badge {
         display: inline-block;
         font-size: $oe-h1-badge-font-size;
+        font-weight: bold;
         margin: $oe-h1-small-margin;
         padding: $oe-h1-padding-top $oe-h1-padding-right $oe-h1-padding-bottom $oe-h1-padding-left;
         @include background(

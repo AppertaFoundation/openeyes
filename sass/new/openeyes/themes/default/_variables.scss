@@ -105,7 +105,7 @@ $total-columns: 12;
 // Heading font styles
 
 $header-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-$header-font-weight: bold;
+$header-font-weight: normal;
 $header-font-style: normal;
 $header-font-color: #333;
 $header-line-height: 1.4;
@@ -115,8 +115,8 @@ $header-text-rendering: optimizeLegibility;
 
 // Heading font sizes
 
-$h1-font-size: emCalc(40px);
-$h2-font-size: emCalc(33px);
+$h1-font-size: emCalc(24px);
+$h2-font-size: emCalc(19px);
 $h3-font-size: emCalc(23px);
 $h4-font-size: emCalc(19px);
 $h5-font-size: emCalc(15px);
@@ -229,13 +229,13 @@ $form-spacing: emCalc(18px);
 
 // We use these to style the labels in different ways
 $form-label-pointer: pointer;
-$form-label-font-size: emCalc(14px);
+$form-label-font-size: emCalc(13px);
 $form-label-font-weight: 500;
-$form-label-font-color: lighten(#000, 30%);
+$form-label-font-color: #000;
 $form-label-bottom-margin: emCalc(3px);
 $input-font-family: inherit;
 $input-font-color: rgba(0,0,0,0.75);
-$input-font-size: emCalc(14px);
+$input-font-size: emCalc(13px);
 $input-bg-color: #fff;
 $input-focus-bg-color: darken(#fff, 2%);
 $input-border-color: darken(#fff, 20%);

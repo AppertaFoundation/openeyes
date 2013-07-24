@@ -28,6 +28,7 @@
 // * Separate rules with new lines.
 // * Lower-case classnames, words separated by a hyphen. (eg .button-dropdown).
 // * Use 3 character hexadecimal notation where possible (eg #000).
+// * Use upper-case characters in hexadecimal notation (eg #3FA522).
 // * Avoid qualifying class names with type selectors (eg, don't do this: div.myclass).
 // * Use double-quotes, (eg: font-family: "Helvetica Neue").
 // * Never change the foundation component files.
@@ -138,6 +139,13 @@
 // Styleguide 4
 @import "openeyes/components/lists";
 
+// Tables
+//
+// Global table styles.
+//
+// Styleguide 5
+@import "openeyes/components/tables";
+
 // Header
 //
 // Header styles
@@ -181,6 +189,13 @@
 //
 // Styleguide 10
 @import "openeyes/components/alert-boxes";
+
+// Content boxes
+//
+// Container boxes that wrap around content.
+//
+// Styleguide 10
+@import "openeyes/components/boxes";
 
 // Visibility
 //
