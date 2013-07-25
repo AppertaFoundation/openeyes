@@ -2,7 +2,34 @@
 //
 // This panel contains the information for the current patient.
 //
-// Styleguide 13.3
+// Markup:
+// <div class="patient-panel radius">
+//     <div class="patient-details">
+//         <a href="#">
+//             <span class="patient-surname">COTTRELL,</span>
+//             <span class="patient-name">Kristen (48)</span>
+//         </a>
+//     </div>
+//     <div class="hospital-number">
+//         No. 1001982
+//     </div>
+//     <div class="row">
+//         <div class="large-6 small-6 columns">
+//             <div class="nhs-number">
+//                 <span class="hide-text">
+//                     NHS number:
+//                 </span>
+//                 451 380 5322
+//             </div>
+//             <span class="icon icon-alerts icon-alerts-female_trans">Female</span>
+//         </div>
+//         <div class="large-6 small-6 columns text-right patient-summary-anchor">
+//             <a href="#">Patient Summary</a>
+//         </div>
+//     </div>
+// </div>
+//
+// Styleguide 15.3
 
 $oe-header-patient-panel-bg-color-start: #FFF2D8 !default;
 $oe-header-patient-panel-bg-color-stop: #FFE6B3 !default;

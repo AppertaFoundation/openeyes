@@ -1,4 +1,30 @@
-/* Tables */
+// Generic tables
+//
+// Markup:
+// <table class="{$modifiers}">
+//     <thead>
+//         <tr>
+//             <th>Cell header 1</th>
+//             <th>Cell header 2</th>
+//         </tr>
+//     </thead>
+//     <tbody>
+//         <tr>
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
+//     </tbody>
+// </table>
+//
+// .grid             - Styles a table like a grid (with borders)
+//
+// Styleguide 5.1
+
+// Table vars
+$oe-table-header-cell-bg-color: #DDD !default;
+$oe-table-header-cell-font-size: emCalc(11px) !default;
+$oe-table-grid-cell-border-color: #CCC;
+$oe-table-cell-label-font-size: emCalc(16px);
 table {
     @include table;
     @include all-form-fields {
@@ -8,8 +34,8 @@ table {
     tr {
         th {
             text-align: left;
-            background: #ddd;
-            font-size: emCalc(11px);
+            background: $oe-table-header-cell-bg-color;
+            font-size: $oe-table-header-cell-font-size;
         }
     }
     tfoot {
@@ -17,11 +43,52 @@ table {
     }
     &.grid {
         th, td {
-            border-right: 1px solid #ccc;
+            border-right: 1px solid $oe-table-grid-cell-border-color;
         }
         th:last-child,
         td:last-child {
             border-right: none;
         }
+    }
+    // Form fields within tables
+    td, th {
+        label {
+            font-size: $oe-table-cell-label-font-size;
+        }
+    }
+}
+
+// Waiting list table
+//
+// Markup:
+// <table class="grid waiting-list">
+//     <thead>
+//         <tr>
+//             <th>Cell header 1</th>
+//             <th>Cell header 2</th>
+//         </tr>
+//     </thead>
+//     <tbody>
+//         <tr>
+//             <td class="{$modifiers}">Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
+//     </tbody>
+// </table>
+//
+// .send-another-reminder        - Adds a green state to the cell
+// .send-invitation-letter       - Adds a blue state to the cell
+//
+// Styleguide 5.1
+
+/* Waiting list table */
+$oe-table-waiting-list-send-another-reminder-bg-color: #B8EAA6 !default;
+$oe-table-waiting-list-send-invitation-letter-bg-color: #77B8D3 !default;
+.waiting-list {
+    .send-another-reminder {
+        background: $oe-table-waiting-list-send-another-reminder-bg-color;
+    }
+    .send-invitation-letter {
+        background: $oe-table-waiting-list-send-invitation-letter-bg-color;
     }
 }

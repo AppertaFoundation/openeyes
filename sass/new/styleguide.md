@@ -29,12 +29,12 @@ and thus it's important that we use these mixins wherever possible.
 
 Please be familiar with the following compass mixins:
 
-* @include background();
-* @include box-shadow();
-* @include image-url();
-* @include border-radius();
-* @include opacity();
-* @include box-sizing();
+* `@include background();`
+* `@include box-shadow();`
+* `@include image-url();`
+* `@include border-radius();`
+* `@include opacity();`
+* `@include box-sizing();`
 
 ## Commenting
 
@@ -46,17 +46,56 @@ Please be familiar with the following compass mixins:
 
 ## Conventions
 
+Conventions allow for code readability and maintainability. You must follow
+the following conventions if you want to make changes to the stylesheet.
+
 * When in doubt, follow the conventions you see used in the foundation files.
 * 4 spaces for indentation.
 * Components should be decoupled from each other.
+* Never use inline styles, this is a slippery slope and must be avoided.
+* Never use `!important`, this is a slippery slope and must be avoided.
 * Never use ID's for styling.
-* Separate rules with new lines.
-* Lower-case classnames, words separated by a hyphen. (eg .button-dropdown).
-* Use 3 character hexadecimal notation where possible (eg #000).
-* Use upper-case characters in hexadecimal notation (eg #3FA522).
-* Avoid qualifying class names with type selectors (eg, don't do this: div.myclass).
-* Use double-quotes, (eg: font-family: "Helvetica Neue").
+* Separate rules with new lines, eg:
+
+        .grid {
+            margin: 10em;
+            padding: 1em;
+        }
+
+* Lower-case classnames, words separated by a hyphen. (eg `.button-dropdown`).
+* Always suffix the class name with variations. For example, if you are creating
+  a .box class with a 'content' variation, the naming convention would be:
+  `.box-content` instead of `.content-box`
+* Always use semantic and descriptive classnames that describe the content, NOT the style.
+  (eg, `.button-primary`, not `.button-blue`)
+* Use 3 character hexadecimal notation where possible (eg `#000`).
+* Use upper-case characters in hexadecimal notation (eg `#3FA522`).
+* Avoid qualifying class names with type selectors (eg, don't do this: `div.myclass`).
+* Keep your selectors short! Try to keep your selectors one level deep. If you don't couple
+  components, this should be easy to achieve. For example, this is bad because you've coupled
+  the main-nav to the header, and you've nested your selector:
+
+        .header {
+            /* ... */
+        }
+        .header .main-nav {
+            /* ... */
+        }
+
+  This is good:
+
+        .header {
+            /* ... */
+        }
+        .main-nav {
+            /* ... */
+        }
+
+* Use double-quotes, (eg: `font-family: "Helvetica Neue"`).
 * Never change the foundation component files.
+* Use percentages instead of pixels or em units when adjusting the dimensions of
+  layout containers. This allows the layout to be responsive and adapt to different
+  screen sizes.
 * If using Sublime Text text editor, you can use the 'SassBeautify'
   plugin to format your Sass.
 
@@ -97,3 +136,12 @@ The following rules have to use ems, and thus you need to use the emCalc() funct
 * margin
 * padding (unless you're offsetting a background image, then just use pixels)
 * font-size
+
+## HTML formatting
+
+* Always provide a label for a form field
+* Feel free to wrap checkboxes or radios in a label, eg:
+
+        <label>
+            <input type="checkbox" />
+        </label>

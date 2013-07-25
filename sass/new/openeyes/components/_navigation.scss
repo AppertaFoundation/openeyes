@@ -9,26 +9,26 @@
 //     <li><a href="#">Link 3</a></li>
 // </ul>
 //
-// Styleguide 8.1
+// Styleguide 10.1
 .side-nav {
     @include side-nav;
 }
 
 
-// User panel
+// User navigation
 //
 // This panel contains the logged-in user information as well as the user-specific
 // application navigation.
 //
 // Markup:
-// <ul class="inline-list user-navigation right">
+// <ul class="inline-list user-navigation">
 //     <li><a href="#">Home</a></li>
 //     <li><a href="#">Theatre Diaries</a></li>
 //     <li><a href="#">Partial bookings waiting list</a></li>
 //     <li><a href="#">Logout</a></li>
 // </ul>
 //
-// Styleguide 8.2
+// Styleguide 10.2
 
 // User panel navigation variables
 $oe-user-navigation-font-size: emCalc(13px) !default;

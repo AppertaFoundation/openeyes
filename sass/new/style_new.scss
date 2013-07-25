@@ -25,9 +25,7 @@
 // Normalize
 @import "openeyes/normalize";
 
-// Foundation. Include all components, so that we have access to all the mixins,
-// but prevent foundation classes from being created by adjusting the
-// $include-html-*-classes variables in the _variables.scss file.
+// Foundation. Include all components so that we have access to all the mixins.
 @import
     "foundation/components/global",
     // "foundation/components/grid",
@@ -67,7 +65,7 @@
     "foundation/components/dropdown";
 
 // ===================================================================
-// OpenEyes styles
+// OpenEyes generic styles and components
 // ===================================================================
 
 // Global
@@ -109,14 +107,14 @@
 //
 // Header styles
 //
-// Styleguide 5
+// Styleguide 6
 @import "openeyes/components/header";
 
 // Footer
 //
 // The footer contains basic copyright information and links to the help documentation.
 //
-// Styleguide 6
+// Styleguide 7
 @import "openeyes/components/footer";
 
 // Forms
@@ -125,54 +123,54 @@
 // Forms must have consistant layouts throughout the application. Form layouts should use the
 // grid system, no additional styling should be required to layout a form.
 //
-// Styleguide 7
+// Styleguide 8
 @import "openeyes/components/forms";
 
 // Buttons
 //
 // Global button styles.
 //
-// Styleguide 8
+// Styleguide 9
 @import "openeyes/components/buttons";
 
 // Navigation
 //
 // Global navigation styles.
 //
-// Styleguide 9
+// Styleguide 10
 @import "openeyes/components/navigation";
 
 // Alerts
 //
 // Global alert styles. Alerts are used to display various messages to the user.
 //
-// Styleguide 10
+// Styleguide 11
 @import "openeyes/components/alert-boxes";
 
 // Content boxes
 //
 // Container boxes that wrap around content.
 //
-// Styleguide 10
+// Styleguide 12
 @import "openeyes/components/boxes";
 
 // Visibility
 //
 // Styles to control the visibility of elements.
 //
-// Styleguide 11
+// Styleguide 13
 @import "openeyes/components/visibility";
 
 // Icons
 //
 // Icons.
 //
-// Styleguide 12
+// Styleguide 14
 @import "openeyes/components/icons";
 
 // Panels
 //
 // A panel is component that enables you to outline sections of your page easily.
 //
-// Styleguide 13
+// Styleguide 15
 @import "openeyes/components/panels";

@@ -8,12 +8,16 @@
 // <input type="button" class="button {$modifiers}" value="input[type='button']"/>
 //
 // .primary             - Primary button style
-// :hover               - Highlight button state
-// :focus               - Focus button state
-// :active              - Pressed button state
-// .disabled            - Disabled state
+// :hover               - Primary button hover state
+// :focus               - Primary button focus state
+// :active              - Primary button pressed state
+// .disabled            - Disabled state for all buttons
+// .secondary           - Secondary button
+// .secondary:hover     - Secondary button hover state
+// .secondary:focus     - Secondary button focus state
+// .secondary:active    - Secondary button pressed state
 //
-// Styleguide 7.1
+// Styleguide 9.1
 
 // Primary button variables
 $oe-button-primary-bg-color-start: #107be9 !default;
@@ -81,12 +85,6 @@ button, .button {
         border-color: $oe-button-disabled-border-color;
         text-shadow: none;
     }
-    &.small {
-        @include button-size($padding: $button-sml);
-        padding: $oe-button-small-padding;
-        font-size: $oe-button-small-font-size;
-        letter-spacing: $oe-button-small-letter-spacing;
-    }
     &.secondary {
         @include background(linear-gradient($oe-button-secondary-bg-color-start, $oe-button-secondary-bg-color-end));
         border-color: $oe-button-secondary-border-color;
@@ -100,5 +98,24 @@ button, .button {
             @include background(linear-gradient($oe-button-secondary-active-bg-color-start, $oe-button-secondary-active-bg-color-end));
             border-color: $oe-button-secondary-active-border-color;
         }
+    }
+}
+
+// Button sizes
+//
+// Buttons can have different sizes.
+//
+// Markup:
+// <a href="#" class="button {$modifiers}">Link Button</a>
+//
+// .small               - Small button
+//
+// Styleguide 9.2
+button, .button {
+    &.small {
+        @include button-size($padding: $button-sml);
+        padding: $oe-button-small-padding;
+        font-size: $oe-button-small-font-size;
+        letter-spacing: $oe-button-small-letter-spacing;
     }
 }

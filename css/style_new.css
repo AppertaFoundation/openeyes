@@ -2886,8 +2886,7 @@ h1.badge {
   display: block;
 }
 
-/* Tables */
-/* line 2, ../sass/new/openeyes/components/_tables.scss */
+/* line 28, ../sass/new/openeyes/components/_tables.scss */
 table {
   background: #edf4f9;
   margin-bottom: 0;
@@ -2930,7 +2929,7 @@ table tfoot tr td {
   display: table-cell;
   line-height: 1.125em;
 }
-/* line 47, ../sass/new/openeyes/_mixins.scss */
+/* line 50, ../sass/new/openeyes/_mixins.scss */
 table input[type="text"],
 table input[type="password"],
 table input[type="date"],
@@ -2942,41 +2941,54 @@ table input[type="email"],
 table input[type="number"],
 table input[type="search"],
 table input[type="tel"],
+table input[type="file"],
+table input[type="radio"],
+table input[type="checkbox"],
 table input[type="time"],
 table input[type="url"],
 table textarea {
   margin: 0;
 }
-/* line 54, ../sass/new/openeyes/_mixins.scss */
+/* line 57, ../sass/new/openeyes/_mixins.scss */
 table button, table button {
   margin: 0;
 }
-/* line 61, ../sass/new/openeyes/_mixins.scss */
+/* line 64, ../sass/new/openeyes/_mixins.scss */
 table select {
   margin: 0;
 }
-/* line 9, ../sass/new/openeyes/components/_tables.scss */
+/* line 35, ../sass/new/openeyes/components/_tables.scss */
 table tr th {
   text-align: left;
-  background: #ddd;
+  background: #dddddd;
   font-size: 0.6875em;
 }
-/* line 15, ../sass/new/openeyes/components/_tables.scss */
+/* line 41, ../sass/new/openeyes/components/_tables.scss */
 table tfoot {
   font-weight: normal;
 }
-/* line 19, ../sass/new/openeyes/components/_tables.scss */
-table.grid th {
-  border-right: 1px solid #bbb;
+/* line 45, ../sass/new/openeyes/components/_tables.scss */
+table.grid th, table.grid td {
+  border-right: 1px solid #cccccc;
 }
-/* line 22, ../sass/new/openeyes/components/_tables.scss */
-table.grid td {
-  border-right: 1px solid #ccc;
-}
-/* line 26, ../sass/new/openeyes/components/_tables.scss */
+/* line 49, ../sass/new/openeyes/components/_tables.scss */
 table.grid th:last-child,
 table.grid td:last-child {
   border-right: none;
+}
+/* line 55, ../sass/new/openeyes/components/_tables.scss */
+table td label, table th label {
+  font-size: 1em;
+}
+
+/* Waiting list table */
+/* line 88, ../sass/new/openeyes/components/_tables.scss */
+.waiting-list .send-another-reminder {
+  background: #b8eaa6;
+}
+/* line 91, ../sass/new/openeyes/components/_tables.scss */
+.waiting-list .send-invitation-letter {
+  background: #77b8d3;
 }
 
 /* line 22, ../sass/new/openeyes/components/_header.scss */
@@ -3119,7 +3131,7 @@ table.grid td:last-child {
   margin: 0;
 }
 
-/* line 47, ../sass/new/openeyes/_mixins.scss */
+/* line 50, ../sass/new/openeyes/_mixins.scss */
 input[type="text"],
 input[type="password"],
 input[type="date"],
@@ -3131,6 +3143,9 @@ input[type="email"],
 input[type="number"],
 input[type="search"],
 input[type="tel"],
+input[type="file"],
+input[type="radio"],
+input[type="checkbox"],
 input[type="time"],
 input[type="url"],
 textarea {
@@ -3152,6 +3167,9 @@ input[type="email"].small,
 input[type="number"].small,
 input[type="search"].small,
 input[type="tel"].small,
+input[type="file"].small,
+input[type="radio"].small,
+input[type="checkbox"].small,
 input[type="time"].small,
 input[type="url"].small,
 textarea.small {
@@ -3159,7 +3177,7 @@ textarea.small {
   height: auto;
 }
 
-/* line 58, ../sass/new/openeyes/components/_buttons.scss */
+/* line 62, ../sass/new/openeyes/components/_buttons.scss */
 button, .button {
   border-style: solid;
   border-width: 1px;
@@ -3192,7 +3210,7 @@ button, .button {
   padding: 0.5em 2.5em;
   text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
 }
-/* line 70, ../sass/new/openeyes/components/_buttons.scss */
+/* line 74, ../sass/new/openeyes/components/_buttons.scss */
 button:hover, button:focus, .button:hover, .button:focus {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #118afb), color-stop(100%, #1279e3));
   background: -webkit-linear-gradient(#118afb, #1279e3);
@@ -3202,7 +3220,7 @@ button:hover, button:focus, .button:hover, .button:focus {
   border-color: #1974d1;
   color: white;
 }
-/* line 75, ../sass/new/openeyes/components/_buttons.scss */
+/* line 79, ../sass/new/openeyes/components/_buttons.scss */
 button:active, .button:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #145ea9), color-stop(100%, #104d8b));
   background: -webkit-linear-gradient(#145ea9, #104d8b);
@@ -3211,7 +3229,7 @@ button:active, .button:active {
   background: linear-gradient(#145ea9, #104d8b);
   border-color: #0f467e;
 }
-/* line 79, ../sass/new/openeyes/components/_buttons.scss */
+/* line 83, ../sass/new/openeyes/components/_buttons.scss */
 button.disabled, button[disabled], .button.disabled, .button[disabled] {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #aaaaaa), color-stop(100%, #999999));
   background: -webkit-linear-gradient(#aaaaaa, #999999);
@@ -3221,18 +3239,7 @@ button.disabled, button[disabled], .button.disabled, .button[disabled] {
   border-color: #999999;
   text-shadow: none;
 }
-/* line 84, ../sass/new/openeyes/components/_buttons.scss */
-button.small, .button.small {
-  padding-top: 0.5625em;
-  padding-right: 1.125em;
-  padding-bottom: 0.625em;
-  padding-left: 1.125em;
-  font-size: 0.8125em;
-  padding: 0.3125em 1.25em;
-  font-size: 0.8125em;
-  letter-spacing: 1px;
-}
-/* line 90, ../sass/new/openeyes/components/_buttons.scss */
+/* line 88, ../sass/new/openeyes/components/_buttons.scss */
 button.secondary, .button.secondary {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #43a844), color-stop(100%, #55a256));
   background: -webkit-linear-gradient(#43a844, #55a256);
@@ -3242,7 +3249,7 @@ button.secondary, .button.secondary {
   border-color: #3fa522;
   text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
 }
-/* line 95, ../sass/new/openeyes/components/_buttons.scss */
+/* line 93, ../sass/new/openeyes/components/_buttons.scss */
 button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #48bd27), color-stop(100%, #3fa522));
   background: -webkit-linear-gradient(#48bd27, #3fa522);
@@ -3251,7 +3258,7 @@ button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button
   background: linear-gradient(#48bd27, #3fa522);
   border-color: #569b42;
 }
-/* line 99, ../sass/new/openeyes/components/_buttons.scss */
+/* line 97, ../sass/new/openeyes/components/_buttons.scss */
 button.secondary:active, .button.secondary:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #458446), color-stop(100%, #396c39));
   background: -webkit-linear-gradient(#458446, #396c39);
@@ -3259,6 +3266,18 @@ button.secondary:active, .button.secondary:active {
   background: -o-linear-gradient(#458446, #396c39);
   background: linear-gradient(#458446, #396c39);
   border-color: #336234;
+}
+
+/* line 115, ../sass/new/openeyes/components/_buttons.scss */
+button.small, .button.small {
+  padding-top: 0.5625em;
+  padding-right: 1.125em;
+  padding-bottom: 0.625em;
+  padding-left: 1.125em;
+  font-size: 0.8125em;
+  padding: 0.3125em 1.25em;
+  font-size: 0.8125em;
+  letter-spacing: 1px;
 }
 
 /* line 13, ../sass/new/openeyes/components/_navigation.scss */
@@ -3373,14 +3392,23 @@ button.secondary:active, .button.secondary:active {
 }
 
 /* line 1, ../sass/new/openeyes/components/_boxes.scss */
-.content-box {
-  background: #dae6f1;
+.box, .box-content, .box-grid {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
   margin: 20px 0;
+}
+
+/* line 6, ../sass/new/openeyes/components/_boxes.scss */
+.box-content {
+  background: #dae6f1;
+}
+
+/* line 11, ../sass/new/openeyes/components/_boxes.scss */
+.box-grid {
+  background: #fff;
 }
 
 /* line 1, ../sass/new/openeyes/components/_visibility.scss */
@@ -3567,7 +3595,7 @@ button.secondary:active, .button.secondary:active {
   clear: both;
 }
 
-/* line 25, ../sass/new/openeyes/components/panels/_patient-panel.scss */
+/* line 52, ../sass/new/openeyes/components/panels/_patient-panel.scss */
 .patient-panel {
   border-style: solid;
   border-width: 1px;
@@ -3613,7 +3641,7 @@ button.secondary:active, .button.secondary:active {
   line-height: 1.4;
 }
 @media only screen and (min-width: 768px) {
-  /* line 25, ../sass/new/openeyes/components/panels/_patient-panel.scss */
+  /* line 52, ../sass/new/openeyes/components/panels/_patient-panel.scss */
   .patient-panel {
     border-width: 0 2px 2px 2px;
     -webkit-border-radius: 0 0 5px 5px;
@@ -3623,29 +3651,29 @@ button.secondary:active, .button.secondary:active {
     border-radius: 0 0 5px 5px;
   }
 }
-/* line 42, ../sass/new/openeyes/components/panels/_patient-panel.scss */
+/* line 69, ../sass/new/openeyes/components/panels/_patient-panel.scss */
 .patient-panel .patient-details {
   padding-bottom: 0.25em;
 }
-/* line 44, ../sass/new/openeyes/components/panels/_patient-panel.scss */
+/* line 71, ../sass/new/openeyes/components/panels/_patient-panel.scss */
 .patient-panel .patient-details a {
   color: black;
 }
-/* line 48, ../sass/new/openeyes/components/panels/_patient-panel.scss */
+/* line 75, ../sass/new/openeyes/components/panels/_patient-panel.scss */
 .patient-panel .patient-surname {
   font-size: 0.875em;
   font-weight: bold;
   text-transform: uppercase;
 }
-/* line 55, ../sass/new/openeyes/components/panels/_patient-panel.scss */
+/* line 82, ../sass/new/openeyes/components/panels/_patient-panel.scss */
 .patient-panel .patient-name {
   font-size: 0.8125em;
 }
-/* line 58, ../sass/new/openeyes/components/panels/_patient-panel.scss */
+/* line 85, ../sass/new/openeyes/components/panels/_patient-panel.scss */
 .patient-panel .hospital-number, .patient-panel .nhs-number, .patient-panel .patient-summary-anchor {
   font-size: 0.75em;
 }
-/* line 61, ../sass/new/openeyes/components/panels/_patient-panel.scss */
+/* line 88, ../sass/new/openeyes/components/panels/_patient-panel.scss */
 .patient-panel .nhs-number {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -3674,33 +3702,33 @@ button.secondary:active, .button.secondary:active {
   margin: 0;
 }
 
-/* line 11, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+/* line 14, ../sass/new/openeyes/components/panels/_filters-panel.scss */
 .filters-panel {
   padding: 0;
   border: 0;
   margin: 0 0 0.625em 0;
 }
-/* line 15, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+/* line 18, ../sass/new/openeyes/components/panels/_filters-panel.scss */
 .filters-panel button, .filters-panel .button {
   margin: 0.25em 0.625em 0.375em 0;
   vertical-align: middle;
 }
-/* line 18, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+/* line 21, ../sass/new/openeyes/components/panels/_filters-panel.scss */
 .filters-panel button:last-child, .filters-panel .button:last-child {
   margin-right: 0;
 }
-/* line 22, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+/* line 25, ../sass/new/openeyes/components/panels/_filters-panel.scss */
 .filters-panel input, .filters-panel select, .filters-panel label {
   margin: 0;
   display: inline-block;
 }
-/* line 26, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+/* line 29, ../sass/new/openeyes/components/panels/_filters-panel.scss */
 .filters-panel .filters-label {
   font-size: 0.8125em;
   font-weight: bold;
   padding: 0.625em 0;
 }
-/* line 31, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+/* line 34, ../sass/new/openeyes/components/panels/_filters-panel.scss */
 .filters-panel .panel-orange {
   border: 0;
   display: inline-block;
@@ -3710,11 +3738,11 @@ button.secondary:active, .button.secondary:active {
   padding: 0.3125em 0.625em;
   margin-right: 0.3125em;
 }
-/* line 39, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+/* line 42, ../sass/new/openeyes/components/panels/_filters-panel.scss */
 .filters-panel .panel-orange label {
   font-weight: normal;
 }
-/* line 43, ../sass/new/openeyes/components/panels/_filters-panel.scss */
+/* line 46, ../sass/new/openeyes/components/panels/_filters-panel.scss */
 .filters-panel .panel-latest-letter {
   width: 7.5em;
 }
