@@ -2811,7 +2811,7 @@ html, body {
   *zoom: 1;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1374490880') 0 0 no-repeat;
+  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1374757178') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
@@ -2889,8 +2889,8 @@ h1.badge {
 /* Tables */
 /* line 2, ../sass/new/openeyes/components/_tables.scss */
 table {
-  background: white;
-  margin-bottom: 1.25em;
+  background: #edf4f9;
+  margin-bottom: 0;
   border: solid 1px #dddddd;
   min-width: 100%;
 }
@@ -2919,7 +2919,7 @@ table tr td {
 }
 /* line 67, ../sass/new/foundation/components/_tables.scss */
 table tr.even, table tr.alt, table tr:nth-of-type(even) {
-  background: #f9f9f9;
+  background: #e1eef9;
 }
 /* line 74, ../sass/new/foundation/components/_tables.scss */
 table thead tr th,
@@ -2930,7 +2930,7 @@ table tfoot tr td {
   display: table-cell;
   line-height: 1.125em;
 }
-/* line 21, ../sass/new/openeyes/components/_tables.scss */
+/* line 47, ../sass/new/openeyes/_mixins.scss */
 table input[type="text"],
 table input[type="password"],
 table input[type="date"],
@@ -2944,19 +2944,39 @@ table input[type="search"],
 table input[type="tel"],
 table input[type="time"],
 table input[type="url"],
-table textarea,
-table select,
-table button,
-table .button {
+table textarea {
   margin: 0;
 }
-/* line 24, ../sass/new/openeyes/components/_tables.scss */
-table th {
-  text-align: left;
+/* line 54, ../sass/new/openeyes/_mixins.scss */
+table button, table button {
+  margin: 0;
 }
-/* line 27, ../sass/new/openeyes/components/_tables.scss */
+/* line 61, ../sass/new/openeyes/_mixins.scss */
+table select {
+  margin: 0;
+}
+/* line 9, ../sass/new/openeyes/components/_tables.scss */
+table tr th {
+  text-align: left;
+  background: #ddd;
+  font-size: 0.6875em;
+}
+/* line 15, ../sass/new/openeyes/components/_tables.scss */
 table tfoot {
   font-weight: normal;
+}
+/* line 19, ../sass/new/openeyes/components/_tables.scss */
+table.grid th {
+  border-right: 1px solid #bbb;
+}
+/* line 22, ../sass/new/openeyes/components/_tables.scss */
+table.grid td {
+  border-right: 1px solid #ccc;
+}
+/* line 26, ../sass/new/openeyes/components/_tables.scss */
+table.grid th:last-child,
+table.grid td:last-child {
+  border-right: none;
 }
 
 /* line 22, ../sass/new/openeyes/components/_header.scss */
@@ -2974,7 +2994,7 @@ table tfoot {
 .header .logo {
   overflow: hidden;
   text-indent: -9999px;
-  background: url('../img/_structure/openeyes.png?1374590757') no-repeat;
+  background: url('../img/_structure/openeyes.png?1374757178') no-repeat;
   background-size: 100%;
   max-width: 210px;
   height: 70px;
@@ -3099,7 +3119,7 @@ table tfoot {
   margin: 0;
 }
 
-/* line 81, ../sass/new/openeyes/components/_forms.scss */
+/* line 47, ../sass/new/openeyes/_mixins.scss */
 input[type="text"],
 input[type="password"],
 input[type="date"],
@@ -3120,7 +3140,7 @@ textarea {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 83, ../sass/new/openeyes/components/_forms.scss */
+/* line 70, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small,
 input[type="password"].small,
 input[type="date"].small,

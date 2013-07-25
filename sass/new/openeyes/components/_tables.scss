@@ -1,30 +1,30 @@
 /* Tables */
 table {
     @include table;
-    min-width: 100%;
-    input[type="text"],
-    input[type="password"],
-    input[type="date"],
-    input[type="datetime"],
-    input[type="datetime-local"],
-    input[type="month"],
-    input[type="week"],
-    input[type="email"],
-    input[type="number"],
-    input[type="search"],
-    input[type="tel"],
-    input[type="time"],
-    input[type="url"],
-    textarea,
-    select,
-    button,
-    .button {
+    @include all-form-fields {
         margin: 0;
     }
-    th {
-        text-align: left;
+    min-width: 100%;
+    tr {
+        th {
+            text-align: left;
+            background: #ddd;
+            font-size: emCalc(11px);
+        }
     }
     tfoot {
         font-weight: normal;
+    }
+    &.grid {
+        th {
+            border-right: 1px solid #bbb;
+        }
+        td {
+            border-right: 1px solid #ccc;
+        }
+        th:last-child,
+        td:last-child {
+            border-right: none;
+        }
     }
 }
