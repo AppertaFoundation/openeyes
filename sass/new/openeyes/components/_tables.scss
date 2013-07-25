@@ -16,10 +16,7 @@ table {
         font-weight: normal;
     }
     &.grid {
-        th {
-            border-right: 1px solid #bbb;
-        }
-        td {
+        th, td {
             border-right: 1px solid #ccc;
         }
         th:last-child,

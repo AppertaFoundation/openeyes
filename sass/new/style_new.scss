@@ -1,49 +1,8 @@
 // Welcome to the OpenEyes core stylesheet.
 //
-// ===================================================================
-// Overview
-// ===================================================================
-//
-// Most elements used throughout the system will be defined in this core stylesheet.
-// There should be few reasons to override these styles, and if we find we are doing so,
-// then we should try make the core styles more generic and adapatable rather than
-// overriding them in the module stylesheets.
-//
-// ===================================================================
-// Commenting
-// ===================================================================
-// * Double-slash (Sass) comments will be removed in the compiled CSS.
-// * Slash-star (CSS) comments will not be removed in the compiled CSS.
-// * Use KSS style comments! The living styleguide is dependent on the correct
-//   format of comments. (See http://warpspire.com/kss/)
-// * Try to keep comments to 80 chars.
-//
-// ===================================================================
-// Conventions
-// ===================================================================
-// * When in doubt, follow the conventions you see used in the foundation files.
-// * 4 spaces for indentation.
-// * Components should be decoupled from each other.
-// * Never use ID's for styling.
-// * Separate rules with new lines.
-// * Lower-case classnames, words separated by a hyphen. (eg .button-dropdown).
-// * Use 3 character hexadecimal notation where possible (eg #000).
-// * Use upper-case characters in hexadecimal notation (eg #3FA522).
-// * Avoid qualifying class names with type selectors (eg, don't do this: div.myclass).
-// * Use double-quotes, (eg: font-family: "Helvetica Neue").
-// * Never change the foundation component files.
-// * If using Sublime Text text editor, you can use the 'SassBeautify'
-//   plugin to format your Sass.
-//
-// ===================================================================
-// Variables
-// ===================================================================
-// * Use variables for all values.
-// * To avoid conlicts with foundation variables, we have to namespace our variables,
-//   thus you must prefix the variable names with 'oe-'.
-// * Add default variables values in the component file, and copy those variables
-//   into the _variables file. This allows use to create different themes in the future
-//   by simply using a different _variables file.
+// Before even thinking of touching this stylesheet, you must read the styleguide
+// overview. The styleguide contains lots of documentation regardingconventions,
+// comments and general approach.
 
 // ===================================================================
 // Framework setup
