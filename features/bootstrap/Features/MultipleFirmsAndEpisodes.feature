@@ -24,8 +24,8 @@ Feature: Create an Episode then Change Site and Firm and create another Episode
 
 
   Examples:
-    | environment | username | password | site    | firm                             | last   | first  |
-    | master      | admin    | admin    | Example | Example Firm (Example Specialty) | Coffin,| Violet |
+    | environment | username | password | site    | firm                     | last   | first  |
+    | master      | admin    | admin    | Queens  | Anderson Firm (Cataract) | Coffin,| Violet |
 
 
   # Site ID's:
