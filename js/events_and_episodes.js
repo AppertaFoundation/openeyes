@@ -81,7 +81,7 @@ $(document).ready(function(){
 		if ($(this).val() != '') {
 			var target = $('#' + $(this).attr('id').replace(/^dropDownTextSelection_/,''));
 			var currentVal = target.val();
-			
+
 			if($(this).hasClass('delimited')) {
 				var newText = $(this).val();
 			} else {
@@ -99,14 +99,14 @@ $(document).ready(function(){
 			} else if ($(this).hasClass('delimited') && currentVal.slice(-1) != ' ') {
 				newText = ' ' + newText;
 			}
-			
+
 			target.val(currentVal + newText);
 			target.trigger('autosize');
 
 			$(this).val('');
 		}
 	});
-	
+
 });
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
@@ -173,12 +173,12 @@ WidgetSlider.prototype = {
 						dp += '0';
 						val += '0';
 					}
-					
+
 					while (dp.length > this.force_dp) {
 						dp = dp.replace(/.$/,'');
 						val = val.replace(/.$/,'');
 					}
-				} 
+				}
 			}
 
 			if (this.prefix_positive && parseFloat(val) >0) {
