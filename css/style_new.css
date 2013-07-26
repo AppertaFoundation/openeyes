@@ -1829,12 +1829,12 @@ h2 {
 
 /* line 200, ../sass/new/foundation/components/_type.scss */
 h3 {
-  font-size: 1.125em;
+  font-size: 0.75em;
 }
 
 /* line 201, ../sass/new/foundation/components/_type.scss */
 h4 {
-  font-size: 0.875em;
+  font-size: 0.6875em;
 }
 
 /* line 202, ../sass/new/foundation/components/_type.scss */
@@ -2046,12 +2046,12 @@ blockquote p {
 
   /* line 369, ../sass/new/foundation/components/_type.scss */
   h3 {
-    font-size: 1.4375em;
+    font-size: 1.0625em;
   }
 
   /* line 370, ../sass/new/foundation/components/_type.scss */
   h4 {
-    font-size: 1.1875em;
+    font-size: 1em;
   }
 }
 /*
@@ -2886,7 +2886,7 @@ h1.badge {
   display: block;
 }
 
-/* line 28, ../sass/new/openeyes/components/_tables.scss */
+/* line 29, ../sass/new/openeyes/components/_tables.scss */
 table {
   background: #edf4f9;
   margin-bottom: 0;
@@ -2957,38 +2957,50 @@ table button, table button {
 table select {
   margin: 0;
 }
-/* line 35, ../sass/new/openeyes/components/_tables.scss */
+/* line 36, ../sass/new/openeyes/components/_tables.scss */
 table tr th {
   text-align: left;
   background: #dddddd;
   font-size: 0.6875em;
 }
 /* line 41, ../sass/new/openeyes/components/_tables.scss */
+table tr td {
+  font-size: 0.8125em;
+}
+/* line 45, ../sass/new/openeyes/components/_tables.scss */
 table tfoot {
   font-weight: normal;
 }
-/* line 45, ../sass/new/openeyes/components/_tables.scss */
+/* line 49, ../sass/new/openeyes/components/_tables.scss */
 table.grid th, table.grid td {
   border-right: 1px solid #cccccc;
 }
-/* line 49, ../sass/new/openeyes/components/_tables.scss */
+/* line 53, ../sass/new/openeyes/components/_tables.scss */
 table.grid th:last-child,
 table.grid td:last-child {
   border-right: none;
 }
-/* line 55, ../sass/new/openeyes/components/_tables.scss */
+/* line 59, ../sass/new/openeyes/components/_tables.scss */
 table td label, table th label {
   font-size: 1em;
 }
 
 /* Waiting list table */
-/* line 88, ../sass/new/openeyes/components/_tables.scss */
+/* line 92, ../sass/new/openeyes/components/_tables.scss */
 .waiting-list .send-another-reminder {
   background: #b8eaa6;
 }
-/* line 91, ../sass/new/openeyes/components/_tables.scss */
+/* line 95, ../sass/new/openeyes/components/_tables.scss */
 .waiting-list .send-invitation-letter {
   background: #77b8d3;
+}
+
+/* line 100, ../sass/new/openeyes/components/_tables.scss */
+.waiting-list-key .key-box {
+  width: 10px;
+  height: 10px;
+  border: 1px solid #999;
+  display: inline-block;
 }
 
 /* line 22, ../sass/new/openeyes/components/_header.scss */

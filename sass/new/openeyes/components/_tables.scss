@@ -24,6 +24,7 @@
 $oe-table-header-cell-bg-color: #DDD !default;
 $oe-table-header-cell-font-size: emCalc(11px) !default;
 $oe-table-grid-cell-border-color: #CCC;
+$oe-table-cell-font-size: emCalc(13px);
 $oe-table-cell-label-font-size: emCalc(16px);
 table {
     @include table;
@@ -36,6 +37,9 @@ table {
             text-align: left;
             background: $oe-table-header-cell-bg-color;
             font-size: $oe-table-header-cell-font-size;
+        }
+        td {
+            font-size: $oe-table-cell-font-size;
         }
     }
     tfoot {
@@ -90,5 +94,13 @@ $oe-table-waiting-list-send-invitation-letter-bg-color: #77B8D3 !default;
     }
     .send-invitation-letter {
         background: $oe-table-waiting-list-send-invitation-letter-bg-color;
+    }
+}
+.waiting-list-key {
+    .key-box {
+        width: 10px;
+        height: 10px;
+        border: 1px solid #999;
+        display: inline-block;
     }
 }

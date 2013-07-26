@@ -3,17 +3,16 @@ var http = require('http');
 
 module.exports = function(grunt) {
 
-  /* Spin up a connect server to display the documentation. */
-  grunt.registerMultiTask('docserver', function() {
+  grunt.registerMultiTask('docserver', 'Spin up a connect server to display the documentation', function() {
 
     // Ensure the docs task has been run (to ensure the documentation
-    // has been generated.)
+    // has been generated).
     this.requires(['docs']);
 
-    // Keep this task running indefinitely
+    // Keep this task running indefinitely.
     this.async();
 
-    // Merge the options with default values
+    // Merge the options with default values.
     var options = this.options({
       port: 9001,
       base: '.',
@@ -49,7 +48,9 @@ module.exports = function(grunt) {
           '/Applications/Google Chrome.app',
           'http://' + options.hostname + ':' + options.port
         ]
-      }, function(){});
+      }, function(error, result){
+        // Ignore any errors...
+      });
     }
 
     startServer();

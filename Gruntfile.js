@@ -33,7 +33,7 @@ module.exports = function(grunt) {
     'styleguide:dist'
   ]);
 
-  grunt.registerTask('viewdocs', 'Spin up a connect server to view the generated documentation', [
+  grunt.registerTask('viewdocs', 'Generates the docs and spins up a connect server to view the generated documentation', [
     'docs',
     'docserver'
   ]);
