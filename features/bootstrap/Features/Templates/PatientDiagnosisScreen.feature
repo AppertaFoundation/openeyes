@@ -4,7 +4,6 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
   As an automation tester
   I want to build a template with supporting code for each web page
 
-
   Scenario Outline: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
     Given I am on the OpenEyes "<environment>" homepage
