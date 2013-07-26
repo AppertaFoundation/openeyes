@@ -18,9 +18,9 @@
  */
 
 /**
- * This is the model class for table "commissioningbody".
+ * This is the model class for table "commissioning_body".
  *
- * The followings are the available columns in table 'commissioningbody':
+ * The followings are the available columns in table 'commissioning_body':
  * @property integer $id
  * @property string $name
  *
@@ -45,7 +45,7 @@ class CommissioningBodyService extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'commissioningbodyservice';
+		return 'commissioning_body_service';
 	}
 
 	public function behaviors() {
@@ -80,10 +80,10 @@ class CommissioningBodyService extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-			'type' => array(self::BELONGS_TO, 'CommissioningBodyServiceType', 'commissioningbodyservice_type_id'),
+			'type' => array(self::BELONGS_TO, 'CommissioningBodyServiceType', 'commissioning_body_service_type_id'),
 			// At this stage, there is a one to many relationship for bodies to services, but at some point in the future
 			// it may be necessary to update this to a many to many to relationship 
-			'commissioningbody' => array(self::BELONGS_TO, 'ComissioningBody', 'commissioningbody_id'),
+			'commissioning_body' => array(self::BELONGS_TO, 'ComissioningBody', 'commissioning_body_id'),
 		);
 	}
 
