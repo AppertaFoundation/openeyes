@@ -136,6 +136,8 @@ class Patient extends BaseActiveRecord
 			'familyHistory' => array(self::HAS_MANY, 'FamilyHistory', 'patient_id', 'order' => 'created_date'),
 			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is null'),
 			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioningbody_patient_assignment(patient_id, commissioningbody_id)'),
+			'referrals' => array(self::HAS_MANY, 'Referral', 'patient_id'),
+			'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
 		);
 	}
 
