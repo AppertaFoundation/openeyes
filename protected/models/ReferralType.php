@@ -18,21 +18,14 @@
  */
 
 /**
- * This is the model class for table "referral".
+ * This is the model class for table "referral_type".
  *
  * The followings are the available columns in table 'referral':
  * @property integer $id
- * @property string $refno
- * @property integer $patient_id
- * @property integer $referral_type_id
- * @property date $received_date
- * @property date $closed_date
- * @property string $referrer
- * @property integer $firm_id
- * @property integer $gp_id
- * @property integer $service_subspecialty_assignment_id // MW: this is here because sometimes the referrer is a pas_code which doesn't map to a firm with the correct subspecialty
+ * @property string $code
+ * @property string $name
  */
-class Referral extends BaseActiveRecord
+class ReferralType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -48,7 +41,7 @@ class Referral extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'referral';
+		return 'referral_type';
 	}
 
 	/**
@@ -70,9 +63,6 @@ class Referral extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-			'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
-			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
 		);
 	}
 
