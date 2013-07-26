@@ -95,7 +95,9 @@ $(document).ready(function(){
 					newText = ', ' + newText.charAt(0).toLowerCase() + newText.slice(1);
 				}
 			} else if (currentVal.length == 0 && $(this).hasClass('delimited')) {
-				newText = newText.charAt(0).toUpperCase() + newText.slice(1)
+				newText = newText.charAt(0).toUpperCase() + newText.slice(1);
+			} else if ($(this).hasClass('delimited') && currentVal.slice(-1) != ' ') {
+				newText = ' ' + newText;
 			}
 			
 			target.val(currentVal + newText);
@@ -106,23 +108,6 @@ $(document).ready(function(){
 	});
 	
 });
-
-function selectSort(a, b) {		 
-		if (a.innerHTML == rootItem) {
-				return -1;		
-		}
-		else if (b.innerHTML == rootItem) {
-				return 1;  
-		}				
-		return (a.innerHTML > b.innerHTML) ? 1 : -1;
-};
-
-var rootItem = null;
-
-function sort_selectbox(element) {
-	rootItem = element.children('option:first').text();
-	element.append(element.children('option').sort(selectSort));
-}
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
 

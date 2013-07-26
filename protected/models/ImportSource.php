@@ -21,7 +21,7 @@
  * This is the model class for table "import_source".
  *
  * The followings are the available columns in table 'import_source':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $ShortName
  */
@@ -29,7 +29,7 @@ class ImportSource extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return ImportSource the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -52,6 +52,7 @@ class ImportSource extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('name','safe'),
 		);
 	}
 

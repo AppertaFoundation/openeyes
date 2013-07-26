@@ -34,7 +34,7 @@ $(document).ready(function(){
 	});
 
 	// show hide
-        
+				
 	$('.sprite.showhide2').click(function(e){
 		var episode_id = $(this).parent().parent().prev('input').val();
 		if (episode_id == undefined) {
@@ -50,7 +50,7 @@ $(document).ready(function(){
 			wb.children('.events').slideUp('fast');
 			sp.removeClass('hide');
 			sp.addClass('show');
-                        wb.children('.minievents').slideDown('fast');
+												wb.children('.minievents').slideDown('fast');
 			$.ajax({
 				'type': 'GET',
 				'url': baseUrl+'/patient/hideepisode?episode_id='+episode_id,
@@ -61,7 +61,7 @@ $(document).ready(function(){
 			wb.children('.events').slideDown('fast');
 			sp.removeClass('show');
 			sp.addClass('hide');
-                        wb.children('.minievents').slideUp('fast');
+												wb.children('.minievents').slideUp('fast');
 			$.ajax({
 				'type': 'GET',
 				'url': baseUrl+'/patient/showepisode?episode_id='+episode_id,
@@ -128,6 +128,9 @@ $(document).ready(function(){
 		e.preventDefault();
 	});
 
+	$('#checkall').click(function() {
+		$('input.'+$(this).attr('class')).attr('checked',$(this).is(':checked') ? 'checked' : false);
+	});
 });
 
 function changeState(wb,sp) {
@@ -178,4 +181,42 @@ function getMonthShortName(i) {
 function getMonthNumberByShortName(m) {
 	var months = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
 	return months[m];
+}
+
+/**
+ * sort comparison function for html elements based on the inner html content, but will check for the presence of data-order attributes and
+ * sort on those if present
+ * 
+ * @param a
+ * @param b
+ * @return
+ */
+function selectSort(a, b) {
+		if (a.innerHTML == rootItem) {
+				return -1;		
+		}
+		else if (b.innerHTML == rootItem) {
+				return 1;  
+		}
+		// custom ordering
+		if ($(a).data('order')) {
+			return ($(a).data('order') > $(b).data('order')) ? 1 : -1;
+		}
+
+		return (a.innerHTML > b.innerHTML) ? 1 : -1;
+};
+
+var rootItem = null;
+
+function sort_selectbox(element) {
+	rootItem = element.children('option:first').text();
+	element.append(element.children('option').sort(selectSort));
+}
+
+function inArray(needle, haystack) {
+	var length = haystack.length;
+	for(var i = 0; i < length; i++) {
+		if(haystack[i] == needle) return true;
+	}
+	return false;
 }

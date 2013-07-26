@@ -21,17 +21,17 @@
 class TheatreTest extends CDbTestCase
 {
 	public $model;
-	
+
 	public $fixtures = array(
 		'theatres' => 'Theatre',
 	);
-	
+
 	public function setUp()
 	{
 		parent::setUp();
 		$this->model = new Theatre;
 	}
-	
+
 	public function dataProvider_Search()
 	{
 		return array(
@@ -62,17 +62,17 @@ class TheatreTest extends CDbTestCase
 		$this->assertEquals($numResults, $results->getItemCount());
 		$this->assertEquals($expectedResults, $data);
 	}
-	
+
 	public function testModel()
 	{
 		$this->assertEquals('Theatre', get_class(Theatre::model()));
 	}
-	
+
 	public function testTableName()
 	{
 		$this->assertEquals('theatre', $this->model->tableName());
 	}
-	
+
 	public function testAttributeLabels()
 	{
 		$expected = array(
@@ -80,10 +80,10 @@ class TheatreTest extends CDbTestCase
 			'name' => 'Name',
 			'site_id' => 'Site',
 		);
-		
+
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
-	
+
 	public function testGetDateFilterOptions_ReturnsCorrectData()
 	{
 		$expected = array(
@@ -92,7 +92,7 @@ class TheatreTest extends CDbTestCase
 			'month' => 'This month',
 			'custom' => 'or from'
 		);
-		
+
 		$this->assertEquals($expected, $this->model->getDateFilterOptions());
 	}
 }

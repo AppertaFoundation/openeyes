@@ -21,14 +21,14 @@
  * This is the model class for table "element_type".
  *
  * The followings are the available columns in table 'element_type':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $class_name
- * @property string $parent_element_type_id
+ * @property integer $parent_element_type_id
  *
  * The followings are the available model relations:
- * @property EventTypeElementTypeAssignment[] $eventTypeElementTypeAssignments
- * @property 
+ * @property ElementType $parent_element_type
+ * @property ElementType[] $child_element_types
  */
 class ElementType extends BaseActiveRecord
 {
@@ -94,19 +94,20 @@ class ElementType extends BaseActiveRecord
 	 * Recursively get all children of an element type
 	 * @return ElementType[]
 	 */
-	public function getDescendents() {
+	public function getDescendents()
+	{
 		$element_types = array();
-		if($child_element_types = $this->child_element_types) {
-			foreach($child_element_types as $child_element_type) {
+		if ($child_element_types = $this->child_element_types) {
+			foreach ($child_element_types as $child_element_type) {
 				$element_types[] = $child_element_type;
-				if($descendents = $child_element_type->getDescendents()) {
+				if ($descendents = $child_element_type->getDescendents()) {
 					$element_types = array_merge($element_types, $descendents);
 				}
 			}
 		}
 		return $element_types;
 	}
-	
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.

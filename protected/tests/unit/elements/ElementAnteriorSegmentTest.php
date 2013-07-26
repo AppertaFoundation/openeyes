@@ -52,7 +52,7 @@ class ElementAnteriorSegmentTest extends CDbTestCase
 				'description_right' => 'And simple to express',
 				'image_string_left' => 'Err. And err. And err again.',
 				'image_string_right' => 'But less. And less. And less.'
-			), 
+			),
 			1, array('elementAnteriorSegment1')),
 		);
 	}

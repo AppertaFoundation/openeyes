@@ -99,6 +99,6 @@ class PhraseByFirmTest extends CDbTestCase
 		$this->assertTrue(is_array($overrideable));
 		foreach ($overrideable as $o) {
 			$this->assertEquals('unnatural cataract', $o->name);
-		}	
+		}
 	}
 }

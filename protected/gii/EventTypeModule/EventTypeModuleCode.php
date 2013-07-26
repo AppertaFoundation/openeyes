@@ -20,7 +20,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public $validation_rules_path = "protected/gii/EventTypeModule/validation";
 	public $validation_rules = array();
 
-	public function __construct() {
+	public function __construct()
+	{
 		$dh = dir($this->validation_rules_path);
 
 		while ($file = $dh->read()) {
@@ -31,7 +32,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		parent::__construct();
 	}
 
-	public function rules() {
+	public function rules()
+	{
 		return array(
 			array('moduleSuffix', 'required'),
 			array('moduleSuffix', 'safe'),
@@ -40,13 +42,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		);
 	}
 
-	public function initialise($properties=false) {
+	public function initialise($properties=false)
+	{
 		if ($properties) {
 			foreach ($properties as $key => $value) {
 				$this->{$key} = $value;
 			}
 		}
-		
+
 		parent::prepare();
 
 		$this->files = array();
@@ -55,14 +58,15 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		$this->files_to_process = CFileHelper::findFiles($this->templatePath,array('exclude'=>array('.svn')));
 	}
 
-	public function prepare() {
+	public function prepare()
+	{
 		if ($this->mode == 'create') {
 			$this->initialise(array(
-				'moduleID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) . 
-					ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) . 
-					Yii::app()->request->getQuery('Specialty[id]') . 
+				'moduleID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->abbreviation)) .
+					ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) .
+					Yii::app()->request->getQuery('Specialty[id]') .
 					preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix))),
-				'moduleShortID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) .
+				'moduleShortID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->abbreviation)) .
 					ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) .
 					Yii::app()->request->getQuery('Specialty[id]') .
 					preg_replace("/ /", "", ucfirst(strtolower($this->moduleShortSuffix))),
@@ -70,23 +74,23 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			));
 		} else if ($this->mode == 'update') {
 			$this->event_type = EventType::model()->findByPk(@$_POST['EventTypeModuleEventType']);
-			
+
 			$short_suffix = $this->getEventShortName($this->event_type);
-			
+
 			$this->initialise(array(
 				'moduleID' => $this->event_type->class_name,
-				'moduleShortID' => Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code .
-					EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code . 
+				'moduleShortID' => Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->abbreviation .
+					EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code .
 					$short_suffix,
 				'event_group' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']),
 				'specialty' => Specialty::model()->findByPk($_REQUEST['Specialty']['id']),
 				'eventGroupName' => $this->event_type->name,
 			));
 		}
-		
+
 		if ($this->mode == 'update') {
 			$current_class = $this->event_type->class_name;
-			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($this->specialty->code)) . ucfirst(strtolower($this->event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
+			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($this->specialty->abbreviation)) . ucfirst(strtolower($this->event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
 			if (@$_POST['generate'] == 'Generate') {
 				$this->handleViewChanges();
 
@@ -98,10 +102,10 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		$elements = $this->getElementsFromPost();
 
-		foreach($this->files_to_process as $file) {
+		foreach ($this->files_to_process as $file) {
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
-			if($file!==$this->moduleTemplateFile) {
-				if(CFileHelper::getExtension($file)==='php' || CFileHelper::getExtension($file)==='js') {
+			if ($file!==$this->moduleTemplateFile) {
+				if (CFileHelper::getExtension($file)==='php' || CFileHelper::getExtension($file)==='js') {
 					if (preg_match("/\/migrations\//", $file)) {
 						if (preg_match('/_create\.php$/',$file) && $this->mode == 'create') {
 							# $matches = Array();
@@ -167,7 +171,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 					}
 				// an empty directory
-				} else if(basename($file)==='.yii') {
+				} else if (basename($file)==='.yii') {
 					$file=dirname($file);
 					$content=null;
 				} else {
@@ -176,9 +180,10 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				}
 			}
 		}
-	}	
+	}
 
-	function changeAllInstancesOfString($path, $from, $to) {
+	function changeAllInstancesOfString($path, $from, $to)
+	{
 		$dh = opendir($path);
 
 		while ($file = readdir($dh)) {
@@ -200,9 +205,10 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		closedir($dh);
 	}
 
-	function regExpFile($regExp, $dir) {
+	function regExpFile($regExp, $dir)
+	{
 		$open = opendir($dir); $matches = Array();
-		while( ($file = readdir($open)) !== false ) {
+		while ( ($file = readdir($open)) !== false ) {
 			if ( preg_match($regExp, $file, $matches) ) {
 				return $matches;
 			}
@@ -210,7 +216,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return false;
 	}
 
-	public function getElementsFromPost() {
+	public function getElementsFromPost()
+	{
 		$elements = Array();
 		foreach ($_POST as $key => $value) {
 			if (preg_match('/^elementName([0-9]+)$/',$key, $matches) || preg_match('/^elementId([0-9]+)$/',$key,$matches)) {
@@ -224,9 +231,9 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$elements[$number]['id'] = $value;
 
 					$element_type = ElementType::model()->findByPk($value);
-					
+
 					$element_class = $element_type->class_name;
-					
+
 					$elements[$number]['name'] = $value = $element_type->name;
 					$elements[$number]['table_name'] = $element_class::model()->tableName();
 					$field = 'elementName'.$number;
@@ -237,7 +244,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				if ($elements[$number]['mode'] == 'create') {
 					$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleShortID) . '_' . strtolower(preg_replace("/ /", "", $_POST["elementShortName".$number]));
 				}
-				
+
 				$elements[$number]['number'] = $number;
 				$elements[$number]['fields'] = array();
 				$elements[$number]['foreign_keys'] = array();
@@ -250,7 +257,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$elements[$number]['after_save'] = array();
 
 				$elements[$number] = $this->generateKeyNames($elements[$number],array('lmui','cui','ev'));
-				
+
 				$fields = Array();
 				foreach ($_POST as $fields_key => $fields_value) {
 					$pattern = '/^' . $field . 'FieldName([0-9]+)$/';
@@ -261,7 +268,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						$elements[$number]['fields'][$field_number]['label'] = $_POST[$field . "FieldLabel".$field_number];
 						$elements[$number]['fields'][$field_number]['number'] = $field_number;
 						$elements[$number]['fields'][$field_number]['type'] = $_POST["elementType" . $number . "FieldType".$field_number];
-						$elements[$number]['fields'][$field_number]['required'] = (boolean)@$_POST['isRequiredField'.$number.'_'.$field_number];
+						$elements[$number]['fields'][$field_number]['required'] = (boolean) @$_POST['isRequiredField'.$number.'_'.$field_number];
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Dropdown list') {
 							$elements = $this->extraElementFieldWrangling_DropdownList($elements, $number, $field_number, $fields_value);
@@ -327,12 +334,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $elements;
 	}
 
-	public function extraElementFieldWrangling_DropdownList($elements, $number, $field_number, $fields_value) {
+	public function extraElementFieldWrangling_DropdownList($elements, $number, $field_number, $fields_value)
+	{
 		// Dropdown list fields should end with _id
 		if (!preg_match('/_id$/',$fields_value)) {
 			$_POST['elementName'.$number.'FieldName'.$field_number] = $elements[$number]['fields'][$field_number]['name'] = $fields_value = $fields_value.'_id';
 		}
-		
+
 		// but for class naming/lookups we don't want the id:
 		$root_fields_value = preg_replace('/_id$/', '', $fields_value);
 
@@ -422,7 +430,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $elements;
 	}
 
-	public function extraElementFieldWrangling_TextareaWithDropdown($elements, $number, $field_number, $fields_value) {
+	public function extraElementFieldWrangling_TextareaWithDropdown($elements, $number, $field_number, $fields_value)
+	{
 		// Manually-entered values
 		$field_values = array();
 
@@ -453,14 +462,15 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $elements;
 	}
 
-	public function extraElementFieldWrangling_RadioButtons($elements, $number, $field_number, $fields_value) {
+	public function extraElementFieldWrangling_RadioButtons($elements, $number, $field_number, $fields_value)
+	{
 		// Radio button fields should end with _id
 		if (!preg_match('/_id$/',$fields_value)) {
 			$_POST['elementName'.$number.'FieldName'.$field_number] = $elements[$number]['fields'][$field_number]['name'] = $fields_value = $fields_value.'_id';
 		}
 		// but for class naming/lookups we don't want the id:
 		$root_fields_value = preg_replace('/_id$/', '', $fields_value);
-		
+
 		if (@$_POST['radioButtonFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
 			$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['radioButtonFieldValueTextInputDefault'.$number.'Field'.$field_number];
 		}
@@ -539,7 +549,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $elements;
 	}
 
-	public function extraElementFieldWrangling_EyeDraw($elements, $number, $field_number, $fields_value) {
+	public function extraElementFieldWrangling_EyeDraw($elements, $number, $field_number, $fields_value)
+	{
 		$elements[$number]['fields'][$field_number]['eyedraw_size'] = @$_POST['eyedrawSize'.$number.'Field'.$field_number];
 		$elements[$number]['fields'][$field_number]['eyedraw_toolbar_doodles'] = @$_POST['eyedrawToolbarDoodle'.$number.'Field'.$field_number];
 		$elements[$number]['fields'][$field_number]['eyedraw_default_doodles'] = @$_POST['eyedrawDefaultDoodle'.$number.'Field'.$field_number];
@@ -548,7 +559,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $elements;
 	}
 
-	public function extraElementFieldWrangling_MultiSelect($elements, $number, $field_number, $fields_value) {
+	public function extraElementFieldWrangling_MultiSelect($elements, $number, $field_number, $fields_value)
+	{
 		if (@$_POST['multiSelectMethod'.$number.'Field'.$field_number] == 0) {
 			$elements[$number]['fields'][$field_number]['method'] = 'Manual';
 
@@ -567,7 +579,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 			$lookup_table['values'] = $field_values;
 			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = $elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $fields_value) ) );
-			
+
 			$lookup_table['defaults'] = array();
 
 			$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
@@ -690,7 +702,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $elements;
 	}
 
-	public function generateKeyNames($table, $keys) {
+	public function generateKeyNames($table, $keys)
+	{
 		if (isset($table['table_name'])) {
 			$table_name = $table['table_name'];
 		} else {
@@ -715,7 +728,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $table;
 	}
 
-	static public function findModelClassForTable($table, $path=false) {
+	static public function findModelClassForTable($table, $path=false)
+	{
 		if (!$path) {
 			$path = Yii::app()->basePath.'/models';
 		}
@@ -765,7 +779,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return false;
 	}
 
-	public function generateKeyName($field, $elementName) {
+	public function generateKeyName($field, $elementName)
+	{
 		$key = 'et_' . strtolower($this->moduleID) . '_';
 
 		foreach (explode(' ',$elementName) as $segment) {
@@ -775,12 +790,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $key . '_'.$field.'_fk';
 	}
 
-	public function renderMigrations($file, $migrationid) {
+	public function renderMigrations($file, $migrationid)
+	{
 		$params = array(); $params['elements'] = $this->getElementsFromPost(); $params['migrationid'] = $migrationid;
 		return $this->render($file, $params);
 	}
 
-	public function getDBFieldSQLType($field) {
+	public function getDBFieldSQLType($field)
+	{
 		switch ($field['type']) {
 			case 'Textbox':
 				$size = $field['textbox_max_length'] ? $field['textbox_max_length'] : '255';
@@ -820,30 +837,31 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				} else {
 					$size = $minlen;
 				}
-				$size += (integer)$field['slider_dp'];
+				$size += (integer) $field['slider_dp'];
 
 				return "decimal ($size,{$field['slider_dp']}) NOT NULL$default";
 			case 'Decimal':
 				$default = $field['default_value']>0 ? " DEFAULT \'{$field['default_value']}\'" : '';
-				
+
 				$maxlen = strlen(preg_replace('/\..*$/', '', preg_replace('/^[\-\+]/','', $field['decimal_max_value'])));
 				$minlen = strlen(preg_replace('/\..*$/', '', preg_replace('/^[\-\+]/','', $field['decimal_min_value'])));
-				
+
 				if ($maxlen > $minlen) {
 					$size = $maxlen;
 				} else {
 					$size = $minlen;
 				}
-				
-				$size += (integer)$field['decimal_dp'];
-				
+
+				$size += (integer) $field['decimal_dp'];
+
 				return "decimal ($size, {$field['decimal_dp']}) NOT NULL$default";
 		}
 
 		return false;
 	}
 
-	public function init() {
+	public function init()
+	{
 		$this->mode = @$_POST['EventTypeModuleMode'] ? 'update' : 'create';
 
 		if (isset($_GET['ajax']) && preg_match('/^[a-zA-Z0-9_]+$/',$_GET['ajax'])) {
@@ -874,22 +892,22 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 	/*
 	 * works out the short name for an event type - if the event was generated through this version of gii
-	 * then it will use the moduleShortSuffix property on the class. Otherwise it uses the table names 
+	 * then it will use the moduleShortSuffix property on the class. Otherwise it uses the table names
 	 * generated for the event elements.
-	 * 
+	 *
 	 * assumes table names of the form et_[specialty_code][group_code][short_name]_[element_short_name]
-	 * 
+	 *
 	 * event needs to have had an element defined.
-	 * 
+	 *
 	 */
-	static public function getEventShortName($event_type) {
+	static public function getEventShortName($event_type)
+	{
 		if (isset($event_type->moduleShortSuffix)) {
 			return $event_type->moduleShortSuffix;
-		}
-		else {
+		} else {
 			// try to derive the short suffix from the table name of an element in the class
 			$el = ElementType::model()->findall('event_type_id=:eventTypeId', array(':eventTypeId' => $event_type->id));
-			
+
 			if (count($el)) {
 				$code = strtolower(substr($event_type->class_name, 0, 5));
 				if (!preg_match('/^et_'.$code.'([a-z0-9]+)_/', $test->tableName(), $m) ) {
@@ -900,17 +918,18 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			return '';
 		}
 	}
-	
-	static public function eventTypeProperties($event_type_id) {
+
+	static public function eventTypeProperties($event_type_id)
+	{
 		$event_type = EventType::model()->findByPk($event_type_id);
 		$event_type_short_name = EventTypeModuleCode::getEventShortName($event_type);
-		
+
 		if (empty($_POST)) {
 			if (!preg_match('/^([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-zA-Z]+)$/',$event_type->class_name,$m)) {
 				die("ERROR: $event_type->class_name");
 			}
 
-			$specialty_id = Specialty::model()->find('code=?',array(strtoupper($m[1])))->id;
+			$specialty_id = Specialty::model()->find('abbreviation=?',array(strtoupper($m[1])))->id;
 			$event_group_id = EventGroup::model()->find('code=?',array($m[2]))->id;
 			$event_type_name = $event_type->name;
 		} else {
@@ -927,7 +946,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		<?php
 	}
 
-	static public function dump_table_fields($table, $selected=false) {
+	static public function dump_table_fields($table, $selected=false)
+	{
 		echo '<option value="">- Please select a field -</option>';
 
 		$tableSchema = Yii::app()->getDb()->getSchema()->getTable($table);
@@ -944,7 +964,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
-	static public function dump_field_unique_values($table, $field, $selected=false) {
+	static public function dump_field_unique_values($table, $field, $selected=false)
+	{
 		echo '<option value="">- No default value -</option>';
 
 		foreach (Yii::app()->db->createCommand()
@@ -956,7 +977,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
-	static public function dump_field_unique_values_multi($table, $field, $selected=false) {
+	static public function dump_field_unique_values_multi($table, $field, $selected=false)
+	{
 		if (!$selected) $selected = array();
 
 		echo '<option value="">- Select default values -</option>';
@@ -972,7 +994,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
-	static public function getEyedrawSize($class) {
+	static public function getEyedrawSize($class)
+	{
 		if (file_exists(Yii::app()->basePath.'/modules/eyedraw/OEEyeDrawWidget'.$class.'.php')) {
 			foreach (@file(Yii::app()->basePath.'/modules/eyedraw/OEEyeDrawWidget'.$class.'.php') as $line) {
 				if (preg_match('/public[\s\t]+\$size[\s\t]*=[\s\t]*([0-9]+)/',$line,$m)) {
@@ -985,31 +1008,33 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	/**
 	 * validation check to determine if an element called $name already exists for the event type
 	 * only performs check for updates
-	 * 
+	 *
 	 * @param string $name
 	 * @return boolean
 	 */
-	public function elementExists($name) {
+	public function elementExists($name)
+	{
 		if ($this->mode == 'update') {
 			// get the id of the event type we are updating, and check if an element with this name exists for that event
 			return ( ElementType::model()->find('event_type_id=:eventTypeId and name=:elementName',array('eventTypeId'=>@$_POST['EventTypeModuleEventType'],':elementName'=>$name)) != null);
 		}
 		return false;
 	}
-	
+
 	/**
-	 * checks if an element short name exists 
-	 * 
-	 * We use the short name to define table names, so here we check for the table 
+	 * checks if an element short name exists
+	 *
+	 * We use the short name to define table names, so here we check for the table
 	 * being defined in the db based off the current event.
-	 * 
+	 *
 	 * Only works for updates.
 	 * @since future
 	 */
-	public function elementShortNameExists($name) {
+	public function elementShortNameExists($name)
+	{
 		if ($this->mode == 'update') {
 			// TODO: work out what the table name would be for the element based off the current event
-			/* 
+			/*
 			 * get the elements that would be used to create the element table name - speciality, group, and event type
 			 * concatanate these, and then try and get the table
 			 */
@@ -1019,7 +1044,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return false;
 	}
 
-	public function validate_form() {
+	public function validate_form()
+	{
 		$errors = array();
 
 		foreach ($_POST as $key => $value) {
@@ -1041,7 +1067,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		Yii::app()->getController()->form_errors = $errors;
 	}
 
-	public function validateRule($field_type,$element_num,$field_num) {
+	public function validateRule($field_type,$element_num,$field_num)
+	{
 		$errors = array();
 
 		if (!isset($this->validation_rules[$field_type])) {
@@ -1057,7 +1084,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$key = $this->substitutePostValue($field,$element_num,$field_num);
 					$value = @$_POST[$key];
 				}
-				
+
 				if (isset($errors[$key])) continue;
 
 				if (isset($rule['condition'])) {
@@ -1068,7 +1095,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						if (@$_POST[$condition_key] != $rule['condition']['value']) continue;
 					}
 				}
-				
+
 				if ($rule['type'] == 'required') {
 					if ((is_array($value) && empty($value)) || (!is_array($value) && strlen($value) <1)) {
 						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'This field is required';
@@ -1076,13 +1103,12 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						continue;
 					}
 				} else if (strlen($value) <1) continue;
-				
+
 				switch ($rule['type']) {
 					case 'length':
 						if (isset($rule['regstrip'])) {
 							$checkval = preg_replace($rule['regstrip'], '', $value);
-						}
-						else {
+						} else {
 							$checkval = $value;
 						}
 						if (isset($rule['max']) && strlen($checkval) > $rule['max']) {
@@ -1154,12 +1180,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $errors;
 	}
 
-	public function substitutePostValue($field,$element_num,$field_num) {
+	public function substitutePostValue($field,$element_num,$field_num)
+	{
 		return str_replace('{$element_num}',$element_num,str_replace('{$field_num}',$field_num,$field));
 	}
 
 	// the <?'s here are deliberately broken apart to prevent annoying syntax highlighting issues with vim
-	public function getHTMLField($field, $mode) {
+	public function getHTMLField($field, $mode)
+	{
 		if ($mode == 'view') {
 			return $this->getHTMLFieldView($field);
 		}
@@ -1220,7 +1248,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
-	public function getHTMLFieldView($field) {
+	public function getHTMLFieldView($field)
+	{
 		switch ($field['type']) {
 			case 'Textbox':
 			case 'Textarea':
@@ -1291,7 +1320,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					<div class="eventHighlight medium">
 						<?php if (!$element->'.@$field['multiselect_relation'].') {?'.'>
 							<h4>None</h4>
-						<?php }else{?'.'>
+						<?php } else {?'.'>
 							<h4>
 								<?php foreach ($element->'.@$field['multiselect_relation'].' as $item) {
 									echo $item->'.@$field['multiselect_lookup_table'].'->name?'.'><br/>
@@ -1310,7 +1339,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
-	public function updateModel($model_path, $element) {
+	public function updateModel($model_path, $element)
+	{
 		$data = file_get_contents($model_path);
 
 		if (preg_match('/public function rules.*?\}/si',$data,$m)) {
@@ -1394,7 +1424,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		file_put_contents($model_path, $data);
 	}
 
-	public function handleViewChanges() {
+	public function handleViewChanges()
+	{
 		foreach ($this->getElementsFromPost() as $num => $element) {
 			$model = "modules/$this->moduleID/models/{$element['class_name']}.php";
 
@@ -1428,7 +1459,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
-	public function shouldUpdateFile($model) {
+	public function shouldUpdateFile($model)
+	{
 		if (isset($_POST['updatefile'])) {
 			foreach ($_POST['updatefile'] as $hash => $value) {
 				if ($_POST['filename'][$hash] == $model) {
@@ -1440,7 +1472,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return false;
 	}
 
-	public function updateFormView($view_path, $element, $mode) {
+	public function updateFormView($view_path, $element, $mode)
+	{
 		$data = file_get_contents($view_path);
 
 		if (preg_match('/<div.*<\/div>/si',$data,$m)) {
@@ -1467,7 +1500,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
-	public function updateViewView($view_path, $element) {
+	public function updateViewView($view_path, $element)
+	{
 		$data = file_get_contents($view_path);
 
 		if (preg_match('/<tbody.*<\/tbody>/si',$data,$m)) {
@@ -1494,7 +1528,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
-	public function getTableForeignKeys($table) {
+	public function getTableForeignKeys($table)
+	{
 		$foreign_keys = array();
 
 		foreach (Yii::app()->db->createCommand("show create table `$table`")->queryAll() as $row) {
@@ -1513,11 +1548,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $foreign_keys;
 	}
 
-	public function rawSQLQuery($sql) {
+	public function rawSQLQuery($sql)
+	{
 		Yii::app()->db->createCommand($sql)->query();
 	}
 
-	public function handleModuleNameChange($current_class, $target_class) {
+	public function handleModuleNameChange($current_class, $target_class)
+	{
 		@rename(Yii::app()->basePath.'/modules/'.$current_class,Yii::app()->basePath.'/modules/'.$target_class);
 
 		$this->event_type->name = $_POST['EventTypeModuleCode']['moduleSuffix'];

@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php if (!$nowrapper) {?>
 <div class="eventDetail" id="editDiagnosis">
 	<div class="data">
+<?php } ?>
 		<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis', 'style' => 'width: 525px; margin-bottom:10px;')) : ""?>
 		<br />
 		<?php
@@ -67,12 +69,14 @@
 				),
 				'htmlOptions' => array(
 						'style'=>'width: 520px;',
-						'placeholder' => 'or type the first few characters of a diagnosis',
+						'placeholder' => $placeholder,
 				),
 		));
 		?>
+<?php if (!$nowrapper) {?>
 	</div>
 </div>
+<?php } ?>
 <script type="text/javascript">
 	<?php if ($callback) {?>
 		$('#<?php echo $class?>_<?php echo $field?>').change(function() {

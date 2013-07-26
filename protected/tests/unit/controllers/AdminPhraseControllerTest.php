@@ -53,17 +53,17 @@ class AdminPhraseControllerTest extends CDbTestCase
 		$this->setExpectedException('CHttpException', 'The requested page does not exist.');
 		$this->controller->actionView($fakeId);
 	}
-	
+
 	public function testActionView_ValidData_RendersViewView()
 	{
 		$itemId = $this->phrases['phrase1']['id'];
 		$itemPhrase = $this->phrases['phrase1']['phrase'];
-		
+
 		$mockController = $this->getMock('AdminPhraseController', array('render'), array('AdminPhraseController'));
 		$mockController->expects($this->any())
 			->method('render')
 			->with('view', array('model' => $this->phrases('phrase1')));
-		
+
 		$mockController->actionView($itemId);
 	}
 
@@ -75,10 +75,10 @@ class AdminPhraseControllerTest extends CDbTestCase
 		$mockController->expects($this->any())
 			->method('render')
 			->with('admin', array('model' => $item));
-		
+
 		$mockController->actionAdmin();
 	}
-	
+
 	public function testActionAdmin_ValidGetParameters_RendersAdminView()
 	{
 		$_GET['id'] = $this->phrases['phrase1']['id'];
@@ -89,7 +89,7 @@ class AdminPhraseControllerTest extends CDbTestCase
 		$mockController->expects($this->any())
 			->method('render')
 			->with('admin', array('model' => $item));
-		
+
 		$mockController->actionAdmin();
 	}
 }

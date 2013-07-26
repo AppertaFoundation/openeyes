@@ -21,7 +21,7 @@
  * This is the model class for table "section_type".
  *
  * The followings are the available columns in table 'section_type':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class SectionType extends BaseActiveRecord

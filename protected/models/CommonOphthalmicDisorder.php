@@ -21,9 +21,9 @@
  * This is the model class for table "common_ophthalmic_disorder".
  *
  * The followings are the available columns in table 'common_ophthalmic_disorder':
- * @property string $id
- * @property string $disorder_id
- * @property string $subspecialty_id
+ * @property integer $id
+ * @property integer $disorder_id
+ * @property integer $subspecialty_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
@@ -120,7 +120,8 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		return CHtml::listData($specialties, 'id', 'name');
 	}
 
-	public static function getList($firm) {
+	public static function getList($firm)
+	{
 		if (empty($firm)) {
 			throw new CException('Firm is required.');
 		}
@@ -136,5 +137,5 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		}
 		return array();
 	}
-	
+
 }

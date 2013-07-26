@@ -6,11 +6,11 @@ class m121108_165957_multiple_specialism_disorders extends CDbMigration
 	{
 		$this->addColumn("disorder", "specialty_id", "int(10) unsigned NULL");
 		$this->addForeignKey("disorder_specialty_fk", "disorder", "specialty_id", "specialty", "id");
-		
+
 		$ophthmalogy = $this->dbConnection->createCommand()->select('specialty.id')->from('specialty')->where('name=:name', array('name' => 'Ophthalmology'))->queryRow();
 		$this->update("disorder", array("specialty_id"=>$ophthmalogy['id']), "systemic=:systemic", array("systemic" => 0));
-		$this->dropColumn("disorder", "systemic");	
-				
+		$this->dropColumn("disorder", "systemic");
+
 	}
 
 	public function down()

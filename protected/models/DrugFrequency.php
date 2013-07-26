@@ -21,7 +21,7 @@
  * This is the model class for table "drug_frequency".
  *
  * The followings are the available columns in table 'drug_frequency':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $long_name
  */
@@ -93,7 +93,7 @@ class DrugFrequency extends BaseActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('long_name',$this->long_name,true);
-		
+
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));

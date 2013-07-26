@@ -21,15 +21,19 @@
  * This is the model class for table "eye".
  *
  * The followings are the available columns in table 'eye':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $ShortName
  */
 class Eye extends BaseActiveRecord
 {
+	const LEFT = 1;
+	const RIGHT = 2;
+	const BOTH = 3;
+
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return Eye the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -64,13 +68,15 @@ class Eye extends BaseActiveRecord
 			'elementTypes' => array(self::HAS_MANY, 'ElementTypeEye', 'eye_id'),
 		);
 	}
-	
-	public function getShortName() {
+
+	public function getShortName()
+	{
 		return substr($this->name, 0, 1);
 	}
 
-	public function getAdjective() {
-		if ($this->name == 'Both') {
+	public function getAdjective()
+	{
+		if ($this->id == Eye::BOTH) {
 			return 'Bilateral';
 		}
 		return $this->name;

@@ -1,13 +1,13 @@
 <?php
 
-class m120312_114412_session_independence extends CDbMigration {
-	
-	public function up() {
-		
+class m120312_114412_session_independence extends CDbMigration
+{
+	public function up()
+	{
 		// Copy theatre relationship to session
 		$this->addColumn('session','theatre_id','int(10) unsigned NOT NULL');
 		$this->execute('UPDATE `session` s, `sequence` q SET s.theatre_id = q.theatre_id WHERE s.sequence_id = q.id');
-		
+
 		// Copy firm relationship to session
 		$this->createTable('session_firm_assignment', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -29,23 +29,26 @@ class m120312_114412_session_independence extends CDbMigration {
 			JOIN `sequence` q ON q.id = sqa.sequence_id
 			JOIN `session` s ON s.sequence_id = q.id
 		');
-		
+
 		// Enforce many to 1 between sequence and firm
 		$this->createIndex('sequence_firm_assignment_sequence_id','sequence_firm_assignment','sequence_id', true);
-		
+
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropColumn('session','theatre_id');
 		$this->dropTable('session_firm_assignment');
 		$this->dropIndex('sequence_firm_assignment_sequence_id','sequence_firm_assignment');
 	}
 
-	public function safeUp() {
+	public function safeUp()
+	{
 		$this->up();
 	}
-	
-	public function safeDown() {
+
+	public function safeDown()
+	{
 		$this->down();
 	}
 

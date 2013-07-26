@@ -18,17 +18,17 @@
  */
 
 /**
- * This is the model class for table "section_type".
+ * This is the model class for table "date_letter_sent".
  *
- * The followings are the available columns in table 'section_type':
- * @property string $id
+ * The followings are the available columns in table 'date_letter_sent':
+ * @property integer $id
  * @property string $name
  */
 class DateLetterSent extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return SectionType the static model class
+	 * @return DateLetterSent the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

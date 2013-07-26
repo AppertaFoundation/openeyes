@@ -22,59 +22,69 @@
  *
  * The followings are the available columns in table 'drug_set_item':
  * @property integer $id
- * @property integer $drug_set_id
- * @property integer $drug_id
- * @property integer $default_frequency_id
- * @property integer $default_duration_id
+ * @property DrugSet $drug_set
+ * @property Drug $drug
+ * @property DrugSetItemTaper[] $tapers
+ * @property string $dose
+ * @property DrugFrequency $frequency
+ * @property DrugDuration $duration
  */
-class DrugSetItem extends BaseActiveRecord {
+class DrugSetItem extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return DrugSetItem the static model class
 	 */
-	public static function model($className=__CLASS__) {
+	public static function model($className=__CLASS__)
+	{
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName() {
+	public function tableName()
+	{
 		return 'drug_set_item';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules() {
+	public function rules()
+	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-				array('drug_set_id, drug_id, default_frequency_id, default_duration_id', 'required'),
+				array('drug_set_id, drug_id', 'required'),
+				array('dose, frequency_id, duration_id', 'safe'),
 				// The following rule is used by search().
 				// Please remove those attributes that should not be searched.
-				array('id, drug_set_id, drug_id, default_frequency_id, default_duration_id', 'safe', 'on'=>'search'),
+				array('id, drug_set_id, drug_id, dose, frequency_id, duration_id', 'safe', 'on'=>'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations() {
+	public function relations()
+	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
 				'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
 				'drug_set' => array(self::BELONGS_TO, 'DrugSet', 'drug_set_id'),
-				'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
-				'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
+				'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
+				'duration' => array(self::BELONGS_TO, 'DrugDuration', 'duration_id'),
+				'tapers' => array(self::HAS_MANY, 'DrugSetItemTaper', 'item_id'),
 		);
 	}
 
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return array(
 		);
 	}
@@ -83,7 +93,8 @@ class DrugSetItem extends BaseActiveRecord {
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search() {
+	public function search()
+	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
@@ -92,9 +103,10 @@ class DrugSetItem extends BaseActiveRecord {
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('drug_set_id',$this->drug_set_id,true);
 		$criteria->compare('drug_id',$this->drug_id,true);
-		$criteria->compare('default_frequency_id',$this->default_frequency_id,true);
-		$criteria->compare('default_duration_id',$this->default_duration_id,true);
-		
+		$criteria->compare('dose',$this->dose,true);
+		$criteria->compare('frequency_id',$this->frequency_id,true);
+		$criteria->compare('duration_id',$this->duration_id,true);
+
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria'=>$criteria,
 		));

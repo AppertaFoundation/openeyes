@@ -362,7 +362,8 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 		$this->delete('address',"parent_class = 'Practice'");
 	}
 
-	public function getConsultantUserID($firm) {
+	public function getConsultantUserID($firm)
+	{
 		$result = Yii::app()->db->createCommand()
 			->select('u.id as id')
 			->from('consultant cslt')
@@ -379,7 +380,8 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 		return $result['id'];
 	}
 
-	public function getLabel($name) {
+	public function getLabel($name)
+	{
 		if ($label = Yii::app()->db->createCommand()->select("*")->from("contact_label")->where("name=:name",array(":name"=>$name))->queryRow()) {
 			return $label;
 		}

@@ -21,28 +21,28 @@
  * This is the model class for table "audit".
  *
  * The following are the available columns in table 'audit':
- * @property string $id
- * @property string $action
+ * @property integer $id
  * @property string $target_type
- * @property string $patient_id
- * @property string $episode_id
- * @property string $event_id
- * @property string $user_id
+ * @property integer $patient_id
+ * @property integer $episode_id
+ * @property integer $event_id
+ * @property integer $user_id
  * @property string $data
  * @property string $remote_addr
  * @property string $http_user_agent
  * @property string $server_name
  * @property string $request_uri
- * @property string $site_id
- * @property string $firm_id
+ * @property integer $site_id
+ * @property integer $firm_id
  *
  * The following are the available model relations:
- * @property Patient[] $patient
- * @property Episode[] $episode
- * @property Event[] $event
- * @property User[] $user
- * @property Site[] $site
- * @property Firm[] $firm
+ * @property AuditAction $action
+ * @property Patient $patient
+ * @property Episode $episode
+ * @property Event $event
+ * @property User $user
+ * @property Site $site
+ * @property Firm $firm
  */
 class Audit extends BaseActiveRecord
 {
@@ -50,7 +50,7 @@ class Audit extends BaseActiveRecord
 
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Theatre the static model class
+	 * @return Audit the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -73,7 +73,7 @@ class Audit extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('action,target_type', 'required'),
+			array('action_id,type_id', 'required'),
 			// array('name', 'length', 'max'=>255),
 			array('id,action,target_type,patient_id,episode_id,event_id,user_id,data,remote_addr,http_user_agent,server_name,request_uri,site_id,firm_id', 'safe', 'on'=>'search'),
 			// The following rule is used by search().
@@ -97,6 +97,11 @@ class Audit extends BaseActiveRecord
 			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 			'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+			'action' => array(self::BELONGS_TO, 'AuditAction', 'action_id'),
+			'target_type' => array(self::BELONGS_TO, 'AuditType', 'type_id'),
+			'ip_addr' => array(self::BELONGS_TO, 'AuditIPAddr', 'ipaddr_id'),
+			'server' => array(self::BELONGS_TO, 'AuditServer', 'server_id'),
+			'user_agent' => array(self::BELONGS_TO, 'AuditUseragent', 'useragent_id'),
 		);
 	}
 
@@ -141,36 +146,84 @@ class Audit extends BaseActiveRecord
 		));
 	}
 
-	public function save($runValidation=true, $attributes=null, $allow_overriding=false) {
-		if(isset($_SERVER['REMOTE_ADDR'])) {
-			$this->remote_addr = $_SERVER['REMOTE_ADDR'];
-			$this->http_user_agent = @$_SERVER['HTTP_USER_AGENT'];
-			$this->server_name = $_SERVER['SERVER_NAME'];
+	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
+	{
+		if (isset($_SERVER['REMOTE_ADDR'])) {
+			if (!$ipaddr = AuditIPAddr::model()->find('name=?',array($_SERVER['REMOTE_ADDR']))) {
+				$ipaddr = new AuditIPAddr;
+				$ipaddr->name = $_SERVER['REMOTE_ADDR'];
+				if (!$ipaddr->save()) {
+					throw new Exception("Unable to save audit IP address: ".print_r($ipaddr->getErrors(),true));
+				}
+			}
+
+			if (isset($_SERVER['HTTP_USER_AGENT'])) {
+				if (!$useragent = AuditUseragent::model()->find('name=?', array($_SERVER['HTTP_USER_AGENT']))) {
+					$useragent = new AuditUseragent;
+					$useragent->name = $_SERVER['HTTP_USER_AGENT'];
+					if (!$useragent->save()) {
+						throw new Exception("Unable to save user agent: ".print_r($useragent->getErrors(),true));
+					}
+				}
+				$this->useragent_id = $useragent->id;
+			}
+
+			if (!$server = AuditServer::model()->find('name=?',array($_SERVER['SERVER_NAME']))) {
+				$server = new AuditServer;
+				$server->name = $_SERVER['SERVER_NAME'];
+				if (!$server->save()) {
+					throw new Exception("Unable to save server: ".print_r($server->getErrors(),true));
+				}
+			}
+
+			$this->ipaddr_id = $ipaddr->id;
+			$this->server_id = $server->id;
 			$this->request_uri = $_SERVER['REQUEST_URI'];
+
 			if ($this->user) {
 				$this->site_id = Yii::app()->session['selected_site_id'];
 				$this->firm_id = Yii::app()->session['selected_firm_id'];
 			}
 		}
-		parent::save($runValidation, $attributes, $allow_overriding);
+		return parent::save($runValidation, $attributes, $allow_overriding);
 	}
 
-	public function getColour() {
-		switch ($this->action) {
-			case 'login-successful':
-				return 'Green';
-				break;
-			case 'login-failed':
-			case 'search-error':
-				return 'Red';
-				break;
+	public function getColour()
+	{
+		if ($this->action) {
+			switch ($this->action->name) {
+				case 'login-successful':
+					return 'Green';
+					break;
+				case 'login-failed':
+				case 'search-error':
+					return 'Red';
+					break;
+			}
 		}
 	}
 
-	public static function add($target, $action, $data=null, $log=false, $properties=array()) {
+	public static function add($target, $action, $data=null, $log=false, $properties=array())
+	{
+		if (!$_target = AuditType::model()->find('name=?',array($target))) {
+			$_target = new AuditType;
+			$_target->name = $target;
+			if (!$_target->save()) {
+				throw new Exception("Unable to save audit target: ".print_r($_target->getErrors(),true));
+			}
+		}
+
+		if (!$_action = AuditAction::model()->find('name=?',array($action))) {
+			$_action = new AuditAction;
+			$_action->name = $action;
+			if (!$_action->save()) {
+				throw new Exception("Unable to save audit action: ".print_r($_action->getErrors(),true));
+			}
+		}
+
 		$audit = new Audit;
-		$audit->target_type = $target;
-		$audit->action = $action;
+		$audit->type_id = $_target->id;
+		$audit->action_id = $_action->id;
 		$audit->data = $data;
 
 		if (!isset($properties['user_id'])) {
@@ -183,7 +236,9 @@ class Audit extends BaseActiveRecord
 			$audit->{$key} = $value;
 		}
 
-		$audit->save();
+		if (!$audit->save()) {
+			throw new Exception("Failed to save audit entry: ".print_r($audit->getErrors(),true));
+		}
 
 		if (isset($properties['user_id'])) {
 			$username = User::model()->findByPk($properties['user_id'])->username;

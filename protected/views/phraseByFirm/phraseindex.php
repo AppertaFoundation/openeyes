@@ -18,7 +18,7 @@
  */
 
 $this->breadcrumbs=array(
-	'Phrase By Firm' => array('/phraseByFirm/index'), 
+	'Phrase By Firm' => array('/phraseByFirm/index'),
 	$sectionName
 );
 $this->menu=array(

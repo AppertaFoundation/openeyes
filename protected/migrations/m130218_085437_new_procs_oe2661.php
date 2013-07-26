@@ -62,7 +62,8 @@ class m130218_085437_new_procs_oe2661 extends CDbMigration
 		$this->delete('proc',"term='Insertion of sustained release device into posterior segment of eye' and snomed_code='428618008'");
 	}
 
-	public function hasTable($table) {
+	public function hasTable($table)
+	{
 		foreach (Yii::app()->db->createCommand("show tables")->queryAll() as $row) {
 			foreach ($row as $key => $value) {
 				if ($value == $table) {

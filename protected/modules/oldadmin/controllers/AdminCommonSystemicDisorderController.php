@@ -62,7 +62,7 @@ class AdminCommonSystemicDisorderController extends Controller
 			if (isset($disorder)) {
 				$model->disorder_id = $disorder->id;
 
-				if($model->save()) {
+				if ($model->save()) {
 					$this->redirect(array('view','id'=>$model->id));
 				}
 			} else {
@@ -92,7 +92,7 @@ class AdminCommonSystemicDisorderController extends Controller
 			if (isset($disorder)) {
 				$model->disorder_id = $disorder->id;
 
-				if($model->save()) {
+				if ($model->save()) {
 					$this->redirect(array('view','id'=>$model->id));
 				}
 			} else {
@@ -113,16 +113,14 @@ class AdminCommonSystemicDisorderController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
-		{
+		if (Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-		}
-		else
+		} else
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
 	}
 
@@ -159,7 +157,7 @@ class AdminCommonSystemicDisorderController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=CommonSystemicDisorder::model()->findByPk((int)$id);
+		$model=CommonSystemicDisorder::model()->findByPk((int) $id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -171,8 +169,7 @@ class AdminCommonSystemicDisorderController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='common-systemic-disorder-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax']==='common-systemic-disorder-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

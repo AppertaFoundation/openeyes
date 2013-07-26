@@ -21,15 +21,15 @@
  * This is the model class for table "common_previous_operation".
  *
  * The followings are the available columns in table 'common_previous_operation':
- * @property string $id
+ * @property integer $id
  * @property string $name
- * @property string $display_order
+ * @property integer $display_order
  */
 class CommonPreviousOperation extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return SectionType the static model class
+	 * @return CommonPreviousOperation the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

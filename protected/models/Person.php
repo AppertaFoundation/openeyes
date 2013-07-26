@@ -21,7 +21,7 @@
  * This is the model class for table "person".
  *
  * The followings are the available columns in table 'person':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property integer $letter_template_only
  */
@@ -44,7 +44,8 @@ class Person extends BaseActiveRecord
 		return 'person';
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',

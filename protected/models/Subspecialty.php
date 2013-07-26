@@ -21,15 +21,14 @@
  * This is the model class for table "subspecialty".
  *
  * The followings are the available columns in table 'subspecialty':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $class_name
  *
  * The followings are the available model relations:
- * @property EventTypeElementTypeAssignmentSubspecialtyAssignment[] $eventTypeElementTypeAssignmentSubspecialtyAssignments
- * @property ExamPhrase[] $examPhrases
  * @property LetterTemplate[] $letterTemplates
  * @property ServiceSubspecialtyAssignment[] $serviceSubspecialtyAssignments
+ * @property Specialty $specialty
  */
 class Subspecialty extends BaseActiveRecord
 {
@@ -74,8 +73,8 @@ class Subspecialty extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-//			'eventTypeElementTypeAssignmentSubspecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSubspecialtyAssignment', 'subspecialty_id'),
-			'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'subspecialty_id'),
+			//'eventTypeElementTypeAssignmentSubspecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSubspecialtyAssignment', 'subspecialty_id'),
+			//'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'subspecialty_id'),
 			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'subspecialty_id'),
 			'serviceSubspecialtyAssignments' => array(self::HAS_MANY, 'ServiceSubspecialtyAssignment', 'subspecialty_id'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
@@ -116,17 +115,16 @@ class Subspecialty extends BaseActiveRecord
 
 	/**
 	 * Fetch an array of subspecialty IDs and names, by default does not return non medical subspecialties (as defined by parent specialty)
-	 * 
+	 *
 	 * @param bool $nonmedical
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getList($nonmedical = false)
 	{
 		if (!$nonmedical) {
 			$list = Subspecialty::model()->with('specialty')->findAll('specialty.specialty_type_id = :surgical or specialty.specialty_type_id = :medical',array(':surgical'=>1,':medical'=>2));
-		}
-		else {
+		} else {
 			$list = Subspecialty::model()->findAll();
 		}
 		$result = array();
@@ -136,5 +134,28 @@ class Subspecialty extends BaseActiveRecord
 		}
 
 		return $result;
+	}
+
+	public function findAllByCurrentSpecialty()
+	{
+		if (!isset(Yii::app()->params['institution_specialty'])) {
+			throw new Exception("institution_specialty code is not set in params");
+		}
+
+		if (!$specialty = Specialty::model()->find('code=?',array(Yii::app()->params['institution_specialty']))) {
+			throw new Exception("Specialty not found: ".Yii::app()->params['institution_specialty']);
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('specialty_id = :specialty_id');
+		$criteria->params[':specialty_id'] = $specialty->id;
+		$criteria->order = 'name asc';
+
+		return Subspecialty::model()->findAll($criteria);
+	}
+
+	public function getTreeName()
+	{
+		return $this->ref_spec;
 	}
 }

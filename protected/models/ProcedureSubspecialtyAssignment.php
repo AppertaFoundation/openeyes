@@ -21,13 +21,13 @@
  * This is the model class for table "proc_subspecialty_assignment".
  *
  * The followings are the available columns in table 'proc_subspecialty_assignment':
- * @property string $id
- * @property string $proc_id
- * @property string $subspecialty_id
+ * @property integer $id
+ * @property integer $proc_id
+ * @property integer $subspecialty_id
  *
  * The followings are the available model relations:
  * @property Subspecialty $subspecialty
- * @property Proc $proc
+ * @property Procedure $procedure
  */
 class ProcedureSubspecialtyAssignment extends BaseActiveRecord
 {

@@ -43,4 +43,3 @@
 	<?php echo CHtml::encode($data->subspecialty_id); ?>
 	<br />
 </div>
-

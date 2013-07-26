@@ -82,7 +82,7 @@ return array(
 					'value_list' => array('Multi select',),
 				),
 				'message' => 'field name cannot be longer than 11 characters for this field type (excluding _id postfix)'
-				
+
 			),
 			array(
 					'type' => 'length',
@@ -93,7 +93,7 @@ return array(
 							'value_list' => array('Dropdown list', 'Radio buttons', 'Textarea with dropdown'),
 					),
 					'message' => 'field name cannot be longer than 20 characters for this field type (excluding _id postfix)'
-			
+
 			),
 		),
 	),

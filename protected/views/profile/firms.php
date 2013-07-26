@@ -32,7 +32,7 @@
 					<div class="sortable">
 						<?php
 						foreach ($user->firmSelections as $i => $firm) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $firm->id?>">
+							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $firm->id?>">
 								<span class="column_checkbox"><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></span>
 								<span class="column_name"><?php echo $firm->name?></span>
 								<span class="column_subspecialty"><?php echo $firm->subspecialtyText?></span>

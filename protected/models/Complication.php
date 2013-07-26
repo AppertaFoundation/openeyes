@@ -21,14 +21,14 @@
  * This is the model class for table "complication".
  *
  * The followings are the available columns in table 'complication':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class Complication extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return Complication the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

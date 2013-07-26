@@ -44,7 +44,7 @@
 		<?php if ($this->patient->date_of_death) { ?>
 		<div class="data_label">Date of Death:</div>
 		<div class="data_value"><?php echo $this->patient->NHSDate('date_of_death') . ' (Age '.$this->patient->getAge().')' ?></div>
-		<?php }else{?>
+		<?php } else {?>
 		<div class="data_label">Age:</div>
 		<div class="data_value"><?php echo $this->patient->getAge()?></div>
 		<?php }?>
