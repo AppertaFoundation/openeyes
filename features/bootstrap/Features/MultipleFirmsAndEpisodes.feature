@@ -9,7 +9,7 @@ Feature: Create an Episode then Change Site and Firm and create another Episode
     Given I am on the OpenEyes "<environment>" homepage
     And I enter login credentials "<username>" and "<password>"
     And I select Site "<site>"
-    Then I select a firm of "1"
+    Then I select a firm of "<firm>"
 
     Then I search for patient name last name "<last>" and first name "<first>"
 
@@ -24,8 +24,8 @@ Feature: Create an Episode then Change Site and Firm and create another Episode
 
 
   Examples:
-    | environment | username | password | site | last   | first  |
-    | master      | admin    | admin    | 2    | Coffin,| Violet |
+    | environment | username | password | site    | firm                             | last   | first  |
+    | master      | admin    | admin    | Example | Example Firm (Example Specialty) | Coffin,| Violet |
 
 
   # Site ID's:
