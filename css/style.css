@@ -1793,7 +1793,9 @@ body .ui-widget-overlay {
 #add-new-event-dialog p > a:active { border: none; color: #fff; background: #5da748; }
 
 #add-new-episode-dialog .details { margin-top: 1em; }
-#add-new-episode-dialog .details p { margin-bottom: 5px; font-size: 15px; padding: 10px; border-radius: 5px; -webkit-border-radius: 5px; background: #f1f1f1;}
+#add-new-episode-dialog .details p { margin-bottom: 1px; font-size: 15px; padding: 10px; border-radius: 5px; -webkit-border-radius: 5px; background: #f1f1f1;}
+#add-new-episode-dialog .details p:first-child { border-bottom-left-radius:0; border-bottom-right-radius: 0;}
+#add-new-episode-dialog .details p:last-child { border-top-left-radius:0; border-top-right-radius: 0;}
 #add-new-episode-dialog .details span { width: 130px; display: inline-block; color: #000; }
 #add-new-episode-dialog .question { margin-top: 1em; }
 #add-new-episode-dialog .buttons { margin-top: 1em; margin-bottom: 10px; }
