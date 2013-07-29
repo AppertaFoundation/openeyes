@@ -11,7 +11,8 @@ class HomePage extends Page
         'firmDropdown' => array('xpath' => "//*[@id='SiteAndFirmForm_firm_id']"),
         'confirmSiteAndFirmButton' => array('xpath' => "//*[@id='site-and-firm-form']//*[@value='Confirm']"),
         'mainSearch' => array('xpath' => "//input[@id='query']"),
-        'searchSubmit' => array('xpath' => "//button[@type='submit']")
+        'searchSubmit' => array('xpath' => "//button[@type='submit']"),
+        'changeFirmHeaderLink' => array('xpath' => "//*[@id='user_firm']//*[contains(text(), 'Change')]")
     );
 
     public function selectSiteID($siteAddress)
@@ -27,6 +28,31 @@ class HomePage extends Page
     public function confirmSelection()
     {
         $this->getElement('confirmSiteAndFirmButton')->press();
+    }
+
+    public function changeFirm ()
+    {
+        $this->getElement('changeFirmHeaderLink')->press();
+    }
+
+    public function searchHospitalNumber ($hospital)
+    {
+        $this->getElement('mainSearch')->setValue($hospital);
+    }
+
+    public function searchPatientName ($first, $last)
+    {
+        $this->getElement('mainSearch')->setValue($first, $last);
+    }
+
+    public function searchNhsNumber ($nhs)
+    {
+        $this->getElement('mainSearch')->setValue($nhs);
+    }
+
+    public function searchSubmit ()
+    {
+        $this->getElement('searchSubmit')->press();
     }
 
 }

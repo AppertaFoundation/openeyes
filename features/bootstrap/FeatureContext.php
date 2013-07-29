@@ -102,43 +102,59 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $homepage->selectFirm($firm);
         $homepage->confirmSelection();
     }
-//
-//    /**
-//     * @Then /^I select Change Firm$/
-//     */
-//    public function ChangeFirm ($firm)
-//    {
-//        $this->clickLink(PatientViewPage::$changeFirmHeaderLink);
-//    }
-//
-//    /**
-//     * @Then /^I search for hospital number "([^"]*)"$/
-//     */
-//    public function iSearchForHospitalNumber($hospital)
-//    {
-//        $this->fillField(Login::$mainSearch, $hospital);
-//        $this->clickLink(Login::$searchSubmit);
-//    }
-//
-//    /**
-//     * @Then /^I search for patient name last name "([^"]*)" and first name"([^"]*)"$/
-//     */
-//    public function iSearchPatientName ($first, $last)
-//    {
-//        $this->fillField(Login::$mainSearch, $first );
-//        $this->fillField(Login::$mainSearch, $last);
-//        $this->clickLink(Login::$searchSubmit);
-//    }
-//
-//        /**
-//     * @Then /^I search for NHS number "([^"]*)"$/
-//     */
-//    public function iSearchForNhsNumber($nhs)
-//    {
-//       $this->fillField(Login::$mainSearch, $nhs);
-//       $this->clickLink(Login::$searchSubmit);
-//    }
-//
+
+    /**
+     * @Then /^I select Change Firm$/
+     */
+    public function changeFirm ()
+    {
+        /**
+         * @var HomePage $homepage
+         */
+        $homepage = $this->getPage('HomePage');
+        $homepage->changeFirm();
+    }
+
+    /**
+     * @Then /^I search for hospital number "([^"]*)"$/
+     */
+
+    public function SearchForHospitalNumber($hospital)
+    {
+        /**
+         * @var HomePage $homepage
+         */
+        $homepage = $this->getPage('HomePage');
+        $homepage->searchHospitalNumber($hospital);
+        $homepage->searchSubmit();
+    }
+
+    /**
+     * @Then /^I search for patient name last name "([^"]*)" and first name"([^"]*)"$/
+     */
+    public function SearchPatientName ($first, $last)
+    {
+        /**
+         * @var HomePage $homepage
+         */
+        $homepage = $this->getPage('HomePage');
+        $homepage->searchPatientName($first, $last);
+        $homepage->searchSubmit();
+    }
+
+     /**
+     * @Then /^I search for NHS number "([^"]*)"$/
+     */
+    public function SearchForNhsNumber($nhs)
+    {
+        /**
+         * @var HomePage $homepage
+         */
+        $homepage = $this->getPage('HomePage');
+        $homepage->searchNhsNumber($nhs);
+        $homepage->searchSubmit();
+    }
+
 //    /**
 //     * @Then /^I select Create or View Episodes and Events$/
 //     */
@@ -209,32 +225,39 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 //        }
 //    }
 //
-//     /**
-//     * @Then /^I Add an Ophthalmic Diagnosis selection of "([^"]*)"$/
-//     */
-//    public function OphthalmicDiagnosisSelection($diagnosis)
-//    {
-//        $this->pressButton(PatientViewPage::$opthDiagnosis);
-//        $this->selectOption(PatientViewPage::$opthDisorder, $diagnosis);
-//        $this->removeDiagnosis++; //
-//    }
-//
-//    /**
-//     * @Given /^I select that it affects eye "([^"]*)"$/
-//     */
-//    public function iSelectThatItAffectsEye($eye)
-//    {
-//        if ($eye==="Right") {
-//            $this->clickLink(PatientViewPage::$opthRighteye);
-//        }
-//        if ($eye==="Both") {
-//            $this->clickLink(PatientViewPage::$opthBotheyes);
-//        }
-//        if ($eye==="Left") {
-//            $this->clickLink(PatientViewPage::$opthLefteye);
-//        }
-//    }
-//
+     /**
+     * @Then /^I Add an Ophthalmic Diagnosis selection of "([^"]*)"$/
+     */
+    public function addOpthalmicDiagnosis ($diagnosis)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientViewPage');
+        $patientView->addOpthalmicDiagnosis($diagnosis);
+    }
+
+    /**
+     * @Given /^I select that it affects eye "([^"]*)"$/
+     */
+    public function SelectThatItAffectsEye($eye)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientViewPage');
+        $patientView->selectEye()
+        if ($eye==="Right") {
+            $this->clickLink(PatientViewPage::$opthRighteye);
+        }
+        if ($eye==="Both") {
+            $this->clickLink(PatientViewPage::$opthBotheyes);
+        }
+        if ($eye==="Left") {
+            $this->clickLink(PatientViewPage::$opthLefteye);
+        }
+    }
+
 //    /**
 //     * @Given /^I select a Opthalmic Diagnosis date of day "([^"]*)" month "([^"]*)" year "([^"]*)"$/
 //     */

@@ -28,5 +28,3 @@ Feature: Create an Episode then Change Site and Firm and create another Episode
     | master      | admin    | admin    | Queens  | Anderson Firm (Cataract) | Coffin,| Violet |
 
 
-  # Site ID's:
-  # Queens-1, Kings-2

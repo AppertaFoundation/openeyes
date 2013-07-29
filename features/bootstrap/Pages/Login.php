@@ -17,8 +17,6 @@ class Login extends Page
         $this->getElement('user')->setValue($user);
         $this->getElement('pass')->setValue($password);
         $this->getElement('loginButton')->press();
-
-
     }
 
 }
