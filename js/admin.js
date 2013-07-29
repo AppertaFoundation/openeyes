@@ -64,7 +64,11 @@ $(document).ready(function() {
 
 		for (var i in e) {
 			if (e[i] == 'admin') {
-				var object = ucfirst(e[parseInt(i)+1].replace(/s$/,''));
+				if (e[parseInt(i)+1].match(/ies$/)) {
+					var object = ucfirst(e[parseInt(i)+1].replace(/ies$/,'y'));
+				} else {
+					var object = ucfirst(e[parseInt(i)+1].replace(/s$/,''));
+				}
 				window.location.href = baseUrl+'/admin/add'+object;
 			}
 		}

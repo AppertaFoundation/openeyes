@@ -65,6 +65,7 @@ class CommissioningBody extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
+			array('commissioning_body_type_id, name, code', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name', 'safe', 'on'=>'search'),
@@ -92,6 +93,7 @@ class CommissioningBody extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+			'commissioning_body_type_id' => 'Commissioning body type',
 		);
 	}
 

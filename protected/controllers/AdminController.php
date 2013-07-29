@@ -824,4 +824,77 @@ class AdminController extends BaseController
 
 		echo $result;
 	}
+
+	public function actionCommissioning_bodies()
+	{
+		$this->render('commissioning_bodies');
+	}
+
+	public function actionEditCommissioningBody()
+	{
+		if (isset($_GET['commissioning_body_id'])) {
+			if (!$cb = CommissioningBody::model()->findByPk(@$_GET['commissioning_body_id'])) {
+				throw new Exception("CommissioningBody not found: ".@$_GET['commissioning_body_id']);
+			}
+			if (!$address = $cb->contact->address) {
+				$address = new Address;
+				$address->country_id = 1;
+			}
+		} else {
+			$cb = new CommissioningBody;
+			$address = new Address;
+			$address->country_id = 1;
+		}
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			$cb->attributes = $_POST['CommissioningBody'];
+
+			if (!$cb->validate()) {
+				$errors = $cb->getErrors();
+			}
+
+			$address->attributes = $_POST['Address'];
+
+			if (!$address->validate()) {
+				$errors = array_merge($errors, $address->getErrors());
+			}
+
+			if (empty($errors)) {
+				if (!$contact = $cb->contact) {
+					$contact = new Contact;
+					if (!$contact->save()) {
+						throw new Exception("Unable to save contact for commissioning body: ".print_r($contact->getErrors(),true));
+					}
+				}
+
+				$cb->contact_id = $contact->id;
+
+				if (!$cb->save()) {
+					throw new Exception("Unable to save CommissioningBody : ".print_r($cb->getErrors(),true));
+				}
+
+				$address->parent_class = 'Contact';
+				$address->parent_id = $contact->id;
+
+				if (!$address->save()) {
+					throw new Exception("Unable to save CommissioningBody address: ".print_r($address->getErrors(),true));
+				}
+
+				$this->redirect('/admin/commissioning_bodies');
+			}
+		}
+
+		$this->render('/admin/editCommissioningBody',array(
+			'cb' => $cb,
+			'address' => $address,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionAddCommissioning_Body()
+	{
+		return $this->actionEditCommissioningBody();
+	}
 }
