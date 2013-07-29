@@ -21,6 +21,9 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 (function() {
 
+  // Set the jQuery UI Dialog default options.
+  $.extend($.ui.dialog.prototype.options, { dialogClass: 'dialog' });
+
   var EventEmitter = OpenEyes.Util.EventEmitter;
 
   function Dialog(options) {
