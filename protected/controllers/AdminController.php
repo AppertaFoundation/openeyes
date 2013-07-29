@@ -897,4 +897,48 @@ class AdminController extends BaseController
 	{
 		return $this->actionEditCommissioningBody();
 	}
+
+	public function actionVerifyDeleteCommissioningBodies()
+	{
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('commissioning_body_id',@$_POST['commissioning_body']);
+
+		if (CommissioningBodyPatientAssignment::model()->find($criteria)) {
+			echo "0";
+			return;
+		}
+
+		if (CommissioningBodyPracticeAssignment::model()->find($criteria)) {
+			echo "0";
+		} else {
+			echo "1";
+		}
+	}
+
+	public function actionDeleteCommissioningBodies()
+	{
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('commissioning_body_id',@$_POST['commissioning_body']);
+
+		foreach (CommissioningBodyService::model()->findAll($criteria) as $cbs) {
+			$cbs->commissioning_body_id = null;
+			if (!$cbs->save()) {
+				throw new Exception("Unable to save commissioning body service: ".print_r($cbs->getErrors(),true));
+			}
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('id',@$_POST['commissioning_body']);
+
+		if (CommissioningBody::model()->deleteAll($criteria)) {
+			echo "1";
+		} else {
+			echo "0";
+		}
+	}
+
+	public function actionCommissioning_body_types()
+	{
+		$this->render('commissioning_body_types');
+	}
 }
