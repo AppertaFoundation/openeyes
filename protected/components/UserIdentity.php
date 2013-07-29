@@ -42,7 +42,7 @@ class UserIdentity extends CUserIdentity
 	 * @return boolean whether authentication succeeds.
 	 * @throws
 	 */
-	public function authenticate()
+	public function authenticate($force=false)
 	{
 		if (!in_array(Yii::app()->params['ldap_method'],array('native','zend'))) {
 			throw new Exception('Unsupported LDAP authentication method: '.Yii::app()->params['ldap_method'].', please use native or zend.');
@@ -58,11 +58,11 @@ class UserIdentity extends CUserIdentity
 			Audit::add('login','login-failed',"User not found in local database: $this->username",true);
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 			return false;
-		} elseif ($user->active != 1) {
+		} elseif (!$force && $user->active != 1) {
 			$user->audit('login','login-failed',"User not active and so cannot login: $this->username",true);
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
-		} elseif ($user->access_level == 0) {
+		} elseif (!$force && $user->access_level == 0) {
 			$user->audit('login','login-failed',"User has 0 access level and so cannot login: $this->username",true);
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
@@ -192,7 +192,7 @@ class UserIdentity extends CUserIdentity
 				throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(),true));
 			}
 		} elseif (Yii::app()->params['auth_source'] == 'BASIC') {
-			if (!$user->validatePassword($this->password)) {
+			if (!$force && !$user->validatePassword($this->password)) {
 				$this->errorCode = self::ERROR_PASSWORD_INVALID;
 				$user->audit('login','login-failed',"Login failed for user {$this->username}: invalid password",true);
 				return false;

@@ -138,8 +138,8 @@ class BaseController extends Controller
 
 		if ($app->params['ab_testing']) {
 			if ($app->user->isGuest) {
-				$identity=new UserIdentity('admin', 'admin');
-				$identity->authenticate();
+				$identity=new UserIdentity('admin', '');
+				$identity->authenticate('force');
 				$app->user->login($identity,0);
 				$this->selectedFirmId = 1;
 				$app->session['patient_id'] = 1;
