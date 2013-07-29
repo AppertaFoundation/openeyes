@@ -1656,6 +1656,8 @@ body .ui-widget-overlay {
     opacity: 0.50;
 }
 
+/* ====== Dialog ====== */
+
 .ui-widget-content.dialog {
 	border-color: #999;
     background: #fff;
@@ -1723,7 +1725,7 @@ body .ui-widget-overlay {
     border: 0;
     background: none;
     font-size: 19px;
-    padding: 0;
+    padding: 0 0 10px 0;
 }
 
 .ui-dialog.dialog .ui-dialog-content {
@@ -1756,6 +1758,16 @@ body .ui-widget-overlay {
 
 .ui-widget.dialog button {
     font-family: Helvetica,Arial,Frutiger,Calibri,sans-serif;
+}
+
+/* ====== Alert dialog ====== */
+
+.ui-widget.dialog.alert .ui-dialog-content {
+    overflow: hidden;
+}
+
+.ui-widget.dialog.alert .buttons {
+    padding: 1.5em .5em .5em .5em;
 }
 
 #add-new-event-dialog p { margin-bottom: 8px; -webkit-border-radius: 5px; border-radius: 5px; display: block; -webkit-margin-before: 5px; -webkit-margin-after: 5px; line-height: 1.231; }

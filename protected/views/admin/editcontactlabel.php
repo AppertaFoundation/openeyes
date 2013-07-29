@@ -63,7 +63,9 @@
 				if (response == 0) {
 					window.location.href = baseUrl+'/admin/contactLabels';
 				} else {
-					alert("You cannot delete this contact label because it's in use by "+response+" contacts.");
+					new OpenEyes.Dialog.Alert({
+						content: "You cannot delete this contact label because it's in use by "+response+" contacts."
+					}).open();
 					enableButtons();
 				}
 			}

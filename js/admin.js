@@ -89,7 +89,9 @@ $(document).ready(function() {
 				if (html == '1') {
 					window.location.reload();
 				} else {
-					alert("One or more "+object+"s could not be deleted as they are in use.");
+					new OpenEyes.Dialog.Alert({
+						content: "One or more "+object+"s could not be deleted as they are in use."
+					}).open();
 				}
 			}
 		});
@@ -106,7 +108,9 @@ $(document).ready(function() {
 				if (m) {
 					window.location.href = baseUrl+'/admin/editUser/'+m[0];
 				} else {
-					alert("User not found");
+					new OpenEyes.Dialog.Alert({
+						content: "User not found"
+					}).open();
 				}
 			}
 		});

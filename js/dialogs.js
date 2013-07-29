@@ -52,7 +52,12 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
     this.instance = this.content.data('ui-dialog');
   };
 
-  Dialog.prototype.bindEvents = $.noop;
+  Dialog.prototype.bindEvents = function() {
+    this.content.on({
+      dialogclose: this.onDialogClose.bind(this),
+      dialogopen: this.onDialogOpen.bind(this)
+    });
+  };
 
   Dialog.prototype.compileTemplate = function(options) {
     var template = $(options.selector).html();
@@ -62,13 +67,11 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
   Dialog.prototype.open = function() {
     this.instance.open();
-    this.emit('open');
   };
 
   Dialog.prototype.close = function() {
 
     this.instance.close();
-    this.emit('close');
 
     if (this.options.destroyOnClose) {
       this.destroy();
@@ -78,7 +81,14 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
   Dialog.prototype.destroy = function() {
     this.instance.destroy();
     this.content.remove();
-    this.emit('destroy');
+  };
+
+  Dialog.prototype.onDialogOpen = function() {
+    this.emit('open');
+  };
+
+  Dialog.prototype.onDialogClose = function() {
+    this.emit('close');
   };
 
   OpenEyes.Dialog = Dialog;
@@ -89,6 +99,16 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
   var Dialog = OpenEyes.Dialog;
 
+  /**
+   * AlertDialog
+   * @name AlertDialog
+   * @constructor
+   * @example
+   * var alert = new OpenEyes.Dialog.Alert({
+   *   content: 'Here is some content.'
+   * });
+   * alert.open();
+   */
   function AlertDialog(options) {
 
     options = $.extend(true, options, AlertDialog.defaultOptions);
@@ -126,6 +146,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
   };
 
   AlertDialog.prototype.bindEvents = function() {
+    Dialog.prototype.bindEvents.apply(this, arguments);
     this.content.on('click', '.ok', this.onButtonClick.bind(this));
   };
 

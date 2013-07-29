@@ -29,7 +29,9 @@ $(document).ready(function(){
 			'data': 'subspecialty_id='+subspecialty_id+'&patient_id='+OE_patient_id+'&returnUrl='+returnUrl+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(html) {
 				if (html == "0") {
-					alert("Sorry, you cannot add an event to this episode because you are not in any firms with the same subspecialty.");
+					new OpenEyes.Dialog.Alert({
+						content: 'Sorry, you cannot add an event to this episode because you are not in any firms with the same subspecialty.'
+					}).open();
 				} else {
 					$('#user_panel').before(html);
 				}
@@ -54,7 +56,9 @@ $(document).ready(function(){
 			'url': baseUrl+'/patient/verifyAddNewEpisode?patient_id='+OE_patient_id,
 			'success': function(response) {
 				if (response != '1') {
-					alert("There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want.");
+					new OpenEyes.Dialog.Alert({
+						content: "There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want."
+					}).open();
 				} else {
 					$.ajax({
 						'type': 'POST',

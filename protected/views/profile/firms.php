@@ -91,7 +91,9 @@
 				if (html == "1") {
 					window.location.reload();
 				} else {
-					alert("Something went wrong trying to add the firms.	Please try again or contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "Something went wrong trying to add the firms.	Please try again or contact support for assistance."
+					}).open();
 				}
 			}
 		});

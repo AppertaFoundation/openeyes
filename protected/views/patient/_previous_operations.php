@@ -129,7 +129,9 @@
 	});
 	$('button.btn_save_previous_operation').click(function() {
 		if ($('#previous_operation').length <1) {
-			alert("Please enter an operation");
+			new OpenEyes.Dialog.Alert({
+				content: "Please enter an operation"
+			}).open();
 			return false;
 		}
 		$('img.add_previous_operation_loader').show();
@@ -181,11 +183,15 @@
 				if (html == 'success') {
 					$('a.removeOperation[rel="'+$('#operation_id').val()+'"]').parent().parent().remove();
 				} else {
-					alert("Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance."
+					}).open();
 				}
 			},
 			'error': function() {
-				alert("Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance.");
+				new OpenEyes.Dialog.Alert({
+					content: "Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance."
+				}).open();
 			}
 		});
 

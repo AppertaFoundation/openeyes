@@ -40,6 +40,7 @@ Object.defineProperty(Object.prototype, 'mixin', {
  */
 Object.defineProperty(Function.prototype, 'inherits', {
   value: function(_super, _subProto) {
+    this._super = _super;
     this.prototype = Object.create(_super.prototype);
     this.prototype.constructor = this;
     this.prototype.mixin(_subProto);

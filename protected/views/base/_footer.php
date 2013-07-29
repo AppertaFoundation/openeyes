@@ -53,3 +53,7 @@ $(document).ready(function() {
 	});
 });
 </script>
+
+<?php
+	$this->renderPartial('//base/_script_templates', array());
+?>
