@@ -1666,7 +1666,6 @@ body .ui-widget-overlay {
 /* ====== Dialog ====== */
 
 .ui-widget-content.dialog {
-	border-color: #999;
     background: #fff;
     -moz-box-shadow: 2px 2px 2px 2px #666;
     -webkit-box-shadow: 2px 2px 2px 2px #666;
@@ -1674,6 +1673,11 @@ body .ui-widget-overlay {
     -webkit-border-radius: 7px;
     -moz-border-radius: 7px;
     border-radius: 7px;
+    border-width: 0;
+}
+
+.ui-widget-content.dialog.event,
+.ui-widget-content.dialog.episode {
     border: 7px solid #69bd51;
 }
 
