@@ -1004,4 +1004,98 @@ class AdminController extends BaseController
 
 		echo "1";
 	}
+
+	public function actionCommissioning_Body_Services()
+	{
+		$this->render('commissioning_body_services');
+	}
+
+	public function actionEditCommissioningBodyService()
+	{
+		$address = new Address;
+		$address->country_id = 1;
+
+		if (isset($_GET['commissioning_body_service_id'])) {
+			if (!$cbs = CommissioningBodyService::model()->findByPk(@$_GET['commissioning_body_service_id'])) {
+				throw new Exception("CommissioningBody not found: ".@$_GET['commissioning_body_service_id']);
+			}
+			if ($cbs->contact && $cbs->contact->address) {
+				$address = $cbs->contact->address;
+			}
+		} else {
+			$cbs = new CommissioningBodyService;
+		}
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			$cbs->attributes = $_POST['CommissioningBodyService'];
+
+			if (!$cbs->validate()) {
+				$errors = $cbs->getErrors();
+			}
+
+			$address->attributes = $_POST['Address'];
+
+			if (!$address->validate()) {
+				$errors = array_merge($errors, $address->getErrors());
+			}
+
+			if (empty($errors)) {
+				if (!$address->id) {
+					$contact = new Contact;
+					if (!$contact->save()) {
+						throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
+					}
+
+					$cbs->contact_id = $contact->id;
+
+					$address->parent_class = 'Contact';
+					$address->parent_id = $contact->id;
+				}
+
+				if (!$cbs->save()) {
+					throw new Exception("Unable to save CommissioningBodyService: ".print_r($cbs->getErrors(),true));
+				}
+				
+				if (!$address->save()) {
+					throw new Exception("Unable to save CommissioningBodyService address: ".print_r($address->getErrors(),true));
+				}
+
+				$this->redirect('/admin/commissioning_body_services');
+			}
+		}
+
+		$this->render('/admin/editCommissioningBodyService',array(
+			'cbs' => $cbs,
+			'address' => $address,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionAddCommissioningBodyService()
+	{
+		$this->actionEditCommissioningBodyService();
+	}
+
+	public function actionVerifyDeleteCommissioningBodyServices()
+	{
+		// Currently no foreign keys to this table
+		echo "1";
+	}
+
+	public function actionDeleteCommissioningBodyServices()
+	{
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('id',@$_POST['commissioning_body_service']);
+
+		foreach (CommissioningBodyService::model()->findAll($criteria) as $cbs) {
+			if (!$cbs->delete()) {
+				echo "0";
+				return;
+			}
+		}
+
+		echo "1";
+	}
 }

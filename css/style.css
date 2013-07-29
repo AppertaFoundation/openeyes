@@ -1608,6 +1608,13 @@ div.pagination .selected { background-color: #0b59da; color: #fff; padding-left:
 #admin_commissioning_body_types ul li .column_code { width: 44px; display: inline-block; }
 #admin_commissioning_body_types ul li .column_name { width: 744px; display: inline-block; }
 
+#admin_commissioning_body_services ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_commissioning_body_services ul li .column_id { width: 30px; display: inline-block; }
+#admin_commissioning_body_services ul li .column_code { width: 44px; display: inline-block; }
+#admin_commissioning_body_services ul li .column_name { width: 232px; display: inline-block; }
+#admin_commissioning_body_services ul li .column_type { width: 232px; display: inline-block; }
+#admin_commissioning_body_services ul li .column_body { width: 232px; display: inline-block; }
+
 #div_Firm_consultant_id { margin-top: 2px; }
 
 #profile_sites ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }

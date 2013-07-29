@@ -65,6 +65,7 @@ class CommissioningBodyService extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
+			array('name, code, commissioning_body_service_type_id, commissioning_body_id, contact_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name', 'safe', 'on'=>'search'),
@@ -83,7 +84,7 @@ class CommissioningBodyService extends BaseActiveRecord
 			'type' => array(self::BELONGS_TO, 'CommissioningBodyServiceType', 'commissioning_body_service_type_id'),
 			// At this stage, there is a one to many relationship for bodies to services, but at some point in the future
 			// it may be necessary to update this to a many to many to relationship 
-			'commissioning_body' => array(self::BELONGS_TO, 'ComissioningBody', 'commissioning_body_id'),
+			'commissioning_body' => array(self::BELONGS_TO, 'CommissioningBody', 'commissioning_body_id'),
 		);
 	}
 
@@ -93,6 +94,8 @@ class CommissioningBodyService extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+			'commissioning_body_id' => 'Commissioning body',
+			'commissioning_body_service_type_id' => 'Service type',
 		);
 	}
 
