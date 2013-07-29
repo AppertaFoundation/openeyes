@@ -18,9 +18,9 @@
  */
 
 /**
- * This is the model class for table "commissioningbody_type".
+ * This is the model class for table "commissioning_body_type".
  *
- * The followings are the available columns in table 'commissioningbody_type':
+ * The followings are the available columns in table 'commissioning_body_type':
  * @property integer $id
  * @property string $name
  * @property string $shortname
@@ -42,7 +42,7 @@ class CommissioningBodyType extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'commissioningbody_type';
+		return 'commissioning_body_type';
 	}
 
 	/**

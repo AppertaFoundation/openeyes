@@ -1596,6 +1596,13 @@ div.pagination .selected { background-color: #0b59da; color: #fff; padding-left:
 #admin_contactlabels ul li .column_id { width: 30px; display: inline-block; }
 #admin_contactlabels ul li .column_name { width: 794px; display: inline-block; }
 
+#admin_commissioning_bodies ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_commissioning_bodies ul li .column_id { width: 30px; display: inline-block; }
+#admin_commissioning_bodies ul li .column_code { width: 44px; display: inline-block; }
+#admin_commissioning_bodies ul li .column_name { width: 200px; display: inline-block; }
+#admin_commissioning_bodies ul li .column_type { width: 170px; display: inline-block; }
+#admin_commissioning_bodies ul li .column_address { width: 326px; display: inline-block; }
+
 #div_Firm_consultant_id { margin-top: 2px; }
 
 #profile_sites ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
