@@ -24,20 +24,16 @@
 			<form id="admin_commissioning_body_types">
 				<ul class="grid reduceheight">
 					<li class="header">
-						<span class="column_checkbox"><input type="checkbox" id="checkall" class="commissioning_body_types" /></span>
+						<span class="column_checkbox"><input type="checkbox" id="checkall" class="commissioning_body_type" /></span>
 						<span class="column_code">Code</span>
 						<span class="column_name">Name</span>
-						<span class="column_type">Type</span>
-						<span class="column_address">Address</span>
 					</li>
 					<div class="sortable">
-						<?php foreach (CommissioningBody::model()->findAll(array('order'=>'name asc')) as $i => $cb) {?>
+						<?php foreach (CommissioningBodyType::model()->findAll(array('order'=>'name asc')) as $i => $cb) {?>
 							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $cb->id?>">
-								<span class="column_checkbox"><input type="checkbox" name="commissioning_body[]" value="<?php echo $cb->id?>" class="wards" /></span>
-								<span class="column_code"><?php echo $cb->code?></span>
+								<span class="column_checkbox"><input type="checkbox" name="commissioning_body_type[]" value="<?php echo $cb->id?>" class="wards" /></span>
+								<span class="column_code"><?php echo $cb->shortname?></span>
 								<span class="column_name"><?php echo $cb->name?></span>
-								<span class="column_type"><?php echo $cb->type->name?></span>
-								<span class="column_address"><?php echo $cb->address ? $cb->address->address1 : 'None'?></span>
 							</li>
 						<?php }?>
 					</div>
@@ -47,113 +43,99 @@
 	</div>
 </div>
 <div>
-	<?php echo EventAction::button('Add', 'add_commissioning_body', array('colour' => 'blue'))->toHtml()?>
-	<?php echo EventAction::button('Delete', 'delete_commissioning_body', array('colour' => 'blue'))->toHtml()?>
+	<?php echo EventAction::button('Add', 'add_commissioning_body_type', array('colour' => 'blue'))->toHtml()?>
+	<?php echo EventAction::button('Delete', 'delete_commissioning_body_type', array('colour' => 'blue'))->toHtml()?>
 </div>
-<div id="confirm_delete_commissioning_bodys" title="Confirm delete commissioning_body" style="display: none;">
+<div id="confirm_delete_commissioning_body_types" title="Confirm delete commissioning_body_type" style="display: none;">
 	<div>
-		<div id="delete_commissioning_bodys">
+		<div id="delete_commissioning_body_types">
 			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-				<strong>WARNING: This will remove the commissioning bodies from the system.<br/>This action cannot be undone.</strong>
+				<strong>WARNING: This will remove the commissioning body types from the system.<br/>This action cannot be undone.</strong>
 			</div>
 			<p>
 				<strong>Are you sure you want to proceed?</strong>
 			</p>
 			<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
 				<input type="hidden" id="medication_id" value="" />
-				<button type="submit" class="classy red venti btn_remove_commissioning_bodies"><span class="button-span button-span-red">Remove commissioning bodies(s)</span></button>
-				<button type="submit" class="classy green venti btn_cancel_remove_commissioning_bodies"><span class="button-span button-span-green">Cancel</span></button>
+				<button type="submit" class="classy red venti btn_remove_commissioning_body_types"><span class="button-span button-span-red">Remove commissioning body types(s)</span></button>
+				<button type="submit" class="classy green venti btn_cancel_remove_commissioning_body_types"><span class="button-span button-span-green">Cancel</span></button>
 				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 			</div>
 		</div>
 	</div>
 </div>
 <script type="text/javascript">
-	handleButton($('#et_delete_commissioning_bodies'),function(e) {
+	$('li.even .column_code, li.even .column_name, li.even .column_type, li.even .column_address, li.odd .column_code, li.odd .column_name, li.odd .column_type, li.odd .column_address').click(function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/admin/editCommissioningBodyType?commissioning_body_type_id='+$(this).parent().attr('data-attr-id');
+	});
+
+	$('#et_add_commissioning_body_type').click(function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/admin/addCommissioningBodyType';
+	});
+
+	$('#checkall').click(function(e) {
+		$('input[name="commissioning_body_type[]"]').attr('checked',$(this).is(':checked') ? 'checked' : false);
+	});
+
+	$('#et_delete_commissioning_body_type').click(function(e) {
 		e.preventDefault();
 
-		if ($('input[type="checkbox"][name="commissioning_body[]"]:checked').length <1) {
-			alert("Please select the commissioning bodies you wish to delete.");
+		if ($('input[type="checkbox"][name="commissioning_body_type[]"]:checked').length <1) {
+			alert("Please select the commissioning body types you wish to delete.");
 			enableButtons();
 			return;
 		}
 
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteWards',
-			'data': $('form#wards').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'url': baseUrl+'/admin/verifyDeleteCommissioningBodyTypes',
+			'data': $('#admin_commissioning_body_types').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(resp) {
+				var mention = ($('input[type="checkbox"][name="commissioning_body_type[]"]:checked').length == 1) ? 'commissioning body type' : 'commissioning body types';
+
 				if (resp == "1") {
 					enableButtons();
 
-					if ($('input[type="checkbox"][name="ward[]"]:checked').length == 1) {
-						$('#confirm_delete_wards').attr('title','Confirm delete ward');
-						$('#delete_wards').children('div').children('strong').html("WARNING: This will remove the ward from the system.<br/><br/>This action cannot be undone.");
-						$('button.btn_remove_wards').children('span').text('Remove ward');
-					} else {
-						$('#confirm_delete_wards').attr('title','Confirm delete wards');
-						$('#delete_wards').children('div').children('strong').html("WARNING: This will remove the wards from the system.<br/><br/>This action cannot be undone.");
-						$('button.btn_remove_wards').children('span').text('Remove wards');
-					}
+					$('#confirm_delete_commissioning_body_types').attr('title','Confirm delete '+mention);
+					$('#delete_commissioning_body_types').children('div').children('strong').html("WARNING: This will remove the "+mention+" from the system.<br/><br/>This action cannot be undone.");
+					$('button.btn_remove_commissioning_body_types').children('span').text('Remove '+mention);
 
-					$('#confirm_delete_wards').dialog({
+					$('#confirm_delete_commissioning_body_types').dialog({
 						resizable: false,
 						modal: true,
 						width: 560
 					});
 				} else {
-					alert("One or more of the selected wards have active future bookings and so cannot be deleted.");
+					alert("One or more of the selected commissioning body types are in use and so cannot be deleted.");
 					enableButtons();
 				}
 			}
 		});
 	});
 
-	$('button.btn_cancel_remove_wards').click(function(e) {
+	$('button.btn_cancel_remove_commissioning_body_types').click(function(e) {
 		e.preventDefault();
-		$('#confirm_delete_wards').dialog('close');
+		$('#confirm_delete_commissioning_body_types').dialog('close');
 	});
 
-	handleButton($('button.btn_remove_wards'),function(e) {
+	handleButton($('button.btn_remove_commissioning_body_types'),function(e) {
 		e.preventDefault();
 
-		// verify again as a precaution against race conditions
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteWards',
-			'data': $('form#wards').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'url': baseUrl+'/admin/deleteCommissioningBodyTypes',
+			'data': $('#admin_commissioning_body_types').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(resp) {
 				if (resp == "1") {
-					$.ajax({
-						'type': 'POST',
-						'url': baseUrl+'/OphTrOperationbooking/admin/deleteWards',
-						'data': $('form#wards').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-						'success': function(resp) {
-							if (resp == "1") {
-								window.location.reload();
-							} else {
-								alert("There was an unexpected error deleting the wards, please try again or contact support for assistance");
-								enableButtons();
-								$('#confirm_delete_wards').dialog('close');
-							}
-						}
-					});
+					window.location.reload();
 				} else {
-					alert("One or more of the selected wards now have active future bookings and so cannot be deleted.");
+					alert("There was an unexpected error deleting the commissioning body types, please try again or contact support for assistance");
 					enableButtons();
-					$('#confirm_delete_wards').dialog('close');
+					$('#confirm_delete_commissioning_body_types').dialog('close');
 				}
 			}
 		});
-	});
-
-	$('li.even, li.odd').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/editCommissioningBody?commissioning_body_id='+$(this).attr('data-attr-id');
-	});
-
-	$('#et_add_commissioning_body').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/addCommissioning_body';
 	});
 </script>
