@@ -133,4 +133,16 @@ class CommissioningBody extends BaseActiveRecord
 	{
 		return $this->name;
 	}
+
+	public function canDelete() {
+		if (CommissioningBodyPatientAssignment::model()->find('commissioning_body_id=?',array($this->id))) {
+			return false;
+		}
+
+		if (CommissioningBodyPracticeAssignment::model()->find('commissioning_body_id',array($this->id))) {
+			return false;
+		}
+
+		return true;
+	}
 }

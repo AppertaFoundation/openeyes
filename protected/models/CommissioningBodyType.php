@@ -52,6 +52,7 @@ class CommissioningBodyType extends BaseActiveRecord
 	{
 		return array(
 			array('name', 'required'),
+			array('name, shortname', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name', 'safe', 'on'=>'search'),

@@ -24,7 +24,7 @@
 			<form id="admin_commissioning_bodies">
 				<ul class="grid reduceheight">
 					<li class="header">
-						<span class="column_checkbox"><input type="checkbox" id="checkall" class="commissioning_bodies" /></span>
+						<span class="column_checkbox"><input type="checkbox" id="checkall" class="commissioning_body" /></span>
 						<span class="column_code">Code</span>
 						<span class="column_name">Name</span>
 						<span class="column_type">Type</span>
@@ -50,9 +50,9 @@
 	<?php echo EventAction::button('Add', 'add_commissioning_body', array('colour' => 'blue'))->toHtml()?>
 	<?php echo EventAction::button('Delete', 'delete_commissioning_body', array('colour' => 'blue'))->toHtml()?>
 </div>
-<div id="confirm_delete_commissioning_bodys" title="Confirm delete commissioning_body" style="display: none;">
+<div id="confirm_delete_commissioning_bodies" title="Confirm delete commissioning_body" style="display: none;">
 	<div>
-		<div id="delete_commissioning_bodys">
+		<div id="delete_commissioning_bodies">
 			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
 				<strong>WARNING: This will remove the commissioning bodies from the system.<br/>This action cannot be undone.</strong>
 			</div>
@@ -69,7 +69,21 @@
 	</div>
 </div>
 <script type="text/javascript">
-	handleButton($('#et_delete_commissioning_bodies'),function(e) {
+	$('li.even .column_code, li.even .column_name, li.even .column_type, li.even .column_address, li.odd .column_code, li.odd .column_name, li.odd .column_type, li.odd .column_address').click(function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/admin/editCommissioningBody?commissioning_body_id='+$(this).parent().attr('data-attr-id');
+	});
+
+	$('#et_add_commissioning_body').click(function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/admin/addCommissioning_body';
+	});
+
+	$('#checkall').click(function(e) {
+		$('input[name="commissioning_body[]"]').attr('checked',$(this).is(':checked') ? 'checked' : false);
+	});
+
+	$('#et_delete_commissioning_body').click(function(e) {
 		e.preventDefault();
 
 		if ($('input[type="checkbox"][name="commissioning_body[]"]:checked').length <1) {
@@ -80,80 +94,52 @@
 
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteWards',
-			'data': $('form#wards').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'url': baseUrl+'/admin/verifyDeleteCommissioningBodies',
+			'data': $('#admin_commissioning_bodies').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(resp) {
+				var mention = ($('input[type="checkbox"][name="commissioning_body[]"]:checked').length == 1) ? 'commissioning body' : 'commissioning bodies';
+
 				if (resp == "1") {
 					enableButtons();
 
-					if ($('input[type="checkbox"][name="ward[]"]:checked').length == 1) {
-						$('#confirm_delete_wards').attr('title','Confirm delete ward');
-						$('#delete_wards').children('div').children('strong').html("WARNING: This will remove the ward from the system.<br/><br/>This action cannot be undone.");
-						$('button.btn_remove_wards').children('span').text('Remove ward');
-					} else {
-						$('#confirm_delete_wards').attr('title','Confirm delete wards');
-						$('#delete_wards').children('div').children('strong').html("WARNING: This will remove the wards from the system.<br/><br/>This action cannot be undone.");
-						$('button.btn_remove_wards').children('span').text('Remove wards');
-					}
+					$('#confirm_delete_commissioning_bodies').attr('title','Confirm delete '+mention);
+					$('#delete_commissioning_bodies').children('div').children('strong').html("WARNING: This will remove the "+mention+" from the system.<br/><br/>This action cannot be undone.");
+					$('button.btn_remove_commissioning_bodies').children('span').text('Remove '+mention);
 
-					$('#confirm_delete_wards').dialog({
+					$('#confirm_delete_commissioning_bodies').dialog({
 						resizable: false,
 						modal: true,
 						width: 560
 					});
 				} else {
-					alert("One or more of the selected wards have active future bookings and so cannot be deleted.");
+					alert("One or more of the selected commissioning bodies are in use and so cannot be deleted.");
 					enableButtons();
 				}
 			}
 		});
 	});
 
-	$('button.btn_cancel_remove_wards').click(function(e) {
+	$('button.btn_cancel_remove_commissioning_bodies').click(function(e) {
 		e.preventDefault();
-		$('#confirm_delete_wards').dialog('close');
+		$('#confirm_delete_commissioning_bodies').dialog('close');
 	});
 
-	handleButton($('button.btn_remove_wards'),function(e) {
+	handleButton($('button.btn_remove_commissioning_bodies'),function(e) {
 		e.preventDefault();
 
-		// verify again as a precaution against race conditions
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/OphTrOperationbooking/admin/verifyDeleteWards',
-			'data': $('form#wards').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'url': baseUrl+'/admin/deleteCommissioningBodies',
+			'data': $('#admin_commissioning_bodies').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(resp) {
 				if (resp == "1") {
-					$.ajax({
-						'type': 'POST',
-						'url': baseUrl+'/OphTrOperationbooking/admin/deleteWards',
-						'data': $('form#wards').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-						'success': function(resp) {
-							if (resp == "1") {
-								window.location.reload();
-							} else {
-								alert("There was an unexpected error deleting the wards, please try again or contact support for assistance");
-								enableButtons();
-								$('#confirm_delete_wards').dialog('close');
-							}
-						}
-					});
+					window.location.reload();
 				} else {
-					alert("One or more of the selected wards now have active future bookings and so cannot be deleted.");
+					alert("There was an unexpected error deleting the commissioning bodies, please try again or contact support for assistance");
 					enableButtons();
-					$('#confirm_delete_wards').dialog('close');
+					$('#confirm_delete_commissioning_bodies').dialog('close');
 				}
 			}
 		});
-	});
-
-	$('li.even, li.odd').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/editCommissioningBody?commissioning_body_id='+$(this).attr('data-attr-id');
-	});
-
-	$('#et_add_commissioning_body').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/addCommissioning_body';
 	});
 </script>

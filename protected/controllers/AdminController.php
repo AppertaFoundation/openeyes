@@ -897,4 +897,111 @@ class AdminController extends BaseController
 	{
 		return $this->actionEditCommissioningBody();
 	}
+
+	public function actionVerifyDeleteCommissioningBodies()
+	{
+		foreach (CommissioningBody::model()->findAllByPk(@$_POST['commissioning_body']) as $cb) {
+			if (!$cb->canDelete()) {
+				echo "0";
+				return;
+			}
+		}
+
+		echo "1";
+	}
+
+	public function actionDeleteCommissioningBodies()
+	{
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('commissioning_body_id',@$_POST['commissioning_body']);
+
+		foreach (CommissioningBodyService::model()->findAll($criteria) as $cbs) {
+			$cbs->commissioning_body_id = null;
+			if (!$cbs->save()) {
+				throw new Exception("Unable to save commissioning body service: ".print_r($cbs->getErrors(),true));
+			}
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('id',@$_POST['commissioning_body']);
+
+		if (CommissioningBody::model()->deleteAll($criteria)) {
+			echo "1";
+		} else {
+			echo "0";
+		}
+	}
+
+	public function actionCommissioning_body_types()
+	{
+		$this->render('commissioning_body_types');
+	}
+
+	public function actionEditCommissioningBodyType()
+	{
+		if (isset($_GET['commissioning_body_type_id'])) {
+			if (!$cbt = CommissioningBodyType::model()->findByPk(@$_GET['commissioning_body_type_id'])) {
+				throw new Exception("CommissioningBody not found: ".@$_GET['commissioning_body_type_id']);
+			}
+		} else {
+			$cbt = new CommissioningBodyType;
+		}
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			$cbt->attributes = $_POST['CommissioningBodyType'];
+
+			if (!$cbt->validate()) {
+				$errors = $cbt->getErrors();
+			}
+
+			if (empty($errors)) {
+				if (!$cbt->save()) {
+					throw new Exception("Unable to save CommissioningBodyType : ".print_r($cbt->getErrors(),true));
+				}
+				$this->redirect('/admin/commissioning_body_types');
+			}
+		}
+
+		$this->render('/admin/editCommissioningBodyType',array(
+			'cbt' => $cbt,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionAddCommissioningBodyType()
+	{
+		$this->actionEditCommissioningBodyType();
+	}
+
+	public function actionVerifyDeleteCommissioningBodyTypes()
+	{
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('commissioning_body_type_id',@$_POST['commissioning_body_type']);
+
+		foreach (CommissioningBody::model()->findAll($criteria) as $cb) {
+			if (!$cb->canDelete()) {
+				echo "0";
+				return;
+			}
+		}
+
+		echo "1";
+	}
+
+	public function actionDeleteCommissioningBodyTypes()
+	{
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('id',@$_POST['commissioning_body_type']);
+
+		foreach (CommissioningBodyType::model()->findAll($criteria) as $cbt) {
+			if (!$cbt->delete()) {
+				echo "0";
+				return;
+			}
+		}
+
+		echo "1";
+	}
 }
