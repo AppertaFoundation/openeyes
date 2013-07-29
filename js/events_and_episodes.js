@@ -29,7 +29,9 @@ $(document).ready(function(){
 			'data': 'subspecialty_id='+subspecialty_id+'&patient_id='+OE_patient_id+'&returnUrl='+returnUrl+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(html) {
 				if (html == "0") {
-					alert("Sorry, you cannot add an event to this episode because you are not in any firms with the same subspecialty.");
+					new OpenEyes.Dialog.Alert({
+						content: 'Sorry, you cannot add an event to this episode because you are not in any firms with the same subspecialty.'
+					}).open();
 				} else {
 					$('#user_panel').before(html);
 				}
@@ -54,7 +56,9 @@ $(document).ready(function(){
 			'url': baseUrl+'/patient/verifyAddNewEpisode?patient_id='+OE_patient_id,
 			'success': function(response) {
 				if (response != '1') {
-					alert("There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want.");
+					new OpenEyes.Dialog.Alert({
+						content: "There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want."
+					}).open();
 				} else {
 					$.ajax({
 						'type': 'POST',
@@ -81,7 +85,7 @@ $(document).ready(function(){
 		if ($(this).val() != '') {
 			var target = $('#' + $(this).attr('id').replace(/^dropDownTextSelection_/,''));
 			var currentVal = target.val();
-			
+
 			if($(this).hasClass('delimited')) {
 				var newText = $(this).val();
 			} else {
@@ -99,14 +103,14 @@ $(document).ready(function(){
 			} else if ($(this).hasClass('delimited') && currentVal.slice(-1) != ' ') {
 				newText = ' ' + newText;
 			}
-			
+
 			target.val(currentVal + newText);
 			target.trigger('autosize');
 
 			$(this).val('');
 		}
 	});
-	
+
 });
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
@@ -173,12 +177,12 @@ WidgetSlider.prototype = {
 						dp += '0';
 						val += '0';
 					}
-					
+
 					while (dp.length > this.force_dp) {
 						dp = dp.replace(/.$/,'');
 						val = val.replace(/.$/,'');
 					}
-				} 
+				}
 			}
 
 			if (this.prefix_positive && parseFloat(val) >0) {

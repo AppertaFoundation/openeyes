@@ -27,7 +27,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 		'modal' => true,
 		'draggable' => false,
 		'resizable' => false,
-		'width' => 450,
+		'width' => 580,
+		'minHeight' => 'auto'
 	),
 ))?>
 	<div class="title">

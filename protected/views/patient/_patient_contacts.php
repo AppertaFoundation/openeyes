@@ -514,9 +514,13 @@ $(document).ready(function() {
 			'success': function(html) {
 				if (html == "1") {
 					$('#add_site_dialog').dialog('close');
-					alert("Your request has been sent, we aim to process requests within 1 working day.");
+					new OpenEyes.Dialog.Alert({
+						content: "Your request has been sent, we aim to process requests within 1 working day."
+					}).open();
 				} else {
-					alert("There was an unexpected error sending your message, please try again or contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "There was an unexpected error sending your message, please try again or contact support for assistance."
+					}).open();
 				}
 			}
 		});
