@@ -22,7 +22,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	'id' => 'add-new-episode-dialog',
 	'options' => array(
 		'title' => 'Create new episode',
-		'dialogClass' => 'dialog',
+		'dialogClass' => 'dialog episode',
 		'autoOpen' => true,
 		'modal' => true,
 		'draggable' => false,
