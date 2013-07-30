@@ -137,4 +137,20 @@ class Practice extends BaseActiveRecord
 		parent::afterFind();
 		Yii::app()->event->dispatch('practice_after_find', array('practice' => $this));
 	}
+
+	/**
+	 * get the CommissioningBody of the CommissioningBodyType $type
+	 * currently assumes there would only ever be one commissioning body of a given type
+	 * 
+	 * @param CommissioningBodyType $type
+	 * @return CommissioningBody
+	 */
+	public function getCommissioningBodyOfType($type)
+	{
+		foreach ($this->commissioningbodies as $body) {
+			if ($body->type->id == $type->id) {
+				return $body;
+			}
+		}
+	}
 }

@@ -65,10 +65,10 @@
 										?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('action', @$_POST['action'], $actions, array('empty' => 'All actions'))?>
+										<?php echo CHtml::dropDownList('action', @$_POST['action'], CHtml::listData(AuditAction::model()->findAll(array('order'=>'name')),'id','name'), array('empty' => 'All actions'))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('target_type', @$_POST['target_type'], $targets, array('empty' => 'All targets'))?>
+										<?php echo CHtml::dropDownList('target_type', @$_POST['target_type'], CHtml::listData(AuditType::model()->findAll(array('order'=>'name')),'id','name'), array('empty' => 'All targets'))?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getActiveList(), array('empty' => 'All event types'))?>

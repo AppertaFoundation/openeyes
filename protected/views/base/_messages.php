@@ -26,7 +26,7 @@ if ($flash_messages = Yii::app()->user->getFlashes()) {
 		$id = isset($parts[1]) ? $parts[1] : $parts[0];
 		?>
 <div id="flash-<?php echo $id; ?>"
-	class="alertBox flash-<?php echo $class; ?>">
+	class="<?php echo $class?>Box flash-<?php echo $class; ?>">
 	<?php echo $flash_message; ?>
 </div>
 <?php }
