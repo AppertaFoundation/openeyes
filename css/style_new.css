@@ -3753,34 +3753,34 @@ button.small, .button.small {
   margin: 0;
 }
 
-/* line 14, ../sass/new/openeyes/components/panels/_filters-panel.scss */
-.filters-panel {
+/* line 14, ../sass/new/openeyes/components/panels/_actions-panel.scss */
+.actions-panel {
   padding: 0;
   border: 0;
   margin: 0 0 0.625em 0;
 }
-/* line 18, ../sass/new/openeyes/components/panels/_filters-panel.scss */
-.filters-panel button, .filters-panel .button {
+/* line 18, ../sass/new/openeyes/components/panels/_actions-panel.scss */
+.actions-panel button, .actions-panel .button {
   margin: 0.25em 0.625em 0.375em 0;
   vertical-align: middle;
 }
-/* line 21, ../sass/new/openeyes/components/panels/_filters-panel.scss */
-.filters-panel button:last-child, .filters-panel .button:last-child {
+/* line 21, ../sass/new/openeyes/components/panels/_actions-panel.scss */
+.actions-panel button:last-child, .actions-panel .button:last-child {
   margin-right: 0;
 }
-/* line 25, ../sass/new/openeyes/components/panels/_filters-panel.scss */
-.filters-panel input, .filters-panel select, .filters-panel label {
+/* line 25, ../sass/new/openeyes/components/panels/_actions-panel.scss */
+.actions-panel input, .actions-panel select, .actions-panel label {
   margin: 0;
   display: inline-block;
 }
-/* line 29, ../sass/new/openeyes/components/panels/_filters-panel.scss */
-.filters-panel .filters-label {
+/* line 29, ../sass/new/openeyes/components/panels/_actions-panel.scss */
+.actions-panel .actions-label {
   font-size: 0.8125em;
   font-weight: bold;
   padding: 0.625em 0;
 }
-/* line 34, ../sass/new/openeyes/components/panels/_filters-panel.scss */
-.filters-panel .panel-orange {
+/* line 34, ../sass/new/openeyes/components/panels/_actions-panel.scss */
+.actions-panel .panel-orange {
   border: 0;
   display: inline-block;
   vertical-align: top;
@@ -3789,11 +3789,11 @@ button.small, .button.small {
   padding: 0.3125em 0.625em;
   margin-right: 0.3125em;
 }
-/* line 42, ../sass/new/openeyes/components/panels/_filters-panel.scss */
-.filters-panel .panel-orange label {
+/* line 42, ../sass/new/openeyes/components/panels/_actions-panel.scss */
+.actions-panel .panel-orange label {
   font-weight: normal;
 }
-/* line 46, ../sass/new/openeyes/components/panels/_filters-panel.scss */
-.filters-panel .panel-latest-letter {
+/* line 46, ../sass/new/openeyes/components/panels/_actions-panel.scss */
+.actions-panel .panel-latest-letter {
   width: 7.5em;
 }

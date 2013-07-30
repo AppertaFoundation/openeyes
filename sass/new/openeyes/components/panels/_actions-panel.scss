@@ -1,0 +1,49 @@
+// Actions panel
+//
+// Styleguide 15.1
+
+// Actions panel variables
+$oe-actions-panel-button-margin: emCalc(4px) emCalc(10px) emCalc(6px) 0;
+$oe-actions-label-font-size: emCalc(13px);
+$oe-actions-label-padding: emCalc(10px) 0;
+$oe-actions-panel-orange-bg-color: #DAA520;
+$oe-actions-panel-orange-padding: emCalc(5px) emCalc(10px);
+$oe-actions-panel-orange-margin-right: emCalc(5px);
+$oe-actions-panel-latest-letter-width: emCalc(120px);
+
+.actions-panel {
+    padding: 0;
+    border: 0;
+    margin: 0 0 emCalc(10px) 0;
+    button, .button {
+        margin: $oe-actions-panel-button-margin;
+        vertical-align: middle;
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+    input, select, label {
+        margin: 0;
+        display: inline-block
+    }
+    .actions-label {
+        font-size: $oe-actions-label-font-size;
+        font-weight: bold;
+        padding: $oe-actions-label-padding;
+    }
+    .panel-orange {
+        border: 0;
+        display: inline-block;
+        vertical-align: top;
+        margin-bottom: 0;
+        background-color: $oe-actions-panel-orange-bg-color;
+        padding: $oe-actions-panel-orange-padding;
+        margin-right: $oe-actions-panel-orange-margin-right;
+        label {
+            font-weight: normal;
+        }
+    }
+    .panel-latest-letter {
+        width: $oe-actions-panel-latest-letter-width;
+    }
+}
