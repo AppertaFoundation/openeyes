@@ -17,7 +17,8 @@ module.exports = {
     boss: true,
     eqnull: true,
     browser: true,
-    es3: true,
+    es3: false,
+    es5: false,
     globals: {
       jQuery: true,
       module: false,

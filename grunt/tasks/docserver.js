@@ -49,7 +49,10 @@ module.exports = function(grunt) {
           'http://' + options.hostname + ':' + options.port
         ]
       }, function(error, result){
-        // Ignore any errors...
+        if (error) {
+          grunt.fail.warn(error.toString());
+        }
+        grunt.log.write(result);
       });
     }
 
