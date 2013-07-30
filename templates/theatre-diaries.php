@@ -9,20 +9,22 @@
 		<? include 'components/header-logged-in-no-patient.php'; ?>
 
 		<div class="content">
-			<h1 class="badge">Partial bookings waiting list</h1>
+			<h1 class="badge">Theatre Diaries</h1>
 
 			<div class="box-content">
 
 				<div class="panel actions-panel row">
-					<div class="large-3 column">
+					<div class="large-12 column">
 						<div class="actions-label">
-							Use the filters below to find patients:
+							Use the filters below to view Theatre schedules:
 						</div>
-					</div>
-					<div class="large-9 column text-right">
+						<div class="button-bar">
+							<? include 'components/theatre-diaries-button-bar.php'; ?>
+						</div>
 					</div>
 				</div>
 
+				<? include 'components/theatre-diaries-search-filters.php'; ?>
 
 			</div>
 		</div>

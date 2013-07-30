@@ -14,17 +14,17 @@
 			<div class="box-content">
 
 				<div class="panel actions-panel row">
-					<div class="large-3 column">
+					<div class="large-12 column">
 						<div class="actions-label">
 							Use the filters below to find patients:
 						</div>
-					</div>
-					<div class="large-9 column text-right">
-						<? include 'components/waiting-list-button-bar.php'; ?>
+						<div class="button-bar">
+							<? include 'components/waiting-list-button-bar.php'; ?>
+						</div>
 					</div>
 				</div>
 
-				<? include 'components/waiting-list-filters.php'; ?>
+				<? include 'components/waiting-list-search-filters.php'; ?>
 				<? include 'components/waiting-list-table.php'; ?>
 
 			</div>

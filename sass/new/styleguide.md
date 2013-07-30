@@ -91,7 +91,8 @@ the following conventions if you want to make changes to the stylesheet.
             /* ... */
         }
 
-* Use double-quotes, (eg: `font-family: "Helvetica Neue"`).
+* Always use double-quotes, (eg: `font-family: "Helvetica Neue"`).
+* Always quote attribute values in attribute selectors, (eg: [type="submit"])
 * Never change the foundation component files.
 * Use percentages instead of pixels or em units when adjusting the dimensions of
   layout containers. This allows the layout to be responsive and adapt to different

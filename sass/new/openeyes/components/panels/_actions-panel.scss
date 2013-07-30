@@ -30,6 +30,7 @@ $oe-actions-panel-latest-letter-width: emCalc(120px);
         font-size: $oe-actions-label-font-size;
         font-weight: bold;
         padding: $oe-actions-label-padding;
+        display: inline-block;
     }
     .panel-orange {
         border: 0;
@@ -45,5 +46,8 @@ $oe-actions-panel-latest-letter-width: emCalc(120px);
     }
     .panel-latest-letter {
         width: $oe-actions-panel-latest-letter-width;
+    }
+    .button-bar {
+        float: right;
     }
 }

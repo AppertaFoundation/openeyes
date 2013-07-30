@@ -80,7 +80,8 @@ button, .button {
         @include background(linear-gradient($oe-button-primary-active-bg-color-start, $oe-button-primary-active-bg-color-end));
         border-color: $oe-button-primary-active-border-color;
     }
-    &.disabled, &[disabled] {
+    &.disabled,
+    &[disabled] {
         @include background(linear-gradient($oe-button-disabled-bg-color-start, $oe-button-disabled-bg-color-stop));
         border-color: $oe-button-disabled-border-color;
         text-shadow: none;
@@ -117,5 +118,32 @@ button, .button {
         padding: $oe-button-small-padding;
         font-size: $oe-button-small-font-size;
         letter-spacing: $oe-button-small-letter-spacing;
+    }
+}
+
+// Button groups
+//
+// Button can be grouped.
+//
+// Markup:
+// <ul class="button-group">
+//     <li><a href="#" class="small button">Button 1</a></li>
+//     <li><a href="#" class="small button">Button 2</a></li>
+//     <li><a href="#" class="small button">Button 3</a></li>
+// </ul>
+//
+// Styleguide 9.3
+.button-group {
+    @include button-group-container;
+    & > * {
+        @include button-group-style;
+    }
+    & > * {
+        @include button-group-style($float: null, $radius: $button-radius);
+    }
+    @for $i from 2 through 8 {
+        &.even#{-$i} li {
+            @include button-group-style($even: $i, $float: null);
+        }
     }
 }

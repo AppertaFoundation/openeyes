@@ -1,0 +1,34 @@
+// Default search filters container and table.
+//
+// Styleguide 16.1
+
+.search-filters {
+    &.theatre-diaries {
+        table {
+            margin: 0;
+        }
+    }
+}
+
+// Extra search filters that exists outside of the main search filters table.
+//
+//
+// Styleguide 16.2
+.search-filters-extra {
+    label {
+        display: inline-block;
+        margin-right: emCalc(10px);
+    }
+    fieldset {
+        border: 0;
+        display: inline-block;
+        margin: 0;
+        input {
+            display: inline-block;
+            margin: 0;
+        }
+        label {
+            margin-right: emCalc(5px);
+        }
+    }
+}
