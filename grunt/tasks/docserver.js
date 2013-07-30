@@ -50,7 +50,9 @@ module.exports = function(grunt) {
         ]
       }, function(error, result){
         if (error) {
-          grunt.fail.warn(error.toString());
+          grunt.log.error(error.toString());
+          grunt.log.writeln('Unable to open chrome. View http://' + options.hostname + ':' + options.port + ' in your browser.');
+          return;
         }
         grunt.log.write(result);
       });
