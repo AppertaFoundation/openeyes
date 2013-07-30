@@ -246,27 +246,20 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
          * @var PatientViewPage $patientView
          */
         $patientView = $this->getPage('PatientViewPage');
-        $patientView->selectEye()
-        if ($eye==="Right") {
-            $this->clickLink(PatientViewPage::$opthRighteye);
-        }
-        if ($eye==="Both") {
-            $this->clickLink(PatientViewPage::$opthBotheyes);
-        }
-        if ($eye==="Left") {
-            $this->clickLink(PatientViewPage::$opthLefteye);
-        }
+        $patientView->selectEye($eye);
     }
 
-//    /**
-//     * @Given /^I select a Opthalmic Diagnosis date of day "([^"]*)" month "([^"]*)" year "([^"]*)"$/
-//     */
-//    public function OpthalmicDiagnosis($day, $month, $year)
-//    {
-//        $this->selectOption(PatientViewPage::$opthDay, $day);
-//        $this->selectOption(PatientViewPage::$opthMonth, $month);
-//        $this->selectOption(PatientViewPage::$opthYear, $year);
-//     }
+    /**
+     * @Given /^I select a Opthalmic Diagnosis date of day "([^"]*)" month "([^"]*)" year "([^"]*)"$/
+     */
+    public function OpthalmicDiagnosis($day, $month, $year)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->addOpthalmicDiagnosisDate($day, $month, $year);
+     }
 //
 //    /**
 //     * @Then /^I save the new Opthalmic Diagnosis$/

@@ -17,7 +17,12 @@ class PatientViewPage extends Page
         'selectOphthalmicDisorder' => array('xpath' => "//select[@id='diagnosisselection_ophthalmic_disorder_id']"),
         'rightEye' => array('xpath' => "//input[@name='diagnosis_eye']"),
         'leftEye' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[3]"),
-        'bothEyes' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[2]")
+        'bothEyes' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[2]"),
+        'opthDay' => array('xpath' => "//select[@name='fuzzy_day']"),
+        'opthMonth' => array('xpath' => "//select[@name='fuzzy_month']"),
+        'opthYear' => array('xpath' => "//select[@name='fuzzy_year']"),
+        'opthSaveButton' => array('xpath' => "//button[@type='submit']//*[contains(text(),'Save')]")
+
 
 
     );
@@ -37,16 +42,17 @@ class PatientViewPage extends Page
             "Left" => 'bothEyes'
         );
 
-        $this->getElement($eyesArray, $eye);
-
+        $this->getElement($eyesArray, $eye)->press();
     }
 
+    public function addOpthalmicDiagnosisDate ($day, $month, $year)
+    {
+        $this->getElement('opthDay')->selectOption($day);
+        $this->getElement('opthMonth')->selectOption($month);
+        $this->getElement('opthYear')->selectOption($year);
+    }
 }
 
-//    public static  $opthDay = "//select[@name='diagnosis_day']";
-//    public static  $opthMonth = "//select[@name='diagnosis_month']";
-//    public static  $opthYear = "//select[@name='diagnosis_year']";
-//    public static  $opthSaveButton = "//button[@type='submit']";
 //    public static  $sysDiagnosis = "//button[@id='btn-add_new_systemic_diagnosis']";
 //    public static  $sysDisorder = "//select[@id='diagnosisselection_systemic_disorder_id']";
 //    public static  $sysNoneSide = "(//input[@name='diagnosis_eye'])[4]";
