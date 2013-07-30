@@ -15,16 +15,29 @@ class PatientViewPage extends Page
         'userProfile' => array('xpath' => "//*[@id='user_id']/a"),
         'addOpthalmicDiagnosis' => array('xpath' => "//button[@id='btn-add_new_ophthalmic_diagnosis']"),
         'selectOphthalmicDisorder' => array('xpath' => "//select[@id='diagnosisselection_ophthalmic_disorder_id']"),
-        'rightEye' => array('xpath' => "//input[@name='diagnosis_eye']"),
-        'leftEye' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[3]"),
-        'bothEyes' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[2]"),
-        'opthDay' => array('xpath' => "//select[@name='fuzzy_day']"),
-        'opthMonth' => array('xpath' => "//select[@name='fuzzy_month']"),
-        'opthYear' => array('xpath' => "//select[@name='fuzzy_year']"),
-        'opthSaveButton' => array('xpath' => "//button[@type='submit']//*[contains(text(),'Save')]")
-
-
-
+        'opthRightEye' => array('xpath' => "//input[@name='diagnosis_eye']"),
+        'opthLeftEye' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[3]"),
+        'opthBothEyes' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[2]"),
+        'Day' => array('xpath' => "//select[@name='fuzzy_day']"),
+        'Month' => array('xpath' => "//select[@name='fuzzy_month']"),
+        'Year' => array('xpath' => "//select[@name='fuzzy_year']"),
+        'opthSaveButton' => array('xpath' => "//*[@class='classy green mini btn_save_ophthalmic_diagnosis']//*[contains(text(),'Save')]"),
+        'addSystemicDiagnosis' => array('xpath' => "//button[@id='btn-add_new_systemic_diagnosis']"),
+        'selectSystemicDiagnosis' => array('xpath' => "//select[@id='diagnosisselection_systemic_disorder_id']"),
+        'sysNoEyes' => array('xpath' => "//*[@id='add-systemic-diagnosis']/div[4]/input[1]"),
+        'sysRightEye' => array('xpath' => "//*[@id='add-systemic-diagnosis']/div[4]/input[2]"),
+        'sysBothEyes' => array('xpath' => "//*[@id='add-systemic-diagnosis']/div[4]/input[3]"),
+        'sysLeftEye' => array('xpath' => "//*[@id='add-systemic-diagnosis']/div[4]/input[4]"),
+        'sysSaveButton' => array('xpath' => "//*[@class='classy green mini btn_save_systemic_diagnosis']//*[contains(text(),'Save')]"),
+        'commonOperation' => array('xpath' => "//select[@id='common_previous_operation']"),
+        'operationNoEyes' => array('xpath' => "//*[@id='add-previous_operation']/div[4]/input[1]"),
+        'operationRightEye' => array('xpath' => "//*[@id='add-previous_operation']/div[4]/input[2]"),
+        'operationBothEyes' => array('xpath' => "//*[@id='add-previous_operation']/div[4]/input[3]"),
+        'operationLeftEye' => array('xpath' => "//*[@id='add-previous_operation']/div[4]/input[4]"),
+        'operationSaveButton' => array('xpath' => "//*[@class='classy green mini btn_save_previous_operation']//*[contains(text(),'Save')]"),
+        'editCVIstatusButton' => array('xpath'=> "//button[@id='btn-edit_oph_info']"),
+        'CVIstatus' => array('xpath' => "//button[@id='btn-edit_oph_info']"),
+        'saveCVI' => array('xpath' => "//*[@class='classy green mini btn_save_oph_info']//*[contains(text(),'Save')]")
     );
 
     public function addOpthalmicDiagnosis ($diagnosis)
@@ -36,40 +49,96 @@ class PatientViewPage extends Page
     public function selectEye ($eye)
     {
         $eyesArray = array(
-
-            "Right" => 'rightEye',
-            "Both" => 'leftEye',
-            "Left" => 'bothEyes'
+            "Right" => 'opthRightEye',
+            "Both" => 'opthLeftEye',
+            "Left" => 'opthBothEyes'
         );
 
-        $this->getElement($eyesArray, $eye)->press();
+       // $this->getElement($eyesArray,[$eye])->press();
     }
 
-    public function addOpthalmicDiagnosisDate ($day, $month, $year)
+    public function addDate ($day, $month, $year)
     {
-        $this->getElement('opthDay')->selectOption($day);
-        $this->getElement('opthMonth')->selectOption($month);
-        $this->getElement('opthYear')->selectOption($year);
+        $this->getElement('Day')->selectOption($day);
+        $this->getElement('Month')->selectOption($month);
+        $this->getElement('Year')->selectOption($year);
+    }
+
+    public function saveOpthalmicDiagnosis ()
+    {
+        $this->getElement('opthSaveButton')->press();
+    }
+
+    public function addSystemicDiagnosis ($diagnosis)
+    {
+        $this->getElement('addSystemicDiagnosis')->press();
+        $this->getElement('selectSystemicDiagnosis')->selectOption($diagnosis);
+    }
+
+    public function selectSystemicSide ($side)
+    {
+        if ($side===("None")) {
+        $this->getElement('sysNoEyes')->click();
+        }
+        if ($side===("Right")) {
+            $this->getElement('sysRightEye')->click();
+        }
+        if ($side===("Both")) {
+            $this->getElement('sysBothEyes')->click();
+        }
+        if ($side===("Left")) {
+            $this->getElement('sysLeftEye')->click();
+        }
+    }
+
+    public function saveSystemicDiagnosis ()
+    {
+        $this->getElement('sysSaveButton')->press();
+    }
+
+    public function commonOperation ($operation)
+    {
+        $this->getElement('commonOperation')->selectOption($operation);
+    }
+
+    public function operationSide ($side)
+    {
+        if ($side===("None")) {
+            $this->getElement('operationNoEyes')->click();
+        }
+        if ($side===("Right")) {
+            $this->getElement('operationRightEye')->click();
+        }
+        if ($side===("Both")) {
+            $this->getElement('operationBothEyes')->click();
+        }
+        if ($side===("Left")) {
+            $this->getElement('operationLeftEye')->click();
+        }
+    }
+
+    public function savePreviousOperation ()
+    {
+        $this->getElement('operationSaveButton')->press();
+    }
+
+    public function editCVIstatus ($status)
+    {
+        $this->getElement('editCVIstatusButton')->click();
+        $this->getElement('CVIstatus')->selectOption($status);
+    }
+
+    public function saveCVIstatus ()
+    {
+        $this->getElement('saveCVI')->click();
     }
 }
 
-//    public static  $sysDiagnosis = "//button[@id='btn-add_new_systemic_diagnosis']";
-//    public static  $sysDisorder = "//select[@id='diagnosisselection_systemic_disorder_id']";
-//    public static  $sysNoneSide = "(//input[@name='diagnosis_eye'])[4]";
-//    public static  $sysRightSide = "(//input[@name='diagnosis_eye'])[5]";
-//    public static  $sysBothSide = "(//input[@name='diagnosis_eye'])[6]";
-//    public static  $sysLeftSide = "(//input[@name='diagnosis_eye'])[7]";
-//    public static  $sysDay = "(//select[@name='diagnosis_day'])[2]";
-//    public static  $sysMonth = "(//select[@name='diagnosis_month'])[2]";
-//    public static  $sysYear = "(//select[@name='diagnosis_year'])[2]";
-//    public static  $sysSaveButton = "(//button[@type='submit'])[5]";
+
 //    public static  $selectAllergy = "//select[@id='allergy_id']";
 //    public static  $addAllergy = "//button[@id='btn_add_allergy']";
-//    public static  $cviEdit = "//button[@id='btn-edit_oph_info']";
-//    public static  $cviStatus = "//select[@id='patientophinfo_cvi_status_id']";
-//    public static  $cviDay = "(//select[@name='diagnosis_day'])[3]";
-//    public static  $cviMonth = "(//select[@name='diagnosis_month'])[3]";
-//    public static  $cviYear = "(//select[@name='diagnosis_year'])[3]";
+
+
 //    public static  $cviSave = "(//button[@type='submit'])[7]";
 //    public static  $addMedication = "//button[@id='btn-add_medication']";
 //    public static  $medicationSelect = "//select[@id='drug_id']";

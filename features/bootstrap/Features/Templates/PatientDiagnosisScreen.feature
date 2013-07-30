@@ -21,20 +21,24 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     Then I save the new Opthalmic Diagnosis
 
     Then I Add an Systemic Diagnosis selection of "<SystDiagnosis>"
-    And I select that it affects side "<side>"
+    And I select that it affects Systemic side "<side>"
     And I select a Systemic Diagnosis date of day "<day>" month "<month>" year "<year>"
     Then I save the new Systemic Diagnosis
 
-    Then I edit the CVI Status "<CVIstatus>" day "<day>" month "<month>" year "<year>"
+    Then I Add a Previous Operation of "1"
+    And I select that it affects Operation side "<side>"
+    And I select a Previous Operation date of day "<day>" month "<month>" year "<year>"
+    Then I save the new Previous Operation
 
     And I Add Medication details medication "<medication>" route "<route>" frequency "<frequency>" date from "<datefrom>"
 
+    Then I edit the CVI Status "<CVIstatus>"
+    And I select a CVI Status date of day "<day>" month "<month>" year "<year>"
+    Then I save the new CVI status
+
     Then I Add Allergy "<allergy>"
 
-    Then I remove diagnosis test data
-    Then I remove medication test data
-    Then I remove allergy test data
-
+    And I Add a Family Histoy of "relative" side "<side>" condition "condition" and comments "comments"
     #Then I choose to close the browser
 
   Examples: User details

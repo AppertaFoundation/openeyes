@@ -130,7 +130,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
     }
 
     /**
-     * @Then /^I search for patient name last name "([^"]*)" and first name"([^"]*)"$/
+     * @Then /^I search for patient name last name "([^"]*)" and first name "([^"]*)"$/
      */
     public function SearchPatientName ($first, $last)
     {
@@ -258,105 +258,190 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
          * @var PatientViewPage $patientView
          */
         $patientView = $this->getPage('PatientView');
-        $patientView->addOpthalmicDiagnosisDate($day, $month, $year);
+        $patientView->addDate($day, $month, $year);
      }
-//
-//    /**
-//     * @Then /^I save the new Opthalmic Diagnosis$/
-//     */
-//    public function iSaveTheNewOpthalmicDiagnosis()
-//    {
-//        $this->pressButton(PatientViewPage::$opthSaveButton);
-//    }
-//
-//    /**
-//     * @Then /^I Add an Systemic Diagnosis selection of "([^"]*)"$/
-//     */
-//    public function SystemicDiagnosisSelection($systemic)
-//    {
-//        $this->pressButton(PatientViewPage::$sysDiagnosis);
-//        $this->selectOption(PatientViewPage::$sysDisorder, $systemic);
-//        $this->removeDiagnosis++;
-//    }
-//
-//    /**
-//     * @Given /^I select that it affects side "([^"]*)"$/
-//     */
-//    public function AffectsSide($side)
-//    {
-//        if ($side===("None")) {
-//            $this->clickLink(PatientViewPage::$sysNoneSide);
-//        }
-//        if ($side===("Right")) {
-//            $this->clickLink(PatientViewPage::$sysRightSide);
-//        }
-//        if ($side===("Both")) {
-//            $this->clickLink(PatientViewPage::$sysBothSide);
-//        }
-//        if ($side===("Left")) {
-//            $this->clickLink(PatientViewPage::$sysLeftSide);
-//        }
-//    }
-//
-//    /**
-//     * @Given /^I select a Systemic Diagnosis date of day "([^"]*)" month "([^"]*)" year "([^"]*)"$/
-//     */
-//    public function iSelectASystemicDiagnosis($day, $month, $year)
-//    {
-//        $this->selectOption(PatientViewPage::$sysDay, $day);
-//        $this->selectOption(PatientViewPage::$sysMonth, $month);
-//        $this->selectOption(PatientViewPage::$sysYear, $year);
-//    }
-//
-//    /**
-//     * @Then /^I save the new Systemic Diagnosis$/
-//     */
-//    public function iSaveTheNewSystemicDiagnosis()
-//    {
-//        $this->pressButton(PatientViewPage::$sysSaveButton);
-//    }
-//
-//    /**
-//     * @Then /^I edit the CVI Status "([^"]*)" day "([^"]*)" month "([^"]*)" year "([^"]*)"$/
-//     */
-//    public function CviStatus($status, $day, $month, $year)
-//    {
-//        $this->clickLink(PatientViewPage::$cviEdit);
-//        $this->selectOption(PatientViewPage::$cviStatus, $status);
-//        $this->selectOption(PatientViewPage::$cviDay, $day);
-//        $this->selectOption(PatientViewPage::$cviMonth, $month);
-//        $this->selectOption(PatientViewPage::$cviYear, $year);
-//        $this->clickLink(PatientViewPage::$cviSave);
-//    }
-//
-//    /**
-//     * @Given /^I Add Medication details medication "([^"]*)" route "([^"]*)" frequency "([^"]*)" date from "([^"]*)"$/
-//     */
-//    public function iAddMedicationDetails($medication, $route, $frequency, $dateFrom)
-//    {
-//        $this->clickLink(PatientViewPage::$addMedication);
-//        $this->selectOption(PatientViewPage::$medicationSelect, $medication);
-//        $this->waitForActionToFinish();
-//        $this->selectOption(PatientViewPage::$medicationRoute, $route);
-//        $this->selectOption(PatientViewPage::$medicationFrequency, $frequency);
-//        $this->clickLink(PatientViewPage::$medicationCalendar);
-//        $this->clickLink(PatientViewPage::passDateFromTable($dateFrom));
-//        $this->clickLink(PatientViewPage::$medicationSave);
-//        $this->waitForActionToFinish();
-//        $this->removeMedication++;
-//    }
-//
-//    /**
-//     * @Then /^I Add Allergy "([^"]*)"$/
-//     */
-//    public function iAddAllergy($allergy)
-//    {
-//        $this->selectOption(PatientViewPage::$selectAllergy, $allergy);
-//        $this->clickLink(PatientViewPage::$addAllergy);
-//        $this->waitForActionToFinish();
-//        $this->removeAllergy++;
-//    }
-//
+
+    /**
+     * @Then /^I save the new Opthalmic Diagnosis$/
+     */
+    public function SaveTheNewOpthalmicDiagnosis()
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->saveOpthalmicDiagnosis();
+    }
+
+    /**
+     * @Then /^I Add an Systemic Diagnosis selection of "([^"]*)"$/
+     */
+    public function SystemicDiagnosisSelection($diagnosis)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->addSystemicDiagnosis($diagnosis);
+    }
+
+    /**
+     * @Given /^I select that it affects Systemic side "([^"]*)"$/
+     */
+    public function systemicSide($side)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->selectSystemicSide($side);
+    }
+
+    /**
+     * @Given /^I select a Systemic Diagnosis date of day "([^"]*)" month "([^"]*)" year "([^"]*)"$/
+     */
+    public function SystemicDiagnosisDate($day, $month, $year)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->addDate($day, $month, $year);
+    }
+
+    /**
+     * @Then /^I save the new Systemic Diagnosis$/
+     */
+    public function SaveTheNewSystemicDiagnosis()
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->saveSystemicDiagnosis();
+    }
+
+    /**
+     * @Then /^I Add a Previous Operation of "([^"]*)"$/
+     */
+    public function iAddAPreviousOperationOf($operation)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->commonOperation($operation);
+    }
+
+    /**
+     * @Given /^I select that it affects Operation side "([^"]*)"$/
+     */
+    public function SelectThatItAffectsOperationSide($operation)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->operationSide($operation);
+    }
+
+    /**
+     * @Given /^I select a Previous Operation date of day "([^"]*)" month "([^"]*)" year "([^"]*)"$/
+     */
+    public function PreviousOperationDate($day, $month, $year)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->addDate($day, $month, $year);
+    }
+
+    /**
+     * @Then /^I save the new Previous Operation$/
+     */
+    public function iSaveTheNewPreviousOperation()
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->savePreviousOperation();
+    }
+
+    /**
+     * @Then /^I edit the CVI Status "([^"]*)"$/
+     */
+    public function iEditTheCviStatus($status)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->editCVIstatus($status);
+    }
+
+    /**
+     * @Given /^I select a CVI Status date of day "([^"]*)" month "([^"]*)" year "([^"]*)"$/
+     */
+    public function iSelectACviStatusDateOfDayMonthYear($day, $month, $year)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->addDate($day, $month, $year);
+    }
+
+    /**
+     * @Then /^I save the new CVI status$/
+     */
+    public function iSaveTheNewCviStatus()
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->saveCVIstatus();
+    }
+
+    /**
+     * @Given /^I Add a Family Histoy of "([^"]*)" side "([^"]*)" condition "([^"]*)" and comments "([^"]*)"$/
+     */
+    public function iAddAFamilyHistoyOfSideConditionAndComments($arg1, $arg2, $arg3, $arg4)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I Add Medication details medication "([^"]*)" route "([^"]*)" frequency "([^"]*)" date from "([^"]*)"$/
+     */
+    public function iAddMedicationDetails($medication, $route, $frequency, $dateFrom)
+    {
+        $this->clickLink(PatientViewPage::$addMedication);
+        $this->selectOption(PatientViewPage::$medicationSelect, $medication);
+        $this->waitForActionToFinish();
+        $this->selectOption(PatientViewPage::$medicationRoute, $route);
+        $this->selectOption(PatientViewPage::$medicationFrequency, $frequency);
+        $this->clickLink(PatientViewPage::$medicationCalendar);
+        $this->clickLink(PatientViewPage::passDateFromTable($dateFrom));
+        $this->clickLink(PatientViewPage::$medicationSave);
+        $this->waitForActionToFinish();
+        $this->removeMedication++;
+    }
+
+    /**
+     * @Then /^I Add Allergy "([^"]*)"$/
+     */
+    public function iAddAllergy($allergy)
+    {
+        $this->selectOption(PatientViewPage::$selectAllergy, $allergy);
+        $this->clickLink(PatientViewPage::$addAllergy);
+        $this->waitForActionToFinish();
+        $this->removeAllergy++;
+    }
+
+
 //    /**
 //     * @Then /^I remove diagnosis test data$/
 //     */
@@ -1838,4 +1923,6 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 //    {
 //        throw new PendingException();
 //    }
+
+
 }
