@@ -47,7 +47,7 @@
 					</div>
 					<div class="large-12 column">
 						<table class="grid">
-							<tbody>
+							<thead>
 								<tr>
 									<th>Service:</th>
 									<th>Firm:</th>
@@ -56,6 +56,8 @@
 									<th>Hospital no:</th>
 									<th>&nbsp;</th>
 								</tr>
+							</thead>
+							<tbody>
 								<tr>
 									<td>
 										<select>
@@ -95,7 +97,7 @@
 						<h2>Search Results:</h2>
 
 						<table class="grid waiting-list">
-							<tbody>
+							<thead>
 								<tr>
 									<th>
 										Letters sent
@@ -134,11 +136,13 @@
 										</label>
 									</th>
 								</tr>
+							</thead>
+							<tbody>
 								<tr>
 									<td class="letter-status">
-										<img src="/assets/2f6770e4/img/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
-										<img src="/assets/2f6770e4/img/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
-										<img src="/assets/2f6770e4/img/letterIcons/letter2.png" alt="2nd reminder" width="17" height="17">
+										<img src="/img/tmp/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
+										<img src="/img/tmp/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
+										<img src="/img/tmp/letterIcons/letter2.png" alt="2nd reminder" width="17" height="17">
 									</td>
 									<td class="patient">
 										<a href="/OphTrOperationbooking/default/view/67">
@@ -177,8 +181,8 @@
 								</tr>
 								<tr>
 									<td class="letter-status send-another-reminder">
-										<img src="/assets/2f6770e4/img/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
-										<img src="/assets/2f6770e4/img/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
+										<img src="/img/tmp/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
+										<img src="/img/tmp/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
 									</td>
 									<td class="patient">
 										<a href="/OphTrOperationbooking/default/view/64">
@@ -217,8 +221,8 @@
 								</tr>
 								<tr>
 									<td class="letter-status send-another-reminder">
-										<img src="/assets/2f6770e4/img/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
-										<img src="/assets/2f6770e4/img/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
+										<img src="/img/tmp/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
+										<img src="/img/tmp/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
 									</td>
 									<td class="patient">
 										<a href="/OphTrOperationbooking/default/view/100">
@@ -257,8 +261,8 @@
 								</tr>
 								<tr>
 									<td class="letter-status send-another-reminder">
-										<img src="/assets/2f6770e4/img/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
-										<img src="/assets/2f6770e4/img/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
+										<img src="/img/tmp/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
+										<img src="/img/tmp/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
 									</td>
 									<td class="patient">
 										<a href="/OphTrOperationbooking/default/view/66">
@@ -297,8 +301,8 @@
 								</tr>
 								<tr>
 									<td class="letter-status send-another-reminder">
-										<img src="/assets/2f6770e4/img/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
-										<img src="/assets/2f6770e4/img/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
+										<img src="/img/tmp/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
+										<img src="/img/tmp/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
 									</td>
 									<td class="patient">
 										<a href="/OphTrOperationbooking/default/view/68">
@@ -337,8 +341,8 @@
 								</tr>
 								<tr>
 									<td class="letter-status send-another-reminder">
-										<img src="/assets/2f6770e4/img/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
-										<img src="/assets/2f6770e4/img/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
+										<img src="/img/tmp/letterIcons/invitation.png" alt="Invitation" width="17" height="17">
+										<img src="/img/tmp/letterIcons/letter1.png" alt="1st reminder" width="17" height="17">
 									</td>
 									<td class="patient">
 										<a href="/OphTrOperationbooking/default/view/65">
@@ -417,9 +421,7 @@
 							<tfoot>
 								<tr>
 									<td colspan="11" class="waiting-list-key">
-										<h3>
-											Colour Key:
-										</h3>
+										<h3>Colour Key:</h3>
 										<ul class="inline-list">
 											<li>
 												<span class="key-box send-invitation-letter"></span>
@@ -440,29 +442,26 @@
 										</ul>
 								</tr>
 								<tr>
-									<td colspan="11" class="small">
-										<div id="letters-key">
-											<span>
-												Letters sent out:
-											</span>
-											&nbsp;&nbsp;
-											<img src="/assets/2f6770e4/img/letterIcons/invitation.png" alt="Invitation" height="17" width="17">
-											- Invitation
-											<img src="/assets/2f6770e4/img/letterIcons/letter1.png" alt="1st reminder" height="17" width="17">
-											- 1
-											<sup>
-												st
-											</sup>
-											Reminder
-											<img src="/assets/2f6770e4/img/letterIcons/letter2.png" alt="2nd reminder" height="17" width="17">
-											- 2
-											<sup>
-												nd
-											</sup>
-											Reminder
-											<img src="/assets/2f6770e4/img/letterIcons/GP.png" alt="GP" height="17" width="17">
-											- GP Removal
-										</div>
+									<td colspan="11" class="letters-sent-out">
+										<h3>Letters sent out:</h3>
+										<ul class="inline-list">
+											<li>
+												<img src="/img/tmp/letterIcons/invitation.png" alt="Invitation" height="17" width="17">
+												- Invitation
+											</li>
+											<li>
+												<img src="/img/tmp/letterIcons/letter1.png" alt="1st reminder" height="17" width="17">
+												- 1 <sup>st</sup> Reminder
+											</li>
+											<li>
+												<img src="/img/tmp/letterIcons/letter2.png" alt="2nd reminder" height="17" width="17">
+												- 2 <sup>nd</sup> Reminder
+											</li>
+											<li>
+												<img src="/img/tmp/letterIcons/GP.png" alt="GP" height="17" width="17">
+												- GP Removal
+											</li>
+										</ul>
 									</td>
 								</tr>
 							</tfoot>

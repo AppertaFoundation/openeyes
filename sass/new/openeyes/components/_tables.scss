@@ -13,6 +13,10 @@
 //             <td>Cell 1</td>
 //             <td>Cell 2</td>
 //         </tr>
+//         <tr>
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
 //     </tbody>
 // </table>
 //
@@ -21,16 +25,18 @@
 // Styleguide 5.1
 
 // Table vars
-$oe-table-header-cell-bg-color: #DDD !default;
+$oe-table-header-cell-bg-color: #dddddd !default;
 $oe-table-header-cell-font-size: emCalc(11px) !default;
-$oe-table-grid-cell-border-color: #CCC;
+$oe-table-grid-cell-border-color: #cccccc;
 $oe-table-cell-font-size: emCalc(13px);
 $oe-table-cell-label-font-size: emCalc(16px);
+
 table {
     @include table;
     @include all-form-fields {
         margin: 0;
     }
+
     min-width: 100%;
     tr {
         th {
@@ -44,6 +50,17 @@ table {
     }
     tfoot {
         font-weight: normal;
+        tr {
+            th,
+            td {
+                font-size: $oe-table-cell-font-size;
+            }
+            &.even,
+            &.alt,
+            &:nth-of-type(even) {
+                background: none;
+            }
+        }
     }
     &.grid {
         th, td {
@@ -62,7 +79,7 @@ table {
     }
 }
 
-// Waiting list table
+// Waiting list table (with key)
 //
 // Markup:
 // <table class="grid waiting-list">
@@ -77,17 +94,55 @@ table {
 //             <td class="{$modifiers}">Cell 1</td>
 //             <td>Cell 2</td>
 //         </tr>
+//         <tr>
+//             <td class="{$modifiers}">Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
 //     </tbody>
+//     <tfoot>
+//         <tr>
+//             <td colspan="2" class="waiting-list-key">
+//                 <h3>
+//                     Colour Key:
+//                 </h3>
+//                 <ul class="inline-list">
+//                     <li>
+//                         <span class="key-box send-invitation-letter"></span>
+//                         Send invitation letter
+//                     </li>
+//                     <li>
+//                         <span class="key-box send-another-reminder"></span>
+//                         Send another reminder (2 weeks)
+//                     </li>
+//                     <li>
+//                         <span class="key-box send-gp-removal-letter"></span>
+//                         Send GP removal letter
+//                     </li>
+//                     <li>
+//                         <span class="key-box patient-due-removed"></span>
+//                         Patient is due to be removed
+//                     </li>
+//                 </ul>
+//             </td>
+//         </tr>
+//     </foot>
 // </table>
 //
 // .send-another-reminder        - Adds a green state to the cell
 // .send-invitation-letter       - Adds a blue state to the cell
+// .send-gp-removal-letter       - Adds a orange state to the cell
+// .patient-due-removed          - Adds a red state to the cell
 //
 // Styleguide 5.1
 
-/* Waiting list table */
-$oe-table-waiting-list-send-another-reminder-bg-color: #B8EAA6 !default;
-$oe-table-waiting-list-send-invitation-letter-bg-color: #77B8D3 !default;
+// Waiting list table vars
+$oe-table-waiting-list-send-another-reminder-bg-color: #b8eaa6 !default;
+$oe-table-waiting-list-send-invitation-letter-bg-color: #77b8d3 !default;
+$oe-table-waiting-list-send-gp-removal-letter-bg-color: #f7bf8d !default;
+$oe-table-waiting-list-patient-due-removed: #f08a6f !default;
+$oe-table-waiting-list-footer-heading-font-size: 1em !default;
+$oe-table-waiting-list-letters-sent-line-height: emCalc(17px) !default;
+
 .waiting-list {
     .send-another-reminder {
         background: $oe-table-waiting-list-send-another-reminder-bg-color;
@@ -95,12 +150,47 @@ $oe-table-waiting-list-send-invitation-letter-bg-color: #77B8D3 !default;
     .send-invitation-letter {
         background: $oe-table-waiting-list-send-invitation-letter-bg-color;
     }
+    .send-gp-removal-letter {
+        background: $oe-table-waiting-list-send-gp-removal-letter-bg-color;
+    }
+    .patient-due-removed {
+        background: $oe-table-waiting-list-patient-due-removed;
+    }
+    tfoot {
+        h3 {
+            float: left;
+            margin: 0;
+            font-size: $oe-table-waiting-list-footer-heading-font-size;
+        }
+        .inline-list {
+            float: left;
+            margin: 0;
+            li {
+                * {
+                    display: inline-block;
+                }
+            }
+        }
+        .letters-sent-out {
+            li {
+                line-height: emCalc(17px);
+            }
+        }
+    }
 }
+
+// Waiting list key vars
+$oe-waiting-list-key-padding-top: emCalc(20px) !default;
+$oe-waiting-list-key-width: 10px !default;
+$oe-waiting-list-key-height: 10px !default;
+$oe-waiting-list-border-color: #999999 !default;
+
 .waiting-list-key {
+    padding-top: $oe-waiting-list-key-padding-top;
     .key-box {
-        width: 10px;
-        height: 10px;
-        border: 1px solid #999;
+        width: $oe-waiting-list-key-width;
+        height: $oe-waiting-list-key-height;
+        border: 1px solid $oe-waiting-list-border-color;
         display: inline-block;
     }
 }

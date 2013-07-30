@@ -69,7 +69,7 @@ the following conventions if you want to make changes to the stylesheet.
 * Always use semantic and descriptive classnames that describe the content, NOT the style.
   (eg, `.button-primary`, not `.button-blue`)
 * Use 3 character hexadecimal notation where possible (eg `#000`).
-* Use upper-case characters in hexadecimal notation (eg `#3FA522`).
+* Use lower-case characters in hexadecimal notation (eg `#3fa522`).
 * Avoid qualifying class names with type selectors (eg, don't do this: `div.myclass`).
 * Keep your selectors short! Try to keep your selectors one level deep. If you don't couple
   components, this should be easy to achieve. For example, this is bad because you've coupled
