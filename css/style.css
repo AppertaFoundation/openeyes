@@ -1546,11 +1546,11 @@ div.pagination .selected { background-color: #0b59da; color: #fff; padding-left:
 #admin_users ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
 #admin_users ul li .column_checkbox { width: 15px; display: inline-block; }
 #admin_users ul li .column_id { width: 15px; display: inline-block; }
-#admin_users ul li .column_username { width: 75px; display: inline-block; }
+#admin_users ul li .column_username { width: 122px; display: inline-block; }
 #admin_users ul li .column_title { width: 25px; display: inline-block; }
-#admin_users ul li .column_firstname { width: 140px; display: inline-block; }
-#admin_users ul li .column_lastname { width: 140px; display: inline-block; }
-#admin_users ul li .column_role { width: 215px; display: inline-block; }
+#admin_users ul li .column_firstname { width: 162px; display: inline-block; }
+#admin_users ul li .column_lastname { width: 162px; display: inline-block; }
+#admin_users ul li .column_role { width: 85px; display: inline-block; }
 #admin_users ul li .column_doctor { width: 35px; display: inline-block; }
 #admin_users ul li .column_active { width: 35px; display: inline-block; }
 
@@ -1614,6 +1614,11 @@ div.pagination .selected { background-color: #0b59da; color: #fff; padding-left:
 #admin_commissioning_body_services ul li .column_name { width: 232px; display: inline-block; }
 #admin_commissioning_body_services ul li .column_type { width: 232px; display: inline-block; }
 #admin_commissioning_body_services ul li .column_body { width: 232px; display: inline-block; }
+
+#admin_commissioning_body_service_types ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_commissioning_body_service_types ul li .column_id { width: 30px; display: inline-block; }
+#admin_commissioning_body_service_types ul li .column_code { width: 44px; display: inline-block; }
+#admin_commissioning_body_service_types ul li .column_name { width: 744px; display: inline-block; }
 
 #div_Firm_consultant_id { margin-top: 2px; }
 
