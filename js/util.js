@@ -158,7 +158,7 @@ if (!Function.prototype.bind) {
     }
 
     // Now try trigger a callback handler
-    this.trigger(type, data);
+    return this.trigger(type, data);
   };
 
   /**
