@@ -2,7 +2,8 @@ module.exports = {
   files: [
     '*.js',
     '*.json',
-    'grunt/**/*.js'
+    'grunt/**/*.js',
+    'docs/templates/**/js/script.js'
   ],
   options: {
     curly: true,
@@ -20,6 +21,7 @@ module.exports = {
     es3: false,
     es5: false,
     globals: {
+      $: true,
       jQuery: true,
       module: false,
       require: false,
