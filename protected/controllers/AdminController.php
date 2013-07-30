@@ -1098,4 +1098,72 @@ class AdminController extends BaseController
 
 		echo "1";
 	}
+
+	public function actionCommissioning_Body_Service_Types()
+	{
+		$this->render('commissioning_body_service_types');
+	}
+
+	public function actionEditCommissioningBodyServiceType()
+	{
+		if (isset($_GET['commissioning_body_service_type_id'])) {
+			if (!$cbs = CommissioningBodyServiceType::model()->findByPk(@$_GET['commissioning_body_service_type_id'])) {
+				throw new Exception("CommissioningBodyServiceType not found: ".@$_GET['commissioning_body_service_type_id']);
+			}
+		} else {
+			$cbs = new CommissioningBodyServiceType;
+		}
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			$cbs->attributes = $_POST['CommissioningBodyServiceType'];
+
+			if (!$cbs->validate()) {
+				$errors = $cbs->getErrors();
+			}
+
+			if (empty($errors)) {
+				if (!$cbs->save()) {
+					throw new Exception("Unable to save CommissioningBodyServiceType: ".print_r($cbs->getErrors(),true));
+				}
+
+				$this->redirect('/admin/commissioning_body_service_types');
+			}
+		}
+
+		$this->render('/admin/editCommissioningBodyServiceType',array(
+			'cbs' => $cbs,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionAddCommissioningBodyServiceType()
+	{
+		$this->actionEditCommissioningBodyServiceType();
+	}
+
+	public function actionVerifyDeleteCommissioningBodyServiceTypes()
+	{
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('commissioning_body_service_type_id',@$_POST['commissioning_body_service_type']);
+
+		if (CommissioningBodyService::model()->find($criteria)) {
+			echo "0";
+		} else {
+			echo "1";
+		}
+	}
+
+	public function actionDeleteCommissioningBodyServiceTypes()
+	{
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('id',@$_POST['commissioning_body_service_type']);
+
+		if (!$er = CommissioningBodyServiceType::model()->deleteAll($criteria)) {
+			throw new Exception("Unable to delete CommissioningBodyServiceTypes: ".print_r($er->getErrors(),true));
+		}
+
+		echo "1";
+	}
 }
