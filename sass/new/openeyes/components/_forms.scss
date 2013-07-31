@@ -70,6 +70,9 @@ $oe-form-input-radius: 3px !default;
     display: inline-block;
     padding: 4px 12px 5px 8px;
     @include border-radius(3px);
+    &:hover {
+        background: #fff;
+    }
 }
 
 fieldset {

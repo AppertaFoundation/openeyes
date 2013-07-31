@@ -135,15 +135,22 @@ button, .button {
 // Styleguide 9.3
 .button-group {
     @include button-group-container;
-    & > * {
+    & > li {
         @include button-group-style;
     }
-    & > * {
-        @include button-group-style($float: null, $radius: $button-radius);
+    .button {
+        @include border-radius(0);
+        padding: emCalc(5px) emCalc(10px);
+        margin: 0;
     }
-    @for $i from 2 through 8 {
-        &.even#{-$i} li {
-            @include button-group-style($even: $i, $float: null);
+    li:first-child {
+        .button {
+            @include border-radius($button-radius 0 0 $button-radius);
+        }
+    }
+    li:last-child {
+        .button {
+            @include border-radius(0 $button-radius $button-radius 0);
         }
     }
 }

@@ -3193,8 +3193,12 @@ table td label, table th label {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
+/* line 73, ../sass/new/openeyes/components/_forms.scss */
+.field-group-highlight:hover, fieldset.highlight:hover, label.highlight:hover {
+  background: #fff;
+}
 
-/* line 86, ../sass/new/openeyes/components/_forms.scss */
+/* line 89, ../sass/new/openeyes/components/_forms.scss */
 label input[type="checkbox"],
 label input[type="radio"] {
   margin: 0;
@@ -3224,7 +3228,7 @@ textarea {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 93, ../sass/new/openeyes/components/_forms.scss */
+/* line 96, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small,
 input[type="password"].small,
 input[type="date"].small,
@@ -3245,7 +3249,7 @@ textarea.small {
   height: auto;
   padding: 0.1875em 0.25em;
 }
-/* line 96, ../sass/new/openeyes/components/_forms.scss */
+/* line 99, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small.fixed-width,
 input[type="password"].small.fixed-width,
 input[type="date"].small.fixed-width,
@@ -3385,87 +3389,39 @@ button.small, .button.small {
   clear: both;
 }
 /* line 138, ../sass/new/openeyes/components/_buttons.scss */
-.button-group > * {
+.button-group > li {
   margin: 0 0 0 -1px;
   float: left;
 }
 /* line 35, ../sass/new/foundation/components/_button-groups.scss */
-.button-group > *:first-child {
+.button-group > li:first-child {
   margin-left: 0;
 }
-/* line 53, ../sass/new/foundation/components/_button-groups.scss */
-.button-group > *:first-child, .button-group > *:first-child > a, .button-group > *:first-child > button, .button-group > *:first-child > .button {
-  -moz-border-radius-bottomleft: 4px;
-  -moz-border-radius-topleft: 4px;
-  -webkit-border-bottom-left-radius: 4px;
-  -webkit-border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-  border-top-left-radius: 4px;
+/* line 141, ../sass/new/openeyes/components/_buttons.scss */
+.button-group .button {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+  padding: 0.3125em 0.625em;
+  margin: 0;
 }
-/* line 57, ../sass/new/foundation/components/_button-groups.scss */
-.button-group > *:last-child, .button-group > *:last-child > a, .button-group > *:last-child > button, .button-group > *:last-child > .button {
-  -moz-border-radius-topright: 4px;
-  -moz-border-radius-bottomright: 4px;
-  -webkit-border-top-right-radius: 4px;
-  -webkit-border-bottom-right-radius: 4px;
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
+/* line 147, ../sass/new/openeyes/components/_buttons.scss */
+.button-group li:first-child .button {
+  -webkit-border-radius: 4px 0 0 4px;
+  -moz-border-radius: 4px 0 0 4px;
+  -ms-border-radius: 4px 0 0 4px;
+  -o-border-radius: 4px 0 0 4px;
+  border-radius: 4px 0 0 4px;
 }
-/* line 145, ../sass/new/openeyes/components/_buttons.scss */
-.button-group.even-2 li {
-  width: 50%;
-}
-/* line 63, ../sass/new/foundation/components/_button-groups.scss */
-.button-group.even-2 li button, .button-group.even-2 li .button {
-  width: 100%;
-}
-/* line 145, ../sass/new/openeyes/components/_buttons.scss */
-.button-group.even-3 li {
-  width: 33.33333%;
-}
-/* line 63, ../sass/new/foundation/components/_button-groups.scss */
-.button-group.even-3 li button, .button-group.even-3 li .button {
-  width: 100%;
-}
-/* line 145, ../sass/new/openeyes/components/_buttons.scss */
-.button-group.even-4 li {
-  width: 25%;
-}
-/* line 63, ../sass/new/foundation/components/_button-groups.scss */
-.button-group.even-4 li button, .button-group.even-4 li .button {
-  width: 100%;
-}
-/* line 145, ../sass/new/openeyes/components/_buttons.scss */
-.button-group.even-5 li {
-  width: 20%;
-}
-/* line 63, ../sass/new/foundation/components/_button-groups.scss */
-.button-group.even-5 li button, .button-group.even-5 li .button {
-  width: 100%;
-}
-/* line 145, ../sass/new/openeyes/components/_buttons.scss */
-.button-group.even-6 li {
-  width: 16.66667%;
-}
-/* line 63, ../sass/new/foundation/components/_button-groups.scss */
-.button-group.even-6 li button, .button-group.even-6 li .button {
-  width: 100%;
-}
-/* line 145, ../sass/new/openeyes/components/_buttons.scss */
-.button-group.even-7 li {
-  width: 14.28571%;
-}
-/* line 63, ../sass/new/foundation/components/_button-groups.scss */
-.button-group.even-7 li button, .button-group.even-7 li .button {
-  width: 100%;
-}
-/* line 145, ../sass/new/openeyes/components/_buttons.scss */
-.button-group.even-8 li {
-  width: 12.5%;
-}
-/* line 63, ../sass/new/foundation/components/_button-groups.scss */
-.button-group.even-8 li button, .button-group.even-8 li .button {
-  width: 100%;
+/* line 152, ../sass/new/openeyes/components/_buttons.scss */
+.button-group li:last-child .button {
+  -webkit-border-radius: 0 4px 4px 0;
+  -moz-border-radius: 0 4px 4px 0;
+  -ms-border-radius: 0 4px 4px 0;
+  -o-border-radius: 0 4px 4px 0;
+  border-radius: 0 4px 4px 0;
 }
 
 /* line 13, ../sass/new/openeyes/components/_navigation.scss */
@@ -3940,28 +3896,73 @@ button.small, .button.small {
   float: right;
 }
 
-/* line 7, ../sass/new/openeyes/components/_search-filters.scss */
+/* line 64, ../sass/new/openeyes/components/_search-filters.scss */
 .search-filters.theatre-diaries table {
-  margin: 0;
+  margin: 0 0 0.3125em 0;
 }
 
-/* line 18, ../sass/new/openeyes/components/_search-filters.scss */
-.search-filters-extra label {
-  display: inline-block;
-  margin-right: 0.625em;
+/* line 117, ../sass/new/openeyes/components/_search-filters.scss */
+.search-filters-extra {
+  padding: 0.125em 0 0 1px;
 }
-/* line 22, ../sass/new/openeyes/components/_search-filters.scss */
+/* line 119, ../sass/new/openeyes/components/_search-filters.scss */
+.search-filters-extra label {
+  float: left;
+  font-size: 0.8125em;
+  height: 30px;
+  line-height: 28px;
+  margin: 0 0.75em 0 0;
+  padding: 0 0.625em 0 0.5em;
+}
+/* line 126, ../sass/new/openeyes/components/_search-filters.scss */
+.search-filters-extra label input {
+  margin: 0 0.3125em 0 0;
+}
+/* line 130, ../sass/new/openeyes/components/_search-filters.scss */
 .search-filters-extra fieldset {
   border: 0;
-  display: inline-block;
+  float: left;
+  height: 30px;
+  line-height: 28px;
   margin: 0;
+  padding: 0 0.625em 0 0.5em;
 }
-/* line 26, ../sass/new/openeyes/components/_search-filters.scss */
-.search-filters-extra fieldset input {
+/* line 137, ../sass/new/openeyes/components/_search-filters.scss */
+.search-filters-extra fieldset input[type="text"] {
   display: inline-block;
-  margin: 0;
+  vertical-align: top;
+  margin: 0.25em 0 0 0;
 }
-/* line 30, ../sass/new/openeyes/components/_search-filters.scss */
+/* line 142, ../sass/new/openeyes/components/_search-filters.scss */
 .search-filters-extra fieldset label {
-  margin-right: 0.3125em;
+  padding: 0;
+}
+/* line 145, ../sass/new/openeyes/components/_search-filters.scss */
+.search-filters-extra fieldset .to {
+  display: inline-block;
+  font-size: 0.8125em;
+  vertical-align: top;
+}
+/* line 151, ../sass/new/openeyes/components/_search-filters.scss */
+.search-filters-extra .button-group {
+  display: inline-block;
+  vertical-align: top;
+}
+/* line 154, ../sass/new/openeyes/components/_search-filters.scss */
+.search-filters-extra .button-group .button {
+  font-size: 0.75em;
+}
+
+/* line 12, ../sass/new/openeyes/components/_helpers.scss */
+.clearfix {
+  *zoom: 1;
+}
+/* line 121, ../sass/new/foundation/components/_global.scss */
+.clearfix:before, .clearfix:after {
+  content: " ";
+  display: table;
+}
+/* line 122, ../sass/new/foundation/components/_global.scss */
+.clearfix:after {
+  clear: both;
 }
