@@ -186,13 +186,14 @@ em { font-style: italic; color:#333; }
 
 /* +++ 1a +++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 /* start REPLACE: with curvybox */
-#content .whiteBox, #content .alertBox, #content .issueBox, #content .infoBox, #content .questionBox, #content .blueBox, #content .fullBox, #content .patientBox { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#content .whiteBox, #content .alertBox, #content .warningBox, #content .issueBox, #content .infoBox, #content .questionBox, #content .blueBox, #content .fullBox, #content .patientBox { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 /* box Paragraphs */
-#content .whiteBox > p, #content .redBox > p, #content .alertBox > p, #content .issueBox > p, #content .infoBox > p, #content .blueBox > p, #content .eventBox > p	{ background: none; padding:0; margin-bottom:8px; }
+#content .whiteBox > p, #content .redBox > p, #content .alertBox > p, #content .warningBox > p, #content .issueBox > p, #content .infoBox > p, #content .blueBox > p, #content .eventBox > p	{ background: none; padding:0; margin-bottom:8px; }
 /* box specifics */
 #content .whiteBox	{ background: #fafafa; padding:10px; position:relative; }
 #content .redBox	{ background: #e81515; border:#fc621f 4px solid; color:#FFF; font-weight: bold; padding:7px 10px; margin-bottom: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 #content .alertBox	{ background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; }
+#content .warningBox	{ background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; }
 #content .issueBox	{ background: #fdf2e5 url(../img/_elements/icons/box/issue.png) top left no-repeat; border:#f3c160 1px solid; padding:10px 10px 10px 50px; }
 #content .infoBox		{ background: #e0f2db url(../img/_elements/icons/box/info.png) top left no-repeat; border:#9c9 1px solid; padding:10px 10px 10px 50px; }
 #content .optionalBox		{ background: transparent url(../img/_elements/icons/event/medium/_optional.png) top left no-repeat; padding:10px 10px 10px 50px; }
@@ -1362,7 +1363,9 @@ input.diagnosis_eye { margin-left: 10px; }
 .episodeSummary form h4 { font-style: normal !important; border: none !important; }
 
 #delete_diagnosis .alertBox  { background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#delete_diagnosis .warningBox  { background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 #delete_allergy .alertBox  { background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#delete_allergy .warningBox  { background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 
 #add_ophthalmic_diagnosis_loader { display: inline; }
 #add_ophthalmic_diagnosis_loader > img { margin-top: 10px; }
