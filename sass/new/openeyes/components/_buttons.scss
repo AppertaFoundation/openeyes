@@ -70,6 +70,7 @@ button, .button {
     font-size: $oe-button-primary-font-size;
     padding: $oe-button-primary-padding;
     text-shadow: 1px 1px 0 $oe-button-primary-text-shadow-1, 2px 2px 0 $oe-button-primary-text-shadow-2;
+    margin: 0;
     &:hover,
     &:focus {
         @include background(linear-gradient($oe-button-primary-hover-bg-color-start, $oe-button-primary-hover-bg-color-end));

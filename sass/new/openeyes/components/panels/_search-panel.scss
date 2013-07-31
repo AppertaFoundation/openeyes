@@ -10,7 +10,7 @@ $oe-panel-search-padding: emCalc(15px) 0;
     }
     &.search {
         padding: $oe-panel-search-padding;
-        input, button {
+        input {
             margin: 0;
         }
     }

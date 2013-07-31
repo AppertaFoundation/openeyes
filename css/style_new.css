@@ -3302,8 +3302,9 @@ button, .button {
   font-size: 1em;
   padding: 0.5em 2.5em;
   text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
+  margin: 0;
 }
-/* line 74, ../sass/new/openeyes/components/_buttons.scss */
+/* line 75, ../sass/new/openeyes/components/_buttons.scss */
 button:hover, button:focus, .button:hover, .button:focus {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #118afb), color-stop(100%, #1279e3));
   background: -webkit-linear-gradient(#118afb, #1279e3);
@@ -3313,7 +3314,7 @@ button:hover, button:focus, .button:hover, .button:focus {
   border-color: #1974d1;
   color: white;
 }
-/* line 79, ../sass/new/openeyes/components/_buttons.scss */
+/* line 80, ../sass/new/openeyes/components/_buttons.scss */
 button:active, .button:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #145ea9), color-stop(100%, #104d8b));
   background: -webkit-linear-gradient(#145ea9, #104d8b);
@@ -3322,7 +3323,7 @@ button:active, .button:active {
   background: linear-gradient(#145ea9, #104d8b);
   border-color: #0f467e;
 }
-/* line 84, ../sass/new/openeyes/components/_buttons.scss */
+/* line 85, ../sass/new/openeyes/components/_buttons.scss */
 button.disabled, button[disabled], .button.disabled, .button[disabled] {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #aaaaaa), color-stop(100%, #999999));
   background: -webkit-linear-gradient(#aaaaaa, #999999);
@@ -3332,7 +3333,7 @@ button.disabled, button[disabled], .button.disabled, .button[disabled] {
   border-color: #999999;
   text-shadow: none;
 }
-/* line 89, ../sass/new/openeyes/components/_buttons.scss */
+/* line 90, ../sass/new/openeyes/components/_buttons.scss */
 button.secondary, .button.secondary {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #43a844), color-stop(100%, #55a256));
   background: -webkit-linear-gradient(#43a844, #55a256);
@@ -3342,7 +3343,7 @@ button.secondary, .button.secondary {
   border-color: #3fa522;
   text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
 }
-/* line 94, ../sass/new/openeyes/components/_buttons.scss */
+/* line 95, ../sass/new/openeyes/components/_buttons.scss */
 button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #48bd27), color-stop(100%, #3fa522));
   background: -webkit-linear-gradient(#48bd27, #3fa522);
@@ -3351,7 +3352,7 @@ button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button
   background: linear-gradient(#48bd27, #3fa522);
   border-color: #569b42;
 }
-/* line 98, ../sass/new/openeyes/components/_buttons.scss */
+/* line 99, ../sass/new/openeyes/components/_buttons.scss */
 button.secondary:active, .button.secondary:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #458446), color-stop(100%, #396c39));
   background: -webkit-linear-gradient(#458446, #396c39);
@@ -3361,7 +3362,7 @@ button.secondary:active, .button.secondary:active {
   border-color: #336234;
 }
 
-/* line 116, ../sass/new/openeyes/components/_buttons.scss */
+/* line 117, ../sass/new/openeyes/components/_buttons.scss */
 button.small, .button.small {
   padding-top: 0.5625em;
   padding-right: 1.125em;
@@ -3373,7 +3374,7 @@ button.small, .button.small {
   letter-spacing: 1px;
 }
 
-/* line 136, ../sass/new/openeyes/components/_buttons.scss */
+/* line 137, ../sass/new/openeyes/components/_buttons.scss */
 .button-group {
   list-style: none;
   margin: 0;
@@ -3388,7 +3389,7 @@ button.small, .button.small {
 .button-group:after {
   clear: both;
 }
-/* line 138, ../sass/new/openeyes/components/_buttons.scss */
+/* line 139, ../sass/new/openeyes/components/_buttons.scss */
 .button-group > li {
   margin: 0 0 0 -1px;
   float: left;
@@ -3397,7 +3398,7 @@ button.small, .button.small {
 .button-group > li:first-child {
   margin-left: 0;
 }
-/* line 141, ../sass/new/openeyes/components/_buttons.scss */
+/* line 142, ../sass/new/openeyes/components/_buttons.scss */
 .button-group .button {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -3407,7 +3408,7 @@ button.small, .button.small {
   padding: 0.3125em 0.625em;
   margin: 0;
 }
-/* line 147, ../sass/new/openeyes/components/_buttons.scss */
+/* line 148, ../sass/new/openeyes/components/_buttons.scss */
 .button-group li:first-child .button {
   -webkit-border-radius: 4px 0 0 4px;
   -moz-border-radius: 4px 0 0 4px;
@@ -3415,7 +3416,7 @@ button.small, .button.small {
   -o-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px;
 }
-/* line 152, ../sass/new/openeyes/components/_buttons.scss */
+/* line 153, ../sass/new/openeyes/components/_buttons.scss */
 .button-group li:last-child .button {
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius: 0 4px 4px 0;
@@ -3842,7 +3843,7 @@ button.small, .button.small {
   padding: 0.9375em 0;
 }
 /* line 13, ../sass/new/openeyes/components/panels/_search-panel.scss */
-.panel.search input, .panel.search button {
+.panel.search input {
   margin: 0;
 }
 
@@ -3894,6 +3895,20 @@ button.small, .button.small {
 /* line 50, ../sass/new/openeyes/components/panels/_actions-panel.scss */
 .actions-panel .button-bar {
   float: right;
+}
+
+/* line 2, ../sass/new/openeyes/components/panels/_theatre-booking-description.scss */
+.panel.theatre-booking-description {
+  margin: 0 0 0 0.625em;
+  font-size: 0.8125em;
+  display: inline-block;
+  border-bottom: 0;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
+  -moz-border-radius-bottomright: 0;
+  -webkit-border-bottom-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 /* line 64, ../sass/new/openeyes/components/_search-filters.scss */

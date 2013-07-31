@@ -25,6 +25,7 @@
 				</div>
 
 				<? include 'components/theatre-diaries-search-filters.php'; ?>
+				<? include 'components/theatre-diaries-bookings.php'; ?>
 
 			</div>
 		</div>
