@@ -24,6 +24,8 @@
 #active_elements .element h5 { background: #ccc; padding: 2px 4px; }
 #active_elements .elementActions { position: absolute; right: 5px; top: 7px; z-index: 1; }
 #active_elements .active_child_elements h4.elementTypeName { border: none; margin: 0; padding: 6px; color: #666; }
+#active_elements .active_child_elements .element .left,
+#active_elements .active_child_elements .element .right { width: 483px; }
 #elements.view .element .element h4.elementTypeName { padding: 3px 6px 0; color: #666; }
 #active_elements .active_child_elements .elementActions { right: 2px; top: 2px; }
 #active_elements .active_child_elements .inactiveForm { padding: 0; margin: 0; }
@@ -32,18 +34,18 @@
 #active_elements .active_child_elements,
 #elements.view .child_elements { padding: 0 10px; background: #dae6f1; }
 #active_elements > .element.clicked { background: #eee url(../img/ajax-loader.gif) 1006px 12px no-repeat; }
-#active_elements > .element.clicked .elementActions { display: none; } 
+#active_elements > .element.clicked .elementActions { display: none; }
 #inactive_elements .element { background: #8C949C url(../img/_elements/icons/event-optional/element-view.png) top right no-repeat; padding: 5px; color: #fff; border-bottom: 1px dotted #fafafa; cursor: pointer; }
-#inactive_elements h5 { margin: 0; line-height: 1em; padding: 0 5px; } 
-#inactive_elements .element:hover { background-color: #3665ff; } 
+#inactive_elements h5 { margin: 0; line-height: 1em; padding: 0 5px; }
+#inactive_elements .element:hover { background-color: #3665ff; }
 #inactive_elements .element.clicked { background: #ddd url(../img/ajax-loader.gif) 1010px 4px no-repeat; }
-#inactive_elements .element.clicked h5 { color: #333; } 
+#inactive_elements .element.clicked h5 { color: #333; }
 #active_elements .inactive_child_elements .element.clicked { background: #ddd url(../img/ajax-loader.gif) 1010px 4px no-repeat; }
-#active_elements .inactive_child_elements .element.clicked h5 { color: #333; } 
+#active_elements .inactive_child_elements .element.clicked h5 { color: #333; }
 .optionals-header { font-size: 12px; border-bottom: 1px dotted #fafafa; border-top: 2px dotted #8C949C; margin-top: 10px; background: #dae6f1; }
 #event_content .optionals-header h4 { margin: 0; padding: 6px 8px; float: left; border: none; }
 .optionals-header div { float: right; height: 28px; }
-.optionals-header .allButton { display: inline-block; height: 20px; padding: 0 0 2px 15px; margin: 3px 0 0 1px; cursor: pointer; } 
+.optionals-header .allButton { display: inline-block; height: 20px; padding: 0 0 2px 15px; margin: 3px 0 0 1px; cursor: pointer; }
 .optionals-header .allButton > a { position: relative; top: 2px; }
 #elements.view .element table { background: #c9ddef; margin-bottom: 0; }
 #elements.view .element table tbody th,
