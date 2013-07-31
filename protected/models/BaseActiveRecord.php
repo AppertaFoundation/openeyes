@@ -76,7 +76,7 @@ class BaseActiveRecord extends CActiveRecord
 		}
 
 		if ($this->getIsNewRecord() || !isset($this->id)) {
-			if (!$allow_overriding || $this->created_user_id == 1) {
+			if (!$allow_overriding) {
 				// Set creation properties
 				if ($user_id === NULL) {
 					// Revert to the admin user
@@ -91,7 +91,7 @@ class BaseActiveRecord extends CActiveRecord
 		}
 
 		try {
-			if (!$allow_overriding || $this->last_modified_user_id == 1) {
+			if (!$allow_overriding) {
 				// Set the last_modified_user_id and last_modified_date fields
 				if ($user_id === NULL) {
 					// Revert to the admin user
