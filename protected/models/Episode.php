@@ -239,7 +239,7 @@ class Episode extends BaseActiveRecord
 	{
 		$previous = Episode::model()->findByPk($this->id);
 
-		if (parent::save($runValidation, $attributes)) {
+		if (parent::save($runValidation, $attributes, $allow_overriding)) {
 			if ($previous && $previous->episode_status_id != $this->episode_status_id) {
 				$this->audit('episode','change-status',$this->episode_status_id);
 			}
