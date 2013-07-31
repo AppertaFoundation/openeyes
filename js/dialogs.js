@@ -129,6 +129,15 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
   };
 
   /**
+   * When loading content, if the request fails, then show an error message.
+   * @name Dialog#showContentLoadError
+   * @method
+   */
+  Dialog.prototype.showContentLoadError = function() {
+    this.content.html('Sorry, there was an error retrieving the content. Please try again.');
+  };
+
+  /**
    * Repositions the dialog in the center of the page.
    * @name Dialog#reposition
    * @method
@@ -199,7 +208,10 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * @method
    * @private
    */
-  Dialog.prototype.onContentLoaded = function() {
+  Dialog.prototype.onContentLoaded = function(response, status, xhr) {
+    if (status === 'error') {
+      this.showContentLoadError();
+    }
     this.reposition();
   };
 
