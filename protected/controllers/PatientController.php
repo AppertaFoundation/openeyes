@@ -848,6 +848,12 @@ class PatientController extends BaseController
 			}
 		}
 
+		// Check that the date is valid
+		$v = new OEFuzzyDateValidator;
+		if (!$v->validateAttribute($sd,'date')) {
+			$errors['date'] = "The date entered is not valid";
+		}
+
 		echo json_encode($errors);
 	}
 

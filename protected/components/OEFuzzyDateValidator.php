@@ -30,7 +30,7 @@ class OEFuzzyDateValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute)
+	public function validateAttribute($object, $attribute)
 	{
 		$dt = $object->$attribute;
 		$_year = (integer) substr($dt,0,4);
@@ -53,7 +53,5 @@ class OEFuzzyDateValidator extends CValidator
 		} elseif ($_month > 12) {
 			$this->addError($object, $attribute, 'Invalid month value');
 		}
-
 	}
-
 }
