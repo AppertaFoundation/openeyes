@@ -1270,7 +1270,7 @@ table.audit-list tr.hover{ background-color: #ffffdd; }
 #alert_banner.stuck { height: 25px; position: fixed; bottom: 0; z-index: 100; margin-bottom: 0; }
 #alert_banner.stuck .banner-watermark { font-size: 13px; height: 15px; line-height: 15px; }
 
-#debug-info-modal { font-family:monospace;padding:15px;-webkit-border-radius: 5px; -moz-border-radius: 5px;}
+#debug-info-modal { font-size: 13px; }
 
 #LoginForm_siteId { margin-top: 6px; position: absolute; right: 0; top: 0; width: 212px; }
 
