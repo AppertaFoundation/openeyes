@@ -30,15 +30,15 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     And I select a Previous Operation date of day "<day>" month "<month>" year "<year>"
     Then I save the new Previous Operation
 
-    And I Add Medication details medication "<medication>" route "<route>" frequency "<frequency>" date from "<datefrom>"
+    And I Add Medication details medication "<medication>" route "<route>" frequency "<frequency>" date from "<datefrom>" and Save
 
     Then I edit the CVI Status "<CVIstatus>"
     And I select a CVI Status date of day "<day>" month "<month>" year "<year>"
     Then I save the new CVI status
 
-    Then I Add Allergy "<allergy>"
+    Then I Add Allergy "<allergy>" and Save
 
-    And I Add a Family Histoy of "relative" side "<side>" condition "condition" and comments "comments"
+    And I Add a Family History of relative "relative" side "<side>" condition "condition" and comments "comments" and Save
     #Then I choose to close the browser
 
   Examples: User details

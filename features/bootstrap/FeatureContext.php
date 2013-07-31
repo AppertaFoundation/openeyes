@@ -370,6 +370,18 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
     }
 
     /**
+     * @Given /^I Add Medication details medication "([^"]*)" route "([^"]*)" frequency "([^"]*)" date from "([^"]*)"$/ and Save
+     */
+    public function iAddMedicationDetails($medication, $route, $frequency, $dateFrom)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->medicationDetails($medication, $route, $frequency, $dateFrom);
+    }
+
+    /**
      * @Then /^I edit the CVI Status "([^"]*)"$/
      */
     public function iEditTheCviStatus($status)
@@ -405,87 +417,31 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $patientView->saveCVIstatus();
     }
 
-    /**
-     * @Given /^I Add a Family Histoy of "([^"]*)" side "([^"]*)" condition "([^"]*)" and comments "([^"]*)"$/
-     */
-    public function iAddAFamilyHistoyOfSideConditionAndComments($arg1, $arg2, $arg3, $arg4)
-    {
-        throw new PendingException();
-    }
 
     /**
-     * @Given /^I Add Medication details medication "([^"]*)" route "([^"]*)" frequency "([^"]*)" date from "([^"]*)"$/
-     */
-    public function iAddMedicationDetails($medication, $route, $frequency, $dateFrom)
-    {
-        $this->clickLink(PatientViewPage::$addMedication);
-        $this->selectOption(PatientViewPage::$medicationSelect, $medication);
-        $this->waitForActionToFinish();
-        $this->selectOption(PatientViewPage::$medicationRoute, $route);
-        $this->selectOption(PatientViewPage::$medicationFrequency, $frequency);
-        $this->clickLink(PatientViewPage::$medicationCalendar);
-        $this->clickLink(PatientViewPage::passDateFromTable($dateFrom));
-        $this->clickLink(PatientViewPage::$medicationSave);
-        $this->waitForActionToFinish();
-        $this->removeMedication++;
-    }
-
-    /**
-     * @Then /^I Add Allergy "([^"]*)"$/
+     * @Then /^I Add Allergy "([^"]*)"$/ and Save
      */
     public function iAddAllergy($allergy)
     {
-        $this->selectOption(PatientViewPage::$selectAllergy, $allergy);
-        $this->clickLink(PatientViewPage::$addAllergy);
-        $this->waitForActionToFinish();
-        $this->removeAllergy++;
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->addAllergy($allergy);
     }
 
+    /**
+     * @Given /^I Add a Family History of relative "([^"]*)" side "([^"]*)" condition "([^"]*)" and comments "([^"]*)"$/ and Save
+     */
+    public function FamilyHistory($relative, $side, $condition, $comments)
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->addFamilyHistory($relative, $side, $condition, $comments);
+    }
 
-//    /**
-//     * @Then /^I remove diagnosis test data$/
-//     */
-//     public function I_remove_diagnosis_test_data ()
-//     {
-//        echo "". $this->removeDiagnosis ." number of Diagnosis test data items to be removed";
-//        while ($this->removeDiagnosis) {
-//        $this->clickLink(PatientViewPage::$removeDiagnosisLink);
-//        $this->waitForActionToFinish();
-//        $this->clickLink(PatientViewPage::$removeDiagnosis);
-//        $this->waitForActionToFinish();
-//        $this->removeDiagnosis--;
-//        }
-//     }
-//
-//    /**
-//     * @Then /^I remove medication test data$/
-//     */
-//    public function I_remove_medication_test_data ()
-//    {
-//        echo "". $this->removeMedication ." number of Medication test data items to be removed";
-//        while ($this->removeMedication) {
-//        $this->clickLink(PatientViewPage::$removeMedicationLink);
-//        $this->waitForActionToFinish();
-//        $this->clickLink(PatientViewPage::$removeMedication);
-//        $this->waitForActionToFinish();
-//        $this->removeMedication--;
-//        }
-//    }
-//
-//    /**
-//     * @Then /^I remove allergy test data$/
-//     */
-//    public function I_remove_allergy_test_data ()
-//    {
-//        echo "". $this->removeAllergy ." number of Allergy test data items to be removed";
-//        while ($this->removeAllergy) {
-//        $this->clickLink(PatientViewPage::$removeAllergyLink);
-//        $this->waitForActionToFinish();
-//        $this->clickLink(PatientViewPage::$removeAllergy);
-//        $this->waitForActionToFinish();
-//        $this->removeAllergy--;
-//        }
-//    }
 //
 //    /**
 //     * @Then /^I select Diagnosis Eyes of "([^"]*)"$/
