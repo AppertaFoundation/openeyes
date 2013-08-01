@@ -19,7 +19,7 @@
 $(document).ready(function(){
 	$collapsed = true;
 
-	$('button.addEvent').click(function(e) {
+	$('button.addEvent.enabled').click(function(e) {
 		var subspecialty_id = $(this).attr('data-attr-subspecialty-id');
 		var returnUrl = window.location.href.replace(/#$/,'')+'#addEvent';
 
