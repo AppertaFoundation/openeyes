@@ -39,16 +39,12 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	$('#support-info-link').live('click',function() {
-		var debug = $('<div></div>')
-		.html('<iframe style="border: 0px; " src="<?php echo Yii::app()->createUrl('site/debuginfo')?>" width="360px" height="300px"></iframe>')
-		.dialog({
-			'autoOpen': true,
-			'modal': true,
-			'height': 360,
-			'width': 400,
-			'resizable': false,
-			'title': 'Support Information',
-		});
+
+		new OpenEyes.Dialog({
+			url: this.href,
+			title: 'Support Information'
+		}).open();
+
 		return false;
 	});
 });
