@@ -818,7 +818,7 @@ class PatientController extends BaseController
 
 		$sd = new SecondaryDiagnosis;
 		$sd->patient_id = $patient->id;
-		$sd->date = @$_POST['diagnosis_year'].'-'.str_pad(@$_POST['diagnosis_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
+		$sd->date = @$_POST['fuzzy_year'].'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
 		$sd->disorder_id = @$disorder_id;
 		$sd->eye_id = @$_POST['diagnosis_eye'];
 
@@ -850,9 +850,7 @@ class PatientController extends BaseController
 
 		// Check that the date is valid
 		$v = new OEFuzzyDateValidator;
-		if (!$v->validateAttribute($sd,'date')) {
-			$errors['date'] = "The date entered is not valid";
-		}
+		$v->validateAttribute($sd,'date');
 
 		echo json_encode($errors);
 	}
