@@ -64,9 +64,18 @@
 						<div <?php if ($episode->hidden) { ?>class="events show" style="display: none;"<?php } else { ?>class="events hide"<?php } ?>>
 							<?php if (BaseController::checkUserLevel(4)) {?>
 								<?php if ($episode->status->name != 'Discharged') {?>
+									<?php 
+									$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+									$enabled = false;
+									if ($firm->serviceSubspecialtyAssignment->subspecialty_id == $episode->firm->serviceSubspecialtyAssignment->subspecialty_id)
+										$enabled = true;
+									?>
 									<div style="margin-top:5px; margin-bottom: 5px;">
-										<button class="classy green mini addEvent" type="button" data-attr-subspecialty-id="<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty_id?>">
-											<span class="btn green plus">Add event</span>
+										<button class="classy mini addEvent<?php echo ($enabled) ? " green enabled" : " grey"; ?>" 
+											type="button" data-attr-subspecialty-id="<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty_id?>"
+										<?php if (!$enabled) echo 'title="Please switch firm to add an event to this episode"'; ?>	
+										>
+											<span class="btn plus<?php echo ($enabled) ? " green" : " grey"; ?>">Add event</span>
 										</button>
 									</div>
 								<?php }?>
