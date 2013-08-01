@@ -215,31 +215,58 @@ class UserIdentity extends CUserIdentity
 		$firms = array();
 
 		if ($user->global_firm_rights) {
-			foreach (Firm::model()->findAll() as $firm) {
+			foreach (Firm::model()->with(array(
+				'serviceSubspecialtyAssignment' => array(
+					'with' => 'subspecialty',
+				)))->findAll() as $firm) {
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 		} else {
 			// Gets the firms the user is associated with
-			foreach ($user->firms as $firm) {
+			foreach (Firm::model()->with(array(
+				'firmUserAssignments' => array(
+					'condition' => 'user_id = :user_id',
+					'params' => array(
+						':user_id' => $user->id,
+					),
+				),
+				'serviceSubspecialtyAssignment' => array(
+					'with' => 'subspecialty',
+				),
+			))->findAll() as $firm) {
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 
-			// Get arbitrarily selected firms
-			foreach ($user->firmRights as $firm) {
+			foreach (Firm::model()->with(array(
+				'userFirmRights' => array(
+					'condition' => 'user_id = :user_id',
+					'params' => array(
+						':user_id' => $user->id,
+					),
+				),
+				'serviceSubspecialtyAssignment' => array(
+					'with' => 'subspecialty',
+				),
+			)) as $firm) {
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 
-			// Get firms associated with services
-			foreach ($user->serviceRights as $service) {
-				foreach ($service->serviceSubspecialtyAssignments as $ssa) {
-					foreach (Firm::model()->findAll(
-						'service_subspecialty_assignment_id = ?', array(
-							$ssa->id
-						)
-					) as $firm) {
-						$firms[$firm->id] = $this->firmString($firm);
-					}
-				}
+			foreach (Firm::model()->with(array(
+				'serviceSubspecialtyAssignment' => array(
+					'with' => array(
+						'service' => array(
+							'userServiceRights' => array(
+								'condition' => 'user_id = :user_id',
+								'params' => array(
+									':user_id' => $user->id,
+								),
+							),
+						),
+						'subspecialty',
+					),
+				),
+			))->findAll() as $firm) {
+				$firms[$firm->id] = $this->firmString($firm);
 			}
 		}
 

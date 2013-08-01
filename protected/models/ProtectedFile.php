@@ -66,7 +66,9 @@ class ProtectedFile extends BaseActiveRecord
 		$path = $file->getFilePath();
 		if (!file_exists($path)) {
 			error_log($path);
-			mkdir($path, 0755, true);
+			if (!@mkdir($path, 0755, true)) {
+				throw new Exception("$path could not be created: permission denied");
+			}
 		}
 
 		return $file;

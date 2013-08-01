@@ -315,7 +315,6 @@ button.mini span.button-span,
 .event-action.primary span { display:block; height:24px; line-height:23px; } 
 button.mini span.button-span.icon-only	{ 
 	padding:0 4px;
-	width: 18px;
 }
 
 /* nano - just replace 'tall','grande' or 'venti' in button class */
@@ -966,6 +965,7 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 #event_content .splitElement { padding:10px 0; margin:10px 0; border-top:5px solid #dae6f1; border-bottom:5px solid #dae6f1; }
 #event_content .splitElement .left	{ clear: left; float: left; width: 50%; }
 #event_content .splitElement .right { clear: right; float: right; width: 50%; }
+#event_content .removeElementForm { overflow: hidden; text-indent: -9999px; display: inline-block; width: 16px; height: 16px; background: url(../img/_elements/icons/event-optional/element-remove.png) -10px -2px no-repeat; }
 
 /* clearfix stuff */
 .eventDetail:before, .eventDetail:after { content: ""; display: table; }
