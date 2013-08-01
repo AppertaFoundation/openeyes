@@ -154,4 +154,22 @@ class BaseActiveRecord extends CActiveRecord
 
 		Audit::add($target, $action, $data, $log, $properties);
 	}
+
+	static public function cloneObject($object, $params=array()) {
+		$class = get_class($object);
+
+		$_object = new $class;
+
+		foreach ($object as $key => $value) {
+			if ($key != 'id') {
+				$_object->{$key} = $value;
+			}
+		}
+
+		foreach ($params as $key => $value) {
+			$_object->{$key} = $value;
+		}
+
+		return $object;
+	}
 }
