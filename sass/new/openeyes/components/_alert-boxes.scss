@@ -13,8 +13,8 @@
 // Styleguide 11.1
 
 // Alert box variables
-$oe-alert-default-bg-color: #e2e2e2 !default;
 $oe-alert-alert-bg-color: #ffe6b2 !default;
+$oe-alert-default-bg-color: #e2e2e2 !default;
 
 .alert-box {
     @include alert($oe-alert-default-bg-color);

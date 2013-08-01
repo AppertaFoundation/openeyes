@@ -31,11 +31,11 @@
 // Styleguide 15.2
 
 // User panel variables
-$oe-user-panel-font-size: emCalc(13px) !default;
-$oe-user-panel-bg-image: image-url("_elements/icons/user/idcard_bg.png") !default;
-$oe-user-panel-bg-repeat: no-repeat !default;
-$oe-user-panel-bg-position: left bottom !default;
 $oe-user-panel-bg-color: #dae6f1 !default;
+$oe-user-panel-bg-image: image-url("_elements/icons/user/idcard_bg.png") !default;
+$oe-user-panel-bg-position: left bottom !default;
+$oe-user-panel-bg-repeat: no-repeat !default;
+$oe-user-panel-font-size: emCalc(13px) !default;
 $oe-user-panel-padding: 0 emCalc(10px) emCalc(5px) emCalc(10px) !default;
 
 .user-panel {

@@ -70,6 +70,9 @@ table {
         td:last-child {
             border-right: none;
         }
+        tfoot {
+            border-top: 1px solid $table-border-color;
+        }
     }
     // Form fields within tables
     td, th {
@@ -192,5 +195,47 @@ $oe-waiting-list-border-color: #999999 !default;
         height: $oe-waiting-list-key-height;
         border: 1px solid $oe-waiting-list-border-color;
         display: inline-block;
+    }
+}
+
+// Theatre bookings table.
+//
+// Styleguide 5.2
+
+// Theatre bookings table vars
+$oe-table-theatre-bookings-footer-cell-bg-color: #bde0b3 !default;
+$oe-table-theatre-bookings-footer-font-size: 1em !default;
+$oe-table-theatre-bookings-footer-line-height: 1 !default;
+$oe-table-theatre-bookings-footer-time-left-font-size: $default-font-size !default;
+$oe-table-theatre-bookings-footer-specialist-bg-color: #fff !default;
+$oe-table-theatre-bookings-footer-specialist-border-color: #ccc !default;
+$oe-table-theatre-bookings-footer-specialist-font-size: emCalc(11px) !default;
+$oe-table-theatre-bookings-footer-specialist-padding: emCalc(6px) emCalc(8px) emCalc(6px) emCalc(17px) !default;
+$oe-table-theatre-bookings-footer-specialist-opacity: 0.8 !default;
+$oe-table-theatre-bookings-footer-specialist-border-radius: 5px !default;
+
+.theatre-bookings {
+    tfoot {
+        td {
+            background: $oe-table-theatre-bookings-footer-cell-bg-color;
+            font-size: $oe-table-theatre-bookings-footer-font-size;
+            line-height: $oe-table-theatre-bookings-footer-line-height;
+        }
+    }
+    .time-left {
+        float: left;
+        font-size: $oe-table-theatre-bookings-footer-time-left-font-size;
+        font-weight: bold;
+    }
+    .specialists {
+        background: $oe-table-theatre-bookings-footer-specialist-bg-color;
+        border: 2px solid $oe-table-theatre-bookings-footer-specialist-border-color;
+        float: right;
+        font-size: $oe-table-theatre-bookings-footer-specialist-font-size;
+        line-height: 1.2;
+        padding: $oe-table-theatre-bookings-footer-specialist-padding;
+        text-align: right;
+        @include opacity($oe-table-theatre-bookings-footer-specialist-opacity);
+        @include border-radius($oe-table-theatre-bookings-footer-specialist-border-radius);
     }
 }

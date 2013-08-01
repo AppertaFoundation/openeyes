@@ -1,0 +1,27 @@
+// Theatre booking session comments panel
+//
+// Styleguide 15.6
+
+// Session panel vars
+$oe-panel-session-comments-bg-color: #fff0a0 !default;
+$oe-panel-session-comments-border-color: #fee54f !default;
+$oe-panel-session-comments-heading-color: #998a30 !default;
+$oe-panel-session-comments-heading-font-size: emCalc(12px);
+$oe-panel-session-comments-min-height: emCalc(80px) !default;
+
+.panel {
+    &.session-comments {
+        background: $oe-panel-session-comments-bg-color;
+        border: 1px solid $oe-panel-session-comments-border-color;
+        min-height: $oe-panel-session-comments-min-height;
+        @include border-radius(0);
+        .theatres-list & {
+            margin-left: -1 * $column-gutter / 2;
+        }
+        h4 {
+            color: $oe-panel-session-comments-heading-color;
+            font-size: $oe-panel-session-comments-heading-font-size;
+            font-style: italic;
+        }
+    }
+}
