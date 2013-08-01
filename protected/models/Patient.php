@@ -666,6 +666,25 @@ class Patient extends BaseActiveRecord
 		}
 		return false;
 	}
+	
+	public function getDisordersOfType($snomeds)
+	{
+		$disorders = array();
+		foreach ($snomeds as $id) {
+			$disorders[] = Disorder::model()->findByPk($id);
+		}
+		$disorder_ids = $this->getAllDisorderIds();
+		$res = array();
+		foreach ($disorder_ids as $p_did) {
+			foreach ($disorders as $d) {
+				if ($d->ancestorOfIds(array($p_did))) {
+					$res[] = Disorder::model()->findByPk($p_did);
+					break;
+				}
+			}
+		}
+		return $res;
+	}
 
 	public function getSystemicDiagnoses()
 	{
@@ -1063,5 +1082,31 @@ class Patient extends BaseActiveRecord
 				}
 			}
 		}
+	}
+	
+	/**
+	 * return the patient warnings that have been defined
+	 * 
+	 * return {'short_msg' => string, 'long_msg' => string}[]
+	 */
+	public function getWarnings()
+	{
+		// At the moment, we only warn for diabetes, so this is quite lightweight and hard coded
+		// but this should serve as a wrapper function for configuring warnings (i.e. a system setting could 
+		// define what should be warned on, and then we return a structure that is determined from this)
+		$res = array();
+		
+		if ($diabetic_disorders = $this->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET) ) {
+			$terms = array();
+			foreach ($diabetic_disorders as $disorder) {
+				$terms[] = $disorder->term;
+			}
+			$res[] = array(
+				'short_msg' => 'Diabetes',
+				'long_msg' => 'Patient is Diabetic',
+				'details' => implode(', ', $terms)
+			);
+		}
+		return $res;
 	}
 }

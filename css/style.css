@@ -194,6 +194,8 @@ em { font-style: italic; color:#333; }
 #content .redBox	{ background: #e81515; border:#fc621f 4px solid; color:#FFF; font-weight: bold; padding:7px 10px; margin-bottom: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 #content .alertBox	{ background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; }
 #content .warningBox	{ background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; }
+#content .patientWarningBox { background: #eb5911 url(../img/_elements/icons/box/patient-warning.png) top left no-repeat;; color:#FFF; border:2px solid #fff; padding-left:50px;}
+
 #content .issueBox	{ background: #fdf2e5 url(../img/_elements/icons/box/issue.png) top left no-repeat; border:#f3c160 1px solid; padding:10px 10px 10px 50px; }
 #content .infoBox		{ background: #e0f2db url(../img/_elements/icons/box/info.png) top left no-repeat; border:#9c9 1px solid; padding:10px 10px 10px 50px; }
 #content .optionalBox		{ background: transparent url(../img/_elements/icons/event/medium/_optional.png) top left no-repeat; padding:10px 10px 10px 50px; }
@@ -640,6 +642,9 @@ ul#user_nav > li .selected,
 .patientReminder .icons li.gender { text-indent: -9999px; width: 16px; height: 16px; }
 .patientReminder .icons li.gender.female { background: url(../img/_elements/icons/alerts/female_trans.png) center center no-repeat; }
 .patientReminder .icons li.gender.male { background: url(../img/_elements/icons/alerts/male_trans.png) center center no-repeat; }
+.patientReminder .icons li.warning { background: url(../img/_elements/icons/alerts/warning.png) center center no-repeat; text-indent: -9999px; width: 16px; height: 16px;}
+.warningHover { display:none; position:absolute; z-index:5; right:5px; bottom:-25px; height:17px; line-height:17px; font-size:11px; letter-spacing:1px; white-space: nowrap; padding:0 5px; color:#fff; background:#eb5911; border:2px solid #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;}
+.warningHover:after { content: ""; position: absolute; top:-6px; left:43%; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 5px solid #fff;}
 .patientReminder .hide { display: none; }
 .patientReminder .i_patient { position: absolute; bottom: 7px; right: 10px; }
 .patientReminder .i_patient a { font-size: 11px; }

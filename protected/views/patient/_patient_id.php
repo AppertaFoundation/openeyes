@@ -27,6 +27,14 @@
 		<div class="nhsNumber"><span class="hide">NHS number:</span><?php echo $this->patient->nhsnum?></div>
 		<ul class="icons">
 			<li class="gender <?php echo strtolower($this->patient->getGenderString()) ?>"><?php echo $this->patient->getGenderString() ?></li>
+			<?php if ($warnings = $this->patient->getWarnings()) { 
+				$msgs = array();
+				foreach ($warnings as $warn) {
+					$msgs[] = $warn['short_msg'];
+				}
+			?>
+				<li class="warning"><span><?php echo implode(' / ', $msgs); ?></span></li>
+			<?php } ?>
 		</ul>
 		<div class="i_patient">
 			<?php echo CHtml::link('Patient Summary',array('/patient/view/'.$this->patient->id)); ?>

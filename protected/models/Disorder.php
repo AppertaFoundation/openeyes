@@ -45,6 +45,7 @@ class Disorder extends BaseActiveRecord
 	// the sets postfix indicate this is an array of SNOMED concepts that can be used to determine if a disorder
 	// is part of the parent SNOMED concept.
 	// For example, diabetes is indicated by both the disorder parent and associated disorders
+	public static $SNOMED_DIABETES_SET = array(73211009, 74627003);
 	public static $SNOMED_DIABETES_TYPE_I_SET = array(46635009, 420868002);
 	public static $SNOMED_DIABETES_TYPE_II_SET = array(44054006, 422014003);
 
