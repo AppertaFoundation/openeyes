@@ -29,7 +29,7 @@
 				<?php
 				if (count($episodes) <1 && count($supportserviceepisodes) <1) {?>
 					<div class="alertBox fullWidthEvent" style="margin-top: 10px;">
-						There are currently no episodes for this patient, please add a new event to open an episode.
+						There are currently no episodes for this patient, please click the Add episode button to open a new episode.
 					</div>
 				<?php } else if (!@$current_episode) {?>
 					<div class="alertBox fullWidthEvent">

@@ -177,7 +177,7 @@ class TreeBehavior extends CActiveRecordBehavior
 		$owner = $this->getOwner();
 		$db = $owner->getDbConnection();
 
-		return $this->_descendentIds($owner->getDbConnection, $owner->treeTable(), $owner->id);
+		return $this->_descendentIds($db, $owner->treeTable(), $owner->id);
 	}
 
 	/*

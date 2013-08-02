@@ -27,7 +27,7 @@
  *
  * The followings are the available model relations:
  * @property LetterTemplate[] $letterTemplates
- * @property ServiceSubspecialtyAssignment[] $serviceSubspecialtyAssignments
+ * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
  * @property Specialty $specialty
  */
 class Subspecialty extends BaseActiveRecord
@@ -76,8 +76,8 @@ class Subspecialty extends BaseActiveRecord
 			//'eventTypeElementTypeAssignmentSubspecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSubspecialtyAssignment', 'subspecialty_id'),
 			//'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'subspecialty_id'),
 			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'subspecialty_id'),
-			'serviceSubspecialtyAssignments' => array(self::HAS_MANY, 'ServiceSubspecialtyAssignment', 'subspecialty_id'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
+			'serviceSubspecialtyAssignment' => array(self::HAS_ONE, 'ServiceSubspecialtyAssignment', 'subspecialty_id'),
 		);
 	}
 

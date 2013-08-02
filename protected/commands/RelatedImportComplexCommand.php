@@ -48,12 +48,11 @@ EOH;
 	public function run($args)
 	{
 		// Initialise db
-		echo "stuff";
 		$connection = Yii::app()->db;
 		$row_count = 0;
 
 		$path = Yii::app()->basePath . '/' . $this->DATA_FOLDER . '/';
-		echo $path;
+		
 		foreach (glob($path."*.cpxmap") as $map_path) {
 			$imp_name = substr(basename($map_path), 0, -7);
 			echo "Performing $imp_name import ...\n";
@@ -164,7 +163,7 @@ EOH;
 		}
 		
 		$query = "INSERT INTO ".$db->quoteTableName($table)." (".implode(',',$quoted_cols).") VALUES ".$insert;
-		echo $query . "\n";
+		//echo $query . "\n";
 		
 		$db->createCommand($query)->execute();
 		if ($imp_id) {

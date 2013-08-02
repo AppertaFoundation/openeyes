@@ -81,7 +81,7 @@ class Practice extends BaseActiveRecord
 	{
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioningbody_practice_assignment(practice_id, commissioningbody_id)'),
+			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioning_body_practice_assignment(practice_id, commissioning_body_id)'),
 		);
 	}
 

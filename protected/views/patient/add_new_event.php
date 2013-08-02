@@ -22,12 +22,13 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	'id' => 'add-new-event-dialog',
 	'options' => array(
 		'title' => 'Add a new '.($subspecialty ? $subspecialty->name : 'Support services').' event',
-		'dialogClass' => 'dialog',
+		'dialogClass' => 'dialog event',
 		'autoOpen' => true,
 		'modal' => true,
 		'draggable' => false,
 		'resizable' => false,
-		'width' => 450,
+		'width' => 580,
+		'minHeight' => 'auto'
 	),
 ))?>
 	<div class="title">

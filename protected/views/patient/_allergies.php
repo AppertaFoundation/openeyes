@@ -122,7 +122,9 @@
 	});
 	$('button.btn_save_allergy').click(function() {
 		if ($('#allergy_id').val() == '') {
-			alert("Please select an allergy");
+			new OpenEyes.Dialog.Alert({
+				content: "Please select an allergy"
+			}).open();
 			return false;
 		}
 		$('img.add_allergy_loader').show();
@@ -181,11 +183,15 @@
 				if (html == 'success') {
 					$('a.removeAllergy[rel="'+$('#remove_allergy_id').val()+'"]').parent().parent().remove();
 				} else {
-					alert("Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
+					}).open();
 				}
 			},
 			'error': function() {
-				alert("Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance.");
+				new OpenEyes.Dialog.Alert({
+					content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
+				}).open();
 			}
 		});
 
