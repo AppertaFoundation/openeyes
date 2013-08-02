@@ -57,7 +57,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
   /**
    * The default dialog options. Custom options will be merged with these.
    * @name Dialog#defaultOptions
-   * @property
+   * @static
    */
   Dialog.defaultOptions = {
     content: '',
@@ -247,7 +247,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * The default alert dialog options. These options will be merged into the
    * default dialog options.
    * @name AlertDialog#defaultOptions
-   * @property
+   * @static
    */
   AlertDialog.defaultOptions = {
     modal: true,

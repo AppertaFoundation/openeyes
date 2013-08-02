@@ -1,3 +1,4 @@
 module.exports = {
-  docs: ['docs/styleguide']
+  styleguide: ['docs/styleguide'],
+  javascript: ['docs/jsdoc']
 };

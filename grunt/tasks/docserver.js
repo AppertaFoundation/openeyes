@@ -5,10 +5,6 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('docserver', 'Spin up a connect server to display the documentation', function() {
 
-    // Ensure the docs task has been run (to ensure the documentation
-    // has been generated).
-    this.requires(['docs']);
-
     // Keep this task running indefinitely.
     this.async();
 

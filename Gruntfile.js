@@ -10,7 +10,10 @@ module.exports = function(grunt) {
     clean: require('./grunt/config/clean'),
     docserver: require('./grunt/config/docserver'),
     modernizr: require('./grunt/config/modernizr'),
-    copy: require('./grunt/config/copy')
+    copy: require('./grunt/config/copy'),
+    jsdoc: require('./grunt/config/jsdoc'),
+    docs: require('./grunt/config/docs'),
+    viewdocs: require('./grunt/config/viewdocs')
   });
 
   /* Load the node packaged grunt tasks */
@@ -20,23 +23,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-styleguide');
+  grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-modernizr');
 
   /* Load our custom grunt tasks */
   require('./grunt/tasks/docserver')(grunt);
   require('./grunt/tasks/bower')(grunt);
-
-  grunt.registerTask('docs', 'Generates the documentation', [
-    'clean:docs',
-    'compass:newstyle',
-    'copy:docs',
-    'styleguide:dist'
-  ]);
-
-  grunt.registerTask('viewdocs', 'Generates the docs and spins up a connect server to view the generated documentation', [
-    'docs',
-    'docserver'
-  ]);
+  require('./grunt/tasks/docs')(grunt);
+  require('./grunt/tasks/viewdocs')(grunt);
 
   grunt.registerTask('lint', 'Check code for syntax errors', [
     'jshint'
