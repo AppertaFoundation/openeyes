@@ -17,8 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class EventAction {
-	
+class EventAction
+{
 	public $name;
 	public $type;
 	public $label;
@@ -29,51 +29,55 @@ class EventAction {
 			'level' => 'primary',
 			'disabled' => false
 	);
-	
-	public static function button($label, $name, $options = null, $htmlOptions = null) {
+
+	public static function button($label, $name, $options = null, $htmlOptions = null)
+	{
 		$action = new self($label, 'button', $options, $htmlOptions);
 		$action->htmlOptions['name'] = $name;
 		$action->htmlOptions['type'] = 'submit';
-		if(!isset($action->htmlOptions['id'])) {
+		if (!isset($action->htmlOptions['id'])) {
 			$action->htmlOptions['id'] = 'et_'.strtolower($name);
 		}
 		return $action;
 	}
-	
-	public static function link($label, $href = '#', $options = null, $htmlOptions = null) {
+
+	public static function link($label, $href = '#', $options = null, $htmlOptions = null)
+	{
 		$action = new self($label, 'link', $options, $htmlOptions);
 		$action->href = $href;
 		return $action;
 	}
-	
-	public function __construct($label, $type, $options = null, $htmlOptions = null) {
+
+	public function __construct($label, $type, $options = null, $htmlOptions = null)
+	{
 		$this->label = $label;
 		$this->type = $type;
 		$this->htmlOptions = $htmlOptions;
-		if(!isset($this->htmlOptions['class'])) {
+		if (!isset($this->htmlOptions['class'])) {
 			$this->htmlOptions['class'] = '';
 		}
-		if(is_array($options)) {
-			foreach($options as $key => $value) {
+		if (is_array($options)) {
+			foreach ($options as $key => $value) {
 				$this->options[$key] = $value;
 			}
 		}
 	}
-	
-	public function toHtml() {
+
+	public function toHtml()
+	{
 		$label = '<span>'.CHtml::encode($this->label).'</span>';
 		$this->htmlOptions['class'] .= ' event-action '.$this->options['level'];
-		if($this->options['disabled']) {
+		if ($this->options['disabled']) {
 			$this->htmlOptions['class'] .= ' disabled';
 			$this->htmlOptions['disabled'] = 'disabled';
 		} else {
 			$this->htmlOptions['class'] .= ' '.$this->options['colour'];
 		}
-		if($this->type == 'button') {
+		if ($this->type == 'button') {
 			return CHtml::htmlButton($label, $this->htmlOptions);
-		} else if($this->type == 'link') {
+		} elseif ($this->type == 'link') {
 			return CHtml::link($label, $this->href, $this->htmlOptions);
 		}
 	}
-	
+
 }

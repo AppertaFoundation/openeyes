@@ -27,16 +27,16 @@
 			<?php $this->renderPartial('episodes_sidebar',array('ordered_episodes' => $ordered_episodes, 'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes,'supportserviceepisodes'=>$supportserviceepisodes))?>
 			<div id="event_display">
 				<?php
-				if (count($episodes) && count($supportserviceepisodes) <1) {?>
+				if (count($episodes) <1 && count($supportserviceepisodes) <1) {?>
 					<div class="alertBox fullWidthEvent" style="margin-top: 10px;">
-						There are currently no episodes for this patient, please add a new event to open an episode.
+						There are currently no episodes for this patient, please click the Add episode button to open a new episode.
 					</div>
-				<?php }else if (!@$current_episode) {?>
+				<?php } else if (!@$current_episode) {?>
 					<div class="alertBox fullWidthEvent">
 						There is no open episode for the current firm's subspecialty.
 					</div>
 				<?php }?>
-				<?php $this->renderPartial('event_tabs',array('hidden'=>(boolean)(count($episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
+				<?php $this->renderPartial('event_tabs',array('hidden'=>(boolean) (count($episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
 
 				<!-- EVENT CONTENT HERE -->
 				<?php if (is_object($this->event) || ((count($episodes) >0 || count($supportserviceepisodes) >0 || count($legacyepisodes) >0) && @$current_episode)) {?>

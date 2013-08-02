@@ -21,7 +21,7 @@
 	<div class="label">Diagnosis:</div>
 	<div class="data">
 		<div id="enteredDiagnosisText" class="eventHighlight big"
-		<?php if (!$label){?> style="display: none;" <?php }?>>
+		<?php if (!$label) {?> style="display: none;" <?php }?>>
 			<h4>
 				<?php echo $label?>
 			</h4>

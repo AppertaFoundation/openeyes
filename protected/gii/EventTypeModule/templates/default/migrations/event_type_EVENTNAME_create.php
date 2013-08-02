@@ -1,9 +1,9 @@
 <?php echo '<?php '; ?>
 
-class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php echo $this->moduleID; ?> extends CDbMigration
+class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php echo $this->moduleID; ?> extends CDbMigration
 {
-	public function up() {
-
+	public function up()
+	{
 		// --- EVENT TYPE ENTRIES ---
 
 		// create an event_type entry for this event type name if one doesn't already exist
@@ -147,7 +147,8 @@ if (isset($field['extra_report'])) {?>
 <?php } ?>
 	}
 
-	public function down() {
+	public function down()
+	{
 		// --- drop any element related tables ---
 		// --- drop element tables ---
 <?php
@@ -188,4 +189,4 @@ if (isset($field['extra_report'])) {?>
 		return true;
 	}
 }
-<?php echo '?>';?>
+

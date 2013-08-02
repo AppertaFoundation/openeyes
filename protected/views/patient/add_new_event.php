@@ -22,12 +22,13 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	'id' => 'add-new-event-dialog',
 	'options' => array(
 		'title' => 'Add a new '.($subspecialty ? $subspecialty->name : 'Support services').' event',
-		'dialogClass' => 'dialog',
+		'dialogClass' => 'dialog event',
 		'autoOpen' => true,
 		'modal' => true,
 		'draggable' => false,
 		'resizable' => false,
-		'width' => 450,
+		'width' => 580,
+		'minHeight' => 'auto'
 	),
 ))?>
 	<div class="title">
@@ -43,7 +44,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 				}
 				?>
 				<p><?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id)?></p>
-			<?php }else{
+			<?php } else {
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
 					$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
 				} else {

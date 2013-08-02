@@ -30,13 +30,13 @@
 									<?php }?>
 								</tbody>
 							</table>
-							
-							<?php if(BaseController::checkUserLevel(4)) { ?>
+
+							<?php if (BaseController::checkUserLevel(4)) { ?>
 								<div align="center" style="margin-top:10px;">
 									<form><button id="btn-add_family_history" class="classy green mini" type="button"><span class="button-span button-span-green">Add family history</span></button></form>
 								</div>
 								<div id="add_family_history" style="display: none;">
-									<h5>Add family history</h5>	
+									<h5>Add family history</h5>
 									<?php
 									$form = $this->beginWidget('CActiveForm', array(
 											'id'=>'add-family_history',
@@ -44,10 +44,10 @@
 											'htmlOptions' => array('class'=>'sliding'),
 											'action'=>array('patient/addFamilyHistory'),
 									))?>
-		
+
 									<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
 									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-		
+
 									<div class="familyHistory">
 										<div class="label">
 											Relative:
@@ -89,9 +89,9 @@
 										<button class="classy green mini btn_save_family_history" type="submit"><span class="button-span button-span-green">Save</span></button>
 										<button class="classy red mini btn_cancel_family_history" type="submit"><span class="button-span button-span-red">Cancel</span></button>
 									</div>
-		
+
 									<?php $this->endWidget()?>
-								</div>	
+								</div>
 							<?php }?>
 						</div>
 					</div>
@@ -134,15 +134,21 @@
 	});
 	$('button.btn_save_family_history').click(function() {
 		if ($('#relative_id').val() == '') {
-			alert("Please select a relative");
+			new OpenEyes.Dialog.Alert({
+				content: "Please select a relative"
+			}).open();
 			return false;
 		}
 		if ($('#side_id').val() == '') {
-			alert("Please select a side");
+			new OpenEyes.Dialog.Alert({
+				content: "Please select a side"
+			}).open();
 			return false;
 		}
 		if ($('#condition_id').val() == '') {
-			alert("Please select a condition");
+			new OpenEyes.Dialog.Alert({
+				content: "Please select a condition"
+			}).open();
 			return false;
 		}
 		$('img.add_family_history_loader').show();
@@ -201,11 +207,15 @@
 				if (html == 'success') {
 					$('a.removeFamilyHistory[rel="'+$('#family_history_id').val()+'"]').parent().parent().remove();
 				} else {
-					alert("Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance."
+					}).open();
 				}
 			},
 			'error': function() {
-				alert("Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance.");
+				new OpenEyes.Dialog.Alert({
+					content: "Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance."
+				}).open();
 			}
 		});
 

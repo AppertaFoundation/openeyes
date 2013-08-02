@@ -19,7 +19,7 @@
 
 /**
  * This is the model class for table "tbl_audit_trail".
- * 
+ *
  * The followings are the available columns in table 'tbl_audit_trail':
  * @property integer $id
  * @property string $new_value
@@ -31,26 +31,30 @@
  * @property integer $user_id
  * @property integer $model_id
  */
-class AuditTrail extends CActiveRecord {
+class AuditTrail extends CActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return AuditTrail the static model class
 	 */
-	public static function model($className=__CLASS__) {
+	public static function model($className=__CLASS__)
+	{
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName() {
+	public function tableName()
+	{
 		return 'tbl_audit_trail';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return array(
 			array('action, model, field, stamp, model_id', 'required'),
 			array('action, model, field', 'length', 'max' => 255),
@@ -62,7 +66,8 @@ class AuditTrail extends CActiveRecord {
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations() {
+	public function relations()
+	{
 		return array(
 		);
 	}
@@ -70,7 +75,8 @@ class AuditTrail extends CActiveRecord {
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return array(
 			'id' => 'ID',
 			'old_value' => 'Old Value',
@@ -88,7 +94,8 @@ class AuditTrail extends CActiveRecord {
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search($options = array()) {
+	public function search($options = array())
+	{
 		$criteria=new CDbCriteria;
 		$criteria->compare('id',$this->id);
 		$criteria->compare('old_value',$this->old_value,true);

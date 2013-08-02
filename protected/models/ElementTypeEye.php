@@ -18,10 +18,10 @@
  */
 
 /**
- * This is the model class for table "eye".
+ * This is the model class for table "element_type_eye".
  *
  * The followings are the available columns in table 'element_type_eye':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $ShortName
  */
@@ -29,7 +29,7 @@ class ElementTypeEye extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return ElementTypeEye the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

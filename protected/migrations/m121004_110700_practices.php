@@ -1,8 +1,9 @@
 <?php
 
-class m121004_110700_practices extends CDbMigration {
-	
-	public function up() {
+class m121004_110700_practices extends CDbMigration
+{
+	public function up()
+	{
 		$this->createTable('practice',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'code' => 'varchar(64) NOT NULL',
@@ -22,7 +23,8 @@ class m121004_110700_practices extends CDbMigration {
 		$this->addForeignKey('patient_practice_id_fk', 'patient', 'practice_id', 'practice', 'id');
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropForeignKey('patient_practice_id_fk', 'patient');
 		$this->dropColumn('patient', 'practice_id');
 		$this->dropTable('practice');

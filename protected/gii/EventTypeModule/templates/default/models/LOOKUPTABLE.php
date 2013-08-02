@@ -67,7 +67,7 @@ class <?php if (isset($lookup_table)) echo $lookup_table['class']?> extends Base
 			array('id, name', 'safe', 'on' => 'search'),
 		);
 	}
-	
+
 	/**
 	 * @return array relational rules.
 	 */

@@ -17,7 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-		<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -', 'style' => 'margin-bottom:10px;') : $dropdownOptions) : ""?> <a href="#" id="<?php echo $class . "_" . $field . "_search"?>">search</a>
+		<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -', 'style' => 'margin-bottom:10px;') : $dropdownOptions) : ""?> 
+		<button class="classy blue mini" style="vertical-align: middle"><span class="button-span blue icon-only search" id="<?php echo $class . "_" . $field . "_search"?>" style="width: 18px"> </span></button>
 		<br />
 		<?php
 		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -79,6 +80,6 @@
 		$('#<?php echo $class . "_" . $field . "_search"?>').live('click', function(e) {
 			$('#<?php echo $class . "_" . $field . "_searchbox"?>').removeClass('hidden').focus();
 			e.preventDefault();
-		}); 
+		});
 	});
 </script>

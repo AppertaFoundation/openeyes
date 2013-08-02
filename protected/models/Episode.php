@@ -21,9 +21,9 @@
  * This is the model class for table "episode".
  *
  * The followings are the available columns in table 'episode':
- * @property string $id
- * @property string $patient_id
- * @property string $firm_id
+ * @property integer $id
+ * @property integer $patient_id
+ * @property integer $firm_id
  * @property string $start_date
  * @property string $end_date
  *
@@ -35,6 +35,8 @@
  */
 class Episode extends BaseActiveRecord
 {
+	private $defaultScopeDisabled = false;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Episode the static model class
@@ -57,11 +59,21 @@ class Episode extends BaseActiveRecord
 	 * @return array of mandatory conditions
 	 */
 
-	public function defaultScope() {
+	public function defaultScope()
+	{
+		if ($this->defaultScopeDisabled) {
+			return array();
+		}
+
 		$table_alias = $this->getTableAlias(false,false);
 		return array(
 			'condition' => $table_alias.'.deleted = 0',
 		);
+	}
+
+	public function disableDefaultScope() {
+		$this->defaultScopeDisabled = true;
+		return $this;
 	}
 
 	/**
@@ -91,7 +103,7 @@ class Episode extends BaseActiveRecord
 		return array(
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-			'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => 'datetime asc'),
+			'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => 'created_date asc'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
@@ -139,6 +151,9 @@ class Episode extends BaseActiveRecord
 
 	/**
 	 * Returns true if an event of the given type exists within this episode
+	 * @param integer $eventTypeId
+	 * @param Event $currentEvent
+	 * @return boolean
 	 */
 	public function hasEventOfType($eventTypeId, $currentEvent = null)
 	{
@@ -180,7 +195,8 @@ class Episode extends BaseActiveRecord
 		return Episode::model()->find($criteria);
 	}
 
-	public function getPrincipalDiagnosisDisorderTerm() {
+	public function getPrincipalDiagnosisDisorderTerm()
+	{
 		if ($disorder = $this->getPrincipalDisorder()) {
 			return $disorder->term;
 		} else {
@@ -211,7 +227,8 @@ class Episode extends BaseActiveRecord
 		return Episode::model()->findByPk($episode['eid']);
 	}
 
-	public function getMostRecentEventByType($event_type_id) {
+	public function getMostRecentEventByType($event_type_id)
+	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('episode_id',$this->id);
 		$criteria->compare('event_type_id',$event_type_id);
@@ -220,19 +237,20 @@ class Episode extends BaseActiveRecord
 		return Event::model()->find($criteria);
 	}
 
-	public function getAllEventsByType($event_type_id) {
+	public function getAllEventsByType($event_type_id)
+	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('episode_id',$this->id);
 		$criteria->compare('event_type_id',$event_type_id);
 		$criteria->order = 'created_date desc';
 		return Event::model()->findAll($criteria);
 	}
-	
+
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
 		$previous = Episode::model()->findByPk($this->id);
 
-		if (parent::save($runValidation, $attributes)) {
+		if (parent::save($runValidation, $attributes, $allow_overriding)) {
 			if ($previous && $previous->episode_status_id != $this->episode_status_id) {
 				$this->audit('episode','change-status',$this->episode_status_id);
 			}
@@ -241,7 +259,8 @@ class Episode extends BaseActiveRecord
 		return false;
 	}
 
-	public function getHidden() {
+	public function getHidden()
+	{
 		if (isset(Yii::app()->getController()->event) && Yii::app()->getController()->event->episode_id == $this->id) {
 			return false;
 		}
@@ -257,36 +276,40 @@ class Episode extends BaseActiveRecord
 		return true;
 	}
 
-	public function getOpen() {
+	public function getOpen()
+	{
 		return ($this->end_date == null);
 	}
 
-	public function getEditable(){
+	public function getEditable()
+	{
 		if (!$this->firm) {
 			if (!$this->support_services) {
 				return FALSE;
 			}
 			return (Yii::app()->getController()->firm->serviceSubspecialtyAssignment == null);
 		}
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id){
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			return FALSE;
 		}
 
 		return TRUE;
 	}
 
-	protected function afterSave() {
+	protected function afterSave()
+	{
 		foreach (SecondaryDiagnosis::model()->findAll('patient_id=? and disorder_id=?',array($this->patient_id,$this->disorder_id)) as $sd) {
 			if ($this->eye_id == $sd->eye_id || ($this->eye_id == 3 && in_array($sd->eye_id,array(1,2)))) {
 				$sd->delete();
-			} else if (in_array($this->eye_id,array(1,2)) && $sd->eye_id == 3) {
+			} elseif (in_array($this->eye_id,array(1,2)) && $sd->eye_id == 3) {
 				$sd->eye_id = ($this->eye_id == 1 ? 2 : 1);
 				$sd->save();
 			}
 		}
 	}
 
-	public function setPrincipalDiagnosis($disorder_id, $eye_id) {
+	public function setPrincipalDiagnosis($disorder_id, $eye_id)
+	{
 		$this->disorder_id = $disorder_id;
 		$this->eye_id = $eye_id;
 		if (!$this->save()) {
@@ -296,9 +319,10 @@ class Episode extends BaseActiveRecord
 		$this->audit('episode','set-principal-diagnosis');
 	}
 
-	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
+	public function audit($target, $action, $data=null, $log=false, $properties=array())
+	{
 		$properties['episode_id'] = $this->id;
 		$properties['patient_id'] = $this->patient_id;
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 }

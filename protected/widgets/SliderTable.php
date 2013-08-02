@@ -17,13 +17,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class SliderTable extends BaseCWidget {
+class SliderTable extends BaseCWidget
+{
 	public $min = 1;
 	public $max;
 	public $step = 1;
 	public $data;
 
-	public function init() {
+	public function init()
+	{
 		parent::init();
 
 		$this->max = count($this->data) + 1;
@@ -33,4 +35,3 @@ class SliderTable extends BaseCWidget {
 		}
 	}
 }
-?>

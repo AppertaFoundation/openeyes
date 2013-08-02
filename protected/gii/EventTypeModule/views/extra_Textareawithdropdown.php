@@ -33,7 +33,7 @@
 						<input class="textAreaDropDownFieldValueTextInput" type="text" name="textAreaDropDownFieldValue<?php echo $element_num?>Field<?php echo $field_num?>_<?php echo $m[1]?>" value="<?php echo $value?>" /><?php if ($m[1] != '1') {?><input type="submit" class="textAreaDropDownFieldValuesRemoveValue" value="remove"><?php }?><br/>
 					<?php }
 				};
-			}else{?>
+			} else {?>
 				<input type="text" class="textAreaDropDownFieldValueTextInput" name="textAreaDropDownFieldValue<?php echo $element_num?>Field<?php echo $field_num?>_1" value="Enter value" /><br/>
 			<?php }?>
 		</div>

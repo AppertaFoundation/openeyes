@@ -63,11 +63,10 @@ class AdminUserController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['User']))
-		{
+		if (isset($_POST['User'])) {
 			$model->attributes=$_POST['User'];
 
-			if($model->save()) {
+			if ($model->save()) {
 				// Add their RBAC role
 				// @todo - this will need to be changed to a more basic role
 				// once RBAC is properly implemented
@@ -97,11 +96,10 @@ class AdminUserController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['User']))
-		{
+		if (isset($_POST['User'])) {
 			$model->attributes=$_POST['User'];
 
-			if($model->save()) {
+			if ($model->save()) {
 				$this->redirect(array('view','id'=>$model->id));
 			}
 		}
@@ -120,15 +118,14 @@ class AdminUserController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest) {
+		if (Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-		}
-		else {
+		} else {
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
 		}
 	}
@@ -176,8 +173,7 @@ class AdminUserController extends Controller
 // @todo - change to a service?
 		$rights = $service->loadRights();
 
-		if(isset($_POST['Rights']))
-		{
+		if (isset($_POST['Rights'])) {
 // @todo - change tables names to singular
 			$service->saveRights();
 
@@ -197,8 +193,8 @@ class AdminUserController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=User::model()->findByPk((int)$id);
-		if($model===null) {
+		$model=User::model()->findByPk((int) $id);
+		if ($model===null) {
 			throw new CHttpException(404,'The requested page does not exist.');
 		}
 
@@ -211,8 +207,7 @@ class AdminUserController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='user-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax']==='user-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

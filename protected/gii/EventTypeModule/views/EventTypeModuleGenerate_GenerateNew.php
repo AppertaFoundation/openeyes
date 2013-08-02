@@ -8,7 +8,7 @@
 		<?php if (isset($this->form_errors['EventTypeModuleCode[moduleSuffix]'])) {?>
 			<span style="color: #f00; margin-bottom: 10px; display: inline-block;"><?php echo $this->form_errors['EventTypeModuleCode[moduleSuffix]']?></span>
 		<?php }?>
-		
+
 		<label>Event type short name:</label>
 		<input type="text" name="EventTypeModuleCode[moduleShortSuffix]" value="<?php echo @$_POST['EventTypeModuleCode']['moduleShortSuffix']?>" size="65" id="moduleShortSuffix" /><br/>
 

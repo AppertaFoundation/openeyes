@@ -26,7 +26,8 @@ class BaseCWidget extends CWidget
 	public $assetFolder;
 	public $hidden = false;
 
-	public function init() {
+	public function init()
+	{
 		if (is_object($this->element)) {
 			if (empty($_POST)) {
 				if (isset($this->element->{$this->field})) {
@@ -47,7 +48,8 @@ class BaseCWidget extends CWidget
 		}
 	}
 
-	public function render($view, $data=null, $return=false) {
+	public function render($view, $data=null, $return=false)
+	{
 		if (is_array($data)) {
 			$data = array_merge($data,get_object_vars($this));
 		} else {
@@ -57,8 +59,8 @@ class BaseCWidget extends CWidget
 		parent::render($view, $data, $return);
 	}
 
-	public function run() {
+	public function run()
+	{
 		$this->render(get_class($this));
 	}
 }
-?>

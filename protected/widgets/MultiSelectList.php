@@ -17,7 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class MultiSelectList extends BaseCWidget {
+class MultiSelectList extends BaseCWidget
+{
 	public $htmlOptions;
 	public $options = array();
 	public $default_options = array();
@@ -26,7 +27,8 @@ class MultiSelectList extends BaseCWidget {
 	public $selected_ids = array();
 	public $relation_id_field;
 
-	public function init() {
+	public function init()
+	{
 		$this->filtered_options = $this->options;
 
 		if (empty($_POST)) {
@@ -44,7 +46,7 @@ class MultiSelectList extends BaseCWidget {
 				}
 			}
 		} else {
-			
+
 			if (isset($_POST[$this->field])) {
 				foreach ($_POST[$this->field] as $id) {
 					$this->selected_ids[] = $id;
@@ -53,7 +55,7 @@ class MultiSelectList extends BaseCWidget {
 			}
 			// when the field being used contains the appropriate square brackets for defining the associative array, the original (above)
 			// approach for retrieving the posted value does not work. The following (more standard) approach does
-			else if(isset($_POST[get_class($this->element)][$this->relation])) {
+			else if (isset($_POST[get_class($this->element)][$this->relation])) {
 				foreach ($_POST[get_class($this->element)][$this->relation] as $id) {
 					$this->selected_ids[] = $id;
 					unset($this->filtered_options[$id]);
@@ -64,4 +66,3 @@ class MultiSelectList extends BaseCWidget {
 		parent::init();
 	}
 }
-?>

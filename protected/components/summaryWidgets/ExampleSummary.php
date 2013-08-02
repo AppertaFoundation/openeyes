@@ -17,7 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ExampleSummary extends CWidget {
+class ExampleSummary extends CWidget
+{
 	public $episode_id;
 	public $noEvents;
 

@@ -21,11 +21,11 @@
  * This is the model class for table "phrase".
  *
  * The followings are the available columns in table 'phrase':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $phrase
- * @property string $section_id
- * @property string $display_order
+ * @property integer $section_id
+ * @property integer $display_order
  *
  * The followings are the available model relations:
  * @property Section $section

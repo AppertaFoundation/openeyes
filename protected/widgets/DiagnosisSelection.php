@@ -17,7 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DiagnosisSelection extends BaseCWidget {
+class DiagnosisSelection extends BaseCWidget
+{
 	public $selectedFirmId;
 	public $options;
 	public $dropdownOptions;
@@ -35,8 +36,9 @@ class DiagnosisSelection extends BaseCWidget {
 	public $nowrapper = false;
 	// text in diagnosis search box
 	public $placeholder = 'or type the first few characters of a diagnosis';
-	
-	public function run() {
+
+	public function run()
+	{
 		$this->class = get_class($this->element);
 		if (empty($_POST) || !array_key_exists($this->class, $_POST)) {
 			if (empty($this->element->event_id)) {
@@ -68,7 +70,7 @@ class DiagnosisSelection extends BaseCWidget {
 				}
 			} else {
 				$this->value = $_POST[$this->class][$this->field];
-				if($disorder = Disorder::model()->findByPk($this->value)) {
+				if ($disorder = Disorder::model()->findByPk($this->value)) {
 					$this->label = $disorder->term;
 				}
 			}
@@ -76,7 +78,8 @@ class DiagnosisSelection extends BaseCWidget {
 		parent::run();
 	}
 
-	public function render($view, $data=null, $return=false) {
+	public function render($view, $data=null, $return=false)
+	{
 		if ($this->layout) {
 			$view .= '_'.$this->layout;
 		}

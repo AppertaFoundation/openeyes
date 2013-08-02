@@ -17,7 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ProcedureSelection extends BaseCWidget {
+class ProcedureSelection extends BaseCWidget
+{
 	public $subsections;
 	public $procedures;
 	public $removed_stack;
@@ -39,7 +40,8 @@ class ProcedureSelection extends BaseCWidget {
 	public $callback = false;
 	public $layout = false;
 
-	public function run() {
+	public function run()
+	{
 		if (empty($_POST)) {
 			if (!$this->selected_procedures && $this->element) {
 				$this->selected_procedures = $this->element->{$this->relation};
@@ -59,7 +61,7 @@ class ProcedureSelection extends BaseCWidget {
 				}
 			}
 		}
-		
+
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 		if ($this->restrict_common == 'unbooked') {
@@ -95,7 +97,7 @@ class ProcedureSelection extends BaseCWidget {
 			}
 		} else {
 			// Doesn't matter if removed_stack contains non-common procedures as lists are reloaded using ajax on removal
-			foreach($this->selected_procedures as $selected_procedure) {
+			foreach ($this->selected_procedures as $selected_procedure) {
 				$this->removed_stack[] = "{id: $selected_procedure->id, name: '$selected_procedure->term'}";
 			}
 		}
@@ -109,11 +111,11 @@ class ProcedureSelection extends BaseCWidget {
 		}
 	}
 
-	public function render($view, $data=null, $return=false) {
+	public function render($view, $data=null, $return=false)
+	{
 		if ($this->layout) {
 			$view .= '_'.$this->layout;
 		}
 		parent::render($view, $data, $return);
 	}
 }
-?>

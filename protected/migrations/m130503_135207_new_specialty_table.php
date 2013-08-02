@@ -122,7 +122,8 @@ class m130503_135207_new_specialty_table extends CDbMigration
 		$this->insert('specialty',array('name'=>'Allied Health Professional Episode','code'=>960,'specialty_type_id'=>6,'default_title'=>'Consultant','default_is_surgeon'=>0));
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropForeignKey('specialty_specialty_type_id_fk','specialty');
 		$this->dropIndex('specialty_specialty_type_id_fk','specialty');
 		$this->dropColumn('specialty','specialty_type_id');

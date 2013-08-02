@@ -17,18 +17,16 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php 
+<?php
 if (isset($htmlOptions['options'])) {
 	$opts = $htmlOptions['options'];
-}
-else {
+} else {
 	$opts = array();
 }
 
 if (isset($htmlOptions['div_id'])) {
 	$div_id = $htmlOptions['div_id'];
-}
-else {
+} else {
 	// for legacy, this is the original definition of the div id that was created for the multiselect
 	// not recommended as it doesn't allow for sided uniqueness
 	$div_id = "div_" . get_class($element) . "_" . @$htmlOptions['label'];
@@ -39,7 +37,7 @@ if (isset($htmlOptions['div_class'])) {
 } else {
 	$div_class = "eventDetail";
 }
-	
+
 ?>
 
 <input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" />
@@ -56,7 +54,7 @@ if (isset($htmlOptions['div_class'])) {
 				echo "<option";
 				foreach ($attributes as $att => $att_val) {
 					echo " " . $att . "=\"" . $att_val . "\"";
-				} 
+				}
 				echo ">" . $option . "</option>";
 			}?>
 		</select>
@@ -67,10 +65,10 @@ if (isset($htmlOptions['div_class'])) {
 						<li>
 							<?php echo $options[$id] ?> (<a href="#" class="MultiSelectRemove <?php echo $id?>">remove</a>)
 						</li>
-						<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>" 
+						<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
 						<?php if (isset($opts[$id])) {
 							foreach ($opts[$id] as $key => $val) {
-								echo " " . $key . "=\"" . $val . "\"";	
+								echo " " . $key . "=\"" . $val . "\"";
 							}
 						}?>
 						/>

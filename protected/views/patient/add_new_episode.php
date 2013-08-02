@@ -22,12 +22,12 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	'id' => 'add-new-episode-dialog',
 	'options' => array(
 		'title' => 'Create new episode',
-		'dialogClass' => 'dialog',
+		'dialogClass' => 'dialog episode',
 		'autoOpen' => true,
 		'modal' => true,
 		'draggable' => false,
 		'resizable' => false,
-		'width' => 450,
+		'width' => 580,
 	),
 ));
 ?>
@@ -44,12 +44,9 @@ $form = $this->beginWidget('CActiveForm', array(
 		<p><span>Firm:</span><strong><?php echo $firm->name?></strong></p>
 		<p><span>Subspecialty:</span><strong><?php echo $firm->serviceSubspecialtyAssignment->subspecialty->name?></strong></p>
 	</div>
-	<div class="question">
-		<p><strong>Do you want to create this new episode?</strong></p>
-	</div>
 	<div class="buttons">
-		<button class="classy green mini confirm" type="button"><span class="button-span button-span-green">Confirm</span></button>
-		<button class="classy red mini cancel" type="button"><span class="button-span button-span-red">Cancel</span></button>
+		<button class="classy green mini confirm" type="button"><span class="button-span button-span-green">Create new episode</span></button>
+		<button class="classy blue mini cancel" type="button"><span class="button-span button-span-blue">Cancel</span></button>
 	</div>
 </div>
 <?php $this->endWidget()?>

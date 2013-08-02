@@ -17,22 +17,24 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class SiteAndFirmForm extends CFormModel {
-	
+class SiteAndFirmForm extends CFormModel
+{
 	public $site_id;
 	public $firm_id;
 
-	public function rules() {
+	public function rules()
+	{
 		return array(
 			array('firm_id, site_id', 'required'),
 		);
 	}
 
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return array(
 			'firm_id' => 'Firm',
 			'site_id' => 'Site',
 		);
 	}
-	
+
 }

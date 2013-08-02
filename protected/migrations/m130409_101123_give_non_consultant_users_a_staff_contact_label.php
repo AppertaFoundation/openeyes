@@ -15,7 +15,8 @@ class m130409_101123_give_non_consultant_users_a_staff_contact_label extends CDb
 		}
 	}
 
-	public function getLabel($name) {
+	public function getLabel($name)
+	{
 		if ($label = Yii::app()->db->createCommand()->select("*")->from("contact_label")->where("name=:name",array(":name"=>$name))->queryRow()) {
 			return $label;
 		}

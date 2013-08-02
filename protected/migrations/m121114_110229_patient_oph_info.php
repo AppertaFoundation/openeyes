@@ -18,12 +18,12 @@ class m121114_110229_patient_oph_info extends CDbMigration
 				'CONSTRAINT `patient_oph_info_cvi_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
 				'CONSTRAINT `patient_oph_info_cvi_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
-		
+
 		$this->insert('patient_oph_info_cvi_status',array('name'=>'Unknown','display_order'=>1));
 		$this->insert('patient_oph_info_cvi_status',array('name'=>'Not Certified','display_order'=>2));
 		$this->insert('patient_oph_info_cvi_status',array('name'=>'Sight Impaired','display_order'=>3));
 		$this->insert('patient_oph_info_cvi_status',array('name'=>'Severely Sight Impaired','display_order'=>4));
-		
+
 		$this->createTable('patient_oph_info',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'patient_id' => 'int(10) unsigned NOT NULL',

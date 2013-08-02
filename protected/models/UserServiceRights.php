@@ -21,16 +21,16 @@
  * This is the model class for table "user_service_rights".
  *
  * The followings are the available columns in table 'user_service_rights':
- * @property string $id
- * @property string $user_id
- * @property string $service_id
+ * @property integer $id
+ * @property integer $user_id
+ * @property integer $service_id
  *
  * The followings are the available model relations:
  * @property User $user
  * @property Service $service
  */
-class UserServiceRights extends BaseActiveRecord {
-	
+class UserServiceRights extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return UserServiceRights the static model class

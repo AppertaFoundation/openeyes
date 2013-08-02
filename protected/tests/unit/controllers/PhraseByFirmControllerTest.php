@@ -56,17 +56,17 @@ class PhraseByFirmControllerTest extends CDbTestCase
 		$this->setExpectedException('CHttpException', 'The requested page does not exist.');
 		$this->controller->actionView($fakeId);
 	}
-	
+
 	public function testActionView_ValidData_RendersViewView()
 	{
 		$itemId = $this->phrasesByFirm['phraseByFirm1']['id'];
 		$itemPhrase = $this->phrasesByFirm['phraseByFirm1']['phrase'];
-		
+
 		$mockController = $this->getMock('PhraseByFirmController', array('render'), array('PhraseByFirmController'));
 		$mockController->expects($this->any())
 			->method('render')
 			->with('view', array('model' => $this->phrasesByFirm('phraseByFirm1')));
-		
+
 		$mockController->actionView($itemId);
 	}
 
@@ -78,10 +78,10 @@ class PhraseByFirmControllerTest extends CDbTestCase
 		$mockController->expects($this->any())
 			->method('render')
 			->with('admin', array('model' => $item));
-		
+
 		$mockController->actionAdmin();
 	}
-	
+
 	public function testAction_ValidGetParameters_RendersView()
 	{
 		$_GET['id'] = $this->phrasesByFirm['phraseByFirm1']['id'];
@@ -92,7 +92,7 @@ class PhraseByFirmControllerTest extends CDbTestCase
 		$mockController->expects($this->any())
 			->method('render')
 			->with('admin', array('model' => $item));
-		
+
 		$mockController->actionAdmin();
 	}
 }

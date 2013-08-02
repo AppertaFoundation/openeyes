@@ -23,11 +23,15 @@ $(document).ready(function() {
 				if (html == 'success') {
 					$('a.removeDiagnosis[rel="'+$('#diagnosis_id').val()+'"]').parent().parent().remove();
 				} else {
-					alert("Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance."
+					}).open();
 				}
 			},
 			'error': function() {
-				alert("Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance.");
+				new OpenEyes.Dialog.Alert({
+					content: "Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance."
+				}).open();
 			}
 		});
 	});
@@ -59,7 +63,9 @@ $(document).ready(function() {
 					}
 					row.remove();
 				} else {
-					alert("There was an error removing the contact association, please try again or contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "There was an error removing the contact association, please try again or contact support for assistance."
+					}).open();
 				}
 			}
 		});

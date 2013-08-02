@@ -20,9 +20,9 @@
 /**
  * This is the model class for table "setting_site".
  *
- * The followings are the available columns in table 'phrase':
- * @property string $id
- * @property string $element_type_id
+ * The followings are the available columns in table 'setting_site':
+ * @property integer $id
+ * @property integer $element_type_id
  * @property string $key
  * @property string $value
  */
@@ -30,7 +30,7 @@ class SettingSite extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Phrase the static model class
+	 * @return SettingSite the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

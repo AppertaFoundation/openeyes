@@ -305,7 +305,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		$this->dropColumn('contact','parent_id');
 	}
 
-	public function getConsultantUserID($firm_id) {
+	public function getConsultantUserID($firm_id)
+	{
 		$result = Yii::app()->db->createCommand()
 			->select('u.id as id')
 			->from('consultant cslt')
@@ -322,7 +323,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		return $result['id'];
 	}
 
-	public function getLabel($name) {
+	public function getLabel($name)
+	{
 		if ($label = Yii::app()->db->createCommand()->select("*")->from("contact_label")->where("name=:name",array(":name"=>$name))->queryRow()) {
 			return $label;
 		}
@@ -332,7 +334,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		return $this->getLabel($name);
 	}
 
-	public function migrateSpecialists($specialists) {
+	public function migrateSpecialists($specialists)
+	{
 		foreach ($specialists as $specialist) {
 			$label = $this->getLabel($specialist['specialist_type']);
 
@@ -367,13 +370,15 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		}
 	}
 
-	public function setFirmConsultants($firm_ids) {
+	public function setFirmConsultants($firm_ids)
+	{
 		foreach ($firm_ids as $firm_id) {
 			$this->update('firm',array('consultant_id'=>$this->getConsultantUserID($firm_id)),"id=$firm_id");
 		}
 	}
 
-	public function migrateUserContacts($users) {
+	public function migrateUserContacts($users)
+	{
 		$co = $this->getLabel('Consultant Ophthalmologist');
 
 		foreach ($users as $user) {
@@ -405,7 +410,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		}
 	}
 
-	public function migrateConsultantContacts($consultants) {
+	public function migrateConsultantContacts($consultants)
+	{
 		$label = $this->getLabel('Consultant Ophthalmologist');
 
 		foreach ($consultants as $contact) {
@@ -414,7 +420,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		}
 	}
 
-	public function migrateGPContacts($gps) {
+	public function migrateGPContacts($gps)
+	{
 		$gpl = $this->getLabel('General Practitioner');
 
 		foreach ($gps as $gp) {
@@ -423,7 +430,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		}
 	}
 
-	public function migrateSiteContacts($sites) {
+	public function migrateSiteContacts($sites)
+	{
 		foreach ($sites as $site) {
 			$update = array();
 
@@ -447,7 +455,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		}
 	}
 
-	public function migrateInstitutionContacts($institutions) {
+	public function migrateInstitutionContacts($institutions)
+	{
 		foreach ($institutions as $institution) {
 			$this->obtainLock();
 
@@ -464,7 +473,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		}
 	}
 
-	public function migratePatientContacts($patients) {
+	public function migratePatientContacts($patients)
+	{
 		foreach ($patients as $patient) {
 			$this->update('patient',array('contact_id'=>$patient['contact_id']),"id={$patient['id']}");
 			$this->update('contact',array('parent_class'=>''),"id={$patient['contact_id']}");
@@ -473,7 +483,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		}
 	}
 
-	public function migratePatientContactAssignments($pcas) {
+	public function migratePatientContactAssignments($pcas)
+	{
 		foreach ($pcas as $pca) {
 			if ($pca['site_id']) {
 				if (!$pca['location_id1']) {
@@ -497,7 +508,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		}
 	}
 
-	public function migratePracticeContacts($practices) {
+	public function migratePracticeContacts($practices)
+	{
 		foreach ($practices as $practice) {
 			$this->obtainLock();
 

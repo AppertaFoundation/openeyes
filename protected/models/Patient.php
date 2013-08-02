@@ -38,36 +38,37 @@
  * @property string  $last_modified_date
  * @property integer $created_user_id
  * @property integer $last_modified_user_id
- * 
+ *
  * The followings are the available model relations:
  * @property Episode[] $episodes
  * @property Address[] $addresses
  * @property Address $address Primary address
- * @property HomeAddress $homeAddress Home address
- * @property CorrespondAddress $correspondAddress Correspondence address
- * @property Contact[] $contacts
+ * @property Contact[] $contactAssignments
  * @property Gp $gp
  * @property Practice $practice
  * @property Allergy[] $allergies
  * @property EthnicGroup $ethnic_group
+ * @property CommissioningBody[] $commissioningbodies
  */
-class Patient extends BaseActiveRecord {
-	
+class Patient extends BaseActiveRecord
+{
 	const CHILD_AGE_LIMIT = 16;
-	
+
 	public $use_pas = TRUE;
 	private $_orderedepisodes;
-	
-	
+
+
 	/**
 		* Returns the static model of the specified AR class.
 		* @return Patient the static model class
 		*/
-	public static function model($className=__CLASS__) {
+	public static function model($className=__CLASS__)
+	{
 		return parent::model($className);
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
@@ -79,7 +80,8 @@ class Patient extends BaseActiveRecord {
 	 * Suppress PAS integration
 	 * @return Patient
 	 */
-	public function noPas() {
+	public function noPas()
+	{
 		// Clone to avoid singleton problems with use_pas flag
 		$model = clone $this;
 		$model->use_pas = FALSE;
@@ -89,14 +91,16 @@ class Patient extends BaseActiveRecord {
 	/**
 		* @return string the associated database table name
 		*/
-	public function tableName() {
+	public function tableName()
+	{
 		return 'patient';
 	}
 
 	/**
 		* @return array validation rules for model attributes.
 		*/
-	public function rules() {
+	public function rules()
+	{
 		return array(
 			array('pas_key', 'length', 'max' => 10),
 			array('hos_num, nhs_num', 'length', 'max' => 40),
@@ -109,7 +113,8 @@ class Patient extends BaseActiveRecord {
 	/**
 		* @return array relational rules.
 		*/
-	public function relations() {
+	public function relations()
+	{
 		return array(
 			'legacyepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
 				'condition' => "legacy=1",
@@ -130,6 +135,9 @@ class Patient extends BaseActiveRecord {
 			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
 			'familyHistory' => array(self::HAS_MANY, 'FamilyHistory', 'patient_id', 'order' => 'created_date'),
 			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is null'),
+			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioning_body_patient_assignment(patient_id, commissioning_body_id)'),
+			'referrals' => array(self::HAS_MANY, 'Referral', 'patient_id'),
+			'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
 		);
 	}
 
@@ -160,17 +168,19 @@ class Patient extends BaseActiveRecord {
 		$criteria->compare('gender',$this->gender,false);
 		$criteria->compare('hos_num',$this->hos_num,false);
 		$criteria->compare('nhs_num',$this->nhs_num,false);
- 
-                
+
+
 		return $this->count($criteria);
-                	
+
 	}
 
 	/**
-		* Retrieves a list of models based on the current search/filter conditions.
-		* @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-		*/
-	public function search($params = false) {
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @param array $params
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+	public function search($params = null)
+	{
 		if (!is_array($params)) {
 			$params = array(
 				'pageSize' => 20,
@@ -193,12 +203,12 @@ class Patient extends BaseActiveRecord {
 		$criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
 
 		Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
-	
+
 		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'])
 		));
-		
+
 		return $dataProvider;
 	}
 
@@ -215,15 +225,15 @@ class Patient extends BaseActiveRecord {
 	/*
 	 * will group episodes by specialty, ordered by the configuration key of specialty sort,
 	 * and alphanumeric for any specialties not configured.
-	 * 
+	 *
 	 * @returns Array
 	 */
-	public function getOrderedEpisodes() {
-		
+	public function getOrderedEpisodes()
+	{
 		if (!isset($this->_orderedepisodes)) {
 			$episodes = $this->episodes;
 			$by_specialty = array();
-			
+
 			// group
 			foreach ($episodes as $ep) {
 				if ($ep->firm) {
@@ -232,8 +242,8 @@ class Patient extends BaseActiveRecord {
 					$by_specialty[$specialty->code]['specialty'] = $specialty;
 				}
 			}
-			
-			
+
+
 			$res = array();
 			if (count(array_keys($by_specialty)) > 1) {
 				// get specialties that are configured
@@ -245,9 +255,10 @@ class Patient extends BaseActiveRecord {
 						}
 					}
 				}
-		
+
 				// sort the remainder
-				function cmp($a, $b) {
+				function cmp($a, $b)
+				{
 					return strcasecmp($a['specialty']->name, $b['specialty']->name);
 				}
 				uasort($by_specialty, "cmp");
@@ -259,18 +270,20 @@ class Patient extends BaseActiveRecord {
 
 			$this->_orderedepisodes = $res;
 		}
-		
+
 		return $this->_orderedepisodes;
 	}
-	
-	public function getAge() {
+
+	public function getAge()
+	{
 		return Helper::getAge($this->dob, $this->date_of_death);
 	}
 
 	/**
 	* @return boolean Is patient a child?
 	*/
-	public function isChild() {
+	public function isChild()
+	{
 		$age_limit = (isset(Yii::app()->params['child_age_limit'])) ? Yii::app()->params['child_age_limit'] : self::CHILD_AGE_LIMIT;
 		return ($this->getAge() < $age_limit);
 	}
@@ -279,16 +292,17 @@ class Patient extends BaseActiveRecord {
 	* @param integer $drug_id
 	* @return boolean Is patient allergic?
 	*/
-	public function hasAllergy($drug_id = null) {
-		if($drug_id) {
-			if($this->allergies) {
+	public function hasAllergy($drug_id = null)
+	{
+		if ($drug_id) {
+			if ($this->allergies) {
 				$criteria = new CDbCriteria();
 				$criteria->select = 't.id';
 				$criteria->condition = 'paa.patient_id = :patient_id';
 				$join = array();
 				$join[] = 'JOIN drug_allergy_assignment daa ON daa.drug_id = t.id';
 				$join[] = 'JOIN patient_allergy_assignment paa ON paa.allergy_id = daa.allergy_id';
-				$criteria->join = implode(' ', $join); 
+				$criteria->join = implode(' ', $join);
 				$criteria->params = array(':patient_id' => $this->id);
 				return (bool) Drug::model()->findByPk($drug_id, $criteria);
 			} else {
@@ -298,45 +312,50 @@ class Patient extends BaseActiveRecord {
 			return (bool) $this->allergies;
 		}
 	}
-	
+
 	/**
 		* @return boolean Is patient deceased?
 		*/
-	public function isDeceased() {
+	public function isDeceased()
+	{
 		// Assume that if the patient has a date of death then they are actually dead, even if the date is in the future
 		return (!empty($this->date_of_death));
 	}
 
 	/**
-		* @return string Patient name for prefixing an address 
+		* @return string Patient name for prefixing an address
 		*/
-	public function getAddressName() {
+	public function getAddressName()
+	{
 		if ($this->isChild()) {
 			return 'Parent/Guardian of ' . $this->getFullName();
 		} else {
 			return $this->getFullName();
-		}	
+		}
 	}
-	
+
 	/**
-		* @return string Patient name for using as a salutation 
+		* @return string Patient name for using as a salutation
 		*/
-	public function getSalutationName() {
+	public function getSalutationName()
+	{
 		if ($this->isChild()) {
 			return 'Parent/Guardian of ' . $this->first_name . ' ' . $this->last_name;
 		} else {
 			return $this->title . ' ' . $this->last_name;
-		}	
+		}
 	}
-	
+
 	/**
-		* @return string Full name 
+		* @return string Full name
 		*/
-	public function getFullName() {
+	public function getFullName()
+	{
 		return trim(implode(' ',array($this->title, $this->first_name, $this->last_name)));
 	}
 
-	public function getDisplayName() {
+	public function getDisplayName()
+	{
 		return '<span class="surname">'.strtoupper($this->last_name).'</span>, <span class="given">'.$this->first_name.'</span>';
 	}
 
@@ -382,22 +401,25 @@ class Patient extends BaseActiveRecord {
 	* Pass through use_pas flag to allow pas supression
 	* @see CActiveRecord::instantiate()
 	*/
-	protected function instantiate($attributes) {
+	protected function instantiate($attributes)
+	{
 			$model = parent::instantiate($attributes);
 			$model->use_pas = $this->use_pas;
 			return $model;
 	}
-	
+
 	/**
 		* Raise event to allow external data sources to update patient
 		* @see CActiveRecord::afterFind()
 		*/
-	protected function afterFind() {
+	protected function afterFind()
+	{
 		parent::afterFind();
 		Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
 	}
 
-	public function getEpisodeForCurrentSubspecialty() {
+	public function getEpisodeForCurrentSubspecialty()
+	{
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
 		if ($firm->service_subspecialty_assignment_id) {
@@ -414,13 +436,14 @@ class Patient extends BaseActiveRecord {
 
 		return Episode::model()->find('patient_id=? and support_services=?',array($this->id,1));
 	}
-	
+
 	/**
 	 * returns the ophthalmic information object for this patient (creates a default one if one does not exist - but does not save it)
-	 * 
+	 *
 	 * @return PatientOphInfo
 	 */
-	public function getOphInfo() {
+	public function getOphInfo()
+	{
 		$info = PatientOphInfo::model()->find('patient_id = ?', array($this->id));
 		if (!$info) {
 			$info = new PatientOphInfo();
@@ -434,7 +457,8 @@ class Patient extends BaseActiveRecord {
 
 	/* Patient as subject, eg man, woman, boy girl */
 
-	public function getSub() {
+	public function getSub()
+	{
 		if ($this->isChild()) {
 			return ($this->gender == 'F' ? 'girl' : 'boy');
 		} else {
@@ -442,19 +466,22 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function getPro() {
+	public function getPro()
+	{
 		return ($this->gender == 'F' ? 'she' : 'he');
 	}
 
-	public function getEpd() {
+	public function getEpd()
+	{
 		$episode = $this->getEpisodeForCurrentSubspecialty();
-		
+
 		if ($episode && $disorder = $episode->diagnosis) {
 			return strtolower($disorder->term);
 		}
 	}
 
-	public function getEps() {
+	public function getEps()
+	{
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
 		if ($episode && $eye = $episode->eye) {
@@ -462,11 +489,13 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function getGenderString() {
+	public function getGenderString()
+	{
 		return ($this->gender == 'F' ? 'Female' : 'Male');
 	}
 
-	public function getEthnicGroupString() {
+	public function getEthnicGroupString()
+	{
 		if ($this->ethnic_group) {
 			return $this->ethnic_group->name;
 		} else {
@@ -474,47 +503,57 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function getObj() {
+	public function getObj()
+	{
 		return ($this->gender == 'F' ? 'her' : 'him');
 	}
 
-	public function getPos() {
+	public function getPos()
+	{
 		return ($this->gender == 'M' ? 'his' : 'her');
 	}
 
-	public function getTitle() {
+	public function getTitle()
+	{
 		return $this->contact->title;
 	}
 
-	public function getFirst_name() {
+	public function getFirst_name()
+	{
 		return $this->contact->first_name;
 	}
 
-	public function getLast_name() {
+	public function getLast_name()
+	{
 		return $this->contact->last_name;
 	}
 
-	public function getNick_name() {
+	public function getNick_name()
+	{
 		return $this->contact->nick_name;
 	}
 
-	public function getPrimary_phone() {
+	public function getPrimary_phone()
+	{
 		return $this->contact->primary_phone;
 	}
 
-	public function getSummaryAddress() {
+	public function getSummaryAddress()
+	{
 		return $this->contact->address ? $this->getLetterAddress(array('delimiter'=>'<br/>')) : 'Unknown';
 	}
 
-	public function getAllergiesString() {
+	public function getAllergiesString()
+	{
 		$allergies = array();
-		foreach($this->allergies as $allergy) {
+		foreach ($this->allergies as $allergy) {
 			$allergies[] = $allergy->name;
 		}
-		return implode(', ',$allergies);		
+		return implode(', ',$allergies);
 	}
 
-	public function addAllergy($allergy_id) {
+	public function addAllergy($allergy_id)
+	{
 		if (!PatientAllergyAssignment::model()->find('patient_id=? and allergy_id=?',array($this->id,$allergy_id))) {
 			$paa = new PatientAllergyAssignment;
 			$paa->patient_id = $this->id;
@@ -526,8 +565,9 @@ class Patient extends BaseActiveRecord {
 			$this->audit('patient','add-allergy',$paa->getAuditAttributes());
 		}
 	}
-	
-	public function removeAllergy($allergy_id) {
+
+	public function removeAllergy($allergy_id)
+	{
 		if ($paa = PatientAllergyAssignment::model()->find('patient_id=? and allergy_id=?',array($this->id,$allergy_id))) {
 			if (!$paa->delete()) {
 				throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
@@ -537,13 +577,14 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function assignAllergies($allergy_ids) {
-		$add_allergy_ids = $allergy_ids;
+	public function assignAllergies($allergy_ids)
+	{
+		$insert_allergy_ids = $allergy_ids;
 		$remove_allergy_ids = array();
 
 		// Check existing allergies
-		foreach($this->allergies as $allergy) {
-			if(($key = array_search($allergy->id, $insert_allergy_ids)) !== false) {
+		foreach ($this->allergies as $allergy) {
+			if (($key = array_search($allergy->id, $insert_allergy_ids)) !== false) {
 				// Allergy unchanged, don't remove or insert
 				unset($insert_allergy_ids[$key]);
 			} else {
@@ -556,7 +597,7 @@ class Patient extends BaseActiveRecord {
 		$query = 'INSERT INTO `patient_allergy_assignment` (patient_id,allergy_id) VALUES (:patient_id, :allergy_id)';
 		$command = Yii::app()->db->createCommand($query);
 		$command->bindValue('patient_id', $this->id);
-		foreach($insert_allergy_ids as $allergy_id) {
+		foreach ($insert_allergy_ids as $allergy_id) {
 			$command->bindValue('allergy_id', $allergy_id);
 			$command->execute();
 		}
@@ -577,7 +618,8 @@ class Patient extends BaseActiveRecord {
 	*
 	* @returns array() of disorder ids
 	*/
-	private function getAllDisorderIds() {
+	private function getAllDisorderIds()
+	{
 		// Get all the secondary disorders
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $this->id);
@@ -586,36 +628,38 @@ class Patient extends BaseActiveRecord {
 		foreach ($sd as $d) {
 			$disorder_ids[] = $d->disorder_id;
 		}
-		
-			
+
+
 		foreach ($this->episodes as $ep) {
 			//primary disorder for episode
 			if ($ep->disorder_id) {
 				$disorder_ids[] = $ep->disorder_id;
 			}
 		}
-		
+
 		return array_unique($disorder_ids);
 	}
-	
+
 	/*
 	 * returns all disorders for the patient.
-	 * 
+	 *
 	 * FIXME: some of this can be abstracted to a relation when we upgrade from yii 1.1.8, which has some problems with yii relations:
 	 * 	http://www.yiiframework.com/forum/index.php/topic/26806-relations-through-problem-wrong-on-clause-in-sql-generated/
-	 *  
+	 *
 	 * @returns array() of disorders
 	 */
-	public function getAllDisorders() {
+	public function getAllDisorders()
+	{
 		return Disorder::model()->findAllByPk($this->getAllDisorderIds());
 	}
-	
+
 	/*
 	 * checks if the patient has a disorder that is defined as being within the SNOMED tree specified by the given $snomed id.
-	 * 
+	 *
 	 * @returns bool
 	 */
-	public function hasDisorderTypeByIds($snomeds) {
+	public function hasDisorderTypeByIds($snomeds)
+	{
 		$disorder_ids = $this->getAllDisorderIds();
 		if (count($disorder_ids)) {
 			return Disorder::model()->ancestorIdsMatch($disorder_ids, $snomeds);
@@ -623,7 +667,27 @@ class Patient extends BaseActiveRecord {
 		return false;
 	}
 	
-	public function getSystemicDiagnoses() {
+	public function getDisordersOfType($snomeds)
+	{
+		$disorders = array();
+		foreach ($snomeds as $id) {
+			$disorders[] = Disorder::model()->findByPk($id);
+		}
+		$disorder_ids = $this->getAllDisorderIds();
+		$res = array();
+		foreach ($disorder_ids as $p_did) {
+			foreach ($disorders as $d) {
+				if ($d->ancestorOfIds(array($p_did))) {
+					$res[] = Disorder::model()->findByPk($p_did);
+					break;
+				}
+			}
+		}
+		return $res;
+	}
+
+	public function getSystemicDiagnoses()
+	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $this->id);
 		$criteria->join = 'join disorder on t.disorder_id = disorder.id and specialty_id is null';
@@ -632,36 +696,38 @@ class Patient extends BaseActiveRecord {
 		return SecondaryDiagnosis::model()->findAll($criteria);
 	}
 
-	public function getOphthalmicDiagnoses() {
+	public function getOphthalmicDiagnoses()
+	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $this->id);
-		
+
 		$criteria->join = 'join disorder on t.disorder_id = disorder.id join specialty on disorder.specialty_id = specialty.id';
 		$criteria->compare('specialty.code', 130);
-		
+
 		$criteria->order = 'date asc';
 
 		return SecondaryDiagnosis::model()->findAll($criteria);
 	}
-	
+
 	/*
 	 * returns the specialty codes that are relevant to the patient. Determined by looking at the diagnoses
 	 * related to the patient.
-	 * 
-	 * @return Array specialty codes 
+	 *
+	 * @return Array specialty codes
 	 */
-	public function getSpecialtyCodes() {
+	public function getSpecialtyCodes()
+	{
 		$codes = array();
 		if (isset(Yii::app()->params['specialty_codes'])) {
 			$codes = Yii::app()->params['specialty_codes'];
-		}
-		else {
+		} else {
 			// TODO: perform dynamic calculation of specialty codes based on the episodes and/or events assigned to patient
 		}
 		return $codes;
 	}
 
-	public function addDiagnosis($disorder_id, $eye_id=false, $date=false) {
+	public function addDiagnosis($disorder_id, $eye_id=false, $date=false)
+	{
 		if (!$date) {
 			$date = date('Y-m-d');
 		}
@@ -672,8 +738,7 @@ class Patient extends BaseActiveRecord {
 
 		if ($disorder->specialty_id) {
 			$type = strtolower(Specialty::model()->findByPk($disorder->specialty_id)->code);
-		}
-		else {
+		} else {
 			$type = 'sys';
 		}
 
@@ -693,7 +758,8 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function removeDiagnosis($diagnosis_id) {
+	public function removeDiagnosis($diagnosis_id)
+	{
 		if (!$sd = SecondaryDiagnosis::model()->findByPk($diagnosis_id)) {
 			throw new Exception('Unable to find secondary_diagnosis: '.$diagnosis_id);
 		}
@@ -701,14 +767,13 @@ class Patient extends BaseActiveRecord {
 		if (!$disorder = Disorder::model()->findByPk($sd->disorder_id)) {
 			throw new Exception('Unable to find disorder: '.$sd->disorder_id);
 		}
-		
+
 		if ($disorder->specialty_id) {
 			$type = strtolower(Specialty::model()->findByPk($disorder->specialty_id)->code);
-		}
-		else {
+		} else {
 			$type = 'sys';
 		}
-		
+
 		$audit_attributes = $sd->getAuditAttributes();
 
 		if (!$sd->delete()) {
@@ -717,34 +782,34 @@ class Patient extends BaseActiveRecord {
 
 		$this->audit('patient',"remove-$type-diagnosis",$audit_attributes);
 	}
-	
+
 	/**
 	 * update the patient's ophthalmic information
-	 * 
+	 *
 	 * @param PatientOphInfoCviStatus $cvi_status
 	 * @param string $cvi_status_date - fuzzy date string of the format yyyy-mm-dd
 	 */
-	public function editOphInfo($cvi_status, $cvi_status_date) 
+	public function editOphInfo($cvi_status, $cvi_status_date)
 	{
 		$oph_info = $this->getOphInfo();
 		if ($oph_info->id) {
 			$action = 'update-ophinfo';
-		}
-		else {
+		} else {
 			$action = 'set-ophinfo';
 		}
-		
+
 		$oph_info->cvi_status_id = $cvi_status->id;
 		$oph_info->cvi_status_date = $cvi_status_date;
-		
+
 		$oph_info->save();
-		
+
 		$audit_attributes = $oph_info->getAuditAttributes();
-		
+
 		$this->audit('patient', $action, $audit_attributes);
 	}
 
-	public function getContactAddress($contact_id, $location_type=false, $location_id=false) {
+	public function getContactAddress($contact_id, $location_type=false, $location_id=false)
+	{
 		if ($location_type && $location_id) {
 			if ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=? and '.$location_type.'_id=?',array($this->id, $contact_id, $location_id))) {
 				return $pca->address;
@@ -758,43 +823,48 @@ class Patient extends BaseActiveRecord {
 		return false;
 	}
 
-	public function getNhsnum() {
+	public function getNhsnum()
+	{
 		$nhs_num = preg_replace('/[^0-9]/', '', $this->nhs_num);
 		return $nhs_num ? substr($nhs_num,0,3).' '.substr($nhs_num,3,3).' '.substr($nhs_num,6,4) : 'not known';
 	}
 
-	public function hasLegacyLetters() {
+	public function hasLegacyLetters()
+	{
 		if ($api = Yii::app()->moduleAPI->get('OphLeEpatientletter')) {
 			return $this->patientHasLegacyLetters($this->hos_num);
 		}
 	}
 
 	// DR function additions
-	
-	
+
+
 	/*
 	* Type of diabetes mellitus
 	*/
-	public function getDmt() {
+	public function getDmt()
+	{
 		if ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_I_SET) ) {
 			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_I)->term;
-		}
-		elseif ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_II_SET)) {
+		} elseif ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_II_SET)) {
 			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_II)->term;
 		}
 		return 'not diabetic';
 	}
-	
-	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
+
+	public function audit($target, $action, $data=null, $log=false, $properties=array())
+	{
 		$properties['patient_id'] = $this->id;
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 
-	public function getChildPrefix() {
+	public function getChildPrefix()
+	{
 		return $this->isChild() ? "child's " : "";
 	}
 
-	public function getSdl() {
+	public function getSdl()
+	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id',$this->id);
 		$criteria->order = 'created_date asc';
@@ -817,7 +887,8 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function addPreviousOperation($operation, $side_id, $date) {
+	public function addPreviousOperation($operation, $side_id, $date)
+	{
 		if (!$pa = PreviousOperation::model()->find('patient_id=? and operation=? and date=?',array($this->id,$operation,$date))) {
 			$pa = new PreviousOperation;
 			$pa->patient_id = $this->id;
@@ -831,7 +902,8 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function addFamilyHistory($relative_id,$side_id,$condition_id,$comments) {
+	public function addFamilyHistory($relative_id,$side_id,$condition_id,$comments)
+	{
 		if (!$fh = FamilyHistory::model()->find('patient_id=? and relative_id=? and side_id=? and condition_id=?',array($this->id,$relative_id,$side_id,$condition_id))) {
 			$fh = new FamilyHistory;
 			$fh->patient_id = $this->id;
@@ -847,7 +919,8 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function currentContactIDS() {
+	public function currentContactIDS()
+	{
 		$ids = array(
 			'locations' => array(),
 			'contacts' => array(),
@@ -855,19 +928,21 @@ class Patient extends BaseActiveRecord {
 
 		foreach ($this->contactAssignments as $pca) {
 			if ($pca->location_id) {
-				$ids['locations'] = $pca->location_id;
+				$ids['locations'][] = $pca->location_id;
 			} else {
-				$ids['contacts'] = $pca->contact_id;
+				$ids['contacts'][] = $pca->contact_id;
 			}
 		}
 		return $ids;
 	}
 
-	public function getPrefix() {
+	public function getPrefix()
+	{
 		return 'Patient';
 	}
 
-	public function getEpc() {
+	public function getEpc()
+	{
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			if ($user = $episode->firm->consultant) {
 				return $user->fullName;
@@ -875,13 +950,15 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function getEpv() {
+	public function getEpv()
+	{
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			return $episode->firm->serviceSubspecialtyAssignment->service->name;
 		}
 	}
 
-	public function updateMedication($m, $params) {
+	public function updateMedication($m, $params)
+	{
 		$m->patient_id = $this->id;
 		$m->drug_id = $params['drug_id'];
 		$m->route_id = $params['route_id'];
@@ -894,11 +971,13 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function addMedication($params) {
+	public function addMedication($params)
+	{
 		$this->updateMedication(new Medication, $params);
 	}
 
-	public function hasOpenEpisodeOfSubspecialty($subspecialty_id) {
+	public function hasOpenEpisodeOfSubspecialty($subspecialty_id)
+	{
 		if ($subspecialty_id) {
 			$firm_ids = array();
 
@@ -918,7 +997,8 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function addEpisode($firm) {
+	public function addEpisode($firm)
+	{
 		$episode = new Episode;
 		$episode->patient_id = $this->id;
 		$episode->firm_id = $firm->id;
@@ -936,5 +1016,97 @@ class Patient extends BaseActiveRecord {
 		Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
 
 		return $episode;
+	}
+	
+	/**
+	 * get an associative array of CommissioningBody for this patient and the patient's practice
+	 * indexed by CommissioningBodyType id.
+	 * 
+	 * @return array[string][CommissioningBody]
+	 */
+	public function getDistinctCommissioningBodiesByType()
+	{
+		$res = array();
+		$seen_bodies = array();
+		
+		foreach ($this->commissioningbodies as $body) {
+			if (in_array($body->id, $seen_bodies)) {
+				continue;
+			}
+			if (array_key_exists($body->type->id, $res)) {
+				$res[$body->type->id][] = $body;
+			}
+			else {
+				$res[$body->type->id] = array($body);
+			}
+			$seen_bodies[] = $body->id;
+		}
+		
+		if ($this->practice) {
+			foreach ($this->practice->commissioningbodies as $body) {
+				if (in_array($body->id, $seen_bodies)) {
+					continue;
+				}
+				if (array_key_exists($body->type->id, $res)) {
+					$res[$body->type->id][] = $body;
+				}
+				else {
+					$res[$body->type->id] = array($body);
+				}
+				$seen_bodies[] = $body->id;
+			}
+		}
+		
+		return $res;
+	}
+	
+	/**
+	 * get the CommissioningBody of the CommissioningBodyType $type
+	 * currently assumes there would only ever be one commissioning body of a given type
+	 * 
+	 * @param CommissioningBodyType $type
+	 * @return CommissioningBody
+	 */
+	public function getCommissioningBodyOfType($type)
+	{
+		foreach ($this->commissioningbodies as $body) {
+			if ($body->type->id == $type->id) {
+				return $body;
+			}
+		}
+
+		if ($this->practice) {
+			foreach ($this->practice->commissioningbodies as $body) {
+				if ($body->type->id == $type->id) {
+					return $body;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * return the patient warnings that have been defined
+	 * 
+	 * return {'short_msg' => string, 'long_msg' => string}[]
+	 */
+	public function getWarnings()
+	{
+		// At the moment, we only warn for diabetes, so this is quite lightweight and hard coded
+		// but this should serve as a wrapper function for configuring warnings (i.e. a system setting could 
+		// define what should be warned on, and then we return a structure that is determined from this)
+		$res = array();
+		
+		if ($diabetic_disorders = $this->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET) ) {
+			$terms = array();
+			foreach ($diabetic_disorders as $disorder) {
+				$terms[] = $disorder->term;
+			}
+			$res[] = array(
+				'short_msg' => 'Diabetes',
+				'long_msg' => 'Patient is Diabetic',
+				'details' => implode(', ', $terms)
+			);
+		}
+		return $res;
 	}
 }

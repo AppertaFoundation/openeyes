@@ -18,7 +18,7 @@
  */
 
 /**
- * This is the model class for table "drug".
+ * This is the model class for table "language".
  *
  * The followings are the available columns in table 'language':
  * @property integer $id

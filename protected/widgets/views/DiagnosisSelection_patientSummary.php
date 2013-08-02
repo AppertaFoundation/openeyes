@@ -20,7 +20,7 @@
 <div class="eventDetail" id="editDiagnosis">
 	<div class="data">
 		<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText" class="eventHighlight big"
-		<?php if (!$label){?> style="display: none;" <?php }?>>
+		<?php if (!$label) {?> style="display: none;" <?php }?>>
 			<h4>
 				<?php echo $label?>
 			</h4>

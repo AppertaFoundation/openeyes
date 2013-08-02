@@ -35,17 +35,16 @@
 		};
 
 		// check to see if the eyedraw libraries are loaded (which implies that we have eyedraws
-		// on the page) If they are, then use that to call the print function when ready, otherwise 
+		// on the page) If they are, then use that to call the print function when ready, otherwise
 		// we can just call it straight off
 		if (typeof(getOeEyeDrawChecker) === 'function') {
-			edChecker = getOEEyeDrawChecker();	
+			edChecker = getOEEyeDrawChecker();
 			edChecker.registerForReady(printFn);
-		}
-		else {
+		} else {
 			printFn();
 		}
 	});
-	
+
 </script>
 </body>
 </html>

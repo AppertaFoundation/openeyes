@@ -4,20 +4,20 @@
  *
  * This file is part of OpenEyes.
  *
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU 
- * General Public License as published by the Free Software Foundation, either version 3 of the 
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License as published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file 
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file
  * titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * _____________________________________________________________________________
  * http://www.openeyes.org.uk   info@openeyes.org.uk
- * 
+ *
  * @author Bill Aylward <bill.aylward@openeyes.org.uk>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
  * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
@@ -29,7 +29,7 @@
 
  /**
  * Element Code
- * 
+ *
  * @package Clinical
  * @property string $elementName Name of element
  * @property string $tableName Name of element table
@@ -63,14 +63,14 @@ class ElementCode extends CCodeModel
 	public $authorName;
 	public $authorEmail;
 	public $level;
-	
+
 	// Constants representing levels through generation process
 	const CREATE_MIGRATION = 1;
 	const CREATE_FILES = 2;
-	
+
 	/**
 	 * Runs on object initiation
-	 */	
+	 */
 	public function init()
 	{
 		// Check database connection
@@ -78,32 +78,25 @@ class ElementCode extends CCodeModel
 			throw new CHttpException(500,'An active "db" connection is required to run this generator.');
 
 		// Check that reset button has been pressed
-		if (isset($_POST['reset']))
-		{
+		if (isset($_POST['reset'])) {
 			$this->resetGenerator();
 		}
-		
+
 		// Refresh element name from session variable if on second pass
-		if (isset(Yii::app()->session['elementName']))
-		{
+		if (isset(Yii::app()->session['elementName'])) {
 			$this->elementName = Yii::app()->session['elementName'];
-		}
-		else
-		{
+		} else {
 			$this->elementName = "";
 		}
-		
+
 		// Refresh table name from session variable if on second pass
-		if (isset(Yii::app()->session['tableName']))
-		{
+		if (isset(Yii::app()->session['tableName'])) {
 			$this->tableName = Yii::app()->session['tableName'];
 			$this->modelClass = $this->generateClassName($this->tableName);
-		}
-		else
-		{
+		} else {
 			$this->tableName = "";
 		}
-		
+
 		// Set default variables
 		$this->elementFields = "'value' => 'string',";
 		$this->controllerClass = $this->generateControllerName($this->modelClass);
@@ -112,37 +105,33 @@ class ElementCode extends CCodeModel
 		$this->baseClass = 'BaseElement';
 		$this->ignore = array(
 			'id',
-			'event_id', 
-			'created_user_id', 
-			'created_date', 
-			'last_modified_user_id', 
+			'event_id',
+			'created_user_id',
+			'created_date',
+			'last_modified_user_id',
 			'last_modified_date'
 			);
 		$this->migrationPath = 'application.migrations';
 		$this->authorName = Yii::app()->params['authorName'];
 		$this->authorEmail = Yii::app()->params['authorEmail'];
-		
+
 		// Set progress level
-		if (isset(Yii::app()->session['level']))
-		{
+		if (isset(Yii::app()->session['level'])) {
 			$this->level = Yii::app()->session['level'];
-		}
-		else
-		{
+		} else {
 			$this->level = self::CREATE_MIGRATION;
 		}
-		
+
 		parent::init();
 	}
 
 	/**
 	 * Validation rules
-	 */		
+	 */
 	public function rules()
 	{
 		// Migration scripts
-		if ($this->level == $this::CREATE_MIGRATION)
-		{
+		if ($this->level == $this::CREATE_MIGRATION) {
 			return array_merge(parent::rules(), array(
 				array('elementName, migrationPath', 'filter', 'filter'=>'trim'),
 				array('elementName, migrationPath', 'required'),
@@ -152,9 +141,7 @@ class ElementCode extends CCodeModel
 					'message'=>'{attribute} should only contain word characters, dots, and an optional ending asterisk.'),
 				array('elementFields', 'validateElementFields', 'skipOnError'=>true),
 			));
-		}
-		else if ($this->level == $this::CREATE_FILES)
-		{
+		} else if ($this->level == $this::CREATE_FILES) {
 			return array_merge(parent::rules(), array(
  				array('modelClass, baseClass', 'match', 'pattern'=>'/^[a-zA-Z_]\w*$/', 'message'=>'{attribute} should only contain word characters.'),
 				array('modelClass', 'validateModelClass'),
@@ -173,7 +160,7 @@ class ElementCode extends CCodeModel
 	 * Attribute labels
 	 *
 	 * @return array
-	 */	
+	 */
 	public function attributeLabels()
 	{
 		return array_merge(parent::attributeLabels(), array(
@@ -186,12 +173,12 @@ class ElementCode extends CCodeModel
 			'baseControllerClass'=>'Base Controller Class',
 		));
 	}
-	
+
 	/**
 	 * List of templates that must be present
 	 *
 	 * @return array
-	 */	
+	 */
 	public function requiredTemplates()
 	{
 		return array(
@@ -200,10 +187,10 @@ class ElementCode extends CCodeModel
 			'model.php',
 			'controller.php',
 			'_form.php',
-			'_view.php'			
+			'_view.php'
 		);
 	}
-	
+
 	/*
 	 * Run on form submission by preview or generate buttons. Generates the list of files and code
 	 */
@@ -211,13 +198,12 @@ class ElementCode extends CCodeModel
 	{
 		// Array of files to be generated
 		$this->files = array();
-		
+
 		// Migration scripts
-		if ($this->level == $this::CREATE_MIGRATION)
-		{
+		if ($this->level == $this::CREATE_MIGRATION) {
 			// Conditionally reset time stamps (otherwise different between preview and generation)
 			$this->resetTimeStamps();
-			
+
 			// Create a table object (For other modules this is normally derived from the table schema)
 			$table = new CMysqlTableSchema;
 			$table->name = $this->tableName;
@@ -226,13 +212,13 @@ class ElementCode extends CCodeModel
 			$table->sequenceName = '';
 			$table->foreignKeys = array();
 			$table->columns = array();
-			
+
 			// Create class name from the table name
 			$this->modelClass = $this->generateClassName($this->tableName);
 
 			// Migration to create table
 			$migrationName = $this->generateMigrationName("create", $this->tableName);
-			
+
 			// Array of parameters to pass to template
 			$params = array(
 				'elementName'=>$this->elementName,
@@ -245,7 +231,7 @@ class ElementCode extends CCodeModel
 				'authorName'=>$this->authorName,
 				'authorEmail'=>$this->authorEmail
 			);
-			
+
 			// Generate code
 			$this->files[] = new CCodeFile(
 				Yii::getPathOfAlias($this->migrationPath).'/'.$migrationName.'.php',
@@ -254,20 +240,19 @@ class ElementCode extends CCodeModel
 
 			// Migration to enable table
 			$migrationName = $this->generateMigrationName("create_site_element_types_for", $this->tableName);
-			
+
 			// Update migration name
 			$params['migrationName'] = $migrationName;
-			
+
 			// Generate code
 			$this->files[] = new CCodeFile(
 				Yii::getPathOfAlias($this->migrationPath).'/'.$migrationName.'.php',
 				$this->render($this->templatePath.'/migrationEnable.php', $params)
 			);
 		}
-		
+
 		// Model and view files
-		else if ($this->level == $this::CREATE_FILES)
-		{
+		else if ($this->level == $this::CREATE_FILES) {
 			// Get metadata for element table
 			$this->tableSchema = $this->getTableSchema($this->tableName);
 
@@ -284,13 +269,13 @@ class ElementCode extends CCodeModel
 				'authorName'=>$this->authorName,
 				'authorEmail'=>$this->authorEmail
 			);
-			
+
 			// Create path for model file
 			$modelFilePath = Yii::getPathOfAlias($this->modelPath).'/'.$this->modelClass.'.php';
-			
+
 			// Generator box ticked by default
 			$this->answers[md5($modelFilePath)] = '1';
-			
+
 			// Generate code
 			$this->files[] = new CCodeFile(
 				$modelFilePath,
@@ -299,7 +284,7 @@ class ElementCode extends CCodeModel
 
 			// Generate controller name
 			$this->controllerClass = $this->generateControllerName($this->modelClass);
-			
+
 			// Paths for files to be stored
 			$controllerTemplateFile = $this->templatePath.DIRECTORY_SEPARATOR.'controller.php';
 			$viewPath = Yii::app()->getViewPath().'/elements/'.$this->modelClass;
@@ -307,17 +292,17 @@ class ElementCode extends CCodeModel
 
 			// Add optional controller file
 			$this->files[] = new CCodeFile(
-				$controllerFilePath, 
+				$controllerFilePath,
 				$this->render($controllerTemplateFile)
 			);
 
 			// Create paths for view files
 			$_formFilePath = $viewPath.DIRECTORY_SEPARATOR.'_form/1.php';
-			$_viewFilePath = $viewPath.DIRECTORY_SEPARATOR.'_view/1.php';				
-    			
+			$_viewFilePath = $viewPath.DIRECTORY_SEPARATOR.'_view/1.php';
+
 			// Generator boxes ticked by default
 			$this->answers[md5($_formFilePath)] = '1';
-			$this->answers[md5($_viewFilePath)] = '1'; 
+			$this->answers[md5($_viewFilePath)] = '1';
 
 			// Add view files
 			$this->files[] = new CCodeFile(
@@ -338,8 +323,7 @@ class ElementCode extends CCodeModel
 	 */
 	public function checkColumns($table)
 	{
-		foreach($table->columns as $column)
-		{
+		foreach ($table->columns as $column) {
 			if(!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',$column->name))
 				return $table->name.'.'.$column->name;
 		}
@@ -377,55 +361,45 @@ class ElementCode extends CCodeModel
 	{
 		$allowedValues = array('string', 'text', 'integer', 'float', 'decimal', 'datetime', 'timestamp', 'time', 'date', 'binary', 'boolean');
 		$existingKeys = array();
-		
+
 		// Split into lines
 		$lines = explode("\n", $this->elementFields);
-		
+
 		// Iterate through lines checking each
-		foreach($lines as $line)
-		{
+		foreach ($lines as $line) {
 			// Trim white space from ends of line
 			$line = trim($line);
 
 			// Check that line contains exactly one instance of =>, 4 of ', and one comma
-			if (substr_count($line , "=>") != 1)
-			{
+			if (substr_count($line , "=>") != 1) {
 				$this->addError('elementFields',"Each lines must contain '=>' exactly once");
-			}
-			else if (substr_count($line , "'") != 4)
-			{
+			} else if (substr_count($line , "'") != 4) {
 				$this->addError('elementFields',"Each lines must contain exactly 4 apostrophes");
-			}
-			else if ($line[strlen($line)-1] != ",")
-			{
+			} else if ($line[strlen($line)-1] != ",") {
 				$this->addError('elementFields',"Each lines must end with a comma");
-			}
-			else
-			{
+			} else {
 				// Split into keys and values
 				$keyAndValue = explode("=>", $line);
-				
+
 				// Remove apostrophes and commas
 				$key = trim(str_replace("'", "", $keyAndValue[0]));
 				$value = trim(str_replace("'", "", $keyAndValue[1]));
 				$value = trim(str_replace(",", "", $value));
 
 				// Check keys are unique, and values are allowed
-				if (in_array($key, $existingKeys))
-				{
+				if (in_array($key, $existingKeys)) {
 					$this->addError('elementFields',"Field names must be unique");
 				}
-				if (!in_array($value, $allowedValues))
-				{
+				if (!in_array($value, $allowedValues)) {
 					$this->addError('elementFields',"Field types must be in the approved list");
 				}
-				
+
 				// Add key to array
 				$existingKeys[] = $key;
 			}
 		}
 	}
-	
+
 	/**
 	 * Validation method for model path
 	 *
@@ -464,10 +438,10 @@ class ElementCode extends CCodeModel
 		if($this->hasErrors('modelClass'))
 			return;
 	}
-	
+
 	/*
 	 * Gets schema for passed tableName
-	 * 
+	 *
 	 * @param string $tableName Name of table
 	 * @return CDbTableSchema Schema of table
 	 */
@@ -475,18 +449,17 @@ class ElementCode extends CCodeModel
 	{
 		return Yii::app()->db->getSchema()->getTable($tableName);
 	}
-	
+
 	/*
 	 * Generates Yii style class name from table name
-	 * 
+	 *
 	 * @param string $tableName Name of the table
 	 * @return string The name of the class
 	 */
 	protected function generateClassName($tableName)
 	{
 		$className='';
-		foreach(explode('_',$tableName) as $name)
-		{
+		foreach (explode('_',$tableName) as $name) {
 			if($name!=='')
 				$className.=ucfirst($name);
 		}
@@ -498,12 +471,11 @@ class ElementCode extends CCodeModel
 	 *
 	 * @param CDbTableSchema $table A table
 	 * @return array Array containing the labels
-	 */	
+	 */
 	public function generateLabels($table)
 	{
 		$labels=array();
-		foreach($table->columns as $column)
-		{
+		foreach ($table->columns as $column) {
 			if(in_array($column->name, $this->ignore))
 				continue;
 			$label=ucwords(trim(strtolower(str_replace(array('-','_'),' ',preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $column->name)))));
@@ -531,9 +503,8 @@ class ElementCode extends CCodeModel
 		$numerical=array();
 		$length=array();
 		$safe=array();
-		
-		foreach($table->columns as $column)
-		{
+
+		foreach ($table->columns as $column) {
 			if(in_array($column->name, $this->ignore))
 				continue;
 			if($column->autoIncrement)
@@ -556,8 +527,7 @@ class ElementCode extends CCodeModel
 			$rules[]="array('".implode(', ',$integers)."', 'numerical', 'integerOnly'=>true)";
 		if($numerical!==array())
 			$rules[]="array('".implode(', ',$numerical)."', 'numerical')";
-		if($length!==array())
-		{
+		if ($length!==array()) {
 			foreach($length as $len=>$cols)
 				$rules[]="array('".implode(', ',$cols)."', 'length', 'max'=>$len)";
 		}
@@ -589,21 +559,17 @@ class ElementCode extends CCodeModel
 	public function generateActiveField($modelClass,$column)
 	{
 		// MySQL specific field generation
-		if (get_class($column) === 'CMysqlColumnSchema')
-		{
+		if (get_class($column) === 'CMysqlColumnSchema') {
 			// Text area
-			if (stripos($column->dbType,'text') !== false)
-			{
+			if (stripos($column->dbType,'text') !== false) {
 				return "echo \$form->textArea(\$model,'{$column->name}',array('rows'=>6, 'cols'=>50))";
 			}
 			// Boolean
-			else if ($column->dbType === 'tinyint(1)')
-			{
+			else if ($column->dbType === 'tinyint(1)') {
 				return "echo \$form->checkBox(\$model,'{$column->name}')";
 			}
 			// Date
-			else if ($column->dbType === 'date')
-			{
+			else if ($column->dbType === 'date') {
 			    return "\$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                     'model'=>\$model,
                     'attribute'=>'{$column->name}',
@@ -619,17 +585,15 @@ class ElementCode extends CCodeModel
                     ))";
             }
 			// Everything else is a string
-			else
-			{
+			else {
 				if(preg_match('/^(password|pass|passwd|passcode)$/i',$column->name))
 					$inputField='passwordField';
 				else
 					$inputField='textField';
-	
+
 				if($column->type!=='string' || $column->size===null)
 					return "echo \$form->{$inputField}(\$model,'{$column->name}')";
-				else
-				{
+				else {
 					if(($size=$maxLength=$column->size)>60)
 						$size=60;
 					return "echo \$form->{$inputField}(\$model,'{$column->name}',array('size'=>$size,'maxlength'=>$maxLength))";
@@ -637,23 +601,20 @@ class ElementCode extends CCodeModel
 			}
 		}
 		// Other databases here
-		else
-		{
+		else {
 			if($column->type==='boolean')
 				return "\$form->checkBox(\$model,'{$column->name}')";
 			else if(stripos($column->dbType,'text')!==false)
 				return "\$form->textArea(\$model,'{$column->name}',array('rows'=>6, 'cols'=>50))";
-			else
-			{
+			else {
 				if(preg_match('/^(password|pass|passwd|passcode)$/i',$column->name))
 					$inputField='passwordField';
 				else
 					$inputField='textField';
-	
+
 				if($column->type!=='string' || $column->size===null)
 					return "\$form->{$inputField}(\$model,'{$column->name}')";
-				else
-				{
+				else {
 					if(($size=$maxLength=$column->size)>60)
 						$size=60;
 					return "\$form->{$inputField}(\$model,'{$column->name}',array('size'=>$size,'maxlength'=>$maxLength))";
@@ -667,29 +628,25 @@ class ElementCode extends CCodeModel
 	 */
 	public function resetTimeStamps()
 	{
-		if ($this->status == $this::STATUS_NEW)
-		{
+		if ($this->status == $this::STATUS_NEW) {
 			unset(Yii::app()->session['create']);
 			unset(Yii::app()->session['create_site_element_types_for']);
 		}
 	}
-		
+
 	/**
 	 * Creates time stamp in format expected for ./yiic migrate
 	 * Stores in a session variable, otherwise time stamp changes on each second call
 	 */
 	protected function createTimeStamp($description)
 	{
-		if (isset(Yii::app()->session[$description]))
-		{
+		if (isset(Yii::app()->session[$description])) {
 			$returnStamp = Yii::app()->session[$description];
-		}
-		else
-		{
+		} else {
 			$returnStamp = date("ymd_His");
 			Yii::app()->session[$description] = $returnStamp;
 		}
-		
+
 		return $returnStamp;
 	}
 
@@ -703,7 +660,7 @@ class ElementCode extends CCodeModel
 
 	/*
 	 * Generates Yii style controller name from class name
-	 * 
+	 *
 	 * @param string $modelClass Name of the table
 	 * @return string The name of the controller
 	 */
@@ -711,7 +668,7 @@ class ElementCode extends CCodeModel
 	{
 		return ucfirst($modelClass).'Controller';
 	}
-	
+
 	/**
 	 * Checks to determine whether file should be saved
 	 *
@@ -723,9 +680,9 @@ class ElementCode extends CCodeModel
 		return $this->answers===null && $file->operation===CCodeFile::OP_NEW
 			|| is_array($this->answers) && isset($this->answers[md5($file->path)]);
 	}
-	
+
 	/**
-	 * Saves the generated views code into files 
+	 * Saves the generated views code into files
 	 * NB Ensure _www has write permissions for elements directory
 	 *
 	 * @return boolean True if save is successful
@@ -736,32 +693,29 @@ class ElementCode extends CCodeModel
 		$result=true;
 
 		// Create a directory structure for the views
-		if ($this->level == $this::CREATE_FILES)
-		{
-			// Construct path for views 
+		if ($this->level == $this::CREATE_FILES) {
+			// Construct path for views
 			$viewPath = Yii::app()->getViewPath().'/elements/'.$this->modelClass;
-			
+
 			// Create directory structure for the views
 			$dir = new CCodeFile($viewPath, null);
 			$result = $dir->save() && $result;
 			$dir = new CCodeFile($viewPath.'/_form', null);
-			$result = $dir->save() && $result;		
+			$result = $dir->save() && $result;
 			$dir = new CCodeFile($viewPath.'/_view', null);
 			$result = $dir->save() && $result;
 		}
-		
+
 		// Write files
-		foreach($this->files as $file)
-		{
-			if($this->confirmed($file))
-			{
+		foreach ($this->files as $file) {
+			if ($this->confirmed($file)) {
 				$result = $file->save() && $result;
 			}
 		}
-		
+
 		return $result;
 	}
-	
+
 	/**
 	 * Write results and run migration scripts
 	 *
@@ -770,82 +724,69 @@ class ElementCode extends CCodeModel
 	public function renderResults()
 	{
 		$success = false;
-		
+
 		$output='Generating code using template "'.$this->templatePath."\"...\n";
-		foreach($this->files as $file)
-		{
+		foreach ($this->files as $file) {
 			if($file->error!==null)
 				$output.="<span class=\"error\">generating {$file->relativePath}<br/>           {$file->error}</span>\n";
-			else if($file->operation===CCodeFile::OP_NEW && $this->confirmed($file))
-			{
+			else if ($file->operation===CCodeFile::OP_NEW && $this->confirmed($file)) {
 				$output.=' generated '.$file->relativePath."\n";
 				$success = true;
-			}
-			else if($file->operation===CCodeFile::OP_OVERWRITE && $this->confirmed($file))
-			{
+			} else if ($file->operation===CCodeFile::OP_OVERWRITE && $this->confirmed($file)) {
 				$output.=' overwrote '.$file->relativePath."\n";
 				$success = true;
-			}
-			else
-			{
+			} else {
 				$output.='   skipped '.$file->relativePath."\n";
 				$success = true;
 			}
 		}
 		$output.="\n";
-		
+
 		// Run migration scripts
-		if ($this->level == $this::CREATE_MIGRATION && $success)
-		{
+		if ($this->level == $this::CREATE_MIGRATION && $success) {
 			// Append message to output
 			$output.="Running ./yiic migrate command...\n";
-			
+
 			// Get path for yiic
 			$protected = Yii::getPathOfAlias('application');
 
 			// Run migration script, piping "y" to command
 			$output .= shell_exec('cd '.$protected.'; echo "y" |./yiic migrate;');
-			
+
 			// Save element name, table name and level as session variables, going to next level
 			Yii::app()->session['elementName'] = $this->elementName;
 			Yii::app()->session['tableName'] = $this->tableName;
 			Yii::app()->session['level'] = $this::CREATE_FILES;
 		}
-		
+
 		// File generation complete
-		else if ($this->level == $this::CREATE_FILES && $success)
-		{
+		else if ($this->level == $this::CREATE_FILES && $success) {
 			// Append message to output
 			$output.="Done!\n";
-			
+
 			// Reset
 			$this->resetGenerator();
-		}
-		else
-		{
+		} else {
 			$output.="Error in file generation\n";
 		}
-		
+
 		return $output;
 	}
-	
+
 	/*
 	 * Returns a success message
-	 * 
+	 *
 	 * @return string Message displayed on successful file generation
-	 */	
+	 */
 	public function successMessage()
 	{
-		if ($this->level == $this::CREATE_MIGRATION)
-		{
+		if ($this->level == $this::CREATE_MIGRATION) {
 			return "The migration scripts and table have been generated successfully - click 'Preview' to continue";
-		}
-		else if ($this->level == $this::CREATE_FILES)
-		{			
+		} else if ($this->level == $this::CREATE_FILES) {
 			return "The model and view files have been generated successfully";
 		}
 	}
-	
+
 	/*
 	 * Resets all session variables to allow restart in case of error
 	 */

@@ -43,11 +43,10 @@
 		</div>
 		<div>
 			<form id="admin_users">
+				<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 				<ul class="grid reduceheight">
 					<li class="header">
-						<?php /*
 						<span class="column_checkbox"><input type="checkbox" name="selectall" id="selectall" /></span>
-						*/?>
 						<span class="column_id">ID</span>
 						<span class="column_username">Username</span>
 						<span class="column_title">Title</span>
@@ -60,10 +59,8 @@
 					<div class="sortable">
 						<?php
 						foreach ($users['items'] as $i => $user) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $user->id?>">
-								<?php /*
+							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $user->id?>">
 								<span class="column_checkbox"><input type="checkbox" name="users[]" value="<?php echo $user->id?>" /></span>
-								*/?>
 								<span class="column_id"><?php echo $user->id?></span>
 								<span class="column_username"><?php echo strtolower($user->username)?></span>
 								<span class="column_title"><?php echo $user->title?>&nbsp;</span>

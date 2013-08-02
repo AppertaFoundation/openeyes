@@ -27,8 +27,8 @@
  * @property integer $drug_id
  * @property integer $option_id
  * @property integer $frequency_id
- * @property date $start_date
- * @property date $end_date
+ * @property string $start_date
+ * @property string $end_date
  */
 class Medication extends BaseActiveRecord
 {

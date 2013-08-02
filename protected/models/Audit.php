@@ -21,28 +21,28 @@
  * This is the model class for table "audit".
  *
  * The following are the available columns in table 'audit':
- * @property string $id
- * @property string $action
+ * @property integer $id
  * @property string $target_type
- * @property string $patient_id
- * @property string $episode_id
- * @property string $event_id
- * @property string $user_id
+ * @property integer $patient_id
+ * @property integer $episode_id
+ * @property integer $event_id
+ * @property integer $user_id
  * @property string $data
  * @property string $remote_addr
  * @property string $http_user_agent
  * @property string $server_name
  * @property string $request_uri
- * @property string $site_id
- * @property string $firm_id
+ * @property integer $site_id
+ * @property integer $firm_id
  *
  * The following are the available model relations:
- * @property Patient[] $patient
- * @property Episode[] $episode
- * @property Event[] $event
- * @property User[] $user
- * @property Site[] $site
- * @property Firm[] $firm
+ * @property AuditAction $action
+ * @property Patient $patient
+ * @property Episode $episode
+ * @property Event $event
+ * @property User $user
+ * @property Site $site
+ * @property Firm $firm
  */
 class Audit extends BaseActiveRecord
 {
@@ -50,7 +50,7 @@ class Audit extends BaseActiveRecord
 
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Theatre the static model class
+	 * @return Audit the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -146,7 +146,8 @@ class Audit extends BaseActiveRecord
 		));
 	}
 
-	public function save($runValidation=true, $attributes=null, $allow_overriding=false) {
+	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
+	{
 		if (isset($_SERVER['REMOTE_ADDR'])) {
 			if (!$ipaddr = AuditIPAddr::model()->find('name=?',array($_SERVER['REMOTE_ADDR']))) {
 				$ipaddr = new AuditIPAddr;
@@ -156,12 +157,15 @@ class Audit extends BaseActiveRecord
 				}
 			}
 
-			if (!$useragent = AuditUseragent::model()->find('name=?',array($_SERVER['HTTP_USER_AGENT']))) {
-				$useragent = new AuditUseragent;
-				$useragent->name = $_SERVER['HTTP_USER_AGENT'];
-				if (!$useragent->save()) {
-					throw new Exception("Unable to save user agent: ".print_r($useragent->getErrors(),true));
+			if (isset($_SERVER['HTTP_USER_AGENT'])) {
+				if (!$useragent = AuditUseragent::model()->find('name=?', array($_SERVER['HTTP_USER_AGENT']))) {
+					$useragent = new AuditUseragent;
+					$useragent->name = $_SERVER['HTTP_USER_AGENT'];
+					if (!$useragent->save()) {
+						throw new Exception("Unable to save user agent: ".print_r($useragent->getErrors(),true));
+					}
 				}
+				$this->useragent_id = $useragent->id;
 			}
 
 			if (!$server = AuditServer::model()->find('name=?',array($_SERVER['SERVER_NAME']))) {
@@ -173,7 +177,6 @@ class Audit extends BaseActiveRecord
 			}
 
 			$this->ipaddr_id = $ipaddr->id;
-			$this->useragent_id = $useragent->id;
 			$this->server_id = $server->id;
 			$this->request_uri = $_SERVER['REQUEST_URI'];
 
@@ -185,7 +188,8 @@ class Audit extends BaseActiveRecord
 		return parent::save($runValidation, $attributes, $allow_overriding);
 	}
 
-	public function getColour() {
+	public function getColour()
+	{
 		if ($this->action) {
 			switch ($this->action->name) {
 				case 'login-successful':
@@ -199,7 +203,8 @@ class Audit extends BaseActiveRecord
 		}
 	}
 
-	public static function add($target, $action, $data=null, $log=false, $properties=array()) {
+	public static function add($target, $action, $data=null, $log=false, $properties=array())
+	{
 		if (!$_target = AuditType::model()->find('name=?',array($target))) {
 			$_target = new AuditType;
 			$_target->name = $target;
