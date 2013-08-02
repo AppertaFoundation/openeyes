@@ -64,7 +64,11 @@ $(document).ready(function() {
 
 		for (var i in e) {
 			if (e[i] == 'admin') {
-				var object = ucfirst(e[parseInt(i)+1].replace(/s$/,''));
+				if (e[parseInt(i)+1].match(/ies$/)) {
+					var object = ucfirst(e[parseInt(i)+1].replace(/ies$/,'y'));
+				} else {
+					var object = ucfirst(e[parseInt(i)+1].replace(/s$/,''));
+				}
 				window.location.href = baseUrl+'/admin/add'+object;
 			}
 		}
@@ -89,7 +93,9 @@ $(document).ready(function() {
 				if (html == '1') {
 					window.location.reload();
 				} else {
-					alert("One or more "+object+"s could not be deleted as they are in use.");
+					new OpenEyes.Dialog.Alert({
+						content: "One or more "+object+"s could not be deleted as they are in use."
+					}).open();
 				}
 			}
 		});
@@ -106,7 +112,9 @@ $(document).ready(function() {
 				if (m) {
 					window.location.href = baseUrl+'/admin/editUser/'+m[0];
 				} else {
-					alert("User not found");
+					new OpenEyes.Dialog.Alert({
+						content: "User not found"
+					}).open();
 				}
 			}
 		});

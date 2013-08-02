@@ -36,6 +36,14 @@
 		Patient has no GP practice address, please correct in PAS before printing GP letter.
 	</div>
 	<?php }?>
+	<?php if ($warnings = $this->patient->getWarnings()) { ?>
+		<div class="curvybox patientWarningBox">
+			<?php foreach ($warnings as $warn) {?>
+				<strong><?php echo $warn['long_msg']; ?></strong>
+				- <?php echo $warn['details']; 
+			}?>
+		</div>
+	<?php }?>
 
 	<div class="halfColumnLeft">
 		<?php $this->renderPartial('_patient_details')?>

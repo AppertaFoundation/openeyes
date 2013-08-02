@@ -44,8 +44,8 @@ $ex = explode('/',file_get_contents(".git/HEAD"));
 $branch = array_pop($ex);
 ?>
 <div id="debug-info-modal">
+	<strong>This information is provided to assist the helpdesk in diagnosing any problems</strong><br/><br/>
 	<code>
-		<strong>This information is provided to assist the helpdesk in diagnosing any problems</strong><br />
 		Served, with love, by: <?php echo $hostname?><br />
 		Docroot: <?php echo @$_SERVER['DOCUMENT_ROOT']?><br />
 		Base dir: <?php echo Yii::app()->basePath?><br />

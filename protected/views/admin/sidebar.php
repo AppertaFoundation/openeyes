@@ -9,6 +9,10 @@
 			'Data sources' => '/admin/datasources',
 			'Institutions' => '/admin/institutions',
 			'Sites' => '/admin/sites',
+			'Commissioning bodies' => '/admin/commissioning_bodies',
+			'Commissioning body types' => '/admin/commissioning_body_types',
+			'Commissioning body services' => '/admin/commissioning_body_services',
+			'Commissioning body service types' => '/admin/commissioning_body_service_types',
 			/*
 			'Global phrases' => '/admin/globalPhrases',
 			'Phrases by subspecialty' => '/admin/phrasesBySubspecialty',

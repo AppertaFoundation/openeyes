@@ -35,6 +35,8 @@
  */
 class Episode extends BaseActiveRecord
 {
+	private $defaultScopeDisabled = false;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Episode the static model class
@@ -59,10 +61,19 @@ class Episode extends BaseActiveRecord
 
 	public function defaultScope()
 	{
+		if ($this->defaultScopeDisabled) {
+			return array();
+		}
+
 		$table_alias = $this->getTableAlias(false,false);
 		return array(
 			'condition' => $table_alias.'.deleted = 0',
 		);
+	}
+
+	public function disableDefaultScope() {
+		$this->defaultScopeDisabled = true;
+		return $this;
 	}
 
 	/**
@@ -239,7 +250,7 @@ class Episode extends BaseActiveRecord
 	{
 		$previous = Episode::model()->findByPk($this->id);
 
-		if (parent::save($runValidation, $attributes)) {
+		if (parent::save($runValidation, $attributes, $allow_overriding)) {
 			if ($previous && $previous->episode_status_id != $this->episode_status_id) {
 				$this->audit('episode','change-status',$this->episode_status_id);
 			}

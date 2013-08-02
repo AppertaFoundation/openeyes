@@ -134,15 +134,21 @@
 	});
 	$('button.btn_save_family_history').click(function() {
 		if ($('#relative_id').val() == '') {
-			alert("Please select a relative");
+			new OpenEyes.Dialog.Alert({
+				content: "Please select a relative"
+			}).open();
 			return false;
 		}
 		if ($('#side_id').val() == '') {
-			alert("Please select a side");
+			new OpenEyes.Dialog.Alert({
+				content: "Please select a side"
+			}).open();
 			return false;
 		}
 		if ($('#condition_id').val() == '') {
-			alert("Please select a condition");
+			new OpenEyes.Dialog.Alert({
+				content: "Please select a condition"
+			}).open();
 			return false;
 		}
 		$('img.add_family_history_loader').show();
@@ -201,11 +207,15 @@
 				if (html == 'success') {
 					$('a.removeFamilyHistory[rel="'+$('#family_history_id').val()+'"]').parent().parent().remove();
 				} else {
-					alert("Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance."
+					}).open();
 				}
 			},
 			'error': function() {
-				alert("Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance.");
+				new OpenEyes.Dialog.Alert({
+					content: "Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance."
+				}).open();
 			}
 		});
 

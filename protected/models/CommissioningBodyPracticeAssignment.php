@@ -18,11 +18,11 @@
  */
 
 /**
- * This is the model class for table "commissioningbody_practice_assignment".
+ * This is the model class for table "commissioning_body_practice_assignment".
  *
- * The followings are the available columns in table 'commissioningbody_practice_assignment':
+ * The followings are the available columns in table 'commissioning_body_practice_assignment':
  * @property integer $id
- * @property integer $commissioningbody_id
+ * @property integer $commissioning_body_id
  * @property integer $practice_id
  *
  */
@@ -42,7 +42,7 @@ class CommissioningBodyPracticeAssignment extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'commissioningbody_practice_assignment';
+		return 'commissioning_body_practice_assignment';
 	}
 
 	/**
@@ -53,7 +53,7 @@ class CommissioningBodyPracticeAssignment extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('commissioningbody_id, practice_id', 'required'),
+			array('commissioning_body_id, practice_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id', 'safe', 'on'=>'search'),
@@ -68,7 +68,7 @@ class CommissioningBodyPracticeAssignment extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'commissioningbody' => array(self::BELONGS_TO, 'CommissioningBody', 'commissioningbody_id'),
+			'commissioning_body' => array(self::BELONGS_TO, 'CommissioningBody', 'commissioning_body_id'),
 			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
 		);
 	}

@@ -24,10 +24,13 @@
  * @property integer $id
  * @property string $refno
  * @property integer $patient_id
- * @property integer $service_subspecialty_assignment_id
- * @property boolean $closed
+ * @property integer $referral_type_id
+ * @property date $received_date
+ * @property date $closed_date
+ * @property string $referrer
  * @property integer $firm_id
- * @fixme Why is there a firm_id _and_ a service_specialty_assignment_id in here? The ssa_id is infered from the firm.
+ * @property integer $gp_id
+ * @property integer $service_subspecialty_assignment_id // MW: this is here because sometimes the referrer is a pas_code which doesn't map to a firm with the correct subspecialty
  */
 class Referral extends BaseActiveRecord
 {
@@ -56,11 +59,6 @@ class Referral extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('refno, patient_id, service_subspecialty_assignment_id', 'required'),
-			array('refno, patient_id, service_subspecialty_assignment_id', 'length', 'max'=>10),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, refno, patient_id, service_subspecialty_assignment_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -72,7 +70,9 @@ class Referral extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'episodeAssignment' => array(self::BELONGS_TO, 'ReferralEpisodeAssignment', 'episode_id'),
+			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+			'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
+			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
 		);
 	}
 
@@ -83,9 +83,6 @@ class Referral extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'refno' => 'Refno',
-			'patient_id' => 'Patient',
-			'service_subspecialty_assignment_id' => 'Service',
 		);
 	}
 
@@ -101,13 +98,9 @@ class Referral extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('refno',$this->refno,true);
-		$criteria->compare('patient_id',$this->patient_id,true);
-		$criteria->compare('service_subspecialty_assignment_id',$this->service_subspecialty_assignment_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
-
 }

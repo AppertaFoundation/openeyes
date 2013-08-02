@@ -86,9 +86,13 @@
 			'url': baseUrl+'/admin/removeLocation',
 			'success': function(resp) {
 				if (resp == "0") {
-					alert("This contact location is currently assocated with one or more patients and so cannot be removed.\n\nYou can click on the location row to view the patients involved.");
+					new OpenEyes.Dialog.Alert({
+						content: "This contact location is currently assocated with one or more patients and so cannot be removed.\n\nYou can click on the location row to view the patients involved."
+					}).open();
 				} else if (resp == "-1") {
-					alert("There was an unexpected error trying to remove the location, please try again or contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "There was an unexpected error trying to remove the location, please try again or contact support for assistance."
+					}).open();
 				} else {
 					row.remove();
 				}
