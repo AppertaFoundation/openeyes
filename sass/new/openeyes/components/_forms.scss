@@ -93,8 +93,8 @@ label {
 
 @include input-form-fields {
     @include border-radius($oe-form-input-radius);
+    height: auto;
     &.small {
-        height: auto;
         padding: emCalc(3px) emCalc(4px);
         &.fixed-width {
             width: emCalc(110px);

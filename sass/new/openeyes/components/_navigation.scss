@@ -22,7 +22,7 @@
 //
 // Markup:
 // <ul class="inline-list user-navigation">
-//     <li><a href="#">Home</a></li>
+//     <li class="selected"><a href="#">Home</a></li>
 //     <li><a href="#">Theatre Diaries</a></li>
 //     <li><a href="#">Partial bookings waiting list</a></li>
 //     <li><a href="#">Logout</a></li>
@@ -45,6 +45,12 @@ $oe-user-navigation-anchor-selected-color: #fff !default;
     li {
         font-size: $oe-user-navigation-font-size;
         margin: 0 0 0 $oe-user-navigation-item-margin;
+        &.selected {
+            a {
+                background: $oe-user-navigation-anchor-selected-bg-color;
+                color: $oe-user-navigation-anchor-selected-color;
+            }
+        }
     }
     a {
         background: $oe-user-navigation-anchor-bg-color;
@@ -52,10 +58,6 @@ $oe-user-navigation-anchor-selected-color: #fff !default;
         &:hover,
         &:focus {
             background: $oe-user-navigation-anchor-hover-bg-color;
-        }
-        &.selected {
-            background: $oe-user-navigation-anchor-selected-bg-color;
-            color: $oe-user-navigation-anchor-selected-color;
         }
     }
 }

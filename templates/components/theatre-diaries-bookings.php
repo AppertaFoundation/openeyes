@@ -19,8 +19,8 @@
 				</strong>
 				for Barton Keith for (Glaucoma) -
 				<strong>Theatre Three (City Road)</strong>
-			</div>
-		</h3>
+			</h3>
+		</div>
 		<div class="large-2 column">
 			<ul class="inline-list tabs theatre-booking-actions">
 				<li class="selected">
@@ -35,7 +35,7 @@
 
 	<div class="row">
 		<div class="large-12 column">
-			<div class="panel">
+			<div class="panel theatre-sessions">
 				<div class="row">
 					<div class="large-9 column">
 						<table class="grid theatre-bookings">
@@ -79,6 +79,269 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="row">
+		<div class="large-10 column">
+			<h3 class="panel theatre-booking-heading">
+				<span class="date">
+					<strong>05 Sep </strong> 2013
+				</span>
+				-
+				<strong>
+					<span class="day">Thursday</span>,
+					<span class="time">08:30:00 - 17:30:00 </span>
+				</strong>
+				for Barton Keith for (Glaucoma) -
+				<strong>Theatre Three (City Road)</strong>
+			</h3>
+		</div>
+		<div class="large-2 column">
+			<ul class="inline-list tabs theatre-booking-actions">
+				<li class="selected">
+					<a href="#">View</a>
+				</li>
+				<li>
+					<a href="#">Edit</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12 column">
+			<div class="panel theatre-sessions">
+				<div class="row">
+					<div class="large-9 column">
+						<table class="grid theatre-bookings">
+							<thead>
+								<tr>
+									<th>Admit time</th>
+									<th class="hide">Sort</th>
+									<th>Hospital #</th>
+									<th>Confirmed</th>
+									<th>Patient (Age)</th>
+									<th>[Eye] Operation</th>
+									<th>Priority</th>
+									<th>Anesth</th>
+									<th>Ward</th>
+									<th>Info</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										12:00
+									</td>
+									<td class="hide">
+										<img src="/img/tmp/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
+									</td>
+									<td>
+										<a href="/OphTrOperationbooking/default/view/136">1001982</a>
+									</td>
+									<td>
+										<input type="checkbox" value="1" disabled="disabled">
+									</td>
+									<td>COTTRELL, Kristen (48)</td>
+									<td>[Left] Application of 5FU</td>
+									<td>Routine</td>
+									<td>Topical</td>
+									<td>Sedgwick</td>
+									<td>
+										<img src="/img/tmp/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
+										<img src="/img/tmp/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
+										<img src="/img/tmp/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										12:00
+									</td>
+									<td class="hide">
+										<img src="/img/tmp/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
+									</td>
+									<td>
+										<a href="/OphTrOperationbooking/default/view/136">1001982</a>
+									</td>
+									<td>
+										<input type="checkbox" value="1" disabled="disabled">
+									</td>
+									<td>COTTRELL, Kristen (48)</td>
+									<td>[Left] Application of 5FU</td>
+									<td>Routine</td>
+									<td>Topical</td>
+									<td>Sedgwick</td>
+									<td>
+										<img src="/img/tmp/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
+										<img src="/img/tmp/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
+										<img src="/img/tmp/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
+									</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="10">
+										<div class="time-left">
+											<strong>
+											520 minutes unallocated
+											</strong>
+										</div>
+										<div class="specialists">
+											<div class="consultant" title="Consultant Present">Consultant</div>
+											<div class="anaesthetist" title="Anaesthetist Present">Anaesthetist (GA)</div>
+										</div>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="large-3 column">
+						<div class="panel session-comments">
+							<h4>Session comments</h4>
+							<p>Here are some sessions comments. They aren't very interesting, but they are very important.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12 column">
+			<h2>Theatre Four (City Road)</h2>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-10 column">
+			<h3 class="panel theatre-booking-heading">
+				<span class="date">
+					<strong>05 Sep </strong> 2013
+				</span>
+				-
+				<strong>
+					<span class="day">Thursday</span>,
+					<span class="time">08:30:00 - 17:30:00 </span>
+				</strong>
+				for Barton Keith for (Glaucoma) -
+				<strong>Theatre Three (City Road)</strong>
+			</h3>
+		</div>
+		<div class="large-2 column">
+			<ul class="inline-list tabs theatre-booking-actions">
+				<li class="selected">
+					<a href="#">View</a>
+				</li>
+				<li>
+					<a href="#">Edit</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12 column">
+			<div class="panel theatre-sessions">
+				<div class="row">
+					<div class="large-9 column">
+						<table class="grid theatre-bookings">
+							<thead>
+								<tr>
+									<th>Admit time</th>
+									<th>Sort</th>
+									<th>Hospital #</th>
+									<th>Confirmed</th>
+									<th>Patient (Age)</th>
+									<th>[Eye] Operation</th>
+									<th>Priority</th>
+									<th>Anesth</th>
+									<th>Ward</th>
+									<th>Info</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<input type="text" value="12:00" />
+									</td>
+									<td>
+										<img src="/img/tmp/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
+									</td>
+									<td>
+										<a href="/OphTrOperationbooking/default/view/136">1001982</a>
+									</td>
+									<td>
+										<input type="checkbox" value="1" disabled="disabled">
+									</td>
+									<td>COTTRELL, Kristen (48)</td>
+									<td>[Left] Application of 5FU</td>
+									<td>Routine</td>
+									<td>Topical</td>
+									<td>Sedgwick</td>
+									<td>
+										<img src="/img/tmp/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
+										<img src="/img/tmp/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
+										<img src="/img/tmp/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<input type="text" value="12:00" />
+									</td>
+									<td>
+										<img src="/img/tmp/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
+									</td>
+									<td>
+										<a href="/OphTrOperationbooking/default/view/136">1001982</a>
+									</td>
+									<td>
+										<input type="checkbox" value="1" disabled="disabled">
+									</td>
+									<td>COTTRELL, Kristen (48)</td>
+									<td>[Left] Application of 5FU</td>
+									<td>Routine</td>
+									<td>Topical</td>
+									<td>Sedgwick</td>
+									<td>
+										<img src="/img/tmp/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
+										<img src="/img/tmp/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
+										<img src="/img/tmp/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
+									</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="10">
+										<div class="time-left">
+											<strong>
+											520 minutes unallocated
+											</strong>
+										</div>
+										<div class="specialists">
+											<div class="consultant" title="Consultant Present">Consultant</div>
+											<div class="anaesthetist" title="Anaesthetist Present">Anaesthetist (GA)</div>
+										</div>
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+					<div class="large-3 column">
+						<div class="panel session-comments">
+							<h4>Session comments</h4>
+							<textarea placeholder="Enter session comments..."></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="large-12 column text-right theatre-booking-edit-actions">
+						<button type="submit" class="secondary small">Save changes to session</button>
+						<button type="submit" class="warning small">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!--
 	<form id="session_form11377" action="/OphTrOperationbooking/theatreDiary/saveSession" method="post">
 	<div style="display:none"><input type="hidden" value="dfa4f218ad3bfd5eb5da79f2031ac6e0b75370e8" name="YII_CSRF_TOKEN"></div>	<div class="action_options diaryViewMode" data-id="11377" style="float: right;">
@@ -150,19 +413,19 @@
 								<span class="admitTime_ro diaryViewMode" data-id="11377" data-operation-id="136">07:30</span>
 							</td>
 							<td class="td_sort diaryEditMode" data-id="11377" style="display: none;">
-								<img src="/assets/7eeba703/img/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
+								<img src="/img/tmp/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
 							</td>
-							<td class="hospital"><a href="/OphTrOperationbooking/default/view/136">1001982</a></td>
-							<td class="confirm"><input type="hidden" name="confirm_136" value="0"><input id="confirm_136" type="checkbox" value="1" name="confirm_136" disabled="disabled"></td>
-							<td class="patient leftAlign">COTTRELL, Kristen (48)</td>
-							<td class="operation leftAlign">[Left] Anterior vitrectomy</td>
-							<td class="">Routine</td>
-							<td class="anesthetic">Topical</td>
-							<td class="ward">Sedgwick</td>
-							<td class="alerts">
-																<img src="/assets/7eeba703/img/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
-															<img src="/assets/7eeba703/img/diaryIcons/confirmed.png" alt="confirmed" width="17" height="17" class="confirmed" title="confirmed" style="display: none;">
-																													<img src="/assets/7eeba703/img/diaryIcons/booked_user.png" alt="Created by: Enoch Root
+							<td><a href="/OphTrOperationbooking/default/view/136">1001982</a></td>
+							<td><input type="hidden" name="confirm_136" value="0"><input id="confirm_136" type="checkbox" value="1" name="confirm_136" disabled="disabled"></td>
+							<td>COTTRELL, Kristen (48)</td>
+							<td>[Left] Anterior vitrectomy</td>
+							<td>Routine</td>
+							<td>Topical</td>
+							<td>Sedgwick</td>
+							<td>
+																<img src="/img/tmp/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
+															<img src="/img/tmp/diaryIcons/confirmed.png" alt="confirmed" width="17" height="17" class="confirmed" title="confirmed" style="display: none;">
+																													<img src="/img/tmp/diaryIcons/booked_user.png" alt="Created by: Enoch Root
 	Last modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root
 	Last modified by: Enoch Root">
 							</td>

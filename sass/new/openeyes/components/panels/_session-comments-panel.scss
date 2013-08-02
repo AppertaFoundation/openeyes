@@ -1,6 +1,6 @@
 // Theatre booking session comments panel
 //
-// Styleguide 15.6
+// Styleguide 15.7
 
 // Session panel vars
 $oe-panel-session-comments-bg-color: #fff0a0 !default;
@@ -14,6 +14,7 @@ $oe-panel-session-comments-min-height: emCalc(80px) !default;
         background: $oe-panel-session-comments-bg-color;
         border: 1px solid $oe-panel-session-comments-border-color;
         min-height: $oe-panel-session-comments-min-height;
+        margin: 0;
         @include border-radius(0);
         .theatres-list & {
             margin-left: -1 * $column-gutter / 2;

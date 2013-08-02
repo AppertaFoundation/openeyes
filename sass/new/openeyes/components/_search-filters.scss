@@ -115,7 +115,6 @@ $oe-search-filters-extra-label-font-size: emCalc(13px) !default;
 $oe-search-filters-extra-label-input-margin: 0 emCalc(5px) 0 0 !default;
 $oe-search-filters-fieldset-text-input-margin: emCalc(4px) 0 0 0 !default;
 $oe-search-filters-fieldset-to-font-size: emCalc(13px) !default;
-$oe-search-filters-fieldset-button-font-size: emCalc(12px) !default;
 
 .search-filters-extra {
     padding: $oe-search-fields-extra-padding;
@@ -154,8 +153,6 @@ $oe-search-filters-fieldset-button-font-size: emCalc(12px) !default;
     .button-group {
         display: inline-block;
         vertical-align: top;
-        .button {
-            font-size: $oe-search-filters-fieldset-button-font-size;
-        }
+        margin-top: emCalc(2px);
     }
 }

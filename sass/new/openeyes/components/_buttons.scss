@@ -16,6 +16,10 @@
 // .secondary:hover     - Secondary button hover state
 // .secondary:focus     - Secondary button focus state
 // .secondary:active    - Secondary button pressed state
+// .warning             - Warning button
+// .warning:hover       - Warning button hover state
+// .warning:focus       - Warning button focus state
+// .warning:active      - Warning button pressed state
 //
 // Styleguide 9.1
 
@@ -36,29 +40,7 @@ $oe-button-primary-active-bg-color-end: #104d8b !default;
 $oe-button-primary-active-border-color: #0f467e !default;
 $oe-button-primary-padding: emCalc(8px) emCalc(40px) !default;
 
-// Disabled button variables
-$oe-button-disabled-bg-color-start: #aaaaaa !default;
-$oe-button-disabled-bg-color-stop: #999999 !default;
-$oe-button-disabled-border-color: #999999 !default;
-
-// Secondary button
-$oe-button-secondary-bg-color-start: #43a844;
-$oe-button-secondary-bg-color-end: #55a256;
-$oe-button-secondary-text-shadow-1: #427d42;
-$oe-button-secondary-text-shadow-2: #43727f;
-$oe-button-secondary-border-color: #3fa522;
-$oe-button-secondary-hover-bg-color-start: #48bd27;
-$oe-button-secondary-hover-bg-color-end: #3fa522;
-$oe-button-secondary-hover-border-color: #569b42;
-$oe-button-secondary-active-bg-color-start: #458446;
-$oe-button-secondary-active-bg-color-end: #396c39;
-$oe-button-secondary-active-border-color: #336234;
-
-// Small button
-$oe-button-small-padding: emCalc(5px) emCalc(20px) !default;
-$oe-button-small-font-size: emCalc(13px);
-$oe-button-small-letter-spacing: 1px;
-
+// Primary button (blue)
 button, .button {
     @include button-base;
     @include border-radius($button-radius);
@@ -81,12 +63,38 @@ button, .button {
         @include background(linear-gradient($oe-button-primary-active-bg-color-start, $oe-button-primary-active-bg-color-end));
         border-color: $oe-button-primary-active-border-color;
     }
+}
+
+// Disabled button vars
+$oe-button-disabled-bg-color-start: #aaaaaa !default;
+$oe-button-disabled-bg-color-stop: #999999 !default;
+$oe-button-disabled-border-color: #999999 !default;
+
+// Disabled button (grey)
+button, .button {
     &.disabled,
     &[disabled] {
         @include background(linear-gradient($oe-button-disabled-bg-color-start, $oe-button-disabled-bg-color-stop));
         border-color: $oe-button-disabled-border-color;
         text-shadow: none;
     }
+}
+
+// Secondary button vars
+$oe-button-secondary-bg-color-start: #43a844;
+$oe-button-secondary-bg-color-end: #55a256;
+$oe-button-secondary-text-shadow-1: #427d42;
+$oe-button-secondary-text-shadow-2: #43727f;
+$oe-button-secondary-border-color: #3fa522;
+$oe-button-secondary-hover-bg-color-start: #48bd27;
+$oe-button-secondary-hover-bg-color-end: #3fa522;
+$oe-button-secondary-hover-border-color: #569b42;
+$oe-button-secondary-active-bg-color-start: #458446;
+$oe-button-secondary-active-bg-color-end: #396c39;
+$oe-button-secondary-active-border-color: #336234;
+
+// Secondary button (green)
+button, .button {
     &.secondary {
         @include background(linear-gradient($oe-button-secondary-bg-color-start, $oe-button-secondary-bg-color-end));
         border-color: $oe-button-secondary-border-color;
@@ -103,6 +111,37 @@ button, .button {
     }
 }
 
+// Warning button vars
+$oe-button-warning-bg-color-start: #cf0d27;
+$oe-button-warning-bg-color-end: #b8152b;
+$oe-button-warning-text-shadow-1: #9a091c;
+$oe-button-warning-text-shadow-2: #851616;
+$oe-button-warning-border-color: #9a091c;
+$oe-button-warning-hover-bg-color-start: #e81515;
+$oe-button-warning-hover-bg-color-end: #e01a1a;
+$oe-button-warning-hover-border-color: #ad1515;
+$oe-button-warning-active-bg-color-start: #901828;
+$oe-button-warning-active-bg-color-end: #761421;
+$oe-button-warning-active-border-color: #6b121e;
+
+// Warning button (red)
+button, .button {
+    &.warning {
+        @include background(linear-gradient($oe-button-warning-bg-color-start, $oe-button-warning-bg-color-end));
+        border-color: $oe-button-warning-border-color;
+        text-shadow: 1px 1px 0 $oe-button-warning-text-shadow-1, 2px 2px 0 $oe-button-warning-text-shadow-2;
+        &:hover,
+        &:focus {
+            @include background(linear-gradient($oe-button-warning-hover-bg-color-start, $oe-button-warning-hover-bg-color-end));
+            border-color: $oe-button-warning-hover-border-color;
+        }
+        &:active {
+            @include background(linear-gradient($oe-button-warning-active-bg-color-start, $oe-button-warning-active-bg-color-end));
+            border-color: $oe-button-warning-active-border-color;
+        }
+    }
+}
+
 // Button sizes
 //
 // Buttons can have different sizes.
@@ -113,6 +152,11 @@ button, .button {
 // .small               - Small button
 //
 // Styleguide 9.2
+
+// Small button vars
+$oe-button-small-padding: emCalc(5px) emCalc(20px) !default;
+$oe-button-small-font-size: emCalc(13px);
+$oe-button-small-letter-spacing: 1px;
 button, .button {
     &.small {
         @include button-size($padding: $button-sml);
@@ -139,18 +183,18 @@ button, .button {
     & > li {
         @include button-group-style;
     }
-    .button {
+    button, .button {
         @include border-radius(0);
         padding: emCalc(5px) emCalc(10px);
         margin: 0;
     }
     li:first-child {
-        .button {
+        button, .button {
             @include border-radius($button-radius 0 0 $button-radius);
         }
     }
     li:last-child {
-        .button {
+        button, .button {
             @include border-radius(0 $button-radius $button-radius 0);
         }
     }

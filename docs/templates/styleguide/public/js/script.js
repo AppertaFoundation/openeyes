@@ -29,7 +29,7 @@
     function initNavBar() {
 
       var win = $(window);
-      var nav = $('.side-nav');
+      var nav = $('.kss-side-nav');
       var navOffset = nav.offset();
 
       function onWinScroll() {

@@ -35,6 +35,7 @@ table {
     @include table;
     @include all-form-fields {
         margin: 0;
+        font-size: 1em;
     }
 
     min-width: 100%;
@@ -200,6 +201,63 @@ $oe-waiting-list-border-color: #999999 !default;
 
 // Theatre bookings table.
 //
+// Markup:
+// <table class="grid theatre-bookings">
+//     <thead>
+//         <tr>
+//             <th>Admit time</th>
+//             <th class="hide">Sort</th>
+//             <th>Hospital #</th>
+//             <th>Confirmed</th>
+//             <th>Patient (Age)</th>
+//             <th>[Eye] Operation</th>
+//             <th>Priority</th>
+//             <th>Anesth</th>
+//             <th>Ward</th>
+//             <th>Info</th>
+//         </tr>
+//     </thead>
+//     <tbody>
+//         <tr>
+//             <td>
+//                 12:00
+//             </td>
+//             <td class="hide">
+//                 <img src="/img/tmp/diaryIcons/draggable_row.png" width="25" height="28" />
+//             </td>
+//             <td>
+//                 <a href="/OphTrOperationbooking/default/view/136">1001982</a>
+//             </td>
+//             <td>
+//                 <input type="checkbox" value="1" disabled="disabled">
+//             </td>
+//             <td>COTTRELL, Kristen (48)</td>
+//             <td>[Left] Application of 5FU</td>
+//             <td>Routine</td>
+//             <td>Topical</td>
+//             <td>Sedgwick</td>
+//             <td>
+//                 <img src="/img/tmp/diaryIcons/female.png" alt="female" width="17" height="17" title="female" />
+//             </td>
+//         </tr>
+//     </tbody>
+//     <tfoot>
+//         <tr>
+//             <td colspan="10">
+//                 <div class="time-left">
+//                     <strong>
+//                     520 minutes unallocated
+//                     </strong>
+//                 </div>
+//                 <div class="specialists">
+//                     <div class="consultant" title="Consultant Present">Consultant</div>
+//                     <div class="anaesthetist" title="Anaesthetist Present">Anaesthetist (GA)</div>
+//                 </div>
+//             </td>
+//         </tr>
+//     </tfoot>
+// </table>
+//
 // Styleguide 5.2
 
 // Theatre bookings table vars
@@ -215,6 +273,11 @@ $oe-table-theatre-bookings-footer-specialist-opacity: 0.8 !default;
 $oe-table-theatre-bookings-footer-specialist-border-radius: 5px !default;
 
 .theatre-bookings {
+    margin: 0;
+    input[type="text"] {
+        max-width: emCalc(70px);
+        text-align: center;
+    }
     tfoot {
         td {
             background: $oe-table-theatre-bookings-footer-cell-bg-color;
