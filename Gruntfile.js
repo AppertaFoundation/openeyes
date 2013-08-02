@@ -27,27 +27,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-modernizr');
 
   /* Load our custom grunt tasks */
-  require('./grunt/tasks/docserver')(grunt);
-  require('./grunt/tasks/bower')(grunt);
-  require('./grunt/tasks/docs')(grunt);
-  require('./grunt/tasks/viewdocs')(grunt);
-
-  grunt.registerTask('lint', 'Check code for syntax errors', [
-    'jshint'
-  ]);
-
-  grunt.registerTask('compile', 'Compiles the public assets', [
-    'compass:newstyle'
-  ]);
-
-  grunt.registerTask('build', 'The development build task', [
-    'bower',
-    'modernizr',
-    'lint',
-    'compile'
-  ]);
-
-  grunt.registerTask('default', 'The default task', [
-    'build'
-  ]);
+  grunt.loadTasks('./grunt/tasks');
 };
