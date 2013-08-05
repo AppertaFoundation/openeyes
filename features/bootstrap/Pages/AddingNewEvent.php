@@ -1,35 +1,83 @@
 <?php
 
-class AddingNewEvent
+use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+
+class AddingNewEvent extends Page
 {
 
+    protected $path = "OphCiExamination/default/view/517"; //TO CODE - default view and patient ID
 
-    public static $createViewEpisodeEvent = "//*[@id='content']//*[contains(text(), 'Create or View Episodes and Events')]";
+    protected $elements = array(
+        'addFirstNewEpisode' => array('xpath' => "//*[@id='event_display']/div[3]/button//*[contains(text(), 'Add episode')]"),
+        'addEpisodeConfirm' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(), 'Confirm')]"),
+        'addEpisodeCancel' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(), 'Cancel')]"),
+        'addNewEpisodeButton' => array('xpath' => "//*[@id='episodes_sidebar']/div[1]/button//*[contains(text(),'Add episode')]"),
+        'expandCataractEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[4]/div[1]/h4//*[contains(text(),'Cataract')]"),
+        'expandGlaucomaEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[3]/div[1]/h4//*[contains(text(),'Glaucoma')]"),
+        'expandRefractiveEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[5]/div[1]/h4//*[contains(text(),'Refractive')]"),
+        'addNewEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(), 'Add event')]"),
+        'anaestheticSatisfaction' => array ('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Anaesthetic Satisfaction Audit')]"),
+        'consentForm' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Consent form')]"),
+        'correspondence' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Correspondence')]"),
+        'examination' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Examination')]"),
+        'operationBooking' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Operation booking')]"),
+        'operationNote' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Operation note')]"),
+        'phasing' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Phasing')]"),
+        'prescription' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Prescription')]"),
+        'intravitreal' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Intravitreal injection')]"),
+        'laser' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Laser')]"),
+        'therapyApplication' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Therapy Application')]")
+    );
 
-    public static $addFirstNewEpisode = "//*[@id='event_display']/div[3]/button//*[contains(text(), 'Add episode')]";
-    public static $addEpisodeConfirm = "//*[@id='add-new-episode-form']//*[contains(text(), 'Confirm')]";
-    public static $addEpisodeCancel = "//*[@id='add-new-episode-form']//*[contains(text(), 'Cancel')]";
+    public function addFirstNewEpisode ()
+    {
+        $this->getElement('addFirstNewEpisode')->click();
+        $this->getElement('addEpisodeConfirm')->click();
+    }
 
-    public static $addNewEpisodeButton = "//*[@id='episodes_sidebar']/div[1]/button";
+    public function addNewEpisode ()
+    {
+        $this->getElement('addNewEpisodeButton')->click();
+    }
 
-    public static $chooseCataractEpisode = "//*[@id='episodes_sidebar']//*[contains(text(), 'Cataract')]";
-    public static $chooseGlaucomaEpisode = "//*[@id='episodes_sidebar']//*[contains(text(), 'Glaucoma')]";
+    public function addNewEvent ($event)
+    {
+        $this->getElement('addNewEventButton')->click();
 
-    public static $addNewEventSideBar = "//*[@id='episodes_sidebar']//*[contains(text(), 'Add event')]";
+        if ($event==="Satisfaction") {
+            $this->getElement('anaestheticSatisfaction')->click();
+        }
+        if ($event==="Consent") {
+            $this->getElement('consentForm')->click();
+        }
+        if ($event==="Correspondence") {
+            $this->getElement('correspondence')->click();
+        }
+        if ($event==="Examination") {
+            $this->getElement('examination')->click();
+        }
+        if ($event==="OpBooking") {
+            $this->getElement('operationBooking')->click();
+        }
+        if ($event==="OpNote") {
+            $this->getElement('operationNote')->click();
+        }
+        if ($event==="Phasing") {
+            $this->getElement('phasing')->click();
+        }
+        if ($event==="Prescription") {
+            $this->getElement('prescription')->click();
+        }
+        if ($event==="Laser") {
+            $this->getElement('laser')->click();
+        }
+        if ($event==="Intravitreal") {
+            $this->getElement('intravitreal')->click();
+        }
+        if ($event==="Therapy") {
+            $this->getElement('therapyApplication')->click();
+        }
 
-    public static $anaestheticSatisfaction = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Anaesthetic Satisfaction Audit')]";
-    public static $consentForm = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Consent form')]";
-    public static $correspondence = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Correspondence')]";
-    public static $examination = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Examination')]";
-    public static $operationBooking = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Operation booking')]";
-    public static $operationNote = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Operation note')]";
-    public static $phasing = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Phasing')]";
-    public static $prescription = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Prescription')]";
-    public static $intravitreal = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Intravitreal injection')]";
-    public static $laser = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Laser')]";
-    public static $therapyApplication = "//*[@id='add-new-event-dialog']//*[contains(text(), 'Therapy Application')]";
-
-
-
+    }
 
 }

@@ -51,7 +51,8 @@ class PatientViewPage extends Page
         'selectFamilySide' => array('xpath' => "//*[@id='side_id']"),
         'selectFamilyCondition' => array('xpath' => "//*[@id='condition_id']"),
         'enterFamilyComments' => array('xpath' => "//*[@id='comments']"),
-        'saveFamilyHistory' => array('xpath' => "//*[@class='classy green mini btn_save_family_history']//*[contains(text(),'Save')]")
+        'saveFamilyHistory' => array('xpath' => "//*[@class='classy green mini btn_save_family_history']//*[contains(text(),'Save')]"),
+        'createViewEpisodeEvents' => array('xpath' => "//*[@id='content']/div/div[2]/p/a//*[contains(text(),'Create or View Episodes and Events')]")
     );
 
     public function addOpthalmicDiagnosis ($diagnosis)
@@ -171,9 +172,13 @@ class PatientViewPage extends Page
         $this->getElement('selectFamilyCondition')->selectOption($condition);
         $this->getElement('enterFamilyComments')->selectOption($comments);
         $this->getElement('saveFamilyHistory')->click();
-
-
     }
+
+    public function createEpisodeAndEvent ()
+    {
+        $this->getElement('createViewEpisodeEvents')->click();
+    }
+
 
 }
 

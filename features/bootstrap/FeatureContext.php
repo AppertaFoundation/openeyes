@@ -155,76 +155,55 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $homepage->searchSubmit();
     }
 
-//    /**
-//     * @Then /^I select Create or View Episodes and Events$/
-//     */
-//    public function iSelectCreateOrViewEpisodesAndEvents()
-//    {
-//        $this->clickLink(AddingNewEvent::$createViewEpisodeEvent);
-//    }
-//
-//    /**
-//     * @Then /^I Select Add First New Episode and Confirm$/
-//     */
-//    public function addFirstNewEpisode ()
-//    {
-//        $this->pressButton(AddingNewEvent::$addFirstNewEpisode);
-//        $this->pressButton(AddingNewEvent::$addEpisodeConfirm);
-//    }
-//
-//    /**
-//     * @And /^I Select Add a New Episode and Confirm$/
-//     */
-//    public function addNewEpisode ()
-//    {
-//        $this->pressButton(AddingNewEvent::$addNewEpisodeButton);
-//        $this->pressButton(AddingNewEvent::$addEpisodeConfirm);
-//    }
-//
-//    /**
-//     * @Given /^I add a New Event "([^"]*)"$/
-//     */
-//    public function iAddANewEvent($event)
-//    {
-//        //Need to select an Episode to reveal Add Event button
-//
-//        $this->clickLink(AddingNewEvent::$addNewEventSideBar);
-//
-//        if ($event==="Satisfaction") {
-//            $this->clickLink(AddingNewEvent::$anaestheticSatisfaction);
-//        }
-//        if ($event==="Consent") {
-//            $this->clickLink(AddingNewEvent::$consentForm);
-//        }
-//        if ($event==="Correspondence") {
-//            $this->clickLink(AddingNewEvent::$correspondence);
-//        }
-//        if ($event==="Examination") {
-//            $this->clickLink(AddingNewEvent::$examination);
-//        }
-//        if ($event==="OpBooking") {
-//            $this->clickLink(AddingNewEvent::$operationBooking);
-//        }
-//        if ($event==="OpNote") {
-//            $this->clickLink(AddingNewEvent::$operationNote);
-//        }
-//        if ($event==="Phasing") {
-//            $this->clickLink(AddingNewEvent::$phasing);
-//        }
-//        if ($event==="Prescription") {
-//            $this->clickLink(AddingNewEvent::$prescription);
-//        }
-//        if ($event==="Laser") {
-//            $this->clickLink(AddingNewEvent::$laser);
-//        }
-//        if ($event==="Intravitreal") {
-//            $this->clickLink(AddingNewEvent::$intravitreal);
-//        }
-//        if ($event==="Therapy") {
-//            $this->clickLink(AddingNewEvent::$therapyApplication);
-//        }
-//    }
-//
+    /**
+     * @Then /^I select Create or View Episodes and Events$/
+     */
+    public function CreateOrViewEpisodesAndEvents()
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientViewPage');
+        $patientView->createEpisodeAndEvent();
+    }
+
+    /**
+     * @Then /^I Select Add First New Episode and Confirm$/
+     */
+    public function addFirstNewEpisode ()
+    {
+        /**
+         * @var AddingNewEvent $addNewEvent
+         */
+       $addNewEvent = $this->getPage('AddingNewEvent');
+       $addNewEvent->addFirstNewEpisode();
+    }
+    //Need to drop the database so this is the first new Episode
+
+    /**
+     * @And /^I Select Add a New Episode and Confirm$/
+     */
+    public function addNewEpisode ()
+    {
+        /**
+         * @var AddingNewEvent $addNewEvent
+         */
+        $addNewEvent = $this->getPage('AddingNewEvent');
+        $addNewEvent->addNewEpisode();
+    }
+
+    /**
+     * @Given /^I add a New Event "([^"]*)"$/
+     */
+    public function iAddANewEvent($event)
+    {
+        /**
+         * @var AddingNewEvent $addNewEvent
+         */
+        $addNewEvent = $this->getPage('AddingNewEvent');
+        $addNewEvent->addNewEvent($event);
+    }
+
      /**
      * @Then /^I Add an Ophthalmic Diagnosis selection of "([^"]*)"$/
      */
@@ -370,7 +349,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
     }
 
     /**
-     * @Given /^I Add Medication details medication "([^"]*)" route "([^"]*)" frequency "([^"]*)" date from "([^"]*)"$/ and Save
+     * @Given /^I Add Medication details medication "([^"]*)" route "([^"]*)" frequency "([^"]*)" date from "([^"]*)" and Save$/
      */
     public function iAddMedicationDetails($medication, $route, $frequency, $dateFrom)
     {
@@ -417,9 +396,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $patientView->saveCVIstatus();
     }
 
-
     /**
-     * @Then /^I Add Allergy "([^"]*)"$/ and Save
+     * @Then /^I Add Allergy "([^"]*)" and Save$/
      */
     public function iAddAllergy($allergy)
     {
@@ -431,7 +409,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
     }
 
     /**
-     * @Given /^I Add a Family History of relative "([^"]*)" side "([^"]*)" condition "([^"]*)" and comments "([^"]*)"$/ and Save
+     * @Given /^I Add a Family History of relative "([^"]*)" side "([^"]*)" condition "([^"]*)" and comments "([^"]*)" and Save$/
      */
     public function FamilyHistory($relative, $side, $condition, $comments)
     {
