@@ -628,6 +628,7 @@ ul#user_nav > li .selected,
 #patientID { background: #fff2d7 url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; padding: 5px;
 	border-right:2px solid #ffb212; border-bottom:2px solid #ffb212; border-left:2px solid #ffb212; }
 .patientReminder { padding:4px 5px 0; font-size: 12px; background: url(../img/_elements/icons/patient/patient-id_small.png) top right no-repeat; }
+.patientReminder.warning  { padding:4px 5px 0; font-size: 12px; background: url(../img/_elements/icons/patient/patient-id_small-warning.png) top right no-repeat; }
 .patientReminder .patientName { font-size: 13px; line-height: 19px; }
 .patientReminder .patientName .surname { font-size: 15px; }
 .patientReminder .patientName a { color: #000; }
@@ -643,7 +644,7 @@ ul#user_nav > li .selected,
 .patientReminder .icons li.gender.female { background: url(../img/_elements/icons/alerts/female_trans.png) center center no-repeat; }
 .patientReminder .icons li.gender.male { background: url(../img/_elements/icons/alerts/male_trans.png) center center no-repeat; }
 .patientReminder .icons li.warning { background: url(../img/_elements/icons/alerts/warning.png) center center no-repeat; text-indent: -9999px; width: 16px; height: 16px;}
-.warningHover { display:none; position:absolute; z-index:5; right:5px; bottom:-25px; height:17px; line-height:17px; font-size:11px; letter-spacing:1px; white-space: nowrap; padding:0 5px; color:#fff; background:#eb5911; border:2px solid #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;}
+.warningHover { display:none; position:absolute; z-index:999; right:3px; bottom:-25px; height:17px; line-height:17px; font-size:11px; letter-spacing:1px; white-space: nowrap; padding:0 5px; color:#fff; background:#eb5911; border:2px solid #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;}
 .warningHover:after { content: ""; position: absolute; top:-6px; left:43%; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 5px solid #fff;}
 .patientReminder .hide { display: none; }
 .patientReminder .i_patient { position: absolute; bottom: 7px; right: 10px; }
