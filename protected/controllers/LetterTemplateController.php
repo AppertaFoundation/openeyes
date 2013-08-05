@@ -22,7 +22,8 @@ class LetterTemplateController extends BaseController
 	public $layout = '//layouts/patientMode/column2';
 	public $firm;
 
-	public function accessRules() {
+	public function accessRules()
+	{
 		return array(
 			// Level 2 can't change anything
 			array('allow',
@@ -37,7 +38,7 @@ class LetterTemplateController extends BaseController
 			array('deny'),
 		);
 	}
-		
+
 	protected function beforeAction($action)
 	{
 		// Only internal consultants are allowed to use this page
@@ -74,8 +75,7 @@ class LetterTemplateController extends BaseController
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['LetterTemplate']))
-		{
+		if (isset($_POST['LetterTemplate'])) {
 			$model->attributes=$_POST['LetterTemplate'];
 			$model->subspecialty_id = $this->firm->serviceSubspecialtyAssignment->subspecialty_id;
 			if($model->save())
@@ -100,8 +100,7 @@ class LetterTemplateController extends BaseController
 			throw new CHttpException(403, 'You are not permitted to alter this letter template.');
 		}
 
-		if(isset($_POST['LetterTemplate']))
-		{
+		if (isset($_POST['LetterTemplate'])) {
 			$model->attributes=$_POST['LetterTemplate'];
 			$model->subspecialty_id = $this->firm->serviceSubspecialtyAssignment->subspecialty_id;
 			if($model->save())
@@ -132,11 +131,11 @@ class LetterTemplateController extends BaseController
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer the ID of the model to be loaded
+	 * @param integer $id the ID of the model to be loaded
 	 */
 	public function loadModel($id)
 	{
-		$model=LetterTemplate::model()->findByPk((int)$id);
+		$model=LetterTemplate::model()->findByPk((int) $id);
 
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');

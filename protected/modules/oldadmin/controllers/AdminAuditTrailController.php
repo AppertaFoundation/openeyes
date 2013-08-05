@@ -17,11 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class AdminAuditTrailController extends Controller {
+class AdminAuditTrailController extends Controller
+{
 	public $defaultAction = "admin";
 	public $layout='column1';
-	
-	protected function beforeAction($action) {
+
+	protected function beforeAction($action)
+	{
 		// Sample code to be used when RBAC is fully implemented.
 		if (!Yii::app()->user->checkAccess('admin')) {
 			throw new CHttpException(403, 'You are not authorised to perform this action.');
@@ -29,11 +31,12 @@ class AdminAuditTrailController extends Controller {
 
 		return parent::beforeAction($action);
 	}
-	
-	public function actionAdmin() {
+
+	public function actionAdmin()
+	{
 		$model = new AuditTrail('search');
 		$model->unsetAttributes();
-		if(isset($_GET['AuditTrail'])) {
+		if (isset($_GET['AuditTrail'])) {
 			$model->attributes=$_GET['AuditTrail'];
 		}
 		$this->render('admin',array(

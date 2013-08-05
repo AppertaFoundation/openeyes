@@ -21,14 +21,14 @@
  * This is the model class for table "benefit".
  *
  * The followings are the available columns in table 'benefit':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class Benefit extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return Benefit the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

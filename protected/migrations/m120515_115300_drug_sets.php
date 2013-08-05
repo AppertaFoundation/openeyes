@@ -1,9 +1,9 @@
 <?php
 
-class m120515_115300_drug_sets extends CDbMigration {
-
-	public function up() {
-
+class m120515_115300_drug_sets extends CDbMigration
+{
+	public function up()
+	{
 		// Create drug set tables
 		$this->createTable('drug_set',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -39,7 +39,8 @@ class m120515_115300_drug_sets extends CDbMigration {
 
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropForeignKey('drug_set_item_drug_id_fk', 'drug_set_item');
 		$this->dropForeignKey('drug_set_item_drug_set_id_fk', 'drug_set_item');
 		$this->dropForeignKey('drug_set_item_default_frequency_id_fk', 'drug_set_item');
@@ -53,11 +54,13 @@ class m120515_115300_drug_sets extends CDbMigration {
 		$this->dropTable('drug_set');
 	}
 
-	public function safeUp() {
+	public function safeUp()
+	{
 		$this->up();
 	}
 
-	public function safeDown() {
+	public function safeDown()
+	{
 		$this->down();
 	}
 

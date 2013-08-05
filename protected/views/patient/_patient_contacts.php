@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="whiteBox patientDetails"> 
+<div class="whiteBox patientDetails">
 	<div class="patient_actions">
 		<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
 	</div>
@@ -159,7 +159,7 @@
 					<div class="data contactType"></div>
 				</div>
 
-				<div> 
+				<div>
 					<div class="label">Institution:</div>
 					<div class="data"><?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
 				</div>
@@ -514,9 +514,13 @@ $(document).ready(function() {
 			'success': function(html) {
 				if (html == "1") {
 					$('#add_site_dialog').dialog('close');
-					alert("Your request has been sent, we aim to process requests within 1 working day.");
+					new OpenEyes.Dialog.Alert({
+						content: "Your request has been sent, we aim to process requests within 1 working day."
+					}).open();
 				} else {
-					alert("There was an unexpected error sending your message, please try again or contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "There was an unexpected error sending your message, please try again or contact support for assistance."
+					}).open();
 				}
 			}
 		});

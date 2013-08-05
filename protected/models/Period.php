@@ -20,16 +20,16 @@
 /**
  * This is the model class for table "period".
  *
- * The followings are the available columns in table 'eye':
- * @property string $id
+ * The followings are the available columns in table 'period':
+ * @property integer $id
  * @property string $name
- * @property string $display_order
+ * @property integer $display_order
  */
 class Period extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return Period the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -44,10 +44,11 @@ class Period extends BaseActiveRecord
 		return 'period';
 	}
 
-	public function __toString() {
+	public function __toString()
+	{
 		return $this->name;
 	}
-	
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -66,5 +67,5 @@ class Period extends BaseActiveRecord
 	{
 		return array();
 	}
-	
+
 }

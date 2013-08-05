@@ -21,7 +21,7 @@
  * This is the model class for table "specialist".
  *
  * The followings are the available columns in table 'specialist':
- * @property string $id
+ * @property integer $id
  * @property string $obj_prof
  * @property string $nat_id
  * @property string $contact_id

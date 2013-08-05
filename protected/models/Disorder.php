@@ -29,13 +29,25 @@
  * The followings are the available model relations:
  * @property CommonOphthalmicDisorder[] $commonOphthalmicDisorders
  * @property CommonSystemicDisorder[] $commonSystemicDisorders
- * @property Diagnosis[] $diagnosises
+ * @property Specialty $specialty
  */
 class Disorder extends BaseActiveRecord
 {
 	const SITE_LEFT = 0;
 	const SITE_RIGHT = 1;
 	const SITE_BILATERAL = 2;
+
+	// the following constants are defined as convenience values for determining disorders of certain types.
+	// prefixed SNOMED to reserve namespace, and be self-describing.
+	const SNOMED_DIABETES = 73211009;
+	const SNOMED_DIABETES_TYPE_I = 46635009;
+	const SNOMED_DIABETES_TYPE_II = 44054006;
+	// the sets postfix indicate this is an array of SNOMED concepts that can be used to determine if a disorder
+	// is part of the parent SNOMED concept.
+	// For example, diabetes is indicated by both the disorder parent and associated disorders
+	public static $SNOMED_DIABETES_SET = array(73211009, 74627003);
+	public static $SNOMED_DIABETES_TYPE_I_SET = array(46635009, 420868002);
+	public static $SNOMED_DIABETES_TYPE_II_SET = array(44054006, 422014003);
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -52,6 +64,14 @@ class Disorder extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'disorder';
+	}
+
+	/**
+	 * @return string the associated database tree table name
+	 */
+	public function treeTable()
+	{
+		return 'disorder_tree';
 	}
 
 	/**
@@ -82,8 +102,17 @@ class Disorder extends BaseActiveRecord
 		return array(
 			'commonOphthalmicDisorders' => array(self::HAS_MANY, 'CommonOphthalmicDisorder', 'disorder_id'),
 			'commonSystemicDisorders' => array(self::HAS_MANY, 'CommonSystemicDisorder', 'disorder_id'),
-			'diagnoses' => array(self::HAS_MANY, 'Diagnosis', 'disorder_id'),
+			//'diagnoses' => array(self::HAS_MANY, 'Diagnosis', 'disorder_id'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'treeBehavior'=>array(
+				'class' => 'TreeBehavior',
+			)
 		);
 	}
 
@@ -114,7 +143,6 @@ class Disorder extends BaseActiveRecord
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('fully_specified_name', $this->fully_specified_name, true);
 		$criteria->compare('term', $this->term, true);
-		$criteria->compare('systemic', $this->systemic);
 		return new CActiveDataProvider(get_class($this), array( 'criteria' => $criteria));
 	}
 
@@ -143,4 +171,14 @@ class Disorder extends BaseActiveRecord
 		return $data;
 	}
 
+	/*
+	 * returns boolean to indicate if the disorder is systemic (true)
+	 */
+	public function getSystemic()
+	{
+		if ($this->specialty_id) {
+			return false;
+		}
+		return true;
+	}
 }

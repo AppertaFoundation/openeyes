@@ -42,10 +42,6 @@ AuditLog.prototype = {
 		});
 
 		var user_id = $('#previous_user_id').val();
-		if (user_id == undefined) {
-			// user wasn't found, so return as there won't ever be any entries
-			return;
-		}
 
 		$.ajax({
 			'type': 'GET',

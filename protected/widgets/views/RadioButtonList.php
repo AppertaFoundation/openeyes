@@ -21,17 +21,17 @@
 	<?php if (!$no_element) {?>
 		<input type="hidden" value="" name="<?php echo get_class($element)?>[<?php echo $field?>]">
 	<?php }?>
-		
+	<?php $i=0; ?>
 	<?php foreach ($data as $id => $data_value) {?>
 		<span class="group">
-			<?php 
+			<?php
 				$options = array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id);
-				
+
 				if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
 					foreach ($htmlOptions['options'][$id] as $k => $v) {
 						$options[$k] = $v;
 					}
-				}	
+				}
 		 	echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), $options)?>
 			<label for="<?php echo get_class($element)?>_<?php echo $field?>_<?php echo $id?>"><?php echo $data_value?></label>
 		</span>
@@ -45,9 +45,9 @@
 		}
 		?>
 	<?php }?>
-<?php }else{?>
+<?php } else {?>
 	<div id="<?php echo get_class($element). '_' . $field?>" class="eventDetail"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-		<?php	// Added hidden input below to enforce posting of current form element name. 
+		<?php	// Added hidden input below to enforce posting of current form element name.
 				// When using radio or checkboxes if no value is selected then nothing is posted
 				// not triggereing server side validation.
 		?>
@@ -64,15 +64,15 @@
 			<?php }?>
 			<?php foreach ($data as $id => $data_value) {?>
 				<span class="group">
-					<?php 
+					<?php
 						$options = array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id);
-						
+
 						if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
 							foreach ($htmlOptions['options'][$id] as $k => $v) {
 								$options[$k] = $v;
 							}
 						}
-							 
+
 						echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), $options);
 					?>
 					<label for="<?php echo get_class($element)?>_<?php echo $field?>_<?php echo $id?>"><?php echo $data_value?></label>

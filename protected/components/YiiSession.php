@@ -17,12 +17,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class YiiSession {
-	static public function get($index) {
+class YiiSession
+{
+	public static function get($index)
+	{
 		return Yii::app()->session[$index];
 	}
 
-	static public function set($index, $data, $data2='NODATAWASSENT') {
+	public static function set($index, $data, $data2='NODATAWASSENT')
+	{
 		if ($data2 != 'NODATAWASSENT') {
 			$d = Yii::app()->session[$index];
 			$d[$data] = $data2;
@@ -32,4 +35,3 @@ class YiiSession {
 		}
 	}
 }
-?>

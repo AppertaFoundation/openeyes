@@ -20,34 +20,36 @@
 /**
  * Validator for OpenEyes standard dates
  */
-class OeDateValidator extends CValidator {
+class OeDateValidator extends CValidator
+{
 	/**
 	 * Validate date attribute
-	 * 
+	 *
 	 * Dates must be in the format d MMM yyyy or MySQL format (yyyy-mm-dd). Blank strings will also pass so that this validator can be combined with required without generating two errors.
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute) {
+	protected function validateAttribute($object, $attribute)
+	{
 		$value = $object->$attribute;
 		$valid = false;
-		
+
 		// Allow empty string
-		if($this->isEmpty($value)) {
+		if ($this->isEmpty($value)) {
 			$valid = true;
 		}
-		
+
 		// Allow NHS format
-		if(preg_match(Helper::NHS_DATE_REGEX, $value) && strtotime($value)) {
+		if (preg_match(Helper::NHS_DATE_REGEX, $value) && strtotime($value)) {
 			$valid = true;
 		}
-		
+
 		// Allow MySQL format (native). Required to avoid problems with both forms and models to be validated.
-		if(preg_match('/^\d{4}-\d{2}-\d{2}/', $value) && strtotime($value)) {
+		if (preg_match('/^\d{4}-\d{2}-\d{2}/', $value) && strtotime($value)) {
 			$valid = true;
 		}
-		
-		if(!$valid) {
+
+		if (!$valid) {
 			$message = ($this->message !== null) ? $this->message : Yii::t('yii','{attribute} is not a valid date');
 			$this->addError($object, $attribute, $message);
 		}

@@ -24,4 +24,3 @@
 class BaseModule extends CWebModule
 {
 }
-

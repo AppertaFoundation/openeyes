@@ -28,7 +28,7 @@
 			<?php echo $element->getAttributeLabel($field)?>
 		</div>
 	</div>
-<?php }else {?>
+<?php } else {?>
 	<?php if (!@$options['nowrapper']) {?>
 		<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
 			<?php if (!@$options['no-label']) {?>

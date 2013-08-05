@@ -19,17 +19,18 @@
 
 /**
  * Consolidates all migrations up to 23/02/2012 into a single step
- * 
+ *
  * This migration will work on a blank database, or a database that has already been migrated up to
  * or beyond 23/02/2012 (m120222_115209_new_general_anaesthetic_field_for_sessions_and_sequences).
  * Databases not migrated up to this point are no longer supported
  */
-class m120223_000000_consolidation extends CDbMigration {
-
-	public function up() {
+class m120223_000000_consolidation extends CDbMigration
+{
+	public function up()
+	{
 		// Check for existing migrations
 		$existing_migrations = $this->getDbConnection()->createCommand("SELECT count(version) FROM `tbl_migration`")->queryScalar();
-		if($existing_migrations == 1) {
+		if ($existing_migrations == 1) {
 			// This is the first migration, so we can safely initialise the database
 			$this->execute("SET foreign_key_checks = 0");
 			echo "Creating tables...";
@@ -40,7 +41,7 @@ class m120223_000000_consolidation extends CDbMigration {
 		} else {
 			// Database has existing migrations, so check that last migration step to be consolidated was applied
 			$previous_migration = $this->getDbConnection()->createCommand("SELECT * FROM `tbl_migration` WHERE version = 'm120222_115209_new_general_anaesthetic_field_for_sessions_and_sequences'")->execute();
-			if($previous_migration) {
+			if ($previous_migration) {
 				// Previous migration was applied, safe to consolidate
 				echo "Consolidating old migration data";
 				$this->execute("DELETE FROM `tbl_migration` WHERE version < 'm120223_000000_consolidation'");
@@ -55,9 +56,10 @@ class m120223_000000_consolidation extends CDbMigration {
 	/**
 	 * Initialise tables with default data
 	 */
-	protected function initialiseData() {
+	protected function initialiseData()
+	{
 		$path = Yii::app()->basePath . '/migrations/data/';
-		foreach(glob($path."*.csv") as $file_path) {
+		foreach (glob($path."*.csv") as $file_path) {
 			$table = substr(basename($file_path), 0, -4);
 			echo "Importing $table data...";
 			$fh = fopen($file_path, 'r');
@@ -65,38 +67,39 @@ class m120223_000000_consolidation extends CDbMigration {
 			$row_count = 0;
 			$block_size = 1000;
 			$values = array();
-			while(($record = fgetcsv($fh)) !== false) {
+			while (($record = fgetcsv($fh)) !== false) {
 				$row_count++;
 				$values[] = $record;
-				if(!($row_count % $block_size)) {
+				if (!($row_count % $block_size)) {
 					// Insert values in blocks to better handle very large tables
 					$this->insertBlock($table, $columns, $values);
 					$values = array();
 				}
 			}
 			fclose($fh);
-			if(!empty($values)) {
+			if (!empty($values)) {
 				// Insert remaining values
 				$this->insertBlock($table, $columns, $values);
 			}
 			echo "$row_count records, done.\n";
 		}
 	}
-	
+
 	/**
 	 * Insert a block of records into a table
 	 * @param string $table
 	 * @param array $columns
 	 * @param array $records
 	 */
-	protected function insertBlock($table, $columns, $records) {
+	protected function insertBlock($table, $columns, $records)
+	{
 		$db = $this->getDbConnection();
-		foreach($columns as &$column) {
+		foreach ($columns as &$column) {
 			$column = $db->quoteColumnName($column);
 		}
 		$insert = array();
-		foreach($records as $record) {
-			foreach($record as &$field) {
+		foreach ($records as $record) {
+			foreach ($record as &$field) {
 				$field = $db->quoteValue($field);
 			}
 			$insert[] = '('.implode(',', $record).')';
@@ -104,11 +107,12 @@ class m120223_000000_consolidation extends CDbMigration {
 		$query = "INSERT INTO ".$db->quoteTableName($table)." (".implode(',',$columns).") VALUES ".implode(',', $insert);
 		$this->getDbConnection()->createCommand($query)->execute();
 	}
-	
+
 	/**
 	 * Create all tables, keys and constraints
 	 */
-	protected function createTables() {
+	protected function createTables()
+	{
 		$this->createTable('address', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'address1' => 'varchar(255) CHARACTER SET utf8 DEFAULT NULL',
@@ -1802,16 +1806,19 @@ class m120223_000000_consolidation extends CDbMigration {
 		);
 	}
 
-	public function down() {
+	public function down()
+	{
 		echo "m120223_000000_consolidation does not support migration down.\n";
 		return false;
 	}
 
-	public function safeUp() {
+	public function safeUp()
+	{
 		$this->up();
 	}
 
-	public function safeDown() {
+	public function safeDown()
+	{
 		$this->down();
 	}
 

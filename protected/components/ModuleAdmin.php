@@ -20,8 +20,10 @@
 /**
  * ModuleAdmin functions
  */
-class ModuleAdmin {
-	static public function getAll() {
+class ModuleAdmin
+{
+	public static function getAll()
+	{
 		$module_admin = array();
 
 		$module_classes = array();

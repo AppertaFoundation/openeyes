@@ -33,7 +33,7 @@ class AddressType extends BaseActiveRecord
 	const HOME = 2;
 	const CORRESPOND = 3;
 	const TRANSPORT = 4;
-	
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return AddressType the static model class

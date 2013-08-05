@@ -29,7 +29,6 @@
  * @property string $name
  * @property string $data
  * @property string $default_value
- * @property string $name
  */
 class SettingMetadata extends BaseActiveRecord
 {

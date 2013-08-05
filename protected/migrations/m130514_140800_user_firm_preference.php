@@ -1,8 +1,9 @@
 <?php
 
-class m130514_140800_user_firm_preference extends CDbMigration {
-
-	public function up() {
+class m130514_140800_user_firm_preference extends CDbMigration
+{
+	public function up()
+	{
 		$this->createTable('user_firm_preference',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'user_id' => 'int(10) unsigned NOT NULL',
@@ -22,7 +23,8 @@ class m130514_140800_user_firm_preference extends CDbMigration {
 		);
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropTable('user_firm_preference');
 	}
 

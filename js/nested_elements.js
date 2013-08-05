@@ -16,6 +16,148 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+function showActiveChildElements() {
+	$('#active_elements .active_child_elements').each(function() {
+		if($('.element', this).length) {
+			$(this).show();
+		} else {
+			$(this).hide();
+		}
+	});
+}
+
+function addElement(element, animate, is_child, previous_id, params) {
+	if (typeof (animate) === 'undefined')
+		animate = true;
+	if (typeof (is_child) === 'undefined')
+		is_child = false;
+	if (typeof (previous_id) === 'undefined')
+		previous_id = 0;
+	if (typeof (params) === 'undefined')
+		params = {};
+	
+	var element_type_id = $(element).attr('data-element-type-id');
+	var element_type_class = $(element).attr('data-element-type-class');
+	var display_order = $(element).attr('data-element-display-order');
+	
+	var core_params = {
+		id: element_type_id,
+		patient_id: OE_patient_id,
+		previous_id: previous_id
+	};
+	
+	$.extend(params, core_params);
+	
+	$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function(data) {
+		if (is_child) {
+			var container = $(element).closest('.inactive_child_elements').parent().find('.active_child_elements:first');
+		} else {
+			var container = $('#active_elements');
+		}
+		
+		$(element).remove();
+		var insert_before = container.find('.element').first();
+		
+		while (parseInt(insert_before.attr('data-element-display-order')) < parseInt(display_order)) {
+			insert_before = insert_before.nextAll('div:first');
+		}
+		if (insert_before.length) {
+			insert_before.before(data);
+		} else {
+			$(container).append(data);
+		}
+		
+		if (is_child) {
+			// check if this is sided
+			// and match the parent active sides if it is
+			var cel = $(container).find('.'+element_type_class);
+			var pel = $(container).parents('.element');
+			var sideField = $(cel).find('input.sideField');
+			if ($(sideField).length && $(pel).find('input.sideField').length) {
+				$(sideField).val($(pel).find('.sideField').val());
+				
+				if($(sideField).val() == '1') {
+					$(cel).find('.side.left').addClass('inactive');
+				}
+				else if ($(sideField).val() == '2') {
+					$(cel).find('.side.right').addClass('inactive');
+				}
+			}				
+		}
+		
+		$('#event_display textarea.autosize:visible').autosize();
+		showActiveChildElements();
+			
+		var inserted = (insert_before.length) ? insert_before.prevAll('div:first') : container.find('.element:last');
+		if (animate) {
+			var offTop = inserted.offset().top - 50;
+			var speed = (Math.abs($(window).scrollTop() - offTop)) * 1.5;
+			$('body').animate({
+				scrollTop : offTop
+			}, speed, null, function() {
+				$('.elementTypeName', inserted).effect('pulsate', {
+					times : 2
+				}, 600);
+			});
+		}
+		
+		var el_class = $(element).attr('data-element-type-class');
+		var initFunctionName = el_class.replace('Element_', '') + '_init';
+		if(typeof(window[initFunctionName]) == 'function') {
+			window[initFunctionName]();
+		}
+
+		// now init any children
+		$(".element." + el_class).find('.active_child_elements').find('.element').each(function() {
+			var initFunctionName = $(this).attr('data-element-type-class').replace('Element_', '') + '_init';
+			if(typeof(window[initFunctionName]) == 'function') {
+				window[initFunctionName]();
+			}
+		});
+		
+		// Update waypoints to cope with change in page size
+		$.waypoints('refresh');
+		
+		// Update text macros (if defined)
+		if(typeof updateTextMacros == 'function') {
+			updateTextMacros();
+		}
+	});
+	
+}
+
+function removeElement(element, is_child) {
+	if (typeof(is_child) == 'undefined')
+		is_child = false;
+	var element_type_name = $(element).attr('data-element-type-name');
+	var display_order = $(element).attr('data-element-display-order');
+	$(element).html($('<h5>' + element_type_name + '</h5>'));
+	if (is_child) {
+		var container = $(element).closest('.active_child_elements').parent().find('.inactive_child_elements:last');
+	}
+	else {
+		var container = $('#inactive_elements');
+	}
+	var insert_before = $(container).find('.element').first();
+	while (parseInt(insert_before.attr('data-element-display-order')) < parseInt(display_order)) {
+		insert_before = insert_before.next();
+	}
+	if (insert_before.length) {
+		insert_before.before(element);
+	} else {
+		$(container).append(element);
+	}
+	showActiveChildElements();
+
+	// Update waypoints to cope with change in page size
+	$.waypoints('refresh');
+	
+	// Update text macros (if defined)
+	if(typeof updateTextMacros == 'function') {
+		updateTextMacros();
+	}
+}
+
 $(document).ready(function() {
 	
 	/**
@@ -23,16 +165,6 @@ $(document).ready(function() {
 	 */
 	showActiveChildElements();
 
-	function showActiveChildElements() {
-		$('#active_elements .active_child_elements').each(function() {
-			if($('.element', this).length) {
-				$(this).show();
-			} else {
-				$(this).hide();
-			}
-		});
-	}
-	
 	/**
 	 * Autoadjust height of textareas
 	 */
@@ -68,99 +200,7 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 	
-	function addElement(element, animate, is_child, previous_id) {
-		if (typeof (animate) === 'undefined')
-			animate = true;
-		if (typeof (is_child) === 'undefined')
-			is_child = false;
-		if (typeof (previous_id) === 'undefined')
-			previous_id = 0;
-		
-		var element_type_id = $(element).attr('data-element-type-id');
-		var element_type_class = $(element).attr('data-element-type-class');
-		
-		var display_order = $(element).attr('data-element-display-order');
-		$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", {
-			id : element_type_id,
-			patient_id : OE_patient_id,
-			previous_id: previous_id,
-		}, function(data) {
-			if (is_child) {
-				var container = $(element).closest('.inactive_child_elements').parent().find('.active_child_elements:first');
-			} else {
-				var container = $('#active_elements');
-			}
-			
-			$(element).remove();
-			var insert_before = container.find('.element').first();
-			
-			while (parseInt(insert_before.attr('data-element-display-order')) < parseInt(display_order)) {
-				insert_before = insert_before.nextAll('div:first');
-			}
-			if (insert_before.length) {
-				insert_before.before(data);
-			} else {
-				$(container).append(data);
-			}
-			
-			if (is_child) {
-				// check if this is sided
-				// and match the parent active sides if it is
-				var cel = $(container).find('.'+element_type_class);
-				var pel = $(container).parents('.element');
-				var sideField = $(cel).find('input.sideField');
-				if ($(sideField).length && $(pel).find('input.sideField').length) {
-					$(sideField).val($(pel).find('.sideField').val());
-					
-					if($(sideField).val() == '1') {
-						$(cel).find('.side.left').addClass('inactive');
-					}
-					else if ($(sideField).val() == '2') {
-						$(cel).find('.side.right').addClass('inactive');
-					}
-				}				
-			}
-			
-			$('#event_display textarea.autosize:visible').autosize();
-			showActiveChildElements();
-				
-			var inserted = (insert_before.length) ? insert_before.prevAll('div:first') : container.find('.element:last');
-			if (animate) {
-				var offTop = inserted.offset().top - 50;
-				var speed = (Math.abs($(window).scrollTop() - offTop)) * 1.5;
-				$('body').animate({
-					scrollTop : offTop
-				}, speed, null, function() {
-					$('.elementTypeName', inserted).effect('pulsate', {
-						times : 2
-					}, 600);
-				});
-			}
-			
-			var el_class = $(element).attr('data-element-type-class');
-			var initFunctionName = el_class.replace('Element_', '') + '_init';
-			if(typeof(window[initFunctionName]) == 'function') {
-				window[initFunctionName]();
-			}
-
-			// now init any children
-			$(".element." + el_class).find('.active_child_elements').find('.element').each(function() {
-				var initFunctionName = $(this).attr('data-element-type-class').replace('Element_', '') + '_init';
-				if(typeof(window[initFunctionName]) == 'function') {
-					window[initFunctionName]();
-				}
-			});
-			
-			// Update waypoints to cope with change in page size
-			$.waypoints('refresh');
-			
-			// Update text macros (if defined)
-			if(typeof updateTextMacros == 'function') {
-				updateTextMacros();
-			}
-		});
-		
-	}
+	
 
 	/**
 	 * View previous elements
@@ -237,38 +277,6 @@ $(document).ready(function() {
 		
 	})
 
-	function removeElement(element, is_child) {
-		if (typeof(is_child) == 'undefined')
-			is_child = false;
-		var element_type_name = $(element).attr('data-element-type-name');
-		var display_order = $(element).attr('data-element-display-order');
-		$(element).html($('<h5>' + element_type_name + '</h5>'));
-		if (is_child) {
-			var container = $(element).closest('.active_child_elements').parent().find('.inactive_child_elements:last');
-		}
-		else {
-			var container = $('#inactive_elements');
-		}
-		var insert_before = $(container).find('.element').first();
-		while (parseInt(insert_before.attr('data-element-display-order')) < parseInt(display_order)) {
-			insert_before = insert_before.next();
-		}
-		if (insert_before.length) {
-			insert_before.before(element);
-		} else {
-			$(container).append(element);
-		}
-		showActiveChildElements();
-
-		// Update waypoints to cope with change in page size
-		$.waypoints('refresh');
-		
-		// Update text macros (if defined)
-		if(typeof updateTextMacros == 'function') {
-			updateTextMacros();
-		}
-	}
-	
 	/**
 	 * Add optional child element
 	 */

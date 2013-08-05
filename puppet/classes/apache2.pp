@@ -33,6 +33,7 @@ class apache2 {
   LogLevel warn
   CustomLog /var/log/apache2/access.log combined
   ServerSignature Off
+  EnableSendfile Off
 </VirtualHost>",
     require => Package['apache2'],
     notify  => Service['apache2'],

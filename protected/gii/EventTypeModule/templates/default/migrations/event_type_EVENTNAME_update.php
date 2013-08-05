@@ -1,9 +1,9 @@
 <?php echo '<?php '; ?>
 
-class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php echo $this->moduleID; ?> extends CDbMigration
+class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php echo $this->moduleID; ?> extends CDbMigration
 {
-	public function up() {
-
+	public function up()
+	{
 		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'<?php echo $this->moduleSuffix; ?>'))->queryRow();
 
 		// --- ELEMENT TYPE ENTRIES ---
@@ -17,7 +17,7 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'<?php echo $element['name'];?>',':eventTypeId'=>$event_type['id']))->queryRow()) {
 			$this->insert('element_type', array('name' => '<?php echo $element['name'];?>','class_name' => '<?php echo $element['class_name'];?>', 'event_type_id' => $event_type['id'], 'display_order' => 1));
 		}
-<?php 
+<?php
 					}
 ?>
 		// select the element_type_id for this element type name
@@ -120,7 +120,7 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 <?php }?>
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
-<?php }else {?>
+<?php } else {?>
 		// update the element type table with the new fields
 <?php
 						$number = $element['number']; $count = 1;
@@ -174,7 +174,8 @@ if (isset($field['extra_report'])) {?>
 <?php } ?>
 	}
 
-	public function down() {
+	public function down()
+	{
 		// --- drop any element related tables ---
 		// --- drop element tables ---
 
@@ -188,7 +189,7 @@ if (isset($field['extra_report'])) {?>
 <?php }
 if ($element['mode'] == 'create') {?>
 		$this->dropTable('<?php echo $element['table_name']; ?>');
-<?php }else {?>
+<?php } else {?>
 			// update the element type table with the new fields
 <?php
 					$number = $element['number']; $count = 1;
@@ -232,4 +233,4 @@ if ($element['mode'] == 'create') {?>
 <?php }} ?>
 	}
 }
-<?php echo '?>';?>
+

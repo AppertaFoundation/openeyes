@@ -64,10 +64,41 @@ $(document).ready(function() {
 
 		for (var i in e) {
 			if (e[i] == 'admin') {
-				var object = ucfirst(e[parseInt(i)+1].replace(/s$/,''));
+				if (e[parseInt(i)+1].match(/ies$/)) {
+					var object = ucfirst(e[parseInt(i)+1].replace(/ies$/,'y'));
+				} else {
+					var object = ucfirst(e[parseInt(i)+1].replace(/s$/,''));
+				}
 				window.location.href = baseUrl+'/admin/add'+object;
 			}
 		}
+	});
+
+	handleButton($('#et_delete'),function(e) {
+		e.preventDefault();
+
+		var e = window.location.href.split('/');
+
+		for (var i in e) {
+			if (e[i] == 'admin') {
+				var object = e[parseInt(i)+1].replace(/s$/,'');
+			}
+		}
+
+		$.ajax({
+			'type': 'POST',
+			'url': baseUrl+'/admin/delete'+ucfirst(object)+'s',
+			'data': $('#admin_'+object+'s').serialize(),
+			'success': function(html) {
+				if (html == '1') {
+					window.location.reload();
+				} else {
+					new OpenEyes.Dialog.Alert({
+						content: "One or more "+object+"s could not be deleted as they are in use."
+					}).open();
+				}
+			}
+		});
 	});
 
 	handleButton($('#lookup_user'),function(e) {
@@ -81,7 +112,9 @@ $(document).ready(function() {
 				if (m) {
 					window.location.href = baseUrl+'/admin/editUser/'+m[0];
 				} else {
-					alert("User not found");
+					new OpenEyes.Dialog.Alert({
+						content: "User not found"
+					}).open();
 				}
 			}
 		});

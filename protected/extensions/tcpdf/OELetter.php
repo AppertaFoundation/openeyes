@@ -17,8 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class OELetter {
-
+class OELetter
+{
 	protected $to_address;
 	protected $from_address;
 	protected $replyto_address;
@@ -35,48 +35,56 @@ class OELetter {
 	 * @param string $from_address Address of sender, lines separated by \n
 	 * @param string $body (optional) Body of the letter in HTML format
 	 */
-	public function __construct($to_address = null, $from_address = null, $body = null) {
+	public function __construct($to_address = null, $from_address = null, $body = null)
+	{
 		$this->to_address = $to_address;
 		$this->from_address = $from_address;
 		$this->body_html = $body;
 	}
 
-	public function setBarcode($barcode) {
+	public function setBarcode($barcode)
+	{
 		$this->barcode = $barcode;
 	}
-	
-	public function setWatermark($watermark) {
+
+	public function setWatermark($watermark)
+	{
 		$this->watermark = $watermark;
 	}
 
-	public function setRollover($text) {
+	public function setRollover($text)
+	{
 		$this->rollover = $text;
 	}
-	
-	public function setHideDate($hide_date) {
+
+	public function setHideDate($hide_date)
+	{
 		$this->hide_date = $hide_date;
 	}
-	
+
 	/**
 	 * Add HTML to body
 	 * @param string $body HTML to be added to letter body
 	 */
-	public function addBody($body) {
+	public function addBody($body)
+	{
 		$this->body_html .= $body;
 	}
 
-	public function setFont($font_family, $font_size = null) {
+	public function setFont($font_family, $font_size = null)
+	{
 		$this->font_family = $font_family;
-		if($font_size) {
+		if ($font_size) {
 			$this->font_size = $font_size;
 		}
 	}
-	
+
 	/**
 	 * Render the letter into supplied PDF
 	 * @param OETCPDF $pdf
 	 */
-	public function render($pdf) {
+	public function render($pdf)
+	{
 		$pdf->startPageGroup();
 		$pdf->setBarcode($this->barcode);
 		$pdf->setWatermark($this->watermark);
@@ -84,20 +92,21 @@ class OELetter {
 		$pdf->AddPage();
 		$pdf->setFont($this->font_family, '', $this->font_size);
 		$pdf->setHeaderFont(array($this->font_family, '', $this->font_size));
-		if($this->to_address) {
+		if ($this->to_address) {
 			$pdf->ToAddress($this->to_address);
 		}
-		if($this->from_address) {
+		if ($this->from_address) {
 			$pdf->FromAddress($this->from_address, $this->hide_date);
 		}
-		if($this->replyto_address) {
+		if ($this->replyto_address) {
 			$pdf->ReplyToAddress("Please reply to: ".$this->replyto_address);
 		}
 		$pdf->moveToBodyStart();
 		$pdf->writeHTML($this->body_html, true, false, true, true, 'L');
 	}
 
-	public function addReplyToAddress($replyto_address) {
+	public function addReplyToAddress($replyto_address)
+	{
 		$this->replyto_address = $replyto_address;
 	}
 }

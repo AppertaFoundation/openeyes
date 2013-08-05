@@ -31,7 +31,7 @@
 					<div class="sortable">
 						<?php
 						foreach (ImportSource::model()->findAll(array('order'=>'name')) as $i => $source) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $source->id?>">
+							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $source->id?>">
 								<span class="column_checkbox"><input type="checkbox" name="source[]" value="<?php echo $source->id?>" class="sources" /></span>
 								<span class="column_name"><?php echo $source->name?>&nbsp;</span>
 							</li>
@@ -55,7 +55,9 @@
 		e.preventDefault();
 
 		if ($('input[type="checkbox"][name="source[]"]:checked').length == 0) {
-			alert("Please select the source(s) you wish to delete.");
+			new OpenEyes.Dialog.Alert({
+				content: "Please select the source(s) you wish to delete."
+			}).open();
 			return;
 		}
 
@@ -68,9 +70,13 @@
 					window.location.reload();
 				} else {
 					if ($('input[type="checkbox"][name="source[]"]:checked').length == 1) {
-						alert("The source you selected is in use and cannot be deleted.");
+						new OpenEyes.Dialog.Alert({
+							content: "The source you selected is in use and cannot be deleted."
+						}).open();
 					} else {
-						alert("The sources you selected are in use and cannot be deleted.");
+						new OpenEyes.Dialog.Alert({
+							content: "The sources you selected are in use and cannot be deleted."
+						}).open();
 					}
 				}
 			}

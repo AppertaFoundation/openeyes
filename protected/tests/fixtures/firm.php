@@ -38,4 +38,3 @@ return array(
 		'name' => 'Allan Firm'
 	),
 );
-

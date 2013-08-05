@@ -18,8 +18,28 @@
 
 $(document).ready(function(){
 	$collapsed = true;
-
-	$('button.addEvent').click(function(e) {
+	
+	var patientWarningSpan = $('.patientReminder .icons li.warning span');
+	$('.patientReminder .icons li.warning').hover(function() {
+			var infoWrap = $('<div class="warningHover"></div>');
+			infoWrap.appendTo('body');
+			infoWrap.html('<span style="display: inline-block">' + patientWarningSpan.html() + '</span>');
+			var width = patientWarningSpan.width()+5;
+			var offsetPos = $(this).offset();
+			var top = offsetPos.top + $(this).height() + 6;
+			var middle = offsetPos.left + $(this).width()/2;
+			var left = middle - infoWrap.width()/2 - 8;
+			
+			infoWrap.css({'position': 'absolute', 'top': top + "px", 'left': left + "px", "width": width});
+			infoWrap.fadeIn('fast');
+		},
+		function(e){
+			$('body > div:last').remove();
+		}
+	);
+		
+	
+	$('button.addEvent.enabled').click(function(e) {
 		var subspecialty_id = $(this).attr('data-attr-subspecialty-id');
 		var returnUrl = window.location.href.replace(/#$/,'')+'#addEvent';
 
@@ -29,7 +49,9 @@ $(document).ready(function(){
 			'data': 'subspecialty_id='+subspecialty_id+'&patient_id='+OE_patient_id+'&returnUrl='+returnUrl+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(html) {
 				if (html == "0") {
-					alert("Sorry, you cannot add an event to this episode because you are not in any firms with the same subspecialty.");
+					new OpenEyes.Dialog.Alert({
+						content: 'Sorry, you cannot add an event to this episode because you are not in any firms with the same subspecialty.'
+					}).open();
 				} else {
 					$('#user_panel').before(html);
 				}
@@ -54,7 +76,9 @@ $(document).ready(function(){
 			'url': baseUrl+'/patient/verifyAddNewEpisode?patient_id='+OE_patient_id,
 			'success': function(response) {
 				if (response != '1') {
-					alert("There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want.");
+					new OpenEyes.Dialog.Alert({
+						content: "There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want."
+					}).open();
 				} else {
 					$.ajax({
 						'type': 'POST',
@@ -81,7 +105,7 @@ $(document).ready(function(){
 		if ($(this).val() != '') {
 			var target = $('#' + $(this).attr('id').replace(/^dropDownTextSelection_/,''));
 			var currentVal = target.val();
-			
+
 			if($(this).hasClass('delimited')) {
 				var newText = $(this).val();
 			} else {
@@ -95,16 +119,18 @@ $(document).ready(function(){
 					newText = ', ' + newText.charAt(0).toLowerCase() + newText.slice(1);
 				}
 			} else if (currentVal.length == 0 && $(this).hasClass('delimited')) {
-				newText = newText.charAt(0).toUpperCase() + newText.slice(1)
+				newText = newText.charAt(0).toUpperCase() + newText.slice(1);
+			} else if ($(this).hasClass('delimited') && currentVal.slice(-1) != ' ') {
+				newText = ' ' + newText;
 			}
-			
+
 			target.val(currentVal + newText);
 			target.trigger('autosize');
 
 			$(this).val('');
 		}
 	});
-	
+
 });
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
@@ -171,12 +197,12 @@ WidgetSlider.prototype = {
 						dp += '0';
 						val += '0';
 					}
-					
+
 					while (dp.length > this.force_dp) {
 						dp = dp.replace(/.$/,'');
 						val = val.replace(/.$/,'');
 					}
-				} 
+				}
 			}
 
 			if (this.prefix_positive && parseFloat(val) >0) {

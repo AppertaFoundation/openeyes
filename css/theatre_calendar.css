@@ -39,7 +39,7 @@ h3 {
 	background: url('/images/blue_title_bar_wide.png') top left no-repeat;
 	width: 825px;
 	height: 17px;
-	top: 0px;
+	top: 0;
 	width: 100%;
 	padding: 8px;
 	font: bold 12pt Arial;
@@ -216,7 +216,7 @@ h3 {
 	text-align: center;
 	text-transform: uppercase;
 	font: 12pt Arial;
-	padding: 12px 0px;
+	padding: 12px 0;
 }
 
 span.button {
@@ -235,7 +235,7 @@ span.button input.form_button {
 	height: 33px; /* Height of button background height */
 	margin-left:0px; /* fixes margin issue with safari and chrome. no an issue for ie or ff. */
 	display:inline-block;
-	margin-top: 0px;
+	margin-top: 0;
 }
 
 input.form_button {
@@ -255,7 +255,7 @@ input.form_button[disabled] {
 }
 
 input.form_button[type="submit"]::-moz-focus-inner, input.form_button[type="button"]::-moz-focus-inner {
-	border: 0px;
+	border: 0;
 }
 
 input.form_button[type="submit"]:focus, input.form_button[type="button"]:focus{
@@ -306,7 +306,7 @@ div.shinybutton div {
 	min-width: 200px;
 	margin-right: 8px;
 	font-weight: bold;
-	font-family: Arial;
+	font-family: Arial, sans-serif;
 	text-align: center;
 	cursor: pointer;
 }

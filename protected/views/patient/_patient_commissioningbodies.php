@@ -16,15 +16,23 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-?><script language="JavaScript">
-	function eyedraw_init() 
-	{
-        	<?php echo $init?>
-	}
-	function eyedraw_submit()
-	{
-		<?php echo $submit?>
-	}
-</script>
-
+?>
+<?php if ($cbs_by_type = $this->patient->getDistinctCommissioningBodiesByType()) {
+	
+	foreach (CommissioningBodyType::model()->findAll() as $cbt) {
+		if (array_key_exists($cbt->id, $cbs_by_type)) { ?>
+			<div class="whiteBox patientDetails" id="commissioning-bodies">
+				<div class="patient_actions">
+					<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
+				</div>
+				<h4><?php echo $cbt->name ?>(s):</h4>
+				<?php foreach ($cbs_by_type[$cbt->id] as $cb) { ?>
+					<div class="data_row">
+						<div class="data_label"><?php echo $cb->getTypeShortName() ?>:</div>
+						<div class="data_value"><?php echo $cb->name ?></div>
+					</div>	
+			<?php }
+		}
+	}?>
+	</div>
+<?php } ?>

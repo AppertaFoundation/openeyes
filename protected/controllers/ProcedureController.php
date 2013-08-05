@@ -21,7 +21,8 @@ class ProcedureController extends BaseController
 {
 	public $layout='column2';
 
-	public function accessRules() {
+	public function accessRules()
+	{
 		return array(
 			// Level 2 or above can do anything
 			array('allow',
@@ -31,7 +32,7 @@ class ProcedureController extends BaseController
 			array('deny'),
 		);
 	}
-	
+
 	protected function beforeAction($action)
 	{
 		// Sample code to be used when RBAC is fully implemented.
@@ -128,7 +129,8 @@ class ProcedureController extends BaseController
 		}
 	}
 
-	public function actionBenefits($id) {
+	public function actionBenefits($id)
+	{
 		if (!Procedure::model()->findByPk($id)) {
 			throw new Exception("Unknown procedure: $id");
 		}
@@ -148,11 +150,12 @@ class ProcedureController extends BaseController
 		echo json_encode($benefits);
 	}
 
-	public function actionComplications($id) {
+	public function actionComplications($id)
+	{
 		if (!Procedure::model()->findByPk($id)) {
 			throw new Exception("Unknown procedure: $id");
 		}
-		
+
 		$complications = array();
 
 		foreach (Yii::app()->db->createCommand()
@@ -164,7 +167,7 @@ class ProcedureController extends BaseController
 			->queryAll() as $row) {
 			$complications[] = $row['name'];
 		}
-		
+
 		echo json_encode($complications);
 	}
 }

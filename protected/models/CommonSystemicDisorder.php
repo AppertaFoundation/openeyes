@@ -21,7 +21,7 @@
  * This is the model class for table "common_systemic_disorder".
  *
  * The followings are the available columns in table 'common_systemic_disorder':
- * @property string $id
+ * @property integer $id
  * @property string $disorder_id
  *
  * The followings are the available model relations:
@@ -104,7 +104,8 @@ class CommonSystemicDisorder extends BaseActiveRecord
 		));
 	}
 
-	public static function getList($firm) {
+	public static function getList($firm)
+	{
 		return CHtml::listData(Disorder::model()->findAll(array(
 				'condition' => 'specialty_id is null',
 				'join' => 'JOIN common_systemic_disorder cad ON cad.disorder_id = t.id',

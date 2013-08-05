@@ -10,10 +10,10 @@ class m130117_105611_multiple_specialties extends CDbMigration
 
 	public function down()
 	{
-		
+
 		$sup = $this->dbConnection->createCommand()->select('id')->from('specialty')->where('code=:code',array(':code'=>"SUP"))->queryRow();
 		$this->delete('subspecialty', 'specialty_id = :sup_id', array(':sup_id' => $sup['id']));
-		
+
 		$this->delete('specialty', 'code = :code', array(':code' => 'SUP'));
 		$this->dropColumn('specialty', 'medical');
 	}

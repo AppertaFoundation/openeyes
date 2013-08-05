@@ -4,20 +4,20 @@
  *
  * This file is part of OpenEyes.
  *
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU 
- * General Public License as published by the Free Software Foundation, either version 3 of the 
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License as published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file 
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file
  * titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * _____________________________________________________________________________
  * http://www.openeyes.org.uk   info@openeyes.org.uk
- * 
+ *
  * @author Bill Aylward <bill.aylward@openeyes.org.uk>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
  * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
@@ -26,7 +26,7 @@
  * @copyright Copyright (c) 2012 OpenEyes Foundation, Moorfields Eye hospital
  * @package Clinical
  */
- 
+
 /**
  * This is the template for generating migrations scripts for creating a new element's table.
  * - $this: the ModelCode object
@@ -43,21 +43,21 @@
  *
  * This file is part of OpenEyes.
  *
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU 
- * General Public License as published by the Free Software Foundation, either version 3 of the 
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License as published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file 
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file
  * titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * _____________________________________________________________________________
  * http://www.openeyes.org.uk   info@openeyes.org.uk
- * 
- * @author <?php echo $authorName; ?> <<?php echo $authorEmail; ?>> 
+ *
+ * @author <?php echo $authorName; ?> <<?php echo $authorEmail; ?>>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
  * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
  * @version 0.9
@@ -83,7 +83,7 @@ class <?php echo "$migrationName";?> extends CDbMigration
 				'created_date' => 'datetime NOT NULL',
 				'last_modified_user_id' => 'integer UNSIGNED NOT NULL DEFAULT "1"',
 				'last_modified_date' => 'datetime NOT NULL',
-				
+
 				/*
 				 * Enter your element table's fields here
 				 * In order to ensure RDMS independence, use the following datatypes
@@ -104,8 +104,7 @@ class <?php echo "$migrationName";?> extends CDbMigration
 				 */
 <?php
 	$lines = preg_split( '/\r\n|\r|\n/', "$elementFields" );
-	foreach($lines as $line)
-	{
+	foreach ($lines as $line) {
 		echo "
 				$line";
 	}
