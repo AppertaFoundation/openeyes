@@ -49,6 +49,8 @@
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.hoverIntent.min.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/print.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/buttons.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/util.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/dialogs.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.getUrlParam.js'))?>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>

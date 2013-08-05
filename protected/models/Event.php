@@ -33,6 +33,8 @@
  */
 class Event extends BaseActiveRecord
 {
+	private $defaultScopeDisabled = false;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className
@@ -58,10 +60,19 @@ class Event extends BaseActiveRecord
 
 	public function defaultScope()
 	{
+		if ($this->defaultScopeDisabled) {
+			return array();
+		}
+
 		$table_alias = $this->getTableAlias(false,false);
 		return array(
 			'condition' => $table_alias.'.deleted = 0',
 		);
+	}
+
+	public function disableDefaultScope() {
+		$this->defaultScopeDisabled = true;
+		return $this;
 	}
 
 	/**
