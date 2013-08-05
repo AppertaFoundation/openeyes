@@ -232,6 +232,35 @@ class Audit extends BaseActiveRecord
 			}
 		}
 
+		if (isset($properties['module'])) {
+			if ($et = EventType::model()->find('class_name=?',array($properties['module']))) {
+				$properties['event_type_id'] = $et->id;
+			} else {
+				if (!$module = AuditModule::model()->find('name=?',array($properties['module']))) {
+					$module = new AuditModule;
+					$module->name = $properties['module'];
+					if (!$module->save()) {
+						throw new Exception("Unable to create audit_module: ".print_r($module->getErrors(),true));
+					}
+				}
+				$properties['module_id'] = $module->id;
+			}
+
+			unset($properties['module']);
+		}
+
+		if (isset($properties['model'])) {
+			if (!$model = AuditModel::model()->find('name=?',array($properties['model']))) {
+				$model = new AuditModel;
+				$model->name = $properties['model'];
+				if (!$model->save()) {
+					throw new Exception("Unable to save audit_model: ".print_r($model->getErrors(),true));
+				}
+			}
+			$properties['model_id'] = $model->id;
+			unset($properties['model_id']);
+		}
+
 		foreach ($properties as $key => $value) {
 			$audit->{$key} = $value;
 		}
