@@ -54,6 +54,15 @@ class Practice extends BaseActiveRecord
 		return $model;
 	}
 
+	public function behaviors()
+	{
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
+
 	/**
 	 * @return string the associated database table name
 	 */
