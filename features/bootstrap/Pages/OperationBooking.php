@@ -31,9 +31,12 @@ class OperationBooking extends Page
         'decisionDate' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_decision_date_0']"),
         'operationComments' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_comments']"),
         'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
-        'scheduleNow' => array('xpath' => "//*[@id='et_schedulenow']")
-
-
+        'scheduleNow' => array('xpath' => "//*[@id='et_schedulenow']"),
+        'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
+        'availableTheatreSessionTime' => array('xpath' => "//*[@class='timeBlock available bookable']"),
+        'sessionComments' => array('xpath' => "//*[@id='Session_comments']"),
+        'sessionOperationComments' => array('xpath' => "//*[@id='operation_comments']"),
+        'confirmSlot' => array('xpath' => "//*[@id='confirm_slot']")
     );
 
     public function diagnosisEyes ($eye)
@@ -145,13 +148,28 @@ class OperationBooking extends Page
         $this->getElement('scheduleNow')->click();
     }
 
+    public function availableSlot ()
+    {
+        $this->getElement('availableTheatreSlotDate')->click();
+    }
+
+    public function availableSessionTime ()
+    {
+        $this->getElement('availableTheatreSessionTime')->click();
+    }
+
+    public function sessionComments ($sessionComments)
+    {
+        $this->getElement('sessionComments')->setValue($sessionComments);
+    }
+
+    public function sessionOperationComments ($opComments)
+    {
+        $this->getElement('sessionOperationComments')->setValue($opComments);
+    }
+
+    public function confirmSlot ()
+    {
+        $this->getElement('confirmSlot')->click();
+    }
 }
-
-
-
-
-//$theatreSessionDate = "//*[@class='available']";
-//$theatreSessionTime = "//*[@class='timeBlock available bookable']";
-//$sessionComments = "//textarea[@id='session_comments']";
-//$operationComments = "//textarea[@id='operation_comments']";
-//$confirmSlot = "//button[@id='confirm_slot']";

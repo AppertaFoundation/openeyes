@@ -12,8 +12,8 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     Then I select a firm of "1"
 
     Then I search for hospital number "<hospnumber>"
-    Then I search for patient name last name "<last>" and first name "<first>"
-    Then I search for NHS number "<nhs>"
+    #Then I search for patient name last name "<last>" and first name "<first>"
+    #Then I search for NHS number "<nhs>"
 
     Then I Add an Ophthalmic Diagnosis selection of "<OphtDiagnosis>"
     And I select that it affects eye "<eye>"

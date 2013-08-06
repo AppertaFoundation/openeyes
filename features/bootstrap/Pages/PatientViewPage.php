@@ -4,7 +4,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class PatientViewPage extends Page
 {
-    protected $path = "/site/patient/view";
+    protected $path = "/";
 
     protected $elements = array(
         'homeButton' => array('xpath' => "//*[@id='user_nav']//*[contains(text(), 'Home')]"),
@@ -14,7 +14,7 @@ class PatientViewPage extends Page
         'patientSummary' => array('xpath' => "//*[@id='patientID']//*[contains(text(), 'Patient Summary')]"),
         'userProfile' => array('xpath' => "//*[@id='user_id']/a"),
         'addOpthalmicDiagnosis' => array('xpath' => "//button[@id='btn-add_new_ophthalmic_diagnosis']"),
-        'selectOphthalmicDisorder' => array('xpath' => "//select[@id='diagnosisselection_ophthalmic_disorder_id']"),
+        'selectOphthalmicDisorder' => array('xpath' => "//*[@id='DiagnosisSelection_ophthalmic_disorder_id']"),
         'opthRightEye' => array('xpath' => "//input[@name='diagnosis_eye']"),
         'opthLeftEye' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[3]"),
         'opthBothEyes' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[2]"),

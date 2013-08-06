@@ -612,50 +612,69 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->scheduleNow();
+        $operationBooking->availableSlot();
     }
 
-//    /**
-//     * @Given /^I select an Available theatre slot date$/
-//     */
-//    public function iSelectAnAvailableTheatreSlotDate()
-//    {
-//        $this->clickLink(OperationBooking::$theatreSessionDate);
-//    }
-//
-//    /**
-//     * @Given /^I select an Available session time$/
-//     */
-//    public function iSelectAnAvailableSessionTime()
-//    {
-//        $this->clickLink(OperationBooking::$theatreSessionTime);
-//    }
-//
-//    /**
-//     * @Then /^I add Session comments of "([^"]*)"$/
-//     */
-//    public function iAddSessionCommentsOf($sessionComments)
-//    {
-//        //As this field has existing text we need a function to Clear Field
-//        $this->fillField(OperationBooking::$sessionComments, $sessionComments);
-//    }
-//
-//    /**
-//     * @Given /^I add Operation comments of "([^"]*)"$/
-//     */
-//    public function iAddOperationCommentsOf($opComments)
-//    {
-//        $this->fillField(OperationBooking::$operationComments, $opComments);
-//    }
-//
-//    /**
-//     * @Then /^I confirm the operation slot$/
-//     */
-//    public function iConfirmTheOperationSlot()
-//    {
-//        $this->clickLink(OperationBooking::$confirmSlot);
-//    }
-//
+    /**
+     * @Given /^I select an Available theatre slot date$/
+     */
+    public function iSelectAnAvailableTheatreSlotDate()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->availableSessionTime();
+    }
+
+    /**
+     * @Given /^I select an Available session time$/
+     */
+    public function iSelectAnAvailableSessionTime()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->availableSessionTime();
+    }
+
+    /**
+     * @Then /^I add Session comments of "([^"]*)"$/
+     */
+    public function iAddSessionCommentsOf($sessionComments)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->sessionComments($sessionComments);
+    }
+
+    /**
+     * @Given /^I add Operation comments of "([^"]*)"$/
+     */
+    public function iAddOperationCommentsOf($opComments)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->sessionOperationComments($opComments);
+    }
+
+    /**
+     * @Then /^I confirm the operation slot$/
+     */
+    public function iConfirmTheOperationSlot()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->confirmSlot();
+    }
+
 //    /**
 //     * @Then /^I select an Anaesthetist "([^"]*)"$/
 //     */
