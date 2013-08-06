@@ -260,7 +260,7 @@ $alert-padding-bottom: $alert-padding-top + emCalc(1px);
 
 // We use these to control text style.
 $alert-font-weight: normal;
-$alert-font-size: emCalc(14px);
+$alert-font-size: $default-font-size;
 $alert-font-color: #000;
 $alert-font-color-alt: #000;
 

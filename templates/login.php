@@ -12,7 +12,7 @@
 			<h1 class="badge">Please login</h1>
 			<div class="row">
 				<div class="large-11 small-11 small-centered large-centered column">
-					<form class="form login panel">
+					<form class="form panel login">
 						<div class="row">
 							<div class="small-4 column">
 								<label for="username" class="inline">Username:</label>

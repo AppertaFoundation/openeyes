@@ -1,28 +1,45 @@
-// Alert box
+// Alert boxes
 //
 // Markup:
-// <div data-alert class="alert-box radius {$modifiers}">
+// <div class="alert-box radius {$modifiers}">
 //     Alert! Some information the user needs to see, good or bad.
 //     <a href="#" class="close">&times;</a>
 //</div>
 //
-// .success             - Success information here
-// .alert               - Alert information here
-// .secondary           - Secondary information here
+// .success             - Success information
+// .alert               - Alert information
+// .alert.with-icon     - Alert information with icon
+// .secondary           - Secondary information
 //
 // Styleguide 11.1
 
 // Alert box variables
-$oe-alert-alert-bg-color: #ffe6b2 !default;
 $oe-alert-default-bg-color: #e2e2e2 !default;
+$oe-alert-alert-bg-color: #ffe6b2 !default;
+$oe-alert-alert-with-icon-bg-image: image-url("_elements/icons/box/warning.png");
+$oe-alert-alert-with-icon-min-height: 40px;
+$oe-alert-with-icon-padding-left: emCalc(60px);
 
 .alert-box {
     @include alert($oe-alert-default-bg-color);
     .close {
         @include alert-close;
     }
+    ul {
+        margin: 0;
+        line-height: 1.4;
+    }
+    li {
+        font-size: 1em;
+        list-style: none;
+    }
     &.radius {
         @include radius($alert-radius);
+    }
+    &.with-icon {
+        padding-left: $oe-alert-with-icon-padding-left;
+        background-repeat: no-repeat;
+        background-position: left top;
     }
     &.success {
         @include alert-style($success-color);
@@ -30,6 +47,10 @@ $oe-alert-default-bg-color: #e2e2e2 !default;
     &.alert {
         @include alert-style($oe-alert-alert-bg-color);
         border-color: $alert-border-color;
+        &.with-icon {
+            background-image: $oe-alert-alert-with-icon-bg-image;
+            min-height: $oe-alert-alert-with-icon-min-height;
+        }
     }
     &.secondary {
         @include alert-style($secondary-color);

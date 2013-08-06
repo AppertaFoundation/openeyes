@@ -1,5 +1,5 @@
-<div class="user-panel">
-	<ul class="inline-list user-navigation right">
+<div class="panel user">
+	<ul class="inline-list navigation user right">
 		<li class="selected"><a href="#">Home</a></li>
 		<li><a href="#">Theatre Diaries</a></li>
 		<li><a href="#">Partial bookings waiting list</a></li>

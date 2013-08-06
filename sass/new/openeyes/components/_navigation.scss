@@ -21,7 +21,7 @@
 // application navigation.
 //
 // Markup:
-// <ul class="inline-list user-navigation">
+// <ul class="inline-list navigation-user">
 //     <li class="selected"><a href="#">Home</a></li>
 //     <li><a href="#">Theatre Diaries</a></li>
 //     <li><a href="#">Partial bookings waiting list</a></li>
@@ -31,33 +31,35 @@
 // Styleguide 10.2
 
 // User panel navigation variables
-$oe-user-navigation-font-size: emCalc(13px) !default;
-$oe-user-navigation-item-margin: emCalc(4px) !default;
-$oe-user-navigation-anchor-bg-color: #cdd9e3 !default;
-$oe-user-navigation-anchor-padding: emCalc(8px) emCalc(5px) emCalc(2px) emCalc(5px) !default;
-$oe-user-navigation-anchor-hover-bg-color: white !default;
-$oe-user-navigation-anchor-selected-bg-color: #1e55c1 !default;
-$oe-user-navigation-anchor-selected-color: #fff !default;
+$oe-navigation-user-font-size: emCalc(13px) !default;
+$oe-navigation-user-item-margin: emCalc(4px) !default;
+$oe-navigation-user-anchor-bg-color: #cdd9e3 !default;
+$oe-navigation-user-anchor-padding: emCalc(8px) emCalc(5px) emCalc(2px) emCalc(5px) !default;
+$oe-navigation-user-anchor-hover-bg-color: white !default;
+$oe-navigation-user-anchor-selected-bg-color: #1e55c1 !default;
+$oe-navigation-user-anchor-selected-color: #fff !default;
 
-.user-navigation {
-    margin-left: 0;
-    margin-bottom: emCalc(8px);
-    li {
-        font-size: $oe-user-navigation-font-size;
-        margin: 0 0 0 $oe-user-navigation-item-margin;
-        &.selected {
-            a {
-                background: $oe-user-navigation-anchor-selected-bg-color;
-                color: $oe-user-navigation-anchor-selected-color;
+.navigation {
+    &.user {
+        margin-left: 0;
+        margin-bottom: emCalc(8px);
+        li {
+            font-size: $oe-navigation-user-font-size;
+            margin: 0 0 0 $oe-navigation-user-item-margin;
+            &.selected {
+                a {
+                    background: $oe-navigation-user-anchor-selected-bg-color;
+                    color: $oe-navigation-user-anchor-selected-color;
+                }
             }
         }
-    }
-    a {
-        background: $oe-user-navigation-anchor-bg-color;
-        padding: $oe-user-navigation-anchor-padding;
-        &:hover,
-        &:focus {
-            background: $oe-user-navigation-anchor-hover-bg-color;
+        a {
+            background: $oe-navigation-user-anchor-bg-color;
+            padding: $oe-navigation-user-anchor-padding;
+            &:hover,
+            &:focus {
+                background: $oe-navigation-user-anchor-hover-bg-color;
+            }
         }
     }
 }

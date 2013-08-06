@@ -1,14 +1,7 @@
 .box {
     @include border-radius($global-radius);
     margin: 20px 0;
-}
-
-.box-content {
-    @extend .box;
-    background: #dae6f1;
-}
-
-.box-grid {
-    @extend .box;
-    background: #fff;
+    &.content {
+        background: #dae6f1;
+    }
 }

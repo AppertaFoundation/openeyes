@@ -166,6 +166,23 @@ button, .button {
     }
 }
 
+// Button icons
+//
+// Buttons can have icons.
+//
+// Markup:
+// <button class="secondary small" type="button">
+//     <span class="icon icon-button-small icon-button-small-plus-sign"></span>
+//     Add episode
+// </button>
+//
+// Styleguide 9.2
+button, .button {
+    .icon-button-small {
+        margin: -6px 0px -5px -14px;
+    }
+}
+
 // Button groups
 //
 // Button can be grouped.
@@ -177,7 +194,7 @@ button, .button {
 //     <li><a href="#" class="small button">Button 3</a></li>
 // </ul>
 //
-// Styleguide 9.3
+// Styleguide 9.4
 .button-group {
     @include button-group-container;
     & > li {

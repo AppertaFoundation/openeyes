@@ -7,8 +7,15 @@
 //
 // .clearfix             - Clear any floated child elements. This class must be added to a container element.
 //
-// Styleguide 18.1
+// Styleguide 19.1
 
 .clearfix {
     @include clearfix;
+}
+
+.reader {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    overflow: hidden;
 }

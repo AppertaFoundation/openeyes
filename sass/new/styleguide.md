@@ -54,7 +54,7 @@ the following conventions if you want to make changes to the stylesheet.
 * Components should be decoupled from each other.
 * Never use inline styles, this is a slippery slope and must be avoided.
 * Never use `!important`, this is a slippery slope and must be avoided.
-* Never use ID's for styling.
+* Never use ID's for styling. This avoids specificity issues.
 * Separate rules with new lines, eg:
 
         .grid {
@@ -63,11 +63,11 @@ the following conventions if you want to make changes to the stylesheet.
         }
 
 * Lower-case classnames, words separated by a hyphen. (eg `.button-dropdown`).
-* Always suffix the class name with variations. For example, if you are creating
-  a .box class with a 'content' variation, the naming convention would be:
-  `.box-content` instead of `.content-box`
+* Use an object orientated approach. Don't name your subclasses with
+  a prefix of the class you're extending. For example, if you're adding a secondary
+  button style, the class list will be: 'button secondary' and NOT 'button button-secondary'.
 * Always use semantic and descriptive classnames that describe the content, NOT the style.
-  (eg, `.button-primary`, not `.button-blue`)
+  (eg, `.button.primary`, not `.button.blue`)
 * Use 3 character hexadecimal notation where possible (eg `#000`).
 * Use lower-case characters in hexadecimal notation (eg `#3fa522`).
 * Avoid qualifying class names with type selectors (eg, don't do this: `div.myclass`).

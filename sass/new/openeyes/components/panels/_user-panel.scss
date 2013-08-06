@@ -4,8 +4,8 @@
 // application navigation.
 //
 // Markup:
-// <div class="user-panel radius">
-//     <ul class="inline-list user-navigation right">
+// <div class="panel user radius">
+//     <ul class="inline-list navigation user right">
 //         <li><a href="#">Home</a></li>
 //         <li><a href="#">Theatre Diaries</a></li>
 //         <li><a href="#">Partial bookings waiting list</a></li>
@@ -31,32 +31,34 @@
 // Styleguide 15.2
 
 // User panel variables
-$oe-user-panel-bg-color: #dae6f1 !default;
-$oe-user-panel-bg-image: image-url("_elements/icons/user/idcard_bg.png") !default;
-$oe-user-panel-bg-position: left bottom !default;
-$oe-user-panel-bg-repeat: no-repeat !default;
-$oe-user-panel-font-size: emCalc(13px) !default;
-$oe-user-panel-padding: 0 emCalc(10px) emCalc(5px) emCalc(10px) !default;
+$oe-panel-user-bg-color: #dae6f1 !default;
+$oe-panel-user-bg-image: image-url("_elements/icons/user/idcard_bg.png") !default;
+$oe-panel-user-bg-position: left bottom !default;
+$oe-panel-user-bg-repeat: no-repeat !default;
+$oe-panel-user-font-size: emCalc(13px) !default;
+$oe-panel-user-padding: 0 emCalc(10px) emCalc(5px) emCalc(10px) !default;
 
-.user-panel {
-    @include clearfix;
-    @include panel($oe-user-panel-bg-color, $oe-user-panel-padding);
-    @include border-radius($global-radius);
-    background: {
-        image: $oe-user-panel-bg-image;
-        repeat: $oe-user-panel-bg-repeat;
-        position: $oe-user-panel-bg-position;
-    }
-    margin: 0;
-    @media #{$small} {
-        border-top: 0;
-        @include border-radius(0 0 $global-radius $global-radius);
-    }
-    .user-id, .user-firm {
-        font-size: $oe-user-panel-font-size;
-        min-height: $oe-user-panel-font-size * 2;
-    }
-    .row {
-        clear: both;
+.panel {
+    &.user {
+        @include clearfix;
+        @include panel($oe-panel-user-bg-color, $oe-panel-user-padding);
+        @include border-radius($global-radius);
+        background: {
+            image: $oe-panel-user-bg-image;
+            repeat: $oe-panel-user-bg-repeat;
+            position: $oe-panel-user-bg-position;
+        }
+        margin: 0;
+        @media #{$small} {
+            border-top: 0;
+            @include border-radius(0 0 $global-radius $global-radius);
+        }
+        .user-id, .user-firm {
+            font-size: $oe-panel-user-font-size;
+            min-height: $oe-panel-user-font-size * 2;
+        }
+        .row {
+            clear: both;
+        }
     }
 }

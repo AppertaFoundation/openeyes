@@ -11,11 +11,11 @@
 		<div class="content">
 			<h1 class="badge">Theatre Diaries</h1>
 
-			<div class="box-content">
+			<div class="box content">
 
-				<div class="panel actions-panel row">
+				<div class="panel panel actions row">
 					<div class="large-12 column">
-						<div class="actions-label">
+						<div class="label">
 							Use the filters below to view Theatre schedules:
 						</div>
 						<div class="button-bar">

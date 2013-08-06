@@ -1,32 +1,70 @@
 .icon {
     @include hide-text;
     display: inline-block;
+    vertical-align: middle;
 }
 
-// Alerts icons
+// Alert icons
 //
-// All the alerts icons. Please note: you will have to add the base '.icon' class
-// as well as the '.icon-alerts' class to the HTML element class list to make
-// use of the following alerts icons.
+// All the alert icons. Please note: you will have to add the base '.icon' class
+// as well as the '.icon-alert' class to the HTML element class list to make
+// use of the following alert icons.
 //
 // Markup:
-// <span class="icon icon-alerts {$modifiers}">Description</span>
+// <span class="icon icon-alert {$modifiers}">Description</span>
 //
-// .icon-alerts                   - The base icon-alerts class
-// .icon-alerts-booked_user       - User
-// .icon-alerts-comment           - Comment
-// .icon-alerts-confirmed         - Confirmed
-// .icon-alerts-consultant        - Consultant
-// .icon-alerts-female            - Female
-// .icon-alerts-female_trans      - Female transparent
-// .icon-alerts-help              - Help
-// .icon-alerts-images            - Images
-// .icon-alerts-male              - Male
-// .icon-alerts-male_trans        - Make transparent
-// .icon-alerts-overnight         - Overnight
-// .icon-alerts-unconfirmed       - Unconfirmed
+// .icon-alert                   - The base icon-alert class
+// .icon-alert-booked_user       - User
+// .icon-alert-comment           - Comment
+// .icon-alert-confirmed         - Confirmed
+// .icon-alert-consultant        - Consultant
+// .icon-alert-female            - Female
+// .icon-alert-female_trans      - Female transparent
+// .icon-alert-help              - Help
+// .icon-alert-images            - Images
+// .icon-alert-male              - Male
+// .icon-alert-male_trans        - Make transparent
+// .icon-alert-overnight         - Overnight
+// .icon-alert-unconfirmed       - Unconfirmed
 //
 // Styleguide 14.1
 
-// Alerts icons
-@include sprite("_elements/icons/alerts/*.png", "icon-alerts", 17px, 17px);
+// Alert icons
+@include sprite("_elements/icons/alerts/*.png", "icon-alert", 17px, 17px);
+
+// Large button icons
+//
+// All the button icons. Please note: you will have to add the base '.icon' class
+// as well as the '.icon-button-large ' class to the HTML element class list to make
+// use of the following button icons.
+//
+// Markup:
+// <span class="icon icon-button-large {$modifiers}">Description</span>
+//
+// .icon-button-large                   - The base icon-button-large class
+// .icon-button-large-cross-sign        - Cross icon
+// .icon-button-large-left-arrow        - Left arrow
+// .icon-button-large-right-arrow       - Right arrow
+//
+// Styleguide 14.2
+
+// Large button icons
+@include sprite("_elements/btns/large/*.png", "icon-button-large", 34px, 32px);
+
+// Small button icons
+//
+// All the button icons. Please note: you will have to add the base '.icon' class
+// as well as the '.icon-button-small' class to the HTML element class list to make
+// use of the following button icons.
+//
+// Markup:
+// <span class="icon icon-button-small {$modifiers}">Description</span>
+//
+// .icon-button-small                  - The base icon-button-small class
+// .icon-button-small-plus-sign        - Plus icon
+// .icon-button-small-search           - Search icon
+//
+// Styleguide 14.3
+
+// Small button icons
+@include sprite("_elements/btns/small/*.png", "icon-button-small", 27px, 24px);

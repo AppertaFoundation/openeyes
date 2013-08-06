@@ -23,7 +23,7 @@
 			</div>
 
 			<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
-				<form class="form search panel">
+				<form class="form panel search">
 					<div class="row">
 						<div class="large-9 medium-8 small-7 column">
 							<input type="text" id="search" placeholder="Enter search...">
