@@ -3675,7 +3675,7 @@ button .icon-button-small, .button .icon-button-small {
 }
 
 /* line 1, ../sass/new/openeyes/components/_icons.scss */
-.icon {
+[class*="icon-"] {
   overflow: hidden;
   text-indent: -9999px;
   display: inline-block;
@@ -3683,7 +3683,7 @@ button .icon-button-small, .button .icon-button-small {
 }
 
 /* line 19, ../sass/new/openeyes/_mixins.scss */
-.icon-alert {
+[class*="icon-alert-"] {
   background: url('../img/new/sprites/_elements/icons/alerts-sd10243233c.png') no-repeat;
   width: 17px;
   height: 17px;
@@ -3755,7 +3755,7 @@ button .icon-button-small, .button .icon-button-small {
 }
 
 /* line 19, ../sass/new/openeyes/_mixins.scss */
-.icon-button-large {
+[class*="icon-button-large-"] {
   background: url('../img/new/sprites/_elements/btns/large-s4cdcd4dc53.png') no-repeat;
   width: 34px;
   height: 32px;
@@ -3777,7 +3777,7 @@ button .icon-button-small, .button .icon-button-small {
 }
 
 /* line 19, ../sass/new/openeyes/_mixins.scss */
-.icon-button-small {
+[class*="icon-button-small-"] {
   background: url('../img/new/sprites/_elements/btns/small-sc294ae73a4.png') no-repeat;
   width: 27px;
   height: 24px;

@@ -1,4 +1,4 @@
-.icon {
+[class*="icon-"] {
     @include hide-text;
     display: inline-block;
     vertical-align: middle;
@@ -6,14 +6,11 @@
 
 // Alert icons
 //
-// All the alert icons. Please note: you will have to add the base '.icon' class
-// as well as the '.icon-alert' class to the HTML element class list to make
-// use of the following alert icons.
+// All the alert icons.
 //
 // Markup:
-// <span class="icon icon-alert {$modifiers}">Description</span>
+// <span class="{$modifiers}">Description</span>
 //
-// .icon-alert                   - The base icon-alert class
 // .icon-alert-booked_user       - User
 // .icon-alert-comment           - Comment
 // .icon-alert-confirmed         - Confirmed
@@ -34,14 +31,11 @@
 
 // Large button icons
 //
-// All the button icons. Please note: you will have to add the base '.icon' class
-// as well as the '.icon-button-large ' class to the HTML element class list to make
-// use of the following button icons.
+// All the large button icons.
 //
 // Markup:
-// <span class="icon icon-button-large {$modifiers}">Description</span>
+// <span class="{$modifiers}">Description</span>
 //
-// .icon-button-large                   - The base icon-button-large class
 // .icon-button-large-cross-sign        - Cross icon
 // .icon-button-large-left-arrow        - Left arrow
 // .icon-button-large-right-arrow       - Right arrow
@@ -53,14 +47,11 @@
 
 // Small button icons
 //
-// All the button icons. Please note: you will have to add the base '.icon' class
-// as well as the '.icon-button-small' class to the HTML element class list to make
-// use of the following button icons.
+// All the small button icons.
 //
 // Markup:
-// <span class="icon icon-button-small {$modifiers}">Description</span>
+// <span class="{$modifiers}">Description</span>
 //
-// .icon-button-small                  - The base icon-button-small class
 // .icon-button-small-plus-sign        - Plus icon
 // .icon-button-small-search           - Search icon
 //

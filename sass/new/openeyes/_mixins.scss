@@ -16,7 +16,7 @@
 
     $icons: sprite-map($icons_path);
 
-    .#{$class} {
+    [class*="#{$class}-"] {
         background: $icons no-repeat;
         width: $width;
         height: $height;
