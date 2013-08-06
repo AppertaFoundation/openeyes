@@ -23,19 +23,29 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
   // Set the jQuery UI Dialog default options.
   $.extend($.ui.dialog.prototype.options, {
-  	dialogClass: 'dialog',
+    dialogClass: 'dialog',
     show: 'fade'
   });
 
   var EventEmitter = OpenEyes.Util.EventEmitter;
 
   /**
-   * Dialog
+   * Dialog constructor.
    * @name Dialog
    * @constructor
    * @example
    * var dialog = new OpenEyes.Dialog({
+   *   title: 'Title here',
    *   content: 'Here is some content.'
+   * });
+   * dialog.on('open', function() {
+   *   console.log('The dialog is now open');
+   * });
+   * dialog.on('close', function() {
+   *   console.log('The dialog is now closed.');
+   * });
+   * dialog.on('destroy', function() {
+   *   console.log('The dialog has been destroyed.');
    * });
    * dialog.open();
    */
@@ -80,6 +90,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * instance on the container.
    * @name Dialog#create
    * @method
+   * @private
    */
   Dialog.prototype.create = function() {
     this.content = $('<div>' + (this.options.content || '') + '</div>');
@@ -91,6 +102,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * Binds common dialog event handlers.
    * @name Dialog#create
    * @method
+   * @private
    */
   Dialog.prototype.bindEvents = function() {
     this.content.on({
@@ -104,6 +116,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * returns the HTML.
    * @name Dialog#compileTemplate
    * @method
+   * @private
    * @param {object} options - An options object container the template selector and data.
    * @returns {string}
    */
@@ -122,6 +135,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * Sets a 'loading' message and retrieves the dialog content via AJAX.
    * @name Dialog#loadContent
    * @method
+   * @private
    */
   Dialog.prototype.loadContent = function() {
     this.content.html('Loading...');
@@ -132,6 +146,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * When loading content, if the request fails, then show an error message.
    * @name Dialog#showContentLoadError
    * @method
+   * @private
    */
   Dialog.prototype.showContentLoadError = function() {
     this.content.html('Sorry, there was an error retrieving the content. Please try again.');
@@ -178,6 +193,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
   Dialog.prototype.destroy = function() {
     this.instance.destroy();
     this.content.remove();
+    this.emit('destroy');
   };
 
   /** Event handlers */
@@ -224,9 +240,11 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
   var Dialog = OpenEyes.Dialog;
 
   /**
-   * AlertDialog
+   * AlertDialog constructor. The AlertDialog extends the base Dialog and provides
+   * an 'Ok' button for the user to click on.
    * @name AlertDialog
    * @constructor
+   * @extends Dialog
    * @example
    * var alert = new OpenEyes.Dialog.Alert({
    *   content: 'Here is some content.'
@@ -262,6 +280,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * and return the alert dialog template.
    * @name AlertDialog#getContent
    * @method
+   * @private
    * @param {string} content - The main alert dialog content to display.
    * @returns {string}
    */
@@ -283,6 +302,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * Bind events
    * @name AlertDialog#bindEvents
    * @method
+   * @private
    */
   AlertDialog.prototype.bindEvents = function() {
     Dialog.prototype.bindEvents.apply(this, arguments);
