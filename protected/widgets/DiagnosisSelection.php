@@ -83,6 +83,10 @@ class DiagnosisSelection extends BaseCWidget
 		if ($this->layout) {
 			$view .= '_'.$this->layout;
 		}
+		if ($this->restrict == 'systemic') {
+			$this->code = $this->restrict;
+		}
+
 		parent::render($view, $data, $return);
 	}
 }
