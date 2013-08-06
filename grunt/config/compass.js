@@ -12,8 +12,8 @@ module.exports = {
     options: {
       sassDir: 'sass/new',
       cssDir: 'css',
-      imagesDir: 'img',
-      generatedImagesDir: 'img/sprites',
+      imagesDir: 'img/new',
+      generatedImagesDir: 'img/new/sprites',
       outputStyle: 'expanded',
       relativeAssets: true,
       httpPath: '',
