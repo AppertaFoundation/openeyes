@@ -254,10 +254,9 @@ class PatientController extends BaseController
 				$message .= 'found for your search.';
 			}
 			Yii::app()->user->setFlash('warning.no-results', $message);
-			error_log('about to redirect:' . Yii::app()->homeUrl);
+			
 			$this->redirect(Yii::app()->homeUrl);
 			
-			error_log('should have redirectred');
 		} elseif ($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
 				$this->redirect(array('patient/view/' . $item->id));
