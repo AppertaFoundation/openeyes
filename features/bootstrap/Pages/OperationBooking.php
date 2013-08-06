@@ -4,34 +4,154 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class OperationBooking extends Page
 {
-    public static  $diagnosisRightEye = "//input[@id='element_ophtroperationbooking_diagnosis_eye_id_2']";
-    public static  $diagnosisLeftEye = "//input[@id='element_ophtroperationbooking_diagnosis_eye_id_1']";
-    public static  $diagnosisBothEyes = "//input[@id='element_ophtroperationbooking_diagnosis_eye_id_3']";
-    public static  $operationDiagnosis = "//select[@id='element_ophtroperationbooking_diagnosis_disorder_id']";
-    public static  $operationProcedure = "//*[@id='select_procedure_id_procs']";
-    public static  $operationRightEye = "//input[@id='Element_OphTrOperationbooking_Operation_eye_id_2']";
-    public static  $operationBothEyes = "//input[@id='Element_OphTrOperationbooking_Operation_eye_id_3']";
-    public static  $operationLeftEye = "//input[@id='Element_OphTrOperationbooking_Operation_eye_id_1']";
-    public static  $consultantYes = "//input[@id='element_ophtroperationbooking_operation_consultant_required_1']";
-    public static  $consultantNo = "//input[@id='element_ophtroperationbooking_operation_consultant_required_0']";
-    public static  $anaestheticTopical= "//input[@id='element_ophtroperationbooking_operation_anaesthetic_type_id_1']";
-    public static  $anaestheticLac= "//input[@id='element_ophtroperationbooking_operation_anaesthetic_type_id_2']";
-    public static  $anaestheticLa= "//input[@id='element_ophtroperationbooking_operation_anaesthetic_type_id_3']";
-    public static  $anaestheticLas= "//input[@id='element_ophtroperationbooking_operation_anaesthetic_type_id_4']";
-    public static  $anaestheticGa= "//input[@id='element_ophtroperationbooking_operation_anaesthetic_type_id_5']";
-    public static  $postOpStayYes = "//input[@id='element_ophtroperationbooking_operation_overnight_stay_1']";
-    public static  $postOpStayNo = "//input[@id='element_ophtroperationbooking_operation_overnight_stay_1']";
-    public static  $operationSite = "//select[@id='element_ophtroperationbooking_operation_site_id']";
-    public static  $routineOperation = "//input[@id='element_ophtroperationbooking_operation_priority_id_1']";
-    public static  $urgentOperation = "//input[@id='element_ophtroperationbooking_operation_priority_id_2']";
-    public static  $decisionOpen = "//input[@id='element_ophtroperationbooking_operation_decision_date_0']";
-    public static  $addComments = "//textarea[@id='element_ophtroperationbooking_operation_comments']";
-    public static  $scheduleLater = "//button[@id='et_schedulelater']";
-    public static  $scheduleAndSaveNow = "//button[@id='et_schedulenow']";
-    public static  $scheduleNowButton = "//a[@id='btn_schedule-now']/span";
-    public static  $theatreSessionDate = "//*[@class='available']";
-    public static  $theatreSessionTime = "//*[@class='timeBlock available bookable']";
-    public static  $sessionComments = "//textarea[@id='session_comments']";
-    public static  $operationComments = "//textarea[@id='operation_comments']";
-    public static  $confirmSlot = "//button[@id='confirm_slot']";
+    protected $path = "/site/OphTrOperationbooking/Default/create?patient_id=19434";//TO CODE - default view and patient ID
+
+    protected $elements = array(
+
+        'diagnosisRightEye' => array('xpath'=>"//input[@id='Element_OphTrOperationbooking_Diagnosis_eye_id_2']"),
+        'diagnosisLeftEye' => array('xpath' => "//input[@id='Element_OphTrOperationbooking_Diagnosis_eye_id_1']"),
+        'diagnosisBothEyes' => array('xpath' => "//input[@id='Element_OphTrOperationbooking_Diagnosis_eye_id_3']"),
+        'operationDiagnosis' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Diagnosis_disorder_id']"),
+        'operationRightEye' => array('xpath' => "//input[@id='Element_OphTrOperationbooking_Operation_eye_id_2']"),
+        'operationBothEyes' => array('xpath' => "//input[@id='Element_OphTrOperationbooking_Operation_eye_id_3']"),
+        'operationLeftEye' => array('xpath' => "//input[@id='Element_OphTrOperationbooking_Operation_eye_id_1']"),
+        'operationProcedure' => array('xpath' => "//*[@id='select_procedure_id_procs']"),
+        'consultantYes' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_consultant_required_1']"),
+        'consultantNo' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_consultant_required_0']"),
+        'anaestheticTopical' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_1']"),
+        'anaestheticLa' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_3']"),
+        'anaestheticLac' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_2']"),
+        'anaestheticLas' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_4']"),
+        'anaestheticGa' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_anaesthetic_type_id_5']"),
+        'postOpStatYes' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_1']"),
+        'postOpStatNo' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_overnight_stay_0']"),
+        'operationSiteID' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_site_id']"),
+        'priorityUrgent' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_priority_id_2']"),
+        'priorityRoutine' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_priority_id_1']"),
+        'decisionDate' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_decision_date_0']"),
+        'operationComments' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_comments']"),
+        'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
+        'scheduleNow' => array('xpath' => "//*[@id='et_schedulenow']")
+
+
+    );
+
+    public function diagnosisEyes ($eye)
+    {
+        if ($eye==='Right') {
+        $this->getElement('diagnosisRightEye')->click();
+    }
+        if ($eye==='Both') {
+            $this->getElement('diagnosisBothEyes')->click();
+    }
+        if ($eye==='Left') {
+            $this->getElement('diagnosisLeftEye')->click();
+    }
+    }
+
+    public function diagnosis ($diagnosis)
+    {
+        $this->getElement('operationDiagnosis')->setValue($diagnosis);
+    }
+
+    public function operationEyes ($opEyes)
+    {
+        if ($opEyes==='Right') {
+            $this->getElement('operationRightEye')->click();
+    }
+        if ($opEyes==='Both') {
+            $this->getElement('operationBothEyes')->click();
+    }
+        if ($opEyes==='Left') {
+            $this->getElement('operationLeftEye')->click();
+    }
 }
+    public function procedure ($procedure)
+    {
+        $this->getElement('operationProcedure')->setValue($procedure);
+    }
+
+    public function consultantYes ()
+    {
+        $this->getElement('consultantYes')->click();
+    }
+
+    public function consultantNo ()
+    {
+        $this->getElement('consultantNo')->click();
+    }
+
+    public function selectAnaesthetic ($type)
+    {
+        if ($type==='Topical') {
+            $this->getElement('anaestheticTopical')->click();
+        }
+        if ($type==='LA') {
+            $this->getElement('anaestheticLa')->click();
+        }
+        if ($type==='LAC') {
+            $this->getElement('anaestheticLac')->click();
+        }
+        if ($type==='LAS') {
+            $this->getElement('anaestheticLas')->click();
+        }
+        if ($type==='GA') {
+            $this->getElement('anaestheticGa')->click();
+        }
+    }
+
+    public function postOpStayYes ()
+    {
+        $this->getElement('postOpStatYes')->click();
+    }
+
+    public function postOpStayNo ()
+    {
+        $this->getElement('postOpStatNo')->click();
+    }
+
+    public function operationSiteID ($site)
+    {
+        $this->getElement('operationSiteID')->selectOption($site);
+    }
+
+    public function priorityRoutine ()
+    {
+        $this->getElement('priorityRoutine')->click();
+    }
+
+    public function priorityUrgent ()
+    {
+        $this->getElement('priorityUrgent')->click();
+    }
+
+    public function decisionDate ($date)
+    {
+        $this->getElement('decisionDate')->selectOption($date);
+    }
+
+    public function operationComments ($comments)
+    {
+        $this->getElement('operationComments')->setValue($comments);
+    }
+
+    public function scheduleLater ()
+    {
+        $this->getElement('scheduleLater')->click();
+    }
+
+    public function scheduleNow ()
+    {
+        $this->getElement('scheduleNow')->click();
+    }
+
+}
+
+
+
+
+//$theatreSessionDate = "//*[@class='available']";
+//$theatreSessionTime = "//*[@class='timeBlock available bookable']";
+//$sessionComments = "//textarea[@id='session_comments']";
+//$operationComments = "//textarea[@id='operation_comments']";
+//$confirmSlot = "//button[@id='confirm_slot']";

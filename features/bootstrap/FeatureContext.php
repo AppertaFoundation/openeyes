@@ -420,166 +420,201 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $patientView->addFamilyHistory($relative, $side, $condition, $comments);
     }
 
-//
-//    /**
-//     * @Then /^I select Diagnosis Eyes of "([^"]*)"$/
-//     */
-//    public function iSelectDiagnosisEyesOf($eye)
-//    {
-//        if ($eye==="Right") {
-//            $this->clickLink(OperationBooking::$diagnosisRightEye);
-//        }
-//        if ($eye==="Both") {
-//            $this->clickLink(OperationBooking::$diagnosisBothEyes);
-//        }
-//        if ($eye==="Left") {
-//            $this->clickLink(OperationBooking::$diagnosisLeftEye);
-//        }
-//    }
-//
-//    /**
-//     * @Given /^I select a Diagnosis of "([^"]*)"$/
-//     */
-//    public function iSelectADiagnosisOf($diagnosis)
-//    {
-//          $this->selectOption(OperationBooking::$operationDiagnosis, $diagnosis);
-//    }
-//
-//    /**
-//     * @Then /^I select Operation Eyes of "([^"]*)"$/
-//     */
-//    public function iSelectOperationEyesOf($opEyes)
-//    {
-//        if ($opEyes==="Right") {
-//            $this->clickLink(OperationBooking::$operationRightEye);
-//        }
-//        if ($opEyes==="Both") {
-//            $this->clickLink(OperationBooking::$operationBothEyes);
-//        }
-//        if ($opEyes==="Left") {
-//            $this->clickLink(OperationBooking::$operationLeftEye);
-//        }
-//    }
-//
-//    /**
-//     * @Given /^I select a Procedure of "([^"]*)"$/
-//     */
-//    public function iSelectAProcedureOf($procedure)
-//    {
-//        $this->selectOption(OperationBooking::$operationProcedure, $procedure);
-//    }
-//
-//    /**
-//     * @Then /^I select Yes to Consultant required$/
-//     */
-//    public function iSelectYesToConsultantRequired()
-//    {
-//        $this->clickLink(OperationBooking::$consultantYes);
-//    }
-//
-//    /**
-//     * @Then /^I select No to Consultant required$/
-//     */
-//    public function iSelectNoToConsultantRequired()
-//    {
-//        $this->clickLink(OperationBooking::$consultantNo);
-//    }
-//
-//    /**
-//     * @Given /^I select a Anaesthetic type "([^"]*)"$/
-//     */
-//    public function iSelectAAnaestheticType($type)
-//    {
-//        if ($type==="Topical") {
-//            $this->clickLink(OperationBooking::$anaestheticTopical);
-//        }
-//        if ($type==="LA") {
-//            $this->clickLink(OperationBooking::$anaestheticLa);
-//        }
-//        if ($type==="LAC") {
-//            $this->clickLink(OperationBooking::$anaestheticLac);
-//        }
-//        if ($type==="LAS") {
-//            $this->clickLink(OperationBooking::$anaestheticLas);
-//        }
-//        if ($type==="GA") {
-//            $this->clickLink(OperationBooking::$anaestheticGa);
-//        }
-//    }
-//
-//    /**
-//     * @Then /^I select Yes to a Post Operative Stay$/
-//     */
-//    public function iSelectYesToAPostOperativeStay()
-//    {
-//        $this->clickLink(OperationBooking::$postOpStayYes);
-//    }
-//
-//    /**
-//     * @Then /^I select No to a Post Operative Stay$/
-//     */
-//    public function iSelectNoToAPostOperativeStay()
-//    {
-//        $this->clickLink(OperationBooking::$postOpStayNo);
-//    }
-//
-//    /**
-//     * @Given /^I select a Operation Site of "([^"]*)"$/
-//     */
-//    public function iSelectAOperationSiteOf($site)
-//    {
-//        $this->selectOption(OperationBooking::$operationSite, $site);
-//    }
-//
-//    /**
-//     * @Then /^I select a Priority of Routine$/
-//     */
-//    public function iSelectAPriorityOfRoutine()
-//    {
-//        $this->clickLink(OperationBooking::$routineOperation);
-//    }
-//
-//    /**
-//     * @Then /^I select a Priority of Urgent$/
-//     */
-//    public function iSelectAPriorityOfUrgent()
-//    {
-//        $this->clickLink(OperationBooking::$urgentOperation);
-//    }
-//
-//    /**
-//     * @Given /^I select a decision date of "([^"]*)"$/
-//     */
-//    public function iSelectADecisionDateOf($dateFrom)
-//    {
-//        $this->clickLink(OperationBooking::$decisionOpen);
-//        $this->clickLink(PatientViewPage::passDateFromTable($dateFrom));
-//    }
-//
-//    /**
-//     * @Then /^I add comments of "([^"]*)"$/
-//     */
-//    public function iAddCommentsOf($comments)
-//    {
-//        $this->fillField(OperationBooking::$addComments, $comments);
-//    }
-//
-//    /**
-//     * @Then /^I select Save and Schedule later$/
-//     */
-//    public function iSelectSaveAndScheduleLater()
-//    {
-//        $this->clickLink(OperationBooking::$scheduleLater);
-//    }
-//
-//    /**
-//     * @Then /^I select Save and Schedule now$/
-//     */
-//    public function iSelectSaveAndScheduleNow()
-//    {
-//        $this->clickLink(OperationBooking::$scheduleAndSaveNow);
-//    }
-//
+
+    /**
+     * @Then /^I select Diagnosis Eyes of "([^"]*)"$/
+     */
+    public function iSelectDiagnosisEyesOf($eye)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->diagnosisEyes($eye);
+    }
+
+
+    /**
+     * @Given /^I select a Diagnosis of "([^"]*)"$/
+     */
+    public function iSelectADiagnosisOf($diagnosis)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->diagnosis($diagnosis);
+    }
+
+    /**
+     * @Then /^I select Operation Eyes of "([^"]*)"$/
+     */
+    public function iSelectOperationEyesOf($opEyes)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->operationEyes($opEyes);
+    }
+
+
+    /**
+     * @Given /^I select a Procedure of "([^"]*)"$/
+     */
+    public function iSelectAProcedureOf($procedure)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->procedure($procedure);
+    }
+
+    /**
+     * @Then /^I select Yes to Consultant required$/
+     */
+    public function iSelectYesToConsultantRequired()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->consultantYes();
+    }
+
+    /**
+     * @Then /^I select No to Consultant required$/
+     */
+    public function iSelectNoToConsultantRequired()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->consultantNo();
+    }
+
+    /**
+     * @Given /^I select a Anaesthetic type "([^"]*)"$/
+     */
+    public function iSelectAAnaestheticType($type)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->selectAnaesthetic($type);
+    }
+
+    /**
+     * @Then /^I select Yes to a Post Operative Stay$/
+     */
+    public function iSelectYesToAPostOperativeStay()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->postOpStayYes();
+    }
+
+    /**
+     * @Then /^I select No to a Post Operative Stay$/
+     */
+    public function iSelectNoToAPostOperativeStay()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->postOpStayNo();
+    }
+
+    /**
+     * @Given /^I select a Operation Site of "([^"]*)"$/
+     */
+    public function iSelectAOperationSiteOf($site)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->operationSiteID($site);
+    }
+
+    /**
+     * @Then /^I select a Priority of Routine$/
+     */
+    public function iSelectAPriorityOfRoutine()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->priorityRoutine();
+    }
+
+    /**
+     * @Then /^I select a Priority of Urgent$/
+     */
+    public function iSelectAPriorityOfUrgent()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->priorityUrgent();
+    }
+
+    /**
+     * @Given /^I select a decision date of "([^"]*)"$/
+     */
+    public function iSelectADecisionDateOf($date)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->decisionDate($date);
+    }
+
+    /**
+     * @Then /^I add comments of "([^"]*)"$/
+     */
+    public function iAddCommentsOf($comments)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->operationComments($comments);
+    }
+
+    /**
+     * @Then /^I select Save and Schedule later$/
+     */
+    public function iSelectSaveAndScheduleLater()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->scheduleLater();
+    }
+
+    /**
+     * @Then /^I select Save and Schedule now$/
+     */
+    public function iSelectSaveAndScheduleNow()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->scheduleNow();
+    }
+
 //    /**
 //     * @Given /^I select an Available theatre slot date$/
 //     */
