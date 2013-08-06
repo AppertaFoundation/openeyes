@@ -24,7 +24,7 @@ $(document).ready(function(){
 			var infoWrap = $('<div class="warningHover"></div>');
 			infoWrap.appendTo('body');
 			infoWrap.html('<span style="display: inline-block">' + patientWarningSpan.html() + '</span>');
-			var width = patientWarningSpan.width()+5;
+			var width = patientWarningSpan.width() + 1;
 			var offsetPos = $(this).offset();
 			var top = offsetPos.top + $(this).height() + 6;
 			var middle = offsetPos.left + $(this).width()/2;

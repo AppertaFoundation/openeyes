@@ -208,7 +208,7 @@ class Episode extends BaseActiveRecord
 	{
 		$where = $include_closed ? '' : ' AND e.end_date IS NULL';
 
-		// Check for an open episode for this patient and firm's service with a referral
+		// Check for an open episode for this patient and firm's service with a referral
 		$episode = Yii::app()->db->createCommand()
 			->select('e.id AS eid')
 			->from('episode e')
@@ -220,7 +220,7 @@ class Episode extends BaseActiveRecord
 			->queryRow();
 
 		if (!$episode['eid']) {
-			// There is an open episode and it has a referral, no action required
+			// There is an open episode and it has a referral, no action required
 			return null;
 		}
 
@@ -245,7 +245,43 @@ class Episode extends BaseActiveRecord
 		$criteria->order = 'created_date desc';
 		return Event::model()->findAll($criteria);
 	}
-
+	
+	/**
+	 * get the latest event for this episode
+	 * 
+	 * @return Event
+	 */
+	public function getLatestEvent()
+	{
+		$criteria = new CDbCriteria();
+		$criteria->addCondition('episode_id = :eid');
+		$criteria->params = array(':eid' => $this->id);
+		$criteria->order = "t.created_date DESC";
+		$criteria->limit = 1;
+	
+		return Event::model()->with('episode')->find($criteria);
+	
+	}
+	
+	/**
+	 * get the subspecialty for this episode
+	 * 
+	 * @return Subspecialty
+	 */
+	public function getSubspecialty()
+	{
+		$criteria = new CdbCriteria;
+		$criteria->distinct = true;
+		$criteria->addCondition('t.id = serviceSubspecialtyAssignment.subspecialty_id');
+		$criteria->addCondition('serviceSubspecialtyAssignment.id = firms.service_subspecialty_assignment_id');
+		$criteria->addCondition('firms.id = :fid');
+		
+		$criteria->params = array(':fid' => $this->firm_id);
+		
+		return Subspecialty::model()->with('serviceSubspecialtyAssignment', 'serviceSubspecialtyAssignment.firms')->find($criteria);
+		
+	}
+	
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
 		$previous = Episode::model()->findByPk($this->id);
@@ -295,7 +331,7 @@ class Episode extends BaseActiveRecord
 
 		return TRUE;
 	}
-
+	
 	protected function afterSave()
 	{
 		foreach (SecondaryDiagnosis::model()->findAll('patient_id=? and disorder_id=?',array($this->patient_id,$this->disorder_id)) as $sd) {

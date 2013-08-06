@@ -1018,6 +1018,18 @@ class Patient extends BaseActiveRecord
 		return $episode;
 	}
 	
+	public function getLatestEvent()
+	{
+		$criteria = new CDbCriteria();
+		$criteria->addCondition('episode.patient_id = :pid');
+		$criteria->params = array(':pid' => $this->id);
+		$criteria->order = "t.created_date DESC";
+		$criteria->limit = 1;
+		
+		return Event::model()->with('episode')->find($criteria);
+		
+	}
+	
 	/**
 	 * get an associative array of CommissioningBody for this patient and the patient's practice
 	 * indexed by CommissioningBodyType id.
