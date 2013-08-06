@@ -18,7 +18,9 @@
  */
 ?>
 <?php 
-	$warnings = $this->patient->getWarnings();
+	$clinical = (BaseController::checkUserLevel(2));
+	
+	$warnings = $this->patient->getWarnings($clinical);
 ?>
 <div id="patientID">
 	<div class="patientReminder clearfix<?php if ($warnings) echo " warning" ?>">
