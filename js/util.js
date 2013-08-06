@@ -23,30 +23,34 @@ OpenEyes.Util = OpenEyes.Util || {};
  * Extends an object with another objects' properties.
  * @name Object#mixin
  */
-Object.defineProperty(Object.prototype, 'mixin', {
-  value: function(obj) {
-    for (var prop in obj) {
-      if (obj.hasOwnProperty(prop)) {
-        this[prop] = obj[prop];
+if (!Object.prototype.mixin) {
+  Object.defineProperty(Object.prototype, 'mixin', {
+    value: function(obj) {
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          this[prop] = obj[prop];
+        }
       }
+      return this;
     }
-    return this;
-  }
-});
+  });
+}
 
 /**
  * Extend an objects' prototype with another objects' prototype.
  * @name Function#inherits
  */
-Object.defineProperty(Function.prototype, 'inherits', {
-  value: function(_super, _subProto) {
-    this._super = _super;
-    this.prototype = Object.create(_super.prototype);
-    this.prototype.constructor = this;
-    this.prototype.mixin(_subProto);
-    return this;
-  }
-});
+if (!Function.prototype.inherits) {
+  Object.defineProperty(Function.prototype, 'inherits', {
+    value: function(_super, _subProto) {
+      this._super = _super;
+      this.prototype = Object.create(_super.prototype);
+      this.prototype.constructor = this;
+      this.prototype.mixin(_subProto);
+      return this;
+    }
+  });
+}
 
 /**
  * Function.prototype.bind polyfill for older browsers
@@ -74,7 +78,7 @@ if (!Function.prototype.bind) {
   };
 }
 
-(function(window, namespace) {
+(function(window) {
 
   /**
    * Emitter
@@ -186,6 +190,6 @@ if (!Function.prototype.bind) {
     return this;
   };
 
-  namespace.EventEmitter = Emitter;
+  OpenEyes.Util.EventEmitter = Emitter;
 
-}(this, OpenEyes.Util));
+}(this));
