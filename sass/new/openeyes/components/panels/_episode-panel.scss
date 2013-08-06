@@ -1,5 +1,12 @@
 .panel {
-    &.episode {
-
+    &.episodes {
+        background: #eaddaf;
+        padding: 0;
+        h3 {
+            color: #504c3c;
+            font-size: emCalc(11px);
+            padding: emCalc(5px) emCalc(2px) emCalc(5px) emCalc(5px);
+            margin: emCalc(10px) 0 0 0;
+        }
     }
 }

@@ -4102,6 +4102,19 @@ button .icon-button-small, .button .icon-button-small {
   font-style: italic;
 }
 
+/* line 2, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episodes {
+  background: #eaddaf;
+  padding: 0;
+}
+/* line 5, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episodes h3 {
+  color: #504c3c;
+  font-size: 0.6875em;
+  padding: 0.3125em 0.125em 0.3125em 0.3125em;
+  margin: 0.625em 0 0 0;
+}
+
 /* line 64, ../sass/new/openeyes/components/_search-filters.scss */
 .search-filters.theatre-diaries table {
   margin: 0 0 0.3125em 0;
@@ -4199,14 +4212,6 @@ button .icon-button-small, .button .icon-button-small {
 /* line 2, ../sass/new/openeyes/components/_sidebars.scss */
 .sidebar.episodes {
   padding: 0.3125em 0 0 0;
-}
-/* line 4, ../sass/new/openeyes/components/_sidebars.scss */
-.sidebar.episodes h3 {
-  background: #eaddaf;
-  color: #504c3c;
-  font-size: 0.6875em;
-  padding: 0.3125em 0.125em 0.3125em 0.3125em;
-  margin: 0.625em 0 0 0;
 }
 
 /* line 12, ../sass/new/openeyes/components/_helpers.scss */

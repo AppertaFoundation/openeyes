@@ -1,12 +1,5 @@
 .sidebar {
     &.episodes {
         padding: emCalc(5px) 0 0 0;
-        h3 {
-            background: #eaddaf;
-            color: #504c3c;
-            font-size: emCalc(11px);
-            padding: emCalc(5px) emCalc(2px) emCalc(5px) emCalc(5px);
-            margin: emCalc(10px) 0 0 0;
-        }
     }
 }

@@ -23,7 +23,7 @@
 								Add episode
 							</button>
 
-							<div class="panel episode">
+							<div class="panel episodes">
 								<h3>Ophthalmology</h3>
 							</div>
 
