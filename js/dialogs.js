@@ -73,6 +73,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
     content: '',
     destroyOnClose: true,
     url: null,
+    id: null,
     autoOpen: false,
     title: '',
     modal: true,
@@ -93,8 +94,17 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * @private
    */
   Dialog.prototype.create = function() {
-    this.content = $('<div>' + (this.options.content || '') + '</div>');
+
+    // Create the dialog content div.
+    this.content = $('<div />', {
+      html: this.options.content,
+      id: this.options.id
+    });
+
+    // Create the jQuery UI dialog.
     this.content.dialog(this.options);
+
+    // Store a reference to the jQuery UI dialog instance.
     this.instance = this.content.data('ui-dialog');
   };
 
@@ -176,12 +186,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * @method
    */
   Dialog.prototype.close = function() {
-
     this.instance.close();
-
-    if (this.options.destroyOnClose) {
-      this.destroy();
-    }
   };
 
   /**
@@ -216,6 +221,9 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    */
   Dialog.prototype.onDialogClose = function() {
     this.emit('close');
+    if (this.options.destroyOnClose) {
+      this.destroy();
+    }
   };
 
   /**
