@@ -599,20 +599,22 @@ class Patient extends BaseActiveRecord
 		}
 
 		// Insert new allergies
-		$query = 'INSERT INTO `patient_allergy_assignment` (patient_id,allergy_id) VALUES (:patient_id, :allergy_id)';
-		$command = Yii::app()->db->createCommand($query);
-		$command->bindValue('patient_id', $this->id);
 		foreach ($insert_allergy_ids as $allergy_id) {
-			$command->bindValue('allergy_id', $allergy_id);
-			$command->execute();
+			$paa = new PatientAllergyAssignment;
+			$paa->patient_id = $this->id;
+			$paa->allergy_id = $allergy_id;
+
+			if (!$paa->save()) {
+				throw new Exception("Unable to save patient_allergy_assignment: ".print_r($paa->getErrors(),true));
+			}
 		}
 
-		// Delete removed allergies
-		$query = 'DELETE from `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id IN (:allergy_ids)';
-		$command = Yii::app()->db->createCommand($query);
-		$command->bindValue('patient_id', $this->id);
-		$command->bindValue('allergy_ids', implode(',',$remove_allergy_ids));
-		$command->execute();
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('patient_id = :patient_id');
+		$criteria->params[':patient_id'] = $this->id;
+		$criteria->addInCondition('allergy_id',$remove_allergy_ids);
+
+		PatientAllergyAssignment::model()->deleteAll($criteria);
 	}
 
 	/*
