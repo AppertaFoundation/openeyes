@@ -88,7 +88,7 @@ if (!Function.prototype.bind) {
    * object for all UI components.
    * @name Emitter
    * @constructor
-   * @property {object} events    - The collection of event handlers.
+   * @property {object} events - The collection of event handlers.
    * @example
    * function UIComponent() {
    *   EventEmitter.call(this); // Execute the super constructor
@@ -174,7 +174,7 @@ if (!Function.prototype.bind) {
       }
     }
 
-    // Now try trigger a callback handler
+    // Now try trigger a callback handler that might exist in the {this.options} object.
     return this.trigger(type, data);
   };
 
