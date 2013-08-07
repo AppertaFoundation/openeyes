@@ -2811,7 +2811,7 @@ html, body {
   *zoom: 1;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/new/_structure/gradient_bg.jpg?1375777891') 0 0 no-repeat;
+  background: #dae6f1 url('../img/new/_structure/gradient_bg.jpg?1375800084') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
@@ -2827,7 +2827,7 @@ html, body {
 /* line 31, ../sass/new/openeyes/components/_containers.scss */
 .content {
   *zoom: 1;
-  background: url('../img/new/_structure/help_top_grad.jpg?1375104847') 0 bottom no-repeat;
+  background: url('../img/new/_structure/help_top_grad.jpg?1375800084') 0 bottom no-repeat;
   min-height: 330px;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
@@ -3117,7 +3117,7 @@ table td label, table th label {
 .header .logo {
   overflow: hidden;
   text-indent: -9999px;
-  background: url('../img/new/_structure/openeyes.png?1375777891') no-repeat;
+  background: url('../img/new/_structure/openeyes.png?1375800084') no-repeat;
   background-size: 100%;
   max-width: 210px;
   height: 70px;
@@ -3127,7 +3127,7 @@ table td label, table th label {
 /* line 43, ../sass/new/openeyes/components/_footer.scss */
 .footer {
   *zoom: 1;
-  background: #b3b0ae url('../img/new/_structure/openeyes_footer.png?1375104847') no-repeat right top;
+  background: #b3b0ae url('../img/new/_structure/openeyes_footer.png?1375800084') no-repeat right top;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
 .footer:before, .footer:after {
@@ -3466,8 +3466,8 @@ button.small, .button.small {
 }
 
 /* line 181, ../sass/new/openeyes/components/_buttons.scss */
-button .icon-button-small, .button .icon-button-small {
-  margin: -6px 0px -5px -14px;
+button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
+  margin: -6px -2px -5px -14px;
 }
 
 /* line 198, ../sass/new/openeyes/components/_buttons.scss */
@@ -3643,7 +3643,7 @@ button .icon-button-small, .button .icon-button-small {
 }
 /* line 50, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.alert.with-icon {
-  background-image: url('../img/new/_elements/icons/box/warning.png?1375104847');
+  background-image: url('../img/new/_elements/icons/box/warning.png?1375800084');
   min-height: 40px;
 }
 /* line 55, ../sass/new/openeyes/components/_alert-boxes.scss */
@@ -3840,7 +3840,7 @@ button .icon-button-small, .button .icon-button-small {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  background-image: url('../img/new/_elements/icons/user/idcard_bg.png?1375104847');
+  background-image: url('../img/new/_elements/icons/user/idcard_bg.png?1375800084');
   background-repeat: no-repeat;
   background-position: left bottom;
   margin: 0;
@@ -3909,11 +3909,11 @@ button .icon-button-small, .button .icon-button-small {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1375104847'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1375104847'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1375104847'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1375104847'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1375104847'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1375800084'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1375800084'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1375800084'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1375800084'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1375800084'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
   background-repeat: no-repeat, no-repeat;
   background-position: 98% 2px, top;
   border-color: #ffb212;
@@ -3982,7 +3982,7 @@ button .icon-button-small, .button .icon-button-small {
   -o-border-radius: 3px;
   border-radius: 3px;
   background-color: #107ebd;
-  background-image: url('../img/new/_elements/icons/nhs_tiny.png?1375104847');
+  background-image: url('../img/new/_elements/icons/nhs_tiny.png?1375800084');
   background-position: center left;
   background-repeat: no-repeat;
   color: white;
@@ -4102,17 +4102,113 @@ button .icon-button-small, .button .icon-button-small {
   font-style: italic;
 }
 
-/* line 2, ../sass/new/openeyes/components/panels/_episode-panel.scss */
-.panel.episodes {
+/* line 2, ../sass/new/openeyes/components/panels/_specialty-panel.scss */
+.panel.specialty {
   background: #eaddaf;
-  padding: 0;
+  border: 0;
+  margin-top: 0.3125em;
+  padding: 0 0 2px 0;
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
-/* line 5, ../sass/new/openeyes/components/panels/_episode-panel.scss */
-.panel.episodes h3 {
+/* line 9, ../sass/new/openeyes/components/panels/_specialty-panel.scss */
+.panel.specialty h3 {
   color: #504c3c;
   font-size: 0.6875em;
-  padding: 0.3125em 0.125em 0.3125em 0.3125em;
-  margin: 0.625em 0 0 0;
+  margin: 0;
+  padding: 0.5em 0.25em 0.75em 0.5em;
+}
+
+/* line 2, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode {
+  padding: 0.3125em 0.0625em 0.3125em 0;
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0;
+}
+/* line 7, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode .episode-date {
+  font-size: 0.6875em;
+  padding-left: 0.4375em;
+}
+/* line 11, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode h4 {
+  margin: 0.3125em 0.125em 0.1875em 0;
+  font-size: 0.9375em;
+}
+/* line 14, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode h4 a {
+  color: #000;
+  padding: 0.3125em 0 1.0625em 0.4375em;
+  display: block;
+  background: url('../img/new/_elements/graphic/view-episode-summary.png?1375800084') right bottom no-repeat;
+  -webkit-border-radius: 0 3px 3px 0;
+  -moz-border-radius: 0 3px 3px 0;
+  -ms-border-radius: 0 3px 3px 0;
+  -o-border-radius: 0 3px 3px 0;
+  border-radius: 0 3px 3px 0;
+}
+/* line 20, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode h4 a:hover {
+  color: #fff;
+  background-color: #3665ff;
+  background-image: url('../img/new/_elements/icons/event/event_open_arrow.png?1375800084');
+}
+/* line 27, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode .add-event {
+  margin-left: 0.125em;
+}
+/* line 30, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode .events {
+  padding: 4px 0 0 0;
+  margin: 5px 0 0 0;
+  border-top: 1px dotted #ccc;
+}
+/* line 34, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode .events li {
+  list-style: none;
+  font-size: 1em;
+}
+/* line 37, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode .events li a {
+  display: block;
+  padding: 0 10px 0 8px;
+  font-size: 0.8125em;
+  -webkit-border-radius: 0 6px 6px 0;
+  -moz-border-radius: 0 6px 6px 0;
+  -ms-border-radius: 0 6px 6px 0;
+  -o-border-radius: 0 6px 6px 0;
+  border-radius: 0 6px 6px 0;
+}
+/* line 42, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode .events li a:hover {
+  background-color: #3665ff;
+  background-image: url('../img/new/_elements/icons/event/event_open_arrow.png?1375800084');
+  background-position: right center;
+  background-repeat: no-repeat;
+  color: #fff;
+}
+/* line 53, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode .events .event-type {
+  width: 35px;
+  display: inline-block;
+}
+/* line 56, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode .events .event-type.alert {
+  background: url('../img/new/_elements/icons/event/status/alert.png?1375800084') right top no-repeat;
+}
+/* line 60, ../sass/new/openeyes/components/panels/_episode-panel.scss */
+.panel.episode .events .event-date {
+  display: inline-block;
+  padding-left: 1.625em;
 }
 
 /* line 64, ../sass/new/openeyes/components/_search-filters.scss */
@@ -4210,8 +4306,12 @@ button .icon-button-small, .button .icon-button-small {
 }
 
 /* line 2, ../sass/new/openeyes/components/_sidebars.scss */
-.sidebar.episodes {
+.sidebar.episodes-and-events {
   padding: 0.3125em 0 0 0;
+}
+/* line 4, ../sass/new/openeyes/components/_sidebars.scss */
+.sidebar.episodes-and-events .add-episode {
+  margin-left: 2px;
 }
 
 /* line 12, ../sass/new/openeyes/components/_helpers.scss */

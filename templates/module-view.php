@@ -11,33 +11,64 @@
 		<div class="content">
 			<h1 class="badge">Episodes and events</h1>
 
-				<div class="box content">
+			<div class="box content">
 
-					<div class="row">
-						<aside class="large-2 column sidebar episodes">
+				<div class="row">
+					<aside class="large-2 column sidebar episodes-and-events">
 
-							<h2 class="reader">Episodes and events</h2>
+						<h2 class="reader">Specialties</h2>
 
-							<button class="secondary small" type="button">
-								<span class="icon icon-button-small icon-button-small-plus-sign"></span>
-								Add episode
-							</button>
+						<button class="secondary small add-episode" type="button">
+							<span class="icon-button-small-plus-sign"></span>
+							Add episode
+						</button>
 
-							<div class="panel episodes">
-								<h3>Ophthalmology</h3>
+						<!-- Specialty Panel -->
+						<div class="panel specialty">
+							<h3>Ophthalmology</h3>
+							<div class="panel episode">
+								<div class="episode-date">12 Dec 2011</div>
+								<h4>
+									<a href="#">
+										Adnexal
+									</a>
+								</h4>
+								<button class="button secondary small add-event" type="button">
+									<span class="icon-button-small-plus-sign"></span>
+									Add event
+								</button>
+								<ol class="events">
+									<li>
+										<a href="#">
+											<span class="event-type alert">
+												<img src="/img/new/operationbooking/small.png" alt="op" width="19" height="19" />
+											</span>
+											<span class="event-date">
+												1 Jan 2000
+											</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<span class="event-type alert">
+												<img src="/img/new/operationbooking/small.png" alt="op" width="19" height="19" />
+											</span>
+											<span class="event-date">
+												1 Jan 2000
+											</span>
+										</a>
+									</li>
+								</ol>
 							</div>
-
-
-						</aside>
-						<div class="large-10 column">
-							Right column
 						</div>
+
+					</aside>
+					<div class="large-10 column">
+						Right column
 					</div>
-
-					<br/><br/><br/><br/><br/><br/><br/><br/>
-
-
 				</div>
+
+				<br/><br/><br/><br/><br/><br/><br/><br/>
 			</div>
 		</div>
 		<? include 'components/footer.php'; ?>

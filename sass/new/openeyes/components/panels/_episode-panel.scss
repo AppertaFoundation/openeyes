@@ -1,12 +1,66 @@
 .panel {
-    &.episodes {
-        background: #eaddaf;
-        padding: 0;
-        h3 {
-            color: #504c3c;
+    &.episode {
+        padding: emCalc(5px) emCalc(1px) emCalc(5px) 0;
+        @include border-top-left-radius(0);
+        @include border-bottom-left-radius(0);
+        border-left: 0;
+        .episode-date {
             font-size: emCalc(11px);
-            padding: emCalc(5px) emCalc(2px) emCalc(5px) emCalc(5px);
-            margin: emCalc(10px) 0 0 0;
+            padding-left: emCalc(7px);
+        }
+        h4 {
+            margin: emCalc(5px) emCalc(2px) emCalc(3px) 0;
+            font-size: emCalc(15px);
+            a {
+                color: #000;
+                padding: emCalc(5px) 0 emCalc(17px) emCalc(7px);
+                display: block;
+                background: image-url("_elements/graphic/view-episode-summary.png") right bottom no-repeat;
+                @include border-radius(0 3px 3px 0);
+                &:hover {
+                    color: #fff;
+                    background-color: #3665ff;
+                    background-image: image-url("_elements/icons/event/event_open_arrow.png");
+                }
+            }
+        }
+        .add-event {
+            margin-left: emCalc(2px);
+        }
+        .events {
+            padding: 4px 0 0 0;
+            margin: 5px 0 0 0;
+            border-top: 1px dotted #ccc;
+            li {
+                list-style: none;
+                font-size: 1em;
+                a {
+                    display: block;
+                    padding: 0 10px 0 8px;
+                    font-size: $default-font-size;
+                    @include border-radius(0 6px 6px 0);
+                    &:hover {
+                        background: {
+                            color: #3665ff;
+                            image: image-url("_elements/icons/event/event_open_arrow.png");
+                            position: right center;
+                            repeat: no-repeat;
+                        }
+                        color: #fff;
+                    }
+                }
+            }
+            .event-type {
+                width: 35px;
+                display: inline-block;
+                &.alert {
+                    background: image-url("_elements/icons/event/status/alert.png") right top no-repeat;
+                }
+            }
+            .event-date {
+                display: inline-block;
+                padding-left: emCalc(26px);
+            }
         }
     }
 }

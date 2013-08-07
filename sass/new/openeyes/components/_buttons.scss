@@ -172,14 +172,14 @@ button, .button {
 //
 // Markup:
 // <button class="secondary small" type="button">
-//     <span class="icon icon-button-small icon-button-small-plus-sign"></span>
+//     <span class="icon-button-small-plus-sign"></span>
 //     Add episode
 // </button>
 //
 // Styleguide 9.2
 button, .button {
-    .icon-button-small {
-        margin: -6px 0px -5px -14px;
+    [class*="icon-button-small-"] {
+        margin: -6px -2px -5px -14px;
     }
 }
 
