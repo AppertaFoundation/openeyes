@@ -33,6 +33,9 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * Dialog constructor.
    * @name Dialog
    * @constructor
+   * @extends Emitter
+   * @property {object} options    - The collection of dialog options, merged
+   *  with the default options
    * @example
    * var dialog = new OpenEyes.Dialog({
    *   title: 'Title here',

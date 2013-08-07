@@ -84,9 +84,19 @@ if (!Function.prototype.bind) {
 (function(window) {
 
   /**
-   * Emitter
+   * Emitter. This is an event emitter class that should be used as a base
+   * object for all UI components.
    * @name Emitter
    * @constructor
+   * @property {object} events    - The collection of event handlers.
+   * @example
+   * function UIComponent() {
+   *   EventEmitter.call(this); // Execute the super constructor
+   * }
+   * UIComponent.inherits(EventEmitter);
+   * var component = new UIComponent();
+   * component.on('someEvent', someHandler);
+   * component.emit('someEvent');
    */
   function Emitter() {
     this.events = {};
