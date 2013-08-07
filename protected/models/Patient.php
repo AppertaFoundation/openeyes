@@ -476,7 +476,12 @@ class Patient extends BaseActiveRecord
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
 		if ($episode && $disorder = $episode->diagnosis) {
-			return strtolower($disorder->term);
+			
+			if ($episode->eye) {
+				return $episode->eye->getAdjective() . ' ' . strtolower($disorder->term);
+			} else {
+				return strtolower($disorder->term);
+			}
 		}
 	}
 
