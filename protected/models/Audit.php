@@ -258,7 +258,7 @@ class Audit extends BaseActiveRecord
 				}
 			}
 			$properties['model_id'] = $model->id;
-			unset($properties['model_id']);
+			unset($properties['model']);
 		}
 
 		foreach ($properties as $key => $value) {

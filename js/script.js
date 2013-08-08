@@ -109,23 +109,18 @@ $(document).ready(function(){
 	 * Site / firm switcher
 	 */
 	$('.change-firm a').click(function(e) {
-		if (typeof(OE_patient_id) != 'undefined') {
-			var patient_id = OE_patient_id;
-		} else {
-			var patient_id = null;
-		}
 
-		$.ajax({
+		e.preventDefault();
+
+		new OpenEyes.Dialog({
+			id: 'site-and-firm-dialog',
+			title: 'Select a new Site and/or Firm',
 			url: baseUrl + '/site/changesiteandfirm',
 			data: {
 				returnUrl: window.location.href,
-				patient_id: patient_id
-			},
-			success: function(data) {
-				$('#user_panel').before(data);
+				patient_id: window.OE_patient_id || null
 			}
-		});
-		e.preventDefault();
+		}).open();
 	});
 
 	$('#checkall').click(function() {

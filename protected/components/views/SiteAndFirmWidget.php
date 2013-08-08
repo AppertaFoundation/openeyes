@@ -18,21 +18,6 @@
  */
 ?>
 <?php
-$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-		'id' => 'site-and-firm-dialog',
-		'options' => array(
-			'title' => $this->title,
-			'dialogClass' => 'dialog',
-			'autoOpen' => true,
-			'modal' => true,
-			'draggable' => false,
-			'resizable' => false,
-			'width' => 450,
-		),
-	));
-?>
-
-<?php
 $form = $this->beginWidget('CActiveForm', array(
 	'id' => 'site-and-firm-form',
 ));
@@ -79,7 +64,5 @@ $form = $this->beginWidget('CActiveForm', array(
 <div class="form-actions">
 	<?php echo CHtml::submitButton('Confirm'); ?>
 </div>
-
-<?php $this->endWidget(); ?>
 
 <?php $this->endWidget(); ?>

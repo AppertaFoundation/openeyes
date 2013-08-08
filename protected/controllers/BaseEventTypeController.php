@@ -144,17 +144,6 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 
-		// Clear js for ajax calls
-		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-			$scriptMap = Yii::app()->clientScript->scriptMap;
-			$scriptMap['jquery.js'] = false;
-			$scriptMap['jquery.min.js'] = false;
-			$scriptMap['jquery-ui.js'] = false;
-			$scriptMap['jquery-ui.min.js'] = false;
-			$scriptMap['module.js'] = false;
-			Yii::app()->clientScript->scriptMap = $scriptMap;
-		}
-
 		return parent::beforeAction($action);
 	}
 

@@ -54,6 +54,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
     EventEmitter.call(this);
 
     this.options = $.extend(true, {}, Dialog.defaultOptions, options);
+
     this.create();
     this.bindEvents();
 
@@ -73,6 +74,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
     content: '',
     destroyOnClose: true,
     url: null,
+    data: null,
     id: null,
     autoOpen: false,
     title: '',
@@ -96,16 +98,26 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
   Dialog.prototype.create = function() {
 
     // Create the dialog content div.
-    this.content = $('<div />', {
-      html: this.options.content,
-      id: this.options.id
-    });
+    this.content = $('<div />', { id: this.options.id });
+
+    // Add default content (if any exists)
+    this.setContent(this.options.content);
 
     // Create the jQuery UI dialog.
     this.content.dialog(this.options);
 
     // Store a reference to the jQuery UI dialog instance.
     this.instance = this.content.data('ui-dialog');
+  };
+
+  /**
+   * Add content to the dialog.
+   * @name Dialog#setContent
+   * @method
+   * @public
+   */
+  Dialog.prototype.setContent = function(content) {
+    this.content.html(content);
   };
 
   /**
@@ -148,24 +160,35 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * @private
    */
   Dialog.prototype.loadContent = function() {
-    this.content.html('Loading...');
-    this.content.load(this.options.url, this.onContentLoaded.bind(this));
+
+    this.content.addClass('loading');
+    this.setTitle('Loading...');
+
+    var xhr = $.ajax({
+      url: this.options.url,
+      data: this.options.data
+    });
+
+    xhr.done(this.onContentLoadSuccess.bind(this));
+    xhr.fail(this.onContentLoadFail.bind(this));
+    xhr.always(this.onContentLoad.bind(this));
   };
 
   /**
-   * When loading content, if the request fails, then show an error message.
-   * @name Dialog#showContentLoadError
+   * Sets the dialog title.
+   * @name Dialog#setTitle
    * @method
-   * @private
+   * @public
    */
-  Dialog.prototype.showContentLoadError = function() {
-    this.content.html('Sorry, there was an error retrieving the content. Please try again.');
+  Dialog.prototype.setTitle = function(title) {
+    this.instance._setOption('title', title);
   };
 
   /**
    * Repositions the dialog in the center of the page.
    * @name Dialog#reposition
    * @method
+   * @pubic
    */
   Dialog.prototype.reposition = function() {
     this.instance._position(this.instance._position());
@@ -175,15 +198,17 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * Opens (shows) the dialog.
    * @name Dialog#open
    * @method
+   * @pubic
    */
   Dialog.prototype.open = function() {
     this.instance.open();
   };
 
   /**
-   * Closes (hides) the dialog, and optionally destroys it.
+   * Closes (hides) the dialog.
    * @name Dialog#close
    * @method
+   * @pubic
    */
   Dialog.prototype.close = function() {
     this.instance.close();
@@ -194,6 +219,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * event handlers.
    * @name Dialog#destroy
    * @method
+   * @pubic
    */
   Dialog.prototype.destroy = function() {
     this.instance.destroy();
@@ -214,7 +240,8 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
   };
 
   /**
-   * Emit the 'close' event after the dialog has closed.
+   * Emit the 'close' event after the dialog has closed, and optionally destroy
+   * the dialog.
    * @name Dialog#onDialogClose
    * @method
    * @private
@@ -227,16 +254,45 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
   };
 
   /**
-   * Reposition the dialog after the content has been loaded.
-   * @name Dialog#onContentLoaded
+   * Content load handler. This method is always executed after the content
+   * request completes (whether there was an error or not), and is executed after
+   * any success or fail handlers. This method removes the loading state of the
+   * dialog, and repositions it in the center of the screen.
+   * @name Dialog#onContentLoad
    * @method
    * @private
    */
-  Dialog.prototype.onContentLoaded = function(response, status, xhr) {
-    if (status === 'error') {
-      this.showContentLoadError();
-    }
+  Dialog.prototype.onContentLoad = function() {
+    // Remove loading state.
+    this.content.removeClass('loading');
+    // Reposition the dialog in the center of the screen.
     this.reposition();
+  };
+
+  /**
+   * Content load success handler. Sets the dialog content to be the response of
+   * the content request.
+   * @name Dialog#onContentLoadSuccess
+   * @method
+   * @private
+   */
+  Dialog.prototype.onContentLoadSuccess = function(response) {
+    // Set the dialog content.
+    this.setTitle(this.options.title);
+    this.setContent(response);
+  };
+
+  /**
+   * Content load fail handler. This method is executed if the content request
+   * fails, and shows an error message.
+   * @name Dialog#onContentLoadFail
+   * @method
+   * @private
+   */
+  Dialog.prototype.onContentLoadFail = function() {
+    // Show the error.
+    this.setTitle('Error');
+    this.setContent('Sorry, there was an error retrieving the content. Please try again.');
   };
 
   OpenEyes.Dialog = Dialog;
