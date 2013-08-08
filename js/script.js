@@ -108,20 +108,35 @@ $(document).ready(function(){
 	/**
 	 * Site / firm switcher
 	 */
-	$('.change-firm a').click(function(e) {
+	(function firmSwitcher() {
 
-		e.preventDefault();
-
-		new OpenEyes.Dialog({
+		// Default dialog options.
+		var options = {
 			id: 'site-and-firm-dialog',
-			title: 'Select a new Site and/or Firm',
-			url: baseUrl + '/site/changesiteandfirm',
-			data: {
-				returnUrl: window.location.href,
-				patient_id: window.OE_patient_id || null
-			}
-		}).open();
-	});
+			title: 'Select a new Site and/or Firm'
+		};
+
+		// Show the 'change firm' dialog when clicking on the 'change firm' link.
+		$('.change-firm a').click(function(e) {
+
+			e.preventDefault();
+
+			new OpenEyes.Dialog($.extend({}, options, {
+				url: baseUrl + '/site/changesiteandfirm',
+				data: {
+					returnUrl: window.location.href,
+					patient_id: window.OE_patient_id || null
+				}
+			})).open();
+		});
+
+		// Show the 'change firm' dialog on page load.
+		if ($('#site-and-firm-form').length) {
+			new OpenEyes.Dialog($.extend({}, options, {
+				content: $('#site-and-firm-form')
+			})).open();
+		}
+	}());
 
 	$('#checkall').click(function() {
 		$('input.'+$(this).attr('class')).attr('checked',$(this).is(':checked') ? 'checked' : false);
