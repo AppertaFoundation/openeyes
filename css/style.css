@@ -1769,6 +1769,11 @@ body .ui-widget-overlay {
     padding: 0;
 }
 
+.ui-dialog.dialog .ui-dialog-content.loading {
+    background: url(../img/ajax-loader-large.gif) center center no-repeat;
+    padding: 20px 0 40px 0;
+    text-align: center;
+}
 .ui-dialog.dialog .ui-dialog-titlebar-close {
     position: absolute;
     top: -4px;
