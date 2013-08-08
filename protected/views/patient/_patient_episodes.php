@@ -50,9 +50,33 @@
 		<?php }?>
 	</div>
 </div>
-<?php $episodes_link = (BaseController::checkUserLevel(4)) ? 'Create or View' : 'View';  ?>
-<p><?php echo CHtml::link('<span class="aPush">'.$episodes_link.' Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
-<?php
+<?php 
+$latest = $this->patient->getLatestEvent();
+$editable = false;
+
+if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
+	$latest = $episode->getLatestEvent();
+	$subspecialty = $episode->getSubspecialty();
+	$editable = true;
+}
+if (!$editable && $latest) {
+	$editable = $latest->episode->editable;
+	$subspecialty = $latest->episode->getSubspecialty();
+}
+
+$msg = null;
+
+if ($latest) {
+	$msg = "Latest Event in " . $subspecialty->name . ": <strong>" . $latest->eventType->name . "</strong> <span class='small'>(" . $latest->NHSDate('created_date') . ")</span>";
+}
+else if (BaseController::checkUserLevel(4)) {
+	$msg = "Create episode / add event";
+}
+
+if ($msg) {
+	echo '<p>' . CHtml::link('<span class="aPush">'. $msg . '</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id)) . '</p>';
+}
+
 try {
 	echo $this->renderPartial('custom/info');
 } catch (Exception $e) {

@@ -18,21 +18,17 @@
  */
 
 /**
- * This is the model class for table "contact_location".
+ * This is the model class for table "audit_model".
  *
- * The followings are the available columns in table 'contact_location':
+ * The followings are the available columns in table 'audit_model':
  * @property integer $id
  * @property string $name
- * @property integer $letter_template_only
- * @property Institution $institution
- * @property Contact $contact
- * @property Site $site
  */
-class ContactLocation extends BaseActiveRecord
+class AuditModel extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ContactLocation the static model class
+	 * @return AuditModel the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -44,16 +40,7 @@ class ContactLocation extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'contact_location';
-	}
-
-	public function behaviors()
-	{
-		return array(
-			'ContactBehavior' => array(
-				'class' => 'application.behaviors.ContactBehavior',
-			),
-		);
+		return 'audit_model';
 	}
 
 	/**
@@ -61,7 +48,10 @@ class ContactLocation extends BaseActiveRecord
 	 */
 	public function rules()
 	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
 		return array(
+			array('name', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name', 'safe', 'on'=>'search'),
@@ -76,16 +66,13 @@ class ContactLocation extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
-			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
 		);
 	}
 
 	/**
-	 * @return array customized attribute locations (name=>location)
+	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLocations()
+	public function attributeLabels()
 	{
 		return array(
 			'id' => 'ID',
@@ -110,55 +97,5 @@ class ContactLocation extends BaseActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->site ? $this->site->name : $this->institution->name;
-	}
-
-	/**
-	 * gets a letter address for this contact location.
-	 * 
-	 * @param unknown $params
-	 * @return array() - address elements
-	 */
-	public function getLetterAddress($params=array())
-	{
-		$owner = $this->owner->site ? $this->owner->site : $this->owner->institution;
-		if (@$params['contact']) {
-			$contactRelation = @$params['contact'];
-			$contact = $owner->$contactRelation;
-		} else {
-			$contact = $owner->contact;
-		}
-		
-		$address = $contact->address;
-
-		$res = $this->formatLetterAddress($this->contact, $address, $params);
-		return $res;
-	}
-
-	public function getLetterArray($include_country)
-	{
-		$address = $this->owner->site ? $this->owner->site->contact->address : $this->owner->institution->contact->address;
-		$name = $this->owner->site ? $this->owner->site->correspondenceName : $this->owner->institution->name;
-		if (!is_array($name)) {
-			$name = array($name);
-		}
-		return array_merge($name,$address->getLetterArray($include_country));
-	}
-
-	public function getPatients()
-	{
-		$criteria = new CDbCriteria;
-		$criteria->join = "join patient_contact_assignment on patient_contact_assignment.patient_id = `t`.id";
-		$criteria->compare("location_id",$this->id);
-		$criteria->order = 'hos_num asc';
-
-		return Patient::model()->findAll($criteria);
 	}
 }

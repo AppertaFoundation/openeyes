@@ -54,6 +54,15 @@ class Practice extends BaseActiveRecord
 		return $model;
 	}
 
+	public function behaviors()
+	{
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -152,5 +161,15 @@ class Practice extends BaseActiveRecord
 				return $body;
 			}
 		}
+	}
+	
+	public function getCorrespondenceName()
+	{
+		return Gp::UNKNOWN_NAME;
+	}
+	
+	public function getSalutationName()
+	{
+		return Gp::UNKNOWN_SALUTATION;
 	}
 }

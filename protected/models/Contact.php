@@ -153,6 +153,11 @@ class Contact extends BaseActiveRecord
 		return trim(implode(' ',array($this->title, $this->last_name, $this->first_name)));
 	}
 
+	public function getCorrespondenceName()
+	{
+		return $this->getFullName();
+	}
+	
 	/**
 	 * @return string Salutaion name
 	 */

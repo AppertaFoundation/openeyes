@@ -476,7 +476,12 @@ class Patient extends BaseActiveRecord
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
 		if ($episode && $disorder = $episode->diagnosis) {
-			return strtolower($disorder->term);
+			
+			if ($episode->eye) {
+				return $episode->eye->getAdjective() . ' ' . strtolower($disorder->term);
+			} else {
+				return strtolower($disorder->term);
+			}
 		}
 	}
 
@@ -594,20 +599,22 @@ class Patient extends BaseActiveRecord
 		}
 
 		// Insert new allergies
-		$query = 'INSERT INTO `patient_allergy_assignment` (patient_id,allergy_id) VALUES (:patient_id, :allergy_id)';
-		$command = Yii::app()->db->createCommand($query);
-		$command->bindValue('patient_id', $this->id);
 		foreach ($insert_allergy_ids as $allergy_id) {
-			$command->bindValue('allergy_id', $allergy_id);
-			$command->execute();
+			$paa = new PatientAllergyAssignment;
+			$paa->patient_id = $this->id;
+			$paa->allergy_id = $allergy_id;
+
+			if (!$paa->save()) {
+				throw new Exception("Unable to save patient_allergy_assignment: ".print_r($paa->getErrors(),true));
+			}
 		}
 
-		// Delete removed allergies
-		$query = 'DELETE from `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id IN (:allergy_ids)';
-		$command = Yii::app()->db->createCommand($query);
-		$command->bindValue('patient_id', $this->id);
-		$command->bindValue('allergy_ids', implode(',',$remove_allergy_ids));
-		$command->execute();
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('patient_id = :patient_id');
+		$criteria->params[':patient_id'] = $this->id;
+		$criteria->addInCondition('allergy_id',$remove_allergy_ids);
+
+		PatientAllergyAssignment::model()->deleteAll($criteria);
 	}
 
 	/*
@@ -1018,6 +1025,18 @@ class Patient extends BaseActiveRecord
 		return $episode;
 	}
 	
+	public function getLatestEvent()
+	{
+		$criteria = new CDbCriteria();
+		$criteria->addCondition('episode.patient_id = :pid');
+		$criteria->params = array(':pid' => $this->id);
+		$criteria->order = "t.created_date DESC";
+		$criteria->limit = 1;
+		
+		return Event::model()->with('episode')->find($criteria);
+		
+	}
+	
 	/**
 	 * get an associative array of CommissioningBody for this patient and the patient's practice
 	 * indexed by CommissioningBodyType id.
@@ -1084,29 +1103,46 @@ class Patient extends BaseActiveRecord
 		}
 	}
 	
+	// storage of warning data
+	protected $_clinical_warnings = null;
+	protected $_nonclinical_warnings = null;
+	
 	/**
-	 * return the patient warnings that have been defined
+	 * return the patient warnings that have been defined for the patient. If $clinical is false
+	 * only non-clinical warnings will be returned.
 	 * 
-	 * return {'short_msg' => string, 'long_msg' => string}[]
+	 * @param boolean $clinical
+	 * @return {'short_msg' => string, 'long_msg' => string}[]
 	 */
-	public function getWarnings()
+	public function getWarnings($clinical=true)
 	{
 		// At the moment, we only warn for diabetes, so this is quite lightweight and hard coded
 		// but this should serve as a wrapper function for configuring warnings (i.e. a system setting could 
 		// define what should be warned on, and then we return a structure that is determined from this)
+		
 		$res = array();
 		
-		if ($diabetic_disorders = $this->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET) ) {
-			$terms = array();
-			foreach ($diabetic_disorders as $disorder) {
-				$terms[] = $disorder->term;
+		if ($clinical) {
+			if ($this->_nonclinical_warnings == null) {
+				// this should be expanded with any future clinical disorders
+				if ($diabetic_disorders = $this->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET) ) {
+					$terms = array();
+					foreach ($diabetic_disorders as $disorder) {
+						$terms[] = $disorder->term;
+					}
+					$res[] = array(
+							'short_msg' => 'Diabetes',
+							'long_msg' => 'Patient is Diabetic',
+							'details' => implode(', ', $terms)
+					);
+				}
+				
+				$this->_nonclinical_warnings = $res;
 			}
-			$res[] = array(
-				'short_msg' => 'Diabetes',
-				'long_msg' => 'Patient is Diabetic',
-				'details' => implode(', ', $terms)
-			);
+			return $this->_nonclinical_warnings;
 		}
+		
+		
 		return $res;
 	}
 }
