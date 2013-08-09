@@ -67,10 +67,12 @@
 // Markup:
 // <span class="{$modifiers}">Description</span>
 //
-// .icon-showhide-show        - Plus icon
-// .icon-button-small-search           - Search icon
+// .icon-showhide-show          - Show icon
+// .icon-showhide-show-hiover   - Show icon hover state
+// .icon-showhide-hide          - Hide icon
+// .icon-showhide-hide-hover    - Hide icon hover state
 //
-// Styleguide 14.3
+// Styleguide 14.4
 
 // Small button icons
 @include sprite($oe-sprite-icon-showhide, "icon-showhide", 11px, 11px);

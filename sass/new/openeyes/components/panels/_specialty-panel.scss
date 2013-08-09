@@ -1,18 +1,38 @@
+// Specialy panel
+//
+// This panel wraps the episdes and events when viewing a module.
+//
+// Markup:
+// <div class="panel specialty">
+//     <h3 class="specialty-title">Ophthalmology</h3>
+// </div>
+//
+// Styleguide 15.8
+
+// Specialty panel vars
+$oe-panel-specialty-margin: emCalc(5px) 0 0 0;
+$oe-panel-specialty-padding: 0 0 emCalc(2px) 0;
+$oe-panel-specialty-title-border-radius: 0 5px 0 0;
+$oe-panel-specialty-title-bg-color: #eaddaf;
+$oe-panel-specialty-title-color: #504c3c;
+$oe-panel-specialty-title-font-size: emCalc(11px);
+$oe-panel-specialty-title-padding: emCalc(8px) emCalc(4px) emCalc(12px) emCalc(8px);
+
 .panel {
     &.specialty {
         background: transparent;
         border: 0;
-        margin-top: emCalc(5px);
-        padding: 0 0 2px 0;
+        margin: $oe-panel-specialty-margin;
+        padding: $oe-panel-specialty-padding;
         @include border-top-left-radius(0);
         @include border-bottom-left-radius(0);
         .specialty-title {
-            @include border-radius(0 5px 0 0);
-            background: #eaddaf;
-            color: #504c3c;
-            font-size: emCalc(11px);
+            @include border-radius($oe-panel-specialty-title-border-radius);
+            background: $oe-panel-specialty-title-bg-color;
+            color: $oe-panel-specialty-title-color;
+            font-size: $oe-panel-specialty-title-font-size;
             margin: 0;
-            padding: emCalc(8px) emCalc(4px) emCalc(12px) emCalc(8px);
+            padding: $oe-panel-specialty-title-padding;
         }
     }
 }

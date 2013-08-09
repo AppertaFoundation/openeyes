@@ -163,12 +163,21 @@ button, .button {
 $oe-button-small-padding: emCalc(5px) emCalc(20px) !default;
 $oe-button-small-font-size: emCalc(13px);
 $oe-button-small-letter-spacing: 1px;
+// Tiny button vars
+$oe-button-tiny-padding: emCalc(5px) emCalc(20px) !default;
+$oe-button-tiny-font-size: emCalc(11px);
+$oe-button-tiny-letter-spacing: 1px;
 button, .button {
     &.small {
-        @include button-size($padding: $button-sml);
         padding: $oe-button-small-padding;
         font-size: $oe-button-small-font-size;
         letter-spacing: $oe-button-small-letter-spacing;
+    }
+    &.tiny {
+        padding: $oe-button-tiny-padding;
+        font-size: $oe-button-tiny-font-size;
+        letter-spacing: $oe-button-tiny-letter-spacing;
+        line-height: 1.4;
     }
 }
 
