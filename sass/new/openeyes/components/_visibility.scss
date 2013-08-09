@@ -1,3 +1,6 @@
 .hide-text {
+    @include hide-text;
+}
+.hide-offscreen {
     @include hide-text-absolutely;
 }

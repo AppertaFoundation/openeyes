@@ -27,7 +27,7 @@
 // Styleguide 14.1
 
 // Alert icons
-@include sprite("_elements/icons/alerts/*.png", "icon-alert", 17px, 17px);
+@include sprite($oe-sprite-icons-alerts, "icon-alert", 17px, 17px);
 
 // Large button icons
 //
@@ -43,7 +43,7 @@
 // Styleguide 14.2
 
 // Large button icons
-@include sprite("_elements/btns/large/*.png", "icon-button-large", 34px, 32px);
+@include sprite($oe-sprite-icons-button-large, "icon-button-large", 34px, 32px);
 
 // Small button icons
 //
@@ -58,4 +58,19 @@
 // Styleguide 14.3
 
 // Small button icons
-@include sprite("_elements/btns/small/*.png", "icon-button-small", 27px, 24px);
+@include sprite($oe-sprite-icons-button-small, "icon-button-small", 27px, 24px);
+
+// Show/hide icons
+//
+// Show/hide icons.
+//
+// Markup:
+// <span class="{$modifiers}">Description</span>
+//
+// .icon-showhide-show        - Plus icon
+// .icon-button-small-search           - Search icon
+//
+// Styleguide 14.3
+
+// Small button icons
+@include sprite($oe-sprite-icon-showhide, "icon-showhide", 11px, 11px);

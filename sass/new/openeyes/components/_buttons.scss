@@ -65,21 +65,6 @@ button, .button {
     }
 }
 
-// Disabled button vars
-$oe-button-disabled-bg-color-start: #aaaaaa !default;
-$oe-button-disabled-bg-color-stop: #999999 !default;
-$oe-button-disabled-border-color: #999999 !default;
-
-// Disabled button (grey)
-button, .button {
-    &.disabled,
-    &[disabled] {
-        @include background(linear-gradient($oe-button-disabled-bg-color-start, $oe-button-disabled-bg-color-stop));
-        border-color: $oe-button-disabled-border-color;
-        text-shadow: none;
-    }
-}
-
 // Secondary button vars
 $oe-button-secondary-bg-color-start: #43a844;
 $oe-button-secondary-bg-color-end: #55a256;
@@ -138,6 +123,27 @@ button, .button {
         &:active {
             @include background(linear-gradient($oe-button-warning-active-bg-color-start, $oe-button-warning-active-bg-color-end));
             border-color: $oe-button-warning-active-border-color;
+        }
+    }
+}
+
+// Disabled button vars
+$oe-button-disabled-bg-color-start: #aaaaaa !default;
+$oe-button-disabled-bg-color-stop: #999999 !default;
+$oe-button-disabled-border-color: #999999 !default;
+
+// Disabled button (grey)
+// This should always be defined after all other button variations.
+button, .button {
+    &.disabled,
+    &[disabled] {
+        &,
+        &:hover,
+        &:focus,
+        &:active {
+            @include background(linear-gradient($oe-button-disabled-bg-color-start, $oe-button-disabled-bg-color-stop));
+            border-color: $oe-button-disabled-border-color;
+            text-shadow: none;
         }
     }
 }

@@ -1,12 +1,14 @@
 .panel {
     &.specialty {
-        background: #eaddaf;
+        background: transparent;
         border: 0;
         margin-top: emCalc(5px);
         padding: 0 0 2px 0;
         @include border-top-left-radius(0);
         @include border-bottom-left-radius(0);
-        h3 {
+        .specialty-title {
+            @include border-radius(0 5px 0 0);
+            background: #eaddaf;
             color: #504c3c;
             font-size: emCalc(11px);
             margin: 0;

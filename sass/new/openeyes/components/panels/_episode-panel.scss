@@ -3,12 +3,51 @@
         padding: emCalc(5px) emCalc(1px) emCalc(5px) 0;
         @include border-top-left-radius(0);
         @include border-bottom-left-radius(0);
-        border-left: 0;
+        position: relative;
+        margin-bottom: 5px;
+        border-color: #dad3ba;
+        border-width: 3px 1px 3px 0;
+        .toggle-events-trigger {
+            position: absolute;
+            display: block;
+            right: 2px;
+            top: 0;
+            width: 21px;
+            height: 20px;
+            @include border-radius(0 0 3px 3px);
+            .icon-showhide {
+                vertical-align: top;
+                margin: 4px 0 0 5px;
+            }
+            &:hover {
+                background: #3665ff;
+            }
+            &.hide {
+                .icon-showhide {
+                    @include sprite-background-position($oe-sprite-icon-showhide, "hide");
+                }
+                &:hover {
+                   .icon-showhide {
+                        @include sprite-background-position($oe-sprite-icon-showhide, "hide-hover");
+                    }
+                }
+            }
+            &.show {
+                .icon-showhide {
+                    @include sprite-background-position($oe-sprite-icon-showhide, "show");
+                }
+                &:hover {
+                   .icon-showhide {
+                        @include sprite-background-position($oe-sprite-icon-showhide, "show-hover");
+                    }
+                }
+            }
+        }
         .episode-date {
             font-size: emCalc(11px);
             padding-left: emCalc(7px);
         }
-        h4 {
+        .episode-title {
             margin: emCalc(5px) emCalc(2px) emCalc(3px) 0;
             font-size: emCalc(15px);
             a {
@@ -27,6 +66,23 @@
         .add-event {
             margin-left: emCalc(2px);
         }
+        .events-overview {
+            margin: 0;
+            padding: 2px 5px 2px 5px;
+            li {
+                list-style: none;
+                font-size: 1em;
+                img {
+                    width: 12px;
+                    height: 12px;
+                }
+            }
+        }
+        &.hide-events {
+            .events {
+                display: none;
+            }
+        }
         .events {
             padding: 4px 0 0 0;
             margin: 5px 0 0 0;
@@ -34,20 +90,15 @@
             li {
                 list-style: none;
                 font-size: 1em;
-                a {
-                    display: block;
-                    padding: 0 10px 0 8px;
-                    font-size: $default-font-size;
-                    @include border-radius(0 6px 6px 0);
-                    &:hover {
-                        background: {
-                            color: #3665ff;
-                            image: image-url("_elements/icons/event/event_open_arrow.png");
-                            position: right center;
-                            repeat: no-repeat;
-                        }
-                        color: #fff;
-                    }
+            }
+            a {
+                display: block;
+                padding: 0 10px 0 8px;
+                font-size: $default-font-size;
+                @include border-radius(0 6px 6px 0);
+                &:hover {
+                    background: #3665ff image-url("_elements/icons/event/event_open_arrow.png") right center no-repeat;
+                    color: #fff;
                 }
             }
             .event-type {
@@ -55,11 +106,28 @@
                 display: inline-block;
                 &.alert {
                     background: image-url("_elements/icons/event/status/alert.png") right top no-repeat;
+                    &:hover {
+                        background-image: image-url("_elements/icons/event/status/alert-hover.png");
+                    }
                 }
             }
             .event-date {
                 display: inline-block;
                 padding-left: emCalc(26px);
+            }
+            // Selected state
+            li {
+                &.selected {
+                    a {
+                        background: #aaaaaa image-url("_elements/icons/event/event_open_arrow.png") right center no-repeat;
+                        color: #fff;
+                    }
+                    .event-type {
+                        &.alert {
+                            background-image: image-url("_elements/icons/event/status/alert-hover.png");
+                        }
+                    }
+                }
             }
         }
     }

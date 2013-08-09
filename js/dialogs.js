@@ -222,11 +222,18 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * event handlers.
    * @name Dialog#destroy
    * @method
+   * @fires Dialog#destroy
    * @pubic
    */
   Dialog.prototype.destroy = function() {
     this.instance.destroy();
     this.content.remove();
+
+    /**
+     * Destroy event.
+     *
+     * @event Dialog#destroy
+     */
     this.emit('destroy');
   };
 
@@ -236,9 +243,14 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * Emit the 'open' event after the dialog has opened.
    * @name Dialog#onDialogOpen
    * @method
+   * @fires Dialog#open
    * @private
    */
   Dialog.prototype.onDialogOpen = function() {
+    /**
+     * Open event.
+     * @event Dialog#open
+     */
     this.emit('open');
   };
 
@@ -247,9 +259,14 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * the dialog.
    * @name Dialog#onDialogClose
    * @method
+   * @fires Dialog#close
    * @private
    */
   Dialog.prototype.onDialogClose = function() {
+    /**
+     * Close event.
+     * @event Dialog#close
+     */
     this.emit('close');
     if (this.options.destroyOnClose) {
       this.destroy();

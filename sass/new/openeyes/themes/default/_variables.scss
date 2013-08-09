@@ -413,3 +413,10 @@ $ico-sprite-dimensions: true;
 
 // TODO: import all the default variables from the OpenEyes components into there once
 // the stylesheet is stable.
+
+// Sprite paths
+
+$oe-sprite-icons-alerts: "_elements/icons/alerts/*.png";
+$oe-sprite-icons-button-large: "_elements/btns/large/*.png";
+$oe-sprite-icons-button-small: "_elements/btns/small/*.png";
+$oe-sprite-icon-showhide: "_elements/icons/showhide/*.png";
