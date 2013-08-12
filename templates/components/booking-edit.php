@@ -104,7 +104,6 @@
 									</tr>
 								</tbody>
 							</table>
-
 							<table class="grid">
 								<tfoot>
 									<tr>
