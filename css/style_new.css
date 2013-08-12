@@ -3604,7 +3604,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   background: white;
 }
 
-/* line 23, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 28, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box {
   border-style: solid;
   border-width: 1px;
@@ -3618,7 +3618,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   border-color: #c9c9c9;
   color: black;
 }
-/* line 25, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 30, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box .close {
   font-size: 1.375em;
   padding: 5px 4px 4px;
@@ -3633,46 +3633,57 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
 .alert-box .close:hover, .alert-box .close:focus {
   opacity: 0.5;
 }
-/* line 28, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 33, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box ul {
   margin: 0;
   line-height: 1.4;
 }
-/* line 32, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 37, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box li {
   font-size: 1em;
   list-style: none;
 }
-/* line 36, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 41, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.radius {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 39, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 44, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.with-icon {
   padding-left: 3.75em;
   background-repeat: no-repeat;
   background-position: left top;
 }
-/* line 44, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 49, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.success {
   background-color: #e0f2db;
   border-color: #c0e4b6;
   color: black;
 }
-/* line 47, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 52, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.alert {
   background-color: #ffe6b2;
   border-color: #ffd57f;
   color: black;
   border-color: #fc621f;
 }
-/* line 50, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 55, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.alert.with-icon {
   background-image: url('../img/new/_elements/icons/box/warning.png?1376044457');
   min-height: 40px;
 }
-/* line 55, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 60, ../sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box.issue {
+  background-color: #fdf2e5;
+  border-color: #f9dab6;
+  color: black;
+}
+/* line 62, ../sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box.issue.with-icon {
+  background-image: url('../img/new/_elements/icons/box/issue.png?1376044457');
+  min-height: 36px;
+}
+/* line 67, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.secondary {
   background-color: #e9e9e9;
   border-color: #d0d0d0;

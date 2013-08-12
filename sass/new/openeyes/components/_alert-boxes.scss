@@ -9,6 +9,8 @@
 // .success             - Success information
 // .alert               - Alert information
 // .alert.with-icon     - Alert information with icon
+// .issue               - Issue information
+// .issue.with-icon     - Issue information with icon
 // .secondary           - Secondary information
 //
 // Styleguide 11.1
@@ -16,9 +18,12 @@
 // Alert box variables
 $oe-alert-default-bg-color: #e2e2e2 !default;
 $oe-alert-alert-bg-color: #ffe6b2 !default;
-$oe-alert-alert-with-icon-bg-image: image-url("_elements/icons/box/warning.png");
-$oe-alert-alert-with-icon-min-height: 40px;
-$oe-alert-with-icon-padding-left: emCalc(60px);
+$oe-alert-alert-with-icon-bg-image: image-url("_elements/icons/box/warning.png") !default;
+$oe-alert-alert-with-icon-min-height: 40px !default;
+$oe-alert-with-icon-padding-left: emCalc(60px) !default;
+$oe-alert-issue-bg-color: #fdf2e5 !default;
+$oe-alert-issue-with-icon-bg-image: image-url("_elements/icons/box/issue.png") !default;
+$oe-alert-issue-with-icon-min-height: 36px !default;
 
 .alert-box {
     @include alert($oe-alert-default-bg-color);
@@ -50,6 +55,13 @@ $oe-alert-with-icon-padding-left: emCalc(60px);
         &.with-icon {
             background-image: $oe-alert-alert-with-icon-bg-image;
             min-height: $oe-alert-alert-with-icon-min-height;
+        }
+    }
+    &.issue {
+        @include alert-style($oe-alert-issue-bg-color);
+        &.with-icon {
+            background-image: $oe-alert-issue-with-icon-bg-image;
+            min-height: $oe-alert-issue-with-icon-min-height;
         }
     }
     &.secondary {
