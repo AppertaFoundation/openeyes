@@ -62,7 +62,7 @@
 								<?php $form->widget('application.widgets.DiagnosisSelection',array(
 										'field' => 'systemic_disorder_id',
 										'options' => CommonSystemicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-										//'restrict' => 'specialty',
+										'restrict' => 'systemic',
 										'default' => false,
 										'layout' => 'patientSummary',
 										'loader' => 'add_systemic_diagnosis_loader',
