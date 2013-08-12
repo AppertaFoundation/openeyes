@@ -1,7 +1,7 @@
 // Alert boxes
 //
 // Markup:
-// <div class="alert-box radius {$modifiers}">
+// <div class="alert-box {$modifiers}">
 //     Alert! Some information the user needs to see, good or bad.
 //     <a href="#" class="close">&times;</a>
 //</div>
@@ -19,7 +19,7 @@
 $oe-alert-default-bg-color: #e2e2e2 !default;
 $oe-alert-alert-bg-color: #ffe6b2 !default;
 $oe-alert-alert-with-icon-bg-image: image-url("_elements/icons/box/warning.png") !default;
-$oe-alert-alert-with-icon-min-height: 40px !default;
+$oe-alert-alert-with-icon-min-height: 36px !default;
 $oe-alert-with-icon-padding-left: emCalc(60px) !default;
 $oe-alert-issue-bg-color: #fdf2e5 !default;
 $oe-alert-issue-with-icon-bg-image: image-url("_elements/icons/box/issue.png") !default;
@@ -27,6 +27,7 @@ $oe-alert-issue-with-icon-min-height: 36px !default;
 
 .alert-box {
     @include alert($oe-alert-default-bg-color);
+    @include radius($alert-radius);
     .close {
         @include alert-close;
     }
@@ -37,9 +38,6 @@ $oe-alert-issue-with-icon-min-height: 36px !default;
     li {
         font-size: 1em;
         list-style: none;
-    }
-    &.radius {
-        @include radius($alert-radius);
     }
     &.with-icon {
         padding-left: $oe-alert-with-icon-padding-left;

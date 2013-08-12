@@ -79,13 +79,6 @@ fieldset {
     &.highlight {
         @extend .field-group-highlight;
     }
-    legend {
-        background: none;
-        font-weight: normal;
-        font-size: $default-font-size;
-        padding: 0 0 1em 0;
-        margin: 0;
-    }
 }
 
 label {
@@ -98,13 +91,32 @@ label {
     }
 }
 
+// Field sizes
+//
+// You should control the width of form fields by the field container (usually
+// using the grid.) There are, however, different field classses that change the
+// font-size and padding, and a fixed-with class to control the width. Please be
+// aware that if you use the fixed-width class, you  will need to manually accomodate
+// this width at different breakpoints.
+//
+// Markup:
+// <input type="text" class="{$modifiers}" />
+//
+// .small             - A small form field
+// .small.fixed-width - A small form field with a fixed width
+//
+// Styleguide 8.2
+
+// Field sizes vars
+$oe-form-field-small-padding: emCalc(3px) emCalc(4px) !default;
+$oe-form-field-fixed-width: emCalc(110px) !default;
 @include input-form-fields {
     @include border-radius($oe-form-input-radius);
     height: auto;
     &.small {
-        padding: emCalc(3px) emCalc(4px);
+        padding: $oe-form-field-small-padding;
         &.fixed-width {
-            width: emCalc(110px);
+            width: $oe-form-field-fixed-width;
         }
     }
 }

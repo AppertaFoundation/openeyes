@@ -8,7 +8,7 @@
 				<a href="#">Edit</a>
 			</li>
 		</ul>
-		<div class="button-bar">
+		<div class="button-bar right">
 			<a href="#" class="button secondary small">
 				Save
 			</a>
@@ -129,7 +129,7 @@
 					<div class="large-2 column">
 						<label>Add comments:</label>
 					</div>
-					<div class="large-5 column end">
+					<div class="large-4 column end">
 						<textarea></textarea>
 					</div>
 				</div>
@@ -139,7 +139,7 @@
 							Site:
 						</label>
 					</div>
-					<div class="large-5 column end">
+					<div class="large-4 column end">
 						<select>
 							<option>City Road</option>
 						</select>
@@ -149,7 +149,7 @@
 					<div class="large-2 column">
 						<label>Decision date:</label>
 					</div>
-					<div class="large-5 column end">
+					<div class="large-4 column end">
 						<input type="text" />
 					</div>
 				</div>

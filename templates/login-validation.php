@@ -13,7 +13,7 @@
 			<div class="row">
 				<div class="large-11 small-11 small-centered large-centered column">
 					<form class="form panel login">
-						<div data-alert class="alert-box radius alert">
+						<div data-alert class="alert-box alert">
 							Invalid login.
 							<a href="#" class="close">×</a>
 						</div>

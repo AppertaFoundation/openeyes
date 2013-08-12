@@ -8,7 +8,7 @@
 				<a href="#">Edit</a>
 			</li>
 		</ul>
-		<div class="button-bar">
+		<div class="button-bar right">
 			<a href="#" class="button small">
 				Print 2nd Reminder letter
 			</a>
@@ -23,8 +23,12 @@
 	<div class="box event booking event-content">
 		<h2 class="event-title">Operation booking</h2>
 
-		<div class="alert-box radius issue with-icon">
-			Operation requires scheduling
+		<div class="alert-box alert with-icon">
+			Patient has no address, please correct in PAS before printing letter.
+		</div>
+
+		<div class="alert-box issue with-icon">
+			Operation requires scheduling.
 		</div>
 	</div>
 </div>

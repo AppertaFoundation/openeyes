@@ -6,7 +6,7 @@
 
 		<div class="panel">
 
-			<div class="alert-box radius alert with-icon">
+			<div class="alert-box alert with-icon">
 				<ul>
 					<li>One or more patients has no GP practice address, please correct in PAS before printing GP letter.</li>
 					<li>One or more patients has no Address, please correct in PAS before printing a letter for them.</li>

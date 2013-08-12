@@ -1,13 +1,38 @@
+// Fieldset panel
+//
+// This panel contains contains form fields, typically for displaying event forms.
+//
+// Markup:
+// <fieldset class="panel fieldset">
+//     <div class="row">
+//         <div class="small-2 column">
+//             <label for="eyes">Eyes:</label>
+//         </div>
+//         <div class="small-10 column">
+//             <input type="text" id="eyes" />
+//         </div>
+//     </div>
+// </fieldset>
+//
+// Styleguide 15.10
+
+// Fieldset panel vars
+$oe-panel-fieldset-border-radius: 0 !default;
+$oe-panel-fieldset-bg-color: #dae6f1 !default;
+$oe-panel-fieldset-padding: emCalc(10px) !default;
+$oe-panel-fieldset-panel-border-radius: 3px !default;
+$oe-panel-fieldset-panel-bg-color: white !default;
+
 .panel {
     &.fieldset {
-        @include border-radius(0);
-        background: #dae6f1;
+        @include border-radius($oe-panel-fieldset-border-radius);
+        background: $oe-panel-fieldset-bg-color;
         border: 0;
-        padding: 10px;
+        padding: $oe-panel-fieldset-padding;
         margin: 0;
         .panel {
-            @include border-radius(3px);
-            background: #fff;
+            @include border-radius($oe-panel-fieldset-panel-border-radius);
+            background: $oe-panel-fieldset-panel-bg-color;
         }
     }
 }

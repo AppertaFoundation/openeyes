@@ -1,19 +1,45 @@
+// Boxes
+//
+// A box is simply a container that groups large sections of the page, for example
+// am event detail view.
+//
+// Markup:
+// <div class="box {$modifiers}">
+//     <p>Here is some content within a box.</p>
+// </div>
+//
+// .content             - Content box
+// .event               - Event detail box
+// .event.booking       - Event booking detail box
+//
+// Styleguide 12.1
+
+// Box vars
+$oe-box-margin: emCalc(20px) 0 !default;
+$oe-box-border-radius: $global-radius !default;
+$oe-box-content-bg-color: #dae6f1 !default;
+$oe-box-event-border-radius: 0 !default;
+$oe-box-event-background: #fafafa !default;
+$oe-box-event-padding: emCalc(5px) !default;
+$oe-box-event-border-width: 0 5px 5px !default;
+$oe-box-event-booking-border-color: #fd6892 !default;
+
 .box {
-    @include border-radius($global-radius);
-    margin: 20px 0;
+    @include border-radius($oe-box-border-radius);
+    margin: $oe-box-margin;
     &.content {
-        background: #dae6f1;
+        background: $oe-box-content-bg-color;
     }
 
     &.event {
-        @include border-radius(0);
-        background: #fafafa;
-        padding: emCalc(5px) emCalc(5px) emCalc(10px);
-        border-width: 0 5px 5px;
+        @include border-radius($oe-box-event-border-radius);
+        background: $oe-box-event-background;
+        padding: $oe-box-event-padding;
+        border-width: $oe-box-event-border-width;
         border-style: solid;
         margin: 0;
         &.booking {
-            border-color: #fd6892;
+            border-color: $oe-box-event-booking-border-color;
         }
     }
 }
