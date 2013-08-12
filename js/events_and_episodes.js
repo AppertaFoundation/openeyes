@@ -18,7 +18,7 @@
 
 $(document).ready(function(){
 	$collapsed = true;
-	
+
 	var patientWarningSpan = $('.patientReminder .icons li.warning span');
 	$('.patientReminder .icons li.warning').hover(function() {
 			var infoWrap = $('<div class="warningHover"></div>');
@@ -29,7 +29,7 @@ $(document).ready(function(){
 			var top = offsetPos.top + $(this).height() + 6;
 			var middle = offsetPos.left + $(this).width()/2;
 			var left = middle - infoWrap.width()/2 - 8;
-			
+
 			infoWrap.css({'position': 'absolute', 'top': top + "px", 'left': left + "px", "width": width});
 			infoWrap.fadeIn('fast');
 		},
@@ -37,27 +37,26 @@ $(document).ready(function(){
 			$('body > div:last').remove();
 		}
 	);
-		
-	
-	$('button.addEvent.enabled').click(function(e) {
-		var subspecialty_id = $(this).attr('data-attr-subspecialty-id');
-		var returnUrl = window.location.href.replace(/#$/,'')+'#addEvent';
 
-		$.ajax({
-			'type': 'POST',
-			'url': baseUrl+'/patient/addNewEvent',
-			'data': 'subspecialty_id='+subspecialty_id+'&patient_id='+OE_patient_id+'&returnUrl='+returnUrl+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'success': function(html) {
-				if (html == "0") {
-					new OpenEyes.Dialog.Alert({
-						content: 'Sorry, you cannot add an event to this episode because you are not in any firms with the same subspecialty.'
-					}).open();
-				} else {
-					$('#user_panel').before(html);
-				}
-			}
+	(function addNewEvent() {
+
+		var template = $('#add-new-event-template');
+		var html = template.html();
+		var data = template.data('specialty');
+
+		var dialog = new OpenEyes.Dialog({
+			destroyOnClose: false,
+			title: 'Add a new ' + (data && data.name ? data.name : 'Support services') + ' event',
+			content: html,
+			dialogClass: 'dialog event',
+			width: 580,
+			id: 'add-new-event-dialog'
 		});
-	});
+
+		$('button.addEvent.enabled').click(function() {
+			dialog.open();
+		});
+	}());
 
 	$('button.cancelAddEvent').die('click').live('click',function(e) {
 		$('#add-new-event-dialog').dialog('close');

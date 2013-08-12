@@ -162,4 +162,14 @@ class Practice extends BaseActiveRecord
 			}
 		}
 	}
+	
+	public function getCorrespondenceName()
+	{
+		return Gp::UNKNOWN_NAME;
+	}
+	
+	public function getSalutationName()
+	{
+		return Gp::UNKNOWN_SALUTATION;
+	}
 }

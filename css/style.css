@@ -1769,6 +1769,11 @@ body .ui-widget-overlay {
     padding: 0;
 }
 
+.ui-dialog.dialog .ui-dialog-content.loading {
+    background: url(../img/ajax-loader-large.gif) center center no-repeat;
+    padding: 20px 0 40px 0;
+    text-align: center;
+}
 .ui-dialog.dialog .ui-dialog-titlebar-close {
     position: absolute;
     top: -4px;
@@ -1807,7 +1812,18 @@ body .ui-widget-overlay {
     padding: 1.5em .5em .5em .5em;
 }
 
-#add-new-event-dialog p { margin-bottom: 8px; -webkit-border-radius: 5px; border-radius: 5px; display: block; -webkit-margin-before: 5px; -webkit-margin-after: 5px; line-height: 1.231; }
+/* ====== Site and firm Dialog ====== */
+
+#site-and-firm-form {
+    display: none;
+}
+
+.ui-dialog #site-and-firm-form {
+    display: block;
+}
+
+
+#add-new-event-dialog p { margin-bottom: 8px; -webkit-border-radius: 5px; border-radius: 5px; display: block; -webkit-margin-before: 5px; -webkit-margin-after: 5px; line-height: 1.231; padding: 0 1px;}
 #add-new-event-dialog a { color: #0b59da; font-weight: normal; display: block; padding: 5px; background: #f6f6f6; -webkit-border-radius: 3px; border-radius: 3px; }
 #add-new-event-dialog div.title { margin-top: 10px; margin-bottom: 15px; }
 #add-new-event-dialog p > a:hover { border: none; color: #fff; background: #69bd51; }
