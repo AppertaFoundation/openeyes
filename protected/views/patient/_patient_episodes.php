@@ -65,10 +65,10 @@ elseif ($latest = $this->patient->getLatestEvent()) {
 $msg = null;
 
 if ($latest) {
-	$msg = "Latest Event ";
+	$msg = "Latest Event";
 	if ($subspecialty) {
 		// might not be a subspecialty for legacy
-		$msg .= "in " . $subspecialty->name;
+		$msg .= " in " . $subspecialty->name;
 	}
 	$msg .= ": <strong>" . $latest->eventType->name . "</strong> <span class='small'>(" . $latest->NHSDate('created_date') . ")</span>";
 }
