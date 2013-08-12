@@ -16,7 +16,20 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * OpenEyes Namespace
+ * @type {object}
+ * @namespace OpenEyes
+ * @global
+ */
 var OpenEyes = window.OpenEyes || {};
+
+/**
+ * Util Namespace
+ * @type {object}
+ * @namespace OpenEyes.Util
+ * @memberof OpenEyes
+ */
 OpenEyes.Util = OpenEyes.Util || {};
 
 /**

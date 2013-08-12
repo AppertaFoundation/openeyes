@@ -29,8 +29,18 @@ $oe-header-small-margin: 0 0 emCalc(10px) 0;
         @include hide-text;
         background: $oe-header-logo-bg-image no-repeat;
         background-size: 100%;
-        max-width: $oe-header-logo-width;
         height: $oe-header-logo-height;
         margin-left: -1 * $column-gutter / 2;
+        max-width: $oe-header-logo-width;
+    }
+}
+
+.event-header {
+    @extend .clearfix;
+    background: #eaddaf;
+    border-bottom: 5px solid #a29d8a;
+    padding: 6px 10px 0 10px;
+    .button-bar {
+        float: right;
     }
 }

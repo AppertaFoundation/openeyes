@@ -1,0 +1,13 @@
+.panel {
+    &.fieldset {
+        @include border-radius(0);
+        background: #dae6f1;
+        border: 0;
+        padding: 10px;
+        margin: 0;
+        .panel {
+            @include border-radius(3px);
+            background: #fff;
+        }
+    }
+}

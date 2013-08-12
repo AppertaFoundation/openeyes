@@ -316,7 +316,7 @@ $form-spacing: emCalc(18px);
 
 // We use these to style the labels in different ways
 $form-label-pointer: pointer;
-$form-label-font-size: emCalc(13px);
+$form-label-font-size: $default-font-size;
 $form-label-font-weight: 500;
 $form-label-font-color: #000;
 $form-label-bottom-margin: emCalc(3px);

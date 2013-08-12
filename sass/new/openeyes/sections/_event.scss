@@ -1,0 +1,33 @@
+.event-title {
+    font-size: emCalc(19px);
+}
+.event-content {
+    .episode {
+        border-top: 1px dotted #97c6f1;
+        .episode-title {
+            color: #56a7f1;
+            font-style: italic;
+            font-size: $default-font-size;
+            padding: 10px;
+            margin: 0;
+        }
+        h3 {
+            font-size: $default-font-size;
+        }
+        fieldset {
+            fieldset {
+                border: 0;
+                margin: 0 0 1em 0;
+                // padding: 0;
+                @include all-form-fields {
+                    margin-bottom: .5em;
+                }
+                &.panel {
+                    border-style: solid;
+                    border-width: 1px;
+                    border-color: #d9d9d9;
+                }
+            }
+        }
+    }
+}

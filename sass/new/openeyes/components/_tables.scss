@@ -30,6 +30,8 @@ $oe-table-header-cell-font-size: emCalc(11px) !default;
 $oe-table-grid-cell-border-color: #cccccc;
 $oe-table-cell-font-size: emCalc(13px);
 $oe-table-cell-label-font-size: emCalc(16px);
+$oe-table-footer-cell-font-size: emCalc(11px);
+
 
 table {
     @include table;
@@ -54,7 +56,8 @@ table {
         tr {
             th,
             td {
-                font-size: $oe-table-cell-font-size;
+                font-size: $oe-table-footer-cell-font-size;
+                font-weight: bold;
             }
             &.even,
             &.alt,

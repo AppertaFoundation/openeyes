@@ -4,4 +4,16 @@
     &.content {
         background: #dae6f1;
     }
+
+    &.event {
+        @include border-radius(0);
+        background: #fafafa;
+        padding: emCalc(5px) emCalc(5px) emCalc(10px);
+        border-width: 0 5px 5px;
+        border-style: solid;
+        margin: 0;
+        &.booking {
+            border-color: #fd6892;
+        }
+    }
 }
