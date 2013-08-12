@@ -4,7 +4,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class PatientViewPage extends Page
 {
-    protected $path = "/";
+    protected $path = "/site/patient/view/";
 
     protected $elements = array(
         'homeButton' => array('xpath' => "//*[@id='user_nav']//*[contains(text(), 'Home')]"),
@@ -15,21 +15,28 @@ class PatientViewPage extends Page
         'userProfile' => array('xpath' => "//*[@id='user_id']/a"),
         'addOpthalmicDiagnosis' => array('xpath' => "//button[@id='btn-add_new_ophthalmic_diagnosis']"),
         'selectOphthalmicDisorder' => array('xpath' => "//*[@id='DiagnosisSelection_ophthalmic_disorder_id']"),
-        'opthRightEye' => array('xpath' => "//input[@name='diagnosis_eye']"),
-        'opthLeftEye' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[3]"),
-        'opthBothEyes' => array('xpath' => "//form[@id='add-ophthalmic-diagnosis']/div[3]/input[2]"),
-        'day' => array('xpath' => "//select[@name='fuzzy_day']"),
-        'month' => array('xpath' => "//select[@name='fuzzy_month']"),
-        'year' => array('xpath' => "//select[@name='fuzzy_year']"),
+        'opthRightEye' => array('xpath' => "//*[@id='add-ophthalmic-diagnosis']/div[4]/input[1]"),
+        'opthLeftEye' => array('xpath' => "//*[@id='add-ophthalmic-diagnosis']/div[4]/input[3]"),
+        'opthBothEyes' => array('xpath' => "//*[@id='add-ophthalmic-diagnosis']/div[4]/input[2]"),
+        'opthDay' => array('xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_day']"),
+        'opthMonth' => array('xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_month']"),
+        'opthYear' => array('xpath' => "//*[@id='add-ophthalmic-diagnosis']//select[@name='fuzzy_year']"),
         'opthSaveButton' => array('xpath' => "//*[@class='classy green mini btn_save_ophthalmic_diagnosis']//*[contains(text(),'Save')]"),
         'addSystemicDiagnosis' => array('xpath' => "//button[@id='btn-add_new_systemic_diagnosis']"),
-        'selectSystemicDiagnosis' => array('xpath' => "//select[@id='diagnosisselection_systemic_disorder_id']"),
+        'selectSystemicDiagnosis' => array('xpath' => "//*[@id='DiagnosisSelection_systemic_disorder_id']"),
+        'sysDay' => array('xpath' => "//*[@id='add-systemic-diagnosis']//select[@name='fuzzy_day']"),
+        'sysMonth'=> array('xpath' => "//*[@id='add-systemic-diagnosis']//select[@name='fuzzy_month']"),
+        'sysYear' => array ('xpath' => "//*[@id='add-systemic-diagnosis']//select[@name='fuzzy_year']"),
         'sysNoEyes' => array('xpath' => "//*[@id='add-systemic-diagnosis']/div[4]/input[1]"),
         'sysRightEye' => array('xpath' => "//*[@id='add-systemic-diagnosis']/div[4]/input[2]"),
         'sysBothEyes' => array('xpath' => "//*[@id='add-systemic-diagnosis']/div[4]/input[3]"),
         'sysLeftEye' => array('xpath' => "//*[@id='add-systemic-diagnosis']/div[4]/input[4]"),
         'sysSaveButton' => array('xpath' => "//*[@class='classy green mini btn_save_systemic_diagnosis']//*[contains(text(),'Save')]"),
+        'addPreviousOperation' => array('xpath' => "//*[@id='btn-add_previous_operation']"),
         'commonOperation' => array('xpath' => "//select[@id='common_previous_operation']"),
+        'operationDay' => array('xpath' => "//*[@id='add-previous_operation']//select[@name='fuzzy_day']"),
+        'operationMonth' => array('xpath' => "//*[@id='add-previous_operation']//select[@name='fuzzy_month']"),
+        'operationYear' => array('xpath' => "//*[@id='add-previous_operation']//select[@name='fuzzy_year']"),
         'operationNoEyes' => array('xpath' => "//*[@id='add-previous_operation']/div[4]/input[1]"),
         'operationRightEye' => array('xpath' => "//*[@id='add-previous_operation']/div[4]/input[2]"),
         'operationBothEyes' => array('xpath' => "//*[@id='add-previous_operation']/div[4]/input[3]"),
@@ -37,23 +44,31 @@ class PatientViewPage extends Page
         'operationSaveButton' => array('xpath' => "//*[@class='classy green mini btn_save_previous_operation']//*[contains(text(),'Save')]"),
         'editCVIstatusButton' => array('xpath'=> "//button[@id='btn-edit_oph_info']"),
         'cviStatus' => array('xpath' => "//button[@id='btn-edit_oph_info']"),
+        'CVIDay' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_day']"),
+        'CVIMonth' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_month']"),
+        'CVIYear' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_year']"),
         'saveCVI' => array('xpath' => "//*[@class='classy green mini btn_save_oph_info']//*[contains(text(),'Save')]"),
         'addMedicationButton' => array('xpath' => "//button[@id='btn-add_medication']"),
         'selectMedication' => array('xpath' => "//select[@id='drug_id']"),
         'selectRoute' => array('xpath' => "//select[@id='route_id']"),
         'selectFrequency' => array('xpath' => "//select[@id='frequency_id']"),
-        'selectDateFrom' => array('xpath' => "//input[@id='start_date']"),
+        'openMedicationDate' => array('xpath' => "//*[@id='start_date']"),
+        'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']/table/tbody/tr[2]/td[4]/a"),
         'saveMedication' => array('xpath' => "//*[@class='classy green mini btn_save_medication']//*[contains(text(),'Save')]"),
-        'addAllergyButton' => array('xpath' => "//button[@id='btn_add_allergy']"),
+        'addAllergyButton' => array('xpath' => "//*[@id='btn-add_allergy']"),
         'selectAllergy' => array('xpath' => "//select[@id='allergy_id']"),
+        'saveAllergy' => array('xpath' => "//*[@id='add-allergy']/div[3]/button[1]//*[contains(text(),'Save')]"),
         'addFamilyHistoryButton' => array('xpath' => "//*[@id='btn-add_family_history']"),
         'selectRelativeID' => array('xpath' => "//*[@id='relative_id']"),
         'selectFamilySide' => array('xpath' => "//*[@id='side_id']"),
         'selectFamilyCondition' => array('xpath' => "//*[@id='condition_id']"),
         'enterFamilyComments' => array('xpath' => "//*[@id='comments']"),
         'saveFamilyHistory' => array('xpath' => "//*[@class='classy green mini btn_save_family_history']//*[contains(text(),'Save')]"),
-        'createViewEpisodeEvents' => array('xpath' => "//*[@id='content']/div/div[2]/p/a//*[contains(text(),'Create or View Episodes and Events')]")
-    );
+        'createViewEpisodeEvents' => array('xpath' => "//*[@id='content']/div/div[2]/p/a//*[contains(text(),'Create or View Episodes and Events')]"),
+        'removeAllergyButton' => array('xpath' => "//*[@id='patient_allergies']//*[contains(text(),'Remove')]"),
+        'removeConfirmButton' => array('xpath' => "//*[@id='delete_allergy']/div[2]//*[contains(text(),'Remove allergy')]")
+
+        );
 
     public function addOpthalmicDiagnosis ($diagnosis)
     {
@@ -63,25 +78,49 @@ class PatientViewPage extends Page
 
     public function selectEye ($eye)
     {
-        $eyesArray = array(
-            "Right" => 'opthRightEye',
-            "Both" => 'opthLeftEye',
-            "Left" => 'opthBothEyes'
-        );
-
-       // $this->getElement($eyesArray,[$eye])->press();
+        if ($eye===('Right')) {
+        $this->getElement('opthRightEye')->press();
+        }
+        if ($eye===('Both'))  {
+            $this->getElement('opthBothEyes')->press();
+        }
+        if ($eye===('Left'))  {
+            $this->getElement('opthLeftEye')->press();
+        }
     }
 
-    public function addDate ($day, $month, $year)
+    public function addOpthalmicDate ($day, $month, $year)
     {
-        $this->getElement('day')->selectOption($day);
-        $this->getElement('month')->selectOption($month);
-        $this->getElement('year')->selectOption($year);
+        $this->getElement('opthDay')->selectOption($day);
+        $this->getElement('opthMonth')->selectOption($month);
+        $this->getElement('opthYear')->selectOption($year);
+    }
+
+    public function addSystemicDate ($day, $month, $year)
+    {
+        $this->getElement('sysDay')->selectOption($day);
+        $this->getElement('sysMonth')->selectOption($month);
+        $this->getElement('sysYear')->selectOption($year);
+    }
+
+    public function addOperationDate ($day, $month, $year)
+    {
+        $this->getElement('operationDay')->selectOption($day);
+        $this->getElement('operationMonth')->selectOption($month);
+        $this->getElement('operationYear')->selectOption($year);
+    }
+
+    public function addCVIDate ($day, $month, $year)
+    {
+        $this->getElement('CVIDay')->selectOption($day);
+        $this->getElement('CVIMonth')->selectOption($month);
+        $this->getElement('CVIYear')->selectOption($year);
     }
 
     public function saveOpthalmicDiagnosis ()
     {
         $this->getElement('opthSaveButton')->press();
+        $this->getSession()->wait(1000,false);
     }
 
     public function addSystemicDiagnosis ($diagnosis)
@@ -109,11 +148,14 @@ class PatientViewPage extends Page
     public function saveSystemicDiagnosis ()
     {
         $this->getElement('sysSaveButton')->press();
+        $this->getSession()->wait(1000,false);
     }
 
-    public function commonOperation ($operation)
+    public function previousOperation ($operation)
     {
+        $this->getElement('addPreviousOperation')->press();
         $this->getElement('commonOperation')->selectOption($operation);
+        $this->getSession()->wait(1000,false);
     }
 
     public function operationSide ($side)
@@ -135,6 +177,7 @@ class PatientViewPage extends Page
     public function savePreviousOperation ()
     {
         $this->getElement('operationSaveButton')->press();
+        $this->getSession()->wait(1000,false);
     }
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
@@ -143,8 +186,11 @@ class PatientViewPage extends Page
         $this->getElement('selectMedication')->selectOption($medication);
         $this->getElement('selectRoute')->selectOption($route);
         $this->getElement('selectFrequency')->selectOption($frequency);
-        $this->getElement('selectDateFrom')->selectOption($datefrom);
+        $this->getElement('openMedicationDate')->click();
+        $this->getSession()->wait(1000,false);
+        $this->getElement('selectDateFrom')->click($datefrom);
         $this->getElement('saveMedication')->click();
+        $this->getSession()->wait(1000,false);
     }
 
     public function editCVIstatus ($status)
@@ -156,12 +202,24 @@ class PatientViewPage extends Page
     public function saveCVIstatus ()
     {
         $this->getElement('saveCVI')->click();
+        $this->getSession()->wait(1000,false);
+    }
+
+    public function removeAllergy ()
+    {
+        $this->getElement('removeAllergyButton')->click();
+        $this->getElement('removeConfirmButton')->click();
+        $this->getSession()->wait(1000,false);
+
     }
 
     public function addAllergy ($allergy)
     {
         $this->getElement('addAllergyButton')->click();
+        $this->getSession()->wait(1000,false);
         $this->getElement('selectAllergy')->selectOption($allergy);
+        $this->getElement('saveAllergy')->click();
+        $this->getSession()->wait(1000,false);
     }
 
     public function addFamilyHistory ($relative, $side, $condition, $comments)
@@ -170,8 +228,9 @@ class PatientViewPage extends Page
         $this->getElement('selectRelativeID')->selectOption($relative);
         $this->getElement('selectFamilySide')->selectOption($side);
         $this->getElement('selectFamilyCondition')->selectOption($condition);
-        $this->getElement('enterFamilyComments')->selectOption($comments);
+        $this->getElement('enterFamilyComments')->setValue($comments);
         $this->getElement('saveFamilyHistory')->click();
+        $this->getSession()->wait(1000,false);
     }
 
     public function createEpisodeAndEvent ()
@@ -179,11 +238,4 @@ class PatientViewPage extends Page
         $this->getElement('createViewEpisodeEvents')->click();
     }
 
-
 }
-
-
-////Pass Calendar Day from Example Table
-//    public static  function passDateFromTable ($dateFrom) {
-//        return "//*[@id='ui-datepicker-div']/table/tbody//a[contains(text(),'". $dateFrom ."')]";
-//}

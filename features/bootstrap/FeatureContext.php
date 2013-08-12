@@ -60,9 +60,9 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         if (isset($this->environment[$environment])) {
             $this->getPage('HomePage')->open();
         } else {
-            throw new \Exception("Environment $environment doesn't exists");
+            throw new \Exception("Environment $environment doesn't exist");
         }
-        //Clear cookies function required here
+
     }
 
     /**
@@ -132,13 +132,13 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
     /**
      * @Then /^I search for patient name last name "([^"]*)" and first name "([^"]*)"$/
      */
-    public function SearchPatientName ($first, $last)
+    public function SearchPatientName ($last, $first)
     {
         /**
          * @var HomePage $homepage
          */
         $homepage = $this->getPage('HomePage');
-        $homepage->searchPatientName($first, $last);
+        $homepage->searchPatientName($last, $first);
         $homepage->searchSubmit();
     }
 
@@ -236,8 +236,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
-        $patientView->addDate($day, $month, $year);
+        $patientView = $this->getPage('PatientViewPage');
+        $patientView->addOpthalmicDate($day, $month, $year);
      }
 
     /**
@@ -248,7 +248,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->saveOpthalmicDiagnosis();
     }
 
@@ -260,7 +260,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->addSystemicDiagnosis($diagnosis);
     }
 
@@ -272,7 +272,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->selectSystemicSide($side);
     }
 
@@ -284,8 +284,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
-        $patientView->addDate($day, $month, $year);
+        $patientView = $this->getPage('PatientViewPage');
+        $patientView->addSystemicDate($day, $month, $year);
     }
 
     /**
@@ -296,7 +296,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->saveSystemicDiagnosis();
     }
 
@@ -308,8 +308,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
-        $patientView->commonOperation($operation);
+        $patientView = $this->getPage('PatientViewPage');
+        $patientView->previousOperation($operation);
     }
 
     /**
@@ -320,7 +320,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->operationSide($operation);
     }
 
@@ -332,8 +332,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
-        $patientView->addDate($day, $month, $year);
+        $patientView = $this->getPage('PatientViewPage');
+        $patientView->addOpthalmicDate($day, $month, $year);
     }
 
     /**
@@ -344,7 +344,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->savePreviousOperation();
     }
 
@@ -356,7 +356,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->medicationDetails($medication, $route, $frequency, $dateFrom);
     }
 
@@ -368,7 +368,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->editCVIstatus($status);
     }
 
@@ -380,8 +380,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
-        $patientView->addDate($day, $month, $year);
+        $patientView = $this->getPage('PatientViewPage');
+        $patientView->addCVIDate($day, $month, $year);
     }
 
     /**
@@ -392,8 +392,19 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->saveCVIstatus();
+    }
+    /**
+     * @Then /^I Remove existing Allergy$/
+     */
+    public function removeAllergy()
+    {
+        /**
+         * @var PatientViewPage $patientView
+         */
+        $patientView = $this->getPage('PatientViewPage');
+        $patientView->removeAllergy();
     }
 
     /**
@@ -404,8 +415,9 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->addAllergy($allergy);
+        //!!Allergies can only be added once so a manual remove or a feature to remove needs to be added here!!
     }
 
     /**
@@ -416,7 +428,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var PatientViewPage $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewPage');
         $patientView->addFamilyHistory($relative, $side, $condition, $comments);
     }
 
