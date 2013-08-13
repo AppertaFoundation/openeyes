@@ -12,6 +12,11 @@ class Login extends Page
         'loginButton' => array('xpath' => "//button[@id='login_button']")
     );
 
+    public function maximizeBrowserWindow ()
+    {
+        $this->getSession()->resizeWindow(1280,800);
+    }
+
     public function loginWith($user, $password)
     {
         $this->getElement('user')->setValue($user);

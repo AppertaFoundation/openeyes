@@ -163,8 +163,30 @@ class BaseController extends Controller
 		}
 
 		$this->registerCssFiles();
+		$this->adjustScriptMapping();
 
 		return parent::beforeAction($action);
+	}
+
+	/**
+	 * Adjust the the client script mapping (for javascript and css files assets).
+	 *
+	 * If a Yii widget is being used in an Ajax request, all dependant scripts and
+	 * stylesheets will be outputted in the response. This method ensures the core
+	 * scripts and stylesheets are not outputted in an Ajax response.
+	 */
+	private function adjustScriptMapping() {
+		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+			$scriptMap = Yii::app()->clientScript->scriptMap;
+			$scriptMap['jquery.js'] = false;
+			$scriptMap['jquery.min.js'] = false;
+			$scriptMap['jquery-ui.js'] = false;
+			$scriptMap['jquery-ui.min.js'] = false;
+			$scriptMap['module.js'] = false;
+			$scriptMap['style.css'] = false;
+			$scriptMap['jquery-ui.css'] = false;
+			Yii::app()->clientScript->scriptMap = $scriptMap;
+		}
 	}
 
 	/**

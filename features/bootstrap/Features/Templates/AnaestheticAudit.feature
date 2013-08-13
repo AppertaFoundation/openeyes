@@ -14,31 +14,31 @@ Feature: Create New Anaesthetic Satisfaction Audit
     Then I search for patient name last name "<last>" and first name "<first>"
 
     Then I select Create or View Episodes and Events
-    Then I select Add First New Episode and Confirm
+    #Then I select Add First New Episode and Confirm
+    Then I expand the Cataract sidebar
+    #Then I expand the Glaucoma sidebar
     And I add a New Event "<EventType>"
 
     Then I select an Anaesthetist "<Anaesthetist>"
     And I select Satisfaction levels of Pain "<pain>" Nausea "<nausea>"
 
     And I tick the Vomited checkbox
-    #And I untick the Vomited checkbox
+    And I untick the Vomited checkbox
 
     Then I select Vital Signs of Respiratory Rate "<resprate>" Oxygen Saturation "<oxysat>" Systolic Blood Pressure "<sysblood>"
     And I select Vital Signs of Body Temperature "<temp>" and Heart Rate "<heart>" Conscious Level AVPU "<AVPU>"
 
     Then I enter Comments "Here are some test comments"
 
-    #And I select the Yes option for Ready to Discharge
-    And I select the No option for Read to Discharge
+    And I select the Yes option for Ready to Discharge
+    And I select the No option for Ready to Discharge
 
     Then I Save the Event
     #Then I Cancel the Event
 
-    Then I choose to close the browser
-
   Examples: User details
-    | environment   | site      | username | password     | hospnumber   | nhs        | last    | first  | EventType     | Anaesthetist | pain | nausea | resprate | oxysat | sysblood | temp | heart | AVPU |
-    | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin, | Violet | Satisfaction  | no           | 2    | 3      | 3        |  3     |  4       |  5   | 2     | 2    |
+    | environment   | site      | username | password     | hospnumber   | nhs        | last            | first  | EventType     | Anaesthetist | pain | nausea | resprate | oxysat | sysblood | temp | heart | AVPU |
+    | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin, Violet  | Violet | Satisfaction  | no           | 2    | 3      | 3        |  3     |  4       |  5   | 2     | 2    |
 
 
   # Site ID's:

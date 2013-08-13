@@ -23,58 +23,65 @@ OpenEyes.Util = OpenEyes.Util || {};
  * Extends an object with another objects' properties.
  * @name Object#mixin
  */
-Object.defineProperty(Object.prototype, 'mixin', {
-  value: function(obj) {
-    for (var prop in obj) {
-      if (obj.hasOwnProperty(prop)) {
-        this[prop] = obj[prop];
+if (!Object.prototype.mixin) {
+  Object.defineProperty(Object.prototype, 'mixin', {
+    value: function(obj) {
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          this[prop] = obj[prop];
+        }
       }
+      return this;
     }
-    return this;
-  }
-});
+  });
+}
 
 /**
  * Extend an objects' prototype with another objects' prototype.
  * @name Function#inherits
  */
-Object.defineProperty(Function.prototype, 'inherits', {
-  value: function(_super, _subProto) {
-    this._super = _super;
-    this.prototype = Object.create(_super.prototype);
-    this.prototype.constructor = this;
-    this.prototype.mixin(_subProto);
-    return this;
-  }
-});
+if (!Function.prototype.inherits) {
+  Object.defineProperty(Function.prototype, 'inherits', {
+    value: function(_super, _subProto) {
+      this._super = _super;
+      this.prototype = Object.create(_super.prototype);
+      this.prototype.constructor = this;
+      this.prototype.mixin(_subProto);
+      return this;
+    }
+  });
+}
 
 /**
  * Function.prototype.bind polyfill for older browsers
  * @name Function.prototype#bind
  */
 if (!Function.prototype.bind) {
-  Function.prototype.bind = function (oThis) {
-    if (typeof this !== "function") {
-      // closest thing possible to the ECMAScript 5 internal IsCallable function
-      throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+  Object.defineProperty(Function.prototype, 'bind', {
+    value: function(oThis) {
+
+      if (typeof this !== "function") {
+        // closest thing possible to the ECMAScript 5 internal IsCallable function
+        throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+      }
+
+      var aArgs = Array.prototype.slice.call(arguments, 1);
+      var fToBind = this;
+      var fNOP = function () {};
+      var fBound = function () {
+        return fToBind.apply((this instanceof fNOP && oThis ? this : oThis),
+          aArgs.concat(Array.prototype.slice.call(arguments)));
+      };
+
+      fNOP.prototype = this.prototype;
+      fBound.prototype = new fNOP();
+
+      return fBound;
     }
-
-    var aArgs = Array.prototype.slice.call(arguments, 1);
-    var fToBind = this;
-    var fNOP = function () {};
-    var fBound = function () {
-      return fToBind.apply((this instanceof fNOP && oThis ? this : oThis),
-        aArgs.concat(Array.prototype.slice.call(arguments)));
-    };
-
-    fNOP.prototype = this.prototype;
-    fBound.prototype = new fNOP();
-
-    return fBound;
-  };
+  });
 }
 
-(function(window, namespace) {
+(function(window) {
 
   /**
    * Emitter
@@ -186,6 +193,6 @@ if (!Function.prototype.bind) {
     return this;
   };
 
-  namespace.EventEmitter = Emitter;
+  OpenEyes.Util.EventEmitter = Emitter;
 
-}(this, OpenEyes.Util));
+}(this));
