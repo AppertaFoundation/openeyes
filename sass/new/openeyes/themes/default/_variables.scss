@@ -31,7 +31,7 @@ $default-float: left;
 
 $body-bg: #d4d1cd;
 $body-font-color: #222;
-$body-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+$body-font-family: Helvetica, Arial, sans-serif;
 $body-font-weight: normal;
 $body-font-style: normal;
 
@@ -324,7 +324,7 @@ $input-font-family: inherit;
 $input-font-color: rgba(0,0,0,0.75);
 $input-font-size: emCalc(13px);
 $input-bg-color: #fff;
-$input-focus-bg-color: darken(#fff, 2%);
+$input-focus-bg-color: #fff;
 $input-border-color: darken(#fff, 20%);
 $input-focus-border-color: darken(#fff, 40%);
 $input-border-style: solid;

@@ -1,3 +1,16 @@
 /**
- * Operation Booking module styles
+ * Operation Booking module styles.
+ * NOTE: This is an example, and these styles will be moved into the module
+ * specific sass directory once the compilation step for modules sass has been created.
  */
+
+.event-content {
+    &.booking {
+        background-image: image-url("modules/operationbooking/watermark.png");
+        background-repeat: no-repeat;
+        background-position: right top;
+        .event-title {
+            background: image-url("modules/operationbooking/medium.png") no-repeat left center;
+        }
+    }
+}

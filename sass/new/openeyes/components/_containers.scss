@@ -33,3 +33,15 @@ $oe-container-content-min-height: 330px !default;
     background: $oe-container-content-bg-image 0 bottom no-repeat;
     min-height: $oe-container-content-min-height;
 }
+
+// Event content container
+//
+// The event content container wraps the event content.
+//
+// Styleguide 2.3
+.event-content {
+    .event-title {
+        padding: 9px 0 9px 50px;
+        font-size: emCalc(19px);
+    }
+}

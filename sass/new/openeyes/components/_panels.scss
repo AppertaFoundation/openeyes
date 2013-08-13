@@ -6,6 +6,7 @@
 .panel {
     @include panel;
     @include radius;
+    margin-top: 0;
 }
 
 @import "panels/user-panel";

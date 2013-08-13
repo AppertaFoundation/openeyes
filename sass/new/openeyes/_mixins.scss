@@ -42,22 +42,7 @@
 
 // Apply a set of rules to input form fields.
 @mixin input-form-fields {
-    input[type="text"],
-    input[type="password"],
-    input[type="date"],
-    input[type="datetime"],
-    input[type="datetime-local"],
-    input[type="month"],
-    input[type="week"],
-    input[type="email"],
-    input[type="number"],
-    input[type="search"],
-    input[type="tel"],
-    input[type="file"],
-    input[type="radio"],
-    input[type="checkbox"],
-    input[type="time"],
-    input[type="url"],
+    input:not([type="hidden"]),
     textarea {
         @content;
     }

@@ -41,6 +41,21 @@
 						</label>
 					</div>
 				</div>
+				<div class="row">
+					<div class="small-2 column">
+						<label>Diagnosis:</label>
+					</div>
+					<div class="small-4 column end">
+						<div class="panel">Blepharospasm</div>
+						<fieldset class="panel">
+							<h4>Change diagnosis:</h4>
+							<select>
+								<option>Select a commonly used diagnosis</option>
+							</select>
+							<input type="text" placeholder="or type the first few characters of a diagnosis" />
+						</fieldset>
+					</div>
+				</div>
 			</fieldset>
 		</div>
 		<div class="element">
@@ -73,7 +88,7 @@
 					</div>
 					<div class="large-4 column">
 						<fieldset class="panel">
-							<h3>Add a procedure:</h3>
+							<h4>Add a procedure:</h4>
 							<select>
 								<option>Select a subsection</option>
 							</select>
@@ -82,8 +97,8 @@
 					</div>
 					<div class="large-6 column">
 						<div class="panel">
-							<h3>Procedures:</h3>
-							<table>
+							<h4>Procedures:</h4>
+							<table class="plain">
 								<thead>
 									<tr>
 										<td>Actions</td>
@@ -127,6 +142,21 @@
 				</div>
 				<div class="row">
 					<div class="large-2 column">
+						<label>Consultant required:</label>
+					</div>
+					<div class="large-4 column end">
+						<label class="inline highlight">
+							<input type="radio" />
+							Yes
+						</label>
+						<label class="inline highlight">
+							<input type="radio" />
+							No
+						</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="large-2 column">
 						<label>Add comments:</label>
 					</div>
 					<div class="large-4 column end">
@@ -149,8 +179,26 @@
 					<div class="large-2 column">
 						<label>Decision date:</label>
 					</div>
-					<div class="large-4 column end">
+					<div class="large-2 column end">
 						<input type="text" />
+					</div>
+				</div>
+			</fieldset>
+		</div>
+		<div class="element">
+			<h3 class="element-title">Schedule operation</h3>
+			<fieldset class="panel fieldset">
+				<div class="row">
+					<div class="large-2 column">
+						<label>
+							Schedule options
+						</label>
+					</div>
+					<div class="large-4 column end">
+						<label class="inline highlight">
+							<input type="radio" />
+							As soon as possible
+						</label>
 					</div>
 				</div>
 			</fieldset>

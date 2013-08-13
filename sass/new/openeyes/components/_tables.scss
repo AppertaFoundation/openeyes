@@ -32,7 +32,6 @@ $oe-table-cell-font-size: emCalc(13px);
 $oe-table-cell-label-font-size: emCalc(16px);
 $oe-table-footer-cell-font-size: emCalc(11px);
 
-
 table {
     @include table;
     @include all-form-fields {
@@ -268,8 +267,8 @@ $oe-table-theatre-bookings-footer-cell-bg-color: #bde0b3 !default;
 $oe-table-theatre-bookings-footer-font-size: 1em !default;
 $oe-table-theatre-bookings-footer-line-height: 1 !default;
 $oe-table-theatre-bookings-footer-time-left-font-size: $default-font-size !default;
-$oe-table-theatre-bookings-footer-specialist-bg-color: #fff !default;
-$oe-table-theatre-bookings-footer-specialist-border-color: #ccc !default;
+$oe-table-theatre-bookings-footer-specialist-bg-color: white !default;
+$oe-table-theatre-bookings-footer-specialist-border-color: #cccccc !default;
 $oe-table-theatre-bookings-footer-specialist-font-size: emCalc(11px) !default;
 $oe-table-theatre-bookings-footer-specialist-padding: emCalc(6px) emCalc(8px) emCalc(6px) emCalc(17px) !default;
 $oe-table-theatre-bookings-footer-specialist-opacity: 0.8 !default;
@@ -303,5 +302,36 @@ $oe-table-theatre-bookings-footer-specialist-border-radius: 5px !default;
         text-align: right;
         @include opacity($oe-table-theatre-bookings-footer-specialist-opacity);
         @include border-radius($oe-table-theatre-bookings-footer-specialist-border-radius);
+    }
+}
+
+// Plain table
+//
+// Markup:
+// <table class="plain">
+//     <thead>
+//         <tr>
+//             <th>Heading 1</th>
+//             <th>Heading 2</th>
+//         </tr>
+//     </thead>
+//     <tbody>
+//         <tr>
+//             <td>
+//                 Cell 1
+//             </td>
+//             <td>
+//                 Cell 2
+//             </td>
+//         </tr>
+//     </tbody>
+// </table>
+//
+// Styleguide 5.3
+
+table {
+    &.plain,
+    tr:nth-of-type(even) {
+        background: #fff;
     }
 }

@@ -1,0 +1,58 @@
+// Default event element container
+//
+// Markup:
+// <div class="element">
+//     <h3>Schedule operation</h3>
+//     <fieldset class="panel fieldset">
+//         <div class="row">
+//             <div class="large-2 column">
+//                 <label>
+//                     Schedule options
+//                 </label>
+//             </div>
+//             <div class="large-4 column end">
+//                 <label class="inline highlight">
+//                     <input type="radio" />
+//                     As soon as possible
+//                 </label>
+//             </div>
+//         </div>
+//     </fieldset>
+// </div>
+// Styleguide 19.1
+//
+
+// Element vars
+$oe-element-border-top: 1px dotted #97c6f1 !default;
+$oe-element-h3-color: #56a7f1 !default;
+$oe-element-h3-font-style: italic !default;
+$oe-element-h3-font-size: $default-font-size !default;
+$oe-element-h3-padding: 10px !default;
+$oe-element-h3-margin: 0 !default;
+$oe-element-h4-font-size: $default-font-size !default;
+$oe-element-fieldset-panel-border-color: #d9d9d9 !default;
+
+.element {
+    border-top: $oe-element-border-top;
+    // h3's are used for episode headings
+    .element-title {
+        color: $oe-element-h3-color;
+        font-style: $oe-element-h3-font-style;
+        font-size: $oe-element-h3-font-size;
+        padding: $oe-element-h3-padding;
+        margin: $oe-element-h3-margin;
+    }
+    fieldset {
+        &.panel {
+            border-style: solid;
+            border-width: 1px;
+            border-color: $oe-element-fieldset-panel-border-color;
+            h4 {
+                font-size: $oe-element-h4-font-size;
+            }
+            @include all-form-fields {
+                margin-bottom: .5em;
+            }
+        }
+    }
+}

@@ -33,6 +33,7 @@ $oe-panel-fieldset-panel-bg-color: white !default;
         .panel {
             @include border-radius($oe-panel-fieldset-panel-border-radius);
             background: $oe-panel-fieldset-panel-bg-color;
+            margin-bottom: emCalc(5px);
         }
     }
 }
