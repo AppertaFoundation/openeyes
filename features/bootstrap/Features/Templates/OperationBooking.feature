@@ -1,19 +1,20 @@
 @NewOpearation
 Feature: Create New Operation Booking Event
+  In order to cover every possible route throughout the site
+  As an automation tester
+  I want to build a template with supporting code for each web page
 
   Scenario Outline: Login and create a Operation Booking
 
     Given I am on the OpenEyes "<environment>" homepage
-    And I select Site "<site>"
     And I enter login credentials "<username>" and "<password>"
+    And I select Site "<site>"
+    Then I select a firm of "1"
 
-    Then I select a firm of "18"
-
-    #Then I search for hospital number "<hospnumber>"
     Then I search for patient name last name "<last>" and first name "<first>"
-    #Then I search for NHS number "<nhs>"
 
     Then I select Create or View Episodes and Events
+    And I select an existing "<Episode>" Episode
     And I add a New Event "<EventType>"
 
     Then I select Diagnosis Eyes of "<DiagEyes>"
@@ -54,7 +55,7 @@ Feature: Create New Operation Booking Event
     | environment   | site      | username | password     | hospnumber   | nhs        | last    | first  | EventType | DiagEyes  | Diagnosis | OpEyes |Procedure | AnaType    |
     | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin, | Violet | Phasing   | Both      | 193570009 | Both   | 41       | Topical    |
 
-  # Firm 18 = Allan Bruce (Cataract)
+  # Firm 1 = Anderson (Cataract)
 
   # Site ID's:
   #1  =City Road

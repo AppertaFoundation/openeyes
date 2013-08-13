@@ -1,17 +1,19 @@
 @NewDiagnosis
-Feature: Open Eyes Login and Patient Diagnosis Screen
+Feature: Open Eyes Login and Patient Diagnosis Screen Template
+  In order to cover every possible route throughout the site
+  As an automation tester
+  I want to build a template with supporting code for each web page
 
   Scenario Outline: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
     Given I am on the OpenEyes "<environment>" homepage
-    And I select Site "<site>"
     And I enter login credentials "<username>" and "<password>"
+    And I select Site "<site>"
+    Then I select a firm of "1"
 
-    #Then I search for hospital number "<hospnumber>"
+    Then I search for hospital number "<hospnumber>"
     Then I search for patient name last name "<last>" and first name "<first>"
-    #Then I search for NHS number "<nhs>"
-
-    Then I select a firm of "18"
+    Then I search for NHS number "<nhs>"
 
     Then I Add an Ophthalmic Diagnosis selection of "<OphtDiagnosis>"
     And I select that it affects eye "<eye>"
@@ -19,20 +21,24 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
     Then I save the new Opthalmic Diagnosis
 
     Then I Add an Systemic Diagnosis selection of "<SystDiagnosis>"
-    And I select that it affects side "<side>"
+    And I select that it affects Systemic side "<side>"
     And I select a Systemic Diagnosis date of day "<day>" month "<month>" year "<year>"
     Then I save the new Systemic Diagnosis
 
-    Then I edit the CVI Status "<CVIstatus>" day "<day>" month "<month>" year "<year>"
+    Then I Add a Previous Operation of "1"
+    And I select that it affects Operation side "<side>"
+    And I select a Previous Operation date of day "<day>" month "<month>" year "<year>"
+    Then I save the new Previous Operation
 
-    And I Add Medication details medication "<medication>" route "<route>" frequency "<frequency>" date from "<datefrom>"
+    And I Add Medication details medication "<medication>" route "<route>" frequency "<frequency>" date from "<datefrom>" and Save
 
-    Then I Add Allergy "<allergy>"
+    Then I edit the CVI Status "<CVIstatus>"
+    And I select a CVI Status date of day "<day>" month "<month>" year "<year>"
+    Then I save the new CVI status
 
-    Then I remove diagnosis test data
-    Then I remove medication test data
-    Then I remove allergy test data
+    Then I Add Allergy "<allergy>" and Save
 
+    And I Add a Family History of relative "relative" side "<side>" condition "condition" and comments "comments" and Save
     #Then I choose to close the browser
 
   Examples: User details
@@ -41,9 +47,9 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
 
 
   # Site ID's:
-  # City Road - 1
+  # Queens - 1
 
-  # Firm 18 = Allan Bruce (Cataract)
+  # Firm 1 = Abderson Firm (Cataract)
 
   # Last name to include a comma after to match search criteria i.e Coffin,
 
