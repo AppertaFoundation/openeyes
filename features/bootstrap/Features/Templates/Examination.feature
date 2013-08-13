@@ -1,4 +1,4 @@
-@NewExamWIP
+@NewExam
 Feature: Create New Examination
   In order to cover every possible route throughout the site
   As an automation tester
@@ -11,10 +11,13 @@ Feature: Create New Examination
     And I select Site "<site>"
     Then I select a firm of "1"
 
-    Then I search for patient name last name "<last>" and first name "<first>"
+    Then I search for hospital number "<hospnumber>"
+    #Then I search for patient name last name "<last>" and first name "<first>"
 
-    Then I select Create or View Episodes and Events
-    Then I select Add First New Episode and Confirm
+    #Then I select Create or View Episodes and Events
+    #Then I select Add First New Episode and Confirm
+    Then I select the Latest Event
+    Then I expand the Cataract sidebar
     And I add a New Event "<EventType>"
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
@@ -60,14 +63,13 @@ Feature: Create New Examination
     Then I choose to expand the Clinic Outcome section
     Then I choose to expand the Conclusion section
 
-    #Then I Save the Examination
+    Then I Save the Examination
     #Then I Cancel the Examination
 
-    #Then I choose to close the browser
 
   Examples: User details
-    | environment   | site      | username | password     | hospnumber   | nhs        | last    | first  | EventType     |
-    | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin, | Violet | Examination   |
+    | environment   | site      | username | password     | hospnumber   | nhs        | last           | first         | EventType     |
+    | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin,Violet  | Coffin,Violet | Examination   |
 
 
   # Site ID's:

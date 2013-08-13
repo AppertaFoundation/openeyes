@@ -4,20 +4,42 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class Examination extends Page
 {
-    public static  $history = "//*[@id='dropdowntextselection_element_ophciexamination_history_description']//*[@value='blurred vision, ']";
-    public static  $severity = "//*[@id='dropdowntextselection_element_ophciexamination_history_description']//*[@value='mild, ']";
-    public static  $onset = "//div[@id='div_element_ophciexamination_history_description']/div/div/select[3]//*[@value='gradual onset, ']";
-    public static  $eye = "//div[@id='div_element_ophciexamination_history_description']/div/div/select[4]//*[@value='left eye, ']";
-    public static  $duration = "//div[@id='div_element_ophciexamination_history_description']/div/div/select[5]//*[@value='1 week, ']";
-    public static  $openComorbidities = "//div[@id='active_elements']/div/div[4]/div/h5";
-    public static  $addComorbidities = "//div[@id='comorbidities_unselected']/select";
-    public static  $openVisualAcuity = "//*[@id='inactive_elements']//*[contains(text(), 'Visual Acuity')]";
-    public static  $openLeftVa = "//div[@id='active_elements']/div[2]/div[2]/div[2]/div/div/button"; //needs unique id
-    public static  $snellenLeft = "//select[@id='visualacuity_reading_0_value']";
-    public static  $readingLeft = "//select[@id='visualacuity_reading_0_method_id']";
-    public static  $openRightVa = "//button[@type='button']";
-    public static  $snellenRight = "//select[@id='visualacuity_reading_1_value']";
-    public static  $readingRight = "//select[@id='visualacuity_reading_1_method_id']";
+    protected $path = "OphCiExamination/Default/create?patient_id=19434";
+
+    protected $elements = array(
+        'history' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='blurred vision, ']"),
+        'severity' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='mild, ']"),
+        'onset' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='gradual onset, ']"),
+        'eye' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='left eye, ']"),
+        'duration' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='1 week, ']"),
+        'openComorbidities' => array('xpath' => "//div[@id='active_elements']/div/div[4]/div/h5"),
+        'addComorbidities' => array('xpath' => "//div[@id='comorbidities_unselected']/select"),
+        'openVisualAcuity' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(), 'Visual Acuity')]"),
+        'visualActuityUnitChange' => array('xpath' => "//select[@id='visualacuity_reading_0_value']"),
+        'openLeftVA' => array('xpath' => "//*[@id='active_elements']/div[2]/div[3]/div[2]/div[1]/div[1]/button//*[contains(text(),'Add')]"),
+        'snellenLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_value']"),
+        'readingLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_method_id']"),
+        'openRightVA' => array('xpath' => "//*[@id='active_elements']/div[2]/div[3]/div[1]/div[1]/div[1]/button//*[contains(text(),'Add')]"),
+        'snellenRight' => array('xpath' => "//select[@id='visualacuity_reading_1_value']"),
+        'readingRight' => array('xpath' => "//select[@id='visualacuity_reading_1_method_id']")
+
+
+);
+    public function history ()
+    {
+        $this->getElement('history')->click();
+        $this->getElement('severity')->click();
+        $this->getElement('onset')->click();
+        $this->getElement('eye')->click();
+        $this->getElement('duration')->click();
+    }
+
+    public function openComorbidities ()
+    {
+        $this->getElement('openComorbidities')->click();
+    }
+
+
     public static  $openIntraocularPressure = "//*[@id='inactive_elements']//*[contains(text(), 'Intraocular Pressure')]";
     public static  $intraocularRight = "//select[@id='element_ophciexamination_intraocularpressure_right_reading_id']";
     public static  $instrumentRight = "//select[@id='element_ophciexamination_intraocularpressure_right_instrument_id']";

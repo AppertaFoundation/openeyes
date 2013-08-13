@@ -16,10 +16,6 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 
 {
     private    $yii;
-    protected  $loop = 0;
-    protected  $removeDiagnosis = 0;
-    protected  $removeMedication = 0;
-    protected  $removeAllergy = 0;
 
     protected $environment = array(
         'master' => 'http://admin:openeyesdevel@master.test.openeyes.org.uk',
@@ -31,38 +27,33 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $this->yii = $yii;
     }
 
-    /**
-     * @BeforeScenario @javascript
-     */
-    public function maximizeBrowserWindow()
-    {
-        $this->getSession()->resizeWindow(1280, 800);
-    }
-
-    /**
-     * @BeforeStep
-     * @AfterStep
-     */
-//    public function waitForActionToFinish()
+//    /**
+//     * @BeforeSuite
+//     */
+//    public static function maximizeBrowserWindow()
 //    {
-//        if ($this->getSession()->getDriver() instanceof Selenium2Driver) {
-//            try {
-//                $this->getSession()->wait(5000, "$.active === 0");
-//            } catch (\Exception $e) {}
-//        }
+//        /**
+//         * @var Login $loginPage
+//         */
+//        $loginPage->getPage('Login');
+//        $loginPage->maximizeBrowserWindow();
 //    }
-    
+
     /**
      * @Given /^I am on the OpenEyes "([^"]*)" homepage$/
      */
     public function iAmOnTheOpeneyesHomepage($environment)
     {
+        /**
+         * @var Login $loginPage
+         */
         if (isset($this->environment[$environment])) {
             $this->getPage('HomePage')->open();
+            ;
+
         } else {
             throw new \Exception("Environment $environment doesn't exist");
         }
-
     }
 
     /**
@@ -74,7 +65,9 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var Login $loginPage
          */
+
         $loginPage = $this->getPage('Login');
+        $loginPage->maximizeBrowserWindow();
         $loginPage->loginWith($user, $password);
     }
 
@@ -193,6 +186,18 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
     }
 
     /**
+     * @Then /^I select the Latest Event$/
+     */
+    public function iSelectTheLatestEvent()
+    {
+        /**
+         * @var PatientViewPage $patientview
+         */
+        $patientview= $this->getPage('PatientViewPage');
+        $patientview->selectLatestEvent();
+    }
+
+    /**
      * @Given /^I add a New Event "([^"]*)"$/
      */
     public function iAddANewEvent($event)
@@ -204,6 +209,29 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $addNewEvent->addNewEvent($event);
     }
 
+    /**
+     * @Then /^I expand the Cataract sidebar$/
+     */
+    public function iExpandTheCataractSidebar()
+    {
+        /**
+         * @var AddingNewEvent $addNewEvent
+         */
+        $addNewEvent = $this->getPage('AddingNewEvent');
+        $addNewEvent->expandCataract();
+    }
+
+    /**
+     * @Then /^I expand the Glaucoma sidebar$/
+     */
+    public function iExpandTheGlaucomaSidebar()
+    {
+        /**
+         * @var AddingNewEvent $addNewEvent
+         */
+        $addNewEvent = $this->getPage('AddingNewEvent');
+        $addNewEvent->expandGlaucoma();
+    }
      /**
      * @Then /^I Add an Ophthalmic Diagnosis selection of "([^"]*)"$/
      */
@@ -687,92 +715,131 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $operationBooking->confirmSlot();
     }
 
-//    /**
-//     * @Then /^I select an Anaesthetist "([^"]*)"$/
-//     */
-//    public function iSelectAnAnaesthetist($select)
-//    {
-//        $this->selectOption(AnaestheticAudit::$anaesthetist,$select);
-//    }
-//
-//    /**
-//     * @And /^I select Satisfaction levels of Pain "([^"]*)" Nausea "([^"]*)"$/
-//     */
-//    public function iSelectSatisfactionLevelsOfPainNausea($pain, $nausea)
-//    {
-//        $this->fillField(AnaestheticAudit::$nausea,$nausea);
-//        $this->fillField(AnaestheticAudit::$pain, $pain);
-//    }
-//
-//    /**
-//     * @Given /^I tick the Vomited checkbox$/
-//     * @And /^I tick the Vomited checkbox$/
-//     */
-//    public function iTickTheVomitedCheckbox()
-//    {
-//        $this->checkOption(AnaestheticAudit::$vomitCheckbox);
-//    }
-//
-//    /**
-//     * @And /^I untick the Vomited checkbox$/
-//     */
-//    public function iUntickTheVomitedCheckbox()
-//    {
-//        $this->uncheckOption(AnaestheticAudit::$vomitCheckbox);
-//    }
-//
-//    /**
-//     * @Then /^I select Vital Signs of Respiratory Rate "([^"]*)" Oxygen Saturation "([^"]*)" Systolic Blood Pressure "([^"]*)"$/
-//     */
-//    public function iSelectVitalSigns($rate, $oxygen, $pressure)
-//    {
-//        $this->selectOption(AnaestheticAudit::$respirotaryRate, $rate);
-//        $this->selectOption(AnaestheticAudit::$oxygenSaturation, $oxygen);
-//        $this->selectOption(AnaestheticAudit::$systolicBloodPressure, $pressure);
-//    }
-//
-//    /**
-//     * @Then /^I select Vital Signs of Body Temperature "([^"]*)" and Heart Rate "([^"]*)" Conscious Level AVPU "([^"]*)"$/
-//     */
-//    public function iSelectVitalSignsTemp($temp, $rate, $avpu)
-//    {
-//        $this->selectOption(AnaestheticAudit::$bodyTemp, $temp);
-//        $this->selectOption(AnaestheticAudit::$heartRate, $rate);
-//        $this->selectOption(AnaestheticAudit::$consciousLevelAvpu, $avpu);
-//    }
-//
-//    /**
-//     * @Then /^I enter Comments "([^"]*)"$/
-//     */
-//    public function iEnterComments($comments)
-//    {
-//        $this->fillField(AnaestheticAudit::$comments, $comments);
-//    }
-//
-//    /**
-//     * @And /^I select the Yes option for Ready to Discharge$/
-//     */
-//    public function iSelectTheYesOptionForReadyToDischarge()
-//    {
-//        $this->clickLink(AnaestheticAudit::$dischargeYes);
-//    }
-//
-//    /**
-//     * @And /^I select the No option for Read to Discharge$/
-//     */
-//    public function iSelectTheNoOptionForReadToDischarge()
-//    {
-//       $this->clickLink(AnaestheticAudit::$dischargeNo);
-//    }
-//
-//    /**
-//     * @Then /^I Save the Event$/
-//     */
-//    public function iSaveTheEvent()
-//    {
-//       $this->clickLink(Examination::$saveExamination);
-//    }
-//
+    /**
+     * @Then /^I select an Anaesthetist "([^"]*)"$/
+     */
+    public function iSelectAnAnaesthetist($anaesthetist)
+    {
+        /**
+         * @var AnaestheticAudit $Asa
+         */
+        $Asa = $this->getPage('AnaestheticAudit');
+        $Asa->anaesthetist($anaesthetist);
+    }
+
+    /**
+     * @Given /^I select Satisfaction levels of Pain "([^"]*)" Nausea "([^"]*)"$/
+     */
+    public function iSelectSatisfactionLevelsOfPainNausea($pain, $nausea)
+    {
+        /**
+         * @var AnaestheticAudit $Asa
+         */
+        $Asa = $this->getPage('AnaestheticAudit');
+        $Asa->pain($pain);
+        $Asa->nausea($nausea);
+    }
+
+    /**
+     * @Given /^I tick the Vomited checkbox$/
+     */
+    public function iTickTheVomitedCheckbox()
+    {
+        /**
+         * @var AnaestheticAudit $Asa
+         */
+        $Asa = $this->getPage('AnaestheticAudit');
+        $Asa->vomitCheckBoxNo();
+    }
+
+    /**
+     * @Given /^I untick the Vomited checkbox$/
+     */
+    public function iUntickTheVomitedCheckbox()
+    {
+        /**
+         * @var AnaestheticAudit $Asa
+         */
+        $Asa = $this->getPage('AnaestheticAudit');
+        $Asa->vomitCheckBoxNo();
+    }
+
+    /**
+     * @Then /^I select Vital Signs of Respiratory Rate "([^"]*)" Oxygen Saturation "([^"]*)" Systolic Blood Pressure "([^"]*)"$/
+     */
+    public function iSelectVitalSigns($rate, $oxygen, $pressure)
+    {
+        /**
+         * @var AnaestheticAudit $Asa
+         */
+        $Asa = $this->getPage('AnaestheticAudit');
+        $Asa->respiratoryRate($rate);
+        $Asa->oxygenSaturation($oxygen);
+        $Asa->systolicBlood($pressure);
+    }
+
+    /**
+     * @Then /^I select Vital Signs of Body Temperature "([^"]*)" and Heart Rate "([^"]*)" Conscious Level AVPU "([^"]*)"$/
+     */
+    public function iSelectVitalSignsTemp($temp, $rate, $level)
+    {
+        /**
+         * @var AnaestheticAudit $Asa
+         */
+        $Asa = $this->getPage('AnaestheticAudit');
+        $Asa->bodyTemp($temp);
+        $Asa->heartRate($rate);
+        $Asa->consciousLevel($level);
+    }
+
+    /**
+     * @Then /^I enter Comments "([^"]*)"$/
+     */
+    public function iEnterComments($comments)
+    {
+        /**
+         * @var AnaestheticAudit $Asa
+         */
+        $Asa = $this->getPage('AnaestheticAudit');
+        $Asa->comments($comments);
+    }
+
+    /**
+     * @Given/^I select the Yes option for Ready to Discharge$/
+     */
+    public function iSelectTheYesOptionForReadyToDischarge()
+    {
+        /**
+         * @var AnaestheticAudit $Asa
+         */
+        $Asa = $this->getPage('AnaestheticAudit');
+        $Asa->dischargeYes();
+    }
+
+    /**
+     * @Given /^I select the No option for Ready to Discharge$/
+     */
+    public function iSelectTheNoOptionForReadToDischarge()
+    {
+        /**
+         * @var AnaestheticAudit $Asa
+         */
+        $Asa = $this->getPage('AnaestheticAudit');
+        $Asa->dischargeNo();
+    }
+
+    /**
+     * @Then /^I Save the Event$/
+     */
+    public function iSaveTheEvent()
+    {
+        /**
+         * @var AnaestheticAudit $Asa
+         */
+        $Asa = $this->getPage('AnaestheticAudit');
+        $Asa->saveEvent();
+    }
+
 //    /**
 //     * @Then /^I Cancel the Event$/
 //     */
@@ -918,26 +985,30 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 //        $this->clickLink(Examination::$saveExamination);
 //    }
 //
-//    /**
-//     * @Then /^I select a History of Blurred Vision, Mild Severity, Onset (\d+) Week, Left Eye, (\d+) Week$/
-//     */
-//    public function iSelectAHistoryOfBlurredVision()
-//    {
-//        $this->clickLink(Examination::$history);
-//        $this->clickLink(Examination::$severity);
-//        $this->clickLink(Examination::$onset);
-//        $this->clickLink(Examination::$eye);
-//        $this->clickLink(Examination::$duration);
-//    }
-//
-//    /**
-//     * @Given /^I choose to expand the Comorbidities section$/
-//     */
-//    public function iChooseToExpandTheComorbiditiesSection()
-//    {
-//        $this->clickLink(Examination::$openComorbidities);
-//    }
-//
+    /**
+     * @Then /^I select a History of Blurred Vision, Mild Severity, Onset (\d+) Week, Left Eye, (\d+) Week$/
+     */
+    public function iSelectAHistoryOfBlurredVision()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->history();
+    }
+
+    /**
+     * @Given /^I choose to expand the Comorbidities section$/
+     */
+    public function iChooseToExpandTheComorbiditiesSection()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->openComorbidities();
+    }
+
 //    /**
 //     * @Then /^I Add a Comorbiditiy of "([^"]*)"$/
 //     */
@@ -1887,14 +1958,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 //
 //    }
 //
-//    /**
-//     * @Then /^I choose to close the browser$/
-//     */
-//    public function iChooseToCloseTheBrowser()
-//    {
-//       $this->Stop ();
-//    }
-//
+
 //
 //    /**
 //     * @Then /^I search for patient name last name "([^"]*)" and first name "([^"]*)"$/
@@ -1912,14 +1976,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 //        throw new PendingException();
 //    }
 //
-//    /**
-//     * @Given /^I select Satisfaction levels of Pain "([^"]*)" Nausea "([^"]*)"$/
-//     */
-//    public function iSelectSatisfactionLevelsOfPainNausea2($arg1, $arg2)
-//    {
-//        throw new PendingException();
-//    }
-//
+
 //    /**
 //     * @Given /^I select the No option for Read to Discharge$/
 //     */

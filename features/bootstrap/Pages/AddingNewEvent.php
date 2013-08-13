@@ -12,8 +12,8 @@ class AddingNewEvent extends Page
         'addEpisodeConfirm' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(), 'Confirm')]"),
         'addEpisodeCancel' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(), 'Cancel')]"),
         'addNewEpisodeButton' => array('xpath' => "//*[@id='episodes_sidebar']/div[1]/button//*[contains(text(),'Add episode')]"),
-        'expandCataractEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[4]/div[1]/h4//*[contains(text(),'Cataract')]"),
-        'expandGlaucomaEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[3]/div[1]/h4//*[contains(text(),'Glaucoma')]"),
+        'expandCataractEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[3]/div[1]/h4//*[contains(text(),'Cataract')]"),
+        'expandGlaucomaEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[4]/div[1]/h4//*[contains(text(),'Glaucoma')]"),
         'expandRefractiveEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[5]/div[1]/h4//*[contains(text(),'Refractive')]"),
         'addNewEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(), 'Add event')]"),
         'anaestheticSatisfaction' => array ('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Anaesthetic Satisfaction Audit')]"),
@@ -29,6 +29,8 @@ class AddingNewEvent extends Page
         'therapyApplication' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Therapy Application')]")
     );
 
+
+
     public function addFirstNewEpisode ()
     {
         $this->getElement('addFirstNewEpisode')->click();
@@ -38,6 +40,18 @@ class AddingNewEvent extends Page
     public function addNewEpisode ()
     {
         $this->getElement('addNewEpisodeButton')->click();
+    }
+
+    public function expandCataract ()
+    {
+        $this->getElement('expandCataractEpisode')->click();
+        $this->getSession()->wait(1000,false);
+    }
+
+    public function expandGlaucoma ()
+    {
+        $this->getElement('expandGlaucomaEpisode')->click();
+        $this->getSession()->wait(1000,false);
     }
 
     public function addNewEvent ($event)
@@ -77,7 +91,10 @@ class AddingNewEvent extends Page
         if ($event==="Therapy") {
             $this->getElement('therapyApplication')->click();
         }
+        $this->getSession()->wait(1000,false);
 
     }
+
+
 
 }
