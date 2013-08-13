@@ -51,23 +51,26 @@
 	</div>
 </div>
 <?php 
-$latest = $this->patient->getLatestEvent();
 $editable = false;
-
 if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 	$latest = $episode->getLatestEvent();
 	$subspecialty = $episode->getSubspecialty();
 	$editable = true;
 }
-if (!$editable && $latest) {
+elseif ($latest = $this->patient->getLatestEvent()) {
 	$editable = $latest->episode->editable;
 	$subspecialty = $latest->episode->getSubspecialty();
-}
+}	
 
 $msg = null;
 
 if ($latest) {
-	$msg = "Latest Event in " . $subspecialty->name . ": <strong>" . $latest->eventType->name . "</strong> <span class='small'>(" . $latest->NHSDate('created_date') . ")</span>";
+	$msg = "Latest Event";
+	if ($subspecialty) {
+		// might not be a subspecialty for legacy
+		$msg .= " in " . $subspecialty->name;
+	}
+	$msg .= ": <strong>" . $latest->eventType->name . "</strong> <span class='small'>(" . $latest->NHSDate('created_date') . ")</span>";
 }
 else if (BaseController::checkUserLevel(4)) {
 	$msg = "Create episode / add event";
