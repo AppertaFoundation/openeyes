@@ -19,8 +19,8 @@
 	</header>
 	<div class="box event booking event-content">
 		<h2 class="event-title">Operation booking</h2>
-		<div class="episode">
-			<h3 class="episode-title">Diagnosis</h3>
+		<div class="element">
+			<h3 class="element-title">Diagnosis</h3>
 			<fieldset class="panel fieldset">
 				<div class="row">
 					<div class="small-2 column">
@@ -43,8 +43,8 @@
 				</div>
 			</fieldset>
 		</div>
-		<div class="episode">
-			<h3 class="episode-title">Operation</h3>
+		<div class="element">
+			<h3 class="element-title">Operation</h3>
 			<fieldset class="panel fieldset">
 				<div class="row">
 					<div class="small-2 column">

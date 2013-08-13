@@ -30,5 +30,31 @@
 		<div class="alert-box issue with-icon">
 			Operation requires scheduling.
 		</div>
+
+		<div class="row">
+			<div class="large-12 column">
+				<h3>Diagnosis</h3>
+				<p>Left Cyst of eyelid</p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="large-12 column">
+				<h3>Procedures</h3>
+				<p>Left Lester Jones tube</p>
+				<p>Conjunctival flap</p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="large-6 column">
+				<h3>Anaesthetic</h3>
+				<p>Topical</p>
+			</div>
+			<div class="large-6 column">
+				<h3>Consultant required?</h3>
+				<p>No Consultant</p>
+			</div>
+		</div>
 	</div>
 </div>
