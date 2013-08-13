@@ -966,10 +966,12 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 
 /* 2 column split - for summary */
 #event_content .cols2 { padding-bottom:30px; }
-#event_content .cols2 > .left { clear: left; float: left; width: 48%; }
-#event_content .cols2 > .right { clear: right; float: right; width: 48%; }
+#event_content .cols2 > .left { clear: left; float: left; width: 50%; box-sizing: border-box;}
+#event_content .cols2 > .eventDetail:nth-of-type(1).left { border-right: 1px solid white; }
+#event_content .cols2 > .right { clear: right; float: right; width: 50%; box-sizing: border-box;}
 /* reduced labels on two column split */
 #event_content .cols2 > .left > h4, #event_content .cols2 > .right > h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px; }
+
 
 #event_content .colsX { padding-bottom:10px; clear:right; }
 #event_content .colsX > .colStack { float: left; width:20%; }
