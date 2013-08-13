@@ -2949,18 +2949,9 @@ table tfoot tr td {
   display: table-cell;
   line-height: 1.125em;
 }
-/* line 46, ../sass/new/openeyes/_mixins.scss */
-table input:not([type="hidden"]),
-table textarea {
-  margin: 0;
-  font-size: 1em;
-}
-/* line 53, ../sass/new/openeyes/_mixins.scss */
-table button, table button {
-  margin: 0;
-  font-size: 1em;
-}
-/* line 60, ../sass/new/openeyes/_mixins.scss */
+/* line 72, ../sass/new/openeyes/_mixins.scss */
+table input:not([type="hidden"]), table textarea,
+table button, table .button,
 table select {
   margin: 0;
   font-size: 1em;
@@ -3272,9 +3263,8 @@ label input[type="radio"] {
   margin: 0;
 }
 
-/* line 46, ../sass/new/openeyes/_mixins.scss */
-input:not([type="hidden"]),
-textarea {
+/* line 49, ../sass/new/openeyes/_mixins.scss */
+input:not([type="hidden"]), textarea {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -ms-border-radius: 3px;
@@ -3283,13 +3273,11 @@ textarea {
   height: auto;
 }
 /* line 116, ../sass/new/openeyes/components/_forms.scss */
-input:not([type="hidden"]).small,
-textarea.small {
+input:not([type="hidden"]).small, textarea.small {
   padding: 0.1875em 0.25em;
 }
 /* line 118, ../sass/new/openeyes/components/_forms.scss */
-input:not([type="hidden"]).small.fixed-width,
-textarea.small.fixed-width {
+input:not([type="hidden"]).small.fixed-width, textarea.small.fixed-width {
   width: 6.875em;
 }
 
@@ -4502,16 +4490,9 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
 .element fieldset.panel h4 {
   font-size: 0.8125em;
 }
-/* line 46, ../sass/new/openeyes/_mixins.scss */
-.element fieldset.panel input:not([type="hidden"]),
-.element fieldset.panel textarea {
-  margin-bottom: .5em;
-}
-/* line 53, ../sass/new/openeyes/_mixins.scss */
-.element fieldset.panel button, .element fieldset.panel button {
-  margin-bottom: .5em;
-}
-/* line 60, ../sass/new/openeyes/_mixins.scss */
+/* line 72, ../sass/new/openeyes/_mixins.scss */
+.element fieldset.panel input:not([type="hidden"]), .element fieldset.panel textarea,
+.element fieldset.panel button, .element fieldset.panel .button,
 .element fieldset.panel select {
   margin-bottom: .5em;
 }
