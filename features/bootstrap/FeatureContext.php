@@ -111,7 +111,6 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
     /**
      * @Then /^I search for hospital number "([^"]*)"$/
      */
-
     public function SearchForHospitalNumber($hospital)
     {
         /**
@@ -1029,7 +1028,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         /**
          * @var Examination $examination
          */
-        $examination= $this->getPage('Examination');
+        $examination = $this->getPage('Examination');
+        $examination->getSession()->wait(5000, '$.active == 0');
         $examination->openVisualAcuity();
     }
 

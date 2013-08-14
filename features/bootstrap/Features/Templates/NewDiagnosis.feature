@@ -5,40 +5,31 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
   I want to build a template with supporting code for each web page
 
   Scenario Outline: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
-
     Given I am on the OpenEyes "<environment>" homepage
     And I enter login credentials "admin" and "admin"
     And I select Site "<site>"
     Then I select a firm of "1"
-
     Then I search for hospital number "<hospnumber>"
     #Then I search for patient name last name "<last>" and first name "<first>"
     #Then I search for NHS number "<nhs>"
-
     Then I Add an Ophthalmic Diagnosis selection of "<OphtDiagnosis>"
     And I select that it affects eye "<eye>"
     And I select a Opthalmic Diagnosis date of day "<day>" month "<month>" year "<year>"
     Then I save the new Opthalmic Diagnosis
-
     Then I Add an Systemic Diagnosis selection of "<SystDiagnosis>"
     And I select that it affects Systemic side "<side>"
     And I select a Systemic Diagnosis date of day "<day>" month "<month>" year "<year>"
     Then I save the new Systemic Diagnosis
-
     Then I Add a Previous Operation of "1"
     And I select that it affects Operation side "<side>"
     And I select a Previous Operation date of day "<day>" month "<month>" year "<year>"
     Then I save the new Previous Operation
-
     And I Add Medication details medication "<medication>" route "<route>" frequency "<frequency>" date from "<datefrom>" and Save
-
     Then I edit the CVI Status "<CVIstatus>"
     And I select a CVI Status date of day "<day>" month "<month>" year "<year>"
     Then I save the new CVI status
-
 #    Then I Remove existing Allergy - BUG RAISED - When removed doesnt reappear in the dropdown!
     Then I Add Allergy "<allergy>" and Save
-
     And I Add a Family History of relative "1" side "3" condition "1" and comments "Family History Comments" and Save
 
 

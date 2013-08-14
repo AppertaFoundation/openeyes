@@ -14,7 +14,7 @@ class Examination extends Page
         'duration' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='1 week, ']"),
         'openComorbidities' => array('xpath' => "//div[@id='active_elements']/div/div[4]/div/h5"),
         'addComorbidities' => array('xpath' => "//*[@id='comorbidities_unselected']/select"),
-        'openVisualAcuity' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(), 'Visual Acuity')]"),
+        'openVisualAcuity' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(),'Visual Acuity')]"),
         'visualAcuityUnitChange' => array('xpath' => "//*[@id='visualacuity_unit_change']"),
         'openLeftVA' => array('xpath' => "//*[@id='active_elements']/div[2]/div[3]/div[2]/div[1]/div[1]/button//*[contains(text(),'Add')]"),
         'snellenLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_value']"),
@@ -36,8 +36,11 @@ class Examination extends Page
 
     public function openComorbidities ()
     {
-        $this->getElement('openComorbidities')->click();
-        $this->getSession()->wait(1000,false);
+        $openComorbities = $this->getElement('openComorbidities');
+        if ($openComorbities) {
+            $openComorbities->click();
+            $this->getSession()->wait(5000, '$.active == 0');
+        }
     }
 
     public function addComorbiditiy ($com)
@@ -47,8 +50,13 @@ class Examination extends Page
 
     public function openVisualAcuity ()
     {
-        $this->getElement('openVisualAcuity')->click();
-        $this->getSession()->wait(1000,false);
+        $openVisualAcuity = $this->getElement('openVisualAcuity');
+        if ($openVisualAcuity === true) {
+            $openVisualAcuity->click();
+            $this->getSession()->wait(5000, '$.active == 0');
+        }
+
+
     }
 
     public function selectVisualAcuity ($unit)
