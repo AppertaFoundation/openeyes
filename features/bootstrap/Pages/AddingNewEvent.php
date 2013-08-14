@@ -15,7 +15,8 @@ class AddingNewEvent extends Page
         'expandCataractEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[3]/div[1]/h4//*[contains(text(),'Cataract')]"),
         'expandGlaucomaEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[4]/div[1]/h4//*[contains(text(),'Glaucoma')]"),
         'expandRefractiveEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[5]/div[1]/h4//*[contains(text(),'Refractive')]"),
-        'addNewEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(), 'Add event')]"),
+        'addNewCataractEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=4]"),
+        'addNewGlaucomaEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=7]"),
         'anaestheticSatisfaction' => array ('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Anaesthetic Satisfaction Audit')]"),
         'consentForm' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Consent form')]"),
         'correspondence' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Correspondence')]"),
@@ -46,17 +47,21 @@ class AddingNewEvent extends Page
     {
         $this->getElement('expandCataractEpisode')->click();
         $this->getSession()->wait(1000,false);
+        $this->getElement('addNewCataractEventButton')->click();
+        $this->getSession()->wait(1000,false);
     }
 
     public function expandGlaucoma ()
     {
         $this->getElement('expandGlaucomaEpisode')->click();
         $this->getSession()->wait(1000,false);
+        $this->getElement('addNewGlaucomaEventButton')->click();
+        $this->getSession()->wait(1000,false);
     }
 
     public function addNewEvent ($event)
     {
-        $this->getElement('addNewEventButton')->click();
+
 
         if ($event==="Satisfaction") {
             $this->getElement('anaestheticSatisfaction')->click();

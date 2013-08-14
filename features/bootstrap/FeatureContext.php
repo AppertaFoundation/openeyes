@@ -1009,42 +1009,66 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $examination->openComorbidities();
     }
 
-//    /**
-//     * @Then /^I Add a Comorbiditiy of "([^"]*)"$/
-//     */
-//    public function iAddAComorbiditiyOf($com)
-//    {
-//        $this->selectOption(Examination::$addComorbidities, $com);
-//    }
-//
-//    /**
-//     * @Then /^I choose to expand the Visual Acuity section$/
-//     */
-//    public function iChooseToExpandTheVisualAcuitySection()
-//    {
-//        $this->clickLink(Examination::$openVisualAcuity);
-//    }
-//
-//    /**
-//     * @Then /^I choose a left Visual Acuity Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
-//     */
-//    public function SnellenMetreAndAReading($metre, $method)
-//    {
-//        $this->clickLink(Examination::$openLeftVa);
-//        $this->selectOption(Examination::$snellenLeft, $metre);
-//        $this->selectOption(Examination::$readingLeft, $method);
-//    }
-//
-//    /**
-//     * @Then /^I choose a right Visual Acuity Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
-//     */
-//    public function RightVisualAcuitySnellenMetre($metre, $method)
-//    {
-//        $this->clickLink(Examination::$openRightVa);
-//        $this->selectOption(Examination::$snellenRight, $metre);
-//        $this->selectOption(Examination::$readingRight, $method);
-//    }
-//
+    /**
+     * @Then /^I Add a Comorbiditiy of "([^"]*)"$/
+     */
+    public function iAddAComorbiditiyOf($com)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->addComorbiditiy($com);
+    }
+
+    /**
+     * @Then /^I choose to expand the Visual Acuity section$/
+     */
+    public function iChooseToExpandTheVisualAcuitySection()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->openVisualAcuity();
+    }
+
+    /**
+     * @Given /^I select a Visual Acuity of "([^"]*)"$/
+     */
+    public function iSelectAVisualAcuityOf($unit)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->selectVisualAcuity($unit);
+    }
+
+    /**
+     * @Then /^I choose a left Visual Acuity Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+     */
+    public function SnellenMetreAndAReading($metre, $method)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftVisualAcuity($metre, $method);
+    }
+
+    /**
+     * @Then /^I choose a right Visual Acuity Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+     */
+    public function RightVisualAcuitySnellenMetre($metre, $method)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightVisualAcuity($metre, $method);
+    }
+
 //    /**
 //     * @Then /^I choose to expand the Intraocular Pressure section$/
 //     */
