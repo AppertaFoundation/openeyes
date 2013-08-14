@@ -27,7 +27,7 @@ class PatientViewContext extends PageObjectContext
          * @var PatientView $patientView
          */
         $patientView = $this->getPage('PatientView');
-        $patientView->createEpisodeAndEvent();
+        $patientView->addEpisodeAndEvent();
     }
 
     /**
@@ -39,7 +39,7 @@ class PatientViewContext extends PageObjectContext
          * @var PatientView $patientview
          */
         $patientview= $this->getPage('PatientView');
-        $patientview->selectLatestEvent();
+        $patientview->addEpisodeAndEvent();
     }
 
     /**

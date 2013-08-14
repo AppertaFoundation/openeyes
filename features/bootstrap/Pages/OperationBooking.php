@@ -4,7 +4,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class OperationBooking extends Page
 {
-    protected $path = "/site/OphTrOperationbooking/Default/create?patient_id=19434";//TO CODE - default view and patient ID
+    protected $path = "/site/OphTrOperationbooking/Default/create?patient_id={parentId}";
 
     protected $elements = array(
 

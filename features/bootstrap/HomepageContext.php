@@ -104,7 +104,7 @@ class HomepageContext extends PageObjectContext
     {
         $hp = $this->getPage('Homepage');
 //        $hp->open();
-        $hp->clickLink($link);
         $hp->getSession()->wait(5000, "$.active == 0");
+        $hp->clickLink($link);
     }
 }

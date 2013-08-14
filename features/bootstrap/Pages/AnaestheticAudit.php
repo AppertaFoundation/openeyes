@@ -5,7 +5,7 @@ use \SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 class AnaestheticAudit extends Page
 
 {
-    protected $path = "/site/OphOuAnaestheticsatisfactionaudit/Default/create?patient_id=19434";
+    protected $path = "/site/OphOuAnaestheticsatisfactionaudit/Default/create?patient_id={patientId}";
 
     protected $elements = array(
 

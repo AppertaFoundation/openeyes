@@ -40,9 +40,9 @@ class Homepage extends Page
         $this->getElement('mainSearch')->setValue($hospital);
     }
 
-    public function searchPatientName ($first, $last)
+    public function searchPatientName ($last, $first)
     {
-        $this->getElement('mainSearch')->setValue($first, $last);
+        $this->getElement('mainSearch')->setValue($last . ' ' . $first);
     }
 
     public function searchNhsNumber ($nhs)

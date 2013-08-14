@@ -4,7 +4,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class AddingNewEvent extends Page
 {
-    protected $path = "OphCiExamination/default/view/517"; //TO CODE - default view and patient ID
+    protected $path = "OphCiExamination/default/view/{eventId}}";
 
     protected $elements = array(
         'addFirstNewEpisode' => array('xpath' => "//*[@id='event_display']/div[3]/button//*[contains(text(), 'Add episode')]"),
@@ -45,17 +45,17 @@ class AddingNewEvent extends Page
     public function expandCataract ()
     {
         $this->getElement('expandCataractEpisode')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(5000, '$.active ==0');
         $this->getElement('addNewCataractEventButton')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(5000, '$.active ==0');
     }
 
     public function expandGlaucoma ()
     {
         $this->getElement('expandGlaucomaEpisode')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(5000, '$.active ==0');
         $this->getElement('addNewGlaucomaEventButton')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(5000, '$.active ==0');
     }
 
     public function addNewEvent($event)
