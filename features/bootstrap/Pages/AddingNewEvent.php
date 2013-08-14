@@ -95,7 +95,7 @@ class AddingNewEvent extends Page
         if ($event==="Therapy") {
             $this->getElement('therapyApplication')->click();
         }
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(3000,false);
 
     }
 }

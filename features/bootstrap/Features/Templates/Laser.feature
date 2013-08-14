@@ -8,14 +8,16 @@ Feature: Create New Anaesthetic Satisfaction Audit
 
     Given I am on the OpenEyes "<environment>" homepage
     And I enter login credentials "<username>" and "<password>"
-    And I select Site "<site>"
-    Then I select a firm of "1"
+    And I select Site "2"
+    Then I select a firm of "3"
 
-    Then I search for patient name last name "<last>" and first name "<first>"
+    Then I search for hospital number "<hospnumber>"
 
-    Then I select Create or View Episodes and Events
-    Then I select Add First New Episode and Confirm
+    Then I select the Latest Event
+    Then I expand the Glaucoma sidebar
     And I add a New Event "<EventType>"
+
+    #!!! THIS DATABASE SET DOESNT CONTAIN ANY LASERSITE OR LAZERS SO DO NOT RUN THIS FEATURE!!!
 
     Then I select a Laser site ID "<LaserSite>"
     And I select a Laser of "<Laser>"

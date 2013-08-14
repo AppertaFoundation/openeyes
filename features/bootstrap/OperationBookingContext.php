@@ -209,7 +209,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->availableSlot();
+        $operationBooking->scheduleNow();
     }
 
     /**
@@ -221,7 +221,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->availableSessionTime();
+        $operationBooking->availableSlot();
     }
 
     /**
