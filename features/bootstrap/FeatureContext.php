@@ -37,6 +37,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $this->useContext('AnaestheticAuditContext', new AnaestheticAuditContext($parameters));
         $this->useContext('ExaminationContext', new ExaminationContext($parameters));
         $this->useContext('LaserContext', new LaserContext($parameters));
+        $this->useContext('PrescriptionContext', new PrescriptionContext($parameters));
 
     }
 
@@ -69,78 +70,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $addNewEvent->addNewEpisode();
     }
 
-//    /**
-//     * @Then /^I Cancel the Event$/
-//     */
-//    public function iCancelTheEvent()
-//    {
-//       $this->clickLink(AnaestheticAudit::$cancelEvent);
-//    }
-//
-//    /**
-//     * @Then /^I select a Common Drug "([^"]*)"$/
-//     */
-//    public function iSelectACommonDrug($drug)
-//    {
-//       $this->selectOption(Prescription::$prescriptionDropDown, $drug);
-//    }
-//
-//    /**
-//     * @Given /^I select a Standard Set of "([^"]*)"$/
-//     */
-//    public function iSelectAStandardSetOf($set)
-//    {
-//       $this->selectOption(Prescription::$prescriptionStandardSet, $set);
-//    }
-//
-//    /**
-//     * @Then /^I enter a Dose of "([^"]*)" drops$/
-//     */
-//    public function iEnterADoseOfDrops($drops)
-//    {
-//       //Clear field required here
-//       $this->fillField(Prescription::$prescriptionDose, $drops);
-//    }
-//
-//    /**
-//     * @Given /^I enter a route of "([^"]*)"$/
-//     */
-//    public function iEnterARouteOf($route)
-//    {
-//       $this->selectOption(Prescription::$prescriptionRoute, $route);
-//    }
-//
-//    /**
-//     * @Then /^I enter a eyes option "([^"]*)"$/
-//     */
-//    public function iEnterAEyesOption($eyes)
-//    {
-//       $this->selectOption(Prescription::$prescriptionOptions, $eyes);
-//    }
-//
-//    /**
-//     * @Given /^I enter a frequency of "([^"]*)"$/
-//     */
-//    public function iEnterAFrequencyOf($frequency)
-//    {
-//       $this->selectOption(Prescription::$prescriptionFrequency, $frequency);
-//    }
-//
-//    /**
-//     * @Then /^I enter a duration of "([^"]*)"$/
-//     */
-//    public function iEnterADurationOf($duration)
-//    {
-//       $this->selectOption(Prescription::$prescriptionDuration, $duration);
-//    }
-//
-//    /**
-//     * @Given /^I add Prescription comments of "([^"]*)"$/
-//     */
-//    public function iAddPrescriptionCommentsOf($comments)
-//    {
-//       $this->selectOption(Prescription::$prescriptionComments, $comments);
-//    }
+
 //
 //    /**
 //     * @Then /^I choose a right eye Intraocular Pressure Instrument  of "([^"]*)"$/
