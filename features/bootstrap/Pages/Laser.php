@@ -4,7 +4,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class Laser extends Page
 {
-    protected $path ="/site/OphTrLaser/Default/create?patient_id=19434"; //TO CODE - default view and patient ID
+    protected $path ="/site/OphTrLaser/Default/create?patient_id={patientId}";
 
     protected $elements = array(
 

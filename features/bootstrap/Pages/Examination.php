@@ -4,7 +4,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class Examination extends Page
 {
-    protected $path = "OphCiExamination/Default/create?patient_id=19434";
+    protected $path = "OphCiExamination/Default/create?patient_id={patientId}";
 
     protected $elements = array(
         'history' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='blurred vision, ']"),
