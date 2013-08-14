@@ -192,6 +192,13 @@ class ProtectedFile extends BaseActiveRecord
 		return true;
 	}
 
+	/**
+	 * ensure we keep track of path to file before deleting from database
+	 *
+	 * @return bool
+	 * (non-PHPdoc)
+	 * @see BaseActiveRecord::beforeDelete()
+	 */
 	public function beforeDelete()
 	{
 		$this->_stored_path = $this->getPath();

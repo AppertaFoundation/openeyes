@@ -25,7 +25,7 @@
 	<div class="icon_patientIssue"></div>
 	<h4>Allergies</h4>
 	<div class="data_row">
-		<table class="subtleWhite">
+		<table class="subtleWhite" id="currentAllergies">
 			<thead>
 				<tr>
 					<th width="80%">Allergies</th>
@@ -34,7 +34,7 @@
 			</thead>
 			<tbody>
 				<?php foreach ($this->patient->allergies as $allergy) { ?>
-				<tr data-allergy-id="<?php echo $allergy->id ?>">
+				<tr data-allergy-id="<?php echo $allergy->id ?>" data-allergy-name="<?php echo $allergy->name ?>">
 					<td><?php echo $allergy->name ?></td>
 					<?php if (BaseController::checkUserLevel(4)) { ?>
 					<td><a href="#" rel="<?php echo $allergy->id?>" class="small removeAllergy"><strong>Remove</strong>
@@ -181,7 +181,13 @@
 			'url': baseUrl+'/patient/removeAllergy?patient_id=<?php echo $this->patient->id?>&allergy_id='+$('#remove_allergy_id').val(),
 			'success': function(html) {
 				if (html == 'success') {
-					$('a.removeAllergy[rel="'+$('#remove_allergy_id').val()+'"]').parent().parent().remove();
+					var allergy_id = $('#remove_allergy_id').val();
+					var row = $('#currentAllergies tr[data-allergy-id="' + allergy_id + '"]');
+					var allergy_name = row.data('allergy-name');
+					row.remove();
+					$('#allergy_id').append('<option value="'+allergy_id+'">'+allergy_name+'</option>');
+					sort_selectbox($('#allergy_id'));
+					
 				} else {
 					new OpenEyes.Dialog.Alert({
 						content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."

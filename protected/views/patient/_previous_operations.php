@@ -128,7 +128,7 @@
 		$(this).val(0);
 	});
 	$('button.btn_save_previous_operation').click(function() {
-		if ($('#previous_operation').length <1) {
+		if ($('#previous_operation').val().length <1) {
 			new OpenEyes.Dialog.Alert({
 				content: "Please enter an operation"
 			}).open();
