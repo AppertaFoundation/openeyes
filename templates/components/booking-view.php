@@ -1,4 +1,4 @@
-<div class="large-10 column">
+<div class="large-10 column event container">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">
@@ -31,29 +31,53 @@
 			Operation requires scheduling.
 		</div>
 
-		<div class="row">
+		<div class="row element-data">
 			<div class="large-12 column">
-				<h3>Diagnosis</h3>
-				<div class="highlight">Left Cyst of eyelid</div>
+				<h3 class="element-title">Diagnosis</h3>
+				<div class="element-value element-highlight">Left Cyst of eyelid</div>
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row element-data">
 			<div class="large-12 column">
-				<h3>Procedures</h3>
-				<p>Left Lester Jones tube</p>
-				<p>Conjunctival flap</p>
+				<h3 class="element-title">Procedures</h3>
+				<ul class="element-value element-highlight important">
+					<li>Left Lester Jones tube</li>
+					<li>Conjunctival flap</li>
+				</ul>
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row element-data">
 			<div class="large-6 column">
-				<h3>Anaesthetic</h3>
-				<p>Topical</p>
+				<h3 class="element-title">Anaesthetic</h3>
+				<div class="element-value">Topical</div>
 			</div>
 			<div class="large-6 column">
-				<h3>Consultant required?</h3>
-				<p>No Consultant</p>
+				<h3 class="element-title">Consultant required?</h3>
+				<div class="element-value">No Consultant</div>
+			</div>
+		</div>
+
+		<div class="row element-data">
+			<div class="large-6 column">
+				<h3 class="element-title">Post Operative Stay Required</h3>
+				<div class="element-value">No Stay</div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="element-title">Decision Date</h3>
+				<div class="element-value">21 Dec 2011</div>
+			</div>
+		</div>
+
+		<div class="row element-data">
+			<div class="large-6 column">
+				<h3 class="element-title">Operation priority</h3>
+				<div class="element-value">Routine</div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="element-title">Operation Comments</h3>
+				<div class="element-value panel comments">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur auctor ante in magna luctus, ac hendrerit mauris dapibus. Sed accumsan bibendum turpis sed pharetra. Curabitur ultrices velit dui, eget aliquet lectus posuere id. Suspendisse rhoncus ante in odio luctus luctus. Duis in facilisis lacus. Vivamus in vulputate dolor. Suspendisse vitae dignissim ante. Maecenas vitae ullamcorper turpis. </div>
 			</div>
 		</div>
 	</div>

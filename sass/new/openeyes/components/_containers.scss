@@ -36,3 +36,9 @@ $oe-container-content-min-height: 330px !default;
         min-height: $oe-container-content-min-height;
     }
 }
+
+.container {
+    &.event {
+        padding-right: 0;
+    }
+}

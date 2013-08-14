@@ -1,12 +1,60 @@
+$oe-event-view-element-title-color: #56a7f1;
+$oe-event-view-element-title-font-size: $default-font-size;
+$oe-event-view-element-title-padding-left: 10px;
+$oe-event-view-panel-comments-border-radius: 5px;
+
+// We keep px units for padding as we have a background image on this element.
+$oe-event-title-padding: 9px 0 9px 50px !default;
+$oe-event-title-font-size: emCalc(19px) !default;
+
+$oe-event-element-data-margin-bottom: 1em !default;
+$oe-event-element-value-padding-left: 10px !default;
+$oe-event-element-value-font-size: emCalc(16px) !default;
+
+$oe-event-element-highlight-border-radius: 5px !default;
+$oe-event-element-highlight-bg-color: white !default;
+$oe-event-element-highlight-padding: 10px !default;
+$oe-event-element-highlight-font-size: emCalc(18px) !default;
+$oe-event-element-highlight-margin: 0 !default;
+$oe-event-element-highlight-list-item-font-size: 1em !default;
+$oe-event-element-highlight-important-bg-color: #fff300 !default;
+
 .event {
-    .event-title {
-        padding: 9px 0 9px 50px;
-        font-size: emCalc(19px);
-    }
     &.view {
-        h3 {
-            color: #56a7f1;
-            font-size: $default-font-size;
+        .element-title {
+            color: $oe-event-view-element-title-color;
+            font-size: $oe-event-view-element-title-font-size;
+            padding-left: $oe-event-view-element-title-padding-left;
+        }
+        .panel {
+            &.comments {
+                @include border-radius($oe-event-view-panel-comments-border-radius);
+            }
+        }
+    }
+    .event-title {
+        padding: $oe-event-title-padding;
+        font-size: $oe-event-title-font-size;
+    }
+    .element-data {
+        margin-bottom: $oe-event-element-data-margin-bottom;
+    }
+    .element-value {
+        padding-left: $oe-event-element-value-padding-left;
+        font-size: $oe-event-element-value-font-size;
+    }
+    .element-highlight {
+        @include border-radius($oe-event-element-highlight-border-radius);
+        background: $oe-event-element-highlight-bg-color;
+        padding: $oe-event-element-highlight-padding;
+        font-size: $oe-event-element-highlight-font-size;
+        margin: $oe-event-element-highlight-margin;
+        list-style-type: none;
+        li {
+            font-size: $oe-event-element-highlight-list-item-font-size;
+        }
+        &.important {
+            background: $oe-event-element-highlight-important-bg-color;
         }
     }
 }

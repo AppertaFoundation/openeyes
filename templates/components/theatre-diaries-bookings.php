@@ -71,7 +71,7 @@
 						</table>
 					</div>
 					<div class="large-3 column">
-						<div class="panel session-comments">
+						<div class="panel comments">
 							<h4>Session comments</h4>
 						</div>
 					</div>
@@ -195,7 +195,7 @@
 						</table>
 					</div>
 					<div class="large-3 column">
-						<div class="panel session-comments">
+						<div class="panel comments">
 							<h4>Session comments</h4>
 							<p>Here are some sessions comments. They aren't very interesting, but they are very important.</p>
 						</div>
@@ -326,7 +326,7 @@
 						</table>
 					</div>
 					<div class="large-3 column">
-						<div class="panel session-comments">
+						<div class="panel comments">
 							<h4>Session comments</h4>
 							<textarea placeholder="Enter session comments..."></textarea>
 						</div>

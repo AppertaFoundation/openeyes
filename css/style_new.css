@@ -1046,6 +1046,11 @@ html, body {
   min-height: 330px;
 }
 
+/* line 41, ../sass/new/openeyes/components/_containers.scss */
+.container.event {
+  padding-right: 0;
+}
+
 /* line 23, ../sass/new/openeyes/components/_type.scss */
 h1.badge {
   display: inline-block;
@@ -3226,8 +3231,8 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   padding-top: 0.625em;
 }
 
-/* line 13, ../sass/new/openeyes/components/panels/_session-comments-panel.scss */
-.panel.session-comments {
+/* line 13, ../sass/new/openeyes/components/panels/_comments-panel.scss */
+.panel.comments {
   background: #fff0a0;
   border: 1px solid #fee54f;
   min-height: 5em;
@@ -3238,12 +3243,12 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   -o-border-radius: 0;
   border-radius: 0;
 }
-/* line 19, ../sass/new/openeyes/components/panels/_session-comments-panel.scss */
-.theatres-list .panel.session-comments {
+/* line 19, ../sass/new/openeyes/components/panels/_comments-panel.scss */
+.theatres-list .panel.comments {
   margin-left: -0.75em;
 }
-/* line 22, ../sass/new/openeyes/components/panels/_session-comments-panel.scss */
-.panel.session-comments h4 {
+/* line 22, ../sass/new/openeyes/components/panels/_comments-panel.scss */
+.panel.comments h4 {
   color: #998a30;
   font-size: 0.75em;
   font-style: italic;
@@ -3596,15 +3601,54 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   margin-left: 2px;
 }
 
-/* line 2, ../sass/new/openeyes/components/_events.scss */
+/* line 24, ../sass/new/openeyes/components/_events.scss */
+.event.view .element-title {
+  color: #56a7f1;
+  font-size: 0.8125em;
+  padding-left: 10px;
+}
+/* line 30, ../sass/new/openeyes/components/_events.scss */
+.event.view .panel.comments {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 35, ../sass/new/openeyes/components/_events.scss */
 .event .event-title {
   padding: 9px 0 9px 50px;
   font-size: 1.1875em;
 }
-/* line 7, ../sass/new/openeyes/components/_events.scss */
-.event.view h3 {
-  color: #56a7f1;
-  font-size: 0.8125em;
+/* line 39, ../sass/new/openeyes/components/_events.scss */
+.event .element-data {
+  margin-bottom: 1em;
+}
+/* line 42, ../sass/new/openeyes/components/_events.scss */
+.event .element-value {
+  padding-left: 10px;
+  font-size: 1em;
+}
+/* line 46, ../sass/new/openeyes/components/_events.scss */
+.event .element-highlight {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  background: white;
+  padding: 10px;
+  font-size: 1.125em;
+  margin: 0;
+  list-style-type: none;
+}
+/* line 53, ../sass/new/openeyes/components/_events.scss */
+.event .element-highlight li {
+  font-size: 1em;
+}
+/* line 56, ../sass/new/openeyes/components/_events.scss */
+.event .element-highlight.important {
+  background: #fff300;
 }
 
 /* line 35, ../sass/new/openeyes/components/events/_elements.scss */

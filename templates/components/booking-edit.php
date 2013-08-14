@@ -1,4 +1,4 @@
-<div class="large-10 column">
+<div class="large-10 column event container">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li>
