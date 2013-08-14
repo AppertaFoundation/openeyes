@@ -39,6 +39,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $this->useContext('LaserContext', new LaserContext($parameters));
         $this->useContext('PrescriptionContext', new PrescriptionContext($parameters));
         $this->useContext('PhasingContext', new PhasingContext($parameters));
+        $this->useContext('CorrespondenceContext', new CorrespondenceContext($parameters));
 
     }
 
@@ -74,103 +75,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 
 
 
-//
-//    /**
-//     * @Then /^I Cancel the Examination$/
-//     */
-//    public function iCancelTheExamination()
-//    {
-//        $this->clickLink(AnaestheticAudit::$cancelExam);
-//    }
-//
-//    /**
-//     * @Then /^I select Site ID "([^"]*)"$/
-//     */
-//    public function iSelectSiteId($site)
-//    {
-//        $this->selectOption(Correspondence::$siteDropdown, $site);
-//    }
-//
-//    /**
-//     * @Given /^I select Address Target "([^"]*)"$/
-//     */
-//    public function iSelectAddressTarget($address)
-//    {
-//       $this->selectOption(Correspondence::$addressTarget, $address);
-//    }
-//
-//    /**
-//     * @Then /^I choose a Macro of "([^"]*)"$/
-//     */
-//    public function iChooseAMacroOf($macro)
-//    {
-//       $this->selectOption(Correspondence::$macro, $macro);
-//    }
-//
-//    /**
-//     * @Given /^I select Clinic Date "([^"]*)"$/
-//     */
-//    public function iSelectClinicDate($dateFrom)
-//    {
-//        $this->clickLink(Correspondence::$letterDate);
-//        $this->clickLink(PatientViewPage::passDateFromTable($dateFrom));
-//    }
-//
-//    /**
-//     * @Then /^I choose an Introduction of "([^"]*)"$/
-//     */
-//    public function iChooseAnIntroductionOf($intro)
-//    {
-//        $this->selectOption(Correspondence::$introduction, $intro);
-//    }
-//
-//    /**
-//     * @Given /^I choose a Diagnosis of "([^"]*)"$/
-//     */
-//    public function iChooseADiagnosisOf($diagnosis)
-//    {
-//        $this->selectOption(Correspondence::$diagnosis, $diagnosis);
-//    }
-//
-//    /**
-//     * @Then /^I choose a Management of "([^"]*)"$/
-//     */
-//    public function iChooseAManagementOf($management)
-//    {
-//        $this->selectOption(Correspondence::$management, $management);
-//    }
-//
-//    /**
-//     * @Given /^I choose Drugs "([^"]*)"$/
-//     */
-//    public function iChooseDrugs($drugs)
-//    {
-//        $this->selectOption(Correspondence::$drugs, $drugs);
-//    }
-//
-//    /**
-//     * @Then /^I choose Outcome "([^"]*)"$/
-//     */
-//    public function iChooseOutcome($outcome)
-//    {
-//        $this->selectOption(Correspondence::$outcome, $outcome);
-//    }
-//
-//    /**
-//     * @Given /^I choose CC Target "([^"]*)"$/
-//     */
-//    public function iChooseCcTarget($cc)
-//    {
-//        $this->selectOption(Correspondence::$letterCc, $cc);
-//    }
-//
-//    /**
-//     * @Given /^I add a New Enclosure$/
-//     */
-//    public function iAddANewEnclosure()
-//    {
-//        $this->clickLink(Correspondence::$addEnclosure);
-//    }
+
 //
 //    /**
 //     * @Then /^I choose Right Anaesthetic Type of Topical$/
