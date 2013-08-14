@@ -82,7 +82,7 @@ class ContactBehavior extends CActiveRecordBehavior
 		return false;
 	}
 
-	public function getLetterIntroduction($params)
+	public function getLetterIntroduction($params=array())
 	{
 		if (@$params['nickname'] && $this->owner->contact->nick_name) {
 			return 'Dear '.$this->owner->contact->nick_name.',';
