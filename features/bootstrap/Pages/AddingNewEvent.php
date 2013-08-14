@@ -4,7 +4,6 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class AddingNewEvent extends Page
 {
-
     protected $path = "OphCiExamination/default/view/517"; //TO CODE - default view and patient ID
 
     protected $elements = array(
@@ -27,18 +26,18 @@ class AddingNewEvent extends Page
         'prescription' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Prescription')]"),
         'intravitreal' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Intravitreal injection')]"),
         'laser' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Laser')]"),
-        'therapyApplication' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Therapy Application')]")
+        'therapyApplication' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Therapy Application')]"),
     );
 
 
 
-    public function addFirstNewEpisode ()
+    public function addFirstNewEpisode()
     {
         $this->getElement('addFirstNewEpisode')->click();
         $this->getElement('addEpisodeConfirm')->click();
     }
 
-    public function addNewEpisode ()
+    public function addNewEpisode()
     {
         $this->getElement('addNewEpisodeButton')->click();
     }
@@ -59,7 +58,7 @@ class AddingNewEvent extends Page
         $this->getSession()->wait(1000,false);
     }
 
-    public function addNewEvent ($event)
+    public function addNewEvent($event)
     {
 
 
@@ -99,7 +98,4 @@ class AddingNewEvent extends Page
         $this->getSession()->wait(1000,false);
 
     }
-
-
-
 }

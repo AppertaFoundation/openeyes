@@ -27,10 +27,10 @@ Feature: Create New Examination
     And I choose to expand the Comorbidities section
     Then I Add a Comorbiditiy of "4"
 
-    #Then I choose to expand the Visual Acuity section
+    Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
-    Then I choose a left Visual Acuity Snellen Metre "4" and a reading method of "5"
-    Then I choose a right Visual Acuity Snellen Metre "4" and a reading method of "5"
+#    Then I choose a left Visual Acuity Snellen Metre "4" and a reading method of "5"
+#    Then I choose a right Visual Acuity Snellen Metre "4" and a reading method of "5"
 
 #    Then I choose to expand the Intraocular Pressure section
 #    Then I choose a left Intraocular Pressure of "19" and Instrument "2"

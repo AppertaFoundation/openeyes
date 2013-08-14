@@ -2,7 +2,7 @@
 
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class PatientViewPage extends Page
+class PatientView extends Page
 {
     protected $path = "/site/patient/view/";
 

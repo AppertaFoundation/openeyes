@@ -2,7 +2,7 @@
 
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class HomePage extends Page
+class Homepage extends Page
 {
     protected $path = '/';
 
@@ -53,6 +53,11 @@ class HomePage extends Page
     public function searchSubmit ()
     {
         $this->getElement('searchSubmit')->press();
+    }
+
+    public function followLink($link)
+    {
+        $this->clickLink($link);
     }
 
 }

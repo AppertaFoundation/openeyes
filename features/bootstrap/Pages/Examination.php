@@ -14,17 +14,64 @@ class Examination extends Page
         'duration' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='1 week, ']"),
         'openComorbidities' => array('xpath' => "//div[@id='active_elements']/div/div[4]/div/h5"),
         'addComorbidities' => array('xpath' => "//*[@id='comorbidities_unselected']/select"),
-        'openVisualAcuity' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(), 'Visual Acuity')]"),
+        'openVisualAcuity' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(),'Visual Acuity')]"),
         'visualAcuityUnitChange' => array('xpath' => "//*[@id='visualacuity_unit_change']"),
         'openLeftVA' => array('xpath' => "//*[@id='active_elements']/div[2]/div[3]/div[2]/div[1]/div[1]/button//*[contains(text(),'Add')]"),
         'snellenLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_value']"),
         'readingLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_method_id']"),
         'openRightVA' => array('xpath' => "//*[@id='active_elements']/div[2]/div[3]/div[1]/div[1]/div[1]/button//*[contains(text(),'Add')]"),
         'snellenRight' => array('xpath' => "//select[@id='visualacuity_reading_1_value']"),
-        'readingRight' => array('xpath' => "//select[@id='visualacuity_reading_1_method_id']")
+        'readingRight' => array('xpath' => "//select[@id='visualacuity_reading_1_method_id']"),
+
+        'openIntraocularPressure' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(), 'Intraocular Pressure')]"),
+        'intraocularRight' => array('xpath' => "//select[@id='element_ophciexamination_intraocularpressure_right_reading_id']"),
+        'instrumentRight' => array('xpath' => "//select[@id='element_ophciexamination_intraocularpressure_right_instrument_id']"),
+        'intraocularLeft' => array('xpath' => "//select[@id='element_ophciexamination_intraocularpressure_left_reading_id']"),
+        'instrumentLeft' => array('xpath' => "//select[@id='element_ophciexamination_intraocularpressure_left_instrument_id']"),
+
+        'openDilation' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(), 'Dilation')]"),
+        'dilationRight' => array('xpath' => "//select[@id='dilation_drug_right']"),
+        'dropsLeft' => array('xpath' => "//select[@name='dilation_treatment[0][drops]']"),
+        'dilationLeft' => array('xpath' => "//select[@id='dilation_drug_left']"),
+        'dropsRight' => array('xpath' => "//select[@name='dilation_treatment[1][drops]']"),
+
+        'expandRefraction' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='refraction']"),
+
+        'sphereLeft' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_sphere_sign']"),
+        'sphereLeftInt' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_sphere_integer']"),
+        'sphereLeftFraction' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_sphere_fraction']"),
+        'cylinderLeft' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_cylinder_sign']"),
+        'cylinderLeftInt' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_cylinder_integer']"),
+        'cylinderLeftFraction' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_cylinder_fraction']"),
+        'sphereLeftAxis' => array('xpath' => "//input[@id='element_ophciexamination_refraction_left_axis']"),
+        'sphereLeftType' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_type_id']"),
 
 
-);
+        'sphereRight' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_sphere_sign']"),
+        'sphereRightInt' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_sphere_integer']"),
+        'sphereRightFraction' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_sphere_fraction']"),
+        'cylinderRight' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_cylinder_sign']"),
+        'cylinderRightInt' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_cylinder_integer']"),
+        'cylinderRightFraction' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_cylinder_fraction']"),
+        'sphereRightAxis' => array('xpath' => "//input[@id='element_ophciexamination_refraction_right_axis']"),
+        'sphereRightType' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_type_id']"),
+
+        'expandGonioscopy' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='gonioscopy']"),
+        'expandaAdnexalComorbidity' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='adnexal comorbidity']"),
+        'expandAnteriorSegment' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='anterior segment']"),
+        'expandPupillaryAbnormalities' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='pupillary abnormalities']"),
+        'expandOpticDisc' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='optic disc']"),
+        'expandPosteriorPole' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='posterior pole']"),
+        'expandDiagnoses' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='diagnoses']"),
+        'expandInvestigation' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='investigation']"),
+        'expandClinicalManagement' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='clinical management']"),
+        'expandRisks' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='risks']"),
+        'expandClinicOutcome' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='clinic outcome']"),
+        'expandConclusion' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='conclusion']"),
+
+        'saveExamination' => array('xpath' => "//*[@id='et_save']"),
+    );
+
     public function history ()
     {
         $this->getElement('history')->click();
@@ -36,8 +83,11 @@ class Examination extends Page
 
     public function openComorbidities ()
     {
-        $this->getElement('openComorbidities')->click();
-        $this->getSession()->wait(1000,false);
+        $openComorbities = $this->getElement('openComorbidities');
+        if ($openComorbities) {
+            $openComorbities->click();
+            $this->getSession()->wait(5000, '$.active == 0');
+        }
     }
 
     public function addComorbiditiy ($com)
@@ -47,8 +97,13 @@ class Examination extends Page
 
     public function openVisualAcuity ()
     {
-        $this->getElement('openVisualAcuity')->click();
-        $this->getSession()->wait(1000,false);
+        $openVisualAcuity = $this->getElement('openVisualAcuity');
+        if ($openVisualAcuity === true) {
+            $openVisualAcuity->click();
+            $this->getSession()->wait(5000, '$.active == 0');
+        }
+
+
     }
 
     public function selectVisualAcuity ($unit)
@@ -69,53 +124,4 @@ class Examination extends Page
         $this->getElement('snellenRight')->selectOption($metre);
         $this->getElement('readingRight')->selectOption($method);
     }
-
-
-    public static  $openIntraocularPressure = "//*[@id='inactive_elements']//*[contains(text(), 'Intraocular Pressure')]";
-    public static  $intraocularRight = "//select[@id='element_ophciexamination_intraocularpressure_right_reading_id']";
-    public static  $instrumentRight = "//select[@id='element_ophciexamination_intraocularpressure_right_instrument_id']";
-    public static  $intraocularLeft = "//select[@id='element_ophciexamination_intraocularpressure_left_reading_id']";
-    public static  $instrumentLeft = "//select[@id='element_ophciexamination_intraocularpressure_left_instrument_id']";
-
-    public static  $openDilation = "//*[@id='inactive_elements']//*[contains(text(), 'Dilation')]";
-    public static  $dilationRight = "//select[@id='dilation_drug_right']";
-    public static  $dropsLeft = "//select[@name='dilation_treatment[0][drops]']";
-    public static  $dilationLeft = "//select[@id='dilation_drug_left']";
-    public static  $dropsRight = "//select[@name='dilation_treatment[1][drops]']";
-
-    public static  $expandRefraction = "//*[@id='inactive_elements']//*[@data-element-type-name='refraction']";
-
-    public static  $sphereLeft = "//select[@id='element_ophciexamination_refraction_left_sphere_sign']";
-    public static  $sphereLeftInt = "//select[@id='element_ophciexamination_refraction_left_sphere_integer']";
-    public static  $sphereLeftFraction = "//select[@id='element_ophciexamination_refraction_left_sphere_fraction']";
-    public static  $cylinderLeft = "//select[@id='element_ophciexamination_refraction_left_cylinder_sign']";
-    public static  $cylinderLeftInt = "//select[@id='element_ophciexamination_refraction_left_cylinder_integer']";
-    public static  $cylinderLeftFraction = "//select[@id='element_ophciexamination_refraction_left_cylinder_fraction']";
-    public static  $sphereLeftAxis = "//input[@id='element_ophciexamination_refraction_left_axis']";
-    public static  $sphereLeftType = "//select[@id='element_ophciexamination_refraction_left_type_id']";
-
-
-    public static  $sphereRight = "//select[@id='element_ophciexamination_refraction_right_sphere_sign']";
-    public static  $sphereRightInt = "//select[@id='element_ophciexamination_refraction_right_sphere_integer']";
-    public static  $sphereRightFraction = "//select[@id='element_ophciexamination_refraction_right_sphere_fraction']";
-    public static  $cylinderRight = "//select[@id='element_ophciexamination_refraction_right_cylinder_sign']";
-    public static  $cylinderRightInt = "//select[@id='element_ophciexamination_refraction_right_cylinder_integer']";
-    public static  $cylinderRightFraction = "//select[@id='element_ophciexamination_refraction_right_cylinder_fraction']";
-    public static  $sphereRightAxis = "//input[@id='element_ophciexamination_refraction_right_axis']";
-    public static  $sphereRightType = "//select[@id='element_ophciexamination_refraction_right_type_id']";
-
-    public static  $expandGonioscopy = "//*[@id='inactive_elements']//*[@data-element-type-name='gonioscopy']";
-    public static  $expandaAdnexalComorbidity = "//*[@id='inactive_elements']//*[@data-element-type-name='adnexal comorbidity']";
-    public static  $expandAnteriorSegment = "//*[@id='inactive_elements']//*[@data-element-type-name='anterior segment']";
-    public static  $expandPupillaryAbnormalities = "//*[@id='inactive_elements']//*[@data-element-type-name='pupillary abnormalities']";
-    public static  $expandOpticDisc = "//*[@id='inactive_elements']//*[@data-element-type-name='optic disc']";
-    public static  $expandPosteriorPole = "//*[@id='inactive_elements']//*[@data-element-type-name='posterior pole']";
-    public static  $expandDiagnoses = "//*[@id='inactive_elements']//*[@data-element-type-name='diagnoses']";
-    public static  $expandInvestigation = "//*[@id='inactive_elements']//*[@data-element-type-name='investigation']";
-    public static  $expandClinicalManagement = "//*[@id='inactive_elements']//*[@data-element-type-name='clinical management']";
-    public static  $expandRisks = "//*[@id='inactive_elements']//*[@data-element-type-name='risks']";
-    public static  $expandClinicOutcome = "//*[@id='inactive_elements']//*[@data-element-type-name='clinic outcome']";
-    public static  $expandConclusion = "//*[@id='inactive_elements']//*[@data-element-type-name='conclusion']";
-
-    public static  $saveExamination = "//*[@id='et_save']";
 }

@@ -4,12 +4,15 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class Prescription extends Page
 {
-    public static  $prescriptionDropDown = "//*[@id='common_drug_id']";
-    public static  $prescriptionStandardSet = "//*[@id='drug_set_id']";
-    public static  $prescriptionDose = "//*[@id='prescription_item_0_dose']";
-    public static  $prescriptionRoute = "//*[@id='prescription_item_0_route_id']";
-    public static  $prescriptionOptions = "//*[@id='prescription_item_0_route_option_id']";
-    public static  $prescriptionFrequency = "//*[@id='prescription_item_0_frequency_id']";
-    public static  $prescriptionDuration = "//*[@id='prescription_item_0_duration_id']";
-    public static  $prescriptionComments = "//textarea[@id='element_ophdrprescription_details_comments']";
+    protected $elements = array(
+        'prescriptionDropDown' => array('xpath' => "//*[@id='common_drug_id']"),
+        'prescriptionStandardSet' => array('xpath' => "//*[@id='drug_set_id']"),
+        'prescriptionDose' => array('xpath' => "//*[@id='prescription_item_0_dose']"),
+        'prescriptionRoute' => array('xpath' => "//*[@id='prescription_item_0_route_id']"),
+        'prescriptionOptions' => array('xpath' => "//*[@id='prescription_item_0_route_option_id']"),
+        'prescriptionFrequency' => array('xpath' => "//*[@id='prescription_item_0_frequency_id']"),
+        'prescriptionDuration' => array('xpath' => "//*[@id='prescription_item_0_duration_id']"),
+        'prescriptionComments' => array('xpath' => "//textarea[@id='element_ophdrprescription_details_comments']"),
+    );
+
 }
