@@ -24,8 +24,6 @@
 #active_elements .element h5 { background: #ccc; padding: 2px 4px; }
 #active_elements .elementActions { position: absolute; right: 5px; top: 7px; z-index: 1; }
 #active_elements .active_child_elements h4.elementTypeName { border: none; margin: 0; padding: 6px; color: #666; }
-#active_elements .active_child_elements .element .left,
-#active_elements .active_child_elements .element .right { width: 483px; }
 #elements.view .element .element h4.elementTypeName { padding: 3px 6px 0; color: #666; }
 #active_elements .active_child_elements .elementActions { right: 2px; top: 2px; }
 #active_elements .active_child_elements .inactiveForm { padding: 0; margin: 0; }

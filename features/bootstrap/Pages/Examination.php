@@ -13,9 +13,9 @@ class Examination extends Page
         'eye' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='left eye, ']"),
         'duration' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='1 week, ']"),
         'openComorbidities' => array('xpath' => "//div[@id='active_elements']/div/div[4]/div/h5"),
-        'addComorbidities' => array('xpath' => "//div[@id='comorbidities_unselected']/select"),
-        'openVisualAcuity' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(), 'Visual Acuity')]"),
-        'visualActuityUnitChange' => array('xpath' => "//select[@id='visualacuity_reading_0_value']"),
+        'addComorbidities' => array('xpath' => "//*[@id='comorbidities_unselected']/select"),
+        'openVisualAcuity' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(),'Visual Acuity')]"),
+        'visualAcuityUnitChange' => array('xpath' => "//*[@id='visualacuity_unit_change']"),
         'openLeftVA' => array('xpath' => "//*[@id='active_elements']/div[2]/div[3]/div[2]/div[1]/div[1]/button//*[contains(text(),'Add')]"),
         'snellenLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_value']"),
         'readingLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_method_id']"),
@@ -83,6 +83,45 @@ class Examination extends Page
 
     public function openComorbidities ()
     {
-        $this->getElement('openComorbidities')->click();
+        $openComorbities = $this->getElement('openComorbidities');
+        if ($openComorbities) {
+            $openComorbities->click();
+            $this->getSession()->wait(5000, '$.active == 0');
+        }
+    }
+
+    public function addComorbiditiy ($com)
+    {
+        $this->getElement('addComorbidities')->selectOption($com);
+    }
+
+    public function openVisualAcuity ()
+    {
+        $openVisualAcuity = $this->getElement('openVisualAcuity');
+        if ($openVisualAcuity === true) {
+            $openVisualAcuity->click();
+            $this->getSession()->wait(5000, '$.active == 0');
+        }
+
+
+    }
+
+    public function selectVisualAcuity ($unit)
+    {
+        $this->getElement('visualAcuityUnitChange')->selectOption($unit);
+    }
+
+    public function leftVisualAcuity ($metre, $method)
+    {
+        $this->getElement('openLeftVA')->click();
+        $this->getElement('snellenLeft')->selectOption($metre);
+        $this->getElement('readingLeft')->selectOption($method);
+    }
+
+    public function rightVisualAcuity ($metre, $method)
+    {
+        $this->getElement('openRightVA')->click();
+        $this->getElement('snellenRight')->selectOption($metre);
+        $this->getElement('readingRight')->selectOption($method);
     }
 }
