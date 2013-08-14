@@ -6,21 +6,23 @@
 // Styleguide 2.1
 
 // Main container variables
-$oe-container-main-bg-color: #dae6f1 !default;
-$oe-container-main-bg-image: image-url("_structure/gradient_bg.jpg") !default;
-$oe-container-main-border-color: #b3b0ae !default;
-$oe-container-main-border-width: 2px !default;
+$oe-container-bg-color: #dae6f1 !default;
+$oe-container-bg-image: image-url("_structure/gradient_bg.jpg") !default;
+$oe-container-border-color: #b3b0ae !default;
+$oe-container-border-width: 2px !default;
 
 .container {
     @include grid-row;
-    @include radius;
-    background: $oe-container-main-bg-color $oe-container-main-bg-image 0 0 no-repeat;
-    border: $oe-container-main-border-width solid $oe-container-main-border-color;
+    &.main {
+        @include radius;
+        background: $oe-container-bg-color $oe-container-bg-image 0 0 no-repeat;
+        border: $oe-container-border-width solid $oe-container-border-color;
+    }
 }
 
-// Content container
+// Main body container
 //
-// The content container wraps around all page content.
+// The main page body container that wraps around all page content.
 //
 // Styleguide 2.2
 
@@ -28,20 +30,9 @@ $oe-container-main-border-width: 2px !default;
 $oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg") !default;
 $oe-container-content-min-height: 330px !default;
 
-.content {
-    @include clearfix;
-    background: $oe-container-content-bg-image 0 bottom no-repeat;
-    min-height: $oe-container-content-min-height;
-}
-
-// Event content container
-//
-// The event content container wraps the event content.
-//
-// Styleguide 2.3
-.event-content {
-    .event-title {
-        padding: 9px 0 9px 50px;
-        font-size: emCalc(19px);
+.container {
+    &.content {
+        background: $oe-container-content-bg-image 0 bottom no-repeat;
+        min-height: $oe-container-content-min-height;
     }
 }

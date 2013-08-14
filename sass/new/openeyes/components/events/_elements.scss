@@ -34,7 +34,6 @@ $oe-element-fieldset-panel-border-color: #d9d9d9 !default;
 
 .element {
     border-top: $oe-element-border-top;
-    // h3's are used for episode headings
     .element-title {
         color: $oe-element-h3-color;
         font-style: $oe-element-h3-font-style;
@@ -50,6 +49,11 @@ $oe-element-fieldset-panel-border-color: #d9d9d9 !default;
             h4 {
                 font-size: $oe-element-h4-font-size;
             }
+        }
+    }
+    // Nested panels.
+    .panel {
+        .panel {
             @include all-form-fields {
                 margin-bottom: .5em;
             }

@@ -4,11 +4,11 @@
 <? include 'components/head.php'; ?>
 </head>
 <body>
-	<div class="container" role="main">
+	<div class="container main" role="main">
 
 		<? include 'components/header.php'; ?>
 
-		<div class="content">
+		<div class="container content">
 			<h1 class="badge">Index</h1>
 
 			<p>These are example uses of the various components.</p>

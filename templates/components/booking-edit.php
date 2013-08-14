@@ -17,7 +17,7 @@
 			</a>
 		</div>
 	</header>
-	<div class="box event booking event-content">
+	<div class="box event event-content event-edit booking">
 		<h2 class="event-title">Operation booking</h2>
 		<div class="element">
 			<h3 class="element-title">Diagnosis</h3>

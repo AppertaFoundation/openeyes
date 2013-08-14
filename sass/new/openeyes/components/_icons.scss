@@ -1,5 +1,5 @@
 [class*="icon-"] {
-    @include hide-text;
+    @extend .hide-text;
     display: inline-block;
     vertical-align: middle;
 }

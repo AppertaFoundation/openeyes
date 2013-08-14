@@ -20,8 +20,8 @@
 			</a>
 		</div>
 	</header>
-	<div class="box event booking event-content">
-		<h2 class="event-title">Operation booking</h2>
+	<div class="box event content view booking">
+		<h2 class="event-title">Operation booking (Requires scheduling)</h2>
 
 		<div class="alert-box alert with-icon">
 			Patient has no address, please correct in PAS before printing letter.
@@ -34,7 +34,7 @@
 		<div class="row">
 			<div class="large-12 column">
 				<h3>Diagnosis</h3>
-				<p>Left Cyst of eyelid</p>
+				<div class="highlight">Left Cyst of eyelid</div>
 			</div>
 		</div>
 

@@ -1,0 +1,14 @@
+.event {
+    .event-title {
+        padding: 9px 0 9px 50px;
+        font-size: emCalc(19px);
+    }
+    &.view {
+        h3 {
+            color: #56a7f1;
+            font-size: $default-font-size;
+        }
+    }
+}
+
+@import "events/elements";

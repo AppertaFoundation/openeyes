@@ -40,9 +40,9 @@
     background-position: sprite-position($icons, $image);
 }
 
-$oe-selector-form-input-fields: unquote('input:not([type="hidden"]), textarea');
-$oe-selector-form-button-fields: unquote('button, .button');
-$oe-selector-form-select-fields: unquote('select');
+$oe-selector-form-input-fields: 'input:not([type="hidden"]), textarea';
+$oe-selector-form-button-fields: 'button, .button';
+$oe-selector-form-select-fields: 'select';
 
 // Apply a set of rules to input form fields.
 @mixin input-form-fields {

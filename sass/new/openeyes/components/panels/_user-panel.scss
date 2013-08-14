@@ -40,7 +40,7 @@ $oe-panel-user-padding: 0 emCalc(10px) emCalc(5px) emCalc(10px) !default;
 
 .panel {
     &.user {
-        @include clearfix;
+        @extend .clearfix;
         @include panel($oe-panel-user-bg-color, $oe-panel-user-padding);
         @include border-radius($global-radius);
         background: {

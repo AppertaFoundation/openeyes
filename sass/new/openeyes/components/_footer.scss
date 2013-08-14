@@ -41,7 +41,7 @@ $oe-footer-copyright-color: #666 !default;
 $oe-footer-logo-bg-image: image-url("_structure/openeyes_footer.png") !default;
 
 .footer {
-    @include clearfix;
+    @extend .clearfix;
     background: $oe-footer-bg-color $oe-footer-logo-bg-image no-repeat right top;
     .info {
         font-size: $oe-footer-info-logo-font-size;

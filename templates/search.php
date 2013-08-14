@@ -4,11 +4,11 @@
 <? include 'components/head.php'; ?>
 </head>
 <body>
-	<div class="container" role="main">
+	<div class="container main" role="main">
 
 		<? include 'components/header-logged-in-no-patient.php'; ?>
 
-		<div class="content">
+		<div class="container content">
 			<h1 class="badge">Search</h1>
 			<div class="row">
 				<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">

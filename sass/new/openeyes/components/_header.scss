@@ -26,7 +26,7 @@ $oe-header-small-margin: 0 0 emCalc(10px) 0;
         margin-bottom: 0;
     }
     .logo {
-        @include hide-text;
+        @extend .hide-text;
         background: $oe-header-logo-bg-image no-repeat;
         background-size: 100%;
         height: $oe-header-logo-height;

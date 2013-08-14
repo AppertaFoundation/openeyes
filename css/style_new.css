@@ -2809,10 +2809,6 @@ html, body {
   max-width: 76.875em;
   width: 100%;
   *zoom: 1;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  background: #dae6f1 url('../img/new/_structure/gradient_bg.jpg?1376392794') 0 0 no-repeat;
-  border: 2px solid #b3b0ae;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
 .container:before, .container:after {
@@ -2823,27 +2819,18 @@ html, body {
 .container:after {
   clear: both;
 }
+/* line 16, ../sass/new/openeyes/components/_containers.scss */
+.container.main {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: #dae6f1 url('../img/new/_structure/gradient_bg.jpg?1376392794') 0 0 no-repeat;
+  border: 2px solid #b3b0ae;
+}
 
-/* line 31, ../sass/new/openeyes/components/_containers.scss */
-.content {
-  *zoom: 1;
+/* line 34, ../sass/new/openeyes/components/_containers.scss */
+.container.content {
   background: url('../img/new/_structure/help_top_grad.jpg?1376392794') 0 bottom no-repeat;
   min-height: 330px;
-}
-/* line 121, ../sass/new/foundation/components/_global.scss */
-.content:before, .content:after {
-  content: " ";
-  display: table;
-}
-/* line 122, ../sass/new/foundation/components/_global.scss */
-.content:after {
-  clear: both;
-}
-
-/* line 43, ../sass/new/openeyes/components/_containers.scss */
-.event-content .event-title {
-  padding: 9px 0 9px 50px;
-  font-size: 1.1875em;
 }
 
 /* line 23, ../sass/new/openeyes/components/_type.scss */
@@ -3104,11 +3091,6 @@ table tr:nth-of-type(even) {
 }
 /* line 28, ../sass/new/openeyes/components/_header.scss */
 .header .logo {
-  background-color: transparent;
-  border: 0;
-  color: transparent;
-  font: 0/0 a;
-  text-shadow: none;
   background: url('../img/new/_structure/openeyes.png?1376392794') no-repeat;
   background-size: 100%;
   height: 70px;
@@ -3125,17 +3107,7 @@ table tr:nth-of-type(even) {
 
 /* line 43, ../sass/new/openeyes/components/_footer.scss */
 .footer {
-  *zoom: 1;
   background: #b3b0ae url('../img/new/_structure/openeyes_footer.png?1376392794') no-repeat right top;
-}
-/* line 121, ../sass/new/foundation/components/_global.scss */
-.footer:before, .footer:after {
-  content: " ";
-  display: table;
-}
-/* line 122, ../sass/new/foundation/components/_global.scss */
-.footer:after {
-  clear: both;
 }
 /* line 46, ../sass/new/openeyes/components/_footer.scss */
 .footer .info {
@@ -3646,7 +3618,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
 }
 
 /* line 1, ../sass/new/openeyes/components/_visibility.scss */
-.hide-text {
+.hide-text, .header .logo, [class*="icon-"] {
   background-color: transparent;
   border: 0;
   color: transparent;
@@ -3664,11 +3636,6 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
 
 /* line 1, ../sass/new/openeyes/components/_icons.scss */
 [class*="icon-"] {
-  background-color: transparent;
-  border: 0;
-  color: transparent;
-  font: 0/0 a;
-  text-shadow: none;
   display: inline-block;
   vertical-align: middle;
 }
@@ -3847,7 +3814,6 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
 
 /* line 42, ../sass/new/openeyes/components/panels/_user-panel.scss */
 .panel.user {
-  *zoom: 1;
   border-style: solid;
   border-width: 1px;
   border-color: #b5cde3;
@@ -3863,15 +3829,6 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   background-repeat: no-repeat;
   background-position: left bottom;
   margin: 0;
-}
-/* line 121, ../sass/new/foundation/components/_global.scss */
-.panel.user:before, .panel.user:after {
-  content: " ";
-  display: table;
-}
-/* line 122, ../sass/new/foundation/components/_global.scss */
-.panel.user:after {
-  clear: both;
 }
 /* line 44, ../sass/new/foundation/components/_panels.scss */
 .panel.user > :first-child {
@@ -4468,11 +4425,22 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   margin-left: 2px;
 }
 
-/* line 35, ../sass/new/openeyes/components/event/_elements.scss */
+/* line 2, ../sass/new/openeyes/components/_events.scss */
+.event .event-title {
+  padding: 9px 0 9px 50px;
+  font-size: 1.1875em;
+}
+/* line 7, ../sass/new/openeyes/components/_events.scss */
+.event.view h3 {
+  color: #56a7f1;
+  font-size: 0.8125em;
+}
+
+/* line 35, ../sass/new/openeyes/components/events/_elements.scss */
 .element {
   border-top: 1px dotted #97c6f1;
 }
-/* line 38, ../sass/new/openeyes/components/event/_elements.scss */
+/* line 37, ../sass/new/openeyes/components/events/_elements.scss */
 .element .element-title {
   color: #56a7f1;
   font-style: italic;
@@ -4480,34 +4448,34 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   padding: 10px;
   margin: 0;
 }
-/* line 46, ../sass/new/openeyes/components/event/_elements.scss */
+/* line 45, ../sass/new/openeyes/components/events/_elements.scss */
 .element fieldset.panel {
   border-style: solid;
   border-width: 1px;
   border-color: #d9d9d9;
 }
-/* line 50, ../sass/new/openeyes/components/event/_elements.scss */
+/* line 49, ../sass/new/openeyes/components/events/_elements.scss */
 .element fieldset.panel h4 {
   font-size: 0.8125em;
 }
 /* line 72, ../sass/new/openeyes/_mixins.scss */
-.element fieldset.panel input:not([type="hidden"]), .element fieldset.panel textarea,
-.element fieldset.panel button, .element fieldset.panel .button,
-.element fieldset.panel select {
+.element .panel .panel input:not([type="hidden"]), .element .panel .panel textarea,
+.element .panel .panel button, .element .panel .panel .button,
+.element .panel .panel select {
   margin-bottom: .5em;
 }
 
 /* line 12, ../sass/new/openeyes/components/_helpers.scss */
-.clearfix, .event-header {
+.clearfix, .event-header, .footer, .panel.user {
   *zoom: 1;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
-.clearfix:before, .event-header:before, .clearfix:after, .event-header:after {
+.clearfix:before, .event-header:before, .footer:before, .panel.user:before, .clearfix:after, .event-header:after, .footer:after, .panel.user:after {
   content: " ";
   display: table;
 }
 /* line 122, ../sass/new/foundation/components/_global.scss */
-.clearfix:after, .event-header:after {
+.clearfix:after, .event-header:after, .footer:after, .panel.user:after {
   clear: both;
 }
 
@@ -4517,12 +4485,12 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
  * specific sass directory once the compilation step for modules sass has been created.
  */
 /* line 8, ../sass/new/openeyes/modules/operation-booking/_module.scss */
-.event-content.booking {
+.event.booking {
   background-image: url('../img/new/modules/operationbooking/watermark.png?1376408072');
   background-repeat: no-repeat;
   background-position: right top;
 }
 /* line 12, ../sass/new/openeyes/modules/operation-booking/_module.scss */
-.event-content.booking .event-title {
+.event.booking .event-title {
   background: url('../img/new/modules/operationbooking/medium.png?1375105639') no-repeat left center;
 }
