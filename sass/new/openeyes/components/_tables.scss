@@ -22,7 +22,7 @@
 //
 // .grid             - Styles a table like a grid (with borders)
 //
-// Styleguide 5.1
+// Styleguide 6.1
 
 // Table vars
 $oe-table-header-cell-bg-color: #dddddd !default;
@@ -139,7 +139,7 @@ table {
 // .send-gp-removal-letter       - Adds a orange state to the cell
 // .patient-due-removed          - Adds a red state to the cell
 //
-// Styleguide 5.1
+// Styleguide 6.2
 
 // Waiting list table vars
 $oe-table-waiting-list-send-another-reminder-bg-color: #b8eaa6 !default;
@@ -260,7 +260,7 @@ $oe-waiting-list-border-color: #999999 !default;
 //     </tfoot>
 // </table>
 //
-// Styleguide 5.2
+// Styleguide 6.3
 
 // Theatre bookings table vars
 $oe-table-theatre-bookings-footer-cell-bg-color: #bde0b3 !default;
@@ -327,7 +327,7 @@ $oe-table-theatre-bookings-footer-specialist-border-radius: 5px !default;
 //     </tbody>
 // </table>
 //
-// Styleguide 5.3
+// Styleguide 6.4
 
 table {
     &.plain,

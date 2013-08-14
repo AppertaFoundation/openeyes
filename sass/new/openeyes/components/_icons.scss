@@ -24,7 +24,7 @@
 // .icon-alert-overnight         - Overnight
 // .icon-alert-unconfirmed       - Unconfirmed
 //
-// Styleguide 14.1
+// Styleguide 15.1
 
 // Alert icons
 @include sprite($oe-sprite-icons-alerts, "icon-alert", 17px, 17px);
@@ -40,7 +40,7 @@
 // .icon-button-large-left-arrow        - Left arrow
 // .icon-button-large-right-arrow       - Right arrow
 //
-// Styleguide 14.2
+// Styleguide 15.2
 
 // Large button icons
 @include sprite($oe-sprite-icons-button-large, "icon-button-large", 34px, 32px);
@@ -55,7 +55,7 @@
 // .icon-button-small-plus-sign        - Plus icon
 // .icon-button-small-search           - Search icon
 //
-// Styleguide 14.3
+// Styleguide 15.3
 
 // Small button icons
 @include sprite($oe-sprite-icons-button-small, "icon-button-small", 27px, 24px);
@@ -72,7 +72,7 @@
 // .icon-showhide-hide          - Hide icon
 // .icon-showhide-hide-hover    - Hide icon hover state
 //
-// Styleguide 14.4
+// Styleguide 15.4
 
 // Small button icons
 @include sprite($oe-sprite-icon-showhide, "icon-showhide", 11px, 11px);

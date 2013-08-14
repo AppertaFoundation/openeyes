@@ -1,3 +1,85 @@
+/* Standard Forms */
+
+form {
+    margin: 0 0 $form-spacing;
+}
+
+/* Using forms within rows, we need to set some defaults */
+form .row {
+    @include form-row-base;
+}
+
+/* Label Styles */
+label {
+    @include form-label;
+    &.right {
+        @include form-label(right, false);
+    }
+    &.inline {
+        @include form-label(inline, false);
+    }
+}
+
+
+/* We use this to get basic styling on all basic form elements */
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea {
+    @include form-element;
+    @if not $input-include-glowing-effect {
+        @include single-transition(all, 0.15s, linear);
+    }
+}
+
+/* Adjust margin for form elements below */
+
+input[type="file"],
+input[type="checkbox"],
+input[type="radio"],
+select {
+    margin: 0 0 $form-spacing 0;
+}
+
+/* Normalize file input width */
+input[type="file"] {
+    width: 100%;
+}
+
+/* We add basic fieldset styling */
+fieldset {
+    @include fieldset;
+}
+
+/* Error Handling */
+
+.error input,
+input.error,
+.error textarea,
+textarea.error {
+    @include form-error-color;
+}
+
+.error label,
+label.error {
+    @include form-label-error-color;
+}
+
+.error small,
+small.error {
+    @include form-error-message;
+}
+
 // Common forms
 //
 // Forms used throughout the application. Make note of how the form is layed out,
@@ -34,7 +116,7 @@
 // .login             - A login form
 // .panel.login       - A login form panel
 //
-// Styleguide 8.1
+// Styleguide 9.1
 
 // Forms variables
 $oe-form-panel-bg-color: #e2dfdb !default;
@@ -105,11 +187,12 @@ label {
 // .small             - A small form field
 // .small.fixed-width - A small form field with a fixed width
 //
-// Styleguide 8.2
+// Styleguide 9.2
 
 // Field sizes vars
 $oe-form-field-small-padding: emCalc(3px) emCalc(4px) !default;
 $oe-form-field-fixed-width: emCalc(110px) !default;
+
 @include input-form-fields {
     @include border-radius($oe-form-input-radius);
     height: auto;

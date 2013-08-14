@@ -21,7 +21,7 @@
 // .warning:focus       - Warning button focus state
 // .warning:active      - Warning button pressed state
 //
-// Styleguide 9.1
+// Styleguide 10.1
 
 // Primary button variables
 $oe-button-primary-bg-color-start: #107be9 !default;
@@ -157,7 +157,7 @@ button, .button {
 //
 // .small               - Small button
 //
-// Styleguide 9.2
+// Styleguide 10.2
 
 // Small button vars
 $oe-button-small-padding: emCalc(5px) emCalc(20px) !default;
@@ -191,7 +191,7 @@ button, .button {
 //     Add episode
 // </button>
 //
-// Styleguide 9.2
+// Styleguide 10.3
 button, .button {
     [class*="icon-button-small-"] {
         margin: -6px -2px -5px -14px;
@@ -209,7 +209,7 @@ button, .button {
 //     <li><a href="#" class="small button">Button 3</a></li>
 // </ul>
 //
-// Styleguide 9.4
+// Styleguide 10.4
 .button-group {
     @include button-group-container;
     & > li {
