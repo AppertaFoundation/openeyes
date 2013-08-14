@@ -93,4 +93,4 @@ class AddingNewEvent extends Page
         $this->getSession()->wait(1000,false);
 
     }
-
+}
