@@ -71,7 +71,7 @@ Feature: Create New Examination
 
   Examples: User details
     | environment   | site      | username | password     | hospnumber   | nhs        | last           | first         | EventType     |
-    | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin,Violet  | Coffin,Violet | Examination   |
+    | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin,        | Violet        | Examination   |
 
 
   # Site ID's:

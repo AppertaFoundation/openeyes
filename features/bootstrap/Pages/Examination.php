@@ -81,11 +81,16 @@ class Examination extends Page
         $this->getElement('duration')->click();
     }
 
+    protected function isComorbitiesCollapsed()
+    {
+        return (bool) $this->find('xpath', $this->getElement('openComorbidities')->getXpath());;
+    }
+
     public function openComorbidities ()
     {
-        $openComorbities = $this->getElement('openComorbidities');
-        if ($openComorbities) {
-            $openComorbities->click();
+        if ($this->isComorbitiesCollapsed()) {
+
+            $this->getElement('openComorbidities')->click();
             $this->getSession()->wait(5000, '$.active == 0');
         }
     }
@@ -95,15 +100,17 @@ class Examination extends Page
         $this->getElement('addComorbidities')->selectOption($com);
     }
 
+    protected function isVisualAcuityCollapsed()
+    {
+        return (bool) $this->find('xpath', $this->getElement('openVisualAcuity')->getXpath());
+    }
+
     public function openVisualAcuity ()
     {
-        $openVisualAcuity = $this->getElement('openVisualAcuity');
-        if ($openVisualAcuity === true) {
-            $openVisualAcuity->click();
+        if ($this->isVisualAcuityCollapsed()) {
+            $this->getElement('openVisualAcuity')->click();
             $this->getSession()->wait(5000, '$.active == 0');
         }
-
-
     }
 
     public function selectVisualAcuity ($unit)

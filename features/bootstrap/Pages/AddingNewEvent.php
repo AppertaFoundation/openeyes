@@ -4,7 +4,7 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class AddingNewEvent extends Page
 {
-    protected $path = "OphCiExamination/default/view/{eventId}}"; //TO CODE - default view and patient ID
+    protected $path = "OphCiExamination/default/view/{eventId}}";
 
     protected $elements = array(
         'addFirstNewEpisode' => array('xpath' => "//*[@id='event_display']/div[3]/button//*[contains(text(), 'Add episode')]"),

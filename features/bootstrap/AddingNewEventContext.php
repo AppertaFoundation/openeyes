@@ -27,7 +27,7 @@ class AddingNewEventContext extends PageObjectContext
          * @var AddingNewEvent $addNewEvent
          */
         $addNewEvent = $this->getPage('AddingNewEvent');
-        $addNewEvent->open(array('parentId' => 517));
+        $addNewEvent->open(array('eventId' => 517));
         $addNewEvent->addFirstNewEpisode();
     }
     //Need to drop the database so this is the first new Episode

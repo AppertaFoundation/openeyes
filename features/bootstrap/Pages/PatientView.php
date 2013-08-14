@@ -234,16 +234,30 @@ class PatientView extends Page
         $this->getSession()->wait(1000,false);
     }
 
+    public function addEpisodeAndEvent()
+    {
+        $this->getSession()->wait(5000, '$.active == 10');
+
+        if ($this->episodesAndEventsAreNotPresent()) {
+            $this->createEpisodeAndEvent();
+        } else {
+            $this->selectLatestEvent();
+        }
+    }
+
     public function createEpisodeAndEvent ()
     {
         $this->getElement('createViewEpisodeEvents')->click();
-        $this->getSession()->wait(1000,false);
     }
 
     public function selectLatestEvent ()
     {
         $this->getElement('latestEvent')->click();
-        $this->getSession()->wait(1000,false);
+    }
+
+    protected function episodesAndEventsAreNotPresent()
+    {
+        return $this->find('xpath', $this->getElement('createViewEpisodeEvents')->getXpath());
     }
 
 }
