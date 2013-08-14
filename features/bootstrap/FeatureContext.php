@@ -38,6 +38,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $this->useContext('ExaminationContext', new ExaminationContext($parameters));
         $this->useContext('LaserContext', new LaserContext($parameters));
         $this->useContext('PrescriptionContext', new PrescriptionContext($parameters));
+        $this->useContext('PhasingContext', new PhasingContext($parameters));
 
     }
 
@@ -71,70 +72,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
     }
 
 
-//
-//    /**
-//     * @Then /^I choose a right eye Intraocular Pressure Instrument  of "([^"]*)"$/
-//     */
-//    public function RightEyeIntraocular($righteye)
-//    {
-//       $this->selectOption(Phasing::$phasingInstrumentRight, $righteye);
-//    }
-//
-//    /**
-//     * @Given /^I choose right eye Dilation of "([^"]*)"$/
-//     */
-//    public function iChooseRightEyeDilationOf($dilation)
-//    {
-//        $this->clickLink(Phasing::$phasingDilationRight);
-//    }
-//
-//    /**
-//     * @Then /^I choose a right eye Intraocular Pressure Reading of "([^"]*)"$/
-//     */
-//    public function iChooseARightEyeIntraocularPressureReadingOf($righteye)
-//    {
-//        $this->fillField(Phasing::$phasingPressureLeft, $righteye);
-//    }
-//
-//    /**
-//     * @Given /^I add right eye comments of "([^"]*)"$/
-//     */
-//    public function iAddRightEyeCommentsOf($comments)
-//    {
-//        $this->fillField(Phasing::$phasingCommentsRight, $comments);
-//    }
-//
-//    /**
-//     * @Then /^I choose a left eye Intraocular Pressure Instrument  of "([^"]*)"$/
-//     */
-//    public function iChooseALeftEyeIntraocularPressureInstrumentOf($lefteye)
-//    {
-//        $this->selectOption(Phasing::$phasingInstrumentLeft,$lefteye);
-//    }
-//
-//    /**
-//     * @Given /^I choose left eye Dilation of "([^"]*)"$/
-//     */
-//    public function iChooseLeftEyeDilationOf($dilation)
-//    {
-//        $this->clickLink(Phasing::$phasingDilationLeft);
-//    }
-//
-//    /**
-//     * @Then /^I choose a left eye Intraocular Pressure Reading of "([^"]*)"$/
-//     */
-//    public function iChooseALeftEyeIntraocularPressureReadingOf($lefteye)
-//    {
-//       $this->fillField(Phasing::$phasingPressureRight, $lefteye);
-//    }
-//
-//    /**
-//     * @Given /^I add left eye comments of "([^"]*)"$/
-//     */
-//    public function iAddLeftEyeCommentsOf($comments)
-//    {
-//        $this->fillField(Phasing::$phasingCommentsLeft, $comments);
-//    }
+
 //
 //    /**
 //     * @Then /^I Save the Phasing Event$/
