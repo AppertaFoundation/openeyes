@@ -142,4 +142,21 @@ class AnaestheticAuditContext extends PageObjectContext
         $asa = $this->getPage('AnaestheticAudit');
         $asa->saveEvent();
     }
+
+//    /**
+//     * @Then /^I Cancel the Event$/
+//     */
+//    public function iCancelTheEvent()
+//    {
+//       $this->clickLink(AnaestheticAudit::$cancelEvent);
+//    }
+//
+//    /**
+//     * @Then /^I Cancel the Examination$/
+//     */
+//    public function iCancelTheExamination()
+//    {
+//        $this->clickLink(AnaestheticAudit::$cancelExam);
+//    }
+
 }
