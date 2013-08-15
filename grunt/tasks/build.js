@@ -3,7 +3,6 @@ module.exports = function(grunt) {
     'bower',
     'modernizr',
     'lint',
-    'compile',
-    'hub'
+    'compile'
   ]);
 };
