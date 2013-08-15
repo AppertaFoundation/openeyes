@@ -1,0 +1,39 @@
+// Element panel
+//
+// This panel is used to group element data or element fields.
+//
+// Markup:
+// <fieldset class="panel element">
+//     <div class="row">
+//         <div class="small-2 column">
+//             <label for="eyes">Eyes:</label>
+//         </div>
+//         <div class="small-10 column">
+//             <input type="text" id="eyes" />
+//         </div>
+//     </div>
+// </fieldset>
+//
+// Styleguide 16.10
+
+// Element panel vars
+$oe-panel-element-border-radius: 0 !default;
+$oe-panel-element-bg-color: #dae6f1 !default;
+$oe-panel-element-padding: emCalc(10px) !default;
+$oe-panel-element-panel-border-radius: 3px !default;
+$oe-panel-element-panel-bg-color: white !default;
+
+.panel {
+    &.element {
+        @include border-radius($oe-panel-element-border-radius);
+        background: $oe-panel-element-bg-color;
+        border: 0;
+        padding: $oe-panel-element-padding;
+        margin: 0;
+        .panel {
+            @include border-radius($oe-panel-element-panel-border-radius);
+            background: $oe-panel-element-panel-bg-color;
+            margin-bottom: emCalc(5px);
+        }
+    }
+}

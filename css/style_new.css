@@ -3442,8 +3442,8 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1376486042');
 }
 
-/* line 27, ../sass/new/openeyes/components/panels/_fieldset-panel.scss */
-.panel.fieldset {
+/* line 27, ../sass/new/openeyes/components/panels/_element-panel.scss */
+.panel.element {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   -ms-border-radius: 0;
@@ -3454,8 +3454,8 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   padding: 0.625em;
   margin: 0;
 }
-/* line 33, ../sass/new/openeyes/components/panels/_fieldset-panel.scss */
-.panel.fieldset .panel {
+/* line 33, ../sass/new/openeyes/components/panels/_element-panel.scss */
+.panel.element .panel {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -ms-border-radius: 3px;
@@ -3677,15 +3677,15 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   padding: 10px;
   margin: 0;
 }
-/* line 45, ../sass/new/openeyes/components/events/_elements.scss */
-.element fieldset.panel {
+/* line 46, ../sass/new/openeyes/components/events/_elements.scss */
+.element fieldset.panel h4 {
+  font-size: 0.8125em;
+}
+/* line 49, ../sass/new/openeyes/components/events/_elements.scss */
+.element fieldset.panel .panel {
   border-style: solid;
   border-width: 1px;
   border-color: #d9d9d9;
-}
-/* line 49, ../sass/new/openeyes/components/events/_elements.scss */
-.element fieldset.panel h4 {
-  font-size: 0.8125em;
 }
 /* line 72, ../sass/new/openeyes/_mixins.scss */
 .element .panel .panel input:not([type="hidden"]), .element .panel .panel textarea,

@@ -3,7 +3,7 @@
 // Markup:
 // <div class="element">
 //     <h3>Schedule operation</h3>
-//     <fieldset class="panel fieldset">
+//     <fieldset class="panel element">
 //         <div class="row">
 //             <div class="large-2 column">
 //                 <label>
@@ -43,11 +43,13 @@ $oe-element-fieldset-panel-border-color: #d9d9d9 !default;
     }
     fieldset {
         &.panel {
-            border-style: solid;
-            border-width: 1px;
-            border-color: $oe-element-fieldset-panel-border-color;
             h4 {
                 font-size: $oe-element-h4-font-size;
+            }
+            .panel {
+                border-style: solid;
+                border-width: 1px;
+                border-color: $oe-element-fieldset-panel-border-color;
             }
         }
     }
