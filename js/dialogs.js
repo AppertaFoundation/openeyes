@@ -317,7 +317,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    */
   function AlertDialog(options) {
 
-    options = $.extend(true, options, AlertDialog.defaultOptions);
+    options = $.extend(true, {}, AlertDialog.defaultOptions, options);
     options.content = this.getContent(options.content);
 
     Dialog.call(this, options);
