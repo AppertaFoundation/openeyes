@@ -45,7 +45,6 @@
 
 				<div class="element">
 					<h3 class="element-title">Refraction</h3>
-
 					<div class="row collapse">
 						<div class="large-6 column">
 							<div class="element panel">
@@ -75,6 +74,66 @@
 										</div>
 									</div>
 								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="element">
+					<h3 class="element-title">Visual Acuity</h3>
+					<div class="row collapse">
+						<div class="large-6 column">
+							<div class="panel element">
+								<div class="element-value">Not recorded</div>
+								<div class="element-value">Left eye Visual Acuity</div>
+							</div>
+						</div>
+						<div class="large-6 column">
+							<div class="panel element">
+								<div class="element-value">Not recorded</div>
+								<div class="element-value">Right eye Visual Acuity</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="element">
+					<h3 class="element-title">Gonioscopy</h3>
+					<div class="row collapse">
+						<div class="large-6 column">
+							<div class="panel element">
+								<div class="row">
+									<div class="large-5 column">
+										<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
+									</div>
+									<div class="large-7 column">
+										<div class="element-value">
+											Gonioscopy, light patchy pigment
+										</div>
+										<div class="element-value">
+											Shaffer Grade:
+										</div>
+										<div class="gonio-cross">
+											<div class="gonio-sup">
+												4
+											</div>
+											<div class="gonio-tem">
+												4
+											</div>
+											<div class="gonio-nas">
+												4
+											</div>
+											<div class="gonio-inf">
+												4
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="large-6 column">
+							<div class="panel element">
+
 							</div>
 						</div>
 					</div>
