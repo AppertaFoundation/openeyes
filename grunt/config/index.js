@@ -11,6 +11,7 @@ module.exports = function(grunt) {
     copy: require('./copy'),
     jsdoc: require('./jsdoc'),
     docs: require('./docs'),
-    viewdocs: require('./viewdocs')
+    viewdocs: require('./viewdocs'),
+    hub: require('./hub')
   };
 };
