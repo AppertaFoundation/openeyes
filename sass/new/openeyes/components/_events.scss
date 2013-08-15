@@ -9,7 +9,8 @@ $oe-event-title-font-size: emCalc(19px) !default;
 
 $oe-event-element-data-margin-bottom: 1em !default;
 $oe-event-element-value-padding-left: 10px !default;
-$oe-event-element-value-font-size: emCalc(16px) !default;
+$oe-event-element-value-padding-bottom: 10px !default;
+$oe-event-element-value-font-size: $default-font-size !default;
 
 $oe-event-element-highlight-border-radius: 5px !default;
 $oe-event-element-highlight-bg-color: white !default;
@@ -30,10 +31,13 @@ $oe-event-metadata-user-color: #333333 !default;
 
 .event {
     &.view {
+        .element {
+            border: 0;
+        }
         .element-title {
-            color: $oe-event-view-element-title-color;
             font-size: $oe-event-view-element-title-font-size;
             padding-left: $oe-event-view-element-title-padding-left;
+            font-style: normal;
         }
         .panel {
             &.comments {
@@ -50,7 +54,13 @@ $oe-event-metadata-user-color: #333333 !default;
     }
     .element-value {
         padding-left: $oe-event-element-value-padding-left;
+        padding-bottom: $oe-event-element-value-padding-bottom;
         font-size: $oe-event-element-value-font-size;
+    }
+    .panel {
+        .element-value {
+            padding-left: 0;
+        }
     }
     .element-highlight {
         @include border-radius($oe-event-element-highlight-border-radius);

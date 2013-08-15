@@ -3,8 +3,8 @@
 .row {
     @include grid-row;
     &.collapse {
-        .column,
-        .columns {
+        > .column,
+        > .columns {
             @include grid-column($collapse: true);
         }
     }

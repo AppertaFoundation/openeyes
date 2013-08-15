@@ -1,0 +1,28 @@
+// Element panel
+//
+// This panel is used to group element data or element fields.
+//
+// Markup:
+// <fieldset class="panel element">
+//     <div class="row">
+//         <div class="small-2 column">
+//             <label for="eyes">Eyes:</label>
+//         </div>
+//         <div class="small-10 column">
+//             <input type="text" id="eyes" />
+//         </div>
+//     </div>
+// </fieldset>
+//
+// Styleguide 16.10
+
+// Element panel vars
+
+.panel {
+    &.sub-element {
+        @extend .panel.element;
+        .element-value:last-child {
+            padding-bottom: 0;
+        }
+    }
+}

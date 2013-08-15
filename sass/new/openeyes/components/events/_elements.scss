@@ -53,6 +53,10 @@ $oe-element-fieldset-panel-border-color: #d9d9d9 !default;
             }
         }
     }
+    canvas, .canvas {
+        border: 1px solid #ccc;
+        margin: 0;
+    }
     // Nested panels.
     .panel {
         .panel {
@@ -60,5 +64,27 @@ $oe-element-fieldset-panel-border-color: #d9d9d9 !default;
                 margin-bottom: .5em;
             }
         }
+    }
+    .row {
+        &.collapse {
+            > .column {
+                padding-right: 1px;
+                &:last-child {
+                    padding-right: 0;
+                }
+            }
+        }
+    }
+}
+
+.sub-element {
+    border: 1px solid #fafafa;
+    .sub-element-title {
+        background: #fafafa;
+        font-style: normal;
+        color: #666;
+        font-size: $default-font-size;
+        padding: emCalc(6px) emCalc(10px);
+        margin: 0;
     }
 }

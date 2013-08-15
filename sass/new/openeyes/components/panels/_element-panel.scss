@@ -30,7 +30,7 @@ $oe-panel-element-panel-bg-color: white !default;
         border: 0;
         padding: $oe-panel-element-padding;
         margin: 0;
-        .panel {
+        .panel:not(.sub-element) {
             @include border-radius($oe-panel-element-panel-border-radius);
             background: $oe-panel-element-panel-bg-color;
             margin-bottom: emCalc(5px);

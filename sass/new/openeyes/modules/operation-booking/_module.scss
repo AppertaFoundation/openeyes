@@ -13,5 +13,10 @@
         .event-title {
             background: image-url("modules/operationbooking/medium.png") no-repeat left center;
         }
+        &.view {
+            .element-value {
+                font-size: emCalc(16px);
+            }
+        }
     }
 }
