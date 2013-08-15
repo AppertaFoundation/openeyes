@@ -1,3 +1,4 @@
+
 <div class="large-10 column event container">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
@@ -78,6 +79,19 @@
 			<div class="large-6 column">
 				<h3 class="element-title">Operation Comments</h3>
 				<div class="element-value panel comments">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur auctor ante in magna luctus, ac hendrerit mauris dapibus. Sed accumsan bibendum turpis sed pharetra. Curabitur ultrices velit dui, eget aliquet lectus posuere id. Suspendisse rhoncus ante in odio luctus luctus. Duis in facilisis lacus. Vivamus in vulputate dolor. Suspendisse vitae dignissim ante. Maecenas vitae ullamcorper turpis. </div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="large-12 column">
+				<div class="metadata">
+					<span class="info">
+						Operation booking created by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
+					</span>
+					<span class="info">
+						Operation booking created by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
+					</span>
+				</div>
 			</div>
 		</div>
 	</div>

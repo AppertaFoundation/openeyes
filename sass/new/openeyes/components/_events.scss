@@ -19,6 +19,15 @@ $oe-event-element-highlight-margin: 0 !default;
 $oe-event-element-highlight-list-item-font-size: 1em !default;
 $oe-event-element-highlight-important-bg-color: #fff300 !default;
 
+$oe-event-metadata-border-top: 1px dotted #dae6f1 !default;
+$oe-event-metadata-padding-top: emCalc(8px) !default;
+$oe-event-metadata-margin: 10px !default;
+$oe-event-metadata-info-font-size: emCalc(12px) !default;
+$oe-event-metadata-info-font-style: italic !default;
+$oe-event-metadata-info-color: #888888 !default;
+$oe-event-metadata-info-padding-right: 15px !default;
+$oe-event-metadata-user-color: #333333 !default;
+
 .event {
     &.view {
         .element-title {
@@ -55,6 +64,21 @@ $oe-event-element-highlight-important-bg-color: #fff300 !default;
         }
         &.important {
             background: $oe-event-element-highlight-important-bg-color;
+        }
+    }
+    .metadata {
+        border-top: $oe-event-metadata-border-top;
+        padding-top: $oe-event-metadata-padding-top;
+        margin: $oe-event-metadata-margin;
+        .info {
+            font-size: $oe-event-metadata-info-font-size;
+            font-style: $oe-event-metadata-info-font-style;
+            color: $oe-event-metadata-info-color;
+            display: inline-block;
+            padding-right: $oe-event-metadata-info-padding-right;
+        }
+        .user {
+            color: $oe-event-metadata-user-color;
         }
     }
 }

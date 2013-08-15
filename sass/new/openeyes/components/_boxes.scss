@@ -20,7 +20,7 @@ $oe-box-border-radius: $global-radius !default;
 $oe-box-content-bg-color: #dae6f1 !default;
 $oe-box-event-border-radius: 0 !default;
 $oe-box-event-background: #fafafa !default;
-$oe-box-event-padding: emCalc(5px) !default;
+$oe-box-event-padding: emCalc(5px) emCalc(5px) emCalc(10px) emCalc(5px) !default;
 $oe-box-event-border-width: 0 5px 5px !default;
 $oe-box-event-booking-border-color: #fd6892 !default;
 
