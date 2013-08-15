@@ -1,4 +1,4 @@
-@booking
+@booking @insulated
 Feature: Create New Operation Booking Event
   In order to cover every possible route throughout the site
   As an automation tester

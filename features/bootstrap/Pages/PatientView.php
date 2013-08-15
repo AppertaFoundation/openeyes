@@ -187,9 +187,11 @@ class PatientView extends Page
         $this->getElement('selectMedication')->selectOption($medication);
         $this->getElement('selectRoute')->selectOption($route);
         $this->getElement('selectFrequency')->selectOption($frequency);
+        $this->getSession()->wait(3000,false);
         $this->getElement('openMedicationDate')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(3000,false);
         $this->getElement('selectDateFrom')->click($datefrom);
+        $this->getSession()->wait(3000,false);
         $this->getElement('saveMedication')->click();
         $this->getSession()->wait(1000,false);
     }
