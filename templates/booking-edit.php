@@ -6,15 +6,15 @@
 <body>
 	<div class="container main" role="main">
 
-		<? include 'components/header-logged-in-no-patient.php'; ?>
+		<? include 'components/header-logged-in.php'; ?>
 
 		<div class="container content">
 			<h1 class="badge">Episodes and events</h1>
 
 			<div class="box content">
 				<div class="row">
-					<? include 'components/booking-sidebar.php'; ?>
-					<? include 'components/booking-edit.php'; ?>
+					<? include 'components/events/sidebar.php'; ?>
+					<? include 'components/events/booking-edit.php'; ?>
 				</div>
 			</div>
 		</div>

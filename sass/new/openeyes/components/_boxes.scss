@@ -22,7 +22,6 @@ $oe-box-event-border-radius: 0 !default;
 $oe-box-event-background: #fafafa !default;
 $oe-box-event-padding: emCalc(5px) emCalc(5px) emCalc(10px) emCalc(5px) !default;
 $oe-box-event-border-width: 0 5px 5px !default;
-$oe-box-event-booking-border-color: #fd6892 !default;
 
 .box {
     @include border-radius($oe-box-border-radius);
@@ -38,8 +37,5 @@ $oe-box-event-booking-border-color: #fd6892 !default;
         border-width: $oe-box-event-border-width;
         border-style: solid;
         margin: 0;
-        &.booking {
-            border-color: $oe-box-event-booking-border-color;
-        }
     }
 }

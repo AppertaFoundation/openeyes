@@ -2762,7 +2762,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   color: black;
 }
 
-/* line 27, ../sass/new/openeyes/components/_boxes.scss */
+/* line 26, ../sass/new/openeyes/components/_boxes.scss */
 .box {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -2771,11 +2771,11 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   border-radius: 5px;
   margin: 1.25em 0;
 }
-/* line 30, ../sass/new/openeyes/components/_boxes.scss */
+/* line 29, ../sass/new/openeyes/components/_boxes.scss */
 .box.content {
   background: #dae6f1;
 }
-/* line 34, ../sass/new/openeyes/components/_boxes.scss */
+/* line 33, ../sass/new/openeyes/components/_boxes.scss */
 .box.event {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -2787,10 +2787,6 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   border-width: 0 5px 5px;
   border-style: solid;
   margin: 0;
-}
-/* line 41, ../sass/new/openeyes/components/_boxes.scss */
-.box.event.booking {
-  border-color: #fd6892;
 }
 
 /* line 1, ../sass/new/openeyes/components/_visibility.scss */
@@ -3722,8 +3718,26 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   background-image: url('../img/new/modules/operationbooking/watermark.png?1376486042');
   background-repeat: no-repeat;
   background-position: right top;
+  border-color: #fd6892;
 }
-/* line 12, ../sass/new/openeyes/modules/operation-booking/_module.scss */
+/* line 13, ../sass/new/openeyes/modules/operation-booking/_module.scss */
 .event.booking .event-title {
   background: url('../img/new/modules/operationbooking/medium.png?1376486042') no-repeat left center;
+}
+
+/**
+ * Examination module styles.
+ * NOTE: This is an example, and these styles will be moved into the module
+ * specific sass directory once the compilation step for modules sass has been created.
+ */
+/* line 8, ../sass/new/openeyes/modules/examination/_module.scss */
+.event.examination {
+  background-image: url('../img/new/modules/examination/watermark.png?1376558222');
+  background-repeat: no-repeat;
+  background-position: right top;
+  border-color: #fdcc56;
+}
+/* line 13, ../sass/new/openeyes/modules/examination/_module.scss */
+.event.examination .event-title {
+  background: url('../img/new/modules/examination/medium.png?1375105603') no-repeat left center;
 }
