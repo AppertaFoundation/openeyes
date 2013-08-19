@@ -26,8 +26,10 @@ class BaseAPI
 	 */
 	protected function getEventType()
 	{
-		if (!$event_type = EventType::model()->find('class_name=?',array(preg_replace('/_API$/','',get_class($this))))) {
-			throw new Exception("Unknown event type or incorrectly named API class: ".get_class($this));
+		$module_class = preg_replace('/_API$/','',get_class($this));
+
+		if (!$event_type = EventType::model()->find('class_name=?',array($module_class))) {
+			throw new Exception("Module is not migrated: $module_class");
 		}
 		return $event_type;
 	}
