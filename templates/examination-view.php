@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
+<link rel="stylesheet" href="/css/modules/examination.css" />
 </head>
 <body>
 	<div class="container main" role="main">
