@@ -4,7 +4,12 @@ local_config_file="protected/config/local/common.php"
 modules_path="protected/modules"
 running_path=${PWD}
 enabled_modules="$running_path/.enabled-modules"
-current_branch=`git symbolic-ref --short HEAD`
+
+if [ "$1" ]; then
+     current_branch=$1
+else
+     current_branch=`git symbolic-ref --short HEAD`
+fi
 
 git submodule update --init
 
