@@ -49,6 +49,7 @@ before_script:
   - cp .htaccess.sample .htaccess
   - mysql -e 'create database openeyes;'
   - bin/clone-sample-db.sh $TRAVIS_BRANCH
+  - protected/yiic migrate --interactive=0
   - echo -e "OphCiExamination\nOphDrPrescription\nOphTrOperationbooking\nOphTrOperationnote\nOphTrConsent\nOphCiPhasing\nOphLeEpatientletter\nOphCoCorrespondence\neyedraw" > .enabled-modules
   - bin/install-modules.sh $TRAVIS_BRANCH
  

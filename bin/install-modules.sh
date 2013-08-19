@@ -3,6 +3,7 @@
 local_config_file="protected/config/local/common.php"
 modules_path="protected/modules"
 running_path=${PWD}
+echo "Running path $running_path"
 enabled_modules="$running_path/.enabled-modules"
 
 if [ "$1" ]; then
@@ -33,15 +34,15 @@ do
             cd $modules_path/$module
             git checkout $current_branch
             cd $running_path
-	else 
+        else
             echo "Installing $module module..."
             git clone https://github.com/openeyes/$module --branch $current_branch $modules_path/$module
-            if ! grep -q $module $local_config_file ; then             
+            echo `pwd`
+            if ! grep -q $module protected/config/local/common.php ; then
                 sed -i '' -e '/return $config/ i \
                               $config["modules"][] = "'"$module"'";\
-                             ' $local_config_file
-
-            fi 
+                             ' protected/config/local/common.php
+            fi
         fi 
 
         if [ -d "$modules_path/$module/migrations" ]; then
