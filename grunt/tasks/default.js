@@ -1,6 +1,5 @@
 module.exports = function(grunt) {
   grunt.registerTask('default', 'The default task', [
-    'build',
-    'hub:build'
+    'build'
   ]);
 };
