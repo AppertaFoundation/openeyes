@@ -1,3 +1,4 @@
+@automation
 Feature: Authentication
 
   Scenario: Successfully logging in with valid credentials
