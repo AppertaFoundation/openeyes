@@ -9,5 +9,8 @@ else
 fi
 
 if [ ! -d $modules_path/sample ]; then
-    git clone https://github.com/openeyes/Sample.git --branch $current_branch $modules_path/sample
+    git clone https://github.com/openeyes/Sample.git $modules_path/sample
 fi
+
+cd $modules_path/sample
+git checkout $current_branch
