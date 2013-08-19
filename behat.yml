@@ -6,6 +6,7 @@ default:
 
     extensions:
         features/bootstrap/extension.php: ~
+        SensioLabs\Behat\PageObjectExtension\Extension: ~
 
         Behat\YiiExtension\Extension:
             framework_script: protected/yii/framework/yii.php

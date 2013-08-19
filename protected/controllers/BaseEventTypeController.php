@@ -268,6 +268,10 @@ class BaseEventTypeController extends BaseController
 			throw new Exception("Can't create a non-support service event for a support-service firm");
 		}
 
+		if (!$episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
+			throw new Exception("There is no open episode for the currently selected firm's subspecialty");
+		}
+
 		// firm changing sanity
 		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
 			// The firm id in the firm is not the same as the session firm id, e.g. they've changed
