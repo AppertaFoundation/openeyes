@@ -10,9 +10,9 @@ if [ ! -f ./protected/yiic ]; then
 fi
 cd protected
 echo "Migrating OpenEyes..."
-./yiic migrate
+./yiic migrate --interactive=0
 echo "Migrating Modules..."
-./yiic migratemodules
+./yiic migratemodules --interactive=0
 echo "Clearing cache..."
 rm -rf cache/*
 sudo rm -rf ../cache/*
