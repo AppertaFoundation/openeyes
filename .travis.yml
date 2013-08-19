@@ -48,8 +48,8 @@ before_script:
   - cp index.example.php index.php
   - cp .htaccess.sample .htaccess
   - mysql -e 'create database openeyes;'
-  - bin/clone-sample-db.sh %{branch}
+  - bin/clone-sample-db.sh $TRAVIS_BRANCH
   - echo -e "OphCiExamination\nOphDrPrescription\nOphTrOperationbooking\nOphTrOperationnote\nOphTrConsent\nOphCiPhasing\nOphLeEpatientletter\nOphCoCorrespondence\neyedraw" > .enabled-modules
-  - bin/install-modules.sh %{branch}
+  - bin/install-modules.sh $TRAVIS_BRANCH
  
 script: bin/behat -p ci
