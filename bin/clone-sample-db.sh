@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 modules_path="protected/modules"
+pwd
 current_branch=`git symbolic-ref --short HEAD`
 
 if [ ! -d $modules_path/sample ]; then
