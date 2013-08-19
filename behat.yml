@@ -39,7 +39,7 @@ sauce:
 ci:
     context:
         parameters:
-            load_db_cmd: "mysql -uroot openeyes < %s; cd /var/www; ./bin/migrate-all.sh"
+            load_db_cmd: "mysql -uroot openeyes < %s; bin/migrate-all.sh"
     extensions:
         Behat\MinkExtension\Extension:
             base_url:           http://localhost
