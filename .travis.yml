@@ -7,6 +7,7 @@ php:
 branches:
     only:
         - develop
+        - release/1.4
 
 notifications:
   email:
