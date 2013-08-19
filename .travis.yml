@@ -51,6 +51,6 @@ before_script:
   - echo -e "OphCiExamination\nOphDrPrescription\nOphTrOperationbooking\nOphTrOperationnote\nOphTrConsent\nOphCiPhasing\nOphLeEpatientletter\nOphCoCorrespondence\neyedraw" > .enabled-modules
   - bin/clone-modules.sh $TRAVIS_BRANCH
   - bin/clone-sample-data.sh $TRAVIS_BRANCH
-  - bin/oe-migrate
+  - bin/oe-migrate.sh
  
 script: bin/behat -p ci
