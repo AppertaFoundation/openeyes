@@ -17,28 +17,42 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ModuleAPI extends CApplicationComponent
-{
-	public function get($moduleName)
-	{
-		try {
-			if ($module = Yii::app()->getModule($moduleName)) {
-				Yii::import("application.modules.$moduleName.components.*");
+$config = array(
+	'components' => array(
+		'db' => array(
+			'connectionString' => 'mysql:host=localhost;dbname=openeyes',
+			'username' => 'root',
+			'password' => '',
+		),
+		'session' => array(
+			'timeout' => 86400
+		),
+	),
+	'modules' => array(
+		'OphCiExamination',
+		'OphDrPrescription',
+		'OphTrOperationbooking',
+		'OphTrOperationnote',
+		'OphTrConsent',
+		'OphCiPhasing',
+		'OphLeEpatientletter',
+		'OphCoCorrespondence',
+		'eyedraw',
+	),
+	'params'=>array(
+		'auth_source' => 'BASIC',
+		'environment' => 'dev',
+		'helpdesk_email' => 'helpdesk@example.com',
+		'helpdesk_phone' => '12345678',
+		'google_analytics_account' => '',
+		'local_users' => array('admin','username'),
+		'urgent_booking_notify_email' => array(
+			'alerts@example.com',
+		),
+		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
+		'specialty_codes' => array(130),
+		'specialty_sort' => array(130, 'SUP')
+	),
+);
 
-				$APIClass = $moduleName.'_API';
-
-				if (file_exists(Yii::app()->basePath."/modules/$moduleName/components/{$moduleName}_API.php")) {
-					if (class_exists($APIClass)) {
-						if ($event_type = EventType::model()->find('class_name=?',array($moduleName))) {
-							return new $APIClass;
-						}
-					}
-				}
-			}
-		} catch (Exception $e) {
-			return false;
-		}
-
-		return false;
-	}
-}
+return $config;
