@@ -17,11 +17,6 @@ $base-line-height: 150%;
 // set the value of $em-base to $base-font-size ($em-base: $base-font-size;)
 $em-base: 16px;
 
-// Working in ems is annoying. Think in pixels by using this handy function, emCalc(#px)
-@function emCalc($pxWidth) {
-	@return $pxWidth / $em-base * 1em;
-}
-
 // Change whether or not you include browser prefixes
 $experimental: true;
 

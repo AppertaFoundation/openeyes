@@ -1,0 +1,4 @@
+// Working in ems is annoying. Think in pixels by using this handy function, emCalc(#px)
+@function emCalc($pxWidth) {
+	@return $pxWidth / $em-base * 1em;
+}

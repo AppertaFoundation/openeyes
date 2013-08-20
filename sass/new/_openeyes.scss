@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+// Import base mixins and functions.
+@import "compass/css3";
+@import "compass/css3/user-interface";
+@import "openeyes/mixins";
+@import "openeyes/functions";
+
+// Global variables. We use the variables file to change the site theme.
+@import "openeyes/themes/default/variables";
+
+// Copyright header
+@import "openeyes/copyright";

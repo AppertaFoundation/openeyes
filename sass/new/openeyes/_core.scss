@@ -1,0 +1,152 @@
+// ===================================================================
+// OpenEyes core styles and components
+// ===================================================================
+
+// Global
+//
+// Global base styles
+//
+// Styleguide 1
+@import "openeyes/components/global";
+
+// Containers
+//
+// Global layout containers
+//
+// Styleguide 2
+@import "openeyes/components/containers";
+
+// Typography
+//
+// Global typography styles
+//
+// Styleguide 3
+@import "openeyes/components/type";
+
+// Grid
+//
+// Grid styles
+//
+// Styleguide 4
+@import "openeyes/components/grid";
+
+// Lists
+//
+// Global list styles.
+//
+// Styleguide 5
+@import "openeyes/components/lists";
+
+// Tables
+//
+// Global table styles.
+//
+// Styleguide 6
+@import "openeyes/components/tables";
+
+// Header
+//
+// Header styles
+//
+// Styleguide 7
+@import "openeyes/components/header";
+
+// Footer
+//
+// The footer contains basic copyright information and links to the help documentation.
+//
+// Styleguide 8
+@import "openeyes/components/footer";
+
+// Forms
+//
+// This application uses lots of different forms with many different layouts.
+// Forms must have consistant layouts throughout the application. Form layouts should use the
+// grid system, no additional styling should be required to layout a form.
+//
+// Styleguide 9
+@import "openeyes/components/forms";
+
+// Buttons
+//
+// Global button styles.
+//
+// Styleguide 10
+@import "openeyes/components/buttons";
+
+// Navigation
+//
+// Global navigation styles.
+//
+// Styleguide 11
+@import "openeyes/components/navigation";
+
+// Alerts
+//
+// Global alert styles. Alerts are used to display various messages to the user.
+//
+// Styleguide 12
+@import "openeyes/components/alert-boxes";
+
+// Content boxes
+//
+// Container boxes that wrap around content.
+//
+// Styleguide 13
+@import "openeyes/components/boxes";
+
+// Visibility
+//
+// Styles to control the visibility of elements.
+//
+// Styleguide 14
+@import "openeyes/components/visibility";
+
+// Icons
+//
+// Icons.
+//
+// Styleguide 15
+@import "openeyes/components/icons";
+
+// Panels
+//
+// A panel is component that enables you to outline sections of your page easily.
+//
+// Styleguide 16
+@import "openeyes/components/panels";
+
+// Search filters
+//
+// Search filter components.
+//
+// Styleguide 17
+@import "openeyes/components/search-filters";
+
+// Tabs
+//
+// Tab components.
+//
+// Styleguide 18
+@import "openeyes/components/tabs";
+
+// Sidebars
+//
+// Sidebars components.
+//
+// Styleguide 19
+@import "openeyes/components/sidebars";
+
+// Event elements
+//
+// Event elements containers
+//
+// Styleguide 20
+@import "openeyes/components/events";
+
+// Helpers
+//
+// General helper classes
+//
+// Styleguide 21
+@import "openeyes/components/helpers";
