@@ -48,6 +48,8 @@ $oe-event-metadata-user-color: #333333 !default;
     .event-title {
         padding: $oe-event-title-padding;
         font-size: $oe-event-title-font-size;
+        background-repeat: no-repeat;
+        background-position: left center;
     }
     .element-data {
         margin-bottom: $oe-event-element-data-margin-bottom;
@@ -56,6 +58,7 @@ $oe-event-metadata-user-color: #333333 !default;
         padding-left: $oe-event-element-value-padding-left;
         padding-bottom: $oe-event-element-value-padding-bottom;
         font-size: $oe-event-element-value-font-size;
+        line-height: 1.3;
     }
     .panel {
         .element-value {
