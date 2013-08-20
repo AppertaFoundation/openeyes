@@ -96,7 +96,6 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @private
 	 */
 	Dialog.prototype.create = function() {
-
 		// Create the dialog content div.
 		this.content = $('<div />', { id: this.options.id });
 
@@ -188,7 +187,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * Repositions the dialog in the center of the page.
 	 * @name Dialog#reposition
 	 * @method
-	 * @pubic
+	 * @public
 	 */
 	Dialog.prototype.reposition = function() {
 		this.instance._position(this.instance._position());
@@ -198,7 +197,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * Opens (shows) the dialog.
 	 * @name Dialog#open
 	 * @method
-	 * @pubic
+	 * @public
 	 */
 	Dialog.prototype.open = function() {
 		this.instance.open();
@@ -318,7 +317,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	function AlertDialog(options) {
 
 		options = $.extend(true, {}, AlertDialog.defaultOptions, options);
-		options.content = this.getContent(options.content);
+		options.content = this.getContent(options);
 
 		Dialog.call(this, options);
 	}
@@ -348,16 +347,16 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @param {string} content - The main alert dialog content to display.
 	 * @returns {string}
 	 */
-	AlertDialog.prototype.getContent = function(content) {
+	AlertDialog.prototype.getContent = function(options) {
 
 		// Replace new line characters with html breaks
-		content = (content || '').replace(/\n/g, '<br/>');
+		options.content = (options.content || '').replace(/\n/g, '<br/>');
 
 		// Compile the template, get the HTML
 		return this.compileTemplate({
 			selector: '#dialog-alert-template',
 			data: {
-				content: content
+				content: options.content
 			}
 		});
 	};
@@ -386,4 +385,99 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	};
 
 	OpenEyes.Dialog.Alert = AlertDialog;
+
+	/**
+	 * ConfirmDialog constructor. The ConfirmDialog extends the base Dialog and provides
+	 * an 'Ok' button for the user to click on.
+	 * @name ConfirmDialog
+	 * @constructor
+	 * @extends Dialog
+	 * @example
+	 * var alert = new OpenEyes.Dialog.Confirm({
+	 *	 content: 'Here is some content.'
+	 * });
+	 * alert.open();
+	 */
+	function ConfirmDialog(options) {
+
+		options = $.extend(true, options, ConfirmDialog.defaultOptions);
+		options.content = this.getContent(options);
+
+		Dialog.call(this, options);
+	}
+
+	ConfirmDialog.inherits(Dialog);
+
+	/**
+	 * The default alert dialog options. These options will be merged into the
+	 * default dialog options.
+	 * @name ConfirmDialog#defaultOptions
+	 * @property
+	 */
+	ConfirmDialog.defaultOptions = {
+		modal: true,
+		width: 400,
+		minHeight: 'auto',
+		title: 'Confirm',
+		dialogClass: 'dialog alert'
+	};
+
+	/**
+	 * Get the dialog content. Do some basic content formatting, then compile
+	 * and return the alert dialog template.
+	 * @name ConfirmDialog#getContent
+	 * @method
+	 * @private
+	 * @param {string} content - The main alert dialog content to display.
+	 * @returns {string}
+	 */
+	ConfirmDialog.prototype.getContent = function(options) {
+		// Compile the template, get the HTML
+		return this.compileTemplate({
+			selector: '#dialog-confirm-template',
+			data: {
+				content: options.content,
+				okButton: options.okButton || 'OK',
+				cancelButton: options.cancelButton || 'Cancel'
+			}
+		});
+	};
+
+	/**
+	 * Bind events
+	 * @name ConfirmDialog#bindEvents
+	 * @method
+	 * @private
+	 */
+	ConfirmDialog.prototype.bindEvents = function() {
+		Dialog.prototype.bindEvents.apply(this, arguments);
+		this.content.on('click', '.ok', this.onOKButtonClick.bind(this));
+		this.content.on('click', '.cancel', this.onCancelButtonClick.bind(this));
+	};
+
+	/** Event handlers */
+
+	/**
+	 * 'OK' button click handler. Simply close the dialog on click.
+	 * @name ConfirmDialog#onButtonClick
+	 * @method
+	 * @private
+	 */
+	ConfirmDialog.prototype.onOKButtonClick = function() {
+		this.close();
+		this.emit('ok');
+	};
+
+	/**
+	 * 'Cancel' button click handler. Simply close the dialog on click.
+	 * @name ConfirmDialog#onButtonClick
+	 * @method
+	 * @private
+	 */
+	ConfirmDialog.prototype.onCancelButtonClick = function() {
+		this.close();
+		this.emit('cancel');
+	};
+
+	OpenEyes.Dialog.Confirm = ConfirmDialog;
 }());
