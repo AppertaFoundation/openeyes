@@ -11,7 +11,7 @@
 // Styleguide 18.1
 
 .tabs {
-    margin: 0;
+	margin: 0;
 }
 
 // Theatre booking action tabs
@@ -35,29 +35,29 @@ $oe-tabs-theatre-booking-actions-item-anchor-border-radius: 3px 3px 0 0 !default
 $oe-tabs-theatre-booking-actions-item-selected-anchor-bg-color: #fafafa !default;
 
 .tabs {
-    &.theatre-booking-actions {
-        margin: $oe-tabs-theatre-booking-actions-margin;
-        float: right;
-        position: relative;
-        bottom: emCalc(-1px);
-        z-index: 1;
-        li {
-            margin: 0;
-            &:first-child {
-                margin-right: $oe-tabs-theatre-booking-actions-item-margin-right;
-            }
-            &.selected {
-                a {
-                    background: $oe-tabs-theatre-booking-actions-item-selected-anchor-bg-color;
-                }
-            }
-        }
-        a {
-            background: $oe-tabs-theatre-booking-actions-item-anchor-bg-color;
-            padding: $oe-tabs-theatre-booking-actions-item-anchor-padding;
-            @include border-radius($oe-tabs-theatre-booking-actions-item-anchor-border-radius);
-        }
-    }
+	&.theatre-booking-actions {
+		margin: $oe-tabs-theatre-booking-actions-margin;
+		float: right;
+		position: relative;
+		bottom: emCalc(-1px);
+		z-index: 1;
+		li {
+			margin: 0;
+			&:first-child {
+				margin-right: $oe-tabs-theatre-booking-actions-item-margin-right;
+			}
+			&.selected {
+				a {
+					background: $oe-tabs-theatre-booking-actions-item-selected-anchor-bg-color;
+				}
+			}
+		}
+		a {
+			background: $oe-tabs-theatre-booking-actions-item-anchor-bg-color;
+			padding: $oe-tabs-theatre-booking-actions-item-anchor-padding;
+			@include border-radius($oe-tabs-theatre-booking-actions-item-anchor-border-radius);
+		}
+	}
 }
 
 // Event action tabs
@@ -74,25 +74,25 @@ $oe-tabs-theatre-booking-actions-item-selected-anchor-bg-color: #fafafa !default
 //
 // Styleguide 18.3
 .tabs {
-    &.event-actions {
-        float: left;
-        li {
-            margin: 0 4px 0 0;
-            &.selected {
-                a {
-                    background: #a29d8a;
-                    color: #fff;
-                }
-            }
-        }
-        a {
-            background: #fffee7;
-            padding: 5px 10px 3px 10px;
-            @include border-radius(3px 3px 0 0);
-            &:hover {
-                background: #3665ff;
-                color: #fff;
-            }
-        }
-    }
+	&.event-actions {
+		float: left;
+		li {
+			margin: 0 4px 0 0;
+			&.selected {
+				a {
+					background: #a29d8a;
+					color: #fff;
+				}
+			}
+		}
+		a {
+			background: #fffee7;
+			padding: 5px 10px 3px 10px;
+			@include border-radius(3px 3px 0 0);
+			&:hover {
+				background: #3665ff;
+				color: #fff;
+			}
+		}
+	}
 }

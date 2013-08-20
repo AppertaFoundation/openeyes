@@ -1,27 +1,27 @@
 /* Standard Forms */
 
 form {
-    margin: 0 0 $form-spacing;
+	margin: 0 0 $form-spacing;
 }
 
 /* Using forms within rows, we need to set some defaults */
 form .row {
-    @include form-row-base;
+	@include form-row-base;
 }
 
 /* Label Styles */
 label {
-    @include form-label;
-    &.right {
-        @include form-label(right, false);
-    }
-    &.inline {
-        @include form-label(inline, false);
-    }
+	@include form-label;
+	&.right {
+		@include form-label(right, false);
+	}
+	&.inline {
+		@include form-label(inline, false);
+	}
 }
 
-
 /* We use this to get basic styling on all basic form elements */
+
 input[type="text"],
 input[type="password"],
 input[type="date"],
@@ -36,10 +36,10 @@ input[type="tel"],
 input[type="time"],
 input[type="url"],
 textarea {
-    @include form-element;
-    @if not $input-include-glowing-effect {
-        @include single-transition(all, 0.15s, linear);
-    }
+	@include form-element;
+	@if not $input-include-glowing-effect {
+		@include single-transition(all, 0.15s, linear);
+	}
 }
 
 /* Adjust margin for form elements below */
@@ -48,17 +48,17 @@ input[type="file"],
 input[type="checkbox"],
 input[type="radio"],
 select {
-    margin: 0 0 $form-spacing 0;
+	margin: 0 0 $form-spacing 0;
 }
 
 /* Normalize file input width */
 input[type="file"] {
-    width: 100%;
+	width: 100%;
 }
 
 /* We add basic fieldset styling */
 fieldset {
-    @include fieldset;
+	@include fieldset;
 }
 
 /* Error Handling */
@@ -67,17 +67,17 @@ fieldset {
 input.error,
 .error textarea,
 textarea.error {
-    @include form-error-color;
+	@include form-error-color;
 }
 
 .error label,
 label.error {
-    @include form-label-error-color;
+	@include form-label-error-color;
 }
 
 .error small,
 small.error {
-    @include form-error-message;
+	@include form-error-message;
 }
 
 // Common forms
@@ -129,48 +129,48 @@ $oe-form-login-margin-bottom: 100px !default;
 $oe-form-input-radius: 3px !default;
 
 .form {
-    &.panel {
-        @include border-radius($oe-form-panel-radius);
-        background: $oe-form-panel-bg-color;
-        border: $oe-form-panel-border-width solid $oe-form-panel-border-color;
-        padding: $oe-form-panel-padding;
-    }
-    &.login {
-        margin: $oe-form-login-margin-top auto $oe-form-login-margin-bottom auto;
-        max-width: 488px;
-        label {
-            font-size: emCalc(15px);
-        }
-    }
-    [type="submit"] {
-        margin: 0;
-    }
+	&.panel {
+		@include border-radius($oe-form-panel-radius);
+		background: $oe-form-panel-bg-color;
+		border: $oe-form-panel-border-width solid $oe-form-panel-border-color;
+		padding: $oe-form-panel-padding;
+	}
+	&.login {
+		margin: $oe-form-login-margin-top auto $oe-form-login-margin-bottom auto;
+		max-width: 488px;
+		label {
+			font-size: emCalc(15px);
+		}
+	}
+	[type="submit"] {
+		margin: 0;
+	}
 }
 
 .field-group-highlight {
-    background: #e3f0f2;
-    display: inline-block;
-    padding: 4px 12px 5px 8px;
-    @include border-radius(3px);
-    &:hover {
-        background: #fff;
-    }
+	background: #e3f0f2;
+	display: inline-block;
+	padding: 4px 12px 5px 8px;
+	@include border-radius(3px);
+	&:hover {
+		background: #fff;
+	}
 }
 
 fieldset {
-    &.highlight {
-        @extend .field-group-highlight;
-    }
+	&.highlight {
+		@extend .field-group-highlight;
+	}
 }
 
 label {
-    &.highlight {
-        @extend .field-group-highlight;
-    }
-    input[type="checkbox"],
-    input[type="radio"] {
-        margin: 0;
-    }
+	&.highlight {
+		@extend .field-group-highlight;
+	}
+	input[type="checkbox"],
+	input[type="radio"] {
+		margin: 0;
+	}
 }
 
 // Field sizes
@@ -194,12 +194,12 @@ $oe-form-field-small-padding: emCalc(3px) emCalc(4px) !default;
 $oe-form-field-fixed-width: emCalc(110px) !default;
 
 @include input-form-fields {
-    @include border-radius($oe-form-input-radius);
-    height: auto;
-    &.small {
-        padding: $oe-form-field-small-padding;
-        &.fixed-width {
-            width: $oe-form-field-fixed-width;
-        }
-    }
+	@include border-radius($oe-form-input-radius);
+	height: auto;
+	&.small {
+		padding: $oe-form-field-small-padding;
+		&.fixed-width {
+			width: $oe-form-field-fixed-width;
+		}
+	}
 }

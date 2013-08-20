@@ -1,75 +1,72 @@
 // Hide text off-screen without affecting container position.
-@mixin hide-text() {
-    background-color: transparent;
-    border: 0;
-    color: transparent;
-    font: 0/0 a;
-    text-shadow: none;
+@mixin hide-text {
+	background-color: transparent;
+	border: 0;
+	color: transparent;
+	font: 0/0 a;
+	text-shadow: none;
 }
 
 // Hide-text off-screen by changing the container position.
-@mixin hide-text-absolutely() {
-    left: -9999px;
-    overflow: hidden;
-    position: absolute;
-    top: -9999px;
+@mixin hide-text-absolutely {
+	left: -9999px;
+	overflow: hidden;
+	position: absolute;
+	top: -9999px;
 }
 
 // Sprite mixin for generating sprites and associated classes.
 @mixin sprite($icons_path, $class, $width, $height) {
-
-    $icons: sprite-map($icons_path);
-
-    [class*="#{$class}"] {
-        background: $icons no-repeat;
-        width: $width;
-        height: $height;
-    }
-
-    @each $i in sprite_names($icons){
-        .#{$class}-#{$i} {
-            background-position: sprite-position($icons, $i);
-        }
-    }
+	$icons: sprite-map($icons_path);
+	[class*="#{$class}"] {
+		background: $icons no-repeat;
+		width: $width;
+		height: $height;
+	}
+	@each $i in sprite_names($icons) {
+		.#{$class}-#{$i} {
+			background-position: sprite-position($icons, $i);
+		}
+	}
 }
 
 // Sprite background position mixing for generating a background-position property
 // for a specific image within a sprite set.
 @mixin sprite-background-position($icons_path, $image) {
-    $icons: sprite-map($icons_path);
-    background-position: sprite-position($icons, $image);
+	$icons: sprite-map($icons_path);
+	background-position: sprite-position($icons, $image);
 }
 
 $oe-selector-form-input-fields: 'input:not([type="hidden"]), textarea';
-$oe-selector-form-button-fields: 'button, .button';
-$oe-selector-form-select-fields: 'select';
+$oe-selector-form-button-fields: "button, .button";
+$oe-selector-form-select-fields: "select";
 
 // Apply a set of rules to input form fields.
 @mixin input-form-fields {
-    #{$oe-selector-form-input-fields} {
-        @content;
-    }
+	#{$oe-selector-form-input-fields} {
+		@content;
+	}
 }
 
 // Apply a set of rules to button form fields.
 @mixin button-form-fields {
-    #{$oe-selector-form-button-fields} {
-        @content;
-    }
+	#{$oe-selector-form-button-fields} {
+		@content;
+	}
 }
 
 // Apply a set of rules to select form fields.
 @mixin select-form-fields {
-    #{$oe-selector-form-select-fields} {
-        @content;
-    }
+	#{$oe-selector-form-select-fields} {
+		@content;
+	}
 }
 
 // Apply a set of rules for all form fields.
 @mixin all-form-fields {
-    #{$oe-selector-form-input-fields},
-    #{$oe-selector-form-button-fields},
-    #{$oe-selector-form-select-fields} {
-        @content;
-    }
+	#{$oe-selector-form-input-fields},
+	#{$oe-selector-form-button-fields},
+	#{$oe-selector-form-select-fields} {
+		@content;
+	}
 }

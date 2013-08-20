@@ -24,11 +24,11 @@
 ul,
 ol,
 dl {
-    font-size: 1em;
-    line-height: 1.6;
-    li {
-        font-size: $default-font-size;
-    }
+	font-size: 1em;
+	line-height: 1.6;
+	li {
+		font-size: $default-font-size;
+	}
 }
 
 // Inline Lists
@@ -36,5 +36,5 @@ dl {
 //
 // Styleguide 5.2
 .inline-list {
-    @include inline-list;
+	@include inline-list;
 }

@@ -5,18 +5,18 @@
  */
 
 .event {
-    &.booking {
-        background-image: image-url("modules/operationbooking/watermark.png");
-        background-repeat: no-repeat;
-        background-position: right top;
-        border-color: #fd6892;
-        .event-title {
-            background: image-url("modules/operationbooking/medium.png") no-repeat left center;
-        }
-        &.view {
-            .element-value {
-                font-size: emCalc(16px);
-            }
-        }
-    }
+	&.booking {
+		background-image: image-url("modules/operationbooking/watermark.png");
+		background-repeat: no-repeat;
+		background-position: right top;
+		border-color: #fd6892;
+		.event-title {
+			background: image-url("modules/operationbooking/medium.png") no-repeat left center;
+		}
+		&.view {
+			.element-value {
+				font-size: emCalc(16px);
+			}
+		}
+	}
 }

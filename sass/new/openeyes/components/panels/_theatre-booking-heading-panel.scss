@@ -22,14 +22,14 @@ $oe-panel-theatre-booking-heading-margin: 0 0 0 emCalc(10px) !default;
 $oe-panel-theatre-booking-heading-padding: emCalc(6px) emCalc(12px) !default;
 
 .panel {
-    &.theatre-booking-heading {
-        background: #fafafa;
-        border-bottom: 0;
-        display: inline-block;
-        font-size: $oe-panel-theatre-booking-heading-font-size;
-        margin: $oe-panel-theatre-booking-heading-margin;
-        padding: $oe-panel-theatre-booking-heading-padding;
-        @include border-bottom-left-radius(0);
-        @include border-bottom-right-radius(0);
-    }
+	&.theatre-booking-heading {
+		background: #fafafa;
+		border-bottom: 0;
+		display: inline-block;
+		font-size: $oe-panel-theatre-booking-heading-font-size;
+		margin: $oe-panel-theatre-booking-heading-margin;
+		padding: $oe-panel-theatre-booking-heading-padding;
+		@include border-bottom-left-radius(0);
+		@include border-bottom-right-radius(0);
+	}
 }

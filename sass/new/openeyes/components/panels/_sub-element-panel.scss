@@ -19,10 +19,10 @@
 // Element panel vars
 
 .panel {
-    &.sub-element {
-        @extend .panel.element;
-        .element-value:last-child {
-            padding-bottom: 0;
-        }
-    }
+	&.sub-element {
+		@extend .panel.element;
+		.element-value:last-child {
+			padding-bottom: 0;
+		}
+	}
 }

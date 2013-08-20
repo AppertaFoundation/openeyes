@@ -42,27 +42,27 @@ $oe-button-primary-padding: emCalc(8px) emCalc(40px) !default;
 
 // Primary button (blue)
 button, .button {
-    @include button-base;
-    @include border-radius($button-radius);
-    @include background(linear-gradient($oe-button-primary-bg-color-start, $oe-button-primary-bg-color-end));
-    @include box-shadow(0 1px 4px rgba(0, 0, 0, $oe-button-primary-shadow-opacity));
-    border: 0;
-    border-bottom: 2px solid $oe-button-primary-border-color;
-    color: $button-font-color;
-    font-size: $oe-button-primary-font-size;
-    padding: $oe-button-primary-padding;
-    text-shadow: 1px 1px 0 $oe-button-primary-text-shadow-1, 2px 2px 0 $oe-button-primary-text-shadow-2;
-    margin: 0;
-    &:hover,
-    &:focus {
-        @include background(linear-gradient($oe-button-primary-hover-bg-color-start, $oe-button-primary-hover-bg-color-end));
-        border-color: $oe-button-primary-hover-border-color;
-        color: $oe-button-primary-hover-color;
-    }
-    &:active {
-        @include background(linear-gradient($oe-button-primary-active-bg-color-start, $oe-button-primary-active-bg-color-end));
-        border-color: $oe-button-primary-active-border-color;
-    }
+	@include button-base;
+	@include border-radius($button-radius);
+	@include background(linear-gradient($oe-button-primary-bg-color-start, $oe-button-primary-bg-color-end));
+	@include box-shadow(0 1px 4px rgba(0, 0, 0, $oe-button-primary-shadow-opacity));
+	border: 0;
+	border-bottom: 2px solid $oe-button-primary-border-color;
+	color: $button-font-color;
+	font-size: $oe-button-primary-font-size;
+	padding: $oe-button-primary-padding;
+	text-shadow: 1px 1px 0 $oe-button-primary-text-shadow-1, 2px 2px 0 $oe-button-primary-text-shadow-2;
+	margin: 0;
+	&:hover,
+	&:focus {
+		@include background(linear-gradient($oe-button-primary-hover-bg-color-start, $oe-button-primary-hover-bg-color-end));
+		border-color: $oe-button-primary-hover-border-color;
+		color: $oe-button-primary-hover-color;
+	}
+	&:active {
+		@include background(linear-gradient($oe-button-primary-active-bg-color-start, $oe-button-primary-active-bg-color-end));
+		border-color: $oe-button-primary-active-border-color;
+	}
 }
 
 // Secondary button vars
@@ -80,20 +80,20 @@ $oe-button-secondary-active-border-color: #336234;
 
 // Secondary button (green)
 button, .button {
-    &.secondary {
-        @include background(linear-gradient($oe-button-secondary-bg-color-start, $oe-button-secondary-bg-color-end));
-        border-color: $oe-button-secondary-border-color;
-        text-shadow: 1px 1px 0 $oe-button-secondary-text-shadow-1, 2px 2px 0 $oe-button-secondary-text-shadow-2;
-        &:hover,
-        &:focus {
-            @include background(linear-gradient($oe-button-secondary-hover-bg-color-start, $oe-button-secondary-hover-bg-color-end));
-            border-color: $oe-button-secondary-hover-border-color;
-        }
-        &:active {
-            @include background(linear-gradient($oe-button-secondary-active-bg-color-start, $oe-button-secondary-active-bg-color-end));
-            border-color: $oe-button-secondary-active-border-color;
-        }
-    }
+	&.secondary {
+		@include background(linear-gradient($oe-button-secondary-bg-color-start, $oe-button-secondary-bg-color-end));
+		border-color: $oe-button-secondary-border-color;
+		text-shadow: 1px 1px 0 $oe-button-secondary-text-shadow-1, 2px 2px 0 $oe-button-secondary-text-shadow-2;
+		&:hover,
+		&:focus {
+			@include background(linear-gradient($oe-button-secondary-hover-bg-color-start, $oe-button-secondary-hover-bg-color-end));
+			border-color: $oe-button-secondary-hover-border-color;
+		}
+		&:active {
+			@include background(linear-gradient($oe-button-secondary-active-bg-color-start, $oe-button-secondary-active-bg-color-end));
+			border-color: $oe-button-secondary-active-border-color;
+		}
+	}
 }
 
 // Warning button vars
@@ -111,20 +111,20 @@ $oe-button-warning-active-border-color: #6b121e;
 
 // Warning button (red)
 button, .button {
-    &.warning {
-        @include background(linear-gradient($oe-button-warning-bg-color-start, $oe-button-warning-bg-color-end));
-        border-color: $oe-button-warning-border-color;
-        text-shadow: 1px 1px 0 $oe-button-warning-text-shadow-1, 2px 2px 0 $oe-button-warning-text-shadow-2;
-        &:hover,
-        &:focus {
-            @include background(linear-gradient($oe-button-warning-hover-bg-color-start, $oe-button-warning-hover-bg-color-end));
-            border-color: $oe-button-warning-hover-border-color;
-        }
-        &:active {
-            @include background(linear-gradient($oe-button-warning-active-bg-color-start, $oe-button-warning-active-bg-color-end));
-            border-color: $oe-button-warning-active-border-color;
-        }
-    }
+	&.warning {
+		@include background(linear-gradient($oe-button-warning-bg-color-start, $oe-button-warning-bg-color-end));
+		border-color: $oe-button-warning-border-color;
+		text-shadow: 1px 1px 0 $oe-button-warning-text-shadow-1, 2px 2px 0 $oe-button-warning-text-shadow-2;
+		&:hover,
+		&:focus {
+			@include background(linear-gradient($oe-button-warning-hover-bg-color-start, $oe-button-warning-hover-bg-color-end));
+			border-color: $oe-button-warning-hover-border-color;
+		}
+		&:active {
+			@include background(linear-gradient($oe-button-warning-active-bg-color-start, $oe-button-warning-active-bg-color-end));
+			border-color: $oe-button-warning-active-border-color;
+		}
+	}
 }
 
 // Disabled button vars
@@ -135,17 +135,17 @@ $oe-button-disabled-border-color: #999999 !default;
 // Disabled button (grey)
 // This should always be defined after all other button variations.
 button, .button {
-    &.disabled,
-    &[disabled] {
-        &,
-        &:hover,
-        &:focus,
-        &:active {
-            @include background(linear-gradient($oe-button-disabled-bg-color-start, $oe-button-disabled-bg-color-stop));
-            border-color: $oe-button-disabled-border-color;
-            text-shadow: none;
-        }
-    }
+	&.disabled,
+	&[disabled] {
+		&,
+		&:hover,
+		&:focus,
+		&:active {
+			@include background(linear-gradient($oe-button-disabled-bg-color-start, $oe-button-disabled-bg-color-stop));
+			border-color: $oe-button-disabled-border-color;
+			text-shadow: none;
+		}
+	}
 }
 
 // Button sizes
@@ -163,22 +163,24 @@ button, .button {
 $oe-button-small-padding: emCalc(5px) emCalc(20px) !default;
 $oe-button-small-font-size: emCalc(13px);
 $oe-button-small-letter-spacing: 1px;
+
 // Tiny button vars
 $oe-button-tiny-padding: emCalc(5px) emCalc(20px) !default;
 $oe-button-tiny-font-size: emCalc(11px);
 $oe-button-tiny-letter-spacing: 1px;
+
 button, .button {
-    &.small {
-        padding: $oe-button-small-padding;
-        font-size: $oe-button-small-font-size;
-        letter-spacing: $oe-button-small-letter-spacing;
-    }
-    &.tiny {
-        padding: $oe-button-tiny-padding;
-        font-size: $oe-button-tiny-font-size;
-        letter-spacing: $oe-button-tiny-letter-spacing;
-        line-height: 1.4;
-    }
+	&.small {
+		padding: $oe-button-small-padding;
+		font-size: $oe-button-small-font-size;
+		letter-spacing: $oe-button-small-letter-spacing;
+	}
+	&.tiny {
+		padding: $oe-button-tiny-padding;
+		font-size: $oe-button-tiny-font-size;
+		letter-spacing: $oe-button-tiny-letter-spacing;
+		line-height: 1.4;
+	}
 }
 
 // Button icons
@@ -193,9 +195,9 @@ button, .button {
 //
 // Styleguide 10.3
 button, .button {
-    [class*="icon-button-small-"] {
-        margin: -6px -2px -5px -14px;
-    }
+	[class*="icon-button-small-"] {
+		margin: -6px -2px -5px -14px;
+	}
 }
 
 // Button groups
@@ -211,23 +213,23 @@ button, .button {
 //
 // Styleguide 10.4
 .button-group {
-    @include button-group-container;
-    & > li {
-        @include button-group-style;
-    }
-    button, .button {
-        @include border-radius(0);
-        padding: emCalc(5px) emCalc(10px);
-        margin: 0;
-    }
-    li:first-child {
-        button, .button {
-            @include border-radius($button-radius 0 0 $button-radius);
-        }
-    }
-    li:last-child {
-        button, .button {
-            @include border-radius(0 $button-radius $button-radius 0);
-        }
-    }
+	@include button-group-container;
+	& > li {
+		@include button-group-style;
+	}
+	button, .button {
+		@include border-radius(0);
+		padding: emCalc(5px) emCalc(10px);
+		margin: 0;
+	}
+	li:first-child {
+		button, .button {
+			@include border-radius($button-radius 0 0 $button-radius);
+		}
+	}
+	li:last-child {
+		button, .button {
+			@include border-radius(0 $button-radius $button-radius 0);
+		}
+	}
 }

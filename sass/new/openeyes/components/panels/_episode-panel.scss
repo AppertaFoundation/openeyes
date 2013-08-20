@@ -63,166 +63,166 @@ $oe-panel-episode-date-padding-left: emCalc(7px) !default;
 $oe-panel-episode-title-margin: emCalc(5px) emCalc(2px) emCalc(3px) 0 !default;
 $oe-panel-episode-title-font-size: emCalc(15px) !default;
 $oe-panel-episode-title-anchor-background: image-url("_elements/graphic/view-episode-summary.png") right bottom no-repeat !default;
-$oe-panel-episode-title-anchor-color: #000 !default;
+$oe-panel-episode-title-anchor-color: black !default;
 $oe-panel-episode-title-anchor-padding: emCalc(5px) 0 emCalc(17px) emCalc(7px) !default;
 $oe-panel-episode-title-anchor-border-radius: 0 3px 3px 0 !default;
-$oe-panel-eipsode-title-anchor-hover-color: #fff !default;
+$oe-panel-eipsode-title-anchor-hover-color: white !default;
 $oe-panel-episode-title-anchor-hover-bg-color: #3665ff !default;
 $oe-panel-episode-title-anchor-hover-bg-image: image-url("_elements/icons/event/event_open_arrow.png") !default;
 $oe-panel-episode-add-event-margin-left: emCalc(2px) !default;
 $oe-panel-episode-events-overview-padding: emCalc(2px) emCalc(5px) emCalc(2px) emCalc(8px) !default;
 $oe-panel-episode-events-padding: emCalc(4px) 0 0 0 !default;
 $oe-panel-episode-events-margin: emCalc(5px) 0 0 0 !default;
-$oe-panel-episode-events-border-top: 1px dotted #ccc !default;
+$oe-panel-episode-events-border-top: 1px dotted #cccccc !default;
 $oe-panel-episode-events-list-item-font-size: 1em !default;
 $oe-panel-episode-events-list-item-margin: 0 0 emCalc(4px) 0 !default;
 $oe-panel-episode-events-anchor-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
 $oe-panel-episode-events-anchor-border-radius: 0 6px 6px 0 !default;
 $oe-panel-episode-events-anchor-hover-background: #3665ff image-url("_elements/icons/event/event_open_arrow.png") right center no-repeat !default;
-$oe-panel-episode-events-anchor-hover-color: #fff !default;
+$oe-panel-episode-events-anchor-hover-color: white !default;
 $oe-panel-episode-events-event-type-alert-background: image-url("_elements/icons/event/status/alert.png") right top no-repeat !default;
 $oe-panel-episode-events-event-type-alert-hover-background-image: image-url("_elements/icons/event/status/alert-hover.png") !default;
 $oe-panel-episode-events-event-date-padding-left: emCalc(26px) !default;
 $oe-panel-episode-events-selected-anchor-background: #aaaaaa image-url("_elements/icons/event/event_open_arrow.png") right center no-repeat !default;
-$oe-panel-episode-events-selected-anchor-color: #fff !default;
+$oe-panel-episode-events-selected-anchor-color: white !default;
 $oe-panel-episode-events-selected-event-type-background-image: image-url("_elements/icons/event/status/alert-hover.png") !default;
 
 .panel {
-    &.episode {
-        @include border-top-left-radius(0);
-        @include border-bottom-left-radius(0);
-        border-color: $oe-panel-episode-border-color;
-        border-width: $oe-panel-episode-border-width;
-        margin: $oe-panel-episode-margin;
-        padding: $oe-panel-episode-padding;
-        position: relative;
-        .toggle-events-trigger {
-            display: block;
-            height: $oe-panel-episode-toggle-events-trigger-height;
-            position: absolute;
-            right: 2px;
-            top: 0;
-            width: $oe-panel-episode-toggle-events-trigger-width;
-            @include border-radius($oe-panel-episode-toggle-events-trigger-border-radius);
-            .icon-showhide {
-                margin: $oe-panel-episode-toggle-events-trigger-icon-margin;
-                vertical-align: top;
-            }
-            &:hover {
-                background: $oe-panel-episode-toggle-events-trigger-hover-bg-color;
-            }
-            &.hide {
-                .icon-showhide {
-                    @include sprite-background-position($oe-sprite-icon-showhide, "hide");
-                }
-                &:hover {
-                   .icon-showhide {
-                        @include sprite-background-position($oe-sprite-icon-showhide, "hide-hover");
-                    }
-                }
-            }
-            &.show {
-                .icon-showhide {
-                    @include sprite-background-position($oe-sprite-icon-showhide, "show");
-                }
-                &:hover {
-                   .icon-showhide {
-                        @include sprite-background-position($oe-sprite-icon-showhide, "show-hover");
-                    }
-                }
-            }
-        }
-        .episode-date {
-            font-size: $oe-panel-episode-date-font-size;
-            padding-left: $oe-panel-episode-date-padding-left;
-        }
-        .episode-title {
-            font-size: $oe-panel-episode-title-font-size;
-            margin: $oe-panel-episode-title-margin;
-            a {
-                background: $oe-panel-episode-title-anchor-background;
-                color: $oe-panel-episode-title-anchor-color;
-                display: block;
-                padding: $oe-panel-episode-title-anchor-padding;
-                @include border-radius($oe-panel-episode-title-anchor-border-radius);
-                &:hover {
-                    color: $oe-panel-eipsode-title-anchor-hover-color;
-                    background-color: $oe-panel-episode-title-anchor-hover-bg-color;
-                    background-image: $oe-panel-episode-title-anchor-hover-bg-image;
-                }
-            }
-        }
-        .add-event {
-            margin-left: $oe-panel-episode-add-event-margin-left;
-        }
-        .events-overview {
-            margin: 0;
-            padding: $oe-panel-episode-events-overview-padding;
-            display: none;
-            li {
-                list-style: none;
-                font-size: 1em;
-                img {
-                    width: 12px;
-                    height: 12px;
-                }
-            }
-        }
-        &.hide-events {
-            .events-overview {
-                display: block;
-            }
-            .events-container {
-                display: none;
-            }
-        }
-        .events {
-            padding: $oe-panel-episode-events-padding;
-            margin: $oe-panel-episode-events-margin;
-            border-top: $oe-panel-episode-events-border-top;
-            li {
-                list-style: none;
-                font-size: $oe-panel-episode-events-list-item-font-size;
-                margin: $oe-panel-episode-events-list-item-margin;
-            }
-            a {
-                display: block;
-                padding: $oe-panel-episode-events-anchor-padding;
-                font-size: $default-font-size;
-                @include border-radius($oe-panel-episode-events-anchor-border-radius);
-                &:hover {
-                    background: $oe-panel-episode-events-anchor-hover-background;
-                    color: $oe-panel-episode-events-anchor-hover-color;
-                }
-            }
-            .event-type {
-                width: 35px;
-                display: inline-block;
-                &.alert {
-                    background: $oe-panel-episode-events-event-type-alert-background;
-                    &:hover {
-                        background-image: $oe-panel-episode-events-event-type-alert-hover-background-image
-                    }
-                }
-            }
-            .event-date {
-                display: inline-block;
-                padding-left: $oe-panel-episode-events-event-date-padding-left;
-            }
-            // Selected state
-            li {
-                &.selected {
-                    a {
-                        background: $oe-panel-episode-events-selected-anchor-background;
-                        color: $oe-panel-episode-events-selected-anchor-color;
-                    }
-                    .event-type {
-                        &.alert {
-                            background-image: $oe-panel-episode-events-selected-event-type-background-image;
-                        }
-                    }
-                }
-            }
-        }
-    }
+	&.episode {
+		@include border-top-left-radius(0);
+		@include border-bottom-left-radius(0);
+		border-color: $oe-panel-episode-border-color;
+		border-width: $oe-panel-episode-border-width;
+		margin: $oe-panel-episode-margin;
+		padding: $oe-panel-episode-padding;
+		position: relative;
+		.toggle-events-trigger {
+			display: block;
+			height: $oe-panel-episode-toggle-events-trigger-height;
+			position: absolute;
+			right: 2px;
+			top: 0;
+			width: $oe-panel-episode-toggle-events-trigger-width;
+			@include border-radius($oe-panel-episode-toggle-events-trigger-border-radius);
+			.icon-showhide {
+				margin: $oe-panel-episode-toggle-events-trigger-icon-margin;
+				vertical-align: top;
+			}
+			&:hover {
+				background: $oe-panel-episode-toggle-events-trigger-hover-bg-color;
+			}
+			&.hide {
+				.icon-showhide {
+					@include sprite-background-position($oe-sprite-icon-showhide, "hide");
+				}
+				&:hover {
+					.icon-showhide {
+						@include sprite-background-position($oe-sprite-icon-showhide, "hide-hover");
+					}
+				}
+			}
+			&.show {
+				.icon-showhide {
+					@include sprite-background-position($oe-sprite-icon-showhide, "show");
+				}
+				&:hover {
+					.icon-showhide {
+						@include sprite-background-position($oe-sprite-icon-showhide, "show-hover");
+					}
+				}
+			}
+		}
+		.episode-date {
+			font-size: $oe-panel-episode-date-font-size;
+			padding-left: $oe-panel-episode-date-padding-left;
+		}
+		.episode-title {
+			font-size: $oe-panel-episode-title-font-size;
+			margin: $oe-panel-episode-title-margin;
+			a {
+				background: $oe-panel-episode-title-anchor-background;
+				color: $oe-panel-episode-title-anchor-color;
+				display: block;
+				padding: $oe-panel-episode-title-anchor-padding;
+				@include border-radius($oe-panel-episode-title-anchor-border-radius);
+				&:hover {
+					color: $oe-panel-eipsode-title-anchor-hover-color;
+					background-color: $oe-panel-episode-title-anchor-hover-bg-color;
+					background-image: $oe-panel-episode-title-anchor-hover-bg-image;
+				}
+			}
+		}
+		.add-event {
+			margin-left: $oe-panel-episode-add-event-margin-left;
+		}
+		.events-overview {
+			margin: 0;
+			padding: $oe-panel-episode-events-overview-padding;
+			display: none;
+			li {
+				list-style: none;
+				font-size: 1em;
+				img {
+					width: 12px;
+					height: 12px;
+				}
+			}
+		}
+		&.hide-events {
+			.events-overview {
+				display: block;
+			}
+			.events-container {
+				display: none;
+			}
+		}
+		.events {
+			padding: $oe-panel-episode-events-padding;
+			margin: $oe-panel-episode-events-margin;
+			border-top: $oe-panel-episode-events-border-top;
+			li {
+				list-style: none;
+				font-size: $oe-panel-episode-events-list-item-font-size;
+				margin: $oe-panel-episode-events-list-item-margin;
+			}
+			a {
+				display: block;
+				padding: $oe-panel-episode-events-anchor-padding;
+				font-size: $default-font-size;
+				@include border-radius($oe-panel-episode-events-anchor-border-radius);
+				&:hover {
+					background: $oe-panel-episode-events-anchor-hover-background;
+					color: $oe-panel-episode-events-anchor-hover-color;
+				}
+			}
+			.event-type {
+				width: 35px;
+				display: inline-block;
+				&.alert {
+					background: $oe-panel-episode-events-event-type-alert-background;
+					&:hover {
+						background-image: $oe-panel-episode-events-event-type-alert-hover-background-image;
+					}
+				}
+			}
+			.event-date {
+				display: inline-block;
+				padding-left: $oe-panel-episode-events-event-date-padding-left;
+			}
+			// Selected state
+			li {
+				&.selected {
+					a {
+						background: $oe-panel-episode-events-selected-anchor-background;
+						color: $oe-panel-episode-events-selected-anchor-color;
+					}
+					.event-type {
+						&.alert {
+							background-image: $oe-panel-episode-events-selected-event-type-background-image;
+						}
+					}
+				}
+			}
+		}
+	}
 }

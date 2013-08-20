@@ -19,7 +19,7 @@ $em-base: 16px;
 
 // Working in ems is annoying. Think in pixels by using this handy function, emCalc(#px)
 @function emCalc($pxWidth) {
-  @return $pxWidth / $em-base * 1em;
+	@return $pxWidth / $em-base * 1em;
 }
 
 // Change whether or not you include browser prefixes
@@ -30,7 +30,7 @@ $experimental: true;
 $default-float: left;
 
 $body-bg: #d4d1cd;
-$body-font-color: #222;
+$body-font-color: #222222;
 $body-font-family: Helvetica, Arial, sans-serif;
 $body-font-weight: normal;
 $body-font-style: normal;
@@ -113,10 +113,10 @@ $default-font-size: emCalc(13px);
 $header-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 $header-font-weight: normal;
 $header-font-style: normal;
-$header-font-color: #333;
+$header-font-color: #333333;
 $header-line-height: 1.4;
-$header-top-margin: .2em;
-$header-bottom-margin: .5em;
+$header-top-margin: 0.2em;
+$header-bottom-margin: 0.5em;
 $header-text-rendering: optimizeLegibility;
 
 // Heading font sizes
@@ -132,8 +132,8 @@ $h6-font-size: 1em;
 $subheader-line-height: 1.4;
 $subheader-font-color: lighten($header-font-color, 30%);
 $subheader-font-weight: 300;
-$subheader-top-margin: .2em;
-$subheader-bottom-margin: .5em;
+$subheader-top-margin: 0.2em;
+$subheader-bottom-margin: 0.5em;
 
 // A general <small> styling
 $small-font-size: 60%;
@@ -152,7 +152,7 @@ $paragraph-text-rendering: optimizeLegibility;
 
 // We use these to style <code> tags
 $code-color: darken($alert-color, 15%);
-$code-font-family: Consolas, 'Liberation Mono', Courier, monospace;
+$code-font-family: Consolas, "Liberation Mono", Courier, monospace;
 $code-font-weight: bold;
 
 // We use these to style anchors
@@ -163,7 +163,7 @@ $anchor-font-color-hover: darken($primary-color, 5%);
 // We use these to style the <hr> element
 $hr-border-width: 1px;
 $hr-border-style: solid;
-$hr-border-color: #ddd;
+$hr-border-color: #dddddd;
 $hr-margin: emCalc(20px);
 
 // We use these to style lists
@@ -171,19 +171,19 @@ $list-style-position: outside;
 $list-side-margin: 0;
 $list-nested-margin: emCalc(20px);
 $definition-list-header-weight: bold;
-$definition-list-header-margin-bottom: .3em;
+$definition-list-header-margin-bottom: 0.3em;
 $definition-list-margin-bottom: emCalc(12px);
 
 // We use these to style blockquotes
 $blockquote-font-color: lighten($header-font-color, 30%);
 $blockquote-padding: emCalc(9px) emCalc(20px) 0 emCalc(19px);
-$blockquote-border: 1px solid #ddd;
+$blockquote-border: 1px solid #dddddd;
 $blockquote-cite-font-size: emCalc(13px);
 $blockquote-cite-font-color: lighten($header-font-color, 20%);
 $blockquote-cite-link-color: $blockquote-cite-font-color;
 
 // Acronym styles
-$acronym-underline: 1px dotted #ddd;
+$acronym-underline: 1px dotted #dddddd;
 
 // We use these to control padding and margin
 $microformat-padding: emCalc(10px) emCalc(12px);
@@ -192,7 +192,7 @@ $microformat-margin: 0 0 emCalc(20px) 0;
 // We use these to control the border styles
 $microformat-border-width: 1px;
 $microformat-border-style: solid;
-$microformat-border-color: #ddd;
+$microformat-border-color: #dddddd;
 
 // We use these to control full name font styles
 $microformat-fullname-font-weight: bold;
@@ -207,7 +207,6 @@ $microformat-abbr-padding: 0 emCalc(1px);
 // We use this to control abbr font styles
 $microformat-abbr-font-weight: bold;
 $microformat-abbr-font-decoration: none;
-
 
 //
 // Button Variables
@@ -224,8 +223,8 @@ $button-margin-bottom: emCalc(20px);
 
 // We use these to control button text styles.
 $button-font-family: inherit;
-$button-font-color: #fff;
-$button-font-color-alt: #333;
+$button-font-color: white;
+$button-font-color-alt: #333333;
 $button-font-med: emCalc(16px);
 $button-font-tny: emCalc(11px);
 $button-font-sml: emCalc(13px);
@@ -261,8 +260,8 @@ $alert-padding-bottom: $alert-padding-top + emCalc(1px);
 // We use these to control text style.
 $alert-font-weight: normal;
 $alert-font-size: $default-font-size;
-$alert-font-color: #000;
-$alert-font-color-alt: #000;
+$alert-font-color: black;
+$alert-font-color-alt: black;
 
 // We use this for close hover effect.
 $alert-function-factor: 10%;
@@ -274,7 +273,7 @@ $alert-border-color: #fc621f;
 $alert-bottom-margin: emCalc(20px);
 
 // We use these to style the close buttons
-$alert-close-color: #333;
+$alert-close-color: #333333;
 $alert-close-position: emCalc(5px);
 $alert-close-font-size: emCalc(22px);
 $alert-close-opacity: 0.3;
@@ -289,7 +288,7 @@ $alert-radius: $global-radius;
 //
 
 // We use these to control the background and border styles
-$panel-bg: darken(#fff, 5%);
+$panel-bg: darken(white, 5%);
 $panel-border-style: solid;
 $panel-border-size: 1px;
 
@@ -302,8 +301,8 @@ $panel-margin-bottom: emCalc(20px);
 $panel-padding: emCalc(10px);
 
 // We use these to set default font colors
-$panel-font-color: #333;
-$panel-font-color-alt: #fff;
+$panel-font-color: #333333;
+$panel-font-color-alt: white;
 
 $panel-header-adjust: true;
 
@@ -318,49 +317,49 @@ $form-spacing: emCalc(18px);
 $form-label-pointer: pointer;
 $form-label-font-size: $default-font-size;
 $form-label-font-weight: 500;
-$form-label-font-color: #000;
+$form-label-font-color: black;
 $form-label-bottom-margin: emCalc(3px);
 $input-font-family: inherit;
-$input-font-color: rgba(0,0,0,0.75);
+$input-font-color: rgba(0, 0, 0, 0.75);
 $input-font-size: emCalc(13px);
-$input-bg-color: #fff;
-$input-focus-bg-color: #fff;
-$input-border-color: darken(#fff, 20%);
-$input-focus-border-color: darken(#fff, 40%);
+$input-bg-color: white;
+$input-focus-bg-color: white;
+$input-border-color: darken(white, 20%);
+$input-focus-border-color: darken(white, 40%);
 $input-border-style: solid;
 $input-border-width: 1px;
-$input-disabled-bg: #ddd;
-$input-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+$input-disabled-bg: #dddddd;
+$input-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 $input-include-glowing-effect: true;
 
 // We use these to style the fieldset border and spacing.
 $fieldset-border-style: solid;
 $fieldset-border-width: 1px;
-$fieldset-border-color: #ddd;
+$fieldset-border-color: #dddddd;
 $fieldset-padding: emCalc(20px);
 $fieldset-margin: emCalc(18px) 0;
 
 // We use these to style the legends when you use them
-$legend-bg: #fff;
+$legend-bg: white;
 $legend-font-weight: bold;
 $legend-padding: 0 emCalc(3px);
 
 // We use these to style the prefix and postfix input elements
-$input-prefix-bg: darken(#fff, 5%);
-$input-prefix-border-color: darken(#fff, 20%);
+$input-prefix-bg: darken(white, 5%);
+$input-prefix-border-color: darken(white, 20%);
 $input-prefix-border-size: 1px;
 $input-prefix-border-type: solid;
 $input-prefix-overflow: hidden;
-$input-prefix-font-color: #333;
-$input-prefix-font-color-alt: #fff;
+$input-prefix-font-color: #333333;
+$input-prefix-font-color-alt: white;
 
 // We use these to style the error states for inputs and labels
 $input-error-message-padding: emCalc(6px) emCalc(4px);
-$input-error-message-top: -($form-spacing) - emCalc(5px);
+$input-error-message-top: -$form-spacing - emCalc(5px);
 $input-error-message-font-size: emCalc(12px);
 $input-error-message-font-weight: bold;
-$input-error-message-font-color: #fff;
-$input-error-message-font-color-alt: #333;
+$input-error-message-font-color: white;
+$input-error-message-font-color-alt: #333333;
 
 // We use this to style the glowing effect of inputs when focused
 $glowing-effect-fade-time: 0.45s;
@@ -371,38 +370,39 @@ $glowing-effect-color: $input-focus-border-color;
 //
 
 // These control the background color for the table and even rows
-$table-bg: #EDF4F9;
-$table-even-row-bg: #E1EEF9;
+$table-bg: #edf4f9;
+$table-even-row-bg: #e1eef9;
 
 // These control the table cell border style
 $table-border-style: solid;
 $table-border-size: 1px;
-$table-border-color: #ddd;
+$table-border-color: #dddddd;
 
 // These control the table head styles
-$table-head-bg: #f5f5f5;
+$table-head-bg: whitesmoke;
 $table-head-font-size: emCalc(11px);
-$table-head-font-color: #444;
+$table-head-font-color: #444444;
 $table-head-font-weight: bold;
 $table-head-padding: emCalc(8px) emCalc(10px) emCalc(10px);
 
 // These control the row padding and font styles
 $table-row-padding: emCalc(9px) emCalc(10px);
 $table-row-font-size: emCalc(14px);
-$table-row-font-color: #222;
+$table-row-font-color: #222222;
 $table-line-height: emCalc(18px);
 
 // These are for controlling the display and margin of tables
 $table-display: table-cell;
 $table-margin-bottom: emCalc(10px);
 
-
 // ============================================
 // OpenEyes default theme variables
 // ============================================
 
 // Compass vars
-$experimental-support-for-svg: false; // Change to true if we want background gradient support in IE9
+$experimental-support-for-svg: false;
+
+// Change to true if we want background gradient support in IE9
 $experimental-support-for-mozilla: true;
 $experimental-support-for-webkit: true;
 $support-for-original-webkit-gradients: true;

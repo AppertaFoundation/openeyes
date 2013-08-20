@@ -26,43 +26,43 @@ $oe-alert-issue-with-icon-bg-image: image-url("_elements/icons/box/issue.png") !
 $oe-alert-issue-with-icon-min-height: 36px !default;
 
 .alert-box {
-    @include alert($oe-alert-default-bg-color);
-    @include radius($alert-radius);
-    .close {
-        @include alert-close;
-    }
-    ul {
-        margin: 0;
-        line-height: 1.4;
-    }
-    li {
-        font-size: 1em;
-        list-style: none;
-    }
-    &.with-icon {
-        padding-left: $oe-alert-with-icon-padding-left;
-        background-repeat: no-repeat;
-        background-position: left top;
-    }
-    &.success {
-        @include alert-style($success-color);
-    }
-    &.alert {
-        @include alert-style($oe-alert-alert-bg-color);
-        border-color: $alert-border-color;
-        &.with-icon {
-            background-image: $oe-alert-alert-with-icon-bg-image;
-            min-height: $oe-alert-alert-with-icon-min-height;
-        }
-    }
-    &.issue {
-        @include alert-style($oe-alert-issue-bg-color);
-        &.with-icon {
-            background-image: $oe-alert-issue-with-icon-bg-image;
-            min-height: $oe-alert-issue-with-icon-min-height;
-        }
-    }
-    &.secondary {
-        @include alert-style($secondary-color);
-    }
+	@include alert($oe-alert-default-bg-color);
+	@include radius($alert-radius);
+	.close {
+		@include alert-close;
+	}
+	ul {
+		margin: 0;
+		line-height: 1.4;
+	}
+	li {
+		font-size: 1em;
+		list-style: none;
+	}
+	&.with-icon {
+		padding-left: $oe-alert-with-icon-padding-left;
+		background-repeat: no-repeat;
+		background-position: left top;
+	}
+	&.success {
+		@include alert-style($success-color);
+	}
+	&.alert {
+		@include alert-style($oe-alert-alert-bg-color);
+		border-color: $alert-border-color;
+		&.with-icon {
+			background-image: $oe-alert-alert-with-icon-bg-image;
+			min-height: $oe-alert-alert-with-icon-min-height;
+		}
+	}
+	&.issue {
+		@include alert-style($oe-alert-issue-bg-color);
+		&.with-icon {
+			background-image: $oe-alert-issue-with-icon-bg-image;
+			min-height: $oe-alert-issue-with-icon-min-height;
+		}
+	}
+	&.secondary {
+		@include alert-style($secondary-color);
+	}
 }

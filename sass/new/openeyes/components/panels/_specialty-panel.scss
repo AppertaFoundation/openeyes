@@ -19,20 +19,20 @@ $oe-panel-specialty-title-font-size: emCalc(11px);
 $oe-panel-specialty-title-padding: emCalc(8px) emCalc(4px) emCalc(12px) emCalc(8px);
 
 .panel {
-    &.specialty {
-        background: transparent;
-        border: 0;
-        margin: $oe-panel-specialty-margin;
-        padding: $oe-panel-specialty-padding;
-        @include border-top-left-radius(0);
-        @include border-bottom-left-radius(0);
-        .specialty-title {
-            @include border-radius($oe-panel-specialty-title-border-radius);
-            background: $oe-panel-specialty-title-bg-color;
-            color: $oe-panel-specialty-title-color;
-            font-size: $oe-panel-specialty-title-font-size;
-            margin: 0;
-            padding: $oe-panel-specialty-title-padding;
-        }
-    }
+	&.specialty {
+		background: transparent;
+		border: 0;
+		margin: $oe-panel-specialty-margin;
+		padding: $oe-panel-specialty-padding;
+		@include border-top-left-radius(0);
+		@include border-bottom-left-radius(0);
+		.specialty-title {
+			@include border-radius($oe-panel-specialty-title-border-radius);
+			background: $oe-panel-specialty-title-bg-color;
+			color: $oe-panel-specialty-title-color;
+			font-size: $oe-panel-specialty-title-font-size;
+			margin: 0;
+			padding: $oe-panel-specialty-title-padding;
+		}
+	}
 }

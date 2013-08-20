@@ -59,15 +59,16 @@
 // Styleguide 17.1
 
 $oe-search-filters-theatre-diaries-table-margin: 0 0 emCalc(5px) 0;
+
 .search-filters {
-    &.theatre-diaries {
-        table {
-            margin: $oe-search-filters-theatre-diaries-table-margin;
-        }
-    }
-    .panel {
-        margin: 0 0 emCalc(10px) 0;
-    }
+	&.theatre-diaries {
+		table {
+			margin: $oe-search-filters-theatre-diaries-table-margin;
+		}
+	}
+	.panel {
+		margin: 0 0 emCalc(10px) 0;
+	}
 }
 
 // Extra search filters
@@ -117,42 +118,42 @@ $oe-search-filters-fieldset-text-input-margin: emCalc(4px) 0 0 0 !default;
 $oe-search-filters-fieldset-to-font-size: emCalc(13px) !default;
 
 .search-filters-extra {
-    padding: $oe-search-fields-extra-padding;
-    label {
-        float: left;
-        font-size: $oe-search-filters-extra-label-font-size;
-        height: $oe-search-filters-extra-label-height;
-        line-height: $oe-search-filters-extra-label-line-height;
-        margin: $oe-search-filters-extra-label-margin;
-        padding: $oe-search-filters-extra-label-padding;
-        input {
-            margin: $oe-search-filters-extra-label-input-margin;
-        }
-    }
-    fieldset {
-        border: 0;
-        float: left;
-        height: $oe-search-filters-extra-label-height;
-        line-height: $oe-search-filters-extra-label-line-height;
-        margin: 0;
-        padding: $oe-search-filters-extra-label-padding;
-        input[type="text"] {
-            display: inline-block;
-            vertical-align: top;
-            margin: $oe-search-filters-fieldset-text-input-margin;
-        }
-        label {
-            padding: 0;
-        }
-        .to {
-            display: inline-block;
-            font-size: $oe-search-filters-fieldset-to-font-size;
-            vertical-align: top;
-        }
-    }
-    .button-group {
-        display: inline-block;
-        vertical-align: top;
-        margin-top: emCalc(2px);
-    }
+	padding: $oe-search-fields-extra-padding;
+	label {
+		float: left;
+		font-size: $oe-search-filters-extra-label-font-size;
+		height: $oe-search-filters-extra-label-height;
+		line-height: $oe-search-filters-extra-label-line-height;
+		margin: $oe-search-filters-extra-label-margin;
+		padding: $oe-search-filters-extra-label-padding;
+		input {
+			margin: $oe-search-filters-extra-label-input-margin;
+		}
+	}
+	fieldset {
+		border: 0;
+		float: left;
+		height: $oe-search-filters-extra-label-height;
+		line-height: $oe-search-filters-extra-label-line-height;
+		margin: 0;
+		padding: $oe-search-filters-extra-label-padding;
+		input[type="text"] {
+			display: inline-block;
+			vertical-align: top;
+			margin: $oe-search-filters-fieldset-text-input-margin;
+		}
+		label {
+			padding: 0;
+		}
+		.to {
+			display: inline-block;
+			font-size: $oe-search-filters-fieldset-to-font-size;
+			vertical-align: top;
+		}
+	}
+	.button-group {
+		display: inline-block;
+		vertical-align: top;
+		margin-top: emCalc(2px);
+	}
 }

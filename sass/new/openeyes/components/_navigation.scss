@@ -11,9 +11,8 @@
 //
 // Styleguide 11.1
 .side-nav {
-    @include side-nav;
+	@include side-nav;
 }
-
 
 // User navigation
 //
@@ -37,29 +36,29 @@ $oe-navigation-user-anchor-bg-color: #cdd9e3 !default;
 $oe-navigation-user-anchor-padding: emCalc(8px) emCalc(5px) emCalc(2px) emCalc(5px) !default;
 $oe-navigation-user-anchor-hover-bg-color: white !default;
 $oe-navigation-user-anchor-selected-bg-color: #1e55c1 !default;
-$oe-navigation-user-anchor-selected-color: #fff !default;
+$oe-navigation-user-anchor-selected-color: white !default;
 
 .navigation {
-    &.user {
-        margin-left: 0;
-        margin-bottom: emCalc(8px);
-        li {
-            font-size: $oe-navigation-user-font-size;
-            margin: 0 0 0 $oe-navigation-user-item-margin;
-            &.selected {
-                a {
-                    background: $oe-navigation-user-anchor-selected-bg-color;
-                    color: $oe-navigation-user-anchor-selected-color;
-                }
-            }
-        }
-        a {
-            background: $oe-navigation-user-anchor-bg-color;
-            padding: $oe-navigation-user-anchor-padding;
-            &:hover,
-            &:focus {
-                background: $oe-navigation-user-anchor-hover-bg-color;
-            }
-        }
-    }
+	&.user {
+		margin-left: 0;
+		margin-bottom: emCalc(8px);
+		li {
+			font-size: $oe-navigation-user-font-size;
+			margin: 0 0 0 $oe-navigation-user-item-margin;
+			&.selected {
+				a {
+					background: $oe-navigation-user-anchor-selected-bg-color;
+					color: $oe-navigation-user-anchor-selected-color;
+				}
+			}
+		}
+		a {
+			background: $oe-navigation-user-anchor-bg-color;
+			padding: $oe-navigation-user-anchor-padding;
+			&:hover,
+			&:focus {
+				background: $oe-navigation-user-anchor-hover-bg-color;
+			}
+		}
+	}
 }

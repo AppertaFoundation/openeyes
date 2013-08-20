@@ -39,26 +39,26 @@ $oe-panel-user-font-size: emCalc(13px) !default;
 $oe-panel-user-padding: 0 emCalc(10px) emCalc(5px) emCalc(10px) !default;
 
 .panel {
-    &.user {
-        @extend .clearfix;
-        @include panel($oe-panel-user-bg-color, $oe-panel-user-padding);
-        @include border-radius($global-radius);
-        background: {
-            image: $oe-panel-user-bg-image;
-            repeat: $oe-panel-user-bg-repeat;
-            position: $oe-panel-user-bg-position;
-        }
-        margin: 0;
-        @media #{$small} {
-            border-top: 0;
-            @include border-radius(0 0 $global-radius $global-radius);
-        }
-        .user-id, .user-firm {
-            font-size: $oe-panel-user-font-size;
-            min-height: $oe-panel-user-font-size * 2;
-        }
-        .row {
-            clear: both;
-        }
-    }
+	&.user {
+		@extend .clearfix;
+		@include panel($oe-panel-user-bg-color, $oe-panel-user-padding);
+		@include border-radius($global-radius);
+		background: {
+			image: $oe-panel-user-bg-image;
+			repeat: $oe-panel-user-bg-repeat;
+			position: $oe-panel-user-bg-position;
+		};
+		margin: 0;
+		@media #{$small} {
+			border-top: 0;
+			@include border-radius(0 0 $global-radius $global-radius);
+		}
+		.user-id, .user-firm {
+			font-size: $oe-panel-user-font-size;
+			min-height: $oe-panel-user-font-size * 2;
+		}
+		.row {
+			clear: both;
+		}
+	}
 }

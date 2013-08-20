@@ -4,9 +4,9 @@
 // Styleguide 16.1
 
 .panel {
-    @include panel;
-    @include radius;
-    margin-top: 0;
+	@include panel;
+	@include radius;
+	margin-top: 0;
 }
 
 @import "panels/user-panel";

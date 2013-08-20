@@ -7,11 +7,12 @@
 // Theatre sessions panel vars
 $oe-panel-theatre-sessions-bg-color: #fafafa !default;
 $oe-panel-theatre-sessions-edit-actions-padding-top: emCalc(10px) !default;
+
 .panel {
-    &.theatre-sessions {
-        background: $oe-panel-theatre-sessions-bg-color;
-        .theatre-booking-edit-actions {
-            padding-top: $oe-panel-theatre-sessions-edit-actions-padding-top;
-        }
-    }
+	&.theatre-sessions {
+		background: $oe-panel-theatre-sessions-bg-color;
+		.theatre-booking-edit-actions {
+			padding-top: $oe-panel-theatre-sessions-edit-actions-padding-top;
+		}
+	}
 }

@@ -24,18 +24,17 @@ $oe-box-event-padding: emCalc(5px) emCalc(5px) emCalc(10px) emCalc(5px) !default
 $oe-box-event-border-width: 0 5px 5px !default;
 
 .box {
-    @include border-radius($oe-box-border-radius);
-    margin: $oe-box-margin;
-    &.content {
-        background: $oe-box-content-bg-color;
-    }
-
-    &.event {
-        @include border-radius($oe-box-event-border-radius);
-        background: $oe-box-event-background;
-        padding: $oe-box-event-padding;
-        border-width: $oe-box-event-border-width;
-        border-style: solid;
-        margin: 0;
-    }
+	@include border-radius($oe-box-border-radius);
+	margin: $oe-box-margin;
+	&.content {
+		background: $oe-box-content-bg-color;
+	}
+	&.event {
+		@include border-radius($oe-box-event-border-radius);
+		background: $oe-box-event-background;
+		padding: $oe-box-event-padding;
+		border-width: $oe-box-event-border-width;
+		border-style: solid;
+		margin: 0;
+	}
 }

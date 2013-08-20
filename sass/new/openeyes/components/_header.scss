@@ -20,19 +20,19 @@ $oe-header-logo-height: 70px !default;
 $oe-header-small-margin: 0 0 emCalc(10px) 0;
 
 .header {
-    min-height: $oe-header-height;
-    margin: $oe-header-small-margin;
-    @media #{$small} {
-        margin-bottom: 0;
-    }
-    .logo {
-        @extend .hide-text;
-        background: $oe-header-logo-bg-image no-repeat;
-        background-size: 100%;
-        height: $oe-header-logo-height;
-        margin-left: -1 * $column-gutter / 2;
-        max-width: $oe-header-logo-width;
-    }
+	min-height: $oe-header-height;
+	margin: $oe-header-small-margin;
+	@media #{$small} {
+		margin-bottom: 0;
+	}
+	.logo {
+		@extend .hide-text;
+		background: $oe-header-logo-bg-image no-repeat;
+		background-size: 100%;
+		height: $oe-header-logo-height;
+		margin-left: -1 * $column-gutter / 2;
+		max-width: $oe-header-logo-width;
+	}
 }
 
 // Event header
@@ -65,9 +65,10 @@ $oe-header-small-margin: 0 0 emCalc(10px) 0;
 $oe-header-event-background: #eaddaf !default;
 $oe-header-event-border-bottom: 5px solid #a29d8a !default;
 $oe-header-event-padding: emCalc(6px) emCalc(10px) 0 emCalc(10px) !default;
+
 .event-header {
-    @extend .clearfix;
-    background: $oe-header-event-background;
-    border-bottom: $oe-header-event-border-bottom;
-    padding: $oe-header-event-padding;
+	@extend .clearfix;
+	background: $oe-header-event-background;
+	border-bottom: $oe-header-event-border-bottom;
+	padding: $oe-header-event-padding;
 }
