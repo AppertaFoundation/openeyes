@@ -1,44 +1,7 @@
-// Main container
-//
-// The main container wraps all content in the document and manages the main
-// background styles.
-//
-// Styleguide 2.1
-
-// Main container variables
-$oe-container-bg-color: #dae6f1 !default;
-$oe-container-bg-image: image-url("_structure/gradient_bg.jpg") !default;
-$oe-container-border-color: #b3b0ae !default;
-$oe-container-border-width: 2px !default;
-
 .container {
 	@include grid-row;
-	&.main {
-		@include radius;
-		background: $oe-container-bg-color $oe-container-bg-image 0 0 no-repeat;
-		border: $oe-container-border-width solid $oe-container-border-color;
-	}
 }
 
-// Main body container
-//
-// The main page body container that wraps around all page content.
-//
-// Styleguide 2.2
-
-// Content container variables
-$oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg") !default;
-$oe-container-content-min-height: 330px !default;
-
-.container {
-	&.content {
-		background: $oe-container-content-bg-image 0 bottom no-repeat;
-		min-height: $oe-container-content-min-height;
-	}
-}
-
-.container {
-	&.event {
-		padding-right: 0;
-	}
-}
+@import "containers/main";
+@import "containers/content";
+@import "containers/event";

@@ -58,14 +58,7 @@
 //
 // Styleguide 17.1
 
-$oe-search-filters-theatre-diaries-table-margin: 0 0 emCalc(5px) 0;
-
 .search-filters {
-	&.theatre-diaries {
-		table {
-			margin: $oe-search-filters-theatre-diaries-table-margin;
-		}
-	}
 	.panel {
 		margin: 0 0 emCalc(10px) 0;
 	}

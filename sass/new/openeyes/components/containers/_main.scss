@@ -1,0 +1,20 @@
+// Main container
+//
+// The main container wraps all content in the document and manages the main
+// background styles.
+//
+// Styleguide 2.1
+
+// Main container variables
+$oe-container-main-bg-color: #dae6f1 !default;
+$oe-container-main-bg-image: image-url("_structure/gradient_bg.jpg") !default;
+$oe-container-main-border-color: #b3b0ae !default;
+$oe-container-main-border-width: 2px !default;
+
+.container {
+    &.main {
+        @include radius;
+        background: $oe-container-main-bg-color $oe-container-main-bg-image 0 0 no-repeat;
+        border: $oe-container-main-border-width solid $oe-container-main-border-color;
+    }
+}

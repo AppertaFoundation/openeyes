@@ -9,12 +9,12 @@
 	margin-top: 0;
 }
 
-@import "panels/user-panel";
-@import "panels/patient-panel";
-@import "panels/search-panel";
-@import "panels/actions-panel";
-@import "panels/comments-panel";
-@import "panels/specialty-panel";
-@import "panels/episode-panel";
-@import "panels/element-panel";
-@import "panels/sub-element-panel";
+@import "panels/user";
+@import "panels/patient";
+@import "panels/search";
+@import "panels/actions";
+@import "panels/comments";
+@import "panels/specialty";
+@import "panels/episode";
+@import "panels/element";
+@import "panels/sub-element";

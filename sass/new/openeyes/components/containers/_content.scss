@@ -1,0 +1,14 @@
+// Content container
+//
+// Styleguide 2.2
+
+// Content container variables
+$oe-container-content-bg-image: image-url("_structure/help_top_grad.jpg") !default;
+$oe-container-content-min-height: 330px !default;
+
+.container {
+    &.content {
+        background: $oe-container-content-bg-image 0 bottom no-repeat;
+        min-height: $oe-container-content-min-height;
+    }
+}
