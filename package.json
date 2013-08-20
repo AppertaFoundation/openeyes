@@ -1,28 +1,28 @@
 {
-  "name": "openeyes",
-  "version": "1.4.0",
-  "description": "An Open Source electronic patient record system.",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/openeyes/OpenEyes.git"
-  },
-  "author": "OpenEyes",
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/openeyes/OpenEyes/issues"
-  },
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "connect": "~2.8.5",
-    "grunt-contrib-compass": "~0.5.0",
-    "grunt-contrib-jshint": "~0.6.2",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-styleguide": "~0.2.6",
-    "grunt-modernizr": "~0.3.0",
-    "grunt-jsdoc": "~0.4.0",
-    "matchdep": "~0.1.2",
-    "grunt-hub": "~0.5.0",
-    "grunt-contrib-watch": "~0.5.2"
-  }
+	"name": "openeyes",
+	"version": "1.4.0",
+	"description": "An Open Source electronic patient record system.",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/openeyes/OpenEyes.git"
+	},
+	"author": "OpenEyes",
+	"license": "GPL-3.0",
+	"bugs": {
+		"url": "https://github.com/openeyes/OpenEyes/issues"
+	},
+	"devDependencies": {
+		"grunt": "~0.4.1",
+		"connect": "~2.8.5",
+		"grunt-contrib-compass": "~0.5.0",
+		"grunt-contrib-jshint": "~0.6.2",
+		"grunt-contrib-clean": "~0.5.0",
+		"grunt-contrib-copy": "~0.4.1",
+		"grunt-styleguide": "~0.2.6",
+		"grunt-modernizr": "~0.3.0",
+		"grunt-jsdoc": "~0.4.0",
+		"matchdep": "~0.1.2",
+		"grunt-hub": "~0.5.0",
+		"grunt-contrib-watch": "~0.5.2"
+	}
 }

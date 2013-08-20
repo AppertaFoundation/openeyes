@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-  grunt.registerTask('compile', 'Compiles the public assets', [
-    'compass:newstyle'
-  ]);
+	grunt.registerTask('compile', 'Compiles the public assets', [
+		'compass:newstyle'
+	]);
 };
