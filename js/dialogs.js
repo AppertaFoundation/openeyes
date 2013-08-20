@@ -181,7 +181,11 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
    * Sets the dialog title.
    * @name Dialog#setTitle
    * @method
+<<<<<<< HEAD
+   * @private
+=======
    * @public
+>>>>>>> release/1.4
    */
   Dialog.prototype.setTitle = function(title) {
     this.instance._setOption('title', title);
