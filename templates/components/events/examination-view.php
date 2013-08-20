@@ -127,6 +127,9 @@
 												4
 											</div>
 										</div>
+										<div class="element-value">
+											Van Herick: NR
+										</div>
 									</div>
 								</div>
 							</div>

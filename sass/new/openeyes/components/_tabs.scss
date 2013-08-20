@@ -14,52 +14,6 @@
 	margin: 0;
 }
 
-// Theatre booking action tabs
-//
-// Markup:
-// <ul class="inline-list tabs theatre-booking-actions">
-//     <li class="selected">
-//         <a href="#">View</a>
-//     </li>
-//     <li>
-//         <a href="#">Edit</a>
-//     </li>
-// </ul>
-//
-// Styleguide 18.2
-$oe-tabs-theatre-booking-actions-margin: 0 emCalc(10px) 0 0 !default;
-$oe-tabs-theatre-booking-actions-item-margin-right: emCalc(5px) !default;
-$oe-tabs-theatre-booking-actions-item-anchor-bg-color: #dadada !default;
-$oe-tabs-theatre-booking-actions-item-anchor-padding: emCalc(6px) emCalc(12px) !default;
-$oe-tabs-theatre-booking-actions-item-anchor-border-radius: 3px 3px 0 0 !default;
-$oe-tabs-theatre-booking-actions-item-selected-anchor-bg-color: #fafafa !default;
-
-.tabs {
-	&.theatre-booking-actions {
-		margin: $oe-tabs-theatre-booking-actions-margin;
-		float: right;
-		position: relative;
-		bottom: emCalc(-1px);
-		z-index: 1;
-		li {
-			margin: 0;
-			&:first-child {
-				margin-right: $oe-tabs-theatre-booking-actions-item-margin-right;
-			}
-			&.selected {
-				a {
-					background: $oe-tabs-theatre-booking-actions-item-selected-anchor-bg-color;
-				}
-			}
-		}
-		a {
-			background: $oe-tabs-theatre-booking-actions-item-anchor-bg-color;
-			padding: $oe-tabs-theatre-booking-actions-item-anchor-padding;
-			@include border-radius($oe-tabs-theatre-booking-actions-item-anchor-border-radius);
-		}
-	}
-}
-
 // Event action tabs
 //
 // Markup:

@@ -228,10 +228,10 @@
 		</div>
 		<div class="large-2 column">
 			<ul class="inline-list tabs theatre-booking-actions">
-				<li class="selected">
+				<li>
 					<a href="#">View</a>
 				</li>
-				<li>
+				<li class="selected">
 					<a href="#">Edit</a>
 				</li>
 			</ul>
