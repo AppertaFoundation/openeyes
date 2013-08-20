@@ -208,7 +208,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * Closes (hides) the dialog.
 	 * @name Dialog#close
 	 * @method
-	 * @pubic
+	 * @public
 	 */
 	Dialog.prototype.close = function() {
 		this.instance.close();
@@ -219,7 +219,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * event handlers.
 	 * @name Dialog#destroy
 	 * @method
-	 * @pubic
+	 * @public
 	 */
 	Dialog.prototype.destroy = function() {
 		this.instance.destroy();
@@ -387,6 +387,12 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 	OpenEyes.Dialog.Alert = AlertDialog;
 
+}());
+
+(function() {
+
+	var Dialog = OpenEyes.Dialog;
+
 	/**
 	 * ConfirmDialog constructor. The ConfirmDialog extends the base Dialog and provides
 	 * an 'Ok' button for the user to click on.
@@ -401,7 +407,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 */
 	function ConfirmDialog(options) {
 
-		options = $.extend(true, options, ConfirmDialog.defaultOptions);
+		options = $.extend(true, {}, ConfirmDialog.defaultOptions, options);
 		options.content = this.getContent(options);
 
 		Dialog.call(this, options);
@@ -420,7 +426,9 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		width: 400,
 		minHeight: 'auto',
 		title: 'Confirm',
-		dialogClass: 'dialog alert'
+		dialogClass: 'dialog confirm',
+		okButton: 'OK',
+		cancelButton: 'Cancel'
 	};
 
 	/**
@@ -438,8 +446,8 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 			selector: '#dialog-confirm-template',
 			data: {
 				content: options.content,
-				okButton: options.okButton || 'OK',
-				cancelButton: options.cancelButton || 'Cancel'
+				okButton: options.okButton,
+				cancelButton: options.cancelButton
 			}
 		});
 	};
@@ -481,4 +489,5 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	};
 
 	OpenEyes.Dialog.Confirm = ConfirmDialog;
+
 }());

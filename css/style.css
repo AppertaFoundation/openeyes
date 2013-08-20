@@ -1804,13 +1804,15 @@ body .ui-widget-overlay {
     font-family: Helvetica,Arial,Frutiger,Calibri,sans-serif;
 }
 
-/* ====== Alert dialog ====== */
+/* ====== Alert and confirm dialog ====== */
 
-.ui-widget.dialog.alert .ui-dialog-content {
+.ui-widget.dialog.alert .ui-dialog-content,
+.ui-widget.dialog.confirm .ui-dialog-content  {
     overflow: hidden;
 }
 
-.ui-widget.dialog.alert .buttons {
+.ui-widget.dialog.alert .buttons,
+.ui-widget.dialog.confirm .buttons {
     padding: 1.5em .5em .5em .5em;
 }
 
