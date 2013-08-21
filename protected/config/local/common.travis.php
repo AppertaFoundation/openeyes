@@ -16,26 +16,43 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
 
-<!-- Dialog alert template -->
-<script type="text/html" id="dialog-alert-template">
-	<p>{{{content}}}</p>
-	<div class="buttons">
-		<button class="classy green mini confirm ok" type="button">
-			<span class="button-span button-span-green">Ok</span>
-		</button>
-	</div>
-</script>
-<!-- Dialog confirm template -->
-<script type="text/html" id="dialog-confirm-template">
-	<p>{{{content}}}</p>
-	<div class="buttons">
-		<button class="classy green mini confirm ok" type="button">
-			<span class="button-span button-span-green">{{{okButton}}}</span>
-		</button>
-		<button class="classy red mini confirm cancel" type="button">
-			<span class="button-span button-span-red">{{{cancelButton}}}</span>
-		</button>
-	</div>
-</script>
+$config = array(
+	'components' => array(
+		'db' => array(
+			'connectionString' => 'mysql:host=localhost;dbname=openeyes',
+			'username' => 'root',
+			'password' => '',
+		),
+		'session' => array(
+			'timeout' => 86400
+		),
+	),
+	'modules' => array(
+		'OphCiExamination',
+		'OphDrPrescription',
+		'OphTrOperationbooking',
+		'OphTrOperationnote',
+		'OphTrConsent',
+		'OphCiPhasing',
+		'OphLeEpatientletter',
+		'OphCoCorrespondence',
+		'eyedraw',
+	),
+	'params'=>array(
+		'auth_source' => 'BASIC',
+		'environment' => 'dev',
+		'helpdesk_email' => 'helpdesk@example.com',
+		'helpdesk_phone' => '12345678',
+		'google_analytics_account' => '',
+		'local_users' => array('admin','username'),
+		'urgent_booking_notify_email' => array(
+			'alerts@example.com',
+		),
+		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
+		'specialty_codes' => array(130),
+		'specialty_sort' => array(130, 'SUP')
+	),
+);
+
+return $config;
