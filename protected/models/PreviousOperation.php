@@ -58,6 +58,7 @@ class PreviousOperation extends BaseActiveRecord
 		return array(
 			array('date, operation, patient_id', 'required'),
 			array('date, side_id, operation, patient_id', 'safe'),
+			array('date', 'OEFuzzyDateValidatorNotFuture'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, date, operation, patient_id', 'safe', 'on'=>'search'),

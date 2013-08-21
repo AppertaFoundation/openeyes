@@ -74,6 +74,8 @@
 
 									<?php $this->renderPartial('_fuzzy_date',array('class'=>'previousOperation'))?>
 
+									<div class="previous_operations_form_errors"></div>
+
 									<div align="right">
 										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
 										<button class="classy green mini btn_save_previous_operation" type="submit"><span class="button-span button-span-green">Save</span></button>
@@ -135,7 +137,31 @@
 			return false;
 		}
 		$('img.add_previous_operation_loader').show();
-		return true;
+
+		$.ajax({
+			'type': 'POST',
+			'url': baseUrl+'/patient/addPreviousOperation',
+			'dataType': 'json',
+			'data': $('#add-previous_operation').serialize(),
+			'success': function(errors) {
+				var ok = true;
+
+				$('.previous_operations_form_errors').html('');
+
+				for (var i in errors) {
+					ok = false;
+					$('div.previous_operations_form_errors').append('<div class="errorMessage">'+errors[i]+'</div>');
+				}
+
+				$('img.add_previous_operation_loader').hide();
+
+				if (ok) {
+					window.location.reload();
+				}
+			}
+		});
+
+		return false;
 	});
 	$('a.editOperation').click(function(e) {
 		var operation_id = $(this).attr('rel');
