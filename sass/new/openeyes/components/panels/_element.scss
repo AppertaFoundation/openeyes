@@ -35,5 +35,8 @@ $oe-panel-element-panel-bg-color: white !default;
 			background: $oe-panel-element-panel-bg-color;
 			margin-bottom: emCalc(5px);
 		}
+		.element-value {
+			padding-left: 0;
+		}
 	}
 }
