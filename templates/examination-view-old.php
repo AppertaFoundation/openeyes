@@ -15,7 +15,7 @@
 			<div class="box content">
 				<div class="row">
 					<? include 'components/events/sidebar.php'; ?>
-					<? include 'components/events/examination-view-new.php'; ?>
+					<? include 'components/events/examination-view.php'; ?>
 				</div>
 			</div>
 		</div>

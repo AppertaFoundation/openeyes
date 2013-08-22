@@ -21,8 +21,17 @@
 .panel {
 	&.sub-element {
 		@extend .panel.element;
+		// border: 1px solid #fafafa;
+		// border-width: 1px 0 1px 1px;
+		// &:last-child {
+			// border-width: 1px 1px 1px 1px;
+		// }
 		.element-value:last-child {
 			padding-bottom: 0;
 		}
+	}
+	&.sub-elements {
+		@extend .panel.element;
+		padding-top: 0;
 	}
 }

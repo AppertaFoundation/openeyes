@@ -1,0 +1,171 @@
+// Default event element container
+//
+// Markup:
+// <div class="element">
+//     <h3>Schedule operation</h3>
+//     <fieldset class="panel element">
+//         <div class="row">
+//             <div class="large-2 column">
+//                 <label>
+//                     Schedule options
+//                 </label>
+//             </div>
+//             <div class="large-4 column end">
+//                 <label class="inline highlight">
+//                     <input type="radio" />
+//                     As soon as possible
+//                 </label>
+//             </div>
+//         </div>
+//     </fieldset>
+// </div>
+// Styleguide 19.1
+//
+
+// Element vars
+$oe-element-border-top: 1px dotted #97c6f1 !default;
+$oe-element-h3-color: #56a7f1 !default;
+$oe-element-h3-font-style: italic !default;
+$oe-element-h3-font-size: $default-font-size !default;
+$oe-element-h3-padding: 10px !default;
+$oe-element-h3-margin: 0 !default;
+$oe-element-h4-font-size: $default-font-size !default;
+$oe-element-fieldset-panel-border-color: #d9d9d9 !default;
+
+
+$oe-element-data-margin-bottom: 1em !default;
+// We keep pixel units as element titles and values might have different font-sizes.
+$oe-element-value-padding-left: 10px !default;
+$oe-element-value-padding-bottom: emCalc(10px) !default;
+$oe-element-value-font-size: $default-font-size !default;
+
+$oe-element-highlight-border-radius: 5px !default;
+$oe-element-highlight-bg-color: white !default;
+$oe-element-highlight-padding: emCalc(10px) !default;
+$oe-element-highlight-font-size: emCalc(18px) !default;
+$oe-element-highlight-margin: 0 !default;
+$oe-element-highlight-list-item-font-size: 1em !default;
+$oe-element-highlight-important-bg-color: #fff300 !default;
+
+.element {
+	border-top: $oe-element-border-top;
+	.element-title {
+		color: $oe-element-h3-color;
+		font-style: $oe-element-h3-font-style;
+		font-size: $oe-element-h3-font-size;
+		padding: $oe-element-h3-padding;
+		margin: $oe-element-h3-margin;
+	}
+	.element-data {
+		padding: 10px;
+
+
+		margin: 0;
+		background: #dae6f1;
+
+	}
+	.element-eyes {
+		@extend .row.collapse;
+		padding: 0;
+		.element-eye {
+			@extend .panel.element;
+			@extend .column;
+			border-right: 1px solid #fafafa;
+			&:last-child {
+				border: 0;
+			}
+			&.left, &.right {
+				@extend .large-6;
+			}
+		}
+	}
+	.element-value {
+		font-size: $oe-element-value-font-size;
+		line-height: 1.3;
+		padding-bottom: 5px;
+	}
+	.element-label {
+		@extend .element-value;
+	}
+	.element-highlight {
+		@include border-radius($oe-element-highlight-border-radius);
+		background: $oe-element-highlight-bg-color;
+		padding: $oe-element-highlight-padding;
+		font-size: $oe-element-highlight-font-size;
+		margin: $oe-element-highlight-margin;
+		list-style-type: none;
+		li {
+			font-size: $oe-element-highlight-list-item-font-size;
+		}
+		&.important {
+			background: $oe-element-highlight-important-bg-color;
+		}
+	}
+	fieldset {
+		&.panel {
+			h4 {
+				font-size: $oe-element-h4-font-size;
+			}
+			.panel {
+				border-style: solid;
+				border-width: 1px;
+				border-color: $oe-element-fieldset-panel-border-color;
+			}
+		}
+	}
+	canvas, .canvas {
+		border: 1px solid #ccc;
+		margin: 0;
+	}
+	table {
+		margin: 0;
+	}
+}
+
+.eyedraw-data {
+	@extend .row;
+}
+.eyedraw-image {
+	@extend .column;
+	&.small {
+		@extend .large-3;
+	}
+	&.large {
+		@extend .large-5;
+	}
+}
+.eyedraw-value {
+	@extend .column;
+	&.small {
+		@extend .large-9;
+	}
+	&.large {
+		@extend .large-7;
+	}
+}
+
+.sub-elements {
+	@extend .panel.element;
+	padding-top: 0;
+}
+.sub-element-eyes {
+	@extend .element-eyes;
+}
+.sub-element {
+	border: 1px solid #fafafa;
+	margin-bottom: emCalc(10px);
+	&:last-child {
+		margin-bottom: 0;
+	}
+	.sub-element-title {
+		background: #fafafa;
+		font-style: normal;
+		color: #666;
+		font-size: $default-font-size;
+		padding: emCalc(6px) emCalc(10px);
+		margin: 0;
+	}
+}
+.sub-element-data {
+	@extend .element-data;
+}

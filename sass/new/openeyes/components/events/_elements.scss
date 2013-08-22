@@ -68,9 +68,9 @@ $oe-element-fieldset-panel-border-color: #d9d9d9 !default;
 	.row {
 		&.collapse {
 			> .column {
-				padding-right: 1px;
+				border-right: 1px solid #fafafa;
 				&:last-child {
-					padding-right: 0;
+					border-right: 0;
 				}
 			}
 		}

@@ -7,19 +7,6 @@ $oe-event-view-panel-comments-border-radius: 5px;
 $oe-event-title-padding: 9px 0 9px 50px !default;
 $oe-event-title-font-size: emCalc(19px) !default;
 
-$oe-event-element-data-margin-bottom: 1em !default;
-$oe-event-element-value-padding-left: emCalc(10px) !default;
-$oe-event-element-value-padding-bottom: emCalc(10px) !default;
-$oe-event-element-value-font-size: $default-font-size !default;
-
-$oe-event-element-highlight-border-radius: 5px !default;
-$oe-event-element-highlight-bg-color: white !default;
-$oe-event-element-highlight-padding: emCalc(10px) !default;
-$oe-event-element-highlight-font-size: emCalc(18px) !default;
-$oe-event-element-highlight-margin: 0 !default;
-$oe-event-element-highlight-list-item-font-size: 1em !default;
-$oe-event-element-highlight-important-bg-color: #fff300 !default;
-
 $oe-event-metadata-border-top: 1px dotted #dae6f1 !default;
 $oe-event-metadata-padding-top: emCalc(8px) !default;
 $oe-event-metadata-margin: 10px !default;
@@ -52,32 +39,6 @@ $oe-event-metadata-user-color: #333333 !default;
 		font-size: $oe-event-title-font-size;
 		background-repeat: no-repeat;
 		background-position: left center;
-	}
-	.element-data {
-		margin-bottom: $oe-event-element-data-margin-bottom;
-	}
-	.element-value {
-		padding-left: $oe-event-element-value-padding-left;
-		padding-bottom: $oe-event-element-value-padding-bottom;
-		font-size: $oe-event-element-value-font-size;
-		line-height: 1.3;
-		&:last-child:not(.element-highlight,.comments) {
-			padding-bottom: 0;
-		}
-	}
-	.element-highlight {
-		@include border-radius($oe-event-element-highlight-border-radius);
-		background: $oe-event-element-highlight-bg-color;
-		padding: $oe-event-element-highlight-padding;
-		font-size: $oe-event-element-highlight-font-size;
-		margin: $oe-event-element-highlight-margin;
-		list-style-type: none;
-		li {
-			font-size: $oe-event-element-highlight-list-item-font-size;
-		}
-		&.important {
-			background: $oe-event-element-highlight-important-bg-color;
-		}
 	}
 	.metadata {
 		border-top: $oe-event-metadata-border-top;
