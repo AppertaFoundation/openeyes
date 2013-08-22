@@ -1,90 +1,16 @@
 // Default event element container
 //
-// Markup:
-// <div class="element">
-//     <h3>Schedule operation</h3>
-//     <fieldset class="panel element">
-//         <div class="row">
-//             <div class="large-2 column">
-//                 <label>
-//                     Schedule options
-//                 </label>
-//             </div>
-//             <div class="large-4 column end">
-//                 <label class="inline highlight">
-//                     <input type="radio" />
-//                     As soon as possible
-//                 </label>
-//             </div>
-//         </div>
-//     </fieldset>
-// </div>
 // Styleguide 19.1
-//
 
-// Element vars
-$oe-element-border-top: 1px dotted #97c6f1 !default;
-$oe-element-h3-color: #56a7f1 !default;
-$oe-element-h3-font-style: italic !default;
-$oe-element-h3-font-size: $default-font-size !default;
-$oe-element-h3-padding: 10px !default;
-$oe-element-h3-margin: 0 !default;
-$oe-element-h4-font-size: $default-font-size !default;
-$oe-element-fieldset-panel-border-color: #d9d9d9 !default;
-
-.element {
-	border-top: $oe-element-border-top;
-	.element-title {
-		color: $oe-element-h3-color;
-		font-style: $oe-element-h3-font-style;
-		font-size: $oe-element-h3-font-size;
-		padding: $oe-element-h3-padding;
-		margin: $oe-element-h3-margin;
-	}
-	fieldset {
-		&.panel {
-			h4 {
-				font-size: $oe-element-h4-font-size;
-			}
-			.panel {
-				border-style: solid;
-				border-width: 1px;
-				border-color: $oe-element-fieldset-panel-border-color;
-			}
-		}
-	}
-	canvas, .canvas {
-		border: 1px solid #ccc;
-		margin: 0;
-	}
-	// Nested panels.
-	.panel {
-		.panel {
-			@include all-form-fields {
-				margin-bottom: .5em;
-			}
-		}
-	}
-	.row {
-		&.collapse {
-			> .column {
-				border-right: 1px solid #fafafa;
-				&:last-child {
-					border-right: 0;
-				}
-			}
-		}
-	}
+%element-panel {
+	padding: 10px;
+	margin: 0;
+	background: #dae6f1;
 }
 
-.sub-element {
-	border: 1px solid #fafafa;
-	.sub-element-title {
-		background: #fafafa;
-		font-style: normal;
-		color: #666;
-		font-size: $default-font-size;
-		padding: emCalc(6px) emCalc(10px);
-		margin: 0;
-	}
-}
+@import "element/view";
+@import "element/edit";
+@import "sub-element/view";
+@import "sub-element/edit";
+@import "eyedraw/view";
+@import "eyedraw/edit";

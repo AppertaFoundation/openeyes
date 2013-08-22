@@ -45,13 +45,13 @@
 				<!-- Element with eye-draw (small size) data for both eyes -->
 				<div class="element">
 					<h3 class="element-title">Refraction</h3>
-					<div class="element-data element-eyes">
-						<div class="element-eye left">
-							<div class="eyedraw-data">
-								<div class="eyedraw-image small">
+					<div class="element-data element-eyes row">
+						<div class="element-eye column left">
+							<div class="eyedraw-data row">
+								<div class="eyedraw-image column small">
 									<img src="/img/new/tmp/eyedraw-small.png" class="canvas" />
 								</div>
-								<div class="eyedraw-value small">
+								<div class="eyedraw-value column small">
 									<div class="element-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
@@ -59,12 +59,12 @@
 								</div>
 							</div>
 						</div>
-						<div class="element-eye right">
-							<div class="eyedraw-data">
-								<div class="eyedraw-image small">
+						<div class="element-eye column right">
+							<div class="eyedraw-data row">
+								<div class="eyedraw-image column small">
 									<img src="/img/new/tmp/eyedraw-small.png" class="canvas" />
 								</div>
-								<div class="eyedraw-value small">
+								<div class="eyedraw-value column small">
 									<div class="element-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
@@ -77,12 +77,12 @@
 
 				<div class="element">
 					<h3 class="element-title">Visual Acuity</h3>
-					<div class="element-data element-eyes">
-						<div class="element-eye left">
+					<div class="element-data element-eyes row">
+						<div class="element-eye column left">
 							<div class="element-value">Not recorded</div>
 							<div class="element-value">Left eye Visual Acuity</div>
 						</div>
-						<div class="element-eye right">
+						<div class="element-eye column right">
 							<div class="element-value">Not recorded</div>
 							<div class="element-value">Right eye Visual Acuity</div>
 						</div>
@@ -92,13 +92,13 @@
 				<!-- Element with eye-draw (large-size) data for both eyes -->
 				<div class="element">
 					<h3 class="element-title">Gonioscopy</h3>
-					<div class="element-data element-eyes">
-						<div class="element-eye left">
-							<div class="eyedraw-data">
-								<div class="eyedraw-image large">
+					<div class="element-data element-eyes row">
+						<div class="element-eye column left">
+							<div class="eyedraw-data row">
+								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
 								</div>
-								<div class="eyedraw-value large">
+								<div class="eyedraw-value column large">
 									<div class="element-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
@@ -106,12 +106,12 @@
 								</div>
 							</div>
 						</div>
-						<div class="element-eye right">
-							<div class="eyedraw-data">
-								<div class="eyedraw-image large">
+						<div class="element-eye column right">
+							<div class="eyedraw-data row">
+								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
 								</div>
-								<div class="eyedraw-value large">
+								<div class="eyedraw-value column large">
 									<div class="element-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
@@ -126,13 +126,13 @@
 				sub-elements -->
 				<div class="element">
 					<h3 class="element-title">Anterior Segment</h3>
-					<div class="element-data element-eyes">
-						<div class="element-eye left">
-							<div class="eyedraw-data">
-								<div class="eyedraw-image large">
+					<div class="element-data element-eyes row">
+						<div class="element-eye column left">
+							<div class="eyedraw-data row">
+								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas">
 								</div>
-								<div class="eyedraw-value large">
+								<div class="eyedraw-value column large">
 									<div class="element-value">
 										Anterior Segment
 									</div>
@@ -163,12 +163,12 @@
 								</div>
 							</div>
 						</div>
-						<div class="element-eye right">
-							<div class="eyedraw-data">
-								<div class="eyedraw-image large">
+						<div class="element-eye column right">
+							<div class="eyedraw-data row">
+								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas">
 								</div>
-								<div class="eyedraw-value large">
+								<div class="eyedraw-value column large">
 									<div class="element-value">
 										Anterior Segment
 									</div>
@@ -203,13 +203,13 @@
 					<div class="sub-elements">
 						<div class="sub-element"> <!-- sub-element container -->
 							<h4 class="sub-element-title">CCT</h4>
-							<div class="sub-element-data sub-element-eyes">
-								<div class="element-eye left">
+							<div class="sub-element-data sub-element-eyes row">
+								<div class="element-eye column left">
 									<div class="element-value">
 										234 µm (Ultrasound pachymetry)
 									</div>
 								</div>
-								<div class="element-eye right">
+								<div class="element-eye column right">
 									<div class="element-value">
 										234 µm (Ultrasound pachymetry)
 									</div>
@@ -222,8 +222,8 @@
 				<!-- Element with tabular data -->
 				<div class="element">
 					<h4 class="element-title">Dilation</h4>
-					<div class="element-data element-eyes">
-						<div class="element-eye left">
+					<div class="element-data element-eyes row">
+						<div class="element-eye column left">
 							<table class="grid">
 								<thead>
 									<tr>
@@ -241,7 +241,7 @@
 								</tbody>
 							</table>
 						</div>
-						<div class="element-eye right">
+						<div class="element-eye column right">
 							<table class="grid">
 								<thead>
 									<tr>
@@ -265,13 +265,13 @@
 				<!-- Element with eyedraw (large-size) and sub-element with custom columns -->
 				<div class="element">
 					<h4 class="element-title">Posterior Pole</h4>
-					<div class="element-data element-eyes">
-						<div class="element-eye left">
-							<div class="eyedraw-data">
-								<div class="eyedraw-image large">
+					<div class="element-data element-eyes row">
+						<div class="element-eye column left">
+							<div class="eyedraw-data row">
+								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
 								</div>
-								<div class="eyedraw-value large">
+								<div class="eyedraw-value column large">
 									<div class="element-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
@@ -279,12 +279,12 @@
 								</div>
 							</div>
 						</div>
-						<div class="element-eye right">
-							<div class="eyedraw-data">
-								<div class="eyedraw-image large">
+						<div class="element-eye column right">
+							<div class="eyedraw-data row">
+								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
 								</div>
-								<div class="eyedraw-value large">
+								<div class="eyedraw-value column large">
 									<div class="element-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
@@ -298,8 +298,8 @@
 							<h4 class="sub-element-title">
 								DR Grading
 							</h4>
-							<div class="sub-element-data sub-element-eyes">
-								<div class="element-eye left">
+							<div class="sub-element-data sub-element-eyes row">
+								<div class="element-eye column left">
 									<div class="row">
 										<div class="large-4 column">
 											<div class="element-label">
@@ -361,7 +361,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="element-eye right">
+								<div class="element-eye column right">
 									<div class="row">
 										<div class="large-4 column">
 											<div class="element-label">

@@ -1079,7 +1079,7 @@ h1.badge {
 
 /* Grid HTML Classes */
 /* line 99, ../sass/new/openeyes/components/_grid.scss */
-.row, .eyedraw-data {
+.row {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
@@ -1089,27 +1089,24 @@ h1.badge {
   *zoom: 1;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
-.row:before, .eyedraw-data:before, .row:after, .eyedraw-data:after {
+.row:before, .row:after {
   content: " ";
   display: table;
 }
 /* line 122, ../sass/new/foundation/components/_global.scss */
-.row:after, .eyedraw-data:after {
+.row:after {
   clear: both;
 }
 /* line 103, ../sass/new/openeyes/components/_grid.scss */
-.row.collapse > .column, .element .element-eyes > .column, .element .sub-element-eyes > .column, .collapse.eyedraw-data > .column, .element .element-eyes .row.collapse > .element-eye, .element .element-eyes > .element-eye, .element .element-eyes .collapse.eyedraw-data > .element-eye, .element .sub-element-eyes .row.collapse > .element-eye, .element .sub-element-eyes > .element-eye, .element .sub-element-eyes .collapse.eyedraw-data > .element-eye, .row.collapse > .eyedraw-image, .element .element-eyes > .eyedraw-image, .element .sub-element-eyes > .eyedraw-image, .collapse.eyedraw-data > .eyedraw-image, .row.collapse > .eyedraw-value, .element .element-eyes > .eyedraw-value, .element .sub-element-eyes > .eyedraw-value, .collapse.eyedraw-data > .eyedraw-value,
-.row.collapse > .columns,
-.element .element-eyes > .columns,
-.element .sub-element-eyes > .columns,
-.collapse.eyedraw-data > .columns {
+.row.collapse > .column,
+.row.collapse > .columns {
   position: relative;
   padding-left: 0;
   padding-right: 0;
   float: left;
 }
 /* line 107, ../sass/new/openeyes/components/_grid.scss */
-.row .row, .eyedraw-data .row, .row .eyedraw-data, .eyedraw-data .eyedraw-data {
+.row .row {
   width: auto;
   margin-left: -0.75em;
   margin-right: -0.75em;
@@ -1119,33 +1116,33 @@ h1.badge {
   *zoom: 1;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
-.row .row:before, .eyedraw-data .row:before, .row .eyedraw-data:before, .eyedraw-data .eyedraw-data:before, .row .row:after, .eyedraw-data .row:after, .row .eyedraw-data:after, .eyedraw-data .eyedraw-data:after {
+.row .row:before, .row .row:after {
   content: " ";
   display: table;
 }
 /* line 122, ../sass/new/foundation/components/_global.scss */
-.row .row:after, .eyedraw-data .row:after, .row .eyedraw-data:after, .eyedraw-data .eyedraw-data:after {
+.row .row:after {
   clear: both;
 }
 /* line 109, ../sass/new/openeyes/components/_grid.scss */
-.row .row.collapse, .eyedraw-data .row.collapse, .row .element .element-eyes, .element .row .element-eyes, .eyedraw-data .element .element-eyes, .element .eyedraw-data .element-eyes, .row .element .sub-element-eyes, .element .row .sub-element-eyes, .eyedraw-data .element .sub-element-eyes, .element .eyedraw-data .sub-element-eyes, .row .collapse.eyedraw-data, .eyedraw-data .collapse.eyedraw-data {
+.row .row.collapse {
   width: auto;
   margin: 0;
   max-width: none;
   *zoom: 1;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
-.row .row.collapse:before, .eyedraw-data .row.collapse:before, .row .element .element-eyes:before, .element .row .element-eyes:before, .eyedraw-data .element .element-eyes:before, .element .eyedraw-data .element-eyes:before, .row .element .sub-element-eyes:before, .element .row .sub-element-eyes:before, .eyedraw-data .element .sub-element-eyes:before, .element .eyedraw-data .sub-element-eyes:before, .row .collapse.eyedraw-data:before, .eyedraw-data .collapse.eyedraw-data:before, .row .row.collapse:after, .eyedraw-data .row.collapse:after, .row .element .element-eyes:after, .element .row .element-eyes:after, .eyedraw-data .element .element-eyes:after, .element .eyedraw-data .element-eyes:after, .row .element .sub-element-eyes:after, .element .row .sub-element-eyes:after, .eyedraw-data .element .sub-element-eyes:after, .element .eyedraw-data .sub-element-eyes:after, .row .collapse.eyedraw-data:after, .eyedraw-data .collapse.eyedraw-data:after {
+.row .row.collapse:before, .row .row.collapse:after {
   content: " ";
   display: table;
 }
 /* line 122, ../sass/new/foundation/components/_global.scss */
-.row .row.collapse:after, .eyedraw-data .row.collapse:after, .row .element .element-eyes:after, .element .row .element-eyes:after, .eyedraw-data .element .element-eyes:after, .element .eyedraw-data .element-eyes:after, .row .element .sub-element-eyes:after, .element .row .sub-element-eyes:after, .eyedraw-data .element .sub-element-eyes:after, .element .eyedraw-data .sub-element-eyes:after, .row .collapse.eyedraw-data:after, .eyedraw-data .collapse.eyedraw-data:after {
+.row .row.collapse:after {
   clear: both;
 }
 
 /* line 115, ../sass/new/openeyes/components/_grid.scss */
-.column, .element .element-eyes .element-eye, .element .sub-element-eyes .element-eye, .eyedraw-image, .eyedraw-value,
+.column,
 .columns {
   position: relative;
   padding-left: 0.75em;
@@ -1156,7 +1153,7 @@ h1.badge {
 
 @media only screen {
   /* line 120, ../sass/new/openeyes/components/_grid.scss */
-  .column, .element .element-eyes .element-eye, .element .sub-element-eyes .element-eye, .eyedraw-image, .eyedraw-value,
+  .column,
   .columns {
     position: relative;
     padding-left: 0.75em;
@@ -1313,7 +1310,7 @@ h1.badge {
   }
 
   /* line 140, ../sass/new/openeyes/components/_grid.scss */
-  .column.small-centered, .element .element-eyes .small-centered.element-eye, .element .sub-element-eyes .small-centered.element-eye, .small-centered.eyedraw-image, .small-centered.eyedraw-value,
+  .column.small-centered,
   .columns.small-centered {
     position: relative;
     margin-left: auto;
@@ -1396,73 +1393,73 @@ h1.badge {
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-0, .eyedraw-data .large-offset-0 {
+  .row .large-offset-0 {
     position: relative;
     margin-left: 0%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-1, .eyedraw-data .large-offset-1 {
+  .row .large-offset-1 {
     position: relative;
     margin-left: 8.33333%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-2, .eyedraw-data .large-offset-2 {
+  .row .large-offset-2 {
     position: relative;
     margin-left: 16.66667%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-3, .eyedraw-data .large-offset-3 {
+  .row .large-offset-3 {
     position: relative;
     margin-left: 25%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-4, .eyedraw-data .large-offset-4 {
+  .row .large-offset-4 {
     position: relative;
     margin-left: 33.33333%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-5, .eyedraw-data .large-offset-5 {
+  .row .large-offset-5 {
     position: relative;
     margin-left: 41.66667%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-6, .eyedraw-data .large-offset-6 {
+  .row .large-offset-6 {
     position: relative;
     margin-left: 50%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-7, .eyedraw-data .large-offset-7 {
+  .row .large-offset-7 {
     position: relative;
     margin-left: 58.33333%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-8, .eyedraw-data .large-offset-8 {
+  .row .large-offset-8 {
     position: relative;
     margin-left: 66.66667%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-9, .eyedraw-data .large-offset-9 {
+  .row .large-offset-9 {
     position: relative;
     margin-left: 75%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-10, .eyedraw-data .large-offset-10 {
+  .row .large-offset-10 {
     position: relative;
     margin-left: 83.33333%;
   }
 
   /* line 152, ../sass/new/openeyes/components/_grid.scss */
-  .row .large-offset-11, .eyedraw-data .large-offset-11 {
+  .row .large-offset-11 {
     position: relative;
     margin-left: 91.66667%;
   }
@@ -1622,7 +1619,7 @@ h1.badge {
   }
 
   /* line 165, ../sass/new/openeyes/components/_grid.scss */
-  .column.large-centered, .element .element-eyes .large-centered.element-eye, .element .sub-element-eyes .large-centered.element-eye, .large-centered.eyedraw-image, .large-centered.eyedraw-value,
+  .column.large-centered,
   .columns.large-centered {
     position: relative;
     margin-left: auto;
@@ -1631,7 +1628,7 @@ h1.badge {
   }
 
   /* line 169, ../sass/new/openeyes/components/_grid.scss */
-  .column.large-uncentered, .element .element-eyes .large-uncentered.element-eye, .element .sub-element-eyes .large-uncentered.element-eye, .large-uncentered.eyedraw-image, .large-uncentered.eyedraw-value,
+  .column.large-uncentered,
   .columns.large-uncentered {
     margin-left: 0;
     margin-right: 0;
@@ -1639,7 +1636,7 @@ h1.badge {
   }
 
   /* line 175, ../sass/new/openeyes/components/_grid.scss */
-  .column.large-uncentered.opposite, .element .element-eyes .large-uncentered.opposite.element-eye, .element .sub-element-eyes .large-uncentered.opposite.element-eye, .large-uncentered.opposite.eyedraw-image, .large-uncentered.opposite.eyedraw-value,
+  .column.large-uncentered.opposite,
   .columns.large-uncentered.opposite {
     float: right !important;
   }
@@ -1895,57 +1892,28 @@ form {
 
 /* Using forms within rows, we need to set some defaults */
 /* line 67, ../sass/new/foundation/components/_forms.scss */
-form .row .row, form .eyedraw-data .row, form .row .eyedraw-data, form .eyedraw-data .eyedraw-data {
+form .row .row {
   margin: 0 -0.5625em;
 }
 /* line 70, ../sass/new/foundation/components/_forms.scss */
-form .row .row .column, form .eyedraw-data .row .column, form .row .eyedraw-data .column, form .eyedraw-data .eyedraw-data .column, form .row .row .element .element-eyes .element-eye, .element .element-eyes form .row .row .element-eye, form .eyedraw-data .row .element .element-eyes .element-eye, .element .element-eyes form .eyedraw-data .row .element-eye, form .row .eyedraw-data .element .element-eyes .element-eye, .element .element-eyes form .row .eyedraw-data .element-eye, form .eyedraw-data .eyedraw-data .element .element-eyes .element-eye, .element .element-eyes form .eyedraw-data .eyedraw-data .element-eye, form .row .row .element .sub-element-eyes .element-eye, .element .sub-element-eyes form .row .row .element-eye, form .eyedraw-data .row .element .sub-element-eyes .element-eye, .element .sub-element-eyes form .eyedraw-data .row .element-eye, form .row .eyedraw-data .element .sub-element-eyes .element-eye, .element .sub-element-eyes form .row .eyedraw-data .element-eye, form .eyedraw-data .eyedraw-data .element .sub-element-eyes .element-eye, .element .sub-element-eyes form .eyedraw-data .eyedraw-data .element-eye, form .row .row .eyedraw-image, form .eyedraw-data .row .eyedraw-image, form .row .eyedraw-data .eyedraw-image, form .eyedraw-data .eyedraw-data .eyedraw-image, form .row .row .eyedraw-value, form .eyedraw-data .row .eyedraw-value, form .row .eyedraw-data .eyedraw-value, form .eyedraw-data .eyedraw-data .eyedraw-value,
-form .row .row .columns,
-form .eyedraw-data .row .columns,
-form .row .eyedraw-data .columns,
-form .eyedraw-data .eyedraw-data .columns {
+form .row .row .column,
+form .row .row .columns {
   padding: 0 0.5625em;
 }
 /* line 73, ../sass/new/foundation/components/_forms.scss */
-form .row .row.collapse, form .eyedraw-data .row.collapse, form .row .element .element-eyes, .element form .row .element-eyes, form .eyedraw-data .element .element-eyes, .element form .eyedraw-data .element-eyes, form .row .element .sub-element-eyes, .element form .row .sub-element-eyes, form .eyedraw-data .element .sub-element-eyes, .element form .eyedraw-data .sub-element-eyes, form .row .collapse.eyedraw-data, form .eyedraw-data .collapse.eyedraw-data {
+form .row .row.collapse {
   margin: 0;
 }
 /* line 76, ../sass/new/foundation/components/_forms.scss */
-form .row .row.collapse .column, form .eyedraw-data .row.collapse .column, form .row .element .element-eyes .column, .element form .row .element-eyes .column, form .eyedraw-data .element .element-eyes .column, .element form .eyedraw-data .element-eyes .column, form .row .element .sub-element-eyes .column, .element form .row .sub-element-eyes .column, form .eyedraw-data .element .sub-element-eyes .column, .element form .eyedraw-data .sub-element-eyes .column, form .row .collapse.eyedraw-data .column, form .eyedraw-data .collapse.eyedraw-data .column, .element .element-eyes form .row .row.collapse .element-eye, .element .element-eyes form .eyedraw-data .row.collapse .element-eye, form .row .element .element-eyes .element-eye, .element form .row .element-eyes .element-eye, form .eyedraw-data .element .element-eyes .element-eye, .element form .eyedraw-data .element-eyes .element-eye, .element .element-eyes form .row .collapse.eyedraw-data .element-eye, .element .element-eyes form .eyedraw-data .collapse.eyedraw-data .element-eye, .element .sub-element-eyes form .row .row.collapse .element-eye, .element .sub-element-eyes form .eyedraw-data .row.collapse .element-eye, form .row .element .sub-element-eyes .element-eye, .element form .row .sub-element-eyes .element-eye, form .eyedraw-data .element .sub-element-eyes .element-eye, .element form .eyedraw-data .sub-element-eyes .element-eye, .element .sub-element-eyes form .row .collapse.eyedraw-data .element-eye, .element .sub-element-eyes form .eyedraw-data .collapse.eyedraw-data .element-eye, form .row .row.collapse .eyedraw-image, form .eyedraw-data .row.collapse .eyedraw-image, form .row .element .element-eyes .eyedraw-image, .element form .row .element-eyes .eyedraw-image, form .eyedraw-data .element .element-eyes .eyedraw-image, .element form .eyedraw-data .element-eyes .eyedraw-image, form .row .element .sub-element-eyes .eyedraw-image, .element form .row .sub-element-eyes .eyedraw-image, form .eyedraw-data .element .sub-element-eyes .eyedraw-image, .element form .eyedraw-data .sub-element-eyes .eyedraw-image, form .row .collapse.eyedraw-data .eyedraw-image, form .eyedraw-data .collapse.eyedraw-data .eyedraw-image, form .row .row.collapse .eyedraw-value, form .eyedraw-data .row.collapse .eyedraw-value, form .row .element .element-eyes .eyedraw-value, .element form .row .element-eyes .eyedraw-value, form .eyedraw-data .element .element-eyes .eyedraw-value, .element form .eyedraw-data .element-eyes .eyedraw-value, form .row .element .sub-element-eyes .eyedraw-value, .element form .row .sub-element-eyes .eyedraw-value, form .eyedraw-data .element .sub-element-eyes .eyedraw-value, .element form .eyedraw-data .sub-element-eyes .eyedraw-value, form .row .collapse.eyedraw-data .eyedraw-value, form .eyedraw-data .collapse.eyedraw-data .eyedraw-value,
-form .row .row.collapse .columns,
-form .eyedraw-data .row.collapse .columns,
-form .row .element .element-eyes .columns,
-.element form .row .element-eyes .columns,
-form .eyedraw-data .element .element-eyes .columns,
-.element form .eyedraw-data .element-eyes .columns,
-form .row .element .sub-element-eyes .columns,
-.element form .row .sub-element-eyes .columns,
-form .eyedraw-data .element .sub-element-eyes .columns,
-.element form .eyedraw-data .sub-element-eyes .columns,
-form .row .collapse.eyedraw-data .columns,
-form .eyedraw-data .collapse.eyedraw-data .columns {
+form .row .row.collapse .column,
+form .row .row.collapse .columns {
   padding: 0;
 }
 /* line 83, ../sass/new/foundation/components/_forms.scss */
-form .row input.column, form .eyedraw-data input.column, form .row .element .element-eyes input.element-eye, .element .element-eyes form .row input.element-eye, form .eyedraw-data .element .element-eyes input.element-eye, .element .element-eyes form .eyedraw-data input.element-eye, form .row .element .sub-element-eyes input.element-eye, .element .sub-element-eyes form .row input.element-eye, form .eyedraw-data .element .sub-element-eyes input.element-eye, .element .sub-element-eyes form .eyedraw-data input.element-eye, form .row input.eyedraw-image, form .eyedraw-data input.eyedraw-image, form .row input.eyedraw-value, form .eyedraw-data input.eyedraw-value,
+form .row input.column,
 form .row input.columns,
-form .eyedraw-data input.columns,
 form .row textarea.column,
-form .eyedraw-data textarea.column,
-form .row .element .element-eyes textarea.element-eye,
-.element .element-eyes form .row textarea.element-eye,
-form .eyedraw-data .element .element-eyes textarea.element-eye,
-.element .element-eyes form .eyedraw-data textarea.element-eye,
-form .row .element .sub-element-eyes textarea.element-eye,
-.element .sub-element-eyes form .row textarea.element-eye,
-form .eyedraw-data .element .sub-element-eyes textarea.element-eye,
-.element .sub-element-eyes form .eyedraw-data textarea.element-eye,
-form .row textarea.eyedraw-image,
-form .eyedraw-data textarea.eyedraw-image,
-form .row textarea.eyedraw-value,
-form .eyedraw-data textarea.eyedraw-value,
-form .row textarea.columns,
-form .eyedraw-data textarea.columns {
+form .row textarea.columns {
   padding-left: 0.5625em;
 }
 
@@ -2806,7 +2774,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   min-height: 1.625em;
 }
 /* line 60, ../sass/new/openeyes/components/panels/_user.scss */
-.panel.user .row, .panel.user .eyedraw-data {
+.panel.user .row {
   clear: both;
 }
 
@@ -3183,42 +3151,6 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1376996432');
 }
 
-/* line 27, ../sass/new/openeyes/components/panels/_element.scss */
-.panel.element, .panel.sub-element, .panel.sub-elements, .element .element-eyes .element-eye, .element .sub-element-eyes .element-eye, .sub-elements {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  -ms-border-radius: 0;
-  -o-border-radius: 0;
-  border-radius: 0;
-  background: #dae6f1;
-  border: 0;
-  padding: 0.625em;
-  margin: 0;
-}
-/* line 33, ../sass/new/openeyes/components/panels/_element.scss */
-.panel.element .panel:not(.sub-element), .panel.sub-element .panel:not(.sub-element), .element .element-eyes .element-eye .panel:not(.sub-element), .element .sub-element-eyes .element-eye .panel:not(.sub-element), .sub-elements .panel:not(.sub-element) {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
-  border-radius: 3px;
-  background: white;
-  margin-bottom: 0.3125em;
-}
-/* line 38, ../sass/new/openeyes/components/panels/_element.scss */
-.panel.element .element-value, .panel.sub-element .element-value, .element .element-eyes .element-eye .element-value, .element .sub-element-eyes .element-eye .element-value, .sub-elements .element-value, .panel.element .element-label, .panel.sub-element .element .element-label, .element .panel.sub-element .element-label, .element .element-eyes .element-eye .element-label, .element .sub-element-eyes .element-eye .element-label, .sub-elements .element .element-label, .element .sub-elements .element-label {
-  padding-left: 0;
-}
-
-/* line 29, ../sass/new/openeyes/components/panels/_sub-element.scss */
-.panel.sub-element .element-value:last-child, .panel.sub-element .element .element-label:last-child, .element .panel.sub-element .element-label:last-child {
-  padding-bottom: 0;
-}
-/* line 33, ../sass/new/openeyes/components/panels/_sub-element.scss */
-.panel.sub-elements {
-  padding-top: 0;
-}
-
 /* line 62, ../sass/new/openeyes/components/_search-filters.scss */
 .search-filters .panel {
   margin: 0 0 0.625em 0;
@@ -3321,17 +3253,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   background-position: right top;
   background-repeat: no-repeat;
 }
-/* line 23, ../sass/new/openeyes/components/events/_event.scss */
-.event.view .element {
-  border: 0;
-}
-/* line 26, ../sass/new/openeyes/components/events/_event.scss */
-.event.view .element-title {
-  font-size: 0.8125em;
-  padding-left: 10px;
-  font-style: normal;
-}
-/* line 32, ../sass/new/openeyes/components/events/_event.scss */
+/* line 24, ../sass/new/openeyes/components/events/_event.scss */
 .event.view .panel.comments {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -3339,20 +3261,20 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   -o-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 37, ../sass/new/openeyes/components/events/_event.scss */
+/* line 29, ../sass/new/openeyes/components/events/_event.scss */
 .event .event-title {
   padding: 9px 0 9px 50px;
   font-size: 1.1875em;
   background-repeat: no-repeat;
   background-position: left center;
 }
-/* line 43, ../sass/new/openeyes/components/events/_event.scss */
+/* line 35, ../sass/new/openeyes/components/events/_event.scss */
 .event .metadata {
   border-top: 1px dotted #dae6f1;
   padding-top: 0.5em;
   margin: 10px;
 }
-/* line 47, ../sass/new/openeyes/components/events/_event.scss */
+/* line 39, ../sass/new/openeyes/components/events/_event.scss */
 .event .metadata .info {
   font-size: 0.75em;
   font-style: italic;
@@ -3360,48 +3282,44 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   display: inline-block;
   padding-right: 15px;
 }
-/* line 54, ../sass/new/openeyes/components/events/_event.scss */
+/* line 46, ../sass/new/openeyes/components/events/_event.scss */
 .event .metadata .user {
   color: #333333;
 }
 
-/* line 50, ../sass/new/openeyes/components/events/_elements_new.scss */
-.element {
-  border-top: 1px dotted #97c6f1;
-}
-/* line 52, ../sass/new/openeyes/components/events/_elements_new.scss */
-.element .element-title {
-  color: #56a7f1;
-  font-style: italic;
-  font-size: 0.8125em;
-  padding: 10px;
-  margin: 0;
-}
-/* line 59, ../sass/new/openeyes/components/events/_elements_new.scss */
-.element .element-data, .element .sub-element-data {
+/* line 5, ../sass/new/openeyes/components/events/_elements.scss */
+.element .element-data, .element .sub-element-data, .element .element-eyes .element-eye, .element .sub-element-eyes .element-eye, .sub-elements {
   padding: 10px;
   margin: 0;
   background: #dae6f1;
 }
-/* line 67, ../sass/new/openeyes/components/events/_elements_new.scss */
+
+/* line 26, ../sass/new/openeyes/components/events/element/_view.scss */
+.element .element-title {
+  color: #56a7f1;
+  font-size: 0.8125em;
+  padding: 10px;
+  margin: 0;
+}
+/* line 35, ../sass/new/openeyes/components/events/element/_view.scss */
 .element .element-eyes, .element .sub-element-eyes {
   padding: 0;
 }
-/* line 70, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 37, ../sass/new/openeyes/components/events/element/_view.scss */
 .element .element-eyes .element-eye, .element .sub-element-eyes .element-eye {
   border-right: 1px solid #fafafa;
 }
-/* line 74, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 40, ../sass/new/openeyes/components/events/element/_view.scss */
 .element .element-eyes .element-eye:last-child, .element .sub-element-eyes .element-eye:last-child {
   border: 0;
 }
-/* line 82, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 48, ../sass/new/openeyes/components/events/element/_view.scss */
 .element .element-value, .element .element-label {
   font-size: 0.8125em;
   line-height: 1.3;
   padding-bottom: 5px;
 }
-/* line 90, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 56, ../sass/new/openeyes/components/events/element/_view.scss */
 .element .element-highlight {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -3414,49 +3332,39 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   margin: 0;
   list-style-type: none;
 }
-/* line 97, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 63, ../sass/new/openeyes/components/events/element/_view.scss */
 .element .element-highlight li {
   font-size: 1em;
 }
-/* line 100, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 66, ../sass/new/openeyes/components/events/element/_view.scss */
 .element .element-highlight.important {
   background: #fff300;
 }
-/* line 106, ../sass/new/openeyes/components/events/_elements_new.scss */
-.element fieldset.panel h4 {
-  font-size: 0.8125em;
-}
-/* line 109, ../sass/new/openeyes/components/events/_elements_new.scss */
-.element fieldset.panel .panel {
-  border-style: solid;
-  border-width: 1px;
-  border-color: #d9d9d9;
-}
-/* line 116, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 70, ../sass/new/openeyes/components/events/element/_view.scss */
 .element canvas, .element .canvas {
   border: 1px solid #ccc;
   margin: 0;
 }
-/* line 120, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 74, ../sass/new/openeyes/components/events/element/_view.scss */
 .element table {
   margin: 0;
 }
 
-/* line 147, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 1, ../sass/new/openeyes/components/events/sub-element/_view.scss */
 .sub-elements {
   padding-top: 0;
 }
 
-/* line 154, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 8, ../sass/new/openeyes/components/events/sub-element/_view.scss */
 .sub-element {
   border: 1px solid #fafafa;
   margin-bottom: 0.625em;
 }
-/* line 157, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 11, ../sass/new/openeyes/components/events/sub-element/_view.scss */
 .sub-element:last-child {
   margin-bottom: 0;
 }
-/* line 160, ../sass/new/openeyes/components/events/_elements_new.scss */
+/* line 14, ../sass/new/openeyes/components/events/sub-element/_view.scss */
 .sub-element .sub-element-title {
   background: #fafafa;
   font-style: normal;
