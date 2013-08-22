@@ -3,7 +3,7 @@ $oe-element-border-top: 1px dotted #97c6f1 !default;
 $oe-element-title-color: #56a7f1 !default;
 $oe-element-title-font-style: italic !default;
 $oe-element-title-font-size: $default-font-size !default;
-$oe-element-title-padding: 10px !default;
+$oe-element-title-padding: 6px 10px !default;
 $oe-element-title-margin: 0 !default;
 $oe-element-h4-font-size: $default-font-size !default;
 $oe-element-fieldset-panel-border-color: #d9d9d9 !default;
@@ -31,6 +31,9 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 	}
 	.element-data {
 		@extend %element-panel;
+		> .element-value:last-child {
+			padding-bottom: 0;
+		}
 	}
 	.element-eyes {
 		padding: 0;
@@ -71,7 +74,22 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 		border: 1px solid #ccc;
 		margin: 0;
 	}
-	table {
+	.element-data-row {
+		.element-label, .element-value {
+			padding: emCalc(9px) 0;
+		}
+	}
+	.element-table {
 		margin: 0;
+		background: #c9ddef;
+		td:first-child {
+			 @include grid-column($collapse: null, $columns: 4, $float: false);
+		}
+		tr {
+			border: 1px solid #dae6f1;
+			&:nth-of-type(even) {
+				background: #c9ddef;
+			}
+		}
 	}
 }

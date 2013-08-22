@@ -224,7 +224,7 @@
 					<h4 class="element-title">Dilation</h4>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column left">
-							<table class="grid">
+							<table class="element-table">
 								<thead>
 									<tr>
 										<th>Time</th>
@@ -242,7 +242,7 @@
 							</table>
 						</div>
 						<div class="element-eye column right">
-							<table class="grid">
+							<table class="element-table">
 								<thead>
 									<tr>
 										<th>Time</th>
@@ -300,7 +300,7 @@
 							</h4>
 							<div class="sub-element-data sub-element-eyes row">
 								<div class="element-eye column left">
-									<div class="row">
+									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
 												Clinical Grading for retinopathy:
@@ -312,7 +312,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row">
+									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
 												NSC retinopathy:
@@ -324,7 +324,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row">
+									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
 												Retinopathy photocoagulation:
@@ -336,7 +336,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row">
+									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
 												NSC maculopathy:
@@ -348,7 +348,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row">
+									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
 												Maculopathy photocoagulation:
@@ -362,7 +362,7 @@
 									</div>
 								</div>
 								<div class="element-eye column right">
-									<div class="row">
+									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
 												Clinical Grading for retinopathy:
@@ -374,7 +374,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row">
+									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
 												NSC retinopathy:
@@ -386,7 +386,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row">
+									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
 												Retinopathy photocoagulation:
@@ -398,7 +398,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row">
+									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
 												NSC maculopathy:
@@ -410,7 +410,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="row">
+									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
 												Maculopathy photocoagulation:
@@ -438,7 +438,7 @@
 						<div class="sub-element">
 							<h4 class="sub-element-title">Cataract Management</h4>
 							<div class="sub-element-data">
-								<table class="grid">
+								<table class="element-table">
 									<tbody>
 									<tr>
 										<td scope="row">Eye</td>
@@ -485,6 +485,40 @@
 							</div>
 						</div>
 					</div>
+				</div>
+
+				<div class="element">
+					<h3 class="element-title">Risks</h3>
+					<div class="element-data">
+						<div class="element-value">
+							Risks
+						</div>
+					</div>
+					<div class="sub-elements">
+						<div class="sub-element">
+							<h4 class="sub-element-title">Glaucoma Risk Stratification</h4>
+							<div class="sub-element-data">
+								<span class="pill high">
+									High
+								</span>
+								<span class="pill moderate">
+									Moderate
+								</span>
+								<span class="pill low">
+									Low
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="metadata">
+					<span class="info">
+						Examination created by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
+					</span>
+					<span class="info">
+						Examination created by <span class="user">Enoch Root</span> on 1 Jan 2000 at 00:00
+					</span>
 				</div>
 			</div>
 		</div>
