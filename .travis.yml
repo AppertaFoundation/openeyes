@@ -47,15 +47,17 @@ before_script:
   - cp protected/config/local/common.travis.php protected/config/local/common.php
   - cp index.example.php index.php
   - cp .htaccess.sample .htaccess
-  - mysql -e 'create database openeyes;'
   - echo -e "OphCiExamination\nOphDrPrescription\nOphTrOperationbooking\nOphTrOperationnote\nOphTrConsent\nOphCiPhasing\nOphLeEpatientletter\nOphCoCorrespondence\neyedraw" > .enabled-modules
   - bin/clone-modules.sh $TRAVIS_BRANCH
 
-  # Check everything migrates ok and then reset database
+  # Initialise database and check migrations
+  - mysql -e 'create database openeyes;'
   - bin/migrate-all.sh
-  - mysql -e 'drop database openeyes; create database openeyes;'
+  - mysql -e 'drop database openeyes;'
 
-  # Load test data
+  # Initialise test data
+  - mysql -e 'create database openeyes;'
   - cat features/testdata.sql | mysql openeyes
- 
+  - bin/migrate-all.sh
+
 script: bin/behat -p ci
