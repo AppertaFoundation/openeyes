@@ -7,6 +7,7 @@ php:
 branches:
     only:
         - develop
+        - release/1.4
 
 notifications:
   email:
@@ -43,12 +44,13 @@ before_script:
   # Application
   - mkdir -p protected/runtime
   - chmod -R 0777 protected/runtime assets
-  - cp protected/config/local/common.sample.php protected/config/local/common.php
+  - cp protected/config/local/common.travis.php protected/config/local/common.php
   - cp index.example.php index.php
   - cp .htaccess.sample .htaccess
   - mysql -e 'create database openeyes;'
-  - bin/clone-sample-db.sh
   - echo -e "OphCiExamination\nOphDrPrescription\nOphTrOperationbooking\nOphTrOperationnote\nOphTrConsent\nOphCiPhasing\nOphLeEpatientletter\nOphCoCorrespondence\neyedraw" > .enabled-modules
-  - bin/install-modules.sh
+  - bin/clone-modules.sh $TRAVIS_BRANCH
+  - bin/clone-sample-data.sh $TRAVIS_BRANCH
+  - bin/migrate-all.sh
  
-script: vendor/bin/behat -p ci
+script: bin/behat -p ci
