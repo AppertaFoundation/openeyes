@@ -1,0 +1,17 @@
+.pill {
+	@include border-radius(5px);
+	display: inline-block;
+	padding: 3px 5px;
+	font-size: $default-font-size;
+	margin: 2px;
+	&.high {
+		background: #f00;
+		color: #fff;
+	}
+	&.moderate {
+		background: #fc0;
+	}
+	&.low {
+		background: #9c0;
+	}
+}
