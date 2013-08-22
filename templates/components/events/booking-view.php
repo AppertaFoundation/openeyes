@@ -32,14 +32,14 @@
 			Operation requires scheduling.
 		</div>
 
-		<div class="row element-data">
+		<div class="row element">
 			<div class="large-12 column">
 				<h3 class="element-title">Diagnosis</h3>
 				<div class="element-value element-highlight">Left Cyst of eyelid</div>
 			</div>
 		</div>
 
-		<div class="row element-data">
+		<div class="row element">
 			<div class="large-12 column">
 				<h3 class="element-title">Procedures</h3>
 				<ul class="element-value element-highlight important">
@@ -49,7 +49,7 @@
 			</div>
 		</div>
 
-		<div class="row element-data">
+		<div class="row element">
 			<div class="large-6 column">
 				<h3 class="element-title">Anaesthetic</h3>
 				<div class="element-value">Topical</div>
@@ -60,7 +60,7 @@
 			</div>
 		</div>
 
-		<div class="row element-data">
+		<div class="row element">
 			<div class="large-6 column">
 				<h3 class="element-title">Post Operative Stay Required</h3>
 				<div class="element-value">No Stay</div>
@@ -71,7 +71,7 @@
 			</div>
 		</div>
 
-		<div class="row element-data">
+		<div class="row element">
 			<div class="large-6 column">
 				<h3 class="element-title">Operation priority</h3>
 				<div class="element-value">Routine</div>

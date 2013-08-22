@@ -3331,7 +3331,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   -o-border-radius: 5px;
   border-radius: 5px;
   background: white;
-  padding: 0.625em;
+  padding: 10px;
   font-size: 1.125em;
   margin: 0;
   list-style-type: none;
