@@ -50,7 +50,12 @@ before_script:
   - mysql -e 'create database openeyes;'
   - echo -e "OphCiExamination\nOphDrPrescription\nOphTrOperationbooking\nOphTrOperationnote\nOphTrConsent\nOphCiPhasing\nOphLeEpatientletter\nOphCoCorrespondence\neyedraw" > .enabled-modules
   - bin/clone-modules.sh $TRAVIS_BRANCH
-  - bin/clone-sample-data.sh $TRAVIS_BRANCH
+
+  # Check everything migrates ok and then reset database
   - bin/migrate-all.sh
+  - mysql -e 'drop database openeyes; create database openeyes;'
+
+  # Load test data
+  - cat features/testdata.sql | mysql openeyes
  
 script: bin/behat -p ci
