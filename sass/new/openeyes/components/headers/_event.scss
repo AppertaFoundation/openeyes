@@ -30,8 +30,8 @@ $oe-header-event-border-bottom: 5px solid #a29d8a !default;
 $oe-header-event-padding: emCalc(6px) emCalc(10px) 0 emCalc(10px) !default;
 
 .event-header {
-    @extend .clearfix;
-    background: $oe-header-event-background;
-    border-bottom: $oe-header-event-border-bottom;
-    padding: $oe-header-event-padding;
+	@extend .clearfix;
+	background: $oe-header-event-background;
+	border-bottom: $oe-header-event-border-bottom;
+	padding: $oe-header-event-padding;
 }

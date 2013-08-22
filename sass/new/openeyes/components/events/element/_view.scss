@@ -24,54 +24,54 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 
 .element {
 	.element-title {
-	    color: $oe-element-title-color;
-	    font-size: $oe-element-title-font-size;
-	    padding: $oe-element-title-padding;
-	    margin: $oe-element-title-margin;
+		color: $oe-element-title-color;
+		font-size: $oe-element-title-font-size;
+		padding: $oe-element-title-padding;
+		margin: $oe-element-title-margin;
 	}
 	.element-data {
-	    @extend %element-panel;
+		@extend %element-panel;
 	}
 	.element-eyes {
-	    padding: 0;
-	    .element-eye {
-	        @extend %element-panel;
-	        border-right: 1px solid $oe-element-eye-border-color;
-	        &:last-child {
-	            border: 0;
-	        }
-	        &.left, &.right {
-	            @extend .large-6;
-	        }
-	    }
+		padding: 0;
+		.element-eye {
+			@extend %element-panel;
+			border-right: 1px solid $oe-element-eye-border-color;
+			&:last-child {
+				border: 0;
+			}
+			&.left, &.right {
+				@extend .large-6;
+			}
+		}
 	}
 	.element-value {
-	    font-size: $oe-element-value-font-size;
-	    line-height: $oe-element-value-line-height;
-	    padding-bottom: $oe-element-value-padding-bottom;
+		font-size: $oe-element-value-font-size;
+		line-height: $oe-element-value-line-height;
+		padding-bottom: $oe-element-value-padding-bottom;
 	}
 	.element-label {
-	    @extend .element-value;
+		@extend .element-value;
 	}
 	.element-highlight {
-	    @include border-radius($oe-element-highlight-border-radius);
-	    background: $oe-element-highlight-bg-color;
-	    padding: $oe-element-highlight-padding;
-	    font-size: $oe-element-highlight-font-size;
-	    margin: $oe-element-highlight-margin;
-	    list-style-type: none;
-	    li {
-	        font-size: $oe-element-highlight-list-item-font-size;
-	    }
-	    &.important {
-	        background: $oe-element-highlight-important-bg-color;
-	    }
+		@include border-radius($oe-element-highlight-border-radius);
+		background: $oe-element-highlight-bg-color;
+		padding: $oe-element-highlight-padding;
+		font-size: $oe-element-highlight-font-size;
+		margin: $oe-element-highlight-margin;
+		list-style-type: none;
+		li {
+			font-size: $oe-element-highlight-list-item-font-size;
+		}
+		&.important {
+			background: $oe-element-highlight-important-bg-color;
+		}
 	}
 	canvas, .canvas {
-        border: 1px solid #ccc;
-        margin: 0;
-    }
-    table {
-        margin: 0;
-    }
+		border: 1px solid #ccc;
+		margin: 0;
+	}
+	table {
+		margin: 0;
+	}
 }

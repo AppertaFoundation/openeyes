@@ -12,9 +12,9 @@ $oe-container-main-border-color: #b3b0ae !default;
 $oe-container-main-border-width: 2px !default;
 
 .container {
-    &.main {
-        @include radius;
-        background: $oe-container-main-bg-color $oe-container-main-bg-image 0 0 no-repeat;
-        border: $oe-container-main-border-width solid $oe-container-main-border-color;
-    }
+	&.main {
+		@include radius;
+		background: $oe-container-main-bg-color $oe-container-main-bg-image 0 0 no-repeat;
+		border: $oe-container-main-border-width solid $oe-container-main-border-color;
+	}
 }

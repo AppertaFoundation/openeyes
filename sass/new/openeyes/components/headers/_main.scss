@@ -20,17 +20,17 @@ $oe-header-main-logo-height: 70px !default;
 $oe-header-main-small-margin: 0 0 emCalc(10px) 0;
 
 .header {
-    min-height: $oe-header-main-height;
-    margin: $oe-header-main-small-margin;
-    @media #{$small} {
-        margin-bottom: 0;
-    }
-    .logo {
-        @extend .hide-text;
-        background: $oe-header-main-logo-bg-image no-repeat;
-        background-size: 100%;
-        height: $oe-header-main-logo-height;
-        margin-left: -1 * $column-gutter / 2;
-        max-width: $oe-header-main-logo-width;
-    }
+	min-height: $oe-header-main-height;
+	margin: $oe-header-main-small-margin;
+	@media #{$small} {
+		margin-bottom: 0;
+	}
+	.logo {
+		@extend .hide-text;
+		background: $oe-header-main-logo-bg-image no-repeat;
+		background-size: 100%;
+		height: $oe-header-main-logo-height;
+		margin-left: -1 * $column-gutter / 2;
+		max-width: $oe-header-main-logo-width;
+	}
 }
