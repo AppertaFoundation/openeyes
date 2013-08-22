@@ -7,6 +7,8 @@ class Phasing extends Page
     protected $path = "/site/OphCiPhasing/Default/create?patient_id={parentId}";
 
     protected $elements = array(
+        'phasingLogo' => array('xpath' => "//*[@id='event_content']/h3[@class='withEventIcon']"),
+
         'phasingInstrumentRight' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_instrument_id']"),
         'phasingDilationRightYes' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_dilated_1']"),
         'phasingDilationRightNo' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_dilated_0']"),
@@ -22,6 +24,19 @@ class Phasing extends Page
         'phasingCommentsLeft' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_left_comments']"),
         'savePhasingEvent' => array('xpath' => "//*[@id='et_save']")
     );
+
+    protected function doesPhasingLogoExist()
+    {
+        return (bool) $this->find('xpath', $this->getElement('phasingLogo')->getXpath());
+    }
+
+    public function confirmPhasingLogoExist ()
+    {
+        if ($this->doesPhasingLogoExist()){
+            print "!!!!!Phasing Text & Logo is Present!!!!!";
+        }
+        elseif (print "Logo missing!");
+    }
 
     public function rightInstrument ($rightEye)
     {
@@ -71,6 +86,7 @@ class Phasing extends Page
     public function leftComments ($comments)
     {
         $this->getElement('phasingCommentsLeft')->setValue($comments);
+
     }
 
     public function savePhasingEvent ()

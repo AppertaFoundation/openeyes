@@ -146,6 +146,8 @@ class PatientView extends Page
         if ($side===("Left")) {
             $this->getElement('sysLeftEye')->click();
         }
+        $this->getSession()->wait(3000);
+
     }
 
     public function saveSystemicDiagnosis ()
@@ -191,7 +193,7 @@ class PatientView extends Page
         $this->getElement('selectFrequency')->selectOption($frequency);
         $this->getSession()->wait(3000,false);
         $this->getElement('openMedicationDate')->click();
-        $this->getSession()->wait(3000,false);
+        $this->getSession()->wait(7000);
         $this->getElement('selectDateFrom')->click($datefrom);
         $this->getSession()->wait(3000,false);
         $this->getElement('saveMedication')->click();

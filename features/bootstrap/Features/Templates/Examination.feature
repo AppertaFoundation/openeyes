@@ -1,4 +1,4 @@
-@NewExam
+@examination @regression
 Feature: Create New Examination
   In order to cover every possible route throughout the site
   As an automation tester

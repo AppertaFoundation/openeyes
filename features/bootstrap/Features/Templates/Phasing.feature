@@ -1,4 +1,4 @@
-@Phasing
+@phasing @regression
 Feature: Create New Phasing Event
   In order to cover every possible route throughout the site
   As an automation tester
@@ -31,7 +31,7 @@ Feature: Create New Phasing Event
     And I choose left eye Dilation of Yes
 #    And I choose left eye Dilation of No
     Then I choose a left eye Intraocular Pressure Reading of "7"
-    And I add left eye comments of "Left eye comments here"
+#    And I add left eye comments of "Left eye comments here"
 
     Then I Save the Phasing Event
 

@@ -1,4 +1,4 @@
-@Prescription
+@prescription @regression
 Feature: Create New Prescription
   In order to cover every possible route throughout the site
   As an automation tester
@@ -29,9 +29,9 @@ Feature: Create New Prescription
     And I enter a frequency of "4"
     Then I enter a duration of "1"
     Then I enter a eyes option "1"
-    #Eyes option last to be selected as duration sometimes causes it to be reset!
+    #!!Eyes option last to be selected as duration sometimes causes it to be reset!!
 
-    And I add Prescription comments of "Prescription comments can go here"
+#    And I add Prescription comments of "TEST COMMENTS"
 
     Then I Save the Prescription Draft
 

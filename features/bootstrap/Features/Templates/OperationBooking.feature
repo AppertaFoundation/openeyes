@@ -1,4 +1,4 @@
-@operationbooking
+@operationbooking @regression
 Feature: Create New Operation Booking Event
   In order to cover every possible route throughout the site
   As an automation tester
@@ -39,7 +39,7 @@ Feature: Create New Operation Booking Event
 
     And I select a decision date of "14"
 
-    Then I add comments of "Insert test comments here"
+#    Then I add comments of "Insert test comments here"
 
     #Then I select Save and Schedule later
 

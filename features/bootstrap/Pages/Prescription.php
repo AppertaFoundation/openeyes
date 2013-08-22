@@ -14,7 +14,7 @@ class Prescription extends Page
         'prescriptionEyeOptionItem0' => array('xpath' => "//*[@id='prescription_item_0_route_option_id']"),
         'prescriptionFrequencyItem0' => array('xpath' => "//*[@id='prescription_item_0_frequency_id']"),
         'prescriptionDurationItem0' => array('xpath' => "//*[@id='prescription_item_0_duration_id']"),
-        'prescriptionComments' => array('xpath' => "//*[@id='Element_OphDrPrescription_Details_comments']"),
+        'prescriptionComments' => array('xpath' => "//textarea[@id='Element_OphDrPrescription_Details_comments']"),
         'prescriptionSaveDraft' => array('xpath' => "//*[@id='et_save_draft']")
     );
 
@@ -59,12 +59,12 @@ class Prescription extends Page
     public function comments ($comments)
     {
         $this->getElement('prescriptionComments')->setValue($comments);
+
     }
 
     public function savePrescription ()
     {
         $this->getElement('prescriptionSaveDraft')->click();
-        $this->getSession()->wait(10000);
     }
 
 }

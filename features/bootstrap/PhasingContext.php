@@ -28,6 +28,7 @@ class PhasingContext extends PageObjectContext
          * @var Phasing $phasing
          */
         $phasing= $this->getPage('Phasing');
+        $phasing->confirmPhasingLogoExist();
         $phasing->rightInstrument($rightEye);
     }
 
