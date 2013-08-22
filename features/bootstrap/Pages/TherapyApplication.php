@@ -4,6 +4,8 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class Therapy extends Page
 {
+//    protected $path = "/site/OphDrPrescription/Default/create?patient_id={parentId}"; - NEEDS TO BE UPDATED WHEN WORKING!
+
     protected $elements = array(
         #Diagnosis
         'addRightSide' => array('xpath' => "//*[@id='clinical-create']/div[3]/div/div[1]/div[2]/a"),

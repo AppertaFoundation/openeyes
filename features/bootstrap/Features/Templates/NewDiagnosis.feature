@@ -32,8 +32,8 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     And I select a CVI Status date of day "<day>" month "<month>" year "<year>"
     Then I save the new CVI status
 
-#    Then I Remove existing Allergy - BUG RAISED - When removed doesnt reappear in the dropdown!
-    Then I Add Allergy "" and Save
+    Then I Remove existing Allergy
+    Then I Add Allergy "5" and Save
 
     And I Add a Family History of relative "1" side "3" condition "1" and comments "Family History Comments" and Save
 

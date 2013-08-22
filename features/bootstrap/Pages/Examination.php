@@ -16,18 +16,18 @@ class Examination extends Page
         'addComorbidities' => array('xpath' => "//*[@id='comorbidities_unselected']/select"),
         'openVisualAcuity' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(),'Visual Acuity')]"),
         'visualAcuityUnitChange' => array('xpath' => "//*[@id='visualacuity_unit_change']"),
-        'openLeftVA' => array('xpath' => "//*[@id='active_elements']/div[2]/div[3]/div[2]/div[1]/div[1]/button//*[contains(text(),'Add')]"),
+        'openLeftVA' => array('xpath' => "//*[@id='active_elements']/div[3]//*[@class='side right eventDetail']//*[contains(text(),'Add')]"),
         'snellenLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_value']"),
         'readingLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_method_id']"),
-        'openRightVA' => array('xpath' => "//*[@id='active_elements']/div[2]/div[3]/div[1]/div[1]/div[1]/button//*[contains(text(),'Add')]"),
+        'openRightVA' => array('xpath' => "//*[@id='active_elements']/div[3]//*[@class='side left eventDetail']//*[contains(text(),'Add')]"),
         'snellenRight' => array('xpath' => "//select[@id='visualacuity_reading_1_value']"),
         'readingRight' => array('xpath' => "//select[@id='visualacuity_reading_1_method_id']"),
 
         'openIntraocularPressure' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(), 'Intraocular Pressure')]"),
-        'intraocularRight' => array('xpath' => "//select[@id='element_ophciexamination_intraocularpressure_right_reading_id']"),
-        'instrumentRight' => array('xpath' => "//select[@id='element_ophciexamination_intraocularpressure_right_instrument_id']"),
-        'intraocularLeft' => array('xpath' => "//select[@id='element_ophciexamination_intraocularpressure_left_reading_id']"),
-        'instrumentLeft' => array('xpath' => "//select[@id='element_ophciexamination_intraocularpressure_left_instrument_id']"),
+        'intraocularRight' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_right_reading_id']"),
+        'instrumentRight' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_right_instrument_id']"),
+        'intraocularLeft' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_left_reading_id']"),
+        'instrumentLeft' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_left_instrument_id']"),
 
         'openDilation' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(), 'Dilation')]"),
         'dilationRight' => array('xpath' => "//select[@id='dilation_drug_right']"),
@@ -35,39 +35,40 @@ class Examination extends Page
         'dilationLeft' => array('xpath' => "//select[@id='dilation_drug_left']"),
         'dropsRight' => array('xpath' => "//select[@name='dilation_treatment[1][drops]']"),
 
-        'expandRefraction' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='refraction']"),
+        'expandRefraction' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Refraction']"),
 
-        'sphereLeft' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_sphere_sign']"),
-        'sphereLeftInt' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_sphere_integer']"),
-        'sphereLeftFraction' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_sphere_fraction']"),
-        'cylinderLeft' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_cylinder_sign']"),
-        'cylinderLeftInt' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_cylinder_integer']"),
-        'cylinderLeftFraction' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_cylinder_fraction']"),
-        'sphereLeftAxis' => array('xpath' => "//input[@id='element_ophciexamination_refraction_left_axis']"),
-        'sphereLeftType' => array('xpath' => "//select[@id='element_ophciexamination_refraction_left_type_id']"),
+        'sphereLeft' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_left_sphere_sign']"),
+        'sphereLeftInt' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_left_sphere_integer']"),
+        'sphereLeftFraction' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_left_sphere_fraction']"),
+        'cylinderLeft' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_left_cylinder_sign']"),
+        'cylinderLeftInt' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_left_cylinder_integer']"),
+        'cylinderLeftFraction' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_left_cylinder_fraction']"),
+        'sphereLeftAxis' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_left_axis']"),
+        'sphereLeftType' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_left_type_id']"),
 
 
-        'sphereRight' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_sphere_sign']"),
-        'sphereRightInt' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_sphere_integer']"),
-        'sphereRightFraction' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_sphere_fraction']"),
-        'cylinderRight' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_cylinder_sign']"),
-        'cylinderRightInt' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_cylinder_integer']"),
-        'cylinderRightFraction' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_cylinder_fraction']"),
-        'sphereRightAxis' => array('xpath' => "//input[@id='element_ophciexamination_refraction_right_axis']"),
-        'sphereRightType' => array('xpath' => "//select[@id='element_ophciexamination_refraction_right_type_id']"),
+        'sphereRight' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_right_sphere_sign']"),
+        'sphereRightInt' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_right_sphere_integer']"),
+        'sphereRightFraction' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_right_sphere_fraction']"),
+        'cylinderRight' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_right_cylinder_sign']"),
+        'cylinderRightInt' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_right_cylinder_integer']"),
+        'cylinderRightFraction' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_right_cylinder_fraction']"),
+        'sphereRightAxis' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_right_axis']"),
+        'sphereRightType' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_right_type_id']"),
 
-        'expandGonioscopy' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='gonioscopy']"),
-        'expandaAdnexalComorbidity' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='adnexal comorbidity']"),
-        'expandAnteriorSegment' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='anterior segment']"),
-        'expandPupillaryAbnormalities' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='pupillary abnormalities']"),
-        'expandOpticDisc' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='optic disc']"),
-        'expandPosteriorPole' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='posterior pole']"),
-        'expandDiagnoses' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='diagnoses']"),
-        'expandInvestigation' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='investigation']"),
-        'expandClinicalManagement' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='clinical management']"),
-        'expandRisks' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='risks']"),
-        'expandClinicOutcome' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='clinic outcome']"),
-        'expandConclusion' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='conclusion']"),
+        'expandVisualFields' => array ('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Visual Fields']"),
+        'expandGonioscopy' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Gonioscopy']"),
+        'expandaAdnexalComorbidity' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Adnexal Comorbidity']"),
+        'expandAnteriorSegment' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Anterior Segment']"),
+        'expandPupillaryAbnormalities' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Pupillary Abnormalities']"),
+        'expandOpticDisc' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Optic Disc']"),
+        'expandPosteriorPole' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Posterior Pole']"),
+        'expandDiagnoses' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Diagnoses']"),
+        'expandInvestigation' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Investigation']"),
+        'expandClinicalManagement' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Clinical Management']"),
+        'expandRisks' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Risks']"),
+        'expandClinicOutcome' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Clinic Outcome']"),
+        'expandConclusion' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Conclusion']"),
 
         'saveExamination' => array('xpath' => "//*[@id='et_save']"),
     );
@@ -91,7 +92,7 @@ class Examination extends Page
         if ($this->isComorbitiesCollapsed()) {
 
             $this->getElement('openComorbidities')->click();
-            $this->getSession()->wait(5000, '$.active == 0');
+            $this->getSession()->wait(3000, '$.active == 0');
         }
     }
 
@@ -109,13 +110,14 @@ class Examination extends Page
     {
         if ($this->isVisualAcuityCollapsed()) {
             $this->getElement('openVisualAcuity')->click();
-            $this->getSession()->wait(5000, '$.active == 0');
+            $this->getSession()->wait(3000, '$.active == 0');
         }
     }
 
     public function selectVisualAcuity ($unit)
     {
         $this->getElement('visualAcuityUnitChange')->selectOption($unit);
+        $this->getSession()->wait(5000);
     }
 
     public function leftVisualAcuity ($metre, $method)
@@ -131,4 +133,185 @@ class Examination extends Page
         $this->getElement('snellenRight')->selectOption($metre);
         $this->getElement('readingRight')->selectOption($method);
     }
+
+    protected function isIntraocularPressureCollapsed()
+    {
+        return (bool) $this->find('xpath', $this->getElement('openIntraocularPressure')->getXpath());
+    }
+
+    public function expandIntraocularPressure ()
+    {
+        if ($this->isIntraocularPressureCollapsed()){
+            $this->getElement('openIntraocularPressure')->click();
+        }
+    }
+
+    public function leftIntracocular ($pressure, $instrument)
+    {
+        $this->getElement('intraocularLeft')->selectOption($pressure);
+        $this->getElement('instrumentLeft')->selectOption($instrument);
+    }
+
+    public function rightIntracocular ($pressure, $instrument)
+    {
+        $this->getElement('intraocularRight')->selectOption($pressure);
+        $this->getElement('instrumentRight')->selectOption($instrument);
+        $this->getSession()->wait(3000);
+    }
+
+    protected function isDilationCollapsed()
+    {
+        return (bool) $this->find('xpath', $this->getElement('openDilation')->getXpath());
+    }
+
+    public function openDilation ()
+    {
+        if ($this->isDilationCollapsed()){
+            $this->getElement('openDilation')->click();
+        }
+    }
+
+    public function dilationRight ($dilation, $drops)
+    {
+        $this->getElement('dilationRight')->selectOption($dilation);
+        $this->getElement('dropsRight')->selectOption($drops);
+    }
+
+    public function dilationLeft ($dilation, $drops)
+    {
+        $this->getElement('dilationLeft')->selectOption($dilation);
+        $this->getElement('dropsLeft')->selectOption($drops);
+    }
+
+    protected function isRefractionCollapsed ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('expandRefraction')->getXpath());
+    }
+
+    public function openRefraction ()
+    {
+        if ($this->isRefractionCollapsed()){
+            $this->getElement('expandRefraction')->click();
+        }
+    }
+
+    public function leftRefractionDetails ($sphere, $integer, $fraction)
+    {
+        $this->getElement('sphereRight')->selectOption($sphere);
+        $this->getElement('sphereRightInt')->selectOption($integer);
+        $this->getElement('sphereRightFraction')->selectOption($fraction);
+    }
+
+    public function leftCyclinderDetails ($cylinder, $integer, $fraction)
+    {
+        $this->getElement('cylinderRight')->selectOption($cylinder);
+        $this->getElement('cylinderRightInt')->selectOption($integer);
+        $this->getElement('cylinderRightFraction')->selectOption($fraction);
+    }
+
+    public function leftAxis ($axis)
+    {
+        $this->getElement('sphereRightAxis')->setValue($axis);
+    }
+
+    public function leftType ($type)
+    {
+        $this->getElement('sphereRightType')->selectOption($type);
+    }
+
+    public function RightRefractionDetails ($sphere, $integer, $fraction)
+    {
+        $this->getElement('sphereLeft')->selectOption($sphere);
+        $this->getElement('sphereLeftInt')->selectOption($integer);
+        $this->getElement('sphereLeftFraction')->selectOption($fraction);
+    }
+
+    public function RightCyclinderDetails ($cylinder, $integer, $fraction)
+    {
+        $this->getElement('cylinderLeft')->selectOption($cylinder);
+        $this->getElement('cylinderLeftInt')->selectOption($integer);
+        $this->getElement('cylinderLeftFraction')->selectOption($fraction);
+    }
+
+    public function RightAxis ($axis)
+    {
+        $this->getElement('sphereLeftAxis')->setValue($axis);
+    }
+
+    public function RightType ($type)
+    {
+        $this->getElement('sphereLeftType')->selectOption($type);
+    }
+
+    public function expandVisualFields ()
+    {
+        $this->getElement('expandVisualFields')->click();
+    }
+
+    public function expandGonioscopy ()
+    {
+        $this->getElement('expandGonioscopy')->click();
+    }
+
+    public function expandAdnexalComorbidity ()
+    {
+        $this->getElement('expandaAdnexalComorbidity')->click();
+    }
+
+    public function expandAnteriorSegment ()
+    {
+        $this->getElement('expandAnteriorSegment')->click();
+    }
+
+    public function expandPupillaryAbnormalities ()
+    {
+        $this->getElement('expandPupillaryAbnormalities')->click();
+    }
+
+    public function expandOpticDisc ()
+    {
+        $this->getElement('expandOpticDisc')->click();
+    }
+
+    public function expandPosteriorPole ()
+    {
+       $this->getElement('expandPosteriorPole')->click();
+    }
+
+    public function expandDiagnoses ()
+    {
+       $this->getElement('expandDiagnoses')->click();
+    }
+
+    public function expandInvestigation ()
+    {
+        $this->getElement('expandInvestigation')->click();
+    }
+
+    public function expandClinicalManagement ()
+    {
+        $this->getElement('expandClinicalManagement')->click();
+    }
+
+    public function expandRisks ()
+    {
+        $this->getElement('expandRisks')->click();
+    }
+
+    public function expandClinicalOutcome ()
+    {
+        $this->getElement('expandClinicOutcome')->click();
+    }
+
+    public function expandConclusion ()
+    {
+        $this->getElement('expandConclusion')->click();
+    }
+
+    public function saveExamination ()
+    {
+        $this->getSession()->wait(10000);
+        $this->getElement('saveExamination')->click();
+    }
+
 }

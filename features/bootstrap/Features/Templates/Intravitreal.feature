@@ -8,13 +8,17 @@ Feature: Create New Anaesthetic Satisfaction Audit
 
     Given I am on the OpenEyes "<environment>" homepage
     And I enter login credentials "<username>" and "<password>"
-    And I select Site "<site>"
-    Then I select a firm of "1"
+    And I select Site "1"
+    Then I select a firm of "3"
 
-    Then I search for patient name last name "<last>" and first name "<first>"
+    Then I search for hospital number "<hospnumber>"
+  #Then I search for patient name last name "<last>" and first name "<first>"
 
+  #Then I select Add First New Episode and Confirm
     Then I select Create or View Episodes and Events
-    Then I select Add First New Episode and Confirm
+  #Then I select the Latest Event
+  #Then I expand the Cataract sidebar
+    Then I expand the Glaucoma sidebar
     And I add a New Event "<EventType>"
 
     #Anaesthetic Right
@@ -28,7 +32,7 @@ Feature: Create New Anaesthetic Satisfaction Audit
     Then I choose Right Anaesthetic Delivery of Topical
     Then I choose Right Anaesthetic Delivery of TopicalandIntracameral
     Then I choose Right Anaesthetic Delivery of Other
-    And I choose Right Anaesthetic Agent "1"
+    And I choose Right Anaesthetic Agent "5"
 
     #Anaesthetic Left
     Then I choose Left Anaesthetic Type of Topical
@@ -47,11 +51,11 @@ Feature: Create New Anaesthetic Satisfaction Audit
     Then I choose Right Pre Injection Antiseptic "1"
     Then I choose Right Pre Injection Skin Cleanser "2"
     And I tick the Right Pre Injection IOP Lowering Drops checkbox
-
+    Then I choose Right Pre Injection IOP Lowering Drops "1"
     Then I choose Right Drug "7"
     And I enter "2" number of Right injections
     Then I enter Right batch number "123"
-    And I enter a Right batch expiry date of "31"
+#    And I enter a Right batch expiry date of "31"
     Then I choose Right Injection Given By "1"
     And I enter a Right Injection time of "09:30"
 
@@ -59,35 +63,35 @@ Feature: Create New Anaesthetic Satisfaction Audit
     Then I choose Left Pre Injection Antiseptic "1"
     Then I choose Left Pre Injection Skin Cleanser "2"
     And I tick the Left Pre Injection IOP Lowering Drops checkbox
-
+    Then I choose Left Pre Injection IOP Lowering Drops "1"
     Then I choose Left Drug "7"
     And I enter "2" number of Left injections
     Then I enter Left batch number "123"
-    And I enter a Left batch expiry date of "31"
+#    And I enter a Left batch expiry date of "31"
     Then I choose Left Injection Given By "1"
     And I enter a Left Injection time of "09:30"
 
-    #Right Anterior Segment
+    #Right Post Injection Examination
     Then I choose A Right Lens Status of "1"
     And I choose Right Counting Fingers Checked Yes
     And I choose Right Counting Fingers Checked No
     And I choose Right IOP Needs to be Checked Yes
     And I choose Right IOP Needs to be Checked No
-    Then I choose Right Post Injection Drops
+    Then I choose Right Post Injection Drops "1"
     
-    #Left Anterior Segment
+    #Left Post Injection Examination
     Then I choose A Left Lens Status of "1"
     And I choose Left Counting Fingers Checked Yes
     And I choose Left Counting Fingers Checked No
     And I choose Left IOP Needs to be Checked Yes
     And I choose Left IOP Needs to be Checked No
-    Then I choose Left Post Injection Drops
+    Then I choose Left Post Injection Drops "1"
     
     #Complications
     And I select Right Complications "5"
     And I select Left Complications "5"
 
-    Then I Save the Examination
+    Then I Save the Intravitreal injection
 
 
   Examples: User details

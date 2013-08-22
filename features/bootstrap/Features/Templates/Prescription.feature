@@ -8,27 +8,32 @@ Feature: Create New Prescription
 
     Given I am on the OpenEyes "<environment>" homepage
     And I enter login credentials "<username>" and "<password>"
-    And I select Site "<site>"
-    Then I select a firm of "1"
+    And I select Site "1"
+    Then I select a firm of "3"
 
-    Then I search for patient name last name "<last>" and first name "<first>"
+    Then I search for hospital number "<hospnumber>"
+  #Then I search for patient name last name "<last>" and first name "<first>"
 
+  #Then I select Add First New Episode and Confirm
     Then I select Create or View Episodes and Events
-    Then I select Add First New Episode and Confirm
+  #Then I select the Latest Event
+  #Then I expand the Cataract sidebar
+    Then I expand the Glaucoma sidebar
     And I add a New Event "<EventType>"
 
-    Then I select a Common Drug "610"
-    And I select a Standard Set of "7"
+    Then I select a Common Drug "75"
+#    And I select a Standard Set of "10"
     Then I enter a Dose of "2" drops
     And I enter a route of "1"
-    Then I enter a eyes option "3"
+
     And I enter a frequency of "4"
-    Then I enter a duration of "4"
+    Then I enter a duration of "1"
+    Then I enter a eyes option "1"
+    #Eyes option last to be selected as duration sometimes causes it to be reset!
+
     And I add Prescription comments of "Prescription comments can go here"
 
-    Then I Save the Event
-
-    Then I choose to close the browser
+    Then I Save the Prescription Draft
 
   Examples: User details
     | environment   | site      | username | password     | hospnumber   | nhs        | last    | first  | EventType  |
