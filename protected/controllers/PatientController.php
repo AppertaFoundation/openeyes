@@ -1018,17 +1018,21 @@ class PatientController extends BaseController
 			if (!$po = PreviousOperation::model()->findByPk(@$_POST['edit_operation_id'])) {
 				throw new Exception("Previous operation not found: ".@$_POST['edit_operation_id']);
 			}
-			$po->side_id = @$_POST['previous_operation_side'] ? @$_POST['previous_operation_side'] : null;
-			$po->operation = @$_POST['previous_operation'];
-			$po->date = str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
-			if (!$po->save()) {
-				throw new Exception("Unable to save previous operation: ".print_r($po->getErrors(),true));
-			}
 		} else {
-			$patient->addPreviousOperation(@$_POST['previous_operation'],@$_POST['previous_operation_side'],str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT));
+			$po = new PreviousOperation;
 		}
 
-		$this->redirect(array('/patient/view/'.$patient->id));
+		$po->patient_id = $patient->id;
+		$po->side_id = @$_POST['previous_operation_side'] ? @$_POST['previous_operation_side'] : null;
+		$po->operation = @$_POST['previous_operation'];
+		$po->date = str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
+
+		if (!$po->save()) {
+			echo json_encode($po->getErrors());
+			return;
+		}
+
+		echo json_encode(array());
 	}
 
 	public function actionAddMedication()
