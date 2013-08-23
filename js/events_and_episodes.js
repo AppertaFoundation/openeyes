@@ -58,12 +58,6 @@ $(document).ready(function(){
 		});
 	}());
 
-	$('button.cancelAddEvent').die('click').live('click',function(e) {
-		$('#add-new-event-dialog').dialog('close');
-		$('#add-new-event-dialog').parent().remove();
-		e.preventDefault();
-	});
-
 	if (window.location.href.match(/#addEvent$/)) {
 		$('button.addEvent[data-attr-subspecialty-id="'+OE_subspecialty_id+'"]').click();
 	}
