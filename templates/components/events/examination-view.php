@@ -46,7 +46,7 @@
 				<div class="element">
 					<h3 class="element-title">Refraction</h3>
 					<div class="element-data element-eyes row">
-						<div class="element-eye column left">
+						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column small">
 									<img src="/img/new/tmp/eyedraw-small.png" class="canvas" />
@@ -59,7 +59,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="element-eye column right">
+						<div class="element-eye column left-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column small">
 									<img src="/img/new/tmp/eyedraw-small.png" class="canvas" />
@@ -78,11 +78,11 @@
 				<div class="element">
 					<h3 class="element-title">Visual Acuity</h3>
 					<div class="element-data element-eyes row">
-						<div class="element-eye column left">
+						<div class="element-eye column right-eye">
 							<div class="element-value">Not recorded</div>
 							<div class="element-value">Left eye Visual Acuity</div>
 						</div>
-						<div class="element-eye column right">
+						<div class="element-eye column left-eye">
 							<div class="element-value">Not recorded</div>
 							<div class="element-value">Right eye Visual Acuity</div>
 						</div>
@@ -93,7 +93,7 @@
 				<div class="element">
 					<h3 class="element-title">Gonioscopy</h3>
 					<div class="element-data element-eyes row">
-						<div class="element-eye column left">
+						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
@@ -106,7 +106,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="element-eye column right">
+						<div class="element-eye column left-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
@@ -127,7 +127,7 @@
 				<div class="element">
 					<h3 class="element-title">Anterior Segment</h3>
 					<div class="element-data element-eyes row">
-						<div class="element-eye column left">
+						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas">
@@ -163,7 +163,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="element-eye column right">
+						<div class="element-eye column left-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas">
@@ -204,12 +204,12 @@
 						<div class="sub-element"> <!-- sub-element container -->
 							<h4 class="sub-element-title">CCT</h4>
 							<div class="sub-element-data sub-element-eyes row">
-								<div class="element-eye column left">
+								<div class="element-eye column right-eye">
 									<div class="element-value">
 										234 µm (Ultrasound pachymetry)
 									</div>
 								</div>
-								<div class="element-eye column right">
+								<div class="element-eye column left-eye">
 									<div class="element-value">
 										234 µm (Ultrasound pachymetry)
 									</div>
@@ -223,7 +223,7 @@
 				<div class="element">
 					<h4 class="element-title">Dilation</h4>
 					<div class="element-data element-eyes row">
-						<div class="element-eye column left">
+						<div class="element-eye column right-eye">
 							<table class="element-table">
 								<thead>
 									<tr>
@@ -241,7 +241,7 @@
 								</tbody>
 							</table>
 						</div>
-						<div class="element-eye column right">
+						<div class="element-eye column left-eye">
 							<table class="element-table">
 								<thead>
 									<tr>
@@ -266,7 +266,7 @@
 				<div class="element">
 					<h4 class="element-title">Posterior Pole</h4>
 					<div class="element-data element-eyes row">
-						<div class="element-eye column left">
+						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
@@ -279,7 +279,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="element-eye column right">
+						<div class="element-eye column left-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
@@ -299,7 +299,7 @@
 								DR Grading
 							</h4>
 							<div class="sub-element-data sub-element-eyes row">
-								<div class="element-eye column left">
+								<div class="element-eye column right-eye">
 									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
@@ -361,7 +361,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="element-eye column right">
+								<div class="element-eye column left-eye">
 									<div class="row element-data-row">
 										<div class="large-4 column">
 											<div class="element-label">
