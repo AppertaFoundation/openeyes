@@ -53,7 +53,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 		EventEmitter.call(this);
 
-		this.options = $.extend(true, {}, Dialog.defaultOptions, options);
+		this.options = $.extend(true, {}, Dialog._defaultOptions, options);
 
 		this.create();
 		this.bindEvents();
@@ -67,10 +67,11 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 	/**
 	 * The default dialog options. Custom options will be merged with these.
-	 * @name Dialog#defaultOptions
-	 * @property
+	 * @name Dialog#_defaultOptions
+	 * @property {object} _defaultOptions
+	 * @private
 	 */
-	Dialog.defaultOptions = {
+	Dialog._defaultOptions = {
 		content: '',
 		destroyOnClose: true,
 		url: null,
@@ -316,7 +317,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 */
 	function AlertDialog(options) {
 
-		options = $.extend(true, {}, AlertDialog.defaultOptions, options);
+		options = $.extend(true, {}, AlertDialog._defaultOptions, options);
 		options.content = this.getContent(options);
 
 		Dialog.call(this, options);
@@ -327,10 +328,11 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	/**
 	 * The default alert dialog options. These options will be merged into the
 	 * default dialog options.
-	 * @name AlertDialog#defaultOptions
-	 * @property
+	 * @name AlertDialog#_defaultOptions
+	 * @property {object] _defaultOptions
+	 * @private
 	 */
-	AlertDialog.defaultOptions = {
+	AlertDialog._defaultOptions = {
 		modal: true,
 		width: 400,
 		minHeight: 'auto',
@@ -394,7 +396,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 	/**
 	 * ConfirmDialog constructor. The ConfirmDialog extends the base Dialog and provides
-	 * an 'Ok' button for the user to click on.
+	 * an 'Ok' and 'Cancel' button for the user to click on.
 	 * @name ConfirmDialog
 	 * @constructor
 	 * @extends Dialog
@@ -406,7 +408,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 */
 	function ConfirmDialog(options) {
 
-		options = $.extend(true, {}, ConfirmDialog.defaultOptions, options);
+		options = $.extend(true, {}, ConfirmDialog._defaultOptions, options);
 		options.content = this.getContent(options);
 
 		Dialog.call(this, options);
@@ -415,12 +417,13 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	ConfirmDialog.inherits(Dialog);
 
 	/**
-	 * The default alert dialog options. These options will be merged into the
+	 * The default confirm dialog options. These options will be merged into the
 	 * default dialog options.
-	 * @name ConfirmDialog#defaultOptions
-	 * @property
+	 * @name ConfirmDialog#_defaultOptions
+	 * @property {object} _defaultOptions - The default options.
+	 * @private
 	 */
-	ConfirmDialog.defaultOptions = {
+	ConfirmDialog._defaultOptions = {
 		modal: true,
 		width: 400,
 		minHeight: 'auto',
