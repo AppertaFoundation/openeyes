@@ -410,7 +410,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	function ConfirmDialog(options) {
 
 		options = $.extend(true, {}, ConfirmDialog._defaultOptions, options);
-		options.content = this.getContent(options);
+		options.content = !options.url ? this.getContent(options) : '';
 
 		Dialog.call(this, options);
 	}
@@ -491,6 +491,17 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		this.emit('cancel');
 	};
 
-	OpenEyes.Dialog.Confirm = ConfirmDialog;
+	/**
+	 * Content load success handler. Sets the dialog content to be the response of
+	 * the content request.
+	 * @name ConfirmDialog#onContentLoadSuccess
+	 * @method
+	 * @private
+	 */
+	ConfirmDialog.prototype.onContentLoadSuccess = function(response) {
+		this.options.content = response;
+		Dialog.prototype.onContentLoadSuccess.call(this, this.getContent(this.options));
+	};
 
+	OpenEyes.Dialog.Confirm = ConfirmDialog;
 }());
