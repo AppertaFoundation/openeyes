@@ -37,6 +37,16 @@
 						</select>
 						<textarea rows="1" cols="80"></textarea>
 					</div>
+					<div class="sub-elements">
+						<div class="sub-element">
+							<h3 class="sub-element-title">Comorbidities</h3>
+							<div class="sub-element-fields">
+								<select>
+									<option>-- Add --</option>
+								</select>
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<div class="element">

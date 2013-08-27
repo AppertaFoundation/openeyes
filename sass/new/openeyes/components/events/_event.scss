@@ -17,9 +17,11 @@ $oe-event-metadata-info-padding-right: 15px !default;
 $oe-event-metadata-user-color: #333333 !default;
 
 .event {
-	&.view {
+	&.content {
 		background-position: right top;
 		background-repeat: no-repeat;
+	}
+	&.view {
 		.panel {
 			&.comments {
 				@include border-radius($oe-event-view-panel-comments-border-radius);

@@ -3,7 +3,7 @@ $oe-element-border-top: 1px dotted #97c6f1 !default;
 $oe-element-title-color: #56a7f1 !default;
 $oe-element-title-font-style: italic !default;
 $oe-element-title-font-size: $default-font-size !default;
-$oe-element-title-padding: 6px 10px !default;
+$oe-element-title-padding: 8px 10px !default;
 $oe-element-title-margin: 0 !default;
 $oe-element-h4-font-size: $default-font-size !default;
 $oe-element-fieldset-panel-border-color: #d9d9d9 !default;
@@ -35,9 +35,6 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 		> .element-value:last-child {
 			padding-bottom: 0;
 		}
-	}
-	.element-fields {
-		@extend .element-data;
 	}
 	.element-eyes {
 		padding: 0;
@@ -108,6 +105,12 @@ $oe-element-edit-title-font-style: italic;
 		border-top: $oe-element-edit-border-top;
 		.element-title {
 			font-style: $oe-element-edit-title-font-style;
+		}
+		.element-fields {
+			@extend .element-data;
+		}
+		.sub-element-fields {
+			@extend .element-data;
 		}
 		.add-side {
 			font-size: $default-font-size;

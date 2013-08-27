@@ -236,8 +236,6 @@
 					</div>
 				</div>
 
-
-
 				<!-- Element with tabular data -->
 				<div class="element">
 					<h3 class="element-title">Dilation</h3>
