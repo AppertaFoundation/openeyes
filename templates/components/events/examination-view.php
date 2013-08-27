@@ -219,9 +219,28 @@
 					</div>
 				</div>
 
+				<!-- Custom element -->
+				<div class="element Element_OphCiExamination_IntraocularPressure">
+					<h3 class="element-title">Intraocular Pressure</h3>
+					<div class="element-data element-eyes row">
+						<div class="element-eye column right-eye">
+							<div class="element-value">
+								Right eye
+							</div>
+						</div>
+						<div class="element-eye column left-eye">
+							<div class="element-value">
+								Left eye
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
 				<!-- Element with tabular data -->
 				<div class="element">
-					<h4 class="element-title">Dilation</h4>
+					<h3 class="element-title">Dilation</h3>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<table class="element-table">
