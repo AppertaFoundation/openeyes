@@ -14,3 +14,16 @@
 		@extend .large-7;
 	}
 }
+
+.edit {
+	.eyedraw-image {
+		&.small {
+			@extend .large-4;
+		}
+	}
+	.eyedraw-fields {
+		&.small {
+			@extend .large-8;
+		}
+	}
+}

@@ -108,9 +108,12 @@ $oe-element-edit-title-font-style: italic;
 		}
 		.element-fields {
 			@extend .element-data;
+			.field-row:last-child {
+				padding: 0;
+			}
 		}
-		.sub-element-fields {
-			@extend .element-data;
+		.element-eyes {
+			@extend .element-eyes;
 		}
 		.add-side {
 			font-size: $default-font-size;
@@ -144,6 +147,9 @@ $oe-element-edit-title-font-style: italic;
 		}
 		textarea {
 			min-height: 1em;
+		}
+		.element-action {
+			font-size: $default-font-size;
 		}
 	}
 }

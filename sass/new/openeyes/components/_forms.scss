@@ -14,41 +14,22 @@ label {
 	@include form-label;
 	&.right {
 		@include form-label(right, false);
+		margin: 0;
 	}
 	&.inline {
 		@include form-label(inline, false);
+		margin: 0;
 	}
 }
 
 /* We use this to get basic styling on all basic form elements */
 
-input[type="text"],
-input[type="password"],
-input[type="date"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="month"],
-input[type="week"],
-input[type="email"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="time"],
-input[type="url"],
-textarea {
+@include input-form-fields {
 	@include form-element;
 	@if not $input-include-glowing-effect {
 		@include single-transition(all, 0.15s, linear);
 	}
-}
-
-/* Adjust margin for form elements below */
-
-input[type="file"],
-input[type="checkbox"],
-input[type="radio"],
-select {
-	margin: 0 0 $form-spacing 0;
+	margin: 0;
 }
 
 /* Normalize file input width */
@@ -202,4 +183,9 @@ $oe-form-field-fixed-width: emCalc(110px) !default;
 			width: $oe-form-field-fixed-width;
 		}
 	}
+}
+
+// Field rows
+.field-row {
+	padding-bottom: $form-spacing;
 }

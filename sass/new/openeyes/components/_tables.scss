@@ -35,7 +35,6 @@ $oe-table-footer-cell-font-size: emCalc(11px);
 table {
 	@include table;
 	@include all-form-fields {
-		margin: 0;
 		font-size: 1em;
 	}
 
@@ -113,5 +112,33 @@ table {
 	&.plain,
 	tr:nth-of-type(even) {
 		background: #fff;
+	}
+}
+
+table {
+	&.blank {
+		background: none;
+		border: 0;
+		width: auto;
+		min-width: 0;
+		thead {
+			background: none;
+			th {
+				background: none;
+				font-weight: normal;
+				font-size: $default-font-size;
+				padding-left: 0;
+			}
+		}
+		tr {
+			background: none;
+		}
+		td {
+			padding: 2px 10px 2px 0;
+			img {
+				height: auto;
+				width: auto;
+			}
+		}
 	}
 }

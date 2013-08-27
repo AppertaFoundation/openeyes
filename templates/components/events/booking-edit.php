@@ -23,7 +23,7 @@
 		<div class="element">
 			<h3 class="element-title">Diagnosis</h3>
 			<fieldset class="element-fields">
-				<div class="row">
+				<div class="row field-row">
 					<div class="small-2 column">
 						<label for="username">Eyes:</label>
 					</div>
@@ -42,7 +42,7 @@
 						</label>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row field-row">
 					<div class="small-2 column">
 						<label>Diagnosis:</label>
 					</div>
@@ -50,10 +50,14 @@
 						<div class="panel element-field">Blepharospasm</div>
 						<fieldset class="panel element-field">
 							<h4>Change diagnosis:</h4>
-							<select>
-								<option>Select a commonly used diagnosis</option>
-							</select>
-							<input type="text" placeholder="or type the first few characters of a diagnosis" />
+							<div class="field-row">
+								<select>
+									<option>Select a commonly used diagnosis</option>
+								</select>
+							</div>
+							<div class="field-row">
+								<input type="text" placeholder="or type the first few characters of a diagnosis" />
+							</div>
 						</fieldset>
 					</div>
 				</div>
@@ -62,7 +66,7 @@
 		<div class="element">
 			<h3 class="element-title">Operation</h3>
 			<fieldset class="element-fields">
-				<div class="row">
+				<div class="row field-row">
 					<div class="small-2 column">
 						<label for="username">Eyes:</label>
 					</div>
@@ -81,7 +85,7 @@
 						</label>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row field-row">
 					<div class="large-2 column">
 						<label>
 							Procedures:
@@ -90,10 +94,14 @@
 					<div class="large-4 column">
 						<fieldset class="panel element-field">
 							<h4>Add a procedure:</h4>
-							<select>
-								<option>Select a subsection</option>
-							</select>
-							<input type="text" placeholder="or enter procedure here..." />
+							<div class="field-row">
+								<select>
+									<option>Select a subsection</option>
+								</select>
+							</div>
+							<div class="field-row">
+								<input type="text" placeholder="or enter procedure here..." />
+							</div>
 						</fieldset>
 					</div>
 					<div class="large-6 column">
@@ -141,7 +149,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row field-row">
 					<div class="large-2 column">
 						<label>Consultant required:</label>
 					</div>
@@ -156,7 +164,7 @@
 						</label>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row field-row">
 					<div class="large-2 column">
 						<label>Add comments:</label>
 					</div>
@@ -164,7 +172,7 @@
 						<textarea></textarea>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row field-row">
 					<div class="large-2 column">
 						<label>
 							Site:
@@ -176,7 +184,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row field-row">
 					<div class="large-2 column">
 						<label>Decision date:</label>
 					</div>
@@ -189,7 +197,7 @@
 		<div class="element">
 			<h3 class="element-title">Schedule operation</h3>
 			<fieldset class="element-fields">
-				<div class="row">
+				<div class="row field-row">
 					<div class="large-2 column">
 						<label>
 							Schedule options

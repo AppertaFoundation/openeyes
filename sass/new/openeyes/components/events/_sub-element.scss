@@ -1,25 +1,42 @@
-.sub-elements {
-    @extend %element-panel;
-    padding-top: 0;
+.element {
+	.sub-elements {
+		@extend %element-panel;
+		padding-top: 0;
+	}
+	.sub-element-eyes {
+		@extend .element-eyes;
+	}
+	.sub-element {
+		border: 1px solid #fafafa;
+		margin-bottom: emCalc(10px);
+		&:last-child {
+			margin-bottom: 0;
+		}
+		.sub-element-title {
+			background: #fafafa;
+			font-style: normal;
+			color: #666;
+			font-size: $default-font-size;
+			padding: emCalc(6px) emCalc(10px);
+			margin: 0;
+		}
+	}
+	.sub-element-header {
+		@extend .clearfix;
+	}
+	.sub-element-data {
+		@extend .element-data;
+	}
 }
-.sub-element-eyes {
-    @extend .element-eyes;
-}
-.sub-element {
-    border: 1px solid #fafafa;
-    margin-bottom: emCalc(10px);
-    &:last-child {
-        margin-bottom: 0;
-    }
-    .sub-element-title {
-        background: #fafafa;
-        font-style: normal;
-        color: #666;
-        font-size: $default-font-size;
-        padding: emCalc(6px) emCalc(10px);
-        margin: 0;
-    }
-}
-.sub-element-data {
-    @extend .element-data;
+
+.edit {
+	.element {
+		.sub-element-actions {
+			@extend .element-actions;
+			padding: emCalc(1px) emCalc(2px) 0 0;
+		}
+		.sub-element-fields {
+			@extend .element-data;
+		}
+	}
 }
