@@ -17,11 +17,12 @@
 			</a>
 		</div>
 	</header>
-	<div class="box event event-content event-edit booking">
+	<div class="box event content edit booking">
 		<h2 class="event-title">Operation booking</h2>
+
 		<div class="element">
 			<h3 class="element-title">Diagnosis</h3>
-			<fieldset class="panel element">
+			<fieldset class="element-fields">
 				<div class="row">
 					<div class="small-2 column">
 						<label for="username">Eyes:</label>
@@ -46,8 +47,8 @@
 						<label>Diagnosis:</label>
 					</div>
 					<div class="small-4 column end">
-						<div class="panel">Blepharospasm</div>
-						<fieldset class="panel">
+						<div class="panel element-field">Blepharospasm</div>
+						<fieldset class="panel element-field">
 							<h4>Change diagnosis:</h4>
 							<select>
 								<option>Select a commonly used diagnosis</option>
@@ -60,7 +61,7 @@
 		</div>
 		<div class="element">
 			<h3 class="element-title">Operation</h3>
-			<fieldset class="panel element">
+			<fieldset class="element-fields">
 				<div class="row">
 					<div class="small-2 column">
 						<label for="username">Eyes:</label>
@@ -87,7 +88,7 @@
 						</label>
 					</div>
 					<div class="large-4 column">
-						<fieldset class="panel">
+						<fieldset class="panel element-field">
 							<h4>Add a procedure:</h4>
 							<select>
 								<option>Select a subsection</option>
@@ -96,7 +97,7 @@
 						</fieldset>
 					</div>
 					<div class="large-6 column">
-						<div class="panel">
+						<div class="panel element-field">
 							<h4>Procedures:</h4>
 							<table class="plain">
 								<thead>
@@ -187,7 +188,7 @@
 		</div>
 		<div class="element">
 			<h3 class="element-title">Schedule operation</h3>
-			<fieldset class="panel element">
+			<fieldset class="element-fields">
 				<div class="row">
 					<div class="large-2 column">
 						<label>
