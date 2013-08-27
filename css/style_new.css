@@ -2148,6 +2148,11 @@ input[type="text"].small.fixed-width, input[type="password"].small.fixed-width, 
   padding-bottom: 1.125em;
 }
 
+/* line 193, ../sass/new/openeyes/components/_forms.scss */
+.form .field-row:last-child {
+  padding: 0;
+}
+
 /* line 44, ../sass/new/openeyes/components/_buttons.scss */
 button, .button {
   border-style: solid;
