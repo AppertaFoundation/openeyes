@@ -304,6 +304,10 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="optional-elements">
+					<h3 class="element-title">Optional elements</h3>
+				</div>
 			</div>
 		</div>
 	</div>
