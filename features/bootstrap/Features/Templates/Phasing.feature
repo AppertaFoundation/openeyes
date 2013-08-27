@@ -1,4 +1,4 @@
-@Phasing
+@phasing @regression
 Feature: Create New Phasing Event
   In order to cover every possible route throughout the site
   As an automation tester
@@ -8,28 +8,32 @@ Feature: Create New Phasing Event
 
     Given I am on the OpenEyes "<environment>" homepage
     And I enter login credentials "<username>" and "<password>"
-    And I select Site "<site>"
-    Then I select a firm of "1"
+    And I select Site "1"
+    Then I select a firm of "3"
 
-    Then I search for patient name last name "<last>" and first name "<first>"
+    Then I search for hospital number "<hospnumber>"
+  #Then I search for patient name last name "<last>" and first name "<first>"
 
+  #Then I select Add First New Episode and Confirm
     Then I select Create or View Episodes and Events
-    Then I select Add First New Episode and Confirm
+  #Then I select the Latest Event
+  #Then I expand the Cataract sidebar
+    Then I expand the Glaucoma sidebar
     And I add a New Event "<EventType>"
 
     Then I choose a right eye Intraocular Pressure Instrument  of "4"
-    And I choose right eye Dilation of "0"
+    And I choose right eye Dilation of Yes
+#    And I choose right eye Dilation of No
     Then I choose a right eye Intraocular Pressure Reading of "5"
     And I add right eye comments of "Right eye comments here"
 
     Then I choose a left eye Intraocular Pressure Instrument  of "5"
-    And I choose left eye Dilation of "0"
+    And I choose left eye Dilation of Yes
+#    And I choose left eye Dilation of No
     Then I choose a left eye Intraocular Pressure Reading of "7"
-    And I add left eye comments of "Left eye comments here"
+#    And I add left eye comments of "Left eye comments here"
 
     Then I Save the Phasing Event
-
-    #Then I choose to close the browser
 
   Examples: User details
     | environment   | site      | username | password     | hospnumber   | nhs        | last    | first  | EventType     |

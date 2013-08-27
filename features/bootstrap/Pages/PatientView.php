@@ -64,7 +64,9 @@ class PatientView extends Page
         'selectFamilyCondition' => array('xpath' => "//*[@id='condition_id']"),
         'enterFamilyComments' => array('xpath' => "//*[@id='comments']"),
         'saveFamilyHistory' => array('xpath' => "//*[@class='classy green mini btn_save_family_history']//*[contains(text(),'Save')]"),
-        'createViewEpisodeEvents' => array('xpath' => "//*[@id='content']/div/div[2]//*[contains(text(),'Create episode / add event')]"),
+        'createNewEpisodeAddEvent' => array('xpath' => "//*[@id='content']/div/div[2]//*[contains(text(),'Create episode / add event')]"),
+        'addEpisodeButton' => array('xpath' => "//*[@id='event_display']/div[3]//*[contains(text(),'Add episode')]"),
+        'confirmCreateEpisode' => array('xpath' => "//*[@id='add-new-episode-form']/div[2]/div[2]//*[contains(text(),'Create new episode')]"),
         'latestEvent' => array('xpath' => "//*[@id='content']/div/div[2]/p//*[contains(text(),'Latest Event')]"),
         'removeAllergyButton' => array('xpath' => "//*[@id='patient_allergies']//*[contains(text(),'Remove')]"),
         'removeConfirmButton' => array('xpath' => "//*[@id='delete_allergy']/div[2]//*[contains(text(),'Remove allergy')]")
@@ -144,6 +146,8 @@ class PatientView extends Page
         if ($side===("Left")) {
             $this->getElement('sysLeftEye')->click();
         }
+        $this->getSession()->wait(3000);
+
     }
 
     public function saveSystemicDiagnosis ()
@@ -189,7 +193,7 @@ class PatientView extends Page
         $this->getElement('selectFrequency')->selectOption($frequency);
         $this->getSession()->wait(3000,false);
         $this->getElement('openMedicationDate')->click();
-        $this->getSession()->wait(3000,false);
+        $this->getSession()->wait(7000);
         $this->getElement('selectDateFrom')->click($datefrom);
         $this->getSession()->wait(3000,false);
         $this->getElement('saveMedication')->click();
@@ -208,12 +212,19 @@ class PatientView extends Page
         $this->getSession()->wait(1000,false);
     }
 
+    protected function doesRemoveAllergyExist ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('removeAllergyButton')->getXpath());
+    }
+
     public function removeAllergy ()
     {
+        if ($this->doesRemoveAllergyExist())
+        {
         $this->getElement('removeAllergyButton')->click();
         $this->getElement('removeConfirmButton')->click();
-        $this->getSession()->wait(1000,false);
-
+        $this->getSession()->wait(3000,false);
+        }
     }
 
     public function addAllergy ($allergy)
@@ -241,15 +252,23 @@ class PatientView extends Page
         $this->getSession()->wait(5000, '$.active == 10');
 
         if ($this->episodesAndEventsAreNotPresent()) {
-            $this->createEpisodeAndEvent();
+            $this->createNewEpisodeAndEvent();
         } else {
             $this->selectLatestEvent();
         }
     }
 
-    public function createEpisodeAndEvent ()
+    public function createNewEpisodeAndEvent ()
     {
-        $this->getElement('createViewEpisodeEvents')->click();
+        $this->getElement('createNewEpisodeAddEvent')->click();
+    }
+
+    public function addEpisode ()
+    {
+        $this->getElement('addEpisodeButton')->click();
+        $this->getSession()->wait(3000,false);
+        $this->getElement('confirmCreateEpisode')->click();
+        $this->getSession()->wait(3000,false);
     }
 
     public function selectLatestEvent ()
@@ -259,7 +278,7 @@ class PatientView extends Page
 
     protected function episodesAndEventsAreNotPresent()
     {
-        return $this->find('xpath', $this->getElement('createViewEpisodeEvents')->getXpath());
+        return $this->find('xpath', $this->getElement('createNewEpisodeAddEvent')->getXpath());
     }
 
 }
