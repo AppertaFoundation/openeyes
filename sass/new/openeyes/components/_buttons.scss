@@ -192,11 +192,24 @@ button, .button {
 //     <span class="icon-button-small-plus-sign"></span>
 //     Add episode
 // </button>
+// <a href="#" class="button small">
+// 	<span class="icon-button-small-mini-cross"></span>
+// 	<span class="hide-offscreen">Add element</span>
+// </a>
 //
 // Styleguide 10.3
 button, .button {
 	[class*="icon-button-small-"] {
 		margin: -6px -2px -5px -14px;
+	}
+	&.button-icon {
+		&.small {
+			padding-right: emCalc(6px);
+			padding-left: emCalc(6px);
+			[class*="icon-button-small-"] {
+				margin: -6px 0 -5px 0;
+			}
+		}
 	}
 }
 

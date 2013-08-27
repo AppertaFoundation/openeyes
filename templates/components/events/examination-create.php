@@ -42,8 +42,9 @@
 				<div class="element">
 					<header class="element-header">
 						<div class="element-actions">
-							<a href="#" class="button small">
+							<a href="#" class="button button-icon small">
 								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove element</span>
 							</a>
 						</div>
 						<h3 class="element-title">Refraction</h3>

@@ -2307,12 +2307,21 @@ button.tiny, .button.tiny {
   line-height: 1.4;
 }
 
-/* line 198, ../sass/new/openeyes/components/_buttons.scss */
+/* line 202, ../sass/new/openeyes/components/_buttons.scss */
 button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   margin: -6px -2px -5px -14px;
 }
+/* line 206, ../sass/new/openeyes/components/_buttons.scss */
+button.button-icon.small, .button.button-icon.small {
+  padding-right: 0.375em;
+  padding-left: 0.375em;
+}
+/* line 209, ../sass/new/openeyes/components/_buttons.scss */
+button.button-icon.small [class*="icon-button-small-"], .button.button-icon.small [class*="icon-button-small-"] {
+  margin: -6px 0 -5px 0;
+}
 
-/* line 215, ../sass/new/openeyes/components/_buttons.scss */
+/* line 228, ../sass/new/openeyes/components/_buttons.scss */
 .button-group {
   list-style: none;
   margin: 0;
@@ -2327,7 +2336,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
 .button-group:after {
   clear: both;
 }
-/* line 217, ../sass/new/openeyes/components/_buttons.scss */
+/* line 230, ../sass/new/openeyes/components/_buttons.scss */
 .button-group > li {
   margin: 0 0 0 -1px;
   float: left;
@@ -2336,7 +2345,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
 .button-group > li:first-child {
   margin-left: 0;
 }
-/* line 220, ../sass/new/openeyes/components/_buttons.scss */
+/* line 233, ../sass/new/openeyes/components/_buttons.scss */
 .button-group button, .button-group .button {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -2346,7 +2355,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   padding: 0.3125em 0.625em;
   margin: 0;
 }
-/* line 226, ../sass/new/openeyes/components/_buttons.scss */
+/* line 239, ../sass/new/openeyes/components/_buttons.scss */
 .button-group li:first-child button, .button-group li:first-child .button {
   -webkit-border-radius: 4px 0 0 4px;
   -moz-border-radius: 4px 0 0 4px;
@@ -2354,7 +2363,7 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
   -o-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px;
 }
-/* line 231, ../sass/new/openeyes/components/_buttons.scss */
+/* line 244, ../sass/new/openeyes/components/_buttons.scss */
 .button-group li:last-child button, .button-group li:last-child .button {
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius: 0 4px 4px 0;
@@ -2649,24 +2658,24 @@ button [class*="icon-button-small-"], .button [class*="icon-button-small-"] {
 
 /* line 21, ../sass/new/openeyes/_mixins.scss */
 [class*="icon-button-small"] {
-  background: url('../img/new/sprites/_elements/btns/small-se2610e3b54.png') no-repeat;
-  width: 27px;
+  background: url('../img/new/sprites/_elements/btns/small-s3491f468e9.png') no-repeat;
+  width: 24px;
   height: 24px;
 }
 
 /* line 27, ../sass/new/openeyes/_mixins.scss */
 .icon-button-small-mini-cross {
-  background-position: 0 0;
+  background-position: 0 -24px;
 }
 
 /* line 27, ../sass/new/openeyes/_mixins.scss */
 .icon-button-small-plus-sign {
-  background-position: 0 -46px;
+  background-position: 0 -48px;
 }
 
 /* line 27, ../sass/new/openeyes/_mixins.scss */
 .icon-button-small-search {
-  background-position: 0 -22px;
+  background-position: 0 0;
 }
 
 /* line 21, ../sass/new/openeyes/_mixins.scss */
