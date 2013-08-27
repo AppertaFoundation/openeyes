@@ -4,6 +4,8 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class Intravitreal extends Page
 {
+    protected $path ="/site/OphTrLaser/Default/create?patient_id={patientId}";
+
     protected $elements = array (
         //Anaesthetic Right
         'rightAnaestheticTopical' => array('xpath' => "//input[@id='Element_OphTrIntravitrealinjection_Anaesthetic_right_anaesthetictype_id_1']"),
@@ -21,7 +23,6 @@ class Intravitreal extends Page
         //Anaesthetic Left
         'leftAnaestheticTopical' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaesthetictype_id_1']"),
         'leftAnaestheticLA' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaesthetictype_id_3']"),
-
         'leftDeliveryRetrobulbar' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaestheticdelivery_id_1']"),
         'leftDeliveryPeribulbar' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaestheticdelivery_id_2']"),
         'leftDeliverySubtenons' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaestheticdelivery_id_3']"),
@@ -80,7 +81,274 @@ class Intravitreal extends Page
         //Complications
         'rightComplicationsDropdown' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Complications_right_complications']/div[2]/select"),
         'leftComplicationsDropdown' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Complications_left_complications']/div[2]/select"),
+        'saveIntravitrealInjection' => array('xpath' => "//*[@id='et_save']")
     );
 
-    //Use $saveExamination to Save Intravitreal injection
+
+         public function rightTypeTopical ()
+         {
+             $this->getElement('rightAnaestheticTopical')->click();
+         }
+
+         public function rightTypeLA ()
+         {
+             $this->getElement('rightAnaestheticLA')->click();
+         }
+
+         public function rightDeliveryRetrobulbar ()
+         {
+             $this->getElement('rightDeliveryRetrobulbar')->click();
+         }
+
+         public function rightDeliveryPeribulbar ()
+         {
+         $this->getElement('rightDeliveryPeribulbar')->click();
+         }
+
+         public function rightDeliverySubtenons ()
+         {
+         $this->getElement('rightDeliverySubtenons')->click();
+         }
+
+         public function rightDeliverySubconjunctival ()
+         {
+         $this->getElement('rightDeliverySubconjunctival')->click();
+         }
+
+         public function rightDeliveryTopical ()
+         {
+         $this->getElement('rightDeliveryTopical')->click();
+         }
+
+         public function rightDeliveryTopicalIntracameral ()
+         {
+         $this->getElement('rightDeliveryTopicalIntracameral')->click();
+         }
+
+         public function rightDeliveryOther ()
+         {
+         $this->getElement('rightDeliveryOther')->click();
+         }
+
+         public function rightAnaestheticAgent ($agent)
+         {
+         $this->getElement('rightAnaestheticAgent')->setValue($agent);
+         }
+
+        //Left
+        public function leftTypeTopical ()
+        {
+            $this->getElement('leftAnaestheticTopical')->click();
+        }
+
+        public function leftTypeLA ()
+        {
+            $this->getElement('leftAnaestheticLA')->click();
+        }
+
+        public function leftDeliveryRetrobulbar ()
+        {
+            $this->getElement('leftDeliveryRetrobulbar')->click();
+        }
+
+        public function leftDeliveryPeribulbar ()
+        {
+            $this->getElement('leftDeliveryPeribulbar')->click();
+        }
+
+        public function leftDeliverySubtenons ()
+        {
+            $this->getElement('leftDeliverySubtenons')->click();
+        }
+
+        public function leftDeliverySubconjunctival ()
+        {
+            $this->getElement('leftDeliverySubconjunctival')->click();
+        }
+
+        public function leftDeliveryTopical ()
+        {
+            $this->getElement('leftDeliveryTopical')->click();
+        }
+
+        public function leftDeliveryTopicalIntracameral ()
+        {
+            $this->getElement('leftDeliveryTopicalIntracameral')->click();
+        }
+
+        public function leftDeliveryOther ()
+        {
+            $this->getElement('leftDeliveryOther')->click();
+        }
+
+        public function leftAnaestheticAgent ($agent)
+        {
+            $this->getElement('leftAnaestheticAgent')->setValue($agent);
+        }
+
+        public function rightPreInjectionAntiseptic ($antiseptic)
+        {
+            $this->getElement('rightPreInjectionAntiseptic')->selectOption($antiseptic);
+        }
+
+        public function rightPreInjectionSkinCleanser ($skin)
+        {
+            $this->getElement('rightPreInjectionSkinCleanser')->selectOption($skin);
+        }
+
+        public function rightPreInjectionIOPDropsCheckbox ()
+        {
+            $this->getElement('rightPreInjectionIOPTickbox')->check();
+        }
+
+        public function rightPreInjectionIOPDropsLoweringDrops ($drops)
+        {
+            $this->getElement('rightPerInjectionIOPDrops')->selectOption($drops);
+        }
+
+        public function rightDrug ($drug)
+        {
+            $this->getElement('rightDrug')->selectOption($drug);
+        }
+
+        public function rightInjections ($injections)
+        {
+            $this->getElement('rightNumberOfInjections')->setValue($injections);
+        }
+
+        public function rightBatchNumber ($batch)
+        {
+            $this->getElement('rightBatchNumber')->setValue($batch);
+        }
+
+        public function rightInjectionGivenBy ($injection)
+        {
+            $this->getElement('rightInjectionGivenBy')->selectOption($injection);
+        }
+
+        public function rightInjectionTime ($time)
+        {
+            $this->getElement('rightInjectionTime')->setValue($time);
+        }
+
+        public function rightLensStatus ($lens)
+        {
+            $this->getElement('rightLensStatus')->selectOption($lens);
+        }
+
+        public function leftPreInjectionAntiseptic ($antiseptic)
+        {
+            $this->getElement('leftPreInjectionAntiseptic')->selectOption($antiseptic);
+        }
+    
+        public function leftPreInjectionSkinCleanser ($skin)
+        {
+            $this->getElement('leftPreInjectionSkinCleanser')->selectOption($skin);
+        }
+    
+        public function leftPreInjectionIOPDropsCheckbox ()
+        {
+            $this->getElement('leftPreInjectionIOPTickbox')->check();
+        }
+    
+        public function leftPreInjectionIOPDropsLoweringDrops ($drops)
+        {
+            $this->getElement('leftPerInjectionIOPDrops')->selectOption($drops);
+        }
+    
+        public function leftDrug ($drug)
+        {
+            $this->getElement('leftDrug')->selectOption($drug);
+        }
+    
+        public function leftInjections ($injections)
+        {
+            $this->getElement('leftNumberOfInjections')->setValue($injections);
+        }
+    
+        public function leftBatchNumber ($batch)
+        {
+            $this->getElement('leftBatchNumber')->setValue($batch);
+        }
+    
+        public function leftInjectionGivenBy ($injection)
+        {
+            $this->getElement('leftInjectionGivenBy')->selectOption($injection);
+        }
+    
+        public function leftInjectionTime ($time)
+        {
+            $this->getElement('leftInjectionTime')->setValue($time);
+        }
+
+        public function leftLensStatus ($lens)
+        {
+            $this->getElement('leftLensStatus')->selectOption($lens);
+        }
+
+        public function rightCountingFingersYes ()
+        {
+            $this->getElement('rightCountingFingersYes')->click();
+        }
+
+        public function rightCountingFingersNo ()
+        {
+            $this->getElement('rightCountingFingersNo')->click();
+        }
+
+        public function rightIOPNeedsToBeCheckedYes ()
+        {
+            $this->getElement('rightIOPCheckYes')->click();
+        }
+
+        public function rightIOPNeedsToBeCheckedNo ()
+        {
+            $this->getElement('rightIOPCheckNo')->click();
+        }
+
+        public function rightPostInjectionDrops ($drops)
+        {
+            $this->getElement('rightPostInjectionDrops')->selectOption($drops);
+        }
+
+        public function leftCountingFingersYes ()
+        {
+            $this->getElement('leftCountingFingersYes')->click();
+        }
+    
+        public function leftCountingFingersNo ()
+        {
+            $this->getElement('leftCountingFingersNo')->click();
+        }
+    
+        public function leftIOPNeedsToBeCheckedYes ()
+        {
+            $this->getElement('leftIOPCheckYes')->click();
+        }
+    
+        public function leftIOPNeedsToBeCheckedNo ()
+        {
+            $this->getElement('leftIOPCheckNo')->click();
+        }
+    
+        public function leftPostInjectionDrops ($drops)
+        {
+            $this->getElement('leftPostInjectionDrops')->selectOption($drops);
+        }
+
+        public function rightComplications ($complication)
+        {
+            $this->getElement('rightComplicationsDropdown')->selectOption($complication);
+        }
+
+        public function leftComplications ($complication)
+        {
+            $this->getElement('leftComplicationsDropdown')->selectOption($complication);
+        }
+
+        public function saveIntravitrealInjection ()
+        {
+            $this->getElement('saveIntravitrealInjection')->click();
+            $this->getSession()->wait(10000);
+        }
 }

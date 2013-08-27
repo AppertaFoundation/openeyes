@@ -41,6 +41,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
         $this->useContext('PhasingContext', new PhasingContext($parameters));
         $this->useContext('CorrespondenceContext', new CorrespondenceContext($parameters));
         $this->useContext('IntravitrealContext', new IntravitrealContext($parameters));
+       // $this->useContext('TherapyApplication', new TherapyContext($parameters); - TO ADD WHEN WORKING!!!
     }
 
     /**
