@@ -19,6 +19,19 @@ class PatientViewContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I select Add First New Episode and Confirm$/
+     */
+    public function iSelectAddFirstNewEpisodeAndConfirm()
+    {
+        /**
+         * @var PatientView $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->addEpisodeAndEvent();
+        $patientView->addEpisode();
+    }
+
+    /**
      * @Then /^I select Create or View Episodes and Events$/
      */
     public function CreateOrViewEpisodesAndEvents()
@@ -255,7 +268,7 @@ class PatientViewContext extends PageObjectContext
          */
         $patientView = $this->getPage('PatientView');
         $patientView->addAllergy($allergy);
-        //!!Allergies can only be added once so a manual remove or a feature to remove needs to be added here!!
+
     }
 
     /**

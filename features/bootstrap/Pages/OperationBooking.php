@@ -146,19 +146,19 @@ class OperationBooking extends Page
     public function scheduleNow ()
     {
         $this->getElement('scheduleNow')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(20000);
     }
 
     public function availableSlot ()
     {
         $this->getElement('availableTheatreSlotDate')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(10000);
     }
 
     public function availableSessionTime ()
     {
         $this->getElement('availableTheatreSessionTime')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(10000);
     }
 
     public function sessionComments ($sessionComments)

@@ -1,4 +1,4 @@
-@NewCorresp
+@Correspondence
 Feature: Create New Correspondence
   In order to cover every possible route throughout the site
   As an automation tester
@@ -8,48 +8,44 @@ Feature: Create New Correspondence
 
     Given I am on the OpenEyes "<environment>" homepage
     And I enter login credentials "<username>" and "<password>"
-    And I select Site "<site>"
-    Then I select a firm of "1"
-    # check below
-    Then I select a firm of "18"
+    And I select Site "1"
+    Then I select a firm of "3"
 
-    Then I search for patient name last name "<last>" and first name "<first>"
+    Then I search for hospital number "<hospnumber>"
+  #Then I search for patient name last name "<last>" and first name "<first>"
 
+  #Then I select Add First New Episode and Confirm
     Then I select Create or View Episodes and Events
-    Then I select Add First New Episode and Confirm
+  #Then I select the Latest Event
+  #Then I expand the Cataract sidebar
+    Then I expand the Glaucoma sidebar
     And I add a New Event "<EventType>"
 
     Then I select Site ID "4"
-    And I select Address Target "<target>"
-    #Then I add "text" to the Letter Address Field
-
-    #Then I select Letter Date "4" //Due to calender datepickers having the same ID - you cant choose Letter & Clinic date
-    Then I choose a Macro of "<macro>"
+    And I select Address Target "gp"
+    Then I choose a Macro of "site42"
 
     And I select Clinic Date "7"
-    #Then I add "text" to the Letter Intro Field
-    #And Then I add "text" to the Letter Reference Field
 
-    Then I choose an Introduction of "<intro>"
-    And I choose a Diagnosis of "<diagnosis>"
-    Then I choose a Management of "<manage>"
-    And I choose Drugs "<drugs>"
-    Then I choose Outcome "<outcome>"
+    Then I choose an Introduction of "site21"
+    And I add Findings of "examination334"
+    And I choose a Diagnosis of "site541"
+    Then I choose a Management of "site181"
+    And I choose Drugs "site301"
+    Then I choose Outcome "site341"
 
-    #Then I add "text" to the Letter Footer field
-    And I choose CC Target "<cc>"
+    And I choose CC Target "patient"
 
-    #Then I add "text" to Letter Element Field
     And I add a New Enclosure
 
-    #Then I Save the Event
-    Then I Cancel the Event
+    Then I Save the Correspondence Draft
 
-    Then I choose to close the browser
+
+
 
   Examples: User details
-    | environment   | username | password     | hospnumber   | nhs        | last    | first  | EventType        | target | macro  | intro | diagnosis | manage | drugs   | outcome | cc      |
-    | master        | admin    | admin        | 1009465      | 8821388753 | Coffin, | Violet | Correspondence   | gp     | site42 | site21 | site541  | site181| site301 | site341 | patient |
+    | environment   | username | password     | hospnumber   | nhs        | last    | first  | EventType        |
+    | master        | admin    | admin        | 1009465      | 8821388753 | Coffin, | Violet | Correspondence   |
 
   #Environment
   # master, develop
