@@ -28,6 +28,10 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 		border: 1px solid #ccc;
 		margin: 0;
 	}
+	.element-eyes {
+		padding: 0;
+		margin: 0;
+	}
 }
 
 .element-title {
@@ -44,18 +48,14 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 	}
 }
 
-.element-eyes {
-	padding: 0;
-	margin: 0;
-	.element-eye {
-		@extend %element-panel;
-		border-right: 1px solid $oe-element-eye-border-color;
-		&:last-child {
-			border: 0;
-		}
-		&.left-eye, &.right-eye {
-			@extend .large-6;
-		}
+.element-eye {
+	@extend %element-panel;
+	border-right: 1px solid $oe-element-eye-border-color;
+	&:last-child {
+		border: 0;
+	}
+	&.left-eye, &.right-eye {
+		@extend .large-6;
 	}
 }
 
