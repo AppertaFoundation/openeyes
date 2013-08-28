@@ -3297,22 +3297,22 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 
 /* line 25, ../sass/new/openeyes/components/events/_element.scss */
-.element {
+.element, .edit .optional-elements {
   position: relative;
 }
 /* line 27, ../sass/new/openeyes/components/events/_element.scss */
-.element canvas, .element .canvas {
+.element canvas, .edit .optional-elements canvas, .element .canvas, .edit .optional-elements .canvas {
   border: 1px solid #ccc;
   margin: 0;
 }
 /* line 31, ../sass/new/openeyes/components/events/_element.scss */
-.element .element-eyes, .element .sub-element-eyes {
+.element .element-eyes, .edit .optional-elements .element-eyes, .element .sub-element-eyes, .edit .optional-elements .sub-element-eyes {
   padding: 0;
   margin: 0;
 }
 
 /* line 37, ../sass/new/openeyes/components/events/_element.scss */
-.element-title, .optional-elements h3 {
+.element-title, .edit .optional-elements h3 {
   color: #56a7f1;
   font-size: 0.8125em;
   padding: 8px 10px;
@@ -3387,20 +3387,20 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 
 /* line 112, ../sass/new/openeyes/components/events/_element.scss */
-.edit .element {
+.edit .element, .edit .optional-elements {
   border-top: 2px dotted #8c949c;
 }
 /* line 114, ../sass/new/openeyes/components/events/_element.scss */
-.edit .element select {
+.edit .element select, .edit .optional-elements select {
   width: auto;
   font-size: 0.8125em;
 }
 /* line 118, ../sass/new/openeyes/components/events/_element.scss */
-.edit .element textarea {
+.edit .element textarea, .edit .optional-elements textarea {
   min-height: 1em;
 }
 /* line 122, ../sass/new/openeyes/components/events/_element.scss */
-.edit .element-title, .edit .optional-elements h3, .optional-elements .edit h3 {
+.edit .element-title, .edit .optional-elements h3 {
   font-style: italic;
 }
 /* line 127, ../sass/new/openeyes/components/events/_element.scss */
@@ -3429,7 +3429,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   height: 16px;
 }
 /* line 155, ../sass/new/openeyes/components/events/_element.scss */
-.edit .element-actions, .edit .sub-element-actions {
+.edit .element-actions, .edit .sub-element-actions, .edit .optional-elements-actions {
   float: right;
   padding: 6px 10px;
 }
@@ -3465,6 +3465,62 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 /* line 35, ../sass/new/openeyes/components/events/_sub-element.scss */
 .edit .sub-element-actions {
   padding: 0.0625em 0.125em 0 0;
+}
+
+/* line 4, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements h3 {
+  padding: 6px 10px;
+  background: #dae6f1;
+}
+/* line 10, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-actions {
+  padding-right: 0;
+}
+/* line 13, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-actions a {
+  font-size: 0.8125em;
+  margin-right: 0.625em;
+  overflow: hidden;
+}
+/* line 17, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-actions a:last-child {
+  margin: 0;
+}
+/* line 20, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-actions a span {
+  display: inline-block;
+  padding: 0.1875em 0 0 0;
+}
+/* line 24, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-actions a img {
+  margin-left: -0.3125em;
+  margin-top: -0.25em;
+}
+/* line 30, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-list {
+  list-style-type: none;
+  margin: 0;
+}
+/* line 33, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-list li {
+  line-height: 1em;
+}
+/* line 35, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-list li:last-child {
+  border: 0;
+}
+/* line 38, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-list li a {
+  background: #8c949c url('../img/new/_elements/icons/event-optional/element-view.png?1377677673') no-repeat right top;
+  border-bottom: 1px dotted #fafafa;
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  padding: 5px 5px 5px 10px;
+}
+/* line 45, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-list li a:hover {
+  background-color: #3665ff;
 }
 
 /* line 1, ../sass/new/openeyes/components/_pills.scss */

@@ -61,33 +61,6 @@
 					</div>
 				</div>
 
-				<div class="element">
-					<header class="element-header">
-						<div class="element-actions">
-							<a href="#" class="button button-icon small">
-								<span class="icon-button-small-mini-cross"></span>
-								<span class="hide-offscreen">Remove element</span>
-							</a>
-						</div>
-						<h3 class="element-title">Refraction</h3>
-					</header>
-					<div class="element-fields element-eyes row">
-						<div class="element-eye column right-eye">
-							<a href="#" class="icon-remove-side">Remove side</a>
-							left eye
-							<br/><br/><br/>
-							some stuff here
-						</div>
-						<div class="element-eye column left-eye">
-							<div class="add-side">
-								<a href="#">
-									Add left side <span class="icon-add-side"></span>
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-
 				<!-- Element with eye-draw -->
 				<div class="element">
 					<h3 class="element-title">Refraction</h3>
@@ -141,51 +114,10 @@
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<a href="#" class="icon-remove-side">Remove side</a>
-							<div class="eyedraw-data row">
-								<div class="eyedraw-image column small">
-									<img src="/img/new/tmp/eyedraw-small-edit.png" class="canvas">
-								</div>
-								<div class="eyedraw-fields column small">
-									<div class="row field-row">
-										<div class="large-3 column">
-											<label>Sphere:</label>
-										</div>
-										<div class="large-9 column">
-											<select><option>-</option></select>
-											<select><option>0</option></select>
-											<select><option>.00</option></select>
-										</div>
-									</div>
-									<div class="row field-row">
-										<div class="large-3 column">
-											<label>Cylinder:</label>
-										</div>
-										<div class="large-9 column">
-											<select><option>-</option></select>
-											<select><option>0</option></select>
-											<select><option>.00</option></select>
-										</div>
-									</div>
-									<div class="row field-row">
-										<div class="large-3 column">
-											<label for="axis">Axis:</label>
-										</div>
-										<div class="large-5 column end">
-											<input type="text" class="small" id="axis" />
-										</div>
-									</div>
-									<div class="row field-row">
-										<div class="large-3 column">
-											<label for="type">Type:</label>
-										</div>
-										<div class="large-5 column end">
-											<select id="type">
-												<option>Auto-refraction</option>
-											</select>
-										</div>
-									</div>
-								</div>
+							<div class="add-side">
+								<a href="#">
+									Add left side <span class="icon-add-side"></span>
+								</a>
 							</div>
 						</div>
 					</div>
@@ -306,7 +238,42 @@
 				</div>
 
 				<div class="optional-elements">
-					<h3 class="element-title">Optional elements</h3>
+					<header class="optional-elements-header">
+						<div class="optional-elements-actions">
+							<a href="#">
+								<span>Add all</span>
+								<img src="/img/_elements/icons/event-optional/element-added.png" />
+							</a>
+							<a href="#">
+								<span>Remove all</span>
+								<img src="/img/_elements/icons/event-optional/element-remove.png" />
+							</a>
+						</div>
+						<h3 class="element-title">Optional Elements</h3>
+					</header>
+					<ul class="optional-elements-list">
+						<li>
+							<a href="#">History</a>
+						</li>
+						<li>
+							<a href="#">Visual Acuity</a>
+						</li>
+						<li>
+							<a href="#">
+								Adnexal Comorbidity
+							</a>
+						</li>
+						<li>
+							<a href="#">
+								Dilation
+							</a>
+						</li>
+						<li>
+							<a href="#">
+								Clinical Management
+							</a>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
