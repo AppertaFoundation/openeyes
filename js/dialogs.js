@@ -33,6 +33,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * Dialog constructor.
 	 * @name Dialog
 	 * @constructor
+	 * @extends {Emitter}
 	 * @example
 	 * var dialog = new OpenEyes.Dialog({
 	 *	 title: 'Title here',
@@ -130,9 +131,13 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @private
 	 */
 	Dialog.prototype.bindEvents = function() {
+
+		// Ensure all handlers are called in the context of this object instance.
+		this.bindAll(true);
+
 		this.content.on({
-			dialogclose: this.onDialogClose.bind(this),
-			dialogopen: this.onDialogOpen.bind(this)
+			dialogclose: this.onDialogClose,
+			dialogopen: this.onDialogOpen
 		});
 	};
 
@@ -172,9 +177,9 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 			data: this.options.data
 		});
 
-		xhr.done(this.onContentLoadSuccess.bind(this));
-		xhr.fail(this.onContentLoadFail.bind(this));
-		xhr.always(this.onContentLoad.bind(this));
+		xhr.done(this.onContentLoadSuccess);
+		xhr.fail(this.onContentLoadFail);
+		xhr.always(this.onContentLoad);
 	};
 
 	/**
@@ -353,7 +358,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * an 'Ok' button for the user to click on.
 	 * @name AlertDialog
 	 * @constructor
-	 * @extends Dialog
+	 * @extends {Dialog}
 	 * @example
 	 * var alert = new OpenEyes.Dialog.Alert({
 	 *	 content: 'Here is some content.'
@@ -416,7 +421,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 */
 	AlertDialog.prototype.bindEvents = function() {
 		Dialog.prototype.bindEvents.apply(this, arguments);
-		this.content.on('click', '.ok', this.onButtonClick.bind(this));
+		this.content.on('click', '.ok', this.onButtonClick);
 	};
 
 	/** Event handlers */
@@ -444,7 +449,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * an 'Ok' and 'Cancel' button for the user to click on.
 	 * @name ConfirmDialog
 	 * @constructor
-	 * @extends Dialog
+	 * @extends {Dialog}
 	 * @example
 	 * var alert = new OpenEyes.Dialog.Confirm({
 	 *	 content: 'Here is some content.'
@@ -507,8 +512,8 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 */
 	ConfirmDialog.prototype.bindEvents = function() {
 		Dialog.prototype.bindEvents.apply(this, arguments);
-		this.content.on('click', '.ok', this.onOKButtonClick.bind(this));
-		this.content.on('click', '.cancel', this.onCancelButtonClick.bind(this));
+		this.content.on('click', '.ok', this.onOKButtonClick);
+		this.content.on('click', '.cancel', this.onCancelButtonClick);
 	};
 
 	/** Event handlers */
