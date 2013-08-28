@@ -125,4 +125,6 @@ class WaitingListContext extends PageObjectContext
         $waitingList->getSession()->wait(5000, "$.active == 0");
         $waitingList->clickLink($this->patient);
     }
+
+
 }

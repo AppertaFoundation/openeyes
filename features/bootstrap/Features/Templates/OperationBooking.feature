@@ -46,8 +46,8 @@ Feature: Create New Operation Booking Event
     Then I select Save and Schedule now
     And I select an Available theatre slot date
     And I select an Available session time
-    Then I add Session comments of "Insert session comments here"
-    And I add Operation comments of "Insert operation comments here"
+#    Then I add Session comments of "Insert session comments here"
+#    And I add Operation comments of "Insert operation comments here"
 
     Then I confirm the operation slot
 

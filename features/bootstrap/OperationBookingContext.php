@@ -174,7 +174,8 @@ class OperationBookingContext extends PageObjectContext
          */
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->decisionDate($date);
-    }
+        $operationBooking->getSession()->wait(10000);
+}
 
     /**
      * @Then /^I add comments of "([^"]*)"$/
@@ -209,7 +210,9 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->getSession()->wait(10000);
         $operationBooking->scheduleNow();
+
     }
 
     /**
@@ -221,6 +224,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->getSession()->wait(10000);
         $operationBooking->availableSlot();
     }
 
@@ -233,6 +237,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->getSession()->wait(10000);
         $operationBooking->availableSessionTime();
     }
 
@@ -269,6 +274,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->getSession()->wait(10000);
         $operationBooking->confirmSlot();
     }
 }
