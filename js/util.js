@@ -81,6 +81,23 @@ if (!Function.prototype.bind) {
 	});
 }
 
+/**
+ * Binds methods of an object to the object itself.
+ * @param {object} object - The object with the methods to bind.
+ * @param {boolean} [inherited=false] - Bind to inherited methods?
+ */
+OpenEyes.Util.bindAll = function(object, inherited) {
+
+	for(var key in object) {
+
+		var isFunction = typeof object[key] === 'function';
+
+		if ((inherited || object.hasOwnProperty(key)) && isFunction) {
+			object[key] = object[key].bind(object);
+		}
+	}
+};
+
 (function(window) {
 
 	/**
@@ -166,6 +183,17 @@ if (!Function.prototype.bind) {
 
 		// Now try trigger a callback handler
 		return this.trigger(type, data);
+	};
+
+	/**
+	 * Binds all methods of this object to the object itself.
+	 * @name Emitter#bindAll
+	 * @method
+	 * @private
+	 * @param {boolean} [inherited=false] - Bind to inherited methods?
+	 */
+	Emitter.prototype.bindAll = function(inherited) {
+		OpenEyes.Util.bindAll(this, inherited);
 	};
 
 	/**
