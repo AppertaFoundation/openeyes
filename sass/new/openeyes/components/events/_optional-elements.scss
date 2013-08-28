@@ -35,6 +35,14 @@
 			&:last-child {
 				border: 0;
 			}
+			&.clicked {
+				a {
+					&, &:hover {
+						background: #dddddd url(../img/ajax-loader.gif) no-repeat 99.5% 2px;
+						color: #333;
+					}
+				}
+			}
 			a {
 				background: #8c949c image-url("_elements/icons/event-optional/element-view.png") no-repeat right top;
 				border-bottom: 1px dotted #fafafa;

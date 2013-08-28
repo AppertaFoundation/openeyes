@@ -1,6 +1,10 @@
 .sub-elements {
 	@extend %element-panel;
 	padding-top: 0;
+	&.inactive {
+		padding: 0;
+		margin-bottom: 10px;
+	}
 }
 
 .sub-element-eyes {
@@ -24,7 +28,7 @@
 }
 
 .sub-element-header {
-	@extend .clearfix;
+	@extend .element-header;
 }
 
 .sub-element-data {

@@ -17,8 +17,17 @@
 		<div class="row">
 			<div class="large-12 column">
 
+				<!-- Element with active sub-element/s -->
 				<div class="element">
-					<h3 class="element-title">History</h3>
+					<header class="element-header">
+						<div class="element-actions">
+							<a href="#" class="button button-icon small">
+								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove sub-element</span>
+							</a>
+						</div>
+						<h3 class="element-title">History</h3>
+					</header>
 					<div class="element-fields">
 						<div class="field-row">
 							<select>
@@ -61,9 +70,62 @@
 					</div>
 				</div>
 
+				<!-- Element with inactive sub-element/s -->
+				<div class="element">
+					<header class="element-header">
+						<div class="element-actions">
+							<a href="#" class="button button-icon small">
+								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove sub-element</span>
+							</a>
+						</div>
+						<h3 class="element-title">History</h3>
+					</header>
+					<div class="element-fields">
+						<div class="field-row">
+							<select>
+								<option>-- History --</option>
+							</select>
+							<select>
+								<option>-- Severity --</option>
+							</select>
+							<select>
+								<option>-- Onset --</option>
+							</select>
+							<select>
+								<option>-- Eye --</option>
+							</select>
+							<select>
+								<option>-- Duration --</option>
+							</select>
+						</div>
+						<div class="field-row">
+							<textarea rows="1"></textarea>
+						</div>
+					</div>
+					<div class="sub-elements inactive">
+						<ul class="optional-elements-list">
+							<li>
+								<a href="#">Comorbidities</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+
 				<!-- Element with eye-draw -->
 				<div class="element">
-					<h3 class="element-title">Refraction</h3>
+					<header class="element-header">
+						<div class="element-actions">
+							<a href="#" title="View Previous" class="view-previous">
+								<img src="/img/_elements/btns/load.png">
+							</a>
+							<a href="#" class="button button-icon small">
+								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove sub-element</span>
+							</a>
+						</div>
+						<h3 class="element-title">Refraction</h3>
+					</header>
 					<div class="element-fields element-eyes row">
 						<div class="element-eye right-eye column">
 							<a href="#" class="icon-remove-side">Remove side</a>
@@ -124,7 +186,17 @@
 				</div>
 
 				<div class="element">
-					<h3 class="element-title">Visual Acuity</h3>
+
+					<header class="element-header">
+						<div class="element-actions">
+							<a href="#" class="button button-icon small">
+								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove sub-element</span>
+							</a>
+						</div>
+						<h3 class="element-title">Visual Acuity</h3>
+					</header>
+
 					<div class="element-fields element-eyes row">
 						<div class="element-eye column right-eye">
 							<a href="#" class="icon-remove-side">Remove side</a>
@@ -268,9 +340,9 @@
 								Dilation
 							</a>
 						</li>
-						<li>
+						<li class="clicked">
 							<a href="#">
-								Clinical Management
+								Clinical Management (clicked state)
 							</a>
 						</li>
 					</ul>
