@@ -3370,50 +3370,55 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 /* line 93, ../sass/new/openeyes/components/events/_element.scss */
 .element-table {
   margin: 0;
+}
+/* line 95, ../sass/new/openeyes/components/events/_element.scss */
+.element-table, .element-table th {
   background: #c9ddef;
 }
-/* line 96, ../sass/new/openeyes/components/events/_element.scss */
-.element-table td:first-child {
+/* line 98, ../sass/new/openeyes/components/events/_element.scss */
+.element-table th[scope="row"], .element-table td:first-child {
   position: relative;
   width: 33.33333%;
+  font-size: 0.8125em;
+  font-weight: normal;
 }
-/* line 99, ../sass/new/openeyes/components/events/_element.scss */
+/* line 103, ../sass/new/openeyes/components/events/_element.scss */
 .element-table tr {
   border: 1px solid #dae6f1;
 }
-/* line 101, ../sass/new/openeyes/components/events/_element.scss */
+/* line 105, ../sass/new/openeyes/components/events/_element.scss */
 .element-table tr:nth-of-type(even) {
   background: #c9ddef;
 }
 
-/* line 112, ../sass/new/openeyes/components/events/_element.scss */
+/* line 116, ../sass/new/openeyes/components/events/_element.scss */
 .edit .element, .edit .optional-elements {
   border-top: 2px dotted #8c949c;
 }
-/* line 114, ../sass/new/openeyes/components/events/_element.scss */
+/* line 118, ../sass/new/openeyes/components/events/_element.scss */
 .edit .element select, .edit .optional-elements select {
   width: auto;
   font-size: 0.8125em;
 }
-/* line 118, ../sass/new/openeyes/components/events/_element.scss */
+/* line 122, ../sass/new/openeyes/components/events/_element.scss */
 .edit .element textarea, .edit .optional-elements textarea {
   min-height: 1em;
 }
-/* line 122, ../sass/new/openeyes/components/events/_element.scss */
+/* line 126, ../sass/new/openeyes/components/events/_element.scss */
 .edit .element-title, .edit .optional-elements h3 {
   font-style: italic;
 }
-/* line 127, ../sass/new/openeyes/components/events/_element.scss */
+/* line 131, ../sass/new/openeyes/components/events/_element.scss */
 .edit .element-fields .field-row:last-child {
   padding: 0;
 }
-/* line 134, ../sass/new/openeyes/components/events/_element.scss */
+/* line 138, ../sass/new/openeyes/components/events/_element.scss */
 .edit .add-side {
   font-size: 0.8125em;
   text-align: center;
   padding: 0.75em;
 }
-/* line 139, ../sass/new/openeyes/components/events/_element.scss */
+/* line 143, ../sass/new/openeyes/components/events/_element.scss */
 .edit .icon-remove-side {
   background: url('../img/new/_elements/icons/event-optional/element-remove.png?1377677673') no-repeat -10px -2px;
   height: 16px;
@@ -3422,18 +3427,18 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   top: 5px;
   width: 16px;
 }
-/* line 147, ../sass/new/openeyes/components/events/_element.scss */
+/* line 151, ../sass/new/openeyes/components/events/_element.scss */
 .edit .icon-add-side {
   background: url('../img/new/_elements/icons/event-optional/element-view.png?1377677673') no-repeat -10px -2px;
   width: 16px;
   height: 16px;
 }
-/* line 155, ../sass/new/openeyes/components/events/_element.scss */
+/* line 159, ../sass/new/openeyes/components/events/_element.scss */
 .edit .element-actions, .edit .sub-element-actions, .edit .optional-elements-actions {
   float: right;
   padding: 6px 10px;
 }
-/* line 159, ../sass/new/openeyes/components/events/_element.scss */
+/* line 163, ../sass/new/openeyes/components/events/_element.scss */
 .edit .element-action {
   font-size: 0.8125em;
 }

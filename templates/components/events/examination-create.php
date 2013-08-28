@@ -18,7 +18,7 @@
 			<div class="large-12 column">
 
 				<!-- Element with active sub-element/s -->
-				<div class="element">
+				<section class="element">
 					<header class="element-header">
 						<div class="element-actions">
 							<a href="#" class="button button-icon small">
@@ -68,10 +68,10 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				<!-- Element with inactive sub-element/s -->
-				<div class="element">
+				<section class="element">
 					<header class="element-header">
 						<div class="element-actions">
 							<a href="#" class="button button-icon small">
@@ -110,14 +110,14 @@
 							</li>
 						</ul>
 					</div>
-				</div>
+				</section>
 
 				<!-- Element with eye-draw -->
-				<div class="element">
+				<section class="element">
 					<header class="element-header">
 						<div class="element-actions">
 							<a href="#" title="View Previous" class="view-previous">
-								<img src="/img/_elements/btns/load.png">
+								<img src="/img/_elements/btns/load.png" alt="View previous">
 							</a>
 							<a href="#" class="button button-icon small">
 								<span class="icon-button-small-mini-cross"></span>
@@ -131,7 +131,7 @@
 							<a href="#" class="icon-remove-side">Remove side</a>
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column small">
-									<img src="/img/new/tmp/eyedraw-small-edit.png" class="canvas">
+									<img src="/img/new/tmp/eyedraw-small-edit.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-fields column small">
 									<div class="row field-row">
@@ -183,9 +183,9 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
-				<div class="element">
+				<section class="element">
 
 					<header class="element-header">
 						<div class="element-actions">
@@ -203,7 +203,7 @@
 							<table class="blank">
 								<thead>
 									<tr>
-										<th>Snellen Metre</th>
+										<th colspan="3">Snellen Metre</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -229,7 +229,7 @@
 												<option value="2">PL</option>
 												<option value="1">NPL</option>
 											</select>
-											<span class="va-info-icon"><img src="/assets/84410d8e/img/icon_info.png" style="height:20px"></span>
+											<img src="/assets/84410d8e/img/icon_info.png" style="height:20px" alt="info" />
 										</td>
 										<td>
 											<select class="method_id" name="visualacuity_reading[0][method_id]" id="visualacuity_reading_0_method_id">
@@ -267,7 +267,7 @@
 												<option value="2">PL</option>
 												<option value="1">NPL</option>
 											</select>
-											<span class="va-info-icon"><img src="/assets/84410d8e/img/icon_info.png" style="height:20px"></span>
+											<img src="/assets/84410d8e/img/icon_info.png" style="height:20px" alt="info" />
 										</td>
 										<td>
 											<select class="method_id" name="visualacuity_reading[1][method_id]" id="visualacuity_reading_1_method_id">
@@ -307,18 +307,18 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
-				<div class="optional-elements">
+				<section class="optional-elements">
 					<header class="optional-elements-header">
 						<div class="optional-elements-actions">
 							<a href="#">
 								<span>Add all</span>
-								<img src="/img/_elements/icons/event-optional/element-added.png" />
+								<img src="/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
 							</a>
 							<a href="#">
 								<span>Remove all</span>
-								<img src="/img/_elements/icons/event-optional/element-remove.png" />
+								<img src="/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
 							</a>
 						</div>
 						<h3 class="element-title">Optional Elements</h3>
@@ -346,7 +346,7 @@
 							</a>
 						</li>
 					</ul>
-				</div>
+				</section>
 			</div>
 		</div>
 	</div>

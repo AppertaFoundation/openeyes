@@ -92,9 +92,13 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 
 .element-table {
 	margin: 0;
-	background: #c9ddef;
-	td:first-child {
+	&, th {
+		background: #c9ddef;
+	}
+	th[scope="row"], td:first-child {
 		@include grid-column($collapse: null, $columns: 4, $float: false);
+		font-size: $default-font-size;
+		font-weight: normal;
 	}
 	tr {
 		border: 1px solid #dae6f1;

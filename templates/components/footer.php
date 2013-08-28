@@ -12,7 +12,7 @@
                 <li><strong>Need help?</strong></li>
                 <li>helpdesk@example.com</li>
                 <li><strong>12345678</strong></li>
-                <li><a target="_new" href="/">Help Documentation</a></li>
+                <li><a target="_blank" href="/">Help Documentation</a></li>
             </ul>
         </div>
     </div>

@@ -20,7 +20,7 @@
 	<div class="box event content edit booking">
 		<h2 class="event-title">Operation booking</h2>
 
-		<div class="element">
+		<section class="element">
 			<h3 class="element-title">Diagnosis</h3>
 			<fieldset class="element-fields">
 				<div class="row field-row">
@@ -62,8 +62,9 @@
 					</div>
 				</div>
 			</fieldset>
-		</div>
-		<div class="element">
+		</section>
+
+		<section class="element">
 			<h3 class="element-title">Operation</h3>
 			<fieldset class="element-fields">
 				<div class="row field-row">
@@ -193,8 +194,9 @@
 					</div>
 				</div>
 			</fieldset>
-		</div>
-		<div class="element">
+		</section>
+
+		<section class="element">
 			<h3 class="element-title">Schedule operation</h3>
 			<fieldset class="element-fields">
 				<div class="row field-row">
@@ -211,6 +213,7 @@
 					</div>
 				</div>
 			</fieldset>
-		</div>
+		</section>
+
 	</div>
 </div>

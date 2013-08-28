@@ -21,7 +21,7 @@
 			<div class="large-12 column">
 
 				<!-- Element with 'global' data containing a sub-element -->
-				<div class="element">
+				<section class="element">
 					<h3 class="element-title">History</h3>
 					<div class="element-data">
 						<div class="element-value">
@@ -40,16 +40,16 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				<!-- Element with eye-draw (small size) data for both eyes -->
-				<div class="element">
+				<section class="element">
 					<h3 class="element-title">Refraction</h3>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column small">
-									<img src="/img/new/tmp/eyedraw-small.png" class="canvas" />
+									<img src="/img/new/tmp/eyedraw-small.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column small">
 									<div class="element-value">
@@ -62,7 +62,7 @@
 						<div class="element-eye column left-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column small">
-									<img src="/img/new/tmp/eyedraw-small.png" class="canvas" />
+									<img src="/img/new/tmp/eyedraw-small.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column small">
 									<div class="element-value">
@@ -73,9 +73,9 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
-				<div class="element">
+				<section class="element">
 					<h3 class="element-title">Visual Acuity</h3>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
@@ -87,16 +87,16 @@
 							<div class="element-value">Right eye Visual Acuity</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				<!-- Element with eye-draw (large-size) data for both eyes -->
-				<div class="element">
+				<section class="element">
 					<h3 class="element-title">Gonioscopy</h3>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
-									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
+									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
 									<div class="element-value">
@@ -109,7 +109,7 @@
 						<div class="element-eye column left-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
-									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
+									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
 									<div class="element-value">
@@ -120,17 +120,17 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				<!-- Element with eye-draw (large-size) data for both eyes, with
 				sub-elements -->
-				<div class="element">
+				<section class="element">
 					<h3 class="element-title">Anterior Segment</h3>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
-									<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas">
+									<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
 									<div class="element-value">
@@ -166,7 +166,7 @@
 						<div class="element-eye column left-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
-									<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas">
+									<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
 									<div class="element-value">
@@ -217,10 +217,10 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				<!-- Custom element -->
-				<div class="element Element_OphCiExamination_IntraocularPressure">
+				<section class="element Element_OphCiExamination_IntraocularPressure">
 					<h3 class="element-title">Intraocular Pressure</h3>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
@@ -234,10 +234,10 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				<!-- Element with tabular data -->
-				<div class="element">
+				<section class="element">
 					<h3 class="element-title">Dilation</h3>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
@@ -277,16 +277,16 @@
 							</table>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				<!-- Element with eyedraw (large-size) and sub-element with custom columns -->
-				<div class="element">
+				<section class="element">
 					<h4 class="element-title">Posterior Pole</h4>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
-									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
+									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
 									<div class="element-value">
@@ -299,7 +299,7 @@
 						<div class="element-eye column left-eye">
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column large">
-									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
+									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
 									<div class="element-value">
@@ -443,10 +443,10 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				<!-- Element with 'global' data, containing a sub-element with tabular data -->
-				<div class="element">
+				<section class="element">
 					<h3 class="element-title">Clinical Management</h3>
 					<div class="element-data">
 						<div class="element-label">Clinical Management</div>
@@ -458,43 +458,43 @@
 								<table class="element-table">
 									<tbody>
 									<tr>
-										<td scope="row">Eye</td>
+										<th scope="row">Eye</th>
 										<td>First eye</td>
 									</tr>
 									<tr>
-										<td scope="row">At City Road</td>
+										<th scope="row">At City Road</th>
 										<td>Yes</td>
 									</tr>
 									<tr>
-										<td scope="row">At Satellite</td>
+										<th scope="row">At Satellite</th>
 										<td>No</td>
 									</tr>
 									<tr>
-										<td scope="row">Straightforward case</td>
+										<th scope="row">Straightforward case</th>
 										<td>No</td>
 									</tr>
 									<tr>
-										<td scope="row">Post operative refractive target in dioptres</td>
+										<th scope="row">Post operative refractive target in dioptres</th>
 										<td>0.0</td>
 									</tr>
 									<tr>
-										<td scope="row">The post operative refractive target has been discussed with the patient</td>
+										<th scope="row">The post operative refractive target has been discussed with the patient</th>
 										<td>Yes</td>
 									</tr>
 									<tr>
-										<td scope="row">Suitable for surgeon</td>
+										<th scope="row">Suitable for surgeon</th>
 										<td>Senior Surgeon</td>
 									</tr>
 									<tr>
-										<td scope="row">Supervised</td>
+										<th scope="row">Supervised</th>
 										<td>No</td>
 									</tr>
 									<tr>
-										<td scope="row">Previous refractive surgery</td>
+										<th scope="row">Previous refractive surgery</th>
 										<td>Yes</td>
 									</tr>
 									<tr>
-										<td scope="row">Vitrectomised eye</td>
+										<th scope="row">Vitrectomised eye</th>
 										<td>No</td>
 									</tr>
 									</tbody>
@@ -502,9 +502,9 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
-				<div class="element">
+				<section class="element">
 					<h3 class="element-title">Risks</h3>
 					<div class="element-data">
 						<div class="element-value">
@@ -527,7 +527,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				<div class="metadata">
 					<span class="info">
