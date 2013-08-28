@@ -185,6 +185,124 @@
 					</div>
 				</section>
 
+				<section class="element Element_OphCiExamination_Diagnoses">
+
+					<header class="element-header">
+						<div class="element-actions">
+							<a href="#" class="button button-icon small">
+								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove sub-element</span>
+							</a>
+						</div>
+						<h3 class="element-title">Diagnoses</h3>
+					</header>
+
+					<div class="element-fields">
+						<div class="panel element-field">
+							<h4>Diagnoses</h4>
+							<table class="blank">
+								<thead>
+									<tr>
+										<th>Diagnosis</th>
+										<th>Eye</th>
+										<th>Principal</th>
+										<th>Edit</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											Blepharospasm
+										</td>
+										<td class="eye">
+											<label>
+												<input type="radio" />
+												Right
+											</label>
+											<label>
+												<input type="radio" />
+												Both
+											</label>
+											<label>
+												<input type="radio" />
+												Left
+											</label>
+										</td>
+										<td>
+											<input type="radio" />
+										</td>
+										<td>
+											<a href="#">Remove</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											Cyst of eyelid
+										</td>
+										<td class="eye">
+											<label>
+												<input type="radio" />
+												Right
+											</label>
+											<label>
+												<input type="radio" />
+												Both
+											</label>
+											<label>
+												<input type="radio" />
+												Left
+											</label>
+										</td>
+										<td>
+											<input type="radio" />
+										</td>
+										<td>
+											<a href="#">Remove</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="panel element-field">
+							<h4>Add a diagnosis</h4>
+							<div class="row field-row">
+								<div class="large-3 column">
+									<label>Eye</label>
+								</div>
+								<div class="large-9 column">
+									<label class="highlight">
+										<input type="radio" />
+										Right
+									</label>
+									<label class="highlight">
+										<input type="radio" />
+										Both
+									</label>
+									<label class="highlight">
+										<input type="radio" />
+										Left
+									</label>
+								</div>
+							</div>
+							<div class="row field-row">
+								<div class="large-3 column">
+									<label>Diagnosis</label>
+								</div>
+								<div class="large-5 column end">
+									<div class="field-row">
+										<select>
+											<option>Select a commonly used diagnosis</option>
+										</select>
+									</div>
+									<div class="field-row">
+										<input type="text" placeholder="or type the first few characters of a diagnosis" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
 				<section class="element">
 
 					<header class="element-header">
