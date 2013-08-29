@@ -42,5 +42,8 @@
 	}
 	.sub-element-fields {
 		@extend .element-data;
+		.field-row:last-child {
+			padding: 0;
+		}
 	}
 }

@@ -10,7 +10,7 @@ form .row {
 }
 
 /* Label Styles */
-label {
+label, .label {
 	@include form-label;
 	&.right {
 		@include form-label(right, false);
@@ -19,6 +19,8 @@ label {
 	&.inline {
 		@include form-label(inline, false);
 		margin: 0;
+		display: inline-block;
+		padding: 0;
 	}
 }
 
@@ -128,25 +130,14 @@ $oe-form-input-radius: 3px !default;
 	}
 }
 
-.field-group-highlight {
-	background: #e3f0f2;
-	display: inline-block;
-	padding: 4px 12px 5px 8px;
-	@include border-radius(3px);
-	&:hover {
-		background: #fff;
-	}
-}
-
-fieldset {
-	&.highlight {
-		@extend .field-group-highlight;
-	}
-}
-
 label {
 	&.highlight {
-		@extend .field-group-highlight;
+		background: #e3f0f2;
+		padding: 4px 12px 5px 8px;
+		@include border-radius(3px);
+		&:hover {
+			background: #fff;
+		}
 	}
 	input[type="checkbox"],
 	input[type="radio"] {

@@ -414,15 +414,15 @@
 									<label>Eye:</label>
 								</div>
 								<div class="large-9 column">
-									<label class="highlight">
+									<label class="inline highlight">
 										<input type="radio" />
 										Right
 									</label>
-									<label class="highlight">
+									<label class="inline highlight">
 										<input type="radio" />
 										Both
 									</label>
-									<label class="highlight">
+									<label class="inline highlight">
 										<input type="radio" />
 										Left
 									</label>
@@ -564,6 +564,179 @@
 							</div>
 							<div class="field-row">
 								<textarea rows="1"></textarea>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section class="element">
+					<header class="element-header">
+						<div class="element-actions">
+							<a href="#" class="button button-icon small">
+								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove element</span>
+							</a>
+						</div>
+						<h3 class="element-title">
+							Clinical Management
+						</h3>
+					</header>
+					<div class="element-fields">
+						<div class="element-field">
+							<div class="field-row">
+								<select>
+									<option>-- Add --</option>
+								</select>
+							</div>
+							<div class="field-row">
+								<textarea rows="1"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="sub-elements">
+						<div class="sub-element">
+							<header class="sub-element-header">
+								<div class="sub-element-actions">
+									<a href="#" class="button button-icon small">
+										<span class="icon-button-small-mini-cross"></span>
+										<span class="hide-offscreen">Remove sub-element</span>
+									</a>
+								</div>
+								<h4 class="sub-element-title">
+									Cataract Management
+								</h4>
+							</header>
+							<div class="sub-element-fields">
+								<div class="row field-row">
+									<div class="large-4 column">
+										<label>
+											Eye:
+										</label>
+									</div>
+									<div class="large-8 column">
+										<label class="inline highlight">
+											<input type="radio" />
+											First eye
+										</label>
+										<label class="inline highlight">
+											<input type="radio" />
+											Second eye
+										</label>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-4 column">
+										<label>
+											Post operative refractive target in dioptres:
+										</label>
+									</div>
+									<div class="large-8 column">
+										<input type="range" min="-20" max="20" value="0.0" step="0.5">
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-4 column">
+										<label>
+											The post operative refractive target has been discussed with the patient:
+										</label>
+									</div>
+									<div class="large-8 column">
+										<label class="inline highlight">
+											<input type="radio" />
+											Yes
+										</label>
+										<label class="inline highlight">
+											<input type="radio" />
+											No
+										</label>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-4 column">
+										<label>
+											Suitable for surgeon:
+										</label>
+									</div>
+									<div class="large-8 column">
+										<select>
+											<option value="">- Please select -</option>
+										</select>
+										<label class="inline">
+											<input type="checkbox" value="1" />	Supervised
+										</label>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-4 column">
+										<label>
+											Previous refractive surgery:
+										</label>
+									</div>
+									<div class="large-8 column">
+										<label class="inline highlight">
+											<input type="radio" />
+											Yes
+										</label>
+										<label class="inline highlight">
+											<input type="radio" />
+											No
+										</label>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-4 column">
+										<label>
+											Vitrectomised eye:
+										</label>
+									</div>
+									<div class="large-8 column">
+										<label class="inline highlight">
+											<input type="radio" />
+											Yes
+										</label>
+										<label class="inline highlight">
+											<input type="radio" />
+											No
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section class="element">
+					<header class="element-header">
+						<div class="element-actions">
+							<a href="#" class="button button-icon small">
+								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove element</span>
+							</a>
+						</div>
+						<h3 class="element-title">
+							Investigation
+						</h3>
+					</header>
+					<div class="element-fields">
+						<div class="field-row">
+							<select><option>-- Add --</option></select>
+						</div>
+					</div>
+					<div class="sub-elements">
+						<div class="sub-element">
+							<header class="sub-element-header">
+								<div class="sub-element-actions">
+									<a href="#" class="button button-icon small">
+										<span class="icon-button-small-mini-cross"></span>
+										<span class="hide-offscreen">Remove sub-element</span>
+									</a>
+								</div>
+								<h4 class="sub-element-title">
+									OCT
+								</h4>
+							</header>
+							<div class="sub-element-fields">
+							test
 							</div>
 						</div>
 					</div>

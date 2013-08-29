@@ -64,22 +64,22 @@
 
 						<div class="search-filters-extra clearfix">
 
-							<label class="highlight">
+							<label class="inline highlight">
 								<input type="radio" name="date-filter" />
 								Today
 							</label>
 
-							<label class="highlight">
+							<label class="inline highlight">
 								<input type="radio" name="date-filter" />
 								Next 7 days
 							</label>
 
-							<label class="highlight">
+							<label class="inline highlight">
 								<input type="radio" name="date-filter" />
 								Next 30 days
 							</label>
 
-							<fieldset class="highlight">
+							<fieldset class="inline highlight">
 								<label>
 									<input type="radio" name="date-filter" />
 									Or select date range:
