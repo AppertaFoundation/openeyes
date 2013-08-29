@@ -17,6 +17,12 @@
 			&:last-child {
 				margin: 0;
 			}
+			&:hover {
+				background: none;
+				span {
+					@extend %anchor-hover;
+				}
+			}
 			span {
 				display: inline-block;
 				padding: emCalc(3px) 0 0 0;

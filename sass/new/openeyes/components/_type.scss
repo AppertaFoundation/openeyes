@@ -19,6 +19,11 @@ $oe-h1-bg-gradient-right: #fffdea !default;
 $oe-h1-bg-gradient-width: 12px !default;
 $oe-h1-small-margin: 0 0 emCalc(10px) 0;
 
+// This is a placeholder selector so we can re-use this hover style for non-anchor hovers.
+%anchor-hover {
+	@include background(linear-gradient(-90deg, $anchor-font-color-hover 1px, transparent 1px) repeat-x center bottom / 2px 1px);
+}
+
 h1 {
 	&.badge {
 		display: inline-block;
@@ -32,4 +37,8 @@ h1 {
 			margin-bottom: 0;
 		}
 	}
+}
+
+a:hover {
+	@extend %anchor-hover;
 }

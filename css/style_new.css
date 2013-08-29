@@ -1060,6 +1060,14 @@ html, body {
 }
 
 /* line 23, ../sass/new/openeyes/components/_type.scss */
+a:hover, .edit .optional-elements-actions a:hover span {
+  background: -webkit-linear-gradient(-90deg, #0a4fc2 1px, transparent 1px) repeat-x center bottom/2px 1px;
+  background: -moz-linear-gradient(-90deg, #0a4fc2 1px, transparent 1px) repeat-x center bottom/2px 1px;
+  background: -o-linear-gradient(-90deg, #0a4fc2 1px, transparent 1px) repeat-x center bottom/2px 1px;
+  background: linear-gradient(-90deg, #0a4fc2 1px, transparent 1px) repeat-x center bottom/2px 1px;
+}
+
+/* line 28, ../sass/new/openeyes/components/_type.scss */
 h1.badge {
   display: inline-block;
   font-size: 0.8125em;
@@ -1078,7 +1086,7 @@ h1.badge {
   border-radius: 0px 3px 3px 0px;
 }
 @media only screen and (min-width: 768px) {
-  /* line 23, ../sass/new/openeyes/components/_type.scss */
+  /* line 28, ../sass/new/openeyes/components/_type.scss */
   h1.badge {
     margin-bottom: 0;
   }
@@ -3214,7 +3222,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   margin-top: 0.125em;
 }
 
-/* line 13, ../sass/new/openeyes/components/_tabs.scss */
+/* line 14, ../sass/new/openeyes/components/_tabs.scss */
 .tabs {
   margin: 0;
 }
@@ -3429,7 +3437,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 /* line 151, ../sass/new/openeyes/components/events/_element.scss */
 .edit .icon-add-side {
-  background: url('../img/new/_elements/icons/event-optional/element-view.png?1377677673') no-repeat -10px -2px;
+  background: url('../img/new/_elements/icons/event-optional/element-view.png?1377677673') no-repeat -10px -4px;
   width: 16px;
   height: 16px;
 }
@@ -3497,34 +3505,38 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   margin: 0;
 }
 /* line 20, ../sass/new/openeyes/components/events/_optional-elements.scss */
+.edit .optional-elements-actions a:hover {
+  background: none;
+}
+/* line 26, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-actions a span {
   display: inline-block;
   padding: 0.1875em 0 0 0;
 }
-/* line 24, ../sass/new/openeyes/components/events/_optional-elements.scss */
+/* line 30, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-actions a img {
   margin-left: -0.3125em;
   margin-top: -0.25em;
 }
-/* line 30, ../sass/new/openeyes/components/events/_optional-elements.scss */
+/* line 36, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list {
   list-style-type: none;
   margin: 0;
 }
-/* line 33, ../sass/new/openeyes/components/events/_optional-elements.scss */
+/* line 39, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list li {
   line-height: 1em;
 }
-/* line 35, ../sass/new/openeyes/components/events/_optional-elements.scss */
+/* line 41, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list li:last-child {
   border: 0;
 }
-/* line 40, ../sass/new/openeyes/components/events/_optional-elements.scss */
+/* line 46, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list li.clicked a, .edit .optional-elements-list li.clicked a:hover {
   background: #dddddd url(../img/ajax-loader.gif) no-repeat 99.5% 2px;
   color: #333;
 }
-/* line 46, ../sass/new/openeyes/components/events/_optional-elements.scss */
+/* line 52, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list li a {
   background: #8c949c url('../img/new/_elements/icons/event-optional/element-view.png?1377677673') no-repeat right top;
   border-bottom: 1px dotted #fafafa;
@@ -3533,7 +3545,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   font-weight: bold;
   padding: 5px 5px 5px 10px;
 }
-/* line 53, ../sass/new/openeyes/components/events/_optional-elements.scss */
+/* line 59, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list li a:hover {
   background-color: #3665ff;
 }
