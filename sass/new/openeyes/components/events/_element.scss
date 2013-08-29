@@ -131,6 +131,9 @@ $oe-element-edit-title-font-style: italic;
 		.field-row:last-child {
 			padding: 0;
 		}
+		.panel:last-child {
+			margin: 0;
+		}
 	}
 	.element-eyes {
 		@extend .element-eyes;
@@ -147,6 +150,7 @@ $oe-element-edit-title-font-style: italic;
 		right: 5px;
 		top: 5px;
 		width: 16px;
+		z-index: 1;
 	}
 	.icon-add-side {
 		background: image-url("_elements/icons/event-optional/element-view.png") no-repeat -10px -4px;

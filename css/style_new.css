@@ -3420,13 +3420,17 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 .edit .element-fields .field-row:last-child {
   padding: 0;
 }
-/* line 138, ../sass/new/openeyes/components/events/_element.scss */
+/* line 134, ../sass/new/openeyes/components/events/_element.scss */
+.edit .element-fields .panel:last-child {
+  margin: 0;
+}
+/* line 141, ../sass/new/openeyes/components/events/_element.scss */
 .edit .add-side {
   font-size: 0.8125em;
   text-align: center;
   padding: 0.75em;
 }
-/* line 143, ../sass/new/openeyes/components/events/_element.scss */
+/* line 146, ../sass/new/openeyes/components/events/_element.scss */
 .edit .icon-remove-side {
   background: url('../img/new/_elements/icons/event-optional/element-remove.png?1377677673') no-repeat -10px -2px;
   height: 16px;
@@ -3434,19 +3438,20 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   right: 5px;
   top: 5px;
   width: 16px;
+  z-index: 1;
 }
-/* line 151, ../sass/new/openeyes/components/events/_element.scss */
+/* line 155, ../sass/new/openeyes/components/events/_element.scss */
 .edit .icon-add-side {
   background: url('../img/new/_elements/icons/event-optional/element-view.png?1377677673') no-repeat -10px -4px;
   width: 16px;
   height: 16px;
 }
-/* line 159, ../sass/new/openeyes/components/events/_element.scss */
+/* line 163, ../sass/new/openeyes/components/events/_element.scss */
 .edit .element-actions, .edit .sub-element-actions, .edit .optional-elements-actions {
   float: right;
   padding: 6px 10px;
 }
-/* line 163, ../sass/new/openeyes/components/events/_element.scss */
+/* line 167, ../sass/new/openeyes/components/events/_element.scss */
 .edit .element-action {
   font-size: 0.8125em;
 }

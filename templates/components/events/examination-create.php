@@ -6,8 +6,8 @@
 			</li>
 		</ul>
 		<div class="button-bar right">
-			<a href="#" class="button small">
-				Print
+			<a href="#" class="button small secondary">
+				Save
 			</a>
 		</div>
 	</header>
@@ -185,8 +185,153 @@
 					</div>
 				</section>
 
-				<section class="element Element_OphCiExamination_Diagnoses">
+				<section class="element Element_OphCiExamination_IntraocularPressure">
+					<header class="element-header">
+						<div class="element-actions">
+							<a href="#" class="button button-icon small">
+								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove sub-element</span>
+							</a>
+						</div>
+						<h3 class="element-title">Intraocular Pressure</h3>
+					</header>
+					<div class="element-fields element-eyes row">
+						<div class="element-eye right-eye column">
+							<div class="field-row">
+								<select>
+									<option value="1" selected="selected">NR</option>
+								</select>
+								<span class="element-label">
+									mmHg,
+								</span>
+								<select>
+									<option value="1" selected="selected">Goldmann</option>
+								</select>
+							</div>
+						</div>
+						<div class="element-eye left-eye column">
+							<div class="field-row">
+								<select>
+									<option value="1" selected="selected">NR</option>
+								</select>
+								<span class="element-label">
+									mmHg,
+								</span>
+								<select>
+									<option value="1" selected="selected">Goldmann</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</section>
 
+				<section class="element Element_OphCiExamination_Dilation">
+					<header class="element-header">
+						<div class="element-actions">
+							<a href="#" class="button button-icon small">
+								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove sub-element</span>
+							</a>
+						</div>
+						<h3 class="element-title">Dilation</h3>
+					</header>
+					<div class="element-fields element-eyes row">
+						<div class="element-eye right-eye column">
+							<a href="#" class="icon-remove-side">Remove side</a>
+							<div class="panel element-field">
+								<h4>Add a treatment</h4>
+								<div class="field-row">
+									<select>
+										<option value="">--- Please select ---</option>
+									</select>
+									<button class="small secondary">
+										Clear
+									</button>
+								</div>
+							</div>
+							<div class="panel element-field">
+								<h4>Treatments</h4>
+								<table class="plain">
+									<thead>
+										<tr>
+											<th>Time</th>
+											<th>Drug</th>
+											<th>Drops</th>
+											<th>Actions</th>
+										</tr>
+									</thead>
+									<tbody class="plain">
+										<tr>
+											<td>
+												<input class="input-time small" type="text" value="09:49" />
+											</td>
+											<td>
+												Cyclopentolate 0.5%
+											</td>
+											<td>
+												<select>
+													<option value="1" selected="selected">1</option>
+												</select>
+											</td>
+											<td>
+												<a href="#" class="removeTreatment">Remove</a>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<input class="input-time small" type="text" value="10:24" />
+											</td>
+											<td>
+												<span class="drug-name">Phenylephrine 2.5%</span>
+											</td>
+											<td>
+												<select>
+													<option value="1">1</option>
+												</select>
+											</td>
+											<td>
+												<a href="#" class="removeTreatment">Remove</a>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<input class="input-time small" type="text" value="10:24" />
+											</td>
+											<td>
+												<span class="drug-name">Tropicamide 0.5%</span>
+											</td>
+											<td>
+												<select>
+													<option value="1">1</option>
+												</select>
+											</td>
+											<td>
+												<a href="#" class="removeTreatment">Remove</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+						</div>
+						<div class="element-eye left-eye column">
+							<a href="#" class="icon-remove-side">Remove side</a>
+							<div class="panel element-field">
+								<h4>Add a treatment</h4>
+								<div class="field-row">
+									<select>
+										<option value="">--- Please select ---</option>
+									</select>
+									<button class="small secondary">
+										Clear
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section class="element Element_OphCiExamination_Diagnoses">
 					<header class="element-header">
 						<div class="element-actions">
 							<a href="#" class="button button-icon small">
@@ -196,7 +341,6 @@
 						</div>
 						<h3 class="element-title">Diagnoses</h3>
 					</header>
-
 					<div class="element-fields">
 						<div class="panel element-field">
 							<h4>Diagnoses</h4>
@@ -288,15 +432,13 @@
 								<div class="large-3 column">
 									<label>Diagnosis:</label>
 								</div>
-								<div class="large-5 column end">
-									<div class="field-row">
-										<select>
-											<option>Select a commonly used diagnosis</option>
-										</select>
-									</div>
-									<div class="field-row">
-										<input type="text" placeholder="or type the first few characters of a diagnosis" />
-									</div>
+								<div class="large-3 column">
+									<select>
+										<option>Select a commonly used diagnosis</option>
+									</select>
+								</div>
+								<div class="large-6 column">
+									<input type="text" placeholder="or type the first few characters of a diagnosis" />
 								</div>
 							</div>
 						</div>
