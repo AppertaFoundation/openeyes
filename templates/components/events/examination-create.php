@@ -200,13 +200,13 @@
 					<div class="element-fields">
 						<div class="panel element-field">
 							<h4>Diagnoses</h4>
-							<table class="blank">
+							<table class="plain">
 								<thead>
 									<tr>
 										<th>Diagnosis</th>
 										<th>Eye</th>
 										<th>Principal</th>
-										<th>Edit</th>
+										<th>Actions</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -267,7 +267,7 @@
 							<h4>Add a diagnosis</h4>
 							<div class="row field-row">
 								<div class="large-3 column">
-									<label>Eye</label>
+									<label>Eye:</label>
 								</div>
 								<div class="large-9 column">
 									<label class="highlight">
@@ -286,7 +286,7 @@
 							</div>
 							<div class="row field-row">
 								<div class="large-3 column">
-									<label>Diagnosis</label>
+									<label>Diagnosis:</label>
 								</div>
 								<div class="large-5 column end">
 									<div class="field-row">

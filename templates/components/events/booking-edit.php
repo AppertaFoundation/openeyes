@@ -111,21 +111,21 @@
 							<table class="plain">
 								<thead>
 									<tr>
-										<td>Actions</td>
 										<td>Procedure</td>
 										<td>Duration</td>
+										<td>Actions</td>
 									</tr>
 								</thead>
 								<tbody>
 									<tr>
-										<td><a href="#">(remove)</a></td>
 										<td>Punctoplasty - 3 snp</td>
 										<td>30 mins</td>
+										<td><a href="#">Remove</a></td>
 									</tr>
 									<tr>
-										<td><a href="#">(remove)</a></td>
 										<td>Blepharoplasty of lower lid - Bleph lower lid</td>
 										<td>40 mins</td>
+										<td><a href="#">Remove</a></td>
 									</tr>
 								</tbody>
 							</table>
