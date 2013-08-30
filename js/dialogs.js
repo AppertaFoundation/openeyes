@@ -42,12 +42,6 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * dialog.on('open', function() {
 	 *	 console.log('The dialog is now open');
 	 * });
-	 * dialog.on('close', function() {
-	 *	 console.log('The dialog is now closed.');
-	 * });
-	 * dialog.on('destroy', function() {
-	 *	 console.log('The dialog has been destroyed.');
-	 * });
 	 * dialog.open();
 	 */
 	function Dialog(options) {
@@ -72,17 +66,30 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	/**
 	 * The default dialog options. Custom options will be merged with these.
 	 * @name Dialog#_defaultOptions
-	 * @property {object} _defaultOptions
+	 * @property {(mixed)} [content=null] - Content to be displayed in the dialog.
+	 * This option accepts multiple types, including strings, DOM elements, jQuery instances, etc.
+	 * @property {(string|null)} [title=null] - The dialog title.
+	 * @property {(string|null)} [iframe=null] - A URL string to load the dialog content
+	 * in via an iFrame.
+	 * @property {(string|null)} [url=null] - A URL string to load the dialog content in via an
+	 * AJAX request.
+	 * @property {(object|null)} [data=null] - Request data used when loading dialog content
+	 * via an AJAX request.
+	 * @property {(string|null)} [dialogClass=dialog] - A CSS class string to be added to
+	 * the main dialog container.
+	 * @property {integer|string} [width=400] - The dialog width.
+	 * @property {integer|string} [height=auto] - The dialog height.
 	 * @private
 	 */
 	Dialog._defaultOptions = {
-		content: '',
+		content: null,
 		destroyOnClose: true,
 		url: null,
 		data: null,
 		id: null,
+		iframe: null,
 		autoOpen: false,
-		title: '',
+		title: null,
 		modal: true,
 		dialogClass: 'dialog',
 		resizable: false,
@@ -379,7 +386,6 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * The default alert dialog options. These options will be merged into the
 	 * default dialog options.
 	 * @name AlertDialog#_defaultOptions
-	 * @property {object] _defaultOptions
 	 * @private
 	 */
 	AlertDialog._defaultOptions = {
