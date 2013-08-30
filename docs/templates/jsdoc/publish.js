@@ -240,6 +240,7 @@ function buildNav(members) {
         }
     }
 
+    /*
     if (members.events.length) {
         nav += '<h3>Events</h3><ul>';
         members.events.forEach(function(e) {
@@ -251,6 +252,7 @@ function buildNav(members) {
 
         nav += '</ul>';
     }
+    */
 
     if (members.namespaces.length) {
         nav += '<h3>Namespaces</h3><ul>';
