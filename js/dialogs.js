@@ -53,12 +53,15 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 		EventEmitter.call(this);
 
-		this.options = $.extend(true, {}, Dialog.defaultOptions, options);
+		this.options = $.extend(true, {}, Dialog._defaultOptions, options);
 
 		this.create();
 		this.bindEvents();
 
-		if (this.options.url) {
+		if (this.options.iframe) {
+			this.loadIframeContent();
+		}
+		else if (this.options.url) {
 			this.loadContent();
 		}
 	}
@@ -67,10 +70,11 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 	/**
 	 * The default dialog options. Custom options will be merged with these.
-	 * @name Dialog#defaultOptions
-	 * @property
+	 * @name Dialog#_defaultOptions
+	 * @property {object} _defaultOptions
+	 * @private
 	 */
-	Dialog.defaultOptions = {
+	Dialog._defaultOptions = {
 		content: '',
 		destroyOnClose: true,
 		url: null,
@@ -175,6 +179,31 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	};
 
 	/**
+	 * Sets a 'loading' message and creates an iframe with the appropriate src attribute
+	 *
+	 * @name Dialog#loadIframeContent
+	 * @method
+	 * @private
+	 */
+	Dialog.prototype.loadIframeContent = function() {
+
+		this.content.addClass('loading');
+		this.setTitle('Loading...');
+
+		this.iframe = $("<iframe></iframe>");
+		this.iframe.attr({
+			src: this.options.iframe,
+			width: this.options.width,
+			height: this.options.height,
+			frameborder: 0
+
+		}).hide();
+
+		this.iframe.on('load', this.onIframeLoad.bind(this));
+		this.setContent(this.iframe);
+	};
+
+	/**
 	 * Sets the dialog title.
 	 * @name Dialog#setTitle
 	 * @method
@@ -222,6 +251,9 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @public
 	 */
 	Dialog.prototype.destroy = function() {
+		if (this.iframe) {
+			this.iframe.remove();
+		}
 		this.instance.destroy();
 		this.content.remove();
 		this.emit('destroy');
@@ -295,6 +327,20 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		this.setContent('Sorry, there was an error retrieving the content. Please try again.');
 	};
 
+	/**
+	 * iFrame load handler. This method is always executed after the iFrame
+	 * source is loaded. This method removes the loading state of the
+	 * dialog, and repositions it in the center of the screen.
+	 * @name Dialog#onIframeLoad
+	 * @method
+	 * @private
+	 */
+	Dialog.prototype.onIframeLoad = function() {
+		this.setTitle(this.options.title);
+		this.iframe.show();
+		this.onContentLoad();
+	}
+
 	OpenEyes.Dialog = Dialog;
 
 }());
@@ -317,7 +363,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 */
 	function AlertDialog(options) {
 
-		options = $.extend(true, {}, AlertDialog.defaultOptions, options);
+		options = $.extend(true, {}, AlertDialog._defaultOptions, options);
 		options.content = this.getContent(options);
 
 		Dialog.call(this, options);
@@ -328,10 +374,11 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	/**
 	 * The default alert dialog options. These options will be merged into the
 	 * default dialog options.
-	 * @name AlertDialog#defaultOptions
-	 * @property
+	 * @name AlertDialog#_defaultOptions
+	 * @property {object] _defaultOptions
+	 * @private
 	 */
-	AlertDialog.defaultOptions = {
+	AlertDialog._defaultOptions = {
 		modal: true,
 		width: 400,
 		minHeight: 'auto',
@@ -395,7 +442,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 	/**
 	 * ConfirmDialog constructor. The ConfirmDialog extends the base Dialog and provides
-	 * an 'Ok' button for the user to click on.
+	 * an 'Ok' and 'Cancel' button for the user to click on.
 	 * @name ConfirmDialog
 	 * @constructor
 	 * @extends Dialog
@@ -407,8 +454,8 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 */
 	function ConfirmDialog(options) {
 
-		options = $.extend(true, {}, ConfirmDialog.defaultOptions, options);
-		options.content = this.getContent(options);
+		options = $.extend(true, {}, ConfirmDialog._defaultOptions, options);
+		options.content = !options.url ? this.getContent(options) : '';
 
 		Dialog.call(this, options);
 	}
@@ -416,12 +463,13 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	ConfirmDialog.inherits(Dialog);
 
 	/**
-	 * The default alert dialog options. These options will be merged into the
+	 * The default confirm dialog options. These options will be merged into the
 	 * default dialog options.
-	 * @name ConfirmDialog#defaultOptions
-	 * @property
+	 * @name ConfirmDialog#_defaultOptions
+	 * @property {object} _defaultOptions - The default options.
+	 * @private
 	 */
-	ConfirmDialog.defaultOptions = {
+	ConfirmDialog._defaultOptions = {
 		modal: true,
 		width: 400,
 		minHeight: 'auto',
@@ -488,6 +536,17 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		this.emit('cancel');
 	};
 
-	OpenEyes.Dialog.Confirm = ConfirmDialog;
+	/**
+	 * Content load success handler. Sets the dialog content to be the response of
+	 * the content request.
+	 * @name ConfirmDialog#onContentLoadSuccess
+	 * @method
+	 * @private
+	 */
+	ConfirmDialog.prototype.onContentLoadSuccess = function(response) {
+		this.options.content = response;
+		Dialog.prototype.onContentLoadSuccess.call(this, this.getContent(this.options));
+	};
 
+	OpenEyes.Dialog.Confirm = ConfirmDialog;
 }());
