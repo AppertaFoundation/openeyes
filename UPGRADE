@@ -1,0 +1,77 @@
+Upgrading instructions for OpenEyes 1.4
+=======================================
+
+!!IIMPORTANT!!!
+The following upgrading instructions are cumulative. That is,
+if you want to upgrade from version A to version C and there is
+version B between A and C, you need to following the instructions
+for both A and B.
+
+These instructions were only introduced to the project for the release
+of 1.4. As such, they begin with the upgrade from 1.3. Earlier versions
+are not covered.
+
+Upgrading from 1.3
+------------------
+
+run the core migrations with 
+
+./yiic migrate
+
+run the script to migrate the support service firms to new schema:
+
+./yiic MigrateSupportServiceFirms
+
+Setup the files directory for ProtectedFile:
+
+mkdir protected/files
+chmod 777 protected/files
+
+New config params:
+
+institution_specialty:
+The specialty code for the site institution. For Opthamology this is 130
+
+contact_labels:
+A list of labels that can be applied to contacts for patients. Supports {SPECIALTY} placeholder
+which will be substituted for the institution_specialty title attribute.
+
+Example:
+'contact_labels' => array(
+    'Staff',
+    'Consultant Ophthalmologist',
+    'Non-{SPECIALTY} specialist',
+  ),
+
+specialty_codes & specialty_sort:
+The codes for specialties have been changed from strings to numerics, these params  needs to be changed accordingly
+
+profile_user_can_edit:
+
+flag to indicate whether users should be able to edit their profile or not. Defaults to true in core config.
+
+profile_user_can_change_password:
+
+flag to indicate whether users can change their password in profile editing. If users cannot edit their profile,
+this flag has no effect.
+
+Cache Busting
+-------------
+
+1.3 provided a cache busting config under the param name of cache_buster. This is no longer supported. This is
+now defined as a component, and should be configured as such:
+
+'components' => array(
+    'clientScript' => array(
+        'cache_buster' => date('Ymd'),
+    ),
+),
+
+Surgeon Flag
+------------
+
+You may want to set your doctors up as surgeons with the new is_surgeon flag. If you do, run the following sql in 
+the database:
+
+update user set is_surgeon = is_doctor;
+

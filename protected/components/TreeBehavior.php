@@ -43,8 +43,18 @@ class TreeBehavior extends CActiveRecordBehavior
 	public $idAttribute = 'id';
 	public $leftAttribute = 'lft';
 	public $rightAttribute = 'rght';
+	protected $_cacheStub = null;
 
-	/*
+	protected function getCacheStub()
+	{
+		if (is_null($this->_cacheStub)) {
+			$owner = $this->getOwner();
+			$this->_cacheStub = "TreeBehaviour:" . $owner->treeTable() . ":" . $owner->id;
+		}
+		return $this->_cacheStub;
+	}
+
+	/**
 	* gets the list of left and right boundaries for any given owner objects
 	*
 	* @param CDbConnection $db
@@ -111,8 +121,8 @@ class TreeBehavior extends CActiveRecordBehavior
 		return $ids;
 	}
 
-	/*
-	 * Returns all the ancestor ids of the provided object id
+	/**
+	* Returns all the ancestor ids of the provided object id
 	*
 	* @param CDbConnection $db
 	* @param string $table
@@ -148,7 +158,7 @@ class TreeBehavior extends CActiveRecordBehavior
 		throw new Exception('object using TreeBehaviour must implement the treeTable method');
 	}
 
-	/*
+	/**
 	 * works out the starting point for a new tree
 	 *
 	 * @returns int start
@@ -167,7 +177,7 @@ class TreeBehavior extends CActiveRecordBehavior
 		}
 	}
 
-	/*
+	/**
 	 * returns all descendant ids of the object, across any trees the the object exists in
 	 *
 	 * @returns array() of object ids
@@ -175,12 +185,17 @@ class TreeBehavior extends CActiveRecordBehavior
 	public function descendentIds()
 	{
 		$owner = $this->getOwner();
-		$db = $owner->getDbConnection();
+		$cache_id = $this->getCacheStub() . ':descendentIds';
+		$descendent_ids = Yii::app()->cache->get($cache_id);
+		if ($descendent_ids === false) {
+			$descendent_ids = $this->_descendentIds($owner->getDbConnection(), $owner->treeTable(), $owner->id);
+			Yii::app()->cache->set($cache_id, $descendent_ids);
+		}
 
-		return $this->_descendentIds($db, $owner->treeTable(), $owner->id);
+		return $descendent_ids;
 	}
 
-	/*
+	/**
 	 * immediate child ids of the object (note that these children might not be all in one tree, given that a node can exist in more than one tree)
 	 *
 	 * @returns array() of object ids
@@ -211,7 +226,7 @@ class TreeBehavior extends CActiveRecordBehavior
 			'GROUP BY leaf.' . $this->idAttribute . ' HAVING depth = ' .
 			'(SELECT count(*) FROM ' . $owner->treeTable() . ' AS tree WHERE tree.' . $this->idAttribute . ' = ' . $db->quoteValue($owner->id) . ') ' .
 			'ORDER BY leaf.' . $this->leftAttribute;
-		print $query;
+
 		$res = $db->createCommand($query)->query();
 		$result = array();
 		foreach ($res as $r) {
@@ -225,7 +240,6 @@ class TreeBehavior extends CActiveRecordBehavior
 		$owner = $this->getOwner();
 		$cids  = $owner->childIds();
 
-		var_dump($cids);
 		$idorder = implode(',',$cids);
 
 		$criteria = new CDbCriteria();
@@ -234,7 +248,7 @@ class TreeBehavior extends CActiveRecordBehavior
 		return $kls::model()->findAllByPk($cids, $criteria);
 	}
 
-	/*
+	/**
 	 * get immediate parent ids for the object (note there may be more than one because any disorder can exist in more than one tree)
 	 *
 	 * @returns array() of object ids
@@ -265,7 +279,7 @@ class TreeBehavior extends CActiveRecordBehavior
 		return $ids;
 	}
 
-	/*
+	/**
 	 * returns all parent object ids (note there may be more than one because any object can exist in more than one tree)
 	 *
 	 * @returns array() of object ids
@@ -273,10 +287,17 @@ class TreeBehavior extends CActiveRecordBehavior
 	public function ancestorIds()
 	{
 		$owner = $this->getOwner();
+		$cache_id = $this->getCacheStub() . ':ancestorIds';
+		$ancestor_ids = Yii::app()->cache->get($cache_id);
+		if ($ancestor_ids === false) {
+			$ancestor_ids = $this->_ancestorIds($owner->getDbConnection(), $owner->treeTable(), $owner->id);
+			Yii::app()->cache->set($cache_id, $ancestor_ids);
+		}
+		return $ancestor_ids;
 
-		return $this->_ancestorIds($owner->getDbConnection(), $owner->treeTable(), $owner->id);
 	}
-	/*
+
+	/**
 	 * returns the object ids that are at the top of trees
 	 *
 	 * @returns array() of object ids
@@ -302,7 +323,7 @@ class TreeBehavior extends CActiveRecordBehavior
 		return $ids;
 	}
 
-	/*
+	/**
 	 * returns true if the owner is an ancestor of any of the ids passed in
 	 *
 	 * @param array() list of object ids

@@ -1767,6 +1767,12 @@ body .ui-widget-overlay {
     padding: 0 0 10px 0;
 }
 
+.ui-dialog .ui-dialog-title {
+	float: none;
+	display: block;
+	margin-right: 34px;
+}
+
 .ui-dialog.dialog .ui-dialog-content {
     padding: 0;
 }
@@ -1778,8 +1784,9 @@ body .ui-widget-overlay {
 }
 .ui-dialog.dialog .ui-dialog-titlebar-close {
     position: absolute;
-    top: -4px;
-    right: -58px;
+    float: none;
+    top: 5px;
+    right: -6px;
     display: block;
     width: 34px;
     height: 34px;
