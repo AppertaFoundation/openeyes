@@ -58,7 +58,10 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		this.create();
 		this.bindEvents();
 
-		if (this.options.url) {
+		if (this.options.iframe) {
+			this.loadIframeContent();
+		}
+		else if (this.options.url) {
 			this.loadContent();
 		}
 	}
@@ -175,6 +178,31 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	};
 
 	/**
+	 * Sets a 'loading' message and creates an iframe with the appropriate src attribute
+	 *
+	 * @name Dialog#loadIframeContent
+	 * @method
+	 * @private
+	 */
+	Dialog.prototype.loadIframeContent = function() {
+
+		this.content.addClass('loading');
+		this.setTitle('Loading...');
+
+		this.iframe = $("<iframe></iframe>");
+		this.iframe.attr({
+			src: this.options.iframe,
+			width: this.options.width,
+			height: this.options.height,
+			frameborder: 0
+
+		}).hide();
+
+		this.iframe.on('load', this.onIframeLoad.bind(this));
+		this.setContent(this.iframe);
+	};
+
+	/**
 	 * Sets the dialog title.
 	 * @name Dialog#setTitle
 	 * @method
@@ -222,6 +250,9 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @public
 	 */
 	Dialog.prototype.destroy = function() {
+		if (this.iframe) {
+			this.iframe.remove();
+		}
 		this.instance.destroy();
 		this.content.remove();
 		this.emit('destroy');
@@ -294,6 +325,20 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		this.setTitle('Error');
 		this.setContent('Sorry, there was an error retrieving the content. Please try again.');
 	};
+
+	/**
+	 * iFrame load handler. This method is always executed after the iFrame
+	 * source is loaded. This method removes the loading state of the
+	 * dialog, and repositions it in the center of the screen.
+	 * @name Dialog#onIframeLoad
+	 * @method
+	 * @private
+	 */
+	Dialog.prototype.onIframeLoad = function() {
+		this.setTitle(this.options.title);
+		this.iframe.show();
+		this.onContentLoad();
+	}
 
 	OpenEyes.Dialog = Dialog;
 
