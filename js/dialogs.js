@@ -33,6 +33,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * Dialog constructor.
 	 * @name Dialog
 	 * @constructor
+	 * @extends {Emitter}
 	 * @example
 	 * var dialog = new OpenEyes.Dialog({
 	 *	 title: 'Title here',
@@ -40,12 +41,6 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * });
 	 * dialog.on('open', function() {
 	 *	 console.log('The dialog is now open');
-	 * });
-	 * dialog.on('close', function() {
-	 *	 console.log('The dialog is now closed.');
-	 * });
-	 * dialog.on('destroy', function() {
-	 *	 console.log('The dialog has been destroyed.');
 	 * });
 	 * dialog.open();
 	 */
@@ -71,17 +66,30 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	/**
 	 * The default dialog options. Custom options will be merged with these.
 	 * @name Dialog#_defaultOptions
-	 * @property {object} _defaultOptions
+	 * @property {(mixed)} [content=null] - Content to be displayed in the dialog.
+	 * This option accepts multiple types, including strings, DOM elements, jQuery instances, etc.
+	 * @property {(string|null)} [title=null] - The dialog title.
+	 * @property {(string|null)} [iframe=null] - A URL string to load the dialog content
+	 * in via an iFrame.
+	 * @property {(string|null)} [url=null] - A URL string to load the dialog content in via an
+	 * AJAX request.
+	 * @property {(object|null)} [data=null] - Request data used when loading dialog content
+	 * via an AJAX request.
+	 * @property {(string|null)} [dialogClass=dialog] - A CSS class string to be added to
+	 * the main dialog container.
+	 * @property {integer|string} [width=400] - The dialog width.
+	 * @property {integer|string} [height=auto] - The dialog height.
 	 * @private
 	 */
 	Dialog._defaultOptions = {
-		content: '',
+		content: null,
 		destroyOnClose: true,
 		url: null,
 		data: null,
 		id: null,
+		iframe: null,
 		autoOpen: false,
-		title: '',
+		title: null,
 		modal: true,
 		dialogClass: 'dialog',
 		resizable: false,
@@ -131,9 +139,13 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @private
 	 */
 	Dialog.prototype.bindEvents = function() {
+
+		// Ensure all handlers are called in the context of this object instance.
+		this.bindAll(true);
+
 		this.content.on({
-			dialogclose: this.onDialogClose.bind(this),
-			dialogopen: this.onDialogOpen.bind(this)
+			dialogclose: this.onDialogClose,
+			dialogopen: this.onDialogOpen
 		});
 	};
 
@@ -173,9 +185,9 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 			data: this.options.data
 		});
 
-		xhr.done(this.onContentLoadSuccess.bind(this));
-		xhr.fail(this.onContentLoadFail.bind(this));
-		xhr.always(this.onContentLoad.bind(this));
+		xhr.done(this.onContentLoadSuccess);
+		xhr.fail(this.onContentLoadFail);
+		xhr.always(this.onContentLoad);
 	};
 
 	/**
@@ -354,7 +366,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * an 'Ok' button for the user to click on.
 	 * @name AlertDialog
 	 * @constructor
-	 * @extends Dialog
+	 * @extends {Dialog}
 	 * @example
 	 * var alert = new OpenEyes.Dialog.Alert({
 	 *	 content: 'Here is some content.'
@@ -375,7 +387,6 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * The default alert dialog options. These options will be merged into the
 	 * default dialog options.
 	 * @name AlertDialog#_defaultOptions
-	 * @property {object] _defaultOptions
 	 * @private
 	 */
 	AlertDialog._defaultOptions = {
@@ -417,7 +428,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 */
 	AlertDialog.prototype.bindEvents = function() {
 		Dialog.prototype.bindEvents.apply(this, arguments);
-		this.content.on('click', '.ok', this.onButtonClick.bind(this));
+		this.content.on('click', '.ok', this.onButtonClick);
 	};
 
 	/** Event handlers */
@@ -445,7 +456,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * an 'Ok' and 'Cancel' button for the user to click on.
 	 * @name ConfirmDialog
 	 * @constructor
-	 * @extends Dialog
+	 * @extends {Dialog}
 	 * @example
 	 * var alert = new OpenEyes.Dialog.Confirm({
 	 *	 content: 'Here is some content.'
@@ -508,8 +519,8 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 */
 	ConfirmDialog.prototype.bindEvents = function() {
 		Dialog.prototype.bindEvents.apply(this, arguments);
-		this.content.on('click', '.ok', this.onOKButtonClick.bind(this));
-		this.content.on('click', '.cancel', this.onCancelButtonClick.bind(this));
+		this.content.on('click', '.ok', this.onOKButtonClick);
+		this.content.on('click', '.cancel', this.onCancelButtonClick);
 	};
 
 	/** Event handlers */
