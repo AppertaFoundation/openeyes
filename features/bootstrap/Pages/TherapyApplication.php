@@ -2,9 +2,9 @@
 
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class Therapy extends Page
+class TherapyApplication extends Page
 {
-//    protected $path = "/site/OphDrPrescription/Default/create?patient_id={parentId}"; - NEEDS TO BE UPDATED WHEN WORKING!
+    protected $path = "/site/OphCoTherapyapplication/Default/create?patient_id={parentId}";
 
     protected $elements = array(
         #Diagnosis
@@ -35,6 +35,12 @@ class Therapy extends Page
     # To Code - Choices of routes to be defined
 
     //Use $saveExamination to Save Intravitreal injection
+
+
+    public function addRightSide ()
+    {
+        $this->getElement('addRightSide')->click();
+    }
 
 }
 

@@ -44,6 +44,8 @@ Feature: Create New Operation Booking Event
     #Then I select Save and Schedule later
 
     Then I select Save and Schedule now
+  # !!!THIS TEST WILL FAIL IF THERE ARE OVER 66 EVENTS - THE SAVE BUTTON WILL NOT BE IN VIEW!!!
+
     And I select an Available theatre slot date
     And I select an Available session time
 #    Then I add Session comments of "Insert session comments here"

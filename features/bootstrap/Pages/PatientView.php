@@ -53,7 +53,7 @@ class PatientView extends Page
         'selectRoute' => array('xpath' => "//select[@id='route_id']"),
         'selectFrequency' => array('xpath' => "//select[@id='frequency_id']"),
         'openMedicationDate' => array('xpath' => "//*[@id='start_date']"),
-        'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']/table/tbody/tr[2]/td[4]/a"),
+        'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']/table/tbody"),
         'saveMedication' => array('xpath' => "//*[@class='classy green mini btn_save_medication']//*[contains(text(),'Save')]"),
         'addAllergyButton' => array('xpath' => "//*[@id='btn-add_allergy']"),
         'selectAllergy' => array('xpath' => "//select[@id='allergy_id']"),
@@ -182,28 +182,32 @@ class PatientView extends Page
     public function savePreviousOperation ()
     {
         $this->getElement('operationSaveButton')->press();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(5000);
     }
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
     {
         $this->getElement('addMedicationButton')->click();
+        $this->getSession()->wait(3000);
         $this->getElement('selectMedication')->selectOption($medication);
+        $this->getSession()->wait(3000);
         $this->getElement('selectRoute')->selectOption($route);
+        $this->getSession()->wait(3000);
         $this->getElement('selectFrequency')->selectOption($frequency);
-        $this->getSession()->wait(3000,false);
-        $this->getElement('openMedicationDate')->click();
         $this->getSession()->wait(7000);
+        $this->getElement('openMedicationDate')->click();
+        $this->getSession()->wait(3000);
         $this->getElement('selectDateFrom')->click($datefrom);
-        $this->getSession()->wait(3000,false);
+        $this->getSession()->wait(7000);
         $this->getElement('saveMedication')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(2000);
     }
 
     public function editCVIstatus ($status)
     {
         $this->getElement('editCVIstatusButton')->click();
         $this->getElement('cviStatus')->selectOption($status);
+        $this->getSession()->wait(3000);
     }
 
     public function saveCVIstatus ()

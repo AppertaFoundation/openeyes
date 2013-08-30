@@ -145,6 +145,7 @@ class OperationBooking extends Page
 
     public function scheduleNow ()
     {
+        $this->getElement('scheduleNow')->keyPress(2191);
         $this->getElement('scheduleNow')->click();
     }
 

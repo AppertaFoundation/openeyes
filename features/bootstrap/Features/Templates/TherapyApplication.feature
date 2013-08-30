@@ -1,4 +1,4 @@
-@Therapy
+@therapy
 Feature: Create New Anaesthetic Satisfaction Audit
   In order to cover every possible route throughout the site
   As an automation tester
@@ -32,7 +32,7 @@ Feature: Create New Anaesthetic Satisfaction Audit
 
     And I select a Consultant of "29"
 
-    Then I Save the Examination
+    Then I Save the Therapy Application
 
 
   Examples: User details
