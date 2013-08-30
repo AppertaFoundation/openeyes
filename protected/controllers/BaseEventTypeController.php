@@ -144,17 +144,6 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 
-		// Clear js for ajax calls
-		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-			$scriptMap = Yii::app()->clientScript->scriptMap;
-			$scriptMap['jquery.js'] = false;
-			$scriptMap['jquery.min.js'] = false;
-			$scriptMap['jquery-ui.js'] = false;
-			$scriptMap['jquery-ui.min.js'] = false;
-			$scriptMap['module.js'] = false;
-			Yii::app()->clientScript->scriptMap = $scriptMap;
-		}
-
 		return parent::beforeAction($action);
 	}
 
@@ -277,6 +266,10 @@ class BaseEventTypeController extends BaseController
 
 		if (!$this->event_type->support_services && !$firm->serviceSubspecialtyAssignment) {
 			throw new Exception("Can't create a non-support service event for a support-service firm");
+		}
+
+		if (!$episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
+			throw new Exception("There is no open episode for the currently selected firm's subspecialty");
 		}
 
 		// firm changing sanity

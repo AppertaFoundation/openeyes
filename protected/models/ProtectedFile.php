@@ -65,7 +65,6 @@ class ProtectedFile extends BaseActiveRecord
 
 		$path = $file->getFilePath();
 		if (!file_exists($path)) {
-			error_log($path);
 			if (!@mkdir($path, 0755, true)) {
 				throw new Exception("$path could not be created: permission denied");
 			}
@@ -183,7 +182,9 @@ class ProtectedFile extends BaseActiveRecord
 	public function beforeSave()
 	{
 		if ($this->_source_path) {
-			mkdir(dirname($this->getPath()), 0777, true);
+			if (!file_exists(dirname($this->getPath())) ) {
+				mkdir(dirname($this->getPath()), 0777, true);
+			}
 			copy($this->_source_path, $this->getPath());
 			$this->_source_path = null;
 		} elseif (!file_exists($this->getPath())) {
@@ -193,6 +194,13 @@ class ProtectedFile extends BaseActiveRecord
 		return true;
 	}
 
+	/**
+	 * ensure we keep track of path to file before deleting from database
+	 *
+	 * @return bool
+	 * (non-PHPdoc)
+	 * @see BaseActiveRecord::beforeDelete()
+	 */
 	public function beforeDelete()
 	{
 		$this->_stored_path = $this->getPath();

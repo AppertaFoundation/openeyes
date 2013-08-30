@@ -628,6 +628,7 @@ ul#user_nav > li .selected,
 #patientID { background: #fff2d7 url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; padding: 5px;
 	border-right:2px solid #ffb212; border-bottom:2px solid #ffb212; border-left:2px solid #ffb212; }
 .patientReminder { padding:4px 5px 0; font-size: 12px; background: url(../img/_elements/icons/patient/patient-id_small.png) top right no-repeat; }
+.patientReminder.warning  { padding:4px 5px 0; font-size: 12px; background: url(../img/_elements/icons/patient/patient-id_small-warning.png) top right no-repeat; }
 .patientReminder .patientName { font-size: 13px; line-height: 19px; }
 .patientReminder .patientName .surname { font-size: 15px; }
 .patientReminder .patientName a { color: #000; }
@@ -643,7 +644,7 @@ ul#user_nav > li .selected,
 .patientReminder .icons li.gender.female { background: url(../img/_elements/icons/alerts/female_trans.png) center center no-repeat; }
 .patientReminder .icons li.gender.male { background: url(../img/_elements/icons/alerts/male_trans.png) center center no-repeat; }
 .patientReminder .icons li.warning { background: url(../img/_elements/icons/alerts/warning.png) center center no-repeat; text-indent: -9999px; width: 16px; height: 16px;}
-.warningHover { display:none; position:absolute; z-index:5; right:5px; bottom:-25px; height:17px; line-height:17px; font-size:11px; letter-spacing:1px; white-space: nowrap; padding:0 5px; color:#fff; background:#eb5911; border:2px solid #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;}
+.warningHover { display:none; position:absolute; z-index:999; right:3px; bottom:-25px; height:17px; line-height:17px; font-size:11px; letter-spacing:1px; white-space: nowrap; padding:0 5px; color:#fff; background:#eb5911; border:2px solid #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;}
 .warningHover:after { content: ""; position: absolute; top:-6px; left:43%; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 5px solid #fff;}
 .patientReminder .hide { display: none; }
 .patientReminder .i_patient { position: absolute; bottom: 7px; right: 10px; }
@@ -965,10 +966,12 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 
 /* 2 column split - for summary */
 #event_content .cols2 { padding-bottom:30px; }
-#event_content .cols2 > .left { clear: left; float: left; width: 48%; }
-#event_content .cols2 > .right { clear: right; float: right; width: 48%; }
+#event_content .cols2 > .left { clear: left; float: left; width: 50%; box-sizing: border-box;}
+#event_content .cols2 > .eventDetail:nth-of-type(1).left { border-right: 1px solid #fafafa; }
+#event_content .cols2 > .right { clear: right; float: right; width: 50%; box-sizing: border-box;}
 /* reduced labels on two column split */
 #event_content .cols2 > .left > h4, #event_content .cols2 > .right > h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px; }
+
 
 #event_content .colsX { padding-bottom:10px; clear:right; }
 #event_content .colsX > .colStack { float: left; width:20%; }
@@ -1764,14 +1767,26 @@ body .ui-widget-overlay {
     padding: 0 0 10px 0;
 }
 
+.ui-dialog .ui-dialog-title {
+	float: none;
+	display: block;
+	margin-right: 34px;
+}
+
 .ui-dialog.dialog .ui-dialog-content {
     padding: 0;
 }
 
+.ui-dialog.dialog .ui-dialog-content.loading {
+    background: url(../img/ajax-loader-large.gif) center center no-repeat;
+    padding: 20px 0 40px 0;
+    text-align: center;
+}
 .ui-dialog.dialog .ui-dialog-titlebar-close {
     position: absolute;
-    top: -4px;
-    right: -58px;
+    float: none;
+    top: 5px;
+    right: -6px;
     display: block;
     width: 34px;
     height: 34px;
@@ -1796,17 +1811,30 @@ body .ui-widget-overlay {
     font-family: Helvetica,Arial,Frutiger,Calibri,sans-serif;
 }
 
-/* ====== Alert dialog ====== */
+/* ====== Alert and confirm dialog ====== */
 
-.ui-widget.dialog.alert .ui-dialog-content {
+.ui-widget.dialog.alert .ui-dialog-content,
+.ui-widget.dialog.confirm .ui-dialog-content  {
     overflow: hidden;
 }
 
-.ui-widget.dialog.alert .buttons {
+.ui-widget.dialog.alert .buttons,
+.ui-widget.dialog.confirm .buttons {
     padding: 1.5em .5em .5em .5em;
 }
 
-#add-new-event-dialog p { margin-bottom: 8px; -webkit-border-radius: 5px; border-radius: 5px; display: block; -webkit-margin-before: 5px; -webkit-margin-after: 5px; line-height: 1.231; }
+/* ====== Site and firm Dialog ====== */
+
+#site-and-firm-form {
+    display: none;
+}
+
+.ui-dialog #site-and-firm-form {
+    display: block;
+}
+
+
+#add-new-event-dialog p { margin-bottom: 8px; -webkit-border-radius: 5px; border-radius: 5px; display: block; -webkit-margin-before: 5px; -webkit-margin-after: 5px; line-height: 1.231; padding: 0 1px;}
 #add-new-event-dialog a { color: #0b59da; font-weight: normal; display: block; padding: 5px; background: #f6f6f6; -webkit-border-radius: 3px; border-radius: 3px; }
 #add-new-event-dialog div.title { margin-top: 10px; margin-bottom: 15px; }
 #add-new-event-dialog p > a:hover { border: none; color: #fff; background: #69bd51; }

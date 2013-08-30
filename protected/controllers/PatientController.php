@@ -254,10 +254,9 @@ class PatientController extends BaseController
 				$message .= 'found for your search.';
 			}
 			Yii::app()->user->setFlash('warning.no-results', $message);
-			error_log('about to redirect:' . Yii::app()->homeUrl);
+
 			$this->redirect(Yii::app()->homeUrl);
-			
-			error_log('should have redirectred');
+
 		} elseif ($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
 				$this->redirect(array('patient/view/' . $item->id));
@@ -865,8 +864,8 @@ class PatientController extends BaseController
 
 		echo "success";
 	}
-	
-	public function actionEditOphInfo() 
+
+	public function actionEditOphInfo()
 	{
 		$cvi_status = PatientOphInfoCviStatus::model()->findByPk(@$_POST['PatientOphInfo']['cvi_status_id']);
 
@@ -1019,17 +1018,21 @@ class PatientController extends BaseController
 			if (!$po = PreviousOperation::model()->findByPk(@$_POST['edit_operation_id'])) {
 				throw new Exception("Previous operation not found: ".@$_POST['edit_operation_id']);
 			}
-			$po->side_id = @$_POST['previous_operation_side'] ? @$_POST['previous_operation_side'] : null;
-			$po->operation = @$_POST['previous_operation'];
-			$po->date = str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
-			if (!$po->save()) {
-				throw new Exception("Unable to save previous operation: ".print_r($po->getErrors(),true));
-			}
 		} else {
-			$patient->addPreviousOperation(@$_POST['previous_operation'],@$_POST['previous_operation_side'],str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT));
+			$po = new PreviousOperation;
 		}
 
-		$this->redirect(array('/patient/view/'.$patient->id));
+		$po->patient_id = $patient->id;
+		$po->side_id = @$_POST['previous_operation_side'] ? @$_POST['previous_operation_side'] : null;
+		$po->operation = @$_POST['previous_operation'];
+		$po->date = str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
+
+		if (!$po->save()) {
+			echo json_encode($po->getErrors());
+			return;
+		}
+
+		echo json_encode(array());
 	}
 
 	public function actionAddMedication()
@@ -1525,57 +1528,6 @@ class PatientController extends BaseController
 		}
 
 		echo json_encode(array('route_id'=>$drug->default_route_id,'frequency_id'=>$drug->default_frequency_id));
-	}
-
-	public function actionAddNewEvent()
-	{
-		if (!BaseController::checkUserLevel(4)) {
-			return;
-		}
-
-		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
-			throw new Exception("Patient not found: ".@$_POST['patient_id']);
-		}
-
-		if (@$_POST['subspecialty_id']) {
-			if (!$subspecialty = Subspecialty::model()->findByPk(@$_POST['subspecialty_id'])) {
-				throw new Exception("Subspecialty not found: ".@$_POST['subspecialty_id']);
-			}
-		}
-
-		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-
-		if (isset($subspecialty)) {
-			if (!$firm->serviceSubspecialtyAssignment || $firm->serviceSubspecialtyAssignment->subspecialty_id != $subspecialty->id) {
-				$has = false;
-				foreach (UserFirm::model()->findAll('user_id=?',array(Yii::app()->user->id)) as $uf) {
-					if ($uf->firm->serviceSubspecialtyAssignment && $uf->firm->serviceSubspecialtyAssignment->subspecialty_id == $subspecialty->id) {
-						$has = true;
-						break;
-					}
-				}
-
-				if (!$has) {
-					echo "0";
-					return;
-				}
-			}
-		}
-
-		if ((isset($subspecialty) && $firm->serviceSubspecialtyAssignment && $subspecialty->id == $firm->serviceSubspecialtyAssignment->subspecialty_id) || (!isset($subspecialty) && $firm->serviceSubspecialtyAssignment == null)) {
-			return $this->renderPartial('//patient/add_new_event',array(
-				'subspecialty' => @$subspecialty,
-				'patient' => $patient,
-				'eventTypes' => EventType::model()->getEventTypeModules(),
-			),false, true);
-		}
-
-		$this->renderPartial('/site/change_site_and_firm', array(
-			'returnUrl' => @$_POST['returnUrl'],
-			'subspecialty' => @$subspecialty,
-			'support_services' => (boolean) !@$subspecialty,
-			'patient' => $patient,
-		), false, true);
 	}
 
 	public function actionVerifyAddNewEpisode()

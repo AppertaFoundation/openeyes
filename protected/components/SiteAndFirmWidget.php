@@ -62,9 +62,15 @@ class SiteAndFirmWidget extends CWidget
 						$episode->id => 1,
 					);
 				}
-
+				
+				if(!isset($episode) && isset($this->patient)) {
+					$this->controller->redirect(array("/patient/".$this->patient->id));
+				}
+				else
+				{
 				// Redirect browser to clear POST
 				$this->controller->redirect($this->returnUrl);
+				}
 				Yii::app()->end();
 			}
 		} else {
@@ -82,8 +88,12 @@ class SiteAndFirmWidget extends CWidget
 		}
 
 		$user_firm_ids = array();
-		foreach ($user->firmSelections as $firm) {
-			$user_firm_ids[] = $firm->id;
+		if (Yii::app()->params['profile_user_can_edit']) {
+			// firm selections only apply when the user is able to change them.
+			// if firms should be restricted then this should be done through UserFirmRights
+			foreach ($user->firmSelections as $firm) {
+				$user_firm_ids[] = $firm->id;
+			}
 		}
 
 		$firms = array();

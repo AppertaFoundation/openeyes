@@ -106,7 +106,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
 			if ($file!==$this->moduleTemplateFile) {
 				if (CFileHelper::getExtension($file)==='php' || CFileHelper::getExtension($file)==='js') {
-					if (preg_match("/\/migrations\//", $file)) {
+					if (preg_match("/".preg_quote(DIRECTORY_SEPARATOR)."migrations".preg_quote(DIRECTORY_SEPARATOR)."/", $file)) {
 						if (preg_match('/_create\.php$/',$file) && $this->mode == 'create') {
 							# $matches = Array();
 							if (file_exists($this->modulePath.'/migrations/') and ($matches = $this->regExpFile("/m([0-9]+)\_([0-9]+)\_event_type_".$this->moduleID."/",$this->modulePath.'/migrations/'))) {
@@ -115,7 +115,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							} else {
 								$migrationid = gmdate('ymd_His');
 							}
-							$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', preg_replace('/_create/','',$destination_file));
+							$destination_file = preg_replace("/".preg_quote(DIRECTORY_SEPARATOR)."migrations".preg_quote(DIRECTORY_SEPARATOR)."/", '/migrations/m'.$migrationid.'_', preg_replace('/_create/','',$destination_file));
 							$content=$this->renderMigrations($file, $migrationid);
 							$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 						} else if (preg_match('/_update\.php$/',$file) && $this->mode == 'update') {

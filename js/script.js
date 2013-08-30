@@ -108,25 +108,35 @@ $(document).ready(function(){
 	/**
 	 * Site / firm switcher
 	 */
-	$('.change-firm a').click(function(e) {
-		if (typeof(OE_patient_id) != 'undefined') {
-			var patient_id = OE_patient_id;
-		} else {
-			var patient_id = null;
-		}
+	(function firmSwitcher() {
 
-		$.ajax({
-			url: baseUrl + '/site/changesiteandfirm',
-			data: {
-				returnUrl: window.location.href,
-				patient_id: patient_id
-			},
-			success: function(data) {
-				$('#user_panel').before(data);
-			}
+		// Default dialog options.
+		var options = {
+			id: 'site-and-firm-dialog',
+			title: 'Select a new Site and/or Firm'
+		};
+
+		// Show the 'change firm' dialog when clicking on the 'change firm' link.
+		$('.change-firm a').click(function(e) {
+
+			e.preventDefault();
+
+			new OpenEyes.Dialog($.extend({}, options, {
+				url: baseUrl + '/site/changesiteandfirm',
+				data: {
+					returnUrl: window.location.href,
+					patient_id: window.OE_patient_id || null
+				}
+			})).open();
 		});
-		e.preventDefault();
-	});
+
+		// Show the 'change firm' dialog on page load.
+		if ($('#site-and-firm-form').length) {
+			new OpenEyes.Dialog($.extend({}, options, {
+				content: $('#site-and-firm-form')
+			})).open();
+		}
+	}());
 
 	$('#checkall').click(function() {
 		$('input.'+$(this).attr('class')).attr('checked',$(this).is(':checked') ? 'checked' : false);

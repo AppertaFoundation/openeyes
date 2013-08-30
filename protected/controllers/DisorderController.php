@@ -50,8 +50,12 @@ class DisorderController extends BaseController
 			// Limit results
 			$criteria->limit = '200';
 			if (@$_GET['code']) {
-				$criteria->join = 'join specialty on specialty_id = specialty.id AND specialty.code = :specode';
-				$params[':specode'] = $_GET['code'];
+				if (@$_GET['code'] == 'systemic') {
+					$criteria->addCondition('specialty_id is null');
+				} else {
+					$criteria->join = 'join specialty on specialty_id = specialty.id AND specialty.code = :specode';
+					$params[':specode'] = $_GET['code'];
+				}
 			}
 
 			$criteria->params = $params;

@@ -17,8 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php 
+	$clinical = (BaseController::checkUserLevel(2));
+	
+	$warnings = $this->patient->getWarnings($clinical);
+?>
 <div id="patientID">
-	<div class="patientReminder clearfix">
+	<div class="patientReminder clearfix<?php if ($warnings) echo " warning" ?>">
 		<div class="patientName">
 			<?php echo CHtml::link($this->patient->getDisplayName(),array('/patient/view/'.$this->patient->id)) ?>
 			(<?php if ($this->patient->isDeceased()) { ?>Deceased<?php } else { echo $this->patient->getAge(); } ?>)
@@ -27,7 +32,7 @@
 		<div class="nhsNumber"><span class="hide">NHS number:</span><?php echo $this->patient->nhsnum?></div>
 		<ul class="icons">
 			<li class="gender <?php echo strtolower($this->patient->getGenderString()) ?>"><?php echo $this->patient->getGenderString() ?></li>
-			<?php if ($warnings = $this->patient->getWarnings()) { 
+			<?php if ($warnings) { 
 				$msgs = array();
 				foreach ($warnings as $warn) {
 					$msgs[] = $warn['short_msg'];
