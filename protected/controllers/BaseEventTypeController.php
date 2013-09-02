@@ -592,7 +592,9 @@ class BaseEventTypeController extends BaseController
 		);
 	}
 
-	/*
+	/**
+	 * Stub method:
+	 *
 	 * Use this for any many to many relations defined on your elements. This is called prior to validation
 	 * so should set values without actually touching the database. To do that, the createElements and updateElements
 	 * methods should be extended to handle the POST values.
@@ -602,8 +604,10 @@ class BaseEventTypeController extends BaseController
 		// placeholder function
 	}
 
-	/*
+	/**
 	 * Uses the POST values to define elements and their field values without hitting the db, and then performs validation
+	 *
+	 * @param array() - elements
 	 */
 	protected function validatePOSTElements($elements)
 	{

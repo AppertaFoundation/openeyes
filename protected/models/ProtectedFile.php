@@ -182,7 +182,9 @@ class ProtectedFile extends BaseActiveRecord
 	public function beforeSave()
 	{
 		if ($this->_source_path) {
-			mkdir(dirname($this->getPath()), 0777, true);
+			if (!file_exists(dirname($this->getPath())) ) {
+				mkdir(dirname($this->getPath()), 0777, true);
+			}
 			copy($this->_source_path, $this->getPath());
 			$this->_source_path = null;
 		} elseif (!file_exists($this->getPath())) {
