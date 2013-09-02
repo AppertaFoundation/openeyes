@@ -33,7 +33,10 @@ class OperationBooking extends Page
         'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
         'scheduleNow' => array('xpath' => "//*[@id='et_schedulenow']"),
         'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
+        'availableThreeWeeksTime' => array ('xpath' => "//*[@id='calendar']//*[contains(text(),'27')]"),
+        'nextMonth' => array('xpath' => "//*[@id='next_month']"),
         'availableTheatreSessionTime' => array('xpath' => "//*[@class='timeBlock available bookable']"),
+        'noAnaesthetist' => array ('xpath' => "//*[@id='bookingSession1222']"),
         'sessionComments' => array('xpath' => "//*[@id='Session_comments']"),
         'sessionOperationComments' => array('xpath' => "//*[@id='operation_comments']"),
         'confirmSlot' => array('xpath' => "//*[@id='confirm_slot']")
@@ -157,6 +160,13 @@ class OperationBooking extends Page
     public function availableSessionTime ()
     {
         $this->getElement('availableTheatreSessionTime')->click();
+    }
+
+    public function availableThreeWeeksTime ()
+    {
+//        $this->getElement('nextMonth')->click();
+        $this->getElement('availableThreeWeeksTime')->click();
+        $this->getElement('noAnaesthetist')->click();
     }
 
     public function sessionComments ($sessionComments)

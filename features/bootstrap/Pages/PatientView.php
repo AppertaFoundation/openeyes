@@ -6,6 +6,8 @@ class PatientView extends Page
 {
     protected $path = "/site/patient/view/";
 
+    protected $datefrom;
+
     protected $elements = array(
         'homeButton' => array('xpath' => "//*[@id='user_nav']//*[contains(text(), 'Home')]"),
         'theatreDiaries' => array('xpath' => "//*[@id='user_nav']//*[contains(text(), 'Theatre Diaries')]"),
@@ -53,7 +55,7 @@ class PatientView extends Page
         'selectRoute' => array('xpath' => "//select[@id='route_id']"),
         'selectFrequency' => array('xpath' => "//select[@id='frequency_id']"),
         'openMedicationDate' => array('xpath' => "//*[@id='start_date']"),
-        'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']/table/tbody"),
+        'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']//*[contains(text(),'10')]"),
         'saveMedication' => array('xpath' => "//*[@class='classy green mini btn_save_medication']//*[contains(text(),'Save')]"),
         'addAllergyButton' => array('xpath' => "//*[@id='btn-add_allergy']"),
         'selectAllergy' => array('xpath' => "//select[@id='allergy_id']"),
@@ -182,7 +184,7 @@ class PatientView extends Page
     public function savePreviousOperation ()
     {
         $this->getElement('operationSaveButton')->press();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(10000);
     }
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
@@ -196,7 +198,7 @@ class PatientView extends Page
         $this->getElement('selectFrequency')->selectOption($frequency);
         $this->getSession()->wait(7000);
         $this->getElement('openMedicationDate')->click();
-        $this->getSession()->wait(3000);
+        $this->getSession()->wait(7000);
         $this->getElement('selectDateFrom')->click($datefrom);
         $this->getSession()->wait(7000);
         $this->getElement('saveMedication')->click();
@@ -213,7 +215,7 @@ class PatientView extends Page
     public function saveCVIstatus ()
     {
         $this->getElement('saveCVI')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(3000);
     }
 
     protected function doesRemoveAllergyExist ()

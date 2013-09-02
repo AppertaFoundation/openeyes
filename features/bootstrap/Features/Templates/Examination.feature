@@ -14,8 +14,8 @@ Feature: Create New Examination
     Then I search for hospital number "<hospnumber>"
     #Then I search for patient name last name "<last>" and first name "<first>"
 
-    #Then I select Add First New Episode and Confirm
-    Then I select Create or View Episodes and Events
+    Then I select Add First New Episode and Confirm
+#    Then I select Create or View Episodes and Events
     #Then I select the Latest Event
     #Then I expand the Cataract sidebar
     Then I expand the Glaucoma sidebar

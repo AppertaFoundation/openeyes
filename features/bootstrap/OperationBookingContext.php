@@ -229,6 +229,18 @@ class OperationBookingContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I select an Available theatre slot date three weeks in the future$/
+     */
+    public function iSelectAnAvailableTheatreSlotDateWeeksInTheFuture()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->availableThreeWeeksTime();
+    }
+
+    /**
      * @Given /^I select an Available session time$/
      */
     public function iSelectAnAvailableSessionTime()
