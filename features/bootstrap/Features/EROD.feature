@@ -38,6 +38,7 @@ Feature: Create New Operation Booking Event
     Then I select Save and Schedule now
 
     Then I select an Available theatre slot date three weeks in the future
+    And I select an Available session time with No Anaesthetist
 
   Examples: User details
     | environment   | site      | username | password     | hospnumber   | nhs        | last    | first  | EventType | DiagEyes  | Diagnosis | OpEyes |Procedure | AnaType    |

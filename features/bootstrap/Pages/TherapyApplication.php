@@ -42,6 +42,67 @@ class TherapyApplication extends Page
         $this->getElement('addRightSide')->click();
     }
 
+    public function rightSideDiagnosis ($diagnosis)
+    {
+        $this->getElement('rightDiagnosis')->selectOption($diagnosis);
+    }
+
+    public function leftSideDiagnosis ($diagnosis)
+    {
+        $this->getElement('leftDiagnosis')->selectOption($diagnosis);
+    }
+
+    public function rightSecondaryTo ($secondary)
+    {
+        $this->getElement('rightSecondaryTo')->selectOption($secondary);
+    }
+
+    public function leftSecondaryTo ($secondary)
+    {
+        $this->getElement('leftSecondaryTo')->selectOption($secondary);
+    }
+
+    public function cerebYes ()
+    {
+        $this->getElement('cerebrovascularYes')->click();
+    }
+
+    public function cerebNo ()
+    {
+        $this->getElement('cerebrovascularNo')->click();
+    }
+
+    public function ischaemicYes ()
+    {
+        $this->getElement('ischaemicYes')->click();
+    }
+
+    public function ischaemicNo ()
+    {
+        $this->getElement('ischaemicNo')->click();
+    }
+
+    public function myocardialYes ()
+    {
+        $this->getElement('myocardialYes')->click();
+    }
+
+    public function myocardialNo ()
+    {
+        $this->getElement('myocardialNo')->click();
+    }
+
+    public function consultantSelect ($consultant)
+    {
+        $this->getElement('consultant')->selectOption($consultant);
+    }
+
+    public function saveTherapy ()
+    {
+
+    }
+
+
 }
 
 

@@ -237,7 +237,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->availableThreeWeeksTime();
+        $operationBooking->getSession()->wait(10000);
     }
 
     /**

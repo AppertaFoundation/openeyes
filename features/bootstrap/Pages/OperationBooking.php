@@ -36,7 +36,7 @@ class OperationBooking extends Page
         'availableThreeWeeksTime' => array ('xpath' => "//*[@id='calendar']//*[contains(text(),'27')]"),
         'nextMonth' => array('xpath' => "//*[@id='next_month']"),
         'availableTheatreSessionTime' => array('xpath' => "//*[@class='timeBlock available bookable']"),
-        'noAnaesthetist' => array ('xpath' => "//*[@id='bookingSession1222']"),
+        'noAnaesthetist' => array ('xpath' => "//*[@id='bookingSession1824']"),
         'sessionComments' => array('xpath' => "//*[@id='Session_comments']"),
         'sessionOperationComments' => array('xpath' => "//*[@id='operation_comments']"),
         'confirmSlot' => array('xpath' => "//*[@id='confirm_slot']")

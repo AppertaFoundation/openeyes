@@ -33,45 +33,49 @@ class TherapyApplicationContext extends PageObjectContext
     /**
      * @Given /^I select a Right Side Diagnosis of "([^"]*)"$/
      */
-    public function iSelectARightSideDiagnosisOf($arg1)
+    public function iSelectARightSideDiagnosisOf($diagnosis)
     {
         /**
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightSideDiagnosis($diagnosis);
     }
 
     /**
      * @Given /^I select a Left Side Diagnosis of "([^"]*)"$/
      */
-    public function iSelectALeftSideDiagnosisOf($arg1)
+    public function iSelectALeftSideDiagnosisOf($diagnosis)
     {
         /**
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->leftSideDiagnosis($diagnosis);
     }
 
     /**
      * @Then /^I select a Right Secondary To of "([^"]*)"$/
      */
-    public function iSelectARightSecondaryToOf($arg1)
+    public function iSelectARightSecondaryToOf($secondary)
     {
         /**
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightSecondaryTo($secondary);
     }
 
     /**
      * @Then /^I select a Left Secondary To of "([^"]*)"$/
      */
-    public function iSelectALeftSecondaryToOf($arg1)
+    public function iSelectALeftSecondaryToOf($secondary)
     {
         /**
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->leftSecondaryTo($secondary);
     }
 
     /**
@@ -83,6 +87,7 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->cerebYes();
     }
 
     /**
@@ -94,6 +99,7 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->cerebNo();
     }
 
     /**
@@ -105,6 +111,7 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->ischaemicYes();
     }
 
     /**
@@ -116,6 +123,7 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->ischaemicNo();
     }
 
     /**
@@ -127,6 +135,7 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->myocardialYes();
     }
 
     /**
@@ -138,17 +147,19 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->myocardialNo();
     }
 
     /**
      * @Given /^I select a Consultant of "([^"]*)"$/
      */
-    public function iSelectAConsultantOf($arg1)
+    public function iSelectAConsultantOf($consultant)
     {
         /**
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->consultantSelect($consultant);
     }
 
     /**
@@ -160,6 +171,7 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->saveTherapy();
     }
 
 }
