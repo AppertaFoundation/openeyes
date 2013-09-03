@@ -1,15 +1,15 @@
 {
-  "name": "OpenEyes",
-  "version": "0.1.4",
-  "ignore": [
-    "**/.*",
-    "node_modules"
-  ],
-  "dependencies": {
-    "modernizr": "~2.6.2",
-    "jquery": "~2.0.3"
-  },
-  "devDependencies": {
-    "google-code-prettify": "~1.0.0"
-  }
+	"name": "OpenEyes",
+	"version": "0.1.4",
+	"ignore": [
+		"**/.*",
+		"node_modules"
+	],
+	"dependencies": {
+		"modernizr": "~2.6.2",
+		"jquery": "~2.0.3"
+	},
+	"devDependencies": {
+		"google-code-prettify": "~1.0.0"
+	}
 }
