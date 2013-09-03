@@ -40,8 +40,12 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 		return parent::beforeAction($action);
 	}
 
-	/*
+	/**
 	 * abstraction of element initialisation to allow custom extension in overrides of controller
+	 *
+	 * @param ElementType $element_type
+	 * @param integer $previous_id
+	 * @param array() $additional - additional attributes for the element
 	 */
 	protected function getElementForElementForm($element_type, $previous_id = 0, $additional)
 	{
@@ -297,7 +301,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 				$criteria->compare('event_type_id',$event_type_id);
 				$criteria->order = 'display_order asc';
 				$criteria->compare('parent_element_type_id', $parent_type->id);
-				
+
 				$elements = array();
 				foreach (ElementType::model()->findAll($criteria) as $element_type) {
 					$pcrit = new CDBCriteria;
@@ -441,8 +445,12 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 		return $elements;
 	}
 
-	/*
+	/**
 	 * returns the optional child elements
+	 *
+	 * @param string $parent_class
+	 * @param string $action
+	 * @param integer $previous_parent_id
 	 */
 	public function getChildOptionalElements($parent_class, $action, $previous_parent_id = null)
 	{
@@ -451,7 +459,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 		foreach ($this->getChildDefaultElements($parent_class, $action, false, false, $previous_parent_id) as $default_element) {
 			$default_element_types[] = get_class($default_element);
 		}
-		
+
 		if ($event = $this->event) {
 			$parent = ElementType::model()->find( array('condition' => 'class_name = :name and event_type_id = :eid', 'params' => array(':name'=>$parent_class, ':eid' => $event->event_type_id)) );
 		} else {
@@ -502,6 +510,41 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 		}
 	}
 
+	/**
+	 * set the validation scenario for elements based on whether they have POSTed children or not.
+	 *
+	 * @param $elements
+	 * @return array|void
+	 */
+	public function validatePOSTElements($elements)
+	{
+		$element_classes = array();
+		$parent_elements = array();
+		foreach ($elements as $element) {
+			$element_classes[] = get_class($element);
+			if ($element->getElementType()->child_element_types) {
+				$parent_elements[] = $element;
+			}
+		}
+		foreach ($parent_elements as $parent) {
+			$has_children = false;
+			foreach ($parent->getElementType()->child_element_types as $child_type) {
+				if (in_array($child_type->class_name, $element_classes)) {
+					$has_children = true;
+					break;
+				}
+			}
+			$parent->scenario = $has_children ? "formHasChildren" : "formHasNoChildren";
+		}
+		return parent::validatePOSTElements($elements);
+	}
+
+	/**
+	 * calls the appropriate option setting method on the given element
+	 *
+	 * @param $element
+	 * @param $action
+	 */
 	protected function setElementOptions($element, $action)
 	{
 		if ($action == 'create') {
@@ -511,10 +554,17 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 		}
 	}
 
-	/*
+	/**
 	 * render the default child elements for the given parent element
-	*/
-	public function renderChildDefaultElements($parent, $action, $form = false, $data = false, $previous_parent_id = null )
+	 *
+	 * @param EventTypeElement $parent
+	 * @param string $action
+	 * @param BaseEventTypeCActiveForm $form
+	 * @param array $data
+	 * @param integer $previous_parent_id
+	 *
+	 */
+	public function renderChildDefaultElements($parent, $action, $form = null, $data = null, $previous_parent_id = null )
 	{
 		foreach ($this->getChildDefaultElements(get_class($parent), $action, false, false, $previous_parent_id) as $child ) {
 			if ($action == 'create' && empty($_POST)) {
@@ -559,8 +609,13 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 	/**
 	 * render the optional child elements for the given parent
 	 *
+	 * @param EventTypeElement $parent
+	 * @param string $action
+	 * @param BaseEventTypeCActiveForm $form
+	 * @param array $data
+	 * @param integer $previous_parent_id
 	 */
-	public function renderChildOptionalElements($parent, $action, $form = false, $data = false, $previous_parent_id = null)
+	public function renderChildOptionalElements($parent, $action, $form = null, $data = null, $previous_parent_id = null)
 	{
 		foreach ($this->getChildOptionalElements(get_class($parent), $action, $previous_parent_id) as $element) {
 			$this->renderPartial(
