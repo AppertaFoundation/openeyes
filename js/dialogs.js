@@ -53,9 +53,11 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		this.create();
 		this.bindEvents();
 
+		// Load dialog content in an iframe.
 		if (this.options.iframe) {
 			this.loadIframeContent();
 		}
+		// Load dialog content via an AJAX request.
 		else if (this.options.url) {
 			this.loadContent();
 		}
@@ -66,17 +68,19 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	/**
 	 * The default dialog options. Custom options will be merged with these.
 	 * @name Dialog#_defaultOptions
-	 * @property {(mixed)} [content=null] - Content to be displayed in the dialog.
+	 * @property {mixed} [content=null] - Content to be displayed in the dialog.
 	 * This option accepts multiple types, including strings, DOM elements, jQuery instances, etc.
-	 * @property {(string|null)} [title=null] - The dialog title.
-	 * @property {(string|null)} [iframe=null] - A URL string to load the dialog content
+	 * @property {string|null} [title=null] - The dialog title.
+	 * @property {string|null} [iframe=null] - A URL string to load the dialog content
 	 * in via an iFrame.
-	 * @property {(string|null)} [url=null] - A URL string to load the dialog content in via an
+	 * @property {string|null} [url=null] - A URL string to load the dialog content in via an
 	 * AJAX request.
-	 * @property {(object|null)} [data=null] - Request data used when loading dialog content
+	 * @property {object|null} [data=null] - Request data used when loading dialog content
 	 * via an AJAX request.
-	 * @property {(string|null)} [dialogClass=dialog] - A CSS class string to be added to
+	 * @property {string|null} [dialogClass=dialog] - A CSS class string to be added to
 	 * the main dialog container.
+	 * @property {boolean} [contrainToViewport=false] - Constrain the dialog dimensions
+	 * so that it is never displayed outside of the window viewport?
 	 * @property {integer|string} [width=400] - The dialog width.
 	 * @property {integer|string} [height=auto] - The dialog height.
 	 * @private
@@ -94,6 +98,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		dialogClass: 'dialog',
 		resizable: false,
 		draggable: false,
+		constrainToViewport: false,
 		width: 400,
 		height: 'auto',
 		minHeight: 'auto',
@@ -170,6 +175,27 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	};
 
 	/**
+	 * Sets the dialog to be in a loading state.
+	 * @name Dialog#setLoadingState
+	 * @method
+	 * @private
+	 */
+	Dialog.prototype.setLoadingState = function() {
+		this.content.addClass('loading');
+		this.setTitle('Loading...');
+	};
+
+	/**
+	 * Removes the loading state from the dialog.
+	 * @name Dialog#removeLoadingState
+	 * @method
+	 * @private
+	 */
+	Dialog.prototype.removeLoadingState = function() {
+		this.content.removeClass('loading');
+	};
+
+	/**
 	 * Sets a 'loading' message and retrieves the dialog content via AJAX.
 	 * @name Dialog#loadContent
 	 * @method
@@ -177,41 +203,41 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 */
 	Dialog.prototype.loadContent = function() {
 
-		this.content.addClass('loading');
-		this.setTitle('Loading...');
+		this.setLoadingState();
 
-		var xhr = $.ajax({
+		this.xhr = $.ajax({
 			url: this.options.url,
 			data: this.options.data
 		});
 
-		xhr.done(this.onContentLoadSuccess);
-		xhr.fail(this.onContentLoadFail);
-		xhr.always(this.onContentLoad);
+		this.xhr.done(this.onContentLoadSuccess);
+		this.xhr.fail(this.onContentLoadFail);
+		this.xhr.always(this.onContentLoad);
 	};
 
 	/**
-	 * Sets a 'loading' message and creates an iframe with the appropriate src attribute
-	 *
+	 * Sets a 'loading' message and creates an iframe with the appropriate src attribute.
 	 * @name Dialog#loadIframeContent
 	 * @method
 	 * @private
 	 */
 	Dialog.prototype.loadIframeContent = function() {
 
-		this.content.addClass('loading');
-		this.setTitle('Loading...');
+		this.setLoadingState();
 
-		this.iframe = $("<iframe></iframe>");
-		this.iframe.attr({
-			src: this.options.iframe,
-			width: this.options.width,
-			height: this.options.height,
+		this.iframe = $('<iframe />', {
+			width: '100%',
+			height: '99%',
 			frameborder: 0
-
 		}).hide();
 
-		this.iframe.on('load', this.onIframeLoad.bind(this));
+		// We're intentionally setting the load handler before setting the src.
+		this.iframe.on('load', this.onIframeLoad);
+		this.iframe.attr({
+			src: this.options.iframe,
+		});
+
+		// Add the iframe to the DOM.
 		this.setContent(this.iframe);
 	};
 
@@ -222,7 +248,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @public
 	 */
 	Dialog.prototype.setTitle = function(title) {
-		this.instance._setOption('title', title);
+		this.instance.option('title', title);
 	};
 
 	/**
@@ -236,12 +262,59 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	};
 
 	/**
+	 * Calculates the dialog dimensions. If Dialog#options.constrainToViewport is
+	 * set, then the dimensions will be calculated so that the dialog will not be
+	 * displayed outside of the browser viewport.
+	 * @name Dialog#getDimensions
+	 * @method
+	 * @private
+	 */
+	Dialog.prototype.getDimensions = function() {
+
+		var dimensions = {
+			width: this.options.width,
+			height: this.options.height
+		};
+
+		if (this.options.constrainToViewport) {
+
+			var margin = 40;
+			var viewportWidth = $(window).width() - margin;
+			var viewportHeight = $(window).height() - margin;
+			var width = parseInt(dimensions.width, 10);
+			var height = parseInt(dimensions.height, 10);
+
+			if (width !== NaN && width > viewportWidth) {
+				dimensions.width = viewportWidth;
+			}
+			if (height !== NaN && height > viewportHeight) {
+				dimensions.height = viewportHeight;
+			}
+		}
+
+		return dimensions;
+	};
+
+	/**
+	 * Calculates and sets the dialog dimensions.
+	 * @name Dialog#setDimensions
+	 * @method
+	 * @private
+	 */
+	Dialog.prototype.setDimensions = function() {
+		var dimensions = this.getDimensions();
+		this.instance.option('width', dimensions.width);
+		this.instance.option('height', dimensions.height);
+	};
+
+	/**
 	 * Opens (shows) the dialog.
 	 * @name Dialog#open
 	 * @method
 	 * @public
 	 */
 	Dialog.prototype.open = function() {
+		this.setDimensions();
 		this.instance.open();
 	};
 
@@ -263,11 +336,17 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @public
 	 */
 	Dialog.prototype.destroy = function() {
+
+		if (this.xhr) {
+			this.xhr.abort();
+		}
 		if (this.iframe) {
 			this.iframe.remove();
 		}
+
 		this.instance.destroy();
 		this.content.remove();
+
 		this.emit('destroy');
 	};
 
@@ -298,7 +377,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	};
 
 	/**
-	 * Content load handler. This method is always executed after the content
+	 * Content load handler. This method is always executed *after* the content
 	 * request completes (whether there was an error or not), and is executed after
 	 * any success or fail handlers. This method removes the loading state of the
 	 * dialog, and repositions it in the center of the screen.
@@ -307,9 +386,8 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @private
 	 */
 	Dialog.prototype.onContentLoad = function() {
-		// Remove loading state.
-		this.content.removeClass('loading');
-		// Reposition the dialog in the center of the screen.
+		this.removeLoadingState();
+		this.setDimensions();
 		this.reposition();
 	};
 
@@ -321,7 +399,6 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @private
 	 */
 	Dialog.prototype.onContentLoadSuccess = function(response) {
-		// Set the dialog content.
 		this.setTitle(this.options.title);
 		this.setContent(response);
 	};
@@ -334,7 +411,6 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @private
 	 */
 	Dialog.prototype.onContentLoadFail = function() {
-		// Show the error.
 		this.setTitle('Error');
 		this.setContent('Sorry, there was an error retrieving the content. Please try again.');
 	};
