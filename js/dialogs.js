@@ -263,7 +263,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 	/**
 	 * Calculates the dialog dimensions. If Dialog#options.constrainToViewport is
-	 * set, then the dialog will be calculated so that the dialog will not be
+	 * set, then the dimensions will be calculated so that the dialog will not be
 	 * displayed outside of the browser viewport.
 	 * @name Dialog#getDimensions
 	 * @method
