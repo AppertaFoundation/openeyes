@@ -109,9 +109,18 @@ table {
 // Styleguide 6.4
 
 table {
-	&.plain,
+	&.white,
 	tr:nth-of-type(even) {
 		background: #fff;
+	}
+}
+
+table {
+	&.plain {
+		border: 0;
+		&, tr:nth-of-type(even) {
+			background: transparent;
+		}
 	}
 }
 

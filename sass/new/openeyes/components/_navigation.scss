@@ -12,6 +12,7 @@
 // Styleguide 11.1
 .side-nav {
 	@include side-nav;
+	padding-top: 0;
 }
 
 // User navigation

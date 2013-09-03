@@ -1,5 +1,4 @@
 /* Standard Forms */
-
 form {
 	margin: 0 0 $form-spacing;
 }
@@ -20,17 +19,17 @@ label, .label {
 		@include form-label(inline, false);
 		margin: 0;
 		display: inline-block;
-		padding: 0;
+		padding: 0 emCalc(10px) 0 0;
 	}
 }
 
 /* We use this to get basic styling on all basic form elements */
-
 @include input-form-fields {
 	@include form-element;
 	@if not $input-include-glowing-effect {
 		@include single-transition(all, 0.15s, linear);
 	}
+	padding: emCalc(6px);
 	margin: 0;
 }
 
@@ -41,11 +40,24 @@ input[type="file"] {
 
 /* We add basic fieldset styling */
 fieldset {
-	@include fieldset;
+
+	border: 0;
+	padding: 0;
+	margin: 0;
+
+	// and legend styles
+	legend {
+		font-weight: $legend-font-weight;
+		background: $legend-bg;
+		padding: $legend-padding;
+		display: block;
+		font-size: $default-font-size;
+		margin: $legend-margin;
+		width: 100%;
+	}
 }
 
 /* Error Handling */
-
 .error input,
 input.error,
 .error textarea,
@@ -180,7 +192,7 @@ $oe-form-field-fixed-width: emCalc(110px) !default;
 .field-row {
 	padding-bottom: $form-spacing;
 }
-.form {
+form, .form {
 	.field-row:last-child {
 		padding: 0;
 	}

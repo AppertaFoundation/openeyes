@@ -15,7 +15,7 @@
       // Ensure all <pre> blocks will have syntax highlighting
       $('pre').addClass('prettyprint');
 
-      // Due to markdown's innability to correctly handle code blocks within list items,
+      // Due to markdown's inability to correctly handle code blocks within list items,
       // we have to remove the excess whitespace manually. Gah!
       $('code').each(function() {
         this.innerHTML = this.innerHTML.replace(/^\s{0,4}/mg, '');

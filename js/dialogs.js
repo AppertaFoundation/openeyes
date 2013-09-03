@@ -202,16 +202,16 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		this.content.addClass('loading');
 		this.setTitle('Loading...');
 
-		this.iframe = $("<iframe></iframe>");
-		this.iframe.attr({
+		// Create the iframe element
+		this.iframe = $('<iframe />', {
 			src: this.options.iframe,
 			width: this.options.width,
 			height: this.options.height,
 			frameborder: 0
-
 		}).hide();
 
 		this.iframe.on('load', this.onIframeLoad.bind(this));
+
 		this.setContent(this.iframe);
 	};
 

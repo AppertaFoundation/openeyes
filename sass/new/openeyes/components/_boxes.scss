@@ -32,7 +32,6 @@ $oe-box-event-border-width: 0 5px 5px !default;
 	&.event {
 		@include border-radius($oe-box-event-border-radius);
 		background: $oe-box-event-background;
-		padding: $oe-box-event-padding;
 		border-width: $oe-box-event-border-width;
 		border-style: solid;
 		margin: 0;

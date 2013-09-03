@@ -313,7 +313,7 @@ $form-label-pointer: pointer;
 $form-label-font-size: $default-font-size;
 $form-label-font-weight: 500;
 $form-label-font-color: black;
-$form-label-bottom-margin: emCalc(3px);
+$form-label-bottom-margin: emCalc(5px);
 $input-font-family: inherit;
 $input-font-color: rgba(0, 0, 0, 0.75);
 $input-font-size: emCalc(13px);
@@ -329,15 +329,16 @@ $input-include-glowing-effect: true;
 
 // We use these to style the fieldset border and spacing.
 $fieldset-border-style: solid;
-$fieldset-border-width: 1px;
+$fieldset-border-width: 0;
 $fieldset-border-color: #dddddd;
-$fieldset-padding: emCalc(20px);
-$fieldset-margin: emCalc(18px) 0;
+$fieldset-padding: 0;
+$fieldset-margin: 0;
 
 // We use these to style the legends when you use them
-$legend-bg: white;
-$legend-font-weight: bold;
-$legend-padding: 0 emCalc(3px);
+$legend-bg: transparent;
+$legend-font-weight: normal;
+$legend-padding: 0;
+$legend-margin: 0 0 emCalc(5px) 0;
 
 // We use these to style the prefix and postfix input elements
 $input-prefix-bg: darken(white, 5%);

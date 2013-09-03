@@ -238,94 +238,84 @@
 					<div class="element-fields element-eyes row">
 						<div class="element-eye right-eye column">
 							<a href="#" class="icon-remove-side">Remove side</a>
-							<div class="panel element-field">
-								<h4>Add a treatment</h4>
-								<div class="field-row">
-									<select>
-										<option value="">--- Please select ---</option>
-									</select>
-									<button class="small secondary">
-										Clear
-									</button>
-								</div>
+							<div class="field-row">
+								<select>
+									<option value="">--- Please select ---</option>
+								</select>
+								<button class="small secondary">
+									Clear
+								</button>
 							</div>
-							<div class="panel element-field">
-								<h4>Treatments</h4>
-								<table class="plain">
-									<thead>
-										<tr>
-											<th>Time</th>
-											<th>Drug</th>
-											<th>Drops</th>
-											<th>Actions</th>
-										</tr>
-									</thead>
-									<tbody class="plain">
-										<tr>
-											<td>
-												<input class="input-time small" type="text" value="09:49" />
-											</td>
-											<td>
-												Cyclopentolate 0.5%
-											</td>
-											<td>
-												<select>
-													<option value="1" selected="selected">1</option>
-												</select>
-											</td>
-											<td>
-												<a href="#" class="removeTreatment">Remove</a>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<input class="input-time small" type="text" value="10:24" />
-											</td>
-											<td>
-												<span class="drug-name">Phenylephrine 2.5%</span>
-											</td>
-											<td>
-												<select>
-													<option value="1">1</option>
-												</select>
-											</td>
-											<td>
-												<a href="#" class="removeTreatment">Remove</a>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<input class="input-time small" type="text" value="10:24" />
-											</td>
-											<td>
-												<span class="drug-name">Tropicamide 0.5%</span>
-											</td>
-											<td>
-												<select>
-													<option value="1">1</option>
-												</select>
-											</td>
-											<td>
-												<a href="#" class="removeTreatment">Remove</a>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-
+							<table class="plain">
+								<thead>
+									<tr>
+										<th>Time</th>
+										<th>Drug</th>
+										<th>Drops</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tbody class="plain">
+									<tr>
+										<td>
+											<input class="input-time small" type="text" value="09:49" />
+										</td>
+										<td>
+											Cyclopentolate 0.5%
+										</td>
+										<td>
+											<select>
+												<option value="1" selected="selected">1</option>
+											</select>
+										</td>
+										<td>
+											<a href="#" class="removeTreatment">Remove</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<input class="input-time small" type="text" value="10:24" />
+										</td>
+										<td>
+											<span class="drug-name">Phenylephrine 2.5%</span>
+										</td>
+										<td>
+											<select>
+												<option value="1">1</option>
+											</select>
+										</td>
+										<td>
+											<a href="#" class="removeTreatment">Remove</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<input class="input-time small" type="text" value="10:24" />
+										</td>
+										<td>
+											<span class="drug-name">Tropicamide 0.5%</span>
+										</td>
+										<td>
+											<select>
+												<option value="1">1</option>
+											</select>
+										</td>
+										<td>
+											<a href="#" class="removeTreatment">Remove</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 						<div class="element-eye left-eye column">
 							<a href="#" class="icon-remove-side">Remove side</a>
-							<div class="panel element-field">
-								<h4>Add a treatment</h4>
-								<div class="field-row">
-									<select>
-										<option value="">--- Please select ---</option>
-									</select>
-									<button class="small secondary">
-										Clear
-									</button>
-								</div>
+							<div class="field-row">
+								<select>
+									<option value="">--- Please select ---</option>
+								</select>
+								<button class="small secondary">
+									Clear
+								</button>
 							</div>
 						</div>
 					</div>
@@ -342,71 +332,68 @@
 						<h3 class="element-title">Diagnoses</h3>
 					</header>
 					<div class="element-fields">
-						<div class="panel element-field">
-							<h4>Diagnoses</h4>
-							<table class="plain">
-								<thead>
-									<tr>
-										<th>Diagnosis</th>
-										<th>Eye</th>
-										<th>Principal</th>
-										<th>Actions</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>
-											Blepharospasm
-										</td>
-										<td class="eye">
-											<label>
-												<input type="radio" />
-												Right
-											</label>
-											<label>
-												<input type="radio" />
-												Both
-											</label>
-											<label>
-												<input type="radio" />
-												Left
-											</label>
-										</td>
-										<td>
+						<table class="plain">
+							<thead>
+								<tr>
+									<th>Diagnosis</th>
+									<th>Eye</th>
+									<th>Principal</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										Blepharospasm
+									</td>
+									<td class="eye">
+										<label>
 											<input type="radio" />
-										</td>
-										<td>
-											<a href="#">Remove</a>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Cyst of eyelid
-										</td>
-										<td class="eye">
-											<label>
-												<input type="radio" />
-												Right
-											</label>
-											<label>
-												<input type="radio" />
-												Both
-											</label>
-											<label>
-												<input type="radio" />
-												Left
-											</label>
-										</td>
-										<td>
+											Right
+										</label>
+										<label>
 											<input type="radio" />
-										</td>
-										<td>
-											<a href="#">Remove</a>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+											Both
+										</label>
+										<label>
+											<input type="radio" />
+											Left
+										</label>
+									</td>
+									<td>
+										<input type="radio" />
+									</td>
+									<td>
+										<a href="#">Remove</a>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Cyst of eyelid
+									</td>
+									<td class="eye">
+										<label>
+											<input type="radio" />
+											Right
+										</label>
+										<label>
+											<input type="radio" />
+											Both
+										</label>
+										<label>
+											<input type="radio" />
+											Left
+										</label>
+									</td>
+									<td>
+										<input type="radio" />
+									</td>
+									<td>
+										<a href="#">Remove</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 						<div class="panel element-field">
 							<h4>Add a diagnosis</h4>
 							<div class="row field-row">
@@ -432,12 +419,12 @@
 								<div class="large-3 column">
 									<label>Diagnosis:</label>
 								</div>
-								<div class="large-3 column">
-									<select>
-										<option>Select a commonly used diagnosis</option>
-									</select>
-								</div>
-								<div class="large-6 column">
+								<div class="large-3 column end">
+									<div class="field-row">
+										<select>
+											<option>Select a commonly used diagnosis</option>
+										</select>
+									</div>
 									<input type="text" placeholder="or type the first few characters of a diagnosis" />
 								</div>
 							</div>

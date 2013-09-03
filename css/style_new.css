@@ -1044,13 +1044,13 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/new/_structure/gradient_bg.jpg?1377677673') 0 0 no-repeat;
+  background: #dae6f1 url('../img/new/_structure/gradient_bg.jpg?1377860418') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
 }
 
 /* line 10, ../sass/new/openeyes/components/containers/_content.scss */
 .container.content {
-  background: url('../img/new/_structure/help_top_grad.jpg?1377677673') 0 bottom no-repeat;
+  background: url('../img/new/_structure/help_top_grad.jpg?1377860418') 0 bottom no-repeat;
   min-height: 330px;
 }
 
@@ -1783,38 +1783,47 @@ table td label, table th label {
 }
 
 /* line 113, ../sass/new/openeyes/components/_tables.scss */
-table.plain,
+table.white,
 table tr:nth-of-type(even) {
   background: #fff;
 }
 
 /* line 119, ../sass/new/openeyes/components/_tables.scss */
+table.plain {
+  border: 0;
+}
+/* line 121, ../sass/new/openeyes/components/_tables.scss */
+table.plain, table.plain tr:nth-of-type(even) {
+  background: transparent;
+}
+
+/* line 128, ../sass/new/openeyes/components/_tables.scss */
 table.blank {
   background: none;
   border: 0;
   width: auto;
   min-width: 0;
 }
-/* line 124, ../sass/new/openeyes/components/_tables.scss */
+/* line 133, ../sass/new/openeyes/components/_tables.scss */
 table.blank thead {
   background: none;
 }
-/* line 126, ../sass/new/openeyes/components/_tables.scss */
+/* line 135, ../sass/new/openeyes/components/_tables.scss */
 table.blank thead th {
   background: none;
   font-weight: normal;
   font-size: 0.8125em;
   padding-left: 0;
 }
-/* line 133, ../sass/new/openeyes/components/_tables.scss */
+/* line 142, ../sass/new/openeyes/components/_tables.scss */
 table.blank tr {
   background: none;
 }
-/* line 136, ../sass/new/openeyes/components/_tables.scss */
+/* line 145, ../sass/new/openeyes/components/_tables.scss */
 table.blank td {
   padding: 2px 10px 2px 0;
 }
-/* line 138, ../sass/new/openeyes/components/_tables.scss */
+/* line 147, ../sass/new/openeyes/components/_tables.scss */
 table.blank td img {
   height: auto;
   width: auto;
@@ -1833,7 +1842,7 @@ table.blank td img {
 }
 /* line 28, ../sass/new/openeyes/components/headers/_main.scss */
 .header .logo {
-  background: url('../img/new/_structure/openeyes.png?1377677673') no-repeat;
+  background: url('../img/new/_structure/openeyes.png?1377860418') no-repeat;
   background-size: 100%;
   height: 70px;
   margin-left: -0.75em;
@@ -1849,7 +1858,7 @@ table.blank td img {
 
 /* line 43, ../sass/new/openeyes/components/_footer.scss */
 .footer {
-  background: #b3b0ae url('../img/new/_structure/openeyes_footer.png?1377677673') no-repeat right top;
+  background: #b3b0ae url('../img/new/_structure/openeyes_footer.png?1377860418') no-repeat right top;
 }
 /* line 46, ../sass/new/openeyes/components/_footer.scss */
 .footer .info {
@@ -1931,7 +1940,7 @@ table.blank td img {
 }
 
 /* Standard Forms */
-/* line 3, ../sass/new/openeyes/components/_forms.scss */
+/* line 2, ../sass/new/openeyes/components/_forms.scss */
 form {
   margin: 0 0 1.125em;
 }
@@ -1964,28 +1973,28 @@ form .row textarea.columns {
 }
 
 /* Label Styles */
-/* line 13, ../sass/new/openeyes/components/_forms.scss */
+/* line 12, ../sass/new/openeyes/components/_forms.scss */
 label, .label {
   font-size: 0.8125em;
   color: black;
   cursor: pointer;
   display: block;
   font-weight: 500;
-  margin-bottom: 0.1875em;
+  margin-bottom: 0.3125em;
 }
-/* line 15, ../sass/new/openeyes/components/_forms.scss */
+/* line 14, ../sass/new/openeyes/components/_forms.scss */
 label.right, .label.right {
   float: none;
   text-align: right;
   margin: 0;
 }
-/* line 19, ../sass/new/openeyes/components/_forms.scss */
+/* line 18, ../sass/new/openeyes/components/_forms.scss */
 label.inline, .label.inline {
   margin: 0 0 1.125em 0;
   padding: 0.6875em 0;
   margin: 0;
   display: inline-block;
-  padding: 0;
+  padding: 0 0.625em 0 0;
 }
 
 /* We use this to get basic styling on all basic form elements */
@@ -2009,6 +2018,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   -webkit-transition: -webkit-box-shadow 0.45s, border-color 0.45s ease-in-out;
   -moz-transition: -moz-box-shadow 0.45s, border-color 0.45s ease-in-out;
   transition: box-shadow 0.45s, border-color 0.45s ease-in-out;
+  padding: 0.375em;
   margin: 0;
 }
 /* line 134, ../sass/new/foundation/components/_global.scss */
@@ -2030,29 +2040,31 @@ input[type="text"][disabled], input[type="password"][disabled], input[type="date
 }
 
 /* Normalize file input width */
-/* line 38, ../sass/new/openeyes/components/_forms.scss */
+/* line 37, ../sass/new/openeyes/components/_forms.scss */
 input[type="file"] {
   width: 100%;
 }
 
 /* We add basic fieldset styling */
-/* line 43, ../sass/new/openeyes/components/_forms.scss */
+/* line 42, ../sass/new/openeyes/components/_forms.scss */
 fieldset {
-  border: solid 1px #dddddd;
-  padding: 1.25em;
-  margin: 1.125em 0;
-}
-/* line 215, ../sass/new/foundation/components/_forms.scss */
-fieldset legend {
-  font-weight: bold;
-  background: white;
-  padding: 0 0.1875em;
+  border: 0;
+  padding: 0;
   margin: 0;
-  margin-left: -0.1875em;
+}
+/* line 49, ../sass/new/openeyes/components/_forms.scss */
+fieldset legend {
+  font-weight: normal;
+  background: transparent;
+  padding: 0;
+  display: block;
+  font-size: 0.8125em;
+  margin: 0 0 0.3125em 0;
+  width: 100%;
 }
 
 /* Error Handling */
-/* line 52, ../sass/new/openeyes/components/_forms.scss */
+/* line 64, ../sass/new/openeyes/components/_forms.scss */
 .error input,
 input.error,
 .error textarea,
@@ -2069,13 +2081,13 @@ textarea.error:focus {
   border-color: #999999;
 }
 
-/* line 57, ../sass/new/openeyes/components/_forms.scss */
+/* line 69, ../sass/new/openeyes/components/_forms.scss */
 .error label,
 label.error {
   color: red;
 }
 
-/* line 62, ../sass/new/openeyes/components/_forms.scss */
+/* line 74, ../sass/new/openeyes/components/_forms.scss */
 .error small,
 small.error {
   display: block;
@@ -2088,7 +2100,7 @@ small.error {
   color: white;
 }
 
-/* line 115, ../sass/new/openeyes/components/_forms.scss */
+/* line 127, ../sass/new/openeyes/components/_forms.scss */
 .form.panel {
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -2099,21 +2111,21 @@ small.error {
   border: 2px solid #666666;
   padding: 30px;
 }
-/* line 121, ../sass/new/openeyes/components/_forms.scss */
+/* line 133, ../sass/new/openeyes/components/_forms.scss */
 .form.login {
   margin: 50px auto 100px auto;
   max-width: 488px;
 }
-/* line 124, ../sass/new/openeyes/components/_forms.scss */
+/* line 136, ../sass/new/openeyes/components/_forms.scss */
 .form.login label {
   font-size: 0.9375em;
 }
-/* line 128, ../sass/new/openeyes/components/_forms.scss */
+/* line 140, ../sass/new/openeyes/components/_forms.scss */
 .form [type="submit"] {
   margin: 0;
 }
 
-/* line 134, ../sass/new/openeyes/components/_forms.scss */
+/* line 146, ../sass/new/openeyes/components/_forms.scss */
 label.highlight {
   background: #e3f0f2;
   padding: 4px 12px 5px 8px;
@@ -2123,11 +2135,11 @@ label.highlight {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 138, ../sass/new/openeyes/components/_forms.scss */
+/* line 150, ../sass/new/openeyes/components/_forms.scss */
 label.highlight:hover {
   background: #fff;
 }
-/* line 143, ../sass/new/openeyes/components/_forms.scss */
+/* line 155, ../sass/new/openeyes/components/_forms.scss */
 label input[type="checkbox"],
 label input[type="radio"] {
   margin: 0;
@@ -2142,22 +2154,22 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   border-radius: 3px;
   height: auto;
 }
-/* line 171, ../sass/new/openeyes/components/_forms.scss */
+/* line 183, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small, input[type="password"].small, input[type="date"].small, input[type="datetime"].small, input[type="datetime-local"].small, input[type="month"].small, input[type="week"].small, input[type="email"].small, input[type="number"].small, input[type="search"].small, input[type="tel"].small, input[type="time"].small, input[type="url"].small, textarea.small {
   padding: 0.1875em 0.25em;
 }
-/* line 173, ../sass/new/openeyes/components/_forms.scss */
+/* line 185, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small.fixed-width, input[type="password"].small.fixed-width, input[type="date"].small.fixed-width, input[type="datetime"].small.fixed-width, input[type="datetime-local"].small.fixed-width, input[type="month"].small.fixed-width, input[type="week"].small.fixed-width, input[type="email"].small.fixed-width, input[type="number"].small.fixed-width, input[type="search"].small.fixed-width, input[type="tel"].small.fixed-width, input[type="time"].small.fixed-width, input[type="url"].small.fixed-width, textarea.small.fixed-width {
   width: 6.875em;
 }
 
-/* line 180, ../sass/new/openeyes/components/_forms.scss */
+/* line 192, ../sass/new/openeyes/components/_forms.scss */
 .field-row {
   padding-bottom: 1.125em;
 }
 
-/* line 184, ../sass/new/openeyes/components/_forms.scss */
-.form .field-row:last-child {
+/* line 196, ../sass/new/openeyes/components/_forms.scss */
+form .field-row:last-child, .form .field-row:last-child {
   padding: 0;
 }
 
@@ -2370,6 +2382,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   padding: 0.875em 0;
   list-style-type: none;
   list-style-position: inside;
+  padding-top: 0;
 }
 /* line 39, ../sass/new/foundation/components/_side-nav.scss */
 .side-nav li {
@@ -2395,27 +2408,27 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   border-top-color: #e6e6e6;
 }
 
-/* line 42, ../sass/new/openeyes/components/_navigation.scss */
+/* line 43, ../sass/new/openeyes/components/_navigation.scss */
 .navigation.user {
   margin-left: 0;
   margin-bottom: 0.5em;
 }
-/* line 45, ../sass/new/openeyes/components/_navigation.scss */
+/* line 46, ../sass/new/openeyes/components/_navigation.scss */
 .navigation.user li {
   font-size: 0.8125em;
   margin: 0 0 0 0.25em;
 }
-/* line 49, ../sass/new/openeyes/components/_navigation.scss */
+/* line 50, ../sass/new/openeyes/components/_navigation.scss */
 .navigation.user li.selected a {
   background: #1e55c1;
   color: white;
 }
-/* line 55, ../sass/new/openeyes/components/_navigation.scss */
+/* line 56, ../sass/new/openeyes/components/_navigation.scss */
 .navigation.user a {
   background: #cdd9e3;
   padding: 0.5em 0.3125em 0.125em 0.3125em;
 }
-/* line 59, ../sass/new/openeyes/components/_navigation.scss */
+/* line 60, ../sass/new/openeyes/components/_navigation.scss */
 .navigation.user a:hover, .navigation.user a:focus {
   background: white;
 }
@@ -2482,7 +2495,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 /* line 53, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.alert.with-icon {
-  background-image: url('../img/new/_elements/icons/box/warning.png?1377677673');
+  background-image: url('../img/new/_elements/icons/box/warning.png?1377860418');
   min-height: 36px;
 }
 /* line 58, ../sass/new/openeyes/components/_alert-boxes.scss */
@@ -2493,7 +2506,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 /* line 60, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.issue.with-icon {
-  background-image: url('../img/new/_elements/icons/box/issue.png?1377677673');
+  background-image: url('../img/new/_elements/icons/box/issue.png?1377860418');
   min-height: 36px;
 }
 /* line 65, ../sass/new/openeyes/components/_alert-boxes.scss */
@@ -2524,7 +2537,6 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   -o-border-radius: 0;
   border-radius: 0;
   background: #fafafa;
-  padding: 0.3125em 0.3125em 0.625em 0.3125em;
   border-width: 0 5px 5px;
   border-style: solid;
   margin: 0;
@@ -2743,7 +2755,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  background-image: url('../img/new/_elements/icons/user/idcard_bg.png?1377677673');
+  background-image: url('../img/new/_elements/icons/user/idcard_bg.png?1377860418');
   background-repeat: no-repeat;
   background-position: left bottom;
   margin: 0;
@@ -2803,11 +2815,11 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1377677673'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1377677673'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1377677673'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1377677673'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1377677673'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1377860418'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1377860418'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1377860418'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1377860418'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1377860418'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
   background-repeat: no-repeat, no-repeat;
   background-position: 98% 2px, top;
   border-color: #ffb212;
@@ -2876,7 +2888,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   -o-border-radius: 3px;
   border-radius: 3px;
   background-color: #107ebd;
-  background-image: url('../img/new/_elements/icons/nhs_tiny.png?1377677673');
+  background-image: url('../img/new/_elements/icons/nhs_tiny.png?1377860418');
   background-position: center left;
   background-repeat: no-repeat;
   color: white;
@@ -3063,7 +3075,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 /* line 142, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-title a {
-  background: url('../img/new/_elements/graphic/view-episode-summary.png?1377677673') right bottom no-repeat;
+  background: url('../img/new/_elements/graphic/view-episode-summary.png?1377860418') right bottom no-repeat;
   color: black;
   display: block;
   padding: 0.3125em 0 1.0625em 0.4375em;
@@ -3077,7 +3089,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 .panel.episode .episode-title a:hover {
   color: white;
   background-color: #3665ff;
-  background-image: url('../img/new/_elements/icons/event/event_open_arrow.png?1377677673');
+  background-image: url('../img/new/_elements/icons/event/event_open_arrow.png?1377860418');
 }
 /* line 155, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .add-event {
@@ -3132,7 +3144,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 /* line 193, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events a:hover {
-  background: #3665ff url('../img/new/_elements/icons/event/event_open_arrow.png?1377677673') right center no-repeat;
+  background: #3665ff url('../img/new/_elements/icons/event/event_open_arrow.png?1377860418') right center no-repeat;
   color: white;
 }
 /* line 198, ../sass/new/openeyes/components/panels/_episode.scss */
@@ -3142,11 +3154,11 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 /* line 201, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert {
-  background: url('../img/new/_elements/icons/event/status/alert.png?1377677673') right top no-repeat;
+  background: url('../img/new/_elements/icons/event/status/alert.png?1377860418') right top no-repeat;
 }
 /* line 203, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert:hover {
-  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1377677673');
+  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1377860418');
 }
 /* line 208, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-date {
@@ -3155,12 +3167,12 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 /* line 215, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected a {
-  background: #aaaaaa url('../img/new/_elements/icons/event/event_open_arrow.png?1377677673') right center no-repeat;
+  background: #aaaaaa url('../img/new/_elements/icons/event/event_open_arrow.png?1377860418') right center no-repeat;
   color: white;
 }
 /* line 220, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected .event-type.alert {
-  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1377677673');
+  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1377860418');
 }
 
 /* line 2, ../sass/new/openeyes/components/panels/_element.scss */
@@ -3432,7 +3444,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 /* line 146, ../sass/new/openeyes/components/events/_element.scss */
 .edit .icon-remove-side {
-  background: url('../img/new/_elements/icons/event-optional/element-remove.png?1377677673') no-repeat -10px -2px;
+  background: url('../img/new/_elements/icons/event-optional/element-remove.png?1377860418') no-repeat -10px -2px;
   height: 16px;
   position: absolute;
   right: 5px;
@@ -3442,7 +3454,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 /* line 155, ../sass/new/openeyes/components/events/_element.scss */
 .edit .icon-add-side {
-  background: url('../img/new/_elements/icons/event-optional/element-view.png?1377677673') no-repeat -10px -4px;
+  background: url('../img/new/_elements/icons/event-optional/element-view.png?1377860418') no-repeat -10px -4px;
   width: 16px;
   height: 16px;
 }
@@ -3547,7 +3559,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 /* line 52, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list li a {
-  background: #8c949c url('../img/new/_elements/icons/event-optional/element-view.png?1377677673') no-repeat right top;
+  background: #8c949c url('../img/new/_elements/icons/event-optional/element-view.png?1377860418') no-repeat right top;
   border-bottom: 1px dotted #fafafa;
   color: #fff;
   display: block;
