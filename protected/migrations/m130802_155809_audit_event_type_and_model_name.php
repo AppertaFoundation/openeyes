@@ -31,33 +31,30 @@ class m130802_155809_audit_event_type_and_model_name extends CDbMigration
 				'CONSTRAINT `audit_module_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
 				'CONSTRAINT `audit_module_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
-
-		$this->addColumn('audit','event_type_id','int(10) unsigned NULL');
-		$this->createIndex('audit_event_type_id_fk','audit','event_type_id');
-		$this->addForeignKey('audit_event_type_id_fk','audit','event_type_id','event_type','id');
-
-		$this->addColumn('audit','model_id','int(10) unsigned NULL');
-		$this->createIndex('audit_model_id_fk','audit','model_id');
-		$this->addForeignKey('audit_model_id_fk','audit','model_id','audit_model','id');
-
-		$this->addColumn('audit','module_id','int(10) unsigned NULL');
-		$this->createIndex('audit_module_id_fk','audit','module_id');
-		$this->addForeignKey('audit_module_id_fk','audit','module_id','audit_module','id');
+		$this->execute('ALTER TABLE audit
+			ADD COLUMN event_type_id int(10) unsigned DEFAULT NULL,
+			ADD COLUMN model_id int(10) unsigned DEFAULT NULL,
+			ADD COLUMN module_id int(10) unsigned DEFAULT NULL,
+			ADD INDEX audit_event_type_id_fk (event_type_id),
+			ADD INDEX audit_model_id_fk (model_id),
+			ADD INDEX audit_module_id_fk (module_id),
+			ADD FOREIGN KEY audit_event_type_id_fk (event_type_id) REFERENCES event_type (id),
+			ADD FOREIGN KEY audit_model_id_fk (model_id) REFERENCES audit_model (id),
+			ADD FOREIGN KEY audit_module_id_fk (module_id) REFERENCES audit_module (id);');
 	}
 
 	public function down()
 	{
-		$this->dropForeignKey('audit_event_type_id_fk','audit');
-		$this->dropIndex('audit_event_type_id_fk','audit');
-		$this->dropColumn('audit','event_type_id');
-
-		$this->dropForeignKey('audit_model_id_fk','audit');
-		$this->dropIndex('audit_model_id_fk','audit');
-		$this->dropColumn('audit','model_id');
-
-		$this->dropForeignKey('audit_module_id_fk','audit');
-		$this->dropIndex('audit_module_id_fk','audit');
-		$this->dropColumn('audit','module_id');
+		$this->execute('ALTER TABLE audit
+			DROP COLUMN event_type_id,
+			DROP COLUMN model_id,
+			DROP COLUMN module_id,
+			DROP INDEX audit_event_type_id_fk,
+			DROP INDEX audit_model_id_fk,
+			DROP INDEX audit_module_id_fk,
+			DROP FOREIGN KEY audit_event_type_id_fk,
+			DROP FOREIGN KEY audit_model_id_fk,
+			DROP FOREIGN KEY audit_module_id_fk;');
 
 		$this->dropTable('audit_model');
 		$this->dropTable('audit_module');
