@@ -1,0 +1,70 @@
+.ui-widget-overlay {
+	background: #666;
+	@include opacity(0.5);
+}
+
+.ui-dialog {
+	&.dialog {
+		background: #fff;
+		overflow: visible;
+		padding: 10px;
+		@include box-shadow(2px 2px 2px 2px #666);
+		@include border-radius(7px);
+		&.event, &.episode {
+			border: 7px solid #69bd51;
+		}
+		.ui-dialog-title {
+			display: block;
+			float: none;
+			margin-right: 34px;
+		}
+		&.dialog {
+			.ui-dialog-titlebar {
+				background: none;
+				border: 0;
+				font-size: 19px;
+				padding: 0 0 10px 0;
+			}
+			.ui-dialog-content {
+				padding: 0;
+				&.loading {
+					background: url(../img/ajax-loader-large.gif) center center no-repeat;
+					padding: 20px 0 40px 0;
+					text-align: center;
+				}
+			}
+			.ui-dialog-titlebar-close {
+				background: transparent url(../img/_elements/btns/overlay/big-cross.png) top left no-repeat;
+				border: 0;
+				display: block;
+				float: none;
+				height: 34px;
+				padding: 0;
+				position: absolute;
+				right: -6px;
+				top: 5px;
+				width: 34px;
+				@include box-shadow(none);
+				span {
+					position: absolute;
+					left: -9999px;
+				}
+				&.ui-state-hover {
+					border: 0;
+				}
+			}
+		}
+		.buttons {
+			text-align: right;
+		}
+		button {
+			font-family: Helvetica,Arial,Frutiger,Calibri,sans-serif;
+		}
+		&.alert .ui-dialog-content, &.confirm .ui-dialog-content {
+			overflow: hidden;
+		}
+		&.alert .buttons, &.confirm .buttons {
+			padding: 1.5em .5em .5em .5em;
+		}
+	}
+}

@@ -3602,6 +3602,96 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   background: #9c0;
 }
 
+/* line 1, ../sass/new/openeyes/components/_dialog.scss */
+.ui-widget-overlay {
+  background: #666;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+  opacity: 0.5;
+}
+
+/* line 7, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog {
+  background: #fff;
+  overflow: visible;
+  padding: 10px;
+  -webkit-box-shadow: 2px 2px 2px 2px #666666;
+  -moz-box-shadow: 2px 2px 2px 2px #666666;
+  box-shadow: 2px 2px 2px 2px #666666;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  -ms-border-radius: 7px;
+  -o-border-radius: 7px;
+  border-radius: 7px;
+}
+/* line 13, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.event, .ui-dialog.dialog.episode {
+  border: 7px solid #69bd51;
+}
+/* line 16, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog .ui-dialog-title {
+  display: block;
+  float: none;
+  margin-right: 34px;
+}
+/* line 22, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.dialog .ui-dialog-titlebar {
+  background: none;
+  border: 0;
+  font-size: 19px;
+  padding: 0 0 10px 0;
+}
+/* line 28, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.dialog .ui-dialog-content {
+  padding: 0;
+}
+/* line 30, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.dialog .ui-dialog-content.loading {
+  background: url(../img/ajax-loader-large.gif) center center no-repeat;
+  padding: 20px 0 40px 0;
+  text-align: center;
+}
+/* line 36, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.dialog .ui-dialog-titlebar-close {
+  background: transparent url(../img/_elements/btns/overlay/big-cross.png) top left no-repeat;
+  border: 0;
+  display: block;
+  float: none;
+  height: 34px;
+  padding: 0;
+  position: absolute;
+  right: -6px;
+  top: 5px;
+  width: 34px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+/* line 48, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.dialog .ui-dialog-titlebar-close span {
+  position: absolute;
+  left: -9999px;
+}
+/* line 52, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.dialog .ui-dialog-titlebar-close.ui-state-hover {
+  border: 0;
+}
+/* line 57, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog .buttons {
+  text-align: right;
+}
+/* line 60, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog button {
+  font-family: Helvetica,Arial,Frutiger,Calibri,sans-serif;
+}
+/* line 63, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.alert .ui-dialog-content, .ui-dialog.dialog.confirm .ui-dialog-content {
+  overflow: hidden;
+}
+/* line 66, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.alert .buttons, .ui-dialog.dialog.confirm .buttons {
+  padding: 1.5em .5em .5em .5em;
+}
+
 /* line 12, ../sass/new/openeyes/components/_helpers.scss */
 .clearfix, .element-data, .edit .element-fields, .sub-element-data, .edit .sub-element-fields, .element-eye, .sub-elements, .event-header, .footer, .panel.user, .edit .element-header, .edit .sub-element-header {
   *zoom: 1;
