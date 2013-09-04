@@ -8,6 +8,10 @@ module.exports = {
 			{
 				src: ['img/**/*'],
 				dest: 'docs/public/'
+			},
+			{
+				src: ['js/**/*'],
+				dest: 'docs/public/'
 			}
 		]
 	}
