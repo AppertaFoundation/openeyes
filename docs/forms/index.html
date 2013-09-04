@@ -13,6 +13,15 @@
 
 <script src="/public/js/vendor/modernizr.js"></script>
 <script src="/public/js/components/jquery/jquery.min.js"></script>
+<script src="/public/js/components/jquery-ui/ui/jquery-ui.js"></script>
+
+<script src="/public/js/util.js"></script>
+<script src="/public/js/dialogs.js"></script>
+
+<script src="/public/js/components/google-code-prettify/src/prettify.js"></script>
+<link rel="stylesheet" href="/public/js/components/google-code-prettify/src/prettify.css" />
+<link rel="stylesheet" href="/public/js/components/jquery-ui/themes/base/minified/jquery-ui.min.css" />
+
 <style type="text/css">
 .box.event {
 	border: 0;
@@ -20,6 +29,9 @@
 .form-example {
 	padding: 10px;
 	border: 1px solid #ddd;
+}
+.form-example header {
+	margin-bottom: 1em;
 }
 .form-title {
 	color: #888;
@@ -30,8 +42,13 @@
 }
 pre {
 	font-size: .8em;
-	display: none;
 	margin-top: .5em;
+}
+hr {
+	margin-top: .5em;
+}
+.view-markup {
+	font-size: 13px;
 }
 </style>
 
@@ -71,30 +88,41 @@ pre {
 								<h2 id="overview">Overview</h2>
 								<p>This page lists all the possible form fields and layouts to
 								be used in the OpenEyes application. Use this documentation as a
-								guide to creating forms for event elements.</p>
+								guide to creating forms throughout the application.</p>
 
 								<p>A lot of the terminology used in this page is taken from the
 								<a href="http://www.w3.org/TR/html51/forms.html">latest
 								html5 spec.</a></p>
+
+								<p>Click on the <code>View Markup</code> links to view the HTML
+								used in constructing the forms.</p>
 							</div>
 						</div>
 
 						<hr />
 
-						<!-- Basic forms -->
+						<!-- Form layouts -->
 						<div class="row">
 							<div class="large-12 column">
-								<h2 id="basic-forms">Basic forms</h2>
-								<p>Below is an example of a basic form. Each field row is wrapped in a
-								container, and labels are used to describe the fields. Fieldsets
+								<h2 id="form-layouts">Form layouts</h2>
+								<p>Each field row is wrapped in a container, and labels are used to describe the fields. Fieldsets
 								are used to wrap fields groups, like radio or checkbox groups.</p>
+								<p>There are no set dimensions for the form components. This allows
+								forms to be flexible and to adapt to fit different areas of the document without
+								the need for creating additional CSS. If you want to create custom form layouts, you need to use the grid system. If you
+								are unfamiliar with how the grid system works, please view the <a href="#">grid documentation</a>.</p>
+
+								<h3>Basic form layouts</h3>
 
 								<div class="row">
-									<div class="column large-5 with-markup">
+									<div class="large-6 column">
 
-										<form class="form-example">
+										<form class="form-example" id="form-example-vertical">
 
-											<h3 class="form-title">Vertical layout</h3>
+											<header>
+												<a class="view-markup right" data-markup="form-example-vertical">View Markup</a>
+												<h3 class="form-title">Vertical layout</h3>
+											</header>
 
 											<!-- Text input -->
 											<div class="field-row">
@@ -162,63 +190,24 @@ pre {
 												</fieldset>
 											</div>
 
-											<!-- Checkbox group -->
-											<div class="field-row">
-												<fieldset>
-													<legend>Checkbox group (block)</legend>
-													<label>
-														<input type="checkbox" name="checkbox-input-2" />
-														Option 1
-													</label>
-													<label>
-														<input type="checkbox" name="checkbox-input-2" />
-														Option 2
-													</label>
-												</fieldset>
-											</div>
-
 											<!-- Submit button -->
 											<div class="field-row">
-												<button type="submit">
+												<button type="submit" class="small">
 													Submit
 												</button>
 											</div>
 
 										</form>
+
 									</div>
 
-									<div class="column large-7">
-										<div class="form-example">
-											<h3 class="form-title">
-												Markup
-											</h3>
-										</div>
-									</div>
-								</div>
+									<div class="large-6 column">
+										<form class="form-example" id="form-example-horizontal">
 
-							</div>
-						</div>
-
-						<hr />
-
-						<!-- Form layouts -->
-						<div class="row">
-							<div class="large-12 column">
-								<h2 id="form-layouts">Form layouts</h2>
-								<p>There are no set dimensions for the form components. This allows
-								forms to be flexible and to adapt to fit different areas of the document without
-								the need for creating additional CSS.</p>
-								<p>If you want to create custom form layouts, you need to use the grid system. If you
-								are unfamiliar with how the grid system works, please view the <a href="#">grid documentation</a>.</p>
-								<p>Here is an example of a custom form layout that uses the grid system
-								to create a horizontal form:</p>
-
-								<div class="row">
-									<div class="large-5 column with-markup">
-
-										<form class="form-example">
-
-											<h3 class="form-title">Horizontal layout</h3>
+											<header>
+												<a class="view-markup right" data-markup="form-example-horizontal">View Markup</a>
+												<h3 class="form-title">Horizontal layout</h3>
+											</header>
 
 											<!-- Text input -->
 											<div class="row field-row">
@@ -326,22 +315,16 @@ pre {
 											<!-- Submit button -->
 											<div class="row field-row">
 												<div class="large-8 large-offset-4 column">
-													<button type="submit">
+													<button type="submit" class="small">
 														Submit
 													</button>
 												</div>
 											</div>
 										</form>
 									</div>
-
-									<div class="column large-7">
-										<div class="form-example">
-											<h3 class="form-title">
-												Markup
-											</h3>
-										</div>
-									</div>
 								</div>
+
+								<h3>Inline form layouts</h3>
 							</div>
 						</div>
 					</div>
@@ -369,38 +352,36 @@ pre {
 		</div>
 	</footer>
 	<script>
-	(function() {
+	$(function() {
 
-		return;
+		$('.view-markup').on('click', function(e) {
 
-		function htmlEntities(str) {
-				return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-		}
+			var element = $('#' + $(this).data('markup'));
+			var markup = element.html();
 
-		$('.with-markup').each(function() {
-
-			var markup = $(this).find('form').html();
-
+			markup = markup.replace(/<header>[\s\S.]*<\/header>/gm, '');
 			markup = markup.replace(/\t/gm, '    '); // tabs to 4 spaces
 			markup = markup.replace(/^\n/gm, '');    // remove blank lines
 
 			// Get the indentation level from the first line
 			var indentation = markup.split('\n')[0].replace(/^([^>]+)<.*/, '$1').length
 
-			markup = markup.replace(new RegExp('^\\s{0,'+indentation+'}', 'gm'), '');
+			markup = markup.replace(new RegExp('^\\s{0,'+indentation+'}', 'gm'), ''); // remove leading whitespace
+			markup = markup.replace(/^\n/gm, '');    // remove blank lines
 
-			var pre = $(this).next().find('pre');
-
-			pre.addClass('prettyprint lang-html').html(htmlEntities(markup));
-
-			$(this).next().find('.show-markup').on('click', function() {
-				pre.toggle();
-			})
+			new OpenEyes.Dialog({
+				title: 'Markup',
+				content: '<pre class="prettyprint lang-html">' + prettyPrintOne(htmlEntities(markup)) + '</pre>',
+				width: 800,
+				height: 800,
+				constrainToViewport: true
+			}).open();
 		});
 
-		prettyPrint();
-
-	}());
+		function htmlEntities(str) {
+				return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+		}
+	});
 	</script>
 </body>
 </html>
