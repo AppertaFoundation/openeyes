@@ -10,7 +10,7 @@ module.exports = function(grunt) {
 		modernizr: require('./modernizr'),
 		copy: require('./copy'),
 		jsdoc: require('./jsdoc'),
-		docs: require('./docs'),
+		createdocs: require('./createdocs'),
 		viewdocs: require('./viewdocs'),
 		hub: require('./hub')
 	};

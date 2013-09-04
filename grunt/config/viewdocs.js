@@ -2,7 +2,7 @@ module.exports = {
 	all: {
 		options: {
 			tasks: [
-				'docs:all',
+				'createdocs:all',
 				'docserver:all'
 			]
 		}
@@ -10,7 +10,7 @@ module.exports = {
 	styleguide: {
 		options: {
 			tasks: [
-				'docs:styleguide',
+				'createdocs:styleguide',
 				'docserver:styleguide'
 			]
 		}
@@ -18,7 +18,7 @@ module.exports = {
 	javascript: {
 		options: {
 			tasks: [
-				'docs:javascript',
+				'createdocs:javascript',
 				'docserver:javascript'
 			]
 		}
