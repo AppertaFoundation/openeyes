@@ -202,7 +202,7 @@ function buildNav(members) {
         globalNav = '';
 
     if (members.modules.length) {
-        nav += '<h3>Modules</h3><ul>';
+        nav += '<h3>Modules</h3><ul class="side-nav">';
         members.modules.forEach(function(m) {
             if ( !hasOwnProp.call(seen, m.longname) ) {
                 nav += '<li>'+linkto(m.longname, m.name)+'</li>';
@@ -214,7 +214,7 @@ function buildNav(members) {
     }
 
     if (members.externals.length) {
-        nav += '<h3>Externals</h3><ul>';
+        nav += '<h3>Externals</h3><ul class="side-nav">';
         members.externals.forEach(function(e) {
             if ( !hasOwnProp.call(seen, e.longname) ) {
                 nav += '<li>'+linkto( e.longname, e.name.replace(/(^"|"$)/g, '') )+'</li>';
@@ -234,7 +234,7 @@ function buildNav(members) {
         });
 
         if (classNav !== '') {
-            nav += '<h3>Classes</h3><ul>';
+            nav += '<h3>Classes</h3><ul class="side-nav">';
             nav += classNav;
             nav += '</ul>';
         }
@@ -255,7 +255,7 @@ function buildNav(members) {
     */
 
     if (members.namespaces.length) {
-        nav += '<h3>Namespaces</h3><ul>';
+        nav += '<h3>Namespaces</h3><ul class="side-nav">';
         members.namespaces.forEach(function(n) {
             if ( !hasOwnProp.call(seen, n.longname) ) {
                 nav += '<li>'+linkto(n.longname, n.name)+'</li>';
@@ -267,7 +267,7 @@ function buildNav(members) {
     }
 
     if (members.mixins.length) {
-        nav += '<h3>Mixins</h3><ul>';
+        nav += '<h3>Mixins</h3><ul class="side-nav">';
         members.mixins.forEach(function(m) {
             if ( !hasOwnProp.call(seen, m.longname) ) {
                 nav += '<li>'+linkto(m.longname, m.name)+'</li>';
@@ -279,7 +279,7 @@ function buildNav(members) {
     }
 
     if (members.tutorials.length) {
-        nav += '<h3>Tutorials</h3><ul>';
+        nav += '<h3>Tutorials</h3><ul class="side-nav">';
         members.tutorials.forEach(function(t) {
             nav += '<li>'+tutoriallink(t.name)+'</li>';
         });
@@ -300,7 +300,7 @@ function buildNav(members) {
             nav += '<h3>' + linkto('global', 'Global') + '</h3>';
         }
         else {
-            nav += '<h3>Global</h3><ul>' + globalNav + '</ul>';
+            nav += '<h3>Global</h3><ul class="side-nav">' + globalNav + '</ul>';
         }
     }
 

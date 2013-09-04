@@ -1,35 +1,3 @@
-html
-{
-    overflow: auto;
-    background-color: #fff;
-}
-
-body
-{
-	font: 14px "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans serif;
-	line-height: 130%;
-	color: #000;
-	background-color: #fff;
-}
-
-a {
-    color: #444;
-}
-
-a:visited {
-    color: #444;
-}
-
-a:active {
-    color: #444;
-}
-
-header
-{
-	display: block;
-	padding: 6px 4px;
-}
-
 .class-description {
     font-style: italic;
 	font-family: Palatino, 'Palatino Linotype', serif;
@@ -39,19 +7,20 @@ header
 	margin-top: 1em;
 }
 
-#main {
-    float: left;
-    width: 100%;
-}
-
 section
 {
 	display: block;
-	
-	background-color: #fff;
-	padding: 12px 24px;
+	/*background-color: #fff;*/
+	padding: 12px 0;
     border-bottom: 1px solid #ccc;
-    margin-right: 240px;
+}
+
+ul li, ol li, dl li  {
+	margin-left: 1.5em;
+}
+
+h1,h2,h3,h4,h5 {
+	font-weight: bold;
 }
 
 .variation {
@@ -64,6 +33,14 @@ section
 	color: #aaa;
 	font-style: italic;
 	font-weight: lighter;
+}
+
+dl dt {
+	margin: 0;
+}
+
+dl dd {
+	margin-bottom: 0;
 }
 
 nav
@@ -111,55 +88,17 @@ nav a:active {
     color: #5C5954;
 }
 
-footer {
-    display: block;
-    padding: 6px;
-    margin-top: 12px;
-    font-style: italic;
-    font-size: 90%;
+h4 {
+	font-size: 13px;
 }
 
-h1
-{
-	font-size: 200%;
-	font-weight: bold;
-	letter-spacing: -0.01em;
-	margin: 6px 0 9px 0;
-}
-
-h2
-{
-	font-size: 170%;
-	font-weight: bold;
-	letter-spacing: -0.01em;
-	margin: 6px 0 3px 0;
-}
-
-h3
-{
-	font-size: 150%;
-	font-weight: bold;
-	letter-spacing: -0.01em;
-	margin-top: 16px;
-	margin: 6px 0 3px 0;
-}
-
-h4
-{
-	font-size: 130%;
-	font-weight: bold;
-	letter-spacing: -0.01em;
-	margin-top: 16px;
-	margin: 18px 0 3px 0;
-	color: #A35A00;
-}
 
 h5, .container-overview .subsection-title
 {
-	font-size: 120%;
+	font-size: 14px;
 	font-weight: bold;
 	letter-spacing: -0.01em;
-	margin: 8px 0 3px -16px;
+	margin: 8px 0 3px 0;
 }
 
 h6
@@ -196,20 +135,22 @@ h6
 }
 
 .details { margin-top: 14px; border-left: 2px solid #DDD; }
-.details dt { width:100px; float:left; padding-left: 10px;  padding-top: 6px; }
+.details dt { width:130px; float:left; padding-left: 10px; font-size: 13px; }
 .details dd { margin-left: 50px; }
 .details ul { margin: 0; }
 .details ul { list-style-type: none; }
-.details li { margin-left: 30px; padding-top: 6px; }
+.details li { margin-left: 30px; }
 .details pre.prettyprint { margin: 0 }
 .details .object-value { padding-top: 0; }
 
 .description {
 	margin-bottom: 1em;
-	margin-left: -16px;
-	margin-top: 1em;
+	margin-top: .2em;
+	font-size: 13px;
 }
-
+code {
+	font-size: 13px;
+}
 .code-caption
 {
 	font-style: italic;
@@ -232,7 +173,6 @@ h6
 .prettyprint code
 {
 	font-family: Consolas, 'Lucida Console', Monaco, monospace;
-	font-size: 100%;
 	line-height: 18px;
 	display: block;
 	padding: 4px 12px;
@@ -257,7 +197,7 @@ h6
 .params .name, .props .name, .name code {
 	color: #A35A00;
 	font-family: Consolas, 'Lucida Console', Monaco, monospace;
-	font-size: 100%;
+	font-size: 13px;
 }
 
 .params td, .params th, .props td, .props th
@@ -270,21 +210,13 @@ h6
 	display: table-cell;
 }
 
-.params thead tr, .props thead tr
-{
-	background-color: #ddd;
-	font-weight: bold;
-}
-
-.params .params thead tr, .props .props thead tr
-{
-	background-color: #fff;
-	font-weight: bold;
-}
-
 .params th, .props th { border-right: 1px solid #aaa; }
 .params thead .last, .props thead .last { border-right: 1px solid #ddd; }
 
 .disabled {
     color: #454545;
+}
+
+.more-info {
+	display: none;
 }
