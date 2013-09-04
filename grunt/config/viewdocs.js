@@ -1,4 +1,12 @@
 module.exports = {
+	all: {
+		options: {
+			tasks: [
+				'docs:all',
+				'docserver:all'
+			]
+		}
+	},
 	styleguide: {
 		options: {
 			tasks: [

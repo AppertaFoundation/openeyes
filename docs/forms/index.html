@@ -1,8 +1,18 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<? include 'components/head.php'; ?>
-<link rel="stylesheet" href="/module_assets/examination/css/module_new.css" />
+
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>OpenEyes</title>
+
+<meta name="viewport" content="width=device-width" />
+
+<link rel="stylesheet" href="/public/css/style_new.css" />
+
+<script src="/public/js/vendor/modernizr.js"></script>
+<script src="/public/js/components/jquery/jquery.min.js"></script>
 <style type="text/css">
 .box.event {
 	border: 0;
@@ -25,15 +35,17 @@ pre {
 }
 </style>
 
-<script src="/js/components/google-code-prettify/src/prettify.js"></script>
-<link rel="stylesheet" href="/js/components/google-code-prettify/src/prettify.css" />
-
 </head>
 <body>
 	<div class="container main" role="main">
 
-		<? include 'components/header.php'; ?>
-
+		<header class="header row">
+			<div class="large-3 columns">
+				<div class="logo">
+					OpenEyes
+				</div>
+			</div>
+		</header>
 		<div class="container content">
 			<h1 class="badge">Event forms</h1>
 
@@ -100,6 +112,18 @@ pre {
 												<input type="password" id="input-password-1" />
 											</div>
 
+											<!-- Select input -->
+											<div class="field-row">
+												<label for="select-1">
+													Select input
+												</label>
+												<select id="select-1">
+													<option>Please select...</option>
+													<option>Option 1</option>
+													<option>Option 2</option>
+												</select>
+											</div>
+
 											<!-- Textarea input -->
 											<div class="field-row">
 												<label for="input-textarea-1">
@@ -111,7 +135,7 @@ pre {
 											<!-- Radio group -->
 											<div class="field-row">
 												<fieldset>
-													<legend>Radio group</legend>
+													<legend>Radio group (inline)</legend>
 													<label class="inline">
 														<input type="radio" name="radio-input-1" />
 														Option 1
@@ -126,13 +150,28 @@ pre {
 											<!-- Checkbox group -->
 											<div class="field-row">
 												<fieldset>
-													<legend>Checkbox group</legend>
+													<legend>Checkbox group (inline)</legend>
 													<label class="inline">
 														<input type="checkbox" name="checkbox-input-1" />
 														Option 1
 													</label>
 													<label class="inline">
 														<input type="checkbox" name="checkbox-input-1" />
+														Option 2
+													</label>
+												</fieldset>
+											</div>
+
+											<!-- Checkbox group -->
+											<div class="field-row">
+												<fieldset>
+													<legend>Checkbox group (block)</legend>
+													<label>
+														<input type="checkbox" name="checkbox-input-2" />
+														Option 1
+													</label>
+													<label>
+														<input type="checkbox" name="checkbox-input-2" />
 														Option 2
 													</label>
 												</fieldset>
@@ -184,71 +223,100 @@ pre {
 											<!-- Text input -->
 											<div class="row field-row">
 												<div class="large-4 column">
-													<label for="input-text-1">
+													<label for="input-text-2">
 														Text input
 													</label>
 												</div>
 												<div class="large-8 column">
-													<input type="text" id="input-text-1" />
+													<input type="text" id="input-text-2" />
 												</div>
 											</div>
 
 											<!-- Password input -->
 											<div class="row field-row">
 												<div class="large-4 column">
-													<label for="input-password-1">
+													<label for="input-password-2">
 														Password input
 													</label>
 												</div>
 												<div class="large-8 column">
-													<input type="password" id="input-password-1" />
+													<input type="password" id="input-password-2" />
+												</div>
+											</div>
+
+											<!-- Select input -->
+											<div class="row field-row">
+												<div class="large-4 column">
+													<label for="select-2">
+														Select input
+													</label>
+												</div>
+												<div class="large-8 column">
+													<select id="select-2">
+														<option>Please select...</option>
+														<option>Option 1</option>
+														<option>Option 2</option>
+													</select>
 												</div>
 											</div>
 
 											<!-- Textarea input -->
 											<div class="row field-row">
 												<div class="large-4 column">
-													<label for="input-textarea-1">
+													<label for="input-textarea-2">
 														Textarea input
 													</label>
 												</div>
 												<div class="large-8 column">
-													<textarea id="input-textarea-1"></textarea>
+													<textarea id="input-textarea-2"></textarea>
 												</div>
 											</div>
 
 											<!-- Radio group -->
 											<div class="row field-row">
 												<fieldset>
-													<div class="large-4 column">
-														<legend>Radio group</legend>
-													</div>
+													<legend class="large-4 column">Radio group (inline)</legend>
 													<div class="large-8 column">
 														<label class="inline">
-															<input type="radio" name="radio-input-1" />
+															<input type="radio" name="radio-input-2" />
 															Option 1
 														</label>
 														<label class="inline">
-															<input type="radio" name="radio-input-1" />
+															<input type="radio" name="radio-input-2" />
 															Option 2
 														</label>
 													</div>
 												</fieldset>
 											</div>
 
-											<!-- Checkbox group -->
+											<!-- Checkbox group (inline) -->
 											<div class="row field-row">
 												<fieldset>
-													<div class="large-4 column">
-														<legend>Checkbox group</legend>
-													</div>
+													<legend class="large-4 column">Checkbox group (inline)</legend>
 													<div class="large-8 column">
 														<label class="inline">
-															<input type="checkbox" name="checkbox-input-1" />
+															<input type="checkbox" name="checkbox-input-3" />
 															Option 1
 														</label>
 														<label class="inline">
-															<input type="checkbox" name="checkbox-input-1" />
+															<input type="checkbox" name="checkbox-input-3" />
+															Option 2
+														</label>
+													</div>
+												</fieldset>
+											</div>
+
+											<!-- Checkbox group (block) -->
+											<div class="row field-row">
+												<fieldset>
+													<legend class="large-4 column">Checkbox group (block)</legend>
+													<div class="large-8 column">
+														<label>
+															<input type="checkbox" name="checkbox-input-4" />
+															Option 1
+														</label>
+														<label>
+															<input type="checkbox" name="checkbox-input-4" />
 															Option 2
 														</label>
 													</div>
@@ -274,23 +342,39 @@ pre {
 										</div>
 									</div>
 								</div>
-								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<? include 'components/footer.php'; ?>
 	</div>
-
+	<footer class="footer row">
+		<div class="large-3 medium-3 columns">
+				<div class="info">
+						<a href="#" data-component="support-info-link">Served, with love, by openeyes.local</a>
+						<br />
+						<span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
+				</div>
+		</div>
+		<div class="large-6 medium-6 large-centered medium-centered columns help">
+				<div class="panel">
+						<ul class="inline-list">
+								<li><strong>Need help?</strong></li>
+								<li>helpdesk@example.com</li>
+								<li><strong>12345678</strong></li>
+								<li><a target="_blank" href="/">Help Documentation</a></li>
+						</ul>
+				</div>
+		</div>
+	</footer>
 	<script>
 	(function() {
 
 		return;
 
 		function htmlEntities(str) {
-		    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+				return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 		}
 
 		$('.with-markup').each(function() {
@@ -314,7 +398,7 @@ pre {
 			})
 		});
 
-    prettyPrint();
+		prettyPrint();
 
 	}());
 	</script>

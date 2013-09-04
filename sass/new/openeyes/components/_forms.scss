@@ -33,6 +33,10 @@ label, .label {
 	margin: 0;
 }
 
+select {
+	font-size: $default-font-size;
+}
+
 /* Normalize file input width */
 input[type="file"] {
 	width: 100%;

@@ -12,6 +12,7 @@ module.exports = function(grunt) {
 		var options = this.options({
 			port: 9001,
 			base: '.',
+			url: '/',
 			hostname: 'localhost'
 		});
 
@@ -42,12 +43,12 @@ module.exports = function(grunt) {
 				args: [
 					'-a',
 					'/Applications/Google Chrome.app',
-					'http://' + options.hostname + ':' + options.port
+					'http://' + options.hostname + ':' + options.port + options.url
 				]
 			}, function(error, result){
 				if (error) {
 					grunt.log.error(error.toString());
-					grunt.log.writeln('Unable to open chrome. View http://' + options.hostname + ':' + options.port + ' in your browser.');
+					grunt.log.writeln('Unable to open chrome. View http://' + options.hostname + ':' + options.port + options.url + ' in your browser.');
 					return;
 				}
 				grunt.log.write(result);

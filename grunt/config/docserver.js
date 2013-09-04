@@ -1,14 +1,22 @@
 module.exports = {
+	options: {
+		port: 9002,
+	},
+	all: {
+		options: {
+			base: 'docs/'
+		}
+	},
 	styleguide: {
 		options: {
-			port: 9002,
-			base: 'docs/styleguide'
+			base: 'docs',
+			url: '/styleguide'
 		}
 	},
 	javascript: {
 		options: {
-			port: 9002,
-			base: 'docs/jsdoc'
+			base: 'docs',
+			url: '/jsdoc'
 		}
 	}
 };

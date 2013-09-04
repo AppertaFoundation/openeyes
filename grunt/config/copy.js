@@ -3,11 +3,11 @@ module.exports = {
 		files: [
 			{
 				src: ['css/**/*'],
-				dest: 'docs/templates/styleguide/public/'
+				dest: 'docs/public/'
 			},
 			{
 				src: ['img/**/*'],
-				dest: 'docs/templates/styleguide/public/'
+				dest: 'docs/public/'
 			}
 		]
 	}
