@@ -1,4 +1,4 @@
-@automationbooking
+@confidencepackbooking
 Feature: Basic booking
   In order to book visits of my patients
   As a system user

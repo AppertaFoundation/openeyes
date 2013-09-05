@@ -57,6 +57,19 @@ class PhasingContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I choose a right eye Intraocular Pressure Reading Time of "([^"]*)"$/
+     */
+    public function iChooseARightEyeIntraocularPressureReadingTimeOf($time)
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->rightPressureTime($time);
+    }
+
+
+    /**
      * @Then /^I choose a right eye Intraocular Pressure Reading of "([^"]*)"$/
      */
     public function iChooseARightEyeIntraocularPressureReadingOf($righteye)
@@ -114,6 +127,18 @@ class PhasingContext extends PageObjectContext
          */
         $phasing= $this->getPage('Phasing');
         $phasing->leftDilationNo();
+    }
+
+    /**
+     * @Then /^I choose a left eye Intraocular Pressure Reading Time of "([^"]*)"$/
+     */
+    public function iChooseALeftEyeIntraocularPressureReadingTimeOf($time)
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->leftPressureTime($time);
     }
 
     /**

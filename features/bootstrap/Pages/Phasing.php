@@ -12,7 +12,7 @@ class Phasing extends Page
         'phasingInstrumentRight' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_instrument_id']"),
         'phasingDilationRightYes' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_dilated_1']"),
         'phasingDilationRightNo' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_dilated_0']"),
-        'phasingReadingTimeRight' => array('xpath' => "//input[@id='intraocularpressure_reading_0_value']"),
+        'phasingReadingTimeRight' => array('xpath' => "//*[@id='intraocularpressure_reading_0_measurement_timestamp']"),
         'phasingPressureRight' => array('xpath' => "//input[@id='intraocularpressure_reading_0_value']"),
         'phasingCommentsRight' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_comments']"),
 
@@ -33,9 +33,9 @@ class Phasing extends Page
     public function confirmPhasingLogoExist ()
     {
         if ($this->doesPhasingLogoExist()){
-            print "!!!!!Phasing Text & Logo is Present!!!!!";
+            print "Phasing Text & Logo IS Present";
         }
-        elseif (print "Logo missing!");
+        elseif (print "Logo MISSING!");
     }
 
     public function rightInstrument ($rightEye)
@@ -51,6 +51,11 @@ class Phasing extends Page
     public function rightDilationNo ()
     {
         $this->getElement('phasingDilationRightNo')->click();
+    }
+
+    public function rightPressureTime ($time)
+    {
+        $this->getElement('phasingReadingTimeRight')->setValue($time);
     }
 
     public function rightPressure ($rightEye)
@@ -78,6 +83,11 @@ class Phasing extends Page
         $this->getElement('phasingDilationLeftNo')->click();
     }
 
+    public function leftPressureTime ($time)
+    {
+        $this->getElement('phasingReadingTimeLeft')->setValue($time);
+    }
+
     public function leftPressure ($leftEye)
     {
         $this->getElement('phasingPressureLeft')->setValue($leftEye);
@@ -92,6 +102,7 @@ class Phasing extends Page
     public function savePhasingEvent ()
     {
         $this->getElement('savePhasingEvent')->click();
+        $this->getSession()->wait(100000);
     }
 
 }
