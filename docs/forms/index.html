@@ -9,48 +9,19 @@
 
 <meta name="viewport" content="width=device-width" />
 
-<link rel="stylesheet" href="/public/css/style_new.css" />
+<link rel="stylesheet" href="/public/core/css/style_new.css" />
+<link rel="stylesheet" href="/public/css/docs.css" />
 
-<script src="/public/js/vendor/modernizr.js"></script>
-<script src="/public/js/components/jquery/jquery.min.js"></script>
-<script src="/public/js/components/jquery-ui/ui/jquery-ui.js"></script>
+<link rel="stylesheet" href="/public/core/js/components/google-code-prettify/src/prettify.css" />
+<link rel="stylesheet" href="/public/core/js/components/jquery-ui/themes/base/minified/jquery-ui.min.css" />
 
-<script src="/public/js/util.js"></script>
-<script src="/public/js/dialogs.js"></script>
-
-<script src="/public/js/components/google-code-prettify/src/prettify.js"></script>
-<link rel="stylesheet" href="/public/js/components/google-code-prettify/src/prettify.css" />
-<link rel="stylesheet" href="/public/js/components/jquery-ui/themes/base/minified/jquery-ui.min.css" />
-
-<style type="text/css">
-.box.event {
-	border: 0;
-}
-.form-example {
-	padding: 10px;
-	border: 1px solid #ddd;
-}
-.form-example header {
-	margin-bottom: 1em;
-}
-.form-title {
-	color: #888;
-}
-.example-box {
-	background: #fafafa;
-	margin: 0;
-}
-pre {
-	font-size: .8em;
-	margin-top: .5em;
-}
-hr {
-	margin-top: .5em;
-}
-.view-markup {
-	font-size: 13px;
-}
-</style>
+<script src="/public/core/js/vendor/modernizr.js"></script>
+<script src="/public/core/js/components/jquery/jquery.min.js"></script>
+<script src="/public/core/js/components/jquery-ui/ui/jquery-ui.js"></script>
+<script src="/public/core/js/components/google-code-prettify/src/prettify.js"></script>
+<script src="/public/core/js/util.js"></script>
+<script src="/public/core/js/dialogs.js"></script>
+<script src="/public/js/docs.js"></script>
 
 </head>
 <body>
@@ -427,54 +398,22 @@ hr {
 	</div>
 	<footer class="footer row">
 		<div class="large-3 medium-3 columns">
-				<div class="info">
-						<a href="#" data-component="support-info-link">Served, with love, by openeyes.local</a>
-						<br />
-						<span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
-				</div>
+			<div class="info">
+				<a href="#" data-component="support-info-link">Served, with love, by openeyes.local</a>
+				<br />
+				<span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
+			</div>
 		</div>
 		<div class="large-6 medium-6 large-centered medium-centered columns help">
-				<div class="panel">
-						<ul class="inline-list">
-								<li><strong>Need help?</strong></li>
-								<li>helpdesk@example.com</li>
-								<li><strong>12345678</strong></li>
-								<li><a target="_blank" href="/">Help Documentation</a></li>
-						</ul>
-				</div>
+			<div class="panel">
+				<ul class="inline-list">
+					<li><strong>Need help?</strong></li>
+					<li>helpdesk@example.com</li>
+					<li><strong>12345678</strong></li>
+					<li><a target="_blank" href="/">Help Documentation</a></li>
+				</ul>
+			</div>
 		</div>
 	</footer>
-	<script>
-	$(function() {
-
-		$('.view-markup').on('click', function(e) {
-
-			var element = $('#' + $(this).data('markup'));
-			var markup = element.html();
-
-			markup = markup.replace(/<header>[\s\S.]*<\/header>/gm, '');
-			markup = markup.replace(/\t/gm, '    '); // tabs to 4 spaces
-			markup = markup.replace(/^\n/gm, '');    // remove blank lines
-
-			// Get the indentation level from the first line
-			var indentation = markup.split('\n')[0].replace(/^([^>]+)<.*/, '$1').length
-
-			markup = markup.replace(new RegExp('^\\s{0,'+indentation+'}', 'gm'), ''); // remove leading whitespace
-			markup = markup.replace(/^\n/gm, '');    // remove blank lines
-
-			new OpenEyes.Dialog({
-				title: 'Markup',
-				content: '<pre class="prettyprint lang-html">' + prettyPrintOne(htmlEntities(markup)) + '</pre>',
-				width: 800,
-				height: 800,
-				constrainToViewport: true
-			}).open();
-		});
-
-		function htmlEntities(str) {
-				return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-		}
-	});
-	</script>
 </body>
 </html>

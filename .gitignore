@@ -33,4 +33,4 @@ vendor
 /docs/templates/styleguide/public/img
 /docs/styleguide/
 /docs/jsdoc
-/docs/public
+/docs/public/core

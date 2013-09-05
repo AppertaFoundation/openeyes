@@ -8,34 +8,19 @@
 
 <meta name="viewport" content="width=device-width" />
 
-<link rel="stylesheet" href="/public/css/style_new.css" />
+<link rel="stylesheet" href="/public/core/css/style_new.css" />
+<link rel="stylesheet" href="/public/css/docs.css" />
 
-<script src="/public/js/vendor/modernizr.js"></script>
-<script src="/public/js/components/jquery/jquery.min.js"></script>
+<link rel="stylesheet" href="/public/core/js/components/google-code-prettify/src/prettify.css" />
+<link rel="stylesheet" href="/public/core/js/components/jquery-ui/themes/base/minified/jquery-ui.min.css" />
 
-
-
-<style type="text/css">
-.box.event {
-	border: 0;
-}
-.form-example {
-	padding: 10px;
-	border: 1px solid #ddd;
-}
-.form-title {
-	color: #888;
-}
-.example-box {
-	background: #fafafa;
-	margin: 0;
-}
-pre {
-	font-size: .8em;
-	display: none;
-	margin-top: .5em;
-}
-</style>
+<script src="/public/core/js/vendor/modernizr.js"></script>
+<script src="/public/core/js/components/jquery/jquery.min.js"></script>
+<script src="/public/core/js/components/jquery-ui/ui/jquery-ui.js"></script>
+<script src="/public/core/js/components/google-code-prettify/src/prettify.js"></script>
+<script src="/public/core/js/util.js"></script>
+<script src="/public/core/js/dialogs.js"></script>
+<script src="/public/js/docs.js"></script>
 
 </head>
 <body>
@@ -49,7 +34,7 @@ pre {
 			</div>
 		</header>
 		<div class="container content">
-			<h1 class="badge">Event forms</h1>
+			<h1 class="badge">OpenEyes Front-end Documentation</h1>
 
 			<div class="box content">
 				<div class="row">
@@ -59,7 +44,7 @@ pre {
 							<li><a href="styleguide">Styleguide</a></li>
 							<li><a href="jsdoc">Javascript API</a></li>
 							<li><a href="forms">Forms</a></li>
-							<li><a href="forms">Grids</a></li>
+							<li><a href="grids">Grids</a></li>
 						</ul>
 					</aside>
 
@@ -70,7 +55,7 @@ pre {
 							<div class="large-12 column">
 								<h2 id="overview">Overview</h2>
 								<p>Welcome to the OpenEyes front-end documentation.</p>
-								<p>Use the menu on the left to select the area of documentation you would like to view.</p>
+								<p>Use the navigation on the left to select the area of documentation you would like to view.</p>
 							</div>
 						</div>
 
@@ -82,21 +67,22 @@ pre {
 	</div>
 	<footer class="footer row">
 		<div class="large-3 medium-3 columns">
-				<div class="info">
-						<a href="#" data-component="support-info-link">Served, with love, by openeyes.local</a>
-						<br />
-						<span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
-				</div>
+			<div class="info">
+				<a href="#" data-component="support-info-link">Served, with love, by openeyes.local</a>
+				<br />
+				<span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
+			</div>
 		</div>
 		<div class="large-6 medium-6 large-centered medium-centered columns help">
-				<div class="panel">
-						<ul class="inline-list">
-								<li><strong>Need help?</strong></li>
-								<li>helpdesk@example.com</li>
-								<li><strong>12345678</strong></li>
-								<li><a target="_blank" href="/">Help Documentation</a></li>
-						</ul>
-				</div>
+			<div class="panel">
+				<ul class="inline-list">
+					<li><strong>Need help?</strong></li>
+					<li>helpdesk@example.com</li>
+					<li><strong>12345678</strong></li>
+					<li><a target="_blank" href="/">Help Documentation</a></li>
+				</ul>
+			</div>
 		</div>
-</footer></body>
+	</footer>
+</body>
 </html>

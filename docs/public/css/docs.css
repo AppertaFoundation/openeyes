@@ -1,0 +1,27 @@
+.box.event {
+	border: 0;
+}
+.form-example {
+	padding: 10px;
+	border: 1px solid #ddd;
+}
+.form-example header {
+	margin-bottom: 1em;
+}
+.form-title {
+	color: #888;
+}
+.example-box {
+	background: #fafafa;
+	margin: 0;
+}
+pre {
+	font-size: .8em;
+	margin-top: .5em;
+}
+hr {
+	margin-top: .5em;
+}
+.view-markup {
+	font-size: 13px;
+}

@@ -2,14 +2,14 @@ module.exports = {
 	all: [
 		'docs/styleguide',
 		'docs/jsdoc',
-		'docs/public'
+		'docs/public/core'
 	],
 	styleguide: [
 		'docs/styleguide',
-		'docs/public'
+		'docs/public/core'
 	],
 	javascript: [
 		'docs/jsdoc',
-		'docs/public'
+		'docs/public/core'
 	]
 };
