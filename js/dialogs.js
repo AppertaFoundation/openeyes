@@ -21,6 +21,8 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 (function() {
 
+	'use strict';
+
 	// Set the jQuery UI Dialog default options.
 	$.extend($.ui.dialog.prototype.options, {
 		dialogClass: 'dialog',
@@ -36,11 +38,11 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @extends {Emitter}
 	 * @example
 	 * var dialog = new OpenEyes.Dialog({
-	 *	 title: 'Title here',
-	 *	 content: 'Here is some content.'
+	 *	title: 'Title here',
+	 *	content: 'Here is some content.'
 	 * });
 	 * dialog.on('open', function() {
-	 *	 console.log('The dialog is now open');
+	 *	console.log('The dialog is now open');
 	 * });
 	 * dialog.open();
 	 */
@@ -279,16 +281,14 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		if (this.options.constrainToViewport) {
 
 			var margin = 40;
-			var viewportWidth = $(window).width() - margin;
-			var viewportHeight = $(window).height() - margin;
 			var width = parseInt(dimensions.width, 10);
 			var height = parseInt(dimensions.height, 10);
 
-			if (width !== NaN && width > viewportWidth) {
-				dimensions.width = viewportWidth;
+			if (!isNaN(width)) {
+				dimensions.width = Math.min(width, $(window).width() - margin);
 			}
-			if (height !== NaN && height > viewportHeight) {
-				dimensions.height = viewportHeight;
+			if (!isNaN(height)) {
+				dimensions.height = Math.min(height, $(window).height() - margin);
 			}
 		}
 
@@ -447,13 +447,15 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		this.setTitle(this.options.title);
 		this.iframe.show();
 		this.onContentLoad();
-	}
+	};
 
 	OpenEyes.Dialog = Dialog;
 
 }());
 
 (function() {
+
+	'use strict';
 
 	var Dialog = OpenEyes.Dialog;
 
@@ -544,6 +546,8 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 }());
 
 (function() {
+
+	'use strict';
 
 	var Dialog = OpenEyes.Dialog;
 
