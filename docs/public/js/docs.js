@@ -1,8 +1,10 @@
 $(function() {
 
+	$('.example header').prepend('<a class="view-markup right">View Markup</a>');
+
 	$('.view-markup').on('click', function(e) {
 
-		var element = $('#' + $(this).data('markup'));
+		var element = $(this).parents('.example');
 		var markup = element.html();
 
 		markup = markup.replace(/<header>[\s\S.]*<\/header>/gm, '');
@@ -20,7 +22,8 @@ $(function() {
 			content: '<pre class="prettyprint lang-html">' + prettyPrintOne(htmlEntities(markup)) + '</pre>',
 			width: 800,
 			height: 800,
-			constrainToViewport: true
+			constrainToViewport: true,
+			show: null
 		}).open();
 	});
 

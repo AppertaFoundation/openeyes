@@ -1,14 +1,16 @@
 .box.event {
 	border: 0;
 }
-.form-example {
+.example {
 	padding: 10px;
 	border: 1px solid #ddd;
+	border-radius: 5px;
+	margin: 0 0 1em 0;
 }
-.form-example header {
+.example header {
 	margin-bottom: 1em;
 }
-.form-title {
+.example header h3 {
 	color: #888;
 }
 .example-box {
