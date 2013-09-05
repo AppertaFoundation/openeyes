@@ -1,4 +1,4 @@
-<div class="large-10 column event container">
+<div class="large-10 column event booking edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li>
@@ -17,7 +17,7 @@
 			</a>
 		</div>
 	</header>
-	<div class="box event content edit booking">
+	<div class="event-content">
 		<h2 class="event-title">Operation booking</h2>
 
 		<section class="element">

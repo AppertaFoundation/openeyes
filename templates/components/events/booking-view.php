@@ -1,5 +1,4 @@
-
-<div class="large-10 column event container">
+<div class="large-10 column event view booking">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">
@@ -21,7 +20,7 @@
 			</a>
 		</div>
 	</header>
-	<div class="box event content view booking">
+	<div class="event-content">
 		<h2 class="event-title">Operation booking (Requires scheduling)</h2>
 
 		<div class="alert-box alert with-icon">

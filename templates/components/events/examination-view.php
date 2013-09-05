@@ -1,4 +1,4 @@
-<div class="large-10 column event container">
+<div class="large-10 column event view examination">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">
@@ -14,7 +14,7 @@
 			</a>
 		</div>
 	</header>
-	<div class="box event content view examination">
+	<div class="event-content">
 		<h2 class="event-title">Examination</h2>
 
 		<div class="row">

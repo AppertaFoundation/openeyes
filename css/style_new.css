@@ -2523,7 +2523,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   color: black;
 }
 
-/* line 26, ../sass/new/openeyes/components/_boxes.scss */
+/* line 24, ../sass/new/openeyes/components/_boxes.scss */
 .box {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -2532,7 +2532,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   border-radius: 5px;
   margin: 1.25em 0;
 }
-/* line 29, ../sass/new/openeyes/components/_boxes.scss */
+/* line 27, ../sass/new/openeyes/components/_boxes.scss */
 .box.content {
   background: #dae6f1;
 }
