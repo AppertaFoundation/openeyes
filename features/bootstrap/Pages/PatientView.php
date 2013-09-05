@@ -68,6 +68,7 @@ class PatientView extends Page
         'saveFamilyHistory' => array('xpath' => "//*[@class='classy green mini btn_save_family_history']//*[contains(text(),'Save')]"),
         'createNewEpisodeAddEvent' => array('xpath' => "//*[@id='content']/div/div[2]//*[contains(text(),'Create episode / add event')]"),
         'addEpisodeButton' => array('xpath' => "//*[@id='event_display']/div[3]//*[contains(text(),'Add episode')]"),
+        'addEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[1]//*[contains(text(),'Add episode')]"),
         'confirmCreateEpisode' => array('xpath' => "//*[@id='add-new-episode-form']/div[2]/div[2]//*[contains(text(),'Create new episode')]"),
         'latestEvent' => array('xpath' => "//*[@id='content']/div/div[2]/p//*[contains(text(),'Latest Event')]"),
         'removeAllergyButton' => array('xpath' => "//*[@id='patient_allergies']//*[contains(text(),'Remove')]"),
@@ -262,6 +263,7 @@ class PatientView extends Page
         } else {
             $this->selectLatestEvent();
         }
+        $this->getSession()->wait(5000);
     }
 
     public function createNewEpisodeAndEvent ()
@@ -275,6 +277,13 @@ class PatientView extends Page
         $this->getSession()->wait(3000,false);
         $this->getElement('confirmCreateEpisode')->click();
         $this->getSession()->wait(3000,false);
+    }
+
+    public function addEpisodePreviousFirmCreated ()
+    {
+        $this->getElement('addEpisode')->click();
+        $this->getSession()->wait(3000,false);
+        $this->getElement('confirmCreateEpisode')->click();
     }
 
     public function selectLatestEvent ()

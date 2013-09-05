@@ -8,6 +8,7 @@ use Behat\Gherkin\Node\PyStringNode,
     Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
 
+use Behat\YiiExtension\Context\YiiAwareContextInterface;
 use Behat\Mink\Driver\Selenium2Driver;
 use \SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 
@@ -148,6 +149,54 @@ class TherapyApplicationContext extends PageObjectContext
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
         $TherapyApplication->myocardialNo();
+    }
+
+    /**
+     * @Then /^I select a Right Treatment of "([^"]*)"$/
+     */
+    public function iSelectARightTreatmentOf($treatment)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightTreatment($treatment);
+    }
+
+    /**
+     * @Given /^I select a Right Angiogram Baseline Date of "([^"]*)"$/
+     */
+    public function iSelectARightAngiogramBaselineDateOf($date)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightDate($date);
+    }
+
+    /**
+     * @Then /^I select a Left Treatment of "([^"]*)"$/
+     */
+    public function iSelectALeftTreatmentOf($treatment)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->leftTreatment($treatment);
+    }
+
+    /**
+     * @Given /^I select a Left Angiogram Baseline Date of "([^"]*)"$/
+     */
+    public function iSelectALeftAngiogramBaselineDateOf($date)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->leftDate($date);
     }
 
     /**

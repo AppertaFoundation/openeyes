@@ -19,6 +19,7 @@ class TherapyApplication extends Page
         'leftTreatment' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_PatientSuitability_left_treatment_id']"),
         'rightAngiogramDate' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_PatientSuitability_right_angiogram_baseline_date_0']"),
         'leftAngiogramDate' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_PatientSuitability_left_angiogram_baseline_date_0']"),
+        'calendarDate' => array('xpath' => "//*[@id='ui-datepicker-div']/table/tbody//*[contains(text(),'1')]"),
 
         #Relative ContraIndications
         'cerebrovascularYes' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_RelativeContraindications_cerebrovascular_accident_1']"),
@@ -31,14 +32,10 @@ class TherapyApplication extends Page
         'consultant' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_consultant_id']"),
     );
 
-    #Exceptional Circumstances
-    # To Code - Choices of routes to be defined
-
-    //Use $saveExamination to Save Intravitreal injection
-
 
     public function addRightSide ()
     {
+        $this->getSession()->wait(5000);
         $this->getElement('addRightSide')->click();
     }
 
@@ -60,6 +57,34 @@ class TherapyApplication extends Page
     public function leftSecondaryTo ($secondary)
     {
         $this->getElement('leftSecondaryTo')->selectOption($secondary);
+    }
+
+    public function rightTreatment ($treatment)
+    {
+        $this->getElement('rightTreatment')->selectOption($treatment);
+        $this->getSession()->wait(10000);
+    }
+
+    public function rightDate ($date)
+    {
+        $this->getElement('rightAngiogramDate')->click();
+        $this->getSession()->wait(8000);
+        $this->getElement('calendarDate')->click();
+//        $this->getElement('calendarDate')->selectOption($date);
+
+    }
+
+    public function leftTreatment ($treatment)
+    {
+        $this->getElement('leftTreatment')->selectOption($treatment);
+    }
+
+    public function leftDate ($date)
+    {
+        $this->getElement('leftAngiogramDate')->click();
+        $this->getSession()->wait(8000);
+        $this->getElement('calendarDate')->click();
+//        $this->getElement('calendarDate')->selectOption($date);
     }
 
     public function cerebYes ()

@@ -32,6 +32,18 @@ class PatientViewContext extends PageObjectContext
     }
 
     /**
+     * @Given /^I select Add Episode from the sidebar$/
+     */
+    public function iSelectAddEpisode()
+    {
+        /**
+         * @var PatientView $patientView
+         */
+        $patientView = $this->getPage('PatientView');
+        $patientView->addEpisodePreviousFirmCreated();
+       }
+
+    /**
      * @Then /^I select Create or View Episodes and Events$/
      */
     public function CreateOrViewEpisodesAndEvents()
