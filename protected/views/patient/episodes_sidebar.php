@@ -81,6 +81,8 @@
 									<?php
 										$subspecialty = $episode->firm->serviceSubspecialtyAssignment->subspecialty;
 										$subspecialty_data = $subspecialty ? array_intersect_key($subspecialty->attributes, array_flip(array('id','name'))) : array();
+									if($enabled)
+									{
 									?>
 									<script type="text/html" id="add-new-event-template" data-specialty='<?php echo json_encode($subspecialty_data);?>'>
 										<?php $this->renderPartial('//patient/add_new_event',array(
@@ -89,7 +91,8 @@
 											'eventTypes' => EventType::model()->getEventTypeModules(),
 										));?>
 									</script>
-								<?php }?>
+								<?php }
+								}?>
 							<?php }?>
 							<ul class="events">
 								<?php

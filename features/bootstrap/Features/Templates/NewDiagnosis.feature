@@ -26,7 +26,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     And I select a Previous Operation date of day "<day>" month "<month>" year "<year>"
     Then I save the new Previous Operation
 
-    And I Add Medication details medication "3" route "2" frequency "8" date from "12" and Save
+    And I Add Medication details medication "3" route "2" frequency "8" date from "1" and Save
 
     Then I edit the CVI Status "4"
     And I select a CVI Status date of day "<day>" month "<month>" year "<year>"

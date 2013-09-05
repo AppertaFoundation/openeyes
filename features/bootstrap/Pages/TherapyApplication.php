@@ -2,9 +2,9 @@
 
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class Therapy extends Page
+class TherapyApplication extends Page
 {
-//    protected $path = "/site/OphDrPrescription/Default/create?patient_id={parentId}"; - NEEDS TO BE UPDATED WHEN WORKING!
+    protected $path = "/site/OphCoTherapyapplication/Default/create?patient_id={parentId}";
 
     protected $elements = array(
         #Diagnosis
@@ -19,6 +19,7 @@ class Therapy extends Page
         'leftTreatment' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_PatientSuitability_left_treatment_id']"),
         'rightAngiogramDate' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_PatientSuitability_right_angiogram_baseline_date_0']"),
         'leftAngiogramDate' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_PatientSuitability_left_angiogram_baseline_date_0']"),
+        'calendarDate' => array('xpath' => "//*[@id='ui-datepicker-div']/table/tbody//*[contains(text(),'1')]"),
 
         #Relative ContraIndications
         'cerebrovascularYes' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_RelativeContraindications_cerebrovascular_accident_1']"),
@@ -31,10 +32,101 @@ class Therapy extends Page
         'consultant' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_consultant_id']"),
     );
 
-    #Exceptional Circumstances
-    # To Code - Choices of routes to be defined
 
-    //Use $saveExamination to Save Intravitreal injection
+    public function addRightSide ()
+    {
+        $this->getSession()->wait(5000);
+        $this->getElement('addRightSide')->click();
+    }
+
+    public function rightSideDiagnosis ($diagnosis)
+    {
+        $this->getElement('rightDiagnosis')->selectOption($diagnosis);
+    }
+
+    public function leftSideDiagnosis ($diagnosis)
+    {
+        $this->getElement('leftDiagnosis')->selectOption($diagnosis);
+    }
+
+    public function rightSecondaryTo ($secondary)
+    {
+        $this->getElement('rightSecondaryTo')->selectOption($secondary);
+    }
+
+    public function leftSecondaryTo ($secondary)
+    {
+        $this->getElement('leftSecondaryTo')->selectOption($secondary);
+    }
+
+    public function rightTreatment ($treatment)
+    {
+        $this->getElement('rightTreatment')->selectOption($treatment);
+        $this->getSession()->wait(10000);
+    }
+
+    public function rightDate ($date)
+    {
+        $this->getElement('rightAngiogramDate')->click();
+        $this->getSession()->wait(8000);
+        $this->getElement('calendarDate')->click();
+//        $this->getElement('calendarDate')->selectOption($date);
+
+    }
+
+    public function leftTreatment ($treatment)
+    {
+        $this->getElement('leftTreatment')->selectOption($treatment);
+    }
+
+    public function leftDate ($date)
+    {
+        $this->getElement('leftAngiogramDate')->click();
+        $this->getSession()->wait(8000);
+        $this->getElement('calendarDate')->click();
+//        $this->getElement('calendarDate')->selectOption($date);
+    }
+
+    public function cerebYes ()
+    {
+        $this->getElement('cerebrovascularYes')->click();
+    }
+
+    public function cerebNo ()
+    {
+        $this->getElement('cerebrovascularNo')->click();
+    }
+
+    public function ischaemicYes ()
+    {
+        $this->getElement('ischaemicYes')->click();
+    }
+
+    public function ischaemicNo ()
+    {
+        $this->getElement('ischaemicNo')->click();
+    }
+
+    public function myocardialYes ()
+    {
+        $this->getElement('myocardialYes')->click();
+    }
+
+    public function myocardialNo ()
+    {
+        $this->getElement('myocardialNo')->click();
+    }
+
+    public function consultantSelect ($consultant)
+    {
+        $this->getElement('consultant')->selectOption($consultant);
+    }
+
+    public function saveTherapy ()
+    {
+
+    }
+
 
 }
 

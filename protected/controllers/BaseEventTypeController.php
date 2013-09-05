@@ -68,7 +68,11 @@ class BaseEventTypeController extends BaseController
 				'actions' => array('view'),
 				'expression' => 'BaseController::checkUserLevel(2)',
 			),
-			// Level 3 or above can do anything
+			array('allow',
+				'actions' => $this->printActions(),
+				'expression' => 'BaseController::checkUserLevel(3)',
+			),
+			// Level 4 or above can do anything
 			array('allow',
 				'expression' => 'BaseController::checkUserLevel(4)',
 			),

@@ -6,6 +6,8 @@ class PatientView extends Page
 {
     protected $path = "/site/patient/view/";
 
+    protected $datefrom;
+
     protected $elements = array(
         'homeButton' => array('xpath' => "//*[@id='user_nav']//*[contains(text(), 'Home')]"),
         'theatreDiaries' => array('xpath' => "//*[@id='user_nav']//*[contains(text(), 'Theatre Diaries')]"),
@@ -53,7 +55,7 @@ class PatientView extends Page
         'selectRoute' => array('xpath' => "//select[@id='route_id']"),
         'selectFrequency' => array('xpath' => "//select[@id='frequency_id']"),
         'openMedicationDate' => array('xpath' => "//*[@id='start_date']"),
-        'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']/table/tbody/tr[2]/td[4]/a"),
+        'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']//*[contains(text(),'10')]"),
         'saveMedication' => array('xpath' => "//*[@class='classy green mini btn_save_medication']//*[contains(text(),'Save')]"),
         'addAllergyButton' => array('xpath' => "//*[@id='btn-add_allergy']"),
         'selectAllergy' => array('xpath' => "//select[@id='allergy_id']"),
@@ -66,6 +68,7 @@ class PatientView extends Page
         'saveFamilyHistory' => array('xpath' => "//*[@class='classy green mini btn_save_family_history']//*[contains(text(),'Save')]"),
         'createNewEpisodeAddEvent' => array('xpath' => "//*[@id='content']/div/div[2]//*[contains(text(),'Create episode / add event')]"),
         'addEpisodeButton' => array('xpath' => "//*[@id='event_display']/div[3]//*[contains(text(),'Add episode')]"),
+        'addEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[1]//*[contains(text(),'Add episode')]"),
         'confirmCreateEpisode' => array('xpath' => "//*[@id='add-new-episode-form']/div[2]/div[2]//*[contains(text(),'Create new episode')]"),
         'latestEvent' => array('xpath' => "//*[@id='content']/div/div[2]/p//*[contains(text(),'Latest Event')]"),
         'removeAllergyButton' => array('xpath' => "//*[@id='patient_allergies']//*[contains(text(),'Remove')]"),
@@ -182,34 +185,38 @@ class PatientView extends Page
     public function savePreviousOperation ()
     {
         $this->getElement('operationSaveButton')->press();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(10000);
     }
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
     {
         $this->getElement('addMedicationButton')->click();
+        $this->getSession()->wait(3000);
         $this->getElement('selectMedication')->selectOption($medication);
+        $this->getSession()->wait(3000);
         $this->getElement('selectRoute')->selectOption($route);
+        $this->getSession()->wait(3000);
         $this->getElement('selectFrequency')->selectOption($frequency);
-        $this->getSession()->wait(3000,false);
+        $this->getSession()->wait(7000);
         $this->getElement('openMedicationDate')->click();
         $this->getSession()->wait(7000);
         $this->getElement('selectDateFrom')->click($datefrom);
-        $this->getSession()->wait(3000,false);
+        $this->getSession()->wait(7000);
         $this->getElement('saveMedication')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(2000);
     }
 
     public function editCVIstatus ($status)
     {
         $this->getElement('editCVIstatusButton')->click();
         $this->getElement('cviStatus')->selectOption($status);
+        $this->getSession()->wait(3000);
     }
 
     public function saveCVIstatus ()
     {
         $this->getElement('saveCVI')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(3000);
     }
 
     protected function doesRemoveAllergyExist ()
@@ -256,6 +263,7 @@ class PatientView extends Page
         } else {
             $this->selectLatestEvent();
         }
+        $this->getSession()->wait(5000);
     }
 
     public function createNewEpisodeAndEvent ()
@@ -269,6 +277,13 @@ class PatientView extends Page
         $this->getSession()->wait(3000,false);
         $this->getElement('confirmCreateEpisode')->click();
         $this->getSession()->wait(3000,false);
+    }
+
+    public function addEpisodePreviousFirmCreated ()
+    {
+        $this->getElement('addEpisode')->click();
+        $this->getSession()->wait(3000,false);
+        $this->getElement('confirmCreateEpisode')->click();
     }
 
     public function selectLatestEvent ()

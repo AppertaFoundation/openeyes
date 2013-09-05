@@ -381,7 +381,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$lookup_table['values'] = $field_values;
-			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = $elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $root_fields_value) ) );
+			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = preg_replace('/^Element_/','',$elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $root_fields_value) ) ));
 			$elements[$number]['fields'][$field_number]['lookup_field'] = 'name';
 			$elements[$number]['fields'][$field_number]['order_field'] = 'display_order';
 
@@ -442,7 +442,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 
 		$lookup_table = array(
-			'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name'])
+			'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = preg_replace('/^et_/','',$elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']))
 		);
 
 		$key_name = $lookup_table['name'].'_fk';
@@ -454,7 +454,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
 
 		$lookup_table['values'] = $field_values;
-		$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = $elements[$number]['class_name'] . '_' . str_replace(' ','',ucwords(str_replace('_',' ', $fields_value)) );
+		$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = preg_replace('/^Element_/','',$elements[$number]['class_name'] . '_' . str_replace(' ','',ucwords(str_replace('_',' ', $fields_value)) ));
 		$elements[$number]['fields'][$field_number]['lookup_field'] = 'name';
 
 		$elements[$number]['lookup_tables'][] = $lookup_table;
@@ -488,7 +488,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 
 			$lookup_table = array(
-				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.$root_fields_value
+				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = preg_replace('/^et_/','',$elements[$number]['table_name'].'_'.$root_fields_value)
 			);
 
 			$key_name = $lookup_table['name'].'_fk';
@@ -506,7 +506,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$lookup_table['values'] = $field_values;
-			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = $elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $root_fields_value) ) );
+			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = preg_replace('/^Element_/','',$elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $root_fields_value) ) ));
 
 			$elements[$number]['lookup_tables'][] = $lookup_table;
 
@@ -574,11 +574,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 
 			$lookup_table = array(
-				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.$fields_value
+				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = preg_replace('/^et_/','',$elements[$number]['table_name'].'_'.$fields_value)
 			);
 
 			$lookup_table['values'] = $field_values;
-			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = $elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $fields_value) ) );
+			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = preg_replace('/^Element_/','',$elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $fields_value) ) ));
 
 			$lookup_table['defaults'] = array();
 
@@ -647,7 +647,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 
 			$defaults_table = array(
-				'name' => $elements[$number]['table_name'].'_'.$lookup_table['name'].'_defaults',
+				'name' => preg_replace('/^et_/','',$elements[$number]['table_name'].'_'.$lookup_table['name'].'_defaults'),
 				'method' => $lookup_table['name'].'_defaults',
 				'values' => $defaults,
 			);
@@ -665,7 +665,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$mapping_table = array(
-				'name' => $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_'.$elements[$number]['fields'][$field_number]['name'],
+				'name' => preg_replace('/^et_/','',$elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_'.$elements[$number]['fields'][$field_number]['name']),
 				'lookup_table' => $lookup_table['name'],
 				'lookup_class' => $lookup_table['class'],
 				'element_class' => $elements[$number]['class_name'],

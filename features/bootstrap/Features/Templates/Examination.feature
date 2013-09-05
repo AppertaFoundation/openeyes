@@ -14,9 +14,9 @@ Feature: Create New Examination
     Then I search for hospital number "<hospnumber>"
     #Then I search for patient name last name "<last>" and first name "<first>"
 
-    #Then I select Add First New Episode and Confirm
-    Then I select Create or View Episodes and Events
-    #Then I select the Latest Event
+#    Then I select Add First New Episode and Confirm
+#   Then I select Create or View Episodes and Events
+    Then I select the Latest Event
     #Then I expand the Cataract sidebar
     Then I expand the Glaucoma sidebar
     And I add a New Event "<EventType>"
@@ -36,10 +36,10 @@ Feature: Create New Examination
     Then I choose a left Intraocular Pressure of "19" and Instrument "2"
     Then I choose a right Intraocular Pressure of "29" and Instrument "2"
 
-#    Then I choose to expand the Dilation section - CURRENTLY BROKEN WILL NOT EXPAND IN LATEST BUILD
-#    Then I choose left Dilation of "4" and drops of "5"
-#    Then I choose right Dilation of "6" and drops of "3"
-#
+    Then I choose to expand the Dilation section
+    Then I choose left Dilation of "4" and drops of "5"
+    Then I choose right Dilation of "6" and drops of "3"
+
     Then I choose to expand the Refraction section
 
     Then I enter left Refraction details of Sphere "1" integer "6" fraction "0.75"
@@ -53,19 +53,19 @@ Feature: Create New Examination
     And I enter a right type of "1"
 
 
-    Then I choose to expand the Visual Fields section
-    Then I choose to expand the Gonioscopy section
-    Then I choose to expand the Adnexal Comorbidity section
-    Then I choose to expand the Anterior Segment section
-    Then I choose to expand the Pupillary Abnormalities section
-    Then I choose to expand the Optic Disc section
-    Then I choose to expand the Posterior Pole section
-    Then I choose to expand the Diagnoses section
-    Then I choose to expand the Investigation section
-    Then I choose to expand the Clinical Management section
-    Then I choose to expand the Risks section
-    Then I choose to expand the Clinic Outcome section
-    Then I choose to expand the Conclusion section
+#    Then I choose to expand the Visual Fields section
+#    Then I choose to expand the Gonioscopy section
+#    Then I choose to expand the Adnexal Comorbidity section
+#    Then I choose to expand the Anterior Segment section
+#    Then I choose to expand the Pupillary Abnormalities section
+#    Then I choose to expand the Optic Disc section
+#    Then I choose to expand the Posterior Pole section
+#    Then I choose to expand the Diagnoses section
+#    Then I choose to expand the Investigation section
+#    Then I choose to expand the Clinical Management section
+#    Then I choose to expand the Risks section
+#    Then I choose to expand the Clinic Outcome section
+#    Then I choose to expand the Conclusion section
 
     Then I Save the Examination
 
