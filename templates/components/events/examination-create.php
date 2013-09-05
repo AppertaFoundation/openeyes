@@ -1,4 +1,4 @@
-<div class="large-10 column event edit container">
+<div class="large-10 column event examination edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">
@@ -11,7 +11,7 @@
 			</a>
 		</div>
 	</header>
-	<div class="box event content view examination">
+	<div class="event-content">
 		<h2 class="event-title">Examination</h2>
 
 		<div class="row">
@@ -347,15 +347,15 @@
 										Blepharospasm
 									</td>
 									<td class="eye">
-										<label>
-											<input type="radio" />
+										<label class="inline">
+											<input type="radio"/>
 											Right
 										</label>
-										<label>
+										<label class="inline">
 											<input type="radio" />
 											Both
 										</label>
-										<label>
+										<label class="inline">
 											<input type="radio" />
 											Left
 										</label>
@@ -372,15 +372,15 @@
 										Cyst of eyelid
 									</td>
 									<td class="eye">
-										<label>
+										<label class="inline">
 											<input type="radio" />
 											Right
 										</label>
-										<label>
+										<label class="inline">
 											<input type="radio" />
 											Both
 										</label>
-										<label>
+										<label class="inline">
 											<input type="radio" />
 											Left
 										</label>

@@ -16,17 +16,27 @@ $oe-event-metadata-info-color: #888888 !default;
 $oe-event-metadata-info-padding-right: 15px !default;
 $oe-event-metadata-user-color: #333333 !default;
 
+$oe-header-event-background: #eaddaf !default;
+$oe-header-event-border-bottom: 5px solid #a29d8a !default;
+$oe-header-event-padding: emCalc(6px) emCalc(10px) 0 emCalc(10px) !default;
+
 .event {
-	&.content {
+	@include border-radius($oe-box-event-border-radius);
+	background: $oe-box-event-background;
+	border-width: $oe-box-event-border-width;
+	border-style: solid;
+	margin: 0;
+	padding: 0 emCalc(5px) emCalc(10px) emCalc(5px);
+	.event-content {
 		background-position: right top;
 		background-repeat: no-repeat;
 	}
-	&.view {
-		.panel {
-			&.comments {
-				@include border-radius($oe-event-view-panel-comments-border-radius);
-			}
-		}
+	.event-header {
+		@extend .clearfix;
+		margin: 0 emCalc(-10px);
+		background: $oe-header-event-background;
+		border-bottom: $oe-header-event-border-bottom;
+		padding: $oe-header-event-padding;
 	}
 	.event-title {
 		padding: $oe-event-title-padding;
@@ -47,6 +57,11 @@ $oe-event-metadata-user-color: #333333 !default;
 		}
 		.user {
 			color: $oe-event-metadata-user-color;
+		}
+	}
+	.panel {
+		&.comments {
+			@include border-radius($oe-event-view-panel-comments-border-radius);
 		}
 	}
 }

@@ -1,5 +1,9 @@
+%clearfix {
+	@include clearfix;
+}
+
 %element-panel {
-	@extend .clearfix;
+	@extend %clearfix;
 	padding: 10px;
 	margin: 0;
 	background: #dae6f1;
