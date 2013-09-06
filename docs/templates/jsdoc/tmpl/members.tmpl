@@ -4,7 +4,7 @@ var self = this;
 ?>
 <dt>
     <h4 class="name" id="<?js= id ?>">
-    	<a href="#<?js= id ?>">
+    	<a href="#<?js= id.replace(/:/g, '_') ?>">
     		<?js= name + (data.signature ? data.signature : '') + ' ' + data.attribs ?>
     	</a>
     </h4>
@@ -20,7 +20,7 @@ var self = this;
     </div>
     <?js } ?>
 
-    <div class="more-info" id="more-info-<?js= id ?>">
+    <div class="more-info" id="more-info-<?js= id.replace(/:/g, '_') ?>">
 	    <?js if (data.type && data.type.names) {?>
 	        <h5>Type:</h5>
 	        <ul>

@@ -1,23 +1,23 @@
 <section>
 
-<header class="sub-tutorials-header">
-    <?js if (children.length > 0) { ?>
+	<header class="sub-tutorials-header">
+	    <?js if (children.length > 0) { ?>
 
-    <div class="panel">
-	    <h4>Sub-tutorials:</h4>
-	    <ul class="sub-tutorials-list inline-list"><?js
-	        var self = this;
-	        children.forEach(function(t) { ?>
-	        <li><?js= self.tutoriallink(t.name) ?></li>
-	    <?js }); ?></ul>
-	    <?js } ?>
-	  </div>
+	    <div class="panel">
+		    <h4>Sub-tutorials:</h4>
+		    <ul class="sub-tutorials-list inline-list"><?js
+		        var self = this;
+		        children.forEach(function(t) { ?>
+		        <li><?js= self.tutoriallink(t.name) ?></li>
+		    <?js }); ?></ul>
+		  </div>
+		  <?js } ?>
 
-    <h2><?js= header ?></h2>
-</header>
+	    <h2><?js= header ?></h2>
+	</header>
 
-<article>
-    <?js= content ?>
-</article>
+	<article>
+	    <?js= content ?>
+	</article>
 
 </section>

@@ -9,6 +9,7 @@
 			this.getElements();
 			this.createMarkupAnchors();
 			this.prettify()
+			this.moreInfo();
 		},
 		getElements: function() {
 			this.examples = $('.example');
@@ -59,9 +60,14 @@
 				$(this).find('code').remove();
 			})
 			prettyPrint()
+		},
+		moreInfo: function() {
+			$('.jsdoc .name a').on('click', function(e){
+				e.preventDefault();
+				$('#more-info-'+ this.href.replace(/^.*#/, '')).toggle();
+			});
 		}
 	};
 
 	$(Docs.init.bind(Docs));
-
 }());

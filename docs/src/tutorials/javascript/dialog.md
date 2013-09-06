@@ -1,3 +1,5 @@
+### Overview
+
 A dialog is a general purpose component that is used for displaying information
 to the user that is overlayed over the page content. A dialog can also be used
 for user input or confirmation.
@@ -19,7 +21,8 @@ to be displayed within the dialog:
 	});
 
 A new instance of a dialog will create the HTML elements in the DOM and will not
-be displayed. If you want to display the dialog, you need to use the `open` method:
+be displayed. If you want to display the dialog, you need to use the {@link Dialog#open}
+method:
 
 	new OpenEyes.Dialog({
 		title: 'This is a title',
@@ -35,9 +38,9 @@ open or close it at different times:
 	});
 	dialog.open();
 
-By default, the dialog will destroy itself when closed, thus you need to need to
-specify the [destroyOnClose]{@link Dialog#_defaultOptions} option to be `false` if you want to keep the dialog
-in the DOM after it has been closed.
+By default, the dialog will destroy itself when closed. If you don't want the
+dialog destroyed when closed, you need to specify the [destroyOnClose]{@link Dialog#_defaultOptions}
+option to be `false`.
 
 	var dialog = new OpenEyes.Dialog({
 		title: 'This is a title',
@@ -45,3 +48,28 @@ in the DOM after it has been closed.
 		destroyOnClose: false
 	});
 	dialog.open();
+
+***
+
+### Events
+
+The dialog extends the [EventEmitter]{@link Emitter} class and emits events
+which you can bind to. You use the {@link Dialog#on} method to bind event handlers:
+
+    var dialog = new OpenEyes.Dialog({
+        title: 'This is a title',
+        content: 'This is some content'
+    });
+    dialog.on('open', function() {
+        console.log('Dialog is opened');
+    });
+    dialog.on('close', function() {
+        console.log('Dialog is closed');
+    });
+    dialog.open();
+
+#### Available events
+
+* [open]{@link Dialog#event:open}
+* [close]{@link Dialog#event:close}
+* [destroy]{@link Dialog#event:destroy}
