@@ -273,7 +273,7 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (!$episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
-			throw new Exception("There is no open episode for the currently selected firm's subspecialty");
+			$this->redirect(array("/patient/episodes/".$this->patient->id));
 		}
 
 		// firm changing sanity
@@ -458,16 +458,18 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
+		$this->patient = $this->event->episode->patient;
+
 		// Check the user's firm is of the correct subspecialty to have the
 		// rights to update this event
 		if ($this->firm->serviceSubspecialtyAssignment && $this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-			throw new CHttpException(403, 'The firm you are using is not associated with the subspecialty for this event.');
+			//The firm you are using is not associated with the subspecialty
+			$this->redirect(array("/patient/episodes/".$this->patient->id));
 		} elseif (!$this->firm->serviceSubspecialtyAssignment && $this->event->episode->firm !== null) {
 			throw new CHttpException(403, 'The firm you are using is not a support services firm.');
 		}
 
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
-		$this->patient = $this->event->episode->patient;
 		$this->episode = $this->event->episode;
 
 		// firm changing sanity
