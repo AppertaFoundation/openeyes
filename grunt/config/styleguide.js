@@ -10,7 +10,7 @@ module.exports = {
 			}
 		},
 		files: {
-			'docs/styleguide': 'sass/new/*.scss'
+			'docs/public/styleguide': 'sass/new/*.scss'
 		}
 	}
 };

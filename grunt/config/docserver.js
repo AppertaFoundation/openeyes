@@ -4,18 +4,18 @@ module.exports = {
 	},
 	all: {
 		options: {
-			base: 'docs/'
+			base: 'docs/public/'
 		}
 	},
 	styleguide: {
 		options: {
-			base: 'docs',
+			base: 'docs/public',
 			url: '/styleguide'
 		}
 	},
 	javascript: {
 		options: {
-			base: 'docs',
+			base: 'docs/public',
 			url: '/jsdoc'
 		}
 	}

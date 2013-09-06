@@ -1,15 +1,15 @@
 module.exports = {
 	all: [
-		'docs/styleguide',
-		'docs/jsdoc',
-		'docs/public/core'
+		'docs/public/styleguide',
+		'docs/public/jsdoc',
+		'docs/public/assets/core'
 	],
 	styleguide: [
-		'docs/styleguide',
-		'docs/public/core'
+		'docs/public/styleguide',
+		'docs/public/assets/core'
 	],
 	javascript: [
-		'docs/jsdoc',
-		'docs/public/core'
+		'docs/public/jsdoc',
+		'docs/public/assets/core'
 	]
 };

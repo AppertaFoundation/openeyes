@@ -33,7 +33,7 @@ hr {
 	font-size: 13px;
 }
 
-.side-nav a {
+.side-nav li a {
 	display: inline-block;
 }
 
@@ -48,6 +48,11 @@ hr {
 .jsdoc .sub-tutorials-header h4 {
 	float: left;
 	margin: 0 1em 0 0;
+	line-height: 1.4;
+}
+.jsdoc .sub-tutorials-header .panel {
+	padding: .2em .5em;
+	margin: .5em 0;
 }
 .jsdoc .sub-tutorials-list {
 	margin-left: 0;

@@ -31,6 +31,6 @@ vendor
 /js/components
 /docs/templates/styleguide/public/css
 /docs/templates/styleguide/public/img
-/docs/styleguide/
-/docs/jsdoc
-/docs/public/core
+/docs/public/styleguide/
+/docs/public/jsdoc
+/docs/public/assets/core

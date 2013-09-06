@@ -3,15 +3,15 @@ module.exports = {
 		files: [
 			{
 				src: ['css/**/*'],
-				dest: 'docs/public/core/'
+				dest: 'docs/public/assets/core/'
 			},
 			{
 				src: ['img/**/*'],
-				dest: 'docs/public/core/'
+				dest: 'docs/public/assets/core/'
 			},
 			{
 				src: ['js/**/*'],
-				dest: 'docs/public/core/'
+				dest: 'docs/public/assets/core/'
 			}
 		]
 	}

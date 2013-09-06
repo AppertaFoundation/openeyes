@@ -1028,6 +1028,11 @@ kbd {
   border-radius: 5px;
 }
 
+/* line 37, ../sass/new/_foundation.scss */
+.blue {
+  color: red;
+}
+
 /* line 7, ../sass/new/openeyes/components/_global.scss */
 html, body {
   background: #d4d1cd;
