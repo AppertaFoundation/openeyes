@@ -126,5 +126,48 @@ class WaitingListContext extends PageObjectContext
         $waitingList->clickLink($this->patient);
     }
 
+    /**
+     * @Given /^I click on available date in the calendar$/
+     */
+    public function iClickOnAvailableDateInTheCalendar()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->getSession()->wait(10000);
+        $operationBooking->availableSlot();
+    }
+
+    /**
+     * @Given /^I select available theatre session from the list$/
+     */
+    public function iSelectAvailableTheatreSessionFromTheList()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->getSession()->wait(10000);
+        $operationBooking->availableSessionTime();
+    }
+
+    /**
+     * @Given /^I press "([^"]*)"$/
+     */
+    public function iPress($arg1)
+    {
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->clickLink($arg1);
+    }
+
+    /**
+     * @Then /^I should see "([^"]*)"$/
+     */
+    public function iShouldSee($arg1)
+    {
+
+    }
+
 
 }

@@ -55,6 +55,7 @@ class PatientView extends Page
         'selectRoute' => array('xpath' => "//select[@id='route_id']"),
         'selectFrequency' => array('xpath' => "//select[@id='frequency_id']"),
         'openMedicationDate' => array('xpath' => "//*[@id='start_date']"),
+        'hopefullFIX' => array('xpath' => "//form[@id='add-medication']"),
         'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']//*[contains(text(),'10')]"),
         'saveMedication' => array('xpath' => "//*[@class='classy green mini btn_save_medication']//*[contains(text(),'Save')]"),
         'addAllergyButton' => array('xpath' => "//*[@id='btn-add_allergy']"),
@@ -185,7 +186,7 @@ class PatientView extends Page
     public function savePreviousOperation ()
     {
         $this->getElement('operationSaveButton')->press();
-        $this->getSession()->wait(10000);
+        $this->getSession()->wait(5000, "$.active == 0");
     }
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
@@ -193,15 +194,17 @@ class PatientView extends Page
         $this->getElement('addMedicationButton')->click();
         $this->getSession()->wait(3000);
         $this->getElement('selectMedication')->selectOption($medication);
-        $this->getSession()->wait(3000);
+        $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('selectRoute')->selectOption($route);
-        $this->getSession()->wait(3000);
+        $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('selectFrequency')->selectOption($frequency);
-        $this->getSession()->wait(7000);
+        $this->getSession()->wait(5000, "$.active == 0");
+        $this->getElement('hopefullFIX')->click();
+        $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('openMedicationDate')->click();
-        $this->getSession()->wait(7000);
+        $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('selectDateFrom')->click($datefrom);
-        $this->getSession()->wait(7000);
+        $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('saveMedication')->click();
         $this->getSession()->wait(2000);
     }
