@@ -33,6 +33,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 	/**
 	 * Dialog constructor.
+	 * @tutorial dialog
 	 * @name Dialog
 	 * @constructor
 	 * @extends {Emitter}
@@ -463,6 +464,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * AlertDialog constructor. The AlertDialog extends the base Dialog and provides
 	 * an 'Ok' button for the user to click on.
 	 * @name AlertDialog
+	 * @tutorial dialog_alert
 	 * @constructor
 	 * @extends {Dialog}
 	 * @example
@@ -555,6 +557,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * ConfirmDialog constructor. The ConfirmDialog extends the base Dialog and provides
 	 * an 'Ok' and 'Cancel' button for the user to click on.
 	 * @name ConfirmDialog
+	 * @tutorial dialog_confirm
 	 * @constructor
 	 * @extends {Dialog}
 	 * @example

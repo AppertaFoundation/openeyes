@@ -10,9 +10,7 @@
 section
 {
 	display: block;
-	/*background-color: #fff;*/
-	padding: 12px 0;
-    border-bottom: 1px solid #ccc;
+	/*padding: 12px 0;*/
 }
 
 ul li, ol li, dl li  {

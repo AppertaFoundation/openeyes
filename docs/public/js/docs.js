@@ -8,6 +8,7 @@
 		init: function() {
 			this.getElements();
 			this.createMarkupAnchors();
+			this.prettify()
 		},
 		getElements: function() {
 			this.examples = $('.example');
@@ -51,6 +52,13 @@
 				constrainToViewport: true,
 				show: null
 			}).open();
+		},
+		prettify: function() {
+			$('pre').addClass('prettyprint').each(function() {
+				$(this).append($(this).find('code').html());
+				$(this).find('code').remove();
+			})
+			prettyPrint()
 		}
 	};
 

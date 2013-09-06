@@ -3,7 +3,9 @@ module.exports = {
 		src: ['js/util.js', 'js/dialogs.js'],
 		options: {
 			destination: 'docs/jsdoc',
-			template: 'docs/templates/jsdoc'
+			template: 'docs/templates/jsdoc',
+			tutorials: 'docs/tutorials/javascript',
+			recurse: true
 		}
 	}
 };

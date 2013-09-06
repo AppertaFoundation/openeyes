@@ -1,8 +1,10 @@
 <section>
-    
-<header>
+
+<header class="sub-tutorials-header">
     <?js if (children.length > 0) { ?>
-    <ul><?js
+
+    <h4>Sub-tutorials:</h4>
+    <ul class="sub-tutorials-list inline-list"><?js
         var self = this;
         children.forEach(function(t) { ?>
         <li><?js= self.tutoriallink(t.name) ?></li>
@@ -10,10 +12,10 @@
     <?js } ?>
 
     <h2><?js= header ?></h2>
-</header>  
+</header>
 
 <article>
     <?js= content ?>
 </article>
 
-</section>  
+</section>
