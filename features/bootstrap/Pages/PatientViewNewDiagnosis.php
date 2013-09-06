@@ -2,7 +2,7 @@
 
 use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class PatientView extends Page
+class PatientViewNewDiagnosis extends Page
 {
     protected $path = "/site/patient/view/";
 
@@ -55,7 +55,7 @@ class PatientView extends Page
         'selectRoute' => array('xpath' => "//select[@id='route_id']"),
         'selectFrequency' => array('xpath' => "//select[@id='frequency_id']"),
         'openMedicationDate' => array('xpath' => "//*[@id='start_date']"),
-        'hopefullFIX' => array('xpath' => "//form[@id='add-medication']"),
+        'hopefullFIX' => array('xpath' => "//form[@id='add-medication']/div[8]"),
         'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']//*[contains(text(),'10')]"),
         'saveMedication' => array('xpath' => "//*[@class='classy green mini btn_save_medication']//*[contains(text(),'Save')]"),
         'addAllergyButton' => array('xpath' => "//*[@id='btn-add_allergy']"),
