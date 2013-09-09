@@ -23,22 +23,18 @@
 </div>
 <?php foreach ($eventTypes as $eventType) {
 	if ($subspecialty || $eventType->support_services) {
+		if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
+			$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
+		} else {
+			$assetpath = '/assets/';
+		}
+
 		if (!$eventType->disabled && $this->checkEventAccess($eventType)) {
-			if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
-				$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
-			} else {
-				$assetpath = '/assets/';
-			}
+
 			?>
 			<p><?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id)?></p>
-		<?php } else {
-			if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
-				$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
-			} else {
-				$assetpath = '/assets/';
-			}
-			?>
-			<p id="<?php echo $eventType->class_name?>_disabled" class="add_event_disabled" data-title="<?php echo $eventType->disabled_title?>" data-detail="<?php echo $eventType->disabled_detail?>">
+		<?php } else { ?>
+			<p id="<?php echo $eventType->class_name?>_disabled" class="add_event_disabled" title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
 				<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>','#')?>
 			</p>
 		<?php }?>
