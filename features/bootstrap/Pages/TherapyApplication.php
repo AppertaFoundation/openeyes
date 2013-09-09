@@ -17,6 +17,8 @@ class TherapyApplication extends Page
         #Patient Suitability
         'rightTreatment' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_PatientSuitability_right_treatment_id']"),
         'leftTreatment' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_PatientSuitability_left_treatment_id']"),
+        'hopefullFIXRight' => array('xpath' => "//form[@id='clinical-create']/div[4]/div/div[2]/div/div[2]"),
+        'hopefullFIXLeft'=> array('xpath' => "//form[@id='clinical-create']/div[4]/div/div/div/div[2]"),
         'rightAngiogramDate' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_PatientSuitability_right_angiogram_baseline_date_0']"),
         'leftAngiogramDate' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_PatientSuitability_left_angiogram_baseline_date_0']"),
         'calendarDate' => array('xpath' => "//*[@id='ui-datepicker-div']/table/tbody//*[contains(text(),'1')]"),
@@ -35,7 +37,7 @@ class TherapyApplication extends Page
 
     public function addRightSide ()
     {
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(3000);
         $this->getElement('addRightSide')->click();
     }
 
@@ -62,13 +64,14 @@ class TherapyApplication extends Page
     public function rightTreatment ($treatment)
     {
         $this->getElement('rightTreatment')->selectOption($treatment);
-        $this->getSession()->wait(10000);
     }
 
     public function rightDate ($date)
     {
+        $this->getElement('hopefullFIXRight')->click();
+//        $this->getSession()->wait(5000);
         $this->getElement('rightAngiogramDate')->click();
-        $this->getSession()->wait(8000);
+        $this->getSession()->wait(5000);
         $this->getElement('calendarDate')->click();
 //        $this->getElement('calendarDate')->selectOption($date);
 
@@ -81,8 +84,10 @@ class TherapyApplication extends Page
 
     public function leftDate ($date)
     {
+        $this->getElement('hopefullFIXLeft')->click();
+//        $this->getSession()->wait(5000);
         $this->getElement('leftAngiogramDate')->click();
-        $this->getSession()->wait(8000);
+        $this->getSession()->wait(5000);
         $this->getElement('calendarDate')->click();
 //        $this->getElement('calendarDate')->selectOption($date);
     }

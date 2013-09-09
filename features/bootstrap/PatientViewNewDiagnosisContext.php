@@ -24,9 +24,9 @@ class PatientViewContext extends PageObjectContext
     public function iSelectAddFirstNewEpisodeAndConfirm()
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addEpisodeAndEvent();
         $patientView->addEpisode();
     }
@@ -37,9 +37,9 @@ class PatientViewContext extends PageObjectContext
     public function iSelectAddEpisode()
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addEpisodePreviousFirmCreated();
        }
 
@@ -49,9 +49,9 @@ class PatientViewContext extends PageObjectContext
     public function CreateOrViewEpisodesAndEvents()
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addEpisodeAndEvent();
     }
 
@@ -61,9 +61,9 @@ class PatientViewContext extends PageObjectContext
     public function iSelectTheLatestEvent()
     {
         /**
-         * @var PatientView $patientview
+         * @var PatientViewNewDiagnosis $patientview
          */
-        $patientview= $this->getPage('PatientView');
+        $patientview= $this->getPage('PatientViewNewDiagnosis');
         $patientview->addEpisodeAndEvent();
     }
 
@@ -73,9 +73,9 @@ class PatientViewContext extends PageObjectContext
     public function addOpthalmicDiagnosis ($diagnosis)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addOpthalmicDiagnosis($diagnosis);
     }
 
@@ -85,9 +85,9 @@ class PatientViewContext extends PageObjectContext
     public function SelectThatItAffectsEye($eye)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->selectEye($eye);
     }
 
@@ -97,9 +97,9 @@ class PatientViewContext extends PageObjectContext
     public function OpthalmicDiagnosis($day, $month, $year)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addOpthalmicDate($day, $month, $year);
     }
 
@@ -109,9 +109,9 @@ class PatientViewContext extends PageObjectContext
     public function SaveTheNewOpthalmicDiagnosis()
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->saveOpthalmicDiagnosis();
     }
 
@@ -121,9 +121,9 @@ class PatientViewContext extends PageObjectContext
     public function SystemicDiagnosisSelection($diagnosis)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addSystemicDiagnosis($diagnosis);
     }
 
@@ -133,9 +133,9 @@ class PatientViewContext extends PageObjectContext
     public function systemicSide($side)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->selectSystemicSide($side);
     }
 
@@ -145,9 +145,9 @@ class PatientViewContext extends PageObjectContext
     public function SystemicDiagnosisDate($day, $month, $year)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addSystemicDate($day, $month, $year);
     }
 
@@ -157,9 +157,9 @@ class PatientViewContext extends PageObjectContext
     public function SaveTheNewSystemicDiagnosis()
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->saveSystemicDiagnosis();
     }
 
@@ -169,9 +169,9 @@ class PatientViewContext extends PageObjectContext
     public function iAddAPreviousOperationOf($operation)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->previousOperation($operation);
     }
 
@@ -181,9 +181,9 @@ class PatientViewContext extends PageObjectContext
     public function SelectThatItAffectsOperationSide($operation)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->operationSide($operation);
     }
 
@@ -193,9 +193,9 @@ class PatientViewContext extends PageObjectContext
     public function PreviousOperationDate($day, $month, $year)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addOpthalmicDate($day, $month, $year);
     }
 
@@ -205,9 +205,9 @@ class PatientViewContext extends PageObjectContext
     public function iSaveTheNewPreviousOperation()
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->savePreviousOperation();
     }
 
@@ -217,9 +217,9 @@ class PatientViewContext extends PageObjectContext
     public function iAddMedicationDetails($medication, $route, $frequency, $dateFrom)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->medicationDetails($medication, $route, $frequency, $dateFrom);
     }
 
@@ -229,9 +229,9 @@ class PatientViewContext extends PageObjectContext
     public function iEditTheCviStatus($status)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->editCVIstatus($status);
     }
 
@@ -241,9 +241,9 @@ class PatientViewContext extends PageObjectContext
     public function iSelectACviStatusDateOfDayMonthYear($day, $month, $year)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addCVIDate($day, $month, $year);
     }
 
@@ -253,9 +253,9 @@ class PatientViewContext extends PageObjectContext
     public function iSaveTheNewCviStatus()
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->saveCVIstatus();
     }
     /**
@@ -264,9 +264,9 @@ class PatientViewContext extends PageObjectContext
     public function removeAllergy()
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->removeAllergy();
     }
 
@@ -276,9 +276,9 @@ class PatientViewContext extends PageObjectContext
     public function iAddAllergy($allergy)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addAllergy($allergy);
 
     }
@@ -289,9 +289,9 @@ class PatientViewContext extends PageObjectContext
     public function FamilyHistory($relative, $side, $condition, $comments)
     {
         /**
-         * @var PatientView $patientView
+         * @var PatientViewNewDiagnosis $patientView
          */
-        $patientView = $this->getPage('PatientView');
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addFamilyHistory($relative, $side, $condition, $comments);
     }
 }

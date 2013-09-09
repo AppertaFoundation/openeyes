@@ -122,9 +122,51 @@ class WaitingListContext extends PageObjectContext
     public function iSelectAwaitingPatientFromTheWaitingList()
     {
         $waitingList = $this->getPage('WaitingList');
-        $waitingList->getSession()->wait(5000, "$.active == 0");
+        $waitingList->getSession()->wait(10000, "$.active == 0");
         $waitingList->clickLink($this->patient);
     }
 
+    /**
+     * @Given /^I click on available date in the calendar$/
+     */
+    public function iClickOnAvailableDateInTheCalendar()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->getSession()->wait(10000, "$.active == 0");
+        $operationBooking->availableSlot();
+    }
 
+    /**
+     * @Given /^I select available theatre session from the list$/
+     */
+    public function iSelectAvailableTheatreSessionFromTheList()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->getSession()->wait(10000, "$.active == 0");
+        $operationBooking->availableSessionTime();
+    }
+
+    /**
+     * @Given /^I press "Confirm slot"$/
+     */
+    public function iPressConfirmSlot()
+    {
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->confirmSlot();
+    }
+
+    /**
+     * @Then /^I should see "([^"]*)"$/
+     */
+    public function iShouldSee($text)
+    {
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->hasContent($text);
+    }
 }
