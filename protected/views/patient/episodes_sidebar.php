@@ -63,36 +63,34 @@
 						<!-- end shows miniicons for the events -->
 						<div <?php if ($episode->hidden) { ?>class="events show" style="display: none;"<?php } else { ?>class="events hide"<?php } ?>>
 							<?php if (BaseController::checkUserLevel(4)) {?>
-								<?php if ($episode->status->name != 'Discharged') {?>
-									<?php
-									$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-									$enabled = false;
-									if ($firm->serviceSubspecialtyAssignment->subspecialty_id == $episode->firm->serviceSubspecialtyAssignment->subspecialty_id)
-										$enabled = true;
-									?>
-									<div style="margin-top:5px; margin-bottom: 5px;">
-										<button class="classy mini addEvent<?php echo ($enabled) ? " green enabled" : " grey"; ?>"
-											type="button" data-attr-subspecialty-id="<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty_id?>"
-										<?php if (!$enabled) echo 'title="Please switch firm to add an event to this episode"'; ?>
-										>
-											<span class="btn plus<?php echo ($enabled) ? " green" : " grey"; ?>">Add event</span>
-										</button>
-									</div>
-									<?php
-										$subspecialty = $episode->firm->serviceSubspecialtyAssignment->subspecialty;
-										$subspecialty_data = $subspecialty ? array_intersect_key($subspecialty->attributes, array_flip(array('id','name'))) : array();
-									if($enabled)
-									{
-									?>
-									<script type="text/html" id="add-new-event-template" data-specialty='<?php echo json_encode($subspecialty_data);?>'>
-										<?php $this->renderPartial('//patient/add_new_event',array(
-											'subspecialty' => @$subspecialty,
-											'patient' => $this->patient,
-											'eventTypes' => EventType::model()->getEventTypeModules(),
-										));?>
-									</script>
-								<?php }
-								}?>
+								<?php
+								$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+								$enabled = false;
+								if ($firm->serviceSubspecialtyAssignment->subspecialty_id == $episode->firm->serviceSubspecialtyAssignment->subspecialty_id)
+									$enabled = true;
+								?>
+								<div style="margin-top:5px; margin-bottom: 5px;">
+									<button class="classy mini addEvent<?php echo ($enabled) ? " green enabled" : " grey"; ?>"
+										type="button" data-attr-subspecialty-id="<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty_id?>"
+									<?php if (!$enabled) echo 'title="Please switch firm to add an event to this episode"'; ?>
+									>
+										<span class="btn plus<?php echo ($enabled) ? " green" : " grey"; ?>">Add event</span>
+									</button>
+								</div>
+								<?php
+									$subspecialty = $episode->firm->serviceSubspecialtyAssignment->subspecialty;
+									$subspecialty_data = $subspecialty ? array_intersect_key($subspecialty->attributes, array_flip(array('id','name'))) : array();
+								if($enabled)
+								{
+								?>
+								<script type="text/html" id="add-new-event-template" data-specialty='<?php echo json_encode($subspecialty_data);?>'>
+									<?php $this->renderPartial('//patient/add_new_event',array(
+										'subspecialty' => @$subspecialty,
+										'patient' => $this->patient,
+										'eventTypes' => EventType::model()->getEventTypeModules(),
+									));?>
+								</script>
+								<?php }?>
 							<?php }?>
 							<ul class="events">
 								<?php

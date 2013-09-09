@@ -26,7 +26,7 @@
  * @property string $phone
  *
  * The followings are the available model relations:
- * @property Address $address
+ * @property Contact $contact
  * @property CommissioningBody[] $commissioningbodies
  */
 class Practice extends BaseActiveRecord
@@ -150,7 +150,7 @@ class Practice extends BaseActiveRecord
 	/**
 	 * get the CommissioningBody of the CommissioningBodyType $type
 	 * currently assumes there would only ever be one commissioning body of a given type
-	 * 
+	 *
 	 * @param CommissioningBodyType $type
 	 * @return CommissioningBody
 	 */
@@ -162,12 +162,12 @@ class Practice extends BaseActiveRecord
 			}
 		}
 	}
-	
+
 	public function getCorrespondenceName()
 	{
 		return Gp::UNKNOWN_NAME;
 	}
-	
+
 	public function getSalutationName()
 	{
 		return Gp::UNKNOWN_SALUTATION;

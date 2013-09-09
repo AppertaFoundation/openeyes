@@ -433,14 +433,6 @@ class PatientController extends BaseController
 				if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
 					$this->episode->episode_status_id = $_POST['episode_status_id'];
 
-					if (EpisodeStatus::model()->findByPk($_POST['episode_status_id'])->name == 'Discharged') {
-						if ($this->episode->end_date === null) {
-							$this->episode->end_date = date('Y-m-d H:i:s');
-						}
-					} elseif ($this->episode->end_date !== null) {
-						$this->episode->end_date = null;
-					}
-
 					if (!$this->episode->save()) {
 						throw new Exception('Unable to update status for episode '.$this->episode->id.' '.print_r($this->episode->getErrors(),true));
 					}
