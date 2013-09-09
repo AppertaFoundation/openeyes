@@ -122,7 +122,7 @@ class WaitingListContext extends PageObjectContext
     public function iSelectAwaitingPatientFromTheWaitingList()
     {
         $waitingList = $this->getPage('WaitingList');
-        $waitingList->getSession()->wait(5000, "$.active == 0");
+        $waitingList->getSession()->wait(10000, "$.active == 0");
         $waitingList->clickLink($this->patient);
     }
 
@@ -135,7 +135,7 @@ class WaitingListContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(10000, "$.active == 0");
         $operationBooking->availableSlot();
     }
 
@@ -148,26 +148,25 @@ class WaitingListContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(10000, "$.active == 0");
         $operationBooking->availableSessionTime();
     }
 
     /**
-     * @Given /^I press "([^"]*)"$/
+     * @Given /^I press "Confirm slot"$/
      */
-    public function iPress($arg1)
+    public function iPressConfirmSlot()
     {
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->clickLink($arg1);
+        $operationBooking->confirmSlot();
     }
 
     /**
      * @Then /^I should see "([^"]*)"$/
      */
-    public function iShouldSee($arg1)
+    public function iShouldSee($text)
     {
-
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->hasContent($text);
     }
-
-
 }
