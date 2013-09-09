@@ -174,11 +174,11 @@ class BaseEventTypeElement extends BaseElement
 			return $this->parseSetting($setting, $metadata);
 		}
 
-		if ($setting = SettingSubspecialty::model()->find('subspecialty_id=? and element_type_id=? and `key`=?',array($firm->serviceSubspecialtyAssignment->subspecialty_id,$element_type->id,$key))) {
+		if ($subspecialty_id = $firm->getSubspecialtyID() && $setting = SettingSubspecialty::model()->find('subspecialty_id=? and element_type_id=? and `key`=?',array($subspecialty_id,$element_type->id,$key))) {
 			return $this->parseSetting($setting, $metadata);
 		}
 
-		if ($setting = SettingSpecialty::model()->find('specialty_id=? and element_type_id=? and `key`=?',array($firm->serviceSubspecialtyAssignment->subspecialty->specialty_id,$element_type->id,$key))) {
+		if ($specialty = $firm->getSpecialty() && $setting = SettingSpecialty::model()->find('specialty_id=? and element_type_id=? and `key`=?',array($specialty->id,$element_type->id,$key))) {
 			return $this->parseSetting($setting, $metadata);
 		}
 
