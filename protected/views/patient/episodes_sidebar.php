@@ -66,8 +66,7 @@
 								<?php
 								$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 								$enabled = false;
-								if ($firm->serviceSubspecialtyAssignment
-								&& $firm->serviceSubspecialtyAssignment->subspecialty_id == $episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+								if ($firm->getSubspecialtyID() == $episode->firm->getSubspecialtyID()) {
 									$enabled = true;
 								}
 								?>
