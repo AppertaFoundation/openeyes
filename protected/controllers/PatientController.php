@@ -382,7 +382,7 @@ class PatientController extends BaseController
 				)
 		);
 		if (BaseController::checkUserLevel(4) && $this->episode->editable
-				&& $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		&& $this->episode->firm && $this->firm->getSubspecialtyID() == $this->episode->firm->getSubspecialtyID()) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
 					'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
