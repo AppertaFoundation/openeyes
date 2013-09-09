@@ -174,6 +174,7 @@ class Episode extends BaseActiveRecord
 	 * @param integer $patientId			id of the patient
 	 *
 	 * @return object $episode if found, null otherwise
+	 * @deprecated - since 1.4 use getCurrentEpisodeByFirm instead
 	 */
 	public function getBySubspecialtyAndPatient($subspecialtyId, $patientId, $onlyReturnOpen = true)
 	{
@@ -204,20 +205,35 @@ class Episode extends BaseActiveRecord
 		}
 	}
 
+	/**
+	* get the current episode for the given firm, based on the firm subspecialty - if firm has no 
+	* subspecialty, will look for episode with no subspecialty (i.e. a support services episode)
+	*/
 	public static function getCurrentEpisodeByFirm($patientId, $firm, $include_closed = false)
 	{
 		$where = $include_closed ? '' : ' AND e.end_date IS NULL';
 
 		// Check for an open episode for this patient and firm's service with a referral
-		$episode = Yii::app()->db->createCommand()
-			->select('e.id AS eid')
-			->from('episode e')
-			->join('firm f', 'e.firm_id = f.id')
-			->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-			->where('e.deleted = False'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
-				':patient_id' => $patientId, ':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id
-			))
-			->queryRow();
+		if ($subspecialty_id = $firm->getSubspecialtyID()) {
+			$episode = Yii::app()->db->createCommand()
+				->select('e.id AS eid')
+				->from('episode e')
+				->join('firm f', 'e.firm_id = f.id')
+				->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
+				->where('e.deleted = False'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
+					':patient_id' => $patientId, ':subspecialty_id' => $subspecialty_id
+				))
+				->queryRow();
+		} else {
+			$episode = Yii::app()->db->createCommand()
+				->select('e.id AS eid')
+				->from('episode e')
+				->join('firm f', 'e.firm_id = f.id')
+				->where('e.deleted = False AND e.legacy = False '.$where.' AND e.patient_id = :patient_id AND f.service_subspecialty_assignment_id is NULL', array(
+					':patient_id' => $patientId
+				))
+				->queryRow();
+		}
 
 		if (!$episode['eid']) {
 			// There is an open episode and it has a referral, no action required
