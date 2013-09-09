@@ -174,12 +174,17 @@ class BaseEventTypeElement extends BaseElement
 			return $this->parseSetting($setting, $metadata);
 		}
 
-		if ($subspecialty_id = $firm->getSubspecialtyID() && $setting = SettingSubspecialty::model()->find('subspecialty_id=? and element_type_id=? and `key`=?',array($subspecialty_id,$element_type->id,$key))) {
-			return $this->parseSetting($setting, $metadata);
+
+		if ($subspecialty_id = $firm->getSubspecialtyID()) {
+			if ($setting = SettingSubspecialty::model()->find('subspecialty_id=? and element_type_id=? and `key`=?',array($subspecialty_id,$element_type->id,$key))) {
+				return $this->parseSetting($setting, $metadata);
+			}
 		}
 
-		if ($specialty = $firm->getSpecialty() && $setting = SettingSpecialty::model()->find('specialty_id=? and element_type_id=? and `key`=?',array($specialty->id,$element_type->id,$key))) {
-			return $this->parseSetting($setting, $metadata);
+		if ($specialty = $firm->getSpecialty()) {
+			if ($setting = SettingSpecialty::model()->find('specialty_id=? and element_type_id=? and `key`=?',array($specialty->id,$element_type->id,$key))) {
+				return $this->parseSetting($setting, $metadata);
+			}
 		}
 
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
