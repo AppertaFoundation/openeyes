@@ -31,7 +31,7 @@
 				<tbody>
 					<?php foreach ($ordered_episodes as $specialty_episodes) {?>
 						<tr>
-						<td colspan="6" class="all-episode specialty small"><?php echo $specialty_episodes['specialty']->name ?></td>
+						<td colspan="6" class="all-episode specialty small"><?php echo $specialty_episodes['specialty'] ?></td>
 						</tr>
 						<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
 							<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0) {?>even<?php } else {?>odd<?php }?><?php if ($episode->end_date !== null) {?> closed<?php }?>">
