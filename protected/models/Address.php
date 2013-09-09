@@ -109,6 +109,18 @@ class Address extends BaseActiveRecord
 		return (!$this->date_start || strtotime($this->date_start) <= time()) && (!$this->date_end || strtotime($this->date_end) >= time());
 	}
 
+	/**
+	 * @param bool $include_country
+	 * @return string Address as formatted HTML (<br/> separated)
+	 */
+	public function getLetterHtml($include_country=true) {
+		return implode('<br />', $this->getLetterArray($include_country));
+	}
+
+	/**
+	 * @param bool $include_country
+	 * @return string Address as text (, separated)
+	 */
 	public function getLetterLine($include_country=true)
 	{
 		return implode(', ', $this->getLetterArray($include_country));
