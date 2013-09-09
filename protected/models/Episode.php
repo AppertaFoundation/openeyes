@@ -208,20 +208,31 @@ class Episode extends BaseActiveRecord
 	/**
 	* get the current episode for the given firm, based on the firm subspecialty - if firm has no 
 	* subspecialty, will look for episode with no subspecialty (i.e. a support services episode)
+	*
+	* wrapper for getCurrentEpisodeBySubspecialtyId($patient_id, $subspecialty_id, $include_closed)
 	*/
-	public static function getCurrentEpisodeByFirm($patientId, $firm, $include_closed = false)
+	public static function getCurrentEpisodeByFirm($patient_id, $firm, $include_closed = false)
+	{
+		return Episode::model()->getCurrentEpisodeBySubspecialtyId($patient_id, $firm->getSubspecialtyID(), $include_closed);
+	}
+
+	/**
+	* get the current episode for the patient id and subspecialty_id (if this is null, looking for support services episode)
+	*
+	*/
+	public static function getCurrentEpisodeBySubspecialtyId($patient_id, $subspecialty_id, $include_closed = false)
 	{
 		$where = $include_closed ? '' : ' AND e.end_date IS NULL';
 
 		// Check for an open episode for this patient and firm's service with a referral
-		if ($subspecialty_id = $firm->getSubspecialtyID()) {
+		if (!is_null($subspecialty_id)) {
 			$episode = Yii::app()->db->createCommand()
 				->select('e.id AS eid')
 				->from('episode e')
 				->join('firm f', 'e.firm_id = f.id')
 				->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
 				->where('e.deleted = False'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
-					':patient_id' => $patientId, ':subspecialty_id' => $subspecialty_id
+					':patient_id' => $patient_id, ':subspecialty_id' => $subspecialty_id
 				))
 				->queryRow();
 		} else {
@@ -230,7 +241,7 @@ class Episode extends BaseActiveRecord
 				->from('episode e')
 				->join('firm f', 'e.firm_id = f.id')
 				->where('e.deleted = False AND e.legacy = False '.$where.' AND e.patient_id = :patient_id AND f.service_subspecialty_assignment_id is NULL', array(
-					':patient_id' => $patientId
+					':patient_id' => $patient_id
 				))
 				->queryRow();
 		}
