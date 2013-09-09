@@ -237,9 +237,16 @@ class Patient extends BaseActiveRecord
 			// group
 			foreach ($episodes as $ep) {
 				if ($ep->firm) {
-					$specialty = $ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty;
-					$by_specialty[$specialty->code]['episodes'][] = $ep;
-					$by_specialty[$specialty->code]['specialty'] = $specialty;
+					if ($ssa = $ep->firm->serviceSubspecialtyAssignment) {
+						$specialty = $ssa->subspecialty->specialty;
+						$specialty_name = $specialty->name;
+						$specialty_code = $specialty->code;
+					} else {
+						$specialty_name = 'Support Services';
+						$specialty_code = 'SUP';
+					}
+					$by_specialty[$specialty_code]['episodes'][] = $ep;
+					$by_specialty[$specialty_code]['specialty'] = $specialty_name;
 				}
 			}
 
@@ -259,7 +266,7 @@ class Patient extends BaseActiveRecord
 				// sort the remainder
 				function cmp($a, $b)
 				{
-					return strcasecmp($a['specialty']->name, $b['specialty']->name);
+					return strcasecmp($a['specialty'], $b['specialty']);
 				}
 				uasort($by_specialty, "cmp");
 			}

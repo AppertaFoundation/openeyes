@@ -1530,7 +1530,7 @@ class PatientController extends BaseController
 
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
-		if ($patient->hasOpenEpisodeOfSubspecialty($firm->serviceSubspecialtyAssignment->subspecialty_id)) {
+		if ($patient->hasOpenEpisodeOfSubspecialty($firm->getSubspecialtyID())) {
 			echo "0";
 			return;
 		}

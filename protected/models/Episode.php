@@ -319,17 +319,27 @@ class Episode extends BaseActiveRecord
 
 	public function getEditable()
 	{
+		// Get current logged in firm's subspecialty id (null for support services firms)
+		$current_subspecialty_id = Yii::app()->getController()->firm->getSubspecialtyID();
 		if (!$this->firm) {
-			if (!$this->support_services) {
+			// Episode has no firm, so it's either a legacy episode or a support services episode
+			if ($this->support_services) {
+				// Support services episode, so are you logged in as a support services firm
+				return ($current_subspecialty_id == null);
+			} else {
+				// Legacy episode
 				return FALSE;
 			}
-			return (Yii::app()->getController()->firm->serviceSubspecialtyAssignment == null);
+		} else {
+			// Episode is normal (has a firm)
+			if (!$current_subspecialty_id) {
+				// Logged in as a support services firm
+				return FALSE;
+			} else {
+				// Logged in as a normal firm, so does episode subspecialty match
+				return ($this->firm->getSubspecialtyID() == $current_subspecialty_id);
+			}
 		}
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-			return FALSE;
-		}
-
-		return TRUE;
 	}
 	
 	protected function afterSave()

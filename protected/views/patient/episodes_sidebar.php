@@ -30,7 +30,7 @@
 	<?php
 	if (is_array($ordered_episodes))
 		foreach ($ordered_episodes as $specialty_episodes) {?>
-			<div class="specialty small"><?php echo $specialty_episodes['specialty']->name ?></div>
+			<div class="specialty small"><?php echo $specialty_episodes['specialty'] ?></div>
 			<?php foreach ($specialty_episodes['episodes'] as $i => $episode) { ?>
 				<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 					<div class="episode_nav">
@@ -43,7 +43,7 @@
 								</a>
 							</span>
 						</div>
-						<h4><?php echo CHtml::link(CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name), array('/patient/episode/' . $episode->id), array('class' => 'title_summary' . ((!$this->event && @$current_episode && $current_episode->id == $episode->id) ? ' viewing' : ''))) ?></h4>
+						<h4><?php echo CHtml::link(CHtml::encode($episode->firm->getSubspecialtyText()), array('/patient/episode/' . $episode->id), array('class' => 'title_summary' . ((!$this->event && @$current_episode && $current_episode->id == $episode->id) ? ' viewing' : ''))) ?></h4>
 						<!-- shows miniicons for the events -->
 							<div class = "minievents" <?php if ($episode->hidden) { ?>style = "display : inline" <?php } else { ?> style = "display : none"<?php } ?>>
 								<?php foreach ($episode->events as $event) {
@@ -66,26 +66,28 @@
 								<?php
 								$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 								$enabled = false;
-								if ($firm->serviceSubspecialtyAssignment->subspecialty_id == $episode->firm->serviceSubspecialtyAssignment->subspecialty_id)
+								if ($firm->serviceSubspecialtyAssignment
+								&& $firm->serviceSubspecialtyAssignment->subspecialty_id == $episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 									$enabled = true;
+								}
 								?>
 								<div style="margin-top:5px; margin-bottom: 5px;">
 									<button class="classy mini addEvent<?php echo ($enabled) ? " green enabled" : " grey"; ?>"
-										type="button" data-attr-subspecialty-id="<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty_id?>"
+										type="button" data-attr-subspecialty-id="<?php echo $episode->firm->getSubspecialtyID()?>"
 									<?php if (!$enabled) echo 'title="Please switch firm to add an event to this episode"'; ?>
 									>
 										<span class="btn plus<?php echo ($enabled) ? " green" : " grey"; ?>">Add event</span>
 									</button>
 								</div>
 								<?php
-									$subspecialty = $episode->firm->serviceSubspecialtyAssignment->subspecialty;
-									$subspecialty_data = $subspecialty ? array_intersect_key($subspecialty->attributes, array_flip(array('id','name'))) : array();
+									$ssa = $episode->firm->serviceSubspecialtyAssignment;
+									$subspecialty_data = $ssa ? array_intersect_key($ssa->subspecialty->attributes, array_flip(array('id','name'))) : array();
 								if($enabled)
 								{
 								?>
 								<script type="text/html" id="add-new-event-template" data-specialty='<?php echo json_encode($subspecialty_data);?>'>
 									<?php $this->renderPartial('//patient/add_new_event',array(
-										'subspecialty' => @$subspecialty,
+										'subspecialty' => @$ssa->subspecialty,
 										'patient' => $this->patient,
 										'eventTypes' => EventType::model()->getEventTypeModules(),
 									));?>
@@ -142,7 +144,7 @@
 						<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? $episode->NHSDate('end_date') : '-') ?></div>
 						<div class="row"><span class="label">Principal eye:</span><?php echo ($episode->diagnosis) ? ($episode->eye ? $episode->eye->name : 'None') : 'No diagnosis' ?></div>
 						<div class="row"><span class="label">Principal diagnosis:</span><?php echo ($episode->diagnosis) ? ($episode->diagnosis ? $episode->diagnosis->term : 'none') : 'No diagnosis' ?></div>
-						<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name) ?></div>
+						<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->firm->getSubspecialtyText()) ?></div>
 						<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm->name) ?></div>
 						<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png') ?>" alt="folder open" />
 					</div>
