@@ -158,7 +158,6 @@ class OperationBooking extends Page
         foreach ($slots as $slot) {
             $slot->click();
             $this->getSession()->wait(10000, "$('.sessionTimes').length > 0");
-//            $freeSession = $this->getElement('availableTheatreSessionTime');
             $freeSession = $this->find('css', '.sessionTimes > a > .bookable');
             if ($freeSession) {
                 return true;
