@@ -163,6 +163,10 @@ class Firm extends BaseActiveRecord
 		return $this->serviceSubspecialtyAssignment->service->name;
 	}
 
+	/**
+	* retrieve a label for the sub specialty assignment for this firm
+	* @return string
+	*/
 	public function getSubspecialtyText()
 	{
 		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty->name : 'Support services';
