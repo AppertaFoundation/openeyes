@@ -154,12 +154,24 @@ class OperationBooking extends Page
 
     public function availableSlot ()
     {
-        $this->getElement('availableTheatreSlotDate')->click();
+        $slots = $this->findAll('xpath', $this->getElement('availableTheatreSlotDate')->getXpath());
+        foreach ($slots as $slot) {
+            $slot->click();
+            $this->getSession()->wait(10000, "$('.sessionTimes').length > 0");
+//            $freeSession = $this->getElement('availableTheatreSessionTime');
+            $freeSession = $this->find('css', '.sessionTimes > a > .bookable');
+            if ($freeSession) {
+                return true;
+            }
+        }
+
+        throw new \Exception('No available theatre session found');
     }
 
     public function availableSessionTime ()
     {
         $this->getElement('availableTheatreSessionTime')->click();
+        $this->getSession()->wait(10000, "$('.active') == 0");
     }
 
     public function availableThreeWeeksTime ()
