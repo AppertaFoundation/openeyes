@@ -1,3 +1,25 @@
+h1, h2, h3, h4, h5, h6  {
+	font-weight: 500;
+}
+pre {
+	font-size: .8em;
+	margin: 1em 0 1.5em 0;
+	width: 99%;
+}
+pre.prettyprint {
+	border-color: #ddd;
+}
+code {
+	font-size: 12px;
+	color: #555;
+}
+hr {
+	margin-top: .5em;
+}
+li {
+	margin-left: 1.5em;
+}
+
 .box.event {
 	border: 0;
 }
@@ -10,24 +32,9 @@
 .example header {
 	margin-bottom: 1em;
 }
-.example header h3 {
-	color: #888;
-}
 .example-box {
 	background: #fafafa;
 	margin: 0;
-}
-pre {
-	font-size: .8em;
-	margin: 1em 0 1.5em 0;
-	width: 100%;
-}
-code {
-	font-size: 12px;
-	color: #555;
-}
-hr {
-	margin-top: .5em;
 }
 .view-markup {
 	font-size: 13px;
@@ -35,6 +42,9 @@ hr {
 
 .side-nav li a {
 	display: inline-block;
+}
+.side-nav li > ul {
+	margin-top: .5em;
 }
 
 /** JSDoc Styles */

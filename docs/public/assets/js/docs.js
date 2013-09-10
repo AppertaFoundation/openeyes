@@ -26,7 +26,7 @@
 		},
 		onViewMarkupClick: function(e) {
 
-			var element = $(e.currentTarget).parents('.example');
+			var element = $(e.currentTarget).parents('.example').find('.show-markup');
 			var markup = element.html();
 
 			markup = markup.replace(/<header>[\s\S.]*<\/header>/gm, '');

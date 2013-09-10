@@ -9,11 +9,11 @@
 
 <meta name="viewport" content="width=device-width" />
 
+<link rel="stylesheet" href="/assets/css/prettify-github.css" />
+<link rel="stylesheet" href="/assets/core/js/components/jquery-ui/themes/base/minified/jquery-ui.min.css" />
+
 <link rel="stylesheet" href="/assets/core/css/style_new.css" />
 <link rel="stylesheet" href="/assets/css/docs.css" />
-
-<link rel="stylesheet" href="/assets/core/js/components/google-code-prettify/src/prettify.css" />
-<link rel="stylesheet" href="/assets/core/js/components/jquery-ui/themes/base/minified/jquery-ui.min.css" />
 
 <script src="/assets/core/js/vendor/modernizr.js"></script>
 <script src="/assets/core/js/components/jquery/jquery.min.js"></script>
@@ -43,16 +43,26 @@
 						<h2>Navigation</h2>
 						<ul class="side-nav">
 							<li><a href="#overview">Overview</a></li>
-							<li><a href="#basic-forms">Basic forms</a></li>
-							<li><a href="#form-layouts">Form layouts</a></li>
 							<li>
-								<a href="#">Default fields</a>
+								<a href="#form-layouts">Form layouts</a>
 								<ul>
-									<li><a href="#">Text input</a></li>
+									<li><a href="#vertical-layout-example">Vertical layout</a></li>
+									<li><a href="#horizontal-layout-example">Horizontal layout</a></li>
+									<li><a href="#table-layout-example">Table layout</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="#default-fields">Default form fields</a>
+								<ul>
+									<li><a href="#text-input-example">Text input</a></li>
+									<li><a href="#password-input-example">Password input</a></li>
+									<li><a href="#select-dropdown-example">Select dropdown</a></li>
+									<li><a href="#radio-input-example">Radio input</a></li>
+									<li><a href="#checkbox-input-example">Checkbox input</a></li>
+									<li><a href="#textarea-example">Textarea</a></li>
 								</ul>
 							</li>
 							<li><a href="#">Custom fields</a></li>
-							<li><a href="#">Field definitions</a></li>
 						</ul>
 					</aside>
 
@@ -90,14 +100,14 @@
 
 								<h3>Basic form layouts</h3>
 
-								<div class="row">
-									<div class="large-6 column">
+								<form class="example" id="vertical-layout-example">
 
-										<form class="example">
+									<header>
+										<h3>Vertical layout</h3>
+									</header>
 
-											<header>
-												<h3 class="form-title">Vertical layout</h3>
-											</header>
+									<div class="row">
+										<div class="large-6 column show-markup">
 
 											<!-- Text input -->
 											<div class="field-row">
@@ -172,16 +182,18 @@
 												</button>
 											</div>
 
-										</form>
-
+										</div>
 									</div>
+								</form>
 
-									<div class="large-6 column">
-										<form class="example">
+								<form class="example" id="horizontal-layout-example">
 
-											<header>
-												<h3 class="form-title">Horizontal layout</h3>
-											</header>
+									<header>
+										<h3>Horizontal layout</h3>
+									</header>
+
+									<div class="row">
+										<div class="large-6 column show-markup">
 
 											<!-- Text input -->
 											<div class="row field-row">
@@ -294,84 +306,81 @@
 													</button>
 												</div>
 											</div>
-										</form>
+										</div>
 									</div>
-								</div>
+								</form>
 
-								<h3>Forms in tables</h3>
 
-								<div class="row">
-									<div class="large-6 column">
+								<form class="example" id="table-form-layout-example">
 
-										<form class="example">
+									<header>
+										<h3>Table layout</h3>
+									</header>
 
-											<header>
-												<h3 class="form-title">Example</h3>
-											</header>
+									<div class="show-markup">
 
-											<table class="plain">
-												<thead>
-													<tr>
-														<th>Time</th>
-														<th>Drug</th>
-														<th>Drops</th>
-														<th>Actions</th>
-													</tr>
-												</thead>
-												<tbody class="plain">
-													<tr>
-														<td>
-															<input class="input-time small" type="text" value="09:49">
-														</td>
-														<td>
-															Cyclopentolate 0.5%
-														</td>
-														<td>
-															<select>
-																<option value="1" selected="selected">1</option>
-															</select>
-														</td>
-														<td>
-															<a href="#" class="removeTreatment">Remove</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<input class="input-time small" type="text" value="10:24">
-														</td>
-														<td>
-															<span class="drug-name">Phenylephrine 2.5%</span>
-														</td>
-														<td>
-															<select>
-																<option value="1">1</option>
-															</select>
-														</td>
-														<td>
-															<a href="#" class="removeTreatment">Remove</a>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<input class="input-time small" type="text" value="10:24">
-														</td>
-														<td>
-															<span class="drug-name">Tropicamide 0.5%</span>
-														</td>
-														<td>
-															<select>
-																<option value="1">1</option>
-															</select>
-														</td>
-														<td>
-															<a href="#" class="removeTreatment">Remove</a>
-														</td>
-													</tr>
-												</tbody>
-											</table>
-										</form>
+										<table class="plain">
+											<thead>
+												<tr>
+													<th>Time</th>
+													<th>Drug</th>
+													<th>Drops</th>
+													<th>Actions</th>
+												</tr>
+											</thead>
+											<tbody class="plain">
+												<tr>
+													<td>
+														<input class="input-time small" type="text" value="09:49">
+													</td>
+													<td>
+														Cyclopentolate 0.5%
+													</td>
+													<td>
+														<select>
+															<option value="1" selected="selected">1</option>
+														</select>
+													</td>
+													<td>
+														<a href="#" class="removeTreatment">Remove</a>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<input class="input-time small" type="text" value="10:24">
+													</td>
+													<td>
+														<span class="drug-name">Phenylephrine 2.5%</span>
+													</td>
+													<td>
+														<select>
+															<option value="1">1</option>
+														</select>
+													</td>
+													<td>
+														<a href="#" class="removeTreatment">Remove</a>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<input class="input-time small" type="text" value="10:24">
+													</td>
+													<td>
+														<span class="drug-name">Tropicamide 0.5%</span>
+													</td>
+													<td>
+														<select>
+															<option value="1">1</option>
+														</select>
+													</td>
+													<td>
+														<a href="#" class="removeTreatment">Remove</a>
+													</td>
+												</tr>
+											</tbody>
+										</table>
 									</div>
-								</div>
+								</form>
 							</div>
 						</div>
 
@@ -380,59 +389,92 @@
 						<!-- Form fields -->
 						<div class="row">
 							<div class="large-12 column">
-								<h2 id="fields">Form fields</h2>
+
+								<h2 id="default-fields">Default form fields</h2>
 								<p>For the application to have consistent forms, it's important
 								that developers understand the purpose of the different form fields and when
 								to use them.</p>
 
-								<div class="example">
-									<h3>Text input</h3>
+								<!-- Text input -->
+								<div class="example" id="text-input-example">
+									<header>
+										<h3>Text input</h3>
+									</header>
 									<p>A single-line text input control.</p>
 									<h4>When to use:</h4>
-									<p>When asking the user to input a small, single line of text.</p>
+									<p>When asking the user to input a small, single line of plain text.</p>
+									<h4>Rules:</h4>
+									<ul>
+										<li>Text inputs should always have corresponding labels, even if they are hidden.</li>
+										<li>Make use of the placeholder attribute for a more descriptive label.</li>
+									</ul>
 									<h4>Example:</h4>
 									<div class="field-row row">
-										<div class="large-4 column end">
-											<input type="text" />
+										<div class="large-4 column end show-markup">
+											<label for="field-text-input-name">Your name:</label>
+											<input type="text" placeholder="Please enter your name" id="field-text-input-name" />
 										</div>
 									</div>
 								</div>
 
-								<div class="example">
-									<h3>Password input</h3>
+								<!-- Password input -->
+								<div class="example" id="password-input-example">
+									<header>
+										<h3>Password input</h3>
+									</header>
 									<p>A single-line text input control that masks the input text.</p>
 									<h4>When to use:</h4>
-									<p>When asking the user to input a password.</p>
+									<p>When asking the user to input a plain text password.</p>
+									<h4>Rules:</h4>
+									<ul>
+										<li>Password inputs should always have corresponding labels, even if they are hidden.</li>
+										<li>Make use of the placeholder attribute for a more descriptive label.</li>
+									</ul>
 									<h4>Example:</h4>
 									<div class="field-row row">
-										<div class="large-4 column end">
-											<input type="password" />
+										<div class="large-4 column end show-markup">
+											<label for="field-text-input-password">Your name:</label>
+											<input type="password" id="field-text-input-password" placeholder="Please enter your password" />
 										</div>
 									</div>
 								</div>
 
-								<div class="example">
-									<h3>Select dropdown</h3>
+								<!-- Select dropdown -->
+								<div class="example" id="select-dropdown-example">
+									<header>
+										<h3>Select dropdown</h3>
+									</header>
 									<p>Provides a menu of choices.</p>
 									<h4>When to use:</h4>
-									<p>When asking the user to select exactly one option from a list
-											of options.</p>
+									<p>When asking the user to select exactly one option from a <em>large</em> list
+											of options, where <em>not all</em> of the options are relevant to the user.</p>
+									<h4>Rules:</h4>
+									<ul>
+										<li>Select dropdowns should always have corresponding labels, even if they are hidden.</li>
+										<li>Make use of &lt;optgroup&gt; tags to group sets of options.</li>
+									</ul>
 									<h4>Example:</h4>
 									<div class="field-row row">
-										<div class="large-4 column end">
-											<select>
+										<div class="large-4 column end show-markup">
+											<label for="field-select-1">
+												Select your choice:
+											</label>
+											<select id="field-select-1">
 												<option selected>Option 1</option>
 												<option>Option 2</option>
 											</select>
 										</div>
 									</div>
 									<h4>Validation:</h4>
-									<p>The select dropdown can have a valid option pre-selected (as demonstrated above), but if you
-									require the user to make a conscious choice, then add an option at
+									<p>You can enforce a consious user selection by not making any of the
+									options selected, and by adding an additional option at
 									the top of the list with text "-- Select --" with a null value, for example:</p>
 									<div class="field-row row">
 										<div class="large-4 column end">
-											<select>
+											<label for="field-select-2">
+												Select your choice:
+											</label>
+											<select id="field-select-2">
 												<option value="" selected>-- Select --</option>
 												<option>Option 2</option>
 											</select>
@@ -440,82 +482,107 @@
 									</div>
 								</div>
 
-								<div class="example">
-									<h3>Radio input</h3>
-									<p>Provides a menu of choices.</p>
+								<!-- Radio input -->
+								<div class="example" id="radio-input-example">
+									<header>
+										<h3>Radio input</h3>
+									</header>
+									<p>Provides a list of choices.</p>
 									<h4>When to use:</h4>
-									<p>When asking the user to select exactly one option from a list
-											of options.</p>
+									<p>When asking the user to select exactly one option from a <em>small</em> list
+											of options, where <em>all</em> of the options are relevant to the user.</p>
+									<h4>Rules:</h4>
+									<ul>
+										<li>Radio inputs should always have corresponding labels and the labels should never be hidden.</li>
+										<li>Radio groups should always be wrapped in a fieldset with a descriptive legend.</li>
+									</ul>
 									<h4>Example:</h4>
 									<div class="field-row row">
-										<div class="large-4 column end">
-											<select>
-												<option selected>Option 1</option>
-												<option>Option 2</option>
-											</select>
+										<div class="large-4 column end show-markup">
+											<fieldset>
+												<legend>Your choices:</legend>
+												<label>
+													<input type="radio" name="input-radio-1" checked /> Choice 1
+												</label>
+												<label>
+													<input type="radio" name="input-radio-1" /> Choice 2
+												</label>
+											</fieldset>
 										</div>
 									</div>
 									<h4>Validation:</h4>
-									<p>The select dropdown can have a valid option pre-selected (as demonstrated above), but if you
-									require the user to make a conscious choice, then add an option at
-									the top of the list with text "Please select..." with a null value, for example:</p>
+									<p>You can enforce a consious user selection by not making any of the
+									radio inputs checked, for example:</p>
 									<div class="field-row row">
-										<div class="large-4 column end">
-											<select>
-												<option value="" selected>Please select...</option>
-												<option>Option 2</option>
-											</select>
+										<div class="large-4 column end show-markup">
+											<fieldset>
+												<legend>Your choices:</legend>
+												<label>
+													<input type="radio" name="input-radio-2" /> Choice 1
+												</label>
+												<label>
+													<input type="radio" name="input-radio-2" /> Choice 2
+												</label>
+											</fieldset>
 										</div>
 									</div>
 								</div>
 
-								<table class="">
-									<thead>
-										<tr>
-											<td>Field name</td>
-											<td>Markup</td>
-											<td>Definition</td>
-											<td>When to use</td>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>Text input</td>
-											<td><input type="text" /></td>
-											<td></td>
-											<td>When ask the user for a small amount of text.</td>
-										</tr>
-										<tr>
-											<td>Password input</td>
-											<td><input type="text" /></td>
-											<td>A single-line text input control that masks the input text
-											with asterisks.</td>
-											<td>When asking the user for a password.</td>
-										</tr>
-										<tr>
-											<td>Select dropdown</td>
-											<td></td>
-											<td>Provides a menu of choices.</td>
-											<td></td>
-										</tr>
-										<tr>
-											<td>Radio groups</td>
-											<td>
-												<fieldset>
-													<legend>Available options</legend>
-													<label>
-														<input type="radio" name="fields-radio-1" /> Option 1
-													</label>
-													<label>
-														<input type="radio" name="fields-radio-1" /> Option 2
-													</label>
-												</fieldset>
-											</td>
-											<td>A single-line text input control.</td>
-											<td>When ask the user for a small amount of text.</td>
-										</tr>
-									</tbody>
-								</table>
+								<!-- Checkbox input -->
+								<div class="example" id="checkbox-input-example">
+									<header>
+										<h3>Checkbox input</h3>
+									</header>
+									<p>Provides a list of optional choices.</p>
+									<h4>When to use:</h4>
+									<p>When asking the user to select none, one or more options from a list
+											of options.</p>
+									<p>A stand-alone checkbox is used for a single option that the user can turn on or off.</p>
+									<h4>Rules</h4>
+									<ul>
+										<li>Checkbox inputs should always have corresponding labels and the labels should never be hidden.</li>
+										<li>Checkbox groups should always be wrapped in a fieldset with a descriptive legend.</li>
+									</ul>
+									<h4>Example:</h4>
+									<div class="field-row row">
+										<div class="large-4 column end show-markup">
+											<fieldset>
+												<legend>Your choices:</legend>
+												<label>
+													<input type="checkbox" name="input-checkbox-1" checked /> Choice 1
+												</label>
+												<label>
+													<input type="checkbox" name="input-checkbox-1" /> Choice 2
+												</label>
+											</fieldset>
+										</div>
+									</div>
+								</div>
+
+								<!-- Textarea input -->
+								<div class="example" id="textarea-example">
+									<header>
+										<h3>Textarea</h3>
+									</header>
+									<p>A multi-line text input control.</p>
+									<h4>When to use:</h4>
+									<p>When asking the user to input a large, possibly multi-line section of plain text.</p>
+									<h4>Rules:</h4>
+									<ul>
+										<li>Textareas should always have corresponding labels, even if they are hidden.</li>
+										<li>Make use of the placeholder attribute for a more descriptive label.</li>
+										<li>Textareas should never be styled like a text input, the height of the textarea
+										should always be at least 2 X line-height.</li>
+									</ul>
+									<h4>Example:</h4>
+									<div class="field-row row">
+										<div class="large-4 column end show-markup">
+											<label for="field-textarea-address">Your address:</label>
+											<textarea placeholder="Please enter your address" id="field-textarea-address"></textarea>
+										</div>
+									</div>
+								</div>
+
 							</div>
 						</div>
 
