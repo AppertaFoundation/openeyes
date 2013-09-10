@@ -71,7 +71,7 @@ class TherapyApplication extends Page
         $this->getElement('hopefullFIXRight')->click();
 //        $this->getSession()->wait(5000);
         $this->getElement('rightAngiogramDate')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('calendarDate')->click();
 //        $this->getElement('calendarDate')->selectOption($date);
 
@@ -87,7 +87,7 @@ class TherapyApplication extends Page
         $this->getElement('hopefullFIXLeft')->click();
 //        $this->getSession()->wait(5000);
         $this->getElement('leftAngiogramDate')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('calendarDate')->click();
 //        $this->getElement('calendarDate')->selectOption($date);
     }

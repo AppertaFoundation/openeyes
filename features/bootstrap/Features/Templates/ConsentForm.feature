@@ -18,6 +18,24 @@ Feature: Create New Examination
     Then I expand the Glaucoma sidebar
     And I add a New Event "Consent"
     Then I select Add Consent Form
+    And I choose Type "1"
+
+    Then I choose Procedure eye of "Both"
+    And I choose an Anaesthetic type of "3"
+    And I add a common procedure of "41"
+
+    Then I choose Permissions for images "1"
+
+    And I select the Information leaflet checkbox
+    And I select the Anasethetic leflet checkbox
+    Then I select a Witness Required checkbox
+    And I enter a Witness Name of "Joe Bloggs"
+    Then I select a Interpreter required checkbox
+    And I enter a Interpreter name of "Tom Smith"
+    Then I select a supplementary consent form checkbox
+
+    Then I save the Consent Form
+
 
 
 

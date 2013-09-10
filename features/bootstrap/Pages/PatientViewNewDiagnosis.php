@@ -6,8 +6,6 @@ class PatientViewNewDiagnosis extends Page
 {
     protected $path = "/site/patient/view/";
 
-    protected $datefrom;
-
     protected $elements = array(
         'homeButton' => array('xpath' => "//*[@id='user_nav']//*[contains(text(), 'Home')]"),
         'theatreDiaries' => array('xpath' => "//*[@id='user_nav']//*[contains(text(), 'Theatre Diaries')]"),
@@ -199,10 +197,10 @@ class PatientViewNewDiagnosis extends Page
         $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('selectFrequency')->selectOption($frequency);
         $this->getSession()->wait(5000, "$.active == 0");
-        $this->getElement('hopefullFIX')->click();
-        $this->getSession()->wait(5000, "$.active == 0");
+//        $this->getElement('hopefullFIX')->click();
+//        $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('openMedicationDate')->click();
-        $this->getSession()->wait(5000, "$.active == 0");
+        $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('selectDateFrom')->click($datefrom);
         $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('saveMedication')->click();
