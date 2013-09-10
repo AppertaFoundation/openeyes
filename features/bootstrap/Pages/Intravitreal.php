@@ -36,7 +36,7 @@ class Intravitreal extends Page
         'rightPreInjectionAntiseptic' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_pre_antisept_drug_id']"),
         'rightPreInjectionSkinCleanser' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_pre_skin_drug_id']"),
         'rightPreInjectionIOPTickbox' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_pre_ioplowering_required']"),
-        'rightPerInjectionIOPDrops' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_pre_ioplowering_id']"),
+        'rightPerInjectionIOPDrops' => array('xpath' => "//*[@id='div_Element_OphTrIntravitrealinjection_Treatment_right_pre_ioploweringdrugs']/div[2]/select"),
         'rightDrug' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_drug_id']"),
         'rightNumberOfInjections' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_number']"),
         'rightBatchNumber' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_batch_number']"),
@@ -49,8 +49,8 @@ class Intravitreal extends Page
         //Left Treatment
         'leftPreInjectionAntiseptic' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_pre_antisept_drug_id']"),
         'leftPreInjectionSkinCleanser' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_pre_skin_drug_id']"),
-        'leftPreInjectionIOPTickbox' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_pre_ioplowering_required']"),
-        'leftPerInjectionIOPDrops' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_pre_ioplowering_id']"),
+        'leftPreInjectionIOPTickbox' => array('xpath' => "//div[@id='div_Element_OphTrIntravitrealinjection_Treatment_left_pre_ioplowering_required']/div[2]/input[2]"),
+        'leftPerInjectionIOPDrops' => array('xpath' => "//*[@id='div_Element_OphTrIntravitrealinjection_Treatment_left_pre_ioploweringdrugs']/div[2]/select"),
         'leftDrug' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_drug_id']"),
         'leftNumberOfInjections' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_number']"),
         'leftBatchNumber' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_batch_number']"),
@@ -199,6 +199,7 @@ class Intravitreal extends Page
         public function rightPreInjectionIOPDropsCheckbox ()
         {
             $this->getElement('rightPreInjectionIOPTickbox')->check();
+            $this->getSession()->wait(5000);
         }
 
         public function rightPreInjectionIOPDropsLoweringDrops ($drops)
@@ -249,6 +250,7 @@ class Intravitreal extends Page
         public function leftPreInjectionIOPDropsCheckbox ()
         {
             $this->getElement('leftPreInjectionIOPTickbox')->check();
+            $this->getSession()->wait(5000);
         }
     
         public function leftPreInjectionIOPDropsLoweringDrops ($drops)
