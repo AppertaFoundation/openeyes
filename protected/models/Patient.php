@@ -123,7 +123,7 @@ class Patient extends BaseActiveRecord
 				'condition' => 'support_services=1',
 			),
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
-				'condition' => "(legacy=0 or legacy is null) and (support_services=0 or support_services is null)",
+				'condition' => "(legacy=0 or legacy is null)",
 			),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
@@ -242,12 +242,14 @@ class Patient extends BaseActiveRecord
 						$specialty_name = $specialty->name;
 						$specialty_code = $specialty->code;
 					} else {
-						$specialty_name = 'Support Services';
-						$specialty_code = 'SUP';
+						continue;
 					}
-					$by_specialty[$specialty_code]['episodes'][] = $ep;
-					$by_specialty[$specialty_code]['specialty'] = $specialty_name;
+				} else {
+					$specialty_name = 'Support Services';
+					$specialty_code = 'SUP';
 				}
+				$by_specialty[$specialty_code]['episodes'][] = $ep;
+				$by_specialty[$specialty_code]['specialty'] = $specialty_name;
 			}
 
 
@@ -434,21 +436,7 @@ class Patient extends BaseActiveRecord
 	{
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
-		$firm_ids = array();
-		if ($firm->service_subspecialty_assignment_id) {
-			// Get all firms for the subspecialty
-			$ssa = $firm->serviceSubspecialtyAssignment;
-
-			foreach (Firm::model()->findAll('service_subspecialty_assignment_id=?',array($ssa->id)) as $firm) {
-				$firm_ids[] = $firm->id;
-			}
-		} else {
-			foreach (Firm::model()->findAll('service_subspecialty_assignment_id is null') as $firm) {
-				$firm_ids[] = $firm->id;
-			}
-		}
-
-		return Episode::model()->find('patient_id=? and firm_id in ('.implode(',',$firm_ids).')',array($this->id));
+		return Episode::model()->getCurrentEpisodeByFirm($this->id, $firm, true);
 	}
 
 	/**
@@ -1006,7 +994,11 @@ class Patient extends BaseActiveRecord
 	{
 		$episode = new Episode;
 		$episode->patient_id = $this->id;
-		$episode->firm_id = $firm->id;
+		if ($firm->getSubspecialtyID()) {
+			$episode->firm_id = $firm->id;
+		} else {
+			$episode->support_services = true;
+		}
 		$episode->start_date = date("Y-m-d H:i:s");
 
 		if (!$episode->save()) {

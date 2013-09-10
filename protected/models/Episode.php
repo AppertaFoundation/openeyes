@@ -206,8 +206,8 @@ class Episode extends BaseActiveRecord
 	}
 
 	/**
-	* get the current episode for the given firm, based on the firm subspecialty - if firm has no 
-	* subspecialty, will look for episode with no subspecialty (i.e. a support services episode)
+	* get the current episode for the given firm, based on the firm subspecialty - if firm has no
+	* subspecialty, will return a support services episode
 	*
 	* wrapper for getCurrentEpisodeBySubspecialtyId($patient_id, $subspecialty_id, $include_closed)
 	*/
@@ -239,18 +239,17 @@ class Episode extends BaseActiveRecord
 			$episode = Yii::app()->db->createCommand()
 				->select('e.id AS eid')
 				->from('episode e')
-				->join('firm f', 'e.firm_id = f.id')
-				->where('e.deleted = False AND e.legacy = False '.$where.' AND e.patient_id = :patient_id AND f.service_subspecialty_assignment_id is NULL', array(
+				->where('e.deleted = False AND e.legacy = False AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id', array(
 					':patient_id' => $patient_id
 				))
 				->queryRow();
 		}
 
 		if (!$episode['eid']) {
-			// There is an open episode and it has a referral, no action required
+			// No episode found
 			return null;
 		}
-
+		// return the episode object
 		return Episode::model()->findByPk($episode['eid']);
 	}
 
@@ -272,10 +271,10 @@ class Episode extends BaseActiveRecord
 		$criteria->order = 'created_date desc';
 		return Event::model()->findAll($criteria);
 	}
-	
+
 	/**
 	 * get the latest event for this episode
-	 * 
+	 *
 	 * @return Event
 	 */
 	public function getLatestEvent()
@@ -285,30 +284,55 @@ class Episode extends BaseActiveRecord
 		$criteria->params = array(':eid' => $this->id);
 		$criteria->order = "t.created_date DESC";
 		$criteria->limit = 1;
-	
+
 		return Event::model()->with('episode')->find($criteria);
-	
+
 	}
-	
+
 	/**
 	 * get the subspecialty for this episode
-	 * 
+	 *
 	 * @return Subspecialty
 	 */
 	public function getSubspecialty()
 	{
-		$criteria = new CdbCriteria;
-		$criteria->distinct = true;
-		$criteria->addCondition('t.id = serviceSubspecialtyAssignment.subspecialty_id');
-		$criteria->addCondition('serviceSubspecialtyAssignment.id = firms.service_subspecialty_assignment_id');
-		$criteria->addCondition('firms.id = :fid');
-		
-		$criteria->params = array(':fid' => $this->firm_id);
-		
-		return Subspecialty::model()->with('serviceSubspecialtyAssignment', 'serviceSubspecialtyAssignment.firms')->find($criteria);
-		
+		if ($this->firm_id) {
+			$criteria = new CdbCriteria;
+
+			$criteria->distinct = true;
+			$criteria->addCondition('t.id = serviceSubspecialtyAssignment.subspecialty_id');
+			$criteria->addCondition('serviceSubspecialtyAssignment.id = firms.service_subspecialty_assignment_id');
+			$criteria->addCondition('firms.id = :fid');
+
+			$criteria->params = array(':fid' => $this->firm_id);
+
+			return Subspecialty::model()->with('serviceSubspecialtyAssignment', 'serviceSubspecialtyAssignment.firms')->find($criteria);
+		}
+		// no subspecialty for episodes without firms
+		return null;
+
 	}
-	
+
+	/**
+	 * get the subspecialty text for the episode
+	 *
+	 * @return string
+	 */
+	public function getSubspecialtyText()
+	{
+		if ($subspecialty = $this->getSubspecialty()) {
+			return $subspecialty->name;
+		}
+		else {
+			if ($this->support_services) {
+				return "Support Services";
+			}
+			else if ($this->legacy) {
+				return "Legacy";
+			}
+		}
+	}
+
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
 		$previous = Episode::model()->findByPk($this->id);
@@ -368,7 +392,7 @@ class Episode extends BaseActiveRecord
 			}
 		}
 	}
-	
+
 	protected function afterSave()
 	{
 		foreach (SecondaryDiagnosis::model()->findAll('patient_id=? and disorder_id=?',array($this->patient_id,$this->disorder_id)) as $sd) {

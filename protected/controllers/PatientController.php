@@ -116,6 +116,7 @@ class PatientController extends BaseController
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 
 		$legacyepisodes = $this->patient->legacyepisodes;
+		// NOTE that this is not being used in the render
 		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		$this->layout = '//layouts/patientMode/main';
@@ -142,7 +143,15 @@ class PatientController extends BaseController
 		);
 
 		$this->render('view', array(
-			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed, 'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']), 'supportserviceepisodes' => $supportserviceepisodes,
+			'tab' => $tabId,
+			'event' => $eventId,
+			'episodes' => $episodes,
+			'ordered_episodes' => $ordered_episodes,
+			'legacyepisodes' => $legacyepisodes,
+			'episodes_open' => $episodes_open,
+			'episodes_closed' => $episodes_closed,
+			'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
+			'supportserviceepisodes' => $supportserviceepisodes,
 		));
 	}
 
