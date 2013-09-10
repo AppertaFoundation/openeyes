@@ -15,9 +15,11 @@ class AddingNewEvent extends Page
         'expandGlaucomaEpisode' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Glaucoma')]"),
         'expandRefractiveEpisode' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Refractive')]"),
         'expandMedicalRetinalEpisode' => array ('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Medical Retinal')]"),
+        'expandSupportFirm' => array('xpath' => "//*[@class='episode closed clearfix']//*[contains(text(),'Support Services')]"),
         'addNewCataractEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=4]"),
         'addNewGlaucomaEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=7]"),
         'addNewMedicalRetinalEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=8]"),
+        'addNewSupportFirmEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id='']"),
         'anaestheticSatisfaction' => array ('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Anaesthetic Satisfaction Audit')]"),
         'consentForm' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Consent form')]"),
         'correspondence' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Correspondence')]"),
@@ -65,6 +67,15 @@ class AddingNewEvent extends Page
         $this->getElement('expandMedicalRetinalEpisode' )->click();
         $this->getSession()->wait(5000, '$.active ==0');
         $this->getElement('addNewMedicalRetinalEventButton')->click();
+        $this->getSession()->wait(5000, '$.active ==0');
+    }
+
+    public function expandSupportFirm ()
+    {
+        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getElement('expandSupportFirm')->click();
+        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getElement('addNewSupportFirmEventButton')->click();
         $this->getSession()->wait(5000, '$.active ==0');
     }
 

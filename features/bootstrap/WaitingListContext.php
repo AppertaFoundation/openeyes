@@ -157,6 +157,9 @@ class WaitingListContext extends PageObjectContext
      */
     public function iPressConfirmSlot()
     {
+        /**
+         * @var OperationBooking $operationBooking
+         */
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->confirmSlot();
     }
@@ -166,6 +169,9 @@ class WaitingListContext extends PageObjectContext
      */
     public function iShouldSee($text)
     {
+        /**
+         * @var OperationBooking $operationBooking
+         */
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->hasContent($text);
     }

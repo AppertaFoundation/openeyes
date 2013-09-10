@@ -31,7 +31,7 @@ Feature: Environment Setup on clean database
     And I select Add Episode from the sidebar
     Then I expand the Medical Retinal sidebar
 
-    And I add a New Event "<EventType>"
+    And I add a New Event "Therapy"
 
   Scenario: Environment Setup Cataract
 
@@ -46,5 +46,20 @@ Feature: Environment Setup on clean database
     And I select Add Episode from the sidebar
     Then I expand the Cataract sidebar
     And I add a New Event "Therapy"
+
+
+  Scenario: Environment Setup Support Firm
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "5"
+
+    Then I search for hospital number "1009465"
+
+    Then I select Create or View Episodes and Events
+    And I select Add Episode from the sidebar
+    Then I expand the Support Firm sidebar
+    And I add a New Event "Consent"
 
 
