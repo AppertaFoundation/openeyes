@@ -415,14 +415,8 @@ class BaseEventTypeController extends BaseController
 			if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 				$this->editable = false;
 			} else {
-				if ($this->firm->serviceSubspecialtyAssignment) {
-					if ($this->event->episode->firm && $this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-						$this->editable = false;
-					}
-				} else {
-					if ($this->event->episode->firm !== null) {
-						$this->editable = false;
-					}
+				if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
+					$this->editable = false;
 				}
 			}
 		}

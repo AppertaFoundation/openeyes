@@ -334,7 +334,7 @@ class Episode extends BaseActiveRecord
 		if ($ss = $this->getSubspecialty()) {
 			return $ss->id;
 		}
-		
+
 		return null;
 	}
 
