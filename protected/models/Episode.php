@@ -296,21 +296,12 @@ class Episode extends BaseActiveRecord
 	 */
 	public function getSubspecialty()
 	{
-		if ($this->firm_id) {
-			$criteria = new CdbCriteria;
-
-			$criteria->distinct = true;
-			$criteria->addCondition('t.id = serviceSubspecialtyAssignment.subspecialty_id');
-			$criteria->addCondition('serviceSubspecialtyAssignment.id = firms.service_subspecialty_assignment_id');
-			$criteria->addCondition('firms.id = :fid');
-
-			$criteria->params = array(':fid' => $this->firm_id);
-
-			return Subspecialty::model()->with('serviceSubspecialtyAssignment', 'serviceSubspecialtyAssignment.firms')->find($criteria);
+		if ($firm = $this->firm) {
+			return $firm->getSubspecialty();
 		}
+
 		// no subspecialty for episodes without firms
 		return null;
-
 	}
 
 	/**
@@ -331,6 +322,20 @@ class Episode extends BaseActiveRecord
 				return "Legacy";
 			}
 		}
+	}
+
+	/**
+	 * get the subspecialty id for this episode
+	 *
+	 * @return int|null
+	 */
+	public function getSubspecialtyID()
+	{
+		if ($ss = $this->getSubspecialty()) {
+			return $ss->id;
+		}
+		
+		return null;
 	}
 
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)

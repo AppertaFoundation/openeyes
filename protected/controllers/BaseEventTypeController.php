@@ -481,8 +481,8 @@ class BaseEventTypeController extends BaseController
 
 		// Check the user's firm is of the correct subspecialty to have the
 		// rights to update this event
-		if ($this->firm->getSubspecialtyID() != $this->event->episode->firm->getSubspecialtyID()) {
-			//The firm you are using is not associated with the subspecialty
+		if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
+			//The firm you are using is not associated with the subspecialty of the episode
 			$this->redirectToPatientEpisodes();
 		}
 
