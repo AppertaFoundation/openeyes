@@ -1,11 +1,14 @@
 .edit {
+	.optional-elements-header {
+		@extend .element-header;
+		background: #dae6f1;
+	}
+	.optional-elements-title {
+		@extend .element-title;
+		padding: 6px 10px;
+	}
 	.optional-elements {
 		@extend .element;
-		h3 {
-			@extend .element-title;
-			padding: 6px 10px;
-			background: #dae6f1;
-		}
 	}
 	.optional-elements-actions {
 		@extend .element-actions;

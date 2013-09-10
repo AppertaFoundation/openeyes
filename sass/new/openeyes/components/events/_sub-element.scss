@@ -18,12 +18,15 @@
 		margin-bottom: 0;
 	}
 	.sub-element-title {
-		background: #fafafa;
 		font-style: normal;
 		color: #666;
 		font-size: $default-font-size;
 		padding: emCalc(6px) emCalc(10px);
 		margin: 0;
+		float: left;
+	}
+	.element-eye {
+		border-top: 1px solid #fafafa;
 	}
 }
 
@@ -42,8 +45,13 @@
 	}
 	.sub-element-fields {
 		@extend .element-data;
-		.field-row:last-child {
+		> .field-row:last-child {
 			padding: 0;
+		}
+		.element-eye {
+			> .field-row:last-child {
+				padding: 0;
+			}
 		}
 	}
 }

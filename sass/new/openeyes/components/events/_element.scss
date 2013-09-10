@@ -39,6 +39,7 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 	font-size: $oe-element-title-font-size;
 	padding: $oe-element-title-padding;
 	margin: $oe-element-title-margin;
+	float: left;
 }
 
 .element-data {
@@ -56,6 +57,11 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 	}
 	&.left-eye, &.right-eye {
 		@extend .large-6;
+	}
+	.column {
+		.field-row:last-child {
+			padding: 0;
+		}
 	}
 }
 
@@ -122,6 +128,9 @@ $oe-element-edit-title-font-style: italic;
 		textarea {
 			min-height: 1em;
 		}
+		.field-row {
+			padding-bottom: .8em;
+		}
 	}
 	.element-title {
 		font-style: $oe-element-edit-title-font-style;
@@ -159,6 +168,7 @@ $oe-element-edit-title-font-style: italic;
 	}
 	.element-header {
 		@extend .clearfix;
+		background: #fafafa;
 	}
 	.element-actions {
 		float: right;

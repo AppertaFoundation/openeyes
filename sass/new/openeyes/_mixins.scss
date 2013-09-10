@@ -6,19 +6,12 @@
 
 // Hide text off-screen without affecting container position.
 @mixin hide-text {
-	background-color: transparent;
-	border: 0;
-	color: transparent;
-	font: 0/0 a;
-	text-shadow: none;
+	@extend %hide-text;
 }
 
 // Hide-text off-screen by changing the container position.
 @mixin hide-text-absolutely {
-	left: -9999px;
-	overflow: hidden;
-	position: absolute;
-	top: -9999px;
+	@extend %hide-text-absolutely;
 }
 
 // Sprite mixin for generating sprites and associated classes.

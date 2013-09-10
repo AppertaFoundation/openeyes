@@ -4,7 +4,22 @@
 
 %element-panel {
 	@extend %clearfix;
-	padding: 10px;
+	padding: emCalc(12px);
 	margin: 0;
 	background: #dae6f1;
+}
+
+%hide-text {
+	background-color: transparent;
+	border: 0;
+	color: transparent;
+	font: 0/0 a;
+	text-shadow: none;
+}
+
+%hide-text-absolutely {
+	left: -9999px;
+	overflow: hidden;
+	position: absolute;
+	top: -9999px;
 }
