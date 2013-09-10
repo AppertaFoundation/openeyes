@@ -115,9 +115,7 @@ class ContactLabel extends BaseActiveRecord
 
 		if (!empty(Yii::app()->params['contact_labels'])) {
 			foreach (Yii::app()->params['contact_labels'] as $label) {
-				if ($label == 'Staff') {
-					$list['staff'] = 'Staff';
-				} elseif (preg_match('/{SPECIALTY}/',$label)) {
+				if (preg_match('/{SPECIALTY}/',$label)) {
 					if (!$specialty = Specialty::model()->find('code=?',array(Yii::app()->params['institution_specialty']))) {
 						throw new Exception("Institution specialty not configured");
 					}

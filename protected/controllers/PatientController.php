@@ -1300,6 +1300,9 @@ class PatientController extends BaseController
 					throw new Exception("Institution not found: ".@$_POST['institution_id']);
 				}
 			}
+			if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+				throw new Exception("patient required for contact assignment");
+			}
 
 			// Attempt to de-dupe by looking for an existing record that matches the user's input
 			$criteria = new CDbCriteria;
