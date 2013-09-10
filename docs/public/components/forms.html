@@ -45,7 +45,12 @@
 							<li><a href="#overview">Overview</a></li>
 							<li><a href="#basic-forms">Basic forms</a></li>
 							<li><a href="#form-layouts">Form layouts</a></li>
-							<li><a href="#">Default fields</a></li>
+							<li>
+								<a href="#">Default fields</a>
+								<ul>
+									<li><a href="#">Text input</a></li>
+								</ul>
+							</li>
 							<li><a href="#">Custom fields</a></li>
 							<li><a href="#">Field definitions</a></li>
 						</ul>
@@ -293,7 +298,6 @@
 									</div>
 								</div>
 
-
 								<h3>Forms in tables</h3>
 
 								<div class="row">
@@ -369,24 +373,152 @@
 									</div>
 								</div>
 							</div>
+						</div>
 
-								<h3>Element form layouts</h3>
-								<p>Element forms should follow the basic form layouts, although requirements of
-								the fields often dictate that the forms should take on custom layouts.</p>
+						<hr />
 
-								<div class="row">
-									<div class="large-6 column">
+						<!-- Form fields -->
+						<div class="row">
+							<div class="large-12 column">
+								<h2 id="fields">Form fields</h2>
+								<p>For the application to have consistent forms, it's important
+								that developers understand the purpose of the different form fields and when
+								to use them.</p>
 
-										<form class="example">
-
-											<header>
-												<h3 class="form-title">Vertical layout</h3>
-											</header>
-										</form>
+								<div class="example">
+									<h3>Text input</h3>
+									<p>A single-line text input control.</p>
+									<h4>When to use:</h4>
+									<p>When asking the user to input a small, single line of text.</p>
+									<h4>Example:</h4>
+									<div class="field-row row">
+										<div class="large-4 column end">
+											<input type="text" />
+										</div>
 									</div>
 								</div>
+
+								<div class="example">
+									<h3>Password input</h3>
+									<p>A single-line text input control that masks the input text.</p>
+									<h4>When to use:</h4>
+									<p>When asking the user to input a password.</p>
+									<h4>Example:</h4>
+									<div class="field-row row">
+										<div class="large-4 column end">
+											<input type="password" />
+										</div>
+									</div>
+								</div>
+
+								<div class="example">
+									<h3>Select dropdown</h3>
+									<p>Provides a menu of choices.</p>
+									<h4>When to use:</h4>
+									<p>When asking the user to select exactly one option from a list
+											of options.</p>
+									<h4>Example:</h4>
+									<div class="field-row row">
+										<div class="large-4 column end">
+											<select>
+												<option selected>Option 1</option>
+												<option>Option 2</option>
+											</select>
+										</div>
+									</div>
+									<h4>Validation:</h4>
+									<p>The select dropdown can have a valid option pre-selected (as demonstrated above), but if you
+									require the user to make a conscious choice, then add an option at
+									the top of the list with text "-- Select --" with a null value, for example:</p>
+									<div class="field-row row">
+										<div class="large-4 column end">
+											<select>
+												<option value="" selected>-- Select --</option>
+												<option>Option 2</option>
+											</select>
+										</div>
+									</div>
+								</div>
+
+								<div class="example">
+									<h3>Radio input</h3>
+									<p>Provides a menu of choices.</p>
+									<h4>When to use:</h4>
+									<p>When asking the user to select exactly one option from a list
+											of options.</p>
+									<h4>Example:</h4>
+									<div class="field-row row">
+										<div class="large-4 column end">
+											<select>
+												<option selected>Option 1</option>
+												<option>Option 2</option>
+											</select>
+										</div>
+									</div>
+									<h4>Validation:</h4>
+									<p>The select dropdown can have a valid option pre-selected (as demonstrated above), but if you
+									require the user to make a conscious choice, then add an option at
+									the top of the list with text "Please select..." with a null value, for example:</p>
+									<div class="field-row row">
+										<div class="large-4 column end">
+											<select>
+												<option value="" selected>Please select...</option>
+												<option>Option 2</option>
+											</select>
+										</div>
+									</div>
+								</div>
+
+								<table class="">
+									<thead>
+										<tr>
+											<td>Field name</td>
+											<td>Markup</td>
+											<td>Definition</td>
+											<td>When to use</td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>Text input</td>
+											<td><input type="text" /></td>
+											<td></td>
+											<td>When ask the user for a small amount of text.</td>
+										</tr>
+										<tr>
+											<td>Password input</td>
+											<td><input type="text" /></td>
+											<td>A single-line text input control that masks the input text
+											with asterisks.</td>
+											<td>When asking the user for a password.</td>
+										</tr>
+										<tr>
+											<td>Select dropdown</td>
+											<td></td>
+											<td>Provides a menu of choices.</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>Radio groups</td>
+											<td>
+												<fieldset>
+													<legend>Available options</legend>
+													<label>
+														<input type="radio" name="fields-radio-1" /> Option 1
+													</label>
+													<label>
+														<input type="radio" name="fields-radio-1" /> Option 2
+													</label>
+												</fieldset>
+											</td>
+											<td>A single-line text input control.</td>
+											<td>When ask the user for a small amount of text.</td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 						</div>
+
 					</div>
 				</div>
 			</div>
