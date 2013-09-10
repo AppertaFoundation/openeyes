@@ -8,6 +8,7 @@ pre {
 }
 pre.prettyprint {
 	border-color: #ddd;
+	padding: 2px 5px;
 }
 code {
 	font-size: 12px;
