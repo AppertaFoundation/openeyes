@@ -308,7 +308,7 @@ $(document).ready(function() {
 		if ($('#add_contact').is(':hidden')) {
 			$('#add_contact').slideToggle('fast');
 			$('#contact_label_id').val($('#contactfilter').val());
-			if ($('#contactfilter').val() == 'nonophthalmic') {
+			if ($('#contactfilter').val() == 'nonspecialty') {
 				$('div.contactLabel').show();
 			} else {
 				$('div.contactLabel').hide();

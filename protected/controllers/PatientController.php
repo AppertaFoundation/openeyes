@@ -1235,7 +1235,7 @@ class PatientController extends BaseController
 			}
 		}
 
-		if (@$_POST['contact_label_id'] == 'nonophthalmic' && !@$_POST['label_id']) {
+		if (@$_POST['contact_label_id'] == 'nonspecialty' && !@$_POST['label_id']) {
 			$errors['label_id'] = 'Please select a label';
 		}
 
@@ -1332,7 +1332,7 @@ class PatientController extends BaseController
 			$contact = new Contact;
 			$contact->attributes = $_POST;
 
-			if (@$_POST['contact_label_id'] == 'nonophthalmic') {
+			if (@$_POST['contact_label_id'] == 'nonspecialty') {
 				if (!$label = ContactLabel::model()->findByPk(@$_POST['label_id'])) {
 					throw new Exception("Contact label not found: ".@$_POST['label_id']);
 				}
