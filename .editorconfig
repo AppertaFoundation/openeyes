@@ -1,0 +1,27 @@
+# editorconfig.org
+
+# Top-most EditorConfig file
+root = true
+
+# Global
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = false
+
+[*.php]
+indent_style = tab
+
+[*.js]
+indent_style = tab
+
+[*.css]
+indent_style = tab
+
+[*.html]
+indent_style = tab
+
+[node_modules/**.js]
+indent_style = space
+indent_size = 2
