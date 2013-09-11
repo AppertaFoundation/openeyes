@@ -172,7 +172,8 @@ $oe-form-input-radius: 3px !default;
 label {
 	&.highlight {
 		background: #e3f0f2;
-		padding: 4px 12px 5px 8px;
+		padding: emCalc(5px) emCalc(14px) emCalc(6px) emCalc(10px);
+		margin-bottom: emCalc(6px);
 		@include border-radius(3px);
 		&:hover {
 			background: #fff;

@@ -172,7 +172,7 @@
 							</a>
 						</div>
 					</header>
-					<div class="element-fields element-eyes">
+					<div class="element-fields element-eyes row">
 						<div class="element-eye right-eye column">
 							<a href="#" class="icon-remove-side">Remove side</a>
 							<div class="eyedraw-data row">
@@ -243,8 +243,8 @@
 						</div>
 					</header>
 
-					<div class="element-fields element-eyes">
-						<div class="element-eye column right-eye">
+					<div class="element-fields element-eyes row">
+						<div class="element-eye right-eye column">
 							<a href="#" class="icon-remove-side">Remove side</a>
 							<table class="blank">
 								<thead>
@@ -340,7 +340,7 @@
 								<textarea rows="1"></textarea>
 							</div>
 						</div>
-						<div class="element-eye column left-eye">
+						<div class="element-eye left-eye column">
 							<a href="#" class="icon-remove-side">Remove side</a>
 							<div class="element-label">Not recorded</div>
 							<div class="field-row">
@@ -365,7 +365,7 @@
 							</a>
 						</div>
 					</header>
-					<div class="element-fields element-eyes">
+					<div class="element-fields element-eyes row">
 						<div class="element-eye right-eye column">
 							<div class="field-row">
 								<select>
@@ -405,7 +405,7 @@
 							</a>
 						</div>
 					</header>
-					<div class="element-fields element-eyes">
+					<div class="element-fields element-eyes row">
 						<div class="element-eye right-eye column">
 							<a href="#" class="icon-remove-side">Remove side</a>
 							<div class="field-row">
@@ -820,7 +820,7 @@
 									</div>
 								</fieldset>
 							</div>
-							<div class="sub-element-fields element-eyes">
+							<div class="sub-element-fields element-eyes row">
 								<div class="element-eye right-eye column">
 									<a href="#" class="icon-remove-side">Remove side</a>
 									<div class="row field-row">
