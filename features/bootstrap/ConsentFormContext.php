@@ -18,6 +18,17 @@ class ConsentFormContext extends PageObjectContext
 
     }
 
+    /**
+     * @Then /^I select Unbooked Procedures$/
+     */
+    public function iSelectUnbookedProcedures()
+    {
+        /**
+         * @var ConsentForm $consentForm
+         */
+        $consentForm = $this->getPage('ConsentForm');
+        $consentForm->unbookedProcedure();
+    }
 
     /**
      * @Then /^I select Add Consent Form$/
@@ -34,56 +45,74 @@ class ConsentFormContext extends PageObjectContext
     /**
      * @Given /^I choose Type "([^"]*)"$/
      */
-    public function iChooseType($arg1)
+    public function iChooseType($type)
     {
         /**
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->chooseType($type);
     }
 
     /**
      * @Then /^I choose Procedure eye of "([^"]*)"$/
      */
-    public function iChooseProcedureEyeOf($arg1)
+    public function iChooseProcedureEyeOf($eye)
     {
         /**
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->procedureEye($eye);
     }
 
     /**
-     * @Given /^I choose an Anaesthetic type of "([^"]*)"$/
+     * @Given /^I choose a Procedure of "([^"]*)"$/
      */
-    public function iChooseAnAnaestheticTypeOf($arg1)
+    public function iChooseAProcedureOf($type)
     {
         /**
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->procedureType($type);
+    }
+
+
+    /**
+     * @Given /^I choose an Anaesthetic type of LA$/
+     */
+    public function iChooseAnAnaestheticTypeOf()
+    {
+        /**
+         * @var ConsentForm $consentForm
+         */
+        $consentForm = $this->getPage('ConsentForm');
+        $consentForm->anaestheticTypeLA();
     }
 
     /**
      * @Given /^I add a common procedure of "([^"]*)"$/
      */
-    public function iAddACommonProcedureOf($arg1)
+    public function iAddACommonProcedureOf($common)
     {
         /**
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->commonProcedure($common);
     }
 
     /**
-     * @Then /^I choose Permissions for images "([^"]*)"$/
+     * @Then /^I choose Permissions for images No$/
      */
-    public function iChoosePermissionsForImages($arg1)
+    public function iChoosePermissionsForImages($images)
     {
         /**
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->permissionImages();
     }
 
     /**
@@ -95,6 +124,7 @@ class ConsentFormContext extends PageObjectContext
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->informationLeaflet();
     }
 
     /**
@@ -106,6 +136,7 @@ class ConsentFormContext extends PageObjectContext
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->anaestheticLeaflet();
     }
 
     /**
@@ -117,17 +148,19 @@ class ConsentFormContext extends PageObjectContext
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->witnessRequired();
     }
 
     /**
      * @Given /^I enter a Witness Name of "([^"]*)"$/
      */
-    public function iEnterAWitnessNameOf($arg1)
+    public function iEnterAWitnessNameOf($witness)
     {
         /**
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->witnessName($witness);
     }
 
     /**
@@ -139,17 +172,19 @@ class ConsentFormContext extends PageObjectContext
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->interpreterRequired();
     }
 
     /**
      * @Given /^I enter a Interpreter name of "([^"]*)"$/
      */
-    public function iEnterAInterpreterNameOf($arg1)
+    public function iEnterAInterpreterNameOf($name)
     {
         /**
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->interpreterName($name);
     }
 
     /**
@@ -161,6 +196,7 @@ class ConsentFormContext extends PageObjectContext
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->supplementaryConsent();
     }
 
     /**
@@ -172,6 +208,7 @@ class ConsentFormContext extends PageObjectContext
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
+        $consentForm->saveConsentForm();
     }
 
 

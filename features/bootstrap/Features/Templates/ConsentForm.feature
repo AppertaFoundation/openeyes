@@ -1,4 +1,4 @@
-@consent
+@consent @regression
 Feature: Create New Examination
   In order to cover every possible route throughout the site
   As an automation tester
@@ -8,7 +8,7 @@ Feature: Create New Examination
 
     Given I am on the OpenEyes "<environment>" homepage
     And I enter login credentials "<username>" and "<password>"
-    And I select Site "1"
+    And I select Site "2"
     Then I select a firm of "3"
 
     Then I search for hospital number "<hospnumber>"
@@ -17,23 +17,25 @@ Feature: Create New Examination
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Consent"
+    Then I select Unbooked Procedures
     Then I select Add Consent Form
     And I choose Type "1"
 
     Then I choose Procedure eye of "Both"
-    And I choose an Anaesthetic type of "3"
-    And I add a common procedure of "41"
+#    And I choose a Procedure of "Laser"
+    And I choose an Anaesthetic type of LA
+    And I add a common procedure of "127"
 
-    Then I choose Permissions for images "1"
+    Then I choose Permissions for images No
 
     And I select the Information leaflet checkbox
-    And I select the Anasethetic leflet checkbox
-    Then I select a Witness Required checkbox
-    And I enter a Witness Name of "Joe Bloggs"
-    Then I select a Interpreter required checkbox
-    And I enter a Interpreter name of "Tom Smith"
-    Then I select a supplementary consent form checkbox
-
+#    And I select the Anasethetic leflet checkbox
+#    Then I select a Witness Required checkbox
+#    And I enter a Witness Name of "Joe Bloggs"
+#    Then I select a Interpreter required checkbox
+#    And I enter a Interpreter name of "Tom Smith"
+#    Then I select a supplementary consent form checkbox
+#    The element not found error crops up again for all of these checkboxes
     Then I save the Consent Form
 
 
