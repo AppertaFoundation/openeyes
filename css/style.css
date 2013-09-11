@@ -1666,6 +1666,7 @@ div.contactLocations { margin-top: 2em; }
 #add_contact div { height: 28px; }
 #add_contact .label { display: inline-block; width: 8em; }
 #add_contact .data { display: inline-block; }
+#add_contact select {width: 250px;}
 
 #edit_contact { margin-top: 1em; }
 #edit_contact div { height: 28px; }
