@@ -1562,7 +1562,9 @@ class PatientController extends BaseController
 
 		if (!empty($_POST['firm_id'])) {
 			$firm = Firm::model()->findByPk($_POST['firm_id']);
-			$episode = $patient->addEpisode($firm);
+			if (!$episode = $patient->getOpenEpisodeOfSubspecialty($firm->getSubspecialtyID())) {
+				$episode = $patient->addEpisode($firm);
+			}
 
 			$this->redirect(array('/patient/episode/'.$episode->id));
 		}

@@ -53,6 +53,7 @@ $form = $this->beginWidget('CActiveForm', array(
 <?php $this->endWidget()?>
 <script type="text/javascript">
 	$('#add-new-episode-dialog button.confirm').click(function(e) {
+		disableButtons();
 		$('#add-new-episode-form').submit();
 		e.preventDefault();
 	});

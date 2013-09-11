@@ -57,7 +57,7 @@ class SiteAndFirmWidget extends CWidget
 				$firm = Firm::model()->findByPk($model->firm_id);
 				$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 
-				if ($this->patient && $episode = $this->patient->hasOpenEpisodeOfSubspecialty($subspecialty_id)) {
+				if ($this->patient && $episode = $this->patient->getOpenEpisodeOfSubspecialty($subspecialty_id)) {
 					Yii::app()->session['episode_hide_status'] = array(
 						$episode->id => 1,
 					);

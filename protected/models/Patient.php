@@ -985,9 +985,26 @@ class Patient extends BaseActiveRecord
 		$this->updateMedication(new Medication, $params);
 	}
 
-	public function hasOpenEpisodeOfSubspecialty($subspecialty_id)
+	/**
+	 * return the open episode of the given subspecialty if there is one, null otherwise
+	 *
+	 * @param $subspecialty_id
+	 * @return CActiveRecord|null
+	 */
+	public function getOpenEpisodeOfSubspecialty($subspecialty_id)
 	{
 		return Episode::model()->getCurrentEpisodeBySubspecialtyId($this->id, $subspecialty_id);
+	}
+
+	/**
+	 * returns true if patient has an open episode for the given subspecialty id
+	 *
+	 * @param $subspecialty_id
+	 * @return boolean
+	 */
+	public function hasOpenEpisodeOfSubspecialty($subspecialty_id)
+	{
+		return  $this->getOpenEpisodeOfSubspecialty($subspecialty_id) ? true : false;
 	}
 
 	public function addEpisode($firm)
