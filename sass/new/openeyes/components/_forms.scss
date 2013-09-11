@@ -88,16 +88,18 @@ small.error {
 	&.align {
 		padding-top: emCalc(6px);
 	}
-	.unit, &.unit {
-		font-size: $default-font-size;
-	}
 }
 
 /* Field helpers */
 .field-info {
 	font-size: $default-font-size;
 	display: inline-block;
-	margin-left: emCalc(6px);
+}
+
+/* Field highlight */
+.field-highlight {
+	@extend .pill;
+	display: block;
 }
 
 // Common forms

@@ -6,7 +6,7 @@
 		margin-left: 10px;
 	}
 	.remove-one {
-		@include opacity(.5);
+		@include opacity(0.5);
 		@extend %hide-text;
 		background: image-url("_elements/icons/event-optional/element-remove.png") no-repeat -10px -2px;
 		display: inline-block;
@@ -19,7 +19,13 @@
 			@include opacity(1);
 		}
 	}
-	.multi-select-pill {
+}
+
+.multi-select-selections {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	li {
 		@extend .pill;
 		background: #ffe;
 		margin-bottom: 0;
@@ -31,15 +37,6 @@
 		}
 		&:last-child {
 			margin-right: 0;
-		}
-	}
-	.multi-select-selections {
-		margin: 0;
-		padding: 0;
-		list-style-type: none;
-		li {
-			@extend .multi-select-pill;
-			display: inline-block;
 		}
 	}
 }

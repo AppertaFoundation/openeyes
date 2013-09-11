@@ -979,7 +979,7 @@
 							<div class="sub-element-fields">
 								<div class="field-row row collapse">
 									<div class="large-2 column">
-										<div class="pill moderate risk">
+										<div class="field-highlight moderate risk">
 											<select class="full-width">
 												<option>-- Select --</option>
 												<option selected>Moderate</option>
@@ -1047,7 +1047,7 @@
 													<input type="text" />
 												</div>
 												<div class="large-9 column">
-													<div class="postfix unit align">
+													<div class="postfix field-info align">
 											 			µm
 											 		</div>
 												</div>
@@ -1064,7 +1064,7 @@
 													<input type="text" />
 												</div>
 												<div class="large-9 column">
-													<div class="postfix unit align">
+													<div class="postfix field-info align">
 											 			µm
 											 		</div>
 												</div>
@@ -1092,7 +1092,7 @@
 													<input type="text" />
 												</div>
 												<div class="large-9 column">
-													<div class="postfix unit align">
+													<div class="postfix field-info align">
 											 			µm
 											 		</div>
 												</div>
@@ -1109,7 +1109,7 @@
 													<input type="text" />
 												</div>
 												<div class="large-9 column">
-													<div class="postfix unit align">
+													<div class="postfix field-info align">
 											 			µm
 											 		</div>
 												</div>

@@ -66,7 +66,8 @@
 							<li>
 								<a href="#custom-fields">Custom fields</a>
 								<ul>
-									<li><a href="#multiselect-example">Custom multi-select</a></li>
+									<li><a href="#multiselect-example">Multi-select</a></li>
+									<li><a href="#highlight-example">Highlight</a></li>
 								</ul>
 							</li>
 						</ul>
@@ -151,7 +152,7 @@
 												<textarea id="input-textarea-1"></textarea>
 											</div>
 
-											<!-- Small text input with postfix unit -->
+											<!-- Small text input with postfix field info -->
 											<div class="field-row">
 												<label for="input-text-postfix-1">Small text input with postfix label</label>
 												<div class="row collapse">
@@ -159,7 +160,7 @@
 														<input type="text" id="input-text-postfix-1" />
 													</div>
 													<div class="large-6 column">
-														<div class="postfix unit align">
+														<div class="postfix field-info align">
 															Postfix label
 														</div>
 													</div>
@@ -268,7 +269,7 @@
 												</div>
 											</div>
 
-											<!-- Small text input with postfix unit -->
+											<!-- Small text input with postfix field-info -->
 											<div class="row field-row">
 												<div class="large-4 column">
 													<label for="input-text-postfix-1">Small text input with postfix label</label>
@@ -279,7 +280,7 @@
 															<input type="text" id="input-text-postfix-1" />
 														</div>
 														<div class="large-6 column">
-															<div class="postfix unit align">
+															<div class="postfix field-info align">
 																Postfix label
 															</div>
 														</div>
@@ -732,6 +733,59 @@
 											</div>
 										</div>
 									</div>
+
+								</div>
+
+								<!-- Highlighted field -->
+
+								<div class="example" id="highlight-example">
+
+									<header>
+										<h3>Highglight</h3>
+									</header>
+
+									<p>A highlighted field may be used to show validation errors or
+									to show different levels of importanance.</p>
+									<h4>Example:</h4>
+									<div class="field-row row">
+										<div class="large-4 column end show-markup">
+
+											<!-- High importance -->
+											<div class="field-row">
+												<label for="input-text-highlight">
+													High importance
+												</label>
+												<div class="field-highlight high">
+													<input type="text" id="input-text-highlight" />
+												</div>
+											</div>
+
+											<!-- Moderate importance -->
+											<div class="field-row">
+												<label for="input-text-highlight">
+													Moderate importance
+												</label>
+												<div class="field-highlight moderate">
+													<input type="text" id="input-text-highlight" />
+												</div>
+											</div>
+
+											<!-- Low importance -->
+											<div class="field-row">
+												<label for="select-1">
+													Low importance
+												</label>
+												<div class="field-highlight low">
+													<select id="select-1">
+														<option>Please select...</option>
+														<option>Option 1</option>
+														<option>Option 2</option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+
 
 								</div>
 							</div>

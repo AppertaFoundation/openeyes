@@ -1958,6 +1958,38 @@ table.blank td img {
   border: 0;
 }
 
+/* line 1, ../sass/new/openeyes/components/_pills.scss */
+.pill, .field-highlight, .multi-select-selections li {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 0.8125em;
+  margin: 2px;
+}
+/* line 7, ../sass/new/openeyes/components/_pills.scss */
+.pill.high, .high.field-highlight, .multi-select-selections li.high {
+  background: #f00;
+  color: #fff;
+}
+/* line 11, ../sass/new/openeyes/components/_pills.scss */
+.pill.moderate, .moderate.field-highlight, .multi-select-selections li.moderate {
+  background: #fc0;
+}
+/* line 14, ../sass/new/openeyes/components/_pills.scss */
+.pill.low, .low.field-highlight, .multi-select-selections li.low {
+  background: #9c0;
+}
+/* line 17, ../sass/new/openeyes/components/_pills.scss */
+.pill.risk, .risk.field-highlight, .multi-select-selections li.risk {
+  padding: 5px;
+  margin: 0;
+  display: block;
+}
+
 /* Standard Forms */
 /* line 2, ../sass/new/openeyes/components/_forms.scss */
 form {
@@ -2137,22 +2169,21 @@ small.error {
 .postfix.align {
   padding-top: 0.375em;
 }
-/* line 91, ../sass/new/openeyes/components/_forms.scss */
-.prefix .unit, .prefix.unit,
-.postfix .unit,
-.postfix.unit {
-  font-size: 0.8125em;
-}
 
 /* Field helpers */
-/* line 97, ../sass/new/openeyes/components/_forms.scss */
+/* line 94, ../sass/new/openeyes/components/_forms.scss */
 .field-info {
   font-size: 0.8125em;
   display: inline-block;
-  margin-left: 0.375em;
 }
 
-/* line 152, ../sass/new/openeyes/components/_forms.scss */
+/* Field highlight */
+/* line 100, ../sass/new/openeyes/components/_forms.scss */
+.field-highlight {
+  display: block;
+}
+
+/* line 154, ../sass/new/openeyes/components/_forms.scss */
 .form.panel {
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -2163,21 +2194,21 @@ small.error {
   border: 2px solid #666666;
   padding: 30px;
 }
-/* line 158, ../sass/new/openeyes/components/_forms.scss */
+/* line 160, ../sass/new/openeyes/components/_forms.scss */
 .form.login {
   margin: 50px auto 100px auto;
   max-width: 488px;
 }
-/* line 161, ../sass/new/openeyes/components/_forms.scss */
+/* line 163, ../sass/new/openeyes/components/_forms.scss */
 .form.login label {
   font-size: 0.9375em;
 }
-/* line 165, ../sass/new/openeyes/components/_forms.scss */
+/* line 167, ../sass/new/openeyes/components/_forms.scss */
 .form [type="submit"] {
   margin: 0;
 }
 
-/* line 171, ../sass/new/openeyes/components/_forms.scss */
+/* line 173, ../sass/new/openeyes/components/_forms.scss */
 label.highlight {
   background: #e3f0f2;
   padding: 4px 12px 5px 8px;
@@ -2187,11 +2218,11 @@ label.highlight {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 175, ../sass/new/openeyes/components/_forms.scss */
+/* line 177, ../sass/new/openeyes/components/_forms.scss */
 label.highlight:hover {
   background: #fff;
 }
-/* line 180, ../sass/new/openeyes/components/_forms.scss */
+/* line 182, ../sass/new/openeyes/components/_forms.scss */
 label input[type="checkbox"],
 label input[type="radio"] {
   margin: 0;
@@ -2206,21 +2237,21 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   border-radius: 3px;
   height: auto;
 }
-/* line 208, ../sass/new/openeyes/components/_forms.scss */
+/* line 210, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small, input[type="password"].small, input[type="date"].small, input[type="datetime"].small, input[type="datetime-local"].small, input[type="month"].small, input[type="week"].small, input[type="email"].small, input[type="number"].small, input[type="search"].small, input[type="tel"].small, input[type="time"].small, input[type="url"].small, textarea.small {
   padding: 0.1875em 0.25em;
 }
-/* line 210, ../sass/new/openeyes/components/_forms.scss */
+/* line 212, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small.fixed-width, input[type="password"].small.fixed-width, input[type="date"].small.fixed-width, input[type="datetime"].small.fixed-width, input[type="datetime-local"].small.fixed-width, input[type="month"].small.fixed-width, input[type="week"].small.fixed-width, input[type="email"].small.fixed-width, input[type="number"].small.fixed-width, input[type="search"].small.fixed-width, input[type="tel"].small.fixed-width, input[type="time"].small.fixed-width, input[type="url"].small.fixed-width, textarea.small.fixed-width {
   width: 6.875em;
 }
 
-/* line 218, ../sass/new/openeyes/components/_forms.scss */
+/* line 220, ../sass/new/openeyes/components/_forms.scss */
 .field-row {
   padding-bottom: 1.125em;
 }
 
-/* line 223, ../sass/new/openeyes/components/_forms.scss */
+/* line 225, ../sass/new/openeyes/components/_forms.scss */
 form .field-row:last-child, .form .field-row:last-child {
   padding: 0;
 }
@@ -3646,38 +3677,6 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   margin-bottom: 10px;
 }
 
-/* line 1, ../sass/new/openeyes/components/_pills.scss */
-.pill, .multi-select .multi-select-pill, .multi-select .multi-select-selections li {
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
-  border-radius: 5px;
-  display: inline-block;
-  padding: 3px 5px;
-  font-size: 0.8125em;
-  margin: 2px;
-}
-/* line 7, ../sass/new/openeyes/components/_pills.scss */
-.pill.high, .multi-select .high.multi-select-pill, .multi-select .multi-select-selections li.high {
-  background: #f00;
-  color: #fff;
-}
-/* line 11, ../sass/new/openeyes/components/_pills.scss */
-.pill.moderate, .multi-select .moderate.multi-select-pill, .multi-select .multi-select-selections li.moderate {
-  background: #fc0;
-}
-/* line 14, ../sass/new/openeyes/components/_pills.scss */
-.pill.low, .multi-select .low.multi-select-pill, .multi-select .multi-select-selections li.low {
-  background: #9c0;
-}
-/* line 17, ../sass/new/openeyes/components/_pills.scss */
-.pill.risk, .multi-select .risk.multi-select-pill, .multi-select .multi-select-selections li.risk {
-  padding: 5px;
-  margin: 0;
-  display: block;
-}
-
 /* line 1, ../sass/new/openeyes/components/_dialog.scss */
 .ui-widget-overlay {
   background: #666;
@@ -3791,34 +3790,31 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   opacity: 1;
 }
-/* line 22, ../sass/new/openeyes/components/_multi-select.scss */
-.multi-select .multi-select-pill, .multi-select .multi-select-selections li {
+
+/* line 24, ../sass/new/openeyes/components/_multi-select.scss */
+.multi-select-selections {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+/* line 28, ../sass/new/openeyes/components/_multi-select.scss */
+.multi-select-selections li {
   background: #ffe;
   margin-bottom: 0;
   margin-top: 0;
   padding: 4px 6px;
   position: relative;
 }
-/* line 29, ../sass/new/openeyes/components/_multi-select.scss */
-.multi-select .multi-select-pill:first-child, .multi-select .multi-select-selections li:first-child {
+/* line 35, ../sass/new/openeyes/components/_multi-select.scss */
+.multi-select-selections li:first-child {
   margin-left: 0;
 }
-/* line 32, ../sass/new/openeyes/components/_multi-select.scss */
-.multi-select .multi-select-pill:last-child, .multi-select .multi-select-selections li:last-child {
+/* line 38, ../sass/new/openeyes/components/_multi-select.scss */
+.multi-select-selections li:last-child {
   margin-right: 0;
 }
-/* line 36, ../sass/new/openeyes/components/_multi-select.scss */
-.multi-select .multi-select-selections {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-}
-/* line 40, ../sass/new/openeyes/components/_multi-select.scss */
-.multi-select .multi-select-selections li {
-  display: inline-block;
-}
 
-/* line 50, ../sass/new/openeyes/components/_multi-select.scss */
+/* line 47, ../sass/new/openeyes/components/_multi-select.scss */
 .multi-select-list .multi-select-selections li {
   display: block;
   -webkit-border-radius: 0;
