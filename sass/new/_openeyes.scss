@@ -1,8 +1,6 @@
 @charset "UTF-8";
 
-// Since the typical default browser font-size is 16px, that makes the calculation for grid size.
-// If you want your base font-size to be a different size and not have it effect grid size too,
-// set the value of $em-base to $base-font-size ($em-base: $base-font-size;)
+// We need to declare this here as some of the mixins and functions require this.
 $em-base: 16px;
 
 // Import base mixins and functions.

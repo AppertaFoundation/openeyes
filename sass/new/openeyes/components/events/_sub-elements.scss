@@ -54,4 +54,10 @@
 			}
 		}
 	}
+	.sub-elements-list {
+		@extend .optional-elements-list;
+		li {
+			margin-bottom: 10px;
+		}
+	}
 }

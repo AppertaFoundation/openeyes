@@ -51,7 +51,8 @@
 						</div>
 					</div>
 					<div class="sub-elements">
-						<div class="sub-element">
+
+						<section class="sub-element">
 							<header class="sub-element-header">
 								<h3 class="sub-element-title">Commorbidities</h3>
 								<div class="sub-element-actions">
@@ -83,7 +84,7 @@
 									<textarea placeholder="Enter comments here"></textarea>
 								</div>
 							</div>
-						</div>
+						</section>
 
 						<!-- Layout with labels: -->
 						<!--
@@ -146,9 +147,12 @@
 						</div>
 					</div>
 					<div class="sub-elements inactive">
-						<ul class="optional-elements-list">
+						<ul class="sub-elements-list">
 							<li>
 								<a href="#">Commorbidities</a>
+							</li>
+							<li>
+								<a href="#">Another example sub-element</a>
 							</li>
 						</ul>
 					</div>
@@ -607,21 +611,19 @@
 						</div>
 					</header>
 					<div class="element-fields">
-						<div class="element-field">
-							<div class="field-row">
-								<select>
-									<option>-- Add --</option>
-								</select>
-							</div>
-							<div class="field-row">
-								<textarea rows="1"></textarea>
-							</div>
+						<div class="field-row">
+							<select>
+								<option>-- Add --</option>
+							</select>
+						</div>
+						<div class="field-row">
+							<textarea rows="1"></textarea>
 						</div>
 					</div>
 					<div class="sub-elements">
 
 						<!-- Cataract management sub-element -->
-						<div class="sub-element">
+						<section class="sub-element">
 							<header class="sub-element-header">
 								<h4 class="sub-element-title">Cataract Management</h4>
 								<div class="sub-element-actions">
@@ -726,10 +728,10 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</section>
 
 						<!-- Laser management sub-element -->
-						<div class="sub-element">
+						<section class="sub-element">
 							<header class="sub-element-header">
 								<h4 class="sub-element-title">Laser Management</h4>
 								<div class="sub-element-actions">
@@ -793,10 +795,10 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</section>
 
 						<!-- Injection management sub-element -->
-						<div class="sub-element">
+						<section class="sub-element">
 							<header class="sub-element-header">
 								<h4 class="sub-element-title">Injection Management</h4>
 								<div class="sub-element-actions">
@@ -864,7 +866,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</section>
 
 					</div>
 				</section>
@@ -883,9 +885,12 @@
 						<div class="field-row">
 							<select><option>-- Add --</option></select>
 						</div>
+						<div class="field-row">
+							<textarea rows="1"></textarea>
+						</div>
 					</div>
 					<div class="sub-elements">
-						<div class="sub-element">
+						<section class="sub-element">
 							<header class="sub-element-header">
 								<h4 class="sub-element-title">OCT</h4>
 								<div class="sub-element-actions">
@@ -895,10 +900,15 @@
 									</a>
 								</div>
 							</header>
-							<div class="sub-element-fields">
-							test
+							<div class="element-eyes sub-element-fields">
+								<div class="element-eye right-eye column">
+									Right eye
+								</div>
+								<div class="element-eye left-eye column">
+									Left eye
+								</div>
 							</div>
-						</div>
+						</section>
 					</div>
 				</section>
 

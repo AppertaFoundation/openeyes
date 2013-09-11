@@ -21,7 +21,9 @@
 		<h2 class="event-title">Operation booking</h2>
 
 		<section class="element">
-			<h3 class="element-title">Diagnosis</h3>
+			<header class="element-header">
+				<h3 class="element-title">Diagnosis</h3>
+			</header>
 			<fieldset class="element-fields">
 				<div class="row field-row">
 					<div class="small-2 column">
@@ -65,7 +67,9 @@
 		</section>
 
 		<section class="element">
-			<h3 class="element-title">Operation</h3>
+			<header class="element-header">
+				<h3 class="element-title">Operation</h3>
+			</header>
 			<fieldset class="element-fields">
 				<div class="row field-row">
 					<div class="small-2 column">
@@ -197,7 +201,9 @@
 		</section>
 
 		<section class="element">
-			<h3 class="element-title">Schedule operation</h3>
+			<header class="element-header">
+				<h3 class="element-title">Schedule operation</h3>
+			</header>
 			<fieldset class="element-fields">
 				<div class="row field-row">
 					<div class="large-2 column">
