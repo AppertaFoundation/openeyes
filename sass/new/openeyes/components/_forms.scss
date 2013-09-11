@@ -81,7 +81,6 @@ small.error {
 }
 
 /* Attach elements to the beginning or end of an input */
-
 .prefix,
 .postfix {
 	display: inline-block;
@@ -92,6 +91,13 @@ small.error {
 	.unit, &.unit {
 		font-size: $default-font-size;
 	}
+}
+
+/* Field helpers */
+.field-info {
+	font-size: $default-font-size;
+	display: inline-block;
+	margin-left: emCalc(6px);
 }
 
 // Common forms

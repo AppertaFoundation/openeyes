@@ -947,6 +947,58 @@
 
 				<section class="element">
 					<header class="element-header">
+						<h3 class="element-title">Risks</h3>
+						<div class="element-actions">
+							<a href="#" class="button button-icon small">
+								<span class="icon-button-small-mini-cross"></span>
+								<span class="hide-offscreen">Remove element</span>
+							</a>
+						</div>
+					</header>
+					<div class="element-fields">
+						<div class="row field-row">
+							<div class="large-2 column">
+								<label>Comments:</label>
+							</div>
+							<div class="large-8 column end">
+								<textarea placeholder="Enter comments..."></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="sub-elements">
+						<section class="sub-element">
+							<header class="sub-element-header">
+								<h4 class="sub-element-title">Glaucoma Risk Stratification</h4>
+								<div class="sub-element-actions">
+									<a href="#" class="button button-icon small">
+										<span class="icon-button-small-mini-cross"></span>
+										<span class="hide-offscreen">Remove sub-element</span>
+									</a>
+								</div>
+							</header>
+							<div class="sub-element-fields">
+								<div class="field-row row collapse">
+									<div class="large-2 column">
+										<div class="pill moderate risk">
+											<select class="full-width">
+												<option>-- Select --</option>
+												<option selected>Moderate</option>
+											</select>
+										</div>
+									</div>
+									<div class="large-10 column">
+										<div class="postfix align">
+											<a href="#" class="field-info">Definitions</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</section>
+					</div>
+				</section>
+
+				<section class="element">
+					<header class="element-header">
 						<h3 class="element-title">Investigation</h3>
 						<div class="element-actions">
 							<a href="#" class="button button-icon small">

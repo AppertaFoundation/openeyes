@@ -2126,25 +2126,33 @@ small.error {
 }
 
 /* Attach elements to the beginning or end of an input */
-/* line 86, ../sass/new/openeyes/components/_forms.scss */
+/* line 85, ../sass/new/openeyes/components/_forms.scss */
 .prefix,
 .postfix {
   display: inline-block;
   padding: 0 0.3125em;
 }
-/* line 89, ../sass/new/openeyes/components/_forms.scss */
+/* line 88, ../sass/new/openeyes/components/_forms.scss */
 .prefix.align,
 .postfix.align {
   padding-top: 0.375em;
 }
-/* line 92, ../sass/new/openeyes/components/_forms.scss */
+/* line 91, ../sass/new/openeyes/components/_forms.scss */
 .prefix .unit, .prefix.unit,
 .postfix .unit,
 .postfix.unit {
   font-size: 0.8125em;
 }
 
-/* line 146, ../sass/new/openeyes/components/_forms.scss */
+/* Field helpers */
+/* line 97, ../sass/new/openeyes/components/_forms.scss */
+.field-info {
+  font-size: 0.8125em;
+  display: inline-block;
+  margin-left: 0.375em;
+}
+
+/* line 152, ../sass/new/openeyes/components/_forms.scss */
 .form.panel {
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -2155,21 +2163,21 @@ small.error {
   border: 2px solid #666666;
   padding: 30px;
 }
-/* line 152, ../sass/new/openeyes/components/_forms.scss */
+/* line 158, ../sass/new/openeyes/components/_forms.scss */
 .form.login {
   margin: 50px auto 100px auto;
   max-width: 488px;
 }
-/* line 155, ../sass/new/openeyes/components/_forms.scss */
+/* line 161, ../sass/new/openeyes/components/_forms.scss */
 .form.login label {
   font-size: 0.9375em;
 }
-/* line 159, ../sass/new/openeyes/components/_forms.scss */
+/* line 165, ../sass/new/openeyes/components/_forms.scss */
 .form [type="submit"] {
   margin: 0;
 }
 
-/* line 165, ../sass/new/openeyes/components/_forms.scss */
+/* line 171, ../sass/new/openeyes/components/_forms.scss */
 label.highlight {
   background: #e3f0f2;
   padding: 4px 12px 5px 8px;
@@ -2179,11 +2187,11 @@ label.highlight {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 169, ../sass/new/openeyes/components/_forms.scss */
+/* line 175, ../sass/new/openeyes/components/_forms.scss */
 label.highlight:hover {
   background: #fff;
 }
-/* line 174, ../sass/new/openeyes/components/_forms.scss */
+/* line 180, ../sass/new/openeyes/components/_forms.scss */
 label input[type="checkbox"],
 label input[type="radio"] {
   margin: 0;
@@ -2198,21 +2206,21 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   border-radius: 3px;
   height: auto;
 }
-/* line 202, ../sass/new/openeyes/components/_forms.scss */
+/* line 208, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small, input[type="password"].small, input[type="date"].small, input[type="datetime"].small, input[type="datetime-local"].small, input[type="month"].small, input[type="week"].small, input[type="email"].small, input[type="number"].small, input[type="search"].small, input[type="tel"].small, input[type="time"].small, input[type="url"].small, textarea.small {
   padding: 0.1875em 0.25em;
 }
-/* line 204, ../sass/new/openeyes/components/_forms.scss */
+/* line 210, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small.fixed-width, input[type="password"].small.fixed-width, input[type="date"].small.fixed-width, input[type="datetime"].small.fixed-width, input[type="datetime-local"].small.fixed-width, input[type="month"].small.fixed-width, input[type="week"].small.fixed-width, input[type="email"].small.fixed-width, input[type="number"].small.fixed-width, input[type="search"].small.fixed-width, input[type="tel"].small.fixed-width, input[type="time"].small.fixed-width, input[type="url"].small.fixed-width, textarea.small.fixed-width {
   width: 6.875em;
 }
 
-/* line 212, ../sass/new/openeyes/components/_forms.scss */
+/* line 218, ../sass/new/openeyes/components/_forms.scss */
 .field-row {
   padding-bottom: 1.125em;
 }
 
-/* line 217, ../sass/new/openeyes/components/_forms.scss */
+/* line 223, ../sass/new/openeyes/components/_forms.scss */
 form .field-row:last-child, .form .field-row:last-child {
   padding: 0;
 }
@@ -3662,6 +3670,12 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 /* line 14, ../sass/new/openeyes/components/_pills.scss */
 .pill.low, .multi-select .low.multi-select-pill, .multi-select .multi-select-selections li.low {
   background: #9c0;
+}
+/* line 17, ../sass/new/openeyes/components/_pills.scss */
+.pill.risk, .multi-select .risk.multi-select-pill, .multi-select .multi-select-selections li.risk {
+  padding: 5px;
+  margin: 0;
+  display: block;
 }
 
 /* line 1, ../sass/new/openeyes/components/_dialog.scss */
