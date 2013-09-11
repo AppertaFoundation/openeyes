@@ -351,6 +351,90 @@
 									</div>
 								</form>
 
+								<form class="example" id="horizontal-layout-example">
+
+									<header>
+										<h3>Field widths</h3>
+									</header>
+
+									<p>Fields will fill the width of their containers. To make a field
+									smaller, you simply need to make the container column smaller.
+									Although we're working with a 12 column grid, it's not necessary
+									to always ensure 12 columns exist. <strong>Note:</strong> Remember to add a class of 'end'
+									to the last column, if the combined columns don't equal 12.</p>
+
+									<div class="row">
+										<div class="large-6 column show-markup">
+
+											<!-- Large text input -->
+											<div class="row field-row">
+												<div class="large-4 column">
+													<label for="input-text-2">
+														Large text input
+													</label>
+												</div>
+												<div class="large-8 column">
+													<input type="text" id="input-text-2" />
+												</div>
+											</div>
+
+											<!-- Small text input -->
+											<div class="row field-row">
+												<div class="large-4 column">
+													<label for="input-text-2">
+														Small text input
+													</label>
+												</div>
+												<div class="large-4 column end">
+													<input type="text" id="input-text-2" />
+												</div>
+											</div>
+
+											<!-- Large select input -->
+											<div class="row field-row">
+												<div class="large-4 column">
+													<label for="select-2">
+														Large select
+													</label>
+												</div>
+												<div class="large-8 column">
+													<select id="select-2">
+														<option>Please select...</option>
+														<option>Option 1</option>
+														<option>Option 2</option>
+													</select>
+												</div>
+											</div>
+
+											<!-- Small select input -->
+											<div class="row field-row">
+												<div class="large-4 column">
+													<label for="select-2">
+														Small select
+													</label>
+												</div>
+												<div class="large-4 column end">
+													<select id="select-2">
+														<option>Please select...</option>
+														<option>Option 1</option>
+														<option>Option 2</option>
+													</select>
+												</div>
+											</div>
+
+
+											<!-- Submit button -->
+											<div class="row field-row">
+												<div class="large-8 large-offset-4 column">
+													<button type="submit" class="small">
+														Submit
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+
 
 								<form class="example" id="table-form-layout-example">
 
