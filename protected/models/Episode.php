@@ -174,6 +174,7 @@ class Episode extends BaseActiveRecord
 	 * @param integer $patientId			id of the patient
 	 *
 	 * @return object $episode if found, null otherwise
+	 * @deprecated - since 1.4 use getCurrentEpisodeByFirm instead
 	 */
 	public function getBySubspecialtyAndPatient($subspecialtyId, $patientId, $onlyReturnOpen = true)
 	{
@@ -204,26 +205,51 @@ class Episode extends BaseActiveRecord
 		}
 	}
 
-	public static function getCurrentEpisodeByFirm($patientId, $firm, $include_closed = false)
+	/**
+	* get the current episode for the given firm, based on the firm subspecialty - if firm has no
+	* subspecialty, will return a support services episode
+	*
+	* wrapper for getCurrentEpisodeBySubspecialtyId($patient_id, $subspecialty_id, $include_closed)
+	*/
+	public static function getCurrentEpisodeByFirm($patient_id, $firm, $include_closed = false)
+	{
+		return Episode::model()->getCurrentEpisodeBySubspecialtyId($patient_id, $firm->getSubspecialtyID(), $include_closed);
+	}
+
+	/**
+	* get the current episode for the patient id and subspecialty_id (if this is null, looking for support services episode)
+	*
+	*/
+	public static function getCurrentEpisodeBySubspecialtyId($patient_id, $subspecialty_id, $include_closed = false)
 	{
 		$where = $include_closed ? '' : ' AND e.end_date IS NULL';
 
 		// Check for an open episode for this patient and firm's service with a referral
-		$episode = Yii::app()->db->createCommand()
-			->select('e.id AS eid')
-			->from('episode e')
-			->join('firm f', 'e.firm_id = f.id')
-			->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-			->where('e.deleted = False'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
-				':patient_id' => $patientId, ':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id
-			))
-			->queryRow();
-
-		if (!$episode['eid']) {
-			// There is an open episode and it has a referral, no action required
-			return null;
+		if (!is_null($subspecialty_id)) {
+			$episode = Yii::app()->db->createCommand()
+				->select('e.id AS eid')
+				->from('episode e')
+				->join('firm f', 'e.firm_id = f.id')
+				->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
+				->where('e.deleted = False'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
+					':patient_id' => $patient_id, ':subspecialty_id' => $subspecialty_id
+				))
+				->queryRow();
+		} else {
+			$episode = Yii::app()->db->createCommand()
+				->select('e.id AS eid')
+				->from('episode e')
+				->where('e.deleted = False AND e.legacy = False AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id', array(
+					':patient_id' => $patient_id
+				))
+				->queryRow();
 		}
 
+		if (!$episode['eid']) {
+			// No episode found
+			return null;
+		}
+		// return the episode object
 		return Episode::model()->findByPk($episode['eid']);
 	}
 
@@ -245,10 +271,10 @@ class Episode extends BaseActiveRecord
 		$criteria->order = 'created_date desc';
 		return Event::model()->findAll($criteria);
 	}
-	
+
 	/**
 	 * get the latest event for this episode
-	 * 
+	 *
 	 * @return Event
 	 */
 	public function getLatestEvent()
@@ -258,30 +284,60 @@ class Episode extends BaseActiveRecord
 		$criteria->params = array(':eid' => $this->id);
 		$criteria->order = "t.created_date DESC";
 		$criteria->limit = 1;
-	
+
 		return Event::model()->with('episode')->find($criteria);
-	
+
 	}
-	
+
 	/**
 	 * get the subspecialty for this episode
-	 * 
+	 *
 	 * @return Subspecialty
 	 */
 	public function getSubspecialty()
 	{
-		$criteria = new CdbCriteria;
-		$criteria->distinct = true;
-		$criteria->addCondition('t.id = serviceSubspecialtyAssignment.subspecialty_id');
-		$criteria->addCondition('serviceSubspecialtyAssignment.id = firms.service_subspecialty_assignment_id');
-		$criteria->addCondition('firms.id = :fid');
-		
-		$criteria->params = array(':fid' => $this->firm_id);
-		
-		return Subspecialty::model()->with('serviceSubspecialtyAssignment', 'serviceSubspecialtyAssignment.firms')->find($criteria);
-		
+		if ($firm = $this->firm) {
+			return $firm->getSubspecialty();
+		}
+
+		// no subspecialty for episodes without firms
+		return null;
 	}
-	
+
+	/**
+	 * get the subspecialty text for the episode
+	 *
+	 * @return string
+	 */
+	public function getSubspecialtyText()
+	{
+		if ($subspecialty = $this->getSubspecialty()) {
+			return $subspecialty->name;
+		}
+		else {
+			if ($this->support_services) {
+				return "Support Services";
+			}
+			else if ($this->legacy) {
+				return "Legacy";
+			}
+		}
+	}
+
+	/**
+	 * get the subspecialty id for this episode
+	 *
+	 * @return int|null
+	 */
+	public function getSubspecialtyID()
+	{
+		if ($ss = $this->getSubspecialty()) {
+			return $ss->id;
+		}
+
+		return null;
+	}
+
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
 		$previous = Episode::model()->findByPk($this->id);
@@ -319,19 +375,29 @@ class Episode extends BaseActiveRecord
 
 	public function getEditable()
 	{
+		// Get current logged in firm's subspecialty id (null for support services firms)
+		$current_subspecialty_id = Yii::app()->getController()->firm->getSubspecialtyID();
 		if (!$this->firm) {
-			if (!$this->support_services) {
+			// Episode has no firm, so it's either a legacy episode or a support services episode
+			if ($this->support_services) {
+				// Support services episode, so are you logged in as a support services firm
+				return ($current_subspecialty_id == null);
+			} else {
+				// Legacy episode
 				return FALSE;
 			}
-			return (Yii::app()->getController()->firm->serviceSubspecialtyAssignment == null);
+		} else {
+			// Episode is normal (has a firm)
+			if (!$current_subspecialty_id) {
+				// Logged in as a support services firm
+				return FALSE;
+			} else {
+				// Logged in as a normal firm, so does episode subspecialty match
+				return ($this->firm->getSubspecialtyID() == $current_subspecialty_id);
+			}
 		}
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-			return FALSE;
-		}
-
-		return TRUE;
 	}
-	
+
 	protected function afterSave()
 	{
 		foreach (SecondaryDiagnosis::model()->findAll('patient_id=? and disorder_id=?',array($this->patient_id,$this->disorder_id)) as $sd) {

@@ -1,4 +1,4 @@
-@Intravitreal @regression
+@Intravitreal
 Feature: Create New Anaesthetic Satisfaction Audit
   In order to cover every possible route throughout the site
   As an automation tester
@@ -92,6 +92,7 @@ Feature: Create New Anaesthetic Satisfaction Audit
     And I select Left Complications "5"
 
     Then I Save the Intravitreal injection
+
 
 
   Examples: User details

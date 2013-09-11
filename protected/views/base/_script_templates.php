@@ -23,7 +23,7 @@
 	<p>{{{content}}}</p>
 	<div class="buttons">
 		<button class="classy green mini confirm ok" type="button">
-			<span class="button-span button-span-green">Ok</span>
+			<span class="button-span button-span-green">OK</span>
 		</button>
 	</div>
 </script>

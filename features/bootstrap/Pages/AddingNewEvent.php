@@ -10,12 +10,16 @@ class AddingNewEvent extends Page
         'addFirstNewEpisode' => array('xpath' => "//*[@id='event_display']/div[3]/button//*[contains(text(), 'Add episode')]"),
         'addEpisodeConfirm' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(), 'Confirm')]"),
         'addEpisodeCancel' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(), 'Cancel')]"),
-        'addNewEpisodeButton' => array('xpath' => "//*[@id='episodes_sidebar']/div[1]/button//*[contains(text(),'Add episode')]"),
+        'addNewEpisodeButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Add episode')]"),
         'expandCataractEpisode' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Cataract')]"),
         'expandGlaucomaEpisode' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Glaucoma')]"),
-        'expandRefractiveEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[5]/div[1]/h4//*[contains(text(),'Refractive')]"),
+        'expandRefractiveEpisode' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Refractive')]"),
+        'expandMedicalRetinalEpisode' => array ('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Medical Retinal')]"),
+        'expandSupportFirm' => array('xpath' => "//*[@class='episode closed clearfix']//*[contains(text(),'Support Services')]"),
         'addNewCataractEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=4]"),
         'addNewGlaucomaEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=7]"),
+        'addNewMedicalRetinalEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=8]"),
+        'addNewSupportFirmEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id='']"),
         'anaestheticSatisfaction' => array ('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Anaesthetic Satisfaction Audit')]"),
         'consentForm' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Consent form')]"),
         'correspondence' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Correspondence')]"),
@@ -54,6 +58,24 @@ class AddingNewEvent extends Page
         $this->getElement('expandGlaucomaEpisode')->click();
         $this->getSession()->wait(5000, '$.active ==0');
         $this->getElement('addNewGlaucomaEventButton')->click();
+        $this->getSession()->wait(5000, '$.active ==0');
+    }
+
+    public function expandMedicalRetinal ()
+    {
+        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getElement('expandMedicalRetinalEpisode' )->click();
+        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getElement('addNewMedicalRetinalEventButton')->click();
+        $this->getSession()->wait(5000, '$.active ==0');
+    }
+
+    public function expandSupportFirm ()
+    {
+        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getElement('expandSupportFirm')->click();
+        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getElement('addNewSupportFirmEventButton')->click();
         $this->getSession()->wait(5000, '$.active ==0');
     }
 

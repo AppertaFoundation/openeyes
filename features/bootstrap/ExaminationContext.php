@@ -149,6 +149,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
+        $examination->openDilation();
     }
 
     /**
@@ -160,6 +161,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
+        $examination->dilationLeft($dilation, $drops);
     }
 
     /**
@@ -171,6 +173,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
+        $examination->dilationRight($dilation, $drops);
     }
 
     /**

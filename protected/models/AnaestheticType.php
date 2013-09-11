@@ -23,7 +23,8 @@
  * The followings are the available columns in table 'anaesthetic_type':
  * @property integer $id
  * @property string $name
- * @proptery string $code
+ * @property string $code
+ * @property integer $display_order
  */
 class AnaestheticType extends BaseActiveRecord
 {

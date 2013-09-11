@@ -33,7 +33,10 @@ class OperationBooking extends Page
         'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
         'scheduleNow' => array('xpath' => "//*[@id='et_schedulenow']"),
         'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
+        'availableThreeWeeksTime' => array ('xpath' => "//*[@id='calendar']//*[contains(text(),'27')]"),
+        'nextMonth' => array('xpath' => "//*[@id='next_month']"),
         'availableTheatreSessionTime' => array('xpath' => "//*[@class='timeBlock available bookable']"),
+        'noAnaesthetist' => array ('xpath' => "//*[@id='bookingSession1824']"),
         'sessionComments' => array('xpath' => "//*[@id='Session_comments']"),
         'sessionOperationComments' => array('xpath' => "//*[@id='operation_comments']"),
         'confirmSlot' => array('xpath' => "//*[@id='confirm_slot']")
@@ -145,20 +148,36 @@ class OperationBooking extends Page
 
     public function scheduleNow ()
     {
+        $this->getElement('scheduleNow')->keyPress(2191);
         $this->getElement('scheduleNow')->click();
-        $this->getSession()->wait(20000);
     }
 
     public function availableSlot ()
     {
-        $this->getElement('availableTheatreSlotDate')->click();
-        $this->getSession()->wait(10000);
+        $slots = $this->findAll('xpath', $this->getElement('availableTheatreSlotDate')->getXpath());
+        foreach ($slots as $slot) {
+            $slot->click();
+            $this->getSession()->wait(10000, "$('.sessionTimes').length > 0");
+            $freeSession = $this->find('css', '.sessionTimes > a > .bookable');
+            if ($freeSession) {
+                return true;
+            }
+        }
+
+        throw new \Exception('No available theatre session found');
     }
 
     public function availableSessionTime ()
     {
         $this->getElement('availableTheatreSessionTime')->click();
-        $this->getSession()->wait(10000);
+        $this->getSession()->wait(10000, "$('.active') == 0");
+    }
+
+    public function availableThreeWeeksTime ()
+    {
+//        $this->getElement('nextMonth')->click();
+        $this->getElement('availableThreeWeeksTime')->click();
+        $this->getElement('noAnaesthetist')->click();
     }
 
     public function sessionComments ($sessionComments)

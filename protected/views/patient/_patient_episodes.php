@@ -31,14 +31,14 @@
 				<tbody>
 					<?php foreach ($ordered_episodes as $specialty_episodes) {?>
 						<tr>
-						<td colspan="6" class="all-episode specialty small"><?php echo $specialty_episodes['specialty']->name ?></td>
+						<td colspan="6" class="all-episode specialty small"><?php echo $specialty_episodes['specialty'] ?></td>
 						</tr>
 						<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
 							<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0) {?>even<?php } else {?>odd<?php }?><?php if ($episode->end_date !== null) {?> closed<?php }?>">
 								<td><?php echo $episode->NHSDate('start_date'); ?></td>
 								<td><?php echo $episode->NHSDate('end_date'); ?></td>
-								<td><?php echo CHtml::encode($episode->firm->name)?></td>
-								<td><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></td>
+								<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
+								<td><?php echo CHtml::encode($episode->getSubspecialtyText())?></td>
 								<td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
 								<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
 							</tr>
@@ -50,7 +50,7 @@
 		<?php }?>
 	</div>
 </div>
-<?php 
+<?php
 $editable = false;
 if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 	$latest = $episode->getLatestEvent();
@@ -60,7 +60,7 @@ if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 elseif ($latest = $this->patient->getLatestEvent()) {
 	$editable = $latest->episode->editable;
 	$subspecialty = $latest->episode->getSubspecialty();
-}	
+}
 
 $msg = null;
 

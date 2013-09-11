@@ -68,7 +68,11 @@ class BaseEventTypeController extends BaseController
 				'actions' => array('view'),
 				'expression' => 'BaseController::checkUserLevel(2)',
 			),
-			// Level 3 or above can do anything
+			array('allow',
+				'actions' => $this->printActions(),
+				'expression' => 'BaseController::checkUserLevel(3)',
+			),
+			// Level 4 or above can do anything
 			array('allow',
 				'expression' => 'BaseController::checkUserLevel(4)',
 			),
@@ -271,6 +275,23 @@ class BaseEventTypeController extends BaseController
 		}
 	}
 
+	/**
+	 * function to redirect to the patient episodes when the controller determines the action cannot be carried out
+	 *
+	 */
+	protected function redirectToPatientEpisodes()
+	{
+		$this->redirect(array("/patient/episodes/".$this->patient->id));
+		Yii::app()->end();
+	}
+
+	/**
+	 * carries out the base create action
+	 *
+	 * @return bool|string
+	 * @throws CHttpException
+	 * @throws Exception
+	 */
 	public function actionCreate()
 	{
 		$this->event_type = EventType::model()->find('class_name=?', array($this->getModule()->name));
@@ -279,8 +300,8 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (is_array(Yii::app()->params['modules_disabled']) && in_array($this->event_type->class_name,Yii::app()->params['modules_disabled'])) {
-			$this->redirect(array('/patient/episodes/'.$this->patient->id));
-			return;
+			// disabled module
+			$this->redirectToPatientEpisodes();
 		}
 
 		$session = Yii::app()->session;
@@ -289,11 +310,13 @@ class BaseEventTypeController extends BaseController
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
 
 		if (!$this->event_type->support_services && !$firm->serviceSubspecialtyAssignment) {
-			throw new Exception("Can't create a non-support service event for a support-service firm");
+			// Can't create a non-support service event for a support-service firm
+			$this->redirectToPatientEpisodes();
 		}
 
 		if (!$episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
-			throw new Exception("There is no open episode for the currently selected firm's subspecialty");
+			// there's no episode for this subspecialty
+			$this->redirectToPatientEpisodes();
 		}
 
 		// firm changing sanity
@@ -416,14 +439,8 @@ class BaseEventTypeController extends BaseController
 			if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 				$this->editable = false;
 			} else {
-				if ($this->firm->serviceSubspecialtyAssignment) {
-					if ($this->event->episode->firm && $this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-						$this->editable = false;
-					}
-				} else {
-					if ($this->event->episode->firm !== null) {
-						$this->editable = false;
-					}
+				if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
+					$this->editable = false;
 				}
 			}
 		}
@@ -478,16 +495,16 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
+		$this->patient = $this->event->episode->patient;
+
 		// Check the user's firm is of the correct subspecialty to have the
 		// rights to update this event
-		if ($this->firm->serviceSubspecialtyAssignment && $this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-			throw new CHttpException(403, 'The firm you are using is not associated with the subspecialty for this event.');
-		} elseif (!$this->firm->serviceSubspecialtyAssignment && $this->event->episode->firm !== null) {
-			throw new CHttpException(403, 'The firm you are using is not a support services firm.');
+		if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
+			//The firm you are using is not associated with the subspecialty of the episode
+			$this->redirectToPatientEpisodes();
 		}
 
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
-		$this->patient = $this->event->episode->patient;
 		$this->episode = $this->event->episode;
 
 		// firm changing sanity
@@ -934,11 +951,7 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function getEpisode($firm, $patientId)
 	{
-		if ($firm->service_subspecialty_assignment_id) {
-			$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
-			return Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
-		}
-		return Episode::model()->find('patient_id=? and support_services=?',array($patientId,1));
+		return Episode::model()->getCurrentEpisodeByFirm($patientId, $firm);
 	}
 
 	public function getOrCreateEpisode($firm, $patientId)

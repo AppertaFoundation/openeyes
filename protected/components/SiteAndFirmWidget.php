@@ -57,20 +57,14 @@ class SiteAndFirmWidget extends CWidget
 				$firm = Firm::model()->findByPk($model->firm_id);
 				$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 
-				if ($this->patient && $episode = $this->patient->hasOpenEpisodeOfSubspecialty($subspecialty_id)) {
+				if ($this->patient && $episode = $this->patient->getOpenEpisodeOfSubspecialty($subspecialty_id)) {
 					Yii::app()->session['episode_hide_status'] = array(
 						$episode->id => 1,
 					);
 				}
-				
-				if(!isset($episode) && isset($this->patient)) {
-					$this->controller->redirect(array("/patient/".$this->patient->id));
-				}
-				else
-				{
+
 				// Redirect browser to clear POST
 				$this->controller->redirect($this->returnUrl);
-				}
 				Yii::app()->end();
 			}
 		} else {

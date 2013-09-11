@@ -47,11 +47,9 @@ if (!empty($supportserviceepisodes)) foreach ($supportserviceepisodes as $episod
 				<?php } ?>
 			</div>
 			<?php if (BaseController::checkUserLevel(4)) {?>
-				<?php if ($episode->status->name != 'Discharged') {?>
-					<div align="center" style="margin-top:5px; margin-bottom: 5px;">
-						<button class="classy blue mini addEvent" type="button" data-attr-subspecialty-id="<?php echo $episode->firm ? $episode->firm->getSubspecialtyID() : null?>"><span class="button-span button-span-blue">Add event</span></button>
-					</div>
-				<?php }?>
+				<div align="center" style="margin-top:5px; margin-bottom: 5px;">
+					<button class="classy blue mini addEvent" type="button" data-attr-subspecialty-id="<?php echo $episode->firm ? $episode->firm->getSubspecialtyID() : null?>"><span class="button-span button-span-blue">Add event</span></button>
+				</div>
 			<?php }?>
 			<ul class="events"<?php if ($episode->hidden) {?> style="display: none;"<?php }?>>
 				<?php
