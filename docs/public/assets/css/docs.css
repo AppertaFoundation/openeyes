@@ -30,7 +30,7 @@ li {
 	border-radius: 5px;
 	margin: 0 0 1em 0;
 }
-.example header {
+.example > header:first-child {
 	margin-bottom: 1em;
 }
 .example-box {

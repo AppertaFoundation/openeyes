@@ -15,7 +15,7 @@
 			this.examples = $('.example');
 		},
 		createMarkupAnchors: function() {
-			this.examples.find('header').prepend(this.createAnchor.bind(this));
+			this.examples.find('header:first').prepend(this.createAnchor.bind(this));
 		},
 		createAnchor: function() {
 			return $('<a />', {
