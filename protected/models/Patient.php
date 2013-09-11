@@ -332,9 +332,9 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* @return string Patient name for prefixing an address
-		*/
-	public function getAddressName()
+	* @return string Patient name for prefixing an address
+	*/
+	public function getCorrespondenceName()
 	{
 		if ($this->isChild()) {
 			return 'Parent/Guardian of ' . $this->getFullName();
@@ -344,8 +344,8 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* @return string Patient name for using as a salutation
-		*/
+	* @return string Patient name for using as a salutation
+	*/
 	public function getSalutationName()
 	{
 		if ($this->isChild()) {
@@ -356,8 +356,8 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* @return string Full name
-		*/
+	* @return string Full name
+	*/
 	public function getFullName()
 	{
 		return trim(implode(' ',array($this->title, $this->first_name, $this->last_name)));
