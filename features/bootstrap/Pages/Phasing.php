@@ -102,7 +102,7 @@ class Phasing extends Page
     public function savePhasingEvent ()
     {
         $this->getElement('savePhasingEvent')->click();
-        $this->getSession()->wait(100000);
+        $this->getSession()->wait(3000);
     }
 
 }

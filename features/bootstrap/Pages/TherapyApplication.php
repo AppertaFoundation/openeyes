@@ -68,7 +68,7 @@ class TherapyApplication extends Page
 
     public function rightDate ($date)
     {
-        $this->getElement('hopefullFIXRight')->click();
+//        $this->getElement('hopefullFIXRight')->click();
 //        $this->getSession()->wait(5000);
         $this->getElement('rightAngiogramDate')->click();
         $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
@@ -84,7 +84,7 @@ class TherapyApplication extends Page
 
     public function leftDate ($date)
     {
-        $this->getElement('hopefullFIXLeft')->click();
+//        $this->getElement('hopefullFIXLeft')->click();
 //        $this->getSession()->wait(5000);
         $this->getElement('leftAngiogramDate')->click();
         $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
