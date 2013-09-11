@@ -22,15 +22,19 @@
 
 				<!-- Element with 'global' data containing a sub-element -->
 				<section class="element">
-					<h3 class="element-title">History</h3>
+					<header class="element-header">
+						<h3 class="element-title">History</h3>
+					</header>
 					<div class="element-data">
 						<div class="element-value">
 							History test 123
 						</div>
 					</div>
 					<div class="sub-elements">
-						<div class="sub-element">
-							<h4 class="sub-element-title">Sub element title</h4>
+						<section class="sub-element">
+							<header class="sub-element-header">
+								<h4 class="sub-element-title">Sub element title</h4>
+							</header>
 							<div class="sub-element-data">
 								<div class="element-value">
 									Angina, Ethnicity
@@ -38,13 +42,15 @@
 									Test 123
 								</div>
 							</div>
-						</div>
+						</section>
 					</div>
 				</section>
 
 				<!-- Element with eye-draw (small size) data for both eyes -->
 				<section class="element">
-					<h3 class="element-title">Refraction</h3>
+					<header class="element-header">
+						<h3 class="element-title">Refraction</h3>
+					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
@@ -76,7 +82,9 @@
 				</section>
 
 				<section class="element">
-					<h3 class="element-title">Visual Acuity</h3>
+					<header class="element-header">
+						<h3 class="element-title">Visual Acuity</h3>
+					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<div class="element-value">Not recorded</div>
@@ -91,7 +99,9 @@
 
 				<!-- Element with eye-draw (large-size) data for both eyes -->
 				<section class="element">
-					<h3 class="element-title">Gonioscopy</h3>
+					<header class="element-header">
+						<h3 class="element-title">Gonioscopy</h3>
+					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
@@ -125,7 +135,9 @@
 				<!-- Element with eye-draw (large-size) data for both eyes, with
 				sub-elements -->
 				<section class="element">
-					<h3 class="element-title">Anterior Segment</h3>
+					<header class="element-header">
+						<h3 class="element-title">Anterior Segment</h3>
+					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
@@ -201,8 +213,10 @@
 						</div>
 					</div>
 					<div class="sub-elements">
-						<div class="sub-element"> <!-- sub-element container -->
-							<h4 class="sub-element-title">CCT</h4>
+						<section class="sub-element"> <!-- sub-element container -->
+							<header class="sub-element-header">
+								<h4 class="sub-element-title">CCT</h4>
+							</header>
 							<div class="sub-element-data sub-element-eyes row">
 								<div class="element-eye column right-eye">
 									<div class="element-value">
@@ -215,13 +229,15 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</section>
 					</div>
 				</section>
 
 				<!-- Custom element -->
 				<section class="element Element_OphCiExamination_IntraocularPressure">
-					<h3 class="element-title">Intraocular Pressure</h3>
+					<header class="element-header">
+						<h3 class="element-title">Intraocular Pressure</h3>
+					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<div class="element-value">
@@ -238,7 +254,9 @@
 
 				<!-- Element with tabular data -->
 				<section class="element">
-					<h3 class="element-title">Dilation</h3>
+					<header class="element-header">
+						<h3 class="element-title">Dilation</h3>
+					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<table class="element-table">
@@ -281,7 +299,9 @@
 
 				<!-- Element with eyedraw (large-size) and sub-element with custom columns -->
 				<section class="element">
-					<h4 class="element-title">Posterior Pole</h4>
+					<header class="element-header">
+						<h4 class="element-title">Posterior Pole</h4>
+					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye column right-eye">
 							<div class="eyedraw-data row">
@@ -311,10 +331,12 @@
 						</div>
 					</div>
 					<div class="sub-elements">
-						<div class="sub-element">
-							<h4 class="sub-element-title">
-								DR Grading
-							</h4>
+						<section class="sub-element">
+							<header class="sub-element-header">
+								<h4 class="sub-element-title">
+									DR Grading
+								</h4>
+							</header>
 							<div class="sub-element-data sub-element-eyes row">
 								<div class="element-eye column right-eye">
 									<div class="row element-data-row">
@@ -441,19 +463,23 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</section>
 					</div>
 				</section>
 
 				<!-- Element with 'global' data, containing a sub-element with tabular data -->
 				<section class="element">
-					<h3 class="element-title">Clinical Management</h3>
+					<header class="element-header">
+						<h3 class="element-title">Clinical Management</h3>
+					</header>
 					<div class="element-data">
 						<div class="element-label">Clinical Management</div>
 					</div>
 					<div class="sub-elements">
-						<div class="sub-element">
-							<h4 class="sub-element-title">Cataract Management</h4>
+						<section class="sub-element">
+							<header class="sub-element-header">
+								<h4 class="sub-element-title">Cataract Management</h4>
+							</header>
 							<div class="sub-element-data">
 								<table class="element-table">
 									<tbody>
@@ -500,20 +526,24 @@
 									</tbody>
 								</table>
 							</div>
-						</div>
+						</section>
 					</div>
 				</section>
 
 				<section class="element">
-					<h3 class="element-title">Risks</h3>
+					<header class="element-header">
+						<h3 class="element-title">Risks</h3>
+					</header>
 					<div class="element-data">
 						<div class="element-value">
 							Risks
 						</div>
 					</div>
 					<div class="sub-elements">
-						<div class="sub-element">
-							<h4 class="sub-element-title">Glaucoma Risk Stratification</h4>
+						<section class="sub-element">
+							<header class="sub-element-header">
+								<h4 class="sub-element-title">Glaucoma Risk Stratification</h4>
+							</header>
 							<div class="sub-element-data">
 								<span class="pill high">
 									High
@@ -525,7 +555,7 @@
 									Low
 								</span>
 							</div>
-						</div>
+						</section>
 					</div>
 				</section>
 

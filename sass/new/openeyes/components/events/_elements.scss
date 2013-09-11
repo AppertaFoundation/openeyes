@@ -34,6 +34,11 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 	}
 }
 
+.element-header {
+	@extend .clearfix;
+	background: #fafafa;
+}
+
 .element-title {
 	color: $oe-element-title-color;
 	font-size: $oe-element-title-font-size;
@@ -167,10 +172,6 @@ $oe-element-edit-title-font-style: italic;
 		background: image-url("_elements/icons/event-optional/element-view.png") no-repeat -10px -4px;
 		width: 16px;
 		height: 16px;
-	}
-	.element-header {
-		@extend .clearfix;
-		background: #fafafa;
 	}
 	.element-actions {
 		float: right;
