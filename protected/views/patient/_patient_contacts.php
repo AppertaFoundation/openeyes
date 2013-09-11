@@ -333,6 +333,11 @@ $(document).ready(function() {
 			$('#add_contact').slideToggle('fast');
 		}
 		$('#btn-add-contact').hide();
+
+		if ($('#contactname').val().length >= 3) {
+			$('#contactname').focus();
+			$('#contactname').autocomplete('search',$('#contactname').val());
+		}
 	});
 
 	$('#add_contact #institution_id').change(function() {
