@@ -204,10 +204,10 @@ button, .button {
 	}
 	&.button-icon {
 		&.small {
-			padding-right: emCalc(6px);
-			padding-left: emCalc(6px);
+			padding-right: emCalc(1px);
+			padding-left: emCalc(1px);
 			[class*="icon-button-small-"] {
-				margin: -6px 0 -5px 0;
+				margin: -7px 0 -5px 0;
 			}
 		}
 	}

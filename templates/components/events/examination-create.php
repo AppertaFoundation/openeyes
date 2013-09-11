@@ -70,15 +70,15 @@
 										</select>
 										<a href="#" class="remove-all">Remove all</a>
 									</div>
-									<div class="field-row">
-										<div class="pill">
+									<ul class="multi-select-selections field-row">
+										<li>
 											No comorbidities
-										</div>
-										<div class="pill">
+										</li>
+										<li>
 											Hyperopia
 											<a href="#" class="remove-one">Remove</a>
-										</div>
-									</div>
+										</li>
+									</ul>
 								</div>
 								<div class="field-row">
 									<textarea placeholder="Enter comments here"></textarea>
@@ -828,25 +828,56 @@
 										 	<label>Diagnosis:</label>
 										</div>
 										<div class="large-9 column">
-											<div class="field-row">
-												<select>
-													<option>-- Select --</option>
-												</select>
+											<div class="field-row row collapse">
+												<div class="large-10 column">
+													<select>
+														<option>-- Select --</option>
+														<option>Idiopathic polypoidal choroidal vasculopathy with some very long text</option>
+													</select>
+												</div>
+												<div class="large-2 column">
+													<div class="postfix">
+														<a href="#" class="button button-icon small">
+															<span class="icon-button-small-search"></span>
+															<span class="hide-offscreen">Search</span>
+														</a>
+													</div>
+												</div>
 											</div>
 											<div class="field-row">
 												<input type="text" placeholder="Search for diagnosis..." />
 											</div>
 										</div>
 									</div>
-									<!-- TODO: make into multiple select -->
+
 									<div class="row field-row">
 										<div class="large-3 column">
 										 	<label>Risks:</label>
 										</div>
 										<div class="large-9 column">
-											<select>
-												<option>-- Select --</option>
-											</select>
+											<div class="multi-select multi-select-list">
+												<div class="field-row">
+													<select>
+														<option>-- Select --</option>
+														<option>Pre-existing glaucoma</option>
+														<option>Previous glaucoma surgery</option>
+														<option>Allergy to povidone iodine</option>
+														<option>Previous interocular surgery</option>
+														<option>CVA</option>
+														<option>MI</option>
+													</select>
+												</div>
+												<ul class="multi-select-selections field-row">
+													<li>
+														Previous glaucoma surgery
+														<a href="#" class="remove-one">Remove</a>
+													</li>
+													<li>
+														Hyperopia
+														<a href="#" class="remove-one">Remove</a>
+													</li>
+												</ul>
+											</div>
 										</div>
 									</div>
 									<div class="row field-row">
@@ -859,10 +890,53 @@
 									</div>
 								</div>
 								<div class="element-eye left-eye column">
-									<div class="add-side">
-										<a href="#">
-											Add left side <span class="icon-add-side"></span>
-										</a>
+									<a href="#" class="icon-remove-side">Remove side</a>
+									<div class="row field-row">
+										<div class="large-3 column">
+										 	<label>Diagnosis:</label>
+										</div>
+										<div class="large-9 column">
+											<div class="field-row row collapse">
+												<div class="large-10 column">
+													<select>
+														<option>-- Select --</option>
+														<option>Idiopathic polypoidal choroidal vasculopathy with some very long text</option>
+													</select>
+												</div>
+												<div class="large-2 column">
+													<div class="postfix">
+														<a href="#" class="button button-icon small">
+															<span class="icon-button-small-search"></span>
+															<span class="hide-offscreen">Search</span>
+														</a>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row field-row">
+										<div class="large-3 column">
+										 	<label>Risks:</label>
+										</div>
+										<div class="large-9 column">
+											<select>
+												<option>-- Select --</option>
+												<option>Pre-existing glaucoma</option>
+												<option>Previous glaucoma surgery</option>
+												<option>Allergy to povidone iodine</option>
+												<option>Previous interocular surgery</option>
+												<option>CVA</option>
+												<option>MI</option>
+											</select>
+										</div>
+									</div>
+									<div class="row field-row">
+										<div class="large-3 column">
+										 	<label>Comments:</label>
+										</div>
+										<div class="large-9 column">
+											<textarea placeholder="Enter comments..."></textarea>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -902,10 +976,94 @@
 							</header>
 							<div class="element-eyes sub-element-fields">
 								<div class="element-eye right-eye column">
-									Right eye
+									<a href="#" class="icon-remove-side">Remove side</a>
+									<div class="row field-row">
+										<div class="large-3 column">
+											<label>Right method:</label>
+										</div>
+										<div class="large-9 column">
+											<select><option>Topcon</option></select>
+										</div>
+									</div>
+									<div class="row field-row">
+										<div class="large-3 column">
+											<label>Maximum CRT:</label>
+										</div>
+										<div class="large-9 column">
+											<div class="row collapse">
+												<div class="large-3 column">
+													<input type="text" />
+												</div>
+												<div class="large-9 column">
+													<div class="postfix unit align">
+											 			µm
+											 		</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row field-row">
+										<div class="large-3 column">
+											<label>Central SFT:</label>
+										</div>
+										<div class="large-9 column">
+											<div class="row collapse">
+												<div class="large-3 column">
+													<input type="text" />
+												</div>
+												<div class="large-9 column">
+													<div class="postfix unit align">
+											 			µm
+											 		</div>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 								<div class="element-eye left-eye column">
-									Left eye
+									<a href="#" class="icon-remove-side">Remove side</a>
+									<div class="row field-row">
+										<div class="large-3 column">
+											<label>Left method:</label>
+										</div>
+										<div class="large-9 column">
+											<select><option>Topcon</option></select>
+										</div>
+									</div>
+									<div class="row field-row">
+										<div class="large-3 column">
+											<label>Maximum CRT:</label>
+										</div>
+										<div class="large-9 column">
+											<div class="row collapse">
+												<div class="large-3 column">
+													<input type="text" />
+												</div>
+												<div class="large-9 column">
+													<div class="postfix unit align">
+											 			µm
+											 		</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row field-row">
+										<div class="large-3 column">
+											<label>Central SFT:</label>
+										</div>
+										<div class="large-9 column">
+											<div class="row collapse">
+												<div class="large-3 column">
+													<input type="text" />
+												</div>
+												<div class="large-9 column">
+													<div class="postfix unit align">
+											 			µm
+											 		</div>
+												</div>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</section>

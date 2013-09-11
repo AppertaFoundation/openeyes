@@ -123,7 +123,9 @@ $oe-element-edit-title-font-style: italic;
 		border-top: $oe-element-edit-border-top;
 		select {
 			width: auto;
-			font-size: $default-font-size;
+			&.full-width {
+				width: 100%;
+			}
 		}
 		textarea {
 			min-height: 1em;

@@ -1,3 +1,4 @@
+// Default multi-select style
 .multi-select {
 	.remove-all {
 		display: inline-block;
@@ -13,15 +14,45 @@
 		margin-left: 2px;
 		vertical-align: top;
 		width: 14px;
+		margin-top: 1px;
 		&:hover {
 			@include opacity(1);
 		}
 	}
-	.pill {
+	.multi-select-pill {
+		@extend .pill;
 		background: #ffe;
 		margin-bottom: 0;
 		margin-top: 0;
 		padding: 4px 6px;
 		position: relative;
+		&:first-child {
+			margin-left: 0;
+		}
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+	.multi-select-selections {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+		li {
+			@extend .multi-select-pill;
+			display: inline-block;
+		}
+	}
+}
+
+// Multi-select list style
+.multi-select-list {
+	.multi-select-selections {
+		li {
+			display: block;
+			@include border-radius(0);
+			background: #fff;
+			margin: 0;
+			padding: emCalc(2px) emCalc(5px);
+		}
 	}
 }

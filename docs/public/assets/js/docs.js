@@ -26,28 +26,33 @@
 		},
 		onViewMarkupClick: function(e) {
 
-			var element = $(e.currentTarget).parents('.example').find('.show-markup');
-			var markup = element.html();
+			var combinedMarkup = '';
 
-			markup = markup.replace(/<header>[\s\S.]*<\/header>/gm, '');
-			markup = markup.replace(/\t/gm, '    '); // tabs to 4 spaces
-			markup = markup.replace(/^\n/gm, '');    // remove blank lines
+			$(e.currentTarget).parents('.example').find('.show-markup').each(function(i, elem) {
 
-			// Get the indentation level from the first line
-			var indentation = markup.split('\n')[0].replace(/^([^>]+)<.*/, '$1').length
+				var markup = $(elem).html();
 
-			markup = markup.replace(new RegExp('^\\s{0,'+indentation+'}', 'gm'), ''); // remove leading whitespace
-			markup = markup.replace(/^\n/gm, '');    // remove blank lines
+				markup = markup.replace(/<header>[\s\S.]*<\/header>/gm, '');
+				markup = markup.replace(/\t/gm, '    '); // tabs to 4 spaces
+				markup = markup.replace(/^\n/gm, '');    // remove blank lines
 
-			// Prettify the markup
-			markup = prettyPrintOne(htmlEntities(markup));
+				// Get the indentation level from the first line
+				var indentation = markup.split('\n')[0].replace(/^([^>]+)<.*/, '$1').length
 
-			this.showMarkupDialog(markup);
+				markup = markup.replace(new RegExp('^\\s{0,'+indentation+'}', 'gm'), ''); // remove leading whitespace
+				markup = markup.replace(/^\n/gm, '');    // remove blank lines
+
+				// Prettify the markup
+				combinedMarkup += '<pre class="prettyprint lang-html">' + prettyPrintOne(htmlEntities(markup)) + '</pre>';
+
+			}.bind(this));
+
+			this.showMarkupDialog(combinedMarkup);
 		},
 		showMarkupDialog: function(markup) {
 			new OpenEyes.Dialog({
 				title: 'Markup',
-				content: '<pre class="prettyprint lang-html">' + markup + '</pre>',
+				content: markup,
 				width: 800,
 				height: 800,
 				constrainToViewport: true,

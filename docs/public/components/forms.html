@@ -64,9 +64,9 @@
 							</li>
 							<li><a href="#field-labels">Field labels</a></li>
 							<li>
-								<a href="#">Custom fields</a>
+								<a href="#custom-fields">Custom fields</a>
 								<ul>
-									<li><a href="#">Custom multi-select</a></li>
+									<li><a href="#multiselect-example">Custom multi-select</a></li>
 								</ul>
 							</li>
 						</ul>
@@ -149,6 +149,21 @@
 													Textarea input
 												</label>
 												<textarea id="input-textarea-1"></textarea>
+											</div>
+
+											<!-- Small text input with postfix unit -->
+											<div class="field-row">
+												<label for="input-text-postfix-1">Small text input with postfix label</label>
+												<div class="row collapse">
+													<div class="large-6 column">
+														<input type="text" id="input-text-postfix-1" />
+													</div>
+													<div class="large-6 column">
+														<div class="postfix unit align">
+															Postfix label
+														</div>
+													</div>
+												</div>
 											</div>
 
 											<!-- Radio group -->
@@ -250,6 +265,25 @@
 												</div>
 												<div class="large-8 column">
 													<textarea id="input-textarea-2"></textarea>
+												</div>
+											</div>
+
+											<!-- Small text input with postfix unit -->
+											<div class="row field-row">
+												<div class="large-4 column">
+													<label for="input-text-postfix-1">Small text input with postfix label</label>
+												</div>
+													<div class="large-8 column">
+													<div class="row collapse">
+														<div class="large-6 column">
+															<input type="text" id="input-text-postfix-1" />
+														</div>
+														<div class="large-6 column">
+															<div class="postfix unit align">
+																Postfix label
+															</div>
+														</div>
+													</div>
 												</div>
 											</div>
 
@@ -604,6 +638,102 @@
 									<li>When a form contains only one field and a heading is used
 									to describe the field. This is most common in event elements.</li>
 								</ul>
+							</div>
+						</div>
+
+						<hr />
+
+						<!-- Custom fields -->
+						<div class="row">
+							<div class="large-12 column">
+
+								<h2 id="custom-fields">Custom fields</h2>
+								<p>Sometimes the default form fields do not provide the functionality
+								or features required by the elements or forms throughout the application.</p>
+								<p>It's important to be familiar with these custom fields so that
+								they can re-used appropriately when required.</p>
+
+								<div class="example" id="multiselect-example">
+
+									<header>
+										<h3>Multi-select</h3>
+									</header>
+
+									<p>A multi-select custom field provides the ability for the user
+									to choose multiple options as well. Default multi-selects are generally cumbersome to use as they require
+									the user to select batch options, and if the user makes a mistake then all options are
+									deselected. This custom multi-select allows the user to select an option <em>
+									one at a time.</em></p>
+									<h4>When to use:</h4>
+									<p>When asking the user to select mulitple options from a massive list of options.</p>
+									<h4>Rules:</h4>
+									<ul>
+									</ul>
+									<h4>Example 1 (default style):</h4>
+									<div class="field-row row">
+										<div class="large-4 column end show-markup">
+											<div class="multi-select">
+												<div class="field-row">
+													<label for="multiselect-risks">
+														Risks:
+													</label>
+													<select id="multiselect-risks">
+														<option>-- Select --</option>
+														<option>Pre-existing glaucoma</option>
+														<option>Previous glaucoma surgery</option>
+														<option>Allergy to povidone iodine</option>
+														<option>Previous interocular surgery</option>
+														<option>CVA</option>
+														<option>MI</option>
+													</select>
+												</div>
+												<ul class="multi-select-selections field-row">
+													<li>
+														Previous glaucoma surgery
+														<a href="#" class="remove-one">Remove</a>
+													</li>
+													<li>
+														Hyperopia
+														<a href="#" class="remove-one">Remove</a>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+
+									<h4>Example 2 (list style):</h4>
+									<div class="field-row row">
+										<div class="large-4 column end show-markup">
+											<div class="multi-select multi-select-list">
+												<div class="field-row">
+													<label for="multiselect-risks">
+														Risks:
+													</label>
+													<select id="multiselect-risks">
+														<option>-- Select --</option>
+														<option>Pre-existing glaucoma</option>
+														<option>Previous glaucoma surgery</option>
+														<option>Allergy to povidone iodine</option>
+														<option>Previous interocular surgery</option>
+														<option>CVA</option>
+														<option>MI</option>
+													</select>
+												</div>
+												<ul class="multi-select-selections field-row">
+													<li>
+														Previous glaucoma surgery
+														<a href="#" class="remove-one">Remove</a>
+													</li>
+													<li>
+														Hyperopia
+														<a href="#" class="remove-one">Remove</a>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+
+								</div>
 							</div>
 						</div>
 					</div>
