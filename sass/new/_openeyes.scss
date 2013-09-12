@@ -1,5 +1,8 @@
 @charset "UTF-8";
 
+// Copyright header.
+@import "openeyes/copyright";
+
 // We need to declare this here as some of the mixins and functions require this.
 $em-base: 16px;
 
@@ -12,6 +15,3 @@ $em-base: 16px;
 
 // Global variables. We use the variables to change the site theme.
 @import "openeyes/themes/default/variables";
-
-// Copyright header.
-@import "openeyes/copyright";
