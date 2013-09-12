@@ -189,6 +189,30 @@
 							</div>
 							<div class="row field-row">
 								<div class="large-4 column">
+									<label for="">Pre Injection IOP Lowering Therapy:</label>
+								</div>
+								<div class="large-8 column">
+									<div class="multi-select  multi-select-list">
+										<div class="field-row">
+											<select>
+												<option>-- Select --</option>
+											</select>
+										</div>
+										<ul class="multi-select-selections field-row">
+											<li>
+												Iopidine 0.5%
+												<a href="#" class="remove-one">Remove</a>
+											</li>
+											<li>
+												Diamox 250mg
+												<a href="#" class="remove-one">Remove</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="row field-row">
+								<div class="large-4 column">
 									<label for="">Drug:</label>
 								</div>
 								<div class="large-8 column">
@@ -262,6 +286,46 @@
 								<a href="#">
 									Add left side <span class="icon-add-side"></span>
 								</a>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- Anterior Segment -->
+				<section class="element">
+					<header class="element-header">
+						<h3 class="element-title">Anterior Segment</h3>
+
+					</header>
+					<div class="element-field element-eyes row">
+						<div class="element-eye right-eye column">
+							<div class="row field-row">
+								<div class="large-4 column">
+									<label for="">Lens status:</label>
+								</div>
+								<div class="large-8 column">
+									<select>
+										<option>-- Select --</option>
+									</select>
+								</div>
+							</div>
+							<div class="field-row">
+								<?php echo eyedraw('large', 1); ?>
+							</div>
+						</div>
+						<div class="element-eye left-eye column">
+							<div class="row field-row">
+								<div class="large-4 column">
+									<label for="">Lens status:</label>
+								</div>
+								<div class="large-8 column">
+									<select>
+										<option>-- Select --</option>
+									</select>
+								</div>
+							</div>
+							<div class="field-row">
+								<?php echo eyedraw('large', 2); ?>
 							</div>
 						</div>
 					</div>
