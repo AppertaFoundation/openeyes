@@ -163,6 +163,10 @@ class Firm extends BaseActiveRecord
 		return $this->serviceSubspecialtyAssignment->service->name;
 	}
 
+	/**
+	* retrieve a label for the sub specialty assignment for this firm
+	* @return string
+	*/
 	public function getSubspecialtyText()
 	{
 		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty->name : 'Support services';
@@ -322,6 +326,21 @@ class Firm extends BaseActiveRecord
 		return $this->name.' '.$this->serviceSubspecialtyAssignment->subspecialty->ref_spec;
 	}
 
+	/**
+	 * get the subspecialty for the firm - null if one not set (support service firm)
+	 *
+	 * @return Subspecialty|null
+	 */
+	public function getSubspecialty()
+	{
+		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty : null;
+	}
+
+	/**
+	 * get the id for the subspecialty for the firm - null if one not set (support service firm)
+	 *
+	 * @return int|null
+	 */
 	public function getSubspecialtyID()
 	{
 		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty_id : null;

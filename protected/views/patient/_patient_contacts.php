@@ -308,7 +308,7 @@ $(document).ready(function() {
 		if ($('#add_contact').is(':hidden')) {
 			$('#add_contact').slideToggle('fast');
 			$('#contact_label_id').val($('#contactfilter').val());
-			if ($('#contactfilter').val() == 'nonophthalmic') {
+			if ($('#contactfilter').val() == 'nonspecialty') {
 				$('div.contactLabel').show();
 			} else {
 				$('div.contactLabel').hide();
@@ -333,6 +333,11 @@ $(document).ready(function() {
 			$('#add_contact').slideToggle('fast');
 		}
 		$('#btn-add-contact').hide();
+
+		if ($('#contactname').val().length >= 3) {
+			$('#contactname').focus();
+			$('#contactname').autocomplete('search',$('#contactname').val());
+		}
 	});
 
 	$('#add_contact #institution_id').change(function() {

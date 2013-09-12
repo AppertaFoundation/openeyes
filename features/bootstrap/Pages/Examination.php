@@ -156,7 +156,7 @@ class Examination extends Page
     {
         $this->getElement('intraocularRight')->selectOption($pressure);
         $this->getElement('instrumentRight')->selectOption($instrument);
-        $this->getSession()->wait(3000);
+
     }
 
     protected function isDilationCollapsed()
@@ -168,6 +168,7 @@ class Examination extends Page
     {
         if ($this->isDilationCollapsed()){
             $this->getElement('openDilation')->click();
+            $this->getSession()->wait(10000);
         }
     }
 

@@ -1,4 +1,4 @@
-@phasing @regression
+@phasing
 Feature: Create New Phasing Event
   In order to cover every possible route throughout the site
   As an automation tester
@@ -21,17 +21,29 @@ Feature: Create New Phasing Event
     Then I expand the Glaucoma sidebar
     And I add a New Event "<EventType>"
 
+
+    Then I choose a right eye Intraocular Pressure Instrument  of "1"
+    Then I choose a right eye Intraocular Pressure Instrument  of "2"
+    Then I choose a right eye Intraocular Pressure Instrument  of "3"
+    Then I choose a right eye Intraocular Pressure Instrument  of "5"
     Then I choose a right eye Intraocular Pressure Instrument  of "4"
     And I choose right eye Dilation of Yes
 #    And I choose right eye Dilation of No
+    Then I choose a right eye Intraocular Pressure Reading Time of "14:00"
     Then I choose a right eye Intraocular Pressure Reading of "5"
     And I add right eye comments of "Right eye comments here"
 
-    Then I choose a left eye Intraocular Pressure Instrument  of "5"
+    Then I choose a left eye Intraocular Pressure Instrument  of "1"
+    Then I choose a right eye Intraocular Pressure Instrument  of "2"
+    Then I choose a right eye Intraocular Pressure Instrument  of "3"
+    Then I choose a right eye Intraocular Pressure Instrument  of "5"
+    Then I choose a right eye Intraocular Pressure Instrument  of "4"
+
     And I choose left eye Dilation of Yes
 #    And I choose left eye Dilation of No
+    Then I choose a left eye Intraocular Pressure Reading Time of "14:42"
     Then I choose a left eye Intraocular Pressure Reading of "7"
-#    And I add left eye comments of "Left eye comments here"
+    And I add left eye comments of "Left eye comments here"
 
     Then I Save the Phasing Event
 

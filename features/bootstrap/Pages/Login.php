@@ -15,6 +15,7 @@ class Login extends Page
     public function maximizeBrowserWindow ()
     {
         $this->getSession()->resizeWindow(1280,800);
+//        $this->getSession()->resizeWindow(2650,1600); # Full screen on Mac Second Monitor
     }
 
     public function loginWith($user, $password)

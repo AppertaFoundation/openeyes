@@ -1666,6 +1666,7 @@ div.contactLocations { margin-top: 2em; }
 #add_contact div { height: 28px; }
 #add_contact .label { display: inline-block; width: 8em; }
 #add_contact .data { display: inline-block; }
+#add_contact select {width: 250px;}
 
 #edit_contact { margin-top: 1em; }
 #edit_contact div { height: 28px; }
@@ -1839,6 +1840,8 @@ body .ui-widget-overlay {
 #add-new-event-dialog div.title { margin-top: 10px; margin-bottom: 15px; }
 #add-new-event-dialog p > a:hover { border: none; color: #fff; background: #69bd51; }
 #add-new-event-dialog p > a:active { border: none; color: #fff; background: #5da748; }
+#add-new-event-dialog .add_event_disabled a { color: #999; }
+#add-new-event-dialog .add_event_disabled a:hover { color: #999; background: #f6f6f6; }
 
 #add-new-episode-dialog .details { margin-top: 1em; }
 #add-new-episode-dialog .details p { margin-bottom: 1px; font-size: 15px; padding: 10px; border-radius: 5px; -webkit-border-radius: 5px; background: #f1f1f1;}

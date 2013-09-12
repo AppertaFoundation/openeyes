@@ -42,7 +42,7 @@ $form = $this->beginWidget('CActiveForm', array(
 <div class="title">
 	<div class="details">
 		<p><span>Firm:</span><strong><?php echo $firm->name?></strong></p>
-		<p><span>Subspecialty:</span><strong><?php echo $firm->serviceSubspecialtyAssignment->subspecialty->name?></strong></p>
+		<p><span>Subspecialty:</span><strong><?php echo $firm->getSubspecialtyText()?></strong></p>
 	</div>
 	<div class="buttons">
 		<button class="classy green mini confirm" type="button"><span class="button-span button-span-green">Create new episode</span></button>
@@ -53,6 +53,7 @@ $form = $this->beginWidget('CActiveForm', array(
 <?php $this->endWidget()?>
 <script type="text/javascript">
 	$('#add-new-episode-dialog button.confirm').click(function(e) {
+		disableButtons();
 		$('#add-new-episode-form').submit();
 		e.preventDefault();
 	});

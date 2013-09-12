@@ -79,4 +79,29 @@ class AddingNewEventContext extends PageObjectContext
         $addNewEvent = $this->getPage('AddingNewEvent');
         $addNewEvent->expandGlaucoma();
     }
+
+    /**
+     * @Then /^I expand the Medical Retinal sidebar$/
+     */
+    public function iExpandTheMedicalRetinalSidebar()
+    {
+        /**
+         * @var AddingNewEvent $addNewEvent
+         */
+        $addNewEvent = $this->getPage('AddingNewEvent');
+        $addNewEvent->expandMedicalRetinal();
+    }
+
+    /**
+     * @Then /^I expand the Support Firm sidebar$/
+     */
+    public function iExpandTheSupportFirmSidebar()
+    {
+        /**
+         * @var AddingNewEvent $addNewEvent
+         */
+        $addNewEvent = $this->getPage('AddingNewEvent');
+        $addNewEvent->expandSupportFirm();
+
+    }
 }

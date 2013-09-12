@@ -116,6 +116,7 @@ class PatientController extends BaseController
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 
 		$legacyepisodes = $this->patient->legacyepisodes;
+		// NOTE that this is not being used in the render
 		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		$this->layout = '//layouts/patientMode/main';
@@ -142,7 +143,15 @@ class PatientController extends BaseController
 		);
 
 		$this->render('view', array(
-			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed, 'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']), 'supportserviceepisodes' => $supportserviceepisodes,
+			'tab' => $tabId,
+			'event' => $eventId,
+			'episodes' => $episodes,
+			'ordered_episodes' => $ordered_episodes,
+			'legacyepisodes' => $legacyepisodes,
+			'episodes_open' => $episodes_open,
+			'episodes_closed' => $episodes_closed,
+			'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
+			'supportserviceepisodes' => $supportserviceepisodes,
 		));
 	}
 
@@ -382,7 +391,7 @@ class PatientController extends BaseController
 				)
 		);
 		if (BaseController::checkUserLevel(4) && $this->episode->editable
-				&& $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		&& $this->episode->firm && $this->firm->getSubspecialtyID() == $this->episode->firm->getSubspecialtyID()) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
 					'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
@@ -432,14 +441,6 @@ class PatientController extends BaseController
 
 				if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
 					$this->episode->episode_status_id = $_POST['episode_status_id'];
-
-					if (EpisodeStatus::model()->findByPk($_POST['episode_status_id'])->name == 'Discharged') {
-						if ($this->episode->end_date === null) {
-							$this->episode->end_date = date('Y-m-d H:i:s');
-						}
-					} elseif ($this->episode->end_date !== null) {
-						$this->episode->end_date = null;
-					}
 
 					if (!$this->episode->save()) {
 						throw new Exception('Unable to update status for episode '.$this->episode->id.' '.print_r($this->episode->getErrors(),true));
@@ -1234,7 +1235,7 @@ class PatientController extends BaseController
 			}
 		}
 
-		if (@$_POST['contact_label_id'] == 'nonophthalmic' && !@$_POST['label_id']) {
+		if (@$_POST['contact_label_id'] == 'nonspecialty' && !@$_POST['label_id']) {
 			$errors['label_id'] = 'Please select a label';
 		}
 
@@ -1299,6 +1300,9 @@ class PatientController extends BaseController
 					throw new Exception("Institution not found: ".@$_POST['institution_id']);
 				}
 			}
+			if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+				throw new Exception("patient required for contact assignment");
+			}
 
 			// Attempt to de-dupe by looking for an existing record that matches the user's input
 			$criteria = new CDbCriteria;
@@ -1328,7 +1332,7 @@ class PatientController extends BaseController
 			$contact = new Contact;
 			$contact->attributes = $_POST;
 
-			if (@$_POST['contact_label_id'] == 'nonophthalmic') {
+			if (@$_POST['contact_label_id'] == 'nonspecialty') {
 				if (!$label = ContactLabel::model()->findByPk(@$_POST['label_id'])) {
 					throw new Exception("Contact label not found: ".@$_POST['label_id']);
 				}
@@ -1538,7 +1542,7 @@ class PatientController extends BaseController
 
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
-		if ($patient->hasOpenEpisodeOfSubspecialty($firm->serviceSubspecialtyAssignment->subspecialty_id)) {
+		if ($patient->hasOpenEpisodeOfSubspecialty($firm->getSubspecialtyID())) {
 			echo "0";
 			return;
 		}
@@ -1558,7 +1562,9 @@ class PatientController extends BaseController
 
 		if (!empty($_POST['firm_id'])) {
 			$firm = Firm::model()->findByPk($_POST['firm_id']);
-			$episode = $patient->addEpisode($firm);
+			if (!$episode = $patient->getOpenEpisodeOfSubspecialty($firm->getSubspecialtyID())) {
+				$episode = $patient->addEpisode($firm);
+			}
 
 			$this->redirect(array('/patient/episode/'.$episode->id));
 		}
