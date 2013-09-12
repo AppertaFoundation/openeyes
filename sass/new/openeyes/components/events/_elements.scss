@@ -75,6 +75,12 @@ $oe-field-highlight-important-bg-color: #fff300 !default;
 	}
 }
 
+.eye-message {
+	text-align: center;
+	font-size: $default-font-size;
+	padding-top: 1em;
+}
+
 .field-value {
 	font-size: $oe-field-value-font-size;
 	line-height: $oe-field-value-line-height;
