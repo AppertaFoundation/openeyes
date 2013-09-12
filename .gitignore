@@ -34,3 +34,4 @@ vendor
 /docs/public/styleguide/
 /docs/public/jsdoc
 /docs/public/assets/core
+.DS_Store
