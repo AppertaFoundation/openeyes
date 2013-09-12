@@ -63,22 +63,24 @@
 								</div>
 							</header>
 							<div class="sub-element-fields">
-								<div class="multi-select">
-									<div class="field-row">
-										<select>
-											<option>-- Add --</option>
-										</select>
-										<a href="#" class="remove-all">Remove all</a>
+								<div class="field-row">
+									<div class="multi-select">
+										<div class="field-row">
+											<select>
+												<option>-- Add --</option>
+											</select>
+											<a href="#" class="remove-all">Remove all</a>
+										</div>
+										<ul class="multi-select-selections field-row">
+											<li>
+												No comorbidities
+											</li>
+											<li>
+												Hyperopia
+												<a href="#" class="remove-one">Remove</a>
+											</li>
+										</ul>
 									</div>
-									<ul class="multi-select-selections field-row">
-										<li>
-											No comorbidities
-										</li>
-										<li>
-											Hyperopia
-											<a href="#" class="remove-one">Remove</a>
-										</li>
-									</ul>
 								</div>
 								<div class="field-row">
 									<textarea placeholder="Enter comments here"></textarea>

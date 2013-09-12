@@ -68,6 +68,7 @@
 								<ul>
 									<li><a href="#multiselect-example">Multi-select</a></li>
 									<li><a href="#highlight-example">Highlight</a></li>
+									<li><a href="#select-search-example">Select search</a></li>
 								</ul>
 							</li>
 						</ul>
@@ -869,9 +870,50 @@
 											</div>
 										</div>
 									</div>
-
-
 								</div>
+
+								<!-- Select search -->
+
+								<div class="example" id="select-search-example">
+
+									<header>
+										<h3>Select search</h3>
+									</header>
+
+									<p>A select search component is a combination of a default
+									select dropdown with an option to search for additional options.</p>
+									<h4>When to use:</h4>
+									<p>When displaying a reduced list of common and relevant options from a massive list in a select dropdown,
+									and allowing the user to search for additional options within the massive list.</p>
+									<h4>Example:</h4>
+									<div class="field-row row">
+										<div class="large-4 column end show-markup">
+
+											<div class="field-row row collapse">
+												<div class="large-10 column">
+													<select>
+														<option>-- Select --</option>
+														<option>Idiopathic polypoidal choroidal vasculopathy with some very long text</option>
+													</select>
+												</div>
+												<div class="large-2 column">
+													<div class="postfix">
+														<a href="#" class="button button-icon small">
+															<span class="icon-button-small-search"></span>
+															<span class="hide-offscreen">Search</span>
+														</a>
+													</div>
+												</div>
+											</div>
+											<div class="field-row">
+												<input type="text" placeholder="Search for diagnosis..." />
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+
 							</div>
 						</div>
 					</div>
