@@ -1,9 +1,9 @@
+<? include 'components/common.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
 <link rel="stylesheet" href="/module_assets/operation-booking/css/module_new.css" />
-
 </head>
 <body>
 	<div class="container main" role="main">

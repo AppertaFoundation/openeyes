@@ -1,3 +1,4 @@
+<? include 'components/common.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
