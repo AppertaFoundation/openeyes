@@ -32,6 +32,12 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 		padding: 0;
 		margin: 0;
 	}
+	.field-row {
+		padding-bottom: .9em;
+		&:last-child {
+			padding: 0;
+		}
+	}
 }
 
 .element-header {
@@ -73,7 +79,6 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 .element-value {
 	font-size: $oe-element-value-font-size;
 	line-height: $oe-element-value-line-height;
-	padding-bottom: $oe-element-value-padding-bottom;
 }
 
 .element-label {
@@ -96,9 +101,7 @@ $oe-element-highlight-important-bg-color: #fff300 !default;
 }
 
 .element-data-row {
-	.element-label, .element-value {
-		padding: emCalc(9px) 0;
-	}
+	@extend .field-row;
 }
 
 .element-table {
@@ -137,6 +140,9 @@ $oe-element-edit-title-font-style: italic;
 		}
 		.field-row {
 			padding-bottom: .8em;
+			&:last-child {
+				padding: 0;
+			}
 		}
 	}
 	.element-title {
