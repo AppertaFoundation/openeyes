@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.network :forwarded_port, host: 8888, guest: 80
   config.vm.network :forwarded_port, host: 3333, guest: 3306
-  config.vm.synced_folder "./", "/var/www", id: "vagrant-root", :extra => "dmode=777,fmode=666"
+  config.vm.synced_folder "./", "/var/www", id: "vagrant-root", :mount_options => ["dmode=777,fmode=666"]
 
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = "puppet"
