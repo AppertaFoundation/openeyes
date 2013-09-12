@@ -25,10 +25,10 @@
 				<h3 class="element-title">Diagnosis</h3>
 			</header>
 			<fieldset class="element-fields">
-				<fieldset class="row field-row">
-					<legend class="small-2 column">
-						Eyes:
-					</legend>
+				<div class="row field-row">
+					<div class="small-2 column">
+						<label for="username">Eyes:</label>
+					</div>
 					<div class="small-10 column">
 						<label class="inline highlight">
 							<input type="radio" />
@@ -43,15 +43,15 @@
 							Left
 						</label>
 					</div>
-				</fieldset>
+				</div>
 				<div class="row field-row">
 					<div class="small-2 column">
 						<label>Diagnosis:</label>
 					</div>
 					<div class="small-4 column end">
 						<div class="panel element-field">Blepharospasm</div>
-						<fieldset>
-							<legend>Change diagnosis:</legend>
+						<fieldset class="panel element-field">
+							<h4>Change diagnosis:</h4>
 							<div class="field-row">
 								<select>
 									<option>Select a commonly used diagnosis</option>
@@ -71,8 +71,10 @@
 				<h3 class="element-title">Operation</h3>
 			</header>
 			<fieldset class="element-fields">
-				<fieldset class="row field-row">
-					<legend class="small-2 column">Eyes:</legend>
+				<div class="row field-row">
+					<div class="small-2 column">
+						<label for="username">Eyes:</label>
+					</div>
 					<div class="small-10 column">
 						<label class="inline highlight">
 							<input type="radio" />
@@ -87,7 +89,7 @@
 							Left
 						</label>
 					</div>
-				</fieldset>
+				</div>
 				<div class="row field-row">
 					<div class="large-2 column">
 						<label>
@@ -95,8 +97,8 @@
 						</label>
 					</div>
 					<div class="large-4 column">
-						<fieldset>
-							<legend>Add a procedure:</legend>
+						<fieldset class="panel element-field">
+							<h4>Add a procedure:</h4>
 							<div class="field-row">
 								<select>
 									<option>Select a subsection</option>
@@ -109,6 +111,7 @@
 					</div>
 					<div class="large-6 column">
 						<div class="panel element-field">
+							<h4>Procedures:</h4>
 							<table class="plain">
 								<thead>
 									<tr>
@@ -151,10 +154,10 @@
 						</div>
 					</div>
 				</div>
-				<fieldset class="row field-row">
-					<legend class="large-2 column">
-						Consultant required:
-					</legend>
+				<div class="row field-row">
+					<div class="large-2 column">
+						<label>Consultant required:</label>
+					</div>
 					<div class="large-4 column end">
 						<label class="inline highlight">
 							<input type="radio" />
@@ -165,13 +168,13 @@
 							No
 						</label>
 					</div>
-				</fieldset>
+				</div>
 				<div class="row field-row">
 					<div class="large-2 column">
 						<label>Add comments:</label>
 					</div>
 					<div class="large-4 column end">
-						<textarea placeholder="Add comments..."></textarea>
+						<textarea></textarea>
 					</div>
 				</div>
 				<div class="row field-row">
@@ -201,19 +204,21 @@
 			<header class="element-header">
 				<h3 class="element-title">Schedule operation</h3>
 			</header>
-			<div class="element-fields">
-				<fieldset class="row field-row">
-					<legend class="large-2 column">
+			<fieldset class="element-fields">
+				<div class="row field-row">
+					<div class="large-2 column">
+						<label>
 							Schedule options
-					</legend>
+						</label>
+					</div>
 					<div class="large-4 column end">
 						<label class="inline highlight">
 							<input type="radio" />
 							As soon as possible
 						</label>
 					</div>
-				</fieldset>
-			</div>
+				</div>
+			</fieldset>
 		</section>
 
 	</div>
