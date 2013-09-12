@@ -106,6 +106,33 @@ $(document).ready(function(){
 	);
 
 	/**
+	 * Warn on leaving edit mode
+	 */
+	if (window.location.pathname.toLowerCase().indexOf("update") >= 0)
+	{
+		var formHasChanged = false;
+		var submitted = false;
+
+		$(document).change (function (e) {
+			formHasChanged = true;
+		});
+
+
+		window.onbeforeunload = function (e) {
+			if (formHasChanged && !submitted) {
+				var message = "You have not saved your changes.", e = e || window.event;
+				if (e) {
+					e.returnValue = message;
+				}
+				return message;
+			}
+		}
+		$("form").submit(function() {
+			submitted = true;
+		});
+	}
+
+	/**
 	 * Site / firm switcher
 	 */
 	(function firmSwitcher() {
