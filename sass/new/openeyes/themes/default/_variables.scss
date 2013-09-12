@@ -411,3 +411,24 @@ $oe-sprite-icons-alerts: "_elements/icons/alerts/*.png";
 $oe-sprite-icons-button-large: "_elements/btns/large/*.png";
 $oe-sprite-icons-button-small: "_elements/btns/small/*.png";
 $oe-sprite-icon-showhide: "_elements/icons/showhide/*.png";
+
+// Element vars
+$oe-element-border-top: 1px dotted #97c6f1;
+$oe-element-title-color: #56a7f1;
+$oe-element-title-font-style: italic;
+$oe-element-title-font-size: $default-font-size;
+$oe-element-title-padding: 8px 10px;
+$oe-element-title-margin: 0;
+$oe-element-h4-font-size: $default-font-size;
+$oe-element-fieldset-panel-border-color: #d9d9d9;
+$oe-field-value-padding-bottom: 5px;
+$oe-field-value-font-size: $default-font-size;
+$oe-field-value-line-height: 1.3;
+$oe-element-eye-border-color: #fafafa;
+$oe-field-highlight-border-radius: 5px;
+$oe-field-highlight-bg-color: white;
+$oe-field-highlight-padding: 10px;
+$oe-field-highlight-font-size: emCalc(18px);
+$oe-field-highlight-margin: 0;
+$oe-field-highlight-list-item-font-size: 1em;
+$oe-field-highlight-important-bg-color: #fff300;

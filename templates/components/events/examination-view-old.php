@@ -24,14 +24,14 @@
 				<div class="element">
 					<h3 class="element-title">History</h3>
 					<div class="panel element">
-						<div class="element-value">History test 123</div>
+						<div class="field-value">History test 123</div>
 					</div>
 					<div class="panel sub-elements">
 						<!-- Sub (optional) element -->
 						<div class="sub-element">
 							<h4 class="sub-element-title">Comorbidities</h4>
 							<div class="panel sub-element">
-								<div class="element-value">
+								<div class="field-value">
 									Angina, Ethnicity
 									<br />
 									Test 123
@@ -53,7 +53,7 @@
 										<img src="/img/new/tmp/eyedraw-small.png" class="canvas" />
 									</div>
 									<div class="large-9 column">
-										<div class="element-value">
+										<div class="field-value">
 											0.00/0.00 @ 20° Auto-refraction <br />
 											Spherical equivalent: 0.00
 										</div>
@@ -68,7 +68,7 @@
 										<img src="/img/new/tmp/eyedraw-small.png" class="canvas" />
 									</div>
 									<div class="large-9 column">
-										<div class="element-value">
+										<div class="field-value">
 											0.00/0.00 @ 20° Auto-refraction <br />
 											Spherical equivalent: 0.00
 										</div>
@@ -84,14 +84,14 @@
 					<div class="row collapse">
 						<div class="large-6 column">
 							<div class="panel element">
-								<div class="element-value">Not recorded</div>
-								<div class="element-value">Left eye Visual Acuity</div>
+								<div class="field-value">Not recorded</div>
+								<div class="field-value">Left eye Visual Acuity</div>
 							</div>
 						</div>
 						<div class="large-6 column">
 							<div class="panel element">
-								<div class="element-value">Not recorded</div>
-								<div class="element-value">Right eye Visual Acuity</div>
+								<div class="field-value">Not recorded</div>
+								<div class="field-value">Right eye Visual Acuity</div>
 							</div>
 						</div>
 					</div>
@@ -107,10 +107,10 @@
 										<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
 									</div>
 									<div class="large-7 column">
-										<div class="element-value">
+										<div class="field-value">
 											Gonioscopy, light patchy pigment
 										</div>
-										<div class="element-label">
+										<div class="field-label">
 											Shaffer Grade:
 										</div>
 										<div class="gonio-cross">
@@ -119,7 +119,7 @@
 											<div class="gonio-nas">4</div>
 											<div class="gonio-inf">4</div>
 										</div>
-										<div class="element-value">
+										<div class="field-value">
 											Van Herick: NR
 										</div>
 									</div>
@@ -133,10 +133,10 @@
 										<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" />
 									</div>
 									<div class="large-7 column">
-										<div class="element-value">
+										<div class="field-value">
 											Gonioscopy, light patchy pigment
 										</div>
-										<div class="element-label">
+										<div class="field-label">
 											Shaffer Grade:
 										</div>
 										<div class="gonio-cross">
@@ -145,7 +145,7 @@
 											<div class="gonio-nas">4</div>
 											<div class="gonio-inf">4</div>
 										</div>
-										<div class="element-value">
+										<div class="field-value">
 											Van Herick: NR
 										</div>
 									</div>
@@ -160,12 +160,12 @@
 					<div class="row collapse">
 						<div class="large-6 column">
 							<div class="panel element">
-								<div class="element-value">Blepharospasm</div>
+								<div class="field-value">Blepharospasm</div>
 							</div>
 						</div>
 						<div class="large-6 column">
 							<div class="panel element">
-								<div class="element-value">Discharge, ectropion</div>
+								<div class="field-value">Discharge, ectropion</div>
 							</div>
 						</div>
 					</div>
@@ -181,31 +181,31 @@
 										<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas" />
 									</div>
 									<div class="large-7 column">
-										<div class="element-value">
+										<div class="field-value">
 											Anterior Segment
 										</div>
 										<div class="row">
 											<div class="large-4 column">
-												<div class="element-label">Pupil Size :</div>
+												<div class="field-label">Pupil Size :</div>
 											</div>
 											<div class="large-8 column">
-												<div class="element-value">Large</div>
+												<div class="field-value">Large</div>
 											</div>
 										</div>
 										<div class="row">
 											<div class="large-4 column">
-												<div class="element-label">Nuclear :</div>
+												<div class="field-label">Nuclear :</div>
 											</div>
 											<div class="large-8 column">
-												<div class="element-value">None</div>
+												<div class="field-value">None</div>
 											</div>
 										</div>
 										<div class="row">
 											<div class="large-4 column">
-												<div class="element-label">Cortical :</div>
+												<div class="field-label">Cortical :</div>
 											</div>
 											<div class="large-8 column">
-												<div class="element-value">None</div>
+												<div class="field-value">None</div>
 											</div>
 										</div>
 									</div>
@@ -219,31 +219,31 @@
 										<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas" />
 									</div>
 									<div class="large-7 column">
-										<div class="element-value">
+										<div class="field-value">
 											Anterior Segment
 										</div>
 										<div class="row">
 											<div class="large-4 column">
-												<div class="element-label">Pupil Size :</div>
+												<div class="field-label">Pupil Size :</div>
 											</div>
 											<div class="large-8 column">
-												<div class="element-value">Large</div>
+												<div class="field-value">Large</div>
 											</div>
 										</div>
 										<div class="row">
 											<div class="large-4 column">
-												<div class="element-label">Nuclear :</div>
+												<div class="field-label">Nuclear :</div>
 											</div>
 											<div class="large-8 column">
-												<div class="element-value">None</div>
+												<div class="field-value">None</div>
 											</div>
 										</div>
 										<div class="row">
 											<div class="large-4 column">
-												<div class="element-label">Cortical :</div>
+												<div class="field-label">Cortical :</div>
 											</div>
 											<div class="large-8 column">
-												<div class="element-value">None</div>
+												<div class="field-value">None</div>
 											</div>
 										</div>
 									</div>
@@ -257,14 +257,14 @@
 								<div class="row collapse">
 									<div class="large-6 column">
 										<div class="panel sub-element">
-											<div class="element-value">
+											<div class="field-value">
 												234 µm (Ultrasound pachymetry)
 											</div>
 										</div>
 									</div>
 									<div class="large-6 column">
 										<div class="panel sub-element">
-											<div class="element-value">
+											<div class="field-value">
 												234 µm (Ultrasound pachymetry)
 											</div>
 										</div>

@@ -342,7 +342,7 @@
 						</div>
 						<div class="element-eye left-eye column">
 							<a href="#" class="icon-remove-side">Remove side</a>
-							<div class="element-label">Not recorded</div>
+							<div class="field-label">Not recorded</div>
 							<div class="field-row">
 								<button class="button small secondary">
 									Add
@@ -371,7 +371,7 @@
 								<select>
 									<option value="1" selected="selected">NR</option>
 								</select>
-								<span class="element-label">
+								<span class="field-label">
 									mmHg,
 								</span>
 								<select>
@@ -384,7 +384,7 @@
 								<select>
 									<option value="1" selected="selected">NR</option>
 								</select>
-								<span class="element-label">
+								<span class="field-label">
 									mmHg,
 								</span>
 								<select>

@@ -3435,7 +3435,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 
 /* line 58, ../sass/new/openeyes/components/events/_elements.scss */
-.element-data > .element-value:last-child, .edit .element-fields > .element-value:last-child, .sub-element-data > .element-value:last-child, .edit .sub-element-fields > .element-value:last-child, .element-data > .element-label:last-child, .edit .element-fields > .element-label:last-child, .sub-element-data > .element-label:last-child, .edit .sub-element-fields > .element-label:last-child {
+.element-data > .field-value:last-child, .edit .element-fields > .field-value:last-child, .sub-element-data > .field-value:last-child, .edit .sub-element-fields > .field-value:last-child, .element-data > .field-label:last-child, .edit .element-fields > .field-label:last-child, .sub-element-data > .field-label:last-child, .edit .sub-element-fields > .field-label:last-child {
   padding-bottom: 0;
 }
 
@@ -3453,13 +3453,13 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 
 /* line 79, ../sass/new/openeyes/components/events/_elements.scss */
-.element-value, .element-label {
+.field-value, .field-label {
   font-size: 0.8125em;
   line-height: 1.3;
 }
 
 /* line 88, ../sass/new/openeyes/components/events/_elements.scss */
-.element-highlight {
+.field-highlight {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -3472,11 +3472,11 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   list-style-type: none;
 }
 /* line 95, ../sass/new/openeyes/components/events/_elements.scss */
-.element-highlight li {
+.field-highlight li {
   font-size: 1em;
 }
 /* line 98, ../sass/new/openeyes/components/events/_elements.scss */
-.element-highlight.important {
+.field-highlight.important {
   background: #fff300;
 }
 

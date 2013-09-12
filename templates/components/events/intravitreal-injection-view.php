@@ -27,12 +27,12 @@
 					<div class="element-data">
 						<div class="row element-data-row">
 							<div class="large-2 column">
-								<div class="element-label">
+								<div class="field-label">
 									Site:
 								</div>
 							</div>
 							<div class="large-10 column">
-								<div class="element-value">
+								<div class="field-value">
 									City Road
 								</div>
 							</div>
@@ -48,31 +48,31 @@
 						<div class="element-eye right-eye column">
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Anaesthetic Type:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										Topical
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Anaesthetic Agent:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										G Amethocaine
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="element-value">Not recorded</div>
+							<div class="field-value">Not recorded</div>
 						</div>
 					</div>
 				</section>
@@ -85,139 +85,139 @@
 						<div class="element-eye right-eye column">
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Pre Injection Antiseptic:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										Iodine 5%
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Pre Injection Skin Cleanser:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										Chlorhexidine
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Pre Injection IOP Lowering Therapy Required:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										Yes
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Pre Injection IOP Lowering Therapy:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										Iopidine 1.0%
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Drug:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										Avastin
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Number of Injections:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										1
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Batch Number:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										1212
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Batch Expiry Date:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										12 Sep 2013
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Injection Given By:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										Root Enoch
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Injection Time:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										7:42am
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Post Injection IOP Lowering Therapy Required:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										No
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="element-value">Not recorded</div>
+							<div class="field-value">Not recorded</div>
 						</div>
 					</div>
 				</section>
@@ -230,43 +230,43 @@
 						<div class="element-eye right-eye column">
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Counting Fingers Checked?:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										Yes
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										IOP:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										IOP should be checked
 									</div>
 								</div>
 							</div>
 							<div class="row element-data-row">
 								<div class="large-4 column">
-									<div class="element-label">
+									<div class="field-label">
 										Post Injection Drops:
 									</div>
 								</div>
 								<div class="large-8 column">
-									<div class="element-value">
+									<div class="field-value">
 										G. Levofloxacin four times daily for 5 days
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="element-value">
+							<div class="field-value">
 								Not recorded
 							</div>
 						</div>

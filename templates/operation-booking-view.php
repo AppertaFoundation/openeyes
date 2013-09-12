@@ -16,7 +16,7 @@
 			<div class="box content">
 				<div class="row">
 					<? include 'components/events/sidebar.php'; ?>
-					<? include 'components/events/booking-view.php'; ?>
+					<? include 'components/events/operation-booking-view.php'; ?>
 				</div>
 			</div>
 		</div>

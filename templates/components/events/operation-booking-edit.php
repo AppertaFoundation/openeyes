@@ -155,7 +155,7 @@
 					<legend class="large-2 column">
 						Consultant required:
 					</legend>
-					<div class="large-4 column end">
+					<div class="large-10 column">
 						<label class="inline highlight">
 							<input type="radio" />
 							Yes
@@ -166,6 +166,34 @@
 						</label>
 					</div>
 				</fieldset>
+				<fieldset class="row field-row">
+					<legend class="large-2 column">
+						Anaesthetic type:
+					</legend>
+					<div class="large-10 column">
+						<label class="inline highlight">
+							<input type="radio" />
+							Topical
+						</label>
+						<label class="inline highlight">
+							<input type="radio" />
+							LA
+						</label>
+						<label class="inline highlight">
+							<input type="radio" />
+							LAC
+						</label>
+						<label class="inline highlight">
+							<input type="radio" />
+							LAS
+						</label>
+						<label class="inline highlight">
+							<input type="radio" />
+							GA
+						</label>
+					</div>
+				</fieldset>
+
 				<div class="row field-row">
 					<div class="large-2 column">
 						<label>Add comments:</label>

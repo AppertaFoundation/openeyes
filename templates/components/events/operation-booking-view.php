@@ -21,6 +21,7 @@
 		</div>
 	</header>
 	<div class="event-content">
+
 		<h2 class="event-title">Operation booking (Requires scheduling)</h2>
 
 		<div class="alert-box alert with-icon">
@@ -31,53 +32,53 @@
 			Operation requires scheduling.
 		</div>
 
-		<section class="row element">
+		<section class="row">
 			<div class="large-12 column">
-				<h3 class="element-title">Diagnosis</h3>
-				<div class="element-value element-highlight">Left Cyst of eyelid</div>
+				<h3 class="field-title">Diagnosis</h3>
+				<div class="field-value field-highlight">Left Cyst of eyelid</div>
 			</div>
 		</section>
 
-		<section class="row element">
+		<section class="row">
 			<div class="large-12 column">
-				<h3 class="element-title">Procedures</h3>
-				<ul class="element-value element-highlight important">
+				<h3 class="field-title">Procedures</h3>
+				<ul class="field-value field-highlight important">
 					<li>Left Lester Jones tube</li>
 					<li>Conjunctival flap</li>
 				</ul>
 			</div>
 		</section>
 
-		<section class="row element">
+		<section class="row">
 			<div class="large-6 column">
-				<h3 class="element-title">Anaesthetic</h3>
-				<div class="element-value">Topical</div>
+				<h3 class="field-title">Anaesthetic</h3>
+				<div class="field-value">Topical</div>
 			</div>
 			<div class="large-6 column">
-				<h3 class="element-title">Consultant required?</h3>
-				<div class="element-value">No Consultant</div>
-			</div>
-		</section>
-
-		<section class="row element">
-			<div class="large-6 column">
-				<h3 class="element-title">Post Operative Stay Required</h3>
-				<div class="element-value">No Stay</div>
-			</div>
-			<div class="large-6 column">
-				<h3 class="element-title">Decision Date</h3>
-				<div class="element-value">21 Dec 2011</div>
+				<h3 class="field-title">Consultant required?</h3>
+				<div class="field-value">No Consultant</div>
 			</div>
 		</section>
 
-		<section class="row element">
+		<section class="row">
 			<div class="large-6 column">
-				<h3 class="element-title">Operation priority</h3>
-				<div class="element-value">Routine</div>
+				<h3 class="field-title">Post Operative Stay Required</h3>
+				<div class="field-value">No Stay</div>
 			</div>
 			<div class="large-6 column">
-				<h3 class="element-title">Operation Comments</h3>
-				<div class="element-value panel comments">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur auctor ante in magna luctus, ac hendrerit mauris dapibus. Sed accumsan bibendum turpis sed pharetra. Curabitur ultrices velit dui, eget aliquet lectus posuere id. Suspendisse rhoncus ante in odio luctus luctus. Duis in facilisis lacus. Vivamus in vulputate dolor. Suspendisse vitae dignissim ante. Maecenas vitae ullamcorper turpis. </div>
+				<h3 class="field-title">Decision Date</h3>
+				<div class="field-value">21 Dec 2011</div>
+			</div>
+		</section>
+
+		<section class="row">
+			<div class="large-6 column">
+				<h3 class="field-title">Operation priority</h3>
+				<div class="field-value">Routine</div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="field-title">Operation Comments</h3>
+				<div class="field-value panel comments">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur auctor ante in magna luctus, ac hendrerit mauris dapibus. Sed accumsan bibendum turpis sed pharetra. Curabitur ultrices velit dui, eget aliquet lectus posuere id. Suspendisse rhoncus ante in odio luctus luctus. Duis in facilisis lacus. Vivamus in vulputate dolor. Suspendisse vitae dignissim ante. Maecenas vitae ullamcorper turpis. </div>
 			</div>
 		</section>
 

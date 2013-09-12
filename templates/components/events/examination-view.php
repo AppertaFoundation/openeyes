@@ -26,7 +26,7 @@
 						<h3 class="element-title">History</h3>
 					</header>
 					<div class="element-data">
-						<div class="element-value">
+						<div class="field-value">
 							History test 123
 						</div>
 					</div>
@@ -36,7 +36,7 @@
 								<h4 class="sub-element-title">Sub element title</h4>
 							</header>
 							<div class="sub-element-data">
-								<div class="element-value">
+								<div class="field-value">
 									Angina, Ethnicity
 									<br />
 									Test 123
@@ -58,7 +58,7 @@
 									<img src="/img/new/tmp/eyedraw-small.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column small">
-									<div class="element-value">
+									<div class="field-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
 									</div>
@@ -71,7 +71,7 @@
 									<img src="/img/new/tmp/eyedraw-small.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column small">
-									<div class="element-value">
+									<div class="field-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
 									</div>
@@ -87,12 +87,12 @@
 					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
-							<div class="element-value">Not recorded</div>
-							<div class="element-value">Left eye Visual Acuity</div>
+							<div class="field-value">Not recorded</div>
+							<div class="field-value">Left eye Visual Acuity</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="element-value">Not recorded</div>
-							<div class="element-value">Right eye Visual Acuity</div>
+							<div class="field-value">Not recorded</div>
+							<div class="field-value">Right eye Visual Acuity</div>
 						</div>
 					</div>
 				</section>
@@ -109,7 +109,7 @@
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
-									<div class="element-value">
+									<div class="field-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
 									</div>
@@ -122,7 +122,7 @@
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
-									<div class="element-value">
+									<div class="field-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
 									</div>
@@ -145,31 +145,31 @@
 									<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
-									<div class="element-value">
+									<div class="field-value">
 										Anterior Segment
 									</div>
 									<div class="row">
 										<div class="large-4 column">
-											<div class="element-label">Pupil Size :</div>
+											<div class="field-label">Pupil Size:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">Large</div>
+											<div class="field-value">Large</div>
 										</div>
 									</div>
 									<div class="row">
 										<div class="large-4 column">
-											<div class="element-label">Nuclear :</div>
+											<div class="field-label">Nuclear:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">None</div>
+											<div class="field-value">None</div>
 										</div>
 									</div>
 									<div class="row">
 										<div class="large-4 column">
-											<div class="element-label">Cortical :</div>
+											<div class="field-label">Cortical:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">None</div>
+											<div class="field-value">None</div>
 										</div>
 									</div>
 								</div>
@@ -181,31 +181,31 @@
 									<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
-									<div class="element-value">
+									<div class="field-value">
 										Anterior Segment
 									</div>
 									<div class="row">
 										<div class="large-4 column">
-											<div class="element-label">Pupil Size :</div>
+											<div class="field-label">Pupil Size:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">Large</div>
+											<div class="field-value">Large</div>
 										</div>
 									</div>
 									<div class="row">
 										<div class="large-4 column">
-											<div class="element-label">Nuclear :</div>
+											<div class="field-label">Nuclear:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">None</div>
+											<div class="field-value">None</div>
 										</div>
 									</div>
 									<div class="row">
 										<div class="large-4 column">
-											<div class="element-label">Cortical :</div>
+											<div class="field-label">Cortical:</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">None</div>
+											<div class="field-value">None</div>
 										</div>
 									</div>
 								</div>
@@ -219,12 +219,12 @@
 							</header>
 							<div class="sub-element-data sub-element-eyes row">
 								<div class="element-eye right-eye column">
-									<div class="element-value">
+									<div class="field-value">
 										234 µm (Ultrasound pachymetry)
 									</div>
 								</div>
 								<div class="element-eye left-eye column">
-									<div class="element-value">
+									<div class="field-value">
 										234 µm (Ultrasound pachymetry)
 									</div>
 								</div>
@@ -240,12 +240,12 @@
 					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
-							<div class="element-value">
+							<div class="field-value">
 								Right eye
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="element-value">
+							<div class="field-value">
 								Left eye
 							</div>
 						</div>
@@ -309,7 +309,7 @@
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
-									<div class="element-value">
+									<div class="field-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
 									</div>
@@ -322,7 +322,7 @@
 									<img src="/img/new/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-value column large">
-									<div class="element-value">
+									<div class="field-value">
 										0.00/0.00 @ 20° Auto-refraction <br />
 										Spherical equivalent: 0.00
 									</div>
@@ -341,60 +341,60 @@
 								<div class="element-eye right-eye column">
 									<div class="row element-data-row">
 										<div class="large-4 column">
-											<div class="element-label">
+											<div class="field-label">
 												Clinical Grading for retinopathy:
 											</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">
+											<div class="field-value">
 												Mild nonproliferative retinopathy
 											</div>
 										</div>
 									</div>
 									<div class="row element-data-row">
 										<div class="large-4 column">
-											<div class="element-label">
+											<div class="field-label">
 												NSC retinopathy:
 											</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">
+											<div class="field-value">
 												R2
 											</div>
 										</div>
 									</div>
 									<div class="row element-data-row">
 										<div class="large-4 column">
-											<div class="element-label">
+											<div class="field-label">
 												Retinopathy photocoagulation:
 											</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">
+											<div class="field-value">
 												No
 											</div>
 										</div>
 									</div>
 									<div class="row element-data-row">
 										<div class="large-4 column">
-											<div class="element-label">
+											<div class="field-label">
 												NSC maculopathy:
 											</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">
+											<div class="field-value">
 												M1A
 											</div>
 										</div>
 									</div>
 									<div class="row element-data-row">
 										<div class="large-4 column">
-											<div class="element-label">
+											<div class="field-label">
 												Maculopathy photocoagulation:
 											</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">
+											<div class="field-value">
 												Yes
 											</div>
 										</div>
@@ -403,60 +403,60 @@
 								<div class="element-eye left-eye column">
 									<div class="row element-data-row">
 										<div class="large-4 column">
-											<div class="element-label">
+											<div class="field-label">
 												Clinical Grading for retinopathy:
 											</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">
+											<div class="field-value">
 												Mild nonproliferative retinopathy
 											</div>
 										</div>
 									</div>
 									<div class="row element-data-row">
 										<div class="large-4 column">
-											<div class="element-label">
+											<div class="field-label">
 												NSC retinopathy:
 											</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">
+											<div class="field-value">
 												R2
 											</div>
 										</div>
 									</div>
 									<div class="row element-data-row">
 										<div class="large-4 column">
-											<div class="element-label">
+											<div class="field-label">
 												Retinopathy photocoagulation:
 											</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">
+											<div class="field-value">
 												No
 											</div>
 										</div>
 									</div>
 									<div class="row element-data-row">
 										<div class="large-4 column">
-											<div class="element-label">
+											<div class="field-label">
 												NSC maculopathy:
 											</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">
+											<div class="field-value">
 												M1A
 											</div>
 										</div>
 									</div>
 									<div class="row element-data-row">
 										<div class="large-4 column">
-											<div class="element-label">
+											<div class="field-label">
 												Maculopathy photocoagulation:
 											</div>
 										</div>
 										<div class="large-8 column">
-											<div class="element-value">
+											<div class="field-value">
 												Yes
 											</div>
 										</div>
@@ -473,7 +473,7 @@
 						<h3 class="element-title">Clinical Management</h3>
 					</header>
 					<div class="element-data">
-						<div class="element-label">Clinical Management</div>
+						<div class="field-label">Clinical Management</div>
 					</div>
 					<div class="sub-elements">
 						<section class="sub-element">
@@ -535,7 +535,7 @@
 						<h3 class="element-title">Risks</h3>
 					</header>
 					<div class="element-data">
-						<div class="element-value">
+						<div class="field-value">
 							Risks
 						</div>
 					</div>
