@@ -1,21 +1,22 @@
 module.exports = {
-	src: [
-		'protected/modules/*/Gruntfile.js'
-	],
+	options: {
+		concurrent: 10,
+		src: 'protected/modules/*/Gruntfile.js'
+	},
 	default: {
-		src: '<%= hub.src %>',
+		src: '<%= hub.options.src %>',
 		tasks: [
 			'default'
 		]
 	},
 	build: {
-		src: '<%= hub.src %>',
+		src: '<%= hub.options.src %>',
 		tasks: [
 			'build'
 		]
 	},
 	watch: {
-		src: '<%= hub.src %>',
+		src: '<%= hub.options.src %>',
 		tasks: [
 			'watch'
 		]
