@@ -1127,6 +1127,7 @@ h1.badge {
   margin-bottom: 0;
   max-width: 76.875em;
   *zoom: 1;
+  display: block;
 }
 /* line 121, ../sass/new/foundation/components/_global.scss */
 .row:before, .row:after {
@@ -1137,7 +1138,7 @@ h1.badge {
 .row:after {
   clear: both;
 }
-/* line 103, ../sass/new/openeyes/components/_grid.scss */
+/* line 104, ../sass/new/openeyes/components/_grid.scss */
 .row.collapse > .column,
 .row.collapse > .columns {
   position: relative;
@@ -1145,7 +1146,7 @@ h1.badge {
   padding-right: 0;
   float: left;
 }
-/* line 107, ../sass/new/openeyes/components/_grid.scss */
+/* line 108, ../sass/new/openeyes/components/_grid.scss */
 .row .row {
   width: auto;
   margin-left: -0.75em;
@@ -1164,7 +1165,7 @@ h1.badge {
 .row .row:after {
   clear: both;
 }
-/* line 109, ../sass/new/openeyes/components/_grid.scss */
+/* line 110, ../sass/new/openeyes/components/_grid.scss */
 .row .row.collapse {
   width: auto;
   margin: 0;
@@ -1181,7 +1182,7 @@ h1.badge {
   clear: both;
 }
 
-/* line 115, ../sass/new/openeyes/components/_grid.scss */
+/* line 116, ../sass/new/openeyes/components/_grid.scss */
 .column,
 .columns {
   position: relative;
@@ -1192,7 +1193,7 @@ h1.badge {
 }
 
 @media only screen {
-  /* line 120, ../sass/new/openeyes/components/_grid.scss */
+  /* line 121, ../sass/new/openeyes/components/_grid.scss */
   .column,
   .columns {
     position: relative;
@@ -1201,155 +1202,155 @@ h1.badge {
     float: left;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-1 {
     position: relative;
     width: 8.33333%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-2 {
     position: relative;
     width: 16.66667%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-3 {
     position: relative;
     width: 25%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-4 {
     position: relative;
     width: 33.33333%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-5 {
     position: relative;
     width: 41.66667%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-6 {
     position: relative;
     width: 50%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-7 {
     position: relative;
     width: 58.33333%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-8 {
     position: relative;
     width: 66.66667%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-9 {
     position: relative;
     width: 75%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-10 {
     position: relative;
     width: 83.33333%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-11 {
     position: relative;
     width: 91.66667%;
   }
 
-  /* line 124, ../sass/new/openeyes/components/_grid.scss */
+  /* line 125, ../sass/new/openeyes/components/_grid.scss */
   .small-12 {
     position: relative;
     width: 100%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-0 {
     position: relative;
     margin-left: 0%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-1 {
     position: relative;
     margin-left: 8.33333%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-2 {
     position: relative;
     margin-left: 16.66667%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-3 {
     position: relative;
     margin-left: 25%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-4 {
     position: relative;
     margin-left: 33.33333%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-5 {
     position: relative;
     margin-left: 41.66667%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-6 {
     position: relative;
     margin-left: 50%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-7 {
     position: relative;
     margin-left: 58.33333%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-8 {
     position: relative;
     margin-left: 66.66667%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-9 {
     position: relative;
     margin-left: 75%;
   }
 
-  /* line 129, ../sass/new/openeyes/components/_grid.scss */
+  /* line 130, ../sass/new/openeyes/components/_grid.scss */
   .small-offset-10 {
     position: relative;
     margin-left: 83.33333%;
   }
 
-  /* line 133, ../sass/new/openeyes/components/_grid.scss */
+  /* line 134, ../sass/new/openeyes/components/_grid.scss */
   [class*="column"] + [class*="column"]:last-child {
     float: right;
   }
 
-  /* line 136, ../sass/new/openeyes/components/_grid.scss */
+  /* line 137, ../sass/new/openeyes/components/_grid.scss */
   [class*="column"] + [class*="column"].end {
     float: left;
   }
 
-  /* line 140, ../sass/new/openeyes/components/_grid.scss */
+  /* line 141, ../sass/new/openeyes/components/_grid.scss */
   .column.small-centered,
   .columns.small-centered {
     position: relative;
@@ -1360,305 +1361,305 @@ h1.badge {
 }
 /* Styles for screens that are atleast 768px; */
 @media only screen and (min-width: 768px) {
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-1 {
     position: relative;
     width: 8.33333%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-2 {
     position: relative;
     width: 16.66667%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-3, .eyedraw-image.small {
     position: relative;
     width: 25%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-4, .edit .eyedraw-image.small {
     position: relative;
     width: 33.33333%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-5, .eyedraw-image.large {
     position: relative;
     width: 41.66667%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-6, .element-eye.left-eye, .element-eye.right-eye {
     position: relative;
     width: 50%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-7, .eyedraw-value.large {
     position: relative;
     width: 58.33333%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-8, .edit .eyedraw-fields.small {
     position: relative;
     width: 66.66667%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-9, .eyedraw-value.small {
     position: relative;
     width: 75%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-10 {
     position: relative;
     width: 83.33333%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-11 {
     position: relative;
     width: 91.66667%;
   }
 
-  /* line 147, ../sass/new/openeyes/components/_grid.scss */
+  /* line 148, ../sass/new/openeyes/components/_grid.scss */
   .large-12 {
     position: relative;
     width: 100%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-0 {
     position: relative;
     margin-left: 0%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-1 {
     position: relative;
     margin-left: 8.33333%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-2 {
     position: relative;
     margin-left: 16.66667%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-3 {
     position: relative;
     margin-left: 25%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-4 {
     position: relative;
     margin-left: 33.33333%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-5 {
     position: relative;
     margin-left: 41.66667%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-6 {
     position: relative;
     margin-left: 50%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-7 {
     position: relative;
     margin-left: 58.33333%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-8 {
     position: relative;
     margin-left: 66.66667%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-9 {
     position: relative;
     margin-left: 75%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-10 {
     position: relative;
     margin-left: 83.33333%;
   }
 
-  /* line 152, ../sass/new/openeyes/components/_grid.scss */
+  /* line 153, ../sass/new/openeyes/components/_grid.scss */
   .row .large-offset-11 {
     position: relative;
     margin-left: 91.66667%;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-1 {
     position: relative;
     left: 8.33333%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-1 {
     position: relative;
     right: 8.33333%;
     left: auto;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-2 {
     position: relative;
     left: 16.66667%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-2 {
     position: relative;
     right: 16.66667%;
     left: auto;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-3 {
     position: relative;
     left: 25%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-3 {
     position: relative;
     right: 25%;
     left: auto;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-4 {
     position: relative;
     left: 33.33333%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-4 {
     position: relative;
     right: 33.33333%;
     left: auto;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-5 {
     position: relative;
     left: 41.66667%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-5 {
     position: relative;
     right: 41.66667%;
     left: auto;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-6 {
     position: relative;
     left: 50%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-6 {
     position: relative;
     right: 50%;
     left: auto;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-7 {
     position: relative;
     left: 58.33333%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-7 {
     position: relative;
     right: 58.33333%;
     left: auto;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-8 {
     position: relative;
     left: 66.66667%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-8 {
     position: relative;
     right: 66.66667%;
     left: auto;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-9 {
     position: relative;
     left: 75%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-9 {
     position: relative;
     right: 75%;
     left: auto;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-10 {
     position: relative;
     left: 83.33333%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-10 {
     position: relative;
     right: 83.33333%;
     left: auto;
   }
 
-  /* line 157, ../sass/new/openeyes/components/_grid.scss */
+  /* line 158, ../sass/new/openeyes/components/_grid.scss */
   .push-11 {
     position: relative;
     left: 91.66667%;
     right: auto;
   }
 
-  /* line 160, ../sass/new/openeyes/components/_grid.scss */
+  /* line 161, ../sass/new/openeyes/components/_grid.scss */
   .pull-11 {
     position: relative;
     right: 91.66667%;
     left: auto;
   }
 
-  /* line 165, ../sass/new/openeyes/components/_grid.scss */
+  /* line 166, ../sass/new/openeyes/components/_grid.scss */
   .column.large-centered,
   .columns.large-centered {
     position: relative;
@@ -1667,7 +1668,7 @@ h1.badge {
     float: none !important;
   }
 
-  /* line 169, ../sass/new/openeyes/components/_grid.scss */
+  /* line 170, ../sass/new/openeyes/components/_grid.scss */
   .column.large-uncentered,
   .columns.large-uncentered {
     margin-left: 0;
@@ -1675,7 +1676,7 @@ h1.badge {
     float: left !important;
   }
 
-  /* line 175, ../sass/new/openeyes/components/_grid.scss */
+  /* line 176, ../sass/new/openeyes/components/_grid.scss */
   .column.large-uncentered.opposite,
   .columns.large-uncentered.opposite {
     float: right !important;
@@ -2090,36 +2091,46 @@ input[type="text"][disabled], input[type="password"][disabled], input[type="date
   background-color: #dddddd;
 }
 
-/* line 36, ../sass/new/openeyes/components/_forms.scss */
+/* line 37, ../sass/new/openeyes/components/_forms.scss */
 input[type="range"] {
   width: 100%;
 }
 
-/* line 40, ../sass/new/openeyes/components/_forms.scss */
+/* line 42, ../sass/new/openeyes/components/_forms.scss */
+input[readonly], input[readonly]:focus {
+  color: #666;
+  background: #f3f3f3;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border: 1px solid #6b8aaa;
+}
+
+/* line 50, ../sass/new/openeyes/components/_forms.scss */
 textarea {
   min-height: 14m;
 }
 
-/* line 45, ../sass/new/openeyes/components/_forms.scss */
+/* line 54, ../sass/new/openeyes/components/_forms.scss */
 select {
   font-size: 0.8125em;
   max-width: 100%;
 }
 
 /* Normalize file input width */
-/* line 51, ../sass/new/openeyes/components/_forms.scss */
+/* line 60, ../sass/new/openeyes/components/_forms.scss */
 input[type="file"] {
   width: 100%;
 }
 
 /* We add basic fieldset styling */
-/* line 56, ../sass/new/openeyes/components/_forms.scss */
+/* line 65, ../sass/new/openeyes/components/_forms.scss */
 fieldset {
   border: 0;
   padding: 0;
   margin: 0;
 }
-/* line 61, ../sass/new/openeyes/components/_forms.scss */
+/* line 70, ../sass/new/openeyes/components/_forms.scss */
 fieldset legend {
   font-weight: normal;
   background: transparent;
@@ -2129,7 +2140,7 @@ fieldset legend {
   margin: 0 0 1em 0;
   width: 100%;
 }
-/* line 69, ../sass/new/openeyes/components/_forms.scss */
+/* line 78, ../sass/new/openeyes/components/_forms.scss */
 fieldset legend.column {
   margin-bottom: 0;
   padding-left: 0.9375em;
@@ -2137,7 +2148,7 @@ fieldset legend.column {
 }
 
 /* Error Handling */
-/* line 84, ../sass/new/openeyes/components/_forms.scss */
+/* line 93, ../sass/new/openeyes/components/_forms.scss */
 .error input,
 input.error,
 .error textarea,
@@ -2154,13 +2165,13 @@ textarea.error:focus {
   border-color: #19a8ea;
 }
 
-/* line 89, ../sass/new/openeyes/components/_forms.scss */
+/* line 98, ../sass/new/openeyes/components/_forms.scss */
 .error label,
 label.error {
   color: red;
 }
 
-/* line 94, ../sass/new/openeyes/components/_forms.scss */
+/* line 103, ../sass/new/openeyes/components/_forms.scss */
 .error small,
 small.error {
   display: block;
@@ -2174,32 +2185,32 @@ small.error {
 }
 
 /* Attach elements to the beginning or end of an input */
-/* line 100, ../sass/new/openeyes/components/_forms.scss */
+/* line 110, ../sass/new/openeyes/components/_forms.scss */
 .prefix,
 .postfix {
   display: inline-block;
   padding: 0 0.3125em;
 }
-/* line 103, ../sass/new/openeyes/components/_forms.scss */
+/* line 113, ../sass/new/openeyes/components/_forms.scss */
 .prefix.align,
 .postfix.align {
   padding-top: 0.375em;
 }
 
 /* Field helpers */
-/* line 109, ../sass/new/openeyes/components/_forms.scss */
+/* line 119, ../sass/new/openeyes/components/_forms.scss */
 .field-info {
   font-size: 0.8125em;
   display: inline-block;
 }
 
 /* Field highlight */
-/* line 115, ../sass/new/openeyes/components/_forms.scss */
+/* line 125, ../sass/new/openeyes/components/_forms.scss */
 .field-highlight {
   display: block;
 }
 
-/* line 169, ../sass/new/openeyes/components/_forms.scss */
+/* line 179, ../sass/new/openeyes/components/_forms.scss */
 .form.panel {
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -2210,21 +2221,21 @@ small.error {
   border: 2px solid #666666;
   padding: 30px;
 }
-/* line 175, ../sass/new/openeyes/components/_forms.scss */
+/* line 185, ../sass/new/openeyes/components/_forms.scss */
 .form.login {
   margin: 50px auto 100px auto;
   max-width: 488px;
 }
-/* line 178, ../sass/new/openeyes/components/_forms.scss */
+/* line 188, ../sass/new/openeyes/components/_forms.scss */
 .form.login label {
   font-size: 0.9375em;
 }
-/* line 182, ../sass/new/openeyes/components/_forms.scss */
+/* line 192, ../sass/new/openeyes/components/_forms.scss */
 .form [type="submit"] {
   margin: 0;
 }
 
-/* line 188, ../sass/new/openeyes/components/_forms.scss */
+/* line 198, ../sass/new/openeyes/components/_forms.scss */
 label.highlight {
   background: #e3f0f2;
   padding: 0.3125em 0.875em 0.375em 0.625em;
@@ -2235,11 +2246,11 @@ label.highlight {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 193, ../sass/new/openeyes/components/_forms.scss */
+/* line 203, ../sass/new/openeyes/components/_forms.scss */
 label.highlight:hover {
   background: #fff;
 }
-/* line 198, ../sass/new/openeyes/components/_forms.scss */
+/* line 208, ../sass/new/openeyes/components/_forms.scss */
 label input[type="checkbox"],
 label input[type="radio"] {
   margin: 0;
@@ -2254,21 +2265,21 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   border-radius: 3px;
   height: auto;
 }
-/* line 226, ../sass/new/openeyes/components/_forms.scss */
+/* line 236, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small, input[type="password"].small, input[type="date"].small, input[type="datetime"].small, input[type="datetime-local"].small, input[type="month"].small, input[type="week"].small, input[type="email"].small, input[type="number"].small, input[type="search"].small, input[type="tel"].small, input[type="time"].small, input[type="url"].small, textarea.small {
   padding: 0.1875em 0.25em;
 }
-/* line 228, ../sass/new/openeyes/components/_forms.scss */
+/* line 238, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small.fixed-width, input[type="password"].small.fixed-width, input[type="date"].small.fixed-width, input[type="datetime"].small.fixed-width, input[type="datetime-local"].small.fixed-width, input[type="month"].small.fixed-width, input[type="week"].small.fixed-width, input[type="email"].small.fixed-width, input[type="number"].small.fixed-width, input[type="search"].small.fixed-width, input[type="tel"].small.fixed-width, input[type="time"].small.fixed-width, input[type="url"].small.fixed-width, textarea.small.fixed-width {
   width: 6.875em;
 }
 
-/* line 236, ../sass/new/openeyes/components/_forms.scss */
+/* line 246, ../sass/new/openeyes/components/_forms.scss */
 .field-row, .element-data-row {
   padding-bottom: 1.125em;
 }
 
-/* line 241, ../sass/new/openeyes/components/_forms.scss */
+/* line 251, ../sass/new/openeyes/components/_forms.scss */
 form .field-row:last-child, form .element-data-row:last-child, .form .field-row:last-child, .form .element-data-row:last-child {
   padding: 0;
 }

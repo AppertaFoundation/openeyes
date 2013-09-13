@@ -98,6 +98,7 @@
 /* Grid HTML Classes */
 .row {
     @include grid-row;
+    display: block;
     &.collapse {
         > .column,
         > .columns {

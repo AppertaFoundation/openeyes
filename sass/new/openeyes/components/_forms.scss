@@ -33,14 +33,23 @@ label, .label {
 	margin: 0;
 }
 
+
 input[type="range"] {
 	width: 100%;
+}
+
+input[readonly] {
+	&, &:focus {
+		color: #666;
+		background: #f3f3f3;
+		@include box-shadow(none);
+		border: $input-border-width $input-border-style $input-border-color;
+	}
 }
 
 textarea {
 	min-height: 14m;
 }
-
 
 select {
 	font-size: $default-font-size;
@@ -70,8 +79,8 @@ fieldset {
 			margin-bottom: 0;
 			// As the fieldset font-size is $default-font-size, we need to
 			// adjust the gutters to account for the smaller em width.
-			padding-left: ($column-gutter / 2) + (1em - $default-font-size);
-			padding-right: ($column-gutter / 2) + (1em - $default-font-size);
+			padding-left: $column-gutter / 2 + 1em - $default-font-size;
+			padding-right: $column-gutter / 2 + 1em - $default-font-size;
 		}
 	}
 }
@@ -96,6 +105,7 @@ small.error {
 }
 
 /* Attach elements to the beginning or end of an input */
+
 .prefix,
 .postfix {
 	display: inline-block;
