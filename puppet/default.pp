@@ -9,6 +9,7 @@ class amp {
   include mysql
   include php5
   include openeyes
+  include xdebug
 }
 
 include amp
