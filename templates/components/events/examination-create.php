@@ -54,7 +54,7 @@
 
 						<section class="sub-element">
 							<header class="sub-element-header">
-								<h3 class="sub-element-title">Commorbidities</h3>
+								<h4 class="sub-element-title">Commorbidities</h4>
 								<div class="sub-element-actions">
 									<a href="#" class="button button-icon small">
 										<span class="icon-button-small-mini-cross"></span>

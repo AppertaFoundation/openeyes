@@ -40,8 +40,8 @@
 										<div class="large-2 column">
 											<div class="postfix">
 												<a href="#" class="button button-icon small">
-														<span class="icon-button-small-search"></span>
-														<span class="hide-offscreen">Search</span>
+													<span class="icon-button-small-search"></span>
+													<span class="hide-offscreen">Search</span>
 												</a>
 											</div>
 										</div>
@@ -63,8 +63,8 @@
 										<div class="large-2 column">
 											<div class="postfix">
 												<a href="#" class="button button-icon small">
-														<span class="icon-button-small-search"></span>
-														<span class="hide-offscreen">Search</span>
+													<span class="icon-button-small-search"></span>
+													<span class="hide-offscreen">Search</span>
 												</a>
 											</div>
 										</div>
@@ -318,7 +318,7 @@
 								<div class="large-8 column">
 
 									<div class="panel previous-interventions">
-										<a href="#" class="icon-remove-side">Remove intervention</a>
+										<a href="#" class="icon-remove-side">Remove</a>
 										<div class="row field-row">
 											<div class="large-6 column">
 												<label for="">Start date</label>
@@ -393,7 +393,7 @@
 								<div class="large-8 column">
 
 									<div class="panel previous-interventions">
-										<a href="#" class="icon-remove-side">Remove intervention</a>
+										<a href="#" class="icon-remove-side">Remove</a>
 										<div class="row field-row">
 											<div class="large-6 column">
 												<label for="">Start date</label>
