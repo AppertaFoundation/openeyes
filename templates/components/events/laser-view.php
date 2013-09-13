@@ -20,6 +20,96 @@
 		<div class="row">
 			<div class="large-12 column">
 
+				<section class="element">
+					<header class="element-header">
+						<h3 class="element-title">Site</h3>
+					</header>
+					<div class="element-data">
+						<div class="row element-data-row">
+							<div class="large-2 column">
+								<div class="field-label">Site</div>
+							</div>
+							<div class="large-10 column">
+								<div class="field-value">Ealing Hospital</div>
+							</div>
+						</div>
+						<div class="row element-data-row">
+							<div class="large-2 column">
+								<div class="field-label">Laser</div>
+							</div>
+							<div class="large-10 column">
+								<div class="field-value">Coherent 7970 YAG (Ealing)</div>
+							</div>
+						</div>
+						<div class="row element-data-row">
+							<div class="large-2 column">
+								<div class="field-label">Surgeon</div>
+							</div>
+							<div class="large-10 column">
+								<div class="field-value">Sagoo Mandeep</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section class="element">
+					<header class="element-header">
+						<h3 class="element-title">Treatment</h3>
+					</header>
+					<div class="element-data element-eyes row">
+						<div class="element-eye right-eye column">
+							<ul class="field-value">
+								<li>Cycloablation</li>
+								<li>Laser iridoplasty</li>
+							</ul>
+						</div>
+						<div class="element-eye left-eye column">
+							<ul class="field-value">
+								<li>Focal laser photocoagulation</li>
+								<li>Laser retinopexy</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section class="element">
+					<header class="element-header">
+						<h3 class="element-title">Anterior Segment</h3>
+					</header>
+					<div class="element-data element-eyes row">
+						<div class="element-eye right-eye column">
+							<div class="eyedraw-image">
+								<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw">
+							</div>
+						</div>
+						<div class="element-eye left-eye column">
+							<div class="eyedraw-image">
+								<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw">
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section class="element">
+					<header class="element-header">
+						<h3 class="element-title">Comments</h3>
+					</header>
+					<div class="element-data">
+						<div class="row element-data-row">
+							<div class="large-2 column">
+								<div class="field-label">
+									Comments:
+								</div>
+							</div>
+							<div clas="row element-data-row">
+								<div class="field-value">
+									Here are some comments
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
 
 				<div class="metadata">
 					<span class="info">
