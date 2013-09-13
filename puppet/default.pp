@@ -10,6 +10,7 @@ class amp {
   include php5
   include openeyes
   include xdebug
+  include curl
 }
 
 include amp
