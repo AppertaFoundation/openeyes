@@ -74,9 +74,23 @@
 									<label for="">Procedures:</label>
 								</div>
 								<div class="large-8 column">
-									<select>
-										<option>-- Select --</option>
-									</select>
+									<div class="multi-select multi-select-list">
+										<div class="field-row">
+											<select>
+												<option>-- Select --</option>
+											</select>
+										</div>
+										<ul class="multi-select-selections field-row">
+											<li>
+												Cycloablation
+												<a href="#" class="remove-one">Remove</a>
+											</li>
+											<li>
+												Laser iridoplasty
+												<a href="#" class="remove-one">Remove</a>
+											</li>
+										</ul>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -129,6 +143,7 @@
 					</div>
 				</section>
 
+				<!-- Comments -->
 				<section class="element">
 					<header class="element-header">
 						<h3 class="element-title">Comments</h3>
@@ -145,6 +160,7 @@
 					</div>
 				</section>
 
+				<!-- Optional elements -->
 				<section class="optional-elements">
 					<header class="optional-elements-header">
 						<h3 class="optional-elements-title">Optional Elements</h3>
