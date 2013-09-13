@@ -35,9 +35,13 @@ $oe-alert-issue-with-icon-min-height: 36px !default;
 		margin: 0;
 		line-height: 1.4;
 	}
+	p {
+		font-size: 1em;
+		margin-bottom: 1em;
+	}
 	li {
 		font-size: 1em;
-		list-style: none;
+		margin-left: 1.4em;
 	}
 	&.with-icon {
 		padding-left: $oe-alert-with-icon-padding-left;
@@ -64,5 +68,9 @@ $oe-alert-issue-with-icon-min-height: 36px !default;
 	}
 	&.secondary {
 		@include alert-style($secondary-color);
+	}
+	&.bottom {
+		margin-bottom: 0;
+		margin-top: $alert-bottom-margin;
 	}
 }

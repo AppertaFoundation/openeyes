@@ -14,6 +14,17 @@
 	<div class="event-content">
 		<h2 class="event-title">Examination</h2>
 
+		<!-- Validation errors -->
+		<div class="alert-box alert with-icon validation-errors top">
+			<a href="#" class="close">×</a>
+			<p>Please fix the following input errors:</p>
+			<ul>
+				<li>History: Description cannot be blank.</li>
+				<li>Posterior Pole: Left Description cannot be blank.</li>
+				<li>Posterior Pole: Right Description cannot be blank.</li>
+			</ul>
+		</div>
+
 		<div class="row">
 			<div class="large-12 column">
 
@@ -1162,6 +1173,17 @@
 						</li>
 					</ul>
 				</section>
+
+				<!-- Validation errors -->
+				<div class="alert-box alert with-icon validation-errors bottom">
+					<a href="#" class="close">×</a>
+					<p>Please fix the following input errors:</p>
+					<ul>
+						<li>History: Description cannot be blank.</li>
+						<li>Posterior Pole: Left Description cannot be blank.</li>
+						<li>Posterior Pole: Right Description cannot be blank.</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>
