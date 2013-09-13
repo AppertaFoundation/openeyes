@@ -43,6 +43,7 @@ $oe-header-event-padding: emCalc(6px) emCalc(10px) 0 emCalc(10px) !default;
 		font-size: $oe-event-title-font-size;
 		background-repeat: no-repeat;
 		background-position: left center;
+		margin-left: 8px;
 	}
 	.metadata {
 		border-top: $oe-event-metadata-border-top;
