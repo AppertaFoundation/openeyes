@@ -9,6 +9,12 @@ module.exports = {
 			'default'
 		]
 	},
+	compile: {
+		src: '<%= hub.options.src %>',
+		tasks: [
+			'compile'
+		]
+	},
 	build: {
 		src: '<%= hub.options.src %>',
 		tasks: [
