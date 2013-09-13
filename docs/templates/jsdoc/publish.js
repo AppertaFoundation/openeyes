@@ -281,7 +281,15 @@ function buildNav(members) {
     if (members.tutorials.length) {
         nav += '<h3>Tutorials</h3><ul class="side-nav">';
         members.tutorials.forEach(function(t) {
-            nav += '<li>'+tutoriallink(t.name)+'</li>';
+            nav += '<li>'+tutoriallink(t.name);
+            if (t.children.length) {
+            	nav += '<ul>';
+            	t.children.forEach(function(c) {
+            		nav += '<li>'+tutoriallink(c.name)+'</li>';
+            	});
+            	nav += '</ul>';
+            }
+            nav += '</li>';
         });
 
         nav += '</ul>';
