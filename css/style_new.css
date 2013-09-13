@@ -2091,30 +2091,35 @@ input[type="text"][disabled], input[type="password"][disabled], input[type="date
 }
 
 /* line 36, ../sass/new/openeyes/components/_forms.scss */
+input[type="range"] {
+  width: 100%;
+}
+
+/* line 40, ../sass/new/openeyes/components/_forms.scss */
 textarea {
   min-height: 14m;
 }
 
-/* line 41, ../sass/new/openeyes/components/_forms.scss */
+/* line 45, ../sass/new/openeyes/components/_forms.scss */
 select {
   font-size: 0.8125em;
   max-width: 100%;
 }
 
 /* Normalize file input width */
-/* line 47, ../sass/new/openeyes/components/_forms.scss */
+/* line 51, ../sass/new/openeyes/components/_forms.scss */
 input[type="file"] {
   width: 100%;
 }
 
 /* We add basic fieldset styling */
-/* line 52, ../sass/new/openeyes/components/_forms.scss */
+/* line 56, ../sass/new/openeyes/components/_forms.scss */
 fieldset {
   border: 0;
   padding: 0;
   margin: 0;
 }
-/* line 57, ../sass/new/openeyes/components/_forms.scss */
+/* line 61, ../sass/new/openeyes/components/_forms.scss */
 fieldset legend {
   font-weight: normal;
   background: transparent;
@@ -2124,7 +2129,7 @@ fieldset legend {
   margin: 0 0 1em 0;
   width: 100%;
 }
-/* line 65, ../sass/new/openeyes/components/_forms.scss */
+/* line 69, ../sass/new/openeyes/components/_forms.scss */
 fieldset legend.column {
   margin-bottom: 0;
   padding-left: 0.9375em;
@@ -2132,7 +2137,7 @@ fieldset legend.column {
 }
 
 /* Error Handling */
-/* line 80, ../sass/new/openeyes/components/_forms.scss */
+/* line 84, ../sass/new/openeyes/components/_forms.scss */
 .error input,
 input.error,
 .error textarea,
@@ -2149,13 +2154,13 @@ textarea.error:focus {
   border-color: #19a8ea;
 }
 
-/* line 85, ../sass/new/openeyes/components/_forms.scss */
+/* line 89, ../sass/new/openeyes/components/_forms.scss */
 .error label,
 label.error {
   color: red;
 }
 
-/* line 90, ../sass/new/openeyes/components/_forms.scss */
+/* line 94, ../sass/new/openeyes/components/_forms.scss */
 .error small,
 small.error {
   display: block;
@@ -2169,32 +2174,32 @@ small.error {
 }
 
 /* Attach elements to the beginning or end of an input */
-/* line 96, ../sass/new/openeyes/components/_forms.scss */
+/* line 100, ../sass/new/openeyes/components/_forms.scss */
 .prefix,
 .postfix {
   display: inline-block;
   padding: 0 0.3125em;
 }
-/* line 99, ../sass/new/openeyes/components/_forms.scss */
+/* line 103, ../sass/new/openeyes/components/_forms.scss */
 .prefix.align,
 .postfix.align {
   padding-top: 0.375em;
 }
 
 /* Field helpers */
-/* line 105, ../sass/new/openeyes/components/_forms.scss */
+/* line 109, ../sass/new/openeyes/components/_forms.scss */
 .field-info {
   font-size: 0.8125em;
   display: inline-block;
 }
 
 /* Field highlight */
-/* line 111, ../sass/new/openeyes/components/_forms.scss */
+/* line 115, ../sass/new/openeyes/components/_forms.scss */
 .field-highlight {
   display: block;
 }
 
-/* line 165, ../sass/new/openeyes/components/_forms.scss */
+/* line 169, ../sass/new/openeyes/components/_forms.scss */
 .form.panel {
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -2205,21 +2210,21 @@ small.error {
   border: 2px solid #666666;
   padding: 30px;
 }
-/* line 171, ../sass/new/openeyes/components/_forms.scss */
+/* line 175, ../sass/new/openeyes/components/_forms.scss */
 .form.login {
   margin: 50px auto 100px auto;
   max-width: 488px;
 }
-/* line 174, ../sass/new/openeyes/components/_forms.scss */
+/* line 178, ../sass/new/openeyes/components/_forms.scss */
 .form.login label {
   font-size: 0.9375em;
 }
-/* line 178, ../sass/new/openeyes/components/_forms.scss */
+/* line 182, ../sass/new/openeyes/components/_forms.scss */
 .form [type="submit"] {
   margin: 0;
 }
 
-/* line 184, ../sass/new/openeyes/components/_forms.scss */
+/* line 188, ../sass/new/openeyes/components/_forms.scss */
 label.highlight {
   background: #e3f0f2;
   padding: 0.3125em 0.875em 0.375em 0.625em;
@@ -2230,11 +2235,11 @@ label.highlight {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 189, ../sass/new/openeyes/components/_forms.scss */
+/* line 193, ../sass/new/openeyes/components/_forms.scss */
 label.highlight:hover {
   background: #fff;
 }
-/* line 194, ../sass/new/openeyes/components/_forms.scss */
+/* line 198, ../sass/new/openeyes/components/_forms.scss */
 label input[type="checkbox"],
 label input[type="radio"] {
   margin: 0;
@@ -2249,21 +2254,21 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   border-radius: 3px;
   height: auto;
 }
-/* line 222, ../sass/new/openeyes/components/_forms.scss */
+/* line 226, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small, input[type="password"].small, input[type="date"].small, input[type="datetime"].small, input[type="datetime-local"].small, input[type="month"].small, input[type="week"].small, input[type="email"].small, input[type="number"].small, input[type="search"].small, input[type="tel"].small, input[type="time"].small, input[type="url"].small, textarea.small {
   padding: 0.1875em 0.25em;
 }
-/* line 224, ../sass/new/openeyes/components/_forms.scss */
+/* line 228, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small.fixed-width, input[type="password"].small.fixed-width, input[type="date"].small.fixed-width, input[type="datetime"].small.fixed-width, input[type="datetime-local"].small.fixed-width, input[type="month"].small.fixed-width, input[type="week"].small.fixed-width, input[type="email"].small.fixed-width, input[type="number"].small.fixed-width, input[type="search"].small.fixed-width, input[type="tel"].small.fixed-width, input[type="time"].small.fixed-width, input[type="url"].small.fixed-width, textarea.small.fixed-width {
   width: 6.875em;
 }
 
-/* line 232, ../sass/new/openeyes/components/_forms.scss */
+/* line 236, ../sass/new/openeyes/components/_forms.scss */
 .field-row, .element-data-row {
   padding-bottom: 1.125em;
 }
 
-/* line 237, ../sass/new/openeyes/components/_forms.scss */
+/* line 241, ../sass/new/openeyes/components/_forms.scss */
 form .field-row:last-child, form .element-data-row:last-child, .form .field-row:last-child, .form .element-data-row:last-child {
   padding: 0;
 }

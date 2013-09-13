@@ -33,6 +33,10 @@ label, .label {
 	margin: 0;
 }
 
+input[type="range"] {
+	width: 100%;
+}
+
 textarea {
 	min-height: 14m;
 }
