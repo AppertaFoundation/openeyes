@@ -31,16 +31,16 @@ $oe-table-grid-cell-border-color: #cccccc;
 $oe-table-cell-font-size: emCalc(13px);
 $oe-table-cell-label-font-size: emCalc(16px);
 $oe-table-footer-cell-font-size: emCalc(11px);
-$oe-table-cell-font-size-reset: (1em * (1em / $oe-table-cell-font-size));
-$oe-table-footer-cell-font-size-reset: (1em * (1em / $oe-table-footer-cell-font-size));
+$oe-table-cell-font-size-reset: 1em * 1em / $oe-table-cell-font-size;
+$oe-table-footer-cell-font-size-reset: 1em * 1em / $oe-table-footer-cell-font-size;
 
 table {
+	min-width: 100%;
 	@include table;
 	@include all-form-fields {
 		font-size: 1em;
 	}
 
-	min-width: 100%;
 	tr {
 		th {
 			text-align: left;
@@ -57,6 +57,12 @@ table {
 					font-size: $oe-button-small-font-size / (1em / $oe-table-cell-font-size-reset);
 				}
 			}
+		}
+		&.odd {
+			background: $table-bg;
+		}
+		&.even {
+			background: $table-even-row-bg;
 		}
 	}
 	tfoot {
@@ -128,9 +134,10 @@ table {
 // Styleguide 6.4
 
 table {
-	&.white,
-	tr:nth-of-type(even) {
-		background: #fff;
+	&.white {
+		&, tr:nth-of-type(even) {
+			background: #fff;
+		}
 	}
 }
 
