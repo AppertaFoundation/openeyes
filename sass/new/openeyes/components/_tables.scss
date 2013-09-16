@@ -31,6 +31,8 @@ $oe-table-grid-cell-border-color: #cccccc;
 $oe-table-cell-font-size: emCalc(13px);
 $oe-table-cell-label-font-size: emCalc(16px);
 $oe-table-footer-cell-font-size: emCalc(11px);
+$oe-table-cell-font-size-reset: (1em * (1em / $oe-table-cell-font-size));
+$oe-table-footer-cell-font-size-reset: (1em * (1em / $oe-table-footer-cell-font-size));
 
 table {
 	@include table;
@@ -48,6 +50,14 @@ table {
 		td {
 			font-size: $oe-table-cell-font-size;
 		}
+		td, th {
+			button, .button {
+				font-size: $oe-button-primary-font-size / (1em / $oe-table-cell-font-size-reset);
+				&.small {
+					font-size: $oe-button-small-font-size / (1em / $oe-table-cell-font-size-reset);
+				}
+			}
+		}
 	}
 	tfoot {
 		font-weight: normal;
@@ -56,6 +66,12 @@ table {
 			td {
 				font-size: $oe-table-footer-cell-font-size;
 				font-weight: bold;
+				button, .button {
+					font-size: $oe-button-primary-font-size / (1em / $oe-table-footer-cell-font-size-reset);
+					&.small {
+						font-size: $oe-button-small-font-size / (1em / $oe-table-footer-cell-font-size-reset);
+					}
+				}
 			}
 			&.even,
 			&.alt,
@@ -81,6 +97,9 @@ table {
 		label {
 			font-size: $oe-table-cell-label-font-size;
 		}
+	}
+	button, .button {
+		font-size: 1em;
 	}
 }
 
@@ -137,6 +156,14 @@ table {
 				font-weight: normal;
 				font-size: $default-font-size;
 				padding-left: 0;
+			}
+		}
+		tfoot {
+			background: none;
+			td {
+				padding: $table-head-padding;
+				padding-left: 0;
+				padding-right: 0;
 			}
 		}
 		tr {

@@ -432,3 +432,28 @@ $oe-field-highlight-font-size: emCalc(18px);
 $oe-field-highlight-margin: 0;
 $oe-field-highlight-list-item-font-size: 1em;
 $oe-field-highlight-important-bg-color: #fff300;
+
+// Button vars
+$oe-button-primary-bg-color-start: #107be9;
+$oe-button-primary-bg-color-end: #1469bf;
+$oe-button-primary-shadow-opacity: 0.3;
+$oe-button-primary-font-size: emCalc(16px);
+$oe-button-primary-text-shadow-1: #105dae;
+$oe-button-primary-text-shadow-2: #5c0faa;
+$oe-button-primary-border-color: #105dae;
+$oe-button-primary-hover-color: white;
+$oe-button-primary-hover-bg-color-start: #118afb;
+$oe-button-primary-hover-bg-color-end: #1279e3;
+$oe-button-primary-hover-border-color: #1974d1;
+$oe-button-primary-active-bg-color-start: #145ea9;
+$oe-button-primary-active-bg-color-end: #104d8b;
+$oe-button-primary-active-border-color: #0f467e;
+$oe-button-primary-padding: emCalc(8px) emCalc(40px);
+// Small button vars
+$oe-button-small-padding: emCalc(5px) emCalc(20px) !default;
+$oe-button-small-font-size: emCalc(13px);
+$oe-button-small-letter-spacing: 1px;
+// Tiny button vars
+$oe-button-tiny-padding: emCalc(5px) emCalc(20px) !default;
+$oe-button-tiny-font-size: emCalc(11px);
+$oe-button-tiny-letter-spacing: 1px;

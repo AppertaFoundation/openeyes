@@ -1717,7 +1717,7 @@ dl li {
   display: block;
 }
 
-/* line 35, ../sass/new/openeyes/components/_tables.scss */
+/* line 37, ../sass/new/openeyes/components/_tables.scss */
 table {
   background: #edf4f9;
   margin-bottom: 0.625em;
@@ -1766,90 +1766,124 @@ table button, table .button,
 table select {
   font-size: 1em;
 }
-/* line 43, ../sass/new/openeyes/components/_tables.scss */
+/* line 45, ../sass/new/openeyes/components/_tables.scss */
 table tr th {
   text-align: left;
   background: #dddddd;
   font-size: 0.6875em;
 }
-/* line 48, ../sass/new/openeyes/components/_tables.scss */
+/* line 50, ../sass/new/openeyes/components/_tables.scss */
 table tr td {
   font-size: 0.8125em;
 }
-/* line 52, ../sass/new/openeyes/components/_tables.scss */
+/* line 54, ../sass/new/openeyes/components/_tables.scss */
+table tr td button, table tr td .button, table tr th button, table tr th .button {
+  font-size: 1.23077em;
+}
+/* line 56, ../sass/new/openeyes/components/_tables.scss */
+table tr td button.small, table tr td .button.small, table tr th button.small, table tr th .button.small {
+  font-size: 1em;
+}
+/* line 62, ../sass/new/openeyes/components/_tables.scss */
 table tfoot {
   font-weight: normal;
 }
-/* line 56, ../sass/new/openeyes/components/_tables.scss */
+/* line 66, ../sass/new/openeyes/components/_tables.scss */
 table tfoot tr th,
 table tfoot tr td {
   font-size: 0.6875em;
   font-weight: bold;
 }
-/* line 62, ../sass/new/openeyes/components/_tables.scss */
+/* line 69, ../sass/new/openeyes/components/_tables.scss */
+table tfoot tr th button, table tfoot tr th .button,
+table tfoot tr td button,
+table tfoot tr td .button {
+  font-size: 1.45455em;
+}
+/* line 71, ../sass/new/openeyes/components/_tables.scss */
+table tfoot tr th button.small, table tfoot tr th .button.small,
+table tfoot tr td button.small,
+table tfoot tr td .button.small {
+  font-size: 1.18182em;
+}
+/* line 78, ../sass/new/openeyes/components/_tables.scss */
 table tfoot tr.even, table tfoot tr.alt, table tfoot tr:nth-of-type(even) {
   background: none;
 }
-/* line 68, ../sass/new/openeyes/components/_tables.scss */
+/* line 84, ../sass/new/openeyes/components/_tables.scss */
 table.grid th, table.grid td {
   border-right: 1px solid #cccccc;
 }
-/* line 72, ../sass/new/openeyes/components/_tables.scss */
+/* line 88, ../sass/new/openeyes/components/_tables.scss */
 table.grid th:last-child,
 table.grid td:last-child {
   border-right: none;
 }
-/* line 75, ../sass/new/openeyes/components/_tables.scss */
+/* line 91, ../sass/new/openeyes/components/_tables.scss */
 table.grid tfoot {
   border-top: 1px solid #dddddd;
 }
-/* line 81, ../sass/new/openeyes/components/_tables.scss */
+/* line 97, ../sass/new/openeyes/components/_tables.scss */
 table td label, table th label {
   font-size: 1em;
 }
+/* line 101, ../sass/new/openeyes/components/_tables.scss */
+table button, table .button {
+  font-size: 1em;
+}
 
-/* line 113, ../sass/new/openeyes/components/_tables.scss */
+/* line 132, ../sass/new/openeyes/components/_tables.scss */
 table.white,
 table tr:nth-of-type(even) {
   background: #fff;
 }
 
-/* line 119, ../sass/new/openeyes/components/_tables.scss */
+/* line 138, ../sass/new/openeyes/components/_tables.scss */
 table.plain {
   border: 0;
 }
-/* line 121, ../sass/new/openeyes/components/_tables.scss */
+/* line 140, ../sass/new/openeyes/components/_tables.scss */
 table.plain, table.plain tr:nth-of-type(even) {
   background: transparent;
 }
 
-/* line 128, ../sass/new/openeyes/components/_tables.scss */
+/* line 147, ../sass/new/openeyes/components/_tables.scss */
 table.blank {
   background: none;
   border: 0;
   width: auto;
   min-width: 0;
 }
-/* line 133, ../sass/new/openeyes/components/_tables.scss */
+/* line 152, ../sass/new/openeyes/components/_tables.scss */
 table.blank thead {
   background: none;
 }
-/* line 135, ../sass/new/openeyes/components/_tables.scss */
+/* line 154, ../sass/new/openeyes/components/_tables.scss */
 table.blank thead th {
   background: none;
   font-weight: normal;
   font-size: 0.8125em;
   padding-left: 0;
 }
-/* line 142, ../sass/new/openeyes/components/_tables.scss */
+/* line 161, ../sass/new/openeyes/components/_tables.scss */
+table.blank tfoot {
+  background: none;
+}
+/* line 163, ../sass/new/openeyes/components/_tables.scss */
+table.blank tfoot td {
+  padding: 0.5em 0.625em 0.625em;
+  padding-left: 0;
+  padding-right: 0;
+}
+/* line 169, ../sass/new/openeyes/components/_tables.scss */
 table.blank tr {
   background: none;
 }
-/* line 145, ../sass/new/openeyes/components/_tables.scss */
+/* line 172, ../sass/new/openeyes/components/_tables.scss */
 table.blank td {
   padding: 2px 10px 2px 0;
 }
-/* line 147, ../sass/new/openeyes/components/_tables.scss */
+/* line 174, ../sass/new/openeyes/components/_tables.scss */
 table.blank td img {
   height: auto;
   width: auto;
@@ -2278,8 +2312,12 @@ input[type="text"].small.fixed-width, input[type="password"].small.fixed-width, 
 .field-row, .element-data-row {
   padding-bottom: 1.125em;
 }
+/* line 248, ../sass/new/openeyes/components/_forms.scss */
+.field-row table:last-child, .element-data-row table:last-child {
+  margin-bottom: 0;
+}
 
-/* line 251, ../sass/new/openeyes/components/_forms.scss */
+/* line 254, ../sass/new/openeyes/components/_forms.scss */
 form .field-row:last-child, form .element-data-row:last-child, .form .field-row:last-child, .form .element-data-row:last-child {
   padding: 0;
 }

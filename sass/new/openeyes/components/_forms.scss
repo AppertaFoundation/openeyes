@@ -245,6 +245,9 @@ $oe-form-field-fixed-width: emCalc(110px) !default;
 // Field rows
 .field-row {
 	padding-bottom: $form-spacing;
+	table:last-child {
+		margin-bottom: 0;
+	}
 }
 
 form, .form {
