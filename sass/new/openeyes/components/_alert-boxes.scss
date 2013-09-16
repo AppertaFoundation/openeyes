@@ -24,6 +24,9 @@ $oe-alert-with-icon-padding-left: emCalc(60px) !default;
 $oe-alert-issue-bg-color: #fdf2e5 !default;
 $oe-alert-issue-with-icon-bg-image: image-url("_elements/icons/box/issue.png") !default;
 $oe-alert-issue-with-icon-min-height: 36px !default;
+$oe-alert-success-border-color: #99cc99 !default;
+$oe-alert-success-with-icon-bg-image: image-url("_elements/icons/box/info.png") !default;
+$oe-alert-success-with-icon-min-height: 36px !default;
 
 .alert-box {
 	@include alert($oe-alert-default-bg-color);
@@ -50,6 +53,11 @@ $oe-alert-issue-with-icon-min-height: 36px !default;
 	}
 	&.success {
 		@include alert-style($success-color);
+		border-color: $oe-alert-success-border-color;
+		&.with-icon {
+			background-image: $oe-alert-success-with-icon-bg-image;
+			min-height: $oe-alert-success-with-icon-min-height;
+		}
 	}
 	&.alert {
 		@include alert-style($oe-alert-alert-bg-color);
