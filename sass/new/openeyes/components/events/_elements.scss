@@ -49,7 +49,9 @@ $oe-field-highlight-important-bg-color: #fff300 !default;
 	font-size: $oe-element-title-font-size;
 	padding: $oe-element-title-padding;
 	margin: $oe-element-title-margin;
-	float: left;
+	.element-header & {
+		float: left;
+	}
 }
 
 .element-data {

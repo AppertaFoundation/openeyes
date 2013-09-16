@@ -121,7 +121,7 @@
 					</td>
 				</tr>
 				<tr class="prescription-tapier odd">
-					<td class="prescription-label">then</td>
+					<td class="prescription-label"><span>then</span></td>
 					<td>
 						<input type="text" value="1 drop(s)" />
 					</td>
@@ -141,7 +141,7 @@
 					</td>
 				</tr>
 				<tr class="prescription-tapier odd">
-					<td class="prescription-label">then</td>
+					<td class="prescription-label"><span>then</span></td>
 					<td>
 						<input type="text" value="1 drop(s)" />
 					</td>
@@ -193,7 +193,7 @@
 					</td>
 				</tr>
 				<tr class="prescription-tapier even">
-					<td class="prescription-label">then</td>
+					<td class="prescription-label"><span>then</span></td>
 					<td>
 						<input type="text" value="1 drop(s)" />
 					</td>
@@ -213,7 +213,7 @@
 					</td>
 				</tr>
 				<tr class="prescription-tapier even">
-					<td class="prescription-label">then</td>
+					<td class="prescription-label"><span>then</span></td>
 					<td>
 						<input type="text" value="1 drop(s)" />
 					</td>
