@@ -1,4 +1,4 @@
-<div class="large-10 column event phasing edit">
+<div class="large-10 column event operation-note edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">
@@ -102,7 +102,7 @@
 				</section>
 
 				<!-- On-demand element for added procedure -->
-				<section class="element on-demand">
+				<section class="element on-demand validation-error">
 					<header class="element-header">
 						<h3 class="element-title">Blepharoplasty of lower lid</h3>
 					</header>
@@ -114,6 +114,215 @@
 							<div class="large-6 column end">
 								<textarea placeholder="Enter comments..."></textarea>
 							</div>
+						</div>
+					</div>
+				</section>
+
+				<section class="element on-demand">
+					<header class="element-header">
+						<h3 class="element-title">Cataract</h3>
+					</header>
+					<div class="element-fields">
+						<div class="row">
+							<div class="large-8 column">
+								<div class="row">
+									<div class="large-6 column">
+										<?php echo eyedraw('large', 1); ?>
+									</div>
+									<div class="large-6 column">
+										<div class="row field-row">
+											<div class="large-6 column">
+												<label for="">Incision site:</label>
+											</div>
+											<div class="large-6 column">
+												<select>
+													<option>-- Select --</option>
+												</select>
+											</div>
+										</div>
+										<div class="row field-row">
+											<div class="large-6 column">
+												<label for="">Length:</label>
+											</div>
+											<div class="large-6 column">
+												<input type="text" />
+											</div>
+										</div>
+										<div class="row field-row">
+											<div class="large-6 column">
+												<label for="">Meridian:</label>
+											</div>
+											<div class="large-6 column">
+												<input type="text" />
+											</div>
+										</div>
+										<div class="row field-row">
+											<div class="large-6 column">
+												<label for="">Incision type:</label>
+											</div>
+											<div class="large-6 column">
+												<select>
+													<option>-- Select --</option>
+												</select>
+											</div>
+										</div>
+										<div class="row field-row">
+											<div class="large-12 column">
+												<label for="">Details:</label>
+												<textarea placeholder="Enter details..."></textarea>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Consistent horizontal form -->
+							<div class="large-4 column">
+								<div class="row field-row">
+									<div class="large-12 column">
+										<label for="">IOL type:</label>
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-12 column">
+										<label for="">IOL power:</label>
+										<input type="text" />
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-12 column">
+										<label for="">Predicted refraction:</label>
+										<input type="text" />
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-12 column">
+										<label for="">IOL position:</label>
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-12 column">
+										<label for="">Devices:</label>
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-12 column">
+										<label for="">Complications:</label>
+										<div class="multi-select multi-select-list">
+											<div class="field-row">
+												<select>
+													<option>-- Select --</option>
+												</select>
+											</div>
+											<ul class="multi-select-selections field-row">
+												<li>
+													Decentered IOL
+													<a href="#" class="remove-one">Remove</a>
+												</li>
+												<li>
+													IOL exchange
+													<a href="#" class="remove-one">Remove</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-12 column">
+										<label for="">Complication notes:</label>
+										<textarea placeholder="Enter complication notes..."></textarea>
+									</div>
+								</div>
+							</div>
+
+							<!-- Consistent horizontal form -->
+							<!-- <div class="large-4 column">
+								<div class="row field-row">
+									<div class="large-6 column">
+										<label for="">IOL type:</label>
+									</div>
+									<div class="large-6 column">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-6 column">
+										<label for="">IOL power:</label>
+									</div>
+									<div class="large-6 column">
+										<input type="text" />
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-6 column">
+										<label for="">Predicted refraction:</label>
+									</div>
+									<div class="large-6 column">
+										<input type="text" />
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-6 column">
+										<label for="">IOL position:</label>
+									</div>
+									<div class="large-6 column">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-6 column">
+										<label for="">Devices:</label>
+									</div>
+									<div class="large-6 column">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-6 column">
+										<label for="">Complications:</label>
+									</div>
+									<div class="large-6 column">
+										<div class="multi-select multi-select-list">
+											<div class="field-row">
+												<select>
+													<option>-- Select --</option>
+												</select>
+											</div>
+											<ul class="multi-select-selections field-row">
+												<li>
+													Decentered IOL
+													<a href="#" class="remove-one">Remove</a>
+												</li>
+												<li>
+													IOL exchange
+													<a href="#" class="remove-one">Remove</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<div class="row field-row">
+									<div class="large-12 column">
+										<label for="">Complication notes:</label>
+										<textarea placeholder="Enter complication notes..."></textarea>
+									</div>
+								</div>
+							</div>-->
 						</div>
 					</div>
 				</section>
