@@ -18,7 +18,7 @@
 							Invalid login.
 							<a href="#" class="close">×</a>
 						</div>
-						<div class="row">
+						<div class="row field-row">
 							<div class="small-4 column">
 								<label for="username" class="inline error">Username:</label>
 							</div>
@@ -26,7 +26,7 @@
 								<input type="text" id="username" placeholder="Enter username...">
 							</div>
 						</div>
-						<div class="row">
+						<div class="row field-row">
 							<div class="small-4 column">
 								<label for="password" class="inline error">Password:</label>
 							</div>
