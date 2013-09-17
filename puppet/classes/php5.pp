@@ -32,7 +32,7 @@ class php5 {
   }
 
   exec { "install_phpunit":
-      command => "/usr/bin/curl https://phar.phpunit.de/phpunit.phar -o phpunit.phar; chmod +x phpunit.phar; mv phpunit.phar /usr/local/bin/phpunit",
+      command => "/usr/bin/pear channel-discover pear.phpunit.de; /usr/bin/pear config-set auto_discover 1; /usr/bin/pear install pear.phpunit.de/PHPUnit; /usr/bin/pear install phpunit/PHPUnit_Selenium",
       path    => "/usr/local/bin/:/bin/",
       require => Package['curl'],
       # path    => [ "/usr/local/bin/", "/bin/" ],  # alternative syntax
