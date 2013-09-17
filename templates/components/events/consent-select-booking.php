@@ -32,7 +32,7 @@
 								Select:
 							</legend>
 							<div class="large-5 column end">
-								<label class="highlight">
+								<label class="highlight booking">
 									<span class="row">
 										<span class="large-1 column">
 											<input type="radio" />
@@ -51,7 +51,7 @@
 										</span>
 									</span>
 								</label>
-								<label class="highlight">
+								<label class="highlight booking">
 									<span class="row">
 										<span class="large-1 column">
 											<input type="radio" />

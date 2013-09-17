@@ -144,6 +144,11 @@ $oe-element-edit-title-font-style: italic;
 .edit {
 	.element {
 		border-top: $oe-element-edit-border-top;
+		&.on-demand {
+			@include border-radius(10px);
+			border: 7px solid #c8d3dd;
+			margin: emCalc(5px) 0;
+		}
 		select {
 			width: auto;
 			&.full-width {

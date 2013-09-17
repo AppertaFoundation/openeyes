@@ -203,6 +203,16 @@ label {
 		&:hover {
 			background: #fff;
 		}
+		&.booking {
+			padding: emCalc(9px) emCalc(14px) emCalc(10px) emCalc(10px);
+			&:hover {
+				background: #3665ff;
+				color: #fff;
+			}
+			img {
+				vertical-align: top;
+			}
+		}
 	}
 	input[type="checkbox"],
 	input[type="radio"] {
