@@ -15,79 +15,75 @@
 		<div class="row">
 			<div class="large-12 column">
 
-				<section class="row element-data-row">
-					<div class="large-12 column">
-						<h3 class="field-title">Procedure list</h3>
-						<div class="element-data">
-							<div class="element-data-row">
-								<ul class="field-value field-highlight important">
-									<li>Left Punctoplasty</li>
-									<li>Left Biopsy of lid - excisional</li>
-									<li>Left Brow lift - direct</li>
-								</ul>
-							</div>
+				<section class="element-data-row">
+					<h3 class="field-title">Procedure list</h3>
+					<div class="element-data">
+						<div class="element-data-row">
+							<ul class="field-value field-highlight important">
+								<li>Left Punctoplasty</li>
+								<li>Left Biopsy of lid - excisional</li>
+								<li>Left Brow lift - direct</li>
+							</ul>
 						</div>
 					</div>
 				</section>
 
-				<section class="row element-data-row">
-					<div class="large-12 column">
-						<h3 class="element-title">Cataract</h3>
-						<div class="element-data">
-							<div class="row">
-								<div class="large-6 column highlight">
-									<div class="row element-data-row">
-										<div class="large-4 column">
-											<div class="field-label">Incision site:</div>
-										</div>
-										<div class="large-8 column">
-											<div class="field-value">Corneal</div>
-										</div>
+				<section class="element-data-row">
+					<h3 class="element-title">Cataract</h3>
+					<div class="element-data">
+						<div class="row">
+							<div class="large-6 column highlight">
+								<div class="row element-data-row">
+									<div class="large-4 column">
+										<div class="field-label">Incision site:</div>
 									</div>
-									<div class="row element-data-row">
-										<div class="large-4 column">
-											<div class="field-label">Length:</div>
-										</div>
-										<div class="large-8 column">
-											<div class="field-value">2.8</div>
-										</div>
-									</div>
-									<div class="row element-data-row">
-										<div class="large-4 column">
-											<div class="field-label">Meridian:</div>
-										</div>
-										<div class="large-8 column">
-											<div class="field-value">0</div>
-										</div>
-									</div>
-									<div class="row element-data-row">
-										<div class="large-4 column">
-											<div class="field-label">Incision type:</div>
-										</div>
-										<div class="large-8 column">
-											<div class="field-value">Pocket</div>
-										</div>
-									</div>
-									<div class="row element-data-row">
-										<div class="large-4 column">
-											<div class="field-label">Details:</div>
-										</div>
-										<div class="large-8 column">
-											<div class="field-value">Posterior chamber IOL, corneal pocket incision at 3 o'clock, sideport at 12, and 6 o'clock</div>
-										</div>
-									</div>
-									<div class="row element-data-row">
-										<div class="large-4 column">
-											<div class="field-label">Predicted refraction:</div>
-										</div>
-										<div class="large-8 column">
-											<div class="field-value">0.00</div>
-										</div>
+									<div class="large-8 column">
+										<div class="field-value">Corneal</div>
 									</div>
 								</div>
-								<div class="large-6 column">
-									(Eyedraw image goes here)
+								<div class="row element-data-row">
+									<div class="large-4 column">
+										<div class="field-label">Length:</div>
+									</div>
+									<div class="large-8 column">
+										<div class="field-value">2.8</div>
+									</div>
 								</div>
+								<div class="row element-data-row">
+									<div class="large-4 column">
+										<div class="field-label">Meridian:</div>
+									</div>
+									<div class="large-8 column">
+										<div class="field-value">0</div>
+									</div>
+								</div>
+								<div class="row element-data-row">
+									<div class="large-4 column">
+										<div class="field-label">Incision type:</div>
+									</div>
+									<div class="large-8 column">
+										<div class="field-value">Pocket</div>
+									</div>
+								</div>
+								<div class="row element-data-row">
+									<div class="large-4 column">
+										<div class="field-label">Details:</div>
+									</div>
+									<div class="large-8 column">
+										<div class="field-value">Posterior chamber IOL, corneal pocket incision at 3 o'clock, sideport at 12, and 6 o'clock</div>
+									</div>
+								</div>
+								<div class="row element-data-row">
+									<div class="large-4 column">
+										<div class="field-label">Predicted refraction:</div>
+									</div>
+									<div class="large-8 column">
+										<div class="field-value">0.00</div>
+									</div>
+								</div>
+							</div>
+							<div class="large-6 column">
+								(Eyedraw image goes here)
 							</div>
 						</div>
 					</div>
@@ -131,27 +127,23 @@
 					</div>
 				</section>
 
-				<section class="row element-data-row">
-					<div class="large-12 column">
-						<h3 class="field-title">Punctoplasty</h3>
-						<div class="element-data">
-							<div class="element-data-row">
-								<div class="field-value">
-								Punctoplasty comments here.
-								</div>
+				<section class="element-data-row">
+					<h3 class="field-title">Punctoplasty</h3>
+					<div class="element-data">
+						<div class="element-data-row">
+							<div class="field-value">
+							Punctoplasty comments here.
 							</div>
 						</div>
 					</div>
 				</section>
 
-				<section class="row element-data-row">
-					<div class="large-12 column">
-						<h3 class="field-title">Biopsy of lid - excisional</h3>
-						<div class="element-data">
-							<div class="element-data-row">
-								<div class="field-value">
-								Biopsy of lid - excisional comments here.
-								</div>
+				<section class="element-data-row">
+					<h3 class="field-title">Biopsy of lid - excisional</h3>
+					<div class="element-data">
+						<div class="element-data-row">
+							<div class="field-value">
+							Biopsy of lid - excisional comments here.
 							</div>
 						</div>
 					</div>
