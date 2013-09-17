@@ -18,7 +18,7 @@ $oe-field-highlight-border-radius: 5px !default;
 $oe-field-highlight-bg-color: white !default;
 $oe-field-highlight-padding: 10px !default;
 $oe-field-highlight-font-size: emCalc(18px) !default;
-$oe-field-highlight-margin: 0 !default;
+$oe-field-highlight-margin: 0 -10px !default;
 $oe-field-highlight-list-item-font-size: 1em !default;
 $oe-field-highlight-important-bg-color: #fff300 !default;
 
@@ -83,18 +83,23 @@ $oe-field-highlight-important-bg-color: #fff300 !default;
 	padding-top: 1em;
 }
 
+.field-title {
+	@extend .element-title;
+}
+
 .field-value {
 	font-size: $oe-field-value-font-size;
 	line-height: $oe-field-value-line-height;
-}
-ul.field-value, ol.field-value {
 	margin: 0;
 	li {
 		font-size: 1em;
 		margin-left: 1.4em;
 	}
+	&.none {
+		color: #999;
+		font-style: italic;
+	}
 }
-
 
 .field-label {
 	@extend .field-value;
@@ -109,6 +114,8 @@ ul.field-value, ol.field-value {
 	list-style-type: none;
 	li {
 		font-size: $oe-field-highlight-list-item-font-size;
+		margin: 0;
+		padding: emCalc(4px) 0;
 	}
 	&.important {
 		background: $oe-field-highlight-important-bg-color;
@@ -148,6 +155,9 @@ $oe-element-edit-title-font-style: italic;
 			@include border-radius(10px);
 			border: 7px solid #c8d3dd;
 			margin: emCalc(5px) 0;
+			&.validation-error {
+				border-color: #da3232;
+			}
 		}
 		select {
 			width: auto;
@@ -202,5 +212,45 @@ $oe-element-edit-title-font-style: italic;
 	}
 	.element-action {
 		font-size: $default-font-size;
+	}
+}
+
+.view {
+	&.highlight-fields {
+		.element {
+			margin-bottom: 10px;
+		}
+		.element-data {
+			background: none;
+			padding-top: 0;
+			padding-bottom: 0;
+			&.highlight, .highlight {
+				@include border-radius(5px);
+				background: #fff;
+				padding-top: emCalc(4px);
+				padding-bottom: emCalc(4px);
+			}
+		}
+		.field-value {
+			font-size: emCalc(16px);
+		}
+	}
+	.element-data {
+		.element-data-row:last-child {
+			padding-bottom: 0;
+		}
+		.field-title {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+	.element-title {
+		&.highlight {
+			background: #dae6f1;
+			padding: emCalc(12px) 10px;
+			float: none;
+			color: #111;
+			font-size: emCalc(14px);
+		}
 	}
 }
