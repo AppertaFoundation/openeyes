@@ -199,7 +199,7 @@
 							<div class="large-2 column">
 								<label for="">Agents:</label>
 							</div>
-							<div class="large-3 column end">
+							<div class="large-10 column">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -209,10 +209,24 @@
 							<div class="large-2 column">
 								<label for="">Complications:</label>
 							</div>
-							<div class="large-3 column end">
-								<select>
-									<option>-- Select --</option>
-								</select>
+							<div class="large-5 column end">
+								<div class="multi-select multi-select-list">
+									<div class="field-row">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+									<ul class="multi-select-selections field-row">
+										<li>
+											Retro bulbar / peribulbar haemorrage
+											<a href="#" class="remove-one">Remove</a>
+										</li>
+										<li>
+											Patient pain - Moderate
+											<a href="#" class="remove-one">Remove</a>
+										</li>
+									</ul>
+								</div>
 							</div>
 						</div>
 						<div class="row field-row">

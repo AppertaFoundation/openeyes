@@ -3932,8 +3932,9 @@ ul.field-value li, ul.field-label li, ol.field-value li, ol.field-label li {
   margin: 0;
   padding: 0;
   list-style-type: none;
+  display: inline-block;
 }
-/* line 28, ../sass/new/openeyes/components/_multi-select.scss */
+/* line 29, ../sass/new/openeyes/components/_multi-select.scss */
 .multi-select-selections li {
   background: #ffe;
   margin-bottom: 0;
@@ -3941,16 +3942,16 @@ ul.field-value li, ul.field-label li, ol.field-value li, ol.field-label li {
   padding: 4px 6px;
   position: relative;
 }
-/* line 35, ../sass/new/openeyes/components/_multi-select.scss */
+/* line 36, ../sass/new/openeyes/components/_multi-select.scss */
 .multi-select-selections li:first-child {
   margin-left: 0;
 }
-/* line 38, ../sass/new/openeyes/components/_multi-select.scss */
+/* line 39, ../sass/new/openeyes/components/_multi-select.scss */
 .multi-select-selections li:last-child {
   margin-right: 0;
 }
 
-/* line 47, ../sass/new/openeyes/components/_multi-select.scss */
+/* line 48, ../sass/new/openeyes/components/_multi-select.scss */
 .multi-select-list .multi-select-selections li {
   display: block;
   -webkit-border-radius: 0;
