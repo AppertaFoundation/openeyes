@@ -8,17 +8,24 @@
 		color: green;
 		white-space: nowrap;
 	}
+	.not-complete {
+		color: red;
+		white-space: nowrap;
+	}
 	.complete:before {
 		content: "✓ ";
 	}
+	.not-complete:before {
+		content: "✖ ";
+	}
 	table {
-		background: #e1eef9
+		background: #fff;
 	}
 	table tr td {
 		border-top: 1px solid #ddd;
 	}
 	table tr:nth-of-type(even) {
-		background: #e1eef9
+		background: #fff;
 	}
 	tr.heading h3 {
 		font-size: inherit;
@@ -184,7 +191,7 @@
 												<a href="correspondence-create.php">Correspondence create</a>
 											</td>
 											<td>The correspondence create template.</td>
-											<td><span class="complete">Complete</span></td>
+											<td><span class="not-complete">Not complete</span></td>
 										</tr>
 										<tr>
 											<td>
