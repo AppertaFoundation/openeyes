@@ -1,6 +1,6 @@
 module.exports = {
 	options: {
-		concurrent: 10,
+		concurrent: 20,
 		src: 'protected/modules/*/Gruntfile.js'
 	},
 	default: {
