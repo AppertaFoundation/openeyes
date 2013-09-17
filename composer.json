@@ -8,11 +8,11 @@
         "behat/mink-goutte-driver":     "~1.0.8",
         "behat/mink-selenium2-driver":  "~1.1.1",
 
-        "sensiolabs/behat-page-object-extension": "*"
+        "sensiolabs/behat-page-object-extension": "*",
+        "phpunit/phpunit": "3.7.*"
 
     },
     "config": {
         "bin-dir": "bin"
     }
-
 }

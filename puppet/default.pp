@@ -7,10 +7,11 @@ class amp {
 
   include apache2
   include mysql
+  include curl
   include php5
   include openeyes
   include xdebug
-  include curl
+
 }
 
 include amp

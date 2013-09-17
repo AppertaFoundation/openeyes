@@ -29,5 +29,12 @@ class php5 {
       ensure  => present,
       require => Exec['apt-update'],
       notify  => Service['apache2']
-    }
+  }
+
+  exec { "install_phpunit":
+      command => "/usr/bin/curl https://phar.phpunit.de/phpunit.phar -o phpunit.phar; chmod +x phpunit.phar; mv phpunit.phar /usr/local/bin/phpunit",
+      path    => "/usr/local/bin/:/bin/",
+      require => Package['curl'],
+      # path    => [ "/usr/local/bin/", "/bin/" ],  # alternative syntax
+  }
 }
