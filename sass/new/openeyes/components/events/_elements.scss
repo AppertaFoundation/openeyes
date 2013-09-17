@@ -56,7 +56,7 @@ $oe-field-highlight-important-bg-color: #fff300 !default;
 
 .element-data {
 	@extend %element-panel;
-	> .field-value:last-child {
+	> .field-value:not(.field-highlight):last-child {
 		padding-bottom: 0;
 	}
 }

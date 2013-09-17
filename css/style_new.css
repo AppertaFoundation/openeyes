@@ -3529,7 +3529,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 }
 
 /* line 59, ../sass/new/openeyes/components/events/_elements.scss */
-.element-data > .field-value:last-child, .edit .element-fields > .field-value:last-child, .sub-element-data > .field-value:last-child, .edit .sub-element-fields > .field-value:last-child, .element-data > .field-label:last-child, .edit .element-fields > .field-label:last-child, .sub-element-data > .field-label:last-child, .edit .sub-element-fields > .field-label:last-child {
+.element-data > .field-value:not(.field-highlight):last-child, .edit .element-fields > .field-value:not(.field-highlight):last-child, .sub-element-data > .field-value:not(.field-highlight):last-child, .edit .sub-element-fields > .field-value:not(.field-highlight):last-child, .element-data > .field-label:not(.field-highlight):last-child, .edit .element-fields > .field-label:not(.field-highlight):last-child, .sub-element-data > .field-label:not(.field-highlight):last-child, .edit .sub-element-fields > .field-label:not(.field-highlight):last-child {
   padding-bottom: 0;
 }
 

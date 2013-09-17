@@ -15,20 +15,16 @@
 		<div class="row">
 			<div class="large-12 column">
 
-				<section class="element-data-row">
+				<section class="element element-data">
 					<h3 class="field-title">Procedure list</h3>
-					<div class="element-data">
-						<div class="element-data-row">
-							<ul class="field-value field-highlight important">
-								<li>Left Punctoplasty</li>
-								<li>Left Biopsy of lid - excisional</li>
-								<li>Left Brow lift - direct</li>
-							</ul>
-						</div>
-					</div>
+					<ul class="field-value field-highlight important">
+						<li>Left Punctoplasty</li>
+						<li>Left Biopsy of lid - excisional</li>
+						<li>Left Brow lift - direct</li>
+					</ul>
 				</section>
 
-				<section class="element-data-row">
+				<section class="element">
 					<h3 class="element-title">Cataract</h3>
 					<div class="element-data">
 						<div class="row">
@@ -89,11 +85,11 @@
 					</div>
 				</section>
 
-				<section class="row element-data-row">
-					<div class="large-4 column">
-						<h3 class="field-title">Cataract report</h3>
-						<div class="element-data highlight">
-							<div class="field-value">
+				<section class="element element-data">
+					<div class="row element-data-row">
+						<div class="large-4 column">
+							<h3 class="field-title">Cataract report</h3>
+							<div class="field-value highlight">
 								Continuous Circular Capsulorrhexis
 								<br />
 								Hydrodissection
@@ -106,46 +102,38 @@
 								<br />
 							</div>
 						</div>
-					</div>
-					<div class="large-4 column">
-						<h3 class="field-title">Cataract devices</h3>
-						<div class="element-data highlight">
-							<div class="field-value none">
-								None
+						<div class="large-4 column">
+							<h3 class="field-title">Cataract devices</h3>
+							<div class="element-data highlight">
+								<div class="field-value none">
+									None
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="large-4 column">
-						<h3 class="field-title">Cataract complications</h3>
-						<div class="element-data highlight">
-							<div class="field-value">
-								Decentered IOL
-								<br />
-								IOL exchange
+						<div class="large-4 column">
+							<h3 class="field-title">Cataract complications</h3>
+							<div class="element-data highlight">
+								<div class="field-value">
+									Decentered IOL
+									<br />
+									IOL exchange
+								</div>
 							</div>
 						</div>
 					</div>
 				</section>
 
-				<section class="element-data-row">
+				<section class="element element-data">
 					<h3 class="field-title">Punctoplasty</h3>
-					<div class="element-data">
-						<div class="element-data-row">
-							<div class="field-value">
-							Punctoplasty comments here.
-							</div>
-						</div>
+					<div class="field-value">
+					Punctoplasty comments here.
 					</div>
 				</section>
 
-				<section class="element-data-row">
+				<section class="element element-data">
 					<h3 class="field-title">Biopsy of lid - excisional</h3>
-					<div class="element-data">
-						<div class="element-data-row">
-							<div class="field-value">
-							Biopsy of lid - excisional comments here.
-							</div>
-						</div>
+					<div class="field-value">
+					Biopsy of lid - excisional comments here.
 					</div>
 				</section>
 

@@ -1,4 +1,4 @@
-<div class="large-10 column event view booking">
+<div class="large-10 column event view booking highlight-fields">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">
@@ -32,53 +32,55 @@
 			Operation requires scheduling.
 		</div>
 
-		<section class="row">
-			<div class="large-12 column">
-				<h3 class="field-title">Diagnosis</h3>
-				<div class="field-value field-highlight">Left Cyst of eyelid</div>
+		<section class="element element-data">
+			<h3 class="field-title">Diagnosis</h3>
+			<div class="field-value field-highlight">Left Cyst of eyelid</div>
+		</section>
+
+		<section class="element element-data">
+			<h3 class="field-title">Procedures</h3>
+			<ul class="field-value field-highlight important">
+				<li>Left Lester Jones tube</li>
+				<li>Conjunctival flap</li>
+			</ul>
+		</section>
+
+		<section class="element element-data">
+			<div class="row element-data-row">
+				<div class="large-6 column">
+					<h3 class="field-title">Anaesthetic</h3>
+					<div class="field-value">Topical</div>
+				</div>
+				<div class="large-6 column">
+					<h3 class="field-title">Consultant required?</h3>
+					<div class="field-value">No Consultant</div>
+				</div>
 			</div>
 		</section>
 
-		<section class="row">
-			<div class="large-12 column">
-				<h3 class="field-title">Procedures</h3>
-				<ul class="field-value field-highlight important">
-					<li>Left Lester Jones tube</li>
-					<li>Conjunctival flap</li>
-				</ul>
+		<section class="element element-data">
+			<div class="row element-data-row">
+				<div class="large-6 column">
+					<h3 class="field-title">Post Operative Stay Required</h3>
+					<div class="field-value">No Stay</div>
+				</div>
+				<div class="large-6 column">
+					<h3 class="field-title">Decision Date</h3>
+					<div class="field-value">21 Dec 2011</div>
+				</div>
 			</div>
 		</section>
 
-		<section class="row">
-			<div class="large-6 column">
-				<h3 class="field-title">Anaesthetic</h3>
-				<div class="field-value">Topical</div>
-			</div>
-			<div class="large-6 column">
-				<h3 class="field-title">Consultant required?</h3>
-				<div class="field-value">No Consultant</div>
-			</div>
-		</section>
-
-		<section class="row">
-			<div class="large-6 column">
-				<h3 class="field-title">Post Operative Stay Required</h3>
-				<div class="field-value">No Stay</div>
-			</div>
-			<div class="large-6 column">
-				<h3 class="field-title">Decision Date</h3>
-				<div class="field-value">21 Dec 2011</div>
-			</div>
-		</section>
-
-		<section class="row">
-			<div class="large-6 column">
-				<h3 class="field-title">Operation priority</h3>
-				<div class="field-value">Routine</div>
-			</div>
-			<div class="large-6 column">
-				<h3 class="field-title">Operation Comments</h3>
-				<div class="field-value panel comments">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur auctor ante in magna luctus, ac hendrerit mauris dapibus. Sed accumsan bibendum turpis sed pharetra. Curabitur ultrices velit dui, eget aliquet lectus posuere id. Suspendisse rhoncus ante in odio luctus luctus. Duis in facilisis lacus. Vivamus in vulputate dolor. Suspendisse vitae dignissim ante. Maecenas vitae ullamcorper turpis. </div>
+		<section class="element element-data">
+			<div class="row element-data-row">
+				<div class="large-6 column">
+					<h3 class="field-title">Operation priority</h3>
+					<div class="field-value">Routine</div>
+				</div>
+				<div class="large-6 column">
+					<h3 class="field-title">Operation Comments</h3>
+					<div class="field-value panel comments">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur auctor ante in magna luctus, ac hendrerit mauris dapibus. Sed accumsan bibendum turpis sed pharetra. Curabitur ultrices velit dui, eget aliquet lectus posuere id. Suspendisse rhoncus ante in odio luctus luctus. Duis in facilisis lacus. Vivamus in vulputate dolor. Suspendisse vitae dignissim ante. Maecenas vitae ullamcorper turpis. </div>
+				</div>
 			</div>
 		</section>
 
