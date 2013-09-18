@@ -31,10 +31,10 @@ class php5 {
       notify  => Service['apache2']
   }
 
-  exec { "install_phpunit":
-      command => "/usr/bin/pear channel-discover pear.phpunit.de; /usr/bin/pear config-set auto_discover 1; /usr/bin/pear install pear.phpunit.de/PHPUnit; /usr/bin/pear install phpunit/PHPUnit_Selenium",
-      path    => "/usr/local/bin/:/bin/",
-      require => Package['curl'],
-      # path    => [ "/usr/local/bin/", "/bin/" ],  # alternative syntax
-  }
+  #exec { "install_phpunit":
+  #    command => "/usr/bin/pear channel-discover pear.phpunit.de; /usr/bin/pear config-set auto_discover 1; /usr/bin/pear install pear.phpunit.de/PHPUnit; /usr/bin/pear install phpunit/PHPUnit_Selenium",
+  #    path    => "/usr/local/bin/:/bin/",
+  #    require => Package['curl'],
+  #    # path    => [ "/usr/local/bin/", "/bin/" ],  # alternative syntax
+  #}
 }
