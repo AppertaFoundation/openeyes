@@ -291,6 +291,52 @@
 											<td>The therapy application view template.</td>
 											<td><span class="complete">Complete</span></td>
 										</tr>
+										<tr class="heading">
+											<td colspan="3"><h3>Bookings</h3></td>
+										</tr>
+										<tr>
+											<td>
+												<a href="schedule-operation.php">Schedule operation</a>
+											</td>
+											<td>
+												The main schedule operation template for bookings which shows a calender.
+											</td>
+											<td><span class="not-complete">Not started</span></td>
+										</tr>
+										<tr class="heading">
+											<td colspan="3"><h3>Profile templates</h3></td>
+										</tr>
+										<tr>
+											<td>
+												<a href="profile-info.php">Profile information</a>
+											</td>
+											<td>The user profile information template with a simple form.</td>
+											<td><span class="not-complete">Not started</span></td>
+										</tr>
+										<tr class="heading">
+											<td colspan="3"><h3>Admin templates</h3></td>
+										</tr>
+										<tr>
+											<td>
+												<a href="admin-layout.php">Admin layout</a>
+											</td>
+											<td>The main admin layout used for all admin templates.</td>
+											<td><span class="not-complete">Not started</span></td>
+										</tr>
+										<tr>
+											<td>
+												<a href="admin-users-list.php">Admin users</a>
+											</td>
+											<td>The admin users template that shows a list of users in a table.</td>
+											<td><span class="not-complete">Not started</span></td>
+										</tr>
+										<tr>
+											<td>
+												<a href="admin-user-edit.php">Admin user edit</a>
+											</td>
+											<td>The admin user edit template which shows a basic edit form.</td>
+											<td><span class="not-complete">Not started</span></td>
+										</tr>
 									</tbody>
 								</table>
 							</div>
