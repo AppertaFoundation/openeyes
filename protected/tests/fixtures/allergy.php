@@ -18,16 +18,16 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 return array(
-                         'allergy1' => array(
-                                                  'id'=> 1,
-                                                  'name' => 'allergy 1' 
-                         ),
-                         'allergy2' => array(
-                                                  'id'=> 2,
-                                                  'name' => 'allergy 2'  
-                         ),
-                         'allergy3' => array(
-                                                  'id'=> 3,
-                                                  'name' => 'allergy 3' 
-                         ),
+	'allergy1' => array(
+		'id' => 1,
+		'name' => 'allergy 1'
+	),
+	'allergy2' => array(
+		'id' => 2,
+		'name' => 'allergy 2'
+	),
+	'allergy3' => array(
+		'id' => 3,
+		'name' => 'allergy 3'
+	),
 );
