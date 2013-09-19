@@ -121,6 +121,16 @@
 											<td><span class="complete">Complete</span></td>
 										</tr>
 										<tr class="heading">
+											<td colspan="3"><h3>Patient summary</h3></td>
+										</tr>
+										<tr>
+											<td>
+												<a href="patient-summary.php">Patient Summary</a>
+											</td>
+											<td>The patient summary template.</td>
+											<td><span class="not-complete">In progress</span></td>
+										</tr>
+										<tr class="heading">
 											<td colspan="3"><h3>Event modules</h3></td>
 										</tr>
 										<tr>

@@ -20,12 +20,12 @@
 						<h3 class="element-title">Type</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Type:</div>
+								<div class="data-label">Type:</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">1. Patient agreement to investigation or treatment</div>
+								<div class="data-value">1. Patient agreement to investigation or treatment</div>
 							</div>
 						</div>
 					</div>
@@ -36,12 +36,12 @@
 						<h3 class="element-title">Leaflets</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Leaflets provided:</div>
+								<div class="data-label">Leaflets provided:</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">None</div>
+								<div class="data-value">None</div>
 							</div>
 						</div>
 					</div>
@@ -52,38 +52,38 @@
 						<h3 class="element-title">Procedure</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Eye:</div>
+								<div class="data-label">Eye:</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">Left</div>
+								<div class="data-value">Left</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Procedures:</div>
+								<div class="data-label">Procedures:</div>
 							</div>
 							<div class="large-9 column">
-								<ul class="field-value procedures">
+								<ul class="data-value procedures">
 									<li>Punctoplasty</li>
 								</ul>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Anaesthetic type:</div>
+								<div class="data-label">Anaesthetic type:</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">Topical</div>
+								<div class="data-value">Topical</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Additional procedures:</div>
+								<div class="data-label">Additional procedures:</div>
 							</div>
 							<div class="large-9 column">
-								<ul class="field-value procedures">
+								<ul class="data-value procedures">
 									<li>Botulinum toxin injection to eyelid</li>
 									<li>Some other procedure</li>
 								</ul>
@@ -97,12 +97,12 @@
 						<h3 class="element-title">Permissions for images</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Agree for use in audit, education and publication</div>
+								<div class="data-label">Agree for use in audit, education and publication</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">Not applicable</div>
+								<div class="data-value">Not applicable</div>
 							</div>
 						</div>
 					</div>
@@ -113,60 +113,60 @@
 						<h3 class="element-title">Other</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Consultant</div>
+								<div class="data-label">Consultant</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">Mr Yassir Abou-Rayyah</div>
+								<div class="data-value">Mr Yassir Abou-Rayyah</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Consultant</div>
+								<div class="data-label">Consultant</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">Mr Yassir Abou-Rayyah</div>
+								<div class="data-value">Mr Yassir Abou-Rayyah</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">An information leaflet has been provided</div>
+								<div class="data-label">An information leaflet has been provided</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">Yes</div>
+								<div class="data-value">Yes</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Anaesthetic leaflet has been provided</div>
+								<div class="data-label">Anaesthetic leaflet has been provided</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">Yes</div>
+								<div class="data-value">Yes</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Witness required</div>
+								<div class="data-label">Witness required</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">No</div>
+								<div class="data-value">No</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Interpreter required</div>
+								<div class="data-label">Interpreter required</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">No</div>
+								<div class="data-value">No</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-3 column">
-								<div class="field-label">Include supplementary consent form</div>
+								<div class="data-label">Include supplementary consent form</div>
 							</div>
 							<div class="large-9 column">
-								<div class="field-value">No</div>
+								<div class="data-value">No</div>
 							</div>
 						</div>
 					</div>

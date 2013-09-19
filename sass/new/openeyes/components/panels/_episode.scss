@@ -53,11 +53,6 @@ $oe-panel-episode-padding: emCalc(5px) emCalc(1px) emCalc(5px) 0 !default;
 $oe-panel-episode-margin: 0 0 emCalc(5px) 0 !default;
 $oe-panel-episode-border-color: #dad3ba !default;
 $oe-panel-episode-border-width: 3px 1px 3px 0 !default;
-$oe-panel-episode-toggle-events-trigger-width: 21px !default;
-$oe-panel-episode-toggle-events-trigger-height: 20px !default;
-$oe-panel-episode-toggle-events-trigger-border-radius: 0 0 3px 3px !default;
-$oe-panel-episode-toggle-events-trigger-icon-margin: 4px 0 0 5px !default;
-$oe-panel-episode-toggle-events-trigger-hover-bg-color: #3665ff !default;
 $oe-panel-episode-date-font-size: emCalc(11px) !default;
 $oe-panel-episode-date-padding-left: emCalc(7px) !default;
 $oe-panel-episode-title-margin: emCalc(5px) emCalc(2px) emCalc(3px) 0 !default;
@@ -96,42 +91,6 @@ $oe-panel-episode-events-selected-event-type-background-image: image-url("_eleme
 		margin: $oe-panel-episode-margin;
 		padding: $oe-panel-episode-padding;
 		position: relative;
-		.toggle-events-trigger {
-			display: block;
-			height: $oe-panel-episode-toggle-events-trigger-height;
-			position: absolute;
-			right: 2px;
-			top: 0;
-			width: $oe-panel-episode-toggle-events-trigger-width;
-			@include border-radius($oe-panel-episode-toggle-events-trigger-border-radius);
-			.icon-showhide {
-				margin: $oe-panel-episode-toggle-events-trigger-icon-margin;
-				vertical-align: top;
-			}
-			&:hover {
-				background: $oe-panel-episode-toggle-events-trigger-hover-bg-color;
-			}
-			&.hide {
-				.icon-showhide {
-					@include sprite-background-position($oe-sprite-icon-showhide, "hide");
-				}
-				&:hover {
-					.icon-showhide {
-						@include sprite-background-position($oe-sprite-icon-showhide, "hide-hover");
-					}
-				}
-			}
-			&.show {
-				.icon-showhide {
-					@include sprite-background-position($oe-sprite-icon-showhide, "show");
-				}
-				&:hover {
-					.icon-showhide {
-						@include sprite-background-position($oe-sprite-icon-showhide, "show-hover");
-					}
-				}
-			}
-		}
 		.episode-date {
 			font-size: $oe-panel-episode-date-font-size;
 			padding-left: $oe-panel-episode-date-padding-left;

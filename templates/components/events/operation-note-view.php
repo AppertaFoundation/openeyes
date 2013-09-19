@@ -16,8 +16,8 @@
 			<div class="large-12 column">
 
 				<section class="element element-data">
-					<h3 class="field-title">Procedure list</h3>
-					<ul class="field-value field-highlight important">
+					<h3 class="data-title">Procedure list</h3>
+					<ul class="data-value field-highlight important">
 						<li>Left Punctoplasty</li>
 						<li>Left Biopsy of lid - excisional</li>
 						<li>Left Brow lift - direct</li>
@@ -29,52 +29,52 @@
 					<div class="element-data">
 						<div class="row">
 							<div class="large-6 column highlight">
-								<div class="row element-data-row">
+								<div class="row data-row">
 									<div class="large-4 column">
-										<div class="field-label">Incision site:</div>
+										<div class="data-label">Incision site:</div>
 									</div>
 									<div class="large-8 column">
-										<div class="field-value">Corneal</div>
+										<div class="data-value">Corneal</div>
 									</div>
 								</div>
-								<div class="row element-data-row">
+								<div class="row data-row">
 									<div class="large-4 column">
-										<div class="field-label">Length:</div>
+										<div class="data-label">Length:</div>
 									</div>
 									<div class="large-8 column">
-										<div class="field-value">2.8</div>
+										<div class="data-value">2.8</div>
 									</div>
 								</div>
-								<div class="row element-data-row">
+								<div class="row data-row">
 									<div class="large-4 column">
-										<div class="field-label">Meridian:</div>
+										<div class="data-label">Meridian:</div>
 									</div>
 									<div class="large-8 column">
-										<div class="field-value">0</div>
+										<div class="data-value">0</div>
 									</div>
 								</div>
-								<div class="row element-data-row">
+								<div class="row data-row">
 									<div class="large-4 column">
-										<div class="field-label">Incision type:</div>
+										<div class="data-label">Incision type:</div>
 									</div>
 									<div class="large-8 column">
-										<div class="field-value">Pocket</div>
+										<div class="data-value">Pocket</div>
 									</div>
 								</div>
-								<div class="row element-data-row">
+								<div class="row data-row">
 									<div class="large-4 column">
-										<div class="field-label">Details:</div>
+										<div class="data-label">Details:</div>
 									</div>
 									<div class="large-8 column">
-										<div class="field-value">Posterior chamber IOL, corneal pocket incision at 3 o'clock, sideport at 12, and 6 o'clock</div>
+										<div class="data-value">Posterior chamber IOL, corneal pocket incision at 3 o'clock, sideport at 12, and 6 o'clock</div>
 									</div>
 								</div>
-								<div class="row element-data-row">
+								<div class="row data-row">
 									<div class="large-4 column">
-										<div class="field-label">Predicted refraction:</div>
+										<div class="data-label">Predicted refraction:</div>
 									</div>
 									<div class="large-8 column">
-										<div class="field-value">0.00</div>
+										<div class="data-value">0.00</div>
 									</div>
 								</div>
 							</div>
@@ -86,10 +86,10 @@
 				</section>
 
 				<section class="element element-data">
-					<div class="row element-data-row">
+					<div class="row data-row">
 						<div class="large-4 column">
-							<h3 class="field-title">Cataract report</h3>
-							<div class="field-value highlight">
+							<h3 class="data-title">Cataract report</h3>
+							<div class="data-value highlight">
 								Continuous Circular Capsulorrhexis
 								<br />
 								Hydrodissection
@@ -103,17 +103,17 @@
 							</div>
 						</div>
 						<div class="large-4 column">
-							<h3 class="field-title">Cataract devices</h3>
+							<h3 class="data-title">Cataract devices</h3>
 							<div class="element-data highlight">
-								<div class="field-value none">
+								<div class="data-value none">
 									None
 								</div>
 							</div>
 						</div>
 						<div class="large-4 column">
-							<h3 class="field-title">Cataract complications</h3>
+							<h3 class="data-title">Cataract complications</h3>
 							<div class="element-data highlight">
-								<div class="field-value">
+								<div class="data-value">
 									Decentered IOL
 									<br />
 									IOL exchange
@@ -124,15 +124,15 @@
 				</section>
 
 				<section class="element element-data">
-					<h3 class="field-title">Punctoplasty</h3>
-					<div class="field-value">
+					<h3 class="data-title">Punctoplasty</h3>
+					<div class="data-value">
 					Punctoplasty comments here.
 					</div>
 				</section>
 
 				<section class="element element-data">
-					<h3 class="field-title">Biopsy of lid - excisional</h3>
-					<div class="field-value">
+					<h3 class="data-title">Biopsy of lid - excisional</h3>
+					<div class="data-value">
 					Biopsy of lid - excisional comments here.
 					</div>
 				</section>
@@ -142,28 +142,28 @@
 					<div class="element-data">
 						<div class="row">
 							<div class="large-2 column">
-								<h4 class="field-title">Type</h4>
-								<div class="field-value">Topical</div>
+								<h4 class="data-title">Type</h4>
+								<div class="data-value">Topical</div>
 							</div>
 							<div class="large-2 column">
-								<h4 class="field-title">Given by</h4>
-								<div class="field-value">Anaesthetist</div>
+								<h4 class="data-title">Given by</h4>
+								<div class="data-value">Anaesthetist</div>
 							</div>
 							<div class="large-2 column">
-									<h4 class="field-title">Agents</h4>
-								<div class="field-value none">None</div>
+									<h4 class="data-title">Agents</h4>
+								<div class="data-value none">None</div>
 							</div>
 							<div class="large-3 column">
-								<h4 class="field-title">Complications</h4>
-								<div class="field-value">
+								<h4 class="data-title">Complications</h4>
+								<div class="data-value">
 									Retro bulbar / peribulbar haemorrage
 									<br />
 									Patient pain - Moderate
 								</div>
 							</div>
 							<div class="large-3 column">
-								<h4 class="field-title">Delivery</h4>
-								<div class="field-value">
+								<h4 class="data-title">Delivery</h4>
+								<div class="data-value">
 									Peribulbar
 								</div>
 							</div>
@@ -171,41 +171,41 @@
 					</div>
 				</section>
 
-				<div class="element">
+				<section class="element">
 					<h3 class="element-title highlight">Other information</h3>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<h4 class="field-title">Surgeon</h4>
-								<div class="field-value">Dr Sandip Amin</div>
+								<h4 class="data-title">Surgeon</h4>
+								<div class="data-value">Dr Sandip Amin</div>
 							</div>
 							<div class="large-2 column">
-								<h4 class="field-title">Assistant</h4>
-								<div class="field-value">Mr Nadeem Ali</div>
+								<h4 class="data-title">Assistant</h4>
+								<div class="data-value">Mr Nadeem Ali</div>
 							</div>
 							<div class="large-2 column end">
-								<h4 class="field-title">Supervising surgeon</h4>
-								<div class="field-value">Dr Sandip Amin</div>
+								<h4 class="data-title">Supervising surgeon</h4>
+								<div class="data-value">Dr Sandip Amin</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-12 column">
-								<h4 class="field-title">Per-operative drugs</h4>
-								<div class="field-value highlight none">None</div>
+								<h4 class="data-title">Per-operative drugs</h4>
+								<div class="data-value highlight none">None</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<h4 class="field-title">Post-op instructions</h4>
-								<div class="field-value">Post-op instructions text here.</div>
+								<h4 class="data-title">Post-op instructions</h4>
+								<div class="data-value">Post-op instructions text here.</div>
 							</div>
 							<div class="large-2 column end">
-								<h4 class="field-title">Operation comments</h4>
-								<div class="field-value">Operation comments text here.</div>
+								<h4 class="data-title">Operation comments</h4>
+								<div class="data-value">Operation comments text here.</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
 				<div class="metadata">
 					<span class="info">

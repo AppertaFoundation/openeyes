@@ -20,12 +20,12 @@
 						<h3 class="element-title">Anaesthetist</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Anaesthetist</div>
+								<div class="data-label">Anaesthetist</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Non-consultant</div>
+								<div class="data-value">Non-consultant</div>
 							</div>
 						</div>
 					</div>
@@ -36,28 +36,28 @@
 						<h3 class="element-title">Satisfaction</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Pain</div>
+								<div class="data-label">Pain</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">7</div>
+								<div class="data-value">7</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Nausea</div>
+								<div class="data-label">Nausea</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">1</div>
+								<div class="data-value">1</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Vomited</div>
+								<div class="data-label">Vomited</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">No</div>
+								<div class="data-value">No</div>
 							</div>
 						</div>
 					</div>
@@ -68,60 +68,60 @@
 						<h3 class="element-title">Vital Signs</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Respiratory Rate</div>
+								<div class="data-label">Respiratory Rate</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">8 or less</div>
+								<div class="data-value">8 or less</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Oxygen Saturation</div>
+								<div class="data-label">Oxygen Saturation</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">90-94</div>
+								<div class="data-value">90-94</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Systolic Blood Pressure</div>
+								<div class="data-label">Systolic Blood Pressure</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">70 or lower</div>
+								<div class="data-value">70 or lower</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Body Temperature</div>
+								<div class="data-label">Body Temperature</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">36.1-37.4</div>
+								<div class="data-value">36.1-37.4</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Heart Rate</div>
+								<div class="data-label">Heart Rate</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">41-50</div>
+								<div class="data-value">41-50</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Conscious Level AVPU</div>
+								<div class="data-label">Conscious Level AVPU</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Unresponsive</div>
+								<div class="data-value">Unresponsive</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Calculated MEWS</div>
+								<div class="data-label">Calculated MEWS</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">11</div>
+								<div class="data-value">11</div>
 							</div>
 						</div>
 					</div>
@@ -132,20 +132,20 @@
 						<h3 class="element-title">Notes</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Comments</div>
+								<div class="data-label">Comments</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Comments here...</div>
+								<div class="data-value">Comments here...</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Ready for discharge from recovery</div>
+								<div class="data-label">Ready for discharge from recovery</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Yes</div>
+								<div class="data-value">Yes</div>
 							</div>
 						</div>
 					</div>

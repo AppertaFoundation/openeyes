@@ -23,8 +23,111 @@ $oe-box-event-border-width: 0 5px 5px !default;
 
 .box {
 	@include border-radius($oe-box-border-radius);
+	position: relative;
 	margin: $oe-box-margin;
+}
+
+.box-header {
+	@extend .clearfix;
+}
+
+// Content box
+.box {
 	&.content {
 		background: $oe-box-content-bg-color;
+	}
+}
+
+// Patient info box
+.box {
+	&.patient-info {
+		background: #fafafa;
+		padding: emCalc(12px);
+		.box-title {
+			font-size: emCalc(13px);
+			color: #e49f10;
+			margin: 0;
+			padding: 0 0 emCalc(10px) 0;
+		}
+		.data-row {
+			padding: emCalc(10px) 0;
+			border-top: 1px dotted #ccc;
+			&:last-child {
+				padding-bottom: 0;
+			}
+			&.highlight {
+				background: goldenrod;
+				> .column {
+					padding-left: emCalc(12px);
+					padding-right: emCalc(12px);
+				}
+				.data-label {
+					color: #eee;
+				}
+				.data-value {
+					color: #666;
+				}
+			}
+		}
+		.field-label {
+			color: #777;
+		}
+		> .row {
+			margin-left: 0;
+			margin-right: 0;
+			> .column {
+				padding-left: 0;
+			}
+		}
+		.toggle-trigger {
+			height: 22px;
+			width: 30px;
+			background: #dadada;
+			right: emCalc(12px);
+			&:hover {
+				background: #3665ff;
+			}
+		}
+	}
+}
+
+// Patient info episodes box
+.box {
+	&.patient-info {
+		&.episodes {
+			background: #dae6f1;
+			.box-title {
+				color: #4d5155;
+				font-weight: bold;
+				float: left;
+			}
+			.box-info {
+				float: right;
+				font-size: $default-font-size;
+			}
+		}
+	}
+}
+
+// Patient info associated data box
+.box {
+	&.patient-info {
+		&.associated-data {
+			border: 1px solid #999;
+			.box-title {
+				@include border-radius(3px);
+				background: #999;
+				color: #fff;
+				display: inline-block;
+				padding: 5px 10px 5px 45px;
+				position: relative;
+				font-size: emCalc(12px);
+				[class*="icon-"] {
+					position: absolute;
+					left: 0;
+					top: -1px;
+				}
+			}
+		}
 	}
 }

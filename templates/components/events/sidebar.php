@@ -14,7 +14,7 @@
 		<!-- Episode panel -->
 		<section class="panel episode">
 			<div class="episode-date">12 Dec 2011</div>
-			<a href="#" class="toggle-events-trigger hide">
+			<a href="#" class="toggle-trigger toggle-hide">
 				<span class="icon-showhide">
 					Show/hide events for this episode
 				</span>
@@ -64,7 +64,7 @@
 		<!-- Episode panel -->
 		<section class="panel episode hide-events">
 			<div class="episode-date">12 Dec 2011</div>
-			<a href="#" class="toggle-events-trigger show">
+			<a href="#" class="toggle-trigger toggle-show">
 				<span class="icon-showhide">
 					Show/hide events for this episode
 				</span>

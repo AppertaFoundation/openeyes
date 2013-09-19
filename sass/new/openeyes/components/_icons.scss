@@ -76,3 +76,19 @@
 
 // Small button icons
 @include sprite($oe-sprite-icon-showhide, "icon-showhide", 11px, 11px);
+
+// Patient icons
+//
+// Patient icons
+//
+// Markup:
+// <span class="{$modifiers}">Description</span>
+//
+// .icon-patient-clinician-hd_flag	- Clincal flag
+// .icon-patient-patient-id_small-warning	- Patient warning flag
+// .icon-patient-patient-id_small	- icon-patient-patient-id_small
+//
+// Styleguide 15.5
+
+// Small button icons
+@include sprite($oe-sprite-icon-patient, "icon-patient", 30px, 30px);

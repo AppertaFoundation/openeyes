@@ -33,13 +33,13 @@
 		</div>
 
 		<section class="element element-data">
-			<h3 class="field-title">Diagnosis</h3>
-			<div class="field-value field-highlight">Left Cyst of eyelid</div>
+			<h3 class="data-title">Diagnosis</h3>
+			<div class="data-value highlight">Left Cyst of eyelid</div>
 		</section>
 
 		<section class="element element-data">
-			<h3 class="field-title">Procedures</h3>
-			<ul class="field-value field-highlight important">
+			<h3 class="data-title">Procedures</h3>
+			<ul class="data-value highlight important">
 				<li>Left Lester Jones tube</li>
 				<li>Conjunctival flap</li>
 			</ul>
@@ -48,25 +48,12 @@
 		<section class="element element-data">
 			<div class="row element-data-row">
 				<div class="large-6 column">
-					<h3 class="field-title">Anaesthetic</h3>
-					<div class="field-value">Topical</div>
+					<h3 class="data-title">Anaesthetic</h3>
+					<div class="data-value">Topical</div>
 				</div>
 				<div class="large-6 column">
-					<h3 class="field-title">Consultant required?</h3>
-					<div class="field-value">No Consultant</div>
-				</div>
-			</div>
-		</section>
-
-		<section class="element element-data">
-			<div class="row element-data-row">
-				<div class="large-6 column">
-					<h3 class="field-title">Post Operative Stay Required</h3>
-					<div class="field-value">No Stay</div>
-				</div>
-				<div class="large-6 column">
-					<h3 class="field-title">Decision Date</h3>
-					<div class="field-value">21 Dec 2011</div>
+					<h3 class="data-title">Consultant required?</h3>
+					<div class="data-value">No Consultant</div>
 				</div>
 			</div>
 		</section>
@@ -74,12 +61,25 @@
 		<section class="element element-data">
 			<div class="row element-data-row">
 				<div class="large-6 column">
-					<h3 class="field-title">Operation priority</h3>
-					<div class="field-value">Routine</div>
+					<h3 class="data-title">Post Operative Stay Required</h3>
+					<div class="data-value">No Stay</div>
 				</div>
 				<div class="large-6 column">
-					<h3 class="field-title">Operation Comments</h3>
-					<div class="field-value panel comments">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur auctor ante in magna luctus, ac hendrerit mauris dapibus. Sed accumsan bibendum turpis sed pharetra. Curabitur ultrices velit dui, eget aliquet lectus posuere id. Suspendisse rhoncus ante in odio luctus luctus. Duis in facilisis lacus. Vivamus in vulputate dolor. Suspendisse vitae dignissim ante. Maecenas vitae ullamcorper turpis. </div>
+					<h3 class="data-title">Decision Date</h3>
+					<div class="data-value">21 Dec 2011</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="element element-data">
+			<div class="row element-data-row">
+				<div class="large-6 column">
+					<h3 class="data-title">Operation priority</h3>
+					<div class="data-value">Routine</div>
+				</div>
+				<div class="large-6 column">
+					<h3 class="data-title">Operation Comments</h3>
+					<div class="data-value panel comments">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur auctor ante in magna luctus, ac hendrerit mauris dapibus. Sed accumsan bibendum turpis sed pharetra. Curabitur ultrices velit dui, eget aliquet lectus posuere id. Suspendisse rhoncus ante in odio luctus luctus. Duis in facilisis lacus. Vivamus in vulputate dolor. Suspendisse vitae dignissim ante. Maecenas vitae ullamcorper turpis. </div>
 				</div>
 			</div>
 		</section>

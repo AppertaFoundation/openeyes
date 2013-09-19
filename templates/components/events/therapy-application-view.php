@@ -29,25 +29,25 @@
 					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye left-eye column">
-							<div class="row element-data-row">
+							<div class="row data-row">
 								<div class="large-4 column">
-									<div class="field-label">Diagnosis:</div>
+									<div class="data-label">Diagnosis:</div>
 								</div>
 								<div class="large-8 column">
-									<div class="field-value">Choroidal retinal neovascularisation</div>
+									<div class="data-value">Choroidal retinal neovascularisation</div>
 								</div>
 							</div>
-							<div class="row element-data-row">
+							<div class="row data-row">
 								<div class="large-4 column">
-									<div class="field-label">Secondary To:</div>
+									<div class="data-label">Secondary To:</div>
 								</div>
 								<div class="large-8 column">
-									<div class="field-value">Age related macular degeneration</div>
+									<div class="data-value">Age related macular degeneration</div>
 								</div>
 							</div>
 						</div>
 						<div class="element-eye right-eye column">
-							<div class="field-value">Not recorded</div>
+							<div class="data-value">Not recorded</div>
 						</div>
 					</div>
 				</section>
@@ -58,33 +58,33 @@
 					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye left-eye column">
-							<div class="row element-data-row">
+							<div class="row data-row">
 								<div class="large-4 column">
-									<div class="field-label">Treatment:</div>
+									<div class="data-label">Treatment:</div>
 								</div>
 								<div class="large-8 column">
-									<div class="field-value">Avastin</div>
+									<div class="data-value">Avastin</div>
 								</div>
 							</div>
-							<div class="row element-data-row">
+							<div class="row data-row">
 								<div class="large-4 column">
-									<div class="field-label">Angiogram Baseline Date:</div>
+									<div class="data-label">Angiogram Baseline Date:</div>
 								</div>
 								<div class="large-8 column">
-									<div class="field-value">13 Sep 2013</div>
+									<div class="data-value">13 Sep 2013</div>
 								</div>
 							</div>
-							<div class="row element-data-row">
+							<div class="row data-row">
 								<div class="large-4 column">
-									<div class="field-label">NICE Compliance:</div>
+									<div class="data-label">NICE Compliance:</div>
 								</div>
 								<div class="large-8 column">
-									<div class="field-value">No</div>
+									<div class="data-value">No</div>
 								</div>
 							</div>
 						</div>
 						<div class="element-eye right-eye column">
-							<div class="field-value">Not recorded</div>
+							<div class="data-value">Not recorded</div>
 						</div>
 					</div>
 				</section>
@@ -94,28 +94,28 @@
 						<h3 class="element-title">Relative ContraIndications</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Cerebrovascular accident:</div>
+								<div class="data-label">Cerebrovascular accident:</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Yes</div>
+								<div class="data-value">Yes</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Ischaemic Attack:</div>
+								<div class="data-label">Ischaemic Attack:</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Yes</div>
+								<div class="data-value">Yes</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Myocardial Infarction:</div>
+								<div class="data-label">Myocardial Infarction:</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Yes</div>
+								<div class="data-value">Yes</div>
 							</div>
 						</div>
 					</div>
@@ -126,12 +126,12 @@
 						<h3 class="element-title">MR Service Information</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Consultant:</div>
+								<div class="data-label">Consultant:</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Andrews Richard</div>
+								<div class="data-value">Andrews Richard</div>
 							</div>
 						</div>
 					</div>

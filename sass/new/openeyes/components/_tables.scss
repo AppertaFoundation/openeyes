@@ -98,6 +98,15 @@ table {
 			border-top: 1px solid $table-border-color;
 		}
 	}
+	.clickable {
+		cursor: pointer;
+		&:hover {
+			background: #3665ff;
+			td {
+				color: #fff;
+			}
+		}
+	}
 	// Form fields within tables
 	td, th {
 		label {
@@ -182,6 +191,43 @@ table {
 				height: auto;
 				width: auto;
 			}
+		}
+	}
+}
+
+// Patient episodes table
+table {
+	&.patient-episodes {
+		border-bottom: 15px solid #ddd;
+		td, th {
+			padding: 10px;
+		}
+		.speciality {
+			background: #eae4ce;
+			td {
+				color: #69634f;
+				font-size: emCalc(12px);
+			}
+		}
+	}
+}
+
+// Patient contacts table
+table {
+	&.patient-contacts {
+		margin-top: emCalc(10px);
+		th {
+			background: #fff;
+		}
+		td {
+			font-size: emCalc(11px);
+		}
+		th, td {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+		td:first-child {
+			font-size: $default-font-size;
 		}
 	}
 }

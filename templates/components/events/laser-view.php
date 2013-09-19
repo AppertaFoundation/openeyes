@@ -25,28 +25,28 @@
 						<h3 class="element-title">Site</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Site</div>
+								<div class="data-label">Site</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Ealing Hospital</div>
+								<div class="data-value">Ealing Hospital</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Laser</div>
+								<div class="data-label">Laser</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Coherent 7970 YAG (Ealing)</div>
+								<div class="data-value">Coherent 7970 YAG (Ealing)</div>
 							</div>
 						</div>
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">Surgeon</div>
+								<div class="data-label">Surgeon</div>
 							</div>
 							<div class="large-10 column">
-								<div class="field-value">Sagoo Mandeep</div>
+								<div class="data-value">Sagoo Mandeep</div>
 							</div>
 						</div>
 					</div>
@@ -58,13 +58,13 @@
 					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
-							<ul class="field-value">
+							<ul class="data-value">
 								<li>Cycloablation</li>
 								<li>Laser iridoplasty</li>
 							</ul>
 						</div>
 						<div class="element-eye left-eye column">
-							<ul class="field-value">
+							<ul class="data-value">
 								<li>Focal laser photocoagulation</li>
 								<li>Laser retinopexy</li>
 							</ul>
@@ -95,14 +95,14 @@
 						<h3 class="element-title">Comments</h3>
 					</header>
 					<div class="element-data">
-						<div class="row element-data-row">
+						<div class="row data-row">
 							<div class="large-2 column">
-								<div class="field-label">
+								<div class="data-label">
 									Comments:
 								</div>
 							</div>
-							<div clas="row element-data-row">
-								<div class="field-value">
+							<div clas="row data-row">
+								<div class="data-value">
 									Here are some comments
 								</div>
 							</div>

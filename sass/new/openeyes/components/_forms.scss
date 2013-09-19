@@ -21,6 +21,9 @@ label, .label {
 		display: inline-block;
 		padding: 0 emCalc(10px) 0 0;
 	}
+	&.align {
+		padding-top: emCalc(4px);
+	}
 }
 
 /* We use this to get basic styling on all basic form elements */
@@ -111,7 +114,7 @@ small.error {
 	display: inline-block;
 	padding: 0 emCalc(5px);
 	&.align {
-		padding-top: emCalc(4px);
+		@extend .label.align;
 	}
 }
 
@@ -251,17 +254,76 @@ $oe-form-field-fixed-width: emCalc(110px) !default;
 	}
 }
 
+// Field rows, fields and label wrappers
+$oe-field-highlight-border-radius: 5px !default;
+$oe-field-highlight-bg-color: white !default;
+$oe-field-highlight-padding: 10px !default;
+$oe-field-highlight-font-size: emCalc(18px) !default;
+$oe-field-highlight-margin: 0 -10px !default;
+$oe-field-highlight-list-item-font-size: 1em !default;
+$oe-field-highlight-important-bg-color: #fff300 !default;
+$oe-field-value-padding-bottom: 5px !default;
+$oe-field-value-font-size: $default-font-size !default;
+$oe-field-value-line-height: 1.3 !default;
 
 // Field rows
 .field-row {
 	padding-bottom: $form-spacing;
+	&:last-child {
+		padding: 0;
+	}
 	table:last-child {
 		margin-bottom: 0;
 	}
 }
 
-form, .form {
-	.field-row:last-child {
-		padding: 0;
+.field-value {
+	font-size: $oe-field-value-font-size;
+	line-height: $oe-field-value-line-height;
+	margin: 0;
+	li {
+		font-size: 1em;
+		margin-left: 1.4em;
 	}
+	&.none {
+		color: #999;
+		font-style: italic;
+	}
+	&.highlight {
+		@include border-radius($oe-field-highlight-border-radius);
+		background: $oe-field-highlight-bg-color;
+		padding: $oe-field-highlight-padding;
+		font-size: $oe-field-highlight-font-size;
+		margin: $oe-field-highlight-margin;
+		list-style-type: none;
+		li {
+			font-size: $oe-field-highlight-list-item-font-size;
+			margin: 0;
+			padding: emCalc(4px) 0;
+		}
+		&.important {
+			background: $oe-field-highlight-important-bg-color;
+		}
+	}
+}
+
+.field-label {
+	@extend .field-value;
+}
+
+
+// Data classes for displaying data
+
+// Data rows
+.data-row {
+	@extend .field-row;
+}
+.data-title {
+	@extend .element-title;
+}
+.data-label {
+	@extend .field-label;
+}
+.data-value {
+	@extend .field-value;
 }
