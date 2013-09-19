@@ -29,6 +29,11 @@ $oe-box-event-border-width: 0 5px 5px !default;
 
 .box-header {
 	@extend .clearfix;
+	margin-bottom: emCalc(12px);
+}
+
+.box-actions {
+	text-align: center;
 }
 
 // Content box
@@ -88,6 +93,9 @@ $oe-box-event-border-width: 0 5px 5px !default;
 				background: #3665ff;
 			}
 		}
+		.add-data {
+			margin: emCalc(12px) 0;
+		}
 	}
 }
 
@@ -100,6 +108,7 @@ $oe-box-event-border-width: 0 5px 5px !default;
 				color: #4d5155;
 				font-weight: bold;
 				float: left;
+				padding: 0;
 			}
 			.box-info {
 				float: right;

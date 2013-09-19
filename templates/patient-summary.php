@@ -233,51 +233,49 @@
 								closed 0
 							</div>
 						</header>
-						<div class="data-row">
-							<table class="patient-episodes grid">
-								<thead>
-									<tr>
-										<th>Start Date</th>
-										<th>End Date</th>
-										<th>Firm</th>
-										<th>Subspecialty</th>
-										<th>Eye</th>
-										<th>Diagnosis</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr class="speciality">
-										<td colspan="6">
-											Ophthalmology
-										</td>
-									</tr>
-									<tr class="clickable">
-										<td>5 Dec 2011</td>
-										<td></td>
-										<td>Aylward Bill</td>
-										<td>Vitreoretinal</td>
-										<td>Left</td>
-										<td>Traction detachment of retina</td>
-									</tr>
-									<tr class="clickable">
-										<td>5 Dec 2011</td>
-										<td></td>
-										<td>Aylward Bill</td>
-										<td>Vitreoretinal</td>
-										<td>Left</td>
-										<td>Traction detachment of retina</td>
-									</tr>
-									<tr class="clickable">
-										<td>5 Dec 2011</td>
-										<td></td>
-										<td>Aylward Bill</td>
-										<td>Vitreoretinal</td>
-										<td>Left</td>
-										<td>Traction detachment of retina</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+						<table class="patient-episodes grid">
+							<thead>
+								<tr>
+									<th>Start Date</th>
+									<th>End Date</th>
+									<th>Firm</th>
+									<th>Subspecialty</th>
+									<th>Eye</th>
+									<th>Diagnosis</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="speciality">
+									<td colspan="6">
+										Ophthalmology
+									</td>
+								</tr>
+								<tr class="clickable">
+									<td>5 Dec 2011</td>
+									<td></td>
+									<td>Aylward Bill</td>
+									<td>Vitreoretinal</td>
+									<td>Left</td>
+									<td>Traction detachment of retina</td>
+								</tr>
+								<tr class="clickable">
+									<td>5 Dec 2011</td>
+									<td></td>
+									<td>Aylward Bill</td>
+									<td>Vitreoretinal</td>
+									<td>Left</td>
+									<td>Traction detachment of retina</td>
+								</tr>
+								<tr class="clickable">
+									<td>5 Dec 2011</td>
+									<td></td>
+									<td>Aylward Bill</td>
+									<td>Vitreoretinal</td>
+									<td>Left</td>
+									<td>Traction detachment of retina</td>
+								</tr>
+							</tbody>
+						</table>
 					</section>
 
 					<!-- Patient associated data box -->
@@ -293,8 +291,89 @@
 								</span>
 							</a>
 						</header>
-					</section>
+						<table class="plain">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Diagnosis</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2 Feb 2006</td>
+									<td>Right Acquired anophthalmos</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+								<tr>
+									<td>2013</td>
+									<td>Right Ectropion</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+							</tbody>
+						</table>
 
+						<div class="box-actions">
+							<button class="secondary small">
+								Add Ophthalmic Diagnosis
+							</button>
+						</div>
+
+						<div class="add-data">
+							<fieldset class="field-row">
+								<legend>Add ophthalmic diagnosis</legend>
+								<div class="field-row">
+									<select>
+										<option>-- Select --</option>
+									</select>
+								</div>
+								<div class="field-row">
+									<input type="text" placeholder="Or type the first few characters of a diagnosis" />
+								</div>
+							</fieldset>
+
+							<fieldset class="row field-row">
+								<legend class="large-1 column">
+									Eye:
+								</legend>
+								<div class="large-11 column">
+									<label class="inline">
+										<input type="radio" />
+										Right
+									</label>
+									<label class="inline">
+										<input type="radio" />
+										Both
+									</label>
+									<label class="inline">
+										<input type="radio" />
+										Left
+									</label>
+								</div>
+							</fieldset>
+
+							<fieldset class="row field-row">
+								<legend class="large-1 column">
+									Date:
+								</legend>
+								<div class="large-2 column">
+									<select>
+										<option>Day</option>
+									</select>
+								</div>
+								<div class="large-2 column">
+									<select>
+										<option>Month</option>
+									</select>
+								</div>
+								<div class="large-2 column end">
+									<select>
+										<option>2013</option>
+									</select>
+								</div>
+							</fieldset>
+						</div>
+					</section>
 				</div>
 			</div>
 		</div>
