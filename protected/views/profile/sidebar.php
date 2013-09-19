@@ -16,7 +16,7 @@
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="active"<?php }?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?>
 					<span class="viewing"><?php echo $title?></span>
-				<?php }else{?>
+				<?php } else {?>
 					<?php echo CHtml::link($title,array($uri))?>
 				<?php }?>
 			</li>

@@ -21,7 +21,7 @@
  * This is the model class for table "family_history_relative".
  *
  * The followings are the available columns in table 'family_history_relative':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class FamilyHistoryRelative extends BaseActiveRecord

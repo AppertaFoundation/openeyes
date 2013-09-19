@@ -102,10 +102,9 @@ class PhraseBySubspecialty extends BaseActiveRecord
 	}
 
 	/**
-	* @param string the name of the attribute to be validated
-	* @param array options specified in the validation rule
+	* @param string $attribute the name of the attribute to be validated
+	* @param array $params options specified in the validation rule
 	*/
-
 	public function ValidatorPhraseNameId($attribute,$params)
 	{
 		// this phrase name id must not exist at this level (not select * from phrase_by_firm where section_id=x and firm_id=y)
@@ -157,7 +156,7 @@ class PhraseBySubspecialty extends BaseActiveRecord
 				-- set of phrase names associated with phrases by subspecialty defined for the given section and subspecialty; in short we are subtracting this set from the previous since you cant override that which is already overridden
 				select phrase_name.id, phrase_name.name from phrase_name
 				join phrase_by_subspecialty on phrase_name.id=phrase_by_subspecialty.phrase_name_id and phrase_by_subspecialty.subspecialty_id=:subspecialtyid and phrase_by_subspecialty.section_id=:sectionid
-			) as t2	
+			) as t2
 			on t1.id=t2.id where t2.id is null';
 
 		$results = PhraseName::model()->findAllBySql($sql, $params);

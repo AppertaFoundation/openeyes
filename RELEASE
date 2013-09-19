@@ -1,0 +1,58 @@
+Release History
+===============
+
+This document is intended to summarise the changes made for each release. It should be noted that this document was only introduced with version 1.4, and therefore doesn't cover earlier releases.
+
+1.4
+
++ Added Yii as submodule
++ Updated Yii to 1.1.13
++ Enabled CSRF protection
++ Introduced and made changes to adhere to coding standards (nominally PSR2):
+	https://github.com/openeyes/OpenEyes/wiki/Coding-Guidelines
+
++ refactored Contacts behaviour for various models (Patient, Gp etc)
+
++ Added ProtectedFile model for application file storage:
+	https://github.com/openeyes/OpenEyes/wiki/File-Management
+
++ Patient Summary changes:
+	- previous operations widget
+	- medications widget
+	- family hitory widget
+	- CVI status widget
+	- changes to latest event link from patient summary to reflect user access and firm selection
+	- patient warnings display to highlight specific disorders/conditions. Shown in summary and patient header. Currently only supports diabetes (and requires disorder tree setup) 
+
++ changes to style and UI for patient sidebar
++ Confirm Site and Firm on login
++ Changed event/episode creation buttons to encourage more accurate association of events with firms/subspecialties
++ Various enhancements to dialog behavour and css styling
+
++ Introduced Disorder Tree functionality
+	https://github.com/openeyes/OpenEyes/wiki/Disorders
+
++ Added surgeon flag to User model (and getter method for list of surgeons)
++ Custom sort ordering for multiple select dropdowns
++ Migrated Specialty data to support the nhs data dictionary of specialties
++ institution_specialty code is a required configuration parameter (130 for Ophthamology)
++ Introduced firm-less episodes for Support Services
++ Refactored theatre/waiting list search to OphTrOperationbooking module
++ Refactored correspondence shortcodes out of patient model into OphCoCorrespondence module
++ Normalised audit tables to reduce db size
+
++ Added configuration to restrict the domains that automated emails will be sent to (restrict_email_domains)
++ Added configuration flags to determine what user values are automatically updated from LDAP (ldap_update_name, ldap_update_email)
++ Introduced access level for printing
+
++ Improved cache buster code
++ Query enhancements for performance
++ Bugfixes for running openeyes in subdirectory
++ Respect the allowOverride flag in BaseActiveRecord::save()
++ Introduction of Eye constants for stronger reference checking
++ Enhance Helper functionality for parsing NHS dates from form submission
+
++ Introduced CommissioningBody and CommissioningBodyService models (for CCG support)
++ Behat functional tests added. Note that these are currently both core and modules, and as such will fail without the necessary modules having been installed, this will be refactored in the next release (and potentially in a point release)
++ User profile page
++ Admin functions added. Note that these are still very much in beta and should be used with caution.

@@ -21,14 +21,14 @@
  * This is the model class for table "procedure_benefit".
  *
  * The followings are the available columns in table 'procedure_benefit':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class ProcedureBenefit extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return ProcedureBenefit the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

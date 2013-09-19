@@ -68,7 +68,7 @@
 					</thead>
 					<tbody>
 						<?php foreach ($data_provider->getData() as $i => $result) {?>
-						<tr id="r<?php echo $result->id?>" class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>">
+						<tr id="r<?php echo $result->id?>" class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>">
 							<td><?php echo $result->hos_num?></td>
 							<td><?php echo $result->title?></td>
 							<td><?php echo $result->first_name?></td>
@@ -92,8 +92,8 @@
 						$to = $total_items;
 					}
 				?>
-				<span class="<?php if($i > 0) { ?>notFirst <?php } ?><?php if($current_page) { ?>showingPage<?php } else { ?>otherPages<?php } ?>">
-				<?php if($current_page) { ?>
+				<span class="<?php if ($i > 0) { ?>notFirst <?php } ?><?php if ($current_page) { ?>showingPage<?php } else { ?>otherPages<?php } ?>">
+				<?php if ($current_page) { ?>
 					<?php echo $from; ?> - <?php echo $to; ?>
 				<?php } else { ?>
 					<a href="<?php echo Yii::app()->createUrl('patient/search', $search_terms + array('page_num' => $i, 'sort_by' => $sort_by, 'sort_dir' => $sort_dir)); ?>"><?php echo $from; ?> - <?php echo $to; ?></a>
@@ -111,7 +111,7 @@
 	<div class="narrowColumn">
 			<p><?php echo CHtml::link('Clear this search and <span class="aPush">start a new search</span>',Yii::app()->baseUrl.'/')?></p>
 	</div> <!-- .narrowColumn -->
-	
+
 </div>
 <!-- .wrapTwo -->
 <script type="text/javascript">

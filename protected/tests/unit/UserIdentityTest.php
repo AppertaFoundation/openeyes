@@ -60,7 +60,6 @@ class UserIdentityTest extends CDbTestCase
 			$userIdentity->errorCode,
 			UserIdentity::ERROR_USERNAME_INVALID
 		);
-               
 	}
 
 	public function testInvalidPassword()
@@ -71,14 +70,12 @@ class UserIdentityTest extends CDbTestCase
 			'JoeBloggs',
 			'wrongpassword'
 		);
+
 		$this->assertFalse($userIdentity->authenticate());
 		$this->assertEquals(
 			$userIdentity->errorCode,
 			UserIdentity::ERROR_PASSWORD_INVALID
 		);
-                
-                
-                 
 	}
 
 	public function testUserInactive()
@@ -105,8 +102,8 @@ class UserIdentityTest extends CDbTestCase
 			'demo',
 			'demo'
 		);
-		
-		$this->assertTrue((bool)$this->users['user1']['global_firm_rights']);
+
+		$this->assertTrue((bool) $this->users['user1']['global_firm_rights']);
 
 		$this->assertTrue($userIdentity->authenticate());
 	}
@@ -118,14 +115,13 @@ class UserIdentityTest extends CDbTestCase
 		$user = $this->users('user1');
 		$user->global_firm_rights = false;
 		$user->save(false);
-		
+
 		$userIdentity = new UserIdentity(
 			'JoeBloggs',
 			'secret'
 		);
-		
-                
-		$this->assertFalse((bool)$user->global_firm_rights);
+
+		$this->assertFalse((bool) $user->global_firm_rights);
 
 		$this->assertTrue($userIdentity->authenticate());
 	}

@@ -21,7 +21,7 @@
  * This is the model class for table "episode_status".
  *
  * The followings are the available columns in table 'episode_status':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class EpisodeStatus extends BaseActiveRecord
@@ -106,7 +106,8 @@ class EpisodeStatus extends BaseActiveRecord
 		
 	}
 
-	public function getList() {
+	public function getList()
+	{
 		$episode_statuses = array();
 
 		foreach ($this->findAll(array('order'=>'`order` ASC')) as $episode_status) {

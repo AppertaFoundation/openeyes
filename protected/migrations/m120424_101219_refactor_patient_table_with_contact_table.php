@@ -65,9 +65,9 @@ class m120424_101219_refactor_patient_table_with_contact_table extends CDbMigrat
 		foreach ($this->dbConnection->createCommand()->select('contact.*')->from('contact')->queryAll() as $contact) {
 			if ($contact['parent_class'] == 'Patient') {
 				$this->update('patient',array('primary_phone'=>$contact['primary_phone'],'title'=>$contact['title'],'first_name'=>$contact['first_name'],'last_name'=>$contact['last_name']),'id='.$contact['parent_id']);
-			} else if ($contact['parent_class'] == 'Gp') {
+			} elseif ($contact['parent_class'] == 'Gp') {
 				$this->update('gp',array('contact_id'=>$contact['id']),'id='.$contact['parent_id']);
-			} else if ($contact['parent_class'] == 'Consultant') {
+			} elseif ($contact['parent_class'] == 'Consultant') {
 				$this->update('consultant',array('contact_id'=>$contact['id']),'id='.$contact['parent_id']);
 			}
 		}

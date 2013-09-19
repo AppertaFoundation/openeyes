@@ -21,7 +21,7 @@
  * This is the model class for table "nsc_grade".
  *
  * The followings are the available columns in table 'nsc_grade':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property integer $type
  * @property string $medical_phrase

@@ -25,34 +25,57 @@ $(document).ready(function() {
 
 			var element_class = $(this).attr('name').replace(/\[.*$/,'');
 
-			var m = $(this).parent().parent().prev('input').attr('name').match(/\[MultiSelectList_(.*?)\]/);
+			var m = $(this).parent().parent().prev('input').attr('name').match(/\[MultiSelectList_(.*?)\]$/);
 			var multiSelectField = m[1];
-
-			$(this).parent().children('div').children('ul').append('<input type="hidden" name="'+multiSelectField+'[]" value="'+selected.val()+'" />');
+			
+			var attrs = {};
+			$(selected[0].attributes).each(function() {
+				attrs[this.nodeName] = this.nodeValue;
+			});
+			var inp_str = '<input type="hidden" name="'+multiSelectField+'[]"';
+			for (var key in attrs) {
+				inp_str += ' ' + key + '="' + attrs[key] + '"';
+			}
+			inp_str += ' />';
+			
+			$(this).parent().children('div').children('ul').append(inp_str);
 
 			selected.remove();
 
 			$(this).val('');
 		}
 
+		$(this).trigger('MultiSelectChanged');
 		return false;
 	});
 
 	$(this).undelegate('a.MultiSelectRemove','click').delegate('a.MultiSelectRemove','click',function(e) {
 		e.preventDefault();
-
-		var value = $(this).parent().next().val();
+		var inp = $(this).parent().next();
+		var attrs = {};
+		$(inp[0].attributes).each(function() {
+			if (this.nodeName != 'type' && this.nodeName != 'name') {
+				attrs[this.nodeName] = this.nodeValue;
+			}
+		});
+		
 		var text = $(this).parent().text().trim().replace(/ \(.*$/,'');
 
 		var select = $(this).parent().parent().parent().parent().children('select');
-
-		select.append('<option value="'+value+'">'+text+'</option>');
+		
+		var attr_str = '';
+		for (var key in attrs) {
+			attr_str += ' ' + key + '="' + attrs[key] + '"';
+		}
+		select.append('<option' + attr_str + '>'+text+'</option>');
 
 		sort_selectbox(select);
 
 		$(this).parent().next().remove();
 		$(this).parent().remove();
-
+		
+		$(select).trigger('MultiSelectChanged');
+		
 		return false;
 	});
 });

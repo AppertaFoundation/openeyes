@@ -21,7 +21,7 @@
  * This is the model class for table "site".
  *
  * The followings are the available columns in table 'site':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $short_name
  * @property string $address1
@@ -32,8 +32,10 @@
  * @property string $telephone
  *
  * The followings are the available model relations:
- * @property Theatre[] $theatres
- * @property Ward[] $wards
+ * @property Institution $institution
+ * @property Contact $contact
+ * @property Contact $replyTo
+ * @property ImportSource $import
  */
 class Site extends BaseActiveRecord
 {
@@ -54,7 +56,8 @@ class Site extends BaseActiveRecord
 		return 'site';
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
@@ -72,6 +75,7 @@ class Site extends BaseActiveRecord
 		return array(
 			array('name', 'required'),
 			array('name', 'length', 'max'=>255),
+			array('institution_id, name, remote_id, short_name, fax, telephone, contact_id, replyto_contact_id, source_id','safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name', 'safe', 'on'=>'search'),
@@ -86,12 +90,12 @@ class Site extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
-			'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
+			//'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
+			//'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
 			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'replyTo' => array(self::BELONGS_TO, 'Contact', 'replyto_contact_id'),
-			'import' => array(self::HAS_ONE, 'ImportSite', 'site_id'),
+			'import' => array(self::HAS_ONE, 'ImportSource', 'site_id'),
 		);
 	}
 
@@ -102,6 +106,7 @@ class Site extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
+			'remote_id' => 'Code',
 			'name' => 'Name',
 			'institution_id' => 'Institution',
 		);
@@ -143,7 +148,8 @@ class Site extends BaseActiveRecord
 		return $result;
 	}
 
-	public function getListForCurrentInstitution($field=false) {
+	public function getListForCurrentInstitution($field=false)
+	{
 		if (!$field) $field = 'short_name';
 
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
@@ -162,7 +168,8 @@ class Site extends BaseActiveRecord
 		return $result;
 	}
 
-	public function getLongListForCurrentInstitution() {
+	public function getLongListForCurrentInstitution()
+	{
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		$criteria = new CDbCriteria;
@@ -170,7 +177,7 @@ class Site extends BaseActiveRecord
 
 		$result = array();
 
-		foreach (Site::model()->findAll($criteria) as $site) {
+		foreach (Site::model()->with('institution')->findAll($criteria) as $site) {
 			$institution = $site->institution;
 
 			$site_name = '';
@@ -190,18 +197,20 @@ class Site extends BaseActiveRecord
 		return $result;
 	}
 
-	public function getDefaultSite() {
+	public function getDefaultSite()
+	{
 		$site = null;
-		if(Yii::app()->params['default_site_code']) {
+		if (Yii::app()->params['default_site_code']) {
 			$site = $this->findByAttributes(array('code' => Yii::app()->params['default_site_code']));
 		}
-		if(!$site) {
+		if (!$site) {
 			$site = $this->find();
 		}
 		return $site;
 	}
-	
-	public function getCorrespondenceName() {
+
+	public function getCorrespondenceName()
+	{
 		if ($this->institution->short_name) {
 			if (!strstr($this->name,$this->institution->short_name)) {
 				return $this->institution->short_name.' at '.$this->name;
@@ -215,11 +224,13 @@ class Site extends BaseActiveRecord
 		return array($this->institution->name,$this->name);
 	}
 
-	public function getShortname() {
+	public function getShortname()
+	{
 		return $this->short_name ? $this->short_name : $this->name;
 	}
 
-	public function getListForInstitution() {
+	public function getListForInstitution()
+	{
 		if (empty(Yii::app()->params['institution_code'])) {
 			throw new Exception("Institution code is not set");
 		}
@@ -234,5 +245,13 @@ class Site extends BaseActiveRecord
 		$criteria->order = 'name asc';
 
 		return Site::model()->findAll($criteria);
+	}
+	
+	public function getReplyToAddress($params = array())
+	{
+		if ($contact = $this->replyTo) {
+			$params['contact'] = 'replyTo';
+			return $this->getLetterAddress($params);
+		}
 	}
 }

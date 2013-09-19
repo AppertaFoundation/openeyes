@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -17,179 +16,149 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class AddressTest extends CDbTestCase {
 
-      /**
-       * @var Address
-       */
-      public $model;
-      public $fixtures = array(
-                               'patients' => 'Patient',
-                               'addresses' => 'Address'
-      );
+class AddressTest extends CDbTestCase
+{
+	public $model;
 
-      public function dataProvider_Search() {
+	public $fixtures = array(
+		'patients' => 'Patient',
+		'addresses' => 'Address'
+	);
 
-            return array(
-                                     array(array('address1' => 'flat 1'), 1, array('address1')),
-                                     array(array('address1' => 'FLAT 1'), 1, array('address1')), /* case insensitivity test */
-                                     array(array('address2' => 'bleakley'), 3, array('address1', 'address2', 'address3')),
-                                     array(array('city' => 'flitchley'), 3, array('address1', 'address2', 'address3')),
-                                     array(array('postcode' => 'ec1v'), 3, array('address1', 'address2', 'address3')),
-                                     array(array('county' => 'london'), 3, array('address1', 'address2', 'address3')),
-                                     array(array('email' => 'bleakley1'), 1, array('address1')),
-                                     array(array('email' => 'foobar'), 0, array()),
-            );
-      }
+	public function dataProvider_Search()
+	{
+		return array(
+			array(array('address1' => 'flat 1'), 1, array('address1')),
+			array(array('address1' => 'FLAT 1'), 1, array('address1')), /* case insensitivity test */
+			array(array('address2' => 'bleakley'), 3, array('address1', 'address2', 'address3')),
+			array(array('city' => 'flitchley'), 3, array('address1', 'address2', 'address3')),
+			array(array('postcode' => 'ec1v'), 3, array('address1', 'address2', 'address3')),
+			array(array('county' => 'london'), 3, array('address1', 'address2', 'address3')),
+			array(array('email' => 'bleakley1'), 1, array('address1')),
+			array(array('email' => 'foobar'), 0, array()),
+		);
+	}
 
-      /**
-       * Sets up the fixture, for example, opens a network connection.
-       * This method is called before a test is executed.
-       */
-      public function setUp() {
+	public function setUp()
+	{
+		parent::setUp();
+		$this->model = new Address;
+	}
 
-            parent::setUp();
-            $this->model = new Address;
-      }
+	public function testModel()
+	{
+		$this->assertEquals('Address', get_class(Address::model()), 'Class name should match model.');
+	}
 
-      /**
-       * Tears down the fixture, for example, closes a network connection.
-       * This method is called after a test is executed.
-       */
-      protected function tearDown() {
-            
-      }
+	public function testAttributeLabels()
+	{
+		$expected = array(
+			'id' => 'ID',
+			'address1' => 'Address1',
+			'address2' => 'Address2',
+			'city' => 'City',
+			'postcode' => 'Postcode',
+			'county' => 'County',
+			'country_id' => 'Country',
+			'email' => 'Email',
+		);
 
-      /**
-       * @covers Address::model
-       * @todo   Implement testModel().
-       */
-      public function testModel() {
+		$this->assertEquals($expected, $this->model->attributeLabels());
+	}
 
-            $this->assertEquals('Address', get_class(Address::model()), 'Class name should match model.');
-      }
+    /**
+     * @covers AuditTrail::rules
+     * @todo   Implement testRules().
+     */
+    public function testRules() {
 
-      /**
-       * @covers Address::tableName
-       * @todo   Implement testTableName().
-       */
-      public function testTableName() {
-            $this->assertEquals('address', $this->model->tableName());
-      }
+        $this->assertTrue($this->addresses('address3')->validate());
+        $this->assertEmpty($this->addresses('address3')->errors);
+    }
 
-      /**
-       * @covers Address::attributeLabels
-       * @todo   Implement testAttributeLabels().
-       */
-      public function testAttributeLabels() {
-	         
-            $expected = array(
-                                     'id' => 'ID',
-                                     'address1' => 'Address1',
-                                     'address2' => 'Address2',
-                                     'city' => 'City',
-                                     'postcode' => 'Postcode',
-                                     'county' => 'County',
-                                     'country_id' => 'Country',
-                                     'email' => 'Email',
-            );
+    /**
+     * @covers Address::isCurrent
+     * @todo   Implement testIsCurrent().
+     */
+    public function testIsCurrent() {
 
-            $this->assertEquals($expected, $this->model->attributeLabels());
-      }
+        $this->assertTrue($this->model->isCurrent());
+    }
 
-      /**
-       * @covers AuditTrail::rules
-       * @todo   Implement testRules().
-       */
-      public function testRules() {
+    /**
+     * @covers Address::getLetterLine
+     * @todo   Implement testGetLetterLine().
+     */
+    public function testGetLetterLine() {
 
-            $this->assertTrue($this->addresses('address3')->validate());
-            $this->assertEmpty($this->addresses('address3')->errors);
-      }
+        $expected = $this->addresses('address3')->getLetterLine($include_country = false);
 
-      /**
-       * @covers Address::isCurrent
-       * @todo   Implement testIsCurrent().
-       */
-      public function testIsCurrent() {
+        $this->model->setAttributes($this->addresses('address3')->getAttributes());
 
-            $this->assertTrue($this->model->isCurrent());
-      }
+        $this->assertEquals($expected, $this->model->getLetterLine($include_country = false));
+    }
 
-      /**
-       * @covers Address::getLetterLine
-       * @todo   Implement testGetLetterLine().
-       */
-      public function testGetLetterLine() {
+    /**
+     * @covers Address::getSummary
+     * @todo   Implement testGetSummary().
+     */
+    public function testGetSummary() {
 
-            $expected = $this->addresses('address3')->getLetterLine($include_country = false);
+        //set attributes
+        $this->model->setAttributes($this->addresses('address3')->getAttributes());
 
-            $this->model->setAttributes($this->addresses('address3')->getAttributes());
+        $this->assertEquals($this->addresses('address3')->address1, $this->model->GetSummary());
+    }
 
-            $this->assertEquals($expected, $this->model->getLetterLine($include_country = false));
-      }
+    /**
+     * @covers Address::getLetterArray
+     * @todo   Implement testGetLetterArray().
+     */
+    public function testGetLetterArray() {
 
-      /**
-       * @covers Address::getSummary
-       * @todo   Implement testGetSummary().
-       */
-      public function testGetSummary() {
+        $expected = array(
+            0 => '1',
+            1 => 'flat 1',
+            2 => 'bleakley creek',
+            3 => 'flitchley',
+            4 => 'london',
+            5 => 'ec1v 0dx',
+        );
 
-            //set attributes
-            $this->model->setAttributes($this->addresses('address3')->getAttributes());
+        $this->model->setAttributes($this->addresses('address1')->getAttributes());
 
-            $this->assertEquals($this->addresses('address3')->address1, $this->model->GetSummary());
-      }
+        $this->assertEquals($expected, $this->model->getLetterArray($include_country = false, $name = true));
+    }
 
-      /**
-       * @covers Address::getLetterArray
-       * @todo   Implement testGetLetterArray().
-       */
-      public function testGetLetterArray() {
+    /**
+     * @covers Address::search
+     * @todo   Implement testSearch().
+     */
+    public function testSearch() {
 
-            $expected = array(
-                                     0 => '1',
-                                     1 => 'flat 1',
-                                     2 => 'bleakley creek',
-                                     3 => 'flitchley',
-                                     4 => 'london',
-                                     5 => 'ec1v 0dx',
-            );
+        $this->markTestSkipped(
+            'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
+        );
+    }
 
-            $this->model->setAttributes($this->addresses('address1')->getAttributes());
+	/**
+	 * @dataProvider dataProvider_Search
+	 */
+	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
+		$address = new Address;
+		$address->setAttributes($searchTerms);
+		$results = $address->search();
+		$data = $results->getData();
 
-            $this->assertEquals($expected, $this->model->getLetterArray($include_country = false, $name = true));
-      }
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
+				$expectedResults[] = $this->addresses($key);
+			}
+		}
 
-      /**
-       * @covers Address::search
-       * @todo   Implement testSearch().
-       */
-      public function testSearch() {
-
-            $this->markTestSkipped(
-                      'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-            );
-      }
-
-      /**
-       * @dataProvider dataProvider_Search
-       */
-      public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
-
-            $this->model->setAttributes($searchTerms);
-            $results = $this->model->search();
-            $data = $results->getData();
-
-            $expectedResults = array();
-            if (!empty($expectedKeys)) {
-                  foreach ($expectedKeys as $key) {
-                        $expectedResults[] = $this->addresses($key);
-                  }
-            }
-
-            $this->assertEquals($numResults, $results->getItemCount());
-            $this->assertEquals($expectedResults, $data);
-      }
-
+		$this->assertEquals($numResults, $results->getItemCount());
+		$this->assertEquals($expectedResults, $data);
+	}
 }

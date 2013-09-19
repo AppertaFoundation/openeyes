@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -17,126 +16,90 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class ContactTypeTest extends CDbTestCase {
 
-      /**
-       * @var ContactType
-       */
-      protected $model;
-      public $fixtures = array(
-                               'contacttypes' => 'ContactType'
-      );
+class ContactTypeTest extends CDbTestCase
+{
+	public $model;
 
-      public function dataProvider_Search() {
+	public $fixtures = array(
+		'contactTypes' => 'ContactType'
+	);
 
-            return array(
-                                     array(array('name' => 'GP', 'id' => 1), 1, array('contacttype1')),
-                                     array(array('letter_template_only'), 8, array('contacttype1', 'contacttype2', 'contacttype3', 'contacttype4', 'contacttype5', 'contacttype6', 'contacttype7', 'contacttype8')),
-                                     array(array('name' => 'foobar'), 0, array()),
-            );
-      }
+	public function dataProvider_Search()
+	{
+		return array(
+			array(array('name' => 'GP', 'id' => 1), 1, array('contacttype1')),
+			array(array('letter_template_only'), 8, array('contacttype1', 'contacttype2', 'contacttype3', 'contacttype4', 'contacttype5', 'contacttype6', 'contacttype7', 'contacttype8')),
+			array(array('name' => 'foobar'), 0, array()),
+		);
+	}
 
-      /**
-       * Sets up the fixture, for example, opens a network connection.
-       * This method is called before a test is executed.
-       */
-      protected function setUp() {
+	public function setUp()
+	{
+		parent::setUp();
+		$this->model = new ContactType;
+	}
 
-            parent::setUp();
-            $this->model = new ContactType;
-      }
+	public function testModel()
+	{
+		$this->assertEquals('ContactType', get_class(ContactType::model()), 'Class name should match model.');
+	}
 
-      /**
-       * Tears down the fixture, for example, closes a network connection.
-       * This method is called after a test is executed.
-       */
-      protected function tearDown() {
-            
-      }
+	/**
+	 * @covers ContactType::rules
+	 * @todo   Implement testRules().
+	 */
+	public function testRules() {
 
-      /**
-       * @covers ContactType::model
-       * @todo   Implement testModel().
-       */
-      public function testModel() {
+		$this->assertTrue($this->contacttypes('contacttype1')->validate());
+		$this->assertEmpty($this->contacttypes('contacttype1')->errors);
+	}
 
-            $this->assertEquals('ContactType', get_class(ContactType::model()), 'Class name should match model.');
-      }
+	/**
+	 * @covers ContactType::relations
+	 * @todo   Implement testRelations().
+	 */
+	public function testRelations() {
+		// Remove the following lines when you implement this test.
+		//$this->markTestIncomplete(
+		//	'This test has not been implemented yet.'
+		//);
+	}
 
-      /**
-       * @covers ContactType::tableName
-       * @todo   Implement testTableName().
-       */
-      public function testTableName() {
+	public function testAttributeLabels()
+	{
+		$expected = array(
+			'id' => 'ID',
+			'name' => 'Name',
+			'letter_template_only' => 'Letter Template Only',
+		);
 
-            $this->assertEquals('contact_type', $this->model->tableName());
-      }
+		$this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
+	}
 
-      /**
-       * @covers ContactType::rules
-       * @todo   Implement testRules().
-       */
-      public function testRules() {
+	/**
+	 * @dataProvider dataProvider_Search
+	 */
+	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+	{
+		$type = new ContactType;
+		$type->setAttributes($searchTerms);
+		$results = $type->search();
+		$data = $results->getData();
 
-            $this->assertTrue($this->contacttypes('contacttype1')->validate());
-            $this->assertEmpty($this->contacttypes('contacttype1')->errors);
-      }
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
+				$expectedResults[] = $this->contactTypes($key);
+			}
+		}
 
-      /**
-       * @covers ContactType::relations
-       * @todo   Implement testRelations().
-       */
-      public function testRelations() {
-            // Remove the following lines when you implement this test.
-            $this->markTestIncomplete(
-                      'This test has not been implemented yet.'
-            );
-      }
+		$this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
+		$this->assertEquals($expectedResults, $data, 'Actual results should match.');
+	}
 
-      /**
-       * @covers ContactType::attributeLabels
-       * @todo   Implement testAttributeLabels().
-       */
-      public function testAttributeLabels() {
-
-            $expected = array(
-                                     'id' => 'ID',
-                                     'name' => 'Name',
-                                     'letter_template_only' => 'Letter Template Only',
-            );
-
-            $this->assertEquals($expected, $this->model->attributeLabels());
-      }
-
-      /**
-       * @covers ContactType::search
-       * @todo   Implement testSearch().
-       */
-      public function testSearch() {
-        
-             $this->markTestSkipped(
-                      'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-            );
-      }
-
-      /**
-       * @dataProvider dataProvider_Search
-       */
-      public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
-
-            $this->model->setAttributes($searchTerms);
-            $results = $this->model->search();
-            $data = $results->getData();
-
-            $expectedResults = array();
-            if (!empty($expectedKeys)) {
-                  foreach ($expectedKeys as $key) {
-                        $expectedResults[] = $this->contacttypes($key);
-                  }
-            }
-
-            $this->assertEquals($numResults, $results->getItemCount());
-            $this->assertEquals($expectedResults, $data);
-      }
-
+	public function testNoContactTypes()
+	{
+		$this->assertEquals(8, count(ContactType::model()->findAll()));
+	}
 }

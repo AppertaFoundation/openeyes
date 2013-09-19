@@ -32,7 +32,7 @@
 					<div class="sortable">
 						<?php
 						foreach ($user->siteSelections as $i => $site) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
+							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
 								<span class="column_checkbox"><input type="checkbox" name="sites[]" value="<?php echo $site->id?>" /></span>
 								<span class="column_name"><?php echo $site->name?>&nbsp;</span>
 								<span class="column_address"><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</span>
@@ -67,7 +67,9 @@
 					if (html == "1") {
 						window.location.reload();
 					} else {
-						alert("Something went wrong trying to add the site.  Please try again or contact support for assistance.");
+						new OpenEyes.Dialog.Alert({
+							content: "Something went wrong trying to add the site.  Please try again or contact support for assistance."
+						}).open();
 					}
 				}
 			});
@@ -93,7 +95,9 @@
 				if (html == "1") {
 					window.location.reload();
 				} else {
-					alert("Something went wrong trying to add the sites.  Please try again or contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "Something went wrong trying to add the sites.  Please try again or contact support for assistance."
+					}).open();
 				}
 			}
 		});

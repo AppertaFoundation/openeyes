@@ -21,9 +21,9 @@
  * This is the model class for table "previous_operation".
  *
  * The followings are the available columns in table 'previous_operation':
- * @property string $id
+ * @property integer $id
  * @property string $date
- * @property string $patient_id
+ * @property integer $patient_id
  * @property integer $operation
  *
  * The followings are the available model relations:
@@ -33,7 +33,7 @@ class PreviousOperation extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Procedure the static model class
+	 * @return PreviousOperation the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -58,6 +58,7 @@ class PreviousOperation extends BaseActiveRecord
 		return array(
 			array('date, operation, patient_id', 'required'),
 			array('date, side_id, operation, patient_id', 'safe'),
+			array('date', 'OEFuzzyDateValidatorNotFuture'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, date, operation, patient_id', 'safe', 'on'=>'search'),
@@ -111,7 +112,8 @@ class PreviousOperation extends BaseActiveRecord
 		));
 	}
 
-	public function getDateText() {
+	public function getDateText()
+	{
 		return Helper::formatFuzzyDate($this->date);
 	}
 }

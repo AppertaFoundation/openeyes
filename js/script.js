@@ -21,7 +21,7 @@ $(document).ready(function(){
 		e.preventDefault();
 		var sprite = $(this).children('span');
 		var whiteBox = $(this).parents('.whiteBox');
-		
+
 		if(sprite.hasClass('hide')) {
 			whiteBox.children('.data_row').slideUp("fast");
 			sprite.removeClass('hide');
@@ -34,7 +34,7 @@ $(document).ready(function(){
 	});
 
 	// show hide
-        
+
 	$('.sprite.showhide2').click(function(e){
 		var episode_id = $(this).parent().parent().prev('input').val();
 		if (episode_id == undefined) {
@@ -44,13 +44,13 @@ $(document).ready(function(){
 		e.preventDefault();
 		changeState($(this).parents('.episode_nav'),$(this).children('span'),episode_id);
 	});
-	
+
 	function changeState(wb,sp,episode_id) {
 		if (sp.hasClass('hide')) {
 			wb.children('.events').slideUp('fast');
 			sp.removeClass('hide');
 			sp.addClass('show');
-                        wb.children('.minievents').slideDown('fast');
+												wb.children('.minievents').slideDown('fast');
 			$.ajax({
 				'type': 'GET',
 				'url': baseUrl+'/patient/hideepisode?episode_id='+episode_id,
@@ -61,19 +61,19 @@ $(document).ready(function(){
 			wb.children('.events').slideDown('fast');
 			sp.removeClass('show');
 			sp.addClass('hide');
-                        wb.children('.minievents').slideUp('fast');
+												wb.children('.minievents').slideUp('fast');
 			$.ajax({
 				'type': 'GET',
 				'url': baseUrl+'/patient/showepisode?episode_id='+episode_id,
 				'success': function(html) {
-				} 
+				}
 			});
 		}
 	}
-	
+
 	/**
 	 * Sticky stuff
-	 */ 
+	 */
 	$('#alert_banner').waypoint('sticky', {
 		offset: -30,
 		wrapper: '<div class="alert_banner_sticky_wrapper" />'
@@ -104,30 +104,73 @@ $(document).ready(function(){
 				$(this).removeClass('hover');
 			}
 	);
-	
+
+	/**
+	 * Warn on leaving edit mode
+	 */
+	var formHasChanged = false;
+	var submitted = false;
+
+	$("#event_content").on("change", function (e) {
+		formHasChanged = true;
+	});
+
+	//if the save button is on page
+	if($('#et_save').length){
+		$(".EyeDrawWidget").on("click", function (e) {
+			formHasChanged = true;
+		});
+	}
+
+	window.onbeforeunload = function (e) {
+		if (formHasChanged && !submitted) {
+			var message = "You have not saved your changes.", e = e || window.event;
+			if (e) {
+				e.returnValue = message;
+			}
+			return message;
+		}
+	}
+	$("form").submit(function() {
+		submitted = true;
+	});
+
 	/**
 	 * Site / firm switcher
 	 */
-	$('.change-firm a').click(function(e) {
-		if (typeof(OE_patient_id) != 'undefined') {
-			var patient_id = OE_patient_id;
-		} else {
-			var patient_id = null;
-		}
+	(function firmSwitcher() {
 
-		$.ajax({
-			url: baseUrl + '/site/changesiteandfirm',
-			data: {
-				returnUrl: window.location.href,
-				patient_id: patient_id
-			},
-			success: function(data) {
-				$('#user_panel').before(data);
-			}
+		// Default dialog options.
+		var options = {
+			id: 'site-and-firm-dialog',
+			title: 'Select a new Site and/or Firm'
+		};
+
+		// Show the 'change firm' dialog when clicking on the 'change firm' link.
+		$('.change-firm a').click(function(e) {
+
+			e.preventDefault();
+
+			new OpenEyes.Dialog($.extend({}, options, {
+				url: baseUrl + '/site/changesiteandfirm',
+				data: {
+					returnUrl: window.location.href,
+					patient_id: window.OE_patient_id || null
+				}
+			})).open();
 		});
-		e.preventDefault();
-	});
 
+		// Show the 'change firm' dialog on page load.
+		if ($('#site-and-firm-form').length) {
+			new OpenEyes.Dialog($.extend({}, options, {
+				content: $('#site-and-firm-form')
+			})).open();
+		}
+	}());
+
+	$('#checkall').click(function() {
+		$('input.'+$(this).attr('class')).attr('checked',$(this).is(':checked') ? 'checked' : false);
+	});
 });
 
 function changeState(wb,sp) {
@@ -178,4 +221,42 @@ function getMonthShortName(i) {
 function getMonthNumberByShortName(m) {
 	var months = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
 	return months[m];
+}
+
+/**
+ * sort comparison function for html elements based on the inner html content, but will check for the presence of data-order attributes and
+ * sort on those if present
+ *
+ * @param a
+ * @param b
+ * @return
+ */
+function selectSort(a, b) {
+		if (a.innerHTML == rootItem) {
+				return -1;
+		}
+		else if (b.innerHTML == rootItem) {
+				return 1;
+		}
+		// custom ordering
+		if ($(a).data('order')) {
+			return ($(a).data('order') > $(b).data('order')) ? 1 : -1;
+		}
+
+		return (a.innerHTML > b.innerHTML) ? 1 : -1;
+};
+
+var rootItem = null;
+
+function sort_selectbox(element) {
+	rootItem = element.children('option:first').text();
+	element.append(element.children('option').sort(selectSort));
+}
+
+function inArray(needle, haystack) {
+	var length = haystack.length;
+	for(var i = 0; i < length; i++) {
+		if(haystack[i] == needle) return true;
+	}
+	return false;
 }

@@ -22,13 +22,20 @@ class ProfileController extends BaseController
 	public $layout = 'profile';
 	public $items_per_page = 30;
 
-	public function accessRules() {
+	public function accessRules()
+	{
 		return array(
+			array('allow','users'=>array('@')),
 			array('deny'),
 		);
 	}
 
-	protected function beforeAction($action) {
+	protected function beforeAction($action)
+	{
+		if (!Yii::app()->params['profile_user_can_edit']) {
+			$this->redirect('/');
+		}
+
 		$this->registerCssFile('profile.css', Yii::app()->createUrl("css/profile.css"));
 		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/profile.js"));
 
@@ -37,11 +44,13 @@ class ProfileController extends BaseController
 		return parent::beforeAction($action);
 	}
 
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$this->redirect(array('/profile/info'));
 	}
 
-	public function actionInfo() {
+	public function actionInfo()
+	{
 		if (!Yii::app()->params['profile_user_can_edit']) {
 			$this->redirect(array('/profile/password'));
 		}
@@ -71,7 +80,8 @@ class ProfileController extends BaseController
 		));
 	}
 
-	public function actionPassword() {
+	public function actionPassword()
+	{
 		if (!Yii::app()->params['profile_user_can_change_password']) {
 			$this->redirect(array('/profile/sites'));
 		}
@@ -84,7 +94,7 @@ class ProfileController extends BaseController
 			if (Yii::app()->params['profile_user_can_change_password']) {
 				if (empty($_POST['User']['password_old'])) {
 					$errors['Current password'] = array('Please enter your current password');
-				} else if ($user->password !== md5($user->salt.$_POST['User']['password_old'])) {
+				} elseif ($user->password !== md5($user->salt.$_POST['User']['password_old'])) {
 					$errors['Current password'] = array('Password is incorrect');
 				}
 
@@ -121,7 +131,8 @@ class ProfileController extends BaseController
 		));
 	}
 
-	public function actionSites() {
+	public function actionSites()
+	{
 		$user = User::model()->findByPk(Yii::app()->user->id);
 
 		if (!empty($_POST['sites'])) {
@@ -139,7 +150,8 @@ class ProfileController extends BaseController
 		));
 	}
 
-	public function actionAddSite() {
+	public function actionAddSite()
+	{
 		if (@$_POST['site_id'] == 'all') {
 			if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
 				throw new Exception("Can't find institution: ".Yii::app()->params['institution_code']);
@@ -163,7 +175,8 @@ class ProfileController extends BaseController
 		echo "1";
 	}
 
-	public function actionFirms() {
+	public function actionFirms()
+	{
 		$user = User::model()->findByPk(Yii::app()->user->id);
 
 		if (!empty($_POST['firms'])) {
@@ -191,7 +204,8 @@ class ProfileController extends BaseController
 		));
 	}
 
-	public function actionAddFirm() {
+	public function actionAddFirm()
+	{
 		if (@$_POST['firm_id'] == 'all') {
 			$firms = Firm::model()->findAll();
 		} else {

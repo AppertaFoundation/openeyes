@@ -19,11 +19,11 @@
 
 ?><div class="form">
 
-<?php 
+<?php
 $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'phrase-by-firm-form',
 	'enableAjaxValidation'=>false,
-)); 
+));
 
 if (isset($_GET['section_id'])) {
 	$model->section_id = $_GET['section_id'];

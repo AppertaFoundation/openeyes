@@ -18,24 +18,25 @@
  */
 
 /**
- * This is the model class for table "firm".
+ * This is the model class for table "institution".
  *
- * The followings are the available columns in table 'firm':
- * @property string $id
- * @property string $service_subspecialty_assignment_id
- * @property string $pas_code
+ * The followings are the available columns in table 'institution':
+ * @property integer $id
  * @property string $name
+ * @property integer $remote_id
+ * @property string $short_name
+ * @property integer $contact_id
+ * @property integer $source_id
  *
  * The followings are the available model relations:
- * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
- * @property FirmUserAssignment[] $firmUserAssignments
- * @property LetterPhrase[] $letterPhrases
+ * @property Contact $contact
+ * @property Site[] $sites
  */
 class Institution extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return Institution the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -50,7 +51,8 @@ class Institution extends BaseActiveRecord
 		return 'institution';
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
@@ -115,5 +117,5 @@ class Institution extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 }

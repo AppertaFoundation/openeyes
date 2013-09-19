@@ -32,12 +32,12 @@
 									<?php }?>
 								</tbody>
 							</table>
-							
+
 							<div align="center" style="margin-top:10px;">
 								<form><button id="btn-add_medication" class="classy green mini" type="button"><span class="button-span button-span-green">Add medication</span></button></form>
 							</div>
 							<div id="add_medication" style="display: none;">
-								<h5>Add medication</h5>	
+								<h5>Add medication</h5>
 								<?php
 								$form = $this->beginWidget('CActiveForm', array(
 										'id'=>'add-medication',
@@ -45,16 +45,16 @@
 										'htmlOptions' => array('class'=>'sliding'),
 										'action'=>array('patient/addMedication'),
 								))?>
-	
+
 								<input type="hidden" name="edit_medication_id" id="edit_medication_id" value="" />
 								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-	
+
 								<div class="patientMedication">
 									<div class="label">
 										Medication:
 									</div>
 									<div class="data">
-										<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->serviceSubspecialtyAssignment->subspecialty_id),array('empty'=>'- Select -'))?>
+										<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->getSubspecialtyID()),array('empty'=>'- Select -'))?>
 									</div>
 								</div>
 								<div class="patientMedication">
@@ -143,9 +143,9 @@
 									<button class="classy green mini btn_save_medication" type="submit"><span class="button-span button-span-green">Save</span></button>
 									<button class="classy red mini btn_cancel_medication" type="submit"><span class="button-span button-span-red">Cancel</span></button>
 								</div>
-	
+
 								<?php $this->endWidget()?>
-							</div>	
+							</div>
 						</div>
 					</div>
 
@@ -195,7 +195,8 @@
 		}
 	});
 
-	function selectMedication(id, name) {
+	function selectMedication(id, name)
+	{
 		$('#selectedMedicationName').text(name);
 		$('#selectedMedicationID').val(id);
 

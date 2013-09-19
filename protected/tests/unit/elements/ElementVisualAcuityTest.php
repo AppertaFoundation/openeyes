@@ -80,6 +80,6 @@ class ElementVisualAcuityTest extends CDbTestCase
 	{
 		$element = ElementVisualAcuity::model()->findByPk(1);
 		// Have to convert to string here else phpunit complains double 0.78 does not equal double 0.78!
-		$this->assertEquals('0.78', (string)$element->toETDRS(50));
+		$this->assertEquals('0.78', (string) $element->toETDRS(50));
 	}
 }

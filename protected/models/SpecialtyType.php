@@ -21,7 +21,7 @@
  * This is the model class for table "specialty_type".
  *
  * The followings are the available columns in table 'specialty_type':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class SpecialtyType extends BaseActiveRecord

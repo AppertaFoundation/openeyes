@@ -9,4 +9,5 @@ console.php - Used by console only
 
 OpenEyes parameters (incomplete list):
 
+specialty_codes - array of medical specialty codes to indicate what specialties should be displayed on the patient summary page
 specialty_sort - array of specialty codes to provide a fixed order to episodes being displayed by specialty.

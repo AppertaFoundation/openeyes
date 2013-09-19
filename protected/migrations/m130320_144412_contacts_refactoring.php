@@ -1,7 +1,9 @@
 <?php
 
-class m130320_144412_contacts_refactoring extends CDbMigration
+class m130320_144412_contacts_refactoring extends ParallelMigration
 {
+	public $fp;
+
 	public function up()
 	{
 		$this->createTable('person',array(
@@ -107,40 +109,14 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 
 		/* Specialists */
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("specialist")->queryAll() as $specialist) {
-			$specialist_type = Yii::app()->db->createCommand()->select("*")->from("specialist_type")->where("id=:id",array(':id'=>$specialist['specialist_type_id']))->queryRow();
+		$specialists = Yii::app()->db->createCommand()
+			->select("specialist.*, specialist_type.name as specialist_type, contact.id as contact_id")
+			->from("specialist")
+			->join("specialist_type","specialist.specialist_type_id = specialist_type.id")
+			->leftJoin("contact","contact.parent_class = 'Specialist' and contact.parent_id = specialist.id")
+			->queryAll();
 
-			$label = $this->getLabel($specialist_type['name']);
-
-			if ($contact = Yii::app()->db->createCommand()->select("id")->from("contact")->where("parent_class=:parent_class and parent_id=:parent_id",array(':parent_class'=>'Specialist',':parent_id'=>$specialist['id']))->queryRow()) {
-				$this->update('contact',array('contact_label_id'=>$label['id'],'parent_class'=>''),"id={$contact['id']}");
-
-				$this->insert('person',array('contact_id'=>$contact['id']));
-
-				if ($specialist['gmc_number']) {
-					$this->insert('contact_metadata',array('contact_id'=>$contact['id'],'key'=>'gmc_number','value'=>$specialist['gmc_number']));
-				}
-				if ($specialist['practitioner_code']) {
-					$this->insert('contact_metadata',array('contact_id'=>$contact['id'],'key'=>'practitioner_code','value'=>$specialist['practitioner_code']));
-				}
-				if ($specialist['gender']) {
-					$this->insert('contact_metadata',array('contact_id'=>$contact['id'],'key'=>'gender','value'=>$specialist['gender']));
-				}
-				if ($specialist['surgeon']) {
-					$this->insert('contact_metadata',array('contact_id'=>$contact['id'],'key'=>'surgeon','value'=>$specialist['surgeon']));
-				}
-
-				foreach (Yii::app()->db->createCommand()->select("*")->from("site_specialist_assignment")->where("specialist_id=:specialist_id",array(':specialist_id'=>$specialist['id']))->queryAll() as $row) {
-					$this->insert('contact_location',array('contact_id'=>$contact['id'],'site_id'=>$row['site_id']));
-				}
-
-				foreach (Yii::app()->db->createCommand()->select("*")->from("institution_specialist_assignment")->where("specialist_id=:specialist_id",array(':specialist_id'=>$specialist['id']))->queryAll() as $row) {
-					$this->insert('contact_location',array('contact_id'=>$contact['id'],'institution_id'=>$row['institution_id']));
-				}
-			} else {
-				echo "WARNING: contact missing for specialist: {$specialist['id']}\n";
-			}
-		}
+		$this->parallelise('migrateSpecialists',$specialists);
 
 		$this->dropTable('site_specialist_assignment');
 		$this->dropTable('institution_specialist_assignment');
@@ -151,9 +127,11 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 
 		$this->addColumn('firm','consultant_id','int(10) unsigned NOT NULL');
 
-		foreach (Firm::model()->findAll() as $firm) {
-			$this->update('firm',array('consultant_id'=>$this->getConsultantUserID($firm)),"id=$firm->id");
+		$firm_ids = array();
+		foreach (Yii::app()->db->createCommand()->select("id")->from("firm")->queryAll() as $firm) {
+			$firm_ids[] = $firm['id'];
 		}
+		$this->parallelise("setFirmConsultants",$firm_ids);
 
 		$this->update('firm',array('consultant_id'=>1),'consultant_id=0');
 
@@ -164,38 +142,21 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 
 		$this->addColumn('user','contact_id','int(10) unsigned NOT NULL');
 
-		$co = $this->getLabel('Consultant Ophthalmologist');
+		$users = Yii::app()->db->createCommand()
+			->select("user.*, user_contact_assignment.contact_id, contact.parent_class, contact.parent_id, consultant.gmc_number, consultant.practitioner_code, consultant.gender")
+			->from("user")
+			->join("user_contact_assignment","user_contact_assignment.user_id = user.id")
+			->join("contact","user_contact_assignment.contact_id = contact.id")
+			->join("consultant","contact.parent_id = consultant.id")
+			->queryAll();
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("user")->queryAll() as $user) {
-			$uca = Yii::app()->db->createCommand()->select("*")->from("user_contact_assignment")->where("user_id=:user_id",array(':user_id'=>$user['id']))->queryRow();
+		$this->parallelise('migrateUserContacts',$users);
 
-			$this->update('user',array('contact_id'=>$uca['contact_id']),"id={$user['id']}");
+		foreach (Yii::app()->db->createCommand()->select("*")->from("user")->where("contact_id is null or contact_id = ?",array(0))->queryAll() as $user) {
+			$this->insert('contact',array('first_name'=>$user['first_name'],'last_name'=>$user['last_name'],'title'=>$user['title']));
+			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
 
-			$contact = Yii::app()->db->createCommand()->select("*")->from("contact")->where("id = :id",array(':id'=>$uca['contact_id']))->queryRow();
-
-			if ($contact['parent_class'] == 'Consultant') {
-				$this->update('contact',array('contact_label_id'=>$co['id']),"id={$contact['id']}");
-				$consultant = Yii::app()->db->createCommand()->select("*")->from("consultant")->where("id=:id",array(':id'=>$contact['parent_id']))->queryRow();
-				if ($consultant['gmc_number']) {
-					$this->insert('contact_metadata',array('contact_id'=>$contact['id'],'key'=>'gmc_number','value'=>$consultant['gmc_number']));
-				}
-				if ($consultant['practitioner_code']) {
-					$this->insert('contact_metadata',array('contact_id'=>$contact['id'],'key'=>'practitioner_code','value'=>$consultant['practitioner_code']));
-				}
-				if ($consultant['gender']) {
-					$this->insert('contact_metadata',array('contact_id'=>$contact['id'],'key'=>'gender','value'=>$consultant['gender']));
-				}
-			}
-
-			$this->update('contact',array('parent_class'=>''),"id={$contact['id']}");
-
-			foreach (Yii::app()->db->createCommand()->select("*")->from("site_consultant_assignment")->where("consultant_id = :consultant_id",array(':consultant_id'=>$contact['parent_id']))->queryAll() as $sca) {
-				$this->insert('contact_location',array('contact_id'=>$uca['contact_id'],'site_id'=>$sca['site_id']));
-			}
-
-			foreach (Yii::app()->db->createCommand()->select("*")->from("institution_consultant_assignment")->where("consultant_id = :consultant_id",array(':consultant_id'=>$contact['parent_id']))->queryAll() as $sca) {
-				$this->insert('contact_location',array('contact_id'=>$uca['contact_id'],'institution_id'=>$sca['institution_id']));
-			}
+			$this->update('user',array('contact_id'=>$contact_id),"id={$user['id']}");
 		}
 
 		$this->createIndex('user_contact_id_fk','user','contact_id');
@@ -205,25 +166,21 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 
 		/* External ophthalmic consultants */
 
-		$label = $this->getLabel('Consultant Ophthalmologist');
+		$consultants = Yii::app()->db->createCommand()->select("*")->from("contact")->where("parent_class = 'Consultant'")->queryAll();
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("contact")->where("parent_class = 'Consultant'")->queryAll() as $contact) {
-			$this->insert('person',array('contact_id'=>$contact['id']));
-			$this->update('contact',array('parent_class'=>'','contact_label_id'=>$label['id']),"id={$contact['id']}");
-		}
+		$this->parallelise('migrateConsultantContacts',$consultants);
 
 		/* GPs */
 
 		$this->addColumn('gp','contact_id','int(10) unsigned NOT NULL');
 
-		$gpl = $this->getLabel('General Practitioner');
+		$gps = Yii::app()->db->createCommand()
+			->select("gp.*, contact.id as contact_id")
+			->from("gp")
+			->join("contact","contact.parent_class = 'Gp' and contact.parent_id = gp.id")
+			->queryAll();
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("gp")->queryAll() as $gp) {
-			if ($contact = Yii::app()->db->createCommand()->select("*")->from("contact")->where("parent_class=:parent_class and parent_id=:parent_id",array(':parent_class'=>'Gp',':parent_id'=>$gp['id']))->queryRow()) {
-				$this->update('gp',array('contact_id'=>$contact['id']),"id={$gp['id']}");
-				$this->update('contact',array('contact_label_id'=>$gpl['id'],'parent_class'=>''),"id={$contact['id']}");
-			}
-		}
+		$this->parallelise('migrateGPContacts',$gps);
 
 		$this->createIndex('gp_contact_id_fk','gp','contact_id');
 		$this->addForeignKey('gp_contact_id_fk','gp','contact_id','contact','id');
@@ -233,23 +190,13 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 		$this->addColumn('site','contact_id','int(10) unsigned NOT NULL');
 		$this->addColumn('site','replyto_contact_id','int(10) unsigned NULL');
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("site")->queryAll() as $site) {
-			$update = array();
+		$sites = Yii::app()->db->createCommand()
+			->select("site.*, contact.id as contact_id")
+			->from("site")
+			->leftJoin("contact","contact.parent_class = 'Site_ReplyTo' and contact.parent_id = site.id")
+			->queryAll();
 
-			if ($contact = Yii::app()->db->createCommand()->select("*")->from("contact")->where("parent_class=:parent_class and parent_id=:parent_id",array(':parent_class'=>'Site_ReplyTo',':parent_id'=>$site['id']))->queryRow()) {
-				$this->update('contact',array('parent_class'=>''),"id={$contact['id']}");
-				$update['replyto_contact_id'] = $contact['id'];
-			}
-
-			$this->insert('contact',array());
-			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
-
-			$update['contact_id'] = $contact_id;
-
-			$this->update('site',$update,"id={$site['id']}");
-
-			$this->insert('address',array('address1'=>$site['address1'],'address2'=>$site['address2'],'city'=>$site['address3'],'postcode'=>$site['postcode'],'parent_class'=>'Contact','parent_id'=>$contact_id,'country_id'=>1));
-		}
+		$this->parallelise('migrateSiteContacts',$sites);
 
 		$this->createIndex('site_contact_id_fk','site','contact_id');
 		$this->addForeignKey('site_contact_id_fk','site','contact_id','contact','id');
@@ -265,16 +212,13 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 
 		$this->addColumn('institution','contact_id','int(10) unsigned NOT NULL');
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("institution")->queryAll() as $institution) {
-			$this->insert('contact',array());
-			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
+		$institutions = Yii::app()->db->createCommand()
+			->select("institution.*, address.id as address_id")
+			->from("institution")
+			->leftJoin("address","address.parent_class = 'Institution' and address.parent_id = institution.id")
+			->queryAll();
 
-			$this->update('institution',array('contact_id'=>$contact_id),"id={$institution['id']}");
-
-			if ($address = Yii::app()->db->createCommand()->select("*")->from("address")->where("parent_class = :parent_class and parent_id = :parent_id",array(':parent_class'=>'Institution',':parent_id'=>$institution['id']))->queryRow()) {
-				$this->update('address',array('parent_class'=>'Contact','parent_id'=>$contact_id),"id={$address['id']}");
-			}
-		}
+		$this->parallelise('migrateInstitutionContacts',$institutions);
 
 		$this->createIndex('institution_contact_id_fk','institution','contact_id');
 		$this->addForeignKey('institution_contact_id_fk','institution','contact_id','contact','id');
@@ -283,40 +227,29 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 
 		$this->addColumn('patient','contact_id','int(10) unsigned NOT NULL');
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("patient")->queryAll() as $patient) {
-			if ($contact = Yii::app()->db->createCommand()->select("*")->from("contact")->where("parent_class=:parent_class and parent_id=:parent_id",array(':parent_class'=>'Patient',':parent_id'=>$patient['id']))->queryRow()) {
-				$this->update('patient',array('contact_id'=>$contact['id']),"id={$patient['id']}");
-				$this->update('contact',array('parent_class'=>''),"id={$contact['id']}");
+		$patients = Yii::app()->db->createCommand()
+			->select("patient.*, contact.id as contact_id")
+			->from("patient")
+			->join("contact","contact.parent_class = 'Patient' and contact.parent_id = patient.id")
+			->queryAll();
 
-				$this->update('address',array('parent_class'=>'Contact','parent_id'=>$contact['id']),"parent_class = 'Patient' and parent_id = {$patient['id']}");
-			}
-		}
+		$this->parallelise('migratePatientContacts',$patients);
 
 		$this->createIndex('patient_contact_id_fk','patient','contact_id');
 		$this->addForeignKey('patient_contact_id_fk','patient','contact_id','contact','id');
-
-		$this->delete('contact',"parent_class in ('Consultant','Specialist','Gp','Site_ReplyTo','Patient')");
-		$this->dropColumn('contact','parent_class');
-		$this->dropColumn('contact','parent_id');
 
 		/* Patient contact assignments */
 
 		$this->addColumn('patient_contact_assignment','location_id','int(10) unsigned NOT NULL');
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("patient_contact_assignment")->queryAll() as $pca) {
-			if ($pca['site_id']) {
-				if (!$location = Yii::app()->db->createCommand()->select("*")->from("contact_location")->where("contact_id=:contact_id and site_id=:site_id",array(':contact_id'=>$pca['contact_id'],':site_id'=>$pca['site_id']))->queryRow()) {
-					$this->insert('contact_location',array('contact_id'=>$pca['contact_id'],'site_id'=>$pca['site_id']));
-					$location = Yii::app()->db->createCommand()->select("*")->from("contact_location")->where("contact_id=:contact_id and site_id=:site_id",array(':contact_id'=>$pca['contact_id'],':site_id'=>$pca['site_id']))->queryRow();
-				}
-			} else {
-				if (!$location = Yii::app()->db->createCommand()->select("*")->from("contact_location")->where("contact_id=:contact_id and institution_id=:institution_id",array(':contact_id'=>$pca['contact_id'],':institution_id'=>$pca['institution_id']))->queryRow()) {
-					$this->insert('contact_location',array('contact_id'=>$pca['contact_id'],'institution_id'=>$pca['institution_id']));
-					$location = Yii::app()->db->createCommand()->select("*")->from("contact_location")->where("contact_id=:contact_id and institution_id=:institution_id",array(':contact_id'=>$pca['contact_id'],':institution_id'=>$pca['institution_id']))->queryRow();
-				}
-			}
-			$this->update('patient_contact_assignment',array('location_id'=>$location['id']),"id={$pca['id']}");
-		}
+		$pcas = Yii::app()->db->createCommand()
+			->select("patient_contact_assignment.*, contact_location1.id as location_id1, contact_location2.id as location_id2")
+			->from("patient_contact_assignment")
+			->leftJoin("contact_location contact_location1","contact_location1.contact_id = patient_contact_assignment.contact_id and contact_location1.site_id = patient_contact_assignment.site_id")
+			->leftJoin("contact_location contact_location2","contact_location2.contact_id = patient_contact_assignment.contact_id and contact_location2.institution_id = patient_contact_assignment.institution_id")
+			->queryAll();
+
+		$this->parallelise('migratePatientContactAssignments',$pcas);
 
 		$this->createIndex('patient_contact_assignment_location_id_fk','patient_contact_assignment','location_id');
 		$this->addForeignKey('patient_contact_assignment_location_id_fk','patient_contact_assignment','location_id','contact_location','id');
@@ -330,9 +263,28 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 
 		/* Address types */
 
-		$this->update('address',array('address_type_id'=>$at_home['id']),"type = 'H'");
-		$this->update('address',array('address_type_id'=>$at_correspondence['id']),"type = 'C'");
-		$this->update('address',array('address_type_id'=>$at_transport['id']),"type = 'T'");
+		if ($this->canFork) {
+			if ($this->fork() == 0) {
+				$this->update('address',array('address_type_id'=>$at_home['id']),"type = 'H'");
+				exit;
+			}
+
+			if ($this->fork() == 0) {
+				$this->update('address',array('address_type_id'=>$at_correspondence['id']),"type = 'C'");
+				exit;
+			}
+
+			if ($this->fork() == 0) {
+				$this->update('address',array('address_type_id'=>$at_transport['id']),"type = 'T'");
+				exit;
+			}
+
+			$this->waitForThreads();
+		} else {
+			$this->update('address',array('address_type_id'=>$at_home['id']),"type = 'H'");
+			$this->update('address',array('address_type_id'=>$at_correspondence['id']),"type = 'C'");
+			$this->update('address',array('address_type_id'=>$at_transport['id']),"type = 'T'");
+		}
 
 		$this->dropColumn('address','type');
 
@@ -342,27 +294,26 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 
 		$this->addColumn('practice','contact_id','int(10) unsigned NOT NULL');
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("practice")->queryAll() as $practice) {
-			$address = Yii::app()->db->createCommand()->select("*")->from("address")->where("parent_class = :parent_class and parent_id = :parent_id",array(':parent_class'=>'Practice',':parent_id'=>$practice['id']))->queryRow();
+		$practices = Yii::app()->db->createCommand()
+			->select("practice.*, address.id as address_id")
+			->from("practice")
+			->leftJoin("address","address.parent_class = 'Practice' and address.parent_id = practice.id")
+			->queryAll();
 
-			$this->insert('contact',array());
-			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
-
-			$this->update('practice',array('contact_id'=>$contact_id),"id={$practice['id']}");
-			$this->update('contact',array('primary_phone'=>$practice['phone']),"id=$contact_id");
-
-			if ($address) {
-				$this->update('address',array('parent_class'=>'Contact','parent_id'=>$contact_id),"id={$address['id']}");
-			}
-		}
+		$this->parallelise('migratePracticeContacts',$practices);
 
 		$this->createIndex('practice_contact_id_fk','practice','contact_id');
 		$this->addForeignKey('practice_contact_id_fk','practice','contact_id','contact','id');
 
 		$this->delete('address',"parent_class = 'Practice'");
+
+		$this->delete('contact',"parent_class in ('Consultant','Specialist','Gp','Site_ReplyTo','Patient')");
+		$this->dropColumn('contact','parent_class');
+		$this->dropColumn('contact','parent_id');
 	}
 
-	public function getConsultantUserID($firm) {
+	public function getConsultantUserID($firm_id)
+	{
 		$result = Yii::app()->db->createCommand()
 			->select('u.id as id')
 			->from('consultant cslt')
@@ -372,14 +323,15 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 			->join('firm_user_assignment fua', 'fua.user_id = u.id')
 			->join('firm f', 'f.id = fua.firm_id')
 			->where('f.id = :fid', array(
-				':fid' => $firm->id
+				':fid' => $firm_id
 			))
 			->queryRow();
 
 		return $result['id'];
 	}
 
-	public function getLabel($name) {
+	public function getLabel($name)
+	{
 		if ($label = Yii::app()->db->createCommand()->select("*")->from("contact_label")->where("name=:name",array(":name"=>$name))->queryRow()) {
 			return $label;
 		}
@@ -387,6 +339,199 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 		$this->insert('contact_label',array('name'=>$name));
 
 		return $this->getLabel($name);
+	}
+
+	public function migrateSpecialists($specialists)
+	{
+		foreach ($specialists as $specialist) {
+			$label = $this->getLabel($specialist['specialist_type']);
+
+			if ($specialist['contact_id']) {
+				$this->update('contact',array('contact_label_id'=>$label['id'],'parent_class'=>''),"id={$specialist['contact_id']}");
+
+				$this->insert('person',array('contact_id'=>$specialist['contact_id']));
+
+				if ($specialist['gmc_number']) {
+					$this->insert('contact_metadata',array('contact_id'=>$specialist['contact_id'],'key'=>'gmc_number','value'=>$specialist['gmc_number']));
+				}
+				if ($specialist['practitioner_code']) {
+					$this->insert('contact_metadata',array('contact_id'=>$specialist['contact_id'],'key'=>'practitioner_code','value'=>$specialist['practitioner_code']));
+				}
+				if ($specialist['gender']) {
+					$this->insert('contact_metadata',array('contact_id'=>$specialist['contact_id'],'key'=>'gender','value'=>$specialist['gender']));
+				}
+				if ($specialist['surgeon']) {
+					$this->insert('contact_metadata',array('contact_id'=>$specialist['contact_id'],'key'=>'surgeon','value'=>$specialist['surgeon']));
+				}
+
+				foreach (Yii::app()->db->createCommand()->select("*")->from("site_specialist_assignment")->where("specialist_id=:specialist_id",array(':specialist_id'=>$specialist['id']))->queryAll() as $row) {
+					$this->insert('contact_location',array('contact_id'=>$specialist['contact_id'],'site_id'=>$row['site_id']));
+				}
+
+				foreach (Yii::app()->db->createCommand()->select("*")->from("institution_specialist_assignment")->where("specialist_id=:specialist_id",array(':specialist_id'=>$specialist['id']))->queryAll() as $row) {
+					$this->insert('contact_location',array('contact_id'=>$specialist['contact_id'],'institution_id'=>$row['institution_id']));
+				}
+			} else {
+				echo "WARNING: contact missing for specialist: {$specialist['id']}\n";
+			}
+		}
+	}
+
+	public function setFirmConsultants($firm_ids)
+	{
+		foreach ($firm_ids as $firm_id) {
+			$this->update('firm',array('consultant_id'=>$this->getConsultantUserID($firm_id)),"id=$firm_id");
+		}
+	}
+
+	public function migrateUserContacts($users)
+	{
+		$co = $this->getLabel('Consultant Ophthalmologist');
+
+		foreach ($users as $user) {
+			$this->update('user',array('contact_id'=>$user['contact_id']),"id={$user['id']}");
+
+			if ($user['parent_class'] == 'Consultant') {
+				$this->update('contact',array('contact_label_id'=>$co['id']),"id={$user['contact_id']}");
+
+				if ($user['gmc_number']) {
+					$this->insert('contact_metadata',array('contact_id'=>$user['contact_id'],'key'=>'gmc_number','value'=>$user['gmc_number']));
+				}
+				if ($user['practitioner_code']) {
+					$this->insert('contact_metadata',array('contact_id'=>$user['contact_id'],'key'=>'practitioner_code','value'=>$user['practitioner_code']));
+				}
+				if ($user['gender']) {
+					$this->insert('contact_metadata',array('contact_id'=>$user['contact_id'],'key'=>'gender','value'=>$user['gender']));
+				}
+			}
+
+			$this->update('contact',array('parent_class'=>''),"id={$user['contact_id']}");
+
+			foreach (Yii::app()->db->createCommand()->select("*")->from("site_consultant_assignment")->where("consultant_id = :consultant_id",array(':consultant_id'=>$user['parent_id']))->queryAll() as $sca) {
+				$this->insert('contact_location',array('contact_id'=>$user['contact_id'],'site_id'=>$sca['site_id']));
+			}
+
+			foreach (Yii::app()->db->createCommand()->select("*")->from("institution_consultant_assignment")->where("consultant_id = :consultant_id",array(':consultant_id'=>$user['parent_id']))->queryAll() as $sca) {
+				$this->insert('contact_location',array('contact_id'=>$user['contact_id'],'institution_id'=>$sca['institution_id']));
+			}
+		}
+	}
+
+	public function migrateConsultantContacts($consultants)
+	{
+		$label = $this->getLabel('Consultant Ophthalmologist');
+
+		foreach ($consultants as $contact) {
+			$this->insert('person',array('contact_id'=>$contact['id']));
+			$this->update('contact',array('parent_class'=>'','contact_label_id'=>$label['id']),"id={$contact['id']}");
+		}
+	}
+
+	public function migrateGPContacts($gps)
+	{
+		$gpl = $this->getLabel('General Practitioner');
+
+		foreach ($gps as $gp) {
+			$this->update('gp',array('contact_id'=>$gp['contact_id']),"id={$gp['id']}");
+			$this->update('contact',array('contact_label_id'=>$gpl['id'],'parent_class'=>''),"id={$gp['contact_id']}");
+		}
+	}
+
+	public function migrateSiteContacts($sites)
+	{
+		foreach ($sites as $site) {
+			$update = array();
+
+			if ($site['contact_id']) {
+				$this->update('contact',array('parent_class'=>''),"id={$site['contact_id']}");
+				$update['replyto_contact_id'] = $site['contact_id'];
+			}
+
+			$this->obtainLock();
+
+			$this->insert('contact',array());
+			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
+
+			$this->releaseLock();
+
+			$update['contact_id'] = $contact_id;
+
+			$this->update('site',$update,"id={$site['id']}");
+
+			$this->insert('address',array('address1'=>$site['address1'],'address2'=>$site['address2'],'city'=>$site['address3'],'postcode'=>$site['postcode'],'parent_class'=>'Contact','parent_id'=>$contact_id,'country_id'=>1));
+		}
+	}
+
+	public function migrateInstitutionContacts($institutions)
+	{
+		foreach ($institutions as $institution) {
+			$this->obtainLock();
+
+			$this->insert('contact',array());
+			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
+
+			$this->releaseLock();
+
+			$this->update('institution',array('contact_id'=>$contact_id),"id={$institution['id']}");
+
+			if ($institution['address_id']) {
+				$this->update('address',array('parent_class'=>'Contact','parent_id'=>$contact_id),"id={$institution['address_id']}");
+			}
+		}
+	}
+
+	public function migratePatientContacts($patients)
+	{
+		foreach ($patients as $patient) {
+			$this->update('patient',array('contact_id'=>$patient['contact_id']),"id={$patient['id']}");
+			$this->update('contact',array('parent_class'=>''),"id={$patient['contact_id']}");
+
+			$this->update('address',array('parent_class'=>'Contact','parent_id'=>$patient['contact_id']),"parent_class = 'Patient' and parent_id = {$patient['id']}");
+		}
+	}
+
+	public function migratePatientContactAssignments($pcas)
+	{
+		foreach ($pcas as $pca) {
+			if ($pca['site_id']) {
+				if (!$pca['location_id1']) {
+					$this->insert('contact_location',array('contact_id'=>$pca['contact_id'],'site_id'=>$pca['site_id']));
+					$location = Yii::app()->db->createCommand()->select("id")->from("contact_location")->where("contact_id=:contact_id and site_id=:site_id",array(':contact_id'=>$pca['contact_id'],':site_id'=>$pca['site_id']))->queryRow();
+					$location_id = $location['id'];
+				} else {
+					$location_id = $pca['location_id1'];
+				}
+			} else {
+				if (!$pca['location_id2']) {
+					$this->insert('contact_location',array('contact_id'=>$pca['contact_id'],'institution_id'=>$pca['institution_id']));
+					$location = Yii::app()->db->createCommand()->select("id")->from("contact_location")->where("contact_id=:contact_id and institution_id=:institution_id",array(':contact_id'=>$pca['contact_id'],':institution_id'=>$pca['institution_id']))->queryRow();
+					$location_id = $location['id'];
+				} else {
+					$location_id = $pca['location_id2'];
+				}
+			}
+
+			$this->update('patient_contact_assignment',array('location_id'=>$location_id),"id={$pca['id']}");
+		}
+	}
+
+	public function migratePracticeContacts($practices)
+	{
+		foreach ($practices as $practice) {
+			$this->obtainLock();
+
+			$this->insert('contact',array());
+			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
+
+			$this->releaseLock();
+
+			$this->update('practice',array('contact_id'=>$contact_id),"id={$practice['id']}");
+			$this->update('contact',array('primary_phone'=>$practice['phone']),"id=$contact_id");
+
+			if ($practice['address_id']) {
+				$this->update('address',array('parent_class'=>'Contact','parent_id'=>$contact_id),"id={$practice['address_id']}");
+			}
+		}
 	}
 
 	public function down()

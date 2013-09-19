@@ -26,7 +26,7 @@
 			<select class="dropDownTextSelection<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>" id="dropDownTextSelection_<?php echo get_class($element)?>_<?php echo $field?>"<?php if (@$htmlOptions['remove_selections'] === false) {?> data-remove-selections="false"<?php }?>>
 				<?php if (isset($data['empty'])) {?>
 					<option value=""><?php echo $data['empty']?></option>
-				<?php }else{?>
+				<?php } else {?>
 					<option value="">- Please select -</option>
 				<?php }?>
 				<?php foreach ($data['options'] as $id => $content) {?>

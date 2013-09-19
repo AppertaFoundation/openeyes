@@ -17,42 +17,26 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php
-$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-	'id' => 'add-new-event-dialog',
-	'options' => array(
-		'title' => 'Add a new '.$subspecialty->name.' event',
-		'dialogClass' => 'dialog',
-		'autoOpen' => true,
-		'modal' => true,
-		'draggable' => false,
-		'resizable' => false,
-		'width' => 450,
-	),
-));
-?>
+
 <div class="title">
-	<p><strong>Select event to add to the <?php echo $subspecialty->name?> episode:</strong></p>
+	<p><strong>Select event to add to the <?php echo $subspecialty ? $subspecialty->name : 'Support services'?> episode:</strong></p>
 </div>
 <?php foreach ($eventTypes as $eventType) {
-	if (!$eventType->disabled && $this->checkEventAccess($eventType)) {
+	if ($subspecialty || $eventType->support_services) {
 		if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
 			$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
 		} else {
 			$assetpath = '/assets/';
 		}
-		?>
-		<p><?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id)?></p>
-	<?php }else{
-		if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
-			$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
-		} else {
-			$assetpath = '/assets/';
-		}
-		?>
-		<p id="<?php echo $eventType->class_name?>_disabled" class="add_event_disabled" data-title="<?php echo $eventType->disabled_title?>" data-detail="<?php echo $eventType->disabled_detail?>">
-			<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>','#')?>
-		</p>
+
+		if (!$eventType->disabled && $this->checkEventAccess($eventType)) {
+
+			?>
+			<p><?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id)?></p>
+		<?php } else { ?>
+			<p id="<?php echo $eventType->class_name?>_disabled" class="add_event_disabled" title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
+				<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>','#')?>
+			</p>
+		<?php }?>
 	<?php }?>
 <?php }?>
-<?php $this->endWidget()?>

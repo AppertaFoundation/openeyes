@@ -67,4 +67,4 @@ return array(
 		'display_order' => 3,
 		'subspecialty_id' => 8,
 	),
-); 
+);

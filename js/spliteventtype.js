@@ -16,6 +16,83 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Given a dom element, will try to determine the side that the element is on for split elements
+ */
+function getSplitElementSide(el) {
+	// Get side (if set)
+	var side = null;
+	if (el.closest('[data-side]').length) {
+		side = el.closest('[data-side]').attr('data-side');
+	}
+	return side;
+}
+
+/**
+ * Helper function to show a given element side
+ * 
+ * @param cls element class to be shown
+ * @param side 'left' or 'right'
+ */
+function showSplitElementSide(cls, side) {
+	var other_side = 'left';
+	var side_val = 2; // Right in db
+	
+	if (side == 'left') {
+		other_side = 'right';
+		side_val = 1; // Left in db
+	}
+	var display_side = other_side;
+	
+	$('.' + cls).find('.side.' + display_side).removeClass('inactive');
+	// side for data is the opposite side for display ...
+	if ($('.' + cls).find('.side.' + side).hasClass('inactive')) {
+		// the other side is not visible, so can set the input value to that of the side being shown
+		$('.' + cls).find('input.sideField').each(function() {
+			$(this).val(side_val);
+		});
+	}
+	else {
+		// both sides are visible
+		$('.' + cls).find('input.sideField').each(function() {
+			$(this).val('3');
+		});
+	}
+}
+
+/**
+ * This will hide the side element of the given the element class.
+ * NOTE: this will not automatically show the other side (leave the standard functions set up below for this functionality)
+ * 
+ * @param cls element class to be hidden
+ * @param side 'left' or 'right'
+ * 
+ */
+function hideSplitElementSide(cls, side) {
+	var other_side = 'left';
+	var other_side_val = 1; // Left in db
+	
+	if (side == 'left') {
+		other_side = 'right';
+		other_side_val = 2; // Right in db
+	}
+	var display_side = other_side;
+	$('.' + cls).find('.side.' + display_side).addClass('inactive');
+	// side for data is the opposite side for display ...
+	if ($('.' + cls).find('.side.' + side).hasClass('inactive')) {
+		// the other side is not visible, so need to set the eye value to null
+		$('.' + cls).find('input.sideField').each(function() {
+			$(this).val('');
+		});
+	}
+	else {
+		// the other side is visible
+		$('.' + cls).find('input.sideField').each(function() {
+			$(this).val(other_side_val);
+		});
+	}
+}
+
 $(document).ready(function() {
 	$(this).delegate('#event_content .side .activeForm a.removeSide', 'click', function(e) {
 		

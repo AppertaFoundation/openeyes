@@ -58,9 +58,9 @@ if (isset($element)) {
  * @property Event $event
  * @property User $user
  * @property User $usermodified
-<?php if (isset($element)) foreach ($element['relations'] as $relation) {
-	echo " * @property {$relation['class']} \${$relation['name']}\n";
-}?>
+<?php if (isset($element)) { foreach ($element['relations'] as $relation) {
+		echo " * @property {$relation['class']} \${$relation['name']}\n";
+} }?>
  */
 
 class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEventTypeElement
@@ -97,40 +97,40 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['type'] != 'Multi select') echo $field['name'] . ", "; } } ?>', 'safe', 'on' => 'search'),
-<?php if (isset($element)) 
-	foreach ($element['fields'] as $field) { 
+<?php if (isset($element))
+	foreach ($element['fields'] as $field) {
 		if ($field['type'] == 'Integer' && (strlen(@$field['integer_min_value']) || strlen(@$field['integer_max_value'])) ) {
 			echo "\t\t\tarray('" . $field['name'] . "', 'numerical', 'integerOnly' => true,";
-			if (strlen(@$field['integer_min_value']) ){
+			if (strlen(@$field['integer_min_value']) ) {
 				echo " 'min' => " . $field['integer_min_value'] . ",";
 			}
-			if (strlen(@$field['integer_max_value']) ){
+			if (strlen(@$field['integer_max_value']) ) {
 				echo " 'max' => " . $field['integer_max_value'] .",";
 			}
 			echo " 'message' => '" . $field['label'] . " ";
-			if (strlen(@$field['integer_min_value']) && strlen(@$field['integer_max_value']) ){
+			if (strlen(@$field['integer_min_value']) && strlen(@$field['integer_max_value']) ) {
 				echo "must be between " . $field['integer_min_value'] . " - " . $field['integer_max_value'];
-			} else if (strlen(@$field['integer_min_value']) ){
+			} else if (strlen(@$field['integer_min_value']) ) {
 				echo "must be higher or equal to " . $field['integer_min_value'];
 			} else {
 				echo "must be lower or equal to " . $field['integer_max_value'];
 			}
 			echo "'),\n";
-		} else if ($field['type'] == 'Decimal') {  
-			echo "\t\t\tarray("; 
+		} else if ($field['type'] == 'Decimal') {
+			echo "\t\t\tarray(";
 			echo "'" . $field['name'] . "', 'numerical', 'numberPattern' => '/^\s*[\+\-]?\d+\.?\d*\s*$/',";
-			if (strlen(@$field['decimal_min_value'])) { 
-				echo " 'min' => " . $field['decimal_min_value'] . ","; 
-			} 
+			if (strlen(@$field['decimal_min_value'])) {
+				echo " 'min' => " . $field['decimal_min_value'] . ",";
+			}
 			if (strlen(@$field['decimal_max_value'])) {
 				echo " 'max' => " . $field['decimal_max_value'];
 			}
 			echo "),\n";
-	} 
+	}
 }?>
 		);
 	}
-	
+
 	/**
 	 * @return array relational rules.
 	 */
@@ -188,21 +188,22 @@ if (isset($element)) {
 	}
 }
 ?>
-		
+
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria' => $criteria,
 		));
 	}
 
 <?php if (@$element['add_selected_eye']) {?>
-	public function getSelectedEye() {
+	public function getSelectedEye()
+	{
 		if (Yii::app()->getController()->getAction()->id == 'create') {
 			// Get the procedure list and eye from the most recent booking for the episode of the current user's subspecialty
 			if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
 				throw new SystemException('Patient not found: '.@$_GET['patient_id']);
 			}
 
-			if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) && 
+			if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) &&
 				($episode = $patient->getEpisodeForCurrentSubspecialty()) ) {
 				if ($booking = $api->getMostRecentBookingForEpisode($patient, $episode)) {
 					return $booking->operation->eye;
@@ -217,7 +218,8 @@ if (isset($element)) {
 		return new Eye;
 	}
 
-	public function getEye() {
+	public function getEye()
+	{
 		// Insert your code to retrieve the current eye here
 		return new Eye;
 	}
@@ -233,7 +235,7 @@ if (isset($element)) {
 		}
 		return $ids;
 	}
-<?php }else{?>
+<?php } else {?>
 	public function get<?php echo $default_method['method']?>() {
 		$ids = array();
 		foreach (<?php echo $default_method['class']?>::model()->findAll('`default` = ?',array(1)) as $item) {

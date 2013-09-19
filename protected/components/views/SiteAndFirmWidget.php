@@ -18,21 +18,6 @@
  */
 ?>
 <?php
-$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
-		'id' => 'site-and-firm-dialog',
-		'options' => array(
-			'title' => $this->title,
-			'dialogClass' => 'dialog',
-			'autoOpen' => true,
-			'modal' => true,
-			'draggable' => false,
-			'resizable' => false,
-			'width' => 450,
-		),
-	));
-?>
-
-<?php 
 $form = $this->beginWidget('CActiveForm', array(
 	'id' => 'site-and-firm-form',
 ));
@@ -45,6 +30,15 @@ $form = $this->beginWidget('CActiveForm', array(
 	<div>
 		<p>
 			To add an event to this episode you must switch to a <?php echo $this->subspecialty->name?> firm.
+		</p>
+	</div>
+<?php }?>
+
+<?php if ($this->support_services) {?>
+	<?php echo CHtml::hiddenField('support_services',1)?>
+	<div>
+		<p>
+			To add an event to this episode you must switch to a support services firm.
 		</p>
 	</div>
 <?php }?>
@@ -70,7 +64,5 @@ $form = $this->beginWidget('CActiveForm', array(
 <div class="form-actions">
 	<?php echo CHtml::submitButton('Confirm'); ?>
 </div>
-
-<?php $this->endWidget(); ?>
 
 <?php $this->endWidget(); ?>

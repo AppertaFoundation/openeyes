@@ -23,7 +23,7 @@
 	<div id="yw0" class="grid-view">
 		<?php if (empty($episodes)) {?>
 			<div class="summary">No episodes</div>
-		<?php }else{?>
+		<?php } else {?>
 			<table class="items">
 				<thead>
 					<tr><th id="yw0_c0">Start  Date</th><th id="yw0_c1">End  Date</th><th id="yw0_c2">Firm</th><th id="yw0_c3">Subspecialty</th><th id="yw0_c4">Eye</th><th id="yw0_c5">Diagnosis</th></tr>
@@ -31,14 +31,14 @@
 				<tbody>
 					<?php foreach ($ordered_episodes as $specialty_episodes) {?>
 						<tr>
-						<td colspan="6" class="all-episode"><b><?php echo $specialty_episodes['specialty']->name ?></b></td>
+						<td colspan="6" class="all-episode specialty small"><?php echo $specialty_episodes['specialty'] ?></td>
 						</tr>
 						<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
-							<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0){?>even<?php }else{?>odd<?php }?><?php if ($episode->end_date !== null){?> closed<?php }?>">
+							<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0) {?>even<?php } else {?>odd<?php }?><?php if ($episode->end_date !== null) {?> closed<?php }?>">
 								<td><?php echo $episode->NHSDate('start_date'); ?></td>
 								<td><?php echo $episode->NHSDate('end_date'); ?></td>
-								<td><?php echo CHtml::encode($episode->firm->name)?></td>
-								<td><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></td>
+								<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
+								<td><?php echo CHtml::encode($episode->getSubspecialtyText())?></td>
 								<td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
 								<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
 							</tr>
@@ -50,9 +50,36 @@
 		<?php }?>
 	</div>
 </div>
-<?php $episodes_link = (BaseController::checkUserLevel(4)) ? 'Create or View' : 'View';  ?>
-<p><?php echo CHtml::link('<span class="aPush">'.$episodes_link.' Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
 <?php
+$editable = false;
+if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
+	$latest = $episode->getLatestEvent();
+	$subspecialty = $episode->getSubspecialty();
+	$editable = true;
+}
+elseif ($latest = $this->patient->getLatestEvent()) {
+	$editable = $latest->episode->editable;
+	$subspecialty = $latest->episode->getSubspecialty();
+}
+
+$msg = null;
+
+if ($latest) {
+	$msg = "Latest Event";
+	if ($subspecialty) {
+		// might not be a subspecialty for legacy
+		$msg .= " in " . $subspecialty->name;
+	}
+	$msg .= ": <strong>" . $latest->eventType->name . "</strong> <span class='small'>(" . $latest->NHSDate('created_date') . ")</span>";
+}
+else if (BaseController::checkUserLevel(4)) {
+	$msg = "Create episode / add event";
+}
+
+if ($msg) {
+	echo '<p>' . CHtml::link('<span class="aPush">'. $msg . '</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id)) . '</p>';
+}
+
 try {
 	echo $this->renderPartial('custom/info');
 } catch (Exception $e) {

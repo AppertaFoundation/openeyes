@@ -21,7 +21,7 @@
  * This is the model class for table "allergy".
  *
  * The followings are the available columns in table 'allergy':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property Drug[] $drugs
  */

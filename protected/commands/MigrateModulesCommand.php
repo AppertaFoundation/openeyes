@@ -17,7 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class MigrateModulesCommand extends CConsoleCommand {
+class MigrateModulesCommand extends CConsoleCommand
+{
+
+	public $defaultAction='up';
 
 	public function getHelp()
 	{
@@ -33,18 +36,24 @@ DESCRIPTION
 
 EOD;
 	}
-	
-	public function run($args) {
+
+	public function actionUp($interactive = true)
+	{
 		$commandPath = Yii::getFrameworkPath() . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'commands';
 		$modules = Yii::app()->modules;
-		foreach($modules as $module => $module_settings) {
-			if(is_dir(Yii::getPathOfAlias($module.'.migrations'))) {
+		foreach ($modules as $module => $module_settings) {
+			if (is_dir(Yii::getPathOfAlias($module.'.migrations'))) {
 				echo "Migrating $module:\n";
-				$args = array('yiic', 'migrate', '--migrationPath='.$module.'.migrations');
+				if(!$interactive) {
+					$args = array('yiic', 'migrate', '--interactive=0', '--migrationPath='.$module.'.migrations');
+				} else {
+					$args = array('yiic', 'migrate', '--migrationPath='.$module.'.migrations');
+				}
 				$runner = new CConsoleCommandRunner();
 				$runner->addCommands($commandPath);
 				$runner->run($args);
 			}
 		}
 	}
+
 }

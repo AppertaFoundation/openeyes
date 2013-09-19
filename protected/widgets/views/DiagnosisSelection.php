@@ -21,7 +21,7 @@
 	<div class="label">Diagnosis:</div>
 	<div class="data">
 		<div id="enteredDiagnosisText" class="eventHighlight big"
-		<?php if (!$label){?> style="display: none;" <?php }?>>
+		<?php if (!$label) {?> style="display: none;" <?php }?>>
 			<h4>
 				<?php echo $label?>
 			</h4>
@@ -39,7 +39,7 @@
 					$.ajax({
 						'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
 						'type':'GET',
-						'data':{'term': request.term, 'code': 130},
+						'data':{'term': request.term, 'code': ".CJavaScript::encode($code)."},
 						'success':function(data) {
 							data = $.parseJSON(data);
 							response(data);

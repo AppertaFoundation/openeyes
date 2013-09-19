@@ -21,66 +21,68 @@
  * This is the model class for table "referral".
  *
  * The followings are the available columns in table 'referral':
- * @property string $id
+ * @property integer $id
  * @property string $refno
- * @property string $patient_id
- * @property string $service_subspecialty_assignment_id
- * @property string $closed
- * @property string $firm_id
- * @fixme Why is there a firm_id _and_ a service_specialty_assignment_id in here? The ssa_id is infered from the firm.
+ * @property integer $patient_id
+ * @property integer $referral_type_id
+ * @property date $received_date
+ * @property date $closed_date
+ * @property string $referrer
+ * @property integer $firm_id
+ * @property integer $gp_id
+ * @property integer $service_subspecialty_assignment_id // MW: this is here because sometimes the referrer is a pas_code which doesn't map to a firm with the correct subspecialty
  */
-class Referral extends BaseActiveRecord {
-	
+class Referral extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Referral the static model class
 	 */
-	public static function model($className=__CLASS__) {
+	public static function model($className=__CLASS__)
+	{
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName() {
+	public function tableName()
+	{
 		return 'referral';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules() {
+	public function rules()
+	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('refno, patient_id, service_subspecialty_assignment_id', 'required'),
-			array('refno, patient_id, service_subspecialty_assignment_id', 'length', 'max'=>10),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, refno, patient_id, service_subspecialty_assignment_id', 'safe', 'on'=>'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations() {
+	public function relations()
+	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'episodeAssignment' => array(self::BELONGS_TO, 'ReferralEpisodeAssignment', 'episode_id'),
+			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+			'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
+			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
 		);
 	}
 
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return array(
 			'id' => 'ID',
-			'refno' => 'Refno',
-			'patient_id' => 'Patient',
-			'service_subspecialty_assignment_id' => 'Service',
 		);
 	}
 
@@ -88,20 +90,17 @@ class Referral extends BaseActiveRecord {
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search() {
+	public function search()
+	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('refno',$this->refno,true);
-		$criteria->compare('patient_id',$this->patient_id,true);
-		$criteria->compare('service_subspecialty_assignment_id',$this->service_subspecialty_assignment_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
-	
 }

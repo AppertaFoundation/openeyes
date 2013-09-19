@@ -17,25 +17,26 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class OEMigration extends CDbMigration {
-
+class OEMigration extends CDbMigration
+{
 	/**
 	 * Initialise tables with default data
 	 * Filenames must to be in the format "nn_tablename.csv", where nn is the processing order
 	 */
-	protected function initialiseData($migrations_path, $update_pk = null, $data_directory = null) {
-		if(!$data_directory) {
+	protected function initialiseData($migrations_path, $update_pk = null, $data_directory = null)
+	{
+		if (!$data_directory) {
 			$data_directory = get_class($this);
 		}
 		$data_path = $migrations_path.'/data/'.$data_directory.'/';
-		foreach(glob($data_path."*.csv") as $file_path) {
+		foreach (glob($data_path."*.csv") as $file_path) {
 			$table = substr(substr(basename($file_path), 0, -4), 3);
 			echo "Importing $table data...\n";
 			$fh = fopen($file_path, 'r');
 			$columns = fgetcsv($fh);
 			$lookup_columns = array();
-			foreach($columns as &$column) {
-				if(strpos($column, '=>') !== false) {
+			foreach ($columns as &$column) {
+				if (strpos($column, '=>') !== false) {
 					$column_parts = explode('=>',$column);
 					$column = trim($column_parts[0]);
 					$lookup_parts = explode('.',$column_parts[1]);
@@ -46,12 +47,12 @@ class OEMigration extends CDbMigration {
 			}
 			$row_count = 0;
 			$values = array();
-			while(($record = fgetcsv($fh)) !== false) {
+			while (($record = fgetcsv($fh)) !== false) {
 				$row_count++;
 				$data = array_combine($columns, $record);
 
 				// Process lookup columns
-				foreach($lookup_columns as $lookup_column => $lookup) {
+				foreach ($lookup_columns as $lookup_column => $lookup) {
 					$model = $lookup['model'];
 					$field = $lookup['field'];
 					$lookup_value = $data[$lookup_column];
@@ -60,20 +61,20 @@ class OEMigration extends CDbMigration {
 				}
 
 				// Process NULLs
-				foreach($data as &$value) {
-					if($value == 'NULL') {
+				foreach ($data as &$value) {
+					if ($value == 'NULL') {
 						$value = null;
 					}
 				}
 
-				if($update_pk) {
+				if ($update_pk) {
 					$pk = $data[$update_pk];
 					$existing = $this->getDbConnection()->createCommand()
 					->select($update_pk)
 					->from($table)
 					->where($update_pk.' = ?')
 					->queryScalar(array($pk));
-					if($existing) {
+					if ($existing) {
 						$this->update($table, $data, $update_pk . '= :pk', array(':pk' => $pk));
 					} else {
 						$this->insert($table, $data);

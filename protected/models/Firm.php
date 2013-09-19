@@ -21,15 +21,16 @@
  * This is the model class for table "firm".
  *
  * The followings are the available columns in table 'firm':
- * @property string $id
- * @property string $service_subspecialty_assignment_id
+ * @property integer $id
+ * @property integer $service_subspecialty_assignment_id
  * @property string $pas_code
  * @property string $name
  *
  * The followings are the available model relations:
  * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
  * @property FirmUserAssignment[] $firmUserAssignments
- * @property LetterPhrase[] $letterPhrases
+ * @property User[] $members
+ * @property User $consultant
  */
 class Firm extends BaseActiveRecord
 {
@@ -60,7 +61,7 @@ class Firm extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('service_subspecialty_assignment_id, name', 'required'),
+			array('name', 'required'),
 			array('service_subspecialty_assignment_id', 'length', 'max'=>10),
 			array('pas_code', 'length', 'max'=>4),
 			array('name', 'length', 'max'=>40),
@@ -81,7 +82,8 @@ class Firm extends BaseActiveRecord
 		return array(
 			'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
 			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'firm_id'),
-			'letterPhrases' => array(self::HAS_MANY, 'LetterPhrase', 'firm_id'),
+			//'letterPhrases' => array(self::HAS_MANY, 'LetterPhrase', 'firm_id'),
+			'userFirmRights' => array(self::HAS_MANY, 'UserFirmRights', 'firm_id'),
 			'members' => array(self::MANY_MANY, 'User', 'firm_user_assignment(firm_id, user_id)'),
 			'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
 		);
@@ -157,10 +159,14 @@ class Firm extends BaseActiveRecord
 	}
 
 	public function getServiceText()
-	{ 
+	{
 		return $this->serviceSubspecialtyAssignment->service->name;
 	}
 
+	/**
+	* retrieve a label for the sub specialty assignment for this firm
+	* @return string
+	*/
 	public function getSubspecialtyText()
 	{
 		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty->name : 'Support services';
@@ -176,7 +182,7 @@ class Firm extends BaseActiveRecord
 
 		if (empty($subspecialtyId)) {
 			$list = Firm::model()->findAll();
-		
+
 			foreach ($list as $firm) {
 				$result[$firm->id] = $firm->name;
 			}
@@ -198,12 +204,13 @@ class Firm extends BaseActiveRecord
 		return $result;
 	}
 
-	public function getListWithoutDupes() {
+	public function getListWithoutDupes()
+	{
 		$result = array();
 
 		if (empty($subspecialtyId)) {
 			$list = Firm::model()->findAll();
-	 
+
 			foreach ($list as $firm) {
 				if (!in_array($firm->name,$result)) {
 					$result[$firm->id] = $firm->name;
@@ -216,7 +223,8 @@ class Firm extends BaseActiveRecord
 		return $result;
 	}
 
-	public function getListWithSpecialties() {
+	public function getListWithSpecialties()
+	{
 		$firms = Yii::app()->db->createCommand()
 			->select('f.id, f.name, s.name AS subspecialty')
 			->from('firm f')
@@ -232,7 +240,17 @@ class Firm extends BaseActiveRecord
 		return $data;
 	}
 
-	public function getCataractList() {
+	public function getListWithSpecialtiesAndEmergency()
+	{
+		$list = array('NULL'=>'Emergency');
+		foreach ($this->getListWithSpecialties() as $firm_id => $name) {
+			$list[$firm_id] = $name;
+		}
+		return $list;
+	}
+
+	public function getCataractList()
+	{
 		$specialty = Specialty::model()->find('code=?',array(130));
 		$subspecialty = Subspecialty::model()->find('specialty_id=? and name=?',array($specialty->id,'Cataract'));
 		$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($subspecialty->id));
@@ -244,26 +262,39 @@ class Firm extends BaseActiveRecord
 		return CHtml::listData(Firm::model()->findAll($criteria),'id','name');
 	}
 
-	public function getConsultantName() { 
+	public function getConsultantName()
+	{
 		if ($consultant = $this->consultant) {
 			return $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
 		}
 		return 'NO CONSULTANT';
 	}
 
-	public function getReportDisplay() {
+	public function getReportDisplay()
+	{
 		return $this->getNameAndSubspecialty();
 	}
 
-	public function getNameAndSubspecialty() {
+	public function getNameAndSubspecialty()
+	{
 		if ($this->serviceSubspecialtyAssignment) {
 			return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->name . ')';
 		} else {
 			return $this->name;
 		}
 	}
-	
-	public function getSpecialty() {
+
+	public function getNameAndSubspecialtyCode()
+	{
+		if ($this->serviceSubspecialtyAssignment) {
+			return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->ref_spec. ')';
+		} else {
+			return $this->name;
+		}
+	}
+
+	public function getSpecialty()
+	{
 		$result = Yii::app()->db->createCommand()
 			->select('su.specialty_id as id')
 			->from('subspecialty su')
@@ -273,7 +304,7 @@ class Firm extends BaseActiveRecord
 				':fid' => $this->id
 			))
 			->queryRow();
-		
+
 		if (empty($result)) {
 			return null;
 		} else {
@@ -281,11 +312,37 @@ class Firm extends BaseActiveRecord
 		}
 	}
 
-	public function beforeSave() {
+	public function beforeSave()
+	{
 		if ($this->subspecialty_id) {
 			$this->service_subspecialty_assignment_id = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($this->subspecialty_id))->id;
 		}
 
 		return parent::beforeSave();
+	}
+
+	public function getTreeName()
+	{
+		return $this->name.' '.$this->serviceSubspecialtyAssignment->subspecialty->ref_spec;
+	}
+
+	/**
+	 * get the subspecialty for the firm - null if one not set (support service firm)
+	 *
+	 * @return Subspecialty|null
+	 */
+	public function getSubspecialty()
+	{
+		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty : null;
+	}
+
+	/**
+	 * get the id for the subspecialty for the firm - null if one not set (support service firm)
+	 *
+	 * @return int|null
+	 */
+	public function getSubspecialtyID()
+	{
+		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty_id : null;
 	}
 }

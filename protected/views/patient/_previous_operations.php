@@ -32,7 +32,7 @@
 									<form><button id="btn-add_previous_operation" class="classy green mini" type="button"><span class="button-span button-span-green">Add Previous operation</span></button></form>
 								</div>
 								<div id="add_previous_operation" style="display: none;">
-									<h5>Add Previous operation</h5>	
+									<h5>Add Previous operation</h5>
 									<?php
 									$form = $this->beginWidget('CActiveForm', array(
 											'id'=>'add-previous_operation',
@@ -40,10 +40,10 @@
 											'htmlOptions' => array('class'=>'sliding'),
 											'action'=>array('patient/addPreviousOperation'),
 									))?>
-		
+
 									<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
 									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-		
+
 									<div class="previousOperation">
 										<div class="label">
 											Common operations:
@@ -73,15 +73,17 @@
 									</div>
 
 									<?php $this->renderPartial('_fuzzy_date',array('class'=>'previousOperation'))?>
-		
+
+									<div class="previous_operations_form_errors"></div>
+
 									<div align="right">
 										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
 										<button class="classy green mini btn_save_previous_operation" type="submit"><span class="button-span button-span-green">Save</span></button>
 										<button class="classy red mini btn_cancel_previous_operation" type="submit"><span class="button-span button-span-red">Cancel</span></button>
 									</div>
-		
+
 									<?php $this->endWidget()?>
-								</div>	
+								</div>
 							<?php }?>
 						</div>
 					</div>
@@ -128,12 +130,38 @@
 		$(this).val(0);
 	});
 	$('button.btn_save_previous_operation').click(function() {
-		if ($('#previous_operation').length <1) {
-			alert("Please enter an operation"); 
+		if ($('#previous_operation').val().length <1) {
+			new OpenEyes.Dialog.Alert({
+				content: "Please enter an operation"
+			}).open();
 			return false;
 		}
 		$('img.add_previous_operation_loader').show();
-		return true;
+
+		$.ajax({
+			'type': 'POST',
+			'url': baseUrl+'/patient/addPreviousOperation',
+			'dataType': 'json',
+			'data': $('#add-previous_operation').serialize(),
+			'success': function(errors) {
+				var ok = true;
+
+				$('.previous_operations_form_errors').html('');
+
+				for (var i in errors) {
+					ok = false;
+					$('div.previous_operations_form_errors').append('<div class="errorMessage">'+errors[i]+'</div>');
+				}
+
+				$('img.add_previous_operation_loader').hide();
+
+				if (ok) {
+					window.location.reload();
+				}
+			}
+		});
+
+		return false;
 	});
 	$('a.editOperation').click(function(e) {
 		var operation_id = $(this).attr('rel');
@@ -181,11 +209,15 @@
 				if (html == 'success') {
 					$('a.removeOperation[rel="'+$('#operation_id').val()+'"]').parent().parent().remove();
 				} else {
-					alert("Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance."
+					}).open();
 				}
 			},
 			'error': function() {
-				alert("Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance.");
+				new OpenEyes.Dialog.Alert({
+					content: "Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance."
+				}).open();
 			}
 		});
 

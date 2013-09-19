@@ -17,18 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class OEEventManager extends CApplicationComponent {
-	
+class OEEventManager extends CApplicationComponent
+{
 	public $observers;
-	
-	public function dispatch($event_id, $params = array()) {
+
+	public function dispatch($event_id, $params = array())
+	{
 		$observers = isset($this->observers[$event_id]) ? $this->observers[$event_id] : array();
-		foreach($observers as $observer) {
+		foreach ($observers as $observer) {
 			$class_name = $observer['class'];
 			$method = $observer['method'];
 			$object = new $class_name;
 			$return = $object->$method($params);
 		}
 	}
-	
+
 }

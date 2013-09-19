@@ -21,17 +21,16 @@
  * This is the model class for table "phrase_name".
  *
  * The followings are the available columns in table 'phrase_name':
- * @property string $id
+ * @property integer $id
  * @property string $name
  *
  * The followings are the available model relations:
- * @property Section $section
  */
 class PhraseName extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Phrase the static model class
+	 * @return PhraseName the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

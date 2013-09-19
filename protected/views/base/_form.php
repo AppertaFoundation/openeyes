@@ -22,7 +22,7 @@ $uri = preg_replace('/^\//','',preg_replace('/\/$/','',$_SERVER['REQUEST_URI']))
 if (!Yii::app()->user->isGuest) {
 	$user = User::model()->findByPk(Yii::app()->user->id);
 	if (!preg_match('/^profile\//',$uri)) {
-		if (!$user->has_selected_firms && empty(Yii::app()->session['shown_reminder'])) {
+		if (!$user->has_selected_firms && !$user->global_firm_rights && empty(Yii::app()->session['shown_reminder'])) {
 			Yii::app()->session['shown_reminder'] = true;
 			$this->widget('SiteAndFirmWidgetReminder');
 		} else if (!empty(Yii::app()->session['confirm_site_and_firm'])) {
@@ -34,7 +34,7 @@ if (!Yii::app()->user->isGuest) {
 	}
 	$user = Yii::app()->session['user'];
 	$menu = array();
-	foreach(Yii::app()->params['menu_bar_items'] as $menu_item) {
+	foreach (Yii::app()->params['menu_bar_items'] as $menu_item) {
 		$menu[$menu_item['position']] = $menu_item;
 	}
 	ksort($menu);
@@ -42,12 +42,12 @@ if (!Yii::app()->user->isGuest) {
 <div id="user_panel">
 	<div id="user_nav" class="clearfix">
 		<ul>
-			<?php foreach($menu as $item) {?>
+			<?php foreach ($menu as $item) {?>
 				<li>
 					<?php if ($uri == $item['uri']) {?>
 						<span class="selected"><?php echo $item['title']?></span>
 					<?php } else { ?>
-						<span><?php echo CHtml::link($item['title'],'/'.Yii::app()->baseUrl.$item['uri'])?></span>
+						<span><?php echo CHtml::link($item['title'], Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/'))?></span>
 					<?php }?>
 				</li>
 			<?php }?>
@@ -61,7 +61,12 @@ if (!Yii::app()->user->isGuest) {
 		<span class="change-firm">(<a href="#">Change</a>)</span>
 	</div>
 	<div id="user_id">
-		<span>You are logged in as:</span> <a class="profileLink" href="<?php echo Yii::app()->createUrl('/profile')?>"><strong><?php echo $user->first_name?> <?php echo $user->last_name?></strong></a>
+		<span>You are logged in as:</span>
+		<?php if (Yii::app()->params['profile_user_can_edit']) {
+			echo CHtml::link("<strong>$user->first_name $user->last_name</strong>",Yii::app()->createUrl('/profile'),array('class'=>'profileLink'));
+		} else {?>
+			<strong><?php echo $user->first_name?> <?php echo $user->last_name?></strong>
+		<?php }?>
 	</div>
 </div>
 <?php } ?>

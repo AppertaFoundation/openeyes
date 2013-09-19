@@ -1,9 +1,9 @@
 <?php
 
-class m120515_172600_drug_route_options extends CDbMigration {
-
-	public function up() {
-
+class m120515_172600_drug_route_options extends CDbMigration
+{
+	public function up()
+	{
 		// Create drug set tables
 		$this->createTable('drug_route_option',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -21,18 +21,21 @@ class m120515_172600_drug_route_options extends CDbMigration {
 
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropForeignKey('drug_route_option_drug_route_id_fk', 'drug_route_option');
 		$this->dropForeignKey('drug_route_option_last_modified_user_id_fk', 'drug_route_option');
 		$this->dropForeignKey('drug_route_option_created_user_id_fk', 'drug_route_option');
 		$this->dropTable('drug_route_option');
 	}
 
-	public function safeUp() {
+	public function safeUp()
+	{
 		$this->up();
 	}
 
-	public function safeDown() {
+	public function safeDown()
+	{
 		$this->down();
 	}
 

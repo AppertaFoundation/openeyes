@@ -21,9 +21,9 @@
  * This is the model class for table "firm_user_assignment".
  *
  * The followings are the available columns in table 'firm_user_assignment':
- * @property string $id
- * @property string $firm_id
- * @property string $user_id
+ * @property integer $id
+ * @property integer $firm_id
+ * @property integer $user_id
  *
  * The followings are the available model relations:
  * @property User $user

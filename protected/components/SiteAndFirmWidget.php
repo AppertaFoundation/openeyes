@@ -17,27 +17,31 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class SiteAndFirmWidget extends CWidget {
+class SiteAndFirmWidget extends CWidget
+{
 	public $title = 'Please confirm Site and Firm';
 	public $subspecialty;
+	public $support_services;
 	public $patient;
 	public $returnUrl;
 
-	public function init() {
-		if(!$this->returnUrl) {
+	public function init()
+	{
+		if (!$this->returnUrl) {
 			$this->returnUrl = Yii::app()->request->url;
 		}
 	}
 
-	public function run() {
+	public function run()
+	{
 		$model = new SiteAndFirmForm();
 		$user = User::model()->findByPk(Yii::app()->user->id);
-		if(isset($_POST['SiteAndFirmForm'])) {
+		if (isset($_POST['SiteAndFirmForm'])) {
 			$model->attributes = $_POST['SiteAndFirmForm'];
-			if($model->validate()) {
+			if ($model->validate()) {
 				$user->changeFirm($model->firm_id);
 				$user->last_site_id = $model->site_id;
-				if(!$user->save(false)) {
+				if (!$user->save(false)) {
 					throw new CException('Error saving user');
 				}
 				$user->audit('user', 'change-firm', $user->last_firm_id);
@@ -50,7 +54,10 @@ class SiteAndFirmWidget extends CWidget {
 
 				Yii::app()->event->dispatch('firm_changed', array('firm_id' => $model->firm_id));
 
-				if ($this->patient && $episode = $this->patient->hasOpenEpisodeOfSubspecialty(Firm::model()->findByPk($model->firm_id)->serviceSubspecialtyAssignment->subspecialty_id)) {
+				$firm = Firm::model()->findByPk($model->firm_id);
+				$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+				if ($this->patient && $episode = $this->patient->getOpenEpisodeOfSubspecialty($subspecialty_id)) {
 					Yii::app()->session['episode_hide_status'] = array(
 						$episode->id => 1,
 					);
@@ -75,15 +82,19 @@ class SiteAndFirmWidget extends CWidget {
 		}
 
 		$user_firm_ids = array();
-		foreach ($user->firmSelections as $firm) {
-			$user_firm_ids[] = $firm->id;
+		if (Yii::app()->params['profile_user_can_edit']) {
+			// firm selections only apply when the user is able to change them.
+			// if firms should be restricted then this should be done through UserFirmRights
+			foreach ($user->firmSelections as $firm) {
+				$user_firm_ids[] = $firm->id;
+			}
 		}
 
 		$firms = array();
 		if ($preferred_firms = $user->preferred_firms) {
 			foreach ($preferred_firms as $preferred_firm) {
 				if (empty($user_firm_ids) || in_array($preferred_firm->id,$user_firm_ids)) {
-					if (!$this->subspecialty || $this->subspecialty->id == $preferred_firm->serviceSubspecialtyAssignment->subspecialty_id) {
+					if (!$this->subspecialty || ($preferred_firm->serviceSubspecialtyAssignment && $this->subspecialty->id == $preferred_firm->serviceSubspecialtyAssignment->subspecialty_id)) {
 						if ($preferred_firm->serviceSubspecialtyAssignment) {
 							$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name ({$preferred_firm->serviceSubspecialtyAssignment->subspecialty->name})";
 						} else {
@@ -97,7 +108,8 @@ class SiteAndFirmWidget extends CWidget {
 		foreach ($this->controller->firms as $firm_id => $firm_label) {
 			if (empty($user_firm_ids) || in_array($firm_id,$user_firm_ids)) {
 				if (!isset($firms['Recent'][$firm_id])) {
-					if (!$this->subspecialty || Firm::model()->findByPk($firm_id)->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id) {
+					$firm = Firm::model()->findByPk($firm_id);
+					if (!$this->subspecialty || ($firm->serviceSubspecialtyAssignment && $firm->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id)) {
 						if ($preferred_firms) {
 							$firms['Other'][$firm_id] = $firm_label;
 						} else {

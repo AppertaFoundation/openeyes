@@ -33,16 +33,16 @@
 				<ul class="grid reduceheight">
 					<li class="header">
 						<span class="column_id">ID</span>
-						<span class="column_code">Code</span>
+						<span class="column_remote_id">Remote ID</span>
 						<span class="column_name">Name</span>
 						<span class="column_address">Address</span>
 					</li>
 					<div class="sortable">
 						<?php
 						foreach ($sites['items'] as $i => $site) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
+							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
 								<span class="column_id"><?php echo $site->id?></span>
-								<span class="column_code"><?php echo $site->code?>&nbsp;</span>
+								<span class="column_remote_id"><?php echo $site->remote_id?>&nbsp;</span>
 								<span class="column_name"><?php echo $site->name?>&nbsp;</span>
 								<span class="column_address"><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</span>
 							</li>

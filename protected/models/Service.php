@@ -21,7 +21,7 @@
  * This is the model class for table "service".
  *
  * The followings are the available columns in table 'service':
- * @property string $id
+ * @property integer $id
  * @property string $name
  *
  * The followings are the available model relations:
@@ -71,6 +71,7 @@ class Service extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'serviceSubspecialtyAssignments' => array(self::HAS_MANY, 'ServiceSubspecialtyAssignment', 'service_id'),
+			'userServiceRights' => array(self::HAS_MANY, 'UserServiceRight', 'service_id'),
 		);
 	}
 

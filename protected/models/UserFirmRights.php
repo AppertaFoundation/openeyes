@@ -21,16 +21,16 @@
  * This is the model class for table "user_firm_rights".
  *
  * The followings are the available columns in table 'user_firm_rights':
- * @property string $id
- * @property string $user_id
- * @property string $firm_id
+ * @property integer $id
+ * @property integer $user_id
+ * @property integer $firm_id
  *
  * The followings are the available model relations:
  * @property User $user
  * @property Firm $firm
  */
-class UserFirmRights extends BaseActiveRecord {
-	
+class UserFirmRights extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return UserFirmRights the static model class

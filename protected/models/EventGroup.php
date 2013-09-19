@@ -21,7 +21,7 @@
  * This is the model class for table "event_group".
  *
  * The followings are the available columns in table 'event_group':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $code
  *
@@ -30,7 +30,7 @@ class EventGroup extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return EventType the static model class
+	 * @return EventGroup the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

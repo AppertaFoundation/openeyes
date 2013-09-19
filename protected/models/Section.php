@@ -21,12 +21,12 @@
  * This is the model class for table "section".
  *
  * The followings are the available columns in table 'section':
- * @property string $id
+ * @property integer $id
  * @property string $name
- * @property string $section_type_id
+ * @property integer $section_type_id
  *
  * The followings are the available model relations:
- * @property Phrase[] $phrases
+ * @property SectionType $section_type
  */
 class Section extends BaseActiveRecord
 {
@@ -70,7 +70,7 @@ class Section extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			// 'phrase' => array(self::HAS_MANY, 'Phrase', 'section_id'),
+			//'phrase' => array(self::HAS_MANY, 'Phrase', 'section_id'),
 			'section_type' => array(self::BELONGS_TO, 'SectionType', 'section_type_id')
 		);
 	}
@@ -109,28 +109,28 @@ class Section extends BaseActiveRecord
 	/**
 	 * Given the plaintext name of a section type, returns all sections of that type by looking up the section type id then filtering sections based on it
 	 */
-	public function getAllByType($type, $name = null) 
+	public function getAllByType($type, $name = null)
 	{
-		$type_obj = SectionType::model()->findByAttributes(array('name' => $type)); 
+		$type_obj = SectionType::model()->findByAttributes(array('name' => $type));
 
 		if (!$name) {
-			return Section::model()->findAllByAttributes(array('section_type_id' => $type_obj->id)); 
+			return Section::model()->findAllByAttributes(array('section_type_id' => $type_obj->id));
 		} else {
-			return Section::model()->findAllByAttributes(array('section_type_id' => $type_obj->id, 'name' => $name)); 
+			return Section::model()->findAllByAttributes(array('section_type_id' => $type_obj->id, 'name' => $name));
 		}
 	}
 
 	/**
 	 * Given the plaintext name of a section type, returns all sections of that type by looking up the section type id then filtering sections based on it
 	 */
-	public function getByType($type, $name = null) 
+	public function getByType($type, $name = null)
 	{
-		$type_obj = SectionType::model()->findByAttributes(array('name' => $type)); 
+		$type_obj = SectionType::model()->findByAttributes(array('name' => $type));
 
 		if (!$name) {
-			return Section::model()->findByAttributes(array('section_type_id' => $type_obj->id)); 
+			return Section::model()->findByAttributes(array('section_type_id' => $type_obj->id));
 		} else {
-			return Section::model()->findByAttributes(array('section_type_id' => $type_obj->id, 'name' => $name)); 
+			return Section::model()->findByAttributes(array('section_type_id' => $type_obj->id, 'name' => $name));
 		}
 	}
 }

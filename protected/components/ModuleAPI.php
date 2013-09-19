@@ -17,18 +17,26 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ModuleAPI extends CApplicationComponent {
-	public function get($moduleName) {
-		if ($module = Yii::app()->getModule($moduleName)) {
-			Yii::import("application.modules.$moduleName.components.*");
+class ModuleAPI extends CApplicationComponent
+{
+	public function get($moduleName)
+	{
+		try {
+			if ($module = Yii::app()->getModule($moduleName)) {
+				Yii::import("application.modules.$moduleName.components.*");
 
-			$APIClass = $moduleName.'_API';
+				$APIClass = $moduleName.'_API';
 
-			if (file_exists(Yii::app()->basePath."/modules/$moduleName/components/{$moduleName}_API.php")) {
-				if (class_exists($APIClass)) {
-					return new $APIClass;
+				if (file_exists(Yii::app()->basePath."/modules/$moduleName/components/{$moduleName}_API.php")) {
+					if (class_exists($APIClass)) {
+						if ($event_type = EventType::model()->find('class_name=?',array($moduleName))) {
+							return new $APIClass;
+						}
+					}
 				}
 			}
+		} catch (Exception $e) {
+			return false;
 		}
 
 		return false;

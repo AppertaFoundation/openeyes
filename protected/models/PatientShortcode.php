@@ -26,7 +26,6 @@
  *
  * The followings are the available model relations:
  * @property Event[] $events
- * @property PatientShortcodeElementTypeAssignment[] $eventTypeElementTypeAssignments
  */
 class PatientShortcode extends BaseActiveRecord
 {
@@ -104,21 +103,22 @@ class PatientShortcode extends BaseActiveRecord
 		));
 	}
 
-	public function replaceText($text,$patient, $ucfirst=false) {
+	public function replaceText($text,$patient, $ucfirst=false)
+	{
 		if ($this->eventType) {
 			if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
 				if (method_exists($api,$this->method)) {
-					return str_replace('['.$this->code.']',$api->{$this->method}($patient),$text);
+					return preg_replace('/\['.$this->code.'\]/i',$api->{$this->method}($patient),$text);
 				}
 				throw new Exception("Unknown API method in {$this->eventType->class_name}: $this->method");
 			}
 		} else {
 			if (property_exists($patient, $this->code) || method_exists($patient, 'get'.ucfirst($this->code))) {
 				if ($ucfirst) {
-					return str_replace('['.$this->code.']',ucfirst($patient->{$this->code}),$text);
+					return preg_replace('/\['.$this->code.'\]/i',ucfirst($patient->{$this->code}),$text);
 				}
 
-				return str_replace('['.$this->code.']',$patient->{$this->code},$text);
+				return preg_replace('/\['.$this->code.'\]/i',$patient->{$this->code},$text);
 			}
 		}
 

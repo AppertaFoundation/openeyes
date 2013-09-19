@@ -18,6 +18,13 @@
  */
 
 ?>
+
+<?php 
+	$clinical = (BaseController::checkUserLevel(2));
+	
+	$warnings = $this->patient->getWarnings($clinical);
+?>
+
 <h2>Patient Summary</h2>
 <div class="wrapTwo clearfix">
 	<?php $this->renderPartial('//base/_messages'); ?>
@@ -36,11 +43,20 @@
 		Patient has no GP practice address, please correct in PAS before printing GP letter.
 	</div>
 	<?php }?>
-	
+	<?php if ($warnings) { ?>
+		<div class="curvybox patientWarningBox">
+			<?php foreach ($warnings as $warn) {?>
+				<strong><?php echo $warn['long_msg']; ?></strong>
+				- <?php echo $warn['details']; 
+			}?>
+		</div>
+	<?php }?>
+
 	<div class="halfColumnLeft">
 		<?php $this->renderPartial('_patient_details')?>
 		<?php $this->renderPartial('_patient_contact_details')?>
 		<?php $this->renderPartial('_patient_gp')?>
+		<?php $this->renderPartial('_patient_commissioningbodies')?>
 		<?php $this->renderPartial('_patient_contacts')?>
 	</div>
 

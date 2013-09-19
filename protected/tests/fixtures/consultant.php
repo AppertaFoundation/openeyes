@@ -31,4 +31,3 @@ return array(
                                                   'gender' => 1,
                          )
 );
-

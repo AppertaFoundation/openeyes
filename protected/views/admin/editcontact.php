@@ -59,7 +59,7 @@
 				</li>
 				<?php
 				foreach ($contact->locations as $i => $location) {?>
-					<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $location->id?>">
+					<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $location->id?>">
 						<span class="column_type"><?php echo $location->site_id ? 'Site' : 'Institution'?></span>
 						<span class="column_name"><?php echo $location->site_id ? $location->site->name : $location->institution->name?>&nbsp;</span>
 						<span class="column_action"><a href="#" class="removeLocation" rel="<?php echo $location->id?>">Remove</a></span>
@@ -86,9 +86,13 @@
 			'url': baseUrl+'/admin/removeLocation',
 			'success': function(resp) {
 				if (resp == "0") {
-					alert("This contact location is currently assocated with one or more patients and so cannot be removed.\n\nYou can click on the location row to view the patients involved.");
+					new OpenEyes.Dialog.Alert({
+						content: "This contact location is currently assocated with one or more patients and so cannot be removed.\n\nYou can click on the location row to view the patients involved."
+					}).open();
 				} else if (resp == "-1") {
-					alert("There was an unexpected error trying to remove the location, please try again or contact support for assistance.");
+					new OpenEyes.Dialog.Alert({
+						content: "There was an unexpected error trying to remove the location, please try again or contact support for assistance."
+					}).open();
 				} else {
 					row.remove();
 				}

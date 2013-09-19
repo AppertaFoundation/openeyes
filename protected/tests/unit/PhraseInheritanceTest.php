@@ -132,7 +132,7 @@ class PhraseInheritanceTest extends CDbTestCase
 		// remove the by specialty override
 		$phraseBySpecialty = PhraseBySpecialty::model()->findByAttributes(array('phrase'=>'Test phrase two'));
 		$phraseBySpecialty->delete();
-		
+
 		// test that it still can't be overridden by firm
 		$overrideable = PhraseByFirm::model()->getOverrideableNames($sectionId, $firmId);
 

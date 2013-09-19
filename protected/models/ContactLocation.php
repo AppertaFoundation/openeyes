@@ -21,9 +21,12 @@
  * This is the model class for table "contact_location".
  *
  * The followings are the available columns in table 'contact_location':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property integer $letter_template_only
+ * @property Institution $institution
+ * @property Contact $contact
+ * @property Site $site
  */
 class ContactLocation extends BaseActiveRecord
 {
@@ -44,7 +47,8 @@ class ContactLocation extends BaseActiveRecord
 		return 'contact_location';
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
@@ -108,16 +112,38 @@ class ContactLocation extends BaseActiveRecord
 		));
 	}
 
-	public function __toString() {
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
 		return $this->site ? $this->site->name : $this->institution->name;
 	}
 
-	public function getLetterAddress($params=array()) {
-		$address = $this->owner->site ? $this->owner->site->contact->address : $this->owner->institution->contact->address;
-		return $this->formatLetterAddress($address, $params);
+	/**
+	 * gets a letter address for this contact location.
+	 * 
+	 * @param unknown $params
+	 * @return array() - address elements
+	 */
+	public function getLetterAddress($params=array())
+	{
+		$owner = $this->owner->site ? $this->owner->site : $this->owner->institution;
+		if (@$params['contact']) {
+			$contactRelation = @$params['contact'];
+			$contact = $owner->$contactRelation;
+		} else {
+			$contact = $owner->contact;
+		}
+		
+		$address = $contact->address;
+
+		$res = $this->formatLetterAddress($this->contact, $address, $params);
+		return $res;
 	}
 
-	public function getLetterArray($include_country) {
+	public function getLetterArray($include_country)
+	{
 		$address = $this->owner->site ? $this->owner->site->contact->address : $this->owner->institution->contact->address;
 		$name = $this->owner->site ? $this->owner->site->correspondenceName : $this->owner->institution->name;
 		if (!is_array($name)) {
@@ -126,7 +152,8 @@ class ContactLocation extends BaseActiveRecord
 		return array_merge($name,$address->getLetterArray($include_country));
 	}
 
-	public function getPatients() {
+	public function getPatients()
+	{
 		$criteria = new CDbCriteria;
 		$criteria->join = "join patient_contact_assignment on patient_contact_assignment.patient_id = `t`.id";
 		$criteria->compare("location_id",$this->id);

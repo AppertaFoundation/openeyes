@@ -32,7 +32,7 @@
 			))?>
 			<?php echo $form->dropDownList($site,'institution_id',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('style'=>'margin-bottom:6px;'))?>
 			<?php echo $form->textField($site,'name',array('size'=>'50'))?>
-			<?php echo $form->textField($site,'code',array('size'=>'10'))?>
+			<?php echo $form->textField($site,'remote_id',array('size'=>'10'))?>
 			<?php echo $form->textField($address,'address1')?>
 			<?php echo $form->textField($address,'address2')?>
 			<?php echo $form->textField($address,'city')?>

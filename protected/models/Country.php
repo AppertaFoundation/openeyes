@@ -21,7 +21,7 @@
  * This is the model class for table "country".
  *
  * The followings are the available columns in table 'country':
- * @property string $id
+ * @property integer $id
  * @property string $code
  * @property string $name
  */
