@@ -578,7 +578,7 @@ class BaseEventTypeController extends BaseController
 			}
 
 			// validation
-			$errors = $this->validatePOSTElements($elements);
+			$errors = $this->validatePOSTElements($elements, $_POST);
 
 			// creation
 			if (empty($errors)) {
