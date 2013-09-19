@@ -18,226 +18,247 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class FirmTest extends CDbTestCase {
+class FirmTest extends CDbTestCase
+{
 
-                       public $fixtures = array(
-                                                'services' => 'Service',
-                                                'specialties' => 'Specialty',
-                                                'serviceSubspecialtyAssignment' => 'ServiceSubspecialtyAssignment',
-                                                'firms' => 'Firm',
-                                                'FirmUserAssignments' => 'FirmUserAssignment',
-                                                'users' => 'User',
-                                                'userContactAssignment' => 'UserContactAssignment',
-                                                'contacts' => 'Contact',
-                                                'consultants' => 'Consultant'
-                       );
+	public $fixtures = array(
+		'services' => 'Service',
+		'specialties' => 'Specialty',
+		'serviceSubspecialtyAssignment' => 'ServiceSubspecialtyAssignment',
+		'firms' => 'Firm',
+		'FirmUserAssignments' => 'FirmUserAssignment',
+		'users' => 'User',
+		'userContactAssignment' => 'UserContactAssignment',
+		'contacts' => 'Contact',
+		'consultants' => 'Consultant'
+	);
 
-                       /**
-                        * Sets up the fixture, for example, opens a network connection.
-                        * This method is called before a test is executed.
-                        */
-                       protected function setUp() {
-                                                     parent::setUp();
-                                              $this->object = new Firm;
-                       }
+	/**
+	 * @covers Firm::model
+	 * @todo   Implement testModel().
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('Firm', get_class(Firm::model()), 'Class name should match model.');
+	}
 
-                       /**
-                        * Tears down the fixture, for example, closes a network connection.
-                        * This method is called after a test is executed.
-                        */
-                       protected function tearDown() {
-                                              
-                       }
+	/**
+	 * @covers Firm::tableName
+	 * @todo   Implement testTableName().
+	 */
+	public function testTableName()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::model
-                        * @todo   Implement testModel().
-                        */
-                       public function testModel() {
-                                             $this->assertEquals('Firm', get_class(Firm::model()), 'Class name should match model.');
-                       }
+	/**
+	 * @covers Firm::rules
+	 * @todo   Implement testRules().
+	 */
+	public function testRules()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::tableName
-                        * @todo   Implement testTableName().
-                        */
-                       public function testTableName() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::relations
+	 * @todo   Implement testRelations().
+	 */
+	public function testRelations()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::rules
-                        * @todo   Implement testRules().
-                        */
-                       public function testRules() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::attributeLabels
+	 * @todo   Implement testAttributeLabels().
+	 */
+	public function testAttributeLabels()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::relations
-                        * @todo   Implement testRelations().
-                        */
-                       public function testRelations() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::search
+	 * @todo   Implement testSearch().
+	 */
+	public function testSearch()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::attributeLabels
-                        * @todo   Implement testAttributeLabels().
-                        */
-                       public function testAttributeLabels() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::getServiceSubspecialtyOptions
+	 * @todo   Implement testGetServiceSubspecialtyOptions().
+	 */
+	public function testGetServiceSubspecialtyOptions()
+	{
 
-                       /**
-                        * @covers Firm::search
-                        * @todo   Implement testSearch().
-                        */
-                       public function testSearch() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+		$serviceSpecialties = Firm::model()->getServiceSubspecialtyOptions();
+		$this->assertTrue(is_array($serviceSpecialties));
+		$this->assertEquals(count($this->serviceSubspecialtyAssignment), count($serviceSpecialties));
+	}
 
-                       /**
-                        * @covers Firm::getServiceSubspecialtyOptions
-                        * @todo   Implement testGetServiceSubspecialtyOptions().
-                        */
-                       public function testGetServiceSubspecialtyOptions() {
-                                         
-                                              $serviceSpecialties = Firm::model()->getServiceSubspecialtyOptions();
-                                              $this->assertTrue(is_array($serviceSpecialties)); 
-                                              $this->assertEquals(count($this->serviceSubspecialtyAssignment), count($serviceSpecialties));
-                       }
+	/**
+	 * @covers Firm::getServiceText
+	 * @todo   Implement testGetServiceText().
+	 */
+	public function testGetServiceText()
+	{
+		$firm = $this->firms('firm1');
+		$this->assertEquals($this->services['service1']['name'], 'Accident and Emergency Service');
+	}
 
-                       /**
-                        * @covers Firm::getServiceText
-                        * @todo   Implement testGetServiceText().
-                        */
-                       public function testGetServiceText() {
-                                              $firm = $this->firms('firm1');
-                                              $this->assertEquals($this->services['service1']['name'], 'Accident and Emergency Service');
-                       }
+	/**
+	 * @covers Firm::getSubspecialtyText
+	 * @todo   Implement testGetSubspecialtyText().
+	 */
+	public function testGetSubspecialtyText()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::getSubspecialtyText
-                        * @todo   Implement testGetSubspecialtyText().
-                        */
-                       public function testGetSubspecialtyText() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::getList
+	 * @todo   Implement testGetList().
+	 */
+	public function testGetList()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::getList
-                        * @todo   Implement testGetList().
-                        */
-                       public function testGetList() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::getListWithoutDupes
+	 * @todo   Implement testGetListWithoutDupes().
+	 */
+	public function testGetListWithoutDupes()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::getListWithoutDupes
-                        * @todo   Implement testGetListWithoutDupes().
-                        */
-                       public function testGetListWithoutDupes() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::getListWithSpecialties
+	 * @todo   Implement testGetListWithSpecialties().
+	 */
+	public function testGetListWithSpecialties()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::getListWithSpecialties
-                        * @todo   Implement testGetListWithSpecialties().
-                        */
-                       public function testGetListWithSpecialties() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::getCataractList
+	 * @todo   Implement testGetCataractList().
+	 */
+	public function testGetCataractList()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::getCataractList
-                        * @todo   Implement testGetCataractList().
-                        */
-                       public function testGetCataractList() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::getConsultantName
+	 * @todo   Implement testGetConsultantName().
+	 */
+	public function testGetConsultantName()
+	{
+		$firm = $this->firms('firm1');
+		$this->assertEquals($this->contacts['contact1']['nick_name'], 'Aylward');
+	}
 
-                       /**
-                        * @covers Firm::getConsultantName
-                        * @todo   Implement testGetConsultantName().
-                        */
-                       public function testGetConsultantName() {
-                                                $firm = $this->firms('firm1');
-                                              $this->assertEquals($this->contacts['contact1']['nick_name'], 'Aylward');
-                       }
+	/**
+	 * @covers Firm::getReportDisplay
+	 * @todo   Implement testGetReportDisplay().
+	 */
+	public function testGetReportDisplay()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::getReportDisplay
-                        * @todo   Implement testGetReportDisplay().
-                        */
-                       public function testGetReportDisplay() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::getNameAndSubspecialty
+	 * @todo   Implement testGetNameAndSubspecialty().
+	 */
+	public function testGetNameAndSubspecialty()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::getNameAndSubspecialty
-                        * @todo   Implement testGetNameAndSubspecialty().
-                        */
-                       public function testGetNameAndSubspecialty() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::getSpecialty
+	 * @todo   Implement testGetSpecialty().
+	 */
+	public function testGetSpecialty()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::getSpecialty
-                        * @todo   Implement testGetSpecialty().
-                        */
-                       public function testGetSpecialty() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Firm::beforeSave
+	 * @todo   Implement testBeforeSave().
+	 */
+	public function testBeforeSave()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Firm::beforeSave
-                        * @todo   Implement testBeforeSave().
-                        */
-                       public function testBeforeSave() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->object = new Firm;
+	}
+
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 */
+	protected function tearDown()
+	{
+
+	}
 
 }
