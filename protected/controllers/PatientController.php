@@ -581,7 +581,7 @@ class PatientController extends BaseController
 	{
 		$term = strtolower(trim($_GET['term'])).'%';
 
-		switch (@$_GET['filter']) {
+		switch (strtolower(@$_GET['filter'])) {
 			case 'staff':
 				$contacts = User::model()->findAsContacts($term);
 				break;
