@@ -362,7 +362,7 @@ class BaseEventTypeController extends BaseController
 			$elementList = array();
 
 			// validation
-			$errors = $this->validatePOSTElements($elements);
+			$errors = $this->validatePOSTElements($elements, $_POST);
 
 
 			// creation
@@ -669,21 +669,55 @@ class BaseEventTypeController extends BaseController
 	 *
 	 * @param array() - elements
 	 */
-	protected function validatePOSTElements($elements)
+	protected function validatePOSTElements($elements, $data)
 	{
 		$errors = array();
 		foreach ($elements as $element) {
 			$elementClassName = get_class($element);
-			$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
-			$this->setPOSTManyToMany($element);
-			if (!$element->validate()) {
-				$elementName = $element->getElementType()->name;
-				foreach ($element->getErrors() as $errormsgs) {
-					foreach ($errormsgs as $error) {
-						$errors[$elementName][] = $error;
+
+			if ($element->required || isset($data[$elementClassName])) {
+				if (isset($data[$elementClassName])) {
+					$keys = array_keys($data[$elementClassName]);
+
+					if (is_array($data[$elementClassName][$keys[0]])) {
+						for ($i=0; $i<count($data[$elementClassName][$keys[0]]); $i++) {
+							$element = new $elementClassName;
+
+							foreach ($keys as $key) {
+								if ($key != '_element_id') {
+									$element->{$key} = $data[$elementClassName][$key][$i];
+								}
+							}
+
+							$this->setPOSTManyToMany($element);
+
+							if (!$element->validate()) {
+								$proc_name = $element->procedure->term;
+								$elementName = $element->getElementType()->name;
+								foreach ($element->getErrors() as $errormsgs) {
+									foreach ($errormsgs as $error) {
+										$errors[$proc_name][] = $error;
+									}
+								}
+							}
+						}
+					}
+					else
+					{
+						$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
+						$this->setPOSTManyToMany($element);
+						if (!$element->validate()) {
+							$elementName = $element->getElementType()->name;
+							foreach ($element->getErrors() as $errormsgs) {
+								foreach ($errormsgs as $error) {
+									$errors[$elementName][] = $error;
+								}
+							}
+						}
 					}
 				}
 			}
+
 		}
 
 		return $errors;
