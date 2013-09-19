@@ -24,4 +24,10 @@ class php5 {
     require => Exec['apt-update'],
     notify  => Service['apache2']
   }
+
+  package { 'php5-curl':
+      ensure  => present,
+      require => Exec['apt-update'],
+      notify  => Service['apache2']
+  }
 }
