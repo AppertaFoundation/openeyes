@@ -20,9 +20,9 @@
 return array(
 	'components' => array(
 		'db' => array(
-			'connectionString' => 'mysql:host=localhost;dbname=testopeneyes',
-			'username' => 'root',
-			'password' => 'root',
+			'connectionString' => 'mysql:host=localhost;dbname=openeyes',
+			'username' => 'openeyes',
+			'password' => 'oe_test',
 		),
 		'session' => array(
 			'timeout' => 86400

@@ -102,16 +102,6 @@ class AllergyTest extends CDbTestCase {
                        }
 
                        /**
-                        * @covers Allergy::search
-                        * @todo   Implement testSearch().
-                        */
-                       public function testSearch() {
-                                              $this->markTestSkipped(
-                                                        'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-                                              );
-                       }
-
-                       /**
                         * @dataProvider dataProvider_Search
                         */
                        public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {

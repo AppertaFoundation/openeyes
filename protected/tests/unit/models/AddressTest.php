@@ -131,17 +131,6 @@ class AddressTest extends CDbTestCase
         $this->assertEquals($expected, $this->model->getLetterArray($include_country = false, $name = true));
     }
 
-    /**
-     * @covers Address::search
-     * @todo   Implement testSearch().
-     */
-    public function testSearch() {
-
-        $this->markTestSkipped(
-            'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-        );
-    }
-
 	/**
 	 * @dataProvider dataProvider_Search
 	 */

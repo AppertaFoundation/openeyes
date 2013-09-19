@@ -20,9 +20,9 @@
 return array(
 	'components' => array(
 		'db' => array(
-			'connectionString' => 'mysql:host=localhost;dbname=testopeneyes',
-			'username' => 'root',
-			'password' => 'root',
+			'connectionString' => 'mysql:host=localhost;port=3333;dbname=openeyestest',
+			'username' => 'openeyes',
+			'password' => 'oe_test',
 		),
 	),
 );

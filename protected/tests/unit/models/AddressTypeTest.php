@@ -17,120 +17,122 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class AddressTypeTest extends CDbTestCase {
+class AddressTypeTest extends CDbTestCase
+{
 
-                       /**
-                        * @var AddressType
-                        */
-                       public $model;
-                       public $fixtures = array(
-                                                'addresstype' => 'AddressType',
-                       );
+	/**
+	 * @var AddressType
+	 */
+	public $model;
+	public $fixtures = array(
+		'addresstype' => 'AddressType',
+	);
 
-                       public function dataProvider_Search() {
+	public function dataProvider_Search()
+	{
 
-                                              return array(
-                                                                       array(array('id' => 1, 'name' => 'addresstype 1'), 1, array('addresstype1')),
-                                                                       array(array('id' => 2, 'name' => 'addresstype 2'), 1, array('addresstype2')),
-                                              );
-                       }
+		return array(
+			array(array('id' => 1, 'name' => 'addresstype 1'), 1, array('addresstype1')),
+			array(array('id' => 2, 'name' => 'addresstype 2'), 1, array('addresstype2')),
+		);
+	}
 
-                       /**
-                        * Sets up the fixture, for example, opens a network connection.
-                        * This method is called before a test is executed.
-                        */
-                       protected function setUp() {
-                                              parent::setUp();
-                                              $this->model = new AddressType;
-                       }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->model = new AddressType;
+	}
 
-                       /**
-                        * Tears down the fixture, for example, closes a network connection.
-                        * This method is called after a test is executed.
-                        */
-                       protected function tearDown() {
-                                              
-                       }
+	/**
+	 * @covers AddressType::model
+	 * @todo   Implement testModel().
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('AddressType', get_class(AddressType::model()), 'Class name should match model.');
+	}
 
-                       /**
-                        * @covers AddressType::model
-                        * @todo   Implement testModel().
-                        */
-                       public function testModel() {
-                                              $this->assertEquals('AddressType', get_class(AddressType::model()), 'Class name should match model.');
-                       }
+	/**
+	 * @covers AddressType::tableName
+	 * @todo   Implement testTableName().
+	 */
+	public function testTableName()
+	{
 
-                       /**
-                        * @covers AddressType::tableName
-                        * @todo   Implement testTableName().
-                        */
-                       public function testTableName() {
+		$this->assertEquals('address_type', $this->model->tableName());
+	}
 
-                                              $this->assertEquals('address_type', $this->model->tableName());
-                       }
+	/**
+	 * @covers AuditTrail::rules
+	 * @todo   Implement testRules().
+	 */
+	public function testRules()
+	{
 
-                       /**
-                        * @covers AuditTrail::rules
-                        * @todo   Implement testRules().
-                        */
-                       public function testRules() {
+		$this->assertTrue($this->addresstype('addresstype1')->validate());
+		$this->assertEmpty($this->addresstype('addresstype1')->errors);
+	}
 
-                                              $this->assertTrue($this->addresstype('addresstype1')->validate());
-                                              $this->assertEmpty($this->addresstype('addresstype1')->errors);
-                       }
+	/**
+	 * @covers AddressType::relations
+	 * @todo   Implement testRelations().
+	 */
+	public function testRelations()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers AddressType::relations
-                        * @todo   Implement testRelations().
-                        */
-                       public function testRelations() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers AddressType::attributeLabels
+	 * @todo   Implement testAttributeLabels().
+	 */
+	public function testAttributeLabels()
+	{
+		$expected = array();
 
-                       /**
-                        * @covers AddressType::attributeLabels
-                        * @todo   Implement testAttributeLabels().
-                        */
-                       public function testAttributeLabels() {
-                                              $expected = array();
+		$this->assertEquals($expected, $this->model->attributeLabels());
+	}
 
-                                              $this->assertEquals($expected, $this->model->attributeLabels());
-                       }
+	/**
+	 * @covers AddressType::search
+	 * @todo   Implement testSearch().
+	 */
+	public function testSearch()
+	{
+		$this->markTestSkipped(
+			'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
+		);
+	}
 
-                       /**
-                        * @covers AddressType::search
-                        * @todo   Implement testSearch().
-                        */
-                       public function testSearch() {
-                                              $this->markTestSkipped(
-                                                        'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-                                              );
-                       }
-
-                       /**
-                        * @dataProvider dataProvider_Search
-                        */
-                       public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
+	/**
+	 * @dataProvider dataProvider_Search
+	 */
+	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+	{
 
 
-                                              $addresstype = new AddressType;
-                                              $addresstype->setAttributes($searchTerms);
-                                              $addresstyperesults = $addresstype->search();
-                                              $addresstypedata = $addresstyperesults->getData();
+		$addresstype = new AddressType;
+		$addresstype->setAttributes($searchTerms);
+		$addresstyperesults = $addresstype->search();
+		$addresstypedata = $addresstyperesults->getData();
 
-                                              $expectedResults = array();
-                                              if (!empty($expectedKeys)) {
-                                                                     foreach ($expectedKeys as $key) {
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
 
-                                                                                            $expectedResults[] = $this->addresstype($key);
-                                                                     }
-                                              }
+				$expectedResults[] = $this->addresstype($key);
+			}
+		}
 
-                                              $this->assertEquals($numResults, $addresstyperesults->getItemCount());
-                                              $this->assertEquals($expectedResults, $addresstypedata);
-                       }
+		$this->assertEquals($numResults, $addresstyperesults->getItemCount());
+		$this->assertEquals($expectedResults, $addresstypedata);
+	}
 
 }
