@@ -3,12 +3,17 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         stopOnFailure="false"
+         stopOnFailure="true"
          verbose="true">
-
+    <groups>
+        <exclude>
+            <group>functional</group>
+        </exclude>
+    </groups>
     <filter>
         <blacklist>
             <directory suffix=".php">../../../yii/</directory>
+            <directory suffix=".php">./unit/controllers/</directory>
         </blacklist>
         <whitelist>
 

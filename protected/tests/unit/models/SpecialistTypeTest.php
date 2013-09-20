@@ -15,7 +15,8 @@ class SpecialistTypeTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new SpecialistType;
+		$this->markTestSkipped('Looks like this can be removed, Skipping until someone can refactor it.');
+		$this->object = new SpecialistType;
     }
 
     /**

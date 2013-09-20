@@ -17,109 +17,120 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class SpecialtyTest extends CDbTestCase {
+class SpecialtyTest extends CDbTestCase
+{
 
-                       public $fixtures = array(
-                                                'specialties' => 'Specialty'
-                       );
+	public $fixtures = array(
+		'specialties' => 'Specialty'
+	);
 
-                       /**
-                        * Sets up the fixture, for example, opens a network connection.
-                        * This method is called before a test is executed.
-                        */
-                       protected function setUp() {
-                                              parent::setUp();
-                                              $this->model = new Specialty;
-                       }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->model = new Specialty;
+	}
 
-                       /**
-                        * Tears down the fixture, for example, closes a network connection.
-                        * This method is called after a test is executed.
-                        */
-                       protected function tearDown() {
-                                              
-                       }
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 */
+	protected function tearDown()
+	{
 
-                       /**
-                        * @covers Specialty::model
-                        * @todo   Implement testModel().
-                        */
-                       public function testModel() {
-                                              $this->assertEquals('Specialty', get_class(Specialty::model()), 'Class name should match model.');
-                       }
+	}
 
-                       /**
-                        * @covers Specialty::tableName
-                        * @todo   Implement testTableName().
-                        */
-                       public function testTableName() {
-                                           $this->assertEquals('specialty', $this->model->tableName());
-                       }
+	/**
+	 * @covers Specialty::model
+	 * @todo   Implement testModel().
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('Specialty', get_class(Specialty::model()), 'Class name should match model.');
+	}
 
-                       /**
-                        * @covers Specialty::rules
-                        * @todo   Implement testRules().
-                        */
-                       public function testRules() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Specialty::tableName
+	 * @todo   Implement testTableName().
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('specialty', $this->model->tableName());
+	}
 
-                       /**
-                        * @covers Specialty::relations
-                        * @todo   Implement testRelations().
-                        */
-                       public function testRelations() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Specialty::rules
+	 * @todo   Implement testRules().
+	 */
+	public function testRules()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Specialty::attributeLabels
-                        * @todo   Implement testAttributeLabels().
-                        */
-                       public function testAttributeLabels() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Specialty::relations
+	 * @todo   Implement testRelations().
+	 */
+	public function testRelations()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Specialty::search
-                        * @todo   Implement testSearch().
-                        */
-                       public function testSearch() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Specialty::attributeLabels
+	 * @todo   Implement testAttributeLabels().
+	 */
+	public function testAttributeLabels()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Specialty::getMedical
-                        * @todo   Implement testGetMedical().
-                        */
-                       public function testGetMedical() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Specialty::search
+	 * @todo   Implement testSearch().
+	 */
+	public function testSearch()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-                       /**
-                        * @covers Specialty::getSpecialtyOptions
-                        * @todo   Implement testGetSpecialtyOptions().
-                        */
-                       public function testGetSpecialtyOptions() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+	/**
+	 * @covers Specialty::getMedical
+	 * @todo   Implement testGetMedical().
+	 */
+	public function testGetMedical()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers Specialty::getSpecialtyOptions
+	 * @todo   Implement testGetSpecialtyOptions().
+	 */
+	public function testGetSpecialtyOptions()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
 }
