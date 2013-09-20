@@ -105,20 +105,22 @@ class PatientShortcode extends BaseActiveRecord
 
 	public function replaceText($text,$patient, $ucfirst=false)
 	{
+		$code = $ucfirst ? ucfirst($this->code) : $this->code;
+
 		if ($this->eventType) {
 			if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
 				if (method_exists($api,$this->method)) {
-					return preg_replace('/\['.$this->code.'\]/i',$api->{$this->method}($patient),$text);
+					return preg_replace('/\['.$code.'\]/',$api->{$this->method}($patient),$text);
 				}
 				throw new Exception("Unknown API method in {$this->eventType->class_name}: $this->method");
 			}
 		} else {
 			if (property_exists($patient, $this->code) || method_exists($patient, 'get'.ucfirst($this->code))) {
 				if ($ucfirst) {
-					return preg_replace('/\['.$this->code.'\]/i',ucfirst($patient->{$this->code}),$text);
+					return preg_replace('/\['.$code.'\]/',ucfirst($patient->{$this->code}),$text);
 				}
 
-				return preg_replace('/\['.$this->code.'\]/i',$patient->{$this->code},$text);
+				return preg_replace('/\['.$code.'\]/',$patient->{$this->code},$text);
 			}
 		}
 

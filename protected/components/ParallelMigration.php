@@ -68,6 +68,7 @@ class ParallelMigration extends CDbMigration {
 		}
 
 		if (!$this->canFork) {
+			// Fork off
 			$this->$method($data);
 		} else {
 			$workload = array();
@@ -103,15 +104,4 @@ class ParallelMigration extends CDbMigration {
 		}
 	}
 
-	public function obtainLock() {
-		$class = get_class($this);
-		$this->lockFP = fopen("/tmp/.$class.lock","a+");
-		flock($this->lockFP,LOCK_EX);
-	}
-
-	public function releaseLock() {
-		fclose($this->lockFP);
-		$class = get_class($this);
-		@unlink("/tmp/.$class.lock");
-	}
 }

@@ -1017,7 +1017,7 @@ class PatientController extends BaseController
 
 		if (@$_POST['edit_operation_id']) {
 			if (!$po = PreviousOperation::model()->findByPk(@$_POST['edit_operation_id'])) {
-				throw new Exception("Previous operation not found: ".@$_POST['edit_operation_id']);
+				$po = new PreviousOperation;
 			}
 		} else {
 			$po = new PreviousOperation;
