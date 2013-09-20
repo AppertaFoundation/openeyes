@@ -182,7 +182,7 @@
 					<section class="box patient-info">
 						<h3 class="box-title">Associated contacts:</h3>
 						<div class="data-row">
-							<table class="plain patient-contacts">
+							<table class="plain patient-data patient-contacts">
 								<thead>
 									<tr>
 										<th>Name</th>
@@ -278,7 +278,7 @@
 						</table>
 					</section>
 
-					<!-- Patient associated data box -->
+					<!-- Patient associated data box with closed form -->
 					<section class="box patient-info associated-data">
 						<header class="box-header">
 							<h3 class="box-title">
@@ -291,7 +291,7 @@
 								</span>
 							</a>
 						</header>
-						<table class="plain">
+						<table class="plain patient-data">
 							<thead>
 								<tr>
 									<th>Date</th>
@@ -319,60 +319,639 @@
 							</button>
 						</div>
 
-						<div class="add-data">
-							<fieldset class="field-row">
-								<legend>Add ophthalmic diagnosis</legend>
-								<div class="field-row">
-									<select>
-										<option>-- Select --</option>
-									</select>
-								</div>
-								<div class="field-row">
-									<input type="text" placeholder="Or type the first few characters of a diagnosis" />
-								</div>
-							</fieldset>
+						<form class="form add-data hide">
+							<!-- -->
+						</form>
+					</section>
 
-							<fieldset class="row field-row">
-								<legend class="large-1 column">
-									Eye:
-								</legend>
-								<div class="large-11 column">
-									<label class="inline">
-										<input type="radio" />
-										Right
-									</label>
-									<label class="inline">
-										<input type="radio" />
-										Both
-									</label>
-									<label class="inline">
-										<input type="radio" />
-										Left
-									</label>
-								</div>
-							</fieldset>
+					<!-- Patient associated data box with open form -->
+					<section class="box patient-info associated-data">
+						<header class="box-header">
+							<h3 class="box-title">
+								<span class="icon-patient-clinician-hd_flag"></span>
+								Other ophthalmic diagnoses
+							</h3>
+							<a href="#" class="toggle-trigger toggle-hide">
+								<span class="icon-showhide">
+									Show/hide this section
+								</span>
+							</a>
+						</header>
+						<table class="plain patient-data">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Diagnosis</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2 Feb 2006</td>
+									<td>Right Acquired anophthalmos</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+								<tr>
+									<td>2013</td>
+									<td>Right Ectropion</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+							</tbody>
+						</table>
 
-							<fieldset class="row field-row">
-								<legend class="large-1 column">
-									Date:
-								</legend>
-								<div class="large-2 column">
-									<select>
-										<option>Day</option>
-									</select>
-								</div>
-								<div class="large-2 column">
-									<select>
-										<option>Month</option>
-									</select>
-								</div>
-								<div class="large-2 column end">
-									<select>
-										<option>2013</option>
-									</select>
-								</div>
-							</fieldset>
+						<div class="box-actions">
+							<button class="secondary small" disabled>
+								Add Ophthalmic Diagnosis
+							</button>
 						</div>
+
+						<form class="form add-data">
+
+							<fieldset class="field-row">
+
+								<legend><strong>Add ophthalmic diagnosis</strong></legend>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Diagnosis:</label>
+									</div>
+									<div class="large-7 column end">
+										<div class="field-row">
+											<select>
+												<option>-- Select --</option>
+											</select>
+										</div>
+										<div class="field-row">
+											<input type="text" placeholder="Or type the first few characters of a diagnosis" />
+										</div>
+									</div>
+								</div>
+
+								<fieldset class="row field-row">
+									<legend class="large-3 column">
+										Eye:
+									</legend>
+									<div class="large-7 column end">
+										<label class="inline">
+											<input type="radio" />
+											Right
+										</label>
+										<label class="inline">
+											<input type="radio" />
+											Both
+										</label>
+										<label class="inline">
+											<input type="radio" />
+											Left
+										</label>
+									</div>
+								</fieldset>
+
+								<fieldset class="row field-row">
+									<legend class="large-3 column">
+										Date:
+									</legend>
+									<div class="large-2 column">
+										<select>
+											<option>Day</option>
+										</select>
+									</div>
+									<div class="large-2 column">
+										<select>
+											<option>Month</option>
+										</select>
+									</div>
+									<div class="large-2 column end">
+										<select>
+											<option>2013</option>
+										</select>
+									</div>
+								</fieldset>
+
+								<div class="buttons">
+									<button type="submit" class="secondary small">
+										Save
+									</button>
+									<button class="warning small">
+										Cancel
+									</button>
+								</div>
+							</fieldset>
+						</form>
+					</section>
+
+					<!-- Previous operations -->
+					<section class="box patient-info associated-data">
+						<header class="box-header">
+							<h3 class="box-title">
+								<span class="icon-patient-clinician-hd_flag"></span>
+								Previous operations
+							</h3>
+							<a href="#" class="toggle-trigger toggle-hide">
+								<span class="icon-showhide">
+									Show/hide this section
+								</span>
+							</a>
+						</header>
+						<table class="plain patient-data">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Diagnosis</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2 Feb 2006</td>
+									<td>Right Acquired anophthalmos</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+								<tr>
+									<td>2013</td>
+									<td>Right Ectropion</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="box-actions">
+							<button class="secondary small" disabled>
+								Add Ophthalmic Diagnosis
+							</button>
+						</div>
+
+						<form class="form add-data">
+
+							<fieldset class="field-row">
+
+								<legend><strong>Add Previous operation</strong></legend>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Common operations:</label>
+									</div>
+									<div class="large-7 column end">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Operation:</label>
+									</div>
+									<div class="large-7 column end">
+										<input type="text" />
+									</div>
+								</div>
+
+								<fieldset class="row field-row">
+									<legend class="large-3 column">
+										Side:
+									</legend>
+									<div class="large-7 column end">
+										<label class="inline">
+											<input type="radio" />
+											None
+										</label>
+										<label class="inline">
+											<input type="radio" />
+											Right
+										</label>
+										<label class="inline">
+											<input type="radio" />
+											Both
+										</label>
+										<label class="inline">
+											<input type="radio" />
+											Left
+										</label>
+									</div>
+								</fieldset>
+
+								<fieldset class="row field-row">
+									<legend class="large-3 column">
+										Date:
+									</legend>
+									<div class="large-2 column">
+										<select>
+											<option>Day</option>
+										</select>
+									</div>
+									<div class="large-2 column">
+										<select>
+											<option>Month</option>
+										</select>
+									</div>
+									<div class="large-2 column end">
+										<select>
+											<option>2013</option>
+										</select>
+									</div>
+								</fieldset>
+
+								<div class="buttons">
+									<button type="submit" class="secondary small">
+										Save
+									</button>
+									<button class="warning small">
+										Cancel
+									</button>
+								</div>
+							</fieldset>
+						</form>
+					</section>
+
+					<!-- Medication -->
+					<section class="box patient-info associated-data">
+						<header class="box-header">
+							<h3 class="box-title">
+								<span class="icon-patient-clinician-hd_flag"></span>
+								Medication
+							</h3>
+							<a href="#" class="toggle-trigger toggle-hide">
+								<span class="icon-showhide">
+									Show/hide this section
+								</span>
+							</a>
+						</header>
+						<table class="plain patient-data">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Diagnosis</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2 Feb 2006</td>
+									<td>Right Acquired anophthalmos</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+								<tr>
+									<td>2013</td>
+									<td>Right Ectropion</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="box-actions">
+							<button class="secondary small" disabled>
+								Add medication
+							</button>
+						</div>
+
+						<form class="form add-data">
+
+							<fieldset class="field-row">
+
+								<legend><strong>Add medication</strong></legend>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Medication:</label>
+									</div>
+									<div class="large-7 column end">
+										<div class="field-row">
+											<select>
+												<option>-- Select --</option>
+											</select>
+										</div>
+										<div class="field-row">
+											<input type="text" placeholder="or search formulary" />
+										</div>
+									</div>
+								</div>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Route:</label>
+									</div>
+									<div class="large-7 column end">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Option:</label>
+									</div>
+									<div class="large-7 column end">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Frequency:</label>
+									</div>
+									<div class="large-7 column end">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Date from:</label>
+									</div>
+									<div class="large-3 column end">
+										<input type="text" />
+									</div>
+								</div>
+
+								<div class="buttons">
+									<button type="submit" class="secondary small">
+										Save
+									</button>
+									<button class="warning small">
+										Cancel
+									</button>
+								</div>
+							</fieldset>
+						</form>
+					</section>
+
+					<!-- CVI Status -->
+					<section class="box patient-info associated-data">
+						<header class="box-header">
+							<h3 class="box-title">
+								<span class="icon-patient-clinician-hd_flag"></span>
+								CVI Status
+							</h3>
+							<a href="#" class="toggle-trigger toggle-hide">
+								<span class="icon-showhide">
+									Show/hide this section
+								</span>
+							</a>
+						</header>
+						<table class="plain patient-data">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Diagnosis</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2 Feb 2006</td>
+									<td>Right Acquired anophthalmos</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+								<tr>
+									<td>2013</td>
+									<td>Right Ectropion</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="box-actions">
+							<button class="secondary small" disabled>
+								Edit
+							</button>
+						</div>
+
+						<form class="form add-data">
+
+							<fieldset class="field-row">
+
+								<legend><strong>Edit CVI Status</strong></legend>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Status:</label>
+									</div>
+									<div class="large-7 column end">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+
+								<fieldset class="row field-row">
+									<legend class="large-3 column">
+										Date:
+									</legend>
+									<div class="large-2 column">
+										<select>
+											<option>Day</option>
+										</select>
+									</div>
+									<div class="large-2 column">
+										<select>
+											<option>Month</option>
+										</select>
+									</div>
+									<div class="large-2 column end">
+										<select>
+											<option>2013</option>
+										</select>
+									</div>
+								</fieldset>
+
+								<div class="buttons">
+									<button type="submit" class="secondary small">
+										Save
+									</button>
+									<button class="warning small">
+										Cancel
+									</button>
+								</div>
+							</fieldset>
+						</form>
+					</section>
+
+					<!-- Allergies -->
+					<section class="box patient-info associated-data">
+						<header class="box-header">
+							<h3 class="box-title">
+								<span class="icon-patient-clinician-hd_flag"></span>
+								CVI Status
+							</h3>
+							<a href="#" class="toggle-trigger toggle-hide">
+								<span class="icon-showhide">
+									Show/hide this section
+								</span>
+							</a>
+						</header>
+						<table class="plain patient-data">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Diagnosis</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2 Feb 2006</td>
+									<td>Right Acquired anophthalmos</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+								<tr>
+									<td>2013</td>
+									<td>Right Ectropion</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="box-actions">
+							<button class="secondary small" disabled>
+								Add allergy
+							</button>
+						</div>
+
+						<form class="form add-data">
+
+							<fieldset class="field-row">
+
+								<legend><strong>Add allergy</strong></legend>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Allergy:</label>
+									</div>
+									<div class="large-7 column end">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="buttons">
+									<button type="submit" class="secondary small">
+										Save
+									</button>
+									<button class="warning small">
+										Cancel
+									</button>
+								</div>
+							</fieldset>
+						</form>
+					</section>
+
+					<!-- Family history -->
+					<section class="box patient-info associated-data">
+						<header class="box-header">
+							<h3 class="box-title">
+								<span class="icon-patient-clinician-hd_flag"></span>
+								Family history
+							</h3>
+							<a href="#" class="toggle-trigger toggle-hide">
+								<span class="icon-showhide">
+									Show/hide this section
+								</span>
+							</a>
+						</header>
+						<table class="plain patient-data">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Diagnosis</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>2 Feb 2006</td>
+									<td>Right Acquired anophthalmos</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+								<tr>
+									<td>2013</td>
+									<td>Right Ectropion</td>
+									<td><a href="#">Remove</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="box-actions">
+							<button class="secondary small" disabled>
+								Add family history
+							</button>
+						</div>
+
+						<form class="form add-data">
+
+							<fieldset class="field-row">
+
+								<legend><strong>Add allergy</strong></legend>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Relative:</label>
+									</div>
+									<div class="large-7 column end">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Site:</label>
+									</div>
+									<div class="large-7 column end">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Side:</label>
+									</div>
+									<div class="large-7 column end">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Condition:</label>
+									</div>
+									<div class="large-7 column end">
+										<select>
+											<option>-- Select --</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="field-row row">
+									<div class="large-3 column">
+										<label for="">Relative:</label>
+									</div>
+									<div class="large-9 column">
+										<input type="text" />
+									</div>
+								</div>
+
+								<div class="buttons">
+									<button type="submit" class="secondary small">
+										Save
+									</button>
+									<button class="warning small">
+										Cancel
+									</button>
+								</div>
+							</fieldset>
+						</form>
 					</section>
 				</div>
 			</div>

@@ -212,13 +212,19 @@ table {
 	}
 }
 
+// Patient associated data table
+table {
+	&.patient-data {
+		th, td {
+			background: #fff;
+		}
+	}
+}
+
 // Patient contacts table
 table {
 	&.patient-contacts {
 		margin-top: emCalc(10px);
-		th {
-			background: #fff;
-		}
 		td {
 			font-size: emCalc(11px);
 		}

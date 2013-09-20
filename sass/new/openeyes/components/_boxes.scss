@@ -77,6 +77,17 @@ $oe-box-event-border-width: 0 5px 5px !default;
 		.field-label {
 			color: #777;
 		}
+		.add-data {
+			> fieldset > legend {
+				margin-bottom: emCalc(25px);
+			}
+			.field-row {
+				padding-bottom: emCalc(12px);
+				&:last-child {
+					padding-bottom: 0;
+				}
+			}
+		}
 		> .row {
 			margin-left: 0;
 			margin-right: 0;
@@ -94,7 +105,7 @@ $oe-box-event-border-width: 0 5px 5px !default;
 			}
 		}
 		.add-data {
-			margin: emCalc(12px) 0;
+			margin: emCalc(6px) 0 emCalc(12px) 0;
 		}
 	}
 }
@@ -135,6 +146,11 @@ $oe-box-event-border-width: 0 5px 5px !default;
 					position: absolute;
 					left: 0;
 					top: -1px;
+				}
+			}
+			.form {
+				.buttons {
+					text-align: right;
 				}
 			}
 		}

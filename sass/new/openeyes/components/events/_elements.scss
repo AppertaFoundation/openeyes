@@ -58,11 +58,6 @@ $oe-element-eye-border-color: #fafafa !default;
 	&.left-eye, &.right-eye {
 		@extend .large-6;
 	}
-	.column {
-		.field-row:last-child {
-			padding: 0;
-		}
-	}
 }
 
 .eye-message {
