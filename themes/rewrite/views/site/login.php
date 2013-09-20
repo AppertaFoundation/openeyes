@@ -1,6 +1,5 @@
 <?php
 	$this->pageTitle=Yii::app()->name . ' - Login';
-	$this->layout = 'simple';
 ?>
 
 <div class="container content">
