@@ -85,9 +85,7 @@
 		<div class="container content">
 			<?php echo $content; ?>
 		</div><!-- #content -->
-		<div id="help" class="clearfix">
-		</div><!-- #help -->
+		<?php $this->renderPartial('//base/_footer',array())?>
 	</div><!--#container -->
-	<?php $this->renderPartial('//base/_footer',array())?>
 </body>
 </html>

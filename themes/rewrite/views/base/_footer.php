@@ -23,7 +23,7 @@
 				<div class="info">
 						<a href="<?php echo Yii::app()->createUrl('site/debuginfo')?>" id="support-info-link">Served, with love, by <?php echo trim(`hostname`)?></a>
 						<br />
-						<span class="copyright">&copy; >&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?></span>
+						<span class="copyright">&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?></span>
 				</div>
 		</div>
 		<div class="large-6 medium-6 large-centered medium-centered columns help">
@@ -36,7 +36,6 @@
 								<?php if (Yii::app()->params['helpdesk_phone']) {?>
 									<li><strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></li>
 								<?php } ?>
-								<li><strong>12345678</strong></li>
 								<li><?php echo CHtml::link('Help Documentation','http://mehhome/about/trust-wide-projects/openeyes/training-arrangements/',array('target'=>'_new'))?></li>
 						</ul>
 				</div>
@@ -45,14 +44,12 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	$('#support-info-link').live('click',function() {
-
+	$('#support-info-link').live('click',function(e) {
+		e.preventDefault();
 		new OpenEyes.Dialog({
 			url: this.href,
 			title: 'Support Information'
 		}).open();
-
-		return false;
 	});
 });
 </script>
