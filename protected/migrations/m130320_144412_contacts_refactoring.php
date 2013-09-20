@@ -447,12 +447,8 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 				$update['replyto_contact_id'] = $site['contact_id'];
 			}
 
-			$this->obtainLock();
-
 			$this->insert('contact',array());
-			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
-
-			$this->releaseLock();
+			$contact_id = Yii::app()->db->getLastInsertID();
 
 			$update['contact_id'] = $contact_id;
 
@@ -465,12 +461,9 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 	public function migrateInstitutionContacts($institutions)
 	{
 		foreach ($institutions as $institution) {
-			$this->obtainLock();
 
 			$this->insert('contact',array());
-			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
-
-			$this->releaseLock();
+			$contact_id = Yii::app()->db->getLastInsertID();
 
 			$this->update('institution',array('contact_id'=>$contact_id),"id={$institution['id']}");
 
@@ -518,12 +511,9 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 	public function migratePracticeContacts($practices)
 	{
 		foreach ($practices as $practice) {
-			$this->obtainLock();
 
 			$this->insert('contact',array());
-			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
-
-			$this->releaseLock();
+			$contact_id = Yii::app()->db->getLastInsertID();
 
 			$this->update('practice',array('contact_id'=>$contact_id),"id={$practice['id']}");
 			$this->update('contact',array('primary_phone'=>$practice['phone']),"id=$contact_id");

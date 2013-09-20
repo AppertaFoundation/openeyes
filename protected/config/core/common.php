@@ -146,7 +146,7 @@ return array(
 			),
 		),
 		'session' => array(
-			'class' => 'application.components.CDbHttpSession',
+			'class' => 'CDbHttpSession',
 			'connectionID' => 'db',
 			'sessionTableName' => 'user_session',
 			'autoCreateSessionTable' => false
