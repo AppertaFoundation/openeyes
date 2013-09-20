@@ -19,32 +19,43 @@
 
 
 return array(
-	'letterphrase1' => array(
-		'firm_id' => 1,
-		'name' => 'test name 1',
-		'phrase' => 'rest letterphrase 1',
-		'section' => 0,
-		'display_order' => 0,
+	'patient1' => array(
+		'pas_key' => '123',
+		'title' => 'Mr.',
+		'first_name' => 'John',
+		'last_name' => 'Jones',
+		'dob' => '1970-01-01',
+		'gender' => 'M',
+		'hos_num' => 12345,
+		'nhs_num' => 54321,
+		'practice_id' => 1,
+		'address_id' => 1,
+		'contact_id' => 1
 	),
-	'letterphrase2' => array(
-		'firm_id' => 2,
-		'name' => 'test name 2',
-		'phrase' => 'rest letterphrase 2',
-		'section' => 1,
-		'display_order' => 1,
+	'patient2' => array(
+		'pas_key' => '456',
+		'title' => 'Mr.',
+		'dob' => '1972-01-01',
+		'gender' => 'M',
+		'first_name' => 'John',
+		'last_name' => 'Jones',
+		'hos_num' => 23456,
+		'nhs_num' => 65432,
+		'practice_id' => 2,
+		'address_id' => 2,
+		'contact_id' => 2
 	),
-	'letterphrase3' => array(
-		'firm_id' => 3,
-		'name' => 'test name 3',
-		'phrase' => 'rest letterphrase 3',
-		'section' => 2,
-		'display_order' => 2,
+	'patient3' => array(
+		'pas_key' => '789',
+		'title' => 'Mrs.',
+		'first_name' => 'Katherine',
+		'last_name' => 'Smith',
+		'dob' => '1960-01-01',
+		'gender' => 'F',
+		'hos_num' => 34567,
+		'nhs_num' => 76543,
+		'practice_id' => 3,
+		'address_id' => 3,
+		'contact_id' => 3
 	),
-	'letterphrase4' => array(
-		'firm_id' => 1,
-		'name' => 'test name 4',
-		'phrase' => 'rest letterphrase 4',
-		'section' => 3,
-		'display_order' => 3,
-	)
 );
