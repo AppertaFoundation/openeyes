@@ -2247,23 +2247,6 @@ fieldset legend.column {
 }
 
 /* Error Handling */
-/* line 96, ../sass/new/openeyes/components/_forms.scss */
-.error input,
-input.error,
-.error textarea,
-textarea.error {
-  border-color: red;
-  background-color: rgba(255, 0, 0, 0.1);
-}
-/* line 230, ../sass/new/foundation/components/_forms.scss */
-.error input:focus,
-input.error:focus,
-.error textarea:focus,
-textarea.error:focus {
-  background: white;
-  border-color: #19a8ea;
-}
-
 /* line 101, ../sass/new/openeyes/components/_forms.scss */
 .error label,
 label.error {
@@ -2324,12 +2307,16 @@ small.error {
 .form.login label {
   font-size: 0.9375em;
 }
-/* line 195, ../sass/new/openeyes/components/_forms.scss */
+/* line 194, ../sass/new/openeyes/components/_forms.scss */
+.form.login .loader {
+  margin-right: 10px;
+}
+/* line 198, ../sass/new/openeyes/components/_forms.scss */
 .form [type="submit"] {
   margin: 0;
 }
 
-/* line 201, ../sass/new/openeyes/components/_forms.scss */
+/* line 204, ../sass/new/openeyes/components/_forms.scss */
 label.highlight {
   background: #e3f0f2;
   padding: 0.3125em 0.875em 0.375em 0.625em;
@@ -2340,24 +2327,24 @@ label.highlight {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 206, ../sass/new/openeyes/components/_forms.scss */
+/* line 209, ../sass/new/openeyes/components/_forms.scss */
 label.highlight:hover {
   background: #fff;
 }
-/* line 209, ../sass/new/openeyes/components/_forms.scss */
+/* line 212, ../sass/new/openeyes/components/_forms.scss */
 label.highlight.booking {
   padding: 0.5625em 0.875em 0.625em 0.625em;
 }
-/* line 211, ../sass/new/openeyes/components/_forms.scss */
+/* line 214, ../sass/new/openeyes/components/_forms.scss */
 label.highlight.booking:hover {
   background: #3665ff;
   color: #fff;
 }
-/* line 215, ../sass/new/openeyes/components/_forms.scss */
+/* line 218, ../sass/new/openeyes/components/_forms.scss */
 label.highlight.booking img {
   vertical-align: top;
 }
-/* line 221, ../sass/new/openeyes/components/_forms.scss */
+/* line 224, ../sass/new/openeyes/components/_forms.scss */
 label input[type="checkbox"],
 label input[type="radio"] {
   margin: 0;
@@ -2372,45 +2359,49 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   border-radius: 3px;
   height: auto;
 }
-/* line 249, ../sass/new/openeyes/components/_forms.scss */
+/* line 252, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small, input[type="password"].small, input[type="date"].small, input[type="datetime"].small, input[type="datetime-local"].small, input[type="month"].small, input[type="week"].small, input[type="email"].small, input[type="number"].small, input[type="search"].small, input[type="tel"].small, input[type="time"].small, input[type="url"].small, textarea.small {
   padding: 0.1875em 0.25em;
 }
-/* line 251, ../sass/new/openeyes/components/_forms.scss */
+/* line 254, ../sass/new/openeyes/components/_forms.scss */
 input[type="text"].small.fixed-width, input[type="password"].small.fixed-width, input[type="date"].small.fixed-width, input[type="datetime"].small.fixed-width, input[type="datetime-local"].small.fixed-width, input[type="month"].small.fixed-width, input[type="week"].small.fixed-width, input[type="email"].small.fixed-width, input[type="number"].small.fixed-width, input[type="search"].small.fixed-width, input[type="tel"].small.fixed-width, input[type="time"].small.fixed-width, input[type="url"].small.fixed-width, textarea.small.fixed-width {
   width: 6.875em;
 }
+/* line 258, ../sass/new/openeyes/components/_forms.scss */
+input[type="text"].large, input[type="password"].large, input[type="date"].large, input[type="datetime"].large, input[type="datetime-local"].large, input[type="month"].large, input[type="week"].large, input[type="email"].large, input[type="number"].large, input[type="search"].large, input[type="tel"].large, input[type="time"].large, input[type="url"].large, textarea.large {
+  padding: 0.5em 0.3125em;
+}
 
-/* line 270, ../sass/new/openeyes/components/_forms.scss */
+/* line 276, ../sass/new/openeyes/components/_forms.scss */
 .field-row, .data-row {
   padding-bottom: 1.125em;
 }
-/* line 272, ../sass/new/openeyes/components/_forms.scss */
+/* line 278, ../sass/new/openeyes/components/_forms.scss */
 .field-row:last-child, .data-row:last-child {
   padding: 0;
 }
-/* line 275, ../sass/new/openeyes/components/_forms.scss */
+/* line 281, ../sass/new/openeyes/components/_forms.scss */
 .field-row table:last-child, .data-row table:last-child {
   margin-bottom: 0;
 }
 
-/* line 280, ../sass/new/openeyes/components/_forms.scss */
+/* line 286, ../sass/new/openeyes/components/_forms.scss */
 .field-value, .field-label, .data-label, .data-value {
   font-size: 0.8125em;
   line-height: 1.3;
   margin: 0;
 }
-/* line 284, ../sass/new/openeyes/components/_forms.scss */
+/* line 290, ../sass/new/openeyes/components/_forms.scss */
 .field-value li, .field-label li, .data-label li, .data-value li {
   font-size: 1em;
   margin-left: 1.4em;
 }
-/* line 288, ../sass/new/openeyes/components/_forms.scss */
+/* line 294, ../sass/new/openeyes/components/_forms.scss */
 .field-value.none, .none.field-label, .none.data-label, .none.data-value {
   color: #999;
   font-style: italic;
 }
-/* line 292, ../sass/new/openeyes/components/_forms.scss */
+/* line 298, ../sass/new/openeyes/components/_forms.scss */
 .field-value.highlight, .highlight.field-label, .highlight.data-label, .highlight.data-value {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -2423,13 +2414,13 @@ input[type="text"].small.fixed-width, input[type="password"].small.fixed-width, 
   margin: 0 -10px;
   list-style-type: none;
 }
-/* line 299, ../sass/new/openeyes/components/_forms.scss */
+/* line 305, ../sass/new/openeyes/components/_forms.scss */
 .field-value.highlight li, .highlight.field-label li, .highlight.data-label li, .highlight.data-value li {
   font-size: 1em;
   margin: 0;
   padding: 0.25em 0;
 }
-/* line 304, ../sass/new/openeyes/components/_forms.scss */
+/* line 310, ../sass/new/openeyes/components/_forms.scss */
 .field-value.highlight.important, .highlight.important.field-label, .highlight.important.data-label, .highlight.important.data-value {
   background: #fff300;
 }

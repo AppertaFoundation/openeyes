@@ -20,18 +20,18 @@
 						</div>
 						<div class="row field-row">
 							<div class="small-4 column">
-								<label for="username" class="inline error">Username:</label>
+								<label for="username" class="error align">Username:</label>
 							</div>
 							<div class="small-8 column">
-								<input type="text" id="username" placeholder="Enter username...">
+								<input type="text" id="username" class="large" placeholder="Enter username...">
 							</div>
 						</div>
 						<div class="row field-row">
 							<div class="small-4 column">
-								<label for="password" class="inline error">Password:</label>
+								<label for="password" class="error align">Password:</label>
 							</div>
 							<div class="small-8 column">
-								<input type="password" id="password" placeholder="Enter password...">
+								<input type="password" id="password" class="large" placeholder="Enter password...">
 							</div>
 						</div>
 						<div class="row text-right">

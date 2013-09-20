@@ -90,12 +90,12 @@ fieldset {
 
 /* Error Handling */
 
-.error input,
-input.error,
-.error textarea,
-textarea.error {
-	@include form-error-color;
-}
+// .error input,
+// input.error,
+// .error textarea,
+// textarea.error {
+// 	@include form-error-color;
+// }
 
 .error label,
 label.error {
@@ -191,6 +191,9 @@ $oe-form-input-radius: 3px !default;
 		label {
 			font-size: emCalc(15px);
 		}
+		.loader {
+			margin-right: 10px;
+		}
 	}
 	[type="submit"] {
 		margin: 0;
@@ -251,6 +254,9 @@ $oe-form-field-fixed-width: emCalc(110px) !default;
 		&.fixed-width {
 			width: $oe-form-field-fixed-width;
 		}
+	}
+	&.large {
+		padding: emCalc(8px) emCalc(5px);
 	}
 }
 
