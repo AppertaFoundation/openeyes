@@ -129,18 +129,15 @@ class BaseController extends Controller
 
 	protected function beforeAction($action)
 	{
-		$what = $_GET['theme'];
-		if($what=="1")
-		{
+
+		if(@$_GET['theme']=="1"){
 			Yii::app()->theme='rewrite';
 		}
-		if($what=="0")
-		{
+		else if (@$_GET['theme']=="0"){
 			Yii::app()->theme=null;
 		}
 
-		if(Yii::app()->theme==null)
-		{
+		if(Yii::app()->theme==null){
 			// Register base style.css unless it's a print action
 			if (!in_array($action->id,$this->printActions())) {
 				$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
