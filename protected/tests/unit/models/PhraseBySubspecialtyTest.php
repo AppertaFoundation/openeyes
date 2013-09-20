@@ -25,7 +25,7 @@ class PhraseBySubspecialtyTest extends CDbTestCase
 		'sectionTypes' => 'SectionType',
 		'services' => 'Service',
 		'specialties' => 'Specialty',
-		'serviceSpecialtyAssignment' => 'ServiceSubspecialtyAssignment',
+		//'serviceSpecialtyAssignment' => 'ServiceSubspecialtyAssignment',
 		'firms' => 'Firm',
 		'eventTypes' => 'EventType',
 		'elementTypes' => 'ElementType',
