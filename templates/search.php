@@ -10,7 +10,9 @@
 		<? include 'components/header-logged-in-no-patient.php'; ?>
 
 		<div class="container content">
+
 			<h1 class="badge">Search</h1>
+
 			<div class="row">
 				<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
 					<div class="panel search-examples">

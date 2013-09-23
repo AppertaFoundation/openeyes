@@ -17,6 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+
+
+
 <?php
 if ($flash_messages = Yii::app()->user->getFlashes()) {
 	ksort($flash_messages);
@@ -25,8 +28,7 @@ if ($flash_messages = Yii::app()->user->getFlashes()) {
 		$class = isset($parts[1]) ? $parts[0] : 'info';
 		$id = isset($parts[1]) ? $parts[1] : $parts[0];
 		?>
-<div id="flash-<?php echo $id; ?>"
-	class="<?php echo $class?>Box flash-<?php echo $class; ?>">
+<div id="flash-<?php echo $id; ?>" class="alert-box with-icon <?php echo $class?> flash-<?php echo $class; ?>">
 	<?php echo $flash_message; ?>
 </div>
 <?php }

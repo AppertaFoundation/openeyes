@@ -68,6 +68,9 @@ $oe-alert-success-with-icon-min-height: 36px !default;
 			min-height: $oe-alert-alert-with-icon-min-height;
 		}
 	}
+	&.warning {
+		@extend .alert-box.alert;
+	}
 	&.issue {
 		@include alert-style($oe-alert-issue-bg-color);
 		&.with-icon {
