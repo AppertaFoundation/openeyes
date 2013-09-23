@@ -36,7 +36,7 @@
 								<?php if (Yii::app()->params['helpdesk_phone']) {?>
 									<li><strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></li>
 								<?php } ?>
-								<li><?php echo CHtml::link('Help Documentation','http://mehhome/about/trust-wide-projects/openeyes/training-arrangements/',array('target'=>'_new'))?></li>
+								<li><?php echo CHtml::link('Help Documentation','http://mehhome/about/trust-wide-projects/openeyes/training-arrangements/',array('target'=>'_blank'))?></li>
 						</ul>
 				</div>
 		</div>
