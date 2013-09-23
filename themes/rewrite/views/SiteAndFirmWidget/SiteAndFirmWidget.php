@@ -47,9 +47,11 @@ $form = $this->beginWidget('CActiveForm', array(
 		<?php echo CHtml::hiddenField('patient_id',$this->patient->id)?>
 	<?php }?>
 
-	<div>
-		<?php echo $form->errorSummary($model); ?>
-	</div>
+	<?php
+	if ($errors = $form->errorSummary($model)) {
+		echo '<div>' . $errors . '</div>';
+	}
+	?>
 
 	<div class="field-row row">
 		<div class="large-3 column text-right">
