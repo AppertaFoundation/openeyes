@@ -103,14 +103,12 @@
 							<tfoot class="pagination-container">
 								<tr>
 									<td colspan="7">
-										<div class="clearfix">
-											<ul class="pagination right">
-												<li class="label">Viewing patients:</li>
-												<li class="current"><a href="#">1-20</a></li>
-												<li><a href="#">21-40</a></li>
-												<li><a href="#">41-50</a></li>
-											</ul>
-										</div>
+										<ul class="pagination right">
+											<li class="label">Viewing patients:</li>
+											<li class="current"><a href="#">1-20</a></li>
+											<li><a href="#">21-40</a></li>
+											<li><a href="#">41-50</a></li>
+										</ul>
 									</td>
 								</tr>
 							</tfoot>
