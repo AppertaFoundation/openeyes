@@ -35,7 +35,6 @@
 
 	<?php $this->renderPartial('//base/_messages'); ?>
 
-
 	<?php
 		$this->beginWidget('CActiveForm', array(
 			'id' => 'search-form',
@@ -45,7 +44,7 @@
 				'class' => 'form panel search'
 			)
 		));?>
-		<div class="row" id="search_patient_id">
+		<div class="row">
 			<div class="large-9 medium-8 small-7 column">
 				<?php echo CHtml::textField('query', '', array('class' => 'large', 'placeholder' => 'Enter search...')); ?>
 			</div>
@@ -58,6 +57,7 @@
 		</div>
 	<?php $this->endWidget(); ?>
 </div>
+
 <script type="text/javascript">
 	handleButton($('#search-form button'));
 </script>
