@@ -152,7 +152,7 @@ class BaseController extends Controller
 			}
 		}
 
-		if($theme==2){
+		if($theme==2){ //new theme with supporting old style sheet
 			Yii::app()->theme='rewrite';
 			if (!in_array($action->id,$this->printActions())) {
 				$this->registerCssFile('style_new.css', Yii::app()->createUrl('/css/style_new.css'), 200);
@@ -160,11 +160,12 @@ class BaseController extends Controller
 			}
 		}
 
-		if($theme==3){
-			Yii::app()->theme='rewrite';
+		if($theme==3){ //new style sheet on old view files
+			Yii::app()->theme=null;
 			if (!in_array($action->id,$this->printActions())) {
-				$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
 				$this->registerCssFile('style_new.css', Yii::app()->createUrl('/css/style_new.css'), 200);
+	//			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
+
 			}
 		}
 
