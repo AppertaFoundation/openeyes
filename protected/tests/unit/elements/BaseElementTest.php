@@ -15,10 +15,11 @@
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
- * @group elements
  */
 
-/* Currently failing as BaseElement doesn't have a db table. Suspect that this file needs replacing
+/**
+ * Currently failing as BaseElement doesn't have a db table. Suspect that this file needs replacing
+ * @group elements
 class BaseElementTest extends CDbTestCase
 {
 	public $fixtures = array(
