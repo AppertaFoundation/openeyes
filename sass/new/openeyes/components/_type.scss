@@ -39,6 +39,8 @@ h1 {
 	}
 }
 
-a:hover {
-	@extend %anchor-hover;
+a {
+	&:hover, .highlight {
+		@extend %anchor-hover;
+	}
 }

@@ -374,10 +374,10 @@ $table-head-bg: whitesmoke;
 $table-head-font-size: emCalc(11px);
 $table-head-font-color: #444444;
 $table-head-font-weight: bold;
-$table-head-padding: emCalc(8px) emCalc(10px) emCalc(10px);
+$table-head-padding: 8px 10px;
 
 // These control the row padding and font styles
-$table-row-padding: emCalc(9px) emCalc(10px);
+$table-row-padding: 10px;
 $table-row-font-size: emCalc(14px);
 $table-row-font-color: #222222;
 $table-line-height: emCalc(18px);
@@ -385,6 +385,38 @@ $table-line-height: emCalc(18px);
 // These are for controlling the display and margin of tables
 $table-display: table-cell;
 $table-margin-bottom: emCalc(10px);
+
+//
+// Pagination
+//
+
+// We use these to control the pagination container
+$pagination-height: emCalc(24px);
+$pagination-margin: emCalc(-5px);
+
+// We use these to set the list-item properties
+$pagination-li-float: $default-float;
+$pagination-li-height: emCalc(24px);
+$pagination-li-font-color: #222;
+$pagination-li-font-size: emCalc(14px);
+$pagination-li-margin: emCalc(5px);
+
+// We use these for the pagination anchor links
+$pagination-link-pad: 0 emCalc(10px) 0 emCalc(10px);
+$pagination-link-font-color: $primary-color;
+$pagination-link-active-bg: none;
+
+// We use these for disabled anchor links
+$pagination-link-unavailable-cursor: default;
+$pagination-link-unavailable-font-color: #999;
+$pagination-link-unavailable-bg-active: none;
+
+// We use these for currently selected anchor links
+$pagination-link-current-background: none;
+$pagination-link-current-font-color: #000;
+$pagination-link-current-font-weight: bold;
+$pagination-link-current-cursor: default;
+$pagination-link-current-active-bg: none;
 
 // ============================================
 // OpenEyes default theme variables

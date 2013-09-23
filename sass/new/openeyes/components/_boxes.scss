@@ -43,6 +43,24 @@ $oe-box-event-border-width: 0 5px 5px !default;
 	}
 }
 
+// Generic box
+.box {
+	&.generic {
+		background: #fff;
+		padding: emCalc(12px);
+		p:last-child {
+			margin: 0;
+		}
+		h1,h2,h3,h4,h5 {
+			margin-top: 0;
+			line-height: 1;
+		}
+		table:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
 // Patient info box
 .box {
 	&.patient-info {

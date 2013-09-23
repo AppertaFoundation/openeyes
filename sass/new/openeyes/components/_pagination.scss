@@ -1,0 +1,26 @@
+/* Default Pagination */
+ul.pagination {
+	@include pagination;
+	li {
+		margin: 0;
+		&:not(.label) {
+			border-right: 1px solid #999;
+		}
+		&:last-child {
+			border: 0;
+			a {
+				padding-right: 0;
+			}
+		}
+	}
+
+}
+
+/* Pagination centred wrapper */
+.pagination-centered {
+	@include pagination-container(true);
+
+	ul.pagination {
+		@include pagination(true, false);
+	}
+}
