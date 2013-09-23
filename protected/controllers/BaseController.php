@@ -130,25 +130,45 @@ class BaseController extends Controller
 	protected function beforeAction($action)
 	{
 
-		if(@$_GET['theme']=="1"){
-			Yii::app()->theme='rewrite';
-		}
-		else if (@$_GET['theme']=="0"){
-			Yii::app()->theme=null;
+		$app = Yii::app();
+		if (@$_GET['theme']!=null){
+			$app->session['theme']=@$_GET['theme'];
 		}
 
-		if(Yii::app()->theme==null){
-			// Register base style.css unless it's a print action
+		$theme = $app->session['theme'];
+		if($theme==null)$theme=0;
+
+		if($theme==0){ // 0 no theme original style
+			Yii::app()->theme=null;
 			if (!in_array($action->id,$this->printActions())) {
 				$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
 			}
 		}
-		else
-		{
-			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style_new.css'), 200);
+
+		if($theme==1){ // 1 new theme new style
+			Yii::app()->theme='rewrite';
+			if (!in_array($action->id,$this->printActions())) {
+				$this->registerCssFile('style_new.css', Yii::app()->createUrl('/css/style_new.css'), 200);
+			}
 		}
 
-		$app = Yii::app();
+		if($theme==2){
+			Yii::app()->theme='rewrite';
+			if (!in_array($action->id,$this->printActions())) {
+				$this->registerCssFile('style_new.css', Yii::app()->createUrl('/css/style_new.css'), 200);
+				$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
+			}
+		}
+
+		if($theme==3){
+			Yii::app()->theme='rewrite';
+			if (!in_array($action->id,$this->printActions())) {
+				$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
+				$this->registerCssFile('style_new.css', Yii::app()->createUrl('/css/style_new.css'), 200);
+			}
+		}
+
+
 
 		if ($app->params['ab_testing']) {
 			if ($app->user->isGuest) {
