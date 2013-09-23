@@ -2773,12 +2773,41 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   min-height: 36px;
 }
 /* line 78, ../sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box.watermark {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+  border: 0;
+  background: #f00;
+  color: #fff;
+  text-align: center;
+  font-size: 1em;
+  padding: 0.5em;
+  margin-bottom: 0.625em;
+}
+/* line 87, ../sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box.watermark.admin {
+  background: #DAA520;
+}
+/* line 90, ../sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box.watermark.description {
+  color: #666;
+  background: #ffc0cb;
+}
+/* line 93, ../sass/new/openeyes/components/_alert-boxes.scss */
+.alert-box.watermark.description p {
+  margin: 0;
+  font-size: 0.75em;
+}
+/* line 99, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.secondary {
   background-color: #e9e9e9;
   border-color: #d0d0d0;
   color: black;
 }
-/* line 81, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 102, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.bottom {
   margin-bottom: 0;
   margin-top: 1.25em;

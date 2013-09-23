@@ -5,6 +5,9 @@
 <? include 'components/head.php'; ?>
 </head>
 <body>
+
+	<? include 'components/alert-logged-in.php'; ?>
+
 	<div class="container main" role="main">
 
 		<? include 'components/header-logged-in.php'; ?>

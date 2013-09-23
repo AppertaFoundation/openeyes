@@ -17,15 +17,16 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+
 <?php if (Yii::app()->user->checkAccess('admin')) {?>
-<div id="alert_banner">
-	<div class="banner-watermark admin"><?php echo (Yii::app()->params['watermark_admin']) ? Yii::app()->params['watermark_admin'] : 'You are logged in as admin' ?></div>
+<div class="alert-box watermark admin">
+	<?php echo (Yii::app()->params['watermark_admin']) ? Yii::app()->params['watermark_admin'] : 'You are logged in as admin' ?>
 </div>
 <?php } else if (Yii::app()->params['watermark']) {?>
-<div id="alert_banner">
-	<div class="banner-watermark"><?php echo Yii::app()->params['watermark']?></div>
+<div class="alert-box watermark">
+	?php echo Yii::app()->params['watermark']?>
 </div>
 <?php }?>
 <?php if (@$description && Yii::app()->params['watermark_description']) {?>
-<div class="banner-watermark-description"><p><?php echo Yii::app()->params['watermark_description']?></p></div>
+<div class="alert-box watermark description"><p><?php echo Yii::app()->params['watermark_description']?></p></div>
 <?php }?>

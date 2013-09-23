@@ -75,6 +75,27 @@ $oe-alert-success-with-icon-min-height: 36px !default;
 			min-height: $oe-alert-issue-with-icon-min-height;
 		}
 	}
+	&.watermark {
+		@include border-radius(0);
+		border: 0;
+		background: #f00;
+		color: #fff;
+		text-align: center;
+		font-size: emCalc(16px);
+		padding: emCalc(8px);
+		margin-bottom: emCalc(10px);
+		&.admin {
+			background: #DAA520;
+		}
+		&.description {
+			color: #666;
+			background: #ffc0cb;
+			p {
+				margin: 0;
+				font-size: emCalc(12px);
+			}
+		}
+	}
 	&.secondary {
 		@include alert-style($secondary-color);
 	}
