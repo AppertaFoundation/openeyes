@@ -4,7 +4,6 @@
 }
 
 .ui-dialog {
-	font-size: 1em;
 	&.dialog {
 		@include box-shadow(2px 2px 2px 2px #666666);
 		@include border-radius(7px);

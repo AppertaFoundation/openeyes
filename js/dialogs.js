@@ -102,7 +102,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		resizable: false,
 		draggable: false,
 		constrainToViewport: false,
-		width: 400,
+		width: 440,
 		height: 'auto',
 		minHeight: 'auto',
 		show: 'fade'

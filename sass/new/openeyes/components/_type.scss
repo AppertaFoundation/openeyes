@@ -44,3 +44,9 @@ a {
 		@extend %anchor-hover;
 	}
 }
+
+code {
+	font-size: $default-font-size;
+	color: #000;
+	font-weight: normal;
+}

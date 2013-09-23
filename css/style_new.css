@@ -1117,6 +1117,13 @@ h1.badge {
   }
 }
 
+/* line 48, ../sass/new/openeyes/components/_type.scss */
+code {
+  font-size: 0.8125em;
+  color: #000;
+  font-weight: normal;
+}
+
 /* Grid HTML Classes */
 /* line 99, ../sass/new/openeyes/components/_grid.scss */
 .row {
@@ -4161,11 +4168,7 @@ ul.pagination li:last-child a {
   opacity: 0.5;
 }
 
-/* line 6, ../sass/new/openeyes/components/_dialog.scss */
-.ui-dialog {
-  font-size: 1em;
-}
-/* line 8, ../sass/new/openeyes/components/_dialog.scss */
+/* line 7, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog {
   -webkit-box-shadow: 2px 2px 2px 2px #666666;
   -moz-box-shadow: 2px 2px 2px 2px #666666;
@@ -4180,30 +4183,30 @@ ul.pagination li:last-child a {
   padding: 10px;
   font-family: Helvetica, Arial, sans-serif;
 }
-/* line 15, ../sass/new/openeyes/components/_dialog.scss */
+/* line 14, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .ui-dialog-title {
   display: block;
   float: none;
   margin-right: 34px;
 }
-/* line 20, ../sass/new/openeyes/components/_dialog.scss */
+/* line 19, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .ui-dialog-titlebar {
   background: none;
   border: 0;
   font-size: 19px;
   padding: 0 0 20px 0;
 }
-/* line 26, ../sass/new/openeyes/components/_dialog.scss */
+/* line 25, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .ui-dialog-content {
   padding: 0;
 }
-/* line 28, ../sass/new/openeyes/components/_dialog.scss */
+/* line 27, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .ui-dialog-content.loading {
   background: url(../img/ajax-loader-large.gif) center center no-repeat;
   padding: 20px 0 40px 0;
   text-align: center;
 }
-/* line 34, ../sass/new/openeyes/components/_dialog.scss */
+/* line 33, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .ui-dialog-titlebar-close {
   background: transparent url(../img/_elements/btns/overlay/big-cross.png) top left no-repeat;
   border: 0;
@@ -4219,32 +4222,32 @@ ul.pagination li:last-child a {
   -moz-box-shadow: none;
   box-shadow: none;
 }
-/* line 46, ../sass/new/openeyes/components/_dialog.scss */
+/* line 45, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .ui-dialog-titlebar-close span {
   position: absolute;
   left: -9999px;
 }
-/* line 50, ../sass/new/openeyes/components/_dialog.scss */
+/* line 49, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .ui-dialog-titlebar-close.ui-state-hover {
   border: 0;
 }
-/* line 54, ../sass/new/openeyes/components/_dialog.scss */
+/* line 53, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .buttons {
   text-align: right;
 }
-/* line 57, ../sass/new/openeyes/components/_dialog.scss */
+/* line 56, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .field-row, .ui-dialog.dialog .data-row {
   padding-bottom: 0.625em;
 }
-/* line 60, ../sass/new/openeyes/components/_dialog.scss */
+/* line 59, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog.event, .ui-dialog.dialog.episode {
   border: 7px solid #69bd51;
 }
-/* line 64, ../sass/new/openeyes/components/_dialog.scss */
+/* line 63, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog.alert .ui-dialog-content, .ui-dialog.dialog.confirm .ui-dialog-content {
   overflow: hidden;
 }
-/* line 67, ../sass/new/openeyes/components/_dialog.scss */
+/* line 66, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog.alert .buttons, .ui-dialog.dialog.confirm .buttons {
   padding: 1.5em .5em .5em .5em;
 }
@@ -4351,15 +4354,19 @@ ul.pagination li:last-child a {
   background-position: 0 -22px;
 }
 
-/* line 7, ../sass/new/openeyes/components/_jquery-ui.scss */
+/* line 6, ../sass/new/openeyes/components/_jquery-ui.scss */
+.open-eyes .ui-widget {
+  font-size: 1em;
+}
+/* line 8, ../sass/new/openeyes/components/_jquery-ui.scss */
 .open-eyes .ui-widget input, .open-eyes .ui-widget select, .open-eyes .ui-widget textarea, .open-eyes .ui-widget button {
   font-family: Helvetica, Arial, sans-serif;
 }
-/* line 10, ../sass/new/openeyes/components/_jquery-ui.scss */
+/* line 11, ../sass/new/openeyes/components/_jquery-ui.scss */
 .open-eyes .ui-widget form {
   margin: 0;
 }
-/* line 13, ../sass/new/openeyes/components/_jquery-ui.scss */
+/* line 14, ../sass/new/openeyes/components/_jquery-ui.scss */
 .open-eyes .ui-widget select {
   font-size: 0.8125em;
 }

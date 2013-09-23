@@ -38,7 +38,7 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	$('#support-info-link').live('click',function() {
+	$('#support-info-link').on('click',function() {
 
 		new OpenEyes.Dialog({
 			url: this.href,
