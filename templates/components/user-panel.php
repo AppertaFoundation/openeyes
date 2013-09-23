@@ -6,13 +6,13 @@
 		<li><a href="#">Logout</a></li>
 	</ul>
 	<div class="row">
-		<div class="small-4 large-4 columns">
+		<div class="large-3 column">
 			<div class="user-id">
 				You are logged in as:
 				<div class="user-name"><strong>Enoch Root</strong></div>
 			</div>
 		</div>
-		<div class="small-8 large-8 columns">
+		<div class="large-9 column">
 			<div class="user-firm text-right">
 				Site: <strong>City Road</strong>,
 				Firm: <strong>Barton Keith (Glaucoma)</strong>

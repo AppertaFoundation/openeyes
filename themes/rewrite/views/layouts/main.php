@@ -26,7 +26,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-	<title>NEW TEST<?php echo CHtml::encode($this->pageTitle); ?></title>
+	<title>NEW THEME - <?php echo CHtml::encode($this->pageTitle); ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=0.62">
 	<?php if (Yii::app()->params['disable_browser_caching']) {?>
 		<meta http-equiv='cache-control' content='no-cache'>
@@ -80,12 +80,16 @@
 			<div class="large-3 columns">
 				<?php $this->renderPartial('//base/_brand'); ?>
 			</div>
-			<?php $this->renderPartial('//base/_form', array()); ?>
+			<div class="large-4 medium-5 columns">
+			</div>
+			<div class="large-6 medium-7 columns">
+				<?php $this->renderPartial('//base/_form', array()); ?>
+			</div>
 		</header> <!-- .header -->
 		<div class="container content">
 			<?php echo $content; ?>
-		</div><!-- #content -->
+		</div><!-- .content -->
 		<?php $this->renderPartial('//base/_footer',array())?>
-	</div><!--#container -->
+	</div><!-- .main.container -->
 </body>
 </html>

@@ -19,6 +19,7 @@
 ?>
 <?php
 $uri = preg_replace('/^\//','',preg_replace('/\/$/','',$_SERVER['REQUEST_URI']));
+
 if (!Yii::app()->user->isGuest) {
 	$user = User::model()->findByPk(Yii::app()->user->id);
 	if (!preg_match('/^profile\//',$uri)) {
@@ -38,35 +39,44 @@ if (!Yii::app()->user->isGuest) {
 		$menu[$menu_item['position']] = $menu_item;
 	}
 	ksort($menu);
-?>
-<div id="user_panel">
-	<div id="user_nav" class="clearfix">
-		<ul>
+	?>
+
+	<div class="panel user">
+		<ul class="inline-list navigation user right">
 			<?php foreach ($menu as $item) {?>
-				<li>
-					<?php if ($uri == $item['uri']) {?>
-						<span class="selected"><?php echo $item['title']?></span>
-					<?php } else { ?>
-						<span><?php echo CHtml::link($item['title'], Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/'))?></span>
-					<?php }?>
+				<?php if ($uri == $item['uri']) {?>
+					<li class="selected">
+				<?php } else { ?>
+					<li>
+				<?php }?>
+					<?php echo CHtml::link($item['title'], Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/'))?>
 				</li>
-			<?php }?>
+				<?php }?>
+			</ul>
 		</ul>
+		<div class="row">
+			<div class="large-3 column">
+				<div class="user-id">
+					You are logged in as:
+					<div class="user-name">
+
+						<?php if (Yii::app()->params['profile_user_can_edit']) {
+							echo CHtml::link("<strong>$user->first_name $user->last_name</strong>",Yii::app()->createUrl('/profile'),array('class'=>'profileLink'));
+						} else {?>
+						<strong><?php echo $user->first_name?> <?php echo $user->last_name?></strong>
+						<?php }?>
+					</div>
+
+
+				</div>
+			</div>
+			<div class="large-9 column">
+				<div class="user-firm text-right">
+					Site: <strong><?php echo Site::model()->findByPk($this->selectedSiteId)->short_name; ?></strong>,
+					Firm: <strong><?php echo Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?></strong>
+					<span class="change-firm">(<a href="#">Change</a>)</span>
+				</div>
+			</div>
+		</div>
 	</div>
-	<div id="user_firm">
-		<span>Site: </span>
-		<strong><?php echo Site::model()->findByPk($this->selectedSiteId)->short_name; ?></strong>,
-		<span>Firm: </span>
-		<strong><?php echo Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?></strong>
-		<span class="change-firm">(<a href="#">Change</a>)</span>
-	</div>
-	<div id="user_id">
-		<span>You are logged in as:</span>
-		<?php if (Yii::app()->params['profile_user_can_edit']) {
-			echo CHtml::link("<strong>$user->first_name $user->last_name</strong>",Yii::app()->createUrl('/profile'),array('class'=>'profileLink'));
-		} else {?>
-			<strong><?php echo $user->first_name?> <?php echo $user->last_name?></strong>
-		<?php }?>
-	</div>
-</div>
 <?php } ?>
