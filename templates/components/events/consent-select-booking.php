@@ -38,7 +38,7 @@
 											<input type="radio" />
 										</span>
 										<span class="large-1 column">
-											<img src="/module_assets/operation-booking/img/new/small.png" alt="op" width="19" height="19" />
+											<img src="/protected/modules/OphTrOperationbooking/assets/img/new/small.png" alt="op" width="19" height="19" />
 										</span>
 										<span class="large-3 column">
 											19 Sep 2013

@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
-<link rel="stylesheet" href="/module_assets/anaesthetic-satisfaction-audit/css/module_new.css" />
+<link rel="stylesheet" href="/protected/modules/OphOuAnaestheticsatisfactionaudit/assets/css/module_new.css" />
 </head>
 <body>
 	<div class="container main" role="main">

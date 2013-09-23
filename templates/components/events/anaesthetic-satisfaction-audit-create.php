@@ -51,7 +51,7 @@
 									<input type="range" min="0" max="10" step="1" />
 								</div>
 								<div class="field-row">
-									<img class="field_key" id="pain_key" src="/module_assets/anaesthetic-satisfaction-audit/img/new/painscale_adult.png" />
+									<img class="field_key" id="pain_key" src="/protected/modules/OphOuAnaestheticsatisfactionaudit/assets/img/new/painscale_adult.png" />
 								</div>
 							</div>
 						</div>

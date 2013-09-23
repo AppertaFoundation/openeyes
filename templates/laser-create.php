@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
-<link rel="stylesheet" href="/module_assets/laser/css/module_new.css" />
+<link rel="stylesheet" href="/protected/modules/OphTrLaser/assets/css/module_new.css" />
 </head>
 <body>
 	<div class="container main" role="main">
