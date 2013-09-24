@@ -49,7 +49,7 @@ Feature: Create New Phasing Event
 
   Examples: User details
     | environment   | site      | username | password     | hospnumber   | nhs        | last    | first  | EventType     |
-    | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin, | Violet | Phasing       |
+    | develop     | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin, | Violet | Phasing       |
 
 
 # Site ID's:
