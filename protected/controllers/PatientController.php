@@ -21,7 +21,8 @@ Yii::import('application.controllers.*');
 
 class PatientController extends BaseController
 {
-	public $layout = '//layouts/column2';
+	public $layout = '//layouts/main';
+	public $renderPatientPanel = true;
 	public $patient;
 	public $firm;
 	public $editable;
@@ -104,6 +105,8 @@ class PatientController extends BaseController
 	 */
 	public function actionView($id)
 	{
+		$this->layout = '//layouts/main';
+
 		Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/patientSummary.js'));
 
 		$this->patient = $this->loadModel($id);
@@ -118,8 +121,6 @@ class PatientController extends BaseController
 		$legacyepisodes = $this->patient->legacyepisodes;
 		// NOTE that this is not being used in the render
 		$supportserviceepisodes = $this->patient->supportserviceepisodes;
-
-		$this->layout = '//layouts/patientMode/main';
 
 		Audit::add('patient summary','view');
 
@@ -315,7 +316,7 @@ class PatientController extends BaseController
 
 	public function actionEpisodes()
 	{
-		$this->layout = '//layouts/patientMode/main';
+		$this->layout = '//layouts/main';
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
@@ -367,7 +368,7 @@ class PatientController extends BaseController
 
 	public function actionEpisode($id)
 	{
-		$this->layout = '//layouts/patientMode/main';
+		$this->layout = '//layouts/main';
 
 		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
@@ -416,7 +417,7 @@ class PatientController extends BaseController
 
 	public function actionUpdateepisode($id)
 	{
-		$this->layout = '//layouts/patientMode/main';
+		$this->layout = '//layouts/main';
 
 		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
