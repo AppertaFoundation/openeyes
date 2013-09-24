@@ -109,7 +109,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		), $options));
 	}
 
-	public function textField($element, $field, $htmlOptions = array(), $links = array(), $options = array())
+	public function textField($element, $field, $htmlOptions=array(), $links=array(), $options=array())
 	{
 		$this->widget('application.widgets.TextField', array(
 			'element' => $element,
@@ -121,14 +121,15 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		));
 	}
 
-	public function passwordField($element,$field,$htmlOptions=array())
+	public function passwordField($element, $field, $htmlOptions=array(), $options=array())
 	{
 		$htmlOptions['password'] = 1;
 		$this->widget('application.widgets.TextField', array(
 			'element' => $element,
 			'name' => get_class($element)."[$field]",
 			'field' => $field,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'options' => $options
 		));
 	}
 

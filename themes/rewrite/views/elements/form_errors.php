@@ -17,20 +17,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-
-
-<?php
-if ($flash_messages = Yii::app()->user->getFlashes()) {
-	ksort($flash_messages);
-	foreach ($flash_messages as $flash_key => $flash_message) {
-		$parts = explode('.', $flash_key);
-		$class = isset($parts[1]) ? $parts[0] : 'info';
-		$id = isset($parts[1]) ? $parts[1] : $parts[0];
-		?>
-		<div id="flash-<?php echo $id; ?>" class="alert-box with-icon <?php echo $class?>">
-			<?php echo $flash_message; ?>
-		</div>
-		<?php
-	}
-}?>
+<?php if (isset($errors) && !empty($errors)) {?>
+	<div class="alert-box alert with-icon">
+		<p>Please fix the following input errors:</p>
+		<?php foreach ($errors as $field => $errs) {?>
+			<?php foreach ($errs as $err) {?>
+				<ul>
+					<li>
+						<?php echo $field.': '.$err?>
+					</li>
+				</ul>
+			<?php }?>
+		<?php }?>
+	</div>
+<?php }?>

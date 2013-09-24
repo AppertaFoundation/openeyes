@@ -52,12 +52,14 @@ $oe-alert-success-with-icon-min-height: 36px !default;
 		background-repeat: no-repeat;
 		background-position: left top;
 	}
-	&.success {
+	&.success, &.info {
 		@include alert-style($success-color);
 		border-color: $oe-alert-success-border-color;
 		&.with-icon {
 			background-image: $oe-alert-success-with-icon-bg-image;
 			min-height: $oe-alert-success-with-icon-min-height;
+			padding-top: emCalc(14px);
+			padding-bottom: emCalc(14px);
 		}
 	}
 	&.alert {

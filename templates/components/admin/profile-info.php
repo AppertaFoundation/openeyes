@@ -1,6 +1,9 @@
 <div class="large-9 column">
 	<div class="box admin">
 		<h2>Basic information</h2>
+		<div id="flash-success" class="alert-box with-icon info">
+			Your profile has been updated.
+		</div>
 		<div class="row field-row">
 			<div class="large-2 column">
 				<label for="">Title:</label>

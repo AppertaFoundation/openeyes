@@ -2836,43 +2836,45 @@ ul.pagination li:last-child a {
   background-position: left top;
 }
 /* line 55, ../sass/new/openeyes/components/_alert-boxes.scss */
-.alert-box.success {
+.alert-box.success, .alert-box.info {
   background-color: #e0f2db;
   border-color: #c0e4b6;
   color: black;
   border-color: #99cc99;
 }
 /* line 58, ../sass/new/openeyes/components/_alert-boxes.scss */
-.alert-box.success.with-icon {
+.alert-box.success.with-icon, .alert-box.info.with-icon {
   background-image: url('../img/new/_elements/icons/box/info.png?1380027376');
   min-height: 36px;
+  padding-top: 0.875em;
+  padding-bottom: 0.875em;
 }
-/* line 63, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 65, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.alert, .alert-box.warning {
   background-color: #ffe6b2;
   border-color: #ffd57f;
   color: black;
   border-color: #fc621f;
 }
-/* line 66, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 68, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.alert.with-icon, .with-icon.alert-box.warning {
   background-image: url('../img/new/_elements/icons/box/warning.png?1380027376');
   min-height: 36px;
   padding-top: 0.875em;
   padding-bottom: 0.875em;
 }
-/* line 76, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 78, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.issue {
   background-color: #fdf2e5;
   border-color: #f9dab6;
   color: black;
 }
-/* line 78, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 80, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.issue.with-icon {
   background-image: url('../img/new/_elements/icons/box/issue.png?1380027376');
   min-height: 36px;
 }
-/* line 83, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 85, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.watermark {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -2887,27 +2889,27 @@ ul.pagination li:last-child a {
   padding: 0.5em;
   margin-bottom: 0.625em;
 }
-/* line 92, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 94, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.watermark.admin {
   background: #DAA520;
 }
-/* line 95, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 97, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.watermark.description {
   color: #666;
   background: #ffc0cb;
 }
-/* line 98, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 100, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.watermark.description p {
   margin: 0;
   font-size: 0.75em;
 }
-/* line 104, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 106, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.secondary {
   background-color: #e9e9e9;
   border-color: #d0d0d0;
   color: black;
 }
-/* line 107, ../sass/new/openeyes/components/_alert-boxes.scss */
+/* line 109, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.bottom {
   margin-bottom: 0;
   margin-top: 1.25em;

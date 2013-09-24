@@ -19,50 +19,24 @@
 
 ?>
 
-<div class="box admin">
-	<h2>Basic information</h2>
-
+<div class="admin box">
+	<h2>Change password</h2>
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id' => 'profile-form',
 		'enableAjaxValidation' => false
 	))?>
-
-		<?php if (!Yii::app()->params['profile_user_can_edit']) {?>
+		<?php if (!Yii::app()->params['profile_user_can_change_password']) {?>
 			<div class="alert-box alert">
-				User editing of basic information is administratively disabled.
+				User changing of passwords is administratively disabled.
 			</div>
 		<?php }?>
-
 		<?php $this->renderPartial('//base/_messages')?>
 		<?php $this->renderPartial('//elements/form_errors',array('errors'=>$errors))?>
+		<?php echo $form->passwordField($user,'password_old',array('readonly'=>!Yii::app()->params['profile_user_can_change_password']), array('fieldColumns' => 4))?>
+		<?php echo $form->passwordField($user,'password_new',array('readonly'=>!Yii::app()->params['profile_user_can_change_password']), array('fieldColumns' => 4))?>
+		<?php echo $form->passwordField($user,'password_confirm',array('readonly'=>!Yii::app()->params['profile_user_can_change_password']), array('fieldColumns' => 4))?>
 
-		<?php echo $form->textField($user, 'title',
-			array('readonly' => !Yii::app()->params['profile_user_can_edit']),
-			array(),
-			array('fieldColumns' => 2));
-		?>
-		<?php echo $form->textField($user, 'first_name',
-			array('readonly' => !Yii::app()->params['profile_user_can_edit']),
-			array(),
-			array('fieldColumns' => 5));
-		?>
-		<?php echo $form->textField($user, 'last_name',
-			array('readonly' => !Yii::app()->params['profile_user_can_edit']),
-			array(),
-			array('fieldColumns' => 5));
-		?>
-		<?php echo $form->textField($user, 'email',
-			array('readonly' => !Yii::app()->params['profile_user_can_edit']),
-			array(),
-			array('fieldColumns' => 5));
-		?>
-		<?php echo $form->textField($user, 'qualifications',
-			array('readonly' => !Yii::app()->params['profile_user_can_edit']),
-			array(),
-			array('fieldColumns' => 5));
-		?>
-
-		<?php if (Yii::app()->params['profile_user_can_edit']) {?>
+		<?php if (Yii::app()->params['profile_user_can_change_password']) {?>
 			<div class="row field-row">
 				<div class="large-5 large-offset-2 column">
 					<?php echo EventAction::button('Save', 'save', array(), array('class' => 'small'))->toHtml()?>
@@ -72,6 +46,5 @@
 		<?php }?>
 
 	<?php $this->endWidget()?>
+
 </div>
-
-
