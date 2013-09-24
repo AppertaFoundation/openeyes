@@ -60,6 +60,6 @@ Feature: Environment Setup on clean database
     Then I select Create or View Episodes and Events
     And I select Add Episode from the sidebar
     Then I expand the Support Firm sidebar
-    And I add a New Event "Consent"
+    And I add a New Event "Correspondence"
 
 

@@ -70,9 +70,9 @@ class PatientContactAssignment extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+			'patient'  => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 			'location' => array(self::BELONGS_TO, 'ContactLocation', 'location_id'),
-			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'contact'  => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 		);
 	}
 

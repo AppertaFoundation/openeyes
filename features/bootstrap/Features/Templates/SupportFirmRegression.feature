@@ -1,4 +1,4 @@
-@SupportFirm
+
 Feature: Create New Correspondence using Support Firm
   In order to cover every possible route throughout the site
   As an automation tester

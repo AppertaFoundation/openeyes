@@ -159,6 +159,7 @@ class ContactLocation extends BaseActiveRecord
 		$criteria->compare("location_id",$this->id);
 		$criteria->order = 'hos_num asc';
 
+                                              //  error_log(print_r($criteria));
 		return Patient::model()->findAll($criteria);
 	}
 }

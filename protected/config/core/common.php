@@ -42,6 +42,7 @@ return array(
 		'application.helpers.*',
 		'application.gii.*',
 		'system.gii.generators.module.*',
+            
 	),
 
 	'modules' => array(
@@ -145,7 +146,7 @@ return array(
 			),
 		),
 		'session' => array(
-			'class' => 'application.components.CDbHttpSession',
+			'class' => 'CDbHttpSession',
 			'connectionID' => 'db',
 			'sessionTableName' => 'user_session',
 			'autoCreateSessionTable' => false

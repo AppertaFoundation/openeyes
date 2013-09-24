@@ -199,6 +199,7 @@ class PatientViewNewDiagnosis extends Page
         $this->getSession()->wait(5000, "$.active == 0");
 //        $this->getElement('hopefullFIX')->click();
 //        $this->getSession()->wait(5000, "$.active == 0");
+        $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('openMedicationDate')->click();
         $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('selectDateFrom')->click($datefrom);

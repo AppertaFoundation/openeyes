@@ -84,6 +84,7 @@ class DrugDuration extends BaseActiveRecord
 	 */
 	public function search()
 	{
+		   error_log(var_dump($this->id));
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 

@@ -103,9 +103,9 @@ class Consultant extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('obj_prof',$this->obj_prof,true);
-		$criteria->compare('nat_id',$this->nat_id,true);
-		$criteria->compare('contact_id',$this->contact_id,true);
+		//$criteria->compare('obj_prof',$this->obj_prof,true);
+		//$criteria->compare('nat_id',$this->nat_id,true);
+		//$criteria->compare('contact_id',$this->contact_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

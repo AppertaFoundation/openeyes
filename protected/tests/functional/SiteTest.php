@@ -17,6 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Class SiteTest
+ * @group functional
+ */
 class SiteTest extends WebTestCase
 {
     public $fixtures=array(

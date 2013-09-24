@@ -17,6 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Class AdminPhraseControllerTest
+ * @group controllers
+ */
 class AdminPhraseControllerTest extends CDbTestCase
 {
 	public $fixtures = array(

@@ -60,10 +60,10 @@ class BaseEventTypeElement extends BaseElement
 	public function getChildren()
 	{
 		$child_elements = array();
-		if ($this->event_id) {
+		if($this->event_id) {
 			$child_element_types = ElementType::model()->findAll('parent_element_type_id = :element_type_id', array(':element_type_id' => $this->getElementType()->id));
-			foreach ($child_element_types as $child_element_type) {
-				if ($element = self::model($child_element_type->class_name)->find('event_id = ?', array($this->event_id))) {
+			foreach($child_element_types as $child_element_type) {
+				if($element = self::model($child_element_type->class_name)->find('event_id = ?', array($this->event_id))) {
 					$child_elements[] = $element;
 				}
 			}
@@ -250,24 +250,20 @@ class BaseEventTypeElement extends BaseElement
 	 * Stubbed method to set default options
 	 * Used by child objects to set defaults for forms on create
 	 */
-	public function setDefaultOptions()
-	{
+	public function setDefaultOptions() {
 	}
 
 	/**
 	 * Stubbed method to set update options
 	 * Used by child objects to override null values for forms on update
 	 */
-	public function setUpdateOptions()
-	{
+	public function setUpdateOptions() {
 	}
 
-	public function getInfoText()
-	{
+	public function getInfoText() {
 	}
 
-	public function getDefaultView()
-	{
+	public function getDefaultView() {
 		return get_class($this);
 	}
 

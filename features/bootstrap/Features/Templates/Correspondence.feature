@@ -1,4 +1,4 @@
-@Correspondence
+
 Feature: Create New Correspondence
   In order to cover every possible route throughout the site
   As an automation tester
@@ -27,12 +27,12 @@ Feature: Create New Correspondence
 
     And I select Clinic Date "7"
 
-    Then I choose an Introduction of "site21"
-    And I add Findings of "examination334"
-    And I choose a Diagnosis of "site541"
-    Then I choose a Management of "site181"
-    And I choose Drugs "site301"
-    Then I choose Outcome "site341"
+#    Then I choose an Introduction of "site21"
+#    And I add Findings of "examination334"
+#    And I choose a Diagnosis of "site541"
+#    Then I choose a Management of "site181"
+#    And I choose Drugs "site301"
+#    Then I choose Outcome "site341"
 
     And I choose CC Target "patient"
 

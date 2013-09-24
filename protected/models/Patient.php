@@ -207,7 +207,7 @@ class Patient extends BaseActiveRecord
 		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'])
-		));
+		)); 
 
 		return $dataProvider;
 	}
