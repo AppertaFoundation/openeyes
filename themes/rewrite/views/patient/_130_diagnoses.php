@@ -51,11 +51,13 @@
 						</table>
 
 						<?php if (BaseController::checkUserLevel(4)) { ?>
+							<form>
 							<div class="box-actions">
-								<button class="secondary small" disabled>
+								<button class="secondary small">
 									Add Ophthalmic Diagnosis
 								</button>
 							</div>
+							</form>
 
 						<form class="form add-data">
 							<fieldset class="field-row">
