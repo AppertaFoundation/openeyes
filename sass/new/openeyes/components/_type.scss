@@ -36,6 +36,12 @@ h1 {
 		@media #{$small} {
 			margin-bottom: 0;
 		}
+		&.admin {
+			background: #666;
+			color: #fff;
+			border: 1px solid #999;
+			border-left: none;
+		}
 	}
 }
 

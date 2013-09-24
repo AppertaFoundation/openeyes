@@ -100,6 +100,13 @@
 											<td>Contains the patient summary panel, user panel and navigation which is shown once a user is logged in.</td>
 											<td><span class="complete">Complete</span></td>
 										</tr>
+										<tr>
+											<td>
+												<a href="error.php">Error</a>
+											</td>
+											<td>The error template used for all application errors.</td>
+											<td><span class="complete">Complete</span></td>
+										</tr>
 										<tr class="heading">
 											<td colspan="3"><h3>Theatre diaries</h3></td>
 										</tr>
@@ -128,7 +135,7 @@
 												<a href="patient-summary.php">Patient Summary</a>
 											</td>
 											<td>The patient summary template.</td>
-											<td><span class="not-complete">In progress</span></td>
+											<td><span class="complete">Complete</span></td>
 										</tr>
 										<tr class="heading">
 											<td colspan="3"><h3>Event modules</h3></td>
@@ -321,6 +328,13 @@
 												<a href="profile-info.php">Profile information</a>
 											</td>
 											<td>The user profile information template with a simple form.</td>
+											<td><span class="complete">Complete</span></td>
+										</tr>
+										<tr>
+											<td>
+												<a href="profile-info-sites.php">Profile information - sites</a>
+											</td>
+											<td>The profile template which lists the sites you work at.</td>
 											<td><span class="not-complete">Not started</span></td>
 										</tr>
 										<tr class="heading">

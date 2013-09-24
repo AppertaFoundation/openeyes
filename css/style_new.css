@@ -1074,13 +1074,13 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/new/_structure/gradient_bg.jpg?1380022296') 0 0 no-repeat;
+  background: #dae6f1 url('../img/new/_structure/gradient_bg.jpg?1380027376') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
 }
 
 /* line 10, ../sass/new/openeyes/components/containers/_content.scss */
 .container.content {
-  background: url('../img/new/_structure/help_top_grad.jpg?1380022296') 0 bottom no-repeat;
+  background: url('../img/new/_structure/help_top_grad.jpg?1380027376') 0 bottom no-repeat;
   min-height: 330px;
 }
 
@@ -1116,8 +1116,15 @@ h1.badge {
     margin-bottom: 0;
   }
 }
+/* line 39, ../sass/new/openeyes/components/_type.scss */
+h1.badge.admin {
+  background: #666;
+  color: #fff;
+  border: 1px solid #999;
+  border-left: none;
+}
 
-/* line 48, ../sass/new/openeyes/components/_type.scss */
+/* line 54, ../sass/new/openeyes/components/_type.scss */
 code {
   font-size: 0.8125em;
   color: #000;
@@ -1978,7 +1985,7 @@ table.patient-contacts td:first-child {
 }
 /* line 28, ../sass/new/openeyes/components/_header.scss */
 .header .logo {
-  background: url('../img/new/_structure/openeyes.png?1380022296') no-repeat;
+  background: url('../img/new/_structure/openeyes.png?1380027376') no-repeat;
   background-size: 100%;
   display: block;
   height: 70px;
@@ -1988,7 +1995,7 @@ table.patient-contacts td:first-child {
 
 /* line 43, ../sass/new/openeyes/components/_footer.scss */
 .footer {
-  background: #b3b0ae url('../img/new/_structure/openeyes_footer.png?1380022296') no-repeat right top;
+  background: #b3b0ae url('../img/new/_structure/openeyes_footer.png?1380027376') no-repeat right top;
 }
 /* line 46, ../sass/new/openeyes/components/_footer.scss */
 .footer .info {
@@ -2104,18 +2111,18 @@ table.patient-contacts td:first-child {
 /* Standard Forms */
 /* line 4, ../sass/new/openeyes/components/_forms.scss */
 form {
-  margin: 0 0 1.125em;
+  margin: 0 0 0.9375em;
 }
 
 /* Using forms within rows, we need to set some defaults */
 /* line 67, ../sass/new/foundation/components/_forms.scss */
 form .row .row {
-  margin: 0 -0.5625em;
+  margin: 0 -0.46875em;
 }
 /* line 70, ../sass/new/foundation/components/_forms.scss */
 form .row .row .column,
 form .row .row .columns {
-  padding: 0 0.5625em;
+  padding: 0 0.46875em;
 }
 /* line 73, ../sass/new/foundation/components/_forms.scss */
 form .row .row.collapse {
@@ -2131,7 +2138,7 @@ form .row input.column,
 form .row input.columns,
 form .row textarea.column,
 form .row textarea.columns {
-  padding-left: 0.5625em;
+  padding-left: 0.46875em;
 }
 
 /* Label Styles */
@@ -2152,8 +2159,8 @@ label.right, .label.right {
 }
 /* line 20, ../sass/new/openeyes/components/_forms.scss */
 label.inline, .label.inline {
-  margin: 0 0 1.125em 0;
-  padding: 0.6875em 0;
+  margin: 0 0 0.9375em 0;
+  padding: 0.59375em 0;
   margin: 0;
   display: inline-block;
   padding: 0 0.625em 0 0;
@@ -2175,9 +2182,9 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   color: rgba(0, 0, 0, 0.75);
   display: block;
   font-size: 0.8125em;
-  margin: 0 0 1.125em 0;
-  padding: 0.5625em;
-  height: 2.5em;
+  margin: 0 0 0.9375em 0;
+  padding: 0.46875em;
+  height: 2.21875em;
   width: 100%;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -2274,8 +2281,8 @@ label.error {
 small.error {
   display: block;
   padding: 0.375em 0.25em;
-  margin-top: -1.4375em;
-  margin-bottom: 1.125em;
+  margin-top: -1.25em;
+  margin-bottom: 0.9375em;
   font-size: 0.75em;
   font-weight: bold;
   background: red;
@@ -2361,7 +2368,7 @@ input[type="text"].large, input[type="password"].large, input[type="date"].large
 
 /* line 209, ../sass/new/openeyes/components/_forms.scss */
 .field-row, .data-row {
-  padding-bottom: 1.125em;
+  padding-bottom: 0.9375em;
 }
 /* line 211, ../sass/new/openeyes/components/_forms.scss */
 .field-row:last-child, .data-row:last-child {
@@ -2672,6 +2679,32 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   background: white;
 }
 
+/* line 69, ../sass/new/openeyes/components/_navigation.scss */
+.navigation.admin {
+  list-style-type: none;
+}
+/* line 71, ../sass/new/openeyes/components/_navigation.scss */
+.navigation.admin a {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  display: block;
+  background: #fff;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+}
+/* line 77, ../sass/new/openeyes/components/_navigation.scss */
+.navigation.admin a:hover {
+  color: #fff;
+  background: #3665ff;
+}
+/* line 83, ../sass/new/openeyes/components/_navigation.scss */
+.navigation.admin li:last-child a {
+  margin: 0;
+}
+
 /* Default Pagination */
 /* line 2, ../sass/new/openeyes/components/_pagination.scss */
 ul.pagination {
@@ -2811,7 +2844,7 @@ ul.pagination li:last-child a {
 }
 /* line 58, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.success.with-icon {
-  background-image: url('../img/new/_elements/icons/box/info.png?1380022296');
+  background-image: url('../img/new/_elements/icons/box/info.png?1380027376');
   min-height: 36px;
 }
 /* line 63, ../sass/new/openeyes/components/_alert-boxes.scss */
@@ -2823,7 +2856,7 @@ ul.pagination li:last-child a {
 }
 /* line 66, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.alert.with-icon, .with-icon.alert-box.warning {
-  background-image: url('../img/new/_elements/icons/box/warning.png?1380022296');
+  background-image: url('../img/new/_elements/icons/box/warning.png?1380027376');
   min-height: 36px;
   padding-top: 0.875em;
   padding-bottom: 0.875em;
@@ -2836,7 +2869,7 @@ ul.pagination li:last-child a {
 }
 /* line 78, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.issue.with-icon {
-  background-image: url('../img/new/_elements/icons/box/issue.png?1380022296');
+  background-image: url('../img/new/_elements/icons/box/issue.png?1380027376');
   min-height: 36px;
 }
 /* line 83, ../sass/new/openeyes/components/_alert-boxes.scss */
@@ -2905,127 +2938,131 @@ ul.pagination li:last-child a {
 .box.content {
   background: #dae6f1;
 }
+/* line 43, ../sass/new/openeyes/components/_boxes.scss */
+.box.content.admin-content {
+  padding: 1em 0;
+}
 
-/* line 48, ../sass/new/openeyes/components/_boxes.scss */
+/* line 51, ../sass/new/openeyes/components/_boxes.scss */
 .box.generic {
   background: #fff;
   padding: 0.75em;
 }
-/* line 51, ../sass/new/openeyes/components/_boxes.scss */
+/* line 54, ../sass/new/openeyes/components/_boxes.scss */
 .box.generic p:last-child {
   margin: 0;
 }
-/* line 54, ../sass/new/openeyes/components/_boxes.scss */
+/* line 57, ../sass/new/openeyes/components/_boxes.scss */
 .box.generic h1, .box.generic h2, .box.generic h3, .box.generic h4, .box.generic h5 {
   margin-top: 0;
   line-height: 1;
 }
-/* line 58, ../sass/new/openeyes/components/_boxes.scss */
+/* line 61, ../sass/new/openeyes/components/_boxes.scss */
 .box.generic table:last-child {
   margin-bottom: 0;
 }
 
-/* line 66, ../sass/new/openeyes/components/_boxes.scss */
+/* line 69, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info {
   background: #fafafa;
   padding: 0.75em;
 }
-/* line 69, ../sass/new/openeyes/components/_boxes.scss */
+/* line 72, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .box-title {
   font-size: 0.8125em;
   color: #e49f10;
   margin: 0;
   padding: 0 0 0.625em 0;
 }
-/* line 75, ../sass/new/openeyes/components/_boxes.scss */
+/* line 78, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row {
   padding: 0.625em 0;
   border-top: 1px dotted #ccc;
 }
-/* line 78, ../sass/new/openeyes/components/_boxes.scss */
+/* line 81, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row:last-child {
   padding-bottom: 0;
 }
-/* line 81, ../sass/new/openeyes/components/_boxes.scss */
+/* line 84, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row.highlight {
   background: goldenrod;
 }
-/* line 83, ../sass/new/openeyes/components/_boxes.scss */
+/* line 86, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row.highlight > .column {
   padding-left: 0.75em;
   padding-right: 0.75em;
 }
-/* line 87, ../sass/new/openeyes/components/_boxes.scss */
+/* line 90, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row.highlight .data-label {
   color: #eee;
 }
-/* line 90, ../sass/new/openeyes/components/_boxes.scss */
+/* line 93, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row.highlight .data-value {
   color: #666;
 }
-/* line 95, ../sass/new/openeyes/components/_boxes.scss */
+/* line 98, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .field-label, .box.patient-info .data-label {
   color: #777;
 }
-/* line 99, ../sass/new/openeyes/components/_boxes.scss */
+/* line 102, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .add-data > fieldset > legend {
   margin-bottom: 1.5625em;
 }
-/* line 102, ../sass/new/openeyes/components/_boxes.scss */
+/* line 105, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .add-data .field-row, .box.patient-info .add-data .data-row {
   padding-bottom: 0.75em;
 }
-/* line 104, ../sass/new/openeyes/components/_boxes.scss */
+/* line 107, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .add-data .field-row:last-child, .box.patient-info .add-data .data-row:last-child {
   padding-bottom: 0;
 }
-/* line 109, ../sass/new/openeyes/components/_boxes.scss */
+/* line 112, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info > .row {
   margin-left: 0;
   margin-right: 0;
 }
-/* line 112, ../sass/new/openeyes/components/_boxes.scss */
+/* line 115, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info > .row > .column {
   padding-left: 0;
 }
-/* line 116, ../sass/new/openeyes/components/_boxes.scss */
+/* line 119, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .toggle-trigger {
   height: 22px;
   width: 30px;
   background: #dadada;
   right: 0.75em;
 }
-/* line 121, ../sass/new/openeyes/components/_boxes.scss */
+/* line 124, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .toggle-trigger:hover {
   background: #3665ff;
 }
-/* line 125, ../sass/new/openeyes/components/_boxes.scss */
+/* line 128, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .add-data {
   margin: 0.375em 0 0.75em 0;
 }
 
-/* line 134, ../sass/new/openeyes/components/_boxes.scss */
+/* line 137, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.episodes {
   background: #dae6f1;
 }
-/* line 136, ../sass/new/openeyes/components/_boxes.scss */
+/* line 139, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.episodes .box-title {
   color: #4d5155;
   font-weight: bold;
   float: left;
   padding: 0;
 }
-/* line 142, ../sass/new/openeyes/components/_boxes.scss */
+/* line 145, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.episodes .box-info {
   float: right;
   font-size: 0.8125em;
 }
 
-/* line 153, ../sass/new/openeyes/components/_boxes.scss */
+/* line 156, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.associated-data {
   border: 1px solid #999;
 }
-/* line 155, ../sass/new/openeyes/components/_boxes.scss */
+/* line 158, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.associated-data .box-title {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -3039,15 +3076,54 @@ ul.pagination li:last-child a {
   position: relative;
   font-size: 0.75em;
 }
-/* line 163, ../sass/new/openeyes/components/_boxes.scss */
+/* line 166, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.associated-data .box-title [class*="icon-"] {
   position: absolute;
   left: 0;
   top: -1px;
 }
-/* line 170, ../sass/new/openeyes/components/_boxes.scss */
+/* line 173, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.associated-data .form .buttons {
   text-align: right;
+}
+
+/* line 183, ../sass/new/openeyes/components/_boxes.scss */
+.box.admin {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #d9d9d9;
+  margin-bottom: 1.25em;
+  padding: 0.625em;
+  background: #f2f2f2;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: #fafafa;
+  margin: 0 0 0.625em 0;
+}
+/* line 44, ../sass/new/foundation/components/_panels.scss */
+.box.admin > :first-child {
+  margin-top: 0;
+}
+/* line 45, ../sass/new/foundation/components/_panels.scss */
+.box.admin > :last-child {
+  margin-bottom: 0;
+}
+/* line 50, ../sass/new/foundation/components/_panels.scss */
+.box.admin h1, .box.admin h2, .box.admin h3, .box.admin h4, .box.admin h5, .box.admin h6, .box.admin p {
+  color: #333333;
+}
+/* line 54, ../sass/new/foundation/components/_panels.scss */
+.box.admin h1, .box.admin h2, .box.admin h3, .box.admin h4, .box.admin h5, .box.admin h6 {
+  line-height: 1;
+  margin-bottom: 0.625em;
+}
+/* line 56, ../sass/new/foundation/components/_panels.scss */
+.box.admin h1.subheader, .box.admin h2.subheader, .box.admin h3.subheader, .box.admin h4.subheader, .box.admin h5.subheader, .box.admin h6.subheader {
+  line-height: 1.4;
+}
+/* line 188, ../sass/new/openeyes/components/_boxes.scss */
+.box.admin h2 {
+  margin-bottom: 0.75em;
 }
 
 /* line 1, ../sass/new/openeyes/components/_icons.scss */
@@ -3298,7 +3374,7 @@ ul.pagination li:last-child a {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  background-image: url('../img/new/_elements/icons/user/idcard_bg.png?1380022296');
+  background-image: url('../img/new/_elements/icons/user/idcard_bg.png?1380027376');
   background-repeat: no-repeat;
   background-position: left bottom;
   border-color: #b3b0ae;
@@ -3379,11 +3455,11 @@ ul.pagination li:last-child a {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1380022296'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1380022296'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1380022296'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1380022296'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1380022296'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1380027376'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1380027376'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1380027376'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1380027376'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1380027376'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
   background-repeat: no-repeat, no-repeat;
   background-position: 98% 2px, top;
   border-color: #ffb212;
@@ -3464,7 +3540,7 @@ ul.pagination li:last-child a {
   -o-border-radius: 3px;
   border-radius: 3px;
   background-color: #107ebd;
-  background-image: url('../img/new/_elements/icons/nhs_tiny.png?1380022296');
+  background-image: url('../img/new/_elements/icons/nhs_tiny.png?1380027376');
   background-position: center left;
   background-repeat: no-repeat;
   color: white;
@@ -3617,7 +3693,7 @@ ul.pagination li:last-child a {
 }
 /* line 101, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-title a {
-  background: url('../img/new/_elements/graphic/view-episode-summary.png?1380022296') right bottom no-repeat;
+  background: url('../img/new/_elements/graphic/view-episode-summary.png?1380027376') right bottom no-repeat;
   color: black;
   display: block;
   padding: 0.3125em 0 1.0625em 0.4375em;
@@ -3631,7 +3707,7 @@ ul.pagination li:last-child a {
 .panel.episode .episode-title a:hover {
   color: white;
   background-color: #3665ff;
-  background-image: url('../img/new/_elements/icons/event/event_open_arrow.png?1380022296');
+  background-image: url('../img/new/_elements/icons/event/event_open_arrow.png?1380027376');
 }
 /* line 114, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .add-event {
@@ -3686,7 +3762,7 @@ ul.pagination li:last-child a {
 }
 /* line 152, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events a:hover {
-  background: #3665ff url('../img/new/_elements/icons/event/event_open_arrow.png?1380022296') right center no-repeat;
+  background: #3665ff url('../img/new/_elements/icons/event/event_open_arrow.png?1380027376') right center no-repeat;
   color: white;
 }
 /* line 157, ../sass/new/openeyes/components/panels/_episode.scss */
@@ -3696,11 +3772,11 @@ ul.pagination li:last-child a {
 }
 /* line 160, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert {
-  background: url('../img/new/_elements/icons/event/status/alert.png?1380022296') right top no-repeat;
+  background: url('../img/new/_elements/icons/event/status/alert.png?1380027376') right top no-repeat;
 }
 /* line 162, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert:hover {
-  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1380022296');
+  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1380027376');
 }
 /* line 167, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-date {
@@ -3709,12 +3785,12 @@ ul.pagination li:last-child a {
 }
 /* line 174, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected a {
-  background: #aaaaaa url('../img/new/_elements/icons/event/event_open_arrow.png?1380022296') right center no-repeat;
+  background: #aaaaaa url('../img/new/_elements/icons/event/event_open_arrow.png?1380027376') right center no-repeat;
   color: white;
 }
 /* line 179, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected .event-type.alert {
-  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1380022296');
+  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1380027376');
 }
 
 /* line 2, ../sass/new/openeyes/components/panels/_element.scss */
@@ -3851,6 +3927,13 @@ ul.pagination li:last-child a {
 /* line 4, ../sass/new/openeyes/components/_sidebars.scss */
 .sidebar.episodes-and-events .add-episode {
   margin-left: 2px;
+}
+
+/* line 12, ../sass/new/openeyes/components/_sidebars.scss */
+.sidebar.admin h2 {
+  border-bottom: 1px dotted #ccc;
+  padding-bottom: 0.3125em;
+  margin-bottom: 0.3125em;
 }
 
 /* line 23, ../sass/new/openeyes/components/events/_event.scss */
@@ -4047,7 +4130,7 @@ ul.pagination li:last-child a {
 }
 /* line 135, ../sass/new/openeyes/components/events/_elements.scss */
 .edit .icon-remove-side {
-  background: url('../img/new/_elements/icons/event-optional/element-remove.png?1380022296') no-repeat -10px -2px;
+  background: url('../img/new/_elements/icons/event-optional/element-remove.png?1380027376') no-repeat -10px -2px;
   height: 16px;
   position: absolute;
   right: 5px;
@@ -4057,7 +4140,7 @@ ul.pagination li:last-child a {
 }
 /* line 144, ../sass/new/openeyes/components/events/_elements.scss */
 .edit .icon-add-side {
-  background: url('../img/new/_elements/icons/event-optional/element-view.png?1380022296') no-repeat -10px -4px;
+  background: url('../img/new/_elements/icons/event-optional/element-view.png?1380027376') no-repeat -10px -4px;
   width: 16px;
   height: 16px;
 }
@@ -4167,7 +4250,7 @@ ul.pagination li:last-child a {
 }
 /* line 56, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list li a, .edit .sub-elements-list li a {
-  background: #8c949c url('../img/new/_elements/icons/event-optional/element-view.png?1380022296') no-repeat right top;
+  background: #8c949c url('../img/new/_elements/icons/event-optional/element-view.png?1380027376') no-repeat right top;
   border-bottom: 1px dotted #fafafa;
   color: #fff;
   display: block;
@@ -4335,7 +4418,7 @@ ul.pagination li:last-child a {
 .multi-select .remove-one {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
   opacity: 0.5;
-  background: url('../img/new/_elements/icons/event-optional/element-remove.png?1380022296') no-repeat -10px -2px;
+  background: url('../img/new/_elements/icons/event-optional/element-remove.png?1380027376') no-repeat -10px -2px;
   display: inline-block;
   height: 15px;
   margin-left: 2px;

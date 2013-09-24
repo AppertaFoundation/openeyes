@@ -63,3 +63,26 @@ $oe-navigation-user-anchor-selected-color: white !default;
 		}
 	}
 }
+
+// Admin sidebar navigation
+.navigation {
+	&.admin {
+		list-style-type: none;
+		a {
+			@include border-radius(3px);
+			display: block;
+			background: #fff;
+			margin-bottom: 4px;
+			padding: 4px 8px;
+			&:hover {
+				color: #fff;
+				background: #3665ff;
+			}
+		}
+		li:last-child {
+			a {
+				margin: 0;
+			}
+		}
+	}
+}

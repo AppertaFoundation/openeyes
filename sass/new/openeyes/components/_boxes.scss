@@ -40,6 +40,9 @@ $oe-box-event-border-width: 0 5px 5px !default;
 .box {
 	&.content {
 		background: $oe-box-content-bg-color;
+		&.admin-content {
+			padding: emCalc(16px) 0;
+		}
 	}
 }
 
@@ -171,6 +174,19 @@ $oe-box-event-border-width: 0 5px 5px !default;
 					text-align: right;
 				}
 			}
+		}
+	}
+}
+
+// Admin box
+.box {
+	&.admin {
+		@include panel;
+		@include radius;
+		background: #fafafa;
+		margin: 0 0 emCalc(10px) 0;
+		h2 {
+			margin-bottom: emCalc(12px);
 		}
 	}
 }

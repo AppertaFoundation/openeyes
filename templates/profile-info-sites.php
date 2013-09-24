@@ -16,7 +16,7 @@
 			<div class="box content admin-content">
 				<div class="row">
 					<? include 'components/admin/profile-sidebar.php'; ?>
-					<? include 'components/admin/profile-info.php'; ?>
+					<? include 'components/admin/profile-info-sites.php'; ?>
 				</div>
 			</div>
 		</div>
