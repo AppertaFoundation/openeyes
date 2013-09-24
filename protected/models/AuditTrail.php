@@ -19,7 +19,7 @@
 
 /**
  * This is the model class for table "tbl_audit_trail".
- * 
+ *
  * The followings are the available columns in table 'tbl_audit_trail':
  * @property integer $id
  * @property string $new_value
