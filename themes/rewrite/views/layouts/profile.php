@@ -17,29 +17,41 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (@$htmlOptions['nowrapper']) {?>
-	<?php echo CHtml::textField($name, $value, $htmlOptions)?>
-<?php } else {?>
-	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row" <?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-		<div class="large-<?php echo $options['labelColumns'];?> column">
-			<?php
-			$labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
-			$labelText .= ':';
-			echo Chtml::label($labelText, Chtml::getIdByName($name));
-			?>
-		</div>
-		<div class="large-<?php echo $options['fieldColumns'];?> column end">
-			<?php if (@$htmlOptions['password']) { ?>
-				<?php echo CHtml::passwordField($name, $value, $htmlOptions)?>
-			<?php } else {?>
-				<?php echo CHtml::textField($name, $value, $htmlOptions)?>
-			<?php } ?>
-			<?php echo @$htmlOptions['append_text']?>
-			<?php if (!empty($links)) {
-				foreach ($links as $link) {
-					echo CHtml::link($link['title'],$link['href'],array('id'=>$link['id']));
-				}
-			}?>
-		</div>
-	</div>
-<?php }?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<?php $this->renderPartial('//base/head/_meta')?>
+	<?php $this->renderPartial('//base/head/_assets')?>
+	<?php $this->renderPartial('//base/head/_tracking')?>
+</head>
+<body class="open-eyes">
+
+	<?php $this->renderPartial('//base/_banner_watermark')?>
+	<?php $this->renderPartial('//base/_debug')?>
+
+	<div class="container main" role="main">
+
+		<?php $this->renderPartial('//base/_header'); ?>
+
+		<div class="container content">
+
+			<h1 class="badge admin">Profile</h1>
+
+			<div class="box content admin-content">
+				<div class="row">
+					<aside class="large-3 column sidebar admin">
+						<?php $this->renderPartial('//profile/sidebar')?>
+					</aside>
+					<div class="large-9 column">
+						<?php echo $content; ?>
+					</div>
+				</div>
+			</div>
+
+		</div><!-- /.content -->
+
+		<?php $this->renderPartial('//base/_footer')?>
+
+	</div><!-- /.main.container -->
+</body>
+</html>

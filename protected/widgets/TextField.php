@@ -21,4 +21,8 @@ class TextField extends BaseCWidget
 {
 	public $name;
 	public $links = array();
+	public $defaultOptions = array(
+		'labelColumns' => 2,
+		'fieldColumns' => 10
+	);
 }

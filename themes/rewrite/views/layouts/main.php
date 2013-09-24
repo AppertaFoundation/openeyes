@@ -20,9 +20,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/_meta')?>
-	<?php $this->renderPartial('//base/_assets')?>
-	<?php $this->renderPartial('//base/_tracking')?>
+	<?php $this->renderPartial('//base/head/_meta')?>
+	<?php $this->renderPartial('//base/head/_assets')?>
+	<?php $this->renderPartial('//base/head/_tracking')?>
 </head>
 <body class="open-eyes">
 
@@ -31,25 +31,7 @@
 
 	<div class="container main" role="main">
 
-		<header class="header row">
-
-			<!-- Branding (logo) -->
-			<div class="large-2 column">
-				<?php $this->renderPartial('//base/_brand'); ?>
-			</div>
-
-			<!-- Patient panel -->
-			<div class="large-4 medium-5 column">
-				<?php if ($this->renderPatientPanel === true) {
-					$this->renderPartial('//patient/_patient_id');
-				}?>
-			</div>
-
-			<!-- User panel (with site navigation) -->
-			<div class="large-6 medium-7 column">
-				<?php $this->renderPartial('//base/_form'); ?>
-			</div>
-		</header><!-- /.header -->
+		<?php $this->renderPartial('//base/_header'); ?>
 
 		<div class="container content">
 			<?php echo $content; ?>
