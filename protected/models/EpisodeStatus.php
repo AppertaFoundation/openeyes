@@ -96,14 +96,11 @@ class EpisodeStatus extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-
-		//order is a reserved word, backticks required : reda
-		$criteria->compare('`order`',$this->order,true);
+		$criteria->compare('order',$this->order,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-		
 	}
 
 	public function getList()

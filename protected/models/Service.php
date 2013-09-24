@@ -104,5 +104,4 @@ class Service extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-                           
 }
