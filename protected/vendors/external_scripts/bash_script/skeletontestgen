@@ -1,0 +1,59 @@
+#!/bin/bash
+
+#notice
+echo "************ Notice : phpunit and phpunit-skeleton instalation are required ************"
+
+#read the paths 
+read -p  "test folder path ? :" TESTPATH
+read -p  "bootstrap folder path ? :" BOOTSTRAPPATH
+
+#check the path exists
+if [ ! -d "$TESTPATH" ]; then
+echo "The path folder doesnt exist "
+exit 1
+fi
+
+#check the bootstrap path exists
+if [ ! -d "$BOOTSTRAPPATH" ]; then
+echo "The bootstart path folder doesnt exist "
+exit 1
+fi
+
+#strip from the path + store the test folder name
+FOLDERNAME=${TESTPATH#*protected/}
+
+#create if necessary target folders
+if [ ! -d "$BOOTSTRAPPATH/new_units" ]; then
+sudo mkdir $BOOTSTRAPPATH/new_units
+exit 1
+fi
+
+#cd  $BOOTSTRAPPATH/new_units
+sudo mkdir $FOLDERNAME 
+
+
+#go into the directory
+cd $TESTPATH
+ 
+
+#loop through the files in path + strip the extension and path + execute skeleton generator + copy to new folder under the test directory
+for file in $TESTPATH/*
+do
+
+echo "**************************"
+echo "***  Generating Test  ****"
+echo "**************************"
+
+#phpunit-skelgen --bootstrap $BOOTSTRAPPATH/bootstrap.php --test $(basename ${file%.*}) 
+
+echo "********************************"
+echo "*** Moving to Tests folder ****"
+echo "********************************"
+
+echo "Moving to $BOOTSTRAPPATH/new_units/$FOLDERNAME"
+
+#sudo mv $(basename ${file%.*})Test.php "$BOOTSTRAPPATH/new_units/$FOLDERNAME"
+
+done
+
+

@@ -37,6 +37,7 @@ class ConsentForm extends Page
 
  public function createConsentForm ()
  {
+
      $this->getElement('createConsentForm')->click();
  }
 
@@ -119,7 +120,6 @@ public function supplementaryConsent ()
 
 public function saveConsentForm ()
 {
-    $this->getSession()->wait(10000);
     $this->getElement('saveConsentForm')->click();
 }
 }

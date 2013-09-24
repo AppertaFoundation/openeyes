@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,23 +17,55 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+class ContactFormTest extends CDbTestCase {
 
-class ContactFormTest extends CDbTestCase
-{
-	public $model;
+                       /**
+                        * @var ContactForm
+                        */
+                       public $model;
 
-	public function setUp()
-	{
-		parent::setUp();
-		$this->model = new ContactForm;
-	}
+                       /**
+                        * Sets up the fixture, for example, opens a network connection.
+                        * This method is called before a test is executed.
+                        */
+                       protected function setUp() {
+                                              parent::setUp();
+                                              $this->model = new ContactForm;
+                       }
 
-	public function testAttributeLabels()
-	{
-		$expected = array(
-			'verifyCode'=>'Verification Code',
-		);
+                       /**
+                        * Tears down the fixture, for example, closes a network connection.
+                        * This method is called after a test is executed.
+                        */
+                       protected function tearDown() {
+                                              
+                       }
 
-		$this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
-	}
+                       /**
+                        * @covers ContactForm::rules
+                        * @todo   Implement testRules().
+                        */
+                       public function testRules() {
+
+                                              $attributes = array('name' => 'test', 'email' => 'email@email.com', 'subject' => 'test', 'body' => 'test');
+                                              $this->model->setAttributes($attributes);
+
+
+                                              $this->assertTrue($this->model->validate());
+                                              $this->assertEmpty($this->model->errors);
+                       }
+
+                       /**
+                        * @covers ContactForm::attributeLabels
+                        * @todo   Implement testAttributeLabels().
+                        */
+                       public function testAttributeLabels() {
+
+                                              $expected = array(
+                                                                       'verifyCode' => 'Verification Code',
+                                              );
+
+                                              $this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
+                       }
+
 }

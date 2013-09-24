@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,23 +17,112 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class PhraseNameTest extends CDbTestCase
 {
+
 	public $fixtures = array(
 		'sections' => 'Section',
 		'sectionTypes' => 'SectionType',
 		'services' => 'Service',
 		'specialties' => 'Specialty',
-		'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
+		'serviceSubspecialtyAssignment' => 'ServiceSubspecialtyAssignment',
 		'firms' => 'Firm',
 		'eventTypes' => 'EventType',
 		'elementTypes' => 'ElementType',
-		'possibleElementTypes' => 'PossibleElementType',
-		'siteElementTypes' => 'SiteElementType',
-		'phraseNames'	=> 'PhraseName',
+		//'possibleElementTypes' => 'PossibleElementType',
+		'siteElementTypes' => 'ElementType',
+		'phraseNames' => 'PhraseName',
+		'user' => 'User',
 	);
 
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->object = new PhraseName;
+	}
+
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 */
+	protected function tearDown()
+	{
+
+	}
+
+	/**
+	 * @covers PhraseName::model
+	 * @todo   Implement testModel().
+	 */
+	public function testModel()
+	{
+
+		$this->assertEquals('PhraseName', get_class(PhraseName::model()), 'Class name should match model.');
+	}
+
+	/**
+	 * @covers PhraseName::tableName
+	 * @todo   Implement testTableName().
+	 */
+	public function testTableName()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers PhraseName::rules
+	 * @todo   Implement testRules().
+	 */
+	public function testRules()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers PhraseName::relations
+	 * @todo   Implement testRelations().
+	 */
+	public function testRelations()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers PhraseName::attributeLabels
+	 * @todo   Implement testAttributeLabels().
+	 */
+	public function testAttributeLabels()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
+
+	/**
+	 * @covers PhraseName::search
+	 * @todo   Implement testSearch().
+	 */
+	public function testSearch()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
 	public function testGet_InvalidParameters_ReturnsFalse()
 	{
@@ -57,6 +147,7 @@ class PhraseNameTest extends CDbTestCase
 		$phraseName = new PhraseName;
 		$phraseName->setAttributes(array(
 			'name' => 'Testing phrasename',
+			'last_modified_user_id' => '1',
 		));
 		$this->assertTrue($phraseName->save(true));
 	}
@@ -65,8 +156,7 @@ class PhraseNameTest extends CDbTestCase
 	{
 		$expected = 'Testing again';
 		$phraseName = PhraseName::model()->findByPk($this->phraseNames['phraseName1']['id']);
-		$phraseName->name = $expected;
-		$phraseName->save();
+		$phraseName = PhraseName::model()->updateByPk($this->phraseNames['phraseName1']['id'], array('name' => $expected));
 		$phraseName = PhraseName::model()->findByPk($this->phraseNames['phraseName1']['id']);
 		$this->assertEquals($expected, $phraseName->name);
 	}
@@ -78,4 +168,5 @@ class PhraseNameTest extends CDbTestCase
 		$result = PhraseName::model()->findByPk($this->phraseNames['phraseName37']['id']);
 		$this->assertNull($result);
 	}
+
 }

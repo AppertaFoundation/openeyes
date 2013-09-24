@@ -105,6 +105,30 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I choose a left Visual Acuity ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+     */
+    public function iChooseALeftVisualAcuityEtdrsLettersSnellenMetreAndAReadingMethodOf($metre, $method)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftETDRS($metre, $method);
+    }
+
+    /**
+     * @Then /^I choose a right Visual Acuity ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+     */
+    public function iChooseARightVisualAcuityEtdrsLettersSnellenMetreAndAReadingMethodOf($metre, $method)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightETDRS($metre, $method);
+    }
+
+    /**
      * @Then /^I choose to expand the Intraocular Pressure section$/
      */
     public function iChooseToExpandTheIntraocularPressureSection()

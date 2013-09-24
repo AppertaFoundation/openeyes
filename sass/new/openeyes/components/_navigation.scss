@@ -42,7 +42,7 @@ $oe-navigation-user-anchor-selected-color: white !default;
 .navigation {
 	&.user {
 		margin-left: 0;
-		margin-bottom: emCalc(8px);
+		margin-bottom: emCalc(6px);
 		li {
 			font-size: $oe-navigation-user-font-size;
 			margin: 0 0 0 $oe-navigation-user-item-margin;

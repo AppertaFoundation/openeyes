@@ -35,7 +35,7 @@ $oe-panel-user-bg-color: #dae6f1 !default;
 $oe-panel-user-bg-image: image-url("_elements/icons/user/idcard_bg.png") !default;
 $oe-panel-user-bg-position: left bottom !default;
 $oe-panel-user-bg-repeat: no-repeat !default;
-$oe-panel-user-font-size: emCalc(13px) !default;
+$oe-panel-user-font-size: emCalc(12px) !default;
 $oe-panel-user-padding: 0 emCalc(10px) emCalc(5px) emCalc(10px) !default;
 
 .panel {
@@ -48,6 +48,7 @@ $oe-panel-user-padding: 0 emCalc(10px) emCalc(5px) emCalc(10px) !default;
 			repeat: $oe-panel-user-bg-repeat;
 			position: $oe-panel-user-bg-position;
 		};
+		border-color: #b3b0ae;
 		margin: 0;
 		@media #{$small} {
 			border-top: 0;
@@ -56,6 +57,24 @@ $oe-panel-user-padding: 0 emCalc(10px) emCalc(5px) emCalc(10px) !default;
 		.user-id, .user-firm {
 			font-size: $oe-panel-user-font-size;
 			min-height: $oe-panel-user-font-size * 2;
+		}
+		.user-firm {
+			padding-top: emCalc(20px);
+		}
+		.user-name {
+			padding-top: emCalc(5px);
+			span, strong {
+				float: left;
+			}
+			strong {
+				margin: 2px 0 0 3px;
+			}
+			a:hover {
+				[class*="icon-user-panel"] {
+					background-position: 0 0;
+				}
+			}
+
 		}
 		.row {
 			clear: both;

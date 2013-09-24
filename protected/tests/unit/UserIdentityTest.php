@@ -19,6 +19,7 @@
 
 /**
  * Required for LDAP authentication
+ * @group undefined
  */
 require_once('Zend/Ldap.php');
 
@@ -99,8 +100,8 @@ class UserIdentityTest extends CDbTestCase
 		Yii::app()->params['auth_source'] = 'BASIC';
 
 		$userIdentity = new UserIdentity(
-			'JoeBloggs',
-			'secret'
+			'demo',
+			'demo'
 		);
 
 		$this->assertTrue((bool) $this->users['user1']['global_firm_rights']);

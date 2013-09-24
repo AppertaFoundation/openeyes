@@ -8,6 +8,7 @@ RewriteEngine On
 RewriteRule ^file/.*$ index.php [L]
 
 # Things not to rewrite
+RewriteCond %{REQUEST_URI} !^\/assets\/
 RewriteCond %{REQUEST_URI} !(\.gif$)|(\.jpg$)|(\.png$)|(\.css$)|(\.js$)|(\.ico$)
 
 # If a file exists, use it directly

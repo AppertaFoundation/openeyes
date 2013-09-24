@@ -1,17 +1,16 @@
 @examination @regression
-Feature: Create New Examination
-  In order to cover every possible route throughout the site
-  As an automation tester
-  I want to build a template with supporting code for each web page
+Feature: Create New Examination Regression Tests
+  Regression over 2 Sites and 4 Firms
+  Coverage at TBC %
 
-  Scenario Outline: Login and create a new Examination Event
+  Scenario: Login and create a new Examination Event Route 1: Site 1 Queens, Firm 3 Anderson Glaucoma
 
-    Given I am on the OpenEyes "<environment>" homepage
-    And I enter login credentials "<username>" and "<password>"
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "3"
 
-    Then I search for hospital number "<hospnumber>"
+    Then I search for hospital number "1009465"
     #Then I search for patient name last name "<last>" and first name "<first>"
 
 #    Then I select Add First New Episode and Confirm
@@ -19,7 +18,7 @@ Feature: Create New Examination
     Then I select the Latest Event
     #Then I expand the Cataract sidebar
     Then I expand the Glaucoma sidebar
-    And I add a New Event "<EventType>"
+    And I add a New Event "Examination"
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
     #Hardcoded as actual data selected is not re-used on this form
@@ -52,39 +51,102 @@ Feature: Create New Examination
     Then I enter right Axis degrees of "34"
     And I enter a right type of "1"
 
+    Then I Save the Examination
 
-#    Then I choose to expand the Visual Fields section
-#    Then I choose to expand the Gonioscopy section
-#    Then I choose to expand the Adnexal Comorbidity section
-#    Then I choose to expand the Anterior Segment section
-#    Then I choose to expand the Pupillary Abnormalities section
-#    Then I choose to expand the Optic Disc section
-#    Then I choose to expand the Posterior Pole section
-#    Then I choose to expand the Diagnoses section
-#    Then I choose to expand the Investigation section
-#    Then I choose to expand the Clinical Management section
-#    Then I choose to expand the Risks section
-#    Then I choose to expand the Clinic Outcome section
-#    Then I choose to expand the Conclusion section
+  Scenario: Login and create a new Examination Event Route 1: Site 2 Queens, Firm 2 Broom Glaucoma
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "2"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Examination"
+
+    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
+
+    And I choose to expand the Comorbidities section
+    Then I Add a Comorbiditiy of "8"
+
+    Then I choose to expand the Visual Acuity section
+    And I select a Visual Acuity of "1"
+    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
+    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
+
+    Then I choose to expand the Intraocular Pressure section
+    Then I choose a left Intraocular Pressure of "8" and Instrument "4"
+    Then I choose a right Intraocular Pressure of "77" and Instrument "1"
+
+    Then I choose to expand the Dilation section
+    Then I choose left Dilation of "5" and drops of "4"
+    Then I choose right Dilation of "2" and drops of "2"
+
+    Then I choose to expand the Refraction section
+
+    Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
+    And I enter left cylinder details of of Cylinder "1" integer "4" fraction "0.25"
+    Then I enter left Axis degrees of "56"
+    And I enter a left type of "2"
+
+    Then I enter right Refraction details of Sphere "-1" integer "9" fraction "0.75"
+    And I enter right cylinder details of of Cylinder "1" integer "5" fraction "0"
+    Then I enter right Axis degrees of "167"
+    And I enter a right type of "3"
+
+    Then I Save the Examination
+
+  Scenario: Login and create a new Examination Event Route 1: Site 2 Queens, Firm 1 Anderson Cataract
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1                                                                                                                                                                                                                                                                                                       "
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+    Then I expand the Cataract sidebar
+    And I add a New Event "Examination"
+
+    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
+
+    And I choose to expand the Comorbidities section
+    Then I Add a Comorbiditiy of "8"
+
+    Then I choose to expand the Visual Acuity section
+    And I select a Visual Acuity of "1"
+    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
+    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
+
+    Then I choose to expand the Intraocular Pressure section
+    Then I choose a left Intraocular Pressure of "8" and Instrument "4"
+    Then I choose a right Intraocular Pressure of "77" and Instrument "1"
+
+    Then I choose to expand the Dilation section
+    Then I choose left Dilation of "5" and drops of "4"
+    Then I choose right Dilation of "2" and drops of "2"
+
+    Then I choose to expand the Refraction section
+
+    Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
+    And I enter left cylinder details of of Cylinder "1" integer "4" fraction "0.25"
+    Then I enter left Axis degrees of "56"
+    And I enter a left type of "2"
+
+    Then I enter right Refraction details of Sphere "-1" integer "9" fraction "0.75"
+    And I enter right cylinder details of of Cylinder "1" integer "5" fraction "0"
+    Then I enter right Axis degrees of "167"
+    And I enter a right type of "3"
 
     Then I Save the Examination
 
 
 
-  Examples: User details
-    | environment   | site      | username | password     | hospnumber   | nhs        | last           | first         | EventType     |
-    | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin,        | Violet        | Examination   |
 
 
-  # Site ID's:
-  # City Road - 1
-  # Last name to include a comma after to match search criteria i.e Coffin,
-  # Anaesthetist - non = Non-Consultant, no = No Consultant
-
- # Firm 18 = Allan Bruce (Cataract)
-
-  # Event Type
-  # Consent = Consent Form
 
   # Disorder/Comorbidities
   # 1=Angina

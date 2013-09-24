@@ -22,26 +22,26 @@ return array(
 	'disorder1' => array(
 		'id' => 1,
 		'fully_specified_name' => 'Myopia (disorder)',
-		'term' => 'Myopia',
-		'systemic' => 0,
+		'term' => 'Myopia', 
+		'systemic' => 1,
 	),
 	'disorder2' => array(
 		'id' => 2,
 		'fully_specified_name' => 'Retinal lattice degeneration (disorder)',
 		'term' => 'Retinal lattice degeneration',
-		'systemic' => 0,
+		'systemic' => 1,
 	),
 	'disorder3' => array(
 		'id' => 3,
 		'fully_specified_name' => 'Posterior vitreous detachment (disorder)',
 		'term' => 'Posterior vitreous detachment',
-		'systemic' => 0,
+		'systemic' => 1,
 	),
 	'disorder4' => array(
 		'id' => 4,
 		'fully_specified_name' => 'Vitreous hemorrhage (disorder)',
 		'term' => 'Vitreous haemorrhage',
-		'systemic' => 0,
+		'systemic' => 1,
 	),
 	'disorder5' => array(
 		'id' => 5,
