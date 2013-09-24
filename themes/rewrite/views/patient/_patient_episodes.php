@@ -16,39 +16,46 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+//FIXME
 ?>
-<div class="halfColumnRight">
+<section class="box patient-info episodes">
 <div class="blueBox">
-	<h5>All Episodes<span style="float:right;">&nbsp; open <?php echo $episodes_open?> &nbsp;|&nbsp;<span style="font-weight:normal;">closed <?php echo $episodes_closed?></span></span></h5>
-	<div id="yw0" class="grid-view">
+	<section class="box patient-info episodes">
+		<header class="box-header">
+			<h3 class="box-title">All Episodes</span></h3>
+			<div class="box-info">
+				<strong>open <?php echo $episodes_open?> &nbsp;|&nbsp;closed <?php echo $episodes_closed?></strong>
+			</div>
+		</header>
 		<?php if (empty($episodes)) {?>
 			<div class="summary">No episodes</div>
 		<?php } else {?>
-			<table class="items">
-				<thead>
-					<tr><th id="yw0_c0">Start  Date</th><th id="yw0_c1">End  Date</th><th id="yw0_c2">Firm</th><th id="yw0_c3">Subspecialty</th><th id="yw0_c4">Eye</th><th id="yw0_c5">Diagnosis</th></tr>
-				</thead>
-				<tbody>
-					<?php foreach ($ordered_episodes as $specialty_episodes) {?>
-						<tr>
-						<td colspan="6" class="all-episode specialty small"><?php echo $specialty_episodes['specialty'] ?></td>
-						</tr>
-						<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
-							<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0) {?>even<?php } else {?>odd<?php }?><?php if ($episode->end_date !== null) {?> closed<?php }?>">
-								<td><?php echo $episode->NHSDate('start_date'); ?></td>
-								<td><?php echo $episode->NHSDate('end_date'); ?></td>
-								<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
-								<td><?php echo CHtml::encode($episode->getSubspecialtyText())?></td>
-								<td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
-								<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
-							</tr>
-						<?php }?>
-					<?php }?>
-				</tbody>
-			</table>
-			<div class="table_endRow"></div>
+		<table class="patient-episodes grid">
+
+			<thead>
+			<tr><th id="yw0_c0">Start  Date</th><th id="yw0_c1">End  Date</th><th id="yw0_c2">Firm</th><th id="yw0_c3">Subspecialty</th><th id="yw0_c4">Eye</th><th id="yw0_c5">Diagnosis</th></tr>
+			</thead>
+			<tbody>
+			<?php foreach ($ordered_episodes as $specialty_episodes) {?>
+				<tr>
+					<td colspan="6" class="all-episode specialty small"><?php echo $specialty_episodes['specialty'] ?></td>
+				</tr>
+				<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
+					<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0) {?>even<?php } else {?>odd<?php }?><?php if ($episode->end_date !== null) {?> closed<?php }?>">
+						<td><?php echo $episode->NHSDate('start_date'); ?></td>
+						<td><?php echo $episode->NHSDate('end_date'); ?></td>
+						<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
+						<td><?php echo CHtml::encode($episode->getSubspecialtyText())?></td>
+						<td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
+						<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
+					</tr>
+				<?php }?>
+			<?php }?>
+			</tbody>
+		</table>
 		<?php }?>
-	</div>
+	</section>
 </div>
 <?php
 $editable = false;
@@ -104,4 +111,4 @@ try {
 	$this->renderPartial('_family_history');
 }
 ?>
-</div>
+</section>

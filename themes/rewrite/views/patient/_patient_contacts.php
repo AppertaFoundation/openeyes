@@ -46,7 +46,7 @@
 		</div>
 
 		<?php
-
+// FIXME:
 		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			'name'=>"contactname",
 			'id'=>"contactname",
