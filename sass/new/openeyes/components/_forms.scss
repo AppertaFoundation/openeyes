@@ -1,3 +1,5 @@
+$oe-form-input-radius: 3px !default;
+
 /* Standard Forms */
 form {
 	margin: 0 0 $form-spacing;
@@ -130,75 +132,6 @@ small.error {
 	display: block;
 }
 
-// Common forms
-//
-// Forms used throughout the application. Make note of how the form is layed out,
-// using the grid system.
-//
-// Markup:
-// <form class="form {$modifiers}">
-//     <div class="row">
-//         <div class="small-4 columns">
-//             <label for="username" class="inline">Username:</label>
-//         </div>
-//         <div class="small-8 columns">
-//             <input type="text" id="username" placeholder="Enter username...">
-//         </div>
-//     </div>
-//     <div class="row">
-//         <div class="small-4 columns">
-//             <label for="password" class="inline">Password:</label>
-//         </div>
-//         <div class="small-8 columns">
-//             <input type="password" id="password" placeholder="Enter password...">
-//         </div>
-//     </div>
-//     <div class="row text-right">
-//         <div class="small-12 columns">
-//             <button type="submit">
-//                 Login
-//             </button>
-//         </div>
-//     </div>
-// </form>
-//
-// .panel             - A fancy form panel
-// .login             - A login form
-// .panel.login       - A login form panel
-//
-// Styleguide 9.1
-
-// Forms variables
-$oe-form-panel-bg-color: #e2dfdb !default;
-$oe-form-panel-padding: 30px !default;
-$oe-form-panel-radius: 10px !default;
-$oe-form-panel-border-width: 2px !default;
-$oe-form-panel-border-color: #666666 !default;
-$oe-form-login-margin-top: 50px !default;
-$oe-form-login-margin-bottom: 100px !default;
-$oe-form-input-radius: 3px !default;
-
-.form {
-	&.panel {
-		@include border-radius($oe-form-panel-radius);
-		background: $oe-form-panel-bg-color;
-		border: $oe-form-panel-border-width solid $oe-form-panel-border-color;
-		padding: $oe-form-panel-padding;
-	}
-	&.login {
-		margin: $oe-form-login-margin-top auto $oe-form-login-margin-bottom auto;
-		max-width: 488px;
-		label {
-			font-size: emCalc(15px);
-		}
-		.loader {
-			margin-right: 10px;
-		}
-	}
-	[type="submit"] {
-		margin: 0;
-	}
-}
 
 label {
 	&.highlight {

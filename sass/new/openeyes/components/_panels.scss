@@ -9,6 +9,7 @@
 	margin-top: 0;
 }
 
+@import "panels/main";
 @import "panels/user";
 @import "panels/patient";
 @import "panels/search";
@@ -17,3 +18,5 @@
 @import "panels/specialty";
 @import "panels/episode";
 @import "panels/element";
+@import "panels/login";
+@import "panels/error";
