@@ -128,7 +128,7 @@ class ConsentFormContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I select the Anasethetic leflet checkbox$/
+     * @Given /^I select the Anaesthetic leaflet checkbox$/
      */
     public function iSelectTheAnasetheticLefletCheckbox()
     {

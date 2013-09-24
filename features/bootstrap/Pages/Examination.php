@@ -20,6 +20,10 @@ class Examination extends Page
         'snellenLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_value']"),
         'readingLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_method_id']"),
         'openRightVA' => array('xpath' => "//*[@id='active_elements']/div[3]//*[@class='side left eventDetail']//*[contains(text(),'Add')]"),
+        'ETDRSSnellenRight' => array('xpath' => "//*[@id='visualacuity_reading_1_value']"),
+        'ETDRSSnellenLeft' => array('xpath' => "//*[@id='visualacuity_reading_0_value']"),
+        'ETDRSreadingRight' => array('xpath' => "//*[@id='visualacuity_reading_1_method_id']"),
+        'ETDRSreadingLeft' => array('xpath' => "//*[@id='visualacuity_reading_0_method_id']"),
         'snellenRight' => array('xpath' => "//select[@id='visualacuity_reading_1_value']"),
         'readingRight' => array('xpath' => "//select[@id='visualacuity_reading_1_method_id']"),
 
@@ -132,6 +136,22 @@ class Examination extends Page
         $this->getElement('openRightVA')->click();
         $this->getElement('snellenRight')->selectOption($metre);
         $this->getElement('readingRight')->selectOption($method);
+    }
+
+    public function leftETDRS ($metre, $method)
+    {
+        $this->getElement('openLeftVA')->click();
+        $this->getSession()->wait(3000, '$.active == 0');
+        $this->getElement('ETDRSSnellenLeft')->selectOption($metre);
+        $this->getElement('ETDRSreadingLeft')->selectOption($method);
+    }
+
+    public function rightETDRS ($metre, $method)
+    {
+        $this->getElement('openRightVA')->click();
+        $this->getSession()->wait(3000, '$.active == 0');
+        $this->getElement('ETDRSSnellenRight')->selectOption($metre);
+        $this->getElement('ETDRSreadingRight')->selectOption($method);
     }
 
     protected function isIntraocularPressureCollapsed()
@@ -311,7 +331,7 @@ class Examination extends Page
 
     public function saveExamination ()
     {
-        $this->getSession()->wait(10000);
+        $this->getSession()->wait(5000);
         $this->getElement('saveExamination')->click();
     }
 
