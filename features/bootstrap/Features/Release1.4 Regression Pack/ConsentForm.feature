@@ -29,7 +29,7 @@ Feature: Create New Examination
     Then I choose Permissions for images No
 
     And I select the Information leaflet checkbox
-#    And I select the Anasethetic leflet checkbox
+#    And I select the Anaesthetic leaflet checkbox
 #    Then I select a Witness Required checkbox
 #    And I enter a Witness Name of "Joe Bloggs"
 #    Then I select a Interpreter required checkbox
