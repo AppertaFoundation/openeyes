@@ -17,46 +17,20 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<?php $this->renderPartial('//base/_meta')?>
-	<?php $this->renderPartial('//base/_assets')?>
-	<?php $this->renderPartial('//base/_tracking')?>
-</head>
-<body class="open-eyes">
-
-	<?php $this->renderPartial('//base/_banner_watermark')?>
-	<?php $this->renderPartial('//base/_debug')?>
-
-	<div class="container main" role="main">
-
-		<header class="header row">
-
-			<!-- Branding (logo) -->
-			<div class="large-2 column">
-				<?php $this->renderPartial('//base/_brand'); ?>
-			</div>
-
-			<!-- Patient panel -->
-			<div class="large-4 medium-5 column">
-				<?php if ($this->renderPatientPanel === true) {
-					$this->renderPartial('//patient/_patient_id');
-				}?>
-			</div>
-
-			<!-- User panel (with site navigation) -->
-			<div class="large-6 medium-7 column">
-				<?php $this->renderPartial('//base/_form'); ?>
-			</div>
-		</header><!-- /.header -->
-
-		<div class="container content">
-			<?php echo $content; ?>
-		</div><!-- /.content -->
-
-		<?php $this->renderPartial('//base/_footer')?>
-
-	</div><!-- /.main.container -->
-</body>
-</html>
+<?php
+	$helpdesk_phone = Yii::app()->params['helpdesk_phone'];
+	$helpdesk_email = Yii::app()->params['helpdesk_email'];
+	$this->layout = 'error';
+?>
+<h2>Application Error</h2>
+<p class="panel"><strong>There has been a problem trying to access OpenEyes, please
+	try again in a moment</strong></p>
+<p class="panel">If there continues to be a problem please contact support.</p>
+<h3>Support Options</h3>
+<ul>
+	<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
+	<li>Less urgent issues email <a
+		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
+	</a></li>
+</ul>
+<p class="date"><?php echo date('r'); ?></p>

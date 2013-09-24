@@ -13,9 +13,6 @@
 <link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" />
 <link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/>
 
-<?php $this->renderPartial('//base/_assets')?>
-<?php $this->renderPartial('//base/_tracking')?>
-
 <script type="text/javascript">
 	var baseUrl = '<?php echo Yii::app()->baseUrl?>';
 </script>

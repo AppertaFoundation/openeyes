@@ -22,41 +22,32 @@
 <head>
 	<?php $this->renderPartial('//base/_meta')?>
 	<?php $this->renderPartial('//base/_assets')?>
-	<?php $this->renderPartial('//base/_tracking')?>
 </head>
 <body class="open-eyes">
-
-	<?php $this->renderPartial('//base/_banner_watermark')?>
-	<?php $this->renderPartial('//base/_debug')?>
 
 	<div class="container main" role="main">
 
 		<header class="header row">
-
 			<!-- Branding (logo) -->
-			<div class="large-2 column">
+			<div class="large-2 column end">
 				<?php $this->renderPartial('//base/_brand'); ?>
-			</div>
-
-			<!-- Patient panel -->
-			<div class="large-4 medium-5 column">
-				<?php if ($this->renderPatientPanel === true) {
-					$this->renderPartial('//patient/_patient_id');
-				}?>
-			</div>
-
-			<!-- User panel (with site navigation) -->
-			<div class="large-6 medium-7 column">
-				<?php $this->renderPartial('//base/_form'); ?>
 			</div>
 		</header><!-- /.header -->
 
 		<div class="container content">
-			<?php echo $content; ?>
+			<h1 class="badge hide-offscreen">Error</h1>
+			<div class="row">
+				<div class="large-11 small-11 small-centered large-centered column">
+					<div class="panel error">
+						<?php echo $content; ?>
+					</div>
+				</div>
+			</div>
 		</div><!-- /.content -->
 
 		<?php $this->renderPartial('//base/_footer')?>
 
 	</div><!-- /.main.container -->
+
 </body>
 </html>
