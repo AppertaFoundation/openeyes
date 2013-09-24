@@ -38,6 +38,10 @@ $oe-panel-search-padding: emCalc(15px) 0;
 		padding: $oe-panel-search-padding;
 		input {
 			margin: 0;
+			&.large {
+				padding-top: emCalc(11px);
+				padding-bottom: emCalc(11px);
+			}
 		}
 	}
 }
