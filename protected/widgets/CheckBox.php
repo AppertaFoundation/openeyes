@@ -21,10 +21,8 @@ class CheckBox extends BaseCWidget
 {
 	public $field;
 	public $labeltext;
-	public $options;
 	public $columns = array();
 	public $checked = array();
-	public $htmlOptions = array();
 
 	public function init()
 	{

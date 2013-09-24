@@ -20,9 +20,15 @@
 <?php if (@$htmlOptions['nowrapper']) {?>
 	<?php echo CHtml::textField($name, $value, $htmlOptions)?>
 <?php } else {?>
-	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail" <?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-		<div class="label"><?php echo empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label']?>:</div>
-		<div class="data">
+	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row" <?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
+		<div class="large-2 column">
+			<?php
+			$labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
+			$labelText .= ':';
+			echo Chtml::label($labelText, Chtml::getIdByName($name));
+			?>
+		</div>
+		<div class="large-10 column">
 			<?php if (@$htmlOptions['password']) { ?>
 				<?php echo CHtml::passwordField($name, $value, $htmlOptions)?>
 			<?php } else {?>

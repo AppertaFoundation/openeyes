@@ -21,7 +21,6 @@ class DropDownListRow extends BaseCWidget
 {
 	public $fields;
 	public $datas;
-	public $htmlOptions;
 	public $values = array();
 
 	public function init()

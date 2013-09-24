@@ -20,6 +20,5 @@
 class TextField extends BaseCWidget
 {
 	public $name;
-	public $htmlOptions;
-	public $links=array();
+	public $links = array();
 }

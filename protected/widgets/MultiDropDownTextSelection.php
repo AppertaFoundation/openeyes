@@ -19,6 +19,4 @@
 
 class MultiDropDownTextSelection extends BaseCWidget
 {
-	public $options;
-	public $htmlOptions;
 }

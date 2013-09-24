@@ -19,8 +19,6 @@
 
 class MultiSelectList extends BaseCWidget
 {
-	public $htmlOptions;
-	public $options = array();
 	public $default_options = array();
 	public $filtered_options = array();
 	public $relation;

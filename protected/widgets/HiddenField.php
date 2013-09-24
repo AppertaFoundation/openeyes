@@ -19,5 +19,4 @@
 
 class HiddenField extends BaseCWidget
 {
-	public $htmlOptions;
 }

@@ -20,5 +20,4 @@
 class DropDownList extends BaseCWidget
 {
 	public $data;
-	public $htmlOptions;
 }

@@ -20,7 +20,6 @@
 class DiagnosisSelection extends BaseCWidget
 {
 	public $selectedFirmId;
-	public $options;
 	public $dropdownOptions;
 	public $class;
 	public $form;

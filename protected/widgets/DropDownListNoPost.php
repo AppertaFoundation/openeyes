@@ -19,8 +19,6 @@
 
 class DropDownListNoPost extends BaseCWidget
 {
-	public $options;
-	public $htmlOptions;
 	public $id;
 	public $selected_value;
 }

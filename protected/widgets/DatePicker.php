@@ -20,8 +20,6 @@
 class DatePicker extends BaseCWidget
 {
 	public $name;
-	public $options;
-	public $htmlOptions;
 
 	public function run()
 	{
