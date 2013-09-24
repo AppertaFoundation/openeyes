@@ -3127,6 +3127,10 @@ ul.pagination li:last-child a {
 .box.admin h2 {
   margin-bottom: 0.75em;
 }
+/* line 192, ../sass/new/openeyes/components/_boxes.scss */
+.box.admin .table-actions select {
+  width: auto;
+}
 
 /* line 1, ../sass/new/openeyes/components/_icons.scss */
 [class*="icon-"] {

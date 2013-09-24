@@ -188,5 +188,10 @@ $oe-box-event-border-width: 0 5px 5px !default;
 		h2 {
 			margin-bottom: emCalc(12px);
 		}
+		.table-actions {
+			select {
+				width: auto;
+			}
+		}
 	}
 }
