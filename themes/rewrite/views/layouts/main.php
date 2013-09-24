@@ -20,13 +20,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/_head',array())?>
+	<?php $this->renderPartial('//base/_head')?>
 </head>
-
 <body class="open-eyes">
 
-	<?php $this->renderPartial('//base/_banner_watermark',array())?>
-	<?php $this->renderPartial('//base/_debug',array())?>
+	<?php $this->renderPartial('//base/_banner_watermark')?>
+	<?php $this->renderPartial('//base/_debug')?>
 
 	<div class="container main" role="main">
 
@@ -40,13 +39,13 @@
 			<!-- Patient panel -->
 			<div class="large-4 medium-5 columns">
 				<?php if ($this->renderPatientPanel === true) {
-					$this->renderPartial('//patient/_patient_id', array());
+					$this->renderPartial('//patient/_patient_id');
 				}?>
 			</div>
 
 			<!-- User panel (with site navigation) -->
 			<div class="large-6 medium-7 columns">
-				<?php $this->renderPartial('//base/_form', array()); ?>
+				<?php $this->renderPartial('//base/_form'); ?>
 			</div>
 		</header><!-- /.header -->
 
@@ -54,7 +53,7 @@
 			<?php echo $content; ?>
 		</div><!-- /.content -->
 
-		<?php $this->renderPartial('//base/_footer',array())?>
+		<?php $this->renderPartial('//base/_footer')?>
 
 	</div><!-- /.main.container -->
 </body>
