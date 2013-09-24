@@ -72,7 +72,7 @@
 	</script>
 </head>
 
-<body>
+<body class="open-eyes">
 	<?php $this->renderPartial('//base/_banner_watermark',array())?>
 	<?php $this->renderPartial('//base/_debug',array())?>
 	<div class="container main" role="main">

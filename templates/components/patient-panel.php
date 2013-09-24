@@ -2,7 +2,8 @@
 	<div class="patient-details">
 		<a href="#">
 			<span class="patient-surname">COTTRELL,</span>
-			<span class="patient-name">Kristen (48)</span>
+			<span class="patient-name">Kristen</span>
+			<span class="patient-age">(48)</span>
 		</a>
 	</div>
 	<div class="hospital-number">

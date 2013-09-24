@@ -157,7 +157,6 @@
 // Styleguide 20
 @import "openeyes/components/events";
 
-
 // Dialog
 //
 // Dialog component styles
@@ -182,3 +181,11 @@
 //
 // Styleguide 22
 @import "openeyes/components/helpers";
+
+
+// jQuery UI
+//
+// Override some of the base jquery ui styles.
+//
+// Styleguide 22
+@import "openeyes/components/_jquery-ui";

@@ -77,13 +77,18 @@
 <body>
 <?php $this->renderPartial('//base/_banner_watermark',array())?>
 <?php $this->renderPartial('//base/_debug',array())?>
+
 <div class="container main" role="main">
 	<header class="header row">
-		<div class="large-3 columns">
+		<div class="large-2 column">
 			<?php $this->renderPartial('//base/_brand'); ?>
 		</div>
-		<?php $this->renderPartial('//base/_form', array()); ?>
-		<?php $this->renderPartial('//patient/_patient_id', array()); ?>
+		<div class="large-4 medium-5 column">
+			<?php $this->renderPartial('//patient/_patient_id', array()); ?>
+		</div>
+		<div class="large-6 medium-7 column">
+			<?php $this->renderPartial('//base/_form', array()); ?>
+		</div>
 	</header> <!-- .header -->
 	<div class="container content">
 		<?php echo $content; ?>

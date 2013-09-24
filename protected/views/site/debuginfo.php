@@ -44,7 +44,7 @@ $ex = explode('/',file_get_contents(".git/HEAD"));
 $branch = array_pop($ex);
 ?>
 <div id="debug-info-modal">
-	<strong>This information is provided to assist the helpdesk in diagnosing any problems</strong><br/><br/>
+	<p><strong>This information is provided to assist the helpdesk in diagnosing any problems</strong></p>
 	<code>
 		Served, with love, by: <?php echo $hostname?><br />
 		Docroot: <?php echo @$_SERVER['DOCUMENT_ROOT']?><br />
