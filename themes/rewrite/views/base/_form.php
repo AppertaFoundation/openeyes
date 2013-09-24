@@ -59,10 +59,13 @@ if (!Yii::app()->user->isGuest) {
 				<div class="user-id">
 					You are logged in as:
 					<div class="user-name">
-						<?php if (Yii::app()->params['profile_user_can_edit']) {
-							echo CHtml::link("<strong>$user->first_name $user->last_name</strong>",Yii::app()->createUrl('/profile'),array('class'=>'profileLink'));
-						} else {?>
-						<strong><?php echo $user->first_name?> <?php echo $user->last_name?></strong>
+						<?php if (Yii::app()->params['profile_user_can_edit']) {?>
+							<a href="<?php echo Yii::app()->createUrl('/profile');?>">
+								<span class="icon-user-panel-cog"></span>
+								<strong><?php echo $user->first_name.' '.$user->last_name;?></strong>
+							</a>
+						<?php } else {?>
+							<strong><?php echo $user->first_name?> <?php echo $user->last_name?></strong>
 						<?php }?>
 					</div>
 				</div>

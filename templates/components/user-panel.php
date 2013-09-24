@@ -9,7 +9,12 @@
 		<div class="large-3 column">
 			<div class="user-id">
 				You are logged in as:
-				<div class="user-name"><strong>Enoch Root</strong></div>
+				<div class="user-name">
+					<a href="#">
+						<span class="icon-user-panel-cog"></span>
+						<strong>Enoch Root</strong>
+					</a>
+				</div>
 			</div>
 		</div>
 		<div class="large-9 column">

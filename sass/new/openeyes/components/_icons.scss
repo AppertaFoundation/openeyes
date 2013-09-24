@@ -92,3 +92,16 @@
 
 // Small button icons
 @include sprite($oe-sprite-icon-patient, "icon-patient", 30px, 30px);
+
+// User panel icons
+//
+// User panel icons
+//
+// Markup:
+// <span class="{$modifiers}">Description</span>
+//
+// .icon-user-panel-cog				- User profile cog
+// .icon-user-panel-cog-highlight	- User profile cog highlight (hover)
+//
+// Styleguide 15.5
+@include sprite($oe-sprite-icon-user-panel, "icon-user-panel", 16px, 14px);

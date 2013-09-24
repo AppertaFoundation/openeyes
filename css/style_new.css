@@ -2679,7 +2679,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
 /* line 43, ../sass/new/openeyes/components/_navigation.scss */
 .navigation.user {
   margin-left: 0;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.375em;
 }
 /* line 46, ../sass/new/openeyes/components/_navigation.scss */
 .navigation.user li {
@@ -3250,6 +3250,23 @@ ul.pagination li:last-child a {
   background-position: 0 -60px;
 }
 
+/* line 20, ../sass/new/openeyes/_mixins.scss */
+[class*="icon-user-panel"] {
+  background: url('../img/new/sprites/_user-panel-s979ca8dc6f.png') no-repeat;
+  width: 16px;
+  height: 14px;
+}
+
+/* line 26, ../sass/new/openeyes/_mixins.scss */
+.icon-user-panel-cog-highlight {
+  background-position: 0 0;
+}
+
+/* line 26, ../sass/new/openeyes/_mixins.scss */
+.icon-user-panel-cog {
+  background-position: 0 -14px;
+}
+
 /* line 6, ../sass/new/openeyes/components/_panels.scss */
 .panel {
   border-style: solid;
@@ -3300,6 +3317,7 @@ ul.pagination li:last-child a {
   background-image: url('../img/new/_elements/icons/user/idcard_bg.png?1379601760');
   background-repeat: no-repeat;
   background-position: left bottom;
+  border-color: #b3b0ae;
   margin: 0;
 }
 /* line 44, ../sass/new/foundation/components/_panels.scss */
@@ -3334,12 +3352,32 @@ ul.pagination li:last-child a {
     border-radius: 0 0 5px 5px;
   }
 }
-/* line 56, ../sass/new/openeyes/components/panels/_user.scss */
+/* line 57, ../sass/new/openeyes/components/panels/_user.scss */
 .panel.user .user-id, .panel.user .user-firm {
-  font-size: 0.8125em;
-  min-height: 1.625em;
+  font-size: 0.75em;
+  min-height: 1.5em;
 }
-/* line 60, ../sass/new/openeyes/components/panels/_user.scss */
+/* line 61, ../sass/new/openeyes/components/panels/_user.scss */
+.panel.user .user-firm {
+  padding-top: 1.25em;
+}
+/* line 64, ../sass/new/openeyes/components/panels/_user.scss */
+.panel.user .user-name {
+  padding-top: 0.3125em;
+}
+/* line 66, ../sass/new/openeyes/components/panels/_user.scss */
+.panel.user .user-name span, .panel.user .user-name strong {
+  float: left;
+}
+/* line 69, ../sass/new/openeyes/components/panels/_user.scss */
+.panel.user .user-name strong {
+  margin: 2px 0 0 3px;
+}
+/* line 73, ../sass/new/openeyes/components/panels/_user.scss */
+.panel.user .user-name a:hover [class*="icon-user-panel"] {
+  background-position: 0 0;
+}
+/* line 79, ../sass/new/openeyes/components/panels/_user.scss */
 .panel.user .row {
   clear: both;
 }
@@ -3367,6 +3405,7 @@ ul.pagination li:last-child a {
   border-color: #ffb212;
   border-style: solid;
   border-width: 2px;
+  position: relative;
 }
 /* line 44, ../sass/new/foundation/components/_panels.scss */
 .panel.patient > :first-child {
@@ -3400,29 +3439,40 @@ ul.pagination li:last-child a {
     border-radius: 0 0 5px 5px;
   }
 }
-/* line 70, ../sass/new/openeyes/components/panels/_patient.scss */
+/* line 71, ../sass/new/openeyes/components/panels/_patient.scss */
 .panel.patient .patient-details {
   padding-bottom: 0.25em;
 }
-/* line 72, ../sass/new/openeyes/components/panels/_patient.scss */
+/* line 73, ../sass/new/openeyes/components/panels/_patient.scss */
 .panel.patient .patient-details a {
   color: black;
 }
-/* line 76, ../sass/new/openeyes/components/panels/_patient.scss */
+/* line 77, ../sass/new/openeyes/components/panels/_patient.scss */
 .panel.patient .patient-surname {
   font-size: 0.875em;
   font-weight: bold;
   text-transform: uppercase;
 }
-/* line 83, ../sass/new/openeyes/components/panels/_patient.scss */
-.panel.patient .patient-name {
+/* line 84, ../sass/new/openeyes/components/panels/_patient.scss */
+.panel.patient .patient-name, .panel.patient .patient-age {
   font-size: 0.8125em;
 }
-/* line 86, ../sass/new/openeyes/components/panels/_patient.scss */
-.panel.patient .hospital-number, .panel.patient .nhs-number, .panel.patient .patient-summary-anchor {
+/* line 87, ../sass/new/openeyes/components/panels/_patient.scss */
+.panel.patient .hospital-number, .panel.patient .nhs-number {
   font-size: 0.75em;
 }
-/* line 89, ../sass/new/openeyes/components/panels/_patient.scss */
+/* line 90, ../sass/new/openeyes/components/panels/_patient.scss */
+.panel.patient .patient-summary-anchor {
+  font-size: 0.6875em;
+  position: absolute;
+  right: 0;
+  bottom: 1em;
+}
+/* line 96, ../sass/new/openeyes/components/panels/_patient.scss */
+.panel.patient .hospital-number {
+  margin-bottom: 0.25em;
+}
+/* line 99, ../sass/new/openeyes/components/panels/_patient.scss */
 .panel.patient .nhs-number {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
