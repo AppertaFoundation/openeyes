@@ -55,7 +55,7 @@
 							<?php if (BaseController::checkUserLevel(4)) { ?>
 								<form>
 									<div class="box-actions">
-										<button class="secondary small">
+										<button id="btn-add_new_systemic_diagnosis" class="secondary small">
 											Add Systemic Diagnosis
 										</button>
 									</div>
@@ -105,8 +105,14 @@
 
 								<div align="right">
 									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader" style="display: none;" />
-									<button class="classy green mini btn_save_systemic_diagnosis" type="submit"><span class="button-span button-span-green">Save</span></button>
-									<button class="classy red mini btn_cancel_systemic_diagnosis" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+									<div class="buttons">
+										<button type="submit" class="secondary small btn_save_systemic_diagnosis">
+											Save
+										</button>
+										<button class="warning small btn_cancel_systemic_diagnosis">
+											Cancel
+										</button>
+									</div>
 								</div>
 
 								<?php $this->endWidget()?>

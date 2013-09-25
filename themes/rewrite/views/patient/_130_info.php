@@ -53,7 +53,7 @@
 								<div align="center" style="margin-top:10px;">
 									<form>
 										<div class="box-actions">
-											<button class="secondary small">
+											<button id="btn-edit_oph_info" class="secondary small">
 												Edit
 											</button>
 										</div>
@@ -90,8 +90,14 @@
 									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 									<div align="right">
 										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_oph_info_loader" style="display: none;" />
-										<button class="classy green mini btn_save_oph_info" type="submit"><span class="button-span button-span-green">Save</span></button>
-										<button class="classy red mini btn_cancel_oph_info" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+										<div class="buttons">
+											<button type="submit" class="secondary small btn_save_previous_operation btn_save_oph_info">
+												Save
+											</button>
+											<button class="warning small btn_cancel_previous_operation btn_cancel_oph_info">
+												Cancel
+											</button>
+										</div>
 									</div>
 
 									<?php $this->endWidget(); ?>

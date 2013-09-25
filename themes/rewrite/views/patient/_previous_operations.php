@@ -40,7 +40,7 @@
 
 								<div class="box-actions">
 									<form>
-									<button class="secondary small">
+									<button id="btn-add_previous_operation" class="secondary small">
 										Add Previous operation
 									</button></form>
 								</div>
@@ -92,8 +92,14 @@
 
 									<div align="right">
 										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
-										<button class="classy green mini btn_save_previous_operation" type="submit"><span class="button-span button-span-green">Save</span></button>
-										<button class="classy red mini btn_cancel_previous_operation" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+										<div class="buttons">
+											<button type="submit" class="secondary small btn_save_previous_operation">
+												Save
+											</button>
+											<button class="warning small btn_cancel_previous_operation">
+												Cancel
+											</button>
+										</div>
 									</div>
 
 									<?php $this->endWidget()?>

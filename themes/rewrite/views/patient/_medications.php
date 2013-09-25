@@ -42,7 +42,7 @@
 
 							<form>
 								<div class="box-actions">
-									<button class="secondary small">
+									<button  id="btn-add_medication" class="secondary small">
 										Add Medication
 									</button>
 								</div>
@@ -151,8 +151,14 @@
 
 								<div align="right">
 									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
-									<button class="classy green mini btn_save_medication" type="submit"><span class="button-span button-span-green">Save</span></button>
-									<button class="classy red mini btn_cancel_medication" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+									<div class="buttons">
+										<button type="submit" class="secondary small btn_save_medication">
+											Save
+										</button>
+										<button class="warning small btn_cancel_medication">
+											Cancel
+										</button>
+									</div>
 								</div>
 
 								<?php $this->endWidget()?>

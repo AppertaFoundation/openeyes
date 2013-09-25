@@ -138,7 +138,6 @@
 				</div>
 <script type="text/javascript">
 
-	console.log($('#btn-add_new_ophthalmic_diagnosis').length)
 	$('#btn-add_new_ophthalmic_diagnosis').click(function() {
 		$('#add_new_ophthalmic_diagnosis').slideToggle('fast');
 		$('#btn-add_new_ophthalmic_diagnosis').attr('disabled',true);

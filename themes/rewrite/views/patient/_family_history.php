@@ -41,7 +41,7 @@
 							<?php if (BaseController::checkUserLevel(4)) { ?>
 								<form>
 									<div class="box-actions">
-										<button class="secondary small">
+										<button id="btn-add_family_history" class="secondary small">
 											Add Family History
 										</button>
 									</div>
@@ -97,9 +97,16 @@
 
 									<div align="right">
 										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_family_history_loader" style="display: none;" />
-										<button class="classy green mini btn_save_family_history" type="submit"><span class="button-span button-span-green">Save</span></button>
-										<button class="classy red mini btn_cancel_family_history" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+										<div class="buttons">
+											<button type="submit" class="secondary small btn_save_family_history">
+												Save
+											</button>
+											<button class="warning small btn_cancel_family_history">
+												Cancel
+											</button>
+										</div>
 									</div>
+
 
 									<?php $this->endWidget()?>
 								</div>
