@@ -26,13 +26,13 @@ class BaseCWidget extends CWidget
 	public $assetFolder;
 	public $hidden = false;
 	public $htmlOptions = array();
-	public $options = array();
-	public $defaultOptions = array();
+	public $widgetOptions = array();
+	public $defaultWidgetOptions = array();
 
 	public function init()
 	{
 		// Merge the supplied options with the default options.
-		$this->options = array_merge($this->defaultOptions, $this->options);
+		$this->widgetOptions = array_merge($this->defaultWidgetOptions, $this->widgetOptions);
 
 		if (is_object($this->element)) {
 			if (empty($_POST)) {

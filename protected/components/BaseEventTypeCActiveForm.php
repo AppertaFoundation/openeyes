@@ -19,6 +19,9 @@
 
 class BaseEventTypeCActiveForm extends CActiveForm
 {
+
+	public $widgetOptions = array();
+
 	public function dropDownList($model, $field, $data, $htmlOptions=array(), $hidden=false)
 	{
 		$this->widget('application.widgets.DropDownList', array(
@@ -109,19 +112,19 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		), $options));
 	}
 
-	public function textField($element, $field, $htmlOptions=array(), $links=array(), $options=array())
+	public function textField($element, $field, $htmlOptions=array(), $links=array(), $widgetOptions=array())
 	{
 		$this->widget('application.widgets.TextField', array(
 			'element' => $element,
 			'name' => get_class($element)."[$field]",
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
-			'options' => $options,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions),
 			'links' => $links
 		));
 	}
 
-	public function passwordField($element, $field, $htmlOptions=array(), $options=array())
+	public function passwordField($element, $field, $htmlOptions=array(), $widgetOptions=array())
 	{
 		$htmlOptions['password'] = 1;
 		$this->widget('application.widgets.TextField', array(
@@ -129,7 +132,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'name' => get_class($element)."[$field]",
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
-			'options' => $options
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 

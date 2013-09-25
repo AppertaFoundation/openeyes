@@ -21,14 +21,14 @@
 	<?php echo CHtml::textField($name, $value, $htmlOptions)?>
 <?php } else {?>
 	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row" <?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-		<div class="large-<?php echo $options['labelColumns'];?> column">
+		<div class="large-<?php echo $widgetOptions['labelColumns'];?> column">
 			<?php
 			$labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
 			$labelText .= ':';
 			echo Chtml::label($labelText, Chtml::getIdByName($name));
 			?>
 		</div>
-		<div class="large-<?php echo $options['fieldColumns'];?> column end">
+		<div class="large-<?php echo $widgetOptions['fieldColumns'];?> column end">
 			<?php if (@$htmlOptions['password']) { ?>
 				<?php echo CHtml::passwordField($name, $value, $htmlOptions)?>
 			<?php } else {?>
