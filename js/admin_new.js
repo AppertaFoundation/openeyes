@@ -1,30 +1,38 @@
 $(document).ready(function() {
+
 	$('#selectall').click(function() {
 		$('input[type="checkbox"]').attr('checked',this.checked);
 	});
 
-	$('#admin_users').find('tr').on('click', function() {
-		var userId = $(this).data('user-id');
-		if (userId) {
-			window.location.href = baseUrl+'/admin/editUser/'+userId;
-		}
-	})
+	function tableRowClick(table, action) {
 
-	$('#admin_users li .column_id, #admin_users li .column_username, #admin_users li .column_title, #admin_users li .column_firstname, #admin_users li .column_lastname, #admin_users li .column_role, #admin_users li .column_doctor, #admin_users li .column_active').click(function(e) {
-		e.preventDefault();
+		$(table).find('tr').on('click', function(e) {
 
-		if ($(this).parent().attr('data-attr-id')) {
-			window.location.href = baseUrl+'/admin/editUser/'+$(this).parent().attr('data-attr-id');
-		}
+			var target = $(e.target);
+
+			// If the user clicked on an input element, or if this cell contains an input
+			// element then do nothing.
+			if (target.is(':input') || (target.is('td') && target.find('input').length)) {
+				return;
+			}
+
+			var id = $(this).data('id');
+
+			if (id) {
+				action(id);
+				window.location.href = baseUrl+'/admin/editUser/'+id;
+			}
+		});
+	}
+
+	tableRowClick('#admin_users', function(id) {
+		window.location.href = baseUrl+'/admin/editUser/'+id;
 	});
 
-	$('#admin_firms li .column_id, #admin_firms li .column_pas_code, #admin_firms li .column_name, #admin_firms li .column_subspecialty, #admin_firms li .column_consultant').click(function(e) {
-		e.preventDefault();
-
-		if ($(this).parent().attr('data-attr-id')) {
-			window.location.href = baseUrl+'/admin/editFirm/'+$(this).parent().attr('data-attr-id');
-		}
+	tableRowClick('#admin_firms', function(id) {
+		window.location.href = baseUrl+'/admin/editFirm/'+id;
 	});
+
 
 	$('#admin_contactlabels li .column_id, #admin_contactlabels li .column_name').click(function(e) {
 		e.preventDefault();
@@ -67,7 +75,7 @@ $(document).ready(function() {
 	handleButton($('#et_add'),function(e) {
 		e.preventDefault();
 
-		var e = window.location.href.split('/');
+		var e = window.location.href.split('?')[0].split('/');
 
 		for (var i in e) {
 			if (e[i] == 'admin') {
@@ -84,7 +92,7 @@ $(document).ready(function() {
 	handleButton($('#et_delete'),function(e) {
 		e.preventDefault();
 
-		var e = window.location.href.split('/');
+		var e = window.location.href.split('?')[0].split('/');
 
 		for (var i in e) {
 			if (e[i] == 'admin') {

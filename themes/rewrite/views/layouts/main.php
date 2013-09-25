@@ -20,14 +20,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<?php $this->renderPartial('//base/head/_meta')?>
-	<?php $this->renderPartial('//base/head/_assets')?>
-	<?php $this->renderPartial('//base/head/_tracking')?>
+	<?php $this->renderPartial('//base/head/_meta'); ?>
+	<?php $this->renderPartial('//base/head/_assets'); ?>
+	<?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes">
 
-	<?php $this->renderPartial('//base/_banner_watermark')?>
-	<?php $this->renderPartial('//base/_debug')?>
+	<?php $this->renderPartial('//base/_banner_watermark'); ?>
+	<?php $this->renderPartial('//base/_debug'); ?>
 
 	<div class="container main" role="main">
 
@@ -37,7 +37,7 @@
 			<?php echo $content; ?>
 		</div><!-- /.content -->
 
-		<?php $this->renderPartial('//base/_footer')?>
+		<?php $this->renderPartial('//base/_footer'); ?>
 
 	</div><!-- /.main.container -->
 </body>

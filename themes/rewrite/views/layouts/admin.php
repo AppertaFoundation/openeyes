@@ -22,32 +22,37 @@
 <head>
 	<?php $this->renderPartial('//base/head/_meta'); ?>
 	<?php $this->renderPartial('//base/head/_assets'); ?>
+	<?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes">
 
+	<?php $this->renderPartial('//base/_banner_watermark'); ?>
+	<?php $this->renderPartial('//base/_debug'); ?>
+
 	<div class="container main" role="main">
 
-		<header class="header row">
-			<!-- Branding (logo) -->
-			<div class="large-2 column end">
-				<?php $this->renderPartial('//base/_brand'); ?>
-			</div>
-		</header><!-- /.header -->
+		<?php $this->renderPartial('//base/_header'); ?>
 
 		<div class="container content">
-			<h1 class="badge hide-offscreen">Error</h1>
-			<div class="row">
-				<div class="large-11 small-11 small-centered large-centered column">
-					<div class="panel error">
+
+			<h1 class="badge admin">Profile</h1>
+
+			<div class="box content admin-content">
+				<div class="row">
+					<aside class="large-3 column sidebar admin">
+						<?php $this->renderPartial('//admin/sidebar'); ?>
+					</aside>
+					<div class="large-9 column">
 						<?php echo $content; ?>
 					</div>
 				</div>
 			</div>
+
 		</div><!-- /.content -->
 
 		<?php $this->renderPartial('//base/_footer'); ?>
 
 	</div><!-- /.main.container -->
-
 </body>
 </html>
+

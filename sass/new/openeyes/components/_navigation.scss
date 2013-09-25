@@ -78,6 +78,10 @@ $oe-navigation-user-anchor-selected-color: white !default;
 				color: #fff;
 				background: #3665ff;
 			}
+			&.selected {
+				background: #ccc;
+				color: #333;
+			}
 		}
 		li:last-child {
 			a {

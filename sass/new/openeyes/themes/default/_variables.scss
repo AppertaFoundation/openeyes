@@ -412,11 +412,11 @@ $pagination-link-unavailable-font-color: #999;
 $pagination-link-unavailable-bg-active: none;
 
 // We use these for currently selected anchor links
-$pagination-link-current-background: none;
-$pagination-link-current-font-color: #000;
+$pagination-link-current-background: #0b59da;
+$pagination-link-current-font-color: #fff;
 $pagination-link-current-font-weight: bold;
 $pagination-link-current-cursor: default;
-$pagination-link-current-active-bg: none;
+$pagination-link-current-active-bg: #0b59da;
 
 // ============================================
 // OpenEyes default theme variables

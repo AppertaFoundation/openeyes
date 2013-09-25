@@ -6,6 +6,9 @@ ul.pagination {
 		&:not(.label) {
 			border-right: 1px solid #999;
 		}
+		&.current {
+			border: 0;
+		}
 		&:last-child {
 			border: 0;
 			a {
@@ -16,7 +19,18 @@ ul.pagination {
 
 }
 
-/* Pagination centred wrapper */
+// Table pagination.
+tfoot.pagination-container {
+	.pagination {
+		margin: 0;
+		li {
+			font-size: 1.2em;
+			font-weight: normal;
+		}
+	}
+}
+
+/* Pagination centered wrapper */
 .pagination-centered {
 	@include pagination-container(true);
 
