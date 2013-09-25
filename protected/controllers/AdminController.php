@@ -164,12 +164,6 @@ class AdminController extends BaseController
 
 	public function actionFirms($id=false)
 	{
-		if ((integer) $id) {
-			$page = $id;
-		} else {
-			$page = 1;
-		}
-
 		Audit::add('admin-Firm','list');
 
 		$pagination = $this->initPagination(Firm::model());
@@ -238,15 +232,7 @@ class AdminController extends BaseController
 	public function getItems($params)
 	{
 		$model = $params['model']::model();
-		$pages = ceil(Yii::app()->db->createCommand()->select("count(*)")->from($model->tableName())->queryScalar() / $this->items_per_page);
-
-		/*if ($params['page'] <1) {
-			$page = 1;
-		} elseif ($params['page'] > $pages) {
-			$page = $pages;
-		} else {*/
-			$page = $params['page'];
-		//}
+		$page = $params['page'];
 
 		$criteria = new CDbCriteria;
 		if (isset($params['order'])) {
@@ -266,8 +252,6 @@ class AdminController extends BaseController
 
 		return array(
 			'items' => $params['model']::model()->findAll($criteria),
-			'page' => $page,
-			'pages' => $pages,
 		);
 	}
 

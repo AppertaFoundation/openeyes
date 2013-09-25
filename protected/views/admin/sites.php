@@ -24,8 +24,6 @@
 		<div class="pagination">
 			<?php echo $this->renderPartial('_pagination',array(
 				'prefix' => '/admin/sites/',
-				'page' => $sites['page'],
-				'pages' => $sites['pages'],
 				'pagination' => $pagination
 			))?>
 		</div>

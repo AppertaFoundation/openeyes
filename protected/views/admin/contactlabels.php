@@ -24,8 +24,6 @@
 		<div class="pagination">
 			<?php echo $this->renderPartial('_pagination',array(
 				'prefix' => '/admin/contactlabels/',
-				'page' => $contactlabels['page'],
-				'pages' => $contactlabels['pages'],
 				'pagination' => $pagination
 			))?>
 		</div>
