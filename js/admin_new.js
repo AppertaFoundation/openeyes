@@ -20,7 +20,6 @@ $(document).ready(function() {
 
 			if (id) {
 				action(id);
-				window.location.href = baseUrl+'/admin/editUser/'+id;
 			}
 		});
 	}
