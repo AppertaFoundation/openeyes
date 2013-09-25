@@ -24,9 +24,8 @@
 		<div class="pagination">
 			<?php echo $this->renderPartial('_pagination',array(
 				'prefix' => '/admin/contacts/',
-				'page' => $contacts['page'],
-				'pages' => $contacts['pages'],
 				'url' => '/admin/contacts?q='.@$_GET['q'].'&page={{PAGE}}',
+				'pagination' => $contacts['pagination'],
 			))?>
 		</div>
 		<div>

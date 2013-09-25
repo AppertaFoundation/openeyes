@@ -26,6 +26,7 @@
 				'prefix' => '/admin/sites/',
 				'page' => $sites['page'],
 				'pages' => $sites['pages'],
+				'pagination' => $pagination
 			))?>
 		</div>
 		<div>
