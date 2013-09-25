@@ -17,11 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+
 <?php if (@$htmlOptions['nowrapper']) {?>
+
 	<?php if (!$no_element) {?>
 		<input type="hidden" value="" name="<?php echo get_class($element)?>[<?php echo $field?>]">
 	<?php }?>
-	<?php $i=0; ?>
+
 	<?php foreach ($data as $id => $data_value) {?>
 		<span class="group">
 			<?php
@@ -32,21 +34,15 @@
 						$options[$k] = $v;
 					}
 				}
-		 	echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), $options)?>
+		 		echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), $options);
+		 	?>
 			<label for="<?php echo get_class($element)?>_<?php echo $field?>_<?php echo $id?>"><?php echo $data_value?></label>
 		</span>
-		<?php
-		if ($maxwidth) {
-			$i++;
-			if ($i >= $maxwidth) {
-				echo "<br />";
-				$i=0;
-			}
-		}
-		?>
 	<?php }?>
+
 <?php } else {?>
-	<div id="<?php echo get_class($element). '_' . $field?>" class="eventDetail"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+
+	<fieldset id="<?php echo get_class($element). '_' . $field?>" class="row field-row"<?php if ($hidden) {?> style="display: none;"<?php }?>>
 		<?php	// Added hidden input below to enforce posting of current form element name.
 				// When using radio or checkboxes if no value is selected then nothing is posted
 				// not triggereing server side validation.
@@ -54,8 +50,8 @@
 		<?php if (!$no_element) {?>
 			<input type="hidden" value="" name="<?php echo get_class($element)?>[<?php echo $field?>]">
 		<?php }?>
-		<div class="label"><?php if (!$label_above) {?><?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:<?php }?></div>
-		<div class="data">
+		<legend class="large-2 column"><?php if (!$label_above) {?><?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:<?php }?></legend>
+		<div class="large-10 column">
 			<?php $i=0; ?>
 			<?php if ($label_above) {?>
 				<div class="label">
@@ -63,7 +59,7 @@
 				</div>
 			<?php }?>
 			<?php foreach ($data as $id => $data_value) {?>
-				<span class="group">
+				<label class="inline">
 					<?php
 						$options = array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id);
 
@@ -75,18 +71,9 @@
 
 						echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), $options);
 					?>
-					<label for="<?php echo get_class($element)?>_<?php echo $field?>_<?php echo $id?>"><?php echo $data_value?></label>
-				</span>
-				<?php
-				if ($maxwidth) {
-					$i++;
-					if ($i >= $maxwidth) {
-						echo "<br />";
-						$i=0;
-					}
-				}
-				?>
+					<?php echo $data_value?>
+				</label>
 			<?php }?>
 		</div>
-	</div>
+	</fieldset>
 <?php }?>
