@@ -4,7 +4,7 @@ $(document).ready(function() {
 		$('input[type="checkbox"]').attr('checked',this.checked);
 	});
 
-	$('table').on('click', 'tr', function(e) {
+	$('table').on('click', 'tr.clickable', function(e) {
 
 		var target = $(e.target);
 
