@@ -31,8 +31,15 @@ class AdminController extends BaseController
 
 	protected function beforeAction($action)
 	{
-		$this->registerCssFile('admin.css', Yii::app()->createUrl("css/admin.css"));
-		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
+		// FIXME: remove once rewrite is complete
+		$theme = Yii::app()->session['theme'];
+		if($theme==0){ // 0 no theme original style
+			$this->registerCssFile('admin.css', Yii::app()->createUrl("css/admin.css"));
+			Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
+		}
+		if($theme==1){ // 1 new theme new style
+			Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin_new.js"));
+		}
 
 		$this->jsVars['items_per_page'] = $this->items_per_page;
 
@@ -1158,7 +1165,7 @@ class AdminController extends BaseController
 				if (!$cbs->save()) {
 					throw new Exception("Unable to save CommissioningBodyService: ".print_r($cbs->getErrors(),true));
 				}
-				
+
 				if (!$address->save()) {
 					throw new Exception("Unable to save CommissioningBodyService address: ".print_r($address->getErrors(),true));
 				}
