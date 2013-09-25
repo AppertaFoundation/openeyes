@@ -35,36 +35,36 @@ if ($pages >$pagination_max_links) {
 }
 ?>
 <ul class="pagination right">
-<?php if ($page > 1) {?>
-	<?php if (isset($url)) {
-		$uri = str_replace('{{PAGE}}',$page-1,$url);
-	} else {
-		$uri = $prefix.($page-1);
-	}?>
-	<li><a href="<?php echo Yii::app()->createUrl($uri)?>">&laquo; back</a></li>
-<?php } else {?>
-	<li class="unavailable"><a href="">&laquo; back</a></li>
-<?php }?>
-<?php foreach ($_pages as $i) {?>
-	<?php if ($i == $page) {?>
-		<li class="current"><a href=""><?php echo $i?></a></li>
-	<?php } else {
-		if (isset($url)) {
-			$uri = str_replace('{{PAGE}}',$i,$url);
+	<?php if ($page > 1) {?>
+		<?php if (isset($url)) {
+			$uri = str_replace('{{PAGE}}',$page-1,$url);
 		} else {
-			$uri = $prefix.$i;
+			$uri = $prefix.($page-1);
 		}?>
-		<li><a href="<?php echo Yii::app()->createUrl($uri)?>"><?php echo $i?></a></li>
+		<li><a href="<?php echo Yii::app()->createUrl($uri)?>">&laquo; back</a></li>
+	<?php } else {?>
+		<li class="unavailable"><a href="">&laquo; back</a></li>
 	<?php }?>
-<?php }?>
-<?php if ($page < $pages) {
-	if (isset($url)) {
-		$uri = str_replace('{{PAGE}}',$page+1,$url);
-	} else {
-		$uri = $prefix.($page+1);
-	}?>
-	<li><a href="<?php echo Yii::app()->createUrl($uri)?>">next &raquo;</a></li>
-<?php } else {?>
-	<li class="unavailable"><a href="">next &raquo;</a></li>
-<?php }?>
+	<?php foreach ($_pages as $i) {?>
+		<?php if ($i == $page) {?>
+			<li class="current"><a href=""><?php echo $i?></a></li>
+		<?php } else {
+			if (isset($url)) {
+				$uri = str_replace('{{PAGE}}',$i,$url);
+			} else {
+				$uri = $prefix.$i;
+			}?>
+			<li><a href="<?php echo Yii::app()->createUrl($uri)?>"><?php echo $i?></a></li>
+		<?php }?>
+	<?php }?>
+	<?php if ($page < $pages) {
+		if (isset($url)) {
+			$uri = str_replace('{{PAGE}}',$page+1,$url);
+		} else {
+			$uri = $prefix.($page+1);
+		}?>
+		<li><a href="<?php echo Yii::app()->createUrl($uri)?>">next &raquo;</a></li>
+	<?php } else {?>
+		<li class="unavailable"><a href="">next &raquo;</a></li>
+	<?php }?>
 </ul>

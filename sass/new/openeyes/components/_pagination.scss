@@ -21,6 +21,9 @@ ul.pagination {
 
 // Table pagination.
 tfoot.pagination-container {
+	td {
+		border: 0;
+	}
 	.pagination {
 		margin: 0;
 		li {

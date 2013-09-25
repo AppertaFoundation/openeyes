@@ -20,7 +20,7 @@
 ?>
 <div class="box admin">
 	<h2>Search contacts</h2>
-	<form id="admin_contacts">
+	<form id="admin_contacts_search">
 		<div class="row field-row">
 			<div class="large-2 column">
 				<label for="q">Search:</label>
@@ -45,13 +45,11 @@
 		</div>
 	</form>
 </div>
-<div style="margin-bottom: 1em;">
+<div style="margin-bottom: 1em">
 	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
 </div>
 <?php if (@$contacts) {?>
-	<div id="searchResults" class="curvybox white">
 		<?php echo $this->renderPartial('/admin/_contacts_list',array('contacts'=>$contacts))?>
-	</div>
 <?php }?>
 <script type="text/javascript">
 	var resultCache = {};
@@ -61,20 +59,16 @@
 
 		handleButton($('#et_search'),function(e) {
 			e.preventDefault();
-			if ($('#q').length <1) {
+			if ($('#q').val().length <1) {
 				new OpenEyes.Dialog.Alert({
 					content: "Please enter a search term"
-				}).open();
+				})
+				.on('close', $('#q').focus)
+				.open();
 				enableButtons();
-				$('#q').focus();
 			} else {
 				window.location.href = baseUrl+'/admin/contacts?q='+$('#q').val()+'&label='+$('#label').val();
 			}
-		});
-
-		$('li.even, li.odd').die('click').live('click',function(e) {
-			e.preventDefault();
-			window.location.href = baseUrl+'/admin/editContact?contact_id='+$(this).attr('data-attr-id');
 		});
 	});
 </script>

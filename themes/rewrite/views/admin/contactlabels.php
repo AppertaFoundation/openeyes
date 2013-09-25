@@ -19,49 +19,38 @@
 
 ?>
 <div class="admin box">
-	<h2>Firms</h2>
-
-	<form id="admin_firms">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+	<h2>Contact labels</h2>
+	<form id="admin_contactlabels">
 		<table class="grid">
 			<thead>
 				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
 					<th>ID</th>
-					<th>PAS code</th>
 					<th>Name</th>
-					<th>Subspecialty</th>
-					<th>Consultant</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php
-				foreach ($firms['items'] as $i => $firm) {?>
-					<tr class="clickable" data-id="<?php echo $firm->id?>" data-uri="admin/editFirm/<?php echo $firm->id?>">
-						<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
-						<td><?php echo $firm->id?></td>
-						<td><?php echo $firm->pas_code?></td>
-						<td><?php echo $firm->name?></td>
-						<td><?php echo $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None'?></td>
-						<td><?php echo $firm->consultant ? $firm->consultant->fullName : 'None'?></td>
+				foreach ($contactlabels['items'] as $i => $contactlabel) {?>
+					<tr data-id="<?php echo $contactlabel->id?>">
+						<td><?php echo $contactlabel->id?></td>
+						<td><?php echo $contactlabel->name?>&nbsp;</td>
 					</tr>
 				<?php }?>
 			</tbody>
 			<tfoot class="pagination-container">
 				<tr>
-					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
-					</td>
-					<td colspan="3">
+					<td colspan="2">
 						<?php echo $this->renderPartial('_pagination',array(
-							'prefix' => '/admin/firms/',
-							'page' => $firms['page'],
-							'pages' => $firms['pages'],
+							'prefix' => '/admin/contactlabels/',
+							'page' => $contactlabels['page'],
+							'pages' => $contactlabels['pages'],
 						))?>
 					</td>
 				</tr>
 			</tfoot>
 		</table>
 	</form>
+</div>
+<div>
+	<?php echo EventAction::button('Add', 'add')->toHtml()?>
 </div>

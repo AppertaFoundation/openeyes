@@ -18,46 +18,41 @@
  */
 
 ?>
-<div class="admin box">
-	<h2>Firms</h2>
-
-	<form id="admin_firms">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+<div id="searchResults" class="box admin">
+	<h2>Contacts</h2>
+	<form id="admin_contacts">
 		<table class="grid">
 			<thead>
 				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
 					<th>ID</th>
-					<th>PAS code</th>
-					<th>Name</th>
-					<th>Subspecialty</th>
-					<th>Consultant</th>
+					<th>Title</th>
+					<th>First name</th>
+					<th>Last name</th>
+					<th>Qualifications</th>
+					<th>Label</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php
-				foreach ($firms['items'] as $i => $firm) {?>
-					<tr class="clickable" data-id="<?php echo $firm->id?>" data-uri="admin/editFirm/<?php echo $firm->id?>">
-						<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
-						<td><?php echo $firm->id?></td>
-						<td><?php echo $firm->pas_code?></td>
-						<td><?php echo $firm->name?></td>
-						<td><?php echo $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None'?></td>
-						<td><?php echo $firm->consultant ? $firm->consultant->fullName : 'None'?></td>
+				foreach ($contacts['contacts'] as $i => $contact) {?>
+					<tr class="clickable" data-id="<?php echo $contact->id?>" data-uri="admin/editContact?contact_id=<?php echo $contact->id?>">
+						<td><?php echo $contact->id?></td>
+						<td><?php echo $contact->title?></td>
+						<td><?php echo $contact->first_name?></td>
+						<td><?php echo $contact->last_name?></td>
+						<td><?php echo $contact->qualifications?></td>
+						<td><?php echo $contact->label ? $contact->label->name : 'None'?></td>
 					</tr>
 				<?php }?>
 			</tbody>
 			<tfoot class="pagination-container">
 				<tr>
-					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
-					</td>
-					<td colspan="3">
+					<td colspan="6" class="clearfix">
 						<?php echo $this->renderPartial('_pagination',array(
-							'prefix' => '/admin/firms/',
-							'page' => $firms['page'],
-							'pages' => $firms['pages'],
+							'prefix' => '/admin/contacts/',
+							'page' => $contacts['page'],
+							'pages' => $contacts['pages'],
+							'url' => '/admin/contacts?q='.@$_GET['q'].'&page={{PAGE}}',
 						))?>
 					</td>
 				</tr>

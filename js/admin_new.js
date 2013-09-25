@@ -4,34 +4,24 @@ $(document).ready(function() {
 		$('input[type="checkbox"]').attr('checked',this.checked);
 	});
 
-	function tableRowClick(table, action) {
+	$('table').on('click', 'tr', function(e) {
 
-		$(table).find('tr').on('click', function(e) {
+		var target = $(e.target);
 
-			var target = $(e.target);
+		// If the user clicked on an input element, or if this cell contains an input
+		// element then do nothing.
+		if (target.is(':input') || (target.is('td') && target.find('input').length)) {
+			return;
+		}
 
-			// If the user clicked on an input element, or if this cell contains an input
-			// element then do nothing.
-			if (target.is(':input') || (target.is('td') && target.find('input').length)) {
-				return;
-			}
+		var uri = $(this).data('uri');
 
-			var id = $(this).data('id');
-
-			if (id) {
-				action(id);
-			}
-		});
-	}
-
-	tableRowClick('#admin_users', function(id) {
-		window.location.href = baseUrl+'/admin/editUser/'+id;
+		if (uri) {
+			var url = uri.split('/');
+			url.unshift(baseUrl);
+			window.location.href = url.join('/');
+		}
 	});
-
-	tableRowClick('#admin_firms', function(id) {
-		window.location.href = baseUrl+'/admin/editFirm/'+id;
-	});
-
 
 	$('#admin_contactlabels li .column_id, #admin_contactlabels li .column_name').click(function(e) {
 		e.preventDefault();

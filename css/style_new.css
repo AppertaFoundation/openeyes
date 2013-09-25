@@ -2773,17 +2773,21 @@ ul.pagination li:last-child a {
 }
 
 /* line 24, ../sass/new/openeyes/components/_pagination.scss */
+tfoot.pagination-container td {
+  border: 0;
+}
+/* line 27, ../sass/new/openeyes/components/_pagination.scss */
 tfoot.pagination-container .pagination {
   margin: 0;
 }
-/* line 26, ../sass/new/openeyes/components/_pagination.scss */
+/* line 29, ../sass/new/openeyes/components/_pagination.scss */
 tfoot.pagination-container .pagination li {
   font-size: 1.2em;
   font-weight: normal;
 }
 
 /* Pagination centered wrapper */
-/* line 34, ../sass/new/openeyes/components/_pagination.scss */
+/* line 37, ../sass/new/openeyes/components/_pagination.scss */
 .pagination-centered {
   text-align: center;
 }

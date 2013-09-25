@@ -19,45 +19,39 @@
 
 ?>
 <div class="admin box">
-	<h2>Firms</h2>
+	<h2>Institution</h2>
 
-	<form id="admin_firms">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+	<form id="admin_institutions">
 		<table class="grid">
 			<thead>
 				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
 					<th>ID</th>
-					<th>PAS code</th>
 					<th>Name</th>
-					<th>Subspecialty</th>
-					<th>Consultant</th>
+					<th>Remote ID</th>
+					<th>Short name</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php
-				foreach ($firms['items'] as $i => $firm) {?>
-					<tr class="clickable" data-id="<?php echo $firm->id?>" data-uri="admin/editFirm/<?php echo $firm->id?>">
-						<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
-						<td><?php echo $firm->id?></td>
-						<td><?php echo $firm->pas_code?></td>
-						<td><?php echo $firm->name?></td>
-						<td><?php echo $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None'?></td>
-						<td><?php echo $firm->consultant ? $firm->consultant->fullName : 'None'?></td>
+				foreach ($institutions['items'] as $i => $institution) {?>
+					<tr class="clickable" data-id="<?php echo $institution->id?>" data-uri="admin/editinstitution?institution_id=<?php echo $institution->id?>">
+						<td><?php echo $institution->id?></td>
+						<td><?php echo $institution->name?></td>
+						<td><?php echo $institution->remote_id?></td>
+						<td><?php echo $institution->short_name?></td>
 					</tr>
 				<?php }?>
 			</tbody>
 			<tfoot class="pagination-container">
 				<tr>
-					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
+					<td colspan="2">
+						<?php echo EventAction::button('Add', 'add', array(), array('class'=> 'small'))->toHtml()?>
 					</td>
-					<td colspan="3">
+					<td colspan="2">
 						<?php echo $this->renderPartial('_pagination',array(
-							'prefix' => '/admin/firms/',
-							'page' => $firms['page'],
-							'pages' => $firms['pages'],
+							'prefix' => '/admin/institutions/',
+							'page' => $institutions['page'],
+							'pages' => $institutions['pages'],
 						))?>
 					</td>
 				</tr>
