@@ -24,7 +24,10 @@
 
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id' => 'profile-form',
-		'enableAjaxValidation' => false
+		'enableAjaxValidation' => false,
+		'widgetOptions' => array(
+			'fieldColumns' => 5
+		)
 	))?>
 
 		<?php if (!Yii::app()->params['profile_user_can_edit']) {?>
@@ -41,26 +44,10 @@
 			array(),
 			array('fieldColumns' => 2));
 		?>
-		<?php echo $form->textField($user, 'first_name',
-			array('readonly' => !Yii::app()->params['profile_user_can_edit']),
-			array(),
-			array('fieldColumns' => 5));
-		?>
-		<?php echo $form->textField($user, 'last_name',
-			array('readonly' => !Yii::app()->params['profile_user_can_edit']),
-			array(),
-			array('fieldColumns' => 5));
-		?>
-		<?php echo $form->textField($user, 'email',
-			array('readonly' => !Yii::app()->params['profile_user_can_edit']),
-			array(),
-			array('fieldColumns' => 5));
-		?>
-		<?php echo $form->textField($user, 'qualifications',
-			array('readonly' => !Yii::app()->params['profile_user_can_edit']),
-			array(),
-			array('fieldColumns' => 5));
-		?>
+		<?php echo $form->textField($user, 'first_name', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
+		<?php echo $form->textField($user, 'last_name', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
+		<?php echo $form->textField($user, 'email', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
+		<?php echo $form->textField($user, 'qualifications', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
 
 		<?php if (Yii::app()->params['profile_user_can_edit']) {?>
 			<div class="row field-row">
