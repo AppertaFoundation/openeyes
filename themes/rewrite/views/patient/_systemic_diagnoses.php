@@ -53,9 +53,15 @@
 							</table>
 
 							<?php if (BaseController::checkUserLevel(4)) { ?>
-							<div align="center" style="margin-top:10px;">
-								<form><button id="btn-add_new_systemic_diagnosis" class="classy green mini" type="button"><span class="button-span button-span-green">Add Systemic Diagnosis</span></button></form>
-							</div>
+								<form>
+									<div class="box-actions">
+										<button class="secondary small">
+											Add Systemic Diagnosis
+										</button>
+									</div>
+								</form>
+
+
 							<div id="add_new_systemic_diagnosis" style="display: none;">
 								<h5>Add Systemic diagnosis</h5>
 								<?php

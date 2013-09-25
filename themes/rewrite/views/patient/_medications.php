@@ -40,9 +40,13 @@
 								</tbody>
 							</table>
 
-							<div align="center" style="margin-top:10px;">
-								<form><button id="btn-add_medication" class="classy green mini" type="button"><span class="button-span button-span-green">Add medication</span></button></form>
-							</div>
+							<form>
+								<div class="box-actions">
+									<button class="secondary small">
+										Add Medication
+									</button>
+								</div>
+							</form>
 							<div id="add_medication" style="display: none;">
 								<h5>Add medication</h5>
 								<?php

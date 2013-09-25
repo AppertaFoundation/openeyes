@@ -40,7 +40,7 @@
 
 								<div class="box-actions">
 									<form>
-									<button class="secondary small" disabled>
+									<button class="secondary small">
 										Add Previous operation
 									</button></form>
 								</div>

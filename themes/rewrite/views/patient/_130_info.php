@@ -51,7 +51,13 @@
 
 							<?php if (BaseController::checkUserLevel(4)) {?>
 								<div align="center" style="margin-top:10px;">
-									<form><button id="btn-edit_oph_info" class="classy green mini" type="button"><span class="button-span button-span-green">Edit</span></button></form>
+									<form>
+										<div class="box-actions">
+											<button class="secondary small">
+												Edit
+											</button>
+										</div>
+									</form>
 								</div>
 
 								<div id="edit_oph_info" style="display: none;">

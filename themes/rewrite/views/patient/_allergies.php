@@ -53,7 +53,13 @@
 
 		<?php if (BaseController::checkUserLevel(4)) { ?>
 			<div align="center" style="margin-top:10px;">
-				<form><button id="btn-add_allergy" class="classy green mini" type="button"><span class="button-span button-span-green">Add allergy</span></button></form>
+				<form>
+					<div class="box-actions">
+						<button class="secondary small">
+							Add Allergy
+						</button>
+					</div>
+				</form>
 			</div>
 			<div id="add_allergy" style="display: none;">
 				<h5>Add allergy</h5>
