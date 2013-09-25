@@ -55,7 +55,7 @@
 			<div align="center" style="margin-top:10px;">
 				<form>
 					<div class="box-actions">
-						<button class="secondary small">
+						<button id="btn-add_allergy" class="secondary small">
 							Add Allergy
 						</button>
 					</div>
@@ -85,8 +85,14 @@
 
 				<div align="right">
 					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_allergy_loader" style="display: none;" />
-					<button class="classy green mini btn_save_allergy" type="submit"><span class="button-span button-span-green">Save</span></button>
-					<button class="classy red mini btn_cancel_allergy" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+					<div class="buttons">
+						<button type="submit" class="secondary small btn_save_allergy">
+							Save
+						</button>
+						<button class="warning small btn_cancel_previous_operation btn_cancel_allergy">
+							Cancel
+						</button>
+					</div>
 				</div>
 
 				<?php $this->endWidget()?>
