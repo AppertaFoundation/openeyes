@@ -247,7 +247,7 @@ class UserIdentity extends CUserIdentity
 				'serviceSubspecialtyAssignment' => array(
 					'with' => 'subspecialty',
 				),
-			)) as $firm) {
+			))->findAll() as $firm) {
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 
