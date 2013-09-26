@@ -18,7 +18,7 @@
  */
 ?>
 <?php // FIXME:?>
-					<section class="box patient-info associated-data">
+<section class="box patient-info associated-data" xmlns="http://www.w3.org/1999/html">
 						<header class="box-header">
 							<h3 class="box-title">
 								<span class="icon-patient-clinician-hd_flag"></span>
@@ -62,8 +62,14 @@
 								</form>
 
 
+
+
 							<div id="add_new_systemic_diagnosis" style="display: none;">
-								<h5>Add Systemic diagnosis</h5>
+								<form class="form add-data">
+
+									<fieldset class="field-row">
+
+										<legend><strong>Add Systemic diagnosis</strong></legend>
 								<?php
 								$form = $this->beginWidget('CActiveForm', array(
 										'id'=>'add-systemic-diagnosis',
@@ -90,15 +96,16 @@
 
 								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-								<div class="diagnosis_eye">
-									<span class="diagnosis_eye_label">
-											Side:
-									</span>
-									<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="" checked="checked" /> None
-									<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
-										<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>
-									<?php }?>
-								</div>
+										<fieldset class="diagnosis_eye row field-row">
+											<legend class="large-3 column">
+												Eye:
+											</legend>
+											<div class="large-7 column end">
+												<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $i => $eye) {?>
+													<label class="inline"><input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?></label>
+												<?php }?>
+											</div>
+										</fieldset>
 
 								<?php $this->renderPartial('_fuzzy_date')?>
 								<div class="systemic_diagnoses_form_errors"></div>
@@ -119,6 +126,8 @@
 							</div>
 							<?php } ?>
 						</div>
+						</fieldset>
+	</form>
 
 					</section>
 <?php if (BaseController::checkUserLevel(4)) { ?>
