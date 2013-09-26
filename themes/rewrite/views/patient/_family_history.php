@@ -1,137 +1,144 @@
-					<?php // FIXME:?>
-					<section class="box patient-info associated-data">
-							<header class="box-header">
-								<h3 class="box-title">
-									<span class="icon-patient-clinician-hd_flag"></span>
-									Family History
-								</h3>
-								<a href="#" class="toggle-trigger toggle-hide">
+<?php // FIXME:?>
+<section class="box patient-info associated-data">
+	<header class="box-header">
+		<h3 class="box-title">
+			<span class="icon-patient-clinician-hd_flag"></span>
+			Family History
+		</h3>
+		<a href="#" class="toggle-trigger toggle-hide">
 															<span class="icon-showhide">
 																Show/hide this section
 															</span>
-								</a>
-							</header>
-						<div class="data_row">
-							<table class="subtleWhite">
-								<thead>
-									<tr>
-										<th width="85px">Relative</th>
-										<th>Side</th>
-										<th>Condition</th>
-										<th>Comments</th>
-										<th>Edit</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php foreach ($this->patient->familyHistory as $history) {?>
-										<tr>
-											<td><?php echo $history->relative->name?></td>
-											<td><?php echo $history->side->name?></td>
-											<td><?php echo $history->condition->name?></td>
-											<td><?php echo $history->comments?></td>
-											<td>
-												<a href="#" class="small editFamilyHistory" rel="<?php echo $history->id?>"><strong>Edit</strong></a>&nbsp;&nbsp;
-												<a href="#" class="small removeFamilyHistory" rel="<?php echo $history->id?>"><strong>Remove</strong></a>
-											</td>
-										</tr>
-									<?php }?>
-								</tbody>
-							</table>
+		</a>
+	</header>
+	<div class="data_row">
+		<table class="subtleWhite">
+			<thead>
+			<tr>
+				<th width="85px">Relative</th>
+				<th>Side</th>
+				<th>Condition</th>
+				<th>Comments</th>
+				<th>Edit</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($this->patient->familyHistory as $history) {?>
+				<tr>
+					<td><?php echo $history->relative->name?></td>
+					<td><?php echo $history->side->name?></td>
+					<td><?php echo $history->condition->name?></td>
+					<td><?php echo $history->comments?></td>
+					<td>
+						<a href="#" class="small editFamilyHistory" rel="<?php echo $history->id?>"><strong>Edit</strong></a>&nbsp;&nbsp;
+						<a href="#" class="small removeFamilyHistory" rel="<?php echo $history->id?>"><strong>Remove</strong></a>
+					</td>
+				</tr>
+			<?php }?>
+			</tbody>
+		</table>
 
-							<?php if (BaseController::checkUserLevel(4)) { ?>
-								<form>
-									<div class="box-actions">
-										<button id="btn-add_family_history" class="secondary small">
-											Add Family History
-										</button>
-									</div>
-								</form>
-								<div id="add_family_history" style="display: none;">
-									<h5>Add family history</h5>
-									<?php
-									$form = $this->beginWidget('CActiveForm', array(
-											'id'=>'add-family_history',
-											'enableAjaxValidation'=>false,
-											'htmlOptions' => array('class'=>'sliding'),
-											'action'=>array('patient/addFamilyHistory'),
-									))?>
-
-									<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
-									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-
-									<div class="familyHistory">
-										<div class="label">
-											Relative:
-										</div>
-										<div class="data">
-											<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(FamilyHistoryRelative::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
-										</div>
-									</div>
-
-									<div class="familyHistory">
-										<div class="label">
-											Side:
-										</div>
-										<div class="data">
-											<?php echo CHtml::dropDownList('side_id','',CHtml::listData(FamilyHistorySide::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;'))?>
-										</div>
-									</div>
-
-									<div class="familyHistory">
-										<div class="label">
-											Condition:
-										</div>
-										<div class="data">
-											<?php echo CHtml::dropDownList('condition_id','',CHtml::listData(FamilyHistoryCondition::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
-										</div>
-									</div>
-
-									<div class="familyHistory">
-										<div class="label">
-											Comments:
-										</div>
-										<div class="data">
-											<?php echo CHtml::textField('comments','')?>
-										</div>
-									</div>
-
-									<div align="right">
-										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_family_history_loader" style="display: none;" />
-										<div class="buttons">
-											<button type="submit" class="secondary small btn_save_family_history">
-												Save
-											</button>
-											<button class="warning small btn_cancel_family_history">
-												Cancel
-											</button>
-										</div>
-									</div>
-
-
-									<?php $this->endWidget()?>
-								</div>
-							<?php }?>
-						</div>
-					</section>
-
-				<div id="confirm_remove_family_history_dialog" title="Confirm remove family history" style="display: none;">
-					<div>
-						<div id="delete_family_history">
-							<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-								<strong>WARNING: This will remove the family_history from the patient record.</strong>
-							</div>
-							<p>
-								<strong>Are you sure you want to proceed?</strong>
-							</p>
-							<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
-								<input type="hidden" id="family_history_id" value="" />
-								<button type="submit" class="classy red venti btn_remove_family_history"><span class="button-span button-span-red">Remove family_history</span></button>
-								<button type="submit" class="classy green venti btn_cancel_remove_family_history"><span class="button-span button-span-green">Cancel</span></button>
-								<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-							</div>
-						</div>
-					</div>
+		<?php if (BaseController::checkUserLevel(4)) { ?>
+			<form>
+				<div class="box-actions">
+					<button id="btn-add_family_history" class="secondary small">
+						Add Family History
+					</button>
 				</div>
+			</form>
+			<div id="add_family_history" style="display: none;">
+				<form class="form add-data">
+
+					<fieldset class="field-row">
+
+						<legend><strong>Add allergy</strong></legend>
+						<?php
+						$form = $this->beginWidget('CActiveForm', array(
+								'id'=>'add-family_history',
+								'enableAjaxValidation'=>false,
+								'htmlOptions' => array('class'=>'sliding'),
+								'action'=>array('patient/addFamilyHistory'),
+							))?>
+
+						<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
+						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+
+
+						<div class="field-row row">
+							<div class="large-3 column">
+								<label for="">Relative:</label>
+							</div>
+							<div class="large-7 column end">
+								<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(FamilyHistoryRelative::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
+							</div>
+						</div>
+
+						<div class="field-row row">
+							<div class="large-3 column">
+								<label for="">Side:</label>
+							</div>
+							<div class="large-7 column end">
+								<?php echo CHtml::dropDownList('side_id','',CHtml::listData(FamilyHistorySide::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;'))?>
+							</div>
+						</div>
+
+						<div class="field-row row">
+							<div class="large-3 column">
+								<label for="">Condition:</label>
+							</div>
+							<div class="large-7 column end">
+								<?php echo CHtml::dropDownList('condition_id','',CHtml::listData(FamilyHistoryCondition::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
+							</div>
+						</div>
+
+						<div class="field-row row">
+							<div class="large-3 column">
+								<label for="">Comments:</label>
+							</div>
+							<div class="large-7 column end">
+								<?php echo CHtml::textField('comments','')?>
+							</div>
+						</div>
+
+						<div align="right">
+							<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_family_history_loader" style="display: none;" />
+							<div class="buttons">
+								<button type="submit" class="secondary small btn_save_family_history">
+									Save
+								</button>
+								<button class="warning small btn_cancel_family_history">
+									Cancel
+								</button>
+							</div>
+						</div>
+
+
+						<?php $this->endWidget()?>
+					</fieldset>
+				</form>
+			</div>
+		<?php }?>
+	</div>
+</section>
+
+<div id="confirm_remove_family_history_dialog" title="Confirm remove family history" style="display: none;">
+	<div>
+		<div id="delete_family_history">
+			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
+				<strong>WARNING: This will remove the family_history from the patient record.</strong>
+			</div>
+			<p>
+				<strong>Are you sure you want to proceed?</strong>
+			</p>
+			<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
+				<input type="hidden" id="family_history_id" value="" />
+				<button type="submit" class="classy red venti btn_remove_family_history"><span class="button-span button-span-red">Remove family_history</span></button>
+				<button type="submit" class="classy green venti btn_cancel_remove_family_history"><span class="button-span button-span-green">Cancel</span></button>
+				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
 	$('#btn-add_family_history').click(function() {
 		$('#relative_id').val('');

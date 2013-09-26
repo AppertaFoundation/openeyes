@@ -59,7 +59,11 @@
 							</div>
 
 						<div id="add_new_ophthalmic_diagnosis" style="display: none;">
-							<h5>Add ophthalmic diagnosis</h5>
+							<form class="form add-data">
+
+								<fieldset class="field-row">
+
+									<legend><strong>Add ophthalmic diagnosis</strong></legend>
 							<?php
 							$form = $this->beginWidget('CActiveForm', array(
 									'id'=>'add-ophthalmic-diagnosis',
@@ -90,9 +94,11 @@
 								<legend class="large-3 column">
 									Eye:
 								</legend>
+								<div class="large-7 column end">
 								<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $i => $eye) {?>
-									<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?>
+									<label class="inline"><input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?></label>
 								<?php }?>
+								</div>
 							</fieldset>
 
 							<?php $this->renderPartial('_fuzzy_date')?>
@@ -113,6 +119,7 @@
 							<?php $this->endWidget()?>
 
 						<?php } ?>
+								</fieldset>
 							</form>
 							</div>
 

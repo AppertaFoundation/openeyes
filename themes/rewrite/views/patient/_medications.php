@@ -1,189 +1,207 @@
-					<?php // FIXME:?>
-					<section class="box patient-info associated-data">
-						<header class="box-header">
-							<h3 class="box-title">
-								<span class="icon-patient-clinician-hd_flag"></span>
-								Medication
-							</h3>
-							<a href="#" class="toggle-trigger toggle-hide">
+<?php // FIXME:?>
+<section class="box patient-info associated-data">
+	<header class="box-header">
+		<h3 class="box-title">
+			<span class="icon-patient-clinician-hd_flag"></span>
+			Medication
+		</h3>
+		<a href="#" class="toggle-trigger toggle-hide">
 														<span class="icon-showhide">
 															Show/hide this section
 														</span>
-							</a>
-						</header>
-						<div class="data_row">
-							<table class="subtleWhite">
-								<thead>
-									<tr>
-										<th width="85px">Medication</th>
-										<th>Route</th>
-										<th>Option</th>
-										<th>Frequency</th>
-										<th>Start date</th>
-										<th>Edit</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php foreach ($this->patient->medications as $medication) {?>
-										<tr>
-											<td><?php echo $medication->drug->name?></td>
-											<td><?php echo $medication->route->name?></td>
-											<td><?php echo $medication->option ? $medication->option->name : '-'?></td>
-											<td><?php echo $medication->frequency->name?></td>
-											<td><?php echo $medication->NHSDate('start_date')?></td>
-											<td>
-												<a href="#" class="small editMedication" rel="<?php echo $medication->id?>"><strong>Edit</strong></a>&nbsp;&nbsp;
-												<a href="#" class="small removeMedication" rel="<?php echo $medication->id?>"><strong>Remove</strong></a>
-											</td>
-										</tr>
-									<?php }?>
-								</tbody>
-							</table>
+		</a>
+	</header>
+	<div class="data_row">
+		<table class="subtleWhite">
+			<thead>
+			<tr>
+				<th width="85px">Medication</th>
+				<th>Route</th>
+				<th>Option</th>
+				<th>Frequency</th>
+				<th>Start date</th>
+				<th>Edit</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($this->patient->medications as $medication) {?>
+				<tr>
+					<td><?php echo $medication->drug->name?></td>
+					<td><?php echo $medication->route->name?></td>
+					<td><?php echo $medication->option ? $medication->option->name : '-'?></td>
+					<td><?php echo $medication->frequency->name?></td>
+					<td><?php echo $medication->NHSDate('start_date')?></td>
+					<td>
+						<a href="#" class="small editMedication" rel="<?php echo $medication->id?>"><strong>Edit</strong></a>&nbsp;&nbsp;
+						<a href="#" class="small removeMedication" rel="<?php echo $medication->id?>"><strong>Remove</strong></a>
+					</td>
+				</tr>
+			<?php }?>
+			</tbody>
+		</table>
 
-							<form>
-								<div class="box-actions">
-									<button  id="btn-add_medication" class="secondary small">
-										Add Medication
-									</button>
-								</div>
-							</form>
-							<div id="add_medication" style="display: none;">
-								<h5>Add medication</h5>
-								<?php
-								$form = $this->beginWidget('CActiveForm', array(
-										'id'=>'add-medication',
-										'enableAjaxValidation'=>false,
-										'htmlOptions' => array('class'=>'sliding'),
-										'action'=>array('patient/addMedication'),
-								))?>
+		<form>
+			<div class="box-actions">
+				<button  id="btn-add_medication" class="secondary small">
+					Add Medication
+				</button>
+			</div>
+		</form>
+		<div id="add_medication" style="display: none;">
 
-								<input type="hidden" name="edit_medication_id" id="edit_medication_id" value="" />
-								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-								<div class="patientMedication">
-									<div class="label">
-										Medication:
-									</div>
-									<div class="data">
-										<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->getSubspecialtyID()),array('empty'=>'- Select -'))?>
-									</div>
-								</div>
-								<div class="patientMedication">
-									<div class="label"></div>
-									<div class="data">
-										<?php
-										$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-												'name' => 'drug_id',
-												'id' => 'autocomplete_drug_id',
-												'source' => "js:function(request, response) {
+
+
+			<legend><strong>Add medication</strong></legend>
+
+			<?php
+			$form = $this->beginWidget('CActiveForm', array(
+					'id'=>'add-medication',
+					'enableAjaxValidation'=>false,
+					'htmlOptions' => array('class'=>'sliding'),
+					'action'=>array('patient/addMedication'),
+				))?>
+			<fieldset class="field-row">
+				<input type="hidden" name="edit_medication_id" id="edit_medication_id" value="" />
+				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+
+
+				<div class="patientMedication field-row row">
+					<div class="large-3 column">
+						<label for="">Medication:</label>
+					</div>
+					<div class="large-7 column end">
+						<div class="field-row">
+							<select>
+								<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->getSubspecialtyID()),array('empty'=>'- Select -'))?>
+
+							</select>
+						</div>
+
+						<div class="patientMedication field-row">
+							<div class="label"></div>
+
+							<?php
+							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+									'name' => 'drug_id',
+									'id' => 'autocomplete_drug_id',
+									'source' => "js:function(request, response) {
 													$.getJSON('".$this->createUrl('DrugList')."', {
 														term : request.term,
 													}, response);
 												}",
-												'options' => array(
-													'select' => "js:function(event, ui) {
+									'options' => array(
+										'select' => "js:function(event, ui) {
 														$('#selectedMedicationName').text(ui.item.value);
 														$('#selectedMedicationID').val(ui.item.id);
 														$(this).val('');
 														return false;
 													}",
-												),
-												'htmlOptions' => array(
-													'placeholder' => 'or search formulary',
-												),
-										))?>
-									</div>
-								</div>
+									),
+									'htmlOptions' => array(
+										'placeholder' => 'or search formulary',
+									),
+								))?>
 
-								<div class="patientMedication">
-									<div class="label"></div>
-									<div class="data">
-										<span id="selectedMedicationName" style="font-weight: bold;"></span>
-										<input type="hidden" name="selectedMedicationID" id="selectedMedicationID" value="" />
-									</div>
-								</div>
 
-								<div class="patientMedication">
-									<div class="label">
-										Route:
-									</div>
-									<div class="data">
-										<?php echo CHtml::dropDownList('route_id','',CHtml::listData(DrugRoute::model()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
-									</div>
-								</div>
-
-								<div class="patientMedication routeOption" style="display: none;">
-									<div class="label">
-										Option:
-									</div>
-									<div class="data">
-									</div>
-								</div>
-
-								<div class="patientMedication">
-									<div class="label">
-										Frequency:
-									</div>
-									<div class="data">
-										<?php echo CHtml::dropDownList('frequency_id','',CHtml::listData(DrugFrequency::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
-									</div>
-								</div>
-
-								<div class="patientMedication">
-									<div class="label">
-										Date from:
-									</div>
-									<div class="data">
-										<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-											'name'=>'start_date',
-											'id'=>'start_date',
-											'options'=>array(
-												'showAnim'=>'fold',
-												'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-											),
-											'value' => date('j M Y'),
-											'htmlOptions'=>array('style'=>'width: 90px;')
-										))?>
-									</div>
-								</div>
-
-								<div class="medication_form_errors"></div>
-
-								<div align="right">
-									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
-									<div class="buttons">
-										<button type="submit" class="secondary small btn_save_medication">
-											Save
-										</button>
-										<button class="warning small btn_cancel_medication">
-											Cancel
-										</button>
-									</div>
-								</div>
-
-								<?php $this->endWidget()?>
-							</div>
-						</div>
-					</section>
-
-				<div id="confirm_remove_medication_dialog" title="Confirm remove medication" style="display: none;">
-					<div>
-						<div id="delete_medication">
-							<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-								<strong>WARNING: This will remove the medication from the patient record.</strong>
-							</div>
-							<p>
-								<strong>Are you sure you want to proceed?</strong>
-							</p>
-							<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
-								<input type="hidden" id="medication_id" value="" />
-								<button type="submit" class="classy red venti btn_remove_medication"><span class="button-span button-span-red">Remove medication</span></button>
-								<button type="submit" class="classy green venti btn_cancel_remove_medication"><span class="button-span button-span-green">Cancel</span></button>
-								<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-							</div>
 						</div>
 					</div>
 				</div>
+
+
+
+				<div class="patientMedication">
+					<div class="label"></div>
+					<div class="data">
+						<span id="selectedMedicationName" style="font-weight: bold;"></span>
+						<input type="hidden" name="selectedMedicationID" id="selectedMedicationID" value="" />
+					</div>
+				</div>
+
+				<div class="field-row row">
+					<div class="large-3 column">
+						<label for="">Option:</label>
+					</div>
+					<div class="large-7 column end">
+						<?php echo CHtml::dropDownList('route_id','',CHtml::listData(DrugRoute::model()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
+					</div>
+				</div>
+
+				<div class="patientMedication routeOption" style="display: none;">
+					<div class="label">
+						Option:
+					</div>
+					<div class="data">
+					</div>
+				</div>
+
+				<div class="field-row row">
+					<div class="large-3 column">
+						<label for="">Frequency:</label>
+					</div>
+					<div class="large-7 column end">
+						<select>
+						<?php echo CHtml::dropDownList('frequency_id','',CHtml::listData(DrugFrequency::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+					</div>
+				</div>
+
+				<div class="field-row row">
+					<div class="large-3 column">
+						<label for="">Date from:</label>
+					</div>
+					<div class="large-3 column end">
+						<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+								'name'=>'start_date',
+								'id'=>'start_date',
+								'options'=>array(
+									'showAnim'=>'fold',
+									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
+								),
+								'value' => date('j M Y'),
+								'htmlOptions'=>array('style'=>'width: 90px;')
+							))?>
+					</div>
+				</div>
+
+				<div class="medication_form_errors"></div>
+
+				<div align="right">
+					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
+					<div class="buttons">
+						<button type="submit" class="secondary small btn_save_medication">
+							Save
+						</button>
+						<button class="warning small btn_cancel_medication">
+							Cancel
+						</button>
+					</div>
+				</div>
+
+				<?php $this->endWidget()?>
+				</form>
+			</fieldset>
+		</div>
+	</div>
+</section>
+
+<div id="confirm_remove_medication_dialog" title="Confirm remove medication" style="display: none;">
+	<div>
+		<div id="delete_medication">
+			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
+				<strong>WARNING: This will remove the medication from the patient record.</strong>
+			</div>
+			<p>
+				<strong>Are you sure you want to proceed?</strong>
+			</p>
+			<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
+				<input type="hidden" id="medication_id" value="" />
+				<button type="submit" class="classy red venti btn_remove_medication"><span class="button-span button-span-red">Remove medication</span></button>
+				<button type="submit" class="classy green venti btn_cancel_remove_medication"><span class="button-span button-span-green">Cancel</span></button>
+				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
 	$('#btn-add_medication').click(function() {
 		$('div.patientMedication #route_id').val('');
