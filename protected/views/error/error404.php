@@ -20,7 +20,7 @@
 <?php
 	$helpdesk_phone = Yii::app()->params['helpdesk_phone'];
 	$helpdesk_email = Yii::app()->params['helpdesk_email'];
-	$this->layout = 'error';
+	$this->layout = '//layouts/error';
 ?>
 <h3>Page not found</h3>
 <p><strong>There has been a problem trying to access OpenEyes, please

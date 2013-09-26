@@ -20,7 +20,7 @@
 <?php
 	$helpdesk_phone = Yii::app()->params['helpdesk_phone'];
 	$helpdesk_email = Yii::app()->params['helpdesk_email'];
-	$this->layout = 'error';
+	$this->layout = '//layouts/error';
 ?>
 <h3>Forbidden</h3>
 <p><strong>You do not have permission to access this page</strong></p>
