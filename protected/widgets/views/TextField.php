@@ -17,24 +17,24 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (@$widgetOptions['nowrapper']) {?>
+<?php if (@$htmlOptions['nowrapper']) {?>
 	<?php echo CHtml::textField($name, $value, $htmlOptions)?>
 <?php } else {?>
-	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row" <?php if (@$widgetOptions['hide']) {?> style="display: none;"<?php }?>>
-		<div class="large-<?php echo $widgetOptions['labelColumns'];?> column">
+	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row" <?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
+		<div class="large-<?php echo $layoutColumns['label'];?> column">
 			<?php
-			$labelText = empty($widgetOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $widgetOptions['label'];
+			$labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
 			$labelText .= ':';
 			echo Chtml::label($labelText, Chtml::getIdByName($name));
 			?>
 		</div>
-		<div class="large-<?php echo $widgetOptions['fieldColumns'];?> column end">
-			<?php if (@$widgetOptions['password']) { ?>
+		<div class="large-<?php echo $layoutColumns['field'];?> column end">
+			<?php if (@$htmlOptions['password']) { ?>
 				<?php echo CHtml::passwordField($name, $value, $htmlOptions)?>
 			<?php } else {?>
 				<?php echo CHtml::textField($name, $value, $htmlOptions)?>
 			<?php } ?>
-			<?php echo @$widgetOptions['append_text']?>
+			<?php echo @$htmlOptions['append_text']?>
 			<?php if (!empty($links)) {
 				foreach ($links as $link) {
 					echo CHtml::link($link['title'],$link['href'],array('id'=>$link['id']));

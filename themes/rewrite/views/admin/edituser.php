@@ -25,11 +25,13 @@
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'adminform',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array('class'=>'sliding'),
+		'htmlOptions' => array(
+			'class'=>'sliding',
+		),
 		'focus'=>'#username',
-		'widgetOptions' => array(
-			'labelColumns' => 2,
-			'fieldColumns' => 5
+		'layoutColumns'=>array(
+			'label' => 2,
+			'field' => 4
 		)
 	))?>
 		<?php echo $form->textField($user,'username')?>
@@ -43,12 +45,7 @@
 		<?php echo $form->radioBoolean($user,'global_firm_rights')?>
 		<?php echo $form->radioBoolean($user,'is_doctor')?>
 		<?php echo $form->passwordField($user,'password')?>
-		<div id="div_User_confirm" class="eventDetail">
-			<div class="label">Confirm:</div>
-			<div class="data">
-				<?php echo CHtml::passwordField('User[password_repeat]','')?>
-			</div>
-		</div>
+		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
 		<?php echo $form->dropDownList($user,'access_level', $user->getAccessLevelOptions())?>
 	<?php $this->endWidget()?>
 </div>

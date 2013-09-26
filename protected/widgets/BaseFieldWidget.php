@@ -20,8 +20,9 @@
 class BaseFieldWidget extends BaseCWidget
 {
 	public $name;
-	public $defaultWidgetOptions = array(
-		'labelColumns' => 2,
-		'fieldColumns' => 10
+
+	public $layoutColumns = array(
+		'label' => 2,
+		'field' => 10
 	);
 }

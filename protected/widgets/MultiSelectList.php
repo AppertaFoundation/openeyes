@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class MultiSelectList extends BaseCWidget
+class MultiSelectList extends BaseFieldWidget
 {
 	public $default_options = array();
 	public $filtered_options = array();

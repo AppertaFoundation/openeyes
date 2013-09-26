@@ -25,8 +25,9 @@
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id' => 'profile-form',
 		'enableAjaxValidation' => false,
-		'widgetOptions' => array(
-			'fieldColumns' => 5
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5,
 		)
 	))?>
 
@@ -39,11 +40,7 @@
 		<?php $this->renderPartial('//base/_messages')?>
 		<?php $this->renderPartial('//elements/form_errors',array('errors'=>$errors))?>
 
-		<?php echo $form->textField($user, 'title',
-			array('readonly' => !Yii::app()->params['profile_user_can_edit']),
-			array(),
-			array('fieldColumns' => 2));
-		?>
+		<?php echo $form->textField($user, 'title', array('readonly' => !Yii::app()->params['profile_user_can_edit']), null, array('field' => 2));?>
 		<?php echo $form->textField($user, 'first_name', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
 		<?php echo $form->textField($user, 'last_name', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
 		<?php echo $form->textField($user, 'email', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
