@@ -17,95 +17,109 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php // FIXME:?>
-					<section class="box patient-info associated-data">
-						<header class="box-header">
-							<h3 class="box-title">
-								<span class="icon-patient-clinician-hd_flag"></span>
-								CVI Status
-							</h3>
-							<a href="#" class="toggle-trigger toggle-hide">
-																		<span class="icon-showhide">
-																			Show/hide this section
-																		</span>
-							</a>
-						</header>
-						<div class="data_row">
-							<table class="subtleWhite">
-								<thead>
-									<tr>
-										<th width="85px">Date</th>
-										<th>Status</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php
-									$info = $this->patient->getOPHInfo();
-									?>
-									<tr>
-										<td><?php echo Helper::formatFuzzyDate($info->cvi_status_date); ?></td>
-										<td><?php echo $info->cvi_status->name; ?></td>
-									</tr>
-								</tbody>
-							</table>
 
-							<?php if (BaseController::checkUserLevel(4)) {?>
-								<div align="center" style="margin-top:10px;">
-									<form>
-										<div class="box-actions">
-											<button id="btn-edit_oph_info" class="secondary small">
-												Edit
-											</button>
-										</div>
-									</form>
-								</div>
+<section class="box patient-info associated-data">
+	<header class="box-header">
+		<h3 class="box-title">
+			<span class="icon-patient-clinician-hd_flag"></span>
+			CVI Status
+		</h3>
+		<a href="#" class="toggle-trigger toggle-hide">
+								<span class="icon-showhide">
+									Show/hide this section
+								</span>
+		</a>
+	</header>
+	<table class="plain patient-data">
+		<thead>
+		<tr>
+			<th width="85px">Date</th>
+			<th>Status</th>
+		</tr>
+		</thead>
+		<tbody>
+		<?php
+		$info = $this->patient->getOPHInfo();
+		?>
+		<tr>
+			<td><?php echo Helper::formatFuzzyDate($info->cvi_status_date); ?></td>
+			<td><?php echo $info->cvi_status->name; ?></td>
+		</tr>
+		</tbody>
+	</table>
 
-								<div id="edit_oph_info" style="display: none;">
-									<h5>Edit CVI Status</h5>
-									<?php
-									$form = $this->beginWidget('CActiveForm', array(
-											'id'=>'edit-oph_info',
-											'enableAjaxValidation'=>true,
-											'clientOptions'=>array(
-												'validateOnSubmit' => true,
-												'validateOnChange' => false,
-												'afterValidate' => "js:function(form, data, hasError) {
+	<?php if (BaseController::checkUserLevel(4)) {?>
+		<div align="center" style="margin-top:10px;">
+			<form>
+				<div class="box-actions">
+					<button id="btn-edit_oph_info" class="secondary small">
+						Edit
+					</button>
+				</div>
+			</form>
+		</div>
+
+		<div id="edit_oph_info" style="display: none;">
+			<form class="form add-data">
+
+				<fieldset class="field-row">
+
+					<legend><strong>Edit CVI Status</strong></legend>
+					<?php
+					$form = $this->beginWidget('CActiveForm', array(
+							'id'=>'edit-oph_info',
+							'enableAjaxValidation'=>true,
+							'clientOptions'=>array(
+								'validateOnSubmit' => true,
+								'validateOnChange' => false,
+								'afterValidate' => "js:function(form, data, hasError) {
 												if (hasError) {
 													// mask the ajax loader image again
 													$('img.edit_oph_info_loader').hide();
 												} else {
 													return true;
 												}}"
-											),
-											'htmlOptions' => array('class'=>'sliding'),
-											'action'=>array('patient/editophinfo'),
-									))?>
-									<?php echo CHtml::activeDropDownList($info, 'cvi_status_id', CHtml::listData(PatientOphInfoCviStatus::model()->findAll(array('order'=>'display_order')),'id','name')) ?>
+							),
+							'htmlOptions' => array('class'=>'sliding'),
+							'action'=>array('patient/editophinfo'),
+						))?>
 
-									<?php echo $form->error($info, 'cvi_status_date'); ?>
-
-									<?php
-									$this->renderPartial('_fuzzy_date')?>
-
-									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-									<div align="right">
-										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_oph_info_loader" style="display: none;" />
-										<div class="buttons">
-											<button type="submit" class="secondary small btn_save_previous_operation btn_save_oph_info">
-												Save
-											</button>
-											<button class="warning small btn_cancel_previous_operation btn_cancel_oph_info">
-												Cancel
-											</button>
-										</div>
-									</div>
-
-									<?php $this->endWidget(); ?>
-
-								</div>
-							<?php }?>
+					<div class="field-row row">
+						<div class="large-3 column">
+							<label for="">Status:</label>
 						</div>
-					</section>
+						<div class="large-7 column end">
+							<select>
+					<?php echo CHtml::activeDropDownList($info, 'cvi_status_id', CHtml::listData(PatientOphInfoCviStatus::model()->findAll(array('order'=>'display_order')),'id','name')) ?>
+
+					<?php echo $form->error($info, 'cvi_status_date'); ?>
+							</select>
+						</div>
+					</div>
+
+					<?php
+					$this->renderPartial('_fuzzy_date')?>
+
+					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+					<div align="right">
+						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_oph_info_loader" style="display: none;" />
+						<div class="buttons">
+							<button type="submit" class="secondary small btn_save_previous_operation btn_save_oph_info">
+								Save
+							</button>
+							<button class="warning small btn_cancel_previous_operation btn_cancel_oph_info">
+								Cancel
+							</button>
+						</div>
+					</div>
+
+					<?php $this->endWidget(); ?>
+				</fieldset>
+			</form>
+		</div>
+	<?php }?>
+
+</section>
 
 <script type="text/javascript">
 	$('#btn-edit_oph_info').click(function() {
