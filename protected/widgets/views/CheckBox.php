@@ -17,9 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (@$htmlOptions['text-align'] == 'right') {?>
+<?php if (@$options['text-align'] == 'right') {?>
 	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-		<?php if (!@$htmlOptions['no-label']) {?>
+		<?php if (!@$options['no-label']) {?>
 			<div class="label"></div>
 		<?php }?>
 		<div class="data">
@@ -29,16 +29,16 @@
 		</div>
 	</div>
 <?php } else {?>
-	<?php if (!@$htmlOptions['nowrapper']) {?>
+	<?php if (!@$options['nowrapper']) {?>
 		<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-			<?php if (!@$htmlOptions['no-label']) {?>
+			<?php if (!@$options['no-label']) {?>
 				<div class="label"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</div>
 			<?php }?>
 			<div class="datacol1">
 				<?php }?>
 				<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0')?>
 				<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],$htmlOptions)?>
-			<?php if (!@$htmlOptions['nowrapper']) {?>
+			<?php if (!@$options['nowrapper']) {?>
 			</div>
 		</div>
 	<?php }?>

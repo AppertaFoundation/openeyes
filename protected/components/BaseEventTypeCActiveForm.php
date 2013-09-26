@@ -94,13 +94,13 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		));
 	}
 
-	public function datePicker($element, $field, $javascriptOptions=array(), $htmlOptions=array(), $layoutColumns=array())
+	public function datePicker($element, $field, $options=array(), $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.DatePicker', array(
 			'element' => $element,
 			'name' => get_class($element)."[$field]",
 			'field' => $field,
-			'javascriptOptions' => $javascriptOptions,
+			'options' => $options,
 			'htmlOptions' => $htmlOptions,
 			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
 		));

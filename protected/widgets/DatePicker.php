@@ -20,7 +20,7 @@
 class DatePicker extends BaseFieldWidget
 {
 	public $name;
-	public $javascriptOptions = array();
+	public $options = array();
 
 	public function run()
 	{
