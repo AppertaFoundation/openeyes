@@ -45,8 +45,11 @@
 									</button></form>
 								</div>
 
+
 								<div id="add_previous_operation" style="display: none;">
-									<h5>Add Previous operation</h5>
+									<form class="form add-data">
+										<fieldset class="field-row">
+											<legend><strong>Add Previous Operation</strong></legend>
 									<?php
 									$form = $this->beginWidget('CActiveForm', array(
 											'id'=>'add-previous_operation',
@@ -58,33 +61,38 @@
 									<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
 									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-									<div class="previousOperation">
-										<div class="label">
-											Common operations:
-										</div>
-										<div class="data">
-											<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
-										</div>
-									</div>
+											<div class="field-row row previousOperation">
+												<div class="large-3 column">
+													<label for="">Common operations:</label>
+												</div>
+												<div class="large-7 column data end">
+													<select>
+														<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
+													</select>
+												</div>
+											</div>
+						
+											<div class="previousOperationrow field-row row">
+												<div class="large-3 column">
+													<label for="">Operation:</label>
+												</div>
+												<div class="large-7 column end">
+													<?php echo CHtml::textField('previous_operation','')?>
+												</div>
+											</div>
 
-									<div class="previousOperation">
-										<div class="label">
-											Operation:
-										</div>
-										<div class="data">
-											<?php echo CHtml::textField('previous_operation','')?>
-										</div>
-									</div>
 
-									<div class="previousOperation">
-										<span class="label">
+
+											<fieldset class="previous_operation row field-row">
+												<legend class="large-3 column">
 											Side:
-										</span>
+													</legend>
+													<div class="large-7 column end">
 										<input type="radio" name="previous_operation_side" class="previous_operation_side" value="" checked="checked" /> None
 										<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
-											<input type="radio" name="previous_operation_side" class="previous_operation_side" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>
+														<label class="inline"><input type="radio" name="previous_operation_side" class="previous_operation_side" value="<?php echo $eye->id?>" /> <?php echo $eye->name?></label>
 										<?php }?>
-									</div>
+									</fieldset>
 
 									<?php $this->renderPartial('_fuzzy_date',array('class'=>'previousOperation'))?>
 
@@ -103,7 +111,8 @@
 									</div>
 
 									<?php $this->endWidget()?>
-								</div>
+										</fieldset>
+									</form>
 							<?php }?>
 
 					</section>
