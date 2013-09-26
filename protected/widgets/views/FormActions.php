@@ -17,29 +17,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (@$htmlOptions['nowrapper']) {?>
-	<?php echo CHtml::textField($name, $value, $htmlOptions)?>
-<?php } else {?>
-	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php
-			$labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
-			$labelText .= ':';
-			echo Chtml::label($labelText, Chtml::getIdByName($name));
-			?>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
-			<?php if (@$htmlOptions['password']) { ?>
-				<?php echo CHtml::passwordField($name, $value, $htmlOptions)?>
-			<?php } else {?>
-				<?php echo CHtml::textField($name, $value, $htmlOptions)?>
-			<?php } ?>
-			<?php echo @$htmlOptions['append_text']?>
-			<?php if (!empty($links)) {
-				foreach ($links as $link) {
-					echo '<span class="field-info">'.CHtml::link($link['title'],$link['href'],array('id'=>$link['id'])).'</span>';
-				}
-			}?>
-		</div>
+<div class="row field-row">
+	<div class="large-<?php echo 12 - $layoutColumns['label'];?> large-offset-<?php echo $layoutColumns['label'];?> column">
+		<?php echo EventAction::button('Save', 'save')->toHtml()?>
+		<?php if ($cancelButton) {
+			echo EventAction::button('Cancel', 'cancel', array(), array('class' => 'warning'))->toHtml();
+		}?>
+		<?php if ($deleteButton) {
+			echo EventAction::button('Delete', 'delete', array(), array('class' => 'warning'))->toHtml();
+		}?>
+		<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 	</div>
-<?php }?>
+</div>

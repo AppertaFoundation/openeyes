@@ -34,7 +34,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'data' => $data,
 			'htmlOptions' => $htmlOptions,
 			'hidden' => $hidden,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -45,7 +45,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'fields' => $fields,
 			'datas' => $datas,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -56,7 +56,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'options' => $options,
 			'selected_value' => $selected_value,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -74,7 +74,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'no_element' => $no_element,
 			'label_above' => $label_above,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -90,7 +90,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			),
 			'selected_item' => $element->$field,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -102,7 +102,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'field' => $field,
 			'options' => $options,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -119,7 +119,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $element,
 			'field' => $field,
 			'hidden' => $hidden,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		), $options));
 	}
 
@@ -131,7 +131,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
 			'links' => $links,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -144,7 +144,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'name' => get_class($element)."[$field]",
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -160,7 +160,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'name' => $name,
 			'field' => null,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -170,7 +170,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $element,
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -180,7 +180,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $element,
 			'fields' => $fields,
 			'labeltext' => $labeltext,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -195,7 +195,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'default_options' => $default_options,
 			'htmlOptions' => $htmlOptions,
 			'hidden' => $hidden,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -206,7 +206,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'field' => $text_field,
 			'options' => $options,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -217,7 +217,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'field' => $text_field,
 			'options' => $options,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -228,7 +228,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'field' => $field,
 			'value' => $value,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -245,7 +245,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'remap_values' => @$options['remap'],
 			'null' => @$options['null'],
 			'append' => @$options['append'],
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -255,7 +255,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $element,
 			'field' => $field,
 			'data' => $data,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -264,7 +264,15 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $element,
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, $layoutColumns)
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
+		));
+	}
+
+	public function formActions($htmlOptions=array(), $layoutColumns=array(), $cancelButton=true, $deleteButton=false) {
+		$this->widget('application.widgets.FormActions', array(
+			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns),
+			'deleteButton' => $deleteButton
 		));
 	}
 }

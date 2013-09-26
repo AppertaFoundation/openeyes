@@ -24,13 +24,13 @@
 
 		<?php if (@$htmlOptions['layout'] == 'vertical') {?>
 			<div class="large-12 column end">
-				<label>
+				<label for="<?php echo get_class($element)?>_<?php echo $field?>">
 					<?php echo $element->getAttributeLabel($field)?>
 				</label>
 		<?php } else {?>
 			<div class="large-<?php echo $layoutColumns['label'];?> column">
 				<?php if (!@$htmlOptions['nolabel']) {?>
-					<label><?php echo $element->getAttributeLabel($field)?>:</label>
+					<label for="<?php echo get_class($element)?>_<?php echo $field?>"><?php echo $element->getAttributeLabel($field)?>:</label>
 				<?php }?>
 			</div>
 		<?php }?>

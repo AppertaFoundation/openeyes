@@ -19,34 +19,49 @@
 
 ?>
 <div class="box admin">
-	<h2>Edit user</h2>
+	<h2>Add contact label</h2>
 	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'adminform',
+		'id'=>'addContactLabelForm',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array(
-			'class'=>'sliding',
-		),
-		'focus'=>'#username',
-		'layoutColumns'=>array(
+		'htmlOptions' => array('class'=>'sliding'),
+		'focus'=>'#ContactLabel_name',
+		'layoutColumns' => array(
 			'label' => 2,
-			'field' => 4
+			'field' => 5
 		)
 	))?>
-		<?php echo $form->textField($user,'username')?>
-		<?php echo $form->textField($user,'title', null, null, array('field' => 2))?>
-		<?php echo $form->textField($user,'first_name')?>
-		<?php echo $form->textField($user,'last_name')?>
-		<?php echo $form->textField($user,'email')?>
-		<?php echo $form->textField($user,'role')?>
-		<?php echo $form->textField($user,'qualifications')?>
-		<?php echo $form->radioBoolean($user,'active')?>
-		<?php echo $form->radioBoolean($user,'global_firm_rights')?>
-		<?php echo $form->radioBoolean($user,'is_doctor')?>
-		<?php echo $form->passwordField($user,'password')?>
-		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
-		<?php echo $form->dropDownList($user,'access_level', $user->getAccessLevelOptions())?>
-		<?php echo $form->formActions(); ;?>
+		<?php echo $form->textField($contactlabel,'name')?>
+		<?php echo $form->formActions()?>
 	<?php $this->endWidget()?>
 </div>
+<script type="text/javascript">
+	handleButton($('#et_cancel'),function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/admin/contactlabels';
+	});
+
+	handleButton($('#et_save'),function(e) {
+		e.preventDefault();
+		$('#addContactLabelForm').submit();
+	});
+
+	function sort_selectbox(element)
+	{
+		rootItem = element.children('option:first').text();
+		element.append(element.children('option').sort(selectSort));
+	}
+
+	function selectSort(a, b)
+	{
+		if (a.innerHTML == rootItem) {
+			return -1;
+		} else if (b.innerHTML == rootItem) {
+			return 1;
+		}
+		return (a.innerHTML > b.innerHTML) ? 1 : -1;
+	};
+
+	var rootItem = null;
+</script>

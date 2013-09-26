@@ -19,22 +19,24 @@
 
 ?>
 <div class="box admin">
-	<h2>Edit user</h2>
+	<h2>Add user</h2>
 	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'adminform',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array(
-			'class'=>'sliding',
-		),
+		'htmlOptions' => array('class'=>'sliding'),
 		'focus'=>'#username',
 		'layoutColumns'=>array(
 			'label' => 2,
-			'field' => 4
+			'field' => 5
 		)
 	))?>
-		<?php echo $form->textField($user,'username')?>
+		<?php echo $form->textField($user,'username',array(),array(array(
+			'id' => 'lookup_user',
+			'title' => 'Lookup user',
+			'href' => '#',
+		)))?>
 		<?php echo $form->textField($user,'title', null, null, array('field' => 2))?>
 		<?php echo $form->textField($user,'first_name')?>
 		<?php echo $form->textField($user,'last_name')?>
@@ -50,3 +52,8 @@
 		<?php echo $form->formActions(); ;?>
 	<?php $this->endWidget()?>
 </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#User_username').focus();
+	});
+</script>

@@ -19,34 +19,36 @@
 
 ?>
 <div class="box admin">
-	<h2>Edit user</h2>
+	<h2>Add contact</h2>
 	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'adminform',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array(
-			'class'=>'sliding',
-		),
-		'focus'=>'#username',
-		'layoutColumns'=>array(
+		'htmlOptions' => array('class'=>'sliding'),
+		'focus'=>'#contactname',
+		'layoutColumns' => array(
 			'label' => 2,
-			'field' => 4
+			'field' => 5
 		)
 	))?>
-		<?php echo $form->textField($user,'username')?>
-		<?php echo $form->textField($user,'title', null, null, array('field' => 2))?>
-		<?php echo $form->textField($user,'first_name')?>
-		<?php echo $form->textField($user,'last_name')?>
-		<?php echo $form->textField($user,'email')?>
-		<?php echo $form->textField($user,'role')?>
-		<?php echo $form->textField($user,'qualifications')?>
-		<?php echo $form->radioBoolean($user,'active')?>
-		<?php echo $form->radioBoolean($user,'global_firm_rights')?>
-		<?php echo $form->radioBoolean($user,'is_doctor')?>
-		<?php echo $form->passwordField($user,'password')?>
-		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
-		<?php echo $form->dropDownList($user,'access_level', $user->getAccessLevelOptions())?>
-		<?php echo $form->formActions(); ;?>
+		<?php echo $form->textField($contact,'title', null, null, array('field' => 2))?>
+		<?php echo $form->textField($contact,'first_name')?>
+		<?php echo $form->textField($contact,'last_name')?>
+		<?php echo $form->textField($contact,'nick_name')?>
+		<?php echo $form->textField($contact,'primary_phone')?>
+		<?php echo $form->textField($contact,'qualifications')?>
+		<?php echo $form->dropDownList($contact,'contact_label_id',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
+		<div class="row field-row">
+			<div class="large-5 large-offset-2 column">
+				<?php echo EventAction::button('Add label','add_label',array(), array('class' => 'small'))->toHtml()?>
+			</div>
+		</div>
+		<?php echo $form->formActions();?>
 	<?php $this->endWidget()?>
 </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#Contact_title').focus();
+	});
+</script>

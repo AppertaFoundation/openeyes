@@ -31,7 +31,7 @@
 			<tbody>
 				<?php
 				foreach ($contactlabels['items'] as $i => $contactlabel) {?>
-					<tr data-id="<?php echo $contactlabel->id?>">
+					<tr class="clickable" data-id="<?php echo $contactlabel->id?>" data-uri="admin/editContactLabel/<?php echo $contactlabel->id?>">
 						<td><?php echo $contactlabel->id?></td>
 						<td><?php echo $contactlabel->name?>&nbsp;</td>
 					</tr>
@@ -40,6 +40,7 @@
 			<tfoot class="pagination-container">
 				<tr>
 					<td colspan="2">
+						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
 						<?php echo $this->renderPartial('_pagination',array(
 							'prefix' => '/admin/contactlabels/',
 							'page' => $contactlabels['page'],
@@ -50,7 +51,4 @@
 			</tfoot>
 		</table>
 	</form>
-</div>
-<div>
-	<?php echo EventAction::button('Add', 'add')->toHtml()?>
 </div>
