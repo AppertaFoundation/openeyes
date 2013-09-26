@@ -20,15 +20,17 @@
 class BaseEventTypeCActiveForm extends CActiveForm
 {
 
+	// This property will be used as default widget options for the field widget options.
 	public $widgetOptions = array();
 
-	public function dropDownList($model, $field, $data, $htmlOptions=array(), $hidden=false)
+	public function dropDownList($model, $field, $data, $htmlOptions=array(), $hidden=false, $widgetOptions=array())
 	{
 		$this->widget('application.widgets.DropDownList', array(
 			'element' => $model,
 			'field' => $field,
 			'data' => $data,
 			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions),
 			'hidden' => $hidden
 		));
 	}
@@ -39,7 +41,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $model,
 			'fields' => $fields,
 			'datas' => $datas,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
@@ -49,11 +52,12 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'id' => $id,
 			'options' => $options,
 			'selected_value' => $selected_value,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function radioButtons($element, $field, $table=null, $selected_item=null, $maxwidth=false, $hidden=false, $no_element=false, $label_above=false, $htmlOptions=array())
+	public function radioButtons($element, $field, $table=null, $selected_item=null, $maxwidth=false, $hidden=false, $no_element=false, $label_above=false, $htmlOptions=array(), $widgetOptions=array())
 	{
 		$data = $element->getFormOptions($table);
 		$this->widget('application.widgets.RadioButtonList', array(
@@ -66,11 +70,12 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'hidden' => $hidden,
 			'no_element' => $no_element,
 			'label_above' => $label_above,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function radioBoolean($element, $field, $htmlOptions=array())
+	public function radioBoolean($element, $field, $htmlOptions=array(), $widgetOptions=array())
 	{
 		$this->widget('application.widgets.RadioButtonList', array(
 			'element' => $element,
@@ -81,22 +86,24 @@ class BaseEventTypeCActiveForm extends CActiveForm
 				0 => 'No'
 			),
 			'selected_item' => $element->$field,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function datePicker($element, $field, $options=array(), $htmlOptions=array())
+	public function datePicker($element, $field, $options=array(), $htmlOptions=array(), $widgetOptions=array())
 	{
 		$this->widget('application.widgets.DatePicker', array(
 			'element' => $element,
 			'name' => get_class($element)."[$field]",
 			'field' => $field,
 			'options' => $options,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function textArea($element, $field, $options=array(), $hidden=false)
+	public function textArea($element, $field, $options=array(), $hidden=false, $widgetOptions=array())
 	{
 		if (!isset($options['rows'])) {
 			throw new SystemException('textArea requires the rows option to be specified');
@@ -108,7 +115,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.TextArea', array_merge(array(
 			'element' => $element,
 			'field' => $field,
-			'hidden' => $hidden
+			'hidden' => $hidden,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		), $options));
 	}
 
@@ -126,7 +134,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 
 	public function passwordField($element, $field, $htmlOptions=array(), $widgetOptions=array())
 	{
-		$htmlOptions['password'] = 1;
+		$widgetOptions['password'] = 1;
+
 		$this->widget('application.widgets.TextField', array(
 			'element' => $element,
 			'name' => get_class($element)."[$field]",
@@ -136,27 +145,45 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		));
 	}
 
-	public function checkBox($element, $field, $options=false, $htmlOptions=array())
+	public function passwordConfirmField($element, $label, $name, $htmlOptions=array(), $widgetOptions=array())
+	{
+		$widgetOptions = array_merge(array(
+			'label' => $label,
+			'password' => 1
+		), $widgetOptions);
+
+		$this->widget('application.widgets.TextField', array(
+			'element' => $element,
+			'name' => $name,
+			'field' => null,
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
+		));
+	}
+
+	public function checkBox($element, $field, $options=false, $htmlOptions=array(), $widgetOptions=array())
 	{
 		$this->widget('application.widgets.CheckBox', array(
 			'element' => $element,
 			'field' => $field,
 			'options' => $options,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function checkBoxArray($element,$labeltext,$fields, $options=false)
+	public function checkBoxArray($element,$labeltext,$fields, $options=false, $widgetOptions=array())
 	{
 		$this->widget('application.widgets.CheckBoxArray', array(
 			'element' => $element,
 			'fields' => $fields,
 			'labeltext' => $labeltext,
-			'options' => $options
+			'options' => $options,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function multiSelectList($element, $field, $relation, $relation_id_field, $options, $default_options, $htmlOptions=array(), $hidden=false)
+	public function multiSelectList($element, $field, $relation, $relation_id_field, $options, $default_options, $htmlOptions=array(), $hidden=false, $widgetOptions=array())
 	{
 		$this->widget('application.widgets.MultiSelectList', array(
 			'element' => $element,
@@ -166,41 +193,45 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'options' => $options,
 			'default_options' => $default_options,
 			'htmlOptions' => $htmlOptions,
-			'hidden' => $hidden
+			'hidden' => $hidden,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function dropDownTextSelection($element, $text_field, $options, $htmlOptions=array())
+	public function dropDownTextSelection($element, $text_field, $options, $htmlOptions=array(), $widgetOptions=array())
 	{
 		$this->widget('application.widgets.DropDownTextSelection', array(
 			'element' => $element,
 			'field' => $text_field,
 			'options' => $options,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function multiDropDownTextSelection($element, $text_field, $options, $htmlOptions)
+	public function multiDropDownTextSelection($element, $text_field, $options, $htmlOptions, $widgetOptions=array())
 	{
 		$this->widget('application.widgets.MultiDropDownTextSelection', array(
 			'element' => $element,
 			'field' => $text_field,
 			'options' => $options,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function hiddenInput($element, $field, $value=false, $htmlOptions=array())
+	public function hiddenInput($element, $field, $value=false, $htmlOptions=array(), $widgetOptions=array())
 	{
 		$this->widget('application.widgets.HiddenField', array(
 			'element' => $element,
 			'field' => $field,
 			'value' => $value,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function slider($element, $field, $options)
+	public function slider($element, $field, $options, $widgetOptions=array())
 	{
 		$this->widget('application.widgets.Slider', array(
 			'element' => $element,
@@ -212,24 +243,27 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'prefix_positive' => @$options['prefix_positive'],
 			'remap_values' => @$options['remap'],
 			'null' => @$options['null'],
-			'append' => @$options['append']
+			'append' => @$options['append'],
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function sliderTable($element, $field, $data)
+	public function sliderTable($element, $field, $data, $widgetOptions=array())
 	{
 		$this->widget('application.widgets.SliderTable', array(
 			'element' => $element,
 			'field' => $field,
-			'data' => $data
+			'data' => $data,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 
-	public function hiddenField($element, $field, $htmlOptions=array()) {
+	public function hiddenField($element, $field, $htmlOptions=array(), $widgetOptions=array()) {
 		$this->widget('application.widgets.HiddenField', array(
 			'element' => $element,
 			'field' => $field,
-			'htmlOptions' => $htmlOptions
+			'htmlOptions' => $htmlOptions,
+			'widgetOptions' => array_merge($this->widgetOptions, $widgetOptions)
 		));
 	}
 }
