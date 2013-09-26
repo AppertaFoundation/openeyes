@@ -20,7 +20,6 @@
 class BaseFieldWidget extends BaseCWidget
 {
 	public $name;
-	public $links = array();
 	public $defaultWidgetOptions = array(
 		'labelColumns' => 2,
 		'fieldColumns' => 10
