@@ -45,6 +45,7 @@ class ExceptionLogRoute extends CLogRoute
 
 	public $adminEmail = false;
 	public $exclude_regex = array();
+	public $useragent_regex = array();
 	public $emailSubject = 'Exception';
 
 	/**
@@ -144,7 +145,7 @@ class ExceptionLogRoute extends CLogRoute
 		@flock($fp,LOCK_UN);
 		@fclose($fp);
 
-		if ($this->adminEmail && $log[1] == 'error' && !$this->isFiltered($log[0])) {
+		if ($this->adminEmail && $log[1] == 'error' && !$this->isFiltered($log[0]) && !$this->userAgentFiltered(@$_SERVER['HTTP_USER_AGENT'])) {
 			$user = isset(Yii::app()->session['user']->username) ? Yii::app()->session['user']->username : 'Not logged in';
 			$useragent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'None';
 
@@ -181,6 +182,16 @@ class ExceptionLogRoute extends CLogRoute
 	{
 		foreach ($this->exclude_regex as $regex) {
 			if (preg_match($regex,$msg)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function userAgentFiltered($useragent)
+	{
+		foreach ($this->useragent_regex as $regex) {
+			if (preg_match($regex,$useragent)) {
 				return true;
 			}
 		}
