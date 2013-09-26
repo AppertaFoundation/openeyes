@@ -35,7 +35,7 @@
 		)
 	))?>
 		<?php echo $form->textField($user,'username')?>
-		<?php echo $form->textField($user,'title')?>
+		<?php echo $form->textField($user,'title', null, null, array('field' => 2))?>
 		<?php echo $form->textField($user,'first_name')?>
 		<?php echo $form->textField($user,'last_name')?>
 		<?php echo $form->textField($user,'email')?>
