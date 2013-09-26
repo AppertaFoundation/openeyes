@@ -11,13 +11,13 @@ class m120306_161357_event_group_table extends CDbMigration
 			'PRIMARY KEY (`id`)'
 		), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
-		$this->insert('event_group',array('name'=>'Clinical events','code'=>'Ci'));
-		$this->insert('event_group',array('name'=>'Communication events','code'=>'Co'));
-		$this->insert('event_group',array('name'=>'Investigation events','code'=>'In'));
-		$this->insert('event_group',array('name'=>'Image events','code'=>'Im'));
-		$this->insert('event_group',array('name'=>'Treatment events','code'=>'Tr'));
-		$this->insert('event_group',array('name'=>'Drug events','code'=>'Dr'));
-		$this->insert('event_group',array('name'=>'Miscellaneous','code'=>'Mi'));
+		$this->insert('event_group',array('id'=>1,'name'=>'Clinical events','code'=>'Ci'));
+		$this->insert('event_group',array('id'=>2,'name'=>'Communication events','code'=>'Co'));
+		$this->insert('event_group',array('id'=>3,'name'=>'Investigation events','code'=>'In'));
+		$this->insert('event_group',array('id'=>4,'name'=>'Image events','code'=>'Im'));
+		$this->insert('event_group',array('id'=>5,'name'=>'Treatment events','code'=>'Tr'));
+		$this->insert('event_group',array('id'=>6,'name'=>'Drug events','code'=>'Dr'));
+		$this->insert('event_group',array('id'=>7,'name'=>'Miscellaneous','code'=>'Mi'));
 
 		$this->addColumn('event_type','event_group_id','int(10) unsigned NULL');
 

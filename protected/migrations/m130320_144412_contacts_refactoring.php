@@ -152,6 +152,12 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 		$this->parallelise('migrateUserContacts',$users);
 
+		foreach (Yii::app()->db->createCommand()->select("*")->from("user")->where("contact_id = :zero",array(":zero"=>0))->queryAll() as $user) {
+			$this->insert('contact',array('title'=>$user['title'],'first_name'=>$user['first_name'],'last_name'=>$user['last_name'],'qualifications'=>$user['qualifications']));
+			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
+			$this->update('user',array('contact_id'=>$contact_id),"id={$user['id']}");
+		}
+
 		$this->createIndex('user_contact_id_fk','user','contact_id');
 		$this->addForeignKey('user_contact_id_fk','user','contact_id','contact','id');
 

@@ -14,6 +14,14 @@ are not covered.
 Upgrading from 1.3
 ------------------
 
+Yii has now been included as a submodule on the git tree. To initialise this:
+
+In the project root, run:
+
+git submodule update --init
+
+Then update your index.php based on index.example.php
+
 run the core migrations with 
 
 ./yiic migrate

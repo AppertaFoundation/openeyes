@@ -10,8 +10,8 @@ class m120320_153814_priority_table extends CDbMigration
 			'PRIMARY KEY (`id`)'
 		), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
-		$this->insert('priority',array('name'=>'Routine'));
-		$this->insert('priority',array('name'=>'Urgent'));
+		$this->insert('priority',array('id'=>1,'name'=>'Routine'));
+		$this->insert('priority',array('id'=>2,'name'=>'Urgent'));
 
 		$this->renameColumn('element_operation','urgent','priority_id');
 		$this->createIndex('element_operation_priority_id_fk','element_operation','priority_id');
@@ -37,8 +37,8 @@ class m120320_153814_priority_table extends CDbMigration
 
 		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'Operation'))->queryRow();
 
-		$this->insert('element_type_priority',array('element_type_id'=>$element_type['id'],'priority_id'=>1,'display_order'=>1));
-		$this->insert('element_type_priority',array('element_type_id'=>$element_type['id'],'priority_id'=>2,'display_order'=>2));
+		$this->insert('element_type_priority',array('id'=>1,'element_type_id'=>$element_type['id'],'priority_id'=>1,'display_order'=>1));
+		$this->insert('element_type_priority',array('id'=>2,'element_type_id'=>$element_type['id'],'priority_id'=>2,'display_order'=>2));
 	}
 
 	public function down()
