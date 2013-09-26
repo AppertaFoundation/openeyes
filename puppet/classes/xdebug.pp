@@ -120,7 +120,7 @@ xdebug::config { 'default':
         remote_port => '9000', # Change default settings
         remote_autostart => '1',
         remote_enable => '1',
-        profiler_enable => '1',
+        profiler_enable => '0',
         profiler_output_name => 'xdebug.log',
         idekey => 'PHPSTORM',
         #remote_handler => 'dbgp',
