@@ -60,7 +60,7 @@
 		</div>
 
 		<div id="edit_oph_info" style="display: none;">
-			<form class="form add-data">
+
 
 				<fieldset class="field-row">
 
@@ -89,11 +89,11 @@
 							<label for="">Status:</label>
 						</div>
 						<div class="large-7 column end">
-							<select>
+
 					<?php echo CHtml::activeDropDownList($info, 'cvi_status_id', CHtml::listData(PatientOphInfoCviStatus::model()->findAll(array('order'=>'display_order')),'id','name')) ?>
 
 					<?php echo $form->error($info, 'cvi_status_date'); ?>
-							</select>
+
 						</div>
 					</div>
 
@@ -115,7 +115,7 @@
 
 					<?php $this->endWidget(); ?>
 				</fieldset>
-			</form>
+
 		</div>
 	<?php }?>
 
