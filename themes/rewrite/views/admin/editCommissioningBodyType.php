@@ -18,35 +18,30 @@
  */
 
 ?>
-<div class="admin box">
-	<h2>Contact labels</h2>
-	<form id="admin_contactlabels">
-		<table class="grid">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php
-				foreach ($contactlabels['items'] as $i => $contactlabel) {?>
-					<tr class="clickable" data-id="<?php echo $contactlabel->id?>" data-uri="admin/editContactLabel/<?php echo $contactlabel->id?>">
-						<td><?php echo $contactlabel->id?></td>
-						<td><?php echo $contactlabel->name?>&nbsp;</td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="2">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
-						<?php echo $this->renderPartial('_pagination',array(
-							'pagination' => $pagination
-						))?>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-	</form>
+<div class="box admin">
+	<h2><?php echo $cbt->id ? 'Edit' : 'Add'?> commissioning body type</h2>
+	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'focus'=>'#username',
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5
+		)
+	))?>
+		<?php echo $form->textField($cbt,'name')?>
+		<?php echo $form->textField($cbt,'shortname')?>
+		<?php echo $form->formActions();?>
+	<?php $this->endWidget()?>
 </div>
+<script type="text/javascript">
+	handleButton($('#et_cancel'),function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/admin/commissioning_bodies';
+	});
+	handleButton($('#et_save'),function(e) {
+		$('#adminform').submit();
+	});
+</script>
