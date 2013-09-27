@@ -160,11 +160,11 @@ class Examination extends Page
     }
 
     public function expandIntraocularPressure ()
-    {
-        if ($this->isIntraocularPressureCollapsed()){
-            $this->getElement('openIntraocularPressure')->click();
-        }
+{
+    if ($this->isIntraocularPressureCollapsed()){
+        $this->getElement('openIntraocularPressure')->click();
     }
+}
 
     public function leftIntracocular ($pressure, $instrument)
     {
@@ -188,19 +188,21 @@ class Examination extends Page
     {
         if ($this->isDilationCollapsed()){
             $this->getElement('openDilation')->click();
-            $this->getSession()->wait(10000);
+            $this->getSession()->wait(5000);
         }
     }
 
     public function dilationRight ($dilation, $drops)
     {
         $this->getElement('dilationRight')->selectOption($dilation);
+        $this->getElement('dilationRight')->click();
         $this->getElement('dropsRight')->selectOption($drops);
     }
 
     public function dilationLeft ($dilation, $drops)
     {
         $this->getElement('dilationLeft')->selectOption($dilation);
+        $this->getElement('dilationLeft')->click();
         $this->getElement('dropsLeft')->selectOption($drops);
     }
 
@@ -331,8 +333,8 @@ class Examination extends Page
 
     public function saveExamination ()
     {
-        $this->getSession()->wait(5000);
         $this->getElement('saveExamination')->click();
+        $this->getSession()->wait(3000);
     }
 
 }

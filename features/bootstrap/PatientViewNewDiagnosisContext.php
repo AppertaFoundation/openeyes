@@ -64,7 +64,8 @@ class PatientViewContext extends PageObjectContext
          * @var PatientViewNewDiagnosis $patientview
          */
         $patientview= $this->getPage('PatientViewNewDiagnosis');
-        $patientview->addEpisodeAndEvent();
+        $patientview->selectLatestEvent();
+//        $patientview->addEpisodeAndEvent();
     }
 
     /**

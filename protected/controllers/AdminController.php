@@ -53,19 +53,15 @@ class AdminController extends BaseController
 
 	public function actionUsers($id=false)
 	{
-		if ((integer) $id) {
-			$page = $id;
-		} else {
-			$page = 1;
-		}
-
 		Audit::add('admin-User','list');
+		$pagination = $this->initPagination(User::model());
 
 		$this->render('/admin/users',array(
 			'users' => $this->getItems(array(
 				'model' => 'User',
-				'page' => $page,
+				'page' => $pagination->currentPage ,
 			)),
+			'pagination' => $pagination,
 		));
 	}
 
@@ -175,19 +171,16 @@ class AdminController extends BaseController
 
 	public function actionFirms($id=false)
 	{
-		if ((integer) $id) {
-			$page = $id;
-		} else {
-			$page = 1;
-		}
-
 		Audit::add('admin-Firm','list');
+
+		$pagination = $this->initPagination(Firm::model());
 
 		$this->render('/admin/firms',array(
 			'firms' => $this->getItems(array(
 				'model' => 'Firm',
-				'page' => $page,
+				'page' => $pagination->currentPage,
 			)),
+			'pagination' => $pagination,
 		));
 	}
 
@@ -246,15 +239,7 @@ class AdminController extends BaseController
 	public function getItems($params)
 	{
 		$model = $params['model']::model();
-		$pages = ceil(Yii::app()->db->createCommand()->select("count(*)")->from($model->tableName())->queryScalar() / $this->items_per_page);
-
-		if ($params['page'] <1) {
-			$page = 1;
-		} elseif ($params['page'] > $pages) {
-			$page = $pages;
-		} else {
-			$page = $params['page'];
-		}
+		$page = $params['page'];
 
 		$criteria = new CDbCriteria;
 		if (isset($params['order'])) {
@@ -262,7 +247,7 @@ class AdminController extends BaseController
 		} else {
 			$criteria->order = 'id asc';
 		}
-		$criteria->offset = ($page-1) * $this->items_per_page;
+		$criteria->offset = $page * $this->items_per_page;
 		$criteria->limit = $this->items_per_page;
 
 
@@ -274,8 +259,6 @@ class AdminController extends BaseController
 
 		return array(
 			'items' => $params['model']::model()->findAll($criteria),
-			'page' => $page,
-			'pages' => $pages,
 		);
 	}
 
@@ -292,16 +275,7 @@ class AdminController extends BaseController
 
 	public function actionContacts($id=false)
 	{
-		if ((integer) $id) {
-			$page = $id;
-		} else {
-			$page = 1;
-		}
-
-		if (!empty($_GET)) {
-			$contacts = $this->searchContacts();
-		}
-
+		$contacts = $this->searchContacts();
 		Audit::add('admin-Contact','list');
 
 		$this->render('/admin/contacts',array('contacts'=>@$contacts));
@@ -309,27 +283,22 @@ class AdminController extends BaseController
 
 	public function actionContactlabels($id=false)
 	{
-		if ((integer) $id) {
-			$page = $id;
-		} else {
-			$page = 1;
-		}
-
 		Audit::add('admin-ContactLabel','list');
+		$pagination = $this->initPagination(ContactLabel::model());
 
 		$this->render('/admin/contactlabels',array(
 			'contactlabels' => $this->getItems(array(
 				'model' => 'ContactLabel',
 				'order' => 'name asc',
-				'page' => $page,
+				'page' => $pagination->currentPage,
 			)),
+			'pagination' => $pagination
 		));
 	}
 
 	public function searchContacts()
 	{
 		$criteria = new CDbCriteria;
-
 		Audit::add('admin-Contact','search',@$_GET['q']);
 
 		$ex = explode(' ',@$_GET['q']);
@@ -355,6 +324,7 @@ class AdminController extends BaseController
 		}
 
 		$criteria->order = 'title, first_name, last_name';
+		$pagination = $this->initPagination(Contact::model() , $criteria);
 
 		$contacts = Contact::model()->findAll($criteria);
 
@@ -364,32 +334,9 @@ class AdminController extends BaseController
 			return;
 		}
 
-		$pages = ceil(count($contacts) / $this->items_per_page);
-
-		$page = (integer) @$_GET['page'];
-
-		if ($page <1) {
-			$page = 1;
-		} elseif ($page > $pages) {
-			$page = $pages;
-		}
-
-		$_contacts = array();
-
-		foreach ($contacts as $i => $contact) {
-			if ($i >= (($page-1) * $this->items_per_page)) {
-				$_contacts[] = $contact;
-			}
-
-			if (count($_contacts) >= $this->items_per_page) {
-				break;
-			}
-		}
-
 		return array(
-			'page' => $page,
-			'pages' => $pages,
-			'contacts' => $_contacts,
+			'contacts' => $contacts,
+			'pagination' =>$pagination
 		);
 	}
 
@@ -513,20 +460,16 @@ class AdminController extends BaseController
 
 	public function actionInstitutions($id=false)
 	{
-		if ((integer) $id) {
-			$page = $id;
-		} else {
-			$page = 1;
-		}
-
 		Audit::add('admin-Institution','list');
+		$pagination = $this->initPagination(Institution::model());
 
 		$this->render('/admin/institutions',array(
 			'institutions' => $this->getItems(array(
 				'model' => 'Institution',
 				'order' => 'name asc',
-				'page' => $page,
+				'page' => $pagination->currentPage,
 			)),
+			'pagination' => $pagination
 		));
 	}
 
@@ -627,20 +570,16 @@ class AdminController extends BaseController
 
 	public function actionSites($id=false)
 	{
-		if ((integer) $id) {
-			$page = $id;
-		} else {
-			$page = 1;
-		}
-
 		Audit::add('admin-Site','list');
+		$pagination = $this->initPagination(Site::model());
 
 		$this->render('/admin/sites',array(
 			'sites' => $this->getItems(array(
 				'model' => 'Site',
 				'order' => 'name asc',
-				'page' => $page,
+				'page' => $pagination->currentPage,
 			)),
+			'pagination' => $pagination
 		));
 	}
 
@@ -1289,5 +1228,26 @@ class AdminController extends BaseController
 		Audit::add('admin-CommissioningBodyServiceType','delete',serialize($_POST));
 
 		echo "1";
+	}
+	/**
+	 *	@description Initialise and handle admin pagination
+	 *  @author bizmate
+	 * 	@param class $model
+	 * 	@param string $criteria
+	 * 	@return CPagination
+	 */
+	private function initPagination($model, $criteria = null)
+	{
+		$criteria = is_null($criteria) ? new CDbCriteria() : $criteria;
+		$itemsCount = $model->count($criteria);
+		$pagination = new CPagination($itemsCount);
+		$pagination->pageSize = $this->items_per_page;
+		// not needed as $_GET['page'] is used by default
+		//if(isset($_GET['page']) && is_int($_GET['page']) )
+		//{
+		//	$pagination->currentPage = $_GET['page'];
+		//}
+		$pagination->applyLimit($criteria);
+		return $pagination;
 	}
 }

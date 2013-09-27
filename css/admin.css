@@ -106,3 +106,13 @@ ul.yiiPager > li { display:inline-block; margin-right: 5px; }
 
 #admin_contacts #contactname { width: 300px; }
 #admin_contacts div { height: 30px; }
+
+.pagination  ul.yiiPager .first,
+.pagination ul.yiiPager .last
+{
+    display: inline;
+}
+
+.admin .search {
+    margin-top: 8px;
+}
