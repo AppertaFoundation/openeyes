@@ -17,42 +17,34 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
-	<?php $this->renderPartial('//base/head/_tracking'); ?>
-</head>
-<body class="open-eyes">
 
-	<?php $this->renderPartial('//base/_banner_watermark'); ?>
-	<?php $this->renderPartial('//base/_debug'); ?>
+<div class="box admin">
+	<header class="box-header">
+		<h2 class="box-title"><?php echo $title ? $title : "Examination Admin" ?></h2>
+		<div class="box-actions">
+			<a class="button small" href="<?php echo Yii::app()->createUrl('OphCiExamination/admin/create' . $model_class); ?>">Add New</a>
+		</div>
+	</header>
 
-	<div class="container main" role="main">
-
-		<?php $this->renderPartial('//base/_header'); ?>
-
-		<div class="container content">
-
-			<h1 class="badge admin">Admin</h1>
-
-			<div class="box content admin-content">
-				<div class="row">
-					<aside class="large-3 column sidebar admin">
-						<?php $this->renderPartial('//admin/sidebar'); ?>
-					</aside>
-					<div class="large-9 column">
-						<?php echo $content; ?>
-					</div>
-				</div>
-			</div>
-
-		</div><!-- /.content -->
-
-		<?php $this->renderPartial('//base/_footer'); ?>
-
-	</div><!-- /.main.container -->
-</body>
-</html>
-
+	<table class="grid">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Enabled</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			foreach ($model_list as $i => $model) {?>
+				<tr data-attr-id="<?php echo $model->id?>" data-attr-name="No Treatment Reason">
+					<td>
+						<a href="<?php echo Yii::app()->createUrl($this->module->getName() . '/admin/update' . get_class($model), array('id'=> $model->id)) ?>"><?php echo $model->name?></a>
+					</td>
+					<td>
+						<input type="checkbox" class="model_enabled" <?php if ($model->enabled) { echo "checked"; }?> />
+					</td>
+				</tr>
+			<?php }?>
+		</tbody>
+	</table>
+</div>

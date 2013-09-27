@@ -42,7 +42,7 @@
 				$action = array_pop($e)?>
 				<li<?php if (Yii::app()->getController()->action->id == $action) {?> class="selected"<?php }?>>
 					<?php if (Yii::app()->getController()->action->id == $action) {?>
-						<span class="viewing"><?php echo $item?></span>
+						<?php echo CHtml::link($item,array($uri), array('class' => 'selected'))?>
 					<?php } else {?>
 						<?php echo CHtml::link($item,array($uri))?>
 					<?php }?>

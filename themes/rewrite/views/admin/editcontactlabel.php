@@ -34,7 +34,9 @@
 			)
 		))?>
 			<?php echo $form->textField($contactlabel,'name')?>
-			<?php echo $form->formActions(null, null, true, true);?>
+			<?php echo $form->formActions(array(
+				'delete' => 'Delete'
+			));?>
 		<?php $this->endWidget()?>
 	</div>
 </div>
