@@ -65,6 +65,10 @@ return array(
 		),
 		'request' => array(
 			'enableCsrfValidation' => true,
+			'class'=>'HttpRequest',
+			'noCsrfValidationRoutes'=>array(
+				'site/login', //disabled csrf check on login form
+			),
 		),
 		'event' => array(
 			'class' => 'OEEventManager',
