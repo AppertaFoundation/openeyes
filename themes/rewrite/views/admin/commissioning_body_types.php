@@ -20,7 +20,7 @@
 <div class="box admin">
 	<h2>Commissioning body types</h2>
 	<form id="admin_commissioning_body_types">
-		<table>
+		<table class="grid">
 			<thead>
 				<tr>
 					<th><input type="checkbox" id="checkall" class="co§mmissioning_body_type" /></th>

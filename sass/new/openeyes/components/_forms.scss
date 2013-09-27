@@ -77,7 +77,6 @@ fieldset {
 		background: $legend-bg;
 		padding: $legend-padding;
 		display: block;
-		font-size: $default-font-size;
 		margin: $legend-margin;
 		width: 100%;
 		&.column {
@@ -87,6 +86,9 @@ fieldset {
 			padding-left: $column-gutter / 2 + 1em - $default-font-size;
 			padding-right: $column-gutter / 2 + 1em - $default-font-size;
 		}
+	}
+	legend.column {
+		font-size: $default-font-size;
 	}
 }
 
