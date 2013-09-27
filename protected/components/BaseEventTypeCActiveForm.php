@@ -268,11 +268,11 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		));
 	}
 
-	public function formActions($htmlOptions=array(), $layoutColumns=array(), $cancelButton=true, $deleteButton=false) {
+	public function formActions($buttonOptions=array(), $htmlOptions=array(), $layoutColumns=array()) {
 		$this->widget('application.widgets.FormActions', array(
+			'buttonOptions' => $buttonOptions,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns),
-			'deleteButton' => $deleteButton
+			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 }

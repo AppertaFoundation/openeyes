@@ -19,12 +19,12 @@
 ?>
 <div class="row field-row">
 	<div class="large-<?php echo 12 - $layoutColumns['label'];?> large-offset-<?php echo $layoutColumns['label'];?> column">
-		<?php echo EventAction::button('Save', 'save')->toHtml()?>
-		<?php if ($cancelButton) {
-			echo EventAction::button('Cancel', 'cancel', array(), array('class' => 'warning'))->toHtml();
+		<?php echo EventAction::button($buttonOptions['submit'], 'save')->toHtml()?>
+		<?php if ($buttonOptions['cancel']) {
+			echo EventAction::button($buttonOptions['cancel'], 'cancel', array(), array('class' => 'warning'))->toHtml();
 		}?>
-		<?php if ($deleteButton) {
-			echo EventAction::button('Delete', 'delete', array(), array('class' => 'warning'))->toHtml();
+		<?php if ($buttonOptions['delete']) {
+			echo EventAction::button($buttonOptions['delete'], 'delete', array(), array('class' => 'warning'))->toHtml();
 		}?>
 		<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 	</div>
