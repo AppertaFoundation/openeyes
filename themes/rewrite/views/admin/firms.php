@@ -55,9 +55,7 @@
 					</td>
 					<td colspan="3">
 						<?php echo $this->renderPartial('_pagination',array(
-							'prefix' => '/admin/firms/',
-							'page' => $firms['page'],
-							'pages' => $firms['pages'],
+							'pagination' => $pagination
 						))?>
 					</td>
 				</tr>

@@ -17,54 +17,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$pagination_max_links = 22;
-
-$_pages = array();
-
-if ($pages >$pagination_max_links) {
-	for ($i=$page;$i<$page+($pagination_max_links/2);$i++) {
-		$_pages[] = $i;
-	}
-	for ($i=$pages-($pagination_max_links/2);$i<=$pages;$i++) {
-		$_pages[] = $i;
-	}
-} else {
-	for ($i=0;$i<$pages;$i++) {
-		$_pages[] = $i+1;
-	}
+// display pagination
+if(isset($pagination)){
+	$this->widget('CLinkPager', array(
+		'pages' => $pagination,
+		'maxButtonCount' => 13,
+		'cssFile' => false,
+		'selectedPageCssClass' => 'current',
+		'hiddenPageCssClass' => 'unavailable',
+		'header' => false,
+		'htmlOptions' => array(
+			'class' => 'pagination'
+		)
+	));
 }
-?>
-<ul class="pagination right">
-	<?php if ($page > 1) {?>
-		<?php if (isset($url)) {
-			$uri = str_replace('{{PAGE}}',$page-1,$url);
-		} else {
-			$uri = $prefix.($page-1);
-		}?>
-		<li><a href="<?php echo Yii::app()->createUrl($uri)?>">&laquo; back</a></li>
-	<?php } else {?>
-		<li class="unavailable"><a href="">&laquo; back</a></li>
-	<?php }?>
-	<?php foreach ($_pages as $i) {?>
-		<?php if ($i == $page) {?>
-			<li class="current"><a href=""><?php echo $i?></a></li>
-		<?php } else {
-			if (isset($url)) {
-				$uri = str_replace('{{PAGE}}',$i,$url);
-			} else {
-				$uri = $prefix.$i;
-			}?>
-			<li><a href="<?php echo Yii::app()->createUrl($uri)?>"><?php echo $i?></a></li>
-		<?php }?>
-	<?php }?>
-	<?php if ($page < $pages) {
-		if (isset($url)) {
-			$uri = str_replace('{{PAGE}}',$page+1,$url);
-		} else {
-			$uri = $prefix.($page+1);
-		}?>
-		<li><a href="<?php echo Yii::app()->createUrl($uri)?>">next &raquo;</a></li>
-	<?php } else {?>
-		<li class="unavailable"><a href="">next &raquo;</a></li>
-	<?php }?>
-</ul>

@@ -49,9 +49,7 @@
 				<tr>
 					<td colspan="6" class="clearfix">
 						<?php echo $this->renderPartial('_pagination',array(
-							'prefix' => '/admin/contacts/',
-							'page' => $contacts['page'],
-							'pages' => $contacts['pages'],
+							'pagination' => $contacts['pagination'],
 							'url' => '/admin/contacts?q='.@$_GET['q'].'&page={{PAGE}}',
 						))?>
 					</td>
