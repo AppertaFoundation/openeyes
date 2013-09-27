@@ -5,3 +5,7 @@
 .hide-offscreen {
 	@include hide-text-absolutely;
 }
+
+.hide {
+	display: none;
+}
