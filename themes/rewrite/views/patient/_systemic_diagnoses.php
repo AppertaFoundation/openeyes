@@ -65,7 +65,7 @@
 
 
 							<div id="add_new_systemic_diagnosis" style="display: none;">
-								<form class="form add-data">
+
 
 									<fieldset class="field-row">
 
@@ -123,11 +123,12 @@
 								</div>
 
 								<?php $this->endWidget()?>
+									</fieldset>
 							</div>
 							<?php } ?>
 						</div>
-						</fieldset>
-	</form>
+
+
 
 					</section>
 <?php if (BaseController::checkUserLevel(4)) { ?>

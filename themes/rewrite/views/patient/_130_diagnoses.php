@@ -59,7 +59,7 @@
 							</div>
 
 						<div id="add_new_ophthalmic_diagnosis" style="display: none;">
-							<form class="form add-data">
+
 
 								<fieldset class="field-row">
 
@@ -120,7 +120,7 @@
 
 						<?php } ?>
 								</fieldset>
-							</form>
+
 							</div>
 
 					</section>
@@ -157,6 +157,7 @@
 		return false;
 	});
 	$('button.btn_save_ophthalmic_diagnosis').click(function() {
+		console.log($('#add-ophthalmic-diagnosis').serialize());
 		$.ajax({
 			'type': 'POST',
 			'dataType': 'json',

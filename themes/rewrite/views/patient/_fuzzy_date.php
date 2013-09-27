@@ -17,12 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-							<fieldset class="row field-row">
+							<fieldset class="row field-row" class="fuzzy_date <?php echo @$class?>">
 								<legend class="large-3 column">
 									Date:
 								</legend>
 								<div class="large-2 column">
-									<select>
+									<select name="fuzzy_day">
 									<option value="">Day (optional)</option>
 									<?php for ($i=1;$i<=31;$i++) {?>
 										<option value="<?php echo $i?>"><?php echo $i?></option>
@@ -30,7 +30,7 @@
 									</select>
 								</div>
 								<div class="large-2 column">
-									<select>
+									<select name="fuzzy_month">
 										<option>Month (optional)</option>
 									<?php foreach (array('January','February','March','April','May','June','July','August','September','October','November','December') as $i => $month) {?>
 										<option value="<?php echo $i+1?>"><?php echo $month?></option>
@@ -38,7 +38,7 @@
 									</select>
 								</div>
 								<div class="large-2 column end">
-									<select>
+									<select name="fuzzy_year">
 									<?php for ($i=date('Y')-50;$i<=date('Y');$i++) {?>
 										<option value="<?php echo $i?>"<?php if (date('Y') == $i) {?> selected="selected"<?php }?>><?php echo $i?></option>
 									<?php }?>
