@@ -33,7 +33,9 @@ class EventAction
 	{
 		$action = new self($label, 'button', $options, $htmlOptions);
 		$action->htmlOptions['name'] = $name;
-		$action->htmlOptions['type'] = 'submit';
+		if (!isset($action->htmlOptions['type'])) {
+			$action->htmlOptions['type'] = 'submit';
+		}
 		if (!isset($action->htmlOptions['id'])) {
 			$action->htmlOptions['id'] = 'et_'.strtolower($name);
 		}
