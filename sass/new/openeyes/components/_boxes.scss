@@ -13,7 +13,8 @@
 // Styleguide 13.1
 
 // Box vars
-$oe-box-margin: emCalc(20px) 0 !default;
+$oe-box-gutter: $column-gutter / 2;
+$oe-box-margin: $oe-box-gutter 0 !default;
 $oe-box-border-radius: $global-radius !default;
 $oe-box-content-bg-color: #dae6f1 !default;
 $oe-box-event-border-radius: 0 !default;
@@ -184,7 +185,7 @@ $oe-box-event-border-width: 0 5px 5px !default;
 		@include panel;
 		@include radius;
 		background: #fafafa;
-		margin: 0 0 emCalc(10px) 0;
+		margin: 0 0 $oe-box-gutter 0;
 		h2 {
 			margin-bottom: emCalc(12px);
 		}

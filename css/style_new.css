@@ -2941,7 +2941,7 @@ tfoot.pagination-container .pagination li {
   margin-top: 1.25em;
 }
 
-/* line 24, ../sass/new/openeyes/components/_boxes.scss */
+/* line 25, ../sass/new/openeyes/components/_boxes.scss */
 .box {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -2949,148 +2949,148 @@ tfoot.pagination-container .pagination li {
   -o-border-radius: 5px;
   border-radius: 5px;
   position: relative;
-  margin: 1.25em 0;
+  margin: 0.75em 0;
 }
 
-/* line 30, ../sass/new/openeyes/components/_boxes.scss */
+/* line 31, ../sass/new/openeyes/components/_boxes.scss */
 .box-header {
   margin-bottom: 0.75em;
 }
 
-/* line 35, ../sass/new/openeyes/components/_boxes.scss */
+/* line 36, ../sass/new/openeyes/components/_boxes.scss */
 .box-actions {
   text-align: center;
 }
 
-/* line 41, ../sass/new/openeyes/components/_boxes.scss */
+/* line 42, ../sass/new/openeyes/components/_boxes.scss */
 .box.content {
   background: #dae6f1;
 }
-/* line 43, ../sass/new/openeyes/components/_boxes.scss */
+/* line 44, ../sass/new/openeyes/components/_boxes.scss */
 .box.content.admin-content {
   padding: 1em 0;
 }
 
-/* line 51, ../sass/new/openeyes/components/_boxes.scss */
+/* line 52, ../sass/new/openeyes/components/_boxes.scss */
 .box.generic {
   background: #fff;
   padding: 0.75em;
 }
-/* line 54, ../sass/new/openeyes/components/_boxes.scss */
+/* line 55, ../sass/new/openeyes/components/_boxes.scss */
 .box.generic p:last-child {
   margin: 0;
 }
-/* line 57, ../sass/new/openeyes/components/_boxes.scss */
+/* line 58, ../sass/new/openeyes/components/_boxes.scss */
 .box.generic h1, .box.generic h2, .box.generic h3, .box.generic h4, .box.generic h5 {
   margin-top: 0;
   line-height: 1;
 }
-/* line 61, ../sass/new/openeyes/components/_boxes.scss */
+/* line 62, ../sass/new/openeyes/components/_boxes.scss */
 .box.generic table:last-child {
   margin-bottom: 0;
 }
 
-/* line 69, ../sass/new/openeyes/components/_boxes.scss */
+/* line 70, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info {
   background: #fafafa;
   padding: 0.75em;
 }
-/* line 72, ../sass/new/openeyes/components/_boxes.scss */
+/* line 73, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .box-title {
   font-size: 0.8125em;
   color: #e49f10;
   margin: 0;
   padding: 0 0 0.625em 0;
 }
-/* line 78, ../sass/new/openeyes/components/_boxes.scss */
+/* line 79, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row {
   padding: 0.625em 0;
   border-top: 1px dotted #ccc;
 }
-/* line 81, ../sass/new/openeyes/components/_boxes.scss */
+/* line 82, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row:last-child {
   padding-bottom: 0;
 }
-/* line 84, ../sass/new/openeyes/components/_boxes.scss */
+/* line 85, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row.highlight {
   background: goldenrod;
 }
-/* line 86, ../sass/new/openeyes/components/_boxes.scss */
+/* line 87, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row.highlight > .column {
   padding-left: 0.75em;
   padding-right: 0.75em;
 }
-/* line 90, ../sass/new/openeyes/components/_boxes.scss */
+/* line 91, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row.highlight .data-label {
   color: #eee;
 }
-/* line 93, ../sass/new/openeyes/components/_boxes.scss */
+/* line 94, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .data-row.highlight .data-value {
   color: #666;
 }
-/* line 98, ../sass/new/openeyes/components/_boxes.scss */
+/* line 99, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .field-label, .box.patient-info .data-label {
   color: #777;
 }
-/* line 102, ../sass/new/openeyes/components/_boxes.scss */
+/* line 103, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .add-data > fieldset > legend {
   margin-bottom: 1.5625em;
 }
-/* line 105, ../sass/new/openeyes/components/_boxes.scss */
+/* line 106, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .add-data .field-row, .box.patient-info .add-data .data-row {
   padding-bottom: 0.75em;
 }
-/* line 107, ../sass/new/openeyes/components/_boxes.scss */
+/* line 108, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .add-data .field-row:last-child, .box.patient-info .add-data .data-row:last-child {
   padding-bottom: 0;
 }
-/* line 112, ../sass/new/openeyes/components/_boxes.scss */
+/* line 113, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info > .row {
   margin-left: 0;
   margin-right: 0;
 }
-/* line 115, ../sass/new/openeyes/components/_boxes.scss */
+/* line 116, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info > .row > .column {
   padding-left: 0;
 }
-/* line 119, ../sass/new/openeyes/components/_boxes.scss */
+/* line 120, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .toggle-trigger {
   height: 22px;
   width: 30px;
   background: #dadada;
   right: 0.75em;
 }
-/* line 124, ../sass/new/openeyes/components/_boxes.scss */
+/* line 125, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .toggle-trigger:hover {
   background: #3665ff;
 }
-/* line 128, ../sass/new/openeyes/components/_boxes.scss */
+/* line 129, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info .add-data {
   margin: 0.375em 0 0.75em 0;
 }
 
-/* line 137, ../sass/new/openeyes/components/_boxes.scss */
+/* line 138, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.episodes {
   background: #dae6f1;
 }
-/* line 139, ../sass/new/openeyes/components/_boxes.scss */
+/* line 140, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.episodes .box-title {
   color: #4d5155;
   font-weight: bold;
   float: left;
   padding: 0;
 }
-/* line 145, ../sass/new/openeyes/components/_boxes.scss */
+/* line 146, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.episodes .box-info {
   float: right;
   font-size: 0.8125em;
 }
 
-/* line 156, ../sass/new/openeyes/components/_boxes.scss */
+/* line 157, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.associated-data {
   border: 1px solid #999;
 }
-/* line 158, ../sass/new/openeyes/components/_boxes.scss */
+/* line 159, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.associated-data .box-title {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -3104,18 +3104,18 @@ tfoot.pagination-container .pagination li {
   position: relative;
   font-size: 0.75em;
 }
-/* line 166, ../sass/new/openeyes/components/_boxes.scss */
+/* line 167, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.associated-data .box-title [class*="icon-"] {
   position: absolute;
   left: 0;
   top: -1px;
 }
-/* line 173, ../sass/new/openeyes/components/_boxes.scss */
+/* line 174, ../sass/new/openeyes/components/_boxes.scss */
 .box.patient-info.associated-data .form .buttons {
   text-align: right;
 }
 
-/* line 183, ../sass/new/openeyes/components/_boxes.scss */
+/* line 184, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin {
   border-style: solid;
   border-width: 1px;
@@ -3126,7 +3126,7 @@ tfoot.pagination-container .pagination li {
   -webkit-border-radius: 5px;
   border-radius: 5px;
   background: #fafafa;
-  margin: 0 0 0.625em 0;
+  margin: 0 0 0.75em 0;
 }
 /* line 44, ../sass/new/foundation/components/_panels.scss */
 .box.admin > :first-child {
@@ -3149,23 +3149,23 @@ tfoot.pagination-container .pagination li {
 .box.admin h1.subheader, .box.admin h2.subheader, .box.admin h3.subheader, .box.admin h4.subheader, .box.admin h5.subheader, .box.admin h6.subheader {
   line-height: 1.4;
 }
-/* line 188, ../sass/new/openeyes/components/_boxes.scss */
+/* line 189, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin h2 {
   margin-bottom: 0.75em;
 }
-/* line 192, ../sass/new/openeyes/components/_boxes.scss */
+/* line 193, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin .table-actions select {
   width: auto;
 }
-/* line 196, ../sass/new/openeyes/components/_boxes.scss */
+/* line 197, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin .box-header {
   margin: 0;
 }
-/* line 198, ../sass/new/openeyes/components/_boxes.scss */
+/* line 199, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin .box-header .box-title {
   float: left;
 }
-/* line 202, ../sass/new/openeyes/components/_boxes.scss */
+/* line 203, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin .box-actions {
   float: right;
 }
