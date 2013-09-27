@@ -72,10 +72,10 @@
 					</div>
 					<div class="large-7 column end">
 						<div class="field-row">
-							<select>
+
 								<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->getSubspecialtyID()),array('empty'=>'- Select -'))?>
 
-							</select>
+
 						</div>
 
 						<div class="patientMedication field-row">
@@ -140,7 +140,6 @@
 						<label for="">Frequency:</label>
 					</div>
 					<div class="large-7 column end">
-						<select>
 						<?php echo CHtml::dropDownList('frequency_id','',CHtml::listData(DrugFrequency::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
 					</div>
 				</div>
