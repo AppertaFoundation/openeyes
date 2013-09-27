@@ -232,7 +232,7 @@ button, .button, input[type="submit"] {
 	}
 	button, .button, input[type="submit"] {
 		@include border-radius(0);
-		padding: emCalc(5px) emCalc(10px);
+		padding: emCalc(8px) emCalc(16px);
 		margin: 0;
 	}
 	li:first-child {
@@ -243,6 +243,11 @@ button, .button, input[type="submit"] {
 	li:last-child {
 		button, .button, input[type="submit"] {
 			@include border-radius(0 $button-radius $button-radius 0);
+		}
+	}
+	&.small {
+		button, .button, input[type="submit"] {
+			padding: emCalc(5px) emCalc(10px);
 		}
 	}
 }

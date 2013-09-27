@@ -48,6 +48,7 @@
 			<tfoot class="pagination-container">
 				<tr>
 					<td colspan="6" class="clearfix">
+						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
 						<?php echo $this->renderPartial('_pagination',array(
 							'pagination' => $contacts['pagination'],
 							'url' => '/admin/contacts?q='.@$_GET['q'].'&page={{PAGE}}',

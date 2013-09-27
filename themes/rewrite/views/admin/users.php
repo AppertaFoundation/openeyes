@@ -33,10 +33,7 @@
 				'action' => Yii::app()->createUrl('/admin/users'),
 			))?>
 				<div class="row">
-					<div class="large-3 column">
-						<label for="search" class="align">Search:</label>
-					</div>
-					<div class="large-9 column">
+					<div class="large-12 column">
 						<input type="text" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
 					</div>
 				</div>
@@ -78,8 +75,8 @@
 			<tfoot class="pagination-container">
 				<tr>
 					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
 					</td>
 					<td colspan="6">
 						<?php echo $this->renderPartial('_pagination',array(

@@ -19,6 +19,7 @@
 
 ?>
 <div class="admin box">
+
 	<h2>Firms</h2>
 
 	<form id="admin_firms">

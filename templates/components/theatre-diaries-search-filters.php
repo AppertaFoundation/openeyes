@@ -88,7 +88,7 @@
 								<span class="to">to</span>
 								<input class="small fixed-width" type="text" name="date-end" />
 
-								<ul class="button-group">
+								<ul class="button-group small">
 				          <li><a href="#" class="small button">Last week</a></li>
 				          <li><a href="#" class="small button">Next week</a></li>
 				        </ul>

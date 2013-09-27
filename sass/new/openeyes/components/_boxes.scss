@@ -193,5 +193,14 @@ $oe-box-event-border-width: 0 5px 5px !default;
 				width: auto;
 			}
 		}
+		.box-header {
+			margin: 0;
+			.box-title {
+				float: left;
+			}
+		}
+		.box-actions {
+			float: right;
+		}
 	}
 }

@@ -2595,7 +2595,7 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   -ms-border-radius: 0;
   -o-border-radius: 0;
   border-radius: 0;
-  padding: 0.3125em 0.625em;
+  padding: 0.5em 1em;
   margin: 0;
 }
 /* line 239, ../sass/new/openeyes/components/_buttons.scss */
@@ -2613,6 +2613,10 @@ button.button-icon.small [class*="icon-button-small-"], .button.button-icon.smal
   -ms-border-radius: 0 4px 4px 0;
   -o-border-radius: 0 4px 4px 0;
   border-radius: 0 4px 4px 0;
+}
+/* line 249, ../sass/new/openeyes/components/_buttons.scss */
+.button-group.small button, .button-group.small .button, .button-group.small input[type="submit"] {
+  padding: 0.3125em 0.625em;
 }
 
 /* line 13, ../sass/new/openeyes/components/_navigation.scss */
@@ -3152,6 +3156,18 @@ tfoot.pagination-container .pagination li {
 /* line 192, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin .table-actions select {
   width: auto;
+}
+/* line 196, ../sass/new/openeyes/components/_boxes.scss */
+.box.admin .box-header {
+  margin: 0;
+}
+/* line 198, ../sass/new/openeyes/components/_boxes.scss */
+.box.admin .box-header .box-title {
+  float: left;
+}
+/* line 202, ../sass/new/openeyes/components/_boxes.scss */
+.box.admin .box-actions {
+  float: right;
 }
 
 /* line 1, ../sass/new/openeyes/components/_icons.scss */

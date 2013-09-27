@@ -45,9 +45,6 @@
 		</div>
 	</form>
 </div>
-<div style="margin-bottom: 1em">
-	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
-</div>
 <?php if (@$contacts) {?>
 		<?php echo $this->renderPartial('/admin/_contacts_list',array('contacts'=>$contacts))?>
 <?php }?>
