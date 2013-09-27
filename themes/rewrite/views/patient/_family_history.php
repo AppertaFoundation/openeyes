@@ -47,8 +47,7 @@
 				</div>
 			</form>
 			<div id="add_family_history" style="display: none;">
-				<form class="form add-data">
-
+		
 					<fieldset class="field-row">
 
 						<legend><strong>Add allergy</strong></legend>
@@ -115,7 +114,7 @@
 
 						<?php $this->endWidget()?>
 					</fieldset>
-				</form>
+
 			</div>
 		<?php }?>
 	</div>
