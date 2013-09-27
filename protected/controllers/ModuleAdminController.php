@@ -26,9 +26,22 @@ class ModuleAdminController extends BaseController
 	protected function beforeAction($action)
 	{
 		$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
-		if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin.js")) {
-			Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin.js');
+
+		// FIXME: remove once rewrite is complete
+		$theme = Yii::app()->session['theme'];
+		if($theme==0){ // 0 no theme original style
+			if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin.js")) {
+				Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin.js');
+			}
 		}
+		if($theme==1){ // 1 new theme new style
+			if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin_new.js")) {
+				Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin_new.js');
+			} else if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin.js")) {
+				Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin.js');
+			}
+		}
+
 		if (file_exists("protected/modules/".$this->getModule()->name."/assets/css/admin.css")) {
 			$this->registerCssFile('admin-module.css', $this->assetPath.'/css/admin.css');
 		}
