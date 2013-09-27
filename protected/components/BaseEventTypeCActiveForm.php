@@ -275,4 +275,11 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
+
+	public function errorSummary($models,$header=null,$footer=null,$htmlOptions=array()) {
+		if (!isset($htmlOptions['class'])) {
+			$htmlOptions['class'] = 'alert-box alert with-icon';
+		}
+		return parent::errorSummary($models,$header,$footer,$htmlOptions);
+	}
 }
