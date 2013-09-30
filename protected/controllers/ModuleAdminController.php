@@ -45,7 +45,20 @@ class ModuleAdminController extends BaseController
 		if (file_exists("protected/modules/".$this->getModule()->name."/assets/css/admin.css")) {
 			$this->registerCssFile('admin-module.css', $this->assetPath.'/css/admin.css');
 		}
-		$this->registerCssFile('module.css', $this->assetPath.'/css/module.css');
+
+		// FIXME: remove once rewrite is complete
+		if($theme==0){ // 0 no theme original style
+			Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
+		}
+		if($theme==1){ // 1 new theme new style
+			Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin_new.js"));
+		}
+
+		if($theme==0){
+			$this->registerCssFile('module.css', $this->assetPath.'/css/module.css');
+		} else {
+			$this->registerCssFile('module_new.css', $this->assetPath.'/css/module_new.css');
+		}
 
 		return parent::beforeAction($action);
 	}

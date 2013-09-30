@@ -3170,6 +3170,11 @@ tfoot.pagination-container .pagination li {
   float: right;
 }
 
+/* line 9, ../sass/new/openeyes/components/_visibility.scss */
+.hide {
+  display: none;
+}
+
 /* line 1, ../sass/new/openeyes/components/_icons.scss */
 [class*="icon-"] {
   display: inline-block;
