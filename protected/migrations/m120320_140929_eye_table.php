@@ -18,9 +18,9 @@ class m120320_140929_eye_table extends CDbMigration
 		$this->update('element_diagnosis',array('eye'=>2),'eye=1');
 		$this->update('element_diagnosis',array('eye'=>1),'eye=0');
 
-		$this->insert('eye',array('name'=>'Left'));
-		$this->insert('eye',array('name'=>'Right'));
-		$this->insert('eye',array('name'=>'Both'));
+		$this->insert('eye',array('id'=>1,'name'=>'Left'));
+		$this->insert('eye',array('id'=>2,'name'=>'Right'));
+		$this->insert('eye',array('id'=>3,'name'=>'Both'));
 
 		$this->renameColumn('element_operation','eye','eye_id');
 		$this->createIndex('element_operation_eye_id_fk','element_operation','eye_id');
@@ -47,15 +47,15 @@ class m120320_140929_eye_table extends CDbMigration
 
 		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'Operation'))->queryRow();
 
-		$this->insert('element_type_eye',array('element_type_id'=>$element_type['id'],'eye_id'=>1,'display_order'=>3));
-		$this->insert('element_type_eye',array('element_type_id'=>$element_type['id'],'eye_id'=>2,'display_order'=>1));
-		$this->insert('element_type_eye',array('element_type_id'=>$element_type['id'],'eye_id'=>3,'display_order'=>2));
+		$this->insert('element_type_eye',array('id'=>1,'element_type_id'=>$element_type['id'],'eye_id'=>1,'display_order'=>3));
+		$this->insert('element_type_eye',array('id'=>2,'element_type_id'=>$element_type['id'],'eye_id'=>2,'display_order'=>1));
+		$this->insert('element_type_eye',array('id'=>3,'element_type_id'=>$element_type['id'],'eye_id'=>3,'display_order'=>2));
 
 		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'Diagnosis'))->queryRow();
 
-		$this->insert('element_type_eye',array('element_type_id'=>$element_type['id'],'eye_id'=>1,'display_order'=>3));
-		$this->insert('element_type_eye',array('element_type_id'=>$element_type['id'],'eye_id'=>2,'display_order'=>1));
-		$this->insert('element_type_eye',array('element_type_id'=>$element_type['id'],'eye_id'=>3,'display_order'=>2));
+		$this->insert('element_type_eye',array('id'=>4,'element_type_id'=>$element_type['id'],'eye_id'=>1,'display_order'=>3));
+		$this->insert('element_type_eye',array('id'=>5,'element_type_id'=>$element_type['id'],'eye_id'=>2,'display_order'=>1));
+		$this->insert('element_type_eye',array('id'=>6,'element_type_id'=>$element_type['id'],'eye_id'=>3,'display_order'=>2));
 	}
 
 	public function down()

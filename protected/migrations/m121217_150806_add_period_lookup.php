@@ -20,10 +20,10 @@ class m121217_150806_add_period_lookup extends CDbMigration
 				'CONSTRAINT `period_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
-		$this->insert('period', array('name'=>'days', 'display_order' => '1'));
-		$this->insert('period', array('name'=>'weeks', 'display_order' => '2'));
-		$this->insert('period', array('name'=>'months', 'display_order' => '3'));
-		$this->insert('period', array('name'=>'years', 'display_order' => '4'));
+		$this->insert('period', array('id'=>1, 'name'=>'days', 'display_order' => '1'));
+		$this->insert('period', array('id'=>2, 'name'=>'weeks', 'display_order' => '2'));
+		$this->insert('period', array('id'=>3, 'name'=>'months', 'display_order' => '3'));
+		$this->insert('period', array('id'=>4, 'name'=>'years', 'display_order' => '4'));
 	}
 
 	public function down()
