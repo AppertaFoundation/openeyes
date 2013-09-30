@@ -1,4 +1,3 @@
-<?php // FIXME:?>
 <section class="box patient-info associated-data">
 	<header class="box-header">
 		<h3 class="box-title">
@@ -47,73 +46,75 @@
 				</div>
 			</form>
 			<div id="add_family_history" style="display: none;">
-		
-					<fieldset class="field-row">
 
-						<legend><strong>Add allergy</strong></legend>
-						<?php
-						$form = $this->beginWidget('CActiveForm', array(
-								'id'=>'add-family_history',
-								'enableAjaxValidation'=>false,
-								'htmlOptions' => array('class'=>'sliding'),
-								'action'=>array('patient/addFamilyHistory'),
-							))?>
+				<?php
+				$form = $this->beginWidget('CActiveForm', array(
+						'id'=>'add-family_history',
+						'enableAjaxValidation'=>false,
+						'htmlOptions' => array('class'=>'sliding form add-data'),
+						'action'=>array('patient/addFamilyHistory'),
+					))?>
 
-						<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
-						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+				<fieldset class="field-row">
+
+					<legend><strong>Add family history</strong></legend>
 
 
-						<div class="field-row row">
-							<div class="large-3 column">
-								<label for="">Relative:</label>
-							</div>
-							<div class="large-7 column end">
-								<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(FamilyHistoryRelative::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
-							</div>
+					<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
+					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+
+
+					<div class="field-row row">
+						<div class="large-3 column">
+							<label for="">Relative:</label>
 						</div>
-
-						<div class="field-row row">
-							<div class="large-3 column">
-								<label for="">Side:</label>
-							</div>
-							<div class="large-7 column end">
-								<?php echo CHtml::dropDownList('side_id','',CHtml::listData(FamilyHistorySide::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;'))?>
-							</div>
+						<div class="large-7 column end">
+							<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(FamilyHistoryRelative::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
+					</div>
 
-						<div class="field-row row">
-							<div class="large-3 column">
-								<label for="">Condition:</label>
-							</div>
-							<div class="large-7 column end">
-								<?php echo CHtml::dropDownList('condition_id','',CHtml::listData(FamilyHistoryCondition::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
-							</div>
+					<div class="field-row row">
+						<div class="large-3 column">
+							<label for="">Side:</label>
 						</div>
-
-						<div class="field-row row">
-							<div class="large-3 column">
-								<label for="">Comments:</label>
-							</div>
-							<div class="large-7 column end">
-								<?php echo CHtml::textField('comments','')?>
-							</div>
+						<div class="large-7 column end">
+							<?php echo CHtml::dropDownList('side_id','',CHtml::listData(FamilyHistorySide::model()->findAll(array('order'=>'display_order')),'id','name'),array(''))?>
 						</div>
+					</div>
 
-						<div align="right">
-							<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_family_history_loader" style="display: none;" />
-							<div class="buttons">
-								<button type="submit" class="secondary small btn_save_family_history">
-									Save
-								</button>
-								<button class="warning small btn_cancel_family_history">
-									Cancel
-								</button>
-							</div>
+					<div class="field-row row">
+						<div class="large-3 column">
+							<label for="">Condition:</label>
 						</div>
+						<div class="large-7 column end">
+							<?php echo CHtml::dropDownList('condition_id','',CHtml::listData(FamilyHistoryCondition::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+						</div>
+					</div>
 
+					<div class="field-row row">
+						<div class="large-3 column">
+							<label for="">Comments:</label>
+						</div>
+						<div class="large-7 column end">
+							<?php echo CHtml::textField('comments','')?>
+						</div>
+					</div>
 
-						<?php $this->endWidget()?>
-					</fieldset>
+					<div align="right">
+						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_family_history_loader" style="display: none;" />
+						<div class="buttons">
+							<button type="submit" class="secondary small btn_save_family_history">
+								Save
+							</button>
+							<button class="warning small btn_cancel_family_history">
+								Cancel
+							</button>
+						</div>
+					</div>
+
+				</fieldset>
+				<?php $this->endWidget()?>
+
 
 			</div>
 		<?php }?>

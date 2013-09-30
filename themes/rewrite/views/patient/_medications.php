@@ -52,16 +52,19 @@
 
 
 
-			<legend><strong>Add medication</strong></legend>
+
 
 			<?php
 			$form = $this->beginWidget('CActiveForm', array(
 					'id'=>'add-medication',
 					'enableAjaxValidation'=>false,
-					'htmlOptions' => array('class'=>'sliding'),
+					'htmlOptions' => array('class'=>'sliding form add-data'),
 					'action'=>array('patient/addMedication'),
 				))?>
 			<fieldset class="field-row">
+
+				<legend><strong>Add medication</strong></legend>
+
 				<input type="hidden" name="edit_medication_id" id="edit_medication_id" value="" />
 				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
@@ -73,7 +76,7 @@
 					<div class="large-7 column end">
 						<div class="field-row">
 
-								<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->getSubspecialtyID()),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->getSubspecialtyID()),array('empty'=>'- Select -'))?>
 
 
 						</div>
@@ -175,10 +178,10 @@
 						</button>
 					</div>
 				</div>
-
-				<?php $this->endWidget()?>
-				</form>
 			</fieldset>
+			<?php $this->endWidget()?>
+
+
 		</div>
 	</div>
 </section>
