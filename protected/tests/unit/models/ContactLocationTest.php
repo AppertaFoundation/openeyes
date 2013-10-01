@@ -147,11 +147,11 @@ class ContactLocationTest extends CDbTestCase
 	public function test__toString()
 	{
 
-		$expected = 'Moorfields City Road';
+		$expected = 'City Road';
 
 		$result = $this->contactlocations('contactlocation1')->__toString();
 
-		$this->assertEquals($expected, $result);
+		$this->assertContains($expected, $result, $expected . " not found");
 
 		$this->assertNotNull($result);
 	}
