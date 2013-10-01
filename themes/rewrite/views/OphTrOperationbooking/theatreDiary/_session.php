@@ -176,8 +176,8 @@
 						<tfoot>
 						<tr>
 							<?php $status = ($session->availableMinutes > 0); ?>
-							<th colspan="9" class="footer <?php echo ($status) ? 'available' : 'full'; ?> clearfix">
-								<div class="session_timeleft">
+							<td colspan="10">
+								<div class="session_timeleft time-left <?php echo ($status) ? 'available' : 'full'; ?>">
 									<?php if ($status) {?>
 										<?php echo $session->availableMinutes ?> minutes unallocated
 									<?php } else {?>
@@ -190,7 +190,7 @@
 									<div<?php if (!$session->anaesthetist) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $session->id?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetist<?php if ($session->general_anaesthetic) {?> (GA)<?php }?></div>
 									<div<?php if (!$session->paediatric) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $session->id?>" class="paediatric" title="Paediatric Session">Paediatric</div>
 								</div>
-							</th>
+							</td>
 						</tr>
 						</tfoot>
 					</table>
