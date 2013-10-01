@@ -129,10 +129,18 @@ class BaseEventTypeController extends BaseController
 					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.get_class($this).'.js');
 				}
 
+				//FIXME: remove after css refactor complete
 				// Register css
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/module.css')) {
-					$this->registerCssFile('module.css',$this->assetPath.'/css/module.css',10);
+					if(Yii::app()->session['theme']>0)
+					{
+						$this->registerCssFile('module.css',$this->assetPath.'/css/module_new.css',10);}
+					else{
+						$this->registerCssFile('module.css',$this->assetPath.'/css/module.css',10);
+					}
+
 				}
+
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/css/'.get_class($this).'.css')) {
 					$this->registerCssFile(get_class($this).'.css',$this->assetPath.'/css/'.get_class($this).'.css',10);
 				}
