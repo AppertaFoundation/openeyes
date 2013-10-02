@@ -17,9 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+
+<h2>Search Results:</h2>
+
 <div class="panel">
 
-	<div id="pas_warnings" class="alertBox">
+	<div class="alert-box alert with-icon">
 		<ul>
 			<li>One or more patients has no GP practice address, please correct in PAS before printing GP letter.</li>
 			<li>One or more patients has no Address, please correct in PAS before printing a letter for them.</li>

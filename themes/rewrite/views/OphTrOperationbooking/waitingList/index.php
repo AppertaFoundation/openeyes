@@ -22,28 +22,31 @@
 <div class="box content">
 	<div class="panel panel actions row">
 		<div class="large-12 column">
+			<div class="label">
+				Use the filters below to find patients:
+			</div>
 			<div class="button-bar">
+
 				<?php if ($this->canPrint()) {?>
 					<button id="btn_print_all" class="small">Print all</button>
 					<button id="btn_print" class="small">Print selected</button>
 				<?php }?>
 				<?php if (Yii::app()->user->checkAccess('admin')) {?>
-				<div class="panel orange">
-					<label for="adminconfirmdate">Set latest letter sent to be:</label>
-					<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-							'name'=>'adminconfirmdate',
-							'id'=>'adminconfirmdate',
-							// additional javascript options for the date picker plugin
-							'options'=>array(
-								'showAnim'=>'fold',
-								'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
-								'maxDate'=>'today'
-							),
-							'value' => date("j M Y"),
-							'htmlOptions'=>array('style'=>'width: 110px;')
-						))?>
-				</div>
-				<div class="panel orange">
+					<div class="panel orange">
+						<label for="adminconfirmdate">Set latest letter sent to be:</label>
+						<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+								'name'=>'adminconfirmdate',
+								'id'=>'adminconfirmdate',
+								// additional javascript options for the date picker plugin
+								'options'=>array(
+									'showAnim'=>'fold',
+									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
+									'maxDate'=>'today'
+								),
+								'value' => date("j M Y"),
+								'htmlOptions'=>array('style'=>'width: 110px;')
+							))?>
+					</div>
 					<div class="panel orange">
 						<select name="adminconfirmto" id="adminconfirmto">
 							<option value="OFF">Off</option>
@@ -54,47 +57,47 @@
 							<option value="3">GP letter</option>
 						</select>
 					</div>
-					<?php }?>
-					<?php if (BaseController::checkUserLevel(4)) { ?>
-						<button type="submit" class="small secondary" id="btn_confirm_selected">
-							Confirm selected
-						</button>
-					<?php }?>
-				</div>
+				<?php }?>
+				<?php if (BaseController::checkUserLevel(4)) { ?>
+					<button type="submit" class="small secondary" id="btn_confirm_selected">
+						Confirm selected
+					</button>
+				<?php }?>
 			</div>
 		</div>
+	</div>
 
-		<form method="post" action="<?php echo Yii::app()->createUrl('/OphTrOperationbooking/waitingList/search')?>" id="waitingList-filter">
-			<div id="waitinglist_display" class="row">
+	<form method="post" action="<?php echo Yii::app()->createUrl('/OphTrOperationbooking/waitingList/search')?>" id="waitingList-filter">
+		<div id="waitinglist_display" class="row">
 
-				<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-				<div class="large-12 column">
-					<h2>Search partial bookings waiting lists by:</h2>
-				</div>
+			<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+			<div class="large-12 column">
+				<h2>Search partial bookings waiting lists by:</h2>
 			</div>
-			<div class="row search-filters waiting-list">
-				<div class="large-12 column">
-					<div class="panel">
-						<table class="grid">
-							<thead>
-							<tr>
-								<th>Service:</th>
-								<th>Firm:</th>
-								<th>Next letter due:</th>
-								<th>Site:</th>
-								<th>Hospital no:</th>
-								<th>&nbsp;</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr>
-								<td>
-									<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(),
-										array('empty'=>'All specialties', 'ajax'=>array(
-											'type'=>'POST',
-											'data'=>array('subspecialty_id'=>'js:this.value','YII_CSRF_TOKEN'=>Yii::app()->request->csrfToken),
-											'url'=>Yii::app()->createUrl('/OphTrOperationbooking/waitingList/filterFirms'),
-											'success'=>"js:function(data) {
+		</div>
+		<div class="row search-filters waiting-list">
+			<div class="large-12 column">
+				<div class="panel">
+					<table class="grid">
+						<thead>
+						<tr>
+							<th>Service:</th>
+							<th>Firm:</th>
+							<th>Next letter due:</th>
+							<th>Site:</th>
+							<th>Hospital no:</th>
+							<th>&nbsp;</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>
+								<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(),
+									array('empty'=>'All specialties', 'ajax'=>array(
+										'type'=>'POST',
+										'data'=>array('subspecialty_id'=>'js:this.value','YII_CSRF_TOKEN'=>Yii::app()->request->csrfToken),
+										'url'=>Yii::app()->createUrl('/OphTrOperationbooking/waitingList/filterFirms'),
+										'success'=>"js:function(data) {
 												if ($('#subspecialty-id').val() != '') {
 													$('#firm-id').attr('disabled', false);
 													$('#firm-id').html(data);
@@ -103,40 +106,37 @@
 													$('#firm-id').html(data);
 												}
 											}",
-										)))?>
-								</td>
-								<td>
-									<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], $this->getFilteredFirms(@$_POST['subspecialty-id']), array('empty'=>'All firms', 'disabled'=>!@$_POST['firm-id']))?>
-								</td>
-								<td>
-									<?php echo CHtml::dropDownList('status', @$_POST['status'], Element_OphTrOperationbooking_Operation::getLetterOptions())?>
-								</td>
-								<td>
-									<?php echo CHtml::dropDownList('site_id',@$_POST['site_id'],Site::model()->getListForCurrentInstitution(),array('empty'=>'All sites'))?>
-								</td>
-								<td>
-									<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" /><br/>
-									<span id="hos_num_error" class="red"<?php if (!@$_POST['hos_num'] || ctype_digit($_POST['hos_num'])) {?> style="display: none;"<?php }?>>Invalid hospital number</span>
-								</td>
-								<td width="20px;" style="margin-left: 50px; border: none;">
-									<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
-								</td>
-								<td class="text-right">
-									<button type="submit" class="secondary">Search</button>
-								</td>
-							</tr>
-							</tbody>
-						</table>
-					</div>
+									)))?>
+							</td>
+							<td>
+								<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], $this->getFilteredFirms(@$_POST['subspecialty-id']), array('empty'=>'All firms', 'disabled'=>!@$_POST['firm-id']))?>
+							</td>
+							<td>
+								<?php echo CHtml::dropDownList('status', @$_POST['status'], Element_OphTrOperationbooking_Operation::getLetterOptions())?>
+							</td>
+							<td>
+								<?php echo CHtml::dropDownList('site_id',@$_POST['site_id'],Site::model()->getListForCurrentInstitution(),array('empty'=>'All sites'))?>
+							</td>
+							<td>
+								<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" />
+								<span id="hos_num_error" class="red"<?php if (!@$_POST['hos_num'] || ctype_digit($_POST['hos_num'])) {?> style="display: none;"<?php }?>>Invalid hospital number</span>
+							</td>
+							<td class="text-right">
+								<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+								<button type="submit" class="secondary">Search</button>
+							</td>
+						</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
-		</form>
-		<h2>Search Results:</h2>
-		<div class="row">
-
-			<div id="searchResults" class="large-12 column">
-
+		</div>
+	</form>
+	<div class="row">
+		<div id="searchResults" class="large-12 column">
 
 
+		</div>
+	</div>
 </div>
-</div>
+
