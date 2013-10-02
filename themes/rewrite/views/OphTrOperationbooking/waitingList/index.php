@@ -17,17 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<h2>Partial bookings waiting List</h2>
+<h1 class="badge">Partial bookings waiting list</h1>
 
-<div class="fullWidth fullBox clearfix">
-	<div id="whiteBox">
-		<div style="float: right; margin-top: 4px; margin-right: 3px;">
-			<?php if ($this->canPrint()) {?>
-				<button style="margin-right: 15px;" type="submit" class="classy blue mini" id="btn_print_all"><span class="button-span button-span-blue">Print all</span></button>
-				<button style="margin-right: 15px;" type="submit" class="classy blue mini" id="btn_print"><span class="button-span button-span-blue">Print selected</span></button>
-			<?php }?>
-			<?php if (Yii::app()->user->checkAccess('admin')) {?>
-				<span class="data admin-confirmto">Set latest letter sent to be:
+<div class="box content">
+	<div class="panel panel actions row">
+		<div class="large-12 column">
+			<div class="button-bar">
+				<?php if ($this->canPrint()) {?>
+					<button id="btn_print_all" class="small">Print all</button>
+					<button id="btn_print" class="small">Print selected</button>
+				<?php }?>
+				<?php if (Yii::app()->user->checkAccess('admin')) {?>
+				<div class="panel orange">
+					<label for="adminconfirmdate">Set latest letter sent to be:</label>
 					<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							'name'=>'adminconfirmdate',
 							'id'=>'adminconfirmdate',
@@ -39,42 +41,53 @@
 							),
 							'value' => date("j M Y"),
 							'htmlOptions'=>array('style'=>'width: 110px;')
-					))?>
-				</span>
-				<span class="admin-confirmto">
-					<select name="adminconfirmto" id="adminconfirmto">
-						<option value="OFF">Off</option>
-						<option value="noletters">No letters sent</option>
-						<option value="0">Invitation letter</option>
-						<option value="1">1st reminder letter</option>
-						<option value="2">2nd reminder letter</option>
-						<option value="3">GP letter</option>
-					</select>
-				</span>
-			<?php }?>
-			<?php if (BaseController::checkUserLevel(4)) { ?>
-				<button type="submit" class="classy green mini" id="btn_confirm_selected"><span class="button-span button-span-green">Confirm selected</span></button>
-			<?php }?>
+						))?>
+				</div>
+				<div class="panel orange">
+					<div class="panel orange">
+						<select name="adminconfirmto" id="adminconfirmto">
+							<option value="OFF">Off</option>
+							<option value="noletters">No letters sent</option>
+							<option value="0">Invitation letter</option>
+							<option value="1">1st reminder letter</option>
+							<option value="2">2nd reminder letter</option>
+							<option value="3">GP letter</option>
+						</select>
+					</div>
+					<?php }?>
+					<?php if (BaseController::checkUserLevel(4)) { ?>
+						<button type="submit" class="small secondary" id="btn_confirm_selected">
+							Confirm selected
+						</button>
+					<?php }?>
+				</div>
+			</div>
 		</div>
-		<p><strong>Use the filters below to find patients:</strong></p>
-	</div>
 
-	<div id="waitinglist_display">
 		<form method="post" action="<?php echo Yii::app()->createUrl('/OphTrOperationbooking/waitingList/search')?>" id="waitingList-filter">
-			<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-			<div id="search-options">
-				<div id="main-search" class="grid-view">
-					<h3>Search partial bookings waiting lists by:</h3>
-					<table>
-						<tbody>
+			<div id="waitinglist_display" class="row">
+
+				<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+				<div class="large-12 column">
+					<h2>Search partial bookings waiting lists by:</h2>
+				</div>
+			</div>
+			<div class="row search-filters waiting-list">
+				<div class="large-12 column">
+					<div class="panel">
+						<table class="grid">
+							<thead>
 							<tr>
 								<th>Service:</th>
 								<th>Firm:</th>
 								<th>Next letter due:</th>
 								<th>Site:</th>
 								<th>Hospital no:</th>
+								<th>&nbsp;</th>
 							</tr>
-							<tr class="even">
+							</thead>
+							<tbody>
+							<tr>
 								<td>
 									<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(),
 										array('empty'=>'All specialties', 'ajax'=>array(
@@ -90,7 +103,7 @@
 													$('#firm-id').html(data);
 												}
 											}",
-									)))?>
+										)))?>
 								</td>
 								<td>
 									<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], $this->getFilteredFirms(@$_POST['subspecialty-id']), array('empty'=>'All firms', 'disabled'=>!@$_POST['firm-id']))?>
@@ -108,19 +121,22 @@
 								<td width="20px;" style="margin-left: 50px; border: none;">
 									<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
 								</td>
-								<td style="padding: 0;" width="70px;">
-									<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Search</span></button>
+								<td class="text-right">
+									<button type="submit" class="secondary">Search</button>
 								</td>
 							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div id="extra-search" class="eventDetail clearfix">
-					<h5>Search Results:</h5>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</form>
-		<div id="searchResults" class="whiteBox">
-		</div>
-	</div>
+		<h2>Search Results:</h2>
+		<div class="row">
+
+			<div id="searchResults" class="large-12 column">
+
+
+
+</div>
 </div>
