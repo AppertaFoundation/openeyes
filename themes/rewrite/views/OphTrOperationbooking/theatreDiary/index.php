@@ -156,16 +156,17 @@
 						</div>
 					</div>
 
-
-
-					<?php $this->endWidget()
-					//FIXME: theatres-list is new markup, theatreList is old left in for Jquery?>
-					<div id="theatreList" class="theatres-list"></div>
-					<div class="printable" id="printable"></div>
 				</div>
 			</div>
 		</div>
 	</div>
+		<?php $this->endWidget()
+		//FIXME: theatres-list is new markup, theatreList is old left in for Jquery?>
+		<div id="theatreList" class="theatres-list"></div>
+		<div class="printable" id="printable"></div>
+
+
+
 </div>
 <div id="iframeprintholder" style="display: none;"></div>
 <script type="text/javascript">
