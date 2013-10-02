@@ -22,7 +22,7 @@
 
 <div class="panel">
 
-	<div class="alert-box alert with-icon">
+	<div id="pas_warnings" class="alert-box alert with-icon" style="display: none;">
 		<ul>
 			<li>One or more patients has no GP practice address, please correct in PAS before printing GP letter.</li>
 			<li>One or more patients has no Address, please correct in PAS before printing a letter for them.</li>
@@ -79,7 +79,8 @@
 				}?>
 
 				<tr class="waitinglist <?php echo ($i % 2 == 0) ? 'Even' : 'Odd'; ?>">
-					<td class="letter-status <?php echo $tablecolour ?>">
+					<?php //FIXME: waiting list color needs adding to style for below to work ?>
+					<td class="letter-status waitinglist<?php echo $tablecolour ?>">
 						<?php if ($eo->sentInvitation()) {?>
 							<img src="<?php echo $assetPath?>/img/letterIcons/invitation.png" alt="Invitation" width="17" height="17" />
 						<?php }?>
