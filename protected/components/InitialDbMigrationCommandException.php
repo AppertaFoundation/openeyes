@@ -17,21 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-return 	array(
-		'name'=>'OpenEyes Test',
-		'import'=>array(
-				'application.modules.admin.controllers.*',
-				'application.components.*',
-				'system.cli.commands.*',
-		),
-		'components'=>array(
-				'fixture'=>array(
-						'class'=>'system.test.CDbFixtureManager',
-				),
-				'db'=>array(
-						'connectionString' => 'mysql:host=localhost;dbname=openeyestest',
-						'username' => 'oe',
-						'password' => '_OE_TESTDB_PASSWORD_',
-				),
-		),
-);
+class InitialDbMigrationCommandException extends Exception
+{
+
+}
