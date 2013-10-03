@@ -1005,10 +1005,7 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (!empty($_POST)) {
-			$this->event->deleted = 1;
-			if (!$this->event->save()) {
-				throw new Exception("Unable to mark event deleted: ".print_r($this->event->getErrors(),true));
-			}
+			$this->event->softDelete();
 
 			$this->event->audit('event','delete',false);
 
