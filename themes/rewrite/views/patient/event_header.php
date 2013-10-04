@@ -27,15 +27,19 @@ if ($module = $this->getModule()) {
 
 $this->renderPartial('//layouts/patientMode/event_header');
 ?>
-		<h2>Episodes &amp; Events</h2>
-		<div class="fullWidth fullBox clearfix">
+<h1 class="badge">Episodes and events</h1>
+
+<div class="box content">
+	<div class="row">
+		<aside class="large-2 column sidebar episodes-and-events">
 			<?php if ($this->patient->isDeceased()) {?>
 				<div id="deceased-notice" class="alertBox">
 					This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
 				</div>
 			<?php }?>
 			<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes, 'supportserviceepisodes'=>$supportserviceepisodes))?>
-			<div id="event_display">
+			</aside>
+		<div class="large-10 column event phasing edit">
 				<?php $this->renderPartial('//patient/event_tabs',array('hidden'=>(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
 				<!-- EVENT CONTENT HERE -->
-				<div id="event_content" class="watermarkBox clearfix">
+			<div class="event-content">

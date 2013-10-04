@@ -17,15 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-		</div><!-- #content -->
-		<div id="help" class="clearfix">
-		</div>
-	</div><!--#container -->
+<?php $this->renderPartial('//base/_footer'); ?>
 
-	<?php $this->renderPartial('//base/_footer',array())?>
-
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/plugins.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
-
+</div><!-- /.main.container -->
 </body>
 </html>
