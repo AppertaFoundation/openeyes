@@ -55,33 +55,6 @@ class InitialDbMigrationCommand extends MigrateCommand
 		return $initialDbMigrationResult;
 	}
 
-	public function getColType($col) {
-		//if ($col->isPrimaryKey && $col->autoIncrement) {
-			//return "pk";
-		//}
-		$result = $col->dbType;
-		if (!$col->allowNull) {
-			$result .= ' NOT NULL';
-		}
-		if ($col->defaultValue != null) {
-			$result .= " DEFAULT '{$col->defaultValue}'";
-		} elseif ($col->allowNull) {
-			$result .= ' DEFAULT NULL';
-		}
-		/*elseif($col->autoIncrement){
-			$result .= ' AUTO_INCREMENT';
-		}*/
-
-		$result = str_replace("'", "\'", $result);
-		return $result;
-	}
-
-	private function isAutoIncrement($col){
-		if($col->autoIncrement ==true )
-			return true;
-		return false;
-	}
-
 	private function getUpCreateTablesStatements($tables){
 		$addForeignKeys = '';
 		$result = "public function up()\n\t\t{\n";
@@ -89,13 +62,6 @@ class InitialDbMigrationCommand extends MigrateCommand
 		foreach ($tables as $table) {
 			if( !is_subclass_of($table,'CDbTableSchema'))
 				throw new InitialDbMigrationCommandException('Table is not of type CDbTableSchema, instead : ' . get_class( $table));
-
-			// if migration table make sure it exists
-			if($table->name == 'tbl_migration'){
-				//$result .= "\t\t\t" . '$this->execute(\'CREATE TABLE IF NOT EXISTS `tbl_migration`' ;
-				//$result .= 	' (`version` varchar(255) NOT NULL, `apply_time` int(11) DEFAULT NULL, PRIMARY KEY (`version`)\' );' . "\n\n";
-				continue;
-			}
 
 			$createTable = Yii::app()->db->createCommand('SHOW CREATE TABLE ' . $table->name . ' ;')->queryRow(true);
 
