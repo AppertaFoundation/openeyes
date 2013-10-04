@@ -100,47 +100,14 @@ class InitialDbMigrationCommand extends MigrateCommand
 				continue;
 			}
 
-			$compositePrimaryKeyCols = array();
-			$primaryKey = false;
+			$createTable = Yii::app()->db->createCommand('SHOW CREATE TABLE ' . $table->name . ' ;')->queryRow(true);
 
-			// Create table
-			$result .= '			$this->createTable(\'' . $table->name . '\', array(' . "\n";
-			foreach ($table->columns as $col) {
-				$result .= '				\'' . $col->name . '\'=>\'' . $this->getColType($col) . '\',' . "\n";
+			if(!isset($createTable["Create Table"]))
+				throw new InitialDbMigrationCommandException('Show Create Table errors. $createTable array was : ' . var_export($createTable, true));
 
-				if ($col->isPrimaryKey && !$col->autoIncrement) {
-					// Add column to composite primary key array
-					$compositePrimaryKeyCols[] = $col->name;
-				}
-				else if ($col->isPrimaryKey && $col->autoIncrement){
-					$primaryKey = $col->name ;
-				}
-			}
-			$result .= '			), \'\');' . "\n\n";
-
-			//if primary key was found alter table
-			if($primaryKey){
-				$result .= '			$this->addPrimaryKey' . "('$primaryKey', '$table->name', '$primaryKey', FALSE);\n";
-			}
-
-			// Add foreign key(s) and create indexes
-			foreach ($table->foreignKeys as $col => $fk) {
-				// Foreign key naming convention: fk_table_foreignTable_col (max 64 characters)
-				$fkName = substr('fk_' . $table->name . '_' . $fk[0] . '_' . $col, 0 , 64);
-				$addForeignKeys .= '			$this->addForeignKey(' . "'$fkName', '$table->name', '$col', '$fk[0]', '$fk[1]', 'NO ACTION', 'NO ACTION');\n";
-				//$dropForeignKeys .= '    $this->dropForeignKey(' . "'$fkName', '$table->name');\n\n";
-
-				// Index naming convention: idx_col
-				$result .= '			$this->createIndex(\'idx_' . $col . "', '$table->name', '$col', FALSE);\n";
-			}
-
-			// Add composite primary key for join tables
-			if ($compositePrimaryKeyCols) {
-				$result .= '			$this->addPrimaryKey(\'pk_' . $table->name . "', '$table->name', '" . implode(',', $compositePrimaryKeyCols) . "');\n";
-			}
+			$result .= '			$this->execute("' . $createTable["Create Table"] .  '");' . "\n\n";
 
 		}
-		$result .= $addForeignKeys; // This needs to come after all of the tables have been created.
 		$result .= '			$this->execute("SET foreign_key_checks = 1");' . "\n";
 		$result .= "\t}\n\n";
 		return $result;
