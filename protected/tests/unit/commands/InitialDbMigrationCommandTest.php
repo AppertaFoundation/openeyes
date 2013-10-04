@@ -21,6 +21,7 @@
 class InitialDbMigrationCommandTest extends CTestCase
 {
 	protected $initialDbMigrationCommand;
+	protected $fileNameRegEx;
 
 	/*public $fixtures = array(
 		'users' => 'User',
@@ -82,7 +83,7 @@ class InitialDbMigrationCommandTest extends CTestCase
 		$expected = <<<'EOD'
 <?php
 
-	class {ClassName} extends CDbMigration
+	class {ClassName} extends OEMigration
 	{
 
 		{ClassUp}

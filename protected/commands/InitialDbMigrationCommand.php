@@ -123,7 +123,7 @@ class InitialDbMigrationCommand extends MigrateCommand
 		return <<<'EOD'
 <?php
 
-	class {ClassName} extends CDbMigration
+	class {ClassName} extends OEMigration
 	{
 
 		{ClassUp}
