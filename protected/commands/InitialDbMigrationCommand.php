@@ -17,9 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-//ugly hack
-Yii::import('system.cli.commands.*');
-
 class InitialDbMigrationCommand extends MigrateCommand
 {
 	public $migrationPath = 'application.migrations';

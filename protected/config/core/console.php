@@ -18,13 +18,23 @@
  */
 
 return array(
-		'name'=>'OpenEyes Console',
-		'commandMap' => array(
-				'migrate' => array(
-						'class' => 'system.cli.commands.MigrateCommand',
-						'migrationPath' => 'application.migrations',
-						'migrationTable' => 'tbl_migration',
-						'connectionID' => 'db'
-				),
+	'name'=>'OpenEyes Console',
+	'commandMap' => array(
+		'migrate' => array(
+			'class' => 'system.cli.commands.MigrateCommand',
+			'migrationPath' => 'application.migrations',
+			'migrationTable' => 'tbl_migration',
+			'connectionID' => 'db'
 		),
+		'initialDbMigration' => array(
+			'class' => 'system.cli.commands.*',
+			'migrationPath' => 'application.migrations',
+			'migrationTable' => 'tbl_migration',
+			'connectionID' => 'db'
+		),
+	),
+	'import' => array(
+		'application.components.*',
+		'system.cli.commands.*',
+	),
 );
