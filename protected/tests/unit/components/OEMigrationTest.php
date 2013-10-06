@@ -40,9 +40,12 @@ class OEMigrationTest extends CDbTestCase
 
 		$this->compareFixtureWithResultSet($this->event_group, $eventGroupResultSet);
 
+		$eventGroup->deleteAll();
+		$this->assertCount(0 , $eventGroup->findAll() );
+		$this->oeMigration->initialiseData($this->fixturePath,  null, 'oeMigrationData');
+		$eventGroupResultSet = $eventGroup->findAll();
 
-
-
+		$this->compareFixtureWithResultSet($this->event_group, $eventGroupResultSet);
 		/*//load info fixture data
 		$this->oeMigration->initialiseData();
 

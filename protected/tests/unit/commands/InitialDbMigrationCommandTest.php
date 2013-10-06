@@ -23,13 +23,6 @@ class InitialDbMigrationCommandTest extends CTestCase
 	protected $initialDbMigrationCommand;
 	protected $fileNameRegEx;
 
-	/*public $fixtures = array(
-		'users' => 'User',
-		'contact' => 'Contact',
-		'site' => 'Site',
-		'firm' => 'Firm',
-	);*/
-
 	public function setUp(){
 		$this->initialDbMigrationCommand = new InitialDbMigrationCommand('initialdbmigration', null);
 		$this->fileNameRegEx = '|^m\d{6}_\d{6}_[a-z]*$|i';

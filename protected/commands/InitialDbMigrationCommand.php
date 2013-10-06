@@ -67,8 +67,9 @@ class InitialDbMigrationCommand extends MigrateCommand
 
 			if(!isset($createTable["Create Table"]))
 				throw new InitialDbMigrationCommandException('Show Create Table errors. $createTable array was : ' . var_export($createTable, true));
-
-			$result .= '			$this->execute("' . $createTable["Create Table"] .  '");' . "\n\n";
+			$createTableStm = $createTable["Create Table"];
+			$createTableStm = str_replace(array('ENGINE' , "\n"), array("\nENGINE", "\n\t\t\t\t" ), $createTableStm);
+			$result .= '			$this->execute("' . $createTableStm .  "\"\n\t\t\t);\n\n";
 
 		}
 		$result .= '			$this->execute("SET foreign_key_checks = 1");' . "\n";
