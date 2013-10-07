@@ -17,24 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-return array(
-	'name'=>'OpenEyes Console',
-	'commandMap' => array(
-		'migrate' => array(
-			'class' => 'system.cli.commands.MigrateCommand',
-			'migrationPath' => 'application.migrations',
-			'migrationTable' => 'tbl_migration',
-			'connectionID' => 'db'
-		),
-		'initialDbMigration' => array(
-			'class' => 'system.cli.commands.*',
-			'migrationPath' => 'application.migrations',
-			'migrationTable' => 'tbl_migration',
-			'connectionID' => 'db'
-		),
-	),
-	'import' => array(
-		'application.components.*',
-		'system.cli.commands.*',
-	),
-);
+class InitialDbMigrationCommandException extends Exception
+{
+
+}

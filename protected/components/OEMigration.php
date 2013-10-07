@@ -23,7 +23,7 @@ class OEMigration extends CDbMigration
 	 * Initialise tables with default data
 	 * Filenames must to be in the format "nn_tablename.csv", where nn is the processing order
 	 */
-	protected function initialiseData($migrations_path, $update_pk = null, $data_directory = null)
+	public function initialiseData($migrations_path, $update_pk = null, $data_directory = null)
 	{
 		if (!$data_directory) {
 			$data_directory = get_class($this);
