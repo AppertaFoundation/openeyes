@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
  ?>
-<div class="element <?php echo $element->elementType->class_name?>"
+<section class="element <?php echo $element->elementType->class_name?>"
 	data-element-type-id="<?php echo $element->elementType->id?>"
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
@@ -40,4 +40,4 @@
 	<?php echo $form->radioButtons($element, 'priority_id', 'ophtroperationbooking_operation_priority')?>
 	<?php echo $form->datePicker($element, 'decision_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
 	<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 50))?>
-</div>
+</section>
