@@ -46,22 +46,51 @@ class OEMigrationTest extends CDbTestCase
 		$eventGroupResultSet = $eventGroup->findAll();
 
 		$this->compareFixtureWithResultSet($this->event_group, $eventGroupResultSet);
-		/*//load info fixture data
-		$this->oeMigration->initialiseData();
+	}
 
-		$this->assertInstanceOf('InitialDbMigrationResult' , $initDbMigrationResult, 'Not and instance of InitialDbMigrationResult' );
-		$this->assertTrue($initDbMigrationResult->result === true);
-		$this->assertRegExp($this->fileNameRegEx , $initDbMigrationResult->fileName );
-		$thisMigrationFile = $this->initialDbMigrationCommand->getMigrationPath()
-			. DIRECTORY_SEPARATOR . $initDbMigrationResult->fileName . '.php';
-		$this->assertFileExists($thisMigrationFile);
-		include $thisMigrationFile;
-		$this->assertTrue(class_exists($initDbMigrationResult->fileName));
-		$thisMigrationClassMethods = get_class_methods($initDbMigrationResult->fileName );
-		$this->assertContains('up', $thisMigrationClassMethods);
-		$this->assertContains('down', $thisMigrationClassMethods);
-		$this->assertContains('safeUp', $thisMigrationClassMethods);
-		$this->assertContains('safeDown', $thisMigrationClassMethods);*/
+	public function testGetMigrationPath(){
+		$path = $this->oeMigration->getMigrationPath();
+		$this->assertStringEndsWith('migrations', $path );
+		$this->oeMigration->setMigrationPath('system');
+		$wrongSavePath = $this->oeMigration->getMigrationPath();
+		$this->assertNotEquals( $path , $wrongSavePath );
+	}
+
+	public function testExportDataCannotWriteFile(){
+		$tables = array();
+		$this->oeMigration->setMigrationPath('system.config');
+		$thisPath = $this->oeMigration->getMigrationPath();
+		$thisConsolidation = 'm'.gmdate('ymd_His').'_consolidation';
+		$this->setExpectedException('OEMigrationException','Migration folder is not writable/accessible: ' . $thisPath);
+		$result = $this->oeMigration->exportData($thisConsolidation , $tables);
+	}
+
+	public function testExportDataCannotExportNoTables(){
+		$tables = array();
+		$thisConsolidation = 'm'.gmdate('ymd_His').'_consolidation';
+		$this->setExpectedException('OEMigrationException','No tables to export in the current database');
+		$result = $this->oeMigration->exportData($thisConsolidation , $tables);
+	}
+
+	public function testExportDataNotCdbTableSchema(){
+		$tables = array('just an array, not' => 'CDbTableSchema');
+		$thisConsolidation = 'm'.gmdate('ymd_His').'_consolidation';
+		$this->setExpectedException('OEMigrationException','Not a CDbTableSchema child class');
+		$result = $this->oeMigration->exportData($thisConsolidation , $tables);
+	}
+
+	public function testExportData(){
+		$tables = Yii::app()->db->schema->getTables();
+		$thisConsolidation = 'm'.gmdate('ymd_His').'_consolidation';
+		$result = $this->oeMigration->exportData($thisConsolidation, $tables);
+		$this->assertInstanceOf('OEMigrationResult', $result);
+		$this->assertTrue($result->result);
+		$this->assertGreaterThan(0 , count($result->tables ));
+		foreach($result->tables as $tableName => $tableTotalRows){
+			$this->assertInternalType('string' ,$tableName );
+			$this->assertGreaterThan(0 , strlen($tableName ));
+			$this->assertInternalType('int' , $tableTotalRows );
+		}
 	}
 
 	/**

@@ -17,29 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-return array(
-	'name' => 'OpenEyes Test',
-	'import' => array(
-		'application.modules.admin.controllers.*',
-		'application.components.*',
-		'system.cli.commands.*',
-		'system..db.schema.*',
-	),
-	'components' => array(
-		'fixture' => array(
-			'class' => 'system.test.CDbFixtureManager',
-		),
-		'db' => array(
-			'class'=> 'CDbConnection',
-			'connectionString' => 'mysql:host=localhost;dbname=openeyestest',
-			'username' => 'oe',
-			'password' => '_OE_TESTDB_PASSWORD_',
-		),
-		'dbTestNotConnecting' => array(
-			'class'=> 'CDbConnection',
-			'connectionString' => 'mysql:host=notArealDB;dbname=openeyestest',
-			'username' => 'oe',
-			'password' => '_OE_TESTDB_PASSWORD_',
-		),
-	),
-);
+/**
+ * Class OEMigrationResult
+ * @description OEMigration operation result placeholder
+ * @property boolean $result was the result correct or incorrect
+ * @property mixed $tables array containing list of tables and total rows exported, returns null by default
+ */
+class OEMigrationResult {
+	public $result = false;
+	public $tables = null;
+}

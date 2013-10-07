@@ -19,6 +19,8 @@
 
 class OEMigration extends CDbMigration
 {
+	private $migrationPath;
+
 	/**
 	 * Initialise tables with default data
 	 * Filenames must to be in the format "nn_tablename.csv", where nn is the processing order
@@ -86,6 +88,79 @@ class OEMigration extends CDbMigration
 			fclose($fh);
 			echo "$row_count records, done.\n";
 		}
+	}
+
+	public function exportData($migrationName , $tables){
+		if(!is_writable($this->getMigrationPath()))
+			throw new OEMigrationException('Migration folder is not writable/accessible: ' . $this->getMigrationPath());
+
+		if(!is_array($tables) || count($tables)==0)
+			throw new OEMigrationException('No tables to export in the current database');
+
+		$migrationResult = new OEMigrationResult();
+		$migrationResult->tables = array();
+		foreach($tables as $table){
+			$migrationResult->tables[@$table->name] =  $this->exportTable($migrationName, $table) ;
+		}
+		$migrationResult->result = true;
+		return $migrationResult;
+	}
+
+	public function getMigrationPath(){
+		if(!isset($this->migrationPath)){
+			$this->migrationPath = 'application.migrations';
+		}
+		return Yii::getPathOfAlias( $this->migrationPath );
+	}
+
+	public function setMigrationPath($path = null){
+		if(is_null($path))
+			$path =  'application.migrations';
+		$this->migrationPath = $path;
+	}
+
+	/**
+	 * @param $migrationName - name of the migration, a folder with name will be created under data
+	 * @param $table - name of the table being exported
+	 * @return int - return totRows
+	 * @throws OEMigrationException
+	 */
+	private function exportTable($migrationName, $table){
+		if(!is_subclass_of($table, 'CDbTableSchema' ) )
+			throw new OEMigrationException('Not a CDbTableSchema child class');
+
+		$dataPath = $this->getMigrationPath(). DIRECTORY_SEPARATOR . 'data';
+		//create data folder if does not exist
+		if(!file_exists( $dataPath )){
+			$dataDirCreated = mkdir($dataPath);
+			if(!$dataDirCreated)
+				throw new OEMigrationException('Data folder could not be created');
+		}
+		$dataMigPath = $dataPath. DIRECTORY_SEPARATOR . $migrationName;
+		//create data migration folder if does not exist
+		if(!file_exists( $dataMigPath )){
+			$dataMigDirCreated = mkdir($dataMigPath );
+			if(!$dataMigDirCreated)
+				throw new OEMigrationException('Data migration folder could not be created');
+		}
+
+		$columns = implode(',' ,  $table->getColumnNames());
+
+		$rowsQuery = $this->getDbConnection()->createCommand()
+			->select($columns)->from($table->name)->queryAll();
+
+		$data = array();
+		$data[] = $table->getColumnNames();
+		$data= array_merge($data , $rowsQuery);
+
+		$file = fopen($dataMigPath . DIRECTORY_SEPARATOR . $table->name,  'w');
+		//i dont like manual file opening with no exceptions - might need refactoring later
+		foreach($data as $row){
+			fputcsv($file , $row);
+		}
+
+		fclose($file);
+		return  count($rowsQuery);
 	}
 
 }
