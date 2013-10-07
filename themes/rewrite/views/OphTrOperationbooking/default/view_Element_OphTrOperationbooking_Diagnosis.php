@@ -17,9 +17,10 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 ?>
-<h4 class="elementTypeName"><?php  echo $element->elementType->name ?></h4>
-
-<div class="eventHighlight big">
+<section class="element element-data">
+	<h3 class="data-title"><?php  echo $element->elementType->name ?></h3>
+		<div class="data-value highlight">
 	<?php $disorder = $element->disorder?>
-	<h4><?php echo !empty($disorder) ? $element->eye->adjective : 'Unknown' ?> <?php echo !empty($disorder) ? $element->disorder->term : 'Unknown' ?></h4>
-</div>
+	<?php echo !empty($disorder) ? $element->eye->adjective : 'Unknown' ?> <?php echo !empty($disorder) ? $element->disorder->term : 'Unknown' ?>
+		</div>
+</section>

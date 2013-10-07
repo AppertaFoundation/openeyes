@@ -19,28 +19,28 @@
 ?>
 <?php $this->header() ?>
 
-<h3 class="withEventIcon"><?php  echo $this->event_type->name ?> (<?php echo Element_OphTrOperationbooking_Operation::model()->find('event_id=?',array($this->event->id))->status->name?>)</h3>
+<h2 class="event-title"><?php  echo $this->event_type->name ?> (<?php echo Element_OphTrOperationbooking_Operation::model()->find('event_id=?',array($this->event->id))->status->name?>)</h2>
 
 <?php $this->renderPartial('//base/_messages'); ?>
 
 <?php if (!$operation->has_gp) {?>
-	<div class="alertBox">
+	<div class="alertBox alert with-icon">
 		Patient has no GP practice address, please correct in PAS before printing GP letter.
 	</div>
 <?php } ?>
 <?php if (!$operation->has_address) { ?>
-	<div class="alertBox">
+	<div class="alertBox alert with-icon">
 		Patient has no address, please correct in PAS before printing letter.
 	</div>
 <?php } ?>
 
 <?php if ($operation->event->hasIssue()) {?>
-	<div class="issueBox">
+	<div class="alert-box issue with-icon">
 		<?php echo $operation->event->getIssueText()?>
 	</div>
 <?php }?>
 
-<div>
+<div class="view booking highlight-fields">
 	<?php
 	$this->renderDefaultElements($this->action->id);
 	$this->renderOptionalElements($this->action->id);

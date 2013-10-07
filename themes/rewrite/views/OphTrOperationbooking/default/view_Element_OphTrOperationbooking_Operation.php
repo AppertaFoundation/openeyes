@@ -17,88 +17,91 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 ?>
-<h4 class="elementTypeName">Procedure<?php if (count($element->procedures) != 1) echo 's'?></h4>
-
-<div class="eventHighlight priority">
-	<h4><?php echo $element->eye->adjective?>
+<section class="element element-data">
+	<h3 class="data-title">Procedure<?php if (count($element->procedures) != 1) echo 's'?></h3>
+	<?php echo $element->eye->adjective?>
+	<ul class="data-value highlight important">
 		<?php foreach ($element->procedures as $procedure) {
-			echo "{$procedure->term}<br />";
+			echo "<li>{$procedure->term}</li>";
 		}
-	?></h4>
-</div>
+	?>
+	</ul>
+</section>
 
-<div class="cols2 clearfix">
-	<div class="left">
-		<h4>Anaesthetic</h4>
-		<div class="eventHighlight">
-			<h4><?php echo $element->anaesthetic_type->name?></h4>
+<section class="element element-data">
+	<div class="row element-data-row">
+		<div class="large-6 column">
+			<h3 class="data-title">Anaesthetic</h3>
+			<div class="data-value">
+				<?php echo $element->anaesthetic_type->name?>
+			</div>
+		</div>
+		<div class="large-6 column">
+			<h3 class="data-title">Consultant required?</h3>
+			<div class="data-value"><?php echo $element->consultant_required ? 'Yes Consultant' : 'No Consultant'?></div>
 		</div>
 	</div>
+</section>
 
-	<div class="right">
-		<h4>Consultant required?</h4>
-		<div class="eventHighlight">
-			<h4><?php echo $element->consultant_required ? 'Yes Consultant' : 'No Consultant'?></h4>
+<section class="element element-data">
+	<div class="row element-data-row">
+		<div class="large-6 column">
+			<h3 class="data-title">Post Operative Stay Required</h3>
+			<div class="data-value"><?php echo $element->overnight_stay ? 'Yes Stay' : 'No Stay'?></div>
+		</div>
+		<div class="large-6 column">
+			<h3 class="data-title">Decision Date</h3>
+			<div class="data-value"><?php echo $element->NHSDate('decision_date') ?></div>
 		</div>
 	</div>
+</section>
 
-	<div class="left">
-		<h4>Post Operative Stay Required</h4>
-		<div class="eventHighlight">
-			<h4><?php echo $element->overnight_stay ? 'Yes Stay' : 'No Stay'?></h4>
+<section class="element element-data">
+	<div class="row element-data-row">
+		<div class="large-6 column">
+			<h3 class="data-title">Operation priority</h3>
+			<div class="data-value"><?php echo $element->priority->name?>
+			</div>
+		</div>
+		<div class="large-6 column">
+			<?php if (!empty($element->comments)) { ?>
+				<h3 class="data-title">Operation Comments</h3>
+				<div class="data-value panel comments"><?php echo CHtml::encode($element->comments)?></div>
+			<?php } ?>
 		</div>
 	</div>
-
-	<div class="right">
-		<h4>Decision Date</h4>
-		<div class="eventHighlight">
-			<h4><?php echo $element->NHSDate('decision_date') ?></h4>
-		</div>
-	</div>
-
-	<div class="left">
-		<h4>Operation priority</h4>
-		<div class="eventHighlight">
-			<h4><?php echo $element->priority->name?></h4>
-		</div>
-	</div>
-
-	<?php if (!empty($element->comments)) { ?>
-	<div class="right">
-		<h4>Operation Comments</h4>
-		<div class="eventHighlight comments">
-			<h4><?php echo CHtml::encode($element->comments)?></h4>
-		</div>
-	</div>
-	<?php } ?>
-</div>
+</section>
 
 <?php if ($element->booking) {?>
 	<h3 class="subsection">Booking Details</h3>
 
-	<div class="cols2">
-		<div class="left">
-			<h4>List</h4>
-			<div class="eventHighlight">
-				<?php $session = $element->booking->session ?>
-				<h4 style="width: 460px;"><?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?></h4>
+	<section class="element element-data">
+		<div class="row element-data-row">
+			<div class="large-6 column">
+				<h3 class="data-title">List</h3>
+				<div class="data-value">
+					<?php $session = $element->booking->session ?>
+					<?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?>
+				</div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="data-title">Theatre</h3>
+				<div class="data-value"><?php echo $session->TheatreName ?></div>
 			</div>
 		</div>
+	</section>
 
-		<div>
-			<h4>Theatre</h4>
-			<div class="eventHighlight">
-				<h4><?php echo $session->TheatreName ?></h4>
+	<section class="element element-data">
+		<div class="row element-data-row">
+			<div class="large-6 column">
+				<h3 class="data-title">Admission Time</h3>
+				<div class="data-value">
+					<h4><?php echo substr($element->booking->admission_time,0,5) ?></div>
 			</div>
 		</div>
+	</section>
 
-		<div>
-			<h4>Admission Time</h4>
-			<div class="eventHighlight">
-				<h4><?php echo substr($element->booking->admission_time,0,5) ?></h4>
-			</div>
-		</div>
-	</div>
+	<?php //FIXME: ?>
 
 	<div class="metaData">
 		<span class="info">
