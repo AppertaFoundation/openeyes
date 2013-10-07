@@ -78,7 +78,8 @@ class InitialDbMigrationCommand extends MigrateCommand
 			$createTableStm = str_replace(array('ENGINE' , "\n"), array("\nENGINE", "\n\t\t\t\t" ), $createTableStm);
 			$result .= '			$this->execute("' . $createTableStm .  "\"\n\t\t\t);\n\n";
 
-		}
+		}//
+		$result .= "\t\t\t" . '$this->initialiseData($this->getMigrationPath());' . "\n";
 		$result .= '			$this->execute("SET foreign_key_checks = 1");' . "\n";
 		$result .= "\t}\n\n";
 		return $result;
@@ -97,6 +98,7 @@ class InitialDbMigrationCommand extends MigrateCommand
 			$result .= $dropForeignKeys;
 			$result .= "\n\t\t\t" . '$this->dropTable(\'' . $table->name . '\');' . "\n";
 		}
+
 		$result .= "\t\t}\n";
 		return $result;
 	}

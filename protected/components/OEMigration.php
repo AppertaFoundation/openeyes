@@ -153,7 +153,7 @@ class OEMigration extends CDbMigration
 		$data[] = $table->getColumnNames();
 		$data= array_merge($data , $rowsQuery);
 
-		$file = fopen($dataMigPath . DIRECTORY_SEPARATOR . $table->name,  'w');
+		$file = fopen($dataMigPath . DIRECTORY_SEPARATOR . '01_' . $table->name . '.csv',  'w');
 		//i dont like manual file opening with no exceptions - might need refactoring later
 		foreach($data as $row){
 			fputcsv($file , $row);
