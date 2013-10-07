@@ -20,11 +20,13 @@
 class InitialDbMigrationCommand extends MigrateCommand
 {
 	public $migrationPath = 'application.migrations';
+	public $oeMigration = null;
 	private $dbSchema;
 
 	public function run($args = null) {
 		$className = 'consolidation';
-		$migrPath = $this->getMigrationPath() ;
+		$this->oeMigration = $this->getOeMigration();
+		$migrPath = $this->oeMigration->getMigrationPath() ;
 		$tables = $this->getDbSchema()->getTables();
 		$initialDbMigrationResult = new InitialDbMigrationResult();
 
@@ -47,6 +49,11 @@ class InitialDbMigrationCommand extends MigrateCommand
 
 		$fileFullPath = $migrPath . DIRECTORY_SEPARATOR . $initialDbMigrationResult->fileName . '.php';
 		$writeFile = file_put_contents($fileFullPath, $content);
+
+		//table structure migration file is generated, lets trigger the data export now
+		$initialDbMigrationResult->tables =
+			$this->oeMigration->exportData($initialDbMigrationResult->fileName, $tables)->tables;
+
 		if( $writeFile !== false  && is_file($fileFullPath) ){
 			$initialDbMigrationResult->result = true;
 			echo "New migration created successfully :" . $writeFile .".\n JSON Result: " . json_encode($initialDbMigrationResult ) . "\n";
@@ -94,19 +101,6 @@ class InitialDbMigrationCommand extends MigrateCommand
 		return $result;
 	}
 
-	public function getMigrationPath(){
-		if(!isset($this->migrationPath)){
-			$this->migrationPath = 'application.migrations';
-		}
-		return Yii::getPathOfAlias( $this->migrationPath );
-	}
-
-	public function setMigrationPath($path = null){
-		if(is_null($path))
-			$path =  'application.migrations';
-		$this->migrationPath = $path;
-	}
-
 	public function getDbSchema(){
 		if(!isset($this->dbSchema)){
 			$this->dbSchema = Yii::app()->db->schema;
@@ -149,5 +143,12 @@ EOD;
 
 	private function getMigrationFileName($name){
 		return $name='m'.gmdate('ymd_His').'_'.$name ;
+	}
+
+	private function getOeMigration(){
+		if($this->oeMigration === null ){
+			return new OEMigration();
+		}
+		return $this->oeMigration;
 	}
 }

@@ -22,8 +22,10 @@ class InitialDbMigrationCommandTest extends CTestCase
 {
 	protected $initialDbMigrationCommand;
 	protected $fileNameRegEx;
+	protected $oeMigration;
 
 	public function setUp(){
+		$this->oeMigration = new OEMigration();
 		$this->initialDbMigrationCommand = new InitialDbMigrationCommand('initialdbmigration', null);
 		$this->fileNameRegEx = '|^m\d{6}_\d{6}_[a-z]*$|i';
 	}
@@ -34,9 +36,13 @@ class InitialDbMigrationCommandTest extends CTestCase
 		$this->assertInstanceOf('InitialDbMigrationResult' , $initDbMigrationResult, 'Not and instance of InitialDbMigrationResult' );
 		$this->assertTrue($initDbMigrationResult->result === true);
 		$this->assertRegExp($this->fileNameRegEx , $initDbMigrationResult->fileName );
-		$thisMigrationFile = $this->initialDbMigrationCommand->getMigrationPath()
+		$this->assertInternalType('array' , $initDbMigrationResult->tables );
+		$this->assertGreaterThan(0 , count($initDbMigrationResult->tables));
+		$thisMigrationFile = $this->oeMigration->getMigrationPath()
 			. DIRECTORY_SEPARATOR . $initDbMigrationResult->fileName . '.php';
 		$this->assertFileExists($thisMigrationFile);
+
+		//test file is valid php and functions exist
 		include $thisMigrationFile;
 		$this->assertTrue(class_exists($initDbMigrationResult->fileName));
 		$thisMigrationClassMethods = get_class_methods($initDbMigrationResult->fileName );
@@ -51,9 +57,9 @@ class InitialDbMigrationCommandTest extends CTestCase
 	 */
 	public function testRunMigrationFolderNotAccessible(){
 		$this->setExpectedException('InitialDbMigrationCommandException','Migration folder is not writable/accessible');
-		$this->initialDbMigrationCommand->setMigrationPath('/root');
+		$this->initialDbMigrationCommand->oeMigration = new OEMigration();
+		$this->initialDbMigrationCommand->oeMigration->setMigrationPath('/root');
 		$this->initialDbMigrationCommand->run();
-		$this->initialDbMigrationCommand->setMigrationPath();
 	}
 
 	public function testRunMigrationNoTables(){
@@ -98,14 +104,6 @@ class InitialDbMigrationCommandTest extends CTestCase
 	}
 EOD;
 		$this->assertEquals($expected, $this->initialDbMigrationCommand->getTemplate(), 'Template was not returned correctly');
-	}
-
-	public function testGetMigrationPath(){
-		$path = $this->initialDbMigrationCommand->getMigrationPath();
-		$this->assertStringEndsWith('migrations', $path );
-		$this->initialDbMigrationCommand->setMigrationPath('system');
-		$wrongSavePath = $this->initialDbMigrationCommand->getMigrationPath();
-		$this->assertNotEquals( $path , $wrongSavePath );
 	}
 
 	public function tearDown(){
