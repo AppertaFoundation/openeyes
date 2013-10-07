@@ -21,21 +21,25 @@
 
 <h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
+
+
 <?php $this->renderPartial('//base/_messages'); ?>
 
 <div id="event_<?php echo $this->module->name?>">
-	<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'clinical-create',
-			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
-		));
 
-		// Event actions
-		$this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('colour' => 'green'), array('id' => 'et_save_draft'));
-		$this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('colour' => 'green'), array('id' => 'et_save_print'));
-		$this->renderPartial('//patient/event_actions');
-	?>
+		<?php
+		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+				'id'=>'clinical-create',
+				'enableAjaxValidation'=>false,
+				'htmlOptions' => array('class'=>'sliding'),
+			));
+
+		/* FIXME: /
+				// Event actions
+				$this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('colour' => 'green'), array('id' => 'et_save_draft'));
+				$this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('colour' => 'green'), array('id' => 'et_save_print'));
+				$this->renderPartial('//patient/event_actions'); ?>
+			*/?>
 
 		<?php $this->displayErrors($errors)?>
 
@@ -47,7 +51,7 @@
 		<?php $this->displayErrors($errors)?>
 
 		<div class="cleartall"></div>
-	<?php $this->endWidget(); ?>
+		<?php $this->endWidget(); ?>
 </div>
 
 <div id="dialog-confirm-cancel" title="Cancel">
