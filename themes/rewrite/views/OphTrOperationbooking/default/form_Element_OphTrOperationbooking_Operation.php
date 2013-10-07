@@ -21,8 +21,10 @@
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<h4 class="elementTypeName"><?php  echo $element->elementType->name; ?></h4>
-
+	<header class="element-header">
+		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
+	</header>
+	<fieldset class="element-fields">
 	<?php echo $form->radioButtons($element, 'eye_id', 'eye')?>
 	<?php $form->widget('application.widgets.ProcedureSelection',array(
 		'element' => $element,
@@ -40,4 +42,5 @@
 	<?php echo $form->radioButtons($element, 'priority_id', 'ophtroperationbooking_operation_priority')?>
 	<?php echo $form->datePicker($element, 'decision_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
 	<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 50))?>
+	</fieldset>
 </section>
