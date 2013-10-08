@@ -42,10 +42,10 @@ class InitialDbMigrationCommandTest extends CTestCase
 			. DIRECTORY_SEPARATOR . $initDbMigrationResult->fileName . '.php';
 		$this->assertFileExists($thisMigrationFile);
 
-		//make sure migration table is excluded
+		//make sure migration table is excluded -
 		$fileCnt = file_get_contents($thisMigrationFile);
-		$hasMigrationTable = strpos($fileCnt , 'tbl_migration');
-		$this->assertFalse($hasMigrationTable);
+		$migrationTableStrings = substr_count($fileCnt , 'tbl_migration');
+		$this->assertEquals(3 , $migrationTableStrings);
 		$this->assertFileNotExists($this->oeMigration->getMigrationPath()
 			. DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . $initDbMigrationResult->fileName
 			. DIRECTORY_SEPARATOR . '01_tbl_migration.csv'
@@ -55,6 +55,7 @@ class InitialDbMigrationCommandTest extends CTestCase
 		include $thisMigrationFile;
 		$this->assertTrue(class_exists($initDbMigrationResult->fileName));
 		$thisMigrationClassMethods = get_class_methods($initDbMigrationResult->fileName );
+		$this->assertContains('up', $thisMigrationClassMethods);
 		$this->assertContains('up', $thisMigrationClassMethods);
 		$this->assertContains('down', $thisMigrationClassMethods);
 		$this->assertContains('safeUp', $thisMigrationClassMethods);
@@ -94,9 +95,33 @@ class InitialDbMigrationCommandTest extends CTestCase
 	class {ClassName} extends OEMigration
 	{
 
-		{ClassUp}
+		public function up(){
+			// Check for existing migrations
+			$existing_migrations = $this->getDbConnection()->createCommand("SELECT count(version) FROM `tbl_migration`")->queryScalar();
+			if ($existing_migrations == 1) {
+				$this->createTables();
+			} else {
+				// Database has existing migrations, so check that last migration step to be consolidated was applied
+				$previous_migration = $this->getDbConnection()->createCommand("SELECT * FROM `tbl_migration` WHERE version = '{LastMigration}'")->execute();
+				if ($previous_migration) {
+					// Previous migration was applied, safe to consolidate
+					echo "Consolidating old migration data";
+					$this->execute("DELETE FROM `tbl_migration` WHERE version < '{ClassName}'");
+				} else {
+					// Database is not migrated up to the consolidation point, cannot migrate
+					echo "Previous migrations missing or incomplete, migration not possible\n";
+					return false;
+				}
+			}
+		}
 
-		{ClassDown}
+		{ClassCreateTables}
+
+		public function down()
+		{
+			echo "{ClassName} does not support migration down.\n";
+			return false;
+		}
 
 
 		// Use safeUp/safeDown to do migration with transaction

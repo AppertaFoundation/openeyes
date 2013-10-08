@@ -24,6 +24,8 @@ class InitialDbMigrationCommand extends CConsoleCommand
 	private $dbSchema;
 
 	public function run($args = null) {
+		Yii::app()->cache->flush();
+
 		$className = 'consolidation';
 		$this->oeMigration = $this->getOeMigration();
 		$migrPath = $this->oeMigration->getMigrationPath() ;
@@ -35,18 +37,18 @@ class InitialDbMigrationCommand extends CConsoleCommand
 
 		if(!is_array($tables) || count($tables)==0)
 			throw new InitialDbMigrationCommandException('No tables to export in the current database');
-
+		//dont export migration table
 		unset($tables['tbl_migration']);
 
 		$template = $this->getTemplate();
 		$initialDbMigrationResult->fileName = $this->getMigrationFileName($className);
 
-		$migrateUp = $this->getUpCreateTablesStatements($tables);
-		$migrateDown = $this->getDownDropTablesStatements($tables);
+		$migrateCreateTables = $this->getUpCreateTablesStatements($tables);
+		$lastMigration = $this->getLatestMigration();
 		$content=strtr($this->getTemplate(), array(
+			'{LastMigration}' => $lastMigration,
 			'{ClassName}'=> $initialDbMigrationResult->fileName,
-			'{ClassUp}'=> $migrateUp,
-			'{ClassDown}'=> $migrateDown,
+			'{ClassCreateTables}'=> $migrateCreateTables,
 		));
 
 		$fileFullPath = $migrPath . DIRECTORY_SEPARATOR . $initialDbMigrationResult->fileName . '.php';
@@ -66,7 +68,7 @@ class InitialDbMigrationCommand extends CConsoleCommand
 
 	private function getUpCreateTablesStatements($tables){
 		$addForeignKeys = '';
-		$result = "public function up()\n\t\t{\n";
+		$result = "public function createTables()\n\t\t{\n";
 		$result .= '			$this->execute("SET foreign_key_checks = 0");' . "\n";
 		foreach ($tables as $table) {
 			if( !is_subclass_of($table,'CDbTableSchema'))
@@ -93,30 +95,6 @@ class InitialDbMigrationCommand extends CConsoleCommand
 		return $result;
 	}
 
-	private function getDownDropTablesStatements($tables){
-		$result = "public function down()\n\t\t{\n";
-		foreach ($tables as $table) {
-			if( !is_subclass_of($table,'CDbTableSchema'))
-				throw new InitialDbMigrationCommandException('Table is not of type CDbTableSchema, instead : ' . get_class( $table));
-			//exclude migrations table
-			if($table->name == 'tbl_migration')
-				continue;
-
-			// Add foreign key(s)
-			$dropForeignKeys = '';
-			foreach ($table->foreignKeys as $col => $fk) {
-				// Foreign key naming convention: fk_table_foreignTable_col (max 64 characters)
-				$fkName = substr('fk_' . $table->name . '_' . $fk[0] . '_' . $col, 0 , 64);
-				$dropForeignKeys .= '			$this->dropForeignKey(' . "'$fkName', '$table->name');\n";
-			}
-			$result .= $dropForeignKeys;
-			$result .= "\n\t\t\t" . '$this->dropTable(\'' . $table->name . '\');' . "\n";
-		}
-
-		$result .= "\t\t}\n";
-		return $result;
-	}
-
 	public function getDbSchema(){
 		if(!isset($this->dbSchema)){
 			$this->dbSchema = Yii::app()->db->schema;
@@ -137,9 +115,33 @@ class InitialDbMigrationCommand extends CConsoleCommand
 	class {ClassName} extends OEMigration
 	{
 
-		{ClassUp}
+		public function up(){
+			// Check for existing migrations
+			$existing_migrations = $this->getDbConnection()->createCommand("SELECT count(version) FROM `tbl_migration`")->queryScalar();
+			if ($existing_migrations == 1) {
+				$this->createTables();
+			} else {
+				// Database has existing migrations, so check that last migration step to be consolidated was applied
+				$previous_migration = $this->getDbConnection()->createCommand("SELECT * FROM `tbl_migration` WHERE version = '{LastMigration}'")->execute();
+				if ($previous_migration) {
+					// Previous migration was applied, safe to consolidate
+					echo "Consolidating old migration data";
+					$this->execute("DELETE FROM `tbl_migration` WHERE version < '{ClassName}'");
+				} else {
+					// Database is not migrated up to the consolidation point, cannot migrate
+					echo "Previous migrations missing or incomplete, migration not possible\n";
+					return false;
+				}
+			}
+		}
 
-		{ClassDown}
+		{ClassCreateTables}
+
+		public function down()
+		{
+			echo "{ClassName} does not support migration down.\n";
+			return false;
+		}
 
 
 		// Use safeUp/safeDown to do migration with transaction
@@ -166,5 +168,14 @@ EOD;
 			return new OEMigration();
 		}
 		return $this->oeMigration;
+	}
+
+	/**
+	 * @return mixed - either the name of the lastest migration or false
+	 */
+	private function getLatestMigration(){
+		//select version from tbl_migration order by 1 desc limit 1
+		return $existing_migrations = Yii::app()->db
+			->createCommand("SELECT version FROM tbl_migration ORDER BY 1 DESC LIMIT 1")->queryScalar();
 	}
 }
