@@ -42,6 +42,11 @@ class InitialDbMigrationCommandTest extends CTestCase
 			. DIRECTORY_SEPARATOR . $initDbMigrationResult->fileName . '.php';
 		$this->assertFileExists($thisMigrationFile);
 
+		//make sure migration table is excluded
+		$fileCnt = file_get_contents($thisMigrationFile);
+		$hasMigrationTable = strpos($fileCnt , 'tbl_migration');
+		$this->assertFalse($hasMigrationTable);
+
 		//test file is valid php and functions exist
 		include $thisMigrationFile;
 		$this->assertTrue(class_exists($initDbMigrationResult->fileName));

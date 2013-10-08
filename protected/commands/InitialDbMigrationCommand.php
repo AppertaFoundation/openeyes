@@ -69,6 +69,9 @@ class InitialDbMigrationCommand extends MigrateCommand
 		foreach ($tables as $table) {
 			if( !is_subclass_of($table,'CDbTableSchema'))
 				throw new InitialDbMigrationCommandException('Table is not of type CDbTableSchema, instead : ' . get_class( $table));
+			//exclude migrations table
+			if($table->name == 'tbl_migration')
+				continue;
 
 			$createTable = Yii::app()->db->createCommand('SHOW CREATE TABLE ' . $table->name . ' ;')->queryRow(true);
 
@@ -78,7 +81,7 @@ class InitialDbMigrationCommand extends MigrateCommand
 			$createTableStm = str_replace(array('ENGINE' , "\n"), array("\nENGINE", "\n\t\t\t\t" ), $createTableStm);
 			$result .= '			$this->execute("' . $createTableStm .  "\"\n\t\t\t);\n\n";
 
-		}//
+		}
 		$result .= "\t\t\t" . '$this->initialiseData($this->getMigrationPath());' . "\n";
 		$result .= '			$this->execute("SET foreign_key_checks = 1");' . "\n";
 		$result .= "\t}\n\n";
@@ -88,6 +91,12 @@ class InitialDbMigrationCommand extends MigrateCommand
 	private function getDownDropTablesStatements($tables){
 		$result = "public function down()\n\t\t{\n";
 		foreach ($tables as $table) {
+			if( !is_subclass_of($table,'CDbTableSchema'))
+				throw new InitialDbMigrationCommandException('Table is not of type CDbTableSchema, instead : ' . get_class( $table));
+			//exclude migrations table
+			if($table->name == 'tbl_migration')
+				continue;
+
 			// Add foreign key(s)
 			$dropForeignKeys = '';
 			foreach ($table->foreignKeys as $col => $fk) {
