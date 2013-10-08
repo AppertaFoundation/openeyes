@@ -36,6 +36,8 @@ class InitialDbMigrationCommand extends MigrateCommand
 		if(!is_array($tables) || count($tables)==0)
 			throw new InitialDbMigrationCommandException('No tables to export in the current database');
 
+		unset($tables['tbl_migration']);
+
 		$template = $this->getTemplate();
 		$initialDbMigrationResult->fileName = $this->getMigrationFileName($className);
 
@@ -70,8 +72,11 @@ class InitialDbMigrationCommand extends MigrateCommand
 			if( !is_subclass_of($table,'CDbTableSchema'))
 				throw new InitialDbMigrationCommandException('Table is not of type CDbTableSchema, instead : ' . get_class( $table));
 			//exclude migrations table
-			if($table->name == 'tbl_migration')
+			if($table->name == 'tbl_migration'){
+				//var_dump($tables);die();
+				unset($tables[$table->name]);
 				continue;
+			}
 
 			$createTable = Yii::app()->db->createCommand('SHOW CREATE TABLE ' . $table->name . ' ;')->queryRow(true);
 

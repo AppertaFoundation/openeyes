@@ -46,6 +46,10 @@ class InitialDbMigrationCommandTest extends CTestCase
 		$fileCnt = file_get_contents($thisMigrationFile);
 		$hasMigrationTable = strpos($fileCnt , 'tbl_migration');
 		$this->assertFalse($hasMigrationTable);
+		$this->assertFileNotExists($this->oeMigration->getMigrationPath()
+			. DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . $initDbMigrationResult->fileName
+			. DIRECTORY_SEPARATOR . '01_tbl_migration.csv'
+		);
 
 		//test file is valid php and functions exist
 		include $thisMigrationFile;
