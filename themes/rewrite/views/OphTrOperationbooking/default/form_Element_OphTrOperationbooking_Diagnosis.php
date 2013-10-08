@@ -24,6 +24,7 @@
 	<header class="element-header">
 		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
 	</header>
+	<fieldset class="element-fields">
 	<?php echo $form->radioButtons($element, 'eye_id', 'eye')?>
 	<?php $form->widget('application.widgets.DiagnosisSelection',array(
 			'field' => 'disorder_id',
@@ -31,4 +32,5 @@
 			'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId))
 	));
 	?>
+	</fieldset>
 </section>

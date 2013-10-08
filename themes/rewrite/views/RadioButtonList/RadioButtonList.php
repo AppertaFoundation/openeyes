@@ -51,8 +51,8 @@
 		<?php if (!$no_element) {?>
 			<input type="hidden" value="" name="<?php echo get_class($element)?>[<?php echo $field?>]">
 		<?php }?>
-		<legend class="small-2 column"><?php if (!$label_above) {?><?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:<?php }?></legend>
-		<div class="small-10 column">
+		<legend class="large-2 column"><?php if (!$label_above) {?><?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:<?php }?></legend>
+		<div class="large-10 column">
 			<?php $i=0; ?>
 			<?php if ($label_above) {?>
 				<div class="label">
