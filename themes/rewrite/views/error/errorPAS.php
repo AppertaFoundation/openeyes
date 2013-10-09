@@ -20,7 +20,7 @@
 <?php
 	$helpdesk_phone = Yii::app()->params['helpdesk_phone'];
 	$helpdesk_email = Yii::app()->params['helpdesk_email'];
-	$this->layout = 'error';
+	$this->layout = '//layouts/error';
 ?>
 <h2>Merged patient record</h2>
 <p class="panel"><strong>The patient record you requested cannot be accessed due to an inconsistency in the PAS system.</strong></p>
