@@ -5,7 +5,7 @@
 </div>
 <div class="search-filters theatre-diaries">
 
-	<div class="row">
+	<form class="row">
 		<div class="large-12 column">
 			<div class="panel">
 				<div class="row">
@@ -104,5 +104,5 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</form>
 </div>
