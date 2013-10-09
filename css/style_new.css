@@ -4559,6 +4559,34 @@ tfoot.pagination-container .pagination li {
   background-position: 0 -22px;
 }
 
+/* line 1, ../sass/new/openeyes/components/_tooltips.scss */
+.tooltip {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: 2px 2px 2px 0 #999999;
+  -moz-box-shadow: 2px 2px 2px 0 #999999;
+  box-shadow: 2px 2px 2px 0 #999999;
+  border: 2px solid #ee9;
+  color: #333;
+  display: none;
+  font-size: 0.75em;
+  font-style: italic;
+  padding: 3px 6px 3px 3px;
+  position: absolute;
+}
+/* line 11, ../sass/new/openeyes/components/_tooltips.scss */
+.tooltip.alerts {
+  background: #ffe;
+}
+
+/* line 1, ../sass/new/openeyes/components/_sortable.scss */
+.theatre-list-sort-placeholder {
+  height: 62px;
+}
+
 /* line 6, ../sass/new/openeyes/components/_jquery-ui.scss */
 .open-eyes .ui-widget {
   font-size: 1em;
