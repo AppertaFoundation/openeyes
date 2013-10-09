@@ -17,40 +17,39 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 ?>
-<?php $this->header() ?>
 
-<h2 class="event-title"><?php  echo $this->event_type->name ?> (<?php echo Element_OphTrOperationbooking_Operation::model()->find('event_id=?',array($this->event->id))->status->name?>)</h2>
+<?php $this->beginContent('//patient/event_container', array(
+	'state' => 'view',
+	'class' => 'booking'
+)); ?>
 
-<?php $this->renderPartial('//base/_messages'); ?>
+	<h2 class="event-title"><?php  echo $this->event_type->name ?> (<?php echo Element_OphTrOperationbooking_Operation::model()->find('event_id=?',array($this->event->id))->status->name?>)</h2>
 
-<?php if (!$operation->has_gp) {?>
-	<div class="alertBox alert with-icon">
-		Patient has no GP practice address, please correct in PAS before printing GP letter.
+	<?php $this->renderPartial('//base/_messages'); ?>
+
+	<?php if (!$operation->has_gp) {?>
+		<div class="alertBox alert with-icon">
+			Patient has no GP practice address, please correct in PAS before printing GP letter.
+		</div>
+	<?php } ?>
+	<?php if (!$operation->has_address) { ?>
+		<div class="alertBox alert with-icon">
+			Patient has no address, please correct in PAS before printing letter.
+		</div>
+	<?php } ?>
+
+	<?php if ($operation->event->hasIssue()) {?>
+		<div class="alert-box issue with-icon">
+			<?php echo $operation->event->getIssueText()?>
+		</div>
+	<?php }?>
+
+	<div class="view booking highlight-fields">
+		<?php
+		$this->renderDefaultElements($this->action->id);
+		$this->renderOptionalElements($this->action->id);
+		?>
+		<div class="cleartall"></div>
 	</div>
-<?php } ?>
-<?php if (!$operation->has_address) { ?>
-	<div class="alertBox alert with-icon">
-		Patient has no address, please correct in PAS before printing letter.
-	</div>
-<?php } ?>
 
-<?php if ($operation->event->hasIssue()) {?>
-	<div class="alert-box issue with-icon">
-		<?php echo $operation->event->getIssueText()?>
-	</div>
-<?php }?>
-
-<div class="view booking highlight-fields">
-	<?php
-	$this->renderDefaultElements($this->action->id);
-	$this->renderOptionalElements($this->action->id);
-	?>
-	<div class="cleartall"></div>
-</div>
-
-<?php
-	// Event actions
-	$this->renderPartial('//patient/event_actions');
-?>
-
-<?php  $this->footer() ?>
+<?php $this->endContent() ;?>
