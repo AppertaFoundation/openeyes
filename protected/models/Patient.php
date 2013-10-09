@@ -38,6 +38,7 @@
  * @property string  $last_modified_date
  * @property integer $created_user_id
  * @property integer $last_modified_user_id
+ * @property datetime $no_allergies_date
  *
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -111,8 +112,8 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* @return array relational rules.
-		*/
+	* @return array relational rules.
+	*/
 	public function relations()
 	{
 		return array(
@@ -142,8 +143,8 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* @return array customized attribute labels (name=>label)
-		*/
+	* @return array customized attribute labels (name=>label)
+	*/
 	public function attributeLabels()
 	{
 		return array(
@@ -283,6 +284,11 @@ class Patient extends BaseActiveRecord
 		return $this->_orderedepisodes;
 	}
 
+	/**
+	 * calculate the patient's age
+	 *
+	 * @return string
+	 */
 	public function getAge()
 	{
 		return Helper::getAge($this->dob, $this->date_of_death);
@@ -322,6 +328,15 @@ class Patient extends BaseActiveRecord
 		}
 	}
 
+	/**
+	 * returns true if the allergy status of the patient is known (has allergies, or no known allergies) false otherwise.
+	 *
+	 * @return bool
+	 */
+	public function hasAllergyStatus()
+	{
+		return ($this->no_allergies_date || $this->allergies);
+	}
 	/**
 		* @return boolean Is patient deceased?
 		*/
@@ -552,6 +567,10 @@ class Patient extends BaseActiveRecord
 
 	public function getAllergiesString()
 	{
+		if ($this->no_allergies_date) {
+			return 'Patient has no known allergies (as of ' . Helper::convertDate2NHS($this->no_allergies_date) . ')';
+		}
+
 		$allergies = array();
 		foreach ($this->allergies as $allergy) {
 			$allergies[] = $allergy->name;
@@ -559,17 +578,38 @@ class Patient extends BaseActiveRecord
 		return implode(', ',$allergies);
 	}
 
+	/**
+	 * adds an allergy to the patient by id
+	 *
+	 * @param $allergy_id
+	 * @throws Exception
+	 */
 	public function addAllergy($allergy_id)
 	{
 		if (!PatientAllergyAssignment::model()->find('patient_id=? and allergy_id=?',array($this->id,$allergy_id))) {
-			$paa = new PatientAllergyAssignment;
-			$paa->patient_id = $this->id;
-			$paa->allergy_id = $allergy_id;
-			if (!$paa->save()) {
-				throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
-			}
+			$transaction = Yii::app()->db->beginTransaction();
+			try {
+				$paa = new PatientAllergyAssignment;
+				$paa->patient_id = $this->id;
+				$paa->allergy_id = $allergy_id;
+				if (!$paa->save()) {
+					throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
+				}
 
-			$this->audit('patient','add-allergy',$paa->getAuditAttributes());
+				$this->audit('patient','add-allergy',$paa->getAuditAttributes());
+				if ($this->no_allergies_date) {
+					$this->no_allergies_date = null;
+					if (!$this->save()) {
+						throw new Exception('Could not remove no allergy flag: ' . print_r($this->getErrors(), true));
+					};
+				}
+				$this->audit('patient','remove-noallergydate');
+				$transaction->commit();
+			}
+			catch (Exception $e) {
+				$transaction->rollback();
+				throw $e;
+			}
 		}
 	}
 
@@ -617,6 +657,34 @@ class Patient extends BaseActiveRecord
 		$criteria->addInCondition('allergy_id',$remove_allergy_ids);
 
 		PatientAllergyAssignment::model()->deleteAll($criteria);
+	}
+
+	/**
+	 * marks the patient as having no allergies as of now
+	 *
+	 * @throws Exception
+	 */
+	public function setNoAllergies()
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			foreach (PatientAllergyAssignment::model()->findAll('patient_id = ?', array($this->id)) as $paa) {
+				if (!$paa->delete()) {
+					throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
+				}
+				$this->audit('patient', 'remove-allergy', $paa->getAuditAttributes());
+			}
+			$this->no_allergies_date = date('Y-m-d H:i:s');
+			if (!$this->save()) {
+				throw new Exception('Unable to set no allergy date:' .  print_r($this->getErrors(), true));
+			}
+			$this->audit('patient', 'set-noallergydate');
+			$transaction->commit();
+		}
+		catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
+		}
 	}
 
 	/*
