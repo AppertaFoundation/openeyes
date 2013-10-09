@@ -17,6 +17,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Class ExampleSummaryTest
+ * @group components
+ */
+
 class ExampleSummaryTest extends CDbTestCase
 {
 	protected $widget;

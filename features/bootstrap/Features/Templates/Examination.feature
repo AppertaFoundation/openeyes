@@ -55,15 +55,33 @@ Feature: Create New Examination
 
 #    Then I choose to expand the Visual Fields section
 #    Then I choose to expand the Gonioscopy section
-#    Then I choose to expand the Adnexal Comorbidity section
+    Then I choose to expand the Adnexal Comorbidity section
+    And I add a left Adnexal Comorbidity of "crusting of lashes, "
+    And I add a right Adnexal Comorbidity of "conjunctivitis, "
 #    Then I choose to expand the Anterior Segment section
-#    Then I choose to expand the Pupillary Abnormalities section
+    Then I choose to expand the Pupillary Abnormalities section
+    And I add a left Abnormality of "2"
+    And I add a right Abnormality of "4"
 #    Then I choose to expand the Optic Disc section
 #    Then I choose to expand the Posterior Pole section
-#    Then I choose to expand the Diagnoses section
-#    Then I choose to expand the Investigation section
+    Then I choose to expand the Diagnoses section
+    And I choose a left eye diagnosis
+    Then I choose a diagnoses of "230670003"
+    And I choose a right eye diagnosis
+    Then I choose a diagnoses of "53889007"
+    And I choose both eyes diagnosis
+    Then I choose a diagnoses of "193570009"
+
+    Then I choose to expand the Investigation section
+    And I add an Investigation of "refraction, "
+    And I add an Investigation of "Fluorescein angiography, "
+    And I add an Investigation of "OCT, "
+    And I add an Investigation of "ultrasound, "
+    And I add an Investigation of "field test, "
+
 #    Then I choose to expand the Clinical Management section
-#    Then I choose to expand the Risks section
+    Then I choose to expand the Risks section
+    And I add comments to the Risk section of "Test comments to Risk section"
 #    Then I choose to expand the Clinic Outcome section
 #    Then I choose to expand the Conclusion section
 
@@ -100,7 +118,7 @@ Feature: Create New Examination
   #"9=Myopia#
   #"14=Other#
   #"11=Raynaud's#
-  #"15=Refractive Surgery#
+  #"15=Refractive Surgery#slipm
   #"12=SOB#
 
   # Snellen Metre
@@ -148,3 +166,34 @@ Feature: Create New Examination
   # 3=Optometrist
   # 5=Own Glasses
   # ""=Other
+
+#   Adnexal Comborbidity options: (must include trailing space)
+#  "blepharitis, "
+#  "blepharochalasis, "
+#  "blepharospasm, "
+#  "conjunctivitis, "
+#  "crusting of lashes, "
+#  "difficult access, "
+#  "discharge, "
+#  "dry eyes, "
+#  "ectropion, "
+#  "entropion, "
+#  "injected lid margins, "
+#  "lower lid ectropion, "
+#  "none, "
+#  "poor tear film, "
+#  "punctal ectropian, "
+#  "squint, "
+
+#  Diagnoses
+#  24010005>Aphakia
+#  193570009>Cataract
+#  79410001>Congenital cataract
+#  193576003>Cortical cataract
+#  230670003>Familial infantile myasthenia
+#  267626000>Hypermature cataract
+#  53889007>Nuclear cataract
+#  34533008>Posterior subcapsular polar cataract
+#  95217000">Pseudophakia
+#  38583007>Toxic cataract
+#  34361001>Traumatic cataract
