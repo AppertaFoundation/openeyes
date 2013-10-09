@@ -125,7 +125,11 @@ class BaseEventTypeController extends BaseController
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/module.js')) {
 					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/module.js');
 				}
-				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/'.get_class($this).'.js')) {
+
+				//FIXME: remove including _new file after refactor complete
+				if (Yii::app()->session['theme']>0 AND file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/'.get_class($this).'_new.js')) {
+					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.get_class($this).'_new.js');
+				} else if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/'.get_class($this).'.js')) {
 					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.get_class($this).'.js');
 				}
 
