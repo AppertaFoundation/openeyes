@@ -117,6 +117,20 @@
 											<td>The main theatre diaries template.</td>
 											<td><span class="complete">Complete</span></td>
 										</tr>
+										<tr>
+											<td>
+												<a href="theatre-diaries-searching.php">Theatre diaries searching</a>
+											</td>
+											<td>The theatre diaries template showing a searching message.</td>
+											<td><span class="complete">Complete</span></td>
+										</tr>
+										<tr>
+											<td>
+												<a href="theatre-diaries-no-results.php">Theatre diaries no results</a>
+											</td>
+											<td>The theatre diaries template showing a no-results message.</td>
+											<td><span class="complete">Complete</span></td>
+										</tr>
 										<tr class="heading">
 											<td colspan="3"><h3>Waiting list</h3></td>
 										</tr>
