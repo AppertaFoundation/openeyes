@@ -17,10 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="infoBox diaryViewMode" id="infoBox_<?php echo $session->id?>" style="display: none;">
-	<strong>Session updated!</strong>
+<div class="row hide" id="infoBox_<?php echo $session->id?>">
+	<div class="large-12 column">
+		<div class="alert-box success with-icon">
+			<strong>Session updated!</strong>
+		</div>
+	</div>
 </div>
-
 
 <?php $this->beginWidget('CActiveForm', array('id'=>'session_form'.$session->id, 'action'=>Yii::app()->createUrl('/OphTrOperationbooking/theatreDiary/saveSession'), 'enableAjaxValidation'=>false))?>
 <div class="action_options diaryViewMode" data-id="<?php echo $session->id?>" style="float: right;">

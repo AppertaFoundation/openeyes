@@ -18,7 +18,11 @@
  */
 
 if (empty($diary)) {?>
-	<p class="fullBox"><strong>No theatre schedules match your search criteria.</strong></p>
+	<div class="row" id="theatre-search-no-results">
+		<div class="large-12 column">
+			<div class="alert-box"><strong>No theatre schedules match your search criteria.</strong></div>
+		</div>
+	</div>
 <?php } else {
 	foreach ($diary as $theatre) {?>
 		<div class="row">

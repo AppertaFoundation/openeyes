@@ -29,12 +29,12 @@
 				Use the filters below to view Theatre schedules:
 			</div>
 			<?php if ($this->canPrint()) {?>
-			<div class="button-bar">
-				<button id="btn_print_diary" class="small">Print</button>
-				<button id="btn_print_diary_list" class="small">Print list</button>						</div>
+				<div class="button-bar">
+					<button id="btn_print_diary" class="small">Print</button>
+					<button id="btn_print_diary_list" class="small">Print list</button>
+				</div>
+			<?php }?>
 		</div>
-		<?php }?>
-
 	</div>
 
 	<div class="row">
@@ -43,8 +43,14 @@
 		</div>
 	</div>
 	<div class="search-filters theatre-diaries">
-		<?php $this->beginWidget('CActiveForm', array('id'=>'theatre-filter', 'action'=>Yii::app()->createUrl('/OphTrOperationbooking/theatre/search'), 'enableAjaxValidation'=>false))?>
-		<div class="row">
+		<?php $this->beginWidget('CActiveForm', array(
+			'id'=>'theatre-filter',
+			'action'=>Yii::app()->createUrl('/OphTrOperationbooking/theatre/search'),
+			'htmlOptions'=>array(
+				'class' => 'row'
+			),
+			'enableAjaxValidation'=>false
+		))?>
 			<div class="large-12 column">
 				<div class="panel">
 					<div class="row">
@@ -90,28 +96,28 @@
 							</table>
 						</div>
 					</div>
-
 					<div class="row">
 
 						<div class="large-10 column">
 
 							<div class="search-filters-extra clearfix">
 								<label class="inline highlight">
-									<input type="radio" name="date-filter" id="date-filter_0" value="today"<?php if (@$_POST['date-filter'] == 'today') {?>checked="checked"<?php }?>>
+									<input type="radio" name="date-filter" id="date-filter_0" value="today"<?php if (@$_POST['date-filter'] == 'today') {?> checked="checked"<?php }?>>
 									Today
 								</label>
 								<label class="inline highlight">
-									<input type="radio" name="date-filter" id="date-filter_1" value="week"<?php if (@$_POST['date-filter'] == 'week') {?>checked="checked"<?php }?>>
+									<input type="radio" name="date-filter" id="date-filter_1" value="week"<?php if (@$_POST['date-filter'] == 'week') {?> checked="checked"<?php }?>>
 									Next 7 days
 								</label>
 								<label class="inline highlight">
-									<input type="radio" name="date-filter" id="date-filter_2" value="month"<?php if (@$_POST['date-filter'] == 'month') {?>checked="checked"<?php }?>>
+									<input type="radio" name="date-filter" id="date-filter_2" value="month"<?php if (@$_POST['date-filter'] == 'month') {?> checked="checked"<?php }?>>
 									Next 30 days
 								</label>
 								<fieldset class="inline highlight">
 									<label>
-										<input type="radio" name="date-filter" id="date-filter_3" value="custom"<?php if (@$_POST['date-filter'] == 'custom') {?>checked="checked"<?php }?>>
-										or select date range:</label>
+										<input type="radio" name="date-filter" id="date-filter_3" value="custom"<?php if (@$_POST['date-filter'] == 'custom') {?> checked="checked"<?php }?>>
+										or select date range:
+									</label>
 									<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 											'name'=>'date-start',
 											'id'=>'date-start',
@@ -138,37 +144,37 @@
 										<li><a href="#" id="next_week" class="small button">Next week</a></li>
 									</ul>
 								</fieldset>
-
 							</div>
 						</div>
-
-
 						<div class="large-2 column text-right">
 
+							<span style="width: 30px;">
+								<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+							</span>
 
-					<span style="width: 30px;">
-						<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-					</span>
-
-							<button id="search_button" class="secondary">
+							<button id="search_button" class="secondary" type="submit">
 								Search
 							</button>
 						</div>
 					</div>
-
 				</div>
 			</div>
+		<?php $this->endWidget()?>
+
+		<div class="row hide" id="theatre-search-loading">
+			<div class="large-12 column">
+				<div class="alert-box"><strong>Please wait...</strong></div>
+			</div>
 		</div>
-	</div>
-		<?php $this->endWidget()
-		//FIXME: theatres-list is new markup, theatreList is old left in for Jquery?>
+
 		<div id="theatreList" class="theatres-list"></div>
 		<div class="printable" id="printable"></div>
 
-
-
+	</div>
 </div>
+
 <div id="iframeprintholder" style="display: none;"></div>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		return getDiary();
