@@ -16,10 +16,19 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-
-
-class DropDownTextSelection extends BaseFieldWidget
-{
-	public $options;
-}
+<div>
+	<h4 class="elementTypeName"><?php echo $element->elementType->name?></h4>
+	<div class="eventHighlight medium<?php if (!$element->drugs) {?> none<?php }?>">
+		<?php if (!$element->drugs) {?>
+			<h4>None</h4>
+		<?php } else {?>
+			<h4>
+				<?php foreach ($element->drugs as $drug) {?>
+					<?php echo $drug->name?><br/>
+				<?php }?>
+			</h4>
+		<?php }?>
+	</div>
+</div>

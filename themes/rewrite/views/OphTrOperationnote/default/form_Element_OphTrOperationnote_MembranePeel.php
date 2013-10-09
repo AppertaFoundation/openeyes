@@ -16,10 +16,20 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
+<div class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
+	data-element-type-id="<?php echo $element->elementType->id ?>"
+	data-element-type-class="<?php echo $element->elementType->class_name ?>"
+	data-element-type-name="<?php echo $element->elementType->name ?>"
+	data-element-display-order="<?php echo $element->elementType->display_order ?>">
+	<?php if ($this->action->id == 'update' && !$element->event_id) {?>
+		<span class="missingtext">This element is missing and needs to be completed</span>
+	<?php }?>
+	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-
-class DropDownTextSelection extends BaseFieldWidget
-{
-	public $options;
-}
+	<?php echo $form->radioBoolean($element, 'membrane_blue')?>
+	<?php echo $form->radioBoolean($element, 'brilliant_blue')?>
+	<?php echo $form->textField($element, 'other_dye')?>
+	<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 60))?>
+</div>

@@ -16,10 +16,13 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-
-
-class DropDownTextSelection extends BaseFieldWidget
-{
-	public $options;
-}
+<div class="colsX clearfix">
+	<div class="left">
+		<h4><?php echo $element->procedure->term?></h4>
+		<div class="eventHighlight">
+			<h4><?php echo CHtml::encode($element->comments)?></h4>
+		</div>
+	</div>
+</div>

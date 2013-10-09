@@ -16,10 +16,39 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
+<h4><?php echo $element->elementType->name ?></h4>
 
-
-class DropDownTextSelection extends BaseFieldWidget
-{
-	public $options;
-}
+<div class="cols2 colsX clearfix">
+	<div class="right">
+		<?php
+		$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+			'side'=>$element->eye->getShortName(),
+			'mode'=>'view',
+			'width'=>200,
+			'height'=>200,
+			'model'=>$element,
+			'attribute'=>'eyedraw',
+		));
+		?>
+	</div>
+	<div class="left">
+		<table class="subtleWhite normalText">
+			<tbody>
+				<tr>
+					<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('gauge_id'))?></td>
+					<td><span class="big"><?php echo $element->gauge->value?></span></td>
+				</tr>
+				<tr>
+					<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('pvd_induced'))?></td>
+					<td><span class="big"><?php echo $element->pvd_induced ? 'Yes' : 'No'; ?></span></td>
+				</tr>
+				<tr>
+					<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></td>
+					<td><span class="big"><?php echo CHtml::encode($element->comments)?></span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

@@ -16,10 +16,37 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
+<h3 class="elementTypeName"><?php echo $element->elementType->name ?></h3>
 
+<div class="procedureContainer">
 
-class DropDownTextSelection extends BaseFieldWidget
-{
-	public $options;
-}
+	<div class="detailRow">
+		<div class="label">
+			<?php echo CHtml::encode($element->getAttributeLabel('gas_type_id')); ?>:
+		</div>
+		<div class="value">
+			<?php echo $element->gas_type->name ?>
+		</div>
+	</div>
+
+	<div class="detailRow">
+		<div class="label">
+			<?php echo CHtml::encode($element->getAttributeLabel('gas_percentage_id')); ?>:
+		</div>
+		<div class="value">
+			<?php echo $element->gas_percentage->value ?>%
+		</div>
+	</div>
+
+	<div class="detailRow">
+		<div class="label">
+			<?php echo CHtml::encode($element->getAttributeLabel('gas_volume_id')); ?>:
+		</div>
+		<div class="value">
+			<?php echo $element->gas_volume->value ?>
+		</div>
+	</div>
+
+</div>
