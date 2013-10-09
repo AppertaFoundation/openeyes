@@ -49,10 +49,9 @@ if (!Yii::app()->user->isGuest) {
 				<?php } else { ?>
 					<li>
 				<?php }?>
-					<?php echo CHtml::link($item['title'], Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/'))?>
+				<?php echo CHtml::link($item['title'], Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/'))?>
 				</li>
-				<?php }?>
-			</ul>
+			<?php }?>
 		</ul>
 		<div class="row">
 			<div class="large-3 column">
