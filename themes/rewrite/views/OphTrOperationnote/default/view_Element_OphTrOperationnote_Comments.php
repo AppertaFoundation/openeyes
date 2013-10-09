@@ -16,10 +16,19 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-
-
-class DropDownTextSelection extends BaseFieldWidget
-{
-	public $options;
-}
+<div class="colsX clearfix">
+	<div class="colStack">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('postop_instructions'))?></h4>
+		<div class="eventHighlight<?php if (!$element->postop_instructions) {?> none<?php }?>">
+			<h4><?php echo $element->postop_instructions ? CHtml::encode($element->postop_instructions) : 'None'?></h4>
+		</div>
+	</div>
+	<div class="colStack" style="width: 60%;">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></h4>
+		<div class="eventHighlight<?php if (!$element->comments) {?> none<?php }?>">
+			<h4><?php echo $element->comments ? CHtml::encode($element->comments) : 'None'?></h4>
+		</div>
+	</div>
+</div>

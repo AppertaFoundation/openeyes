@@ -16,10 +16,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-
-
-class DropDownTextSelection extends BaseFieldWidget
-{
-	public $options;
-}
+<h4><?php echo $element->elementType->name ?></h4>
+<div class="eventHighlight priority">
+	<?php foreach ($element->procedures as $procedure) {?>
+		<h4><?php echo $element->eye->adjective?> <?php echo $procedure->term?></h4>
+	<?php }?>
+</div>

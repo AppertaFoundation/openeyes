@@ -16,10 +16,27 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
+<h3 class="subsection">Other information</h3>
 
-
-class DropDownTextSelection extends BaseFieldWidget
-{
-	public $options;
-}
+<div class="colsX clearfix">
+	<div class="colStack">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id'))?></h4>
+		<div class="eventHighlight">
+			<h4><?php echo $element->surgeon->fullNameAndTitle?></h4>
+		</div>
+	</div>
+	<div class="colStack">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('assistant_id'))?></h4>
+		<div class="eventHighlight<?php if (!$element->assistant) {?> none<?php }?>">
+			<h4><?php echo ($element->assistant ? $element->assistant->fullNameAndTitle : 'None')?></h4>
+		</div>
+	</div>
+	<div class="colStack">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id'))?></h4>
+		<div class="eventHighlight<?php if (!$element->supervising_surgeon) {?> none<?php }?>">
+			<h4><?php echo ($element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None')?></h4>
+		</div>
+	</div>
+</div>

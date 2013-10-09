@@ -16,10 +16,30 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
+<h4><?php echo $element->elementType->name ?></h4>
 
+<?php if ($element->membrane_blue) {?>
+	<div class="eventHighlight">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('membrane_blue'))?></h4>
+	</div>
+<?php }?>
 
-class DropDownTextSelection extends BaseFieldWidget
-{
-	public $options;
-}
+<?php if ($element->brilliant_blue) {?>
+	<div class="eventHighlight">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('brilliant_blue'))?></h4>
+	</div>
+<?php }?>
+
+<?php if ($element->other_dye) {?>
+	<div class="eventHighlight">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('other_dye'))?>: <?php echo CHtml::encode($element->other_dye)?></h4>
+	</div>
+<?php }?>
+
+<?php if ($element->comments) {?>
+	<div class="eventHighlight">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('comments'))?>: <?php echo CHtml::encode($element->comments)?></h4>
+	</div>
+<?php }?>
