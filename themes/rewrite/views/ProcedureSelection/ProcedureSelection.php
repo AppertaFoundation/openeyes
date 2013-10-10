@@ -181,14 +181,15 @@ function updateTotalDuration(identifier)
 }
 
 $('a.removeProcedure').die('click').live('click',function() {
-	var m = $(this).parent().parent().parent().parent().attr('id').match(/^procedureList_(.*?)$/);
+	var m = $(this).parent().parent().parent().parent().parent().attr('id').match(/^procedureList_(.*?)$/);
 	removeProcedure($(this),m[1]);
 	return false;
 });
 
 function removeProcedure(element, identifier)
 {
-	var len = element.parent().parent().parent().children('div').length;
+
+	var len = element.parent().parent().parent().children('tr').length;
 	var procedure_id = element.parent().parent().find('input[type="hidden"]:first').val();
 
 	element.parent().parent().remove();
