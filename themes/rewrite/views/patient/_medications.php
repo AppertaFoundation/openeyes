@@ -1,17 +1,20 @@
 <?php // FIXME:?>
-<section class="box patient-info associated-data">
+<section class="box patient-info associated-data js-toggle-container">
+
 	<header class="box-header">
 		<h3 class="box-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Medication
 		</h3>
-		<a href="#" class="toggle-trigger toggle-hide">
-														<span class="icon-showhide">
-															Show/hide this section
-														</span>
+		<a href="#" class="toggle-trigger toggle-hide js-toggle">
+			<span class="icon-showhide">
+				Show/hide this section
+			</span>
 		</a>
 	</header>
-	<div class="data_row">
+
+
+	<div class="js-toggle-body">
 		<table class="subtleWhite">
 			<thead>
 			<tr>
@@ -48,12 +51,6 @@
 			</div>
 		</form>
 		<div id="add_medication" style="display: none;">
-
-
-
-
-
-
 			<?php
 			$form = $this->beginWidget('CActiveForm', array(
 					'id'=>'add-medication',
@@ -75,15 +72,11 @@
 					</div>
 					<div class="large-7 column end">
 						<div class="field-row">
-
 							<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->getSubspecialtyID()),array('empty'=>'- Select -'))?>
-
-
 						</div>
 
 						<div class="patientMedication field-row">
 							<div class="label"></div>
-
 							<?php
 							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 									'name' => 'drug_id',
@@ -105,13 +98,9 @@
 										'placeholder' => 'or search formulary',
 									),
 								))?>
-
-
 						</div>
 					</div>
 				</div>
-
-
 
 				<div class="patientMedication">
 					<div class="label"></div>

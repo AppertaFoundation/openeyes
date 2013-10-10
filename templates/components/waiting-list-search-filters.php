@@ -3,7 +3,7 @@
 		<h2>Search partial bookings waiting lists by:</h2>
 	</div>
 </div>
-<div class="row search-filters waiting-list">
+<form class="row search-filters waiting-list">
 	<div class="large-12 column">
 		<div class="panel">
 			<table class="grid">
@@ -52,4 +52,4 @@
 			</table>
 		</div>
 	</div>
-</div>
+</form>

@@ -17,19 +17,36 @@
  */
 
 $(document).ready(function(){
-	$('.sprite.showhide').click( function(e){
-		e.preventDefault();
-		var sprite = $(this).children('span');
-		var whiteBox = $(this).parents('.whiteBox');
 
-		if(sprite.hasClass('hide')) {
-			whiteBox.children('.data_row').slideUp("fast");
-			sprite.removeClass('hide');
-			sprite.addClass('show');
+	$('.js-toggle').on('click', function(e) {
+
+		e.preventDefault();
+
+		var trigger = $(this);
+		var container = trigger.closest('.js-toggle-container');
+
+		if (!container.length) {
+			throw new Error('Unable to find js-toggle container.')
+		}
+
+		var body = container.find('.js-toggle-body');
+
+		if (!body.length) {
+			throw new Error('Unable to find js-toggle body.')
+		}
+
+		if (trigger.hasClass('toggle-hide')) {
+			trigger
+			.removeClass('toggle-hide')
+			.addClass('toggle-show');
+			body.slideUp('fast');
 		} else {
-			whiteBox.children('.data_row').slideDown("fast");
-			sprite.removeClass('show');
-			sprite.addClass('hide');
+			trigger
+			.removeClass('toggle-show')
+			.addClass('toggle-hide');
+			body.slideDown('fast', function() {
+				body.css('overflow', 'visible');
+			});
 		}
 	});
 

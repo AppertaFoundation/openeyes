@@ -110,4 +110,8 @@ $oe-alert-success-with-icon-min-height: 36px !default;
 		margin-bottom: 0;
 		margin-top: $alert-bottom-margin;
 	}
+	.spinner {
+		float: left;
+		margin-right: 10px;
+	}
 }

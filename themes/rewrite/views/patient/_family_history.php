@@ -1,16 +1,16 @@
-<section class="box patient-info associated-data">
+<section class="box patient-info associated-data js-toggle-container">
 	<header class="box-header">
 		<h3 class="box-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Family History
 		</h3>
-		<a href="#" class="toggle-trigger toggle-hide">
-															<span class="icon-showhide">
-																Show/hide this section
-															</span>
+		<a href="#" class="toggle-trigger toggle-hide js-toggle">
+			<span class="icon-showhide">
+				Show/hide this section
+			</span>
 		</a>
 	</header>
-	<div class="data_row">
+	<div class="js-toggle-body">
 		<table class="subtleWhite">
 			<thead>
 			<tr>

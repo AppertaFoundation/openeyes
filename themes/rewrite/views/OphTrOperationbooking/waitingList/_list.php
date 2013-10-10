@@ -65,22 +65,22 @@
 				}?>
 
 				<?php if ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_PURPLE) {
-					$tablecolour = "Purple";
+					$letterStatusClass = "send-invitation-letter";
 				} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN1) {
-					$tablecolour = "Green";
+					$letterStatusClass = "send-another-reminder";
 				} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_GREEN2) {
-					$tablecolour = "Green";
+					$letterStatusClass = "send-another-reminder";
 				} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_ORANGE) {
-					$tablecolour = "Orange";
+					$letterStatusClass = "send-gp-removal-letter";
 				} elseif ($eo->getWaitingListStatus() == Element_OphTrOperationbooking_Operation::STATUS_RED) {
-					$tablecolour = "Red";
+					$letterStatusClass = "patient-due-removed";
 				} else {
-					$tablecolour = "White";
+					$letterStatusClass = "";
 				}?>
 
 				<tr class="waitinglist <?php echo ($i % 2 == 0) ? 'Even' : 'Odd'; ?>">
 					<?php //FIXME: waiting list color needs adding to style for below to work ?>
-					<td class="letter-status waitinglist<?php echo $tablecolour ?>">
+					<td class="letter-status <?php echo $letterStatusClass ?>">
 						<?php if ($eo->sentInvitation()) {?>
 							<img src="<?php echo $assetPath?>/img/letterIcons/invitation.png" alt="Invitation" width="17" height="17" />
 						<?php }?>
@@ -105,7 +105,7 @@
 					<td><?php echo $eo->NHSDate('decision_date') ?></td>
 					<td><?php echo $eo->priority->name?></td>
 					<td><?php echo ucfirst(preg_replace('/^Requires /','',$eo->status->name)) ?></td>
-					<td<?php if ($tablecolour == 'White' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
+					<td<?php if ($letterStatusClass == '' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
 
 						<?php if (($patient && $patient->contact->correspondAddress)
 							&& $eo->id
@@ -113,7 +113,7 @@
 								|| ($eo->getDueLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP && $patient->practice && $patient->practice->contact->address)
 							)) {?>
 							<div>
-								<input<?php if ($tablecolour == 'White' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?> type="checkbox" id="operation<?php echo $eo->id ?>" value="1" />
+								<input<?php if ($letterStatusClass == '' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?> type="checkbox" id="operation<?php echo $eo->id ?>" value="1" />
 							</div>
 						<?php }?>
 
@@ -122,7 +122,7 @@
 								$('#pas_warnings').show();
 								$('#pas_warnings .no_gp').show();
 							</script>
-							<span class="no-GP">No GP</span>
+							<span class="no-gp error">No GP</span>
 						<?php }?>
 
 						<?php if ($patient && !$patient->contact->correspondAddress) { ?>
@@ -130,7 +130,7 @@
 								$('#pas_warnings').show();
 								$('#pas_warnings .no_address').show();
 							</script>
-							<span class="no-Address">No Address</span>
+							<span class="no-address error">No Address</span>
 						<?php }?>
 					</td>
 				</tr>

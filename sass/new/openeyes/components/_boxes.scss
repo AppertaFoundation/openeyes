@@ -110,13 +110,6 @@ $oe-box-event-border-width: 0 5px 5px !default;
 				}
 			}
 		}
-		> .row {
-			margin-left: 0;
-			margin-right: 0;
-			> .column {
-				padding-left: 0;
-			}
-		}
 		.toggle-trigger {
 			height: 22px;
 			width: 30px;
@@ -146,6 +139,15 @@ $oe-box-event-border-width: 0 5px 5px !default;
 			.box-info {
 				float: right;
 				font-size: $default-font-size;
+			}
+			.summary {
+				font-size: $default-font-size;
+			}
+		}
+		&.episode-links {
+			a {
+				font-size: $default-font-size;
+				@extend %anchor-hover;
 			}
 		}
 	}

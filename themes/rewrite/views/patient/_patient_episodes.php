@@ -20,43 +20,46 @@
 //FIXME
 ?>
 <section class="box patient-info episodes">
-<div class="blueBox">
-	<section class="box patient-info episodes">
-		<header class="box-header">
-			<h3 class="box-title">All Episodes</span></h3>
-			<div class="box-info">
-				<strong>open <?php echo $episodes_open?> &nbsp;|&nbsp;closed <?php echo $episodes_closed?></strong>
-			</div>
-		</header>
-		<?php if (empty($episodes)) {?>
-			<div class="summary">No episodes</div>
-		<?php } else {?>
-		<table class="patient-episodes grid">
-
-			<thead>
-			<tr><th id="yw0_c0">Start  Date</th><th id="yw0_c1">End  Date</th><th id="yw0_c2">Firm</th><th id="yw0_c3">Subspecialty</th><th id="yw0_c4">Eye</th><th id="yw0_c5">Diagnosis</th></tr>
-			</thead>
-			<tbody>
-			<?php foreach ($ordered_episodes as $specialty_episodes) {?>
-				<tr>
-					<td colspan="6" class="all-episode specialty small"><?php echo $specialty_episodes['specialty'] ?></td>
+	<header class="box-header">
+		<h3 class="box-title">All Episodes</span></h3>
+		<div class="box-info">
+			<strong>open <?php echo $episodes_open?> &nbsp;|&nbsp;closed <?php echo $episodes_closed?></strong>
+		</div>
+	</header>
+	<?php if (empty($episodes)) {?>
+		<div class="summary">No episodes</div>
+	<?php } else {?>
+	<table class="patient-episodes grid">
+		<thead>
+			<tr>
+				<th id="yw0_c0">Start Date</th>
+				<th id="yw0_c1">End Date</th>
+				<th id="yw0_c2">Firm</th>
+				<th id="yw0_c3">Subspecialty</th>
+				<th id="yw0_c4">Eye</th>
+				<th id="yw0_c5">Diagnosis</th>
+			</tr>
+		</thead>
+		<tbody>
+		<?php foreach ($ordered_episodes as $specialty_episodes) {?>
+			<tr>
+				<td colspan="6" class="all-episode specialty small"><?php echo $specialty_episodes['specialty'] ?></td>
+			</tr>
+			<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
+				<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0) {?>even<?php } else {?>odd<?php }?><?php if ($episode->end_date !== null) {?> closed<?php }?>">
+					<td><?php echo $episode->NHSDate('start_date'); ?></td>
+					<td><?php echo $episode->NHSDate('end_date'); ?></td>
+					<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
+					<td><?php echo CHtml::encode($episode->getSubspecialtyText())?></td>
+					<td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
+					<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
 				</tr>
-				<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
-					<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0) {?>even<?php } else {?>odd<?php }?><?php if ($episode->end_date !== null) {?> closed<?php }?>">
-						<td><?php echo $episode->NHSDate('start_date'); ?></td>
-						<td><?php echo $episode->NHSDate('end_date'); ?></td>
-						<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
-						<td><?php echo CHtml::encode($episode->getSubspecialtyText())?></td>
-						<td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
-						<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
-					</tr>
-				<?php }?>
 			<?php }?>
-			</tbody>
-		</table>
 		<?php }?>
-	</section>
-</div>
+		</tbody>
+	</table>
+	<?php }?>
+</section>
 <?php
 $editable = false;
 if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
@@ -84,7 +87,7 @@ else if (BaseController::checkUserLevel(4)) {
 }
 
 if ($msg) {
-	echo '<p>' . CHtml::link('<span class="aPush">'. $msg . '</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id)) . '</p>';
+	echo '<div class="box patient-info episode-links">' . CHtml::link($msg,Yii::app()->createUrl('patient/episodes/'.$this->patient->id)) . '</div>';
 }
 
 try {

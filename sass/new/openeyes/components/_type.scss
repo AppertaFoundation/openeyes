@@ -56,3 +56,10 @@ code {
 	color: #000;
 	font-weight: normal;
 }
+
+span {
+	&.error {
+		border-bottom: #f00 1px dotted;
+		color: #f00;
+	}
+}

@@ -18,106 +18,108 @@
  */
 ?>
 
-<section class="box patient-info associated-data">
+<section class="box patient-info associated-data js-toggle-container">
 	<header class="box-header">
 		<h3 class="box-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			CVI Status
 		</h3>
-		<a href="#" class="toggle-trigger toggle-hide">
-								<span class="icon-showhide">
-									Show/hide this section
-								</span>
+		<a href="#" class="toggle-trigger toggle-hide js-toggle">
+			<span class="icon-showhide">
+				Show/hide this section
+			</span>
 		</a>
 	</header>
-	<table class="plain patient-data">
-		<thead>
-		<tr>
-			<th width="85px">Date</th>
-			<th>Status</th>
-		</tr>
-		</thead>
-		<tbody>
-		<?php
-		$info = $this->patient->getOPHInfo();
-		?>
-		<tr>
-			<td><?php echo Helper::formatFuzzyDate($info->cvi_status_date); ?></td>
-			<td><?php echo $info->cvi_status->name; ?></td>
-		</tr>
-		</tbody>
-	</table>
+	<div class="js-toggle-body">
+		<table class="plain patient-data">
+			<thead>
+			<tr>
+				<th width="85px">Date</th>
+				<th>Status</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php
+			$info = $this->patient->getOPHInfo();
+			?>
+			<tr>
+				<td><?php echo Helper::formatFuzzyDate($info->cvi_status_date); ?></td>
+				<td><?php echo $info->cvi_status->name; ?></td>
+			</tr>
+			</tbody>
+		</table>
 
-	<?php if (BaseController::checkUserLevel(4)) {?>
-		<div align="center" style="margin-top:10px;">
-			<form>
-				<div class="box-actions">
-					<button id="btn-edit_oph_info" class="secondary small">
-						Edit
-					</button>
-				</div>
-			</form>
-		</div>
-
-		<div id="edit_oph_info" style="display: none;">
-
-
-				<fieldset class="field-row">
-
-					<legend><strong>Edit CVI Status</strong></legend>
-					<?php
-					$form = $this->beginWidget('CActiveForm', array(
-							'id'=>'edit-oph_info',
-							'enableAjaxValidation'=>true,
-							'clientOptions'=>array(
-								'validateOnSubmit' => true,
-								'validateOnChange' => false,
-								'afterValidate' => "js:function(form, data, hasError) {
-												if (hasError) {
-													// mask the ajax loader image again
-													$('img.edit_oph_info_loader').hide();
-												} else {
-													return true;
-												}}"
-							),
-							'htmlOptions' => array('class'=>'sliding'),
-							'action'=>array('patient/editophinfo'),
-						))?>
-
-					<div class="field-row row">
-						<div class="large-3 column">
-							<label for="">Status:</label>
-						</div>
-						<div class="large-7 column end">
-
-					<?php echo CHtml::activeDropDownList($info, 'cvi_status_id', CHtml::listData(PatientOphInfoCviStatus::model()->findAll(array('order'=>'display_order')),'id','name')) ?>
-
-					<?php echo $form->error($info, 'cvi_status_date'); ?>
-
-						</div>
+		<?php if (BaseController::checkUserLevel(4)) {?>
+			<div align="center" style="margin-top:10px;">
+				<form>
+					<div class="box-actions">
+						<button id="btn-edit_oph_info" class="secondary small">
+							Edit
+						</button>
 					</div>
+				</form>
+			</div>
 
-					<?php
-					$this->renderPartial('_fuzzy_date')?>
+			<div id="edit_oph_info" style="display: none;">
 
-					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-					<div align="right">
-						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_oph_info_loader" style="display: none;" />
-						<div class="buttons">
-							<button type="submit" class="secondary small btn_save_previous_operation btn_save_oph_info">
-								Save
-							</button>
-							<button class="warning small btn_cancel_previous_operation btn_cancel_oph_info">
-								Cancel
-							</button>
+
+					<fieldset class="field-row">
+
+						<legend><strong>Edit CVI Status</strong></legend>
+						<?php
+						$form = $this->beginWidget('CActiveForm', array(
+								'id'=>'edit-oph_info',
+								'enableAjaxValidation'=>true,
+								'clientOptions'=>array(
+									'validateOnSubmit' => true,
+									'validateOnChange' => false,
+									'afterValidate' => "js:function(form, data, hasError) {
+													if (hasError) {
+														// mask the ajax loader image again
+														$('img.edit_oph_info_loader').hide();
+													} else {
+														return true;
+													}}"
+								),
+								'htmlOptions' => array('class'=>'sliding'),
+								'action'=>array('patient/editophinfo'),
+							))?>
+
+						<div class="field-row row">
+							<div class="large-3 column">
+								<label for="">Status:</label>
+							</div>
+							<div class="large-7 column end">
+
+						<?php echo CHtml::activeDropDownList($info, 'cvi_status_id', CHtml::listData(PatientOphInfoCviStatus::model()->findAll(array('order'=>'display_order')),'id','name')) ?>
+
+						<?php echo $form->error($info, 'cvi_status_date'); ?>
+
+							</div>
 						</div>
-					</div>
 
-					<?php $this->endWidget(); ?>
-				</fieldset>
+						<?php
+						$this->renderPartial('_fuzzy_date')?>
 
-		</div>
-	<?php }?>
+						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+						<div align="right">
+							<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_oph_info_loader" style="display: none;" />
+							<div class="buttons">
+								<button type="submit" class="secondary small btn_save_previous_operation btn_save_oph_info">
+									Save
+								</button>
+								<button class="warning small btn_cancel_previous_operation btn_cancel_oph_info">
+									Cancel
+								</button>
+							</div>
+						</div>
+
+						<?php $this->endWidget(); ?>
+					</fieldset>
+
+			</div>
+		<?php }?>
+	</div>
 
 </section>
 

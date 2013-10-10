@@ -17,30 +17,29 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="box patient-info">
-	<div class="patient_actions">
-		<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
-	</div>
+<section class="box patient-info js-toggle-container">
 	<h3 class="box-title">Contact details:</h3>
-	<a href="#" class="toggle-trigger toggle-show">
-							<span class="icon-showhide">
-								Show/hide this section
-							</span>
+	<a href="#" class="toggle-trigger toggle-hide js-toggle">
+		<span class="icon-showhide">
+			Show/hide this section
+		</span>
 	</a>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label">Telephone:</div>
+	<div class="js-toggle-body">
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Telephone:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></div>
+			</div>
 		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></div>
-		</div>
-	</div>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label">Email:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown'?></div>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Email:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown'?></div>
+			</div>
 		</div>
 	</div>
 </section>
