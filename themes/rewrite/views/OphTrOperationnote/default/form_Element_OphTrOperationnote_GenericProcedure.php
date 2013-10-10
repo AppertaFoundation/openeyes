@@ -18,7 +18,7 @@
  */
 ?>
 
-<div class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
+<section class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
 	data-element-type-id="<?php echo $element->elementType->id ?>"
 	data-element-type-class="<?php echo $element->elementType->class_name ?>"
 	data-element-type-name="<?php echo $element->elementType->name ?>"
@@ -26,7 +26,10 @@
 	<?php if ($this->action->id == 'update' && !$element->event_id) {?>
 		<span class="missingtext">This element is missing and needs to be completed</span>
 	<?php }?>
-	<h4 class="elementTypeName"><?php echo $element->procedure ? $element->procedure->term : 'No procedure'?></h4>
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->procedure ? $element->procedure->term : 'No procedure'?></h3>
+	</header>
+	<fieldset class="element-fields">
 	<div id="div_Element_OphTrOperationnote_GenericProcedure_comments" class="eventDetail">
 		<div class="label">Comments:</div>
 		<div class="data">
@@ -35,4 +38,5 @@
 	</div>
 	<input type="hidden" name="<?php echo get_class($element)?>[proc_id][]" value="<?php echo $element->proc_id?>" />
 	<input type="hidden" name="<?php echo get_class($element)?>[_element_id][]" value="<?php echo $element->id?>" />
-</div>
+	</fieldset>
+</section>

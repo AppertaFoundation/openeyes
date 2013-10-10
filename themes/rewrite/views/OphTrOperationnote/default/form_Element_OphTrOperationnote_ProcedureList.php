@@ -18,13 +18,16 @@
  */
 ?>
 
-<div class="element <?php echo $element->elementType->class_name?>"
+<section class="element element <?php echo $element->elementType->class_name?>"
 	data-element-type-id="<?php echo $element->elementType->id ?>"
 	data-element-type-class="<?php echo $element->elementType->class_name ?>"
 	data-element-type-name="<?php echo $element->elementType->name ?>"
 	data-element-display-order="<?php echo $element->elementType->display_order ?>">
-	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+	</header>
 
+	<fieldset class="element-fields">
 	<?php if (ctype_digit(@$_GET['booking_event_id'])) {?>
 		<?php echo $form->hiddenInput($element, 'booking_event_id', $_GET['booking_event_id'])?>
 	<?php }?>
@@ -39,4 +42,5 @@
 		'short_version' => false,
 	));
 	?>
-</div>
+	</fieldset>
+</section>
