@@ -257,6 +257,38 @@ class Event extends BaseActiveRecord
 		return ($this->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($this->created_date)) <= 86400);
 	}
 
+	/**
+	 * marks an event as deleted and processes any softDelete methods that exist on the elements attached to it.
+	 *
+	 * @throws Exception
+	 */
+	public function softDelete()
+	{
+		// perform this process in a transaction if one has not been created
+		$transaction = Yii::app()->db->getCurrentTransaction() === null
+			? Yii::app()->db->beginTransaction()
+			: false;
+
+		try {
+			$this->deleted = 1;
+			foreach ($this->getElements() as $element) {
+				$element->softDelete();
+			}
+			if (!$this->save()) {
+				throw new Exception("Unable to mark event deleted: ".print_r($this->event->getErrors(),true));
+			}
+			if ($transaction) {
+				$transaction->commit();
+			}
+		}
+		catch (Exception $e) {
+			if ($transaction) {
+				$transaction->rollback();
+			}
+			throw $e;
+		}
+	}
+
 	public function delete()
 	{
 		// Delete related
@@ -301,4 +333,27 @@ class Event extends BaseActiveRecord
 		parent::audit($target, $action, $data, $log, $properties);
 	}
 
+	/**
+	 * returns the saved elements that belong to the event if it has any.
+	 *
+	 * @return BaseEventTypeElement[]
+	 */
+	public function getElements()
+	{
+		$elements = array();
+		if ($this->id) {
+			$criteria = new CDbCriteria;
+			$criteria->compare('event_type_id', $this->event_type_id);
+			$criteria->order = 'display_order asc';
+
+			foreach (ElementType::model()->findAll($criteria) as $element_type) {
+				$element_class = $element_type->class_name;
+
+				if ($element = $element_class::model()->find('event_id = ?',array($this->id))) {
+					$elements[] = $element;
+				}
+			}
+		}
+		return $elements;
+	}
 }

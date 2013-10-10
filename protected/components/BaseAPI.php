@@ -34,7 +34,7 @@ class BaseAPI
 		return $event_type;
 	}
 
-	/*
+	/**
 	 * gets the element of type $element for the given patient in the given episode
 	 *
 	 * @param Patient $patient - the patient
@@ -59,7 +59,7 @@ class BaseAPI
 		}
 	}
 
-	/*
+	/**
 	 * gets all the events in the episode for the event type this API is for, for the given patient, most recent first.
 	 *
 	 * @param Patient $patient - the patient

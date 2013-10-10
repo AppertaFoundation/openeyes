@@ -676,6 +676,12 @@ class Patient extends BaseActiveRecord
 		return false;
 	}
 
+	/**
+	 * get the patient disorders that are of the type in the list of disorder ids provided
+	 *
+	 * @param integer[] $snomeds - disorder ids to check for
+	 * @return Disorder[]
+	 */
 	public function getDisordersOfType($snomeds)
 	{
 		$disorders = array();
@@ -686,7 +692,7 @@ class Patient extends BaseActiveRecord
 		$res = array();
 		foreach ($patient_disorder_ids as $p_did) {
 			foreach ($disorders as $d) {
-				if ($d->ancestorOfIds(array($p_did))) {
+				if ($d->id == $p_did || $d->ancestorOfIds(array($p_did))) {
 					$res[] = Disorder::model()->findByPk($p_did);
 					break;
 				}
@@ -845,19 +851,32 @@ class Patient extends BaseActiveRecord
 		}
 	}
 
-	// DR function additions
-
-
-	/*
-	* Type of diabetes mellitus
-	*/
-	public function getDmt()
+	/**
+	 * Get the Diabetes Type as a Disorder instance
+	 *
+	 * @return Disorder|null
+	 */
+	public function getDiabetesType()
 	{
 		if ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_I_SET) ) {
-			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_I)->term;
+			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_I);
 		} elseif ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_II_SET)) {
-			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_II)->term;
+			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_II);
 		}
+		return null;
+	}
+
+	/**
+	 * Type of diabetes mellitus as a letter string
+	 *
+	 * @return string
+	 */
+	public function getDmt()
+	{
+		if ($disorder = $this->getDiabetesType()) {
+			return $disorder->term;
+		}
+
 		return 'not diabetic';
 	}
 
