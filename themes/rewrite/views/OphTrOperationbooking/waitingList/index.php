@@ -44,7 +44,9 @@
 									'maxDate'=>'today'
 								),
 								'value' => date("j M Y"),
-								'htmlOptions'=>array('style'=>'width: 110px;')
+								'htmlOptions'=>array(
+									'class' => 'small fixed-width'
+								)
 							))?>
 					</div>
 					<div class="panel orange">
@@ -67,75 +69,77 @@
 		</div>
 	</div>
 
-	<form method="post" action="<?php echo Yii::app()->createUrl('/OphTrOperationbooking/waitingList/search')?>" id="waitingList-filter">
-		<div id="waitinglist_display" class="row">
 
-			<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-			<div class="large-12 column">
-				<h2>Search partial bookings waiting lists by:</h2>
-			</div>
+	<div id="waitinglist_display" class="row">
+		<div class="large-12 column">
+			<h2>Search partial bookings waiting lists by:</h2>
 		</div>
-		<div class="row search-filters waiting-list">
-			<div class="large-12 column">
-				<div class="panel">
-					<table class="grid">
-						<thead>
-						<tr>
-							<th>Service:</th>
-							<th>Firm:</th>
-							<th>Next letter due:</th>
-							<th>Site:</th>
-							<th>Hospital no:</th>
-							<th>&nbsp;</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr>
-							<td>
-								<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(),
-									array('empty'=>'All specialties', 'ajax'=>array(
-										'type'=>'POST',
-										'data'=>array('subspecialty_id'=>'js:this.value','YII_CSRF_TOKEN'=>Yii::app()->request->csrfToken),
-										'url'=>Yii::app()->createUrl('/OphTrOperationbooking/waitingList/filterFirms'),
-										'success'=>"js:function(data) {
-												if ($('#subspecialty-id').val() != '') {
-													$('#firm-id').attr('disabled', false);
-													$('#firm-id').html(data);
-												} else {
-													$('#firm-id').attr('disabled', true);
-													$('#firm-id').html(data);
-												}
-											}",
-									)))?>
-							</td>
-							<td>
-								<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], $this->getFilteredFirms(@$_POST['subspecialty-id']), array('empty'=>'All firms', 'disabled'=>!@$_POST['firm-id']))?>
-							</td>
-							<td>
-								<?php echo CHtml::dropDownList('status', @$_POST['status'], Element_OphTrOperationbooking_Operation::getLetterOptions())?>
-							</td>
-							<td>
-								<?php echo CHtml::dropDownList('site_id',@$_POST['site_id'],Site::model()->getListForCurrentInstitution(),array('empty'=>'All sites'))?>
-							</td>
-							<td>
-								<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" />
-								<span id="hos_num_error" class="red"<?php if (!@$_POST['hos_num'] || ctype_digit($_POST['hos_num'])) {?> style="display: none;"<?php }?>>Invalid hospital number</span>
-							</td>
-							<td class="text-right">
-								<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-								<button type="submit" class="secondary">Search</button>
-							</td>
-						</tr>
-						</tbody>
-					</table>
-				</div>
+	</div>
+	<form class="row search-filters waiting-list" method="post" action="<?php echo Yii::app()->createUrl('/OphTrOperationbooking/waitingList/search')?>" id="waitingList-filter">
+		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+		<div class="large-12 column">
+			<div class="panel">
+				<table class="grid">
+					<thead>
+					<tr>
+						<th>Service:</th>
+						<th>Firm:</th>
+						<th>Next letter due:</th>
+						<th>Site:</th>
+						<th>Hospital no:</th>
+						<th>&nbsp;</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>
+							<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(),
+								array('empty'=>'All specialties', 'ajax'=>array(
+									'type'=>'POST',
+									'data'=>array('subspecialty_id'=>'js:this.value','YII_CSRF_TOKEN'=>Yii::app()->request->csrfToken),
+									'url'=>Yii::app()->createUrl('/OphTrOperationbooking/waitingList/filterFirms'),
+									'success'=>"js:function(data) {
+											if ($('#subspecialty-id').val() != '') {
+												$('#firm-id').attr('disabled', false);
+												$('#firm-id').html(data);
+											} else {
+												$('#firm-id').attr('disabled', true);
+												$('#firm-id').html(data);
+											}
+										}",
+								)))?>
+						</td>
+						<td>
+							<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], $this->getFilteredFirms(@$_POST['subspecialty-id']), array('empty'=>'All firms', 'disabled'=>!@$_POST['firm-id']))?>
+						</td>
+						<td>
+							<?php echo CHtml::dropDownList('status', @$_POST['status'], Element_OphTrOperationbooking_Operation::getLetterOptions())?>
+						</td>
+						<td>
+							<?php echo CHtml::dropDownList('site_id',@$_POST['site_id'],Site::model()->getListForCurrentInstitution(),array('empty'=>'All sites'))?>
+						</td>
+						<td>
+							<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" />
+							<span id="hos_num_error" class="red"<?php if (!@$_POST['hos_num'] || ctype_digit($_POST['hos_num'])) {?> style="display: none;"<?php }?>>Invalid hospital number</span>
+						</td>
+						<td class="text-right">
+							<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+							<button type="submit" class="secondary">Search</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</form>
 	<div class="row">
 		<div id="searchResults" class="large-12 column">
 
-
+		</div>
+		<div id="search-loading-msg" class="large-12 column hide">
+			<div class="alert-box">
+				<img src="/img/ajax-loader.gif" class="spinner" /> <strong>Searching, please wait...</strong>
+			</div>
 		</div>
 	</div>
 </div>

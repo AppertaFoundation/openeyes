@@ -6,6 +6,11 @@
 <link rel="stylesheet" href="/protected/modules/OphTrOperationbooking/assets/css/module_new.css" />
 </head>
 <body>
+
+	<div class="alert-box watermark admin">
+		You are logged in as admin. So this is OpenEyes Goldenrod Edition
+	</div>
+
 	<div class="container main" role="main">
 
 		<? include 'components/header-logged-in-no-patient.php'; ?>
