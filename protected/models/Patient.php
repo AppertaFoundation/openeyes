@@ -1240,7 +1240,7 @@ class Patient extends BaseActiveRecord
 	 * only non-clinical warnings will be returned.
 	 *
 	 * @param boolean $clinical
-	 * @return {'short_msg' => string, 'long_msg' => string}[]
+	 * @return {'short_msg' => string, 'long_msg' => string, 'details' => string}[]
 	 */
 	public function getWarnings($clinical=true)
 	{
@@ -1248,28 +1248,40 @@ class Patient extends BaseActiveRecord
 		// but this should serve as a wrapper function for configuring warnings (i.e. a system setting could
 		// define what should be warned on, and then we return a structure that is determined from this)
 
-		$res = array();
+		if ($this->_nonclinical_warnings === null) {
+			// placeholder for nonclinical warning setup
+			$this->_nonclinical_warnings = array();
+		}
+
+		$res = $this->_nonclinical_warnings;
 
 		if ($clinical) {
-			if ($this->_nonclinical_warnings == null) {
-				// this should be expanded with any future clinical disorders
+			if ($this->_clinical_warnings === null) {
+				$this->_clinical_warnings = array();
 				if ($diabetic_disorders = $this->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET) ) {
 					$terms = array();
 					foreach ($diabetic_disorders as $disorder) {
 						$terms[] = $disorder->term;
 					}
-					$res[] = array(
+					$this->_clinical_warnings[] = array(
 							'short_msg' => 'Diabetes',
 							'long_msg' => 'Patient is Diabetic',
 							'details' => implode(', ', $terms)
 					);
 				}
-
-				$this->_nonclinical_warnings = $res;
+				if ($this->allergies) {
+					foreach ($this->allergies as $allergy) {
+						$allergies[] = $allergy->name;
+					}
+					$this->_clinical_warnings[] = array(
+						'short_msg' => 'Allergies',
+						'long_msg' => 'Patient has allergies',
+						'details' => implode(', ', $allergies)
+					);
+				}
 			}
-			return $this->_nonclinical_warnings;
+			$res = array_merge($res, $this->_clinical_warnings);
 		}
-
 
 		return $res;
 	}

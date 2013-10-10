@@ -17,9 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php 
+<?php
 	$clinical = (BaseController::checkUserLevel(2));
-	
+
 	$warnings = $this->patient->getWarnings($clinical);
 ?>
 <div id="patientID">
@@ -32,13 +32,13 @@
 		<div class="nhsNumber"><span class="hide">NHS number:</span><?php echo $this->patient->nhsnum?></div>
 		<ul class="icons">
 			<li class="gender <?php echo strtolower($this->patient->getGenderString()) ?>"><?php echo $this->patient->getGenderString() ?></li>
-			<?php if ($warnings) { 
+			<?php if ($warnings) {
 				$msgs = array();
 				foreach ($warnings as $warn) {
 					$msgs[] = $warn['short_msg'];
 				}
 			?>
-				<li class="warning"><span><?php echo implode(' / ', $msgs); ?></span></li>
+				<li class="warning"><span><?php echo implode(', ', $msgs); ?></span></li>
 			<?php } ?>
 		</ul>
 		<div class="i_patient">
