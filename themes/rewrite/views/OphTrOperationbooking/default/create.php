@@ -17,9 +17,9 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 ?>
-<?php $this->header() ?>
+<?php $this->beginContent('//patient/event_container', array()); ?>
 
-<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
+<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
 <div class="booking edit">
 	<?php
@@ -30,9 +30,9 @@
 	));
 
 	// Event actions
-	$this->event_actions[] = EventAction::button('Save and Schedule later', 'scheduleLater', array('id' => 'et_save', 'colour' => 'green'));
-	$this->event_actions[] = EventAction::button('Save and Schedule now', 'scheduleNow', array('id' => 'et_save_and_schedule', 'colour' => 'green'));
-	$this->renderPartial('//patient/event_actions');
+	$this->event_actions[] = EventAction::link('Save and Schedule later','#', null, array('name'=> 'scheduleLater', 'id' => 'et_save', 'class' => 'button small'));
+	$this->event_actions[] = EventAction::link('Save and Schedule now', '#', null,  array('name'=> 'scheduleNow','id' => 'et_save_and_schedule', 'class' => 'button secondary small'));
+
 	?>
 	<input type="hidden" name="schedule_now" id="schedule_now" value="0" />
 	<?php
@@ -45,4 +45,4 @@
 	<?php $this->endWidget()?>
 </div>
 
-<?php $this->footer()?>
+<?php $this->endContent() ;?>

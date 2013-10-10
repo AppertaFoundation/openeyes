@@ -30,11 +30,11 @@
 			</li>
 			<?php } ?>
 		</ul>
-		<div class="button-bar right">
-			<a href="#" class="button small secondary">
-				Save
-			</a>
-		</div>
+		<?php
+		// Event actions
+		$this->renderPartial('//patient/event_actions');
+		?>
+
 	</header>
 
 <?php if ($hidden && BaseController::checkUserLevel(4)) {?>

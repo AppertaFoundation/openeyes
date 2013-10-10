@@ -18,10 +18,7 @@
 */
 ?>
 
-<?php $this->beginContent('//patient/event_container', array(
-	'state' => 'view',
-	'class' => 'booking'
-)); ?>
+<?php $this->beginContent('//patient/event_container', array()); ?>
 
 	<h2 class="event-title"><?php  echo $this->event_type->name ?> (<?php echo Element_OphTrOperationbooking_Operation::model()->find('event_id=?',array($this->event->id))->status->name?>)</h2>
 
