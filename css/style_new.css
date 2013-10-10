@@ -4569,11 +4569,6 @@ tfoot.pagination-container .pagination li {
   background-position: 0 -22px;
 }
 
-/* line 45, ../sass/new/openeyes/components/_toggler.scss */
-.js-toggle-body {
-  overflow-x: visible;
-}
-
 /* line 1, ../sass/new/openeyes/components/_tooltips.scss */
 .tooltip {
   -webkit-border-radius: 4px;
