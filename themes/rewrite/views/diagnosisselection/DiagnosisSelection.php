@@ -22,7 +22,7 @@
 		<label>Diagnosis:</label>
 	</div>
 	<div class="small-4 column end">
-		<div class="panel element-field" <?php if (!$label) {?> style="display: none;" <?php }?>>
+		<div class="panel element-field" id="enteredDiagnosisText" <?php if (!$label) {?> style="display: none;" <?php }?>>
 			<?php echo $label?>
 		</div>
 		<fieldset>
@@ -50,7 +50,7 @@
 							'minLength'=>'3',
 							'select' => "js:function(event, ui) {
 							$('#".$class."_".$field."_0').val('');
-							$('#enteredDiagnosisText h4').html(ui.item.value);
+							$('#enteredDiagnosisText').html(ui.item.value);
 							$('#enteredDiagnosisText').show();
 							$('input[id=savedDiagnosis]').val(ui.item.id);
 							$('#".$class."_".$field."').focus();
@@ -71,7 +71,7 @@
 
 <script type="text/javascript">
 	$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-		$('#enteredDiagnosisText h4').html($('option:selected', this).text());
+		$('#enteredDiagnosisText').html($('option:selected', this).text());
 		$('#savedDiagnosis').val($(this).val());
 		$('#enteredDiagnosisText').show();
 	});
