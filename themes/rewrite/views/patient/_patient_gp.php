@@ -17,58 +17,55 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="box patient-info">
-	<div class="patient_actions">
-		<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
-	</div>
-	<h4>General Practitioner:</h4>
-
+<section class="box patient-info js-toggle-container">
 	<h3 class="box-title">General Practitioner:</h3>
-	<a href="#" class="toggle-trigger toggle-hide">
-							<span class="icon-showhide">
-								Show/hide this section
-							</span>
+	<a href="#" class="toggle-trigger toggle-hide js-toggle">
+		<span class="icon-showhide">
+			Show/hide this section
+		</span>
 	</a>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label">Name:</div>
+	<div class="js-toggle-body">
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Name:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo ($this->patient->gp) ? $this->patient->gp->contact->fullName : 'Unknown'; ?></div>
+			</div>
 		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo ($this->patient->gp) ? $this->patient->gp->contact->fullName : 'Unknown'; ?></div>
+		<?php if (Yii::app()->user->checkAccess('admin')) { ?>
+		<div class="row data-row highlight">
+			<div class="large-4 column">
+				<div class="data-label">GP Address:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></div>
+			</div>
 		</div>
-	</div>
-	<?php if (Yii::app()->user->checkAccess('admin')) { ?>
-	<div class="row data-row highlight">
-		<div class="large-4 column">
-			<div class="data-label">GP Address:</div>
+		<div class="row data-row highlight">
+			<div class="large-4 column">
+				<div class="data-label">GP Telephone:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></div>
+			</div>
 		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></div>
+		<?php } ?>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Practice Address:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo ($this->patient->practice && $this->patient->practice->contact->address) ? $this->patient->practice->contact->address->letterLine : 'Unknown'; ?></div>
+			</div>
 		</div>
-	</div>
-	<div class="row data-row highlight">
-		<div class="large-4 column">
-			<div class="data-label">GP Telephone:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></div>
-		</div>
-	</div>
-	<?php } ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label">Practice Address:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo ($this->patient->practice && $this->patient->practice->contact->address) ? $this->patient->practice->contact->address->letterLine : 'Unknown'; ?></div>
-		</div>
-	</div>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label">Practice Telephone:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo ($this->patient->practice && $this->patient->practice->phone) ? $this->patient->practice->phone : 'Unknown'; ?></div>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Practice Telephone:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo ($this->patient->practice && $this->patient->practice->phone) ? $this->patient->practice->phone : 'Unknown'; ?></div>
+			</div>
 		</div>
 	</div>
 </section>

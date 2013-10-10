@@ -17,294 +17,298 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="box patient-info">
-	<div class="patient_actions">
-		<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
-	</div>
+<section class="box patient-info js-toggle-container">
 	<h3 class="box-title">Associated contacts:</h3>
-	<div class="data_row">
-		<table class="plain patient-data patient-contacts">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Location</th>
-					<th>Type</th>
-					<?php if (BaseController::checkUserLevel(4)) {?><th colspan="2"></th><?php }?>
-				</tr>
-			</thead>
-			<tbody id="patient_contacts">
-				<?php foreach ($this->patient->contactAssignments as $pca) {
-					$this->renderPartial('_patient_contact_row',array('pca'=>$pca));
-				}?>
-			</tbody>
-		</table>
-	</div>
-	<?php if (BaseController::checkUserLevel(4)) {?>
-		<div class="row data-row">
-		<div class="large-2 column align">
-			<label for="" class="align">Add contact:</label>
+	<a href="#" class="toggle-trigger toggle-hide js-toggle">
+		<span class="icon-showhide">
+			Show/hide this section
+		</span>
+	</a>
+	<div class="js-toggle-body">
+		<div class="data_row">
+			<table class="plain patient-data patient-contacts">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Location</th>
+						<th>Type</th>
+						<?php if (BaseController::checkUserLevel(4)) {?><th colspan="2"></th><?php }?>
+					</tr>
+				</thead>
+				<tbody id="patient_contacts">
+					<?php foreach ($this->patient->contactAssignments as $pca) {
+						$this->renderPartial('_patient_contact_row',array('pca'=>$pca));
+					}?>
+				</tbody>
+			</table>
 		</div>
+		<?php if (BaseController::checkUserLevel(4)) {?>
+			<div class="row data-row">
+			<div class="large-2 column align">
+				<label for="" class="align">Add contact:</label>
+			</div>
 
-		<?php
-// FIXME:
-		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-			'name'=>"contactname",
-			'id'=>"contactname",
-			'value'=>'',
-			'source'=>"js:function(request, response) {
+			<?php
+			// FIXME:
+			$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+				'name'=>"contactname",
+				'id'=>"contactname",
+				'value'=>'',
+				'source'=>"js:function(request, response) {
 
-				$('#btn-add-contact').hide();
+					$('#btn-add-contact').hide();
 
-				var filter = $('#contactfilter').val();
+					var filter = $('#contactfilter').val();
 
-				$('img.loader').show();
-
-				$.ajax({
-					'url': '" . Yii::app()->createUrl('patient/possiblecontacts') . "',
-					'type':'GET',
-					'data':{'term': request.term, 'filter': filter},
-					'success':function(data) {
-						data = $.parseJSON(data);
-
-						var result = [];
-
-						contactCache = {};
-
-						for (var i = 0; i < data.length; i++) {
-							if (data[i]['contact_location_id']) {
-								if ($.inArray(data[i]['contact_location_id'], currentContacts['locations']) == -1) {
-									result.push(data[i]['line']);
-									contactCache[data[i]['line']] = data[i];
-								}
-							} else {
-								if ($.inArray(data[i]['contact_id'], currentContacts['contacts']) == -1) {
-									result.push(data[i]['line']);
-									contactCache[data[i]['line']] = data[i];
-								}
-							}
-						}
-
-						response(result);
-
-						$('img.loader').hide();
-
-						if (filter != 'users') {
-							$('#btn-add-contact').show();
-						}
-					}
-				});
-			}",
-			'options'=>array(
-				'minLength'=>'3',
-				'select'=>"js:function(event, ui) {
-					var value = ui.item.value;
-
-					$('#contactname').val('');
-
-					if (contactCache[value]['contact_location_id']) {
-						var querystr = 'patient_id=".$this->patient->id."&contact_location_id='+contactCache[value]['contact_location_id'];
-					} else {
-						var querystr = 'patient_id=".$this->patient->id."&contact_id='+contactCache[value]['contact_id'];
-					}
+					$('img.loader').show();
 
 					$.ajax({
-						'type': 'GET',
-						'url': '".Yii::app()->createUrl('patient/associatecontact')."?'+querystr,
-						'success': function(html) {
-							if (html.length >0) {
-								$('#patient_contacts').append(html);
-								if (contactCache[value]['contact_location_id']) {
-									currentContacts['locations'].push(contactCache[value]['contact_location_id']);
-								} else {
-									currentContacts['contacts'].push(contactCache[value]['contact_id']);
-								}
+						'url': '" . Yii::app()->createUrl('patient/possiblecontacts') . "',
+						'type':'GET',
+						'data':{'term': request.term, 'filter': filter},
+						'success':function(data) {
+							data = $.parseJSON(data);
 
-								$('#btn-add-contact').hide();
+							var result = [];
+
+							contactCache = {};
+
+							for (var i = 0; i < data.length; i++) {
+								if (data[i]['contact_location_id']) {
+									if ($.inArray(data[i]['contact_location_id'], currentContacts['locations']) == -1) {
+										result.push(data[i]['line']);
+										contactCache[data[i]['line']] = data[i];
+									}
+								} else {
+									if ($.inArray(data[i]['contact_id'], currentContacts['contacts']) == -1) {
+										result.push(data[i]['line']);
+										contactCache[data[i]['line']] = data[i];
+									}
+								}
+							}
+
+							response(result);
+
+							$('img.loader').hide();
+
+							if (filter != 'users') {
+								$('#btn-add-contact').show();
 							}
 						}
 					});
-
-					return false;
 				}",
-			),
-			'htmlOptions'=>array(
-				'placeholder' => 'search for contacts'
-			),
-		));
-		?>
-		&nbsp;
-		&nbsp;&nbsp;
-		<select id="contactfilter" name="contactfilter">
-			<?php foreach (ContactLabel::getList() as $key => $name) {?>
-				<option value="<?php echo $key?>"><?php echo $name?>
-			<?php }?>
-		</select>
-		&nbsp;
-		<div style="display: inline-block; width: 15px;">
-			<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
-		</div>
-		<?php if (BaseController::checkUserLevel(4)) {?>
+				'options'=>array(
+					'minLength'=>'3',
+					'select'=>"js:function(event, ui) {
+						var value = ui.item.value;
+
+						$('#contactname').val('');
+
+						if (contactCache[value]['contact_location_id']) {
+							var querystr = 'patient_id=".$this->patient->id."&contact_location_id='+contactCache[value]['contact_location_id'];
+						} else {
+							var querystr = 'patient_id=".$this->patient->id."&contact_id='+contactCache[value]['contact_id'];
+						}
+
+						$.ajax({
+							'type': 'GET',
+							'url': '".Yii::app()->createUrl('patient/associatecontact')."?'+querystr,
+							'success': function(html) {
+								if (html.length >0) {
+									$('#patient_contacts').append(html);
+									if (contactCache[value]['contact_location_id']) {
+										currentContacts['locations'].push(contactCache[value]['contact_location_id']);
+									} else {
+										currentContacts['contacts'].push(contactCache[value]['contact_id']);
+									}
+
+									$('#btn-add-contact').hide();
+								}
+							}
+						});
+
+						return false;
+					}",
+				),
+				'htmlOptions'=>array(
+					'placeholder' => 'search for contacts'
+				),
+			));
+			?>
 			&nbsp;
-			<button id="btn-add-contact" class="classy green mini" type="button" style="display: none;"><span class="button-span button-span-green">Add</span></button>
-			<div id="add_contact" style="display: none;">
-				<?php
-				$form = $this->beginWidget('CActiveForm', array(
-						'id'=>'add-contact',
-						'enableAjaxValidation'=>false,
-						'htmlOptions' => array('class'=>'sliding'),
-						'action'=>array('patient/addContact'),
-				))?>
-
-				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-				<input type="hidden" name="contact_label_id" id="contact_label_id" value="" />
-
-				<div>
-					<div class="label">Type:</div>
-					<div class="data contactType"></div>
-				</div>
-
-				<div>
-					<div class="label">Institution:</div>
-					<div class="data"><?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
-				</div>
-
-				<div class="siteID">
-					<div class="label">Site:</div>
-					<div class="data"><?php echo CHtml::dropDownList('site_id','',array(),array('- Select -'))?></div>
-				</div>
-
-				<div class="contactLabel">
-					<div class="label">Label:</div>
-					<div class="data"><?php echo CHtml::dropDownList('label_id','',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
-				</div>
-
-				<div>
-					<div class="label">Title:</div>
-					<div class="data"><?php echo CHtml::textField('title','')?></div>
-				</div>
-
-				<div>
-					<div class="label">First name:</div>
-					<div class="data"><?php echo CHtml::textField('first_name','')?></div>
-				</div>
-
-				<div>
-					<div class="label">Last name:</div>
-					<div class="data"><?php echo CHtml::textField('last_name','')?></div>
-				</div>
-
-				<div>
-					<div class="label">Nick name:</div>
-					<div class="data"><?php echo CHtml::textField('nick_name','')?></div>
-				</div>
-
-				<div>
-					<div class="label">Primary phone:</div>
-					<div class="data"><?php echo CHtml::textField('primary_phone','')?></div>
-				</div>
-
-				<div>
-					<div class="label">Qualifications:</div>
-					<div class="data"><?php echo CHtml::textField('qualifications','')?></div>
-				</div>
-
-				<div class="add_contact_form_errors" style="height: auto;"></div>
-
-				<div align="right" style="margin-top: 10px;">
-					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_contact_loader" style="display: none;" />
-					<button class="classy green mini btn_save_contact" type="submit"><span class="button-span button-span-green">Save</span></button>
-					<button class="classy red mini btn_cancel_contact" type="submit"><span class="button-span button-span-red">Cancel</span></button>
-				</div>
-
-				<div align="left" style="float: left; margin-top: -27px;">
-					<button class="classy blue mini btn_add_site" type="submit"><span class="button-span button-span-blue">Add site/institution</span></button>
-				</div>
-
-				<?php $this->endWidget()?>
+			&nbsp;&nbsp;
+			<select id="contactfilter" name="contactfilter">
+				<?php foreach (ContactLabel::getList() as $key => $name) {?>
+					<option value="<?php echo $key?>"><?php echo $name?>
+				<?php }?>
+			</select>
+			&nbsp;
+			<div style="display: inline-block; width: 15px;">
+				<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
 			</div>
-
-			<div id="edit_contact" style="display: none;">
-				<?php
-				$form = $this->beginWidget('CActiveForm', array(
-						'id'=>'edit-contact',
-						'enableAjaxValidation'=>false,
-						'htmlOptions' => array('class'=>'sliding'),
-						'action'=>array('patient/editContact'),
-				))?>
-
-				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-				<input type="hidden" name="contact_id" id="contact_id" value="" />
-				<input type="hidden" name="pca_id" id="pca_id" value="" />
-
-				<div>
-					<div class="label">Contact:</div>
-					<div class="data editContactName"></div>
-				</div>
-
-				<div>
-					<div class="label">Institution:</div>
-					<div class="data"><?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
-				</div>
-
-				<div class="siteID">
-					<div class="label">Site:</div>
-					<div class="data"><?php echo CHtml::dropDownList('site_id','',array(),array('- Select -'))?></div>
-				</div>
-
-				<div class="edit_contact_form_errors" style="height: auto;"></div>
-
-				<div align="right" style="margin-top: 10px;">
-					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_contact_loader" style="display: none;" />
-					<button class="classy green mini btn_save_editcontact" type="submit"><span class="button-span button-span-green">Save</span></button>
-					<button class="classy red mini btn_cancel_editcontact" type="submit"><span class="button-span button-span-red">Cancel</span></button>
-				</div>
-
-				<div align="left" style="float: left; margin-top: -27px;">
-					<button class="classy blue mini btn_add_site" type="submit"><span class="button-span button-span-blue">Add site/institution</span></button>
-				</div>
-
-				<?php $this->endWidget()?>
-			</div>
-			<div id="add_site_dialog" title="Add site or institution" style="display: none;">
-				<div>
-					<p>
-						This form allows you to send a request to the OpenEyes support team to add a site or institution to the system for you.
-					</p>
+			<?php if (BaseController::checkUserLevel(4)) {?>
+				&nbsp;
+				<button id="btn-add-contact" class="classy green mini" type="button" style="display: none;"><span class="button-span button-span-green">Add</span></button>
+				<div id="add_contact" style="display: none;">
 					<?php
 					$form = $this->beginWidget('CActiveForm', array(
-						'id'=>'add_site_form',
-						'enableAjaxValidation'=>false,
-						'htmlOptions' => array('class'=>'sliding'),
-						'action'=>array('patient/sendSiteMessage'),
+							'id'=>'add-contact',
+							'enableAjaxValidation'=>false,
+							'htmlOptions' => array('class'=>'sliding'),
+							'action'=>array('patient/addContact'),
 					))?>
-						<div>
-							<div class="label">From:</div>
-							<div class="data"><?php echo CHtml::textField('newsite_from',User::model()->findByPk(Yii::app()->user->id)->email)?></div>
-						</div>
-						<div>
-							<div class="label">Subject:</div>
-							<div class="data"><?php echo CHtml::textField('newsite_subject','Please add the following site/institution')?></div>
-						</div>
-						<div style="height: 10em;">
-							<div class="label">Message:</div>
-							<div class="data"><?php echo CHtml::textArea('newsite_message',"Please could you add the following site/institution to OpenEyes:\n\n",array('rows'=>7,'cols'=>55))?></div>
-						</div>
-					<?php $this->endWidget()?>
-					<p>
-						We will respond to your request via email as soon as it has been completed.
-					</p>
+
+					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+					<input type="hidden" name="contact_label_id" id="contact_label_id" value="" />
+
 					<div>
-						<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
-							<button type="submit" class="classy green venti btn_add_site_ok"><span class="button-span button-span-green">Send</span></button>
-							<button type="submit" class="classy red venti btn_add_site_cancel"><span class="button-span button-span-red">Cancel</span></button>
-							<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+						<div class="label">Type:</div>
+						<div class="data contactType"></div>
+					</div>
+
+					<div>
+						<div class="label">Institution:</div>
+						<div class="data"><?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
+					</div>
+
+					<div class="siteID">
+						<div class="label">Site:</div>
+						<div class="data"><?php echo CHtml::dropDownList('site_id','',array(),array('- Select -'))?></div>
+					</div>
+
+					<div class="contactLabel">
+						<div class="label">Label:</div>
+						<div class="data"><?php echo CHtml::dropDownList('label_id','',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
+					</div>
+
+					<div>
+						<div class="label">Title:</div>
+						<div class="data"><?php echo CHtml::textField('title','')?></div>
+					</div>
+
+					<div>
+						<div class="label">First name:</div>
+						<div class="data"><?php echo CHtml::textField('first_name','')?></div>
+					</div>
+
+					<div>
+						<div class="label">Last name:</div>
+						<div class="data"><?php echo CHtml::textField('last_name','')?></div>
+					</div>
+
+					<div>
+						<div class="label">Nick name:</div>
+						<div class="data"><?php echo CHtml::textField('nick_name','')?></div>
+					</div>
+
+					<div>
+						<div class="label">Primary phone:</div>
+						<div class="data"><?php echo CHtml::textField('primary_phone','')?></div>
+					</div>
+
+					<div>
+						<div class="label">Qualifications:</div>
+						<div class="data"><?php echo CHtml::textField('qualifications','')?></div>
+					</div>
+
+					<div class="add_contact_form_errors" style="height: auto;"></div>
+
+					<div align="right" style="margin-top: 10px;">
+						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_contact_loader" style="display: none;" />
+						<button class="classy green mini btn_save_contact" type="submit"><span class="button-span button-span-green">Save</span></button>
+						<button class="classy red mini btn_cancel_contact" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+					</div>
+
+					<div align="left" style="float: left; margin-top: -27px;">
+						<button class="classy blue mini btn_add_site" type="submit"><span class="button-span button-span-blue">Add site/institution</span></button>
+					</div>
+
+					<?php $this->endWidget()?>
+				</div>
+
+				<div id="edit_contact" style="display: none;">
+					<?php
+					$form = $this->beginWidget('CActiveForm', array(
+							'id'=>'edit-contact',
+							'enableAjaxValidation'=>false,
+							'htmlOptions' => array('class'=>'sliding'),
+							'action'=>array('patient/editContact'),
+					))?>
+
+					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+					<input type="hidden" name="contact_id" id="contact_id" value="" />
+					<input type="hidden" name="pca_id" id="pca_id" value="" />
+
+					<div>
+						<div class="label">Contact:</div>
+						<div class="data editContactName"></div>
+					</div>
+
+					<div>
+						<div class="label">Institution:</div>
+						<div class="data"><?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
+					</div>
+
+					<div class="siteID">
+						<div class="label">Site:</div>
+						<div class="data"><?php echo CHtml::dropDownList('site_id','',array(),array('- Select -'))?></div>
+					</div>
+
+					<div class="edit_contact_form_errors" style="height: auto;"></div>
+
+					<div align="right" style="margin-top: 10px;">
+						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_contact_loader" style="display: none;" />
+						<button class="classy green mini btn_save_editcontact" type="submit"><span class="button-span button-span-green">Save</span></button>
+						<button class="classy red mini btn_cancel_editcontact" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+					</div>
+
+					<div align="left" style="float: left; margin-top: -27px;">
+						<button class="classy blue mini btn_add_site" type="submit"><span class="button-span button-span-blue">Add site/institution</span></button>
+					</div>
+
+					<?php $this->endWidget()?>
+				</div>
+				<div id="add_site_dialog" title="Add site or institution" style="display: none;">
+					<div>
+						<p>
+							This form allows you to send a request to the OpenEyes support team to add a site or institution to the system for you.
+						</p>
+						<?php
+						$form = $this->beginWidget('CActiveForm', array(
+							'id'=>'add_site_form',
+							'enableAjaxValidation'=>false,
+							'htmlOptions' => array('class'=>'sliding'),
+							'action'=>array('patient/sendSiteMessage'),
+						))?>
+							<div>
+								<div class="label">From:</div>
+								<div class="data"><?php echo CHtml::textField('newsite_from',User::model()->findByPk(Yii::app()->user->id)->email)?></div>
+							</div>
+							<div>
+								<div class="label">Subject:</div>
+								<div class="data"><?php echo CHtml::textField('newsite_subject','Please add the following site/institution')?></div>
+							</div>
+							<div style="height: 10em;">
+								<div class="label">Message:</div>
+								<div class="data"><?php echo CHtml::textArea('newsite_message',"Please could you add the following site/institution to OpenEyes:\n\n",array('rows'=>7,'cols'=>55))?></div>
+							</div>
+						<?php $this->endWidget()?>
+						<p>
+							We will respond to your request via email as soon as it has been completed.
+						</p>
+						<div>
+							<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
+								<button type="submit" class="classy green venti btn_add_site_ok"><span class="button-span button-span-green">Send</span></button>
+								<button type="submit" class="classy red venti btn_add_site_cancel"><span class="button-span button-span-red">Cancel</span></button>
+								<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			<?php }?>
+		</div>
 		<?php }?>
 	</div>
-	<?php }?>
 </section>
 <script type="text/javascript">
 $(document).ready(function() {

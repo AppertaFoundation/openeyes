@@ -17,111 +17,113 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="box patient-info associated-data">
+<section class="box patient-info associated-data js-toggle-container">
 
 	<header class="box-header">
 		<h3 class="box-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
 			Other ophthalmic diagnoses
 		</h3>
-		<a href="#" class="toggle-trigger toggle-hide">
-								<span class="icon-showhide">
-									Show/hide this section
-								</span>
+		<a href="#" class="toggle-trigger toggle-hide js-toggle">
+			<span class="icon-showhide">
+				Show/hide this section
+			</span>
 		</a>
 	</header>
 
-	<table class="plain patient-data">
-		<thead>
-		<tr>
-			<th>Date</th>
-			<th>Diagnosis</th>
-			<?php if (BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
-		</tr>
-		</thead>
-		<tbody>
-		<?php foreach ($this->patient->ophthalmicDiagnoses as $diagnosis) {?>
+	<div class="js-toggle-body">
+
+		<table class="plain patient-data">
+			<thead>
 			<tr>
-				<td><?php echo $diagnosis->dateText?></td>
-				<td><?php echo $diagnosis->eye->adjective?> <?php echo $diagnosis->disorder->term?></td>
-				<?php if (BaseController::checkUserLevel(4)) { ?>
-					<td><a href="#" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
-				<?php } ?>
+				<th>Date</th>
+				<th>Diagnosis</th>
+				<?php if (BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
 			</tr>
-		<?php }?>
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+			<?php foreach ($this->patient->ophthalmicDiagnoses as $diagnosis) {?>
+				<tr>
+					<td><?php echo $diagnosis->dateText?></td>
+					<td><?php echo $diagnosis->eye->adjective?> <?php echo $diagnosis->disorder->term?></td>
+					<?php if (BaseController::checkUserLevel(4)) { ?>
+						<td><a href="#" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
+					<?php } ?>
+				</tr>
+			<?php }?>
+			</tbody>
+		</table>
 
-	<?php if (BaseController::checkUserLevel(4)) { ?>
-	<div class="box-actions">
-		<button id='btn-add_new_ophthalmic_diagnosis' class="secondary small">
-			Add Ophthalmic Diagnosis
-		</button>
-	</div>
+		<?php if (BaseController::checkUserLevel(4)) { ?>
+		<div class="box-actions">
+			<button id='btn-add_new_ophthalmic_diagnosis' class="secondary small">
+				Add Ophthalmic Diagnosis
+			</button>
+		</div>
 
-	<div id="add_new_ophthalmic_diagnosis" style="display: none;">
+		<div id="add_new_ophthalmic_diagnosis" style="display: none;">
 
-		<?php
-		$form = $this->beginWidget('CActiveForm', array(
-				'id'=>'add-ophthalmic-diagnosis',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding form add-data'),
-				'action'=>array('patient/adddiagnosis'),
-			))?>
-
-		<fieldset class="field-row">
-
-			<legend><strong>Add ophthalmic diagnosis</strong></legend>
-
-			<?php $form->widget('application.widgets.DiagnosisSelection',array(
-					'field' => 'ophthalmic_disorder_id',
-					'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-					'code' => 130,
-					'default' => false,
-					'layout' => 'patientSummary',
-					'loader' => 'add_ophthalmic_diagnosis_loader',
+			<?php
+			$form = $this->beginWidget('CActiveForm', array(
+					'id'=>'add-ophthalmic-diagnosis',
+					'enableAjaxValidation'=>false,
+					'htmlOptions' => array('class'=>'sliding form add-data'),
+					'action'=>array('patient/adddiagnosis'),
 				))?>
 
-			<div id="add_ophthalmic_diagnosis_loader" style="display: none;">
-				<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
-				<div>
-					searching...
-				</div>
-			</div>
+			<fieldset class="field-row">
 
-			<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+				<legend><strong>Add ophthalmic diagnosis</strong></legend>
 
-			<fieldset class="diagnosis_eye row field-row">
-				<legend class="large-3 column">
-					Eye:
-				</legend>
-				<div class="large-7 column end">
-					<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $i => $eye) {?>
-						<label class="inline"><input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?></label>
-					<?php }?>
+				<?php $form->widget('application.widgets.DiagnosisSelection',array(
+						'field' => 'ophthalmic_disorder_id',
+						'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+						'code' => 130,
+						'default' => false,
+						'layout' => 'patientSummary',
+						'loader' => 'add_ophthalmic_diagnosis_loader',
+					))?>
+
+				<div id="add_ophthalmic_diagnosis_loader" style="display: none;">
+					<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
+					<div>
+						searching...
+					</div>
 				</div>
+
+				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+
+				<fieldset class="diagnosis_eye row field-row">
+					<legend class="large-3 column">
+						Eye:
+					</legend>
+					<div class="large-7 column end">
+						<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $i => $eye) {?>
+							<label class="inline"><input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?></label>
+						<?php }?>
+					</div>
+				</fieldset>
+
+				<?php $this->renderPartial('_fuzzy_date')?>
+				<div class="ophthalmic_diagnoses_form_errors"></div>
+
+				<div align="right">
+					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_ophthalmic_diagnosis_loader" style="display: none;" />
+					<div class="buttons">
+						<button type="submit" class="secondary small btn_save_ophthalmic_diagnosis">
+							Save
+						</button>
+						<button class="warning small btn_cancel_ophthalmic_diagnosis">
+							Cancel
+						</button>
+					</div>
+				</div>
+
 			</fieldset>
-
-			<?php $this->renderPartial('_fuzzy_date')?>
-			<div class="ophthalmic_diagnoses_form_errors"></div>
-
-			<div align="right">
-				<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_ophthalmic_diagnosis_loader" style="display: none;" />
-				<div class="buttons">
-					<button type="submit" class="secondary small btn_save_ophthalmic_diagnosis">
-						Save
-					</button>
-					<button class="warning small btn_cancel_ophthalmic_diagnosis">
-						Cancel
-					</button>
-				</div>
-			</div>
-
-		</fieldset>
-		<?php $this->endWidget()?>
-		<?php } ?>
+			<?php $this->endWidget()?>
+			<?php } ?>
+		</div>
 	</div>
-
 </section>
 <?php if (BaseController::checkUserLevel(4)) { ?>
 	<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
