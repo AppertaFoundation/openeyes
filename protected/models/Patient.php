@@ -307,7 +307,7 @@ class Patient extends BaseActiveRecord
 	* @param integer $drug_id
 	* @return boolean Is patient allergic?
 	*/
-	public function hasAllergy($drug_id = null)
+	public function hasDrugAllergy($drug_id = null)
 	{
 		if ($drug_id) {
 			if ($this->allergies) {
