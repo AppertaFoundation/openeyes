@@ -18,7 +18,7 @@
  */
 ?>
 
-<div class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
+<section class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
 	data-element-type-id="<?php echo $element->elementType->id ?>"
 	data-element-type-class="<?php echo $element->elementType->class_name ?>"
 	data-element-type-name="<?php echo $element->elementType->name ?>"
@@ -26,8 +26,11 @@
 	<?php if ($this->action->id == 'update' && !$element->event_id) {?>
 		<span class="missingtext">This element is missing and needs to be completed</span>
 	<?php }?>
-	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+	</header>
 
+	<fieldset class="element-fields">
 	<div class="splitElement clearfix" style="background-color: #DAE6F1;">
 		<div class="left" style="width:65%;">
 			<?php
@@ -111,4 +114,5 @@
 			</div>
 		</div>
 	</div>
-</div>
+	</fieldset>
+</section>

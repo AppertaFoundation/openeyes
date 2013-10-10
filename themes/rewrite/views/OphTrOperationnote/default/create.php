@@ -19,9 +19,13 @@
 ?>
 <?php $this->header() ?>
 
-<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
+<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<div id="event_<?php echo $this->module->name?>">
+<div class="row">
+	<div class="large-12 column">
+
+
+<div id="event_<?php echo $this->module->name?>" class="operation-note edit">
 	<?php
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'clinical-create',
@@ -47,5 +51,8 @@
 		<div class="cleartall"></div>
 	<?php $this->endWidget(); ?>
 </div>
+
+		</div>
+	</div>
 
 <?php $this->footer() ?>
