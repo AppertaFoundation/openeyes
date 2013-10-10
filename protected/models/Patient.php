@@ -58,7 +58,6 @@ class Patient extends BaseActiveRecord
 	public $use_pas = TRUE;
 	private $_orderedepisodes;
 
-
 	/**
 		* Returns the static model of the specified AR class.
 		* @return Patient the static model class
@@ -329,6 +328,22 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
+	 * returns true if the patient has the allergy passed in
+	 *
+	 * @param $allergy
+	 * @return boolean
+	 */
+	public function hasAllergy($allergy)
+	{
+		foreach ($this->allergies as $allrgy) {
+			if ($allergy->id == $allrgy->id) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * returns true if the allergy status of the patient is known (has allergies, or no known allergies) false otherwise.
 	 *
 	 * @return bool
@@ -565,8 +580,16 @@ class Patient extends BaseActiveRecord
 		return $this->contact->address ? $this->getLetterAddress(array('delimiter'=>'<br/>')) : 'Unknown';
 	}
 
+	/**
+	 * returns a standard allergy string for the patient
+	 *
+	 * @return string
+	 */
 	public function getAllergiesString()
 	{
+		if (!$this->hasAllergyStatus()) {
+			return 'Patient allergy status is not known';
+		}
 		if ($this->no_allergies_date) {
 			return 'Patient has no known allergies (as of ' . Helper::convertDate2NHS($this->no_allergies_date) . ')';
 		}
@@ -575,7 +598,7 @@ class Patient extends BaseActiveRecord
 		foreach ($this->allergies as $allergy) {
 			$allergies[] = $allergy->name;
 		}
-		return implode(', ',$allergies);
+		return 'Patient is allergic to: ' . implode(', ',$allergies);
 	}
 
 	/**
@@ -613,6 +636,12 @@ class Patient extends BaseActiveRecord
 		}
 	}
 
+	/**
+	 * remove the allergy identified by $allergy_id from the patient
+	 *
+	 * @param $allergy_id
+	 * @throws Exception
+	 */
 	public function removeAllergy($allergy_id)
 	{
 		if ($paa = PatientAllergyAssignment::model()->find('patient_id=? and allergy_id=?',array($this->id,$allergy_id))) {
@@ -624,6 +653,11 @@ class Patient extends BaseActiveRecord
 		}
 	}
 
+	/**
+	 * set patient allergies to be the allergies identified by the array of ids. Other allergies will be removed
+	 * @param $allergy_ids
+	 * @throws Exception
+	 */
 	public function assignAllergies($allergy_ids)
 	{
 		$insert_allergy_ids = $allergy_ids;
