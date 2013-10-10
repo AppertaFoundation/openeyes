@@ -93,7 +93,6 @@
 		</fieldset>
 	</div>
 
-
 	<?php
 	$totalDuration = 0;
 	?>
@@ -107,7 +106,7 @@
 					<td>Actions</td>
 				</tr>
 				</thead>
-				<tbody>
+				<tbody id="procedure_body">
 
 				<?php
 				if (!empty($selected_procedures)) {
@@ -143,7 +142,7 @@
 					<td>
 						Calculated Total Duration:
 					</td>
-					<td>
+					<td id="projected_duration_procs">
 						<?php echo $totalDuration?> mins
 					</td>
 					<td>
@@ -168,8 +167,8 @@ function updateTotalDuration(identifier)
 {
 	// update total duration
 	var totalDuration = 0;
-	$('#procedureList_'+identifier).children('h4').children('div.procedureItem').map(function() {
-		$(this).children('span:last').map(function() {
+	$('#procedureList_'+identifier).find('#procedure_body').children('.procedureItem').map(function() {
+		$(this).find('#procedureItemDuration').map(function() {
 			totalDuration += parseInt($(this).html().match(/[0-9]+/));
 		});
 	});
@@ -340,7 +339,7 @@ function ProcedureSelectionSelectByName(name, callback, identifier)
 			var shortVersion = <?php echo $short_version?'true':'false'?>;
 
 			// append selection onto procedure list
-			$('#procedureList_'+identifier).children('h4').append(data);
+			$('#procedureList_'+identifier).find('#procedure_body').append(data);
 			$('#procedureList_'+identifier).show();
 
 			if (enableDurations) {
