@@ -37,14 +37,7 @@
 			e.stopPropagation();
 		};
 
-		var hideFormField = {
-			position: 'absolute',
-			top: -9999,
-			left: -9999,
-			visibility: 'hidden'
-		};
-
-		$(document).on('click', 'input[form],button[form]', function(e) {
+		function onSubmitClick(e) {
 
 			if (e.target.form || e.isDefaultPrevented() || !~$.inArray(e.target.type, ['image', 'submit'])) {
 				return;
@@ -59,7 +52,12 @@
 			var clone = $(e.target)
 				.clone()
 				.removeAttr('form')
-				.css(hideFormField)
+				.css({
+					position: 'absolute',
+					top: -9999,
+					left: -9999,
+					visibility: 'hidden'
+				})
 				.on('click', stopPropagation)
 				.appendTo(targetForm)
 				.trigger('click');
@@ -67,6 +65,8 @@
 			setTimeout(function(){
 				clone.remove();
 			}, 9);
-		});
+		}
+
+		$(document).on('click', 'input[form],button[form]', onSubmitClick);
 	})
 }(window.Modernizr, document));
