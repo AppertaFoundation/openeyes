@@ -53,60 +53,15 @@ class ProcedureController extends BaseController
 
 	public function actionDetails()
 	{
-		$list = Yii::app()->session['Procedures'];
-		$found = false;
-
-		if (!isset($_GET['short_version'])) {
-			$_GET['short_version'] = true;
-		}
-
-		if (!empty($_GET['name'])) {
-			if (!empty($list)) {
-				foreach ($list as $id => $procedure) {
-					if ($procedure['term'] == $_GET['name']) {
-						$data = $procedure;
-						$data['id'] = $id;
-
-						$found = true;
-
-						$this->renderPartial('_ajaxProcedure',array(
-							'data' => $data,
-							'durations' => @$_GET['durations'],
-							'short_version' => $_GET['short_version'],
-							'identifier' => @$_GET['identifier'],
-						), false, false);
-						break;
-					}
-				}
-			}
-
-			// if not in the session, check in the db
-			if (!$found) {
-				$procedure = Yii::app()->db->createCommand()
-					->select('*')
-					->from('proc')
-					->where('term=:term', array(':term'=>$_GET['name']))
-					->queryRow();
-				if (!empty($procedure)) {
-					$data = array(
-						'term' => $procedure['term'],
-						'short_format' => $procedure['short_format'],
-						'duration' => $procedure['default_duration'],
-					);
-					$list[$procedure['id']] = $data;
-
-					$data['id'] = $procedure['id'];
-
-					Yii::app()->session['Procedures'] = $list;
-
-					$this->renderPartial('_ajaxProcedure',array(
-						'data' => $data,
-						'durations' => @$_GET['durations'],
-						'short_version' => $_GET['short_version'],
-						'identifier' => @$_GET['identifier'],
-					), false, false);
-				}
-			}
+		if (!empty($_GET['name']) && ($proc = Procedure::model()->findByAttributes(array('term' => $_GET['name'])))) {
+			$this->renderPartial(
+				'_ajaxProcedure',
+				array(
+					'proc' => $proc,
+					'durations' => @$_GET['durations'],
+					'identifier' => @$_GET['identifier']
+				)
+			);
 		}
 	}
 
@@ -118,10 +73,6 @@ class ProcedureController extends BaseController
 			$criteria->join = 'LEFT JOIN proc_subspecialty_subsection_assignment pssa ON t.id = pssa.proc_id';
 			$criteria->compare('pssa.subspecialty_subsection_id', $_POST['subsection']);
 			$criteria->order = 'term asc';
-
-			if (!empty($_POST['existing'])) {
-				$criteria->addNotInCondition("CONCAT_WS(' - ', term, short_format)", $_POST['existing']);
-			}
 
 			$procedures = Procedure::model()->findAll($criteria);
 

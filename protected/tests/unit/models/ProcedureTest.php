@@ -30,96 +30,14 @@ class ProcedureTest extends CDbTestCase {
                        }
 
                        public function dataProvider_ProcedureSearch() {
-                                              $procedure1 = array(
-                                                                       1 => array(
-                                                                                                'term' => 'Foobar Procedure',
-                                                                                                'short_format' => 'FUB',
-                                                                                                'duration' => 60,
-                                                                       )
-                                              );
-                                              $procedure2 = array(
-                                                                       2 => array(
-                                                                                                'term' => 'Test Procedure',
-                                                                                                'short_format' => 'TP',
-                                                                                                'duration' => 20,
-                                                                       )
-                                              );
-
                                               return array(
-                                                                       array('Foo', array('Foobar Procedure'), $procedure1),
-                                                                       array('Foobar', array('Foobar Procedure'), $procedure1),
-                                                                       array('Fo', array('Foobar Procedure'), $procedure1),
-                                                                       array('Test', array('Test Procedure'), $procedure2),
-                                                                       array('Test Pro', array('Test Procedure'), $procedure2),
-                                                                       array('Te', array('Test Procedure'), $procedure2),
-                                              );
-                       }
-
-                       /**
-                        * Tears down the fixture, for example, closes a network connection.
-                        * This method is called after a test is executed.
-                        */
-                       protected function tearDown() {
-                                              
-                       }
-
-                       /**
-                        * @covers Procedure::model
-                        * @todo   Implement testModel().
-                        */
-                       public function testModel() {
-                                              $this->assertEquals('Procedure', get_class(Procedure::model()));
-                       }
-
-                       /**
-                        * @covers Procedure::tableName
-                        * @todo   Implement testTableName().
-                        */
-                       public function testTableName() {
-                                              $this->assertEquals('proc', $this->model->tableName());
-                       }
-
-                       /**
-                        * @covers Procedure::rules
-                        * @todo   Implement testRules().
-                        */
-                       public function testRules() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
-
-                       /**
-                        * @covers Procedure::relations
-                        * @todo   Implement testRelations().
-                        */
-                       public function testRelations() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
-
-                       /**
-                        * @covers Procedure::getComplications
-                        * @todo   Implement testGetComplications().
-                        */
-                       public function testGetComplications() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
-
-                       /**
-                        * @covers Procedure::getBenefits
-                        * @todo   Implement testGetBenefits().
-                        */
-                       public function testGetBenefits() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
+                                                                       array('Foo', array('Foobar Procedure')),
+                                                                       array('Foobar', array('Foobar Procedure')),
+                                                                       array('Fo', array('Foobar Procedure')),
+                                                                       array('Test', array('Test Procedure')),
+                                                                       array('Test Pro', array('Test Procedure')),
+                                                                       array('Te', array('Test Procedure')),
+																	   array('Pro', array('Foobar Procedure', 'Test Procedure')),
                                               );
                        }
 
@@ -150,28 +68,33 @@ class ProcedureTest extends CDbTestCase {
                        }
 
                        /**
-                        * @covers Procedure::getList
-                        * @todo   Implement testGetList().
-                        */
-                       public function testGetList() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
-
-                       /**
                         * @dataProvider dataProvider_ProcedureSearch
                         */
-                       public function testGetList_ValidTerms_ReturnsValidResults($term, $data, $session) {
-                                              Yii::app()->session['Procedures'] = null;
-                                              $this->assertNull(Yii::app()->session['Procedures']);
-
+                       public function testGetList_ValidTerms_ReturnsValidResults($term, $data) {
                                               $results = Procedure::getList($term);
-
                                               $this->assertEquals($data, $results);
-                                              $this->assertEquals($session, Yii::app()->session['Procedures']);
                        }
+
+                       public function testGetList_InvalidTerm_ReturnsEmptyResults() {
+                                              $results = Procedure::getList('Qux');
+                                              $this->assertEquals(array(), $results);
+                       }
+
+					   public function testGetList_RestrictBooked()
+					   {
+						   $this->assertEquals(
+							   array('Foobar Procedure'),
+							   Procedure::getList('Proc', 'booked')
+						   );
+					   }
+
+					   public function testGetList_RestrictUnbooked()
+					   {
+						   $this->assertEquals(
+							   array('Test Procedure'),
+							   Procedure::getList('Proc', 'unbooked')
+						   );
+					   }
 
                        /**
                         * @covers Procedure::getListBySubspecialty
@@ -182,51 +105,6 @@ class ProcedureTest extends CDbTestCase {
                                               $this->markTestIncomplete(
                                                         'This test has not been implemented yet.'
                                               );
-                       }
-
-                       public function testGetList_CalledTwice_AppendsSessionData() {
-
-                                              Yii::app()->session['Procedures'] = null;
-                                              $this->assertNull(Yii::app()->session['Procedures']);
-
-                                              $expected = array(
-                                                                       1 => array(
-                                                                                                'term' => 'Foobar Procedure',
-                                                                                                'short_format' => 'FUB',
-                                                                                                'duration' => 60,
-                                                                       ),
-                                                                       2 => array(
-                                                                                                'term' => 'Test Procedure',
-                                                                                                'short_format' => 'TP',
-                                                                                                'duration' => 20,
-                                                                       )
-                                              );
-
-                                              $results = Procedure::getList('Fo');
-                                              $this->assertEquals(array_slice($expected, 0, 1, true), Yii::app()->session['Procedures']);
-                                              $results = Procedure::getList('Te');
-                                              $this->assertEquals($expected, Yii::app()->session['Procedures']);
-                       }
-
-                       public function testGetList_InvalidTerm_ReturnsEmptyResults_SessionDataUnchanged() {
-                                              Yii::app()->session['Procedures'] = null;
-
-                                              $this->assertNull(Yii::app()->session['Procedures']);
-
-                                              $expected = array(
-                                                                       1 => array(
-                                                                                                'term' => 'Foobar Procedure',
-                                                                                                'short_format' => 'FUB',
-                                                                                                'duration' => 60,
-                                                                       )
-                                              );
-
-                                              $results = Procedure::getList('Fo');
-                                              $this->assertEquals($expected, Yii::app()->session['Procedures']);
-
-                                              $results = Procedure::getList('Qux');
-                                              $this->assertEquals(array(), $results);
-                                              $this->assertEquals($expected, Yii::app()->session['Procedures']);
                        }
 
 }

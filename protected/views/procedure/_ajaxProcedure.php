@@ -24,16 +24,13 @@
 	</span>
 	<span class="middle<?php if (!$durations) {?> noDuration<?php }?>">
 		<?php
-		echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $data['id']);
-		echo "<span>".$data['term'].'</span>';
-		if ($short_version) {
-			echo ' - <span>'.$data['short_format']."</span>";
-		}
+		echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $proc->id);
+		echo "<span>".$proc->term.'</span>';
 		?>
 	</span>
 	<?php if ($durations) {?>
 		<span class="right">
-			<?php echo $data['duration']?> mins
+			<?php echo $proc->default_duration?> mins
 		</span>
 	<?php }?>
 </div>

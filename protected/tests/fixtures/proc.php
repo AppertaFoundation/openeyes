@@ -22,10 +22,12 @@ return array(
 		'term' => 'Foobar Procedure',
 		'short_format' => 'FUB',
 		'default_duration' => 60,
+		'unbooked' => 0,
 	),
 	'procedure2' => array(
 		'term' => 'Test Procedure',
 		'short_format' => 'TP',
 		'default_duration' => 20,
+		'unbooked' => 1,
 	)
 );
