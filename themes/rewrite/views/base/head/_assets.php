@@ -7,7 +7,8 @@
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/libs/uri-1.10.2.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/waypoints.min.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/waypoints-sticky.min.js'))?>
-<?php $cs->registerScriptFile(Yii::app()->createUrl('js/libs/modernizr-2.0.6.min.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/vendor/modernizr.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/polyfills.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.printElement.min.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.hoverIntent.min.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.autosize.js'))?>
