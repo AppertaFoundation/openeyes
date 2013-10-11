@@ -31,7 +31,7 @@
 
 	// Event actions
 	$this->event_actions[] = EventAction::link('Save and Schedule later','#', null, array('name'=> 'scheduleLater', 'id' => 'et_save', 'class' => 'button small'));
-	$this->event_actions[] = EventAction::link('Save and Schedule now', '#', null,  array('name'=> 'scheduleNow','id' => 'et_save_and_schedule', 'class' => 'button secondary small'));
+	$this->event_actions[] = EventAction::link('Save and Schedule now', '#', array('level'=>'secondary'),  array('name'=> 'scheduleNow','id' => 'et_save_and_schedule', 'class' => 'button small'));
 
 	?>
 	<input type="hidden" name="schedule_now" id="schedule_now" value="0" />

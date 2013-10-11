@@ -1,4 +1,5 @@
-<?php /**
+<?php
+/**
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -15,22 +16,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
- ?>
-<section class="element <?php echo $element->elementType->class_name?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<header class="element-header">
-		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
-	</header>
-	<fieldset class="element-fields" id="editDiagnosis">
-	<?php echo $form->radioButtons($element, 'eye_id', 'eye')?>
-	<?php $form->widget('application.widgets.DiagnosisSelection',array(
-			'field' => 'disorder_id',
-			'element' => $element,
-			'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId))
-	));
-	?>
-	</fieldset>
-</section>
+
+echo CHtml::tag('option',
+	array('value'=>''),
+	CHtml::encode('Select a commonly used procedure'), true);
+foreach ($procedures as $procedure) {
+	echo CHtml::tag('option',
+		array('value'=>$procedure->id),
+		CHtml::encode($procedure->term), true);
+}

@@ -93,7 +93,6 @@
 		</fieldset>
 	</div>
 
-
 	<?php
 	$totalDuration = 0;
 	?>
@@ -107,7 +106,7 @@
 					<td>Actions</td>
 				</tr>
 				</thead>
-				<tbody>
+				<tbody id="procedure_body">
 
 				<?php
 				if (!empty($selected_procedures)) {
@@ -143,7 +142,7 @@
 					<td>
 						Calculated Total Duration:
 					</td>
-					<td>
+					<td id="projected_duration_procs">
 						<?php echo $totalDuration?> mins
 					</td>
 					<td>
@@ -168,8 +167,8 @@ function updateTotalDuration(identifier)
 {
 	// update total duration
 	var totalDuration = 0;
-	$('#procedureList_'+identifier).children('h4').children('div.procedureItem').map(function() {
-		$(this).children('span:last').map(function() {
+	$('#procedureList_'+identifier).find('#procedure_body').children('.procedureItem').map(function() {
+		$(this).find('#procedureItemDuration').map(function() {
 			totalDuration += parseInt($(this).html().match(/[0-9]+/));
 		});
 	});
@@ -182,14 +181,15 @@ function updateTotalDuration(identifier)
 }
 
 $('a.removeProcedure').die('click').live('click',function() {
-	var m = $(this).parent().parent().parent().parent().attr('id').match(/^procedureList_(.*?)$/);
+	var m = $(this).parent().parent().parent().parent().parent().attr('id').match(/^procedureList_(.*?)$/);
 	removeProcedure($(this),m[1]);
 	return false;
 });
 
 function removeProcedure(element, identifier)
 {
-	var len = element.parent().parent().parent().children('div').length;
+
+	var len = element.parent().parent().parent().children('tr').length;
 	var procedure_id = element.parent().parent().find('input[type="hidden"]:first').val();
 
 	element.parent().parent().remove();
@@ -340,7 +340,7 @@ function ProcedureSelectionSelectByName(name, callback, identifier)
 			var shortVersion = <?php echo $short_version?'true':'false'?>;
 
 			// append selection onto procedure list
-			$('#procedureList_'+identifier).children('h4').append(data);
+			$('#procedureList_'+identifier).find('#procedure_body').append(data);
 			$('#procedureList_'+identifier).show();
 
 			if (enableDurations) {
