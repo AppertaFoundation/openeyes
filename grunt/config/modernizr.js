@@ -18,6 +18,9 @@ module.exports = {
 		prefixes: false,
 		domprefixes: false
 	},
+	customTests: [
+		'grunt/config/modernizr/tests/*.js'
+	],
 	uglify: true,
 	parseFiles: false
 };
