@@ -22,6 +22,7 @@
 <head>
 	<?php $this->renderPartial('//base/head/_meta'); ?>
 	<?php $this->renderPartial('//base/head/_assets'); ?>
+	<?php $this->renderPartial('//patient/head/_assets'); ?>
 	<?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
 <body class="open-eyes">

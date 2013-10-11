@@ -149,6 +149,13 @@
 									<td>The patient summary template.</td>
 									<td><span class="complete">Complete</span></td>
 								</tr>
+								<tr>
+									<td>
+										<a href="patient-summary-add-episode-no-episodes.php">No episodes</a>
+									</td>
+									<td>The 'no episodes' page when trying to create a new episode from the patient summary.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
 								<tr class="heading">
 									<td colspan="3"><h3>Event modules</h3></td>
 								</tr>
