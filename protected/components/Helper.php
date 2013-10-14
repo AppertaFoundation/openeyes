@@ -191,4 +191,25 @@ class Helper
 			case 7: return 'Sunday';
 		}
 	}
+
+	/**
+	 * convert string of format n[units] to bytes
+	 * units can be one of B, KB, MB, GB, TB, PB, EB, ZB or YB (case-insensitive)
+	 *
+	 * @param $val
+	 * @return mixed
+	 */
+	public static function convertToBytes($val)
+	{
+		$units = array('B'=>0, 'KB'=>1, 'MB'=>2, 'GB'=>3, 'TB'=>4, 'PB'=>5, 'EB'=>6, 'ZB'=>7, 'YB'=>8);
+		$regexp = implode('|', array_keys($units));
+		if (intval($val) === $val) {
+			// no units, so simply return
+			return $val;
+		}
+
+		if (preg_match('/^([\d\.]+)(' . $regexp . ')$/', strtoupper($val), $matches)) {
+			return $matches[1] * pow(1024, $units[$matches[2]]);
+		}
+	}
 }
