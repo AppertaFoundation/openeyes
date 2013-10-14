@@ -1858,3 +1858,7 @@ a.profileLink strong { float: left; margin-left: 20px; margin-top: 3px; }
 #admin_data_sources ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
 #admin_data_sources ul li .column_checkbox { width: 16px; display: inline-block; }
 #admin_data_sources ul li .column_name { width: 808px; display: inline-block; }
+
+.allergy-status {
+	font-size: 15px;
+}

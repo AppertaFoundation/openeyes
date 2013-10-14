@@ -50,7 +50,7 @@
 				}
 			?>
 				<!-- FIXME: check these warnings display correctly -->
-				<span class="warning"><span><?php echo implode(' / ', $msgs); ?></span>
+				<span class="warning"><span><?php echo implode(', ', $msgs); ?></span>
 			<?php } ?>
 		</div>
 		<div class="large-6 small-6 columns text-right patient-summary-anchor">
