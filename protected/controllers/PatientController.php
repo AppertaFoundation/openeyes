@@ -661,8 +661,7 @@ class PatientController extends BaseController
 
 	/**
 	 * Add patient/allergy assignment
-	 * @param integer $patient_id
-	 * @param integer $allergy_id
+	 *
 	 * @throws Exception
 	 */
 	public function actionAddAllergy()
@@ -674,13 +673,19 @@ class PatientController extends BaseController
 			if (!$patient = Patient::model()->findByPk($patient_id)) {
 				throw new Exception('Patient not found: '.$patient_id);
 			}
-			if (!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
-				throw new Exception('Allergy ID required');
+			if (@$_POST['no_allergies']) {
+				$patient->setNoAllergies();
 			}
-			if (!$allergy = Allergy::model()->findByPk($allergy_id)) {
-				throw new Exception('Allergy not found: '.$allergy_id);
+			else  {
+				if (!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
+					throw new Exception('Allergy ID required');
+				}
+				if (!$allergy = Allergy::model()->findByPk($allergy_id)) {
+					throw new Exception('Allergy not found: '.$allergy_id);
+				}
+				$patient->addAllergy($allergy_id);
 			}
-			$patient->addAllergy($allergy_id);
+
 		}
 
 		$this->redirect(array('patient/view/'.$patient->id));
@@ -688,8 +693,7 @@ class PatientController extends BaseController
 
 	/**
 	 * Remove patient/allergy assignment
-	 * @param integer $patient_id
-	 * @param integer $allergy_id
+	 *
 	 * @throws Exception
 	 */
 	public function actionRemoveAllergy()

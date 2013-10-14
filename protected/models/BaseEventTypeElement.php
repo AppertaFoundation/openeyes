@@ -238,6 +238,7 @@ class BaseEventTypeElement extends BaseElement
 	/**
 	 * Returns a list of Exam Phrases to be used by the element form.
 	 *
+	 * @param $section
 	 * @return array
 	 */
 	public function getPhraseBySubspecialtyOptions($section)
@@ -312,5 +313,13 @@ class BaseEventTypeElement extends BaseElement
 
 	public function textWithLineBreaks($field) {
 		return str_replace("\n","<br/>",$this->$field);
+	}
+
+	/**
+	 * stub method to allow elements to carry out actions related to being a part of a soft deleted event
+	 */
+	public function softDelete()
+	{
+
 	}
 }
