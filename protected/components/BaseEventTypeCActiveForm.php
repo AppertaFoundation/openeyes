@@ -17,15 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class BaseEventTypeCActiveForm extends CActiveForm
+class BaseEventTypeCActiveForm extends FormLayout
 {
-	// The amount of columns for the labels and fields. These 'global' values will be merged
-	// into the widget options.
-	public $layoutColumns = array(
-		'label' => 2,
-		'field' => 10
-	);
-
 	public function dropDownList($model, $field, $data, $htmlOptions=array(), $hidden=false, $layoutColumns=array())
 	{
 		$this->widget('application.widgets.DropDownList', array(
@@ -33,8 +26,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'field' => $field,
 			'data' => $data,
 			'htmlOptions' => $htmlOptions,
-			'hidden' => $hidden,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
+			'hidden' => $hidden
 		));
 	}
 
@@ -45,7 +37,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'fields' => $fields,
 			'datas' => $datas,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -56,7 +47,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'options' => $options,
 			'selected_value' => $selected_value,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -74,7 +64,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'no_element' => $no_element,
 			'label_above' => $label_above,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -90,7 +79,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			),
 			'selected_item' => $element->$field,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -102,7 +90,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'field' => $field,
 			'options' => $options,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -119,7 +106,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $element,
 			'field' => $field,
 			'hidden' => $hidden,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		), $options));
 	}
 
@@ -130,8 +116,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'name' => get_class($element)."[$field]",
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
-			'links' => $links,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
+			'links' => $links
 		));
 	}
 
@@ -144,7 +129,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'name' => get_class($element)."[$field]",
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -160,7 +144,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'name' => $name,
 			'field' => null,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -170,7 +153,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $element,
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -180,7 +162,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $element,
 			'fields' => $fields,
 			'labeltext' => $labeltext,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -195,7 +176,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'default_options' => $default_options,
 			'htmlOptions' => $htmlOptions,
 			'hidden' => $hidden,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -206,7 +186,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'field' => $text_field,
 			'options' => $options,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -217,7 +196,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'field' => $text_field,
 			'options' => $options,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -228,7 +206,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'field' => $field,
 			'value' => $value,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -245,7 +222,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'remap_values' => @$options['remap'],
 			'null' => @$options['null'],
 			'append' => @$options['append'],
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -255,7 +231,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $element,
 			'field' => $field,
 			'data' => $data,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -264,7 +239,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			'element' => $element,
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
@@ -272,7 +246,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.FormActions', array(
 			'buttonOptions' => $buttonOptions,
 			'htmlOptions' => $htmlOptions,
-			'layoutColumns' => array_merge($this->layoutColumns, (array) $layoutColumns)
 		));
 	}
 
