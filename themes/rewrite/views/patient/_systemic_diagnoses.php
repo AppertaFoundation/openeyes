@@ -32,106 +32,105 @@
 
 	<div class="js-toggle-body">
 
-		<div class="data_row">
-			<table class="subtleWhite">
-				<thead>
+		<table class="plain patient-data">
+			<thead>
+			<tr>
+				<th width="85px">Date</th>
+				<th>Diagnosis</th>
+				<?php if (BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
+			</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($this->patient->systemicDiagnoses as $diagnosis) {?>
 				<tr>
-					<th width="85px">Date</th>
-					<th>Diagnosis</th>
-					<?php if (BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
+					<td><?php echo $diagnosis->dateText?></td>
+					<td><?php echo $diagnosis->eye ? $diagnosis->eye->adjective : ''?> <?php echo $diagnosis->disorder->term?></td>
+					<?php if (BaseController::checkUserLevel(4)) { ?>
+						<td><a href="#" class="small removeDiagnosis" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
+					<?php } ?>
 				</tr>
-				</thead>
-				<tbody>
-				<?php foreach ($this->patient->systemicDiagnoses as $diagnosis) {?>
-					<tr>
-						<td><?php echo $diagnosis->dateText?></td>
-						<td><?php echo $diagnosis->eye ? $diagnosis->eye->adjective : ''?> <?php echo $diagnosis->disorder->term?></td>
-						<?php if (BaseController::checkUserLevel(4)) { ?>
-							<td><a href="#" class="small removeDiagnosis" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
-						<?php } ?>
-					</tr>
-				<?php }?>
-				</tbody>
-			</table>
+			<?php }?>
+			</tbody>
+		</table>
 
-			<?php if (BaseController::checkUserLevel(4)) { ?>
-				<form>
-					<div class="box-actions">
-						<button id="btn-add_new_systemic_diagnosis" class="secondary small">
-							Add Systemic Diagnosis
-						</button>
-					</div>
-				</form>
+		<?php if (BaseController::checkUserLevel(4)) { ?>
+			<form>
+				<div class="box-actions">
+					<button id="btn-add_new_systemic_diagnosis" class="secondary small">
+						Add Systemic Diagnosis
+					</button>
+				</div>
+			</form>
 
+			<div id="add_new_systemic_diagnosis" style="display: none;">
 
+				<?php
+				$form = $this->beginWidget('FormLayout', array(
+						'id'=>'add-systemic-diagnosis',
+						'enableAjaxValidation'=>false,
+						'action'=>array('patient/adddiagnosis'),
+						'layoutColumns'=>array(
+							'label' => 3,
+							'field' => 9
+						),
+						'htmlOptions'=>array(
+							'class' => 'form add-data'
+						)
+					))?>
 
+				<fieldset class="field-row">
 
-				<div id="add_new_systemic_diagnosis" style="display: none;">
+					<legend><strong>Add Systemic diagnosis</strong></legend>
 
-
-					<?php
-					$form = $this->beginWidget('CActiveForm', array(
-							'id'=>'add-systemic-diagnosis',
-							'enableAjaxValidation'=>false,
-							'htmlOptions' => array('class'=>'sliding form add-data'),
-							'action'=>array('patient/adddiagnosis'),
+					<?php $form->widget('application.widgets.DiagnosisSelection',array(
+							'field' => 'systemic_disorder_id',
+							'label' => 'Diagnosis',
+							'options' => CommonSystemicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+							'restrict' => 'systemic',
+							'default' => false,
+							'loader' => 'add_systemic_diagnosis_loader',
 						))?>
 
-					<fieldset class="field-row">
-
-						<legend><strong>Add Systemic diagnosis</strong></legend>
-
-
-						<?php $form->widget('application.widgets.DiagnosisSelection',array(
-								'field' => 'systemic_disorder_id',
-								'options' => CommonSystemicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-								'restrict' => 'systemic',
-								'default' => false,
-								'layout' => 'patientSummary',
-								'loader' => 'add_systemic_diagnosis_loader',
-							))?>
-
-						<div id="add_systemic_diagnosis_loader" style="display: none;">
-							<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
-							<div>
+					<div class="row field-row hide" id="dd_systemic_diagnosis_loader">
+						<p class="large-offset-<?php echo $form->layoutColumns['label'];?> large-<?php echo $form->layoutColumns['field'];?> column end">
+							<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
 								searching...
-							</div>
+						</p>
+					</div>
+
+					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+
+					<fieldset class="diagnosis_eye row field-row">
+						<legend class="large-<?php echo $form->layoutColumns['label'];?> column">
+							Eye:
+						</legend>
+						<div class="large-<?php echo $form->layoutColumns['field'];?> column end">
+							<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $i => $eye) {?>
+								<label class="inline"><input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?></label>
+							<?php }?>
 						</div>
-
-						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-
-						<fieldset class="diagnosis_eye row field-row">
-							<legend class="large-3 column">
-								Eye:
-							</legend>
-							<div class="large-7 column end">
-								<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $i => $eye) {?>
-									<label class="inline"><input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?></label>
-								<?php }?>
-							</div>
-						</fieldset>
-
-						<?php $this->renderPartial('_fuzzy_date')?>
-						<div class="systemic_diagnoses_form_errors"></div>
-
-						<div align="right">
-							<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader" style="display: none;" />
-							<div class="buttons">
-								<button type="submit" class="secondary small btn_save_systemic_diagnosis">
-									Save
-								</button>
-								<button class="warning small btn_cancel_systemic_diagnosis">
-									Cancel
-								</button>
-							</div>
-						</div>
-
 					</fieldset>
-					<?php $this->endWidget()?>
 
-				</div>
-			<?php } ?>
-		</div>
+
+					<?php $this->renderPartial('_fuzzy_date', array('form'=>$form))?>
+
+					<div class="systemic_diagnoses_form_errors alert-box alert hide"></div>
+
+					<div class="buttons">
+						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader hide" />
+						<button type="submit" class="secondary small btn_save_systemic_diagnosis">
+							Save
+						</button>
+						<button class="warning small btn_cancel_systemic_diagnosis">
+							Cancel
+						</button>
+					</div>
+
+				</fieldset>
+				<?php $this->endWidget()?>
+
+			</div>
+		<?php } ?>
 	</div>
 
 </section>
@@ -140,14 +139,12 @@
 		$('#btn-add_new_systemic_diagnosis').click(function() {
 			$('#add_new_systemic_diagnosis').slideToggle('fast');
 			$('#btn-add_new_systemic_diagnosis').attr('disabled',true);
-			$('#btn-add_new_systemic_diagnosis').removeClass('green').addClass('disabled');
-			$('#btn-add_new_systemic_diagnosis span').removeClass('button-span-green').addClass('button-span-disabled');
+			$('#btn-add_new_systemic_diagnosis').addClass('disabled');
 		});
 		$('button.btn_cancel_systemic_diagnosis').click(function() {
 			$('#add_new_systemic_diagnosis').slideToggle('fast');
 			$('#btn-add_new_systemic_diagnosis').attr('disabled',false);
-			$('#btn-add_new_systemic_diagnosis').removeClass('disabled').addClass('green');
-			$('#btn-add_new_systemic_diagnosis span').removeClass('button-span-disabled').addClass('button-span-green');
+			$('#btn-add_new_systemic_diagnosis').removeClass('disabled');
 			return false;
 		});
 		$('button.btn_save_systemic_diagnosis').click(function() {
@@ -157,14 +154,14 @@
 				'url': baseUrl+'/patient/validateadddiagnosis',
 				'data': $('#add-systemic-diagnosis').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 				'success': function(data) {
-					$('div.systemic_diagnoses_form_errors').html('');
+					$('div.systemic_diagnoses_form_errors').html('').hide();
 					if (data.length == 0) {
 						$('img.add_systemic_diagnosis_loader').show();
 						$('#add-systemic-diagnosis').submit();
 						return true;
 					} else {
 						for (var i in data) {
-							$('div.systemic_diagnoses_form_errors').append('<div class="errorMessage">'+data[i]+'</div>');
+							$('div.systemic_diagnoses_form_errors').show().append('<div>'+data[i]+'</div>');
 						}
 					}
 				}

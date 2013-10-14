@@ -87,7 +87,6 @@
 							'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
 							'code' => 130,
 							'default' => false,
-							'layout' => 'patientSummary',
 							'loader' => 'add_ophthalmic_diagnosis_loader',
 						))?>
 
@@ -157,12 +156,12 @@
 		$('#btn-add_new_ophthalmic_diagnosis').click(function() {
 			$('#add_new_ophthalmic_diagnosis').slideToggle('fast');
 			$('#btn-add_new_ophthalmic_diagnosis').attr('disabled',true);
+			$('#btn-add_new_ophthalmic_diagnosis').addClass('disabled');
 		});
 		$('button.btn_cancel_ophthalmic_diagnosis').click(function() {
 			$('#add_new_ophthalmic_diagnosis').slideToggle('fast');
 			$('#btn-add_new_ophthalmic_diagnosis').attr('disabled',false);
-			$('#btn-add_new_ophthalmic_diagnosis').removeClass('disabled').addClass('green');
-			$('#btn-add_new_ophthalmic_diagnosis span').removeClass('button-span-disabled').addClass('button-span-green');
+			$('#btn-add_new_ophthalmic_diagnosis').removeClass('disabled');
 			return false;
 		});
 		$('button.btn_save_ophthalmic_diagnosis').click(function() {

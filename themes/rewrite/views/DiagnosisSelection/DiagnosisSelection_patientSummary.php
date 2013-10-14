@@ -24,9 +24,11 @@
 		</label>
 	</div>
 	<div class="large-<?php echo $layoutColumns['field'];?> column end">
+
 		<!-- Here we show the selected diagnosis -->
 		<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText" class="field-row hide">
 		</div>
+
 		<div class="field-row">
 			<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
 		</div>
