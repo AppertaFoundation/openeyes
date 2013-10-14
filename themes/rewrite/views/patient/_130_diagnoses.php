@@ -101,10 +101,10 @@
 						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
 						<fieldset class="diagnosis_eye row field-row">
-							<legend class="large-<?php echo $form->layoutColumns['label'];?> column">
+							<legend class="<?php echo $form->columns('label');?>">
 								Eye:
 							</legend>
-							<div class="large-<?php echo $form->layoutColumns['field'];?> column end">
+							<div class="<?php echo $form->columns('field');?>">
 								<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $i => $eye) {?>
 									<label class="inline">
 										<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?>

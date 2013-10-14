@@ -26,8 +26,34 @@ class FormLayout extends CActiveForm
 		'field' => 10
 	);
 
-	// We override this method so we can pass through the layoutColumns from the 'form'
-	// into the widget.
+	/**
+	 * Generates a CSS class that is used for the layout columns.
+	 * @param  mixed $key The column key ('label', or 'field') or column value (integer).
+	 * @return string      The CSS class.
+	 */
+	public function columns($key='label', $end=false) {
+
+		if (is_int($key)) {
+			$className = 'large-'.(string)$key.' column';
+		} else {
+			$className = 'large-'.$this->layoutColumns[$key].' column';
+		}
+
+		if ($key === 'field') {
+			$end = true;
+		}
+
+		if ($end) {
+			$className .= ' end';
+		}
+
+		return $className;
+	}
+
+	/**
+	 * We override this method so we can pass through the layoutColumns from the 'form'
+	 * into the widget.
+	 */
 	public function widget($className,$properties=array(),$captureOutput=false){
 		$properties = array_merge((array) $properties, array('layoutColumns' => $this->layoutColumns));
 		return parent::widget($className,$properties,$captureOutput);

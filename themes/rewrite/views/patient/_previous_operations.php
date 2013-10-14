@@ -82,28 +82,28 @@
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
 					<div class="field-row row">
-						<div class="large-<?php echo $form->layoutColumns['label'];?> column">
+						<div class="<?php echo $form->columns('label');?>">
 							<label for="">Common operations:</label>
 						</div>
-						<div class="large-<?php echo $form->layoutColumns['field'];?> column end">
-							<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
+						<div class="<?php echo $form->columns('field');?>">
+							<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
 
 					<div class="field-row row">
-						<div class="large-<?php echo $form->layoutColumns['label'];?> column">
+						<div class="<?php echo $form->columns('label');?>">
 							<label for="">Operation:</label>
 						</div>
-						<div class="large-<?php echo $form->layoutColumns['field'];?> column end">
+						<div class="<?php echo $form->columns('field');?>">
 							<?php echo CHtml::textField('previous_operation','')?>
 						</div>
 					</div>
 
 					<fieldset class="row field-row">
-						<legend class="large-<?php echo $form->layoutColumns['label'];?> column">
+						<legend class="<?php echo $form->columns('label');?>">
 							Side:
 						</legend>
-						<div class="large-<?php echo $form->layoutColumns['field'];?> column end">
+						<div class="<?php echo $form->columns('field');?>">
 							<label class="inline">
 								<input type="radio" name="previous_operation_side" class="previous_operation_side" value="" checked="checked" /> None
 							</label>
