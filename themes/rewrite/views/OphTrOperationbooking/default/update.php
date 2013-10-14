@@ -31,7 +31,7 @@
 		));
 
 		// Event actions
-		$this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'et_save', 'colour' => 'green'));
+		$this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'et_save', 'level'=>'secondary'), array('class'=>'button small'));
 
 	?>
 	<?php  $this->displayErrors($errors)?>
