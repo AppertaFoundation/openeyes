@@ -74,7 +74,7 @@
 </div>
 <script type="text/javascript">
 	$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').html($('option:selected', this).text());
+		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').html('<strong>' + $('option:selected', this).text() + '</strong>');
 		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').show();
 		$('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
 	});

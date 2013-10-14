@@ -87,6 +87,7 @@
 							'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
 							'code' => 130,
 							'default' => false,
+							'layout' => 'patientSummary',
 							'loader' => 'add_ophthalmic_diagnosis_loader',
 						))?>
 

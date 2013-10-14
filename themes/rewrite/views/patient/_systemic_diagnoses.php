@@ -35,7 +35,7 @@
 		<table class="plain patient-data">
 			<thead>
 			<tr>
-				<th width="85px">Date</th>
+				<th>Date</th>
 				<th>Diagnosis</th>
 				<?php if (BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
 			</tr>
@@ -46,7 +46,7 @@
 					<td><?php echo $diagnosis->dateText?></td>
 					<td><?php echo $diagnosis->eye ? $diagnosis->eye->adjective : ''?> <?php echo $diagnosis->disorder->term?></td>
 					<?php if (BaseController::checkUserLevel(4)) { ?>
-						<td><a href="#" class="small removeDiagnosis" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
+						<td><a href="#" class="removeDiagnosis" rel="<?php echo $diagnosis->id?>">Remove</a></td>
 					<?php } ?>
 				</tr>
 			<?php }?>
@@ -88,10 +88,11 @@
 							'options' => CommonSystemicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
 							'restrict' => 'systemic',
 							'default' => false,
+							'layout' => 'patientSummary',
 							'loader' => 'add_systemic_diagnosis_loader',
 						))?>
 
-					<div class="row field-row hide" id="dd_systemic_diagnosis_loader">
+					<div class="row field-row hide" id="add_systemic_diagnosis_loader">
 						<p class="large-offset-<?php echo $form->layoutColumns['label'];?> large-<?php echo $form->layoutColumns['field'];?> column end">
 							<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
 								searching...
