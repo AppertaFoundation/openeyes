@@ -38,7 +38,7 @@
 			<tr>
 				<th>Date</th>
 				<th>Diagnosis</th>
-				<?php if (BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
+				<?php if (BaseController::checkUserLevel(4)) { ?><th>Actions</th><?php } ?>
 			</tr>
 			</thead>
 			<tbody>
@@ -47,7 +47,7 @@
 					<td><?php echo $diagnosis->dateText?></td>
 					<td><?php echo $diagnosis->eye->adjective?> <?php echo $diagnosis->disorder->term?></td>
 					<?php if (BaseController::checkUserLevel(4)) { ?>
-						<td><a href="#" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
+						<td><a href="#" class="removeDiagnosis" rel="<?php echo $diagnosis->id?>">Remove</a></td>
 					<?php } ?>
 				</tr>
 			<?php }?>
@@ -70,7 +70,7 @@
 					'action'=>array('patient/adddiagnosis'),
 					'layoutColumns'=>array(
 						'label' => 3,
-						'field' => 7
+						'field' => 9
 					),
 					'htmlOptions'=>array(
 						'class' => 'form add-data'
@@ -137,7 +137,7 @@
 	<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
 		<div>
 			<div id="delete_diagnosis">
-				<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
+				<div class="alert-box alert">
 					<strong>WARNING: This will remove the diagnosis from the patient record.</strong>
 				</div>
 				<p>
@@ -145,9 +145,9 @@
 				</p>
 				<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
 					<input type="hidden" id="diagnosis_id" value="" />
-					<button type="submit" class="classy red venti btn_remove_diagnosis"><span class="button-span button-span-red">Remove diagnosis</span></button>
-					<button type="submit" class="classy green venti btn_cancel_remove_diagnosis"><span class="button-span button-span-green">Cancel</span></button>
-					<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+					<button type="submit" class="warning btn_remove_diagnosis">Remove diagnosis</button>
+					<button type="submit" class="secondary btn_cancel_remove_diagnosis">Cancel</button>
+					<img class="loader hide" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
 				</div>
 			</div>
 		</div>
@@ -166,14 +166,13 @@
 			return false;
 		});
 		$('button.btn_save_ophthalmic_diagnosis').click(function() {
-			console.log($('#add-ophthalmic-diagnosis').serialize());
 			$.ajax({
 				'type': 'POST',
 				'dataType': 'json',
 				'url': baseUrl+'/patient/validateadddiagnosis',
 				'data': $('#add-ophthalmic-diagnosis').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 				'success': function(data) {
-					$('div.ophthalmic_diagnoses_form_errors').html('');
+					$('div.ophthalmic_diagnoses_form_errors').hide();
 					if (data.length == 0) {
 						$('img.add_ophthalmic_diagnosis_loader').show();
 						$('#add-ophthalmic-diagnosis').submit();

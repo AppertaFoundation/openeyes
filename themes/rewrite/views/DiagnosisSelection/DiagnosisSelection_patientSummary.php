@@ -18,14 +18,15 @@
  */
 ?>
 <div class="row field-row" id="editDiagnosis">
-	<div
-		id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText"
-		class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+	<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
 		<label for="<?php echo "{$class}_{$field}";?>">
-			<?php echo $label?>
+			<?php echo $label?>:
 		</label>
 	</div>
 	<div class="large-<?php echo $layoutColumns['field'];?> column end">
+		<!-- Here we show the selected diagnosis -->
+		<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText" class="field-row hide">
+		</div>
 		<div class="field-row">
 			<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
 		</div>
@@ -52,7 +53,7 @@
 							'minLength'=>'3',
 							'select' => "js:function(event, ui) {
 								$('#".$class."_".$field."_0').val('');
-								$('#".$class."_".$field."_enteredDiagnosisText h4').html(ui.item.value);
+								$('#".$class."_".$field."_enteredDiagnosisText').html('<strong>' + ui.item.value + '</strong>');
 								$('#".$class."_".$field."_enteredDiagnosisText').show();
 								$('input[id=".$class."_".$field."_savedDiagnosis]').val(ui.item.id);
 								$('#".$class."_".$field."').focus();
@@ -71,8 +72,8 @@
 </div>
 <script type="text/javascript">
 	$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText h4').html($('option:selected', this).text());
-		$('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
+		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').html($('option:selected', this).text());
 		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').show();
+		$('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
 	});
 </script>
