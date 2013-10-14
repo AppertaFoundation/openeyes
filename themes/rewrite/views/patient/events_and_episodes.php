@@ -17,6 +17,37 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php
+
+$noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1);
+
+?>
+	<h1 class="badge">Episodes and events</h1>
+<?php
+
+if($noEpisodesFound && BaseController::checkUserLevel(4))
+{
+?>
+
+	<div class="row">
+		<div class="large-8 large-centered column">
+			<div class="box content">
+				<div class="panel">
+					<div class="alert-box alert with-icon">There are currently no episodes for this patient, please click the Add episode button to open a new episode.</div>
+					<button class="small addEpisode">
+						Add episode
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<?php
+}
+else{ ?>
+
+
+
 <div class="box content">
 	<div class="row">
 
@@ -28,7 +59,7 @@
 		<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes, 'supportserviceepisodes'=>$supportserviceepisodes))?>
 
 		<div class="large-10 column event">
-			<?php $this->renderPartial('//patient/event_tabs',array('hidden'=>(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
+			<?php $this->renderPartial('//patient/event_tabs',array())?>
 
 			<!-- EVENT CONTENT HERE -->
 			<div class="event-content">
@@ -48,3 +79,4 @@
 				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
+<?php }	?>

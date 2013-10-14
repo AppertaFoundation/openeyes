@@ -37,9 +37,4 @@
 
 	</header>
 
-<?php if ($hidden && BaseController::checkUserLevel(4)) {?>
-	<div>
-		<button class="classy blue mini addEpisode" type="button"><span class="button-span button-span-blue">Add episode</span></button>
-	</div>
-<?php }?>
 
