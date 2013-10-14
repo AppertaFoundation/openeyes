@@ -16,25 +16,32 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+/*
 ?>
+<div class="extraSummary">
+	This is the extra episode summary detail page for Medical Retinal.
+	<br />
+	<br />
+	As an example it includes the exampleSummary widget.
+	<br />
+	<?php $this->widget('application.components.summaryWidgets.ExampleSummary', array(
+		 'episode_id' => $episode->id
+	)); ?>
+	<br />
+	<br />
+	And a link to view the exampleSummary widget on a different page:
+	<br />
+	<?php
 
-	<header class="event-header">
-		<ul class="inline-list tabs event-actions">
-			<?php foreach ($this->event_tabs as $tab) { ?>
-			<li<?php if (@$tab['active']) { ?> class="selected"<?php } ?>>
-				<?php if (@$tab['href']) { ?>
-					<a href="<?php echo $tab['href'] ?>"><?php echo $tab['label'] ?></a>
-				<?php } else { //FIXME: don't select?>
-					<a href="#"><?php echo $tab['label'] ?></a>
-				<?php } ?>
-			</li>
-			<?php } ?>
-		</ul>
-		<?php
-		// Event actions
-		$this->renderPartial('//patient/event_actions');
-		?>
-
-	</header>
-
-
+	echo CHtml::link(
+		'exampleSummary',
+		Yii::app()->createUrl('clinical/summary', array(
+			'id' => $episode->id,
+			'summary' => 'ExampleSummary'
+		))
+	);
+?>
+</div>
+*/
+?>

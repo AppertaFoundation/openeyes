@@ -18,6 +18,8 @@
  */
 ?>
 
+<aside class="large-2 column sidebar episodes-and-events">
+
 <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && BaseController::checkUserLevel(4)) {?>
 	<button class="secondary small add-episode" type="button">
 		<span class="icon-button-small-plus-sign"></span>Add Episode
@@ -145,6 +147,7 @@ if (is_array($ordered_episodes))
 */?>
 
 			</section>
+
 <?php /* FIXME:
 			<div class="episode_details hidden" id="episode-details-<?php echo $episode->id ?>">
 				<div class="row"><span class="label">Start date:</span><?php echo $episode->NHSDate('start_date'); ?></div>
@@ -158,8 +161,9 @@ if (is_array($ordered_episodes))
 			</div>
 */?>
 		<?php } ?>
+		</div>
 	<?php } ?>
-</div>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('.quicklook').each(function() {
@@ -173,3 +177,4 @@ if (is_array($ordered_episodes))
 		});
 	});
 </script>
+	</aside>

@@ -17,31 +17,52 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-		<h2>Episodes &amp; Events</h2>
-		<div class="fullWidth fullBox clearfix">
-			<?php if ($this->patient->isDeceased()) {?>
-				<div id="deceased-notice" class="alertBox">
-					This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
-				</div>
-			<?php }?>
-			<?php $this->renderPartial('episodes_sidebar',array('ordered_episodes' => $ordered_episodes, 'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes,'supportserviceepisodes'=>$supportserviceepisodes))?>
-			<div id="event_display">
-				<?php
-				if (count($episodes) <1 && count($supportserviceepisodes) <1) {?>
-					<div class="alertBox fullWidthEvent" style="margin-top: 10px;">
-						There are currently no episodes for this patient, please click the Add episode button to open a new episode.
-					</div>
-				<?php } else if (!@$current_episode) {?>
-					<div class="alertBox fullWidthEvent">
-						There is no open episode for the current firm's subspecialty.
-					</div>
-				<?php }?>
-				<?php $this->renderPartial('event_tabs',array('hidden'=>(boolean) (count($episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
+<?php
 
-				<!-- EVENT CONTENT HERE -->
-				<?php if (is_object($this->event) || ((count($episodes) >0 || count($supportserviceepisodes) >0 || count($legacyepisodes) >0) && @$current_episode)) {?>
-					<div id="event_content" class="watermarkBox clearfix">
-				<?php }?>
+$noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1);
+
+?>
+	<h1 class="badge">Episodes and events</h1>
+<?php
+
+if($noEpisodesFound && BaseController::checkUserLevel(4))
+{
+?>
+
+	<div class="row">
+		<div class="large-8 large-centered column">
+			<div class="box content">
+				<div class="panel">
+					<div class="alert-box alert with-icon">There are currently no episodes for this patient, please click the Add episode button to open a new episode.</div>
+					<button class="small addEpisode">
+						Add episode
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<?php
+}
+else{ ?>
+
+
+
+<div class="box content">
+	<div class="row">
+
+		<?php if ($this->patient->isDeceased()) {?>
+			<div id="deceased-notice" class="alertBox">
+				This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
+			</div>
+		<?php }?>
+		<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes, 'supportserviceepisodes'=>$supportserviceepisodes))?>
+
+		<div class="large-10 column event">
+			<?php $this->renderPartial('//patient/event_tabs',array())?>
+
+			<!-- EVENT CONTENT HERE -->
+			<div class="event-content">
 					<?php
 					if ($current_episode) {
 						if ($this->editing) {
@@ -58,3 +79,4 @@
 				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
+<?php }	?>

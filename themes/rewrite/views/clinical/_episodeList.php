@@ -16,25 +16,28 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
 
-	<header class="event-header">
-		<ul class="inline-list tabs event-actions">
-			<?php foreach ($this->event_tabs as $tab) { ?>
-			<li<?php if (@$tab['active']) { ?> class="selected"<?php } ?>>
-				<?php if (@$tab['href']) { ?>
-					<a href="<?php echo $tab['href'] ?>"><?php echo $tab['label'] ?></a>
-				<?php } else { //FIXME: don't select?>
-					<a href="#"><?php echo $tab['label'] ?></a>
-				<?php } ?>
-			</li>
-			<?php } ?>
-		</ul>
-		<?php
-		// Event actions
-		$this->renderPartial('//patient/event_actions');
-		?>
-
-	</header>
-
-
+if (empty($episodes)) {
+	echo 'No episodes.';
+} else {
+	foreach ($episodes as $episode) { ?>
+<div class="episode">
+	<div class="title">
+		<input type="hidden" name="episode-id" value="<?php echo $episode->id; ?>" />
+		<span class="date"><?php echo $episode->NHSDate('start_date'); ?></span> - <?php
+		echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name); ?></div>
+	<ul class="events">
+<?php
+		foreach ($episode->events as $event) { ?>
+		<li><?php
+		$text = '<span class="type">' . ucfirst($event->eventType->name) .
+			'</span><span class="date"> ' . $event->NHSDate('created_date') .
+			'</span>';
+		echo CHtml::link($text, array('clinical/view', 'id'=>$event->id));
+		} ?>
+	</ul>
+	<div class="footer"></div>
+</div>
+<?php
+	}
+}
