@@ -18,6 +18,8 @@
  */
 ?>
 
+<aside class="large-2 column sidebar episodes-and-events">
+
 <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && BaseController::checkUserLevel(4)) {?>
 	<button class="secondary small add-episode" type="button">
 		<span class="icon-button-small-plus-sign"></span>Add Episode
@@ -173,3 +175,4 @@ if (is_array($ordered_episodes))
 		});
 	});
 </script>
+	</aside>

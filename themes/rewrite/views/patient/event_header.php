@@ -31,14 +31,14 @@ $this->renderPartial('//layouts/patientMode/event_header');
 
 <div class="box content">
 	<div class="row">
-		<aside class="large-2 column sidebar episodes-and-events">
+
 			<?php if ($this->patient->isDeceased()) {?>
 				<div id="deceased-notice" class="alertBox">
 					This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
 				</div>
 			<?php }?>
 			<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes, 'supportserviceepisodes'=>$supportserviceepisodes))?>
-			</aside>
+
 		<div class="large-10 column event">
 				<?php $this->renderPartial('//patient/event_tabs',array('hidden'=>(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
 
