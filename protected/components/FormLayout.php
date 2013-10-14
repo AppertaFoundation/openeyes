@@ -28,14 +28,22 @@ class FormLayout extends CActiveForm
 
 	/**
 	 * Generates a CSS class that is used for the layout columns.
-	 * @param  string $key The column key ('label', or 'field')
+	 * @param  mixed $key The column key ('label', or 'field') or column value (integer).
 	 * @return string      The CSS class.
 	 */
-	public function columns($key='label') {
+	public function columns($key='label', $end=false) {
 
-		$className = 'large-'.$this->layoutColumns[$key].' column';
+		if (is_int($key)) {
+			$className = 'large-'.(string)$key.' column';
+		} else {
+			$className = 'large-'.$this->layoutColumns[$key].' column';
+		}
 
 		if ($key === 'field') {
+			$end = true;
+		}
+
+		if ($end) {
 			$className .= ' end';
 		}
 
