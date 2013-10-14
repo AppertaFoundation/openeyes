@@ -17,7 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php // FIXME:?>
 <section class="box patient-info associated-data js-toggle-container">
 	<header class="box-header">
 		<h3 class="box-title">
@@ -31,79 +30,76 @@
 		</a>
 	</header>
 	<div class="js-toggle-body">
-		<table class="subtleWhite" id="currentAllergies">
+		<table class="plain patient-data" id="currentAllergies">
 			<thead>
 			<tr>
 				<th width="80%">Allergies</th>
-				<?php if (BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
+				<?php if (BaseController::checkUserLevel(4)) { ?><th>Actions</th><?php } ?>
 			</tr>
 			</thead>
 			<tbody>
-			<?php foreach ($this->patient->allergies as $allergy) { ?>
-				<tr data-allergy-id="<?php echo $allergy->id ?>" data-allergy-name="<?php echo $allergy->name ?>">
-					<td><?php echo $allergy->name ?></td>
-					<?php if (BaseController::checkUserLevel(4)) { ?>
-					<td><a href="#" rel="<?php echo $allergy->id?>" class="small removeAllergy"><strong>Remove</strong>
-							<?php } ?>
-						</a></td>
-				</tr>
-			<?php } ?>
+				<?php foreach ($this->patient->allergies as $allergy) { ?>
+					<tr data-allergy-id="<?php echo $allergy->id ?>" data-allergy-name="<?php echo $allergy->name ?>">
+						<td><?php echo $allergy->name ?></td>
+						<?php if (BaseController::checkUserLevel(4)) { ?>
+						<td>
+							<a href="#" rel="<?php echo $allergy->id?>" class="small removeAllergy"><strong>Remove</strong>
+								<?php } ?>
+							</a>
+						</td>
+					</tr>
+				<?php } ?>
 			</tbody>
 		</table>
 
 		<?php if (BaseController::checkUserLevel(4)) { ?>
-			<div align="center" style="margin-top:10px;">
-				<form>
-					<div class="box-actions">
-						<button id="btn-add_allergy" class="secondary small">
-							Add Allergy
-						</button>
-					</div>
-				</form>
+
+			<div class="box-actions">
+				<button id="btn-add_allergy" class="secondary small">
+					Add Allergy
+				</button>
 			</div>
 
-
 			<div id="add_allergy" style="display: none;">
-				<form class="form add-data">
-					<fieldset class="field-row">
-						<legend><strong>Add allergy</strong></legend>
+				<fieldset class="field-row">
+					<legend><strong>Add allergy</strong></legend>
 
-						<?php
-						$form = $this->beginWidget('CActiveForm', array(
-								'id'=>'add-allergy',
-								'enableAjaxValidation'=>false,
-								'htmlOptions' => array('class'=>'sliding'),
-								'action'=>array('patient/addAllergy'),
-							))?>
+					<?php
+					$form = $this->beginWidget('FormLayout', array(
+						'id'=>'add-allergy',
+						'enableAjaxValidation'=>false,
+						'htmlOptions' => array('class'=>'form add-data'),
+						'action'=>array('patient/addAllergy'),
+						'layoutColumns'=>array(
+							'label' => 3,
+							'field' => 9
+						),
+					))?>
 
-						<input type="hidden" name="edit_allergy_id" id="edit_allergy_id" value="" />
-						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+					<input type="hidden" name="edit_allergy_id" id="edit_allergy_id" value="" />
+					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-						<div class="field-row row">
-							<div class="large-3 column">
-								<label for="">Allergy:</label>
-							</div>
-							<div class="large-7 column end">
-								<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'))?>
-							</div>
+					<div class="field-row row">
+						<div class="<?php echo $form->columns('label');?>">
+							<label for="allergy_id">Allergy:</label>
 						</div>
-
-						<div align="right">
-							<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_allergy_loader" style="display: none;" />
-							<div class="buttons">
-								<button type="submit" class="secondary small btn_save_allergy">
-									Save
-								</button>
-								<button class="warning small btn_cancel_previous_operation btn_cancel_allergy">
-									Cancel
-								</button>
-							</div>
+						<div class="<?php echo $form->columns('field');?>">
+							<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'))?>
 						</div>
+					</div>
 
-						<?php $this->endWidget()?>
-					</fieldset>
-				</form>
+					<div class="buttons">
+						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_allergy_loader" style="display: none;" />
+						<button type="submit" class="secondary small btn_save_allergy">
+							Save
+						</button>
+						<button class="warning small btn_cancel_previous_operation btn_cancel_allergy">
+							Cancel
+						</button>
+					</div>
 
+					<?php $this->endWidget()?>
+				</fieldset>
 			</div>
 		<?php }?>
 	</div>
@@ -136,14 +132,12 @@
 			$('div.familyHistory #comments').val('');
 			$('#add_allergy').slideToggle('fast');
 			$('#btn-add_allergy').attr('disabled',true);
-			$('#btn-add_allergy').removeClass('green').addClass('disabled');
-			$('#btn-add_allergy span').removeClass('button-span-green').addClass('button-span-disabled');
+			$('#btn-add_allergy').addClass('disabled');
 		});
 		$('button.btn_cancel_allergy').click(function() {
 			$('#add_allergy').slideToggle('fast');
 			$('#btn-add_allergy').attr('disabled',false);
-			$('#btn-add_allergy').removeClass('disabled').addClass('green');
-			$('#btn-add_allergy span').removeClass('button-span-disabled').addClass('button-span-green');
+			$('#btn-add_allergy').removeClass('disabled');
 			return false;
 		});
 		$('button.btn_save_allergy').click(function() {
@@ -181,7 +175,7 @@
 			$('div.familyHistory #comments').val($(this).parent().prev('td').text());
 			$('#add_allergy').slideToggle('fast');
 			$('#btn-add_allergy').attr('disabled',true);
-			$('#btn-add_allergy').removeClass('green').addClass('disabled');
+			$('#btn-add_allergy').addClass('disabled');
 			$('#btn-add_allergy span').removeClass('button-span-green').addClass('button-span-disabled');
 
 			e.preventDefault();
