@@ -18,24 +18,24 @@
  */
 ?>
 <div class="row field-row">
-	<div class="small-2 column">
-		<label>Diagnosis:</label>
+	<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+		<label for="<?php echo "{$class}_{$field}";?>">Diagnosis:</label>
 	</div>
-	<div class="small-4 column end">
-		<div class="panel element-field" id="enteredDiagnosisText" <?php if (!$label) {?> style="display: none;" <?php }?>>
-			<?php echo $label?>
+	<div class="large-<?php echo $layoutColumns['field'];?> column end">
+
+		<!-- Here we show the selected diagnosis -->
+		<div id="enteredDiagnosisText" class="field-row hide">
 		</div>
-		<fieldset>
-			<legend>Change diagnosis:</legend>
-			<div class="field-row">
-				<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
-			</div>
-			<div class="field-row">
-				<?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-						'name' => "{$class}[$field]",
-						'id' => "{$class}_{$field}_0",
-						'value'=>'',
-						'source'=>"js:function(request, response) {
+
+		<div class="field-row">
+			<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
+		</div>
+		<div class="field-row">
+			<?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+				'name' => "{$class}[$field]",
+				'id' => "{$class}_{$field}_0",
+				'value'=>'',
+				'source'=>"js:function(request, response) {
 					$.ajax({
 						'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
 						'type':'GET',
@@ -46,33 +46,32 @@
 						}
 					});
 				}",
-						'options' => array(
-							'minLength'=>'3',
-							'select' => "js:function(event, ui) {
-							$('#".$class."_".$field."_0').val('');
-							$('#enteredDiagnosisText').html(ui.item.value);
-							$('#enteredDiagnosisText').show();
-							$('input[id=savedDiagnosis]').val(ui.item.id);
-							$('#".$class."_".$field."').focus();
-							return false;
-						}",
-						),
-						'htmlOptions' => array(
-							'placeholder' => 'or type the first few characters of a diagnosis',
-						),
-					));
-				?>
-				<input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
-					   id="savedDiagnosis" value="<?php echo $value?>" />
-			</div>
-		</fieldset>
+				'options' => array(
+					'minLength'=>'3',
+					'select' => "js:function(event, ui) {
+						$('#".$class."_".$field."_0').val('');
+						$('#enteredDiagnosisText').html(ui.item.value);
+						$('#enteredDiagnosisText').show();
+						$('input[id=savedDiagnosis]').val(ui.item.id);
+						$('#".$class."_".$field."').focus();
+						return false;
+					}",
+				),
+				'htmlOptions' => array(
+					'placeholder' => 'or type the first few characters of a diagnosis',
+				),
+			));
+			?>
+			<input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
+				   id="savedDiagnosis" value="<?php echo $value?>" />
+		</div>
 	</div>
 </div>
 
 <script type="text/javascript">
 	$('#<?php echo $class?>_<?php echo $field?>').change(function() {
 		$('#enteredDiagnosisText').html($('option:selected', this).text());
-		$('#savedDiagnosis').val($(this).val());
 		$('#enteredDiagnosisText').show();
+		$('#savedDiagnosis').val($(this).val());
 	});
 </script>

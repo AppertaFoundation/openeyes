@@ -17,17 +17,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="field-row row">
-	<div class="large-3 column">
-		<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText" class="eventHighlight big"
-			<?php if (!$label) {?> style="display: none;" <?php }?>>
-			<h4>
-				<?php echo $label?>
-			</h4>
-		</div>
-		<label for="">Diagnosis:</label>
+<div class="row field-row">
+	<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+		<label for="<?php echo "{$class}_{$field}";?>">
+			<?php echo $label?>:
+		</label>
 	</div>
-	<div class="large-7 column end">
+	<div class="large-<?php echo $layoutColumns['field'];?> column end">
+
+		<!-- Here we show the selected diagnosis -->
+		<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText" class="field-row hide">
+		</div>
+
 		<div class="field-row">
 			<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
 		</div>
@@ -38,42 +39,43 @@
 					'id' => "{$class}_{$field}_0",
 					'value'=>'',
 					'source'=>"js:function(request, response) {
-					".($loader ? "$('#".$loader."').show();" : "")."
-					$.ajax({
-						'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
-						'type':'GET',
-						'data':{'term': request.term, 'code': '".$code."'},
-						'success':function(data) {
-							".($loader ? "$('#".$loader."').hide();" : "")."
-							data = $.parseJSON(data);
-							response(data);
-						}
-					});
-				}",
+						".($loader ? "$('#".$loader."').show();" : "")."
+						$.ajax({
+							'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
+							'type':'GET',
+							'data':{'term': request.term, 'code': '".$code."'},
+							'success':function(data) {
+								".($loader ? "$('#".$loader."').hide();" : "")."
+								data = $.parseJSON(data);
+								response(data);
+							}
+						});
+					}",
 					'options' => array(
-						'minLength'=>'3',
-						'select' => "js:function(event, ui) {
-							$('#".$class."_".$field."_0').val('');
-							$('#".$class."_".$field."_enteredDiagnosisText h4').html(ui.item.value);
-							$('#".$class."_".$field."_enteredDiagnosisText').show();
-							$('input[id=".$class."_".$field."_savedDiagnosis]').val(ui.item.id);
-							$('#".$class."_".$field."').focus();
-							return false;
-						}",
+							'minLength'=>'3',
+							'select' => "js:function(event, ui) {
+								$('#".$class."_".$field."_0').val('');
+								$('#".$class."_".$field."_enteredDiagnosisText').html('<strong>' + ui.item.value + '</strong>');
+								$('#".$class."_".$field."_enteredDiagnosisText').show();
+								$('input[id=".$class."_".$field."_savedDiagnosis]').val(ui.item.id);
+								$('#".$class."_".$field."').focus();
+								return false;
+							}",
 					),
 					'htmlOptions' => array(
-						'placeholder' => 'or type the first few characters of a diagnosis',
+							'placeholder' => 'or type the first few characters of a diagnosis',
 					),
-				));
-			?></div>
-		<input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
-			   id="<?php echo $class?>_<?php echo $field?>_savedDiagnosis" value="<?php echo $value?>" />
+			));
+			?>
+			<input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
+				id="<?php echo $class?>_<?php echo $field?>_savedDiagnosis" value="<?php echo $value?>" />
+		</div>
 	</div>
 </div>
 <script type="text/javascript">
 	$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText h4').html($('option:selected', this).text());
-		$('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
+		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').html('<strong>' + $('option:selected', this).text() + '</strong>');
 		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').show();
+		$('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
 	});
 </script>

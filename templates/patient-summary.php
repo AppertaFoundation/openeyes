@@ -377,6 +377,9 @@
 									</div>
 									<div class="large-7 column end">
 										<div class="field-row">
+											<strong>Selected diagnosis</strong>
+										</div>
+										<div class="field-row">
 											<select>
 												<option>-- Select --</option>
 											</select>

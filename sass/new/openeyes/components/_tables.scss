@@ -27,7 +27,7 @@
 // Table vars
 $oe-table-header-cell-bg-color: #dddddd !default;
 $oe-table-header-cell-font-size: emCalc(11px) !default;
-$oe-table-grid-cell-border-color: #cccccc;
+$oe-table-grid-cell-border-color: #CCD;
 $oe-table-cell-font-size: emCalc(13px);
 $oe-table-cell-label-font-size: emCalc(16px);
 $oe-table-footer-cell-font-size: emCalc(11px);
@@ -87,6 +87,12 @@ table {
 		}
 	}
 	&.grid {
+		tr {
+			border-bottom: 1px solid #CCD;
+			&:last-child {
+				border: 0;
+			}
+		}
 		th, td {
 			border-right: 1px solid $oe-table-grid-cell-border-color;
 		}
@@ -96,6 +102,9 @@ table {
 		}
 		tfoot {
 			border-top: 1px solid $table-border-color;
+			tr {
+				border-bottom: 0;
+			}
 		}
 	}
 	.clickable {
