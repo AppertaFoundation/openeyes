@@ -51,6 +51,7 @@ class Disorder extends BaseActiveRecord
 
 	/**
 	 * Returns the static model of the specified AR class.
+	 * @param string $className
 	 * @return Disorder the static model class
 	 */
 	public static function model($className = __CLASS__)
@@ -171,8 +172,10 @@ class Disorder extends BaseActiveRecord
 		return $data;
 	}
 
-	/*
+	/**
 	 * returns boolean to indicate if the disorder is systemic (true)
+	 *
+	 * @return boolean
 	 */
 	public function getSystemic()
 	{
