@@ -1,4 +1,23 @@
-<?php // FIXME:?>
+<?php
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+?>
+
 <section class="box patient-info associated-data js-toggle-container">
 
 	<header class="box-header">
@@ -13,9 +32,8 @@
 		</a>
 	</header>
 
-
 	<div class="js-toggle-body">
-		<table class="subtleWhite">
+		<table class="plain patient-data">
 			<thead>
 			<tr>
 				<th width="85px">Medication</th>
@@ -43,20 +61,23 @@
 			</tbody>
 		</table>
 
-		<form>
-			<div class="box-actions">
-				<button  id="btn-add_medication" class="secondary small">
-					Add Medication
-				</button>
-			</div>
-		</form>
+		<div class="box-actions">
+			<button  id="btn-add_medication" class="secondary small">
+				Add Medication
+			</button>
+		</div>
+
 		<div id="add_medication" style="display: none;">
 			<?php
-			$form = $this->beginWidget('CActiveForm', array(
+			$form = $this->beginWidget('FormLayout', array(
 					'id'=>'add-medication',
 					'enableAjaxValidation'=>false,
 					'htmlOptions' => array('class'=>'sliding form add-data'),
 					'action'=>array('patient/addMedication'),
+					'layoutColumns'=>array(
+						'label' => 3,
+						'field' => 9
+					),
 				))?>
 			<fieldset class="field-row">
 
@@ -65,9 +86,8 @@
 				<input type="hidden" name="edit_medication_id" id="edit_medication_id" value="" />
 				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-
 				<div class="patientMedication field-row row">
-					<div class="large-3 column">
+					<div class="<?php echo $form->columns('label');?>">
 						<label for="">Medication:</label>
 					</div>
 					<div class="large-7 column end">

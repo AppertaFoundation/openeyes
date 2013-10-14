@@ -18,14 +18,14 @@
  */
 ?>
 <?php
-$labelColumns = @$form ? $form->layoutColumns['label'] : 3;
-$fieldColumns = @$form ? $form->layoutColumns['field'] : 9;
+$labelColumns = @$form ? $form->columns('label') : 'large-3 column';
+$fieldColumns = @$form ? $form->columns('field') : 'large-9 column end';
 ?>
 <fieldset class="row field-row" class="fuzzy_date <?php echo @$class?>">
-	<legend class="large-<?php echo $labelColumns;?> column">
+	<legend class="<?php echo $labelColumns;?>">
 		Date:
 	</legend>
-	<div class="large-<?php echo $fieldColumns;?> column end">
+	<div class="<?php echo $fieldColumns;?>">
 		<div class="row">
 			<div class="large-4 column">
 				<select name="fuzzy_day">
