@@ -19,10 +19,9 @@
 ?>
 <section class="element element-data">
 	<h3 class="data-title">Procedure<?php if (count($element->procedures) != 1) echo 's'?></h3>
-	<?php echo $element->eye->adjective?>
 	<ul class="data-value highlight important">
 		<?php foreach ($element->procedures as $procedure) {
-			echo "<li>{$procedure->term}</li>";
+			echo "<li>{$element->eye->adjective} {$procedure->term}</li>";
 		}
 	?>
 	</ul>
@@ -101,8 +100,9 @@
 		</div>
 	</section>
 
-	<?php //FIXME: ?>
 
+<div class="row">
+	<div class="large-12 column">
 	<div class="metaData">
 		<span class="info">
 		Booking created by <span class="user"><?php echo $element->booking->user->fullname ?></span> on <?php echo $element->booking->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
@@ -110,6 +110,8 @@
 		<span class="info">
 		Booking last modified by <span class="user"><?php echo $element->booking->usermodified->fullname ?></span> on <?php echo $element->booking->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($element->booking->last_modified_date)) ?>
 		</span>
+	</div>
+		</div>
 	</div>
 <?php } ?>
 
@@ -163,14 +165,14 @@ if ($element->status->name != 'Cancelled' && $this->event->editable) {
 				$print_letter_options['disabled'] = true;
 			}
 			if (BaseController::checkUserLevel(3)) {
-				$this->event_actions[] = EventAction::button("Print ".$element->letterType." letter", 'print-letter', $print_letter_options, array('id' => 'btn_print-letter'));
+				$this->event_actions[] = EventAction::button("Print ".$element->letterType." letter", 'print-letter', $print_letter_options, array('id' => 'btn_print-letter', 'class'=>'button small'));
 			}
 		}
 		if (BaseController::checkUserLevel(4)) {
 			$this->event_actions[] = EventAction::link("Schedule now",
 				Yii::app()->createUrl('/'.$element->event->eventType->class_name.'/booking/schedule/'.$element->event_id),
-				array('colour' => 'green'),
-				array('id' => 'btn_schedule-now'));
+				array('level'=>'secondary'),
+				array('id' => 'btn_schedule-now', 'class'=>'button small'));
 		}
 	} else {
 		if ($this->canPrint()) {
@@ -197,7 +199,7 @@ if ($element->status->name != 'Cancelled' && $this->event->editable) {
 if (BaseController::checkUserLevel(4) && $element->status->name != 'Cancelled' && $element->status->name != 'Completed' && $element->event->episode->editable) {
 	$this->event_actions[] = EventAction::link("Cancel operation",
 		Yii::app()->createUrl('/'.$element->event->eventType->class_name.'/default/cancel/'.$element->event_id),
-		array('colour' => 'red'),
-		array('id' => 'btn_cancel-operation'));
+		array(),
+		array('id' => 'btn_cancel-operation', 'class'=>'warning button small'));
 }
 ?>
