@@ -72,7 +72,7 @@
 </section>
 
 <?php if ($element->booking) {?>
-	<h3 class="subsection">Booking Details</h3>
+	<h3 class="element-title highlight">Booking Details</h3>
 
 	<section class="element element-data">
 		<div class="row element-data-row">
@@ -95,7 +95,7 @@
 			<div class="large-6 column">
 				<h3 class="data-title">Admission Time</h3>
 				<div class="data-value">
-					<h4><?php echo substr($element->booking->admission_time,0,5) ?></div>
+					<?php echo substr($element->booking->admission_time,0,5) ?></div>
 			</div>
 		</div>
 	</section>
@@ -103,7 +103,7 @@
 
 <div class="row">
 	<div class="large-12 column">
-	<div class="metaData">
+	<div class="metadata">
 		<span class="info">
 		Booking created by <span class="user"><?php echo $element->booking->user->fullname ?></span> on <?php echo $element->booking->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
 		</span>
@@ -132,28 +132,42 @@
 	</ul>
 <?php }?>
 
-<?php if ($element->status->name == 'Cancelled' && $element->operation_cancellation_date) {?>
-	<h3 class="subsection">Cancellation details</h3>
-		<div class="eventHighlight">
-			<h4>Cancelled on <?php echo $element->NHSDate('operation_cancellation_date') . ' by user ' . $element->cancellation_user->username . ' for reason: ' . $element->cancellation_reason->text?>
-			</h4>
+<?php if ($element->status->name == 'Cancelled' && $element->operation_cancellation_date){?>
+<section class="element element-data">
+	<div class="row element-data-row">
+		<div class="large-6 column">
+			<h3 class="data-title">Cancellation details</h3>
+			<div class="data-value">
+			Cancelled on <?php echo $element->NHSDate('operation_cancellation_date') . ' by user ' . $element->cancellation_user->username . ' for reason: ' . $element->cancellation_reason->text?>
+			</div>
 		</div>
+	</div>
+</section>
 
 	<?php if ($element->cancellation_comment) {?>
-		<h4>Cancellation comments</h4>
-		<div class="eventHighlight comments">
-			<h4><?php echo str_replace("\n","<br/>",$element->cancellation_comment)?></h4>
+<section class="element element-data">
+	<div class="row element-data-row">
+		<div class="large-6 column">
+			<h3 class="data-title">Cancellation comments</h3>
+			<div class="data-value">
+			<?php echo str_replace("\n","<br/>",$element->cancellation_comment)?>
+			</div>
 		</div>
+	</div>
+</section>
 	<?php } ?>
 <?php } ?>
 
 <?php if ($element->erod) {?>
-	<div>
-		<h3 class="subsection">Earliest reasonable offer date</h3>
-		<div class="eventHighlight">
-			<h4><?php echo $element->erod->NHSDate('session_date').' '.$element->erod->timeSlot.', '.$element->erod->FirmName?></h4>
+<section class="element element-data">
+	<div class="row element-data-row">
+		<div class="large-6 column">
+			<h3 class="data-title">Earliest reasonable offer date</h3>
+			<div class="data-value"><?php echo $element->erod->NHSDate('session_date').' '.$element->erod->timeSlot.', '.$element->erod->FirmName?>
+			</div>
 		</div>
 	</div>
+</section>
 <?php }?>
 
 <?php
@@ -181,18 +195,18 @@ if ($element->status->name != 'Cancelled' && $this->event->editable) {
 				$print_letter_options['disabled'] = true;
 			}
 			if (BaseController::checkUserLevel(3)) {
-				$this->event_actions[] = EventAction::button("Print letter", 'print-letter', $print_letter_options, array('id' => 'btn_print-admissionletter'));
+				$this->event_actions[] = EventAction::button("Print letter", 'print-letter', $print_letter_options, array('id' => 'btn_print-admissionletter','class'=>'small button'));
 			}
 		}
 		if (BaseController::checkUserLevel(4) && $element->status->name != 'Completed') {
 			$this->event_actions[] = EventAction::link("Reschedule now",
 				Yii::app()->createUrl('/'.$element->event->eventType->class_name.'/booking/reschedule/'.$element->event_id),
-				array('colour' => 'green'),
-				array('id' => 'btn_reschedule-now'));
+				array('level' => 'secondary'),
+				array('id' => 'btn_reschedule-now','class' => 'button small'));
 			$this->event_actions[] = EventAction::link("Reschedule later",
 				Yii::app()->createUrl('/'.$element->event->eventType->class_name.'/booking/rescheduleLater/'.$element->event_id),
-				array('colour' => 'green'),
-				array('id' => 'btn_reschedule-later'));
+				array('level' => 'secondary'),
+				array('id' => 'btn_reschedule-later','class' => 'button small'));
 		}
 	}
 }
