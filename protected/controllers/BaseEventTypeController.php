@@ -374,7 +374,7 @@ class BaseEventTypeController extends BaseController
 			$elementList = array();
 
 			// validation
-			$errors = $this->validatePOSTElements($elements, $_POST);
+			$errors = $this->validatePOSTElements($elements);
 
 
 			// creation
@@ -590,7 +590,7 @@ class BaseEventTypeController extends BaseController
 			}
 
 			// validation
-			$errors = $this->validatePOSTElements($elements, $_POST);
+			$errors = $this->validatePOSTElements($elements);
 
 			// creation
 			if (empty($errors)) {
@@ -681,23 +681,23 @@ class BaseEventTypeController extends BaseController
 	 *
 	 * @param array() - elements
 	 */
-	protected function validatePOSTElements($elements, $data)
+	protected function validatePOSTElements($elements)
 	{
 		$errors = array();
 		foreach ($elements as $element) {
 			$elementClassName = get_class($element);
 
-			if ($element->required || isset($data[$elementClassName])) {
-				if (isset($data[$elementClassName])) {
-					$keys = array_keys($data[$elementClassName]);
+			if ($element->required || isset($_POST[$elementClassName])) {
+				if (isset($_POST[$elementClassName])) {
+					$keys = array_keys($_POST[$elementClassName]);
 
-					if (is_array($data[$elementClassName][$keys[0]])) {
-						for ($i=0; $i<count($data[$elementClassName][$keys[0]]); $i++) {
+					if (is_array($_POST[$elementClassName][$keys[0]])) {
+						for ($i=0; $i<count($_POST[$elementClassName][$keys[0]]); $i++) {
 							$element = new $elementClassName;
 
 							foreach ($keys as $key) {
 								if ($key != '_element_id') {
-									$element->{$key} = $data[$elementClassName][$key][$i];
+									$element->{$key} = $_POST[$elementClassName][$key][$i];
 								}
 							}
 
