@@ -37,7 +37,7 @@
 			<tr>
 				<th>Date</th>
 				<th>Diagnosis</th>
-				<?php if (BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
+				<?php if (BaseController::checkUserLevel(4)) { ?><th>Actions</th><?php } ?>
 			</tr>
 			</thead>
 			<tbody>
