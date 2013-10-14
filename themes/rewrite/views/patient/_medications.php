@@ -41,7 +41,7 @@
 				<th>Option</th>
 				<th>Frequency</th>
 				<th>Start date</th>
-				<th>Edit</th>
+				<th>Actions</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -53,8 +53,8 @@
 					<td><?php echo $medication->frequency->name?></td>
 					<td><?php echo $medication->NHSDate('start_date')?></td>
 					<td>
-						<a href="#" class="small editMedication" rel="<?php echo $medication->id?>"><strong>Edit</strong></a>&nbsp;&nbsp;
-						<a href="#" class="small removeMedication" rel="<?php echo $medication->id?>"><strong>Remove</strong></a>
+						<a href="#" class="editMedication" rel="<?php echo $medication->id?>"><strong>Edit</strong></a>&nbsp;&nbsp;
+						<a href="#" class="removeMedication" rel="<?php echo $medication->id?>"><strong>Remove</strong></a>
 					</td>
 				</tr>
 			<?php }?>
@@ -90,7 +90,12 @@
 					<div class="<?php echo $form->columns('label');?>">
 						<label for="">Medication:</label>
 					</div>
-					<div class="large-7 column end">
+					<div class="<?php echo $form->columns('field');?>">
+
+						<div class="field-row">
+							<span id="selectedMedicationName" style="font-weight: bold;"></span>
+						</div>
+
 						<div class="field-row">
 							<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->getSubspecialtyID()),array('empty'=>'- Select -'))?>
 						</div>
@@ -122,59 +127,52 @@
 					</div>
 				</div>
 
-				<div class="patientMedication">
-					<div class="label"></div>
-					<div class="data">
-						<span id="selectedMedicationName" style="font-weight: bold;"></span>
-						<input type="hidden" name="selectedMedicationID" id="selectedMedicationID" value="" />
-					</div>
-				</div>
+				<input type="hidden" name="selectedMedicationID" id="selectedMedicationID" value="" />
 
 				<div class="field-row row">
-					<div class="large-3 column">
-						<label for="">Option:</label>
+					<div class="<?php echo $form->columns('label');?>">
+						<label for="route_id">Option:</label>
 					</div>
-					<div class="large-7 column end">
+					<div class="<?php echo $form->columns('field');?>">
 						<?php echo CHtml::dropDownList('route_id','',CHtml::listData(DrugRoute::model()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
 					</div>
 				</div>
 
-				<div class="patientMedication routeOption" style="display: none;">
-					<div class="label">
-						Option:
+				<div class="patientMedication routeOption row field-row" style="display: none;">
+					<div class="<?php echo $form->columns('label');?>">
+						<label for="option_id">Option:</label>
 					</div>
-					<div class="data">
+					<div class="data <?php echo $form->columns('field');?>">
 					</div>
 				</div>
 
 				<div class="field-row row">
-					<div class="large-3 column">
-						<label for="">Frequency:</label>
+					<div class="<?php echo $form->columns('label');?>">
+						<label for="frequency_id">Frequency:</label>
 					</div>
-					<div class="large-7 column end">
+					<div class="<?php echo $form->columns('field');?>">
 						<?php echo CHtml::dropDownList('frequency_id','',CHtml::listData(DrugFrequency::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
 					</div>
 				</div>
 
 				<div class="field-row row">
-					<div class="large-3 column">
+					<div class="<?php echo $form->columns('label');?>">
 						<label for="">Date from:</label>
 					</div>
-					<div class="large-3 column end">
+					<div class="<?php echo $form->columns(3, true);?>">
 						<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-								'name'=>'start_date',
-								'id'=>'start_date',
-								'options'=>array(
-									'showAnim'=>'fold',
-									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-								),
-								'value' => date('j M Y'),
-								'htmlOptions'=>array('style'=>'width: 90px;')
-							))?>
+							'name'=>'start_date',
+							'id'=>'start_date',
+							'options'=>array(
+								'showAnim'=>'fold',
+								'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
+							),
+							'value' => date('j M Y')
+						))?>
 					</div>
 				</div>
 
-				<div class="medication_form_errors"></div>
+				<div class="medication_form_errors alert-box alert hide"></div>
 
 				<div align="right">
 					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
@@ -215,23 +213,21 @@
 </div>
 <script type="text/javascript">
 	$('#btn-add_medication').click(function() {
-		$('div.patientMedication #route_id').val('');
-		$('div.patientMedication #drug_id').val('');
-		$('div.patientMedication #frequency_id').val('');
-		$('div.patientMedication #start_date').val('');
+		$('#add_medication #route_id').val('');
+		$('#add_medication #drug_id').val('');
+		$('#add_medication #frequency_id').val('');
+		$('#add_medication #start_date').val('');
 		$('div.routeOption .date').html('');
 		$('div.routeOption').hide();
 
 		$('#add_medication').slideToggle('fast');
 		$('#btn-add_medication').attr('disabled',true);
-		$('#btn-add_medication').removeClass('green').addClass('disabled');
-		$('#btn-add_medication span').removeClass('button-span-green').addClass('button-span-disabled');
+		$('#btn-add_medication').addClass('disabled');
 	});
 	$('button.btn_cancel_medication').click(function() {
 		$('#add_medication').slideToggle('fast');
 		$('#btn-add_medication').attr('disabled',false);
-		$('#btn-add_medication').removeClass('disabled').addClass('green');
-		$('#btn-add_medication span').removeClass('button-span-disabled').addClass('button-span-green');
+		$('#btn-add_medication').removeClass('disabled');
 		return false;
 	});
 	$('#drug_id').change(function() {
@@ -271,7 +267,7 @@
 			'dataType': 'json',
 			'url': baseUrl+'/patient/validateAddMedication',
 			'success': function(data) {
-				$('div.medication_form_errors').html('');
+				$('div.medication_form_errors').html('').hide();
 
 				if (data.length == 0) {
 					$('#add-medication').submit();
@@ -281,12 +277,12 @@
 				enableButtons();
 
 				for (var i in data) {
-					$('div.medication_form_errors').append('<div class="errorMessage">'+data[i]+'</div>');
+					$('div.medication_form_errors').show().append('<div>'+data[i]+'</div>');
 				}
 			}
 		});
 	});
-	$('a.editMedication').click(function(e) {
+	$('.editMedication').click(function(e) {
 		var medication_id = $(this).attr('rel');
 
 		$('#edit_medication_id').val(medication_id);
@@ -296,21 +292,20 @@
 			'dataType': 'json',
 			'url': baseUrl+'/patient/getMedication?medication_id='+medication_id,
 			'success': function(data) {
-				$('div.patientMedication #route_id').val(data['route_id']);
+				$('#add_medication #route_id').val(data['route_id']);
 				$('#selectedMedicationID').val(data['drug_id']);
 				$('#selectedMedicationName').text(data['drug_name']);
-				$('div.patientMedication #frequency_id').val(data['frequency_id']);
-				$('div.patientMedication #start_date').val(data['start_date']);
+				$('#add_medication #frequency_id').val(data['frequency_id']);
+				$('#add_medication #start_date').val(data['start_date']);
 				$('div.routeOption .data').html(data['route_options']);
 				$('div.routeOption').show();
-				$('div.patientMedication #option_id').val(data['option_id']);
+				$('#add_medication #option_id').val(data['option_id']);
 			}
 		});
 
 		$('#add_medication').slideToggle('fast');
 		$('#btn-add_medication').attr('disabled',true);
-		$('#btn-add_medication').removeClass('green').addClass('disabled');
-		$('#btn-add_medication span').removeClass('button-span-green').addClass('button-span-disabled');
+		$('#btn-add_medication').addClass('disabled');
 
 		e.preventDefault();
 	});
