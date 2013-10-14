@@ -111,7 +111,7 @@ $subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 	<tbody>
 		<?php foreach ($element->items as $key => $item) { ?>
 		<tr
-			class="prescriptionItem<?php if ($this->patient->hasAllergy($item->drug_id)) { ?> allergyWarning<?php } ?>">
+			class="prescriptionItem<?php if ($this->patient->hasDrugAllergy($item->drug_id)) { ?> allergyWarning<?php } ?>">
 			<td class="prescriptionLabel"><?php echo $item->drug->label; ?></td>
 			<td><?php echo $item->dose ?></td>
 			<td><?php echo $item->route->name ?> <?php if ($item->route_option) {

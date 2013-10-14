@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<tr data-key="<?php echo $key ?>" class="prescriptionItem<?php if ($patient->hasAllergy($item->drug_id)) { ?> allergyWarning<?php } ?><?php if($item->getErrors()) { ?> errors<?php } ?> <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
+<tr data-key="<?php echo $key ?>" class="prescriptionItem<?php if ($patient->hasDrugAllergy($item->drug_id)) { ?> allergyWarning<?php } ?><?php if($item->getErrors()) { ?> errors<?php } ?> <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
 	<td class="prescriptionLabel">
 		<?php echo $item->drug->tallmanlabel; ?>
 		<?php if ($item->id) { ?><input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id?>" /><?php } ?>
