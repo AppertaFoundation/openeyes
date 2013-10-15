@@ -21,7 +21,7 @@
 ?>
 <section class="box patient-info episodes">
 	<header class="box-header">
-		<h3 class="box-title">All Episodes</span></h3>
+		<h3 class="box-title">All Episodes</h3>
 		<div class="box-info">
 			<strong>open <?php echo $episodes_open?> &nbsp;|&nbsp;closed <?php echo $episodes_closed?></strong>
 		</div>

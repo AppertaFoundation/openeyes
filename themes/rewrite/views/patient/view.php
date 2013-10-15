@@ -26,34 +26,58 @@ $warnings = $this->patient->getWarnings($clinical);
 ?>
 
 <div class="container content">
+
 	<h1 class="badge">Patient summary</h1>
 
-	<div class="row">
+	<div class="messages patient">
+
 		<?php $this->renderPartial('//base/_messages'); ?>
+
 		<?php if ($this->patient->contact->address && !$this->patient->contact->address->isCurrent()) {?>
-			<div id="no-current-address-error" class="alertBox">
-				<h3>Warning: The patient has no current address. The address shown is their last known address.</h3>
-			</div>
-		<?php }?>
-		<?php if ($this->patient->isDeceased()) {?>
-			<div id="deceased-notice" class="alertBox">
-				This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
-			</div>
-		<?php }?>
-		<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) {?>
-			<div id="no-practice-address" class="alertBox">
-				Patient has no GP practice address, please correct in PAS before printing GP letter.
-			</div>
-		<?php }?>
-		<?php if ($warnings) { ?>
-			<div class="curvybox patientWarningBox">
-				<?php foreach ($warnings as $warn) {?>
-					<strong><?php echo $warn['long_msg']; ?></strong>
-					- <?php echo $warn['details'];
-				}?>
+			<div class="row">
+				<div class="large-12 column">
+					<div id="no-current-address-error" class="alert-box alert with-icon">
+						Warning: The patient has no current address. The address shown is their last known address.
+					</div>
+				</div>
 			</div>
 		<?php }?>
 
+		<?php if ($this->patient->isDeceased()) {?>
+			<div clas="row">
+				<div class="large-12 column">
+					<div id="deceased-notice" class="alert-box alert with-icon">
+						This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
+					</div>
+				</div>
+			</div>
+		<?php }?>
+
+		<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) {?>
+			<div class="row">
+				<div class="large-12 column">
+					<div id="no-practice-address" class="alert-box alert with-icon">
+						Patient has no GP practice address, please correct in PAS before printing GP letter.
+					</div>
+				</div>
+			</div>
+		<?php }?>
+
+		<?php if ($warnings) { ?>
+			<div class="row">
+				<div class="large-12 column">
+					<div class="alert-box patient with-icon">
+						<?php foreach ($warnings as $warn) {?>
+							<strong><?php echo $warn['long_msg']; ?></strong>
+							- <?php echo $warn['details'];
+						}?>
+					</div>
+				</div>
+			</div>
+		<?php }?>
+	</div>
+
+	<div class="row">
 		<div class="large-6 column">
 			<?php $this->renderPartial('_patient_details')?>
 			<?php $this->renderPartial('_patient_contact_details')?>
@@ -62,8 +86,8 @@ $warnings = $this->patient->getWarnings($clinical);
 			<?php $this->renderPartial('_patient_contacts')?>
 		</div>
 		<div class="large-6 column">
-		<?php if (BaseController::checkUserLevel(2)) {?>
-			<?php $this->renderPartial('_patient_episodes',array(
+			<?php if (BaseController::checkUserLevel(2)) {?>
+				<?php $this->renderPartial('_patient_episodes',array(
 					'episodes' => $episodes,
 					'ordered_episodes' => $ordered_episodes,
 					'legacyepisodes' => $legacyepisodes,
@@ -71,7 +95,7 @@ $warnings = $this->patient->getWarnings($clinical);
 					'episodes_closed' => $episodes_closed,
 					'firm' => $firm,
 				))?>
-		<?php }?>
+			<?php }?>
 		</div>
 	</div>
 </div>

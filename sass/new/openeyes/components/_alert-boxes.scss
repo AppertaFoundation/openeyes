@@ -12,6 +12,8 @@
 // .alert.with-icon     - Alert information with icon
 // .issue               - Issue information
 // .issue.with-icon     - Issue information with icon
+// .patient				- Patient warning
+// .patient.with-icon 	- Patient warning with icon
 // .secondary           - Secondary information
 //
 // Styleguide 12.1
@@ -32,6 +34,9 @@ $oe-alert-success-with-icon-min-height: 36px !default;
 .alert-box {
 	@include alert($oe-alert-default-bg-color);
 	@include radius($alert-radius);
+	.messages.patient & {
+		margin: .75em 0 0 0;
+	}
 	.close {
 		@include alert-close;
 	}
@@ -101,6 +106,16 @@ $oe-alert-success-with-icon-min-height: 36px !default;
 				margin: 0;
 				font-size: emCalc(12px);
 			}
+		}
+	}
+	&.patient {
+		background-color: #eb5911;
+		border: 2px solid #fff;
+		color: #fff;
+		&.with-icon {
+			background-image: image-url("_elements/icons/box/patient-warning.png");
+			padding-top: emCalc(14px);
+			padding-bottom: emCalc(14px);
 		}
 	}
 	&.secondary {
