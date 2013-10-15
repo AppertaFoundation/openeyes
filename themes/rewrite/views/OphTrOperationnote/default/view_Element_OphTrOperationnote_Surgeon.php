@@ -18,7 +18,7 @@
  */
 ?>
 
-<h3 class="subsection">Other information</h3>
+<h2 class="event-title">Other information</h2>
 
 <div class="colsX clearfix">
 	<div class="colStack">
