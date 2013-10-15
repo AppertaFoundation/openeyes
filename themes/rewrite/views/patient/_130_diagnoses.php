@@ -134,24 +134,24 @@
 	</div>
 </section>
 <?php if (BaseController::checkUserLevel(4)) { ?>
+	<!-- Confirm deletion dialog -->
 	<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
-		<div>
-			<div id="delete_diagnosis">
-				<div class="alert-box alert">
-					<strong>WARNING: This will remove the diagnosis from the patient record.</strong>
-				</div>
-				<p>
-					<strong>Are you sure you want to proceed?</strong>
-				</p>
-				<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
-					<input type="hidden" id="diagnosis_id" value="" />
-					<button type="submit" class="warning btn_remove_diagnosis">Remove diagnosis</button>
-					<button type="submit" class="secondary btn_cancel_remove_diagnosis">Cancel</button>
-					<img class="loader hide" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
-				</div>
+		<div id="delete_diagnosis">
+			<div class="alert-box alert with-icon">
+				<strong>WARNING: This will remove the diagnosis from the patient record.</strong>
+			</div>
+			<p>
+				<strong>Are you sure you want to proceed?</strong>
+			</p>
+			<div class="buttons">
+				<input type="hidden" id="diagnosis_id" value="" />
+				<button type="submit" class="warning small btn_remove_diagnosis">Remove diagnosis</button>
+				<button type="submit" class="secondary small btn_cancel_remove_diagnosis">Cancel</button>
+				<img class="loader hide" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
 			</div>
 		</div>
 	</div>
+
 	<script type="text/javascript">
 
 		$('#btn-add_new_ophthalmic_diagnosis').click(function() {

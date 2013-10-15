@@ -19,7 +19,7 @@
 (function(Modernizr, document) {
 
 	var Polyfills = {
-		// Ensure the modernizr test fails before adding the polyfill.
+		// Ensure the modernizr test fails before adding the polyfill on document ready.
 		add: function(name, polyfill) {
 			if (!Modernizr[name]) {
 				$(polyfill);

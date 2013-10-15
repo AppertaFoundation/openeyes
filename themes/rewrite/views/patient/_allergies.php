@@ -30,106 +30,126 @@
 		</a>
 	</header>
 	<div class="js-toggle-body">
-		<table class="plain patient-data" id="currentAllergies">
-			<thead>
-			<tr>
-				<th width="80%">Allergies</th>
-				<?php if (BaseController::checkUserLevel(4)) { ?><th>Actions</th><?php } ?>
-			</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($this->patient->allergies as $allergy) { ?>
+		<?php
+		if (!$this->patient->hasAllergyStatus()) {
+			?>
+			<span class="allergy-status">Patient allergy status is unknown</span>
+			<?php
+		} elseif ($this->patient->no_allergies_date) {
+			?>
+			<span class="allergy-status">Patient has no known allergies</span>
+			<?php
+		} else {
+			?>
+			<table class="plain patient-data" id="currentAllergies">
+				<thead>
+					<tr>
+						<th>Allergies</th>
+						<?php if (BaseController::checkUserLevel(4)) { ?><th>Actions</th><?php } ?>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ($this->patient->allergies as $allergy) { ?>
 					<tr data-allergy-id="<?php echo $allergy->id ?>" data-allergy-name="<?php echo $allergy->name ?>">
 						<td><?php echo $allergy->name ?></td>
 						<?php if (BaseController::checkUserLevel(4)) { ?>
-						<td>
-							<a href="#" rel="<?php echo $allergy->id?>" class="small removeAllergy"><strong>Remove</strong>
-								<?php } ?>
-							</a>
-						</td>
+							<td>
+								<a href="#" rel="<?php echo $allergy->id?>" class="small removeAllergy">
+									Remove
+								</a>
+							</td>
+						<?php } ?>
 					</tr>
-				<?php } ?>
-			</tbody>
-		</table>
-
-		<?php if (BaseController::checkUserLevel(4)) { ?>
-
+					<?php } ?>
+				</tbody>
+			</table>
+			<?php
+		}
+		if (BaseController::checkUserLevel(4)) { ?>
 			<div class="box-actions">
 				<button id="btn-add_allergy" class="secondary small">
-					Add Allergy
+					Edit
 				</button>
 			</div>
 
 			<div id="add_allergy" style="display: none;">
-				<fieldset class="field-row">
-					<legend><strong>Add allergy</strong></legend>
+				<?php
+				$form = $this->beginWidget('FormLayout', array(
+					'id'=>'add-allergy',
+					'enableAjaxValidation'=>false,
+					'htmlOptions' => array('class'=>'form add-data'),
+					'action'=>array('patient/addAllergy'),
+					'layoutColumns'=>array(
+						'label' => 3,
+						'field' => 9
+					),
+				))?>
 
-					<?php
-					$form = $this->beginWidget('FormLayout', array(
-						'id'=>'add-allergy',
-						'enableAjaxValidation'=>false,
-						'htmlOptions' => array('class'=>'form add-data'),
-						'action'=>array('patient/addAllergy'),
-						'layoutColumns'=>array(
-							'label' => 3,
-							'field' => 9
-						),
-					))?>
-
-					<input type="hidden" name="edit_allergy_id" id="edit_allergy_id" value="" />
-					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-
-					<div class="field-row row">
-						<div class="<?php echo $form->columns('label');?>">
-							<label for="allergy_id">Allergy:</label>
-						</div>
-						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'))?>
-						</div>
+				<div class="row field-row familyHistory">
+					<div class="<?php echo $form->columns('label');?>">
+						<label for="no_allergies">Confirm patient has no allergies:</label>
 					</div>
-
-					<div class="buttons">
-						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_allergy_loader" style="display: none;" />
-						<button type="submit" class="secondary small btn_save_allergy">
-							Save
-						</button>
-						<button class="warning small btn_cancel_previous_operation btn_cancel_allergy">
-							Cancel
-						</button>
+					<div class="<?php echo $form->columns('field');?>">
+						<?php echo CHtml::checkBox('no_allergies', $this->patient->no_allergies_date ? true : false); ?>
 					</div>
+				</div>
 
-					<?php $this->endWidget()?>
-				</fieldset>
+				<input type="hidden" name="edit_allergy_id" id="edit_allergy_id" value="" />
+				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+
+				<div class="row field-row familyHistory" id="allergy_field" <?php if ($this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>
+					<div class="<?php echo $form->columns('label');?>">
+						<label for="allergy_id">Add allergy:</label>
+					</div>
+					<div class="<?php echo $form->columns('field');?>">
+						<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'))?>
+					</div>
+				</div>
+
+				<div class="buttons">
+					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_allergy_loader" style="display: none;" />
+					<button class="secondary small btn_save_allergy" type="submit">Save</button>
+					<button class="warning small btn_cancel_allergy" type="submit">Cancel</button>
+				</div>
+
+				<?php $this->endWidget()?>
 			</div>
 		<?php }?>
 	</div>
 </section>
+
 <?php if (BaseController::checkUserLevel(4)) { ?>
+
+	<!-- Confirm deletion dialog -->
 	<div id="confirm_remove_allergy_dialog" title="Confirm remove allergy" style="display: none;">
-		<div>
-			<div id="delete_allergy">
-				<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-					<strong>WARNING: This will remove the allergy from the patient record.</strong>
-				</div>
-				<p>
-					<strong>Are you sure you want to proceed?</strong>
-				</p>
-				<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
-					<input type="hidden" id="remove_allergy_id" value="" />
-					<button type="submit" class="classy red venti btn_remove_allergy"><span class="button-span button-span-red">Remove allergy</span></button>
-					<button type="submit" class="classy green venti btn_cancel_remove_allergy"><span class="button-span button-span-green">Cancel</span></button>
-					<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-				</div>
+		<div id="delete_allergy">
+			<div class="alert-box alert with-icon">
+				<strong>WARNING: This will remove the allergy from the patient record.</strong>
+			</div>
+			<p>
+				<strong>Are you sure you want to proceed?</strong>
+			</p>
+			<div class="buttons">
+				<input type="hidden" id="remove_allergy_id" value="" />
+				<button type="submit" class="warning small btn_remove_allergy">Remove allergy</button>
+				<button type="submit" class="secondary small btn_cancel_remove_allergy">Cancel</button>
+				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 			</div>
 		</div>
 	</div>
-	<!-- #patient_allergies -->
+
 	<script type="text/javascript">
+		$('#no_allergies').bind('change', function() {
+			if ($(this)[0].checked) {
+				$('#allergy_field').hide().find('select').attr('disabled', 'disabled');
+			}
+			else {
+				$('#allergy_field').show().find('select').removeAttr('disabled');
+			}
+		});
+
 		$('#btn-add_allergy').click(function() {
 			$('#relative_id').val('');
-			$('div.familyHistory #side_id').val('');
-			$('#condition_id').val('');
-			$('div.familyHistory #comments').val('');
 			$('#add_allergy').slideToggle('fast');
 			$('#btn-add_allergy').attr('disabled',true);
 			$('#btn-add_allergy').addClass('disabled');
@@ -141,45 +161,16 @@
 			return false;
 		});
 		$('button.btn_save_allergy').click(function() {
-			if ($('#allergy_id').val() == '') {
+			if ($('#allergy_id').val() == '' && !$('#no_allergies')[0].checked) {
 				new OpenEyes.Dialog.Alert({
-					content: "Please select an allergy"
+					content: "Please select an allergy or confirm patient has no allergies"
 				}).open();
 				return false;
 			}
 			$('img.add_allergy_loader').show();
 			return true;
 		});
-		$('a.editAllergy').click(function(e) {
-			var history_id = $(this).attr('rel');
 
-			$('#edit_allergy_id').val(history_id);
-			var relative = $(this).parent().parent().children('td:first').text();
-			$('#relative_id').children('option').map(function() {
-				if ($(this).text() == relative) {
-					$(this).attr('selected','selected');
-				}
-			});
-			var side = $(this).parent().parent().children('td:nth-child(2)').text();
-			$('#side_id').children('option').map(function() {
-				if ($(this).text() == side) {
-					$(this).attr('selected','selected');
-				}
-			});
-			var condition = $(this).parent().parent().children('td:nth-child(3)').text();
-			$('#condition_id').children('option').map(function() {
-				if ($(this).text() == condition) {
-					$(this).attr('selected','selected');
-				}
-			});
-			$('div.familyHistory #comments').val($(this).parent().prev('td').text());
-			$('#add_allergy').slideToggle('fast');
-			$('#btn-add_allergy').attr('disabled',true);
-			$('#btn-add_allergy').addClass('disabled');
-			$('#btn-add_allergy span').removeClass('button-span-green').addClass('button-span-disabled');
-
-			e.preventDefault();
-		});
 
 		$('.removeAllergy').live('click',function() {
 			$('#remove_allergy_id').val($(this).attr('rel'));

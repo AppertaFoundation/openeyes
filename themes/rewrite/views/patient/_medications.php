@@ -53,8 +53,8 @@
 					<td><?php echo $medication->frequency->name?></td>
 					<td><?php echo $medication->NHSDate('start_date')?></td>
 					<td>
-						<a href="#" class="editMedication" rel="<?php echo $medication->id?>"><strong>Edit</strong></a>&nbsp;&nbsp;
-						<a href="#" class="removeMedication" rel="<?php echo $medication->id?>"><strong>Remove</strong></a>
+						<a href="#" class="editMedication" rel="<?php echo $medication->id?>">Edit</a>&nbsp;&nbsp;
+						<a href="#" class="removeMedication" rel="<?php echo $medication->id?>">Remove</a>
 					</td>
 				</tr>
 			<?php }?>
@@ -70,15 +70,15 @@
 		<div id="add_medication" style="display: none;">
 			<?php
 			$form = $this->beginWidget('FormLayout', array(
-					'id'=>'add-medication',
-					'enableAjaxValidation'=>false,
-					'htmlOptions' => array('class'=>'sliding form add-data'),
-					'action'=>array('patient/addMedication'),
-					'layoutColumns'=>array(
-						'label' => 3,
-						'field' => 9
-					),
-				))?>
+				'id'=>'add-medication',
+				'enableAjaxValidation'=>false,
+				'htmlOptions' => array('class'=>'sliding form add-data'),
+				'action'=>array('patient/addMedication'),
+				'layoutColumns'=>array(
+					'label' => 3,
+					'field' => 9
+				),
+			))?>
 			<fieldset class="field-row">
 
 				<legend><strong>Add medication</strong></legend>
@@ -107,17 +107,17 @@
 									'name' => 'drug_id',
 									'id' => 'autocomplete_drug_id',
 									'source' => "js:function(request, response) {
-													$.getJSON('".$this->createUrl('DrugList')."', {
-														term : request.term,
-													}, response);
-												}",
+										$.getJSON('".$this->createUrl('DrugList')."', {
+											term : request.term,
+										}, response);
+									}",
 									'options' => array(
-										'select' => "js:function(event, ui) {
-														$('#selectedMedicationName').text(ui.item.value);
-														$('#selectedMedicationID').val(ui.item.id);
-														$(this).val('');
-														return false;
-													}",
+									'select' => "js:function(event, ui) {
+											$('#selectedMedicationName').text(ui.item.value);
+											$('#selectedMedicationID').val(ui.item.id);
+											$(this).val('');
+											return false;
+										}",
 									),
 									'htmlOptions' => array(
 										'placeholder' => 'or search formulary',
@@ -174,40 +174,35 @@
 
 				<div class="medication_form_errors alert-box alert hide"></div>
 
-				<div align="right">
+				<div class="buttons">
 					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
-					<div class="buttons">
-						<button type="submit" class="secondary small btn_save_medication">
-							Save
-						</button>
-						<button class="warning small btn_cancel_medication">
-							Cancel
-						</button>
-					</div>
+					<button type="submit" class="secondary small btn_save_medication">
+						Save
+					</button>
+					<button class="warning small btn_cancel_medication">
+						Cancel
+					</button>
 				</div>
 			</fieldset>
 			<?php $this->endWidget()?>
-
-
 		</div>
 	</div>
 </section>
 
+<!-- Confirm deletion dialog. FIXME -->
 <div id="confirm_remove_medication_dialog" title="Confirm remove medication" style="display: none;">
-	<div>
-		<div id="delete_medication">
-			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-				<strong>WARNING: This will remove the medication from the patient record.</strong>
-			</div>
-			<p>
-				<strong>Are you sure you want to proceed?</strong>
-			</p>
-			<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
-				<input type="hidden" id="medication_id" value="" />
-				<button type="submit" class="classy red venti btn_remove_medication"><span class="button-span button-span-red">Remove medication</span></button>
-				<button type="submit" class="classy green venti btn_cancel_remove_medication"><span class="button-span button-span-green">Cancel</span></button>
-				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-			</div>
+	<div id="delete_medication">
+		<div class="alert-box alert with-icon">
+			<strong>WARNING: This will remove the medication from the patient record.</strong>
+		</div>
+		<p>
+			<strong>Are you sure you want to proceed?</strong>
+		</p>
+		<div class="buttons">
+			<input type="hidden" id="medication_id" value="" />
+			<button type="submit" class="classy red venti btn_remove_medication"><span class="button-span button-span-red">Remove medication</span></button>
+			<button type="submit" class="classy green venti btn_cancel_remove_medication"><span class="button-span button-span-green">Cancel</span></button>
+			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 	</div>
 </div>

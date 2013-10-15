@@ -45,8 +45,8 @@
 					<td><?php echo $operation->dateText?></td>
 					<td><?php if ($operation->side) { echo $operation->side->adjective.' ';}?><?php echo $operation->operation?></td>
 					<td>
-						<a href="#" class="editOperation" rel="<?php echo $operation->id?>"><strong>Edit</strong></a>&nbsp;&nbsp;
-						<a href="#" class="removeOperation" rel="<?php echo $operation->id?>"><strong>Remove</strong></a>
+						<a href="#" class="editOperation" rel="<?php echo $operation->id?>">Edit</a>&nbsp;&nbsp;
+						<a href="#" class="removeOperation" rel="<?php echo $operation->id?>">Remove</a>
 					</td>
 				</tr>
 			<?php }?>
@@ -133,25 +133,24 @@
 	</div>
 </section>
 
-
+<!-- Confirm deletion dialog -->
 <div id="confirm_remove_operation_dialog" title="Confirm remove operation" style="display: none;">
-	<div>
-		<div id="delete_operation">
-			<div class="alert-box alert with-icon">
-				<strong>WARNING: This will remove the operation from the patient record.</strong>
-			</div>
-			<p>
-				<strong>Are you sure you want to proceed?</strong>
-			</p>
-			<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
-				<input type="hidden" id="operation_id" value="" />
-				<button type="submit" class="warning btn_remove_operation">Remove operation</button>
-				<button type="submit" class="secondary btn_cancel_remove_operation">Cancel</button>
-				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-			</div>
+	<div id="delete_operation">
+		<div class="alert-box alert with-icon">
+			<strong>WARNING: This will remove the operation from the patient record.</strong>
+		</div>
+		<p>
+			<strong>Are you sure you want to proceed?</strong>
+		</p>
+		<div class="buttons">
+			<input type="hidden" id="operation_id" value="" />
+			<button type="submit" class="warning small btn_remove_operation">Remove operation</button>
+			<button type="submit" class="secondary small btn_cancel_remove_operation">Cancel</button>
+			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 	</div>
 </div>
+
 <script type="text/javascript">
 	$('#btn-add_previous_operation').click(function() {
 		$('#previous_operation').val('');
