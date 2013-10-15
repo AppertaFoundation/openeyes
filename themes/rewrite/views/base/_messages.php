@@ -24,7 +24,7 @@
 if ($flash_messages = Yii::app()->user->getFlashes()) {
 ?>
 <div class="row">
-	<div class="large-12">
+	<div class="large-12 column">
 		<?php
 		ksort($flash_messages);
 		foreach ($flash_messages as $flash_key => $flash_message) {

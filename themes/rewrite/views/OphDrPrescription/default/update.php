@@ -18,13 +18,13 @@
  */
 ?>
 
-<?php $this->header() ?>
+<?php $this->beginContent('//patient/event_container', array()); ?>
 
-<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
+<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
 <?php $this->renderPartial('//base/_messages'); ?>
 
-<div id="event_<?php echo $this->module->name?>">
+<div id="event_<?php echo $this->module->name?>" class="edit">
 	<?php
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'clinical-create',
@@ -33,14 +33,13 @@
 		));
 
 		// Event actions
-		$this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('colour' => 'green'), array('id' => 'et_save_draft'));
-		$this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('colour' => 'green'), array('id' => 'et_save_print'));
-		$this->renderPartial('//patient/event_actions');
+		$this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'secondary'), array('id' => 'et_save_draft', 'class'=>'button small', 'form' => 'clinical-create'));
+		$this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class'=>'button small', 'form' => 'clinical-create'));
 	?>
 
 		<?php $this->displayErrors($errors)?>
 
-		<div class="elements">
+		<div class="elements ">
 			<?php $this->renderDefaultElements($this->action->id, $form); ?>
 			<?php $this->renderOptionalElements($this->action->id, $form); ?>
 		</div>
@@ -51,4 +50,4 @@
 	<?php $this->endWidget(); ?>
 </div>
 
-<?php $this->footer() ?>
+<?php $this->endContent() ;?>
