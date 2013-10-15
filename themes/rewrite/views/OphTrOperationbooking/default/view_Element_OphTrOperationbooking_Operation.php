@@ -116,7 +116,7 @@
 <?php } ?>
 
 <?php if (count($element->cancelledBookings)) { ?>
-	<h3 class="subsection">Cancelled Bookings</h3>
+	<h2 class="event-title">Cancelled Bookings</h2>
 	<ul class="eventComments">
 		<?php foreach ($element->cancelledBookings as $booking) { ?>
 		<li>

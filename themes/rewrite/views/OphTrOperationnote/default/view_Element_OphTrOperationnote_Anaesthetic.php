@@ -18,7 +18,7 @@
  */
 ?>
 
-<h3 class="subsection"><?php echo $element->elementType->name?></h3>
+<h2 class="event-title"><?php echo $element->elementType->name?></h2>
 
 <div class="colsX clearfix">
 	<div class="colStack">

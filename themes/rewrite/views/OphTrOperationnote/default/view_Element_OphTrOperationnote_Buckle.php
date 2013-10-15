@@ -18,7 +18,7 @@
  */
 ?>
 
-<h3 class="subsection"><?php echo $element->elementType->name ?></h3>
+<h2 class="event-title"><?php echo $element->elementType->name ?></h2>
 
 <div class="cols2 colsX clearfix">
 	<div class="right" style="margin-top: 30px;">
