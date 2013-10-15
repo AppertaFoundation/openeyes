@@ -181,6 +181,17 @@ $oe-box-event-border-width: 0 5px 5px !default;
 	}
 }
 
+// Patient info - associated contacts
+.box {
+	&.patient-info {
+		&.patient-contacts {
+			.data-label {
+				color: $form-label-font-color;
+			}
+		}
+	}
+}
+
 // Admin box
 .box {
 	&.admin {

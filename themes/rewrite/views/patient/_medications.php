@@ -36,7 +36,7 @@
 		<table class="plain patient-data">
 			<thead>
 			<tr>
-				<th width="85px">Medication</th>
+				<th>Medication</th>
 				<th>Route</th>
 				<th>Option</th>
 				<th>Frequency</th>
@@ -88,12 +88,11 @@
 
 				<div class="patientMedication field-row row">
 					<div class="<?php echo $form->columns('label');?>">
-						<label for="">Medication:</label>
+						<label for="drug_id">Medication:</label>
 					</div>
 					<div class="<?php echo $form->columns('field');?>">
 
-						<div class="field-row">
-							<span id="selectedMedicationName" style="font-weight: bold;"></span>
+						<div class="field-row hide" id="selectedMedicationName" style="font-weight: bold;">
 						</div>
 
 						<div class="field-row">
@@ -113,7 +112,7 @@
 									}",
 									'options' => array(
 									'select' => "js:function(event, ui) {
-											$('#selectedMedicationName').text(ui.item.value);
+											$('#selectedMedicationName').text(ui.item.value).show();
 											$('#selectedMedicationID').val(ui.item.id);
 											$(this).val('');
 											return false;
@@ -157,7 +156,7 @@
 
 				<div class="field-row row">
 					<div class="<?php echo $form->columns('label');?>">
-						<label for="">Date from:</label>
+						<label for="start_date">Date from:</label>
 					</div>
 					<div class="<?php echo $form->columns(3, true);?>">
 						<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
@@ -234,7 +233,7 @@
 
 	function selectMedication(id, name)
 	{
-		$('#selectedMedicationName').text(name);
+		$('#selectedMedicationName').text(name).show();
 		$('#selectedMedicationID').val(id);
 
 		$.ajax({
@@ -289,7 +288,7 @@
 			'success': function(data) {
 				$('#add_medication #route_id').val(data['route_id']);
 				$('#selectedMedicationID').val(data['drug_id']);
-				$('#selectedMedicationName').text(data['drug_name']);
+				$('#selectedMedicationName').text(data['drug_name']).show();
 				$('#add_medication #frequency_id').val(data['frequency_id']);
 				$('#add_medication #start_date').val(data['start_date']);
 				$('div.routeOption .data').html(data['route_options']);

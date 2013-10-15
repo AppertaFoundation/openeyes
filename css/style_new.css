@@ -3153,7 +3153,12 @@ tfoot.pagination-container .pagination li {
   text-align: right;
 }
 
-/* line 186, ../sass/new/openeyes/components/_boxes.scss */
+/* line 188, ../sass/new/openeyes/components/_boxes.scss */
+.box.patient-info.patient-contacts .data-label {
+  color: black;
+}
+
+/* line 197, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin {
   border-style: solid;
   border-width: 1px;
@@ -3187,23 +3192,23 @@ tfoot.pagination-container .pagination li {
 .box.admin h1.subheader, .box.admin h2.subheader, .box.admin h3.subheader, .box.admin h4.subheader, .box.admin h5.subheader, .box.admin h6.subheader {
   line-height: 1.4;
 }
-/* line 191, ../sass/new/openeyes/components/_boxes.scss */
+/* line 202, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin h2 {
   margin-bottom: 0.75em;
 }
-/* line 195, ../sass/new/openeyes/components/_boxes.scss */
+/* line 206, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin .table-actions select {
   width: auto;
 }
-/* line 199, ../sass/new/openeyes/components/_boxes.scss */
+/* line 210, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin .box-header {
   margin: 0;
 }
-/* line 201, ../sass/new/openeyes/components/_boxes.scss */
+/* line 212, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin .box-header .box-title {
   float: left;
 }
-/* line 205, ../sass/new/openeyes/components/_boxes.scss */
+/* line 216, ../sass/new/openeyes/components/_boxes.scss */
 .box.admin .box-actions {
   float: right;
 }

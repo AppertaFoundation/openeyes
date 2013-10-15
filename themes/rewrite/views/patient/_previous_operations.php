@@ -83,7 +83,7 @@
 
 					<div class="field-row row">
 						<div class="<?php echo $form->columns('label');?>">
-							<label for="">Common operations:</label>
+							<label for="common_previous_operation">Common operations:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
 							<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
@@ -92,7 +92,7 @@
 
 					<div class="field-row row">
 						<div class="<?php echo $form->columns('label');?>">
-							<label for="">Operation:</label>
+							<label for="previous_operation">Operation:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
 							<?php echo CHtml::textField('previous_operation','')?>

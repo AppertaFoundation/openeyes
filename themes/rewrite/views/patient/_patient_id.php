@@ -25,10 +25,8 @@
 
 <div class="panel patient radius" id="patientID">
 	<div class="patient-details">
-		<a href="#">
-			<?php echo CHtml::link($this->patient->getDisplayName(),array('/patient/view/'.$this->patient->id)) ?>
-			<span class="patient-age">(<?php if ($this->patient->isDeceased()) { ?>Deceased<?php } else { echo $this->patient->getAge(); } ?>)</span>
-		</a>
+		<?php echo CHtml::link($this->patient->getDisplayName(),array('/patient/view/'.$this->patient->id)) ?>
+		<span class="patient-age">(<?php if ($this->patient->isDeceased()) { ?>Deceased<?php } else { echo $this->patient->getAge(); } ?>)</span>
 	</div>
 	<div class="hospital-number">
 		No. <?php echo $this->patient->hos_num?>
