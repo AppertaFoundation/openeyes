@@ -33,11 +33,11 @@
 		<?php
 		if (!$this->patient->hasAllergyStatus()) {
 			?>
-			<span class="allergy-status">Patient allergy status is unknown</span>
+			<p class="allergy-status">Patient allergy status is unknown</p>
 			<?php
 		} elseif ($this->patient->no_allergies_date) {
 			?>
-			<span class="allergy-status">Patient has no known allergies</span>
+			<p class="allergy-status">Patient has no known allergies</p>
 			<?php
 		} else {
 			?>

@@ -12,7 +12,19 @@
 		<div class="container content">
 			<h1 class="badge">Patient summary</h1>
 
+			<div class="messages patient">
+				<div class="row">
+					<div class="large-12 column">
+						<div class="alert-box patient with-icon">
+							<strong>Patient has allergies</strong>
+							- Acetazolamide<br />
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="row">
+
 				<div class="large-6 column">
 
 					<!-- Personal Details -->
