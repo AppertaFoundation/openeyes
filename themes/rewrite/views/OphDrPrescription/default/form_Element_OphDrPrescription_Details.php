@@ -92,7 +92,7 @@
 					</div>
 					<div class="large-10 column">
 						<?php if ($this->getPreviousPrescription($this->patient, $element->id)) { ?>
-							<button type="button" class="classy blue mini"
+							<button type="button" class="classy blue mini button small"
 									id="repeat_prescription" name="repeat_prescription">
 								<span class="button-span button-span-blue">Add Repeat Prescription</span>
 							</button>
@@ -132,9 +132,6 @@
 		<section class="element">
 			<div class="element-fields">
 				<div class="row field-row">
-					<div class="large-2 column">
-						<label for="">Comments:</label>
-					</div>
 					<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 60)) ?>
 				</div>
 			</div>
@@ -237,8 +234,8 @@ $('#prescription_items').delegate('a.taperItem:not(.processing)', 'click', funct
 
 	// Insert taper row
 	var odd_even = (row.hasClass('odd')) ? 'odd' : 'even';
-	var new_row = $('<tr data-key="'+key+'" data-taper="'+taper_key+'" class="prescriptionTaper '+odd_even+'"></tr>');
-	new_row.append($('<td class="prescriptionLabel">then</td>'), $('<td></td>').append(dose_input), $('<td colspan="2"></td>'), $('<td></td>').append(frequency_input), $('<td></td>').append(duration_input), $('<td class="prescriptionItemActions"><a class="removeTaper"	href="#">Remove</a></td>'));
+	var new_row = $('<tr data-key="'+key+'" data-taper="'+taper_key+'" class="prescription-tapier '+odd_even+'"></tr>');
+	new_row.append($('<td class="prescription-label"><span>then</span></td>'), $('<td></td>').append(dose_input), $('<td colspan="2"></td>'), $('<td></td>').append(frequency_input), $('<td></td>').append(duration_input), $('<td class="prescriptionItemActions"><a class="removeTaper"	href="#">Remove</a></td>'));
 	last_row.after(new_row);
 
 	return false;

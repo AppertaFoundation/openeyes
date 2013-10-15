@@ -18,54 +18,50 @@
  */
 ?>
 
-<h2 class="event-title"><?php echo $element->elementType->name?></h2>
-
-<div class="colsX clearfix">
-	<div class="colStack">
-		<h4><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id'))?></h4>
-		<div class="eventHighlight">
-			<h4><?php echo $element->anaesthetic_type->name?></h4>
-		</div>
-	</div>
-	<?php if ($element->anaesthetic_type->name != 'GA') {?>
-		<div class="colStack">
-			<h4><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id'))?></h4>
-			<div class="eventHighlight">
-				<h4><?php echo $element->anaesthetist->name?></h4>
+<section class="element">
+	<h3 class="element-title highlight"><?php echo $element->elementType->name?></h3>
+	<div class="element-data">
+		<div class="row">
+			<div class="large-2 column">
+				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id'))?></h4>
+				<div class="data-value"><?php echo $element->anaesthetic_type->name?>
+				</div>
 			</div>
+	<?php if ($element->anaesthetic_type->name != 'GA') {?>
+		<div class="large-2 column">
+			<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id'))?></h4>
+				<div class="data-value"><?php echo $element->anaesthetist->name?>
+				</div>
 		</div>
-		<div class="colStack">
-			<h4><?php echo CHtml::encode($element->getAttributeLabel('agents'))?></h4>
-			<div class="eventHighlight<?php if (!$element->anaesthetic_agents) {?> none<?php }?>">
+		<div class="large-2 column">
+			<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('agents'))?></h4>
+			<div class="data-value <?php if (!$element->anaesthetic_agents) {?> none<?php }?>">
 				<?php if (!$element->anaesthetic_agents) {?>
-					<h4>None</h4>
+					None
 				<?php } else {?>
-					<h4>
+
 						<?php foreach ($element->anaesthetic_agents as $agent) {?>
 							<?php echo $agent->name?><br/>
 						<?php }?>
-					</h4>
+
 				<?php }?>
 			</div>
 		</div>
-		<div class="colStack">
-			<h4><?php echo CHtml::encode($element->getAttributeLabel('complications'))?></h4>
-			<div class="eventHighlight<?php if (!$element->anaesthetic_complications) {?> none<?php }?>">
+		<div class="large-3 column">
+			<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('complications'))?></h4>
+			<div class="data-value <?php if (!$element->anaesthetic_complications) {?> none<?php }?>">
 				<?php if (!$element->anaesthetic_complications) {?>
-					<h4>None</h4>
+					None
 				<?php } else {?>
-					<h4>
 						<?php foreach ($element->anaesthetic_complications as $complication) {?>
 							<?php echo $complication->name?><br/>
 						<?php }?>
-					</h4>
 				<?php }?>
 			</div>
 		</div>
-		<div class="colStack">
-			<h4><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_delivery_id'))?></h4>
-			<div class="eventHighlight">
-				<h4><?php echo $element->anaesthetic_delivery->name?></h4>
+		<div class="large-3 column">
+			<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_delivery_id'))?></h4>
+			<div class="data-value"><?php echo $element->anaesthetic_delivery->name?></h4>
 			</div>
 		</div>
 		<?php if ($element->getSetting('fife')) {?>
@@ -75,6 +71,9 @@
 					<h4><?php echo ($element->witness ? $element->witness->fullName : 'None')?></h4>
 				</div>
 			</div>
+		</div>
+
 		<?php }?>
 	<?php }?>
-</div>
+	</div>
+</section>

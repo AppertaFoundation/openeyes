@@ -136,9 +136,9 @@
 			</div>
 		</div>
 		<div class="large-4 column">
-			<h3 class="data-title">Cataract devices<</h3>
+			<h3 class="data-title">Cataract devices</h3>
 			<div class="element-data highlight">
-				<div class="data-value none">
+				<div class="data-value <?php if (!$element->operative_devices)  {?> none<?php }?>">
 			<?php if (!$element->operative_devices) {?>
 				None
 			<?php } else {?>
@@ -155,7 +155,7 @@
 		<div class="large-4 column">
 			<h3 class="data-title">Cataract complications</h3>
 			<div class="element-data highlight">
-				<div class="data-value">
+				<div class="data-value <?php if (!$element->complications && !$element->complication_notes)  {?> none<?php }?>">
 			<?php if (!$element->complications && !$element->complication_notes) {?>
 				None
 			<?php } else {?>

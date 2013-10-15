@@ -17,8 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<tr data-key="<?php echo $key ?>" class="prescriptionItem<?php if ($patient->hasDrugAllergy($item->drug_id)) { ?> allergyWarning<?php } ?><?php if($item->getErrors()) { ?> errors<?php } ?> <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
-	<td class="prescriptionLabel">
+<tr data-key="<?php echo $key ?>" class="prescription-item<?php if ($patient->hasDrugAllergy($item->drug_id)) { ?> allergyWarning<?php } ?><?php if($item->getErrors()) { ?> errors<?php } ?> <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
+	<td class="prescription-label">
 		<?php echo $item->drug->tallmanlabel; ?>
 		<?php if ($item->id) { ?><input type="hidden" name="prescription_item[<?php echo $key ?>][id]" value="<?php echo $item->id?>" /><?php } ?>
 		<input type="hidden" name="prescription_item[<?php echo $key ?>][drug_id]" value="<?php echo $item->drug_id?>" />
@@ -51,8 +51,8 @@
 	$count = 0;
 	foreach ($item->tapers as $taper) {
 ?>
-<tr data-key="<?php echo $key ?>" data-taper="<?php echo $count ?>" class="prescriptionTaper <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
-	<td class="prescriptionLabel">
+<tr data-key="<?php echo $key ?>" data-taper="<?php echo $count ?>" class="prescription-tapier <?php echo ($key % 2) ? 'odd' : 'even'; ?>">
+	<td class="prescription-label">
 		<span>then</span>
 		<?php if ($taper->id) { ?><input type="hidden" name="prescription_item[<?php echo $key ?>][taper][<?php echo $count ?>][id]" value="<?php echo $taper->id?>" /><?php } ?>
 	</td>
@@ -67,7 +67,7 @@
 	<td>
 		<?php echo CHtml::dropDownList('prescription_item['.$key.'][taper]['.$count.'][duration_id]', $taper->duration_id, CHtml::listData($item->availableDurations(), 'id', 'name'), array('empty' => '-- Select --')); ?>
 	</td>
-	<td class="prescriptionItemActions">
+	<td class="prescription-actions">
 		<a class="removeTaper"	href="#">Remove</a>
 	</td>
 </tr>

@@ -31,7 +31,7 @@
 	</header>
 
 	<fieldset class="element-fields">
-	<div class="splitElement clearfix" style="background-color: #DAE6F1;">
+	<div class="splitElement clearfix" style="basckground-color: #DAE6F1;">
 		<div class="left" style="width:65%;">
 			<?php
 			$this->widget('application.modules.OphTrOperationnote.widgets.OEEyeDrawWidgetCataract', array(
