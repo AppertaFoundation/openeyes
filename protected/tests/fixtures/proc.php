@@ -23,6 +23,7 @@ return array(
 		'short_format' => 'FUB',
 		'snomed_code' => '12345',
 		'snomed_term' => 'Blah',
+		'aliases' => 'wstfgl,barfoo',
 		'default_duration' => 60,
 		'unbooked' => 0,
 	),

@@ -134,7 +134,7 @@ class Procedure extends BaseActiveRecord
 
 		$select = 'term, short_format, id, default_duration';
 
-		$where = '(term like :search or short_format like :search or snomed_term like :search or snomed_code = :term)';
+		$where = '(term like :search or short_format like :search or snomed_term like :search or snomed_code = :term or aliases like :search)';
 
 		if ($restrict == 'unbooked') {
 			$where .= ' and unbooked = 1';
