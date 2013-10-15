@@ -134,7 +134,7 @@ class Procedure extends BaseActiveRecord
 
 		$select = 'term, short_format, id, default_duration';
 
-		$where = 'term LIKE :term';
+		$where = '(term like :search or short_format like :search or snomed_term like :search or snomed_code = :term)';
 
 		if ($restrict == 'unbooked') {
 			$where .= ' and unbooked = 1';
@@ -145,7 +145,7 @@ class Procedure extends BaseActiveRecord
 		return Yii::app()->db->createCommand()
 			->select('term')
 			->from('proc')
-			->where($where, array(':term'=>$search))
+			->where($where, array(':term' => $term, ':search' => $search))
 			->order('term')
 			->queryColumn();
 	}

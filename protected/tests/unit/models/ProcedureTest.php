@@ -34,9 +34,13 @@ class ProcedureTest extends CDbTestCase {
                                                                        array('Foo', array('Foobar Procedure')),
                                                                        array('Foobar', array('Foobar Procedure')),
                                                                        array('Fo', array('Foobar Procedure')),
+                                                                       array('UB', array('Foobar Procedure')),
+                                                                       array('Bla', array('Foobar Procedure')),
                                                                        array('Test', array('Test Procedure')),
                                                                        array('Test Pro', array('Test Procedure')),
                                                                        array('Te', array('Test Procedure')),
+                                                                       array('TP', array('Test Procedure')),
+                                                                       array('leh', array('Test Procedure')),
 																	   array('Pro', array('Foobar Procedure', 'Test Procedure')),
                                               );
                        }
