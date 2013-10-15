@@ -27,6 +27,5 @@ module.exports = {
 			require: false,
 			console: false
 		}
-	},
-	test: 'test'
+	}
 };
