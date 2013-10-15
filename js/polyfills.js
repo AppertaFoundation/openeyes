@@ -37,7 +37,7 @@
 			e.stopPropagation();
 		};
 
-		function onSubmitClick(e) {
+		function onButtonClick(e) {
 
 			if (e.target.form || e.isDefaultPrevented() || !~$.inArray(e.target.type, ['image', 'submit'])) {
 				return;
@@ -67,6 +67,6 @@
 			}, 9);
 		}
 
-		$(document).on('click', 'input[form],button[form]', onSubmitClick);
-	})
+		$(document).on('click', 'input[form],button[form]', onButtonClick);
+	});
 }(window.Modernizr, document));
