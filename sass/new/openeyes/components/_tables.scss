@@ -46,6 +46,9 @@ table {
 			text-align: left;
 			background: $oe-table-header-cell-bg-color;
 			font-size: $oe-table-header-cell-font-size;
+			&, label {
+				font-weight: bold;
+			}
 		}
 		td {
 			font-size: $oe-table-cell-font-size;

@@ -314,6 +314,7 @@ class PatientController extends BaseController
 
 	public function actionEpisodes()
 	{
+		$this->layout = 'episodes';
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
@@ -351,6 +352,7 @@ class PatientController extends BaseController
 		}
 
 		$this->title = 'Episode summary';
+
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
@@ -369,6 +371,7 @@ class PatientController extends BaseController
 			throw new SystemException('Episode not found: '.$id);
 		}
 
+		$this->layout = 'episodes';
 		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
