@@ -78,7 +78,7 @@ $(document).ready(function(){
 						'url': baseUrl+'/patient/addNewEpisode',
 						'data': 'patient_id='+OE_patient_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 						'success': function(html) {
-							$('#user_panel').before(html);
+							$(document.body).append(html);
 						}
 					});
 				}

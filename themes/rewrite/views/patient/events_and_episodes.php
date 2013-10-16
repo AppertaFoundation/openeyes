@@ -18,35 +18,24 @@
  */
 ?>
 <?php
-
 $noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1);
-
-?>
-	<h1 class="badge">Episodes and events</h1>
-<?php
-
-if($noEpisodesFound && BaseController::checkUserLevel(4))
-{
 ?>
 
+<h1 class="badge">Episodes and events</h1>
+<?php if($noEpisodesFound && BaseController::checkUserLevel(4)) { ?>
 	<div class="row">
 		<div class="large-8 large-centered column">
 			<div class="box content">
 				<div class="panel">
 					<div class="alert-box alert with-icon">There are currently no episodes for this patient, please click the Add episode button to open a new episode.</div>
-					<button class="small addEpisode">
+					<button class="small add-episode">
 						Add episode
 					</button>
 				</div>
 			</div>
 		</div>
 	</div>
-
-<?php
-}
-else{ ?>
-
-
+<?php } else { ?>
 
 <div class="box content">
 	<div class="row">
