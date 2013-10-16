@@ -18,57 +18,56 @@
  */
 ?>
 
-<?php
-	$this->breadcrumbs=array($this->module->id);
-	$this->header();
-?>
+<?php $this->beginContent('//patient/event_container', array()); ?>
 
-<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
-
-<?php $this->renderPartial('//base/_messages'); ?>
-
-<div>
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'clinical-create',
-			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
-	));
-
-	$this->event_actions[] = EventAction::button('Save', 'save', array('colour' => 'green'));
-	$this->renderPartial('//patient/event_actions');
+	<?php
+		$this->breadcrumbs=array($this->module->id);
+		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
 	?>
 
-	<?php $this->displayErrors($errors)?>
-	<?php if ($this->side_to_inject !== null) {
-		$cls_lkup = array(
-			0 => 'none',
-			Eye::LEFT => 'left',
-			Eye::RIGHT => 'right',
-			Eye::BOTH => 'both'
-		);
-		if ($this->side_to_inject == 0) {
-			$msg = 'No injection should be performed today';
-		}
-		elseif ($this->side_to_inject == Eye::BOTH) {
-			$msg = "Both eyes to be injected";
-		}
-		else {
-			$msg = "Only " . strtolower(Eye::model()->findByPk($this->side_to_inject)->name) . " eye to be injected";
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+
+	<?php $this->renderPartial('//base/_messages'); ?>
+
+	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'clinical-create',
+		'enableAjaxValidation'=>false,
+		'htmlOptions' => array('class'=>'sliding'),
+		'layoutColumns' => array(
+			'label' => 4,
+			'field' => 8
+		)
+	));
+	?>
+		<?php $this->displayErrors($errors)?>
+		<?php if ($this->side_to_inject !== null) {
+			$cls_lkup = array(
+				0 => 'none',
+				Eye::LEFT => 'left',
+				Eye::RIGHT => 'right',
+				Eye::BOTH => 'both'
+			);
+			if ($this->side_to_inject == 0) {
+				$msg = 'No injection should be performed today';
+			}
+			elseif ($this->side_to_inject == Eye::BOTH) {
+				$msg = "Both eyes to be injected";
+			}
+			else {
+				$msg = "Only " . strtolower(Eye::model()->findByPk($this->side_to_inject)->name) . " eye to be injected";
+			}
+			?>
+			<div class="injection-warning <?php echo $cls_lkup[$this->side_to_inject] ?>">
+				<?php echo $msg ?>
+			</div>
+
+			<?php
 		}
 		?>
-		<div class="injection-warning <?php echo $cls_lkup[$this->side_to_inject] ?>">
-			<?php echo $msg ?>
-		</div>
+		<?php $this->renderDefaultElements($this->action->id, $form)?>
+		<?php $this->renderOptionalElements($this->action->id, $form)?>
+		<?php $this->displayErrors($errors)?>
 
-		<?php
-	}
-	?>
-	<?php $this->renderDefaultElements($this->action->id, $form)?>
-	<?php $this->renderOptionalElements($this->action->id, $form)?>
-	<?php $this->displayErrors($errors)?>
-
-	<div class="cleartall"></div>
+		<div class="cleartall"></div>
 	<?php $this->endWidget()?>
-</div>
-
-<?php $this->footer()?>
+<?php $this->endContent() ;?>

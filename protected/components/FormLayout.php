@@ -55,7 +55,14 @@ class FormLayout extends CActiveForm
 	 * into the widget.
 	 */
 	public function widget($className,$properties=array(),$captureOutput=false){
-		$properties = array_merge((array) $properties, array('layoutColumns' => $this->layoutColumns));
+
+		// We don't want to override the default layoutColumns with an empty array.
+		if (isset($properties['layoutColumns']) && empty($properties['layoutColumns'])) {
+			unset($properties['layoutColumns']);
+		}
+
+		$properties = array_merge(array('layoutColumns' => $this->layoutColumns), (array) $properties);
+
 		return parent::widget($className,$properties,$captureOutput);
 	}
 }

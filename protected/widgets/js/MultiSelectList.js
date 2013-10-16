@@ -21,13 +21,12 @@ $(document).ready(function() {
 		var selected = $(this).children('option:selected');
 
 		if (selected.val().length >0) {
-			$(this).parent().children('div').children('ul').append('<li>'+selected.text()+' (<a href="#" class="MultiSelectRemove '+selected.val()+'">remove</a>)</li>');
+			$(this).closest('.multi-select').find('.multi-select-selections').append('<li>'+selected.text()+' (<a href="#" class="MultiSelectRemove '+selected.val()+'">remove</a>)</li>');
 
 			var element_class = $(this).attr('name').replace(/\[.*$/,'');
 
-			var m = $(this).parent().parent().prev('input').attr('name').match(/\[MultiSelectList_(.*?)\]$/);
+			var m = $(this).closest('.widget').find('.multi-select-list-name').attr('name').match(/\[MultiSelectList_(.*?)\]$/);
 			var multiSelectField = m[1];
-			
 			var attrs = {};
 			$(selected[0].attributes).each(function() {
 				attrs[this.nodeName] = this.nodeValue;

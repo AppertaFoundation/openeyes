@@ -26,7 +26,8 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'field' => $field,
 			'data' => $data,
 			'htmlOptions' => $htmlOptions,
-			'hidden' => $hidden
+			'hidden' => $hidden,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 

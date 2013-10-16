@@ -39,7 +39,7 @@ $this->renderPartial('//layouts/patientMode/event_header');
 			<?php }?>
 			<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes, 'supportserviceepisodes'=>$supportserviceepisodes))?>
 
-		<div class="large-10 column event">
+		<div class="large-10 column event <?php echo $this->moduleNameCssClass;?> <?php echo $this->moduleStateCssClass; ?>">
 				<?php $this->renderPartial('//patient/event_tabs',array('hidden'=>(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
 
 				<!-- EVENT CONTENT HERE -->

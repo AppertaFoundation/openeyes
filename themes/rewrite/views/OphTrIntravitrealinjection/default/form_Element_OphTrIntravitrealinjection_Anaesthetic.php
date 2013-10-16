@@ -18,38 +18,33 @@
  */
 ?>
 
-<div class="element <?php echo $element->elementType->class_name?>"
+<section class="element <?php echo $element->elementType->class_name?>"
 	data-element-type-id="<?php echo $element->elementType->id?>"
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<h4 class="elementTypeName"><?php echo $element->elementType->name; ?></h4>
-
-	<div class="cols2 clearfix">
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
+	</header>
+	<div class="element-fields element-eyes row">
 		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-		<div
-			class="side left eventDetail<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
+		<div class="element-eye right-eye column <?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
 			data-side="right">
-			<div class="activeForm">
-				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-					array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-			</div>
+			<?php $this->renderPartial('form_' . get_class($element) . '_fields',
+				array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
 			<div class="inactiveForm">
 				Set right side treatment drug
 			</div>
 		</div>
 
-		<div
-			class="side right eventDetail<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
+		<div class="element-eye left-eye column <?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
 			data-side="left">
-			<div class="activeForm">
-				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-					array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-			</div>
+			<?php $this->renderPartial('form_' . get_class($element) . '_fields',
+				array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
 			<div class="inactiveForm">
 				Set left side treatment drug
 			</div>
 		</div>
 
 	</div>
-</div>
+</section>

@@ -30,6 +30,8 @@ class BaseEventTypeController extends BaseController
 	public $title;
 	public $assetPath;
 	public $episode;
+	public $moduleNameCssClass = '';
+	public $moduleStateCssClass = '';
 	public $event_tabs = array();
 	public $event_actions = array();
 	public $print_css = true;
@@ -106,6 +108,9 @@ class BaseEventTypeController extends BaseController
 
 	protected function beforeAction($action)
 	{
+		// Set the module CSS class name.
+		$this->moduleNameCssClass = strtolower(Yii::app()->getController()->module->id);
+
 		// Set asset path
 		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
 			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
@@ -306,6 +311,7 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function actionCreate()
 	{
+		$this->moduleStateCssClass = 'edit';
 		$this->event_type = EventType::model()->find('class_name=?', array($this->getModule()->name));
 		if (!$this->patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
 			throw new CHttpException(403, 'Invalid patient_id.');
@@ -437,6 +443,7 @@ class BaseEventTypeController extends BaseController
 
 	public function actionView($id)
 	{
+		$this->moduleStateCssClass = 'view';
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
@@ -503,6 +510,7 @@ class BaseEventTypeController extends BaseController
 
 	public function actionUpdate($id)
 	{
+		$this->moduleStateCssClass = 'edit';
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}

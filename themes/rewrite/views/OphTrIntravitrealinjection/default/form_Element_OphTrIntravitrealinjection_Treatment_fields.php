@@ -52,11 +52,12 @@
 ?>
 
 <div id="div_<?php echo get_class($element)?>_<?php echo $side ?>_pre_antisept_drug_id"
-	 class="eventDetail">
-	<div class="label">
-		<?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:
+	 class="row field-row">
+	<div class="large-4 column">
+	<label for="">
+		<?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:</label>
 	</div>
-	<div class="data">
+	<div class="large-8 column">
 		<div class="wrapper<?php if ($antiseptic_allergic) { echo ' allergyWarning'; }?>">
 			<?php
 				echo $form->dropDownList($element, $side . '_pre_antisept_drug_id', CHtml::listData($antiseptic_drugs, 'id', 'name'), $antiseptic_drugs_opts);
@@ -66,11 +67,12 @@
 </div>
 
 <div id="div_<?php echo get_class($element)?>_<?php echo $side ?>_pre_skin_drug_id"
-	 class="eventDetail">
-	<div class="label">
-		<?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:
+	 class="row field-row">
+	<div class="large-4 column">
+	<label for="">
+		<?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:</label>
 	</div>
-	<div class="data">
+	<div class="large-8 column">
 		<div class="wrapper<?php if ($skin_allergic) { echo ' allergyWarning'; }?>">
 			<?php
 			echo $form->dropDownList($element, $side . '_pre_skin_drug_id', CHtml::listData($skin_drugs, 'id', 'name'), $skin_drugs_opts);
@@ -79,17 +81,9 @@
 	</div>
 </div>
 
-<div id="div_<?php echo get_class($element)?>_<?php echo $side ?>_pre_ioplowering_required"
-	class="eventDetail">
-	<div class="label">
-		<?php echo $element->getAttributeLabel($side . '_pre_ioplowering_required') ?>:
-	</div>
-	<div class="data">
-		<?php
-			echo $form->checkbox($element, $side . '_pre_ioplowering_required', array('nowrapper' => true));
-		?>
-	</div>
-</div>
+<?php
+	echo $form->checkbox($element, $side . '_pre_ioplowering_required', array('nowrapper' => true));
+?>
 
 <?php
 $show = $element->{ $side . '_pre_ioplowering_required'};
@@ -155,11 +149,12 @@ if (isset($_POST[get_class($element)])) {
 
 ?>
 
-<div id="div_<?php echo get_class($element);?>_<?php echo $side?>_number" class="eventDetail">
-	<div class="label">
-		<?php echo $element->getAttributeLabel($side . '_number'); ?>
+<div id="div_<?php echo get_class($element);?>_<?php echo $side?>_number" class="row field-row">
+	<div class="large-4 column">
+		<label for="">
+		<?php echo $element->getAttributeLabel($side . '_number'); ?></label>
 	</div>
-	<div class="data">
+	<div class="large-8 column">
 		<?php echo $form->textField($element, $side . '_number', array('size' => '10', 'nowrapper' => true))?>
 		<span id="<?php echo $side; ?>_number_history_icon" class="number-history-icon<?php if (!$selected_drug) { echo ' hidden'; } ?>">
 			<img src="<?php echo $this->assetPath ?>/img/icon_info.png" height="20" />
@@ -187,25 +182,33 @@ if (isset($_POST[get_class($element)])) {
 	</div>
 </div>
 
-<?php echo $form->textField($element, $side . '_batch_number', array('size' => '32'))?>
+
+<div class="row field-row">
+	<div class="large-4 column">
+		<label for=""><?php echo $form->textField($element, $side . '_batch_number', array('size' => '32'))?></label>
+	</div>
+	<div class="large-8 column">
 <?php
 if (!$element->getIsNewRecord()) {
 	$expiry_date_params = array('minDate' => Helper::convertDate2NHS($element->created_date) );
 } else {
 	$expiry_date_params = array('minDate' => 'yesterday');
 }
-?>
+?>		</div>
+</div>
 
 <?php echo $form->datePicker($element, $side . '_batch_expiry_date', $expiry_date_params, array('style'=>'width: 110px;'))?>
 
 <?php echo $form->dropDownList($element, $side . '_injection_given_by_id', CHtml::listData(OphTrIntravitrealinjection_InjectionUser::model()->getUsers(),'id','ReversedFullName'),array('empty'=>'- Please select -'))?>
 
 <div id="div_<?php echo get_class($element)?>_<?php echo $side ?>_injection_time"
-	class="eventDetail">
-	<div class="label">
+	class="row field-row">
+	<div class="large-4 column">
+		<label for="">
 		<?php echo $element->getAttributeLabel($side . '_injection_time') ?>:
+		</label>
 	</div>
-	<div class="data">
+	<div class="large-8 column">
 		<?php
 			if ($element->{$side . '_injection_time'} != null) {
 				$val = date('H:i',strtotime($element->{$side . '_injection_time'}));
@@ -221,18 +224,23 @@ if (!$element->getIsNewRecord()) {
 	</div>
 </div>
 
+<?php
+echo $form->checkbox($element, $side . '_post_ioplowering_required');
+?>
+
+<?php /*
 <div id="div_<?php echo get_class($element)?>_<?php echo $side ?>_post_ioplowering_required"
-	class="eventDetail">
-	<div class="label">
+	class="row field-row">
+	<div class="large-4 column">
+		<label for="">
 		<?php echo $element->getAttributeLabel($side . '_post_ioplowering_required') ?>:
+		</label>
 	</div>
-	<div class="data">
-		<?php
-			echo $form->checkbox($element, $side . '_post_ioplowering_required', array('nowrapper' => true));
-		?>
+	<div class="large-8 column">
+
 	</div>
 </div>
-
+*/?>
 <?php
 	$div_class = "eventDetail";
 	$show = $element->{ $side . '_post_ioplowering_required'};
