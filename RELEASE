@@ -3,7 +3,26 @@ Release History
 
 This document is intended to summarise the changes made for each release. It should be noted that this document was only introduced with version 1.4, and therefore doesn't cover earlier releases.
 
+1.4.4
+-----
++ allergy enhancements - display warnings for allergies, and support flag to indicate patient has no allergies
++ helper function for file size config parsing
+
+1.4.3
+-----
++ introduce softdelete support for event elements
+
+1.4.2
+-----
++ bugfixes - migrations
++ bugfix - csrf token check on login
+ 
+1.4.1
+-----
++ bugfixes/optimisations
+
 1.4
+---
 
 + Added Yii as submodule
 + Updated Yii to 1.1.13
