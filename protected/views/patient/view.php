@@ -19,9 +19,9 @@
 
 ?>
 
-<?php 
+<?php
 	$clinical = (BaseController::checkUserLevel(2));
-	
+
 	$warnings = $this->patient->getWarnings($clinical);
 ?>
 
@@ -47,7 +47,7 @@
 		<div class="curvybox patientWarningBox">
 			<?php foreach ($warnings as $warn) {?>
 				<strong><?php echo $warn['long_msg']; ?></strong>
-				- <?php echo $warn['details']; 
+				- <?php echo $warn['details'] . '<br />';
 			}?>
 		</div>
 	<?php }?>
