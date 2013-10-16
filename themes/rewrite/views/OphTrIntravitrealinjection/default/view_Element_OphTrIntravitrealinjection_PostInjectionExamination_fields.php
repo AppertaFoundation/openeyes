@@ -18,14 +18,22 @@
  */
 ?>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_finger_count') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_finger_count'} ? 'Yes' : 'No'?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_finger_count') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_finger_count'} ? 'Yes' : 'No'?>		</div>
+	</div>
 </div>
-<div class="eventDetail aligned">
-	<div class="label">IOP:</div>
 
-	<div class="data">
+
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label">IOP:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
 	<?php if ($element->{$side . '_iop_check'}) {?>
 		IOP should be checked
 		<?php if (Yii::app()->hasModule('OphCiPhasing')) { ?>
@@ -34,13 +42,20 @@
 	<?php } else {?>
 		IOP does not need to be checked.
 	<?php } ?>
+		</div>
 	</div>
 </div>
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_drops_id') ?>:</div>
-	<div class="data"><?php if ($element->{$side . '_drops'}) {
+
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_drops_id') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php if ($element->{$side . '_drops'}) {
 		echo $element->{$side . '_drops'}->name;
 	} else { ?>
 		Not Recorded
-	<?php }?></div>
+	<?php }?>
+		</div>
+	</div>
 </div>

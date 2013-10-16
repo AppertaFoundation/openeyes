@@ -18,25 +18,40 @@
  */
 ?>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_pre_antisept_drug'}->name ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_pre_antisept_drug_id') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_pre_antisept_drug'}->name ?></div>
+	</div>
 </div>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_pre_skin_drug'}->name ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_pre_skin_drug_id') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_pre_skin_drug'}->name ?></div>
+	</div>
 </div>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_pre_ioplowering_required') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_pre_ioplowering_required'} ? 'Yes' : 'No' ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_pre_ioplowering_required') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_pre_ioplowering_required'} ? 'Yes' : 'No' ?></div>
+	</div>
 </div>
 
 <?php if ($element->{$side . '_pre_ioploweringdrugs'}) { ?>
-	<div class="eventDetail aligned">
-		<div class="label"><?php echo $element->getAttributeLabel($side . '_pre_ioploweringdrugs') ?>:</div>
-		<div class="data" style="display: inline-block;">
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_pre_ioploweringdrugs') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
 			<?php 
 			foreach ($element->{$side . '_pre_ioploweringdrugs'} as $item) {
 				echo $item->name . "<br />";
@@ -44,47 +59,79 @@
 			?>
 		</div>
 	</div>
+</div>
 <?php } ?>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_drug_id') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_drug'}->name ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_drug_id') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_drug'}->name ?>		</div>
+	</div>
 </div>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_number') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_number'} ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_number') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_number'} ?></div>
+	</div>
 </div>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_batch_number') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_batch_number'} ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_batch_number') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_batch_number'} ?></div>
+	</div>
 </div>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_batch_expiry_date') ?>:</div>
-	<div class="data"><?php echo $element->NHSDate($side . '_batch_expiry_date') ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_batch_expiry_date') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->NHSDate($side . '_batch_expiry_date') ?></div>
+	</div>
 </div>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_injection_given_by_id') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_injection_given_by'}->ReversedFullName ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_injection_given_by_id') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_injection_given_by'}->ReversedFullName ?></div>
+	</div>
 </div>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_injection_time') ?>:</div>
-	<div class="data"><?php echo date('g:ia',strtotime($element->{$side . '_injection_time'})); ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_injection_time') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo date('g:ia',strtotime($element->{$side . '_injection_time'})); ?></div>
+	</div>
 </div>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_post_ioplowering_required') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_post_ioplowering_required'} ? 'Yes' : 'No' ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_post_ioplowering_required') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_post_ioplowering_required'} ? 'Yes' : 'No' ?></div>
+	</div>
 </div>
 
 <?php if ($element->{$side . '_post_ioploweringdrugs'}) { ?>
-	<div class="eventDetail aligned">
-		<div class="label"><?php echo $element->getAttributeLabel($side . '_post_ioploweringdrugs') ?>:</div>
-		<div class="data" style="display: inline-block;">
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_post_ioploweringdrugs') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
 			<?php 
 			foreach ($element->{$side . '_post_ioploweringdrugs'} as $item) {
 				echo $item->name . "<br />";
@@ -92,5 +139,6 @@
 			?>
 		</div>
 	</div>
+</div>
 
 <?php } ?>

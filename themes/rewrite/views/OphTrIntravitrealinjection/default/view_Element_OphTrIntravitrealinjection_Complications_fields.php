@@ -19,9 +19,12 @@
 ?>
 
 
-	<div class="eventDetail aligned">
-		<div class="label"><?php echo $element->getAttributeLabel($side . '_complications') ?>:</div>
-		<div class="data" style="display: inline-block;">
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_complications') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
 			<?php
 			if (!$element->{$side . '_complications'}) {
 				echo "None";
@@ -33,10 +36,15 @@
 			?>
 		</div>
 	</div>
+</div>
 
 	<?php if ($element->{$side . '_oth_descrip'}) { ?>
-		<div class="eventDetail aligned">
-			<div class="label"><?php echo $element->getAttributeLabel($side . '_oth_descrip') ?>:</div>
-			<div class="data"><?php echo CHtml::encode($element->{$side . '_oth_descrip'}) ?></div>
+	<div class="row data-row">
+		<div class="large-4 column">
+			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_oth_descrip') ?>:</div>
 		</div>
+		<div class="large-8 column">
+			<div class="data-value"><?php echo CHtml::encode($element->{$side . '_oth_descrip'}) ?>		</div>
+		</div>
+	<div>
 	<?php } ?>
