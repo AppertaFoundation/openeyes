@@ -32,21 +32,21 @@
 	<table class="patient-episodes grid">
 		<thead>
 			<tr>
-				<th id="yw0_c0">Start Date</th>
-				<th id="yw0_c1">End Date</th>
-				<th id="yw0_c2">Firm</th>
-				<th id="yw0_c3">Subspecialty</th>
-				<th id="yw0_c4">Eye</th>
-				<th id="yw0_c5">Diagnosis</th>
+				<th>Start Date</th>
+				<th>End Date</th>
+				<th>Firm</th>
+				<th>Subspecialty</th>
+				<th>Eye</th>
+				<th>Diagnosis</th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php foreach ($ordered_episodes as $specialty_episodes) {?>
-			<tr>
-				<td colspan="6" class="all-episode specialty small"><?php echo $specialty_episodes['specialty'] ?></td>
+			<tr class="speciality">
+				<td colspan="6"><?php echo $specialty_episodes['specialty'] ?></td>
 			</tr>
 			<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
-				<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0) {?>even<?php } else {?>odd<?php }?><?php if ($episode->end_date !== null) {?> closed<?php }?>">
+				<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($episode->end_date !== null) {?> closed<?php }?>">
 					<td><?php echo $episode->NHSDate('start_date'); ?></td>
 					<td><?php echo $episode->NHSDate('end_date'); ?></td>
 					<td><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A'; ?></td>
@@ -114,4 +114,3 @@ try {
 	$this->renderPartial('_family_history');
 }
 ?>
-</section>
