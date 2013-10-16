@@ -22,27 +22,32 @@
 
 <div class="panel">
 
-	<div id="pas_warnings" class="alert-box alert with-icon" style="display: none;">
+	<div id="pas_warnings" class="alert-box alert with-icon hide">
 		<ul>
 			<li>One or more patients has no GP practice address, please correct in PAS before printing GP letter.</li>
 			<li>One or more patients has no Address, please correct in PAS before printing a letter for them.</li>
 		</ul>
 		<a href="#" class="close">×</a>
 	</div>
+
 	<table class="grid waiting-list">
 		<thead>
 		<tr>
 			<th>Letters sent</th>
-			<th style="width: 120px;">Patient</th>
-			<th style="width: 53px;">Hospital number</th>
-			<th style="width: 95px;">Location</th>
+			<th>Patient</th>
+			<th>Hospital number</th>
+			<th>Location</th>
 			<th>Procedure</th>
 			<th>Eye</th>
 			<th>Firm</th>
-			<th style="width: 80px;">Decision date</th>
+			<th>Decision date</th>
 			<th>Priority</th>
 			<th>Book status (requires...)</th>
-			<th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /> All</th>
+			<th>
+				<label>
+					<input type="checkbox" id="checkall" value="" /> All
+				</label>
+			</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -78,7 +83,7 @@
 					$letterStatusClass = "";
 				}?>
 
-				<tr class="waitinglist <?php echo ($i % 2 == 0) ? 'Even' : 'Odd'; ?>">
+				<tr>
 					<?php //FIXME: waiting list color needs adding to style for below to work ?>
 					<td class="letter-status <?php echo $letterStatusClass ?>">
 						<?php if ($eo->sentInvitation()) {?>
@@ -140,7 +145,7 @@
 
 			if ($i == 0) {?>
 				<tr>
-					<td colspan="7" style="border: none; padding-top: 10px;">
+					<td colspan="7">
 						There are no patients who match the specified criteria.
 					</td>
 				</tr>
