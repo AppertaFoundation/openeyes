@@ -26,7 +26,7 @@
 	<header class="element-header">
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
-	<div class="element-field element-eyes row">
+	<div class="element-fields element-eyes row">
 		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 		<div
 			class="element-eye right-eye left side column<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"

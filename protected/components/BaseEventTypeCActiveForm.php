@@ -38,6 +38,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'fields' => $fields,
 			'datas' => $datas,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -48,6 +49,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'options' => $options,
 			'selected_value' => $selected_value,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -65,6 +67,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'no_element' => $no_element,
 			'label_above' => $label_above,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -80,6 +83,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			),
 			'selected_item' => $element->$field,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -91,6 +95,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'field' => $field,
 			'options' => $options,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -107,6 +112,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'element' => $element,
 			'field' => $field,
 			'hidden' => $hidden,
+			'layoutColumns' => $layoutColumns
 		), $options));
 	}
 
@@ -117,7 +123,8 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'name' => get_class($element)."[$field]",
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
-			'links' => $links
+			'links' => $links,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -130,6 +137,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'name' => get_class($element)."[$field]",
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -145,6 +153,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'name' => $name,
 			'field' => null,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -154,6 +163,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'element' => $element,
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -163,6 +173,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'element' => $element,
 			'fields' => $fields,
 			'labeltext' => $labeltext,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -177,6 +188,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'default_options' => $default_options,
 			'htmlOptions' => $htmlOptions,
 			'hidden' => $hidden,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -187,6 +199,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'field' => $text_field,
 			'options' => $options,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -197,6 +210,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'field' => $text_field,
 			'options' => $options,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -207,6 +221,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'field' => $field,
 			'value' => $value,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -223,6 +238,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'remap_values' => @$options['remap'],
 			'null' => @$options['null'],
 			'append' => @$options['append'],
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -232,6 +248,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'element' => $element,
 			'field' => $field,
 			'data' => $data,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -240,6 +257,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'element' => $element,
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
@@ -247,6 +265,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 		$this->widget('application.widgets.FormActions', array(
 			'buttonOptions' => $buttonOptions,
 			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 
