@@ -26,9 +26,9 @@
 	<header class="element-header">
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
-	<div class="element-fields element-eyes row">
+	<div class="element-eyes row">
 		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-		<div class="element-eye right-eye left side column <?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
+		<div class="element-fields element-eye right-eye left side column <?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
 			data-side="right">
 			<div class="active-form">
 			<?php $this->renderPartial('form_' . get_class($element) . '_fields',
@@ -41,7 +41,7 @@
 			</div>
 		</div>
 
-		<div class="element-eye left-eye right side column <?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
+		<div class="element-fields element-eye left-eye right side column <?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
 			data-side="left">
 			<div class="active-form">
 			<?php $this->renderPartial('form_' . get_class($element) . '_fields',
