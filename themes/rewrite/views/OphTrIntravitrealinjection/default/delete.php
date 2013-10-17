@@ -20,10 +20,10 @@
 
 <?php
 	$this->breadcrumbs=array($this->module->id);
-	$this->header();
+	$this->beginContent('//patient/event_container', array());
 ?>
 
-<h3 class="withEventIcon"><?php echo $this->event_type->name?></h3>
+<h2 class="event-title"><?php echo $this->event_type->name?></h2>
 
 <div>
 	<div class="cleartall"></div>
@@ -42,11 +42,11 @@
 		echo CHtml::hiddenField('event_id', $this->event->id);
 	?>
 	<div class="buttonwrapper">
-		<button type="submit" class="classy red venti" id="et_deleteevent" name="et_deleteevent"><span class="button-span button-span-red">Delete event</span></button>
-		<button type="submit" class="classy green venti" id="et_canceldelete" name="et_canceldelete"><span class="button-span button-span-green">Cancel</span></button>
+		<button type="submit" class="button small secondary" id="et_deleteevent" name="et_deleteevent"><span class="button-span button-span-red">Delete event</span></button>
+		<button type="submit" class="button small warning" id="et_canceldelete" name="et_canceldelete"><span class="button-span button-span-green">Cancel</span></button>
 		<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 	</div>
 	<?php echo CHtml::endForm()?>
 </div>
 
-<?php $this->footer()?>
+<?php $this->endContent() ;?>
