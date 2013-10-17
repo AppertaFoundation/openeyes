@@ -20,20 +20,17 @@
 
 <?php
 	$this->breadcrumbs=array($this->module->id);
-	$this->header();
+	$this->beginContent('//patient/event_container', array());
 ?>
 
 <?php
 
 	// Event actions
 	if ($this->canPrint()) {
-		$this->event_actions[] = EventAction::button('Print', 'print');
-	}
-
-	$this->renderPartial('//patient/event_actions');
+		$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));}
 ?>
 
-<h3 class="withEventIcon"><?php echo $this->event_type->name?></h3>
+<h2 class="event-title"><?php echo $this->event_type->name?></h2>
 
 <div>
 	<?php $this->renderDefaultElements($this->action->id)?>
@@ -41,4 +38,4 @@
 	<div class="cleartall"></div>
 </div>
 
-<?php $this->footer()?>
+<?php $this->endContent() ;?>
