@@ -17,42 +17,28 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php
-$noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1);
-?>
-
-<h1 class="badge">Episodes and events</h1>
-<?php if($noEpisodesFound && BaseController::checkUserLevel(4)) { ?>
+<div class="box content">
 	<div class="row">
-		<div class="large-8 large-centered column">
-			<div class="box content">
-				<div class="panel">
-					<div class="alert-box alert with-icon">There are currently no episodes for this patient, please click the Add episode button to open a new episode.</div>
-					<button class="small add-episode">
-						Add episode
-					</button>
-				</div>
+
+		<?php if ($this->patient->isDeceased()) {?>
+			<div id="deceased-notice" class="alert-box alert with-icon">
+				This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
+			</div>
+		<?php }?>
+
+		<?php $this->renderPartial('//patient/episodes_sidebar',array(
+			'ordered_episodes'=>$ordered_episodes,
+			'legacyepisodes'=>@$legacyepisodes,
+			'supportserviceepisodes'=>$supportserviceepisodes
+		))?>
+
+		<div class="large-10 column event episode highlight-fields view">
+
+			<?php $this->renderPartial('//patient/event_tabs')?>
+
+			<div class="event-content">
+					<?php echo $content; ?>
 			</div>
 		</div>
 	</div>
-<?php } else { ?>
-	<?php $this->beginContent('//patient/episodes_container', array(
-		'ordered_episodes'=>$ordered_episodes,
-		'legacyepisodes'=>@$legacyepisodes,
-		'supportserviceepisodes'=>$supportserviceepisodes
-	));?>
-		<?php
-		if ($current_episode) {
-			if ($this->editing) {
-				$this->renderPartial('/clinical/updateEpisode',
-					array('episode' => $current_episode, 'error' => $error)
-				);
-			} else {
-				$this->renderPartial('/clinical/episodeSummary',
-					array('episode' => $current_episode)
-				);
-			}
-		}
-		?>
-	<?php $this->endContent(); ?>
-<?php }	?>
+</div>
