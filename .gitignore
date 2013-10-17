@@ -26,3 +26,5 @@ tags
 /protected/views/patient/custom/info/php
 /protected/commands/
 vendor
+/bin/phpunit
+/bin/webunit
