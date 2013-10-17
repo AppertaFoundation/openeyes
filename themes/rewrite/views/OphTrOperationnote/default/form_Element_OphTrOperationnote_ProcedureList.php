@@ -39,7 +39,6 @@
 		'newRecord' => true,
 		'last' => true,
 		'hidden' => ($this->action->id == 'create' && $element->getSelectedEye() == null && !@$_POST['Element_OphTrOperationnote_ProcedureList']['eye_id']),
-		'short_version' => false,
 	));
 	?>
 	</fieldset>
