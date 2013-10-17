@@ -13,7 +13,7 @@ Ophthalmic units of any size, from a single practitioner to a large eye hospital
 Resources
 ---------
 
-This is the main repository for development of the core OpenEyes framework.  Event type modules are being developed in other repositories both by ourselves and third party developers.  (EG: [OphCoCorrespondence](https://github.com/openeyes/OphCoCorrespondence)).  You may also be interested in our [EyeDraw repository](https://github.com/openeyes/EyeDraw) - this code is used by OpenEyes but may also be used independently.
+This is the main repository for development of the core OpenEyes framework.  Event type modules are being developed in other repositories both by ourselves and third party developers.  The [OpenEyes Project Overview](https://github.com/openeyes/OpenEyes/wiki#project-overview) provides a list of currently stable modules.  You may also be interested in our [EyeDraw repository](https://github.com/openeyes/EyeDraw) - this code is used by OpenEyes but may also be used independently.
 
 The principal source of information on OpenEyes is [the OpenEyes website](http://www.openeyes.org.uk)
 
