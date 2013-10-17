@@ -29,7 +29,6 @@ class ProcedureSelection extends BaseFieldWidget
 	public $class;
 	public $total_duration = 0;
 	public $last;
-	public $short_version = true;
 	public $identifier = 'procs';
 	public $relation = 'procedures';
 	public $label = 'Procedures';
