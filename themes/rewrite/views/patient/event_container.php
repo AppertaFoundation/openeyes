@@ -10,6 +10,8 @@ if ($module = $this->getModule()) {
 }
 ?>
 
+<h1 class="badge">Episodes and events</h1>
+
 <div class="box content">
 	<div class="row">
 

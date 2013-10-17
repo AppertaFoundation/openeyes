@@ -34,6 +34,7 @@ class PatientController extends BaseController
 	public $episode;
 	public $event_tabs = array();
 	public $event_actions = array();
+	public $episodes = array();
 
 	/**
 	 * Checks to see if current user can create an event type
@@ -1578,5 +1579,17 @@ class PatientController extends BaseController
 			'patient' => $patient,
 			'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
 		),false, true);
+	}
+
+	public function getEpisodes()
+	{
+		if ($this->patient && empty($this->episodes)) {
+			$this->episodes = array(
+				'ordered_episodes'=>$this->patient->getOrderedEpisodes(),
+				'legacyepisodes'=>$this->patient->legacyepisodes,
+				'supportserviceepisodes'=>$this->patient->supportserviceepisodes,
+			);
+		}
+		return $this->episodes;
 	}
 }
