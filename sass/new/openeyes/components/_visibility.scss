@@ -9,3 +9,16 @@
 .hide {
 	display: none;
 }
+
+.inactive-form {
+  display: none;
+  .inactive & {
+    display: block;
+  }
+}
+
+.active-form {
+  .inactive & {
+    display: none;
+  }
+}

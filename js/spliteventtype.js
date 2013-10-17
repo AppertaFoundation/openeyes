@@ -77,7 +77,7 @@ function hideSplitElementSide(cls, side) {
 		other_side_val = 2; // Right in db
 	}
 	var display_side = other_side;
-	$('.' + cls).find('.side.' + display_side).addClass('inactive');
+	$('.' + cls).find('.side.' +  display_side).addClass('inactive');
 	// side for data is the opposite side for display ...
 	if ($('.' + cls).find('.side.' + side).hasClass('inactive')) {
 		// the other side is not visible, so need to set the eye value to null
@@ -94,7 +94,7 @@ function hideSplitElementSide(cls, side) {
 }
 
 $(document).ready(function() {
-	$(this).delegate('#event_content .side .activeForm a.removeSide', 'click', function(e) {
+	$(this).delegate('#event_content .removeSide', 'click', function(e) {
 		
 		// Update side field to indicate other side
 		var side = $(this).closest('.side');
@@ -122,13 +122,13 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
-	$(this).delegate('#event_content .side .inactiveForm a', 'click', function(e) {
+	$(this).delegate('#event_content .side .inactive-form a', 'click', function(e) {
 		var element = $(this).closest('.element'); 
 		element.find('input.sideField').each(function() {
 			$(this).val(3); // Both eyes
 		});
 		
-		element.find('.side').removeClass('inactive');
+		element.find('.inactive').removeClass('inactive');
 		
 		e.preventDefault();
 	});

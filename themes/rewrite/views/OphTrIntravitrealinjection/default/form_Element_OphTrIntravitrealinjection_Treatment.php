@@ -34,27 +34,30 @@
 
 	<div class="element-fields element-eyes row">
 		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-		<div class="element-eye right-eye column <?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
+		<div class="element-eye right-eye left side column<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
 			data-side="right">
-			<div class="activeForm">
-				<a href="#" class="icon-remove-side">Remove side</a>
+			<div class="active-form">
+				<a href="#" class="icon-remove-side removeSide">Remove side</a>
 				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
 					array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data, 'injection_api' => $injection_api, 'episode' => $current_episode)); ?>
 			</div>
-			<div class="inactiveForm">
-				<a href="#">Add right side</a>
+			<div class="inactive-form">
+				<div class="add-side">
+				<a href="#">Add right side</a><span class="icon-add-side"></span>
+				</div>
 			</div>
 		</div>
-
-		<div class="element-eye left-eye column<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
+		<div class="element-eye left-eye right side column<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
 			data-side="left">
-			<div class="activeForm">
-				<a href="#" class="icon-remove-side">Remove side</a>
+			<div class="active-form">
+				<a href="#" class="icon-remove-side removeSide">Remove side</a>
 				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
 					array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data, 'injection_api' => $injection_api, 'episode' => $current_episode)); ?>
 			</div>
-			<div class="inactiveForm">
-				<a href="#">Add left side</a>
+			<div class="inactive-form">
+				<div class="add-side">
+				<a href="#">Add left side</a><span class="icon-add-side"></span>
+				</div>
 			</div>
 		</div>
 
