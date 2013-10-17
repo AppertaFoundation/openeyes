@@ -18,74 +18,74 @@
  */
 
 if (!empty($episode)) {
-if ($episode->diagnosis) {
-	$eye = $episode->eye ? $episode->eye->name : 'None';
-	$diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
-} else {
-	$eye = 'No diagnosis';
-	$diagnosis = 'No diagnosis';
-}
 
-$episode->audit('episode summary','view',false);
-?>
-
-<h2>Summary</h2>
-<h3><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></h3>
-
-<?php $this->renderPartial('//base/_messages'); ?>
-
-<section class="element element-data">
-	<h3 class="data-title">Principal diagnosis:</h3>
-	<div class="data-value highlight">
-		<?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></div>
-</section>
-
-
-
-<section class="element element-data">
-	<h3 class="data-title">Principal eye:</h3>
-	<div class="data-value highlight">
-		<?php echo $episode->eye ? $episode->eye->name : 'None'?></div>
-</section>
-
-<!-- divide into two columns -->
-
-<section class="element element-data">
-	<div class="row element-data-row">
-		<div class="large-6 column">
-			<h3 class="data-title">Start Date</h3>
-			<div class="data-value">
-				<?php echo $episode->NHSDate('start_date')?></div>
-		</div>
-		<div class="large-6 column">
-			<h3 class="data-title">End date:</h3>
-			<div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></div>
-		</div>
-	</div>
-</section>
-
-<section class="element element-data">
-	<div class="row element-data-row">
-		<div class="large-6 column">
-			<h3 class="data-title">Subspecialty:</h3>
-			<div class="data-value">
-				<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></div>
-		</div>
-		<div class="large-6 column">
-			<h3 class="data-title">Consultant firm:</h3>
-			<div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None'?></div>
-		</div>
-	</div>
-</section>
-
-<?php
-try {
-	if ($episode->firm) {
-		echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->firm->getSubspecialtyID(), array('episode' => $episode));
+	if ($episode->diagnosis) {
+		$eye = $episode->eye ? $episode->eye->name : 'None';
+		$diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
+	} else {
+		$eye = 'No diagnosis';
+		$diagnosis = 'No diagnosis';
 	}
-} catch (Exception $e) {
-	// If there is no extra episode summary detail page for this subspecialty we don't care
-}
+
+	$episode->audit('episode summary','view',false);
+	?>
+
+	<div class="element-data">
+		<h2>Summary</h2>
+		<h3><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></h3>
+	</div>
+
+	<?php $this->renderPartial('//base/_messages'); ?>
+
+	<section class="element element-data">
+		<h3 class="data-title">Principal diagnosis:</h3>
+		<div class="data-value highlight">
+			<?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></div>
+	</section>
+
+	<section class="element element-data">
+		<h3 class="data-title">Principal eye:</h3>
+		<div class="data-value highlight">
+			<?php echo $episode->eye ? $episode->eye->name : 'None'?></div>
+	</section>
+
+	<section class="element element-data">
+		<div class="row element-data-row">
+			<div class="large-6 column">
+				<h3 class="data-title">Start Date</h3>
+				<div class="data-value">
+					<?php echo $episode->NHSDate('start_date')?></div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="data-title">End date:</h3>
+				<div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></div>
+			</div>
+		</div>
+	</section>
+
+	<section class="element element-data">
+		<div class="row element-data-row">
+			<div class="large-6 column">
+				<h3 class="data-title">Subspecialty:</h3>
+				<div class="data-value">
+					<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="data-title">Consultant firm:</h3>
+				<div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None'?></div>
+			</div>
+		</div>
+	</section>
+
+	<?php
+	try {
+		if ($episode->firm) {
+			echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->firm->getSubspecialtyID(), array('episode' => $episode));
+		}
+	} catch (Exception $e) {
+		// If there is no extra episode summary detail page for this subspecialty we don't care
+	}
+
 } else {
 	// hide the episode border ?>
 	<script type="text/javascript">
@@ -94,20 +94,24 @@ try {
 <?php }?>
 
 <div class="metadata">
-	<span class="info"><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>: created by <span class="user"><?php echo $episode->user->fullName?> on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?></span></span>
+	<span class="info">
+		<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>: created by <span class="user"><?php echo $episode->user->fullName?></span>
+		on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?>
+	</span>
 </div>
-
-<!-- Booking -->
 
 <section class="element element-data">
 	<h3 class="data-title">Episode Status:</h3>
 	<div class="data-value highlight">
-		<?php echo $episode->status->name?></div>
+		<?php echo $episode->status->name?>
+	</div>
 </section>
 
-
 <div class="metadata">
-	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
+	<span class="info">
+		Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?></span>
+		on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?>
+	</span>
 </div>
 
 <div class="eventData">
