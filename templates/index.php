@@ -157,6 +157,23 @@
 									<td><span class="complete">Complete</span></td>
 								</tr>
 								<tr class="heading">
+									<td colspan="3"><h3>Episodes</h3></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="episode-view.php">Episode view</a>
+									</td>
+									<td>The episode detail view template.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="episode-create.php">Episode create</a>
+									</td>
+									<td>The episode create template.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr class="heading">
 									<td colspan="3"><h3>Event modules</h3></td>
 								</tr>
 								<tr>
