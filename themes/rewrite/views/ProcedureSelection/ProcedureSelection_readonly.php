@@ -34,11 +34,7 @@
 									<?php
 										$totalDuration += $procedure['default_duration'];
 										echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
-										echo "<span>".$procedure['term'];
-										if ($short_version) {
-											echo '</span> - <span>'.$procedure['short_format'];
-										}
-										echo "</span>";
+										echo "<span>".$procedure['term']."</span>";
 									?>
 								</span>
 								<?php if ($durations) {?>

@@ -54,7 +54,7 @@
 						'select'=>"js:function(event, ui) {
 							".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
 							if (typeof(window.callbackVerifyAddProcedure) == 'function') {
-								window.callbackVerifyAddProcedure(ui.item.value,".($durations?'1':'0').",".($short_version?'1':'0').",function(result) {
+								window.callbackVerifyAddProcedure(ui.item.value,".($durations?'1':'0').",function(result) {
 									if (result != true) {
 										$('#autocomplete_procedure_id_$identifier').val('');
 										return;
@@ -167,16 +167,11 @@
 		var subsection_field = $('select[id=subsection_id_'+identifier+']');
 		var subsection = subsection_field.val();
 		if (subsection != '') {
-			var existingProcedures = [];
-			$('#procedureList_'+identifier).children('h4').children('div.procedureItem').map(function() {
-				var text = $.trim($(subsection_field).children('span:nth-child(2)').text());
-				existingProcedures.push(text.replace(/ - .*?$/,''));
-			});
 
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
 				'type': 'POST',
-				'data': {'subsection': subsection, 'existing': existingProcedures, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
+				'data': {'subsection': subsection, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
 				'success': function(data) {
 					$('select[name=select_procedure_id_'+identifier+']').attr('disabled', false);
 					$('select[name=select_procedure_id_'+identifier+']').html(data);
@@ -212,7 +207,7 @@
 		<?php }?>
 
 			if (typeof(window.callbackVerifyAddProcedure) == 'function') {
-				window.callbackVerifyAddProcedure(procedure,".($durations?'1':'0').",".($short_version?'1':'0').",function(result) {
+				window.callbackVerifyAddProcedure(procedure,".($durations?'1':'0').",function(result) {
 					if (result != true) {
 						select.val('');
 						return;
@@ -246,7 +241,7 @@
 	function ProcedureSelectionSelectByName(name, callback, identifier)
 	{
 		$.ajax({
-			'url': baseUrl + '/procedure/details?durations=<?php echo $durations?'1':'0'?>&short_version=<?php echo $short_version?'1':'0'?>&identifier='+identifier,
+			'url': baseUrl + '/procedure/details?durations=<?php echo $durations?'1':'0'?>&identifier='+identifier,
 			'type': 'GET',
 			'data': {'name': name},
 			'success': function(data) {
