@@ -17,9 +17,7 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 ?>
-<?php 	$this->breadcrumbs=array($this->module->id);
-	$this->header();
-?>
+<?php $this->beginContent('//patient/event_container'); ?>
 <h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
 
 <div>
@@ -42,4 +40,4 @@
 		</div>
 	<?php echo CHtml::endForm();?></div>
 
-<?php $this->footer()?>
+<?php $this->endContent()?>

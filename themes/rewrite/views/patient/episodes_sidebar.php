@@ -18,6 +18,9 @@
  */
 ?>
 
+<?php
+extract($this->getEpisodes());
+?>
 <aside class="large-2 column sidebar episodes-and-events">
 
 <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && BaseController::checkUserLevel(4)) {?>

@@ -314,7 +314,7 @@ class PatientController extends BaseController
 
 	public function actionEpisodes()
 	{
-		$this->layout = 'episodes';
+		$this->layout = '//layouts/events_and_episodes';
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
@@ -353,7 +353,7 @@ class PatientController extends BaseController
 
 		$this->title = 'Episode summary';
 
-		$this->render('events_and_episodes', array(
+		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
 			'ordered_episodes' => $ordered_episodes,
@@ -371,7 +371,7 @@ class PatientController extends BaseController
 			throw new SystemException('Episode not found: '.$id);
 		}
 
-		$this->layout = 'episodes';
+		$this->layout = '//layouts/events_and_episodes';
 		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
@@ -401,7 +401,7 @@ class PatientController extends BaseController
 		$status[$id] = true;
 		Yii::app()->session['episode_hide_status'] = $status;
 
-		$this->render('events_and_episodes', array(
+		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
 			'ordered_episodes' => $ordered_episodes,
@@ -423,6 +423,8 @@ class PatientController extends BaseController
 			$this->redirect(array('patient/episode/'.$this->episode->id));
 			return;
 		}
+
+		$this->layout = '//layouts/events_and_episodes';
 
 		if (!empty($_POST)) {
 			if ((@$_POST['eye_id'] && !@$_POST['DiagnosisSelection']['disorder_id'])) {
@@ -474,9 +476,11 @@ class PatientController extends BaseController
 		$status[$id] = true;
 		Yii::app()->session['episode_hide_status'] = $status;
 
+
+
 		$this->editing = true;
 
-		$this->render('events_and_episodes', array(
+		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
 			'ordered_episodes' => $ordered_episodes,

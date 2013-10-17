@@ -36,11 +36,7 @@ $noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportservicee
 		</div>
 	</div>
 <?php } else { ?>
-	<?php $this->beginContent('//patient/episodes_container', array(
-		'ordered_episodes'=>$ordered_episodes,
-		'legacyepisodes'=>@$legacyepisodes,
-		'supportserviceepisodes'=>$supportserviceepisodes
-	));?>
+	<?php $this->beginContent('//patient/episodes_container');?>
 		<?php
 		if ($current_episode) {
 			if ($this->editing) {

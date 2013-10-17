@@ -26,11 +26,7 @@
 			</div>
 		<?php }?>
 
-		<?php $this->renderPartial('//patient/episodes_sidebar',array(
-			'ordered_episodes'=>$ordered_episodes,
-			'legacyepisodes'=>@$legacyepisodes,
-			'supportserviceepisodes'=>$supportserviceepisodes
-		))?>
+		<?php $this->renderPartial('//patient/episodes_sidebar')?>
 
 		<div class="large-10 column event episode highlight-fields view">
 

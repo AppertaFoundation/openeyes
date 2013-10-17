@@ -39,6 +39,8 @@ class BaseEventTypeController extends BaseController
 	public $eventIssueCreate = false;
 	public $extraViewProperties = array();
 	public $jsVars = array();
+	public $layout = '//layouts/events_and_episodes';
+	private $episodes = array();
 
 	/**
 	 * Checks to see if current user can create an event type
@@ -432,18 +434,18 @@ class BaseEventTypeController extends BaseController
 		);
 
 		$this->processJsVars();
-		$this->renderPartial(
-			'create',
-			array('elements' => $this->getDefaultElements('create'), 'eventId' => null, 'errors' => @$errors),
-			// processOutput is true so that the css/javascript from the event_header.php are processed when rendering the view
-			false, true
-		);
 
+		$this->render('create', array(
+			'elements' => $this->getDefaultElements('create'),
+			'eventId' => null,
+			'errors' => @$errors
+		));
 	}
 
 	public function actionView($id)
 	{
 		$this->moduleStateCssClass = 'view';
+
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
@@ -501,11 +503,13 @@ class BaseEventTypeController extends BaseController
 		}
 
 		$this->processJsVars();
-		$this->renderPartial(
-			'view', array_merge(array(
+
+		$viewData = array_merge(array(
 			'elements' => $elements,
 			'eventId' => $id,
-			), $this->extraViewProperties), false, true);
+		), $this->extraViewProperties);
+
+		$this->render('view', $viewData);
 	}
 
 	public function actionUpdate($id)
@@ -661,15 +665,11 @@ class BaseEventTypeController extends BaseController
 		);
 
 		$this->processJsVars();
-		$this->renderPartial(
-			$this->action->id,
-			array(
-				'elements' => $this->getDefaultElements($this->action->id),
-				'errors' => @$errors
-			),
-			// processOutput is true so that the css/javascript from the event_header.php are processed when rendering the view
-			false, true
-		);
+
+		$this->render($this->action->id, array(
+			'elements' => $this->getDefaultElements($this->action->id),
+			'errors' => @$errors
+		));
 	}
 
 	/**
@@ -775,49 +775,16 @@ class BaseEventTypeController extends BaseController
 		}
 	}
 
-	public function header($editable=null)
+	public function getEpisodes()
 	{
-		$episodes = $this->patient->episodes;
-		$ordered_episodes = $this->patient->getOrderedEpisodes();
-		/*
-		$ordered_episodes = array();
-		foreach ($episodes as $ep) {
-			$ordered_episodes[$ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty->name][] = $ep;
+		if (empty($this->episodes)) {
+			$this->episodes = array(
+				'ordered_episodes'=>$this->patient->getOrderedEpisodes(),
+				'legacyepisodes'=>$this->patient->legacyepisodes,
+				'supportserviceepisodes'=>$this->patient->supportserviceepisodes,
+			);
 		}
-		*/
-		$legacyepisodes = $this->patient->legacyepisodes;
-		$supportserviceepisodes = $this->patient->supportserviceepisodes;
-
-		if ($editable === null) {
-			if (isset($this->event)) {
-				$editable = $this->event->editable;
-			} else {
-				$editable = false;
-			}
-		}
-
-		$this->renderPartial('//patient/event_header',array(
-			'ordered_episodes'=>$ordered_episodes,
-			'legacyepisodes'=>$legacyepisodes,
-			'supportserviceepisodes'=>$supportserviceepisodes,
-			'eventTypes'=>EventType::model()->getEventTypeModules(),
-			'model'=>$this->patient,
-			'editable'=>$editable,
-		));
-	}
-
-	public function footer()
-	{
-		$episodes = $this->patient->episodes;
-		$legacyepisodes = $this->patient->legacyepisodes;
-		$supportserviceepisodes = $this->patient->supportserviceepisodes;
-
-		$this->renderPartial('//patient/event_footer',array(
-			'episodes'=>$episodes,
-			'legacyepisodes'=>$legacyepisodes,
-			'supportserviceepisodes'=>$supportserviceepisodes,
-			'eventTypes'=>EventType::model()->getEventTypeModules()
-		));
+		return $this->episodes;
 	}
 
 	public function createElements($elements, $data, $firm, $patientId, $userId, $eventTypeId)
@@ -1182,10 +1149,13 @@ class BaseEventTypeController extends BaseController
 		}
 
 		$this->processJsVars();
-		$this->renderPartial(
-			'delete', array(
+
+		$episodes = $this->getEpisodes();
+		$viewData = array_merge(array(
 			'eventId' => $id,
-			), false, true);
+		), $episodes);
+
+		$this->render('delete', $viewData);
 
 		return false;
 	}
