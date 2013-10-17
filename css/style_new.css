@@ -1074,13 +1074,13 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/new/_structure/gradient_bg.jpg?1381763520') 0 0 no-repeat;
+  background: #dae6f1 url('../img/new/_structure/gradient_bg.jpg?1381936129') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
 }
 
 /* line 10, ../sass/new/openeyes/components/containers/_content.scss */
 .container.content {
-  background: url('../img/new/_structure/help_top_grad.jpg?1381763520') 0 bottom no-repeat;
+  background: url('../img/new/_structure/help_top_grad.jpg?1381936129') 0 bottom no-repeat;
   min-height: 330px;
 }
 
@@ -1998,7 +1998,7 @@ table.patient-contacts td:first-child {
 }
 /* line 28, ../sass/new/openeyes/components/_header.scss */
 .header .logo {
-  background: url('../img/new/_structure/openeyes.png?1381763520') no-repeat;
+  background: url('../img/new/_structure/openeyes.png?1381936129') no-repeat;
   background-size: 100%;
   display: block;
   height: 70px;
@@ -2008,7 +2008,7 @@ table.patient-contacts td:first-child {
 
 /* line 43, ../sass/new/openeyes/components/_footer.scss */
 .footer {
-  background: #b3b0ae url('../img/new/_structure/openeyes_footer.png?1381763520') no-repeat right top;
+  background: #b3b0ae url('../img/new/_structure/openeyes_footer.png?1381936129') no-repeat right top;
 }
 /* line 46, ../sass/new/openeyes/components/_footer.scss */
 .footer .info {
@@ -2896,7 +2896,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 63, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.success.with-icon, .alert-box.info.with-icon {
-  background-image: url('../img/new/_elements/icons/box/info.png?1381763520');
+  background-image: url('../img/new/_elements/icons/box/info.png?1381936129');
   min-height: 36px;
   padding-top: 0.875em;
   padding-bottom: 0.875em;
@@ -2910,7 +2910,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 73, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.alert.with-icon, .with-icon.alert-box.warning {
-  background-image: url('../img/new/_elements/icons/box/warning.png?1381763520');
+  background-image: url('../img/new/_elements/icons/box/warning.png?1381936129');
   min-height: 36px;
   padding-top: 0.875em;
   padding-bottom: 0.875em;
@@ -2923,7 +2923,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 85, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.issue.with-icon {
-  background-image: url('../img/new/_elements/icons/box/issue.png?1381763520');
+  background-image: url('../img/new/_elements/icons/box/issue.png?1381936129');
   min-height: 36px;
 }
 /* line 90, ../sass/new/openeyes/components/_alert-boxes.scss */
@@ -2963,7 +2963,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 115, ../sass/new/openeyes/components/_alert-boxes.scss */
 .alert-box.patient.with-icon {
-  background-image: url('../img/new/_elements/icons/box/patient-warning.png?1381763520');
+  background-image: url('../img/new/_elements/icons/box/patient-warning.png?1381936129');
   padding-top: 0.875em;
   padding-bottom: 0.875em;
 }
@@ -3470,7 +3470,7 @@ tfoot.pagination-container .pagination li {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  background-image: url('../img/new/_elements/icons/user/idcard_bg.png?1381763520');
+  background-image: url('../img/new/_elements/icons/user/idcard_bg.png?1381936129');
   background-repeat: no-repeat;
   background-position: left bottom;
   border-color: #b3b0ae;
@@ -3551,11 +3551,11 @@ tfoot.pagination-container .pagination li {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1381763520'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1381763520'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1381763520'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1381763520'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1381763520'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1381936129'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1381936129'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1381936129'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1381936129'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background: url('../img/new/_elements/icons/patient/patient-id_small.png?1381936129'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
   background-repeat: no-repeat, no-repeat;
   background-position: 98% 2px, top;
   border-color: #ffb212;
@@ -3636,7 +3636,7 @@ tfoot.pagination-container .pagination li {
   -o-border-radius: 3px;
   border-radius: 3px;
   background-color: #107ebd;
-  background-image: url('../img/new/_elements/icons/nhs_tiny.png?1381763520');
+  background-image: url('../img/new/_elements/icons/nhs_tiny.png?1381936129');
   background-position: center left;
   background-repeat: no-repeat;
   color: white;
@@ -3789,7 +3789,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 101, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-title a {
-  background: url('../img/new/_elements/graphic/view-episode-summary.png?1381763520') right bottom no-repeat;
+  background: url('../img/new/_elements/graphic/view-episode-summary.png?1381936129') right bottom no-repeat;
   color: black;
   display: block;
   padding: 0.3125em 0 1.0625em 0.4375em;
@@ -3803,7 +3803,7 @@ tfoot.pagination-container .pagination li {
 .panel.episode .episode-title a:hover {
   color: white;
   background-color: #3665ff;
-  background-image: url('../img/new/_elements/icons/event/event_open_arrow.png?1381763520');
+  background-image: url('../img/new/_elements/icons/event/event_open_arrow.png?1381936129');
 }
 /* line 114, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .add-event {
@@ -3858,7 +3858,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 152, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events a:hover {
-  background: #3665ff url('../img/new/_elements/icons/event/event_open_arrow.png?1381763520') right center no-repeat;
+  background: #3665ff url('../img/new/_elements/icons/event/event_open_arrow.png?1381936129') right center no-repeat;
   color: white;
 }
 /* line 157, ../sass/new/openeyes/components/panels/_episode.scss */
@@ -3868,11 +3868,11 @@ tfoot.pagination-container .pagination li {
 }
 /* line 160, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert {
-  background: url('../img/new/_elements/icons/event/status/alert.png?1381763520') right top no-repeat;
+  background: url('../img/new/_elements/icons/event/status/alert.png?1381936129') right top no-repeat;
 }
 /* line 162, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert:hover {
-  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1381763520');
+  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1381936129');
 }
 /* line 167, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-date {
@@ -3881,12 +3881,12 @@ tfoot.pagination-container .pagination li {
 }
 /* line 174, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected a {
-  background: #aaaaaa url('../img/new/_elements/icons/event/event_open_arrow.png?1381763520') right center no-repeat;
+  background: #aaaaaa url('../img/new/_elements/icons/event/event_open_arrow.png?1381936129') right center no-repeat;
   color: white;
 }
 /* line 179, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected .event-type.alert {
-  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1381763520');
+  background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1381936129');
 }
 
 /* line 2, ../sass/new/openeyes/components/panels/_element.scss */
@@ -4092,6 +4092,11 @@ tfoot.pagination-container .pagination li {
   border-radius: 5px;
 }
 
+/* line 2, ../sass/new/openeyes/components/events/_episode.scss */
+.event.episode {
+  border-color: #a29d8a;
+}
+
 /* line 13, ../sass/new/openeyes/components/events/_elements.scss */
 .element, .edit .optional-elements {
   position: relative;
@@ -4226,7 +4231,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 135, ../sass/new/openeyes/components/events/_elements.scss */
 .edit .icon-remove-side {
-  background: url('../img/new/_elements/icons/event-optional/element-remove.png?1381763520') no-repeat -10px -2px;
+  background: url('../img/new/_elements/icons/event-optional/element-remove.png?1381936129') no-repeat -10px -2px;
   height: 16px;
   position: absolute;
   right: 5px;
@@ -4236,7 +4241,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 144, ../sass/new/openeyes/components/events/_elements.scss */
 .edit .icon-add-side {
-  background: url('../img/new/_elements/icons/event-optional/element-view.png?1381763520') no-repeat -10px -4px;
+  background: url('../img/new/_elements/icons/event-optional/element-view.png?1381936129') no-repeat -10px -4px;
   width: 16px;
   height: 16px;
 }
@@ -4346,7 +4351,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 56, ../sass/new/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list li a, .edit .sub-elements-list li a {
-  background: #8c949c url('../img/new/_elements/icons/event-optional/element-view.png?1381763520') no-repeat right top;
+  background: #8c949c url('../img/new/_elements/icons/event-optional/element-view.png?1381936129') no-repeat right top;
   border-bottom: 1px dotted #fafafa;
   color: #fff;
   display: block;
@@ -4515,7 +4520,7 @@ tfoot.pagination-container .pagination li {
 .multi-select .remove-one {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
   opacity: 0.5;
-  background: url('../img/new/_elements/icons/event-optional/element-remove.png?1381763520') no-repeat -10px -2px;
+  background: url('../img/new/_elements/icons/event-optional/element-remove.png?1381936129') no-repeat -10px -2px;
   display: inline-block;
   height: 15px;
   margin-left: 2px;

@@ -28,171 +28,169 @@ if ($episode->diagnosis) {
 
 $episode->audit('episode summary','view',false);
 ?>
-<h2 class="event-title">Summary</h2>
-<div class="view highlight-fields">
-	<h1><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></h1>
 
-	<?php $this->renderPartial('//base/_messages'); ?>
+<h2>Summary</h2>
+<h3><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></h3>
 
-	<section class="element element-data">
-		<h3 class="data-title">Principal diagnosis:</h3>
-		<div class="data-value highlight">
-			<?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></div>
-	</section>
+<?php $this->renderPartial('//base/_messages'); ?>
+
+<section class="element element-data">
+	<h3 class="data-title">Principal diagnosis:</h3>
+	<div class="data-value highlight">
+		<?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></div>
+</section>
 
 
 
-	<section class="element element-data">
-		<h3 class="data-title">Principal eye:</h3>
-		<div class="data-value highlight">
-			<?php echo $episode->eye ? $episode->eye->name : 'None'?></div>
-	</section>
+<section class="element element-data">
+	<h3 class="data-title">Principal eye:</h3>
+	<div class="data-value highlight">
+		<?php echo $episode->eye ? $episode->eye->name : 'None'?></div>
+</section>
 
-	<!-- divide into two columns -->
+<!-- divide into two columns -->
 
-	<section class="element element-data">
-		<div class="row element-data-row">
-			<div class="large-6 column">
-				<h3 class="data-title">Start Date</h3>
-				<div class="data-value">
-					<?php echo $episode->NHSDate('start_date')?></div>
-			</div>
-			<div class="large-6 column">
-				<h3 class="data-title">End date:</h3>
-				<div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></div>
-			</div>
+<section class="element element-data">
+	<div class="row element-data-row">
+		<div class="large-6 column">
+			<h3 class="data-title">Start Date</h3>
+			<div class="data-value">
+				<?php echo $episode->NHSDate('start_date')?></div>
 		</div>
-	</section>
-
-	<section class="element element-data">
-		<div class="row element-data-row">
-			<div class="large-6 column">
-				<h3 class="data-title">Subspecialty:</h3>
-				<div class="data-value">
-					<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></div>
-			</div>
-			<div class="large-6 column">
-				<h3 class="data-title">Consultant firm:</h3>
-				<div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None'?></div>
-			</div>
+		<div class="large-6 column">
+			<h3 class="data-title">End date:</h3>
+			<div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></div>
 		</div>
-	</section>
+	</div>
+</section>
 
+<section class="element element-data">
+	<div class="row element-data-row">
+		<div class="large-6 column">
+			<h3 class="data-title">Subspecialty:</h3>
+			<div class="data-value">
+				<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></div>
+		</div>
+		<div class="large-6 column">
+			<h3 class="data-title">Consultant firm:</h3>
+			<div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None'?></div>
+		</div>
+	</div>
+</section>
 
-	<?php
-	try {
-		if ($episode->firm) {
-			echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->firm->getSubspecialtyID(), array('episode' => $episode));
-		}
-	} catch (Exception $e) {
-		// If there is no extra episode summary detail page for this subspecialty we don't care
+<?php
+try {
+	if ($episode->firm) {
+		echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->firm->getSubspecialtyID(), array('episode' => $episode));
 	}
-	} else {
-		// hide the episode border ?>
-		<script type="text/javascript">
-			$('div#episodes_details').hide();
-		</script>
-	<?php }?>
+} catch (Exception $e) {
+	// If there is no extra episode summary detail page for this subspecialty we don't care
+}
+} else {
+	// hide the episode border ?>
+	<script type="text/javascript">
+		$('div#episodes_details').hide();
+	</script>
+<?php }?>
 
-	<div class="metadata">
-		<span class="info"><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>: created by <span class="user"><?php echo $episode->user->fullName?> on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?></span></span>
-	</div>
+<div class="metadata">
+	<span class="info"><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>: created by <span class="user"><?php echo $episode->user->fullName?> on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?></span></span>
+</div>
 
-	<!-- Booking -->
+<!-- Booking -->
 
-	<section class="element element-data">
-		<h3 class="data-title">Episode Status:</h3>
-		<div class="data-value highlight">
-			<?php echo $episode->status->name?></div>
-	</section>
+<section class="element element-data">
+	<h3 class="data-title">Episode Status:</h3>
+	<div class="data-value highlight">
+		<?php echo $episode->status->name?></div>
+</section>
 
 
-	<div class="metadata">
-		<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
-	</div>
+<div class="metadata">
+	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
+</div>
 
-	<div class="eventData">
-		<?php foreach (EventType::model()->getEventTypeModules() as $event_type) {
-			if ($api = $event_type->api) {
-				if ($eventData = $api->getEpisodeHTML($episode->id)) {?>
-					<div>
-						<?php echo $eventData?>
-					</div>
-				<?php }
+<div class="eventData">
+	<?php foreach (EventType::model()->getEventTypeModules() as $event_type) {
+		if ($api = $event_type->api) {
+			if ($eventData = $api->getEpisodeHTML($episode->id)) {?>
+				<div>
+					<?php echo $eventData?>
+				</div>
+			<?php }
+		}
+	}?>
+</div>
+
+<script type="text/javascript">
+	$('#closelink').click(function() {
+		$('#dialog-confirm').dialog({
+			resizable: false,
+			height: 140,
+			modal: false,
+			buttons: {
+				"Close episode": function() {
+					$.ajax({
+						url: $('#closelink').attr('href'),
+						type: 'GET',
+						success: function(data) {
+							$('#episodes_details').show();
+							$('#episodes_details').html(data);
+						}
+					});
+					$(this).dialog('close');
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+				}
+			},
+			open: function() {
+				$(this).parents('.ui-dialog-buttonpane button:eq(1)').focus();
 			}
-		}?>
+		});
+		return false;
+	});
+</script>
+
+<?php if (empty($episode->end_date)) {?>
+	<div style="text-align:right; position:relative; ">
+		<!--button id="close-episode" type="submit" value="submit" class="wBtn_close-episode ir">Close Episode</button-->
+
+		<div id="close-episode-popup" class="popup red" style="display: none;">
+			<p style="text-align:left;">You are closing this episode. This can not be undone. Once an episode is closed it can not be re-opened.</p>
+			<p><strong>Are you sure?</strong></p>
+			<div class="action_options">
+				<span class="aBtn"><a id="yes-close-episode" href="#"><strong>Yes, I am</strong></a></span>
+				<span class="aBtn"><a id="no-close-episode" href="#"><strong>No, cancel this.</strong></a></span>
+			</div>
+		</div>
 	</div>
 
 	<script type="text/javascript">
-		$('#closelink').click(function() {
-			$('#dialog-confirm').dialog({
-				resizable: false,
-				height: 140,
-				modal: false,
-				buttons: {
-					"Close episode": function() {
-						$.ajax({
-							url: $('#closelink').attr('href'),
-							type: 'GET',
-							success: function(data) {
-								$('#episodes_details').show();
-								$('#episodes_details').html(data);
-							}
-						});
-						$(this).dialog('close');
-					},
-					Cancel: function() {
-						$(this).dialog('close');
-					}
-				},
-				open: function() {
-					$(this).parents('.ui-dialog-buttonpane button:eq(1)').focus();
+		$('#close-episode').unbind('click').click(function(e) {
+			e.preventDefault();
+			$('#close-episode-popup').slideToggle(100);
+			return false;
+		});
+
+		$('#no-close-episode').unbind('click').click(function(e) {
+			e.preventDefault();
+			$('#close-episode-popup').slideToggle(100);
+			return false;
+		});
+
+		$('#yes-close-episode').unbind('click').click(function(e) {
+			e.preventDefault();
+			$('#close-episode-popup').slideToggle(100);
+			$.ajax({
+				url: '<?php echo Yii::app()->createUrl('clinical/closeepisode/'.$episode->id)?>',
+				success: function(data) {
+					$('#event_content').html(data);
+					return false;
 				}
 			});
+
 			return false;
 		});
 	</script>
-
-	<?php if (empty($episode->end_date)) {?>
-		<div style="margin-top:40px; text-align:right; position:relative; ">
-			<!--button id="close-episode" type="submit" value="submit" class="wBtn_close-episode ir">Close Episode</button-->
-
-			<div id="close-episode-popup" class="popup red" style="display: none;">
-				<p style="text-align:left;">You are closing this episode. This can not be undone. Once an episode is closed it can not be re-opened.</p>
-				<p><strong>Are you sure?</strong></p>
-				<div class="action_options">
-					<span class="aBtn"><a id="yes-close-episode" href="#"><strong>Yes, I am</strong></a></span>
-					<span class="aBtn"><a id="no-close-episode" href="#"><strong>No, cancel this.</strong></a></span>
-				</div>
-			</div>
-		</div>
-
-		<script type="text/javascript">
-			$('#close-episode').unbind('click').click(function(e) {
-				e.preventDefault();
-				$('#close-episode-popup').slideToggle(100);
-				return false;
-			});
-
-			$('#no-close-episode').unbind('click').click(function(e) {
-				e.preventDefault();
-				$('#close-episode-popup').slideToggle(100);
-				return false;
-			});
-
-			$('#yes-close-episode').unbind('click').click(function(e) {
-				e.preventDefault();
-				$('#close-episode-popup').slideToggle(100);
-				$.ajax({
-					url: '<?php echo Yii::app()->createUrl('clinical/closeepisode/'.$episode->id)?>',
-					success: function(data) {
-						$('#event_content').html(data);
-						return false;
-					}
-				});
-
-				return false;
-			});
-		</script>
-	<?php }?>
-</div>
+<?php }?>

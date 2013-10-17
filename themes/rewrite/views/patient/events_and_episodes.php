@@ -47,7 +47,7 @@ $noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportservicee
 		<?php }?>
 		<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes, 'supportserviceepisodes'=>$supportserviceepisodes))?>
 
-		<div class="large-10 column event">
+		<div class="large-10 column event episode highlight-fields <?php echo $this->editing ? 'edit' : 'view';?>">
 			<?php $this->renderPartial('//patient/event_tabs',array())?>
 
 			<!-- EVENT CONTENT HERE -->
