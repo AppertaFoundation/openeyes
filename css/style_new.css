@@ -3903,16 +3903,12 @@ tfoot.pagination-container .pagination li {
 .panel.episode .events .event-date .day, .panel.episode .events .event-date .mth, .panel.episode .events .event-date .yr {
   padding-right: 6px;
 }
-/* line 177, ../sass/new/openeyes/components/panels/_episode.scss */
-.panel.episode .events .event-date .day:last-child, .panel.episode .events .event-date .mth:last-child, .panel.episode .events .event-date .yr:last-child {
-  padding: 0;
-}
-/* line 185, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 182, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected a {
   background: #aaaaaa url('../img/new/_elements/icons/event/event_open_arrow.png?1382093882') right center no-repeat;
   color: white;
 }
-/* line 190, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 187, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected .event-type.alert {
   background-image: url('../img/new/_elements/icons/event/status/alert-hover.png?1382093882');
 }

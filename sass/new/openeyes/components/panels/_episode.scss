@@ -174,9 +174,6 @@ $oe-panel-episode-events-selected-event-type-background-image: image-url("_eleme
 				padding-left: $oe-panel-episode-events-event-date-padding-left;
 				.day,.mth,.yr {
 					padding-right: 6px;
-					&:last-child {
-						padding: 0;
-					}
 				}
 			}
 			// Selected state
