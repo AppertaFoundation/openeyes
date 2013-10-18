@@ -201,12 +201,19 @@ class OEMigration extends CDbMigration
 			'class_name' => $eventTypeClass
 		));
 
-		// Get the newly created event type
-		return $this->dbConnection->createCommand()
+		echo 'Inserting event_type, event_type_name: ' . $eventTypeName . ' event_type_class: ' .  $eventTypeClass .' event_type_group: ' . $eventTypeGroup;
+
+		$getIdQuery = $this->dbConnection->createCommand()
 			->select('id')
 			->from('event_type')
-			->where('class_name=:class_name', array(':class_name' => $eventTypeName))
-			->queryScalar();
+			->where('class_name=:class_name', array(':class_name' => $eventTypeClass));
+
+		echo "\n\nEvent type query: " . $getIdQuery->getText() . "\n" ;
+
+		$event_type_id = $getIdQuery->queryScalar();
+
+		// Get the newly created event type
+		return $event_type_id;
 	}
 
 	/**
@@ -238,6 +245,8 @@ class OEMigration extends CDbMigration
 					'default' => 1,
 				));
 			}
+			echo 'Added element type, element_type_class: ' . $element_type_class .
+				' element type properties: ' .   var_export($element_type_data, true) . ' event_type_id: ' . $event_type_id . " \n";
 
 			// Insert element type id into element type array
 			$element_type_ids[] = $this->dbConnection->createCommand()
