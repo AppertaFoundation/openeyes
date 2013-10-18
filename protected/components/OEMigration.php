@@ -163,4 +163,50 @@ class OEMigration extends CDbMigration
 		return  count($rowsQuery);
 	}
 
+	/**
+	 * @description used within subclasses to find out the element_type id based on Class Name
+	 * @param $className - string
+	 * @return mixed - the value of the id. False is returned if there is no value.
+	 */
+	protected function getIdOfElementTypeByClassName($className){
+		return $this->dbConnection->createCommand()
+			->select('id')
+			->from('element_type')
+			->where('class_name=:class_name', array(':class_name' => $className))
+			->queryScalar();
+	}
+
+	/**
+	 * @param $eventTypeName - string
+	 * @param $eventTypeClass - string
+	 * @param $eventTypeGroup - string
+	 * @return mixed - the id value of the event_type. False is returned if there is no value.
+	 * @throws OEMigrationException
+	 */
+	protected function insertOEEventType( $eventTypeName, $eventTypeClass, $eventTypeGroup){
+		// Get the event group id for this event type g
+		$group_id = $this->dbConnection->createCommand()
+			->select('id')
+			->from('event_group')
+			->where('code=:code', array(':code' => $eventTypeGroup))
+			->queryScalar();
+
+		if($group_id === false)
+			throw new OEMigrationException('Group id could not be found for $eventTypeGroup: ' . $eventTypeGroup);
+
+		// Create the new  event_type
+		$this->insert('event_type', array(
+			'name' => $eventTypeName,
+			'event_group_id' => $group_id,
+			'class_name' => $eventTypeClass
+		));
+
+		// Get the newly created event type
+		return $this->dbConnection->createCommand()
+			->select('id')
+			->from('event_type')
+			->where('class_name=:class_name', array(':class_name' => $eventTypeName))
+			->queryScalar();
+	}
+
 }
