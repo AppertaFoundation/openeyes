@@ -19,47 +19,59 @@
 ?>
 
 <?php
-	$injection_api = Yii::app()->moduleAPI->get('OphTrIntravitrealinjection');
-	$current_episode = $this->patient->getEpisodeForCurrentSubspecialty();
-?>
+// build up data structures for the two levels of disorders that are mapped through the therapydisorder lookup
+$l1_disorders = $element->getLevel1Disorders();
+$l1_options = array();
+$l2_disorders = array();
 
-<section class="element <?php echo $element->elementType->class_name?>"
+foreach ($l1_disorders as $disorder) {
+	if ($td_l2 = $element->getLevel2Disorders($disorder)) {
+		$jsn_arry = array();
+		foreach ($td_l2 as $l2) {
+			$jsn_arry[] = array('id' => $l2->id, 'term' => $l2->term);
+		}
+		$l1_options[$disorder->id] = array('data-level2' => CJSON::encode($jsn_arry));
+		$l2_disorders[$disorder->id] = $td_l2;
+	}
+}
+
+?>
+<div class="element <?php echo $element->elementType->class_name?>"
 	data-element-type-id="<?php echo $element->elementType->id?>"
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
-	</header>
+	<h4 class="elementTypeName"><?php echo $element->elementType->name; ?></h4>
 
-	<div class="element-eyes row">
+	<div class="cols2 clearfix">
 		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-		<div class="element-fields element-eye right-eye left side column<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
+		<div
+			class="side left eventDetail<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
 			data-side="right">
-			<div class="active-form">
-				<a href="#" class="icon-remove-side removeSide">Remove side</a>
-				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-					array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data, 'injection_api' => $injection_api, 'episode' => $current_episode)); ?>
+			<div class="activeForm">
+				<a href="#" class="removeSide">-</a>
+					<?php $this->renderPartial('form_' . get_class($element) . '_fields',
+					array('side' => 'right', 'element' => $element, 'form' => $form, 'l1_disorders' => $l1_disorders, 'l1_opts' => $l1_options, 'l2_disorders' => $l2_disorders, 'data' => $data)); ?>
+
+
 			</div>
-			<div class="inactive-form">
-				<div class="add-side">
-				<a href="#">Add right side</a><span class="icon-add-side"></span>
-				</div>
+			<div class="inactiveForm">
+				<a href="#">Add right side</a>
 			</div>
 		</div>
-		<div class="element-fields element-eye left-eye right side column<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
+
+		<div
+			class="side right eventDetail<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
 			data-side="left">
-			<div class="active-form">
-				<a href="#" class="icon-remove-side removeSide">Remove side</a>
+			<div class="activeForm">
+				<a href="#" class="removeSide">-</a>
 				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-					array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data, 'injection_api' => $injection_api, 'episode' => $current_episode)); ?>
+					array('side' => 'left', 'element' => $element, 'form' => $form, 'l1_disorders' => $l1_disorders, 'l1_opts' => $l1_options, 'l2_disorders' => $l2_disorders, 'data' => $data)); ?>
 			</div>
-			<div class="inactive-form">
-				<div class="add-side">
-				<a href="#">Add left side</a><span class="icon-add-side"></span>
-				</div>
+			<div class="inactiveForm">
+				<a href="#">Add left side</a>
 			</div>
 		</div>
 
 	</div>
-</section>
+</div>
