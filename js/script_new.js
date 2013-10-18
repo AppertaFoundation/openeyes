@@ -50,43 +50,36 @@ $(document).ready(function(){
 		}
 	});
 
-	// show hide
+	(function sidebarEventsToggle() {
 
-	$('.sprite.showhide2').click(function(e){
-		var episode_id = $(this).parent().parent().prev('input').val();
-		if (episode_id == undefined) {
-			episode_id = 'legacy';
+		var trigger = $('.sidebar.episodes-and-events .toggle-trigger');
+		trigger.on('click', onTriggerClick);
+
+		function onTriggerClick(e) {
+
+			e.preventDefault();
+
+			var episodeContainer = $(this).closest('.episode');
+			var input = episodeContainer.find('[name="episode-id"]');
+			var episode_id = input.val() || 'legacy';
+			var state = trigger.hasClass('toggle-hide') ? 'hide' : 'show';
+
+			changeState(episodeContainer, trigger, episode_id, state);
 		}
 
-		e.preventDefault();
-		changeState($(this).parents('.episode_nav'),$(this).children('span'),episode_id);
-	});
+		function changeState(episodeContainer, trigger, episode_id, state) {
+			trigger.toggleClass('toggle-hide toggle-show');
+			episodeContainer.find('.events-container,.events-overview').slideToggle('fast');
+			updateEpisode(episode_id, state);
+		}
 
-	function changeState(wb,sp,episode_id) {
-		if (sp.hasClass('hide')) {
-			wb.children('.events').slideUp('fast');
-			sp.removeClass('hide');
-			sp.addClass('show');
-												wb.children('.minievents').slideDown('fast');
+		function updateEpisode(episode_id, state) {
 			$.ajax({
 				'type': 'GET',
-				'url': baseUrl+'/patient/hideepisode?episode_id='+episode_id,
-				'success': function(html) {
-				}
-			});
-		} else {
-			wb.children('.events').slideDown('fast');
-			sp.removeClass('show');
-			sp.addClass('hide');
-												wb.children('.minievents').slideUp('fast');
-			$.ajax({
-				'type': 'GET',
-				'url': baseUrl+'/patient/showepisode?episode_id='+episode_id,
-				'success': function(html) {
-				}
+				'url': baseUrl+'/patient/' + state + 'episode?episode_id='+episode_id,
 			});
 		}
-	}
+	}());
 
 	/**
 	 * Sticky stuff

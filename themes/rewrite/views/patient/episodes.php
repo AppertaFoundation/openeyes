@@ -18,6 +18,8 @@
  */
 ?>
 <?php
+extract($this->getEpisodes());
+$current_episode = @$this->current_episode;
 $noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1);
 ?>
 

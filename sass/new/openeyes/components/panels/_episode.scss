@@ -109,6 +109,11 @@ $oe-panel-episode-events-selected-event-type-background-image: image-url("_eleme
 					background-color: $oe-panel-episode-title-anchor-hover-bg-color;
 					background-image: $oe-panel-episode-title-anchor-hover-bg-image;
 				}
+				&.selected {
+					background-color: #aaa;
+					background-image: $oe-panel-episode-title-anchor-hover-bg-image;
+					color: #fff;
+				}
 			}
 		}
 		.add-event {
@@ -167,6 +172,12 @@ $oe-panel-episode-events-selected-event-type-background-image: image-url("_eleme
 			.event-date {
 				display: inline-block;
 				padding-left: $oe-panel-episode-events-event-date-padding-left;
+				.day,.mth,.yr {
+					padding-right: 6px;
+					&:last-child {
+						padding: 0;
+					}
+				}
 			}
 			// Selected state
 			li {

@@ -32,6 +32,7 @@ class PatientController extends BaseController
 	public $title;
 	public $event_type_id;
 	public $episode;
+	public $current_episode;
 	public $event_tabs = array();
 	public $event_actions = array();
 	public $episodes = array();
@@ -319,10 +320,7 @@ class PatientController extends BaseController
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
-		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
-		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
-		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
@@ -352,17 +350,14 @@ class PatientController extends BaseController
 			$current_episode = null;
 		}
 
+		$this->current_episode = $current_episode;
 		$this->title = 'Episode summary';
 
 		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
-			'ordered_episodes' => $ordered_episodes,
-			'legacyepisodes' => $legacyepisodes,
-			'supportserviceepisodes' => $supportserviceepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => $current_episode,
 		));
 	}
 
@@ -376,10 +371,6 @@ class PatientController extends BaseController
 		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
-		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
-		$ordered_episodes = $this->patient->getOrderedEpisodes();
-		$legacyepisodes = $this->patient->legacyepisodes;
-		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
@@ -397,7 +388,7 @@ class PatientController extends BaseController
 					'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
 			);
 		}
-
+		$this->current_episode = $this->episode;
 		$status = Yii::app()->session['episode_hide_status'];
 		$status[$id] = true;
 		Yii::app()->session['episode_hide_status'] = $status;
@@ -405,12 +396,8 @@ class PatientController extends BaseController
 		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
-			'ordered_episodes' => $ordered_episodes,
-			'legacyepisodes' => $legacyepisodes,
-			'supportserviceepisodes' => $supportserviceepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => $this->episode
 		));
 	}
 

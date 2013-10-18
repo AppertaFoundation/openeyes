@@ -40,6 +40,7 @@ class BaseEventTypeController extends BaseController
 	public $extraViewProperties = array();
 	public $jsVars = array();
 	public $layout = '//layouts/events_and_episodes';
+	public $current_episode;
 	private $episodes = array();
 
 	/**
