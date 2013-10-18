@@ -33,6 +33,7 @@ class OperationBooking extends Page
         'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
         'scheduleNow' => array('xpath' => "//*[@id='et_schedulenow']"),
         'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
+        'availableTheatreSlotDateOutsideRTT' => array('xpath' => "//*[@class='available outside_rtt']"),
         'availableThreeWeeksTime' => array ('xpath' => "//*[@id='calendar']//*[contains(text(),'27')]"),
         'nextMonth' => array('xpath' => "//*[@id='next_month']"),
         'availableTheatreSessionTime' => array('xpath' => "//*[@class='timeBlock available bookable']"),
@@ -150,6 +151,7 @@ class OperationBooking extends Page
     {
         $this->getElement('scheduleNow')->keyPress(2191);
         $this->getElement('scheduleNow')->click();
+        $this->getSession()->wait(5000);
     }
 
     public function availableSlot ()
@@ -165,6 +167,21 @@ class OperationBooking extends Page
         }
 
         throw new \Exception('No available theatre session found');
+    }
+
+    public function availableSlotOutsideRTT ()
+    {
+        $slots = $this->findAll('xpath', $this->getElement('availableTheatreSlotDateOutsideRTT')->getXpath());
+        foreach ($slots as $slot) {
+            $slot->click();
+            $this->getSession()->wait(10000, "$('.sessionTimes').length > 0");
+            $freeSession = $this->find('css', '.sessionTimes > a > .bookable');
+            if ($freeSession) {
+                return true;
+            }
+        }
+
+        throw new \Exception('No available theatre session Outside RTT found');
     }
 
     public function availableSessionTime ()
