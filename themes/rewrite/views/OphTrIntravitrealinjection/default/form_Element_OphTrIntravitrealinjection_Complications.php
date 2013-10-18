@@ -51,7 +51,9 @@
 					array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
 			</div>
 			<div class="inactive-form">
+				<div class="add-side">
 				Set left side treatment drug
+				</div>
 			</div>
 		</div>
 
