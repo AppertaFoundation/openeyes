@@ -18,13 +18,22 @@
  */
 ?>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_diagnosis1_id') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_diagnosis1'} ? $element->{$side . '_diagnosis1'}->term : 'None'; ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_diagnosis1_id') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_diagnosis1'} ? $element->{$side . '_diagnosis1'}->term : 'None'; ?></div>
+	</div>
 </div>
+
 <?php if ($element->{$side . '_diagnosis2_id'}) {?>
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_diagnosis2_id') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_diagnosis2'}->term; ?></div>
-</div>
+	<div class="row data-row">
+		<div class="large-4 column">
+			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_diagnosis2_id') ?>:</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value"><?php echo $element->{$side . '_diagnosis2'}->term; ?></div>
+		</div>
+	</div>
 <?php } ?>

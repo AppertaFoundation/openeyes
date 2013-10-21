@@ -18,17 +18,28 @@
  */
 ?>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_treatment_id') ?>:</div>
-	<div class="data"><?php echo $element[$side . '_treatment']->name ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_treatment_id') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element[$side . '_treatment']->name ?></div>
+	</div>
 </div>
-
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_angiogram_baseline_date') ?>:</div>
-	<div class="data"><?php echo CHtml::encode($element->NHSDate($side . '_angiogram_baseline_date'))?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_angiogram_baseline_date') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo CHtml::encode($element->NHSDate($side . '_angiogram_baseline_date'))?></div>
+	</div>
 </div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_nice_compliance') ?>:</div>
+	</div>
 
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_nice_compliance') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_nice_compliance'} ? 'Yes' : 'No'?></div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_nice_compliance'} ? 'Yes' : 'No'?></div>
+	</div>
 </div>

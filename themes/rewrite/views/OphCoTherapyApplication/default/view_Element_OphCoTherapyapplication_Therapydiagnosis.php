@@ -18,23 +18,30 @@
  */
 ?>
 
-<h4 class="elementTypeName"><?php echo $element->elementType->name?></h4>
-
-	<div class="cols2 clearfix">
-		<div class="left eventDetail">
-			<?php if ($element->hasRight()) {
-				$this->renderPartial('view_' . get_class($element) . '_fields',
-					array('side' => 'right', 'element' => $element));
-			} else { ?>
-			Not recorded
-			<?php } ?>
-		</div>
-		<div class="right eventDetail">
-			<?php if ($element->hasLeft()) {
-				$this->renderPartial('view_' . get_class($element) . '_fields',
-					array('side' => 'left', 'element' => $element));
-			} else { ?>
-			Not recorded
-			<?php } ?>
-		</div>
+<div class="row">
+	<div class="large-12 column">
+		<section class="element">
+			<header class="element-header">
+				<h3 class="element-title"><?php echo $element->elementType->name?></h3>
+			</header>
+			<div class="element-data element-eyes row">
+				<div class="element-eye left-eye column">
+					<?php if ($element->hasRight()) {
+						$this->renderPartial('view_' . get_class($element) . '_fields',
+							array('side' => 'right', 'element' => $element));
+					} else { ?>
+							Not recorded
+					<?php } ?>
+				</div>
+				<div class="element-eye right-eye column">
+					<?php if ($element->hasLeft()) {
+						$this->renderPartial('view_' . get_class($element) . '_fields',
+							array('side' => 'left', 'element' => $element));
+					} else { ?>
+						Not recorded
+					<?php } ?>
+				</div>
+			</div>
+		</section>
 	</div>
+</div>

@@ -18,19 +18,39 @@
  */
 ?>
 
-<h4 class="elementTypeName"><?php echo $element->elementType->name?></h4>
+<section class="element">
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->elementType->name?></h3>
+	</header>
 
-<div class="eventDetail clearfix">
-	<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('cerebrovascular_accident'))?>:</div>
-	<div class="data"><?php echo $element->cerebrovascular_accident ? 'Yes' : 'No'?></div>
-</div>
+	<div class="element-data">
 
-<div class="eventDetail">
-	<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('ischaemic_attack'))?>:</div>
-	<div class="data"><?php echo $element->ischaemic_attack ? 'Yes' : 'No'?></div>
-</div>
+	<div class="row data-row">
+		<div class="large-4 column">
+			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('cerebrovascular_accident'))?>:</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value"><?php echo $element->cerebrovascular_accident ? 'Yes' : 'No'?></div>
+		</div>
+	</div>
 
-<div class="eventDetail">
-	<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('myocardial_infarction'))?>:</div>
-	<div class="data"><?php echo $element->myocardial_infarction ? 'Yes' : 'No'?></div>
-</div>
+	<div class="row data-row">
+		<div class="large-4 column">
+			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('ischaemic_attack'))?>:</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value"><?php echo $element->ischaemic_attack ? 'Yes' : 'No'?></div>
+		</div>
+	</div>
+
+	<div class="row data-row">
+		<div class="large-4 column">
+			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('myocardial_infarction'))?>:</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value"><?php echo $element->myocardial_infarction ? 'Yes' : 'No'?></div>
+		</div>
+	</div>
+
+		</div>
+</section>
