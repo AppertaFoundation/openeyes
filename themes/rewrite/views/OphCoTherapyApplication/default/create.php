@@ -32,7 +32,7 @@
 				'enableAjaxValidation'=>false,
 				'htmlOptions' => array('class'=>'sliding'),
 		));
-		$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'secondary'), array('class'=>'button small'));
+		$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
 	?>
 
 	<?php $this->displayErrors($errors)?>

@@ -18,15 +18,19 @@
  */
 ?>
 
-<div class="element <?php echo $element->elementType->class_name?>"
+<section class="element <?php echo $element->elementType->class_name?>"
 	<?php if (!$element->eventPatientSuitability() || !$element->eventPatientSuitability()->contraindicationsRequired()) { echo 'style="display:none;"'; } ?>
 	data-element-type-id="<?php echo $element->elementType->id?>"
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<h4 class="elementTypeName"><?php echo $element->elementType->name; ?></h4>
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
+	</header>
 
+	<div class="element-fields">
 	<?php echo $form->radioBoolean($element, 'cerebrovascular_accident')?>
 	<?php echo $form->radioBoolean($element, 'ischaemic_attack')?>
 	<?php echo $form->radioBoolean($element, 'myocardial_infarction')?>
-</div>
+	</div>
+</section>

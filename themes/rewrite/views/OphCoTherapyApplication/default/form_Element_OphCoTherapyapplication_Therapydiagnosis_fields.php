@@ -19,8 +19,11 @@
 ?>
 
 <div class="row field-row">
-	<div class="label" style="vertical-align: top;"><?php echo $element->getAttributeLabel($side . '_diagnosis1_id'); ?></div>
-	<div class="data" style="display: inline-block;">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_diagnosis1_id'); ?></div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
 	<?php $form->widget('application.widgets.DiagnosisSelection',array(
 			'field' => $side . '_diagnosis1_id',
 			'element' => $element,
@@ -30,10 +33,14 @@
 			'dropdownOptions' => array('empty'=>'- Please select -', 'options' => $l1_opts, 'style' => 'margin-bottom: 10px; width: 240px;'),
 	));?>
 	</div>
+	</div>
 </div>
 <div class="row field-row<?php if (!array_key_exists($element->{$side . '_diagnosis1_id'}, $l2_disorders) ) { echo " hidden"; }?>" id="<?php echo $side ?>_diagnosis2_wrapper">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_diagnosis2_id'); ?></div>
-	<div class="data"">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_diagnosis2_id'); ?></div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
 		<?php
 		$l2_attrs =  array('empty'=>'- Please select -', 'style' => 'margin-bottom: 10px; width: 240px;');
 		$l2_opts = array();
@@ -50,6 +57,6 @@
 			'default' => false,
 			'dropdownOptions' => $l2_attrs,
 		));?>
-
+		</div>
 	</div>
 </div>

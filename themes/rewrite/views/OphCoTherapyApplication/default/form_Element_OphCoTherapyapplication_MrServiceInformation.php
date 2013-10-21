@@ -27,9 +27,10 @@
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
 
-
+	<div class='element-fields'>
 	<?php
 	$subspecialty = Subspecialty::model()->find('ref_spec=:ref_spec', array(':ref_spec' => 'MR'));
 
 	echo $form->dropDownList($element, 'consultant_id', Firm::model()->getList($subspecialty->id),array('empty'=>'- Please select -'))?>
+	</div>
 </section>

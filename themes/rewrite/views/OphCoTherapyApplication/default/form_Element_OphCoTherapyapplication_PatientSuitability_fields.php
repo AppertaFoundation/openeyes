@@ -32,19 +32,30 @@
 	}
 ?>
 
-<div class="elementField">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_treatment_id'); ?></div>
-	<div class="data"><?php echo $form->dropDownList($element, $side . '_treatment_id', CHtml::listData($treatments,'id','name'),$treat_opts); ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_treatment_id'); ?></div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $form->dropDownList($element, $side . '_treatment_id', CHtml::listData($treatments,'id','name'),$treat_opts); ?></div>
+	</div>
 </div>
 
-<div class="elementField">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_angiogram_baseline_date'); ?></div>
-	<div class="data"><?php echo $form->datePicker($element, $side . '_angiogram_baseline_date', array('maxDate' => 'today'), array('style'=>'width: 110px;', 'nowrapper' => true))?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_angiogram_baseline_date'); ?></div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $form->datePicker($element, $side . '_angiogram_baseline_date', array('maxDate' => 'today'), array('style'=>'width: 110px;', 'nowrapper' => true))?></div>
+	</div>
 </div>
 
-<div id="nice_compliance_<?php echo $side?>" class="elementField">
-	<div class="label">NICE Compliance</div>
-	<div class="data compliance-container">
+<div id="nice_compliance_<?php echo $side?>" class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label">NICE Compliance</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value compliance-container">
 		<?php $this->renderPartial(
 			'form_OphCoTherapyapplication_DecisionTree',
 			array('element' => $element, 'data' => $data, 'form' => $form, 'side' => $side),
@@ -52,5 +63,5 @@
 		)?>
 
 	</div>
-
+	</div>
 </div>
