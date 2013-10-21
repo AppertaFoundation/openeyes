@@ -119,14 +119,20 @@ class Helper
 	 * If date of death provided, then returns age at point of death
 	 * @param string $dob
 	 * @param string $date_of_death
+	 * @param string $check_date Optional date to check age at (default is today)
 	 *
 	 * @return string $age
 	 */
-	public static function getAge($dob, $date_of_death = null)
+	public static function getAge($dob, $date_of_death = null, $check_date = null)
 	{
 		if (!$dob) return 'Unknown';
 		$date = date('Ymd', strtotime($dob));
-		$end_date = ($date_of_death) ? strtotime($date_of_death) : time();
+		if($check_date) {
+			$check_datetime = strtotime($check_date);
+		} else {
+			$check_datetime = time();
+		}
+		$end_date = ($date_of_death) ? strtotime($date_of_death) : $check_datetime;
 		$age = date('Y',$end_date) - substr($date, 0, 4);
 		$birthDate = substr($date, 4, 2) . substr($date, 6, 2);
 		if (date('md',$end_date) < $birthDate) {
