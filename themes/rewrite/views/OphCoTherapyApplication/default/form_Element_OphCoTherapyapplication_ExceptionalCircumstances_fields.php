@@ -183,8 +183,8 @@ if (@$_POST[get_class($element)]) {
 			}
 			?>
 		</div>
-		<button class="addPrevintervention classy green mini" type="button">
-			<span class="button-span button-span-green">Add</span>
+		<button class="addPrevintervention button small" type="button">
+			Add
 		</button>
 	</div>
 </div>
@@ -207,8 +207,8 @@ if (@$_POST[get_class($element)]) {
 			}
 			?>
 		</div>
-		<button class="addRelevantintervention classy green mini" type="button">
-			<span class="button-span button-span-green">Add</span>
+		<button class="addRelevantintervention button small" type="button">
+			Add
 		</button>
 	</div>
 </div>
