@@ -28,7 +28,7 @@
 	<td>
 	<?php if ($durations) {?>
 		<span id='procedureItemDuration' class="right">
-			<?php echo $data['duration']?> mins
+			<?php echo $proc->default_duration?> mins
 		</span>
 	<?php }?></td>
 	<td><a href="#" class="small removeProcedure"><strong>(remove)</strong></a></td>

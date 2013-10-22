@@ -28,34 +28,43 @@ MODULE_REGEX="Oph"
 MODULE_PATH="protected/modules"
 CONFIG_FILE="protected/config/local/common.php"
 BRANCH=`git symbolic-ref --short HEAD`
-
 GITHUB_ORG="openeyes"
 GITHUB_API="https://api.github.com"
 
-DB_NAME="openeyes"
-DB_USER="openeyes"
-DB_PASSWORD="oe_test"
-DB_PORT="3334"
-DB_HOST="127.0.0.1"
+getPHPDBConfig() {
+  php << EOF
+<?php
+\$config = include "protected/config/local/common.php";
+echo \$config["components"]["db"]["$1"];
+EOF
+}
+
+CONNECTION_STRING=`getPHPDBConfig "connectionString" | sed 's/^.*://'`
+DB_NAME=`echo $CONNECTION_STRING | cut -d';' -f3 | sed 's/.*=//'`
+DB_PORT=`echo $CONNECTION_STRING | cut -d';' -f2 | sed 's/.*=//'`
+DB_HOST=`echo $CONNECTION_STRING | cut -d';' -f1 | sed 's/.*=//'`
+DB_USER=`getPHPDBConfig "username"`
+DB_PASSWORD=`getPHPDBConfig "password"`
 
 usage() {
-cat << EOF  usage: $0 [options] [command]
+cat << EOF
+usage: $0 [options] [command]
 
   This interactive script is used to perform various tasks on the OpenEyes application.
 
   Commands:
-    setup                    Performs some setup tasks on the repository and ensures vagrant is up.
-    install                  Interactively install modules from github
-    migrate                  Run the migrations for core and all installed modules
-    sample_data              Clones the sample data and imports the SQL to the database
-    import_data              Imports data from a SQL file into the database
-    environment              Changes the app environment in the common.php config file
-    change_branch            Switches to specified branch for core and all modules
-    reset                    Resets all changes for core and all modules
-    update                   Pulls down new changes from github for core and all modules
-    changes                  Shows changed files for core and for all modules
-    merge                    Merges the specified branch for core and all modules
-    diff                     Shows diffs of changes for core and all modules
+    setup           Performs some setup tasks on the repository and ensures vagrant is up
+    install         Interactively install modules from github
+    migrate         Run the migrations for core and all installed modules
+    sample_data     Clones the sample data and imports the SQL to the database
+    import_data     Imports data from a SQL file into the database
+    environment     Changes the app environment in the common.php config file
+    change_branch   Switches to specified branch for core and all modules
+    reset           Resets all changes for core and all modules
+    update          Pulls down new changes from github for core and all modules
+    changes         Shows changed files for core and for all modules
+    merge           Merges the specified branch for core and all modules
+    diff            Shows diffs of changes for core and all modules
 
   Options:
     --db_port      Set the database port
