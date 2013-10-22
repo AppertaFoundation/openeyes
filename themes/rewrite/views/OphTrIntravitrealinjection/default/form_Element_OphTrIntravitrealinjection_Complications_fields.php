@@ -48,8 +48,14 @@ foreach ($complications as $complication) {
 }
 ?>
 
-<div id="div_Element_OphTrIntravitrealinjection_Complications_<?php echo $side; ?>_oth_descrip" class="elementField" <?php if (!$show_desc) { echo ' style="display: none;"'; } ?>>
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_oth_descrip'); ?></div>
-	<div class="data"><?php echo $form->textArea($element, $side . '_oth_descrip', array('rows' => 4, 'cols' => 30, 'nowrapper' => true));?></div>
+<div id="div_Element_OphTrIntravitrealinjection_Complications_<?php echo $side; ?>_oth_descrip" class="row field-row<?php if (!$show_desc) { echo ' hide'; } ?>">
+	<div class="<?php echo $form->columns('label');?>">
+		<label for="<?php echo get_class($element)?>_<?php echo $side . '_oth_descrip'?>">
+			<?php echo $element->getAttributeLabel($side . '_oth_descrip'); ?>:
+		</label>
+	</div>
+	<div class="<?php echo $form->columns('field');?>">
+		<?php echo $form->textArea($element, $side . '_oth_descrip', array('rows' => 4, 'cols' => 30, 'nowrapper' => true));?>
+	</div>
 </div>
 

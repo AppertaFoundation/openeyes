@@ -29,7 +29,7 @@
 				$this->renderPartial('view_' . get_class($element) . '_fields',
 					array('side' => 'right', 'element' => $element));
 			} else { ?>
-			Not recorded
+				<div class="data-value">Not recorded</div>
 			<?php } ?>
 		</div>
 		<div class="element-eye left-eye column">
@@ -37,7 +37,7 @@
 				$this->renderPartial('view_' . get_class($element) . '_fields',
 					array('side' => 'left', 'element' => $element));
 			} else { ?>
-			Not recorded
+				<div class="data-value">Not recorded</div>
 			<?php } ?>
 		</div>
 	</div>
