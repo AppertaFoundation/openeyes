@@ -53,18 +53,18 @@ usage: $0 [options] [command]
   This interactive script is used to perform various tasks on the OpenEyes application.
 
   Commands:
-    setup                    Performs some setup tasks on the repository and ensures vagrant is up.
-    install                  Interactively install modules from github
-    migrate                  Run the migrations for core and all installed modules
-    sample_data              Clones the sample data and imports the SQL to the database
-    import_data              Imports data from a SQL file into the database
-    environment              Changes the app environment in the common.php config file
-    change_branch            Switches to specified branch for core and all modules
-    reset                    Resets all changes for core and all modules
-    update                   Pulls down new changes from github for core and all modules
-    changes                  Shows changed files for core and for all modules
-    merge                    Merges the specified branch for core and all modules
-    diff                     Shows diffs of changes for core and all modules
+    setup           Performs some setup tasks on the repository and ensures vagrant is up
+    install         Interactively install modules from github
+    migrate         Run the migrations for core and all installed modules
+    sample_data     Clones the sample data and imports the SQL to the database
+    import_data     Imports data from a SQL file into the database
+    environment     Changes the app environment in the common.php config file
+    change_branch   Switches to specified branch for core and all modules
+    reset           Resets all changes for core and all modules
+    update          Pulls down new changes from github for core and all modules
+    changes         Shows changed files for core and for all modules
+    merge           Merges the specified branch for core and all modules
+    diff            Shows diffs of changes for core and all modules
 
   Options:
     --db_port      Set the database port
