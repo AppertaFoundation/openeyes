@@ -47,7 +47,8 @@ DB_USER=`getPHPDBConfig "username"`
 DB_PASSWORD=`getPHPDBConfig "password"`
 
 usage() {
-cat << EOF  usage: $0 [options] [command]
+cat << EOF
+usage: $0 [options] [command]
 
   This interactive script is used to perform various tasks on the OpenEyes application.
 
