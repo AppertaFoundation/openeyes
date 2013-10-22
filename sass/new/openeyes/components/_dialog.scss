@@ -86,6 +86,26 @@
 				}
 			}
 		}
+		&.add-episode {
+			.details {
+				margin-bottom: 20px;
+				p {
+					@include border-radius(5px);
+					background: #f1f1f1;
+					font-size: 15px;
+					margin-bottom: 1px;
+					padding: 10px;
+					&:first-child {
+						@include border-bottom-left-radius(0);
+						@include border-bottom-right-radius(0);
+					}
+					&:last-child {
+						@include border-top-left-radius(0);
+						@include border-top-right-radius(0);
+					}
+				}
+			}
+		}
 		&.alert .ui-dialog-content,
 		&.confirm .ui-dialog-content {
 			overflow: hidden;
