@@ -16,35 +16,19 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-class Slider extends BaseFieldWidget
-{
-	public $min;
-	public $max;
-	public $step;
-	public $force_dp = false;
-	public $prefix_positive = false;
-	public $remap_values = false;
-	public $null;
-	public $value_display;
-	public $append = '';
-	public $painScale;
-
-	public function init()
-	{
-		parent::init();
-
-		if ($this->null) {
-			$this->max += 1;
-
-			if ($this->value === null) {
-				$this->value = 0;
-				$this->value_display = 'NR';
-			} else {
-				$this->value_display = $this->value++;
-			}
-		} else {
-			$this->value_display = $this->value;
-		}
-	}
-}
+?>
+<?php if (!$nowrapper) {?>
+	<div class="row field-row">
+		<div class="large-<?php echo $layoutColumns['label']?> column">
+			<label for="<?php echo get_class($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
+		</div>
+		<div class="large-<?php echo $layoutColumns['field']?> column">
+	<?php }?>
+		<textarea id="<?php echo get_class($element)?>_<?php echo $field?>" name="<?php echo get_class($element)?>[<?php echo $field?>]" placeholder="<?php echo @$htmlOptions['placeholder']?>"></textarea>
+		<?php if (!$nowrapper) {?>
+			<?php if ($button) {?>
+				<button type="submit" class="classy <?php echo $button['colour']?> <?php echo $button['size']?>" id="<?php echo get_class($element)?>_<?php echo $button['id']?>" name="<?php echo get_class($element)?>_<?php echo $button['id']?>"><span class="button-span button-span-<?php echo $button['colour']?>"><?php echo $button['label']?></span></button>
+			<?php }?>
+		</div>
+	</div>
+<?php }?>

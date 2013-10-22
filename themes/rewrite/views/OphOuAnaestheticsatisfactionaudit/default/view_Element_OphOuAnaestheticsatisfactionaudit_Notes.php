@@ -16,35 +16,30 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-class Slider extends BaseFieldWidget
-{
-	public $min;
-	public $max;
-	public $step;
-	public $force_dp = false;
-	public $prefix_positive = false;
-	public $remap_values = false;
-	public $null;
-	public $value_display;
-	public $append = '';
-	public $painScale;
-
-	public function init()
-	{
-		parent::init();
-
-		if ($this->null) {
-			$this->max += 1;
-
-			if ($this->value === null) {
-				$this->value = 0;
-				$this->value_display = 'NR';
-			} else {
-				$this->value_display = $this->value++;
-			}
-		} else {
-			$this->value_display = $this->value;
-		}
-	}
-}
+<section class="element">
+	<header class="element-header">
+		<h3 class="element-title"><?php  echo $element->elementType->name ?></h3>
+	</header>
+	<div class="element-data">
+		<?php if ($element->comments) {?>
+			<div class="row data-row">
+				<div class="large-2 column">
+					<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></div>
+				</div>
+				<div class="large-10 column">
+					<div class="data-value"><?php echo CHtml::encode($element->comments)?></div>
+				</div>
+			</div>
+		<?php }?>
+		<div class="row data-row">
+			<div class="large-2 column">
+				<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('ready_for_discharge_id'))?></div>
+			</div>
+			<div class="large-10 column">
+				<div class="data-value"><?php echo $element->ready_for_discharge ? $element->ready_for_discharge->name : 'None'?></div>
+			</div>
+		</div>
+	</div>
+</section>

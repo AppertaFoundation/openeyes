@@ -16,35 +16,9 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-class Slider extends BaseFieldWidget
-{
-	public $min;
-	public $max;
-	public $step;
-	public $force_dp = false;
-	public $prefix_positive = false;
-	public $remap_values = false;
-	public $null;
-	public $value_display;
-	public $append = '';
-	public $painScale;
-
-	public function init()
-	{
-		parent::init();
-
-		if ($this->null) {
-			$this->max += 1;
-
-			if ($this->value === null) {
-				$this->value = 0;
-				$this->value_display = 'NR';
-			} else {
-				$this->value_display = $this->value++;
-			}
-		} else {
-			$this->value_display = $this->value;
-		}
-	}
-}
+?>
+<?php $this->renderPartial(
+		'form_' . get_class($element),
+		array('element' => $element, 'data' => $data, 'form' => $form),
+		false, false
+)?>
