@@ -36,6 +36,14 @@
 
 						</div>
 
+						<div class="example">
+							<div class="tooltip quicklook" style="display:block">
+								<div class="event-name">Operation booking</div>
+								<div class="event-info">Insertion of orbital implant</div>
+								<div class="event-issue">Operation requires scheduling</div>
+							</div>
+						</div>
+
 					</div>
 				</div>
 			</div>

@@ -31,161 +31,162 @@ $current_episode = @$this->current_episode;
 	<?php }?>
 	<?php $this->renderPartial('//patient/_legacy_events',array('legacyepisodes'=>$legacyepisodes))?>
 	<!-- <?php $this->renderPartial('//patient/_support_service_events',array('supportserviceepisodes'=>$supportserviceepisodes))?> -->
+
 	<?php
-	if (is_array($ordered_episodes))
+	if (is_array($ordered_episodes)) {
 		foreach ($ordered_episodes as $specialty_episodes) {?>
-			<div class="panel specialty"><h3 class="specialty-title"><?php echo $specialty_episodes['specialty'] ?></h3>
+			<div class="panel specialty">
+				<h3 class="specialty-title"><?php echo $specialty_episodes['specialty'] ?></h3>
 
-			<?php foreach ($specialty_episodes['episodes'] as $i => $episode) { ?>
+				<?php foreach ($specialty_episodes['episodes'] as $i => $episode) { ?>
 
-				<section class="panel episode<?php echo empty($episode->end_date) ? ' closed' : ' open'?>">
+					<section class="panel episode<?php echo empty($episode->end_date) ? ' closed' : ' open'?>">
 
-					<input type="hidden" name="episode-id" value="<?php echo $episode->id ?>" />
+						<input type="hidden" name="episode-id" value="<?php echo $episode->id ?>" />
 
-					<!-- Episode date -->
-					<div class="episode-date">
-						<?php echo $episode->NHSDate('start_date') ?>
-					</div>
+						<!-- Episode date -->
+						<div class="episode-date">
+							<?php echo $episode->NHSDate('start_date'); ?>
+						</div>
 
-					<!-- Show/hide toggle icon -->
-					<a href="#" class="toggle-trigger toggle-<?php if ((!$current_episode || $current_episode->id != $episode->id) && $episode->hidden) { ?>show<?php } else { ?>hide<?php } ?>">
-						<span class="icon-showhide <?php if ((!$current_episode || $current_episode->id != $episode->id) && $episode->hidden) { ?>show<?php } else { ?>hide<?php } ?>">
-							Show/hide events for this episode
-						</span>
-					</a>
+						<!-- Show/hide toggle icon -->
+						<a href="#" class="toggle-trigger toggle-<?php if ((!$current_episode || $current_episode->id != $episode->id) && $episode->hidden) { ?>show<?php } else { ?>hide<?php } ?>">
+							<span class="icon-showhide <?php if ((!$current_episode || $current_episode->id != $episode->id) && $episode->hidden) { ?>show<?php } else { ?>hide<?php } ?>">
+								Show/hide events for this episode
+							</span>
+						</a>
 
-					<!-- Episode title -->
-					<h4 class="episode-title">
-						<?php echo CHtml::link(
-							$episode->getSubspecialtyText(),
-							array('/patient/episode/' . $episode->id),
-							array('class' => (!$this->event && $current_episode && $current_episode->id == $episode->id) ? ' selected' : '')
-						) ?>
-					</h4>
+						<!-- Episode title -->
+						<h4 class="episode-title">
+							<?php echo CHtml::link(
+								$episode->getSubspecialtyText(),
+								array('/patient/episode/' . $episode->id),
+								array('class' => (!$this->event && $current_episode && $current_episode->id == $episode->id) ? ' selected' : '')
+							) ?>
+						</h4>
 
-					<!-- Episode event icons -->
-					<ol class="events-overview" <?php  if ($episode->hidden) { ?>style = "display : inline" <?php } else { ?> style = "display : none"<?php } ?>>
-						<?php foreach ($episode->events as $event) {
-							$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
-							<li>
-								<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>">
-									<?php
-									if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
-										$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
-									} else {
-										$assetpath = '/assets/';
-									}
-									?>
-									<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
-								</a>
-							</li>
-						<?php } ?>
-					</ol>
-
-					<!-- Episode events -->
-					<div <?php if ($episode->hidden) { ?>class="events-container hide"<?php } else { ?>class="events-container show"<?php } ?>>
-
-						<?php if (BaseController::checkUserLevel(4)) {?>
+						<!-- Episode event icons -->
+						<ol class="events-overview" <?php  if ($episode->hidden) { ?>style = "display:block" <?php } else { ?> style = "display : none"<?php } ?>>
 							<?php
-							$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-							$enabled = false;
-							if ($episode->firm) {
-								if ($firm->getSubspecialtyID() == $episode->firm->getSubspecialtyID()) {
-									$enabled = true;
-								}
-							} elseif (is_null($firm->getSubspecialtyID()) && $episode->support_services) {
-								$enabled = true;
-							}
-							?>
-
-							<button
-								<?php echo ($enabled) ? "" : " disabled "; ?>
-								class="button secondary tiny add-event addEvent <?php echo ($enabled) ? "enabled" : "disabled "; ?>"
-								type="button"
-								data-attr-subspecialty-id="<?php echo $episode->firm ? $episode->firm->getSubspecialtyID() : ''; ?>"
-								<?php if (!$enabled) echo 'title="Please switch firm to add an event to this episode"'; ?>>
-								<span class="icon-button-small-plus-sign"></span>
-								Add event
-							</button>
-
-							<?php
-							$ssa = $episode->firm ? $episode->firm->serviceSubspecialtyAssignment : null;
-							$subspecialty_data = $ssa ? array_intersect_key($ssa->subspecialty->attributes, array_flip(array('id','name'))) : array();
-							if($enabled) { ?>
-								<script type="text/html" id="add-new-event-template" data-specialty='<?php echo json_encode($subspecialty_data);?>'>
-									<?php $this->renderPartial('//patient/add_new_event',array(
-											'subspecialty' => @$ssa->subspecialty,
-											'patient' => $this->patient,
-											'eventTypes' => EventType::model()->getEventTypeModules(),
-										));?>
-								</script>
-							<?php }?>
-						<?php }?>
-
-						<ol class="events">
-							<?php
-							foreach ($episode->events as $event) {
-								$highlight = false;
-
-								if (isset($this->event) && $this->event->id == $event->id) {
-									$highlight = TRUE;
-								}
-
-								$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
-								?>
-								<li id="eventLi<?php echo $event->id ?>"<?php if ($highlight) { ?> class="selected"<?php }?>>
-
-									<!-- TODO -->
-									<!-- Quicklook tooltip -->
-									<div class="quicklook" style="display: none; ">
-										<span class="event"><?php echo $event->eventType->name ?></span>
-										<span class="info"><?php echo str_replace("\n", "<br/>", $event->info) ?></span>
-										<?php if ($event->hasIssue()) { ?>
-											<span class="issue"><?php echo $event->getIssueText() ?></span>
-										<?php } ?>
-									</div>
-
+								foreach ($episode->events as $event) {
+								$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
+								<li>
 									<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>">
-										<span class="event-type alert<?php if ($event->hasIssue()) { ?> statusflag<?php } ?>">
-											<?php
-											if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
-												$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
-											} else {
-												$assetpath = '/assets/';
-											}
-											?>
-											<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
-										</span>
-										<span class="event-date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
+										<?php
+										if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
+											$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
+										} else {
+											$assetpath = '/assets/';
+										}
+										?>
+										<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
 									</a>
-
 								</li>
 							<?php } ?>
 						</ol>
-					</div>
-				</section>
 
-	<?php /* FIXME:
-				<div class="episode_details hidden" id="episode-details-<?php echo $episode->id ?>">
-					<div class="row"><span class="label">Start date:</span><?php echo $episode->NHSDate('start_date'); ?></div>
-					<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? $episode->NHSDate('end_date') : '-') ?></div>
-					<div class="row"><span class="label">Principal eye:</span><?php echo ($episode->diagnosis) ? ($episode->eye ? $episode->eye->name : 'None') : 'No diagnosis' ?></div>
-					<div class="row"><span class="label">Principal diagnosis:</span><?php echo ($episode->diagnosis) ? ($episode->diagnosis ? $episode->diagnosis->term : 'none') : 'No diagnosis' ?></div>
-					<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->getSubspecialtyText()) ?></div>
-					<div class="row"><span class="label">Consultant firm:</span><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A' ?></div>
-					<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png') ?>" alt="folder open" />
-				</div>
-				</div>
-	*/?>
-			<?php } ?>
+						<!-- Episode events -->
+						<div <?php if ($episode->hidden) { ?>class="events-container hide"<?php } else { ?>class="events-container show"<?php } ?>>
+
+							<?php
+							if (BaseController::checkUserLevel(4)) {?>
+								<?php
+								$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+								$enabled = false;
+								if ($episode->firm) {
+									if ($firm->getSubspecialtyID() == $episode->firm->getSubspecialtyID()) {
+										$enabled = true;
+									}
+								} elseif (is_null($firm->getSubspecialtyID()) && $episode->support_services) {
+									$enabled = true;
+								}
+								?>
+
+								<button
+									<?php echo ($enabled) ? "" : " disabled "; ?>
+									class="button secondary tiny add-event addEvent <?php echo ($enabled) ? "enabled" : "disabled "; ?>"
+									type="button"
+									data-attr-subspecialty-id="<?php echo $episode->firm ? $episode->firm->getSubspecialtyID() : ''; ?>"
+									<?php if (!$enabled) echo 'title="Please switch firm to add an event to this episode"'; ?>>
+									<span class="icon-button-small-plus-sign"></span>
+									Add event
+								</button>
+
+								<?php
+								$ssa = $episode->firm ? $episode->firm->serviceSubspecialtyAssignment : null;
+								$subspecialty_data = $ssa ? array_intersect_key($ssa->subspecialty->attributes, array_flip(array('id','name'))) : array();
+								if($enabled) { ?>
+									<script type="text/html" id="add-new-event-template" data-specialty='<?php echo json_encode($subspecialty_data);?>'>
+										<?php $this->renderPartial('//patient/add_new_event',array(
+												'subspecialty' => @$ssa->subspecialty,
+												'patient' => $this->patient,
+												'eventTypes' => EventType::model()->getEventTypeModules(),
+											));?>
+									</script>
+								<?php }?>
+							<?php }?>
+
+							<ol class="events">
+								<?php	foreach ($episode->events as $event) {
+									$highlight = false;
+
+									if (isset($this->event) && $this->event->id == $event->id) {
+										$highlight = TRUE;
+									}
+
+									$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
+									?>
+									<li id="eventLi<?php echo $event->id ?>"<?php if ($highlight) { ?> class="selected"<?php }?>>
+
+										<!-- Quicklook tooltip -->
+										<div class="tooltip quicklook" style="display: none; ">
+											<div class="event-name"><?php echo $event->eventType->name ?></div>
+											<div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
+											<?php if ($event->hasIssue()) { ?>
+												<div class="event-issue"><?php echo $event->getIssueText() ?></div>
+											<?php } ?>
+										</div>
+
+										<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>">
+											<span class="event-type alert<?php if ($event->hasIssue()) { ?> statusflag<?php } ?>">
+												<?php
+												if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
+													$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
+												} else {
+													$assetpath = '/assets/';
+												}
+												?>
+												<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
+											</span>
+											<span class="event-date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
+										</a>
+
+									</li>
+								<?php } ?>
+							</ol>
+						</div>
+					</section>
+
+					<div class="episode_details hide" id="episode-details-<?php echo $episode->id ?>">
+						<div class="row"><span class="label">Start date:</span><?php echo $episode->NHSDate('start_date'); ?></div>
+						<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? $episode->NHSDate('end_date') : '-') ?></div>
+						<div class="row"><span class="label">Principal eye:</span><?php echo ($episode->diagnosis) ? ($episode->eye ? $episode->eye->name : 'None') : 'No diagnosis' ?></div>
+						<div class="row"><span class="label">Principal diagnosis:</span><?php echo ($episode->diagnosis) ? ($episode->diagnosis ? $episode->diagnosis->term : 'none') : 'No diagnosis' ?></div>
+						<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->getSubspecialtyText()) ?></div>
+						<div class="row"><span class="label">Consultant firm:</span><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A' ?></div>
+						<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png') ?>" alt="folder open" />
+					</div>
+				<?php } ?>
+
 			</div>
 		<?php } ?>
+	<?php } ?>
 
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('.quicklook').each(function() {
 				var quick = $(this);
-				var iconHover = $(this).parent().find('.type');
+				var iconHover = $(this).closest('.events').find('.event-type');
 				iconHover.hover(function(e) {
 					quick.fadeIn('fast');
 				}, function(e) {

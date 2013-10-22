@@ -64,8 +64,9 @@
 		&.confirm .ui-dialog-content {
 			overflow: hidden;
 		}
-		&.alert .buttons, &.confirm .buttons {
-			padding: 1.5em .5em .5em .5em;
+		&.alert .buttons,
+		&.confirm .buttons {
+			padding: .5em;
 		}
 	}
 }
