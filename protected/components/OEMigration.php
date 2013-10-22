@@ -260,4 +260,50 @@ class OEMigration extends CDbMigration
 		return $element_type_ids;
 	}
 
+	/**
+	 * @description helper method to add element_type_eye records
+	 * @param array $eye_ids - array of integers
+	 * @param $event_type_id
+	 */
+	protected function insertOEElementTypeEye( array $eye_ids, $element_type_id){
+		$displayOrder = 1;
+		foreach($eye_ids as $eye_id){
+			$this->insert('element_type_eye',array('element_type_id' => $element_type_id ,'eye_id'=>$eye_id,'display_order'=>$displayOrder));
+			echo 'Added Element Type Eye. Element Type id: '. $element_type_id . ' with EyeId: ' . $eye_id . ' and DisplayOrder: ' . $displayOrder;
+			$displayOrder++;
+		}
+	}
+
+	/**
+	 * @description method helping to insert element_type_anaesthetic tables
+	 * @param $table_name - required string
+	 * @param array $entity_ids - array of entity_table_id_name => entity_val
+	 * @param $element_type_id
+	 * @param int $last_modified_user_id
+	 * @param int $created_user_id
+	 */
+	protected function insertOEElementTypeAnaesteticTablesHelper($table_name , $entity_column_name, array $entity_ids, $element_type_id, $last_modified_user_id =1 , $created_user_id =1){
+		$displayOrder = 1;
+		foreach($entity_ids as $entity_id){
+			$this->insert($table_name, //table name
+				array('element_type_id' => $element_type_id ,$entity_column_name => $entity_id,'display_order'=>$displayOrder,'last_modified_user_id'=>$last_modified_user_id,'created_user_id'=>$created_user_id)
+			);
+			echo "\nAdded ElementTypeAnaestetic Tables Entry.  Element Type id: ". $element_type_id . " with $entity_column_name: " . $entity_id .
+				' and DisplayOrder: ' . $displayOrder . ' last_modified_user_id: '. $last_modified_user_id . ' created_user_id' . $created_user_id ."\n";
+			$displayOrder++;
+		}
+	}
+
+	/**
+	 * @param $tableName - string
+	 * @param array $fieldsValArray -  must be two dimension array with fieldName => fieldVal structure
+	 */
+	protected function insertOEGenericDynamicTable($tableName, array $fieldsValArray){
+			// must be two dimension array with fieldName => fieldVal structure
+		foreach($fieldsValArray as $fieldsVal){
+			$this->insert($tableName,$fieldsVal);
+			echo "\nAdded  in table : $tableName. Fields : ". var_export($fieldsVal, true) ."\n";
+		}
+	}
+
 }
