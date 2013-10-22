@@ -103,6 +103,10 @@ class Examination extends Page
         'rightSecondaryTo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_diagnosis2_id']"),
         'leftChoroidalRetinal' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis1_id']//*[@value='75971007']"),
         'leftSecondaryTo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis2_id']"),
+        'rightMacularRetinal' => array ('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_diagnosis1_id']//*[@value='37231002']"),
+        'leftMacularRetinal' => array ('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis1_id']//*[@value='37231002']"),
+        'rightVenousRetinalBranchOcclusion' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_diagnosis2_id']//*[@value='24596005']"),
+        'leftDiabeticMacularOedema' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis2_id']//*[@value='312912001']"),
 
         'expandVisualFields' => array ('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Visual Fields']"),
         'expandGonioscopy' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Gonioscopy']"),
@@ -137,7 +141,23 @@ class Examination extends Page
         'leftLossOfFiveLettersHigherThanFiveYes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_4_1']"),
         'leftLossOfFiveLettersHigherThanFiveNo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_4_0']"),
 
+        'rightFailedLaserYes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_Answer_5_1']"),
+        'rightFailedLaserNo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_Answer_5_0']"),
+        'rightUnsuitableForLaserYes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_Answer_6_1']"),
+        'rightUnsuitableForLaserNo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_Answer_6_0']"),
+        'rightPreviousOzurdexYes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_Answer_7_1']"),
+        'rightPreviousOzurdexNo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_Answer_7_0']"),
 
+        'leftCrtIncreaseMoreThanFourHundredYes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_8_1']"),
+        'leftCrtIncreaseMoreThanFourHundredNo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_8_0']"),
+        'leftFovealDamageYes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_9_1']"),
+        'leftFovealDamageNo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_9_0']"),
+        'leftFailedLaserYes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_10_1']"),
+        'leftFailedLaserNo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_10_0']"),
+        'leftUnsuitableForLaserYes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_11_1']"),
+        'leftUnsuitableForLaserNo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_11_0']"),
+        'leftPreviousAntiVEGFyes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_12_1']"),
+        'leftPreviousAntiVEGFno' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_12_0']"),
 
         'expandRisks' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Risks']"),
         'expandClinicOutcome' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Clinic Outcome']"),
@@ -292,10 +312,10 @@ class Examination extends Page
 
     public function openRefraction ()
     {
-//        if ($this->isRefractionCollapsed()){
+        if ($this->isRefractionCollapsed()){
         $this->getElement('expandRefraction')->click();
         $this->getSession()->wait(10000);
-//        }
+        }
     }
 
     public function leftRefractionDetails ($sphere, $integer, $fraction)
@@ -574,6 +594,7 @@ class Examination extends Page
     public function rightChoroidalRetinal ()
     {
         $this->getElement('rightChoroidalRetinal')->click();
+        $this->getSession()->wait(5000);
     }
 
     public function rightSecondaryTo ($secondary)
@@ -671,6 +692,108 @@ class Examination extends Page
     public function leftLossOfFiveLettersHigherThanFiveNo ()
     {
         $this->getElement('leftLossOfFiveLettersHigherThanFiveNo')->click();
+    }
+
+    public function rightMacularRetinal ()
+    {
+        $this->getElement('rightMacularRetinal')->click();
+    }
+
+    public function leftMacularRetinal ()
+    {
+        $this->getElement('leftMacularRetinal')->click();
+    }
+
+    public function rightSecondaryVenousRetinalBranchOcclusion ()
+    {
+        $this->getElement('rightVenousRetinalBranchOcclusion')->click();
+        $this->getSession()->wait(5000);
+    }
+
+    public function leftSecondaryDiabeticMacularOedema ()
+    {
+        $this->getElement('leftDiabeticMacularOedema')->click();
+        $this->getSession()->wait(5000);
+    }
+
+    public function leftCrtIncreaseMoreThanFourHundredYes ()
+    {
+        $this->getElement('leftCrtIncreaseMoreThanFourHundredYes')->click();
+    }
+
+    public function leftCrtIncreaseMoreThanFourHundredNo ()
+    {
+        $this->getElement('leftCrtIncreaseMoreThanFourHundredNo')->click();
+    }
+
+    public function leftFovealDamageYes ()
+    {
+        $this->getElement('leftFovealDamageYes')->click();
+    }
+
+    public function leftFovealDamageNo ()
+    {
+        $this->getElement('leftFovealDamageNo')->click();
+    }
+
+    public function leftFailedLaserYes ()
+    {
+        $this->getElement('leftFailedLaserYes')->click();
+    }
+
+    public function leftFailedLaserNo ()
+    {
+        $this->getElement('leftFailedLaserNo')->click();
+    }
+
+    public function leftUnsuitableForLaserYes ()
+    {
+        $this->getElement('leftUnsuitableForLaserYes')->click();
+    }
+
+    public function leftUnsuitableForLaserNo ()
+    {
+        $this->getElement('leftUnsuitableForLaserNo')->click();
+    }
+
+    public function leftPreviousAntiVEGFyes ()
+    {
+        $this->getElement('leftPreviousAntiVEGFyes')->click();
+    }
+
+    public function leftPreviousAntiVEGFno ()
+    {
+        $this->getElement('leftPreviousAntiVEGFno')->click();
+    }
+
+    public function rightFailedLaserYes ()
+    {
+        $this->getElement('rightFailedLaserYes')->click();
+    }
+
+    public function rightFailedLaserNo()
+    {
+        $this->getElement('rightFailedLaserNo')->click();
+    }
+
+    public function rightUnsuitableForLaserYes ()
+    {
+        $this->getElement('rightUnsuitableForLaserYes')->click();
+    }
+
+    public function rightUnsuitableForLaserNo ()
+    {
+        $this->getElement('rightUnsuitableForLaserNo')->click();
+    }
+
+    public function rightPreviousOzurdexYes ()
+    {
+        $this->getElement('rightPreviousOzurdexYes')->click();
+    }
+
+    public function rightPreviousOzurdexNo ()
+    {
+        $this->getElement('rightPreviousOzurdexNo')->click();
     }
 
     public function expandRisks ()

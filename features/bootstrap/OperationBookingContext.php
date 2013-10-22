@@ -174,7 +174,7 @@ class OperationBookingContext extends PageObjectContext
          */
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->decisionDate($date);
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
 }
 
     /**
@@ -210,7 +210,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
         $operationBooking->scheduleNow();
 
     }
@@ -224,7 +224,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
         $operationBooking->availableSlot();
     }
 
@@ -237,7 +237,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
     }
 
     /**
@@ -249,7 +249,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
         $operationBooking->availableSessionTime();
     }
 
@@ -286,7 +286,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
         $operationBooking->confirmSlot();
     }
 }

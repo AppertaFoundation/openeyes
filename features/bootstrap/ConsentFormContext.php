@@ -106,7 +106,7 @@ class ConsentFormContext extends PageObjectContext
     /**
      * @Then /^I choose Permissions for images No$/
      */
-    public function iChoosePermissionsForImages($images)
+    public function iChoosePermissionsForImages()
     {
         /**
          * @var ConsentForm $consentForm
