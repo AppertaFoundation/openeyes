@@ -16,35 +16,36 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-class Slider extends BaseFieldWidget
-{
-	public $min;
-	public $max;
-	public $step;
-	public $force_dp = false;
-	public $prefix_positive = false;
-	public $remap_values = false;
-	public $null;
-	public $value_display;
-	public $append = '';
-	public $painScale;
+<?php $this->beginContent('//patient/event_container', array()); ?>
+	<?php
+		$this->breadcrumbs=array($this->module->id);
+		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
+	?>
 
-	public function init()
-	{
-		parent::init();
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-		if ($this->null) {
-			$this->max += 1;
+	<?php $this->renderPartial('//base/_messages'); ?>
 
-			if ($this->value === null) {
-				$this->value = 0;
-				$this->value_display = 'NR';
-			} else {
-				$this->value_display = $this->value++;
-			}
-		} else {
-			$this->value_display = $this->value;
-		}
-	}
-}
+	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'clinical-create',
+		'enableAjaxValidation'=>false,
+		'htmlOptions' => array('class'=>'sliding'),
+		'layoutColumns' => array(
+			'label' => 4,
+			'field' => 8
+		)
+	));
+	?>
+		<?php $this->displayErrors($errors)?>
+
+		<div id='event_content'>
+		<?php $this->renderDefaultElements($this->action->id, $form)?>
+		<?php $this->renderOptionalElements($this->action->id, $form)?>
+		<?php $this->displayErrors($errors)?>
+		</div>
+
+		<div class="cleartall"></div>
+	<?php $this->endWidget()?>
+<?php $this->endContent() ;?>

@@ -17,34 +17,23 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class Slider extends BaseFieldWidget
-{
-	public $min;
-	public $max;
-	public $step;
-	public $force_dp = false;
-	public $prefix_positive = false;
-	public $remap_values = false;
-	public $null;
-	public $value_display;
-	public $append = '';
-	public $painScale;
+$this->breadcrumbs=array($this->module->id);
+$this->beginContent('//patient/event_container', array());
+?>
 
-	public function init()
-	{
-		parent::init();
+<?php
 
-		if ($this->null) {
-			$this->max += 1;
+	// Event actions
+	if ($this->canPrint()) {
+		$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));}
+?>
 
-			if ($this->value === null) {
-				$this->value = 0;
-				$this->value_display = 'NR';
-			} else {
-				$this->value_display = $this->value++;
-			}
-		} else {
-			$this->value_display = $this->value;
-		}
-	}
-}
+<h2 class="event-title"><?php echo $this->event_type->name?></h2>
+
+<div>
+	<?php $this->renderDefaultElements($this->action->id)?>
+	<?php $this->renderOptionalElements($this->action->id)?>
+	<div class="cleartall"></div>
+</div>
+
+<?php $this->endContent() ;?>
