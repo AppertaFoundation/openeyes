@@ -38,7 +38,7 @@
 				Select a diagnosis
 			</div>
 		</div>
-		<div class="element-fields element-eye left-eye ride side column<?php if (!$element->hasLeft() || !$this->hasDiagnosisForSide($element->event_id,'left')) { ?> inactive<?php } ?>" data-side="left">
+		<div class="element-fields element-eye left-eye right side column<?php if (!$element->hasLeft() || !$this->hasDiagnosisForSide($element->event_id,'left')) { ?> inactive<?php } ?>" data-side="left">
 			<div class="active-form">
 				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
 					array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
