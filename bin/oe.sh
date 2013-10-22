@@ -28,15 +28,23 @@ MODULE_REGEX="Oph"
 MODULE_PATH="protected/modules"
 CONFIG_FILE="protected/config/local/common.php"
 BRANCH=`git symbolic-ref --short HEAD`
-
 GITHUB_ORG="openeyes"
 GITHUB_API="https://api.github.com"
 
-DB_NAME="openeyes"
-DB_USER="openeyes"
-DB_PASSWORD="oe_test"
-DB_PORT="3334"
-DB_HOST="127.0.0.1"
+getPHPDBConfig() {
+  php << EOF
+<?php
+\$config = include "protected/config/local/common.php";
+echo \$config["components"]["db"]["$1"];
+EOF
+}
+
+CONNECTION_STRING=`getPHPDBConfig "connectionString" | sed 's/^.*://'`
+DB_NAME=`echo $CONNECTION_STRING | cut -d';' -f3 | sed 's/.*=//'`
+DB_PORT=`echo $CONNECTION_STRING | cut -d';' -f2 | sed 's/.*=//'`
+DB_HOST=`echo $CONNECTION_STRING | cut -d';' -f1 | sed 's/.*=//'`
+DB_USER=`getPHPDBConfig "username"`
+DB_PASSWORD=`getPHPDBConfig "password"`
 
 usage() {
 cat << EOF  usage: $0 [options] [command]
