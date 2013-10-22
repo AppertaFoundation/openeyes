@@ -4522,15 +4522,47 @@ tfoot.pagination-container .pagination li {
 .ui-dialog.dialog .field-row, .ui-dialog.dialog .data-row {
   padding-bottom: 0.625em;
 }
-/* line 60, ../sass/new/openeyes/components/_dialog.scss */
+/* line 61, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog.event, .ui-dialog.dialog.episode {
   border: 7px solid #69bd51;
 }
-/* line 64, ../sass/new/openeyes/components/_dialog.scss */
+/* line 65, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.add-event .title {
+  margin-bottom: 20px;
+}
+/* line 68, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.add-event .events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* line 72, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.add-event .events li {
+  margin: 5px 0;
+}
+/* line 75, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.add-event .events a {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  background: #f6f6f6;
+  color: #0b59da;
+  display: block;
+  font-weight: normal;
+  padding: 5px;
+}
+/* line 82, ../sass/new/openeyes/components/_dialog.scss */
+.ui-dialog.dialog.add-event .events a:hover {
+  background: #69bd51;
+  color: #fff;
+}
+/* line 90, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog.alert .ui-dialog-content, .ui-dialog.dialog.confirm .ui-dialog-content {
   overflow: hidden;
 }
-/* line 68, ../sass/new/openeyes/components/_dialog.scss */
+/* line 94, ../sass/new/openeyes/components/_dialog.scss */
 .ui-dialog.dialog.alert .buttons, .ui-dialog.dialog.confirm .buttons {
   padding: .5em;
 }

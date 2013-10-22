@@ -48,7 +48,7 @@ $(document).ready(function(){
 			destroyOnClose: false,
 			title: 'Add a new ' + (data && data.name ? data.name : 'Support services') + ' event',
 			content: html,
-			dialogClass: 'dialog event',
+			dialogClass: 'dialog event add-event',
 			width: 580,
 			id: 'add-new-event-dialog'
 		});

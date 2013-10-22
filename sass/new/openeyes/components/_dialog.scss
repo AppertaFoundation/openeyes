@@ -57,8 +57,34 @@
 		.field-row {
 			padding-bottom: emCalc(10px);
 		}
-		&.event, &.episode {
+		&.event,
+		&.episode {
 			border: 7px solid #69bd51;
+		}
+		&.add-event {
+			.title {
+				margin-bottom: 20px;
+			}
+			.events {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				li {
+					margin: 5px 0;
+				}
+				a {
+					@include border-radius(3px);
+					background: #f6f6f6;
+					color: #0b59da;
+					display: block;
+					font-weight: normal;
+					padding: 5px;
+					&:hover {
+						background: #69bd51;
+						color: #fff;
+					}
+				}
+			}
 		}
 		&.alert .ui-dialog-content,
 		&.confirm .ui-dialog-content {
