@@ -24,7 +24,8 @@
 	<div class="large-<?php echo $layoutColumns['field'];?> column end">
 
 		<!-- Here we show the selected diagnosis -->
-		<div id="enteredDiagnosisText" class="field-row hide">
+		<div id="enteredDiagnosisText" class="panel element-field<?php if (!$label) {?> hide<?php }?>">
+			<?php echo $label?>
 		</div>
 
 		<div class="field-row">
