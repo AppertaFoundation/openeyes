@@ -28,6 +28,7 @@ class Slider extends BaseFieldWidget
 	public $null;
 	public $value_display;
 	public $append = '';
+	public $painScale;
 
 	public function init()
 	{

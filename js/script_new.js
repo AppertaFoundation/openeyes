@@ -52,14 +52,15 @@ $(document).ready(function(){
 
 	(function sidebarEventsToggle() {
 
-		var trigger = $('.sidebar.episodes-and-events .toggle-trigger');
-		trigger.on('click', onTriggerClick);
+		var triggers = $('.sidebar.episodes-and-events .toggle-trigger');
+		triggers.on('click', onTriggerClick);
 
 		function onTriggerClick(e) {
 
 			e.preventDefault();
 
-			var episodeContainer = $(this).closest('.episode');
+			var trigger = $(this);
+			var episodeContainer = trigger.closest('.episode');
 			var input = episodeContainer.find('[name="episode-id"]');
 			var episode_id = input.val() || 'legacy';
 			var state = trigger.hasClass('toggle-hide') ? 'hide' : 'show';

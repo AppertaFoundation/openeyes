@@ -41,14 +41,14 @@ if (isset($htmlOptions['div_class'])) {
 ?>
 
 <div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> row field-row widget"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-	<input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
 	<div class="large-<?php echo $layoutColumns['label'];?> column">
 		<label for="<?php echo $field?>">
 			<?php echo @$htmlOptions['label']?>:
 		</label>
 	</div>
 	<div class="large-<?php echo $layoutColumns['field'];?> column end">
-		<div class="multi-select  multi-select-list">
+		<div class="multi-select multi-select-list">
+			<input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
 			<div class="field-row">
 				<select id="<?php echo $field?>" label="<?php echo $htmlOptions['label']?>" class="MultiSelectList" name="">
 					<option value=""><?php echo $htmlOptions['empty']?></option>
@@ -69,15 +69,16 @@ if (isset($htmlOptions['div_class'])) {
 				<?php foreach ($selected_ids as $id) {
 					if (isset($options[$id])) {?>
 						<li>
-							<?php echo $options[$id] ?> (<a href="#" class="MultiSelectRemove <?php echo $id?>">remove</a>)
+							<?php echo $options[$id] ?>
+							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one <?php echo $id?>">Remove</a>
+							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
+							<?php if (isset($opts[$id])) {
+								foreach ($opts[$id] as $key => $val) {
+									echo " " . $key . "=\"" . $val . "\"";
+								}
+							}?>
+							/>
 						</li>
-						<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
-						<?php if (isset($opts[$id])) {
-							foreach ($opts[$id] as $key => $val) {
-								echo " " . $key . "=\"" . $val . "\"";
-							}
-						}?>
-						/>
 					<?php }?>
 				<?php }?>
 			</ul>

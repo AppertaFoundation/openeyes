@@ -4,14 +4,14 @@ Feature: Create New Examination
   As an automation tester
   I want to build a template with supporting code for each web page
 
-  Scenario Outline: Login and create a new Examination Event
+  Scenario: Login and create a new Examination Event
 
-    Given I am on the OpenEyes "<environment>" homepage
-    And I enter login credentials "<username>" and "<password>"
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
     And I select Site "2"
     Then I select a firm of "3"
 
-    Then I search for hospital number "<hospnumber>"
+    Then I search for hospital number "1009465"
 
     Then I select the Latest Event
 
@@ -22,25 +22,11 @@ Feature: Create New Examination
     And I choose Type "1"
 
     Then I choose Procedure eye of "Both"
-#    And I choose a Procedure of "Laser"
     And I choose an Anaesthetic type of LA
     And I add a common procedure of "127"
 
     Then I choose Permissions for images No
 
     And I select the Information leaflet checkbox
-#    And I select the Anaesthetic leaflet checkbox
-#    Then I select a Witness Required checkbox
-#    And I enter a Witness Name of "Joe Bloggs"
-#    Then I select a Interpreter required checkbox
-#    And I enter a Interpreter name of "Tom Smith"
-#    Then I select a supplementary consent form checkbox
-#    The element not found error crops up again for all of these checkboxes
+
     Then I save the Consent Form
-
-
-
-
-  Examples: User details
-    | environment   | site      | username | password     | hospnumber   | nhs        | last           | first         | EventType     |
-    | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin,        | Violet        | Examination   |

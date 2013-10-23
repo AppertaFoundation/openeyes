@@ -148,6 +148,7 @@ $oe-panel-episode-events-selected-event-type-background-image: image-url("_eleme
 				list-style: none;
 				font-size: $oe-panel-episode-events-list-item-font-size;
 				margin: $oe-panel-episode-events-list-item-margin;
+				position: relative;
 			}
 			a {
 				display: block;

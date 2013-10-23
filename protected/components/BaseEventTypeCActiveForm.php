@@ -225,7 +225,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
-	public function slider($element, $field, $options, $layoutColumns=array())
+	public function slider($element, $field, $options, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.Slider', array(
 			'element' => $element,
@@ -238,7 +238,9 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'remap_values' => @$options['remap'],
 			'null' => @$options['null'],
 			'append' => @$options['append'],
-			'layoutColumns' => $layoutColumns
+			'layoutColumns' => $layoutColumns,
+			'painScale' => @$options['painScale'],
+			'htmlOptions' => $htmlOptions,
 		));
 	}
 
