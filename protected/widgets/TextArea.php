@@ -19,8 +19,6 @@
 
 class TextArea extends BaseFieldWidget
 {
-	public $rows;
-	public $cols;
 	public $button;
 	public $layout;
 	public $nowrapper;
