@@ -37,7 +37,7 @@
 					array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
 			</div>
 			<div class="inactive-form">
-				Only required if Patient Suitability is Non-Compliant
+				<div class="eye-message">Only required if Patient Suitability is Non-Compliant</div>
 			</div>
 		</div>
 
@@ -49,7 +49,7 @@
 
 			</div>
 			<div class="inactive-form">
-				Only required if Patient Suitability is Non-Compliant
+				<div class="eye-message">Only required if Patient Suitability is Non-Compliant</div>
 			</div>
 		</div>
 

@@ -20,6 +20,8 @@
 
 <?php
 
+	$layoutColumns = array('label'=>4, 'field'=>8);
+
 	$treatments = $element->getTreatments($side);
 
 	$treat_opts = array(
@@ -32,29 +34,29 @@
 	}
 ?>
 
-<div class="row data-row">
-	<div class="large-4 column">
+<div class="row field-row">
+	<div class="large-<?php echo $layoutColumns['label']?> column">
 		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_treatment_id'); ?></div>
 	</div>
-	<div class="large-8 column">
+	<div class="large-<?php echo $layoutColumns['field']?> column">
 		<div class="data-value"><?php echo $form->dropDownList($element, $side . '_treatment_id', CHtml::listData($treatments,'id','name'),$treat_opts); ?></div>
 	</div>
 </div>
 
-<div class="row data-row">
-	<div class="large-4 column">
+<div class="row field-row">
+	<div class="large-<?php echo $layoutColumns['label']?> column">
 		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_angiogram_baseline_date'); ?></div>
 	</div>
-	<div class="large-8 column">
+	<div class="large-<?php echo $layoutColumns['field']?> column">
 		<div class="data-value"><?php echo $form->datePicker($element, $side . '_angiogram_baseline_date', array('maxDate' => 'today'), array('style'=>'width: 110px;', 'nowrapper' => true))?></div>
 	</div>
 </div>
 
-<div id="nice_compliance_<?php echo $side?>" class="row data-row">
-	<div class="large-4 column">
+<div id="nice_compliance_<?php echo $side?>" class="row field-row">
+	<div class="large-<?php echo $layoutColumns['label']?> column">
 		<div class="data-label">NICE Compliance</div>
 	</div>
-	<div class="large-8 column">
+	<div class="large-<?php echo $layoutColumns['field']?> column">
 		<div class="data-value compliance-container">
 		<?php $this->renderPartial(
 			'form_OphCoTherapyapplication_DecisionTree',

@@ -66,12 +66,20 @@ class EventAction
 
 	public function toHtml()
 	{
-		$label = CHtml::encode($this->label);
 		$this->htmlOptions['class'] .= ' '.$this->options['level'];
+		$label = CHtml::encode($this->label);
+
+		if ($this->options['level'] === 'delete') {
+			$content = '<span class="icon-button-small-trash-can"></span>';
+			$content .= '<span class="hide-offscreen">'.$label.'</span>';
+			$label = $content;
+		}
+
 		if ($this->options['disabled']) {
 			$this->htmlOptions['class'] .= ' disabled';
 			$this->htmlOptions['disabled'] = 'disabled';
 		}
+
 		if ($this->type == 'button') {
 			return CHtml::htmlButton($label, $this->htmlOptions);
 		} elseif ($this->type == 'link') {

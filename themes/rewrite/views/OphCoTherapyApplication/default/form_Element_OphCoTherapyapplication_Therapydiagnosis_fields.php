@@ -16,13 +16,15 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+$layoutColumns = array('label'=>4, 'field'=>8);
 ?>
 
 <div class="row field-row">
-	<div class="large-4 column">
+	<div class="large-<?php echo $layoutColumns['label']?> column">
 		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_diagnosis1_id'); ?></div>
 	</div>
-	<div class="large-8 column">
+	<div class="large-<?php echo $layoutColumns['field']?> column">
 		<div class="data-value">
 	<?php $form->widget('application.widgets.DiagnosisSelection',array(
 			'field' => $side . '_diagnosis1_id',
@@ -32,14 +34,14 @@
 			'default' => false,
 			'dropdownOptions' => array('empty'=>'- Please select -', 'options' => $l1_opts, 'style' => 'margin-bottom: 10px; width: 240px;'),
 	));?>
-	</div>
+		</div>
 	</div>
 </div>
 <div class="row field-row<?php if (!array_key_exists($element->{$side . '_diagnosis1_id'}, $l2_disorders) ) { echo " hidden"; }?>" id="<?php echo $side ?>_diagnosis2_wrapper">
-	<div class="large-4 column">
+	<div class="large-<?php echo $layoutColumns['label']?> column">
 		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_diagnosis2_id'); ?></div>
 	</div>
-	<div class="large-8 column">
+	<div class="large-<?php echo $layoutColumns['field']?> column">
 		<div class="data-value">
 		<?php
 		$l2_attrs =  array('empty'=>'- Please select -', 'style' => 'margin-bottom: 10px; width: 240px;');

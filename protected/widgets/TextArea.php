@@ -24,4 +24,6 @@ class TextArea extends BaseFieldWidget
 	public $nowrapper;
 	public $class;
 	public $no_label;
+	public $rows;
+	public $cols;
 }
