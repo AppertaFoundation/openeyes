@@ -42,8 +42,10 @@
 		<div class="field-row">
 			<input class="widgetSlider<?php if (@$htmlOptions['class']) {?> <?php echo $htmlOptions['class']?><?php }?>" type="range" id="<?php echo get_class($element)?>_<?php echo $field?>" name="<?php echo get_class($element)?>[<?php echo $field?>]" min="<?php echo $min?>" max="<?php echo $max?>" value="<?php echo $value?>" step="<?php echo $step?>" />
 		</div>
-		<div class="field-row">
-			<img class="field_key" id="pain_key" src="<?php echo $painScale?>" />
-		</div>
+		<?php if ($painScale) {?>
+			<div class="field-row">
+				<img class="field_key" id="pain_key" src="<?php echo $painScale?>" />
+			</div>
+		<?php }?>
 	</div>
 </div>
