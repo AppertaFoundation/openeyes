@@ -31,7 +31,16 @@
 			)
 		));
 		// Event actions
-		$this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'et_save', 'level'=>'secondary'), array('class'=>'button small'));
+		$this->event_actions[] = EventAction::button('Save', 'save',
+			array(
+				'id' => 'et_save',
+				'level'=>'secondary'
+			),
+			array(
+				'form'=>'clinical-create',
+				'class'=>'button small'
+			)
+		);
 		?>
 		<?php  $this->displayErrors($errors)?>
 		<?php  $this->renderDefaultElements($this->action->id, $form); ?>
