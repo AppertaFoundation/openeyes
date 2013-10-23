@@ -40,6 +40,7 @@
 				Cancel
 			</button>
 			<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" />
-		<?php echo CHtml::endForm();?></div>
+		<?php echo CHtml::endForm();?>
+	</div>
 
 <?php $this->endContent()?>

@@ -19,28 +19,28 @@
 ?>
 <?php $this->beginContent('//patient/event_container', array()); ?>
 
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<?php
-$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'clinical-create',
-		'enableAjaxValidation'=>false,
-));
-
-	// Event actions
-	$this->event_actions[] = EventAction::button('Save and Schedule later','#', null, array('name'=> 'scheduleLater', 'id' => 'et_save', 'class' => 'button small', 'form'=>'clinical-create'));
-	$this->event_actions[] = EventAction::button('Save and Schedule now', '#', array('level'=>'secondary'),  array('name'=> 'scheduleNow','id' => 'et_save_and_schedule', 'class' => 'button small', 'form' => 'clinical-create'));
-
-	?>
-	<input type="hidden" name="schedule_now" id="schedule_now" value="0" />
 	<?php
-	$this->displayErrors($errors);
-	$this->renderDefaultElements($this->action->id, $form);
-	$this->renderOptionalElements($this->action->id, $form);
-	$this->displayErrors($errors, true);
-	?>
-	<div class="cleartall"></div>
-<?php $this->endWidget()?>
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'clinical-create',
+			'enableAjaxValidation'=>false,
+	));
+
+		// Event actions
+		$this->event_actions[] = EventAction::button('Save and Schedule later','#', null, array('name'=> 'scheduleLater', 'id' => 'et_save', 'class' => 'button small', 'form'=>'clinical-create'));
+		$this->event_actions[] = EventAction::button('Save and Schedule now', '#', array('level'=>'secondary'),  array('name'=> 'scheduleNow','id' => 'et_save_and_schedule', 'class' => 'button small', 'form' => 'clinical-create'));
+
+		?>
+		<input type="hidden" name="schedule_now" id="schedule_now" value="0" />
+		<?php
+		$this->displayErrors($errors);
+		$this->renderDefaultElements($this->action->id, $form);
+		$this->renderOptionalElements($this->action->id, $form);
+		$this->displayErrors($errors, true);
+		?>
+		<div class="cleartall"></div>
+	<?php $this->endWidget()?>
 
 <?php $this->endContent() ;?>
 
