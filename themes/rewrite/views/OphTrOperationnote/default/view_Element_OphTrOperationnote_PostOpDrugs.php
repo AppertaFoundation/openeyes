@@ -18,21 +18,17 @@
  */
 ?>
 
-<section class="element">
-	<div class="element-data">
-		<div class="row">
-			<div class="large-2 column">
-				<h4 class="data-title"><?php echo $element->elementType->name?></h4>
-				<div class="data-value <?php if (!$element->drugs) {?> none<?php }?>">
-					<?php if (!$element->drugs) {?>
-						None
-					<?php } else {?>
-						<?php foreach ($element->drugs as $drug) {?>
-							<?php echo $drug->name?><br/>
-						<?php }?>
-					<?php }?>
-				</div>
-			</div>
-		</div>
+<div>
+	<h4 class="elementTypeName"><?php echo $element->elementType->name?></h4>
+	<div class="eventHighlight medium<?php if (!$element->drugs) {?> none<?php }?>">
+		<?php if (!$element->drugs) {?>
+			<h4>None</h4>
+		<?php } else {?>
+			<h4>
+				<?php foreach ($element->drugs as $drug) {?>
+					<?php echo $drug->name?><br/>
+				<?php }?>
+			</h4>
+		<?php }?>
 	</div>
-</section>
+</div>

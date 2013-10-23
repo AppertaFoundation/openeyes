@@ -18,11 +18,9 @@
  */
 ?>
 
-<section class="element element-data">
-	<h3 class="data-title"><?php echo $element->elementType->name ?></h3>
-	<ul class="data-value field-highlight important">
+<h4><?php echo $element->elementType->name ?></h4>
+<div class="eventHighlight priority">
 	<?php foreach ($element->procedures as $procedure) {?>
-		<li><?php echo $element->eye->adjective?> <?php echo $procedure->term?></li>
+		<h4><?php echo $element->eye->adjective?> <?php echo $procedure->term?></h4>
 	<?php }?>
-	</ul>
-</section>
+</div>

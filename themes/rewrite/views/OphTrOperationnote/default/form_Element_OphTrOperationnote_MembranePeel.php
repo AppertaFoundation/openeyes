@@ -18,7 +18,7 @@
  */
 ?>
 
-<section class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
+<div class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
 	data-element-type-id="<?php echo $element->elementType->id ?>"
 	data-element-type-class="<?php echo $element->elementType->class_name ?>"
 	data-element-type-name="<?php echo $element->elementType->name ?>"
@@ -26,14 +26,10 @@
 	<?php if ($this->action->id == 'update' && !$element->event_id) {?>
 		<span class="missingtext">This element is missing and needs to be completed</span>
 	<?php }?>
-	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-	</header>
+	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-	<fieldset class="element-fields">
 	<?php echo $form->radioBoolean($element, 'membrane_blue')?>
 	<?php echo $form->radioBoolean($element, 'brilliant_blue')?>
 	<?php echo $form->textField($element, 'other_dye')?>
 	<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 60))?>
-	</fieldset>
-</section>
+</div>

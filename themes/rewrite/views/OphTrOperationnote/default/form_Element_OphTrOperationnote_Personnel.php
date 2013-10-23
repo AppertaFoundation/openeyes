@@ -19,15 +19,13 @@
 ?>
 
 <?php if ($element->getSetting('fife')) {?>
-	<section class="element <?php echo $element->elementType->class_name?>"
+	<div class="element <?php echo $element->elementType->class_name?>"
 		data-element-type-id="<?php echo $element->elementType->id ?>"
 		data-element-type-class="<?php echo $element->elementType->class_name ?>"
 		data-element-type-name="<?php echo $element->elementType->name ?>"
 		data-element-display-order="<?php echo $element->elementType->display_order ?>">
-		<header class="element-header">
-			<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-		</header>
-		<fieldset class="element-fields">
+		<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+
 		<?php echo $form->dropDownListRow(
 			$element,
 			array(
@@ -47,6 +45,5 @@
 			)
 		)?>
 		<?php echo $form->dropDownList($element, 'operating_department_practitioner_id', CHtml::listData($element->operating_department_practitioners, 'id', 'FullName'), array('empty'=>'- Please select -'), $element->operating_department_practitioner_id)?>
-		</fieldset>
-	</section>
+	</div>
 <?php }?>

@@ -18,7 +18,7 @@
  */
 ?>
 
-<section class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
+<div class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
 	data-element-type-id="<?php echo $element->elementType->id ?>"
 	data-element-type-class="<?php echo $element->elementType->class_name ?>"
 	data-element-type-name="<?php echo $element->elementType->name ?>"
@@ -27,11 +27,8 @@
 		<span class="missingtext">This element is missing and needs to be completed</span>
 	<?php }?>
 
-	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
-	</header>
+	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-	<fieldset class="element-fields">
 	<div class="splitElement clearfix" style="background-color: #DAE6F1;">
 		<div class="left" style="width:45%;">
 			<?php
@@ -63,5 +60,4 @@
 			<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 60))?>
 		</div>
 	</div>
-	</fieldset>
-</section>
+</div>
