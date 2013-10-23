@@ -17,68 +17,76 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-		<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -', 'style' => 'margin-bottom:10px;') : $dropdownOptions) : ""?> 
-		<button class="small button-icon small" style="vertical-align: middle"><span class="icon-button-small-search" id="<?php echo $class . "_" . $field . "_search"?>"> </span><span class="hide-offscreen">Search</span></button>
-		<br />
-		<?php
-		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-				'name' => "ignore_{$class}[$field]",
-				'id' => "{$class}_{$field}_searchbox",
-				'value'=>'',
-				'source'=>"js:function(request, response) {
-					$.ajax({
-						'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
-						'type':'GET',
-						'data':{'term': request.term, 'code': '".$code."'},
-						'success':function(data) {
-							data = $.parseJSON(data);
+<div class="row field-row collapse">
+	<div class="large-10 column">
+		<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -') : $dropdownOptions) : ""?>
+	</div>
+	<div class="large-2 column">
+		<div class="postfix">
+			<button class="small button-icon small" style="vertical-align: middle"><span class="icon-button-small-search" id="<?php echo $class . "_" . $field . "_search"?>"> </span><span class="hide-offscreen">Search</span></button>
+		</div>
+	</div>
+</div>
+<div class="hide">
+	<?php
+	$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+			'name' => "ignore_{$class}[$field]",
+			'id' => "{$class}_{$field}_searchbox",
+			'value'=>'',
+			'source'=>"js:function(request, response) {
+				$.ajax({
+					'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
+					'type':'GET',
+					'data':{'term': request.term, 'code': '".$code."'},
+					'success':function(data) {
+						data = $.parseJSON(data);
 
-							var result = [];
+						var result = [];
 
-							for (var i = 0; i < data.length; i++) {
-								var ok = true;
-								$('#selected_diagnoses').children('input').map(function() {
-									if ($(this).val() == data[i]['id']) {
-										ok = false;
-									}
-								});
-								if (ok) {
-									result.push(data[i]);
-								}
-							}
-
-							response(result);
-						}
-					});
-				}",
-				'options' => array(
-						'minLength'=>'3',
-						'select' => "js:function(event, ui) {
-							".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
-							$('#".$class."_".$field."_searchbox').val('').addClass('hidden');
-							var matched = false;
-							$('#".$class."_".$field."').children('option').map(function() {
-								if ($(this).val() == ui.item.id) {
-									matched = true;
+						for (var i = 0; i < data.length; i++) {
+							var ok = true;
+							$('#selected_diagnoses').children('input').map(function() {
+								if ($(this).val() == data[i]['id']) {
+									ok = false;
 								}
 							});
-							if (!matched) {
-								$('#".$class."_".$field."').append('<option value=\"' + ui.item.id + '\">'+ui.item.value+'</option>');
+							if (ok) {
+								result.push(data[i]);
 							}
-							$('#".$class."_".$field."').val(ui.item.id).trigger('change');
-							return false;
-						}",
-				),
-				'htmlOptions' => array(
-						'class' => 'hidden',
-						'placeholder' => 'search for diagnosis',
-				),
-		));
-		?>
+						}
+
+						response(result);
+					}
+				});
+			}",
+			'options' => array(
+					'minLength'=>'3',
+					'select' => "js:function(event, ui) {
+						".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
+						$('#".$class."_".$field."_searchbox').val('').parent().addClass('hide');
+						var matched = false;
+						$('#".$class."_".$field."').children('option').map(function() {
+							if ($(this).val() == ui.item.id) {
+								matched = true;
+							}
+						});
+						if (!matched) {
+							$('#".$class."_".$field."').append('<option value=\"' + ui.item.id + '\">'+ui.item.value+'</option>');
+						}
+						$('#".$class."_".$field."').val(ui.item.id).trigger('change');
+						return false;
+					}",
+			),
+			'htmlOptions' => array(
+				'placeholder' => 'search for diagnosis',
+			),
+	));
+	?>
+</div>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#<?php echo $class . "_" . $field . "_search"?>').live('click', function(e) {
-			$('#<?php echo $class . "_" . $field . "_searchbox"?>').removeClass('hidden').focus();
+			$('#<?php echo $class . "_" . $field . "_searchbox"?>').parent().removeClass('hide').focus();
 			e.preventDefault();
 		});
 	});

@@ -27,9 +27,9 @@
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
 
-	<div class="element-eyes row">
+	<div class="element-eyes element-fields row">
 		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-		<div class="element-fields element-eye right-eye left side column<?php if (!$element->hasRight() || !$this->hasDiagnosisForSide($element->event_id,'right')) { ?> inactive<?php } ?>" data-side="right">
+		<div class="element-eye right-eye left side column<?php if (!$element->hasRight() || !$this->hasDiagnosisForSide($element->event_id,'right')) { ?> inactive<?php } ?>" data-side="right">
 			<div class="active-form">
 				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
 					array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
@@ -38,7 +38,7 @@
 				<div class="eye-message">Select a diagnosis</div>
 			</div>
 		</div>
-		<div class="element-fields element-eye left-eye right side column<?php if (!$element->hasLeft() || !$this->hasDiagnosisForSide($element->event_id,'left')) { ?> inactive<?php } ?>" data-side="left">
+		<div class="element-eye left-eye right side column<?php if (!$element->hasLeft() || !$this->hasDiagnosisForSide($element->event_id,'left')) { ?> inactive<?php } ?>" data-side="left">
 			<div class="active-form">
 				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
 					array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>

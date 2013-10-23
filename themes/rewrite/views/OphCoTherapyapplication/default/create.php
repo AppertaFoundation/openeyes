@@ -18,14 +18,10 @@
  */
 ?>
 
-<?php
-	$this->breadcrumbs=array($this->module->id);
-	$this->beginContent('//patient/event_container', array());
-?>
+<?php $this->beginContent('//patient/event_container');?>
 
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<div id='event_content'>
 	<?php
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 				'id'=>'clinical-create',
@@ -37,15 +33,13 @@
 				)
 		));
 		$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
-	?>
+		?>
 
-	<?php $this->displayErrors($errors)?>
-	<?php $this->renderDefaultElements($this->action->id, $form)?>
-	<?php $this->renderOptionalElements($this->action->id, $form)?>
-	<?php $this->displayErrors($errors)?>
+		<?php $this->displayErrors($errors)?>
+		<?php $this->renderDefaultElements($this->action->id, $form)?>
+		<?php $this->renderOptionalElements($this->action->id, $form)?>
+		<?php $this->displayErrors($errors)?>
 
-	<div class="cleartall"></div>
 	<?php $this->endWidget()?>
-</div>
 
 <?php $this->endContent() ;?>
