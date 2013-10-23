@@ -17,38 +17,34 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
 <?php
 	$this->breadcrumbs=array($this->module->id);
-	$this->beginContent('//patient/event_container', array());
+	$this->header();
 ?>
 
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
 
-<div id='event_content'>
-	<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'clinical-create',
-			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
-			'focus'=>'#procedure_id',
-			'layoutColumns' => array(
-				'label' => 2,
-				'field' => 10
-			)
-
-		));
-		$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'secondary') , array('class'=>'button small', 'form'=>'clinical-create'));
-	?>
-
-	<?php $this->displayErrors($errors)?>
-	<?php $this->renderDefaultElements($this->action->id, $form)?>
-	<?php $this->renderOptionalElements($this->action->id, $form)?>
-	<?php $this->displayErrors($errors)?>
-
+<div>
 	<div class="cleartall"></div>
-
-	<?php $this->endWidget()?>
 </div>
 
-<?php $this->endContent() ;?>
+<div id="delete_event">
+	<h1>Delete event</h1>
+	<div class="alertBox" style="margin-top: 10px;">
+		<strong>WARNING: This will permanently delete the event and remove it from view.<br><br>THIS ACTION CANNOT BE UNDONE.</strong>
+	</div>
+	<p>
+		<strong>Are you sure you want to proceed?</strong>
+	</p>
+	<?php
+	echo CHtml::form(array('Default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'));
+		echo CHtml::hiddenField('event_id', $this->event->id); ?>
+		<div class="buttonwrapper">
+			<button type="submit" class="classy red venti" id="et_deleteevent" name="et_deleteevent"><span class="button-span button-span-red">Delete event</span></button>
+			<button type="submit" class="classy green venti" id="et_canceldelete" name="et_canceldelete"><span class="button-span button-span-green">Cancel</span></button>
+			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+		</div>
+	<?php echo CHtml::endForm(); ?>
+</div>
+
+<?php $this->footer() ?>

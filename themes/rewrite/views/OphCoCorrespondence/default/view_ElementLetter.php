@@ -16,12 +16,29 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-class TextArea extends BaseFieldWidget
-{
-	public $button;
-	public $layout;
-	public $nowrapper;
-	public $class;
-	public $no_label;
-}
+<div id="correspondence_out"<?php if ($element->draft) {?> class="draft"<?php }?>>
+	<div class="letter_header">
+		<?php $this->renderPartial("letter_start", array(
+			'site' => $element->site,
+			'toAddress' => CHtml::encode($element->address),
+			'patient' => $this->patient,
+			'date' => $element->date,
+			'clinicDate' => $element->clinic_date,
+			'directLine' => $element->direct_line,
+			'faxNumber' => $element->fax,
+		))?>
+	</div>
+
+	<?php $this->renderPartial("reply_address", array(
+			'site' => $element->site,
+	))?>
+
+	<?php $this->renderPartial("print_ElementLetter", array(
+			'element' => $element,
+	))?>
+
+	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
+	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
+</div>

@@ -16,12 +16,27 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
+<?php $this->header(); ?>
 
-class TextArea extends BaseFieldWidget
-{
-	public $button;
-	public $layout;
-	public $nowrapper;
-	public $class;
-	public $no_label;
-}
+<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
+
+<?php
+	// Event actions
+	if ($this->canPrint()) {
+		$this->event_actions[] = EventAction::button('Print', 'print');
+		$this->event_actions[] = EventAction::button('Print all', 'printall', null, array('id' => 'et_print_all'));
+	}
+	$this->renderPartial('//patient/event_actions');
+?>
+
+<input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>css" />
+
+<div>
+	<?php $this->renderDefaultElements($this->action->id); ?>
+	<?php $this->renderOptionalElements($this->action->id); ?>
+
+	<div class="cleartall"></div>
+</div>
+
+<?php $this->footer() ?>

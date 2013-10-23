@@ -42,11 +42,11 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
-	public function dropDownListNoPost($id, $options, $selected_value, $htmlOptions=array(), $layoutColumns=array())
+	public function dropDownListNoPost($id, $data, $selected_value, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.DropDownListNoPost', array(
 			'id' => $id,
-			'options' => $options,
+			'data' => $data,
 			'selected_value' => $selected_value,
 			'htmlOptions' => $htmlOptions,
 			'layoutColumns' => $layoutColumns
@@ -99,20 +99,14 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
-	public function textArea($element, $field, $options=array(), $hidden=false, $layoutColumns=array())
+	public function textArea($element, $field, $options=array(), $hidden=false, $htmlOptions=array(), $layoutColumns=array())
 	{
-		if (!isset($options['rows'])) {
-			throw new SystemException('textArea requires the rows option to be specified');
-		}
-		if (!isset($options['cols'])) {
-			throw new SystemException('textArea requires the cols option to be specified');
-		}
-
 		$this->widget('application.widgets.TextArea', array_merge(array(
 			'element' => $element,
 			'field' => $field,
 			'hidden' => $hidden,
-			'layoutColumns' => $layoutColumns
+			'htmlOptions' => $htmlOptions,
+			'layoutColumns' => $layoutColumns,
 		), $options));
 	}
 

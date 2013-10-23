@@ -16,12 +16,16 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-class TextArea extends BaseFieldWidget
-{
-	public $button;
-	public $layout;
-	public $nowrapper;
-	public $class;
-	public $no_label;
-}
+?>
+<div class="replyAddress">
+	<?php if ($site->replyTo) {?>
+		<strong>Please reply to:</strong>
+		<br/>
+		<?php
+		echo $site->getLetterAddress(array(
+			'contact' => 'replyTo',
+			'include_name' => true,
+			'delimiter' => ', ',
+		))?>
+	<?php }?>
+</div>
