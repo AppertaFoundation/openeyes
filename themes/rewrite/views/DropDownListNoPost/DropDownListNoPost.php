@@ -16,10 +16,20 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-class DropDownListNoPost extends BaseFieldWidget
-{
-	public $id;
-	public $selected_value;
-	public $data;
-}
+?>
+<?php if (!@$htmlOptions['nowrapper']) {?>
+	<div id="div_<?php echo $id?>" class="eventDetail">
+		<div class="data">
+<?php }?>
+		<select id="<?php echo $id?>"<?php if (@$htmlOptions['class']) {?> class="<?php echo $htmlOptions['class']?>"<?php }?><?php if (@$htmlOptions['disabled']) {?> disabled="disabled"<?php }?><?php if (@$htmlOptions['title']) {?> title="<?php echo $htmlOptions['title']?>"<?php }?>>
+			<?php if (isset($htmlOptions['empty'])) {?>
+				<option value=""><?php echo $htmlOptions['empty']?></option>
+			<?php }?>
+			<?php foreach ($data as $id => $option) {?>
+				<option value="<?php echo $id?>"<?php if ($id == $selected_value) {?> selected="selected"<?php }?>><?php echo $option?></option>
+			<?php }?>
+		</select>
+		<?php if (!@$htmlOptions['nowrapper']) {?>
+	</div>
+</div>
+<?php }?>
