@@ -1,4 +1,4 @@
-<div class="large-10 column event view booking highlight-fields">
+<div class="large-10 column event view ophtroperationbooking highlight-fields">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">

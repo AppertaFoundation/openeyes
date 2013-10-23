@@ -20,6 +20,10 @@
 // .warning:hover       - Warning button hover state
 // .warning:focus       - Warning button focus state
 // .warning:active      - Warning button pressed state
+// .delete				- Delete button
+// .delete:hover		- Delete button hover state
+// .delete:focus		- Delete button focus state
+// .delete:active		- Delete button active state
 //
 // Styleguide 10.1
 
@@ -127,6 +131,30 @@ button, .button, input[type="submit"] {
 	}
 }
 
+// Delete button styles
+button, .button, input[type="submit"] {
+	&.delete {
+		@include box-shadow(none);
+		background: none;
+		border-color: $oe-button-warning-border-color;
+		border: 0;
+		color: #000;
+		text-shadow: none;
+		&:hover,
+		&:focus {
+			@include background(linear-gradient($oe-button-warning-bg-color-start, $oe-button-warning-bg-color-end));
+			@include box-shadow(0 1px 4px rgba(0, 0, 0, $oe-button-primary-shadow-opacity));
+			text-shadow: 1px 1px 0 $oe-button-warning-text-shadow-1, 2px 2px 0 $oe-button-warning-text-shadow-2;
+			color: #fff;
+		}
+		&:active {
+			@include background(linear-gradient($oe-button-warning-active-bg-color-start, $oe-button-warning-active-bg-color-end));
+			border-color: $oe-button-warning-active-border-color;
+			color: #fff;
+		}
+	}
+}
+
 // Disabled button vars
 $oe-button-disabled-bg-color-start: #aaaaaa !default;
 $oe-button-disabled-bg-color-stop: #999999 !default;
@@ -193,8 +221,12 @@ button, .button, input[type="submit"] {
 //     Add episode
 // </button>
 // <a href="#" class="button button-icon small">
-// 	<span class="icon-button-small-mini-cross"></span>
-// 	<span class="hide-offscreen">Add element</span>
+//     <span class="icon-button-small-mini-cross"></span>
+//     <span class="hide-offscreen">Add element</span>
+// </a>
+// <a href="#" class="button button-icon small delete">
+//     <span class="icon-button-small-trash-can"></span>
+//     <span class="hide-offscreen">Delete</span>
 // </a>
 //
 // Styleguide 10.3
@@ -208,6 +240,19 @@ button, .button, input[type="submit"] {
 			padding-left: emCalc(1px);
 			[class*="icon-button-small-"] {
 				margin: -7px 0 -5px 0;
+			}
+			&.delete {
+				padding-right: emCalc(4px);
+				padding-left: emCalc(4px);
+				padding-bottom: emCalc(7px);
+				[class*="icon-button-small-"] {
+					margin-top: -3px;
+				}
+				&:hover {
+					.icon-button-small-trash-can {
+						@include sprite-background-position($oe-sprite-icons-button-small, "trash-can-hover");
+					}
+				}
 			}
 		}
 	}
