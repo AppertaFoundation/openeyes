@@ -40,7 +40,7 @@
 	?>
 	<?php echo $form->dropDownList($element, 'site_id', CHtml::listData(Site::model()->findAll($criteria),'id','short_name'))?>
 	<?php echo $form->radioButtons($element, 'priority_id', 'ophtroperationbooking_operation_priority')?>
-	<?php echo $form->datePicker($element, 'decision_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
-	<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 50))?>
+	<?php echo $form->datePicker($element, 'decision_date', array('maxDate' => 'today'), array(), array_merge($form->layoutColumns, array('field' => 2)))?>
+	<?php echo $form->textArea($element, 'comments', array('rows' => 4), false, array(), array_merge($form->layoutColumns, array('field' => 4)))?>
 	</fieldset>
 </section>
