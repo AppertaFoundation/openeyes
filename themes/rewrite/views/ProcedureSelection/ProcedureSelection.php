@@ -26,19 +26,22 @@
 			<?php if ($headertext) {?>
 				<legend><?php echo $headertext?></legend>
 			<?php }?>
-			<legend>Add a procedure:</legend>
-			<div class="field-row">
-				<?php
-				if (!empty($subsections) || !empty($procedures)) {
-					if (!empty($subsections)) {
-						echo CHtml::dropDownList('subsection_id_'.$identifier, '', $subsections, array('empty' => 'Select a subsection', 'style' => 'width: 90%; margin-bottom:10px;'));
-						echo CHtml::dropDownList('select_procedure_id_'.$identifier, '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none; width: 90%; margin-bottom:10px;'));
-					} else {
-						echo CHtml::dropDownList('select_procedure_id_'.$identifier, '', $procedures, array('empty' => 'Select a commonly used procedure', 'style' => 'width: 90%; margin-bottom:10px;'));
-					}
-				}
-				?>
-			</div>
+			<?php
+			if (!empty($subsections) || !empty($procedures)) {
+				if (!empty($subsections)) {?>
+					<div class="field-row">
+						<?php echo CHtml::dropDownList('subsection_id_'.$identifier, '', $subsections, array('empty' => 'Select a subsection'));?>
+					</div>
+					<div class="field-row hide">
+						<?php echo CHtml::dropDownList('select_procedure_id_'.$identifier, '', array(), array('empty' => 'Select a commonly used procedure'));?>
+					</div>
+				<?php } else { ?>
+					<div class="field-row">
+						<?php echo CHtml::dropDownList('select_procedure_id_'.$identifier, '', $procedures, array('empty' => 'Select a commonly used procedure'));?>
+					</div>
+				<?php }
+			}
+			?>
 			<div class="field-row">
 				<?php
 				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -87,7 +90,7 @@
 							}
 						}",
 						),
-						'htmlOptions'=>array('style'=>'width: 90%;','placeholder'=>'or enter procedure here')
+						'htmlOptions'=>array('placeholder'=>'or enter procedure here')
 					)); ?>
 			</div>
 		</fieldset>
@@ -97,7 +100,7 @@
 	$totalDuration = 0;
 	?>
 	<div class="large-6 column">
-		<div id="procedureList_<?php echo $identifier?>" class="panel element-field" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
+		<div id="procedureList_<?php echo $identifier?>" class="panel element-field" style="<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
 			<table class="plain">
 				<thead>
 				<tr>
@@ -106,31 +109,32 @@
 					<td>Actions</td>
 				</tr>
 				</thead>
-				<tbody id="procedure_body">
-
+				<tbody class="body">
 				<?php
 				if (!empty($selected_procedures)) {
 					foreach ($selected_procedures as $procedure) {?>
-						<tr><td><?php
+						<tr class="item">
+							<td>
+								<?php
 								$totalDuration += $procedure['default_duration'];
 								echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
 								echo $procedure['term'];
-								?></td>
-							<td><?php if ($durations) {?>
-
+								?>
+							</td>
+							<td class="duration">
+								<?php if ($durations) {?>
 									<?php echo $procedure['default_duration']?> mins
-
-								<?php } ?></td>
-							<td><a href="#"class="small removeProcedure">Remove</a></td></tr>
-
+								<?php } ?>
+							</td>
+							<td>
+								<a href="#">Remove</a>
+							</td>
+						</tr>
 					<?php	}
 					if (isset($_POST[$class]['total_duration_'.$identifier])) {
 						$total_duration = $_POST[$class]['total_duration_'.$identifier];
 					}
-				}
-				?>
-
-
+				}?>
 				</tbody>
 			</table>
 			<table class="grid">
@@ -139,14 +143,20 @@
 					<td>
 						Calculated Total Duration:
 					</td>
-					<td id="projected_duration_procs">
+					<td>
 						<?php echo $totalDuration?> mins
 					</td>
 					<td>
 						Estimated Total Duration:
 					</td>
 					<td>
-						<input type="text" value="<?php echo $total_duration?>" id="<?php echo $class?>_total_duration_<?php echo $identifier?>" name="<?php echo $class?>[total_duration_<?php echo $identifier?>]" style="width: 60px;">
+						<input
+							type="text"
+							value="<?php echo $total_duration?>"
+							id="<?php echo $class?>_total_duration_<?php echo $identifier?>"
+							name="<?php echo $class?>[total_duration_<?php echo $identifier?>]"
+							style="width:60px"
+							/>
 					</td>
 				</tr>
 				</tfoot>
@@ -162,10 +172,11 @@ var removed_stack_<?php echo $identifier?> = [<?php echo implode(',', $removed_s
 
 function updateTotalDuration(identifier)
 {
+
 	// update total duration
 	var totalDuration = 0;
-	$('#procedureList_'+identifier).find('#procedure_body').children('.procedureItem').map(function() {
-		$(this).find('#procedureItemDuration').map(function() {
+	$('#procedureList_'+identifier).find('.item').map(function() {
+		$(this).find('.duration').map(function() {
 			totalDuration += parseInt($(this).html().match(/[0-9]+/));
 		});
 	});
@@ -272,11 +283,11 @@ function updateProcedureSelect(identifier)
 					});
 				});
 
-				$('select[name=select_procedure_id_'+identifier+']').show();
+				$('select[name=select_procedure_id_'+identifier+']').parent().show();
 			}
 		});
 	} else {
-		$('select[name=select_procedure_id_'+identifier+']').hide();
+		$('select[name=select_procedure_id_'+identifier+']').parent().hide();
 	}
 }
 
@@ -332,7 +343,7 @@ function ProcedureSelectionSelectByName(name, callback, identifier)
 			var enableDurations = <?php echo $durations?'true':'false'?>;
 
 			// append selection onto procedure list
-			$('#procedureList_'+identifier).find('#procedure_body').append(data);
+			$('#procedureList_'+identifier).find('.body').append(data);
 			$('#procedureList_'+identifier).show();
 
 			if (enableDurations) {
@@ -345,7 +356,7 @@ function ProcedureSelectionSelectByName(name, callback, identifier)
 
 			// remove selection from the filter box
 			if ($('#select_procedure_id_'+identifier).children().length > 0) {
-				m = data.match(/<span>(.*?)<\/span>/);
+				m = data.match(/<span class="value">(.*?)<\/span>/);
 
 				$('#select_procedure_id_'+identifier).children().each(function () {
 					if ($(this).text() == m[1]) {

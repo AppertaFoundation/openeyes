@@ -24,15 +24,14 @@
 	data-element-type-name="<?php echo $element->elementType->name ?>"
 	data-element-display-order="<?php echo $element->elementType->display_order ?>">
 	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
 	</header>
-	<fieldset class="element-fields">
-	<div class="half">
-		<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 40))?>
-	</div>
-	<div class="half">
+
+
+	<div class="element-fields">
+		<?php echo $form->textArea($element, 'comments')?>
 		<?php echo $form->dropDownTextSelection($element, 'postop_instructions', $element->postop_instructions_list)?>
-		<?php echo $form->textArea($element, 'postop_instructions', array('rows' => 4, 'cols' => 40))?>
+		<?php echo $form->textArea($element, 'postop_instructions')?>
 	</div>
-	</fieldset>
+
 </section>

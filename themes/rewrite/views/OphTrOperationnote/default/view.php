@@ -18,14 +18,15 @@
  */
 ?>
  <?php $this->header() ?>
-<div class="view highlight-fields">
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+
+<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
 
 <?php
 	// Event actions
 	if ($this->canPrint()) {
 		$this->event_actions[] = EventAction::button('Print', 'print');
 	}
+	$this->renderPartial('//patient/event_actions');
 ?>
 
 <input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>/css" />
@@ -36,5 +37,5 @@
 
 	<div class="cleartall"></div>
 </div>
-</div>
+
 <?php $this->footer() ?>

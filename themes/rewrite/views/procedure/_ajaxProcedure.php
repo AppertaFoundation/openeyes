@@ -18,19 +18,18 @@
  */
 
 ?>
-<tr class="procedureItem">
-	<td>	<span class="middle<?php if (!$durations) {?> noDuration<?php }?>">
-		<?php
-		echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $proc->id);
-		echo "<span>".$proc->term.'</span>';
-		?>
-	</span></td>
+<tr class="item">
+	<td class="procedure">
+		<span class="field"><?php echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $proc->id); ?></span>
+		<span class="value"><?php echo $proc->term;?></span>
+	</td>
+	<td class="duration">
+		<?php if ($durations) {?>
+				<?php echo $proc->default_duration?> mins
+		<?php }?>
+	</td>
 	<td>
-	<?php if ($durations) {?>
-		<span id='procedureItemDuration' class="right">
-			<?php echo $proc->default_duration?> mins
-		</span>
-	<?php }?></td>
-	<td><a href="#" class="small removeProcedure"><strong>(remove)</strong></a></td>
+		<a href="#" class="removeProcedure">Remove</a>
+	</td>
 </tr>
 

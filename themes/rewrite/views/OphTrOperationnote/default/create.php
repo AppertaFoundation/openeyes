@@ -21,34 +21,32 @@
 
 <h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<div class="row">
-	<div class="large-12 column">
-		<div id="event_<?php echo $this->module->name?>" class="operation-note edit highlight-fields">
-			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-					'id'=>'clinical-create',
-					'enableAjaxValidation'=>false,
-					'htmlOptions' => array('class'=>'sliding'),
-					'focus'=>'#procedure_id'
-				));
+<div id="event_<?php echo $this->module->name?>">
+	<?php
+		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'clinical-create',
+			'enableAjaxValidation'=>false,
+			'htmlOptions' => array('class'=>'sliding'),
+			'focus'=>'#procedure_id',
+			'layoutColumns'=>array('label'=>2,'field'=>10),
 
-			// Event actions
-			$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small', 'form' => 'clinical-create'));
-			?>
+		));
 
-			<?php $this->displayErrors($errors)?>
+		// Event actions
+		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small'));
+	?>
 
-			<div class="elements">
-				<?php $this->renderDefaultElements($this->action->id, $form); ?>
-				<?php $this->renderOptionalElements($this->action->id, $form); ?>
-			</div>
+		<?php $this->displayErrors($errors)?>
 
-			<?php $this->displayErrors($errors)?>
-
-			<div class="cleartall"></div>
-			<?php $this->endWidget(); ?>
+		<div class="elements">
+			<?php $this->renderDefaultElements($this->action->id, $form); ?>
+			<?php $this->renderOptionalElements($this->action->id, $form); ?>
 		</div>
 
-	</div>
+		<?php $this->displayErrors($errors)?>
+
+		<div class="cleartall"></div>
+	<?php $this->endWidget(); ?>
 </div>
+
 <?php $this->endContent() ;?>

@@ -22,12 +22,14 @@
 		<div class="large-<?php echo $layoutColumns['label']?> column">
 			<label for="<?php echo get_class($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
 		</div>
-		<div class="large-<?php echo $layoutColumns['field']?> column">
+		<div class="large-<?php echo $layoutColumns['field']?> column end">
 	<?php }?>
 		<textarea id="<?php echo get_class($element)?>_<?php echo $field?>" name="<?php echo get_class($element)?>[<?php echo $field?>]" placeholder="<?php echo @$htmlOptions['placeholder']?>"></textarea>
 		<?php if (!$nowrapper) {?>
 			<?php if ($button) {?>
-				<button type="submit" class="classy <?php echo $button['colour']?> <?php echo $button['size']?>" id="<?php echo get_class($element)?>_<?php echo $button['id']?>" name="<?php echo get_class($element)?>_<?php echo $button['id']?>"><span class="button-span button-span-<?php echo $button['colour']?>"><?php echo $button['label']?></span></button>
+				<button type="submit" class="<?php echo $button['colour']?> <?php echo $button['size']?>" id="<?php echo get_class($element)?>_<?php echo $button['id']?>" name="<?php echo get_class($element)?>_<?php echo $button['id']?>">
+					<?php echo $button['label']?>
+				</button>
 			<?php }?>
 		</div>
 	</div>

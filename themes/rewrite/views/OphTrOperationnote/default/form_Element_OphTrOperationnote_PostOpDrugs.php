@@ -24,9 +24,10 @@
 	data-element-type-name="<?php echo $element->elementType->name ?>"
 	data-element-display-order="<?php echo $element->elementType->display_order ?>">
 	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
 	</header>
-	<fieldset class="element-fields">
+
+	<div class="element-fields">
 	<?php echo $form->multiSelectList($element, 'Drug', 'drugs', 'drug_id', $element->drug_list, $element->drug_defaults, array('empty' => '- Drugs -', 'label' => 'Drugs'))?>
-	</fieldset>
+	</div>
 </section>

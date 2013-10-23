@@ -18,14 +18,12 @@
  */
 ?>
 <?php
-	$this->header();
+	$this->beginContent('//patient/event_container', array());
 	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphTrOperationbooking.assets')).'/';
 ?>
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
 
-<section class="element">
-<div class="row edit">
-	<div class="large-12 column">
+<div>
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'clinical-create',
 			'enableAjaxValidation'=>false,
@@ -34,22 +32,18 @@
 		));
 
 		// Event actions
-		$this->event_actions[] = EventAction::button('Create Operation Note', 'save', array('colour' => 'green'));
-		$this->renderPartial('//patient/event_actions');
+		$this->event_actions[] = EventAction::button('Create Operation Note', 'save', array('level' => 'secondary'), array('form'=>'clinical-create','class'=>'button small'));
 	?>
 	<?php  $this->displayErrors($errors)?>
 
-		<header class="element-header">
-			<h3 class="element-title">Create Operation Note</h3>
-		</header>
-
+	<h4>Create Operation note</h4>
+	<h3 class="sectiondivider">
 		<?php if (count($bookings) >0) {?>
 			Please indicate whether this operation note relates to a booking or an unbooked emergency:
 		<?php } else {?>
 			There are no open bookings in the current episode so only an emergency operation note can be created.
 		<?php }?>
-
-
+	</h3>
 
 	<div class="edetail">
 		<div class="label">Select:</div>
@@ -85,7 +79,5 @@
 	<div class="cleartall"></div>
 	<?php  $this->endWidget(); ?>
 </div>
-	</div>
-	</section>
 
-<?php  $this->footer(); ?>
+<?php $this->endContent() ;?>

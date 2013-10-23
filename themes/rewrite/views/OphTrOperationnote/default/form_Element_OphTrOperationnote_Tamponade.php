@@ -18,7 +18,7 @@
  */
 ?>
 
-<section  class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
+<section class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
 	data-element-type-id="<?php echo $element->elementType->id ?>"
 	data-element-type-class="<?php echo $element->elementType->class_name ?>"
 	data-element-type-name="<?php echo $element->elementType->name ?>"
@@ -27,11 +27,13 @@
 		<span class="missingtext">This element is missing and needs to be completed</span>
 	<?php }?>
 	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name ?></h3>
+		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
 	</header>
-	<fieldset class="element-fields">
+
+	<div class="element-fields">
+
 	<?php echo $form->dropDownList($element, 'gas_type_id', CHtml::listData(OphTrOperationnote_GasType::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Please select -'))?>
 	<?php echo $form->dropDownList($element, 'gas_percentage_id', CHtml::listData(OphTrOperationnote_GasPercentage::model()->findAll(array('order'=>'display_order')),'id','value'),array('empty'=>'- Please select -'))?>
 	<?php echo $form->dropDownList($element, 'gas_volume_id', CHtml::listData(OphTrOperationnote_GasVolume::model()->findAll(array('order'=>'display_order')),'id','value'),array('empty'=>'- Please select -'))?>
-	</fieldset>
+	</div>
 </section>

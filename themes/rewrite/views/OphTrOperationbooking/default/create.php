@@ -21,13 +21,11 @@
 
 <h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<div class="booking edit">
-	<?php
-	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'clinical-create',
-			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
-	));
+<?php
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'clinical-create',
+		'enableAjaxValidation'=>false,
+));
 
 	// Event actions
 	$this->event_actions[] = EventAction::button('Save and Schedule later','#', null, array('name'=> 'scheduleLater', 'id' => 'et_save', 'class' => 'button small', 'form'=>'clinical-create'));
@@ -39,10 +37,10 @@
 	$this->displayErrors($errors);
 	$this->renderDefaultElements($this->action->id, $form);
 	$this->renderOptionalElements($this->action->id, $form);
-	$this->displayErrors($errors);
+	$this->displayErrors($errors, true);
 	?>
 	<div class="cleartall"></div>
-	<?php $this->endWidget()?>
-</div>
+<?php $this->endWidget()?>
 
 <?php $this->endContent() ;?>
+

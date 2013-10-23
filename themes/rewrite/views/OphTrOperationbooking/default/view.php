@@ -20,17 +20,24 @@
 
 <?php $this->beginContent('//patient/event_container'); ?>
 
-	<h2 class="event-title"><?php  echo $this->event_type->name ?> (<?php echo Element_OphTrOperationbooking_Operation::model()->find('event_id=?',array($this->event->id))->status->name?>)</h2>
+	<?php
+	$this->moduleNameCssClass .= ' highlight-fields';
+	?>
+
+	<h2 class="event-title">
+		<?php echo $this->event_type->name ?>
+		(<?php echo Element_OphTrOperationbooking_Operation::model()->find('event_id=?',array($this->event->id))->status->name?>)
+	</h2>
 
 	<?php $this->renderPartial('//base/_messages'); ?>
 
 	<?php if (!$operation->has_gp) {?>
-		<div class="alertBox alert with-icon">
+		<div class="alert-box alert with-icon">
 			Patient has no GP practice address, please correct in PAS before printing GP letter.
 		</div>
 	<?php } ?>
 	<?php if (!$operation->has_address) { ?>
-		<div class="alertBox alert with-icon">
+		<div class="alert-box alert with-icon">
 			Patient has no address, please correct in PAS before printing letter.
 		</div>
 	<?php } ?>
@@ -41,12 +48,9 @@
 		</div>
 	<?php }?>
 
-	<div class="view booking highlight-fields">
-		<?php
-		$this->renderDefaultElements($this->action->id);
-		$this->renderOptionalElements($this->action->id);
-		?>
-		<div class="cleartall"></div>
-	</div>
+	<?php
+	$this->renderDefaultElements($this->action->id);
+	$this->renderOptionalElements($this->action->id);
+	?>
 
 <?php $this->endContent() ;?>
