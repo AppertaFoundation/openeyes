@@ -242,11 +242,11 @@ button, .button, input[type="submit"] {
 				margin: -7px 0 -5px 0;
 			}
 			&.delete {
-				padding-right: emCalc(4px);
-				padding-left: emCalc(4px);
+				padding-right: emCalc(5px);
+				padding-left: emCalc(5px);
 				padding-bottom: emCalc(7px);
 				[class*="icon-button-small-"] {
-					margin-top: -3px;
+					margin-top: -6px;
 				}
 				&:hover {
 					.icon-button-small-trash-can {

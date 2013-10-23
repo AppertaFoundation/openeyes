@@ -482,24 +482,24 @@ class BaseEventTypeController extends BaseController
 
 		$this->title = $this->event_type->name;
 		$this->event_tabs = array(
-				array(
-						'label' => 'View',
-						'active' => true,
-				)
+			array(
+				'label' => 'View',
+				'active' => true,
+			)
 		);
 		if ($this->editable) {
 			$this->event_tabs[] = array(
-					'label' => 'Edit',
-					'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
+				'label' => 'Edit',
+				'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
 		if ($this->event->canDelete()) {
 			$this->event_actions = array(
-					EventAction::link('Delete',
-							Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-							array('colour' => 'red', 'level' => 'secondary'),
-							array('class' => 'trash')
-					)
+				EventAction::link('Delete',
+					Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+					array('level' => 'delete'),
+					array('class' => 'button button-icon small delete')
+				)
 			);
 		}
 

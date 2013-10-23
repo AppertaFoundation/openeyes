@@ -2579,9 +2579,10 @@ button.delete:active, .button.delete:active, input[type="submit"].delete:active 
   background: -o-linear-gradient(#901828, #761421);
   background: linear-gradient(#901828, #761421);
   border-color: #6b121e;
+  color: #fff;
 }
 
-/* line 170, ../sass/new/openeyes/components/_buttons.scss */
+/* line 171, ../sass/new/openeyes/components/_buttons.scss */
 button.disabled, button.disabled:hover, button.disabled:focus, button.disabled:active, button[disabled], button[disabled]:hover, button[disabled]:focus, button[disabled]:active, .button.disabled, .button.disabled:hover, .button.disabled:focus, .button.disabled:active, .button[disabled], .button[disabled]:hover, .button[disabled]:focus, .button[disabled]:active, input[type="submit"].disabled, input[type="submit"].disabled:hover, input[type="submit"].disabled:focus, input[type="submit"].disabled:active, input[type="submit"][disabled], input[type="submit"][disabled]:hover, input[type="submit"][disabled]:focus, input[type="submit"][disabled]:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #aaaaaa), color-stop(100%, #999999));
   background: -webkit-linear-gradient(#aaaaaa, #999999);
@@ -2592,13 +2593,13 @@ button.disabled, button.disabled:hover, button.disabled:focus, button.disabled:a
   text-shadow: none;
 }
 
-/* line 200, ../sass/new/openeyes/components/_buttons.scss */
+/* line 201, ../sass/new/openeyes/components/_buttons.scss */
 button.small, .button.small, input[type="submit"].small {
   padding: 0.3125em 1.25em;
   font-size: 0.8125em;
   letter-spacing: 1px;
 }
-/* line 205, ../sass/new/openeyes/components/_buttons.scss */
+/* line 206, ../sass/new/openeyes/components/_buttons.scss */
 button.tiny, .button.tiny, input[type="submit"].tiny {
   padding: 0.3125em 1.25em;
   font-size: 0.6875em;
@@ -2606,35 +2607,35 @@ button.tiny, .button.tiny, input[type="submit"].tiny {
   line-height: 1.4;
 }
 
-/* line 233, ../sass/new/openeyes/components/_buttons.scss */
+/* line 234, ../sass/new/openeyes/components/_buttons.scss */
 button [class*="icon-button-small-"], .button [class*="icon-button-small-"], input[type="submit"] [class*="icon-button-small-"] {
   margin: -6px -2px -5px -14px;
 }
-/* line 237, ../sass/new/openeyes/components/_buttons.scss */
+/* line 238, ../sass/new/openeyes/components/_buttons.scss */
 button.button-icon.small, .button.button-icon.small, input[type="submit"].button-icon.small {
   padding-right: 0.0625em;
   padding-left: 0.0625em;
 }
-/* line 240, ../sass/new/openeyes/components/_buttons.scss */
+/* line 241, ../sass/new/openeyes/components/_buttons.scss */
 button.button-icon.small [class*="icon-button-small-"], .button.button-icon.small [class*="icon-button-small-"], input[type="submit"].button-icon.small [class*="icon-button-small-"] {
   margin: -7px 0 -5px 0;
 }
-/* line 243, ../sass/new/openeyes/components/_buttons.scss */
+/* line 244, ../sass/new/openeyes/components/_buttons.scss */
 button.button-icon.small.delete, .button.button-icon.small.delete, input[type="submit"].button-icon.small.delete {
-  padding-right: 0.25em;
-  padding-left: 0.25em;
+  padding-right: 0.3125em;
+  padding-left: 0.3125em;
   padding-bottom: 0.4375em;
 }
-/* line 247, ../sass/new/openeyes/components/_buttons.scss */
+/* line 248, ../sass/new/openeyes/components/_buttons.scss */
 button.button-icon.small.delete [class*="icon-button-small-"], .button.button-icon.small.delete [class*="icon-button-small-"], input[type="submit"].button-icon.small.delete [class*="icon-button-small-"] {
-  margin-top: -3px;
+  margin-top: -6px;
 }
-/* line 251, ../sass/new/openeyes/components/_buttons.scss */
+/* line 252, ../sass/new/openeyes/components/_buttons.scss */
 button.button-icon.small.delete:hover .icon-button-small-trash-can, .button.button-icon.small.delete:hover .icon-button-small-trash-can, input[type="submit"].button-icon.small.delete:hover .icon-button-small-trash-can {
   background-position: 0 -72px;
 }
 
-/* line 272, ../sass/new/openeyes/components/_buttons.scss */
+/* line 273, ../sass/new/openeyes/components/_buttons.scss */
 .button-group {
   list-style: none;
   margin: 0;
@@ -2649,7 +2650,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, .button.butt
 .button-group:after {
   clear: both;
 }
-/* line 274, ../sass/new/openeyes/components/_buttons.scss */
+/* line 275, ../sass/new/openeyes/components/_buttons.scss */
 .button-group > li {
   margin: 0 0 0 -1px;
   float: left;
@@ -2658,7 +2659,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, .button.butt
 .button-group > li:first-child {
   margin-left: 0;
 }
-/* line 277, ../sass/new/openeyes/components/_buttons.scss */
+/* line 278, ../sass/new/openeyes/components/_buttons.scss */
 .button-group button, .button-group .button, .button-group input[type="submit"] {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -2668,7 +2669,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, .button.butt
   padding: 0.5em 1em;
   margin: 0;
 }
-/* line 283, ../sass/new/openeyes/components/_buttons.scss */
+/* line 284, ../sass/new/openeyes/components/_buttons.scss */
 .button-group li:first-child button, .button-group li:first-child .button, .button-group li:first-child input[type="submit"] {
   -webkit-border-radius: 4px 0 0 4px;
   -moz-border-radius: 4px 0 0 4px;
@@ -2676,7 +2677,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, .button.butt
   -o-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px;
 }
-/* line 288, ../sass/new/openeyes/components/_buttons.scss */
+/* line 289, ../sass/new/openeyes/components/_buttons.scss */
 .button-group li:last-child button, .button-group li:last-child .button, .button-group li:last-child input[type="submit"] {
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius: 0 4px 4px 0;
@@ -2684,7 +2685,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, .button.butt
   -o-border-radius: 0 4px 4px 0;
   border-radius: 0 4px 4px 0;
 }
-/* line 293, ../sass/new/openeyes/components/_buttons.scss */
+/* line 294, ../sass/new/openeyes/components/_buttons.scss */
 .button-group.small button, .button-group.small .button, .button-group.small input[type="submit"] {
   padding: 0.3125em 0.625em;
 }
