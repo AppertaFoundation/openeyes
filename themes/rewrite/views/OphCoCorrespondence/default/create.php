@@ -17,9 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $this->header(); ?>
+<?php $this->beginContent('//patient/event_container', array()); ?>
 
-<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
+<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
 <div id="event_<?php echo $this->module->name?>">
 	<?php
@@ -27,12 +27,12 @@
 			'id'=>'clinical-create',
 			'enableAjaxValidation'=>false,
 			'htmlOptions' => array('class'=>'sliding'),
+			'layoutColumns' => array('label'=> 2, 'field'=>10)
 		));
 
 		// Event actions
-		$this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('colour' => 'green'), array('id' => 'et_save_draft'));
-		$this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('colour' => 'green'), array('id' => 'et_save_print'));
-		$this->renderPartial('//patient/event_actions');
+		$this->event_actions[] = EventAction::button('Save draft', 'savedraft', array('level' => 'secondary'), array('id' => 'et_save_draft', 'class'=>'button small'));
+		$this->event_actions[] = EventAction::button('Save and print', 'saveprint', array('level' => 'secondary'), array('id' => 'et_save_print', 'class'=>'button small'));
 	?>
 
 	<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) { ?>
@@ -54,4 +54,4 @@
 	<?php $this->endWidget(); ?>
 </div>
 
-<?php $this->footer() ?>
+<?php $this->endContent() ;?>
