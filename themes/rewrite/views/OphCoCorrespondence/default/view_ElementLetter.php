@@ -18,34 +18,27 @@
  */
 ?>
 
-<?php
-	$this->breadcrumbs=array($this->module->id);
-	$this->beginContent('//patient/event_container', array());
-?>
+<div id="correspondence_out"<?php if ($element->draft) {?> class="draft"<?php }?>>
+	<div class="letter_header">
+		<?php $this->renderPartial("letter_start", array(
+			'site' => $element->site,
+			'toAddress' => CHtml::encode($element->address),
+			'patient' => $this->patient,
+			'date' => $element->date,
+			'clinicDate' => $element->clinic_date,
+			'directLine' => $element->direct_line,
+			'faxNumber' => $element->fax,
+		))?>
+	</div>
 
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+	<?php $this->renderPartial("reply_address", array(
+			'site' => $element->site,
+	))?>
 
-<div id='event_content'>
-	<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'clinical-create',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'layoutColumns' => array(
-				'label' => 4,
-				'field' => 8
-				)
-		));
-		$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
-	?>
+	<?php $this->renderPartial("print_ElementLetter", array(
+			'element' => $element,
+	))?>
 
-	<?php $this->displayErrors($errors)?>
-	<?php $this->renderDefaultElements($this->action->id, $form)?>
-	<?php $this->renderOptionalElements($this->action->id, $form)?>
-	<?php $this->displayErrors($errors)?>
-
-	<div class="cleartall"></div>
-	<?php $this->endWidget()?>
+	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter" value="<?php echo $element->print?>" />
+	<input type="hidden" name="OphCoCorrespondence_printLetter" id="OphCoCorrespondence_printLetter_all" value="<?php echo $element->print_all?>" />
 </div>
-
-<?php $this->endContent() ;?>

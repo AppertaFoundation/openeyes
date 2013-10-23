@@ -17,35 +17,26 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php $this->header(); ?>
+
+<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
 
 <?php
-	$this->breadcrumbs=array($this->module->id);
-	$this->beginContent('//patient/event_container', array());
+	// Event actions
+	if ($this->canPrint()) {
+		$this->event_actions[] = EventAction::button('Print', 'print');
+		$this->event_actions[] = EventAction::button('Print all', 'printall', null, array('id' => 'et_print_all'));
+	}
+	$this->renderPartial('//patient/event_actions');
 ?>
 
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+<input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>css" />
 
-<div id='event_content'>
-	<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'clinical-create',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'layoutColumns' => array(
-				'label' => 4,
-				'field' => 8
-				)
-		));
-		$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
-	?>
-
-	<?php $this->displayErrors($errors)?>
-	<?php $this->renderDefaultElements($this->action->id, $form)?>
-	<?php $this->renderOptionalElements($this->action->id, $form)?>
-	<?php $this->displayErrors($errors)?>
+<div>
+	<?php $this->renderDefaultElements($this->action->id); ?>
+	<?php $this->renderOptionalElements($this->action->id); ?>
 
 	<div class="cleartall"></div>
-	<?php $this->endWidget()?>
 </div>
 
-<?php $this->endContent() ;?>
+<?php $this->footer() ?>

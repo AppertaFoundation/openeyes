@@ -17,35 +17,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<?php
-	$this->breadcrumbs=array($this->module->id);
-	$this->beginContent('//patient/event_container', array());
-?>
-
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
-
-<div id='event_content'>
-	<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'clinical-create',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'layoutColumns' => array(
-				'label' => 4,
-				'field' => 8
-				)
-		));
-		$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
-	?>
-
-	<?php $this->displayErrors($errors)?>
-	<?php $this->renderDefaultElements($this->action->id, $form)?>
-	<?php $this->renderOptionalElements($this->action->id, $form)?>
-	<?php $this->displayErrors($errors)?>
-
-	<div class="cleartall"></div>
-	<?php $this->endWidget()?>
+<div class="replyAddress">
+	<?php if ($site->replyTo) {?>
+		<strong>Please reply to:</strong>
+		<br/>
+		<?php
+		echo $site->getLetterAddress(array(
+			'contact' => 'replyTo',
+			'include_name' => true,
+			'delimiter' => ', ',
+		))?>
+	<?php }?>
 </div>
-
-<?php $this->endContent() ;?>

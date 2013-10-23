@@ -21,4 +21,5 @@ class DropDownListNoPost extends BaseFieldWidget
 {
 	public $id;
 	public $selected_value;
+	public $data;
 }

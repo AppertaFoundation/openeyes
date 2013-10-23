@@ -42,11 +42,11 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
-	public function dropDownListNoPost($id, $options, $selected_value, $htmlOptions=array(), $layoutColumns=array())
+	public function dropDownListNoPost($id, $data, $selected_value, $htmlOptions=array(), $layoutColumns=array())
 	{
 		$this->widget('application.widgets.DropDownListNoPost', array(
 			'id' => $id,
-			'options' => $options,
+			'data' => $data,
 			'selected_value' => $selected_value,
 			'htmlOptions' => $htmlOptions,
 			'layoutColumns' => $layoutColumns

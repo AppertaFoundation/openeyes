@@ -61,10 +61,13 @@ if (@$_POST[get_class($element)]) {
 }
 ?>
 
-<div class="elementField standard_intervention_exists">
-	<div class="label" style="vertical-align: top;"><?php echo $element->getAttributeLabel($side . '_standard_intervention_exists'); ?></div>
-	<div class="data"><?php echo $form->radioBoolean($element, $side . '_standard_intervention_exists', array('nowrapper' => true))?></div>
-</div>
+<?php
+$layoutColumns =array(
+	'label' => 4,
+	'field' => 8
+);
+echo $form->radioBoolean($element, $side . '_standard_intervention_exists', array('class' => 'standard_intervention_exists', ))?>
+
 
 
 <span id="<?php echo get_class($element) . "_" . $side ?>_standard_intervention_details"
@@ -72,21 +75,16 @@ if (@$_POST[get_class($element)]) {
 		echo ' class="hidden"';
 	}?>
 	>
-		<div class="elementField">
-			<div class="label"><?php echo $element->getAttributeLabel($side . '_standard_intervention_id'); ?></div>
-			<div class="data">
+
 				<?php
 				echo $form->dropDownList(
 					$element,
 					$side . '_standard_intervention_id',
 					CHtml::listData($element->getStandardInterventionsForSide($side), 'id', 'name'),
-					array('empty'=>'- Please select -', 'nowrapper' => true)) ?></div>
-		</div>
+					array('empty'=>'- Please select -')) ?>
 
-		<div class="elementField standard_previous" id="<?php echo get_class($element) . "_" . $side; ?>_standard_previous">
-			<div class="label"><?php echo $element->getAttributeLabel($side . '_standard_previous'); ?></div>
-			<div class="data"><?php echo $form->radioBoolean($element, $side . '_standard_previous', array('nowrapper' => true))?></div>
-		</div>
+
+		<?php echo $form->radioBoolean($element, $side . '_standard_previous', array('nowrapper' => true))?></div>
 
 	<?php
 	$opts = array('nowrapper' => true,
@@ -97,21 +95,23 @@ if (@$_POST[get_class($element)]) {
 	}
 	?>
 
-	<div class="elementField intervention" id="<?php echo get_class($element) . "_" . $side;?>_intervention">
-		<div class="label" style="vertical-align: top;"><?php echo $element->getAttributeLabel($side . '_intervention_id'); ?></div>
-		<div class="data" style="display: inline-block;"><?php echo $form->radioButtons($element, $side . '_intervention_id', 'et_ophcotherapya_exceptional_intervention', $element->{$side . '_intervention_id'}, 1, false, false, false, $opts)?></div>
-	</div>
+	<fieldset class="row field-row intervention" id="<?php echo get_class($element) . "_" . $side;?>_intervention">
+		<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_intervention_id'); ?></legend>
+		<div class="large-<?php echo $layoutColumns['field']?> column"><?php echo $form->radioButtons($element, $side . '_intervention_id', 'et_ophcotherapya_exceptional_intervention', $element->{$side . '_intervention_id'}, 1, false, false, false, $opts)?></div>
+	</fieldset>
 
-		<div class="elementField" <?php if (!$intervention_id) { echo ' style="display: none;"'; } ?>>
-			<div class="label">
+	<?php echo $form->radioButtons($element, $side . '_intervention_id', 'et_ophcotherapya_exceptional_intervention', $element->{$side . '_intervention_id'}, 1, false, false, false, $opts)?>
+
+		<fieldset class="row field-row" <?php if (!$intervention_id) { echo ' style="display: none;"'; } ?>>
+			<legend class="large-<?php echo $layoutColumns['label']?> column end">
 				<?php if ($intervention_id) {
 					echo Element_OphCoTherapyapplication_ExceptionalCircumstances_Intervention::model()->findByPk((int)$intervention_id)->description_label;
 				} else {
 					$element->getAttributeLabel($side . '_description');
 				}?>
-			</div>
-			<div class="data"><?php echo $form->textArea($element, $side . '_description',array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
-		</div>
+			</legend>
+			<div class="large-<?php echo $layoutColumns['field']?> column"><?php echo $form->textArea($element, $side . '_description',array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
+		</fieldset>
 
 		<span id="<?php echo get_class($element) . "_" . $side;?>_deviation_fields"
 			<?php if (!$need_reason) {?>
@@ -144,30 +144,30 @@ if (@$_POST[get_class($element)]) {
 		echo ' class="hidden"';
 	}?>
 	>
-		<div class="elementField">
-			<div class="label"><?php echo $element->getAttributeLabel($side . '_condition_rare'); ?></div>
-			<div class="data"><?php echo $form->radioBoolean($element, $side . '_condition_rare', array('nowrapper' => true))?></div>
-		</div>
+		<fieldset class="row field-row">
+			<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_condition_rare'); ?></legend>
+			<div class="large-<?php echo $layoutColumns['field']?> column"><?php echo $form->radioBoolean($element, $side . '_condition_rare', array('nowrapper' => true))?></div>
+		</fieldset>
 
-		<div class="elementField">
-			<div class="label"><?php echo $element->getAttributeLabel($side . '_incidence'); ?></div>
-			<div class="data"><?php echo $form->textArea($element, $side . '_incidence', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
-		</div>
+		<fieldset class="row field-row">
+			<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_incidence'); ?></legend>
+			<div class="large-<?php echo $layoutColumns['field']?> column"><?php echo $form->textArea($element, $side . '_incidence', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
+		</fieldset>
 	</span>
 
-<div class="elementField">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_patient_different'); ?></div>
-	<div class="data"><?php echo $form->textArea($element, $side . '_patient_different', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
-</div>
+<fieldset class="row field-row">
+	<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_patient_different'); ?></legend>
+	<div class="large-<?php echo $layoutColumns['field']?> column"><?php echo $form->textArea($element, $side . '_patient_different', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
+</fieldset>
 
-<div class="elementField">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_patient_gain'); ?></div>
-	<div class="data"><?php echo $form->textArea($element, $side . '_patient_gain', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
-</div>
+<fieldset class="row field-row">
+	<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_patient_gain'); ?></legend>
+	<div class="large-<?php echo $layoutColumns['field']?> column"><?php echo $form->textArea($element, $side . '_patient_gain', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
+</fieldset>
 
-<div class="elementField" id="div_<?php echo get_class($element) . "_" . $side; ?>_previnterventions">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_previnterventions') ?></div>
-	<div class="data">
+<fieldset class="row field-row" id="div_<?php echo get_class($element) . "_" . $side; ?>_previnterventions">
+	<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_previnterventions') ?></legend>
+	<div class="large-<?php echo $layoutColumns['field']?> column">
 		<div class="previntervention-container">
 			<?php
 			$key = 0;
@@ -187,11 +187,11 @@ if (@$_POST[get_class($element)]) {
 			Add
 		</button>
 	</div>
-</div>
+</fieldset>
 
-<div class="elementField" id="div_<?php echo get_class($element) . "_" . $side; ?>_relevantinterventions">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_relevantinterventions') ?></div>
-	<div class="data">
+<fieldset class="row field-row" id="div_<?php echo get_class($element) . "_" . $side; ?>_relevantinterventions">
+	<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_relevantinterventions') ?></legend>
+	<div class="large-<?php echo $layoutColumns['field']?> column">
 		<div class="relevantintervention-container">
 			<?php
 			$key = 0;
@@ -211,22 +211,22 @@ if (@$_POST[get_class($element)]) {
 			Add
 		</button>
 	</div>
-</div>
+</fieldset>
 
-<div class="elementField patient_factors">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_patient_factors'); ?></div>
-	<div class="data"><?php echo $form->radioBoolean($element, $side . '_patient_factors', array('nowrapper' => true))?></div>
-</div>
+<fieldset class="row field-row patient_factors">
+	<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_patient_factors'); ?></legend>
+	<div class="large-<?php echo $layoutColumns['field']?> column"><?php echo $form->radioBoolean($element, $side . '_patient_factors', array('nowrapper' => true))?></div>
+</fieldset>
 
-<div id="div_<?php echo get_class($element) . "_" . $side; ?>_patient_factor_details" class="elementField <?php if (!$patient_factors) { echo ' hidden'; } ?>">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_patient_factor_details'); ?></div>
-	<div class="data"><?php echo $form->textArea($element, $side . '_patient_factor_details', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
-</div>
+<fieldset id="div_<?php echo get_class($element) . "_" . $side; ?>_patient_factor_details" class="elementField <?php if (!$patient_factors) { echo ' hidden'; } ?>">
+	<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_patient_factor_details'); ?></legend>
+	<div class="large-<?php echo $layoutColumns['field']?> column"><?php echo $form->textArea($element, $side . '_patient_factor_details', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
+</fieldset>
 
-<div id="div_<?php echo get_class($element) . "_" . $side; ?>_patient_expectations" class="elementField">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_patient_expectations'); ?></div>
-	<div class="data"><?php echo $form->textArea($element, $side . '_patient_expectations', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
-</div>
+<fieldset id="div_<?php echo get_class($element) . "_" . $side; ?>_patient_expectations" class="elementField">
+	<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_patient_expectations'); ?></legend>
+	<div class="large-<?php echo $layoutColumns['field']?> column"><?php echo $form->textArea($element, $side . '_patient_expectations', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
+</fieldset>
 
 <?php
 $posted_sp = null;
@@ -247,9 +247,9 @@ foreach ($start_periods as $sp) {
 }
 
 ?>
-<div class="elementField start_period">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_start_period_id'); ?></div>
-	<div class="data">
+<fieldset class="row field-row start_period">
+	<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_start_period_id'); ?></legend>
+	<div class="large-<?php echo $layoutColumns['field']?> column">
 		<?php
 		echo $form->dropDownList(
 			$element,
@@ -259,14 +259,14 @@ foreach ($start_periods as $sp) {
 		);
 		?>
 	</div>
-</div>
+</fieldset>
 
-<div id="<?php echo get_class($element) . '_' . $side ?>_urgency_reason"
+<fieldset id="<?php echo get_class($element) . '_' . $side ?>_urgency_reason"
 	 class="elementField<?php if (!$urgent) {
 		 echo ' hidden';} ?>">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_urgency_reason'); ?></div>
-	<div class="data"><?php echo $form->textArea($element, $side . '_urgency_reason', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
-</div>
+	<legend class="large-<?php echo $layoutColumns['label']?> column end"><?php echo $element->getAttributeLabel($side . '_urgency_reason'); ?></legend>
+	<div class="large-<?php echo $layoutColumns['field']?> column"><?php echo $form->textArea($element, $side . '_urgency_reason', array('rows' => 4, 'cols' => 30, 'nowrapper' => true))?></div>
+</fieldset>
 
 <?php
 $html_options = array(
