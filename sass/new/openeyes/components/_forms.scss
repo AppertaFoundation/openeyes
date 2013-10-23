@@ -3,6 +3,9 @@ $oe-form-input-radius: 3px !default;
 /* Standard Forms */
 form {
 	margin: 0 0 $form-spacing;
+	&.cancel {
+		margin-bottom: 0;
+	}
 }
 
 /* Using forms within rows, we need to set some defaults */
