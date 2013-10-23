@@ -35,7 +35,7 @@
 					array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
 			</div>
 			<div class="inactive-form">
-				Select a diagnosis
+				<div class="eye-message">Select a diagnosis</div>
 			</div>
 		</div>
 		<div class="element-fields element-eye left-eye right side column<?php if (!$element->hasLeft() || !$this->hasDiagnosisForSide($element->event_id,'left')) { ?> inactive<?php } ?>" data-side="left">
@@ -44,7 +44,7 @@
 					array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
 			</div>
 			<div class="inactive-form">
-				Select a diagnosis
+				<div class="eye-message">Select a diagnosis</div>
 			</div>
 		</div>
 	</div>
