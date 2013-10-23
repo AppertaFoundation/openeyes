@@ -31,6 +31,10 @@
 				'id'=>'clinical-create',
 				'enableAjaxValidation'=>false,
 				'htmlOptions' => array('class'=>'sliding'),
+				'layoutColumns' => array(
+				'label' => 4,
+				'field' => 8
+				)
 		));
 		$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
 	?>
