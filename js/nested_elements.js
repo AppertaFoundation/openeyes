@@ -184,7 +184,7 @@ $(document).ready(function() {
 	/**
 	 * Add all optional elements
 	 */
-	$('.optionals-header').delegate('.add-all', 'click', function(e) {
+	$('.optional-elements').delegate('.add-all', 'click', function(e) {
 		if($(this).closest('.element').length) {
 			$(this).closest('.element').find('.inactive_child_elements .element').each(function() {
 				$(this).addClass('clicked');
@@ -192,7 +192,7 @@ $(document).ready(function() {
 			});
 		}
 		else {
-			$('#inactive_elements .element').each(function() {
+			$('.optional-elements-list li').each(function() {
 				$(this).addClass('clicked');
 				addElement(this, false);
 			});
@@ -210,8 +210,6 @@ $(document).ready(function() {
 		}
 		e.preventDefault();
 	});
-	
-	
 
 	/**
 	 * View previous elements
@@ -254,13 +252,13 @@ $(document).ready(function() {
 	/**
 	 * Remove all optional elements
 	 */
-	$('.optionals-header').delegate('.remove-all', 'click', function(e) {
+	$('.optional-elements').delegate('.remove-all', 'click', function(e) {
 		if($(this).closest('.element').length) {
 			$(this).closest('.element').find('.active_child_elements .element').each(function() {
 				removeElement(this, true);
 			})
 		} else {
-			$('#active_elements > .element').each(function() {
+			$('.js-active-elements .element').each(function() {
 				removeElement(this);
 			});
 		}
