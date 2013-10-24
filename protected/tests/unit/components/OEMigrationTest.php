@@ -24,7 +24,7 @@ class OEMigrationTest extends CDbTestCase
 	protected $fixturePath;
 
 	public $fixtures = array(
-		'event_group' => 'EventGroup'
+		'event_group' => 'EventGroup',
 	);
 
 	public function setUp(){
@@ -36,10 +36,6 @@ class OEMigrationTest extends CDbTestCase
 	public function testInitialiseData()
 	{
 		$eventGroup = new EventGroup();
-		$eventGroupResultSet = $eventGroup->findAll();
-
-		$this->compareFixtureWithResultSet($this->event_group, $eventGroupResultSet);
-
 		$eventGroup->deleteAll();
 		$this->assertCount(0 , $eventGroup->findAll() );
 		$this->oeMigration->initialiseData($this->fixturePath,  null, 'oeMigrationData');
@@ -110,14 +106,16 @@ class OEMigrationTest extends CDbTestCase
 
 		$this->assertCount(count($fixture), $resultArr);
 
-		foreach($fixture as $k => $v){
-			$this->assertTrue(isset($resultArr[$v['id']]));
-			$this->assertTrue(isset($resultArr[$v['id']] ['name'] ));
-			$this->assertTrue(isset($resultArr[$v['id']] ['code']));
-			$this->assertEquals($v['id'], $resultArr[$v['id']]['id']);
-			$this->assertEquals($v['name'], $resultArr[$v['id']]['name']);
-			$this->assertEquals($v['code'], $resultArr[$v['id']]['code']);
+		while($thisFixture = array_shift($fixture) ){
+			$thisRecord = @array_shift($resultArr);
+
+			//remove ids to compare results
+			unset($thisFixture['id']); unset($thisRecord['id']);
+
+			$this->assertCount(0 , array_diff( $thisFixture, $thisRecord ) , 'Somehow the fixture and db record are different, fixture: ' . var_export($thisFixture, true) .
+				' this record: ' .  var_export( $thisRecord, true)  );
 		}
+
 	}
 
 	public function tearDown(){

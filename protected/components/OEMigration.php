@@ -51,6 +51,7 @@ class OEMigration extends CDbMigration
 			$values = array();
 			while (($record = fgetcsv($fh)) !== false) {
 				$row_count++;
+				echo "\nReading line " . $row_count . "\n";
 				$data = array_combine($columns, $record);
 
 				// Process lookup columns
@@ -68,7 +69,7 @@ class OEMigration extends CDbMigration
 						$value = null;
 					}
 				}
-
+				echo "\nTrying migration insert/update table: " . $table . " vals: " . var_export($data, true) . "\n";
 				if ($update_pk) {
 					$pk = $data[$update_pk];
 					$existing = $this->getDbConnection()->createCommand()
@@ -76,6 +77,7 @@ class OEMigration extends CDbMigration
 					->from($table)
 					->where($update_pk.' = ?')
 					->queryScalar(array($pk));
+
 					if ($existing) {
 						$this->update($table, $data, $update_pk . '= :pk', array(':pk' => $pk));
 					} else {
@@ -275,34 +277,31 @@ class OEMigration extends CDbMigration
 	}
 
 	/**
-	 * @description method helping to insert element_type_anaesthetic tables
-	 * @param $table_name - required string
-	 * @param array $entity_ids - array of entity_table_id_name => entity_val
-	 * @param $element_type_id
-	 * @param int $last_modified_user_id
-	 * @param int $created_user_id
+	 * @description method needed to delete records from multi key tables
+	 * @param $tableName
+	 * @param array $fieldsValsArray
+	 *  example of fieldsValsArray
+	 * $fieldsValsArray should look like
+	 *
+	 * array(
+	 * 	array('column_name'=>'value', 'column_name'=>'val'),
+	 * )
 	 */
-	protected function insertOEElementTypeAnaesteticTablesHelper($table_name , $entity_column_name, array $entity_ids, $element_type_id, $last_modified_user_id =1 , $created_user_id =1){
-		$displayOrder = 1;
-		foreach($entity_ids as $entity_id){
-			$this->insert($table_name, //table name
-				array('element_type_id' => $element_type_id ,$entity_column_name => $entity_id,'display_order'=>$displayOrder,'last_modified_user_id'=>$last_modified_user_id,'created_user_id'=>$created_user_id)
-			);
-			echo "\nAdded ElementTypeAnaestetic Tables Entry.  Element Type id: ". $element_type_id . " with $entity_column_name: " . $entity_id .
-				' and DisplayOrder: ' . $displayOrder . ' last_modified_user_id: '. $last_modified_user_id . ' created_user_id' . $created_user_id ."\n";
-			$displayOrder++;
-		}
-	}
+	protected function deleteOEFromMultikeyTable($tableName, array $fieldsValsArray){
+		foreach($fieldsValsArray as $fieldsValArray){
+			$fieldsList = '';
+			$fieldsValArrayMap = array();
+			$isFirst = true;
+			foreach($fieldsValArray as $fieldKey => $fieldVal){
+				$fieldsList .= ($isFirst?' and ':'');
+				$fieldsList .= $fieldKey . "=:$fieldKey ";
 
-	/**
-	 * @param $tableName - string
-	 * @param array $fieldsValArray -  must be two dimension array with fieldName => fieldVal structure
-	 */
-	protected function insertOEGenericDynamicTable($tableName, array $fieldsValArray){
-			// must be two dimension array with fieldName => fieldVal structure
-		foreach($fieldsValArray as $fieldsVal){
-			$this->insert($tableName,$fieldsVal);
-			echo "\nAdded  in table : $tableName. Fields : ". var_export($fieldsVal, true) ."\n";
+				$fieldsValArrayMap[":$fieldKey "] = $fieldVal;
+
+				$isFirst = false;
+			}
+			$this->delete($tableName,$fieldsList , $fieldsValArrayMap );
+			echo "\nDeleted  in table : $tableName. Fields : ". $fieldsList . ' value: ' . var_export($fieldsValArrayMap , true) ."\n";
 		}
 	}
 
