@@ -16,17 +16,24 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+$this->breadcrumbs=array($this->module->id);
+$this->beginContent('//patient/event_container', array());
 ?>
 
-<section class="element">
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<h4 class="data-title"><?php echo $element->procedure->term?></h4>
-				<div class="data-value<?php if (!$element->procedure) {?> none<?php }?>">
-					<?php echo CHtml::encode($element->comments)?>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
+<?php
+
+	// Event actions
+	if ($this->canPrint()) {
+		$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));}
+?>
+
+<h2 class="event-title"><?php echo $this->event_type->name?></h2>
+
+<div>
+	<?php $this->renderDefaultElements($this->action->id)?>
+	<?php $this->renderOptionalElements($this->action->id)?>
+	<div class="cleartall"></div>
+</div>
+
+<?php $this->endContent() ;?>

@@ -17,16 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<section class="element">
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<h4 class="data-title"><?php echo $element->procedure->term?></h4>
-				<div class="data-value<?php if (!$element->procedure) {?> none<?php }?>">
-					<?php echo CHtml::encode($element->comments)?>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
+<li data-element-type-class="<?php echo get_class($element)?>" data-element-type-id="<?php echo $element->elementType->id?>" data-element-type-name="<?php echo $element->elementType->name?>" data-element-display-order="<?php echo $element->elementType->display_order?>">
+	<a href="#"><?php echo $element->elementType->name?></a>
+</li>

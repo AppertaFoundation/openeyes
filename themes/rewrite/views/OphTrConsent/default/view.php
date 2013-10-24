@@ -17,16 +17,20 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php		$this->breadcrumbs=array($this->module->id);;?>
+<?php $this->beginContent('//patient/event_container');?>
 
-<section class="element">
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<h4 class="data-title"><?php echo $element->procedure->term?></h4>
-				<div class="data-value<?php if (!$element->procedure) {?> none<?php }?>">
-					<?php echo CHtml::encode($element->comments)?>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
+<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+
+<?php
+$this->event_actions[] = EventAction::button('Print', 'print', array(),array('class'=>'button small'));
+$this->event_actions[] = EventAction::button('Print for visually impaired', 'print_va', array(),array('class'=>'button small'));
+?>
+
+<?php  $this->renderDefaultElements($this->action->id); ?>
+<?php  $this->renderOptionalElements($this->action->id); ?>
+
+
+<iframe id="print_iframe" name="print_iframe" style="display: none;"></iframe>
+
+<?php $this->endContent() ;?>

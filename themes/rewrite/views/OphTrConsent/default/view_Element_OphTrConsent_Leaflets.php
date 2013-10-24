@@ -16,17 +16,28 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
+ ?>
 
 <section class="element">
+	<header class="element-header">
+		<h3 class="element-title"><?php  echo $element->elementType->name ?></h3>
+	</header>
 	<div class="element-data">
 		<div class="row data-row">
-			<div class="large-2 column">
-				<h4 class="data-title"><?php echo $element->procedure->term?></h4>
-				<div class="data-value<?php if (!$element->procedure) {?> none<?php }?>">
-					<?php echo CHtml::encode($element->comments)?>
+			<div class="large-3 column">
+				<div class="data-label">Leaflets provided:</div>
+			</div>
+			<div class="large-9 column">
+				<div class="data-value"><?php if (empty($element->leaflets)) {?>
+						None
+					<?php } else {?>
+						<?php foreach ($element->leaflets as $leaflet) {?>
+							<?php echo $leaflet->leaflet->name?><br/>
+						<?php }?>
+					<?php }?>
 				</div>
 			</div>
 		</div>
 	</div>
 </section>
+

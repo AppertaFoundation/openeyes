@@ -18,115 +18,145 @@
  */
 ?>
 
-<h4><?php echo $element->elementType->name ?></h4>
+<section class="element element-data">
+	<h3 class="data-title"><?php echo $element->elementType->name ?></h3>
 
-<div class="cols2">
-	<div class="right">
-		<?php
-		$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-			'idSuffix'=>'Cataract',
-			'side'=>$element->eye->getShortName(),
-			'mode'=>'view',
-			'width'=>200,
-			'height'=>200,
-			'model'=>$element,
-			'attribute'=>'eyedraw',
-		));
-		?>
-		<?php
-		$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-			'idSuffix'=>'Position',
-			'side'=>$element->eye->getShortName(),
-			'mode'=>'view',
-			'width'=>200,
-			'height'=>200,
-			'model'=>$element,
-			'attribute'=>'eyedraw2',
-		));
-		?>
-	</div>
-	<div class="left">
-		<table class="subtleWhite normalText">
-			<tbody>
-				<tr>
-					<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('incision_site_id'))?>:</td>
-					<td><span class="big"><?php echo $element->incision_site->name?></span></td>
-				</tr>
-				<tr>
-					<td><?php echo CHtml::encode($element->getAttributeLabel('length'))?>:</td>
-					<td><span class="big"><?php echo $element->length?></span></td>
-				</tr>
-				<tr>
-					<td><?php echo CHtml::encode($element->getAttributeLabel('meridian'))?>:</td>
-					<td><span class="big"><?php echo $element->meridian?></span></td>
-				</tr>
-				<tr>
-					<td><?php echo CHtml::encode($element->getAttributeLabel('incision_type_id'))?>:</td>
-					<td><span class="big"><?php echo $element->incision_type->name?></span></td>
-				</tr>
-				<tr>
-					<td><?php echo CHtml::encode($element->getAttributeLabel('report2'))?>:</td>
-					<td><span class="big"><?php echo CHtml::encode($element->report2)?></span></td>
-				</tr>
-				<tr>
-					<td><?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction'))?>:</td>
-					<td><span class="big"><?php echo CHtml::encode($element->predicted_refraction)?></span></td>
-				</tr>
+	<div class="element-data">
+		<div class="row">
+			<div class="large-6 column highlight">
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_site_id'))?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php echo $element->incision_site->name?></div>
+					</div>
+				</div>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('length'))?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php echo $element->length?></div>
+					</div>
+				</div>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('meridian'))?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php echo $element->meridian?></div>
+					</div>
+				</div>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_type_id'))?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php echo $element->incision_type->name?></div>
+					</div>
+				</div>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('report2'))?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php echo CHtml::encode($element->report2)?></div>
+					</div>
+				</div>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('predicted_refraction'))?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php echo CHtml::encode($element->predicted_refraction)?></div>
+					</div>
+				</div>
 				<?php if ($element->getSetting('fife')) {?>
-					<tr>
-						<td><?php echo CHtml::encode($element->getAttributeLabel('intraocular_solution_id'))?>:</td>
-						<td><span class="big"><?php echo $element->intraocular_solution ? $element->intraocular_solution->name : 'Not specified'?></span></td>
-					</tr>
-					<tr>
-						<td><?php echo CHtml::encode($element->getAttributeLabel('skin_preparation_id'))?>:</td>
-						<td><span class="big"><?php echo $element->skin_preparation ? $element->skin_preparation->name : 'Not specified'?></span></td>
-					</tr>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('intraocular_solution_id'))?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php echo $element->intraocular_solution ? $element->intraocular_solution->name : 'Not specified'?></div>
+					</div>
+				</div>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('skin_preparation_id'))?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php echo $element->skin_preparation ? $element->skin_preparation->name : 'Not specified'?></div>
+					</div>
+				</div>
 				<?php }?>
-			</tbody>
-		</table>
+			</div>
+			<div class="large-6 column">
+				<?php
+				$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+						'idSuffix'=>'Cataract',
+						'side'=>$element->eye->getShortName(),
+						'mode'=>'view',
+						'width'=>200,
+						'height'=>200,
+						'model'=>$element,
+						'attribute'=>'eyedraw',
+					));
+				?>
+				<?php
+				$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+						'idSuffix'=>'Position',
+						'side'=>$element->eye->getShortName(),
+						'mode'=>'view',
+						'width'=>200,
+						'height'=>200,
+						'model'=>$element,
+						'attribute'=>'eyedraw2',
+					));
+				?>
+			</div>
+		</div>
 	</div>
-</div>
+</section>
 
-<div class="colsX clearfix">
-	<div class="colThird">
-		<h4>Cataract report</h4>
-		<div class="eventHighlight medium">
-			<h4>
+<section class="element element-data">
+	<div class="row data-row">
+		<div class="large-4 column">
+			<h3 class="data-title">Cataract report</h3>
+			<div class="data-value highlight">
 				<?php foreach (explode(chr(10),CHtml::encode($element->report)) as $line) {?>
 					<?php echo $line?><br/>
 				<?php }?>
-			</h4>
+			</div>
 		</div>
-	</div>
-
-	<div class="colThird">
-		<h4>Cataract devices</h4>
-		<div class="eventHighlight medium">
-			<?php if (!$element->operative_devices) {?>
-				<h4>None</h4>
-			<?php } else {?>
-				<h4>
-					<?php foreach ($element->operative_devices as $device) {?>
-						<?php echo $device->name?><br/>
+		<div class="large-4 column">
+			<h3 class="data-title">Cataract devices</h3>
+			<div class="element-data highlight">
+				<div class="data-value none">
+					<?php if (!$element->operative_devices) {?>
+						None
+					<?php } else {?>
+							<?php foreach ($element->operative_devices as $device) {?>
+								<?php echo $device->name?><br/>
+							<?php }?>
 					<?php }?>
-				</h4>
-			<?php }?>
+				</div>
+			</div>
 		</div>
-	</div>
-
-	<div class="colThird">
-		<h4>Cataract complications</h4>
-		<div class="eventHighlight medium">
-			<?php if (!$element->complications && !$element->complication_notes) {?>
-				<h4>None</h4>
-			<?php } else {?>
-				<h4>
-					<?php foreach ($element->complications as $complication) {?>
-						<?php echo $complication->name?><br/>
+		<div class="large-4 column">
+			<h3 class="data-title">Cataract complications</h3>
+			<div class="element-data highlight">
+				<div class="data-value">
+					<?php if (!$element->complications && !$element->complication_notes) {?>
+						None
+					<?php } else {?>
+							<?php foreach ($element->complications as $complication) {?>
+								<?php echo $complication->name?><br/>
+							<?php }?>
+							<?php echo CHtml::encode($element->complication_notes)?>
 					<?php }?>
-					<?php echo CHtml::encode($element->complication_notes)?>
-				</h4>
-			<?php }?>
+				</div>
+			</div>
 		</div>
 	</div>
-</div>
+</section>

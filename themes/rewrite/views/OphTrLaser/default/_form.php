@@ -18,21 +18,35 @@
  */
 ?>
 
-<section class="element">
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<h4 class="data-title"><?php echo $element->elementType->name?></h4>
-				<div class="data-value <?php if (!$element->drugs) {?> none<?php }?>">
-					<?php if (!$element->drugs) {?>
-						None
-					<?php } else {?>
-						<?php foreach ($element->drugs as $drug) {?>
-							<?php echo $drug->name?><br/>
-						<?php }?>
-					<?php }?>
-				</div>
-			</div>
+<section class="element" data-element-type-id="<?php echo $element->elementType->id?>" data-element-type-name="<?php echo $element->elementType->name?>" data-element-display-order="<?php echo $element->elementType->display_order?>">
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->elementType->name?></h3>
+		<div class="element-actions">
+			<?php if (!@$child && !$element->elementType->required) {?>
+				<a href="#" class="button button-icon small js-remove-element">
+					<span class="icon-button-small-mini-cross"></span>
+					<span class="hide-offscreen">Remove element</span>
+				</a>
+			<?php }?>
 		</div>
-	</div>
+	</header>
+
+	<?php
+	$this->renderPartial(
+		'form_' . get_class($element),
+		array('element' => $element, 'data' => $data, 'form' => $form),
+		false, false
+	);
+	?>
+
+	<?php if (!@$child) {?>
+		<div class="sub-elements active">
+			<?php $this->renderChildDefaultElements($element, $this->action->id, $form, $data)?>
+		</div>
+		<div class="sub-elements inactive">
+			<ul class="sub-elements-list">
+				<?php $this->renderChildOptionalElements($element, $this->action->id, $form, $data)?>
+			</ul>
+		</div>
+	<?php }?>
 </section>

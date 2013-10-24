@@ -16,17 +16,19 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
+ ?>
+<section class="element <?php echo $element->elementType->class_name?>"
+		 data-element-type-id="<?php echo $element->elementType->id?>"
+		 data-element-type-class="<?php echo $element->elementType->class_name?>"
+		 data-element-type-name="<?php echo $element->elementType->name?>"
+		 data-element-display-order="<?php echo $element->elementType->display_order?>">
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
+	</header>
 
-<section class="element">
-	<div class="element-data">
-		<div class="row data-row">
-			<div class="large-2 column">
-				<h4 class="data-title"><?php echo $element->procedure->term?></h4>
-				<div class="data-value<?php if (!$element->procedure) {?> none<?php }?>">
-					<?php echo CHtml::encode($element->comments)?>
-				</div>
-			</div>
+	<div class="element">
+		<div class="element-fields">
+			<?php echo $form->multiSelectList($element, 'OphTrConsent_Leaflet', 'leaflets', 'leaflet_id', CHtml::listData(OphTrConsent_Leaflet::model()->findAllByCurrentFirm(),'id','name'), array(), array('empty' => '- Leaflets -', 'label' => 'Leaflets provided'))?>
 		</div>
 	</div>
 </section>
