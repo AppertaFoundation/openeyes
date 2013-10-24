@@ -17,20 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (!$nowrapper) {?>
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label']?> column">
-			<label for="<?php echo get_class($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field']?> column end">
-	<?php }?>
-		<textarea id="<?php echo get_class($element)?>_<?php echo $field?>" name="<?php echo get_class($element)?>[<?php echo $field?>]" placeholder="<?php echo @$htmlOptions['placeholder']?>"><?php echo CHtml::encode($value)?></textarea>
-		<?php if (!$nowrapper) {?>
-			<?php if ($button) {?>
-				<button type="submit" class="<?php echo $button['colour']?> <?php echo $button['size']?>" id="<?php echo get_class($element)?>_<?php echo $button['id']?>" name="<?php echo get_class($element)?>_<?php echo $button['id']?>">
-					<?php echo $button['label']?>
-				</button>
-			<?php }?>
-		</div>
-	</div>
-<?php }?>
+<?php
+$this->renderPartial(
+	'_form',
+	array('element' => $element, 'data' => $data, 'form' => $form)
+);
+?>

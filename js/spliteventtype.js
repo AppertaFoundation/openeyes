@@ -94,8 +94,7 @@ function hideSplitElementSide(cls, side) {
 }
 
 $(document).ready(function() {
-	$(this).delegate('#event_content .removeSide', 'click', function(e) {
-		
+	$(this).delegate('.event-content .removeSide', 'click', function(e) {
 		// Update side field to indicate other side
 		var side = $(this).closest('.side');
 		
@@ -109,21 +108,21 @@ $(document).ready(function() {
 			show_physical_side = 'left';
 		} 
 
-		$(this).closest('.element').find('input.sideField').each(function() {
+		$(this).closest('.sub-element, .element').find('input.sideField').each(function() {
 			$(this).val(eye_side);
 		});
-		
+
 		// If other side is already inactive, then activate it (can't have both sides inactive)
-		$(this).closest('.element').find('.side.'+show_physical_side).removeClass('inactive');
+		$(this).closest('.sub-element, .element').find('.side.'+show_physical_side).removeClass('inactive');
 		
 		// Make this side inactive
-		$(this).closest('.element').find('.side.'+remove_physical_side).addClass('inactive');
+		$(this).closest('.sub-element, .element').find('.side.'+remove_physical_side).addClass('inactive');
 		
 		e.preventDefault();
 	});
 
 	$(this).delegate('#event_content .side .inactive-form a', 'click', function(e) {
-		var element = $(this).closest('.element'); 
+		var element = $(this).closest('.sub-element, .element'); 
 		element.find('input.sideField').each(function() {
 			$(this).val(3); // Both eyes
 		});

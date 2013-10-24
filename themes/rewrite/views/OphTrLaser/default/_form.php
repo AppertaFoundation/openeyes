@@ -17,20 +17,36 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (!$nowrapper) {?>
-	<div class="row field-row">
-		<div class="large-<?php echo $layoutColumns['label']?> column">
-			<label for="<?php echo get_class($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
-		</div>
-		<div class="large-<?php echo $layoutColumns['field']?> column end">
-	<?php }?>
-		<textarea id="<?php echo get_class($element)?>_<?php echo $field?>" name="<?php echo get_class($element)?>[<?php echo $field?>]" placeholder="<?php echo @$htmlOptions['placeholder']?>"><?php echo CHtml::encode($value)?></textarea>
-		<?php if (!$nowrapper) {?>
-			<?php if ($button) {?>
-				<button type="submit" class="<?php echo $button['colour']?> <?php echo $button['size']?>" id="<?php echo get_class($element)?>_<?php echo $button['id']?>" name="<?php echo get_class($element)?>_<?php echo $button['id']?>">
-					<?php echo $button['label']?>
-				</button>
+
+<section class="element" data-element-type-id="<?php echo $element->elementType->id?>" data-element-type-name="<?php echo $element->elementType->name?>" data-element-display-order="<?php echo $element->elementType->display_order?>">
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->elementType->name?></h3>
+		<div class="element-actions">
+			<?php if (!@$child && !$element->elementType->required) {?>
+				<a href="#" class="button button-icon small js-remove-element">
+					<span class="icon-button-small-mini-cross"></span>
+					<span class="hide-offscreen">Remove element</span>
+				</a>
 			<?php }?>
 		</div>
-	</div>
-<?php }?>
+	</header>
+
+	<?php
+	$this->renderPartial(
+		'form_' . get_class($element),
+		array('element' => $element, 'data' => $data, 'form' => $form),
+		false, false
+	);
+	?>
+
+	<?php if (!@$child) {?>
+		<div class="sub-elements active">
+			<?php $this->renderChildDefaultElements($element, $this->action->id, $form, $data)?>
+		</div>
+		<div class="sub-elements inactive">
+			<ul class="sub-elements-list">
+				<?php $this->renderChildOptionalElements($element, $this->action->id, $form, $data)?>
+			</ul>
+		</div>
+	<?php }?>
+</section>
