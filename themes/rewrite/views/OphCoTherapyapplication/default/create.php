@@ -18,19 +18,28 @@
  */
 ?>
 
-<section class="element <?php echo $element->elementType->class_name?>"
-	<?php if (!$element->eventPatientSuitability() || !$element->eventPatientSuitability()->contraindicationsRequired()) { echo 'style="display:none;"'; } ?>
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
-	</header>
+<?php $this->beginContent('//patient/event_container');?>
 
-	<div class="element-fields">
-	<?php echo $form->radioBoolean($element, 'cerebrovascular_accident')?>
-	<?php echo $form->radioBoolean($element, 'ischaemic_attack')?>
-	<?php echo $form->radioBoolean($element, 'myocardial_infarction')?>
-	</div>
-</section>
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+
+	<?php
+		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+				'id'=>'clinical-create',
+				'enableAjaxValidation'=>false,
+				'htmlOptions' => array('class'=>'sliding'),
+				'layoutColumns' => array(
+				'label' => 2,
+				'field' => 10
+				)
+		));
+		$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
+		?>
+
+		<?php $this->displayErrors($errors)?>
+		<?php $this->renderDefaultElements($this->action->id, $form)?>
+		<?php $this->renderOptionalElements($this->action->id, $form)?>
+		<?php $this->displayErrors($errors)?>
+
+	<?php $this->endWidget()?>
+
+<?php $this->endContent() ;?>

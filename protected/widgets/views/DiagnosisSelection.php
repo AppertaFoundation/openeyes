@@ -23,6 +23,7 @@
 		<div id="enteredDiagnosisText" class="eventHighlight big"
 		<?php if (!$label) {?> style="display: none;" <?php }?>>
 			<h4>
+			test
 				<?php echo $label?>
 			</h4>
 		</div>

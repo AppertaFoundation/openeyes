@@ -19,6 +19,7 @@
 ?>
 
 <section class="element <?php echo $element->elementType->class_name?>"
+	<?php if (!$element->eventPatientSuitability() || !$element->eventPatientSuitability()->contraindicationsRequired()) { echo 'style="display:none;"'; } ?>
 	data-element-type-id="<?php echo $element->elementType->id?>"
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
@@ -27,25 +28,9 @@
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
 
-	<div class="element-eyes row">
-		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-		<div class="element-fields element-eye right-eye left side column<?php if (!$element->hasRight() || !$this->hasDiagnosisForSide($element->event_id,'right')) { ?> inactive<?php } ?>" data-side="right">
-			<div class="active-form">
-				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-					array('side' => 'right', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-			</div>
-			<div class="inactive-form">
-				<div class="eye-message">Select a diagnosis</div>
-			</div>
-		</div>
-		<div class="element-fields element-eye left-eye right side column<?php if (!$element->hasLeft() || !$this->hasDiagnosisForSide($element->event_id,'left')) { ?> inactive<?php } ?>" data-side="left">
-			<div class="active-form">
-				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-					array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-			</div>
-			<div class="inactive-form">
-				<div class="eye-message">Select a diagnosis</div>
-			</div>
-		</div>
+	<div class="element-fields">
+		<?php echo $form->radioBoolean($element, 'cerebrovascular_accident')?>
+		<?php echo $form->radioBoolean($element, 'ischaemic_attack')?>
+		<?php echo $form->radioBoolean($element, 'myocardial_infarction')?>
 	</div>
 </section>

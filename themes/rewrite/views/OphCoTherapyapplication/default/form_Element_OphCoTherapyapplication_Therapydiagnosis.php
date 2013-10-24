@@ -41,26 +41,35 @@ foreach ($l1_disorders as $disorder) {
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
+
 	<header class="element-header">
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
 
+	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 
-		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-		<div class="element-fields element-eyes row">
+	<div class="element-fields element-eyes row">
 		<div
 			class="element-eye right-eye column side left eventDetail<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
 			data-side="right">
+
 			<div class="active-form">
 				<a href="#" class="icon-remove-side removeSide">Remove side</a>
 					<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-					array('side' => 'right', 'element' => $element, 'form' => $form, 'l1_disorders' => $l1_disorders, 'l1_opts' => $l1_options, 'l2_disorders' => $l2_disorders, 'data' => $data)); ?>
-
-
+						array(
+							'side' => 'right',
+							'element' => $element,
+							'form' => $form,
+							'l1_disorders' => $l1_disorders,
+							'l1_opts' => $l1_options,
+							'l2_disorders' => $l2_disorders,
+							'data' => $data
+						)
+					);?>
 			</div>
 			<div class="inactive-form">
 				<div class="add-side">
-				<a href="#">Add right side<span class="icon-add-side"></span></a>
+					<a href="#">Add right side<span class="icon-add-side"></span></a>
 				</div>
 			</div>
 		</div>
@@ -71,15 +80,22 @@ foreach ($l1_disorders as $disorder) {
 			<div class="active-form">
 				<a href="#" class="icon-remove-side removeSide">Remove side</a>
 				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-					array('side' => 'left', 'element' => $element, 'form' => $form, 'l1_disorders' => $l1_disorders, 'l1_opts' => $l1_options, 'l2_disorders' => $l2_disorders, 'data' => $data)); ?>
+					array(
+						'side' => 'left',
+						'element' => $element,
+						'form' => $form,
+						'l1_disorders' => $l1_disorders,
+						'l1_opts' => $l1_options,
+						'l2_disorders' => $l2_disorders,
+						'data' => $data
+					)
+				); ?>
 			</div>
 			<div class="inactive-form">
 				<div class="add-side">
-				<a href="#">Add left side<span class="icon-add-side"></span></a>
+					<a href="#">Add left side<span class="icon-add-side"></span></a>
 				</div>
 			</div>
 		</div>
-
-
 	</div>
 </section>
