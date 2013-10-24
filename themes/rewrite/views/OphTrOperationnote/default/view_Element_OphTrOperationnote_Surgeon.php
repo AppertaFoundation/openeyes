@@ -18,25 +18,23 @@
  */
 ?>
 
-<h3 class="subsection">Other information</h3>
+<section class="element">
+	<h3 class="element-title highlight">Other information</h3>
+	<div class="element-data">
+		<div class="row data-row">
+			<div class="large-2 column">
+				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id'))?></h4>
+				<div class="data-value"><?php echo $element->surgeon->fullNameAndTitle?></div>
+			</div>
+			<div class="large-2 column">
+				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id'))?></h4>
+				<div class="data-value<?php if (!$element->assistant) {?> none<?php }?>"><?php echo ($element->assistant ? $element->assistant->fullNameAndTitle : 'None')?></div>
+			</div>
+			<div class="large-2 column end">
+				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id'))?></h4>
+				<div class="data-value<?php if (!$element->supervising_surgeon) {?> none<?php }?>"><?php echo ($element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None')?></div>
+			</div>
+		</div>
+	</div>
+</section>
 
-<div class="colsX clearfix">
-	<div class="colStack">
-		<h4><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id'))?></h4>
-		<div class="eventHighlight">
-			<h4><?php echo $element->surgeon->fullNameAndTitle?></h4>
-		</div>
-	</div>
-	<div class="colStack">
-		<h4><?php echo CHtml::encode($element->getAttributeLabel('assistant_id'))?></h4>
-		<div class="eventHighlight<?php if (!$element->assistant) {?> none<?php }?>">
-			<h4><?php echo ($element->assistant ? $element->assistant->fullNameAndTitle : 'None')?></h4>
-		</div>
-	</div>
-	<div class="colStack">
-		<h4><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id'))?></h4>
-		<div class="eventHighlight<?php if (!$element->supervising_surgeon) {?> none<?php }?>">
-			<h4><?php echo ($element->supervising_surgeon ? $element->supervising_surgeon->fullNameAndTitle : 'None')?></h4>
-		</div>
-	</div>
-</div>

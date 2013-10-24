@@ -18,17 +18,18 @@
  */
 ?>
 
-<div class="colsX clearfix">
-	<div class="colStack">
-		<h4><?php echo CHtml::encode($element->getAttributeLabel('postop_instructions'))?></h4>
-		<div class="eventHighlight<?php if (!$element->postop_instructions) {?> none<?php }?>">
-			<h4><?php echo $element->postop_instructions ? CHtml::encode($element->postop_instructions) : 'None'?></h4>
+<section class="element">
+	<div class="element-data">
+		<div class="row data-row">
+			<div class="large-2 column">
+				<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('postop_instructions'))?></h4>
+				<div class="data-value<?php if (!$element->postop_instructions) {?> none<?php }?>"><?php echo $element->postop_instructions ? CHtml::encode($element->postop_instructions) : 'None'?></div>
+			</div>
+			<div class="large-2 column end">
+			<h4 class="data-title"><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></h4>
+				<div class="data-value<?php if (!$element->comments) {?> none<?php }?>"><?php echo $element->comments ? CHtml::encode($element->comments) : 'None'?></div>
+			</div>
 		</div>
 	</div>
-	<div class="colStack" style="width: 60%;">
-		<h4><?php echo CHtml::encode($element->getAttributeLabel('comments'))?></h4>
-		<div class="eventHighlight<?php if (!$element->comments) {?> none<?php }?>">
-			<h4><?php echo $element->comments ? CHtml::encode($element->comments) : 'None'?></h4>
-		</div>
-	</div>
-</div>
+</section>
+
