@@ -45,7 +45,6 @@
 
 		<?php $this->displayErrors($errors)?>
 
-		<div class="cleartall"></div>
 	<?php $this->endWidget(); ?>
 </div>
 
