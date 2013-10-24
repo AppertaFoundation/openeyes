@@ -1,5 +1,5 @@
 @therapy @regression
-Feature: Create New Anaesthetic Satisfaction Audit
+Feature: Create New Therapy Application Event
   In order to cover every possible route throughout the site
   As an automation tester
   I want to build a template with supporting code for each web page

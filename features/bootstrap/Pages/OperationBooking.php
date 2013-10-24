@@ -66,10 +66,10 @@ class OperationBooking extends Page
         if ($opEyes==='Right') {
             $this->getElement('operationRightEye')->click();
     }
-        if ($opEyes==='Both') {
+        if ($opEyes==='Both')  {
             $this->getElement('operationBothEyes')->click();
     }
-        if ($opEyes==='Left') {
+        if ($opEyes==='Left')  {
             $this->getElement('operationLeftEye')->click();
     }
 }
@@ -109,12 +109,12 @@ class OperationBooking extends Page
 
     public function postOpStayYes ()
     {
-        $this->getElement('postOpStatYes')->click();
+        $this->getElement('postOpStatYes')->check();
     }
 
     public function postOpStayNo ()
     {
-        $this->getElement('postOpStatNo')->click();
+        $this->getElement('postOpStatNo')->check();
     }
 
     public function operationSiteID ($site)

@@ -1,10 +1,10 @@
 @NewLaser
-Feature: Create New Anaesthetic Satisfaction Audit
+Feature: Create New Laser event
   In order to cover every possible route throughout the site
   As an automation tester
   I want to build a template with supporting code for each web page
 
-  Scenario: Login and create a Anaesthetic Satisfaction Audit
+  Scenario: Login and create a Laser event
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"

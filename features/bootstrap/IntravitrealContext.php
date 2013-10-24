@@ -19,6 +19,18 @@ class IntravitrealContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I select Add Right Side$/
+     */
+    public function iSelectAddRightSide()
+    {
+        /**
+         * @var Intravitreal $Intravitreal
+         */
+        $Intravitreal  = $this->getPage('Intravitreal');
+        $Intravitreal->addRightSide();
+    }
+
+    /**
      * @Then /^I choose Right Anaesthetic Type of Topical$/
      */
     public function RightAnaestheticTopical()

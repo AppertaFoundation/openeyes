@@ -1,10 +1,10 @@
 @consent @regression
-Feature: Create New Examination
+Feature: Create New Consent Form
   In order to cover every possible route throughout the site
   As an automation tester
   I want to build a template with supporting code for each web page
 
-  Scenario: Login and create a new Examination Event
+  Scenario: Login and create a new Consent Form
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"

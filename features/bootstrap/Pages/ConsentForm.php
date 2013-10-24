@@ -84,7 +84,7 @@ public function permissionImages ()
 
 public function informationLeaflet ()
 {
-    $this->getElement('informationLeaflet')->click();
+    $this->getElement('informationLeaflet')->check();
 }
 
 public function anaestheticLeaflet()

@@ -1,5 +1,5 @@
 @confidence
-Feature: Basic booking
+Feature: Basic booking Time slot Available INSIDE RTT
   In order to book visits of my patients
   As a system user
   I need to be able to schedule or reschedule an Adult operation
@@ -43,6 +43,7 @@ Feature: Basic booking
 
 
   Scenario: Successfully scheduling an adult operation that does need a consultant but no anaesthetist
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"
@@ -77,6 +78,7 @@ Feature: Basic booking
     Then I should see "Operation booking (Scheduled)"
 
   Scenario: Successfully scheduling an adult operation that does not need a consultant but anaesthetist with no GA
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"
@@ -111,6 +113,7 @@ Feature: Basic booking
     Then I should see "Operation booking (Scheduled)"
 
   Scenario: Successfully scheduling an adult operation that does not need a consultant but anaesthetist with GA
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"
@@ -145,6 +148,7 @@ Feature: Basic booking
     Then I should see "Operation booking (Scheduled)"
 
   Scenario: Successfully scheduling an adult operation that does need a consultant and anaesthetist with no GA
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"
@@ -181,6 +185,7 @@ Feature: Basic booking
     Then I should see "Operation booking (Scheduled)"
 
   Scenario: Successfully scheduling an adult operation that does need a consultant and anaesthetist with GA
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"
@@ -215,6 +220,7 @@ Feature: Basic booking
     Then I should see "Operation booking (Scheduled)"
 
   Scenario: Successfully scheduling a child operation that does not need a consultant or an anaesthetist
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"
@@ -249,6 +255,7 @@ Feature: Basic booking
     Then I should see "Operation booking (Scheduled)"
 
   Scenario: Successfully scheduling a child operation that does need a consultant but no anaesthetist
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"
@@ -283,6 +290,7 @@ Feature: Basic booking
     Then I should see "Operation booking (Scheduled)"
 
   Scenario: Successfully scheduling a child operation that does not need a consultant but anaesthetist with no GA
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"
@@ -317,6 +325,7 @@ Feature: Basic booking
     Then I should see "Operation booking (Scheduled)"
 
   Scenario: Successfully scheduling a child operation that does not need a consultant but anaesthetist with GA
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"
@@ -351,6 +360,7 @@ Feature: Basic booking
     Then I should see "Operation booking (Scheduled)"
 
   Scenario: Successfully scheduling a child operation that does need a consultant and anaesthetist with no GA
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"
@@ -385,6 +395,7 @@ Feature: Basic booking
     Then I should see "Operation booking (Scheduled)"
 
   Scenario: Successfully scheduling a child operation that does need a consultant and anaesthetist with GA
+
     Given I enter login credentials "admin" and "admin"
     And I select Site "1"
     Then I select a firm of "1"

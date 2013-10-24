@@ -4,7 +4,7 @@ Feature: Create New Correspondence using Support Firm
   As an automation tester
   I want to build a template with supporting code for each web page
 
-  Scenario: Login and create a new Correspondence
+  Scenario: Login and create a new Correspondence using Support Firm
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
