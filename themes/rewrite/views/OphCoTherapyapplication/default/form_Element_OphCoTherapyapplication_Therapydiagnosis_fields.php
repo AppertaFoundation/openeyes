@@ -22,22 +22,25 @@ $layoutColumns = array('label'=>4, 'field'=>8);
 
 <div class="row field-row">
 	<div class="large-<?php echo $layoutColumns['label']?> column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_diagnosis1_id'); ?></div>
+		<label for="<?php echo get_class($element).'_'.$side . '_diagnosis1_id';?>">
+			<?php echo $element->getAttributeLabel($side . '_diagnosis1_id'); ?>:
+		</label>
 	</div>
-	<div class="large-<?php echo $layoutColumns['field']?> column">
-		<div class="data-value">
-	<?php $form->widget('application.widgets.DiagnosisSelection',array(
-			'field' => $side . '_diagnosis1_id',
-			'element' => $element,
-			'options' => CHtml::listData($l1_disorders,'id','term'),
-			'layout' => 'search',
-			'default' => false,
-			'dropdownOptions' => array('empty'=>'- Please select -', 'options' => $l1_opts, 'style' => 'margin-bottom: 10px; width: 240px;'),
-	));?>
-		</div>
+	<div class="large-<?php echo $layoutColumns['field']?> column end">
+		<?php $form->widget('application.widgets.DiagnosisSelection',array(
+				'field' => $side . '_diagnosis1_id',
+				'element' => $element,
+				'options' => CHtml::listData($l1_disorders,'id','term'),
+				'layout' => 'search',
+				'default' => false,
+				'dropdownOptions' => array(
+					'empty'=>'- Please select -',
+					'options'=>$l1_opts
+				),
+		));?>
 	</div>
 </div>
-<div class="row field-row<?php if (!array_key_exists($element->{$side . '_diagnosis1_id'}, $l2_disorders) ) { echo " hidden"; }?>" id="<?php echo $side ?>_diagnosis2_wrapper">
+<div class="row field-row<?php if (!array_key_exists($element->{$side . '_diagnosis1_id'}, $l2_disorders) ) { echo " hide"; }?>" id="<?php echo $side ?>_diagnosis2_wrapper">
 	<div class="large-<?php echo $layoutColumns['label']?> column">
 		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_diagnosis2_id'); ?></div>
 	</div>
