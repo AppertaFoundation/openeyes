@@ -39,25 +39,25 @@ function addElement(element, animate, is_child, previous_id, params) {
 	var element_type_id = $(element).attr('data-element-type-id');
 	var element_type_class = $(element).attr('data-element-type-class');
 	var display_order = $(element).attr('data-element-display-order');
-	
+
 	var core_params = {
 		id: element_type_id,
 		patient_id: OE_patient_id,
 		previous_id: previous_id
 	};
-	
+
 	$.extend(params, core_params);
-	
+
 	$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function(data) {
 		if (is_child) {
-			var container = $(element).closest('.inactive_child_elements').parent().find('.active_child_elements:first');
+			var container = $(element).closest('.sub-elements.inactive').parent().find('.sub-elements:first');
 		} else {
-			var container = $('#active_elements');
+			var container = $('.js-active-elements');
 		}
 		
 		$(element).remove();
 		var insert_before = container.find('.element').first();
-		
+
 		while (parseInt(insert_before.attr('data-element-display-order')) < parseInt(display_order)) {
 			insert_before = insert_before.nextAll('div:first');
 		}
@@ -66,14 +66,14 @@ function addElement(element, animate, is_child, previous_id, params) {
 		} else {
 			$(container).append(data);
 		}
-		
+
 		if (is_child) {
 			// check if this is sided
 			// and match the parent active sides if it is
 			var cel = $(container).find('.'+element_type_class);
 			var pel = $(container).parents('.element');
 			var sideField = $(cel).find('input.sideField');
-			if ($(sideField).length && $(pel).find('input.sideField').length) {
+		if ($(sideField).length && $(pel).find('input.sideField').length) {
 				$(sideField).val($(pel).find('.sideField').val());
 				
 				if($(sideField).val() == '1') {
@@ -84,10 +84,10 @@ function addElement(element, animate, is_child, previous_id, params) {
 				}
 			}				
 		}
-		
+
 		$('#event_display textarea.autosize:visible').autosize();
 		showActiveChildElements();
-			
+
 		var inserted = (insert_before.length) ? insert_before.prevAll('div:first') : container.find('.element:last');
 		if (animate) {
 			var offTop = inserted.offset().top - 50;
@@ -100,7 +100,7 @@ function addElement(element, animate, is_child, previous_id, params) {
 				}, 600);
 			});
 		}
-		
+
 		var el_class = $(element).attr('data-element-type-class');
 		var initFunctionName = el_class.replace('Element_', '') + '_init';
 		if(typeof(window[initFunctionName]) == 'function') {
@@ -127,26 +127,37 @@ function addElement(element, animate, is_child, previous_id, params) {
 }
 
 function removeElement(element, is_child) {
-	if (typeof(is_child) == 'undefined')
+	if (typeof(is_child) == 'undefined') {
 		is_child = false;
+	}
+
+	var element_type_class = $(element).attr('data-element-type-class');
+	var element_type_id = $(element).attr('data-element-type-id');
 	var element_type_name = $(element).attr('data-element-type-name');
 	var display_order = $(element).attr('data-element-display-order');
-	$(element).html($('<h5>' + element_type_name + '</h5>'));
+
 	if (is_child) {
-		var container = $(element).closest('.active_child_elements').parent().find('.inactive_child_elements:last');
+		var container = $(element).closest('.sub-elements.active').parent().find('.sub-elements.inactive:last .sub-elements-list');
+	} else {
+		var container = $('.optional-elements-list');
 	}
-	else {
-		var container = $('#inactive_elements');
-	}
-	var insert_before = $(container).find('.element').first();
+
+	$(element).remove();
+
+	var element = '<li data-element-type-class="'+element_type_class+'" data-element-type-id="'+element_type_id+'" data-element-type-name="'+element_type_name+'" data-element-display-order="'+display_order+'"><a href="#">'+element_type_name+'</a></li>';
+
+	var insert_before = $(container).find('li').first();
+
 	while (parseInt(insert_before.attr('data-element-display-order')) < parseInt(display_order)) {
 		insert_before = insert_before.next();
 	}
+
 	if (insert_before.length) {
 		insert_before.before(element);
 	} else {
 		$(container).append(element);
 	}
+
 	showActiveChildElements();
 
 	// Update waypoints to cope with change in page size
@@ -192,7 +203,7 @@ $(document).ready(function() {
 	/**
 	 * Add an optional element
 	 */
-	$('#inactive_elements').delegate('.element', 'click', function(e) {
+	$('.optional-elements-list').delegate('li', 'click', function(e) {
 		if (!$(this).hasClass('clicked')) {
 			$(this).addClass('clicked');
 			addElement(this);
@@ -259,34 +270,31 @@ $(document).ready(function() {
 	/**
 	 * Remove an optional element
 	 */
-	$('#active_elements').delegate('.elementActions .removeElement', 'click', function(e) {
-		if (!$(this).parents('.active_child_elements').length) {
+	$('.js-active-elements').delegate('.js-remove-element', 'click', function(e) {
+		if (!$(this).parents('.sub-elements.active').length) {
 			var element = $(this).closest('.element');
 			removeElement(element);
 		}
 		e.preventDefault();
 	});
-	
+
 	/**
 	 * Remove a child element
 	 */
-	$('#active_elements').delegate('.active_child_elements .elementActions .removeElement', 'click', function(e) {
+	$('.sub-elements.active').delegate('.js-remove-element', 'click', function(e) {
 		var element = $(this).closest('.element');
 		removeElement(element, true);
 		e.preventDefault();
-		
 	})
 
 	/**
 	 * Add optional child element
 	 */
-	$("#active_elements").delegate('.inactive_child_elements .element', 'click', function(e) {
+	$(".js-active-elements").delegate('.sub-elements-list li', 'click', function(e) {
 		if (!$(this).hasClass('clicked')) {
 			$(this).addClass('clicked');
 			addElement(this, true, true);
 		}
 		e.preventDefault();
 	});
-	
-
 });
