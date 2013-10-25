@@ -16,8 +16,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<div class="element <?php echo $element->elementType->class_name?>"
+ ?>
+<section class="element <?php echo $element->elementType->class_name?>"
 	data-element-type-id="<?php echo $element->elementType->id?>"
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
@@ -26,12 +26,29 @@
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
 
-	<div class="element-fields">
-		<?php
-		$subspecialty = Subspecialty::model()->find('ref_spec=:ref_spec', array(':ref_spec' => 'MR'));
+	<div class="element">
+		<div class="element-fields">
 
-		echo $form->dropDownList($element, 'consultant_id', Firm::model()->getList($subspecialty->id),array('empty'=>'- Please select -'));
+	<?php echo $form->hiddenField($element, 'booking_event_id')?>
 
-		echo $form->dropDownList($element, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Please select -')); ?>
+	<?php echo $form->radioButtons($element, 'eye_id', 'eye')?>
+	<?php $form->widget('application.widgets.ProcedureSelection',array(
+		'element' => $element,
+		'durations' => false,
+		'identifier' => 'procedures',
+		'read_only' => !@$_GET['unbooked'],
+		'restrict' => 'unbooked',
+		'restrict_common' => 'unbooked',
+	))?>
+	<?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type')?>
+	<?php $form->widget('application.widgets.ProcedureSelection',array(
+		'element' => $element,
+		'durations' => false,
+		'relation' => 'additional_procedures',
+		'label' => 'Additional procedures',
+		'identifier' => 'additional',
+		'headertext' => 'Any extra procedures which may become necessary during the procedure.',
+	))?>
+		</div>
 	</div>
-</div>
+</section>

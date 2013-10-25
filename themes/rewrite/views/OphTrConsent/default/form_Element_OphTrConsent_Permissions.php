@@ -16,30 +16,20 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
+ ?>
+<section class="element <?php echo $element->elementType->class_name?>"
+	 data-element-type-id="<?php echo $element->elementType->id?>"
+	 data-element-type-class="<?php echo $element->elementType->class_name?>"
+	 data-element-type-name="<?php echo $element->elementType->name?>"
+	 data-element-display-order="<?php echo $element->elementType->display_order?>">
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
+	</header>
 
-<?php $this->beginContent('//patient/event_container');?>
+	<div class="element">
+		<div class="element-fields">
 
-	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
-
-	<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'clinical-create',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'layoutColumns' => array(
-				'label' => 2,
-				'field' => 10
-				)
-		));
-		$this->event_actions[] = EventAction::button('Save', 'save', array('level'=>'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
-		?>
-
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderDefaultElements($this->action->id, $form)?>
-		<?php $this->renderOptionalElements($this->action->id, $form)?>
-		<?php $this->displayErrors($errors, true)?>
-
-	<?php $this->endWidget()?>
-
-<?php $this->endContent() ;?>
+			<?php echo $form->radioButtons($element, 'images_id', 'et_ophtrconsent_permissions_images',null,false,false,false,true)?>
+		</div>
+	</div>
+</section>
