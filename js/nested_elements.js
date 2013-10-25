@@ -270,7 +270,7 @@ $(document).ready(function() {
 	 * Remove an optional element
 	 */
 	$('.js-active-elements').delegate('.js-remove-element', 'click', function(e) {
-		if (!$(this).parents('.sub-elements.active').length) {
+		if (!$(this).parents('.elements.active').length) {
 			var element = $(this).closest('.element');
 			removeElement(element);
 		}
@@ -280,7 +280,7 @@ $(document).ready(function() {
 	/**
 	 * Remove a child element
 	 */
-	$('.sub-elements.active').delegate('.js-remove-element', 'click', function(e) {
+	$(this).delegate('.js-remove-child-element', 'click', function(e) {
 		var element = $(this).closest('.sub-element');
 		removeElement(element, true);
 		e.preventDefault();

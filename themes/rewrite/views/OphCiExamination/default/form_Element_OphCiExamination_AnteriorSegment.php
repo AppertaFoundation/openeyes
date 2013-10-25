@@ -17,31 +17,41 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<div class="cols2 clearfix">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div
-		class="side left eventDetail<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
-		data-side="right">
-		<div class="activeForm">
-			<a href="#" class="removeSide">-</a>
-			<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw',
-				array('side' => 'right', 'element' => $element)); ?>
+<div class="element-fields element-eyes row">
+	<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
+		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<div class="active-form">
+			<div class="eyedraw-data row">
+				<div class="eyedraw-image column large" style="width: 66%;">
+					<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'right', 'element' => $element))?>
+				</div>
+				<?php echo $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw_fields', array('side' => 'right', 'element' => $element))?>
+			</div>
 		</div>
-		<div class="inactiveForm">
-			<a href="#">Add right side</a>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add right side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
-	<div
-		class="side right eventDetail<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
-		data-side="left">
-		<div class="activeForm">
-			<a href="#" class="removeSide">-</a>
-			<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw',
-				array('side' => 'left', 'element' => $element)); ?>
+	<div class="element-eye right-eye column side right<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
+		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<div class="active-form">
+			<div class="eyedraw-data row">
+				<div class="eyedraw-image column large" style="width: 66%;">
+					<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'left', 'element' => $element))?>
+				</div>
+				<?php echo $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw_fields', array('side' => 'left', 'element' => $element))?>
+			</div>
 		</div>
-		<div class="inactiveForm">
-			<a href="#">Add left side</a>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add left side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
 </div>

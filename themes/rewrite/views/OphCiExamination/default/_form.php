@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="<?php if (@$child) {?>sub-<?php }?>element" data-element-type-id="<?php echo $element->elementType->id?>" data-element-type-name="<?php echo $element->elementType->name?>" data-element-display-order="<?php echo $element->elementType->display_order?>" data-element-type-class="<?php echo $element->elementType->class_name?>">
+<section class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>" data-element-type-id="<?php echo $element->elementType->id?>" data-element-type-name="<?php echo $element->elementType->name?>" data-element-display-order="<?php echo $element->elementType->display_order?>" data-element-type-class="<?php echo $element->elementType->class_name?>">
 	<header class="<?php if (@$child) {?>sub-<?php }?>element-header">
 		<?php if (@$child) {?>
 			<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
@@ -33,7 +33,7 @@
 			<?php }?>
 			<?php if (@$child) {?>
 				<div class="sub-element-actions">
-					<a href="#" class="button button-icon small js-remove-element">
+					<a href="#" class="button button-icon small js-remove-child-element">
 						<span class="icon-button-small-mini-cross"></span>
 						<span class="hide-offscreen">Remove sub-element</span>
 					</a>
