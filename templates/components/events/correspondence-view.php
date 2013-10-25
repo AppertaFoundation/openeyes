@@ -1,4 +1,4 @@
-<div class="large-10 column event view correspondence">
+<div class="large-10 column event view ophcocorrespondence">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">
