@@ -64,7 +64,11 @@ input[readonly] {
 }
 
 textarea {
-	min-height: 14m;
+	min-height: 4em;
+	&.address {
+		font-family: courier;
+		color: #000;
+	}
 }
 
 select {
