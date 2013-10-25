@@ -17,15 +17,45 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_method') ?>:</div>
-	<div class="data"><?php echo $form->dropDownList($element, $side . '_method_id', CHtml::listData(OphCiExamination_OCT_Method::model()->findAll(array('order' => 'display_order')),'id','name'), array('nowrapper' => true)) ?></div>
+<div class="row field-row">
+	<div class="large-3 column">
+		<label><?php echo $element->getAttributeLabel($side . '_method_id')?>:</label>
+	</div>
+	<div class="large-9 column">
+		<?php echo $form->dropDownList($element, $side . '_method_id', CHtml::listData(OphCiExamination_OCT_Method::model()->findAll(array('order' => 'display_order')),'id','name'), array('nowrapper' => true))?>
+	</div>
 </div>
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_crt') ?>:</div>
-	<div class="data"><?php echo $form->textField($element, $side . '_crt', array('nowrapper' => true, 'size' => 6)) ?> &micro;m</div>
+<div class="row field-row">
+	<div class="large-3 column">
+		<label><?php echo $element->getAttributeLabel($side . '_crt')?>:</label>
+	</div>
+	<div class="large-9 column">
+		<div class="row collapse">
+			<div class="large-3 column">
+				<?php echo $form->textField($element, $side . '_crt', array('nowrapper' => true, 'size' => 6))?>
+			</div>
+			<div class="large-9 column">
+				<div class="postfix field-info align">
+					µm
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_sft') ?>:</div>
-	<div class="data"><?php echo $form->textField($element, $side . '_sft', array('nowrapper' => true, 'size' => 6)) ?> &micro;m</div>
+<div class="row field-row">
+	<div class="large-3 column">
+		<label><?php echo $element->getAttributeLabel($side . '_sft')?>:</label>
+	</div>
+	<div class="large-9 column">
+		<div class="row collapse">
+			<div class="large-3 column">
+				<?php echo $form->textField($element, $side . '_sft', array('nowrapper' => true, 'size' => 6))?>
+			</div>
+			<div class="large-9 column">
+				<div class="postfix field-info align">
+					µm
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
