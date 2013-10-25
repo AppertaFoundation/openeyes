@@ -17,13 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<section class="<?php if (@$child) {?>sub-<?php }?>element" data-element-type-id="<?php echo $element->elementType->id?>" data-element-type-name="<?php echo $element->elementType->name?>" data-element-display-order="<?php echo $element->elementType->display_order?>">
+<section class="<?php if (@$child) {?>sub-<?php }?>element" data-element-type-id="<?php echo $element->elementType->id?>" data-element-type-name="<?php echo $element->elementType->name?>" data-element-display-order="<?php echo $element->elementType->display_order?>" data-element-type-class="<?php echo $element->elementType->class_name?>">
 	<header class="<?php if (@$child) {?>sub-<?php }?>element-header">
-		<?php if (!@$child) {?>
-			<h3 class="element-title"><?php echo $element->elementType->name?></h3>
-		<?php }else{?>
+		<?php if (@$child) {?>
 			<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
+		<?php }else{?>
+			<h3 class="element-title"><?php echo $element->elementType->name?></h3>
 		<?php }?>
 		<div class="<?php if (@$child) {?>sub-<?php }?>element-actions">
 			<?php if (!@$child && !$element->elementType->required) {?>

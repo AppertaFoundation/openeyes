@@ -17,43 +17,32 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="sub-element">
-	<header class="sub-element-header">
-		<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
-		<div class="sub-element-actions">
-			<a href="#" class="button button-icon small js-remove-element">
-				<span class="icon-button-small-mini-cross"></span>
-				<span class="hide-offscreen">Remove sub-element</span>
-			</a>
+<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
+<div class="sub-element-fields element-eyes row">
+	<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
+		<div class="active-form">
+			<a href="#" class="icon-remove-side removeSide">Remove eye</a>
+			<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'right', 'element' => $element))?>
 		</div>
-		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-	</header>
-	<div class="sub-element-fields element-eyes row">
-		<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
-			<div class="active-form">
-				<a href="#" class="icon-remove-side removeSide">Remove eye</a>
-				<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'right', 'element' => $element))?>
-			</div>
-			<div class="inactive-form">
-				<div class="add-side">
-					<a href="#">
-						Add right side <span class="icon-add-side"></span>
-					</a>
-				</div>
-			</div>
-		</div>
-		<div class="element-eye left-eye column side right<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
-			<div class="active-form">
-				<a href="#" class="icon-remove-side removeSide">Remove eye</a>
-				<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'left', 'element' => $element))?>
-			</div>
-			<div class="inactive-form">
-				<div class="add-side">
-					<a href="#">
-						Add left side <span class="icon-add-side"></span>
-					</a>
-				</div>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add right side <span class="icon-add-side"></span>
+				</a>
 			</div>
 		</div>
 	</div>
-</section>
+	<div class="element-eye left-eye column side right<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
+		<div class="active-form">
+			<a href="#" class="icon-remove-side removeSide">Remove eye</a>
+			<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'left', 'element' => $element))?>
+		</div>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add left side <span class="icon-add-side"></span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
