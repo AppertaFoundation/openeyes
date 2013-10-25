@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
+<link rel="stylesheet" href="/protected/modules/OphTrOperationbooking/assets/css/module_new.css" />
 </head>
 <body>
 	<div class="container main" role="main">
@@ -10,12 +11,11 @@
 		<? include 'components/header-logged-in.php'; ?>
 
 		<div class="container content">
-			<h1 class="badge">Admin</h1>
+			<h1 class="badge">Transport</h1>
 
-			<div class="box content admin-content">
+			<div class="box content">
 				<div class="row">
-					<? include 'components/admin/sidebar.php'; ?>
-					<? include 'components/admin/default-content.php'; ?>
+					<? include 'components/events/operation-booking-transport.php'; ?>
 				</div>
 			</div>
 		</div>
