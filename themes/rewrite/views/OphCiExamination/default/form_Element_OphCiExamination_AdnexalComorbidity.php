@@ -17,38 +17,38 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="cols2 clearfix">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div
-		class="side left eventDetail<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
-		data-side="right">
-		<div class="activeForm">
-			<a href="#" class="removeSide">-</a>
-			<div class="data">
-				<div class="textMacros inline">
-					<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'right_description', 'form' => $form)); ?>
-				</div>
-				<?php echo $form->textArea($element, 'right_description', array('rows' => "1", 'cols' => "40", 'class' => 'autosize', 'nowrapper'=>true)) ?>
+<div class="element-eyes sub-element-fields">
+	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
+	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-attr="right">
+		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<div class="active-form">
+			<div class="field-row textMacros">
+				<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'right_description', 'form' => $form))?>
 			</div>
+			<?php echo $form->textArea($element, 'right_description', array('class' => 'autosize', 'nowrapper'=>true))?>
 		</div>
-		<div class="inactiveForm">
-			<a href="#">Add right side</a>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add right side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
-	<div
-		class="side right eventDetail<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
-		data-side="left">
-		<div class="activeForm">
-			<a href="#" class="removeSide">-</a>
-			<div class="data">
-				<div class="textMacros inline">
-					<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'left_description', 'form' => $form)); ?>
-				</div>
-				<?php echo $form->textArea($element, 'left_description', array('rows' => "1", 'cols' => "40", 'class' => 'autosize', 'nowrapper'=>true)) ?>
+	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-attr="left">
+		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<div class="active-form">
+			<div class="field-row textMacros">
+				<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'left_description', 'form' => $form))?>
 			</div>
+			<?php echo $form->textArea($element, 'left_description', array('class' => 'autosize', 'nowrapper'=>true))?>
 		</div>
-		<div class="inactiveForm">
-			<a href="#">Add left side</a>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add left side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
 </div>
