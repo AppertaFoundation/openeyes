@@ -39,16 +39,3 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
 		'attribute' => $side.'_eyedraw',
 	));
 ?>
-<div class="eyedrawFields">
-	<div>
-		<div class="label">
-			<?php echo $element->getAttributeLabel($side . '_description'); ?>
-			:
-		</div>
-		<div class="data">
-			<?php echo CHtml::activeTextArea($element, $side . '_description', array('rows' => "2", 'cols' => "20", 'class' => 'autosize clearWithEyedraw')) ?>
-		</div>
-	</div>
-	<button class="ed_report">Report</button>
-	<button class="ed_clear">Clear</button>
-</div>
