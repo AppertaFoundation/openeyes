@@ -23,8 +23,20 @@ if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_va
 	$item_ids = $element->getItemIds();
 }
 ?>
-<div class="sub-element-fields">
-	<?php echo CHtml::hiddenField("comorbidities_items_valid", 1, array('id' => 'comorbidities_items_valid'))?>
-	<?php echo $form->multiSelectList($element, 'comorbidities_items', 'items', 'id', $element->getItemOptions(), array(), array('empty' => '-- Add --', 'label' => 'Comorbidities', 'nowrapper' => true))?>
-	<?php echo $form->textArea($element, 'comments', array('rows' => "1", 'cols' => "80", 'class' => 'autosize', 'nowrapper'=>true), false, array('placeholder' => 'Enter comments here'))?>
-</div>
+<section class="sub-element">
+	<header class="sub-element-header">
+		<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
+		<div class="sub-element-actions">
+			<a href="#" class="button button-icon small js-remove-element">
+				<span class="icon-button-small-mini-cross"></span>
+				<span class="hide-offscreen">Remove sub-element</span>
+			</a>
+		</div>
+		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
+	</header>
+	<div class="sub-element-fields">
+		<?php echo CHtml::hiddenField("comorbidities_items_valid", 1, array('id' => 'comorbidities_items_valid'))?>
+		<?php echo $form->multiSelectList($element, 'comorbidities_items', 'items', 'id', $element->getItemOptions(), array(), array('empty' => '-- Add --', 'label' => 'Comorbidities', 'nowrapper' => true))?>
+		<?php echo $form->textArea($element, 'comments', array('rows' => "1", 'cols' => "80", 'class' => 'autosize', 'nowrapper'=>true), false, array('placeholder' => 'Enter comments here'))?>
+	</div>
+</section>
