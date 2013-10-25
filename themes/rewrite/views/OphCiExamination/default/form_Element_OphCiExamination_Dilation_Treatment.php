@@ -19,18 +19,14 @@
 ?>
 <tr class="dilationTreatment" data-key="<?php echo $key ?>">
 	<td>
-		<?php echo CHtml::textField('dilation_treatment['.$key.'][treatment_time]',isset($treatment) ? substr($treatment->treatment_time,0,5) : date('H:i'),array('size'=>'6'))?>
+		<?php echo CHtml::textField('dilation_treatment['.$key.'][treatment_time]',isset($treatment) ? substr($treatment->treatment_time,0,5) : date('H:i'),array('class' => 'input-time'))?>
 	</td>
 	<td>
-		<?php if (isset($treatment) && $treatment->id) { ?>
-		<input type="hidden"
-			name="dilation_treatment[<?php echo $key ?>][id]"
-			value="<?php echo $treatment->id?>" />
-		<?php } ?>
-		<input type="hidden"
-			name="dilation_treatment[<?php echo $key ?>][side]"
-			value="<?php echo $side ?>" />
-		<span class="drugName"><?php echo $drug_name ?></span>
+		<?php if (isset($treatment) && $treatment->id) {?>
+			<input type="hidden" name="dilation_treatment[<?php echo $key ?>][id]" value="<?php echo $treatment->id?>" />
+		<?php }?>
+		<input type="hidden" name="dilation_treatment[<?php echo $key ?>][side]" value="<?php echo $side ?>" />
+		<span class="drugName"><?php echo $drug_name?></span>
 		<input type="hidden" class="drugId" name="dilation_treatment[<?php echo $key ?>][drug_id]" value="<?php echo @$drug_id ?>" />
 	</td>
 	<td>
