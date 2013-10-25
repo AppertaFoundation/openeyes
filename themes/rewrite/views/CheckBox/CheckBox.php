@@ -17,10 +17,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (@$options['text-align'] == 'right') {?>
+
+<?php if (@$htmlOptions['text-align'] == 'right') {?>
 	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php if (!@$options['no-label']) {?>
+			<?php if (!@$htmlOptions['no-label']) {?>
 				<div class="label"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</div>
 			<?php }?>
 		</div>
@@ -30,10 +31,10 @@
 		</div>
 	</div>
 <?php } else {?>
-	<?php if (!@$options['nowrapper']) {?>
+	<?php if (!@$htmlOptions['nowrapper']) {?>
 		<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
 			<div class="large-<?php echo $layoutColumns['label'];?> column">
-				<?php if (!@$options['no-label']) {?>
+				<?php if (!@$htmlOptions['no-label']) {?>
 					<label for="<?php echo get_class($element)."_".$field;?>">
 						<?php echo CHtml::encode($element->getAttributeLabel($field))?>:
 					</label>

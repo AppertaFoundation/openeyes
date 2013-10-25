@@ -1,4 +1,4 @@
-<div class="large-10 column event correspondence edit">
+<div class="large-10 column event ophcocorrespondence edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">
@@ -24,10 +24,7 @@
 					</header>
 					<div class="element-fields">
 						<div class="row field-row">
-							<div class="large-2 column">
-								<label for="">Site:</label>
-							</div>
-							<div class="large-10 column">
+							<div class="large-10 large-offset-2 column">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -35,24 +32,30 @@
 						</div>
 						<div class="row field-row">
 							<div class="large-2 column">
-								<label for="">Address:</label>
+								<select class="full-width">
+									<option>-- Select --</option>
+									<option selected>Dr A Who (GP)</option>
+								</select>
 							</div>
 							<div class="large-10 column">
 								<div class="field-row">
-									<label class="inline">Recipient:</label>
-									<select>
-										<option>-- Select --</option>
-										<option selected>Dr A Who (GP)</option>
-									</select>
-								</div>
-								<div class="field-row">
-									<textarea class="address">Dr A Who
+									<textarea rows="8" class="address">Dr A Who
 83 Wintour Lane
 Northop
 Heald Green
 Lothian
 GH14 2DH</textarea>
 								</div>
+							</div>
+						</div>
+						<div class="row field-row">
+							<div class="large-2 column">
+								<select class="full-width">
+									<option>- Macro -</option>
+								</select>
+							</div>
+							<div class="large-2 column end">
+								<input type="text" />
 							</div>
 						</div>
 						<div class="row field-row">
@@ -72,10 +75,7 @@ GH14 2DH</textarea>
 							</div>
 						</div>
 						<div class="row field-row">
-							<div class="large-2 column">
-								<label for="">Introduction:</label>
-							</div>
-							<div class="large-10 column">
+							<div class="large-10 large-offset-2 column">
 								<div class="row field-row">
 									<div class="large-8 column">
 										<textarea>Dear Dr Who,</textarea>
@@ -94,10 +94,39 @@ GH14 2DH</textarea>
 						</div>
 						<div class="row field-row">
 							<div class="large-2 column">
-
+								<div class="field-row">
+									<select class="full-width">
+										<option>- Introduction -</option>
+									</select>
+								</div>
+								<div class="field-row">
+									<select class="full-width">
+										<option>- Findings -</option>
+									</select>
+								</div>
+								<div class="field-row">
+									<select class="full-width">
+										<option>- Diagnosis -</option>
+									</select>
+								</div>
+								<div class="field-row">
+									<select class="full-width">
+										<option>- Management -</option>
+									</select>
+								</div>
+								<div class="field-row">
+									<select class="full-width">
+										<option>- Drugs -</option>
+									</select>
+								</div>
+								<div class="field-row">
+									<select class="full-width">
+										<option>- Outcome -</option>
+									</select>
+								</div>
 							</div>
 							<div class="large-10 column">
-								<textarea class="letter-body"></textarea>
+								<textarea class="letter-body" rows="20"></textarea>
 							</div>
 						</div>
 						<div class="row field-row">
@@ -112,23 +141,19 @@ GH14 2DH</textarea>
 								</div>
 								<div class="row field-row">
 									<div class="large-8 column end">
-										<textarea></textarea>
+										<textarea rows="5"></textarea>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="row field-row">
 							<div class="large-2 column">
-								<label for="">CC</label>
+								<select class="full-width">
+									<option>-- Cc --</option>
+									<option>Dr A Who (GP)</option>
+								</select>
 							</div>
 							<div class="large-10 column">
-								<div class="field-row">
-									<label class="inline">Recipient:</label>
-									<select>
-										<option>-- Select --</option>
-										<option selected>Dr A Who (GP)</option>
-									</select>
-								</div>
 								<div class="field-row">
 									<textarea class="cc"></textarea>
 								</div>
