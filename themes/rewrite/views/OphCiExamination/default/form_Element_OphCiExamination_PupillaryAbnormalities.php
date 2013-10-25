@@ -17,32 +17,31 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="cols2 clearfix">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div
-		class="side left eventDetail<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
-		data-side="right">
-		<div class="activeForm">
-			<a href="#" class="removeSide">-</a>
-			<div class="data">
-				<?php echo $form->dropDownList($element, 'right_abnormality_id', $element->getAbnormalityOptions(), array('empty' => '-- Select --')) ?>
-			</div>
+<div class="element-fields element-eyes row">
+	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
+		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<div class="active-form">
+			<?php echo $form->dropDownList($element, 'right_abnormality_id', $element->getAbnormalityOptions(), array('empty' => '-- Select --')) ?>
 		</div>
-		<div class="inactiveForm">
-			<a href="#">Add right side</a>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add right side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
-	<div
-		class="side right eventDetail<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
-		data-side="left">
-		<div class="activeForm">
-			<a href="#" class="removeSide">-</a>
-			<div class="data">
-				<?php echo $form->dropDownList($element, 'left_abnormality_id', $element->getAbnormalityOptions(), array('empty' => '-- Select --')) ?>
-			</div>
+	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
+		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<div class="active-form">
+			<?php echo $form->dropDownList($element, 'left_abnormality_id', $element->getAbnormalityOptions(), array('empty' => '-- Select --')) ?>
 		</div>
-		<div class="inactiveForm">
-			<a href="#">Add left side</a>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add left side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
 </div>
