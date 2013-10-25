@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-eyes sub-element-fields">
+<div class="element-eyes element-fields">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-attr="right">
 		<a href="#" class="icon-remove-side removeSide">Remove side</a>

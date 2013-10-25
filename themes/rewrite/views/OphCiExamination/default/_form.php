@@ -33,7 +33,7 @@
 			<?php }?>
 			<?php if (@$child) {?>
 				<div class="sub-element-actions">
-					<a href="#" class="button button-icon small js-remove-element">
+					<a href="#" class="button button-icon small js-remove-child-element">
 						<span class="icon-button-small-mini-cross"></span>
 						<span class="hide-offscreen">Remove sub-element</span>
 					</a>
