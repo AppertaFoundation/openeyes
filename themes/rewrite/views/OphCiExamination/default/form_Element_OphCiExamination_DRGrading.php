@@ -17,10 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="clearfix">
-
-<!--  only provide image popup if provided to the webserver -->
-<?php if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets') . "/img/drgrading.jpg") ) { ?>
+<?php if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets') . "/img/drgrading.jpg")) {?>
 	<div style="margin-top:-30px; margin-left:120px;">
 		<a href="#" class="drgrading_images_link"><img src="<?php echo $this->assetPath ?>/img/photo_sm.png" /></a>
 		<a href="#" id="drgrading_dirty" style="display: none;">re-sync</a>
@@ -29,48 +26,42 @@
 		title="DR Grading Images">
 		<img src="<?php echo $this->assetPath ?>/img/drgrading.jpg">
 	</div>
-<?php } else { ?>
+<?php }else{?>
 	<div style="margin-top:-25px; margin-left:120px;">
 	<a href="#" id="drgrading_dirty" style="display: none;">re-sync</a>
 	</div>
-<?php } ?>
-</div>
+<?php }?>
 
-<div class="eventDetail">
-	<div class="label"><?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id');?></div>
-	<div class="data">
+<div class="element-fields element-eyes row">
+	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
+	<div class="field-row">
+		<?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>
 		<?php
 			if ($diabetes = $this->patient->getDiabetesType()) {
 				echo $diabetes->term;
-			}
-			else {
+			} else {
 				$form->radioButtons($element, 'secondarydiagnosis_disorder_id', 'diabetes_types', null, false, false, false, false, array('nowrapper' => true));
 			}
 		?>
 	</div>
-</div>
-<div class="cols2 clearfix">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div
-		class="side left eventDetail<?php if (!$element->hasRight()) { ?> inactive<?php } if ($element->id || !empty($_POST) ) { ?> uninitialised<?php } ?>"
-		data-side="right">
-		<div class="activeForm">
-			<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-				array('side' => 'right', 'element' => $element, 'form' => $form)); ?>
+	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?><?php if ($element->id || !empty($_POST)) {?> uninitialised<?php }?>" data-side="right">
+		<div class="active-form">
+			<?php $this->renderPartial('form_' . get_class($element) . '_fields', array('side' => 'right', 'element' => $element, 'form' => $form))?>
 		</div>
-		<div class="inactiveForm">
-			Add right posterior segment.
+		<div class="inactive-form">
+			<div class="add-side">
+				Add right posterior segment
+			</div>
 		</div>
 	</div>
-	<div
-		class="side right eventDetail<?php if (!$element->hasLeft()) { ?> inactive<?php } if ($element->id || !empty($_POST) ) { ?> uninitialised<?php } ?>"
-		data-side="left">
-		<div class="activeForm">
-			<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-				array('side' => 'left', 'element' => $element, 'form' => $form)); ?>
+	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?><?php if ($element->id || !empty($_POST)) {?> uninitialised<?php }?>" data-side="left">
+		<div class="active-form">
+			<?php $this->renderPartial('form_' . get_class($element) . '_fields', array('side' => 'left', 'element' => $element, 'form' => $form))?>
 		</div>
-		<div class="inactiveForm">
-			Add left posterior segment.
+		<div class="inactive-form">
+			<div class="add-side">
+				Add left posterior segment
+			</div>
 		</div>
 	</div>
 </div>
