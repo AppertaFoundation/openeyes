@@ -19,7 +19,13 @@ ul.pagination {
 			}
 		}
 	}
-
+	.page {
+		a {
+			&:hover {
+				font-weight: bold;
+			}
+		}
+	}
 }
 
 // Table pagination.
@@ -40,7 +46,6 @@ tfoot.pagination-container {
 /* Pagination centered wrapper */
 .pagination-centered {
 	@include pagination-container(true);
-
 	ul.pagination {
 		@include pagination(true, false);
 	}
