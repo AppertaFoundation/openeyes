@@ -19,7 +19,7 @@
 ?>
 <div class="element-fields element-eyes row">
 	<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
-		<a href="#" class="icon-remove-side">Remove side</a>
+		<a href="#" class="icon-remove-side removeSide">Remove side</a>
 		<div class="active-form">
 			<div class="eyedraw-data row">
 				<div class="eyedraw-image column large" style="width: 40%;">
@@ -29,11 +29,15 @@
 			</div>
 		</div>
 		<div class="inactive-form">
-			<a href="#">Add right side</a>
+			<div class="add-side">
+				<a href="#">
+					Add right side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
 	<div class="element-eye right-eye column side right<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
-		<a href="#" class="icon-remove-side">Remove side</a>
+		<a href="#" class="icon-remove-side removeSide">Remove side</a>
 		<div class="active-form">
 			<div class="eyedraw-data row">
 				<div class="eyedraw-image column large" style="width: 40%;">
@@ -43,7 +47,11 @@
 			</div>
 		</div>
 		<div class="inactive-form">
-			<a href="#">Add left side</a>
+			<div class="add-side">
+				<a href="#">
+					Add left side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
 </div>
