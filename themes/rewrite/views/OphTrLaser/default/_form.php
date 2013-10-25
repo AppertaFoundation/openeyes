@@ -18,15 +18,27 @@
  */
 ?>
 
-<section class="element" data-element-type-id="<?php echo $element->elementType->id?>" data-element-type-name="<?php echo $element->elementType->name?>" data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name?></h3>
-		<div class="element-actions">
+<section class="<?php if (@$child) {?>sub-<?php }?>element" data-element-type-id="<?php echo $element->elementType->id?>" data-element-type-name="<?php echo $element->elementType->name?>" data-element-display-order="<?php echo $element->elementType->display_order?>">
+	<header class="<?php if (@$child) {?>sub-<?php }?>element-header">
+		<?php if (!@$child) {?>
+			<h3 class="element-title"><?php echo $element->elementType->name?></h3>
+		<?php }else{?>
+			<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
+		<?php }?>
+		<div class="<?php if (@$child) {?>sub-<?php }?>element-actions">
 			<?php if (!@$child && !$element->elementType->required) {?>
 				<a href="#" class="button button-icon small js-remove-element">
 					<span class="icon-button-small-mini-cross"></span>
 					<span class="hide-offscreen">Remove element</span>
 				</a>
+			<?php }?>
+			<?php if (@$child) {?>
+				<div class="sub-element-actions">
+					<a href="#" class="button button-icon small js-remove-element">
+						<span class="icon-button-small-mini-cross"></span>
+						<span class="hide-offscreen">Remove sub-element</span>
+					</a>
+				</div>
 			<?php }?>
 		</div>
 	</header>
