@@ -37,7 +37,7 @@
 	<?php echo $form->radioButtons($element, 'anaesthetic_delivery_id', 'anaesthetic_delivery',false,4, $element->hidden)?>
 	<?php echo $form->multiSelectList($element, 'AnaestheticAgent', 'anaesthetic_agents', 'anaesthetic_agent_id', $element->anaesthetic_agent_list, $element->anaesthetic_agent_defaults, array('empty' => '- Anaesthetic agents -', 'label' => 'Agents'), $element->hidden)?>
 	<?php echo $form->multiSelectList($element, 'OphTrOperationnote_AnaestheticComplications', 'anaesthetic_complications', 'anaesthetic_complication_id', CHtml::listData(OphTrOperationnote_AnaestheticComplications::model()->findAll(), 'id', 'name'), array(), array('empty' => '- Complications -', 'label' => 'Complications'), $element->hidden)?>
-	<?php echo $form->textArea($element, 'anaesthetic_comment', array(), $element->hidden)?>
+	<?php echo $form->textArea($element, 'anaesthetic_comment', array(), $element->hidden, array('rows'=>4))?>
 
 	</div>
 </section>

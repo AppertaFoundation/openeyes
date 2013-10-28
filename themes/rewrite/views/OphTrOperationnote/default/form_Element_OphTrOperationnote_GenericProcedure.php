@@ -18,21 +18,39 @@
  */
 ?>
 
-<div class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
+<?php
+$layoutColumns = array(
+	'label' => 2,
+	'field' => 10
+);
+?>
+
+<section class="element <?php echo $element->elementType->class_name?> on-demand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
 	data-element-type-id="<?php echo $element->elementType->id ?>"
 	data-element-type-class="<?php echo $element->elementType->class_name ?>"
 	data-element-type-name="<?php echo $element->elementType->name ?>"
 	data-element-display-order="<?php echo $element->elementType->display_order ?>">
+
 	<?php if ($this->action->id == 'update' && !$element->event_id) {?>
-		<span class="missingtext">This element is missing and needs to be completed</span>
+		<div class="alert-box alert">This element is missing and needs to be completed</div>
 	<?php }?>
-	<h4 class="elementTypeName"><?php echo $element->procedure ? $element->procedure->term : 'No procedure'?></h4>
-	<div id="div_Element_OphTrOperationnote_GenericProcedure_comments" class="eventDetail">
-		<div class="label">Comments:</div>
-		<div class="data">
-			<?php echo CHtml::textArea(get_class($element).'[comments][]',$element->comments,array('rows'=>4,'cols'=>60))?>
+
+	<header class="element-header">
+		<h3 class="element-title"><?php echo $element->procedure ? $element->procedure->term : 'No procedure'?></h3>
+	</header>
+
+	<div class="element-fields" id="div_Element_OphTrOperationnote_GenericProcedure_comments">
+		<div class="row field-row">
+			<div class="large-<?php echo $layoutColumns['label'];?> column">
+				<label for="<?php echo get_class($element)."_comments";?>">
+					Comments:
+				</label>
+			</div>
+			<div class="large-<?php echo $layoutColumns['field'];?> column end">
+				<?php echo CHtml::textArea(get_class($element).'[comments][]',$element->comments,array('rows'=>4))?>
+			</div>
 		</div>
 	</div>
 	<input type="hidden" name="<?php echo get_class($element)?>[proc_id][]" value="<?php echo $element->proc_id?>" />
 	<input type="hidden" name="<?php echo get_class($element)?>[_element_id][]" value="<?php echo $element->id?>" />
-</div>
+</section>
