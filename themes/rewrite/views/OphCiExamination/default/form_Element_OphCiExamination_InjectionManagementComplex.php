@@ -19,16 +19,15 @@
 ?>
 
 <?php
-	$no_treatment_reasons = $element->getNoTreatmentReasons();
-	$no_treatment_reasons_opts = array(
-		'options' => array(),
-		'empty'=>'- Please select -',
-		'nowrapper' => true,
-	);
-	foreach ($no_treatment_reasons as $ntr) {
-		$no_treatment_reasons_opts['options'][$ntr->id] = array('data-other' => $ntr->other ? '1' : '0');
-	}
-
+$no_treatment_reasons = $element->getNoTreatmentReasons();
+$no_treatment_reasons_opts = array(
+	'options' => array(),
+	'empty'=>'- Please select -',
+	'nowrapper' => true,
+);
+foreach ($no_treatment_reasons as $ntr) {
+	$no_treatment_reasons_opts['options'][$ntr->id] = array('data-other' => $ntr->other ? '1' : '0');
+}
 ?>
 
 
@@ -48,39 +47,50 @@ foreach ($l1_disorders as $disorder) {
 		$l2_disorders[$disorder->id] = $td_l2;
 	}
 }
-
 ?>
-
-<div class="cols2 clearfix">
-	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
-	<div
-		class="side left eventDetail<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
-		data-side="right">
-		<div class="activeForm">
-			<a href="#" class="removeSide">-</a>
-			<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-				array('side' => 'right', 'element' => $element, 'form' => $form,
-					'no_treatment_reasons' => $no_treatment_reasons, 'no_treatment_reasons_opts' => $no_treatment_reasons_opts,
-					'l1_disorders' => $l1_disorders, 'l1_opts' => $l1_options, 'l2_disorders' => $l2_disorders,
-				)); ?>
+<div class="element-fields element-eyes row">
+	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
+		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<div class="active-form">
+			<?php $this->renderPartial('form_' . get_class($element) . '_fields', array(
+				'side' => 'right',
+				'element' => $element,
+				'form' => $form,
+				'no_treatment_reasons' => $no_treatment_reasons,
+				'no_treatment_reasons_opts' => $no_treatment_reasons_opts,
+				'l1_disorders' => $l1_disorders,
+				'l1_opts' => $l1_options,
+				'l2_disorders' => $l2_disorders,
+			))?>
 		</div>
-		<div class="inactiveForm">
-			<a href="#">Add right side</a>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add right side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
-	<div
-		class="side right eventDetail<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
-		data-side="left">
-		<div class="activeForm">
-			<a href="#" class="removeSide">-</a>
-			<?php $this->renderPartial('form_' . get_class($element) . '_fields',
-				array('side' => 'left', 'element' => $element, 'form' => $form,
-					'no_treatment_reasons' => $no_treatment_reasons, 'no_treatment_reasons_opts' => $no_treatment_reasons_opts,
-					'l1_disorders' => $l1_disorders, 'l1_opts' => $l1_options, 'l2_disorders' => $l2_disorders,
-				)); ?>
+	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
+		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<div class="active-form">
+			<?php $this->renderPartial('form_' . get_class($element) . '_fields', array(
+				'side' => 'left',
+				'element' => $element,
+				'form' => $form,
+				'no_treatment_reasons' => $no_treatment_reasons,
+				'no_treatment_reasons_opts' => $no_treatment_reasons_opts,
+				'l1_disorders' => $l1_disorders,
+				'l1_opts' => $l1_options,
+				'l2_disorders' => $l2_disorders,
+			))?>
 		</div>
-		<div class="inactiveForm">
-			<a href="#">Add left side</a>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add left side <span class="icon-add-side"></span>
+				</a>
+			</div>
 		</div>
 	</div>
 </div>
