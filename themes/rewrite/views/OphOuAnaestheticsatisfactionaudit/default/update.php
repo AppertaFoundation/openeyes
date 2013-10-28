@@ -33,19 +33,14 @@
 		'enableAjaxValidation'=>false,
 		'htmlOptions' => array('class'=>'sliding'),
 		'layoutColumns' => array(
-			'label' => 4,
-			'field' => 8
+			'label' => 2,
+			'field' => 10
 		)
 	));
 	?>
 		<?php $this->displayErrors($errors)?>
-
-		<div id='event_content'>
 		<?php $this->renderDefaultElements($this->action->id, $form)?>
 		<?php $this->renderOptionalElements($this->action->id, $form)?>
-		<?php $this->displayErrors($errors)?>
-		</div>
-
-		<div class="cleartall"></div>
+		<?php $this->displayErrors($errors, true)?>
 	<?php $this->endWidget()?>
 <?php $this->endContent() ;?>
