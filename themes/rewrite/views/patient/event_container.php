@@ -27,7 +27,7 @@ if ($module = $this->getModule()) {
 
 			<?php $this->renderPartial('//patient/event_tabs',array('hidden'=>(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
 
-			<div class="event-content">
+			<div class="event-content" id="event-content">
 					<?php echo $content; ?>
 					<?php if ($this->action->id == 'view') {
 						$this->renderEventMetadata();
