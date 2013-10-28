@@ -17,63 +17,72 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div id="div_<?php echo get_class($element)?>_status"
-	class="eventDetail">
-	<div class="label">
-		<?php echo $element->getAttributeLabel('status_id') ?>:
-	</div>
-	<div class="data">
-		<?php
-		$html_options = array('empty'=>'- Please select -', 'options' => array());
-		foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll(array('order'=>'display_order')) as $opt) {
-			$html_options['options'][(string) $opt->id] = array('data-followup' => $opt->followup);
-		}
-		echo CHtml::activeDropDownList($element,'status_id', CHtml::listData(OphCiExamination_ClinicOutcome_Status::model()->findAll(array('order'=>'display_order')),'id','name'), $html_options)?>
-	</div>
-</div>
-<div id="div_<?php echo get_class($element)?>_followup"
-	class="eventDetail"
-	<?php if (!($element->status && $element->status->followup)) { ?>
-	style="display: none;"
-	<?php }?>
-	>
-	<div class="label">
-		<?php echo $element->getAttributeLabel('followup_quantity')?>:
-	</div>
-	<div class="data">
-		<?php
-		$html_options = array('empty'=>'- Please select -', 'options' => array());
-		echo CHtml::activeDropDownList($element,'followup_quantity', $element->getFollowUpQuantityOptions(), $html_options)?>
-	</div>
-	<div class="data">
-		<?php
-		$html_options = array('empty'=>'- Please select -', 'options' => array());
-		echo CHtml::activeDropDownList($element,'followup_period_id', CHtml::listData(Period::model()->findAll(array('order'=>'display_order')),'id','name'), $html_options)?>
-	</div>
-	<div class="data" style="margin-left: 1em;">
-		<?php echo CHtml::activeCheckBox($element,'community_patient')?>
-		<?php echo $element->getAttributeLabel('community_patient')?>
+<div class="element-fields" id="div_<?php echo get_class($element)?>_status">
+	<div class="field-row row">
+		<div class="large-3 column">
+			<label>
+				<?php echo $element->getAttributeLabel('status_id')?>:
+			</label>
+		</div>
+		<div class="large-9 column">
+			<?php
+			$html_options = array('empty'=>'- Please select -', 'options' => array());
+			foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll(array('order'=>'display_order')) as $opt) {
+				$html_options['options'][(string) $opt->id] = array('data-followup' => $opt->followup);
+			}
+			echo CHtml::activeDropDownList($element,'status_id', CHtml::listData(OphCiExamination_ClinicOutcome_Status::model()->findAll(array('order'=>'display_order')),'id','name'), $html_options)?>
+		</div>
 	</div>
 </div>
-<div id="div_<?php echo get_class($element)?>_role"
-	class="eventDetail"
-	<?php if (!($element->status && $element->status->followup)) { ?>
-	style="display: none;"
-	<?php }?>>
-	<div class="label">
-		<?php echo $element->getAttributeLabel('role')?>:
-	</div>
-	<div class="data">
-		<?php
-		$html_options = array('empty'=>'- Please select -', 'options' => array());
-		echo CHtml::activeDropDownList($element, 'role_id',
-			CHtml::listData(OphCiExamination_ClinicOutcome_Role::model()->findAll(array('order'=>'display_order')),'id', 'name'),
-			$html_options) ?>
-	</div>
-	<div class="data">
-		<?php echo CHtml::activeTextField($element, 'role_comments')?>
+
+<div class="element-fields" id="div_<?php echo get_class($element)?>_followup"<?php if (!($element->status && $element->status->followup)) {?> style="display: none;"<?php }?>>
+	<div class="field-row row">
+		<div class="large-3 column">
+			<label>
+				<?php echo $element->getAttributeLabel('followup_quantity')?>:
+			</label>
+		</div>
+		<div class="large-9 column">
+			<div class="large-3 column">
+				<?php
+				$html_options = array('empty'=>'- Please select -', 'options' => array());
+				echo CHtml::activeDropDownList($element,'followup_quantity', $element->getFollowUpQuantityOptions(), $html_options)?>
+			</div>
+			<div class="large-3 column">
+				<?php
+				$html_options = array('empty'=>'- Please select -', 'options' => array());
+				echo CHtml::activeDropDownList($element,'followup_period_id', CHtml::listData(Period::model()->findAll(array('order'=>'display_order')),'id','name'), $html_options)?>
+			</div>
+			<div class="large-3 column end">
+				<label>
+					<?php echo CHtml::activeCheckBox($element,'community_patient')?>
+					<?php echo $element->getAttributeLabel('community_patient')?>
+				</label>
+			</div>
+		</div>
 	</div>
 </div>
+
+<div class="element-fields" id="div_<?php echo get_class($element)?>_role"<?php if (!($element->status && $element->status->followup)) {?> style="display: none;"<?php }?>>
+	<div class="field-row row">
+		<div class="large-3 column">
+			<label>
+				<?php echo $element->getAttributeLabel('role')?>:
+			</label>
+		</div>
+		<div class="large-9 column">
+			<div class="large-3 column">
+				<?php
+				$html_options = array('empty'=>'- Please select -', 'options' => array());
+				echo CHtml::activeDropDownList($element, 'role_id', CHtml::listData(OphCiExamination_ClinicOutcome_Role::model()->findAll(array('order'=>'display_order')),'id', 'name'), $html_options) ?>
+			</div>
+			<div class="large-3 column end">
+				<?php echo CHtml::activeTextField($element, 'role_comments')?>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript">
 		var Element_OphCiExamination_ClinicOutcome_templates = {
 		<?php foreach (OphCiExamination_ClinicOutcome_Template::model()->findAll() as $template) { ?>
