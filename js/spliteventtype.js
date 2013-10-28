@@ -30,20 +30,20 @@ function getSplitElementSide(el) {
 
 /**
  * Helper function to show a given element side
- * 
+ *
  * @param cls element class to be shown
  * @param side 'left' or 'right'
  */
 function showSplitElementSide(cls, side) {
 	var other_side = 'left';
 	var side_val = 2; // Right in db
-	
+
 	if (side == 'left') {
 		other_side = 'right';
 		side_val = 1; // Left in db
 	}
 	var display_side = other_side;
-	
+
 	$('.' + cls).find('.side.' + display_side).removeClass('inactive');
 	// side for data is the opposite side for display ...
 	if ($('.' + cls).find('.side.' + side).hasClass('inactive')) {
@@ -63,15 +63,15 @@ function showSplitElementSide(cls, side) {
 /**
  * This will hide the side element of the given the element class.
  * NOTE: this will not automatically show the other side (leave the standard functions set up below for this functionality)
- * 
+ *
  * @param cls element class to be hidden
  * @param side 'left' or 'right'
- * 
+ *
  */
 function hideSplitElementSide(cls, side) {
 	var other_side = 'left';
 	var other_side_val = 1; // Left in db
-	
+
 	if (side == 'left') {
 		other_side = 'right';
 		other_side_val = 2; // Right in db
@@ -97,16 +97,16 @@ $(document).ready(function() {
 	$(this).delegate('.event-content .removeSide', 'click', function(e) {
 		// Update side field to indicate other side
 		var side = $(this).closest('.side');
-		
+
 		var remove_physical_side = 'left';
 		var show_physical_side = 'right';
-		
+
 		var eye_side = 1;
 		if(side.attr('data-side') == 'left') {
 			eye_side = 2; // Right
 			remove_physical_side = 'right';
 			show_physical_side = 'left';
-		} 
+		}
 
 		$(this).closest('.sub-element, .element').find('input.sideField').each(function() {
 			$(this).val(eye_side);
@@ -114,21 +114,21 @@ $(document).ready(function() {
 
 		// If other side is already inactive, then activate it (can't have both sides inactive)
 		$(this).closest('.sub-element, .element').find('.side.'+show_physical_side).removeClass('inactive');
-		
+
 		// Make this side inactive
 		$(this).closest('.sub-element, .element').find('.side.'+remove_physical_side).addClass('inactive');
-		
+
 		e.preventDefault();
 	});
 
-	$(this).delegate('#event_content .side .inactive-form a', 'click', function(e) {
-		var element = $(this).closest('.sub-element, .element'); 
+	$(this).delegate('#event-content .side .inactive-form a', 'click', function(e) {
+		var element = $(this).closest('.sub-element, .element');
 		element.find('input.sideField').each(function() {
 			$(this).val(3); // Both eyes
 		});
-		
+
 		element.find('.inactive').removeClass('inactive');
-		
+
 		e.preventDefault();
 	});
 });

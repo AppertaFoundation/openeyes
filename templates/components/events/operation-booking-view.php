@@ -46,7 +46,7 @@
 		</section>
 
 		<section class="element element-data">
-			<div class="row element-data-row">
+			<div class="row">
 				<div class="large-6 column">
 					<h3 class="data-title">Anaesthetic</h3>
 					<div class="data-value">Topical</div>
@@ -59,7 +59,7 @@
 		</section>
 
 		<section class="element element-data">
-			<div class="row element-data-row">
+			<div class="row">
 				<div class="large-6 column">
 					<h3 class="data-title">Post Operative Stay Required</h3>
 					<div class="data-value">No Stay</div>
@@ -72,7 +72,7 @@
 		</section>
 
 		<section class="element element-data">
-			<div class="row element-data-row">
+			<div class="row">
 				<div class="large-6 column">
 					<h3 class="data-title">Operation priority</h3>
 					<div class="data-value">Routine</div>

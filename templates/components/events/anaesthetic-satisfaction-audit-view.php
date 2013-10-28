@@ -1,4 +1,4 @@
-<div class="large-10 column event view anaesthetic-satisfaction-audit">
+<div class="large-10 column event view ophouanaestheticsatisfactionaudit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">

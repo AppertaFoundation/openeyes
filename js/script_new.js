@@ -122,7 +122,7 @@ $(document).ready(function(){
 	var formHasChanged = false;
 	var submitted = false;
 
-	$("#event_content").on("change", function (e) {
+	$("#event-content").on("change", function (e) {
 		formHasChanged = true;
 	});
 

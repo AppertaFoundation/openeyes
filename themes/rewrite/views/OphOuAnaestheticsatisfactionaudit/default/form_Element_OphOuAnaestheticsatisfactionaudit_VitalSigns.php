@@ -27,11 +27,11 @@
 	</header>
 
 	<div class="element-fields">
-		<?php echo $form->dropDownList($element, 'respiratory_rate_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_RespiratoryRate::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'),false,array('label' => 2, 'field' => 10))?>
-		<?php echo $form->dropDownList($element, 'oxygen_saturation_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_OxygenSaturation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'),false,array('label' => 2, 'field' => 10))?>
-		<?php echo $form->dropDownList($element, 'systolic_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_Systolic::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'),false,array('label' => 2, 'field' => 10))?>
-		<?php echo $form->dropDownList($element, 'body_temp_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_BodyTemp::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'),false,array('label' => 2, 'field' => 10))?>
-		<?php echo $form->dropDownList($element, 'heart_rate_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_HeartRate::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'),false,array('label' => 2, 'field' => 10))?>
-		<?php echo $form->dropDownList($element, 'conscious_lvl_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_ConsciousLvl::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'),false,array('label' => 2, 'field' => 10))?>
+		<?php echo $form->dropDownList($element, 'respiratory_rate_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_RespiratoryRate::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+		<?php echo $form->dropDownList($element, 'oxygen_saturation_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_OxygenSaturation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+		<?php echo $form->dropDownList($element, 'systolic_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_Systolic::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+		<?php echo $form->dropDownList($element, 'body_temp_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_BodyTemp::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+		<?php echo $form->dropDownList($element, 'heart_rate_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_HeartRate::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+		<?php echo $form->dropDownList($element, 'conscious_lvl_id', CHtml::listData(Element_OphOuAnaestheticsatisfactionaudit_VitalSigns_ConsciousLvl::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 	</div>
 </section>

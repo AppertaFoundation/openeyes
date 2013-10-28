@@ -64,12 +64,9 @@
 			<?php
 		}
 		?>
-		<div id='event_content'>
 		<?php $this->renderDefaultElements($this->action->id, $form)?>
 		<?php $this->renderOptionalElements($this->action->id, $form)?>
 		<?php $this->displayErrors($errors)?>
-		</div>
 
-		<div class="cleartall"></div>
 	<?php $this->endWidget()?>
 <?php $this->endContent() ;?>

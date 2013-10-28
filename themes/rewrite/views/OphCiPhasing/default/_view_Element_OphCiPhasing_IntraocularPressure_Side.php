@@ -18,12 +18,12 @@
  */
 ?>
 <?php if ($element->{'has'.$side}()) {?>
-	<div class="element-data-row">
+	<div class="data-row">
 		<div class="field-value">
 			<?php echo $element->{strtolower($side).'_instrument'}->name ?> <?php if ($element->{strtolower($side).'_dilated'}) { ?>(dilated)<?php } ?>
 		</div>
 	</div>
-	<div class="element-data-row">
+	<div class="data-row">
 		<table class="blank">
 			<tbody>
 				<?php foreach ($element->{strtolower($side).'_readings'} as $reading) {?>
@@ -36,7 +36,7 @@
 		</table>
 	</div>
 	<?php if ($element->{strtolower($side).'_comments'}) {?>
-		<div class="element-data-row">
+		<div class="data-row">
 			<div class="field-value">
 				(<?php echo $element->{strtolower($side).'_comments'} ?>)
 			</div>

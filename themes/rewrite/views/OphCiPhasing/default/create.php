@@ -19,7 +19,6 @@
 
 $this->beginContent('//patient/event_container', array()); ?>
 	<?php
-		$this->breadcrumbs=array($this->module->id);
 		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
 	?>
 
@@ -30,7 +29,6 @@ $this->beginContent('//patient/event_container', array()); ?>
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'clinical-create',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array('class'=>'sliding'),
 		'layoutColumns' => array(
 			'label' => 4,
 			'field' => 8
@@ -38,13 +36,9 @@ $this->beginContent('//patient/event_container', array()); ?>
 	));
 	?>
 		<?php $this->displayErrors($errors)?>
-
-		<div id='event_content'>
 		<?php $this->renderDefaultElements($this->action->id, $form)?>
 		<?php $this->renderOptionalElements($this->action->id, $form)?>
-		<?php $this->displayErrors($errors)?>
-		</div>
+		<?php $this->displayErrors($errors, true)?>
 
-		<div class="cleartall"></div>
 	<?php $this->endWidget()?>
 <?php $this->endContent() ;?>

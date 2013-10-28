@@ -1,4 +1,4 @@
-<div class="large-10 column event view phasing">
+<div class="large-10 column event view ophciphasing">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">
@@ -18,12 +18,12 @@
 				<section class="element">
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
-							<div class="element-data-row">
+							<div class="data-row">
 								<div class="field-value">
 									Tono-pen (dilated)
 								</div>
 							</div>
-							<div class="element-data-row">
+							<div class="data-row">
 								<table class="blank">
 									<tbody>
 										<tr>
@@ -37,19 +37,19 @@
 									</tbody>
 								</table>
 							</div>
-							<div class="element-data-row">
+							<div class="data-row">
 								<div class="field-value">
 									(sdfdsfsdf3 sdfdsf)
 								</div>
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="element-data-row">
+							<div class="data-row">
 								<div class="field-value">
 									Other
 								</div>
 							</div>
-							<div class="element-data-row">
+							<div class="data-row">
 								<table class="blank">
 									<tbody>
 										<tr>
@@ -59,7 +59,7 @@
 									</tbody>
 								</table>
 							</div>
-							<div class="element-data-row">
+							<div class="data-row">
 								<div class="field-value">
 									(sdfdsfsdf)
 								</div>

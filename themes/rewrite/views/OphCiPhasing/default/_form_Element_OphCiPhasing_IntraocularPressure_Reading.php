@@ -28,7 +28,9 @@
 	<td>
 		<?php echo CHtml::textField('intraocularpressure_reading['.$key.'][value]', @$reading->value,array('class'=>'small'))?>
 	</td>
-	<?php if (!isset($no_remove) || !$no_remove) {?>
-		<td class="readingActions"><a class="removeReading" href="#">Remove</a></td>
-	<?php }?>
+	<td class="readingActions">
+		<?php if (!isset($no_remove) || !$no_remove) {?>
+			<a class="removeReading" href="#">Remove</a>
+		<?php }?>
+	</td>
 </tr>

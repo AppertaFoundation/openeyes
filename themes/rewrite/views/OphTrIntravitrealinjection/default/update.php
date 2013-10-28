@@ -19,15 +19,13 @@
 ?>
 
 <?php
-	$this->breadcrumbs=array($this->module->id);
 	$this->beginContent('//patient/event_container', array());
 ?>
 
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<?php $this->renderPartial('//base/_messages'); ?>
+	<?php $this->renderPartial('//base/_messages'); ?>
 
-<div>
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'c',
@@ -37,20 +35,13 @@
 			'label' => 4,
 			'field' => 8)
 	));
-
 	// Event actions
-
 	$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('form'=>'c','class'=>'button small'));
-
 	?>
-	<div id='event_content'>
-	<?php $this->displayErrors($errors)?>
-	<?php $this->renderDefaultElements($this->action->id, $form)?>
-	<?php $this->renderOptionalElements($this->action->id, $form)?>
-	<?php $this->displayErrors($errors)?>
-	</div>
-	<div class="cleartall"></div>
+		<?php $this->displayErrors($errors)?>
+		<?php $this->renderDefaultElements($this->action->id, $form)?>
+		<?php $this->renderOptionalElements($this->action->id, $form)?>
+		<?php $this->displayErrors($errors, true)?>
 	<?php $this->endWidget()?>
-</div>
 
 <?php $this->endContent() ;?>

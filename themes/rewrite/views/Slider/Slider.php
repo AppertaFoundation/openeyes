@@ -34,18 +34,24 @@
 	});
 </script>
 
-<div class="row field-row">
+<div class="row field-row slider">
 	<div class="large-<?php echo $layoutColumns['label']?> column">
 		<label for="<?php echo get_class($element)."_$field"?>"><?php echo $element->getAttributeLabel($field)?>:</label>
 	</div>
 	<div class="large-<?php echo $layoutColumns['field']?> column end">
-		<div class="row field-row">
-			<div class="large-1 column">
-				<span class="widgetSliderValue" id="<?php echo get_class($element)?>_<?php echo $field?>_value_span"><?php echo $value_display?><?php echo $append?></span>
-			</div>
-			<div class="large-11 column">
-				<input class="widgetSlider<?php if (@$htmlOptions['class']) {?> <?php echo $htmlOptions['class']?><?php }?>" type="range" id="<?php echo get_class($element)?>_<?php echo $field?>" name="<?php echo get_class($element)?>[<?php echo $field?>]" min="<?php echo $min?>" max="<?php echo $max?>" value="<?php echo $value?>" step="<?php echo $step?>" />
-			</div>
+		<div class="field-row">
+			<span class="widgetSliderValue slider-value" id="<?php echo get_class($element)?>_<?php echo $field?>_value_span"><?php echo $value_display?><?php echo $append?></span>
+			<input
+				class="widgetSlider slider-input<?php if (@$htmlOptions['class']) {?> <?php echo $htmlOptions['class']?><?php }?>"
+				type="range"
+				id="<?php echo get_class($element)?>_<?php echo $field?>"
+				name="<?php echo get_class($element)?>[<?php echo $field?>]"
+				min="<?php echo $min?>"
+				max="<?php echo $max?>"
+				value="<?php echo $value?>"
+				step="<?php echo $step?>"
+				style="<?php if ($width) {?>width:<?php echo $width;?><?php }?>"
+				/>
 		</div>
 		<?php if ($painScale) {?>
 			<div class="field-row">

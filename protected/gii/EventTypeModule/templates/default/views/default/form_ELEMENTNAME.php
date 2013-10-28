@@ -18,18 +18,21 @@
  */
 <?php echo "?>\n"?>
 
-<div class="element <?php echo '<?php'?> echo $element->elementType->class_name<?php echo '?>'?>"
+<section class="element <?php echo '<?php'?> echo $element->elementType->class_name<?php echo '?>'?>"
 	data-element-type-id="<?php echo '<?php'?> echo $element->elementType->id<?php echo '?>'?>"
 	data-element-type-class="<?php echo '<?php'?> echo $element->elementType->class_name<?php echo '?>'?>"
 	data-element-type-name="<?php echo '<?php'?> echo $element->elementType->name<?php echo '?>'?>"
 	data-element-display-order="<?php echo '<?php'?> echo $element->elementType->display_order<?php echo '?>'?>">
-	<h4 class="elementTypeName"><?php echo '<?php'?> echo $element->elementType->name; <?php echo '?>'?></h4>
-
+	<header class="element-header">
+		<h3 class="element-title"><?php echo '<?php'?> echo $element->elementType->name; <?php echo '?>'?></h3>
+	</header>
 <?php
 	if (isset($element)) {
 		foreach ($element['fields'] as $field) {
+			echo "<div class=\"element-fields\">\n";
 			echo "\t".$this->getHTMLField($field,'create')."\n";
+			echo "</div>\n";
 		}
 	}
 ?>
-</div>
+</section>

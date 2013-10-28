@@ -226,6 +226,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'field' => $field,
 			'min' => $options['min'],
 			'max' => $options['max'],
+			'width' => @$options['width'],
 			'step' => $options['step'],
 			'force_dp' => @$options['force_dp'],
 			'prefix_positive' => @$options['prefix_positive'],

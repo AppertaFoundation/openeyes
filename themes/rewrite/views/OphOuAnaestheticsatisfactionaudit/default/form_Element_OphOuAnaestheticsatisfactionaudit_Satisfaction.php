@@ -28,9 +28,17 @@
 	</header>
 
 	<div class="element-fields">
-		<?php echo $form->slider($element, 'pain', array('min' => 0, 'max' => 10, 'step' => 1, 'painScale' => $this->patient->isChild() ? $this->assetPath."/img/new/painscale_child.png" : $this->assetPath."/img/new/painscale_adult.png"), array('class' => 'slider painscale'), array('label' => 2, 'field' => 5))?>
+		<?php echo $form->slider($element, 'pain', array(
+				'min' => 0,
+				'max' => 10,
+				'step' => 1,
+				'width' => 340,
+				'painScale' => $this->patient->isChild() ? $this->assetPath."/img/new/painscale_child.png" : $this->assetPath."/img/new/painscale_adult.png"
+			),
+			array('class' => 'slider painscale')
+		)?>
 
-		<?php echo $form->slider($element, 'nausea', array('min' => 0, 'max' => 3, 'step' => 1), array(), array('label' => 2, 'field' => 3))?>
+		<?php echo $form->slider($element, 'nausea', array('min' => 0, 'max' => 3, 'step' => 1, 'width' => 200))?>
 
 		<div class="row field-row">
 			<div class="large-10 large-offset-2 column">
@@ -40,6 +48,6 @@
 			</div>
 		</div>
 
-		<?php echo $form->checkBox($element, 'vomited', array(), array('label' => 2, 'field' => 10))?>
+		<?php echo $form->checkBox($element, 'vomited', array())?>
 	</div>
 </section>

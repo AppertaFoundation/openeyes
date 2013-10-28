@@ -19,23 +19,18 @@
 ?>
 
 <?php
-	$this->breadcrumbs=array($this->module->id);
 	$this->beginContent('//patient/event_container', array());
 ?>
 
-<?php
+	<?php
+		// Event actions
+		if ($this->canPrint()) {
+			$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));}
+	?>
 
-	// Event actions
-	if ($this->canPrint()) {
-		$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));}
-?>
+	<h2 class="event-title"><?php echo $this->event_type->name?></h2>
 
-<h2 class="event-title"><?php echo $this->event_type->name?></h2>
-
-<div>
 	<?php $this->renderDefaultElements($this->action->id)?>
 	<?php $this->renderOptionalElements($this->action->id)?>
-	<div class="cleartall"></div>
-</div>
 
 <?php $this->endContent() ;?>

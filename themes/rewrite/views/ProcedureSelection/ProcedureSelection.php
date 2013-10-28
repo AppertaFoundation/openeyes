@@ -130,7 +130,7 @@
 								</td>
 							<?php } ?>
 							<td>
-								<a href="#">Remove</a>
+								<a href="#" class="removeProcedure">Remove</a>
 							</td>
 						</tr>
 					<?php	}
@@ -140,32 +140,30 @@
 				}?>
 				</tbody>
 			</table>
-			<?php if ($durations) {?>
-				<table class="grid">
-					<tfoot>
-					<tr>
-						<td>
-							Calculated Total Duration:
-						</td>
-						<td>
-							<?php echo $totalDuration?> mins
-						</td>
-						<td>
-							Estimated Total Duration:
-						</td>
-						<td>
-							<input
-								type="text"
-								value="<?php echo $total_duration?>"
-								id="<?php echo $class?>_total_duration_<?php echo $identifier?>"
-								name="<?php echo $class?>[total_duration_<?php echo $identifier?>]"
-								style="width:60px"
-								/>
-						</td>
-					</tr>
-					</tfoot>
-				</table>
-			<?php }?>
+			<table class="grid"<?php if (empty($selected_procedures) || !$durations) {?> style="display: none;"<?php }?>>
+				<tfoot>
+				<tr>
+					<td>
+						Calculated Total Duration:
+					</td>
+					<td id="projected_duration_<?php echo $identifier?>">
+						<?php echo $totalDuration?> mins
+					</td>
+					<td>
+						Estimated Total Duration:
+					</td>
+					<td>
+						<input
+							type="text"
+							value="<?php echo $total_duration?>"
+							id="<?php echo $class?>_total_duration_<?php echo $identifier?>"
+							name="<?php echo $class?>[total_duration_<?php echo $identifier?>]"
+							style="width:60px"
+							/>
+					</td>
+				</tr>
+				</tfoot>
+			</table>
 		</div>
 	</div>
 </div>
