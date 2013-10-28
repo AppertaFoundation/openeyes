@@ -33,8 +33,8 @@
 		'enableAjaxValidation'=>false,
 		'htmlOptions' => array('class'=>'sliding'),
 		'layoutColumns' => array(
-			'label' => 4,
-			'field' => 8
+			'label' => 2,
+			'field' => 10
 		)
 	));
 	?>

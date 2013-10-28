@@ -27,6 +27,6 @@
 	</header>
 
 	<div class="element-fields">
-		<?php echo $form->dropDownList($element, 'anaesthetist_select', CHtml::listData($element->anaesthetistSelectList(),'id','text'),array('empty'=>'- Select -'),false,array('label'=>2,'field'=>10))?>
+		<?php echo $form->dropDownList($element, 'anaesthetist_select', CHtml::listData($element->anaesthetistSelectList(),'id','text'),array('empty'=>'- Select -'))?>
 	</div>
 </section>

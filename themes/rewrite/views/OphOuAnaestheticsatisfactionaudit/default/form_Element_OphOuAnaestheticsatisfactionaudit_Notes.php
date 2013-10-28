@@ -27,7 +27,7 @@
 	</header>
 
 	<div class="element-fields">
-		<?php echo $form->textArea($element, 'comments', array(), false, array('placeholder' => 'Enter comments ...'), array('label' => 2, 'field' => 10))?>
-		<?php echo $form->radioButtons($element, 'ready_for_discharge_id', 'et_ophouanaestheticsataudit_notes_ready_for_discharge', null, false, false, false, false, array(), array('label' => 2, 'field' => 10))?>
+		<?php echo $form->textArea($element, 'comments', array(), false, array('placeholder' => 'Enter comments ...'))?>
+		<?php echo $form->radioButtons($element, 'ready_for_discharge_id', 'et_ophouanaestheticsataudit_notes_ready_for_discharge')?>
 	</div>
 </section>
