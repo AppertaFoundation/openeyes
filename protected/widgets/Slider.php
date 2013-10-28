@@ -28,6 +28,7 @@ class Slider extends BaseFieldWidget
 	public $null;
 	public $value_display;
 	public $append = '';
+	public $width;
 	public $painScale;
 
 	public function init()
@@ -45,6 +46,10 @@ class Slider extends BaseFieldWidget
 			}
 		} else {
 			$this->value_display = $this->value;
+		}
+
+		if ($this->width && !preg_match('/[^0-9]/', $this->width)) {
+			$this->width .= 'px';
 		}
 	}
 }

@@ -4830,6 +4830,16 @@ tfoot.pagination-container .pagination li {
   width: 100%;
 }
 
+/* line 2, ../sass/new/openeyes/components/_slider.scss */
+.slider .slider-input {
+  margin-left: 6px;
+}
+/* line 5, ../sass/new/openeyes/components/_slider.scss */
+.slider .slider-value {
+  display: inline-block;
+  width: 20px;
+}
+
 /* line 6, ../sass/new/openeyes/components/_jquery-ui.scss */
 .open-eyes .ui-widget {
   font-size: 1em;
