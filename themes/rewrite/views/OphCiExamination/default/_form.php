@@ -25,6 +25,11 @@
 			<h3 class="element-title"><?php echo $element->elementType->name?></h3>
 		<?php }?>
 		<div class="<?php if (@$child) {?>sub-<?php }?>element-actions">
+			<?php
+			$event_id = ($element->id) ? $element->event_id : null;
+			if ($this->canCopy($element->elementType->class_name, $event_id)) {?>
+				<a href="#" title="View Previous" class="viewPrevious"><img src="<?php echo Yii::app()->createUrl('img/_elements/btns/load.png')?>" /></a>
+			<?php }?>
 			<?php if (!@$child && !$element->elementType->required) {?>
 				<a href="#" class="button button-icon small js-remove-element">
 					<span class="icon-button-small-mini-cross"></span>

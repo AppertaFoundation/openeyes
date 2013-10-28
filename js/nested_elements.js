@@ -215,7 +215,7 @@ $(document).ready(function() {
 	/**
 	 * View previous elements
 	 */
-	$('#active_elements').delegate('.elementActions .viewPrevious', 'click', function(e) {
+	$('.js-active-elements').delegate('.viewPrevious', 'click', function(e) {
 		var element = $(this).closest('.element');
 		if (!$(element).hasClass('clicked')) {
 			$(element).addClass('clicked');
@@ -239,7 +239,7 @@ $(document).ready(function() {
 				});
 				$('#previous_elements .copy_element').click(function() {
 					var element_id = $(this).attr('data-element-id');
-					var element = $('#active_elements .element.' + $(this).attr('data-element-type-class'))
+					var element = $('.js-active-elements .element.' + $(this).attr('data-element-type-class'))
 					$(element).addClass('clicked');
 					$('#previous_elements').dialog('close');
 					addElement(element, false, false, element_id);

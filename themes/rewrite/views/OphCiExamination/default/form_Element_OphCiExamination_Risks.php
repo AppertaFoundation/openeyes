@@ -17,4 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php echo $form->textArea($element, 'comments', array('rows' => "1", 'cols' => "80", 'class' => 'autosize')) ?>
+<div class="element-fields">
+	<?php echo $form->textArea($element, 'comments', array('class' => 'autosize'), false, array('placeholder' => 'Enter comments'), array('label' => 3, 'field' => 9))?>
+</div>
