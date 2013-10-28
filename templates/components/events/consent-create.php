@@ -189,7 +189,7 @@
 					<header class="element-header">
 						<h3 class="element-title">Permissions for images</h3>
 					</header>
-					<div class="element-data">
+					<div class="element-fields">
 						<fieldset class="row field-row">
 							<legend class="large-2 column">
 								Agree for use in audit, education and publication:

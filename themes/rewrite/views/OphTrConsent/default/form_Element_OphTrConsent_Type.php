@@ -26,9 +26,7 @@
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
 
-	<div class="element">
-		<div class="element-fields">
-			<?php echo $form->dropDownList($element, 'type_id', CHtml::listData(Element_OphTrConsent_Type_Type::model()->findAll(array('order'=> 'display_order asc')),'id','name'))?>
-		</div>
+	<div class="element-fields">
+		<?php echo $form->dropDownList($element, 'type_id', CHtml::listData(Element_OphTrConsent_Type_Type::model()->findAll(array('order'=> 'display_order asc')),'id','name'))?>
 	</div>
 </section>

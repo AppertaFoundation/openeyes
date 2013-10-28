@@ -25,10 +25,7 @@
 	<header class="element-header">
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
-
-	<div class="element">
-		<div class="element-fields">
-			<?php echo $form->multiSelectList($element, 'OphTrConsent_Leaflet', 'leaflets', 'leaflet_id', CHtml::listData(OphTrConsent_Leaflet::model()->findAllByCurrentFirm(),'id','name'), array(), array('empty' => '- Leaflets -', 'label' => 'Leaflets provided'))?>
-		</div>
+	<div class="element-fields">
+		<?php echo $form->multiSelectList($element, 'OphTrConsent_Leaflet', 'leaflets', 'leaflet_id', CHtml::listData(OphTrConsent_Leaflet::model()->findAllByCurrentFirm(),'id','name'), array(), array('empty' => '- Leaflets -', 'label' => 'Leaflets provided'))?>
 	</div>
 </section>

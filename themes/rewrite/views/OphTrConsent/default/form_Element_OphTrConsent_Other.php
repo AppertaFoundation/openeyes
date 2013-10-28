@@ -28,43 +28,75 @@
 	<header class="element-header">
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
-	<div class="element">
-		<div class="element-fields">
+	<div class="element-fields">
 
-			<?php
-			$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-					'id'=>'OphTrConsent_consultantAutoComplete',
-					'name'=>'OphTrConsent_consultantAutoComplete',
-					'value'=>'',
-					'sourceUrl'=>array('default/users'),
-					'options'=>array(
-						'minLength'=>'3',
-						'select'=>"js:function(event, ui) {
-								$('#Element_OphTrConsent_Other_consultant_id').val(ui.item.id);
-								$('#consultant').val(ui.item.fullname);
-								$('#OphTrConsent_consultantAutoComplete').val('');
-								return false;
-							}",
-					),
-					'htmlOptions'=>array(
-						'style'=>'width: 320px;',
-						'placeholder' => 'type to search for users'
-					),
-				));
-			?>
+		<div class="row field-row">
+			<div class="<?php echo $form->columns('label');?>">
+				<label for="OphTrConsent_consultantAutoComplete">
+					Consultant:
+				</label>
+			</div>
+			<div class="<?php echo $form->columns(5, true);?>">
+				<div class="field-row">
+					<?php
+					$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+							'id'=>'OphTrConsent_consultantAutoComplete',
+							'name'=>'OphTrConsent_consultantAutoComplete',
+							'value'=>'',
+							'sourceUrl'=>array('default/users'),
+							'options'=>array(
+								'minLength'=>'3',
+								'select'=>"js:function(event, ui) {
+										$('#Element_OphTrConsent_Other_consultant_id').val(ui.item.id);
+										$('#consultant').val(ui.item.fullname);
+										$('#OphTrConsent_consultantAutoComplete').val('');
+										return false;
+									}",
+							),
+							'htmlOptions'=>array(
+								'placeholder' => 'type to search for users'
+							),
+						));
+					?>
+				</div>
+				<div class="field-row">
+					<?php echo CHtml::textField('consultant',$element->consultant ? $element->consultant->fullNameAndTitleAndQualifications: '',array('readonly'=>'readonly'))?>
+				</div>
+			</div>
+		</div>
 
-
-			<?php echo CHtml::textField('consultant',$element->consultant ? $element->consultant->fullNameAndTitleAndQualifications: '',array('readonly'=>'readonly'))?>
-
-
-			<?php echo $form->checkBox($element, 'information', array('text-align' => 'right'))?>
-			<?php echo $form->checkBox($element, 'anaesthetic_leaflet', array('text-align' => 'right'))?>
-			<?php echo $form->checkBox($element, 'witness_required', array('text-align' => 'right'))?>
-			<?php echo $form->textField($element, 'witness_name', array('size' => '30','maxLength' => '255', 'hide' => (!@$_POST['Element_OphTrConsent_Other']['witness_required'] && !$element->witness_name)))?>
-			<?php echo $form->checkBox($element, 'interpreter_required', array('text-align' => 'right'))?>
-			<?php echo $form->textField($element, 'interpreter_name', array('size' => '30','maxLength' => '255', 'hide' => (!@$_POST['Element_OphTrConsent_Other']['interpreter_required'] && !$element->interpreter_name)))?>
-			<?php echo $form->textField($element, 'parent_guardian', array('size' => '30','maxlength' => '255', 'hide' => $element->isAdult()))?>
-			<?php echo $form->checkBox($element, 'include_supplementary_consent', array('text-align' => 'right'))?>
+		<div class="row field-row">
+			<div class="large-<?php echo $form->layoutColumns['field'];?> large-offset-<?php echo $form->layoutColumns['label'];?> column">
+				<?php echo $form->checkBox($element, 'information', array('nowrapper'=>true))?>
+			</div>
+		</div>
+		<div class="row field-row">
+			<div class="large-<?php echo $form->layoutColumns['field'];?> large-offset-<?php echo $form->layoutColumns['label'];?> column">
+				<?php echo $form->checkBox($element, 'anaesthetic_leaflet', array('nowrapper'=>true))?>
+			</div>
+		</div>
+		<div class="row field-row">
+			<div class="large-<?php echo $form->layoutColumns['field'];?> large-offset-<?php echo $form->layoutColumns['label'];?> column">
+				<?php echo $form->checkBox($element, 'witness_required', array('nowrapper'=>true))?>
+			</div>
+		</div>
+		<?php $hideWitnessName = (!@$_POST['Element_OphTrConsent_Other']['witness_required'] && !$element->witness_name);?>
+		<?php echo $form->textField($element, 'witness_name', array('size' => '30','maxLength' => '255', 'hide' => $hideWitnessName), array(), array_merge($form->layoutColumns, array('field' => 5)));?>
+		<div class="row field-row">
+			<div class="large-<?php echo $form->layoutColumns['field'];?> large-offset-<?php echo $form->layoutColumns['label'];?> column">
+				<?php echo $form->checkBox($element, 'interpreter_required', array('nowrapper'=>true))?>
+			</div>
+		</div>
+		<?php $hideInterpreterName = (!@$_POST['Element_OphTrConsent_Other']['interpreter_required'] && !$element->interpreter_name);?>
+		<?php echo $form->textField($element, 'interpreter_name', array('size' => '30','maxLength' => '255', 'hide' => $hideInterpreterName), array(), array_merge($form->layoutColumns, array('field' => 5)))?>
+		<?php $hideGuardian = $element->isAdult();?>
+		<div class="field-row<?php echo $hideGuardian ? ' hide' : '';?>">
+			<?php echo $form->textField($element, 'parent_guardian', array('nowrapper' => true, 'size' => '30','maxlength' => '255', 'hide' => $hideGuardian), array(), array_merge($form->layoutColumns, array('field' => 5)))?>
+		</div>
+		<div class="row field-row">
+			<div class="large-<?php echo $form->layoutColumns['field'];?> large-offset-<?php echo $form->layoutColumns['label'];?> column">
+				<?php echo $form->checkBox($element, 'include_supplementary_consent', array('nowrapper'=>true))?>
+			</div>
 		</div>
 	</div>
 </section>

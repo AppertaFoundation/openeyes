@@ -23,8 +23,9 @@
 	</div>
 	<div class="large-4 column">
 		<fieldset>
+			<legend><em>Add a procedure:</em></legend>
 			<?php if ($headertext) {?>
-				<legend><?php echo $headertext?></legend>
+				<p><em><?php echo $headertext?></em></p>
 			<?php }?>
 			<?php
 			if (!empty($subsections) || !empty($procedures)) {
@@ -104,9 +105,11 @@
 			<table class="plain">
 				<thead>
 				<tr>
-					<td>Procedure</td>
-					<td>Duration</td>
-					<td>Actions</td>
+					<th>Procedure</th>
+					<?php if ($durations) {?>
+						<th>Duration</th>
+					<?php }?>
+					<th>Actions</th>
 				</tr>
 				</thead>
 				<tbody class="body">
@@ -121,11 +124,11 @@
 								echo $procedure['term'];
 								?>
 							</td>
-							<td class="duration">
-								<?php if ($durations) {?>
+							<?php if ($durations) {?>
+								<td class="duration">
 									<?php echo $procedure['default_duration']?> mins
-								<?php } ?>
-							</td>
+								</td>
+							<?php } ?>
 							<td>
 								<a href="#">Remove</a>
 							</td>
@@ -137,30 +140,32 @@
 				}?>
 				</tbody>
 			</table>
-			<table class="grid">
-				<tfoot>
-				<tr>
-					<td>
-						Calculated Total Duration:
-					</td>
-					<td>
-						<?php echo $totalDuration?> mins
-					</td>
-					<td>
-						Estimated Total Duration:
-					</td>
-					<td>
-						<input
-							type="text"
-							value="<?php echo $total_duration?>"
-							id="<?php echo $class?>_total_duration_<?php echo $identifier?>"
-							name="<?php echo $class?>[total_duration_<?php echo $identifier?>]"
-							style="width:60px"
-							/>
-					</td>
-				</tr>
-				</tfoot>
-			</table>
+			<?php if ($durations) {?>
+				<table class="grid">
+					<tfoot>
+					<tr>
+						<td>
+							Calculated Total Duration:
+						</td>
+						<td>
+							<?php echo $totalDuration?> mins
+						</td>
+						<td>
+							Estimated Total Duration:
+						</td>
+						<td>
+							<input
+								type="text"
+								value="<?php echo $total_duration?>"
+								id="<?php echo $class?>_total_duration_<?php echo $identifier?>"
+								name="<?php echo $class?>[total_duration_<?php echo $identifier?>]"
+								style="width:60px"
+								/>
+						</td>
+					</tr>
+					</tfoot>
+				</table>
+			<?php }?>
 		</div>
 	</div>
 </div>
