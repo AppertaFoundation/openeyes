@@ -17,11 +17,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div id="div_<?php echo get_class($element)?>_comments" class="eventDetail">
-	<div class="data">
-		<div class="textMacros">
-			<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'comments', 'form' => $form)); ?>
-		</div>
-		<?php echo $form->textArea($element, 'comments', array('rows' => "1", 'cols' => "80", 'class' => 'autosize', 'nowrapper'=>true)) ?>
+<div class="element-fields">
+	<div class="field-row textMacros">
+		<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'comments', 'form' => $form))?>
+	</div>
+	<div class="field-row">
+		<?php echo $form->textArea($element, 'comments', array('class' => 'autosize', 'nowrapper' => true))?>
 	</div>
 </div>
