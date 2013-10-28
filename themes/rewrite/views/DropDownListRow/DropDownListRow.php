@@ -17,17 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div id="div_<?php echo get_class($element); ?>" class="field-row">
+<?php
+$labelCols = $layoutColumns['label'];
+$fieldCols = floor((12 - ($labelCols * count($fields))) / 2);
+?>
+<div id="div_<?php echo get_class($element); ?>" class="row field-row">
 	<?php foreach ($fields as $i => $field) {?>
-		<div class="row field-row">
-			<div class="large-<?php echo $layoutColumns['label'];?> column">
-				<label for="<?php echo get_class($element).'_'.$field;?>">
-					<?php echo $element->getAttributeLabel($field); ?>:
-				</label>
-			</div>
-			<div class="large-<?php echo $layoutColumns['field'];?> column end">
-				<?php echo CHtml::activeDropDownList($element,$field,$datas[$i],$htmlOptions[$i])?>
-			</div>
+		<div class="large-<?php echo $labelCols;?> column">
+			<label for="<?php echo get_class($element).'_'.$field;?>">
+				<?php echo $element->getAttributeLabel($field); ?>:
+			</label>
+		</div>
+		<div class="large-<?php echo $fieldCols;?> column">
+			<?php echo CHtml::activeDropDownList($element,$field,$datas[$i],$htmlOptions[$i])?>
 		</div>
 	<?php }?>
 </div>
