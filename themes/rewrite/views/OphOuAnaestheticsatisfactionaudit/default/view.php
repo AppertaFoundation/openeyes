@@ -17,23 +17,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$this->breadcrumbs=array($this->module->id);
 $this->beginContent('//patient/event_container', array());
 ?>
+	<?php
+		// Event actions
+		if ($this->canPrint()) {
+			// $this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));
+		}
+	?>
 
-<?php
-
-	// Event actions
-	if ($this->canPrint()) {
-		$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));}
-?>
-
-<h2 class="event-title"><?php echo $this->event_type->name?></h2>
-
-<div>
+	<h2 class="event-title"><?php echo $this->event_type->name?></h2>
 	<?php $this->renderDefaultElements($this->action->id)?>
 	<?php $this->renderOptionalElements($this->action->id)?>
-	<div class="cleartall"></div>
-</div>
 
 <?php $this->endContent() ;?>
