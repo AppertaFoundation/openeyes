@@ -227,6 +227,9 @@ class OEMigration extends CDbMigration
 		$display_order = 1;
 		$element_type_ids = array();
 		foreach ($element_types as $element_type_class => $element_type_data) {
+			$default = isset($element_type_data['default'])? $element_type_data['default'] : 1;
+			$confirmedDisplayOrder = isset($element_type_data['display_order'])?
+				$element_type_data['display_order'] : $display_order * 10;
 			//this is needed to se the parent id for those elements set as children elements of another element type
 			if(isset($element_type_data['parent_element_type_id'])){
 				$thisParentId = $this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']);
@@ -234,8 +237,8 @@ class OEMigration extends CDbMigration
 					'name' => $element_type_data['name'],
 					'class_name' => $element_type_class,
 					'event_type_id' => $event_type_id,
-					'display_order' => $display_order * 10,
-					'default' => 1,
+					'display_order' => $confirmedDisplayOrder,
+					'default' => $default,
 					'parent_element_type_id' => $thisParentId
 				));
 			}else{
@@ -243,8 +246,8 @@ class OEMigration extends CDbMigration
 					'name' => $element_type_data['name'],
 					'class_name' => $element_type_class,
 					'event_type_id' => $event_type_id,
-					'display_order' => $display_order * 10,
-					'default' => 1,
+					'display_order' => $confirmedDisplayOrder,
+					'default' => $default,
 				));
 			}
 			echo 'Added element type, element_type_class: ' . $element_type_class .
