@@ -302,7 +302,7 @@ $('select[id^="select_procedure_id"]').unbind('change').change(function() {
 	if (procedure != 'Select a commonly used procedure') {
 
 		if (typeof(window.callbackVerifyAddProcedure) == 'function') {
-			window.callbackVerifyAddProcedure(procedure,".($durations?'1':'0').",function(result) {
+			window.callbackVerifyAddProcedure(procedure,"<?php echo $durations?'1':'0';?>",function(result) {
 				if (result != true) {
 					select.val('');
 					return;

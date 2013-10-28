@@ -106,6 +106,6 @@
 
 			</section>
 		</div>
-	</section>
+	</div>
 
 <?php $this->endContent() ;?>

@@ -45,7 +45,7 @@
 				array('level' => 'secondary'),
 				array('id' => 'et_save_print', 'class'=>'button small', 'form' => 'correspondence-create')
 			);
-		?>
+			?>
 
 			<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) { ?>
 				<div id="no-practice-address" class="alert-box alert with-icon">
