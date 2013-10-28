@@ -21,13 +21,16 @@
 <?php if (@$htmlOptions['text-align'] == 'right') {?>
 	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<?php if (!@$htmlOptions['no-label']) {?>
-				<div class="label"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</div>
-			<?php }?>
+			<div class="label">
+				<?php if (!@$htmlOptions['no-label']) {?>
+					<?php echo CHtml::encode($element->getAttributeLabel($field))?>:
+				<?php }?>
+			</div>
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 			<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0',array('id' => get_class($element)."_".$field."_hidden"))?>
 			<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],$htmlOptions)?>
+			<?php echo CHtml::encode($element->getAttributeLabel($field))?>
 		</div>
 	</div>
 <?php } else {?>
