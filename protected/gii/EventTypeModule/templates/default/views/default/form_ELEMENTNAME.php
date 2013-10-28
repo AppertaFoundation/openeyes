@@ -26,13 +26,13 @@
 	<header class="element-header">
 		<h3 class="element-title"><?php echo '<?php'?> echo $element->elementType->name; <?php echo '?>'?></h3>
 	</header>
+	<div class="element-fields">
 <?php
 	if (isset($element)) {
 		foreach ($element['fields'] as $field) {
-			echo "<div class=\"element-fields\">\n";
 			echo "\t".$this->getHTMLField($field,'create')."\n";
-			echo "</div>\n";
 		}
 	}
 ?>
+	</div>
 </section>
