@@ -48,11 +48,11 @@
 				<header class="optional-elements-header">
 					<h3 class="optional-elements-title">Optional Elements</h3>
 					<div class="optional-elements-actions">
-						<a href="#">
+						<a href="#" class="add-all">
 							<span>Add all</span>
 							<img src="/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
 						</a>
-						<a href="#">
+						<a href="#" class="remove-all">
 							<span>Remove all</span>
 							<img src="/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
 						</a>

@@ -17,50 +17,55 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $this->header() ?>
 
-<h3 class="withEventIcon">
-	<?php echo $this->event_type->name ?>
-</h3>
-
-<div id="event_<?php echo $this->module->name?>">
+<?php $this->beginContent('//patient/event_container', array()); ?>
 	<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id' => 'clinical-create',
-				'enableAjaxValidation' => false,
-				'htmlOptions' => array('class' => 'sliding'),
-		));
-
-		// Event actions
-		$this->event_actions[] = EventAction::button('Save', 'save', array('colour' => 'green'));
-		$this->renderPartial('//patient/event_actions');
+		$this->breadcrumbs=array($this->module->id);
+		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
 	?>
 
-	<div id="elements">
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+
+	<?php $this->renderPartial('//base/_messages'); ?>
+
+	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'clinical-create',
+		'enableAjaxValidation'=>false,
+		'htmlOptions' => array('class'=>'sliding'),
+		'layoutColumns' => array(
+			'label' => 4,
+			'field' => 8
+		)
+	));
+	?>
 		<?php $this->displayErrors($errors)?>
-		<div id="active_elements">
-			<?php $this->renderDefaultElements($this->action->id, $form); ?>
-		</div>
-		<div class="optionals-header clearfix">
-			<h4>Optional Elements</h4>
-			<div>
-				<span class="allButton"><a class="add-all" href="#">Add all</a><img
-					src="<?php echo Yii::app()->createUrl('img/_elements/icons/event-optional/element-added.png')?>"
-					alt="extra-element_added" width="30" height="20" /></span>
-				<span class="allButton"><a class="remove-all" href="#">Remove all</a><img
-					src="<?php echo Yii::app()->createUrl('img/_elements/icons/event-optional/element-remove.png')?>"
-					alt="extra-element_remove" width="30" height="20" /></span>
+
+		<div id='event_content'>
+			<div class="js-active-elements">
+				<?php $this->renderDefaultElements($this->action->id, $form)?>
 			</div>
+			<section class="optional-elements">
+				<header class="optional-elements-header">
+					<h3 class="optional-elements-title">Optional Elements</h3>
+					<div class="optional-elements-actions">
+						<a href="#" class="add-all">
+							<span>Add all</span>
+							<img src="/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
+						</a>
+						<a href="#" class="remove-all">
+							<span>Remove all</span>
+							<img src="/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
+						</a>
+					</div>
+				</header>
+				<ul class="optional-elements-list">
+					<?php $this->renderOptionalElements($this->action->id, $form)?>
+				</ul>
+			</section>
+
+			<?php $this->displayErrors($errors)?>
 		</div>
-		<div id="inactive_elements">
-			<?php $this->renderOptionalElements($this->action->id, $form); ?>
-		</div>
-	</div>
 
-	<?php $this->displayErrors($errors)?>
-
-	<div class="cleartall"></div>
-	<?php $this->endWidget(); ?>
-</div>
-
-<?php $this->footer() ?>
+		<div class="cleartall"></div>
+	<?php $this->endWidget()?>
+<?php $this->endContent() ;?>
