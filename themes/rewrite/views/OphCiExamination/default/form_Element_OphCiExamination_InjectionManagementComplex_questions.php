@@ -18,14 +18,13 @@
  */
 ?>
 
-<div id="<?php echo get_class($element)?>_<?php echo $side?>_Questions">
+<div class="sub-element-fields" id="<?php echo get_class($element)?>_<?php echo $side?>_Questions">
 	<?php
 	$name_stub = get_class($element) . '[' . $side . '_Answer]';
-	foreach ($questions as $question) {
-		?>
-		<div class="eventDetail">
-			<div class="label">
-				<?php echo $question->question ?>
+	foreach ($questions as $question) {?>
+		<div class="row field-row">
+			<div class="large-3 column">
+				<label><?php echo $question->question?></label>
 			</div>
 			<?php
 			$name = $name_stub . '[' . $question->id . ']';
@@ -33,24 +32,17 @@
 			// update with POST values if available
 			if (isset($_POST[get_class($element)][$side . '_Answer'][$question->id])) {
 				$value = $_POST[get_class($element)][$side . '_Answer'][$question->id];
-			}
-			?>
-			<div class="data">
-			<span class="group">
-			<?php
-			echo CHtml::radioButton($name, $value, array('id' => get_class($element) . '_' . $side . '_Answer_' . $question->id . '_1', 'value' => 1));
-			?>
-			<label>Yes</label>
-			</span>
-
-			<span class="group">
-			<?php
-			echo CHtml::radioButton($name, (!is_null($value) && !$value), array('id' => get_class($element) . '_' . $side . '_Answer_' . $question->id . '_0', 'value' => 0));
-			?>
-			<label>No</label>
-			</span>
+			}?>
+			<div class="large-9 column">
+				<span class="group">
+					<?php echo CHtml::radioButton($name, $value, array('id' => get_class($element) . '_' . $side . '_Answer_' . $question->id . '_1', 'value' => 1))?>
+					<label>Yes</label>
+				</span>
+				<span class="group">
+					<?php echo CHtml::radioButton($name, (!is_null($value) && !$value), array('id' => get_class($element) . '_' . $side . '_Answer_' . $question->id . '_0', 'value' => 0))?>
+					<label>No</label>
+				</span>
 			</div>
 		</div>
-		<?php
-	}?>
+	<?php }?>
 </div>

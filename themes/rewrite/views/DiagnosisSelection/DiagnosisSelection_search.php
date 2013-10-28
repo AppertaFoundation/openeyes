@@ -19,7 +19,12 @@
 ?>
 <div class="diagnosis-selection">
 	<div class="row field-row collapse">
-		<div class="large-10 column">
+		<?php if ($label) {?>
+			<div class="large-3 column">
+				<label><?php echo $element->getAttributeLabel($field)?>:</label>
+			</div>
+		<?php }?>
+		<div class="large-<?php if ($label) {?>7<?php }else{?>10<?php }?> column">
 			<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -') : $dropdownOptions) : ""?>
 		</div>
 		<div class="large-2 column">
