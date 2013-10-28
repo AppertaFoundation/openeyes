@@ -17,20 +17,30 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<tr>
-	<td>
-		<?php if (isset($reading) && $reading->id) { ?>
-		<input type="hidden" name="intraocularpressure_reading[<?php echo $key ?>][id]" value="<?php echo $reading->id?>" />
-		<?php } ?>
-		<input type="hidden" name="intraocularpressure_reading[<?php echo $key ?>][side]" value="<?php echo $side ?>" />
-		<?php echo CHtml::textField('intraocularpressure_reading['.$key.'][measurement_timestamp]', isset($reading) ? date('H:i',strtotime($reading->measurement_timestamp)) : date('H:i'),array('class'=>'small'))?>
-	</td>
-	<td>
-		<?php echo CHtml::textField('intraocularpressure_reading['.$key.'][value]', @$reading->value,array('class'=>'small'))?>
-	</td>
-	<td class="readingActions">
-		<?php if (!isset($no_remove) || !$no_remove) {?>
-			<a class="removeReading" href="#">Remove</a>
-		<?php }?>
-	</td>
-</tr>
+
+<?php $this->beginContent('//patient/event_container'); ?>
+
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+
+	<div id="delete_event">
+		<h3>Delete event</h3>
+		<div class="alert-box alert with-icon">
+			<strong>WARNING: This will permanently delete the event and remove it from view.<br><br>THIS ACTION CANNOT BE UNDONE.</strong>
+		</div>
+		<p>
+			<strong>Are you sure you want to proceed?</strong>
+		</p>
+		<?php
+		echo CHtml::form(array('Default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'));
+			echo CHtml::hiddenField('event_id', $this->event->id); ?>
+			<button type="submit" class="warning" id="et_deleteevent" name="et_deleteevent">
+				Delete event
+			</button>
+			<button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
+				Cancel
+			</button>
+			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+		<?php echo CHtml::endForm(); ?>
+	</div>
+
+<?php $this->endContent() ?>
