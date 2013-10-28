@@ -62,7 +62,7 @@
 		</section>
 
 		<section class="element element-data">
-			<div class="row element-data-row">
+			<div class="row">
 				<div class="large-6 column">
 					<h3 class="data-title">Start Date</h3>
 					<div class="data-value">5 Dec 2011</div>
@@ -75,7 +75,7 @@
 		</section>
 
 		<section class="element element-data">
-			<div class="row element-data-row">
+			<div class="row">
 				<div class="large-6 column">
 					<h3 class="data-title">Subspecialty:</h3>
 					<div class="data-value">Adnexal</div>
