@@ -14,6 +14,10 @@
 	<div class="event-content">
 		<h2 class="event-title">Correspondence</h2>
 
+		<div class="alert-box alert with-icon">
+			Patient has no GP practice address, please correct in PAS before creating GP letter.
+		</div>
+
 		<div class="row">
 			<div class="large-12 column">
 
@@ -37,7 +41,7 @@
 									<option selected>Dr A Who (GP)</option>
 								</select>
 							</div>
-							<div class="large-10 column">
+							<div class="large-6 column end">
 								<div class="field-row">
 									<textarea rows="8" class="address">Dr A Who
 83 Wintour Lane

@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="replyAddress">
+<div class="reply-address">
 	<?php if ($site->replyTo) {?>
 		<strong>Please reply to:</strong>
 		<br/>
