@@ -26,10 +26,8 @@
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
 
-	<div class="element">
-		<div class="element-fields">
-
-			<?php echo $form->radioButtons($element, 'images_id', 'et_ophtrconsent_permissions_images',null,false,false,false,true)?>
-		</div>
+	<div class="element-fields">
+		<?php echo $form->radioButtons($element, 'images_id', 'et_ophtrconsent_permissions_images',null,false,false,false,false)?>
 	</div>
+
 </section>

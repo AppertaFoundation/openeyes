@@ -47,6 +47,9 @@
 		</div>
 	<?php } else { ?>
 		<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0',array('id' => get_class($element)."_".$field."_hidden"))?>
-		<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],$htmlOptions)?>
+		<label>
+			<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],$htmlOptions)?>
+			<?php echo CHtml::encode($element->getAttributeLabel($field))?>
+		</label>
 	<?php }?>
 <?php }?>

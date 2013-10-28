@@ -26,29 +26,27 @@
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
 
-	<div class="element">
-		<div class="element-fields">
+	<div class="element-fields">
 
-	<?php echo $form->hiddenField($element, 'booking_event_id')?>
+		<?php echo $form->hiddenField($element, 'booking_event_id')?>
 
-	<?php echo $form->radioButtons($element, 'eye_id', 'eye')?>
-	<?php $form->widget('application.widgets.ProcedureSelection',array(
-		'element' => $element,
-		'durations' => false,
-		'identifier' => 'procedures',
-		'read_only' => !@$_GET['unbooked'],
-		'restrict' => 'unbooked',
-		'restrict_common' => 'unbooked',
-	))?>
-	<?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type')?>
-	<?php $form->widget('application.widgets.ProcedureSelection',array(
-		'element' => $element,
-		'durations' => false,
-		'relation' => 'additional_procedures',
-		'label' => 'Additional procedures',
-		'identifier' => 'additional',
-		'headertext' => 'Any extra procedures which may become necessary during the procedure.',
-	))?>
-		</div>
+		<?php echo $form->radioButtons($element, 'eye_id', 'eye')?>
+		<?php $form->widget('application.widgets.ProcedureSelection',array(
+			'element' => $element,
+			'durations' => false,
+			'identifier' => 'procedures',
+			'read_only' => !@$_GET['unbooked'],
+			'restrict' => 'unbooked',
+			'restrict_common' => 'unbooked',
+		))?>
+		<?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type')?>
+		<?php $form->widget('application.widgets.ProcedureSelection',array(
+			'element' => $element,
+			'durations' => false,
+			'relation' => 'additional_procedures',
+			'label' => 'Additional procedures',
+			'identifier' => 'additional',
+			'headertext' => 'Any extra procedures which may become necessary during the procedure.',
+		))?>
 	</div>
 </section>

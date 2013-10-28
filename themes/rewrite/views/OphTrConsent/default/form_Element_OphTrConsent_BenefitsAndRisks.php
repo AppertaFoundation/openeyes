@@ -25,12 +25,8 @@
 	<header class="element-header">
 		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
 	</header>
-
-	<div class="element">
-		<div class="element-fields">
-
-			<?php echo $form->textArea($element, 'benefits', array('rows' => 4, 'cols' => 80))?>
-			<?php echo $form->textArea($element, 'risks', array('rows' => 4, 'cols' => 80))?>
-		</div>
+	<div class="element-fields">
+		<?php echo $form->textArea($element, 'benefits', array('rows' => 4, 'cols' => 80))?>
+		<?php echo $form->textArea($element, 'risks', array('rows' => 4, 'cols' => 80))?>
 	</div>
 </section>

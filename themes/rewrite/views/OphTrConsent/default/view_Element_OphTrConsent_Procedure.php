@@ -61,7 +61,8 @@
 				<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('add_procs'))?>:</div>
 			</div>
 			<div class="large-9 column">
-				<div class="data-value"><?php if (!$element->additional_procedures) {?>
+				<div class="data-value">
+					<?php if (!$element->additional_procedures) {?>
 						<h4>None</h4>
 					<?php } else {?>
 						<h4>
@@ -73,7 +74,5 @@
 				</div>
 			</div>
 		</div>
+	</div>
 </section>
-
-		
-		
