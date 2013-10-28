@@ -1,4 +1,4 @@
-<div class="large-10 column event operation-note edit">
+<div class="large-10 column event ophtroperationnote edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">

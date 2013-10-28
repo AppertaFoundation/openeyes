@@ -1,4 +1,4 @@
-<div class="large-10 column event view operation-note highlight-fields">
+<div class="large-10 column event view ophtroperationnote highlight-fields">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">

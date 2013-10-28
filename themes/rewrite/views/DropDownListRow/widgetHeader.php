@@ -17,4 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php echo $element->summary ?>
+<?php if ($assetFolder) {?>
+	<script type="text/javascript" src="<?php echo $assetFolder?>/<?php echo get_class($this)?>.js"></script>
+<?php }?>

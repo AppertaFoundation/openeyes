@@ -17,27 +17,35 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="eventDetail">
-	<div class="risk_wrapper <?php if ($element->risk) { echo $element->risk->class; } ?>">
-		<?php
-			$html_options = array('nowrapper' => true, 'empty' => '--- Please select ---');
-			$risks = OphCiExamination_GlaucomaRisk_Risk::model()->findAll();
-			foreach ($risks as $option) {
-				$html_options['options'][(string) $option->id] = array(
-					'data-clinicoutcome-template-id'=> $option->clinicoutcome_template_id,
-					'class' => $option->class,
-				);
-			}
-			echo $form->dropdownList($element, 'risk_id', CHtml::listData($risks, 'id', 'name'), $html_options);
-		?>
+<div class="sub-element-fields">
+	<div class="field-row row collapse">
+		<div class="large-2 column">
+			<div class="field-highlight<?php if ($element->risk) {?> <?php echo $element->risk->class?><?php }?> risk">
+				<?php
+					$html_options = array('nowrapper' => true, 'empty' => '--- Please select ---');
+					$risks = OphCiExamination_GlaucomaRisk_Risk::model()->findAll();
+					foreach ($risks as $option) {
+						$html_options['options'][(string) $option->id] = array(
+							'data-clinicoutcome-template-id'=> $option->clinicoutcome_template_id,
+							'class' => $option->class,
+						);
+					}
+					echo $form->dropdownList($element, 'risk_id', CHtml::listData($risks, 'id', 'name'), $html_options);
+				?>
+			</div>
+		</div>
+		<div class="large-10 column">
+			<div class="postfix align">
+				<a href="#" class="field-info descriptions_link">definitions</a>
+			</div>
+		</div>
 	</div>
-	<span><a class="descriptions_link" href="#">definitions</a></span>
-	<div id="Element_OphCiExamination_GlaucomaRisk_descriptions">
+	<div class="field-row row" id="Element_OphCiExamination_GlaucomaRisk_descriptions">
 		<dl>
-			<?php foreach ($risks as $option) { ?>
-			<dt class="<?php echo $option->class ?>"><a href="#" data-risk-id="<?php echo $option->id ?>"><?php echo $option->name ?></a></dt>
-			<dd class="<?php echo $option->class ?>"><?php echo nl2br($option->description) ?></dd>
-			<?php } ?>
+			<?php foreach ($risks as $option) {?>
+				<dt class="<?php echo $option->class ?>"><a href="#" data-risk-id="<?php echo $option->id ?>"><?php echo $option->name ?></a></dt>
+				<dd class="<?php echo $option->class ?>"><?php echo nl2br($option->description) ?></dd>
+			<?php }?>
 		</dl>
 	</div>
 </div>

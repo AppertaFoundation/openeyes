@@ -17,49 +17,16 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<h3><?php echo $element->elementType->name ?></h3>
-<div class="procedureContainer">
-	<?php if ($element->membrane_blue) {?>
-		<div class="detailRow">
-			<div class="label">
-				<?php echo CHtml::encode($element->getAttributeLabel('membrane_blue'))?>:
+<div id="div_<?php echo get_class($element); ?>" class="field-row">
+	<?php foreach ($fields as $i => $field) {?>
+		<div class="row field-row">
+			<div class="large-<?php echo $layoutColumns['label'];?> column">
+				<label for="<?php echo get_class($element).'_'.$field;?>">
+					<?php echo $element->getAttributeLabel($field); ?>:
+				</label>
 			</div>
-			<div class="value">
-				Yes
-			</div>
-		</div>
-	<?php }?>
-
-	<?php if ($element->brilliant_blue) {?>
-		<div class="detailRow">
-			<div class="label">
-				<?php echo CHtml::encode($element->getAttributeLabel('brilliant_blue'))?>:
-			</div>
-			<div class="value">
-				Yes
-			</div>
-		</div>
-	<?php }?>
-
-	<?php if ($element->other_dye) {?>
-		<div class="detailRow">
-			<div class="label">
-				<?php echo CHtml::encode($element->getAttributeLabel('other_dye'))?>:
-			</div>
-			<div class="value">
-				<?php echo CHtml::encode($element->other_dye)?>
-			</div>
-		</div>
-	<?php }?>
-
-	<?php if ($element->comments) {?>
-		<div class="detailRow">
-			<div class="label">
-				<?php echo CHtml::encode($element->getAttributeLabel('comments'))?>:
-			</div>
-			<div class="value">
-				<?php echo CHtml::encode($element->comments)?>
+			<div class="large-<?php echo $layoutColumns['field'];?> column end">
+				<?php echo CHtml::activeDropDownList($element,$field,$datas[$i],$htmlOptions[$i])?>
 			</div>
 		</div>
 	<?php }?>
