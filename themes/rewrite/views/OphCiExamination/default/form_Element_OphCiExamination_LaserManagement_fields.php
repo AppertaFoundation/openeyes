@@ -18,10 +18,7 @@
  */
 ?>
 
-<div class="eventDetail lasertype">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_lasertype_id'); ?></div>
-	<div class="data"><?php echo CHtml::activeDropDownList($element,$side . '_lasertype_id', CHtml::listData($lasertypes,'id','name'), array('options' => $lasertype_options, 'empty'=>'- Please select -'))?></div>
-</div>
+<?php echo $form->dropDownList($element, $side . '_lasertype_id', CHtml::listData($lasertypes,'id','name'), array('options' => $lasertype_options, 'empty'=>'- Please select -'), false, array('label' => 3, 'field' => 9))?>
 
 <?php 
 	$show_other = false;
@@ -36,12 +33,20 @@
 	}
 ?>
 
-<div class="eventDetail lasertype_other<?php if (!$show_other) { echo " hidden"; }?>">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_lasertype_other'); ?></div>
-	<div class="data"><?php echo $form->textField($element, $side . '_lasertype_other',array('max' => 120, 'nowrapper' => true))?></div>
+<div class="row field-row lasertype_other<?php if (!$show_other) { echo " hidden"; }?>">
+	<div class="large-3 column">
+		<?php echo $element->getAttributeLabel($side . '_lasertype_other')?>:
+	</div>
+	<div class="large-9 column">
+		<?php echo $form->textField($element, $side . '_lasertype_other',array('max' => 120, 'nowrapper' => true))?>
+	</div>
 </div>
 
-<div class="eventDetail comments">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_comments'); ?></div>
-	<div class="data"><?php echo $form->textArea($element, $side . '_comments',array('rows' => 4, 'cols' => 50, 'nowrapper' => true))?></div>
+<div class="row field-row">
+	<div class="large-3 column">
+		<?php echo $element->getAttributeLabel($side . '_comments')?>
+	</div>
+	<div class="large-9 column">
+		<?php echo $form->textArea($element, $side . '_comments',array('rows' => 4, 'cols' => 50, 'nowrapper' => true))?>
+	</div>
 </div>
