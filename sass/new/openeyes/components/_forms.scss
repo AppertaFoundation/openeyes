@@ -9,9 +9,9 @@ form {
 }
 
 /* Using forms within rows, we need to set some defaults */
-form .row {
-	@include form-row-base;
-}
+// form .row {
+// 	@include form-row-base;
+// }
 
 /* Label Styles */
 label, .label {
@@ -42,6 +42,11 @@ label, .label {
 	&.hide {
 		@extend .hide;
 	}
+	&.inline {
+		display: inline-block;
+		width: auto;
+		margin: 0 emCalc(10px) 0 0;
+	}
 }
 
 
@@ -59,7 +64,11 @@ input[readonly] {
 }
 
 textarea {
-	min-height: 14m;
+	min-height: 4em;
+	&.address {
+		font-family: courier;
+		color: #000;
+	}
 }
 
 select {
@@ -77,9 +86,20 @@ fieldset {
 	border: 0;
 	padding: 0;
 	margin: 0;
+	&.inline {
+		legend {
+			display: inline-block;
+			float: left;
+			width: auto;
+			padding-right: emCalc(15px);
+			line-height: emCalc(20px);
+			margin: 0;
+		}
+	}
 	// and legend styles
 	legend {
 		font-weight: $legend-font-weight;
+		font-size: $default-font-size;
 		background: $legend-bg;
 		padding: $legend-padding;
 		display: block;
@@ -164,6 +184,7 @@ label {
 	input[type="checkbox"],
 	input[type="radio"] {
 		margin: 0;
+		vertical-align: top;
 	}
 }
 
@@ -192,9 +213,9 @@ $oe-form-field-fixed-width: emCalc(110px) !default;
 	height: auto;
 	&.small {
 		padding: $oe-form-field-small-padding;
-		&.fixed-width {
-			width: $oe-form-field-fixed-width;
-		}
+	}
+	&.fixed-width {
+		width: $oe-form-field-fixed-width;
 	}
 	&.large {
 		padding: emCalc(8px) emCalc(5px);

@@ -54,9 +54,9 @@ function addElement(element, animate, is_child, previous_id, params) {
 		} else {
 			var container = $('.js-active-elements');
 		}
-		
+
 		$(element).remove();
-		var insert_before = container.find('.element').first();
+		var insert_before = container.find('.sub-element, .element').first();
 
 		while (parseInt(insert_before.attr('data-element-display-order')) < parseInt(display_order)) {
 			insert_before = insert_before.nextAll('div:first');
@@ -71,7 +71,7 @@ function addElement(element, animate, is_child, previous_id, params) {
 			// check if this is sided
 			// and match the parent active sides if it is
 			var cel = $(container).find('.'+element_type_class);
-			var pel = $(container).parents('.element');
+			var pel = $(container).parents('.sub-element, .element');
 			var sideField = $(cel).find('input.sideField');
 		if ($(sideField).length && $(pel).find('input.sideField').length) {
 				$(sideField).val($(pel).find('.sideField').val());
@@ -88,7 +88,8 @@ function addElement(element, animate, is_child, previous_id, params) {
 		$('#event_display textarea.autosize:visible').autosize();
 		showActiveChildElements();
 
-		var inserted = (insert_before.length) ? insert_before.prevAll('div:first') : container.find('.element:last');
+		var inserted = (insert_before.length) ? insert_before.prevAll('div:first') : container.find('.sub-element:last, .element:last');
+
 		if (animate) {
 			var offTop = inserted.offset().top - 50;
 			var speed = (Math.abs($(window).scrollTop() - offTop)) * 1.5;
@@ -269,7 +270,7 @@ $(document).ready(function() {
 	 * Remove an optional element
 	 */
 	$('.js-active-elements').delegate('.js-remove-element', 'click', function(e) {
-		if (!$(this).parents('.sub-elements.active').length) {
+		if (!$(this).parents('.elements.active').length) {
 			var element = $(this).closest('.element');
 			removeElement(element);
 		}
@@ -279,8 +280,8 @@ $(document).ready(function() {
 	/**
 	 * Remove a child element
 	 */
-	$('.sub-elements.active').delegate('.js-remove-element', 'click', function(e) {
-		var element = $(this).closest('.element');
+	$(this).delegate('.js-remove-child-element', 'click', function(e) {
+		var element = $(this).closest('.sub-element');
 		removeElement(element, true);
 		e.preventDefault();
 	})

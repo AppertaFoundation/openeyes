@@ -12,7 +12,7 @@
 		<div class="container content">
 			<h1 class="badge">Admin</h1>
 
-			<div class="box content">
+			<div class="box content admin-content">
 				<div class="row">
 					<? include 'components/admin/sidebar.php'; ?>
 					<? include 'components/admin/default-content.php'; ?>

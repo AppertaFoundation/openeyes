@@ -46,7 +46,6 @@
 			<div class="active-form">
 				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
 					array('side' => 'left', 'element' => $element, 'form' => $form, 'data' => $data)); ?>
-
 			</div>
 			<div class="inactive-form">
 				<div class="eye-message">Only required if Patient Suitability is Non-Compliant</div>
@@ -54,9 +53,7 @@
 		</div>
 
 	</div>
-
 </section>
-
 
 <script id="previntervention_template" type="text/html">
 	<?php

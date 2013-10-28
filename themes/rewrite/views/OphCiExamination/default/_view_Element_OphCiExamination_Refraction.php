@@ -17,32 +17,21 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<p class="accessible">
-	<?php echo $element->renderIntroduction()?>
-</p>
-<p class="accessible"><strong><?php if ($element->re) { ?>Re: <?php echo preg_replace("/\, DOB\:|DOB\:/","<br />\nDOB:",CHtml::encode($element->re))?>
-<?php } else { ?>Hosp No: <?php echo $element->event->episode->patient->hos_num?>, NHS No: <?php echo $element->event->episode->patient->nhsnum?> <?php }?></strong></p>
-
-<p class="accessible">
-<?php echo $element->renderBody() ?>
-</p>
-<br/>
-<p class="accessible" nobr="true">
-	<?php echo $element->renderFooter() ?>
-</p>
-
-<?php if ($element->cc) { ?>
-<p nobr="true">
-	To:
-	<?php echo $element->renderToAddress()?>
-	<?php foreach (explode("\n",trim(CHtml::encode($element->cc))) as $line) {
-			if (trim($line)) { ?>
-	<br />CC:
-	<?php echo str_replace(';',',',$line) ?>
-	<?php }
-	foreach ($element->enclosures as $enclosure) {?>
-		<br/>Enc: <?php echo $enclosure->content?>
-	<?php }
-} ?>
-</p>
-<?php } ?>
+<div class="cols2 clearfix">
+		<div class="left eventDetail">
+			<?php if ($element->hasRight()) {
+				$this->renderPartial('_view_' . get_class($element) . '_OEEyeDraw',
+					array('side' => 'right', 'element' => $element));
+			} else { ?>
+			Not recorded
+			<?php } ?>
+		</div>
+		<div class="right eventDetail">
+			<?php if ($element->hasLeft()) {
+				$this->renderPartial('_view_' . get_class($element) . '_OEEyeDraw',
+					array('side' => 'left', 'element' => $element));
+			} else { ?>
+			Not recorded
+			<?php } ?>
+		</div>
+	</div>

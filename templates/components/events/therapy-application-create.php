@@ -1,4 +1,4 @@
-<div class="large-10 column event therapy-application edit">
+<div class="large-10 column event ophcotherapyapplication edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">

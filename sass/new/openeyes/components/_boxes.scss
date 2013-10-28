@@ -59,9 +59,6 @@ $oe-box-event-border-width: 0 5px 5px !default;
 			margin-top: 0;
 			line-height: 1;
 		}
-		table:last-child {
-			margin-bottom: 0;
-		}
 	}
 }
 
@@ -188,6 +185,15 @@ $oe-box-event-border-width: 0 5px 5px !default;
 			.data-label {
 				color: $form-label-font-color;
 			}
+		}
+	}
+}
+
+// Transport box
+.box {
+	&.transport {
+		.csvform {
+			margin: 0;
 		}
 	}
 }

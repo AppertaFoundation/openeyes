@@ -17,21 +17,21 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $this->beginContent('//patient/event_container');?>
+<?php $this->beginContent('//patient/event_container'); ?>
 
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<?php
-	// Event actions
-	if ($this->canPrint()) {
-		$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));
-		$this->event_actions[] = EventAction::button('Print all', 'printall', null, array('id' => 'et_print_all', 'class'=>'button small'));
-	}
-?>
+	<?php
+		// Event actions
+		if ($this->canPrint()) {
+			$this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small'));
+			$this->event_actions[] = EventAction::button('Print all', 'printall', null, array('id' => 'et_print_all', 'class' => 'small'));
+		}
+	?>
 
-<input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>css" />
+	<input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>css" />
 
-<?php $this->renderDefaultElements($this->action->id); ?>
-<?php $this->renderOptionalElements($this->action->id); ?>
+	<?php $this->renderDefaultElements($this->action->id); ?>
+	<?php $this->renderOptionalElements($this->action->id); ?>
 
 <?php $this->endContent() ;?>

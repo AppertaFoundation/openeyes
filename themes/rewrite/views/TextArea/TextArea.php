@@ -24,7 +24,14 @@
 		</div>
 		<div class="large-<?php echo $layoutColumns['field']?> column end">
 	<?php }?>
-		<textarea id="<?php echo get_class($element)?>_<?php echo $field?>" name="<?php echo get_class($element)?>[<?php echo $field?>]" placeholder="<?php echo @$htmlOptions['placeholder']?>"><?php echo CHtml::encode($value)?></textarea>
+		<textarea
+			<?php echo CHtml::renderAttributes(array_merge($htmlOptions, array(
+				'id'=>get_class($element).'_'.$field,
+				'name'=>get_class($element).'['.$field.']',
+				'placeholder'=>@$htmlOptions['placeholder'],
+				'rows'=>$rows,
+				'cols'=>$cols
+			)));?>><?php echo CHtml::encode($value)?></textarea>
 		<?php if (!$nowrapper) {?>
 			<?php if ($button) {?>
 				<button type="submit" class="<?php echo $button['colour']?> <?php echo $button['size']?>" id="<?php echo get_class($element)?>_<?php echo $button['id']?>" name="<?php echo get_class($element)?>_<?php echo $button['id']?>">

@@ -40,13 +40,15 @@ if (isset($htmlOptions['div_class'])) {
 
 ?>
 
-<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> row field-row widget"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-	<div class="large-<?php echo $layoutColumns['label'];?> column">
-		<label for="<?php echo $field?>">
-			<?php echo @$htmlOptions['label']?>:
-		</label>
-	</div>
-	<div class="large-<?php echo $layoutColumns['field'];?> column end">
+<?php if (!@$htmlOptions['nowrapper']) {?>
+	<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> row field-row widget"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+		<div class="large-<?php echo $layoutColumns['label'];?> column">
+			<label for="<?php echo $field?>">
+				<?php echo @$htmlOptions['label']?>:
+			</label>
+		</div>
+		<div class="large-<?php echo $layoutColumns['field'];?> column end">
+	<?php }?>
 		<div class="multi-select multi-select-list">
 			<input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
 			<div class="field-row">
@@ -84,5 +86,7 @@ if (isset($htmlOptions['div_class'])) {
 			</ul>
 
 		</div>
+<?php if (!@$htmlOptions['nowrapper']) {?>
 	</div>
 </div>
+<?php }?>

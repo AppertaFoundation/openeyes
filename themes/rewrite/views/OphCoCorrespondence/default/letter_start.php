@@ -18,11 +18,15 @@
  */
 ?>
 <div class="banner clearfix">
-	<div class="seal"><img src="<?php echo Yii::app()->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" /></div>
-	<div class="logo"><img src="<?php echo Yii::app()->createUrl('img/_print/letterhead_Moorfields_NHS.jpg')?>" alt="letterhead_Moorfields_NHS" /></div>
+	<div class="seal">
+		<img src="<?php echo Yii::app()->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" />
+	</div>
+	<div class="logo">
+		<img src="<?php echo Yii::app()->createUrl('img/_print/letterhead_Moorfields_NHS.jpg')?>" alt="letterhead_Moorfields_NHS" />
+	</div>
 </div>
 <?php if (isset($site)) {?>
-	<div class="fromAddress">
+	<div class="from-address">
 		<?php
 		echo $site->getLetterAddress(array(
 			'include_name' => true,
@@ -39,5 +43,5 @@
 		<div class="date"><?php echo date(Helper::NHS_DATE_FORMAT,strtotime($date))?><?php if ($clinicDate) {?> (clinic date <?php echo date(Helper::NHS_DATE_FORMAT,strtotime($clinicDate))?>)<?php }?></div>
 	</div>
 <?php }?>
-<div class="toAddress"><?php echo str_replace("\n","<br/>",$toAddress)?></div>
+<div class="to-address"><?php echo str_replace("\n","<br/>",$toAddress)?></div>
 <br/><br/>
