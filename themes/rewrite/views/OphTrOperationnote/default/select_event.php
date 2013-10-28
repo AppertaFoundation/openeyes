@@ -18,66 +18,87 @@
  */
 ?>
 <?php
-	$this->beginContent('//patient/event_container', array());
+	$this->beginContent('//patient/event_container');
 	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphTrOperationbooking.assets')).'/';
 ?>
-<h3 class="withEventIcon"><?php echo $this->event_type->name ?></h3>
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<div>
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'clinical-create',
-			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
-			// 'focus'=>'#procedure_id'
-		));
+	<div class="row">
+		<div class="large-12 column">
 
-		// Event actions
-		$this->event_actions[] = EventAction::button('Create Operation Note', 'save', array('level' => 'secondary'), array('form'=>'clinical-create','class'=>'button small'));
-	?>
-	<?php  $this->displayErrors($errors)?>
+			<section class="element">
+				<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+						'id'=>'operation-note-select',
+						'enableAjaxValidation'=>false,
+						// 'focus'=>'#procedure_id'
+					));
 
-	<h4>Create Operation note</h4>
-	<h3 class="sectiondivider">
-		<?php if (count($bookings) >0) {?>
-			Please indicate whether this operation note relates to a booking or an unbooked emergency:
-		<?php } else {?>
-			There are no open bookings in the current episode so only an emergency operation note can be created.
-		<?php }?>
-	</h3>
+					// Event actions
+					$this->event_actions[] = EventAction::button('Create Operation Note', 'save', array('level' => 'secondary'), array('form'=>'operation-note-select','class'=>'button small'));
+				?>
+					<?php  $this->displayErrors($errors)?>
 
-	<div class="edetail">
-		<div class="label">Select:</div>
-		<div class="data">
-			<table class="grid nodivider valignmiddle">
-				<tbody>
-					<?php foreach ($bookings as $booking) {?>
-						<tr class="odd clickable">
-							<td><input type="radio" value="booking<?php echo $booking->operation->event_id?>" name="SelectBooking" /></td>
-							<td><img src="<?php echo Yii::app()->createUrl($assetpath.'img/small.png')?>" alt="op" width="19" height="19" /></td>
-							<td><?php echo $booking->operation->booking->session->NHSDate('date')?></td>
-							<td>Operation</td>
-							<td>
-								<?php foreach ($booking->operation->procedures as $i => $procedure) {
-									if ($i >0) { echo "<br/>"; }
-									echo $procedure->term;
-								}?>
-							</td>
-						</tr>
-					<?php }?>
-					<tr class="odd clickable">
-						<td><input type="radio" value="emergency" name="SelectBooking" <?php if (count($bookings)==0) {?>checked="checked" <?php }?>/></td>
-						<td></td>
-						<td colspan="3">Emergency</td>
-					</tr>
-				</tbody>
-			</table>
+					<header class="element-header">
+						<h3 class="element-title">Create Operation Note</h3>
+					</header>
+
+					<div class="element-fields">
+
+						<div class="field-row">
+							<div class="field-info">
+								<?php if (count($bookings) >0) {?>
+									Please indicate whether this operation note relates to a booking or an unbooked emergency:
+								<?php } else {?>
+									There are no open bookings in the current episode so only an emergency operation note can be created.
+								<?php }?>
+							</div>
+						</div>
+
+						<fieldset class="row field-row">
+							<legend class="large-2 column">Select:</legend>
+							<div class="large-5 column end">
+								<?php foreach ($bookings as $booking) {?>
+									<label class="highlight booking">
+										<span class="row">
+											<span class="large-1 column">
+												<input type="radio" value="booking<?php echo $booking->operation->event_id?>" name="SelectBooking" />
+											</span>
+											<span class="large-1 column">
+												<img src="<?php echo Yii::app()->createUrl($assetpath.'img/small.png')?>" alt="op" width="19" height="19" />
+											</span>
+											<span class="large-3 column">
+												<?php echo $booking->operation->booking->session->NHSDate('date')?>
+											</span>
+											<span class="large-3 column">
+												Operation
+											</span>
+											<span class="large-4 column">
+												<?php foreach ($booking->operation->procedures as $i => $procedure) {
+												if ($i >0) { echo "<br/>"; }
+												echo $procedure->term;
+											}?>
+											</span>
+										</span>
+									</label>
+								<?php }?>
+								<label class="highlight booking">
+									<span class="row">
+										<span class="large-1 column">
+											<input type="radio" value="emergency" name="SelectBooking" <?php if (count($bookings)==0) {?>checked="checked" <?php }?>/>
+										</span>
+										<span class="large-11 column">
+											Emergency
+										</span>
+									</span>
+								</label>
+							</div>
+						</fieldset>
+					</div>
+
+					<?php $this->displayErrors($errors, true)?>
+				<?php $this->endWidget(); ?>
+			</section>
 		</div>
 	</div>
-
-	<?php  $this->displayErrors($errors)?>
-
-	<div class="cleartall"></div>
-	<?php  $this->endWidget(); ?>
-</div>
 
 <?php $this->endContent() ;?>
