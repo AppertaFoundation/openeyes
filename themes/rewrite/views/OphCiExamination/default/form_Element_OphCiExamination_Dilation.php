@@ -23,6 +23,8 @@ $right_treatments = (isset($_POST['dilation_treatments_valid']) ? $element->conv
 $key = 0;
 ?>
 <div class="element-fields element-eyes row">
+	<input type="hidden" name="dilation_treatments_valid" value="1" />
+	<?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField'))?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
 		<a href="#" class="icon-remove-side removeSide">Remove side</a>
 		<div class="active-form">

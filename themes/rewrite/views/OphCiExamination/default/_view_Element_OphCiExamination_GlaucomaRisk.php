@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="eventDetail <?php echo $element->risk->class ?>">
-	<span><?php echo $element->risk->name ?></span>
+<div class="sub-element-data">
+	<div class="data-value <?php echo $element->risk->class?>">
+		<?php echo $element->risk->name?>
+	</div>
 </div>

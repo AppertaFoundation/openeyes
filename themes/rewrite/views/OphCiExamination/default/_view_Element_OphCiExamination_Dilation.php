@@ -17,49 +17,45 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-	<div class="cols2 clearfix">
-		<div class="left eventDetail">
-			<?php if ($element->hasRight()) {?>
-				<div class="grid-view dilation_table">
-					<table>
-						<thead>
-							<tr>
-								<th style="width: 65px;">Time</th>
-								<th>Drug</th>
-								<th style="width: 50px;">Drops</th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach ($element->right_treatments as $treatment) {
-								$this->renderPartial('_view_Element_OphCiExamination_Dilation_Treatment',array('treatment'=>$treatment));
-							}?>
-						</tbody>
-					</table>
-				</div>
-			<?php } else {?>
-				<span>None given.</span>
-			<?php }?>
-		</div>
-		<div class="right eventDetail">
-			<?php if ($element->hasLeft()) {?>
-				<div class="grid-view dilation_table">
-					<table>
-						<thead>
-							<tr>
-								<th style="width: 65px;">Time</th>
-								<th>Drug</th>
-								<th style="width: 50px;">Drops</th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach ($element->left_treatments as $treatment) {
-								$this->renderPartial('_view_Element_OphCiExamination_Dilation_Treatment',array('treatment'=>$treatment));
-							}?>
-						</tbody>
-					</table>
-				</div>
-			<?php } else {?>
-				<span>None given</span>
-			<?php }?>
-		</div>
+<div class="element-data element-eyes row">
+	<div class="element-eye right-eye column">
+		<table class="element-table">
+			<thead>
+				<tr>
+					<th>Time</th>
+					<th>Drug</th>
+					<th>Drops</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($element->right_treatments as $treatment) {?>
+					<tr>
+						<td><?php echo date('H:i', strtotime($treatment->treatment_time))?></td>
+						<td><?php echo $treatment->drug->name?></td>
+						<td><?php echo $treatment->drops?> drop<?php if ($treatment->drops != 1) {?>s<?php }?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+		</table>
 	</div>
+	<div class="element-eye left-eye column">
+		<table class="element-table">
+			<thead>
+				<tr>
+					<th>Time</th>
+					<th>Drug</th>
+					<th>Drops</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($element->left_treatments as $treatment) {?>
+					<tr> 
+						<td><?php echo date('H:i', strtotime($treatment->treatment_time))?></td>
+						<td><?php echo $treatment->drug->name?></td>
+						<td><?php echo $treatment->drops?> drop<?php if ($treatment->drops != 1) {?>s<?php }?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+		</table>
+	</div>
+</div>

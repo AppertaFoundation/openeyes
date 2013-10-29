@@ -25,6 +25,9 @@ $right_readings = (isset($_POST['visualacuity_readings_valid']) ? $element->conv
 $left_readings = (isset($_POST['visualacuity_readings_valid']) ? $element->convertReadings(@$_POST['visualacuity_reading'], 'left') : $element->getFormReadings('left'));
 ?>
 <div class="element-fields element-eyes row">
+	<input type="hidden" name="visualacuity_readings_valid" value="1" />
+	<?php echo $form->hiddenInput($element, 'unit_id', false); ?>
+	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
 		<a href="#" class="icon-remove-side removeSide">Remove side</a>
 		<div class="active-form">
