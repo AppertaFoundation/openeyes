@@ -4,7 +4,7 @@ Feature: Create New Operation Booking Event
   As an automation tester
   I want to build a template with supporting code for each web page
 
-  Scenario: Login and create a Operation Booking
+  Scenario: Route 1: Login and create a Operation Booking
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"

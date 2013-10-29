@@ -9,7 +9,7 @@ class Intravitreal extends Page
     protected $elements = array (
         //Anaesthetic Right
 
-        'addRightSide' => array('xpath' => "//*[@id='clinical-create']//*[contains(text(),'Add right side')]"),
+        'addRightSide' => array('xpath' => "//*[@id='clinical-create']//*[@class='side left eventDetail inactive']//*[contains(text(),'Add right side')]"),
         'removeRightSide' => array('xpath' => "//*[@id='clinical-create']//*[@class='side left eventDetail']//*[@class='removeSide']"),
         'rightAnaestheticTopical' => array('xpath' => "//input[@id='Element_OphTrIntravitrealinjection_Anaesthetic_right_anaesthetictype_id_1']"),
         'rightAnaestheticLA' => array('xpath' => "//input[@id='Element_OphTrIntravitrealinjection_Anaesthetic_right_anaesthetictype_id_3']"),

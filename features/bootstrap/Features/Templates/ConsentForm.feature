@@ -35,7 +35,8 @@ Feature: Create New Consent Form
 #    Then I select a Interpreter required checkbox
 #    And I enter a Interpreter name of "Tom Smith"
 #    Then I select a supplementary consent form checkbox
-#    The element not found error crops up again for all of these checkboxes
+
+#   !!!! The element not found error crops up again for all of these checkboxes!!!!
     Then I save the Consent Form
 
 

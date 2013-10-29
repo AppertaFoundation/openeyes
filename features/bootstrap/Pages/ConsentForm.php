@@ -18,6 +18,7 @@ class ConsentForm extends Page
         'chooseLaser' => array ('xpath' => "//a[contains(text(),'Laser iridoplasty')]"),
         'anaestheticType' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_anaesthetic_type_id_3']"),
         'permissionsImagesNO' => array('xpath' => "//*[@id='Element_OphTrConsent_Permissions_images_id_2']"),
+        'permissionsImagesYES' => array('xpath' => "//*[@id='Element_OphTrConsent_Permissions_images_id_1']"),
         'informationLeaflet' => array('xpath' => "//div[@id='div_Element_OphTrConsent_Other_information']/div[2]/input[2]"),
         'anaestheticLeaflet' =>array('xpath' => "//*[@id='Element_OphTrConsent_Other_anaesthetic_leaflet']"),
         'witnessRequired' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_witness_required']"),
@@ -77,9 +78,14 @@ public function anaestheticTypeLA ()
     $this->getElement('anaestheticType')->click();
 }
 
-public function permissionImages ()
+public function permissionImagesNo ()
 {
     $this->getElement('permissionsImagesNO')->click();
+}
+
+public function permissionImagesYes ()
+{
+    $this->getElement('permissionsImagesYES')->click();
 }
 
 public function informationLeaflet ()
