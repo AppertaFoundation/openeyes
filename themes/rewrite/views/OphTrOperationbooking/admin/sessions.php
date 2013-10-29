@@ -80,22 +80,22 @@
 	</div>
 	<div class="row field-row">
 		<div class="large-2 column">
-		<?php echo CHtml::dropDownList('weekday',@$_GET['weekday'],array(1=>'Monday',2=>'Tuesday',3=>'Wednesday',4=>'Thursday',5=>'Friday',6=>'Saturday',7=>'Sunday'),array('empty'=>'- Weekday '))?>
+			<?php echo CHtml::dropDownList('weekday',@$_GET['weekday'],array(1=>'Monday',2=>'Tuesday',3=>'Wednesday',4=>'Thursday',5=>'Friday',6=>'Saturday',7=>'Sunday'),array('empty'=>'- Weekday '))?>
 		</div>
 		<div class="large-2 column">
-		<?php echo CHtml::dropDownList('consultant',@$_GET['consultant'],array(1=>'Yes',0=>'No'),array('empty'=>'- Consultant -'))?>
+			<?php echo CHtml::dropDownList('consultant',@$_GET['consultant'],array(1=>'Yes',0=>'No'),array('empty'=>'- Consultant -'))?>
 		</div>
 		<div class="large-2 column">
-		<?php echo CHtml::dropDownList('paediatric',@$_GET['paediatric'],array(1=>'Yes',0=>'No'),array('empty'=>'- Paediatric -'))?>
+			<?php echo CHtml::dropDownList('paediatric',@$_GET['paediatric'],array(1=>'Yes',0=>'No'),array('empty'=>'- Paediatric -'))?>
 		</div>
 		<div class="large-2 column">
-		<?php echo CHtml::dropDownList('anaesthetist',@$_GET['anaesthetist'],array(1=>'Yes',0=>'No'),array('empty'=>'- Anaesthetist -'))?>
+			<?php echo CHtml::dropDownList('anaesthetist',@$_GET['anaesthetist'],array(1=>'Yes',0=>'No'),array('empty'=>'- Anaesthetist -'))?>
 		</div>
 		<div class="large-2 column">
-		<?php echo CHtml::dropDownList('general_anaesthetic',@$_GET['general_anaesthetic'],array(1=>'Yes',0=>'No'),array('empty'=>'- General anaesthetic -'))?>
+			<?php echo CHtml::dropDownList('general_anaesthetic',@$_GET['general_anaesthetic'],array(1=>'Yes',0=>'No'),array('empty'=>'- General anaesthetic -'))?>
 		</div>
 		<div class="large-2 column">
-		<?php echo CHtml::dropDownList('available',@$_GET['available'],array(1=>'Yes',0=>'No'),array('empty'=>'- Available -'))?>
+			<?php echo CHtml::dropDownList('available',@$_GET['available'],array(1=>'Yes',0=>'No'),array('empty'=>'- Available -'))?>
 		</div>
 	</div>
 	<div class="field-row">
@@ -105,71 +105,71 @@
 </form>
 
 <h2>Sessions<?php if (@$_GET['sequence_id']!='') {?> for sequence <?php echo $_GET['sequence_id']?><?php }?></h2>
-		<form id="admin_sessions">
-			<table class="grid">
-				<thead>
-				<tr>
-				<th><input type="checkbox" id="checkall" class="sessions" /></th>
-				<th><?php echo CHtml::link('Firm',$this->getUri(array('sortby'=>'firm')))?></th>
-				<th><?php echo CHtml::link('Theatre',$this->getUri(array('sortby'=>'theatre')))?></th>
-				<th><?php echo CHtml::link('Date',$this->getUri(array('sortby'=>'dates')))?></th>
-				<th><?php echo CHtml::link('Time',$this->getUri(array('sortby'=>'time')))?></th>
-				<th><?php echo CHtml::link('Weekday',$this->getUri(array('sortby'=>'weekday')))?></th>
-				<th>Available</th>
-				<th>Attributes</th>
-					<input type="hidden" id="select_all" value="0" />
-				</tr>
-				</thead>
-				<tbody>
-				<?php if ($sessions['more_items']) {?>
-					<li class="checkall_message" style="display: none;">
+<form id="admin_sessions">
+	<table class="grid">
+		<thead>
+		<tr>
+			<th><input type="checkbox" id="checkall" class="sessions" /></th>
+			<th><?php echo CHtml::link('Firm',$this->getUri(array('sortby'=>'firm')))?></th>
+			<th><?php echo CHtml::link('Theatre',$this->getUri(array('sortby'=>'theatre')))?></th>
+			<th><?php echo CHtml::link('Date',$this->getUri(array('sortby'=>'dates')))?></th>
+			<th><?php echo CHtml::link('Time',$this->getUri(array('sortby'=>'time')))?></th>
+			<th><?php echo CHtml::link('Weekday',$this->getUri(array('sortby'=>'weekday')))?></th>
+			<th>Available</th>
+			<th>Attributes</th>
+			<input type="hidden" id="select_all" value="0" />
+		</tr>
+		</thead>
+		<tbody>
+		<?php if ($sessions['more_items']) {?>
+			<li class="checkall_message" style="display: none;">
 							<span class="column_checkall_message">
 								All <?php echo count($sessions['data'])?> sessions on this page are selected. <a href="#" id="select_all_items">Select all <?php echo $sessions['count']?> sessions that match the current search criteria</a>
 							</span>
-					</li>
-				<?php }?>
-				<?php if (count($sessions['data']) <1) {?>
-					<li class="no_results">
+			</li>
+		<?php }?>
+		<?php if (count($sessions['data']) <1) {?>
+			<li class="no_results">
 							<span class="column_no_results">
 								No items matched your search criteria.
 							</span>
-					</li>
-				<?php }?>
-					<?php
-					foreach ($sessions['data'] as $i => $session) {?>
-						<tr class="clickable sortable" data-attr-id="<?php echo $session->id?>" data-uri="OphTrOperationbooking/admin/editSession/<?php echo $session->id?>">
-							<td><input type="checkbox" name="session[]" value="<?php echo $session->id?>" class="sessions" /></td>
-							<td><?php echo $session->firm ? $session->firm->nameAndSubspecialtyCode: 'Emergency'?></td>
-							<td><?php echo $session->theatre->name?></td>
-							<td><?php echo $session->NHSDate('date')?></td>
-							<td><?php echo $session->start_time?> - <?php echo $session->end_time?></td>
-							<td><?php echo $session->weekdayText?></td>
-							<td><?php echo $session->available ? 'Yes' : 'No'?></td>
-							<td>
-									<span class="<?php echo $session->consultant ? 'set' : 'notset'?>">CON</span>
-									<span class="<?php echo $session->paediatric ? 'set' : 'notset'?>">PAED</span>
-									<span class="<?php echo $session->anaesthetist ? 'set' : 'notset'?>">ANA</span>
-									<span class="<?php echo $session->general_anaesthetic ? 'set' : 'notset'?>">GA</span>
-							</td>
-						</tr>
-					<?php }?>
-				</tbody>
-				<tfoot class="pagination-container">
-				<tr>
-					<td colspan="8">
-						<?php echo $this->renderPartial('_pagination',array(
-								'page' => $sessions['page'],
-								'pages' => $sessions['pages'],
-								'onePageOnly' => true,
-							))?>
-						<?php echo EventAction::button('Add', 'add_session', null, array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete_session', null, array('class' => 'small'))->toHtml()?>
-						<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-					</td>
-				</tr>
-				</tfoot>
-				</table>
-		</form>
+			</li>
+		<?php }?>
+		<?php
+		foreach ($sessions['data'] as $i => $session) {?>
+			<tr class="clickable sortable" data-attr-id="<?php echo $session->id?>" data-uri="OphTrOperationbooking/admin/editSession/<?php echo $session->id?>">
+				<td><input type="checkbox" name="session[]" value="<?php echo $session->id?>" class="sessions" /></td>
+				<td><?php echo $session->firm ? $session->firm->nameAndSubspecialtyCode: 'Emergency'?></td>
+				<td><?php echo $session->theatre->name?></td>
+				<td><?php echo $session->NHSDate('date')?></td>
+				<td><?php echo $session->start_time?> - <?php echo $session->end_time?></td>
+				<td><?php echo $session->weekdayText?></td>
+				<td><?php echo $session->available ? 'Yes' : 'No'?></td>
+				<td>
+					<span class="<?php echo $session->consultant ? 'set' : 'notset'?>">CON</span>
+					<span class="<?php echo $session->paediatric ? 'set' : 'notset'?>">PAED</span>
+					<span class="<?php echo $session->anaesthetist ? 'set' : 'notset'?>">ANA</span>
+					<span class="<?php echo $session->general_anaesthetic ? 'set' : 'notset'?>">GA</span>
+				</td>
+			</tr>
+		<?php }?>
+		</tbody>
+		<tfoot class="pagination-container">
+		<tr>
+			<td colspan="8">
+				<?php echo $this->renderPartial('_pagination',array(
+						'page' => $sessions['page'],
+						'pages' => $sessions['pages'],
+						'onePageOnly' => true,
+					))?>
+				<?php echo EventAction::button('Add', 'add_session', null, array('class' => 'small'))->toHtml()?>
+				<?php echo EventAction::button('Delete', 'delete_session', null, array('class' => 'small'))->toHtml()?>
+				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+			</td>
+		</tr>
+		</tfoot>
+	</table>
+</form>
 
 <div class="alert-box hide" id="update_inline">
 	<a href="#">Update selected sessions</a>

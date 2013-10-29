@@ -19,7 +19,6 @@
 
 ?>
 <div class="box admin">
-
 		<h2><?php echo $sequence->id ? 'Edit' : 'Add'?> sequence</h2>
 		<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
 		<div>
@@ -79,7 +78,7 @@
 <div id="confirm_delete_sequence" title="Confirm delete sequence" style="display: none;">
 	<div>
 		<div id="delete_sequence">
-			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
+			<div class="alert-box alert with-icon">
 				<strong>WARNING: This will remove the sequence from the system.<br/>This action cannot be undone.</strong>
 			</div>
 			<p>

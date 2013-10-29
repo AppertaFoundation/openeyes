@@ -70,7 +70,7 @@
 <div id="confirm_delete_session" title="Confirm delete session" style="display: none;">
 	<div>
 		<div id="delete_session">
-			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
+			<div class="alert-box alert with-icon">
 				<strong>WARNING: This will remove the session from the system.<br/>This action cannot be undone.</strong>
 			</div>
 			<p>
