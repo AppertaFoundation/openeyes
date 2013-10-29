@@ -17,7 +17,7 @@
 
 				<section class="element element-data">
 					<h3 class="data-title">Procedure list</h3>
-					<ul class="data-value field-highlight important">
+					<ul class="data-value highlight important">
 						<li>Left Punctoplasty</li>
 						<li>Left Biopsy of lid - excisional</li>
 						<li>Left Brow lift - direct</li>
@@ -29,7 +29,7 @@
 					<div class="element-data">
 						<div class="row">
 							<div class="large-6 column highlight">
-								<div class="row data-row">
+								<div class="row data-row highlight">
 									<div class="large-4 column">
 										<div class="data-label">Incision site:</div>
 									</div>

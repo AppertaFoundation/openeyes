@@ -228,9 +228,9 @@ $oe-form-field-fixed-width: emCalc(110px) !default;
 // Field rows, fields and label wrappers
 $oe-field-highlight-border-radius: 5px !default;
 $oe-field-highlight-bg-color: white !default;
-$oe-field-highlight-padding: 10px !default;
+$oe-field-highlight-padding: .75em !default;
 $oe-field-highlight-font-size: emCalc(18px) !default;
-$oe-field-highlight-margin: 0 -10px !default;
+$oe-field-highlight-margin: 0 -.75em !default;
 $oe-field-highlight-list-item-font-size: 1em !default;
 $oe-field-highlight-important-bg-color: #fff300 !default;
 $oe-field-value-padding-bottom: 5px !default;
