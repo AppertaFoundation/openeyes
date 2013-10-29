@@ -20,6 +20,7 @@
 <?php
 	$this->beginContent('//patient/event_container');
 	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.OphTrOperationbooking.assets')).'/';
+	$this->moduleNameCssClass .= ' edit';
 ?>
 	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
