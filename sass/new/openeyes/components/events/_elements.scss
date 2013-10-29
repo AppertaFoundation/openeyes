@@ -9,7 +9,6 @@ $oe-element-h4-font-size: $default-font-size !default;
 $oe-element-fieldset-panel-border-color: #d9d9d9 !default;
 $oe-element-eye-border-color: #fafafa !default;
 
-
 .element {
 	position: relative;
 	canvas, .canvas {
@@ -98,6 +97,9 @@ $oe-element-edit-title-font-style: italic;
 			&.validation-error {
 				border-color: #da3232;
 			}
+			.alert-box {
+				margin: 1em;
+			}
 		}
 		select {
 			width: auto;
@@ -110,6 +112,9 @@ $oe-element-edit-title-font-style: italic;
 			&:last-child {
 				padding: 0;
 			}
+		}
+		.alert-box {
+			margin: 1em 0;
 		}
 	}
 	.element-title {

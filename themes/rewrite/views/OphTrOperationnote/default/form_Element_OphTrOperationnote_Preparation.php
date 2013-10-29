@@ -19,16 +19,20 @@
 ?>
 
 <?php if ($element->getSetting('fife')) {?>
-	<div class="element <?php echo $element->elementType->class_name?>"
+	<section class="element <?php echo $element->elementType->class_name?>"
 		data-element-type-id="<?php echo $element->elementType->id ?>"
 		data-element-type-class="<?php echo $element->elementType->class_name ?>"
 		data-element-type-name="<?php echo $element->elementType->name ?>"
 		data-element-display-order="<?php echo $element->elementType->display_order ?>">
-		<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
-		<?php echo $form->slider($element, 'spo2', array('min'=>0,'max'=>100,'step'=>1,'append'=>'%'))?>
-		<?php echo $form->slider($element, 'oxygen', array('min'=>0,'max'=>100,'step'=>1,'append'=>'%'))?>
-		<?php echo $form->slider($element, 'pulse', array('min'=>1, 'max'=>300,'step'=>1))?>
-		<?php echo $form->dropDownList($element, 'skin_preparation_id', CHtml::listData(OphTrOperationnote_PreparationSkinPreparation::model()->findAll(array('order'=>'display_order')), 'id', 'name'),array('empty' => '- Please select -'))?>
-		<?php echo $form->dropDownList($element, 'intraocular_solution_id', CHtml::listData(OphTrOperationnote_PreparationIntraocularSolution::model()->findAll(array('order'=>'display_order')), 'id', 'name'),array('empty' => '- Please select -'))?>
-	</div>
+		<header class="element-header">
+			<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
+		</header>
+		<div class="element-fields">
+			<?php echo $form->slider($element, 'spo2', array('min'=>0,'max'=>100,'step'=>1,'append'=>'%'))?>
+			<?php echo $form->slider($element, 'oxygen', array('min'=>0,'max'=>100,'step'=>1,'append'=>'%'))?>
+			<?php echo $form->slider($element, 'pulse', array('min'=>1, 'max'=>300,'step'=>1))?>
+			<?php echo $form->dropDownList($element, 'skin_preparation_id', CHtml::listData(OphTrOperationnote_PreparationSkinPreparation::model()->findAll(array('order'=>'display_order')), 'id', 'name'),array('empty' => '- Please select -'))?>
+			<?php echo $form->dropDownList($element, 'intraocular_solution_id', CHtml::listData(OphTrOperationnote_PreparationIntraocularSolution::model()->findAll(array('order'=>'display_order')), 'id', 'name'),array('empty' => '- Please select -'))?>
+		</div>
+	</section>
 <?php }?>

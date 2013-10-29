@@ -18,22 +18,26 @@
  */
 ?>
 
-<section class="element <?php echo $element->elementType->class_name?> ondemand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
+<section class="element <?php echo $element->elementType->class_name?> on-demand<?php if (@$ondemand) {?> hidden<?php }?><?php if ($this->action->id == 'update' && !$element->event_id) {?> missing<?php }?>"
 		 data-element-type-id="<?php echo $element->elementType->id ?>"
 		 data-element-type-class="<?php echo $element->elementType->class_name ?>"
 		 data-element-type-name="<?php echo $element->elementType->name ?>"
 		 data-element-display-order="<?php echo $element->elementType->display_order ?>">
 	<?php if ($this->action->id == 'update' && !$element->event_id) {?>
-		<span class="missingtext">This element is missing and needs to be completed</span>
+		<div class="alert-box alert with-icon">This element is missing and needs to be completed</div>
 	<?php }?>
+
 	<header class="element-header">
 		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
 	</header>
 
-	<div class="element-fields element-eyes row">
-		<div
-			class="element-eye right-eye left side columm">
-			<div class="left" style="width:45%;">
+	<?php
+	$layoutColumns=$form->layoutColumns;
+	$form->layoutColumns=array('label'=>3,'field'=>9);
+	?>
+	<div class="element-fields">
+		<div class="row vitrectomy">
+			<div class="fixed column">
 				<?php
 				$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
 						'doodleToolBarArray' => array(
@@ -54,12 +58,13 @@
 					));
 				?>
 			</div>
-			<div
-				class="element-eye left-eye right side column">
+			<div class="fluid column">
 				<?php echo $form->dropDownList($element, 'gauge_id', CHtml::listData(OphTrOperationnote_VitrectomyGauge::model()->findAll(),'id','value'),array('empty'=>'- Please select -'))?>
-				<?php echo $form->radioBoolean($element, 'pvd_induced')?>
-				<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 55))?>
+				<?php echo $form->radioBoolean($element, 'pvd_induced',array())?>
+				<?php echo $form->textArea($element, 'comments', array('rows' => 4))?>
 			</div>
 		</div>
 	</div>
 </section>
+
+<?php $form->layoutColumns=$layoutColumns;?>

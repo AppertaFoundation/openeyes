@@ -13,5 +13,10 @@ $em-base: 16px;
 @import "openeyes/functions";
 @import "openeyes/placeholders";
 
+// We include the global foundation file to allow the OE modules to access the global
+// grid (and other) variables.
+$include-html-global-classes: false;
+@import "foundation/components/global";
+
 // Global variables. We use the variables to change the site theme.
 @import "openeyes/themes/default/variables";
