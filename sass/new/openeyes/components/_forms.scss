@@ -158,6 +158,9 @@ small.error {
 .field-highlight {
 	@extend .pill;
 	display: block;
+	&.inline {
+		display: inline-block;
+	}
 }
 
 
