@@ -1,7 +1,12 @@
 @mixin clearfix {
-  *zoom:1;
-  &:before, &:after { content: " "; display: table; }
-  &:after { clear: both; }
+	*zoom: 1;
+	&:before, &:after {
+		content: " ";
+		display: table;
+	}
+	&:after {
+		clear: both;
+	}
 }
 
 // Hide text off-screen without affecting container position.
@@ -67,5 +72,36 @@ $oe-selector-form-select-fields: "select";
 	#{$oe-selector-form-button-fields},
 	#{$oe-selector-form-select-fields} {
 		@content;
+	}
+}
+
+// Add vendor prefixes for calc()
+@mixin calc($property, $expression) {
+	#{$property}: -moz-calc(#{$expression});
+	#{$property}: -o-calc(#{$expression});
+	#{$property}: -webkit-calc(#{$expression});
+	#{$property}: calc(#{$expression});
+}
+
+@mixin grid-fixed-fluid($row-selector, $width) {
+	.row {
+		&#{$row-selector} {
+			.column {
+				&.fixed {
+					width: $width;
+				}
+			}
+		}
+	}
+	@media #{$small} {
+		.row {
+			&#{$row-selector} {
+				.column {
+					&.fluid {
+						@include calc("width", "100% - #{$width}");
+					}
+				}
+			}
+		}
 	}
 }

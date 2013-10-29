@@ -24,7 +24,7 @@
 <div id="event_<?php echo $this->module->name?>">
 	<?php
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'clinical-create',
+			'id'=>'opnote-create',
 			'enableAjaxValidation'=>false,
 			'htmlOptions' => array('class'=>'sliding'),
 			'focus'=>'#procedure_id',
@@ -33,7 +33,7 @@
 		));
 
 		// Event actions
-		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small', 'form'=>'clinical-create'));
+		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small', 'form'=>'opnote-create'));
 	?>
 
 		<?php $this->displayErrors($errors)?>
