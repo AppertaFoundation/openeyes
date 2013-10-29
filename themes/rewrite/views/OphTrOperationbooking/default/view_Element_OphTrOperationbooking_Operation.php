@@ -28,7 +28,7 @@
 </section>
 
 <section class="element element-data">
-	<div class="row element-data-row">
+	<div class="row">
 		<div class="large-6 column">
 			<h3 class="data-title">Anaesthetic</h3>
 			<div class="data-value">
@@ -43,7 +43,7 @@
 </section>
 
 <section class="element element-data">
-	<div class="row element-data-row">
+	<div class="row">
 		<div class="large-6 column">
 			<h3 class="data-title">Post Operative Stay Required</h3>
 			<div class="data-value"><?php echo $element->overnight_stay ? 'Yes Stay' : 'No Stay'?></div>
@@ -56,7 +56,7 @@
 </section>
 
 <section class="element element-data">
-	<div class="row element-data-row">
+	<div class="row">
 		<div class="large-6 column">
 			<h3 class="data-title">Operation priority</h3>
 			<div class="data-value"><?php echo $element->priority->name?>
@@ -75,7 +75,7 @@
 	<h3 class="element-title highlight">Booking Details</h3>
 
 	<section class="element element-data">
-		<div class="row element-data-row">
+		<div class="row">
 			<div class="large-6 column">
 				<h3 class="data-title">List</h3>
 				<div class="data-value">
@@ -91,7 +91,7 @@
 	</section>
 
 	<section class="element element-data">
-		<div class="row element-data-row">
+		<div class="row">
 			<div class="large-6 column">
 				<h3 class="data-title">Admission Time</h3>
 				<div class="data-value">
@@ -134,7 +134,7 @@
 
 <?php if ($element->status->name == 'Cancelled' && $element->operation_cancellation_date){?>
 <section class="element element-data">
-	<div class="row element-data-row">
+	<div class="row">
 		<div class="large-6 column">
 			<h3 class="data-title">Cancellation details</h3>
 			<div class="data-value">
@@ -146,7 +146,7 @@
 
 	<?php if ($element->cancellation_comment) {?>
 <section class="element element-data">
-	<div class="row element-data-row">
+	<div class="row">
 		<div class="large-6 column">
 			<h3 class="data-title">Cancellation comments</h3>
 			<div class="data-value">
@@ -160,7 +160,7 @@
 
 <?php if ($element->erod) {?>
 <section class="element element-data">
-	<div class="row element-data-row">
+	<div class="row">
 		<div class="large-6 column">
 			<h3 class="data-title">Earliest reasonable offer date</h3>
 			<div class="data-value"><?php echo $element->erod->NHSDate('session_date').' '.$element->erod->timeSlot.', '.$element->erod->FirmName?>

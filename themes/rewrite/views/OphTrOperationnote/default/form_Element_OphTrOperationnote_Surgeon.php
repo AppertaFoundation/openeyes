@@ -28,22 +28,21 @@
 	</header>
 
 	<div class="element-fields">
-
-	<?php echo $form->dropDownListRow(
-		$element,
-		array(
-			'surgeon_id',
-			'assistant_id',
-		),
-		array(
-			CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-			CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-		),
-		array(
-			array('empty'=>'- Please select -'),
-			array('empty'=>'- None -'),
-		)
-	)?>
-	<?php echo $form->dropDownList($element, 'supervising_surgeon_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'), array('empty' => '- None -'))?>
+		<?php echo $form->dropDownListRow(
+			$element,
+			array(
+				'surgeon_id',
+				'assistant_id',
+			),
+			array(
+				CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+				CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+			),
+			array(
+				array('empty'=>'- Please select -'),
+				array('empty'=>'- None -'),
+			)
+		)?>
+		<?php echo $form->dropDownList($element, 'supervising_surgeon_id', CHtml::listData($element->surgeons, 'id', 'ReversedFullName'), array('empty' => '- None -'))?>
 	</div>
 </section>

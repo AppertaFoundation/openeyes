@@ -18,8 +18,14 @@
  */
 ?>
 <?php if (!@$htmlOptions['nowrapper']) {?>
-	<div id="div_<?php echo $id?>" class="eventDetail">
-		<div class="data">
+	<div id="div_<?php echo $id?>" class="row field-row">
+		<div class="large-<?php echo $layoutColumns['label'];?> column">
+			<?php if (!@$htmlOptions['nolabel']) {?>
+				<label for="<?php echo $id?>"></label>
+			<?php }?>
+		</div>
+
+		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 <?php }?>
 		<select id="<?php echo $id?>"<?php if (@$htmlOptions['class']) {?> class="<?php echo $htmlOptions['class']?>"<?php }?><?php if (@$htmlOptions['disabled']) {?> disabled="disabled"<?php }?><?php if (@$htmlOptions['title']) {?> title="<?php echo $htmlOptions['title']?>"<?php }?>>
 			<?php if (isset($htmlOptions['empty'])) {?>
@@ -30,6 +36,6 @@
 			<?php }?>
 		</select>
 		<?php if (!@$htmlOptions['nowrapper']) {?>
+		</div>
 	</div>
-</div>
 <?php }?>
