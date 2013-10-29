@@ -17,22 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<div class="cols2 clearfix">
-	<div class="left eventDetail">
+<div class="sub-element-data sub-element-eyes row">
+	<div class="element-eye right-eye column">
 		<?php if ($element->hasRight()) {
-			$this->renderPartial('_view_' . get_class($element) . '_fields',
-				array('side' => 'right', 'element' => $element));
-		} else { ?>
-		Not recorded
-		<?php } ?>
+			$this->renderPartial('_view_' . get_class($element) . '_fields', array('side' => 'right', 'element' => $element));
+		} else {?>
+			Not recorded
+		<?php }?>
 	</div>
-	<div class="right eventDetail">
+	<div class="element-eye left-eye column">
 		<?php if ($element->hasLeft()) {
-			$this->renderPartial('_view_' . get_class($element) . '_fields',
-				array('side' => 'left', 'element' => $element));
-		} else { ?>
-		Not recorded
-		<?php } ?>
+			$this->renderPartial('_view_' . get_class($element) . '_fields', array('side' => 'left', 'element' => $element));
+		} else {?>
+			Not recorded
+		<?php }?>
 	</div>
 </div>

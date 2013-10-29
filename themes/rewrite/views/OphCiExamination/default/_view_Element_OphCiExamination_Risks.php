@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="eventDetail">
-	<?php  echo $element->textWithLineBreaks('comments') ?>
+<div class="element-data">
+	<div class="data-value">
+		<?php echo $element->textWithLineBreaks('comments')?>
+	</div>
 </div>

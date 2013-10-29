@@ -61,6 +61,7 @@
 						</a>
 					</td>
 				</tr>
+				<input type="hidden" name="selected_diagnoses[]" value="<?php echo $diagnosis['disorder']->id?>" />
 			<?php }?>
 		</tbody>
 	</table>
