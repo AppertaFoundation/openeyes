@@ -23,7 +23,7 @@ $clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()
 		<label><?php echo $element->getAttributeLabel($side.'_clinicalret_id')?>:</label>
 	</div>
 	<div class="large-9 column">
-		<div class="wrapper field-highlight inline<?php if ($element->{$side.'_clinicalret'}) {?> <?php echo $element->{$side . '_clinicalret'}->class?><?php }?>">
+		<div class="wrapper field-highlight inline<?php if ($element->{$side.'_clinicalret'}) {?> <?php echo $element->{$side . '_clinicalret'}->class?><?php }else{?> none<?php }?>">
 			<?php
 				$html_options = array('options' => array());
 				foreach ($clinical_retinopathys as $clinical) {
