@@ -83,6 +83,8 @@ $oe-selector-form-select-fields: "select";
 	#{$property}: calc(#{$expression});
 }
 
+// This mixin allows us to generate two columns, one with a fixed width and
+// the other with a fluid width.
 @mixin grid-fixed-fluid($row-selector, $width) {
 	.row {
 		&#{$row-selector} {
