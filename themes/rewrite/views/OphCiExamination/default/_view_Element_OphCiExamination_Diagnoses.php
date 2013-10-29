@@ -17,15 +17,14 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-	<?php foreach ($element->diagnoses as $diagnosis) {?>
-		<div class="eventDetail">
-			<?php if ($diagnosis->principal) {?>
-				<strong>
-			<?php }?>
-			<?php echo $diagnosis->eye->adjective; ?>
-			<?php echo $diagnosis->disorder->term; ?>
-			<?php if ($diagnosis->principal) {?>
-				</strong>
-			<?php }?>
-		</div>
-	<?php }?>
+<div class="element-data">
+	<div class="data-value">
+		<?php foreach ($element->diagnoses as $diagnosis) {?>
+			<?php if ($diagnosis->principal) {?><strong><?php }?>
+			<?php echo $diagnosis->eye->adjective?>
+			<?php echo $diagnosis->disorder->term?>
+			<?php if ($diagnosis->principal) {?></strong><?php }?>
+			<br/>
+		<?php }?>
+	</div>
+</div>

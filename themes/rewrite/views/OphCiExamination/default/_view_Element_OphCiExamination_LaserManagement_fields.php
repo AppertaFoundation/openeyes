@@ -17,14 +17,27 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_lasertype_id') ?>:</div>
-	<div class="data"><?php echo $element->getLaserTypeStringForSide($side) ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label">
+			<?php echo $element->getAttributeLabel($side.'_lasertype_id')?>:
+		</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
+			<?php echo $element->getLaserTypeStringForSide($side)?>
+		</div>
+	</div>
 </div>
-
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_comments') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_comments'} ? $element->{$side . '_comments'} : 'None'; ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label">
+			<?php echo $element->getAttributeLabel($side.'_comments')?>:
+		</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
+			<?php echo $element->{$side.'_comments'} ? $element->{$side.'_comments'} : 'None'?>
+		</div>
+	</div>
 </div>
-

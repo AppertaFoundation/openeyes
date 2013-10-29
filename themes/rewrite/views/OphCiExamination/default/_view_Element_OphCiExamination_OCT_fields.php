@@ -17,16 +17,39 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_method_id') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_method'}->name; ?></div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label">
+			<?php echo $element->getAttributeLabel($side.'_method_id')?>:
+		</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
+			<?php echo $element->{$side.'_method'}->name?>
+		</div>
+	</div>
 </div>
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_crt') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_crt'}; ?> &micro;m</div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label">
+			<?php echo $element->getAttributeLabel($side.'_crt')?>:
+		</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
+			<?php echo $element->{$side.'_crt'}?> &micro;m
+		</div>
+	</div>
 </div>
-<div class="eventDetail aligned">
-	<div class="label"><?php echo $element->getAttributeLabel($side . '_sft') ?>:</div>
-	<div class="data"><?php echo $element->{$side . '_sft'}; ?> &micro;m</div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label">
+			<?php echo $element->getAttributeLabel($side.'_sft')?>:
+		</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value">
+			<?php echo $element->{$side.'_sft'}?> &micro;m
+		</div>
+	</div>
 </div>
