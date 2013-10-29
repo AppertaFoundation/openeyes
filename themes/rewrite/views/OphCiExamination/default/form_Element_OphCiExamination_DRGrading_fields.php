@@ -20,10 +20,10 @@ $clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()
 ?>
 <div class="row field-row">
 	<div class="large-3 column">
-		<?php echo $element->getAttributeLabel($side.'_clinicalret_id')?>:
+		<label><?php echo $element->getAttributeLabel($side.'_clinicalret_id')?>:</label>
 	</div>
 	<div class="large-9 column">
-		<div class="wrapper <?php if ($element->{$side . '_clinicalret'}) { echo $element->{$side . '_clinicalret'}->class; } ?>">
+		<div class="wrapper<?php if ($element->{$side.'_clinicalret'}) {?> <?php echo $element->{$side . '_clinicalret'}->class?><?php }?>">
 			<?php
 				$html_options = array('options' => array());
 				foreach ($clinical_retinopathys as $clinical) {
@@ -51,7 +51,7 @@ $clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()
 </div>
 <div class="row field-row">
 	<div class="large-3 column">
-		<?php echo $element->getAttributeLabel($side.'_nscretinopathy_id')?>:
+		<label><?php echo $element->getAttributeLabel($side.'_nscretinopathy_id')?>:</label>
 	</div>
 	<div class="large-9 column">
 		<div class="wrapper <?php if ($element->{$side . '_nscretinopathy'}) { echo $element->{$side . '_nscretinopathy'}->class; } ?>">
@@ -80,13 +80,13 @@ $clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()
 		</div>
 	</div>
 </div>
-<?php echo $form->radioBoolean($element,$side.'_nscretinopathy_photocoagulation');
+<?php echo $form->radioBoolean($element,$side.'_nscretinopathy_photocoagulation',array(),array('label'=>3,'field'=>9));
 $clinical_maculopathys = OphCiExamination_DRGrading_ClinicalMaculopathy::model()->findAll(array('order'=>'display_order'));
 $curr_cm = $element->{$side . '_clinicalmac'} ? $element->{$side . '_clinicalmac'} : @$clinical_maculopathys[0];
 ?>
 <div class="row field-row">
 	<div class="large-3 column">
-		<?php echo $element->getAttributelabel($side.'_clinicalmac_id')?>:
+		<label><?php echo $element->getAttributelabel($side.'_clinicalmac_id')?>:</label>
 	</div>
 	<div class="large-9 column">
 		<div class="wrapper <?php if ($curr_cm) { echo $curr_cm->class; } ?>">
@@ -121,7 +121,7 @@ $curr_cm = $element->{$side . '_clinicalmac'} ? $element->{$side . '_clinicalmac
 </div>
 <div class="row field-row">
 	<div class="large-3 column">
-		<?php echo $element->getAttributelabel($side.'_nscmaculopathy_id')?>:
+		<label><?php echo $element->getAttributelabel($side.'_nscmaculopathy_id')?>:</label>
 	</div>
 	<div class="large-9 column">
 		<div class="wrapper <?php if ($element->{$side . '_nscmaculopathy'}) { echo $element->{$side . '_nscmaculopathy'}->class; } ?>">
@@ -151,4 +151,4 @@ $curr_cm = $element->{$side . '_clinicalmac'} ? $element->{$side . '_clinicalmac
 		</div>
 	</div>
 </div>
-<?php echo $form->radioBoolean($element,$side.'_nscmaculopathy_photocoagulation'); ?>
+<?php echo $form->radioBoolean($element,$side.'_nscmaculopathy_photocoagulation',array(),array('label'=>3,'field'=>9))?>

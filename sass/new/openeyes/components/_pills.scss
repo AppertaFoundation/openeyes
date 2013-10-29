@@ -4,14 +4,17 @@
 	padding: 3px 5px;
 	font-size: $default-font-size;
 	margin: 2px;
-	&.high {
+	&.high, &.severe, &.high-risk, &.proliferative, &.maculopathy {
 		background: #f00;
 		color: #fff;
 	}
-	&.moderate {
+	&.moderate, &.pre-polif {
 		background: #fc0;
 	}
-	&.low {
+	&.mild, &.early, &.background, &.peripheral, &.upgradable {
+		background: #36f;
+	}
+	&.low, &.none {
 		background: #9c0;
 	}
 	&.risk {
