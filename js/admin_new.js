@@ -83,6 +83,9 @@ $(document).ready(function() {
 
 		if ($(e.target).data('object')) {
 			var object = $(e.target).data('object');
+			if (object.charAt(object.length-1) != 's') {
+				object = object + 's';
+			}
 		} else {
 			var x = window.location.href.split('?')[0].split('/');
 
@@ -93,22 +96,27 @@ $(document).ready(function() {
 			}
 		}
 
+		if ($('#admin_'+object).serialize().length == 0) {
+			alert("Please select one or more items to delete.");
+			return;
+		}
+
 		if ($(e.target).data('uri')) {
 			var uri = baseUrl+$(e.target).data('uri');
 		} else {
-			var uri = baseUrl+'/admin/delete'+ucfirst(object)+'s';
+			var uri = baseUrl+'/admin/delete'+ucfirst(object);
 		}
 
 		$.ajax({
 			'type': 'POST',
 			'url': uri,
-			'data': $('#admin_'+object+'s').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'data': $('#admin_'+object).serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(html) {
 				if (html == '1') {
 					window.location.reload();
 				} else {
 					new OpenEyes.Dialog.Alert({
-						content: "One or more "+object+"s could not be deleted as they are in use."
+						content: "One or more "+object+" could not be deleted as they are in use."
 					}).open();
 				}
 			}
