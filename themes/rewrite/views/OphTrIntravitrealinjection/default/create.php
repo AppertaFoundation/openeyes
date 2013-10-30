@@ -32,7 +32,6 @@
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'clinical-create',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array('class'=>'sliding'),
 		'layoutColumns' => array(
 			'label' => 4,
 			'field' => 8
@@ -57,7 +56,7 @@
 				$msg = "Only " . strtolower(Eye::model()->findByPk($this->side_to_inject)->name) . " eye to be injected";
 			}
 			?>
-			<div class="injection-warning <?php echo $cls_lkup[$this->side_to_inject] ?>">
+			<div class="alert-box alert with-icon injection-warning <?php echo $cls_lkup[$this->side_to_inject] ?>">
 				<?php echo $msg ?>
 			</div>
 
