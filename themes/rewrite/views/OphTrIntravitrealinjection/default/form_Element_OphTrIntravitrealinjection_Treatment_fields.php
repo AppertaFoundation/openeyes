@@ -86,7 +86,7 @@
 </div>
 
 <?php
-	echo $form->checkbox($element, $side . '_pre_ioplowering_required', array('nowrapper' => true));
+	echo $form->checkbox($element, $side . '_pre_ioplowering_required');
 ?>
 
 <?php

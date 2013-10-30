@@ -22,33 +22,32 @@
 $this->beginContent('//patient/event_container', array());
 ?>
 
-<?php
-$this->renderPartial('//base/_messages');
+	<?php
+	$this->renderPartial('//base/_messages');
 
-$service = new OphCoTherapyapplication_Processor();
-$warnings = array();
+	$service = new OphCoTherapyapplication_Processor();
+	$warnings = array();
 
-if ($service->canProcessEvent($this->event->id)) {
-	if ($service->isEventNonCompliant($this->event->id)) {
-		$this->event_actions[] = EventAction::link('Preview Application', Yii::app()->createUrl($this->event->eventType->class_name.'/default/previewApplication/?event_id='.$this->event->id),null, array('id' => 'application-preview'));
+	if ($service->canProcessEvent($this->event->id)) {
+		if ($service->isEventNonCompliant($this->event->id)) {
+			$this->event_actions[] = EventAction::link('Preview Application', Yii::app()->createUrl($this->event->eventType->class_name.'/default/previewApplication/?event_id='.$this->event->id),null, array('id' => 'application-preview'));
+		}
+		else {
+			$this->event_actions[] = EventAction::button('Preview Application',null,array('disabled' => true), array('title' => 'Preview unavailable for NICE compliant applications'));
+		}
+
+		$this->event_actions[] = EventAction::link('Submit Application', Yii::app()->createUrl($this->event->eventType->class_name.'/default/processApplication/?event_id='.$this->event->id));
+	} else {
+		$warnings = $service->getProcessWarnings($this->event->id);
 	}
-	else {
-		$this->event_actions[] = EventAction::button('Preview Application',null,array('disabled' => true), array('title' => 'Preview unavailable for NICE compliant applications'));
-	}
 
-	$this->event_actions[] = EventAction::link('Submit Application', Yii::app()->createUrl($this->event->eventType->class_name.'/default/processApplication/?event_id='.$this->event->id));
-} else {
-	$warnings = $service->getProcessWarnings($this->event->id);
-}
+	?>
 
-?>
+	<h2 class="event-title"><?php echo $this->event_type->name?></h2>
 
-<h2 class="event-title"><?php echo $this->event_type->name?></h2>
-
-<div>
 	<?php
 		if (count($warnings)) {
-			echo "<div class=\"alert-box alert with-icon validation-errors top\">Application cannot be submitted for the following reasons:<ul>";
+			echo "<div class=\"alert-box alert with-icon validation-errors top\"><p>Application cannot be submitted for the following reasons:</p><ul>";
 			foreach ($warnings as $warning) {
 				echo "<li>" . $warning . "</li>";
 			}
@@ -58,7 +57,5 @@ if ($service->canProcessEvent($this->event->id)) {
 
 	<?php $this->renderDefaultElements($this->action->id)?>
 	<?php $this->renderOptionalElements($this->action->id)?>
-	<div class="cleartall"></div>
-</div>
 
 <?php $this->endContent() ;?>

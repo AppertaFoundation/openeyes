@@ -17,13 +17,31 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<section class="element element-data">
-	<h3 class="data-title"><?php echo $element->elementType->name ?></h3>
-	<ul class="data-value highlight important">
-		<?php foreach ($element->procedures as $procedure) {?>
-			<li><?php echo $element->eye->adjective?> <?php echo $procedure->term?></li>
-		<?php }?>
-	</ul>
-</section>
-
+<div class="box admin">
+	<h2>EROD rules</h2>
+	<form id="erod_rules">
+		<table class="grid">
+			<thead>
+			<tr>
+				<th><input type="checkbox" id="checkall" class="erod_rules" /></th>
+				<th>Subspecialty</th>
+				<th>Firms</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php
+			$criteria = new CDbCriteria;
+			$criteria->order = "display_order asc";
+			foreach (OphTrOperationbooking_Operation_EROD_Rule::model()->findAll() as $i => $erod) {?>
+				<tr class="clickable sortable" data-attr-id="<?php echo $erod->id?>?>" data-uri="OphTrOperationbooking/admin/editerodrule/<?php echo $erod->id?>">
+					<td><input type="checkbox" name="erod[]" value="<?php echo $erod->id?>" class="erod_rules" /></td>
+					<td><?php echo $erod->subspecialty->name?></td>
+					<td><?php echo $erod->firmString?></td>
+				</tr>
+			<?php }?>
+			</tbody>
+		</table>
+	</form>
+</div>
+<?php echo EventAction::button('Add', 'add_erod_rule', null,array('class'=>'button small'))->toHtml()?>&nbsp;
+<?php echo EventAction::button('Delete', 'delete_erod_rule', array('level' => 'warning'),array('class'=>'button small'))->toHtml()?>

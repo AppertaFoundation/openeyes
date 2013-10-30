@@ -30,13 +30,12 @@
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'c',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array('class'=>'sliding'),
 		'layoutColumns' => array(
 			'label' => 4,
 			'field' => 8)
-	));
-	// Event actions
-	$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('form'=>'c','class'=>'button small'));
+		));
+		// Event actions
+		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('form'=>'c','class'=>'button small'));
 	?>
 		<?php $this->displayErrors($errors)?>
 		<?php $this->renderDefaultElements($this->action->id, $form)?>
