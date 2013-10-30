@@ -18,13 +18,13 @@
  */
 ?>
 <div class="box admin">
-	<h2>Filters</h2>
+	<h2>Theatres</h2>
 		<div>
 			<form id="theatres">
 				<table class="grid">
 					<thead>
 					<tr>
-						<th><input type="checkbox" id="checkall" class="theatres" /></span>
+						<th><input type="checkbox" id="checkall" class="theatres" /></th>
 						<th>Site</th>
 						<th>Name</th>
 						<th>Code</th>
