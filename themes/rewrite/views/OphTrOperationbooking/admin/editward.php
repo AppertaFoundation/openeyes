@@ -19,34 +19,30 @@
 
 ?>
 <div class="box admin">
-		<h2><?php echo $ward->id ? 'Edit' : 'Add'?> ward</h2>
-		<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
-			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'adminform',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'focus'=>'#username'
-			))?>
-			<?php echo $form->dropDownList($ward,'site_id',Site::model()->getListForCurrentInstitution(),array('empty'=>'- Site -'))?>
-			<?php echo $form->textField($ward,'name')?>
-			<?php echo $form->textField($ward,'long_name')?>
-			<?php echo $form->textField($ward,'code',array('size'=>10))?>
-			<?php echo $form->radioBoolean($ward,'restriction_male')?>
-			<?php echo $form->radioBoolean($ward,'restriction_female')?>
-			<?php echo $form->radioBoolean($ward,'restriction_child')?>
-			<?php echo $form->radioBoolean($ward,'restriction_adult')?>
-			<?php echo $form->radioBoolean($ward,'restriction_observation')?>
-			<?php $this->endWidget()?>
+	<h2><?php echo $ward->id ? 'Edit' : 'Add'?> ward</h2>
+	<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'adminform',
+			'enableAjaxValidation'=>false,
+			'htmlOptions' => array('class'=>'sliding'),
+			'focus'=>'#username'
+		))?>
+	<?php echo $form->dropDownList($ward,'site_id',Site::model()->getListForCurrentInstitution(),array('empty'=>'- Site -'))?>
+	<?php echo $form->textField($ward,'name')?>
+	<?php echo $form->textField($ward,'long_name')?>
+	<?php echo $form->textField($ward,'code',array('size'=>10))?>
+	<?php echo $form->radioBoolean($ward,'restriction_male')?>
+	<?php echo $form->radioBoolean($ward,'restriction_female')?>
+	<?php echo $form->radioBoolean($ward,'restriction_child')?>
+	<?php echo $form->radioBoolean($ward,'restriction_adult')?>
+	<?php echo $form->radioBoolean($ward,'restriction_observation')?>
+	<?php $this->endWidget()?>
 
-
-<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
-
-
-
+	<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
 </div>
 
-<?php echo EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?> 
+<?php echo EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
 <?php echo EventAction::button('Cancel', 'cancel', array('level' => 'warning'), array('class' => 'button small'))->toHtml()?>
 <img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 
