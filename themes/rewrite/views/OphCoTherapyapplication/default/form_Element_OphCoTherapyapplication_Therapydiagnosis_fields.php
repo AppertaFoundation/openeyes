@@ -33,6 +33,7 @@ $layoutColumns = array('label'=>4, 'field'=>8);
 				'options' => CHtml::listData($l1_disorders,'id','term'),
 				'layout' => 'search',
 				'default' => false,
+				'nowrapper' => true,
 				'dropdownOptions' => array(
 					'empty'=>'- Please select -',
 					'options'=>$l1_opts
@@ -60,7 +61,9 @@ $layoutColumns = array('label'=>4, 'field'=>8);
 			'element' => $element,
 			'options' => CHtml::listData($l2_opts,'id','term'),
 			'layout' => 'search',
+			'label' => false,
 			'default' => false,
+			'nowrapper' => true,
 			'dropdownOptions' => $l2_attrs,
 		));?>
 	</div>

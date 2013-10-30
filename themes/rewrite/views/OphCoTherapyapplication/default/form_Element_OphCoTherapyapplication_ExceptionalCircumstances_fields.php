@@ -269,5 +269,5 @@ foreach ($collections as $collection) {
 	$html_options['options'][(string) $collection->id] = array('data-order' => $collection->display_order);
 }
 */
-echo $form->multiSelectList($element, get_class($element) . '[' . $side . '_filecollections]', $side . '_filecollections', 'id', CHtml::listData($collections,'id','name'), array(), $html_options, $layoutColumns);
+$form->multiSelectList($element, get_class($element) . '[' . $side . '_filecollections]', $side . '_filecollections', 'id', CHtml::listData($collections,'id','name'), array(), $html_options, $layoutColumns);
 ?>
