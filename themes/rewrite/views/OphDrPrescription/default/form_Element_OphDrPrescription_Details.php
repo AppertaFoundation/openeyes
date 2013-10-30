@@ -18,94 +18,89 @@
  */
 ?>
 <?php echo $form->hiddenInput($element, 'draft', 1)?>
-<div class="row">
-	<div class="large-12 column">
-		<section class="element <?php echo $element->elementType->class_name?>"
-				 data-element-type-id="<?php echo $element->elementType->id ?>"
-				 data-element-type-class="<?php echo $element->elementType->class_name ?>"
-				 data-element-type-name="<?php echo $element->elementType->name ?>"
-				 data-element-display-order="<?php echo $element->elementType->display_order ?>">
-			<div id="div_Element_OphDrPrescription_Details_prescription_items" class="element-fields">
-				<div class="row field-row">
-					<div class="large-6 column">
-						<fieldset class="row field-row">
-							<legend class="large-4 column">
-								Add Item
-							</legend>
-							<div class="large-8 column">
-								<div class="field-row">
-									<?php echo CHtml::dropDownList('common_drug_id', null, CHtml::listData($element->commonDrugs(), 'id', 'tallmanlabel'), array('empty' => '-- Select common --')); ?>
-									</div>
-									<div class="field-row">
-									<?php
-									$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-											'name' => 'drug_id',
-											'id' => 'autocomplete_drug_id',
-											'source' => "js:function(request, response) {
-								$.getJSON('".$this->createUrl('DrugList')."', {
-									term : request.term,
-									type_id: $('#drug_type_id').val(),
-									preservative_free: ($('#preservative_free').is(':checked') ? '1' : ''),
-								}, response);
-							}",
-											'options' => array(
-												'select' => "js:function(event, ui) {
-									addItem(ui.item.value, ui.item.id);
-									$(this).val('');
-									return false;
+
+<section class="element <?php echo $element->elementType->class_name?>"
+		 data-element-type-id="<?php echo $element->elementType->id ?>"
+		 data-element-type-class="<?php echo $element->elementType->class_name ?>"
+		 data-element-type-name="<?php echo $element->elementType->name ?>"
+		 data-element-display-order="<?php echo $element->elementType->display_order ?>">
+	<div id="div_Element_OphDrPrescription_Details_prescription_items" class="element-fields">
+		<div class="row field-row">
+			<div class="large-6 column">
+				<fieldset class="row field-row">
+					<legend class="large-4 column">
+						Add Item
+					</legend>
+					<div class="large-8 column">
+						<div class="field-row">
+							<?php echo CHtml::dropDownList('common_drug_id', null, CHtml::listData($element->commonDrugs(), 'id', 'tallmanlabel'), array('empty' => '-- Select common --')); ?>
+						</div>
+						<div class="field-row">
+							<?php
+							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+								'name' => 'drug_id',
+								'id' => 'autocomplete_drug_id',
+								'source' => "js:function(request, response) {
+									$.getJSON('".$this->createUrl('DrugList')."', {
+										term : request.term,
+										type_id: $('#drug_type_id').val(),
+										preservative_free: ($('#preservative_free').is(':checked') ? '1' : ''),
+									}, response);
 								}",
-											),
-											'htmlOptions' => array(
-												'placeholder' => 'or search formulary',
-											),
-										));
-									?>
-								</div>
-							</div>
-						</fieldset>
-					</div>
-					<div class="large-6 column">
-						<fieldset>
-							<legend><em>Filtered by:</em></h5>
-							</legend>
-							<label class="inline" for="">Type:</label>
-							<?php echo CHtml::dropDownList('drug_type_id', null, $element->drugTypes(), array('class' => 'drugFilter', 'empty' => '-- Select --')); ?>
-							<label class="inline highlight">
-								No preservative
-								<?php echo CHtml::checkBox('preservative_free', null, array('class' => 'drugFilter'))?>
-							</label>
-						</fieldset>
-					</div>
-				</div>
-				<div class="row field-row">
-					<div class="large-2 column">
-						<label for="">Add Standard Set</label>
-					</div>
-					<div class="large-10 column">
-						<?php echo CHtml::dropDownList('drug_set_id', null, CHtml::listData($element->drugSets(), 'id', 'name'), array('empty' => '-- Select --')); ?>
-					</div>
-				</div>
-				<div class="row field-row">
-					<div class="large-2 column">
-						<div class="field-label">Other Actions
+								'options' => array(
+									'select' => "js:function(event, ui) {
+										addItem(ui.item.value, ui.item.id);
+										$(this).val('');
+										return false;
+									}",
+								),
+								'htmlOptions' => array(
+									'placeholder' => 'or search formulary',
+								)
+							));?>
 						</div>
 					</div>
-					<div class="large-10 column">
-						<?php if ($this->getPreviousPrescription($this->patient, $element->id)) { ?>
-							<button type="button" class="classy blue mini button small"
-									id="repeat_prescription" name="repeat_prescription">
-								<span class="button-span button-span-blue">Add Repeat Prescription</span>
-							</button>
-						<?php } ?>
-						<button type="button" class="small"
-								id="clear_prescription" name="clear_prescription">
-							Clear Prescription</button>
-					</div>
-				</div>
+				</fieldset>
 			</div>
-		</section>
+			<div class="large-6 column">
+				<fieldset>
+					<legend><em>Filtered by:</em></h5>
+					</legend>
+					<label class="inline" for="">Type:</label>
+					<?php echo CHtml::dropDownList('drug_type_id', null, $element->drugTypes(), array('class' => 'drugFilter', 'empty' => '-- Select --')); ?>
+					<label class="inline highlight">
+						No preservative
+						<?php echo CHtml::checkBox('preservative_free', null, array('class' => 'drugFilter'))?>
+					</label>
+				</fieldset>
+			</div>
+		</div>
+		<div class="row field-row">
+			<div class="large-2 column">
+				<label for="drug_set_id">Add Standard Set:</label>
+			</div>
+			<div class="large-10 column">
+				<?php echo CHtml::dropDownList('drug_set_id', null, CHtml::listData($element->drugSets(), 'id', 'name'), array('empty' => '-- Select --')); ?>
+			</div>
+		</div>
+		<div class="row field-row">
+			<div class="large-2 column">
+				<div class="field-label">Other Actions</div>
+			</div>
+			<div class="large-10 column">
+				<?php if ($this->getPreviousPrescription($this->patient, $element->id)) { ?>
+					<button type="button" class="classy blue mini button small"
+							id="repeat_prescription" name="repeat_prescription">
+						<span class="button-span button-span-blue">Add Repeat Prescription</span>
+					</button>
+				<?php } ?>
+				<button type="button" class="small"
+						id="clear_prescription" name="clear_prescription">
+					Clear Prescription</button>
+			</div>
+		</div>
 	</div>
-</div>
+</section>
 
 <input type="hidden" name="prescription_items_valid" value="1" />
 <table class="prescriptions" id="prescription_items">
@@ -127,17 +122,11 @@
 	</tbody>
 </table>
 
-<div class="row">
-	<div class="large-12 column">
-		<section class="element">
-			<div class="element-fields">
-				<div class="row field-row">
-					<?php echo $form->textArea($element, 'comments', array('rows' => 4, 'cols' => 60)) ?>
-				</div>
-			</div>
-		</section>
+<section class="element">
+	<div class="element-fields">
+		<?php echo $form->textArea($element, 'comments', array('rows' => 4)) ?>
 	</div>
-</div>
+</section>
 
 
 <script type="text/javascript">
