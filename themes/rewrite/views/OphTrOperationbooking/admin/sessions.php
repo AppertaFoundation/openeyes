@@ -160,7 +160,6 @@
 				<?php echo $this->renderPartial('_pagination',array(
 						'page' => $sessions['page'],
 						'pages' => $sessions['pages'],
-						'onePageOnly' => true,
 					))?>
 				<?php echo EventAction::button('Add', 'add_session', null, array('class' => 'small'))->toHtml()?>
 				<?php echo EventAction::button('Delete', 'delete_session', null, array('class' => 'small'))->toHtml()?>
