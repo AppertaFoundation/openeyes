@@ -1,4 +1,4 @@
-<div class="large-10 column event phasing edit">
+<div class="large-10 column event ophdrprescription edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">
@@ -14,65 +14,61 @@
 	<div class="event-content">
 		<h2 class="event-title">Prescription</h2>
 
-		<div class="row">
-			<div class="large-12 column">
-
-				<section class="element">
-					<div class="element-fields">
-						<div class="row field-row">
-							<div class="large-6 column">
-								<fieldset class="row field-row">
-									<legend class="large-4 column">
-										Add Item:
-									</legend>
-									<div class="large-8 column">
-										<div class="field-row">
-											<select>
-												<option>-- Select --</option>
-											</select>
-										</div>
-										<div class="field-row">
-											<input type="text" placeholder="Or search formulary..." />
-										</div>
-									</div>
-								</fieldset>
-							</div>
-							<div class="large-6 column">
-								<fieldset>
-									<legend><em>Filtered by:</em></legend>
-									<label class="inline" for="">Type:</label>
+		<section class="element">
+			<div class="element-fields">
+				<div class="row field-row">
+					<div class="large-6 column">
+						<fieldset class="row field-row">
+							<legend class="large-4 column">
+								Add Item:
+							</legend>
+							<div class="large-8 column">
+								<div class="field-row">
 									<select>
 										<option>-- Select --</option>
 									</select>
-									<label class="inline highlight">
-										No preservative
-										<input type="checkbox" />
-									</label>
-								</fieldset>
+								</div>
+								<div class="field-row">
+									<input type="text" placeholder="Or search formulary..." />
+								</div>
 							</div>
-						</div>
-						<div class="row field-row">
-							<div class="large-2 column">
-								<label for="">Add Standard Set</label>
-							</div>
-							<div class="large-10 column">
-								<select>
-									<option>-- Select --</option>
-								</select>
-							</div>
-						</div>
-						<div class="row field-row">
-							<div class="large-2 column">
-								<div class="field-label">Other Actions:</div>
-							</div>
-							<div class="large-10 column">
-								<button class="small">Clear Prescription</button>
-							</div>
-						</div>
+						</fieldset>
 					</div>
-				</section>
+					<div class="large-6 column">
+						<fieldset>
+							<legend><em>Filtered by:</em></legend>
+							<label class="inline" for="">Type:</label>
+							<select>
+								<option>-- Select --</option>
+							</select>
+							<label class="inline highlight">
+								No preservative
+								<input type="checkbox" />
+							</label>
+						</fieldset>
+					</div>
+				</div>
+				<div class="row field-row">
+					<div class="large-2 column">
+						<label for="">Add Standard Set</label>
+					</div>
+					<div class="large-10 column">
+						<select>
+							<option>-- Select --</option>
+						</select>
+					</div>
+				</div>
+				<div class="row field-row">
+					<div class="large-2 column">
+						<div class="field-label">Other Actions:</div>
+					</div>
+					<div class="large-10 column">
+						<button class="small">Clear Prescription</button>
+					</div>
+				</div>
 			</div>
-		</div>
+		</section>
+
 
 		<!-- Added prescription items -->
 		<table class="prescriptions">
@@ -267,21 +263,17 @@
 			</tbody>
 		</table>
 
-		<div class="row">
-			<div class="large-12 column">
-				<section class="element">
-					<div class="element-fields">
-						<div class="row field-row">
-							<div class="large-2 column">
-								<label for="">Comments:</label>
-							</div>
-							<div class="large-10 column">
-								<textarea placeholder="Enter comments..." /></textarea>
-							</div>
-						</div>
+		<section class="element">
+			<div class="element-fields">
+				<div class="row field-row">
+					<div class="large-2 column">
+						<label for="">Comments:</label>
 					</div>
-				</section>
+					<div class="large-10 column">
+						<textarea placeholder="Enter comments..." /></textarea>
+					</div>
+				</div>
 			</div>
-		</div>
+		</section>
 	</div>
 </div>

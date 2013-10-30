@@ -18,16 +18,14 @@
  */
 ?>
 
-<div class="element-data">
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_standard_intervention_exists') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side . '_standard_intervention_exists'} ? 'Yes' : 'No'?></div>
-		</div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_standard_intervention_exists') ?>:</div>
 	</div>
-
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_standard_intervention_exists'} ? 'Yes' : 'No'?></div>
+	</div>
+</div>
 
 <?php if ($element->{$side . '_standard_intervention_exists'}) { ?>
 	<div class="row data-row">
@@ -67,20 +65,20 @@
 	</div>
 
 	<?php if ($element->needDeviationReasonForSide($side)) { ?>
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_deviationreasons') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value">
-				<ul>
-					<?php foreach ($element->{$side . '_deviationreasons'} as $dr) {
-						echo "<li>" . $dr->name . "</li>";
-					}?>
-				</ul>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label"><?php echo $element->getAttributeLabel($side . '_deviationreasons') ?>:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value">
+					<ul>
+						<?php foreach ($element->{$side . '_deviationreasons'} as $dr) {
+							echo "<li>" . $dr->name . "</li>";
+						}?>
+					</ul>
+				</div>
 			</div>
 		</div>
-	</div>
 	<?php }?>
 <?php } else { ?>
 	<div class="row data-row">
@@ -102,23 +100,23 @@
 	</div>
 <?php }?>
 
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_patient_different') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side . '_patient_different'} ?></div>
-		</div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_patient_different') ?>:</div>
 	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_patient_different'} ?></div>
+	</div>
+</div>
 
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_patient_gain') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side . '_patient_gain'} ?></div>
-		</div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_patient_gain') ?>:</div>
 	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_patient_gain'} ?></div>
+	</div>
+</div>
 
 <?php if ($element->{$side . '_previnterventions'}) { ?>
 	<div class="row data-row">
@@ -126,15 +124,13 @@
 			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_previnterventions') ?>:</div>
 		</div>
 		<div class="large-8 column">
-			<div class="data-value">
-		<?php
-			foreach ($element->{$side . '_previnterventions'} as $previntervention) {
-				$this->renderPartial('view_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
-					'pastintervention' => $previntervention,
-				));
-			}
-		?>
-			</div>
+			<?php
+				foreach ($element->{$side . '_previnterventions'} as $previntervention) {
+					$this->renderPartial('view_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
+						'pastintervention' => $previntervention,
+					));
+				}
+			?>
 		</div>
 	</div>
 <?php } ?>
@@ -145,7 +141,6 @@
 			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_relevantinterventions') ?>:</div>
 		</div>
 		<div class="large-8 column">
-			<div class="data-value">
 			<?php
 			foreach ($element->{$side . '_relevantinterventions'} as $relevantintervention) {
 				$this->renderPartial('view_OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention', array(
@@ -153,19 +148,19 @@
 					));
 			}
 			?>
-			</div>
 		</div>
 	</div>
 <?php } ?>
 
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_patient_factors') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side . '_patient_factors'} ? 'Yes' : 'No'?></div>
-		</div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_patient_factors') ?>:</div>
 	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_patient_factors'} ? 'Yes' : 'No'?></div>
+	</div>
+</div>
+
 <?php if ($element->{$side . '_patient_factors'}) { ?>
 	<div class="row data-row">
 		<div class="large-4 column">
@@ -177,23 +172,23 @@
 	</div>
 <?php } ?>
 
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_patient_expectations') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side . '_patient_expectations'} ?></div>
-		</div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_patient_expectations') ?>:</div>
 	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_patient_expectations'} ?></div>
+	</div>
+</div>
 
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_start_period_id') ?>:</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side . '_start_period'}->name ?></div>
-		</div>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_start_period_id') ?>:</div>
 	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_start_period'}->name ?></div>
+	</div>
+</div>
 
 <?php if ($element->{$side . "_start_period"}->urgent) { ?>
 	<div class="row data-row">
@@ -221,4 +216,3 @@
 		</div>
 	</div>
 <?php } ?>
-	</div>

@@ -17,39 +17,35 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $this->beginContent('//patient/event_container', array()); ?>
+<?php $this->beginContent('//patient/event_container'); ?>
 
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<?php
-	// Event actions
-	if ($this->canPrint()) {
-		$this->event_actions[] = EventAction::button('Print', 'print', null, array('id' => 'et_print', 'class'=>'button small'));
-	}
-?>
+	<?php
+		// Event actions
+		if ($this->canPrint()) {
+			$this->event_actions[] = EventAction::button('Print', 'print', null, array('id' => 'et_print', 'class'=>'button small'));
+		}
+	?>
 
+	<?php $this->renderPartial('//base/_messages'); ?>
 
-<?php $this->renderPartial('//base/_messages'); ?>
+	<?php if (Element_OphDrPrescription_Details::model()->find('event_id=?',array($this->event->id))->draft) {?>
+		<div class="alert-box alert with-icon">
+			This prescription is a draft and can still be edited
+		</div>
+	<?php }?>
 
-<?php if (Element_OphDrPrescription_Details::model()->find('event_id=?',array($this->event->id))->draft) {?>
-	<div class="alert-box alert with-icon">
-		This prescription is a draft and can still be edited
-	</div>
-<?php }?>
-
-<div>
 	<?php $this->renderDefaultElements($this->action->id); ?>
 	<?php $this->renderOptionalElements($this->action->id); ?>
-	<div class="cleartall"></div>
-</div>
 
-<script type="text/javascript">
-	<?php if (isset(Yii::app()->session['print_prescription'])) {
-		unset(Yii::app()->session['print_prescription']); ?>
-	$(document).ready(function() {
-		do_print_prescription();
-	});
-	<?php } ?>
-</script>
+	<script type="text/javascript">
+		<?php if (isset(Yii::app()->session['print_prescription'])) {
+			unset(Yii::app()->session['print_prescription']); ?>
+		$(document).ready(function() {
+			do_print_prescription();
+		});
+		<?php } ?>
+	</script>
 
 <?php $this->endContent() ;?>

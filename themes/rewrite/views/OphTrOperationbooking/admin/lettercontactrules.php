@@ -18,24 +18,24 @@
  */
 ?>
 <div class="box admin">
-		<form id="rulestest" class="panel">
-			<h2>Test:</h2>
-			<div class="row field-row">
-				<div class="large-3 column">
+	<form id="rulestest" class="panel">
+		<h2>Test:</h2>
+		<div class="row field-row">
+			<div class="large-3 column">
 				<?php echo CHtml::dropDownList('lcr_site_id','',CHtml::listData(Site::model()->findAll(array('order'=>'name asc','condition'=>'institution_id = 1')),'id','name'),array('empty'=>'- Site -'))?>
-				</div>
-				<div class="large-3 column">
-				<?php echo CHtml::dropDownList('lcr_subspecialty_id','',CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty(),'id','name'),array('empty'=>'- Subspecialty -'))?>
-				</div>
-				<div class="large-3 column">
-				<?php echo CHtml::dropDownList('lcr_firm_id','',array(),array('empty'=>'- Firm -'))?>
-				</div>
-				<div class="large-3 column">
-				<?php echo CHtml::dropDownList('lcr_theatre_id','',array(),array('empty'=>'- Theatre -'))?>
-				</div>
 			</div>
-			<div id="nomatch" style="display: none; color: #f00;">No match</div>
-		</form>
+			<div class="large-3 column">
+				<?php echo CHtml::dropDownList('lcr_subspecialty_id','',CHtml::listData(Subspecialty::model()->findAllByCurrentSpecialty(),'id','name'),array('empty'=>'- Subspecialty -'))?>
+			</div>
+			<div class="large-3 column">
+				<?php echo CHtml::dropDownList('lcr_firm_id','',array(),array('empty'=>'- Firm -'))?>
+			</div>
+			<div class="large-3 column">
+				<?php echo CHtml::dropDownList('lcr_theatre_id','',array(),array('empty'=>'- Theatre -'))?>
+			</div>
+		</div>
+		<div id="nomatch" style="display: none; color: #f00;">No match</div>
+	</form>
 
 	<div class="reportInputs">
 		<h3 class="georgia">Letter contact rules</h3>
@@ -43,8 +43,8 @@
 			<form id="rules">
 				<?php
 				$this->widget('CTreeView',array(
-					'data' => $data,
-				))?>
+						'data' => $data,
+					))?>
 			</form>
 		</div>
 	</div>

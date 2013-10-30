@@ -19,52 +19,101 @@
 ?>
 
 
-<div class="pastintervention-view">
-	<div>
-		<div class="label"><?php echo $pastintervention->getAttributeLabel('start_date'); ?>:</div>
-		<div class="data"><?php echo Helper::convertMySQL2NHS($pastintervention->start_date) ?></div>
-	</div>
-
-	<div>
-		<div class="label"><?php echo $pastintervention->getAttributeLabel('end_date'); ?>:</div>
-		<div class="data"><?php echo Helper::convertMySQL2NHS($pastintervention->end_date) ?></div>
-	</div>
-
-	<div>
-		<div class="label"><?php echo $pastintervention->getAttributeLabel('treatment_id'); ?>:</div>
-		<div class="data"><?php echo $pastintervention->getTreatmentName() ?></div>
-	</div>
-
-	<div>
-		<div class="label"><?php echo $pastintervention->getAttributeLabel('start_va'); ?>:</div>
-		<div class="data"><?php echo $pastintervention->start_va ?></div>
-	</div>
-
-	<div>
-		<div class="label"><?php echo $pastintervention->getAttributeLabel('end_va'); ?>:</div>
-		<div class="data"><?php echo $pastintervention->end_va ?></div>
-	</div>
-
-
-	<div>
-		<div class="label"><?php echo $pastintervention->getAttributeLabel('stopreason_id'); ?>:</div>
-		<div class="data">
-			<?php if ($pastintervention->stopreason_other) {
-				echo $pastintervention->stopreason_other;
-			} else {
-				echo $pastintervention->stopreason->name;
-			} ?>
+<div class="pastintervention-view panel previous-interventions">
+	<div class="row data-row">
+		<div class="large-6 column">
+			<div class="data-label">
+				<?php echo $pastintervention->getAttributeLabel('start_date'); ?>:
+			</div>
+		</div>
+		<div class="large-6 column">
+			<div class="data-value">
+				<?php echo Helper::convertMySQL2NHS($pastintervention->start_date) ?>
+			</div>
 		</div>
 	</div>
 
-	<div>
-		<div class="label"><?php echo $pastintervention->getAttributeLabel('comments'); ?>:</div>
-		<div class="data comments">
-		<?php if ($pastintervention->comments) {
-			echo $pastintervention->comments;
-		} else {
-			echo "None";
-		}
-		?></div>
+	<div class="row data-row">
+		<div class="large-6 column">
+			<div class="data-label">
+				<?php echo $pastintervention->getAttributeLabel('end_date'); ?>:
+			</div>
+		</div>
+		<div class="large-6 column">
+			<div class="data-value">
+				<?php echo Helper::convertMySQL2NHS($pastintervention->end_date) ?>
+			</div>
+		</div>
+	</div>
+
+	<div class="row data-row">
+		<div class="large-6 column">
+			<div class="data-label">
+				<?php echo $pastintervention->getAttributeLabel('treatment_id'); ?>:
+			</div>
+		</div>
+		<div class="large-6 column">
+			<div class="data-value">
+				<?php echo $pastintervention->getTreatmentName() ?>
+			</div>
+		</div>
+	</div>
+
+	<div class="row data-row">
+		<div class="large-6 column">
+			<div class="data-label">
+				<?php echo $pastintervention->getAttributeLabel('start_va'); ?>:
+			</div>
+		</div>
+		<div class="large-6 column">
+			<div class="data-value">
+				<?php echo $pastintervention->start_va ?>
+			</div>
+		</div>
+	</div>
+
+	<div class="row data-row">
+		<div class="large-6 column">
+			<div class="data-label">
+				<?php echo $pastintervention->getAttributeLabel('end_va'); ?>:
+			</div>
+		</div>
+		<div class="large-6 column">
+			<div class="data-value">
+				<?php echo $pastintervention->end_va ?>
+			</div>
+		</div>
+	</div>
+
+	<div class="row data-row">
+		<div class="large-6 column">
+			<div class="data-label">
+				<?php echo $pastintervention->getAttributeLabel('stopreason_id'); ?>:
+			</div>
+		</div>
+		<div class="large-6 column">
+			<div class="data-value">
+				<?php if ($pastintervention->stopreason_other) {
+					echo $pastintervention->stopreason_other;
+				} else {
+					echo $pastintervention->stopreason->name;
+				} ?>
+			</div>
+		</div>
+	</div>
+
+	<div class="row data-row">
+		<div class="large-12 column">
+			<div class="data-label data-row">
+				<?php echo $pastintervention->getAttributeLabel('comments'); ?>:
+			</div>
+			<div class="data-value comments">
+				<?php if ($pastintervention->comments) {
+					echo $pastintervention->comments;
+				} else {
+					echo "None";
+				}?>
+			</div>
+		</div>
 	</div>
 </div>

@@ -25,32 +25,32 @@
 
 	<div class="element-data">
 
-	<div class="row data-row">
-		<div class="large-2 column">
-			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('cerebrovascular_accident'))?>:</div>
+		<div class="row data-row">
+			<div class="large-2 column">
+				<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('cerebrovascular_accident'))?>:</div>
+			</div>
+			<div class="large-10 column">
+				<div class="data-value"><?php echo $element->cerebrovascular_accident ? 'Yes' : 'No'?></div>
+			</div>
 		</div>
-		<div class="large-10 column">
-			<div class="data-value"><?php echo $element->cerebrovascular_accident ? 'Yes' : 'No'?></div>
-		</div>
-	</div>
 
-	<div class="row data-row">
-		<div class="large-2 column">
-			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('ischaemic_attack'))?>:</div>
+		<div class="row data-row">
+			<div class="large-2 column">
+				<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('ischaemic_attack'))?>:</div>
+			</div>
+			<div class="large-10 column">
+				<div class="data-value"><?php echo $element->ischaemic_attack ? 'Yes' : 'No'?></div>
+			</div>
 		</div>
-		<div class="large-10 column">
-			<div class="data-value"><?php echo $element->ischaemic_attack ? 'Yes' : 'No'?></div>
-		</div>
-	</div>
 
-	<div class="row data-row">
-		<div class="large-2 column">
-			<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('myocardial_infarction'))?>:</div>
+		<div class="row data-row">
+			<div class="large-2 column">
+				<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('myocardial_infarction'))?>:</div>
+			</div>
+			<div class="large-10 column">
+				<div class="data-value"><?php echo $element->myocardial_infarction ? 'Yes' : 'No'?></div>
+			</div>
 		</div>
-		<div class="large-10 column">
-			<div class="data-value"><?php echo $element->myocardial_infarction ? 'Yes' : 'No'?></div>
-		</div>
-	</div>
 
-		</div>
+	</div>
 </section>
