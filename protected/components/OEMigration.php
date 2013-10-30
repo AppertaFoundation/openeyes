@@ -232,8 +232,8 @@ class OEMigration extends CDbMigration
 				$element_type_data['display_order'] : $display_order * 10;
 			//this is needed to se the parent id for those elements set as children elements of another element type
 			$thisParentId = isset($element_type_data['parent_element_type_id'])?
-				$this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : 'null';
-			$required = isset($element_type_data['required'])? $element_type_data['required'] : 'null';
+				$this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : NULL;
+			$required = isset($element_type_data['required'])? $element_type_data['required'] : NULL;
 
 
 			$this->insert('element_type', array(
