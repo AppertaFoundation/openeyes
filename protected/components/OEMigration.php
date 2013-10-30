@@ -231,25 +231,21 @@ class OEMigration extends CDbMigration
 			$confirmedDisplayOrder = isset($element_type_data['display_order'])?
 				$element_type_data['display_order'] : $display_order * 10;
 			//this is needed to se the parent id for those elements set as children elements of another element type
-			if(isset($element_type_data['parent_element_type_id'])){
-				$thisParentId = $this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']);
-				$this->insert('element_type', array(
-					'name' => $element_type_data['name'],
-					'class_name' => $element_type_class,
-					'event_type_id' => $event_type_id,
-					'display_order' => $confirmedDisplayOrder,
-					'default' => $default,
-					'parent_element_type_id' => $thisParentId
-				));
-			}else{
-				$this->insert('element_type', array(
-					'name' => $element_type_data['name'],
-					'class_name' => $element_type_class,
-					'event_type_id' => $event_type_id,
-					'display_order' => $confirmedDisplayOrder,
-					'default' => $default,
-				));
-			}
+			$thisParentId = isset($element_type_data['parent_element_type_id'])?
+				$this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : 'null';
+			$required = isset($element_type_data['required'])? $element_type_data['required'] : 'null';
+
+
+			$this->insert('element_type', array(
+				'name' => $element_type_data['name'],
+				'class_name' => $element_type_class,
+				'event_type_id' => $event_type_id,
+				'display_order' => $confirmedDisplayOrder,
+				'default' => $default,
+				'parent_element_type_id' => $thisParentId,
+				'required' =>$required
+			));
+
 			echo 'Added element type, element_type_class: ' . $element_type_class .
 				' element type properties: ' .   var_export($element_type_data, true) . ' event_type_id: ' . $event_type_id . " \n";
 
