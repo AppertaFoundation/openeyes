@@ -43,22 +43,16 @@
 				<td><?php echo $ward->restrictionText?></td>
 			<?php }?>
 			</tbody>
-			<tfoot>
-			<tr>
-				<td colspan="8">
-			<?php echo EventAction::button('Add', 'add_ward', null, array('class' => 'small', 'id'=>'et_add_ward'))->toHtml()?>
-			<?php echo EventAction::button('Delete', 'delete_ward', null, array('class' => 'small'))->toHtml()?>
-				</td>
-			</tr>
-			</tfoot>
 		</table>
+		<?php echo EventAction::link('Add', '#', null, array('class' => 'small button', 'id'=>'et_add_ward'))->toHtml()?>
+		<?php echo EventAction::link('Delete', '#', null, array('class' => 'small button','id'=>'et_delete_ward'))->toHtml()?>
 	</form>
 </div>
 
 <div id="confirm_delete_wards" title="Confirm delete ward" style="display: none;">
 	<div>
 		<div id="delete_wards">
-			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
+			<div class="alert-box alert with-icon">
 				<strong>WARNING: This will remove the wards from the system.<br/>This action cannot be undone.</strong>
 			</div>
 			<p>
