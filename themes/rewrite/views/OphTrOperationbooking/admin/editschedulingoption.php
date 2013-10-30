@@ -19,31 +19,26 @@
 
 ?>
 <div class="box admin">
-	<h2><?php echo $theatre->id ? 'Edit' : 'Add'?> theatre</h2>
+	<h2 class="georgia"><?php echo $option->id ? 'Edit' : 'Add'?> ward</h2>
 	<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'adminform',
 			'enableAjaxValidation'=>false,
 			'htmlOptions' => array('class'=>'sliding'),
-			'focus'=>'#username'
+			'focus'=>'#OphTrOperationbooking_ScheduleOperation_Options_name',
 		))?>
-	<?php echo $form->dropDownList($theatre,'site_id',Site::model()->getListForCurrentInstitution(),array('empty'=>'- Site -'))?>
-	<?php echo $form->textField($theatre,'name')?>
-	<?php echo $form->textField($theatre,'code',array('size'=>10))?>
-	<?php echo $form->dropDownList($theatre,'ward_id',CHtml::listData(OphTrOperationbooking_Operation_Ward::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
+	<?php echo $form->textField($option,'name')?>
 	<?php $this->endWidget()?>
 </div>
 <?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
-
-<?php echo EventAction::button('Save', 'save', null , array('class' => 'small'))->toHtml()?>
-<?php echo EventAction::button('Cancel', 'cancel', array('level' => 'warning'), array('class' => 'small'))->toHtml()?>
+<?php echo EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
+<?php echo EventAction::button('Cancel', 'cancel', array('level' => 'warning'), array('class' => 'button small'))->toHtml()?>
 <img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-
 <script type="text/javascript">
 	handleButton($('#et_cancel'),function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewTheatres';
+		window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewSchedulingOptions';
 	});
 	handleButton($('#et_save'),function(e) {
 		$('#adminform').submit();
