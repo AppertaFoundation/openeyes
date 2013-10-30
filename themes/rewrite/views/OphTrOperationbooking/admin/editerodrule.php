@@ -19,7 +19,7 @@
 
 ?>
 <div class="box admin">
-	<h2><?php echo $ward->id ? 'Edit' : 'Add'?> ward</h2>
+	<h2 class="georgia"><?php echo $erod->id ? 'Edit' : 'Add'?> EROD rule</h2>
 	<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -28,28 +28,20 @@
 			'htmlOptions' => array('class'=>'sliding'),
 			'focus'=>'#username'
 		))?>
-	<?php echo $form->dropDownList($ward,'site_id',Site::model()->getListForCurrentInstitution(),array('empty'=>'- Site -'))?>
-	<?php echo $form->textField($ward,'name')?>
-	<?php echo $form->textField($ward,'long_name')?>
-	<?php echo $form->textField($ward,'code',array('size'=>10))?>
-	<?php echo $form->radioBoolean($ward,'restriction_male')?>
-	<?php echo $form->radioBoolean($ward,'restriction_female')?>
-	<?php echo $form->radioBoolean($ward,'restriction_child')?>
-	<?php echo $form->radioBoolean($ward,'restriction_adult')?>
-	<?php echo $form->radioBoolean($ward,'restriction_observation')?>
+	<?php echo $form->dropDownList($erod,'subspecialty_id',CHtml::listData(Subspecialty::model()->findAll(array('order'=>'name')),'id','name'),array('style'=>'margin-bottom:6px;','empty'=>'- Subspecialty -'))?>
+	<?php echo $form->multiSelectList($erod, 'Firms', 'firms', 'item_id', Firm::model()->getListWithSpecialties(), array(), array('empty' => '- Firms -', 'label' => 'Firms'))?>
 	<?php $this->endWidget()?>
-
-	<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
 </div>
+<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
 
-<?php echo EventAction::button('Save', 'save', array('level' => 'secondary'), array('class' => 'button small'))->toHtml()?>
-<?php echo EventAction::button('Cancel', 'cancel', array('level' => 'warning'), array('class' => 'button small'))->toHtml()?>
+<?php echo EventAction::button('Save', 'save', null,array('class'=>'button small'))->toHtml()?>&nbsp;
+<?php echo EventAction::button('Cancel', 'cancel',  array('level' => 'warning'),array('class'=>'button small'))->toHtml()?>
 <img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 
 <script type="text/javascript">
-	handleButton($('#et_cancel'),function(e) {s
+	handleButton($('#et_cancel'),function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewWards';
+		window.location.href = baseUrl+'/OphTrOperationbooking/admin/viewERODRules';
 	});
 	handleButton($('#et_save'),function(e) {
 		$('#adminform').submit();
