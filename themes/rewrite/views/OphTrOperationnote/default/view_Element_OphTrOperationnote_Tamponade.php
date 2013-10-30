@@ -18,25 +18,50 @@
  */
 ?>
 
-<h4><?php echo $element->elementType->name ?></h4>
+<section class="element">
 
-<div class="cols2 colsX clearfix">
-	<div class="left">
-		<table class="subtleWhite normalText">
-			<tbody>
-				<tr>
-					<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('gas_type_id'))?></td>
-					<td><span class="big"><?php echo $element->gas_type->name?></span></td>
-				</tr>
-				<tr>
-					<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('gas_percentage_id'))?></td>
-					<td><span class="big"><?php echo $element->gas_percentage->value?>%</span></td>
-				</tr>
-				<tr>
-					<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel('gas_volume_id'))?></td>
-					<td><span class="big"><?php echo $element->gas_volume ? $element->gas_volume->value : '-'?></span></td>
-				</tr>
-			</tbody>
-		</table>
+	<h3 class="element-title highlight"><?php echo $element->elementType->name ?></h3>
+
+	<div class="element-data">
+		<div class="row">
+			<div class="large-6 column end">
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label">
+							<?php echo CHtml::encode($element->getAttributeLabel('gas_type_id'))?>
+						</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value">
+							<?php echo $element->gas_type->name?>
+						</div>
+					</div>
+				</div>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label">
+							<?php echo CHtml::encode($element->getAttributeLabel('gas_percentage_id'))?>
+						</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value">
+							<?php echo $element->gas_percentage->value?>%
+						</div>
+					</div>
+				</div>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label">
+							<?php echo CHtml::encode($element->getAttributeLabel('gas_volume_id'))?>
+						</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value">
+							<?php echo $element->gas_volume ? $element->gas_volume->value : '-'?>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
+</section>

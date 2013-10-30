@@ -23,7 +23,7 @@
 
 	<div class="element-data">
 		<div class="row">
-			<div class="large-6 column highlight">
+			<div class="large-6 column data-value highlight">
 				<div class="row data-row">
 					<div class="large-4 column">
 						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('incision_site_id'))?>:</div>
@@ -73,22 +73,22 @@
 					</div>
 				</div>
 				<?php if ($element->getSetting('fife')) {?>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('intraocular_solution_id'))?>:</div>
+					<div class="row data-row">
+						<div class="large-4 column">
+							<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('intraocular_solution_id'))?>:</div>
+						</div>
+						<div class="large-8 column">
+							<div class="data-value"><?php echo $element->intraocular_solution ? $element->intraocular_solution->name : 'Not specified'?></div>
+						</div>
 					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->intraocular_solution ? $element->intraocular_solution->name : 'Not specified'?></div>
+					<div class="row data-row">
+						<div class="large-4 column">
+							<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('skin_preparation_id'))?>:</div>
+						</div>
+						<div class="large-8 column">
+							<div class="data-value"><?php echo $element->skin_preparation ? $element->skin_preparation->name : 'Not specified'?></div>
+						</div>
 					</div>
-				</div>
-				<div class="row data-row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('skin_preparation_id'))?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->skin_preparation ? $element->skin_preparation->name : 'Not specified'?></div>
-					</div>
-				</div>
 				<?php }?>
 			</div>
 			<div class="large-6 column">
@@ -131,31 +131,27 @@
 		</div>
 		<div class="large-4 column">
 			<h3 class="data-title">Cataract devices</h3>
-			<div class="element-data highlight">
-				<div class="data-value none">
-					<?php if (!$element->operative_devices) {?>
-						None
-					<?php } else {?>
-							<?php foreach ($element->operative_devices as $device) {?>
-								<?php echo $device->name?><br/>
-							<?php }?>
-					<?php }?>
-				</div>
+			<div class="data-value highlight">
+				<?php if (!$element->operative_devices) {?>
+					None
+				<?php } else {?>
+						<?php foreach ($element->operative_devices as $device) {?>
+							<?php echo $device->name?><br/>
+						<?php }?>
+				<?php }?>
 			</div>
 		</div>
 		<div class="large-4 column">
 			<h3 class="data-title">Cataract complications</h3>
-			<div class="element-data highlight">
-				<div class="data-value">
-					<?php if (!$element->complications && !$element->complication_notes) {?>
-						None
-					<?php } else {?>
-							<?php foreach ($element->complications as $complication) {?>
-								<?php echo $complication->name?><br/>
-							<?php }?>
-							<?php echo CHtml::encode($element->complication_notes)?>
-					<?php }?>
-				</div>
+			<div class="data-value highlight">
+				<?php if (!$element->complications && !$element->complication_notes) {?>
+					None
+				<?php } else {?>
+						<?php foreach ($element->complications as $complication) {?>
+							<?php echo $complication->name?><br/>
+						<?php }?>
+						<?php echo CHtml::encode($element->complication_notes)?>
+				<?php }?>
 			</div>
 		</div>
 	</div>
