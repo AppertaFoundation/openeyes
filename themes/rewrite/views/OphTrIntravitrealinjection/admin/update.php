@@ -18,7 +18,7 @@
  */
 ?>
 <div class="box admin">
-	<h2>Add <?php echo $title?></h2>
+	<h2>Edit <?php echo $title?></h2>
 
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
