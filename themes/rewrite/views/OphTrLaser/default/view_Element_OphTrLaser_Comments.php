@@ -28,7 +28,7 @@
 					<?php echo $element->getAttributeLabel('comments')?>:
 				</div>
 			</div>
-			<div clas="row data-row">
+			<div class="large-10 column">
 				<div class="data-value">
 					<?php echo CHtml::encode($element->textWithLineBreaks('comments'))?>
 				</div>
