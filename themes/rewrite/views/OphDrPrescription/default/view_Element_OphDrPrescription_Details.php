@@ -52,6 +52,7 @@
 
 <input type="hidden" id="et_ophdrprescription_draft" value="<?php echo $element->draft?>" />
 <input type="hidden" id="et_ophdrprescription_print" value="<?php echo $element->print?>" />
+
 <?php if ($element->comments) { ?>
 	<h3 class="element-title">
 		<?php echo CHtml::encode($element->getAttributeLabel('comments'))?>
@@ -61,5 +62,4 @@
 			<?php echo $element->textWithLineBreaks('comments')?>
 		</div>
 	</div>
-</div>
 <?php } ?>
