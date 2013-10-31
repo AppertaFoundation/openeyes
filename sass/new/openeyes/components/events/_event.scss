@@ -30,6 +30,9 @@ $oe-header-event-padding: emCalc(6px) emCalc(10px) 0 emCalc(10px) !default;
 	.event-content {
 		background-position: right top;
 		background-repeat: no-repeat;
+		form {
+			margin: 0;
+		}
 	}
 	.event-header {
 		@extend .clearfix;

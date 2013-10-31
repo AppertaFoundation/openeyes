@@ -127,7 +127,7 @@ $(document).ready(function() {
 			$(this).val(3); // Both eyes
 		});
 
-		element.find('.inactive').removeClass('inactive');
+		element.find('.side.inactive').removeClass('inactive');
 
 		e.preventDefault();
 	});

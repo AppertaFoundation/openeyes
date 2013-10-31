@@ -43,7 +43,7 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
 <?php echo '<?php'?> $this->displayErrors($errors)<?php echo "?>\n"?>
 <?php echo '<?php'?> $this->renderDefaultElements($this->action->id, $form)<?php echo "?>\n"?>
 <?php echo '<?php'?> $this->renderOptionalElements($this->action->id, $form)<?php echo "?>\n"?>
-<?php echo '<?php'?> $this->displayErrors($errors)<?php echo "?>\n"?>
+<?php echo '<?php'?> $this->displayErrors($errors, true)<?php echo "?>\n"?>
 
 <?php echo '<?php'?> $this->endWidget()<?php echo "?>\n"?>
 

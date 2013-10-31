@@ -20,6 +20,6 @@
 <?php
 $this->renderPartial(
 	'_form',
-	array('element' => $element, 'data' => $data, 'form' => $form)
+	array('element' => $element, 'data' => $data, 'form' => $form, 'child' => $child)
 );
 ?>

@@ -64,9 +64,8 @@
 			</div>
 			<div class="large-6 column">
 				<fieldset>
-					<legend><em>Filtered by:</em></h5>
-					</legend>
-					<label class="inline" for="">Type:</label>
+					<legend><em>Filtered by:</em></legend>
+					<label class="inline" for="drug_type_id">Type:</label>
 					<?php echo CHtml::dropDownList('drug_type_id', null, $element->drugTypes(), array('class' => 'drugFilter', 'empty' => '-- Select --')); ?>
 					<label class="inline highlight">
 						No preservative

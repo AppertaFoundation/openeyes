@@ -4147,14 +4147,18 @@ tfoot.pagination-container .pagination li {
   background-position: right top;
   background-repeat: no-repeat;
 }
-/* line 34, ../sass/new/openeyes/components/events/_event.scss */
+/* line 33, ../sass/new/openeyes/components/events/_event.scss */
+.event .event-content form {
+  margin: 0;
+}
+/* line 37, ../sass/new/openeyes/components/events/_event.scss */
 .event .event-header {
   margin: 0 -0.625em;
   background: #eaddaf;
   border-bottom: 5px solid #a29d8a;
   padding: 0.375em 0.625em 0 0.625em;
 }
-/* line 41, ../sass/new/openeyes/components/events/_event.scss */
+/* line 44, ../sass/new/openeyes/components/events/_event.scss */
 .event .event-title {
   padding: 9px 0 9px 50px;
   font-size: 1.1875em;
@@ -4162,13 +4166,13 @@ tfoot.pagination-container .pagination li {
   background-position: left center;
   margin-left: 8px;
 }
-/* line 48, ../sass/new/openeyes/components/events/_event.scss */
+/* line 51, ../sass/new/openeyes/components/events/_event.scss */
 .event .metadata {
   border-top: 1px dotted #dae6f1;
   padding-top: 0.5em;
   margin: 10px;
 }
-/* line 52, ../sass/new/openeyes/components/events/_event.scss */
+/* line 55, ../sass/new/openeyes/components/events/_event.scss */
 .event .metadata .info {
   font-size: 0.75em;
   font-style: italic;
@@ -4176,11 +4180,11 @@ tfoot.pagination-container .pagination li {
   display: inline-block;
   padding-right: 15px;
 }
-/* line 59, ../sass/new/openeyes/components/events/_event.scss */
+/* line 62, ../sass/new/openeyes/components/events/_event.scss */
 .event .metadata .user {
   color: #333333;
 }
-/* line 64, ../sass/new/openeyes/components/events/_event.scss */
+/* line 67, ../sass/new/openeyes/components/events/_event.scss */
 .event .panel.comments {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;

@@ -503,7 +503,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 				// otherwise use the default layout
 				$this->renderPartial(
 						'_'.$action,
-						array('element' => $element, 'data' => $data, 'form' => $form)
+						array('element' => $element, 'data' => $data, 'form' => $form, 'child' => $element->elementType->parent_element_type_id)
 				);
 			}
 

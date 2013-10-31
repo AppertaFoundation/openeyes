@@ -52,7 +52,7 @@ if (isset($htmlOptions['div_class'])) {
 		<div class="multi-select multi-select-list">
 			<input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
 			<div class="field-row">
-				<select id="<?php echo $field?>" label="<?php echo $htmlOptions['label']?>" class="MultiSelectList" name="">
+				<select id="<?php echo $field?>" class="MultiSelectList" name="">
 					<option value=""><?php echo $htmlOptions['empty']?></option>
 					<?php foreach ($filtered_options as $value => $option) {
 						$attributes = array('value' => $value);
