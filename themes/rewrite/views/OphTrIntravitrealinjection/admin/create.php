@@ -17,29 +17,27 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
 <div class="box admin">
+	<h2>Add <?php echo $title?></h2>
 
 	<?php
-	$form=$this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'OphTrIntravitrealinjection_adminform',
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
 		'enableAjaxValidation'=>false,
-		'layoutColumns' => array(
-			'label' => 2,
-			'field' => 5
+		'htmlOptions' => array(
+				'enctype' => 'multipart/form-data'
 		)
-	));
+	))?>
 
-	$this->renderPartial('form_' . get_class($model), array(
+	<?php echo $form->errorSummary($model)?>
+
+	<?php
+	$this->renderPartial('form_'.get_class($model), array(
 			'model' => $model,
 			'form' => $form,
-	));
+	))?>
 
-	echo $form->formActions(array(
-		'submit' => $model->isNewRecord ? 'Create' : 'Save',
-		'cancel' => false,
-	));
+	<?php echo $form->formActions(array('cancel-uri'=>@$cancel_uri))?>
 
-	$this->endWidget();
-	?>
+	<?php $this->endWidget()?>
 </div>

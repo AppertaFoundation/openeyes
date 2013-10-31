@@ -34,10 +34,8 @@
 			data-side="right">
 			<div class="active-form">
 				<?php
-				$this->renderPartial('form_' . get_class($element) . '_fields',
-						array('side' => 'right', 'element' => $element, 'form' => $form));
 				$this->renderPartial('form_' . get_class($element) . '_OEEyeDraw',
-					array('side' => 'right', 'element' => $element));
+					array('side' => 'right', 'element' => $element, 'form' => $form));
 				?>
 
 			</div>
@@ -52,10 +50,8 @@
 			data-side="left">
 			<div class="active-form">
 				<?php
-				$this->renderPartial('form_' . get_class($element) . '_fields',
-					array('side' => 'left', 'element' => $element, 'form' => $form));
 				$this->renderPartial('form_' . get_class($element) . '_OEEyeDraw',
-					array('side' => 'left', 'element' => $element));
+					array('side' => 'left', 'element' => $element, 'form' => $form));
 				?>
 			</div>
 			<div class="inactive-form">

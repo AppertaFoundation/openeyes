@@ -29,3 +29,11 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
 		'attribute' => $side.'_eyedraw',
 ));
 ?>
+<div class="row data-row">
+	<div class="large-4 column">
+		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_lens_status_id') ?>:</div>
+	</div>
+	<div class="large-8 column">
+		<div class="data-value"><?php echo $element->{$side . '_lens_status'}->name ?></div>
+	</div>
+</div>
