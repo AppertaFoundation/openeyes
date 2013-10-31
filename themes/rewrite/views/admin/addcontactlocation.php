@@ -33,7 +33,6 @@
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'adminform',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array('class'=>'sliding'),
 		'focus'=>'#username'
 	))?>
 		<input type="hidden" name="contact_id" value="<?php echo $contact->id?>" />

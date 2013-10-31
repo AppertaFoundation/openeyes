@@ -35,7 +35,6 @@ $episode->audit('episode summary','view',false);
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'update-episode',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array('class'=>'sliding'),
 		'action'=>array('patient/updateepisode/'.$episode->id),
 ));
 ?>

@@ -26,10 +26,8 @@
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'opnote-create',
 			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
 			'focus'=>'#procedure_id',
 			'layoutColumns'=>array('label'=>2,'field'=>10),
-
 		));
 
 		// Event actions

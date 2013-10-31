@@ -63,7 +63,6 @@ $this->renderPartial('//base/_messages');
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'clinical-create',
 			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
 			'action' => Yii::app()->createURL($this->module->getName() . '/admin/addDiagnosis')
 	));
 
