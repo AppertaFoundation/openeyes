@@ -16,40 +16,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <h1><?php echo $title ?></h1>
 
 <?php
 $this->renderPartial('//base/_messages');
 ?>
-<div class="hidden" id="add-new-form" style="margin-bottom: 10px">
-	<?php
-	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'clinical-create',
-			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
-			'action' => Yii::app()->createURL($this->module->getName() . '/admin/addDiagnosis')
-	));
-
-	if ($parent_id) {
-		echo CHtml::hiddenField('parent_id', $parent_id);
-	}
-
-	$form->widget('application.widgets.DiagnosisSelection',array(
-			'field' => 'new_disorder_id',
-			'layout' => 'minimal',
-			'default' => false,
-			'callback' => 'OphCoTherapyapplication_AddDiagnosis',
-			'placeholder' => 'type the first few characters to search',
-	));
-
-	echo CHtml::hiddenField('disorder_id', '', array('id' => 'disorder_id'));
-
-	$this->endWidget();
-	?>
-</div>
-
 <div class="box admin">
 	<form id="admin_diagnoses">
 		<table class="grid">
@@ -85,4 +57,30 @@ $this->renderPartial('//base/_messages');
 			</tfoot>
 		</table>
 	</form>
+</div>
+<div class="hidden" id="add-new-form" style="margin-bottom: 10px">
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'clinical-create',
+			'enableAjaxValidation'=>false,
+			'htmlOptions' => array('class'=>'sliding'),
+			'action' => Yii::app()->createURL($this->module->getName() . '/admin/addDiagnosis')
+	));
+
+	if ($parent_id) {
+		echo CHtml::hiddenField('parent_id', $parent_id);
+	}
+
+	$form->widget('application.widgets.DiagnosisSelection',array(
+			'field' => 'new_disorder_id',
+			'layout' => 'minimal',
+			'default' => false,
+			'callback' => 'OphCoTherapyapplication_AddDiagnosis',
+			'placeholder' => 'type the first few characters to search',
+	));
+
+	echo CHtml::hiddenField('disorder_id', '', array('id' => 'disorder_id'));
+
+	$this->endWidget();
+	?>
 </div>

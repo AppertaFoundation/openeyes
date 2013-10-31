@@ -16,11 +16,52 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
+<h1><?php echo $title ?></h1>
 
-<div class="view">
+<?php
+$this->renderPartial('//base/_messages');
+?>
+<div class="hidden" id="add-new-form" style="margin-bottom: 10px">
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'clinical-create',
+			'enableAjaxValidation'=>false,
+			'htmlOptions' => array('class'=>'sliding'),
+			'action' => Yii::app()->createURL($this->module->getName() . '/admin/addTreatment')
+	));
 
-<a href="<?php echo Yii::app()->createUrl('OphCoTherapyapplication/admin/updateOphCoTherapyapplication_Treatment/', array('id'=> $data->id)) ?>"><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>: <?php echo $data->name ?></a>
+	$this->endWidget();
+	?>
+</div>
 
+<div class="box admin">
+	<form id="admin_treatments">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th><input type="checkbox" name="selectall" id="selectall" /></th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($model_list as $i => $model) {?>
+					<tr class="clickable" data-id="<?php echo $model->id?>" data-uri="OphCoTherapyapplication/admin/editTreatment/<?php echo $model->id?>">
+						<td><input type="checkbox" name="treatments[]" value="<?php echo $model->id?>" /></td>
+						<td>
+							<?php echo $model->name?>
+						</td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot class="pagination-container">
+				<tr>
+					<td colspan="2">
+						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphCoTherapyapplication/admin/addTreatment'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCoTherapyapplication/admin/deleteTreatments', 'data-object' => 'treatments'))->toHtml()?>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
 </div>
