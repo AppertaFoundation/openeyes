@@ -17,25 +17,27 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<div class="box admin">
+	<h2>Edit <?php echo $title?></h2>
 
-<div class="report curvybox white">
-	<div class="admin">
 	<?php
-	$form=$this->beginWidget('BaseEventTypeCActiveForm', array(
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'OphCoTherapyapplication_adminform',
 		'enableAjaxValidation'=>false,
-	));
+		'htmlOptions' => array(
+				'enctype' => 'multipart/form-data'
+		)
+	))?>
 
-	$this->renderPartial('form_' . get_class($model), array(
+	<?php echo $form->errorSummary($model)?>
+
+	<?php
+	$this->renderPartial('form_'.get_class($model), array(
 			'model' => $model,
 			'form' => $form,
-	));
-	?>
+	))?>
 
-	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
-	</div>
+	<?php echo $form->formActions(array('cancel-uri'=>'/OphCoTherapyapplication/admin/viewTreatments'))?>
 
-	<?php $this->endWidget(); ?>
-	</div>
+	<?php $this->endWidget()?>
 </div>
