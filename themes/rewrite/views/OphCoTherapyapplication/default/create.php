@@ -26,7 +26,6 @@
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 				'id'=>'clinical-create',
 				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
 				'layoutColumns' => array(
 				'label' => 2,
 				'field' => 10

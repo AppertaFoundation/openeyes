@@ -20,7 +20,7 @@
 
 <?php echo "<?php\n"?>
 $this->breadcrumbs=array($this->module->id);
-$this->beginContent('//patient/event_container', array());
+$this->beginContent('//patient/event_container');
 $this->moduleNameCssClass.=" highlight-fields";
 <?php echo "?>\n"?>
 

@@ -30,7 +30,10 @@
 	$previnterventions = array();
 	$relevantinterventions = array();
 	if (@$_POST[get_class($element)]) {
+
 		$exists = $_POST[get_class($element)][$side . '_standard_intervention_exists'];
+
+		// die(print_r($_POST));
 		$intervention_id = $_POST[get_class($element)][$side . '_intervention_id'];
 		if ($_POST[get_class($element)][$side . '_standard_previous'] == '0') {
 			if ($id = $_POST[get_class($element)][$side . '_intervention_id']) {
@@ -72,7 +75,7 @@
 </div>
 
 <div id="<?php echo get_class($element) . "_" . $side ?>_standard_intervention_details"
-	class="field-row<?php if ($exists != '1') {	echo ' hidden';}?>>">
+	class="f<?php if ($exists != '1') {	echo ' hidden';}?>>">
 
 	<?php
 	echo $form->dropDownList(
@@ -96,7 +99,7 @@
 			$opts['options'][$intervention->id] = array('data-description-label' => $intervention->description_label, 'data-is-deviation' => $intervention->is_deviation);
 		}
 	?>
-	<div class="elementField intervention" id="<?php echo get_class($element) . "_" . $side;?>_intervention">
+	<div class="intervention field-row" id="<?php echo get_class($element) . "_" . $side;?>_intervention">
 		<?php echo $form->radioButtons($element, $side . '_intervention_id', 'et_ophcotherapya_exceptional_intervention', $element->{$side . '_intervention_id'}, 1, false, false, false, $opts, $layoutColumns)?>
 	</div>
 
@@ -143,7 +146,7 @@
 </div>
 
 <div id="<?php echo get_class($element) . "_" . $side; ?>_standard_intervention_not_exists"
-	class="field-row<?php if ($exists != '0') { ' hidden';}?>">
+	class="field-row<?php if ($exists != '0') { echo ' hidden';}?>">
 	<?php echo $form->radioBoolean($element, $side . '_condition_rare', array(), $layoutColumns);?>
 	<?php echo $form->textArea($element, $side . '_incidence', array(), false, array(), $layoutColumns);?>
 </div>
@@ -269,5 +272,5 @@ foreach ($collections as $collection) {
 	$html_options['options'][(string) $collection->id] = array('data-order' => $collection->display_order);
 }
 */
-$form->multiSelectList($element, get_class($element) . '[' . $side . '_filecollections]', $side . '_filecollections', 'id', CHtml::listData($collections,'id','name'), array(), $html_options, $layoutColumns);
+$form->multiSelectList($element, get_class($element) . '[' . $side . '_filecollections]', $side . '_filecollections', 'id', CHtml::listData($collections,'id','name'), array(), $html_options, false, $layoutColumns);
 ?>

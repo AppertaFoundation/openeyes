@@ -25,7 +25,6 @@
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'adminform',
 			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
 			'focus'=>'#username'
 		))?>
 	<?php echo $form->dropDownList($theatre,'site_id',Site::model()->getListForCurrentInstitution(),array('empty'=>'- Site -'))?>

@@ -18,7 +18,7 @@
  */
 ?>
 
-<?php $this->beginContent('//patient/event_container', array()); ?>
+<?php $this->beginContent('//patient/event_container'); ?>
 	<?php
 		$this->breadcrumbs=array($this->module->id);
 		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
@@ -31,7 +31,6 @@
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'clinical-create',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array('class'=>'sliding'),
 		'layoutColumns' => array(
 			'label' => 2,
 			'field' => 10

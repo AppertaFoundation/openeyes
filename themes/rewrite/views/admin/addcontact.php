@@ -25,7 +25,6 @@
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'adminform',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array('class'=>'sliding'),
 		'focus'=>'#contactname',
 		'layoutColumns' => array(
 			'label' => 2,

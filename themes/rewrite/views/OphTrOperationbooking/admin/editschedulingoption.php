@@ -25,7 +25,6 @@
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'adminform',
 			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
 			'focus'=>'#OphTrOperationbooking_ScheduleOperation_Options_name',
 		))?>
 	<?php echo $form->textField($option,'name')?>

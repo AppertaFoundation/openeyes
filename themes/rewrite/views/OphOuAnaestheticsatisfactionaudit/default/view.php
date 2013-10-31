@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$this->beginContent('//patient/event_container', array());
+$this->beginContent('//patient/event_container');
 ?>
 	<?php
 		// Event actions

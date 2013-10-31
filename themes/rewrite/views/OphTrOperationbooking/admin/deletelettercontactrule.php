@@ -25,7 +25,6 @@
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'lcr_deleteform',
 			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
 			'focus'=>'#contactname'
 		))?>
 	<input type="hidden" name="delete" value="1" />

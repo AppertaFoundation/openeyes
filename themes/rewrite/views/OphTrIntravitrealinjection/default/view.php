@@ -19,7 +19,7 @@
 ?>
 
 <?php
-	$this->beginContent('//patient/event_container', array());
+	$this->beginContent('//patient/event_container');
 ?>
 
 	<?php

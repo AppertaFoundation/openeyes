@@ -25,7 +25,6 @@
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'adminform',
 			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
 			'focus'=>'#contactname'
 		))?>
 	<?php echo $form->dropDownList($rule,'rule_type_id',CHtml::listData(OphTrOperationbooking_Admission_Letter_Warning_Rule_Type::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Rule type -'))?>

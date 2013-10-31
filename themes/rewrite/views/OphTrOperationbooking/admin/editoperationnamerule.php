@@ -25,7 +25,6 @@
 			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 				'id'=>'adminform',
 				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
 				'focus'=>'#username'
 			))?>
 			<?php echo $form->dropDownList($rule,'theatre_id',CHtml::listData(OphTrOperationbooking_Operation_Theatre::model()->findAll(array('order'=>'name')),'id','name'),array('style'=>'margin-bottom:6px;','empty'=>'- Theatre -'))?>

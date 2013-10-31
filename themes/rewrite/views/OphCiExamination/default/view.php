@@ -17,8 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$this->breadcrumbs=array($this->module->id);
-$this->beginContent('//patient/event_container', array());
+$this->beginContent('//patient/event_container');
 ?>
 
 <?php
@@ -29,9 +28,5 @@ if ($this->canPrint()) {
 
 <h2 class="event-title"><?php echo $this->event_type->name?></h2>
 
-<div>
-	<?php $this->renderDefaultElements($this->action->id)?>
-	<div class="cleartall"></div>
-</div>
-
+<?php $this->renderDefaultElements($this->action->id)?>
 <?php $this->endContent() ;?>

@@ -25,7 +25,6 @@
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'adminform',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array('class'=>'sliding'),
 		'focus'=>'#username',
 		'layoutColumns'=>array(
 			'label' => 2,
@@ -49,7 +48,7 @@
 		<?php echo $form->passwordField($user,'password')?>
 		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
 		<?php echo $form->dropDownList($user,'access_level', $user->getAccessLevelOptions())?>
-		<?php echo $form->formActions(); ;?>
+		<?php echo $form->formActions();?>
 	<?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
