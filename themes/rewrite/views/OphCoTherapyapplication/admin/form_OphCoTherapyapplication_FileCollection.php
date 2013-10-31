@@ -18,10 +18,8 @@
  */
 ?>
 
-<?php
-	echo $form->textField($model,'name',array('size'=>40,'maxlength'=>40));
-	echo $form->textArea($model, 'summary', array('rows' => 8, 'cols' => 60) );
-?>
+<?php echo $form->textField($model, 'name', array('maxlength'=>40), array(), array('label' => 2, 'field' => 10))?>
+<?php	echo $form->textArea($model, 'summary', array(), false, array(), array('label' => 2, 'field' => 10))?>
 
 <?php
 	if ($model->files) {
