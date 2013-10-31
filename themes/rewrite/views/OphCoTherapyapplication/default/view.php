@@ -19,8 +19,10 @@
 ?>
 
 <?php
-$this->beginContent('//patient/event_container', array());
+$this->beginContent('//patient/event_container');
 ?>
+
+	<h2 class="event-title"><?php echo $this->event_type->name?></h2>
 
 	<?php
 	$this->renderPartial('//base/_messages');
@@ -39,11 +41,7 @@ $this->beginContent('//patient/event_container', array());
 		$this->event_actions[] = EventAction::link('Submit Application', Yii::app()->createUrl($this->event->eventType->class_name.'/default/processApplication/?event_id='.$this->event->id));
 	} else {
 		$warnings = $service->getProcessWarnings($this->event->id);
-	}
-
-	?>
-
-	<h2 class="event-title"><?php echo $this->event_type->name?></h2>
+	}?>
 
 	<?php
 		if (count($warnings)) {

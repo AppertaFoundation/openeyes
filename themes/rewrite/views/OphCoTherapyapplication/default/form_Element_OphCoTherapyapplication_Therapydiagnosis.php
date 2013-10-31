@@ -93,7 +93,7 @@ foreach ($l1_disorders as $disorder) {
 			</div>
 			<div class="inactive-form">
 				<div class="add-side">
-					<a href="#">Add left side<span class="icon-add-side"></span></a>
+					<a href="#">Add left side <span class="icon-add-side"></span></a>
 				</div>
 			</div>
 		</div>
