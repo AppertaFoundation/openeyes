@@ -17,42 +17,65 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-
-<h3><?php echo $model->isNewRecord ? 'Create' : 'Edit'; ?> Treatment</h3>
-
 <?php echo $form->errorSummary($model); ?>
 
-<?php echo $form->dropdownlist($model, 'drug_id', CHtml::listData($model->getTreatmentDrugs(), 'id', 'name'), array('empty' => '- Please select -', 'class' => 'clearfix'))?>
+<?php echo $form->dropdownlist($model, 'drug_id', CHtml::listData($model->getTreatmentDrugs(), 'id', 'name'), array('empty' => '- Please select -', 'class' => 'clearfix'), false, array('label' => 3, 'field' => 9))?>
 
-<?php echo $form->dropdownlist($model, 'decisiontree_id', CHtml::listData(OphCoTherapyapplication_DecisionTree::model()->findAll(),'id','name'),array('empty'=>'- Please select -'))?>
+<?php echo $form->dropdownlist($model, 'decisiontree_id', CHtml::listData(OphCoTherapyapplication_DecisionTree::model()->findAll(),'id','name'),array('empty'=>'- Please select -'), false, array('label' => 3, 'field' => 9))?>
 
-<?php echo $form->radioBoolean($model, 'contraindications_required', array(1 => 'Yes', 0 => 'No'), array('separator' => '&nbsp;')); ?>
+<?php echo $form->radioBoolean($model, 'contraindications_required', array(1 => 'Yes', 0 => 'No'), array('separator' => '&nbsp;', 'label' => 3, 'field' => 9))?>
 
-<?php echo $form->textField($model, 'template_code') ?>
+<?php echo $form->textField($model, 'template_code', array(), array(), array('label' => 3, 'field' => 9))?>
+
 <span class="info">The template code is used to determine what form is attached to application email. Leave blank for the default behaviour.</span>
 
 <hr />
 
-<?php echo $form->textfield($model, 'intervention_name') ?>
+<?php echo $form->textfield($model, 'intervention_name', array(), array(), array('label' => 3, 'field' => 9))?>
 
-<?php echo $form->textField($model, 'dose_and_frequency') ?>
+<?php echo $form->textField($model, 'dose_and_frequency', array(), array(), array('label' => 3, 'field' => 9))?>
 
-<?php echo $form->textField($model, 'administration_route') ?>
+<?php echo $form->textField($model, 'administration_route', array(), array(), array('label' => 3, 'field' => 9))?>
 
-<div id="div_OphCoTherapyapplication_Treatment_cost">
-	<div class="label">Cost:</div>
-	<div class="data" style="display: inline-block">
-	<?php echo $form->textField($model, 'cost',  array('nowrapper' => true))?> per <?php echo $form->dropDownList($model, 'cost_type_id', CHtml::listData(OphCoTherapyapplication_Treatment_CostType::model()->findAll(), 'id', 'name'), array('nowrapper' => true)) ?>
+<div class="row field-row">
+	<div class="large-3 column">
+		<label>
+			<?php echo $model->getAttributeLabel('cost_type_id')?>
+		</label>
+	</div>
+	<div class="large-9 column">
+		<div class="row">
+			<div class="large-2 column">
+				<?php echo $form->textField($model, 'cost',  array('nowrapper' => true))?>
+			</div>
+			<div class="large-1 column">
+				<label>per</label>
+			</div>
+			<div class="large-2 column end">
+				<?php echo $form->dropDownList($model, 'cost_type_id', CHtml::listData(OphCoTherapyapplication_Treatment_CostType::model()->findAll(), 'id', 'name'), array('nowrapper' => true))?>
+			</div>
+		</div>
 	</div>
 </div>
 
-<div id="div_OphCoTherapyapplication_Treatment_monitoring">
-	<div class="label">Monitoring Frequency:</div>
-	<div class="data" style="display: inline-block">
-	Every <?php echo $form->textField($model, 'monitoring_frequency',  array('nowrapper' => true))?> <?php echo $form->dropDownList($model, 'monitoring_frequency_period_id', CHtml::listData(Period::model()->findAll(), 'id', 'name'), array('nowrapper' => true)) ?>
+<div class="row field-row">
+	<div class="large-3 column">
+		<label>
+			<?php echo $model->getAttributeLabel('monitoring_frequency')?>
+		</label>
+	</div>
+	<div class="large-9 column">
+		<div class="large-1 column">
+			<label>Every</label>
+		</div>
+		<div class="large-2 column">
+			<?php echo $form->textField($model, 'monitoring_frequency',  array('nowrapper' => true))?>
+		</div>
+		<div class="large-2 column end">
+			<?php echo $form->dropDownList($model, 'monitoring_frequency_period_id', CHtml::listData(Period::model()->findAll(), 'id', 'name'), array('nowrapper' => true))?>
+		</div>
 	</div>
 </div>
 
-<?php echo $form->textArea($model, 'duration', array('rows' => 4, 'cols' => 40)) ?>
-<?php echo $form->textArea($model, 'toxicity', array('rows' => 6, 'cols' => 60)) ?>
+<?php echo $form->textArea($model, 'duration', array(), false, array(), array('label' => 3, 'field' => 9))?>
+<?php echo $form->textArea($model, 'toxicity', array(), false, array(), array('label' => 3, 'field' => 9))?>

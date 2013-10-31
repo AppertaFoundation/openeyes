@@ -57,12 +57,13 @@ class FormLayout extends CActiveForm
 	public function widget($className,$properties=array(),$captureOutput=false){
 
 		// We don't want to override the default layoutColumns with an empty array.
-		if (isset($properties['layoutColumns']) && empty($properties['layoutColumns'])) {
+		if (empty($properties['layoutColumns'])) {
 			unset($properties['layoutColumns']);
 		}
-
-		$properties = array_merge(array('layoutColumns' => $this->layoutColumns), (array) $properties);
-
+		else{
+			//override form layoutColumns with any properties set by the form controls
+			$properties['layoutColumns']=array_merge($this->layoutColumns,$properties['layoutColumns']);
+		}
 		return parent::widget($className,$properties,$captureOutput);
 	}
 }

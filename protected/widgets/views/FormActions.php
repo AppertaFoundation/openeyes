@@ -19,16 +19,16 @@
 ?>
 <div class="row field-row">
 	<div class="large-<?php echo 12 - $layoutColumns['label'];?> large-offset-<?php echo $layoutColumns['label'];?> column">
-		<?php echo EventAction::button($buttonOptions['submit'], 'save')->toHtml()?>
+		<?php echo EventAction::button($buttonOptions['submit'], 'save', array(), array('class' => 'button small'))->toHtml()?>
 		<?php if ($buttonOptions['cancel']) {
-			$cancelHtmlOptions = array('class' => 'warning');
+			$cancelHtmlOptions = array('class' => 'warning button small');
 			if (@$buttonOptions['cancel-uri']) {
 				$cancelHtmlOptions['data-uri'] = $buttonOptions['cancel-uri'];
 			}
 			echo EventAction::button($buttonOptions['cancel'], 'cancel', array(), $cancelHtmlOptions)->toHtml();
 		}?>
 		<?php if ($buttonOptions['delete']) {
-			echo EventAction::button($buttonOptions['delete'], 'delete', array(), array('class' => 'warning'))->toHtml();
+			echo EventAction::button($buttonOptions['delete'], 'delete', array(), array('class' => 'warning button small'))->toHtml();
 		}?>
 		<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 	</div>
