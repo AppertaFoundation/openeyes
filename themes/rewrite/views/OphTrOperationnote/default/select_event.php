@@ -31,7 +31,6 @@
 				<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 						'id'=>'operation-note-select',
 						'enableAjaxValidation'=>false,
-						// 'focus'=>'#procedure_id'
 					));
 
 					// Event actions

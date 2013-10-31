@@ -19,9 +19,8 @@
 ?>
 <?php $this->beginContent('//patient/event_container'); ?>
 
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<div id="event_<?php echo $this->module->name?>">
 	<?php
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'opnote-create',
@@ -40,6 +39,4 @@
 		<?php $this->displayErrors($errors, true)?>
 
 	<?php $this->endWidget(); ?>
-</div>
-
 <?php $this->endContent() ;?>

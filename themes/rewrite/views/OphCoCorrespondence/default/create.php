@@ -21,44 +21,42 @@
 
 	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-	<div id="event_<?php echo $this->module->name?>">
-		<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'correspondence-create',
-				'enableAjaxValidation'=>false,
-				'layoutColumns' => array(
-					'label'=> 2,
-					'field'=>10
-				)
-			));
+	<?php
+		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'correspondence-create',
+			'enableAjaxValidation'=>false,
+			'layoutColumns' => array(
+				'label'=> 2,
+				'field'=>10
+			)
+		));
 
-			// Event actions
-			$this->event_actions[] = EventAction::button(
-				'Save draft',
-				'savedraft',
-				array('level' => 'secondary'),
-				array('id' => 'et_save_draft', 'class'=>'button small', 'form' => 'correspondence-create')
-			);
-			$this->event_actions[] = EventAction::button(
-				'Save and print',
-				'saveprint',
-				array('level' => 'secondary'),
-				array('id' => 'et_save_print', 'class'=>'button small', 'form' => 'correspondence-create')
-			);
-			?>
+		// Event actions
+		$this->event_actions[] = EventAction::button(
+			'Save draft',
+			'savedraft',
+			array('level' => 'secondary'),
+			array('id' => 'et_save_draft', 'class'=>'button small', 'form' => 'correspondence-create')
+		);
+		$this->event_actions[] = EventAction::button(
+			'Save and print',
+			'saveprint',
+			array('level' => 'secondary'),
+			array('id' => 'et_save_print', 'class'=>'button small', 'form' => 'correspondence-create')
+		);
+		?>
 
-			<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) { ?>
-				<div id="no-practice-address" class="alert-box alert with-icon">
-					Patient has no GP practice address, please correct in PAS before creating GP letter.
-				</div>
-			<?php } ?>
+		<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) { ?>
+			<div id="no-practice-address" class="alert-box alert with-icon">
+				Patient has no GP practice address, please correct in PAS before creating GP letter.
+			</div>
+		<?php } ?>
 
-			<?php $this->displayErrors($errors)?>
-			<?php $this->renderDefaultElements($this->action->id, $form); ?>
-			<?php $this->renderOptionalElements($this->action->id, $form); ?>
-			<?php $this->displayErrors($errors, true)?>
+		<?php $this->displayErrors($errors)?>
+		<?php $this->renderDefaultElements($this->action->id, $form); ?>
+		<?php $this->renderOptionalElements($this->action->id, $form); ?>
+		<?php $this->displayErrors($errors, true)?>
 
-		<?php $this->endWidget(); ?>
-	</div>
+	<?php $this->endWidget(); ?>
 
 <?php $this->endContent() ;?>
