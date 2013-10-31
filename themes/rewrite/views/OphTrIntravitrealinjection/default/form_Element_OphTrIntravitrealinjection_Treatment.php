@@ -56,7 +56,7 @@
 			</div>
 			<div class="inactive-form">
 				<div class="add-side">
-				<a href="#">Add left side</a><span class="icon-add-side"></span>
+				<a href="#">Add left side</a> <span class="icon-add-side"></span>
 				</div>
 			</div>
 		</div>

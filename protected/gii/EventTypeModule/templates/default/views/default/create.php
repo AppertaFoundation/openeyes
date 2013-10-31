@@ -20,7 +20,7 @@
 
 <?php echo "<?php\n"?>
 $this->breadcrumbs=array($this->module->id);
-$this->beginContent('//patient/event_container', array());
+$this->beginContent('//patient/event_container');
 <?php echo "?>\n"?>
 
 <h2 class="event-title"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h2>
@@ -43,7 +43,7 @@ $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 's
 <?php echo '<?php'?> $this->displayErrors($errors)<?php echo "?>\n"?>
 <?php echo '<?php'?> $this->renderDefaultElements($this->action->id, $form)<?php echo "?>\n"?>
 <?php echo '<?php'?> $this->renderOptionalElements($this->action->id, $form)<?php echo "?>\n"?>
-<?php echo '<?php'?> $this->displayErrors($errors)<?php echo "?>\n"?>
+<?php echo '<?php'?> $this->displayErrors($errors, true)<?php echo "?>\n"?>
 
 <?php echo '<?php'?> $this->endWidget()<?php echo "?>\n"?>
 

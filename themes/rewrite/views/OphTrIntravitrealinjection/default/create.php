@@ -18,7 +18,7 @@
  */
 ?>
 
-<?php $this->beginContent('//patient/event_container', array()); ?>
+<?php $this->beginContent('//patient/event_container'); ?>
 
 	<?php
 		$this->breadcrumbs=array($this->module->id);
@@ -65,7 +65,7 @@
 		?>
 		<?php $this->renderDefaultElements($this->action->id, $form)?>
 		<?php $this->renderOptionalElements($this->action->id, $form)?>
-		<?php $this->displayErrors($errors)?>
+		<?php $this->displayErrors($errors, true)?>
 
 	<?php $this->endWidget()?>
 <?php $this->endContent() ;?>
