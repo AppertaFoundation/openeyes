@@ -42,13 +42,11 @@
 	</div>
 	<div class="large-<?php echo $layoutColumns['field']?> column">
 		<div class="compliance-container">
-			<div class="field-value">
-				<?php $this->renderPartial(
-					'form_OphCoTherapyapplication_DecisionTree',
-					array('element' => $element, 'data' => $data, 'form' => $form, 'side' => $side),
-					false, false
-				)?>
-			</div>
+			<?php $this->renderPartial(
+				'form_OphCoTherapyapplication_DecisionTree',
+				array('element' => $element, 'data' => $data, 'form' => $form, 'side' => $side),
+				false, false
+			)?>
 		</div>
 	</div>
 </div>
