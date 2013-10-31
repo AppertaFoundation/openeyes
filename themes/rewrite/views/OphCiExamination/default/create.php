@@ -65,6 +65,5 @@
 			<?php $this->displayErrors($errors)?>
 		</div>
 
-		<div class="cleartall"></div>
 	<?php $this->endWidget()?>
 <?php $this->endContent() ;?>
