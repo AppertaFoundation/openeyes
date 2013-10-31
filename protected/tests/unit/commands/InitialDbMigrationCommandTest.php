@@ -156,13 +156,11 @@ EOD;
 			@unlink($file);
 		}
 		foreach($this->foldersCreated as $folder){
-			echo "\nTrying to clean folder : " .  $folder;
 			if(is_dir($folder)){
 				if ($dh = opendir($folder)) {
 					while (($file = readdir($dh)) !== false) {
 						if($file != '.' && $file != '..'){
 							$fullFilePath = $folder . DIRECTORY_SEPARATOR . $file ;
-							echo "\nDelete file " . $fullFilePath;
 							unlink($fullFilePath);
 						}
 					}
