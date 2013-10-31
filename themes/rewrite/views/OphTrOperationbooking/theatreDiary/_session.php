@@ -162,7 +162,7 @@
 										<?php } ?>
 										<img src="<?php echo $assetPath?>/img/diaryIcons/confirmed.png" alt="confirmed" width="17" height="17" class="confirmed" title="confirmed"<?php if (!$booking->confirmed) {?> style="display: none;"<?php }?>>
 										<?php if ($booking->operation->comments && preg_match('/\w/', $booking->operation->comments)) {?>
-											<img src="<?php echo $assetPath?>/img/diaryIcons/comment.png" alt="<?php echo htmlentities($booking->operation->comments) ?>" title="<?php echo htmlentities($booking->operation->comments) ?>" width="17" height="17" />
+											<img src="<?php echo $assetPath?>/img/diaryIcons/comment.png" alt="<?php echo htmlentities($booking->operation->comments, ENT_COMPAT | ENT_HTML5, 'UTF-8') ?>" title="<?php echo htmlentities($booking->operation->comments, ENT_COMPAT | ENT_HTML5, 'UTF-8') ?>" width="17" height="17" />
 										<?php }?>
 										<?php if ($booking->operation->overnight_stay) {?>
 											<img src="<?php echo $assetPath?>/img/diaryIcons/overnight.png" alt="Overnight stay required" title="Overnight stay required" width="17" height="17" />
