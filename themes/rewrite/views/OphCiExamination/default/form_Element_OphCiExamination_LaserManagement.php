@@ -89,7 +89,7 @@ if (@$_POST[get_class($element)]) {
 <div class="element-eyes sub-element-fields jsTreatmentFields<?php if (!$show_fields) {?> hidden<?php }?>" id="div_<?php echo get_class($element)?>_treatment_fields">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) { ?> inactive<?php }?>" data-side="right">
-		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
 			<?php $this->renderPartial('form_' . get_class($element) . '_fields', array('side' => 'right', 'element' => $element, 'form' => $form, 'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options))?>
 		</div>
@@ -102,7 +102,7 @@ if (@$_POST[get_class($element)]) {
 		</div>
 	</div>
 	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) { ?> inactive<?php }?>" data-side="left">
-		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
 			<?php $this->renderPartial('form_' . get_class($element) . '_fields', array('side' => 'left', 'element' => $element, 'form' => $form, 'lasertypes' => $lasertypes, 'lasertype_options' => $lasertype_options)); ?>
 		</div>

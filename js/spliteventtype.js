@@ -94,7 +94,7 @@ function hideSplitElementSide(cls, side) {
 }
 
 $(document).ready(function() {
-	$(this).delegate('.event-content .removeSide', 'click', function(e) {
+	$(this).delegate('.event-content .remove-side', 'click', function(e) {
 		// Update side field to indicate other side
 		var side = $(this).closest('.side');
 

@@ -21,7 +21,7 @@
 <div class="element-eyes sub-element-fields">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-attr="right">
-		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
 			<?php echo $form->textField($element, 'right_value', array('nowrapper' => true, 'class' => 'cct_value')) ?> &micro;m,
 			using <?php echo $form->dropDownList($element, 'right_method_id', $methods, array('nowrapper' => true)) ?>
@@ -35,7 +35,7 @@
 		</div>
 	</div>
 	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-attr="left">
-		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
 			<?php echo $form->textField($element, 'left_value', array('nowrapper' => true, 'class' => 'cct_value')) ?> &micro;m,
 			using <?php echo $form->dropDownList($element, 'left_method_id', $methods, array('nowrapper' => true)) ?>

@@ -26,7 +26,7 @@ $key = 0;
 		<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 		<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) { ?> inactive<?php } ?>" data-side="right">
 			<div class="active-form">
-				<a href="#" class="icon-remove-side removeSide">Remove side</a>
+				<a href="#" class="icon-remove-side remove-side">Remove side</a>
 				<?php echo $form->dropDownList($element, 'right_instrument_id', $instruments, array(), false, array('label' => 2, 'field' => 10))?>
 				<?php echo $form->radioBoolean($element, 'right_dilated', array(), array('label' => 2, 'field' => 10))?>
 				<fieldset class="row field-row">
@@ -85,7 +85,7 @@ $key = 0;
 		</div>
 		<div class="element-eye left-eye column side right<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>" data-side="left">
 			<div class="active-form">
-				<a href="#" class="icon-remove-side removeSide">Remove side</a>
+				<a href="#" class="icon-remove-side remove-side">Remove side</a>
 				<?php echo $form->dropDownList($element, 'left_instrument_id', $instruments, array(), false, array('label' => 2, 'field' => 10))?>
 				<?php echo $form->radioBoolean($element, 'left_dilated', array(), array('label' => 2, 'field' => 10))?>
 				<fieldset class="row field-row">

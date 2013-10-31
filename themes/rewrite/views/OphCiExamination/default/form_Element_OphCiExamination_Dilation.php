@@ -26,7 +26,7 @@ $key = 0;
 	<input type="hidden" name="dilation_treatments_valid" value="1" />
 	<?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField'))?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
-		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
 			<div class="field-row">
 				<?php echo $form->dropDownListNoPost('dilation_drug_right',$element->getUnselectedDilationDrugs('right'),'', array('class'=> 'dilation_drug', 'empty'=>'--- Please select ---', 'nowrapper' => true))?>
@@ -66,7 +66,7 @@ $key = 0;
 		</div>
 	</div>
 	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
-		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
 			<div class="field-row">
 				<?php echo $form->dropDownListNoPost('dilation_drug_left',$element->getUnselectedDilationDrugs('left'),'', array('class'=> 'dilation_drug', 'empty'=>'--- Please select ---', 'nowrapper' => true))?>
