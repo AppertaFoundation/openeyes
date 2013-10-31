@@ -18,10 +18,7 @@
  */
 ?>
 <h1><?php echo $title ?></h1>
-
-<?php
-$this->renderPartial('//base/_messages');
-?>
+<?php $this->renderPartial('//base/_messages')?>
 <div class="box admin">
 	<form id="admin_diagnoses">
 		<table class="grid">

@@ -22,7 +22,7 @@
 
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'OphCoTherapyapplication_adminform',
+		'id'=>'adminform',
 		'enableAjaxValidation'=>false,
 		'htmlOptions' => array(
 				'enctype' => 'multipart/form-data'
@@ -37,7 +37,7 @@
 			'form' => $form,
 	))?>
 
-	<?php echo $form->formActions(array('cancel-uri'=>'/OphCoTherapyapplication/admin/viewTreatments'))?>
+	<?php echo $form->formActions(array('cancel-uri'=>@$cancel_uri))?>
 
 	<?php $this->endWidget()?>
 </div>

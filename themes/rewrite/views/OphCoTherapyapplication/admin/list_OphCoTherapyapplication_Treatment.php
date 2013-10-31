@@ -18,10 +18,7 @@
  */
 ?>
 <h1><?php echo $title ?></h1>
-
-<?php
-$this->renderPartial('//base/_messages');
-?>
+<?php $this->renderPartial('//base/_messages')?>
 <div class="hidden" id="add-new-form" style="margin-bottom: 10px">
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -34,7 +31,6 @@ $this->renderPartial('//base/_messages');
 	$this->endWidget();
 	?>
 </div>
-
 <div class="box admin">
 	<form id="admin_treatments">
 		<table class="grid">
