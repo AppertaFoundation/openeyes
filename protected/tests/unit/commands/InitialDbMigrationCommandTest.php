@@ -23,11 +23,15 @@ class InitialDbMigrationCommandTest extends CTestCase
 	protected $initialDbMigrationCommand;
 	protected $fileNameRegEx;
 	protected $oeMigration;
+	protected $filesCreated;
+	protected $foldersCreated;
 
 	public function setUp(){
 		$this->oeMigration = new OEMigration();
 		$this->initialDbMigrationCommand = new InitialDbMigrationCommand('initialdbmigration', null);
 		$this->fileNameRegEx = '|^m\d{6}_\d{6}_[a-z]*$|i';
+		$this->filesCreated = array();
+		$this->foldersCreated = array();
 	}
 
 	public function testRunSuccessful()
@@ -46,10 +50,12 @@ class InitialDbMigrationCommandTest extends CTestCase
 		$fileCnt = file_get_contents($thisMigrationFile);
 		$migrationTableStrings = substr_count($fileCnt , 'tbl_migration');
 		$this->assertEquals(3 , $migrationTableStrings);
-		$this->assertFileNotExists($this->oeMigration->getMigrationPath()
-			. DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . $initDbMigrationResult->fileName
-			. DIRECTORY_SEPARATOR . '01_tbl_migration.csv'
-		);
+
+		$migrationDataFolder =  $this->oeMigration->getMigrationPath()
+			. DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . $initDbMigrationResult->fileName;
+
+		$migrDataFile = $migrationDataFolder . DIRECTORY_SEPARATOR . '01_tbl_migration.csv';
+		$this->assertFileNotExists($migrDataFile);
 
 		//test file is valid php and functions exist
 		include $thisMigrationFile;
@@ -60,6 +66,11 @@ class InitialDbMigrationCommandTest extends CTestCase
 		$this->assertContains('down', $thisMigrationClassMethods);
 		$this->assertContains('safeUp', $thisMigrationClassMethods);
 		$this->assertContains('safeDown', $thisMigrationClassMethods);
+
+		//make sure we keep track of files created
+		$this->filesCreated[]= $thisMigrationFile;
+		$this->filesCreated[]= $migrDataFile;
+		$this->foldersCreated[]=$migrationDataFolder;
 	}
 
 	/**
@@ -141,6 +152,25 @@ EOD;
 	}
 
 	public function tearDown(){
+		foreach($this->filesCreated as $file){
+			@unlink($file);
+		}
+		foreach($this->foldersCreated as $folder){
+			echo "\nTrying to clean folder : " .  $folder;
+			if(is_dir($folder)){
+				if ($dh = opendir($folder)) {
+					while (($file = readdir($dh)) !== false) {
+						if($file != '.' && $file != '..'){
+							$fullFilePath = $folder . DIRECTORY_SEPARATOR . $file ;
+							echo "\nDelete file " . $fullFilePath;
+							unlink($fullFilePath);
+						}
+					}
+					closedir($dh);
+				}
+			}
+			rmdir($folder);
+		}
 		unset($this->initialDbMigrationCommand);
 	}
 
