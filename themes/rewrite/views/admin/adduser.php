@@ -37,7 +37,7 @@
 			'title' => 'Lookup user',
 			'href' => '#',
 		)))?>
-		<?php echo $form->textField($user,'title', null, null, array('label' => 2, 'field' => 2))?>
+		<?php echo $form->textField($user,'title', null, null, array('field' => 2))?>
 		<?php echo $form->textField($user,'first_name')?>
 		<?php echo $form->textField($user,'last_name')?>
 		<?php echo $form->textField($user,'email')?>
@@ -49,7 +49,7 @@
 		<?php echo $form->passwordField($user,'password')?>
 		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
 		<?php echo $form->dropDownList($user,'access_level', $user->getAccessLevelOptions())?>
-		<?php echo $form->formActions(); ;?>
+		<?php echo $form->formActions();?>
 	<?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
