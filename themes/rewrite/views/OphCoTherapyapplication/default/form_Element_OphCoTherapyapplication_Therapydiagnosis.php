@@ -54,7 +54,7 @@ foreach ($l1_disorders as $disorder) {
 			data-side="right">
 
 			<div class="active-form">
-				<a href="#" class="icon-remove-side removeSide">Remove side</a>
+				<a href="#" class="icon-remove-side remove-side">Remove side</a>
 					<?php $this->renderPartial('form_' . get_class($element) . '_fields',
 						array(
 							'side' => 'right',
@@ -78,7 +78,7 @@ foreach ($l1_disorders as $disorder) {
 			class="element-eye left-eye column side right eventDetail<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
 			data-side="left">
 			<div class="active-form">
-				<a href="#" class="icon-remove-side removeSide">Remove side</a>
+				<a href="#" class="icon-remove-side remove-side">Remove side</a>
 				<?php $this->renderPartial('form_' . get_class($element) . '_fields',
 					array(
 						'side' => 'left',
