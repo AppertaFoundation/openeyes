@@ -159,15 +159,58 @@
 								</div>
 								<div class="large-8 column">
 									<div class="compliance-container">
-											<div class="outcome non-compliant">
-												Non-Compliant
-											</div>
+										<div class="outcome non-compliant">
+											Non-Compliant
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="element-eye right-eye column">
-							<div class="eye-message">Select a diagnosis</div>
+							<div class="row field-row">
+								<div class="large-4 column">
+									<label for="">Treatment:</label>
+								</div>
+								<div class="large-8 column">
+									<select>
+										<option>Eylea</option>
+									</select>
+								</div>
+							</div>
+							<div class="row field-row">
+								<div class="large-4 column">
+									<label for="">Angiogram Baseline Date:</label>
+								</div>
+								<div class="large-4 column end">
+									<input type="text" />
+								</div>
+							</div>
+							<div class="row field-row">
+								<div class="large-4 column">
+									<div class="field-label">
+										NICE Compliance
+									</div>
+								</div>
+								<div class="large-8 column">
+									<div class="compliance-container">
+										<div class="field-row">
+											<label for="">Patient has CNV?</label>
+											<select>
+												<option>- Select -</option>
+											</select>
+										</div>
+										<div class="field-row">
+											<label for="">CNV Secondary to AMD?</label>
+											<select>
+												<option>- Select -</option>
+											</select>
+										</div>
+										<div class="outcome unknown">
+											Unknown
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</section>
