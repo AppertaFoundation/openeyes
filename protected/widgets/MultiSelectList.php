@@ -25,6 +25,7 @@ class MultiSelectList extends BaseFieldWidget
 	public $selected_ids = array();
 	public $relation_id_field;
 	public $options;
+	public $inline = false;
 
 	public function init()
 	{

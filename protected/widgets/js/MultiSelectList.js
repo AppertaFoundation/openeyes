@@ -62,7 +62,8 @@ $(document).ready(function() {
 			item.append(input);
 
 			selections
-			.append(item);
+			.append(item)
+			.removeClass('hide');
 
 			selected.remove();
 			select.val('');
@@ -76,6 +77,7 @@ $(document).ready(function() {
 		e.preventDefault();
 		var anchor = $(this);
 		var container = anchor.closest('.multi-select');
+		var selections = container.find('.multi-select-selections');
 		var input = anchor.closest('li').find('input');
 
 		var attrs = {};
@@ -98,6 +100,10 @@ $(document).ready(function() {
 
 		anchor.closest('li').remove();
 		input.remove();
+
+		if (!selections.children().length) {
+			selections.addClass('hide');
+		}
 
 		select.trigger('MultiSelectChanged');
 

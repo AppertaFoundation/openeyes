@@ -49,9 +49,9 @@ if (isset($htmlOptions['div_class'])) {
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 	<?php }?>
-		<div class="multi-select multi-select-list">
+		<div class="multi-select<?php if (!$inline) echo ' multi-select-list';?>">
 			<input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
-			<div class="field-row">
+			<div class="multi-select-dropdown-container">
 				<select id="<?php echo $field?>" class="MultiSelectList" name="">
 					<option value=""><?php echo $htmlOptions['empty']?></option>
 					<?php foreach ($filtered_options as $value => $option) {
@@ -67,7 +67,15 @@ if (isset($htmlOptions['div_class'])) {
 					}?>
 				</select>
 			</div>
-			<ul class="MultiSelectList multi-select-selections field-row">
+			<?php
+			$found = false;
+			foreach($selected_ids as $id) {
+				if (isset($options[$id])) {
+					$found = true;
+					break;
+				}
+			}?>
+			<ul class="MultiSelectList multi-select-selections<?php if (!$found) echo ' hide';?>">
 				<?php foreach ($selected_ids as $id) {
 					if (isset($options[$id])) {?>
 						<li>
