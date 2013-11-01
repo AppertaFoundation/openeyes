@@ -3799,11 +3799,10 @@ tfoot.pagination-container .pagination li {
   font-weight: normal;
 }
 
-/* line 13, ../sass/new/openeyes/components/panels/_comments.scss */
+/* line 12, ../sass/new/openeyes/components/panels/_comments.scss */
 .panel.comments {
   background: #fff0a0;
   border: 1px solid #fee54f;
-  min-height: 5em;
   margin: 0;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -3811,11 +3810,11 @@ tfoot.pagination-container .pagination li {
   -o-border-radius: 0;
   border-radius: 0;
 }
-/* line 19, ../sass/new/openeyes/components/panels/_comments.scss */
+/* line 17, ../sass/new/openeyes/components/panels/_comments.scss */
 .theatres-list .panel.comments {
   margin-left: -0.75em;
 }
-/* line 22, ../sass/new/openeyes/components/panels/_comments.scss */
+/* line 20, ../sass/new/openeyes/components/panels/_comments.scss */
 .panel.comments h4 {
   color: #998a30;
   font-size: 0.75em;

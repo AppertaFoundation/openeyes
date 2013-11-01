@@ -22,8 +22,7 @@
 	<ul class="data-value highlight important">
 		<?php foreach ($element->procedures as $procedure) {
 			echo "<li>{$element->eye->adjective} {$procedure->term}</li>";
-		}
-	?>
+		}?>
 	</ul>
 </section>
 
@@ -72,20 +71,21 @@
 </section>
 
 <?php if ($element->booking) {?>
-	<h3 class="element-title highlight">Booking Details</h3>
-
-	<section class="element element-data">
-		<div class="row">
-			<div class="large-6 column">
-				<h3 class="data-title">List</h3>
-				<div class="data-value">
-					<?php $session = $element->booking->session ?>
-					<?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?>
+	<section class="element">
+		<h3 class="element-title highlight">Booking Details</h3>
+		<div class="element-data">
+			<div class="row">
+				<div class="large-6 column">
+					<h3 class="data-title">List</h3>
+					<div class="data-value">
+						<?php $session = $element->booking->session ?>
+						<?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?>
+					</div>
 				</div>
-			</div>
-			<div class="large-6 column">
-				<h3 class="data-title">Theatre</h3>
-				<div class="data-value"><?php echo $session->TheatreName ?></div>
+				<div class="large-6 column">
+					<h3 class="data-title">Theatre</h3>
+					<div class="data-value"><?php echo $session->TheatreName ?></div>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -95,79 +95,92 @@
 			<div class="large-6 column">
 				<h3 class="data-title">Admission Time</h3>
 				<div class="data-value">
-					<?php echo substr($element->booking->admission_time,0,5) ?></div>
+					<?php echo substr($element->booking->admission_time,0,5) ?>
+				</div>
 			</div>
 		</div>
 	</section>
 
-
-<div class="row">
-	<div class="large-12 column">
-	<div class="metadata">
-		<span class="info">
-		Booking created by <span class="user"><?php echo $element->booking->user->fullname ?></span> on <?php echo $element->booking->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
-		</span>
-		<span class="info">
-		Booking last modified by <span class="user"><?php echo $element->booking->usermodified->fullname ?></span> on <?php echo $element->booking->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($element->booking->last_modified_date)) ?>
-		</span>
-	</div>
+	<div class="row">
+		<div class="large-12 column">
+			<div class="metadata">
+				<span class="info">
+					Booking created by
+					<span class="user"><?php echo $element->booking->user->fullname ?></span>
+					on <?php echo $element->booking->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($element->booking->created_date)) ?>
+				</span>
+				<span class="info">
+					Booking last modified by <span class="user"><?php echo $element->booking->usermodified->fullname ?></span>
+					on <?php echo $element->booking->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($element->booking->last_modified_date)) ?>
+				</span>
+			</div>
 		</div>
 	</div>
 <?php } ?>
 
 <?php if (count($element->cancelledBookings)) { ?>
-	<h2 class="event-title">Cancelled Bookings</h2>
-	<ul class="eventComments">
-		<?php foreach ($element->cancelledBookings as $booking) { ?>
-		<li>
-			Originally scheduled for <strong><?php echo $booking->NHSDate('session_date'); ?>,
-			<?php echo date('H:i',strtotime($booking->session_start_time)); ?> -
-			<?php echo date('H:i',strtotime($booking->session_end_time)); ?></strong>,
-			in <strong><?php echo $booking->theatre->nameWithSite; ?></strong>.
-			Cancelled on <?php echo $booking->NHSDate('booking_cancellation_date'); ?>
-			by <strong><?php echo $booking->usercancelled->FullName; ?></strong>
-			due to <?php echo $booking->cancellationReasonWithComment; ?>
-		</li>
-		<?php }?>
-	</ul>
+	<section class="element">
+		<h3 class="element-title highlight">Cancelled Bookings</h3>
+		<div class="element-data">
+			<ul class="cancelled-bookings">
+				<?php foreach ($element->cancelledBookings as $booking) { ?>
+					<li>
+						Originally scheduled for <strong><?php echo $booking->NHSDate('session_date'); ?>,
+						<?php echo date('H:i',strtotime($booking->session_start_time)); ?> -
+						<?php echo date('H:i',strtotime($booking->session_end_time)); ?></strong>,
+						in <strong><?php echo $booking->theatre->nameWithSite; ?></strong>.
+						Cancelled on <?php echo $booking->NHSDate('booking_cancellation_date'); ?>
+						by <strong><?php echo $booking->usercancelled->FullName; ?></strong>
+						due to <?php echo $booking->cancellationReasonWithComment; ?>
+					</li>
+				<?php }?>
+			</ul>
+		</div>
+	</section>
 <?php }?>
 
 <?php if ($element->status->name == 'Cancelled' && $element->operation_cancellation_date){?>
-<section class="element element-data">
-	<div class="row">
-		<div class="large-6 column">
-			<h3 class="data-title">Cancellation details</h3>
-			<div class="data-value">
-			Cancelled on <?php echo $element->NHSDate('operation_cancellation_date') . ' by user ' . $element->cancellation_user->username . ' for reason: ' . $element->cancellation_reason->text?>
+	<section class="element">
+		<h3 class="element-title highlight">Cancellation details</h3>
+		<div class="element-data">
+			<div class="row">
+				<div class="large-6 column">
+					<div class="data-value">
+						Cancelled on
+						<?php echo $element->NHSDate('operation_cancellation_date') . ' by user ' . $element->cancellation_user->username . ' for reason: ' . $element->cancellation_reason->text?>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
 
 	<?php if ($element->cancellation_comment) {?>
-<section class="element element-data">
-	<div class="row">
-		<div class="large-6 column">
-			<h3 class="data-title">Cancellation comments</h3>
-			<div class="data-value">
-			<?php echo str_replace("\n","<br/>",$element->cancellation_comment)?>
+		<section class="element element-data">
+			<div class="row">
+				<div class="large-6 column">
+					<h3 class="data-title">Cancellation comments</h3>
+					<div class="data-value panel comments">
+						<?php echo str_replace("\n","<br/>",$element->cancellation_comment)?>
+					</div>
+				</div>
 			</div>
-		</div>
-	</div>
-</section>
+		</section>
 	<?php } ?>
 <?php } ?>
 
 <?php if ($element->erod) {?>
-<section class="element element-data">
-	<div class="row">
-		<div class="large-6 column">
-			<h3 class="data-title">Earliest reasonable offer date</h3>
-			<div class="data-value"><?php echo $element->erod->NHSDate('session_date').' '.$element->erod->timeSlot.', '.$element->erod->FirmName?>
+	<section class="element">
+		<h3 class="element-title highlight">Earliest reasonable offer date</h3>
+		<div class="element-data">
+			<div class="row">
+				<div class="large-12 column">
+					<div class="data-value">
+						<?php echo $element->erod->NHSDate('session_date').' '.$element->erod->timeSlot.', '.$element->erod->FirmName?>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
 <?php }?>
 
 <?php
