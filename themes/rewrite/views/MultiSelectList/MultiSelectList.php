@@ -38,6 +38,13 @@ if (isset($htmlOptions['div_class'])) {
 	$div_class = "eventDetail";
 }
 
+$found = false;
+foreach($selected_ids as $id) {
+	if (isset($options[$id])) {
+		$found = true;
+		break;
+	}
+}
 ?>
 
 <?php if (!@$htmlOptions['nowrapper']) {?>
@@ -66,21 +73,19 @@ if (isset($htmlOptions['div_class'])) {
 						echo ">" . $option . "</option>";
 					}?>
 				</select>
+				<?php if ($showRemoveAllLink) {?>
+					<a href="#" class="remove-all<?php echo !$found ? ' hide': '';?>">Remove all</a>
+				<?php }?>
 			</div>
-			<?php
-			$found = false;
-			foreach($selected_ids as $id) {
-				if (isset($options[$id])) {
-					$found = true;
-					break;
-				}
-			}?>
+			<?php if (!$found && $noSelectionsMessage) {?>
+				<div class="no-selections-msg pill"><?php echo $noSelectionsMessage;?></div>
+			<?php }?>
 			<ul class="MultiSelectList multi-select-selections<?php if (!$found) echo ' hide';?>">
 				<?php foreach ($selected_ids as $id) {
 					if (isset($options[$id])) {?>
 						<li>
 							<?php echo $options[$id] ?>
-							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one <?php echo $id?>">Remove</a>
+							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one">Remove</a>
 							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
 							<?php if (isset($opts[$id])) {
 								foreach ($opts[$id] as $key => $val) {

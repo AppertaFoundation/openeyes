@@ -26,6 +26,8 @@ class MultiSelectList extends BaseFieldWidget
 	public $relation_id_field;
 	public $options;
 	public $inline = false;
+	public $showRemoveAllLink = false;
+	public $noSelectionsMessage;
 
 	public function init()
 	{

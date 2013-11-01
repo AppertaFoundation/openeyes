@@ -24,6 +24,12 @@ $(document).ready(function() {
 	}
 	$(this).data('multi-select-events', true);
 
+	$(this).on('click', '.multi-select .remove-all', function(e) {
+		e.preventDefault();
+		var container = $(this).closest('.multi-select');
+		container.find('.remove-one').trigger('click');
+	});
+
 	$(this).on('change', 'select.MultiSelectList', function() {
 
 		var select = $(this);
@@ -35,6 +41,8 @@ $(document).ready(function() {
 			var selections = container.find('.multi-select-selections');
 			var inputField = container.find('.multi-select-list-name');
 			var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];
+			var noSelectionsMsg = container.find('.no-selections-msg');
+			var removeAll = container.find('.remove-all');
 
 			var attrs = {};
 			$(selected[0].attributes).each(function() {
@@ -65,6 +73,9 @@ $(document).ready(function() {
 			.append(item)
 			.removeClass('hide');
 
+			noSelectionsMsg.addClass('hide');
+			removeAll.removeClass('hide');
+
 			selected.remove();
 			select.val('');
 		}
@@ -78,6 +89,8 @@ $(document).ready(function() {
 		var anchor = $(this);
 		var container = anchor.closest('.multi-select');
 		var selections = container.find('.multi-select-selections');
+		var noSelectionsMsg = container.find('.no-selections-msg');
+		var removeAll = container.find('.remove-all');
 		var input = anchor.closest('li').find('input');
 
 		var attrs = {};
@@ -102,7 +115,8 @@ $(document).ready(function() {
 		input.remove();
 
 		if (!selections.children().length) {
-			selections.addClass('hide');
+			selections.add(removeAll).addClass('hide');
+			noSelectionsMsg.removeClass('hide');
 		}
 
 		select.trigger('MultiSelectChanged');

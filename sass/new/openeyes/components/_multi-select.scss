@@ -19,11 +19,15 @@
 			@include opacity(1);
 		}
 	}
+	.no-selections-msg {
+		display: block;
+		background: #efe;
+		margin: .9em 0 0 0;
+	}
 }
 
 .multi-select-selections {
-	margin: 0;
-	padding: 0;
+	margin: .8em 0 0 0;
 	list-style-type: none;
 	display: inline-block;
 	li {
