@@ -1,5 +1,4 @@
 <meta charset="utf-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 <title>NEW THEME - <?php echo CHtml::encode($this->pageTitle); ?></title>
 <meta name="viewport" content="width=device-width" />

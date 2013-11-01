@@ -71,7 +71,7 @@ $current_episode = @$this->current_episode;
 								foreach ($episode->events as $event) {
 								$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
 								<li>
-									<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>">
+									<a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
 										<?php
 										if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
 											$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
@@ -147,7 +147,7 @@ $current_episode = @$this->current_episode;
 											<?php } ?>
 										</div>
 
-										<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>">
+										<a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
 											<span class="event-type alert<?php if ($event->hasIssue()) { ?> statusflag<?php } ?>">
 												<?php
 												if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
