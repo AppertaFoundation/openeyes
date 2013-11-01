@@ -17,38 +17,40 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="eyedraw-fields column small" style="width: 60%">
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label><?php echo $element->getAttributeLabel($side.'_sphere')?>:</label>
-		</div>
-		<div class="large-9 column">
-			<?php Yii::app()->getController()->renderPartial('_segmented_field', array('element' => $element, 'field' => $side.'_sphere'), false, false)?>
-		</div>
+<fieldset class="row field-row">
+	<legend class="large-3 column">
+		<?php echo $element->getAttributeLabel($side.'_sphere')?>:
+	</legend>
+	<div class="large-9 column">
+		<?php Yii::app()->getController()->renderPartial('_segmented_field', array('element' => $element, 'field' => $side.'_sphere'), false, false)?>
 	</div>
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label><?php echo $element->getAttributeLabel($side.'_cylinder')?>:</label>
-		</div>
-		<div class="large-9 column">
-			<?php Yii::app()->getController()->renderPartial('_segmented_field', array('element' => $element, 'field' => $side.'_cylinder'), false, false)?>
-		</div>
+</fieldset>
+<fieldset class="row field-row">
+	<legend class="large-3 column">
+		<?php echo $element->getAttributeLabel($side.'_cylinder')?>:
+	</legend>
+	<div class="large-9 column">
+		<?php Yii::app()->getController()->renderPartial('_segmented_field', array('element' => $element, 'field' => $side.'_cylinder'), false, false)?>
 	</div>
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label for="axis"><?php echo $element->getAttributeLabel($side.'_axis')?>:</label>
-		</div>
-		<div class="large-6 column end">
-			<?php echo CHtml::activeTextField($element, $side.'_axis', array('class' => 'axis'))?>
-		</div>
+</fieldset>
+<div class="row field-row">
+	<div class="large-3 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_axis';?>">
+			<?php echo $element->getAttributeLabel($side.'_axis')?>:
+		</label>
 	</div>
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label for="type"><?php echo $element->getAttributeLabel($side.'_type_id')?>:</label>
-		</div>
-		<div class="large-6 column end">
-			<?php echo CHtml::activeDropDownList($element, $side.'_type_id', OphCiExamination_Refraction_Type::model()->getOptions(), array('class' => 'refractionType'))?>
-			<?php echo CHtml::activeTextField($element, $side.'_type_other')?>
-		</div>
+	<div class="large-6 column end">
+		<?php echo CHtml::activeTextField($element, $side.'_axis', array('class' => 'axis'))?>
+	</div>
+</div>
+<div class="row field-row">
+	<div class="large-3 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_type_id';?>">
+			<?php echo $element->getAttributeLabel($side.'_type_id')?>:
+		</label>
+	</div>
+	<div class="large-6 column end">
+		<?php echo CHtml::activeDropDownList($element, $side.'_type_id', OphCiExamination_Refraction_Type::model()->getOptions(), array('class' => 'refractionType'))?>
+		<?php echo CHtml::activeTextField($element, $side.'_type_other')?>
 	</div>
 </div>

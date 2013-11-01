@@ -28,6 +28,6 @@
 	</header>
 
 	<div class="element-fields">
-	<?php echo $form->multiSelectList($element, 'Drug', 'drugs', 'drug_id', $element->drug_list, $element->drug_defaults, array('empty' => '- Drugs -', 'label' => 'Drugs'))?>
+		<?php echo $form->multiSelectList($element, 'Drug', 'drugs', 'drug_id', $element->drug_list, $element->drug_defaults, array('empty' => '- Drugs -', 'label' => 'Drugs'))?>
 	</div>
 </section>

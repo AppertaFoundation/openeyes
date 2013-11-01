@@ -115,7 +115,7 @@ if ($no_treatment_reason && $no_treatment_reason->other) {
 		foreach ($risks as $risk) {
 			$html_options['options'][(string) $risk->id] = array('data-order' => $risk->display_order);
 		}
-		echo $form->multiSelectList($element, get_class($element) . '[' . $side . '_risks]', $side . '_risks', 'id', CHtml::listData($risks,'id','name'), array(), $html_options, false, array('label' => 3, 'field' => 9))?>
+		echo $form->multiSelectList($element, get_class($element) . '[' . $side . '_risks]', $side . '_risks', 'id', CHtml::listData($risks,'id','name'), array(), $html_options, false, false, null, false, false, array('label' => 3, 'field' => 9))?>
 
 	<?php echo $form->textArea($element, $side . '_comments', array(), false, array('placeholder' => 'Enter comments'), array('label' => 3, 'field' => 9))?>
 </div>

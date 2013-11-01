@@ -1,4 +1,4 @@
-<div class="large-10 column event view examination">
+<div class="large-10 column event view ophciexamination">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">

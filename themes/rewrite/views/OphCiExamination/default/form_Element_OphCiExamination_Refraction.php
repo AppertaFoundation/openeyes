@@ -21,11 +21,13 @@
 	<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
 		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
-			<div class="eyedraw-data row">
-				<div class="eyedraw-image column large" style="width: 40%;">
+			<div class="eyedraw-data row refraction">
+				<div class="fixed column">
 					<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'right', 'element' => $element))?>
 				</div>
-				<?php echo $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw_fields', array('side' => 'right', 'element' => $element))?>
+				<div class="fluid column">
+					<?php echo $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw_fields', array('side' => 'right', 'element' => $element))?>
+				</div>
 			</div>
 		</div>
 		<div class="inactive-form">
@@ -39,11 +41,13 @@
 	<div class="element-eye right-eye column side right<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
 		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
-			<div class="eyedraw-data row">
-				<div class="eyedraw-image column large" style="width: 40%;">
+			<div class="eyedraw-data row refraction">
+				<div class="fixed column">
 					<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'left', 'element' => $element))?>
 				</div>
-				<?php echo $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw_fields', array('side' => 'left', 'element' => $element))?>
+				<div class="fluid column">
+					<?php echo $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw_fields', array('side' => 'left', 'element' => $element))?>
+				</div>
 			</div>
 		</div>
 		<div class="inactive-form">

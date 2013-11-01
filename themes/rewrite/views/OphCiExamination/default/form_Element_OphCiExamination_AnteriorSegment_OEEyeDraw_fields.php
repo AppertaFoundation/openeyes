@@ -17,73 +17,61 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="eyedraw-fields column small" style="width: 33%; padding-left: 0;">
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label><?php echo $element->getAttributeLabel($side.'_pupil_id')?>:</label>
-		</div>
-		<div class="large-9 column">
-			<?php
-				$html_options = array();
-				foreach (OphCiExamination_AnteriorSegment_Pupil::model()->findAll(array('order'=>'display_order')) as $option) {
-					$html_options[(string) $option->id] = array('data-value'=> $option->value);
-				}
-				echo CHtml::activeDropDownList($element, $side.'_pupil_id', CHtml::listData(OphCiExamination_AnteriorSegment_Pupil::model()->findAll(array('order'=>'display_order')), 'id','name'), array('options' => $html_options));
-			?>
-		</div>
+<div class="eyedraw-fields">
+	<div class="field-row">
+		<label for="<?php echo get_class($element).'_'.$side.'_pupil_id';?>">
+			<?php echo $element->getAttributeLabel($side.'_pupil_id')?>:
+		</label>
+		<?php
+			$html_options = array();
+			foreach (OphCiExamination_AnteriorSegment_Pupil::model()->findAll(array('order'=>'display_order')) as $option) {
+				$html_options[(string) $option->id] = array('data-value'=> $option->value);
+			}
+			echo CHtml::activeDropDownList($element, $side.'_pupil_id', CHtml::listData(OphCiExamination_AnteriorSegment_Pupil::model()->findAll(array('order'=>'display_order')), 'id','name'), array('options' => $html_options));
+		?>
 	</div>
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label><?php echo $element->getAttributeLabel($side.'_nuclear_id')?>:</label>
-		</div>
-		<div class="large-9 column">
-			<?php
-				$html_options = array();
-				foreach (OphCiExamination_AnteriorSegment_Nuclear::model()->findAll(array('order'=>'display_order')) as $option) {
-					$html_options[(string) $option->id] = array('data-value'=> $option->value);
-				}
-				echo CHtml::activeDropDownList($element, $side.'_nuclear_id', CHtml::listData(OphCiExamination_AnteriorSegment_Nuclear::model()->findAll(array('order'=>'display_order')), 'id','name'), array('options' => $html_options));
-			?>
-		</div>
+	<div class="field-row">
+		<label for="<?php echo get_class($element).'_'.$side.'_nuclear_id';?>">
+			<?php echo $element->getAttributeLabel($side.'_nuclear_id')?>:
+		</label>
+		<?php
+			$html_options = array();
+			foreach (OphCiExamination_AnteriorSegment_Nuclear::model()->findAll(array('order'=>'display_order')) as $option) {
+				$html_options[(string) $option->id] = array('data-value'=> $option->value);
+			}
+			echo CHtml::activeDropDownList($element, $side.'_nuclear_id', CHtml::listData(OphCiExamination_AnteriorSegment_Nuclear::model()->findAll(array('order'=>'display_order')), 'id','name'), array('options' => $html_options));
+		?>
 	</div>
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label><?php echo $element->getAttributeLabel($side.'_cortical_id')?>:</label>
-		</div>
-		<div class="large-9 column">
-			<?php
-				$html_options = array();
-				foreach (OphCiExamination_AnteriorSegment_Cortical::model()->findAll(array('order'=>'display_order')) as $option) {
-					$html_options[(string) $option->id] = array('data-value'=> $option->value);
-				}
-				echo CHtml::activeDropDownList($element, $side.'_cortical_id', CHtml::listData(OphCiExamination_AnteriorSegment_Cortical::model()->findAll(array('order'=>'display_order')), 'id','name'), array('options' => $html_options));
-			?>
-		</div>
+	<div class="field-row">
+		<label for="<?php echo get_class($element).'_'.$side.'_cortical_id';?>">
+			<?php echo $element->getAttributeLabel($side.'_cortical_id')?>:
+		</label>
+		<?php
+			$html_options = array();
+			foreach (OphCiExamination_AnteriorSegment_Cortical::model()->findAll(array('order'=>'display_order')) as $option) {
+				$html_options[(string) $option->id] = array('data-value'=> $option->value);
+			}
+			echo CHtml::activeDropDownList($element, $side.'_cortical_id', CHtml::listData(OphCiExamination_AnteriorSegment_Cortical::model()->findAll(array('order'=>'display_order')), 'id','name'), array('options' => $html_options));
+		?>
 	</div>
-	<div class="row field-row">
-		<div class="large-3 column">
-			<label><?php echo $element->getAttributeLabel($side.'_description')?>:</label>
-		</div>
-		<div class="large-9 column">
-			<?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => "2", 'cols' => "20", 'class' => 'autosize clearWithEyedraw'))?>
-		</div>
+	<div class="field-row">
+		<label for="<?php echo get_class($element).'_'.$side.'_description';?>">
+			<?php echo $element->getAttributeLabel($side.'_description')?>:
+		</label>
+		<?php echo CHtml::activeTextArea($element, $side.'_description', array('rows' => "2", 'class' => 'autosize clearWithEyedraw'))?>
 	</div>
-	<div class="row field-row">
-		<div class="large-3 column">
-		</div>
-		<div class="large-9 column">
+	<div class="field-row">
+		<label>
 			<?php echo CHtml::activeCheckBox($element, $side.'_pxe', array('class' => 'clearWithEyedraw')) ?>
-			<label><?php echo $element->getAttributeLabel($side.'_pxe')?></label>
-		</div>
-	</div>
-	<div class="row field-row">
-		<div class="large-3 column">
-		</div>
-		<div class="large-9 column">
+			<?php echo $element->getAttributeLabel($side.'_pxe')?>
+		</label>
+		<label>
 			<?php echo CHtml::activeCheckBox($element, $side.'_phako', array('class' => 'clearWithEyedraw')) ?>
-			<label><?php echo $element->getAttributeLabel($side.'_description')?>:</label>
-		</div>
+			<?php echo $element->getAttributeLabel($side.'_description')?>:
+		</label>
 	</div>
-	<button class="ed_report">Report</button>
-	<button class="ed_clear">Clear</button>
+	<div class="field-row">
+		<button class="ed_report secondary small">Report</button>
+		<button class="ed_clear secondary small">Clear</button>
+	</div>
 </div>

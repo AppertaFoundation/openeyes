@@ -19,24 +19,24 @@
 ?>
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-		'doodleToolBarArray' => array(),
-		'toolbar' => false,
-		'onReadyCommandArray' => array(
-				array('addDoodle', array('TrialFrame')),
-				array('addDoodle', array('TrialLens')),
-				array('deselectDoodles', array()),
+	'doodleToolBarArray' => array(),
+	'toolbar' => false,
+	'onReadyCommandArray' => array(
+		array('addDoodle', array('TrialFrame')),
+		array('addDoodle', array('TrialLens')),
+		array('deselectDoodles', array()),
+	),
+	'bindingArray' => array(
+		'TrialLens' => array(
+			'axis' => array('id' => 'Element_OphCiExamination_Refraction_'.$side.'_axis'),
 		),
-		'bindingArray' => array(
-			'TrialLens' => array(
-					'axis' => array('id' => 'Element_OphCiExamination_Refraction_'.$side.'_axis'),
-			),
-		),
-		'idSuffix' => $side.'_'.$element->elementType->id,
-		'side' => ($side == 'right') ? 'R' : 'L',
-		'mode' => 'edit',
-		'width' => 160,
-		'height' => 160,
-		'model' => $element,
-		'attribute' => $side.'_axis_eyedraw',
+	),
+	'idSuffix' => $side.'_'.$element->elementType->id,
+	'side' => ($side == 'right') ? 'R' : 'L',
+	'mode' => 'edit',
+	'width' => 160,
+	'height' => 160,
+	'model' => $element,
+	'attribute' => $side.'_axis_eyedraw',
 ));
 ?>

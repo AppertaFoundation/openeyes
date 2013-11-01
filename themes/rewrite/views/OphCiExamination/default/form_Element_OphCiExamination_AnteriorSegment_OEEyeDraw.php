@@ -19,33 +19,33 @@
 ?>
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-		'doodleToolBarArray' => array('NuclearCataract','CorticalCataract','PostSubcapCataract','PCIOL','ACIOL','Bleb','PI','Fuchs','RK','LasikFlap','CornealScar','SectorIridectomy','PosteriorSynechia','Rubeosis'),
-		'onReadyCommandArray' => array(
-				array('addDoodle', array('AntSeg')),
-				array('deselectDoodles', array()),
+	'doodleToolBarArray' => array('NuclearCataract','CorticalCataract','PostSubcapCataract','PCIOL','ACIOL','Bleb','PI','Fuchs','RK','LasikFlap','CornealScar','SectorIridectomy','PosteriorSynechia','Rubeosis'),
+	'onReadyCommandArray' => array(
+		array('addDoodle', array('AntSeg')),
+		array('deselectDoodles', array()),
+	),
+	'bindingArray' => array(
+		'AntSeg' => array(
+			'pupilSize' => array('id' => 'Element_OphCiExamination_AnteriorSegment_'.$side.'_pupil_id', 'attribute' => 'data-value'),
+			'pxe' => array('id' => 'Element_OphCiExamination_AnteriorSegment_'.$side.'_pxe'),
 		),
-		'bindingArray' => array(
-			'AntSeg' => array(
-					'pupilSize' => array('id' => 'Element_OphCiExamination_AnteriorSegment_'.$side.'_pupil_id', 'attribute' => 'data-value'),
-					'pxe' => array('id' => 'Element_OphCiExamination_AnteriorSegment_'.$side.'_pxe'),
-			),
-			'NuclearCataract' => array(
-					'grade' => array('id' => 'Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id', 'attribute' => 'data-value'),
-			),
-			'CorticalCataract' => array(
-					'grade' => array('id' => 'Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id', 'attribute' => 'data-value'),
-			),
+		'NuclearCataract' => array(
+			'grade' => array('id' => 'Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id', 'attribute' => 'data-value'),
 		),
-		'deleteValueArray' => array(
-			'Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id' => '',
-			'Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id' => '',
+		'CorticalCataract' => array(
+			'grade' => array('id' => 'Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id', 'attribute' => 'data-value'),
 		),
-		'idSuffix' => $side.'_'.$element->elementType->id,
-		'side' => ($side == 'right') ? 'R' : 'L',
-		'mode' => 'edit',
-		'width' => 300,
-		'height' => 300,
-		'model' => $element,
-		'attribute' => $side.'_eyedraw',
+	),
+	'deleteValueArray' => array(
+		'Element_OphCiExamination_AnteriorSegment_'.$side.'_nuclear_id' => '',
+		'Element_OphCiExamination_AnteriorSegment_'.$side.'_cortical_id' => '',
+	),
+	'idSuffix' => $side.'_'.$element->elementType->id,
+	'side' => ($side == 'right') ? 'R' : 'L',
+	'mode' => 'edit',
+	'width' => 300,
+	'height' => 300,
+	'model' => $element,
+	'attribute' => $side.'_eyedraw',
 ));
 ?>
