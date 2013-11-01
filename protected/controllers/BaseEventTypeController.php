@@ -42,6 +42,7 @@ class BaseEventTypeController extends BaseController
 	public $layout = '//layouts/events_and_episodes';
 	public $current_episode;
 	private $episodes = array();
+	public $renderPatientPanel = true;
 
 	/**
 	 * Checks to see if current user can create an event type
