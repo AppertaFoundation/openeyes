@@ -39,9 +39,6 @@ label, .label {
 	}
 	padding: emCalc(5px) emCalc(6px);
 	margin: 0;
-	&.hide {
-		@extend .hide;
-	}
 	&.inline {
 		display: inline-block;
 		width: auto;
