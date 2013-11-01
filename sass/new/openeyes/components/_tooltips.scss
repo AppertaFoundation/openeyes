@@ -11,29 +11,4 @@
 		border: 2px solid #ee9;
 		background: #ffe;
 	}
-	&.quicklook {
-		width: 200px;
-		padding: 5px;
-		border: 1px solid #3665ff;
-		background: #fff;
-		.event-name {
-			font-weight: bold;
-			padding-bottom: 3px;
-		}
-		.event-info {
-			font-size: 11px;
-		}
-		.event-issue {
-			font-size: 11px;
-			color: #600;
-			padding: 5px 0 5px 20px;
-			margin-top: 7px;
-			background: #fdf2e5 image-url("_elements/icons/event/status/alert.png") top left no-repeat;
-		}
-		.events & {
-			left: 140px;
-			top: -5px;
-			z-index: 1;
-		}
-	}
 }
