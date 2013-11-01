@@ -18,9 +18,11 @@
  */
 ?>
 
-<?php echo $form->dropDownList($element, $side . '_lasertype_id', CHtml::listData($lasertypes,'id','name'), array('options' => $lasertype_options, 'empty'=>'- Please select -'), false, array('label' => 3, 'field' => 9))?>
+<div class="lasertype field-row">
+	<?php echo $form->dropDownList($element, $side . '_lasertype_id', CHtml::listData($lasertypes,'id','name'), array('options' => $lasertype_options, 'empty'=>'- Please select -'), false, array('label' => 4, 'field' => 8))?>
+</div>
 
-<?php 
+<?php
 	$show_other = false;
 	if (@$_POST[get_class($element)]) {
 		if ($lasertype = OphCiExamination_LaserManagement_LaserType::model()->findByPk((int)@$_POST[get_class($element)][$side . '_lasertype_id'])) {
@@ -34,19 +36,23 @@
 ?>
 
 <div class="row field-row lasertype_other<?php if (!$show_other) { echo " hidden"; }?>">
-	<div class="large-3 column">
-		<?php echo $element->getAttributeLabel($side . '_lasertype_other')?>:
+	<div class="large-4 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_lasertype_other';?>">
+			<?php echo $element->getAttributeLabel($side . '_lasertype_other')?>:
+		</label>
 	</div>
-	<div class="large-9 column">
+	<div class="large-8 column">
 		<?php echo $form->textField($element, $side . '_lasertype_other',array('max' => 120, 'nowrapper' => true))?>
 	</div>
 </div>
 
 <div class="row field-row">
-	<div class="large-3 column">
-		<?php echo $element->getAttributeLabel($side . '_comments')?>
+	<div class="large-4 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_comments';?>">
+			<?php echo $element->getAttributeLabel($side . '_comments')?>
+		</label>
 	</div>
-	<div class="large-9 column">
+	<div class="large-8 column">
 		<?php echo $form->textArea($element, $side . '_comments',array('rows' => 4, 'cols' => 50, 'nowrapper' => true))?>
 	</div>
 </div>

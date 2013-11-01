@@ -115,6 +115,9 @@
 .column,
 .columns {
     @include grid-column($columns: $total-columns);
+    &.collapse {
+        padding: 0;
+    }
 }
 @media only screen {
     .column,

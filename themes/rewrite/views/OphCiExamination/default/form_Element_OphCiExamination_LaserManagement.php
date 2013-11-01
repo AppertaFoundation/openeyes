@@ -38,7 +38,7 @@ if (@$_POST[get_class($element)]) {
 <div class="sub-element-fields">
 	<div class="row field-row">
 		<div class="large-3 column">
-			<label>
+			<label for="<?php echo get_class($element).'_laser_status_id';?>">
 				<?php echo $element->getAttributeLabel('laser_status_id')?>:
 			</label>
 		</div>
@@ -62,7 +62,7 @@ if (@$_POST[get_class($element)]) {
 <div class="sub-element-fields jsLaserDeferral"<?php if (!($element->laser_status && $element->laser_status->deferred)) {?> style="display: none;"<?php }?> id="div_<?php echo get_class($element)?>_laser_deferralreason">
 	<div class="row field-row">
 		<div class="large-3 column">
-			<label>
+			<label for="<?php echo get_class($element).'_laser_deferralreason_id';?>">
 				<?php echo $element->getAttributeLabel('laser_deferralreason_id')?>:
 			</label>
 		</div>
@@ -79,8 +79,7 @@ if (@$_POST[get_class($element)]) {
 
 <div class="sub-element-fields jsLaserDeferralOther"<?php if (!($element->laser_deferralreason && $element->laser_deferralreason->other)) {?> style="display: none;"<?php }?> id="div_<?php echo get_class($element)?>_laser_deferralreason_other">
 	<div class="row field-row">
-		<div class="large-3 column"></div>
-		<div class="large-9 column">
+		<div class="large-9 column large-offset-3">
 			<?php echo $form->textArea($element, 'laser_deferralreason_other', array('rows' => "1", 'cols' => "80", 'class' => 'autosize', 'nowrapper' => true) ) ?>
 		</div>
 	</div>

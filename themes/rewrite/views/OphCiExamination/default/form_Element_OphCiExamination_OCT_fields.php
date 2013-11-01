@@ -38,21 +38,24 @@ else {
 }
 ?>
 
-<?php echo $form->dropDownList($element, $side . '_method_id', CHtml::listData(OphCiExamination_OCT_Method::model()->findAll(array('order' => 'display_order')),'id','name')) ?>
-<?php echo $form->textField($element, $side . '_crt', array('append-text' => '&micro;'),null,array('label'=>'2','field'=>'6','append-text'=>'4')) ?>
+<?php echo $form->dropDownList($element, $side . '_method_id', CHtml::listData(OphCiExamination_OCT_Method::model()->findAll(array('order' => 'display_order')),'id','name'), array(), false, array('label'=>4,'field'=>8)) ?>
+
+<?php echo $form->textField($element, $side . '_crt', array('append-text' => '&micro;m'),null,array('label'=>4,'field'=>'3','append-text'=>'4')) ?>
 
 <div class="data-row row">
-	<div class="large-2 column">
-		<div class="label"><?php echo $element->getAttributeLabel($side . '_sft') ?>:</div>
+	<div class="large-4 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_sft';?>">
+			<?php echo $element->getAttributeLabel($side . '_sft') ?>:
+		</label>
 	</div>
-	<div class="large-6 column">
-		<?php echo $form->textField($element, $side . '_sft', array('nowrapper' => true, 'size' => 6)) ?>
+	<div class="large-3 column">
+		<?php echo $form->textField($element, $side . '_sft', array('nowrapper' => true)) ?>
 	</div>
-	<div class="large-4 column">&micro;m&nbsp;&nbsp;
+	<div class="large-4 column end collapse">&micro;m&nbsp;&nbsp;
 		<?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($current_episode, $side, $event_date)) { ?>
 			<span id="<?php echo $side; ?>_sft_history_icon" class="sft-history-icon">
-			<img src="<?php echo $this->assetPath ?>/img/icon_info.png" height="20" />
-		</span>
+				<img src="<?php echo $this->assetPath ?>/img/icon_info.png" height="20" />
+			</span>
 			<div class="quicklook sft-history" style="display: none;">
 				<?php
 				echo '<b>Previous SFT Measurements</b><br />';
@@ -66,14 +69,10 @@ else {
 	</div>
 </div>
 
-<div class="data-row row">
-	<div class="large-2 column"><label><?php echo $element->getAttributeLabel($side . '_thickness_increase') ?>:</label></div>
-	<div class="large-10 column"><?php echo $form->radioBoolean($element, $side . '_thickness_increase', array('nowrapper' => true)) ?></div>
-</div>
+<?php echo $form->radioBoolean($element, $side . '_thickness_increase',array(),array('label'=>4,'field'=>8))?>
+<?php echo $form->radioBoolean($element, $side . '_dry',array(),array('label'=>4,'field'=>8)) ?>
 
-<?php echo $form->radioBoolean($element, $side . '_dry') ?>
-
-<div id="<?php echo get_class($element) . '_' . $side; ?>_fluid_fields"<?php if ($hide_fluid) { echo ' style="display: none;"'; }?>>
+<div class="row field-row" id="<?php echo get_class($element) . '_' . $side; ?>_fluid_fields"<?php if ($hide_fluid) { echo ' style="display: none;"'; }?>>
 	<?php
 	$html_options = array(
 		'style' => 'margin-bottom: 10px; width: 240px;',
@@ -87,10 +86,14 @@ else {
 	}
 	echo $form->multiSelectList($element, get_class($element) . '[' . $side . '_fluidtypes]', $side . '_fluidtypes', 'id', CHtml::listData($fts,'id','name'), array(), $html_options)
 	?>
-	<div class="eventDetail aligned">
-		<div class="label">Finding Type:</div>
-		<div class="data"><?php echo $form->dropDownList($element, $side . '_fluidstatus_id', CHtml::listData(OphCiExamination_OCT_FluidStatus::model()->findAll(),'id','name'), array('nowrapper' => true, 'empty' => ' - Please Select - ')) ?></div>
+	<div class="large-3 column">
+		<label for="">
+			Finding Type:
+		</label>
+	</div>
+	<div class="large-9 column">
+		<?php echo $form->dropDownList($element, $side . '_fluidstatus_id', CHtml::listData(OphCiExamination_OCT_FluidStatus::model()->findAll(),'id','name'), array('nowrapper' => true, 'empty' => ' - Please Select - ')) ?>
 	</div>
 </div>
 
-<?php echo $form->textArea($element, $side . '_comments')?>
+<?php echo $form->textArea($element, $side . '_comments',array(),false,array(),array('label'=>4,'field'=>8))?>

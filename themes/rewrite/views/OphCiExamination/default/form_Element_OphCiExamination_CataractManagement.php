@@ -18,22 +18,26 @@
  */
 ?>
 <div class="sub-element-fields">
-	<?php echo $form->radioButtons($element, 'eye_id', 'ophciexamination_cataractmanagement_eye',null,false,false,false,false,array(),array('label' => 3, 'field' => 9))?>
-	<?php echo $form->checkbox($element, 'city_road', array('text-align' => 'right', 'no-label' => true), array('label' => 3, 'field' => 9))?>
-	<?php echo $form->checkbox($element, 'satellite', array('text-align' => 'right', 'no-label' => true), array('label' => 3, 'field' => 9))?>
-	<?php echo $form->checkbox($element, 'fast_track', array('text-align' => 'right', 'no-label' => true), array('label' => 3, 'field' => 9))?>
+	<div class="field-row">
+		<?php echo $form->radioButtons($element, 'eye_id', 'ophciexamination_cataractmanagement_eye',null,false,false,false,false,array('nowrapper'=>true))?>
+	</div>
+	<div class="field-row">
+		<?php echo $form->checkbox($element, 'city_road', array('nowrapper'=>true))?>
+		<?php echo $form->checkbox($element, 'satellite', array('nowrapper'=>true))?>
+		<?php echo $form->checkbox($element, 'fast_track', array('nowrapper'=>true))?>
+	</div>
 	<?php echo $form->slider($element, 'target_postop_refraction', array('min'=>-20,'max'=>20,'step'=>0.5), array(), array('label' => 3, 'field' => 6))?>
 	<?php echo $form->radioBoolean($element, 'correction_discussed', array(), array('label' => 3, 'field' => 9))?>
 	<div class="row field-row">
 		<div class="large-3 column">
-			<label>
+			<label for="<?php echo get_class($element).'_suitable_for_surgeon_id';?>">
 				<?php echo $element->getAttributeLabel('suitable_for_surgeon_id')?>:
 			</label>
 		</div>
 		<div class="large-9 column">
 			<?php echo CHtml::activeDropDownList($element,'suitable_for_surgeon_id', CHtml::listData(OphCiExamination_SuitableForSurgeon::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Please select -'))?>
 			<label class="inline">
-				<?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true))?>
+				<?php echo $form->checkbox($element, 'supervised', array('nowrapper' => true, 'no-label'=>true))?>
 				<?php echo $element->getAttributeLabel('supervised')?>
 			</label>
 		</div>

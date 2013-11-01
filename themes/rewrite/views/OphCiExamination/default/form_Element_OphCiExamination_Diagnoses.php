@@ -18,18 +18,18 @@
  */
 ?>
 <div class="element-fields">
-	<?php echo $form->radioButtons($element, 'eye_id', 'eye', ($this->episode && $this->episode->eye_id) ? $this->episode->eye_id : 2, false, false, false, false, array(), array('label' => 3, 'field' => 9))?>
+	<?php echo $form->radioButtons($element, 'eye_id', 'eye', ($this->episode && $this->episode->eye_id) ? $this->episode->eye_id : 2, false, false, false, false, array(), array('label' => 2, 'field' => 10))?>
 	<?php $this->widget('application.widgets.DiagnosisSelection', array(
-			'field' => 'disorder_id',
-			'options' => $element->getCommonOphthalmicDisorders($this->selectedFirmId),
-			'code' => '130', // Ophthamology
-			'callback' => 'OphCiExamination_AddDiagnosis',
-			'layout' => 'minimal',
-			'layoutColumns' => array(
-				'label' => 3,
-				'field' => 5,
-			),
-			'label' => true,
+		'field' => 'disorder_id',
+		'options' => $element->getCommonOphthalmicDisorders($this->selectedFirmId),
+		'code' => '130', // Ophthamology
+		'callback' => 'OphCiExamination_AddDiagnosis',
+		'layout' => 'minimal',
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5,
+		),
+		'label' => true,
 	))?>
 
 	<table class="plain grid">
@@ -57,7 +57,7 @@
 					</td>
 					<td>
 						<a href="#" class="removeDiagnosis" rel="<?php echo $diagnosis['disorder']->id?>">
-							<strong>Remove</strong>
+							Remove
 						</a>
 					</td>
 				</tr>
