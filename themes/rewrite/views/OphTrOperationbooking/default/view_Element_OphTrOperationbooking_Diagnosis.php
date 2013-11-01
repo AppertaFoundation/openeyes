@@ -20,7 +20,7 @@
 <section class="element element-data">
 	<h3 class="data-title"><?php  echo $element->elementType->name ?></h3>
 		<div class="data-value highlight">
-	<?php $disorder = $element->disorder?>
-	<?php echo !empty($disorder) ? $element->eye->adjective : 'Unknown' ?> <?php echo !empty($disorder) ? $element->disorder->term : 'Unknown' ?>
+			<?php $disorder = $element->disorder?>
+			<?php echo !empty($disorder) ? $element->eye->adjective : 'Unknown' ?> <?php echo !empty($disorder) ? $element->disorder->term : 'Unknown' ?>
 		</div>
 </section>

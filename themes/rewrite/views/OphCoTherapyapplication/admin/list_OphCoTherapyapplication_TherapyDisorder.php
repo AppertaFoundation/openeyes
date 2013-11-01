@@ -18,10 +18,7 @@
  */
 ?>
 <h1><?php echo $title ?></h1>
-
-<?php
-$this->renderPartial('//base/_messages');
-?>
+<?php $this->renderPartial('//base/_messages')?>
 <div class="box admin">
 	<form id="admin_diagnoses">
 		<table class="grid">
@@ -63,7 +60,6 @@ $this->renderPartial('//base/_messages');
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'clinical-create',
 			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
 			'action' => Yii::app()->createURL($this->module->getName() . '/admin/addDiagnosis')
 	));
 

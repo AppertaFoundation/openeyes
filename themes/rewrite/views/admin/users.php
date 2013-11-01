@@ -28,7 +28,6 @@
 			$form = $this->beginWidget('BaseEventTypeCActiveForm',array(
 				'id' => 'searchform',
 				'enableAjaxValidation' => false,
-				'htmlOptions' => array('class'=>'sliding'),
 				'focus' => '#search',
 				'action' => Yii::app()->createUrl('/admin/users'),
 			))?>

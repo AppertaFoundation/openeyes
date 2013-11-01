@@ -1,4 +1,4 @@
-<div class="large-10 column event booking edit">
+<div class="large-10 column event ophtroperationbooking edit">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li>

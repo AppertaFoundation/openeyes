@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $this->beginContent('//patient/event_container', array());
+<?php $this->beginContent('//patient/event_container');
 
 $this->moduleNameCssClass.=" highlight-fields";
 ?>
@@ -32,7 +32,6 @@ $this->moduleNameCssClass.=" highlight-fields";
 ?>
 
 <input type="hidden" id="moduleCSSPath" value="<?php echo $this->assetPath?>/css" />
-
 
 <?php $this->renderDefaultElements($this->action->id); ?>
 <?php $this->renderOptionalElements($this->action->id); ?>

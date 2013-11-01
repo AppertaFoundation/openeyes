@@ -26,7 +26,6 @@
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'editContactLabelForm',
 			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
 			'focus'=>'#ContactLabel_name',
 			'layoutColumns' => array(
 				'label' => 2,

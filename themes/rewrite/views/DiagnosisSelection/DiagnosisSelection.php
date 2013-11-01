@@ -18,7 +18,7 @@
  */
 ?>
 <div class="row field-row">
-	<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+	<div class="large-<?php echo $layoutColumns['label'];?> column">
 		<label for="<?php echo "{$class}_{$field}";?>">Diagnosis:</label>
 	</div>
 	<div class="large-<?php echo $layoutColumns['field'];?> column end">

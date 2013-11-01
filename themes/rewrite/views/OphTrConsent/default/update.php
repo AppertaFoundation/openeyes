@@ -25,7 +25,6 @@
 	<?php			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'clinical-create',
 			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
 			'focus'=>'#procedure_id'
 		));
 		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'small button', 'form'=>'clinical-create'));

@@ -285,6 +285,19 @@ class PatientViewContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I confirm the patient has no allergies and Save$/
+     */
+    public function iConfirmThePatientHasNoAllergies()
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->noAllergyTickbox();
+    }
+
+
+    /**
      * @Given /^I Add a Family History of relative "([^"]*)" side "([^"]*)" condition "([^"]*)" and comments "([^"]*)" and Save$/
      */
     public function FamilyHistory($relative, $side, $condition, $comments)

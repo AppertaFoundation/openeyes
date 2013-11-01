@@ -22,24 +22,24 @@
 	<div
 		class="side left eventDetail<?php if (!$element->hasRight()) { ?> inactive<?php } ?>"
 		data-side="right">
-		<div class="activeForm">
-			<a href="#" class="removeSide">-</a>
+		<div class="active-form">
+			<a href="#" class="remove-side">-</a>
 			<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw',
 				array('side' => 'right', 'element' => $element)); ?>
 		</div>
-		<div class="inactiveForm">
+		<div class="inactive-form">
 			<a href="#">Add right side</a>
 		</div>
 	</div>
 	<div
 		class="side right eventDetail<?php if (!$element->hasLeft()) { ?> inactive<?php } ?>"
 		data-side="left">
-		<div class="activeForm">
-			<a href="#" class="removeSide">-</a>
+		<div class="active-form">
+			<a href="#" class="remove-side">-</a>
 			<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw',
 				array('side' => 'left', 'element' => $element)); ?>
 		</div>
-		<div class="inactiveForm">
+		<div class="inactive-form">
 			<a href="#">Add left side</a>
 		</div>
 	</div>

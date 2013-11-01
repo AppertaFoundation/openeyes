@@ -40,9 +40,15 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
 		'idSuffix' => $side.'_'.$element->elementType->id,
 		'side' => ($side == 'right') ? 'R' : 'L',
 		'mode' => 'edit',
-		'width' => 300,
-		'height' => 300,
 		'model' => $element,
 		'attribute' => $side.'_eyedraw',
 ));
 ?>
+<?php
+$values = array();
+$options = array();
+foreach (OphTrIntravitrealinjection_LensStatus::model()->findAll() as $lens_status) {
+	$values[] = $lens_status;
+	$options[$lens_status->id]['data-default-distance'] = $lens_status->default_distance;
+}
+echo $form->dropDownList($element, $side . '_lens_status_id', CHtml::listData($values,'id','name'),array('empty'=>'- Please select -', 'options' => $options) )?>

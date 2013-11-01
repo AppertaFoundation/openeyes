@@ -18,9 +18,9 @@
  */
 ?>
 
-<?php if (Yii::app()->user->checkAccess('admin')) {?>
+<?php if (Yii::app()->user->checkAccess('admin') && Yii::app()->params['watermark_admin']) {?>
 	<div class="alert-box watermark admin">
-		<?php echo (Yii::app()->params['watermark_admin']) ? Yii::app()->params['watermark_admin'] : 'You are logged in as admin' ?>
+		<?php echo (Yii::app()->params['watermark_admin'])?>
 	</div>
 <?php } else if (Yii::app()->params['watermark']) {?>
 	<div class="alert-box watermark">

@@ -17,20 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $this->beginContent('//patient/event_container', array()); ?>
+<?php $this->beginContent('//patient/event_container'); ?>
 
-<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 
-<div id="event_<?php echo $this->module->name?>">
 	<?php
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'opnote-create',
+			'id'=>'opnote-update',
 			'enableAjaxValidation'=>false,
 			'focus'=>'#procedure_id'
 		));
 
 		// Event actions
-		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small','form'=>'opnote-create'));
+		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small','form'=>'opnote-update'));
 	?>
 
 		<?php $this->displayErrors($errors)?>
@@ -39,6 +38,5 @@
 		<?php $this->displayErrors($errors, true)?>
 
 	<?php $this->endWidget(); ?>
-</div>
 
 <?php $this->endContent() ;?>

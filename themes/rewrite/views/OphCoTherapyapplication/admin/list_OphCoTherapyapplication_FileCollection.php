@@ -16,11 +16,47 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
-
-<div class="view">
-
-<a href="<?php echo Yii::app()->createUrl('OphCoTherapyapplication/admin/updateOphCoTherapyapplication_FileCollection/', array('id'=> $data->id)) ?>"><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>: <?php echo $data->name ?></a>
-
+<h1><?php echo $title ?></h1>
+<?php $this->renderPartial('//base/_messages')?>
+<div class="hidden" id="add-new-form" style="margin-bottom: 10px">
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'clinical-create',
+			'enableAjaxValidation'=>false,
+			'htmlOptions' => array('class'=>'sliding'),
+			'action' => Yii::app()->createURL($this->module->getName() . '/admin/addFileCollection')
+	));
+	$this->endWidget();
+	?>
+</div>
+<div class="box admin">
+	<form id="admin_file_collections">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th><input type="checkbox" name="selectall" id="selectall" /></th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($model_list as $i => $model) {?>
+					<tr class="clickable" data-id="<?php echo $model->id?>" data-uri="OphCoTherapyapplication/admin/editFileCollection/<?php echo $model->id?>">
+						<td><input type="checkbox" name="file_collections[]" value="<?php echo $model->id?>" /></td>
+						<td>
+							<?php echo $model->name?>
+						</td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot class="pagination-container">
+				<tr>
+					<td colspan="2">
+						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'data-uri' => '/OphCoTherapyapplication/admin/addFileCollection'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small', 'data-uri' => '/OphCoTherapyapplication/admin/deleteFileCollections', 'data-object' => 'file_collections'))->toHtml()?>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
 </div>

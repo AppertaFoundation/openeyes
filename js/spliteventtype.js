@@ -94,7 +94,7 @@ function hideSplitElementSide(cls, side) {
 }
 
 $(document).ready(function() {
-	$(this).delegate('.event-content .removeSide', 'click', function(e) {
+	$(this).delegate('.event-content .remove-side', 'click', function(e) {
 		// Update side field to indicate other side
 		var side = $(this).closest('.side');
 
@@ -127,7 +127,7 @@ $(document).ready(function() {
 			$(this).val(3); // Both eyes
 		});
 
-		element.find('.inactive').removeClass('inactive');
+		element.find('.side.inactive').removeClass('inactive');
 
 		e.preventDefault();
 	});

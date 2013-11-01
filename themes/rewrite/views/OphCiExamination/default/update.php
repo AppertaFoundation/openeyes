@@ -18,7 +18,7 @@
  */
 ?>
 
-<?php $this->beginContent('//patient/event_container', array()); ?>
+<?php $this->beginContent('//patient/event_container'); ?>
 	<?php
 		$this->breadcrumbs=array($this->module->id);
 		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
@@ -31,41 +31,38 @@
 	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'clinical-create',
 		'enableAjaxValidation'=>false,
-		'htmlOptions' => array('class'=>'sliding'),
 		'layoutColumns' => array(
 			'label' => 4,
 			'field' => 8
 		)
 	));
 	?>
+
 		<?php $this->displayErrors($errors)?>
 
-		<div id='event_content'>
-			<div class="js-active-elements">
-				<?php $this->renderDefaultElements($this->action->id, $form)?>
-			</div>
-			<section class="optional-elements">
-				<header class="optional-elements-header">
-					<h3 class="optional-elements-title">Optional Elements</h3>
-					<div class="optional-elements-actions">
-						<a href="#" class="add-all">
-							<span>Add all</span>
-							<img src="/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
-						</a>
-						<a href="#" class="remove-all">
-							<span>Remove all</span>
-							<img src="/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
-						</a>
-					</div>
-				</header>
-				<ul class="optional-elements-list">
-					<?php $this->renderOptionalElements($this->action->id, $form)?>
-				</ul>
-			</section>
-
-			<?php $this->displayErrors($errors)?>
+		<div class="js-active-elements">
+			<?php $this->renderDefaultElements($this->action->id, $form)?>
 		</div>
+		<section class="optional-elements">
+			<header class="optional-elements-header">
+				<h3 class="optional-elements-title">Optional Elements</h3>
+				<div class="optional-elements-actions">
+					<a href="#" class="add-all">
+						<span>Add all</span>
+						<img src="/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
+					</a>
+					<a href="#" class="remove-all">
+						<span>Remove all</span>
+						<img src="/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
+					</a>
+				</div>
+			</header>
+			<ul class="optional-elements-list">
+				<?php $this->renderOptionalElements($this->action->id, $form)?>
+			</ul>
+		</section>
 
-		<div class="cleartall"></div>
+		<?php $this->displayErrors($errors, true)?>
+
 	<?php $this->endWidget()?>
 <?php $this->endContent() ;?>

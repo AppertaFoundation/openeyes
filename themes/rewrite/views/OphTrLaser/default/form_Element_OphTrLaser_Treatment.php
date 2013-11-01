@@ -22,25 +22,46 @@ $procs = array();
 foreach ($lprocs as $lproc) {
 	$procs[] = $lproc->procedure;
 }
+$layoutColumns = array(
+	'label' => 4,
+	'field' => 8
+);
 ?>
 
 <div class="element-fields element-eyes row">
-	<div class="element-eye right-eye column">
-		<a href="#" class="icon-remove-side">Remove eye</a>
-		<?php
-		$form->multiSelectList(
-			$element,
-			'treatment_right_procedures',
-			'right_procedures', 'id', CHtml::listData($procs, 'id', 'term'), array(), array('empty' => '- Procedures -', 'label' => $element->getAttributeLabel('procedures')));
-		?>
+	<div class="element-eye right-eye column side left" data-side="right">
+		<a href="#" class="icon-remove-side remove-side">Remove eye</a>
+		<div class="active-form">
+			<?php
+			$form->multiSelectList(
+				$element,
+				'treatment_right_procedures',
+				'right_procedures', 'id', CHtml::listData($procs, 'id', 'term'), array(),array('empty' => '- Procedures -', 'label' => $element->getAttributeLabel('procedures')), false,	$layoutColumns);?>
+		</div>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add right side <span class="icon-add-side"></span>
+				</a>
+			</div>
+		</div>
 	</div>
-	<div class="element-eye left-eye column">
-		<a href="#" class="icon-remove-side">Remove eye</a>
-		<?php
-		$form->multiSelectList(
-			$element,
-			'treatment_left_procedures',
-			'left_procedures', 'id', CHtml::listData($procs, 'id', 'term'), array(), array('empty' => '- Procedures -', 'label' => $element->getAttributeLabel('procedures')));
-		?>
+	<div class="element-eye left-eye column side right" data-side="left">
+		<a href="#" class="icon-remove-side remove-side">Remove eye</a>
+		<div class="active-form">
+			<?php
+			$form->multiSelectList(
+				$element,
+				'treatment_left_procedures',
+				'left_procedures', 'id', CHtml::listData($procs, 'id', 'term'), array(), array('empty' => '- Procedures -', 'label' => $element->getAttributeLabel('procedures')), false, $layoutColumns);
+			?>
+		</div>
+		<div class="inactive-form">
+			<div class="add-side">
+				<a href="#">
+					Add left side <span class="icon-add-side"></span>
+				</a>
+			</div>
+		</div>
 	</div>
 </div>

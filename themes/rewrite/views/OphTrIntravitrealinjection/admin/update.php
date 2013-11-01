@@ -17,12 +17,27 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<div class="box admin">
+	<h2>Edit <?php echo $title?></h2>
 
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label"><?php echo $element->getAttributeLabel($side . '_lens_status_id') ?>:</div>
-	</div>
-	<div class="large-8 column">
-		<div class="data-value"><?php echo $element->{$side . '_lens_status'}->name ?></div>
-	</div>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'htmlOptions' => array(
+				'enctype' => 'multipart/form-data'
+		)
+	))?>
+
+	<?php echo $form->errorSummary($model)?>
+
+	<?php
+	$this->renderPartial('form_'.get_class($model), array(
+			'model' => $model,
+			'form' => $form,
+	))?>
+
+	<?php echo $form->formActions(array('cancel-uri'=>@$cancel_uri))?>
+
+	<?php $this->endWidget()?>
 </div>

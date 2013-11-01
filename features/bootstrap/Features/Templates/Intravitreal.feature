@@ -22,6 +22,7 @@ Feature: Create New Intravitreal Event
     And I add a New Event "<EventType>"
 
     #Anaesthetic Right
+    Then I select Add Right Side
     Then I choose Right Anaesthetic Type of Topical
     Then I choose Right Anaesthetic Type of LA
 

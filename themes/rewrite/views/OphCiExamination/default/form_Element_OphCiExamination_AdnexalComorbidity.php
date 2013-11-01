@@ -20,7 +20,7 @@
 <div class="element-eyes element-fields">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-attr="right">
-		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
 			<div class="field-row textMacros">
 				<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'right_description', 'form' => $form))?>
@@ -36,7 +36,7 @@
 		</div>
 	</div>
 	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-attr="left">
-		<a href="#" class="icon-remove-side removeSide">Remove side</a>
+		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
 			<div class="field-row textMacros">
 				<?php $this->renderPartial('_attributes', array('element' => $element, 'field' => 'left_description', 'form' => $form))?>

@@ -17,47 +17,64 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<h4 class="elementTypeName">Application</h4>
 
-<?php if (!$element->sent) {?>
-	<p><strong>This application has been prepared but not sent due to a system failure sending the email - please try again.</strong></p>
-<?php }?>
+<section class="element">
+	<header class="element-header">
+		<h3 class="element-title">Application</h3>
+	</header>
 
-<div class="cols2 clearfix">
-	<div class="left eventDetail">
-		<?php if ($element->hasRight()) {?>
-			<div class="eventDetail aligned">
-				<div class="label">Application files</div>
-				<div class="data">
-					<ul style="margin: 0px;">
-						<?php foreach ($element->right_attachments as $att) {?>
-							<li><a href="<?php echo $att->getDownloadURL()?>"><?php echo $att->name; ?></a></li>
-						<?php } ?>
-					</ul>
+	<?php if (!$element->sent) {?>
+		<div class="alert-box alert"><strong>This application has been prepared but not sent due to a system failure sending the email - please try again.</strong></div>
+	<?php }?>
+
+	<div class="element-data element-eyes row">
+		<div class="element-eye right-eye column">
+			<?php if ($element->hasRight()) {?>
+				<div class="row field-row">
+					<div class="large-4 column">
+						<div class="data-label">Application files:</div>
+					</div>
+					<div class="large-8 column end">
+						<div class="data-value">
+							<ul>
+								<?php foreach ($element->right_attachments as $att) {?>
+									<li><a href="<?php echo $att->getDownloadURL()?>"><?php echo $att->name; ?></a></li>
+								<?php } ?>
+							</ul>
+						</div>
+					</div>
 				</div>
-			</div>
-		<?php } else { ?>
-		N/A
-		<?php } ?>
-	</div>
-	<div class="right eventDetail">
-		<?php if ($element->hasLeft()) {?>
-			<div class="eventDetail aligned">
-				<div class="label">Application files</div>
-				<div class="data">
-					<ul style="margin: 0px;">
-						<?php foreach ($element->left_attachments as $att) {?>
-							<li><a href="<?php echo $att->getDownloadURL()?>"><?php echo $att->name; ?></a></li>
-						<?php } ?>
-					</ul>
+			<?php } else { ?>
+				<div class="eye-mesage">
+					N/A
 				</div>
-			</div>
-		<?php } else { ?>
-		N/A
-		<?php } ?>
+			<?php } ?>
+		</div>
+		<div class="element-eye left-eye column">
+			<?php if ($element->hasLeft()) {?>
+				<div class="row field-row">
+					<div class="large-4 column">
+						<div class="data-label">Application files:</div>
+					</div>
+					<div class="large-8 column end">
+						<div class="data-value">
+							<ul>
+								<?php foreach ($element->left_attachments as $att) {?>
+									<li><a href="<?php echo $att->getDownloadURL()?>"><?php echo $att->name; ?></a></li>
+								<?php } ?>
+							</ul>
+						</div>
+					</div>
+				</div>
+			<?php } else { ?>
+				<div class="eye-mesage">
+					N/A
+				</div>
+			<?php } ?>
+		</div>
 	</div>
-</div>
-<div class="metaData">
-Application sent by <span class="user"><?php echo $element->user->fullname ?></span> on <?php echo $element->NHSDate('created_date') ?>
-		at <?php echo date('H:i', strtotime($element->created_date)) ?>
-</div>
+	<div class="metadata">
+	Application sent by <span class="user"><?php echo $element->user->fullname ?></span> on <?php echo $element->NHSDate('created_date') ?>
+			at <?php echo date('H:i', strtotime($element->created_date)) ?>
+	</div>
+</section>

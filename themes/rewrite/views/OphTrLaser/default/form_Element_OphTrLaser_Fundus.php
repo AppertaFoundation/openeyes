@@ -21,7 +21,7 @@
 <div class="sub-element-fields element-eyes row">
 	<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side removeSide">Remove eye</a>
+			<a href="#" class="icon-remove-side remove-side">Remove eye</a>
 			<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'right', 'element' => $element))?>
 		</div>
 		<div class="inactive-form">
@@ -34,7 +34,7 @@
 	</div>
 	<div class="element-eye left-eye column side right<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
 		<div class="active-form">
-			<a href="#" class="icon-remove-side removeSide">Remove eye</a>
+			<a href="#" class="icon-remove-side remove-side">Remove eye</a>
 			<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'left', 'element' => $element))?>
 		</div>
 		<div class="inactive-form">

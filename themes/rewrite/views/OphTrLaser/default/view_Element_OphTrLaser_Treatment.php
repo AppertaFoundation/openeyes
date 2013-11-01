@@ -34,7 +34,7 @@
 					</ul>
 				<?php }?>
 			<?php }else{?>
-				Not recorded
+				<p>Not recorded</p>
 			<?php }?>
 		</div>
 		<div class="element-eye left-eye column">
@@ -49,7 +49,7 @@
 					</ul>
 				<?php }?>
 			<?php }else{?>
-				Not recorded
+				<p>Not recorded</p>
 			<?php }?>
 		</div>
 	</div>

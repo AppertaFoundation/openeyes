@@ -25,7 +25,7 @@ if (!$reschedule) {
 ?>
 	<h4>Other operations in this session: <?php echo abs($session->availableMinutes) . " min {$session->minuteStatus}"; ?></h4>
 	<div class="theatre-sessions">
-	<table id="appointment_list">
+	<table id="appointment_list" class="grid">
 		<thead>
 			<tr>
 				<th>Operation list overview</th>
@@ -87,7 +87,9 @@ if (!$reschedule) {
 				<span id="Booking_admission_time_error"></span>
 			</div>
 		</div>
+	</div>
 
+	<div class="eventDetail">
 		<div class="row field-row" style="position:relative;">
 			<div class="large-2 column">
 				<label for="Session_comments"><strong>Session Comments:</strong></label>
@@ -99,17 +101,19 @@ if (!$reschedule) {
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<?php
-		if ($reschedule) {
-			echo CHtml::hiddenField('booking_id', $operation->booking->id);
-		}
-		echo CHtml::hiddenField('Booking[element_id]', $operation->id);
-		echo CHtml::hiddenField('Booking[session_id]', $session['id']);
-		?>
+	<?php
+	if ($reschedule) {
+		echo CHtml::hiddenField('booking_id', $operation->booking->id);
+	}
+	echo CHtml::hiddenField('Booking[element_id]', $operation->id);
+	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
+	?>
 
-		<?php if ($reschedule) { ?>
-			<h3>Reason for Reschedule</h3>
+	<?php if ($reschedule) { ?>
+		<h3>Reason for Reschedule</h3>
+		<div class="eventDetail">
 			<div class="row field-row">
 				<div class="large-2 column">
 					<?php echo CHtml::label('<strong>Reschedule Reason:</strong> ', 'cancellation_reason'); ?>
@@ -134,8 +138,10 @@ if (!$reschedule) {
 					<textarea name="cancellation_comment" rows=3 cols=50></textarea>
 				</div>
 			</div>
-		<?php }?>
+		</div>
+	<?php }?>
 
+	<div class="eventDetail">
 		<div class="row field-row">
 			<div class="large-2 column">
 				<?php echo CHtml::label('<strong>Operation Comments:</strong>', 'operation_comments'); ?>
@@ -144,18 +150,18 @@ if (!$reschedule) {
 				<textarea id="operation_comments" name="Operation[comments]" rows=3 cols=50><?php echo htmlspecialchars($_POST['Operation']['comments'])?></textarea>
 			</div>
 		</div>
-
-		<div class="field-row">
-			<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
-		</div>
-
-		<div class="field-row">
-			<button type="submit" class="secondary" id="confirm_slot">Confirm slot</button>
-			<button type="button" class="warning" id="cancel_scheduling"><?php echo 'Cancel '.($reschedule ? 're-' : '').'scheduling';?></button>
-		</div>
-
-		<?php
-		echo CHtml::endForm();
-		?>
 	</div>
+
+	<div class="field-row" style="margin-top: 1em">
+		<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
+	</div>
+
+	<div class="field-row">
+		<button type="submit" class="secondary" id="confirm_slot">Confirm slot</button>
+		<button type="button" class="warning" id="cancel_scheduling"><?php echo 'Cancel '.($reschedule ? 're-' : '').'scheduling';?></button>
+	</div>
+
+	<?php
+	echo CHtml::endForm();
+	?>
 <?php }?>

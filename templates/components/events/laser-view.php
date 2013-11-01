@@ -1,4 +1,4 @@
-<div class="large-10 column event view laser">
+<div class="large-10 column event view ophtrlaser">
 	<header class="event-header">
 		<ul class="inline-list tabs event-actions">
 			<li class="selected">

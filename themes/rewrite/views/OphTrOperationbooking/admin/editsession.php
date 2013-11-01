@@ -26,7 +26,6 @@
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 				'id'=>'adminform',
 				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
 				'focus'=>'#username'
 			))?>
 		<?php if (!$session->id) {?>

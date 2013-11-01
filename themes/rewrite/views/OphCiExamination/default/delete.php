@@ -23,9 +23,6 @@
 	<?php echo $this->event_type->name ?>
 </h3>
 
-<div>
-	<div class="cleartall"></div>
-</div>
 
 <div id="delete_event">
 	<h1>Delete event</h1>
