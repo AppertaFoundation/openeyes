@@ -493,8 +493,8 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 				// look for an action/element specific view file
 				$view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
 				$this->renderPartial(
-						$action . '_' . $view,
-						array('element' => $element, 'data' => $data, 'form' => $form)
+					$action . '_' . $view,
+					array('element' => $element, 'data' => $data, 'form' => $form, 'child' => $element->elementType->parent_element_type_id)
 				);
 			} catch (Exception $e) {
 				if (strpos($e->getMessage(), "cannot find the requested view") === false) {
@@ -502,8 +502,8 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 				}
 				// otherwise use the default layout
 				$this->renderPartial(
-						'_'.$action,
-						array('element' => $element, 'data' => $data, 'form' => $form, 'child' => $element->elementType->parent_element_type_id)
+					'_'.$action,
+					array('element' => $element, 'data' => $data, 'form' => $form, 'child' => $element->elementType->parent_element_type_id)
 				);
 			}
 
