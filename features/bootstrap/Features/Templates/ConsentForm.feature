@@ -1,10 +1,10 @@
 
-Feature: Create New Examination
+Feature: Create New Consent Form
   In order to cover every possible route throughout the site
   As an automation tester
   I want to build a template with supporting code for each web page
 
-  Scenario Outline: Login and create a new Examination Event
+  Scenario Outline: Login and create a new Consent Form
 
     Given I am on the OpenEyes "<environment>" homepage
     And I enter login credentials "<username>" and "<password>"
@@ -35,7 +35,8 @@ Feature: Create New Examination
 #    Then I select a Interpreter required checkbox
 #    And I enter a Interpreter name of "Tom Smith"
 #    Then I select a supplementary consent form checkbox
-#    The element not found error crops up again for all of these checkboxes
+
+#   !!!! The element not found error crops up again for all of these checkboxes!!!!
     Then I save the Consent Form
 
 

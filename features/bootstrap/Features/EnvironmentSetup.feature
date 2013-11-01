@@ -33,7 +33,6 @@ Feature: Environment Setup on clean database
     Then I Save the Event
 
 
-
   Scenario: Environment Setup Medical Retinal
 
     Given I am on the OpenEyes "master" homepage
@@ -75,6 +74,7 @@ Feature: Environment Setup on clean database
     Then I select the Latest Event
     And I select Add Episode from the sidebar
     Then I expand the Cataract sidebar
+
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "no"

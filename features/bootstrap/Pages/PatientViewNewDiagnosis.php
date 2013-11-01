@@ -42,8 +42,8 @@ class PatientViewNewDiagnosis extends Page
         'operationBothEyes' => array('xpath' => "//*[@id='add-previous_operation']/div[4]/input[3]"),
         'operationLeftEye' => array('xpath' => "//*[@id='add-previous_operation']/div[4]/input[4]"),
         'operationSaveButton' => array('xpath' => "//*[@class='classy green mini btn_save_previous_operation']//*[contains(text(),'Save')]"),
-        'editCVIstatusButton' => array('xpath'=> "//button[@id='btn-edit_oph_info']"),
-        'cviStatus' => array('xpath' => "//button[@id='btn-edit_oph_info']"),
+        'editCVIstatusButton' => array('xpath'=> "//*[@id='btn-edit_oph_info']"),
+        'cviStatus' => array('xpath' => "//select[@id='PatientOphInfo_cvi_status_id']"),
         'CVIDay' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_day']"),
         'CVIMonth' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_month']"),
         'CVIYear' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_year']"),
@@ -58,7 +58,8 @@ class PatientViewNewDiagnosis extends Page
         'saveMedication' => array('xpath' => "//*[@class='classy green mini btn_save_medication']//*[contains(text(),'Save')]"),
         'addAllergyButton' => array('xpath' => "//*[@id='btn-add_allergy']"),
         'selectAllergy' => array('xpath' => "//select[@id='allergy_id']"),
-        'saveAllergy' => array('xpath' => "//*[@id='add-allergy']/div[3]/button[1]//*[contains(text(),'Save')]"),
+        'noAllergyTickbox' => array('xpath' => "//*[@id='no_allergies']"),
+        'saveAllergy' => array('xpath' => "//*[@id='add-allergy']//*[contains(text(),'Save')]"),
         'addFamilyHistoryButton' => array('xpath' => "//*[@id='btn-add_family_history']"),
         'selectRelativeID' => array('xpath' => "//*[@id='relative_id']"),
         'selectFamilySide' => array('xpath' => "//*[@id='side_id']"),
@@ -84,13 +85,13 @@ class PatientViewNewDiagnosis extends Page
     public function selectEye ($eye)
     {
         if ($eye===('Right')) {
-        $this->getElement('opthRightEye')->press();
+        $this->getElement('opthRightEye')->check();
         }
         if ($eye===('Both'))  {
-            $this->getElement('opthBothEyes')->press();
+            $this->getElement('opthBothEyes')->check();
         }
         if ($eye===('Left'))  {
-            $this->getElement('opthLeftEye')->press();
+            $this->getElement('opthLeftEye')->check();
         }
     }
 
@@ -137,16 +138,16 @@ class PatientViewNewDiagnosis extends Page
     public function selectSystemicSide ($side)
     {
         if ($side===("None")) {
-        $this->getElement('sysNoEyes')->click();
+        $this->getElement('sysNoEyes')->check();
         }
         if ($side===("Right")) {
-            $this->getElement('sysRightEye')->click();
+            $this->getElement('sysRightEye')->check();
         }
         if ($side===("Both")) {
-            $this->getElement('sysBothEyes')->click();
+            $this->getElement('sysBothEyes')->check();
         }
         if ($side===("Left")) {
-            $this->getElement('sysLeftEye')->click();
+            $this->getElement('sysLeftEye')->check();
         }
         $this->getSession()->wait(3000);
 
@@ -168,23 +169,23 @@ class PatientViewNewDiagnosis extends Page
     public function operationSide ($side)
     {
         if ($side===("None")) {
-            $this->getElement('operationNoEyes')->click();
+            $this->getElement('operationNoEyes')->check();
         }
         if ($side===("Right")) {
-            $this->getElement('operationRightEye')->click();
+            $this->getElement('operationRightEye')->check();
         }
         if ($side===("Both")) {
-            $this->getElement('operationBothEyes')->click();
+            $this->getElement('operationBothEyes')->check();
         }
         if ($side===("Left")) {
-            $this->getElement('operationLeftEye')->click();
+            $this->getElement('operationLeftEye')->check();
         }
     }
 
     public function savePreviousOperation ()
     {
-        $this->getElement('operationSaveButton')->press();
-        $this->getSession()->wait(5000, "$.active == 0");
+        $this->getElement('operationSaveButton')->click();
+        $this->getSession()->wait(10000);
     }
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
@@ -197,8 +198,6 @@ class PatientViewNewDiagnosis extends Page
         $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('selectFrequency')->selectOption($frequency);
         $this->getSession()->wait(5000, "$.active == 0");
-//        $this->getElement('hopefullFIX')->click();
-//        $this->getSession()->wait(5000, "$.active == 0");
         $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('openMedicationDate')->click();
         $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
@@ -210,6 +209,7 @@ class PatientViewNewDiagnosis extends Page
 
     public function editCVIstatus ($status)
     {
+
         $this->getElement('editCVIstatusButton')->click();
         $this->getElement('cviStatus')->selectOption($status);
         $this->getSession()->wait(3000);
@@ -241,6 +241,15 @@ class PatientViewNewDiagnosis extends Page
         $this->getElement('addAllergyButton')->click();
         $this->getSession()->wait(1000,false);
         $this->getElement('selectAllergy')->selectOption($allergy);
+        $this->getElement('saveAllergy')->click();
+        $this->getSession()->wait(1000,false);
+    }
+
+    public function noAllergyTickbox ()
+    {
+        $this->getElement('addAllergyButton')->click();
+        $this->getSession()->wait(1000,false);
+        $this->getElement('noAllergyTickbox')->check();
         $this->getElement('saveAllergy')->click();
         $this->getSession()->wait(1000,false);
     }
@@ -291,6 +300,7 @@ class PatientViewNewDiagnosis extends Page
     public function selectLatestEvent ()
     {
         $this->getElement('latestEvent')->click();
+        $this->getSession()->wait(3000);
     }
 
     protected function episodesAndEventsAreNotPresent()
