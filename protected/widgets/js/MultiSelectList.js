@@ -43,6 +43,7 @@ $(document).ready(function() {
 			var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];
 			var noSelectionsMsg = container.find('.no-selections-msg');
 			var removeAll = container.find('.remove-all');
+			var options = container.data('options');
 
 			var attrs = {};
 			$(selected[0].attributes).each(function() {
@@ -65,7 +66,7 @@ $(document).ready(function() {
 				'data-text': selected.text()
 			});
 
-			var item = $('<li>'+selected.text()+'</li>');
+			var item = $('<li><span class="text">'+selected.text()+'</span></li>');
 			item.append(remove);
 			item.append(input);
 
@@ -78,6 +79,12 @@ $(document).ready(function() {
 
 			selected.remove();
 			select.val('');
+
+			if (options.sorted) {
+				selections.append(selections.find('li').sort(function(a,b) {
+					return $.trim($(a).find('.text').text()) > $.trim($(b).find('.text').text());
+				}));
+			}
 		}
 
 		select.trigger('MultiSelectChanged');

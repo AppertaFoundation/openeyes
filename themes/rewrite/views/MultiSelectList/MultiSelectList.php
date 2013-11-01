@@ -45,6 +45,10 @@ foreach($selected_ids as $id) {
 		break;
 	}
 }
+
+$widgetOptionsJson = json_encode(array(
+	'sorted' => $sorted
+));
 ?>
 
 <?php if (!@$htmlOptions['nowrapper']) {?>
@@ -56,7 +60,7 @@ foreach($selected_ids as $id) {
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 	<?php }?>
-		<div class="multi-select<?php if (!$inline) echo ' multi-select-list';?>">
+		<div class="multi-select<?php if (!$inline) echo ' multi-select-list';?>" data-options='<?php echo $widgetOptionsJson;?>'>
 			<input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
 			<div class="multi-select-dropdown-container">
 				<select id="<?php echo $field?>" class="MultiSelectList" name="">
@@ -84,7 +88,9 @@ foreach($selected_ids as $id) {
 				<?php foreach ($selected_ids as $id) {
 					if (isset($options[$id])) {?>
 						<li>
-							<?php echo $options[$id] ?>
+							<span class="text">
+								<?php echo $options[$id] ?>
+							</span>
 							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one">Remove</a>
 							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
 							<?php if (isset($opts[$id])) {

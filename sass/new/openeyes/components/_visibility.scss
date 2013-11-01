@@ -11,14 +11,25 @@
 }
 
 .inactive-form {
-  display: none;
-  .inactive & {
-    display: block;
-  }
+	display: none;
+	.inactive & {
+		display: block;
+	}
 }
 
 .active-form {
-  .inactive & {
-    display: none;
-  }
+	.inactive & {
+		display: none;
+	}
+}
+
+.quicklook {
+	@include border-radius(3px);
+	@include box-shadow(2px 2px 2px 0 #999999);
+	width: 280px;
+	top: 0;
+	z-index: 1;
+	padding: 5px;
+	border: 1px solid #3665ff;
+	background: #fff;
 }

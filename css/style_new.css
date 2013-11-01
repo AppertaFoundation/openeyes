@@ -4865,6 +4865,24 @@ tfoot.pagination-container .pagination li {
   display: none;
 }
 
+/* line 26, ../sass/new/openeyes/components/_visibility.scss */
+.quicklook {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 2px 2px 2px 0 #999999;
+  -moz-box-shadow: 2px 2px 2px 0 #999999;
+  box-shadow: 2px 2px 2px 0 #999999;
+  width: 280px;
+  top: 0;
+  z-index: 1;
+  padding: 5px;
+  border: 1px solid #3665ff;
+  background: #fff;
+}
+
 /* line 6, ../sass/new/openeyes/components/_jquery-ui.scss */
 .open-eyes .ui-widget {
   font-size: 1em;
