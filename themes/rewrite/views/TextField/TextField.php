@@ -28,18 +28,22 @@
 			echo Chtml::label($labelText, Chtml::getIdByName($name));
 			?>
 		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column end">
+		<div class="large-<?php echo $layoutColumns['field'];?> column">
 			<?php if (@$htmlOptions['password']) { ?>
 				<?php echo CHtml::passwordField($name, $value, $htmlOptions)?>
 			<?php } else {?>
 				<?php echo CHtml::textField($name, $value, $htmlOptions)?>
 			<?php } ?>
-			<?php echo @$htmlOptions['append_text']?>
 			<?php if (!empty($links)) {
 				foreach ($links as $link) {
 					echo '<span class="field-info">'.CHtml::link($link['title'],$link['href'],array('id'=>$link['id'])).'</span>';
 				}
 			}?>
 		</div>
+	<?php if(!empty($htmlOptions['append-text']) && !empty($layoutColumns['append-text'])){?>
+		<div class="large-<?php echo $layoutColumns['append-text'];?> column">
+			<?php echo $htmlOptions['append-text'];?>
+		</div>
+	<?php }?>
 	</div>
 <?php }?>
