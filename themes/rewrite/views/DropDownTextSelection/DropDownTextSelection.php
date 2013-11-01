@@ -38,7 +38,7 @@
 <div id="div_<?php echo get_class($element) ?>_<?php echo $field ?>_TextSelection" class="row field-row">
 	<div class="large-<?php echo $layoutColumns['label'];?> column">
 		<label for="<?php echo $htmlOptions['id'];?>">
-			<?php echo $element->getAttributeLabel($field) ?>:
+			<?php echo CHtml::encode($element->getAttributeLabel($field)) ?>:
 		</label>
 	</div>
 	<div class="large-<?php echo $layoutColumns['field'];?> column end">

@@ -25,7 +25,7 @@ $fieldCols = floor((12 - ($labelCols * count($fields))) / 2);
 	<?php foreach ($fields as $i => $field) {?>
 		<div class="large-<?php echo $labelCols;?> column">
 			<label for="<?php echo get_class($element).'_'.$field;?>">
-				<?php echo $element->getAttributeLabel($field); ?>:
+				<?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:
 			</label>
 		</div>
 		<div class="large-<?php echo $fieldCols;?> column">

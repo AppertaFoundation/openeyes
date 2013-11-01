@@ -36,7 +36,7 @@
 
 <div class="row field-row slider">
 	<div class="large-<?php echo $layoutColumns['label']?> column">
-		<label for="<?php echo get_class($element)."_$field"?>"><?php echo $element->getAttributeLabel($field)?>:</label>
+		<label for="<?php echo get_class($element)."_$field"?>"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</label>
 	</div>
 	<div class="large-<?php echo $layoutColumns['field']?> column end">
 		<div class="field-row">
