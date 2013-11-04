@@ -1,9 +1,13 @@
 .sub-elements {
 	@extend %element-panel;
 	padding-top: 0;
+	padding-bottom: 0;
 	&.inactive {
 		padding: 0;
 		margin-bottom: 10px;
+	}
+	&:empty {
+		padding: 0;
 	}
 }
 
@@ -13,10 +17,7 @@
 
 .sub-element {
 	border: 1px solid #fafafa;
-	margin-bottom: emCalc(10px);
-	&:last-child {
-		margin-bottom: 0;
-	}
+	margin-bottom: 10px;
 	.sub-element-title {
 		font-style: normal;
 		color: #666;
