@@ -31,20 +31,7 @@ $left_readings = (isset($_POST['visualacuity_readings_valid']) ? $element->conve
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
 		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
-			<table class="blank">
-				<thead>
-					<?php if ($element->isNewRecord) {?>
-						<tr>
-							<th colspan="3">
-								<?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id, CHtml::listData($element->getUsableUnits(), 'id', 'name'))?>
-							</th>
-						</tr>
-					<?php }elseif ($element->unit->information) {?>
-						<tr>
-							<th colspan="3"><?php echo $element->unit->information?></th>
-						</tr>
-					<?php }?>
-				</thead>
+			<table class="blank"<?php if (!$right_readings) { ?> style="display: none;" <?php } ?>>
 				<tbody>
 					<?php foreach ($right_readings as $reading) {
 						// Adjust currently element readings to match unit steps
@@ -61,6 +48,9 @@ $left_readings = (isset($_POST['visualacuity_readings_valid']) ? $element->conve
 					}?>
 				</tbody>
 			</table>
+			<div class="field-row field-info noReadings"<?php if ($right_readings) { ?> style="display: none;" <?php } ?>>
+				Not recorded
+			</div>
 			<div class="field-row">
 				<button class="button small secondary addReading">
 					Add
@@ -81,20 +71,7 @@ $left_readings = (isset($_POST['visualacuity_readings_valid']) ? $element->conve
 	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
 		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
-			<table class="blank">
-				<thead>
-					<?php if ($element->isNewRecord) {?>
-						<tr>
-							<th colspan="3">
-								<?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id, CHtml::listData($element->getUsableUnits(), 'id', 'name'))?>
-							</th>
-						</tr>
-					<?php }elseif ($element->unit->information) {?>
-						<tr>
-							<th colspan="3"><?php echo $element->unit->information?></th>
-						</tr>
-					<?php }?>
-				</thead>
+			<table class="blank"<?php if (!$left_readings) { ?> style="display: none;" <?php } ?>>
 				<tbody>
 					<?php foreach ($left_readings as $reading) {
 						// Adjust currently element readings to match unit steps
@@ -111,6 +88,9 @@ $left_readings = (isset($_POST['visualacuity_readings_valid']) ? $element->conve
 					}?>
 				</tbody>
 			</table>
+			<div class="field-row field-info noReadings"<?php if ($right_readings) { ?> style="display: none;" <?php } ?>>
+				Not recorded
+			</div>
 			<div class="field-row">
 				<button class="button small secondary addReading">
 					Add

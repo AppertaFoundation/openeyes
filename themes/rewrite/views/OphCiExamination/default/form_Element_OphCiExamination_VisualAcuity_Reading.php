@@ -24,7 +24,7 @@
 		<?php }?>
 		<input type="hidden" name="visualacuity_reading[<?php echo $key ?>][side]" value="<?php echo $side?>" />
 		<?php echo CHtml::dropDownList('visualacuity_reading['.$key.'][value]', @$reading->value, $values, array('class' => 'va-selector', 'options' => $val_options))?>
-		<span class="va-info-icon"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" height="20" /></span>
+		<span class="va-info-icon"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px" /></span>
 	</td>
 	<td>
 		<?php echo CHtml::dropDownList('visualacuity_reading['.$key.'][method_id]', @$reading->method_id, $methods, array('class' => 'method_id'))?>

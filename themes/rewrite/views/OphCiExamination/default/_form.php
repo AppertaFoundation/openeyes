@@ -19,11 +19,25 @@
 ?>
 <section class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>" data-element-type-id="<?php echo $element->elementType->id?>" data-element-type-name="<?php echo $element->elementType->name?>" data-element-display-order="<?php echo $element->elementType->display_order?>" data-element-type-class="<?php echo $element->elementType->class_name?>">
 	<header class="<?php if (@$child) {?>sub-<?php }?>element-header">
+
 		<?php if (@$child) {?>
 			<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
 		<?php }else{?>
 			<h3 class="element-title"><?php echo $element->elementType->name?></h3>
 		<?php }?>
+
+		<div class="element-title-additional">
+			<?php
+				if (get_class($element) === 'Element_OphCiExamination_VisualAcuity') {?>
+					<?php if ($element->isNewRecord) { ?>
+						<?php echo CHtml::dropDownList('visualacuity_unit_change', @$element->unit_id, CHtml::listData($element->getUsableUnits(), 'id', 'name')); ?>
+					<?php } ?>
+					<?php if ($element->unit->information) {?>
+						<small><em><?php echo $element->unit->information ?></em></small>
+					<?php } ?>
+			<?php } ?>
+		</div>
+
 		<div class="<?php if (@$child) {?>sub-<?php }?>element-actions">
 			<?php
 			$event_id = ($element->id) ? $element->event_id : null;

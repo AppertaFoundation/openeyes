@@ -120,6 +120,17 @@ $oe-element-edit-title-font-style: italic;
 	.element-title {
 		font-style: $oe-element-edit-title-font-style;
 	}
+	.element-title-additional {
+		float: left;
+		font-size: $default-font-size;
+		line-height: 2.4em;
+		margin-left: .5em;
+		small {
+			font-size: 85%;
+			display: inline-block;
+			margin-left: .5em;
+		}
+	}
 	.element-fields {
 		@extend .element-data;
 		.field-row:last-child {
