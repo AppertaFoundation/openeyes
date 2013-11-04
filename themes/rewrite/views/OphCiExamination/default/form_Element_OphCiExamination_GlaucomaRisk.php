@@ -40,11 +40,17 @@
 			</div>
 		</div>
 	</div>
-	<div class="field-row row" id="Element_OphCiExamination_GlaucomaRisk_descriptions">
+	<div class="field-row row glaucoma-risk-descriptions" id="Element_OphCiExamination_GlaucomaRisk_descriptions">
 		<dl>
 			<?php foreach ($risks as $option) {?>
-				<dt class="<?php echo $option->class ?>"><a href="#" data-risk-id="<?php echo $option->id ?>"><?php echo $option->name ?></a></dt>
-				<dd class="<?php echo $option->class ?>"><?php echo nl2br($option->description) ?></dd>
+				<dt class="pill <?php echo $option->class ?>">
+					<a href="#" data-risk-id="<?php echo $option->id ?>">
+						<?php echo $option->name ?>
+					</a>
+				</dt>
+				<dd class="<?php echo $option->class ?>">
+					<?php echo nl2br($option->description) ?>
+				</dd>
 			<?php }?>
 		</dl>
 	</div>

@@ -29,8 +29,12 @@ $show_no_treatment_reason_other = false;
 if ($no_treatment_reason && $no_treatment_reason->other) {
 	$show_no_treatment_reason_other = true;
 }
+$layoutColumns = array(
+	'label' => 3,
+	'field' => 9
+);
 ?>
-<div class="sub-element-fields jsNoTreatment">
+<div class="field-row jsNoTreatment">
 	<fieldset class="row field-row">
 		<legend class="large-3 column">
 			Treatment:
@@ -41,7 +45,7 @@ if ($no_treatment_reason && $no_treatment_reason->other) {
 	</fieldset>
 </div>
 
-<div class="sub-element-fields" id="div_<?php echo get_class($element) . "_" . $side?>_no_treatment_reason_id"<?php if (!$no_treatment) {?> style="display: none;"<?php }?>>
+<div class="field-row" id="div_<?php echo get_class($element) . "_" . $side?>_no_treatment_reason_id"<?php if (!$no_treatment) {?> style="display: none;"<?php }?>>
 	<fieldset class="row field-row">
 		<legend class="large-3 column">
 			<?php echo $element->getAttributeLabel($side . '_no_treatment_reason_id')?>:
@@ -54,7 +58,7 @@ if ($no_treatment_reason && $no_treatment_reason->other) {
 	</fieldset>
 </div>
 
-<div class="sub-element-fields" id="div_<?php echo get_class($element) . "_" . $side ?>_no_treatment_reason_other"<?php if (!$show_no_treatment_reason_other) {?> style="display: none;"<?php }?>>
+<div class="field-row" id="div_<?php echo get_class($element) . "_" . $side ?>_no_treatment_reason_other"<?php if (!$show_no_treatment_reason_other) {?> style="display: none;"<?php }?>>
 	<fieldset class="row field-row">
 		<legend class="large-3 column">
 			<?php echo $element->getAttributeLabel($side . '_no_treatment_reason_other')?>:
@@ -67,7 +71,7 @@ if ($no_treatment_reason && $no_treatment_reason->other) {
 	</fieldset>
 </div>
 
-<div class="sub-element-fields element-eyes row" id="div_<?php echo get_class($element) . '_' . $side ?>_treatment_fields">
+<div id="div_<?php echo get_class($element) . '_' . $side ?>_treatment_fields">
 	<?php $form->widget('application.widgets.DiagnosisSelection',array(
 			'field' => $side . '_diagnosis1_id',
 			'element' => $element,
@@ -76,6 +80,7 @@ if ($no_treatment_reason && $no_treatment_reason->other) {
 			'default' => false,
 			'dropdownOptions' => array('empty'=>'- Please select -', 'options' => $l1_opts),
 			'label' => true,
+			'layoutColumns' => $layoutColumns
 	))?>
 
 	<?php
@@ -95,6 +100,7 @@ if ($no_treatment_reason && $no_treatment_reason->other) {
 			'default' => false,
 			'dropdownOptions' => $l2_attrs,
 			'label' => true,
+			'layoutColumns' => $layoutColumns
 	))?>
 	<?php
 	$questions = $element->getInjectionQuestionsForSide($side);

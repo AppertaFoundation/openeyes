@@ -35,7 +35,7 @@ function addElement(element, animate, is_child, previous_id, params) {
 		previous_id = 0;
 	if (typeof (params) === 'undefined')
 		params = {};
-	
+
 	var element_type_id = $(element).attr('data-element-type-id');
 	var element_type_class = $(element).attr('data-element-type-class');
 	var display_order = $(element).attr('data-element-display-order');
@@ -75,14 +75,14 @@ function addElement(element, animate, is_child, previous_id, params) {
 			var sideField = $(cel).find('input.sideField');
 		if ($(sideField).length && $(pel).find('input.sideField').length) {
 				$(sideField).val($(pel).find('.sideField').val());
-				
+
 				if($(sideField).val() == '1') {
 					$(cel).find('.side.left').addClass('inactive');
 				}
 				else if ($(sideField).val() == '2') {
 					$(cel).find('.side.right').addClass('inactive');
 				}
-			}				
+			}
 		}
 
 		$('#event_display textarea.autosize:visible').autosize();
@@ -96,7 +96,7 @@ function addElement(element, animate, is_child, previous_id, params) {
 			$('body').animate({
 				scrollTop : offTop
 			}, speed, null, function() {
-				$('.elementTypeName', inserted).effect('pulsate', {
+				$('.element-title', inserted).effect('pulsate', {
 					times : 2
 				}, 600);
 			});
@@ -115,16 +115,16 @@ function addElement(element, animate, is_child, previous_id, params) {
 				window[initFunctionName]();
 			}
 		});
-		
+
 		// Update waypoints to cope with change in page size
 		$.waypoints('refresh');
-		
+
 		// Update text macros (if defined)
 		if(typeof updateTextMacros == 'function') {
 			updateTextMacros();
 		}
 	});
-	
+
 }
 
 function removeElement(element, is_child) {
@@ -163,7 +163,7 @@ function removeElement(element, is_child) {
 
 	// Update waypoints to cope with change in page size
 	$.waypoints('refresh');
-	
+
 	// Update text macros (if defined)
 	if(typeof updateTextMacros == 'function') {
 		updateTextMacros();
@@ -171,7 +171,7 @@ function removeElement(element, is_child) {
 }
 
 $(document).ready(function() {
-	
+
 	/**
 	 * Show/hide activechildelements containers (necessary in order to deal with padding)
 	 */
