@@ -73,7 +73,7 @@ else {
 <?php echo $form->radioBoolean($element, $side . '_thickness_increase',array(),array('label'=>4,'field'=>8))?>
 <?php echo $form->radioBoolean($element, $side . '_dry',array(),array('label'=>4,'field'=>8)) ?>
 
-<div class="row field-row" id="<?php echo get_class($element) . '_' . $side; ?>_fluid_fields"<?php if ($hide_fluid) { echo ' style="display: none;"'; }?>>
+<div class="field-row" id="<?php echo get_class($element) . '_' . $side; ?>_fluid_fields"<?php if ($hide_fluid) { echo ' style="display: none;"'; }?>>
 	<?php
 	$html_options = array(
 		'style' => 'margin-bottom: 10px; width: 240px;',
@@ -85,15 +85,17 @@ else {
 	foreach ($fts as $ft) {
 		$html_options['options'][(string) $ft->id] = array('data-order' => $ft->display_order);
 	}
-	echo $form->multiSelectList($element, get_class($element) . '[' . $side . '_fluidtypes]', $side . '_fluidtypes', 'id', CHtml::listData($fts,'id','name'), array(), $html_options)
+	echo $form->multiSelectList($element, get_class($element) . '[' . $side . '_fluidtypes]', $side . '_fluidtypes', 'id', CHtml::listData($fts,'id','name'), array(), $html_options,false,false,null,false,false,array('label'=>4,'field'=>8));
 	?>
-	<div class="large-3 column">
-		<label for="">
-			Finding Type:
-		</label>
-	</div>
-	<div class="large-9 column">
-		<?php echo $form->dropDownList($element, $side . '_fluidstatus_id', CHtml::listData(OphCiExamination_OCT_FluidStatus::model()->findAll(),'id','name'), array('nowrapper' => true, 'empty' => ' - Please Select - ')) ?>
+	<div class="row field-row">
+		<div class="large-4 column">
+			<label for="<?php echo get_class($element).'_'.$side.'_fluidstatus_id';?>">
+				Finding Type:
+			</label>
+		</div>
+		<div class="large-8 column">
+			<?php echo $form->dropDownList($element, $side . '_fluidstatus_id', CHtml::listData(OphCiExamination_OCT_FluidStatus::model()->findAll(),'id','name'), array('nowrapper' => true, 'empty' => ' - Please Select - ')) ?>
+		</div>
 	</div>
 </div>
 

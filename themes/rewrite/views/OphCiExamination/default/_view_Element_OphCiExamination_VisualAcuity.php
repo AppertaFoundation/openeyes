@@ -21,50 +21,70 @@
 	<div class="element-eye right-eye column">
 		<?php if ($element->hasRight()) {?>
 			<?php if ($element->getCombined('right')) {?>
-				<div class="data-value">
-					<?php echo $element->unit->name?>
+				<div class="data-row">
+					<div class="data-value">
+						<?php echo $element->unit->name?>
+					</div>
 				</div>
-				<div class="data-value">
-					<?php echo $element->getCombined('right')?>
+				<div class="data-row">
+					<div class="data-value">
+						<?php echo $element->getCombined('right')?>
+					</div>
 				</div>
 			<?php }else{?>
-				<div class="data-value">
-					Not recorded
+				<div class="data-row">
+					<div class="data-value">
+						Not recorded
+					</div>
 				</div>
 			<?php }?>
 			<?php if ($element->right_comments) {?>
-				<div class="data-value">
-					<?php echo $element->textWithLineBreaks('right_comments')?>
+				<div class="data-row">
+					<div class="data-value">
+						<?php echo $element->textWithLineBreaks('right_comments')?>
+					</div>
 				</div>
 			<?php }?>
 		<?php }else{?>
-			<div class="data-value">
-				Not recorded
+			<div class="data-row">
+				<div class="data-value">
+					Not recorded
+				</div>
 			</div>
 		<?php }?>
 	</div>
 	<div class="element-eye left-eye column">
 		<?php if ($element->hasLeft()) {?>
 			<?php if ($element->getCombined('left')) {?>
-				<div class="data-value">
-					<?php echo $element->unit->name?>
+				<div class="data-row">
+					<div class="data-value">
+						<?php echo $element->unit->name?>
+					</div>
 				</div>
-				<div class="data-value">
-					<?php echo $element->getCombined('left')?>
+				<div class="data-row">
+					<div class="data-value">
+						<?php echo $element->getCombined('left')?>
+					</div>
 				</div>
 			<?php }else{?>
-				<div class="data-value">
-					Not recorded
+				<div class="data-row">
+					<div class="data-value">
+						Not recorded
+					</div>
 				</div>
 			<?php }?>
 			<?php if ($element->left_comments) {?>
-				<div class="data-value">
-					<?php echo $element->textWithLineBreaks('left_comments')?>
+				<div class="data-row">
+					<div class="data-value">
+						<?php echo $element->textWithLineBreaks('left_comments')?>
+					</div>
 				</div>
 			<?php }?>
 		<?php }else{?>
-			<div class="data-value">
-				Not recorded
+			<div class="data-row">
+				<div class="data-value">
+					Not recorded
+				</div>
 			</div>
 		<?php }?>
 	</div>

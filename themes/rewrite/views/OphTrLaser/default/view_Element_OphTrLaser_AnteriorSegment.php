@@ -35,7 +35,7 @@
 						'attribute' => 'right_eyedraw',
 					));
 				} else {?>
-					<p>Not recorded</p>
+					<div class="data-value">Not recorded</div>
 				<?php }?>
 			</div>
 		</div>
@@ -52,7 +52,7 @@
 						'attribute' => 'left_eyedraw',
 					));
 				} else {?>
-					<p>Not recorded</p>
+					<div class="data-value">Not recorded</div>
 				<?php }?>
 			</div>
 		</div>

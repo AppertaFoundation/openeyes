@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="sub-element-data row">
+<div class="sub-element-data">
 	<div class="row data-row">
 		<div class="large-4 column">
 			<div class="data-label">
@@ -33,7 +33,7 @@
 </div>
 
 <?php if ($element->laser_status->deferred) {?>
-	<div class="sub-element-data row">
+	<div class="sub-element-data">
 		<div class="row data-row">
 			<div class="large-4 column">
 				<div class="data-label">
@@ -53,14 +53,14 @@
 			<?php if ($element->hasRight()) {
 				$this->renderPartial('_view_' . get_class($element) . '_fields', array('side' => 'right', 'element' => $element));
 			} else {?>
-				Not recorded
+				<div class="data-value">Not recorded</div>
 			<?php }?>
 		</div>
 		<div class="element-eye left-eye column">
 			<?php if ($element->hasLeft()) {
 				$this->renderPartial('_view_' . get_class($element) . '_fields', array('side' => 'left', 'element' => $element));
 			} else {?>
-				Not recorded
+				<div class="data-value">Not recorded</div>
 			<?php }?>
 		</div>
 	</div>

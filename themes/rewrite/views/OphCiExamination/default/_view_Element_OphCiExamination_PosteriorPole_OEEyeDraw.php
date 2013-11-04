@@ -17,32 +17,25 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes row">
-	<div class="element-eye right-eye column">
-		<div class="eyedraw-data row">
-			<div class="eyedraw-image column large">
-				<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-						'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
-						'side' => ($side == 'right') ? 'R' : 'L',
-						'mode' => 'view',
-						'width' => 200,
-						'height' => 200,
-						'model' => $element,
-						'attribute' => $side.'_eyedraw',
-				))?>
-			</div>
-			<div class="eyedraw-value column large">
+<div class="eyedraw-data row posterior-pole">
+	<div class="eyedraw-image column fixed">
+		<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+			'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
+			'side' => ($side == 'right') ? 'R' : 'L',
+			'mode' => 'view',
+			'width' => 200,
+			'height' => 200,
+			'model' => $element,
+			'attribute' => $side.'_eyedraw',
+		))?>
+	</div>
+	<div class="eyedraw-value column fluid">
+		<?php if ($element->{$side . '_description'}) {?>
+			<div class="row">
 				<div class="data-value">
-					Posterior Pole
+					<?php echo $element->{$side.'_description'}?>
 				</div>
-				<?php if ($element->{$side . '_description'}) {?>
-					<div class="row">
-						<div class="data-value">
-							<?php echo $element->{$side.'_description'}?>
-						</div>
-					</div>
-				<?php }?>
 			</div>
-		</div>
+		<?php }?>
 	</div>
 </div>

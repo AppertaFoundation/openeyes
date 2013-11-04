@@ -19,20 +19,20 @@
 ?>
 <div class="element-data element-eyes row">
 	<div class="element-eye right-eye column">
-		<div class="eyedraw-data row">
+		<div class="eyedraw-data row refraction">
 			<?php if ($element->hasRight()) {
 				$this->renderPartial('_view_' . get_class($element) . '_OEEyeDraw', array('side' => 'right', 'element' => $element));
 			} else {?>
-				Not recorded
+				<div class="data-value">Not recorded</div>
 			<?php }?>
 		</div>
 	</div>
 	<div class="element-eye left-eye column">
-		<div class="eyedraw-data row">
+		<div class="eyedraw-data row refraction">
 			<?php if ($element->hasLeft()) {
 				$this->renderPartial('_view_' . get_class($element) . '_OEEyeDraw', array('side' => 'left', 'element' => $element));
 			} else {?>
-				Not recorded
+				<div class="data-value">Not recorded</div>
 			<?php }?>
 		</div>
 	</div>

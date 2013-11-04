@@ -18,13 +18,14 @@
  */
 ?>
 <div class="element-data">
-	<div class="data-value">
-		<?php foreach ($element->diagnoses as $diagnosis) {?>
-			<?php if ($diagnosis->principal) {?><strong><?php }?>
-			<?php echo $diagnosis->eye->adjective?>
-			<?php echo $diagnosis->disorder->term?>
-			<?php if ($diagnosis->principal) {?></strong><?php }?>
-			<br/>
-		<?php }?>
-	</div>
+	<?php foreach ($element->diagnoses as $diagnosis) {?>
+		<div class="data-row">
+			<div class="data-value">
+				<?php if ($diagnosis->principal) {?><strong><?php }?>
+				<?php echo $diagnosis->eye->adjective?>
+				<?php echo $diagnosis->disorder->term?>
+				<?php if ($diagnosis->principal) {?></strong><?php }?>
+			</div>
+		</div>
+	<?php }?>
 </div>

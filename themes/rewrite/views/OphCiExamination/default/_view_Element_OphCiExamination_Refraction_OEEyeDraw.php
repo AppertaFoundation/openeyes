@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="eyedraw-image column small">
+<div class="eyedraw-image column fixed">
 	<?php $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
 			'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
 			'side' => ($side == 'right') ? 'R' : 'L',
@@ -28,7 +28,7 @@
 			'attribute' => $side.'_axis_eyedraw',
 	))?>
 </div>
-<div class="eyedraw-value column small">
+<div class="eyedraw-value column fluid">
 	<div class="data-value">
 		<?php echo $element->getCombined($side)?><br/>
 		Spherical equivalent: <?php echo number_format($element->{$side.'_sphere'} + 0.5 * $element->{$side.'_cylinder'},2)?>

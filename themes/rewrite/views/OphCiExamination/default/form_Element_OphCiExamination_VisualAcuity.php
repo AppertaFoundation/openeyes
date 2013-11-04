@@ -49,16 +49,18 @@ $left_readings = (isset($_POST['visualacuity_readings_valid']) ? $element->conve
 				</tbody>
 			</table>
 			<div class="field-row field-info noReadings"<?php if ($right_readings) { ?> style="display: none;" <?php } ?>>
-				Not recorded
+				<div class="data-value">Not recorded</div>
 			</div>
 			<div class="field-row">
 				<button class="button small secondary addReading">
 					Add
 				</button>
 			</div>
-			<div class="field-row">
-				<textarea rows="1"></textarea>
-			</div>
+			<?php if ($element->right_comments || $element->getSetting('notes')) { ?>
+				<div class="field-row">
+					<?php echo $form->textArea($element, 'right_comments', array('rows' => 1, 'nowrapper'=>true)) ?>
+				</div>
+			<?php } ?>
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">
@@ -89,16 +91,18 @@ $left_readings = (isset($_POST['visualacuity_readings_valid']) ? $element->conve
 				</tbody>
 			</table>
 			<div class="field-row field-info noReadings"<?php if ($right_readings) { ?> style="display: none;" <?php } ?>>
-				Not recorded
+				<div class="data-value">Not recorded</div>
 			</div>
 			<div class="field-row">
 				<button class="button small secondary addReading">
 					Add
 				</button>
 			</div>
-			<div class="field-row">
-				<textarea rows="1"></textarea>
-			</div>
+			<?php if ($element->left_comments || $element->getSetting('notes')) { ?>
+				<div class="field-data">
+					<?php echo $form->textArea($element, 'left_comments', array('rows' => 1, 'nowrapper'=>true)) ?>
+				</div>
+			<?php } ?>
 		</div>
 		<div class="inactive-form">
 			<div class="add-side">

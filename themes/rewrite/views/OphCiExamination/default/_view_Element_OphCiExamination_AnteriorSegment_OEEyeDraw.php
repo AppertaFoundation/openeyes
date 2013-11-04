@@ -17,66 +17,64 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="element-data element-eyes row">
-	<div class="element-eye right-eye column">
-		<div class="eyedraw-data row">
-			<div class="eyedraw-image column large">
-				<?php
-				$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-					'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
-					'side' => ($side == 'right') ? 'R' : 'L',
-					'mode' => 'view',
-					'width' => 200,
-					'height' => 200,
-					'model' => $element,
-					'attribute' => $side.'_eyedraw',
-				))?>
+<div class="eyedraw-image column fixed">
+	<?php
+	$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+		'idSuffix' => $side.'_'.$element->elementType->id.'_'.$element->id,
+		'side' => ($side == 'right') ? 'R' : 'L',
+		'mode' => 'view',
+		'width' => 200,
+		'height' => 200,
+		'model' => $element,
+		'attribute' => $side.'_eyedraw',
+	))?>
+</div>
+<div class="eyedraw-value column fluid">
+	<?php if ($description = $element->{$side.'_description'}) { ?>
+		<div class="data-row description">
+			<div class="data-value">
+				<?php echo $description ?>
 			</div>
-			<div class="eyedraw-value column large">
-				<div class="data-value">
-					Anterior Segment
-				</div>
-				<div class="row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo $element->getAttributeLabel($side.'_pupil_id')?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->{$side.'_pupil'}->name?></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo $element->getAttributeLabel($side.'_nuclear_id')?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->{$side.'_nuclear'}->name?></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo $element->getAttributeLabel($side.'_cortical_id')?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->{$side.'_cortical'}->name?></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo $element->getAttributeLabel($side.'_pxe')?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->{$side.'_pxe'} ? 'Yes' : 'No'?></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="large-4 column">
-						<div class="data-label"><?php echo $element->getAttributeLabel($side.'_phako')?>:</div>
-					</div>
-					<div class="large-8 column">
-						<div class="data-value"><?php echo $element->{$side.'_phako'} ? 'Yes' : 'No'?></div>
-					</div>
-				</div>
-			</div>
+		</div>
+	<?php } ?>
+	<div class="row">
+		<div class="large-4 column">
+			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_pupil_id')?>:</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value"><?php echo $element->{$side.'_pupil'}->name?></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="large-4 column">
+			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_nuclear_id')?>:</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value"><?php echo $element->{$side.'_nuclear'}->name?></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="large-4 column">
+			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_cortical_id')?>:</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value"><?php echo $element->{$side.'_cortical'}->name?></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="large-4 column">
+			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_pxe')?>:</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value"><?php echo $element->{$side.'_pxe'} ? 'Yes' : 'No'?></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="large-4 column">
+			<div class="data-label"><?php echo $element->getAttributeLabel($side.'_phako')?>:</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value"><?php echo $element->{$side.'_phako'} ? 'Yes' : 'No'?></div>
 		</div>
 	</div>
 </div>

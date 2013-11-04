@@ -34,7 +34,7 @@ $layoutColumns = array(
 	'field' => 9
 );
 ?>
-<div class="field-row jsNoTreatment">
+<div class="field-row jsNoTreatment <?php echo get_class($element) ?>_no_treatment">
 	<fieldset class="row field-row">
 		<legend class="large-3 column">
 			Treatment:
@@ -45,7 +45,7 @@ $layoutColumns = array(
 	</fieldset>
 </div>
 
-<div class="field-row" id="div_<?php echo get_class($element) . "_" . $side?>_no_treatment_reason_id"<?php if (!$no_treatment) {?> style="display: none;"<?php }?>>
+<div class="field-row <?php echo get_class($element) ?>_no_treatment_reason_id" id="div_<?php echo get_class($element) . "_" . $side?>_no_treatment_reason_id"<?php if (!$no_treatment) {?> style="display: none;"<?php }?>>
 	<fieldset class="row field-row">
 		<legend class="large-3 column">
 			<?php echo $element->getAttributeLabel($side . '_no_treatment_reason_id')?>:
@@ -58,7 +58,7 @@ $layoutColumns = array(
 	</fieldset>
 </div>
 
-<div class="field-row" id="div_<?php echo get_class($element) . "_" . $side ?>_no_treatment_reason_other"<?php if (!$show_no_treatment_reason_other) {?> style="display: none;"<?php }?>>
+<div class="field-row <?php echo get_class($element) ?>_no_treatment_reason_other" id="div_<?php echo get_class($element) . "_" . $side ?>_no_treatment_reason_other"<?php if (!$show_no_treatment_reason_other) {?> style="display: none;"<?php }?>>
 	<fieldset class="row field-row">
 		<legend class="large-3 column">
 			<?php echo $element->getAttributeLabel($side . '_no_treatment_reason_other')?>:
@@ -72,16 +72,19 @@ $layoutColumns = array(
 </div>
 
 <div id="div_<?php echo get_class($element) . '_' . $side ?>_treatment_fields">
-	<?php $form->widget('application.widgets.DiagnosisSelection',array(
-			'field' => $side . '_diagnosis1_id',
-			'element' => $element,
-			'options' => CHtml::listData($l1_disorders,'id','term'),
-			'layout' => 'search',
-			'default' => false,
-			'dropdownOptions' => array('empty'=>'- Please select -', 'options' => $l1_opts),
-			'label' => true,
-			'layoutColumns' => $layoutColumns
-	))?>
+
+	<div class="diagnosis_id">
+		<?php $form->widget('application.widgets.DiagnosisSelection',array(
+				'field' => $side . '_diagnosis1_id',
+				'element' => $element,
+				'options' => CHtml::listData($l1_disorders,'id','term'),
+				'layout' => 'search',
+				'default' => false,
+				'dropdownOptions' => array('empty'=>'- Please select -', 'options' => $l1_opts),
+				'label' => true,
+				'layoutColumns' => $layoutColumns
+		))?>
+	</div>
 
 	<?php
 	$l2_attrs =  array('empty'=>'- Please select -');

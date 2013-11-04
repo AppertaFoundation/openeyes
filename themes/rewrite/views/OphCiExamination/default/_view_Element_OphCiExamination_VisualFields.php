@@ -23,7 +23,7 @@
 				$this->renderPartial('_view_' . get_class($element) . '_OEEyeDraw',
 					array('side' => 'right', 'element' => $element));
 			} else { ?>
-			Not recorded
+				<div class="data-value">Not recorded</div>
 			<?php } ?>
 		</div>
 		<div class="right eventDetail">
@@ -31,7 +31,7 @@
 				$this->renderPartial('_view_' . get_class($element) . '_OEEyeDraw',
 					array('side' => 'left', 'element' => $element));
 			} else { ?>
-			Not recorded
+				<div class="data-value">Not recorded</div>
 			<?php } ?>
 		</div>
 	</div>

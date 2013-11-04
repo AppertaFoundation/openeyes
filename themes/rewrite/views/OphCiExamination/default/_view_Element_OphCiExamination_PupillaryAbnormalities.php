@@ -24,7 +24,7 @@
 				<?php if ($element->hasRight()) {
 					echo $element->right_abnormality->name;
 				} else {?>
-					Not recorded
+					<div class="data-value">Not recorded</div>
 				<?php }?>
 			</div>
 		</div>
@@ -35,7 +35,7 @@
 				<?php if ($element->hasLeft()) {
 					echo $element->left_abnormality->name;
 				} else {?>
-					Not recorded
+					<div class="data-value">Not recorded</div>
 				<?php }?>
 			</div>
 		</div>

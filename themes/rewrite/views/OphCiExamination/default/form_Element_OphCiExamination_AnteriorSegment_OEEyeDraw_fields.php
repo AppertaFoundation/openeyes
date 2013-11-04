@@ -67,7 +67,7 @@
 		</label>
 		<label>
 			<?php echo CHtml::activeCheckBox($element, $side.'_phako', array('class' => 'clearWithEyedraw')) ?>
-			<?php echo $element->getAttributeLabel($side.'_description')?>:
+			<?php echo $element->getAttributeLabel($side.'_phako')?>
 		</label>
 	</div>
 	<div class="field-row">

@@ -43,7 +43,5 @@
 		</div>
 	<?php }?>
 <?php }else{?>
-	<div class="data">
-		Not recorded
-	</div>
+	<div class="data-value">Not recorded</div>
 <?php }?>

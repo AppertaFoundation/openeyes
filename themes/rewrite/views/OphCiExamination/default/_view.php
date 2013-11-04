@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="<?php if (@$child) {?>sub-<?php }?>element">
+<section class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>">
  <header class="<?php if (@$child) {?>sub-<?php }?>element-header">
 		<h3 class="<?php if (@$child) {?>sub-<?php }?>element-title"><?php echo $element->elementType->name?></h3>
 	</header>
