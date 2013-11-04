@@ -60,10 +60,10 @@ class FormLayout extends CActiveForm
 		if (empty($properties['layoutColumns'])) {
 			unset($properties['layoutColumns']);
 		}
-		else{
-			//override form layoutColumns with any properties set by the form controls
-			$properties['layoutColumns']=array_merge($this->layoutColumns,$properties['layoutColumns']);
-		}
+
+		//override form layoutColumns with any properties set by the form controls
+		$properties['layoutColumns']=array_merge($this->layoutColumns,isset($properties['layoutColumns']) ? $properties['layoutColumns'] : array());
+
 		return parent::widget($className,$properties,$captureOutput);
 	}
 }
