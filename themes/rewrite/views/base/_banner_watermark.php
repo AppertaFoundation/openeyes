@@ -19,11 +19,11 @@
 ?>
 
 <?php if (Yii::app()->user->checkAccess('admin') && Yii::app()->params['watermark_admin']) {?>
-	<div class="alert-box watermark admin">
+	<div class="alert-box watermark admin banner">
 		<?php echo (Yii::app()->params['watermark_admin'])?>
 	</div>
 <?php } else if (Yii::app()->params['watermark']) {?>
-	<div class="alert-box watermark">
+	<div class="alert-box watermark banner">
 		<?php echo Yii::app()->params['watermark']?>
 	</div>
 <?php }?>

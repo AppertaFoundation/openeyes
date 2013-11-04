@@ -54,12 +54,24 @@ $oe-panel-user-padding: 0 emCalc(10px) emCalc(5px) emCalc(10px) !default;
 			border-top: 0;
 			@include border-radius(0 0 $global-radius $global-radius);
 		}
+		.stuck & {
+			@include border-radius(0);
+			border-bottom: 0;
+		}
+		.user-id {
+			.stuck & {
+				margin-top: 5px;
+			}
+		}
 		.user-id, .user-firm {
 			font-size: $oe-panel-user-font-size;
 			min-height: $oe-panel-user-font-size * 2;
 		}
 		.user-firm {
 			padding-top: emCalc(20px);
+			.stuck & {
+				margin-top: 5px;
+			}
 		}
 		.user-name {
 			padding-top: emCalc(5px);

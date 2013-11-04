@@ -85,21 +85,28 @@ $(document).ready(function(){
 	/**
 	 * Sticky stuff
 	 */
-	$('#alert_banner').waypoint('sticky', {
+
+	// content-box
+
+	var adminBanner = $('.alert-box.admin.banner');
+	adminBanner.waypoint('sticky', {
 		offset: -30,
-		wrapper: '<div class="alert_banner_sticky_wrapper" />'
-	});
-	$('#header').waypoint('sticky', {
-		offset: -20,
-	});
-	$('.event_tabs').waypoint('sticky', {
-		offset: 39,
-		wrapper: '<div class="event_tabs_sticky_wrapper" />'
-	});
-	$('.event_actions').waypoint('sticky', {
-		offset: 44,
-		wrapper: '<div class="event_actions_sticky_wrapper" />'
-	});
+		wrapper: '<div class="alert-banner-sticky-wrapper" />'
+	}).parent().height(adminBanner.outerHeight());
+
+	var header = $('.header');
+	header.waypoint('sticky', {
+		offset: -20
+	}).width(header.width());
+
+	var eventHeader = $('.event-header');
+	eventHeader.waypoint('sticky', {
+		offset: 39
+	})
+	.width(eventHeader.width())
+	.parent()
+	.height(eventHeader.outerHeight());
+
 	$('body').delegate('#header.stuck, .event_tabs.stuck, .event_actions.stuck', 'hover', function(e) {
 		$('#header, .event_tabs, .event_actions').toggleClass('hover', e.type === 'mouseenter');
 	});

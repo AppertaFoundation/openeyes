@@ -68,10 +68,20 @@ $oe-header-panel-patient-nhs-number-radius: 3px !default;
 			border-width: 0 $oe-header-panel-patient-border-width $oe-header-panel-patient-border-width $oe-header-panel-patient-border-width;
 			@include border-radius(0 0 $global-radius $global-radius);
 		}
+		.stuck & {
+			margin: 0;
+			padding-bottom: 2px;
+			padding-top: 2px;
+			border-bottom: 0;
+			@include border-radius(0);
+		}
 		.patient-details {
 			padding-bottom: $oe-header-panel-patient-details-padding-bottom;
 			a {
 				color: $oe-header-panel-patient-details-anchor-color;
+			}
+			.stuck & {
+				font-size: 91%;
 			}
 		}
 		.patient-surname {
@@ -92,9 +102,15 @@ $oe-header-panel-patient-nhs-number-radius: 3px !default;
 			position: absolute;
 			right: 0;
 			bottom: 1em;
+			.stuck & {
+				display: none;
+			}
 		}
 		.hospital-number {
 			margin-bottom: emCalc(4px);
+			.stuck & {
+				float: left;
+			}
 		}
 		.nhs-number {
 			@include border-radius($oe-header-panel-patient-nhs-number-radius);

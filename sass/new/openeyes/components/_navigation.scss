@@ -61,6 +61,9 @@ $oe-navigation-user-anchor-selected-color: white !default;
 				background: $oe-navigation-user-anchor-hover-bg-color;
 			}
 		}
+		.stuck & {
+			display: none;
+		}
 	}
 }
 

@@ -40,6 +40,12 @@ $oe-header-event-padding: emCalc(6px) emCalc(10px) 0 emCalc(10px) !default;
 		background: $oe-header-event-background;
 		border-bottom: $oe-header-event-border-bottom;
 		padding: $oe-header-event-padding;
+		&.stuck {
+			@include box-shadow(0 2px 4px rgba(0, 0, 0, .3));
+			position: fixed;
+			top: 39px;
+			z-index: 9;
+		}
 	}
 	.event-title {
 		padding: $oe-event-title-padding;
