@@ -19,10 +19,12 @@
 $clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()->findAll(array('order'=>'display_order'));
 ?>
 <div class="row field-row">
-	<div class="large-3 column">
-		<label><?php echo $element->getAttributeLabel($side.'_clinicalret_id')?>:</label>
+	<div class="large-4 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_clinicalret_id';?>">
+			<?php echo $element->getAttributeLabel($side.'_clinicalret_id')?>:
+		</label>
 	</div>
-	<div class="large-9 column">
+	<div class="large-8 column">
 		<div class="wrapper field-highlight inline<?php if ($element->{$side.'_clinicalret'}) {?> <?php echo $element->{$side . '_clinicalret'}->class?><?php }else{?> none<?php }?>">
 			<?php
 				$html_options = array('options' => array());
@@ -32,7 +34,7 @@ $clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()
 				echo CHtml::activeDropDownList($element, $side . '_clinicalret_id', CHtml::listData($clinical_retinopathys,'id','name'), $html_options);
 			?>
 		</div>
-		<span class="grade-info-icon" data-info-type="clinical"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" height="20" /></span>
+		<span class="grade-info-icon" data-info-type="clinical"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px" /></span>
 		<div class="quicklook grade-info" style="display: none;">
 			<?php foreach ($clinical_retinopathys as $clinical) {
 				echo '<div style="display: none;" class="' . get_class($element). '_'. $side.'_clinicalret_desc" id="' . get_class($element). '_' . $side . '_clinicalret_desc_' . preg_replace('/\s+/', '', $clinical->name) . '">' . $clinical->description . '</div>';
@@ -50,10 +52,12 @@ $clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()
 	</div>
 </div>
 <div class="row field-row">
-	<div class="large-3 column">
-		<label><?php echo $element->getAttributeLabel($side.'_nscretinopathy_id')?>:</label>
+	<div class="large-4 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_nscretinopathy_id';?>">
+			<?php echo $element->getAttributeLabel($side.'_nscretinopathy_id')?>:
+		</label>
 	</div>
-	<div class="large-9 column">
+	<div class="large-8 column">
 		<div class="wrapper field-highlight inline<?php if ($element->{$side.'_nscretinopathy'}) {?> <?php echo $element->{$side.'_nscretinopathy'}->class?><?php }else{?> none<?php }?>">
 		<?php
 			$nscretinopathy_html_options = array('options' => array());
@@ -63,7 +67,7 @@ $clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()
 			echo CHtml::activeDropDownList($element, $side.'_nscretinopathy_id', CHtml::listData(OphCiExamination_DRGrading_NSCRetinopathy::model()->findAll(array('order'=>'display_order')),'id','name'), $nscretinopathy_html_options);
 		?>
 		</div>
-		<span class="grade-info-icon" data-info-type="retinopathy"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" height="20" /></span>
+		<span class="grade-info-icon" data-info-type="retinopathy"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px" /></span>
 		<div class="quicklook grade-info" style="display: none;">
 			<?php foreach (OphCiExamination_DRGrading_NSCRetinopathy::model()->findAll(array('order'=>'display_order')) as $retin) {
 				echo '<div style="display: none;" class="' . get_class($element). '_'. $side.'_nscretinopathy_desc" id="' . get_class($element). '_' . $side . '_nscretinopathy_desc_' . $retin->name . '">' . $retin->description . '</div>';
@@ -79,15 +83,17 @@ $clinical_retinopathys = OphCiExamination_DRGrading_ClinicalRetinopathy::model()
 		</div>
 	</div>
 </div>
-<?php echo $form->radioBoolean($element,$side.'_nscretinopathy_photocoagulation',array(),array('label'=>3,'field'=>9));
+<?php echo $form->radioBoolean($element,$side.'_nscretinopathy_photocoagulation',array(),array('label'=>4,'field'=>8));
 $clinical_maculopathys = OphCiExamination_DRGrading_ClinicalMaculopathy::model()->findAll(array('order'=>'display_order'));
 $curr_cm = $element->{$side . '_clinicalmac'} ? $element->{$side . '_clinicalmac'} : @$clinical_maculopathys[0];
 ?>
 <div class="row field-row">
-	<div class="large-3 column">
-		<label><?php echo $element->getAttributelabel($side.'_clinicalmac_id')?>:</label>
+	<div class="large-4 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_clinicalmac_id';?>">
+			<?php echo $element->getAttributelabel($side.'_clinicalmac_id')?>:
+		</label>
 	</div>
-	<div class="large-9 column">
+	<div class="large-8 column">
 		<div class="wrapper field-highlight inline<?php if ($curr_cm) {?> <?php echo $curr_cm->class?><?php }else{?> none<?php }?>">
 			<?php
 			$html_options = array('options' => array());
@@ -99,7 +105,7 @@ $curr_cm = $element->{$side . '_clinicalmac'} ? $element->{$side . '_clinicalmac
 		</div>
 		<!-- REMOVED UNTIL WE ARE PROVIDED WITH APPROPRIATE TEXT FOR THE DESCRIPTIONS
 		TODO: code to auto detect when there are no descriptions, so that this works dynamically based on the data.
-		<span class="grade-info-icon" data-info-type="clinical"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" height="20" /></span>
+		<span class="grade-info-icon" data-info-type="clinical"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px" /></span>
 		<div class="quicklook grade-info" style="display: none;">
 			<?php foreach ($clinical_maculopathys as $clinical) {
 				echo '<div style="display: none;" class="' . get_class($element). '_'. $side.'_clinicalmac_desc" id="' . get_class($element). '_' . $side . '_clinicalmac_desc_' . preg_replace('/\s+/', '', $clinical->name) . '">' . $clinical->description . '</div>';
@@ -119,10 +125,12 @@ $curr_cm = $element->{$side . '_clinicalmac'} ? $element->{$side . '_clinicalmac
 	</div>
 </div>
 <div class="row field-row">
-	<div class="large-3 column">
-		<label><?php echo $element->getAttributelabel($side.'_nscmaculopathy_id')?>:</label>
+	<div class="large-4 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_nscmaculopathy_id';?>">
+			<?php echo $element->getAttributelabel($side.'_nscmaculopathy_id')?>:
+		</label>
 	</div>
-	<div class="large-9 column">
+	<div class="large-8 column">
 		<div class="wrapper field-highlight inline<?php if ($element->{$side . '_nscmaculopathy'}) {?> <?php echo $element->{$side . '_nscmaculopathy'}->class?><?php }else{?> none<?php }?>">
 		<?php
 			$nscmacuopathy_html_options = array('options' => array());
@@ -132,7 +140,7 @@ $curr_cm = $element->{$side . '_clinicalmac'} ? $element->{$side . '_clinicalmac
 			echo CHtml::activeDropDownList($element, $side . '_nscmaculopathy_id', CHtml::listData(OphCiExamination_DRGrading_NSCMaculopathy::model()->findAll(array('order'=>'display_order')),'id','name'), $nscmaculopathy_html_options);
 		?>
 		</div>
-		<span class="grade-info-icon" data-info-type="maculopathy"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" height="20" /></span>
+		<span class="grade-info-icon" data-info-type="maculopathy"><img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px" /></span>
 		<div class="quicklook grade-info" style="display: none;">
 			<?php foreach (OphCiExamination_DRGrading_NSCMaculopathy::model()->findAll(array('order'=>'display_order')) as $macu) {
 				echo '<div style="display: none;" class="' . get_class($element) . '_' . $side . '_nscmaculopathy_desc desc" id="' . get_class($element) . '_' . $side . '_nscmaculopathy_desc_' . $macu->name . '">' . $macu->description . '</div>';
@@ -150,4 +158,4 @@ $curr_cm = $element->{$side . '_clinicalmac'} ? $element->{$side . '_clinicalmac
 		</div>
 	</div>
 </div>
-<?php echo $form->radioBoolean($element,$side.'_nscmaculopathy_photocoagulation',array(),array('label'=>3,'field'=>9))?>
+<?php echo $form->radioBoolean($element,$side.'_nscmaculopathy_photocoagulation',array(),array('label'=>4,'field'=>8))?>

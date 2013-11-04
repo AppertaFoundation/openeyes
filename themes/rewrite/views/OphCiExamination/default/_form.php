@@ -36,6 +36,19 @@
 						<small><em><?php echo $element->unit->information ?></em></small>
 					<?php } ?>
 			<?php } ?>
+			<?php
+				if (get_class($element) === 'Element_OphCiExamination_DRGrading') {?>
+					<?php if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets') . "/img/drgrading.jpg")) {?>
+						<a href="#" class="drgrading_images_link"><img src="<?php echo $this->assetPath ?>/img/photo_sm.png" /></a>
+						<a href="#" id="drgrading_dirty" style="display: none;">re-sync</a>
+						<div class="drgrading_images_dialog" title="DR Grading Images">
+							<img src="<?php echo $this->assetPath ?>/img/drgrading.jpg">
+						</div>
+					<?php }else{?>
+						<a href="#" id="drgrading_dirty" style="display: none;">re-sync</a>
+					<?php }?>
+				<?php }
+			?>
 		</div>
 
 		<div class="<?php if (@$child) {?>sub-<?php }?>element-actions">

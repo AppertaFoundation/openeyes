@@ -17,33 +17,25 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets') . "/img/drgrading.jpg")) {?>
-	<div style="margin-top:-30px; margin-left:120px;">
-		<a href="#" class="drgrading_images_link"><img src="<?php echo $this->assetPath ?>/img/photo_sm.png" /></a>
-		<a href="#" id="drgrading_dirty" style="display: none;">re-sync</a>
-	</div>
-	<div class="drgrading_images_dialog"
-		title="DR Grading Images">
-		<img src="<?php echo $this->assetPath ?>/img/drgrading.jpg">
-	</div>
-<?php }else{?>
-	<div style="margin-top:-25px; margin-left:120px;">
-	<a href="#" id="drgrading_dirty" style="display: none;">re-sync</a>
-	</div>
-<?php }?>
 
-<div class="element-fields element-eyes row">
+<div class="sub-element-fields">
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
-	<div class="field-row">
-		<?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>
-		<?php
-			if ($diabetes = $this->patient->getDiabetesType()) {
-				echo $diabetes->term;
-			} else {
-				$form->radioButtons($element, 'secondarydiagnosis_disorder_id', 'diabetes_types', null, false, false, false, false, array('nowrapper' => true));
-			}
-		?>
-	</div>
+	<fieldset class="field-row row">
+		<legend class="large-2 column">
+				<?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>:
+		</legend>
+		<div class="large-10 column">
+			<?php
+				if ($diabetes = $this->patient->getDiabetesType()) {
+					echo '<span class="data-value">'.$diabetes->term.'</span>';
+				} else {
+					$form->radioButtons($element, 'secondarydiagnosis_disorder_id', 'diabetes_types', null, false, false, false, false, array('nowrapper' => true));
+				}
+			?>
+		</div>
+	</fieldset>
+</div>
+<div class="sub-element-fields element-eyes row">
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?><?php if ($element->id || !empty($_POST)) {?> uninitialised<?php }?>" data-side="right">
 		<div class="active-form">
 			<?php $this->renderPartial('form_' . get_class($element) . '_fields', array('side' => 'right', 'element' => $element, 'form' => $form))?>
