@@ -28,7 +28,7 @@
 			echo Chtml::label($labelText, Chtml::getIdByName($name));
 			?>
 		</div>
-		<div class="large-<?php echo $layoutColumns['field'];?> column">
+		<div class="large-<?php echo $layoutColumns['field'];?> column<?php if(empty($htmlOptions['append-text']) || empty($layoutColumns['append-text'])){?> end<?php }?>">
 			<?php if (@$htmlOptions['password']) { ?>
 				<?php echo CHtml::passwordField($name, $value, $htmlOptions)?>
 			<?php } else {?>
