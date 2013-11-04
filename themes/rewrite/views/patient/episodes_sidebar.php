@@ -186,7 +186,7 @@ $current_episode = @$this->current_episode;
 		$(document).ready(function() {
 			$('.quicklook').each(function() {
 				var quick = $(this);
-				var iconHover = $(this).closest('li');
+				var iconHover = $(this).parent().find('.event-type');
 				iconHover.hover(function(e) {
 					quick.fadeIn('fast');
 				}, function(e) {
