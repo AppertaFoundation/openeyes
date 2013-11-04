@@ -17,15 +17,75 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="diagnosis-selection">
-	<div class="row field-row collapse">
+<div class="diagnosis-selection field-row">
+	<div class="row">
 		<?php if (!$nowrapper && $label) {?>
 			<div class="large-<?php echo $layoutColumns['label'];?> column">
-				<label><?php echo $element->getAttributeLabel($field)?>:</label>
+				<label for="<?php echo "{$class}_{$field}";?>">
+					<?php echo $element->getAttributeLabel($field)?>:
+				</label>
 			</div>
 		<?php }?>
 		<div class="large-<?php if ($label) { echo $layoutColumns['field']-2; }else{?>10<?php }?> column">
-			<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -') : $dropdownOptions) : ""?>
+			<div class="field-row">
+				<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -') : $dropdownOptions) : ""?>
+			</div>
+			<div class="hide field-row">
+				<?php
+				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+						'name' => "ignore_{$class}[$field]",
+						'id' => "{$class}_{$field}_searchbox",
+						'value'=>'',
+						'source'=>"js:function(request, response) {
+							$.ajax({
+								'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
+								'type':'GET',
+								'data':{'term': request.term, 'code': '".$code."'},
+								'success':function(data) {
+									data = $.parseJSON(data);
+
+									var result = [];
+
+									for (var i = 0; i < data.length; i++) {
+										var ok = true;
+										$('#selected_diagnoses').children('input').map(function() {
+											if ($(this).val() == data[i]['id']) {
+												ok = false;
+											}
+										});
+										if (ok) {
+											result.push(data[i]);
+										}
+									}
+
+									response(result);
+								}
+							});
+						}",
+						'options' => array(
+								'minLength'=>'3',
+								'select' => "js:function(event, ui) {
+									".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
+									$('#".$class."_".$field."_searchbox').val('').parent().addClass('hide');
+									var matched = false;
+									$('#".$class."_".$field."').children('option').map(function() {
+										if ($(this).val() == ui.item.id) {
+											matched = true;
+										}
+									});
+									if (!matched) {
+										$('#".$class."_".$field."').append('<option value=\"' + ui.item.id + '\">'+ui.item.value+'</option>');
+									}
+									$('#".$class."_".$field."').val(ui.item.id).trigger('change');
+									return false;
+								}",
+						),
+						'htmlOptions' => array(
+							'placeholder' => 'search for diagnosis',
+						),
+				));
+				?>
+			</div>
 		</div>
 		<div class="large-2 column">
 			<div class="postfix">
@@ -35,62 +95,6 @@
 				</button>
 			</div>
 		</div>
-	</div>
-	<div class="hide">
-		<?php
-		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-				'name' => "ignore_{$class}[$field]",
-				'id' => "{$class}_{$field}_searchbox",
-				'value'=>'',
-				'source'=>"js:function(request, response) {
-					$.ajax({
-						'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
-						'type':'GET',
-						'data':{'term': request.term, 'code': '".$code."'},
-						'success':function(data) {
-							data = $.parseJSON(data);
-
-							var result = [];
-
-							for (var i = 0; i < data.length; i++) {
-								var ok = true;
-								$('#selected_diagnoses').children('input').map(function() {
-									if ($(this).val() == data[i]['id']) {
-										ok = false;
-									}
-								});
-								if (ok) {
-									result.push(data[i]);
-								}
-							}
-
-							response(result);
-						}
-					});
-				}",
-				'options' => array(
-						'minLength'=>'3',
-						'select' => "js:function(event, ui) {
-							".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
-							$('#".$class."_".$field."_searchbox').val('').parent().addClass('hide');
-							var matched = false;
-							$('#".$class."_".$field."').children('option').map(function() {
-								if ($(this).val() == ui.item.id) {
-									matched = true;
-								}
-							});
-							if (!matched) {
-								$('#".$class."_".$field."').append('<option value=\"' + ui.item.id + '\">'+ui.item.value+'</option>');
-							}
-							$('#".$class."_".$field."').val(ui.item.id).trigger('change');
-							return false;
-						}",
-				),
-				'htmlOptions' => array(
-					'placeholder' => 'search for diagnosis',
-				),
-		));
-		?>
 	</div>
 </div>
 <script type="text/javascript">

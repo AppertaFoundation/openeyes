@@ -18,14 +18,14 @@
  */
 ?>
 
-<div class="sub-element-fields" id="<?php echo get_class($element)?>_<?php echo $side?>_Questions">
+<div class="field-row" id="<?php echo get_class($element)?>_<?php echo $side?>_Questions">
 	<?php
 	$name_stub = get_class($element) . '[' . $side . '_Answer]';
 	foreach ($questions as $question) {?>
-		<div class="row field-row">
-			<div class="large-3 column">
-				<label><?php echo $question->question?></label>
-			</div>
+		<fieldset class="row field-row">
+			<legend class="large-3 column">
+				<?php echo $question->question?>
+			</legend>
 			<?php
 			$name = $name_stub . '[' . $question->id . ']';
 			$value = $element->getQuestionAnswer($side, $question->id);
@@ -34,15 +34,15 @@
 				$value = $_POST[get_class($element)][$side . '_Answer'][$question->id];
 			}?>
 			<div class="large-9 column">
-				<span class="group">
+				<label class="inline highlight">
 					<?php echo CHtml::radioButton($name, $value, array('id' => get_class($element) . '_' . $side . '_Answer_' . $question->id . '_1', 'value' => 1))?>
-					<label>Yes</label>
-				</span>
-				<span class="group">
+					Yes
+				</label>
+				<label class="inline highlight">
 					<?php echo CHtml::radioButton($name, (!is_null($value) && !$value), array('id' => get_class($element) . '_' . $side . '_Answer_' . $question->id . '_0', 'value' => 0))?>
-					<label>No</label>
-				</span>
+					No
+				</label>
 			</div>
-		</div>
+		</fieldset>
 	<?php }?>
 </div>

@@ -51,10 +51,11 @@ else {
 	<div class="large-3 column">
 		<?php echo $form->textField($element, $side . '_sft', array('nowrapper' => true)) ?>
 	</div>
-	<div class="large-4 column end collapse">&micro;m&nbsp;&nbsp;
+	<div class="large-4 column end collapse">
+		<span class="field-info">&micro;m&nbsp;&nbsp;</span>
 		<?php if ($past_sft = $exam_api->getOCTSFTHistoryForSide($current_episode, $side, $event_date)) { ?>
 			<span id="<?php echo $side; ?>_sft_history_icon" class="sft-history-icon">
-				<img src="<?php echo $this->assetPath ?>/img/icon_info.png" height="20" />
+				<img src="<?php echo $this->assetPath ?>/img/icon_info.png" style="height:20px" />
 			</span>
 			<div class="quicklook sft-history" style="display: none;">
 				<?php
