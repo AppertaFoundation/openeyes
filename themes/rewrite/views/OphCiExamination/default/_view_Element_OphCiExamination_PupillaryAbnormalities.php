@@ -19,25 +19,21 @@
 ?>
 <div class="element-data element-eyes row">
 	<div class="element-eye right-eye column">
-		<div class="eyedraw-data">
-			<div class="data-value">
-				<?php if ($element->hasRight()) {
-					echo $element->right_abnormality->name;
-				} else {?>
-					<div class="data-value">Not recorded</div>
-				<?php }?>
-			</div>
+		<div class="data-value">
+			<?php if ($element->hasRight()) {
+				echo $element->right_abnormality->name;
+			} else {?>
+				Not recorded
+			<?php }?>
 		</div>
 	</div>
 	<div class="element-eye left-eye column">
-		<div class="eyedraw-data">
-			<div class="data-value">
-				<?php if ($element->hasLeft()) {
-					echo $element->left_abnormality->name;
-				} else {?>
-					<div class="data-value">Not recorded</div>
-				<?php }?>
-			</div>
+		<div class="data-value">
+			<?php if ($element->hasLeft()) {
+				echo $element->left_abnormality->name;
+			} else {?>
+				Not recorded
+			<?php }?>
 		</div>
 	</div>
 </div>

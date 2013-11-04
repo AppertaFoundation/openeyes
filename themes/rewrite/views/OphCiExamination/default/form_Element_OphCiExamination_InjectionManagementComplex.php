@@ -49,9 +49,10 @@ foreach ($l1_disorders as $disorder) {
 }
 ?>
 <div class="sub-element-fields element-eyes row">
+	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
-		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<?php $this->renderPartial('form_' . get_class($element) . '_fields', array(
 				'side' => 'right',
 				'element' => $element,
@@ -72,8 +73,8 @@ foreach ($l1_disorders as $disorder) {
 		</div>
 	</div>
 	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
-		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<?php $this->renderPartial('form_' . get_class($element) . '_fields', array(
 				'side' => 'left',
 				'element' => $element,

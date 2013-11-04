@@ -18,9 +18,10 @@
  */
 ?>
 <div class="element-fields element-eyes row">
+	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 	<div class="element-eye right-eye column side left<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
-		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<div class="eyedraw-data row anterior-segment">
 				<div class="fixed column">
 					<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'right', 'element' => $element))?>
@@ -39,8 +40,8 @@
 		</div>
 	</div>
 	<div class="element-eye right-eye column side right<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
-		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<div class="eyedraw-data row anterior-segment">
 				<div class="fixed column">
 					<?php $this->renderPartial('form_' . get_class($element) . '_OEEyeDraw', array('side' => 'left', 'element' => $element))?>

@@ -29,8 +29,8 @@ $left_readings = (isset($_POST['visualacuity_readings_valid']) ? $element->conve
 	<?php echo $form->hiddenInput($element, 'unit_id', false); ?>
 	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
-		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<table class="blank"<?php if (!$right_readings) { ?> style="display: none;" <?php } ?>>
 				<tbody>
 					<?php foreach ($right_readings as $reading) {
@@ -71,8 +71,8 @@ $left_readings = (isset($_POST['visualacuity_readings_valid']) ? $element->conve
 		</div>
 	</div>
 	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
-		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<table class="blank"<?php if (!$left_readings) { ?> style="display: none;" <?php } ?>>
 				<tbody>
 					<?php foreach ($left_readings as $reading) {

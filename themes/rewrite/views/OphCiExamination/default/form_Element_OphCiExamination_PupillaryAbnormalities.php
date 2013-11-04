@@ -18,9 +18,10 @@
  */
 ?>
 <div class="element-fields element-eyes row">
+	<?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
 	<div class="element-eye right-eye column left side<?php if (!$element->hasRight()) {?> inactive<?php }?>" data-side="right">
-		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<?php echo $form->dropDownList($element, 'right_abnormality_id', $element->getAbnormalityOptions(), array('empty' => '-- Select --'), false, array('label' => 3, 'field' => 9)); ?>
 		</div>
 		<div class="inactive-form">
@@ -32,8 +33,8 @@
 		</div>
 	</div>
 	<div class="element-eye left-eye column right side<?php if (!$element->hasLeft()) {?> inactive<?php }?>" data-side="left">
-		<a href="#" class="icon-remove-side remove-side">Remove side</a>
 		<div class="active-form">
+			<a href="#" class="icon-remove-side remove-side">Remove side</a>
 			<?php echo $form->dropDownList($element, 'left_abnormality_id', $element->getAbnormalityOptions(), array('empty' => '-- Select --'), false, array('label' => 3, 'field' => 9)) ?>
 		</div>
 		<div class="inactive-form">

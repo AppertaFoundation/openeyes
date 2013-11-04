@@ -24,7 +24,7 @@
 				<?php if ($element->hasRight()) {
 					echo $element->right_description;
 				} else {?>
-					<div class="data-value">Not recorded</div>
+					Not recorded
 				<?php }?>
 			</div>
 		</div>
@@ -35,7 +35,7 @@
 				<?php if ($element->hasLeft()) {
 					echo $element->left_description;
 				} else {?>
-					<div class="data-value">Not recorded</div>
+					Not recorded
 				<?php }?>
 			</div>
 		</div>

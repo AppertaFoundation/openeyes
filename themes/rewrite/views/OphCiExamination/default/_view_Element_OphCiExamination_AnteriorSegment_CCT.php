@@ -25,7 +25,7 @@
 					<?php echo $element->right_value?> &micro;m
 					(<?php echo $element->right_method->name?>)
 				<?php } else {?>
-					<div class="data-value">Not recorded</div>
+					Not recorded
 				<?php }?>
 			</div>
 		</div>
@@ -37,7 +37,7 @@
 					<?php echo $element->left_value?> &micro;m
 					(<?php echo $element->left_method->name?>)
 				<?php } else {?>
-					<div class="data-value">Not recorded</div>
+					Not recorded
 				<?php }?>
 			</div>
 		</div>

@@ -34,41 +34,36 @@ $layoutColumns = array(
 	'field' => 9
 );
 ?>
-<div class="field-row jsNoTreatment <?php echo get_class($element) ?>_no_treatment">
-	<fieldset class="row field-row">
-		<legend class="large-3 column">
-			Treatment:
-		</legend>
-		<div class="large-9 column">
-			<?php echo $form->checkBox($element, $side . '_no_treatment', array('nowrapper' => true))?>
-		</div>
-	</fieldset>
-</div>
 
-<div class="field-row <?php echo get_class($element) ?>_no_treatment_reason_id" id="div_<?php echo get_class($element) . "_" . $side?>_no_treatment_reason_id"<?php if (!$no_treatment) {?> style="display: none;"<?php }?>>
-	<fieldset class="row field-row">
-		<legend class="large-3 column">
+<fieldset class="row field-row jsNoTreatment <?php echo get_class($element) ?>_no_treatment">
+	<legend class="large-3 column">
+		Treatment:
+	</legend>
+	<div class="large-9 column">
+		<?php echo $form->checkBox($element, $side . '_no_treatment', array('nowrapper' => true))?>
+	</div>
+</fieldset>
+
+<div class="row field-row <?php echo get_class($element) ?>_no_treatment_reason_id" id="div_<?php echo get_class($element) . "_" . $side?>_no_treatment_reason_id"<?php if (!$no_treatment) {?> style="display: none;"<?php }?>>
+	<div class="large-3 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_no_treatment_reason_id';?>">
 			<?php echo $element->getAttributeLabel($side . '_no_treatment_reason_id')?>:
-		</legend>
-		<div class="large-9 column">
-			<label>
-				<?php echo $form->dropDownlist($element, $side . '_no_treatment_reason_id', CHtml::listData($no_treatment_reasons,'id','name'), $no_treatment_reasons_opts, array('nowrapper' => true))?>
-			</label>
-		</div>
-	</fieldset>
+		</label>
+	</div>
+	<div class="large-9 column">
+		<?php echo $form->dropDownlist($element, $side . '_no_treatment_reason_id', CHtml::listData($no_treatment_reasons,'id','name'), $no_treatment_reasons_opts, array('nowrapper' => true))?>
+	</div>
 </div>
 
-<div class="field-row <?php echo get_class($element) ?>_no_treatment_reason_other" id="div_<?php echo get_class($element) . "_" . $side ?>_no_treatment_reason_other"<?php if (!$show_no_treatment_reason_other) {?> style="display: none;"<?php }?>>
-	<fieldset class="row field-row">
-		<legend class="large-3 column">
+<div class="row field-row <?php echo get_class($element) ?>_no_treatment_reason_other" id="div_<?php echo get_class($element) . "_" . $side ?>_no_treatment_reason_other"<?php if (!$show_no_treatment_reason_other) {?> style="display: none;"<?php }?>>
+	<div class="large-3 column">
+		<label for="<?php echo get_class($element).'_'.$side.'_no_treatment_reason_other';?>">
 			<?php echo $element->getAttributeLabel($side . '_no_treatment_reason_other')?>:
-		</legend>
-		<div class="large-9 column">
-			<label>
-				<?php echo $form->textArea($element, $side . '_no_treatment_reason_other', array('nowrapper' => true))?>
-			</label>
-		</div>
-	</fieldset>
+		</label>
+	</div>
+	<div class="large-9 column">
+		<?php echo $form->textArea($element, $side . '_no_treatment_reason_other', array('nowrapper' => true))?>
+	</div>
 </div>
 
 <div id="div_<?php echo get_class($element) . '_' . $side ?>_treatment_fields">
