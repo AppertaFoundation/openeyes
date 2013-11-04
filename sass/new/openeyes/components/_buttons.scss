@@ -176,6 +176,13 @@ button, .button, input[type="submit"] {
 	}
 }
 
+// Extend disabled to inactive buttons
+button, .button, input[type="submit"] {
+  &.inactive {
+    @extend button.disabled;
+  }
+}
+
 // Button sizes
 //
 // Buttons can have different sizes.
