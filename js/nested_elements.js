@@ -88,7 +88,7 @@ function addElement(element, animate, is_child, previous_id, params) {
 		$('#event_display textarea.autosize:visible').autosize();
 		showActiveChildElements();
 
-		var inserted = (insert_before.length) ? insert_before.prevAll('div:first') : container.find('.sub-element:last, .element:last');
+		var inserted = (insert_before.length) ? insert_before.prevAll('section:first') : container.find('.sub-element:last, .element:last');
 
 		if (animate) {
 			var offTop = inserted.offset().top - 50;
