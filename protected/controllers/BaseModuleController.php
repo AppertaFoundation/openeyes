@@ -103,16 +103,6 @@ class BaseModuleController extends BaseController {
 	}
 
 	/**
-	 * Whether the current user is allowed to call print actions
-	 *
-	 * @return boolean
-	 */
-	public function canPrint()
-	{
-		return BaseController::checkUserLevel(3);
-	}
-
-	/**
 	 * Redirect to the patient episodes when the controller determines the action cannot be carried out
 	 *
 	 */

@@ -78,7 +78,7 @@ return array(
 			'class' => 'ClientScript',
 		),
 		'user' => array(
-			'class' => 'WebUser',
+			'class' => 'CWebUser',
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,
 		),

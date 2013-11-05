@@ -107,19 +107,6 @@ class Event extends BaseActiveRecord
 		);
 	}
 
-	public function getEditable()
-	{
-		if (!$this->episode->editable) {
-			return FALSE;
-		}
-
-		if ($this->episode->patient->date_of_death) {
-			return FALSE;
-		}
-
-		return TRUE;
-	}
-
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -262,24 +249,6 @@ class Event extends BaseActiveRecord
 		foreach (EventIssue::model()->findAll('event_id=?',array($this->id)) as $event_issue) {
 			$event_issue->delete();
 		}
-	}
-
-	/**
-	 * Only the event creator can delete the event, and only 24 hours after its initial creation
-	 *
-	 * @return boolean
-	 */
-	public function canDelete()
-	{
-		if (!BaseController::checkUserLevel(4)) return false;
-
-		if ($this->episode->patient->date_of_death) return false;
-
-		if (!$this->episode->editable) return false;
-
-		$admin = User::model()->find('username=?',array('admin'));	 // these two lines should be replaced once we have rbac
-		if ($admin->id == Yii::app()->session['user']->id) {return true;}
-		return ($this->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($this->created_date)) <= 86400);
 	}
 
 	/**

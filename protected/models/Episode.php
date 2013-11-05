@@ -407,31 +407,6 @@ class Episode extends BaseActiveRecord
 		return ($this->end_date == null);
 	}
 
-	public function getEditable()
-	{
-		// Get current logged in firm's subspecialty id (null for support services firms)
-		$current_subspecialty_id = Yii::app()->getController()->firm->getSubspecialtyID();
-		if (!$this->firm) {
-			// Episode has no firm, so it's either a legacy episode or a support services episode
-			if ($this->support_services) {
-				// Support services episode, so are you logged in as a support services firm
-				return ($current_subspecialty_id == null);
-			} else {
-				// Legacy episode
-				return FALSE;
-			}
-		} else {
-			// Episode is normal (has a firm)
-			if (!$current_subspecialty_id) {
-				// Logged in as a support services firm
-				return FALSE;
-			} else {
-				// Logged in as a normal firm, so does episode subspecialty match
-				return ($this->firm->getSubspecialtyID() == $current_subspecialty_id);
-			}
-		}
-	}
-
 	protected function afterSave()
 	{
 		foreach (SecondaryDiagnosis::model()->findAll('patient_id=? and disorder_id=?',array($this->patient_id,$this->disorder_id)) as $sd) {
