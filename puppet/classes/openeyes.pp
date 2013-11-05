@@ -48,7 +48,7 @@ class openeyes {
   }
 
   exec { 'create openeyestest db':
-      unless  => '/usr/bin/mysql -uroot openeyes',
+      unless  => '/usr/bin/mysql -uroot openeyestest',
       command => '/usr/bin/mysql -uroot -e "create database openeyestest IF NOT EXISTS;"',
       require => Service['mysql'],
     }
