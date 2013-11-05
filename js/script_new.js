@@ -84,32 +84,73 @@ $(document).ready(function(){
 
 	/**
 	 * Sticky stuff
+	 * @todo Fix the offsets when resizing the layouts.
 	 */
+	(function sticky() {
 
-	// content-box
+		var adminBanner = $('.alert-box.admin.banner');
+		var header = $('.header');
+		var eventHeader = $('.event-header');
 
-	var adminBanner = $('.alert-box.admin.banner');
-	adminBanner.waypoint('sticky', {
-		offset: -30,
-		wrapper: '<div class="alert-banner-sticky-wrapper" />'
-	}).parent().height(adminBanner.outerHeight());
+		function initWaypoints() {
 
-	var header = $('.header');
-	header.waypoint('sticky', {
-		offset: -20
-	}).width(header.width());
+			adminBanner.waypoint('sticky', {
+				offset: -30
+			});
 
-	var eventHeader = $('.event-header');
-	eventHeader.waypoint('sticky', {
-		offset: 39
-	})
-	.width(eventHeader.width())
-	.parent()
-	.height(eventHeader.outerHeight());
+			header.waypoint('sticky', {
+				offset: 0
+			}).width(header.width());
 
-	$('body').delegate('#header.stuck, .event_tabs.stuck, .event_actions.stuck', 'hover', function(e) {
-		$('#header, .event_tabs, .event_actions').toggleClass('hover', e.type === 'mouseenter');
-	});
+			eventHeader.waypoint('sticky', {
+				offset: function(){
+					return header.height() + adminBanner.height();
+				},
+				handler: function() {
+					eventHeader.css({
+						top: header.height()
+					});
+				}
+			})
+			.width(eventHeader.width());
+		}
+
+		function adjustHeights() {
+			adminBanner
+			.closest('.sticky-wrapper')
+			.height(adminBanner.outerHeight(true));
+
+			eventHeader
+			.closest('.sticky-wrapper')
+			.height(eventHeader.outerHeight(true));
+		}
+
+		function adjustWidths() {
+			header.width(
+				header.closest('.container.main').width()
+			);
+			eventHeader.width(
+				eventHeader.closest('.column.event').width()
+			);
+		}
+
+		function onWindowResize(e) {
+			adjustHeights();
+			adjustWidths();
+		}
+
+		function bindResizeHandler() {
+			var timer = 0;
+			$(window).on('resize', function(e) {
+				// Throttle this handler.
+				clearTimeout(timer);
+				timer = setTimeout(onWindowResize.bind(null, e), 10);
+			}).trigger('resize');
+		}
+
+		initWaypoints();
+		bindResizeHandler();
+	}());
 
 	/**
 	 * Tab hover
