@@ -60,7 +60,15 @@
 		</div>
 	</div>
 	<div class="large-8 column">
-		<div class="data-value"><?php echo $element->{$side . '_thickness_increase'} ? 'Yes' : 'No'; ?></div>
+		<div class="data-value">
+			<?php
+				if ($element->{$side . '_thickness_increase'} === null) {
+					echo "Not recorded";
+				} else {
+					echo $element->{$side . '_thickness_increase'} ? 'Yes' : 'No';
+				}
+			?>
+		</div>
 	</div>
 </div>
 <div class="row data-row">
