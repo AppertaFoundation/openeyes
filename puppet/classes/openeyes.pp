@@ -40,8 +40,10 @@ class openeyes {
     unless  => '/usr/bin/mysql -uopeneyes -poe_test openeyes',
     command => '/usr/bin/mysql -uroot -e "\
       create user \'openeyes\'@\'localhost\' identified by \'oe_test\';\
+      create user \'openeyes\'@\'10.0.2.2\' identified by \'oe_test\';\
       create user \'openeyes\'@\'%\' identified by \'oe_test\';\
       grant all privileges on openeyes.* to \'openeyes\'@\'localhost\' identified by \'oe_test\';\
+      grant all privileges on openeyes.* to \'openeyes\'@\'10.0.2.2\' identified by \'oe_test\';\
       grant all privileges on openeyes.* to \'openeyes\'@\'%\' identified by \'oe_test\';\
       flush privileges;"',
     require => Exec['create openeyes db']
@@ -49,7 +51,7 @@ class openeyes {
 
   exec { 'create openeyestest db':
       unless  => '/usr/bin/mysql -uroot openeyestest',
-      command => '/usr/bin/mysql -uroot -e "create database openeyestest IF NOT EXISTS;"',
+      command => '/usr/bin/mysql -uroot -e "create database IF NOT EXISTS openeyestest ;"',
       require => Service['mysql'],
     }
 
@@ -57,6 +59,7 @@ class openeyes {
       unless  => '/usr/bin/mysql -uopeneyes -poe_test openeyestest',
       command => '/usr/bin/mysql -uroot -e "\
         grant all privileges on openeyestest.* to \'openeyes\'@\'localhost\' identified by \'oe_test\';\
+        grant all privileges on openeyestest.* to \'openeyes\'@\'10.0.2.2\' identified by \'oe_test\';\
         grant all privileges on openeyestest.* to \'openeyes\'@\'%\' identified by \'oe_test\';\
         flush privileges;"',
       require => [
