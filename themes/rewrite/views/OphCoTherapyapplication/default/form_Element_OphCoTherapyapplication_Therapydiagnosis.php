@@ -30,7 +30,7 @@ foreach ($l1_disorders as $disorder) {
 		foreach ($td_l2 as $l2) {
 			$jsn_arry[] = array('id' => $l2->id, 'term' => $l2->term);
 		}
-		$l1_options[$disorder->id] = array('data-level2' => CJSON::encode($jsn_arry));
+		$l1_options[$disorder->id] = array('data-level2' => $jsn_arry);
 		$l2_disorders[$disorder->id] = $td_l2;
 	}
 }
