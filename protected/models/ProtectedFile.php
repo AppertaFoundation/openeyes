@@ -216,7 +216,7 @@ class ProtectedFile extends BaseActiveRecord
 	{
 		unlink($this->_stored_path);
 
-		return parent::beforeDelete();
+		return parent::afterDelete();
 	}
 
 	/**
