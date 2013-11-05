@@ -46,11 +46,32 @@ class openeyes {
     require => Exec['create openeyes db']
   }
 
+  exec { 'create openeyestest db':
+      unless  => '/usr/bin/mysql -uroot openeyes',
+      command => '/usr/bin/mysql -uroot -e "create database openeyestest;"',
+      require => Service['mysql'],
+    }
+
+    exec { 'create openeyestest user':
+      unless  => '/usr/bin/mysql -uopeneyes -poe_test openeyestest',
+      command => '/usr/bin/mysql -uroot -e "\
+        grant all privileges on openeyestest.* to \'openeyes\'@\'localhost\' identified by \'oe_test\';\
+        grant all privileges on openeyestest.* to \'openeyes\'@\'%\' identified by \'oe_test\';\
+        flush privileges;"',
+      require => [
+        Exec['create openeyestest db'],
+        Exec['create openeyes user']
+        ]
+    }
+
   exec { 'migrate openeyes db':
-    command => '/usr/bin/php /var/www/protected/yiic.php migrate --interactive=0',
+    command => '/usr/bin/php /var/www/protected/yiic.php migrate --interactive=0\
+    /usr/bin/php /var/www/protected/yiic.php migrate --connectionID=testdb --interactive=0',
     require => [
       Exec['create openeyes db'],
       Exec['create openeyes user'],
+      Exec['create openeyestest db'],
+      Exec['create openeyestest user'],
       Exec['create application config'],
       File['/var/www/protected/runtime'],
     ]
