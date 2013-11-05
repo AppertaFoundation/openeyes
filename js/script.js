@@ -17,81 +17,140 @@
  */
 
 $(document).ready(function(){
-	$('.sprite.showhide').click( function(e){
-		e.preventDefault();
-		var sprite = $(this).children('span');
-		var whiteBox = $(this).parents('.whiteBox');
 
-		if(sprite.hasClass('hide')) {
-			whiteBox.children('.data_row').slideUp("fast");
-			sprite.removeClass('hide');
-			sprite.addClass('show');
+	$('.js-toggle').on('click', function(e) {
+
+		e.preventDefault();
+
+		var trigger = $(this);
+		var container = trigger.closest('.js-toggle-container');
+
+		if (!container.length) {
+			throw new Error('Unable to find js-toggle container.')
+		}
+
+		var body = container.find('.js-toggle-body');
+
+		if (!body.length) {
+			throw new Error('Unable to find js-toggle body.')
+		}
+
+		if (trigger.hasClass('toggle-hide')) {
+			trigger
+			.removeClass('toggle-hide')
+			.addClass('toggle-show');
+			body.slideUp('fast');
 		} else {
-			whiteBox.children('.data_row').slideDown("fast");
-			sprite.removeClass('show');
-			sprite.addClass('hide');
+			trigger
+			.removeClass('toggle-show')
+			.addClass('toggle-hide');
+			body.slideDown('fast', function() {
+				body.css('overflow', 'visible');
+			});
 		}
 	});
 
-	// show hide
+	(function sidebarEventsToggle() {
 
-	$('.sprite.showhide2').click(function(e){
-		var episode_id = $(this).parent().parent().prev('input').val();
-		if (episode_id == undefined) {
-			episode_id = 'legacy';
+		var triggers = $('.sidebar.episodes-and-events .toggle-trigger');
+		triggers.on('click', onTriggerClick);
+
+		function onTriggerClick(e) {
+
+			e.preventDefault();
+
+			var trigger = $(this);
+			var episodeContainer = trigger.closest('.episode');
+			var input = episodeContainer.find('[name="episode-id"]');
+			var episode_id = input.val() || 'legacy';
+			var state = trigger.hasClass('toggle-hide') ? 'hide' : 'show';
+
+			changeState(episodeContainer, trigger, episode_id, state);
 		}
 
-		e.preventDefault();
-		changeState($(this).parents('.episode_nav'),$(this).children('span'),episode_id);
-	});
+		function changeState(episodeContainer, trigger, episode_id, state) {
+			trigger.toggleClass('toggle-hide toggle-show');
+			episodeContainer.find('.events-container,.events-overview').slideToggle('fast');
+			updateEpisode(episode_id, state);
+		}
 
-	function changeState(wb,sp,episode_id) {
-		if (sp.hasClass('hide')) {
-			wb.children('.events').slideUp('fast');
-			sp.removeClass('hide');
-			sp.addClass('show');
-												wb.children('.minievents').slideDown('fast');
+		function updateEpisode(episode_id, state) {
 			$.ajax({
 				'type': 'GET',
-				'url': baseUrl+'/patient/hideepisode?episode_id='+episode_id,
-				'success': function(html) {
-				}
-			});
-		} else {
-			wb.children('.events').slideDown('fast');
-			sp.removeClass('show');
-			sp.addClass('hide');
-												wb.children('.minievents').slideUp('fast');
-			$.ajax({
-				'type': 'GET',
-				'url': baseUrl+'/patient/showepisode?episode_id='+episode_id,
-				'success': function(html) {
-				}
+				'url': baseUrl+'/patient/' + state + 'episode?episode_id='+episode_id,
 			});
 		}
-	}
+	}());
 
 	/**
 	 * Sticky stuff
+	 * @todo Fix the offsets when resizing the layouts.
 	 */
-	$('#alert_banner').waypoint('sticky', {
-		offset: -30,
-		wrapper: '<div class="alert_banner_sticky_wrapper" />'
-	});
-	$('#header').waypoint('sticky', {
-		offset: -20,
-	});
-	$('.event_tabs').waypoint('sticky', {
-		offset: 39,
-		wrapper: '<div class="event_tabs_sticky_wrapper" />'
-	});
-	$('.event_actions').waypoint('sticky', {
-		offset: 44,
-		wrapper: '<div class="event_actions_sticky_wrapper" />'
-	});
-	$('body').delegate('#header.stuck, .event_tabs.stuck, .event_actions.stuck', 'hover', function(e) {
-		$('#header, .event_tabs, .event_actions').toggleClass('hover', e.type === 'mouseenter');
-	});
+	(function sticky() {
+
+		var adminBanner = $('.alert-box.admin.banner');
+		var header = $('.header');
+		var eventHeader = $('.event-header');
+
+		function initWaypoints() {
+
+			adminBanner.waypoint('sticky', {
+				offset: -30
+			});
+
+			header.waypoint('sticky', {
+				offset: 0
+			}).width(header.width());
+
+			eventHeader.waypoint('sticky', {
+				offset: function(){
+					return header.height() + adminBanner.height();
+				},
+				handler: function() {
+					eventHeader.css({
+						top: header.height()
+					});
+				}
+			})
+			.width(eventHeader.width());
+		}
+
+		function adjustHeights() {
+			adminBanner
+			.closest('.sticky-wrapper')
+			.height(adminBanner.outerHeight(true));
+
+			eventHeader
+			.closest('.sticky-wrapper')
+			.height(eventHeader.outerHeight(true));
+		}
+
+		function adjustWidths() {
+			header.width(
+				header.closest('.container.main').width()
+			);
+			eventHeader.width(
+				eventHeader.closest('.column.event').width()
+			);
+		}
+
+		function onWindowResize(e) {
+			adjustHeights();
+			adjustWidths();
+		}
+
+		function bindResizeHandler() {
+			var timer = 0;
+			$(window).on('resize', function(e) {
+				// Throttle this handler.
+				clearTimeout(timer);
+				timer = setTimeout(onWindowResize.bind(null, e), 10);
+			}).trigger('resize');
+		}
+
+		initWaypoints();
+		bindResizeHandler();
+	}());
 
 	/**
 	 * Tab hover
@@ -111,7 +170,7 @@ $(document).ready(function(){
 	var formHasChanged = false;
 	var submitted = false;
 
-	$("#event_content").on("change", function (e) {
+	$("#event-content").on("change", function (e) {
 		formHasChanged = true;
 	});
 
