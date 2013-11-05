@@ -9,7 +9,7 @@ class m130430_141855_person_import_fields extends CDbMigration
 		$this->addForeignKey('person_source_id_fk','person','source_id','import_source','id');
 		$this->addColumn('person','remote_id','varchar(10) COLLATE utf8_bin NOT NULL');
 
-		foreach (Yii::app()->db->createCommand()
+		foreach ($this->getDbConnection()->createCommand()
 			->select("person.id, contact_metadata.value")
 			->from("person")
 			->join("contact","person.contact_id = contact.id")

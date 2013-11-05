@@ -4,9 +4,10 @@ class m120824_074626_site_table_changes_and_reply_to_addresses extends CDbMigrat
 {
 	public function up()
 	{
+		$db = $this->getDbConnection();
 		$this->addColumn('site','location','varchar(64) COLLATE utf8_bin NOT NULL');
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("site")->where('institution_id=:one',array(':one'=>1))->queryAll() as $site) {
+		foreach ($db->createCommand()->select("*")->from("site")->where('institution_id=:one',array(':one'=>1))->queryAll() as $site) {
 			$update = array();
 
 			if (preg_match('/, (.*?)$/',$site['name'],$m)) {
@@ -29,9 +30,10 @@ class m120824_074626_site_table_changes_and_reply_to_addresses extends CDbMigrat
 
 	public function down()
 	{
+		$db = $this->getDbConnection();
 		$this->dropColumn('institution','short_name');
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("site")->where('institution_id=:one',array(':one'=>1))->queryAll() as $site) {
+		foreach ($db->createCommand()->select("*")->from("site")->where('institution_id=:one',array(':one'=>1))->queryAll() as $site) {
 			$update = array();
 
 			if ($site['location']) {

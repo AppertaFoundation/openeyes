@@ -25,7 +25,8 @@ class openeyes {
 
   exec { 'create application config':
     unless  => '/usr/bin/test -e /var/www/protected/config/local/common.php',
-    command => '/bin/cp /var/www/protected/config/local/common.vagrant.php /var/www/protected/config/local/common.php',
+    command => '/bin/cp /var/www/protected/config/local/common.vagrant.php /var/www/protected/config/local/common.php;\
+    /bin/cp -f /var/www/protected/config/local/console.sample.php /var/www/protected/config/local/console.php;',
     require => Service['mysql'],
   }
 
@@ -48,7 +49,7 @@ class openeyes {
 
   exec { 'create openeyestest db':
       unless  => '/usr/bin/mysql -uroot openeyes',
-      command => '/usr/bin/mysql -uroot -e "create database openeyestest;"',
+      command => '/usr/bin/mysql -uroot -e "create database openeyestest IF NOT EXISTS;"',
       require => Service['mysql'],
     }
 
@@ -65,8 +66,8 @@ class openeyes {
     }
 
   exec { 'migrate openeyes db':
-    command => '/usr/bin/php /var/www/protected/yiic.php migrate --interactive=0\
-    /usr/bin/php /var/www/protected/yiic.php migrate --connectionID=testdb --interactive=0',
+    command => '/usr/bin/php /var/www/protected/yiic.php migrate --interactive=0;\
+    /usr/bin/php /var/www/protected/yiic.php migrate --connectionID=testdb --interactive=0;',
     require => [
       Exec['create openeyes db'],
       Exec['create openeyes user'],

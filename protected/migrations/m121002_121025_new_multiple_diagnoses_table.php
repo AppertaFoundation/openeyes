@@ -4,6 +4,7 @@ class m121002_121025_new_multiple_diagnoses_table extends CDbMigration
 {
 	public function up()
 	{
+		$db = $this->getDbConnection();
 		$this->createTable('secondary_diagnosis',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'disorder_id' => 'int(10) unsigned NOT NULL',
@@ -39,18 +40,19 @@ class m121002_121025_new_multiple_diagnoses_table extends CDbMigration
 
 		echo "Populating principal eyes and diagnoses for episodes ... ";
 
-		foreach (Yii::app()->db->createCommand("select * from episode")->queryAll() as $episode) {
+		foreach ($db->createCommand("select * from episode")->queryAll() as $episode) {
 			$diagnosis = null;
 
-			$criteria = new CDbCriteria();
-			$criteria->join = 'JOIN event ev ON t.event_id = ev.id';
-			$criteria->addCondition('ev.episode_id = :episode_id');
-			$criteria->params = array(':episode_id' => $episode['id']);
-			$criteria->order = 't.created_date DESC, t.id DESC';
-			$element = ElementDiagnosis::model()->find($criteria);
+
+			$element_diagnosis_stm = "select ed.id, ed.event_id, ed.disorder_id, ed.eye_id, ed.last_modified_user_id, ed.last_modified_date, ed.created_user_id, ed.created_date
+			 	from element_diagnosis ed JOIN event ev ON ed.event_id = ev.id where ev.`episode_id` =:episode_id order by ed.created_date DESC, ed.id DESC;";
+
+			$element = $db->createCommand($element_diagnosis_stm)
+				->bindValues(array(':episode_id' => $episode['id']))->queryRow();
+
 			if ($element && (!$diagnosis || strtotime($element->created_date) > strtotime($diagnosis->created_date))) {
-				Yii::app()->db->createCommand("update episode set disorder_id = $element->disorder_id where id = {$episode['id']}")->query();
-				Yii::app()->db->createCommand("update episode set eye_id = $element->eye_id where id = {$episode['id']}")->query();
+				$db->createCommand("update episode set disorder_id = $element->disorder_id where id = {$episode['id']}")->query();
+				$db->createCommand("update episode set eye_id = $element->eye_id where id = {$episode['id']}")->query();
 			}
 		}
 

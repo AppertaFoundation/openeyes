@@ -6,6 +6,7 @@ class m130603_114507_normalise_audit_table extends CDbMigration
 
 	public function up()
 	{
+		$db = $this->getDbConnection();
 		$this->createTable('audit_action', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'name' => 'varchar(64) COLLATE utf8_bin NOT NULL',
@@ -76,27 +77,27 @@ class m130603_114507_normalise_audit_table extends CDbMigration
 				'CONSTRAINT `audit_server_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
-		foreach (Yii::app()->db->createCommand()->select("distinct(action) as action")->from('audit')->queryAll() as $audit) {
+		foreach ($db->createCommand()->select("distinct(action) as action")->from('audit')->queryAll() as $audit) {
 			$action_id = $this->findObject('action',$audit['action']);
 			$this->update('audit',array('action'=>$action_id),"action='{$audit['action']}'");
 		}
 
-		foreach (Yii::app()->db->createCommand()->select("distinct(target_type) as target_type")->from("audit")->queryAll() as $audit) {
+		foreach ($db->createCommand()->select("distinct(target_type) as target_type")->from("audit")->queryAll() as $audit) {
 			$type_id = $this->findObject('type',$audit['target_type']);
 			$this->update('audit',array('target_type'=>$type_id),"target_type='{$audit['target_type']}'");
 		}
 
-		foreach (Yii::app()->db->createCommand()->select("distinct(remote_addr) as remote_addr")->from("audit")->queryAll() as $audit) {
+		foreach ($db->createCommand()->select("distinct(remote_addr) as remote_addr")->from("audit")->queryAll() as $audit) {
 			$ipaddr_id = $audit['remote_addr'] ? $this->findObject('ipaddr',$audit['remote_addr']) : null;
 			$this->update('audit',array('remote_addr'=>$ipaddr_id),"remote_addr='{$audit['remote_addr']}'");
 		}
 
-		foreach (Yii::app()->db->createCommand()->select("distinct(http_user_agent) as http_user_agent")->from("audit")->queryAll() as $audit) {
+		foreach ($db->createCommand()->select("distinct(http_user_agent) as http_user_agent")->from("audit")->queryAll() as $audit) {
 			$useragent_id = $audit['http_user_agent'] ? $this->findObject('useragent',$audit['http_user_agent']) : null;
 			$this->update('audit',array('http_user_agent'=>$useragent_id),"http_user_agent='{$audit['http_user_agent']}'");
 		}
 
-		foreach (Yii::app()->db->createCommand()->select("distinct(server_name) as server_name")->from("audit")->queryAll() as $audit) {
+		foreach ($db->createCommand()->select("distinct(server_name) as server_name")->from("audit")->queryAll() as $audit) {
 			$server_id = $audit['server_name'] ? $this->findObject('server',$audit['server_name']) : null;
 			$this->update('audit',array('server_name'=>$server_id),"server_name='{$audit['server_name']}'");
 		}
@@ -129,11 +130,12 @@ class m130603_114507_normalise_audit_table extends CDbMigration
 
 	public function findObject($type,$name)
 	{
+		$db = $this->getDbConnection();
 		if (isset($this->lookup[$type][$name])) {
 			return $this->lookup[$type][$name];
 		}
 
-		if ($object = Yii::app()->db->createCommand()->select("*")->from("audit_$type")->where('name=:name',array(':name'=>$name))->queryRow()) {
+		if ($object = $this->getDbConnection()->createCommand()->select("*")->from("audit_$type")->where('name=:name',array(':name'=>$name))->queryRow()) {
 			$this->lookup[$type][$name] = $object['id'];
 			return $object['id'];
 		}
@@ -170,27 +172,27 @@ class m130603_114507_normalise_audit_table extends CDbMigration
 		$this->alterColumn('audit','action_id','varchar(32) COLLATE utf8_bin NOT NULL');
 		$this->renameColumn('audit','action_id','action');
 
-		foreach (Yii::app()->db->createCommand()->select("distinct(action) as action")->from('audit')->queryAll() as $audit) {
+		foreach ($db->createCommand()->select("distinct(action) as action")->from('audit')->queryAll() as $audit) {
 			$action_id = $this->findObjectName('action',$audit['action']);
 			$this->update('audit',array('action'=>$action_id),"action='{$audit['action']}'");
 		}
 
-		foreach (Yii::app()->db->createCommand()->select("distinct(target_type) as target_type")->from("audit")->queryAll() as $audit) {
+		foreach ($db->createCommand()->select("distinct(target_type) as target_type")->from("audit")->queryAll() as $audit) {
 			$type_id = $this->findObjectName('type',$audit['target_type']);
 			$this->update('audit',array('target_type'=>$type_id),"target_type='{$audit['target_type']}'");
 		}
 
-		foreach (Yii::app()->db->createCommand()->select("distinct(remote_addr) as remote_addr")->from("audit")->queryAll() as $audit) {
+		foreach ($db->createCommand()->select("distinct(remote_addr) as remote_addr")->from("audit")->queryAll() as $audit) {
 			$ipaddr_id = $audit['remote_addr'] ? $this->findObjectName('ipaddr',$audit['remote_addr']) : null;
 			$this->update('audit',array('remote_addr'=>$ipaddr_id),"remote_addr='{$audit['remote_addr']}'");
 		}
 
-		foreach (Yii::app()->db->createCommand()->select("distinct(http_user_agent) as http_user_agent")->from("audit")->queryAll() as $audit) {
+		foreach ($db->createCommand()->select("distinct(http_user_agent) as http_user_agent")->from("audit")->queryAll() as $audit) {
 			$useragent_id = $audit['http_user_agent'] ? $this->findObjectName('useragent',$audit['http_user_agent']) : null;
 			$this->update('audit',array('http_user_agent'=>$useragent_id),"http_user_agent='{$audit['http_user_agent']}'");
 		}
 
-		foreach (Yii::app()->db->createCommand()->select("distinct(server_name) as server_name")->from("audit")->queryAll() as $audit) {
+		foreach ($db->createCommand()->select("distinct(server_name) as server_name")->from("audit")->queryAll() as $audit) {
 			$server_id = $audit['server_name'] ? $this->findObjectName('server',$audit['server_name']) : null;
 			$this->update('audit',array('server_name'=>$server_id),"server_name='{$audit['server_name']}'");
 		}
@@ -208,7 +210,7 @@ class m130603_114507_normalise_audit_table extends CDbMigration
 			return $this->lookup[$type][$id];
 		}
 
-		if ($object = Yii::app()->db->createCommand()->select("*")->from("audit_$type")->where('id=:id',array(':id'=>$id))->queryRow()) {
+		if ($object = $this->getDbConnection()->createCommand()->select("*")->from("audit_$type")->where('id=:id',array(':id'=>$id))->queryRow()) {
 			$this->lookup[$type][$id] = $object['name'];
 			return $object['name'];
 		}

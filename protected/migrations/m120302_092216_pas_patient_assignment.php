@@ -29,13 +29,17 @@ class m120302_092216_pas_patient_assignment extends CDbMigration
 
 		// Disable foreign key checks (keys being reassigned)
 		$this->execute('SET foreign_key_checks = 0');
+		$db = $this->getDbConnection();
 
 		// Migrate existing patients
 		echo "Migrating patients...\n";
-		$patients = Patient::model()->findAll();
+
+		$patients_st = "select * from patient";
+
+		$patients = $db->createCommand($patients_st)->queryAll();
 
 		// Set patient counter above highest existing ID to avoid collisions
-		$patient_counter = $this->getDbConnection()->createCommand('SELECT MAX(id) FROM `patient`')->queryScalar() + 1;
+		$patient_counter = $db->createCommand('SELECT MAX(id) FROM `patient`')->queryScalar() + 1;
 
 		foreach ($patients as $patient) {
 			$old_patient_id = $patient->id;

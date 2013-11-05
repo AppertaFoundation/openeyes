@@ -4,7 +4,8 @@ class m120927_075937_add_new_durations_to_drug_duration_table extends CDbMigrati
 {
 	public function up()
 	{
-
+		$db = $this->getDbConnection();
+		$drug_duration_stm = "select id from drug_duration where name = :name;" ;
 		// Add missing create/edited columns on drug tables
 		foreach (array('drug_duration','drug_allergy_assignment','drug_form','drug_frequency','drug_route','drug_type') as $table) {
 			$this->addColumn($table, 'last_modified_user_id', 'int(10) unsigned NOT NULL DEFAULT 1');
@@ -18,10 +19,12 @@ class m120927_075937_add_new_durations_to_drug_duration_table extends CDbMigrati
 		$this->addColumn('drug_duration','display_order','int(10) unsigned NOT NULL DEFAULT 1');
 
 		foreach (array('24 hours','48 hours','1 day','3 days','4 days','6 weeks') as $name) {
-			if (!DrugDuration::model()->find('name=?',array($name))) {
-				$dd = new DrugDuration;
-				$dd->name = $name;
-				$dd->save();
+			$drug_duration = $db->createCommand($drug_duration_stm)
+				->bindValues(array(':name' => $name))->queryScalar();
+			if (!$drug_duration) {
+				$this->insert('drug_duration',
+					array('name'=> $name)
+				);
 			}
 		}
 
@@ -33,17 +36,17 @@ class m120927_075937_add_new_durations_to_drug_duration_table extends CDbMigrati
 			'other' => array(),
 		);
 
-		foreach (DrugDuration::model()->findAll() as $drug_duration) {
-			if (preg_match('/^([0-9]+) hour/',$drug_duration->name,$m)) {
-				$ids['hours'][$m[1]] = $drug_duration->id;
-			} elseif (preg_match('/^([0-9]+) day/',$drug_duration->name,$m)) {
-				$ids['days'][$m[1]] = $drug_duration->id;
-			} elseif (preg_match('/^([0-9]+) week/',$drug_duration->name,$m)) {
-				$ids['weeks'][$m[1]] = $drug_duration->id;
-			} elseif (preg_match('/^([0-9]+) month/',$drug_duration->name,$m)) {
-				$ids['months'][$m[1]] = $drug_duration->id;
+		foreach ($db->createCommand("select * from drug_duration")->queryAll() as $drug_duration) {
+			if (preg_match('/^([0-9]+) hour/',$drug_duration['name'],$m)) {
+				$ids['hours'][$m[1]] = $drug_duration['id'];
+			} elseif (preg_match('/^([0-9]+) day/',$drug_duration['name'],$m)) {
+				$ids['days'][$m[1]] = $drug_duration['id'];
+			} elseif (preg_match('/^([0-9]+) week/',$drug_duration['name'],$m)) {
+				$ids['weeks'][$m[1]] = $drug_duration['id'];
+			} elseif (preg_match('/^([0-9]+) month/',$drug_duration['name'],$m)) {
+				$ids['months'][$m[1]] = $drug_duration['id'];
 			} else {
-				$ids['other'][] = $drug_duration->id;
+				$ids['other'][] = $drug_duration['id'];
 			}
 		}
 

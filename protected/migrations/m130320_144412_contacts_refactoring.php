@@ -94,10 +94,10 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		$this->insert('address_type',array('name'=>'Correspondence'));
 		$this->insert('address_type',array('name'=>'Transport'));
 
-		$at_replyto = Yii::app()->db->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Reply to'))->queryRow();
-		$at_home = Yii::app()->db->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Home'))->queryRow();
-		$at_correspondence = Yii::app()->db->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Correspondence'))->queryRow();
-		$at_transport = Yii::app()->db->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Transport'))->queryRow();
+		$at_replyto = $this->getDbConnection()->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Reply to'))->queryRow();
+		$at_home = $this->getDbConnection()->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Home'))->queryRow();
+		$at_correspondence = $this->getDbConnection()->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Correspondence'))->queryRow();
+		$at_transport = $this->getDbConnection()->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Transport'))->queryRow();
 
 		$this->addColumn('address','address_type_id','int(10) unsigned NULL');
 		$this->createIndex('address_address_type_id_fk','address','address_type_id');
@@ -109,7 +109,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 		/* Specialists */
 
-		$specialists = Yii::app()->db->createCommand()
+		$specialists = $this->getDbConnection()->createCommand()
 			->select("specialist.*, specialist_type.name as specialist_type, contact.id as contact_id")
 			->from("specialist")
 			->join("specialist_type","specialist.specialist_type_id = specialist_type.id")
@@ -128,7 +128,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		$this->addColumn('firm','consultant_id','int(10) unsigned NOT NULL');
 
 		$firm_ids = array();
-		foreach (Yii::app()->db->createCommand()->select("id")->from("firm")->queryAll() as $firm) {
+		foreach ($this->getDbConnection()->createCommand()->select("id")->from("firm")->queryAll() as $firm) {
 			$firm_ids[] = $firm['id'];
 		}
 		$this->parallelise("setFirmConsultants",$firm_ids);
@@ -142,7 +142,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 		$this->addColumn('user','contact_id','int(10) unsigned NOT NULL');
 
-		$users = Yii::app()->db->createCommand()
+		$users = $this->getDbConnection()->createCommand()
 			->select("user.*, user_contact_assignment.contact_id, contact.parent_class, contact.parent_id, consultant.gmc_number, consultant.practitioner_code, consultant.gender")
 			->from("user")
 			->join("user_contact_assignment","user_contact_assignment.user_id = user.id")
@@ -152,9 +152,9 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 		$this->parallelise('migrateUserContacts',$users);
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("user")->where("contact_id = :zero or contact_id is null",array(":zero"=>0))->queryAll() as $user) {
+		foreach ($this->getDbConnection()->createCommand()->select("*")->from("user")->where("contact_id = :zero or contact_id is null",array(":zero"=>0))->queryAll() as $user) {
 			$this->insert('contact',array('title'=>$user['title'],'first_name'=>$user['first_name'],'last_name'=>$user['last_name'],'qualifications'=>$user['qualifications']));
-			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
+			$contact_id = $this->getDbConnection()->createCommand()->select("max(id)")->from("contact")->queryScalar();
 			$this->update('user',array('contact_id'=>$contact_id),"id={$user['id']}");
 		}
 
@@ -165,7 +165,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 		/* External ophthalmic consultants */
 
-		$consultants = Yii::app()->db->createCommand()->select("*")->from("contact")->where("parent_class = 'Consultant'")->queryAll();
+		$consultants = $this->getDbConnection()->createCommand()->select("*")->from("contact")->where("parent_class = 'Consultant'")->queryAll();
 
 		$this->parallelise('migrateConsultantContacts',$consultants);
 
@@ -173,7 +173,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 		$this->addColumn('gp','contact_id','int(10) unsigned NOT NULL');
 
-		$gps = Yii::app()->db->createCommand()
+		$gps = $this->getDbConnection()->createCommand()
 			->select("gp.*, contact.id as contact_id")
 			->from("gp")
 			->join("contact","contact.parent_class = 'Gp' and contact.parent_id = gp.id")
@@ -189,7 +189,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		$this->addColumn('site','contact_id','int(10) unsigned NOT NULL');
 		$this->addColumn('site','replyto_contact_id','int(10) unsigned NULL');
 
-		$sites = Yii::app()->db->createCommand()
+		$sites = $this->getDbConnection()->createCommand()
 			->select("site.*, contact.id as contact_id")
 			->from("site")
 			->leftJoin("contact","contact.parent_class = 'Site_ReplyTo' and contact.parent_id = site.id")
@@ -211,7 +211,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 		$this->addColumn('institution','contact_id','int(10) unsigned NOT NULL');
 
-		$institutions = Yii::app()->db->createCommand()
+		$institutions = $this->getDbConnection()->createCommand()
 			->select("institution.*, address.id as address_id")
 			->from("institution")
 			->leftJoin("address","address.parent_class = 'Institution' and address.parent_id = institution.id")
@@ -226,7 +226,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 		$this->addColumn('patient','contact_id','int(10) unsigned NOT NULL');
 
-		$patients = Yii::app()->db->createCommand()
+		$patients = $this->getDbConnection()->createCommand()
 			->select("patient.*, contact.id as contact_id")
 			->from("patient")
 			->join("contact","contact.parent_class = 'Patient' and contact.parent_id = patient.id")
@@ -241,7 +241,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 		$this->addColumn('patient_contact_assignment','location_id','int(10) unsigned NOT NULL');
 
-		$pcas = Yii::app()->db->createCommand()
+		$pcas = $this->getDbConnection()->createCommand()
 			->select("patient_contact_assignment.*, contact_location1.id as location_id1, contact_location2.id as location_id2")
 			->from("patient_contact_assignment")
 			->leftJoin("contact_location contact_location1","contact_location1.contact_id = patient_contact_assignment.contact_id and contact_location1.site_id = patient_contact_assignment.site_id")
@@ -293,7 +293,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 		$this->addColumn('practice','contact_id','int(10) unsigned NOT NULL');
 
-		$practices = Yii::app()->db->createCommand()
+		$practices = $this->getDbConnection()->createCommand()
 			->select("practice.*, address.id as address_id")
 			->from("practice")
 			->leftJoin("address","address.parent_class = 'Practice' and address.parent_id = practice.id")
@@ -313,7 +313,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 	public function getConsultantUserID($firm_id)
 	{
-		$result = Yii::app()->db->createCommand()
+		$result = $this->getDbConnection()->createCommand()
 			->select('u.id as id')
 			->from('consultant cslt')
 			->join('contact c', "c.parent_id = cslt.id and c.parent_class = 'Consultant'")
@@ -331,7 +331,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 	public function getLabel($name)
 	{
-		if ($label = Yii::app()->db->createCommand()->select("*")->from("contact_label")->where("name=:name",array(":name"=>$name))->queryRow()) {
+		if ($label = $this->getDbConnection()->createCommand()->select("*")->from("contact_label")->where("name=:name",array(":name"=>$name))->queryRow()) {
 			return $label;
 		}
 
@@ -363,11 +363,11 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 					$this->insert('contact_metadata',array('contact_id'=>$specialist['contact_id'],'key'=>'surgeon','value'=>$specialist['surgeon']));
 				}
 
-				foreach (Yii::app()->db->createCommand()->select("*")->from("site_specialist_assignment")->where("specialist_id=:specialist_id",array(':specialist_id'=>$specialist['id']))->queryAll() as $row) {
+				foreach ($this->getDbConnection()->createCommand()->select("*")->from("site_specialist_assignment")->where("specialist_id=:specialist_id",array(':specialist_id'=>$specialist['id']))->queryAll() as $row) {
 					$this->insert('contact_location',array('contact_id'=>$specialist['contact_id'],'site_id'=>$row['site_id']));
 				}
 
-				foreach (Yii::app()->db->createCommand()->select("*")->from("institution_specialist_assignment")->where("specialist_id=:specialist_id",array(':specialist_id'=>$specialist['id']))->queryAll() as $row) {
+				foreach ($this->getDbConnection()->createCommand()->select("*")->from("institution_specialist_assignment")->where("specialist_id=:specialist_id",array(':specialist_id'=>$specialist['id']))->queryAll() as $row) {
 					$this->insert('contact_location',array('contact_id'=>$specialist['contact_id'],'institution_id'=>$row['institution_id']));
 				}
 			} else {
@@ -406,11 +406,11 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 			$this->update('contact',array('parent_class'=>''),"id={$user['contact_id']}");
 
-			foreach (Yii::app()->db->createCommand()->select("*")->from("site_consultant_assignment")->where("consultant_id = :consultant_id",array(':consultant_id'=>$user['parent_id']))->queryAll() as $sca) {
+			foreach ($this->getDbConnection()->createCommand()->select("*")->from("site_consultant_assignment")->where("consultant_id = :consultant_id",array(':consultant_id'=>$user['parent_id']))->queryAll() as $sca) {
 				$this->insert('contact_location',array('contact_id'=>$user['contact_id'],'site_id'=>$sca['site_id']));
 			}
 
-			foreach (Yii::app()->db->createCommand()->select("*")->from("institution_consultant_assignment")->where("consultant_id = :consultant_id",array(':consultant_id'=>$user['parent_id']))->queryAll() as $sca) {
+			foreach ($this->getDbConnection()->createCommand()->select("*")->from("institution_consultant_assignment")->where("consultant_id = :consultant_id",array(':consultant_id'=>$user['parent_id']))->queryAll() as $sca) {
 				$this->insert('contact_location',array('contact_id'=>$user['contact_id'],'institution_id'=>$sca['institution_id']));
 			}
 		}
@@ -447,7 +447,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 			}
 
 			$this->insert('contact',array());
-			$contact_id = Yii::app()->db->getLastInsertID();
+			$contact_id = $this->getDbConnection()->getLastInsertID();
 
 			$update['contact_id'] = $contact_id;
 
@@ -462,7 +462,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		foreach ($institutions as $institution) {
 
 			$this->insert('contact',array());
-			$contact_id = Yii::app()->db->getLastInsertID();
+			$contact_id = $this->getDbConnection()->getLastInsertID();
 
 			$this->update('institution',array('contact_id'=>$contact_id),"id={$institution['id']}");
 
@@ -488,7 +488,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 			if ($pca['site_id']) {
 				if (!$pca['location_id1']) {
 					$this->insert('contact_location',array('contact_id'=>$pca['contact_id'],'site_id'=>$pca['site_id']));
-					$location = Yii::app()->db->createCommand()->select("id")->from("contact_location")->where("contact_id=:contact_id and site_id=:site_id",array(':contact_id'=>$pca['contact_id'],':site_id'=>$pca['site_id']))->queryRow();
+					$location = $this->getDbConnection()->createCommand()->select("id")->from("contact_location")->where("contact_id=:contact_id and site_id=:site_id",array(':contact_id'=>$pca['contact_id'],':site_id'=>$pca['site_id']))->queryRow();
 					$location_id = $location['id'];
 				} else {
 					$location_id = $pca['location_id1'];
@@ -496,7 +496,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 			} else {
 				if (!$pca['location_id2']) {
 					$this->insert('contact_location',array('contact_id'=>$pca['contact_id'],'institution_id'=>$pca['institution_id']));
-					$location = Yii::app()->db->createCommand()->select("id")->from("contact_location")->where("contact_id=:contact_id and institution_id=:institution_id",array(':contact_id'=>$pca['contact_id'],':institution_id'=>$pca['institution_id']))->queryRow();
+					$location = $this->getDbConnection()->createCommand()->select("id")->from("contact_location")->where("contact_id=:contact_id and institution_id=:institution_id",array(':contact_id'=>$pca['contact_id'],':institution_id'=>$pca['institution_id']))->queryRow();
 					$location_id = $location['id'];
 				} else {
 					$location_id = $pca['location_id2'];
@@ -512,7 +512,7 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 		foreach ($practices as $practice) {
 
 			$this->insert('contact',array());
-			$contact_id = Yii::app()->db->getLastInsertID();
+			$contact_id = $this->getDbConnection()->getLastInsertID();
 
 			$this->update('practice',array('contact_id'=>$contact_id),"id={$practice['id']}");
 			$this->update('contact',array('primary_phone'=>$practice['phone']),"id=$contact_id");

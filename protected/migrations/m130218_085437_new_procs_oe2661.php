@@ -19,31 +19,49 @@ class m130218_085437_new_procs_oe2661 extends CDbMigration
 		$this->insert('proc',array('term'=>'Optical coherence tomography','short_format'=>'OCT','default_duration'=>15,'snomed_code'=>'392010000','snomed_term'=>'Optical coherence tomography'));
 		$this->insert('proc',array('term'=>'Insertion of sustained release device into posterior segment of eye','short_format'=>'Insertion slow release','default_duration'=>80,'snomed_code'=>'428618008','snomed_term'=>'Insertion of sustained release device into posterior segment of eye'));
 
-		$old = Procedure::model()->find('term=? and snomed_code=?',array('Bandage contact lens','416582002'));
-		$new = Procedure::model()->find('term=? and snomed_code=?',array('Insertion of bandage contact lens','428497007'));
+		$db=$this->getDbConnection();
 
-		$this->update('proc_opcs_assignment',array('proc_id'=>$new->id),"proc_id = $old->id");
-		$this->update('proc_subspecialty_assignment',array('proc_id'=>$new->id),"proc_id = $old->id");
+		$proc_sql = 'select id from proc where term=:term and snomed_code=:snomed_code';
+
+		$old_id = $db->createCommand($proc_sql)
+			->bindValues(array(':term' => 'Bandage contact lens', ':snomed_code' => '416582002'))->queryScalar();
+		$new_id = $db->createCommand($proc_sql)
+			->bindValues(array(':term' => 'Insertion of bandage contact lens', ':snomed_code' => '428497007'))->queryScalar();
+
+		//$old = Procedure::model()->find('term=? and snomed_code=?',array('Bandage contact lens','416582002'));
+		//$new = Procedure::model()->find('term=? and snomed_code=?',array('Insertion of bandage contact lens','428497007'));
+
+		$this->update('proc_opcs_assignment',array('proc_id'=>$new_id),"proc_id = $old_id");
+		$this->update('proc_subspecialty_assignment',array('proc_id'=>$new_id),"proc_id = $old_id");
 
 		if (isset(Yii::app()->modules['OphTrOperationnote']) && $this->hasTable('et_ophtroperationnote_procedure_element')) {
-			$this->update('et_ophtroperationnote_procedure_element',array('procedure_id'=>$new->id),"procedure_id = $old->id");
+			$this->update('et_ophtroperationnote_procedure_element',array('procedure_id'=>$new_id),"procedure_id = $old_id");
 		}
 
-		$this->delete('proc',"id=$old->id");
+		$this->delete('proc',"id=$old_id");
 	}
 
 	public function down()
 	{
 		$this->insert('proc',array('term'=>'Bandage contact lens','short_format'=>'Bandage','default_duration'=>20,'snomed_code'=>'416582002','snomed_term'=>'Bandage contact lens'));
 
-		$old = Procedure::model()->find('term=? and snomed_code=?',array('Bandage contact lens','416582002'));
-		$new = Procedure::model()->find('term=? and snomed_code=?',array('Insertion of bandage contact lens','428497007'));
+		$db=$this->getDbConnection();
 
-		$this->update('proc_opcs_assignment',array('proc_id'=>$old->id),"proc_id = $new->id");
-		$this->update('proc_subspecialty_assignment',array('proc_id'=>$old->id),"proc_id = $new->id");
+		$proc_sql = 'select id from proc where term=:term and snomed_code=:snomed_code';
+
+		$old_id = $db->createCommand($proc_sql)
+			->bindValues(array(':term' => 'Bandage contact lens', ':snomed_code' => '416582002'))->queryScalar();
+		$new_id = $db->createCommand($proc_sql)
+			->bindValues(array(':term' => 'Insertion of bandage contact lens', ':snomed_code' => '428497007'))->queryScalar();
+
+		//$old = Procedure::model()->find('term=? and snomed_code=?',array('Bandage contact lens','416582002'));
+		//$new = Procedure::model()->find('term=? and snomed_code=?',array('Insertion of bandage contact lens','428497007'));
+
+		$this->update('proc_opcs_assignment',array('proc_id'=>$old_id),"proc_id = $new_id");
+		$this->update('proc_subspecialty_assignment',array('proc_id'=>$old_id),"proc_id = $new_id");
 
 		if (isset(Yii::app()->modules['OphTrOperationnote']) && $this->hasTable('et_ophtroperationnote_procedure_element')) {
-			$this->update('et_ophtroperationnote_procedure_element',array('procedure_id'=>$old->id),"procedure_id = $new->id");
+			$this->update('et_ophtroperationnote_procedure_element',array('procedure_id'=>$old_id),"procedure_id = $new_id");
 		}
 
 		$this->delete('proc',"term='Removal of eyelash' and snomed_code='398072007'");
@@ -64,7 +82,7 @@ class m130218_085437_new_procs_oe2661 extends CDbMigration
 
 	public function hasTable($table)
 	{
-		foreach (Yii::app()->db->createCommand("show tables")->queryAll() as $row) {
+		foreach ($this->getDbConnection()->createCommand("show tables")->queryAll() as $row) {
 			foreach ($row as $key => $value) {
 				if ($value == $table) {
 					return true;
