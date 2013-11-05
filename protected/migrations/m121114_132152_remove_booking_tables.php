@@ -4,14 +4,21 @@ class m121114_132152_remove_booking_tables extends CDbMigration
 {
 	public function up()
 	{
-		$element_operation = ElementType::model()->find('event_type_id=? and class_name=?',array(25,'ElementOperation'));
-		$element_diagnosis = ElementType::model()->find('event_type_id=? and class_name=?',array(25,'ElementDiagnosis'));
-		$this->delete('element_type_anaesthetic_type','element_type_id='.$element_operation->id);
-		$this->delete('element_type_eye','element_type_id='.$element_operation->id);
-		$this->delete('element_type_eye','element_type_id='.$element_diagnosis->id);
-		$this->delete('element_type_priority','element_type_id='.$element_operation->id);
-		$this->delete('element_type','id='.$element_operation->id);
-		$this->delete('element_type','id='.$element_diagnosis->id);
+		//echo ElementType::getDbConnection()->connectionString . " < -- DB Conneciton \n\n";
+		$db = $this->getDbConnection();
+		$et_sql = 'select id from element_type where event_type_id=:element_type_id and class_name=:class_name';
+
+		$element_operation_id = $db->createCommand($et_sql)
+			->bindValues(array(':element_type_id' => 25, ':class_name' => 'ElementOperation'))->queryScalar();
+		$element_diagnosis_id = $db->createCommand($et_sql)
+			->bindValues(array(':element_type_id' => 25, ':class_name' => 'ElementDiagnosis'))->queryScalar();
+
+		$this->delete('element_type_anaesthetic_type','element_type_id='.$element_operation_id);
+		$this->delete('element_type_eye','element_type_id='.$element_operation_id);
+		$this->delete('element_type_eye','element_type_id='.$element_diagnosis_id);
+		$this->delete('element_type_priority','element_type_id='.$element_operation_id);
+		$this->delete('element_type','id='.$element_operation_id);
+		$this->delete('element_type','id='.$element_diagnosis_id);
 
 		$this->dropTable('element_diagnosis');
 		$this->dropTable('operation_procedure_assignment');
@@ -427,23 +434,28 @@ class m121114_132152_remove_booking_tables extends CDbMigration
 		$this->insert('element_type',array('name' => 'Diagnosis', 'class_name' => 'ElementDiagnosis', 'event_type_id' => 25, 'display_order' => 1, 'default' => 1));
 		$this->insert('element_type',array('name' => 'Operation', 'class_name' => 'ElementOperation', 'event_type_id' => 25, 'display_order' => 2, 'default' => 1));
 
-		$element_operation = ElementType::model()->find('event_type_id=? and class_name=?',array(25,'ElementOperation'));
-		$element_diagnosis = ElementType::model()->find('event_type_id=? and class_name=?',array(25,'ElementDiagnosis'));
+		$db = $this->getDbConnection();
+		$et_sql = 'select id from element_type where event_type_id=:element_type_id and class_name=:class_name';
+
+		$element_operation_id = $db->createCommand($et_sql)
+			->bindValues(array(':element_type_id' => 25, ':class_name' => 'ElementOperation'))->queryScalar();
+		$element_diagnosis_id = $db->createCommand($et_sql)
+			->bindValues(array(':element_type_id' => 25, ':class_name' => 'ElementDiagnosis'))->queryScalar();
 
 		for ($i=1;$i<=5;$i++) {
 			$this->insert('element_type_anaesthetic_type',array('element_type_id' => $element_operation->id, 'anaesthetic_type_id' => $i, 'display_order' => $i));
 		}
 
-		$this->insert('element_type_eye',array('element_type_id' => $element_operation->id, 'eye_id' => 1, 'display_order' => 3));
-		$this->insert('element_type_eye',array('element_type_id' => $element_operation->id, 'eye_id' => 2, 'display_order' => 1));
-		$this->insert('element_type_eye',array('element_type_id' => $element_operation->id, 'eye_id' => 3, 'display_order' => 2));
+		$this->insert('element_type_eye',array('element_type_id' => $element_operation_id, 'eye_id' => 1, 'display_order' => 3));
+		$this->insert('element_type_eye',array('element_type_id' => $element_operation_id, 'eye_id' => 2, 'display_order' => 1));
+		$this->insert('element_type_eye',array('element_type_id' => $element_operation_id, 'eye_id' => 3, 'display_order' => 2));
 
-		$this->insert('element_type_eye',array('element_type_id' => $element_diagnosis->id, 'eye_id' => 1, 'display_order' => 3));
-		$this->insert('element_type_eye',array('element_type_id' => $element_diagnosis->id, 'eye_id' => 2, 'display_order' => 1));
-		$this->insert('element_type_eye',array('element_type_id' => $element_diagnosis->id, 'eye_id' => 3, 'display_order' => 2));
+		$this->insert('element_type_eye',array('element_type_id' => $element_diagnosis_id, 'eye_id' => 1, 'display_order' => 3));
+		$this->insert('element_type_eye',array('element_type_id' => $element_diagnosis_id, 'eye_id' => 2, 'display_order' => 1));
+		$this->insert('element_type_eye',array('element_type_id' => $element_diagnosis_id, 'eye_id' => 3, 'display_order' => 2));
 
-		$this->insert('element_type_priority',array('element_type_id' => $element_operation->id, 'priority_id' => 1, 'display_order' => 1));
-		$this->insert('element_type_priority',array('element_type_id' => $element_operation->id, 'priority_id' => 2, 'display_order' => 2));
+		$this->insert('element_type_priority',array('element_type_id' => $element_operation_id, 'priority_id' => 1, 'display_order' => 1));
+		$this->insert('element_type_priority',array('element_type_id' => $element_operation_id, 'priority_id' => 2, 'display_order' => 2));
 
 		$this->createTable('transport_list', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',

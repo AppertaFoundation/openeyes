@@ -4,9 +4,10 @@ class m130717_102933_complications_and_benefits_should_be_linked_to_procedure_on
 {
 	public function up()
 	{
+		$db = $this->getDbConnection();
 		$benefits = array();
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("procedure_benefit")->queryAll() as $row) {
+		foreach ($db->createCommand()->select("*")->from("procedure_benefit")->queryAll() as $row) {
 			if (!isset($benefits[$row['proc_id']])) {
 				$benefits[$row['proc_id']] = array();
 			}
@@ -24,7 +25,7 @@ class m130717_102933_complications_and_benefits_should_be_linked_to_procedure_on
 
 		$complications = array();
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("procedure_complication")->queryAll() as $row) {
+		foreach ($db->createCommand()->select("*")->from("procedure_complication")->queryAll() as $row) {
 			if (!isset($complications[$row['proc_id']])) {
 				$complications[$row['proc_id']] = array();
 			}

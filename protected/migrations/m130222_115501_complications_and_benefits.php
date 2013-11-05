@@ -2101,44 +2101,63 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 
 	public function addComplication($subspecialty,$procedure,$complication)
 	{
-		if (!$_subspecialty = Subspecialty::model()->find('name=?',array($subspecialty))) {
+		$db = $this->getDbConnection();
+		$_subspecialty = $db->createCommand("select * from subspecialty where name = :name")
+			->bindValues(array(':name' => $subspecialty))->queryRow();
+		if (!$_subspecialty ) {
 			return;
 		}
 
-		if (!$_procedure = Procedure::model()->find('term=?',array($procedure))) {
+		$_procedure = $db->createCommand("select * from procedure where term = :term")
+			->bindValues(array(':term' => $procedure))->queryRow();
+
+		if (!$_procedure ) {
 			return;
 		}
 
-		if (!$_complication = Complication::model()->find('name=?',array($complication))) {
-			$_complication = new Complication;
-			$_complication->name = $complication;
-			if (!$_complication->save()) {
-				throw new Exception("Unable to save complication: ".print_r($_complication->getErrors(),true));
-			}
+		$_complication = $db->createCommand("select * from complication where name = :name")
+			->bindValues(array(':name' => $complication))->queryRow();
+
+		if (!$_complication) {
+			//$this->update('event_type', array('name' => 'operationnote'), 'id = :id', array(':id' => 4));
+			$this->update('complication', array('name' => $complication), 'id = :id', array(':id' => $_complication['id'] ));
+			//$_complication = new Complication;
+			//$_complication->name = $complication;
+			//if (!$_complication->save()) {
+			//	throw new Exception("Unable to save complication: ".print_r($_complication->getErrors(),true));
+			//}
 		}
 
-		$this->insert('procedure_complication',array('proc_id'=>$_procedure->id,'subspecialty_id'=>$_subspecialty->id,'complication_id'=>$_complication->id));
+		$this->insert('procedure_complication',array('proc_id'=>$_procedure['id'],'subspecialty_id'=>$_subspecialty['id'],'complication_id'=>$_complication['id']));
 	}
 
 	public function addBenefit($subspecialty,$procedure,$benefit)
 	{
-		if (!$_subspecialty = Subspecialty::model()->find('name=?',array($subspecialty))) {
+		$db = $this->getDbConnection();
+		$_subspecialty = $db->createCommand("select * from subspecialty where name = :name")
+			->bindValues(array(':name' => $subspecialty))->queryRow();
+		if (!$_subspecialty ) {
 			return;
 		}
 
-		if (!$_procedure = Procedure::model()->find('term=?',array($procedure))) {
+		$_procedure = $db->createCommand("select * from procedure where term = :term")
+			->bindValues(array(':term' => $procedure))->queryRow();
+		if (!$_procedure ) {
 			return;
 		}
 
-		if (!$_benefit = Benefit::model()->find('name=?',array($benefit))) {
-			$_benefit = new Benefit;
-			$_benefit->name = $benefit;
-			if (!$_benefit->save()) {
-				throw new Exception("Unable to save benefit: ".print_r($_benefit->getErrors(),true));
-			}
+		$_benefit = $db->createCommand("select * from benefit where name = :name")
+			->bindValues(array(':name' => $benefit))->queryRow();
+		if (!$_benefit ) {
+			$this->update('benefit', array('name' => $benefit), 'id = :id', array(':id' => $_benefit['id'] ));
+			//$_benefit = new Benefit;
+			//$_benefit->name = $benefit;
+			//if (!$_benefit->save()) {
+			//	throw new Exception("Unable to save benefit: ".print_r($_benefit->getErrors(),true));
+			//}
 		}
 
-		$this->insert('procedure_benefit',array('proc_id'=>$_procedure->id,'subspecialty_id'=>$_subspecialty->id,'benefit_id'=>$_benefit->id));
+		$this->insert('procedure_benefit',array('proc_id'=>$_procedure['id'],'subspecialty_id'=>$_subspecialty['id'],'benefit_id'=>$_benefit['id']));
 	}
 
 	public function down()
