@@ -50,10 +50,17 @@ $(document).ready(function() {
 		e.preventDefault();
 
 		var row = $(this).parent().parent();
+		var pca_id = row.attr('data-attr-pca-id');
+
+		// If we're currently editing this contact, hide the edit form
+		var edit_contact = $("#edit_contact:visible");
+		if (edit_contact.find("[name='pca_id']").val() == pca_id) {
+		    edit_contact.slideToggle('fast');
+		}
 
 		$.ajax({
 			'type': 'GET',
-			'url': baseUrl+'/patient/unassociateContact?pca_id='+row.attr('data-attr-pca-id'),
+			'url': baseUrl+'/patient/unassociateContact?pca_id='+pca_id,
 			'success': function(resp) {
 				if (resp == "1") {
 					if (row.attr('data-attr-location-id')) {

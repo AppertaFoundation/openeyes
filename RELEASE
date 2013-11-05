@@ -3,6 +3,11 @@ Release History
 
 This document is intended to summarise the changes made for each release. It should be noted that this document was only introduced with version 1.4, and therefore doesn't cover earlier releases.
 
+1.4.5
+-----
++ patient contact editing tweak
++ update to yii 1.1.14
+
 1.4.4
 -----
 + allergy enhancements - display warnings for allergies, and support flag to indicate patient has no allergies
