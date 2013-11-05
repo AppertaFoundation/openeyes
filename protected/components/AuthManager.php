@@ -26,6 +26,22 @@ class AuthManager extends CDbAuthManager
 	}
 
 	/**
+	 * Override to allow access to everything for admin user
+	 *
+	 * @param string $itemName
+	 * @param integer $userId
+	 * @param array $params
+	 * @return boolean
+	 */
+	public function checkAccess($itemName, $userId, $params=array())
+	{
+		// Run the access check in all cases so that any appropriate business rules are executed
+		$access = parent::checkAccess($itemName, $userId, $params);
+
+		return $this->isAssigned('admin', $userId) ? true : $access;
+	}
+
+	/**
 	 * @param string $bizRule
 	 * @param array $params
 	 * @param mixed $data

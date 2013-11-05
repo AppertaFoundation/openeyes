@@ -19,7 +19,7 @@
 
 /**
  * A base controller class that helps display the firm dropdown and the patient name.
- * It is extended by all non-admin controllers.
+ * It is extended by all other controllers.
  */
 
 class BaseController extends Controller
@@ -70,45 +70,20 @@ class BaseController extends Controller
 		return false;
 	}
 
-	/**
-	 * Set default rules to block everyone apart from admin
-	 * These should be overridden in child classes
-	 * @return array
-	 */
 	public function filters()
 	{
 		return array('accessControl');
 	}
-	public function accessRules()
-	{
-		return array(
-			array('allow',
-				'roles'=>array('admin'),
-			),
-			// Deny everyone else (this is important to add when overriding as otherwise
-			// any authenticated user may fall through and be allowed)
-			array('deny'),
-		);
-	}
 
 	public function filterAccessControl($filterChain)
 	{
+		$rules = $this->accessRules();
+		// Fallback to denying everyone
+		$rules[] = array('deny');
+
 		$filter = new CAccessControlFilter;
-		$filter->setRules($this->compileAccessRules());
+		$filter->setRules($rules);
 		$filter->filter($filterChain);
-	}
-
-	protected function compileAccessRules()
-	{
-		// Always allow admin
-		$admin_rule = array('allow', 'roles' => array('admin'));
-
-		// Always deny unauthenticated users in case rules fall through
-		// Maybe we should change this to deny everyone for safety
-		$default_rule = array('deny', 'users' => array('?'));
-
-		// Merge rules defined by controller
-		return array_merge(array($admin_rule), $this->accessRules(), array($default_rule));
 	}
 
 	/**
