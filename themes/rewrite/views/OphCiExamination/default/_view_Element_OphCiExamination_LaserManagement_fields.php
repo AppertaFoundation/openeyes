@@ -20,24 +20,52 @@
 <div class="row data-row">
 	<div class="large-4 column">
 		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_lasertype_id')?>:
+			<?php echo CHtml::encode($element->getAttributeLabel($side . '_laser_status_id'))?>
 		</div>
 	</div>
 	<div class="large-8 column">
 		<div class="data-value">
-			<?php echo $element->getLaserTypeStringForSide($side)?>
+			<?php echo $element->{$side . '_laser_status'} ?>
 		</div>
 	</div>
 </div>
-<div class="row data-row">
-	<div class="large-4 column">
-		<div class="data-label">
-			<?php echo $element->getAttributeLabel($side.'_comments')?>:
+<?php if ($element->{$side . '_laser_status'}->deferred) { ?>
+	<div class="row data-row">
+		<div class="large-4 column">
+			<div class="data-label">
+				<?php echo CHtml::encode($element->getAttributeLabel($side . '_laser_deferralreason_id'))?>
+			</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value">
+				<?php echo Yii::app()->format->Ntext($element->getLaserDeferralReasonForSide($side)) ?>
+			</div>
 		</div>
 	</div>
-	<div class="large-8 column">
-		<div class="data-value">
-			<?php echo $element->{$side.'_comments'} ? $element->{$side.'_comments'} : 'None'?>
+<?php } else if ($element->{$side . '_laser_status'}->book || $element->{$side . '_laser_status'}->event) { ?>
+	<div class="row data-row">
+		<div class="large-4 column">
+			<div class="data-label">
+				<?php echo $element->getAttributeLabel($side . '_lasertype_id') ?>:
+			</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value">
+				<?php echo Yii::app()->format->Ntext($element->getLaserTypeStringForSide($side)) ?>
+			</div>
 		</div>
 	</div>
-</div>
+	<div class="row data-row">
+		<div class="large-4 column">
+			<div class="data-label">
+				<?php echo $element->getAttributeLabel($side . '_comments') ?>:
+			</div>
+		</div>
+		<div class="large-8 column">
+			<div class="data-value">
+				<?php echo $element->{$side . '_comments'} ? Yii::app()->format->Ntext($element->{$side . '_comments'}) : 'None'; ?>
+			</div>
+		</div>
+	</div>
+<?php }
+

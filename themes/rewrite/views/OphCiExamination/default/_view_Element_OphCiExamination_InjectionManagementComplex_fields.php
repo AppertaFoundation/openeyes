@@ -26,7 +26,7 @@
 		</div>
 		<div class="large-8 column">
 			<div class="data-value">
-				<?php echo $element->{$side.'NoTreatmentReasonName'}?>
+				<?= Yii::app()->format->Ntext($element->{"{$side}NoTreatmentReasonName"}) ?>
 			</div>
 		</div>
 	</div>
@@ -93,10 +93,10 @@
 		</div>
 		<div class="large-8 column">
 			<div class="data-value">
-				<?php if (!$element->{$side.'_risks'}) { 
+				<?php if (!$element->{$side.'_risks'}) {
 					echo "None";
 				} else {
-					foreach ($element->{$side.'_risks'} as $item) { 
+					foreach ($element->{$side.'_risks'} as $item) {
 						echo $item->name."<br />";
 					}
 				}?>
@@ -111,7 +111,7 @@
 		</div>
 		<div class="large-8 column">
 			<div class="data-value">
-				<?php echo $element->textWithLineBreaks($side.'_comments')?>
+				<?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?>
 			</div>
 		</div>
 	</div>

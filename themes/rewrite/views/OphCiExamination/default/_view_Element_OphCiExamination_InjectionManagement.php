@@ -39,7 +39,7 @@
 			</div>
 			<div class="large-8 column">
 				<div class="data-value">
-					<?php echo $element->injectionDeferralReason?>
+					<?= Yii::app()->format->Ntext($element->getInjectionDeferralReason()) ?>
 				</div>
 			</div>
 		</div>

@@ -17,51 +17,21 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="sub-element-data">
-	<div class="row data-row">
-		<div class="large-4 column">
-			<div class="data-label">
-				<?php echo $element->getAttributeLabel('laser_status_id')?>:
-			</div>
-		</div>
-		<div class="large-8 column">
-			<div class="data-value">
-				<?php echo $element->laser_status?>
-			</div>
-		</div>
+<div class="sub-element-data sub-element-eyes row">
+	<div class="element-eye right-eye column">
+		<?php if ($element->hasRight()) {
+			$this->renderPartial('_view_' . get_class($element) . '_fields',
+				array('side' => 'right', 'element' => $element));
+		} else { ?>
+			<div class="data-value">Not recorded</div>
+		<?php }?>
+	</div>
+	<div class="element-eye left-eye column">
+		<?php if ($element->hasLeft()) {
+			$this->renderPartial('_view_' . get_class($element) . '_fields',
+				array('side' => 'left', 'element' => $element));
+		} else { ?>
+			<div class="data-value">Not recorded</div>
+		<?php }?>
 	</div>
 </div>
-
-<?php if ($element->laser_status->deferred) {?>
-	<div class="sub-element-data">
-		<div class="row data-row">
-			<div class="large-4 column">
-				<div class="data-label">
-					<?php echo $element->getAttributeLabel('laser_deferralreason_id')?>:
-				</div>
-			</div>
-			<div class="large-8 column">
-				<div class="data-value">
-					<?php echo $element->laserDeferralReason?>
-				</div>
-			</div>
-		</div>
-	</div>
-<?php } elseif ($element->laser_status->book || $element->laser_status->event) {?>
-	<div class="sub-element-data sub-element-eyes row">
-		<div class="element-eye right-eye column">
-			<?php if ($element->hasRight()) {
-				$this->renderPartial('_view_' . get_class($element) . '_fields', array('side' => 'right', 'element' => $element));
-			} else {?>
-				<div class="data-value">Not recorded</div>
-			<?php }?>
-		</div>
-		<div class="element-eye left-eye column">
-			<?php if ($element->hasLeft()) {
-				$this->renderPartial('_view_' . get_class($element) . '_fields', array('side' => 'left', 'element' => $element));
-			} else {?>
-				<div class="data-value">Not recorded</div>
-			<?php }?>
-		</div>
-	</div>
-<?php }?>

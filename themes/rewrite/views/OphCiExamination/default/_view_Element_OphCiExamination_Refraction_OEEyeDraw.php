@@ -30,7 +30,7 @@
 </div>
 <div class="eyedraw-value column fluid">
 	<div class="data-value">
-		<?php echo $element->getCombined($side)?><br/>
+		<?= Yii::app()->format->text($element->getCombined($side)) ?><br/>
 		Spherical equivalent: <?php echo number_format($element->{$side.'_sphere'} + 0.5 * $element->{$side.'_cylinder'},2)?>
 	</div>
 </div>

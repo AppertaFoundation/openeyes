@@ -22,7 +22,7 @@
 		<?php echo $element->summary?>
 		<?php if ($element->comments) {?>
 			<br/>
-			<?php echo $element->textWithLineBreaks('comments');
+			<?php echo Yii::app()->format->Ntext($element->comments);
 		}?>
 	</div>
 </div>

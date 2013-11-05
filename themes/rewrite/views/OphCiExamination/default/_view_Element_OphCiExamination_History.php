@@ -19,6 +19,6 @@
 ?>
 <div class="element-data">
 	<div class="data-value">
-		<?php echo $element->description?>
+		<?= Yii::app()->format->Ntext($element->description) ?>
 	</div>
 </div>

@@ -32,7 +32,7 @@
 	<?php if ($element->{$side.'_description'}) {?>
 		<div class="data-row">
 			<div class="data-value">
-				<?php echo $element->{$side.'_description'}?>
+				<?= Yii::app()->format->Ntext($element->{$side.'_description'}) ?>
 			</div>
 		</div>
 	<?php }?>

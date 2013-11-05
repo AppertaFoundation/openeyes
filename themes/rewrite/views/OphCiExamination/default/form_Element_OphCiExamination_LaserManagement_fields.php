@@ -18,41 +18,137 @@
  */
 ?>
 
-<div class="lasertype field-row">
-	<?php echo $form->dropDownList($element, $side . '_lasertype_id', CHtml::listData($lasertypes,'id','name'), array('options' => $lasertype_options, 'empty'=>'- Please select -'), false, array('label' => 4, 'field' => 8))?>
-</div>
-
 <?php
-	$show_other = false;
-	if (@$_POST[get_class($element)]) {
-		if ($lasertype = OphCiExamination_LaserManagement_LaserType::model()->findByPk((int)@$_POST[get_class($element)][$side . '_lasertype_id'])) {
-			$show_other = $lasertype->other;
-		}
-	} else {
-		if ($lasertype = $element->{$side . '_lasertype'}) {
-			$show_other = $lasertype->other;
-		}
+// Work out what to show in the form
+$show_deferral = false;
+$show_deferral_other = false;
+$show_treatment = false;
+$show_booking_hint = false;
+$show_event_hint = false;
+$status = null;
+$deferralreason = null;
+
+if (@$_POST[get_class($element)]) {
+	$status = OphCiExamination_Management_Status::model()->findByPk(@$_POST[get_class($element)][$side . '_laser_status_id']);
+
+	if ($deferral_id = @$_POST[get_class($element)][$side . '_laser_deferralreason_id']) {
+		$deferralreason = OphCiExamination_Management_DeferralReason::model()->findByPk($deferral_id);
 	}
+}
+else {
+	$status = $element->{$side . '_laser_status'};
+	$deferralreason = $element->{$side . '_laser_deferralreason'};
+}
+if ($status) {
+	if ($status->deferred) {
+		$show_deferral = true;
+	}
+	elseif ($status->book) {
+		$show_treatment = true;
+		$show_booking_hint = true;
+	}
+	elseif ($status->event) {
+		$show_treatment = true;
+		$show_event_hint = true;
+	}
+}
+if ($deferralreason && $deferralreason->other) {
+		$show_deferral_other = true;
+}
 ?>
 
-<div class="row field-row lasertype_other<?php if (!$show_other) { echo " hidden"; }?>">
+<div id="div_<?php echo get_class($element) . "_" . $side; ?>_laser"
+	 class="row field-row">
 	<div class="large-4 column">
-		<label for="<?php echo get_class($element).'_'.$side.'_lasertype_other';?>">
-			<?php echo $element->getAttributeLabel($side . '_lasertype_other')?>:
+		<label for="<?php echo get_class($element).'_'.$side.'_laser_status_id';?>">
+			<?php echo $element->getAttributeLabel($side . '_laser_status_id') ?>:
 		</label>
 	</div>
 	<div class="large-8 column">
-		<?php echo $form->textField($element, $side . '_lasertype_other',array('max' => 120, 'nowrapper' => true))?>
+		<?php echo CHtml::activeDropDownList($element,$side .'_laser_status_id', CHtml::listData($statuses,'id','name'), $status_options)?>
+		<span id="<?php echo $side ?>_laser_booking_hint" class="field-info hint"<?php if (!$show_booking_hint) {?> style="display:none;"<?php } ?>></span>
+		<?php if (Yii::app()->hasModule('OphTrLaser')) {
+			$event = EventType::model()->find("class_name = 'OphTrLaser'");
+			?>
+			<span id="<?php echo $side ?>_laser_event_hint" class="field-info hint"<?php if (!$show_event_hint) {?> style="display:none;"<?php } ?>>Ensure a <?php echo $event->name ?> event is added for this patient when procedure is completed</span>
+		<?php }?>
 	</div>
 </div>
 
-<div class="row field-row">
+<div id="div_<?php echo get_class($element) . "_" . $side; ?>_laser_deferralreason"
+	 class="row field-row"
+	<?php if (!$show_deferral) { ?>
+		style="display: none;"
+	<?php }?>
+	>
 	<div class="large-4 column">
-		<label for="<?php echo get_class($element).'_'.$side.'_comments';?>">
-			<?php echo $element->getAttributeLabel($side . '_comments')?>
+		<label for="<?php echo get_class($element).'_'.$side.'_laser_deferralreason_id';?>">
+			<?php echo $element->getAttributeLabel($side . '_laser_deferralreason_id')?>:
 		</label>
 	</div>
 	<div class="large-8 column">
-		<?php echo $form->textArea($element, $side . '_comments',array('rows' => 4, 'cols' => 50, 'nowrapper' => true))?>
+		<?php echo CHtml::activeDropDownList($element, $side . '_laser_deferralreason_id', CHtml::listData($deferrals,'id','name'), $deferral_options)?>
+	</div>
+</div>
+
+<div id="div_<?php echo get_class($element) . "_" . $side; ?>_laser_deferralreason_other"
+	 class="row field-row"
+	<?php if (!$show_deferral_other) { ?>
+		style="display: none;"
+	<?php } ?>
+	>
+	<div class="large-4 column">
+		&nbsp;
+	</div>
+	<div class="large-8 column">
+		<?php echo $form->textArea($element, $side . '_laser_deferralreason_other', array('rows' => "1", 'cols' => "40", 'class' => 'autosize', 'nowrapper' => true) ) ?>
+	</div>
+</div>
+
+<div class="field-row" id="<?php echo get_class($element) . '_' . $side;?>_treatment_fields"<?php if (!$show_treatment) { echo 'style="display: none;"'; }?>>
+	<div class="row field-row lasertype">
+		<div class="large-4 column">
+			<label for="<?php echo get_class($element).'_'.$side.'_lasertype_id';?>">
+				<?php echo $element->getAttributeLabel($side . '_lasertype_id'); ?>:
+			</label>
+		</div>
+		<div class="large-8 column">
+			<?php echo CHtml::activeDropDownList($element,$side . '_lasertype_id', CHtml::listData($lasertypes,'id','name'), array('options' => $lasertype_options, 'empty'=>'- Please select -'))?>
+		</div>
+	</div>
+
+	<?php
+		$show_other = false;
+		if (@$_POST[get_class($element)]) {
+			if ($lasertype = OphCiExamination_LaserManagement_LaserType::model()->findByPk((int)@$_POST[get_class($element)][$side . '_lasertype_id'])) {
+				$show_other = $lasertype->other;
+			}
+		} else {
+			if ($lasertype = $element->{$side . '_lasertype'}) {
+				$show_other = $lasertype->other;
+			}
+		}
+	?>
+
+	<div class="row field-row lasertype_other<?php if (!$show_other) { echo " hidden"; }?>">
+		<div class="large-4 column">
+			<label for="<?php echo get_class($element).'_'.$side.'_lasertype_other';?>">
+				<?php echo $element->getAttributeLabel($side . '_lasertype_other'); ?>:
+			</label>
+		</div>
+		<div class="large-8 column">
+			<?php echo $form->textField($element, $side . '_lasertype_other',array('max' => 120, 'nowrapper' => true))?>
+		</div>
+	</div>
+
+	<div class="row field-row comments">
+		<div class="large-4 column">
+			<label for="<?php echo get_class($element).'_'.$side.'_comments';?>">
+				<?php echo $element->getAttributeLabel($side . '_comments'); ?>:
+			</label>
+		</div>
+		<div class="large-8 column">
+			<?php echo $form->textArea($element, $side . '_comments',array('rows' => 4, 'nowrapper' => true))?>
+		</div>
 	</div>
 </div>

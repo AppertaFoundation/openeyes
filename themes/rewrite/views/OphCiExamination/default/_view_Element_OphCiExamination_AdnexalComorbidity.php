@@ -22,7 +22,7 @@
 		<div class="eyedraw-data">
 			<div class="data-value">
 				<?php if ($element->hasRight()) {
-					echo $element->right_description;
+					echo Yii::app()->format->Ntext($element->right_description);
 				} else {?>
 					Not recorded
 				<?php }?>
@@ -33,7 +33,7 @@
 		<div class="eyedraw-data">
 			<div class="data-value">
 				<?php if ($element->hasLeft()) {
-					echo $element->left_description;
+					echo Yii::app()->format->Ntext($element->left_description);
 				} else {?>
 					Not recorded
 				<?php }?>

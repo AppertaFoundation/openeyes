@@ -85,7 +85,7 @@
 			<div class="data-label"><?php echo $element->getAttributeLabel($side . '_comments') ?>:</div>
 		</div>
 		<div class="large-8 column">
-			<div class="data-value"><?php echo $element->{$side . '_comments'} ;?></div>
+			<div class="data-value"><?= Yii::app()->format->Ntext($element->{"{$side}_comments"}) ?></div>
 		</div>
 	</div>
 <?php }

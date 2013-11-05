@@ -19,6 +19,6 @@
 ?>
 <div class="element-data">
 	<div class="data-value">
-		<?php echo $element->textWithLineBreaks('comments')?>
+		<?= Yii::app()->format->Ntext($element->comments) ?>
 	</div>
 </div>
