@@ -107,7 +107,7 @@ return array(
 			'schemaCachingDuration' => 300,
 		),
 		'authManager' => array(
-			'class' => 'CDbAuthManager',
+			'class' => 'AuthManager',
 			'connectionID' => 'db',
 		),
 		'cache' => array(
