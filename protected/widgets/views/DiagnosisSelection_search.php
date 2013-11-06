@@ -18,7 +18,7 @@
  */
 ?>
 <div class="diagnosis-selection field-row">
-	<div class="row">
+	<div class="row collapse">
 		<?php if (!$nowrapper && $label) {?>
 			<div class="large-<?php echo $layoutColumns['label'];?> column">
 				<label for="<?php echo "{$class}_{$field}";?>">

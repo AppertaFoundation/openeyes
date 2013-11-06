@@ -4906,8 +4906,9 @@ tfoot.pagination-container .pagination li {
   height: 62px;
 }
 
-/* line 2, ../sass/new/openeyes/components/_diagnosis-selection.scss */
-.diagnosis-selection select {
+/* line 3, ../sass/new/openeyes/components/_diagnosis-selection.scss */
+.diagnosis-selection select,
+.edit .diagnosis-selection select {
   width: 100%;
 }
 
