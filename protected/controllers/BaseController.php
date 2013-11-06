@@ -256,4 +256,19 @@ class BaseController extends Controller
 	{
 		return BaseController::checkUserLevel(3);
 	}
+
+	/*
+	 * Convenience function for authorisation checks
+	 *
+	 * @param string $operation
+	 * @param mixed $param, ...
+	 * @return boolean
+	 */
+	public function checkAccess($operation)
+	{
+		$params = func_get_args();
+		array_shift($params);
+
+		return Yii::app()->user->checkAccess($operation, $params);
+	}
 }
