@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -23,7 +22,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	'id' => 'add-new-episode-dialog',
 	'options' => array(
 		'title' => 'Create new episode',
-		'dialogClass' => 'dialog episode',
+		'dialogClass' => 'dialog episode add-episode',
 		'autoOpen' => true,
 		'modal' => true,
 		'draggable' => false,
@@ -32,25 +31,22 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	),
 ));
 ?>
-<?php
-$form = $this->beginWidget('CActiveForm', array(
-	'id' => 'add-new-episode-form',
-));
-?>
-<?php echo CHtml::hiddenField('firm_id',$firm->id)?>
-<?php echo CHtml::hiddenField('patient_id',$patient->id)?>
-
-<div class="title">
-	<div class="details">
-		<p><span>Firm:</span><strong><?php echo $firm->name?></strong></p>
-		<p><span>Subspecialty:</span><strong><?php echo $firm->getSubspecialtyText()?></strong></p>
-	</div>
-	<div class="buttons">
-		<button class="classy green mini confirm" type="button"><span class="button-span button-span-green">Create new episode</span></button>
-		<button class="classy blue mini cancel" type="button"><span class="button-span button-span-blue">Cancel</span></button>
-	</div>
-</div>
-<?php $this->endWidget()?>
+	<?php
+	$form = $this->beginWidget('CActiveForm', array(
+		'id' => 'add-new-episode-form',
+	));
+	?>
+		<?php echo CHtml::hiddenField('firm_id',$firm->id)?>
+		<?php echo CHtml::hiddenField('patient_id',$patient->id)?>
+		<div class="details">
+			<p><span>Firm:</span> <strong><?php echo $firm->name?></strong></p>
+			<p><span>Subspecialty:</span> <strong><?php echo $firm->getSubspecialtyText()?></strong></p>
+		</div>
+		<div class="buttons">
+			<button class="secondary small confirm" type="button">Create new episode</button>
+			<button class="warning small cancel" type="button">Cancel</button>
+		</div>
+	<?php $this->endWidget()?>
 <?php $this->endWidget()?>
 <script type="text/javascript">
 	$('#add-new-episode-dialog button.confirm').click(function(e) {

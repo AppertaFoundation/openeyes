@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,39 +18,43 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Add location</h3>
-		<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-		<div>
-			<div>
-				<span class="label-nofloat">Contact:</span>
-				<span><?php echo $contact->fullName?></span>
-			</div>
-			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'adminform',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'focus'=>'#username'
-			))?>
-			<input type="hidden" name="contact_id" value="<?php echo $contact->id?>" />
-			<div>
-				<span class="label-nofloat">Institution:</span>
-				<span><?php echo CHtml::dropDownList('institution_id',@$_POST['institution_id'],CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Please select -'))?></span>
-			</div>
-			<div>
-				<span class="label-nofloat">Site:</span>
-				<span><?php echo CHtml::dropDownList('site_id','',$sites,array('empty' => '- Optional -'))?></span>
-			</div>
-			<?php $this->endWidget()?>
+<div class="admin box">
+	<h2>Add location</h2>
+	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+	<div class="row field-row">
+		<div class="large-2 column">
+			<div class="field-label">Contact:</div>
+		</div>
+		<div class="large-10 column">
+			<div class="field-value"><?php echo $contact->fullName?></div>
 		</div>
 	</div>
-</div>
-<div>
-	<?php echo EventAction::button('Save', 'save', array('colour' => 'green'))->toHtml()?>
-	<?php echo EventAction::button('Cancel', 'cancel', array('colour' => 'red'))->toHtml()?>
-	<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'focus'=>'#username'
+	))?>
+		<input type="hidden" name="contact_id" value="<?php echo $contact->id?>" />
+		<div class="row field-row">
+			<div class="large-2 column">
+				<label for="institution_id">Institution:</label>
+			</div>
+			<div class="large-5 column end">
+				<?php echo CHtml::dropDownList('institution_id',@$_POST['institution_id'],CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Please select -'))?>
+			</div>
+		</div>
+		<div class="row field-row">
+			<div class="large-2 column">
+				<label for="site_od">Site:</label>
+			</div>
+			<div class="large-5 column end">
+				<?php echo CHtml::dropDownList('site_id','',$sites,array('empty' => '- Optional -'))?>
+			</div>
+		</div>
+		<?php echo $form->formActions(); ?>
+		<?php $this->endWidget()?>
+	</div>
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {

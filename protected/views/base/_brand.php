@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,4 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div id="brand"><h1><?php echo CHtml::link('OpenEyes', $this->createUrl('/'))?></h1></div>
+<div class="logo">
+  <?php echo CHtml::link('OpenEyes', $this->createUrl('/'))?>
+</div>

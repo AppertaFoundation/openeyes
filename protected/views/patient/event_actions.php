@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,11 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="event_actions clearfix">
-	<ul>
-		<li><img class="loader" style="display: none;" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." /></li>
-		<?php foreach ($this->event_actions as $action) { ?>
-		<li><?php echo $action->toHtml();?></li>
+<div class="button-bar right">
+	<img class="loader" style="display: none;" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
+<?php foreach ($this->event_actions as $action) { ?>
+		<?php echo $action->toHtml();?>
 		<?php } ?>
-	</ul>
 </div>

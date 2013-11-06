@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,21 +17,24 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="event_tabs clearfix"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-	<ul>
-		<?php foreach ($this->event_tabs as $tab) { ?>
-		<li<?php if (@$tab['active']) { ?> class="active"<?php } ?>>
-			<?php if (@$tab['href']) { ?>
-			<a href="<?php echo $tab['href'] ?>"><span><?php echo $tab['label'] ?></span></a>
-			<?php } else { ?>
-			<span><?php echo $tab['label'] ?></span>
+
+	<header class="event-header">
+		<ul class="inline-list tabs event-actions">
+			<?php foreach ($this->event_tabs as $tab) { ?>
+			<li<?php if (@$tab['active']) { ?> class="selected"<?php } ?>>
+				<?php if (@$tab['href']) { ?>
+					<a href="<?php echo $tab['href'] ?>"><?php echo $tab['label'] ?></a>
+				<?php } else { //FIXME: don't select?>
+					<a href="#"><?php echo $tab['label'] ?></a>
+				<?php } ?>
+			</li>
 			<?php } ?>
-		</li>
-		<?php } ?>
-	</ul>
-</div>
-<?php if ($hidden && BaseController::checkUserLevel(4)) {?>
-	<div>
-		<button class="classy blue mini addEpisode" type="button"><span class="button-span button-span-blue">Add episode</span></button>
-	</div>
-<?php }?>
+		</ul>
+		<?php
+		// Event actions
+		$this->renderPartial('//patient/event_actions');
+		?>
+
+	</header>
+
+

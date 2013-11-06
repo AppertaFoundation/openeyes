@@ -17,37 +17,40 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<?php $this->renderPartial('//base/head/_meta'); ?>
-	<?php $this->renderPartial('//base/head/_assets'); ?>
-</head>
-<body class="open-eyes">
+<?php
+extract($this->getEpisodes());
+$current_episode = @$this->current_episode;
+$noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1);
+?>
 
-	<div class="container main" role="main">
-
-		<header class="header row">
-			<!-- Branding (logo) -->
-			<div class="large-2 column end">
-				<?php $this->renderPartial('//base/_brand'); ?>
-			</div>
-		</header><!-- /.header -->
-
-		<div class="container content">
-			<h1 class="badge hide-offscreen">Error</h1>
-			<div class="row">
-				<div class="large-11 small-11 small-centered large-centered column">
-					<div class="panel error">
-						<?php echo $content; ?>
-					</div>
+<h1 class="badge">Episodes and events</h1>
+<?php if($noEpisodesFound && BaseController::checkUserLevel(4)) { ?>
+	<div class="row">
+		<div class="large-8 large-centered column">
+			<div class="box content">
+				<div class="panel">
+					<div class="alert-box alert with-icon">There are currently no episodes for this patient, please click the Add episode button to open a new episode.</div>
+					<button class="small add-episode">
+						Add episode
+					</button>
 				</div>
 			</div>
-		</div><!-- /.content -->
-
-		<?php $this->renderPartial('//base/_footer'); ?>
-
-	</div><!-- /.main.container -->
-
-</body>
-</html>
+		</div>
+	</div>
+<?php } else { ?>
+	<?php $this->beginContent('//patient/episodes_container');?>
+		<?php
+		if ($current_episode) {
+			if ($this->editing) {
+				$this->renderPartial('/clinical/updateEpisode',
+					array('episode' => $current_episode, 'error' => $error)
+				);
+			} else {
+				$this->renderPartial('/clinical/episodeSummary',
+					array('episode' => $current_episode)
+				);
+			}
+		}
+		?>
+	<?php $this->endContent(); ?>
+<?php }	?>

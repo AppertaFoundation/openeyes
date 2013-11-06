@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,6 +18,7 @@
  */
 
 if (!empty($episode)) {
+
 	if ($episode->diagnosis) {
 		$eye = $episode->eye ? $episode->eye->name : 'None';
 		$diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
@@ -28,54 +28,54 @@ if (!empty($episode)) {
 	}
 
 	$episode->audit('episode summary','view',false);
-?>
-	<h3>Summary</h3>
-	<h3 class="episodeTitle"><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></h3>
+	?>
+
+	<div class="element-data">
+		<h2>Summary</h2>
+		<h3><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></h3>
+	</div>
 
 	<?php $this->renderPartial('//base/_messages'); ?>
 
-	<h4>Principal diagnosis:</h4>
+	<section class="element element-data">
+		<h3 class="data-title">Principal diagnosis:</h3>
+		<div class="data-value highlight">
+			<?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></div>
+	</section>
 
-	<div class="eventHighlight big">
-		<h4><?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></h4>
-	</div>
+	<section class="element element-data">
+		<h3 class="data-title">Principal eye:</h3>
+		<div class="data-value highlight">
+			<?php echo $episode->eye ? $episode->eye->name : 'None'?></div>
+	</section>
 
-	<h4>Principal eye:</h4>
-
-	<div class="eventHighlight big">
-		<h4><?php echo $episode->eye ? $episode->eye->name : 'None'?></h4>
-	</div>
-
-	<!-- divide into two columns -->
-	<div class="cols2 clearfix">
-		<div class="left">
-			<h4>Start Date</h4>
-			<div class="eventHighlight">
-				<h4><?php echo $episode->NHSDate('start_date')?></h4>
+	<section class="element element-data">
+		<div class="row">
+			<div class="large-6 column">
+				<h3 class="data-title">Start Date</h3>
+				<div class="data-value">
+					<?php echo $episode->NHSDate('start_date')?></div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="data-title">End date:</h3>
+				<div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></div>
 			</div>
 		</div>
+	</section>
 
-		<div class="right">
-			<h4>End date:</h4>
-			<div class="eventHighlight">
-				<h4><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></h4>
+	<section class="element element-data">
+		<div class="row">
+			<div class="large-6 column">
+				<h3 class="data-title">Subspecialty:</h3>
+				<div class="data-value">
+					<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="data-title">Consultant firm:</h3>
+				<div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None'?></div>
 			</div>
 		</div>
-
-		<div class="left">
-		<h4>Subspecialty:</h4>
-			<div class="eventHighlight">
-				<h4><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></h4>
-			</div>
-		</div>
-
-		<div class="right">
-		<h4>Consultant firm:</h4>
-			<div class="eventHighlight">
-				<h4><?php echo $episode->firm ? $episode->firm->name : 'None'?></h4>
-			</div>
-		</div>
-	</div> <!-- end of cols2 (column split) -->
+	</section>
 
 	<?php
 	try {
@@ -85,6 +85,7 @@ if (!empty($episode)) {
 	} catch (Exception $e) {
 		// If there is no extra episode summary detail page for this subspecialty we don't care
 	}
+
 } else {
 	// hide the episode border ?>
 	<script type="text/javascript">
@@ -92,20 +93,25 @@ if (!empty($episode)) {
 	</script>
 <?php }?>
 
-<div class="metaData">
-	<span class="info"><?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>: created by <span class="user"><?php echo $episode->user->fullName?> on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?></span></span>
+<div class="metadata">
+	<span class="info">
+		<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>: created by <span class="user"><?php echo $episode->user->fullName?></span>
+		on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?>
+	</span>
 </div>
 
-<!-- Booking -->
+<section class="element element-data">
+	<h3 class="data-title">Episode Status:</h3>
+	<div class="data-value highlight">
+		<?php echo $episode->status->name?>
+	</div>
+</section>
 
-<h4>Episode Status</h4>
-
-<div class="eventHighlight big">
-	<h4><?php echo $episode->status->name?></h4>
-</div>
-
-<div class="metaData">
-	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
+<div class="metadata">
+	<span class="info">
+		Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?></span>
+		on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?>
+	</span>
 </div>
 
 <div class="eventData">
@@ -142,16 +148,16 @@ if (!empty($episode)) {
 					$(this).dialog('close');
 				}
 			},
-				open: function() {
-					$(this).parents('.ui-dialog-buttonpane button:eq(1)').focus();
-				}
+			open: function() {
+				$(this).parents('.ui-dialog-buttonpane button:eq(1)').focus();
+			}
 		});
 		return false;
 	});
 </script>
 
 <?php if (empty($episode->end_date)) {?>
-	<div style="margin-top:40px; text-align:right; position:relative; ">
+	<div style="text-align:right; position:relative; ">
 		<!--button id="close-episode" type="submit" value="submit" class="wBtn_close-episode ir">Close Episode</button-->
 
 		<div id="close-episode-popup" class="popup red" style="display: none;">
@@ -183,7 +189,7 @@ if (!empty($episode)) {
 			$.ajax({
 				url: '<?php echo Yii::app()->createUrl('clinical/closeepisode/'.$episode->id)?>',
 				success: function(data) {
-					$('#event_content').html(data);
+					$('#event-content').html(data);
 					return false;
 				}
 			});

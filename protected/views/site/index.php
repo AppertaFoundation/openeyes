@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,23 +17,47 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<h2>Search</h2>
-<div class="centralColumn">
-	<p>Find a patient by <strong>Hospital Number</strong>, <strong>NHS Number</strong>, <strong>Firstname Surname</strong> or <strong>Surname, Firstname</strong>.</p>
+<h1 class="badge">Search</h1>
+
+<div class="row">
+	<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
+		<div class="panel search-examples">
+			Find a patient by
+			<strong>Hospital Number</strong>,
+			<strong>NHS Number</strong>,
+			<strong>Firstname Surname</strong> or
+			<strong>Surname, Firstname</strong>.
+		</div>
+	</div>
+</div>
+
+<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
+
 	<?php $this->renderPartial('//base/_messages'); ?>
+
 	<?php
 		$this->beginWidget('CActiveForm', array(
-			'id' => 'omnibox',
+			'id' => 'search-form',
 			'focus' => '#query',
 			'action' => Yii::app()->createUrl('site/search'),
+			'htmlOptions' => array(
+				'class' => 'form panel search'
+			)
 		));?>
-	<div id="search_patient_id" class="form_greyBox bigInput">
-		<?php echo CHtml::textField('query', '', array('style' => 'width: 400px;')); ?>
-		<button type="submit" style="float: right; display: block;" class="classy blue tall" tabindex="2"><span class="button-span button-span-blue">Search</span></button>
-		<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="float: right; margin-right: 10px; margin-top: 9px; display: none;" />
-	</div>
+		<div class="row">
+			<div class="large-9 medium-8 small-7 column">
+				<?php echo CHtml::textField('query', '', array('class' => 'large', 'placeholder' => 'Enter search...')); ?>
+			</div>
+			<div class="large-3 medium-4 small-5 column text-right">
+				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="margin-right: 10px; display: none;" />
+				<button type="submit">
+					Search
+				</button>
+			</div>
+		</div>
 	<?php $this->endWidget(); ?>
-</div><!-- .centralColumn -->
+</div>
+
 <script type="text/javascript">
-	handleButton($('#omnibox button'));
+	handleButton($('#search-form button'));
 </script>

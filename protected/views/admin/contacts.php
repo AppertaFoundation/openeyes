@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,35 +18,35 @@
  */
 
 ?>
-<div class="curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Search contacts</h3>
-		<div>
-			<form id="admin_contacts">
-				<div>
-					<span class="label">Search:</span>
-					<?php echo CHtml::textField('q',@$_GET['q'])?>
-				</div>
-				<div>
-					<span class="label">Label:</span>
-					<?php echo CHtml::dropDownList('label',@$_GET['label'],CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Any label -'))?>
-				</div>
-				<div>
-					<span class="label"></span>
-					<?php echo EventAction::button('Search', 'search', array('colour' => 'blue'))->toHtml()?>
-					<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
-				</div>
+<div class="box admin">
+	<h2>Search contacts</h2>
+	<form id="admin_contacts_search">
+		<div class="row field-row">
+			<div class="large-2 column">
+				<label for="q">Search:</label>
 			</div>
-		</form>
-	</div>
-</div>
-<div style="margin-bottom: 1em;">
-	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
+			<div class="large-4 column end">
+				<?php echo CHtml::textField('q',@$_GET['q'])?>
+			</div>
+		</div>
+		<div class="row field-row">
+			<div class="large-2 column">
+				<label for="label">Label:</label>
+			</div>
+			<div class="large-4 column end">
+				<?php echo CHtml::dropDownList('label',@$_GET['label'],CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Any label -'))?>
+			</div>
+		</div>
+		<div class="row field-row">
+			<div class="large-4 large-offset-2 column end">
+				<?php echo EventAction::button('Search', 'search', array(), array('class' => 'small'))->toHtml()?>
+				<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
+			</div>
+		</div>
+	</form>
 </div>
 <?php if (@$contacts) {?>
-	<div id="searchResults" class="curvybox white">
 		<?php echo $this->renderPartial('/admin/_contacts_list',array('contacts'=>$contacts))?>
-	</div>
 <?php }?>
 <script type="text/javascript">
 	var resultCache = {};
@@ -57,20 +56,16 @@
 
 		handleButton($('#et_search'),function(e) {
 			e.preventDefault();
-			if ($('#q').length <1) {
+			if ($('#q').val().length <1) {
 				new OpenEyes.Dialog.Alert({
 					content: "Please enter a search term"
-				}).open();
+				})
+				.on('close', $('#q').focus)
+				.open();
 				enableButtons();
-				$('#q').focus();
 			} else {
 				window.location.href = baseUrl+'/admin/contacts?q='+$('#q').val()+'&label='+$('#label').val();
 			}
-		});
-
-		$('li.even, li.odd').die('click').live('click',function(e) {
-			e.preventDefault();
-			window.location.href = baseUrl+'/admin/editContact?contact_id='+$(this).attr('data-attr-id');
 		});
 	});
 </script>

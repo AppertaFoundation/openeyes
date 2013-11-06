@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -23,27 +22,37 @@
 
 	$warnings = $this->patient->getWarnings($clinical);
 ?>
-<div id="patientID">
-	<div class="patientReminder clearfix<?php if ($warnings) echo " warning" ?>">
-		<div class="patientName">
-			<?php echo CHtml::link($this->patient->getDisplayName(),array('/patient/view/'.$this->patient->id)) ?>
-			(<?php if ($this->patient->isDeceased()) { ?>Deceased<?php } else { echo $this->patient->getAge(); } ?>)
-		</div>
-		<div class="hospitalNumber">No. <?php echo $this->patient->hos_num?></div>
-		<div class="nhsNumber"><span class="hide">NHS number:</span><?php echo $this->patient->nhsnum?></div>
-		<ul class="icons">
-			<li class="gender <?php echo strtolower($this->patient->getGenderString()) ?>"><?php echo $this->patient->getGenderString() ?></li>
+
+<div class="panel patient radius" id="patientID">
+	<div class="patient-details">
+		<?php echo CHtml::link($this->patient->getDisplayName(),array('/patient/view/'.$this->patient->id)) ?>
+		<span class="patient-age">(<?php if ($this->patient->isDeceased()) { ?>Deceased<?php } else { echo $this->patient->getAge(); } ?>)</span>
+	</div>
+	<div class="hospital-number">
+		No. <?php echo $this->patient->hos_num?>
+	</div>
+	<div class="row">
+		<div class="large-6 small-6 columns">
+			<div class="nhs-number">
+				<span class="hide-text">
+					NHS number:
+				</span>
+				<?php echo $this->patient->nhsnum?>
+			</div>
+			<span class="icon icon-alert icon-alert-<?php echo strtolower($this->patient->getGenderString()) ?>_trans"><?php echo $this->patient->getGenderString() ?></span>
+
 			<?php if ($warnings) {
 				$msgs = array();
 				foreach ($warnings as $warn) {
 					$msgs[] = $warn['short_msg'];
 				}
 			?>
-				<li class="warning"><span><?php echo implode(', ', $msgs); ?></span></li>
+				<!-- FIXME: check these warnings display correctly -->
+				<span class="warning"><span><?php echo implode(', ', $msgs); ?></span>
 			<?php } ?>
-		</ul>
-		<div class="i_patient">
+		</div>
+		<div class="large-6 small-6 columns text-right patient-summary-anchor">
 			<?php echo CHtml::link('Patient Summary',array('/patient/view/'.$this->patient->id)); ?>
 		</div>
 	</div>
-</div><!-- #patientID -->
+</div>

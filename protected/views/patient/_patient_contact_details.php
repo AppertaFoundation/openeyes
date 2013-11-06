@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,21 +17,29 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="whiteBox patientDetails" id="contact_details">
-	<div class="patient_actions">
-		<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
+<section class="box patient-info js-toggle-container">
+	<h3 class="box-title">Contact details:</h3>
+	<a href="#" class="toggle-trigger toggle-hide js-toggle">
+		<span class="icon-showhide">
+			Show/hide this section
+		</span>
+	</a>
+	<div class="js-toggle-body">
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Telephone:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></div>
+			</div>
+		</div>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Email:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown'?></div>
+			</div>
+		</div>
 	</div>
-	<h4>Contact Details:</h4>
-	<div class="data_row">
-		<div class="data_label">Telephone:</div>
-		<div class="data_value"><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></div>
-	</div>
-	<div class="data_row">
-		<div class="data_label">Email:</div>
-		<div class="data_value"><?php echo !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown'?></div>
-	</div>
-	<div class="data_row">
-		<div class="data_label">Next of Kin:</div>
-		<div class="data_value">Unknown</div>
-	</div>
-</div>
+</section>

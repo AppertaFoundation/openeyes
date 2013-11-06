@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,39 +18,35 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Data sources</h3>
-		<div>
-			<form id="admin_data_sources">
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_checkbox"><input type="checkbox" id="checkall" class="sources" /></span>
-						<span class="column_name">Name</span>
-					</li>
-					<div class="sortable">
-						<?php
-						foreach (ImportSource::model()->findAll(array('order'=>'name')) as $i => $source) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $source->id?>">
-								<span class="column_checkbox"><input type="checkbox" name="source[]" value="<?php echo $source->id?>" class="sources" /></span>
-								<span class="column_name"><?php echo $source->name?>&nbsp;</span>
-							</li>
-						<?php }?>
-					</div>
-				</ul>
-			</form>
-		</div>
-	</div>
-</div>
-<div>
-	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
-	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
+<div class="admin box">
+	<h2>Data sources</h2>
+	<form id="admin_data_sources">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="checkall" class="sources" /></th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach (ImportSource::model()->findAll(array('order'=>'name')) as $i => $source) {?>
+					<tr class="clickable" data-id="<?php echo $source->id?>" data-uri="admin/editdatasource/<?php echo $source->id?>">
+						<td><input type="checkbox" name="source[]" value="<?php echo $source->id?>" class="sources" /></td>
+						<td><?php echo $source->name?>&nbsp;</td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot>
+				<td colspan="2">
+					<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
+					<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
+				</td>
+			</tfoot>
+		</table>
+	</form>
 </div>
 <script type="text/javascript">
-	$('li.even .column_name,li.odd .column_name').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/editdatasource/'+$(this).parent().attr('data-attr-id');
-	});
 	$('#et_delete').click(function(e) {
 		e.preventDefault();
 

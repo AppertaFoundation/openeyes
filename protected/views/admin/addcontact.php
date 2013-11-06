@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,37 +18,33 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Add contact</h3>
-		<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-		<div>
-			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'adminform',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'focus'=>'#contactname'
-			))?>
-			<?php echo $form->textField($contact,'title')?>
-			<?php echo $form->textField($contact,'first_name')?>
-			<?php echo $form->textField($contact,'last_name')?>
-			<?php echo $form->textField($contact,'nick_name')?>
-			<?php echo $form->textField($contact,'primary_phone')?>
-			<?php echo $form->textField($contact,'qualifications')?>
-			<?php echo $form->dropDownList($contact,'contact_label_id',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
-			<div style="margin-left: 170px;">
-				<?php echo EventAction::button('Add label','add_label',array('colour'=>'blue'))->toHtml()?>
+<div class="box admin">
+	<h2>Add contact</h2>
+	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'focus'=>'#contactname',
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5
+		)
+	))?>
+		<?php echo $form->textField($contact,'title', null, null, array('field' => 2))?>
+		<?php echo $form->textField($contact,'first_name')?>
+		<?php echo $form->textField($contact,'last_name')?>
+		<?php echo $form->textField($contact,'nick_name')?>
+		<?php echo $form->textField($contact,'primary_phone')?>
+		<?php echo $form->textField($contact,'qualifications')?>
+		<?php echo $form->dropDownList($contact,'contact_label_id',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
+		<div class="row field-row">
+			<div class="large-5 large-offset-2 column">
+				<?php echo EventAction::button('Add label','add_label',array(), array('class' => 'small'))->toHtml()?>
 			</div>
-			<?php $this->endWidget()?>
 		</div>
-	</div>
-</div>
-<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-<div>
-	<?php echo EventAction::button('Save', 'save', array('colour' => 'green'))->toHtml()?>
-	<?php echo EventAction::button('Cancel', 'cancel', array('colour' => 'red'))->toHtml()?>
-	<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+		<?php echo $form->formActions();?>
+	<?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {

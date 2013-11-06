@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,40 +18,44 @@
  */
 
 ?>
-<div class="curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Contacts</h3>
-		<div class="pagination">
-			<?php echo $this->renderPartial('_pagination',array(
-				'prefix' => '/admin/contacts/',
-				'url' => '/admin/contacts?q='.@$_GET['q'].'&page={{PAGE}}',
-				'pagination' => $contacts['pagination'],
-			))?>
-		</div>
-		<div>
-			<form id="admin_contacts">
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_id">ID</span>
-						<span class="column_title">Title</span>
-						<span class="column_first_name">First name</span>
-						<span class="column_last_name">Last name</span>
-						<span class="column_qualifications">Qualifications</span>
-						<span class="column_label">Label</span>
-					</li>
-					<?php
-					foreach ($contacts['contacts'] as $i => $contact) {?>
-						<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $contact->id?>">
-							<span class="column_id"><?php echo $contact->id?></span>
-							<span class="column_title"><?php echo $contact->title?>&nbsp;</span>
-							<span class="column_first_name"><?php echo $contact->first_name?>&nbsp;</span>
-							<span class="column_last_name"><?php echo $contact->last_name?>&nbsp;</span>
-							<span class="column_qualifications"><?php echo $contact->qualifications?>&nbsp;</span>
-							<span class="column_label"><?php echo $contact->label ? $contact->label->name : 'None'?>&nbsp;</span>
-						</li>
-					<?php }?>
-				</ul>
-			</form>
-		</div>
-	</div>
+<div id="searchResults" class="box admin">
+	<h2>Contacts</h2>
+	<form id="admin_contacts">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Title</th>
+					<th>First name</th>
+					<th>Last name</th>
+					<th>Qualifications</th>
+					<th>Label</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach ($contacts['contacts'] as $i => $contact) {?>
+					<tr class="clickable" data-id="<?php echo $contact->id?>" data-uri="admin/editContact?contact_id=<?php echo $contact->id?>">
+						<td><?php echo $contact->id?></td>
+						<td><?php echo $contact->title?></td>
+						<td><?php echo $contact->first_name?></td>
+						<td><?php echo $contact->last_name?></td>
+						<td><?php echo $contact->qualifications?></td>
+						<td><?php echo $contact->label ? $contact->label->name : 'None'?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot class="pagination-container">
+				<tr>
+					<td colspan="6" class="clearfix">
+						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
+						<?php echo $this->renderPartial('_pagination',array(
+							'pagination' => $contacts['pagination'],
+							'url' => '/admin/contacts?q='.@$_GET['q'].'&page={{PAGE}}',
+						))?>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
 </div>

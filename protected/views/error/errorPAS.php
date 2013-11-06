@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -23,15 +22,15 @@
 	$helpdesk_email = Yii::app()->params['helpdesk_email'];
 	$this->layout = '//layouts/error';
 ?>
-<h3>Merged patient record</h3>
-<p><strong>The patient record you requested cannot be accessed due to an inconsistency in the PAS system.</strong></p>
-<p>Please contact OpenEyes support for assistance:</p>
-<h4>Support Options</h4>
+<h2>Merged patient record</h2>
+<p class="panel"><strong>The patient record you requested cannot be accessed due to an inconsistency in the PAS system.</strong></p>
+<p class="panel">Please contact OpenEyes support for assistance:</p>
+<h3>Support Options</h3>
 <ul>
 	<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
 	<li>Less urgent issues email <a
 		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
 	</a></li>
 </ul>
-<p><?php echo CHtml::link('Click here to go back to the search page',Yii::app()->baseUrl.'/')?></p>
-<div style="color: gray;"><?php echo date('r'); ?></div>
+<p class="panel"><?php echo CHtml::link('Click here to go back to the search page',Yii::app()->baseUrl.'/')?></p>
+<p class="date"><?php echo date('r'); ?></p>

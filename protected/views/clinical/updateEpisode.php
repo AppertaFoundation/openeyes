@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,23 +17,35 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-if (!empty($episode)) {
-	if ($episode->diagnosis) {
-		$eye = $episode->eye ? $episode->eye->name : 'None';
-		$diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
-	} else {
-		$eye = 'No diagnosis';
-		$diagnosis = 'No diagnosis';
-	}
 
-	$episode->audit('episode summary','view',false);
+// Event actions
+$this->event_actions[] = EventAction::link('Cancel', Yii::app()->createUrl('/patient/episode/'.$episode->id), array('level' => 'warning small'));
+$this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'episode_save', 'level' => 'secondary small'));
+
+if ($episode->diagnosis) {
+	$eye = $episode->eye ? $episode->eye->name : 'None';
+	$diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
+} else {
+	$eye = 'No diagnosis';
+	$diagnosis = 'No diagnosis';
+}
+
+$episode->audit('episode summary','view',false);
+
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'update-episode',
+		'enableAjaxValidation'=>false,
+		'action'=>array('patient/updateepisode/'.$episode->id),
+));
 ?>
-<div class="episodeSummary">
-	<h3>Summary</h3>
-	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
+
+	<div class="element-data">
+		<h2>Summary</h2>
+		<h3><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
+	</div>
 
 	<?php if ($error) {?>
-		<div id="clinical-create_es_" class="alertBox">
+		<div id="clinical-create_es_" class="alert-box alert with-icon">
 			<p>Please fix the following input errors:</p>
 			<ul>
 				<li>
@@ -44,74 +55,66 @@ if (!empty($episode)) {
 		</div>
 	<?php }?>
 
-	<h4>Principal diagnosis:</h4>
+	<section class="element element-data">
+		<h3 class="data-title">Principal diagnosis:</h3>
+		<div class="row">
+			<div class="large-5 column end">
+				<?php
+				$form->widget('application.widgets.DiagnosisSelection',array(
+						'field' => 'disorder_id',
+						'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+						'code' => 130,
+						'layout' => 'episodeSummary',
+				));
+				?>
+			</div>
+		</div>
+	</section>
 
 	<?php
-	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'update-episode',
-			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
-			'action'=>array('patient/updateepisode/'.$episode->id),
-	));
-
-	// Event actions
-	$this->event_actions[] = EventAction::link('Cancel', Yii::app()->createUrl('/patient/episode/'.$episode->id), array('colour' => 'red', 'level' => 'secondary'));
-	$this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'episode_save', 'colour' => 'green'));
-	$this->renderPartial('//patient/event_actions');
-
-	$form->widget('application.widgets.DiagnosisSelection',array(
-			'field' => 'disorder_id',
-			'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-			'code' => 130,
-			'layout' => 'episodeSummary',
-	));
-
 	if (!empty($_POST)) {
 		$eye_id = @$_POST['eye_id'];
 	} else {
 		$eye_id = $episode->eye_id;
 	}
 	?>
+	<section class="element element-data">
+		<fieldset>
+			<legend class="data-title">Principle eye:</legend>
+			<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
+				<label class="inline">
+					<?php echo CHtml::radioButton('eye_id', $eye_id,array('value' => $eye->id,'class'=>'episodeSummaryRadio'))?>
+					<?php echo $eye->name?>
+				</label>
+			<?php }?>
+		</fieldset>
+	</section>
 
-	<h4>Principal eye:</h4>
-
-	<div>
-		<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
-			<?php echo CHtml::radioButton('eye_id', $eye_id,array('value' => $eye->id,'class'=>'episodeSummaryRadio'))?>
-			<label for="<?php echo $episode->eye_id?>"><?php echo $eye->name?></label>
-		<?php }?>
-	</div>
-
-	<!-- divide into two columns -->
-	<div class="cols2 clearfix">
-		<div class="left">
-			<h4>Start Date</h4>
-			<div class="eventHighlight">
-				<h4><?php echo $episode->NHSDate('start_date')?></h4>
+	<section class="element element-data">
+		<div class="row">
+			<div class="large-6 column">
+				<h3 class="data-title">Start Date</h3>
+				<div class="data-value"><?php echo $episode->NHSDate('start_date')?></div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="data-title">End date:</h3>
+				<div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></div>
 			</div>
 		</div>
+	</section>
 
-		<div class="right">
-			<h4>End date:</h4>
-			<div class="eventHighlight">
-				<h4><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></h4>
+	<section class="element element-data">
+		<div class="row">
+			<div class="large-6 column">
+				<h3 class="data-title">Subspecialty:</h3>
+				<div class="data-value"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="data-title">Consultant firm:</h3>
+				<div class="data-value"><?php echo $episode->firm->name?></div>
 			</div>
 		</div>
-
-		<div class="left">
-		<h4>Subspecialty:</h4>
-			<div class="eventHighlight">
-				<h4><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h4>
-			</div>
-		</div>
-
-		<div class="right">
-		<h4>Consultant firm:</h4>
-			<div class="eventHighlight">
-				<h4><?php echo $episode->firm->name?></h4>
-			</div>
-		</div>
-	</div> <!-- end of cols2 (column split) -->
+	</section>
 
 	<?php
 	try {
@@ -119,46 +122,47 @@ if (!empty($episode)) {
 	} catch (Exception $e) {
 		// If there is no extra episode summary detail page for this subspecialty we don't care
 	}
-} else {
-	// hide the episode border ?>
-	<script type="text/javascript">
-		$('div#episodes_details').hide();
-	</script>
-<?php }?>
+	?>
 
-<div class="metaData">
-	<span class="info"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?>: created by <span class="user"><?php echo $episode->user->fullName?> on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?></span></span>
-</div>
-
-<!-- Booking -->
-
-<h4>Episode Status</h4>
-
-<div class="eventDetail">
-	<div class="label"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?></div>
-	<div class="data">
-		<span class="group">
-			<?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id, EpisodeStatus::Model()->getList())?>
+	<div class="metadata">
+		<span class="info">
+			<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?>: created by <span class="user"><?php echo $episode->user->fullName?></span>
+			on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?>
 		</span>
 	</div>
-</div>
 
-<div class="metaData">
-	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
-</div>
+	<section class="element element-data">
+		<h3 class="data-title">Episode Status:</h3>
+		<div class="row">
+			<div class="large-2 column">
+				<label for="episode_status_id"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?>:</label>
+			</div>
+			<div class="large-3 column end">
+				<?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id, EpisodeStatus::Model()->getList())?>
+			</div>
+		</div>
+	</section>
 
-<?php if ($error) {?>
-	<div id="clinical-create_es_" class="alertBox">
-		<p>Please fix the following input errors:</p>
-		<ul>
-			<li>
-				<?php echo $error?>
-			</li>
-		</ul>
+	<div class="metadata">
+		<span class="info">
+			Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?></span>
+			on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?>
+		</span>
 	</div>
-<?php }?>
+
+	<?php if ($error) {?>
+		<div id="clinical-create_es_" class="alert-box alert with-icon">
+			<p>Please fix the following input errors:</p>
+			<ul>
+				<li>
+					<?php echo $error?>
+				</li>
+			</ul>
+		</div>
+	<?php }?>
 
 <?php $this->endWidget()?>
+
 
 <script type="text/javascript">
 	$('#closelink').click(function() {
@@ -191,7 +195,7 @@ if (!empty($episode)) {
 </script>
 
 <?php if (empty($episode->end_date)) {?>
-	<div style="margin-top:10px; text-align:right; position:relative;">
+	<div style="text-align:right; position:relative;">
 		<!--button id="close-episode" type="submit" value="submit" class="wBtn_close-episode ir">Close Episode</button-->
 
 		<div id="close-episode-popup" class="popup red" style="display: none;">
@@ -223,7 +227,7 @@ if (!empty($episode)) {
 			$.ajax({
 				url: '<?php echo Yii::app()->createUrl('clinical/closeepisode/'.$episode->id)?>',
 				success: function(data) {
-					$('#event_content').html(data);
+					$('#event-content').html(data);
 					return false;
 				}
 			});
@@ -241,4 +245,3 @@ if (!empty($episode)) {
 		});
 	</script>
 <?php }?>
-</div>

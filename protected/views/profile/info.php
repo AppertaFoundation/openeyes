@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,34 +18,44 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Basic information</h3>
-		<div>
-			<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'profile-form',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-			))?>
-			<?php if (!Yii::app()->params['profile_user_can_edit']) {?>
-				<div class="alertBox flash-alert">
-					User editing of basic information is administratively disabled.
+
+<div class="box admin">
+	<h2>Basic information</h2>
+
+	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id' => 'profile-form',
+		'enableAjaxValidation' => false,
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5,
+		)
+	))?>
+
+		<?php if (!Yii::app()->params['profile_user_can_edit']) {?>
+			<div class="alert-box alert">
+				User editing of basic information is administratively disabled.
+			</div>
+		<?php }?>
+
+		<?php $this->renderPartial('//base/_messages')?>
+		<?php $this->renderPartial('//elements/form_errors',array('errors'=>$errors))?>
+
+		<?php echo $form->textField($user, 'title', array('readonly' => !Yii::app()->params['profile_user_can_edit']), null, array('field' => 2));?>
+		<?php echo $form->textField($user, 'first_name', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
+		<?php echo $form->textField($user, 'last_name', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
+		<?php echo $form->textField($user, 'email', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
+		<?php echo $form->textField($user, 'qualifications', array('readonly' => !Yii::app()->params['profile_user_can_edit']));?>
+
+		<?php if (Yii::app()->params['profile_user_can_edit']) {?>
+			<div class="row field-row">
+				<div class="large-5 large-offset-2 column">
+					<?php echo EventAction::button('Save', 'save')->toHtml()?>
+					<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 				</div>
-			<?php }?>
-			<?php $this->renderPartial('//base/_messages')?>
-			<?php $this->renderPartial('//elements/form_errors',array('errors'=>$errors))?>
-			<?php echo $form->textField($user,'title',array('readonly'=>!Yii::app()->params['profile_user_can_edit']))?>
-			<?php echo $form->textField($user,'first_name',array('readonly'=>!Yii::app()->params['profile_user_can_edit']))?>
-			<?php echo $form->textField($user,'last_name',array('readonly'=>!Yii::app()->params['profile_user_can_edit']))?>
-			<?php echo $form->textField($user,'email',array('readonly'=>!Yii::app()->params['profile_user_can_edit']))?>
-			<?php echo $form->textField($user,'qualifications',array('readonly'=>!Yii::app()->params['profile_user_can_edit']))?>
-			<?php $this->endWidget()?>
-		</div>
-	</div>
+			</div>
+		<?php }?>
+
+	<?php $this->endWidget()?>
 </div>
-<?php if (Yii::app()->params['profile_user_can_edit']) {?>
-	<div>
-		<?php echo EventAction::button('Save', 'save', array('colour' => 'blue'))->toHtml()?>
-		<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-	</div>
-<?php }?>
+
+

@@ -1,112 +1,156 @@
-<?php /* DEPRECATED */ ?>
-					<div class="whiteBox forClinicians">
-						<div class="patient_actions">
-							<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
+<?php
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+?>
+<section class="box patient-info associated-data js-toggle-container">
+	<header class="box-header">
+		<h3 class="box-title">
+			<span class="icon-patient-clinician-hd_flag"></span>
+			Previous operations
+		</h3>
+		<a href="#" class="toggle-trigger toggle-hide js-toggle">
+			<span class="icon-showhide">
+			Show/hide this section
+			</span>
+		</a>
+	</header>
+
+	<div class="js-toggle-body">
+		<table class="plain patient-data">
+			<thead>
+			<tr>
+				<th>Date</th>
+				<th>Operation</th>
+				<th>Actions</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($this->patient->previousOperations as $operation) {?>
+				<tr>
+					<td><?php echo $operation->dateText?></td>
+					<td><?php if ($operation->side) { echo $operation->side->adjective.' ';}?><?php echo $operation->operation?></td>
+					<td>
+						<a href="#" class="editOperation" rel="<?php echo $operation->id?>">Edit</a>&nbsp;&nbsp;
+						<a href="#" class="removeOperation" rel="<?php echo $operation->id?>">Remove</a>
+					</td>
+				</tr>
+			<?php }?>
+			</tbody>
+		</table>
+
+		<?php if (BaseController::checkUserLevel(4)) {?>
+			<div class="box-actions">
+				<button  id="btn-add_previous_operation" class="secondary small">
+					Add Previous operation
+				</button>
+			</div>
+
+			<div id="add_previous_operation" style="display: none;">
+
+				<?php
+				$form = $this->beginWidget('FormLayout', array(
+						'id'=>'add-previous_operation',
+						'enableAjaxValidation'=>false,
+						'htmlOptions' => array('class'=>'form add-data'),
+						'action'=>array('patient/addPreviousOperation'),
+						'layoutColumns'=>array(
+							'label' => 3,
+							'field' => 9
+						),
+					))?>
+
+				<fieldset class="field-row">
+
+					<legend><strong>Add Previous operation</strong></legend>
+
+					<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
+					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+
+					<div class="field-row row">
+						<div class="<?php echo $form->columns('label');?>">
+							<label for="common_previous_operation">Common operations:</label>
 						</div>
-						<div class="icon_patientIssue"></div>
-						<h4>Previous operations</h4>
-						<div class="data_row">
-							<table class="subtleWhite">
-								<thead>
-									<tr>
-										<th width="85px">Date</th>
-										<th>Operation</th>
-										<th>Edit</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php foreach ($this->patient->previousOperations as $operation) {?>
-										<tr>
-											<td><?php echo $operation->dateText?></td>
-											<td><?php if ($operation->side) { echo $operation->side->adjective.' ';}?><?php echo $operation->operation?></td>
-											<td>
-												<a href="#" class="small editOperation" rel="<?php echo $operation->id?>"><strong>Edit</strong></a>&nbsp;&nbsp;
-												<a href="#" class="small removeOperation" rel="<?php echo $operation->id?>"><strong>Remove</strong></a>
-											</td>
-										</tr>
-									<?php }?>
-								</tbody>
-							</table>
+						<div class="<?php echo $form->columns('field');?>">
+							<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+						</div>
+					</div>
 
-							<?php if (BaseController::checkUserLevel(4)) {?>
-								<div align="center" style="margin-top:10px;">
-									<form><button id="btn-add_previous_operation" class="classy green mini" type="button"><span class="button-span button-span-green">Add Previous operation</span></button></form>
-								</div>
-								<div id="add_previous_operation" style="display: none;">
-									<h5>Add Previous operation</h5>
-									<?php
-									$form = $this->beginWidget('CActiveForm', array(
-											'id'=>'add-previous_operation',
-											'enableAjaxValidation'=>false,
-											'htmlOptions' => array('class'=>'sliding'),
-											'action'=>array('patient/addPreviousOperation'),
-									))?>
+					<div class="field-row row">
+						<div class="<?php echo $form->columns('label');?>">
+							<label for="previous_operation">Operation:</label>
+						</div>
+						<div class="<?php echo $form->columns('field');?>">
+							<?php echo CHtml::textField('previous_operation','')?>
+						</div>
+					</div>
 
-									<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
-									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-
-									<div class="previousOperation">
-										<div class="label">
-											Common operations:
-										</div>
-										<div class="data">
-											<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
-										</div>
-									</div>
-
-									<div class="previousOperation">
-										<div class="label">
-											Operation:
-										</div>
-										<div class="data">
-											<?php echo CHtml::textField('previous_operation','')?>
-										</div>
-									</div>
-
-									<div class="previousOperation">
-										<span class="label">
-											Side:
-										</span>
-										<input type="radio" name="previous_operation_side" class="previous_operation_side" value="" checked="checked" /> None
-										<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
-											<input type="radio" name="previous_operation_side" class="previous_operation_side" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>
-										<?php }?>
-									</div>
-
-									<?php $this->renderPartial('_fuzzy_date',array('class'=>'previousOperation'))?>
-
-									<div class="previous_operations_form_errors"></div>
-
-									<div align="right">
-										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
-										<button class="classy green mini btn_save_previous_operation" type="submit"><span class="button-span button-span-green">Save</span></button>
-										<button class="classy red mini btn_cancel_previous_operation" type="submit"><span class="button-span button-span-red">Cancel</span></button>
-									</div>
-
-									<?php $this->endWidget()?>
-								</div>
+					<fieldset class="row field-row">
+						<legend class="<?php echo $form->columns('label');?>">
+							Side:
+						</legend>
+						<div class="<?php echo $form->columns('field');?>">
+							<label class="inline">
+								<input type="radio" name="previous_operation_side" class="previous_operation_side" value="" checked="checked" /> None
+							</label>
+							<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
+								<label class="inline"><input type="radio" name="previous_operation_side" class="previous_operation_side" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>	</label>
 							<?php }?>
 						</div>
-					</div>
+					</fieldset>
 
-				<div id="confirm_remove_operation_dialog" title="Confirm remove operation" style="display: none;">
-					<div>
-						<div id="delete_operation">
-							<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-								<strong>WARNING: This will remove the operation from the patient record.</strong>
-							</div>
-							<p>
-								<strong>Are you sure you want to proceed?</strong>
-							</p>
-							<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
-								<input type="hidden" id="operation_id" value="" />
-								<button type="submit" class="classy red venti btn_remove_operation"><span class="button-span button-span-red">Remove operation</span></button>
-								<button type="submit" class="classy green venti btn_cancel_remove_operation"><span class="button-span button-span-green">Cancel</span></button>
-								<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-							</div>
+					<?php $this->renderPartial('_fuzzy_date',array('class'=>'previousOperation'))?>
+
+					<div class="previous_operations_form_errors alert-box alert hide"></div>
+
+					<div class="buttons">
+						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
+						<button type="submit" class="secondary small btn_save_previous_operation">
+							Save
+						</button>
+						<button class="warning small btn_cancel_previous_operation">
+							Cancel
+						</button>
 						</div>
-					</div>
-				</div>
+				</fieldset>
+				<?php $this->endWidget()?>
+			</div>
+		<?php }?>
+	</div>
+</section>
+
+<!-- Confirm deletion dialog -->
+<div id="confirm_remove_operation_dialog" title="Confirm remove operation" style="display: none;">
+	<div id="delete_operation">
+		<div class="alert-box alert with-icon">
+			<strong>WARNING: This will remove the operation from the patient record.</strong>
+		</div>
+		<p>
+			<strong>Are you sure you want to proceed?</strong>
+		</p>
+		<div class="buttons">
+			<input type="hidden" id="operation_id" value="" />
+			<button type="submit" class="warning small btn_remove_operation">Remove operation</button>
+			<button type="submit" class="secondary small btn_cancel_remove_operation">Cancel</button>
+			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript">
 	$('#btn-add_previous_operation').click(function() {
 		$('#previous_operation').val('');
@@ -116,14 +160,12 @@
 		$('div.previousOperation select[name="fuzzy_year"]').val(d.getFullYear());
 		$('#add_previous_operation').slideToggle('fast');
 		$('#btn-add_previous_operation').attr('disabled',true);
-		$('#btn-add_previous_operation').removeClass('green').addClass('disabled');
-		$('#btn-add_previous_operation span').removeClass('button-span-green').addClass('button-span-disabled');
+		$('#btn-add_previous_operation').addClass('disabled');
 	});
 	$('button.btn_cancel_previous_operation').click(function() {
 		$('#add_previous_operation').slideToggle('fast');
 		$('#btn-add_previous_operation').attr('disabled',false);
-		$('#btn-add_previous_operation').removeClass('disabled').addClass('green');
-		$('#btn-add_previous_operation span').removeClass('button-span-disabled').addClass('button-span-green');
+		$('#btn-add_previous_operation').removeClass('disabled');
 		return false;
 	});
 	$('#common_previous_operation').change(function() {
@@ -133,7 +175,7 @@
 	$('button.btn_save_previous_operation').click(function() {
 		if ($('#previous_operation').val().length <1) {
 			new OpenEyes.Dialog.Alert({
-				content: "Please enter an operation"
+				content: "Please enter an operation."
 			}).open();
 			return false;
 		}
@@ -147,11 +189,11 @@
 			'success': function(errors) {
 				var ok = true;
 
-				$('.previous_operations_form_errors').html('');
+				$('.previous_operations_form_errors').html('').hide();
 
 				for (var i in errors) {
 					ok = false;
-					$('div.previous_operations_form_errors').append('<div class="errorMessage">'+errors[i]+'</div>');
+					$('div.previous_operations_form_errors').show().append('<div>'+errors[i]+'</div>');
 				}
 
 				$('img.add_previous_operation_loader').hide();
@@ -174,14 +216,13 @@
 			'success': function(data) {
 				$('#edit_operation_id').val(operation_id);
 				$('#previous_operation').val(data['operation']);
-				$('div.previousOperation input[name="previous_operation_side"][value="'+data['side_id']+'"]').attr('checked','checked');
-				$('div.previousOperation select[name="fuzzy_day"]').val(data['fuzzy_day']);
-				$('div.previousOperation select[name="fuzzy_month"]').val(data['fuzzy_month']);
-				$('div.previousOperation select[name="fuzzy_year"]').val(data['fuzzy_year']);
+				$('#add_previous_operation input[name="previous_operation_side"][value="'+data['side_id']+'"]').attr('checked','checked');
+				$('#add_previous_operation select[name="fuzzy_day"]').val(data['fuzzy_day']);
+				$('#add_previous_operation select[name="fuzzy_month"]').val(data['fuzzy_month']);
+				$('#add_previous_operation select[name="fuzzy_year"]').val(data['fuzzy_year']);
 				$('#add_previous_operation').slideToggle('fast');
 				$('#btn-add_previous_operation').attr('disabled',true);
-				$('#btn-add_previous_operation').removeClass('green').addClass('disabled');
-				$('#btn-add_previous_operation span').removeClass('button-span-green').addClass('button-span-disabled');
+				$('#btn-add_previous_operation').addClass('disabled');
 			}
 		});
 

@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,28 +18,26 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Edit contact label</h3>
-		<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-		<div>
-			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'editContactLabelForm',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'focus'=>'#ContactLabel_name'
-			))?>
+<div class="box admin">
+	<h2>Edit contact label</h2>
+	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+	<div>
+		<?php
+		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'editContactLabelForm',
+			'enableAjaxValidation'=>false,
+			'focus'=>'#ContactLabel_name',
+			'layoutColumns' => array(
+				'label' => 2,
+				'field' => 5
+			)
+		))?>
 			<?php echo $form->textField($contactlabel,'name')?>
-			<?php $this->endWidget()?>
-		</div>
+			<?php echo $form->formActions(array(
+				'delete' => 'Delete'
+			));?>
+		<?php $this->endWidget()?>
 	</div>
-</div>
-<div>
-	<?php echo EventAction::button('Save', 'save', array('colour' => 'green'))->toHtml()?>
-	<?php echo EventAction::button('Cancel', 'cancel', array('colour' => 'red'))->toHtml()?>
-	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
-	<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 </div>
 <script type="text/javascript">
 	handleButton($('#et_cancel'),function(e) {

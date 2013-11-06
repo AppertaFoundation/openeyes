@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,56 +18,53 @@
  */
 
 ?>
-<div class="curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Edit contact</h3>
-		<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-		<div>
-			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'adminform',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'focus'=>'#contactname'
-			))?>
-			<?php echo $form->textField($contact,'title')?>
-			<?php echo $form->textField($contact,'first_name')?>
-			<?php echo $form->textField($contact,'last_name')?>
-			<?php echo $form->textField($contact,'nick_name')?>
-			<?php echo $form->textField($contact,'primary_phone')?>
-			<?php echo $form->textField($contact,'qualifications')?>
-			<?php echo $form->dropDownList($contact,'contact_label_id',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
-			<?php $this->endWidget()?>
-		</div>
-	</div>
+<div class="box admin">
+	<h2>Edit contact</h2>
+	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'focus'=>'#contactname',
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5
+		)
+	))?>
+		<?php echo $form->textField($contact,'title', null, null, array('field' => 2))?>
+		<?php echo $form->textField($contact,'first_name')?>
+		<?php echo $form->textField($contact,'last_name')?>
+		<?php echo $form->textField($contact,'nick_name')?>
+		<?php echo $form->textField($contact,'primary_phone')?>
+		<?php echo $form->textField($contact,'qualifications')?>
+		<?php echo $form->dropDownList($contact,'contact_label_id',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
+		<?php echo $form->formActions(); ;?>
+	<?php $this->endWidget()?>
 </div>
-<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-<div>
-	<?php echo EventAction::button('Save', 'save', array('colour' => 'green'))->toHtml()?>
-	<?php echo EventAction::button('Cancel', 'contact_cancel', array('colour' => 'red'))->toHtml()?>
-	<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-</div>
-<div class="curvybox white contactLocations">
-	<div class="admin">
-		<h3 class="georgia">Locations</h3>
-		<form id="admin_contact_locations">
-			<ul class="grid reduceheight">
-				<li class="header">
-					<span class="column_type">Type</span>
-					<span class="column_name">Name</span>
-					<span class="column_action">Actions</span>
-				</li>
+
+<div class="box admin">
+	<h2>Locations</h2>
+	<form id="admin_contact_locations">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th>Type</th>
+					<th>Name</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
 				<?php
 				foreach ($contact->locations as $i => $location) {?>
-					<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $location->id?>">
-						<span class="column_type"><?php echo $location->site_id ? 'Site' : 'Institution'?></span>
-						<span class="column_name"><?php echo $location->site_id ? $location->site->name : $location->institution->name?>&nbsp;</span>
-						<span class="column_action"><a href="#" class="removeLocation" rel="<?php echo $location->id?>">Remove</a></span>
-					</li>
+					<tr class="clickable" data-id="<?php echo $location->id?>" data-uri="admin/contactLocation?location_id=<?php echo $location->id?>">
+						<td><?php echo $location->site_id ? 'Site' : 'Institution'?></td>
+						<td><?php echo $location->site_id ? $location->site->name : $location->institution->name?>&nbsp;</td>
+						<td><a href="#" class="removeLocation" rel="<?php echo $location->id?>">Remove</a></td>
+					</tr>
 				<?php }?>
-			</ul>
-		</form>
-	</div>
+			</tbody>
+		</table>
+	</form>
 </div>
 <div>
 	<?php echo EventAction::button('Add', 'add_contact_location', array('colour' => 'blue'))->toHtml()?>
@@ -103,11 +99,6 @@
 
 	$('a.removeLocation').click(function(e) {
 		return false;
-	});
-
-	$('li.even, li.odd').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/contactLocation?location_id='+$(this).attr('data-attr-id');
 	});
 
 	handleButton($('#et_add_contact_location'),function(e) {

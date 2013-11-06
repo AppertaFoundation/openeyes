@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,49 +18,38 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Add user</h3>
-		<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-		<div>
-			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'adminform',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'focus'=>'#username'
-			))?>
-			<?php echo $form->textField($user,'username',array(),array(array(
-				'id' => 'lookup_user',
-				'title' => 'Lookup user',
-				'href' => '#',
-			)))?>
-			<?php echo $form->textField($user,'title')?>
-			<?php echo $form->textField($user,'first_name')?>
-			<?php echo $form->textField($user,'last_name')?>
-			<?php echo $form->textField($user,'email')?>
-			<?php echo $form->textField($user,'role')?>
-			<?php echo $form->textField($user,'qualifications')?>
-			<?php echo $form->radioBoolean($user,'active')?>
-			<?php echo $form->radioBoolean($user,'global_firm_rights')?>
-			<?php echo $form->radioBoolean($user,'is_doctor')?>
-			<?php echo $form->passwordField($user,'password')?>
-			<div id="div_User_confirm" class="eventDetail">
-				<div class="label">Confirm:</div>
-				<div class="data">
-					<?php echo CHtml::passwordField('User[password_repeat]','')?>
-				</div>
-			</div>
-			<?php echo $form->dropDownList($user,'access_level', $user->getAccessLevelOptions())?>
-			<?php $this->endWidget()?>
-		</div>
-	</div>
-</div>
-<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-<div>
-	<?php echo EventAction::button('Save', 'save', array('colour' => 'green'))->toHtml()?>
-	<?php echo EventAction::button('Cancel', 'cancel', array('colour' => 'red'))->toHtml()?>
-	<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+<div class="box admin">
+	<h2>Add user</h2>
+	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'focus'=>'#username',
+		'layoutColumns'=>array(
+			'label' => 2,
+			'field' => 5
+		)
+	))?>
+		<?php echo $form->textField($user,'username',array(),array(array(
+			'id' => 'lookup_user',
+			'title' => 'Lookup user',
+			'href' => '#',
+		)))?>
+		<?php echo $form->textField($user,'title', null, null, array('field' => 2))?>
+		<?php echo $form->textField($user,'first_name')?>
+		<?php echo $form->textField($user,'last_name')?>
+		<?php echo $form->textField($user,'email')?>
+		<?php echo $form->textField($user,'role')?>
+		<?php echo $form->textField($user,'qualifications')?>
+		<?php echo $form->radioBoolean($user,'active')?>
+		<?php echo $form->radioBoolean($user,'global_firm_rights')?>
+		<?php echo $form->radioBoolean($user,'is_doctor')?>
+		<?php echo $form->passwordField($user,'password')?>
+		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
+		<?php echo $form->dropDownList($user,'access_level', $user->getAccessLevelOptions())?>
+		<?php echo $form->formActions();?>
+	<?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {

@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,19 +18,18 @@
  */
 
 ?>
-<div class="procedureItem">
-	<span class="left">
-		<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
-	</span>
-	<span class="middle<?php if (!$durations) {?> noDuration<?php }?>">
-		<?php
-		echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $proc->id);
-		echo "<span>".$proc->term.'</span>';
-		?>
-	</span>
+<tr class="item">
+	<td class="procedure">
+		<span class="field"><?php echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $proc->id); ?></span>
+		<span class="value"><?php echo $proc->term;?></span>
+	</td>
 	<?php if ($durations) {?>
-		<span class="right">
+		<td class="duration">
 			<?php echo $proc->default_duration?> mins
-		</span>
+		</td>
 	<?php }?>
-</div>
+	<td>
+		<a href="#" class="removeProcedure">Remove</a>
+	</td>
+</tr>
+

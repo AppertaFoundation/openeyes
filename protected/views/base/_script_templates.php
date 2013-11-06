@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -23,8 +22,8 @@
 <script type="text/html" id="dialog-alert-template">
 	<p>{{{content}}}</p>
 	<div class="buttons">
-		<button class="classy green mini confirm ok" type="button">
-			<span class="button-span button-span-green">OK</span>
+		<button class="secondary small confirm ok" type="button">
+			OK
 		</button>
 	</div>
 </script>
@@ -32,11 +31,11 @@
 <script type="text/html" id="dialog-confirm-template">
 	<p>{{{content}}}</p>
 	<div class="buttons">
-		<button class="classy green mini confirm ok" type="button">
-			<span class="button-span button-span-green">{{{okButton}}}</span>
+		<button class="secondary small confirm ok" type="button">
+			{{{okButton}}}
 		</button>
-		<button class="classy red mini confirm cancel" type="button">
-			<span class="button-span button-span-red">{{{cancelButton}}}</span>
+		<button class="warning small confirm cancel" type="button">
+			{{{cancelButton}}}
 		</button>
 	</div>
 </script>

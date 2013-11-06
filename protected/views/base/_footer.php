@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,35 +17,39 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-	<div id="footer">
-		<h6>&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?>&nbsp;&nbsp;|&nbsp;&nbsp;
-			<a href="<?php echo Yii::app()->createUrl('site/debuginfo')?>" id="support-info-link">served, with love, by <?php echo trim(`hostname`)?></a></h6>
-		<div class="help">
 
-				<span><strong>Need Help?</strong></span>
-				<span class="divider">|</span>
-				<?php if (Yii::app()->params['helpdesk_email']) {?>
-					<span><?php echo Yii::app()->params['helpdesk_email']?></span>
-				<?php }?>
-					<span class="divider">|</span>
-				<?php if (Yii::app()->params['helpdesk_phone']) {?>
-					<span><strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></span>
-				<?php } ?>
-				<span class="divider">|</span>
-				<span><?php echo CHtml::link('Help Documentation','http://mehhome/about/trust-wide-projects/openeyes/training-arrangements/',array('target'=>'_new'))?></span>
+<footer class="footer row">
+		<div class="large-3 medium-3 columns">
+				<div class="info">
+						<a href="<?php echo Yii::app()->createUrl('site/debuginfo')?>" id="support-info-link">Served, with love, by <?php echo trim(`hostname`)?></a>
+						<br />
+						<span class="copyright">&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?></span>
+				</div>
 		</div>
-	</div> <!-- #footer -->
+		<div class="large-6 medium-6 large-centered medium-centered columns help">
+				<div class="panel">
+						<ul class="inline-list">
+								<li><strong>Need help?</strong></li>
+								<?php if (Yii::app()->params['helpdesk_email']) {?>
+									<li><?php echo Yii::app()->params['helpdesk_email']?></li>
+								<?php }?>
+								<?php if (Yii::app()->params['helpdesk_phone']) {?>
+									<li><strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></li>
+								<?php } ?>
+								<li><?php echo CHtml::link('Help Documentation','http://mehhome/about/trust-wide-projects/openeyes/training-arrangements/',array('target'=>'_blank'))?></li>
+						</ul>
+				</div>
+		</div>
+</footer>
 
 <script type="text/javascript">
 $(document).ready(function() {
-	$('#support-info-link').on('click',function() {
-
+	$('#support-info-link').live('click',function(e) {
+		e.preventDefault();
 		new OpenEyes.Dialog({
 			url: this.href,
 			title: 'Support Information'
 		}).open();
-
-		return false;
 	});
 });
 </script>
