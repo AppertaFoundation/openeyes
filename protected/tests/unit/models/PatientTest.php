@@ -51,6 +51,9 @@ class PatientTest extends CDbTestCase
 	 */
 	protected function setUp()
 	{
+		$this->markTestSkipped(
+			'This test might be redundant/not needed anymore.'
+		);
 		parent::setUp();
 		$this->model = new Patient;
 	}
