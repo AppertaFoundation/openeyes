@@ -131,45 +131,10 @@ class BaseController extends Controller
 	protected function beforeAction($action)
 	{
 
-		$app = Yii::app();
-		if (@$_GET['theme']!=null){
-			$app->session['theme']=@$_GET['theme'];
+		// Register base style.css unless it's a print action
+		if (!in_array($action->id,$this->printActions())) {
+			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
 		}
-
-		$theme = $app->session['theme'];
-		if($theme==null)$theme=0;
-
-		if($theme==0){ // 0 no theme original style
-			Yii::app()->theme=null;
-			if (!in_array($action->id,$this->printActions())) {
-				$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
-			}
-		}
-
-		if($theme==1){ // 1 new theme new style
-			Yii::app()->theme='rewrite';
-			if (!in_array($action->id,$this->printActions())) {
-				$this->registerCssFile('style_new.css', Yii::app()->createUrl('/css/style_new.css'), 200);
-			}
-		}
-
-		if($theme==2){ //new theme with supporting old style sheet
-			Yii::app()->theme='rewrite';
-			if (!in_array($action->id,$this->printActions())) {
-				$this->registerCssFile('style_new.css', Yii::app()->createUrl('/css/style_new.css'), 200);
-				$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
-			}
-		}
-
-		if($theme==3){ //new style sheet on old view files
-			Yii::app()->theme=null;
-			if (!in_array($action->id,$this->printActions())) {
-				$this->registerCssFile('style_new.css', Yii::app()->createUrl('/css/style_new.css'), 200);
-	//			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
-
-			}
-		}
-
 
 
 		if ($app->params['ab_testing']) {
