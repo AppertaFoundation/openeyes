@@ -1,5 +1,5 @@
 <phpunit bootstrap="bootstrap.php"
-         colors="true"
+         colors="false"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
@@ -48,4 +48,7 @@
         <log type="coverage-clover" target="/tmp/coverage.xml"/>
         <log type="coverage-php" target="/tmp/coverage.serialized"/>
     </logging>
+    <php>
+        <ini name="output_buffering" value="On" />
+    </php>
 </phpunit>
