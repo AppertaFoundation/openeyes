@@ -17,4 +17,4 @@
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/buttons.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/util.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/dialogs.js'))?>
-<?php $cs->registerScriptFile(Yii::app()->createUrl('js/script_new.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
