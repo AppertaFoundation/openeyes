@@ -1,10 +1,10 @@
 .sub-elements {
 	@extend %element-panel;
-	padding-top: 0;
 	padding-bottom: 0;
+	padding-top: 0;
 	&.inactive {
-		padding: 0;
 		margin-bottom: 10px;
+		padding: 0;
 	}
 	&:empty {
 		padding: 0;
@@ -19,12 +19,12 @@
 	border: 1px solid #fafafa;
 	margin-bottom: 10px;
 	.sub-element-title {
-		font-style: normal;
 		color: #666;
-		font-size: $default-font-size;
-		padding: emCalc(6px) emCalc(10px);
-		margin: 0;
 		float: left;
+		font-size: $default-font-size;
+		font-style: normal;
+		margin: 0;
+		padding: emCalc(6px) emCalc(10px);
 	}
 	.element-eye {
 		border-top: 1px solid #fafafa;

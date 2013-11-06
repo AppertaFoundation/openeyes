@@ -1,0 +1,5 @@
+.alert-box {
+	&.warning {
+		@extend .alert-box.alert;
+	}
+}

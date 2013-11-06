@@ -8,17 +8,6 @@
 //
 // Styleguide 3.1
 
-// Heading variables
-$oe-h1-badge-font-size: emCalc(13px) !default;
-$oe-h1-padding-top: 5px !default;
-$oe-h1-padding-right: 15px !default;
-$oe-h1-padding-bottom: 5px !default;
-$oe-h1-padding-left: 55px !default;
-$oe-h1-bg-gradient-left: #b4b0ae !default;
-$oe-h1-bg-gradient-right: #fffdea !default;
-$oe-h1-bg-gradient-width: 12px !default;
-$oe-h1-small-margin: 0 0 emCalc(10px) 0;
-
 // This is a placeholder selector so we can re-use this hover style for non-anchor hovers.
 %anchor-hover {
 	@include background(linear-gradient(-90deg, $anchor-font-color-hover 1px, transparent 1px) repeat-x center bottom / 2px 1px);
@@ -26,21 +15,21 @@ $oe-h1-small-margin: 0 0 emCalc(10px) 0;
 
 h1 {
 	&.badge {
-		display: inline-block;
-		font-size: $oe-h1-badge-font-size;
-		font-weight: bold;
-		margin: $oe-h1-small-margin;
-		padding: $oe-h1-padding-top $oe-h1-padding-right $oe-h1-padding-bottom $oe-h1-padding-left;
-		@include background(linear-gradient(left, $oe-h1-bg-gradient-left 0, $oe-h1-bg-gradient-right $oe-h1-bg-gradient-width));
+		@include background(linear-gradient(left, #b4b0ae 0, #fffdea 12px));
 		@include border-radius(0px 3px 3px 0px);
+		display: inline-block;
+		font-size: emCalc(13px);
+		font-weight: bold;
+		margin: 0 0 emCalc(10px) 0;;
+		padding: 5px 15px 5px 55px;
 		@media #{$small} {
 			margin-bottom: 0;
 		}
 		&.admin {
 			background: #666;
-			color: #fff;
-			border: 1px solid #999;
 			border-left: none;
+			border: 1px solid #999;
+			color: #fff;
 		}
 	}
 }
@@ -52,8 +41,8 @@ a {
 }
 
 code {
-	font-size: $default-font-size;
 	color: #000;
+	font-size: $default-font-size;
 	font-weight: normal;
 }
 

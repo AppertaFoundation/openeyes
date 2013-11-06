@@ -25,11 +25,7 @@
 // Styleguide 6.1
 
 // Table vars
-$oe-table-header-cell-bg-color: #dddddd !default;
-$oe-table-header-cell-font-size: emCalc(11px) !default;
-$oe-table-grid-cell-border-color: #CCD;
 $oe-table-cell-font-size: emCalc(13px);
-$oe-table-cell-label-font-size: emCalc(16px);
 $oe-table-footer-cell-font-size: emCalc(11px);
 $oe-table-cell-font-size-reset: 1em * 1em / $oe-table-cell-font-size;
 $oe-table-footer-cell-font-size-reset: 1em * 1em / $oe-table-footer-cell-font-size;
@@ -44,8 +40,8 @@ table {
 	tr {
 		th {
 			text-align: left;
-			background: $oe-table-header-cell-bg-color;
-			font-size: $oe-table-header-cell-font-size;
+			background: #dddddd;
+			font-size: emCalc(11px);
 			&, label {
 				font-weight: bold;
 			}
@@ -97,7 +93,7 @@ table {
 			}
 		}
 		th, td {
-			border-right: 1px solid $oe-table-grid-cell-border-color;
+			border-right: 1px solid #CCD;
 		}
 		th:last-child,
 		td:last-child {
@@ -122,7 +118,7 @@ table {
 	// Form fields within tables
 	td, th {
 		label {
-			font-size: $oe-table-cell-label-font-size;
+			font-size: emCalc(16px);
 		}
 	}
 	button, .button {

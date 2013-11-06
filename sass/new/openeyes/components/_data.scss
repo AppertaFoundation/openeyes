@@ -1,0 +1,15 @@
+// Data classes for displaying data
+
+// Data rows
+.data-row {
+	@extend .field-row;
+}
+.data-title {
+	@extend .element-title;
+}
+.data-label {
+	@extend .field-label;
+}
+.data-value {
+	@extend .field-value;
+}

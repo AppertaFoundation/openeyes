@@ -4,36 +4,27 @@
 // <div class="alert-box {$modifiers}">
 //     Alert! Some information the user needs to see, good or bad.
 //     <a href="#" class="close">&times;</a>
-//</div>
+// </div>
 //
-// .success             - Success information
-// .success.with-icon   - Success information with icon
-// .alert               - Alert information
-// .alert.with-icon     - Alert information with icon
-// .issue               - Issue information
-// .issue.with-icon     - Issue information with icon
-// .patient				- Patient warning
-// .patient.with-icon 	- Patient warning with icon
-// .secondary           - Secondary information
+// .success             	- Success information
+// .success.with-icon   	- Success information with icon
+// .alert               	- Alert information
+// .alert.with-icon     	- Alert information with icon
+// .issue               	- Issue information
+// .issue.with-icon     	- Issue information with icon
+// .patient					- Patient warning
+// .patient.with-icon 		- Patient warning with icon
+// .warning					- Warning
+// .watermark				- Watermark
+// .watermark.admin			- Admin watermark
+// .watermark.description	- Description watermark
 //
 // Styleguide 12.1
 
-// Alert box variables
-$oe-alert-default-bg-color: #e2e2e2 !default;
-$oe-alert-alert-bg-color: #ffe6b2 !default;
-$oe-alert-alert-with-icon-bg-image: image-url("_elements/icons/box/warning.png") !default;
-$oe-alert-alert-with-icon-min-height: 36px !default;
-$oe-alert-with-icon-padding-left: emCalc(60px) !default;
-$oe-alert-issue-bg-color: #fdf2e5 !default;
-$oe-alert-issue-with-icon-bg-image: image-url("_elements/icons/box/issue.png") !default;
-$oe-alert-issue-with-icon-min-height: 36px !default;
-$oe-alert-success-border-color: #99cc99 !default;
-$oe-alert-success-with-icon-bg-image: image-url("_elements/icons/box/info.png") !default;
-$oe-alert-success-with-icon-min-height: 36px !default;
-
+// Base alert-box styling.
 .alert-box {
-	@include alert($oe-alert-default-bg-color);
-	@include radius($alert-radius);
+	@include alert(#e2e2e2);
+	@include radius(5px);
 	.messages.patient & {
 		margin: .75em 0 0 0;
 	}
@@ -41,99 +32,35 @@ $oe-alert-success-with-icon-min-height: 36px !default;
 		@include alert-close;
 	}
 	ul {
-		margin: 0;
 		line-height: 1.4;
-	}
-	p {
-		font-size: 1em;
-		margin-bottom: 1em;
+		margin: 0;
 	}
 	li {
 		font-size: 1em;
 		margin-left: 1.4em;
 	}
+	p {
+		font-size: 1em;
+		margin-bottom: 1em;
+	}
 	&.with-icon {
-		padding-left: $oe-alert-with-icon-padding-left;
-		background-repeat: no-repeat;
 		background-position: left top;
-	}
-	&.success, &.info {
-		@include alert-style($success-color);
-		border-color: $oe-alert-success-border-color;
-		&.with-icon {
-			background-image: $oe-alert-success-with-icon-bg-image;
-			min-height: $oe-alert-success-with-icon-min-height;
-			padding-top: emCalc(14px);
-			padding-bottom: emCalc(14px);
-		}
-	}
-	&.alert {
-		@include alert-style($oe-alert-alert-bg-color);
-		border-color: $alert-border-color;
-		&.with-icon {
-			background-image: $oe-alert-alert-with-icon-bg-image;
-			min-height: $oe-alert-alert-with-icon-min-height;
-			padding-top: emCalc(14px);
-			padding-bottom: emCalc(14px);
-		}
-	}
-	&.warning {
-		@extend .alert-box.alert;
-	}
-	&.issue {
-		@include alert-style($oe-alert-issue-bg-color);
-		&.with-icon {
-			background-image: $oe-alert-issue-with-icon-bg-image;
-			min-height: $oe-alert-issue-with-icon-min-height;
-		}
-	}
-	&.watermark {
-		@include border-radius(0);
-		border: 0;
-		background: #f00;
-		color: #fff;
-		text-align: center;
-		font-size: emCalc(16px);
-		padding: emCalc(8px);
-		margin-bottom: emCalc(10px);
-		&.admin {
-			background: #DAA520;
-			&.stuck {
-				bottom: 0;
-				margin: 0;
-				position: fixed;
-				width: 100%;
-				z-index: 100;
-			}
-		}
-		&.description {
-			color: #666;
-			background: #ffc0cb;
-			p {
-				margin: 0;
-				font-size: emCalc(12px);
-			}
-		}
-	}
-	&.patient {
-		background-color: #eb5911;
-		border: 2px solid #fff;
-		color: #fff;
-		&.with-icon {
-			background-image: image-url("_elements/icons/box/patient-warning.png");
-			padding-top: emCalc(14px);
-			padding-bottom: emCalc(14px);
-		}
-	}
-	&.secondary {
-		@include alert-style($secondary-color);
+		background-repeat: no-repeat;
+		padding-left: emCalc(60px);
 	}
 	&.bottom {
 		margin-bottom: 0;
-		margin-top: $alert-bottom-margin;
+		margin-top: emCalc(20px);
 	}
 	.spinner {
 		float: left;
 		margin-right: 10px;
 	}
 }
+
+@import "alert-boxes/alert";
+@import "alert-boxes/issue";
+@import "alert-boxes/patient";
+@import "alert-boxes/success";
+@import "alert-boxes/warning";
+@import "alert-boxes/watermark";
