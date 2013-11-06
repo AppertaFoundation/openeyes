@@ -1,0 +1,43 @@
+$oe-toggle-trigger-width: 21px !default;
+$oe-toggle-trigger-height: 20px !default;
+$oe-toggle-trigger-border-radius: 0 0 3px 3px !default;
+$oe-toggle-trigger-icon-margin: 4px 0 0 0 !default;
+$oe-toggle-trigger-hover-bg-color: #3665ff !default;
+
+.toggle-trigger {
+	display: block;
+	height: $oe-toggle-trigger-height;
+	position: absolute;
+	right: 2px;
+	top: 0;
+	text-align: center;
+	width: $oe-toggle-trigger-width;
+	@include border-radius($oe-toggle-trigger-border-radius);
+	.icon-showhide {
+		margin: $oe-toggle-trigger-icon-margin;
+		vertical-align: top;
+	}
+	&:hover {
+		background: $oe-toggle-trigger-hover-bg-color;
+	}
+	&.toggle-hide {
+		.icon-showhide {
+			@include sprite-background-position($oe-sprite-icon-showhide, "hide");
+		}
+		&:hover {
+			.icon-showhide {
+				@include sprite-background-position($oe-sprite-icon-showhide, "hide-hover");
+			}
+		}
+	}
+	&.toggle-show {
+		.icon-showhide {
+			@include sprite-background-position($oe-sprite-icon-showhide, "show");
+		}
+		&:hover {
+			.icon-showhide {
+				@include sprite-background-position($oe-sprite-icon-showhide, "show-hover");
+			}
+		}
+	}
+}

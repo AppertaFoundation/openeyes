@@ -17,10 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class CheckBoxArray extends BaseCWidget
+class CheckBoxArray extends BaseFieldWidget
 {
 	public $fields;
-	public $options;
 	public $columns = array();
 	public $checked = array();
 	public $labeltext;

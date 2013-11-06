@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+// Copyright header.
+@import "openeyes/copyright";
+
+// We need to declare this here as some of the mixins and functions require this.
+$em-base: 16px;
+
+// Import base mixins and functions.
+@import "compass/css3";
+@import "compass/css3/user-interface";
+@import "openeyes/mixins";
+@import "openeyes/functions";
+@import "openeyes/placeholders";
+
+// We include the global foundation file to allow the OE modules to access the global
+// grid (and other) variables.
+$include-html-global-classes: false;
+@import "foundation/components/global";
+
+// Global variables. We use the variables to change the site theme.
+@import "openeyes/themes/default/variables";

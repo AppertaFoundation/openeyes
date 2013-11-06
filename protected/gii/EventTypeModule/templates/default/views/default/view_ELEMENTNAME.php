@@ -18,10 +18,12 @@
  */
 <?php echo "?>\n"?>
 
-<h4 class="elementTypeName"><?php echo '<?php'?> echo $element->elementType->name<?php echo '?>'?></h4>
+<section class="element">
+	<header class="element-header">
+		<h3 class="element-title"><?php echo '<?php'?> echo $element->elementType->name<?php echo '?>'?></h3>
+	</header>
 
-<table class="subtleWhite normalText">
-	<tbody>
+	<div class="element-data">
 <?php
 if (isset($element)) {
 	foreach ($element['fields'] as $field) {
@@ -29,5 +31,5 @@ if (isset($element)) {
 	}
 }
 ?>
-	</tbody>
-</table>
+	</div>
+</section>

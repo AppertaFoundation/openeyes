@@ -1,0 +1,299 @@
+$oe-form-input-radius: 3px !default;
+
+/* Standard Forms */
+form {
+	margin: 0 0 $form-spacing;
+	&.cancel {
+		margin-bottom: 0;
+	}
+}
+
+/* Using forms within rows, we need to set some defaults */
+// form .row {
+// 	@include form-row-base;
+// }
+
+/* Label Styles */
+label, .label {
+	@include form-label;
+	&.right {
+		@include form-label(right, false);
+		margin: 0;
+	}
+	&.inline {
+		@include form-label(inline, false);
+		margin: 0;
+		display: inline-block;
+		padding: 0 emCalc(10px) 0 0;
+	}
+	&.align {
+		padding-top: emCalc(5px);
+	}
+}
+
+/* We use this to get basic styling on all basic form elements */
+@include input-form-fields {
+	@include form-element;
+	@if not $input-include-glowing-effect {
+		@include single-transition(all, 0.15s, linear);
+	}
+	padding: emCalc(5px) emCalc(6px);
+	margin: 0;
+	&.inline {
+		display: inline-block;
+		width: auto;
+		margin: 0 emCalc(10px) 0 0;
+	}
+}
+
+
+input[type="range"] {
+	width: 100%;
+}
+
+input[readonly] {
+	&, &:focus {
+		color: #666;
+		background: #f3f3f3;
+		@include box-shadow(none);
+		border: $input-border-width $input-border-style $input-border-color;
+	}
+}
+
+textarea {
+	min-height: 4em;
+	&.address {
+		font-family: courier;
+		color: #000;
+	}
+}
+
+select {
+	font-size: $default-font-size;
+	max-width: 100%;
+}
+
+/* Normalize file input width */
+input[type="file"] {
+	width: 100%;
+}
+
+/* We add basic fieldset styling */
+fieldset {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	&.inline {
+		legend {
+			display: inline-block;
+			float: left;
+			width: auto;
+			padding-right: emCalc(15px);
+			line-height: emCalc(20px);
+			margin: 0;
+		}
+	}
+	// and legend styles
+	legend {
+		font-weight: $legend-font-weight;
+		font-size: $default-font-size;
+		background: $legend-bg;
+		padding: $legend-padding;
+		display: block;
+		margin: $legend-margin;
+		width: 100%;
+		&.column {
+			margin-bottom: 0;
+			// As the fieldset font-size is $default-font-size, we need to
+			// adjust the gutters to account for the smaller em width.
+			padding-left: $column-gutter / 2 + 1em - $default-font-size;
+			padding-right: $column-gutter / 2 + 1em - $default-font-size;
+		}
+	}
+	legend.column {
+		font-size: $default-font-size;
+	}
+}
+
+/* Error Handling */
+
+// .error input,
+// input.error,
+// .error textarea,
+// textarea.error {
+// 	@include form-error-color;
+// }
+
+.error label,
+label.error {
+	@include form-label-error-color;
+}
+
+.error small,
+small.error {
+	@include form-error-message;
+}
+
+/* Attach elements to the beginning or end of an input */
+
+.prefix,
+.postfix {
+	display: inline-block;
+	padding: 0 emCalc(5px);
+	&.align {
+		@extend .label.align;
+	}
+}
+
+/* Field helpers */
+.field-info {
+	font-size: $default-font-size;
+	display: inline-block;
+}
+
+/* Field highlight */
+.field-highlight {
+	@extend .pill;
+	display: block;
+	&.inline {
+		display: inline-block;
+	}
+}
+
+
+label {
+	&.highlight {
+		background: #e3f0f2;
+		padding: emCalc(5px) emCalc(14px) emCalc(6px) emCalc(10px);
+		margin-bottom: emCalc(6px);
+		@include border-radius(3px);
+		&:hover {
+			background: #fff;
+		}
+		&.booking {
+			padding: emCalc(9px) emCalc(14px) emCalc(10px) emCalc(10px);
+			&:hover {
+				background: #3665ff;
+				color: #fff;
+			}
+			img {
+				vertical-align: top;
+			}
+		}
+	}
+	input[type="checkbox"],
+	input[type="radio"] {
+		margin: 0;
+		vertical-align: top;
+	}
+}
+
+// Field sizes
+//
+// You should control the width of form fields by the field container (usually
+// using the grid.) There are, however, different field classses that change the
+// font-size and padding, and a fixed-with class to control the width. Please be
+// aware that if you use the fixed-width class, you  will need to manually accomodate
+// this width at different breakpoints.
+//
+// Markup:
+// <input type="text" class="{$modifiers}" />
+//
+// .small             - A small form field
+// .small.fixed-width - A small form field with a fixed width
+//
+// Styleguide 9.2
+
+// Field sizes vars
+$oe-form-field-small-padding: emCalc(3px) emCalc(4px) !default;
+$oe-form-field-fixed-width: emCalc(110px) !default;
+
+@include input-form-fields {
+	@include border-radius($oe-form-input-radius);
+	height: auto;
+	&.small {
+		padding: $oe-form-field-small-padding;
+	}
+	&.fixed-width {
+		width: $oe-form-field-fixed-width;
+	}
+	&.large {
+		padding: emCalc(8px) emCalc(5px);
+	}
+}
+
+// Field rows, fields and label wrappers
+$oe-field-highlight-border-radius: 5px !default;
+$oe-field-highlight-bg-color: white !default;
+$oe-field-highlight-padding: .75em !default;
+$oe-field-highlight-font-size: emCalc(18px) !default;
+$oe-field-highlight-margin: 0 -.75em !default;
+$oe-field-highlight-list-item-font-size: 1em !default;
+$oe-field-highlight-important-bg-color: #fff300 !default;
+$oe-field-value-padding-bottom: 5px !default;
+$oe-field-value-font-size: $default-font-size !default;
+$oe-field-value-line-height: 1.3 !default;
+
+// Field rows
+.field-row {
+	&:not(.hide) {
+		padding-bottom: $form-spacing;
+	}
+	&:last-child {
+		padding: 0;
+	}
+	table:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.field-value {
+	font-size: $oe-field-value-font-size;
+	line-height: $oe-field-value-line-height;
+	margin: 0;
+	li {
+		font-size: 1em;
+		margin-left: 1.4em;
+	}
+	&.none {
+		color: #999;
+		font-style: italic;
+	}
+	&.highlight {
+		@include border-radius($oe-field-highlight-border-radius);
+		background: $oe-field-highlight-bg-color;
+		padding: $oe-field-highlight-padding;
+		font-size: $oe-field-highlight-font-size;
+		margin: $oe-field-highlight-margin;
+		list-style-type: none;
+		li {
+			font-size: $oe-field-highlight-list-item-font-size;
+			margin: 0;
+			padding: emCalc(4px) 0;
+		}
+		&.important {
+			background: $oe-field-highlight-important-bg-color;
+		}
+	}
+}
+
+.field-label {
+	@extend .field-value;
+}
+
+
+// Data classes for displaying data
+
+// Data rows
+.data-row {
+	@extend .field-row;
+}
+.data-title {
+	@extend .element-title;
+}
+.data-label {
+	@extend .field-label;
+}
+.data-value {
+	@extend .field-value;
+}

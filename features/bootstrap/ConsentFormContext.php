@@ -106,13 +106,25 @@ class ConsentFormContext extends PageObjectContext
     /**
      * @Then /^I choose Permissions for images No$/
      */
-    public function iChoosePermissionsForImages($images)
+    public function iChoosePermissionsForImages()
     {
         /**
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
-        $consentForm->permissionImages();
+        $consentForm->permissionImagesNo();
+    }
+
+    /**
+     * @Then /^I choose Permissions for images Yes$/
+     */
+    public function iChoosePermissionsForImagesYes()
+    {
+        /**
+         * @var ConsentForm $consentForm
+         */
+        $consentForm = $this->getPage('ConsentForm');
+        $consentForm->permissionImagesNo();
     }
 
     /**

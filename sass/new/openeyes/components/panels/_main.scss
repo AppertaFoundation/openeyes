@@ -1,0 +1,15 @@
+$oe-main-panel-bg-color: #e2dfdb !default;
+$oe-main-panel-padding: 30px !default;
+$oe-main-panel-radius: 10px !default;
+$oe-main-panel-border-width: 2px !default;
+$oe-main-panel-border-color: #666666 !default;
+$oe-main-panel-margin-top: 50px !default;
+$oe-main-panel-margin-bottom: 100px !default;
+
+%main-panel {
+	@include border-radius($oe-main-panel-radius);
+	background: $oe-main-panel-bg-color;
+	border: $oe-main-panel-border-width solid $oe-main-panel-border-color;
+	padding: $oe-main-panel-padding;
+	margin: $oe-main-panel-margin-top auto $oe-main-panel-margin-bottom auto;
+}

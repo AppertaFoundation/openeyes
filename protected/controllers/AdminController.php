@@ -1097,7 +1097,7 @@ class AdminController extends BaseController
 				if (!$cbs->save()) {
 					throw new Exception("Unable to save CommissioningBodyService: ".print_r($cbs->getErrors(),true));
 				}
-				
+
 				if (!$address->save()) {
 					throw new Exception("Unable to save CommissioningBodyService address: ".print_r($address->getErrors(),true));
 				}

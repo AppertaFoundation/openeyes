@@ -16,7 +16,8 @@ default:
             base_url:           http://localhost:8888
             javascript_session: selenium2
             goutte:             ~
-            selenium2:          ~
+            selenium2:
+                browser: 'chrome'
             saucelabs:
                 connect:  true
                 browser:  'chrome'

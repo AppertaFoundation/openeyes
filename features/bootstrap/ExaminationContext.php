@@ -1072,6 +1072,246 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
+     * @Given /^I select a Right Diagnosis of Macular retinal oedema$/
+     */
+    public function iSelectARightDiagnosisOfMacularRetinalOedema()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightMacularRetinal();
+    }
+
+    /**
+     * @Then /^I select Right Secondary of Venous retinal branch occlusion$/
+     */
+    public function iSelectRightSecondaryOfVenousRetinalBranchOcclusion()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightSecondaryVenousRetinalBranchOcclusion();
+    }
+
+    /**
+     * @Given /^I select a Left Diagnosis of Macular retinal oedema$/
+     */
+    public function iSelectALeftDiagnosisOfMacularRetinalOedema()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftMacularRetinal();
+    }
+
+    /**
+     * @Then /^I select Left Secondary of Diabetic macular oedema$/
+     */
+    public function iSelectLeftSecondaryOfDiabeticMacularOedema()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftSecondaryDiabeticMacularOedema();
+    }
+
+    /**
+     * @Then /^I choose a Right Failed Laser of Yes$/
+     */
+    public function iChooseARightFailedLaserOfYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightFailedLaserYes();
+    }
+
+    /**
+     * @Then /^I choose a Right Failed Laser of No$/
+     */
+    public function iChooseARightFailedLaserOfNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightFailedLaserNo();
+    }
+
+    /**
+     * @Then /^I choose a Right Unsuitable Laser of Yes$/
+     */
+    public function iChooseARightUnsuitableLaserOfYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightUnsuitableForLaserYes();
+    }
+
+    /**
+     * @Then /^I choose a Right Unsuitable Laser of No$/
+     */
+    public function iChooseARightUnsuitableLaserOfNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightUnsuitableForLaserNo();
+    }
+
+    /**
+     * @Then /^I choose a Right Previous Ozurdex Yes$/
+     */
+    public function iChooseARightPreviousOzurdexYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightPreviousOzurdexYes();
+    }
+
+    /**
+     * @Then /^I choose a Right Previous Ozurdex No$/
+     */
+    public function iChooseARightPreviousOzurdexNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightPreviousOzurdexNo();
+    }
+
+    /**
+     * @Then /^I choose a Left CRT above Four Hundred of Yes$/
+     */
+    public function iChooseALeftCrtAboveFourHundredOfYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftCrtIncreaseMoreThanFourHundredYes();
+    }
+
+    /**
+     * @Then /^I choose a Left CRT above Four Hundred of No$/
+     */
+    public function iChooseALeftCrtAboveFourHundredOfNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftCrtIncreaseMoreThanFourHundredNo();
+    }
+
+    /**
+     * @Then /^I choose a Left Foveal Structure Damage Yes$/
+     */
+    public function iChooseALeftFovealStructureDamageYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftFovealDamageYes();
+    }
+
+    /**
+     * @Then /^I choose a Left Foveal Structure Damage No$/
+     */
+    public function iChooseALeftFovealStructureDamageNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftFovealDamageNo();
+    }
+
+    /**
+     * @Then /^I choose a Left Failed Laser of Yes$/
+     */
+    public function iChooseALeftFailedLaserOfYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftFailedLaserYes();
+    }
+
+    /**
+     * @Then /^I choose a Left Failed Laser of No$/
+     */
+    public function iChooseALeftFailedLaserOfNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftFailedLaserNo();
+    }
+
+    /**
+     * @Then /^I choose a Left Unsuitable Laser of Yes$/
+     */
+    public function iChooseALeftUnsuitableLaserOfYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftUnsuitableForLaserYes();
+    }
+
+    /**
+     * @Then /^I choose a Left Unsuitable Laser of No$/
+     */
+    public function iChooseALeftUnsuitableLaserOfNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftUnsuitableForLaserNo();
+    }
+
+    /**
+     * @Then /^I choose a Left Previous Anti VEGF of Yes$/
+     */
+    public function iChooseALeftPreviousAntiVegfOfYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftPreviousAntiVEGFyes();
+    }
+
+    /**
+     * @Then /^I choose a Left Previous Anti VEGF of No$/
+     */
+    public function iChooseALeftPreviousAntiVegfOfNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftPreviousAntiVEGFno();
+    }
+
+    /**
      * @Then /^I choose to expand the Risks section$/
      */
     public function iChooseToExpandTheRisksSection()

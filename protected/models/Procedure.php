@@ -124,16 +124,17 @@ class Procedure extends BaseActiveRecord
 	 * Store extra data for the session
 	 *
 	 * @param string  $term          term to search by
+	 * @param string $restrict Set to 'booked' or 'unbooked' to restrict results to procedures of that type
 	 *
 	 * @return array
 	 */
-	public static function getList($term, $restrict = false)
+	public static function getList($term, $restrict = null)
 	{
 		$search = "%{$term}%";
 
 		$select = 'term, short_format, id, default_duration';
 
-		$where = 'term LIKE :term';
+		$where = '(term like :search or short_format like :search or snomed_term like :search or snomed_code = :term or aliases like :search)';
 
 		if ($restrict == 'unbooked') {
 			$where .= ' and unbooked = 1';
@@ -141,29 +142,12 @@ class Procedure extends BaseActiveRecord
 			$where .= ' and unbooked = 0';
 		}
 
-		$procedures = Yii::app()->db->createCommand()
-			->select($select)
+		return Yii::app()->db->createCommand()
+			->select('term')
 			->from('proc')
-			->where($where, array(':term'=>$search))
+			->where($where, array(':term' => $term, ':search' => $search))
 			->order('term')
-			->queryAll();
-
-		$data = array();
-		$session = Yii::app()->session['Procedures'];
-
-		foreach ($procedures as $procedure) {
-			$data[] = $procedure['term'];
-			$id = $procedure['id'];
-			$session[$id] = array(
-				'term' => $procedure['term'],
-				'short_format' => $procedure['short_format'],
-				'duration' => $procedure['default_duration'],
-			);
-		}
-
-		Yii::app()->session['Procedures'] = $session;
-
-		return $data;
+			->queryColumn();
 	}
 
 	public function getListBySubspecialty($subspecialtyId, $restrict = false)

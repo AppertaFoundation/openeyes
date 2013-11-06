@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ProcedureSelection extends BaseCWidget
+class ProcedureSelection extends BaseFieldWidget
 {
 	public $subsections;
 	public $procedures;
@@ -29,7 +29,6 @@ class ProcedureSelection extends BaseCWidget
 	public $class;
 	public $total_duration = 0;
 	public $last;
-	public $short_version = true;
 	public $identifier = 'procs';
 	public $relation = 'procedures';
 	public $label = 'Procedures';

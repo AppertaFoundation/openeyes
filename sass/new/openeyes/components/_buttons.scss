@@ -1,0 +1,305 @@
+// Common buttons
+//
+// These are the generic button styles that are used throughout the application.
+//
+// Markup:
+// <a href="#" class="button {$modifiers}">Link Button</a>
+// <button class="button {$modifiers}">Button Element</button>
+// <input type="button" class="button {$modifiers}" value="input[type='button']"/>
+//
+// .primary             - Primary button style
+// :hover               - Primary button hover state
+// :focus               - Primary button focus state
+// :active              - Primary button pressed state
+// .disabled            - Disabled state for all buttons
+// .secondary           - Secondary button
+// .secondary:hover     - Secondary button hover state
+// .secondary:focus     - Secondary button focus state
+// .secondary:active    - Secondary button pressed state
+// .warning             - Warning button
+// .warning:hover       - Warning button hover state
+// .warning:focus       - Warning button focus state
+// .warning:active      - Warning button pressed state
+// .delete				- Delete button
+// .delete:hover		- Delete button hover state
+// .delete:focus		- Delete button focus state
+// .delete:active		- Delete button active state
+//
+// Styleguide 10.1
+
+// Primary button variables
+$oe-button-primary-bg-color-start: #107be9 !default;
+$oe-button-primary-bg-color-end: #1469bf !default;
+$oe-button-primary-shadow-opacity: 0.3 !default;
+$oe-button-primary-font-size: emCalc(16px);
+$oe-button-primary-text-shadow-1: #105dae !default;
+$oe-button-primary-text-shadow-2: #5c0faa !default;
+$oe-button-primary-border-color: #105dae !default;
+$oe-button-primary-hover-color: white !default;
+$oe-button-primary-hover-bg-color-start: #118afb !default;
+$oe-button-primary-hover-bg-color-end: #1279e3 !default;
+$oe-button-primary-hover-border-color: #1974d1 !default;
+$oe-button-primary-active-bg-color-start: #145ea9 !default;
+$oe-button-primary-active-bg-color-end: #104d8b !default;
+$oe-button-primary-active-border-color: #0f467e !default;
+$oe-button-primary-padding: emCalc(8px) emCalc(34px) !default;
+
+// Primary button (blue)
+button, .button, input[type="submit"] {
+	@include button-base;
+	@include border-radius($button-radius);
+	@include background(linear-gradient($oe-button-primary-bg-color-start, $oe-button-primary-bg-color-end));
+	@include box-shadow(0 1px 4px rgba(0, 0, 0, $oe-button-primary-shadow-opacity));
+	border: 0;
+	border-bottom: 2px solid $oe-button-primary-border-color;
+	color: $button-font-color;
+	font-size: $oe-button-primary-font-size;
+	padding: $oe-button-primary-padding;
+	text-shadow: 1px 1px 0 $oe-button-primary-text-shadow-1, 2px 2px 0 $oe-button-primary-text-shadow-2;
+	margin: 0;
+	&:hover,
+	&:focus {
+		@include background(linear-gradient($oe-button-primary-hover-bg-color-start, $oe-button-primary-hover-bg-color-end));
+		border-color: $oe-button-primary-hover-border-color;
+		color: $oe-button-primary-hover-color;
+	}
+	&:active {
+		@include background(linear-gradient($oe-button-primary-active-bg-color-start, $oe-button-primary-active-bg-color-end));
+		border-color: $oe-button-primary-active-border-color;
+	}
+}
+
+// Secondary button vars
+$oe-button-secondary-bg-color-start: #43a844;
+$oe-button-secondary-bg-color-end: #55a256;
+$oe-button-secondary-text-shadow-1: #427d42;
+$oe-button-secondary-text-shadow-2: #43727f;
+$oe-button-secondary-border-color: #3fa522;
+$oe-button-secondary-hover-bg-color-start: #48bd27;
+$oe-button-secondary-hover-bg-color-end: #3fa522;
+$oe-button-secondary-hover-border-color: #569b42;
+$oe-button-secondary-active-bg-color-start: #458446;
+$oe-button-secondary-active-bg-color-end: #396c39;
+$oe-button-secondary-active-border-color: #336234;
+
+// Secondary button (green)
+button, .button, input[type="submit"] {
+	&.secondary {
+		@include background(linear-gradient($oe-button-secondary-bg-color-start, $oe-button-secondary-bg-color-end));
+		border-color: $oe-button-secondary-border-color;
+		text-shadow: 1px 1px 0 $oe-button-secondary-text-shadow-1, 2px 2px 0 $oe-button-secondary-text-shadow-2;
+		&:hover,
+		&:focus {
+			@include background(linear-gradient($oe-button-secondary-hover-bg-color-start, $oe-button-secondary-hover-bg-color-end));
+			border-color: $oe-button-secondary-hover-border-color;
+		}
+		&:active {
+			@include background(linear-gradient($oe-button-secondary-active-bg-color-start, $oe-button-secondary-active-bg-color-end));
+			border-color: $oe-button-secondary-active-border-color;
+		}
+	}
+}
+
+// Warning button vars
+$oe-button-warning-bg-color-start: #cf0d27;
+$oe-button-warning-bg-color-end: #b8152b;
+$oe-button-warning-text-shadow-1: #9a091c;
+$oe-button-warning-text-shadow-2: #851616;
+$oe-button-warning-border-color: #9a091c;
+$oe-button-warning-hover-bg-color-start: #e81515;
+$oe-button-warning-hover-bg-color-end: #e01a1a;
+$oe-button-warning-hover-border-color: #ad1515;
+$oe-button-warning-active-bg-color-start: #901828;
+$oe-button-warning-active-bg-color-end: #761421;
+$oe-button-warning-active-border-color: #6b121e;
+
+// Warning button (red)
+button, .button, input[type="submit"] {
+	&.warning {
+		@include background(linear-gradient($oe-button-warning-bg-color-start, $oe-button-warning-bg-color-end));
+		border-color: $oe-button-warning-border-color;
+		text-shadow: 1px 1px 0 $oe-button-warning-text-shadow-1, 2px 2px 0 $oe-button-warning-text-shadow-2;
+		&:hover,
+		&:focus {
+			@include background(linear-gradient($oe-button-warning-hover-bg-color-start, $oe-button-warning-hover-bg-color-end));
+			border-color: $oe-button-warning-hover-border-color;
+		}
+		&:active {
+			@include background(linear-gradient($oe-button-warning-active-bg-color-start, $oe-button-warning-active-bg-color-end));
+			border-color: $oe-button-warning-active-border-color;
+		}
+	}
+}
+
+// Delete button styles
+button, .button, input[type="submit"] {
+	&.delete {
+		@include box-shadow(none);
+		background: none;
+		border-color: $oe-button-warning-border-color;
+		border: 0;
+		color: #000;
+		text-shadow: none;
+		&:hover,
+		&:focus {
+			@include background(linear-gradient($oe-button-warning-bg-color-start, $oe-button-warning-bg-color-end));
+			@include box-shadow(0 1px 4px rgba(0, 0, 0, $oe-button-primary-shadow-opacity));
+			text-shadow: 1px 1px 0 $oe-button-warning-text-shadow-1, 2px 2px 0 $oe-button-warning-text-shadow-2;
+			color: #fff;
+		}
+		&:active {
+			@include background(linear-gradient($oe-button-warning-active-bg-color-start, $oe-button-warning-active-bg-color-end));
+			border-color: $oe-button-warning-active-border-color;
+			color: #fff;
+		}
+	}
+}
+
+// Disabled button vars
+$oe-button-disabled-bg-color-start: #aaaaaa !default;
+$oe-button-disabled-bg-color-stop: #999999 !default;
+$oe-button-disabled-border-color: #999999 !default;
+
+// Disabled button (grey)
+// This should always be defined after all other button variations.
+button, .button, input[type="submit"] {
+	&.disabled,
+	&[disabled] {
+		&,
+		&:hover,
+		&:focus,
+		&:active {
+			@include background(linear-gradient($oe-button-disabled-bg-color-start, $oe-button-disabled-bg-color-stop));
+			border-color: $oe-button-disabled-border-color;
+			text-shadow: none;
+		}
+	}
+}
+
+// Extend disabled to inactive buttons
+button, .button, input[type="submit"] {
+  &.inactive {
+    @extend button.disabled;
+  }
+}
+
+// Button sizes
+//
+// Buttons can have different sizes.
+//
+// Markup:
+// <a href="#" class="button {$modifiers}">Link Button</a>
+//
+// .small               - Small button
+//
+// Styleguide 10.2
+
+// Small button vars
+$oe-button-small-padding: emCalc(5px) emCalc(20px) !default;
+$oe-button-small-font-size: emCalc(13px);
+$oe-button-small-letter-spacing: 1px;
+
+// Tiny button vars
+$oe-button-tiny-padding: emCalc(5px) emCalc(20px) !default;
+$oe-button-tiny-font-size: emCalc(11px);
+$oe-button-tiny-letter-spacing: 1px;
+
+button, .button, input[type="submit"] {
+	&.small {
+		padding: $oe-button-small-padding;
+		font-size: $oe-button-small-font-size;
+		letter-spacing: $oe-button-small-letter-spacing;
+	}
+	&.tiny {
+		padding: $oe-button-tiny-padding;
+		font-size: $oe-button-tiny-font-size;
+		letter-spacing: $oe-button-tiny-letter-spacing;
+		line-height: 1.4;
+	}
+}
+
+// Button icons
+//
+// Buttons can have icons.
+//
+// Markup:
+// <button class="secondary small" type="button">
+//     <span class="icon-button-small-plus-sign"></span>
+//     Add episode
+// </button>
+// <a href="#" class="button button-icon small">
+//     <span class="icon-button-small-mini-cross"></span>
+//     <span class="hide-offscreen">Add element</span>
+// </a>
+// <a href="#" class="button button-icon small delete">
+//     <span class="icon-button-small-trash-can"></span>
+//     <span class="hide-offscreen">Delete</span>
+// </a>
+//
+// Styleguide 10.3
+button, .button, input[type="submit"] {
+	[class*="icon-button-small-"] {
+		margin: -6px -2px -5px -14px;
+	}
+	&.button-icon {
+		&.small {
+			padding-right: emCalc(1px);
+			padding-left: emCalc(1px);
+			[class*="icon-button-small-"] {
+				margin: -7px 0 -5px 0;
+			}
+			&.delete {
+				padding-right: emCalc(5px);
+				padding-left: emCalc(5px);
+				padding-bottom: emCalc(7px);
+				[class*="icon-button-small-"] {
+					margin-top: -6px;
+				}
+				&:hover {
+					.icon-button-small-trash-can {
+						@include sprite-background-position($oe-sprite-icons-button-small, "trash-can-hover");
+					}
+				}
+			}
+		}
+	}
+}
+
+// Button groups
+//
+// Button can be grouped.
+//
+// Markup:
+// <ul class="button-group">
+//     <li><a href="#" class="small button">Button 1</a></li>
+//     <li><a href="#" class="small button">Button 2</a></li>
+//     <li><a href="#" class="small button">Button 3</a></li>
+// </ul>
+//
+// Styleguide 10.4
+.button-group {
+	@include button-group-container;
+	& > li {
+		@include button-group-style;
+	}
+	button, .button, input[type="submit"] {
+		@include border-radius(0);
+		padding: emCalc(8px) emCalc(16px);
+		margin: 0;
+	}
+	li:first-child {
+		button, .button, input[type="submit"] {
+			@include border-radius($button-radius 0 0 $button-radius);
+		}
+	}
+	li:last-child {
+		button, .button, input[type="submit"] {
+			@include border-radius(0 $button-radius $button-radius 0);
+		}
+	}
+	&.small {
+		button, .button, input[type="submit"] {
+			padding: emCalc(5px) emCalc(10px);
+		}
+	}
+}

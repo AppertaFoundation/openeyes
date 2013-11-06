@@ -4,7 +4,7 @@ Feature: Create New Correspondence using Support Firm
   As an automation tester
   I want to build a template with supporting code for each web page
 
-  Scenario: Login and create a new Correspondence
+  Scenario: Login and create a new Correspondence using Support Firm
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -30,7 +30,7 @@ Feature: Create New Correspondence using Support Firm
 #    Then I choose a Management of "site181"
 #    And I choose Drugs "site301"
 #    Then I choose Outcome "site341"
-    # The above fields are greyed out in my data set :(
+#    The above fields are greyed out in my data set :(
 
     And I choose CC Target "patient"
 

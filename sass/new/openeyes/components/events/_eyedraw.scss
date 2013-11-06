@@ -1,0 +1,29 @@
+.eyedraw-image {
+	&.small {
+		@extend .large-3;
+	}
+	&.large {
+		@extend .large-5;
+	}
+}
+.eyedraw-value {
+	&.small {
+		@extend .large-9;
+	}
+	&.large {
+		@extend .large-7;
+	}
+}
+
+.edit {
+	.eyedraw-image {
+		&.small {
+			@extend .large-4;
+		}
+	}
+	.eyedraw-fields {
+		&.small {
+			@extend .large-8;
+		}
+	}
+}

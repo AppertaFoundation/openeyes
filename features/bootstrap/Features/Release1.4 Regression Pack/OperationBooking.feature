@@ -4,92 +4,134 @@ Feature: Create New Operation Booking Event
   As an automation tester
   I want to build a template with supporting code for each web page
 
-  Scenario Outline: Login and create a Operation Booking
+  Scenario: Route 1: Login and create a Operation Booking Anderson Glaucoma
 
-    Given I am on the OpenEyes "<environment>" homepage
-    And I enter login credentials "<username>" and "<password>"
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
     And I select Site "2"
     Then I select a firm of "3"
 
-    Then I search for hospital number "<hospnumber>"
-    #Then I search for patient name last name "<last>" and first name "<first>"
+    Then I search for hospital number "1009465"
 
     Then I select the Latest Event
-    #Then I select Create or View Episodes and Events
+
     Then I expand the Glaucoma sidebar
-    And I add a New Event "<EventType>"
+    And I add a New Event "OpBooking"
 
     Then I select Diagnosis Eyes of "Left"
     And I select a Diagnosis of "30041005"
     Then I select Operation Eyes of "Left"
     And I select a Procedure of "41"
 
-    #Then I select Yes to Consultant required
     Then I select No to Consultant required
 
-    And I select a Anaesthetic type "<AnaType>"
+    And I select a Anaesthetic type "Topical"
 
     Then I select Yes to a Post Operative Stay
     Then I select No to a Post Operative Stay
 
     And I select a Operation Site of "1"
 
-    #Then I select a Priority of Routine
     Then I select a Priority of Urgent
 
     And I select a decision date of "14"
 
-#    Then I add comments of "Insert test comments here"
-
-    #Then I select Save and Schedule later
-
     Then I select Save and Schedule now
-  # !!!THIS TEST WILL FAIL IF THERE ARE OVER 66 EVENTS - THE SAVE BUTTON WILL NOT BE IN VIEW!!!
 
     And I select an Available theatre slot date
     And I select an Available session time
-#    Then I add Session comments of "Insert session comments here"
-#    And I add Operation comments of "Insert operation comments here"
 
     Then I confirm the operation slot
 
 
+  Scenario: Route 2: Login and create a Operation Booking Anderson Cataract
 
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
 
+    Then I search for hospital number "1009465"
 
-  Examples: User details
-    | environment   | site      | username | password     | hospnumber   | nhs        | last    | first  | EventType | DiagEyes  | Diagnosis | OpEyes |Procedure | AnaType    |
-    | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin, | Violet | OpBooking | Both      | 95717004  | Both   | 41       | Topical    |
+    Then I select the Latest Event
 
-  # Firm 1 = Anderson (Cataract)
+    Then I expand the Cataract sidebar
+    And I add a New Event "OpBooking"
 
-  # Site ID's:
-  #1  =City Road
-  #2  =Bedford
-  #11 =Boots
-  #10 =Bridge lane
-  #17 =Croydon
-  #3  =Ealing
-  #19 =Harlow
-  #18 =Homerton
-  #12 =Loxford
-  #6  =Mile End
-  #4  =Northwick Park
-  #7  =Potters Bar
-  #8  =Queen Mary's
-  #9  =St Ann's
-  #5  =St George's
-  #14 =Teddington
-  #15 =Upney lane
-  #16 =Visioncare
-  #20 =Watford
+    Then I select Diagnosis Eyes of "Right"
+    And I select a Diagnosis of "24010005"
+    Then I select Operation Eyes of "Right"
+    And I select a Procedure of "79"
 
-  # Procedure 41 = Anterior vitrectomy
+    Then I select Yes to Consultant required
 
-  # Last name to include a comma after to match search criteria i.e Coffin,
+    And I select a Anaesthetic type "LA"
 
-  # For Available theatre and session I have coded to select the first elements which are "Available" - so not to rely on potentially expired dates
-  # we can alter this to allow Example Date to be used instead
+    Then I select Yes to a Post Operative Stay
 
+    And I select a Operation Site of "2"
 
+    Then I select a Priority of Routine
 
+    And I select a decision date of "10"
+
+    Then I add comments of "Insert test comments here"
+
+    Then I select Save and Schedule now
+
+    Then I select Next Month
+
+    And I select an Available theatre slot date
+    And I select an Available session time
+
+    Then I add Session comments of "Insert session comments here"
+    And I add Operation comments of "Insert operation comments here"
+
+    Then I confirm the operation slot
+
+  Scenario: Route 3: Login and create a Operation Booking Anderson Medical Retinal
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "4"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Medical Retinal sidebar
+    And I add a New Event "OpBooking"
+
+    Then I select Diagnosis Eyes of "Both"
+    And I select a Diagnosis of "255024002"
+    Then I select Operation Eyes of "Both"
+    And I select a Procedure of "327"
+
+    Then I select Yes to Consultant required
+
+    And I select a Anaesthetic type "LAC"
+
+    Then I select No to a Post Operative Stay
+
+    And I select a Operation Site of "2"
+
+    Then I select a Priority of Urgent
+
+    And I select a decision date of "3"
+
+    Then I add comments of "Insert test comments here"
+
+    Then I select Save and Schedule now
+
+    Then I change the Viewing Schedule to Emergency List
+
+    Then I select Next Month
+
+    Then I select an Available theatre slot date of the "16" of the month
+    And I select an Available session time
+
+    Then I add Session comments of "Insert session comments here"
+    And I add Operation comments of "Insert operation comments here"
+
+    Then I confirm the operation slot

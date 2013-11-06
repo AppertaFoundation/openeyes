@@ -33,6 +33,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 
 	/**
 	 * Dialog constructor.
+	 * @tutorial dialog
 	 * @name Dialog
 	 * @constructor
 	 * @extends {Emitter}
@@ -101,7 +102,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		resizable: false,
 		draggable: false,
 		constrainToViewport: false,
-		width: 400,
+		width: 440,
 		height: 'auto',
 		minHeight: 'auto',
 		show: 'fade'
@@ -332,8 +333,10 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * Destroys the dialog. Removes all elements from the DOM and detaches all
 	 * event handlers.
 	 * @name Dialog#destroy
+	 * @fires Dialog#destroy
 	 * @method
 	 * @public
+	 *
 	 */
 	Dialog.prototype.destroy = function() {
 
@@ -347,6 +350,11 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		this.instance.destroy();
 		this.content.remove();
 
+		/**
+		 * Emitted after the dialog has been destroyed and completed removed from the DOM.
+		 *
+		 * @event Dialog#destroy
+		 */
 		this.emit('destroy');
 	};
 
@@ -355,10 +363,16 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	/**
 	 * Emit the 'open' event after the dialog has opened.
 	 * @name Dialog#onDialogOpen
+	 * @fires Dialog#open
 	 * @method
 	 * @private
 	 */
 	Dialog.prototype.onDialogOpen = function() {
+		/**
+		 * Emitted after the dialog has opened.
+		 *
+		 * @event Dialog#open
+		 */
 		this.emit('open');
 	};
 
@@ -366,11 +380,18 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * Emit the 'close' event after the dialog has closed, and optionally destroy
 	 * the dialog.
 	 * @name Dialog#onDialogClose
+	 * @fires Dialog#close
 	 * @method
 	 * @private
 	 */
 	Dialog.prototype.onDialogClose = function() {
+		/**
+		 * Emitted after the dialog has closed.
+		 *
+		 * @event Dialog#close
+		 */
 		this.emit('close');
+
 		if (this.options.destroyOnClose) {
 			this.destroy();
 		}
@@ -443,6 +464,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * AlertDialog constructor. The AlertDialog extends the base Dialog and provides
 	 * an 'Ok' button for the user to click on.
 	 * @name AlertDialog
+	 * @tutorial dialog_alert
 	 * @constructor
 	 * @extends {Dialog}
 	 * @example
@@ -535,6 +557,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * ConfirmDialog constructor. The ConfirmDialog extends the base Dialog and provides
 	 * an 'Ok' and 'Cancel' button for the user to click on.
 	 * @name ConfirmDialog
+	 * @tutorial dialog_confirm
 	 * @constructor
 	 * @extends {Dialog}
 	 * @example
@@ -608,22 +631,38 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	/**
 	 * 'OK' button click handler. Simply close the dialog on click.
 	 * @name ConfirmDialog#onButtonClick
+	 * @fires ConfirmDialog#ok
 	 * @method
 	 * @private
 	 */
 	ConfirmDialog.prototype.onOKButtonClick = function() {
+
 		this.close();
+
+		/**
+		 * Emitted after the use has clicked on the 'OK' button.
+		 *
+		 * @event ConfirmDialog#ok
+		 */
 		this.emit('ok');
 	};
 
 	/**
-	 * 'Cancel' button click handler. Simply close the dialog on click.
+	 * 'Cancel' button click handler. Simply closes the dialog on click.
 	 * @name ConfirmDialog#onButtonClick
+	 * @fires ConfirmDialog#cancel
 	 * @method
 	 * @private
 	 */
 	ConfirmDialog.prototype.onCancelButtonClick = function() {
+
 		this.close();
+
+		/**
+		 * Emitted after the use has clicked on the 'Cancel' button.
+		 *
+		 * @event ConfirmDialog#cancel
+		 */
 		this.emit('cancel');
 	};
 

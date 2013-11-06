@@ -17,10 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DiagnosisSelection extends BaseCWidget
+class DiagnosisSelection extends BaseFieldWidget
 {
 	public $selectedFirmId;
-	public $options;
 	public $dropdownOptions;
 	public $class;
 	public $form;
@@ -34,6 +33,7 @@ class DiagnosisSelection extends BaseCWidget
 	public $selected = array();
 	public $loader = false;
 	public $nowrapper = false;
+	public $options = array();
 	// text in diagnosis search box
 	public $placeholder = 'or type the first few characters of a diagnosis';
 

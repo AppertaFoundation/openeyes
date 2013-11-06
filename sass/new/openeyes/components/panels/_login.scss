@@ -1,0 +1,12 @@
+.panel {
+	&.login {
+		@extend %main-panel;
+		max-width: 488px;
+		label {
+			font-size: emCalc(15px);
+		}
+		.loader {
+			margin-right: 10px;
+		}
+	}
+}

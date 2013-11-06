@@ -32,14 +32,17 @@ class OperationBooking extends Page
         'operationComments' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_comments']"),
         'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
         'scheduleNow' => array('xpath' => "//*[@id='et_schedulenow']"),
+        'availableSlotExactDate' => array('xpath' => "//*[@id='calendar']//*[contains(number(),'16')]"),
         'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
+        'availableTheatreSlotDateOutsideRTT' => array('xpath' => "//*[@class='available outside_rtt']"),
         'availableThreeWeeksTime' => array ('xpath' => "//*[@id='calendar']//*[contains(text(),'27')]"),
         'nextMonth' => array('xpath' => "//*[@id='next_month']"),
         'availableTheatreSessionTime' => array('xpath' => "//*[@class='timeBlock available bookable']"),
         'noAnaesthetist' => array ('xpath' => "//*[@id='bookingSession1824']"),
         'sessionComments' => array('xpath' => "//*[@id='Session_comments']"),
         'sessionOperationComments' => array('xpath' => "//*[@id='operation_comments']"),
-        'confirmSlot' => array('xpath' => "//*[@id='confirm_slot']")
+        'confirmSlot' => array('xpath' => "//*[@id='confirm_slot']"),
+        'EmergencyList' => array ('xpath' => "//select[@id='firm_id']")
     );
 
     public function diagnosisEyes ($eye)
@@ -65,10 +68,10 @@ class OperationBooking extends Page
         if ($opEyes==='Right') {
             $this->getElement('operationRightEye')->click();
     }
-        if ($opEyes==='Both') {
+        if ($opEyes==='Both')  {
             $this->getElement('operationBothEyes')->click();
     }
-        if ($opEyes==='Left') {
+        if ($opEyes==='Left')  {
             $this->getElement('operationLeftEye')->click();
     }
 }
@@ -108,12 +111,12 @@ class OperationBooking extends Page
 
     public function postOpStayYes ()
     {
-        $this->getElement('postOpStatYes')->click();
+        $this->getElement('postOpStatYes')->check();
     }
 
     public function postOpStayNo ()
     {
-        $this->getElement('postOpStatNo')->click();
+        $this->getElement('postOpStatNo')->check();
     }
 
     public function operationSiteID ($site)
@@ -150,6 +153,25 @@ class OperationBooking extends Page
     {
         $this->getElement('scheduleNow')->keyPress(2191);
         $this->getElement('scheduleNow')->click();
+        $this->getSession()->wait(5000);
+    }
+
+    public function EmergencyList ()
+    {
+        $this->getElement('EmergencyList')->selectOption("EMG");
+        $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
+        $this->getSession()->wait(5000);
+    }
+
+    public function nextMonth ()
+    {
+        $this->getElement('nextMonth')->click();
+    }
+
+    public function availableSlotExactDay ($day)
+    {
+        $this->getElement('availableSlotExactDate')->click();
+//        Need to include
     }
 
     public function availableSlot ()
@@ -165,6 +187,21 @@ class OperationBooking extends Page
         }
 
         throw new \Exception('No available theatre session found');
+    }
+
+    public function availableSlotOutsideRTT ()
+    {
+        $slots = $this->findAll('xpath', $this->getElement('availableTheatreSlotDateOutsideRTT')->getXpath());
+        foreach ($slots as $slot) {
+            $slot->click();
+            $this->getSession()->wait(10000, "$('.sessionTimes').length > 0");
+            $freeSession = $this->find('css', '.sessionTimes > a > .bookable');
+            if ($freeSession) {
+                return true;
+            }
+        }
+
+        throw new \Exception('No available theatre session Outside RTT found');
     }
 
     public function availableSessionTime ()

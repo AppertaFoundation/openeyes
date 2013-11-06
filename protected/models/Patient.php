@@ -38,6 +38,7 @@
  * @property string  $last_modified_date
  * @property integer $created_user_id
  * @property integer $last_modified_user_id
+ * @property datetime $no_allergies_date
  *
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -56,7 +57,6 @@ class Patient extends BaseActiveRecord
 
 	public $use_pas = TRUE;
 	private $_orderedepisodes;
-
 
 	/**
 		* Returns the static model of the specified AR class.
@@ -111,8 +111,8 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* @return array relational rules.
-		*/
+	* @return array relational rules.
+	*/
 	public function relations()
 	{
 		return array(
@@ -142,8 +142,8 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* @return array customized attribute labels (name=>label)
-		*/
+	* @return array customized attribute labels (name=>label)
+	*/
 	public function attributeLabels()
 	{
 		return array(
@@ -283,6 +283,11 @@ class Patient extends BaseActiveRecord
 		return $this->_orderedepisodes;
 	}
 
+	/**
+	 * calculate the patient's age
+	 *
+	 * @return string
+	 */
 	public function getAge()
 	{
 		return Helper::getAge($this->dob, $this->date_of_death);
@@ -301,7 +306,7 @@ class Patient extends BaseActiveRecord
 	* @param integer $drug_id
 	* @return boolean Is patient allergic?
 	*/
-	public function hasAllergy($drug_id = null)
+	public function hasDrugAllergy($drug_id = null)
 	{
 		if ($drug_id) {
 			if ($this->allergies) {
@@ -322,6 +327,31 @@ class Patient extends BaseActiveRecord
 		}
 	}
 
+	/**
+	 * returns true if the patient has the allergy passed in
+	 *
+	 * @param $allergy
+	 * @return boolean
+	 */
+	public function hasAllergy($allergy)
+	{
+		foreach ($this->allergies as $allrgy) {
+			if ($allergy->id == $allrgy->id) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * returns true if the allergy status of the patient is known (has allergies, or no known allergies) false otherwise.
+	 *
+	 * @return bool
+	 */
+	public function hasAllergyStatus()
+	{
+		return ($this->no_allergies_date || $this->allergies);
+	}
 	/**
 		* @return boolean Is patient deceased?
 		*/
@@ -365,7 +395,7 @@ class Patient extends BaseActiveRecord
 
 	public function getDisplayName()
 	{
-		return '<span class="surname">'.strtoupper($this->last_name).'</span>, <span class="given">'.$this->first_name.'</span>';
+		return '<span class="patient-surname">'.strtoupper($this->last_name).'</span>, <span class="patient-name">'.$this->first_name.'</span>';
 	}
 
 	private function randomData($field)
@@ -550,29 +580,68 @@ class Patient extends BaseActiveRecord
 		return $this->contact->address ? $this->getLetterAddress(array('delimiter'=>'<br/>')) : 'Unknown';
 	}
 
+	/**
+	 * returns a standard allergy string for the patient
+	 *
+	 * @return string
+	 */
 	public function getAllergiesString()
 	{
+		if (!$this->hasAllergyStatus()) {
+			return 'Patient allergy status is not known';
+		}
+		if ($this->no_allergies_date) {
+			return 'Patient has no known allergies (as of ' . Helper::convertDate2NHS($this->no_allergies_date) . ')';
+		}
+
 		$allergies = array();
 		foreach ($this->allergies as $allergy) {
 			$allergies[] = $allergy->name;
 		}
-		return implode(', ',$allergies);
+		return 'Patient is allergic to: ' . implode(', ',$allergies);
 	}
 
+	/**
+	 * adds an allergy to the patient by id
+	 *
+	 * @param $allergy_id
+	 * @throws Exception
+	 */
 	public function addAllergy($allergy_id)
 	{
 		if (!PatientAllergyAssignment::model()->find('patient_id=? and allergy_id=?',array($this->id,$allergy_id))) {
-			$paa = new PatientAllergyAssignment;
-			$paa->patient_id = $this->id;
-			$paa->allergy_id = $allergy_id;
-			if (!$paa->save()) {
-				throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
-			}
+			$transaction = Yii::app()->db->beginTransaction();
+			try {
+				$paa = new PatientAllergyAssignment;
+				$paa->patient_id = $this->id;
+				$paa->allergy_id = $allergy_id;
+				if (!$paa->save()) {
+					throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
+				}
 
-			$this->audit('patient','add-allergy',$paa->getAuditAttributes());
+				$this->audit('patient','add-allergy',$paa->getAuditAttributes());
+				if ($this->no_allergies_date) {
+					$this->no_allergies_date = null;
+					if (!$this->save()) {
+						throw new Exception('Could not remove no allergy flag: ' . print_r($this->getErrors(), true));
+					};
+				}
+				$this->audit('patient','remove-noallergydate');
+				$transaction->commit();
+			}
+			catch (Exception $e) {
+				$transaction->rollback();
+				throw $e;
+			}
 		}
 	}
 
+	/**
+	 * remove the allergy identified by $allergy_id from the patient
+	 *
+	 * @param $allergy_id
+	 * @throws Exception
+	 */
 	public function removeAllergy($allergy_id)
 	{
 		if ($paa = PatientAllergyAssignment::model()->find('patient_id=? and allergy_id=?',array($this->id,$allergy_id))) {
@@ -584,6 +653,11 @@ class Patient extends BaseActiveRecord
 		}
 	}
 
+	/**
+	 * set patient allergies to be the allergies identified by the array of ids. Other allergies will be removed
+	 * @param $allergy_ids
+	 * @throws Exception
+	 */
 	public function assignAllergies($allergy_ids)
 	{
 		$insert_allergy_ids = $allergy_ids;
@@ -617,6 +691,34 @@ class Patient extends BaseActiveRecord
 		$criteria->addInCondition('allergy_id',$remove_allergy_ids);
 
 		PatientAllergyAssignment::model()->deleteAll($criteria);
+	}
+
+	/**
+	 * marks the patient as having no allergies as of now
+	 *
+	 * @throws Exception
+	 */
+	public function setNoAllergies()
+	{
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			foreach (PatientAllergyAssignment::model()->findAll('patient_id = ?', array($this->id)) as $paa) {
+				if (!$paa->delete()) {
+					throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
+				}
+				$this->audit('patient', 'remove-allergy', $paa->getAuditAttributes());
+			}
+			$this->no_allergies_date = date('Y-m-d H:i:s');
+			if (!$this->save()) {
+				throw new Exception('Unable to set no allergy date:' .  print_r($this->getErrors(), true));
+			}
+			$this->audit('patient', 'set-noallergydate');
+			$transaction->commit();
+		}
+		catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
+		}
 	}
 
 	/*
@@ -676,6 +778,12 @@ class Patient extends BaseActiveRecord
 		return false;
 	}
 
+	/**
+	 * get the patient disorders that are of the type in the list of disorder ids provided
+	 *
+	 * @param integer[] $snomeds - disorder ids to check for
+	 * @return Disorder[]
+	 */
 	public function getDisordersOfType($snomeds)
 	{
 		$disorders = array();
@@ -686,7 +794,7 @@ class Patient extends BaseActiveRecord
 		$res = array();
 		foreach ($patient_disorder_ids as $p_did) {
 			foreach ($disorders as $d) {
-				if ($d->ancestorOfIds(array($p_did))) {
+				if ($d->id == $p_did || $d->ancestorOfIds(array($p_did))) {
 					$res[] = Disorder::model()->findByPk($p_did);
 					break;
 				}
@@ -845,19 +953,32 @@ class Patient extends BaseActiveRecord
 		}
 	}
 
-	// DR function additions
-
-
-	/*
-	* Type of diabetes mellitus
-	*/
-	public function getDmt()
+	/**
+	 * Get the Diabetes Type as a Disorder instance
+	 *
+	 * @return Disorder|null
+	 */
+	public function getDiabetesType()
 	{
 		if ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_I_SET) ) {
-			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_I)->term;
+			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_I);
 		} elseif ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_II_SET)) {
-			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_II)->term;
+			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_II);
 		}
+		return null;
+	}
+
+	/**
+	 * Type of diabetes mellitus as a letter string
+	 *
+	 * @return string
+	 */
+	public function getDmt()
+	{
+		if ($disorder = $this->getDiabetesType()) {
+			return $disorder->term;
+		}
+
 		return 'not diabetic';
 	}
 
@@ -1119,7 +1240,7 @@ class Patient extends BaseActiveRecord
 	 * only non-clinical warnings will be returned.
 	 *
 	 * @param boolean $clinical
-	 * @return {'short_msg' => string, 'long_msg' => string}[]
+	 * @return {'short_msg' => string, 'long_msg' => string, 'details' => string}[]
 	 */
 	public function getWarnings($clinical=true)
 	{
@@ -1127,28 +1248,40 @@ class Patient extends BaseActiveRecord
 		// but this should serve as a wrapper function for configuring warnings (i.e. a system setting could
 		// define what should be warned on, and then we return a structure that is determined from this)
 
-		$res = array();
+		if ($this->_nonclinical_warnings === null) {
+			// placeholder for nonclinical warning setup
+			$this->_nonclinical_warnings = array();
+		}
+
+		$res = $this->_nonclinical_warnings;
 
 		if ($clinical) {
-			if ($this->_nonclinical_warnings == null) {
-				// this should be expanded with any future clinical disorders
+			if ($this->_clinical_warnings === null) {
+				$this->_clinical_warnings = array();
 				if ($diabetic_disorders = $this->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET) ) {
 					$terms = array();
 					foreach ($diabetic_disorders as $disorder) {
 						$terms[] = $disorder->term;
 					}
-					$res[] = array(
+					$this->_clinical_warnings[] = array(
 							'short_msg' => 'Diabetes',
 							'long_msg' => 'Patient is Diabetic',
 							'details' => implode(', ', $terms)
 					);
 				}
-
-				$this->_nonclinical_warnings = $res;
+				if ($this->allergies) {
+					foreach ($this->allergies as $allergy) {
+						$allergies[] = $allergy->name;
+					}
+					$this->_clinical_warnings[] = array(
+						'short_msg' => 'Allergies',
+						'long_msg' => 'Patient has allergies',
+						'details' => implode(', ', $allergies)
+					);
+				}
 			}
-			return $this->_nonclinical_warnings;
+			$res = array_merge($res, $this->_clinical_warnings);
 		}
-
 
 		return $res;
 	}

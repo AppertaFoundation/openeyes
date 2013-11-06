@@ -1,0 +1,210 @@
+// Element vars
+$oe-element-border-top: 1px dotted #97c6f1 !default;
+$oe-element-title-color: #56a7f1 !default;
+$oe-element-title-font-style: italic !default;
+$oe-element-title-font-size: $default-font-size !default;
+$oe-element-title-padding: 8px 10px !default;
+$oe-element-title-margin: 0 !default;
+$oe-element-h4-font-size: $default-font-size !default;
+$oe-element-fieldset-panel-border-color: #d9d9d9 !default;
+$oe-element-eye-border-color: #fafafa !default;
+
+.element {
+	position: relative;
+	canvas, .canvas {
+		border: 1px solid #ccc;
+		margin: 0;
+	}
+	.element-eyes {
+		padding: 0;
+		margin: 0;
+	}
+	.field-row {
+		padding-bottom: .9em;
+		&:last-child {
+			padding: 0;
+		}
+	}
+}
+
+.element-header {
+	@extend .clearfix;
+}
+
+.element-title {
+	color: $oe-element-title-color;
+	font-size: $oe-element-title-font-size;
+	padding: $oe-element-title-padding;
+	margin: $oe-element-title-margin;
+	.element-header & {
+		float: left;
+	}
+}
+
+.element-data {
+	@extend %element-panel;
+	> .field-value:not(.highlight):last-child {
+		padding-bottom: 0;
+	}
+}
+
+.element-eye {
+	@extend %element-panel;
+	border-right: 1px solid $oe-element-eye-border-color;
+	&:last-child {
+		border: 0;
+	}
+	&.left-eye, &.right-eye {
+		@extend .large-6;
+	}
+}
+
+.eye-message {
+	text-align: center;
+	font-size: $default-font-size;
+	padding: 1em 0;
+}
+
+.element-table {
+	margin: 0;
+	&, th {
+		background: #c9ddef;
+	}
+	th[scope="row"], td:first-child {
+		@include grid-column($collapse: null, $columns: 4, $float: false);
+		font-size: $default-font-size;
+		font-weight: normal;
+	}
+	tr {
+		border: 1px solid #dae6f1;
+		&:nth-of-type(even) {
+			background: #c9ddef;
+		}
+	}
+}
+
+// ELEMENT EDIT
+$oe-element-edit-border-top: 2px dotted #8c949c;
+$oe-element-edit-title-font-style: italic;
+
+.edit {
+	.element {
+		border-top: $oe-element-edit-border-top;
+		&.on-demand {
+			@include border-radius(10px);
+			border: 7px solid #c8d3dd;
+			margin: emCalc(5px) 0;
+			&.validation-error {
+				border-color: #da3232;
+			}
+			.alert-box {
+				margin: 1em;
+			}
+		}
+		select {
+			width: auto;
+			&.full-width {
+				width: 100%;
+			}
+		}
+		.field-row {
+			padding-bottom: .8em;
+			&:last-child {
+				padding: 0;
+			}
+		}
+		.alert-box {
+			margin: 1em 0;
+		}
+	}
+	.element-title {
+		font-style: $oe-element-edit-title-font-style;
+	}
+	.element-title-additional {
+		float: left;
+		font-size: $default-font-size;
+		line-height: 2.4em;
+		margin-left: .5em;
+		small {
+			font-size: 85%;
+			display: inline-block;
+			margin-left: .5em;
+		}
+	}
+	.element-fields {
+		@extend .element-data;
+		.field-row:last-child {
+			padding: 0;
+		}
+		.panel:last-child {
+			margin: 0;
+		}
+	}
+	.element-eyes {
+		@extend .element-eyes;
+	}
+	.add-side {
+		font-size: $default-font-size;
+		text-align: center;
+		padding: emCalc(12px);
+	}
+	.icon-remove-side {
+		background: image-url("_elements/icons/event-optional/element-remove.png") no-repeat -10px -2px;
+		height: 16px;
+		position: absolute;
+		right: 5px;
+		top: 5px;
+		width: 16px;
+		z-index: 1;
+	}
+	.icon-add-side {
+		background: image-url("_elements/icons/event-optional/element-view.png") no-repeat -10px -4px;
+		width: 16px;
+		height: 16px;
+	}
+	.element-actions {
+		float: right;
+		padding: 6px 10px;
+	}
+	.element-action {
+		font-size: $default-font-size;
+	}
+}
+
+.view {
+	&.highlight-fields {
+		.element {
+			margin-bottom: 10px;
+		}
+		.element-data {
+			background: none;
+			padding-top: 0;
+			padding-bottom: 0;
+			&.highlight {
+				@include border-radius(5px);
+				background: #fff;
+				padding-top: emCalc(4px);
+				padding-bottom: emCalc(4px);
+			}
+		}
+		.field-value {
+			font-size: emCalc(16px);
+		}
+	}
+	.element-data {
+		.data-title {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+	.element-title {
+		&.highlight {
+			background: #dae6f1;
+			padding: emCalc(12px) 10px;
+			float: none;
+			color: #111;
+			font-size: emCalc(14px);
+			margin-bottom: 1em;
+		}
+	}
+}

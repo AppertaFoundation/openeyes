@@ -21,7 +21,8 @@ Yii::import('application.controllers.*');
 
 class PatientController extends BaseController
 {
-	public $layout = '//layouts/column2';
+	public $layout = '//layouts/main';
+	public $renderPatientPanel = true;
 	public $patient;
 	public $firm;
 	public $editable;
@@ -31,8 +32,10 @@ class PatientController extends BaseController
 	public $title;
 	public $event_type_id;
 	public $episode;
+	public $current_episode;
 	public $event_tabs = array();
 	public $event_actions = array();
+	public $episodes = array();
 
 	/**
 	 * Checks to see if current user can create an event type
@@ -118,8 +121,6 @@ class PatientController extends BaseController
 		$legacyepisodes = $this->patient->legacyepisodes;
 		// NOTE that this is not being used in the render
 		$supportserviceepisodes = $this->patient->supportserviceepisodes;
-
-		$this->layout = '//layouts/patientMode/main';
 
 		Audit::add('patient summary','view');
 
@@ -315,14 +316,11 @@ class PatientController extends BaseController
 
 	public function actionEpisodes()
 	{
-		$this->layout = '//layouts/patientMode/main';
+		$this->layout = '//layouts/events_and_episodes';
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
-		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
-		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
-		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
@@ -352,34 +350,27 @@ class PatientController extends BaseController
 			$current_episode = null;
 		}
 
+		$this->current_episode = $current_episode;
 		$this->title = 'Episode summary';
-		$this->render('events_and_episodes', array(
+
+		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
-			'ordered_episodes' => $ordered_episodes,
-			'legacyepisodes' => $legacyepisodes,
-			'supportserviceepisodes' => $supportserviceepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => $current_episode,
 		));
 	}
 
 	public function actionEpisode($id)
 	{
-		$this->layout = '//layouts/patientMode/main';
-
 		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
 		}
 
+		$this->layout = '//layouts/events_and_episodes';
 		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
-		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
-		$ordered_episodes = $this->patient->getOrderedEpisodes();
-		$legacyepisodes = $this->patient->legacyepisodes;
-		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
@@ -397,27 +388,21 @@ class PatientController extends BaseController
 					'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
 			);
 		}
-
+		$this->current_episode = $this->episode;
 		$status = Yii::app()->session['episode_hide_status'];
 		$status[$id] = true;
 		Yii::app()->session['episode_hide_status'] = $status;
 
-		$this->render('events_and_episodes', array(
+		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
-			'ordered_episodes' => $ordered_episodes,
-			'legacyepisodes' => $legacyepisodes,
-			'supportserviceepisodes' => $supportserviceepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => $this->episode
 		));
 	}
 
 	public function actionUpdateepisode($id)
 	{
-		$this->layout = '//layouts/patientMode/main';
-
 		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
 		}
@@ -426,6 +411,8 @@ class PatientController extends BaseController
 			$this->redirect(array('patient/episode/'.$this->episode->id));
 			return;
 		}
+
+		$this->layout = '//layouts/events_and_episodes';
 
 		if (!empty($_POST)) {
 			if ((@$_POST['eye_id'] && !@$_POST['DiagnosisSelection']['disorder_id'])) {
@@ -477,9 +464,11 @@ class PatientController extends BaseController
 		$status[$id] = true;
 		Yii::app()->session['episode_hide_status'] = $status;
 
+
+
 		$this->editing = true;
 
-		$this->render('events_and_episodes', array(
+		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
 			'ordered_episodes' => $ordered_episodes,
@@ -667,8 +656,7 @@ class PatientController extends BaseController
 
 	/**
 	 * Add patient/allergy assignment
-	 * @param integer $patient_id
-	 * @param integer $allergy_id
+	 *
 	 * @throws Exception
 	 */
 	public function actionAddAllergy()
@@ -680,13 +668,19 @@ class PatientController extends BaseController
 			if (!$patient = Patient::model()->findByPk($patient_id)) {
 				throw new Exception('Patient not found: '.$patient_id);
 			}
-			if (!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
-				throw new Exception('Allergy ID required');
+			if (@$_POST['no_allergies']) {
+				$patient->setNoAllergies();
 			}
-			if (!$allergy = Allergy::model()->findByPk($allergy_id)) {
-				throw new Exception('Allergy not found: '.$allergy_id);
+			else  {
+				if (!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
+					throw new Exception('Allergy ID required');
+				}
+				if (!$allergy = Allergy::model()->findByPk($allergy_id)) {
+					throw new Exception('Allergy not found: '.$allergy_id);
+				}
+				$patient->addAllergy($allergy_id);
 			}
-			$patient->addAllergy($allergy_id);
+
 		}
 
 		$this->redirect(array('patient/view/'.$patient->id));
@@ -694,8 +688,7 @@ class PatientController extends BaseController
 
 	/**
 	 * Remove patient/allergy assignment
-	 * @param integer $patient_id
-	 * @param integer $allergy_id
+	 *
 	 * @throws Exception
 	 */
 	public function actionRemoveAllergy()
@@ -1573,5 +1566,17 @@ class PatientController extends BaseController
 			'patient' => $patient,
 			'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
 		),false, true);
+	}
+
+	public function getEpisodes()
+	{
+		if ($this->patient && empty($this->episodes)) {
+			$this->episodes = array(
+				'ordered_episodes'=>$this->patient->getOrderedEpisodes(),
+				'legacyepisodes'=>$this->patient->legacyepisodes,
+				'supportserviceepisodes'=>$this->patient->supportserviceepisodes,
+			);
+		}
+		return $this->episodes;
 	}
 }

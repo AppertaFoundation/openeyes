@@ -17,11 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DatePicker extends BaseCWidget
+class DatePicker extends BaseFieldWidget
 {
 	public $name;
-	public $options;
-	public $htmlOptions;
+	public $options = array();
 
 	public function run()
 	{

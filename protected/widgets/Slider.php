@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class Slider extends BaseCWidget
+class Slider extends BaseFieldWidget
 {
 	public $min;
 	public $max;
@@ -28,6 +28,8 @@ class Slider extends BaseCWidget
 	public $null;
 	public $value_display;
 	public $append = '';
+	public $width;
+	public $painScale;
 
 	public function init()
 	{
@@ -44,6 +46,10 @@ class Slider extends BaseCWidget
 			}
 		} else {
 			$this->value_display = $this->value;
+		}
+
+		if ($this->width && !preg_match('/[^0-9]/', $this->width)) {
+			$this->width .= 'px';
 		}
 	}
 }

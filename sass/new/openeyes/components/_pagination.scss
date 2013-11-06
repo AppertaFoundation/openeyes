@@ -1,0 +1,52 @@
+/* Default Pagination */
+ul.pagination {
+	@include pagination;
+	li {
+		margin: 0;
+		&:not(.label) {
+			border-right: 1px solid #999;
+		}
+		&.current {
+			border: 0;
+		}
+		&.first, &.last {
+			display: none;
+		}
+		&:last-child, &.next {
+			border: 0;
+			a {
+				padding-right: 0;
+			}
+		}
+	}
+	.page {
+		a {
+			&:hover {
+				font-weight: bold;
+			}
+		}
+	}
+}
+
+// Table pagination.
+tfoot.pagination-container {
+	td {
+		border: 0;
+	}
+	.pagination {
+		float: right;
+		margin: 0;
+		li {
+			font-size: 1.1em;
+			font-weight: normal;
+		}
+	}
+}
+
+/* Pagination centered wrapper */
+.pagination-centered {
+	@include pagination-container(true);
+	ul.pagination {
+		@include pagination(true, false);
+	}
+}

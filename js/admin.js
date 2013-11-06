@@ -1,29 +1,25 @@
 $(document).ready(function() {
+
 	$('#selectall').click(function() {
 		$('input[type="checkbox"]').attr('checked',this.checked);
 	});
 
-	$('#admin_users li .column_id, #admin_users li .column_username, #admin_users li .column_title, #admin_users li .column_firstname, #admin_users li .column_lastname, #admin_users li .column_role, #admin_users li .column_doctor, #admin_users li .column_active').click(function(e) {
-		e.preventDefault();
+	$('table').on('click', 'tr.clickable', function(e) {
 
-		if ($(this).parent().attr('data-attr-id')) {
-			window.location.href = baseUrl+'/admin/editUser/'+$(this).parent().attr('data-attr-id');
+		var target = $(e.target);
+
+		// If the user clicked on an input element, or if this cell contains an input
+		// element then do nothing.
+		if (target.is(':input') || (target.is('td') && target.find('input').length)) {
+			return;
 		}
-	});
 
-	$('#admin_firms li .column_id, #admin_firms li .column_pas_code, #admin_firms li .column_name, #admin_firms li .column_subspecialty, #admin_firms li .column_consultant').click(function(e) {
-		e.preventDefault();
+		var uri = $(this).data('uri');
 
-		if ($(this).parent().attr('data-attr-id')) {
-			window.location.href = baseUrl+'/admin/editFirm/'+$(this).parent().attr('data-attr-id');
-		}
-	});
-
-	$('#admin_contactlabels li .column_id, #admin_contactlabels li .column_name').click(function(e) {
-		e.preventDefault();
-
-		if ($(this).parent().attr('data-attr-id')) {
-			window.location.href = baseUrl+'/admin/editContactLabel/'+$(this).parent().attr('data-attr-id');
+		if (uri) {
+			var url = uri.split('/');
+			url.unshift(baseUrl);
+			window.location.href = url.join('/');
 		}
 	});
 
@@ -36,18 +32,22 @@ $(document).ready(function() {
 	handleButton($('#et_cancel'),function(e) {
 		e.preventDefault();
 
-		var e = window.location.href.split('/');
+		if ($(e.target).data('uri')) {
+			window.location.href = $(e.target).data('uri');
+		} else {
+			var e = window.location.href.split('/');
 
-		var page = false;
+			var page = false;
 
-		if (parseInt(e[e.length-1])) {
-			page = Math.ceil(parseInt(e[e.length-1]) / items_per_page);
-		}
+			if (parseInt(e[e.length-1])) {
+				page = Math.ceil(parseInt(e[e.length-1]) / items_per_page);
+			}
 
-		for (var i in e) {
-			if (e[i] == 'admin') {
-				var object = e[parseInt(i)+1].replace(/^[a-z]+/,'').toLowerCase()+'s';
-				window.location.href = baseUrl+'/admin/'+object+(page ? '/'+page : '');
+			for (var i in e) {
+				if (e[i] == 'admin') {
+					var object = e[parseInt(i)+1].replace(/^[a-z]+/,'').toLowerCase()+'s';
+					window.location.href = baseUrl+'/admin/'+object+(page ? '/'+page : '');
+				}
 			}
 		}
 	});
@@ -60,16 +60,20 @@ $(document).ready(function() {
 	handleButton($('#et_add'),function(e) {
 		e.preventDefault();
 
-		var e = window.location.href.split('/');
+		if ($(e.target).data('uri')) {
+			window.location.href = baseUrl+$(e.target).data('uri');
+		} else {
+			var e = window.location.href.split('?')[0].split('/');
 
-		for (var i in e) {
-			if (e[i] == 'admin') {
-				if (e[parseInt(i)+1].match(/ies$/)) {
-					var object = ucfirst(e[parseInt(i)+1].replace(/ies$/,'y'));
-				} else {
-					var object = ucfirst(e[parseInt(i)+1].replace(/s$/,''));
+			for (var i in e) {
+				if (e[i] == 'admin') {
+					if (e[parseInt(i)+1].match(/ies$/)) {
+						var object = ucfirst(e[parseInt(i)+1].replace(/ies$/,'y'));
+					} else {
+						var object = ucfirst(e[parseInt(i)+1].replace(/s$/,''));
+					}
+					window.location.href = baseUrl+'/admin/add'+object;
 				}
-				window.location.href = baseUrl+'/admin/add'+object;
 			}
 		}
 	});
@@ -77,24 +81,42 @@ $(document).ready(function() {
 	handleButton($('#et_delete'),function(e) {
 		e.preventDefault();
 
-		var e = window.location.href.split('/');
-
-		for (var i in e) {
-			if (e[i] == 'admin') {
-				var object = e[parseInt(i)+1].replace(/s$/,'');
+		if ($(e.target).data('object')) {
+			var object = $(e.target).data('object');
+			if (object.charAt(object.length-1) != 's') {
+				object = object + 's';
 			}
+		} else {
+			var x = window.location.href.split('?')[0].split('/');
+
+			for (var i in x) {
+				if (x[i] == 'admin') {
+					var object = x[parseInt(i)+1].replace(/s$/,'');
+				}
+			}
+		}
+
+		if ($('#admin_'+object).serialize().length == 0) {
+			alert("Please select one or more items to delete.");
+			return;
+		}
+
+		if ($(e.target).data('uri')) {
+			var uri = baseUrl+$(e.target).data('uri');
+		} else {
+			var uri = baseUrl+'/admin/delete'+ucfirst(object);
 		}
 
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/admin/delete'+ucfirst(object)+'s',
-			'data': $('#admin_'+object+'s').serialize(),
+			'url': uri,
+			'data': $('#admin_'+object).serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(html) {
 				if (html == '1') {
 					window.location.reload();
 				} else {
 					new OpenEyes.Dialog.Alert({
-						content: "One or more "+object+"s could not be deleted as they are in use."
+						content: "One or more "+object+" could not be deleted as they are in use."
 					}).open();
 				}
 			}
