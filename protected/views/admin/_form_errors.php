@@ -1,3 +1,4 @@
+<?php /* DEPRECATED */ ?>
 <?php if (isset($errors) && !empty($errors)) {?>
 	<div id="clinical-create_es_" class="alertBox">
 		<p>Please fix the following input errors:</p>

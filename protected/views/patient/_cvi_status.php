@@ -1,3 +1,4 @@
+<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes

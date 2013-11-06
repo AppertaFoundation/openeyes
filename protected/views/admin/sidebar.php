@@ -1,3 +1,4 @@
+<?php /* DEPRECATED */ ?>
 <div class="admingroup curvybox">
 	<h4>Core</h4>
 	<ul>

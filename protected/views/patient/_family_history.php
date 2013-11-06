@@ -1,3 +1,4 @@
+<?php /* DEPRECATED */ ?>
 					<div class="whiteBox forClinicians">
 						<div class="patient_actions">
 							<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
