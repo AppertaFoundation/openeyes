@@ -30,4 +30,24 @@ class php5 {
       require => Exec['apt-update'],
       notify  => Service['apache2']
   }
+
+  define set_php_var($value, $path = 'default') {
+      if $path == 'default'
+         $path= “/etc/php5/apache/php.ini″
+      else
+         $path= “/etc/php5/cli/php.ini”
+      end
+
+      exec { "sed -i 's/^;*[[:space:]]*$name[[:space:]]*=.*$/$name = $value/g' $path":
+        unless  => "grep -xqe '$name[[:space:]]*=[[:space:]]*$value' -- $path",
+        path    => "/bin:/usr/bin",
+        require => Package['php5'],
+        notify  => Service['apache2'];
+      }
+    }
+
+  set_php_var_cli {
+      "auto_detect_line_endings":       value => 'On';
+  }
+
 }
