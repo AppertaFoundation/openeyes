@@ -22,6 +22,39 @@ class OEMigration extends CDbMigration
 	private $migrationPath;
 
 	/**
+	 * @param array $consolidated_migrations
+	 * @return bool
+	 */
+	protected function consolidate($consolidated_migrations) {
+		sort($consolidated_migrations);
+
+		// Check for existing migrations
+		$existing_migrations = $this->getDbConnection()->createCommand()
+			->select('version')
+			->from('tbl_migration')
+			->where(array('in', 'version', $consolidated_migrations))
+			->queryColumn();
+		if (count($existing_migrations) == 0) {
+			return false;
+		} else {
+			// Database has existing migrations, so check that last migration step to be consolidated was applied
+			if(count($existing_migrations) == count($consolidated_migrations)) {
+				// All previous migrations were applied, safe to consolidate
+				echo "Consolidating old migration data...";
+				$deleted = $this->getDbConnection()->createCommand()
+					->delete('tbl_migration', array('in', 'version', $consolidated_migrations));
+				echo "removed $deleted rows\n";
+			} else {
+				// Database is not migrated up to the consolidation point, cannot migrate
+				echo "In order to run this migration, you must migrate have migrated up to at least ".end($consolidated_migrations)."\n";
+				echo "This requires a pre-consolidation version of the code\n";
+				throw new CException('Previous migrations missing or incomplete, migration not possible');
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Initialise tables with default data
 	 * Filenames must to be in the format "nn_tablename.csv", where nn is the processing order
 	 */
