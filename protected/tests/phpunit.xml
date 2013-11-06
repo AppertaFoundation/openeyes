@@ -43,10 +43,10 @@
         <browser name="Chrome" browser="Chrome" />
     </selenium> -->
     <logging>
-        <log type="coverage-html" target="/tmp/report" charset="UTF-8"
+        <log type="coverage-html" target="./report" charset="UTF-8"
              highlight="false" lowUpperBound="35" highLowerBound="70"/>
-        <log type="coverage-clover" target="/tmp/coverage.xml"/>
-        <log type="coverage-php" target="/tmp/coverage.serialized"/>
+        <log type="coverage-clover" target="./coverage.xml"/>
+        <log type="coverage-php" target="./coverage.serialized"/>
     </logging>
     <php>
         <ini name="output_buffering" value="On" />
