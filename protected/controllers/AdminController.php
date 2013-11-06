@@ -31,15 +31,8 @@ class AdminController extends BaseController
 
 	protected function beforeAction($action)
 	{
-		// FIXME: remove once rewrite is complete
-		$theme = Yii::app()->session['theme'];
-		if($theme==0){ // 0 no theme original style
-			$this->registerCssFile('admin.css', Yii::app()->createUrl("css/admin.css"));
-			Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
-		}
-		if($theme==1){ // 1 new theme new style
-			Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin_new.js"));
-		}
+		$this->registerCssFile('admin.css', Yii::app()->createUrl("css/admin.css"));
+		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
 
 		$this->jsVars['items_per_page'] = $this->items_per_page;
 

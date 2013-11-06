@@ -220,8 +220,6 @@ class BaseController extends Controller
 			$scriptMap['jquery-ui.min.js'] = false;
 			$scriptMap['module.js'] = false;
 			$scriptMap['style.css'] = false;
-			// FIXME: rewrite specific. Remove once rewrite is complete.
-			$scriptMap['style_new.css'] = false;
 			$scriptMap['jquery-ui.css'] = false;
 			Yii::app()->clientScript->scriptMap = $scriptMap;
 		}

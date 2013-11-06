@@ -27,38 +27,16 @@ class ModuleAdminController extends BaseController
 	{
 		$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
 
-		// FIXME: remove once rewrite is complete
-		$theme = Yii::app()->session['theme'];
-		if($theme==0){ // 0 no theme original style
-			if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin.js")) {
-				Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin.js');
-			}
-		}
-		if($theme==1){ // 1 new theme new style
-			if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin_new.js")) {
-				Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin_new.js');
-			} else if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin.js")) {
-				Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin.js');
-			}
+		if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin.js")) {
+			Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin.js');
 		}
 
 		if (file_exists("protected/modules/".$this->getModule()->name."/assets/css/admin.css")) {
 			$this->registerCssFile('admin-module.css', $this->assetPath.'/css/admin.css');
 		}
 
-		// FIXME: remove once rewrite is complete
-		if($theme==0){ // 0 no theme original style
-			Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
-		}
-		if($theme==1){ // 1 new theme new style
-			Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin_new.js"));
-		}
-
-		if($theme==0){
-			$this->registerCssFile('module.css', $this->assetPath.'/css/module.css');
-		} else {
-			$this->registerCssFile('module_new.css', $this->assetPath.'/css/module_new.css');
-		}
+		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
+		$this->registerCssFile('module.css', $this->assetPath.'/css/module.css');
 
 		return parent::beforeAction($action);
 	}

@@ -135,23 +135,13 @@ class BaseEventTypeController extends BaseController
 					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/module.js');
 				}
 
-				//FIXME: remove including _new file after refactor complete
-				if (Yii::app()->session['theme']>0 AND file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/'.get_class($this).'_new.js')) {
-					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.get_class($this).'_new.js');
-				} else if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/'.get_class($this).'.js')) {
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/'.get_class($this).'.js')) {
 					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.get_class($this).'.js');
 				}
 
-				//FIXME: remove after css refactor complete
 				// Register css
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/module.css')) {
-					if(Yii::app()->session['theme']>0)
-					{
-						$this->registerCssFile('module.css',$this->assetPath.'/css/module_new.css',10);}
-					else{
-						$this->registerCssFile('module.css',$this->assetPath.'/css/module.css',10);
-					}
-
+					$this->registerCssFile('module.css',$this->assetPath.'/css/module.css',10);
 				}
 
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/css/'.get_class($this).'.css')) {
