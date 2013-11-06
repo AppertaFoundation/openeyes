@@ -131,6 +131,8 @@ class BaseController extends Controller
 	protected function beforeAction($action)
 	{
 
+		$app = Yii::app();
+
 		// Register base style.css unless it's a print action
 		if (!in_array($action->id,$this->printActions())) {
 			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
