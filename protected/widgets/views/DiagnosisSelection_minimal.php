@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -19,11 +18,15 @@
  */
 ?>
 <?php if (!$nowrapper) {?>
-<div class="eventDetail" id="editDiagnosis">
-	<div class="data">
+	<div class="row field-row">
+		<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+			<label for="<?php echo "{$class}_{$field}";?>">Diagnosis:</label>
+		</div>
+		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 <?php } ?>
-		<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis', 'style' => 'width: 525px; margin-bottom:10px;')) : ""?>
-		<br />
+		<div class="field-row">
+			<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis')) : ""?>
+		</div>
 		<?php
 		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				'name' => "{$class}[$field]",
@@ -69,7 +72,6 @@
 						}",
 				),
 				'htmlOptions' => array(
-						'style'=>'width: 520px;',
 						'placeholder' => $placeholder,
 				),
 		));

@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,29 +17,30 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (@$options['text-align'] == 'right') {?>
-	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-		<?php if (!@$options['no-label']) {?>
-			<div class="label"></div>
-		<?php }?>
-		<div class="data">
-			<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0')?>
+
+
+<?php if (!@$htmlOptions['nowrapper']) {?>
+	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
+		<div class="large-<?php echo $layoutColumns['label'];?> column">
+			<?php if (!@$htmlOptions['no-label']) {?>
+				<label for="<?php echo get_class($element)."_".$field;?>">
+					<?php echo CHtml::encode($element->getAttributeLabel($field))?>:
+				</label>
+			<?php }?>
+		</div>
+		<div class="large-<?php echo $layoutColumns['field'];?> column end">
+			<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0',array('id' => get_class($element)."_".$field."_hidden"))?>
 			<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],$htmlOptions)?>
-			<?php echo $element->getAttributeLabel($field)?>
 		</div>
 	</div>
-<?php } else {?>
-	<?php if (!@$options['nowrapper']) {?>
-		<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-			<?php if (!@$options['no-label']) {?>
-				<div class="label"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</div>
-			<?php }?>
-			<div class="datacol1">
-				<?php }?>
-				<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0')?>
-				<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],$htmlOptions)?>
-			<?php if (!@$options['nowrapper']) {?>
-			</div>
-		</div>
+<?php } else { ?>
+	<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0',array('id' => get_class($element)."_".$field."_hidden"))?>
+	<?php if (!@$htmlOptions['no-label']) {?>
+	<label>
+	<?php }?>
+		<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],$htmlOptions)?>
+	<?php if (!@$htmlOptions['no-label']) {?>
+		<?php echo CHtml::encode($element->getAttributeLabel($field))?>
+	</label>
 	<?php }?>
 <?php }?>

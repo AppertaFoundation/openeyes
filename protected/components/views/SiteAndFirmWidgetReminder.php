@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -32,25 +31,23 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 		),
 	));
 ?>
-
-<div>
 	<p>
 		You haven't set your site and firm selections yet.	Doing so will restrict the site and firm dropdowns to the sites and firms that you work in.
 	</p>
-</div>
-
-<div style="margin-top: 1em; margin-bottom: 1.5em;">
 	<p>
 		Do this now?
 	</p>
-</div>
 
-<div style="margin-left: 8em;">
-	<button class="classy green mini cancel" type="button" id="yes" style="margin-right: 3em;"><span class="button-span button-span-green">Yes</span></button>
-	<button class="classy red mini cancel" type="button" id="later"><span class="button-span button-span-red">Later</span></button>
-</div>
-
+	<div class="buttons">
+		<button class="secondary small" type="button" id="yes">
+			Yes
+		</button>
+		<button class="warning small" type="button" id="later">
+			Later
+		</button>
+	</div>
 <?php $this->endWidget()?>
+
 <script type="text/javascript">
 	$('#yes').click(function() {
 		$('#site-and-firm-dialog').dialog('close');

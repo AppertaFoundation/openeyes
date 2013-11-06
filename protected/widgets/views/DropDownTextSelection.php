@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -36,9 +35,13 @@
 	}
 ?>
 <?php if (!$no_wrapper) { ?>
-<div id="div_<?php echo get_class($element) ?>_<?php echo $field ?>_TextSelection" class="eventDetail">
-	<div class="label"><?php echo $element->getAttributeLabel($field) ?>:</div>
-	<div class="data">
+<div id="div_<?php echo get_class($element) ?>_<?php echo $field ?>_TextSelection" class="row field-row">
+	<div class="large-<?php echo $layoutColumns['label'];?> column">
+		<label for="<?php echo $htmlOptions['id'];?>">
+			<?php echo CHtml::encode($element->getAttributeLabel($field)) ?>:
+		</label>
+	</div>
+	<div class="large-<?php echo $layoutColumns['field'];?> column end">
 		<?php }?>
 		<?php echo CHtml::dropDownList('', null, $options, $htmlOptions); ?>
 		<?php if (!$no_wrapper) { ?>
