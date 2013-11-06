@@ -30,8 +30,8 @@ class OEMigration extends CDbMigration
 		if (!$data_directory) {
 			$data_directory = get_class($this);
 		}
-		$data_path = $migrations_path.'/data/'.$data_directory.'/';
-		foreach (glob($data_path."*.csv") as $file_path) {
+		$data_path = $migrations_path . '/data/' . $data_directory . '/';
+		foreach (glob($data_path . "*.csv") as $file_path) {
 			$table = substr(substr(basename($file_path), 0, -4), 3);
 			echo "Importing $table data...\n";
 			$fh = fopen($file_path, 'r');
@@ -39,19 +39,18 @@ class OEMigration extends CDbMigration
 			$lookup_columns = array();
 			foreach ($columns as &$column) {
 				if (strpos($column, '=>') !== false) {
-					$column_parts = explode('=>',$column);
+					$column_parts = explode('=>', $column);
 					$column = trim($column_parts[0]);
-					$lookup_parts = explode('.',$column_parts[1]);
+					$lookup_parts = explode('.', $column_parts[1]);
 					$model = trim($lookup_parts[0]);
 					$field = trim($lookup_parts[1]);
 					$lookup_columns[$column] = array('model' => $model, 'field' => $field);
 				}
 			}
 			$row_count = 0;
-			$values = array();
 			while (($record = fgetcsv($fh)) !== false) {
 				$row_count++;
-				echo "\nReading line " . $row_count . "\n";
+				//echo "\nReading line " . $row_count . "\n";
 				$data = array_combine($columns, $record);
 
 				// Process lookup columns
@@ -69,14 +68,14 @@ class OEMigration extends CDbMigration
 						$value = null;
 					}
 				}
-				echo "\nTrying migration insert/update table: " . $table . " vals: " . var_export($data, true) . "\n";
+				//echo "\nTrying migration insert/update table: " . $table . " vals: " . var_export($data, true) . "\n";
 				if ($update_pk) {
 					$pk = $data[$update_pk];
 					$existing = $this->getDbConnection()->createCommand()
-					->select($update_pk)
-					->from($table)
-					->where($update_pk.' = ?')
-					->queryScalar(array($pk));
+						->select($update_pk)
+						->from($table)
+						->where($update_pk . ' = ?')
+						->queryScalar(array($pk));
 
 					if ($existing) {
 						$this->update($table, $data, $update_pk . '= :pk', array(':pk' => $pk));
@@ -92,77 +91,87 @@ class OEMigration extends CDbMigration
 		}
 	}
 
-	public function exportData($migrationName , $tables){
-		if(!is_writable($this->getMigrationPath()))
+	public function exportData($migrationName, $tables)
+	{
+		if (!is_writable($this->getMigrationPath())) {
 			throw new OEMigrationException('Migration folder is not writable/accessible: ' . $this->getMigrationPath());
+		}
 
-		if(!is_array($tables) || count($tables)==0)
+		if (!is_array($tables) || count($tables) == 0) {
 			throw new OEMigrationException('No tables to export in the current database');
+		}
 
 		$migrationResult = new OEMigrationResult();
 		$migrationResult->tables = array();
-		foreach($tables as $table){
-			$migrationResult->tables[@$table->name] =  $this->exportTable($migrationName, $table) ;
+		foreach ($tables as $table) {
+			$migrationResult->tables[@$table->name] = $this->exportTable($migrationName, $table);
 		}
 		$migrationResult->result = true;
 		return $migrationResult;
 	}
 
-	public function getMigrationPath(){
-		if(!isset($this->migrationPath)){
+	public function getMigrationPath()
+	{
+		if (!isset($this->migrationPath)) {
 			$this->migrationPath = 'application.migrations';
 		}
-		return Yii::getPathOfAlias( $this->migrationPath );
+		return Yii::getPathOfAlias($this->migrationPath);
 	}
 
-	public function setMigrationPath($path = null){
-		if(is_null($path))
-			$path =  'application.migrations';
+	public function setMigrationPath($path = null)
+	{
+		if (is_null($path)) {
+			$path = 'application.migrations';
+		}
 		$this->migrationPath = $path;
 	}
 
 	/**
-	 * @param $migrationName - name of the migration, a folder with name will be created under data
-	 * @param $table - name of the table being exported
+	 * @param string $migrationName - name of the migration, a folder with name will be created under data
+	 * @param CDbTableSchema $table - name of the table being exported
 	 * @return int - return totRows
 	 * @throws OEMigrationException
 	 */
-	private function exportTable($migrationName, $table){
-		if(!is_subclass_of($table, 'CDbTableSchema' ) )
+	private function exportTable($migrationName, $table)
+	{
+		if (!is_subclass_of($table, 'CDbTableSchema')) {
 			throw new OEMigrationException('Not a CDbTableSchema child class');
+		}
 
-		$dataPath = $this->getMigrationPath(). DIRECTORY_SEPARATOR . 'data';
+		$dataPath = $this->getMigrationPath() . DIRECTORY_SEPARATOR . 'data';
 		//create data folder if does not exist
-		if(!file_exists( $dataPath )){
+		if (!file_exists($dataPath)) {
 			$dataDirCreated = mkdir($dataPath);
-			if(!$dataDirCreated)
+			if (!$dataDirCreated) {
 				throw new OEMigrationException('Data folder could not be created');
+			}
 		}
-		$dataMigPath = $dataPath. DIRECTORY_SEPARATOR . $migrationName;
+		$dataMigPath = $dataPath . DIRECTORY_SEPARATOR . $migrationName;
 		//create data migration folder if does not exist
-		if(!file_exists( $dataMigPath )){
-			$dataMigDirCreated = mkdir($dataMigPath );
-			if(!$dataMigDirCreated)
+		if (!file_exists($dataMigPath)) {
+			$dataMigDirCreated = mkdir($dataMigPath);
+			if (!$dataMigDirCreated) {
 				throw new OEMigrationException('Data migration folder could not be created');
+			}
 		}
 
-		$columns = implode(',' ,  $table->getColumnNames());
+		$columns = implode(',', $table->getColumnNames());
 
 		$rowsQuery = $this->getDbConnection()->createCommand()
 			->select($columns)->from($table->name)->queryAll();
 
 		$data = array();
 		$data[] = $table->getColumnNames();
-		$data= array_merge($data , $rowsQuery);
+		$data = array_merge($data, $rowsQuery);
 
-		$file = fopen($dataMigPath . DIRECTORY_SEPARATOR . '01_' . $table->name . '.csv',  'w');
+		$file = fopen($dataMigPath . DIRECTORY_SEPARATOR . '01_' . $table->name . '.csv', 'w');
 		//i dont like manual file opening with no exceptions - might need refactoring later
-		foreach($data as $row){
-			fputcsv($file , $row);
+		foreach ($data as $row) {
+			fputcsv($file, $row);
 		}
 
 		fclose($file);
-		return  count($rowsQuery);
+		return count($rowsQuery);
 	}
 
 	/**
@@ -170,7 +179,8 @@ class OEMigration extends CDbMigration
 	 * @param $className - string
 	 * @return mixed - the value of the id. False is returned if there is no value.
 	 */
-	protected function getIdOfElementTypeByClassName($className){
+	protected function getIdOfElementTypeByClassName($className)
+	{
 		return $this->dbConnection->createCommand()
 			->select('id')
 			->from('element_type')
@@ -185,7 +195,8 @@ class OEMigration extends CDbMigration
 	 * @return mixed - the id value of the event_type. False is returned if there is no value.
 	 * @throws OEMigrationException
 	 */
-	protected function insertOEEventType( $eventTypeName, $eventTypeClass, $eventTypeGroup){
+	protected function insertOEEventType($eventTypeName, $eventTypeClass, $eventTypeGroup)
+	{
 		// Get the event group id for this event type g
 		$group_id = $this->dbConnection->createCommand()
 			->select('id')
@@ -193,24 +204,28 @@ class OEMigration extends CDbMigration
 			->where('code=:code', array(':code' => $eventTypeGroup))
 			->queryScalar();
 
-		if($group_id === false)
+		if ($group_id === false) {
 			throw new OEMigrationException('Group id could not be found for $eventTypeGroup: ' . $eventTypeGroup);
+		}
 
 		// Create the new  event_type
-		$this->insert('event_type', array(
-			'name' => $eventTypeName,
-			'event_group_id' => $group_id,
-			'class_name' => $eventTypeClass
-		));
+		$this->insert(
+			'event_type',
+			array(
+				'name' => $eventTypeName,
+				'event_group_id' => $group_id,
+				'class_name' => $eventTypeClass
+			)
+		);
 
-		echo 'Inserting event_type, event_type_name: ' . $eventTypeName . ' event_type_class: ' .  $eventTypeClass .' event_type_group: ' . $eventTypeGroup;
+		echo 'Inserting event_type, event_type_name: ' . $eventTypeName . ' event_type_class: ' . $eventTypeClass . ' event_type_group: ' . $eventTypeGroup;
 
 		$getIdQuery = $this->dbConnection->createCommand()
 			->select('id')
 			->from('event_type')
 			->where('class_name=:class_name', array(':class_name' => $eventTypeClass));
 
-		echo "\n\nEvent type query: " . $getIdQuery->getText() . "\n" ;
+		echo "\n\nEvent type query: " . $getIdQuery->getText() . "\n";
 
 		$event_type_id = $getIdQuery->queryScalar();
 
@@ -223,31 +238,38 @@ class OEMigration extends CDbMigration
 	 * @param int $event_type_id
 	 * @return array - list of the element_types ids inserted
 	 */
-	protected function insertOEElementType( array $element_types, $event_type_id){
+	protected function insertOEElementType(array $element_types, $event_type_id)
+	{
 		$display_order = 1;
 		$element_type_ids = array();
 		foreach ($element_types as $element_type_class => $element_type_data) {
-			$default = isset($element_type_data['default'])? $element_type_data['default'] : 1;
-			$confirmedDisplayOrder = isset($element_type_data['display_order'])?
+			$default = isset($element_type_data['default']) ? $element_type_data['default'] : 1;
+			$confirmedDisplayOrder = isset($element_type_data['display_order']) ?
 				$element_type_data['display_order'] : $display_order * 10;
 			//this is needed to se the parent id for those elements set as children elements of another element type
-			$thisParentId = isset($element_type_data['parent_element_type_id'])?
-				$this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : NULL;
-			$required = isset($element_type_data['required'])? $element_type_data['required'] : NULL;
+			$thisParentId = isset($element_type_data['parent_element_type_id']) ?
+				$this->getIdOfElementTypeByClassName($element_type_data['parent_element_type_id']) : null;
+			$required = isset($element_type_data['required']) ? $element_type_data['required'] : null;
 
 
-			$this->insert('element_type', array(
-				'name' => $element_type_data['name'],
-				'class_name' => $element_type_class,
-				'event_type_id' => $event_type_id,
-				'display_order' => $confirmedDisplayOrder,
-				'default' => $default,
-				'parent_element_type_id' => $thisParentId,
-				'required' =>$required
-			));
+			$this->insert(
+				'element_type',
+				array(
+					'name' => $element_type_data['name'],
+					'class_name' => $element_type_class,
+					'event_type_id' => $event_type_id,
+					'display_order' => $confirmedDisplayOrder,
+					'default' => $default,
+					'parent_element_type_id' => $thisParentId,
+					'required' => $required
+				)
+			);
 
 			echo 'Added element type, element_type_class: ' . $element_type_class .
-				' element type properties: ' .   var_export($element_type_data, true) . ' event_type_id: ' . $event_type_id . " \n";
+				' element type properties: ' . var_export(
+					$element_type_data,
+					true
+				) . ' event_type_id: ' . $event_type_id . " \n";
 
 			// Insert element type id into element type array
 			$element_type_ids[] = $this->dbConnection->createCommand()
@@ -264,43 +286,51 @@ class OEMigration extends CDbMigration
 	/**
 	 * @description helper method to add element_type_eye records
 	 * @param array $eye_ids - array of integers
-	 * @param $event_type_id
+	 * @param $element_type_id
 	 */
-	protected function insertOEElementTypeEye( array $eye_ids, $element_type_id){
+	protected function insertOEElementTypeEye(array $eye_ids, $element_type_id)
+	{
 		$displayOrder = 1;
-		foreach($eye_ids as $eye_id){
-			$this->insert('element_type_eye',array('element_type_id' => $element_type_id ,'eye_id'=>$eye_id,'display_order'=>$displayOrder));
-			echo 'Added Element Type Eye. Element Type id: '. $element_type_id . ' with EyeId: ' . $eye_id . ' and DisplayOrder: ' . $displayOrder;
+		foreach ($eye_ids as $eye_id) {
+			$this->insert(
+				'element_type_eye',
+				array('element_type_id' => $element_type_id, 'eye_id' => $eye_id, 'display_order' => $displayOrder)
+			);
+			echo 'Added Element Type Eye. Element Type id: ' . $element_type_id . ' with EyeId: ' . $eye_id . ' and DisplayOrder: ' . $displayOrder;
 			$displayOrder++;
 		}
 	}
 
 	/**
 	 * @description method needed to delete records from multi key tables
-	 * @param $tableName
+	 * @param string $tableName
 	 * @param array $fieldsValsArray
 	 *  example of fieldsValsArray
 	 * $fieldsValsArray should look like
 	 *
 	 * array(
-	 * 	array('column_name'=>'value', 'column_name'=>'val'),
+	 *    array('column_name'=>'value', 'column_name'=>'val'),
 	 * )
 	 */
-	protected function deleteOEFromMultikeyTable($tableName, array $fieldsValsArray){
-		foreach($fieldsValsArray as $fieldsValArray){
+	protected function deleteOEFromMultikeyTable($tableName, array $fieldsValsArray)
+	{
+		foreach ($fieldsValsArray as $fieldsValArray) {
 			$fieldsList = '';
 			$fieldsValArrayMap = array();
 			$isFirst = true;
-			foreach($fieldsValArray as $fieldKey => $fieldVal){
-				$fieldsList .= ($isFirst?' and ':'');
+			foreach ($fieldsValArray as $fieldKey => $fieldVal) {
+				$fieldsList .= ($isFirst ? ' and ' : '');
 				$fieldsList .= $fieldKey . "=:$fieldKey ";
 
 				$fieldsValArrayMap[":$fieldKey "] = $fieldVal;
 
 				$isFirst = false;
 			}
-			$this->delete($tableName,$fieldsList , $fieldsValArrayMap );
-			echo "\nDeleted  in table : $tableName. Fields : ". $fieldsList . ' value: ' . var_export($fieldsValArrayMap , true) ."\n";
+			$this->delete($tableName, $fieldsList, $fieldsValArrayMap);
+			echo "\nDeleted  in table : $tableName. Fields : " . $fieldsList . ' value: ' . var_export(
+					$fieldsValArrayMap,
+					true
+				) . "\n";
 		}
 	}
 

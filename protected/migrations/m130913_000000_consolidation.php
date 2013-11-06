@@ -179,23 +179,45 @@
 		public function up()
 		{
 			// Check for existing migrations
-			$existing_migrations = $this->getDbConnection()->createCommand("SELECT version FROM `tbl_migration`")
-				->where(array('in:', 'version', $this->consolidated_migrations))->queryColumn();
-			if ($count($existing_migrations) == 0) {
+			$existing_migrations = $this->getDbConnection()->createCommand()
+				->select('version')
+				->from('tbl_migration')
+				->where(array('in', 'version', $this->consolidated_migrations))
+				->queryColumn();
+			if (count($existing_migrations) == 0) {
 				$this->createTables();
 			} else {
 				// Database has existing migrations, so check that last migration step to be consolidated was applied
-				if($count($existing_migrations) == count($this->consolidated_migrations)) {
+				if(count($existing_migrations) == count($this->consolidated_migrations)) {
 					// All previous migrations were applied, safe to consolidate
-					echo "Consolidating old migration data";
-					$this->getDbConnection()->createCommand("DELETE FROM `tbl_migration`")
-						->where(array('in:', 'version', $this->consolidated_migrations))->queryColumn();
+					echo "Consolidating old migration data...";
+					$deleted = $this->getDbConnection()->createCommand()
+						->delete('tbl_migration', array('in', 'version', $this->consolidated_migrations));
+					echo "removed $deleted rows\n";
 				} else {
 					// Database is not migrated up to the consolidation point, cannot migrate
 					echo "Previous migrations missing or incomplete, migration not possible\n";
+					echo "In order to run this migration, you must migrate have migrated up to at least ".end($this->consolidated_migrations)."\n";
+					echo "This requires a pre-consolidation version of the code\n";
 					return false;
 				}
 			}
+		}
+
+		public function down()
+		{
+			echo "You cannot migrate down past a consolidation migration\n";
+			return false;
+		}
+
+		public function safeUp()
+		{
+			$this->up();
+		}
+
+		public function safeDown()
+		{
+			$this->down();
 		}
 
 		public function createTables()
@@ -3122,24 +3144,4 @@
 			$this->execute("SET foreign_key_checks = 1");
 	}
 
-
-
-		public function down()
-		{
-			echo "m130913_000000_consolidation does not support migration down.\n";
-			return false;
-		}
-
-
-		// Use safeUp/safeDown to do migration with transaction
-		public function safeUp()
-		{
-			$this->up();
-		}
-
-		public function safeDown()
-		{
-			$this->down();
-		}
-
-	}
+}
