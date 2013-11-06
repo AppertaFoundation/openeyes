@@ -1,3 +1,4 @@
+<?php /* DEPRECATED */ ?>
 					<div class="eventDetail">
 						<div class="label"><?php echo CHtml::encode($labeltext)?>:</div>
 						<?php if (!empty($columns)) {
