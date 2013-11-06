@@ -1,6 +1,6 @@
 <meta charset="utf-8" />
 
-<title>NEW THEME - <?php echo CHtml::encode($this->pageTitle); ?></title>
+<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 <meta name="viewport" content="width=device-width" />
 
 <?php if (Yii::app()->params['disable_browser_caching']) {?>
