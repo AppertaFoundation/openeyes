@@ -31,11 +31,11 @@ class php5 {
       notify  => Service['apache2']
   }
 
-  define set_php_var($value, $path = 'default') {
+  define set_php_var_cli($value, $path = 'default') {
       if $path == 'default'
-         $path= “/etc/php5/apache/php.ini″
+         $path= "/etc/php5/apache/php.ini"
       else
-         $path= “/etc/php5/cli/php.ini”
+         $path= "/etc/php5/cli/php.ini"
       end
 
       exec { "sed -i 's/^;*[[:space:]]*$name[[:space:]]*=.*$/$name = $value/g' $path":
