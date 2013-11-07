@@ -44,7 +44,6 @@ class BaseEventTypeController extends BaseController
 	private $episodes = array();
 	public $renderPatientPanel = true;
 
-
 	public function getTitle()
 	{
 		if(isset($this->title)){
@@ -59,6 +58,15 @@ class BaseEventTypeController extends BaseController
 	public function setTitle($title)
 	{
 		$this->title=$title;
+	}
+
+	public function init()
+	{
+		// Set asset path
+		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
+			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
+		}
+		return parent::init();
 	}
 
 	/**
@@ -150,11 +158,6 @@ class BaseEventTypeController extends BaseController
 	{
 		// Set the module CSS class name.
 		$this->moduleNameCssClass = strtolower(Yii::app()->getController()->module->id);
-
-		// Set asset path
-		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
-			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
-		}
 
 		// Automatic file inclusion unless it's an ajax call
 		if ($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
