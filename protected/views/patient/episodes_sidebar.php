@@ -51,7 +51,7 @@ $current_episode = @$this->current_episode;
 
 						<!-- Show/hide toggle icon -->
 						<a href="#" class="toggle-trigger toggle-<?php if ((!$current_episode || $current_episode->id != $episode->id) && $episode->hidden) { ?>show<?php } else { ?>hide<?php } ?>">
-							<span class="icon-showhide <?php if ((!$current_episode || $current_episode->id != $episode->id) && $episode->hidden) { ?>show<?php } else { ?>hide<?php } ?>">
+							<span class="icon-showhide">
 								Show/hide events for this episode
 							</span>
 						</a>
@@ -66,7 +66,7 @@ $current_episode = @$this->current_episode;
 						</h4>
 
 						<!-- Episode event icons -->
-						<ol class="events-overview" <?php  if ($episode->hidden) { ?>style = "display:block" <?php } else { ?> style = "display : none"<?php } ?>>
+						<ol class="events-overview clearfix" <?php  if ($episode->hidden) { ?>style = "display:block" <?php } else { ?> style = "display : none"<?php } ?>>
 							<?php
 								foreach ($episode->events as $event) {
 								$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>

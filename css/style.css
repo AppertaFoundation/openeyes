@@ -3974,36 +3974,39 @@ tfoot.pagination-container .pagination li {
 }
 /* line 93, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events-overview li {
+  float: left;
   font-size: 1em;
+  line-height: 1;
   list-style: none;
+  margin-right: 0.375em;
 }
-/* line 96, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 99, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events-overview li img {
   height: 12px;
   width: 12px;
 }
-/* line 103, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 106, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode.hide-events .events-overview {
   display: block;
 }
-/* line 106, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 109, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode.hide-events .events-container {
   display: none;
 }
-/* line 110, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 113, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events {
   border-top: 1px dotted #cccccc;
   margin: 0.3125em 0 0 0;
   padding: 0.25em 0 0 0;
 }
-/* line 114, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 117, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li {
   font-size: 1em;
   list-style: none;
   margin: 0 0 0.25em 0;
   position: relative;
 }
-/* line 120, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 123, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events a {
   -webkit-border-radius: 0 6px 6px 0;
   -moz-border-radius: 0 6px 6px 0;
@@ -4014,41 +4017,41 @@ tfoot.pagination-container .pagination li {
   font-size: 0.8125em;
   padding: 0 0.625em 0 0.5em;
 }
-/* line 125, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 128, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events a:hover {
   background: #3665ff url('../img/_elements/icons/event/event_open_arrow.png?1383823007') right center no-repeat;
   color: white;
 }
-/* line 130, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 133, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type {
   display: inline-block;
   width: 35px;
 }
-/* line 133, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 136, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert {
   background: url('../img/_elements/icons/event/status/alert.png?1383823007') right top no-repeat;
 }
-/* line 135, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 138, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert:hover {
   background-image: url('../img/_elements/icons/event/status/alert-hover.png?1383823007');
 }
-/* line 140, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 143, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-date {
   display: inline-block;
   padding-left: 1.625em;
 }
-/* line 145, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 148, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-date .day,
 .panel.episode .events .event-date .mth,
 .panel.episode .events .event-date .yr {
   padding-right: 6px;
 }
-/* line 152, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 155, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected a {
   background: #aaaaaa url('../img/_elements/icons/event/event_open_arrow.png?1383823007') right center no-repeat;
   color: white;
 }
-/* line 157, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 160, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected .event-type.alert {
   background-image: url('../img/_elements/icons/event/status/alert-hover.png?1383823007');
 }
@@ -4974,7 +4977,7 @@ tfoot.pagination-container .pagination li {
 /* line 10, ../sass/new/openeyes/components/_visibility.scss */
 .hide,
 .hidden {
-  display: none !important;
+  display: none;
 }
 
 /* line 6, ../sass/new/openeyes/components/_jquery-ui.scss */
