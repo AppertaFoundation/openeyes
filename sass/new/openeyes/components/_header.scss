@@ -12,27 +12,21 @@
 //
 // Styleguide 7.1
 
-// Header variables
-$oe-header-main-height: 70px !default;
-$oe-header-main-logo-bg-image: image-url("_structure/openeyes.png") !default;
-$oe-header-main-logo-width: 210px !default;
-$oe-header-main-logo-height: 70px !default;
-$oe-header-main-small-margin: 0 0 emCalc(10px) 0;
 
 .header {
-	min-height: $oe-header-main-height;
-	margin: $oe-header-main-small-margin;
+	min-height: 70px;
+	margin: 0 0 emCalc(10px) 0;
 	@media #{$small} {
 		margin-bottom: 0;
 	}
 	.logo {
 		@extend .hide-text;
-		background: $oe-header-main-logo-bg-image no-repeat;
+		background: image-url("_structure/openeyes.png") no-repeat;
 		background-size: 100%;
 		display: block;
-		height: $oe-header-main-logo-height;
+		height: 70px;
 		margin-left: -1 * $column-gutter / 2;
-		max-width: $oe-header-main-logo-width;
+		max-width: 210px;
 	}
 	&.stuck {
 		background: #a0d7f8 image-url("_structure/miniheader/bg_gradient.png") bottom repeat-x;

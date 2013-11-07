@@ -1,17 +1,7 @@
-// Element vars
-$oe-element-border-top: 1px dotted #97c6f1 !default;
-$oe-element-title-color: #56a7f1 !default;
-$oe-element-title-font-style: italic !default;
-$oe-element-title-font-size: $default-font-size !default;
-$oe-element-title-padding: 8px 10px !default;
-$oe-element-title-margin: 0 !default;
-$oe-element-h4-font-size: $default-font-size !default;
-$oe-element-fieldset-panel-border-color: #d9d9d9 !default;
-$oe-element-eye-border-color: #fafafa !default;
-
 .element {
 	position: relative;
-	canvas, .canvas {
+	canvas,
+	.canvas {
 		border: 1px solid #ccc;
 		margin: 0;
 	}
@@ -25,6 +15,15 @@ $oe-element-eye-border-color: #fafafa !default;
 			padding: 0;
 		}
 	}
+	.inactive .active-form,
+	.inactive-form {
+		display: none;
+	}
+	.inactive {
+		.inactive-form {
+			display: block;
+		}
+	}
 }
 
 .element-header {
@@ -32,10 +31,10 @@ $oe-element-eye-border-color: #fafafa !default;
 }
 
 .element-title {
-	color: $oe-element-title-color;
-	font-size: $oe-element-title-font-size;
-	padding: $oe-element-title-padding;
-	margin: $oe-element-title-margin;
+	color: #56a7f1;
+	font-size: $default-font-size;
+	margin: 0;
+	padding: 8px 10px;
 	.element-header & {
 		float: left;
 	}
@@ -50,19 +49,20 @@ $oe-element-eye-border-color: #fafafa !default;
 
 .element-eye {
 	@extend %element-panel;
-	border-right: 1px solid $oe-element-eye-border-color;
+	border-right: 1px solid #fafafa;
 	&:last-child {
 		border: 0;
 	}
-	&.left-eye, &.right-eye {
+	&.left-eye,
+	&.right-eye {
 		@extend .large-6;
 	}
 }
 
 .eye-message {
-	text-align: center;
 	font-size: $default-font-size;
 	padding: 1em 0;
+	text-align: center;
 }
 
 .element-table {
@@ -126,8 +126,8 @@ $oe-element-edit-title-font-style: italic;
 		line-height: 2.4em;
 		margin-left: .5em;
 		small {
-			font-size: 85%;
 			display: inline-block;
+			font-size: 85%;
 			margin-left: .5em;
 		}
 	}
@@ -145,8 +145,8 @@ $oe-element-edit-title-font-style: italic;
 	}
 	.add-side {
 		font-size: $default-font-size;
-		text-align: center;
 		padding: emCalc(12px);
+		text-align: center;
 	}
 	.icon-remove-side {
 		background: image-url("_elements/icons/event-optional/element-remove.png") no-repeat -10px -2px;
@@ -159,8 +159,8 @@ $oe-element-edit-title-font-style: italic;
 	}
 	.icon-add-side {
 		background: image-url("_elements/icons/event-optional/element-view.png") no-repeat -10px -4px;
-		width: 16px;
 		height: 16px;
+		width: 16px;
 	}
 	.element-actions {
 		float: right;
@@ -178,13 +178,13 @@ $oe-element-edit-title-font-style: italic;
 		}
 		.element-data {
 			background: none;
-			padding-top: 0;
 			padding-bottom: 0;
+			padding-top: 0;
 			&.highlight {
 				@include border-radius(5px);
 				background: #fff;
-				padding-top: emCalc(4px);
 				padding-bottom: emCalc(4px);
+				padding-top: emCalc(4px);
 			}
 		}
 		.field-value {
@@ -200,11 +200,11 @@ $oe-element-edit-title-font-style: italic;
 	.element-title {
 		&.highlight {
 			background: #dae6f1;
-			padding: emCalc(12px) 10px;
-			float: none;
 			color: #111;
+			float: none;
 			font-size: emCalc(14px);
 			margin-bottom: 1em;
+			padding: emCalc(12px) 10px;
 		}
 	}
 }

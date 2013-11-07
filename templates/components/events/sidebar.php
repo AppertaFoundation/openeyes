@@ -27,7 +27,7 @@
 			<ol class="events-overview">
 				<li>
 					<a href="#">
-						<img src="/protected/modules/OphTrOperationbooking/assets/img/new/small.png" alt="op" width="19" height="19" />
+						<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 					</a>
 				</li>
 			</ol>
@@ -39,8 +39,8 @@
 				<ol class="events">
 					<li class="selected">
 						<a href="#">
-							<span class="event-type alert">
-								<img src="/protected/modules/OphTrOperationbooking/assets/img/new/small.png" alt="op" width="19" height="19" />
+							<span class="event-type">
+								<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
 								1 Jan 2000
@@ -50,7 +50,7 @@
 					<li>
 						<a href="#">
 							<span class="event-type alert">
-								<img src="/protected/modules/OphTrOperationbooking/assets/img/new/small.png" alt="op" width="19" height="19" />
+								<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
 								1 Jan 2000
@@ -77,7 +77,7 @@
 			<ol class="events-overview">
 				<li>
 					<a href="#">
-						<img src="/protected/modules/OphTrOperationbooking/assets/img/new/small.png" alt="op" width="19" height="19" />
+						<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 					</a>
 				</li>
 			</ol>
@@ -90,7 +90,7 @@
 					<li>
 						<a href="#">
 							<span class="event-type alert">
-								<img src="/protected/modules/OphTrOperationbooking/assets/img/new/small.png" alt="op" width="19" height="19" />
+								<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
 								1 Jan 2000
@@ -100,7 +100,7 @@
 					<li>
 						<a href="#">
 							<span class="event-type alert">
-								<img src="/protected/modules/OphTrOperationbooking/assets/img/new/small.png" alt="op" width="19" height="19" />
+								<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
 								1 Jan 2000

@@ -12,24 +12,24 @@
 		display: inline-block;
 		height: 15px;
 		margin-left: 2px;
+		margin-top: 1px;
 		vertical-align: top;
 		width: 14px;
-		margin-top: 1px;
 		&:hover {
 			@include opacity(1);
 		}
 	}
 	.no-selections-msg {
-		display: block;
 		background: #efe;
+		display: block;
 		margin: .9em 0 0 0;
 	}
 }
 
 .multi-select-selections {
-	margin: .8em 0 0 0;
-	list-style-type: none;
 	display: inline-block;
+	list-style-type: none;
+	margin: .8em 0 0 0;
 	li {
 		@extend .pill;
 		background: #ffe;
@@ -50,9 +50,9 @@
 .multi-select-list {
 	.multi-select-selections {
 		li {
-			display: block;
 			@include border-radius(0);
 			background: #fff;
+			display: block;
 			margin: 0;
 			padding: emCalc(2px) emCalc(5px);
 		}

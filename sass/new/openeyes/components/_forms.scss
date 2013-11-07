@@ -204,35 +204,19 @@ label {
 //
 // Styleguide 9.2
 
-// Field sizes vars
-$oe-form-field-small-padding: emCalc(3px) emCalc(4px) !default;
-$oe-form-field-fixed-width: emCalc(110px) !default;
-
 @include input-form-fields {
 	@include border-radius($oe-form-input-radius);
 	height: auto;
 	&.small {
-		padding: $oe-form-field-small-padding;
+		padding: emCalc(3px) emCalc(4px);
 	}
 	&.fixed-width {
-		width: $oe-form-field-fixed-width;
+		width: emCalc(110px);
 	}
 	&.large {
 		padding: emCalc(8px) emCalc(5px);
 	}
 }
-
-// Field rows, fields and label wrappers
-$oe-field-highlight-border-radius: 5px !default;
-$oe-field-highlight-bg-color: white !default;
-$oe-field-highlight-padding: .75em !default;
-$oe-field-highlight-font-size: emCalc(18px) !default;
-$oe-field-highlight-margin: 0 -.75em !default;
-$oe-field-highlight-list-item-font-size: 1em !default;
-$oe-field-highlight-important-bg-color: #fff300 !default;
-$oe-field-value-padding-bottom: 5px !default;
-$oe-field-value-font-size: $default-font-size !default;
-$oe-field-value-line-height: 1.3 !default;
 
 // Field rows
 .field-row {
@@ -248,8 +232,8 @@ $oe-field-value-line-height: 1.3 !default;
 }
 
 .field-value {
-	font-size: $oe-field-value-font-size;
-	line-height: $oe-field-value-line-height;
+	font-size: $default-font-size;
+	line-height: 1.3;
 	margin: 0;
 	li {
 		font-size: 1em;
@@ -260,40 +244,23 @@ $oe-field-value-line-height: 1.3 !default;
 		font-style: italic;
 	}
 	&.highlight {
-		@include border-radius($oe-field-highlight-border-radius);
-		background: $oe-field-highlight-bg-color;
-		padding: $oe-field-highlight-padding;
-		font-size: $oe-field-highlight-font-size;
-		margin: $oe-field-highlight-margin;
+		@include border-radius(5px);
+		background: white;
+		padding: .75em;
+		font-size: emCalc(18px);
+		margin: 0 -.75em;
 		list-style-type: none;
 		li {
-			font-size: $oe-field-highlight-list-item-font-size;
+			font-size: 1em;
 			margin: 0;
 			padding: emCalc(4px) 0;
 		}
 		&.important {
-			background: $oe-field-highlight-important-bg-color;
+			background: #fff300;
 		}
 	}
 }
 
 .field-label {
-	@extend .field-value;
-}
-
-
-// Data classes for displaying data
-
-// Data rows
-.data-row {
-	@extend .field-row;
-}
-.data-title {
-	@extend .element-title;
-}
-.data-label {
-	@extend .field-label;
-}
-.data-value {
 	@extend .field-value;
 }

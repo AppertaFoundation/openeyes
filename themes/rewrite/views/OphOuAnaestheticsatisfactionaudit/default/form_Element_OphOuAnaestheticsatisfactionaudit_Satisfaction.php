@@ -33,7 +33,7 @@
 				'max' => 10,
 				'step' => 1,
 				'width' => 340,
-				'painScale' => $this->patient->isChild() ? $this->assetPath."/img/new/painscale_child.png" : $this->assetPath."/img/new/painscale_adult.png"
+				'painScale' => $this->patient->isChild() ? $this->assetPath."/img/painscale_child.png" : $this->assetPath."/img/painscale_adult.png"
 			),
 			array('class' => 'slider painscale')
 		)?>

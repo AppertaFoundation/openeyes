@@ -16,11 +16,6 @@
 $oe-box-gutter: $column-gutter / 2;
 $oe-box-margin: $oe-box-gutter 0 !default;
 $oe-box-border-radius: $global-radius !default;
-$oe-box-content-bg-color: #dae6f1 !default;
-$oe-box-event-border-radius: 0 !default;
-$oe-box-event-background: #fafafa !default;
-$oe-box-event-padding: emCalc(5px) emCalc(5px) emCalc(10px) emCalc(5px) !default;
-$oe-box-event-border-width: 0 5px 5px !default;
 
 .box {
 	@include border-radius($oe-box-border-radius);
@@ -40,7 +35,7 @@ $oe-box-event-border-width: 0 5px 5px !default;
 // Content box
 .box {
 	&.content {
-		background: $oe-box-content-bg-color;
+		background: #dae6f1;
 		&.admin-content {
 			padding: emCalc(16px) 0;
 		}

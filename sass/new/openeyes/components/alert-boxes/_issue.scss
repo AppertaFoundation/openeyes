@@ -1,0 +1,9 @@
+.alert-box{
+	&.issue {
+		@include alert-style(#fdf2e5);
+		&.with-icon {
+			background-image: image-url("_elements/icons/box/issue.png");
+			min-height: 36px;
+		}
+	}
+}

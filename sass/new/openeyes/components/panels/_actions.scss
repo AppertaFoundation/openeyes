@@ -2,23 +2,13 @@
 //
 // Styleguide 16.1
 
-// Actions panel variables
-$oe-actions-label-font-size: emCalc(13px) !default;
-$oe-actions-label-padding: emCalc(10px) 0 !default;
-$oe-panel-actions-button-margin: emCalc(4px) emCalc(10px) emCalc(6px) 0 !default;
-$oe-panel-actions-latest-letter-width: emCalc(120px) !default;
-$oe-panel-actions-margin: 0 0 emCalc(10px) 0 !default;
-$oe-panel-actions-orange-bg-color: goldenrod !default;
-$oe-panel-actions-orange-margin-right: emCalc(5px) !default;
-$oe-panel-actions-orange-padding: emCalc(5px) emCalc(10px) !default;
-
 .panel {
 	&.actions {
 		border: 0;
-		margin: $oe-panel-actions-margin;
+		margin: 0 0 emCalc(10px) 0;
 		padding: 0;
 		button, .button {
-			margin: $oe-panel-actions-button-margin;
+			margin: emCalc(4px) emCalc(10px) emCalc(6px) 0;
 			vertical-align: middle;
 			&:last-child {
 				margin-right: 0;
@@ -30,30 +20,15 @@ $oe-panel-actions-orange-padding: emCalc(5px) emCalc(10px) !default;
 		}
 		.label {
 			display: inline-block;
-			font-size: $oe-actions-label-font-size;
+			font-size: emCalc(13px);
 			font-weight: bold;
-			padding: $oe-actions-label-padding;
+			padding: emCalc(10px) 0;
 		}
 		.panel-latest-letter {
-			width: $oe-panel-actions-latest-letter-width;
+			width: emCalc(120px);
 		}
 		.button-bar {
 			float: right;
-		}
-	}
-}
-
-.panel {
-	&.orange {
-		background-color: $oe-panel-actions-orange-bg-color;
-		border: 0;
-		display: inline-block;
-		margin-bottom: 0;
-		margin-right: $oe-panel-actions-orange-margin-right;
-		padding: $oe-panel-actions-orange-padding;
-		vertical-align: top;
-		label {
-			font-weight: normal;
 		}
 	}
 }

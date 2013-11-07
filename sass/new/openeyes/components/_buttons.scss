@@ -26,107 +26,65 @@
 // .delete:active		- Delete button active state
 //
 // Styleguide 10.1
-
-// Primary button variables
-$oe-button-primary-bg-color-start: #107be9 !default;
-$oe-button-primary-bg-color-end: #1469bf !default;
-$oe-button-primary-shadow-opacity: 0.3 !default;
-$oe-button-primary-font-size: emCalc(16px);
-$oe-button-primary-text-shadow-1: #105dae !default;
-$oe-button-primary-text-shadow-2: #5c0faa !default;
-$oe-button-primary-border-color: #105dae !default;
-$oe-button-primary-hover-color: white !default;
-$oe-button-primary-hover-bg-color-start: #118afb !default;
-$oe-button-primary-hover-bg-color-end: #1279e3 !default;
-$oe-button-primary-hover-border-color: #1974d1 !default;
-$oe-button-primary-active-bg-color-start: #145ea9 !default;
-$oe-button-primary-active-bg-color-end: #104d8b !default;
-$oe-button-primary-active-border-color: #0f467e !default;
-$oe-button-primary-padding: emCalc(8px) emCalc(34px) !default;
+//
 
 // Primary button (blue)
 button, .button, input[type="submit"] {
 	@include button-base;
 	@include border-radius($button-radius);
-	@include background(linear-gradient($oe-button-primary-bg-color-start, $oe-button-primary-bg-color-end));
-	@include box-shadow(0 1px 4px rgba(0, 0, 0, $oe-button-primary-shadow-opacity));
+	@include background(linear-gradient(#107be9, #1469bf));
+	@include box-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
 	border: 0;
-	border-bottom: 2px solid $oe-button-primary-border-color;
+	border-bottom: 2px solid #105dae;
 	color: $button-font-color;
 	font-size: $oe-button-primary-font-size;
-	padding: $oe-button-primary-padding;
-	text-shadow: 1px 1px 0 $oe-button-primary-text-shadow-1, 2px 2px 0 $oe-button-primary-text-shadow-2;
+	padding: emCalc(8px) emCalc(34px);
+	text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
 	margin: 0;
 	&:hover,
 	&:focus {
-		@include background(linear-gradient($oe-button-primary-hover-bg-color-start, $oe-button-primary-hover-bg-color-end));
-		border-color: $oe-button-primary-hover-border-color;
-		color: $oe-button-primary-hover-color;
+		@include background(linear-gradient(#118afb, #1279e3));
+		border-color: #1974d1;
+		color: white;
 	}
 	&:active {
-		@include background(linear-gradient($oe-button-primary-active-bg-color-start, $oe-button-primary-active-bg-color-end));
-		border-color: $oe-button-primary-active-border-color;
+		@include background(linear-gradient(#145ea9, #104d8b));
+		border-color: #0f467e;
 	}
 }
-
-// Secondary button vars
-$oe-button-secondary-bg-color-start: #43a844;
-$oe-button-secondary-bg-color-end: #55a256;
-$oe-button-secondary-text-shadow-1: #427d42;
-$oe-button-secondary-text-shadow-2: #43727f;
-$oe-button-secondary-border-color: #3fa522;
-$oe-button-secondary-hover-bg-color-start: #48bd27;
-$oe-button-secondary-hover-bg-color-end: #3fa522;
-$oe-button-secondary-hover-border-color: #569b42;
-$oe-button-secondary-active-bg-color-start: #458446;
-$oe-button-secondary-active-bg-color-end: #396c39;
-$oe-button-secondary-active-border-color: #336234;
 
 // Secondary button (green)
 button, .button, input[type="submit"] {
 	&.secondary {
-		@include background(linear-gradient($oe-button-secondary-bg-color-start, $oe-button-secondary-bg-color-end));
-		border-color: $oe-button-secondary-border-color;
-		text-shadow: 1px 1px 0 $oe-button-secondary-text-shadow-1, 2px 2px 0 $oe-button-secondary-text-shadow-2;
+		@include background(linear-gradient(#43a844, #55a256));
+		border-color: #3fa522;
+		text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
 		&:hover,
 		&:focus {
-			@include background(linear-gradient($oe-button-secondary-hover-bg-color-start, $oe-button-secondary-hover-bg-color-end));
-			border-color: $oe-button-secondary-hover-border-color;
+			@include background(linear-gradient(#48bd27, #3fa522));
+			border-color: #569b42;
 		}
 		&:active {
-			@include background(linear-gradient($oe-button-secondary-active-bg-color-start, $oe-button-secondary-active-bg-color-end));
-			border-color: $oe-button-secondary-active-border-color;
+			@include background(linear-gradient(#458446, #396c39));
+			border-color: #336234;
 		}
 	}
 }
 
-// Warning button vars
-$oe-button-warning-bg-color-start: #cf0d27;
-$oe-button-warning-bg-color-end: #b8152b;
-$oe-button-warning-text-shadow-1: #9a091c;
-$oe-button-warning-text-shadow-2: #851616;
-$oe-button-warning-border-color: #9a091c;
-$oe-button-warning-hover-bg-color-start: #e81515;
-$oe-button-warning-hover-bg-color-end: #e01a1a;
-$oe-button-warning-hover-border-color: #ad1515;
-$oe-button-warning-active-bg-color-start: #901828;
-$oe-button-warning-active-bg-color-end: #761421;
-$oe-button-warning-active-border-color: #6b121e;
-
 // Warning button (red)
 button, .button, input[type="submit"] {
 	&.warning {
-		@include background(linear-gradient($oe-button-warning-bg-color-start, $oe-button-warning-bg-color-end));
-		border-color: $oe-button-warning-border-color;
-		text-shadow: 1px 1px 0 $oe-button-warning-text-shadow-1, 2px 2px 0 $oe-button-warning-text-shadow-2;
+		@include background(linear-gradient(#cf0d27, #b8152b));
+		border-color: #9a091c;
+		text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
 		&:hover,
 		&:focus {
-			@include background(linear-gradient($oe-button-warning-hover-bg-color-start, $oe-button-warning-hover-bg-color-end));
-			border-color: $oe-button-warning-hover-border-color;
+			@include background(linear-gradient(#e81515, #e01a1a));
+			border-color: #ad1515;
 		}
 		&:active {
-			@include background(linear-gradient($oe-button-warning-active-bg-color-start, $oe-button-warning-active-bg-color-end));
-			border-color: $oe-button-warning-active-border-color;
+			@include background(linear-gradient(#901828, #761421));
+			border-color: #6b121e;
 		}
 	}
 }
@@ -136,29 +94,24 @@ button, .button, input[type="submit"] {
 	&.delete {
 		@include box-shadow(none);
 		background: none;
-		border-color: $oe-button-warning-border-color;
+		border-color: #9a091c;
 		border: 0;
 		color: #000;
 		text-shadow: none;
 		&:hover,
 		&:focus {
-			@include background(linear-gradient($oe-button-warning-bg-color-start, $oe-button-warning-bg-color-end));
-			@include box-shadow(0 1px 4px rgba(0, 0, 0, $oe-button-primary-shadow-opacity));
-			text-shadow: 1px 1px 0 $oe-button-warning-text-shadow-1, 2px 2px 0 $oe-button-warning-text-shadow-2;
+			@include background(linear-gradient(#336234, #b8152b));
+			@include box-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
+			text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
 			color: #fff;
 		}
 		&:active {
-			@include background(linear-gradient($oe-button-warning-active-bg-color-start, $oe-button-warning-active-bg-color-end));
-			border-color: $oe-button-warning-active-border-color;
+			@include background(linear-gradient(#901828, #761421));
+			border-color: #6b121e;
 			color: #fff;
 		}
 	}
 }
-
-// Disabled button vars
-$oe-button-disabled-bg-color-start: #aaaaaa !default;
-$oe-button-disabled-bg-color-stop: #999999 !default;
-$oe-button-disabled-border-color: #999999 !default;
 
 // Disabled button (grey)
 // This should always be defined after all other button variations.
@@ -169,8 +122,8 @@ button, .button, input[type="submit"] {
 		&:hover,
 		&:focus,
 		&:active {
-			@include background(linear-gradient($oe-button-disabled-bg-color-start, $oe-button-disabled-bg-color-stop));
-			border-color: $oe-button-disabled-border-color;
+			@include background(linear-gradient(#aaaaaa, #999999));
+			border-color: #999999;
 			text-shadow: none;
 		}
 	}
@@ -194,26 +147,16 @@ button, .button, input[type="submit"] {
 //
 // Styleguide 10.2
 
-// Small button vars
-$oe-button-small-padding: emCalc(5px) emCalc(20px) !default;
-$oe-button-small-font-size: emCalc(13px);
-$oe-button-small-letter-spacing: 1px;
-
-// Tiny button vars
-$oe-button-tiny-padding: emCalc(5px) emCalc(20px) !default;
-$oe-button-tiny-font-size: emCalc(11px);
-$oe-button-tiny-letter-spacing: 1px;
-
 button, .button, input[type="submit"] {
 	&.small {
-		padding: $oe-button-small-padding;
+		padding: emCalc(5px) emCalc(20px);
 		font-size: $oe-button-small-font-size;
-		letter-spacing: $oe-button-small-letter-spacing;
+		letter-spacing: 1px;
 	}
 	&.tiny {
-		padding: $oe-button-tiny-padding;
-		font-size: $oe-button-tiny-font-size;
-		letter-spacing: $oe-button-tiny-letter-spacing;
+		padding: emCalc(5px) emCalc(20px);
+		font-size: emCalc(11px);
+		letter-spacing: 1px;
 		line-height: 1.4;
 	}
 }

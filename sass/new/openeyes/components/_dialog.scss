@@ -8,9 +8,9 @@
 		@include box-shadow(2px 2px 2px 2px #666666);
 		@include border-radius(7px);
 		background: #fff;
+		font-family: Helvetica, Arial, sans-serif;
 		overflow: visible;
 		padding: 10px;
-		font-family: Helvetica, Arial, sans-serif;
 		.ui-dialog-title {
 			display: block;
 			float: none;
@@ -31,6 +31,7 @@
 			}
 		}
 		.ui-dialog-titlebar-close {
+			@include box-shadow(none);
 			background: transparent url(../img/_elements/btns/overlay/big-cross.png) top left no-repeat;
 			border: 0;
 			display: block;
@@ -41,18 +42,17 @@
 			right: -6px;
 			top: 5px;
 			width: 34px;
-			@include box-shadow(none);
 			span {
-				position: absolute;
 				left: -9999px;
+				position: absolute;
 			}
 			&.ui-state-hover {
 				border: 0;
 			}
 		}
 		.buttons {
-			text-align: right;
 			padding: 0 5px 5px 0;
+			text-align: right;
 		}
 		.field-row {
 			padding-bottom: emCalc(10px);

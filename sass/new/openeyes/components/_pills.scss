@@ -1,9 +1,9 @@
 .pill {
 	@include border-radius(5px);
 	display: inline-block;
-	padding: 3px 5px;
 	font-size: $default-font-size;
 	margin: 2px;
+	padding: 3px 5px;
 	&.high,
 	&.severe,
 	&.high-risk,
@@ -28,8 +28,8 @@
 		background: #9c0;
 	}
 	&.risk {
-		padding: 5px;
-		margin: 0;
 		display: block;
+		margin: 0;
+		padding: 5px;
 	}
 }
