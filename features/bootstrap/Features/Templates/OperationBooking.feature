@@ -46,8 +46,8 @@ Feature: Create New Operation Booking Event
     Then I select Save and Schedule now
   # !!!THIS TEST WILL FAIL IF THERE ARE OVER 66 EVENTS - THE SAVE BUTTON WILL NOT BE IN VIEW!!!
 
-#    Then I change the Viewing Schedule to Emergency List
-#    And I select Leave Page from the dialogue
+    Then I change the Viewing Schedule to Emergency List
+  # Then I select Next Month
 
     And I select an Available theatre slot date
     And I select an Available session time

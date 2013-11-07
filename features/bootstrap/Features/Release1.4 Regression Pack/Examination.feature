@@ -3,7 +3,7 @@ Feature: Create New Examination Regression Tests
   Regression over 2 Sites and 4 Firms
   Coverage at 60%
 
-  Scenario: Login and create a new Examination Event Route 1: Site 1:Queens, Firm:3 Anderson Glaucoma
+  Scenario: Route 1: Login and create a new Examination Event: Site 1:Queens, Firm:3 Anderson Glaucoma
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -47,7 +47,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination
 
-  Scenario: Login and create a new Examination Event Route 2: Site:1 Queens, Firm:2 Broom Glaucoma
+  Scenario: Route 2:Login and create a new Examination Event: Site:1 Queens, Firm:2 Broom Glaucoma
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -91,7 +91,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination
 
-  Scenario: Login and create a new Examination Event Route 3: Site:1 Queens, Firm:1 Anderson Cataract
+  Scenario: Route 3:Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -135,7 +135,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination
 
-  Scenario: Login and create a new Examination Event Route 4: Site:1 Queens, Firm:1 Anderson Cataract.
+  Scenario: Route 4: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
             Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
 
     Given I am on the OpenEyes "master" homepage

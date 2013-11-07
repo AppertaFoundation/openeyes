@@ -3,7 +3,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
   Regression coverage of this event is approx 90%
   Across 2 Sites and 4 Firms
 
-  Scenario: Login and create a Anaesthetic Satisfaction Audit Regression Test Route 1: Site 2 Kings, Firm 3 Anderson Glaucoma
+  Scenario: Route 1: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 3 Anderson Glaucoma
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -31,7 +31,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Then I Save the Event
 
-  Scenario: Login and create a Anaesthetic Satisfaction Audit Regression Test Route 2: Site 1 Queens, Firm 1 Anderson Cataract
+  Scenario: Route 2: Login and create a Anaesthetic Satisfaction Audit: Site 1 Queens, Firm 1 Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -59,7 +59,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Then I Save the Event
 
-  Scenario: Login and create a Anaesthetic Satisfaction Audit Regression Test Route 3: Site 1 Queens, Firm 2 Broom Glaucoma
+  Scenario: Route 3: Login and create a Anaesthetic Satisfaction Audit Regression - Site 1 Queens, Firm 2 Broom Glaucoma
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -87,7 +87,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Then I Save the Event
 
-  Scenario: Login and create a Anaesthetic Satisfaction Audit Regression Test Route 4: Site 2 Kings, Firm 4 Medical Retinal
+  Scenario: Route 4: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 4 Medical Retinal
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
