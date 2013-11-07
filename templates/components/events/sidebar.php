@@ -39,7 +39,7 @@
 				<ol class="events">
 					<li class="selected">
 						<a href="#">
-							<span class="event-type alert">
+							<span class="event-type">
 								<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">

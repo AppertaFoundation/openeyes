@@ -5,6 +5,11 @@
 	line-height: 1.3;
 	padding: 5px;
 	width: 200px;
+	.event-name,
+	.event-info,
+	.event-issue {
+		display: block;
+	}
 	.event-name {
 		font-weight: bold;
 		padding-bottom: 3px;

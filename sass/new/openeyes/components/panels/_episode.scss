@@ -58,6 +58,9 @@
 		margin: 0 0 emCalc(5px) 0;
 		padding: emCalc(5px) emCalc(1px) emCalc(5px) 0;
 		position: relative;
+		&.legacy {
+			margin-top: emCalc(5px);
+		}
 		.episode-date {
 			font-size: emCalc(11px);
 			padding-left: emCalc(7px);
@@ -82,11 +85,15 @@
 					color: #fff;
 				}
 			}
+			&.legacy {
+				padding: emCalc(5px) 0 emCalc(5px) emCalc(7px);
+			}
 		}
 		.add-event {
 			margin-left: emCalc(2px);
 		}
 		.events-overview {
+			@extend .clearfix;
 			display: none;
 			margin: 0;
 			padding: emCalc(2px) emCalc(5px) emCalc(2px) emCalc(8px);
@@ -133,8 +140,12 @@
 			.event-type {
 				display: inline-block;
 				width: 35px;
+				background: image-url("_elements/icons/event/status/quicklook.png") right top no-repeat;
+				&:hover {
+					background-image: image-url("_elements/icons/event/status/quicklook-hover.png");
+				}
 				&.alert {
-					background: image-url("_elements/icons/event/status/alert.png") right top no-repeat;
+					background-image: image-url("_elements/icons/event/status/alert.png");
 					&:hover {
 						background-image: image-url("_elements/icons/event/status/alert-hover.png");
 					}

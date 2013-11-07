@@ -29,6 +29,8 @@ $current_episode = @$this->current_episode;
 			<span class="icon-button-small-plus-sign"></span>Add Episode
 		</button>
 	<?php }?>
+
+	<!-- Legacy events -->
 	<?php $this->renderPartial('//patient/_legacy_events',array('legacyepisodes'=>$legacyepisodes))?>
 	<!-- <?php $this->renderPartial('//patient/_support_service_events',array('supportserviceepisodes'=>$supportserviceepisodes))?> -->
 
@@ -66,7 +68,7 @@ $current_episode = @$this->current_episode;
 						</h4>
 
 						<!-- Episode event icons -->
-						<ol class="events-overview clearfix" <?php  if ($episode->hidden) { ?>style = "display:block" <?php } else { ?> style = "display : none"<?php } ?>>
+						<ol class="events-overview" <?php  if ($episode->hidden) { ?>style = "display:block" <?php } else { ?> style = "display : none"<?php } ?>>
 							<?php
 								foreach ($episode->events as $event) {
 								$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
@@ -148,7 +150,7 @@ $current_episode = @$this->current_episode;
 										</div>
 
 										<a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
-											<span class="event-type alert<?php if ($event->hasIssue()) { ?> statusflag<?php } ?>">
+											<span class="event-type<?php if ($event->hasIssue()) { ?> alert<?php } ?>">
 												<?php
 												if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
 													$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';

@@ -16,16 +16,16 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 /* line 1, ../sass/new/openeyes/_placeholders.scss */
-.element-data, .edit .element-fields, .sub-element-data, .edit .sub-element-fields, .element-eye, .sub-elements, .clearfix, .footer, .box-header, .panel.user, .event .event-header, .element-header, .edit .optional-elements-header, .sub-element-header {
+.element-data, .edit .element-fields, .sub-element-data, .edit .sub-element-fields, .element-eye, .sub-elements, .clearfix, .footer, .box-header, .panel.user, .panel.episode .events-overview, .event .event-header, .element-header, .edit .optional-elements-header, .sub-element-header {
   *zoom: 1;
 }
 /* line 3, ../sass/new/openeyes/_mixins.scss */
-.element-data:before, .edit .element-fields:before, .sub-element-data:before, .edit .sub-element-fields:before, .element-eye:before, .sub-elements:before, .clearfix:before, .footer:before, .box-header:before, .panel.user:before, .event .event-header:before, .element-header:before, .edit .optional-elements-header:before, .sub-element-header:before, .element-data:after, .edit .element-fields:after, .sub-element-data:after, .edit .sub-element-fields:after, .element-eye:after, .sub-elements:after, .clearfix:after, .footer:after, .box-header:after, .panel.user:after, .event .event-header:after, .element-header:after, .edit .optional-elements-header:after, .sub-element-header:after {
+.element-data:before, .edit .element-fields:before, .sub-element-data:before, .edit .sub-element-fields:before, .element-eye:before, .sub-elements:before, .clearfix:before, .footer:before, .box-header:before, .panel.user:before, .panel.episode .events-overview:before, .event .event-header:before, .element-header:before, .edit .optional-elements-header:before, .sub-element-header:before, .element-data:after, .edit .element-fields:after, .sub-element-data:after, .edit .sub-element-fields:after, .element-eye:after, .sub-elements:after, .clearfix:after, .footer:after, .box-header:after, .panel.user:after, .panel.episode .events-overview:after, .event .event-header:after, .element-header:after, .edit .optional-elements-header:after, .sub-element-header:after {
   content: " ";
   display: table;
 }
 /* line 7, ../sass/new/openeyes/_mixins.scss */
-.element-data:after, .edit .element-fields:after, .sub-element-data:after, .edit .sub-element-fields:after, .element-eye:after, .sub-elements:after, .clearfix:after, .footer:after, .box-header:after, .panel.user:after, .event .event-header:after, .element-header:after, .edit .optional-elements-header:after, .sub-element-header:after {
+.element-data:after, .edit .element-fields:after, .sub-element-data:after, .edit .sub-element-fields:after, .element-eye:after, .sub-elements:after, .clearfix:after, .footer:after, .box-header:after, .panel.user:after, .panel.episode .events-overview:after, .event .event-header:after, .element-header:after, .edit .optional-elements-header:after, .sub-element-header:after {
   clear: both;
 }
 
@@ -3929,16 +3929,20 @@ tfoot.pagination-container .pagination li {
   position: relative;
 }
 /* line 61, ../sass/new/openeyes/components/panels/_episode.scss */
+.panel.episode.legacy {
+  margin-top: 0.3125em;
+}
+/* line 64, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-date {
   font-size: 0.6875em;
   padding-left: 0.4375em;
 }
-/* line 65, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 68, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-title {
   font-size: 0.9375em;
   margin: 0.3125em 0.125em 0.1875em 0;
 }
-/* line 68, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 71, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-title a {
   background: url('../img/_elements/graphic/view-episode-summary.png?1383823007') right bottom no-repeat;
   color: black;
@@ -3950,29 +3954,33 @@ tfoot.pagination-container .pagination li {
   -o-border-radius: 0 3px 3px 0;
   border-radius: 0 3px 3px 0;
 }
-/* line 74, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 77, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-title a:hover {
   background-color: #3665ff;
   background-image: url('../img/_elements/icons/event/event_open_arrow.png?1383823007');
   color: white;
 }
-/* line 79, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 82, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-title a.selected {
   background-color: #aaa;
   background-image: url('../img/_elements/icons/event/event_open_arrow.png?1383823007');
   color: #fff;
 }
-/* line 86, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 88, ../sass/new/openeyes/components/panels/_episode.scss */
+.panel.episode .episode-title.legacy {
+  padding: 0.3125em 0 0.3125em 0.4375em;
+}
+/* line 92, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .add-event {
   margin-left: 0.125em;
 }
-/* line 89, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 95, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events-overview {
   display: none;
   margin: 0;
   padding: 0.125em 0.3125em 0.125em 0.5em;
 }
-/* line 93, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 100, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events-overview li {
   float: left;
   font-size: 1em;
@@ -3980,33 +3988,33 @@ tfoot.pagination-container .pagination li {
   list-style: none;
   margin-right: 0.375em;
 }
-/* line 99, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 106, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events-overview li img {
   height: 12px;
   width: 12px;
 }
-/* line 106, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 113, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode.hide-events .events-overview {
   display: block;
 }
-/* line 109, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 116, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode.hide-events .events-container {
   display: none;
 }
-/* line 113, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 120, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events {
   border-top: 1px dotted #cccccc;
   margin: 0.3125em 0 0 0;
   padding: 0.25em 0 0 0;
 }
-/* line 117, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 124, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li {
   font-size: 1em;
   list-style: none;
   margin: 0 0 0.25em 0;
   position: relative;
 }
-/* line 123, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 130, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events a {
   -webkit-border-radius: 0 6px 6px 0;
   -moz-border-radius: 0 6px 6px 0;
@@ -4017,41 +4025,46 @@ tfoot.pagination-container .pagination li {
   font-size: 0.8125em;
   padding: 0 0.625em 0 0.5em;
 }
-/* line 128, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 135, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events a:hover {
   background: #3665ff url('../img/_elements/icons/event/event_open_arrow.png?1383823007') right center no-repeat;
   color: white;
 }
-/* line 133, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 140, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type {
   display: inline-block;
   width: 35px;
+  background: url('../img/_elements/icons/event/status/quicklook.png?1383823007') right top no-repeat;
 }
-/* line 136, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 144, ../sass/new/openeyes/components/panels/_episode.scss */
+.panel.episode .events .event-type:hover {
+  background-image: url('../img/_elements/icons/event/status/quicklook-hover.png?1383823007');
+}
+/* line 147, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert {
-  background: url('../img/_elements/icons/event/status/alert.png?1383823007') right top no-repeat;
+  background-image: url('../img/_elements/icons/event/status/alert.png?1383823007');
 }
-/* line 138, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 149, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert:hover {
   background-image: url('../img/_elements/icons/event/status/alert-hover.png?1383823007');
 }
-/* line 143, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 154, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-date {
   display: inline-block;
   padding-left: 1.625em;
 }
-/* line 148, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 159, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-date .day,
 .panel.episode .events .event-date .mth,
 .panel.episode .events .event-date .yr {
   padding-right: 6px;
 }
-/* line 155, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 166, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected a {
   background: #aaaaaa url('../img/_elements/icons/event/event_open_arrow.png?1383823007') right center no-repeat;
   color: white;
 }
-/* line 160, ../sass/new/openeyes/components/panels/_episode.scss */
+/* line 171, ../sass/new/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected .event-type.alert {
   background-image: url('../img/_elements/icons/event/status/alert-hover.png?1383823007');
 }
@@ -4950,16 +4963,22 @@ tfoot.pagination-container .pagination li {
   padding: 5px;
   width: 200px;
 }
-/* line 8, ../sass/new/openeyes/components/_quicklook.scss */
+/* line 10, ../sass/new/openeyes/components/_quicklook.scss */
+.quicklook .event-name,
+.quicklook .event-info,
+.quicklook .event-issue {
+  display: block;
+}
+/* line 13, ../sass/new/openeyes/components/_quicklook.scss */
 .quicklook .event-name {
   font-weight: bold;
   padding-bottom: 3px;
 }
-/* line 12, ../sass/new/openeyes/components/_quicklook.scss */
+/* line 17, ../sass/new/openeyes/components/_quicklook.scss */
 .quicklook .event-info {
   font-size: 11px;
 }
-/* line 15, ../sass/new/openeyes/components/_quicklook.scss */
+/* line 20, ../sass/new/openeyes/components/_quicklook.scss */
 .quicklook .event-issue {
   background: #fdf2e5 url('../img/_elements/icons/event/status/alert.png?1383823007') top left no-repeat;
   color: #600;
@@ -4967,7 +4986,7 @@ tfoot.pagination-container .pagination li {
   margin-top: 7px;
   padding: 5px 0 5px 20px;
 }
-/* line 22, ../sass/new/openeyes/components/_quicklook.scss */
+/* line 27, ../sass/new/openeyes/components/_quicklook.scss */
 .events .quicklook {
   left: 140px;
   top: -5px;
