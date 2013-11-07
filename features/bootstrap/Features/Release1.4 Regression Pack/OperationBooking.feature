@@ -126,8 +126,6 @@ Feature: Create New Operation Booking Event
 
     Then I change the Viewing Schedule to Emergency List
 
-    Then I select Next Month
-
     Then I select an Available theatre slot date of the "16" of the month
     And I select an Available session time
 

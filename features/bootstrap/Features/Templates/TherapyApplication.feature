@@ -1,4 +1,4 @@
-
+@code
 Feature: Create New Anaesthetic Satisfaction Audit
   In order to cover every possible route throughout the site
   As an automation tester
@@ -37,14 +37,59 @@ Feature: Create New Anaesthetic Satisfaction Audit
 
   # NOTES: The Angiogram Baseline Dates occasionally fail with the datepicker and a solution so far has not been found
 
-    Then I select Cerebrovascular accident Yes
-    Then I select Cerebrovascular accident No
-    Then I select Ischaemic attack Yes
-    Then I select Ischaemic attack No
-    Then I select Myocardial infarction Yes
-    Then I select Myocardial infarction No
+    Then I select Right Cerebrovascular accident Yes
+    Then I select Right Cerebrovascular accident No
+    Then I select Right Ischaemic attack Yes
+    Then I select Right Ischaemic attack No
+    Then I select Right Myocardial infarction Yes
+    Then I select Right Myocardial infarction No
 
-    And I select a Consultant of "4"
+    And I select a Right Consultant of "4"
+
+    Then I select a Right Standard Intervention Exists of Yes
+#    Then I select a Right Standard Intervention Exists of No
+    And I choose a Right Standard Intervention of "1"
+    And I select a Right Standard Intervention Previous of Yes
+#    And I select a Right Standard Intervention Previous of No
+#    Then I select Right In addition to the standard (Additional)
+    Then I select Right Instead of the standard (Deviation)
+
+#    And I add Right details of additional of "Additional Details Comment box"
+    And I add Right details of deviation of "Deviation Details Comment box"
+
+    Then I choose a Right reason for not using standard intervention of "1"
+    Then I add Right How is the patient different to others of "How is the patient significantly different to others comments?"
+    And I add Right How is the patient likely to gain benefit "How is the patient likely to gain more benefit than otherwise comments?"
+
+    Then I select Right Patient Factors Yes
+#    Then I select Right Patient Factors No
+
+    Then I add Right Patient Factor Details of "Patient Factor Details comments"
+    And I add Right Patient Expectations of "Patient Expectations comments"
+
+    Then I add Right Anticipated Start Date of "5"
+
+    Then I select a Left Standard Intervention Exists of Yes
+
+    And I choose a Left Standard Intervention of "1"
+    And I select a Left Standard Intervention Previous of Yes
+
+    Then I select Left Instead of the standard (Deviation)
+
+    And I add Left details of deviation of "Deviation Details Comment box"
+
+    Then I choose a Left reason for not using standard intervention of "1"
+    Then I add Left How is the patient different to others of "How is the patient significantly different to others comments?"
+    And I add Left How is the patient likely to gain benefit "How is the patient likely to gain more benefit than otherwise comments?"
+
+    Then I select Left Patient Factors Yes
+
+    Then I add Left Patient Factor Details of "Patient Factor Details comments"
+    And I add Left Patient Expectations of "Patient Expectations comments"
+
+    Then I add Left Anticipated Start Date of "5"
+
+
 
     Then I Save the Therapy Application
 

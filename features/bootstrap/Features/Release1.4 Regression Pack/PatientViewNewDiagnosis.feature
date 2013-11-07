@@ -4,7 +4,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
   As an automation tester
   I want to build a template with supporting code for each web page
 
-  Scenario: (1) Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
+  Scenario: Route 1: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -38,7 +38,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     And I Add a Family History of relative "1" side "3" condition "1" and comments "Family History Comments" and Save
 
 
-  Scenario: (2) Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
+  Scenario: Route 2: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -72,7 +72,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     And I Add a Family History of relative "5" side "2" condition "5" and comments "Family History Comments" and Save
 
 
-  Scenario: (3) Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
+  Scenario: Route 3: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"

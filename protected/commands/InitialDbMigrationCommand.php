@@ -17,6 +17,29 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/*
+ *
+How to consolidate
+
+1) make sure you have the latest structure and data files up to the release you are consolidating to, for instance release 1.4.0
+	run "./yiic migrate" will update to the latest migration in this release.
+
+2) Run "./yiic initialisedbmigration"
+This takes the current db status and data and prepares migration file/data structure that will recreate the database status as it is at that current moment
+
+3) delete all tables and data in the database.
+
+4) delete all previous migration files and old data within the data folder, make sure the new consolidation data and migration files are not removed.
+
+5) run the "./yiic migration" command. It executes the new consolidation migration and restores the database structure and data to the consolidation.
+
+Example : migrated to 130913_000000
+
+For modules consolidation generation there is no command available as automation is more difficult.
+But an helper has been created and it is available in the DevTools project https://github.com/openeyes/DevTools
+
+ */
+
 class InitialDbMigrationCommand extends CConsoleCommand
 {
 	public $migrationPath = 'application.migrations';

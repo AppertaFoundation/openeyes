@@ -1,6 +1,7 @@
 module.exports = {
 	options: {
 		port: 9002,
+		hostname: '0.0.0.0'
 	},
 	all: {
 		options: {

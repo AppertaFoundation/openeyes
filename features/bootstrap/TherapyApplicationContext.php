@@ -80,7 +80,7 @@ class TherapyApplicationContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I select Cerebrovascular accident Yes$/
+     * @Then /^I select Right Cerebrovascular accident Yes$/
      */
     public function iSelectCerebrovascularAccidentYes()
     {
@@ -88,11 +88,11 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
-        $TherapyApplication->cerebYes();
+        $TherapyApplication->RightCerebYes();
     }
 
     /**
-     * @Then /^I select Cerebrovascular accident No$/
+     * @Then /^I select Right Cerebrovascular accident No$/
      */
     public function iSelectCerebrovascularAccidentNo()
     {
@@ -100,11 +100,11 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
-        $TherapyApplication->cerebNo();
+        $TherapyApplication->RightCerebNo();
     }
 
     /**
-     * @Then /^I select Ischaemic attack Yes$/
+     * @Then /^I select Right Ischaemic attack Yes$/
      */
     public function iSelectIschaemicAttackYes()
     {
@@ -112,11 +112,11 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
-        $TherapyApplication->ischaemicYes();
+        $TherapyApplication->RightIschaemicYes();
     }
 
     /**
-     * @Then /^I select Ischaemic attack No$/
+     * @Then /^I select Right Ischaemic attack No$/
      */
     public function iSelectIschaemicAttackNo()
     {
@@ -124,11 +124,11 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
-        $TherapyApplication->ischaemicNo();
+        $TherapyApplication->RightIschaemicNo();
     }
 
     /**
-     * @Then /^I select Myocardial infarction Yes$/
+     * @Then /^I select Right Myocardial infarction Yes$/
      */
     public function iSelectMyocardialInfarctionYes()
     {
@@ -136,11 +136,11 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
-        $TherapyApplication->myocardialYes();
+        $TherapyApplication->RightMyocardialYes();
     }
 
     /**
-     * @Then /^I select Myocardial infarction No$/
+     * @Then /^I select Right Myocardial infarction No$/
      */
     public function iSelectMyocardialInfarctionNo()
     {
@@ -148,7 +148,7 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
-        $TherapyApplication->myocardialNo();
+        $TherapyApplication->RightMyocardialNo();
     }
 
     /**
@@ -200,7 +200,7 @@ class TherapyApplicationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I select a Consultant of "([^"]*)"$/
+     * @Given /^I select a Right Consultant of "([^"]*)"$/
      */
     public function iSelectAConsultantOf($consultant)
     {
@@ -208,7 +208,380 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
-        $TherapyApplication->consultantSelect($consultant);
+        $TherapyApplication->RightConsultantSelect($consultant);
+    }
+
+    /**
+     * @Then /^I select a Right Standard Intervention Exists of Yes$/
+     */
+    public function iSelectAStandardInterventionExistsOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightStandardExistsYes();
+    }
+
+    /**
+     * @Then /^I select a Right Standard Intervention Exists of No$/
+     */
+    public function iSelectAStandardInterventionExistsOfNo()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightStandardExistsNo();
+    }
+
+    /**
+     * @Given /^I choose a Right Standard Intervention of "([^"]*)"$/
+     */
+    public function iChooseAStandardInterventionOf($standard)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightStandardIntervention($standard);
+    }
+
+    /**
+     * @Given /^I select a Right Standard Intervention Previous of Yes$/
+     */
+    public function iSelectAStandardInterventionPreviousOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightStandardPreviousYes();
+    }
+
+    /**
+     * @Given /^I select a Right Standard Intervention Previous of No$/
+     */
+    public function iSelectAStandardInterventionPreviousOfNo()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightStandardPreviousNo();
+    }
+
+    /**
+     * @Then /^I select Right In addition to the standard \(Additional\)$/
+     */
+    public function iSelectInAdditionToTheStandardAdditional()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightStandardAdditional();
+    }
+
+    /**
+     * @Then /^I select Right Instead of the standard \(Deviation\)$/
+     */
+    public function iSelectInsteadOfTheStandardDeviation()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightStandardDeviation();
+
+    }
+
+    /**
+     * @Given /^I add Right details of additional of "([^"]*)"$/
+     */
+    public function iAddDetailsOfAdditionalOf($details)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightAdditionalOrDeviationComments($details);
+    }
+
+    /**
+     * @Given /^I add Right details of deviation of "([^"]*)"$/
+     */
+    public function iAddDetailsOfDeviationOf($details)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightAdditionalOrDeviationComments($details);
+    }
+
+    /**
+     * @Then /^I choose a Right reason for not using standard intervention of "([^"]*)"$/
+     */
+    public function iChooseAReasonForNotUsingStandardInterventionOf($option)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightNotUsingStandardIntervention($option);
+    }
+
+    /**
+     * @Then /^I add Right How is the patient different to others of "([^"]*)"$/
+     */
+    public function iAddHowIsThePatientDifferentToOthersOf($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightPatientSignificantDifferent($comments);
+    }
+
+    /**
+     * @Given /^I add Right How is the patient likely to gain benefit "([^"]*)"$/
+     */
+    public function iAddHowIsThePatientLikelyToGainBenefit($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightPatientMoreBenefit($comments);
+    }
+
+    /**
+     * @Then /^I select Right Patient Factors Yes$/
+     */
+    public function iSelectPatientFactorsYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightPatientFactorsYes();
+    }
+
+    /**
+     * @Then /^I select Right Patient Factors No$/
+     */
+    public function iSelectPatientFactorsNo()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightPatientFactorsNo();
+    }
+
+    /**
+     * @Then /^I add Right Patient Factor Details of "([^"]*)"$/
+     */
+    public function iAddPatientFactorDetailsOf($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightPatientFactorDetails($comments);
+    }
+
+    /**
+     * @Given /^I add Right Patient Expectations of "([^"]*)"$/
+     */
+    public function iAddPatientExpectationsOf($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightPatientExpectations($comments);
+    }
+
+    /**
+     * @Then /^I add Right Anticipated Start Date of "([^"]*)"$/
+     */
+    public function iAddAnticipatedStartDateOf($date)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->RightAnticipatedStartDate($date);
+    }
+
+    /**
+     * @Then /^I select a Left Standard Intervention Exists of Yes$/
+     */
+    public function iSelectALeftStandardInterventionExistsOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftStandardExistsYes();
+    }
+
+    /**
+     * @Given /^I choose a Left Standard Intervention of "([^"]*)"$/
+     */
+    public function iChooseALeftStandardInterventionOf($standard)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftStandardIntervention($standard);
+    }
+
+    /**
+     * @Given /^I select a Left Standard Intervention Previous of Yes$/
+     */
+    public function iSelectALeftStandardInterventionPreviousOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftStandardPreviousYes();
+    }
+
+    /**
+     * @Then /^I select Left Instead of the standard \(Deviation\)$/
+     */
+    public function iSelectLeftInsteadOfTheStandardDeviation()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftStandardDeviation();
+    }
+
+    /**
+     * @Given /^I add Left details of deviation of "([^"]*)"$/
+     */
+    public function iAddLeftDetailsOfDeviationOf($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftAdditionalOrDeviationComments($comments);
+    }
+
+    /**
+     * @Then /^I choose a Left reason for not using standard intervention of "([^"]*)"$/
+     */
+    public function iChooseALeftReasonForNotUsingStandardInterventionOf($option)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftNotUsingStandardIntervention($option);
+    }
+
+    /**
+     * @Then /^I add Left How is the patient different to others of "([^"]*)"$/
+     */
+    public function iAddLeftHowIsThePatientDifferentToOthersOf($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftPatientSignificantDifferent($comments);
+    }
+
+    /**
+     * @Given /^I add Left How is the patient likely to gain benefit "([^"]*)"$/
+     */
+    public function iAddLeftHowIsThePatientLikelyToGainBenefit($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftPatientMoreBenefit($comments);
+    }
+
+    /**
+     * @Then /^I select Left Patient Factors Yes$/
+     */
+    public function iSelectLeftPatientFactorsYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftPatientFactorsYes();
+    }
+
+    /**
+     * @Then /^I add Left Patient Factor Details of "([^"]*)"$/
+     */
+    public function iAddLeftPatientFactorDetailsOf($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftPatientFactorDetails($comments);
+    }
+
+    /**
+     * @Given /^I add Left Patient Expectations of "([^"]*)"$/
+     */
+    public function iAddLeftPatientExpectationsOf($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftPatientExpectations($comments);
+    }
+
+    /**
+     * @Then /^I add Left Anticipated Start Date of "([^"]*)"$/
+     */
+    public function iAddLeftAnticipatedStartDateOf($date)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->LeftAnticipatedStartDate($date);
+    }
+
+    /**
+     * @Then /^I select Patient Venous Occlusion of "([^"]*)"$/
+     */
+    public function iSelectPatientVenousOcclusionOfYes($option)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->patientVenousYes($option);
+    }
+
+    /**
+     * @Given /^I select CRVO of "([^"]*)"$/
+     */
+    public function iSelectCrvoOfYes($option)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->CRVOyes($option);
     }
 
     /**
