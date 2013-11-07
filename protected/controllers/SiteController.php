@@ -19,28 +19,16 @@
 
 class SiteController extends BaseController
 {
-
-	/**
-	 * Declares class-based actions.
-	 */
-	public function actions()
-	{
-		return array(
-			// page action renders "static" pages stored under 'protected/views/site/pages'
-			// They can be accessed via: index.php?r=site/page&view=FileName
-			'page'=>array(
-				'class'=>'CViewAction',
-			),
-		);
-	}
-
 	public function accessRules()
 	{
 		return array(
 			// Allow unauthenticated users to view certain pages
 			array('allow',
 				'actions'=>array('error', 'login', 'debuginfo'),
-				'users'=>array('?')
+			),
+			array('allow',
+				'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout'),
+				'users' => array('@'),
 			),
 		);
 	}
