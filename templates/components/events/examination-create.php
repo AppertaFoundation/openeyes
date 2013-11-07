@@ -190,7 +190,7 @@
 							<a href="#" class="icon-remove-side">Remove side</a>
 							<div class="eyedraw-data row">
 								<div class="eyedraw-image column small">
-									<img src="/img/new/tmp/eyedraw-small-edit.png" class="canvas" alt="Eyedraw" />
+									<img src="/img/tmp/eyedraw-small-edit.png" class="canvas" alt="Eyedraw" />
 								</div>
 								<div class="eyedraw-fields column small">
 									<div class="row field-row">

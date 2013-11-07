@@ -79,12 +79,12 @@
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
 							<div class="eyedraw-image">
-								<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw">
+								<img src="/img/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw">
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
 							<div class="eyedraw-image">
-								<img src="/img/new/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw">
+								<img src="/img/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw">
 							</div>
 						</div>
 					</div>
