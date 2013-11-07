@@ -30,6 +30,8 @@ class BaseEventTypeController extends BaseController
 	public $title;
 	public $assetPath;
 	public $episode;
+	public $moduleNameCssClass = '';
+	public $moduleStateCssClass = '';
 	public $event_tabs = array();
 	public $event_actions = array();
 	public $print_css = true;
@@ -37,6 +39,10 @@ class BaseEventTypeController extends BaseController
 	public $eventIssueCreate = false;
 	public $extraViewProperties = array();
 	public $jsVars = array();
+	public $layout = '//layouts/events_and_episodes';
+	public $current_episode;
+	private $episodes = array();
+	public $renderPatientPanel = true;
 
 	/**
 	 * Checks to see if current user can create an event type
@@ -106,6 +112,9 @@ class BaseEventTypeController extends BaseController
 
 	protected function beforeAction($action)
 	{
+		// Set the module CSS class name.
+		$this->moduleNameCssClass = strtolower(Yii::app()->getController()->module->id);
+
 		// Set asset path
 		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
 			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
@@ -125,6 +134,7 @@ class BaseEventTypeController extends BaseController
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/module.js')) {
 					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/module.js');
 				}
+
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/'.get_class($this).'.js')) {
 					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.get_class($this).'.js');
 				}
@@ -133,6 +143,7 @@ class BaseEventTypeController extends BaseController
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/module.css')) {
 					$this->registerCssFile('module.css',$this->assetPath.'/css/module.css',10);
 				}
+
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/css/'.get_class($this).'.css')) {
 					$this->registerCssFile(get_class($this).'.css',$this->assetPath.'/css/'.get_class($this).'.css',10);
 				}
@@ -294,6 +305,7 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function actionCreate()
 	{
+		$this->moduleStateCssClass = 'edit';
 		$this->event_type = EventType::model()->find('class_name=?', array($this->getModule()->name));
 		if (!$this->patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
 			throw new CHttpException(403, 'Invalid patient_id.');
@@ -408,23 +420,24 @@ class BaseEventTypeController extends BaseController
 		$cancel_url = ($this->episode) ? '/patient/episode/'.$this->episode->id : '/patient/episodes/'.$this->patient->id;
 		$this->event_actions = array(
 				EventAction::link('Cancel',
-						Yii::app()->createUrl($cancel_url),
-						array('colour' => 'red', 'level' => 'secondary')
+						Yii::app()->createUrl($cancel_url), null,
+						array('class' => 'button warning small')
 				)
 		);
 
 		$this->processJsVars();
-		$this->renderPartial(
-			'create',
-			array('elements' => $this->getDefaultElements('create'), 'eventId' => null, 'errors' => @$errors),
-			// processOutput is true so that the css/javascript from the event_header.php are processed when rendering the view
-			false, true
-		);
 
+		$this->render('create', array(
+			'elements' => $this->getDefaultElements('create'),
+			'eventId' => null,
+			'errors' => @$errors
+		));
 	}
 
 	public function actionView($id)
 	{
+		$this->moduleStateCssClass = 'view';
+
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
@@ -460,37 +473,40 @@ class BaseEventTypeController extends BaseController
 
 		$this->title = $this->event_type->name;
 		$this->event_tabs = array(
-				array(
-						'label' => 'View',
-						'active' => true,
-				)
+			array(
+				'label' => 'View',
+				'active' => true,
+			)
 		);
 		if ($this->editable) {
 			$this->event_tabs[] = array(
-					'label' => 'Edit',
-					'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
+				'label' => 'Edit',
+				'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
 		if ($this->event->canDelete()) {
 			$this->event_actions = array(
-					EventAction::link('Delete',
-							Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-							array('colour' => 'red', 'level' => 'secondary'),
-							array('class' => 'trash')
-					)
+				EventAction::link('Delete',
+					Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+					array('level' => 'delete'),
+					array('class' => 'button button-icon small delete')
+				)
 			);
 		}
 
 		$this->processJsVars();
-		$this->renderPartial(
-			'view', array_merge(array(
+
+		$viewData = array_merge(array(
 			'elements' => $elements,
 			'eventId' => $id,
-			), $this->extraViewProperties), false, true);
+		), $this->extraViewProperties);
+
+		$this->render('view', $viewData);
 	}
 
 	public function actionUpdate($id)
 	{
+		$this->moduleStateCssClass = 'edit';
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
@@ -636,20 +652,16 @@ class BaseEventTypeController extends BaseController
 		$this->event_actions = array(
 				EventAction::link('Cancel',
 						Yii::app()->createUrl($this->event->eventType->class_name.'/default/view/'.$this->event->id),
-						array('colour' => 'red', 'level' => 'secondary')
+						array('level' => 'secondary'),array('class' => 'warning button small')
 				)
 		);
 
 		$this->processJsVars();
-		$this->renderPartial(
-			$this->action->id,
-			array(
-				'elements' => $this->getDefaultElements($this->action->id),
-				'errors' => @$errors
-			),
-			// processOutput is true so that the css/javascript from the event_header.php are processed when rendering the view
-			false, true
-		);
+
+		$this->render($this->action->id, array(
+			'elements' => $this->getDefaultElements($this->action->id),
+			'errors' => @$errors
+		));
 	}
 
 	/**
@@ -755,49 +767,16 @@ class BaseEventTypeController extends BaseController
 		}
 	}
 
-	public function header($editable=null)
+	public function getEpisodes()
 	{
-		$episodes = $this->patient->episodes;
-		$ordered_episodes = $this->patient->getOrderedEpisodes();
-		/*
-		$ordered_episodes = array();
-		foreach ($episodes as $ep) {
-			$ordered_episodes[$ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty->name][] = $ep;
+		if (empty($this->episodes)) {
+			$this->episodes = array(
+				'ordered_episodes'=>$this->patient->getOrderedEpisodes(),
+				'legacyepisodes'=>$this->patient->legacyepisodes,
+				'supportserviceepisodes'=>$this->patient->supportserviceepisodes,
+			);
 		}
-		*/
-		$legacyepisodes = $this->patient->legacyepisodes;
-		$supportserviceepisodes = $this->patient->supportserviceepisodes;
-
-		if ($editable === null) {
-			if (isset($this->event)) {
-				$editable = $this->event->editable;
-			} else {
-				$editable = false;
-			}
-		}
-
-		$this->renderPartial('//patient/event_header',array(
-			'ordered_episodes'=>$ordered_episodes,
-			'legacyepisodes'=>$legacyepisodes,
-			'supportserviceepisodes'=>$supportserviceepisodes,
-			'eventTypes'=>EventType::model()->getEventTypeModules(),
-			'model'=>$this->patient,
-			'editable'=>$editable,
-		));
-	}
-
-	public function footer()
-	{
-		$episodes = $this->patient->episodes;
-		$legacyepisodes = $this->patient->legacyepisodes;
-		$supportserviceepisodes = $this->patient->supportserviceepisodes;
-
-		$this->renderPartial('//patient/event_footer',array(
-			'episodes'=>$episodes,
-			'legacyepisodes'=>$legacyepisodes,
-			'supportserviceepisodes'=>$supportserviceepisodes,
-			'eventTypes'=>EventType::model()->getEventTypeModules()
-		));
+		return $this->episodes;
 	}
 
 	public function createElements($elements, $data, $firm, $patientId, $userId, $eventTypeId)
@@ -1022,9 +1001,12 @@ class BaseEventTypeController extends BaseController
 		return $event;
 	}
 
-	public function displayErrors($errors)
+	public function displayErrors($errors, $bottom=false)
 	{
-		$this->renderPartial('//elements/form_errors',array('errors'=>$errors));
+		$this->renderPartial('//elements/form_errors',array(
+			'errors'=>$errors,
+			'bottom'=>$bottom
+		));
 	}
 
 	/**
@@ -1162,10 +1144,13 @@ class BaseEventTypeController extends BaseController
 		}
 
 		$this->processJsVars();
-		$this->renderPartial(
-			'delete', array(
+
+		$episodes = $this->getEpisodes();
+		$viewData = array_merge(array(
 			'eventId' => $id,
-			), false, true);
+		), $episodes);
+
+		$this->render('delete', $viewData);
 
 		return false;
 	}

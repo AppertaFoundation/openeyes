@@ -48,7 +48,7 @@ $(document).ready(function(){
 			destroyOnClose: false,
 			title: 'Add a new ' + (data && data.name ? data.name : 'Support services') + ' event',
 			content: html,
-			dialogClass: 'dialog event',
+			dialogClass: 'dialog event add-event',
 			width: 580,
 			id: 'add-new-event-dialog'
 		});
@@ -62,7 +62,7 @@ $(document).ready(function(){
 		$('button.addEvent[data-attr-subspecialty-id="'+OE_subspecialty_id+'"]').click();
 	}
 
-	$('button.addEpisode').click(function(e) {
+	$('button.add-episode').click(function(e) {
 		$.ajax({
 			'type': 'POST',
 			'data': "YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
@@ -78,7 +78,7 @@ $(document).ready(function(){
 						'url': baseUrl+'/patient/addNewEpisode',
 						'data': 'patient_id='+OE_patient_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 						'success': function(html) {
-							$('#user_panel').before(html);
+							$(document.body).append(html);
 						}
 					});
 				}

@@ -25,7 +25,8 @@ class openeyes {
 
   exec { 'create application config':
     unless  => '/usr/bin/test -e /var/www/protected/config/local/common.php',
-    command => '/bin/cp /var/www/protected/config/local/common.vagrant.php /var/www/protected/config/local/common.php',
+    command => '/bin/cp /var/www/protected/config/local/common.vagrant.php /var/www/protected/config/local/common.php;\
+    /bin/cp -f /var/www/protected/config/local/console.sample.php /var/www/protected/config/local/console.php;',
     require => Service['mysql'],
   }
 
@@ -39,16 +40,18 @@ class openeyes {
     unless  => '/usr/bin/mysql -uopeneyes -poe_test openeyes',
     command => '/usr/bin/mysql -uroot -e "\
       create user \'openeyes\'@\'localhost\' identified by \'oe_test\';\
+      create user \'openeyes\'@\'10.0.2.2\' identified by \'oe_test\';\
       create user \'openeyes\'@\'%\' identified by \'oe_test\';\
       grant all privileges on openeyes.* to \'openeyes\'@\'localhost\' identified by \'oe_test\';\
+      grant all privileges on openeyes.* to \'openeyes\'@\'10.0.2.2\' identified by \'oe_test\';\
       grant all privileges on openeyes.* to \'openeyes\'@\'%\' identified by \'oe_test\';\
       flush privileges;"',
     require => Exec['create openeyes db']
   }
 
   exec { 'create openeyestest db':
-      unless  => '/usr/bin/mysql -uroot openeyes',
-      command => '/usr/bin/mysql -uroot -e "create database openeyestest;"',
+      unless  => '/usr/bin/mysql -uroot openeyestest',
+      command => '/usr/bin/mysql -uroot -e "create database IF NOT EXISTS openeyestest ;"',
       require => Service['mysql'],
     }
 
@@ -56,6 +59,7 @@ class openeyes {
       unless  => '/usr/bin/mysql -uopeneyes -poe_test openeyestest',
       command => '/usr/bin/mysql -uroot -e "\
         grant all privileges on openeyestest.* to \'openeyes\'@\'localhost\' identified by \'oe_test\';\
+        grant all privileges on openeyestest.* to \'openeyes\'@\'10.0.2.2\' identified by \'oe_test\';\
         grant all privileges on openeyestest.* to \'openeyes\'@\'%\' identified by \'oe_test\';\
         flush privileges;"',
       require => [
@@ -65,8 +69,8 @@ class openeyes {
     }
 
   exec { 'migrate openeyes db':
-    command => '/usr/bin/php /var/www/protected/yiic.php migrate --interactive=0\
-    /usr/bin/php /var/www/protected/yiic.php migrate --connectionID=testdb --interactive=0',
+    command => '/usr/bin/php /var/www/protected/yiic.php migrate --interactive=0;\
+    /usr/bin/php /var/www/protected/yiic.php migrate --connectionID=testdb --interactive=0;',
     require => [
       Exec['create openeyes db'],
       Exec['create openeyes user'],

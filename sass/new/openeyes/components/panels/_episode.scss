@@ -1,0 +1,196 @@
+// Episode panel
+//
+// This panel is used to show the episode and events.
+//
+// Markup:
+// <section class="panel episode">
+//     <div class="episode-date">12 Dec 2011</div>
+//     <a href="#" class="toggle-events-trigger hide">
+//         <span class="icon-showhide">
+//             Show/hide events for this episode
+//         </span>
+//     </a>
+//     <h4 class="episode-title">
+//         <a href="#">
+//             Adnexal
+//         </a>
+//     </h4>
+//     <div class="events-container">
+//         <button class="button secondary tiny add-event" type="button">
+//             <span class="icon-button-small-plus-sign"></span>
+//             Add event
+//         </button>
+//         <ol class="events">
+//             <li class="selected">
+//                 <a href="#">
+//                     <span class="event-type alert">
+//                         <img src="/img/new/operationbooking/small.png" alt="op" width="19" height="19" />
+//                     </span>
+//                     <span class="event-date">
+//                         1 Jan 2000
+//                     </span>
+//                 </a>
+//             </li>
+//             <li>
+//                 <a href="#">
+//                     <span class="event-type alert">
+//                         <img src="/img/new/operationbooking/small.png" alt="op" width="19" height="19" />
+//                     </span>
+//                     <span class="event-date">
+//                         1 Jan 2000
+//                     </span>
+//                 </a>
+//             </li>
+//         </ol>
+//     </div>
+// </section>
+//
+// Styleguide 16.9
+
+// Episode panel vars
+
+$oe-panel-episode-padding: emCalc(5px) emCalc(1px) emCalc(5px) 0 !default;
+$oe-panel-episode-margin: 0 0 emCalc(5px) 0 !default;
+$oe-panel-episode-border-color: #dad3ba !default;
+$oe-panel-episode-border-width: 3px 1px 3px 0 !default;
+$oe-panel-episode-date-font-size: emCalc(11px) !default;
+$oe-panel-episode-date-padding-left: emCalc(7px) !default;
+$oe-panel-episode-title-margin: emCalc(5px) emCalc(2px) emCalc(3px) 0 !default;
+$oe-panel-episode-title-font-size: emCalc(15px) !default;
+$oe-panel-episode-title-anchor-background: image-url("_elements/graphic/view-episode-summary.png") right bottom no-repeat !default;
+$oe-panel-episode-title-anchor-color: black !default;
+$oe-panel-episode-title-anchor-padding: emCalc(5px) 0 emCalc(17px) emCalc(7px) !default;
+$oe-panel-episode-title-anchor-border-radius: 0 3px 3px 0 !default;
+$oe-panel-eipsode-title-anchor-hover-color: white !default;
+$oe-panel-episode-title-anchor-hover-bg-color: #3665ff !default;
+$oe-panel-episode-title-anchor-hover-bg-image: image-url("_elements/icons/event/event_open_arrow.png") !default;
+$oe-panel-episode-add-event-margin-left: emCalc(2px) !default;
+$oe-panel-episode-events-overview-padding: emCalc(2px) emCalc(5px) emCalc(2px) emCalc(8px) !default;
+$oe-panel-episode-events-padding: emCalc(4px) 0 0 0 !default;
+$oe-panel-episode-events-margin: emCalc(5px) 0 0 0 !default;
+$oe-panel-episode-events-border-top: 1px dotted #cccccc !default;
+$oe-panel-episode-events-list-item-font-size: 1em !default;
+$oe-panel-episode-events-list-item-margin: 0 0 emCalc(4px) 0 !default;
+$oe-panel-episode-events-anchor-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
+$oe-panel-episode-events-anchor-border-radius: 0 6px 6px 0 !default;
+$oe-panel-episode-events-anchor-hover-background: #3665ff image-url("_elements/icons/event/event_open_arrow.png") right center no-repeat !default;
+$oe-panel-episode-events-anchor-hover-color: white !default;
+$oe-panel-episode-events-event-type-alert-background: image-url("_elements/icons/event/status/alert.png") right top no-repeat !default;
+$oe-panel-episode-events-event-type-alert-hover-background-image: image-url("_elements/icons/event/status/alert-hover.png") !default;
+$oe-panel-episode-events-event-date-padding-left: emCalc(26px) !default;
+$oe-panel-episode-events-selected-anchor-background: #aaaaaa image-url("_elements/icons/event/event_open_arrow.png") right center no-repeat !default;
+$oe-panel-episode-events-selected-anchor-color: white !default;
+$oe-panel-episode-events-selected-event-type-background-image: image-url("_elements/icons/event/status/alert-hover.png") !default;
+
+.panel {
+	&.episode {
+		@include border-top-left-radius(0);
+		@include border-bottom-left-radius(0);
+		border-color: $oe-panel-episode-border-color;
+		border-width: $oe-panel-episode-border-width;
+		margin: $oe-panel-episode-margin;
+		padding: $oe-panel-episode-padding;
+		position: relative;
+		.episode-date {
+			font-size: $oe-panel-episode-date-font-size;
+			padding-left: $oe-panel-episode-date-padding-left;
+		}
+		.episode-title {
+			font-size: $oe-panel-episode-title-font-size;
+			margin: $oe-panel-episode-title-margin;
+			a {
+				background: $oe-panel-episode-title-anchor-background;
+				color: $oe-panel-episode-title-anchor-color;
+				display: block;
+				padding: $oe-panel-episode-title-anchor-padding;
+				@include border-radius($oe-panel-episode-title-anchor-border-radius);
+				&:hover {
+					color: $oe-panel-eipsode-title-anchor-hover-color;
+					background-color: $oe-panel-episode-title-anchor-hover-bg-color;
+					background-image: $oe-panel-episode-title-anchor-hover-bg-image;
+				}
+				&.selected {
+					background-color: #aaa;
+					background-image: $oe-panel-episode-title-anchor-hover-bg-image;
+					color: #fff;
+				}
+			}
+		}
+		.add-event {
+			margin-left: $oe-panel-episode-add-event-margin-left;
+		}
+		.events-overview {
+			margin: 0;
+			padding: $oe-panel-episode-events-overview-padding;
+			display: none;
+			li {
+				list-style: none;
+				font-size: 1em;
+				img {
+					width: 12px;
+					height: 12px;
+				}
+			}
+		}
+		&.hide-events {
+			.events-overview {
+				display: block;
+			}
+			.events-container {
+				display: none;
+			}
+		}
+		.events {
+			padding: $oe-panel-episode-events-padding;
+			margin: $oe-panel-episode-events-margin;
+			border-top: $oe-panel-episode-events-border-top;
+			li {
+				list-style: none;
+				font-size: $oe-panel-episode-events-list-item-font-size;
+				margin: $oe-panel-episode-events-list-item-margin;
+				position: relative;
+			}
+			a {
+				display: block;
+				padding: $oe-panel-episode-events-anchor-padding;
+				font-size: $default-font-size;
+				@include border-radius($oe-panel-episode-events-anchor-border-radius);
+				&:hover {
+					background: $oe-panel-episode-events-anchor-hover-background;
+					color: $oe-panel-episode-events-anchor-hover-color;
+				}
+			}
+			.event-type {
+				width: 35px;
+				display: inline-block;
+				&.alert {
+					background: $oe-panel-episode-events-event-type-alert-background;
+					&:hover {
+						background-image: $oe-panel-episode-events-event-type-alert-hover-background-image;
+					}
+				}
+			}
+			.event-date {
+				display: inline-block;
+				padding-left: $oe-panel-episode-events-event-date-padding-left;
+				.day,.mth,.yr {
+					padding-right: 6px;
+				}
+			}
+			// Selected state
+			li {
+				&.selected {
+					a {
+						background: $oe-panel-episode-events-selected-anchor-background;
+						color: $oe-panel-episode-events-selected-anchor-color;
+					}
+					.event-type {
+						&.alert {
+							background-image: $oe-panel-episode-events-selected-event-type-background-image;
+						}
+					}
+				}
+			}
+		}
+	}
+}

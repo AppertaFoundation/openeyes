@@ -16,7 +16,6 @@ tags
 /protected/models/ElementExample.php
 /protected/models/elements/ElementExample.php
 /protected/modules/*
-!/protected/modules/oldadmin
 /protected/runtime/
 /protected/tests/report/
 /protected/tests/test_results/
@@ -26,5 +25,12 @@ tags
 /protected/views/patient/custom/info/php
 /protected/commands/
 vendor
+/.sass-cache
+/node_modules
+/docs/templates/styleguide/public/css
+/docs/templates/styleguide/public/img
+/docs/public/styleguide/
+/docs/public/jsdoc
+/docs/public/assets/core
 /bin/phpunit
 /bin/webunit

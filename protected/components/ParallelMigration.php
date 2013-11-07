@@ -46,9 +46,9 @@ class ParallelMigration extends CDbMigration {
 	}
 
 	public function fork() {
-		Yii::app()->db->setActive(false);
+		$this->getDbConnection()->setActive(false);
 		$pid = pcntl_fork();
-		Yii::app()->db->setActive(true);
+		$this->getDbConnection()->setActive(true);
 		if ($pid >0) {
 			$this->pids[] = $pid;
 		}

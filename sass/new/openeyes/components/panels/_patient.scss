@@ -1,0 +1,128 @@
+// Patient panel
+//
+// This panel contains the information for the current patient.
+//
+// Markup:
+// <div class="panel patient radius">
+//     <div class="patient-details">
+//         <a href="#">
+//             <span class="patient-surname">COTTRELL,</span>
+//             <span class="patient-name">Kristen (48)</span>
+//         </a>
+//     </div>
+//     <div class="hospital-number">
+//         No. 1001982
+//     </div>
+//     <div class="row">
+//         <div class="large-6 small-6 columns">
+//             <div class="nhs-number">
+//                 <span class="hide-text">
+//                     NHS number:
+//                 </span>
+//                 451 380 5322
+//             </div>
+//             <span class="icon icon-alert icon-alert-female_trans">Female</span>
+//         </div>
+//         <div class="large-6 small-6 columns text-right patient-summary-anchor">
+//             <a href="#">Patient Summary</a>
+//         </div>
+//     </div>
+// </div>
+//
+// Styleguide 16.3
+
+$oe-header-panel-patient-bg-color-start: #fff2d8 !default;
+$oe-header-panel-patient-bg-color-stop: #ffe6b3 !default;
+$oe-header-panel-patient-bg-image: image-url("_elements/icons/patient/patient-id_small.png") !default;
+$oe-header-panel-patient-padding: emCalc(9px) emCalc(10px) !default;
+$oe-header-panel-patient-border-color: #ffb212 !default;
+$oe-header-panel-patient-border-width: 2px !default;
+$oe-header-panel-patient-default-font-size: emCalc(12px) !default;
+$oe-header-panel-patient-details-font-size: emCalc(13px) !default;
+$oe-header-panel-patient-details-surname-font-size: emCalc(14px) !default;
+$oe-header-panel-patient-details-name-font-size: emCalc(13px) !default;
+$oe-header-panel-patient-details-anchor-color: black !default;
+$oe-header-panel-patient-details-padding-bottom: emCalc(4px) !default;
+$oe-header-panel-patient-nhs-number-bg-color: #107ebd !default;
+$oe-header-panel-patient-nhs-number-bg-image: image-url("_elements/icons/nhs_tiny.png") !default;
+$oe-header-panel-patient-nhs-number-color: white !default;
+$oe-header-panel-patient-nhs-number-padding: emCalc(2px) emCalc(4px) emCalc(2px) 33px !default;
+$oe-header-panel-patient-nhs-number-radius: 3px !default;
+
+.panel {
+	&.patient {
+		@include panel($padding: $oe-header-panel-patient-padding);
+		@include border-radius($global-radius);
+		@include background($oe-header-panel-patient-bg-image, linear-gradient(top, $oe-header-panel-patient-bg-color-start 0%, $oe-header-panel-patient-bg-color-stop 100%));
+		background: {
+			repeat: no-repeat, no-repeat;
+			position: 98% 2px, top;
+		};
+		border: {
+			color: $oe-header-panel-patient-border-color;
+			style: solid;
+			width: $oe-header-panel-patient-border-width;
+		};
+		position: relative;
+		@media #{$small} {
+			border-width: 0 $oe-header-panel-patient-border-width $oe-header-panel-patient-border-width $oe-header-panel-patient-border-width;
+			@include border-radius(0 0 $global-radius $global-radius);
+		}
+		.stuck & {
+			margin: 0;
+			padding-bottom: 2px;
+			padding-top: 2px;
+			border-bottom: 0;
+			@include border-radius(0);
+		}
+		.patient-details {
+			padding-bottom: $oe-header-panel-patient-details-padding-bottom;
+			a {
+				color: $oe-header-panel-patient-details-anchor-color;
+			}
+			.stuck & {
+				font-size: 91%;
+			}
+		}
+		.patient-surname {
+			font: {
+				size: $oe-header-panel-patient-details-surname-font-size;
+				weight: bold;
+			};
+			text-transform: uppercase;
+		}
+		.patient-name, .patient-age {
+			font-size: $oe-header-panel-patient-details-name-font-size;
+		}
+		.hospital-number, .nhs-number {
+			font-size: $oe-header-panel-patient-default-font-size;
+		}
+		.patient-summary-anchor  {
+			font-size: emCalc(11px);
+			position: absolute;
+			right: 0;
+			bottom: 1em;
+			.stuck & {
+				display: none;
+			}
+		}
+		.hospital-number {
+			margin-bottom: emCalc(4px);
+			.stuck & {
+				float: left;
+			}
+		}
+		.nhs-number {
+			@include border-radius($oe-header-panel-patient-nhs-number-radius);
+			background: {
+				color: $oe-header-panel-patient-nhs-number-bg-color;
+				image: $oe-header-panel-patient-nhs-number-bg-image;
+				position: center left;
+				repeat: no-repeat;
+			};
+			color: $oe-header-panel-patient-nhs-number-color;
+			display: inline-block;
+			padding: $oe-header-panel-patient-nhs-number-padding;
+		}
+	}
+}

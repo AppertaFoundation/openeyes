@@ -17,10 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DropDownListNoPost extends BaseCWidget
+class DropDownListNoPost extends BaseFieldWidget
 {
-	public $options;
-	public $htmlOptions;
 	public $id;
 	public $selected_value;
+	public $data;
 }

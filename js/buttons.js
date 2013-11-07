@@ -16,9 +16,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-var button_colours = ["red","blue","green"];
-var button_cache = {};
-
 function handleButton(button, callback) {
 	button.click(function(e) {
 		if (!button.hasClass('inactive')) {
@@ -28,36 +25,18 @@ function handleButton(button, callback) {
 			}
 		} else {
 			e.preventDefault();
+			console.log('canceled');
 		}
 	});
 }
 
 function disableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		var selection = $('button.'+col);
-		selection.removeClass(col).addClass('inactive');
-		selection.children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
-		selection.children('a').children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
-		if(button_cache[col]) {
-			button_cache[col] = button_cache[col].add(selection);
-		} else {
-			button_cache[col] = selection;
-		}
-	}
+	$('button,.button').addClass('inactive');
 	$('.loader').show();
 }
 
 function enableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		if (button_cache[col]) {
-			button_cache[col].removeClass('inactive').addClass(col);
-			button_cache[col].children('span').removeClass('button-span-inactive').addClass('button-span-'+col);
-			button_cache[col].children('a').children('span').removeClass('button-span-inactive').addClass('button-span-'+col);
-		}
-	}
-	button_cache = {};
+	$('button,.button').removeClass('inactive');
 	$('.loader').hide();
 }
 

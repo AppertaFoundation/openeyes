@@ -1,0 +1,35 @@
+.pill {
+	@include border-radius(5px);
+	display: inline-block;
+	padding: 3px 5px;
+	font-size: $default-font-size;
+	margin: 2px;
+	&.high,
+	&.severe,
+	&.high-risk,
+	&.proliferative,
+	&.maculopathy {
+		background: #f00;
+		color: #fff;
+	}
+	&.moderate,
+	&.pre-prolif {
+		background: #fc0;
+	}
+	&.mild,
+	&.early,
+	&.background,
+	&.peripheral,
+	&.ungradable {
+		background: #36f;
+	}
+	&.low,
+	&.none {
+		background: #9c0;
+	}
+	&.risk {
+		padding: 5px;
+		margin: 0;
+		display: block;
+	}
+}

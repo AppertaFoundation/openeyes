@@ -1207,7 +1207,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				return '<?php echo $form->dropDownList($element, \''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(array(\'order\'=> \''.$field['order_field'].' asc\')),\'id\',\''.$field['lookup_field'].'\')'.(@$field['empty'] ? ',array(\'empty\'=>\'- Please select -\')' : '').')?'.'>';
 			case 'Textarea with dropdown':
 				return '<?php echo $form->dropDownListNoPost(\''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(),\'id\',\''.$field['lookup_field'].'\'),\'\',array(\'empty\'=>\'- '.ucfirst($field['label']).' -\',\'class\'=>\'populate_textarea\'))?'.'>'."\n".
-					'<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => '.$field['textarea_rows'].', \'cols\' => '.$field['textarea_cols'].'))?'.'>';
+					'	<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => '.$field['textarea_rows'].', \'cols\' => '.$field['textarea_cols'].'))?'.'>';
 			case 'Checkbox':
 				return '<?php echo $form->checkBox($element, \''.$field['name'].'\')?'.'>';
 			case 'Radio buttons':
@@ -1221,7 +1221,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						$commandArray .= "\t\t\t\tarray('addDoodle',array('$doodle')),\n";
 					}
 				}
-				return '<div class="clearfix" style="background-color: #DAE6F1;">
+				return '	<div class="row data-row">
+			<div class="large-12 column">
 		<?php
 			$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 				\'doodleToolBarArray\' => array('.(!empty($fields['eyedraw_toolbar_doodles']) ? '\''.implode("','",$field['eyedraw_toolbar_doodles']).'\'' : '').'),
@@ -1240,7 +1241,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				\'attribute\'=>\''.$field['name'].'\',
 			));
 		?>
-	</div>';
+			</div>
+		</div>';
 			case 'Multi select':
 				return '<?php echo $form->multiSelectList($element, \'MultiSelect_'.$field['name'].'\', \''.@$field['multiselect_relation'].'\', \''.@$field['multiselect_field'].'\', CHtml::listData('.@$field['multiselect_lookup_class'].'::model()->findAll(array(\'order\'=>\''.$field['multiselect_order_field'].' asc\')),\'id\',\''.$field['multiselect_table_field_name'].'\'), $element->'.@$field['multiselect_lookup_table'].'_defaults, array(\'empty\' => \'- Please select -\', \'label\' => \''.$field['label'].'\'))?'.'>';
 			case 'Slider':
@@ -1254,48 +1256,48 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Textbox':
 			case 'Textarea':
 			case 'Textarea with dropdown':
-				return '		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-			<td><span class="big"><?php echo CHtml::encode($element->'.$field['name'].')?'.'></span></td>
-		</tr>';
+				return '		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->'.$field['name'].')?'.'></div></div>
+		</div>';
 			case 'Decimal':
-				return '		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-			<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
-		</tr>';
+				return '		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].'?'.'></div></div>
+		</div>';
 			case 'Integer':
-				return '		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-			<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
-		</tr>';
+				return '		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].'?'.'></div></div>
+		</div>';
 			case 'Date picker':
-				return '		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-			<td><span class="big"><?php echo CHtml::encode($element->NHSDate(\''.$field['name'].'\'))?'.'></span></td>
-		</tr>';
+				return '		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->NHSDate(\''.$field['name'].'\'))?'.'></div></div>
+		</div>';
 			case 'Dropdown list':
-				return '		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-			<td><span class="big"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->'.$field['lookup_field'].' : \'None\'?'.'></span></td>
-		</tr>';
+				return '		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->'.$field['lookup_field'].' : \'None\'?'.'></div></div>
+		</div>';
 			case 'Checkbox':
-				return '		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-			<td><span class="big"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
-		</tr>';
+				return '		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></div></div>
+		</div>';
 			case 'Radio buttons':
-				return '		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-			<td><span class="big"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->name : \'None\'?'.'></span></td>
-		</tr>';
+				return '		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->name : \'None\'?'.'></div></div>
+		</div>';
 			case 'Boolean':
-				return '		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</td>
-			<td><span class="big"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
-		</tr>';
+				return '		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></div></div>
+		</div>';
 			case 'EyeDraw':
-				return '		<tr>
-			<td colspan="2">
+				return '		<div class="row data-row">
+			<div class="large-12 column">
 				<?php
 					$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 						\'side\'=>$element->eye->getShortName(),
@@ -1306,36 +1308,29 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						\'attribute\'=>\''.$field['name'].'\',
 					));
 				?>
-			</td>
-		</tr>
-		'.(@$field['extra_report'] ? '<tr>
-			<td width="30%">Report:</td>
-			<td><span class="big"><?php echo CHtml::encode($element->'.$field['name'].'2)?'.'></span></td>
-		</tr>' : '');
+			</div>
+		</div>
+		'.(@$field['extra_report'] ? '<div class="row data-row">
+			<div class="large-2 column"><div class="data-label">Report:</div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo CHtml::encode($element->'.$field['name'].'2)?'.'></div></div>
+		</div>' : '');
 			case 'Multi select':
-				return '		<tr>
-			<td colspan="2">
-				<div class="colThird">
-					<b><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</b>
-					<div class="eventHighlight medium">
-						<?php if (!$element->'.@$field['multiselect_relation'].') {?'.'>
-							<h4>None</h4>
+				return '		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</div></div>
+			<div class="large-10 column end"><div class="data-value"><?php if (!$element->'.@$field['multiselect_relation'].') {?'.'>
+							None
 						<?php } else {?'.'>
-							<h4>
 								<?php foreach ($element->'.@$field['multiselect_relation'].' as $item) {
 									echo $item->'.@$field['multiselect_lookup_table'].'->name?'.'><br/>
 								<?php }?'.'>
-							</h4>
 						<?php }?'.'>
-					</div>
-				</div>
-			</td>
-		</tr>';
+			</div></div>
+		</div>';
 			case 'Slider':
-				return '		<tr>
-			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-			<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
-		</tr>';
+				return '		<div class="row data-row">
+			<div class="large-2 column"><div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></div></div>
+			<div class="large-10 column end"><div class="data-value"><?php echo $element->'.$field['name'].'?'.'></div></div>
+		</div>';
 		}
 	}
 
