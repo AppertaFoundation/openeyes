@@ -4,7 +4,7 @@
 
 <meta name="viewport" content="width=device-width" />
 
-<link rel="stylesheet" href="/css/style_new.css" />
+<link rel="stylesheet" href="/css/style.css" />
 <link rel="stylesheet" type="text/css" href="/protected/modules/eyedraw/css/oe-eyedraw.css" />
 
 <link rel="icon" href="/favicon.ico" type="image/x-icon" />
