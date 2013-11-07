@@ -44,6 +44,8 @@ class BaseEventTypeController extends BaseController
 	private $episodes = array();
 	public $renderPatientPanel = true;
 
+	protected $open_elements;
+
 	public function getTitle()
 	{
 		if(isset($this->title)){
@@ -121,6 +123,19 @@ class BaseEventTypeController extends BaseController
 		);
 	}
 
+	private $_event_type;
+	/**
+	 * The EventType class for this module
+	 *
+	 * @return EventType
+	 */
+	public function getEvent_type()
+	{
+		if (!$this->_event_type) {
+			$this->_event_type = EventType::model()->find('class_name=?', array($this->getModule()->name));
+		}
+		return $this->_event_type;
+	}
 
 	/**
 	 * Renders the metadata of the event with the standard template
@@ -156,6 +171,11 @@ class BaseEventTypeController extends BaseController
 	 */
 	protected function beforeAction($action)
 	{
+		if ($this->event_type->disabled) {
+			// disabled module
+			$this->redirectToPatientEpisodes();
+		}
+
 		// Set the module CSS class name.
 		$this->moduleNameCssClass = strtolower(Yii::app()->getController()->module->id);
 
@@ -200,9 +220,13 @@ class BaseEventTypeController extends BaseController
 	 * @param int $event_type_id
 	 * @param Event $event
 	 * @return BaseEventTypeElement[]
+	 *
+	 * @deprecated use open_elements attribute instead
 	 */
 	public function getDefaultElements($action, $event_type_id = null, $event = null)
 	{
+		return $this->open_elements;
+
 		if (!$event && isset($this->event)) {
 			$event = $this->event;
 		}
@@ -280,38 +304,23 @@ class BaseEventTypeController extends BaseController
 
 	/**
 	 * Get the optional elements for the current module's event type
-	 * This will be overriden by the module
 	 *
-	 * @param $action
 	 * @return array
 	 */
-	public function getOptionalElements($action)
+	public function getOptionalElements()
 	{
-		switch ($action) {
-			case 'create':
-			case 'view':
-			case 'print':
-				return array();
-			case 'update':
-				$event_type = EventType::model()->findByPk($this->event->event_type_id);
-
-				$criteria = new CDbCriteria;
-				$criteria->compare('event_type_id',$event_type->id);
-				$criteria->compare('`default`',1);
-				$criteria->order = 'display_order asc';
-
-				$elements = array();
-				$element_classes = array();
-
-				foreach (ElementType::model()->findAll($criteria) as $element_type) {
-					$element_class = $element_type->class_name;
-					if (!$element_class::model()->find('event_id = ?',array($this->event->id))) {
-						$elements[] = new $element_class;
-					}
-				}
-
-				return $elements;
+		$open_et = array();
+		foreach ($this->open_elements as $open) {
+			$open_et[] = get_class($open);
 		}
+		$optional = array();
+		foreach ($this->event_type->getAllElementTypes() as $element_type) {
+			if (!in_array($element_type->class_name, $open_et)) {
+				$optional[] = new $element_type->class_name;
+			}
+		}
+
+		return $optional;
 	}
 
 	/**
@@ -333,14 +342,9 @@ class BaseEventTypeController extends BaseController
 	public function actionCreate()
 	{
 		$this->moduleStateCssClass = 'edit';
-		$this->event_type = EventType::model()->find('class_name=?', array($this->getModule()->name));
+
 		if (!$this->patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
 			throw new CHttpException(403, 'Invalid patient_id.');
-		}
-
-		if (is_array(Yii::app()->params['modules_disabled']) && in_array($this->event_type->class_name,Yii::app()->params['modules_disabled'])) {
-			// disabled module
-			$this->redirectToPatientEpisodes();
 		}
 
 		$session = Yii::app()->session;
@@ -358,51 +362,25 @@ class BaseEventTypeController extends BaseController
 			$this->redirectToPatientEpisodes();
 		}
 
-		// firm changing sanity
-		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
-			// The firm id in the firm is not the same as the session firm id, e.g. they've changed
-			// firms in a different tab. Set the session firm id to the provided firm id.
-
-			$firms = $session['firms'];
-			$firmId = intval($_POST['firm_id']);
-
-			if ($firms[$firmId]) {
-				$session['selected_firm_id'] = $firmId;
-				$this->selectedFirmId = $firmId;
-				$this->firm = Firm::model()->findByPk($this->selectedFirmId);
-			} else {
-				// They've supplied a firm id in the post to which they are not entitled??
-				throw new Exception('Invalid firm id on attempting to create event.');
+		if (!empty($_POST)) {
+			// form has been submitted
+			if (isset($_POST['cancel'])) {
+				$this->redirectToPatientEpisodes();
 			}
-		}
-		$elements = $this->getDefaultElements('create', $this->event_type->id);
+			$errors = array();
 
-		if (empty($_POST) && !count($elements)) {
-			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
-		}
-
-		if (!empty($_POST) && isset($_POST['cancel'])) {
-			$this->redirect(array('/patient/view/'.$this->patient->id));
-			return;
-		} elseif (!empty($_POST) && !count($elements)) {
-			$errors['Event'][] = 'No elements selected';
-		} elseif (!empty($_POST)) {
-
-			$elements = array();
-			$element_names = array();
-
-			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {
+			// detemine what elements have been submitted, checking for missing required elements
+			foreach ($this->event_type->getAllElementTypes() as $element_type) {
 				if (isset($_POST[$element_type->class_name])) {
 					$elements[] = new $element_type->class_name;
-					$element_names[$element_type->class_name] = $element_type->name;
+				}
+				elseif ($element_type->required) {
+					$errors['Event'][] = $element_type->name . ' is required';
 				}
 			}
 
-			$elementList = array();
-
 			// validation
-			$errors = $this->validatePOSTElements($elements);
-
+			$errors = array_merge($errors, $this->validatePOSTElements($elements));
 
 			// creation
 			if (empty($errors)) {
@@ -434,6 +412,12 @@ class BaseEventTypeController extends BaseController
 				}
 			}
 		}
+		else {
+			$elements = $this->event_type->getDefaultElements();
+			foreach ($elements as $element) {
+				$element->setDefaultOptions();
+			}
+		}
 
 		$this->editable = false;
 		$this->event_tabs = array(
@@ -453,8 +437,10 @@ class BaseEventTypeController extends BaseController
 
 		$this->processJsVars();
 
+		$this->open_elements = $elements;
+
 		$this->render('create', array(
-			'elements' => $this->getDefaultElements('create'),
+			'elements' => $elements,
 			'eventId' => null,
 			'errors' => @$errors
 		));
@@ -474,10 +460,9 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 		$this->patient = $this->event->episode->patient;
-		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 		$this->episode = $this->event->episode;
 
-		$elements = $this->getDefaultElements('view');
+		$this->open_elements = $this->event->getElements();
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->editable) {
@@ -491,7 +476,7 @@ class BaseEventTypeController extends BaseController
 		}
 		// Allow elements to override the editable status
 		if ($this->editable) {
-			foreach ($elements as $element) {
+			foreach ($this->open_elements as $element) {
 				if (!$element->isEditable()) {
 					$this->editable = false;
 					break;
@@ -527,7 +512,7 @@ class BaseEventTypeController extends BaseController
 		$this->processJsVars();
 
 		$viewData = array_merge(array(
-			'elements' => $elements,
+			'elements' => $this->open_elements,
 			'eventId' => $id,
 		), $this->extraViewProperties);
 
@@ -786,6 +771,8 @@ class BaseEventTypeController extends BaseController
 	 * @param $action
 	 * @param bool $form
 	 * @param bool $data
+	 *
+	 * @deprecated - use renderOpenElements($action, $form, $data)
 	 */
 	public function renderDefaultElements($action, $form=false, $data=false)
 	{
@@ -804,18 +791,34 @@ class BaseEventTypeController extends BaseController
 	}
 
 	/**
+	 * Render the open elements for the controller state
+	 *
+	 * @param $action
+	 * @param BaseCActiveBaseEventTypeCActiveForm $form
+	 * @param array $data
+	 */
+	public function renderOpenElements($action, $form = null, $data=null)
+	{
+		foreach ($this->open_elements as $element) {
+			$view = ($element->{$action.'_view'}) ? $element->{$action.'_view'} : $element->getDefaultView();
+			$this->renderPartial(
+				$action . '_' . $view,
+				array('element' => $element, 'data' => $data, 'form' => $form),
+				false, false
+			);
+		}
+	}
+
+	/**
 	 * Render the optional elements for the controller state
 	 *
 	 * @param $action
 	 * @param bool $form
 	 * @param bool $data
 	 */
-	public function renderOptionalElements($action, $form=false,$data=false)
+	public function renderOptionalElements($action, $form=null,$data=null)
 	{
-		foreach ($this->getOptionalElements($action) as $element) {
-			if ($action == 'create' && empty($_POST)) {
-				$element->setDefaultOptions();
-			}
+		foreach ($this->getOptionalElements() as $element) {
 
 			$view = ($element->{$action.'_view'}) ? $element->{$action.'_view'} : $element->getDefaultView();
 			$this->renderPartial(
@@ -918,7 +921,6 @@ class BaseEventTypeController extends BaseController
 		// Create elements for the event
 		foreach ($elementsToProcess as $element) {
 			$element->event_id = $event->id;
-			error_log($elementClassName);
 			// No need to validate as it has already been validated and the event id was just generated.
 			if (!$element->save(false)) {
 				throw new Exception('Unable to save element ' . get_class($element) . '.');
@@ -1147,6 +1149,7 @@ class BaseEventTypeController extends BaseController
 		$this->patient = $this->event->episode->patient;
 		$this->event_type = $this->event->eventType;
 		$this->site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+		$this->open_elements = $this->event->getElements();
 	}
 
 	/**

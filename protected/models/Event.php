@@ -154,13 +154,21 @@ class Event extends BaseActiveRecord
 		));
 	}
 
-	/* Does this event have some kind of issue that the user should know about */
-
+	/**
+	 * Does this event have some kind of issue that the user should know about
+	 *
+	 * @return boolean
+	 */
 	public function hasIssue()
 	{
 		return (boolean) $this->issues;
 	}
 
+	/**
+	 * Get the text for any issues on this event
+	 *
+	 * @return string
+	 */
 	public function getIssueText()
 	{
 		$text = '';
@@ -172,6 +180,12 @@ class Event extends BaseActiveRecord
 		return $text;
 	}
 
+	/**
+	 * parse out placeholders in the given text
+	 *
+	 * @param $text
+	 * @return mixed
+	 */
 	public function expandIssueText($text)
 	{
 		if (preg_match_all('/\{(.*?)\}/',$text,$m)) {
@@ -191,15 +205,12 @@ class Event extends BaseActiveRecord
 		return $text;
 	}
 
-	public function getInfoText()
-	{
-		foreach (Yii::app()->getController()->getDefaultElements('view',false,$this) as $element) {
-			if ($element->getInfoText()) {
-				return $element->getInfoText();
-			}
-		}
-	}
-
+	/**
+	 * Add an issue to this event
+	 *
+	 * @param $text
+	 * @return bool
+	 */
 	public function addIssue($text)
 	{
 		if (!$issue = Issue::model()->find('name=?',array($text))) {
@@ -223,6 +234,12 @@ class Event extends BaseActiveRecord
 		return true;
 	}
 
+	/**
+	 * Remove an issue assignment for this event
+	 *
+	 * @param $name
+	 * @return bool
+	 */
 	public function deleteIssue($name)
 	{
 		if (!$issue = Issue::model()->find('name=?',array($name))) {
@@ -236,6 +253,10 @@ class Event extends BaseActiveRecord
 		return true;
 	}
 
+	/**
+	 * Remove all issues assigned to this event
+	 *
+	 */
 	public function deleteIssues()
 	{
 		foreach (EventIssue::model()->findAll('event_id=?',array($this->id)) as $event_issue) {
@@ -243,7 +264,11 @@ class Event extends BaseActiveRecord
 		}
 	}
 
-	// Only the event creator can delete the event, and only 24 hours after its initial creation
+	/**
+	 * Only the event creator can delete the event, and only 24 hours after its initial creation
+	 *
+	 * @return boolean
+	 */
 	public function canDelete()
 	{
 		if (!BaseController::checkUserLevel(4)) return false;
@@ -258,7 +283,7 @@ class Event extends BaseActiveRecord
 	}
 
 	/**
-	 * marks an event as deleted and processes any softDelete methods that exist on the elements attached to it.
+	 * Marks an event as deleted and processes any softDelete methods that exist on the elements attached to it.
 	 *
 	 * @throws Exception
 	 */
@@ -289,15 +314,22 @@ class Event extends BaseActiveRecord
 		}
 	}
 
+	/**
+	 * Deletes issues for this event before calling the parent delete method
+	 * Does not handle the removal of elements and will therefore fail if this has not been handled before being called.
+	 *
+	 * @return bool
+	 * @see parent::delete()
+	 */
 	public function delete()
 	{
 		// Delete related
 		EventIssue::model()->deleteAll('event_id = ?', array($this->id));
 
-		parent::delete();
+		return parent::delete();
 	}
 
-	/*
+	/**
 	 * returns the latest event of this type in the event episode
 	 *
 	 * @returns Event
@@ -313,7 +345,7 @@ class Event extends BaseActiveRecord
 		return Event::model()->find($criteria);
 	}
 
-	/*
+	/**
 	 * if this event is the most recent of its type in its episode, returns true. false otherwise
 	 *
 	 * @returns boolean
@@ -324,6 +356,15 @@ class Event extends BaseActiveRecord
 		return ($latest->id == $this->id) ? true : false;
 	}
 
+	/**
+	 * Sets various default properties for audit calls on this event
+	 *
+	 * @param $target
+	 * @param $action
+	 * @param null $data
+	 * @param bool $log
+	 * @param array $properties
+	 */
 	public function audit($target, $action, $data=null, $log=false, $properties=array())
 	{
 		$properties['event_id'] = $this->id;

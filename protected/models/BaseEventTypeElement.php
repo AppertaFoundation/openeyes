@@ -35,6 +35,11 @@ class BaseEventTypeElement extends BaseElement
 	// Used during creation and updating of elements
 	public $required = false;
 
+	/**
+	 * Get the ElementType for this element
+	 *
+	 * @return ElementType
+	 */
 	public function getElementType()
 	{
 		if (!$this->element_type) {
