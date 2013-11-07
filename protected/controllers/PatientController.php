@@ -40,9 +40,12 @@ class PatientController extends BaseController
 	/**
 	 * Checks to see if current user can create an event type
 	 * @param EventType $event_type
+	 * @deprecated use BaseController::canCreateEventType
 	 */
 	public function checkEventAccess($event_type)
 	{
+		return $this->canCreateEventType($event_type);
+
 		if (BaseController::checkUserLevel(5)) {
 			return true;
 		}

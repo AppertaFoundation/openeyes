@@ -30,7 +30,7 @@
 				$assetpath = '/assets/';
 			}
 
-			if (!$eventType->disabled && $this->checkEventAccess($eventType)) {
+			if (!$eventType->disabled && $this->userCanCreateEventType($eventType)) {
 
 				?>
 				<li>

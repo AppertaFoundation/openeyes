@@ -49,6 +49,31 @@ class BaseController extends Controller
 	}
 
 	/**
+	 * Check if current user can create event of the given type
+	 *
+	 * @param EventType $event_type
+	 * @return boolean
+	 */
+	public function canCreateEventType($event_type)
+	{
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		if (!$firm->service_subspecialty_assignment_id) {
+			// firm is a support services firm, which are restricted to only certain event types
+			if (!$event_type->support_services) {
+				return false;
+			}
+		}
+
+		if (self::checkUserLevel(5)) {
+			return true;
+		}
+		if (self::checkUserLevel(4) && $event_type->class_name != 'OphDrPrescription') {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Set default rules to block everyone apart from admin
 	 * These should be overridden in child classes
 	 * @return array

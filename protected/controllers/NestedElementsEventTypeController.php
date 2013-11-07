@@ -234,6 +234,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 		if (!$event && isset($this->event)) {
 			$event = $this->event;
 		}
+
 		if ($event && !$event_type_id) {
 			$event_type_id = $event->eventType->id;
 		}
