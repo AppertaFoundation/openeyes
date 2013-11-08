@@ -66,11 +66,11 @@ class PatientViewNewDiagnosis extends Page
         'selectFamilyCondition' => array('xpath' => "//*[@id='condition_id']"),
         'enterFamilyComments' => array('xpath' => "//*[@id='comments']"),
         'saveFamilyHistory' => array('xpath' => "//*[@class='classy green mini btn_save_family_history']//*[contains(text(),'Save')]"),
-        'createNewEpisodeAddEvent' => array('xpath' => "//*[@id='content']/div/div[2]//*[contains(text(),'Create episode / add event')]"),
-        'addEpisodeButton' => array('xpath' => "//*[@id='event_display']/div[3]//*[contains(text(),'Add episode')]"),
+        'createNewEpisodeAddEvent' => array('xpath' => "//*[@class='box patient-info episode-links']//*[contains(text(),'Create episode / add event')]"),
+        'addEpisodeButton' => array('xpath' => "//*[@class='large-8 large-centered column']//button"),
         'addEpisode' => array('xpath' => "//*[@id='episodes_sidebar']/div[1]//*[contains(text(),'Add episode')]"),
-        'confirmCreateEpisode' => array('xpath' => "//*[@id='add-new-episode-form']/div[2]/div[2]//*[contains(text(),'Create new episode')]"),
-        'latestEvent' => array('xpath' => "//*[@id='content']/div/div[2]/p//*[contains(text(),'Latest Event')]"),
+        'confirmCreateEpisode' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(),'Create new episode')]"),
+        'latestEvent' => array('xpath' => "//*[@class='box patient-info episode-links']//*[contains(text(),'Latest Event')]"),
         'removeAllergyButton' => array('xpath' => "//*[@id='patient_allergies']//*[contains(text(),'Remove')]"),
         'removeConfirmButton' => array('xpath' => "//*[@id='delete_allergy']/div[2]//*[contains(text(),'Remove allergy')]")
 
