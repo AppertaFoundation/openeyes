@@ -4684,7 +4684,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 25, ../sass/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .ui-dialog-content {
-  padding: 0;
+  padding: 1px;
 }
 /* line 27, ../sass/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .ui-dialog-content.loading {
