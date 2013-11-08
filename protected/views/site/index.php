@@ -31,31 +31,33 @@
 	</div>
 </div>
 
-<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
+<div class="row">
+	<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
 
-	<?php $this->renderPartial('//base/_messages'); ?>
+		<?php $this->renderPartial('//base/_messages'); ?>
 
-	<?php
-		$this->beginWidget('CActiveForm', array(
-			'id' => 'search-form',
-			'focus' => '#query',
-			'action' => Yii::app()->createUrl('site/search'),
-			'htmlOptions' => array(
-				'class' => 'form panel search'
-			)
-		));?>
-		<div class="row">
-			<div class="large-9 medium-8 small-7 column">
-				<?php echo CHtml::textField('query', '', array('class' => 'large', 'placeholder' => 'Enter search...')); ?>
+		<?php
+			$this->beginWidget('CActiveForm', array(
+				'id' => 'search-form',
+				'focus' => '#query',
+				'action' => Yii::app()->createUrl('site/search'),
+				'htmlOptions' => array(
+					'class' => 'form panel search'
+				)
+			));?>
+			<div class="row">
+				<div class="large-9 medium-8 small-7 column">
+					<?php echo CHtml::textField('query', '', array('class' => 'large', 'placeholder' => 'Enter search...')); ?>
+				</div>
+				<div class="large-3 medium-4 small-5 column text-right">
+					<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="margin-right: 10px; display: none;" />
+					<button type="submit">
+						Search
+					</button>
+				</div>
 			</div>
-			<div class="large-3 medium-4 small-5 column text-right">
-				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="margin-right: 10px; display: none;" />
-				<button type="submit">
-					Search
-				</button>
-			</div>
-		</div>
-	<?php $this->endWidget(); ?>
+		<?php $this->endWidget(); ?>
+	</div>
 </div>
 
 <script type="text/javascript">

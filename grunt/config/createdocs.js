@@ -3,7 +3,7 @@ module.exports = {
 		options: {
 			tasks: [
 				'clean:all',
-				'compass:newstyle',
+				'compass:dist',
 				'copy:docs',
 				'styleguide:dist',
 				'jsdoc:dist'
@@ -14,7 +14,7 @@ module.exports = {
 		options: {
 			tasks: [
 				'clean:styleguide',
-				'compass:newstyle',
+				'compass:dist',
 				'copy:docs',
 				'styleguide:dist'
 			]
@@ -24,7 +24,7 @@ module.exports = {
 		options: {
 			tasks: [
 				'clean:javascript',
-				'compass:newstyle',
+				'compass:dist',
 				'copy:docs',
 				'jsdoc:dist'
 			]

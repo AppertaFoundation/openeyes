@@ -1,9 +1,9 @@
 module.exports = {
 	sass: {
 		files: 'sass/**/*.scss',
-		tasks: ['compass:newstyle'],
+		tasks: ['compass:dist'],
 		options: {
-			livereload: true
+			// livereload: true
 		}
 	}
 };
