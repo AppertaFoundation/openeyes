@@ -1,0 +1,11 @@
+.event {
+	&.<?php echo strtolower($this->moduleID);?> {
+		border-color: #aaaaaa;
+		.event-content {
+			background-image: image-url("watermark.png");
+		}
+		.event-title {
+			background-image: image-url("medium.png");
+		}
+	}
+}
