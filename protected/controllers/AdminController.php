@@ -22,13 +22,6 @@ class AdminController extends BaseAdminController
 	public $layout = 'admin';
 	public $items_per_page = 30;
 
-	public function accessRules()
-	{
-		return array(
-			array('deny'),
-		);
-	}
-
 	public function actionIndex()
 	{
 		$this->redirect(array('/admin/users'));
