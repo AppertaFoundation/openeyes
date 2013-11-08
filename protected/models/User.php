@@ -74,7 +74,7 @@ class User extends BaseActiveRecord
 			// Added for uniqueness of username
 			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
 			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
-			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, access_level, password, is_clinical, is_consultant, is_surgeon, has_selected_firms', 'safe'),
+			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms', 'safe'),
 		);
 
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
