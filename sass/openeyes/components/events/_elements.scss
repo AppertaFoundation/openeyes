@@ -37,14 +37,11 @@
 			position: absolute;
 			top: 0;
 			width: 0;
-			z-index: 9999;
+			z-index: 1;
 		}
 	}
 	.field-row {
 		padding-bottom: .9em;
-		&:last-child {
-			padding: 0;
-		}
 	}
 	.inactive .active-form,
 	.inactive-form {
@@ -73,9 +70,6 @@
 
 .element-data {
 	@extend %element-panel;
-	> .field-value:not(.highlight):last-child {
-		padding-bottom: 0;
-	}
 }
 
 .element-eye {
@@ -137,9 +131,6 @@ $oe-element-edit-title-font-style: italic;
 		}
 		.field-row {
 			padding-bottom: .8em;
-			&:last-child {
-				padding: 0;
-			}
 		}
 		.alert-box {
 			margin: 1em 0;
@@ -161,12 +152,6 @@ $oe-element-edit-title-font-style: italic;
 	}
 	.element-fields {
 		@extend .element-data;
-		.field-row:last-child {
-			padding: 0;
-		}
-		.panel:last-child {
-			margin: 0;
-		}
 	}
 	.element-eyes {
 		@extend .element-eyes;
