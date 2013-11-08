@@ -32,7 +32,8 @@
 		font-size: emCalc(13px);
 	}
 	&.search {
-		padding: emCalc(15px) 0;
+		padding-top: emCalc(15px);
+		padding-bottom: emCalc(15px);
 		input {
 			margin: 0;
 			&.large {

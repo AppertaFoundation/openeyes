@@ -3799,13 +3799,14 @@ tfoot.pagination-container .pagination li {
 }
 /* line 34, ../sass/openeyes/components/panels/_search.scss */
 .panel.search {
-  padding: 0.9375em 0;
+  padding-top: 0.9375em;
+  padding-bottom: 0.9375em;
 }
-/* line 36, ../sass/openeyes/components/panels/_search.scss */
+/* line 37, ../sass/openeyes/components/panels/_search.scss */
 .panel.search input {
   margin: 0;
 }
-/* line 38, ../sass/openeyes/components/panels/_search.scss */
+/* line 39, ../sass/openeyes/components/panels/_search.scss */
 .panel.search input.large {
   padding-top: 0.6875em;
   padding-bottom: 0.6875em;
