@@ -8,6 +8,19 @@
 	.element-eyes {
 		padding: 0;
 		margin: 0;
+		position: relative;
+		overflow: hidden;
+		&:after {
+			border-right: 1px solid #fff;
+			content: " ";
+			display: block;
+			height: 100%;
+			left: 50%;
+			position: absolute;
+			top: 0;
+			width: 0;
+			z-index: 9999;
+		}
 	}
 	.field-row {
 		padding-bottom: .9em;
@@ -49,10 +62,7 @@
 
 .element-eye {
 	@extend %element-panel;
-	border-right: 1px solid #fafafa;
-	&:last-child {
-		border: 0;
-	}
+	background: none;
 	&.left-eye,
 	&.right-eye {
 		@extend .large-6;
