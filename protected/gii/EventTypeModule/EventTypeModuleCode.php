@@ -105,7 +105,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		foreach ($this->files_to_process as $file) {
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
 			if ($file!==$this->moduleTemplateFile) {
-				if (CFileHelper::getExtension($file)==='php' || CFileHelper::getExtension($file)==='js') {
+				if (CFileHelper::getExtension($file)==='php' || CFileHelper::getExtension($file)==='js'|| CFileHelper::getExtension($file)==='json'|| CFileHelper::getExtension($file)==='scss') {
 					if (preg_match("/".preg_quote(DIRECTORY_SEPARATOR)."migrations".preg_quote(DIRECTORY_SEPARATOR)."/", $file)) {
 						if (preg_match('/_create\.php$/',$file) && $this->mode == 'create') {
 							# $matches = Array();
