@@ -65,14 +65,6 @@
 	}
 	.sub-element-fields {
 		@extend .element-data;
-		> .field-row:last-child {
-			padding: 0;
-		}
-		.element-eye {
-			> .field-row:last-child {
-				padding: 0;
-			}
-		}
 	}
 	.sub-elements-list {
 		@extend .optional-elements-list;
