@@ -126,6 +126,14 @@ table {
 	}
 }
 
+table {
+	&.white {
+		&, tr:nth-of-type(even) {
+			background: #fff;
+		}
+	}
+}
+
 // Plain table
 //
 // Markup:
@@ -149,15 +157,6 @@ table {
 // </table>
 //
 // Styleguide 6.4
-
-table {
-	&.white {
-		&, tr:nth-of-type(even) {
-			background: #fff;
-		}
-	}
-}
-
 table {
 	&.plain {
 		border: 0;

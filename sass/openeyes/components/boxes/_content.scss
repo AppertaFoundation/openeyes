@@ -1,0 +1,9 @@
+// Content box
+.box {
+  &.content {
+    background: #dae6f1;
+    &.admin-content {
+      padding: emCalc(16px) 0;
+    }
+  }
+}
