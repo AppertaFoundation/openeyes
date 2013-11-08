@@ -22,6 +22,21 @@ class OEMigration extends CDbMigration
 	private $migrationPath;
 
 	/**
+	 * Executes a SQL statement.
+	 * This method executes the specified SQL statement using {@link dbConnection}.
+	 * @param string $sql the SQL statement to be executed
+	 * @param array $params input parameters (name=>value) for the SQL execution. See {@link CDbCommand::execute} for more details.
+	 * @param string $message optional message to display instead of SQL
+	 */
+	public function execute($sql, $params=array(), $message = null) {
+		$message = ($message) ? $message : strtok($sql, "\n").'...';
+		echo "    > execute SQL: $message ...";
+		$time=microtime(true);
+		$this->getDbConnection()->createCommand($sql)->execute($params);
+		echo " done (time: ".sprintf('%.3f', microtime(true)-$time)."s)\n";
+	}
+
+	/**
 	 * @param array $consolidated_migrations
 	 * @return bool
 	 */
@@ -57,6 +72,7 @@ class OEMigration extends CDbMigration
 	/**
 	 * Initialise tables with default data
 	 * Filenames must to be in the format "nn_tablename.csv", where nn is the processing order
+	 * FIXME: This needs to be refactored to use SQL rather than relying on models
 	 */
 	public function initialiseData($migrations_path, $update_pk = null, $data_directory = null)
 	{
