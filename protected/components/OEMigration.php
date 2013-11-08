@@ -230,7 +230,7 @@ class OEMigration extends CDbMigration
 	 */
 	protected function insertOEEventType($eventTypeName, $eventTypeClass, $eventTypeGroup)
 	{
-		// Get the event group id for this event type g
+		// Get the event group id for this event type
 		$group_id = $this->dbConnection->createCommand()
 			->select('id')
 			->from('event_group')
@@ -241,28 +241,43 @@ class OEMigration extends CDbMigration
 			throw new OEMigrationException('Group id could not be found for $eventTypeGroup: ' . $eventTypeGroup);
 		}
 
-		// Create the new  event_type
-		$this->insert(
-			'event_type',
-			array(
-				'name' => $eventTypeName,
-				'event_group_id' => $group_id,
-				'class_name' => $eventTypeClass
-			)
-		);
-
-		echo 'Inserting event_type, event_type_name: ' . $eventTypeName . ' event_type_class: ' . $eventTypeClass . ' event_type_group: ' . $eventTypeGroup;
-
-		$getIdQuery = $this->dbConnection->createCommand()
+		// Create the new event_type (if not already present)
+		$event_type_id = $this->dbConnection->createCommand()
 			->select('id')
 			->from('event_type')
-			->where('class_name=:class_name', array(':class_name' => $eventTypeClass));
+			->where('class_name = :class_name', array(':class_name' => $eventTypeClass))
+			->queryScalar();
+		if($event_type_id) {
+			echo 'Updating event_type, event_type_name: ' . $eventTypeName . ' event_type_class: ' . $eventTypeClass . ' event_type_group: ' . $eventTypeGroup . "\n";
+			$this->update(
+				'event_type',
+				array(
+					'name' => $eventTypeName,
+					'event_group_id' => $group_id,
+				),
+				'id = :event_type_id',
+				array(':event_type_id' => $event_type_id)
+			);
+		} else {
+			echo 'Inserting event_type, event_type_name: ' . $eventTypeName . ' event_type_class: ' . $eventTypeClass . ' event_type_group: ' . $eventTypeGroup . "\n";
+			$this->insert(
+				'event_type',
+				array(
+					'name' => $eventTypeName,
+					'event_group_id' => $group_id,
+					'class_name' => $eventTypeClass
+				)
+			);
+			$event_type_id = $this->dbConnection->createCommand()
+				->select('id')
+				->from('event_type')
+				->where('class_name = :class_name', array(':class_name' => $eventTypeClass))
+				->queryScalar();
+			if(!$event_type_id) {
+				throw new CException('Failed to insert event type');
+			}
+		}
 
-		echo "\n\nEvent type query: " . $getIdQuery->getText() . "\n";
-
-		$event_type_id = $getIdQuery->queryScalar();
-
-		// Get the newly created event type
 		return $event_type_id;
 	}
 
