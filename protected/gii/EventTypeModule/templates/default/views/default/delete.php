@@ -18,10 +18,7 @@
  */
 <?php echo "?>\n"?>
 
-<?php echo "<?php\n"?>
-	$this->breadcrumbs=array($this->module->id);
-	$this->beginContent('//patient/event_container');
-<?php echo "?>\n"?>
+<?php echo "<?php\n"?>$this->beginContent('//patient/event_container');<?php echo "?>\n"?>
 
 <h2 class="event-title"><?php echo '<?php '?>echo $this->event_type->name<?php echo '?>'?></h2>
 
@@ -37,15 +34,13 @@
 		echo CHtml::form(array('Default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'));
 		echo CHtml::hiddenField('event_id', $this->event->id);
 	<?php echo "?>\n"?>
-	<div class="buttonwrapper">
-		<button type="submit" class="warning" id="et_deleteevent" name="et_deleteevent">
-			Delete event
-		</button>
-		<button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
-			Cancel
-		</button>
-		<img class="loader" src="<?php echo '<?php'?> echo Yii::app()->createUrl('img/ajax-loader.gif')<?php echo '?>'?>" alt="loading..." style="display: none;" />
-	</div>
+	<button type="submit" class="warning" id="et_deleteevent" name="et_deleteevent">
+		Delete event
+	</button>
+	<button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
+		Cancel
+	</button>
+	<img class="loader" src="<?php echo '<?php'?> echo Yii::app()->createUrl('img/ajax-loader.gif')<?php echo '?>'?>" alt="loading..." style="display: none;" />
 	<?php echo '<?php'?> echo CHtml::endForm()<?php echo "?>\n"?>
 </div>
 

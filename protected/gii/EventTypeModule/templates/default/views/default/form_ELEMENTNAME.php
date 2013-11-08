@@ -27,12 +27,12 @@
 		<h3 class="element-title"><?php echo '<?php'?> echo $element->elementType->name; <?php echo '?>'?></h3>
 	</header>
 	<div class="element-fields">
-<?php
-	if (isset($element)) {
-		foreach ($element['fields'] as $field) {
-			echo "\t".$this->getHTMLField($field,'create')."\n";
-		}
-	}
-?>
+		<?php
+			if (isset($element)) {
+				foreach ($element['fields'] as $field) {
+					echo "\t".$this->getHTMLField($field,'create')."\n";
+				}
+			}
+		?>
 	</div>
 </section>

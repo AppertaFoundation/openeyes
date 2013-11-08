@@ -18,10 +18,7 @@
  */
 <?php echo "?>\n"?>
 
-<?php echo "<?php\n"?>
-$this->breadcrumbs=array($this->module->id);
-$this->beginContent('//patient/event_container');
-<?php echo "?>\n"?>
+<?php echo "<?php\n"?>$this->beginContent('//patient/event_container');<?php echo "?>\n"?>
 
 <h2 class="event-title"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h2>
 
@@ -29,8 +26,8 @@ $this->beginContent('//patient/event_container');
 	'id'=>'clinical-create',
 	'enableAjaxValidation'=>false,
 	'layoutColumns' => array(
-	'label' => 2,
-	'field' => 10
+		'label' => 2,
+		'field' => 10
 	)
 ));
 

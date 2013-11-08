@@ -22,14 +22,13 @@
 	<header class="element-header">
 		<h3 class="element-title"><?php echo '<?php'?> echo $element->elementType->name<?php echo '?>'?></h3>
 	</header>
-
 	<div class="element-data">
-<?php
-if (isset($element)) {
-	foreach ($element['fields'] as $field) {
-		echo $this->getHTMLFieldView($field)."\n";
-	}
-}
-?>
+		<?php
+		if (isset($element)) {
+			foreach ($element['fields'] as $field) {
+				echo $this->getHTMLFieldView($field)."\n";
+			}
+		}
+		?>
 	</div>
 </section>

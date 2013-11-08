@@ -4,9 +4,9 @@ module.exports = function(grunt) {
 			options: {
 				sassDir: 'assets/sass',
 				cssDir: 'assets/css',
-				imagesDir: 'assets/img/new',
+				imagesDir: 'assets/img',
 				generatedImagesDir: 'assets/img/sprites',
-				importPath: '../../../sass/new',
+				importPath: '../../../sass',
 				outputStyle: 'expanded',
 				relativeAssets: true,
 				httpPath: '',
