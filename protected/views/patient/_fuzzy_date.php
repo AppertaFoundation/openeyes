@@ -37,7 +37,7 @@ $fieldColumns = @$form ? $form->columns('field') : 'large-9 column end';
 			</div>
 			<div class="large-4 column">
 				<select name="fuzzy_month">
-					<option>Month (optional)</option>
+					<option value="">Month (optional)</option>
 				<?php foreach (array('January','February','March','April','May','June','July','August','September','October','November','December') as $i => $month) {?>
 					<option value="<?php echo $i+1?>"><?php echo $month?></option>
 				<?php }?>
