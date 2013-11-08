@@ -3107,8 +3107,8 @@ class m130913_000000_consolidation extends OEMigration
 			"CREATE TABLE `user` (
 							 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 							 `username` varchar(40) NOT NULL,
-							 `first_name` varchar(40) NOT NULL,
-							 `last_name` varchar(40) NOT NULL,
+							 `first_name` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+							 `last_name` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
 							 `email` varchar(80) NOT NULL,
 							 `active` tinyint(1) NOT NULL,
 							 `global_firm_rights` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -3143,7 +3143,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `user_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `user_last_site_id_fk` FOREIGN KEY (`last_site_id`) REFERENCES `site` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci"
 		);
 
 		$this->execute(
