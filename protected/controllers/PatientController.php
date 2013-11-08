@@ -37,62 +37,59 @@ class PatientController extends BaseController
 	public $event_actions = array();
 	public $episodes = array();
 
-	/**
-	 * Checks to see if current user can create an event type
-	 * @param EventType $event_type
-	 * @deprecated use BaseController::canCreateEventType
-	 */
-	public function checkEventAccess($event_type)
-	{
-		return $this->canCreateEventType($event_type);
-
-		if (BaseController::checkUserLevel(5)) {
-			return true;
-		}
-		if (BaseController::checkUserLevel(4) && $event_type->class_name != 'OphDrPrescription') {
-			return true;
-		}
-		return false;
-	}
-
 	public function accessRules()
 	{
 		return array(
-			// Level 1 can view patient demographics
 			array('allow',
-				'actions' => array('search','view','hideepisode','showepisode'),
-				'expression' => 'BaseController::checkUserLevel(1)',
+				'actions' => array('search', 'view'),
+				'users' => array('@')
 			),
-			// Level 2 can't change anything
 			array('allow',
-				'actions' => array('episode','event', 'episodes'),
-				'expression' => 'BaseController::checkUserLevel(2)',
+				'actions' => array('episode', 'episodes', 'hideepisode', 'showepisode'),
+				'roles' => array('OprnViewClinical'),
 			),
-			// Level 3 or above can do anything
 			array('allow',
-				'expression' => 'BaseController::checkUserLevel(4)',
+				'actions' => array('verifyAddNewEpisode', 'addNewEpisode'),
+				'roles' => array('OprnCreateEpisode'),
 			),
-			// Deny anything else (default rule allows authenticated users)
-			array('deny'),
+			array('allow',
+				'actions' => array('updateepisode'),  // checked in action
+				'users' => array('@'),
+			),
+			array('allow',
+				'actions' => array('possiblecontacts', 'associatecontact', 'unassociatecontact', 'getContactLocation', 'institutionSites', 'validateSaveContact', 'addContact', 'validateEditContact', 'editContact', 'sendSiteMessage'),
+				'roles' => array('OprnEditContact'),
+			),
+			array('allow',
+				'actions' => array('addAllergy', 'removeAllergy'),
+				'roles' => array('OprnEditAllergy'),
+			),
+			array('allow',
+				'actions' => array('adddiagnosis', 'validateAddDiagnosis', 'removediagnosis'),
+				'roles' => array('OprnEditOtherOphDiagnosis'),
+			),
+			array('allow',
+				'actions' => array('editOphInfo'),
+				'roles' => array('OprnEditOphInfo'),
+			),
+			array('allow',
+				'actions' => array('addPreviousOperation', 'getPreviousOperation', 'removePreviousOperation'),
+				'roles' => array('OprnEditPreviousOperation'),
+			),
+			array('allow',
+				'actions' => array('drugList', 'drugDefaults', 'getDrugRouteOptions', 'validateAddMedication', 'addMedication', 'getMedication', 'removeMedication'),
+				'roles' => array('OprnEditMedication'),
+			),
+			array('allow',
+				'actions' => array('addFamilyHistory', 'removeFamilyHistory'),
+				'roles' => array('OprnEditFamilyHistory')
+			),
 		);
 	}
-
-	public function printActions()
-	{
-		return array(
-				'printadmissionletter',
-		);
-	}
-
 
 	protected function beforeAction($action)
 	{
 		parent::storeData();
-
-		// Sample code to be used when RBAC is fully implemented.
-//		if (!Yii::app()->user->checkAccess('admin')) {
-//			throw new CHttpException(403, 'You are not authorised to perform this action.');
-//		}
 
 		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
 
@@ -157,25 +154,6 @@ class PatientController extends BaseController
 			'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
 			'supportserviceepisodes' => $supportserviceepisodes,
 		));
-	}
-
-	/**
-	 * Redirect to correct patient view by hospital number
-	 * @param string $hos_num
-	 * @throws CHttpException
-	 */
-	public function actionViewhosnum($hos_num)
-	{
-		$hos_num = (int) $hos_num;
-		if (!$hos_num) {
-			throw new CHttpException(400, 'Invalid hospital number');
-		}
-		$patient = Patient::model()->find('hos_num=:hos_num', array(':hos_num' => $hos_num));
-		if ($patient) {
-			$this->redirect(array('/patient/view/'.$patient->id));
-		} else {
-			throw new CHttpException(404, 'Hospital number not found');
-		}
 	}
 
 	public function actionSearch()
@@ -291,33 +269,6 @@ class PatientController extends BaseController
 
 	}
 
-	public function actionSummary()
-	{
-		$patient = $this->loadModel($_GET['id']);
-
-		$criteria = new CDbCriteria;
-		$criteria->compare('patient_id', $patient->id);
-		$criteria->order = 'start_date DESC';
-
-		$dataProvider = new CActiveDataProvider('Episode', array(
-			'criteria'=>$criteria));
-
-		$this->renderPartial('_summary',
-			array('model'=>$patient, 'address'=>$patient->contact->address, 'episodes'=>$dataProvider));
-	}
-
-	public function actionContacts()
-	{
-		$patient = $this->loadModel($_GET['id']);
-		$this->renderPartial('_contacts', array('model'=>$patient));
-	}
-
-	public function actionCorrespondence()
-	{
-		$patient = $this->loadModel($_GET['id']);
-		$this->renderPartial('_correspondence', array('model'=>$patient));
-	}
-
 	public function actionEpisodes()
 	{
 		$this->layout = '//layouts/events_and_episodes';
@@ -385,8 +336,8 @@ class PatientController extends BaseController
 						'active' => true,
 				)
 		);
-		if (BaseController::checkUserLevel(4) && $this->episode->editable
-		&& $this->episode->firm && $this->firm->getSubspecialtyID() == $this->episode->firm->getSubspecialtyID()) {
+
+		if ($this->checkAccess('OprnEditEpisode', $this->firm, $this->episode) && $this->episode->firm) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
 					'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
@@ -411,7 +362,7 @@ class PatientController extends BaseController
 			throw new SystemException('Episode not found: '.$id);
 		}
 
-		if (!$this->episode->editable || isset($_POST['episode_cancel'])) {
+		if (!$this->checkAccess('OprnEditEpisode', $this->firm, $this->episode) || isset($_POST['episode_cancel'])) {
 			$this->redirect(array('patient/episode/'.$this->episode->id));
 			return;
 		}
@@ -585,8 +536,6 @@ class PatientController extends BaseController
 			default:
 				$contacts = Contact::model()->findByLabel($term, @$_GET['filter']);
 		}
-
-		sort($contacts);
 
 		echo CJavaScript::jsonEncode($contacts);
 	}
@@ -1285,86 +1234,84 @@ class PatientController extends BaseController
 
 	public function actionAddContact()
 	{
-		if (BaseController::checkUserLevel(4)) {
-			if (@$_POST['site_id']) {
-				if (!$site = Site::model()->findByPk($_POST['site_id'])) {
-					throw new Exception("Site not found: ".$_POST['site_id']);
-				}
-			} else {
-				if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
-					throw new Exception("Institution not found: ".@$_POST['institution_id']);
-				}
+		if (@$_POST['site_id']) {
+			if (!$site = Site::model()->findByPk($_POST['site_id'])) {
+				throw new Exception("Site not found: ".$_POST['site_id']);
 			}
-			if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
-				throw new Exception("patient required for contact assignment");
+		} else {
+			if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+				throw new Exception("Institution not found: ".@$_POST['institution_id']);
 			}
-
-			// Attempt to de-dupe by looking for an existing record that matches the user's input
-			$criteria = new CDbCriteria;
-			$criteria->compare('lower(title)',strtolower($_POST['title']));
-			$criteria->compare('lower(first_name)',strtolower($_POST['first_name']));
-			$criteria->compare('lower(last_name)',strtolower($_POST['last_name']));
-
-			if (isset($site)) {
-				$criteria->compare('site_id',$site->id);
-			} else {
-				$criteria->compare('institution_id',$institution->id);
-			}
-
-			if ($contact = Contact::model()->with('locations')->find($criteria)) {
-				foreach ($contact->locations as $location) {
-					$pca = new PatientContactAssignment;
-					$pca->patient_id = $patient->id;
-					$pca->location_id = $location->id;
-					if (!$pca->save()) {
-						throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
-					}
-
-					$this->redirect(array('/patient/view/'.$patient->id));
-				}
-			}
-
-			$contact = new Contact;
-			$contact->attributes = $_POST;
-
-			if (@$_POST['contact_label_id'] == 'nonspecialty') {
-				if (!$label = ContactLabel::model()->findByPk(@$_POST['label_id'])) {
-					throw new Exception("Contact label not found: ".@$_POST['label_id']);
-				}
-			} else {
-				if (!$label = ContactLabel::model()->find('name=?',array(@$_POST['contact_label_id']))) {
-					throw new Exception("Contact label not found: ".@$_POST['contact_label_id']);
-				}
-			}
-
-			$contact->contact_label_id = $label->id;
-
-			if (!$contact->save()) {
-				throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
-			}
-
-			$cl = new ContactLocation;
-			$cl->contact_id = $contact->id;
-			if (isset($site)) {
-				$cl->site_id = $site->id;
-			} else {
-				$cl->institution_id = $institution->id;
-			}
-
-			if (!$cl->save()) {
-				throw new Exception("Unable to save contact location: ".print_r($cl->getErrors(),true));
-			}
-
-			$pca = new PatientContactAssignment;
-			$pca->patient_id = $patient->id;
-			$pca->location_id = $cl->id;
-
-			if (!$pca->save()) {
-				throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
-			}
-
-			$this->redirect(array('/patient/view/'.$patient->id));
 		}
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("patient required for contact assignment");
+		}
+
+		// Attempt to de-dupe by looking for an existing record that matches the user's input
+		$criteria = new CDbCriteria;
+		$criteria->compare('lower(title)',strtolower($_POST['title']));
+		$criteria->compare('lower(first_name)',strtolower($_POST['first_name']));
+		$criteria->compare('lower(last_name)',strtolower($_POST['last_name']));
+
+		if (isset($site)) {
+			$criteria->compare('site_id',$site->id);
+		} else {
+			$criteria->compare('institution_id',$institution->id);
+		}
+
+		if ($contact = Contact::model()->with('locations')->find($criteria)) {
+			foreach ($contact->locations as $location) {
+				$pca = new PatientContactAssignment;
+				$pca->patient_id = $patient->id;
+				$pca->location_id = $location->id;
+				if (!$pca->save()) {
+					throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+				}
+
+				$this->redirect(array('/patient/view/'.$patient->id));
+			}
+		}
+
+		$contact = new Contact;
+		$contact->attributes = $_POST;
+
+		if (@$_POST['contact_label_id'] == 'nonspecialty') {
+			if (!$label = ContactLabel::model()->findByPk(@$_POST['label_id'])) {
+				throw new Exception("Contact label not found: ".@$_POST['label_id']);
+			}
+		} else {
+			if (!$label = ContactLabel::model()->find('name=?',array(@$_POST['contact_label_id']))) {
+				throw new Exception("Contact label not found: ".@$_POST['contact_label_id']);
+			}
+		}
+
+		$contact->contact_label_id = $label->id;
+
+		if (!$contact->save()) {
+			throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
+		}
+
+		$cl = new ContactLocation;
+		$cl->contact_id = $contact->id;
+		if (isset($site)) {
+			$cl->site_id = $site->id;
+		} else {
+			$cl->institution_id = $institution->id;
+		}
+
+		if (!$cl->save()) {
+			throw new Exception("Unable to save contact location: ".print_r($cl->getErrors(),true));
+		}
+
+		$pca = new PatientContactAssignment;
+		$pca->patient_id = $patient->id;
+		$pca->location_id = $cl->id;
+
+		if (!$pca->save()) {
+			throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
 	}
 
 	public function actionGetContactLocation()
@@ -1547,10 +1494,6 @@ class PatientController extends BaseController
 
 	public function actionAddNewEpisode()
 	{
-		if (!BaseController::checkUserLevel(4)) {
-			return;
-		}
-
 		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
 			throw new Exception("Patient not found: ".@$_POST['patient_id']);
 		}
@@ -1580,5 +1523,17 @@ class PatientController extends BaseController
 			);
 		}
 		return $this->episodes;
+	}
+
+	/**
+	 * Check create access for the specified event type
+	 *
+	 * @param EventType $event_type
+	 * @return boolean
+	 */
+	public function checkCreateAccess(EventType $event_type)
+	{
+		$oprn = 'OprnCreate' . ($event_type->class_name == 'OphDrPrescription' ? 'Prescription' : 'Event');
+		return $this->checkAccess($oprn, $this->firm, $event_type);
 	}
 }
