@@ -24,9 +24,9 @@ $(document).ready(function() {
 	});
 
 	handleButton($('#et_save'),function(e) {
-		e.preventDefault();
+		/*e.preventDefault();
 
-		$('#adminform').submit();
+		$('#adminform').submit();*/
 	});
 
 	handleButton($('#et_cancel'),function(e) {
