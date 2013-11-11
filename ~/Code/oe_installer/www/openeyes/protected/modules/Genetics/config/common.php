@@ -4,7 +4,7 @@ return array(
 		'menu_bar_items' => array(
 			'pedigrees' => array(
 				'title' => 'Pedigrees',
-				'uri' => 'Pedigrees/default/index',
+				'uri' => 'Genetics/default/index',
 				'position' => 40,
 			),
 		),
