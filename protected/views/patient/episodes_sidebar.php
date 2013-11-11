@@ -25,8 +25,9 @@ $current_episode = @$this->current_episode;
 <aside class="large-2 column sidebar episodes-and-events">
 
 	<?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && BaseController::checkUserLevel(4)) {?>
-		<button class="secondary small add-episode" type="button">
-			<span class="icon-button-small-plus-sign"></span>Add Episode
+		<button class="secondary small add-episode" type="button" id="add-episode">
+			<span class="icon-button-small-plus-sign"></span>
+			Add Episode
 		</button>
 	<?php }?>
 
