@@ -24,7 +24,7 @@
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 <?php } ?>
-		<div class="field-row">
+		<div class="dropdown-row"">
 			<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis')) : ""?>
 		</div>
 		<?php

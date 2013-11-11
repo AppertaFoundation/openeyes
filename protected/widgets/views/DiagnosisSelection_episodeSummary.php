@@ -22,10 +22,10 @@
 		<?php echo $label?>
 	</h4>
 </div>
-<div class="field-row">
+<div class="dropdown-row">
 	<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
 </div>
-<div class="field-row">
+<div class="autocomplete-row">
 	<?php
 	$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		'name' => "{$class}[$field]",
