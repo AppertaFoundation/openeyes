@@ -33,7 +33,6 @@ $current_episode = @$this->current_episode;
 
 	<!-- Legacy events -->
 	<?php $this->renderPartial('//patient/_legacy_events',array('legacyepisodes'=>$legacyepisodes))?>
-	<!-- <?php $this->renderPartial('//patient/_support_service_events',array('supportserviceepisodes'=>$supportserviceepisodes))?> -->
 
 	<?php
 	if (is_array($ordered_episodes)) {
