@@ -159,18 +159,6 @@ class BaseEventTypeElementTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers BaseEventTypeElement::getPhraseBySubspecialtyOptions
-	 * @todo   Implement testGetPhraseBySubspecialtyOptions().
-	 */
-	public function testGetPhraseBySubspecialtyOptions()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers BaseEventTypeElement::setDefaultOptions
 	 * @todo   Implement testSetDefaultOptions().
 	 */

@@ -236,18 +236,6 @@ class BaseEventTypeElement extends BaseElement
 	}
 
 	/**
-	 * Returns a list of Exam Phrases to be used by the element form.
-	 *
-	 * @param $section
-	 * @return array
-	 */
-	public function getPhraseBySubspecialtyOptions($section)
-	{
-		$section = Section::Model()->getByType('Exam', $section);
-		return array_merge(array('-' => '-'), CHtml::listData(PhraseBySubspecialty::Model()->findAll('subspecialty_id = ? AND section_id = ?', array($this->firm->serviceSubspecialtyAssignment->subspecialty_id, $section->id)), 'id', 'phrase'));
-	}
-
-	/**
 	 * Stubbed method to set default options
 	 * Used by child objects to set defaults for forms on create
 	 */

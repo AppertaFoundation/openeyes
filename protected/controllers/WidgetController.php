@@ -19,8 +19,6 @@
 
 class WidgetController extends BaseController
 {
-	public $layout='column2';
-
 	public function accessRules()
 	{
 		return array(
