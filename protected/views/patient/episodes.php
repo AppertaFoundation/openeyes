@@ -30,7 +30,7 @@ $noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportservicee
 			<div class="box content">
 				<div class="panel">
 					<div class="alert-box alert with-icon">There are currently no episodes for this patient, please click the Add episode button to open a new episode.</div>
-					<button class="small add-episode">
+					<button class="small add-episode" id="add-episode">
 						Add episode
 					</button>
 				</div>
