@@ -38,11 +38,15 @@
 		<?php echo $form->textField($contact,'primary_phone')?>
 		<?php echo $form->textField($contact,'qualifications')?>
 		<?php echo $form->dropDownList($contact,'contact_label_id',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
-		<div class="row field-row">
+
+		<?php /* TODO */ ?>
+		<div class="row field-row hide">
 			<div class="large-5 large-offset-2 column">
 				<?php echo EventAction::button('Add label','add_label',array(), array('class' => 'small'))->toHtml()?>
 			</div>
 		</div>
+		<?php /* TODO */ ?>
+
 		<?php echo $form->formActions();?>
 	<?php $this->endWidget()?>
 </div>

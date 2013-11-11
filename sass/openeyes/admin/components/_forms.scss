@@ -1,0 +1,10 @@
+.admin {
+	.field-row {
+		&:last-child {
+			padding: 0;
+		}
+	}
+	legend {
+		font-size: 1.1em;
+	}
+}

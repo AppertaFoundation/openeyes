@@ -21,23 +21,21 @@
 <div class="box admin">
 	<h2>Edit contact label</h2>
 	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-	<div>
-		<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'editContactLabelForm',
-			'enableAjaxValidation'=>false,
-			'focus'=>'#ContactLabel_name',
-			'layoutColumns' => array(
-				'label' => 2,
-				'field' => 5
-			)
-		))?>
-			<?php echo $form->textField($contactlabel,'name')?>
-			<?php echo $form->formActions(array(
-				'delete' => 'Delete'
-			));?>
-		<?php $this->endWidget()?>
-	</div>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'editContactLabelForm',
+		'enableAjaxValidation'=>false,
+		'focus'=>'#ContactLabel_name',
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5
+		)
+	))?>
+		<?php echo $form->textField($contactlabel,'name')?>
+		<?php echo $form->formActions(array(
+			'delete' => 'Delete'
+		));?>
+	<?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
 	handleButton($('#et_cancel'),function(e) {

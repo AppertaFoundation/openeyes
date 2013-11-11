@@ -63,12 +63,17 @@
 					</tr>
 				<?php }?>
 			</tbody>
+			<tfoot class="pagination-container">
+				<tr>
+					<td colspan="3">
+						<?php echo EventAction::button('Add', 'add_contact_location', null, array('class' => 'small'))->toHtml()?>
+					</td>
+				</tr>
+			</tfoot>
 		</table>
 	</form>
 </div>
-<div>
-	<?php echo EventAction::button('Add', 'add_contact_location', array('colour' => 'blue'))->toHtml()?>
-</div>
+
 <script type="text/javascript">
 	$('a.removeLocation').click(function(e) {
 		e.preventDefault();

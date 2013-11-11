@@ -21,39 +21,37 @@
 <div class="box admin">
 	<h2><?php echo ($firm->id ? 'Edit' : 'Add')?> firm</h2>
 	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-	<div>
-		<?php
-		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'adminform',
-			'enableAjaxValidation'=>false,
-			'focus'=>'#username',
-			'layoutColumns' => array(
-				'label' => 2,
-				'field' => 5
-			)
-		))?>
-			<?php echo $form->textField($firm,'pas_code')?>
-			<?php echo $form->textField($firm,'name')?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'focus'=>'#username',
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5
+		)
+	))?>
+		<?php echo $form->textField($firm,'pas_code')?>
+		<?php echo $form->textField($firm,'name')?>
 
-			<div id="div_Firm_subspecialty_id" class="row field-row">
-				<div class="large-2 column">
-					<label for="Firm_subspecialty_id">Subspecialty:</label>
-				</div>
-				<div class="large-5 column end">
-					<?php echo CHtml::dropDownList('Firm[subspecialty_id]',$firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null,CHtml::listData(Subspecialty::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
-				</div>
+		<div id="div_Firm_subspecialty_id" class="row field-row">
+			<div class="large-2 column">
+				<label for="Firm_subspecialty_id">Subspecialty:</label>
 			</div>
-			<div id="div_Firm_consultant_id" class="row field-row">
-				<div class="large-2 column">
-					<label for="Firm_consultant_id">Consultant:</label>
-				</div>
-				<div class="large-5 column end">
-					<?php echo CHtml::dropDownList('Firm[consultant_id]',$firm->consultant_id,CHtml::listData(User::model()->findAll(array('order'=>'first_name,last_name')),'id','fullName'),array('empty'=>'- None -'))?>
-				</div>
+			<div class="large-5 column end">
+				<?php echo CHtml::dropDownList('Firm[subspecialty_id]',$firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null,CHtml::listData(Subspecialty::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
 			</div>
+		</div>
+		<div id="div_Firm_consultant_id" class="row field-row">
+			<div class="large-2 column">
+				<label for="Firm_consultant_id">Consultant:</label>
+			</div>
+			<div class="large-5 column end">
+				<?php echo CHtml::dropDownList('Firm[consultant_id]',$firm->consultant_id,CHtml::listData(User::model()->findAll(array('order'=>'first_name,last_name')),'id','fullName'),array('empty'=>'- None -'))?>
+			</div>
+		</div>
 
-			<?php echo $form->formActions(); ;?>
+		<?php echo $form->formActions(); ;?>
 
-		<?php $this->endWidget()?>
-	</div>
+	<?php $this->endWidget()?>
 </div>
