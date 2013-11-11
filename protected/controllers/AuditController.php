@@ -20,10 +20,10 @@
 class AuditController extends BaseController
 {
 	/**
-		* @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-		* using two-column layout. See 'protected/views/layouts/column2.php'.
-		*/
+	 * @var string the default layout for the views
+	 */
 	public $layout='//layouts/main';
+
 	public $items_per_page = 100;
 
 	public function accessRules()

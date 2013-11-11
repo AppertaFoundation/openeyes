@@ -20,7 +20,7 @@
 /**
  * This is the model class for table "setting_metadata".
  *
- * The followings are the available columns in table 'phrase':
+ * The followings are the available columns in table 'setting_metadata':
  * @property string $id
  * @property string $element_type_id
  * @property string $display_order
@@ -34,7 +34,7 @@ class SettingMetadata extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Phrase the static model class
+	 * @return SettingMetadata the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
