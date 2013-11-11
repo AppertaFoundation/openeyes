@@ -1,4 +1,21 @@
 <?php
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
 
 class m130913_000000_consolidation extends OEMigration
 {
@@ -3107,8 +3124,8 @@ class m130913_000000_consolidation extends OEMigration
 			"CREATE TABLE `user` (
 							 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 							 `username` varchar(40) NOT NULL,
-							 `first_name` varchar(40) NOT NULL,
-							 `last_name` varchar(40) NOT NULL,
+							 `first_name` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+							 `last_name` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
 							 `email` varchar(80) NOT NULL,
 							 `active` tinyint(1) NOT NULL,
 							 `global_firm_rights` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -3143,7 +3160,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `user_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `user_last_site_id_fk` FOREIGN KEY (`last_site_id`) REFERENCES `site` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci"
 		);
 
 		$this->execute(
