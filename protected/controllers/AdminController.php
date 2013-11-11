@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class AdminController extends BaseController
+class AdminController extends BaseAdminController
 {
 	public $layout = 'admin';
 	public $items_per_page = 30;
@@ -27,16 +27,6 @@ class AdminController extends BaseController
 		return array(
 			array('deny'),
 		);
-	}
-
-	protected function beforeAction($action)
-	{
-		$this->registerCssFile('admin.css', Yii::app()->createUrl("css/admin.css"));
-		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
-
-		$this->jsVars['items_per_page'] = $this->items_per_page;
-
-		return parent::beforeAction($action);
 	}
 
 	public function actionIndex()
@@ -1221,26 +1211,5 @@ class AdminController extends BaseController
 		Audit::add('admin-CommissioningBodyServiceType','delete',serialize($_POST));
 
 		echo "1";
-	}
-	/**
-	 *	@description Initialise and handle admin pagination
-	 *  @author bizmate
-	 * 	@param class $model
-	 * 	@param string $criteria
-	 * 	@return CPagination
-	 */
-	private function initPagination($model, $criteria = null)
-	{
-		$criteria = is_null($criteria) ? new CDbCriteria() : $criteria;
-		$itemsCount = $model->count($criteria);
-		$pagination = new CPagination($itemsCount);
-		$pagination->pageSize = $this->items_per_page;
-		// not needed as $_GET['page'] is used by default
-		//if(isset($_GET['page']) && is_int($_GET['page']) )
-		//{
-		//	$pagination->currentPage = $_GET['page'];
-		//}
-		$pagination->applyLimit($criteria);
-		return $pagination;
 	}
 }
