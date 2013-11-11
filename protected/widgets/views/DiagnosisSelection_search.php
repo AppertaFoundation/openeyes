@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="diagnosis-selection field-row">
+<div class="diagnosis-selection">
 	<div class="row collapse">
 		<?php if (!$nowrapper && $label) {?>
 			<div class="large-<?php echo $layoutColumns['label'];?> column">
@@ -27,10 +27,10 @@
 			</div>
 		<?php }?>
 		<div class="large-<?php if ($label) { echo $layoutColumns['field']-2; }else{?>10<?php }?> column">
-			<div class="field-row">
+			<div class="dropdown-row">
 				<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -') : $dropdownOptions) : ""?>
 			</div>
-			<div class="hide field-row">
+			<div class="autocomplete-row hide">
 				<?php
 				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						'name' => "ignore_{$class}[$field]",

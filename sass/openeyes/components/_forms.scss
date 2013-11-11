@@ -238,12 +238,7 @@ label {
 
 // Field rows
 .field-row {
-	&:not(.hide) {
-		padding-bottom: $form-spacing;
-	}
-	&:last-child {
-		padding: 0;
-	}
+	padding-bottom: $form-spacing;
 	table:last-child {
 		margin-bottom: 0;
 	}
