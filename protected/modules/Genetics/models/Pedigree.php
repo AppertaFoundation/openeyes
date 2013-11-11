@@ -64,6 +64,7 @@ class Pedigree extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('inheritance_id, comments, consanguinity, gene_id, base_change, amino_acid_change, disorder_id', 'safe'),
 		);
 	}
 
@@ -76,6 +77,21 @@ class Pedigree extends BaseActiveRecord
 			'inheritance' => array(self::BELONGS_TO, 'PedigreeInheritance', 'inheritance_id'),
 			'gene' => array(self::BELONGS_TO, 'PedigreeGene', 'gene_id'),
 			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'inheritance_id' => 'Inheritance',
+			'base_change' => 'Base change',
+			'gene_id' => 'Gene',
+			'amino_acid_change' => 'Amino acid change',
+			'disorder_id' => 'Disorder',
 		);
 	}
 }
