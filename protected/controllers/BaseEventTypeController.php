@@ -20,13 +20,16 @@
 class BaseEventTypeController extends BaseController
 {
 	public $model;
+	/* @var Firm */
 	public $firm;
+	/* @var Patient */
 	public $patient;
+	/* @var Site */
 	public $site;
+	/* @var Event */
+	public $event;
 	public $editable = true;
 	public $editing;
-	public $event;
-	public $event_type;
 	private $title;
 	public $assetPath;
 	public $episode;
@@ -36,7 +39,8 @@ class BaseEventTypeController extends BaseController
 	public $event_actions = array();
 	public $print_css = true;
 	public $successUri = 'default/view/';
-	public $eventIssueCreate = false;
+	// String to set an issue when an event is created
+	public $eventIssueCreate;
 	public $extraViewProperties = array();
 	public $jsVars = array();
 	public $layout = '//layouts/events_and_episodes';
@@ -333,6 +337,41 @@ class BaseEventTypeController extends BaseController
 	}
 
 	/**
+	 * Set the default values on each of the open elements.
+	 *
+	 * @param string $action
+	 */
+	protected function setDefaultOptions()
+	{
+		foreach ($this->open_elements as $element) {
+			$element->setDefaultOptions();
+		}
+	}
+
+	/**
+	 * Initialise the controller prior to a create action
+	 *
+	 * @throws CHttpException
+	 */
+	protected function createInit()
+	{
+		$this->moduleStateCssClass = 'edit';
+
+		if (!$this->patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
+			throw new CHttpException(403, 'Invalid patient_id.');
+		}
+
+		if (!$this->episode = $this->getEpisode($this->firm, $this->patient->id)) {
+			$this->redirectToPatientEpisodes();
+		}
+
+		if (!$this->event_type->support_services && !$this->firm->getSubspecialty()) {
+			// Can't create a non-support service event for a support-service firm
+			$this->redirectToPatientEpisodes();
+		}
+	}
+
+	/**
 	 * Carries out the base create action
 	 *
 	 * @return bool|string
@@ -341,82 +380,48 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function actionCreate()
 	{
-		$this->moduleStateCssClass = 'edit';
-
-		if (!$this->patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
-			throw new CHttpException(403, 'Invalid patient_id.');
-		}
-
-		$session = Yii::app()->session;
-		/** @var $firm Firm */
-		$firm = Firm::model()->findByPk($session['selected_firm_id']);
-		$this->episode = $this->getEpisode($firm, $this->patient->id);
-
-		if (!$this->event_type->support_services && !$firm->serviceSubspecialtyAssignment) {
-			// Can't create a non-support service event for a support-service firm
-			$this->redirectToPatientEpisodes();
-		}
-
-		if (!$episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
-			// there's no episode for this subspecialty
-			$this->redirectToPatientEpisodes();
-		}
+		$this->createInit();
 
 		if (!empty($_POST)) {
 			// form has been submitted
 			if (isset($_POST['cancel'])) {
 				$this->redirectToPatientEpisodes();
 			}
-			$errors = array();
 
-			// detemine what elements have been submitted, checking for missing required elements
-			foreach ($this->event_type->getAllElementTypes() as $element_type) {
-				if (isset($_POST[$element_type->class_name])) {
-					$elements[] = new $element_type->class_name;
-				}
-				elseif ($element_type->required) {
-					$errors['Event'][] = $element_type->name . ' is required';
-				}
-			}
-
-			// validation
-			$errors = array_merge($errors, $this->validatePOSTElements($elements));
+			// set and validate
+			$errors = $this->setAndValidateElementsFromData($_POST);
 
 			// creation
 			if (empty($errors)) {
-				// The user has submitted the form to create the event
-				$eventId = $this->createElements(
-					$elements, $_POST, $this->firm, $this->patient->id, Yii::app()->user->id, $this->event_type->id
-				);
+				$success = $this->saveEvent($_POST);
 
-				if ($eventId) {
+				if ($success) {
 					$this->logActivity('created event.');
 
-					$event = Event::model()->findByPk($eventId);
-
 					if ($this->eventIssueCreate) {
-						$event->addIssue($this->eventIssueCreate);
+						$this->event->addIssue($this->eventIssueCreate);
 					}
 
-					$audit_data = array('event' => $event->getAuditAttributes());
+					$audit_data = array('event' => $this->event->getAuditAttributes());
 
-					foreach ($elements as $element) {
+					//TODO: should this be simply handled by the audit wrapper of the event?
+					foreach ($this->open_elements as $element) {
 						$audit_data[get_class($element)] = $element->getAuditAttributes();
 					}
 
-					$event->audit('event','create',serialize($audit_data));
+					$this->event->audit('event','create',serialize($audit_data));
 
 					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
-					$this->redirect(array($this->successUri.$eventId));
-					return $eventId;
+					$this->redirect(array($this->successUri.$this->event->id));
+				}
+				else {
+					throw new Exception("could not save event");
 				}
 			}
 		}
 		else {
-			$elements = $this->event_type->getDefaultElements();
-			foreach ($elements as $element) {
-				$element->setDefaultOptions();
-			}
+			$this->open_elements = $this->event_type->getDefaultElements();
+			$this->setDefaultOptions();
 		}
 
 		$this->editable = false;
@@ -437,11 +442,7 @@ class BaseEventTypeController extends BaseController
 
 		$this->processJsVars();
 
-		$this->open_elements = $elements;
-
 		$this->render('create', array(
-			'elements' => $elements,
-			'eventId' => null,
 			'errors' => @$errors
 		));
 	}
@@ -520,14 +521,12 @@ class BaseEventTypeController extends BaseController
 	}
 
 	/**
-	 * The update action for the given event id
+	 * initialise the controller prior to event update action
 	 *
 	 * @param $id
 	 * @throws CHttpException
-	 * @throws SystemException
-	 * @throws Exception
 	 */
-	public function actionUpdate($id)
+	protected function updateInit($id)
 	{
 		$this->moduleStateCssClass = 'edit';
 		if (!$this->event = Event::model()->findByPk($id)) {
@@ -543,109 +542,47 @@ class BaseEventTypeController extends BaseController
 			$this->redirectToPatientEpisodes();
 		}
 
-		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 		$this->episode = $this->event->episode;
+	}
+	/**
+	 * The update action for the given event id
+	 *
+	 * @param $id
+	 * @throws CHttpException
+	 * @throws SystemException
+	 * @throws Exception
+	 */
+	public function actionUpdate($id)
+	{
+		$this->updateInit();
 
-		// firm changing sanity
-		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
-			// The firm id in the firm is not the same as the session firm id, e.g. they've changed
-			// firms in a different tab. Set the session firm id to the provided firm id.
-
-			$session = Yii::app()->session;
-
-			$firms = $session['firms'];
-			$firmId = intval($_POST['firm_id']);
-
-			if ($firms[$firmId]) {
-				$session['selected_firm_id'] = $firmId;
-				$this->selectedFirmId = $firmId;
-				$this->firm = Firm::model()->findByPk($this->selectedFirmId);
-			} else {
-				// They've supplied a firm id in the post to which they are not entitled??
-				throw new Exception('Invalid firm id on attempting to update event.');
-			}
-		}
-
-		if (empty($_POST) && !count($this->getDefaultElements($this->action->id))) {
-			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
-		}
-
-		if (!empty($_POST) && isset($_POST['cancel'])) {
-			// Cancel button pressed, so just bounce to view
-			$this->redirect(array('default/view/'.$this->event->id));
-			return;
-		} elseif (!empty($_POST) && !count($this->getDefaultElements($this->action->id))) {
-			$errors['Event'][] = 'No elements selected';
-		} elseif (!empty($_POST)) {
-
-			$elements = array();
-			$to_delete = array();
-			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {
-				$class_name = $element_type->class_name;
-				if (isset($_POST[$class_name])) {
-					$keys = array_keys($_POST[$class_name]);
-					if (is_array($_POST[$class_name][$keys[0]])) {
-						if (!isset($_POST[$class_name]['_element_id'])) {
-							throw new Exception("Array'd elements must include _element_id");
-						}
-
-						foreach ($class_name::model()->findAll(array('condition'=>'event_id=?','params'=>array($this->event->id),'order'=>'id asc')) as $element) {
-							if (in_array($element->id,$_POST[$class_name]['_element_id'])) {
-								$elements[] = $element;
-							} else {
-								$to_delete[] = $element;
-							}
-						}
-						foreach ($_POST[$class_name]['_element_id'] as $element_id) {
-							if (!$element_id) {
-								$elements[] = new $class_name;
-							}
-						}
-					} else {
-						if ($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
-							// Add existing element to array
-							$elements[] = $element;
-						} else {
-							// Add new element to array
-							$elements[] = new $class_name;
-						}
-					}
-				} elseif ($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
-					// Existing element is not posted, so we need to delete it
-					$to_delete[] = $element;
-				}
+		if (!empty($_POST)) {
+			if (isset($_POST['cancel'])) {
+				// Cancel button pressed, so just bounce to view
+				$this->redirect(array('default/view/'.$this->event->id));
 			}
 
-			// validation
-			$errors = $this->validatePOSTElements($elements);
+			$errors = $this->setAndValidateElementsFromData($_POST);
 
 			// creation
 			if (empty($errors)) {
-
-				// Need to pass through _all_ elements to updateElements (those not in _POST will be deleted)
-				$all_elements = array_merge($elements, $to_delete);
-				$success = $this->updateElements($all_elements, $_POST, $this->event);
+				//TODO: setup a transaction at this point.
+				//TODO: should all the auditing be moved into the saving of the event
+				$success = $this->saveEvent($_POST);
 
 				if ($success) {
-					$info_text = '';
-					foreach ($elements as $element) {
-						if ($element->infotext) {
-							$info_text .= $element->infotext;
-						}
-					}
 
 					$this->logActivity('updated event');
 
 					$audit_data = array('event' => $this->event->getAuditAttributes());
 
-					foreach ($elements as $element) {
+					foreach ($this->open_elements as $element) {
 						$audit_data[get_class($element)] = $element->getAuditAttributes();
 					}
 
 					$this->event->audit('event','update',serialize($audit_data));
 
 					$this->event->user = Yii::app()->user->id;
-					$this->event->info = $info_text;
 
 					if (!$this->event->save()) {
 						throw new SystemException('Unable to update event: '.print_r($this->event->getErrors(),true));
@@ -654,9 +591,14 @@ class BaseEventTypeController extends BaseController
 					OELog::log("Updated event {$this->event->id}");
 
 					$this->redirect(array('default/view/'.$this->event->id));
-					return;
+				}
+				else {
+					throw new Exception("Unable to save edits to event");
 				}
 			}
+		}
+		else {
+			$this->open_elements = $this->event->getElements();
 		}
 
 		$this->editing = true;
@@ -681,7 +623,6 @@ class BaseEventTypeController extends BaseController
 		$this->processJsVars();
 
 		$this->render($this->action->id, array(
-			'elements' => $this->getDefaultElements($this->action->id),
 			'errors' => @$errors
 		));
 	}
@@ -705,11 +646,12 @@ class BaseEventTypeController extends BaseController
 	 *
 	 * @param BaseEventTypeElement[] - $elements
 	 * @return array - $errors
+	 * @deprecated - use setAndValidateElementsFromData($data)
 	 */
 	protected function validatePOSTElements($elements)
 	{
-		$generic = array();
 
+		$this->setAndValidateElementsFromData($_POST);
 		$errors = array();
 		foreach ($elements as $element) {
 			$elementClassName = get_class($element);
@@ -766,6 +708,183 @@ class BaseEventTypeController extends BaseController
 	}
 
 	/**
+	 * Stub method:
+	 *
+	 * Use this for any many to many relations defined on elements, and any other custom data setting outside of the
+	 * standard applying attribute values. This is called prior to validation so should set values without actually
+	 * touching the database.
+	 *
+	 * The $data attribute will typically be the $_POST structure, but can be any appropriately structured array
+	 * The optional $index attribute is thecounter for multiple elements of the same type that might exist in source data.
+	 *
+	 * @param BaseEventTypeElement $element
+	 * @param array $data
+	 * @param integer $index
+	 */
+	protected function setElementComplexAttributesFromData($element, $data, $index = null)
+	{
+		// placeholder method
+	}
+
+	/**
+	 * Set the attributes of the given $elements from the given structured array.
+	 * Returns any validation errors that arise.
+	 *
+	 * @param array $data
+	 * @throws Exception
+	 * @return array $errors
+	 */
+	protected function setAndValidateElementsFromData($data)
+	{
+		$errors = array();
+
+		// only process data for elements that are part of the element type set for the controller event type
+		foreach ($this->event_type->getAllElementTypes() as $element_type) {
+			$el_cls_name = $element_type->class_name;
+			if (isset($data[$el_cls_name])) {
+				$keys = array_keys($data[$el_cls_name]);
+
+				if (is_array($data[$el_cls_name][$keys[0]])) {
+					// there is more than one element of this type
+					if ($this->event && !$data[$el_ls_name]['_element_id']) {
+						throw new Exception("missing _element_id for multiple elements for editing an event");
+					}
+
+					// iterate through each to define the multiple instances we require
+					for ($i=0; $i<count($data[$el_cls_name][$keys[0]]); $i++) {
+						if ($el_id = $data[$el_cls_name]['_element_id'][$i]) {
+							$element = $el_cls_name::model()->findByPk($el_id);
+						}
+						else {
+							$element = new $el_cls_name;
+						}
+
+						$el_attrs = array();
+						foreach ($keys as $key) {
+							if ($key != '_element_id') {
+								$el_attrs[$key] = $data[$el_cls_name][$key][$i];
+							}
+						}
+						$element->attributes = Helper::convertNHS2MySQL($el_attrs);
+						$this->setElementComplexAttributesFromData($element, $data, $i);
+
+						if (!$element->validate()) {
+							// FIXME: this is not suitably generic for the base controller, needs to be abstracted
+							$proc_name = $element->procedure->term;
+							foreach ($element->getErrors() as $errormsgs) {
+								foreach ($errormsgs as $error) {
+									$errors[$proc_name][] = $error;
+								}
+							}
+						}
+						$elements[] = $element;
+					}
+				}
+				else {
+					if (!$this->event
+						|| !$element = $el_cls_name::model()->find('event_id=?',array($this->event->id))) {
+						$element = new $el_cls_name;
+					}
+					$element->attributes = Helper::convertNHS2MySQL($data[$el_cls_name]);
+					$this->setElementComplexAttributesFromData($element, $data);
+					if (!$element->validate()) {
+						$element_name = $element_type->name;
+						foreach ($element->getErrors() as $errormsgs) {
+							foreach ($errormsgs as $error) {
+								$errors[$element_name][] = $error;
+							}
+						}
+					}
+					$elements[] = $element;
+				}
+			}
+			elseif ($element_type->required) {
+				$errors['Event'][] = $element_type->name . ' is required';
+			}
+		}
+
+		$this->open_elements = $elements;
+
+		return $errors;
+	}
+
+	protected function updateEventInfo()
+	{
+		$info_text = '';
+		foreach ($this->open_elements as $element) {
+			if ($element->infotext) {
+				$info_text .= $element->infotext;
+			}
+		}
+		$this->event->info = $info_text;
+		$this->event->save();
+	}
+
+	/**
+	 * Stub method to allow custom behaviour for managing the many to many data fields that have been submitted for the
+	 * elements, and any other custom data setting outside of the standard applying attribute values.
+	 *
+	 * Sibling method to setElementComplexAttributesFromdata($element, $data)
+	 *
+	 * @param $data
+	 */
+	protected function saveEventComplexAttributesFromData($data)
+	{
+		//placeholder method
+	}
+
+	/**
+	 * Save the event for this controller - will create or update the event, create and update the elements, delete any
+	 * elements that are no longer required. Note that $data is provided for the purposes of any extensions to this
+	 * behaviour that might be required.
+	 *
+	 * @param $data
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function saveEvent($data)
+	{
+		if ($this->event) {
+			// this is an edit, so need to work out what we are deleting
+			$oe_ids = array();
+			foreach ($this->open_elements as $o_e) {
+				if ($o_e->id) {
+					if (isset($oe_ids[get_class($o_e)])) {
+						$oe_ids[get_class($o_e)][] = $oe_id;
+					}
+					$oe_ids[get_class($o_e)] = array($o_e->id);
+				}
+			}
+			// delete any elements that are no longer required for the event
+			foreach ($this->event->getElements() as $curr_element) {
+				if (!isset($oe_ids[get_class($curr_element)])
+					|| !in_array($curr_element->id, $oe_ids[get_class($curr_element)])) {
+					$curr_element->delete();
+				}
+			}
+		}
+		else {
+			$this->event = $this->createEvent($this->getOrCreateEpisode());
+		}
+
+		foreach ($this->open_elements as $element) {
+			$element->event_id = $this->event->id;
+			// No need to validate as it has already been validated and the event id was just generated.
+			if (!$element->save(false)) {
+				throw new Exception('Unable to save element ' . get_class($element) . '.');
+			}
+		}
+
+		// ensure any complex data is saved to the elements
+		$this->saveEventComplexAttributesFromData($data);
+
+		// update the information attribute on the event
+		$this->updateEventInfo();
+
+		return true;
+	}
+
+	/**
 	 * Render the default elements for the controller state
 	 *
 	 * @param $action
@@ -793,7 +912,7 @@ class BaseEventTypeController extends BaseController
 	/**
 	 * Render the open elements for the controller state
 	 *
-	 * @param $action
+	 * @param string $action
 	 * @param BaseCActiveBaseEventTypeCActiveForm $form
 	 * @param array $data
 	 */
@@ -812,7 +931,7 @@ class BaseEventTypeController extends BaseController
 	/**
 	 * Render the optional elements for the controller state
 	 *
-	 * @param $action
+	 * @param string $action
 	 * @param bool $form
 	 * @param bool $data
 	 */
@@ -858,6 +977,8 @@ class BaseEventTypeController extends BaseController
 	 * @param $eventTypeId
 	 * @return bool|string
 	 * @throws Exception
+	 *
+	 * @deprecated - use saveEvent($data)
 	 */
 	public function createElements($elements, $data, $firm, $patientId, $userId, $eventTypeId)
 	{
@@ -941,6 +1062,8 @@ class BaseEventTypeController extends BaseController
 	 *
 	 * @throws SystemException
 	 * @return bool true if all elements succeeded, false otherwise
+	 *
+	 * @deprecated - use saveEvent($data)
 	 */
 	public function updateElements($elements, $data, $event)
 	{
@@ -1042,62 +1165,42 @@ class BaseEventTypeController extends BaseController
 	/**
 	 * Get the current episode for the firm and patient
 	 *
-	 * @param Firm $firm
-	 * @param integer $patientId
 	 * @return Episode
 	 */
-	public function getEpisode($firm, $patientId)
+	public function getEpisode()
 	{
-		return Episode::model()->getCurrentEpisodeByFirm($patientId, $firm);
+		return Episode::model()->getCurrentEpisodeByFirm($this->patient->id, $this->firm);
 	}
 
 	/**
 	 * Create an episode for the firm and patient if it doesn't already exist. Return the episode.
 	 *
-	 * @param $firm
-	 * @param $patientId
 	 * @return Episode
 	 */
-	public function getOrCreateEpisode($firm, $patientId)
+	public function getOrCreateEpisode()
 	{
-		if (!$episode = $this->getEpisode($firm, $patientId)) {
-			$episode = Patient::model()->findByPk($patientId)->addEpisode($firm);
-		}
-
-		return $episode;
+		return $this->patient->getOrCreateEpisodeForFirm($this->firm);
 	}
 
 	/**
 	 * Create the event instance of the given type, based on the elements to process and the user id given.
 	 *
-	 * @param $episode
-	 * @param $userId
-	 * @param $eventTypeId
-	 * @param $elementsToProcess
+	 * @param Episode $episode
 	 * @return Event
 	 * @throws Exception
 	 */
-	public function createEvent($episode, $userId, $eventTypeId, $elementsToProcess)
+	public function createEvent($episode)
 	{
-		$info_text = '';
-
-		foreach ($elementsToProcess as $element) {
-			if ($element->infotext) {
-				$info_text .= $element->infotext;
-			}
-		}
-
 		$event = new Event();
 		$event->episode_id = $episode->id;
-		$event->event_type_id = $eventTypeId;
-		$event->info = $info_text;
+		$event->event_type_id = $this->event_type->id;
 
 		if (!$event->save()) {
-			OELog::log("Failed to creat new event for episode_id=$episode->id, event_type_id=$eventTypeId");
+			OELog::log("Failed to creat new event for episode_id=$episode->id, event_type_id=" . $this->event_type->id);
 			throw new Exception('Unable to save event.');
 		}
 
-		OELog::log("Created new event for episode_id=$episode->id, event_type_id=$eventTypeId");
+		OELog::log("Created new event for episode_id=$episode->id, event_type_id=" . $this->event_type->id);
 
 		return $event;
 	}
@@ -1125,13 +1228,14 @@ class BaseEventTypeController extends BaseController
 	public function actionPrint($id)
 	{
 		$this->printInit($id);
-		$elements = $this->getDefaultElements('print');
+
 		$pdf = (isset($_GET['pdf']) && $_GET['pdf']);
 		$this->printLog($id, $pdf);
+		//TODO: check on whether we need to pass the elements to the print after all
 		if ($pdf) {
-			$this->printPDF($id, $elements);
+			$this->printPDF($id, $this->open_elements);
 		} else {
-			$this->printHTML($id, $elements);
+			$this->printHTML($id, $this->open_elements);
 		}
 	}
 

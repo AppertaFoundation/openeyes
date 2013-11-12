@@ -253,6 +253,12 @@ class Episode extends BaseActiveRecord
 		return Episode::model()->findByPk($episode['eid']);
 	}
 
+	/**
+	 * Get the most recent event by the given type in this episode
+	 *
+	 * @param $event_type_id
+	 * @return Event
+	 */
 	public function getMostRecentEventByType($event_type_id)
 	{
 		$criteria = new CDbCriteria;
@@ -263,6 +269,12 @@ class Episode extends BaseActiveRecord
 		return Event::model()->find($criteria);
 	}
 
+	/**
+	 * Get all the events of the given type for this episode
+	 *
+	 * @param $event_type_id
+	 * @return Event[]
+	 */
 	public function getAllEventsByType($event_type_id)
 	{
 		$criteria = new CDbCriteria;
