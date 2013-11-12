@@ -127,6 +127,9 @@ fieldset {
 			padding-left: $column-gutter / 2 + 1em - $default-font-size;
 			padding-right: $column-gutter / 2 + 1em - $default-font-size;
 		}
+		&.align {
+			@extend .label.align;
+		}
 	}
 	legend.column {
 		font-size: $default-font-size;

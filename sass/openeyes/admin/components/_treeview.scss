@@ -1,0 +1,15 @@
+.admin {
+	.treeview {
+		ul {
+			margin-top: 0;
+			background-color: transparent;
+		}
+		li {
+			padding-top: 0;
+			padding-bottom: 0;
+			li {
+				font-size: 1em;
+			}
+		}
+	}
+}

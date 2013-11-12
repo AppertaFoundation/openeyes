@@ -108,3 +108,18 @@
 .admin legend {
   font-size: 1.1em;
 }
+
+/* line 3, ../sass/openeyes/admin/components/_treeview.scss */
+.admin .treeview ul {
+  margin-top: 0;
+  background-color: transparent;
+}
+/* line 7, ../sass/openeyes/admin/components/_treeview.scss */
+.admin .treeview li {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+/* line 10, ../sass/openeyes/admin/components/_treeview.scss */
+.admin .treeview li li {
+  font-size: 1em;
+}
