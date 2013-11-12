@@ -39,7 +39,8 @@
 			<?php $this->endWidget()?>
 		</div>
 	</div>
-	<form id="admin_users">
+	<?php echo $this->renderPartial('//elements/form_errors',array('errors'=>$errors))?>
+	<form id="admin_genes" method="post">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 		<table class="grid">
 			<thead>
@@ -62,6 +63,19 @@
 					</tr>
 				<?php }?>
 			</tbody>
+			<tfoot class="pagination-container">
+				<tr>
+					<td colspan="3">
+						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
+					</td>
+					<td colspan="6">
+						<?php echo $this->renderPartial('_pagination',array(
+							'pagination' => $pagination
+						))?>
+					</td>
+				</tr>
+			</tfoot>
 		</table>
 	</form>
 </div>

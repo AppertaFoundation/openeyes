@@ -56,6 +56,8 @@ class PedigreeGene extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('name, location, priority, description, details, refs', 'safe'),
+			array('name, location', 'required'),
 		);
 	}
 
