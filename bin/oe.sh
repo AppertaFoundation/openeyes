@@ -16,9 +16,14 @@
 # @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 # @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-# Check we're in the root of the OpenEyes directory.
+# Find OpenEyes root
+while [ $PWD != "/" ];
+do
+	if [ -e ".git/config" ] && grep -Fq "openeyes/OpenEyes.git" ".git/config"; then break;	fi
+	cd ..
+done
 if [ ! -e ".git/config" ] || ! grep -Fq "openeyes/OpenEyes.git" ".git/config"; then
-  echo "Error: You need to be in the root of the OpenEyes repository to run this script."
+  echo "Error: Cannot find root of the OpenEyes repository to run this script."
   exit 1
 fi
 
