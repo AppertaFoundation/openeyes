@@ -1227,7 +1227,7 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1383823007') 0 0 no-repeat;
+  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1384190146') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1230px;
@@ -2243,7 +2243,7 @@ table.patient-contacts td:first-child {
 }
 /* line 40, ../sass/openeyes/components/_header.scss */
 .header .logo {
-  background: url('../img/_structure/openeyes.png?1383823007') no-repeat;
+  background: url('../img/_structure/openeyes.png?1384190146') no-repeat;
   background-size: 100%;
   display: block;
   height: 70px;
@@ -4158,6 +4158,10 @@ tfoot.pagination-container .pagination li {
 /* line 56, ../sass/foundation/components/_panels.scss */
 .panel h1.subheader, .panel h2.subheader, .panel h3.subheader, .panel h4.subheader, .panel h5.subheader, .panel h6.subheader {
   line-height: 1.4;
+}
+/* line 29, ../sass/openeyes/components/_panels.scss */
+.panel .field-row:last-child, .panel .data-row:last-child, .panel .data-row:last-child {
+  padding: 0;
 }
 
 /**
