@@ -500,4 +500,30 @@ class User extends BaseActiveRecord
 		natcasesort($data);
 		return $data;
 	}
+
+	/**
+	 * @return CAuthItem[]
+	 */
+	public function getRoles()
+	{
+		return $this->id ? Yii::app()->authManager->getRoles($this->id) : array();
+	}
+
+	/**
+	 * @param string[] $roles
+	 */
+	public function saveRoles(array $roles)
+	{
+		$old_roles = array_map(function ($role) { return $role->name; }, $this->roles);
+		$added_roles = array_diff($roles, $old_roles);
+		$removed_roles = array_diff($old_roles, $roles);
+
+		foreach ($added_roles as $role) {
+			Yii::app()->authManager->assign($role, $this->id);
+		}
+
+		foreach ($removed_roles as $role) {
+			Yii::app()->authManager->revoke($role, $this->id);
+		}
+	}
 }
