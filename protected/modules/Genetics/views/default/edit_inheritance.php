@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2011-2012
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,39 +13,25 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
 ?>
-
-<?php
-$uri_append = $this->getUriAppend();
-?>
-<ul class="pagination">
-	<li class="previous<?php echo ($this->page<=1 ? ' unavailable' : '');?>">
-		<?php echo CHtml::link(
-			'&lt; Previous',
-			Yii::app()->createUrl("/Genetics/default/{$this->action->id}?page=".($this->page-1).$uri_append),
-			array('rel'=>'back')
-		)?>
-	</li>
-
-	<?php for ($i=1;$i<=$this->pages;$i++) {?>
-		<li class="page<?php echo ($i == $this->page ? ' current' : '');?>">
-			<?php echo CHtml::link(
-				$i,
-				Yii::app()->createUrl("/Genetics/default/{$this->action->id}?page=".$i.$uri_append),
-				array('rel'=>$i)
-			)?>
-		</li>
-	<?php }?>
-
-
-	<li class="next<?php echo (!$this->pages || $this->page == $this->pages ? ' unavailable' : '');?>">
-		<?php echo CHtml::link(
-			'Next &gt;',
-			Yii::app()->createUrl("/Genetics/default/{$this->action->id}?page=".($this->page+1).$uri_append),
-			array('rel'=>'back')
-		)?>
-	</li>
+<div class="box admin">
+	<h2><?php if ($inheritance->id) {?>Edit<?php }else{?>Add<?php }?> inheritance</h2>
+	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'focus'=>'#PedigreeInheritance_name',
+		'layoutColumns'=>array(
+			'label' => 2,
+			'field' => 4
+		)
+	))?>
+		<?php echo $form->textField($inheritance,'name')?>
+		<?php echo $form->formActions()?>
+	<?php $this->endWidget()?>
 </div>

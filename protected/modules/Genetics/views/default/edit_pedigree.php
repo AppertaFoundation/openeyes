@@ -19,13 +19,13 @@
 
 ?>
 <div class="box admin">
-	<h2>Edit pedigree</h2>
+	<h2><?php if ($pedigree->id) {?>Edit<?php }else{?>Add<?php }?> pedigree</h2>
 	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id'=>'adminform',
 		'enableAjaxValidation'=>false,
-		'focus'=>'#username',
+		'focus'=>'#Pedigree_base_change',
 		'layoutColumns'=>array(
 			'label' => 2,
 			'field' => 4
@@ -40,7 +40,7 @@
 			'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
 			'layoutColumns' => array(
 				'label' => $form->layoutColumns['label'],
-				'field' => 4
+				'field' => 4,
 			),
 			'default' => false,
 		))?>
@@ -50,3 +50,28 @@
 		<?php echo $form->formActions()?>
 	<?php $this->endWidget()?>
 </div>
+<?php if ($pedigree->id) {?>
+	<div>
+		<h2>Family members</h2>
+		<table class="grid">
+			<thead>
+				<tr>
+					<th>Hospital no</th>
+					<th>Title</th>
+					<th>First name</th>
+					<th>Last name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($pedigree->members as $patient) {?>
+					<tr>
+						<td><?php echo $patient->hos_num?></td>
+						<td><?php echo $patient->title?></td>
+						<td><?php echo $patient->first_name?></td>
+						<td><?php echo $patient->last_name?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+		</table>
+	</div>
+<?php }?>

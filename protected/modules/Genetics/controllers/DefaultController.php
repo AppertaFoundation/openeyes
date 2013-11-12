@@ -33,41 +33,162 @@ class DefaultController extends BaseEventTypeController
 
 	public function actionPedigrees()
 	{
+		$errors = array();
+
+		if (isset($_POST['add'])) {
+			$this->redirect(Yii::app()->createUrl('/Genetics/default/addPedigree'));
+		}
+
+		if (isset($_POST['delete'])) {
+			$criteria = new CDbCriteria;
+			$criteria->addInCondition('id',$_POST['pedigrees']);
+
+			foreach (Pedigree::model()->findAll($criteria) as $pedigree) {
+				try {
+					$pedigree->delete();
+				} catch (Exception $e) {
+					if (!isset($errors['Error'])) {
+						$errors['Error'] = array();
+					}
+					$errors['Error'][] = "unable to delete pedigree $pedigree->id: in use";
+				}
+			}
+		}
+
+		$pagination = $this->initPagination(Pedigree::model());
+
 		$this->render('pedigrees',array(
-			'pedigrees' => $this->pedigrees,
-			'pagination' => '',
+			'pedigrees' => $this->getItems(array(
+				'model' => 'Pedigree',
+				'with' => array(
+					'inheritance',
+					'gene',
+					'disorder',
+				),
+				'page' => (Integer)@$_GET['page'],
+			)),
+			'pagination' => $pagination,
+			'errors' => $errors,
 		));
 	}
 
-	public function getPedigrees()
+	public function getItems($params)
 	{
-		$this->total_items = Pedigree::model()->with(array(
-				'inheritance',
-				'gene',
-				'disorder',
-			))
-			->count(array(
-				'order' => 't.id asc',
-			));
+		$model = $params['model'];
+		$with = isset($params['with']) ? $params['with'] : array();
 
+		$this->total_items = $model::model()->count();
 		$this->pages = ceil($this->total_items / $this->items_per_page);
+		$this->page = 1;
 
-		return Pedigree::model()->with(array(
-				'inheritance',
-				'gene',
-				'disorder',
-			))
-			->findAll(array(
-				'order' => 't.id asc',
-				'limit' => $this->items_per_page,
-			));
+		if (isset($params['page'])) {
+			if ($params['page'] >= 1 and $params['page'] <= $this->pages) {
+				$this->page = $params['page'];
+			}
+		}
+
+		$offset = ($this->page-1) * $this->items_per_page;
+
+		return $model::model()->with($with)->findAll(array('order' => 't.id asc', 'offset' => $offset, 'limit' => $this->items_per_page));
+	}
+
+	private function initPagination($model, $criteria = null)
+	{
+		$criteria = is_null($criteria) ? new CDbCriteria() : $criteria;
+		$itemsCount = $model->count($criteria);
+		$pagination = new CPagination($itemsCount);
+		$pagination->pageSize = $this->items_per_page;
+		$pagination->applyLimit($criteria);
+		return $pagination;
+	}
+
+	public function actionAddPedigree()
+	{
+		$pedigree = new Pedigree;
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			if (isset($_POST['cancel'])) {
+				return $this->redirect(array('/Genetics/default/index'));
+			}
+
+			$pedigree->attributes = $_POST['Pedigree'];
+
+			if (!$pedigree->save()) {
+				$errors = $pedigree->getErrors();
+			} else {
+				return $this->redirect(array('/Genetics/default/index'));
+			}
+		}
+
+		$this->render('edit_pedigree',array(
+			'pedigree' => $pedigree,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionEditPedigree($id)
+	{
+		if (!$pedigree = Pedigree::model()->findByPk($id)) {
+			throw new Exception("Pedigree not found: $id");
+		}
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			if (isset($_POST['cancel'])) {
+				return $this->redirect(array('/Genetics/default/index'));
+			}
+
+			$pedigree->attributes = $_POST['Pedigree'];
+
+			if (!$pedigree->save()) {
+				$errors = $pedigree->getErrors();
+			} else {
+				return $this->redirect(array('/Genetics/default/index'));
+			}
+		}
+
+		$this->render('edit_pedigree',array(
+			'pedigree' => $pedigree,
+			'errors' => $errors,
+		));
 	}
 
 	public function actionInheritance()
 	{
+		$errors = array();
+
+		if (isset($_POST['add'])) {
+			$this->redirect(Yii::app()->createUrl('/Genetics/default/addInheritance'));
+		}
+
+		if (isset($_POST['delete'])) {
+			$criteria = new CDbCriteria;
+			$criteria->addInCondition('id',$_POST['inheritance']);
+
+			foreach (PedigreeInheritance::model()->findAll($criteria) as $inheritance) {
+				try {
+					$inheritance->delete();
+				} catch (Exception $e) {
+					if (!isset($errors['Error'])) {
+						$errors['Error'] = array();
+					}
+					$errors['Error'][] = "unable to delete inheritance $inheritance->id: in use";
+				}
+			}
+		}
+
+		$pagination = $this->initPagination(PedigreeInheritance::model());
+
 		$this->render('inheritance',array(
-			'inheritance' => $this->inheritance,
-			'pagination' => '',
+			'inheritance' => $this->getItems(array(
+				'model' => 'PedigreeInheritance',
+				'page' => (Integer)@$_GET['page'],
+			)),
+			'pagination' => $pagination,
+			'errors' => $errors,
 		));
 	}
 
@@ -80,6 +201,60 @@ class DefaultController extends BaseEventTypeController
 		return PedigreeInheritance::model()->findAll(array(
 			'order' => 't.id asc',
 			'limit' => $this->items_per_page,
+		));
+	}
+
+	public function actionAddInheritance()
+	{
+		$inheritance = new PedigreeInheritance;
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			if (isset($_POST['cancel'])) {
+				return $this->redirect(array('/Genetics/default/index'));
+			}
+
+			$inheritance->attributes = $_POST['PedigreeInheritance'];
+
+			if (!$inheritance->save()) {
+				$errors = $inheritance->getErrors();
+			} else {
+				return $this->redirect(array('/Genetics/default/index'));
+			}
+		}
+
+		$this->render('edit_inheritance',array(
+			'inheritance' => $inheritance,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionEditInheritance($id)
+	{
+		if (!$inheritance = PedigreeInheritance::model()->findByPk($id)) {
+			throw new Exception("PedigreeInheritance not found: $id");
+		}
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			if (isset($_POST['cancel'])) {
+				return $this->redirect(array('/Genetics/default/inheritance'));
+			}
+
+			$inheritance->attributes = $_POST['PedigreeInheritance'];
+
+			if (!$inheritance->save()) {
+				$errors = $inheritance->getErrors();
+			} else {
+				return $this->redirect(array('/Genetics/default/inheritance'));
+			}
+		}
+
+		$this->render('edit_inheritance',array(
+			'inheritance' => $inheritance,
+			'errors' => $errors,
 		));
 	}
 
@@ -112,33 +287,5 @@ class DefaultController extends BaseEventTypeController
 			}
 		}
 		return $return;
-	}
-
-	public function actionEditPedigree($id)
-	{
-		if (!$pedigree = Pedigree::model()->findByPk($id)) {
-			throw new Exception("Pedigree not found: $id");
-		}
-
-		$errors = array();
-
-		if (!empty($_POST)) {
-			if (isset($_POST['cancel'])) {
-				return $this->redirect(array('/Genetics/default/index'));
-			}
-
-			$pedigree->attributes = $_POST['Pedigree'];
-
-			if (!$pedigree->save()) {
-				$errors = $pedigree->getErrors();
-			} else {
-				return $this->redirect(array('/Genetics/default/index'));
-			}
-		}
-
-		$this->render('edit_pedigree',array(
-			'pedigree' => $pedigree,
-			'errors' => $errors,
-		));
 	}
 }
