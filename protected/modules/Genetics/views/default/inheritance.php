@@ -39,6 +39,7 @@
 			<?php $this->endWidget()?>
 		</div>
 	</div>
+	<?php echo $this->renderPartial('//elements/form_errors',array('errors'=>$errors))?>
 	<form id="admin_inheritance" method="post">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 		<table class="grid">

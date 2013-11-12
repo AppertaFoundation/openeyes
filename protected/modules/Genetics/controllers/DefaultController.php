@@ -212,7 +212,7 @@ class DefaultController extends BaseEventTypeController
 
 		if (!empty($_POST)) {
 			if (isset($_POST['cancel'])) {
-				return $this->redirect(array('/Genetics/default/index'));
+				return $this->redirect(array('/Genetics/default/inheritance'));
 			}
 
 			$inheritance->attributes = $_POST['PedigreeInheritance'];
@@ -220,7 +220,7 @@ class DefaultController extends BaseEventTypeController
 			if (!$inheritance->save()) {
 				$errors = $inheritance->getErrors();
 			} else {
-				return $this->redirect(array('/Genetics/default/index'));
+				return $this->redirect(array('/Genetics/default/inheritance'));
 			}
 		}
 
@@ -260,9 +260,37 @@ class DefaultController extends BaseEventTypeController
 
 	public function actionGenes()
 	{
+		$errors = array();
+
+		if (isset($_POST['add'])) {
+			$this->redirect(Yii::app()->createUrl('/Genetics/default/addGene'));
+		}
+
+		if (isset($_POST['delete'])) {
+			$criteria = new CDbCriteria;
+			$criteria->addInCondition('id',$_POST['genes']);
+
+			foreach (PedigreeGene::model()->findAll($criteria) as $gene) {
+				try {
+					$gene->delete();
+				} catch (Exception $e) {
+					if (!isset($errors['Error'])) {
+						$errors['Error'] = array();
+					}
+					$errors['Error'][] = "unable to delete gene $gene->id: in use";
+				}
+			}
+		}
+
+		$pagination = $this->initPagination(PedigreeGene::model());
+
 		$this->render('genes',array(
-			'genes' => $this->genes,
-			'pagination' => '',
+			'genes' => $this->getItems(array(
+				'model' => 'PedigreeGene',
+				'page' => (Integer)@$_GET['page'],
+			)),
+			'pagination' => $pagination,
+			'errors' => $errors,
 		));
 	}
 
@@ -287,5 +315,59 @@ class DefaultController extends BaseEventTypeController
 			}
 		}
 		return $return;
+	}
+
+	public function actionAddGene()
+	{
+		$gene = new PedigreeGene;
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			if (isset($_POST['cancel'])) {
+				return $this->redirect(array('/Genetics/default/genes'));
+			}
+
+			$gene->attributes = $_POST['PedigreeGene'];
+
+			if (!$gene->save()) {
+				$errors = $gene->getErrors();
+			} else {
+				return $this->redirect(array('/Genetics/default/genes'));
+			}
+		}
+
+		$this->render('edit_gene',array(
+			'gene' => $gene,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionEditGene($id)
+	{
+		if (!$gene = PedigreeGene::model()->findByPk($id)) {
+			throw new Exception("PedigreeGene not found: $id");
+		}
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			if (isset($_POST['cancel'])) {
+				return $this->redirect(array('/Genetics/default/genes'));
+			}
+
+			$gene->attributes = $_POST['Pedigree'];
+
+			if (!$gene->save()) {
+				$errors = $gene->getErrors();
+			} else {
+				return $this->redirect(array('/Genetics/default/genes'));
+			}
+		}
+
+		$this->render('edit_gene',array(
+			'gene' => $gene,
+			'errors' => $errors,
+		));
 	}
 }
