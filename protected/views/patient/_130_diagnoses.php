@@ -129,8 +129,8 @@
 
 					</fieldset>
 				<?php $this->endWidget()?>
-			<?php } ?>
-		</div>
+			</div>
+		<?php } ?>
 	</div>
 </section>
 <?php if (BaseController::checkUserLevel(4)) { ?>
