@@ -60,15 +60,21 @@
 					<th>Title</th>
 					<th>First name</th>
 					<th>Last name</th>
+					<th>DoB</th>
+					<th>Gender</th>
+					<th>Status</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($pedigree->members as $patient) {?>
+				<?php foreach ($pedigree->members as $pm) {?>
 					<tr>
-						<td><?php echo $patient->hos_num?></td>
-						<td><?php echo $patient->title?></td>
-						<td><?php echo $patient->first_name?></td>
-						<td><?php echo $patient->last_name?></td>
+						<td><?php echo $pm->patient->hos_num?></td>
+						<td><?php echo $pm->patient->title?></td>
+						<td><?php echo $pm->patient->first_name?></td>
+						<td><?php echo $pm->patient->last_name?></td>
+						<td><?php echo $pm->patient->dob ? $patient->NHSDate('dob') : $patient->yob?></td>
+						<td><?php echo $pm->patient->gender == 'M' ? 'Male' : 'Female'?></td>
+						<td><?php echo $pm->status->name?></td>
 					</tr>
 				<?php }?>
 			</tbody>
