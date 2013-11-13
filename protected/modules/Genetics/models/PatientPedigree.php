@@ -52,6 +52,7 @@ class PatientPedigree extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			'status' => array(self::BELONGS_TO, 'PedigreeStatus', 'status_id'),
 		);
 	}
 
