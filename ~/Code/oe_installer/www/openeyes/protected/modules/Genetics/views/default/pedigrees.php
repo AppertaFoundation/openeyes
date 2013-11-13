@@ -23,7 +23,7 @@
 		<div class="large-8 column">
 			<h2>Pedigrees</h2>
 		</div>
-		<div class="large-4 column">
+		<div class="large-12 column">
 			<?php
 			$form = $this->beginWidget('BaseEventTypeCActiveForm',array(
 				'id' => 'searchform',
@@ -31,11 +31,72 @@
 				'focus' => '#search',
 				'action' => Yii::app()->createUrl('/Genetics/default/pedigrees'),
 			))?>
+				<div class="large-12 column">
+					<div class="panel">
+						<div class="row">
+							<div class="large-12 column">
+								<table class="grid">
+									<thead>
+										<tr>
+											<th>Family ID:</th>
+											<th>Causative gene:</th>
+											<th>Consanguineous:</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Enter family ID here...'))?>
+											</td>
+											<td>
+												<?php echo CHtml::dropDownList('gene-id',@$_GET['gene-id'],CHtml::listData(PedigreeGene::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- All -'))?>
+											</td>
+											<td>
+												<?php echo CHtml::dropDownList('consanguineous',@$_GET['consanguineous'],array(1 => 'Yes', 0 => 'No'),array('empty' => '- All -'))?>
+											</td>
+											<td>
+												<button id="search_button" class="secondary" type="submit">
+													Search
+												</button>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="4">
+												<?php $form->widget('application.widgets.DiagnosisSelection',array(
+													'value' => @$_GET['disorder-id'],
+													'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+													'layoutColumns' => array(
+														'label' => $form->layoutColumns['label'],
+														'field' => 4,
+													),
+													'default' => false,
+													'htmlOptions' => array(
+														'fieldLabel' => 'Principal diagnosis',
+													),
+													'allowClear' => true,
+												))?>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php /*
 				<div class="row">
+					<div class="large-3 column">
+						<label>Family ID:</label>
+						<input type="text" name="family_id" id="family_id" placeholder="Enter family ID here..." value="<?php echo strip_tags(@$_POST['family_id'])?>" />
+					</div>
+					<div class="large-3 column">
+						<label>Principal diagnosis:</label>
+						
 					<div class="large-12 column">
 						<input type="text" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
 					</div>
 				</div>
+				*/?>
 			<?php $this->endWidget()?>
 		</div>
 	</div>

@@ -57,6 +57,28 @@ class DefaultController extends BaseEventTypeController
 
 		$pagination = $this->initPagination(Pedigree::model());
 
+		$criteria = new CDbCriteria;
+
+		if (@$_GET['family-id']) {
+			$criteria->addCondition('t.id = :id');
+			$criteria->params[':id'] = $_GET['family-id'];
+		}
+
+		if (@$_GET['gene-id']) {
+			$criteria->addCondition('gene_id = :gene_id');
+			$criteria->params[':gene_id'] = $_GET['gene-id'];
+		}
+
+		if (strlen(@$_GET['consanguineous']) >0) {
+			$criteria->addCondition('consanguinity = :consanguineous');
+			$criteria->params[':consanguineous'] = $_GET['consanguineous'];
+		}
+
+		if (@$_GET['disorder-id']) {
+			$criteria->addCondition('disorder_id = :disorder_id');
+			$criteria->params[':disorder_id'] = $_GET['disorder-id'];
+		}
+
 		$this->render('pedigrees',array(
 			'pedigrees' => $this->getItems(array(
 				'model' => 'Pedigree',
@@ -66,6 +88,7 @@ class DefaultController extends BaseEventTypeController
 					'disorder',
 				),
 				'page' => (Integer)@$_GET['page'],
+				'criteria' => $criteria,
 			)),
 			'pagination' => $pagination,
 			'errors' => $errors,
@@ -74,10 +97,16 @@ class DefaultController extends BaseEventTypeController
 
 	public function getItems($params)
 	{
+		if (isset($params['criteria'])) {
+			$criteria = $params['criteria'];
+		} else {
+			$criteria = new CDbCriteria;
+		}
+
 		$model = $params['model'];
 		$with = isset($params['with']) ? $params['with'] : array();
 
-		$this->total_items = $model::model()->count();
+		$this->total_items = $model::model()->count($criteria);
 		$this->pages = ceil($this->total_items / $this->items_per_page);
 		$this->page = 1;
 
@@ -87,9 +116,11 @@ class DefaultController extends BaseEventTypeController
 			}
 		}
 
-		$offset = ($this->page-1) * $this->items_per_page;
+		$criteria->order = 't.id asc';
+		$criteria->offset = ($this->page-1) * $this->items_per_page;
+		$criteria->limit = $this->items_per_page;
 
-		return $model::model()->with($with)->findAll(array('order' => 't.id asc', 'offset' => $offset, 'limit' => $this->items_per_page));
+		return $model::model()->with($with)->findAll($criteria);
 	}
 
 	private function initPagination($model, $criteria = null)
