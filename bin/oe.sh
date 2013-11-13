@@ -37,6 +37,7 @@ CONFIG_FILE="protected/config/local/common.php"
 CORE_BRANCH=`git symbolic-ref --short HEAD`
 GITHUB_ORG="openeyes"
 GITHUB_API="https://api.github.com"
+COLOURS=1
 ROOT_DIR=`pwd`
 
 #
@@ -62,6 +63,7 @@ Options:
 	--db-user <user>      Set the database user.
 	--db-host <host>      Set the database host.
 	--db-pass <pass>      Set the database password.
+	--no-colour            Prevent colours from being displayed.
 	-h|--help             Show this message.
 EOF
 }
@@ -90,24 +92,26 @@ set_default_values() {
 write_log() {
 
 	local level="$1"
-	local color
+	local colour
 	shift
 
 	case "$level" in
 		success)
-			color="\x1B[92m"
+			colour="\x1B[92m"
 			;;
 		fail|error)
-			color="\x1B[91m"
+			colour="\x1B[91m"
 			;;
 		notice|info)
-			color="\x1B[93m"
+			colour="\x1B[93m"
 			;;
 	esac
 
-	level=`echo $level | tr '[a-z]' '[A-Z]'`
-	# echo -e "$color$level: $@"
-	echo -e "$color$@"
+	if [ $COLOURS -eq 0 ]; then
+		colour=""
+	fi
+
+	echo -e "$colour$@"
 	tput sgr0
 }
 
@@ -117,32 +121,32 @@ write_log() {
 #
 command_install() {
 
-	echo "Getting module list from github, please wait..."
+	if [ -n "$1" ]; then
+		install_module "$1"
+	else
 
-	local repolist=`curl --silent ${GITHUB_API}/orgs/${GITHUB_ORG}/repos?per_page=100 -q | grep -o '"name": ".*"' | sed 's/"name": "//g' | sed 's/"//'`
+		echo "Getting module list from github, please wait..."
 
-	while [ 1 ]; do
+		local repolist=`curl --silent ${GITHUB_API}/orgs/${GITHUB_ORG}/repos?per_page=100 -q | grep -o '"name": ".*"' | sed 's/"name": "//g' | sed 's/"//'`
 
-		echo -e "\nAvailable modules:"
-		echo "-----------------------"
-		echo "$repolist"
-		echo "-----------------------"
+		while [ 1 ]; do
 
-		echo -n "Which module would you like to install? "
-		read module
+			echo -e "\nAvailable modules:"
+			echo "-----------------------"
+			echo "$repolist"
+			echo "-----------------------"
 
-		[ -z "$module" ] && {
-			echo "Good-bye"
-			break
-		}
+			echo -n "Which module would you like to install? "
+			read module
 
-		if ! grep -qw "$module" <<< $repolist; then
-			write_log "error" "Error! Invalid module!"
-		else
-			write_log "info" "\nPlease read the notices carefully throughout this process!\n"
+			[ -z "$module" ] && {
+				echo "Good-bye"
+				break
+			}
+
 			install_module "$module"
-		fi
-	done
+		done
+	fi
 }
 
 #
@@ -415,6 +419,7 @@ clone_module() {
 # Install a module.
 #
 install_module() {
+	write_log "info" "\nPlease read the notices carefully throughout this process!\n"
 	clone_module $1
 	migrate_module $1
 	enable_module $1
@@ -536,6 +541,10 @@ main() {
 			--db-name)
 				DB_NAME=$2
 				shift 2
+				;;
+			--no-colour)
+				COLOURS=0
+				shift
 				;;
 			--) # End of all options.
 				shift
