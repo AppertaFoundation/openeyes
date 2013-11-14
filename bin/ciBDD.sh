@@ -29,11 +29,13 @@ do
     echo "attempting to add module $module"s
     if [ ! -e $module ]; then
         echo "Adding $module to conf string..."
-        modules_conf_string="$modules_conf_string '$module',\n"
+        modules_conf_string="$modules_conf_string '$module',\
+        \
+        "
     fi
 done < $enabled_modules
 echo "Modules $modules_conf_string"
 #'modules' => array(
-sed 's/\/\/PLACEHOLDER/$modules_conf_string/g' protected/config/local/test.txt  > protected/config/local/test2.txt
+sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.autotest.php > protected/config/local/common.php
 
 vagrant ssh -c 'cd /var/www; bin/migrate-all.sh; exit;'

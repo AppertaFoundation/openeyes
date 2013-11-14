@@ -28,6 +28,12 @@ class openeyes {
     command => '/bin/cp /var/www/protected/config/local/common.vagrant.php /var/www/protected/config/local/common.php;',
     require => Service['mysql'],
   }
+  #required to provide a testdb connection id to yiic migrate
+  exec { 'create console config':
+    unless  => '/usr/bin/test -e /var/www/protected/config/local/console.php',
+    command => '/bin/cp /var/www/protected/config/local/console.sample.php /var/www/protected/config/local/console.php;',
+    require => Service['mysql'],
+  }
 
   exec { 'create openeyes db':
     unless  => '/usr/bin/mysql -uroot openeyes',
