@@ -124,5 +124,13 @@
 			display: inline-block;
 			padding: emCalc(2px) emCalc(4px) emCalc(2px) 33px;
 		}
+		&.warning {
+			@include background-image(image-url("_elements/icons/patient/patient-id_small-warning.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
+			.warning {
+				.messages {
+					display: none;
+				}
+			}
+		}
 	}
 }

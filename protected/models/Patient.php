@@ -1255,6 +1255,16 @@ class Patient extends BaseActiveRecord
 
 		$res = $this->_nonclinical_warnings;
 
+		$this->_clinical_warnings[] = array(
+			'short_msg' => 'Diabetes',
+			'long_msg' => 'Patient is Diabetic',
+			'details' => implode(', ',  array('peanut'))
+		);
+
+			$res = array_merge($res, $this->_clinical_warnings);
+
+			return $res;
+
 		if ($clinical) {
 			if ($this->_clinical_warnings === null) {
 				$this->_clinical_warnings = array();

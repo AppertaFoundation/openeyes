@@ -19,25 +19,6 @@
 $(document).ready(function(){
 	$collapsed = true;
 
-	var patientWarningSpan = $('.patientReminder .icons li.warning span');
-	$('.patientReminder .icons li.warning').hover(function() {
-			var infoWrap = $('<div class="warningHover"></div>');
-			infoWrap.appendTo('body');
-			infoWrap.html('<span style="display: inline-block">' + patientWarningSpan.html() + '</span>');
-			var width = patientWarningSpan.width() + Math.ceil(patientWarningSpan.width()/30);
-			var offsetPos = $(this).offset();
-			var top = offsetPos.top + $(this).height() + 6;
-			var middle = offsetPos.left + $(this).width()/2;
-			var left = middle - infoWrap.width()/2 - 8;
-
-			infoWrap.css({'position': 'absolute', 'top': top + "px", 'left': left + "px", "width": width});
-			infoWrap.fadeIn('fast');
-		},
-		function(e){
-			$('body > div:last').remove();
-		}
-	);
-
 	(function addNewEvent() {
 
 		var template = $('#add-new-event-template');
