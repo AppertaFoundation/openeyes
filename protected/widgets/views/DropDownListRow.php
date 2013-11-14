@@ -19,7 +19,7 @@
 ?>
 <?php
 $labelCols = $layoutColumns['label'];
-$fieldCols = floor((12 - ($labelCols * count($fields))) / 2);
+$fieldCols = floor(12 - ($labelCols * count($fields))) / count($fields);
 ?>
 <div id="div_<?php echo get_class($element); ?>" class="row field-row">
 	<?php foreach ($fields as $i => $field) {?>
