@@ -56,6 +56,7 @@
 		<table class="grid">
 			<thead>
 				<tr>
+					<th>ID</th>
 					<th>Hospital no</th>
 					<th>Title</th>
 					<th>First name</th>
@@ -69,11 +70,12 @@
 				<?php if ($pedigree->members) {
 					foreach ($pedigree->members as $pm) {?>
 						<tr>
+							<td><?php echo CHtml::link($pm->patient->id,Yii::app()->createUrl('/patient/view/'.$pm->patient_id))?></td>
 							<td><?php echo $pm->patient->hos_num?></td>
 							<td><?php echo $pm->patient->title?></td>
 							<td><?php echo $pm->patient->first_name?></td>
 							<td><?php echo $pm->patient->last_name?></td>
-							<td><?php echo $pm->patient->dob ? $patient->NHSDate('dob') : $patient->yob?></td>
+							<td><?php echo $pm->patient->dob ? $pm->patient->NHSDate('dob') : $pm->patient->yob?></td>
 							<td><?php echo $pm->patient->gender == 'M' ? 'Male' : 'Female'?></td>
 							<td><?php echo $pm->status->name?></td>
 						</tr>
