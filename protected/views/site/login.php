@@ -23,9 +23,6 @@
 					</div>
 					<div class="small-8 column">
 						<?php echo $form->textField($model,'username',array('placeholder'=>'Enter username...','class'=>'large')); ?>
-						<?php if (Yii::app()->params['auth_source'] == 'BASIC') {?>
-							<a href="#"><span class="small">Forgotten your username?</span></a>
-						<?php }?>
 					</div>
 				</div>
 
@@ -35,9 +32,6 @@
 					</div>
 					<div class="small-8 column">
 						<?php echo $form->passwordField($model,'password',array('autocomplete'=>'off','placeholder'=>'Enter password...','class'=>'large')); ?>
-						<?php if (Yii::app()->params['auth_source'] == 'BASIC') {?>
-							<a href="#"><span class="small">Forgotten your password?</span></a>
-						<?php }?>
 					</div>
 				</div>
 
