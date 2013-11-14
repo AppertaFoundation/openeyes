@@ -46,7 +46,7 @@ PHANTOM=`ps aux | grep -c phantom`
 if [ "$PHANTOM" = "2" ]; then
     echo "Phantomjs is already running"
 else
-    ~/phantomjs/phantomjs-1.9.2-macosx/bin/phantomjs --webdriver=8643 & PHANTOM=`ps aux | grep -c phantom`
+    ~/phantomjs/phantomjs-1.9.2/bin/phantomjs --webdriver=8643 & PHANTOM=`ps aux | grep -c phantom`
     if [ "$PHANTOM" = "2" ]; then
         echo "Phantomjs has been started"
     else
@@ -56,3 +56,5 @@ else
 fi
 
 #run tests
+bin/behat --tags=diagnosis --profile=phantomjs --expand
+exit
