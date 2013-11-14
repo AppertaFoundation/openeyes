@@ -66,15 +66,23 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($pedigree->members as $pm) {?>
+				<?php if ($pedigree->members) {
+					foreach ($pedigree->members as $pm) {?>
+						<tr>
+							<td><?php echo $pm->patient->hos_num?></td>
+							<td><?php echo $pm->patient->title?></td>
+							<td><?php echo $pm->patient->first_name?></td>
+							<td><?php echo $pm->patient->last_name?></td>
+							<td><?php echo $pm->patient->dob ? $patient->NHSDate('dob') : $patient->yob?></td>
+							<td><?php echo $pm->patient->gender == 'M' ? 'Male' : 'Female'?></td>
+							<td><?php echo $pm->status->name?></td>
+						</tr>
+					<?php }
+				} else {?>
 					<tr>
-						<td><?php echo $pm->patient->hos_num?></td>
-						<td><?php echo $pm->patient->title?></td>
-						<td><?php echo $pm->patient->first_name?></td>
-						<td><?php echo $pm->patient->last_name?></td>
-						<td><?php echo $pm->patient->dob ? $patient->NHSDate('dob') : $patient->yob?></td>
-						<td><?php echo $pm->patient->gender == 'M' ? 'Male' : 'Female'?></td>
-						<td><?php echo $pm->status->name?></td>
+						<td colspan="7">
+							There are no family members in this pedigree.
+						</td>
 					</tr>
 				<?php }?>
 			</tbody>
