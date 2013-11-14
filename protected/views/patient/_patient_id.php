@@ -19,11 +19,10 @@
 ?>
 <?php
 	$clinical = (BaseController::checkUserLevel(2));
-
 	$warnings = $this->patient->getWarnings($clinical);
 ?>
 
-<div class="panel patient radius" id="patientID">
+<div class="panel patient<?php if ($warnings) echo " warning" ?>" id="patientID">
 	<div class="patient-details">
 		<?php echo CHtml::link($this->patient->getDisplayName(),array('/patient/view/'.$this->patient->id)) ?>
 		<span class="patient-age">(<?php if ($this->patient->isDeceased()) { ?>Deceased<?php } else { echo $this->patient->getAge(); } ?>)</span>
@@ -33,23 +32,32 @@
 	</div>
 	<div class="row">
 		<div class="large-6 small-6 columns">
+
+			<!-- NHS number -->
 			<div class="nhs-number">
 				<span class="hide-text">
 					NHS number:
 				</span>
 				<?php echo $this->patient->nhsnum?>
 			</div>
-			<span class="icon icon-alert icon-alert-<?php echo strtolower($this->patient->getGenderString()) ?>_trans"><?php echo $this->patient->getGenderString() ?></span>
 
+			<!-- Gender -->
+			<span class="icon icon-alert icon-alert-<?php echo strtolower($this->patient->getGenderString()) ?>_trans">
+				<?php echo $this->patient->getGenderString() ?>
+			</span>
+
+			<!-- Warnings -->
 			<?php if ($warnings) {
 				$msgs = array();
 				foreach ($warnings as $warn) {
 					$msgs[] = $warn['short_msg'];
-				}
-			?>
-				<!-- FIXME: check these warnings display correctly -->
-				<span class="warning"><span><?php echo implode(', ', $msgs); ?></span>
+				}?>
+				<span class="warning">
+					<span class="icon icon-alert icon-alert-warning"></span>
+					<span class="messages"><?php echo implode(', ', $msgs); ?></span>
+				</span>
 			<?php } ?>
+
 		</div>
 		<div class="large-6 small-6 columns text-right patient-summary-anchor">
 			<?php echo CHtml::link('Patient Summary',array('/patient/view/'.$this->patient->id)); ?>

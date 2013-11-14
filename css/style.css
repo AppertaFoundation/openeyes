@@ -4457,6 +4457,18 @@ tfoot.pagination-container .pagination li {
   display: inline-block;
   padding: 0.125em 0.25em 0.125em 33px;
 }
+/* line 127, ../sass/openeyes/components/panels/_patient.scss */
+.panel.patient.warning {
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384266454'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384266454'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384266454'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384266454'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384266454'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+}
+/* line 130, ../sass/openeyes/components/panels/_patient.scss */
+.panel.patient.warning .warning .messages {
+  display: none;
+}
 
 /**
  * OpenEyes
@@ -6124,6 +6136,27 @@ tfoot.pagination-container .pagination li {
   left: 140px;
   top: -5px;
   z-index: 1;
+}
+/* line 50, ../sass/openeyes/components/_quicklook.scss */
+.quicklook.warning {
+  width: auto;
+  background: #eb5911;
+  border: 2px solid #fff;
+  color: #fff;
+  padding: 2px 5px;
+}
+/* line 56, ../sass/openeyes/components/_quicklook.scss */
+.quicklook.warning:after {
+  left: -moz-calc(50% - 3px);
+  left: -o-calc(50% - 3px);
+  left: -webkit-calc(50% - 3px);
+  left: calc(50% - 3px);
+  border-bottom: 5px solid #fff;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  content: "";
+  position: absolute;
+  top: -6px;
 }
 
 /**
