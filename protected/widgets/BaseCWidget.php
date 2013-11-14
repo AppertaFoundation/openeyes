@@ -29,7 +29,7 @@ class BaseCWidget extends CWidget
 
 	public function init()
 	{
-		if (is_object($this->element)) {
+		if (is_object($this->element) && $this->field) {
 			$this->value = $this->element->{$this->field};
 		}
 
