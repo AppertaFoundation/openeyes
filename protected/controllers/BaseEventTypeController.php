@@ -836,10 +836,15 @@ class BaseEventTypeController extends BaseController
 	protected function setValidationScenarioForElement($element)
 	{
 		if ($child_types = $element->getElementType()->child_element_types) {
+			$ct_cls_names = array();
+			foreach ($child_types as $ct) {
+				$ct_cls_names[] = $ct->class_name;
+			}
+
 			$has_children = false;
 			foreach ($this->open_elements as $open) {
 				$et = $open->getElementType();
-				if ($et->isChild() && in_array($et, $child_types)) {
+				if ($et->isChild() && in_array($et->class_name, $ct_cls_names)) {
 					$has_children = true;
 					break;
 				}
