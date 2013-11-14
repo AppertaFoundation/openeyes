@@ -78,6 +78,9 @@
 		position: relative;
 		&.legacy {
 			margin-top: emCalc(5px);
+			a {
+				color: #999;
+			}
 		}
 		.episode-date {
 			font-size: emCalc(11px);
@@ -175,7 +178,18 @@
 				.day,
 				.mth,
 				.yr {
+					display: inline-block;
+				}
+				.day {
+					width: emCalc(26px);
+					text-align: right;
 					padding-right: 6px;
+				}
+				.mth {
+					width: emCalc(34px);
+				}
+				.yr {
+					width: emCalc(40px);
 				}
 			}
 			// Selected state
