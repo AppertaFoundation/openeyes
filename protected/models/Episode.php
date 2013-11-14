@@ -302,6 +302,28 @@ class Episode extends BaseActiveRecord
 	}
 
 	/**
+	 * Get all elements of the given type from this Episode
+	 *
+	 * @param $element_type
+	 * @param integer $exclude_event_id
+	 * @return BaseEventTypeElement[]
+	 */
+	public function getElementsOfType($element_type, $exclude_event_id = null)
+	{
+		$criteria = new CDbCriteria();
+		$criteria->condition = 'event.episode_id = :episode_id';
+		$criteria->params = array(':episode_id' => $this->id);
+		if ($exclude_event_id) {
+			$criteria->condition .= ' AND event.id != :exclude_event_id';
+			$criteria->params[':exclude_event_id'] = $exclude_event_id;
+		}
+		$criteria->order = 't.id DESC';
+		$criteria->join = 'JOIN event ON event.id = t.event_id';
+		$kls = $element_type->class_name;
+		return $kls::model()->findAll($criteria);
+	}
+
+	/**
 	 * get the subspecialty for this episode
 	 *
 	 * @return Subspecialty

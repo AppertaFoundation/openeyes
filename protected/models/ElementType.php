@@ -127,4 +127,14 @@ class ElementType extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	/**
+	 * If the element type is a child, returns true
+	 *
+	 * @return bool
+	 */
+	public function isChild()
+	{
+		return ($this->parent_element_type_id) ? true : false;
+	}
 }
