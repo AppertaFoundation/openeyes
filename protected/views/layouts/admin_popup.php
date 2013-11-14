@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,33 +17,14 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-<!doctype html>
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
-<!--[if IE 7]>		<html class="no-js ie7 oldie" lang="en"> <![endif]-->
-<!--[if IE 8]>		<html class="no-js ie8 oldie" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<?php $cs = Yii::app()->clientScript; ?>
-	<?php $cs->registerCoreScript('jquery')?>
-	<?php $cs->registerCoreScript('jquery.ui')?>
-	<?php $cs->registerCSSFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', 'screen')?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.watermark.min.js'))?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/mustache.js'))?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/waypoints.min.js'))?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/waypoints-sticky.min.js'))?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/libs/modernizr-2.0.6.min.js'))?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.printElement.min.js'))?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.hoverIntent.min.js'))?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/print.js'))?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/buttons.js'))?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
-
-	</head>
-
-<body>
+	<?php $this->renderPartial('//base/head/_meta'); ?>
+	<?php $this->renderPartial('//base/head/_assets'); ?>
+	<?php $this->renderPartial('//base/head/_tracking'); ?>
+</head>
+<body class="open-eyes">
 	<?php echo $content?>
 </body>
 </html>
