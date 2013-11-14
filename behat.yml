@@ -74,3 +74,16 @@ selenium-orbis:
             base_url:           http://admin:openeyesdevel@orbis-master.dev.openeyes.org.uk
             default_session:    selenium2
             javascript_session: selenium2
+
+phantomjs:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url: http://localhost:8888
+            goutte: ~
+            selenium2:
+                wd_host: "http://localhost:8643/wd/hub"
+
+    formatter:
+        name:               pretty,html
+        parameters:
+            output_path:    null,jm_behat_report.html

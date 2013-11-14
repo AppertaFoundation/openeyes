@@ -31,7 +31,7 @@ class openeyes {
   #required to provide a testdb connection id to yiic migrate
   exec { 'create console config':
     unless  => '/usr/bin/test -e /var/www/protected/config/local/console.php',
-    command => '/bin/cp /var/www/protected/config/local/console.sample.php /var/www/protected/config/local/console.php;',
+    command => '/bin/cp /var/www/protected/config/local/console.vagrant.php /var/www/protected/config/local/console.php;',
     require => Service['mysql'],
   }
 
