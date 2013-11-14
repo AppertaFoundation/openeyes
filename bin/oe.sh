@@ -63,7 +63,7 @@ Options:
 	--db-user <user>      Set the database user.
 	--db-host <host>      Set the database host.
 	--db-pass <pass>      Set the database password.
-	--no-colour            Prevent colours from being displayed.
+	--no-colour           Prevent colours from being displayed.
 	-h|--help             Show this message.
 EOF
 }
@@ -103,7 +103,7 @@ write_log() {
 			colour="\x1B[91m"
 			;;
 		notice|info)
-			colour="\x1B[93m"
+			colour="\x1B[33m"
 			;;
 	esac
 
@@ -140,7 +140,6 @@ command_install() {
 			read module
 
 			[ -z "$module" ] && {
-				echo "Good-bye"
 				break
 			}
 
@@ -365,6 +364,11 @@ migrate_module() {
 	else
 		write_log "info" "Running migrations for module $module"
 		protected/yiic migrate --migrationPath=application.modules.$module.migrations
+		if [ $? -ne 0 ]; then
+			echo
+			write_log "error" "Aborted! Please fix the errors."
+			exit 1
+		fi
 	fi
 }
 
