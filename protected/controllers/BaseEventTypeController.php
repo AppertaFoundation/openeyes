@@ -28,6 +28,8 @@ class BaseEventTypeController extends BaseController
 	public $site;
 	/* @var Event */
 	public $event;
+	/* @var EventType event type for this controller */
+	private $_event_type;
 	public $editable = true;
 	public $editing;
 	private $title;
@@ -127,7 +129,6 @@ class BaseEventTypeController extends BaseController
 		);
 	}
 
-	private $_event_type;
 	/**
 	 * The EventType class for this module
 	 *
@@ -326,6 +327,8 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 
+		$this->initAction($action->id);
+
 		return parent::beforeAction($action);
 	}
 
@@ -429,9 +432,17 @@ class BaseEventTypeController extends BaseController
 		return $element;
 	}
 
-	public function actionIndex()
+	/**
+	 * Runs initialisation of the controller based on the action
+	 *
+	 * @param string $action
+	 */
+	protected function initAction($action)
 	{
-		$this->render('index');
+		$init_method = "initAction" . ucfirst($action);
+		if (method_exists($this, $init_method)) {
+			$this->$init_method();
+		}
 	}
 
 	/**
@@ -439,7 +450,7 @@ class BaseEventTypeController extends BaseController
 	 *
 	 * @throws CHttpException
 	 */
-	protected function createInit()
+	protected function initActionCreate()
 	{
 		$this->moduleStateCssClass = 'edit';
 
@@ -458,6 +469,55 @@ class BaseEventTypeController extends BaseController
 	}
 
 	/**
+	 * Sets the the css state
+	 */
+	protected function initActionView()
+	{
+		$this->moduleStateCssClass = 'view';
+
+		$id = @$_GET['id'];
+
+		if (!$id || !$this->event = Event::model()->findByPk($id)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+		$this->patient = $this->event->episode->patient;
+		$this->episode = $this->event->episode;
+	}
+
+	/**
+	 * initialise the controller prior to event update action
+	 *
+	 * @throws CHttpException
+	 */
+	protected function initActionUpdate()
+	{
+		$this->moduleStateCssClass = 'edit';
+
+		$id = @$_GET['id'];
+
+		if (!$id || !$this->event = Event::model()->findByPk($id)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		$this->patient = $this->event->episode->patient;
+
+		// Check the user's firm is of the correct subspecialty to have the
+		// rights to update this event
+		if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
+			//The firm you are using is not associated with the subspecialty of the episode
+			$this->redirectToPatientEpisodes();
+		}
+
+		$this->episode = $this->event->episode;
+	}
+
+
+	public function actionIndex()
+	{
+		$this->render('index');
+	}
+
+	/**
 	 * Carries out the base create action
 	 *
 	 * @return bool|string
@@ -466,8 +526,6 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function actionCreate()
 	{
-		$this->createInit();
-
 		if (!empty($_POST)) {
 			// form has been submitted
 			if (isset($_POST['cancel'])) {
@@ -544,14 +602,6 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function actionView($id)
 	{
-		$this->moduleStateCssClass = 'view';
-
-		if (!$this->event = Event::model()->findByPk($id)) {
-			throw new CHttpException(403, 'Invalid event id.');
-		}
-		$this->patient = $this->event->episode->patient;
-		$this->episode = $this->event->episode;
-
 		$this->open_elements = $this->event->getElements();
 
 		// Decide whether to display the 'edit' button in the template
@@ -610,31 +660,6 @@ class BaseEventTypeController extends BaseController
 	}
 
 	/**
-	 * initialise the controller prior to event update action
-	 *
-	 * @param $id
-	 * @throws CHttpException
-	 */
-	protected function updateInit($id)
-	{
-		$this->moduleStateCssClass = 'edit';
-		if (!$this->event = Event::model()->findByPk($id)) {
-			throw new CHttpException(403, 'Invalid event id.');
-		}
-
-		$this->patient = $this->event->episode->patient;
-
-		// Check the user's firm is of the correct subspecialty to have the
-		// rights to update this event
-		if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
-			//The firm you are using is not associated with the subspecialty of the episode
-			$this->redirectToPatientEpisodes();
-		}
-
-		$this->episode = $this->event->episode;
-	}
-
-	/**
 	 * The update action for the given event id
 	 *
 	 * @param $id
@@ -644,8 +669,6 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function actionUpdate($id)
 	{
-		$this->updateInit($id);
-
 		if (!empty($_POST)) {
 			// somethings been submitted
 			if (isset($_POST['cancel'])) {
@@ -1033,10 +1056,10 @@ class BaseEventTypeController extends BaseController
 	/**
 	 * Render the individual element based on the action provided
 	 *
-	 * @param $element
-	 * @param $action
-	 * @param $form
-	 * @param $data
+	 * @param BaseEventTypeElement $element
+	 * @param string $action
+	 * @param BaseCActiveBaseEventTypeCActiveForm $form
+	 * @param array $data
 	 * @throws Exception
 	 */
 	protected function renderElement($element, $action, $form, $data)
@@ -1072,10 +1095,11 @@ class BaseEventTypeController extends BaseController
 
 	/**
 	 * Render an optional element based on the action provided
-	 * @param $element
-	 * @param $action
-	 * @param $form
-	 * @param $data
+	 *
+	 * @param BaseEventTypeElement $element
+	 * @param string $action
+	 * @param BaseCActiveBaseEventTypeCActiveForm $form
+	 * @param array $data
 	 */
 	protected function renderOptionalElement($element, $action, $form, $data)
 	{
@@ -1275,7 +1299,6 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 		$this->patient = $this->event->episode->patient;
-		$this->event_type = $this->event->eventType;
 		$this->site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 		$this->open_elements = $this->getEventElements();
 	}
