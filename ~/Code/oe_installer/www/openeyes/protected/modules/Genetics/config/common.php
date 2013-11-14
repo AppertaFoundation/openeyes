@@ -8,5 +8,12 @@ return array(
 				'position' => 40,
 			),
 		),
+		'module_partials' => array(
+			'patient_summary_column1' => array(
+				'Genetics' => array(
+					'_patient_pedigree',
+				),
+			),
+		),
 	)
 );
