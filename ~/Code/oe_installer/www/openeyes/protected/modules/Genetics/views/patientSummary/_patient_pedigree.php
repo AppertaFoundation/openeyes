@@ -25,7 +25,7 @@
 		</span>
 	</a>
 	<div class="js-toggle-body">
-		<?php if ($pp = $api->findPatientPedigree($this->patient->id)) {?>
+		<?php if ($pp = $api->findPatientPedigree($patient->id)) {?>
 			<div class="row data-row">
 				<div class="large-4 column">
 					<div class="data-label">ID:</div>

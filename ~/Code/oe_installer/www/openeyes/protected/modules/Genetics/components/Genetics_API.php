@@ -23,4 +23,15 @@ class Genetics_API extends BaseAPI
 	{
 		return PatientPedigree::model()->with(array('patient','pedigree' => array('with' => array('inheritance','gene','disorder')),'status'))->find('patient_id=?',array($patient_id));
 	}
+
+	public function findViewFile($type, $partial)
+	{
+		$viewFile = Yii::getPathOfAlias('Genetics.views.'.$type.'.'.$partial).'.php';
+
+		if (file_exists($viewFile)) {
+			return $viewFile;
+		}
+
+		return false;
+	}
 }
