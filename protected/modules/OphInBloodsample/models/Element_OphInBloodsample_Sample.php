@@ -69,7 +69,7 @@ class Element_OphInBloodsample_Sample extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, old_dna_no, subject_id, blood_date, blood_location, comments, type_id, ', 'safe'),
+			array('event_id, old_dna_no, subject_id, blood_date, blood_location, comments, type_id, volume', 'safe'),
 			array('type_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
