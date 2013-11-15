@@ -6,12 +6,10 @@ module.exports = function(grunt) {
 		jshint: require('./jshint'),
 		styleguide: require('./styleguide'),
 		clean: require('./clean'),
-		docserver: require('./docserver'),
 		modernizr: require('./modernizr'),
 		copy: require('./copy'),
 		jsdoc: require('./jsdoc'),
-		createdocs: require('./createdocs'),
-		viewdocs: require('./viewdocs'),
+		docs: require('./docs'),
 		hub: require('./hub')
 	};
 };
