@@ -1,27 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>OpenEyes - Grids</title>
-
 <meta name="viewport" content="width=device-width" />
-
-<link rel="stylesheet" href="/assets/core/css/style.css" />
-<link rel="stylesheet" href="/assets/css/docs.css" />
-
-<link rel="stylesheet" href="/assets/core/js/components/google-code-prettify/src/prettify.css" />
-<link rel="stylesheet" href="/assets/core/js/components/jquery-ui/themes/base/minified/jquery-ui.min.css" />
-
-<script src="/assets/core/js/vendor/modernizr.js"></script>
-<script src="/assets/core/js/components/jquery/jquery.min.js"></script>
-<script src="/assets/core/js/components/jquery-ui/ui/jquery-ui.js"></script>
-<script src="/assets/core/js/components/google-code-prettify/src/prettify.js"></script>
-<script src="/assets/core/js/util.js"></script>
-<script src="/assets/core/js/dialogs.js"></script>
-<script src="/assets/js/docs.js"></script>
-
+<?php
+$assets_root_path = '../';
+include '../fragments/assets.php';
+?>
 <style type="text/css">
 .example .column {
 	border: 1px solid #e3e3e3;
@@ -37,7 +24,7 @@
 
 		<header class="header row">
 			<div class="large-3 columns">
-				<a class="logo" href="/">
+				<a class="logo" href="../index.php">
 					OpenEyes
 				</a>
 			</div>
@@ -46,17 +33,20 @@
 
 			<h1 class="badge">Grids</h1>
 
-			<div class="box content">
-				<div class="row">
+			<div class="row">
+
 				<aside class="large-2 column sidebar">
+					<div class="box generic">
 						<h2>Navigation</h2>
 						<ul class="side-nav">
 							<li><a href="#overview">Overview</a></li>
 							<li><a href="#usage">Grid usage</a></li>
 						</ul>
-					</aside>
+					</div>
+				</aside>
 
-					<div class="large-10 column example-box">
+				<div class="large-10 column">
+					<div class="box generic">
 						<h2 id="overview">Overview</h2>
 						<p>The layout of the OpenEyes application is based on a 12 column grid. The grid does not
 						use set dimensions, instead the width of the columns are percentage based, and
@@ -111,25 +101,7 @@
 				</div>
 			</div>
 		</div>
+		<?php include '../fragments/footer.php'; ?>
 	</div>
-	<footer class="footer row">
-		<div class="large-3 medium-3 columns">
-			<div class="info">
-				<a href="#" data-component="support-info-link">Served, with love, by openeyes.local</a>
-				<br />
-				<span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
-			</div>
-		</div>
-		<div class="large-6 medium-6 large-centered medium-centered columns help">
-			<div class="panel">
-				<ul class="inline-list">
-					<li><strong>Need help?</strong></li>
-					<li>helpdesk@example.com</li>
-					<li><strong>12345678</strong></li>
-					<li><a target="_blank" href="/">Help Documentation</a></li>
-				</ul>
-			</div>
-		</div>
-	</footer>
 </body>
 </html>

@@ -34,6 +34,7 @@ vendor
 /docs/public/assets/core
 /bin/phpunit
 /bin/webunit
+/docs/public
 
 # Bower development dependencies
 /js/components/google-code-prettify
@@ -50,8 +51,6 @@ bin/dbunit.php
 bin/oe-git-checkout
 bin/oe-git-pull
 bin/oe-git-status
-bin/phpunit
-bin/webunit
 composer.phar
 features/bootstrap/Features/Templates/CODINGONLY.feature
 selenium-server-standalone-2.35.0.jar
