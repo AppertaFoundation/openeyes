@@ -76,6 +76,7 @@ class EventAction
 			$content = '<span class="icon-button-small-trash-can"></span>';
 			$content .= '<span class="hide-offscreen">'.$label.'</span>';
 			$label = $content;
+			$this->htmlOptions['class'] .= ' button button-icon small';
 		}
 		if ($this->options['level'] === 'cancel') {
 			$this->htmlOptions['class'] .= ' button small';
