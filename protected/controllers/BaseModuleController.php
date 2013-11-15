@@ -113,17 +113,6 @@ class BaseModuleController extends BaseController {
 	}
 
 	/**
-	 * define the name of the actions that are print actions (for checking access based on print rules)
-	 *
-	 * @return array
-	 */
-	public function printActions()
-	{
-		// stub method to be overridden in child controllers
-		return array();
-	}
-
-	/**
 	 * Redirect to the patient episodes when the controller determines the action cannot be carried out
 	 *
 	 */

@@ -37,12 +37,6 @@ class BaseControllerTest extends CDbTestCase
 		parent::setUp();
 	}
 
-	public function testCheckPatientId_EmptySessionData_ThrowsException()
-	{
-		$this->setExpectedException('CHttpException', 'You are not authorised to perform this action.');
-		$this->controller->checkPatientId();
-	}
-
 	public function testStoreData_EmptySession_StoresNothing()
 	{
 		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');

@@ -208,53 +208,11 @@ class BaseController extends Controller
 		}
 	}
 
-	/**
-	 * Resets the session patient information.
-	 *
-	 * This method is called when the patient id for the requested activity is not the
-	 * same as the session patient id, e.g. the user has viewed a different patient in
-	 * a different tab. As such the patient id has to be reset to prevent problems
-	 * such an event being assigned to the wrong patient.
-	 *
-	 * This code is much like that in PatientController->actionView.
-	 *
-	 * @param int $patientId
-	 */
-	public function resetSessionPatient($patientId)
-	{
-		$patient = Patient::model()->findByPk($patientId);
-
-		if (empty($patient)) {
-			throw new Exception('Invalid patient id provided.');
-		}
-
-		$this->setSessionPatient($patient);
-
-	}
-
 	protected function setSessionPatient($patient)
 	{
 		$app = Yii::app();
 		$app->session['patient_id'] = $patient->id;
 		$app->session['patient_name'] = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
-	}
-
-	public function checkPatientId()
-	{
-		$app = Yii::app();
-
-		if (Yii::app()->params['ab_testing']) {
-			if (Yii::app()->user->isGuest) {
-				$identity=new UserIdentity('admin', 'admin');
-				$identity->authenticate();
-				Yii::app()->user->login($identity,0);
-				$this->selectedFirmId = 1;
-				$app->session['patient_id'] = 1;
-				$app->session['patient_name'] = 'John Smith';
-			}
-			$app->session['patient_id'] = 1;
-			$app->session['patient_name'] = 'John Smith';
-		}
 	}
 
 	public function storeData()

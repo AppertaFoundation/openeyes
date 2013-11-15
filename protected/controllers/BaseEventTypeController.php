@@ -54,7 +54,6 @@
  */
 class BaseEventTypeController extends BaseModuleController
 {
-	public $model;
 	/* @var Firm */
 	public $firm;
 	/* @var Patient */
@@ -70,7 +69,6 @@ class BaseEventTypeController extends BaseModuleController
 	public $moduleStateCssClass = '';
 	public $event_tabs = array();
 	public $event_actions = array();
-	public $print_css = true;
 	public $successUri = 'default/view/';
 	// String to set an issue when an event is created
 	public $eventIssueCreate;
@@ -527,11 +525,6 @@ class BaseEventTypeController extends BaseModuleController
 	protected function initActionDelete()
 	{
 		$this->initWithEventId(@$_GET['id']);
-	}
-
-	public function actionIndex()
-	{
-		$this->render('index');
 	}
 
 	/**
