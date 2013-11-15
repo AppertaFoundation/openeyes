@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="row field-row">
+<div class="row field-row diagnosis-selection">
 	<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
 		<label for="<?php echo "{$class}_{$field}";?>">
 			<?php echo $label?>:

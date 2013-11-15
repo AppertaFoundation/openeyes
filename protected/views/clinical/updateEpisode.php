@@ -19,8 +19,8 @@
 
 
 // Event actions
-$this->event_actions[] = EventAction::link('Cancel', Yii::app()->createUrl('/patient/episode/'.$episode->id), array('level' => 'warning small'));
-$this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'episode_save', 'level' => 'secondary small'));
+$this->event_actions[] = EventAction::link('Cancel', Yii::app()->createUrl('/patient/episode/'.$episode->id), array('level' => 'cancel'));
+$this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'episode_save', 'level' => 'save'));
 
 if ($episode->diagnosis) {
 	$eye = $episode->eye ? $episode->eye->name : 'None';

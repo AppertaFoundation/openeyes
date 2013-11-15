@@ -69,10 +69,17 @@ class EventAction
 		$this->htmlOptions['class'] .= ' '.$this->options['level'];
 		$label = CHtml::encode($this->label);
 
+		if ($this->options['level'] === 'save') {
+			$this->htmlOptions['class'] .= ' button secondary small';
+		}
 		if ($this->options['level'] === 'delete') {
 			$content = '<span class="icon-button-small-trash-can"></span>';
 			$content .= '<span class="hide-offscreen">'.$label.'</span>';
 			$label = $content;
+			$this->htmlOptions['class'] .= ' button button-icon small';
+		}
+		if ($this->options['level'] === 'cancel') {
+			$this->htmlOptions['class'] .= ' button small';
 		}
 
 		if ($this->options['disabled']) {
