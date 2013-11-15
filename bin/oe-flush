@@ -11,8 +11,8 @@ if [ ! -f ./protected/yiic ]; then
 fi
 echo "Found OpenEyes root"
 
-cd protected
-echo "Migrating OpenEyes..."
-./yiic migrate
-echo "Migrating Modules..."
-./yiic migratemodules
+echo "Clearing caches..."
+sudo rm -rf protected/cache/*
+sudo rm -rf cache/*
+echo "Clearing assets..."
+sudo rm -rf assets/*
