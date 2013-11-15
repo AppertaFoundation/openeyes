@@ -82,6 +82,7 @@ class openeyes {
       Exec['create openeyestest db'],
       Exec['create openeyestest user'],
       Exec['create application config'],
+      Exec['create console config'],
       File['/var/www/protected/runtime'],
     ]
   }
