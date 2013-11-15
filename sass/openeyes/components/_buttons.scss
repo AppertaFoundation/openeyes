@@ -114,9 +114,10 @@ button, .button, input[type="submit"] {
 		border: 0;
 		color: #000;
 		text-shadow: none;
+		&:active,
 		&:hover,
 		&:focus {
-			@include background(linear-gradient(#336234, #b8152b));
+			@include background(linear-gradient(#cf0d27, #b8152b));
 			@include box-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
 			text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
 			color: #fff;
@@ -128,6 +129,28 @@ button, .button, input[type="submit"] {
 		}
 	}
 }
+
+// Cancel button styles
+@include buttons {
+	&.cancel {
+		@extend button.warning;
+		@include box-shadow(none);
+		background: none;
+		border-color: transparent;
+		color: #ad1515;
+		text-shadow: none;
+		&:active,
+		&:focus,
+		&:hover {
+			@include box-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
+			background-color: #ad1515;
+			border-color: #9a091c;
+			text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
+			color: #fff;
+		}
+	}
+}
+
 
 // Disabled button (grey)
 // This should always be defined after all other button variations.
@@ -147,9 +170,9 @@ button, .button, input[type="submit"] {
 
 // Extend disabled to inactive buttons
 button, .button, input[type="submit"] {
-  &.inactive {
-    @extend button.disabled;
-  }
+	&.inactive {
+		@extend button.disabled;
+	}
 }
 
 // Button sizes
@@ -214,7 +237,9 @@ button, .button, input[type="submit"] {
 				[class*="icon-button-small-"] {
 					margin-top: -6px;
 				}
-				&:hover {
+				&:hover,
+				&:focus,
+				&:active {
 					.icon-button-small-trash-can {
 						@include sprite-background-position($oe-sprite-icons-button-small, "trash-can-hover");
 					}

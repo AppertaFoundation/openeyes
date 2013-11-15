@@ -91,6 +91,13 @@ $oe-selector-form-select-fields: "select";
 	}
 }
 
+// Apply a set of rules to buttons.
+@mixin buttons {
+	button, .button, input[type="submit"] {
+		@content;
+	}
+}
+
 // Add vendor prefixes for calc()
 @mixin calc($property, $expression) {
 	#{$property}: -moz-calc(#{$expression});
