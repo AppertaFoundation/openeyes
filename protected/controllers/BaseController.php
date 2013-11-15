@@ -150,13 +150,22 @@ class BaseController extends Controller
 		return array();
 	}
 
+	/**
+	 * @param string $action
+	 * @return boolean
+	 */
+	protected function isPrintAction($action)
+	{
+		return in_array($action, $this->printActions());
+	}
+
 	protected function beforeAction($action)
 	{
 
 		$app = Yii::app();
 
 		// Register base style.css unless it's a print action
-		if (!in_array($action->id,$this->printActions())) {
+		if (!$this->isPrintAction($action->id)) {
 			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
 		}
 

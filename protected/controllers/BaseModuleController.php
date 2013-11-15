@@ -72,7 +72,7 @@ class BaseModuleController extends BaseController {
 
 		// Automatic file inclusion unless it's an ajax call
 		if ($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
-			if (in_array($action->id,$this->printActions())) {
+			if ($this->isPrintAction($action->id)) {
 				// Register print css
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/print.css')) {
 					$this->registerCssFile('module-print.css', $this->assetPath.'/css/print.css');
