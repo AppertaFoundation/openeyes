@@ -12,14 +12,14 @@ class Examination extends Page
         'onset' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='gradual onset, ']"),
         'eye' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='left eye, ']"),
         'duration' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_History_description']//*[@value='1 week, ']"),
-        'openComorbidities' => array('xpath' => "//div[@id='active_elements']/div/div[4]/div/h5"),
-        'addComorbidities' => array('xpath' => "//*[@id='comorbidities_unselected']/select"),
-        'openVisualAcuity' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(),'Visual Acuity')]"),
+        'openComorbidities' => array('xpath' => "//div[@class='sub-elements inactive']//*[@data-element-type-name='Comorbidities']"),
+        'addComorbidities' => array('xpath' => "//select[@id='comorbidities_items']"),
+        'openVisualAcuity' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Visual Acuity')]"),
         'visualAcuityUnitChange' => array('xpath' => "//*[@id='visualacuity_unit_change']"),
-        'openLeftVA' => array('xpath' => "//*[@class='element Element_OphCiExamination_VisualAcuity']//*[@class='side right eventDetail']//*[@class='activeForm']//*[contains(text(),'Add')]"),
+        'openLeftVA' => array('xpath' => "//*[@class='element-eye left-eye column right side']//*[@class='button small secondary addReading']"),
         'snellenLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_value']"),
         'readingLeft' => array('xpath' => "//select[@id='visualacuity_reading_0_method_id']"),
-        'openRightVA' => array('xpath' => "//*[@class='element Element_OphCiExamination_VisualAcuity']//*[@class='side left eventDetail']//*[@class='activeForm']//*[contains(text(),'Add')]"),
+        'openRightVA' => array('xpath' => "//*[@class='element-eye right-eye column left side']//*[@class='button small secondary addReading']"),
         'ETDRSSnellenRight' => array('xpath' => "//*[@id='visualacuity_reading_1_value']"),
         'ETDRSSnellenLeft' => array('xpath' => "//*[@id='visualacuity_reading_0_value']"),
         'ETDRSreadingRight' => array('xpath' => "//*[@id='visualacuity_reading_1_method_id']"),
@@ -27,19 +27,19 @@ class Examination extends Page
         'snellenRight' => array('xpath' => "//select[@id='visualacuity_reading_1_value']"),
         'readingRight' => array('xpath' => "//select[@id='visualacuity_reading_1_method_id']"),
 
-        'openIntraocularPressure' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(), 'Intraocular Pressure')]"),
+        'openIntraocularPressure' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Intraocular Pressure')]"),
         'intraocularRight' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_right_reading_id']"),
         'instrumentRight' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_right_instrument_id']"),
         'intraocularLeft' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_left_reading_id']"),
         'instrumentLeft' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_left_instrument_id']"),
 
-        'openDilation' => array('xpath' => "//*[@id='inactive_elements']//*[contains(text(), 'Dilation')]"),
+        'openDilation' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Dilation')]"),
         'dilationRight' => array('xpath' => "//select[@id='dilation_drug_right']"),
         'dropsLeft' => array('xpath' => "//select[@name='dilation_treatment[0][drops]']"),
         'dilationLeft' => array('xpath' => "//select[@id='dilation_drug_left']"),
         'dropsRight' => array('xpath' => "//select[@name='dilation_treatment[1][drops]']"),
 
-        'expandRefraction' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Refraction']"),
+        'expandRefraction' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Refraction')]"),
 
         'sphereLeft' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_left_sphere_sign']"),
         'sphereLeftInt' => array('xpath' => "//*[@id='Element_OphCiExamination_Refraction_left_sphere_integer']"),
@@ -80,12 +80,12 @@ class Examination extends Page
         'selectSecondEye' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_eye_id_2']"),
         'cityRoad' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_city_road'][2]"),
         'satellite' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_satellite'][2]"),
-        'straightforward' => array('xpath' => "//*[@id='div_Element_OphCiExamination_CataractManagement_fast_track']//*[@type='checkbox']"),
+        'straightforward' => array('xpath' => "//input[@id='Element_OphCiExamination_CataractManagement_fast_track']"),
         'postOpRefractiveTarget' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_target_postop_refraction']"),
         'discussedWithPatientYes' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_correction_discussed_1']"),
         'discussedWithPatientNo' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_correction_discussed_0']"),
         'suitableForSurgeon' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_suitable_for_surgeon_id']"),
-        'supervisedCheckbox' => array ('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_supervised'][2]"),
+        'supervisedCheckbox' => array ('xpath' => "//input[@id='Element_OphCiExamination_CataractManagement_supervised']"),
         'previousRefractiveSurgeryYes' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_previous_refractive_surgery_1']"),
         'previousRefractiveSurgeryNo' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_previous_refractive_surgery_0']"),
         'VitrectomisedEyeYes' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_vitrectomised_eye_1']"),
@@ -108,20 +108,20 @@ class Examination extends Page
         'rightVenousRetinalBranchOcclusion' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_diagnosis2_id']//*[@value='24596005']"),
         'leftDiabeticMacularOedema' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis2_id']//*[@value='312912001']"),
 
-        'expandVisualFields' => array ('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Visual Fields']"),
-        'expandGonioscopy' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Gonioscopy']"),
-        'expandaAdnexalComorbidity' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Adnexal Comorbidity']"),
-        'expandAnteriorSegment' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Anterior Segment']"),
-        'expandPupillaryAbnormalities' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Pupillary Abnormalities']"),
-        'expandOpticDisc' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Optic Disc']"),
-        'expandPosteriorPole' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Posterior Pole']"),
-        'expandDiagnoses' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Diagnoses']"),
-        'expandInvestigation' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Investigation']"),
+        'expandVisualFields' => array ('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Visual Fields')]"),
+        'expandGonioscopy' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Gonioscopy')]"),
+        'expandaAdnexalComorbidity' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Adnexal Comorbidity')]"),
+        'expandAnteriorSegment' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Anterior Segment')]"),
+        'expandPupillaryAbnormalities' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Pupillary Abnormalities')]"),
+        'expandOpticDisc' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Optic Disc')]"),
+        'expandPosteriorPole' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Posterior Pole')]"),
+        'expandDiagnoses' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Diagnoses')]"),
+        'expandInvestigation' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Investigation')]"),
 
-        'expandClinicalManagement' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Clinical Management']"),
-        'expandCataractManagement' => array('xpath' => "//*[@id='active_elements']//*[@data-element-type-name='Cataract Management']"),
-        'expandLaserManagement' => array('xpath' => "//*[@id='active_elements']//*[@data-element-type-name='Laser Management']"),
-        'expandInjectionManagement' => array('xpath' => "//*[@id='active_elements']//*[@data-element-type-name='Injection Management']"),
+        'expandClinicalManagement' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Clinical Management')]"),
+        'expandCataractManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Cataract Management')]"),
+        'expandLaserManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Laser Management')]"),
+        'expandInjectionManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Injection Management')]"),
 
         'rightCrtIncreaseLowerHundredYes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_Answer_1_1']"),
         'rightCrtIncreaseLowerHundredNo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_Answer_1_0']"),
@@ -159,8 +159,8 @@ class Examination extends Page
         'leftPreviousAntiVEGFyes' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_12_1']"),
         'leftPreviousAntiVEGFno' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_Answer_12_0']"),
 
-        'expandRisks' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Risks']"),
-        'expandClinicOutcome' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Clinic Outcome']"),
+        'expandRisks' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Risks')]"),
+        'expandClinicOutcome' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Clinic Outcome')]"),
 
         'clinicalOutcomeFollowUp' => array('xpath' => "//*[@id='Element_OphCiExamination_ClinicOutcome_status_id']//*[@value='1']"),
         'clinicalOutcomeQuantity' => array('xpath' => "//*[@id='Element_OphCiExamination_ClinicOutcome_followup_quantity']"),
@@ -170,7 +170,7 @@ class Examination extends Page
 
         'clinicalOutcomeDischarge' => array('xpath' => "//*[@id='Element_OphCiExamination_ClinicOutcome_status_id']//*[@value='2']"),
 
-        'expandConclusion' => array('xpath' => "//*[@id='inactive_elements']//*[@data-element-type-name='Conclusion']"),
+        'expandConclusion' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Conclusion')]"),
         'conclusionOption' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_Conclusion_description']"),
 
         'saveExamination' => array('xpath' => "//*[@id='et_save']"),
@@ -499,6 +499,7 @@ class Examination extends Page
 
     public function straightforward ()
     {
+        $this->getSession()->wait(10000);
         $this->getElement('straightforward')->check();
     }
 

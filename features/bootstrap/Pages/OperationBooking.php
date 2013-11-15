@@ -31,7 +31,7 @@ class OperationBooking extends Page
         'decisionDate' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_decision_date_0']"),
         'operationComments' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_comments']"),
         'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
-        'scheduleNow' => array('xpath' => "//*[@id='et_schedulenow']"),
+        'scheduleNow' => array('xpath' => "//*[@id='et_save_and_schedule']"),
         'availableSlotExactDate' => array('xpath' => "//*[@id='calendar']//*[contains(number(),'16')]"),
         'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
         'availableTheatreSlotDateOutsideRTT' => array('xpath' => "//*[@class='available outside_rtt']"),
@@ -131,7 +131,7 @@ class OperationBooking extends Page
 
     public function priorityUrgent ()
     {
-        $this->getElement('priorityUrgent')->click();
+        $this->getElement('priorityUrgent')->check();
     }
 
     public function decisionDate ($date)

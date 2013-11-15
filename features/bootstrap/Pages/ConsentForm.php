@@ -8,7 +8,7 @@ class ConsentForm extends Page
 
     protected $elements = array(
         'unbookedProcedure' => array('xpath' => "//input[contains(@value, 'unbooked')]"),
-        'createConsentForm' => array('xpath' => "//*[@id='et_save']//*[contains(text(),'Create Consent Form')]"),
+        'createConsentForm' => array('xpath' => "//*[@class='button-bar right']//*[@id='et_save']"),
         'consentType' => array ('xpath' => "//*[@id='Element_OphTrConsent_Type_type_id']"),
         'rightEye' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_eye_id_2']"),
         'bothEyes' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_eye_id_3']"),
@@ -19,7 +19,7 @@ class ConsentForm extends Page
         'anaestheticType' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_anaesthetic_type_id_3']"),
         'permissionsImagesNO' => array('xpath' => "//*[@id='Element_OphTrConsent_Permissions_images_id_2']"),
         'permissionsImagesYES' => array('xpath' => "//*[@id='Element_OphTrConsent_Permissions_images_id_1']"),
-        'informationLeaflet' => array('xpath' => "//div[@id='div_Element_OphTrConsent_Other_information']/div[2]/input[2]"),
+        'informationLeaflet' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_information']"),
         'anaestheticLeaflet' =>array('xpath' => "//*[@id='Element_OphTrConsent_Other_anaesthetic_leaflet']"),
         'witnessRequired' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_witness_required']"),
         'witnessName' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_witness_name']"),

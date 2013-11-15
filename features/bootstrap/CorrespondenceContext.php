@@ -151,7 +151,7 @@ class CorrespondenceContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I add a New Enclosure$/
+     * @Given /^I add a New Enclosure of "([^"]*)"$/
      */
     public function iAddANewEnclosure($enclosure)
     {
