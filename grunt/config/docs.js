@@ -2,8 +2,9 @@ module.exports = {
 	all: {
 		options: {
 			tasks: [
+				'bower',
 				'clean:docs',
-				'compass:dist',
+				'build',
 				'copy:docs',
 				'styleguide:dist',
 				'jsdoc:dist'

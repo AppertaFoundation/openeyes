@@ -91,10 +91,10 @@ class Examination extends Page
         'VitrectomisedEyeYes' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_vitrectomised_eye_1']"),
         'VitrectomisedEyeNo' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_vitrectomised_eye_0']"),
 
-        'laserStatusChoice' => array('xpath' => "//*[@id='Element_OphCiExamination_LaserManagement_laser_status_id']"),
-        'deferralReason' => array('xpath' => "//*[@id='Element_OphCiExamination_LaserManagement_laser_deferralreason_id']"),
-        'leftLaserType' => array('xpath' => "//*[@id='Element_OphCiExamination_LaserManagement_left_lasertype_id']"),
-        'rightLaserType' => array('xpath' => "//*[@id='Element_OphCiExamination_LaserManagement_right_lasertype_id']"),
+        'rightLaserStatusChoice' => array('xpath' => "//*[@id='Element_OphCiExamination_LaserManagement_right_laser_status_id']"),
+        'leftLaserStatusChoice' => array('xpath' => "//*[@id='Element_OphCiExamination_LaserManagement_left_laser_status_id']"),
+        'rightLaserType' => array('xpath' => "//select[@id='Element_OphCiExamination_LaserManagement_left_lasertype_id']"),
+        'leftLaserType' => array('xpath' => "//select[@id='Element_OphCiExamination_LaserManagement_right_lasertype_id']"),
 
         'noTreatmentCheckbox' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_no_treatment'][2]"),
         'noTreatmentReason' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_no_treatment_reason_id']"),
@@ -556,14 +556,14 @@ class Examination extends Page
         $this->getSession()->wait(5000);
     }
 
-    public function laserStatusChoice ($laser)
+    public function RightLaserStatusChoice ($laser)
     {
-        $this->getElement('laserStatusChoice')->selectOption($laser);
+        $this->getElement('rightLaserStatusChoice')->selectOption($laser);
     }
 
-    public function deferralReason ($reason)
+    public function LeftLaserStatusChoice ($laser)
     {
-        $this->getElement('deferralReason')->selectOption($reason);
+        $this->getElement('leftLaserStatusChoice')->selectOption($laser);
     }
 
     public function leftLaser ($laser)
