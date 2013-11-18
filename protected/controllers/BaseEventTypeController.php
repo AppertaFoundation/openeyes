@@ -468,6 +468,15 @@ class BaseEventTypeController extends BaseController
 		}
 	}
 
+	protected function initWithEventId($id)
+	{
+		if (!$id || !$this->event = Event::model()->findByPk($id)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+		$this->patient = $this->event->episode->patient;
+		$this->episode = $this->event->episode;
+	}
+
 	/**
 	 * Sets the the css state
 	 */
@@ -475,13 +484,7 @@ class BaseEventTypeController extends BaseController
 	{
 		$this->moduleStateCssClass = 'view';
 
-		$id = @$_GET['id'];
-
-		if (!$id || !$this->event = Event::model()->findByPk($id)) {
-			throw new CHttpException(403, 'Invalid event id.');
-		}
-		$this->patient = $this->event->episode->patient;
-		$this->episode = $this->event->episode;
+		$this->initWithEventId(@$_GET['id']);
 	}
 
 	/**
@@ -493,13 +496,7 @@ class BaseEventTypeController extends BaseController
 	{
 		$this->moduleStateCssClass = 'edit';
 
-		$id = @$_GET['id'];
-
-		if (!$id || !$this->event = Event::model()->findByPk($id)) {
-			throw new CHttpException(403, 'Invalid event id.');
-		}
-
-		$this->patient = $this->event->episode->patient;
+		$this->initWithEventId(@$_GET['id']);
 
 		// Check the user's firm is of the correct subspecialty to have the
 		// rights to update this event
@@ -507,10 +504,12 @@ class BaseEventTypeController extends BaseController
 			//The firm you are using is not associated with the subspecialty of the episode
 			$this->redirectToPatientEpisodes();
 		}
-
-		$this->episode = $this->event->episode;
 	}
 
+	protected function initActionDelete()
+	{
+		$this->initWithEventId(@$_GET['id']);
+	}
 
 	public function actionIndex()
 	{
@@ -884,7 +883,7 @@ class BaseEventTypeController extends BaseController
 	 * touching the database.
 	 *
 	 * The $data attribute will typically be the $_POST structure, but can be any appropriately structured array
-	 * The optional $index attribute is thecounter for multiple elements of the same type that might exist in source data.
+	 * The optional $index attribute is the counter for multiple elements of the same type that might exist in source data.
 	 *
 	 * @param BaseEventTypeElement $element
 	 * @param array $data
@@ -1292,6 +1291,7 @@ class BaseEventTypeController extends BaseController
 	 *
 	 * @param integer $id event id
 	 * @throws CHttpException
+	 * @TODO: standardise printInit function as per init naming convention
 	 */
 	protected function printInit($id)
 	{
@@ -1306,6 +1306,7 @@ class BaseEventTypeController extends BaseController
 	/**
 	 * Render HTML print layout
 	 *
+	 * @TODO: are we still doing html printing at all?
 	 * @param integer $id event id
 	 * @param BaseEventTypeElement[] $elements
 	 * @param string $template
@@ -1376,10 +1377,6 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function actionDelete($id)
 	{
-		if (!$this->event = Event::model()->findByPk($id)) {
-			throw new CHttpException(403, 'Invalid event id.');
-		}
-
 		// Only the event creator can delete the event, and only 24 hours after its initial creation
 		if (!$this->canDelete()) {
 			$this->redirect(array('default/view/'.$this->event->id));
@@ -1409,11 +1406,8 @@ class BaseEventTypeController extends BaseController
 			return true;
 		}
 
-		$this->patient = $this->event->episode->patient;
+		$this->title = "Delete " . $this->event_type->name;
 
-		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
-
-		$this->title = "Delete ".$this->event_type->name;
 		$this->event_tabs = array(
 				array(
 						'label' => 'View',
@@ -1435,8 +1429,6 @@ class BaseEventTypeController extends BaseController
 		), $episodes);
 
 		$this->render('delete', $viewData);
-
-		return false;
 	}
 
 	/**
