@@ -1,19 +1,20 @@
 class composer {
     package { 'git':
-        ensure  => present,
+        ensure => present,
         require => Exec['apt-update']
     }
 
     exec { "download_composer":
-        command => "/usr/bin/curl -sS https://getcomposer.org/installer | /usr/bin/php; mv composer.phar /usr/local/bin/composer",
-        path    => "/usr/local/bin/:/bin/",
+        cwd => '/var/www',
+        command => "/usr/bin/curl -sS https://getcomposer.org/installer | /usr/bin/php",
+        creates => "/var/www/composer.phar",
         require => Package['curl','git']
     }
 
     exec { "run_composer_install":
-        command => "composer install --prefer-source --verbose --no-interaction",
-        path    => "/usr/local/bin/:/bin/:/usr/bin/",
         cwd => '/var/www',
-        require  => Exec["download_composer"]
+        #command => "/var/www/composer.phar install --prefer-source --no-interaction",
+        command => "/var/www/composer.phar install --no-interaction",
+        require => Exec["download_composer"]
     }
 }
