@@ -42,18 +42,18 @@ sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.aut
 vagrant ssh -c 'cd /var/www; bin/migrate-all.sh; exit;'
 
 #make sure phantomjs is set up and running
-PHANTOM=`ps aux | grep -c phantom`
-if [ "$PHANTOM" = "2" ]; then
-    echo "Phantomjs is already running"
-else
-    ~/phantomjs/phantomjs-1.9.2/bin/phantomjs --webdriver=8643 & PHANTOM=`ps aux | grep -c phantom`
-    if [ "$PHANTOM" = "2" ]; then
-        echo "Phantomjs has been started"
-    else
-        echo "Error starting phantomjs"
-        exit 126;
-    fi
-fi
+#PHANTOM=`ps aux | grep -c phantom`
+#if [ "$PHANTOM" = "2" ]; then
+#    echo "Phantomjs is already running"
+#else
+#    ~/phantomjs/phantomjs-1.9.2/bin/phantomjs --webdriver=8643 & PHANTOM=`ps aux | grep -c phantom`
+#    if [ "$PHANTOM" = "2" ]; then
+#        echo "Phantomjs has been started"
+#    else
+#        echo "Error starting phantomjs"
+#        exit 126;
+#    fi
+#fi
 
 #run tests
 bin/behat --tags=diagnosis --profile=phantomjs --expand
