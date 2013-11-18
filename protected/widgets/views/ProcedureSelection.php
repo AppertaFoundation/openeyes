@@ -140,7 +140,7 @@
 				}?>
 				</tbody>
 			</table>
-			<table class="grid"<?php if (empty($selected_procedures) || !$durations) {?> style="display: none;"<?php }?>>
+			<table>
 				<tfoot>
 				<tr>
 					<td>
