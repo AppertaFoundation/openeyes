@@ -748,28 +748,29 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I choose a laser of "([^"]*)"$/
-     */
-    public function iChooseALaserOf($laser)
+ * @Given /^I choose a right laser choice of "([^"]*)"$/
+ */
+    public function iChooseARightLaserOf($laser)
     {
         /**
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->laserStatusChoice($laser);
+        $examination->RightLaserStatusChoice($laser);
     }
 
     /**
-     * @Then /^I choose a deferral reason of "([^"]*)"$/
+     * @Given /^I choose a left laser choice of "([^"]*)"$/
      */
-    public function iChooseADeferralReasonOf($reason)
+    public function iChooseALeftLaserOf($laser)
     {
         /**
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->deferralReason($reason);
+        $examination->LeftLaserStatusChoice($laser);
     }
+
 
     /**
      * @Given /^I choose a left laser type of "([^"]*)"$/
