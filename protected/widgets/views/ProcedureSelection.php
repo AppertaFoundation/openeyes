@@ -140,7 +140,7 @@
 				}?>
 				</tbody>
 			</table>
-			<table>
+			<table class="grid">
 				<tfoot>
 				<tr>
 					<td>
