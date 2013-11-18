@@ -34,6 +34,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -70,6 +71,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -105,6 +107,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -140,6 +143,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -177,6 +181,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -212,6 +217,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -247,6 +253,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -282,6 +289,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -317,6 +325,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -352,6 +361,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -387,6 +397,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -422,6 +433,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"

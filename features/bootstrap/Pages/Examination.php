@@ -201,6 +201,7 @@ class Examination extends Page
 
     public function addComorbiditiy ($com)
     {
+        $this->getSession()->wait(3000);
         $this->getElement('addComorbidities')->selectOption($com);
     }
 
@@ -219,6 +220,7 @@ class Examination extends Page
 
     public function selectVisualAcuity ($unit)
     {
+        $this->getSession()->wait(3000);
         $this->getElement('visualAcuityUnitChange')->selectOption($unit);
         $this->getSession()->wait(5000);
     }
@@ -267,6 +269,7 @@ class Examination extends Page
 
     public function leftIntracocular ($pressure, $instrument)
     {
+        $this->getSession()->wait(3000);
         $this->getElement('intraocularLeft')->selectOption($pressure);
         $this->getElement('instrumentLeft')->selectOption($instrument);
     }
