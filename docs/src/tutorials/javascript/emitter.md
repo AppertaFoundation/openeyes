@@ -51,5 +51,3 @@ For example:
 
     var obj = new MyObject();
     obj.emit('myEvent');
-
-test

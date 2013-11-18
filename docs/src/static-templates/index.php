@@ -48,13 +48,8 @@
 				<!-- Overview -->
 				<div class="row">
 					<div class="large-12 column">
-						<h2>Overview</h2>
-						<p>Here you will find templates containing the markup used for
-						the OpenEyes application.</p>
-						<h2>Templates</h2>
 
-						<p>Select the template you'd like to view:</p>
-
+						<br />
 						<table class="">
 							<thead>
 								<tr>
