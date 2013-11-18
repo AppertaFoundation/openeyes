@@ -7,7 +7,7 @@ class composer {
     }
 
     exec { "run_composer_build":
-        command => "composer install",
+        command => "composer install -vvv",
         path    => "/usr/local/bin/:/bin/:/usr/bin/",
         cwd => '/var/www',
         require  => Exec["install_composer"]
