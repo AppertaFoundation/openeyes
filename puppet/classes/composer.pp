@@ -7,7 +7,7 @@ class composer {
     }
 
     exec { "run_composer_install":
-        command => "/usr/local/bin/composer install -vvv",
+        command => "/usr/local/bin/composer install --prefer-source -n -vvv",
         path    => "/usr/local/bin/:/bin/:/usr/bin/",
         cwd => '/var/www',
         require  => Exec["download_composer"]
