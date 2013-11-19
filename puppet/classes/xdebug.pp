@@ -58,7 +58,7 @@ class xdebug {
         }
 
         $xdebug_remote_autostart = $remote_autostart ? {
-            ''      => '1',
+            ''      => '0',
             default => $remote_autostart,
         }
 
