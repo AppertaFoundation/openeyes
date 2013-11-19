@@ -3,7 +3,6 @@
 	<ul class="navigation admin">
 		<?php foreach (array(
 			'Pedigrees' => Yii::app()->createUrl('/Genetics/default/pedigrees'),
-			'Inheritance' => Yii::app()->createUrl('/Genetics/default/inheritance'),
 			'Genes' => Yii::app()->createUrl('/Genetics/default/genes'),
 		) as $title => $uri) {?>
 			<li<?php if (Yii::app()->getController()->action->id == $uri) {?> class="selected"<?php }?>>
