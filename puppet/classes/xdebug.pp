@@ -46,6 +46,11 @@ class xdebug {
             default => $remote_host,
         }
 
+        $xdebug_remote_connect_back = $remote_connect_back ? {
+            ''      => '0',
+            default => $remote_connect_back,
+        }
+
         $xdebug_remote_port = $remote_port ? {
             ''      => '9000',
             default => $remote_port,
@@ -57,7 +62,7 @@ class xdebug {
         }
 
         $xdebug_profiler_enable = $profiler_enable ? {
-            ''      => '1',
+            ''      => '0',
             default => $profiler_enable,
         }
 
@@ -76,6 +81,7 @@ class xdebug {
             xdebug.default_enable=<%= default_enable %>
             xdebug.remote_enable=<%= remote_enable %>
             xdebug.remote_handler=<%= remote_handler %>
+            xdebug.xdebug.remote_connect_back=<%= remote_connect_back %>
             xdebug.remote_host=<%= remote_host %>
             xdebug.remote_port=<%= remote_port %>
             xdebug.remote_autostart=<%= remote_autostart %>
@@ -116,13 +122,6 @@ class xdebug::params {
 }
 notice("Running advanced xdebug config")
 xdebug::config { 'default':
-        remote_host => '192.168.50.1', # Vagrant users can specify their address
-        remote_port => '9000', # Change default settings
-        remote_autostart => '1',
-        remote_enable => '1',
-        profiler_enable => '0',
         profiler_output_name => 'xdebug.log',
-        idekey => 'PHPSTORM',
-        #remote_handler => 'dbgp',
 }
 
