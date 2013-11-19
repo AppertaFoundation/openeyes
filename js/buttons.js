@@ -31,12 +31,12 @@ function handleButton(button, callback) {
 }
 
 function disableButtons() {
-	$('button,.button').addClass('inactive');
+	$('button,.button').not('.cancel').addClass('inactive');
 	$('.loader').show();
 }
 
 function enableButtons() {
-	$('button,.button').removeClass('inactive');
+	$('button,.button').not('.cancel').removeClass('inactive');
 	$('.loader').hide();
 }
 

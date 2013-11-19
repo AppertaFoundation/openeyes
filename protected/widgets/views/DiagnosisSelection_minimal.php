@@ -18,64 +18,66 @@
  */
 ?>
 <?php if (!$nowrapper) {?>
-	<div class="row field-row">
+	<div class="row field-row diagnosis-selection">
 		<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
 			<label for="<?php echo "{$class}_{$field}";?>">Diagnosis:</label>
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 <?php } ?>
-		<div class="dropdown-row"">
+		<div class="dropdown-row">
 			<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis')) : ""?>
 		</div>
-		<?php
-		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-				'name' => "{$class}[$field]",
-				'id' => "{$class}_{$field}_0",
-				'value'=>'',
-				'source'=>"js:function(request, response) {
-					$.ajax({
-						'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
-						'type':'GET',
-						'data':{'term': request.term, 'code': '".$code."'},
-						'success':function(data) {
-							data = $.parseJSON(data);
+		<div class="autocomplete-row">
+			<?php
+			$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+					'name' => "{$class}[$field]",
+					'id' => "{$class}_{$field}_0",
+					'value'=>'',
+					'source'=>"js:function(request, response) {
+						$.ajax({
+							'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
+							'type':'GET',
+							'data':{'term': request.term, 'code': '".$code."'},
+							'success':function(data) {
+								data = $.parseJSON(data);
 
-							var result = [];
+								var result = [];
 
-							for (var i = 0; i < data.length; i++) {
-								var ok = true;
-								$('#selected_diagnoses').children('input').map(function() {
-									if ($(this).val() == data[i]['id']) {
-										ok = false;
+								for (var i = 0; i < data.length; i++) {
+									var ok = true;
+									$('#selected_diagnoses').children('input').map(function() {
+										if ($(this).val() == data[i]['id']) {
+											ok = false;
+										}
+									});
+									if (ok) {
+										result.push(data[i]);
+									}
+								}
+
+								response(result);
+							}
+						});
+					}",
+					'options' => array(
+							'minLength'=>'3',
+							'select' => "js:function(event, ui) {
+								".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
+								$('#".$class."_".$field."_0').val('');
+								$('#".$class."_".$field."').children('option').map(function() {
+									if ($(this).val() == ui.item.id) {
+										$(this).remove();
 									}
 								});
-								if (ok) {
-									result.push(data[i]);
-								}
-							}
-
-							response(result);
-						}
-					});
-				}",
-				'options' => array(
-						'minLength'=>'3',
-						'select' => "js:function(event, ui) {
-							".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
-							$('#".$class."_".$field."_0').val('');
-							$('#".$class."_".$field."').children('option').map(function() {
-								if ($(this).val() == ui.item.id) {
-									$(this).remove();
-								}
-							});
-							return false;
-						}",
-				),
-				'htmlOptions' => array(
-						'placeholder' => $placeholder,
-				),
-		));
-		?>
+								return false;
+							}",
+					),
+					'htmlOptions' => array(
+							'placeholder' => $placeholder,
+					),
+			));
+			?>
+		</div>
 <?php if (!$nowrapper) {?>
 	</div>
 </div>
