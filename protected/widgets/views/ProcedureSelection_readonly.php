@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="row field-row" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+<div class="row field-row procedure-selection readonly" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
 	<div class="large-<?php echo $layoutColumns['label'];?> column">
 		<div class="data-label"><?php echo $label?>:</div>
 	</div>
