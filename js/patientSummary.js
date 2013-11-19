@@ -1,37 +1,5 @@
 $(document).ready(function() {
 
-	(function patientWarningTooltip() {
-
-		var warning = $('.panel.patient .warning');
-		if (!warning.length) {
-			return;
-		}
-		var messages = warning.find('.messages');
-		var box = $('<div class="quicklook warning"></div>');
-
-		box.hide();
-		box.html(messages.html());
-		box.appendTo('body');
-
-		warning.hover(function() {
-
-			var offsetPos = $(this).offset();
-			var top = offsetPos.top + $(this).height() + 6;
-			var middle = offsetPos.left + $(this).width()/2;
-			var left = middle - box.width()/2 - 8;
-
-			box.css({
-					position: 'absolute',
-					top: top,
-					left: left
-			});
-			box.fadeIn('fast');
-		}, function(e){
-			box.hide();
-		});
-	}());
-
-
 	$('.removeDiagnosis').live('click',function(e) {
 		e.preventDefault();
 

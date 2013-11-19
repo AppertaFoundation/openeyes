@@ -24,11 +24,6 @@ form {
 	}
 }
 
-/* Using forms within rows, we need to set some defaults */
-// form .row {
-// 	@include form-row-base;
-// }
-
 /* Label Styles */
 label, .label {
 	@include form-label;
@@ -44,6 +39,9 @@ label, .label {
 	}
 	&.align {
 		padding-top: emCalc(5px);
+	}
+	.required {
+		color: #f00;
 	}
 }
 
@@ -178,7 +176,6 @@ small.error {
 		display: inline-block;
 	}
 }
-
 
 label {
 	&.highlight {
