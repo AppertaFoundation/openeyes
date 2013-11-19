@@ -10,6 +10,7 @@ class xdebug {
         $default_enable   = '',
         $remote_enable    = '',
         $remote_handler   = '',
+        $remote_connect_back = '',
         $remote_host      = '',
         $remote_port      = '',
         $remote_autostart = '',
@@ -81,7 +82,7 @@ class xdebug {
             xdebug.default_enable=<%= default_enable %>
             xdebug.remote_enable=<%= remote_enable %>
             xdebug.remote_handler=<%= remote_handler %>
-            xdebug.xdebug.remote_connect_back=<%= remote_connect_back %>
+            xdebug.remote_connect_back=<%= remote_connect_back %>
             xdebug.remote_host=<%= remote_host %>
             xdebug.remote_port=<%= remote_port %>
             xdebug.remote_autostart=<%= remote_autostart %>
