@@ -57,8 +57,7 @@ button, .button, input[type="submit"] {
 	padding: emCalc(8px) emCalc(34px);
 	text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
 	margin: 0;
-	&:hover,
-	&:focus {
+	&:hover {
 		@include background(linear-gradient(#118afb, #1279e3));
 		border-color: #1974d1;
 		color: white;
@@ -75,8 +74,7 @@ button, .button, input[type="submit"] {
 		@include background(linear-gradient(#43a844, #55a256));
 		border-color: #3fa522;
 		text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
-		&:hover,
-		&:focus {
+		&:hover {
 			@include background(linear-gradient(#48bd27, #3fa522));
 			border-color: #569b42;
 		}
@@ -93,8 +91,7 @@ button, .button, input[type="submit"] {
 		@include background(linear-gradient(#cf0d27, #b8152b));
 		border-color: #9a091c;
 		text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
-		&:hover,
-		&:focus {
+		&:hover {
 			@include background(linear-gradient(#e81515, #e01a1a));
 			border-color: #ad1515;
 		}
@@ -114,9 +111,7 @@ button, .button, input[type="submit"] {
 		border: 0;
 		color: #000;
 		text-shadow: none;
-		&:active,
-		&:hover,
-		&:focus {
+		&:hover {
 			@include background(linear-gradient(#cf0d27, #b8152b));
 			@include box-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
 			text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
@@ -130,9 +125,9 @@ button, .button, input[type="submit"] {
 	}
 }
 
-// Cancel button styles
+// Cancel event button styles
 @include buttons {
-	&.cancel {
+	&.cancel.event-action {
 		@extend button.warning;
 		@include box-shadow(none);
 		background: none;
@@ -140,7 +135,6 @@ button, .button, input[type="submit"] {
 		color: #ad1515;
 		text-shadow: none;
 		&:active,
-		&:focus,
 		&:hover {
 			@include box-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
 			background-color: #ad1515;
@@ -159,10 +153,10 @@ button, .button, input[type="submit"] {
 	&[disabled] {
 		&,
 		&:hover,
-		&:focus,
 		&:active {
 			@include background(linear-gradient(#aaaaaa, #999999));
 			border-color: #999999;
+			color: #fff;
 			text-shadow: none;
 		}
 	}

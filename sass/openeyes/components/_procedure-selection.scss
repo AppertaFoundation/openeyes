@@ -14,66 +14,10 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-/* Default Pagination */
-ul.pagination {
-	@include pagination;
-	li {
-		margin: 0;
-		&.label {
-			cursor: default;
+.procedure-selection {
+	&.readonly {
+		.panel {
+			margin: 0;
 		}
-		&:not(.label) {
-			border-right: 1px solid #999;
-		}
-		&.current {
-			border: 0;
-		}
-		&.first, &.last {
-			display: none;
-		}
-		&:last-child, &.next {
-			border: 0;
-			a {
-				padding-right: 0;
-			}
-		}
-	}
-	.page {
-		a {
-			&:hover {
-				font-weight: bold;
-			}
-		}
-	}
-	&.patient-results {
-		.current {
-			a, a:focus, a:hover {
-				background: none;
-				color: #0b59da;
-			}
-		}
-	}
-}
-
-// Table pagination.
-tfoot.pagination-container {
-	td {
-		border: 0;
-	}
-	.pagination {
-		float: right;
-		margin: 0;
-		li {
-			font-size: 1.1em;
-			font-weight: normal;
-		}
-	}
-}
-
-/* Pagination centered wrapper */
-.pagination-centered {
-	@include pagination-container(true);
-	ul.pagination {
-		@include pagination(true, false);
 	}
 }

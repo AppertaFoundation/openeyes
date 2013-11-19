@@ -272,6 +272,7 @@ class PatientController extends BaseController
 				$this->redirect(array('patient/view/' . $item->id));
 			}
 		} else {
+			$this->renderPatientPanel = false;
 			$pages = ceil($nr/$page_size);
 			$this->render('results', array(
 				'data_provider' => $dataProvider,
@@ -463,8 +464,6 @@ class PatientController extends BaseController
 		$status = Yii::app()->session['episode_hide_status'];
 		$status[$id] = true;
 		Yii::app()->session['episode_hide_status'] = $status;
-
-
 
 		$this->editing = true;
 
