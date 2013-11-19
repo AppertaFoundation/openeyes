@@ -163,6 +163,7 @@ button, .button, input[type="submit"] {
 		&:active {
 			@include background(linear-gradient(#aaaaaa, #999999));
 			border-color: #999999;
+			color: #fff;
 			text-shadow: none;
 		}
 	}
