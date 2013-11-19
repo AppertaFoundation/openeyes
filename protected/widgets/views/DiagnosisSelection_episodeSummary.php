@@ -17,48 +17,50 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText"<?php if (!$label) {?> style="display: none;" <?php }?>>
-	<h4>
-		<?php echo $label?>
-	</h4>
-</div>
-<div class="dropdown-row">
-	<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
-</div>
-<div class="autocomplete-row">
-	<?php
-	$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-		'name' => "{$class}[$field]",
-		'id' => "{$class}_{$field}_0",
-		'value'=>'',
-		'source'=>"js:function(request, response) {
-			$.ajax({
-				'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
-				'type':'GET',
-				'data':{'term': request.term, 'code': '".$code."'},
-				'success':function(data) {
-					data = $.parseJSON(data);
-					response(data);
-				}
-			});
-		}",
-		//'sourceUrl'=>array('/disorder/autocomplete'.($restrict ? '?restrict='.$restrict : '')),
-		'options' => array(
-			'minLength'=>'3',
-			'select' => "js:function(event, ui) {
-				$('#".$class."_".$field."_0').val('');
-				$('#".$class."_".$field."_enteredDiagnosisText h4').html(ui.item.value);
-				$('#".$class."_".$field."_enteredDiagnosisText').show();
-				$('input[id=".$class."_".$field."_savedDiagnosis]').val(ui.item.id);
-				$('#".$class."_".$field."').focus();
-				return false;
+<div class="diagnosis-selection">
+	<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText"<?php if (!$label) {?> style="display: none;" <?php }?>>
+		<h4>
+			<?php echo $label?>
+		</h4>
+	</div>
+	<div class="dropdown-row">
+		<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis'))?>
+	</div>
+	<div class="autocomplete-row">
+		<?php
+		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+			'name' => "{$class}[$field]",
+			'id' => "{$class}_{$field}_0",
+			'value'=>'',
+			'source'=>"js:function(request, response) {
+				$.ajax({
+					'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
+					'type':'GET',
+					'data':{'term': request.term, 'code': '".$code."'},
+					'success':function(data) {
+						data = $.parseJSON(data);
+						response(data);
+					}
+				});
 			}",
-		),
-		'htmlOptions' => array(
-			'placeholder' => 'or type the first few characters of a diagnosis',
-		),
-));
-	?>
+			//'sourceUrl'=>array('/disorder/autocomplete'.($restrict ? '?restrict='.$restrict : '')),
+			'options' => array(
+				'minLength'=>'3',
+				'select' => "js:function(event, ui) {
+					$('#".$class."_".$field."_0').val('');
+					$('#".$class."_".$field."_enteredDiagnosisText h4').html(ui.item.value);
+					$('#".$class."_".$field."_enteredDiagnosisText').show();
+					$('input[id=".$class."_".$field."_savedDiagnosis]').val(ui.item.id);
+					$('#".$class."_".$field."').focus();
+					return false;
+				}",
+			),
+			'htmlOptions' => array(
+				'placeholder' => 'or type the first few characters of a diagnosis',
+			),
+	));
+		?>
+	</div>
 </div>
 <input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
 	id="<?php echo $class?>_<?php echo $field?>_savedDiagnosis" value="<?php echo $value?>" />
