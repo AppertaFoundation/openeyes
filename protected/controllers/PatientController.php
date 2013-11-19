@@ -464,9 +464,8 @@ class PatientController extends BaseController
 		$status[$id] = true;
 		Yii::app()->session['episode_hide_status'] = $status;
 
-
-
 		$this->editing = true;
+		// $this->current_episode = $this->episode;
 
 		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
