@@ -67,6 +67,7 @@ class EventAction
 	public function toHtml()
 	{
 		$this->htmlOptions['class'] .= ' '.$this->options['level'];
+		$this->htmlOptions['class'] .= ' event-action';
 		$label = CHtml::encode($this->label);
 
 		if ($this->options['level'] === 'save') {

@@ -125,9 +125,9 @@ button, .button, input[type="submit"] {
 	}
 }
 
-// Cancel button styles
+// Cancel event button styles
 @include buttons {
-	&.cancel {
+	&.cancel.event-action {
 		@extend button.warning;
 		@include box-shadow(none);
 		background: none;

@@ -2556,7 +2556,7 @@ button.secondary:active, .button.secondary:active, input[type="submit"].secondar
 }
 
 /* line 90, ../sass/openeyes/components/_buttons.scss */
-button.warning, button.cancel, .button.cancel, input[type="submit"].cancel, .button.warning, input[type="submit"].warning {
+button.warning, button.cancel.event-action, .button.cancel.event-action, input[type="submit"].cancel.event-action, .button.warning, input[type="submit"].warning {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #cf0d27), color-stop(100%, #b8152b));
   background: -webkit-linear-gradient(#cf0d27, #b8152b);
   background: -moz-linear-gradient(#cf0d27, #b8152b);
@@ -2566,7 +2566,7 @@ button.warning, button.cancel, .button.cancel, input[type="submit"].cancel, .but
   text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
 }
 /* line 94, ../sass/openeyes/components/_buttons.scss */
-button.warning:hover, button.cancel:hover, .button.cancel:hover, input[type="submit"].cancel:hover, .button.warning:hover, input[type="submit"].warning:hover {
+button.warning:hover, button.cancel.event-action:hover, .button.cancel.event-action:hover, input[type="submit"].cancel.event-action:hover, .button.warning:hover, input[type="submit"].warning:hover {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e81515), color-stop(100%, #e01a1a));
   background: -webkit-linear-gradient(#e81515, #e01a1a);
   background: -moz-linear-gradient(#e81515, #e01a1a);
@@ -2575,7 +2575,7 @@ button.warning:hover, button.cancel:hover, .button.cancel:hover, input[type="sub
   border-color: #ad1515;
 }
 /* line 98, ../sass/openeyes/components/_buttons.scss */
-button.warning:active, button.cancel:active, .button.cancel:active, input[type="submit"].cancel:active, .button.warning:active, input[type="submit"].warning:active {
+button.warning:active, button.cancel.event-action:active, .button.cancel.event-action:active, input[type="submit"].cancel.event-action:active, .button.warning:active, input[type="submit"].warning:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #901828), color-stop(100%, #761421));
   background: -webkit-linear-gradient(#901828, #761421);
   background: -moz-linear-gradient(#901828, #761421);
@@ -2620,7 +2620,7 @@ button.delete:active, .button.delete:active, input[type="submit"].delete:active 
 }
 
 /* line 130, ../sass/openeyes/components/_buttons.scss */
-button.cancel, .button.cancel, input[type="submit"].cancel {
+button.cancel.event-action, .button.cancel.event-action, input[type="submit"].cancel.event-action {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -2630,7 +2630,7 @@ button.cancel, .button.cancel, input[type="submit"].cancel {
   text-shadow: none;
 }
 /* line 138, ../sass/openeyes/components/_buttons.scss */
-button.cancel:active, button.cancel:hover, .button.cancel:active, .button.cancel:hover, input[type="submit"].cancel:active, input[type="submit"].cancel:hover {
+button.cancel.event-action:active, button.cancel.event-action:hover, .button.cancel.event-action:active, .button.cancel.event-action:hover, input[type="submit"].cancel.event-action:active, input[type="submit"].cancel.event-action:hover {
   -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
