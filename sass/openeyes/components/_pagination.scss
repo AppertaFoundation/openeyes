@@ -19,6 +19,9 @@ ul.pagination {
 	@include pagination;
 	li {
 		margin: 0;
+		&.label {
+			cursor: default;
+		}
 		&:not(.label) {
 			border-right: 1px solid #999;
 		}
@@ -39,6 +42,14 @@ ul.pagination {
 		a {
 			&:hover {
 				font-weight: bold;
+			}
+		}
+	}
+	&.patient-results {
+		.current {
+			a, a:focus, a:hover {
+				background: none;
+				color: #0b59da;
 			}
 		}
 	}

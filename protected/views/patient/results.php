@@ -86,7 +86,7 @@
 				<tfoot class="pagination-container">
 					<tr>
 						<td colspan="7">
-							<ul class="pagination right">
+							<ul class="pagination patient-results right">
 								<li class="label">Viewing patients:</li>
 								<?php for ($i=0; $i < $pages; $i++) { ?>
 									<?php
@@ -119,7 +119,7 @@
 </div><!-- /.row -->
 
 <script type="text/javascript">
-	$('#patient-grid tr').click(function() {
+	$('#patient-grid tr.clickable').click(function() {
 		window.location.href = '<?php echo Yii::app()->createUrl('patient/view')?>/'+$(this).attr('id').match(/[0-9]+/);
 		return false;
 	});
