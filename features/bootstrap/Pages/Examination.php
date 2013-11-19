@@ -847,10 +847,18 @@ class Examination extends Page
         $this->getElement('clinicalOutcomeDischarge')->click();
     }
 
+    protected function isConclusionCollapsed()
+    {
+        return (bool) $this->find('xpath', $this->getElement('expandConclusion')->getXpath());;
+    }
+
     public function expandConclusion ()
     {
+        if ($this->isConclusionCollapsed()) {
+
         $this->getElement('expandConclusion')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(3000, '$.active == 0');
+        }
     }
 
     public function conclusionOption ($option)

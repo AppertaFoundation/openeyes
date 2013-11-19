@@ -206,6 +206,7 @@ class OperationBooking extends Page
 
     public function availableSessionTime ()
     {
+//        $this->getSession()->wait(5000);
         $this->getElement('availableTheatreSessionTime')->click();
         $this->getSession()->wait(10000, "$('.active') == 0");
     }
