@@ -18,7 +18,7 @@
  */
 ?>
 <section class="box patient-info js-toggle-container">
-	<h3 class="box-title">Pedigree:</h3>
+	<h3 class="box-title">Genetics:</h3>
 	<a href="#" class="toggle-trigger toggle-hide js-toggle">
 		<span class="icon-showhide">
 			Show/hide this section
@@ -34,60 +34,12 @@
 					<div class="data-value"><?php echo $pp->pedigree_id?> (<?php echo CHtml::link('edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pp->pedigree_id))?>)</div>
 				</div>
 			</div>
-			<div class="row data-row highlight">
-				<div class="large-4 column">
-					<div class="data-label"><?php echo $pp->pedigree->getAttributeLabel('inheritance_id')?>:</div>
-				</div>
-				<div class="large-8 column">
-					<div class="data-value"><?php echo $pp->pedigree->inheritance ? $pp->pedigree->inheritance->name : 'None'?></div>
-				</div>
-			</div>
-			<div class="row data-row highlight">
-				<div class="large-4 column">
-					<div class="data-label"><?php echo $pp->pedigree->getAttributeLabel('gene_id')?>:</div>
-				</div>
-				<div class="large-8 column">
-					<div class="data-value"><?php echo $pp->pedigree->gene ? $pp->pedigree->gene->name : 'None'?></div>
-				</div>
-			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
-					<div class="data-label"><?php echo $pp->pedigree->getAttributeLabel('consanguinity')?>:</div>
-				</div>
-				<div class="large-8 column">
-					<div class="data-value"><?php echo $pp->pedigree->consanguinity ? 'Yes' : 'No'?></div>
-				</div>
-			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
-					<div class="data-label"><?php echo $pp->pedigree->getAttributeLabel('disorder_id')?>:</div>
-				</div>
-				<div class="large-8 column">
-					<div class="data-value"><?php echo $pp->pedigree->disorder ? $pp->pedigree->disorder->term : 'None'?></div>
-				</div>
-			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
-					<div class="data-label"><?php echo $pp->pedigree->getAttributeLabel('base_change')?>:</div>
-				</div>
-				<div class="large-8 column">
-					<div class="data-value"><?php echo $pp->pedigree->base_change?></div>
-				</div>
-			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
-					<div class="data-label"><?php echo $pp->pedigree->getAttributeLabel('amino_acid_change')?>:</div>
-				</div>
-				<div class="large-8 column">
-					<div class="data-value"><?php echo $pp->pedigree->amino_acid_change?></div>
-				</div>
-			</div>
 			<div class="row data-row">
 				<div class="large-4 column">
 					<div class="data-label"><?php echo $pp->pedigree->getAttributeLabel('comments')?>:</div>
 				</div>
 				<div class="large-8 column">
-					<div class="data-value"><?php echo $pp->pedigree->comments?></div>
+					<div class="data-value"><?php echo CHtml::encode($pp->pedigree->comments)?></div>
 				</div>
 			</div>
 		<?php }else{?>

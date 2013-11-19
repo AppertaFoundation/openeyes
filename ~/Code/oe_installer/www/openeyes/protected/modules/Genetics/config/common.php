@@ -11,7 +11,7 @@ return array(
 		'module_partials' => array(
 			'patient_summary_column1' => array(
 				'Genetics' => array(
-					'_patient_pedigree',
+					'_patient_genetics',
 				),
 			),
 		),
