@@ -43,10 +43,10 @@ class BaseEventTypeController extends BaseController
 	public $successUri = 'default/view/';
 	// String to set an issue when an event is created
 	public $eventIssueCreate;
+	// defines additional variables to be available in view templates
 	public $extraViewProperties = array();
 	public $jsVars = array();
 	public $layout = '//layouts/events_and_episodes';
-	public $current_episode;
 	private $episodes = array();
 	public $renderPatientPanel = true;
 
@@ -143,8 +143,16 @@ class BaseEventTypeController extends BaseController
 	}
 
 	/**
-<<<<<<< HEAD
-=======
+	 * Wrapper around the episode property on this controller - current_episode is used in patient layouts
+	 *
+	 * @return Episode
+	 */
+	public function getCurrent_episode()
+	{
+		return $this->episode;
+	}
+
+	/**
 	 * Abstraction of getting the elements for the event being controlled to allow more complex overrides (such as workflow)
 	 * where required
 	 *
@@ -162,7 +170,6 @@ class BaseEventTypeController extends BaseController
 
 
 	/**
->>>>>>> + merge nested elements behaviour into base controller
 	 * Renders the metadata of the event with the standard template
 	 * @param string $view
 	 */
