@@ -166,12 +166,16 @@ small.error {
 .field-info {
 	font-size: $default-font-size;
 	display: inline-block;
+	select, input, textarea {
+		font-size: 1em;
+	}
 }
 
 /* Field highlight */
 .field-highlight {
 	@extend .pill;
 	display: block;
+	font-size: 1em;
 	&.inline {
 		display: inline-block;
 	}
