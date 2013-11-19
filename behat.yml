@@ -78,10 +78,13 @@ selenium-orbis:
 phantomjs:
     extensions:
         Behat\MinkExtension\Extension:
-            base_url: http://localhost:8888
+            base_url:           http://localhost:8888
+            browser_name:       "phantomjs"
             goutte: ~
+            default_session:    selenium2
+            javascript_session: selenium2
             selenium2:
-                wd_host: "http://localhost:8643/wd/hub"
+              browser: 'phantomjs'
 
     formatter:
         name:               pretty,html
