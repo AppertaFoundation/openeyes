@@ -1074,7 +1074,7 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1384853882') 0 0 no-repeat;
+  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1384855298') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1230px;
@@ -2005,7 +2005,7 @@ table.patient-contacts td:first-child {
 }
 /* line 36, ../sass/openeyes/components/_header.scss */
 .header .logo {
-  background: url('../img/_structure/openeyes.png?1384853882') no-repeat;
+  background: url('../img/_structure/openeyes.png?1384855298') no-repeat;
   background-size: 100%;
   display: block;
   height: 70px;
@@ -2506,8 +2506,8 @@ button, .button, input[type="submit"] {
   text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
   margin: 0;
 }
-/* line 61, ../sass/openeyes/components/_buttons.scss */
-button:hover, button:focus, .button:hover, .button:focus, input[type="submit"]:hover, input[type="submit"]:focus {
+/* line 60, ../sass/openeyes/components/_buttons.scss */
+button:hover, .button:hover, input[type="submit"]:hover {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #118afb), color-stop(100%, #1279e3));
   background: -webkit-linear-gradient(#118afb, #1279e3);
   background: -moz-linear-gradient(#118afb, #1279e3);
@@ -2516,7 +2516,7 @@ button:hover, button:focus, .button:hover, .button:focus, input[type="submit"]:h
   border-color: #1974d1;
   color: white;
 }
-/* line 66, ../sass/openeyes/components/_buttons.scss */
+/* line 65, ../sass/openeyes/components/_buttons.scss */
 button:active, .button:active, input[type="submit"]:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #145ea9), color-stop(100%, #104d8b));
   background: -webkit-linear-gradient(#145ea9, #104d8b);
@@ -2526,7 +2526,7 @@ button:active, .button:active, input[type="submit"]:active {
   border-color: #0f467e;
 }
 
-/* line 74, ../sass/openeyes/components/_buttons.scss */
+/* line 73, ../sass/openeyes/components/_buttons.scss */
 button.secondary, .button.secondary, input[type="submit"].secondary {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #43a844), color-stop(100%, #55a256));
   background: -webkit-linear-gradient(#43a844, #55a256);
@@ -2536,8 +2536,8 @@ button.secondary, .button.secondary, input[type="submit"].secondary {
   border-color: #3fa522;
   text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
 }
-/* line 79, ../sass/openeyes/components/_buttons.scss */
-button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus, input[type="submit"].secondary:hover, input[type="submit"].secondary:focus {
+/* line 77, ../sass/openeyes/components/_buttons.scss */
+button.secondary:hover, .button.secondary:hover, input[type="submit"].secondary:hover {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #48bd27), color-stop(100%, #3fa522));
   background: -webkit-linear-gradient(#48bd27, #3fa522);
   background: -moz-linear-gradient(#48bd27, #3fa522);
@@ -2545,7 +2545,7 @@ button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button
   background: linear-gradient(#48bd27, #3fa522);
   border-color: #569b42;
 }
-/* line 83, ../sass/openeyes/components/_buttons.scss */
+/* line 81, ../sass/openeyes/components/_buttons.scss */
 button.secondary:active, .button.secondary:active, input[type="submit"].secondary:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #458446), color-stop(100%, #396c39));
   background: -webkit-linear-gradient(#458446, #396c39);
@@ -2555,7 +2555,7 @@ button.secondary:active, .button.secondary:active, input[type="submit"].secondar
   border-color: #336234;
 }
 
-/* line 92, ../sass/openeyes/components/_buttons.scss */
+/* line 90, ../sass/openeyes/components/_buttons.scss */
 button.warning, button.cancel, .button.cancel, input[type="submit"].cancel, .button.warning, input[type="submit"].warning {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #cf0d27), color-stop(100%, #b8152b));
   background: -webkit-linear-gradient(#cf0d27, #b8152b);
@@ -2565,8 +2565,8 @@ button.warning, button.cancel, .button.cancel, input[type="submit"].cancel, .but
   border-color: #9a091c;
   text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
 }
-/* line 97, ../sass/openeyes/components/_buttons.scss */
-button.warning:hover, button.cancel:hover, .button.cancel:hover, input[type="submit"].cancel:hover, button.warning:focus, button.cancel:focus, .button.cancel:focus, input[type="submit"].cancel:focus, .button.warning:hover, .button.warning:focus, input[type="submit"].warning:hover, input[type="submit"].warning:focus {
+/* line 94, ../sass/openeyes/components/_buttons.scss */
+button.warning:hover, button.cancel:hover, .button.cancel:hover, input[type="submit"].cancel:hover, .button.warning:hover, input[type="submit"].warning:hover {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e81515), color-stop(100%, #e01a1a));
   background: -webkit-linear-gradient(#e81515, #e01a1a);
   background: -moz-linear-gradient(#e81515, #e01a1a);
@@ -2574,7 +2574,7 @@ button.warning:hover, button.cancel:hover, .button.cancel:hover, input[type="sub
   background: linear-gradient(#e81515, #e01a1a);
   border-color: #ad1515;
 }
-/* line 101, ../sass/openeyes/components/_buttons.scss */
+/* line 98, ../sass/openeyes/components/_buttons.scss */
 button.warning:active, button.cancel:active, .button.cancel:active, input[type="submit"].cancel:active, .button.warning:active, input[type="submit"].warning:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #901828), color-stop(100%, #761421));
   background: -webkit-linear-gradient(#901828, #761421);
@@ -2584,7 +2584,7 @@ button.warning:active, button.cancel:active, .button.cancel:active, input[type="
   border-color: #6b121e;
 }
 
-/* line 110, ../sass/openeyes/components/_buttons.scss */
+/* line 107, ../sass/openeyes/components/_buttons.scss */
 button.delete, .button.delete, input[type="submit"].delete {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -2595,8 +2595,8 @@ button.delete, .button.delete, input[type="submit"].delete {
   color: #000;
   text-shadow: none;
 }
-/* line 119, ../sass/openeyes/components/_buttons.scss */
-button.delete:active, button.delete:hover, button.delete:focus, .button.delete:active, .button.delete:hover, .button.delete:focus, input[type="submit"].delete:active, input[type="submit"].delete:hover, input[type="submit"].delete:focus {
+/* line 114, ../sass/openeyes/components/_buttons.scss */
+button.delete:hover, .button.delete:hover, input[type="submit"].delete:hover {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #cf0d27), color-stop(100%, #b8152b));
   background: -webkit-linear-gradient(#cf0d27, #b8152b);
   background: -moz-linear-gradient(#cf0d27, #b8152b);
@@ -2608,7 +2608,7 @@ button.delete:active, button.delete:hover, button.delete:focus, .button.delete:a
   text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
   color: #fff;
 }
-/* line 125, ../sass/openeyes/components/_buttons.scss */
+/* line 120, ../sass/openeyes/components/_buttons.scss */
 button.delete:active, .button.delete:active, input[type="submit"].delete:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #901828), color-stop(100%, #761421));
   background: -webkit-linear-gradient(#901828, #761421);
@@ -2619,7 +2619,7 @@ button.delete:active, .button.delete:active, input[type="submit"].delete:active 
   color: #fff;
 }
 
-/* line 135, ../sass/openeyes/components/_buttons.scss */
+/* line 130, ../sass/openeyes/components/_buttons.scss */
 button.cancel, .button.cancel, input[type="submit"].cancel {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -2629,8 +2629,8 @@ button.cancel, .button.cancel, input[type="submit"].cancel {
   color: #ad1515;
   text-shadow: none;
 }
-/* line 144, ../sass/openeyes/components/_buttons.scss */
-button.cancel:active, button.cancel:focus, button.cancel:hover, .button.cancel:active, .button.cancel:focus, .button.cancel:hover, input[type="submit"].cancel:active, input[type="submit"].cancel:focus, input[type="submit"].cancel:hover {
+/* line 138, ../sass/openeyes/components/_buttons.scss */
+button.cancel:active, button.cancel:hover, .button.cancel:active, .button.cancel:hover, input[type="submit"].cancel:active, input[type="submit"].cancel:hover {
   -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
@@ -2640,8 +2640,8 @@ button.cancel:active, button.cancel:focus, button.cancel:hover, .button.cancel:a
   color: #fff;
 }
 
-/* line 163, ../sass/openeyes/components/_buttons.scss */
-button.disabled, button.inactive, .button.inactive, input[type="submit"].inactive, button.disabled:hover, button.inactive:hover, .button.inactive:hover, input[type="submit"].inactive:hover, button.disabled:focus, button.inactive:focus, .button.inactive:focus, input[type="submit"].inactive:focus, button.disabled:active, button.inactive:active, .button.inactive:active, input[type="submit"].inactive:active, button[disabled], button[disabled]:hover, button[disabled]:focus, button[disabled]:active, .button.disabled, .button.disabled:hover, .button.disabled:focus, .button.disabled:active, .button[disabled], .button[disabled]:hover, .button[disabled]:focus, .button[disabled]:active, input[type="submit"].disabled, input[type="submit"].disabled:hover, input[type="submit"].disabled:focus, input[type="submit"].disabled:active, input[type="submit"][disabled], input[type="submit"][disabled]:hover, input[type="submit"][disabled]:focus, input[type="submit"][disabled]:active {
+/* line 156, ../sass/openeyes/components/_buttons.scss */
+button.disabled, button.inactive, .button.inactive, input[type="submit"].inactive, button.disabled:hover, button.inactive:hover, .button.inactive:hover, input[type="submit"].inactive:hover, button.disabled:active, button.inactive:active, .button.inactive:active, input[type="submit"].inactive:active, button[disabled], button[disabled]:hover, button[disabled]:active, .button.disabled, .button.disabled:hover, .button.disabled:active, .button[disabled], .button[disabled]:hover, .button[disabled]:active, input[type="submit"].disabled, input[type="submit"].disabled:hover, input[type="submit"].disabled:active, input[type="submit"][disabled], input[type="submit"][disabled]:hover, input[type="submit"][disabled]:active {
   background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #aaaaaa), color-stop(100%, #999999));
   background: -webkit-linear-gradient(#aaaaaa, #999999);
   background: -moz-linear-gradient(#aaaaaa, #999999);
@@ -2652,13 +2652,13 @@ button.disabled, button.inactive, .button.inactive, input[type="submit"].inactiv
   text-shadow: none;
 }
 
-/* line 191, ../sass/openeyes/components/_buttons.scss */
+/* line 184, ../sass/openeyes/components/_buttons.scss */
 button.small, .button.small, input[type="submit"].small {
   padding: 0.3125em 1.25em;
   font-size: 0.8125em;
   letter-spacing: 1px;
 }
-/* line 196, ../sass/openeyes/components/_buttons.scss */
+/* line 189, ../sass/openeyes/components/_buttons.scss */
 button.tiny, .button.tiny, input[type="submit"].tiny {
   padding: 0.3125em 1.25em;
   font-size: 0.6875em;
@@ -2666,35 +2666,35 @@ button.tiny, .button.tiny, input[type="submit"].tiny {
   line-height: 1.4;
 }
 
-/* line 224, ../sass/openeyes/components/_buttons.scss */
+/* line 217, ../sass/openeyes/components/_buttons.scss */
 button [class*="icon-button-small-"], .button [class*="icon-button-small-"], input[type="submit"] [class*="icon-button-small-"] {
   margin: -6px -2px -5px -14px;
 }
-/* line 228, ../sass/openeyes/components/_buttons.scss */
+/* line 221, ../sass/openeyes/components/_buttons.scss */
 button.button-icon.small, .button.button-icon.small, input[type="submit"].button-icon.small {
   padding-right: 0.0625em;
   padding-left: 0.0625em;
 }
-/* line 231, ../sass/openeyes/components/_buttons.scss */
+/* line 224, ../sass/openeyes/components/_buttons.scss */
 button.button-icon.small [class*="icon-button-small-"], .button.button-icon.small [class*="icon-button-small-"], input[type="submit"].button-icon.small [class*="icon-button-small-"] {
   margin: -7px 0 -5px 0;
 }
-/* line 234, ../sass/openeyes/components/_buttons.scss */
+/* line 227, ../sass/openeyes/components/_buttons.scss */
 button.button-icon.small.delete, .button.button-icon.small.delete, input[type="submit"].button-icon.small.delete {
   padding-right: 0.3125em;
   padding-left: 0.3125em;
   padding-bottom: 0.4375em;
 }
-/* line 238, ../sass/openeyes/components/_buttons.scss */
+/* line 231, ../sass/openeyes/components/_buttons.scss */
 button.button-icon.small.delete [class*="icon-button-small-"], .button.button-icon.small.delete [class*="icon-button-small-"], input[type="submit"].button-icon.small.delete [class*="icon-button-small-"] {
   margin-top: -6px;
 }
-/* line 244, ../sass/openeyes/components/_buttons.scss */
+/* line 237, ../sass/openeyes/components/_buttons.scss */
 button.button-icon.small.delete:hover .icon-button-small-trash-can, button.button-icon.small.delete:focus .icon-button-small-trash-can, button.button-icon.small.delete:active .icon-button-small-trash-can, .button.button-icon.small.delete:hover .icon-button-small-trash-can, .button.button-icon.small.delete:focus .icon-button-small-trash-can, .button.button-icon.small.delete:active .icon-button-small-trash-can, input[type="submit"].button-icon.small.delete:hover .icon-button-small-trash-can, input[type="submit"].button-icon.small.delete:focus .icon-button-small-trash-can, input[type="submit"].button-icon.small.delete:active .icon-button-small-trash-can {
   background-position: 0 -72px;
 }
 
-/* line 265, ../sass/openeyes/components/_buttons.scss */
+/* line 258, ../sass/openeyes/components/_buttons.scss */
 .button-group {
   list-style: none;
   margin: 0;
@@ -2709,7 +2709,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, button.butto
 .button-group:after {
   clear: both;
 }
-/* line 267, ../sass/openeyes/components/_buttons.scss */
+/* line 260, ../sass/openeyes/components/_buttons.scss */
 .button-group > li {
   margin: 0 0 0 -1px;
   float: left;
@@ -2718,7 +2718,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, button.butto
 .button-group > li:first-child {
   margin-left: 0;
 }
-/* line 270, ../sass/openeyes/components/_buttons.scss */
+/* line 263, ../sass/openeyes/components/_buttons.scss */
 .button-group button, .button-group .button, .button-group input[type="submit"] {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -2728,7 +2728,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, button.butto
   padding: 0.5em 1em;
   margin: 0;
 }
-/* line 276, ../sass/openeyes/components/_buttons.scss */
+/* line 269, ../sass/openeyes/components/_buttons.scss */
 .button-group li:first-child button, .button-group li:first-child .button, .button-group li:first-child input[type="submit"] {
   -webkit-border-radius: 4px 0 0 4px;
   -moz-border-radius: 4px 0 0 4px;
@@ -2736,7 +2736,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, button.butto
   -o-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px;
 }
-/* line 281, ../sass/openeyes/components/_buttons.scss */
+/* line 274, ../sass/openeyes/components/_buttons.scss */
 .button-group li:last-child button, .button-group li:last-child .button, .button-group li:last-child input[type="submit"] {
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius: 0 4px 4px 0;
@@ -2744,7 +2744,7 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, button.butto
   -o-border-radius: 0 4px 4px 0;
   border-radius: 0 4px 4px 0;
 }
-/* line 286, ../sass/openeyes/components/_buttons.scss */
+/* line 279, ../sass/openeyes/components/_buttons.scss */
 .button-group.small button, .button-group.small .button, .button-group.small input[type="submit"] {
   padding: 0.3125em 0.625em;
 }
@@ -3829,11 +3829,11 @@ tfoot.pagination-container .pagination li {
 }
 /* line 125, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning {
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384853882'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384853882'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384853882'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384853882'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384853882'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384855298'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384855298'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384855298'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384855298'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384855298'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
 }
 /* line 128, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning .warning .messages {
