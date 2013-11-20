@@ -160,4 +160,18 @@ $oe-search-filters-extra-label-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
 		margin-top: emCalc(2px);
 		vertical-align: top;
 	}
+	&.audit-filters {
+		fieldset {
+			padding-left: 0;
+			.inline {
+				margin: 0 emCalc(12px);
+				float: none;
+				font-size: $default-font-size;
+				&:first-child {
+					margin-left: 0;
+				}
+			}
+		}
+	}
 }
+

@@ -175,7 +175,9 @@ table {
 // Styleguide 6.4
 table {
 	&.plain {
-		border: 0;
+		&, td, th, tr {
+			border: 0;
+		}
 		&, tr:nth-of-type(even) {
 			background: transparent;
 		}
@@ -190,12 +192,12 @@ table {
 		min-width: 0;
 		thead {
 			background: none;
-			th {
-				background: none;
-				font-weight: normal;
-				font-size: $default-font-size;
-				padding-left: 0;
-			}
+		}
+		th {
+			background: none;
+			font-weight: normal;
+			font-size: $default-font-size;
+			padding-left: 0;
 		}
 		tfoot {
 			background: none;
@@ -257,6 +259,38 @@ table {
 		}
 		td:first-child {
 			font-size: $default-font-size;
+		}
+	}
+}
+
+// Audit logs table
+table {
+	&.audit-logs {
+		tr {
+			&.even.green {
+				background-color: #c6ebb9;
+			}
+			&.odd.green {
+				background-color: #e0f8d8;
+			}
+			&.even.red {
+				background-color: #eba694;
+			}
+			&.odd.red {
+				background-color: #e9c2b8;
+			}
+		}
+	}
+	&.log-details {
+		width: 100%;
+		table-layout: fixed;
+		th {
+			vertical-align: top;
+			width: 9%;
+		}
+		.data {
+			overflow-x: auto;
+			padding-bottom: 1px;
 		}
 	}
 }
