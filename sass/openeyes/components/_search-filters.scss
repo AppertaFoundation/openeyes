@@ -130,7 +130,8 @@ $oe-search-filters-extra-label-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
 		margin: 0 emCalc(12px) 0 0;
 		padding: $oe-search-filters-extra-label-padding;
 		input {
-			margin: 0 emCalc(5px) 0 0;
+			margin: -3px emCalc(5px) 0 0;
+			vertical-align: middle;
 		}
 	}
 	fieldset {
