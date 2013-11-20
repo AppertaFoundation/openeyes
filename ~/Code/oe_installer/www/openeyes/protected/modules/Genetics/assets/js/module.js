@@ -3,8 +3,13 @@
 
 $(document).ready(function() {
 	$('#search_button').click(function(e) {
-		window.location.href = baseUrl+'/Genetics/default/pedigrees?family-id='+$('#family-id').val()+'&gene-id='+$('#gene-id').val()+'&consanguineous='+$('#consanguineous').val()+'&disorder-id='+$('#savedDiagnosis').val();
 		e.preventDefault();
+		window.location.href = baseUrl+'/Genetics/search/index?gene-id='+$('#gene-id').val()+'&disorder-id='+$('#savedDiagnosis').val();
+	});
+
+	$('tr.clickable').click(function(e) {
+		e.preventDefault();
+		window.location.href = $(this).data('uri');
 	});
 });
 
