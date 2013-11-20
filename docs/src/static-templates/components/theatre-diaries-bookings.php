@@ -326,6 +326,23 @@
 						</table>
 					</div>
 					<div class="large-3 column">
+						<div class="panel session-options">
+							<label>
+								<input type="checkbox" /> Consultant present
+							</label>
+							<label>
+								<input type="checkbox" /> Paediatric
+							</label>
+							<label>
+								<input type="checkbox" /> Anaesthetist present
+							</label>
+							<label>
+								<input type="checkbox" /> General anaesthetic available
+							</label>
+							<label>
+								<input type="checkbox" /> Session available
+							</label>
+						</div>
 						<div class="panel comments">
 							<h4>Session comments</h4>
 							<textarea placeholder="Enter session comments..."></textarea>
