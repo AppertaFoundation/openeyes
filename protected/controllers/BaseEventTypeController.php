@@ -251,28 +251,26 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function beforeAction($action)
 	{
-		if (parent::beforeAction($action)) {
-			// Automatic file inclusion unless it's an ajax call
-			if ($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
-				if (!in_array($action->id,$this->printActions())) {
-					// nested elements behaviour
-					//TODO: possibly put this into standard js library for events
-					Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
-					Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('js/nested_elements.js'));
-				}
+		// Automatic file inclusion unless it's an ajax call
+		if ($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
+			if (!in_array($action->id,$this->printActions())) {
+				// nested elements behaviour
+				//TODO: possibly put this into standard js library for events
+				Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
+				Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('js/nested_elements.js'));
 			}
-
-			$this->firm = Firm::model()->findByPk($this->selectedFirmId);
-
-			if (!isset($this->firm)) {
-				// No firm selected, reject
-				throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
-			}
-
-			$this->initAction($action->id);
-			return true;
 		}
-		return false;
+
+		$this->firm = Firm::model()->findByPk(Yii::app()->session->get('selected_firm_id'));
+
+		if (!isset($this->firm)) {
+			// No firm selected, reject
+			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
+		}
+
+		$this->initAction($action->id);
+
+		return parent::beforeAction($action);
 	}
 
 	/**
