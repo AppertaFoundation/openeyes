@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class BaseEventTypeController extends BaseController
+class BaseEventTypeController extends BaseModuleController
 {
 	public $model;
 	/* @var Firm */
@@ -28,14 +28,10 @@ class BaseEventTypeController extends BaseController
 	public $site;
 	/* @var Event */
 	public $event;
-	/* @var EventType event type for this controller */
-	private $_event_type;
 	public $editable = true;
 	public $editing;
 	private $title;
-	public $assetPath;
 	public $episode;
-	public $moduleNameCssClass = '';
 	public $moduleStateCssClass = '';
 	public $event_tabs = array();
 	public $event_actions = array();
@@ -45,7 +41,6 @@ class BaseEventTypeController extends BaseController
 	public $eventIssueCreate;
 	// defines additional variables to be available in view templates
 	public $extraViewProperties = array();
-	public $jsVars = array();
 	public $layout = '//layouts/events_and_episodes';
 	private $episodes = array();
 	public $renderPatientPanel = true;
@@ -66,15 +61,6 @@ class BaseEventTypeController extends BaseController
 	public function setTitle($title)
 	{
 		$this->title=$title;
-	}
-
-	public function init()
-	{
-		// Set asset path
-		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
-			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
-		}
-		return parent::init();
 	}
 
 	/**
@@ -127,19 +113,6 @@ class BaseEventTypeController extends BaseController
 			),
 			array('deny'),
 		);
-	}
-
-	/**
-	 * The EventType class for this module
-	 *
-	 * @return EventType
-	 */
-	public function getEvent_type()
-	{
-		if (!$this->_event_type) {
-			$this->_event_type = EventType::model()->find('class_name=?', array($this->getModule()->name));
-		}
-		return $this->_event_type;
 	}
 
 	/**
@@ -259,16 +232,6 @@ class BaseEventTypeController extends BaseController
 	}
 
 	/**
-	 * Whether the current user is allowed to call print actions
-	 *
-	 * @return boolean
-	 */
-	public function canPrint()
-	{
-		return BaseController::checkUserLevel(3);
-	}
-
-	/**
 	 * define the name of the actions that are print actions (for checking access based on print rules)
 	 *
 	 * @return array
@@ -288,65 +251,28 @@ class BaseEventTypeController extends BaseController
 	 */
 	protected function beforeAction($action)
 	{
-		if ($this->event_type->disabled) {
-			// disabled module
-			$this->redirectToPatientEpisodes();
-		}
-
-		// Set the module CSS class name.
-		$this->moduleNameCssClass = strtolower(Yii::app()->getController()->module->id);
-
-		// Automatic file inclusion unless it's an ajax call
-		if ($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
-
-			if (in_array($action->id,$this->printActions())) {
-				// Register print css
-				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/print.css')) {
-					$this->registerCssFile('module-print.css', $this->assetPath.'/css/print.css');
+		if (parent::beforeAction($action)) {
+			// Automatic file inclusion unless it's an ajax call
+			if ($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
+				if (!in_array($action->id,$this->printActions())) {
+					// nested elements behaviour
+					//TODO: possibly put this into standard js library for events
+					Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
+					Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('js/nested_elements.js'));
 				}
-
-			} else {
-				// Register js
-				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/module.js')) {
-					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/module.js');
-				}
-
-				// Register css
-				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/module.css')) {
-					$this->registerCssFile('module.css',$this->assetPath.'/css/module.css',10);
-				}
-				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/css/'.get_class($this).'.css')) {
-					$this->registerCssFile(get_class($this).'.css',$this->assetPath.'/css/'.get_class($this).'.css',10);
-				}
-
-				// nested elements behaviour
-				//TODO: possibly put this into standard js library for events
-				Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
-				Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('js/nested_elements.js'));
 			}
+
+			$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+
+			if (!isset($this->firm)) {
+				// No firm selected, reject
+				throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
+			}
+
+			$this->initAction($action->id);
+			return true;
 		}
-
-		parent::storeData();
-
-		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
-
-		if (!isset($this->firm)) {
-			// No firm selected, reject
-			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
-		}
-
-		$this->initAction($action->id);
-
-		return parent::beforeAction($action);
-	}
-
-	/**
-	 * Redirect to the patient episodes when the controller determines the action cannot be carried out
-	 *
-	 */
-	protected function redirectToPatientEpisodes()
-	{
-		$this->redirect(array("/patient/episodes/".$this->patient->id));
+		return false;
 	}
 
 	/**
@@ -1195,9 +1121,9 @@ class BaseEventTypeController extends BaseController
 	{
 		if (empty($this->episodes)) {
 			$this->episodes = array(
-				'ordered_episodes'=>$this->patient->getOrderedEpisodes(),
-				'legacyepisodes'=>$this->patient->legacyepisodes,
-				'supportserviceepisodes'=>$this->patient->supportserviceepisodes,
+				'ordered_episodes' => $this->patient->getOrderedEpisodes(),
+				'legacyepisodes' => $this->patient->legacyepisodes,
+				'supportserviceepisodes' => $this->patient->supportserviceepisodes,
 			);
 		}
 		return $this->episodes;

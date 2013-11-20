@@ -28,9 +28,6 @@ class BaseController extends Controller
 	public $selectedFirmId;
 	public $selectedSiteId;
 	public $firms;
-	public $showForm = false;
-	public $patientId;
-	public $patientName;
 	public $jsVars = array();
 	protected $css = array();
 
@@ -176,18 +173,12 @@ class BaseController extends Controller
 		}
 
 		if (isset($app->session['firms']) && count($app->session['firms'])) {
-			$this->showForm = true;
-
 			$this->firms = $app->session['firms'];
 			$this->selectedFirmId = $app->session['selected_firm_id'];
 		}
 
 		if (isset($app->session['selected_site_id'])) {
 			$this->selectedSiteId = $app->session['selected_site_id'];
-		}
-
-		if (isset($app->session['patient_name'])) {
-			$this->patientName = $app->session['patient_name'];
 		}
 
 		$this->registerCssFiles();
@@ -239,12 +230,6 @@ class BaseController extends Controller
 
 		$this->setSessionPatient($patient);
 
-		if (isset(Yii::app()->session['patient_id'])) {
-			$this->patientId = Yii::app()->session['patient_id'];
-		}
-		if (isset(Yii::app()->session['patient_name'])) {
-			$this->patientName = Yii::app()->session['patient_name'];
-		}
 	}
 
 	protected function setSessionPatient($patient)
@@ -270,13 +255,6 @@ class BaseController extends Controller
 			$app->session['patient_id'] = 1;
 			$app->session['patient_name'] = 'John Smith';
 		}
-
-		if (isset($app->session['patient_id'])) {
-			$this->patientId = $app->session['patient_id'];
-			$this->patientName = $app->session['patient_name'];
-		} else {
-			throw new CHttpException(403, 'You are not authorised to perform this action.');
-		}
 	}
 
 	public function storeData()
@@ -284,14 +262,8 @@ class BaseController extends Controller
 		$app = Yii::app();
 
 		if (!empty($app->session['firms'])) {
-			$this->showForm = true;
-
 			$this->firms = $app->session['firms'];
 			$this->selectedFirmId = $app->session['selected_firm_id'];
-		}
-
-		if (isset($app->session['patient_name'])) {
-			$this->patientName = $app->session['patient_name'];
 		}
 	}
 
