@@ -54,7 +54,7 @@
 						}?>
 					</tbody>
 				</table>
-				<div class="pagination"></div>
+				<div class="pagination last"></div>
 			<?php }?>
 		</div>
 	</div>

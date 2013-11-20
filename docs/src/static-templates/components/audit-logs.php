@@ -7,6 +7,15 @@
 <div class="row">
 	<div class="large-12 column">
 		<div class="box generic">
+			<div class="pagination">
+				<div class="panel logs-pagination">
+					<div class="pages">
+						&laquo; previous&nbsp;&nbsp;
+						1&nbsp;&nbsp;
+						next &raquo;&nbsp;&nbsp;
+					</div>
+				</div>
+			</div>
 			<table class="grid audit-logs">
 				<thead>
 					<tr>
@@ -183,6 +192,15 @@
 					</tr>
 				</tbody>
 			</table>
+			<div class="pagination last">
+				<div class="panel logs-pagination">
+					<div class="pages">
+						&laquo; previous&nbsp;&nbsp;
+						1&nbsp;&nbsp;
+						next &raquo;&nbsp;&nbsp;
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

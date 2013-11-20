@@ -24,4 +24,13 @@
 			padding-top: 4px;
 		}
 	}
+	&.logs-pagination {
+		.pages {
+			font-size: $default-font-size;
+		}
+		margin-bottom: .75em;
+		.last & {
+			margin-bottom: 0;
+		}
+	}
 }
