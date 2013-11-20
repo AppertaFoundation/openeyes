@@ -139,13 +139,15 @@ $oe-element-edit-title-font-style: italic;
 	}
 	.element-title-additional {
 		float: left;
-		font-size: $default-font-size;
-		line-height: 2.4em;
 		margin-left: .5em;
-		small {
-			display: inline-block;
-			font-size: 85%;
-			margin-left: .5em;
+		line-height: 2em;
+		.info {
+			font-size: $default-font-size;
+			small {
+				display: inline-block;
+				font-size: 85%;
+				margin-left: .5em;
+			}
 		}
 	}
 	.element-fields {

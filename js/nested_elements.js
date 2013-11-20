@@ -27,6 +27,7 @@ function showActiveChildElements() {
 }
 
 function addElement(element, animate, is_child, previous_id, params) {
+
 	if (typeof (animate) === 'undefined')
 		animate = true;
 	if (typeof (is_child) === 'undefined')
@@ -56,10 +57,11 @@ function addElement(element, animate, is_child, previous_id, params) {
 		}
 
 		$(element).remove();
+
 		var insert_before = container.find('.sub-element, .element').first();
 
 		while (parseInt(insert_before.attr('data-element-display-order')) < parseInt(display_order)) {
-			insert_before = insert_before.nextAll('div:first');
+			insert_before = insert_before.nextAll('.sub-element, .element').first();
 		}
 		if (insert_before.length) {
 			insert_before.before(data);
@@ -73,7 +75,7 @@ function addElement(element, animate, is_child, previous_id, params) {
 			var cel = $(container).find('.'+element_type_class);
 			var pel = $(container).parents('.sub-element, .element');
 			var sideField = $(cel).find('input.sideField');
-		if ($(sideField).length && $(pel).find('input.sideField').length) {
+			if ($(sideField).length && $(pel).find('input.sideField').length) {
 				$(sideField).val($(pel).find('.sideField').val());
 
 				if($(sideField).val() == '1') {
