@@ -178,7 +178,8 @@ class BaseEventTypeController extends BaseController
 		$this->renderPartial($view);
 	}
 	/**
-	 * get the open elements for the event that are not children
+	 * Get the open elements for the event that are not children
+	 *
 	 * @return array
 	 */
 	public function getElements()
@@ -609,7 +610,6 @@ class BaseEventTypeController extends BaseController
 	public function actionView($id)
 	{
 		$this->open_elements = $this->event->getElements();
-
 		// Decide whether to display the 'edit' button in the template
 		if ($this->editable) {
 			if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
@@ -912,6 +912,7 @@ class BaseEventTypeController extends BaseController
 	protected function setAndValidateElementsFromData($data)
 	{
 		$errors = array();
+		$elements = array();
 
 		// only process data for elements that are part of the element type set for the controller event type
 		foreach ($this->event_type->getAllElementTypes() as $element_type) {
@@ -958,7 +959,11 @@ class BaseEventTypeController extends BaseController
 			}
 			elseif ($element_type->required) {
 				$errors['Event'][] = $element_type->name . ' is required';
+				$elements[] = new $el_cls_name;
 			}
+		}
+		if (!count($elements)) {
+			$errors['Event'][] = 'Cannot create an event without at least one element';
 		}
 
 		// assign

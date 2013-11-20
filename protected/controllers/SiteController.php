@@ -151,13 +151,15 @@ class SiteController extends BaseController
 	 */
 	public function actionChangeSiteAndFirm()
 	{
-		if (empty($_GET['returnUrl'])) {
-			throw new CHttpException(500, 'Return URL must be specified');
+		if (!$return_url = @$_GET['returnUrl']) {
+			if (!$return_url = @$_POST['returnUrl']) {
+				throw new CHttpException(500, 'Return URL must be specified');
+			}
 		}
 		if (@$_GET['patient_id']) {
 			$patient = Patient::model()->findByPk(@$_GET['patient_id']);
 		}
-		$this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $_GET['returnUrl'], 'patient'=>@$patient), false, true);
+		$this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $return_url), false, true);
 	}
 
 	/**
