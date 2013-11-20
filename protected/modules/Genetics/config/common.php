@@ -15,5 +15,8 @@ return array(
 				),
 			),
 		),
+		'advanced_search' => array(
+			'Genetics',
+		),
 	)
 );
