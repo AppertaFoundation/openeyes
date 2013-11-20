@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -17,7 +16,13 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
+?>
+<?php
+/**
+ * @todo : refactor the html
+ */
+?>
+<?php
 if ($data['page'] >1) {?>
 	<a href="#" class="changePage" id="page<?php echo ($data['page']-1)?>">&laquo; previous</a>&nbsp;&nbsp;
 <?php } else {?>

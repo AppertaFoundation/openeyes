@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -17,7 +16,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
+?>
+<?php
+/**
+ * @todo : refactor the html
+ */
 ?>
 					<li class="auditlist<?php echo ($i % 2 == 0) ? 'Even' : 'Odd'; echo $log->colour;?>" id="audit<?php echo $log->id?>"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
 						<span class="timestamp"><a href="#" id="auditItem<?php echo $log->id?>" class="auditItem"><?php echo $log->NHSDate('created_date').' '.substr($log->created_date,11,8)?></a></span>
