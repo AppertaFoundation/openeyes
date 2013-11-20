@@ -22,20 +22,18 @@
  * @todo : refactor the html
  */
 ?>
-<?php
-if ($data['page'] >1) {?>
-	<a href="#" class="changePage" id="page<?php echo ($data['page']-1)?>">&laquo; previous</a>&nbsp;&nbsp;
-<?php } else {?>
-&laquo; previous&nbsp;&nbsp;
-<?php }
-
-echo $data['page'].'&nbsp;&nbsp;';
-
-if ($data['page'] < $data['pages']) {?>
-	<a href="#" class="changePage" id="page<?php echo ($data['page']+1)?>">next &raquo;</a>&nbsp;&nbsp;
-<?php } else {?>
-next &raquo;&nbsp;&nbsp;
-<?php }
-?>
-&nbsp;
-<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+<div class="panel">
+	<?php
+	if ($data['page'] >1) {?>
+		<a href="#" class="changePage" id="page<?php echo ($data['page']-1)?>">&laquo; previous</a>&nbsp;&nbsp;
+	<?php } else {?>
+		&laquo; previous&nbsp;&nbsp;
+	<?php }
+	echo $data['page'].'&nbsp;&nbsp;';
+	if ($data['page'] < $data['pages']) {?>
+		<a href="#" class="changePage" id="page<?php echo ($data['page']+1)?>">next &raquo;</a>&nbsp;&nbsp;
+	<?php } else {?>
+		next &raquo;&nbsp;&nbsp;
+	<?php }
+	?>
+</div>

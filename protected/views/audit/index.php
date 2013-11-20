@@ -22,6 +22,32 @@
  * @todo : refactor the html
  */
 ?>
+
+<h1 class="badge">Audit logs</h1>
+
+<div class="box content">
+	<form method="post" action="/audit/search" id="auditList-filter" class="clearfix">
+		<input type="hidden" id="previous_site_id" value="<?php echo @$_POST['site_id']?>" />
+		<input type="hidden" id="previous_firm_id" value="<?php echo @$_POST['firm_id']?>" />
+		<input type="hidden" id="previous_user" value="<?php echo @$_POST['user']?>" />
+		<input type="hidden" id="previous_action" value="<?php echo @$_POST['action']?>" />
+		<input type="hidden" id="previous_target_type" value="<?php echo @$_POST['target_type']?>" />
+		<input type="hidden" id="previous_event_type_id" value="<?php echo @$_POST['event_type_id']?>" />
+		<input type="hidden" id="previous_date_from" value="<?php echo @$_POST['date_from']?>" />
+		<input type="hidden" id="previous_date_to" value="<?php echo @$_POST['date_to']?>" />
+		<input type="hidden" id="previous_hos_num" value="<?php echo @$_POST['hos_num']?>" />
+		<?php echo $this->renderPartial('_filters');?>
+		<div id="searchResults"></div>
+		<div id="search-loading-msg" class="large-12 column hidden">
+			<div class="alert-box">
+				<img src="/img/ajax-loader.gif" class="spinner" /> <strong>Searching, please wait...</strong>
+			</div>
+		</div>
+	</form>
+</div>
+
+<?php
+/*
 <h2>Audit log</h2>
 <div class="fullWidth fullBox clearfix">
 	<div id="whiteBox">
@@ -145,37 +171,48 @@
 			</div>
 			<div style="float: right; margin-right: 18px;">
 			</div>
-		</div> <!-- .fullWidth -->
+		</div> <!-- .fullWidth -->*/?>
 <script type="text/javascript">
-	handleButton($('#auditList-filter button[type="submit"]'),function(e) {
-		$('#searchResults').html('<div id="auditList" class="grid-view"><ul id="auditList"><li class="header"><span>Searching...</span></li></ul></div>');
+	$(function() {
 
-		$('#page').val(1);
+		var loadingMsg = $('#search-loading-msg');
 
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('audit/search'); ?>',
-			'type': 'POST',
-			'data': $('#auditList-filter').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'success': function(data) {
-				$('#previous_site_id').val($('#site_id').val());
-				$('#previous_firm_id').val($('#firm_id').val());
-				$('#previous_user').val($('#user').val());
-				$('#previous_action').val($('#action').val());
-				$('#previous_target_type').val($('#target_type').val());
-				$('#previous_event_type_id').val($('#event_type_id').val());
-				$('#previous_date_from').val($('#date_from').val());
-				$('#previous_date_to').val($('#date_to').val());
+		handleButton($('#auditList-filter button[type="submit"]'),function(e) {
+			loadingMsg.show();
+			$('#searchResults').empty();
 
-				var s = data.split('<!-------------------------->');
+			// $('#searchResults').html('<div id="auditList" class="grid-view"><ul id="auditList"><li class="header"><span>Searching...</span></li></ul></div>');
 
-				$('#searchResults').html(s[0]);
-				$('div.pagination').html(s[1]).show();
+			$('#page').val(1);
 
-				enableButtons();
-			}
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('audit/search'); ?>',
+				'type': 'POST',
+				'data': $('#auditList-filter').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+				'success': function(data) {
+					$('#previous_site_id').val($('#site_id').val());
+					$('#previous_firm_id').val($('#firm_id').val());
+					$('#previous_user').val($('#user').val());
+					$('#previous_action').val($('#action').val());
+					$('#previous_target_type').val($('#target_type').val());
+					$('#previous_event_type_id').val($('#event_type_id').val());
+					$('#previous_date_from').val($('#date_from').val());
+					$('#previous_date_to').val($('#date_to').val());
+
+					var s = data.split('<!-------------------------->');
+
+					$('#searchResults').html(s[0]);
+					$('.pagination').html(s[1]).show();
+
+					enableButtons();
+				},
+				'complete': function() {
+					loadingMsg.hide();
+				}
+			});
+
+			e.preventDefault();
 		});
-
-		e.preventDefault();
 	});
 
 	$(document).ready(function() {
