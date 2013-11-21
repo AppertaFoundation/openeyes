@@ -87,7 +87,7 @@ function addElement(element, animate, is_child, previous_id, params) {
 			}
 		}
 
-		$('#event_display textarea.autosize:visible').autosize();
+		$('#event-content textarea.autosize:visible').autosize();
 		showActiveChildElements();
 
 		var inserted = (insert_before.length) ? insert_before.prevAll('section:first') : container.find('.sub-element:last, .element:last');
@@ -182,7 +182,7 @@ $(document).ready(function() {
 	/**
 	 * Autoadjust height of textareas
 	 */
-	$('#event_display textarea.autosize:visible').autosize();
+	$('#event-content textarea.autosize:visible').autosize();
 
 	/**
 	 * Add all optional elements
