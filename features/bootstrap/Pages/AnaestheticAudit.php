@@ -23,6 +23,9 @@ class AnaestheticAudit extends Page
       'dischargeYes' => array('xpath' => "//*[@id='Element_OphOuAnaestheticsatisfactionaudit_Notes_ready_for_discharge_id_1']"),
       'dischargeNo' => array('xpath' => "//*[@id='Element_OphOuAnaestheticsatisfactionaudit_Notes_ready_for_discharge_id_2']"),
       'save' => array('xpath' => "//*[@id='et_save']"),
+      'edit' => array('xpath' => "//*[@class='inline-list tabs event-actions']//*[contains(text(),'Edit')]"),
+      'deleteEvent' => array('xpath' => "//*[@class=' delete event-action button button-icon small']//*[@class='icon-button-small-trash-can']"),
+      'confirmDeleteEvent' => array('xpath' => "//button[@id='et_deleteevent']"),
     );
 
     public function anaesthetist ($anaesthetist)
@@ -99,5 +102,19 @@ class AnaestheticAudit extends Page
     {
         $this->getElement('save')->click();
     }
+
+    public function editEvent ()
+    {
+        $this->getElement('edit')->click();
+    }
+
+    public function deleteEvent ()
+    {
+        $this->getElement('deleteEvent')->click();
+        $this->getSession()->wait(3000);
+        $this->getElement('confirmDeleteEvent')->click();
+    }
+
+
 
 }

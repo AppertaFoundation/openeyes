@@ -1,25 +1,33 @@
 #!/usr/bin/env sh
 # define all modules to test
-echo "eyedraw
-OphCiExamination
-OphCiPhasing
-OphCoCorrespondence
-OphCoTherapyapplication
+echo "OphCiExamination
 OphDrPrescription
-OphLeIntravitrealinjection
-OphOuAnaestheticsatisfactionaudit
-OphTrConsent
-OphTrIntravitrealinjection
-OphTrLaser
 OphTrOperationbooking
-OphTrOperationnote" > .enabled-modules
+OphTrOperationnote
+OphTrConsent
+OphCiPhasing
+OphLeEpatientletter
+eyedraw
+mehpas
+OphCoCorrespondence
+MEHCommands
+OphOuAnaestheticsatisfactionaudit
+OphTrIntravitrealinjection
+OphCoTherapyapplication
+OphTrLaser
+" > .enabled-modules
 
 enabled_modules=".enabled-modules"
 modules_path="protected/modules"
 modules_conf_string=""
 
 #git clone modules
+echo "Cloning/checkout modules"
 bin/clone-modules.sh develop
+
+echo "hard reset all and pull"
+#bin/oe-git "reset --hard"
+bin/oe-git pull
 
 #set up modules in conf
 while read module
@@ -38,9 +46,9 @@ sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.aut
 echo 'Moved config files'
 
 # import test sql and migrate up all modules
-vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;\
-    cd /var/www; echo "running oe-git-pull"; bin/oe-git-pull; \
-    echo "running migrate-all"; bin/migrate-all.sh; exit;'
+vagrant ssh -c '/user/bin/mysql -u openeyes -poe_test openeyes -e "drop database openeyes; create database openeyes;";\
+    /usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;\
+    cd /var/www;  echo "running oe-migrate"; bin/oe-migrate; exit;'
 
 #make sure phantomjs is set up and running
 #PHANTOM=`ps aux | grep -c phantom`
@@ -65,6 +73,6 @@ fi
 
 #run tests
 bin/behat --tags=setup --profile=$PROFILE --expand
-bin/behat --tags=confidence --profile=$PROFILE --expand
-bin/behat --tags=regression --profile=$PROFILE --expand
+#bin/behat --tags=confidence --profile=$PROFILE --expand
+bin/behat --tags=examination --profile=$PROFILE --expand
 exit

@@ -92,6 +92,18 @@ class ConsentFormContext extends PageObjectContext
     }
 
     /**
+     * @Given /^I choose an Anaesthetic type of LAC$/
+     */
+    public function iChooseAnAnaestheticTypeOfLAC()
+    {
+        /**
+         * @var ConsentForm $consentForm
+         */
+        $consentForm = $this->getPage('ConsentForm');
+        $consentForm->anaestheticTypeLAC();
+    }
+
+    /**
      * @Given /^I add a common procedure of "([^"]*)"$/
      */
     public function iAddACommonProcedureOf($common)
@@ -222,7 +234,5 @@ class ConsentFormContext extends PageObjectContext
         $consentForm = $this->getPage('ConsentForm');
         $consentForm->saveConsentForm();
     }
-
-
 
 }
