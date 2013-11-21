@@ -16,7 +16,8 @@ class ConsentForm extends Page
         'commonProcedure' => array('xpath' => "//*[@id='select_procedure_id_procedures']"),
         'procedureType' => array('xpath' => "//input[@id='autocomplete_procedure_id_procedures']"),
         'chooseLaser' => array ('xpath' => "//a[contains(text(),'Laser iridoplasty')]"),
-        'anaestheticType' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_anaesthetic_type_id_3']"),
+        'anaestheticTypeLA' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_anaesthetic_type_id_3']"),
+        'anaestheticTypeLAC' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_anaesthetic_type_id_2']"),
         'permissionsImagesNO' => array('xpath' => "//*[@id='Element_OphTrConsent_Permissions_images_id_2']"),
         'permissionsImagesYES' => array('xpath' => "//*[@id='Element_OphTrConsent_Permissions_images_id_1']"),
         'informationLeaflet' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_information']"),
@@ -63,6 +64,7 @@ class ConsentForm extends Page
 public function commonProcedure ($common)
 {
     $this->getElement('commonProcedure')->selectOption($common);
+    $this->getSession()->wait(5000);
 }
 
 public function procedureType ($type)
@@ -75,7 +77,12 @@ public function procedureType ($type)
 
 public function anaestheticTypeLA ()
 {
-    $this->getElement('anaestheticType')->click();
+    $this->getElement('anaestheticTypeLA')->click();
+}
+
+public function anaestheticTypeLAC ()
+{
+    $this->getElement('anaestheticTypeLAC')->click();
 }
 
 public function permissionImagesNo ()
@@ -128,4 +135,6 @@ public function saveConsentForm ()
 {
     $this->getElement('saveConsentForm')->click();
 }
+
+
 }

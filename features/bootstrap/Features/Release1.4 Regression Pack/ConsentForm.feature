@@ -50,7 +50,7 @@ Feature: Create New Consent Form
 
     Then I choose Procedure eye of "Left"
     And I choose an Anaesthetic type of LA
-    And I add a common procedure of "127"
+    And I add a common procedure of "129"
 
     Then I choose Permissions for images Yes
 
