@@ -147,7 +147,10 @@
 									<td>Topical</td>
 									<td>Sedgwick</td>
 									<td class="alerts">
+										<img src="img/diaryIcons/male.png" alt="female" width="17" height="17" title="female">
+										<img src="img/diaryIcons/consultant.png" alt="female" width="17" height="17" title="female">
 										<img src="img/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
+										<img src="img/diaryIcons/warning.png" alt="female" width="17" height="17" title="female">
 										<img src="img/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
 										<img src="img/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
 									</td>
