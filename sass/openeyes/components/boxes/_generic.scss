@@ -17,7 +17,9 @@
 // Generic box
 .box {
 	&.generic {
+    	@include panel;
 		background: #fff;
+		margin-top: 0;
 		padding: emCalc(12px);
 		p:last-child {
 			margin: 0;

@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,30 +17,45 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div id="auditList" class="grid-view">
-	<?php
-	if (empty($data['items'])) {?>
-		<h4>No audit logs match the search criteria.</h4>
-	<?php
-	} else {
-	?>
-		<ul id="auditList">
-			<li class="header">
-				<span class="timestamp">Timestamp</span>
-				<span class="site">Site</span>
-				<span class="firm">Firm</span>
-				<span class="user">User</span>
-				<span class="action">Action</span>
-				<span class="target">Target type</span>
-				<span class="event_type">Event type</span>
-				<span class="patient">Patient</span>
-				<span class="episode">Episode</span>
-			</li>
-			<div id="auditListData">
-				<?php foreach ($data['items'] as $i => $log) {
-					$this->renderPartial('_list_row',array('i'=>$i,'log'=>$log));
-				}?>
-			</div>
-		</ul>
-	<?php }?>
+<div class="row">
+	<div class="large-12 column">
+		<h2>Results:</h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="large-12 column">
+		<div class="box generic">
+			<?php
+			if (empty($data['items'])) {?>
+				<div class="alert-box">
+					No audit logs match the search criteria.
+				</div>
+			<?php
+			} else {?>
+				<div class="pagination"></div>
+				<table class="grid audit-logs">
+					<thead>
+						<tr>
+							<th>Timestamp</th>
+							<th>Site</th>
+							<th>Firm</th>
+							<th>User</th>
+							<th>Action</th>
+							<th>Target type</th>
+							<th>Event type</th>
+							<th>Patient</th>
+							<th>Episode</th>
+						</tr>
+					</thead>
+					<tbody id="auditListData">
+						<?php foreach ($data['items'] as $i => $log) {
+							$this->renderPartial('_list_row',array('i'=>$i,'log'=>$log));
+						}?>
+					</tbody>
+				</table>
+				<div class="pagination last"></div>
+			<?php }?>
+		</div>
+	</div>
 </div>

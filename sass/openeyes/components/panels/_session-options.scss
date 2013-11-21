@@ -14,35 +14,29 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Panels
+// Theatre booking session options panel
 //
-//
-// Styleguide 16.1
+// Styleguide 16.7
 
 .panel {
-	@include panel;
-	@include radius;
-	margin-top: 0;
-	.field-row,
-	.data-row {
-		&:last-child,
-		&:only-child {
-			padding: 0;
+	&.session-options {
+		@include border-radius(0);
+		background: #545065;
+		border: 2px solid #602aba;
+		.theatres-list & {
+			margin-bottom: 0;
+			margin-left: -1 * $column-gutter / 2;
+		}
+		label {
+			color: #ffffde;
+			font-size: emCalc(11px);
+			margin-bottom: emCalc(10px);
+			&:last-child {
+				margin: 0;
+			}
+			input {
+				margin-right: emCalc(5px);
+			}
 		}
 	}
 }
-
-@import "panels/main";
-@import "panels/user";
-@import "panels/patient";
-@import "panels/search";
-@import "panels/actions";
-@import "panels/orange";
-@import "panels/comments";
-@import "panels/session-options";
-@import "panels/specialty";
-@import "panels/episode";
-@import "panels/element";
-@import "panels/login";
-@import "panels/error";
-@import "panels/logs";

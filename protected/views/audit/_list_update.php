@@ -1,4 +1,3 @@
-<?php /* DEPRECATED */ ?>
 <?php
 /**
  * OpenEyes
@@ -18,6 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-				<?php foreach ($data['items'] as $i => $log) {
-					$this->renderPartial('_list_row',array('i'=>$i,'log'=>$log,'hidden'=>true));
-				}?>
+<?php foreach ($data['items'] as $i => $log) {
+	$this->renderPartial('_list_row',array('i'=>$i,'log'=>$log,'hidden'=>true));
+}?>

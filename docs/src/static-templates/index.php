@@ -135,6 +135,16 @@
 									<td><span class="complete">Complete</span></td>
 								</tr>
 								<tr class="heading">
+									<td colspan="3"><h3>Audit logs</h3></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="audit.php">Audit logs</a>
+									</td>
+									<td>The main audit logs template, showing the filters and logs with log details.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr class="heading">
 									<td colspan="3"><h3>Patient summary</h3></td>
 								</tr>
 								<tr>
