@@ -351,7 +351,7 @@ migrate_module() {
 
 	local module=`friendly_dir $1`
 	local found=0
-	local skip_modules=(Sample eyedraw)
+	local skip_modules=(Sample eyedraw MEHCommands mehstaffdb)
 	local m
 
 	for m in "${skip_modules[@]}";
