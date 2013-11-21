@@ -185,7 +185,7 @@
 									<td colspan="10">
 										<div class="time-left">
 											<strong>
-											520 minutes unallocated
+												520 minutes unallocated <span class="session-unavailable"> - session unavailable</span>
 											</strong>
 										</div>
 										<div class="specialists">
