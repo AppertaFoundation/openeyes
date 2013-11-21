@@ -23,7 +23,7 @@ $this->beginContent('//patient/event_container')?>
 			$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));
 		}
 		if ($this->event_type->children) {
-			$this->event_actions[] = EventAction::button('Add test', 'add_test',null,array('class'=>'button small'));
+			$this->event_actions[] = EventAction::button('Add child', 'add_test',null,array('class'=>'button small'));
 		}
 	?>
 	<h2 class="event-title"><?php echo $this->event_type->name?></h2>
