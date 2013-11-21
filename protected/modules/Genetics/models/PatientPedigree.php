@@ -66,4 +66,24 @@ class PatientPedigree extends BaseActiveRecord
 			'status' => array(self::BELONGS_TO, 'PedigreeStatus', 'status_id'),
 		);
 	}
+
+	public function getHoverText()
+	{
+		if ($api = Yii::app()->moduleAPI->get('OphInGenetictest')) {
+			$text = '';
+
+			foreach ($api->getGeneticTestsForPatient($this->patient) as $i => $genetic_test) {
+				if ($i >0) {
+					$text .= "\r\n";
+				}
+				$text .= $genetic_test->getHoverText();
+			}
+
+			if ($text) {
+				return $text;
+			}
+		}
+
+		return 'No genetic tests recorded';
+	}
 }
