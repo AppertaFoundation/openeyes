@@ -7,7 +7,6 @@ OphTrOperationnote
 OphTrConsent
 OphCiPhasing
 OphLeEpatientletter
-OphCoCorrespndence
 eyedraw
 mehpas
 OphCoCorrespondence
@@ -27,8 +26,8 @@ echo "Cloning/checkout modules"
 bin/clone-modules.sh develop
 
 echo "hard reset all and pull"
-oe-git "reset --hard"
-oe-git pull
+bin/oe-git "reset --hard"
+bin/oe-git pull
 
 #set up modules in conf
 while read module
