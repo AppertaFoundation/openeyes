@@ -70,7 +70,7 @@
 			<tbody>
 				<?php if ($pedigree->members) {
 					foreach ($pedigree->members as $pm) {?>
-						<tr>
+						<tr class="hover" data-hover="<?php echo $pm->getHoverText()?>">
 							<td><?php echo CHtml::link($pm->patient->id,Yii::app()->createUrl('/patient/view/'.$pm->patient_id))?></td>
 							<td><?php echo $pm->patient->hos_num?></td>
 							<td><?php echo $pm->patient->title?></td>
