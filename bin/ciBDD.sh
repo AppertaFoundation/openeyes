@@ -46,7 +46,7 @@ sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.aut
 echo 'Moved config files'
 
 # import test sql and migrate up all modules
-vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;exit'
+vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;exit\
     cd /var/www;  echo "running oe-migrate"; bin/oe-migrate; exit;'
 
 #make sure phantomjs is set up and running
@@ -72,6 +72,6 @@ fi
 
 #run tests
 bin/behat --tags=setup --profile=$PROFILE --expand
-bin/behat --tags=confidence --profile=$PROFILE --expand
-bin/behat --tags=regression --profile=$PROFILE --expand
+#bin/behat --tags=confidence --profile=$PROFILE --expand
+bin/behat --tags=examination --profile=$PROFILE --expand
 exit
