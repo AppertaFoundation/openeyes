@@ -40,21 +40,24 @@ if (!empty($episode)) {
 	<section class="element element-data">
 		<h3 class="data-title">Principal diagnosis:</h3>
 		<div class="data-value highlight">
-			<?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></div>
+			<?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?>
+		</div>
 	</section>
 
 	<section class="element element-data">
 		<h3 class="data-title">Principal eye:</h3>
 		<div class="data-value highlight">
-			<?php echo $episode->eye ? $episode->eye->name : 'None'?></div>
+			<?php echo $episode->eye ? $episode->eye->name : 'None'?>
+		</div>
 	</section>
 
 	<section class="element element-data">
 		<div class="row">
 			<div class="large-6 column">
-				<h3 class="data-title">Start Date</h3>
+				<h3 class="data-title">Start Date:</h3>
 				<div class="data-value">
-					<?php echo $episode->NHSDate('start_date')?></div>
+					<?php echo $episode->NHSDate('start_date')?>
+				</div>
 			</div>
 			<div class="large-6 column">
 				<h3 class="data-title">End date:</h3>
@@ -68,7 +71,8 @@ if (!empty($episode)) {
 			<div class="large-6 column">
 				<h3 class="data-title">Subspecialty:</h3>
 				<div class="data-value">
-					<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?></div>
+					<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>
+				</div>
 			</div>
 			<div class="large-6 column">
 				<h3 class="data-title">Consultant firm:</h3>
@@ -114,14 +118,12 @@ if (!empty($episode)) {
 	</span>
 </div>
 
-<div class="eventData">
+<div class="element element-data event-types">
 	<?php foreach (EventType::model()->getEventTypeModules() as $event_type) {
 		if ($api = $event_type->api) {
-			if ($eventData = $api->getEpisodeHTML($episode->id)) {?>
-				<div>
-					<?php echo $eventData?>
-				</div>
-			<?php }
+			if ($eventData = $api->getEpisodeHTML($episode->id)) {
+				echo $eventData;
+			}
 		}
 	}?>
 </div>

@@ -1,0 +1,144 @@
+.printable {
+	display: none;
+	* {
+		font-size: 9pt;
+	}
+}
+
+/* ====== LETTERs (hidden in page) ====== */
+
+#letterTemplate {
+	display: block;
+	background: #fff;
+	#l_type {
+		text-align: center;
+		font-size: 6pt;
+	}
+	#l_content {
+		p {
+			margin-bottom: 1em;
+		}
+		ul {
+			margin: 0 0 1.5em 0.5em;
+		}
+		table {
+			margin-bottom: 1.5em;
+		}
+		td {
+			padding: 0.25em 0.5em;
+		}
+	}
+}
+
+#letterFooter {
+	display: block;
+	text-align: right;
+	font-size: 6pt;
+	line-height: 1.5;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+/* ====== FORMs (hidden in page) ====== */
+
+#printForm {
+	display: block;
+	background: #fff;
+	font-size: 7pt;
+}
+
+#printFormTemplate {
+	.title {
+		font-size: 13pt;
+		font-weight: bold;
+	}
+	table tr > td {
+		padding: 1em 0.5em;
+		border: 1px solid #eee;
+	}
+	.subTitle {
+		display: block;
+		font-size: 8pt;
+		font-weight: bold;
+		margin-top: 1em;
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+	}
+	table.subTableNoBorders tr > td {
+		border: none;
+	}
+}
+
+@media print {
+	* {
+		background: transparent !important;
+		color: black !important;
+		text-shadow: none !important;
+		filter: none !important;
+		-ms-filter: none !important;
+	}
+	a {
+		text-decoration: underline;
+		&:visited {
+			text-decoration: underline;
+		}
+		&[href]:after {
+			content: " (" attr(href) ")";
+		}
+	}
+	abbr[title]:after {
+		content: " (" attr(title) ")";
+	}
+	.ir a:after {
+		content: "";
+	}
+	a {
+		&[href^="javascript:"]:after, &[href^="#"]:after {
+			content: "";
+		}
+	}
+	pre, blockquote {
+		border: 1px solid #999;
+		page-break-inside: avoid;
+	}
+	thead {
+		display: table-header-group;
+	}
+	tr {
+		page-break-inside: avoid;
+	}
+	img {
+		page-break-inside: avoid;
+		max-width: 100% !important;
+	}
+	@page {
+		margin: 0.5cm;
+	}
+
+	p, h2, h3 {
+		orphans: 3;
+		widows: 3;
+	}
+	h2, h3 {
+		page-break-after: avoid;
+	}
+	table {
+		width: 100%;
+	}
+	td, th {
+		text-align: left;
+		padding: 2px 4px;
+		vertical-align: top;
+		font-size: 14pt;
+	}
+	/* PREPAPRE PAGE FOR PRINT */
+	html {
+		height: 100%;
+	}
+	.printable {
+		display: block !important;
+		width: 1050px !important;
+	}
+	/* max width 1050px */
+}

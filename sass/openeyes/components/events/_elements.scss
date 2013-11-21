@@ -199,10 +199,13 @@ $oe-element-edit-title-font-style: italic;
 				padding-bottom: emCalc(4px);
 				padding-top: emCalc(4px);
 			}
+			&:not(.event-types) {
+				.field-value {
+					font-size: emCalc(16px);
+				}
+			}
 		}
-		.field-value {
-			font-size: emCalc(16px);
-		}
+
 	}
 	.element-data {
 		.data-title {

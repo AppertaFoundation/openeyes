@@ -1074,7 +1074,7 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1384964873') 0 0 no-repeat;
+  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1385051422') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1230px;
@@ -2037,7 +2037,7 @@ table.log-details .data {
 }
 /* line 36, ../sass/openeyes/components/_header.scss */
 .header .logo {
-  background: url('../img/_structure/openeyes.png?1384964873') no-repeat;
+  background: url('../img/_structure/openeyes.png?1385051422') no-repeat;
   background-size: 100%;
   display: block;
   height: 70px;
@@ -3908,11 +3908,11 @@ tfoot.pagination-container .pagination li {
 }
 /* line 125, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning {
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384964873'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384964873'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384964873'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384964873'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1384964873'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385051422'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385051422'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385051422'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385051422'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385051422'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
 }
 /* line 128, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning .warning .messages {
@@ -4709,15 +4709,15 @@ tfoot.pagination-container .pagination li {
   padding-top: 0.25em;
 }
 /* line 203, ../sass/openeyes/components/events/_elements.scss */
-.view.highlight-fields .field-value, .view.highlight-fields .field-label, .view.highlight-fields .data-label, .view.highlight-fields .data-value {
+.view.highlight-fields .element-data:not(.event-types) .field-value, .view.highlight-fields .edit .element-fields:not(.event-types) .field-value, .edit .view.highlight-fields .element-fields:not(.event-types) .field-value, .view.highlight-fields .sub-element-data:not(.event-types) .field-value, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .field-value, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .field-value, .view.highlight-fields .element-data:not(.event-types) .field-label, .view.highlight-fields .edit .element-fields:not(.event-types) .field-label, .edit .view.highlight-fields .element-fields:not(.event-types) .field-label, .view.highlight-fields .sub-element-data:not(.event-types) .field-label, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .field-label, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .field-label, .view.highlight-fields .element-data:not(.event-types) .data-label, .view.highlight-fields .edit .element-fields:not(.event-types) .data-label, .edit .view.highlight-fields .element-fields:not(.event-types) .data-label, .view.highlight-fields .sub-element-data:not(.event-types) .data-label, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .data-label, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .data-label, .view.highlight-fields .element-data:not(.event-types) .data-value, .view.highlight-fields .edit .element-fields:not(.event-types) .data-value, .edit .view.highlight-fields .element-fields:not(.event-types) .data-value, .view.highlight-fields .sub-element-data:not(.event-types) .data-value, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .data-value, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .data-value {
   font-size: 1em;
 }
-/* line 208, ../sass/openeyes/components/events/_elements.scss */
+/* line 211, ../sass/openeyes/components/events/_elements.scss */
 .view .element-data .data-title, .view .edit .element-fields .data-title, .edit .view .element-fields .data-title, .view .sub-element-data .data-title, .view .edit .sub-element-fields .data-title, .edit .view .sub-element-fields .data-title {
   padding-left: 0;
   padding-right: 0;
 }
-/* line 214, ../sass/openeyes/components/events/_elements.scss */
+/* line 217, ../sass/openeyes/components/events/_elements.scss */
 .view .element-title.highlight, .view .highlight.data-title, .view .edit .highlight.optional-elements-title, .edit .view .highlight.optional-elements-title {
   background: #dae6f1;
   color: #111;
@@ -5247,4 +5247,188 @@ tfoot.pagination-container .pagination li {
 /* line 30, ../sass/openeyes/components/_jquery-ui.scss */
 .open-eyes .ui-widget input, .open-eyes .ui-widget select, .open-eyes .ui-widget textarea {
   font-size: 0.8125em;
+}
+
+/* ------------------------ PRINT STUFF */
+/* line 3, ../sass/openeyes/components/_print.scss */
+.printable {
+  display: none;
+}
+/* line 5, ../sass/openeyes/components/_print.scss */
+.printable * {
+  font-size: 9pt;
+}
+
+/* ====== LETTERs (hidden in page) ====== */
+/* line 12, ../sass/openeyes/components/_print.scss */
+#letterTemplate {
+  display: block;
+  background: #fff;
+}
+/* line 15, ../sass/openeyes/components/_print.scss */
+#letterTemplate #l_type {
+  text-align: center;
+  font-size: 6pt;
+}
+/* line 20, ../sass/openeyes/components/_print.scss */
+#letterTemplate #l_content p {
+  margin-bottom: 1em;
+}
+/* line 23, ../sass/openeyes/components/_print.scss */
+#letterTemplate #l_content ul {
+  margin: 0 0 1.5em 0.5em;
+}
+/* line 26, ../sass/openeyes/components/_print.scss */
+#letterTemplate #l_content table {
+  margin-bottom: 1.5em;
+}
+/* line 29, ../sass/openeyes/components/_print.scss */
+#letterTemplate #l_content td {
+  padding: 0.25em 0.5em;
+}
+
+/* line 35, ../sass/openeyes/components/_print.scss */
+#letterFooter {
+  display: block;
+  text-align: right;
+  font-size: 6pt;
+  line-height: 1.5;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+/* ====== FORMs (hidden in page) ====== */
+/* line 47, ../sass/openeyes/components/_print.scss */
+#printForm {
+  display: block;
+  background: #fff;
+  font-size: 7pt;
+}
+
+/* line 54, ../sass/openeyes/components/_print.scss */
+#printFormTemplate .title {
+  font-size: 13pt;
+  font-weight: bold;
+}
+/* line 58, ../sass/openeyes/components/_print.scss */
+#printFormTemplate table tr > td {
+  padding: 1em 0.5em;
+  border: 1px solid #eee;
+}
+/* line 62, ../sass/openeyes/components/_print.scss */
+#printFormTemplate .subTitle {
+  display: block;
+  font-size: 8pt;
+  font-weight: bold;
+  margin-top: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+/* line 70, ../sass/openeyes/components/_print.scss */
+#printFormTemplate table.subTableNoBorders tr > td {
+  border: none;
+}
+
+@media print {
+  /* line 76, ../sass/openeyes/components/_print.scss */
+  * {
+    background: transparent !important;
+    color: black !important;
+    text-shadow: none !important;
+    filter: none !important;
+    -ms-filter: none !important;
+  }
+
+  /* line 83, ../sass/openeyes/components/_print.scss */
+  a {
+    text-decoration: underline;
+  }
+  /* line 85, ../sass/openeyes/components/_print.scss */
+  a:visited {
+    text-decoration: underline;
+  }
+  /* line 88, ../sass/openeyes/components/_print.scss */
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+
+  /* line 92, ../sass/openeyes/components/_print.scss */
+  abbr[title]:after {
+    content: " (" attr(title) ")";
+  }
+
+  /* line 95, ../sass/openeyes/components/_print.scss */
+  .ir a:after {
+    content: "";
+  }
+
+  /* line 99, ../sass/openeyes/components/_print.scss */
+  a[href^="javascript:"]:after, a[href^="#"]:after {
+    content: "";
+  }
+
+  /* line 103, ../sass/openeyes/components/_print.scss */
+  pre, blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+
+  /* line 107, ../sass/openeyes/components/_print.scss */
+  thead {
+    display: table-header-group;
+  }
+
+  /* line 110, ../sass/openeyes/components/_print.scss */
+  tr {
+    page-break-inside: avoid;
+  }
+
+  /* line 113, ../sass/openeyes/components/_print.scss */
+  img {
+    page-break-inside: avoid;
+    max-width: 100% !important;
+  }
+
+  @page {
+    margin: 0.5cm;
+}
+
+  /* line 121, ../sass/openeyes/components/_print.scss */
+  p, h2, h3 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* line 125, ../sass/openeyes/components/_print.scss */
+  h2, h3 {
+    page-break-after: avoid;
+  }
+
+  /* line 128, ../sass/openeyes/components/_print.scss */
+  table {
+    width: 100%;
+  }
+
+  /* line 131, ../sass/openeyes/components/_print.scss */
+  td, th {
+    text-align: left;
+    padding: 2px 4px;
+    vertical-align: top;
+    font-size: 14pt;
+  }
+
+  /* PREPAPRE PAGE FOR PRINT */
+  /* line 138, ../sass/openeyes/components/_print.scss */
+  html {
+    height: 100%;
+  }
+
+  /* line 141, ../sass/openeyes/components/_print.scss */
+  .printable {
+    display: block !important;
+    width: 1050px !important;
+  }
+
+  /* max width 1050px */
 }
