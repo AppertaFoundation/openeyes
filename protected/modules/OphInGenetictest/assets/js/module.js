@@ -2,8 +2,8 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
-			handleButton($('#et_save'),function() {
-					});
+	handleButton($('#et_save'),function() {
+	});
 	
 	handleButton($('#et_cancel'),function(e) {
 		if (m = window.location.href.match(/\/update\/[0-9]+/)) {

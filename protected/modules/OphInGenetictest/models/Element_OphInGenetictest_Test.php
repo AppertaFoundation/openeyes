@@ -134,22 +134,9 @@ class Element_OphInGenetictest_Test extends BaseEventTypeElement
 		));
 	}
 
-
-
-	protected function beforeSave()
+	public function getHoverText()
 	{
-		return parent::beforeSave();
-	}
-
-	protected function afterSave()
-	{
-
-		return parent::afterSave();
-	}
-
-	protected function beforeValidate()
-	{
-		return parent::beforeValidate();
+		return $this->gene->name.', result: '.$this->result;
 	}
 }
 ?>
