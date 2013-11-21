@@ -45,10 +45,12 @@ echo "Modules $modules_conf_string"
 sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.autotest.php > protected/config/local/common.php
 echo 'Moved config files'
 
-# import test sql and migrate up all modules
-vagrant ssh -c '/user/bin/mysql -u openeyes -poe_test openeyes -e "drop database openeyes; create database openeyes;";\
-    /usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;\
-    cd /var/www;  echo "running oe-migrate"; bin/oe-migrate; exit;'
+echo "import test sql - delete/create db"
+vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes -e "drop database openeyes; create database openeyes;";'
+echo "import test sql - import testdata.sql"
+vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;'
+echo "run oe-migrate"
+vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; bin/oe-migrate; exit;'
 
 #make sure phantomjs is set up and running
 #PHANTOM=`ps aux | grep -c phantom`
