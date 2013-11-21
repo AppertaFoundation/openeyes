@@ -1074,7 +1074,7 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1385030558') 0 0 no-repeat;
+  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1385046760') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1230px;
@@ -2037,7 +2037,7 @@ table.log-details .data {
 }
 /* line 36, ../sass/openeyes/components/_header.scss */
 .header .logo {
-  background: url('../img/_structure/openeyes.png?1385030558') no-repeat;
+  background: url('../img/_structure/openeyes.png?1385046760') no-repeat;
   background-size: 100%;
   display: block;
   height: 70px;
@@ -3908,11 +3908,11 @@ tfoot.pagination-container .pagination li {
 }
 /* line 125, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning {
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385030558'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385030558'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385030558'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385030558'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385030558'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385046760'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385046760'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385046760'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385046760'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385046760'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
 }
 /* line 128, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning .warning .messages {
@@ -4709,15 +4709,15 @@ tfoot.pagination-container .pagination li {
   padding-top: 0.25em;
 }
 /* line 203, ../sass/openeyes/components/events/_elements.scss */
-.view.highlight-fields .field-value, .view.highlight-fields .field-label, .view.highlight-fields .data-label, .view.highlight-fields .data-value {
+.view.highlight-fields .element-data:not(.event-types) .field-value, .view.highlight-fields .edit .element-fields:not(.event-types) .field-value, .edit .view.highlight-fields .element-fields:not(.event-types) .field-value, .view.highlight-fields .sub-element-data:not(.event-types) .field-value, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .field-value, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .field-value, .view.highlight-fields .element-data:not(.event-types) .field-label, .view.highlight-fields .edit .element-fields:not(.event-types) .field-label, .edit .view.highlight-fields .element-fields:not(.event-types) .field-label, .view.highlight-fields .sub-element-data:not(.event-types) .field-label, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .field-label, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .field-label, .view.highlight-fields .element-data:not(.event-types) .data-label, .view.highlight-fields .edit .element-fields:not(.event-types) .data-label, .edit .view.highlight-fields .element-fields:not(.event-types) .data-label, .view.highlight-fields .sub-element-data:not(.event-types) .data-label, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .data-label, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .data-label, .view.highlight-fields .element-data:not(.event-types) .data-value, .view.highlight-fields .edit .element-fields:not(.event-types) .data-value, .edit .view.highlight-fields .element-fields:not(.event-types) .data-value, .view.highlight-fields .sub-element-data:not(.event-types) .data-value, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .data-value, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .data-value {
   font-size: 1em;
 }
-/* line 208, ../sass/openeyes/components/events/_elements.scss */
+/* line 211, ../sass/openeyes/components/events/_elements.scss */
 .view .element-data .data-title, .view .edit .element-fields .data-title, .edit .view .element-fields .data-title, .view .sub-element-data .data-title, .view .edit .sub-element-fields .data-title, .edit .view .sub-element-fields .data-title {
   padding-left: 0;
   padding-right: 0;
 }
-/* line 214, ../sass/openeyes/components/events/_elements.scss */
+/* line 217, ../sass/openeyes/components/events/_elements.scss */
 .view .element-title.highlight, .view .highlight.data-title, .view .edit .highlight.optional-elements-title, .edit .view .highlight.optional-elements-title {
   background: #dae6f1;
   color: #111;
