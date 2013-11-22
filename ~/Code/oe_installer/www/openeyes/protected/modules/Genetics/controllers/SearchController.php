@@ -29,22 +29,20 @@ class SearchController extends BaseController
 
 		$pagination = $this->initPagination(Pedigree::model());
 
-		$criteria = new CDbCriteria;
-
-		if (@$_GET['gene-id']) {
-			$criteria->addCondition('gene_id = :gene_id');
-			$criteria->params[':gene_id'] = $_GET['gene-id'];
-		}
-
 		if (@$_GET['disorder-id']) {
-			$criteria->addCondition('disorder_id = :disorder_id');
-			$criteria->params[':disorder_id'] = $_GET['disorder-id'];
-		}
-
-		if (@$_GET['gene-id'] || @$_GET['disorder-id']) {
 			Yii::app()->event->dispatch('start_batch_mode');
 
-			$total_items = PatientPedigree::model()->with(array('pedigree'))->count($criteria);
+			$total_items = Yii::app()->db->createCommand()
+				->select("count(p.id) as count")
+				->from("patient p")
+				->join("patient_pedigree pp","pp.patient_id = p.id")
+				->leftJoin("secondary_diagnosis sd","sd.patient_id = p.id")
+				->leftJoin("episode ep","ep.patient_id = p.id")
+				->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
+					":disorder_id" => $_GET['disorder-id'],
+				))
+				->queryScalar();
+
 			$pages = ceil($total_items / $this->items_per_page);
 			$page = 1;
 
@@ -52,31 +50,61 @@ class SearchController extends BaseController
 				$page = $_GET['page'];
 			}
 
-			$order = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
+			$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
 			switch (@$_GET['sortby']) {
 				case 'hos_num':
 				case 'title':
 				case 'gender':
-					$criteria->order = @$_GET['sortby'];
+					$order = @$_GET['sortby'].' '.$dir;
 					break;
 				case 'patient_name':
-					$criteria->order = "last_name $order, first_name $order";
+					$order = "last_name $dir, first_name $dir";
 					break;
 				case 'gene':
-					$criteria->order = "gene.name $order";
+					$order = "gene.name $dir";
 					break;
 				case 'diagnosis':
-					$criteria->order = "disorder.term $order";
+					$order = "disorder.term $dir";
 					break;
 				default:
-					$criteria->order = "last_name $order, first_name $order";
+					$order = "last_name $dir, first_name $dir";
 			}
 
-			$criteria->offset = ($page-1) * $this->items_per_page;
-			$criteria->limit = $this->items_per_page;
+			$patient_ids = array();
+			
+			foreach (Yii::app()->db->createCommand()
+				->select("pp.id")
+				->from("patient p")
+				->join("contact c","p.contact_id = c.id")
+				->join("patient_pedigree pp","pp.patient_id = p.id")
+				->leftJoin("secondary_diagnosis sd","sd.patient_id = p.id")
+				->leftJoin("episode ep","ep.patient_id = p.id")
+				->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
+					":disorder_id" => $_GET['disorder-id'],
+				))
+				->order($order)
+				->offset(($page-1) * $this->items_per_page)
+				->limit($this->items_per_page)
+				->queryAll() as $row) {
+				$pp_ids[] = $row['id'];
+			}
 
-			$patient_pedigrees = PatientPedigree::model()->with(array('patient' => array('with' => array('contact')),'pedigree' => array('with' => array('gene','disorder'))))->findAll($criteria);
+			$pp_map = array();
+
+			$criteria = new CDbCriteria;
+			$criteria->addInCondition('id',$pp_ids);
+
+			foreach (PatientPedigree::model()->findAll($criteria) as $pp) {
+				$pp_map[$pp->id] = $pp;
+			}
+
+			$patient_pedigrees = array();
+
+			foreach ($pp_ids as $pp_id) {
+				$patient_pedigrees[] = $pp_map[$pp_id];
+			}
+
 		} else {
 			$total_items = 0;
 			$pages = 1;
