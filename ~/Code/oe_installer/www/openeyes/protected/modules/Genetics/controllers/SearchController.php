@@ -93,9 +93,17 @@ class SearchController extends BaseController
 			$pp_map = array();
 
 			$criteria = new CDbCriteria;
-			$criteria->addInCondition('id',$pp_ids);
+			$criteria->addInCondition('t.id',$pp_ids);
 
-			foreach (PatientPedigree::model()->findAll($criteria) as $pp) {
+			foreach (PatientPedigree::model()
+				->with(array(
+					'patient',
+					'pedigree' => array(
+						'gene',
+						'disorder',
+					),
+				))
+				->findAll($criteria) as $pp) {
 				$pp_map[$pp->id] = $pp;
 			}
 
