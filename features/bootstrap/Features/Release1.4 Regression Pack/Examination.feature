@@ -203,7 +203,7 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Clinical Management section
     And I choose to expand Cataract Management
-    And I add Cataract Management Comments of "new glasses prescribed, "
+#    And I add Cataract Management Comments of "new glasses prescribed, "
     Then I select First Eye
 
     And I choose Straightforward case
@@ -215,8 +215,8 @@ Feature: Create New Examination Regression Tests
     And I select Vitrectomised Eye Yes
 
     Then I choose to expand the Laser Management section
-    And I choose a laser of "3"
-
+    And I choose a right laser choice of "4"
+    And I choose a left laser choice of "4"
     And I choose a left laser type of "1"
     And I choose a right laser type of "2"
 
@@ -320,7 +320,7 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Clinical Management section
     And I choose to expand Cataract Management
-    And I add Cataract Management Comments of "new glasses prescribed, "
+#    And I add Cataract Management Comments of "new glasses prescribed, "
     Then I select First Eye
 
     And I choose Straightforward case
@@ -332,9 +332,10 @@ Feature: Create New Examination Regression Tests
     And I select Vitrectomised Eye No
 
     Then I choose to expand the Laser Management section
-
-    And I choose a laser of "2"
-    Then I choose a deferral reason of "1"
+    And I choose a right laser choice of "4"
+    And I choose a left laser choice of "4"
+    And I choose a left laser type of "1"
+    And I choose a right laser type of "2"
 
     Then I choose to expand the Injection Management section
 
@@ -440,7 +441,7 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Clinical Management section
     And I choose to expand Cataract Management
-    And I add Cataract Management Comments of "new glasses prescribed, "
+#    And I add Cataract Management Comments of "new glasses prescribed, "
     Then I select First Eye
 
     And I choose Straightforward case
@@ -452,9 +453,10 @@ Feature: Create New Examination Regression Tests
     And I select Vitrectomised Eye No
 
     Then I choose to expand the Laser Management section
-
-    And I choose a laser of "2"
-    Then I choose a deferral reason of "1"
+    And I choose a right laser choice of "4"
+    And I choose a left laser choice of "4"
+    And I choose a left laser type of "1"
+    And I choose a right laser type of "2"
 
     Then I choose to expand the Injection Management section
 
@@ -482,7 +484,6 @@ Feature: Create New Examination Regression Tests
     Then I choose a Left Unsuitable Laser of No
     Then I choose a Left Previous Anti VEGF of Yes
     Then I choose a Left Previous Anti VEGF of No
-
 
     Then I choose to expand the Risks section
     And I add comments to the Risk section of "Risk section comments Automation Test"

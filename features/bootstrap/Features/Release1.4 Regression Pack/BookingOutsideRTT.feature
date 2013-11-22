@@ -151,18 +151,18 @@ Feature: Basic booking
     And I press "Confirm slot"
     Then I should see "Operation booking (Scheduled)"
 
-  Scenario: Route 12: Successfully scheduling a child operation that does need a consultant and anaesthetist with GA
-    Given I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
-    And there is a child patient with operation that does need a consultant and anaesthetist with GA
-    When I follow "Partial bookings waiting list"
-    And I select awaiting patient from the waiting list
-    And I follow "Schedule now"
-    And I click on available date in the calendar Outside RTT
-    And I select available theatre session from the list
-    And I press "Confirm slot"
-    Then I should see "Operation booking (Scheduled)"
+#  Scenario: Route 12: Successfully scheduling a child operation that does need a consultant and anaesthetist with GA
+#    Given I enter login credentials "admin" and "admin"
+#    And I select Site "1"
+#    Then I select a firm of "1"
+#    And there is a child patient with operation that does need a consultant and anaesthetist with GA
+#    When I follow "Partial bookings waiting list"
+#    And I select awaiting patient from the waiting list
+#    And I follow "Schedule now"
+#    And I click on available date in the calendar Outside RTT
+#    And I select available theatre session from the list
+#    And I press "Confirm slot"
+#    Then I should see "Operation booking (Scheduled)"
 
 #  Examples: Waiting patients
 #  | site | firm | patient               |

@@ -37,6 +37,7 @@ Feature: Create New Operation Booking Event
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
 
     And I select an Available theatre slot date
     And I select an Available session time
@@ -78,14 +79,15 @@ Feature: Create New Operation Booking Event
     Then I add comments of "Insert test comments here"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
 
     Then I select Next Month
 
     And I select an Available theatre slot date
     And I select an Available session time
 
-    Then I add Session comments of "Insert session comments here"
-    And I add Operation comments of "Insert operation comments here"
+#    Then I add Session comments of "Insert session comments here"
+#    And I add Operation comments of "Insert operation comments here"
 
     Then I confirm the operation slot
 
@@ -123,13 +125,14 @@ Feature: Create New Operation Booking Event
     Then I add comments of "Insert test comments here"
 
     Then I select Save and Schedule now
+    And I follow "Schedule now"
 
     Then I change the Viewing Schedule to Emergency List
 
-    Then I select an Available theatre slot date of the "16" of the month
+    Then I select an Available theatre slot date of the "30" of the month
     And I select an Available session time
 
-    Then I add Session comments of "Insert session comments here"
-    And I add Operation comments of "Insert operation comments here"
+#    Then I add Session comments of "Insert session comments here"
+#    And I add Operation comments of "Insert operation comments here"
 
     Then I confirm the operation slot

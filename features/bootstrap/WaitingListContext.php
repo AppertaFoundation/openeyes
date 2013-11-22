@@ -148,6 +148,7 @@ class WaitingListContext extends PageObjectContext
         /**
          * @var OperationBooking $operationBooking
          */
+
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->getSession()->wait(10000, "$.active == 0");
         $operationBooking->availableSlotOutsideRTT();

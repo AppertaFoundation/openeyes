@@ -1,7 +1,7 @@
 import 'classes/*'
 
-    class amp {
-        exec { 'apt-update':
+class amp {
+    exec { 'apt-update':
         command => '/usr/bin/apt-get update',
     }
 
