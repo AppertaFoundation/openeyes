@@ -22,7 +22,7 @@ class SearchController extends BaseController
 	public $layout = '//layouts/advanced_search';
 	public $items_per_page = 30;
 
-	public function actionIndex()
+	public function actionGeneticPatients()
 	{
 		$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
 		Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
@@ -71,7 +71,7 @@ class SearchController extends BaseController
 					$order = "last_name $dir, first_name $dir";
 			}
 
-			$patient_ids = array();
+			$pp_ids = array();
 			
 			foreach (Yii::app()->db->createCommand()
 				->select("pp.id")

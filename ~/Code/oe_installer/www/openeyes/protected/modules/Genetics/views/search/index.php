@@ -26,7 +26,7 @@
 			'id' => 'searchform',
 			'enableAjaxValidation' => false,
 			'focus' => '#search',
-			'action' => Yii::app()->createUrl('/Genetics/search/index'),
+			'action' => Yii::app()->createUrl('/Genetics/search/geneticPatients'),
 		))?>
 			<div class="large-12 column">
 				<div class="panel">
@@ -74,7 +74,7 @@
 			</div>
 		<?php }?>
 
-		<?php if (@$_GET['gene-id'] || @$_GET['disorder-id']) {?>
+		<?php if (!empty($patient_pedigrees)) {?>
 			<table class="grid">
 				<thead>
 					<tr>
