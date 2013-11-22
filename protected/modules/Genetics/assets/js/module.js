@@ -2,9 +2,9 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
-	$('#search_button').click(function(e) {
+	$('#search_patients').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/Genetics/search/index?gene-id='+$('#gene-id').val()+'&disorder-id='+$('#savedDiagnosis').val();
+		window.location.href = baseUrl+'/Genetics/search/index?disorder-id='+$('#savedDiagnosis').val();
 	});
 
 	$('tr.clickable').click(function(e) {

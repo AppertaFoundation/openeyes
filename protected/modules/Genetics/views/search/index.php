@@ -18,7 +18,7 @@
  */
 ?>
 <div class="box admin">
-	<h2>Genetics search</h2>
+	<h2>Patient search by diagnosis</h2>
 
 	<div class="large-12 column">
 		<?php
@@ -31,42 +31,25 @@
 			<div class="large-12 column">
 				<div class="panel">
 					<div class="row">
-						<div class="large-12 column">
-							<table class="grid">
-								<thead>
-									<tr>
-										<th>Causative gene:</th>
-										<th>Principal diagnosis:</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>
-											<?php echo CHtml::dropDownList('gene-id',@$_GET['gene-id'],CHtml::listData(PedigreeGene::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- All -'))?>
-										</td>
-										<td>
-											<?php $form->widget('application.widgets.DiagnosisSelection',array(
-												'value' => @$_GET['disorder-id'],
-												'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-												'layoutColumns' => array(
-													'label' => $form->layoutColumns['label'],
-													'field' => 8,
-												),
-												'default' => false,
-												'htmlOptions' => array(
-													'hide_label' => true,
-												),
-												'allowClear' => true,
-											))?>
-										</td>
-										<td>
-											<button id="search_button" class="secondary" type="submit">
-												Search
-											</button>
-										</td>
-									</tr>
-								</tbody>
-							</table>
+						<div class="large-9 column">
+							<?php $form->widget('application.widgets.DiagnosisSelection',array(
+								'value' => @$_GET['disorder-id'],
+								'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+								'layoutColumns' => array(
+									'label' => $form->layoutColumns['label'],
+									'field' => 8,
+								),
+								'default' => false,
+								'htmlOptions' => array(
+									'hide_label' => true,
+								),
+								'allowClear' => true,
+							))?>
+						</div>
+						<div class="large-3 column">
+							<button id="search_patients" class="secondary" type="submit">
+								Search
+							</button>
 						</div>
 					</div>
 				</div>
@@ -83,9 +66,9 @@
 			<div class="alert-box no_results">
 				<span class="column_no_results">
 					<?php if (@$_GET['gene-id'] || @$_GET['disorder-id']) {?>
-						No genetics patients matched your search criteria.
+						No genetics patients were found with the selected diagnosis.
 					<?php }else{?>
-						Please select a gene and/or a disorder to search for patients.
+						Please select a diagnosis to search for patients.
 					<?php }?>
 				</span>
 			</div>
@@ -99,8 +82,8 @@
 						<th><?php echo CHtml::link('Title',$this->getUri(array('sortby'=>'title')))?></th>
 						<th><?php echo CHtml::link('Patient name',$this->getUri(array('sortby'=>'patient_name')))?></th>
 						<th><?php echo CHtml::link('Gender',$this->getUri(array('sortby'=>'gender')))?></th>
-						<th><?php echo CHtml::link('Gene',$this->getUri(array('sortby'=>'gene')))?></th>
-						<th><?php echo CHtml::link('Diagnosis',$this->getUri(array('sortby'=>'diagnosis')))?></th>
+						<th><?php echo CHtml::link('Pedigree gene',$this->getUri(array('sortby'=>'gene')))?></th>
+						<th><?php echo CHtml::link('Pedigree diagnosis',$this->getUri(array('sortby'=>'diagnosis')))?></th>
 					</tr>
 				</thead>
 				<tbody>
