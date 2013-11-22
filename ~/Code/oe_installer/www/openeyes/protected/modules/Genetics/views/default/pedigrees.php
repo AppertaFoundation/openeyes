@@ -55,7 +55,7 @@
 												<?php echo CHtml::dropDownList('consanguineous',@$_GET['consanguineous'],array(1 => 'Yes', 0 => 'No'),array('empty' => '- All -'))?>
 											</td>
 											<td>
-												<button id="search_button" class="secondary" type="submit">
+												<button id="search_pedigrees" class="secondary" type="submit">
 													Search
 												</button>
 											</td>
