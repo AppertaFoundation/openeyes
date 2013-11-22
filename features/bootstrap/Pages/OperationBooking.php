@@ -32,7 +32,7 @@ class OperationBooking extends Page
         'operationComments' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_comments']"),
         'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
         'scheduleNow' => array('xpath' => "//*[@id='et_save_and_schedule']"),
-        'availableSlotExactDate' => array('xpath' => "//*[@id='calendar']//*[contains(number(),'16')]"),
+        'availableSlotExactDate' => array('xpath' => "//*[@id='calendar']//*[contains(number(),'30')]"),
         'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
         'availableTheatreSlotDateOutsideRTT' => array('xpath' => "//*[@class='available outside_rtt']"),
         'availableThreeWeeksTime' => array ('xpath' => "//*[@id='calendar']//*[contains(text(),'27')]"),
@@ -206,6 +206,7 @@ class OperationBooking extends Page
 
     public function availableSessionTime ()
     {
+//        $this->getSession()->wait(5000);
         $this->getElement('availableTheatreSessionTime')->click();
         $this->getSession()->wait(10000, "$('.active') == 0");
     }
@@ -219,6 +220,7 @@ class OperationBooking extends Page
 
     public function sessionComments ($sessionComments)
     {
+        $this->getSession()->wait(7000);
         $this->getElement('sessionComments')->setValue($sessionComments);
     }
 
