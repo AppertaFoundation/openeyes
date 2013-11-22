@@ -90,20 +90,6 @@ function addElement(element, animate, is_child, previous_id, params) {
 		$('#event-content textarea.autosize:visible').autosize();
 		showActiveChildElements();
 
-		var inserted = (insert_before.length) ? insert_before.prevAll('section:first') : container.find('.sub-element:last, .element:last');
-
-		if (animate) {
-			var offTop = inserted.offset().top - 50;
-			var speed = (Math.abs($(window).scrollTop() - offTop)) * 1.5;
-			$('body').animate({
-				scrollTop : offTop
-			}, speed, null, function() {
-				$('.element-title', inserted).effect('pulsate', {
-					times : 2
-				}, 600);
-			});
-		}
-
 		var el_class = $(element).attr('data-element-type-class');
 		var initFunctionName = el_class.replace('Element_', '') + '_init';
 		if(typeof(window[initFunctionName]) == 'function') {
@@ -118,8 +104,22 @@ function addElement(element, animate, is_child, previous_id, params) {
 			}
 		});
 
-		// Update waypoints to cope with change in page size
-		$.waypoints('refresh');
+		var inserted = (insert_before.length) ? insert_before.prevAll('section:first') : container.find('.sub-element:last, .element:last');
+
+		if (animate) {
+			var offTop = inserted.offset().top - 90;
+			var speed = (Math.abs($(window).scrollTop() - offTop)) * 1.5;
+			$('body').animate({
+				scrollTop : offTop
+			}, speed, null, function() {
+				$('.element-title', inserted).effect('pulsate', {
+					times : 2
+				}, 600);
+			});
+		}
+
+		// Update stick elements to cope with change in page size
+		OpenEyes.UI.StickyElements.refresh();
 
 		// Update text macros (if defined)
 		if(typeof updateTextMacros == 'function') {
@@ -163,8 +163,8 @@ function removeElement(element, is_child) {
 
 	showActiveChildElements();
 
-	// Update waypoints to cope with change in page size
-	$.waypoints('refresh');
+	// Update sticky elements to cope with change in page size
+	OpenEyes.UI.StickyElements.refresh();
 
 	// Update text macros (if defined)
 	if(typeof updateTextMacros == 'function') {
