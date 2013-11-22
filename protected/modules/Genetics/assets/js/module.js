@@ -7,6 +7,11 @@ $(document).ready(function() {
 		window.location.href = baseUrl+'/Genetics/default/pedigrees?family-id='+$('#family-id').val()+'&gene-id='+$('#gene-id').val()+'&consanguineous='+$('#consanguineous').val()+'&disorder-id='+$('#savedDiagnosis').val();
 	});
 
+	$('#search_patients').click(function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/Genetics/search/geneticPatients?disorder-id='+$('#savedDiagnosis').val();
+	});
+
 	$('tr.clickable').click(function(e) {
 		e.preventDefault();
 		window.location.href = $(this).data('uri');
