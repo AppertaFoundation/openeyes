@@ -2,16 +2,16 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
-	$('#search_patients').click(function(e) {
+	$('#search_pedigrees').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/Genetics/search/index?disorder-id='+$('#savedDiagnosis').val();
+		window.location.href = baseUrl+'/Genetics/default/pedigrees?family-id='+$('#family-id').val()+'&gene-id='+$('#gene-id').val()+'&consanguineous='+$('#consanguineous').val()+'&disorder-id='+$('#savedDiagnosis').val();
 	});
 
 	$('tr.clickable').click(function(e) {
 		e.preventDefault();
 		window.location.href = $(this).data('uri');
 	});
-	
+
 	Genetics_patient_hovers();
 });
 
