@@ -54,21 +54,75 @@ class ComponentStubGeneratorTest extends PHPUnit_Framework_TestCase
 		$this->stub->expects($this->any())->method('getNormal_prop')->will($this->returnArgument(0));
 		$this->assertEquals('foo', $this->stub->getNormal_prop('foo'));
 	}
+
+	public function testChangeNormalProp()
+	{
+		$this->stub->normal_prop = 'baz';
+		$this->assertEquals('baz', $this->stub->normal_prop);
+	}
+
+	public function testChangeMagicGetProp()
+	{
+		$this->stub->magic_get_prop = 'baz';
+		$this->assertEquals('baz', $this->stub->magic_get_prop);
+	}
+
+	public function testChangeGetMethodProp_GetDirect()
+	{
+		$this->stub->get_method_prop = 'baz';
+		$this->assertEquals('baz', $this->stub->get_method_prop);
+	}
+
+	public function testChangeGetMethodProp_GetWithMethodCall()
+	{
+		$this->stub->get_method_prop = 'baz';
+		$this->assertEquals('baz', $this->stub->getGet_method_prop());
+	}
+
+	public function testAddNormalProp()
+	{
+		$this->stub->other_normal_prop = 'baz';
+		$this->assertEquals('baz', $this->stub->other_normal_prop);
+	}
+
+	public function testAddMagicGetProp()
+	{
+		$this->stub->other_magic_get_prop = 'baz';
+		$this->assertEquals('baz', $this->stub->other_magic_get_prop);
+	}
+
+	public function testAddGetMethodProp_GetDirect()
+	{
+		$this->stub->other_get_method_prop = 'baz';
+		$this->assertEquals('baz', $this->stub->other_get_method_prop);
+	}
+
+	public function testAddGetMethodProp_GetWithMethodCall()
+	{
+		$this->stub->other_get_method_prop = 'baz';
+		$this->assertEquals('baz', $this->stub->getOther_get_method_prop());
+	}
 }
 
 class ComponentStubGeneratorTest_ExampleComponent extends CComponent
 {
 	public $normal_prop = 'foo';
+	public $other_normal_prop = 'foo';
 
 	public function __get($name)
 	{
-		if ($name == 'magic_get_prop') {
+		if ($name == 'magic_get_prop' || $name == 'other_magic_get_prop') {
 			return 'foo';
 		}
 		return parent::__get($name);
 	}
 
 	public function getGet_method_prop()
+	{
+		return 'foo';
+	}
+
+	public function getOther_get_method_prop()
 	{
 		return 'foo';
 	}

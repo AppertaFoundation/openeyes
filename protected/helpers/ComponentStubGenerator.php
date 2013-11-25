@@ -27,7 +27,7 @@ class ComponentStubGenerator
 	 * @param string $class_name
 	 * @param array $properties
 	 */
-	static public function generate($class_name, array $properties)
+	static public function generate($class_name, array $properties = array())
 	{
 		$stub = PHPUnit_Framework_MockObject_Generator::getMock($class_name, array(), array(), '', false);
 
@@ -60,7 +60,9 @@ class ComponentStubMatcher implements PHPUnit_Framework_MockObject_Matcher_Invoc
 
 	public function matches(PHPUnit_Framework_MockObject_Invocation $invocation)
 	{
-		if ($invocation->methodName == '__get') {
+		if ($invocation->methodName == '__set') {
+			$this->properties[$invocation->parameters[0]] = $invocation->parameters[1];
+		} elseif ($invocation->methodName == '__get') {
 			return array_key_exists($invocation->parameters[0], $this->properties);
 		} else {
 			return $this->methodNameToProperty($invocation, true);
