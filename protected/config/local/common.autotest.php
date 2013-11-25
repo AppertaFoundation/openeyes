@@ -83,15 +83,15 @@ $config = array(
 	'params'=>array(
 		//'pseudonymise_patient_details' => false,
 		//'ab_testing' => false,
-		'auth_source' => 'LDAP',
+		//'auth_source' => 'LDAP',
 		// This is used in contact page
 		//'alerts_email' => 'alerts@example.com',
 		//'adminEmail' => 'webmaster@example.com',
-		'ldap_server' => 'ldap.example.com',
+		//'ldap_server' => 'ldap.example.com',
 		//'ldap_port' => '',
-		'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
-		'ldap_password' => '',
-		'ldap_dn' => 'CN=Users,dc=example,dc=com',
+		//'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
+		//'ldap_password' => '',
+		//'ldap_dn' => 'CN=Users,dc=example,dc=com',
 		'environment' => 'dev',
 		//'audit_trail' => false,
 		'watermark' => '',
@@ -109,7 +109,13 @@ $config = array(
 		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
-		'specialty_sort' => array(130, 'SUP')
+		'specialty_sort' => array(130, 'SUP'),
+		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
+		'OphCoTherapyapplication_compliant_recipient_email' => array('email@example.com' => 'Email Test'),
+		'OphCoTherapyapplication_noncompliant_recipient_email' => array('email2@example.com' => 'Email Test 2'),
+		'OphCoTherapyapplication_applicant_email' => 'email@example.com',
+		'OphCoTherapyapplication_chief_pharmacist' => 'John Smith',
+		'OphCoTherapyapplication_chief_pharmacist_contact' => '12345678',
 	),
 );
 
