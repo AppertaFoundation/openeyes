@@ -31,25 +31,65 @@ class ComponentStubGenerator
 	{
 		$stub = PHPUnit_Framework_MockObject_Generator::getMock($class_name, array(), array(), '', false);
 
-		$value_map = array();
 		$rf_obj = new ReflectionObject($stub);
 		foreach ($properties as $name => $value) {
 			if ($rf_obj->hasProperty($name)) {
 				$stub->$name = $value;
-			} else {
-				$value_map[] = array($name, $value);
-			}
-
-			$get_method = "get{$name}";
-			if ($rf_obj->hasMethod($get_method) && $rf_obj->getMethod($get_method)->getNumberOfParameters() == 0) {
-				$stub->expects(new PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount)
-					->method($get_method)->will(new PHPUnit_Framework_MockObject_Stub_Return($value));
 			}
 		}
 
-		$stub->expects(new PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount)
-			->method('__get')->will(new PHPUnit_Framework_MockObject_Stub_ReturnValueMap($value_map));
+		$stub->__phpunit_getInvocationMocker()->addMatcher(new ComponentStubMatcher($properties));
 
 		return $stub;
+	}
+}
+
+class ComponentStubMatcher implements PHPUnit_Framework_MockObject_Matcher_Invocation
+{
+	protected $properties;
+
+	public function __construct(array $properties)
+	{
+		$this->properties = $properties;
+	}
+
+	public function toString()
+	{
+		print "Component stub matcher";
+	}
+
+	public function matches(PHPUnit_Framework_MockObject_Invocation $invocation)
+	{
+		if ($invocation->methodName == '__get') {
+			return array_key_exists($invocation->parameters[0], $this->properties);
+		} else {
+			return $this->methodNameToProperty($invocation, true);
+		}
+	}
+
+	public function invoked(PHPUnit_Framework_MockObject_Invocation $invocation)
+	{
+		if ($invocation->methodName == '__get') {
+			return $this->properties[$invocation->parameters[0]];
+		} else {
+			return $this->methodNameToProperty($invocation, false);
+		}
+	}
+
+	public function verify()
+	{
+	}
+
+	protected function methodNameToProperty(PHPUnit_Framework_MockObject_Invocation $invocation, $return_bool)
+	{
+		if(preg_match('/^get(.*)$/', $invocation->methodName, $matches) && count($invocation->parameters) == 0) {
+			$search = strtolower($matches[1]);
+			foreach ($this->properties as $name => $value) {
+				if (strtolower($name) == $search) {
+					return $return_bool ? true : $value;
+				}
+			}
+		}
+		return $return_bool ? false : null;
 	}
 }
