@@ -138,7 +138,7 @@
 		if (len <= 1) {
 			$('#procedureList_'+identifier).hide();
 			<?php if ($durations) {?>
-				$('div.extraDetails').hide();
+				$('#procedureList_'+identifier).find('.durations').hide();
 			<?php }?>
 		}
 
@@ -276,7 +276,7 @@
 
 				if (enableDurations) {
 					updateTotalDuration(identifier);
-					$('div.extraDetails').show();
+					$('#procedureList_'+identifier).find('.durations').show();
 				}
 
 				// clear out text field
