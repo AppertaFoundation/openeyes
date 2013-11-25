@@ -95,9 +95,9 @@ class BaseEventTypeController extends BaseController
 		return BaseController::checkUserLevel(3);
 	}
 
-	public function renderEventMetadata()
+	public function renderEventMetadata($view='//patient/event_metadata')
 	{
-		$this->renderPartial('//patient/event_metadata');
+		$this->renderPartial($view);
 	}
 
 	public function actionIndex()
@@ -1049,6 +1049,7 @@ class BaseEventTypeController extends BaseController
 	protected function printHTML($id, $elements, $template='print')
 	{
 		$this->layout = '//layouts/print';
+
 		$this->render($template, array(
 			'elements' => $elements,
 			'eventId' => $id,
