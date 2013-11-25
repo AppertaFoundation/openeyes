@@ -20,16 +20,20 @@
 <?php
 extract($this->getEpisodes());
 $current_episode = isset($current_episode) ? $current_episode : @$this->current_episode;
-$noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1);
+$noCurrentEpisodes = (count($episodes) <1 && count($supportserviceepisodes) <1);
+$noEpisodes = ($noCurrentEpisodes && count($legacyepisodes) <1);
 ?>
 
 <h1 class="badge">Episodes and events</h1>
-<?php if($noEpisodesFound && BaseController::checkUserLevel(4)) { ?>
+
+<?php if($noEpisodes && BaseController::checkUserLevel(4)) { ?>
 	<div class="row">
 		<div class="large-8 large-centered column">
 			<div class="box content">
 				<div class="panel">
-					<div class="alert-box alert with-icon">There are currently no episodes for this patient, please click the Add episode button to open a new episode.</div>
+					<div class="alert-box alert with-icon">
+						There are currently no episodes for this patient, please click the Add episode button to open a new episode.
+					</div>
 					<button class="small add-episode" id="add-episode">
 						Add episode
 					</button>
@@ -51,6 +55,12 @@ $noEpisodesFound=(boolean) (count($ordered_episodes)<1 && count($supportservicee
 				);
 			}
 		}
-		?>
+		// Only legacy episodes exist for this patient, so we still display the episodes
+		// sidebar to allow the user to view the legacy episodes.
+		else if ($noCurrentEpisodes) {?>
+			<div class="alert-box alert with-icon">
+				There are currently no episodes for this patient, please click the Add episode button to open a new episode.
+			</div>
+		<?php } ?>
 	<?php $this->endContent(); ?>
 <?php }	?>
