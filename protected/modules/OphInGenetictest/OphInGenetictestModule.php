@@ -39,6 +39,7 @@ class OphInGenetictestModule extends BaseEventTypeModule
 		$this->setImport(array(
 			'OphInGenetictest.models.*',
 			'OphInGenetictest.components.*',
+			'Genetics.models.*',
 		));
 
 		$this->moduleShortSuffix = "genetictest";

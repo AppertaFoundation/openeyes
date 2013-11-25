@@ -39,6 +39,11 @@ $(document).ready(function() {
 			}
 		}
 	});
+
+	$('#search_tests').click(function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/OphInGenetictest/search/geneticTests?gene-id='+$('#gene-id').val()+'&method-id='+$('#method-id').val()+'&homo='+$('#homo').val()+'&effect-id='+$('#effect-id').val()+'&from='+$('#date-from').val()+'&to='+$('#date-to').val()+'&query='+$('#query').val();
+	});
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

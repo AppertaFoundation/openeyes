@@ -4,8 +4,6 @@ class DefaultController extends BaseEventTypeController
 {
 	protected function beforeAction($action)
 	{
-		Yii::import('application.modules.Genetics.models.*');
-
 		return parent::beforeAction($action);
 	}
 
