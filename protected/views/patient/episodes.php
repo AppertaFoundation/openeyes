@@ -20,8 +20,7 @@
 <?php
 extract($this->getEpisodes());
 $current_episode = isset($current_episode) ? $current_episode : @$this->current_episode;
-$noCurrentEpisodes = (count($episodes) <1 && count($supportserviceepisodes) <1);
-$noEpisodes = ($noCurrentEpisodes && count($legacyepisodes) <1);
+$noEpisodes = (count($episodes) <1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1);
 ?>
 
 <h1 class="badge">Episodes and events</h1>
@@ -41,9 +40,10 @@ $noEpisodes = ($noCurrentEpisodes && count($legacyepisodes) <1);
 			</div>
 		</div>
 	</div>
-<?php } else { ?>
-	<?php $this->beginContent('//patient/episodes_container');?>
-		<?php
+<?php } else {
+
+		$this->beginContent('//patient/episodes_container');
+
 		if ($current_episode) {
 			if ($this->editing) {
 				$this->renderPartial('/clinical/updateEpisode',
@@ -54,13 +54,11 @@ $noEpisodes = ($noCurrentEpisodes && count($legacyepisodes) <1);
 					array('episode' => $current_episode)
 				);
 			}
-		}
-		// Only legacy episodes exist for this patient, so we still display the episodes
-		// sidebar to allow the user to view the legacy episodes.
-		else if ($noCurrentEpisodes) {?>
+		} else if (count($legacyepisodes)) {?>
+			<h2>No episodes</h2>
 			<div class="alert-box alert with-icon">
 				There are currently no episodes for this patient, please click the Add episode button to open a new episode.
 			</div>
-		<?php } ?>
-	<?php $this->endContent(); ?>
-<?php }	?>
+		<?php }
+		$this->endContent();
+}?>
