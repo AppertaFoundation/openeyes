@@ -121,7 +121,7 @@ class SearchController extends BaseController
 			$patient_pedigrees = array();
 		}
 
-		$this->render('index',array(
+		$this->render('geneticPatients',array(
 			'patient_pedigrees' => $patient_pedigrees,
 			'pagination' => $pagination,
 			'page' => $page,
