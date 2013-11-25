@@ -1074,7 +1074,7 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1385389050') 0 0 no-repeat;
+  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1385391437') 0 0 no-repeat;
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1230px;
@@ -1109,16 +1109,10 @@ h1.badge {
   display: inline-block;
   font-size: 0.8125em;
   font-weight: bold;
-  margin: 0 0 0.625em 0;
+  margin: 0 0 0.9375em 0;
   padding: 5px 15px 5px 55px;
 }
-@media only screen and (min-width: 768px) {
-  /* line 33, ../sass/openeyes/components/_type.scss */
-  h1.badge {
-    margin-bottom: 0;
-  }
-}
-/* line 44, ../sass/openeyes/components/_type.scss */
+/* line 41, ../sass/openeyes/components/_type.scss */
 h1.badge.admin {
   background: #666;
   border-left: none;
@@ -1126,14 +1120,14 @@ h1.badge.admin {
   color: #fff;
 }
 
-/* line 59, ../sass/openeyes/components/_type.scss */
+/* line 56, ../sass/openeyes/components/_type.scss */
 code {
   color: #000;
   font-size: 0.8125em;
   font-weight: normal;
 }
 
-/* line 66, ../sass/openeyes/components/_type.scss */
+/* line 63, ../sass/openeyes/components/_type.scss */
 span.error {
   border-bottom: #f00 1px dotted;
   color: #f00;
@@ -2037,7 +2031,7 @@ table.log-details .data {
 }
 /* line 36, ../sass/openeyes/components/_header.scss */
 .header .logo {
-  background: url('../img/_structure/openeyes.png?1385389050') no-repeat;
+  background: url('../img/_structure/openeyes.png?1385391437') no-repeat;
   background-size: 100%;
   display: block;
   height: 70px;
@@ -3176,7 +3170,7 @@ tfoot.pagination-container .pagination li {
   -o-border-radius: 5px;
   border-radius: 5px;
   position: relative;
-  margin: 0.75em 0;
+  margin: 0 0 0.75em 0;
 }
 
 /* line 42, ../sass/openeyes/components/_boxes.scss */
@@ -3910,11 +3904,11 @@ tfoot.pagination-container .pagination li {
 }
 /* line 125, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning {
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385389050'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385389050'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385389050'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385389050'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385389050'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385391437'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385391437'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385391437'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385391437'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
+  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1385391437'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
 }
 /* line 128, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning .warning .messages {
