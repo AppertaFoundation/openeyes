@@ -289,4 +289,46 @@
 			});
 		}
 	});
+
+	$('.removeMedication').live('click',function() {
+		$('#medication_id').val($(this).attr('rel'));
+
+		$('#confirm_remove_medication_dialog').dialog({
+			resizable: false,
+			modal: true,
+			width: 560
+		});
+
+		return false;
+	});
+
+	$('button.btn_remove_medication').click(function() {
+		$("#confirm_remove_medication_dialog").dialog("close");
+
+		$.ajax({
+			'type': 'GET',
+			'url': baseUrl+'/patient/removeMedication?patient_id=<?php echo $this->patient->id?>&medication_id='+$('#medication_id').val(),
+			'success': function(html) {
+				if (html == 'success') {
+					$('a.removeMedication[rel="'+$('#medication_id').val()+'"]').parent().parent().remove();
+				} else {
+					new OpenEyes.Dialog.Alert({
+						content: "Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance."
+					}).open();
+				}
+			},
+			'error': function() {
+				new OpenEyes.Dialog.Alert({
+					content: "Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance."
+				}).open();
+			}
+		});
+
+		return false;
+	});
+
+	$('button.btn_cancel_remove_medication').click(function() {
+		$("#confirm_remove_medication_dialog").dialog("close");
+		return false;
+	});
 </script>
