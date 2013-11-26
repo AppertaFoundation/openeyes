@@ -215,23 +215,18 @@ class BaseEventTypeController extends BaseController
 						$keys = array_keys($value);
 
 						if (is_array($value[$keys[0]])) {
-							if (isset($event->event_type_id)) {
-								foreach ($element_class::model()->findAll(array('condition'=>'event_id=?','params'=>array($event->id),'order'=>'id asc')) as $element) {
-									$elements[] = $element;
-								}
-							} else {
-								if ($action != 'update' || !$element_type->default) {
-									for ($i=0; $i<count($value[$keys[0]]); $i++) {
-										$element = new $element_class;
+							if ($action != 'update' || !$element_type->default) {
+								for ($i=0; $i<count($value[$keys[0]]); $i++) {
+									$element = new $element_class;
+									$element->event_id = $event ? $event->id : null;
 
-										foreach ($keys as $_key) {
-											if ($_key != '_element_id') {
-												$element[$_key] = $value[$_key][$i];
-											}
+									foreach ($keys as $_key) {
+										if ($_key != '_element_id') {
+											$element[$_key] = $value[$_key][$i];
 										}
-
-										$elements[] = $element;
 									}
+
+									$elements[] = $element;
 								}
 							}
 						} else {
@@ -880,12 +875,15 @@ class BaseEventTypeController extends BaseController
 
 				if (is_array($data[$elementClassName][$keys[0]])) {
 					if (!$element->id || in_array($element->id,$data[$elementClassName]['_element_id'])) {
-						$i = array_search($element->id,$data[$elementClassName]['_element_id']);
 
 						$properties = array();
+
 						foreach ($data[$elementClassName] as $key => $values) {
-							$properties[$key] = $values[$i];
+							if ($key != '_element_id') {
+								$properties[$key] = array_shift($data[$elementClassName][$key]);
+							}
 						}
+
 						$element->attributes = Helper::convertNHS2MySQL($properties);
 
 						$toSave[] = $element;
