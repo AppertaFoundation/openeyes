@@ -97,24 +97,39 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	{
 		if (4 === $event->getResult()) {
 			$driver = $this->mink->getSession()->getDriver();
-			if ($driver instanceof Behat\Mink\Driver\Selenium2Driver) {
-				$step = $event->getStep();
-				$path = array(
-					'date' => date("Ymd-Hi"),
-					'feature' => $step->getParent()->getFeature()->getTitle(),
-					'scenario' => $step->getParent()->getTitle(),
-					'step' => $step->getType() . ' ' . $step->getText()
-				);
-				$path = preg_replace('/[^\-\.\w]/', '_', $path);
-				$filename = '/tmp/behat/' .  implode('/', $path) . '.jpg';
+			/*$disableAlert = <<<EOT
+       			window.alert = function() {};
+EOT;
+			$driver->executeScript( $disableAlert );*/
 
-				// Create directories if needed
-				if (!@is_dir(dirname($filename))) {
-					@mkdir(dirname($filename), 0775, TRUE);
+			if ($driver instanceof Behat\Mink\Driver\Selenium2Driver) {
+				try{
+					$step = $event->getStep();
+					$path = array(
+						'date' => date("Ymd-Hi"),
+						'feature' => substr($step->getParent()->getFeature()->getTitle() , 0, 255),
+						'scenario' => substr($step->getParent()->getTitle() , 0, 255),
+						'step' => substr($step->getType() . ' ' . $step->getText() , 0, 255)
+					);
+					$path = preg_replace('/[^\-\.\w]/', '_', $path);
+					$filename = '/tmp/behat/' .  implode('/', $path) . '.jpg';
+
+					// Create directories if needed
+					if (!@is_dir(dirname($filename))) {
+						@mkdir(dirname($filename), 0775, TRUE);
+					}
+
+					file_put_contents($filename, $driver->getScreenshot());
+				}
+				catch(Exception $e){
+					echo "Feature Context Exception " . get_class($e) ." \n\nFile: " . $e->getFile() .  " \n\nMessage: " . $e->getMessage() .
+						" \n\nLine: " . $e->getLine() . " \n\nCode: " . $e->getCode() . " \n\nTrace: " . $e->getTraceAsString();
 				}
 
-				file_put_contents($filename, $driver->getScreenshot());
 			}
 		}
 	}
+	//public function __destruct(){
+	//	$this->mink->getSession()->restart();
+	//}
 }
