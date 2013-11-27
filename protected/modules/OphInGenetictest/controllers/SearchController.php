@@ -116,8 +116,34 @@ class SearchController extends BaseController
 		$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
 		switch (@$_GET['sortby']) {
+			case 'date':
+				$order = "result_date $dir";
+				break;
+			case 'hos_num':
+				$order = "hos_num $dir";
+				break;
+			case 'gene':
+				$order = "g.name $dir";
+				break;
+			case 'method':
+				$order = "m.name $dir";
+				break;
+			case 'homo':
+				$order = "homo $dir";
+				break;
+			case 'base_change':
+				$order = "base_change $dir";
+				break;
+			case 'amino_acid_change':
+				$order = "amino_acid_change $dir";
+				break;
+			case 'result':
+				$order = "result $dir";
+				break;
+			case 'patient_name':
 			default:
-				$order = 'last_name asc, first_name asc';
+				$order = "last_name $dir, first_name $dir";
+				break;
 		}
 
 		$test_ids = array();
@@ -129,6 +155,9 @@ class SearchController extends BaseController
 			->join("episode ep","e.episode_id = ep.id")
 			->join("patient p","ep.patient_id = p.id")
 			->join("contact c","p.contact_id = c.id")
+			->leftJoin("ophingenetictest_test_method m","gt.method_id = m.id")
+			->join("pedigree_gene g","gt.gene_id = g.id")
+			->leftJoin("ophingenetictest_test_effect ef","gt.effect_id = ef.id")
 			->where($where, $whereParams)
 			->order($order)
 			->offset(($page-1) * $this->items_per_page)
@@ -168,6 +197,8 @@ class SearchController extends BaseController
 
 		$this->render('geneticTests',array(
 			'genetic_tests' => $tests,
+			'page' => $page,
+			'pages' => $pages,
 		));
 	}
 }

@@ -125,24 +125,30 @@
 			<table class="grid">
 				<thead>
 					<tr>
+						<th><?php echo CHtml::link('Result date',$this->getUri(array('sortby'=>'date')))?></th>
 						<th><?php echo CHtml::link('Hospital no',$this->getUri(array('sortby'=>'hos_num')))?></th>
-						<th><?php echo CHtml::link('Title',$this->getUri(array('sortby'=>'title')))?></th>
 						<th><?php echo CHtml::link('Patient name',$this->getUri(array('sortby'=>'patient_name')))?></th>
-						<th><?php echo CHtml::link('Gender',$this->getUri(array('sortby'=>'gender')))?></th>
-						<th><?php echo CHtml::link('Pedigree gene',$this->getUri(array('sortby'=>'gene')))?></th>
-						<th><?php echo CHtml::link('Pedigree diagnosis',$this->getUri(array('sortby'=>'diagnosis')))?></th>
+						<th><?php echo CHtml::link('Gene',$this->getUri(array('sortby'=>'gene')))?></th>
+						<th><?php echo CHtml::link('Method',$this->getUri(array('sortby'=>'method')))?></th>
+						<th><?php echo CHtml::link('Homo',$this->getUri(array('sortby'=>'homo')))?></th>
+						<th><?php echo CHtml::link('Base change',$this->getUri(array('sortby'=>'base_change')))?></th>
+						<th><?php echo CHtml::link('Amino acid change',$this->getUri(array('sortby'=>'amino_acid_change')))?></th>
+						<th><?php echo CHtml::link('Result',$this->getUri(array('sortby'=>'result')))?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php
-					foreach ($genetic_tests as $i => $patient_pedigree) {?>
-						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/patient/view/'.$patient_pedigree->patient_id)?>">
-							<td><?php echo $patient_pedigree->patient->hos_num?></td>
-							<td><?php echo $patient_pedigree->patient->title?>
-							<td><?php echo strtoupper($patient_pedigree->patient->last_name)?>, <?php echo $patient_pedigree->patient->first_name?></td>
-							<td><?php echo $patient_pedigree->patient->gender?>
-							<td><?php echo $patient_pedigree->pedigree->gene ? $patient_pedigree->pedigree->gene->name : 'None'?>
-							<td><?php echo $patient_pedigree->pedigree->disorder ? $patient_pedigree->pedigree->disorder->term : 'None'?>
+					foreach ($genetic_tests as $i => $test) {?>
+						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGenetictest/default/view/'.$test->event_id)?>">
+							<td><?php echo $test->NHSDate('result_date')?></td>
+							<td><?php echo $test->event->episode->patient->hos_num?></td>
+							<td><?php echo strtoupper($test->event->episode->patient->last_name)?>, <?php echo $test->event->episode->patient->first_name?></td>
+							<td><?php echo $test->gene->name?></td>
+							<td><?php echo $test->method->name?></td>
+							<td><?php echo $test->homo ? 'Yes' : 'No'?></td>
+							<td><?php echo $test->base_change?></td>
+							<td><?php echo $test->amino_acid_change?></td>
+							<td><?php echo $test->result?></td>
 						</tr>
 					<?php }?>
 				</tbody>
