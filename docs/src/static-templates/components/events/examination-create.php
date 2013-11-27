@@ -266,7 +266,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr class="visualAcuityReading" data-key="0">
+									<tr class="visualAcuityReading visual-acuity-reading" data-key="0">
 										<td>
 											<input type="hidden" name="visualacuity_reading[0][side]" value="0">
 											<select class="va-selector" name="visualacuity_reading[0][value]" id="visualacuity_reading_0_value">
@@ -304,7 +304,7 @@
 											<a class="removeReading" href="#">Remove</a>
 										</td>
 									</tr>
-									<tr class="visualAcuityReading" data-key="1">
+									<tr class="visualAcuityReading visual-acuity-reading" data-key="1">
 										<td>
 											<input type="hidden" name="visualacuity_reading[1][side]" value="0">
 											<select class="va-selector" name="visualacuity_reading[1][value]" id="visualacuity_reading_1_value">

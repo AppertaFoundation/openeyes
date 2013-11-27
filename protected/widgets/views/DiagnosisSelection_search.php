@@ -25,7 +25,7 @@
 			</label>
 		</div>
 	<?php }?>
-	<div class="large-<?php if ($label) { echo $layoutColumns['field']; }else{?>12<?php }?> column">
+	<div class="large-<?php if ($label) { echo $layoutColumns['field']; }else{?>12<?php }?> column end">
 		<div class="row collapse">
 			<div class="large-10 column">
 				<div class="dropdown-row">
