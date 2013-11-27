@@ -117,7 +117,15 @@ class ContactLocation extends BaseActiveRecord
 	 */
 	public function __toString()
 	{
-		return $this->site ? $this->site->name : $this->institution->name;
+		$object = $this->site ? $this->site : $this->institution;
+
+		$return = $object->name;
+
+		if ($object->contact && $object->contact->address) {
+			$return .= ', '.$object->contact->address->address1.', '.$object->contact->address->city;
+		}
+
+		return $return;
 	}
 
 	/**

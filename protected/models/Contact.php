@@ -169,7 +169,9 @@ class Contact extends BaseActiveRecord
 	public function contactLine($location=false)
 	{
 		$line = $this->fullName.' ('.$this->label->name;
-		if ($location) $line .= ', '.$location;
+		if ($location) {
+			$line .= ', '.$location;
+		}
 		return $line.')';
 	}
 
