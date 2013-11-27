@@ -244,10 +244,13 @@ label {
 
 // Field rows
 .field-row {
-	padding-bottom: $form-spacing;
+	padding-bottom: 10px;
 	table:last-child {
 		margin-bottom: 0;
 	}
+}
+.eyedraw-row {
+	@extend .field-row;
 }
 
 .field-value {

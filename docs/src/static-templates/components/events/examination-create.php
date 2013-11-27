@@ -188,7 +188,7 @@
 					<div class="element-fields element-eyes row">
 						<div class="element-eye right-eye column">
 							<a href="#" class="icon-remove-side">Remove side</a>
-							<div class="eyedraw-data row">
+							<div class="eyedraw-data eyedraw-row row">
 								<div class="eyedraw-image column small">
 									<img src="/img/tmp/eyedraw-small-edit.png" class="canvas" alt="Eyedraw" />
 								</div>
