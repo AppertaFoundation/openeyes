@@ -85,6 +85,9 @@ textarea {
 select {
 	font-size: $default-font-size;
 	max-width: 100%;
+	&.inline {
+		width: auto;
+	}
 }
 
 /* Normalize file input width */
