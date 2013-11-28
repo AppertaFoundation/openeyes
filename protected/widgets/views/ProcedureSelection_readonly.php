@@ -25,7 +25,7 @@
 		<?php
 		$totalDuration = 0;
 		?>
-		<div id="procedureList_<?php echo $identifier?>" class="panel" style="<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
+		<div id="procedureList_<?php echo $identifier?>" class="panel procedures readonly" style="<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
 			<?php
 			if (!empty($selected_procedures)) {
 				foreach ($selected_procedures as $procedure) {?>

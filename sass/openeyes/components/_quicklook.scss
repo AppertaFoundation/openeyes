@@ -21,6 +21,7 @@
 	line-height: 1.3;
 	padding: 5px;
 	width: 200px;
+	z-index: 10;
 	.event-name,
 	.event-info,
 	.event-issue {
@@ -60,5 +61,11 @@
  			position: absolute;
  			top: -6px;
  		}
+	}
+	ul {
+		margin: .5em 0 .5em 1.5em;
+		li {
+			font-size: 1em;
+		}
 	}
 }

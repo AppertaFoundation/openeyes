@@ -1,0 +1,16 @@
+.panel {
+	&.procedures {
+		&.readonly {
+			background: #fff;
+			.row {
+				padding-bottom: .5em;
+				&:last-child {
+					padding-bottom: 0;
+				}
+				span {
+					font-style: italic;
+				}
+			}
+		}
+	}
+}

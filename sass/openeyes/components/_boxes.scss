@@ -30,7 +30,7 @@
 
 // Box vars
 $oe-box-gutter: $column-gutter / 2;
-$oe-box-margin: $oe-box-gutter 0 !default;
+$oe-box-margin: 0 0 $oe-box-gutter 0 !default;
 $oe-box-border-radius: $global-radius !default;
 
 .box {

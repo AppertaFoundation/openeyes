@@ -19,6 +19,7 @@
 	canvas,
 	.canvas {
 		border: 1px solid #ccc;
+		display: block;
 		margin: 0;
 	}
 	.element-eyes {
@@ -37,9 +38,6 @@
 			width: 0;
 			z-index: 1;
 		}
-	}
-	.field-row {
-		padding-bottom: .9em;
 	}
 	.inactive .active-form,
 	.inactive-form {
@@ -127,9 +125,6 @@ $oe-element-edit-title-font-style: italic;
 				width: 100%;
 			}
 		}
-		.field-row {
-			padding-bottom: .8em;
-		}
 		.alert-box {
 			margin: 1em 0;
 		}
@@ -142,6 +137,7 @@ $oe-element-edit-title-font-style: italic;
 		margin-left: .5em;
 		line-height: 2em;
 		.info {
+			display: inline-block;
 			font-size: $default-font-size;
 			small {
 				display: inline-block;
