@@ -5053,7 +5053,7 @@ tfoot.pagination-container .pagination li {
 
 /* line 48, ../sass/openeyes/components/_multi-select.scss */
 .multi-select-selections {
-  display: inline-block;
+  display: block;
   list-style-type: none;
   margin: .8em 0 0 0;
 }

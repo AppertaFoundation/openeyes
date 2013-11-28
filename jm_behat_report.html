@@ -1,0 +1,816 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns ="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title>Behat Test Suite</title>
+    <style type="text/css">
+        body {
+            margin:0px;
+            padding:0px;
+            position:relative;
+            padding-top:75px;
+        }
+        #behat {
+            float:left;
+            font-family: Georgia, serif;
+            font-size:18px;
+            line-height:26px;
+            width:100%;
+        }
+        #behat .statistics {
+            float:left;
+            width:100%;
+            margin-bottom:15px;
+        }
+        #behat .statistics p {
+            text-align:right;
+            padding:5px 15px;
+            margin:0px;
+            border-right:10px solid #000;
+        }
+        #behat .statistics.failed p {
+            border-color:#C20000;
+        }
+        #behat .statistics.passed p {
+            border-color:#3D7700;
+        }
+        #behat .feature {
+            margin:15px;
+        }
+        #behat h2, #behat h3, #behat h4 {
+            margin:0px 0px 5px 0px;
+            padding:0px;
+            font-family:Georgia;
+        }
+        #behat h2 .title, #behat h3 .title, #behat h4 .title {
+            font-weight:normal;
+        }
+        #behat .path {
+            font-size:10px;
+            font-weight:normal;
+            font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace !important;
+            color:#999;
+            padding:0px 5px;
+            float:right;
+        }
+        #behat .path a:link,
+        #behat .path a:visited {
+            color:#999;
+        }
+        #behat .path a:hover,
+        #behat .path a:active {
+            background-color:#000;
+            color:#fff;
+        }
+        #behat h3 .path {
+            margin-right:4%;
+        }
+        #behat ul.tags {
+            font-size:14px;
+            font-weight:bold;
+            color:#246AC1;
+            list-style:none;
+            margin:0px;
+            padding:0px;
+        }
+        #behat ul.tags li {
+            display:inline;
+        }
+        #behat ul.tags li:after {
+            content:' ';
+        }
+        #behat ul.tags li:last-child:after {
+            content:'';
+        }
+        #behat .feature > p {
+            margin-top:0px;
+            margin-left:20px;
+        }
+        #behat .scenario {
+            margin-left:20px;
+            margin-bottom:20px;
+        }
+        #behat .scenario > ol,
+        #behat .scenario .examples > ol {
+            margin:0px;
+            list-style:none;
+            padding:0px;
+        }
+        #behat .scenario > ol {
+            margin-left:20px;
+        }
+        #behat .scenario > ol:after,
+        #behat .scenario .examples > ol:after {
+            content:'';
+            display:block;
+            clear:both;
+        }
+        #behat .scenario > ol li,
+        #behat .scenario .examples > ol li {
+            float:left;
+            width:95%;
+            padding-left:5px;
+            border-left:5px solid;
+            margin-bottom:4px;
+        }
+        #behat .scenario > ol li .argument,
+        #behat .scenario .examples > ol li .argument {
+            margin:10px 20px;
+            font-size:16px;
+            overflow:hidden;
+        }
+        #behat .scenario > ol li table.argument,
+        #behat .scenario .examples > ol li table.argument {
+            border:1px solid #d2d2d2;
+        }
+        #behat .scenario > ol li table.argument thead td,
+        #behat .scenario .examples > ol li table.argument thead td {
+            font-weight: bold;
+        }
+        #behat .scenario > ol li table.argument td,
+        #behat .scenario .examples > ol li table.argument td {
+            padding:5px 10px;
+            background:#f3f3f3;
+        }
+        #behat .scenario > ol li .keyword,
+        #behat .scenario .examples > ol li .keyword {
+            font-weight:bold;
+        }
+        #behat .scenario > ol li .path,
+        #behat .scenario .examples > ol li .path {
+            float:right;
+        }
+        #behat .scenario .examples {
+            margin-top:20px;
+            margin-left:40px;
+        }
+        #behat .scenario .examples h4 span {
+            font-weight:normal;
+            background:#f3f3f3;
+            color:#999;
+            padding:0 5px;
+            margin-left:10px;
+        }
+        #behat .scenario .examples table {
+            margin-left:20px;
+        }
+        #behat .scenario .examples table thead td {
+            font-weight:bold;
+            text-align:center;
+        }
+        #behat .scenario .examples table td {
+            padding:2px 10px;
+            font-size:16px;
+        }
+        #behat .scenario .examples table .failed.exception td {
+            border-left:5px solid #000;
+            border-color:#C20000 !important;
+            padding-left:0px;
+        }
+        pre {
+            font-family:monospace;
+        }
+        .snippet {
+            font-size:14px;
+            color:#000;
+            margin-left:20px;
+        }
+        .backtrace {
+            font-size:12px;
+            line-height:18px;
+            color:#000;
+            overflow:hidden;
+            margin-left:20px;
+            padding:15px;
+            border-left:2px solid #C20000;
+            background: #fff;
+            margin-right:15px;
+        }
+        #behat .passed {
+            background:#DBFFB4;
+            border-color:#65C400 !important;
+            color:#3D7700;
+        }
+        #behat .failed {
+            background:#FFFBD3;
+            border-color:#C20000 !important;
+            color:#C20000;
+        }
+        #behat .undefined, #behat .pending {
+            border-color:#FAF834 !important;
+            background:#FCFB98;
+            color:#000;
+        }
+        #behat .skipped {
+            background:lightCyan;
+            border-color:cyan !important;
+            color:#000;
+        }
+        #behat .summary {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width:100%;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 18px;
+        }
+        #behat .summary .counters {
+            padding: 10px;
+            border-top: 0px;
+            border-bottom: 0px;
+            border-right: 0px;
+            border-left: 5px;
+            border-style: solid;
+            height: 52px;
+            overflow: hidden;
+        }
+        #behat .summary .switchers {
+            position: absolute;
+            right: 15px;
+            top: 25px;
+        }
+        #behat .summary .switcher {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        #behat .summary .switchers a {
+            margin-left: 10px;
+            color: #000;
+        }
+        #behat .summary .switchers a:hover {
+            text-decoration:none;
+        }
+        #behat .summary p {
+            margin:0px;
+        }
+        #behat .jq-toggle > .scenario,
+        #behat .jq-toggle > ol,
+        #behat .jq-toggle > .examples {
+            display:none;
+        }
+        #behat .jq-toggle-opened > .scenario,
+        #behat .jq-toggle-opened > ol,
+        #behat .jq-toggle-opened > .examples {
+            display:block;
+        }
+        #behat .jq-toggle > h2,
+        #behat .jq-toggle > h3 {
+            cursor:pointer;
+        }
+        #behat .jq-toggle > h2:after,
+        #behat .jq-toggle > h3:after {
+            content:' |+';
+            font-weight:bold;
+        }
+        #behat .jq-toggle-opened > h2:after,
+        #behat .jq-toggle-opened > h3:after {
+            content:' |-';
+            font-weight:bold;
+        }
+    </style>
+
+    <style type="text/css" media="print">
+        body {
+            padding:0px;
+        }
+
+        #behat {
+            font-size:11px;
+        }
+
+        #behat .jq-toggle > .scenario,
+        #behat .jq-toggle > .scenario .examples,
+        #behat .jq-toggle > ol {
+            display:block;
+        }
+
+        #behat .summary {
+            position:relative;
+        }
+
+        #behat .summary .counters {
+            border:none;
+        }
+
+        #behat .summary .switchers {
+            display:none;
+        }
+
+        #behat .step .path {
+            display:none;
+        }
+
+        #behat .jq-toggle > h2:after,
+        #behat .jq-toggle > h3:after {
+            content:'';
+            font-weight:bold;
+        }
+
+        #behat .jq-toggle-opened > h2:after,
+        #behat .jq-toggle-opened > h3:after {
+            content:'';
+            font-weight:bold;
+        }
+
+        #behat .scenario > ol li,
+        #behat .scenario .examples > ol li {
+            border-left:none;
+        }
+    </style>
+</head>
+<body>
+    <div id="behat">
+        
+<div class="feature">
+<ul class="tags">
+<li>@diagnosis</li>
+<li>@regression</li>
+</ul>
+<h2>
+<span class="keyword">Feature: </span>
+<span class="title">Open Eyes Login and Patient Diagnosis Screen Template</span>
+</h2>
+<p>
+In order to cover every possible route throughout the site<br />
+As an automation tester<br />
+I want to build a template with supporting code for each web page<br />
+</p>
+
+<div class="scenario">
+<h3>
+<span class="keyword">Scenario: </span>
+<span class="title">Route 1: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies</span>
+<span class="path">features/bootstrap/Features/Release1.4 Regression Pack/PatientViewNewDiagnosis.feature:7</span>
+</h3>
+<ol>
+<li class="passed">
+<div class="step">
+<span class="keyword">Given </span>
+<span class="text">I am on the OpenEyes "<strong class="passed_param">master</strong>" homepage</span>
+<span class="path">FeatureContext::iAmOnTheOpeneyesHomepage()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I enter login credentials "<strong class="passed_param">admin</strong>" and "<strong class="passed_param">admin</strong>"</span>
+<span class="path">LoginContext::iEnterLoginCredentials()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select Site "<strong class="passed_param">1</strong>"</span>
+<span class="path">HomepageContext::iSelectSite()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I select a firm of "<strong class="passed_param">1</strong>"</span>
+<span class="path">HomepageContext::iselectAFirm()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I search for hospital number "<strong class="passed_param">1009465</strong>"</span>
+<span class="path">HomepageContext::SearchForHospitalNumber()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I Add an Ophthalmic Diagnosis selection of "<strong class="passed_param">193570009</strong>"</span>
+<span class="path">PatientViewContext::addOpthalmicDiagnosis()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select that it affects eye "<strong class="passed_param">Left</strong>"</span>
+<span class="path">PatientViewContext::SelectThatItAffectsEye()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select a Opthalmic Diagnosis date of day "<strong class="passed_param">18</strong>" month "<strong class="passed_param">6</strong>" year "<strong class="passed_param">2012</strong>"</span>
+<span class="path">PatientViewContext::OpthalmicDiagnosis()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I save the new Opthalmic Diagnosis</span>
+<span class="path">PatientViewContext::SaveTheNewOpthalmicDiagnosis()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I Add an Systemic Diagnosis selection of "<strong class="passed_param">195967001</strong>"</span>
+<span class="path">PatientViewContext::SystemicDiagnosisSelection()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select that it affects Systemic side "<strong class="passed_param">Left</strong>"</span>
+<span class="path">PatientViewContext::systemicSide()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select a Systemic Diagnosis date of day "<strong class="passed_param">18</strong>" month "<strong class="passed_param">6</strong>" year "<strong class="passed_param">2012</strong>"</span>
+<span class="path">PatientViewContext::SystemicDiagnosisDate()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I save the new Systemic Diagnosis</span>
+<span class="path">PatientViewContext::SaveTheNewSystemicDiagnosis()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I Add a Previous Operation of "<strong class="passed_param">1</strong>"</span>
+<span class="path">PatientViewContext::iAddAPreviousOperationOf()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select that it affects Operation side "<strong class="passed_param">Left</strong>"</span>
+<span class="path">PatientViewContext::SelectThatItAffectsOperationSide()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select a Previous Operation date of day "<strong class="passed_param">9</strong>" month "<strong class="passed_param">9</strong>" year "<strong class="passed_param">2012</strong>"</span>
+<span class="path">PatientViewContext::PreviousOperationDate()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I save the new Previous Operation</span>
+<span class="path">PatientViewContext::iSaveTheNewPreviousOperation()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I edit the CVI Status "<strong class="passed_param">4</strong>"</span>
+<span class="path">PatientViewContext::iEditTheCviStatus()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select a CVI Status date of day "<strong class="passed_param">18</strong>" month "<strong class="passed_param">6</strong>" year "<strong class="passed_param">2012</strong>"</span>
+<span class="path">PatientViewContext::iSelectACviStatusDateOfDayMonthYear()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I save the new CVI status</span>
+<span class="path">PatientViewContext::iSaveTheNewCviStatus()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I Remove existing Allergy</span>
+<span class="path">PatientViewContext::removeAllergy()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I Add Allergy "<strong class="passed_param">5</strong>" and Save</span>
+<span class="path">PatientViewContext::iAddAllergy()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I Add a Family History of relative "<strong class="passed_param">1</strong>" side "<strong class="passed_param">3</strong>" condition "<strong class="passed_param">1</strong>" and comments "<strong class="passed_param">Family History Comments</strong>" and Save</span>
+<span class="path">PatientViewContext::FamilyHistory()</span>
+</div>
+</li>
+</ol>
+</div>
+<div class="scenario">
+<h3>
+<span class="keyword">Scenario: </span>
+<span class="title">Route 2: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies</span>
+<span class="path">features/bootstrap/Features/Release1.4 Regression Pack/PatientViewNewDiagnosis.feature:41</span>
+</h3>
+<ol>
+<li class="passed">
+<div class="step">
+<span class="keyword">Given </span>
+<span class="text">I am on the OpenEyes "<strong class="passed_param">master</strong>" homepage</span>
+<span class="path">FeatureContext::iAmOnTheOpeneyesHomepage()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I enter login credentials "<strong class="passed_param">admin</strong>" and "<strong class="passed_param">admin</strong>"</span>
+<span class="path">LoginContext::iEnterLoginCredentials()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select Site "<strong class="passed_param">2</strong>"</span>
+<span class="path">HomepageContext::iSelectSite()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I select a firm of "<strong class="passed_param">3</strong>"</span>
+<span class="path">HomepageContext::iselectAFirm()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I search for hospital number "<strong class="passed_param">1009465</strong>"</span>
+<span class="path">HomepageContext::SearchForHospitalNumber()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I Add an Ophthalmic Diagnosis selection of "<strong class="passed_param">95217000</strong>"</span>
+<span class="path">PatientViewContext::addOpthalmicDiagnosis()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select that it affects eye "<strong class="passed_param">Right</strong>"</span>
+<span class="path">PatientViewContext::SelectThatItAffectsEye()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select a Opthalmic Diagnosis date of day "<strong class="passed_param">4</strong>" month "<strong class="passed_param">3</strong>" year "<strong class="passed_param">2012</strong>"</span>
+<span class="path">PatientViewContext::OpthalmicDiagnosis()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I save the new Opthalmic Diagnosis</span>
+<span class="path">PatientViewContext::SaveTheNewOpthalmicDiagnosis()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I Add an Systemic Diagnosis selection of "<strong class="passed_param">46635009</strong>"</span>
+<span class="path">PatientViewContext::SystemicDiagnosisSelection()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select that it affects Systemic side "<strong class="passed_param">Right</strong>"</span>
+<span class="path">PatientViewContext::systemicSide()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select a Systemic Diagnosis date of day "<strong class="passed_param">4</strong>" month "<strong class="passed_param">1</strong>" year "<strong class="passed_param">2012</strong>"</span>
+<span class="path">PatientViewContext::SystemicDiagnosisDate()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I save the new Systemic Diagnosis</span>
+<span class="path">PatientViewContext::SaveTheNewSystemicDiagnosis()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I Add a Previous Operation of "<strong class="passed_param">4</strong>"</span>
+<span class="path">PatientViewContext::iAddAPreviousOperationOf()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select that it affects Operation side "<strong class="passed_param">Right</strong>"</span>
+<span class="path">PatientViewContext::SelectThatItAffectsOperationSide()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select a Previous Operation date of day "<strong class="passed_param">4</strong>" month "<strong class="passed_param">1</strong>" year "<strong class="passed_param">2012</strong>"</span>
+<span class="path">PatientViewContext::PreviousOperationDate()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I save the new Previous Operation</span>
+<span class="path">PatientViewContext::iSaveTheNewPreviousOperation()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I edit the CVI Status "<strong class="passed_param">3</strong>"</span>
+<span class="path">PatientViewContext::iEditTheCviStatus()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select a CVI Status date of day "<strong class="passed_param">4</strong>" month "<strong class="passed_param">1</strong>" year "<strong class="passed_param">2012</strong>"</span>
+<span class="path">PatientViewContext::iSelectACviStatusDateOfDayMonthYear()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I save the new CVI status</span>
+<span class="path">PatientViewContext::iSaveTheNewCviStatus()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I Remove existing Allergy</span>
+<span class="path">PatientViewContext::removeAllergy()</span>
+</div>
+</li>
+<li class="failed">
+<div class="step">
+<span class="keyword">Then </span>
+<span class="text">I confirm the patient has no allergies and Save</span>
+<span class="path">PatientViewContext::iConfirmThePatientHasNoAllergies()</span>
+</div>
+<pre class="backtrace">Exception thrown by //*[@class='secondary small btn_save_allergy']
+Error Message =&gt; 'Element is not currently visible and may not be manipulated'
+ caused by Request =&gt; {&quot;headers&quot;:{&quot;Accept&quot;:&quot;application/json, image/png&quot;,&quot;Connection&quot;:&quot;Keep-Alive&quot;,&quot;Content-Length&quot;:&quot;27&quot;,&quot;Content-Type&quot;:&quot;application/json; charset=utf-8&quot;,&quot;Host&quot;:&quot;localhost:43773&quot;},&quot;httpVersion&quot;:&quot;1.1&quot;,&quot;method&quot;:&quot;POST&quot;,&quot;post&quot;:&quot;{\&quot;id\&quot;:\&quot;:wdc:1385573476523\&quot;}&quot;,&quot;url&quot;:&quot;/click&quot;,&quot;urlParsed&quot;:{&quot;anchor&quot;:&quot;&quot;,&quot;query&quot;:&quot;&quot;,&quot;file&quot;:&quot;click&quot;,&quot;directory&quot;:&quot;/&quot;,&quot;path&quot;:&quot;/click&quot;,&quot;relative&quot;:&quot;/click&quot;,&quot;port&quot;:&quot;&quot;,&quot;host&quot;:&quot;&quot;,&quot;password&quot;:&quot;&quot;,&quot;user&quot;:&quot;&quot;,&quot;userInfo&quot;:&quot;&quot;,&quot;authority&quot;:&quot;&quot;,&quot;protocol&quot;:&quot;&quot;,&quot;source&quot;:&quot;/click&quot;,&quot;queryKey&quot;:{},&quot;chunks&quot;:[&quot;click&quot;]},&quot;urlOriginal&quot;:&quot;/session/5f77a720-5789-11e3-82ad-f1bb20c5d327/element/%3Awdc%3A1385573476523/click&quot;}
+Build info: version: '2.37.0', revision: 'a7c61cb', time: '2013-10-18 17:14:00'
+System info: host: 'Richards-MacBook-Air.local', ip: '192.168.1.104', os.name: 'Mac OS X', os.arch: 'x86_64', os.version: '10.8.5', java.version: '1.6.0_65'
+Driver info: driver.version: unknown</pre>
+</li>
+<li class="skipped">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I Add a Family History of relative "<strong class="skipped_param">5</strong>" side "<strong class="skipped_param">2</strong>" condition "<strong class="skipped_param">5</strong>" and comments "<strong class="skipped_param">Family History Comments</strong>" and Save</span>
+<span class="path">PatientViewContext::FamilyHistory()</span>
+</div>
+</li>
+</ol>
+</div>
+<div class="scenario">
+<h3>
+<span class="keyword">Scenario: </span>
+<span class="title">Route 3: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies</span>
+<span class="path">features/bootstrap/Features/Release1.4 Regression Pack/PatientViewNewDiagnosis.feature:75</span>
+</h3>
+<ol>
+<li class="passed">
+<div class="step">
+<span class="keyword">Given </span>
+<span class="text">I am on the OpenEyes "<strong class="passed_param">master</strong>" homepage</span>
+<span class="path">FeatureContext::iAmOnTheOpeneyesHomepage()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I enter login credentials "<strong class="passed_param">admin</strong>" and "<strong class="passed_param">admin</strong>"</span>
+<span class="path">LoginContext::iEnterLoginCredentials()</span>
+</div>
+</li>
+<li class="passed">
+<div class="step">
+<span class="keyword">And </span>
+<span class="text">I select Site "<strong class="passed_param">1</strong>"</span>
+<span class="path">HomepageContext::iSelectSite()</span>
+</div>
+</li>
+<div class="summary failed">
+<div class="counters">
+<p class="scenarios">
+2 scenarios (<strong class="passed">1 passed</strong>, <strong class="failed">1 failed</strong>)
+</p>
+<p class="steps">
+49 steps (<strong class="passed">47 passed</strong>, <strong class="skipped">1 skipped</strong>, <strong class="failed">1 failed</strong>)
+</p>
+<p class="time">
+2m37.753s
+</p>
+</div>
+<div class="switchers">
+    <a href="javascript:void(0)" id="behat_show_all">[+] all</a>
+    <a href="javascript:void(0)" id="behat_hide_all">[-] all</a>
+</div>
+</div>
+
+    </div>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#behat .feature h2').click(function(){
+                $(this).parent().toggleClass('jq-toggle-opened');
+            }).parent().addClass('jq-toggle');
+
+            $('#behat .scenario h3').click(function(){
+                $(this).parent().toggleClass('jq-toggle-opened');
+            }).parent().addClass('jq-toggle');
+
+            $('#behat_show_all').click(function(){
+                $('#behat .feature').addClass('jq-toggle-opened');
+                $('#behat .scenario').addClass('jq-toggle-opened');
+            });
+
+            $('#behat_hide_all').click(function(){
+                $('#behat .feature').removeClass('jq-toggle-opened');
+                $('#behat .scenario').removeClass('jq-toggle-opened');
+            });
+
+            $('#behat .summary .counters .scenarios .passed')
+                .addClass('switcher')
+                .click(function(){
+                    var $scenario = $('.feature .scenario:not(:has(.failed, .pending))');
+                    var $feature  = $scenario.parent();
+
+                    $('#behat_hide_all').click();
+
+                    $scenario.addClass('jq-toggle-opened');
+                    $feature.addClass('jq-toggle-opened');
+                });
+
+            $('#behat .summary .counters .steps .passed')
+                .addClass('switcher')
+                .click(function(){
+                    var $scenario = $('.feature .scenario:has(.passed)');
+                    var $feature  = $scenario.parent();
+
+                    $('#behat_hide_all').click();
+
+                    $scenario.addClass('jq-toggle-opened');
+                    $feature.addClass('jq-toggle-opened');
+                });
+
+            $('#behat .summary .counters .failed')
+                .addClass('switcher')
+                .click(function(){
+                    var $scenario = $('.feature .scenario:has(.failed)');
+                    var $feature = $scenario.parent();
+
+                    $('#behat_hide_all').click();
+
+                    $scenario.addClass('jq-toggle-opened');
+                    $feature.addClass('jq-toggle-opened');
+                });
+
+            $('#behat .summary .counters .skipped')
+                .addClass('switcher')
+                .click(function(){
+                    var $scenario = $('.feature .scenario:has(.skipped)');
+                    var $feature = $scenario.parent();
+
+                    $('#behat_hide_all').click();
+
+                    $scenario.addClass('jq-toggle-opened');
+                    $feature.addClass('jq-toggle-opened');
+                });
+
+            $('#behat .summary .counters .pending')
+                .addClass('switcher')
+                .click(function(){
+                    var $scenario = $('.feature .scenario:has(.pending)');
+                    var $feature = $scenario.parent();
+
+                    $('#behat_hide_all').click();
+
+                    $scenario.addClass('jq-toggle-opened');
+                    $feature.addClass('jq-toggle-opened');
+                });
+        });
+    </script>
+</body>
+</html>

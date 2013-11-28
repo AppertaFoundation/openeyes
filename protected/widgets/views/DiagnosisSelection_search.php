@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="row field-row diagnosis-selection">
+<div class="row diagnosis-selection<?php echo !$nowrapper?' field-row':'';?>">
 	<?php if (!$nowrapper && $label) {?>
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
 			<label for="<?php echo "{$class}_{$field}";?>">
