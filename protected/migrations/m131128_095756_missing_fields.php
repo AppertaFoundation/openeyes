@@ -2,7 +2,8 @@
 
 class m131128_095756_missing_fields extends CDbMigration
 {
-	public $tables = array('anaesthetic_type','disorder_tree','element_type_anaesthetic_type','element_type_eye','element_type_priority','event_group','eye','priority','specialty');
+	//public $tables = array('anaesthetic_type','disorder_tree','element_type_anaesthetic_type','element_type_eye','element_type_priority','event_group','eye','priority','specialty');
+	public $tables = array('anaesthetic_type','disorder_tree','element_type_anaesthetic_type','element_type_eye','element_type_priority','eye','priority','specialty');
 
 	public function up()
 	{

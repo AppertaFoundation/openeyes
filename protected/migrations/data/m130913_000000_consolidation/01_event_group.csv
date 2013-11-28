@@ -1,11 +1,11 @@
-id,name,code,created_user_id,last_modified_user_id
-1,"Clinical events",Ci,1,1
-2,"Communication events",Co,1,1
-3,"Investigation events",In,1,1
-4,"Image events",Im,1,1
-5,"Treatment events",Tr,1,1
-6,"Drug events",Dr,1,1
-7,Miscellaneous,Mi,1,1
-8,"Legacy data",Le,1,1
-9,Outcomes,Ou,1,1
-10,Nursing,Nu,1,1
+id,name,code
+1,"Clinical events",Ci
+2,"Communication events",Co
+3,"Investigation events",In
+4,"Image events",Im
+5,"Treatment events",Tr
+6,"Drug events",Dr
+7,Miscellaneous,Mi
+8,"Legacy data",Le
+9,Outcomes,Ou
+10,Nursing,Nu
