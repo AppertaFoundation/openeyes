@@ -36,11 +36,8 @@ h1 {
 		display: inline-block;
 		font-size: emCalc(13px);
 		font-weight: bold;
-		margin: 0 0 emCalc(10px) 0;;
+		margin: 0 0 emCalc(15px) 0;;
 		padding: 5px 15px 5px 55px;
-		@media #{$small} {
-			margin-bottom: 0;
-		}
 		&.admin {
 			background: #666;
 			border-left: none;

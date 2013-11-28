@@ -69,8 +69,15 @@ $(document).ready(function(){
 		}
 
 		function changeState(episodeContainer, trigger, episode_id, state) {
+
 			trigger.toggleClass('toggle-hide toggle-show');
-			episodeContainer.find('.events-container,.events-overview').slideToggle('fast');
+
+			episodeContainer
+			.find('.events-container,.events-overview')
+			.slideToggle('fast', function() {
+				$(this).css({ overflow: 'visible' });
+			});
+
 			updateEpisode(episode_id, state);
 		}
 
