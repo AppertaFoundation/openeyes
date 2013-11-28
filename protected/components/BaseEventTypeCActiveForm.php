@@ -33,6 +33,9 @@ class BaseEventTypeCActiveForm extends FormLayout
 
 	public function dropDownListRow($model, $fields, $datas, $htmlOptions=array(), $layoutColumns=array())
 	{
+		if (!isset($layoutColumns['field'])) {
+			$layoutColumns['field'] = 12;
+		}
 		$this->widget('application.widgets.DropDownListRow', array(
 			'element' => $model,
 			'fields' => $fields,
