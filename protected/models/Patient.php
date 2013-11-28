@@ -955,8 +955,7 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-	 * Get the Diabetes Type as a Disorder instance - will return generic Diabetes
-	 * if no specific type available, but patient has diabetes
+	 * Get the Diabetes Type as a Disorder instance
 	 *
 	 * @return Disorder|null
 	 */
@@ -966,21 +965,34 @@ class Patient extends BaseActiveRecord
 			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_I);
 		} elseif ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_II_SET)) {
 			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_II);
-		} elseif ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_SET)) {
-			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES);
 		}
 
 		return null;
 	}
 
 	/**
-	 * Type of diabetes mellitus as a letter string
+	 * Get the patient diabetes type as Disorder instance - will return generic Diabetes
+	 * if no specific type available, but patient has diabetes
+	 *
+	 * @return Disorder|null
+	 */
+	public function getDiabetes()
+	{
+		$type = $this->getDiabetesType();
+		if ($type === null && $this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_SET)) {
+			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES);
+		}
+		return $type;
+	}
+
+	/**
+	 * Diabetes mellitus as a letter string
 	 *
 	 * @return string
 	 */
 	public function getDmt()
 	{
-		if ($disorder = $this->getDiabetesType()) {
+		if ($disorder = $this->getDiabetes()) {
 			return $disorder->term;
 		}
 
