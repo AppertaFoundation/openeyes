@@ -170,5 +170,11 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 
 	public function clearScreenshots(){
 		$this->screenshots = array();
+
+		/*$driver = $this->mink->getSession()->getDriver();
+		if ($driver instanceof Behat\Mink\Driver\Selenium2Driver) {
+			$webDriver = $driver->getWebDriverSession();
+			$webDriver->timeouts()->implicit_wait(array('ms' => 20000));
+		}*/
 	}
 }
