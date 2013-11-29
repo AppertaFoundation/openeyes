@@ -209,7 +209,7 @@ $(document).ready(function(){
 
 			e.preventDefault();
 
-			new OpenEyes.Dialog($.extend({}, options, {
+			new OpenEyes.UI.Dialog($.extend({}, options, {
 				url: baseUrl + '/site/changesiteandfirm',
 				data: {
 					returnUrl: window.location.href,
@@ -220,7 +220,7 @@ $(document).ready(function(){
 
 		// Show the 'change firm' dialog on page load.
 		if ($('#site-and-firm-form').length) {
-			new OpenEyes.Dialog($.extend({}, options, {
+			new OpenEyes.UI.Dialog($.extend({}, options, {
 				content: $('#site-and-firm-form')
 			})).open();
 		}

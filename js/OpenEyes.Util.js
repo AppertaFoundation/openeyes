@@ -17,56 +17,33 @@
  */
 (function(exports) {
 
+	/**
+	 * OpenEyes Util module
+	 * @exports OpenEyes.Util
+	 */
 	var Util = {};
 
 	/**
-	 * Extends an object with another objects' properties.
-	 * @name Object#mixin
-	 */
-	if (!Object.prototype.mixin) {
-		Object.defineProperty(Object.prototype, 'mixin', {
-			value: function(obj) {
-				for (var prop in obj) {
-					if (obj.hasOwnProperty(prop)) {
-						this[prop] = obj[prop];
-					}
-				}
-				return this;
-			}
-		});
-	}
-
-	/**
 	 * Extend an objects' prototype with another objects' prototype.
-	 * @name Function#inherits
+	 * @method
+	 * @param {Function} parent The parent constructor.
+	 * @param {Function} child  The child constructor.
+	 * @example
+	 * function Parent() {}
+	 * Parent.prototype.method = function() {};
+	 *
+	 * function Child() {}
+	 * Util.inherits(Parent, Child);
+	 *
+	 * var child = new Child();
+	 * child.method();
+	 * @returns {Function} The child constructor.
 	 */
-	if (!Function.prototype.inherits) {
-		Object.defineProperty(Function.prototype, 'inherits', {
-			value: function(_super, _subProto) {
-				this._super = _super;
-				this.prototype = Object.create(_super.prototype);
-				this.prototype.constructor = this;
-				this.prototype.mixin(_subProto);
-				return this;
-			}
-		});
-	}
-
-	/**
-	 * Binds methods of an object to the object itself.
-	 * @param {object} object - The object with the methods to bind.
-	 * @param {boolean} [inherited=false] - Bind to inherited methods?
-	 */
-	Util.bindAll = function(object, inherited) {
-
-		for(var key in object) {
-
-			var isFunction = typeof object[key] === 'function';
-
-			if ((inherited || object.hasOwnProperty(key)) && isFunction) {
-				object[key] = object[key].bind(object);
-			}
-		}
+	Util.inherits = function(parent, child) {
+		child._super = parent;
+		child.prototype = Object.create(parent.prototype);
+		child.prototype.constructor = child;
+		return child;
 	};
 
 	exports.Util = Util;

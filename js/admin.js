@@ -115,7 +115,7 @@ $(document).ready(function() {
 				if (html == '1') {
 					window.location.reload();
 				} else {
-					new OpenEyes.Dialog.Alert({
+					new OpenEyes.UI.Dialog.Alert({
 						content: "One or more "+object+" could not be deleted as they are in use."
 					}).open();
 				}
@@ -134,7 +134,7 @@ $(document).ready(function() {
 				if (m) {
 					window.location.href = baseUrl+'/admin/editUser/'+m[0];
 				} else {
-					new OpenEyes.Dialog.Alert({
+					new OpenEyes.UI.Dialog.Alert({
 						content: "User not found"
 					}).open();
 				}

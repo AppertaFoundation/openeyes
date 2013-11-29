@@ -20,12 +20,20 @@
 	var NAMESPACE = 'sticky';
 	var win = $(window);
 
+	/**
+	 * StickyElement constructor.
+	 * @name OpenEyes.UI.StickyElement
+	 * @constructor
+	 * @param {Mixed}  element Element can be a selector string, a DOM element or a
+	 * jQuery instance.
+	 * @param {Object} options The custom options for this instance.
+	 */
 	function StickyElement(element, options) {
 
 		this.element = $(element);
 		if (!this.element.length) return;
 
-		this.options = $.extend({}, StickyElement.defaultOptions, options);
+		this.options = $.extend({}, StickyElement._defauOptions, options);
 		this.elementOffset = this.element.offset();
 		this.wrapperHeight = this.options.wrapperHeight.call(this);
 
@@ -33,7 +41,12 @@
 		this.bindEvents();
 	}
 
-	StickyElement.defaultOptions = {
+	/**
+	 * StickyElement default options.
+	 * @name OpenEyes.UI.StickyElement#_defauOptions
+	 * @type {Object}
+	 */
+	StickyElement._defauOptions = {
 		wrapperClass: 'sticky-wrapper',
 		stuckClass: 'stuck',
 		offset: 0,
@@ -49,6 +62,12 @@
 		}
 	};
 
+	/**
+	 * Wraps the element in a container div.
+	 * @name OpenEyes.UI.StickyElement#wrapElement
+	 * @private
+	 * @method
+	 */
 	StickyElement.prototype.wrapElement = function() {
 		this.element.wrap($('<div />', {
 			'class': this.options.wrapperClass
@@ -56,20 +75,44 @@
 		this.wrapper = this.element.parent();
 	};
 
+	/**
+	 * Binds DOM events to method handlers.
+	 * @name OpenEyes.UI.StickyElement#bindEvents
+	 * @private
+	 * @method
+	 */
 	StickyElement.prototype.bindEvents = function() {
 		win.on('scroll.' + NAMESPACE, this.onWindowScroll.bind(this));
 	};
 
+	/**
+	 * Make the element sticky.
+	 * @name OpenEyes.UI.StickyElement#enable
+	 * @method
+	 */
 	StickyElement.prototype.enable = function() {
 		this.wrapper.height(this.wrapperHeight);
 		this.element.addClass(this.options.stuckClass);
 	};
 
+	/**
+	 * Unstick the element.
+	 * @name OpenEyes.UI.StickyElement#disable
+	 * @method
+	 */
 	StickyElement.prototype.disable = function() {
 		this.wrapper.height('auto');
 		this.element.removeClass(this.options.stuckClass);
 	};
 
+	/**
+	 * Window scroll handler. This method compares the offset of the element to the
+	 * window scroll position and determines if the element should be sticky or not.
+	 * @param  {Object} e The scroll event object.
+	 * @name OpenEyes.UI.StickyElement#onWindowScroll
+	 * @method
+	 * @private
+	 */
 	StickyElement.prototype.onWindowScroll = function(e) {
 
 		var offset = $.isFunction(this.options.offset) ? this.options.offset() : this.options.offset;
