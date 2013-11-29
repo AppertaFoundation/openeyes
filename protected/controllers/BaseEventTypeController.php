@@ -348,7 +348,7 @@ class BaseEventTypeController extends BaseModuleController
 	{
 		$element_class = $element_type->class_name;
 		$element = new $element_class;
-		$element->setDefaultOptions();
+		$this->setElementDefaultOptions($element, "create");
 
 		if ($previous_id && $element->canCopy()) {
 			$previous_element = $element_class::model()->findByPk($previous_id);
