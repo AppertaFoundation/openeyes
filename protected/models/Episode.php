@@ -33,7 +33,7 @@
  * @property Event[] $events
  * @property EpisodeStatus $status
  */
-class Episode extends BaseActiveRecord
+class Episode extends BaseActiveRecordVersioned
 {
 	private $defaultScopeDisabled = false;
 
@@ -338,11 +338,11 @@ class Episode extends BaseActiveRecord
 		return null;
 	}
 
-	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
+	public function save($runValidation=true, $attributes=null, $allow_overriding=false, $save_version=false)
 	{
 		$previous = Episode::model()->findByPk($this->id);
 
-		if (parent::save($runValidation, $attributes, $allow_overriding)) {
+		if (parent::save($runValidation, $attributes, $allow_overriding, $save_version)) {
 			if ($previous && $previous->episode_status_id != $this->episode_status_id) {
 				$this->audit('episode','change-status',$this->episode_status_id);
 			}

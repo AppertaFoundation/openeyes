@@ -28,7 +28,7 @@
  * The followings are the available model relations:
  * @property Institution $institution
  */
-class InstitutionConsultantAssignment extends BaseActiveRecord
+class InstitutionConsultantAssignment extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

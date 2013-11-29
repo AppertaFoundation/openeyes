@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class DrugType extends BaseActiveRecord
+class DrugType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

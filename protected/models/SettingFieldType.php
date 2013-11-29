@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class SettingFieldType extends BaseActiveRecord
+class SettingFieldType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

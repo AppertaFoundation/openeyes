@@ -29,7 +29,7 @@
  * @property string $mimetype
  * @property integer $size
  */
-class ProtectedFile extends BaseActiveRecord
+class ProtectedFile extends BaseActiveRecordVersioned
 {
 	const THUMBNAIL_QUALITY = 85;
 	// used in model creation

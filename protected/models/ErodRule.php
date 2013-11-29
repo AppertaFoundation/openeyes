@@ -24,7 +24,7 @@
  * @property integer $id
  * @property integer $subspecialty_id
  */
-class ErodRule extends BaseActiveRecord
+class ErodRule extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

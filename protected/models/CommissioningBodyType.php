@@ -26,7 +26,7 @@
  * @property string $shortname
  * 
  */
-class CommissioningBodyType extends BaseActiveRecord
+class CommissioningBodyType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

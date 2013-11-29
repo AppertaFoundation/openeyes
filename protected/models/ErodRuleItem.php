@@ -26,7 +26,7 @@
  * @property integer $item_type
  * @property integer $item_id
  */
-class ErodRuleItem extends BaseActiveRecord
+class ErodRuleItem extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

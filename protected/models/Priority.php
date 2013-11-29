@@ -23,7 +23,7 @@
  * The followings are the available columns in table 'priority':
  * @property integer $id
  */
-class Priority extends BaseActiveRecord
+class Priority extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

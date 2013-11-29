@@ -25,7 +25,7 @@
  * @property string $name
  * @property integer $display_order
  */
-class CommonPreviousOperation extends BaseActiveRecord
+class CommonPreviousOperation extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

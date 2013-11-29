@@ -25,7 +25,7 @@
  * @property string $name
  * @property integer $letter_template_only
  */
-class ContactMetadata extends BaseActiveRecord
+class ContactMetadata extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

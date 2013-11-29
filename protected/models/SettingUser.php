@@ -26,7 +26,7 @@
  * @property string $key
  * @property string $value
  */
-class SettingUser extends BaseActiveRecord
+class SettingUser extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

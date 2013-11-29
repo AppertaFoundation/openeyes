@@ -29,7 +29,7 @@
  * The followings are the available model relations:
  * @property Patient $patient
  */
-class PreviousOperation extends BaseActiveRecord
+class PreviousOperation extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

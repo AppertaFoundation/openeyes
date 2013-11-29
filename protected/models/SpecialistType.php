@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class SpecialistType extends BaseActiveRecord
+class SpecialistType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

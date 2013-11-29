@@ -36,7 +36,7 @@
  * @property PatientOphInfoCviStatus $cvi_status
  */
 
-class PatientOphInfo extends BaseActiveRecord
+class PatientOphInfo extends BaseActiveRecordVersioned
 {
 
 	/**

@@ -25,7 +25,7 @@
  * @property string $name
  * @property integer $display_order
  */
-class Period extends BaseActiveRecord
+class Period extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

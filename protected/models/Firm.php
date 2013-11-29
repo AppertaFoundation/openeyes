@@ -32,7 +32,7 @@
  * @property User[] $members
  * @property User $consultant
  */
-class Firm extends BaseActiveRecord
+class Firm extends BaseActiveRecordVersioned
 {
 	public $subspecialty_id;
 

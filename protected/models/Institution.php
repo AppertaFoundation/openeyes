@@ -32,7 +32,7 @@
  * @property Contact $contact
  * @property Site[] $sites
  */
-class Institution extends BaseActiveRecord
+class Institution extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

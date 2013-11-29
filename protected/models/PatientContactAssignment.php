@@ -29,7 +29,7 @@
  * @property Patient $patient
  * @property Contact $contact
  */
-class PatientContactAssignment extends BaseActiveRecord
+class PatientContactAssignment extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

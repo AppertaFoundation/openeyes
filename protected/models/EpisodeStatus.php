@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class EpisodeStatus extends BaseActiveRecord
+class EpisodeStatus extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

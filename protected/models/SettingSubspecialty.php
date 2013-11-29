@@ -26,7 +26,7 @@
  * @property string $key
  * @property string $value
  */
-class SettingSubspecialty extends BaseActiveRecord
+class SettingSubspecialty extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

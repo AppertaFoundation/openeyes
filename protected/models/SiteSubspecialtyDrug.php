@@ -26,7 +26,7 @@
  * @property integer $subspecialty_id
  * @property integer $drug_id
  */
-class SiteSubspecialtyDrug extends BaseActiveRecord
+class SiteSubspecialtyDrug extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

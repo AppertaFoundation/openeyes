@@ -31,7 +31,7 @@
  * @property string $salt
  * @property integer $global_firm_rights
  */
-class User extends BaseActiveRecord
+class User extends BaseActiveRecordVersioned
 {
 	/**
 	 * Used to check password and password confirmation match
@@ -202,7 +202,7 @@ class User extends BaseActiveRecord
 	 *
 	 * @return boolean
 	 */
-	public function save($runValidation = true, $attributes = null, $allow_overriding=false)
+	public function save($runValidation = true, $attributes = null, $allow_overriding=false, $save_archive=false)
 	{
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
 			/**
@@ -220,7 +220,7 @@ class User extends BaseActiveRecord
 			}
 		}
 
-		return parent::save($runValidation, $attributes, $allow_overriding);
+		return parent::save($runValidation, $attributes, $allow_overriding, $save_archive);
 	}
 
 	/**

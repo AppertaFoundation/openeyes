@@ -29,7 +29,7 @@
  * @property User $user
  * @property Firm $firm
  */
-class UserFirmRights extends BaseActiveRecord
+class UserFirmRights extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

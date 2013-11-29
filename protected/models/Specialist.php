@@ -29,7 +29,7 @@
  * The followings are the available model relations:
  * @property Contact $contact
  */
-class Specialist extends BaseActiveRecord
+class Specialist extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

@@ -28,7 +28,7 @@
  * The followings are the available model relations:
  * @property Contact $contact
  */
-class Gp extends BaseActiveRecord
+class Gp extends BaseActiveRecordVersioned
 {
 	const UNKNOWN_SALUTATION = 'Doctor';
 	const UNKNOWN_NAME = 'The General Practitioner';

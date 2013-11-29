@@ -37,7 +37,7 @@
  * @property DrugFrequency $default_frequency
  * @property DrugDuration $default_duration
  */
-class Drug extends BaseActiveRecord
+class Drug extends BaseActiveRecordVersioned
 {
 	public $default_scope = true;
 

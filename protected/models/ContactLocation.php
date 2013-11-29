@@ -28,7 +28,7 @@
  * @property Contact $contact
  * @property Site $site
  */
-class ContactLocation extends BaseActiveRecord
+class ContactLocation extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

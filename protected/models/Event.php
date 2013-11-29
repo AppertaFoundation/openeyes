@@ -31,7 +31,7 @@
  * @property User $user
  * @property EventType $eventType
  */
-class Event extends BaseActiveRecord
+class Event extends BaseActiveRecordVersioned
 {
 	private $defaultScopeDisabled = false;
 

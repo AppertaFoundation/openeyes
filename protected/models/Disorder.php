@@ -31,7 +31,7 @@
  * @property CommonSystemicDisorder[] $commonSystemicDisorders
  * @property Specialty $specialty
  */
-class Disorder extends BaseActiveRecord
+class Disorder extends BaseActiveRecordVersioned
 {
 	const SITE_LEFT = 0;
 	const SITE_RIGHT = 1;

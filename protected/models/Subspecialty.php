@@ -29,7 +29,7 @@
  * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
  * @property Specialty $specialty
  */
-class Subspecialty extends BaseActiveRecord
+class Subspecialty extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
