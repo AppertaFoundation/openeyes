@@ -10,5 +10,15 @@ module.exports = {
 				'jsdoc:dist'
 			]
 		}
+	},
+	javascript: {
+		options: {
+			tasks: [
+				'clean:docs',
+				'build',
+				'copy:docs',
+				'jsdoc:dist'
+			]
+		}
 	}
 };

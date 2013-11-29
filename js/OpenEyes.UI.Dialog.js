@@ -16,10 +16,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-var OpenEyes = window.OpenEyes || {};
-OpenEyes.Dialog = OpenEyes.Dialog || {};
-
-(function() {
+(function(exports, Util, EventEmitter) {
 
 	'use strict';
 
@@ -29,8 +26,6 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		show: 'fade'
 	});
 
-	var EventEmitter = OpenEyes.Util.EventEmitter;
-
 	/**
 	 * Dialog constructor.
 	 * @tutorial dialog
@@ -38,7 +33,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @constructor
 	 * @extends {Emitter}
 	 * @example
-	 * var dialog = new OpenEyes.Dialog({
+	 * var dialog = new OpenEyes.UI.Dialog({
 	 *	title: 'Title here',
 	 *	content: 'Here is some content.'
 	 * });
@@ -66,7 +61,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		}
 	}
 
-	Dialog.inherits(EventEmitter);
+	Util.inherits(EventEmitter, Dialog);
 
 	/**
 	 * The default dialog options. Custom options will be merged with these.
@@ -147,13 +142,9 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 	 * @private
 	 */
 	Dialog.prototype.bindEvents = function() {
-
-		// Ensure all handlers are called in the context of this object instance.
-		this.bindAll(true);
-
 		this.content.on({
-			dialogclose: this.onDialogClose,
-			dialogopen: this.onDialogOpen
+			dialogclose: this.onDialogClose.bind(this),
+			dialogopen: this.onDialogOpen.bind(this)
 		});
 	};
 
@@ -213,9 +204,9 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 			data: this.options.data
 		});
 
-		this.xhr.done(this.onContentLoadSuccess);
-		this.xhr.fail(this.onContentLoadFail);
-		this.xhr.always(this.onContentLoad);
+		this.xhr.done(this.onContentLoadSuccess.bind(this));
+		this.xhr.fail(this.onContentLoadFail.bind(this));
+		this.xhr.always(this.onContentLoad.bind(this));
 	};
 
 	/**
@@ -235,7 +226,7 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		}).hide();
 
 		// We're intentionally setting the load handler before setting the src.
-		this.iframe.on('load', this.onIframeLoad);
+		this.iframe.on('load', this.onIframeLoad.bind(this));
 		this.iframe.attr({
 			src: this.options.iframe,
 		});
@@ -450,233 +441,6 @@ OpenEyes.Dialog = OpenEyes.Dialog || {};
 		this.onContentLoad();
 	};
 
-	OpenEyes.Dialog = Dialog;
+	exports.Dialog = Dialog;
 
-}());
-
-(function() {
-
-	'use strict';
-
-	var Dialog = OpenEyes.Dialog;
-
-	/**
-	 * AlertDialog constructor. The AlertDialog extends the base Dialog and provides
-	 * an 'Ok' button for the user to click on.
-	 * @name AlertDialog
-	 * @tutorial dialog_alert
-	 * @constructor
-	 * @extends {Dialog}
-	 * @example
-	 * var alert = new OpenEyes.Dialog.Alert({
-	 *	 content: 'Here is some content.'
-	 * });
-	 * alert.open();
-	 */
-	function AlertDialog(options) {
-
-		options = $.extend(true, {}, AlertDialog._defaultOptions, options);
-		options.content = this.getContent(options);
-
-		Dialog.call(this, options);
-	}
-
-	AlertDialog.inherits(Dialog);
-
-	/**
-	 * The default alert dialog options. These options will be merged into the
-	 * default dialog options.
-	 * @name AlertDialog#_defaultOptions
-	 * @private
-	 */
-	AlertDialog._defaultOptions = {
-		modal: true,
-		width: 400,
-		minHeight: 'auto',
-		title: 'Alert',
-		dialogClass: 'dialog alert'
-	};
-
-	/**
-	 * Get the dialog content. Do some basic content formatting, then compile
-	 * and return the alert dialog template.
-	 * @name AlertDialog#getContent
-	 * @method
-	 * @private
-	 * @param {string} content - The main alert dialog content to display.
-	 * @returns {string}
-	 */
-	AlertDialog.prototype.getContent = function(options) {
-
-		// Replace new line characters with html breaks
-		options.content = (options.content || '').replace(/\n/g, '<br/>');
-
-		// Compile the template, get the HTML
-		return this.compileTemplate({
-			selector: '#dialog-alert-template',
-			data: {
-				content: options.content
-			}
-		});
-	};
-
-	/**
-	 * Bind events
-	 * @name AlertDialog#bindEvents
-	 * @method
-	 * @private
-	 */
-	AlertDialog.prototype.bindEvents = function() {
-		Dialog.prototype.bindEvents.apply(this, arguments);
-		this.content.on('click', '.ok', this.onButtonClick);
-	};
-
-	/** Event handlers */
-
-	/**
-	 * 'OK' button click handler. Simply close the dialog on click.
-	 * @name AlertDialog#onButtonClick
-	 * @method
-	 * @private
-	 */
-	AlertDialog.prototype.onButtonClick = function() {
-		this.close();
-	};
-
-	OpenEyes.Dialog.Alert = AlertDialog;
-
-}());
-
-(function() {
-
-	'use strict';
-
-	var Dialog = OpenEyes.Dialog;
-
-	/**
-	 * ConfirmDialog constructor. The ConfirmDialog extends the base Dialog and provides
-	 * an 'Ok' and 'Cancel' button for the user to click on.
-	 * @name ConfirmDialog
-	 * @tutorial dialog_confirm
-	 * @constructor
-	 * @extends {Dialog}
-	 * @example
-	 * var alert = new OpenEyes.Dialog.Confirm({
-	 *	 content: 'Here is some content.'
-	 * });
-	 * alert.open();
-	 */
-	function ConfirmDialog(options) {
-
-		options = $.extend(true, {}, ConfirmDialog._defaultOptions, options);
-		options.content = !options.url ? this.getContent(options) : '';
-
-		Dialog.call(this, options);
-	}
-
-	ConfirmDialog.inherits(Dialog);
-
-	/**
-	 * The default confirm dialog options. These options will be merged into the
-	 * default dialog options.
-	 * @name ConfirmDialog#_defaultOptions
-	 * @property {object} _defaultOptions - The default options.
-	 * @private
-	 */
-	ConfirmDialog._defaultOptions = {
-		modal: true,
-		width: 400,
-		minHeight: 'auto',
-		title: 'Confirm',
-		dialogClass: 'dialog confirm',
-		okButton: 'OK',
-		cancelButton: 'Cancel'
-	};
-
-	/**
-	 * Get the dialog content. Do some basic content formatting, then compile
-	 * and return the alert dialog template.
-	 * @name ConfirmDialog#getContent
-	 * @method
-	 * @private
-	 * @param {string} content - The main alert dialog content to display.
-	 * @returns {string}
-	 */
-	ConfirmDialog.prototype.getContent = function(options) {
-		// Compile the template, get the HTML
-		return this.compileTemplate({
-			selector: '#dialog-confirm-template',
-			data: {
-				content: options.content,
-				okButton: options.okButton,
-				cancelButton: options.cancelButton
-			}
-		});
-	};
-
-	/**
-	 * Bind events
-	 * @name ConfirmDialog#bindEvents
-	 * @method
-	 * @private
-	 */
-	ConfirmDialog.prototype.bindEvents = function() {
-		Dialog.prototype.bindEvents.apply(this, arguments);
-		this.content.on('click', '.ok', this.onOKButtonClick);
-		this.content.on('click', '.cancel', this.onCancelButtonClick);
-	};
-
-	/** Event handlers */
-
-	/**
-	 * 'OK' button click handler. Simply close the dialog on click.
-	 * @name ConfirmDialog#onButtonClick
-	 * @fires ConfirmDialog#ok
-	 * @method
-	 * @private
-	 */
-	ConfirmDialog.prototype.onOKButtonClick = function() {
-
-		this.close();
-
-		/**
-		 * Emitted after the use has clicked on the 'OK' button.
-		 *
-		 * @event ConfirmDialog#ok
-		 */
-		this.emit('ok');
-	};
-
-	/**
-	 * 'Cancel' button click handler. Simply closes the dialog on click.
-	 * @name ConfirmDialog#onButtonClick
-	 * @fires ConfirmDialog#cancel
-	 * @method
-	 * @private
-	 */
-	ConfirmDialog.prototype.onCancelButtonClick = function() {
-
-		this.close();
-
-		/**
-		 * Emitted after the use has clicked on the 'Cancel' button.
-		 *
-		 * @event ConfirmDialog#cancel
-		 */
-		this.emit('cancel');
-	};
-
-	/**
-	 * Content load success handler. Sets the dialog content to be the response of
-	 * the content request.
-	 * @name ConfirmDialog#onContentLoadSuccess
-	 * @method
-	 * @private
-	 */
-	ConfirmDialog.prototype.onContentLoadSuccess = function(response) {
-		this.options.content = response;
-		Dialog.prototype.onContentLoadSuccess.call(this, this.getContent(this.options));
-	};
-
-	OpenEyes.Dialog.Confirm = ConfirmDialog;
-}());
+}(OpenEyes.UI, OpenEyes.Util, OpenEyes.Util.EventEmitter));

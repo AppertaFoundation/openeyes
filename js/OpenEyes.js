@@ -16,5 +16,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 (function(exports) {
+	/**
+	 * The Global OpenEyes namespace
+	 * @namespace OpenEyes
+	 */
 	exports.OpenEyes = {};
-}(window));
+}(this));
