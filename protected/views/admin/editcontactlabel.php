@@ -59,7 +59,7 @@
 				if (response == 0) {
 					window.location.href = baseUrl+'/admin/contactLabels';
 				} else {
-					new OpenEyes.Dialog.Alert({
+					new OpenEyes.UI.Dialog.Alert({
 						content: "You cannot delete this contact label because it's in use by "+response+" contacts."
 					}).open();
 					enableButtons();

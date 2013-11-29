@@ -69,8 +69,15 @@ $(document).ready(function(){
 		}
 
 		function changeState(episodeContainer, trigger, episode_id, state) {
+
 			trigger.toggleClass('toggle-hide toggle-show');
-			episodeContainer.find('.events-container,.events-overview').slideToggle('fast');
+
+			episodeContainer
+			.find('.events-container,.events-overview')
+			.slideToggle('fast', function() {
+				$(this).css({ overflow: 'visible' });
+			});
+
 			updateEpisode(episode_id, state);
 		}
 
@@ -133,13 +140,15 @@ $(document).ready(function(){
 			}
 		});
 
-		var header = new OpenEyes.UI.StickyElement('.header', options);
+		var header = new OpenEyes.UI.StickyElement('.header', $.extend({
+			offset: 25
+		}, options));
 
-		new OpenEyes.UI.StickyElement('.event-header', $.extend({}, options, {
+		new OpenEyes.UI.StickyElement('.event-header', $.extend({
 			offset: function() {
 				return header.element.height() * -1;
 			}
-		}));
+		}, options));
 	}());
 
 	/**
@@ -200,7 +209,7 @@ $(document).ready(function(){
 
 			e.preventDefault();
 
-			new OpenEyes.Dialog($.extend({}, options, {
+			new OpenEyes.UI.Dialog($.extend({}, options, {
 				url: baseUrl + '/site/changesiteandfirm',
 				data: {
 					returnUrl: window.location.href,
@@ -211,7 +220,7 @@ $(document).ready(function(){
 
 		// Show the 'change firm' dialog on page load.
 		if ($('#site-and-firm-form').length) {
-			new OpenEyes.Dialog($.extend({}, options, {
+			new OpenEyes.UI.Dialog($.extend({}, options, {
 				content: $('#site-and-firm-form')
 			})).open();
 		}

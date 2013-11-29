@@ -159,7 +159,8 @@ class OperationBooking extends Page
     public function EmergencyList ()
     {
         $this->getElement('EmergencyList')->selectOption("EMG");
-        $this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
+		//alert is not happening anymore so call is commented out
+        //$this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
         $this->getSession()->wait(5000);
     }
 

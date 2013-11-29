@@ -57,7 +57,7 @@
 		handleButton($('#et_search'),function(e) {
 			e.preventDefault();
 			if ($('#q').val().length <1) {
-				new OpenEyes.Dialog.Alert({
+				new OpenEyes.UI.Dialog.Alert({
 					content: "Please enter a search term"
 				})
 				.on('close', $('#q').focus)

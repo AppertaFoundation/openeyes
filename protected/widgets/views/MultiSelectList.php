@@ -63,7 +63,7 @@ $widgetOptionsJson = json_encode(array(
 		<div class="multi-select<?php if (!$inline) echo ' multi-select-list';?>" data-options='<?php echo $widgetOptionsJson;?>'>
 			<input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
 			<div class="multi-select-dropdown-container">
-				<select id="<?php echo $field?>" class="MultiSelectList" name="">
+				<select id="<?php echo $field?>" class="MultiSelectList<?php if ($showRemoveAllLink) {?> inline<?php }?>" name="">
 					<option value=""><?php echo $htmlOptions['empty']?></option>
 					<?php foreach ($filtered_options as $value => $option) {
 						$attributes = array('value' => $value);

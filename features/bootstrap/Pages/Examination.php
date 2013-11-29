@@ -382,7 +382,7 @@ class Examination extends Page
     public function expandAdnexalComorbidity ()
     {
         $this->getElement('expandaAdnexalComorbidity')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(20000);
     }
 
     public function leftAdnexal ($left)

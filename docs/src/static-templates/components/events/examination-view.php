@@ -53,7 +53,7 @@
 					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
-							<div class="eyedraw-data row">
+							<div class="eyedraw-data eyedraw-row row">
 								<div class="eyedraw-image column small">
 									<img src="/img/tmp/eyedraw-small.png" class="canvas" alt="Eyedraw" />
 								</div>
@@ -66,7 +66,7 @@
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="eyedraw-data row">
+							<div class="eyedraw-data eyedraw-row row">
 								<div class="eyedraw-image column small">
 									<img src="/img/tmp/eyedraw-small.png" class="canvas" alt="Eyedraw" />
 								</div>
@@ -104,7 +104,7 @@
 					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
-							<div class="eyedraw-data row">
+							<div class="eyedraw-data eyedraw-row row">
 								<div class="eyedraw-image column large">
 									<img src="/img/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
@@ -117,7 +117,7 @@
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="eyedraw-data row">
+							<div class="eyedraw-data eyedraw-row row">
 								<div class="eyedraw-image column large">
 									<img src="/img/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
@@ -140,7 +140,7 @@
 					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
-							<div class="eyedraw-data row">
+							<div class="eyedraw-data eyedraw-row row">
 								<div class="eyedraw-image column large">
 									<img src="/img/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw" />
 								</div>
@@ -176,7 +176,7 @@
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="eyedraw-data row">
+							<div class="eyedraw-data eyedraw-row row">
 								<div class="eyedraw-image column large">
 									<img src="/img/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw" />
 								</div>
@@ -304,7 +304,7 @@
 					</header>
 					<div class="element-data element-eyes row">
 						<div class="element-eye right-eye column">
-							<div class="eyedraw-data row">
+							<div class="eyedraw-data eyedraw-row row">
 								<div class="eyedraw-image column large">
 									<img src="/img/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>
@@ -317,7 +317,7 @@
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="eyedraw-data row">
+							<div class="eyedraw-data eyedraw-row row">
 								<div class="eyedraw-image column large">
 									<img src="/img/tmp/eyedraw-medium.png" class="canvas" alt="Eyedraw" />
 								</div>

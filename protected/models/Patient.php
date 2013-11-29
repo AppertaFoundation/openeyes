@@ -790,11 +790,12 @@ class Patient extends BaseActiveRecordVersioned
 		foreach ($snomeds as $id) {
 			$disorders[] = Disorder::model()->findByPk($id);
 		}
+
 		$patient_disorder_ids = $this->getAllDisorderIds();
 		$res = array();
 		foreach ($patient_disorder_ids as $p_did) {
 			foreach ($disorders as $d) {
-				if ($d->id == $p_did || $d->ancestorOfIds(array($p_did))) {
+				if (($d->id == $p_did) || $d->ancestorOfIds(array($p_did))) {
 					$res[] = Disorder::model()->findByPk($p_did);
 					break;
 				}
@@ -965,17 +966,33 @@ class Patient extends BaseActiveRecordVersioned
 		} elseif ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_II_SET)) {
 			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_II);
 		}
+
 		return null;
 	}
 
 	/**
-	 * Type of diabetes mellitus as a letter string
+	 * Get the patient diabetes type as Disorder instance - will return generic Diabetes
+	 * if no specific type available, but patient has diabetes
+	 *
+	 * @return Disorder|null
+	 */
+	public function getDiabetes()
+	{
+		$type = $this->getDiabetesType();
+		if ($type === null && $this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_SET)) {
+			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES);
+		}
+		return $type;
+	}
+
+	/**
+	 * Diabetes mellitus as a letter string
 	 *
 	 * @return string
 	 */
 	public function getDmt()
 	{
-		if ($disorder = $this->getDiabetesType()) {
+		if ($disorder = $this->getDiabetes()) {
 			return $disorder->term;
 		}
 

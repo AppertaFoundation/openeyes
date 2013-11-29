@@ -85,6 +85,9 @@ textarea {
 select {
 	font-size: $default-font-size;
 	max-width: 100%;
+	&.inline {
+		width: auto;
+	}
 }
 
 /* Normalize file input width */
@@ -244,10 +247,13 @@ label {
 
 // Field rows
 .field-row {
-	padding-bottom: $form-spacing;
+	padding-bottom: 10px;
 	table:last-child {
 		margin-bottom: 0;
 	}
+}
+.eyedraw-row {
+	@extend .field-row;
 }
 
 .field-value {

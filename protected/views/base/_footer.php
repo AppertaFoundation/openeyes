@@ -46,7 +46,7 @@
 $(document).ready(function() {
 	$('#support-info-link').live('click',function(e) {
 		e.preventDefault();
-		new OpenEyes.Dialog({
+		new OpenEyes.UI.Dialog({
 			url: this.href,
 			title: 'Support Information'
 		}).open();

@@ -18,5 +18,7 @@
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.Util.EventEmitter.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.StickyElement.js'))?>
-<?php $cs->registerScriptFile(Yii::app()->createUrl('js/dialogs.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.Dialog.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.Dialog.Alert.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.Dialog.Confirm.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>

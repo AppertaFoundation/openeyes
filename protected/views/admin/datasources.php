@@ -51,7 +51,7 @@
 		e.preventDefault();
 
 		if ($('input[type="checkbox"][name="source[]"]:checked').length == 0) {
-			new OpenEyes.Dialog.Alert({
+			new OpenEyes.UI.Dialog.Alert({
 				content: "Please select the source(s) you wish to delete."
 			}).open();
 			return;
@@ -66,11 +66,11 @@
 					window.location.reload();
 				} else {
 					if ($('input[type="checkbox"][name="source[]"]:checked').length == 1) {
-						new OpenEyes.Dialog.Alert({
+						new OpenEyes.UI.Dialog.Alert({
 							content: "The source you selected is in use and cannot be deleted."
 						}).open();
 					} else {
-						new OpenEyes.Dialog.Alert({
+						new OpenEyes.UI.Dialog.Alert({
 							content: "The sources you selected are in use and cannot be deleted."
 						}).open();
 					}

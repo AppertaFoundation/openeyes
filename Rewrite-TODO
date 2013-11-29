@@ -1,3 +1,0 @@
-* Login form forgotten passwords
-* Login form spinner
-* Adjust all asset paths to point to module assets in protected folder (and remove symlinks)

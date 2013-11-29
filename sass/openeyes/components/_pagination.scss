@@ -17,6 +17,8 @@
 /* Default Pagination */
 ul.pagination {
 	@include pagination;
+	height: auto;
+	min-height: $pagination-height;
 	li {
 		margin: 0;
 		&.label {

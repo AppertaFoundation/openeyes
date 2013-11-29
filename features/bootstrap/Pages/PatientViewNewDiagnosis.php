@@ -300,7 +300,8 @@ class PatientViewNewDiagnosis extends Page
     public function selectLatestEvent ()
     {
         $this->getElement('latestEvent')->click();
-        $this->getSession()->wait(3000);
+		//make sure the Episodes and Events page is shown after clicking latest event link
+        $this->getSession()->wait(15000, "$('h1.badge').html() ==  'Episodes and events' ");
     }
 
     protected function episodesAndEventsAreNotPresent()

@@ -1,4 +1,14 @@
 #!/usr/bin/env sh
+#make sure selenium is running before going ahead
+SELENIUM=`ps aux | grep -c selenium`
+if [ $SELENIUM -gt 1 ]
+  then
+    echo GOOD - Looks like selenium is running
+  else
+    echo ERR - looks like selenium is not running. PLS run ./bin/run-selenium.sh
+    exit 1
+fi
+
 # define all modules to test
 echo "OphCiExamination
 OphDrPrescription
@@ -8,7 +18,6 @@ OphTrConsent
 OphCiPhasing
 OphLeEpatientletter
 eyedraw
-mehpas
 OphCoCorrespondence
 MEHCommands
 OphOuAnaestheticsatisfactionaudit
@@ -49,8 +58,9 @@ echo "import test sql - delete/create db"
 vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes -e "drop database openeyes; create database openeyes;";'
 echo "import test sql - import testdata.sql"
 vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;'
-echo "run oe-migrate"
-vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; bin/oe-migrate; exit;'
+echo "run migrations"
+vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; protected/yiic migrate --interactive=0; \
+protected/yiic migratemodules --interactive=0;exit;'
 
 #make sure phantomjs is set up and running
 #PHANTOM=`ps aux | grep -c phantom`
@@ -76,5 +86,5 @@ fi
 #run tests
 bin/behat --tags=setup --profile=$PROFILE --expand
 #bin/behat --tags=confidence --profile=$PROFILE --expand
-bin/behat --tags=examination --profile=$PROFILE --expand
+bin/behat --tags=diagnosis --profile=$PROFILE --expand
 exit
