@@ -140,13 +140,15 @@ $(document).ready(function(){
 			}
 		});
 
-		var header = new OpenEyes.UI.StickyElement('.header', options);
+		var header = new OpenEyes.UI.StickyElement('.header', $.extend({
+			offset: 25
+		}, options));
 
-		new OpenEyes.UI.StickyElement('.event-header', $.extend({}, options, {
+		new OpenEyes.UI.StickyElement('.event-header', $.extend({
 			offset: function() {
 				return header.element.height() * -1;
 			}
-		}));
+		}, options));
 	}());
 
 	/**
