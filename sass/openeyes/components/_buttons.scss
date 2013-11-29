@@ -105,22 +105,24 @@ button, .button, input[type="submit"] {
 // Delete button styles
 button, .button, input[type="submit"] {
 	&.delete {
-		@include box-shadow(none);
-		background: none;
-		border-color: #9a091c;
-		border: 0;
-		color: #000;
-		text-shadow: none;
-		&:hover {
-			@include background(linear-gradient(#cf0d27, #b8152b));
-			@include box-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
-			text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
-			color: #fff;
-		}
-		&:active {
-			@include background(linear-gradient(#901828, #761421));
-			border-color: #6b121e;
-			color: #fff;
+		&, &.disabled {
+			@include box-shadow(none);
+			background: none;
+			border-color: #9a091c;
+			border: 0;
+			color: #000;
+			text-shadow: none;
+			&:hover {
+				@include background(linear-gradient(#cf0d27, #b8152b));
+				@include box-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
+				text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
+				color: #fff;
+			}
+			&:active {
+				@include background(linear-gradient(#901828, #761421));
+				border-color: #6b121e;
+				color: #fff;
+			}
 		}
 	}
 }
