@@ -70,7 +70,7 @@
 					if (html == "1") {
 						window.location.reload();
 					} else {
-						new OpenEyes.Dialog.Alert({
+						new OpenEyes.UI.Dialog.Alert({
 							content: "Something went wrong trying to add the site.  Please try again or contact support for assistance."
 						}).open();
 					}
@@ -98,7 +98,7 @@
 				if (html == "1") {
 					window.location.reload();
 				} else {
-					new OpenEyes.Dialog.Alert({
+					new OpenEyes.UI.Dialog.Alert({
 						content: "Something went wrong trying to add the sites.  Please try again or contact support for assistance."
 					}).open();
 				}
