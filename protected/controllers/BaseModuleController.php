@@ -90,7 +90,6 @@ class BaseModuleController extends BaseController {
 
 				// Register css
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/module.css')) {
-					error_log('registering');
 					$this->registerCssFile('module.css',$this->assetPath.'/css/module.css',10);
 				}
 
