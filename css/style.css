@@ -4596,7 +4596,7 @@ tfoot.pagination-container .pagination li {
 /* line 80, ../sass/openeyes/components/events/_elements.scss */
 .eye-message {
   font-size: 0.8125em;
-  padding: 1em 0;
+  padding: 0 0 1em 0;
   text-align: center;
 }
 
