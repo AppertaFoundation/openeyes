@@ -37,7 +37,7 @@
 		this.elementOffset = this.element.offset();
 		this.wrapperHeight = this.options.wrapperHeight.call(this);
 
-		this.wrapElement()
+		this.wrapElement();
 		this.bindEvents();
 	}
 
@@ -108,12 +108,11 @@
 	/**
 	 * Window scroll handler. This method compares the offset of the element to the
 	 * window scroll position and determines if the element should be sticky or not.
-	 * @param  {Object} e The scroll event object.
 	 * @name OpenEyes.UI.StickyElement#onWindowScroll
 	 * @method
 	 * @private
 	 */
-	StickyElement.prototype.onWindowScroll = function(e) {
+	StickyElement.prototype.onWindowScroll = function() {
 
 		var offset = $.isFunction(this.options.offset) ? this.options.offset() : this.options.offset;
 		var winTop = win.scrollTop();

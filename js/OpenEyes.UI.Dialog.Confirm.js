@@ -31,7 +31,7 @@
 	 * @extends {Dialog}
 	 * @example
 	 * var alert = new OpenEyes.UI.Dialog.Confirm({
-	 *	 content: 'Here is some content.'
+	 *   content: 'Here is some content.'
 	 * });
 	 * alert.open();
 	 */
