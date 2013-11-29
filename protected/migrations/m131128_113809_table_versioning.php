@@ -1,6 +1,6 @@
 <?php
 
-class m131128_113809_table_versioning extends CDbMigration
+class m131128_113809_table_versioning extends OEMigration
 {
 	public function up()
 	{
@@ -15,7 +15,9 @@ class m131128_113809_table_versioning extends CDbMigration
 			$proc_ids[] = $row['id'];
 		}
 
-		$this->delete('proc_opcs_assignment',"proc_id not in (".implode(',',$proc_ids).")");
+		if (!empty($proc_ids)) {
+			$this->delete('proc_opcs_assignment',"proc_id not in (".implode(',',$proc_ids).")");
+		}
 
 		foreach (Yii::app()->db->getSchema()->getTables() as $table) {
 			if (!in_array($table->name,$exclude) && !preg_match('/et_/',$table->name) && !preg_match('/^oph/',$table->name)) {
@@ -24,106 +26,7 @@ class m131128_113809_table_versioning extends CDbMigration
 		}
 	}
 
-	public function createArchiveTable($table)
+	public function down()
 	{
-		$a = Yii::app()->db->createCommand("show create table $table->name;")->queryRow();
-
-		$create = $a['Create Table'];
-
-		$create = preg_replace('/CREATE TABLE `(.*?)`/',"CREATE TABLE `{$table->name}_archive`",$create);
-
-		preg_match_all('/  KEY `(.*?)`/',$create,$m);
-
-		foreach ($m[1] as $key) {
-			$_key = $key;
-
-			if (strlen($_key) <= 60) {
-				$_key = 'acv_'.$_key;
-			} else {
-				$_key[0] = 'a';
-				$_key[1] = 'c';
-				$_key[2] = 'v';
-				$_key[3] = '_';
-			}
-
-			$create = preg_replace("/KEY `{$key}`/","KEY `$_key`",$create);
-		}
-
-		preg_match_all('/CONSTRAINT `(.*?)`/',$create,$m);
-
-		foreach ($m[1] as $key) {
-			$_key = $key;
-
-			if (strlen($_key) <= 60) {
-				$_key = 'acv_'.$_key;
-			} else {
-				$_key[0] = 'a';
-				$_key[1] = 'c';
-				$_key[2] = 'v';
-				$_key[3] = '_';
-			}
-
-			$create = preg_replace("/CONSTRAINT `{$key}`/","CONSTRAINT `$_key`",$create);
-		}
-
-		Yii::app()->db->createCommand($create)->query();
-
-		$this->addColumn("{$table->name}_archive","rid","int(10) unsigned NOT NULL");
-		$this->createIndex("{$table->name}_archive_rid_fk","{$table->name}_archive","rid");
-		$this->addForeignKey("{$table->name}_archive_rid_fk","{$table->name}_archive","rid",$table->name,"id");
-
-		foreach (Yii::app()->db->createCommand()->select("*")->from($table->name)->order("id asc")->queryAll() as $row) {
-			$row['rid'] = $row['id'];
-			unset($row['id']);
-			$this->insert("{$table->name}_archive",$row);
-		}
-	}
-
-	public function findForeignKey($table, $field)
-	{
-		foreach ($this->getKeys($table) as $name => $data) {
-			if ($data['field'] == $field && isset($data['remote_table'])) {
-				return $name;
-			}
-		}
-
-		throw new Exception("Can't find foreign key for $table: $field");
-	}
-
-	public function findIndex($table, $field)
-	{
-		foreach ($this->getKeys($table) as $name => $data) {
-			if ($data['field'] == $field && !isset($data['remote_table'])) {
-				return $name;
-			}
-		}
-
-		throw new Exception("Can't find index for $table: $field");
-	}
-
-	public function getKeys($table) {
-		$a = Yii::app()->db->createCommand("show create table `$table`;")->queryRow();
-
-		$keys = array();
-
-		foreach (explode(chr(10),trim($a['Create Table'])) as $line) {
-			if (preg_match('/ KEY `(.*?)` \(`(.*?)`\)/',$line,$m)) {
-				$keys[$m[1]] = array(
-					'field' => $m[2],
-				);
-			}
-
-			if (preg_match('/ CONSTRAINT `(.*?)` FOREIGN KEY \(`(.*?)`\) REFERENCES `(.*?)` \(`(.*?)`\)/',$line,$m)) {
-				if (isset($keys[$m[1]]['field']) && $keys[$m[1]]['field'] != $m[2]) {
-					throw new Exception("Key mismatch for table $table: {$keys[$m[1]]['field']} != {$m[2]}");
-				}
-
-				$keys[$m[1]]['field'] = $m[2];
-				$keys[$m[1]]['remote_table'] = $m[3];
-				$keys[$m[1]]['remote_field'] = $m[4];
-			}
-		}
-
-		return $keys;
 	}
 }

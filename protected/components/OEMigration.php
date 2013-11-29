@@ -30,7 +30,7 @@ class OEMigration extends CDbMigration
 	 */
 	public function execute($sql, $params=array(), $message = null) {
 		$message = ($message) ? $message : strtok($sql, "\n").'...';
-		echo "    > execute SQL: $message ...";
+		echo "		> execute SQL: $message ...";
 		$time=microtime(true);
 		$this->getDbConnection()->createCommand($sql)->execute($params);
 		echo " done (time: ".sprintf('%.3f', microtime(true)-$time)."s)\n";
@@ -369,11 +369,11 @@ class OEMigration extends CDbMigration
 	 * @description method needed to delete records from multi key tables
 	 * @param string $tableName
 	 * @param array $fieldsValsArray
-	 *  example of fieldsValsArray
+	 *	example of fieldsValsArray
 	 * $fieldsValsArray should look like
 	 *
 	 * array(
-	 *    array('column_name'=>'value', 'column_name'=>'val'),
+	 *		array('column_name'=>'value', 'column_name'=>'val'),
 	 * )
 	 */
 	protected function deleteOEFromMultikeyTable($tableName, array $fieldsValsArray)
@@ -398,4 +398,73 @@ class OEMigration extends CDbMigration
 		}
 	}
 
+	public function createArchiveTable($table, $migrate_data = true)
+	{
+		echo "Creating archive table for $table->name ...\n";
+
+		$a = Yii::app()->db->createCommand("show create table $table->name;")->queryRow();
+
+		$create = $a['Create Table'];
+
+		$create = preg_replace('/CREATE TABLE `(.*?)`/',"CREATE TABLE `{$table->name}_archive`",$create);
+
+		preg_match_all('/  KEY `(.*?)`/',$create,$m);
+
+		foreach ($m[1] as $key) {
+			$_key = $key;
+
+			if (strlen($_key) <= 60) {
+				$_key = 'acv_'.$_key;
+			} else {
+				$_key[0] = 'a';
+				$_key[1] = 'c';
+				$_key[2] = 'v';
+				$_key[3] = '_';
+			}
+
+			$create = preg_replace("/KEY `{$key}`/","KEY `$_key`",$create);
+		}
+
+		preg_match_all('/CONSTRAINT `(.*?)`/',$create,$m);
+
+		foreach ($m[1] as $key) {
+			$_key = $key;
+
+			if (strlen($_key) <= 60) {
+				$_key = 'acv_'.$_key;
+			} else {
+				$_key[0] = 'a';
+				$_key[1] = 'c';
+				$_key[2] = 'v';
+				$_key[3] = '_';
+			}
+
+			$create = preg_replace("/CONSTRAINT `{$key}`/","CONSTRAINT `$_key`",$create);
+		}
+
+		Yii::app()->db->createCommand($create)->query();
+
+		$this->addColumn("{$table->name}_archive","rid","int(10) unsigned NOT NULL");
+		$this->createIndex("{$table->name}_archive_rid_fk","{$table->name}_archive","rid");
+		$this->addForeignKey("{$table->name}_archive_rid_fk","{$table->name}_archive","rid",$table->name,"id");
+
+		if ($migrate_data) {
+			$offset = 0;
+			$limit = 10000;
+
+			while (1) {
+				$data = Yii::app()->db->createCommand()->select("*")->from($table->name)->order("id asc")->limit($limit)->offset($offset)->queryAll();
+				
+				if (empty($data)) break;
+
+				foreach ($data as $row) {
+					$row['rid'] = $row['id'];
+					unset($row['id']);
+					$this->insert("{$table->name}_archive",$row);
+				}
+
+				$offset += $limit;
+			}
+		}
+	}
 }
