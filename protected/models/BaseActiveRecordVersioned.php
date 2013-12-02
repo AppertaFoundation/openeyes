@@ -122,50 +122,6 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		));
 	}
 
-	/*public function save($runValidation=true, $attributes=null, $allow_overriding=false, $save_archive=false)
-	{
-		if (preg_match('/Archive$/',get_class($this))) {
-			if ($save_archive) {
-				return parent::save($runValidation, $attributes, $allow_overriding);
-			}
-
-			throw new Exception("save() should not be called on archive models here: ".get_class($this));
-		}
-
-		if ($this->getIsNewRecord()) {
-			return parent::save($runValidation, $attributes, $allow_overriding);
-		}
-
-		if ($this->enable_archive) {
-			$this->saveArchiveVersion();
-		}
-
-		$result = parent::save($runValidation, $attributes, $allow_overriding);
-
-		return $result;
-	}*/
-
-	public function saveArchiveVersion()
-	{
-		$archive = $this->newArchiveModel();
-
-		$model = get_class($this);
-		$object = $model::model()->findByPk($this->id);
-
-		foreach ($object as $key => $value) {
-			if ($key == 'id') {
-				$key = 'rid';
-			}
-
-			$archive->{$key} = $value;
-			$archive->deleted_at = date('Y-m-d H:i:s');
-		}
-
-		if (!$archive->save(true, null, true, true)) {
-			throw new Exception("Unable to save archive model ".get_class($archive).": ".print_r($archive->getErrors(),true));
-		}
-	}
-
 	public function getArchiveTableSchema()
 	{
 		return Yii::app()->db->getSchema()->getTable($this->tableName().'_archive');
