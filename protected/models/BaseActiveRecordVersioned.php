@@ -129,17 +129,13 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 	public function updateByPk($pk,$attributes,$condition='',$params=array())
 	{
-		$archiveAttributes = $attributes;
-		$archiveAttributes['rid'] = $this->id;
-		$archiveAttributes['deleted_at'] = date('Y-m-d H:i:s');
+		$table=$this->getTableSchema();
+		$table_archive=$this->getArchiveTableSchema();
+		$date = date('Y-m-d H:i:s');
+		$primaryKey = $this->tableSchema->primaryKey;
 
-		$builder=$this->getCommandBuilder();
-		$table=$this->getArchiveTableSchema();
-		$criteria=$builder->createPkCriteria($table,$pk,$condition,$params);
-		$command=$builder->createInsertCommand($table,$archiveAttributes,$criteria);
-		if ($command->execute()) {
-			return parent::updateByPk($pk,$attributes,$condition,$params);
-		}
-		return false;
+		Yii::app()->db->createCommand("insert into `$table_archive->name` select `$table->name`.*, {$this->id}, '$date', null from `$table->name` where `$primaryKey` = $pk")->query();
+
+		return parent::updateByPk($pk,$attributes,$condition,$params);
 	}
 }
