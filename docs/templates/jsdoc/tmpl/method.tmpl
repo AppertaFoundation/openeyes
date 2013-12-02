@@ -15,13 +15,13 @@ var self = this;
 </dt>
 <dd>
 
+    <div class="more-info" id="more-info-<?js= id.replace(/:/g, '_') ?>">
+
     <?js if (data.description) { ?>
     <div class="description">
         <?js= data.description ?>
     </div>
     <?js } ?>
-
-    <div class="more-info" id="more-info-<?js= id.replace(/:/g, '_') ?>">
 
     <?js if (kind === 'event' && data.type && data.type.names) {?>
         <h5>Type:</h5>

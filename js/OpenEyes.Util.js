@@ -20,6 +20,7 @@
 	/**
 	 * OpenEyes Util module
 	 * @exports OpenEyes.Util
+	 * @memberOf OpenEyes
 	 */
 	var Util = {};
 
