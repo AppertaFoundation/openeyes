@@ -80,11 +80,11 @@ if [ $# -eq 1 ]
   then
     PROFILE=$1
   else
-    PROFILE=phantomjs
+    PROFILE=phantomjs-ci
 fi
 
 #run tests
 bin/behat --tags=setup --profile=$PROFILE --expand
 #bin/behat --tags=confidence --profile=$PROFILE --expand
-bin/behat --tags=diagnosis --profile=$PROFILE --expand
+bin/behat --tags=regression --profile=$PROFILE --expand
 exit
