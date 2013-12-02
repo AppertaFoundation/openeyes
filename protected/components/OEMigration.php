@@ -445,8 +445,8 @@ class OEMigration extends CDbMigration
 		Yii::app()->db->createCommand($create)->query();
 
 		$this->addColumn("{$table->name}_archive","rid","int(10) unsigned NOT NULL");
-		$this->createIndex("{$table->name}_archive_rid_fk","{$table->name}_archive","rid");
-		$this->addForeignKey("{$table->name}_archive_rid_fk","{$table->name}_archive","rid",$table->name,"id");
+		$this->createIndex("{$table->name}_arid_fk","{$table->name}_archive","rid");
+		$this->addForeignKey("{$table->name}_arid_fk","{$table->name}_archive","rid",$table->name,"id");
 
 		if ($migrate_data) {
 			$offset = 0;
