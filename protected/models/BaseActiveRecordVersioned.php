@@ -161,6 +161,8 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 			}
 
 			$archive->{$key} = $value;
+
+			$archive->deleted_at = date('Y-m-d H:i:s');
 		}
 
 		if (!$archive->save(true, null, true, true)) {
