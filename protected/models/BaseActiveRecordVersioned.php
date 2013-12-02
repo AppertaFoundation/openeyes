@@ -61,6 +61,15 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		return $archive_model::model();
 	}
 
+	/* Returns a new archive model object for the current non-archived model */
+
+	public function newArchiveModel()
+	{
+		$archive_model = get_class($this).'Archive';
+
+		return new $archive_model;
+	}
+
 	/* Return the version prior to the current one, or NULL if there isn't one */
 
 	public function getPreviousVersion()
@@ -124,7 +133,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		}
 
 		if ($this->enable_archive) {
-			$archive = $this->archiveModel();
+			$archive = $this->newArchiveModel();
 
 			foreach ($this as $key => $value) {
 				if ($key == 'id') {
@@ -134,7 +143,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 				$archive->{$key} = $value;
 			}
 
-			if (!$archive->save(false, null, true, true)) {
+			if (!$archive->save(true, null, true, true)) {
 				throw new Exception("Unable to save archive model ".get_class($archive_model).": ".print_r($archive_model->getErrors(),true));
 			}
 		}
