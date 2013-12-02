@@ -25,6 +25,15 @@
  */
 class BaseActiveRecord extends CActiveRecord
 {
+	/**
+	 * Override to use LSB
+	 *
+	 * @param string $class_name
+	 */
+	static public function model($class_name = null)
+	{
+		return parent::model($class_name ?: get_called_class());
+	}
 
 	/**
 	 * Audit log
