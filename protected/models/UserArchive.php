@@ -27,4 +27,12 @@ class UserArchive extends User {
 	{
 		return 'user_archive';
 	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		return array();
+	}
 }

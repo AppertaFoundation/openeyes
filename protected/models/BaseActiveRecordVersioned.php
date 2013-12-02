@@ -124,6 +124,8 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false, $save_archive=false)
 	{
+		return parent::save($runValidation, $attributes, $allow_overriding);
+
 		if (preg_match('/Archive$/',get_class($this))) {
 			if ($save_archive) {
 				return parent::save($runValidation, $attributes, $allow_overriding);
@@ -132,22 +134,37 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 			throw new Exception("save() should not be called on archive models here: ".get_class($this));
 		}
 
-		if ($this->enable_archive) {
-			$archive = $this->newArchiveModel();
+		if ($this->getIsNewRecord()) {
+			$result = parent::save($runValidation, $attributes, $allow_overriding);
 
-			foreach ($this as $key => $value) {
-				if ($key == 'id') {
-					$key = 'rid';
-				}
-
-				$archive->{$key} = $value;
+			if ($result && $this->enable_archive) {
+				$this->saveArchiveVersion();
+			}
+		} else {
+			if ($this->enable_archive) {
+				$this->saveArchiveVersion();
 			}
 
-			if (!$archive->save(true, null, true, true)) {
-				throw new Exception("Unable to save archive model ".get_class($archive_model).": ".print_r($archive_model->getErrors(),true));
-			}
+			$result = parent::save($runValidation, $attributes, $allow_overriding);
 		}
 
-		return parent::save($runValidation, $attributes, $allow_overriding);
+		return $result;
+	}
+
+	public function saveArchiveVersion()
+	{
+		$archive = $this->newArchiveModel();
+
+		foreach ($this as $key => $value) {
+			if ($key == 'id') {
+				$key = 'rid';
+			}
+
+			$archive->{$key} = $value;
+		}
+
+		if (!$archive->save(true, null, true, true)) {
+			throw new Exception("Unable to save archive model ".get_class($archive).": ".print_r($archive->getErrors(),true));
+		}
 	}
 }

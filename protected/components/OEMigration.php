@@ -398,7 +398,7 @@ class OEMigration extends CDbMigration
 		}
 	}
 
-	public function createArchiveTable($table, $migrate_data = true)
+	public function createArchiveTable($table)
 	{
 		echo "Creating archive table for $table->name ...\n";
 
@@ -448,23 +448,6 @@ class OEMigration extends CDbMigration
 		$this->createIndex("{$table->name}_arid_fk","{$table->name}_archive","rid");
 		$this->addForeignKey("{$table->name}_arid_fk","{$table->name}_archive","rid",$table->name,"id");
 
-		if ($migrate_data) {
-			$offset = 0;
-			$limit = 10000;
-
-			while (1) {
-				$data = Yii::app()->db->createCommand()->select("*")->from($table->name)->order("id asc")->limit($limit)->offset($offset)->queryAll();
-				
-				if (empty($data)) break;
-
-				foreach ($data as $row) {
-					$row['rid'] = $row['id'];
-					unset($row['id']);
-					$this->insert("{$table->name}_archive",$row);
-				}
-
-				$offset += $limit;
-			}
-		}
+		$this->addColumn("{$table->name}_archive","deleted_at","datetime not null default '1900-01-01 00:00:00'");
 	}
 }
