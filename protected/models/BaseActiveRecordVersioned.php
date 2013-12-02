@@ -124,8 +124,6 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false, $save_archive=false)
 	{
-		return parent::save($runValidation, $attributes, $allow_overriding);
-
 		if (preg_match('/Archive$/',get_class($this))) {
 			if ($save_archive) {
 				return parent::save($runValidation, $attributes, $allow_overriding);
@@ -135,18 +133,14 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		}
 
 		if ($this->getIsNewRecord()) {
-			$result = parent::save($runValidation, $attributes, $allow_overriding);
-
-			if ($result && $this->enable_archive) {
-				$this->saveArchiveVersion();
-			}
-		} else {
-			if ($this->enable_archive) {
-				$this->saveArchiveVersion();
-			}
-
-			$result = parent::save($runValidation, $attributes, $allow_overriding);
+			return parent::save($runValidation, $attributes, $allow_overriding);
 		}
+
+		if ($this->enable_archive) {
+			$this->saveArchiveVersion();
+		}
+
+		$result = parent::save($runValidation, $attributes, $allow_overriding);
 
 		return $result;
 	}
