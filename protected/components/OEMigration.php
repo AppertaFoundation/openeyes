@@ -444,10 +444,17 @@ class OEMigration extends CDbMigration
 
 		Yii::app()->db->createCommand($create)->query();
 
+		$this->alterColumn("{$table->name}_archive",'id','int(10) unsigned NOT NULL');
+		$this->dropPrimaryKey('id',"{$table->name}_archive");
+
 		$this->addColumn("{$table->name}_archive","rid","int(10) unsigned NOT NULL");
 		$this->createIndex("{$table->name}_arid_fk","{$table->name}_archive","rid");
 		$this->addForeignKey("{$table->name}_arid_fk","{$table->name}_archive","rid",$table->name,"id");
 
 		$this->addColumn("{$table->name}_archive","deleted_at","datetime not null default '1900-01-01 00:00:00'");
+
+		$this->addColumn("{$table->name}_archive","unique_id","int(10) unsigned NOT NULL");
+		$this->addPrimaryKey("unique_id","{$table->name}_archive","unique_id");
+		$this->alterColumn("{$table->name}_archive","unique_id","int(10) unsigned NOT NULL AUTO_INCREMENT");
 	}
 }

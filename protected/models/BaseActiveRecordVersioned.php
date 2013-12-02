@@ -122,7 +122,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		));
 	}
 
-	public function save($runValidation=true, $attributes=null, $allow_overriding=false, $save_archive=false)
+	/*public function save($runValidation=true, $attributes=null, $allow_overriding=false, $save_archive=false)
 	{
 		if (preg_match('/Archive$/',get_class($this))) {
 			if ($save_archive) {
@@ -143,24 +143,47 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$result = parent::save($runValidation, $attributes, $allow_overriding);
 
 		return $result;
-	}
+	}*/
 
 	public function saveArchiveVersion()
 	{
 		$archive = $this->newArchiveModel();
 
-		foreach ($this as $key => $value) {
+		$model = get_class($this);
+		$object = $model::model()->findByPk($this->id);
+
+		foreach ($object as $key => $value) {
 			if ($key == 'id') {
 				$key = 'rid';
 			}
 
 			$archive->{$key} = $value;
-
 			$archive->deleted_at = date('Y-m-d H:i:s');
 		}
 
 		if (!$archive->save(true, null, true, true)) {
 			throw new Exception("Unable to save archive model ".get_class($archive).": ".print_r($archive->getErrors(),true));
 		}
+	}
+
+	public function getArchiveTableSchema()
+	{
+		return Yii::app()->db->getSchema()->getTable($this->tableName().'_archive');
+	}
+
+	public function updateByPk($pk,$attributes,$condition='',$params=array())
+	{
+		$archiveAttributes = $attributes;
+		$archiveAttributes['rid'] = $this->id;
+		$archiveAttributes['deleted_at'] = date('Y-m-d H:i:s');
+
+		$builder=$this->getCommandBuilder();
+		$table=$this->getArchiveTableSchema();
+		$criteria=$builder->createPkCriteria($table,$pk,$condition,$params);
+		$command=$builder->createInsertCommand($table,$archiveAttributes,$criteria);
+		if ($command->execute()) {
+			return parent::updateByPk($pk,$attributes,$condition,$params);
+		}
+		return false;
 	}
 }
