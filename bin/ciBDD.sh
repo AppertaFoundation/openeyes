@@ -86,7 +86,7 @@ if [ $# -eq 1 ]
 fi
 
 #run tests
-vagrant ssh -c "/var/www/bin/behat --tags=setup --profile=$PROFILE --expand"
+vagrant ssh -c "/var/www/bin/behat --tags=setup --profile=$PROFILE --expand --config=/var/www/behat.yml"
 #bin/behat --tags=confidence --profile=$PROFILE --expand
-vagrant ssh -c "/var/www/bin/behat --tags=regression --profile=$PROFILE --expand"
+vagrant ssh -c "/var/www/bin/behat --tags=regression --profile=$PROFILE --expand --config=/var/www/behat.yml"
 exit
