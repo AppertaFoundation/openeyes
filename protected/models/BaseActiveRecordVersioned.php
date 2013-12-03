@@ -127,15 +127,97 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		return Yii::app()->db->getSchema()->getTable($this->tableName().'_archive');
 	}
 
+	public function getCommandBuilder()
+	{
+		return new OECommandBuilder($this->getDbConnection()->getSchema());
+	}
+
 	public function updateByPk($pk,$attributes,$condition='',$params=array())
 	{
-		$table=$this->getTableSchema();
-		$table_archive=$this->getArchiveTableSchema();
-		$date = date('Y-m-d H:i:s');
-		$primaryKey = $this->tableSchema->primaryKey;
+		$table = $this->getTableSchema();
 
-		Yii::app()->db->createCommand("insert into `$table_archive->name` select `$table->name`.*, {$this->id}, '$date', null from `$table->name` where `$primaryKey` = $pk")->query();
+		$transaction = Yii::app()->db->getCurrentTransaction() === null ? Yii::app()->db->beginTransaction() : false;
 
-		return parent::updateByPk($pk,$attributes,$condition,$params);
+		try {
+			if ($this->archiveToTableByPk($pk,$condition,$params)) {
+				$result = parent::updateByPk($pk,$attributes,$condition,$params);
+
+				if ($transaction && $result) {
+					$transaction->commit();
+				}
+
+				return $result;
+			}
+		} catch (Exception $e) {
+			if ($transaction) {
+				$transaction->rollback();
+			}
+			throw $e;
+		}
+
+		if ($transaction) {
+			$transaction->rollback();
+		}
+
+		return false;
+	}
+
+	public function updateAll($attributes,$condition='',$params=array())
+	{
+		$transaction = Yii::app()->db->getCurrentTransaction() === null ? Yii::app()->db->beginTransaction() : false;
+
+		try {
+			if ($this->archiveAllToTable($condition,$params)) {
+				$result = parent::updateAll($attributes,$condition,$params);
+
+				if ($transaction && $result) {
+					$transaction->commit();
+				}
+
+				return $result;
+			}
+		} catch (Exception $e) {
+			if ($transaction) {
+				$transaction->rollback();
+			}
+			throw $e;
+		}
+
+		if ($transaction) {
+			$transaction->rollback();
+		}
+
+		return false;
+	}
+
+	public function archiveToTableByPk($pk, $condition, $params=array())
+	{
+		$builder = $this->getCommandBuilder();
+		$table = $this->getTableSchema();
+		$table_archive = $this->getArchiveTableSchema();
+
+		$criteria = $builder->createPkCriteria($table,$pk,$condition,$params);
+
+		$data = array($pk, date('Y-m-d H:i:s'), null);
+
+		$command = $builder->createInsertFromTableCommand($table_archive,$table,$data,$criteria);
+
+		return $command->execute();
+	}
+
+	public function archiveAllToTable($condition,$params)
+	{
+		foreach (Yii::app()->db->createCommand()
+			->select("*")
+			->from($this->tableName())
+			->where($condition, $params)
+			->queryAll() as $row) {
+
+			if (!$this->archiveToTableByPk($row['id'], "id = :id", array(":id" => $row['id']))) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
