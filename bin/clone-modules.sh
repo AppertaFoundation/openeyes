@@ -30,6 +30,7 @@ do
         fi
         cd $modules_path/$module
         echo "Switching module branch to $current_branch..."
+        git clean -xdf
         git reset --hard HEAD
         git checkout $current_branch
         cd $running_path
