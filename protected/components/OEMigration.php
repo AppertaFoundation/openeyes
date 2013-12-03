@@ -406,7 +406,7 @@ class OEMigration extends CDbMigration
 
 		$create = $a['Create Table'];
 
-		$create = preg_replace('/CREATE TABLE `(.*?)`/',"CREATE TABLE `{$table->name}_archive`",$create);
+		$create = preg_replace('/CREATE TABLE `(.*?)`/',"CREATE TABLE `{$table->name}_version`",$create);
 
 		preg_match_all('/  KEY `(.*?)`/',$create,$m);
 
@@ -444,16 +444,16 @@ class OEMigration extends CDbMigration
 
 		Yii::app()->db->createCommand($create)->query();
 
-		$this->alterColumn("{$table->name}_archive",'id','int(10) unsigned NOT NULL');
-		$this->dropPrimaryKey('id',"{$table->name}_archive");
+		$this->alterColumn("{$table->name}_version",'id','int(10) unsigned NOT NULL');
+		$this->dropPrimaryKey('id',"{$table->name}_version");
 
-		$this->createIndex("{$table->name}_aid_fk","{$table->name}_archive","id");
-		$this->addForeignKey("{$table->name}_aid_fk","{$table->name}_archive","id",$table->name,"id");
+		$this->createIndex("{$table->name}_aid_fk","{$table->name}_version","id");
+		$this->addForeignKey("{$table->name}_aid_fk","{$table->name}_version","id",$table->name,"id");
 
-		$this->addColumn("{$table->name}_archive","deleted_at","datetime not null default '1900-01-01 00:00:00'");
+		$this->addColumn("{$table->name}_version","version_date","datetime not null default '1900-01-01 00:00:00'");
 
-		$this->addColumn("{$table->name}_archive","unique_id","int(10) unsigned NOT NULL");
-		$this->addPrimaryKey("unique_id","{$table->name}_archive","unique_id");
-		$this->alterColumn("{$table->name}_archive","unique_id","int(10) unsigned NOT NULL AUTO_INCREMENT");
+		$this->addColumn("{$table->name}_version","version_id","int(10) unsigned NOT NULL");
+		$this->addPrimaryKey("version_id","{$table->name}_version","version_id");
+		$this->alterColumn("{$table->name}_version","version_id","int(10) unsigned NOT NULL AUTO_INCREMENT");
 	}
 }

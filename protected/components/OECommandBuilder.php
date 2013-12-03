@@ -19,12 +19,12 @@
 
 class OECommandBuilder extends CDbCommandBuilder
 {
-	public function createInsertFromTableCommand($table_archive,$table,$criteria)
+	public function createInsertFromTableCommand($table_version,$table,$criteria)
 	{
 		$this->ensureTable($table);
-		$this->ensureTable($table_archive);
+		$this->ensureTable($table_version);
 
-		$sql="INSERT INTO {$table_archive->rawName} SELECT {$table->rawName}.*, :oevalue1, :oevalue2 FROM {$table->rawName}";
+		$sql="INSERT INTO {$table_version->rawName} SELECT {$table->rawName}.*, :oevalue1, :oevalue2 FROM {$table->rawName}";
 
 		$sql=$this->applyJoin($sql,$criteria->join);
 		$sql=$this->applyCondition($sql,$criteria->condition);

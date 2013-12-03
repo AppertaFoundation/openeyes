@@ -19,57 +19,57 @@
 
 class BaseActiveRecordVersioned extends BaseActiveRecord
 {
-	private $enable_archive = true;
-	private $fetch_from_archive = false;
+	private $enable_version = true;
+	private $fetch_from_version = false;
 	public $unique_id = null;
 	public $deleted_at = null;
 
 	/* Disable archiving on save() */
 
-	public function noArchive()
+	public function noVersion()
 	{
-		$this->enable_archive = false;
+		$this->enable_version = false;
 
 		return $this;
 	}
 
 	/* Re-enable archiving on save() */
 
-	public function withArchive()
+	public function withVersion()
 	{
-		$this->enable_archive = true;
+		$this->enable_version = true;
 
 		return $this;
 	}
 
-	/* Fetch from archive */
+	/* Fetch from version */
 
-	public function fromArchive()
+	public function fromVersion()
 	{
-		$this->fetch_from_archive = true;
+		$this->fetch_from_version = true;
 
 		return $this;
 	}
 
-	/* Disable fetch from archive */
+	/* Disable fetch from version */
 
-	public function notFromArchive()
+	public function notFromVersion()
 	{
-		$this->fetch_from_archive = false;
+		$this->fetch_from_version = false;
 
 		return $this;
 	}
 
 	public function getTableSchema()
 	{
-		if ($this->fetch_from_archive) {
-			return $this->getDbConnection()->getSchema()->getTable($this->tableName().'_archive');
+		if ($this->fetch_from_version) {
+			return $this->getDbConnection()->getSchema()->getTable($this->tableName().'_version');
 		}
 
 		return parent::getTableSchema();
 	}
 
-	public function isArchived()
+	public function isVersioned()
 	{
 		return $this->unique_id;
 	}
@@ -79,12 +79,12 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$condition = 'id = :id';
 		$params = array(':id' => $this->id);
 
-		if ($this->isArchived()) {
+		if ($this->isVersioned()) {
 			$condition .= ' and unique_id < :unique_id';
 			$params[':unique_id'] = $this->unique_id;
 		}
 
-		return $this->model()->fromArchive()->find(array(
+		return $this->model()->fromVersion()->find(array(
 			'condition' => $condition,
 			'params' => $params,
 			'order' => 'unique_id desc',
@@ -98,21 +98,21 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$condition = 'id = :id';
 		$params = array(':id' => $this->id);
 
-		if ($this->isArchived()) {
+		if ($this->isVersioned()) {
 			$condition .= ' and unique_id = :unique_id';
 			$params[':unique_id'] = $this->unique_id;
 		}
 
-		return $this->model()->fromArchive()->findAll(array(
+		return $this->model()->fromVersion()->findAll(array(
 			'condition' => $condition,
 			'params' => $params,
 			'order' => 'unique_id desc',
 		));
 	}
 
-	public function getArchiveTableSchema()
+	public function getVersionTableSchema()
 	{
-		return Yii::app()->db->getSchema()->getTable($this->tableName().'_archive');
+		return Yii::app()->db->getSchema()->getTable($this->tableName().'_version');
 	}
 
 	public function getCommandBuilder()
@@ -127,7 +127,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$transaction = Yii::app()->db->getCurrentTransaction() === null ? Yii::app()->db->beginTransaction() : false;
 
 		try {
-			if (!$this->enable_archive || $this->archiveToTableByPk($pk,$condition,$params)) {
+			if (!$this->enable_version || $this->versionToTableByPk($pk,$condition,$params)) {
 				$result = parent::updateByPk($pk,$attributes,$condition,$params);
 
 				if ($transaction && $result) {
@@ -155,7 +155,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$transaction = Yii::app()->db->getCurrentTransaction() === null ? Yii::app()->db->beginTransaction() : false;
 
 		try {
-			if (!$this->enable_archive || $this->archiveAllToTable($condition,$params)) {
+			if (!$this->enable_version || $this->versionAllToTable($condition,$params)) {
 				$result = parent::updateAll($attributes,$condition,$params);
 
 				if ($transaction && $result) {
@@ -178,20 +178,20 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		return false;
 	}
 
-	public function archiveToTableByPk($pk, $condition, $params=array())
+	public function versionToTableByPk($pk, $condition, $params=array())
 	{
 		$builder = $this->getCommandBuilder();
 		$table = $this->getTableSchema();
-		$table_archive = $this->getArchiveTableSchema();
+		$table_version = $this->getVersionTableSchema();
 
 		$criteria = $builder->createPkCriteria($table,$pk,$condition,$params);
 
-		$command = $builder->createInsertFromTableCommand($table_archive,$table,$criteria);
+		$command = $builder->createInsertFromTableCommand($table_version,$table,$criteria);
 
 		return $command->execute();
 	}
 
-	public function archiveAllToTable($condition,$params)
+	public function versionAllToTable($condition,$params)
 	{
 		foreach (Yii::app()->db->createCommand()
 			->select("*")
@@ -199,7 +199,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 			->where($condition, $params)
 			->queryAll() as $row) {
 
-			if (!$this->archiveToTableByPk($row['id'], "id = :id", array(":id" => $row['id']))) {
+			if (!$this->versionToTableByPk($row['id'], "id = :id", array(":id" => $row['id']))) {
 				return false;
 			}
 		}
@@ -209,10 +209,18 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
-		if ($this->isArchived()) {
-			throw new Exception("save() should not be called on archived model instances.");
+		if ($this->isVersioned()) {
+			throw new Exception("save() should not be called on versiond model instances.");
 		}
 
 		return parent::save($runValidation, $attributes, $allow_overriding);
+	}
+
+	public function resetScope($resetDefault=true)
+	{
+		$this->enable_version = true;
+		$this->fetch_from_version = false;
+
+		return parent::resetScope($resetDefault);
 	}
 }
