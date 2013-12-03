@@ -24,7 +24,11 @@ Vagrant.configure("2") do |config|
   if custom_ip
     config.vm.network "private_network", ip: custom_ip
   end
-  config.vm.synced_folder "/tmp/behat", "/tmp/behat", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
+
+  if mode != 'bdd'
+    config.vm.synced_folder "/tmp/behat", "/tmp/behat", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
+  end
+
   config.vm.synced_folder "./", "/var/www", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
 
   config.vm.provider "virtualbox" do |v|
