@@ -19,18 +19,12 @@
 
 class OECommandBuilder extends CDbCommandBuilder
 {
-	public function createInsertFromTableCommand($table_archive,$table,$data,$criteria)
+	public function createInsertFromTableCommand($table_archive,$table,$criteria)
 	{
 		$this->ensureTable($table);
 		$this->ensureTable($table_archive);
 
-		$sql="INSERT INTO {$table_archive->rawName} SELECT {$table->rawName}.*";
-
-		foreach ($data as $i => $value) {
-			$sql .= ", :value$i";
-		}
-
-		$sql .= " FROM {$table->rawName} ";
+		$sql="INSERT INTO {$table_archive->rawName} SELECT {$table->rawName}.*, :oevalue1, :oevalue2 FROM {$table->rawName}";
 
 		$sql=$this->applyJoin($sql,$criteria->join);
 		$sql=$this->applyCondition($sql,$criteria->condition);
@@ -39,10 +33,8 @@ class OECommandBuilder extends CDbCommandBuilder
 
 		$command=$this->getDbConnection()->createCommand($sql);
 
-		foreach ($data as $i => $value) {
-			$command->bindValue(":value$i",$value);
-		}
-
+		$command->bindValue(':oevalue1',date('Y-m-d H:i:s'));
+		$command->bindValue(':oevalue2',null);
 		$this->bindValues($command,$criteria->params);
 
 		return $command;

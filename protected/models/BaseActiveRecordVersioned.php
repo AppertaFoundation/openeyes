@@ -186,9 +186,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 		$criteria = $builder->createPkCriteria($table,$pk,$condition,$params);
 
-		$data = array(date('Y-m-d H:i:s'), null);
-
-		$command = $builder->createInsertFromTableCommand($table_archive,$table,$data,$criteria);
+		$command = $builder->createInsertFromTableCommand($table_archive,$table,$criteria);
 
 		return $command->execute();
 	}
