@@ -64,7 +64,7 @@ class m131128_113809_table_versioning extends OEMigration
 		$this->addPrimaryKey("id","disorder_tree","id");
 
 		foreach (Yii::app()->db->getSchema()->getTables() as $table) {
-			if (!in_array($table->name,$exclude) && !preg_match('/et_/',$table->name) && !preg_match('/^oph/',$table->name)) {
+			if (!in_array($table->name,$exclude) && !preg_match('/^et_/',$table->name) && !preg_match('/^oph/',$table->name)) {
 				$this->createArchiveTable($table);
 			}
 		}
