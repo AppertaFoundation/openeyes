@@ -27,7 +27,7 @@
 							<div class="large-2 column">
 								<label for="">Anaesthetist</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -42,13 +42,14 @@
 						<h3 class="element-title">Satisfaction</h3>
 					</header>
 					<div class="element-fields">
-						<div class="row field-row">
+						<div class="row field-row slider">
 							<div class="large-2 column">
 								<label for="">Pain:</label>
 							</div>
-							<div class="large-5 column end">
+							<div class="large-10 column end">
 								<div class="field-row">
-									<input type="range" min="0" max="10" step="1" />
+									<span class="slider-value">0</span>
+									<input type="range" min="0" max="10" step="1" style="width:340px;" />
 								</div>
 								<div class="field-row">
 									<img class="field_key" id="pain_key" src="/protected/modules/OphOuAnaestheticsatisfactionaudit/assets/img/painscale_adult.png" />
@@ -92,7 +93,7 @@
 							<div class="large-2 column">
 								<label for="">Respiratory Rate:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -102,7 +103,7 @@
 							<div class="large-2 column">
 								<label for="">Oxygen Saturation:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -112,7 +113,7 @@
 							<div class="large-2 column">
 								<label for="">Systolic Blood Pressure:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -122,7 +123,7 @@
 							<div class="large-2 column">
 								<label for="">Body Temperature:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -132,7 +133,7 @@
 							<div class="large-2 column">
 								<label for="">Heart Rate:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -142,7 +143,7 @@
 							<div class="large-2 column">
 								<label for="">Conscious Level AVPU:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -161,7 +162,7 @@
 							<div class="large-2 column">
 								<label for="">Comments:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-10 column end">
 								<textarea placeholder="Enter comments..."></textarea>
 							</div>
 						</div>
@@ -169,7 +170,7 @@
 							<legend class="large-2 column">
 								Ready for discharge from recovery:
 							</legend>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<label class="inline highlight">
 									<input type="radio"> Yes
 								</label>

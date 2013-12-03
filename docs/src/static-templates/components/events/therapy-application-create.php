@@ -27,45 +27,66 @@
 							<a href="#" class="icon-remove-side">Remove side</a>
 							<div class="row field-row">
 								<div class="large-4 column">
-									<label for="">Diagnosis:</label>
+									<label for="">
+										Diagnosis:
+									</label>
 								</div>
-								<div class="large-8 column">
-									<div class="field-row row collapse">
-										<div class="large-10 column">
-											<select>
-												<option>-- Select --</option>
-												<option>Idiopathic polypoidal choroidal vasculopathy with some very long text</option>
-											</select>
-										</div>
-										<div class="large-2 column">
-											<div class="postfix">
-												<a href="#" class="button button-icon small">
-													<span class="icon-button-small-search"></span>
-													<span class="hide-offscreen">Search</span>
-												</a>
+								<div class="large-8 column end">
+									<div class="row diagnosis-selection">
+										<div class="large-12 column end">
+											<div class="row collapse">
+												<div class="large-10 column">
+													<div class="dropdown-row">
+														<select>
+															<option>- Please select -</option>
+														</select>
+													</div>
+													<div class="autocomplete-row hide">
+														<input placeholder="search for diagnosis" type="text" />
+													</div>
+												</div>
+												<div class="large-2 column">
+													<div class="postfix">
+														<button class="small button-icon small">
+															<span class="icon-button-small-search"></span>
+															<span class="hide-offscreen">Search</span>
+														</button>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
+
 							<div class="row field-row">
 								<div class="large-4 column">
-									<label for="">Secondary to:</label>
+									<label for="">
+										Secondary To:
+									</label>
 								</div>
 								<div class="large-8 column">
-									<div class="field-row row collapse">
-										<div class="large-10 column">
-											<select>
-												<option>-- Select --</option>
-												<option>Idiopathic polypoidal choroidal vasculopathy with some very long text</option>
-											</select>
-										</div>
-										<div class="large-2 column">
-											<div class="postfix">
-												<a href="#" class="button button-icon small">
-													<span class="icon-button-small-search"></span>
-													<span class="hide-offscreen">Search</span>
-												</a>
+									<div class="row diagnosis-selection">
+										<div class="large-12 column end">
+											<div class="row collapse">
+												<div class="large-10 column">
+													<div class="dropdown-row">
+														<select>
+															<option>- Please Select -</option>
+														</select>
+													</div>
+													<div class="autocomplete-row hide">
+														<input placeholder="search for diagnosis" type="text" />
+													</div>
+												</div>
+												<div class="large-2 column">
+													<div class="postfix">
+														<button class="small button-icon small">
+															<span class="icon-button-small-search"></span>
+															<span class="hide-offscreen">Search</span>
+														</button>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -93,7 +114,7 @@
 								<div class="large-4 column">
 									<label for="">Treatment:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-4 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -103,7 +124,7 @@
 								<div class="large-4 column">
 									<label for="">Angiogram Baseline Date:</label>
 								</div>
-								<div class="large-4 column end">
+								<div class="large-3 column end">
 									<input type="text" />
 								</div>
 							</div>
@@ -137,7 +158,7 @@
 								<div class="large-4 column">
 									<label for="">Treatment:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-4 column end">
 									<select>
 										<option>Eylea</option>
 									</select>
@@ -147,7 +168,7 @@
 								<div class="large-4 column">
 									<label for="">Angiogram Baseline Date:</label>
 								</div>
-								<div class="large-4 column end">
+								<div class="large-3 column end">
 									<input type="text" />
 								</div>
 							</div>
@@ -171,7 +192,7 @@
 								<div class="large-4 column">
 									<label for="">Treatment:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-4 column end">
 									<select>
 										<option>Eylea</option>
 									</select>
@@ -191,7 +212,7 @@
 										NICE Compliance
 									</div>
 								</div>
-								<div class="large-8 column">
+								<div class="large-5 column end">
 									<div class="compliance-container">
 										<div class="field-row">
 											<label for="">Patient has CNV?</label>
@@ -273,7 +294,7 @@
 							<div class="large-2 column">
 								<label for="">Consultant:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -306,7 +327,7 @@
 								<div class="large-4 column">
 									<label for="">Standard intervention</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -529,7 +550,7 @@
 								<div class="large-4 column">
 									<label for="">Anticipated Start Date</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -539,7 +560,7 @@
 								<div class="large-4 column">
 									<label for="">File attachments</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>

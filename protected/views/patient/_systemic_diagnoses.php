@@ -54,13 +54,11 @@
 		</table>
 
 		<?php if (BaseController::checkUserLevel(4)) { ?>
-			<form>
-				<div class="box-actions">
-					<button id="btn-add_new_systemic_diagnosis" class="secondary small">
-						Add Systemic Diagnosis
-					</button>
-				</div>
-			</form>
+			<div class="box-actions">
+				<button id="btn-add_new_systemic_diagnosis" class="secondary small">
+					Add Systemic Diagnosis
+				</button>
+			</div>
 
 			<div id="add_new_systemic_diagnosis" style="display: none;">
 
@@ -117,7 +115,7 @@
 						</div>
 					</fieldset>
 
-					<?php $this->renderPartial('_fuzzy_date', array('form'=>$form))?>
+					<?php $this->renderPartial('_fuzzy_date', array('form'=>$form,'label'=>'Date diagnosed'))?>
 
 					<div class="systemic_diagnoses_form_errors alert-box alert hide"></div>
 

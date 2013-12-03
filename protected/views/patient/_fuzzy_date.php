@@ -18,12 +18,13 @@
  */
 ?>
 <?php
+$label = @$label ?: 'Date';
 $labelColumns = @$form ? $form->columns('label') : 'large-3 column';
 $fieldColumns = @$form ? $form->columns('field') : 'large-9 column end';
 ?>
 <fieldset class="row field-row fuzzy_date <?php echo @$class?>">
 	<legend class="<?php echo $labelColumns;?>">
-		Date:
+		<?php echo $label;?>:
 	</legend>
 	<div class="<?php echo $fieldColumns;?>">
 		<div class="row">

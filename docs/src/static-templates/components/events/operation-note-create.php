@@ -59,7 +59,7 @@
 								</fieldset>
 							</div>
 							<div class="large-6 column">
-								<div class="panel element-field">
+								<div class="panel procedures">
 									<table class="plain">
 										<thead>
 											<tr>
@@ -127,7 +127,7 @@
 							<div class="large-8 column">
 								<div class="row">
 									<div class="large-6 column">
-										<?php echo eyedraw('large', 1); ?>
+										<img src="img/eyedraw/large.png" />
 									</div>
 									<div class="large-6 column">
 										<div class="row field-row">
@@ -408,7 +408,7 @@
 							<div class="large-2 column">
 								<label for="">Agents:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -418,14 +418,14 @@
 							<div class="large-2 column">
 								<label for="">Complications:</label>
 							</div>
-							<div class="large-5 column end">
+							<div class="large-3 column end">
 								<div class="multi-select multi-select-list">
-									<div class="field-row">
+									<div class="multi-select-dropdown-container">
 										<select>
 											<option>-- Select --</option>
 										</select>
 									</div>
-									<ul class="multi-select-selections field-row">
+									<ul class="multi-select-selections">
 										<li>
 											Retro bulbar / peribulbar haemorrage
 											<a href="#" class="remove-one">Remove</a>
@@ -454,31 +454,46 @@
 						<h3 class="element-title">Surgeon</h3>
 					</header>
 					<div class="element-fields">
-						<div class="row field-row">
+						<div id="div_Element_OphTrOperationnote_Surgeon" class="row field-row">
 							<div class="large-2 column">
-								<label for="">Surgeon:</label>
+								<label for="Element_OphTrOperationnote_Surgeon_surgeon_id">
+									Surgeon:
+								</label>
 							</div>
-							<div class="large-3 column">
-								<select>
-									<option>-- Select --</option>
-								</select>
+							<div class="large-4 column end">
+								<div class="row">
+									<div class="large-9 column end">
+										<select name="Element_OphTrOperationnote_Surgeon[surgeon_id]" id="Element_OphTrOperationnote_Surgeon_surgeon_id">
+											<option value="">- Please select -</option>
+										</select>
+									</div>
+								</div>
 							</div>
 							<div class="large-2 column">
-								<label for="">Assistant:</label>
+								<label for="Element_OphTrOperationnote_Surgeon_assistant_id">
+									Assistant:
+								</label>
 							</div>
-							<div class="large-2 column end">
-								<select>
-									<option>-- Select --</option>
-								</select>
+							<div class="large-4 column end">
+								<div class="row">
+									<div class="large-9 column end">
+										<select name="Element_OphTrOperationnote_Surgeon[assistant_id]" id="Element_OphTrOperationnote_Surgeon_assistant_id">
+											<option value="">- None -</option>
+										</select>
+									</div>
+								</div>
 							</div>
 						</div>
-						<div class="row field-row">
+						<div id="div_Element_OphTrOperationnote_Surgeon_supervising_surgeon_id" class="row field-row">
+
 							<div class="large-2 column">
-								<label for="">Supervising surgeon:</label>
+								<label for="Element_OphTrOperationnote_Surgeon_supervising_surgeon_id">Supervising surgeon:</label>
 							</div>
+
 							<div class="large-3 column end">
-								<select>
-									<option>-- Select --</option>
+
+								<select name="Element_OphTrOperationnote_Surgeon[supervising_surgeon_id]" id="Element_OphTrOperationnote_Surgeon_supervising_surgeon_id">
+									<option value="">- None -</option>
 								</select>
 							</div>
 						</div>
@@ -508,7 +523,7 @@
 						<h3 class="element-title">Comments</h3>
 					</header>
 					<div class="element-fields">
-						<div class="row field-row">
+						<div class="row">
 							<div class="large-2 column">
 								<label for="">Operation comments:</label>
 							</div>

@@ -27,7 +27,7 @@
 							<div class="large-2 column">
 								<label for="">Type:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-4 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -46,7 +46,7 @@
 							<div class="large-2 column">
 								<label for="">Leaflets provided:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-4 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -77,12 +77,12 @@
 								</label>
 							</div>
 						</fieldset>
-						<div class="row field-row">
+						<div class="row field-row procedure-selection readonly">
 							<div class="large-2 column">
 								<div class="field-label">Procedures:</div>
 							</div>
 							<div class="large-4 column end">
-								<div class="panel element-field">
+								<div class="panel procedures readonly">
 									Punctoplasty - 3 snp
 								</div>
 							</div>
@@ -134,7 +134,7 @@
 								</fieldset>
 							</div>
 							<div class="large-6 column">
-								<div class="panel element-field">
+								<div class="panel procedures">
 									<table class="plain">
 										<thead>
 											<tr>
@@ -222,7 +222,7 @@
 							<div class="large-2 column">
 								<label for="">Consultant</label>
 							</div>
-							<div class="large-6 column end">
+							<div class="large-5 column end">
 								<div class="field-row">
 									<input type="text" placeholder="Type to search for users..." />
 								</div>

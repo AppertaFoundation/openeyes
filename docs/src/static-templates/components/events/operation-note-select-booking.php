@@ -51,6 +51,9 @@
 											</span>
 										</span>
 									</label>
+									<div class="alert-box alert with-icon">
+										Warning: this booking already has a consent form
+									</div>
 									<label class="highlight booking">
 										<span class="row">
 											<span class="large-1 column">

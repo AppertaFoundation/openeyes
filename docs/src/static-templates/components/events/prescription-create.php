@@ -28,7 +28,7 @@
 										<option>-- Select --</option>
 									</select>
 								</div>
-								<div class="field-row">
+								<div>
 									<input type="text" placeholder="Or search formulary..." />
 								</div>
 							</div>
@@ -38,7 +38,7 @@
 						<fieldset>
 							<legend><em>Filtered by:</em></legend>
 							<label class="inline" for="">Type:</label>
-							<select>
+							<select class="inline">
 								<option>-- Select --</option>
 							</select>
 							<label class="inline highlight">
@@ -52,7 +52,7 @@
 					<div class="large-2 column">
 						<label for="">Add Standard Set</label>
 					</div>
-					<div class="large-10 column">
+					<div class="large-3 column end">
 						<select>
 							<option>-- Select --</option>
 						</select>
