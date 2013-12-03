@@ -1489,7 +1489,7 @@ class PatientController extends BaseController
 			'route_id' => $m->route_id,
 			'option_id' => $m->option_id,
 			'frequency_id' => $m->frequency_id,
-			'start_date' => $m->start_date,
+			'start_date' => Helper::convertMysql2NHS($m->start_date),
 			'route_options' => $this->renderPartial('_drug_route_options',array('route'=>$m->route),true),
 		));
 	}
