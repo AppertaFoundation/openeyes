@@ -390,7 +390,7 @@ class Event extends BaseActiveRecord
 			foreach (ElementType::model()->findAll($criteria) as $element_type) {
 				$element_class = $element_type->class_name;
 
-				if ($element = $element_class::model()->find('event_id = ?',array($this->id))) {
+				foreach ($element_class::model()->findAll('event_id = ?',array($this->id)) as $element) {
 					$elements[] = $element;
 				}
 			}
