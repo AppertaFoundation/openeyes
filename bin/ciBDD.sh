@@ -19,7 +19,6 @@ OphCiPhasing
 OphLeEpatientletter
 eyedraw
 OphCoCorrespondence
-MEHCommands
 OphOuAnaestheticsatisfactionaudit
 OphTrIntravitrealinjection
 OphCoTherapyapplication
@@ -37,6 +36,9 @@ bin/clone-modules.sh develop
 echo "hard reset all and pull"
 #bin/oe-git "reset --hard"
 bin/oe-git pull
+
+# install Yii
+git submodule update --init
 
 #set up modules in conf
 while read module
@@ -59,8 +61,8 @@ vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes -e "drop database 
 echo "import test sql - import testdata.sql"
 vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;'
 echo "run migrations"
-vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; protected/yiic migrate --interactive=0; \
-protected/yiic migratemodules --interactive=0;exit;'
+vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; /var/www/protected/yiic migrate --interactive=0; \
+/var/www/protected/yiic migratemodules --interactive=0;exit;'
 
 #make sure phantomjs is set up and running
 #PHANTOM=`ps aux | grep -c phantom`
@@ -84,7 +86,7 @@ if [ $# -eq 1 ]
 fi
 
 #run tests
-vagrant ssh -c "bin/behat --tags=setup --profile=$PROFILE --expand"
+vagrant ssh -c "/var/www/bin/behat --tags=setup --profile=$PROFILE --expand"
 #bin/behat --tags=confidence --profile=$PROFILE --expand
-vagrant ssh -c "bin/behat --tags=regression --profile=$PROFILE --expand"
+vagrant ssh -c "/var/www/bin/behat --tags=regression --profile=$PROFILE --expand"
 exit

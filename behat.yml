@@ -100,7 +100,7 @@ phantomjs-ci:
             javascript_session: selenium2
             selenium2:
               browser: 'phantomjs'
-              wd_host: 192.168.50.1:4444/wd/hub
+              wd_host: 10.0.2.2:4444/wd/hub
               capabilities: { "browser": "phantomjs"}
 
     formatter:
