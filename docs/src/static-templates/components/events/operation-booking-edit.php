@@ -208,7 +208,7 @@
 							Site:
 						</label>
 					</div>
-					<div class="large-4 column end">
+					<div class="large-2 column end">
 						<select>
 							<option>City Road</option>
 						</select>

@@ -25,7 +25,7 @@
 								<div class="large-2 column">
 									<label for="">Instrument:</label>
 								</div>
-								<div class="large-10 column">
+								<div class="large-4 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -94,7 +94,7 @@
 								<div class="large-2 column">
 									<label for="">Instrument:</label>
 								</div>
-								<div class="large-10 column">
+								<div class="large-4 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>

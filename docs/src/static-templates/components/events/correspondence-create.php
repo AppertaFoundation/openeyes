@@ -28,7 +28,7 @@
 					</header>
 					<div class="element-fields">
 						<div class="row field-row">
-							<div class="large-10 large-offset-2 column">
+							<div class="large-4 large-offset-2 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>

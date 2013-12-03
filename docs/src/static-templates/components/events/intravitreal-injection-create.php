@@ -27,7 +27,7 @@
 							<div class="large-2 column">
 								<label for="">Site:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>City Road</option>
 								</select>
@@ -88,7 +88,7 @@
 								<div class="large-4 column">
 									<label for="">Anaesthetic Agent:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -141,7 +141,7 @@
 								<div class="large-4 column">
 									<label for="">Anaesthetic Agent:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -163,7 +163,7 @@
 								<div class="large-4 column">
 									<label for="">Pre Injection Antiseptic:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -173,7 +173,7 @@
 								<div class="large-4 column">
 									<label for="">Pre Injection Skin Cleanser:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -183,7 +183,7 @@
 								<div class="large-4 column">
 									<label for="">Pre Injection IOP Lowering Therapy Required:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<input type="checkbox" />
 								</div>
 							</div>
@@ -191,7 +191,7 @@
 								<div class="large-4 column">
 									<label for="">Pre Injection IOP Lowering Therapy:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<div class="multi-select  multi-select-list">
 										<div class="field-row">
 											<select>
@@ -215,7 +215,7 @@
 								<div class="large-4 column">
 									<label for="">Drug:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -232,7 +232,7 @@
 										</div>
 										<div class="large-9 column">
 											<div class="postfix">
-												<img src="/assets/84410d8e/img/icon_info.png" style="height:20px" alt="info">
+												<img src="img/examination/icon_info.png" style="height:20px" alt="info">
 											</div>
 										</div>
 									</div>
@@ -242,7 +242,7 @@
 								<div class="large-4 column">
 									<label for="">Batch number:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<input type="text" />
 								</div>
 							</div>
@@ -250,7 +250,7 @@
 								<div class="large-4 column">
 									<label for="">Batch expiry date:</label>
 								</div>
-								<div class="large-4 column end">
+								<div class="large-3 column end">
 									<input type="text" />
 								</div>
 							</div>
@@ -258,7 +258,7 @@
 								<div class="large-4 column">
 									<label for="">Inspection given by:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -268,7 +268,7 @@
 								<div class="large-4 column">
 									<label for="">Injection time:</label>
 								</div>
-								<div class="large-4 column end">
+								<div class="large-3 column end">
 									<input type="text" />
 								</div>
 							</div>
@@ -295,37 +295,42 @@
 				<section class="element">
 					<header class="element-header">
 						<h3 class="element-title">Anterior Segment</h3>
-
 					</header>
-					<div class="element-field element-eyes row">
+					<div class="element-fields element-eyes row">
 						<div class="element-eye right-eye column">
-							<div class="row field-row">
-								<div class="large-4 column">
-									<label for="">Lens status:</label>
+							<div class="eyedraw-row row field-row anterior-segment">
+								<div class="fixed column">
+									<img src="img/eyedraw/large.png" />
 								</div>
-								<div class="large-8 column">
-									<select>
-										<option>-- Select --</option>
+								<div class="fluid column">
+									<label for="Element_OphTrIntravitrealinjection_AnteriorSegment_right_lens_status_id">
+										Lens Status:
+									</label>
+									<select nowrapper="1" name="Element_OphTrIntravitrealinjection_AnteriorSegment[right_lens_status_id]" id="Element_OphTrIntravitrealinjection_AnteriorSegment_right_lens_status_id">
+										<option value="">- Please select -</option>
+										<option value="1" data-default-distance="4.0">Phakic</option>
+										<option value="2" data-default-distance="3.5">Aphakic</option>
+										<option value="3" data-default-distance="3.5">Pseudophakic</option>
 									</select>
 								</div>
-							</div>
-							<div class="field-row">
-								<?php echo eyedraw('large', 1); ?>
 							</div>
 						</div>
 						<div class="element-eye left-eye column">
-							<div class="row field-row">
-								<div class="large-4 column">
-									<label for="">Lens status:</label>
+							<div class="eyedraw-row row field-row anterior-segment">
+								<div class="fixed column">
+									<img src="img/eyedraw/large.png" />
 								</div>
-								<div class="large-8 column">
-									<select>
-										<option>-- Select --</option>
+								<div class="fluid column">
+									<label for="Element_OphTrIntravitrealinjection_AnteriorSegment_right_lens_status_id">
+										Lens Status:
+									</label>
+									<select nowrapper="1" name="Element_OphTrIntravitrealinjection_AnteriorSegment[right_lens_status_id]" id="Element_OphTrIntravitrealinjection_AnteriorSegment_right_lens_status_id">
+										<option value="">- Please select -</option>
+										<option value="1" data-default-distance="4.0">Phakic</option>
+										<option value="2" data-default-distance="3.5">Aphakic</option>
+										<option value="3" data-default-distance="3.5">Pseudophakic</option>
 									</select>
 								</div>
-							</div>
-							<div class="field-row">
-								<?php echo eyedraw('large', 2); ?>
 							</div>
 						</div>
 					</div>
@@ -368,7 +373,7 @@
 								<div class="large-4 column">
 									<label for="">Post Injection Drops:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-5 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -406,7 +411,7 @@
 								<div class="large-4 column">
 									<label for="">Post Injection Drops:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-5 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -427,7 +432,7 @@
 								<div class="large-4 column">
 									<label for="">Complications:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-5 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -439,7 +444,7 @@
 								<div class="large-4 column">
 									<label for="">Complications:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-5 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
