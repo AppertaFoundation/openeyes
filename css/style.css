@@ -4675,17 +4675,22 @@ tfoot.pagination-container .pagination li {
   font-size: 0.8125em;
 }
 
-/* line 190, ../sass/openeyes/components/events/_elements.scss */
+/* line 179, ../sass/openeyes/components/events/_elements.scss */
+.edit.highlight-fields .sub-elements {
+  margin: 10px -10px 0 -10px;
+}
+
+/* line 187, ../sass/openeyes/components/events/_elements.scss */
 .view.highlight-fields .element, .view.highlight-fields .edit .optional-elements, .edit .view.highlight-fields .optional-elements {
   margin-bottom: 10px;
 }
-/* line 193, ../sass/openeyes/components/events/_elements.scss */
+/* line 190, ../sass/openeyes/components/events/_elements.scss */
 .view.highlight-fields .element-data, .view.highlight-fields .edit .element-fields, .edit .view.highlight-fields .element-fields, .view.highlight-fields .sub-element-data, .view.highlight-fields .edit .sub-element-fields, .edit .view.highlight-fields .sub-element-fields {
   background: none;
   padding-bottom: 0;
   padding-top: 0;
 }
-/* line 197, ../sass/openeyes/components/events/_elements.scss */
+/* line 194, ../sass/openeyes/components/events/_elements.scss */
 .view.highlight-fields .element-data.highlight, .view.highlight-fields .edit .highlight.element-fields, .edit .view.highlight-fields .highlight.element-fields, .view.highlight-fields .highlight.sub-element-data, .view.highlight-fields .edit .highlight.sub-element-fields, .edit .view.highlight-fields .highlight.sub-element-fields {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -4696,9 +4701,14 @@ tfoot.pagination-container .pagination li {
   padding-bottom: 0.25em;
   padding-top: 0.25em;
 }
-/* line 204, ../sass/openeyes/components/events/_elements.scss */
+/* line 201, ../sass/openeyes/components/events/_elements.scss */
 .view.highlight-fields .element-data:not(.event-types) .field-value, .view.highlight-fields .edit .element-fields:not(.event-types) .field-value, .edit .view.highlight-fields .element-fields:not(.event-types) .field-value, .view.highlight-fields .sub-element-data:not(.event-types) .field-value, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .field-value, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .field-value, .view.highlight-fields .element-data:not(.event-types) .field-label, .view.highlight-fields .edit .element-fields:not(.event-types) .field-label, .edit .view.highlight-fields .element-fields:not(.event-types) .field-label, .view.highlight-fields .sub-element-data:not(.event-types) .field-label, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .field-label, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .field-label, .view.highlight-fields .element-data:not(.event-types) .data-label, .view.highlight-fields .edit .element-fields:not(.event-types) .data-label, .edit .view.highlight-fields .element-fields:not(.event-types) .data-label, .view.highlight-fields .sub-element-data:not(.event-types) .data-label, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .data-label, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .data-label, .view.highlight-fields .element-data:not(.event-types) .data-value, .view.highlight-fields .edit .element-fields:not(.event-types) .data-value, .edit .view.highlight-fields .element-fields:not(.event-types) .data-value, .view.highlight-fields .sub-element-data:not(.event-types) .data-value, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .data-value, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .data-value {
   font-size: 1em;
+}
+/* line 206, ../sass/openeyes/components/events/_elements.scss */
+.view.highlight-fields .sub-elements {
+  margin: 10px -10px 0 -10px;
+  padding-top: 10px;
 }
 /* line 212, ../sass/openeyes/components/events/_elements.scss */
 .view .element-data .data-title, .view .edit .element-fields .data-title, .edit .view .element-fields .data-title, .view .sub-element-data .data-title, .view .edit .sub-element-fields .data-title, .edit .view .sub-element-fields .data-title {

@@ -52,7 +52,7 @@ EOH;
 		$row_count = 0;
 
 		$path = Yii::app()->basePath . '/' . $this->DATA_FOLDER . '/';
-		
+
 		foreach (glob($path."*.cpxmap") as $map_path) {
 			$imp_name = substr(basename($map_path), 0, -7);
 			echo "Performing $imp_name import ...\n";
@@ -103,14 +103,14 @@ EOH;
 			}
 		}
 	}
-	
+
 	protected function handleRawData($raw_columns, $raw_data)
 	{
 		$db = Yii::app()->db;
 		$imp_id = null;
 		$insert_cols = array();
 		$data = array();
-		
+
 		// iterate through columns and map data where necessary
 		foreach ($raw_columns as $i => $column) {
 			if ($column == 'imp_id') {
@@ -123,14 +123,14 @@ EOH;
 						echo "ERROR: haven't set import ids for $matches[3] - is your import order correct?\n";
 						exit;
 					}
-		
+
 					if (!(isset($this->imp_id_map[$matches[3]][$raw_data[$i]]) ) ) {
 						echo "ERROR: cannot find import id $raw_data[$i] for $matches[2]\n";
 						exit;
 					}
-		
+
 					$data[] = $this->imp_id_map[$matches[3]][$raw_data[$i]];
-		
+
 				} else {
 				// the value should already exist in the db and we go look for it
 					$data[] = $this->getTableVal($matches[2], $raw_data[$i]);
@@ -142,43 +142,43 @@ EOH;
 		}
 		return array($imp_id, $insert_cols, $data);
 	}
-	
+
 	protected function processHandledData($table, $insert_cols, $data, $imp_id = null)
 	{
 		$db = Yii::app()->db;
-		
+
 		// escape data values
 		foreach ($data as &$field) {
 			if ($field != 'NULL') {
 				$field = $db->quoteValue($field);
 			}
 		}
-		
+
 		// create the query
 		$insert = '('.implode(',', $data).')';
-		
+
 		$quoted_cols = array();
 		foreach ($insert_cols as $col) {
 			$quoted_cols[] = $db->quoteColumnName($col);
 		}
-		
+
 		$query = "INSERT INTO ".$db->quoteTableName($table)." (".implode(',',$quoted_cols).") VALUES ".$insert;
 		//echo $query . "\n";
-		
+
 		$db->createCommand($query)->execute();
 		if ($imp_id) {
 			$this->imp_id_map[$table][$imp_id] = $db->getLastInsertID();
 		}
 	}
-	
+
 	protected function insert($table, $raw_columns, $raw_data)
 	{
 		$db = Yii::app()->db;
-		
+
 		list($imp_id, $insert_cols, $data) = $this->handleRawData($raw_columns, $raw_data);
-		
+
 		$this->processHandledData($table, $insert_cols, $data, $imp_id);
-		
+
 	}
 
 	// TODO: handle NULL results appropriately
@@ -189,10 +189,15 @@ EOH;
 		$db = Yii::app()->db;
 		$query = "SELECT id FROM " . $db->quoteTableName($table) . " WHERE " . $db->quoteColumnName($column) . " = "  . $db->quoteValue($value);
 		$res =  $db->createCommand($query)->query();
+
 		foreach ($res as $row) {
 			// we'll grab the last if there are multiple.
 			$this->column_value_map[$col_spec][$value] = $row['id'];
 		}
+		if (!isset($this->column_value_map[$col_spec][$value])) {
+			$this->column_value_map[$col_spec][$value] = null;
+		}
+
 	}
 
 	protected function getTableVal($col_spec, $value)
