@@ -516,6 +516,7 @@ class ExaminationContext extends PageObjectContext
          */
         $examination= $this->getPage('Examination');
         $examination->expandInvestigation();
+        $examination->expandInvestigation();
     }
 
     /**
