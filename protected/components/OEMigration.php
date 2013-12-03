@@ -447,9 +447,8 @@ class OEMigration extends CDbMigration
 		$this->alterColumn("{$table->name}_archive",'id','int(10) unsigned NOT NULL');
 		$this->dropPrimaryKey('id',"{$table->name}_archive");
 
-		$this->addColumn("{$table->name}_archive","rid","int(10) unsigned NOT NULL");
-		$this->createIndex("{$table->name}_arid_fk","{$table->name}_archive","rid");
-		$this->addForeignKey("{$table->name}_arid_fk","{$table->name}_archive","rid",$table->name,"id");
+		$this->createIndex("{$table->name}_aid_fk","{$table->name}_archive","id");
+		$this->addForeignKey("{$table->name}_aid_fk","{$table->name}_archive","id",$table->name,"id");
 
 		$this->addColumn("{$table->name}_archive","deleted_at","datetime not null default '1900-01-01 00:00:00'");
 
