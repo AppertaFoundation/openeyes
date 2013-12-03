@@ -1,7 +1,7 @@
 <meta charset="utf-8" />
 
 <title><?php echo CHtml::encode($this->pageTitle); ?></title>
-<meta name="viewport" content="width=device-width" />
+<meta name="viewport" content="width=1230, user-scalable=1" />
 
 <?php if (Yii::app()->params['disable_browser_caching']) {?>
 	<meta http-equiv="cache-control" content="no-cache" />

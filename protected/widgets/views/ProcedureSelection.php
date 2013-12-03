@@ -17,9 +17,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="row field-row eventDetail<?php if ($last) {?> eventDetailLast<?php }?>" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+<div class="row field-row procedure-selection eventDetail<?php if ($last) {?> eventDetailLast<?php }?>" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
 	<div class="large-2 column">
-		<label><?php echo $label?>:</label>
+		<label for="select_procedure_id_<?php echo $identifier;?>">
+			<?php echo $label?>:
+		</label>
 	</div>
 	<div class="large-4 column">
 		<fieldset>
@@ -140,30 +142,32 @@
 				}?>
 				</tbody>
 			</table>
-			<table class="grid">
-				<tfoot>
-				<tr>
-					<td>
-						Calculated Total Duration:
-					</td>
-					<td id="projected_duration_<?php echo $identifier?>">
-						<?php echo $totalDuration?> mins
-					</td>
-					<td>
-						Estimated Total Duration:
-					</td>
-					<td>
-						<input
-							type="text"
-							value="<?php echo $total_duration?>"
-							id="<?php echo $class?>_total_duration_<?php echo $identifier?>"
-							name="<?php echo $class?>[total_duration_<?php echo $identifier?>]"
-							style="width:60px"
-							/>
-					</td>
-				</tr>
-				</tfoot>
-			</table>
+			<?php if ($durations) {?>
+				<table class="grid durations">
+					<tfoot>
+					<tr>
+						<td>
+							Calculated Total Duration:
+						</td>
+						<td id="projected_duration_<?php echo $identifier?>">
+							<?php echo $totalDuration?> mins
+						</td>
+						<td>
+							Estimated Total Duration:
+						</td>
+						<td>
+							<input
+								type="text"
+								value="<?php echo $total_duration?>"
+								id="<?php echo $class?>_total_duration_<?php echo $identifier?>"
+								name="<?php echo $class?>[total_duration_<?php echo $identifier?>]"
+								style="width:60px"
+								/>
+						</td>
+					</tr>
+					</tfoot>
+				</table>
+			<?php }?>
 		</div>
 	</div>
 </div>
@@ -212,7 +216,7 @@ function removeProcedure(element, identifier)
 	if (len <= 1) {
 		$('#procedureList_'+identifier).hide();
 		<?php if ($durations) {?>
-		$('div.extraDetails').hide();
+		$('#procedureList_'+identifier).find('.durations').hide();
 		<?php }?>
 	}
 
@@ -351,7 +355,7 @@ function ProcedureSelectionSelectByName(name, callback, identifier)
 
 			if (enableDurations) {
 				updateTotalDuration(identifier);
-				$('div.extraDetails').show();
+				$('#procedureList_'+identifier).find('.durations').show();
 			}
 
 			// clear out text field

@@ -50,7 +50,7 @@
 			this.showMarkupDialog(combinedMarkup);
 		},
 		showMarkupDialog: function(markup) {
-			new OpenEyes.Dialog({
+			new OpenEyes.UI.Dialog({
 				title: 'Markup',
 				content: markup,
 				width: 800,

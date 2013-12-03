@@ -41,6 +41,10 @@ vendor
 /js/components/jquery
 /js/components/jquery-ui
 
+# Tests
+/bin/.enabled-modules
+/jm_behat_report.html
+
 # Temporary, until we've sorted out vagrant for installing test dependencies
 bin/OLD selenium-server-standalone-2.33.0.jar
 bin/OLDER selenium-server-standalone-2.34.0.jar

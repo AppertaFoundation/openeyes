@@ -1,25 +1,42 @@
 #!/usr/bin/env sh
+#make sure selenium is running before going ahead
+#SELENIUM=`ps aux | grep -c selenium`
+#if [ $SELENIUM -gt 1 ]
+#  then
+#    echo GOOD - Looks like selenium is running
+#  else
+#    echo ERR - looks like selenium is not running. PLS run ./bin/run-selenium.sh
+#    exit 1
+#fi
+#
 # define all modules to test
-echo "eyedraw
-OphCiExamination
-OphCiPhasing
-OphCoCorrespondence
-OphCoTherapyapplication
+echo "OphCiExamination
 OphDrPrescription
-OphLeIntravitrealinjection
-OphOuAnaestheticsatisfactionaudit
-OphTrConsent
-OphTrIntravitrealinjection
-OphTrLaser
 OphTrOperationbooking
-OphTrOperationnote" > .enabled-modules
+OphTrOperationnote
+OphTrConsent
+OphCiPhasing
+OphLeEpatientletter
+eyedraw
+OphCoCorrespondence
+MEHCommands
+OphOuAnaestheticsatisfactionaudit
+OphTrIntravitrealinjection
+OphCoTherapyapplication
+OphTrLaser
+" > .enabled-modules
 
 enabled_modules=".enabled-modules"
 modules_path="protected/modules"
 modules_conf_string=""
 
 #git clone modules
+echo "Cloning/checkout modules"
 bin/clone-modules.sh develop
+
+echo "hard reset all and pull"
+#bin/oe-git "reset --hard"
+bin/oe-git pull
 
 #set up modules in conf
 while read module
@@ -37,10 +54,13 @@ echo "Modules $modules_conf_string"
 sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.autotest.php > protected/config/local/common.php
 echo 'Moved config files'
 
-# import test sql and migrate up all modules
-vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;\
-    cd /var/www; echo "running oe-git-pull"; bin/oe-git-pull; \
-    echo "running migrate-all"; bin/migrate-all.sh; exit;'
+echo "import test sql - delete/create db"
+vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes -e "drop database openeyes; create database openeyes;";'
+echo "import test sql - import testdata.sql"
+vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;'
+echo "run migrations"
+vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; protected/yiic migrate --interactive=0; \
+protected/yiic migratemodules --interactive=0;exit;'
 
 #make sure phantomjs is set up and running
 #PHANTOM=`ps aux | grep -c phantom`
@@ -60,11 +80,11 @@ if [ $# -eq 1 ]
   then
     PROFILE=$1
   else
-    PROFILE=phantomjs
+    PROFILE=phantomjs-ci
 fi
 
 #run tests
-bin/behat --tags=setup --profile=$PROFILE --expand
-bin/behat --tags=confidence --profile=$PROFILE --expand
-bin/behat --tags=regression --profile=$PROFILE --expand
+vagrant ssh -c "bin/behat --tags=setup --profile=$PROFILE --expand"
+#bin/behat --tags=confidence --profile=$PROFILE --expand
+vagrant ssh -c "bin/behat --tags=regression --profile=$PROFILE --expand"
 exit

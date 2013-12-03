@@ -5,8 +5,6 @@
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.watermark.min.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/mustache.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/libs/uri-1.10.2.js'))?>
-<?php $cs->registerScriptFile(Yii::app()->createUrl('js/waypoints.min.js'))?>
-<?php $cs->registerScriptFile(Yii::app()->createUrl('js/waypoints-sticky.min.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/modernizr.custom.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/polyfills.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.printElement.min.js'))?>
@@ -15,6 +13,12 @@
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.getUrlParam.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/print.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/buttons.js'))?>
-<?php $cs->registerScriptFile(Yii::app()->createUrl('js/util.js'))?>
-<?php $cs->registerScriptFile(Yii::app()->createUrl('js/dialogs.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.Util.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.Util.EventEmitter.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.StickyElement.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.Dialog.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.Dialog.Alert.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.Dialog.Confirm.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>

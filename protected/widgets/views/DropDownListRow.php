@@ -28,8 +28,12 @@ $fieldCols = floor(12 - ($labelCols * count($fields))) / count($fields);
 				<?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:
 			</label>
 		</div>
-		<div class="large-<?php echo $fieldCols;?> column">
-			<?php echo CHtml::activeDropDownList($element,$field,$datas[$i],$htmlOptions[$i])?>
+		<div class="large-<?php echo $fieldCols;?> column end">
+			<div class="row">
+				<div class="large-<?php echo $layoutColumns['field'];?> column end">
+					<?php echo CHtml::activeDropDownList($element,$field,$datas[$i],$htmlOptions[$i])?>
+				</div>
+			</div>
 		</div>
 	<?php }?>
 </div>

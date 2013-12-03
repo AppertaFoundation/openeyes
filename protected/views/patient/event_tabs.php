@@ -18,23 +18,24 @@
  */
 ?>
 
-	<header class="event-header">
-		<ul class="inline-list tabs event-actions">
-			<?php foreach ($this->event_tabs as $tab) { ?>
-			<li<?php if (@$tab['active']) { ?> class="selected"<?php } ?>>
-				<?php if (@$tab['href']) { ?>
-					<a href="<?php echo $tab['href'] ?>"><?php echo $tab['label'] ?></a>
-				<?php } else { //FIXME: don't select?>
-					<a href="#"><?php echo $tab['label'] ?></a>
-				<?php } ?>
-			</li>
-			<?php } ?>
-		</ul>
-		<?php
-		// Event actions
-		$this->renderPartial('//patient/event_actions');
-		?>
+<header class="event-header">
 
-	</header>
+	<ul class="inline-list tabs event-actions">
+		<?php foreach ($this->event_tabs as $tab) { ?>
+		<li<?php if (@$tab['active']) { ?> class="selected"<?php } ?>>
+			<?php if (@$tab['href']) { ?>
+				<a href="<?php echo $tab['href'] ?>"><?php echo $tab['label'] ?></a>
+			<?php } else { //FIXME: don't select?>
+				<a href="#"><?php echo $tab['label'] ?></a>
+			<?php } ?>
+		</li>
+		<?php } ?>
+	</ul>
+
+	<?php
+	// Event actions
+	$this->renderPartial('//patient/event_actions');
+	?>
+</header>
 
 

@@ -25,7 +25,7 @@ if ($module = $this->getModule()) {
 
 		<div class="large-10 column event <?php echo $this->moduleNameCssClass;?> <?php echo $this->moduleStateCssClass; ?>">
 
-			<?php $this->renderPartial('//patient/event_tabs',array('hidden'=>(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
+			<?php $this->renderPartial('//patient/event_tabs')?>
 
 			<div class="event-content" id="event-content">
 					<?php echo $content; ?>

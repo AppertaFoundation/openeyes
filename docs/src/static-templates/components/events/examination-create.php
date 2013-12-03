@@ -188,7 +188,7 @@
 					<div class="element-fields element-eyes row">
 						<div class="element-eye right-eye column">
 							<a href="#" class="icon-remove-side">Remove side</a>
-							<div class="eyedraw-data row">
+							<div class="eyedraw-data eyedraw-row row">
 								<div class="eyedraw-image column small">
 									<img src="/img/tmp/eyedraw-small-edit.png" class="canvas" alt="Eyedraw" />
 								</div>
@@ -266,7 +266,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr class="visualAcuityReading" data-key="0">
+									<tr class="visualAcuityReading visual-acuity-reading" data-key="0">
 										<td>
 											<input type="hidden" name="visualacuity_reading[0][side]" value="0">
 											<select class="va-selector" name="visualacuity_reading[0][value]" id="visualacuity_reading_0_value">
@@ -304,7 +304,7 @@
 											<a class="removeReading" href="#">Remove</a>
 										</td>
 									</tr>
-									<tr class="visualAcuityReading" data-key="1">
+									<tr class="visualAcuityReading visual-acuity-reading" data-key="1">
 										<td>
 											<input type="hidden" name="visualacuity_reading[1][side]" value="0">
 											<select class="va-selector" name="visualacuity_reading[1][value]" id="visualacuity_reading_1_value">

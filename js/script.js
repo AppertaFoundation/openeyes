@@ -69,8 +69,15 @@ $(document).ready(function(){
 		}
 
 		function changeState(episodeContainer, trigger, episode_id, state) {
+
 			trigger.toggleClass('toggle-hide toggle-show');
-			episodeContainer.find('.events-container,.events-overview').slideToggle('fast');
+
+			episodeContainer
+			.find('.events-container,.events-overview')
+			.slideToggle('fast', function() {
+				$(this).css({ overflow: 'visible' });
+			});
+
 			updateEpisode(episode_id, state);
 		}
 
@@ -113,74 +120,35 @@ $(document).ready(function(){
 		});
 	}());
 
-	/**
-	 * Sticky stuff
-	 * @todo Fix the offsets when resizing the layouts.
-	 */
-	(function sticky() {
+	(function stickyElements() {
 
-		var adminBanner = $('.alert-box.admin.banner');
-		var header = $('.header');
-		var eventHeader = $('.event-header');
+		var options = {
+			enableHandler: function() {
+				this.element.width(this.element.width());
+				this.enable();
+			},
+			disableHandler: function() {
+				this.element.width('auto');
+				this.disable();
+			}
+		};
 
-		function initWaypoints() {
+		new OpenEyes.UI.StickyElement('.admin.banner', {
+			offset: 30,
+			wrapperHeight: function() {
+				return this.element.outerHeight(true);
+			}
+		});
 
-			adminBanner.waypoint('sticky', {
-				offset: -30
-			});
+		var header = new OpenEyes.UI.StickyElement('.header', $.extend({
+			offset: 25
+		}, options));
 
-			header.waypoint('sticky', {
-				offset: 0
-			}).width(header.width());
-
-			eventHeader.waypoint('sticky', {
-				offset: function(){
-					return header.height() + adminBanner.height();
-				},
-				handler: function() {
-					eventHeader.css({
-						top: header.height()
-					});
-				}
-			})
-			.width(eventHeader.width());
-		}
-
-		function adjustHeights() {
-			adminBanner
-			.closest('.sticky-wrapper')
-			.height(adminBanner.outerHeight(true));
-
-			eventHeader
-			.closest('.sticky-wrapper')
-			.height(eventHeader.outerHeight(true));
-		}
-
-		function adjustWidths() {
-			header.width(
-				header.closest('.container.main').width()
-			);
-			eventHeader.width(
-				eventHeader.closest('.column.event').width()
-			);
-		}
-
-		function onWindowResize(e) {
-			adjustHeights();
-			adjustWidths();
-		}
-
-		function bindResizeHandler() {
-			var timer = 0;
-			$(window).on('resize', function(e) {
-				// Throttle this handler.
-				clearTimeout(timer);
-				timer = setTimeout(onWindowResize.bind(null, e), 10);
-			}).trigger('resize');
-		}
-
-		initWaypoints();
-		bindResizeHandler();
+		new OpenEyes.UI.StickyElement('.event-header', $.extend({
+			offset: function() {
+				return header.element.height() * -1;
+			}
+		}, options));
 	}());
 
 	/**
@@ -241,7 +209,7 @@ $(document).ready(function(){
 
 			e.preventDefault();
 
-			new OpenEyes.Dialog($.extend({}, options, {
+			new OpenEyes.UI.Dialog($.extend({}, options, {
 				url: baseUrl + '/site/changesiteandfirm',
 				data: {
 					returnUrl: window.location.href,
@@ -252,7 +220,7 @@ $(document).ready(function(){
 
 		// Show the 'change firm' dialog on page load.
 		if ($('#site-and-firm-form').length) {
-			new OpenEyes.Dialog($.extend({}, options, {
+			new OpenEyes.UI.Dialog($.extend({}, options, {
 				content: $('#site-and-firm-form')
 			})).open();
 		}

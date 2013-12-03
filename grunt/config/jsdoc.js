@@ -1,8 +1,7 @@
 module.exports = {
 	dist : {
 		src: [
-			'js/util.js',
-			'js/dialogs.js',
+			'js/OpenEyes*',
 			'docs/src/jsdoc/README.md'
 		],
 		options: {

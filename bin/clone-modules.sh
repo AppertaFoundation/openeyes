@@ -24,11 +24,13 @@ while read module
 do
     if [ ! -e $module ]; then 
         if [ ! -d "$modules_path/$module" ]; then
-            echo "Cloning $module module..."
+            echo "Cloning $module module..." git@github.com:openeyes/$module.git
+            #git clone git@github.com:openeyes/$module.git $modules_path/$module
             git clone https://github.com/openeyes/$module $modules_path/$module
         fi
         cd $modules_path/$module
         echo "Switching module branch to $current_branch..."
+        git reset --hard HEAD
         git checkout $current_branch
         cd $running_path
     fi

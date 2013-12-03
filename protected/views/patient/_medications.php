@@ -347,13 +347,13 @@
 				if (html == 'success') {
 					$('a.removeMedication[rel="'+$('#medication_id').val()+'"]').parent().parent().remove();
 				} else {
-					new OpenEyes.Dialog.Alert({
+					new OpenEyes.UI.Dialog.Alert({
 						content: "Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance."
 					}).open();
 				}
 			},
 			'error': function() {
-				new OpenEyes.Dialog.Alert({
+				new OpenEyes.UI.Dialog.Alert({
 					content: "Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance."
 				}).open();
 			}

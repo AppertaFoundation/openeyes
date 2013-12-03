@@ -3,10 +3,11 @@ module.exports = {
 		'*.js',
 		'*.json',
 		'grunt/**/*.js',
+		'js/OpenEyes*',
 		'docs/templates/**/js/script.js'
 	],
 	options: {
-		curly: true,
+		curly: false,
 		eqeqeq: true,
 		immed: true,
 		latedef: true,
@@ -25,7 +26,9 @@ module.exports = {
 			jQuery: true,
 			module: false,
 			require: false,
-			console: false
+			console: false,
+			OpenEyes: true,
+			Mustache: true
 		}
 	}
 };

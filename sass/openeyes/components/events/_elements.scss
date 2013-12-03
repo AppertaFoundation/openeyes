@@ -19,6 +19,7 @@
 	canvas,
 	.canvas {
 		border: 1px solid #ccc;
+		display: block;
 		margin: 0;
 	}
 	.element-eyes {
@@ -37,9 +38,6 @@
 			width: 0;
 			z-index: 1;
 		}
-	}
-	.field-row {
-		padding-bottom: .9em;
 	}
 	.inactive .active-form,
 	.inactive-form {
@@ -81,7 +79,7 @@
 
 .eye-message {
 	font-size: $default-font-size;
-	padding: 1em 0;
+	padding: 0 0 1em 0;
 	text-align: center;
 }
 
@@ -121,15 +119,6 @@ $oe-element-edit-title-font-style: italic;
 				margin: 1em;
 			}
 		}
-		select {
-			width: auto;
-			&.full-width {
-				width: 100%;
-			}
-		}
-		.field-row {
-			padding-bottom: .8em;
-		}
 		.alert-box {
 			margin: 1em 0;
 		}
@@ -142,6 +131,7 @@ $oe-element-edit-title-font-style: italic;
 		margin-left: .5em;
 		line-height: 2em;
 		.info {
+			display: inline-block;
 			font-size: $default-font-size;
 			small {
 				display: inline-block;
@@ -199,10 +189,13 @@ $oe-element-edit-title-font-style: italic;
 				padding-bottom: emCalc(4px);
 				padding-top: emCalc(4px);
 			}
+			&:not(.event-types) {
+				.field-value {
+					font-size: emCalc(16px);
+				}
+			}
 		}
-		.field-value {
-			font-size: emCalc(16px);
-		}
+
 	}
 	.element-data {
 		.data-title {

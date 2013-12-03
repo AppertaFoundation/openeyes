@@ -14,6 +14,19 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Pills
+//
+// Markup:
+// <span class="pill {$modifiers}">A message of varying importance</span>
+// <span class="pill {$modifiers}"><select><option>A dropdown</option></select></span>
+// <span class="pill {$modifiers}"><input type="text" placeholder="A text input..." /></span>
+//
+// .high			- High importance
+// .moderate		- Moderate importance
+// .mild			- Mild importance
+// .low				- Low importance
+//
+// Styleguide 9.1
 .pill {
 	@include border-radius(5px);
 	display: inline-block;

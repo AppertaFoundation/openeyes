@@ -95,9 +95,9 @@ class BaseEventTypeController extends BaseController
 		return BaseController::checkUserLevel(3);
 	}
 
-	public function renderEventMetadata()
+	public function renderEventMetadata($view='//patient/event_metadata')
 	{
-		$this->renderPartial('//patient/event_metadata');
+		$this->renderPartial($view);
 	}
 
 	public function actionIndex()
@@ -215,23 +215,18 @@ class BaseEventTypeController extends BaseController
 						$keys = array_keys($value);
 
 						if (is_array($value[$keys[0]])) {
-							if (isset($event->event_type_id)) {
-								foreach ($element_class::model()->findAll(array('condition'=>'event_id=?','params'=>array($event->id),'order'=>'id asc')) as $element) {
-									$elements[] = $element;
-								}
-							} else {
-								if ($action != 'update' || !$element_type->default) {
-									for ($i=0; $i<count($value[$keys[0]]); $i++) {
-										$element = new $element_class;
+							if ($action != 'update' || !$element_type->default) {
+								for ($i=0; $i<count($value[$keys[0]]); $i++) {
+									$element = new $element_class;
+									$element->event_id = $event ? $event->id : null;
 
-										foreach ($keys as $_key) {
-											if ($_key != '_element_id') {
-												$element[$_key] = $value[$_key][$i];
-											}
+									foreach ($keys as $_key) {
+										if ($_key != '_element_id') {
+											$element[$_key] = $value[$_key][$i];
 										}
-
-										$elements[] = $element;
 									}
+
+									$elements[] = $element;
 								}
 							}
 						} else {
@@ -682,6 +677,8 @@ class BaseEventTypeController extends BaseController
 	 */
 	protected function validatePOSTElements($elements)
 	{
+		$generic = array();
+
 		$errors = array();
 		foreach ($elements as $element) {
 			$elementClassName = get_class($element);
@@ -691,24 +688,26 @@ class BaseEventTypeController extends BaseController
 					$keys = array_keys($_POST[$elementClassName]);
 
 					if (is_array($_POST[$elementClassName][$keys[0]])) {
-						for ($i=0; $i<count($_POST[$elementClassName][$keys[0]]); $i++) {
-							$element = new $elementClassName;
+						if (!isset($generic[$elementClassName])) {
+							$generic[$elementClassName] = $_POST[$elementClassName];
+						}
 
-							foreach ($keys as $key) {
-								if ($key != '_element_id') {
-									$element->{$key} = $_POST[$elementClassName][$key][$i];
-								}
+						$element = new $elementClassName;
+
+						foreach ($keys as $key) {
+							if ($key != '_element_id') {
+								$element->{$key} = array_shift($generic[$elementClassName][$key]);
 							}
+						}
 
-							$this->setPOSTManyToMany($element);
+						$this->setPOSTManyToMany($element);
 
-							if (!$element->validate()) {
-								$proc_name = $element->procedure->term;
-								$elementName = $element->getElementType()->name;
-								foreach ($element->getErrors() as $errormsgs) {
-									foreach ($errormsgs as $error) {
-										$errors[$proc_name][] = $error;
-									}
+						if (!$element->validate()) {
+							$proc_name = $element->procedure->term;
+							$elementName = $element->getElementType()->name;
+							foreach ($element->getErrors() as $errormsgs) {
+								foreach ($errormsgs as $error) {
+									$errors[$proc_name][] = $error;
 								}
 							}
 						}
@@ -728,7 +727,6 @@ class BaseEventTypeController extends BaseController
 					}
 				}
 			}
-
 		}
 
 		return $errors;
@@ -877,12 +875,15 @@ class BaseEventTypeController extends BaseController
 
 				if (is_array($data[$elementClassName][$keys[0]])) {
 					if (!$element->id || in_array($element->id,$data[$elementClassName]['_element_id'])) {
-						$i = array_search($element->id,$data[$elementClassName]['_element_id']);
 
 						$properties = array();
+
 						foreach ($data[$elementClassName] as $key => $values) {
-							$properties[$key] = $values[$i];
+							if ($key != '_element_id') {
+								$properties[$key] = array_shift($data[$elementClassName][$key]);
+							}
 						}
+
 						$element->attributes = Helper::convertNHS2MySQL($properties);
 
 						$toSave[] = $element;
@@ -1049,6 +1050,7 @@ class BaseEventTypeController extends BaseController
 	protected function printHTML($id, $elements, $template='print')
 	{
 		$this->layout = '//layouts/print';
+
 		$this->render($template, array(
 			'elements' => $elements,
 			'eventId' => $id,

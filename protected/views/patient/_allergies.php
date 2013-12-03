@@ -162,7 +162,7 @@
 		});
 		$('button.btn_save_allergy').click(function() {
 			if ($('#allergy_id').val() == '' && !$('#no_allergies')[0].checked) {
-				new OpenEyes.Dialog.Alert({
+				new OpenEyes.UI.Dialog.Alert({
 					content: "Please select an allergy or confirm patient has no allergies"
 				}).open();
 				return false;
@@ -200,13 +200,13 @@
 						sort_selectbox($('#allergy_id'));
 
 					} else {
-						new OpenEyes.Dialog.Alert({
+						new OpenEyes.UI.Dialog.Alert({
 							content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
 						}).open();
 					}
 				},
 				'error': function() {
-					new OpenEyes.Dialog.Alert({
+					new OpenEyes.UI.Dialog.Alert({
 						content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
 					}).open();
 				}
