@@ -103,7 +103,7 @@
 	$totalDuration = 0;
 	?>
 	<div class="large-6 column">
-		<div id="procedureList_<?php echo $identifier?>" class="panel element-field" style="<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
+		<div id="procedureList_<?php echo $identifier?>" class="panel procedures" style="<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
 			<table class="plain">
 				<thead>
 				<tr>

@@ -4257,11 +4257,6 @@ tfoot.pagination-container .pagination li {
   background-image: url('../img/_elements/icons/event/status/alert-hover.png?1383823007');
 }
 
-/* line 18, ../sass/openeyes/components/panels/_element.scss */
-.panel.element-field {
-  background: #fff;
-}
-
 /* line 18, ../sass/openeyes/components/panels/_login.scss */
 .panel.login {
   max-width: 488px;
@@ -4320,19 +4315,20 @@ tfoot.pagination-container .pagination li {
   margin-bottom: 0;
 }
 
-/* line 3, ../sass/openeyes/components/panels/_procedures.scss */
-.panel.procedures.readonly {
-  background: #fff;
+/* line 18, ../sass/openeyes/components/panels/_procedures.scss */
+.panel.procedure, .panel.procedures, .panel.diagnosis {
+  background: #FFF;
 }
-/* line 5, ../sass/openeyes/components/panels/_procedures.scss */
+
+/* line 27, ../sass/openeyes/components/panels/_procedures.scss */
 .panel.procedures.readonly .row {
   padding-bottom: .5em;
 }
-/* line 7, ../sass/openeyes/components/panels/_procedures.scss */
+/* line 29, ../sass/openeyes/components/panels/_procedures.scss */
 .panel.procedures.readonly .row:last-child {
   padding-bottom: 0;
 }
-/* line 10, ../sass/openeyes/components/panels/_procedures.scss */
+/* line 32, ../sass/openeyes/components/panels/_procedures.scss */
 .panel.procedures.readonly .row span {
   font-style: italic;
 }
