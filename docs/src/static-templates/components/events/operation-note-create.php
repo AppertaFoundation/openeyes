@@ -59,7 +59,7 @@
 								</fieldset>
 							</div>
 							<div class="large-6 column">
-								<div class="panel element-field">
+								<div class="panel procedures">
 									<table class="plain">
 										<thead>
 											<tr>
@@ -523,7 +523,7 @@
 						<h3 class="element-title">Comments</h3>
 					</header>
 					<div class="element-fields">
-						<div class="row field-row">
+						<div class="row">
 							<div class="large-2 column">
 								<label for="">Operation comments:</label>
 							</div>

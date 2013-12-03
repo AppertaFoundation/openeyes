@@ -134,7 +134,7 @@
 								</fieldset>
 							</div>
 							<div class="large-6 column">
-								<div class="panel element-field">
+								<div class="panel procedures">
 									<table class="plain">
 										<thead>
 											<tr>

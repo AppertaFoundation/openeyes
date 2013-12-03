@@ -28,7 +28,7 @@
 										<option>-- Select --</option>
 									</select>
 								</div>
-								<div class="field-row">
+								<div>
 									<input type="text" placeholder="Or search formulary..." />
 								</div>
 							</div>

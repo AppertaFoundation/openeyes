@@ -97,7 +97,7 @@
 						</label>
 					</div>
 					<div class="large-4 column">
-						<fieldset class="panel element-field">
+						<fieldset class="panel procedure">
 							<h4>Add a procedure:</h4>
 							<div class="field-row">
 								<select>
@@ -110,7 +110,7 @@
 						</fieldset>
 					</div>
 					<div class="large-6 column">
-						<div class="panel element-field">
+						<div class="panel procedures">
 							<h4>Procedures:</h4>
 							<table class="plain">
 								<thead>

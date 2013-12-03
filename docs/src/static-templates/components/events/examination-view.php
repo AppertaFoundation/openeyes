@@ -59,10 +59,10 @@
 						<div class="element-eye right-eye column">
 							<div class="data-row">
 								<div class="row refraction">
-									<div class="eyedraw-image column fixed">
+									<div class="column fixed">
 										<img src="/img/tmp/eyedraw/small.png" class="canvas" alt="Eyedraw" />
 									</div>
-									<div class="eyedraw-value column fluid">
+									<div class="column fluid">
 										<div class="data-value">
 											0.00/0.00 @ 95° Auto-refraction<br>
 											Spherical equivalent: 0.00
@@ -74,10 +74,10 @@
 						<div class="element-eye left-eye column">
 							<div class="data-row">
 								<div class="row refraction">
-									<div class="eyedraw-image column fixed">
+									<div class="column fixed">
 										<img src="/img/tmp/eyedraw/small.png" class="canvas" alt="Eyedraw" />
 									</div>
-									<div class="eyedraw-value column fluid">
+									<div class="column fluid">
 										<div class="data-value">
 											0.00/0.00 @ 95° Auto-refraction<br>
 											Spherical equivalent: 0.00
@@ -116,10 +116,10 @@
 						<div class="element-data element-eyes row">
 							<div class="element-eye right-eye column">
 								<div class="row gonioscopy">
-									<div class="eyedraw-image column fixed">
+									<div class="column fixed">
 										<img src="/img/tmp/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
-									<div class="eyedraw-value column fluid">
+									<div class="column fluid">
 										<div class="shaffer-grade">
 											<div class="data-label">Shaffer Grade:</div>
 											<div class="gonio-cross">
@@ -158,10 +158,10 @@
 							</div>
 							<div class="element-eye left-eye column">
 								<div class="row gonioscopy">
-									<div class="eyedraw-image column fixed">
+									<div class="column fixed">
 										<img src="/img/tmp/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
-									<div class="eyedraw-value column fluid">
+									<div class="column fluid">
 										<div class="shaffer-grade">
 											<div class="data-label">Shaffer Grade:</div>
 											<div class="gonio-cross">
@@ -211,10 +211,10 @@
 						<div class="element-eye right-eye column">
 							<div class="data-row">
 								<div class="row anterior-segment">
-									<div class="eyedraw-image column fixed">
-										<img src="/img/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw" />
+									<div class="column fixed">
+										<img src="img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
-									<div class="eyedraw-value column fluid">
+									<div class="column fluid">
 										<div class="data-row description">
 											<div class="data-value">
 												Moderate nuclear cataract, moderate cortical cataract
@@ -267,10 +267,10 @@
 						<div class="element-eye left-eye column">
 							<div class="data-row">
 								<div class="row anterior-segment">
-									<div class="eyedraw-image column fixed">
-										<img src="/img/tmp/eyedraw-medium-2.png" class="canvas" alt="Eyedraw" />
+									<div class="column fixed">
+										<img src="img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
-									<div class="eyedraw-value column fluid">
+									<div class="column fluid">
 										<div class="data-row description">
 											<div class="data-value">
 												Moderate nuclear cataract, moderate cortical cataract
@@ -427,10 +427,10 @@
 						<div class="element-eye right-eye column">
 							<div class="data-row">
 								<div class="row posterior-pole">
-									<div class="eyedraw-image column fixed">
+									<div class="column fixed">
 										<img src="/img/tmp/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
-									<div class="eyedraw-value column fluid">
+									<div class="column fluid">
 										<div class="row">
 											<div class="data-value">
 												No abnormality
@@ -443,10 +443,10 @@
 						<div class="element-eye left-eye column">
 							<div class="data-row">
 								<div class="row posterior-pole">
-									<div class="eyedraw-image column fixed">
+									<div class="column fixed">
 										<img src="/img/tmp/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
-									<div class="eyedraw-value column fluid">
+									<div class="column fluid">
 										<div class="row">
 											<div class="data-value">
 												No abnormality
