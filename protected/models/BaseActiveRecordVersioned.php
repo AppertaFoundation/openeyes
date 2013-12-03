@@ -17,15 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/**
- * A class that all OpenEyes active record classes should extend.
- *
- * Currently its only purpose is to remove all html tags to
- * prevent XSS.
- */
 class BaseActiveRecordVersioned extends BaseActiveRecord
 {
 	private $enable_archive = true;
+	private $fetch_from_archive = false;
+	public $unique_id = null;
+	public $deleted_at = null;
 
 	/* Disable archiving on save() */
 
@@ -45,54 +42,52 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		return $this;
 	}
 
-	/* Test if the current model instance is an archived (previous) row */
+	/* Fetch from archive */
+
+	public function fromArchive()
+	{
+		$this->fetch_from_archive = true;
+
+		return $this;
+	}
+
+	/* Disable fetch from archive */
+
+	public function notFromArchive()
+	{
+		$this->fetch_from_archive = false;
+
+		return $this;
+	}
+
+	public function getTableSchema()
+	{
+		if ($this->fetch_from_archive) {
+			return $this->getDbConnection()->getSchema()->getTable($this->tableName().'_archive');
+		}
+
+		return parent::getTableSchema();
+	}
 
 	public function isArchived()
 	{
-		return preg_match('/Archive$/',get_class($this));
+		return $this->unique_id;
 	}
-
-	/* Get the archive model for the current non-archived model */
-
-	public function archiveModel()
-	{
-		$archive_model = get_class($this).'Archive';
-
-		return $archive_model::model();
-	}
-
-	/* Returns a new archive model object for the current non-archived model */
-
-	public function newArchiveModel()
-	{
-		$archive_model = get_class($this).'Archive';
-
-		return new $archive_model;
-	}
-
-	/* Return the version prior to the current one, or NULL if there isn't one */
 
 	public function getPreviousVersion()
 	{
-		if (!$this->isArchived()) {
-			return $this->archiveModel()->find(array(
-				'condition' => 'rid = :rid',
-				'params' => array(
-					':rid' => $this->id
-				),
-				'limit' => 1,
-				'offset' => 1,
-				'order' => 'id desc',
-			));
+		$condition = 'id = :id';
+		$params = array(':id' => $this->id);
+
+		if ($this->isArchived()) {
+			$condition .= ' and unique_id < :unique_id';
+			$params[':unique_id'] = $this->unique_id;
 		}
 
-		return $this->model()->find(array(
-			'condition' => 'rid = :rid and id < :id',
-			'params' => array(
-				':rid' => $this->rid,
-				':id' => $this->id,
-			),
-			'order' => 'id desc',
+		return $this->model()->fromArchive()->find(array(
+			'condition' => $condition,
+			'params' => $params,
+			'order' => 'unique_id desc',
 		));
 	}
 
@@ -100,25 +95,18 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 	public function getPreviousVersions()
 	{
-		if (!$this->isArchived()) {
-			return $this->archiveModel()->findAll(array(
-				'condition' => 'rid = :rid',
-				'params' => array(
-					':rid' => $this->id,
-				),
-				'offset' => 1,
-				'limit' => 99999999999, /* this is ugly but limit is required to use offset */
-				'order' => 'id desc',
-			));
+		$condition = 'id = :id';
+		$params = array(':id' => $this->id);
+
+		if ($this->isArchived()) {
+			$condition .= ' and unique_id = :unique_id';
+			$params[':unique_id'] = $this->unique_id;
 		}
 
-		return $this->model()->findAll(array(
-			'condition' => 'rid = :rid and id < :id',
-			'params' => array(
-				':rid' => $this->rid,
-				':id' => $this->id,
-			),
-			'order' => 'id desc',
+		return $this->model()->fromArchive()->findAll(array(
+			'condition' => $condition,
+			'params' => $params,
+			'order' => 'unique_id desc',
 		));
 	}
 
@@ -139,7 +127,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$transaction = Yii::app()->db->getCurrentTransaction() === null ? Yii::app()->db->beginTransaction() : false;
 
 		try {
-			if ($this->archiveToTableByPk($pk,$condition,$params)) {
+			if (!$this->enable_archive || $this->archiveToTableByPk($pk,$condition,$params)) {
 				$result = parent::updateByPk($pk,$attributes,$condition,$params);
 
 				if ($transaction && $result) {
@@ -167,7 +155,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$transaction = Yii::app()->db->getCurrentTransaction() === null ? Yii::app()->db->beginTransaction() : false;
 
 		try {
-			if ($this->archiveAllToTable($condition,$params)) {
+			if (!$this->enable_archive || $this->archiveAllToTable($condition,$params)) {
 				$result = parent::updateAll($attributes,$condition,$params);
 
 				if ($transaction && $result) {
@@ -219,5 +207,14 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		}
 
 		return true;
+	}
+
+	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
+	{
+		if ($this->isArchived()) {
+			throw new Exception("save() should not be called on archived model instances.");
+		}
+
+		return parent::save($runValidation, $attributes, $allow_overriding);
 	}
 }
