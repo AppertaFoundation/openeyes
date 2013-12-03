@@ -1274,7 +1274,7 @@ class PatientController extends BaseController
 		if (empty($_POST['start_date'])) {
 			$errors['start_date'] = 'Please select a date';
 		} elseif (!strtotime($_POST['start_date'])) {
-			$errors['start_date'] = 'Invalid date entered';
+			$errors['start_date'] = 'Please enter a date in the format dd mmm yyyy (eg 01 Jan 2013)';
 		}
 
 		echo json_encode($errors);
