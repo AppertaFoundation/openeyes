@@ -1,4 +1,4 @@
-@edit
+@editdelete
 Feature: These tests set up Events, Edit and Delete them.
 
   Scenario: Route 1A: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 3 Anderson Glaucoma

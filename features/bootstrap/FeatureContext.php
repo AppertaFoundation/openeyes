@@ -96,10 +96,14 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	 */
 	public function takeScreenshotAfterFailedStep($event)
 	{
-		$this->stackScreenshots($event);
-		if (4 === $event->getResult()) {
-			$this->saveScreenshots();
-		}
+		try{
+            $this->stackScreenshots($event);
+
+		    if (4 === $event->getResult()) {
+		    	$this->saveScreenshots();
+		    }
+        }catch(Exception $e){
+        }
 	}
 
 	private function stackScreenshots($event)

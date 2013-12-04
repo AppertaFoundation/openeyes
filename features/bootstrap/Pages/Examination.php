@@ -195,7 +195,7 @@ class Examination extends Page
         if ($this->isComorbitiesCollapsed()) {
 
             $this->getElement('openComorbidities')->click();
-            $this->getSession()->wait(3000, '$.active == 0');
+            $this->getSession()->wait(15000, '$.active == 0');
         }
     }
 
@@ -214,15 +214,14 @@ class Examination extends Page
     {
         if ($this->isVisualAcuityCollapsed()) {
             $this->getElement('openVisualAcuity')->click();
-            $this->getSession()->wait(3000, '$.active == 0');
+            $this->getSession()->wait(15000, '$.active == 0');
         }
     }
 
     public function selectVisualAcuity ($unit)
     {
-        $this->getSession()->wait(3000);
         $this->getElement('visualAcuityUnitChange')->selectOption($unit);
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function leftVisualAcuity ($metre, $method)
@@ -242,7 +241,8 @@ class Examination extends Page
     public function leftETDRS ($metre, $method)
     {
         $this->getElement('openLeftVA')->click();
-        $this->getSession()->wait(3000, '$.active == 0');
+        $this->getSession()->wait(15000, '$.active == 0');
+        $this->getElement('ETDRSSnellenLeft')->selectOption($metre);
         $this->getElement('ETDRSSnellenLeft')->selectOption($metre);
         $this->getElement('ETDRSreadingLeft')->selectOption($method);
     }
@@ -250,7 +250,7 @@ class Examination extends Page
     public function rightETDRS ($metre, $method)
     {
         $this->getElement('openRightVA')->click();
-        $this->getSession()->wait(3000, '$.active == 0');
+        $this->getSession()->wait(15000, '$.active == 0');
         $this->getElement('ETDRSSnellenRight')->selectOption($metre);
         $this->getElement('ETDRSreadingRight')->selectOption($method);
     }
@@ -290,7 +290,7 @@ class Examination extends Page
     {
         if ($this->isDilationCollapsed()){
             $this->getElement('openDilation')->click();
-            $this->getSession()->wait(5000);
+            $this->getSession()->wait(15000, '$.active == 0');
         }
     }
 
@@ -319,7 +319,7 @@ class Examination extends Page
     {
         if ($this->isRefractionCollapsed()){
         $this->getElement('expandRefraction')->click();
-        $this->getSession()->wait(10000);
+        $this->getSession()->wait(8000, '$.active == 0');
         }
     }
 
@@ -384,7 +384,7 @@ class Examination extends Page
     public function expandAdnexalComorbidity ()
     {
         $this->getElement('expandAdnexalComorbidity')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function leftAdnexal ($left)
@@ -405,7 +405,7 @@ class Examination extends Page
     public function expandPupillaryAbnormalities ()
     {
         $this->getElement('expandPupillaryAbnormalities')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function leftPupillaryAbnormality ($left)
@@ -431,7 +431,8 @@ class Examination extends Page
     public function expandDiagnoses ()
     {
        $this->getElement('expandDiagnoses')->click();
-       $this->getSession()->wait(5000);
+       $this->getSession()->wait(15000, '$("#DiagnosisSelection_disorder_id")');
+       $this->getSession()->wait(3000);
     }
 
     public function diagnosesLeftEye ()
@@ -457,7 +458,7 @@ class Examination extends Page
     public function expandInvestigation ()
     {
         $this->getElement('expandInvestigation')->click();
-        $this->getSession()->wait(5000);
+
     }
 
     public function addInvestigation ($investigation)
@@ -468,13 +469,13 @@ class Examination extends Page
     public function expandClinicalManagement ()
     {
         $this->getElement('expandClinicalManagement')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(25000, '$("#Element_OphCiExamination_Management_comments")');
     }
 
     public function expandCataractManagement ()
     {
         $this->getElement('expandCataractManagement')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(20000, '$.active == 0');
     }
 
     public function cataractManagementComments ($comments)
@@ -504,7 +505,6 @@ class Examination extends Page
 
     public function straightforward ()
     {
-        $this->getSession()->wait(10000);
         $this->getElement('straightforward')->check();
     }
 
@@ -558,7 +558,7 @@ class Examination extends Page
     public function expandLaserManagement ()
     {
         $this->getElement('expandLaserManagement')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function RightLaserStatusChoice ($laser)
@@ -584,7 +584,7 @@ class Examination extends Page
     public function expandInjectionManagement ()
     {
         $this->getElement('expandInjectionManagement')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function noTreatment ()
@@ -600,13 +600,13 @@ class Examination extends Page
     public function rightChoroidalRetinal ()
     {
         $this->getElement('rightChoroidalRetinal')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function rightSecondaryTo ($secondary)
     {
         $this->getElement('rightSecondaryTo')->selectOption($secondary);
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function leftChoroidalRetinal ()
@@ -617,7 +617,7 @@ class Examination extends Page
     public function leftSecondaryTo ($secondary)
     {
         $this->getElement('leftSecondaryTo')->selectOption($secondary);
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function rightCRTIncreaseLowerThanHundredYes ()
@@ -713,13 +713,13 @@ class Examination extends Page
     public function rightSecondaryVenousRetinalBranchOcclusion ()
     {
         $this->getElement('rightVenousRetinalBranchOcclusion')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function leftSecondaryDiabeticMacularOedema ()
     {
         $this->getElement('leftDiabeticMacularOedema')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function leftCrtIncreaseMoreThanFourHundredYes ()
@@ -805,7 +805,7 @@ class Examination extends Page
     public function expandRisks ()
     {
         $this->getElement('expandRisks')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function riskComments ($comments)
@@ -816,7 +816,7 @@ class Examination extends Page
     public function expandClinicalOutcome ()
     {
         $this->getElement('expandClinicOutcome')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, '$.active == 0');
     }
 
     public function clinicalOutcomeFollowUp ()
@@ -859,7 +859,7 @@ class Examination extends Page
         if ($this->isConclusionCollapsed()) {
 
         $this->getElement('expandConclusion')->click();
-        $this->getSession()->wait(3000, '$.active == 0');
+            $this->getSession()->wait(15000, '$.active == 0');
         }
     }
 
@@ -870,8 +870,8 @@ class Examination extends Page
 
     public function saveExamination ()
     {
-        $this->getSession()->wait(10000);
         $this->getElement('saveExamination')->click();
+        $this->getSession()->wait(15000, '$("#flash-success").html() == "Examination created."');
     }
 
 }
