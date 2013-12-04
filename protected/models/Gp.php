@@ -70,7 +70,7 @@ class Gp extends BaseActiveRecordVersioned
 	 */
 	public function tableName()
 	{
-		return 'Gp';
+		return 'gp';
 	}
 
 	/**
