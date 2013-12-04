@@ -18,5 +18,8 @@
     },
     "config": {
         "bin-dir": "bin"
+    },
+    "autoload": {
+        "classmap": ["features/bootstrap/Pages/OpenEyesPage.php"]
     }
 }

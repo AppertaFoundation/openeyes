@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class TherapyApplication extends Page
+class TherapyApplication extends OpenEyesPage
 {
     protected $path = "/site/OphCoTherapyapplication/Default/create?patient_id={parentId}";
 

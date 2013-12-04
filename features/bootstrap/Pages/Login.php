@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Login extends Page
+class Login extends OpenEyesPage
 {
     protected $path = '/site/login';
 

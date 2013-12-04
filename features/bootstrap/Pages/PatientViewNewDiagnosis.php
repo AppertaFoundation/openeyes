@@ -1,8 +1,8 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+//use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class PatientViewNewDiagnosis extends Page
+class PatientViewNewDiagnosis extends OpenEyesPage
 {
     protected $path = "/site/patient/view/";
 
@@ -133,7 +133,8 @@ class PatientViewNewDiagnosis extends Page
     {
         //the waits make sure the action is completed before going forward
 		$this->getElement('addSystemicDiagnosis')->press();
-		$this->getSession()->wait(2000,"$('#add_new_systemic_diagnosis').css('display') == 'block'");
+		$this->waitForElementDisplayBlock('#add_new_systemic_diagnosis');
+		//$this->getSession()->wait(2000,"$('#add_new_systemic_diagnosis').css('display') == 'block'");
         $this->getElement('selectSystemicDiagnosis')->selectOption($diagnosis);
 		$this->getSession()->wait(2000,"$('#DiagnosisSelection_systemic_disorder_id').val() == '" . $diagnosis . "'");
     }
@@ -206,13 +207,16 @@ class PatientViewNewDiagnosis extends Page
         $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('selectFrequency')->selectOption($frequency);
         $this->getSession()->wait(5000, "$.active == 0");
-        $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
+		$this->waitForElementDisplayBlock('#ui-datepicker-div');
+		//$this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('openMedicationDate')->click();
-        $this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
+		$this->waitForElementDisplayBlock('#ui-datepicker-div');
+        //$this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('selectDateFrom')->click($datefrom);
         $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('saveMedication')->click();
-        $this->getSession()->wait(2000, "$('#add_medication').css('display') == 'none'");
+		$this->waitForElementDisplayNone('#add_medication');
+		//$this->getSession()->wait(2000, "$('#add_medication').css('display') == 'none'");
     }
 
     public function editCVIstatus ($status)
@@ -226,7 +230,8 @@ class PatientViewNewDiagnosis extends Page
     public function saveCVIstatus ()
     {
         $this->getElement('saveCVI')->click();
-        $this->getSession()->wait(10000, "$('#edit_oph_info').css('display') == 'none'");
+		$this->waitForElementDisplayNone('#edit_oph_info');
+        //$this->getSession()->wait(10000, "$('#edit_oph_info').css('display') == 'none'");
     }
 
     protected function doesRemoveAllergyExist ()
@@ -250,7 +255,8 @@ class PatientViewNewDiagnosis extends Page
         $this->getSession()->wait(1000,false);
         $this->getElement('selectAllergy')->selectOption($allergy);
         $this->getElement('saveAllergy')->click();
-        $this->getSession()->wait(10000,"$('#add_allergy').css('display') == 'none'");
+		$this->waitForElementDisplayNone('#add_allergy');
+        //$this->getSession()->wait(10000,"$('#add_allergy').css('display') == 'none'");
     }
 
     public function noAllergyTickbox ()
@@ -259,7 +265,8 @@ class PatientViewNewDiagnosis extends Page
         $this->getSession()->wait(1000,false);
         $this->getElement('noAllergyTickbox')->check();
         $this->getElement('saveAllergy')->click();
-        $this->getSession()->wait(10000,"$('#add_allergy').css('display') == 'none'");
+		$this->waitForElementDisplayNone('#add_allergy');
+        //$this->getSession()->wait(10000,"$('#add_allergy').css('display') == 'none'");
     }
 
     public function addFamilyHistory ($relative, $side, $condition, $comments)
@@ -270,7 +277,8 @@ class PatientViewNewDiagnosis extends Page
         $this->getElement('selectFamilyCondition')->selectOption($condition);
         $this->getElement('enterFamilyComments')->setValue($comments);
         $this->getElement('saveFamilyHistory')->click();
-        $this->getSession()->wait(10000,"$('#add_family_history').css('display') == 'none'");
+		$this->waitForElementDisplayNone('#add_family_history');
+        //$this->getSession()->wait(10000,"$('#add_family_history').css('display') == 'none'");
     }
 
     public function addEpisodeAndEvent()
@@ -309,7 +317,8 @@ class PatientViewNewDiagnosis extends Page
     {
         $this->getElement('latestEvent')->click();
 		//make sure the Episodes and Events page is shown after clicking latest event link
-        $this->getSession()->wait(15000, "$('h1.badge').html() ==  'Episodes and events' ");
+		$this->waitForTitle('Episodes and events');
+        //$this->getSession()->wait(15000, "$('h1.badge').html() ==  'Episodes and events' ");
     }
 
     protected function episodesAndEventsAreNotPresent()

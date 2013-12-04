@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Laser extends Page
+class Laser extends OpenEyesPage
 {
     protected $path ="/site/OphTrLaser/Default/create?patient_id={patientId}";
 

@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Phasing extends Page
+class Phasing extends OpenEyesPage
 {
     protected $path = "/site/OphCiPhasing/Default/create?patient_id={parentId}";
 

@@ -58,10 +58,10 @@
 		};
 		border-color: #b3b0ae;
 		margin: 0;
-		@media #{$small} {
-			border-top: 0;
-			@include border-radius(0 0 $global-radius $global-radius);
-		}
+		// @media #{$small} {
+		// 	border-top: 0;
+		// 	@include border-radius(0 0 $global-radius $global-radius);
+		// }
 		.stuck & {
 			@include border-radius(0);
 			border-bottom: 0;

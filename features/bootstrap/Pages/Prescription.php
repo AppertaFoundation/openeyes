@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Prescription extends Page
+class Prescription extends OpenEyesPage
 {
     protected $path = "/site/OphDrPrescription/Default/create?patient_id={parentId}";
 

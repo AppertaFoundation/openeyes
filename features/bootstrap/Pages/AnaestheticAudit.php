@@ -1,8 +1,6 @@
 <?php
 
-use \SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class AnaestheticAudit extends Page
+class AnaestheticAudit extends OpenEyesPage
 
 {
     protected $path = "/site/OphOuAnaestheticsatisfactionaudit/Default/create?patient_id={patientId}";

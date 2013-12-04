@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Correspondence extends Page
+class Correspondence extends OpenEyesPage
 {
     protected $path ="/site/OphCoCorrespondence/Default/create?patient_id={patientId}";
 
