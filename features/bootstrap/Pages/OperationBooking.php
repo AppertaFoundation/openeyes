@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class OperationBooking extends Page
+class OperationBooking extends OpenEyesPage
 {
     protected $path = "/site/OphTrOperationbooking/Default/create?patient_id={parentId}";
 

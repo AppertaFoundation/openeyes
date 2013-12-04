@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class ConsentForm extends Page
+class ConsentForm extends OpenEyesPage
 {
 	protected $path = "OphTrConsent/default/view/{eventId}}";
 

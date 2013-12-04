@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class WaitingList extends Page
+class WaitingList extends OpenEyesPage
 {
     protected $path = '/OphTrOperationbooking/waitingList/index';
 }
