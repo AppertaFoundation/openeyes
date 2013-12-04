@@ -64,7 +64,7 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 		if (preg_match('/extends (.*?)[\s\t\r\n]+{/',$data,$m)) {
 			if (in_array($m[1],array('BaseActiveRecordVersioned','BaseEventTypeElement'))) {
 				if (preg_match('/public function tableName\(\)[\r\n\s\t]+{[\r\t\n\s]+return \'(.*?)\'/s',$data,$m)) {
-					if ($this->tableExists[$m[1]]) {
+					if ($this->tableExists($m[1])) {
 						if (!$this->tableExists($m[1].'_version')) {
 							echo "Table {$m[1]}_version doesn't exist.\n";
 						} else {
