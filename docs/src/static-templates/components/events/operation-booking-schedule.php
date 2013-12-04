@@ -17,19 +17,15 @@
 		</div>
 
 		<div id="firmSelect">
-			<div class="element-fields">
-				<div class="row field-row">
-					<div class="large-2 column">
-						<div class="field-label">
-							Viewing the schedule for <strong>Abou-Rayyah Yassir</strong>
-						</div>
-					</div>
-					<div class="large-5 column end">
-						<select id="firm_id">
-							<option value="">Select a different firm</option>
-							<option value="EMG">Emergency List</option>
-						</select>
-					</div>
+			<div class="element-fields change-firm">
+				<div class="field-row">
+					<span class="field-label">
+						Viewing the schedule for <strong>Abou-Rayyah Yassir</strong>
+					</span>
+					<select id="firm_id" class="inline firm-switcher">
+						<option value="">Select a different firm</option>
+						<option value="EMG">Emergency List</option>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -75,7 +71,7 @@
 						</tbody>
 						<tfoot>
 							<tr>
-							<td colspan="5">
+								<td colspan="5">
 									<div id="key">
 										<span>Key:</span>
 										<div class="container" id="day"><div class="color_box"></div><div class="label">Day of the week</div></div>
