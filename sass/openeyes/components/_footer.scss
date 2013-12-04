@@ -56,9 +56,9 @@
 	.help {
 		font-size: emCalc(13px);
 		text-align: left;
-		@media #{$small} {
-			text-align: center;
-		}
+		// @media #{$small} {
+		// 	text-align: center;
+		// }
 		.panel {
 			@include panel(#e2dfdb, emCalc(10px) emCalc(10px) emCalc(10px) - emCalc(4px) emCalc(10px));
 			@include border-radius(0 0 3px 3px);

@@ -62,10 +62,10 @@
 			width: 2px;
 		};
 		position: relative;
-		@media #{$small} {
-			@include border-radius(0 0 $global-radius $global-radius);
-			border-width: 0 2px 2px 2px;
-		}
+		// @media #{$small} {
+		// 	@include border-radius(0 0 $global-radius $global-radius);
+		// 	border-width: 0 2px 2px 2px;
+		// }
 		.stuck & {
 			border-bottom: 0;
 			margin: 0;
