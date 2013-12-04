@@ -17,20 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/*
-		$this->alterColumn("{$table->name}_version",'id','int(10) unsigned NOT NULL');
-		$this->dropPrimaryKey('id',"{$table->name}_version");
-
-		$this->createIndex("{$table->name}_aid_fk","{$table->name}_version","id");
-		$this->addForeignKey("{$table->name}_aid_fk","{$table->name}_version","id",$table->name,"id");
-
-		$this->addColumn("{$table->name}_version","version_date","datetime not null default '1900-01-01 00:00:00'");
-
-		$this->addColumn("{$table->name}_version","version_id","int(10) unsigned NOT NULL");
-		$this->addPrimaryKey("version_id","{$table->name}_version","version_id");
-		$this->alterColumn("{$table->name}_version","version_id","int(10) unsigned NOT NULL AUTO_INCREMENT");
-*/
-
 class GenerateVersionMigrationCommand extends CConsoleCommand {
 	public function run($args) {
 		$exclude = array('audit', 'audit_action', 'audit_ipaddr', 'audit_model', 'audit_module', 'audit_server', 'audit_type', 'audit_useragent', 'authassignment', 'authitem', 'authitemchild', 'eye', 'gender', 'import_source', 'pas_assignment', 'pas_patient_merged', 'report', 'report_dataset', 'report_dataset_element', 'report_dataset_element_field', 'report_dataset_element_join', 'report_dataset_related_entity', 'report_dataset_related_entity_table', 'report_dataset_related_entity_table_relation', 'report_dataset_related_entity_type', 'report_graph', 'report_graph_item', 'report_input', 'report_input_data_type', 'report_input_option', 'report_item', 'report_item_data_type', 'report_item_list_item', 'report_item_list_item_conditional', 'report_item_pair_field', 'report_query_type', 'report_validation_rule', 'report_validation_rule_type', 'tbl_audit_trail', 'tbl_migration', 'user_session');
