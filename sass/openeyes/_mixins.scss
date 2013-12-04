@@ -118,7 +118,7 @@ $oe-selector-form-select-fields: "select";
 			}
 		}
 	}
-	@media #{$small} {
+	// @media #{$small} {
 		.row {
 			&#{$row-selector} {
 				.column {
@@ -128,5 +128,5 @@ $oe-selector-form-select-fields: "select";
 				}
 			}
 		}
-	}
+	// }
 }

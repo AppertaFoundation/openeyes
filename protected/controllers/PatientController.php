@@ -1274,7 +1274,7 @@ class PatientController extends BaseController
 		if (empty($_POST['start_date'])) {
 			$errors['start_date'] = 'Please select a date';
 		} elseif (!strtotime($_POST['start_date'])) {
-			$errors['start_date'] = 'Invalid date entered';
+			$errors['start_date'] = 'Please enter a date in the format dd mmm yyyy (eg 01 Jan 2013)';
 		}
 
 		echo json_encode($errors);
@@ -1489,7 +1489,7 @@ class PatientController extends BaseController
 			'route_id' => $m->route_id,
 			'option_id' => $m->option_id,
 			'frequency_id' => $m->frequency_id,
-			'start_date' => $m->start_date,
+			'start_date' => Helper::convertMysql2NHS($m->start_date),
 			'route_options' => $this->renderPartial('_drug_route_options',array('route'=>$m->route),true),
 		));
 	}
