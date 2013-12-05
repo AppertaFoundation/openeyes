@@ -387,7 +387,7 @@ class BaseEventTypeController extends BaseModuleController
 		$this->moduleStateCssClass = 'edit';
 
 		if (!$this->patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
-			throw new CHttpException(403, 'Invalid patient_id.');
+			throw new CHttpException(404, 'Invalid patient_id.');
 		}
 
 		if (!$this->episode = $this->getEpisode($this->firm, $this->patient->id)) {
@@ -400,11 +400,21 @@ class BaseEventTypeController extends BaseModuleController
 		}
 	}
 
+	/**
+	 * Intialise controller property based off the event id
+	 *
+	 * @param $id
+	 * @throws CHttpException
+	 */
 	protected function initWithEventId($id)
 	{
-		if (!$id || !$this->event = Event::model()->findByPk($id)) {
-			throw new CHttpException(403, 'Invalid event id.');
+		$criteria = new CDbCriteria();
+		$criteria->addCondition('event_type_id = ?');
+		$criteria->params = array($this->event_type->id);
+		if (!$id || !$this->event = Event::model()->findByPk($id, $criteria)) {
+			throw new CHttpException(404, 'Invalid event id.');
 		}
+
 		$this->patient = $this->event->episode->patient;
 		$this->episode = $this->event->episode;
 	}
