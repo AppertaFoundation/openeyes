@@ -1,5 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+#
+# Required Vagrant version: >= 1.3.0
 
 Vagrant.configure("2") do |config|
   config.vm.box = "precise64"
