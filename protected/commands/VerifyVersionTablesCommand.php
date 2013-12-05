@@ -94,6 +94,14 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 			}
 		}
 
+		foreach ($_table_version->columns as $column => $properties) {
+			if (!in_array($column,array('version_id','version_date'))) {
+				if (!isset($_table->columns[$column])) {
+					echo "$_table_version->name has extra column $column\n";
+				}
+			}
+		}
+
 		foreach ($_table->foreignKeys as $column => $properties) {
 			if (!isset($_table_version->foreignKeys[$column])) {
 				echo "$_table_version->name doesn't have a foreign key on column $column\n";
@@ -103,6 +111,14 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 				}
 				if ($_table_version->foreignKeys[$column][1] != $properties[1]) {
 					echo "$_table_version->name foreign key on $column column doesn't match\n";
+				}
+			}
+		}
+
+		foreach ($_table_version->foreignKeys as $column => $properties) {
+			if ($column != 'id') {
+				if (!isset($_table->foreignKeys[$column])) {
+					echo "$_table_version->name has extra foriegn key on column $column\n";
 				}
 			}
 		}
