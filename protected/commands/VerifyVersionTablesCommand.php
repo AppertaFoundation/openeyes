@@ -21,10 +21,18 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 	public function run($args)
 	{
 		if (isset($args[0])) {
-			if (!file_exists("modules/{$args[0]}/models")) {
-				die("Path not found: modules/{$args[0]}/models\n");
+			if ($args[0] == 'all') {
+				foreach (Yii::app()->modules as $module => $blah) {
+					if (file_exists("modules/$module/models")) {
+						$this->scanModels("modules/$module/models");
+					}
+				}
+			} else {
+				if (!file_exists("modules/{$args[0]}/models")) {
+					die("Path not found: modules/{$args[0]}/models\n");
+				}
+				$this->scanModels("modules/{$args[0]}/models");
 			}
-			$this->scanModels("modules/{$args[0]}/models");
 		} else {
 			$this->scanModels("models");
 
