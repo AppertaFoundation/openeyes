@@ -811,22 +811,26 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * Stub method:
-	 *
-	 * Use this for any many to many relations defined on elements, and any other custom data setting outside of the
-	 * standard applying attribute values. This is called prior to validation so should set values without actually
+	 * Looks for custom methods to set many to many data defined on elements. This is called prior to validation so should set values without actually
 	 * touching the database.
 	 *
 	 * The $data attribute will typically be the $_POST structure, but can be any appropriately structured array
 	 * The optional $index attribute is the counter for multiple elements of the same type that might exist in source data.
 	 *
+	 * The convention for the method name for the element setting is:
+	 *
+	 * setComplexAttributes_[element_class_name]($element, $data, $index)
+	 * 
 	 * @param BaseEventTypeElement $element
 	 * @param array $data
 	 * @param integer $index
 	 */
 	protected function setElementComplexAttributesFromData($element, $data, $index = null)
 	{
-		// placeholder method
+		$element_method = "setComplexAttributes_" . get_class($element);
+		if (method_exists($this, $element_method)) {
+			$this->$element_method($element, $data, $index);
+		}
 	}
 
 	/**
@@ -929,16 +933,31 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * Stub method to allow custom behaviour for managing the many to many data fields that have been submitted for the
-	 * elements, and any other custom data setting outside of the standard applying attribute values.
+	 * Iterates through the open elements and calls the custom methods for saving complex data attributes to them.
 	 *
-	 * Sibling method to setElementComplexAttributesFromdata($element, $data)
+	 * Custom method is of the name format saveComplexAttributes_[element_class_name]($element, $data, $index)
 	 *
 	 * @param $data
 	 */
 	protected function saveEventComplexAttributesFromData($data)
 	{
-		//placeholder method
+		$counter_by_cls = array();
+
+		foreach ($this->open_elements as $element) {
+			$el_cls_name = get_class($element);
+			$element_method = "saveComplexAttributes_" . get_class($element);
+			if (method_exists($this, $element_method)) {
+				// there's custom behaviour for setting additional relations on this element class
+				if (!isset($counter_by_cls[$el_cls_name])) {
+					$counter_by_cls[$el_cls_name] = 0;
+				}
+				else {
+					$counter_by_cls[$el_cls_name]++;
+				}
+				$this->$element_method($element, $data, $counter_by_cls[$el_cls_name]);
+			}
+
+		}
 	}
 
 	/**
