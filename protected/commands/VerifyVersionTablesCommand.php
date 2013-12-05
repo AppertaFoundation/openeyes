@@ -22,6 +22,8 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 	{
 		if (isset($args[0])) {
 			if ($args[0] == 'all') {
+				$this->scanModels("models");
+
 				foreach (Yii::app()->modules as $module => $blah) {
 					if (file_exists("modules/$module/models")) {
 						$this->scanModels("modules/$module/models");
