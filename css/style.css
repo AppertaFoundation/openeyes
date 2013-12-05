@@ -2022,6 +2022,7 @@ table.log-details .data {
 .header {
   min-height: 70px;
   margin: 0 0 0.625em 0;
+  margin-bottom: 0;
 }
 /* line 36, ../sass/openeyes/components/_header.scss */
 .header .logo {
@@ -2075,6 +2076,7 @@ table.log-details .data {
 .footer .help {
   font-size: 0.8125em;
   text-align: left;
+  text-align: center;
 }
 /* line 62, ../sass/openeyes/components/_footer.scss */
 .footer .help .panel {
@@ -3682,6 +3684,12 @@ tfoot.pagination-container .pagination li {
   background-repeat: no-repeat;
   border-color: #b3b0ae;
   margin: 0;
+  border-top: 0;
+  -webkit-border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -ms-border-radius: 0 0 5px 5px;
+  -o-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
 }
 /* line 44, ../sass/foundation/components/_panels.scss */
 .panel.user > :first-child {
@@ -3775,6 +3783,12 @@ tfoot.pagination-container .pagination li {
   border-style: solid;
   border-width: 2px;
   position: relative;
+  -webkit-border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -ms-border-radius: 0 0 5px 5px;
+  -o-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
+  border-width: 0 2px 2px 2px;
 }
 /* line 44, ../sass/foundation/components/_panels.scss */
 .panel.patient > :first-child {
