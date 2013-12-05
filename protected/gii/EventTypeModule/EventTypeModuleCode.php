@@ -1251,6 +1251,97 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
+	public function getPRINTFieldView($field)
+	{
+		switch ($field['type']) {
+			case 'Textbox':
+			case 'Textarea':
+			case 'Textarea with dropdown':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo CHtml::encode($element->'.$field['name'].')?'.'></span></td>
+		</tr>';
+			case 'Decimal':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
+		</tr>';
+			case 'Integer':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
+		</tr>';
+			case 'Date picker':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo CHtml::encode($element->NHSDate(\''.$field['name'].'\'))?'.'></span></td>
+		</tr>';
+			case 'Dropdown list':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->'.$field['lookup_field'].' : \'None\'?'.'></span></td>
+		</tr>';
+			case 'Checkbox':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
+		</tr>';
+			case 'Radio buttons':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->name : \'None\'?'.'></span></td>
+		</tr>';
+			case 'Boolean':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</td>
+			<td><span class="big"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
+		</tr>';
+			case 'EyeDraw':
+				return '		<tr>
+			<td colspan="2">
+				<?php
+					$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
+						\'side\'=>$element->eye->getShortName(),
+						\'mode\'=>\'view\',
+						\'width\'=>'.$field['eyedraw_size'].',
+						\'height\'=>'.$field['eyedraw_size'].',
+						\'model\'=>$element,
+						\'attribute\'=>\''.$field['name'].'\',
+					));
+				?>
+			</td>
+		</tr>
+		'.(@$field['extra_report'] ? '<tr>
+			<td width="30%">Report:</td>
+			<td><span class="big"><?php echo CHtml::encode($element->'.$field['name'].'2)?'.'></span></td>
+		</tr>' : '');
+			case 'Multi select':
+				return '		<tr>
+			<td colspan="2">
+				<div class="colThird">
+					<b><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</b>
+					<div class="eventHighlight medium">
+						<?php if (!$element->'.@$field['multiselect_relation'].') {?'.'>
+							<h4>None</h4>
+						<?php } else {?'.'>
+							<h4>
+								<?php foreach ($element->'.@$field['multiselect_relation'].' as $item) {
+									echo $item->'.@$field['multiselect_lookup_table'].'->name?'.'><br/>
+								<?php }?'.'>
+							</h4>
+						<?php }?'.'>
+					</div>
+				</div>
+			</td>
+		</tr>';
+			case 'Slider':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
+		</tr>';
+		}
+	}
+
 	public function getHTMLFieldView($field)
 	{
 		switch ($field['type']) {

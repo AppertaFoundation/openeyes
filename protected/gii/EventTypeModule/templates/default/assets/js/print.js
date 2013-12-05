@@ -1,4 +1,3 @@
-<?php echo "<?php\n"?>
 /**
  * OpenEyes
  *
@@ -16,19 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-<?php echo "?>\n"?>
 
-<?php echo "<?php\n"?>
-if ($this->canPrint()) {
-	$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'small button'));
+function printIframe() {
+	window.print();
 }
-$this->beginContent('//patient/event_container');
-$this->moduleNameCssClass.=" highlight-fields";
-<?php echo "?>\n"?>
-
-<h2 class="event-title"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h2>
-
-<?php echo '<?php'?> $this->renderDefaultElements($this->action->id)<?php echo "?>\n"?>
-<?php echo '<?php'?> $this->renderOptionalElements($this->action->id)<?php echo "?>\n"?>
-
-<?php echo '<?php'?> $this->endContent()<?php echo "?>\n"?>
