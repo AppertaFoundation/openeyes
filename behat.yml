@@ -87,9 +87,9 @@ phantomjs:
               browser: 'phantomjs'
 
     formatter:
-        name:               pretty,html
+        name:               pretty,junit,html
         parameters:
-            output_path:    null,jm_behat_report.html
+            output_path:    null,junit_behat_reports,jm_behat_report.html
 phantomjs-ci:
     extensions:
         Behat\MinkExtension\Extension:
@@ -104,6 +104,6 @@ phantomjs-ci:
               capabilities: { "browser": "phantomjs"}
 
     formatter:
-        name:               pretty,html
+        name:               pretty,junit,html
         parameters:
-            output_path:    null,jm_behat_report.html
+            output_path:    null,junit_behat_reports,jm_behat_report.html
