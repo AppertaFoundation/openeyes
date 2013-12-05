@@ -63,8 +63,8 @@
 		};
 		position: relative;
 		// @media #{$small} {
-		// 	@include border-radius(0 0 $global-radius $global-radius);
-		// 	border-width: 0 2px 2px 2px;
+			@include border-radius(0 0 $global-radius $global-radius);
+			border-width: 0 2px 2px 2px;
 		// }
 		.stuck & {
 			border-bottom: 0;
