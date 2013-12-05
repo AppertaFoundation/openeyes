@@ -1,7 +1,22 @@
 <?php
 use \SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+use \Behat\Mink\Exception\ElementTextException;
 
 abstract class OpenEyesPage extends Page{
+
+	/**
+	 * @description checks that the title is equal to the expected value
+	 * @param string $expectedTitle - the string value
+	 */
+	public function checkOpenEyesTitle($expectedTitle){
+		$titleElement = $this->find('css', 'h1.badge');
+		$title = trim( $titleElement->getHtml() );
+		if($expectedTitle != $title){
+			throw new ElementTextException("Title was  " . $title . " instead of " . $expectedTitle, $this->getSession(), $titleElement );
+		}
+		return true;
+	}
+
 	/**
 	 * @description waits for the title of the page included in the OpenEyes specific class to become equal to the expected value
 	 * @param string $title - the string value

@@ -31,7 +31,7 @@
 	min-height: 70px;
 	margin: 0 0 emCalc(10px) 0;
 	// @media #{$small} {
-	// 	margin-bottom: 0;
+		margin-bottom: 0;
 	// }
 	.logo {
 		@extend .hide-text;

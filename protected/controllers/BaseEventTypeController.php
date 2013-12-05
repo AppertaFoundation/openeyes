@@ -479,7 +479,7 @@ class BaseEventTypeController extends BaseController
 				'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
-		if ($this->event->canDelete()) {
+		if ($this->canDelete()) {
 			$this->event_actions = array(
 				EventAction::link('Delete',
 					Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
@@ -1091,6 +1091,14 @@ class BaseEventTypeController extends BaseController
 		$this->event->audit('event','print',false);
 	}
 
+	public function canDelete()
+	{
+		if($this->event){
+			return($this->event->canDelete());
+		}
+		return false;
+	}
+
 	public function actionDelete($id)
 	{
 		if (!$this->event = Event::model()->findByPk($id)) {
@@ -1098,7 +1106,7 @@ class BaseEventTypeController extends BaseController
 		}
 
 		// Only the event creator can delete the event, and only 24 hours after its initial creation
-		if (!$this->event->canDelete()) {
+		if (!$this->canDelete()) {
 			$this->redirect(array('default/view/'.$this->event->id));
 			return false;
 		}

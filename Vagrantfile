@@ -2,6 +2,12 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+
+  vagrant_version = Vagrant::VERSION.sub(/^v/, '')
+  if vagrant_version < "1.3.0"
+    abort(sprintf("You need to have at least v1.3.0 of vagrant installed. You are currently using v%s", vagrant_version));
+  end
+
   config.vm.box = "precise64"
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 
