@@ -26,43 +26,67 @@ class GenerateVersionMigrationCommand extends CConsoleCommand {
 				die("Path modules/{$args[0]}/models does not exist.\n");
 			}
 
-			$args[0] = $this->getPointlesslyShortenedTableSegmentForModule($args[0]);
+			$module = $args[0];
+
+			$args[0] = $this->getPointlesslyShortenedTableSegmentForModule($module);
 		}
+
+		if ($module) {
+			$r = `echo yes |./yiic migrate --migrationPath=application.modules.$module.migrations create table_versioning`;
+			preg_match('/\/migrations\/(.*?)\.php/',$r,$m);
+			$fp = fopen("modules/$module/migrations/{$m[1]}.php","w");
+			$migration = $m[1];
+		} else {
+			$r = `echo yes |./yiic migrate create table_versioning`;
+			preg_match('/\/migrations\/(.*?)\.php)/',$r,$m);
+			$fp = fopen("migrations/{$m[1]}.php","w");
+			$migration = $m[1];
+		}
+
+		fwrite($fp,'<?php
+
+class '.$migration.' extends CDbMigration
+{
+	public function up()
+	{
+');
 
 		$i = 0;
 		foreach (Yii::app()->db->getSchema()->getTables() as $table) {
 			if ($this->matches($table, $args, $exclude)) {
 				$create = $this->createArchiveTable($table);
 
-				if ($i >0) echo "\n";
+				if ($i >0) fwrite($fp,"\n");
 
-				echo "\t\t\$this->execute(\"\n$create\n\t\t\");\n\n";
+				fwrite($fp,"\t\t\$this->execute(\"\n$create\n\t\t\");\n\n");
 
-				echo "\t\t\$this->alterColumn('{$table->name}_version','id','int(10) unsigned NOT NULL');\n";
-				echo "\t\t\$this->dropPrimaryKey('id','{$table->name}_version');\n\n";
+				fwrite($fp,"\t\t\$this->alterColumn('{$table->name}_version','id','int(10) unsigned NOT NULL');\n");
+				fwrite($fp,"\t\t\$this->dropPrimaryKey('id','{$table->name}_version');\n\n");
 
-				echo "\t\t\$this->createIndex('{$table->name}_aid_fk','{$table->name}_version','id');\n";
-				echo "\t\t\$this->addForeignKey('{$table->name}_aid_fk','{$table->name}_version','id','$table->name','id');\n\n";
+				fwrite($fp,"\t\t\$this->createIndex('{$table->name}_aid_fk','{$table->name}_version','id');\n");
+				fwrite($fp,"\t\t\$this->addForeignKey('{$table->name}_aid_fk','{$table->name}_version','id','$table->name','id');\n\n");
 
-				echo "\t\t\$this->addColumn('{$table->name}_version','version_date',\"datetime not null default '1900-01-01 00:00:00'\");\n\n";
+				fwrite($fp,"\t\t\$this->addColumn('{$table->name}_version','version_date',\"datetime not null default '1900-01-01 00:00:00'\");\n\n");
 
-				echo "\t\t\$this->addColumn('{$table->name}_version','version_id','int(10) unsigned NOT NULL');\n";
-				echo "\t\t\$this->addPrimaryKey('version_id','{$table->name}_version','version_id');\n";
-				echo "\t\t\$this->alterColumn('{$table->name}_version','version_id','int(10) unsigned NOT NULL AUTO_INCREMENT');\n";
+				fwrite($fp,"\t\t\$this->addColumn('{$table->name}_version','version_id','int(10) unsigned NOT NULL');\n");
+				fwrite($fp,"\t\t\$this->addPrimaryKey('version_id','{$table->name}_version','version_id');\n");
+				fwrite($fp,"\t\t\$this->alterColumn('{$table->name}_version','version_id','int(10) unsigned NOT NULL AUTO_INCREMENT');\n");
 
 				$i++;
 			}
 		}
 
-		echo "\t}\n\n\tpublic function down()\n\t{\n";
+		fwrite($fp,"\t}\n\n\tpublic function down()\n\t{\n");
 
 		foreach (Yii::app()->db->getSchema()->getTables() as $table) {
 			if ($this->matches($table, $args, $exclude)) {
-				echo "\t\t\$this->dropTable('{$table->name}_version');\n";
+				fwrite($fp,"\t\t\$this->dropTable('{$table->name}_version');\n");
 			}
 		}
 
-		echo "\t}\n}\n";
+		fwrite($fp,"\t}\n}\n");
+
+		fclose($fp);
 	}
 
 	public function getPointlesslyShortenedTableSegmentForModule($module)
