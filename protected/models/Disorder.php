@@ -113,6 +113,7 @@ class Disorder extends BaseActiveRecordVersioned
 		return array(
 			'treeBehavior'=>array(
 				'class' => 'TreeBehavior',
+				'idAttribute' => 'disorder_id',
 			)
 		);
 	}
