@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Examination extends Page
+class Examination extends OpenEyesPage
 {
     protected $path = "OphCiExamination/Default/create?patient_id={patientId}";
 
@@ -110,7 +108,7 @@ class Examination extends Page
 
         'expandVisualFields' => array ('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Visual Fields')]"),
         'expandGonioscopy' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Gonioscopy')]"),
-        'expandaAdnexalComorbidity' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Adnexal Comorbidity')]"),
+        'expandAdnexalComorbidity' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Adnexal Comorbidity')]"),
         'expandAnteriorSegment' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Anterior Segment')]"),
         'expandPupillaryAbnormalities' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Pupillary Abnormalities')]"),
         'expandOpticDisc' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Optic Disc')]"),
@@ -299,6 +297,7 @@ class Examination extends Page
         $this->getElement('dilationRight')->selectOption($dilation);
         $this->getElement('dilationRight')->click();
         $this->getElement('dropsRight')->selectOption($drops);
+        $this->getElement('dropsRight')->blur();
     }
 
     public function dilationLeft ($dilation, $drops)
@@ -306,6 +305,7 @@ class Examination extends Page
         $this->getElement('dilationLeft')->selectOption($dilation);
         $this->getElement('dilationLeft')->click();
         $this->getElement('dropsLeft')->selectOption($drops);
+        $this->getElement('dropsLeft')->blur();
     }
 
     protected function isRefractionCollapsed ()
@@ -381,8 +381,8 @@ class Examination extends Page
 
     public function expandAdnexalComorbidity ()
     {
-        $this->getElement('expandaAdnexalComorbidity')->click();
-        $this->getSession()->wait(20000);
+        $this->getElement('expandAdnexalComorbidity')->click();
+        $this->getSession()->wait(5000);
     }
 
     public function leftAdnexal ($left)

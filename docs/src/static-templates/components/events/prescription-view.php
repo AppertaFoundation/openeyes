@@ -112,12 +112,12 @@
 				<h3 class="element-title">Comments</h3>
 
 				<div class="element-data">
-					<div class="field-value">
-						Some comments here.
+					<div class="data-row">
+						<div class="field-value">
+							Some comments here.
+						</div>
 					</div>
 				</div>
-
-
 
 				<div class="metadata">
 					<span class="info">

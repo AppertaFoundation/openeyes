@@ -166,7 +166,6 @@
 								'showAnim'=>'fold',
 								'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
 							),
-							'value' => date('j M Y')
 						))?>
 					</div>
 				</div>
@@ -297,6 +296,7 @@
 			}
 		});
 
+		$('div.medication_form_errors').hide();
 		$('#add_medication').slideToggle('fast');
 		$('#btn-add_medication').attr('disabled',true);
 		$('#btn-add_medication').addClass('disabled');

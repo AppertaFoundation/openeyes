@@ -27,7 +27,7 @@
 							<div class="large-2 column">
 								<label for="">Site:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -37,7 +37,7 @@
 							<div class="large-2 column">
 								<label for="">Laser:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -52,7 +52,7 @@
 							<div class="large-2 column">
 								<label for="">Surgeon:</label>
 							</div>
-							<div class="large-10 column">
+							<div class="large-3 column end">
 								<select>
 									<option>-- Select --</option>
 								</select>
@@ -73,14 +73,14 @@
 								<div class="large-4 column">
 									<label for="">Procedures:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<div class="multi-select multi-select-list">
-										<div class="field-row">
+										<div class="multi-select-dropdown-container">
 											<select>
 												<option>-- Select --</option>
 											</select>
 										</div>
-										<ul class="multi-select-selections field-row">
+										<ul class="multi-select-selections">
 											<li>
 												Cycloablation
 												<a href="#" class="remove-one">Remove</a>
@@ -100,7 +100,7 @@
 								<div class="large-4 column">
 									<label for="">Procedures:</label>
 								</div>
-								<div class="large-8 column">
+								<div class="large-6 column end">
 									<select>
 										<option>-- Select --</option>
 									</select>
@@ -122,11 +122,19 @@
 							<div class="sub-element-fields element-eyes row">
 								<div class="element-eye right-eye column">
 									<a href="#" class="icon-remove-side">Remove eye</a>
-									<?php echo eyedraw('large', 1); ?>
+									<div class="eyedraw-row row field-row anterior-segment">
+										<div class="fixed column">
+											<img src="img/eyedraw/large.png" />
+										</div>
+									</div>
 								</div>
 								<div class="element-eye left-eye column">
 									<a href="#" class="icon-remove-side">Remove eye</a>
-									<?php echo eyedraw('large', 2); ?>
+									<div class="eyedraw-row row field-row anterior-segment">
+										<div class="fixed column">
+											<img src="img/eyedraw/large.png" />
+										</div>
+									</div>
 								</div>
 							</div>
 						</section>

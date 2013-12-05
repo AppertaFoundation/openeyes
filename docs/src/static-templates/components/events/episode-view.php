@@ -9,6 +9,10 @@
 			</li>
 		</ul>
 		<div class="button-bar right">
+			<a class="button delete button-icon small" href="#">
+				<span class="icon-button-small-trash-can"></span>
+				<span class="hide-offscreen">Delete</span>
+			</a>
 			<a href="#" class="button small">
 				Print 2nd Reminder letter
 			</a>

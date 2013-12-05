@@ -28,9 +28,10 @@
 
 	/**
 	 * Dialog constructor.
-	 * @tutorial dialog
-	 * @name Dialog
 	 * @constructor
+	 * @class OpenEyes.UI.Dialog
+	 * @tutorial dialog
+	 * @memberOf OpenEyes.UI
 	 * @extends {Emitter}
 	 * @example
 	 * var dialog = new OpenEyes.UI.Dialog({

@@ -41,5 +41,13 @@
 				<div class="data-value"><?php echo !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown'?></div>
 			</div>
 		</div>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Next of Kin:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value">Unknown</div>
+			</div>
+		</div>
 	</div>
 </section>

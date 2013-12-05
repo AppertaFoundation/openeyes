@@ -14,13 +14,12 @@ var self = this;
     <?js } ?>
 </dt>
 <dd>
-    <?js if (data.description) { ?>
-    <div class="description">
-        <?js= data.description ?>
-    </div>
-    <?js } ?>
-
     <div class="more-info" id="more-info-<?js= id.replace(/:/g, '_') ?>">
+	    <?js if (data.description) { ?>
+		    <div class="description">
+		        <?js= data.description ?>
+		    </div>
+	    <?js } ?>
 	    <?js if (data.type && data.type.names) {?>
 	        <h5>Type:</h5>
 	        <ul>

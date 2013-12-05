@@ -146,7 +146,7 @@
     }
 }
 /* Styles for screens that are atleast 768px; */
-@media #{$small} {
+// @media #{$small} {
     @for $i from 1 through $total-columns {
         .large#{-$i} {
             @include grid-column($collapse: null, $columns: $i, $float: false);
@@ -179,4 +179,4 @@
     .columns.large-uncentered.opposite {
         float: $opposite-direction !important;
     }
-}
+// }

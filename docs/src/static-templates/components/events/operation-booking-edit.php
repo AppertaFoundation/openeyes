@@ -49,7 +49,7 @@
 						<label>Diagnosis:</label>
 					</div>
 					<div class="small-4 column end">
-						<div class="panel element-field">Blepharospasm</div>
+						<div class="panel diagnosis">Blepharospasm</div>
 						<fieldset>
 							<legend>Change diagnosis:</legend>
 							<div class="field-row">
@@ -108,7 +108,7 @@
 						</fieldset>
 					</div>
 					<div class="large-6 column">
-						<div class="panel element-field">
+						<div class="panel procedures">
 							<table class="plain">
 								<thead>
 									<tr>
@@ -208,7 +208,7 @@
 							Site:
 						</label>
 					</div>
-					<div class="large-4 column end">
+					<div class="large-2 column end">
 						<select>
 							<option>City Road</option>
 						</select>

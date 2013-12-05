@@ -50,7 +50,7 @@
 							<div class="panel element">
 								<div class="row">
 									<div class="large-3 column">
-										<img src="/img/tmp/eyedraw-small.png" class="canvas" />
+										<img src="/img/tmp/eyedraw/small.png" class="canvas" />
 									</div>
 									<div class="large-9 column">
 										<div class="field-value">
@@ -65,7 +65,7 @@
 							<div class="panel element">
 								<div class="row">
 									<div class="large-3 column">
-										<img src="/img/tmp/eyedraw-small.png" class="canvas" />
+										<img src="/img/tmp/eyedraw/small.png" class="canvas" />
 									</div>
 									<div class="large-9 column">
 										<div class="field-value">
@@ -104,7 +104,7 @@
 							<div class="panel element">
 								<div class="row">
 									<div class="large-5 column">
-										<img src="/img/tmp/eyedraw-medium.png" class="canvas" />
+										<img src="/img/tmp/eyedraw/medium.png" class="canvas" />
 									</div>
 									<div class="large-7 column">
 										<div class="field-value">
@@ -130,7 +130,7 @@
 							<div class="panel element">
 								<div class="row">
 									<div class="large-5 column">
-										<img src="/img/tmp/eyedraw-medium.png" class="canvas" />
+										<img src="/img/tmp/eyedraw/medium.png" class="canvas" />
 									</div>
 									<div class="large-7 column">
 										<div class="field-value">
@@ -178,7 +178,7 @@
 							<div class="panel element">
 								<div class="row">
 									<div class="large-5 column">
-										<img src="/img/tmp/eyedraw-medium-2.png" class="canvas" />
+										<img src="img/eyedraw/medium.png" class="canvas" />
 									</div>
 									<div class="large-7 column">
 										<div class="field-value">
@@ -216,7 +216,7 @@
 							<div class="panel element">
 								<div class="row">
 									<div class="large-5 column">
-										<img src="/img/tmp/eyedraw-medium-2.png" class="canvas" />
+										<img src="img/eyedraw/medium.png" class="canvas" />
 									</div>
 									<div class="large-7 column">
 										<div class="field-value">

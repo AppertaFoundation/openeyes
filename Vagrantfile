@@ -2,6 +2,12 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+
+  vagrant_version = Vagrant::VERSION.sub(/^v/, '')
+  if vagrant_version < "1.3.0"
+    abort(sprintf("You need to have at least v1.3.0 of vagrant installed. You are currently using v%s", vagrant_version));
+  end
+
   config.vm.box = "precise64"
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 
@@ -24,6 +30,11 @@ Vagrant.configure("2") do |config|
   if custom_ip
     config.vm.network "private_network", ip: custom_ip
   end
+
+  if mode == 'bdd'
+    config.vm.synced_folder "/tmp/behat", "/tmp/behat", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
+  end
+
   config.vm.synced_folder "./", "/var/www", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
 
   config.vm.provider "virtualbox" do |v|

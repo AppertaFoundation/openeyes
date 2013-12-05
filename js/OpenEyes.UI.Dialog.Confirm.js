@@ -25,13 +25,13 @@
 	/**
 	 * ConfirmDialog constructor. The ConfirmDialog extends the base Dialog and provides
 	 * an 'Ok' and 'Cancel' button for the user to click on.
-	 * @name ConfirmDialog
-	 * @tutorial dialog_confirm
 	 * @constructor
+	 * @memberOf OpenEyes.UI.Dialog
+	 * @tutorial dialog_confirm
 	 * @extends {Dialog}
 	 * @example
 	 * var alert = new OpenEyes.UI.Dialog.Confirm({
-	 *	 content: 'Here is some content.'
+	 *   content: 'Here is some content.'
 	 * });
 	 * alert.open();
 	 */

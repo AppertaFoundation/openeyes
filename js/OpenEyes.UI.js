@@ -19,6 +19,7 @@
 	/**
 	 * OpenEyes UI namespace
 	 * @namespace OpenEyes.UI
+	 * @memberOf OpenEyes
 	 */
 	exports.UI = {};
 }(this.OpenEyes));

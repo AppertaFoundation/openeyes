@@ -7,6 +7,76 @@
 		Add episode
 	</button>
 
+	<section class="panel episode open legacy">
+
+		<!-- Episode date -->
+		<div class="episode-date">
+			14 May 2004
+		</div>
+
+		<!-- Show/hide toggle icon -->
+		<a href="#" class="toggle-trigger toggle-hide">
+			<span class="icon-showhide">
+				Show/hide events for this episode
+			</span>
+		</a>
+
+		<!-- Episode title -->
+		<h4 class="episode-title legacy">
+			Legacy events
+		</h4>
+
+		<div class="events-container show">
+			<ol class="events">
+				<li>
+					<!-- Quicklook tooltip -->
+					<div class="quicklook hidden">
+						<span class="event-name">Epatient letter</span>
+						<span class="event-info">Letter to:<br>Dr A Smith, 351 North Pole Lane</span>
+					</div>
+					<a href="#">
+						<span class="event-type">
+							<img src="img/patienteletter/small.png" alt="op" width="19" height="19" />
+						</span>
+						<span class="event-date">
+							<span class="day">14</span><span class="mth">May</span><span class="yr">2004</span>
+						</span>
+					</a>
+				</li>
+				<li>
+					<!-- Quicklook tooltip -->
+					<div class="quicklook hidden">
+						<span class="event-name">Epatient letter</span>
+						<span class="event-info">Letter to:<br>Dr A Smith, 351 North Pole Lane</span>
+					</div>
+					<a href="#">
+						<span class="event-type">
+							<img src="img/patienteletter/small.png" alt="op" width="19" height="19" />
+						</span>
+						<span class="event-date">
+							<span class="day">21</span><span class="mth">May</span><span class="yr">2008</span>
+						</span>
+					</a>
+				</li>
+				<li>
+					<!-- Quicklook tooltip -->
+					<div class="quicklook hidden">
+						<span class="event-name">Epatient letter</span>
+						<span class="event-info">Letter to:<br>Dr A Smith, 351 North Pole Lane</span>
+					</div>
+					<a href="#">
+						<span class="event-type">
+							<img src="img/patienteletter/small.png" alt="op" width="19" height="19" />
+						</span>
+						<span class="event-date">
+							<span class="day">23</span><span class="mth">May</span><span class="yr">2008</span>
+						</span>
+					</a>
+				</li>
+			</ol>
+		</div>
+	</section>
+
 	<!-- Specialty Panel -->
 	<div class="panel specialty">
 		<h3 class="specialty-title">Ophthalmology</h3>

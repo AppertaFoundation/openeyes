@@ -25,13 +25,13 @@
 	/**
 	 * AlertDialog constructor. The AlertDialog extends the base Dialog and provides
 	 * an 'Ok' button for the user to click on.
-	 * @name AlertDialog
-	 * @tutorial dialog_alert
 	 * @constructor
+	 * @memberOf OpenEyes.UI.Dialog
+	 * @tutorial dialog_alert
 	 * @extends {Dialog}
 	 * @example
 	 * var alert = new OpenEyes.UI.Dialog.Alert({
-	 *	 content: 'Here is some content.'
+	 *   content: 'Here is some content.'
 	 * });
 	 * alert.open();
 	 */

@@ -24,6 +24,7 @@
 		margin-bottom: emCalc(10px);
 		padding: emCalc(8px);
 		text-align: center;
+		min-width: 1230px;
 		&.admin {
 			background: #DAA520;
 			&.stuck {
