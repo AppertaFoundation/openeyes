@@ -126,19 +126,18 @@ class Helper
 	public static function getAge($dob, $date_of_death = null, $check_date = null)
 	{
 		if (!$dob) return 'Unknown';
-		$date = date('Ymd', strtotime($dob));
-		if($check_date) {
-			$check_datetime = strtotime($check_date);
-		} else {
-			$check_datetime = time();
+
+		$dob_datetime = new DateTime($dob);
+		$check_datetime = new DateTime($check_date);
+
+		if ($date_of_death) {
+			$dod_datetime = new DateTime($date_of_death);
+			if ($check_datetime->diff($dod_datetime)->invert) {
+				$check_datetime = $dod_datetime;
+			}
 		}
-		$end_date = ($date_of_death) ? strtotime($date_of_death) : $check_datetime;
-		$age = date('Y',$end_date) - substr($date, 0, 4);
-		$birthDate = substr($date, 4, 2) . substr($date, 6, 2);
-		if (date('md',$end_date) < $birthDate) {
-			$age--; // birthday hasn't happened yet this year
-		}
-		return $age;
+
+		return $dob_datetime->diff($check_datetime)->y;
 	}
 
 	public static function getMonthText($month, $long=false)
