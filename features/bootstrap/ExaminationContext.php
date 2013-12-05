@@ -264,6 +264,30 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I select a Right Intended Treatment of "([^"]*)"$/
+     */
+    public function iSelectARightIntendedTreatmentOf($treatment)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightIntended($treatment);
+    }
+
+    /**
+     * @Then /^I select a Left Intended Treatment of "([^"]*)"$/
+     */
+    public function iSelectALeftIntendedTreatmentOf($treatment)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftIntended($treatment);
+    }
+
+    /**
      * @Then /^I enter right Refraction details of Sphere "([^"]*)" integer "([^"]*)" fraction "([^"]*)"$/
      */
     public function iEnterRightRefractionDetailsOfSphereIntegerFraction($sphere, $integer, $fraction)
@@ -515,7 +539,6 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->expandInvestigation();
         $examination->expandInvestigation();
     }
 

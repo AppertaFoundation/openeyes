@@ -99,8 +99,10 @@ class Examination extends OpenEyesPage
 
         'rightChoroidalRetinal' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_diagnosis1_id']//*[@value='75971007']"),
         'rightSecondaryTo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_diagnosis2_id']"),
+        'rightIntendedTreatment' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_treatment_id']"),
         'leftChoroidalRetinal' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis1_id']//*[@value='75971007']"),
         'leftSecondaryTo' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis2_id']"),
+        'leftIntendedTreatment' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_treatment_id']"),
         'rightMacularRetinal' => array ('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_diagnosis1_id']//*[@value='37231002']"),
         'leftMacularRetinal' => array ('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis1_id']//*[@value='37231002']"),
         'rightVenousRetinalBranchOcclusion' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_diagnosis2_id']//*[@value='24596005']"),
@@ -295,17 +297,15 @@ class Examination extends OpenEyesPage
     public function dilationRight ($dilation, $drops)
     {
         $this->getElement('dilationRight')->selectOption($dilation);
-        $this->getElement('dilationRight')->click();
         $this->getElement('dropsRight')->selectOption($drops);
-        $this->getElement('dropsRight')->blur();
+//        $this->getElement('dropsRight')->blur();
     }
 
     public function dilationLeft ($dilation, $drops)
     {
         $this->getElement('dilationLeft')->selectOption($dilation);
-        $this->getElement('dilationLeft')->click();
         $this->getElement('dropsLeft')->selectOption($drops);
-        $this->getElement('dropsLeft')->blur();
+//        $this->getElement('dropsLeft')->blur();
     }
 
     protected function isRefractionCollapsed ()
@@ -343,6 +343,17 @@ class Examination extends OpenEyesPage
     public function leftType ($type)
     {
         $this->getElement('sphereRightType')->selectOption($type);
+        $this->getSession()->getDriver()->blur('sphereRightType');
+    }
+
+    public function leftIntended ($treatment)
+    {
+        $this->getElement('leftIntendedTreatment')->selectOption($treatment);
+    }
+
+    public function rightIntended ($treatment)
+    {
+        $this->getElement('rightIntendedTreatment')->selectOption($treatment);
     }
 
     public function RightRefractionDetails ($sphere, $integer, $fraction)
@@ -429,8 +440,7 @@ class Examination extends OpenEyesPage
     public function expandDiagnoses ()
     {
        $this->getElement('expandDiagnoses')->click();
-       $this->getSession()->wait(15000, '$("#DiagnosisSelection_disorder_id")');
-       $this->getSession()->wait(3000);
+        $this->getSession()->wait(10000);
     }
 
     public function diagnosesLeftEye ()
@@ -456,6 +466,7 @@ class Examination extends OpenEyesPage
     public function expandInvestigation ()
     {
         $this->getElement('expandInvestigation')->click();
+        $this->getSession()->wait(10000);
 
     }
 
@@ -467,7 +478,7 @@ class Examination extends OpenEyesPage
     public function expandClinicalManagement ()
     {
         $this->getElement('expandClinicalManagement')->click();
-        $this->getSession()->wait(25000, '$("#Element_OphCiExamination_Management_comments")');
+        $this->getSession()->wait(10000);
     }
 
     public function expandCataractManagement ()
@@ -503,7 +514,7 @@ class Examination extends OpenEyesPage
 
     public function straightforward ()
     {
-        $this->getElement('straightforward')->check();
+        $this->getElement('straightforward')->click();
     }
 
     public function postOpRefractiveTarget ($target)
@@ -530,7 +541,7 @@ class Examination extends OpenEyesPage
 
     public function supervisedCheckbox ()
     {
-        $this->getElement('supervisedCheckbox')->check();
+        $this->getElement('supervisedCheckbox')->click();
     }
 
     public function previousRefractiveSurgeryYes ()
@@ -814,7 +825,7 @@ class Examination extends OpenEyesPage
     public function expandClinicalOutcome ()
     {
         $this->getElement('expandClinicOutcome')->click();
-        $this->getSession()->wait(15000, '$.active == 0');
+        $this->getSession()->wait(15000);
     }
 
     public function clinicalOutcomeFollowUp ()
@@ -849,6 +860,7 @@ class Examination extends OpenEyesPage
 
     protected function isConclusionCollapsed()
     {
+        $this->getElement('expandConclusion')->focus();
         return (bool) $this->find('xpath', $this->getElement('expandConclusion')->getXpath());;
     }
 
@@ -869,7 +881,9 @@ class Examination extends OpenEyesPage
     public function saveExamination ()
     {
         $this->getElement('saveExamination')->click();
-        $this->getSession()->wait(15000, '$("#flash-success").html() == "Examination created."');
+        $this->getSession()->wait(15000, 'window.$ && $("#et_deleteevent").html() == "Examination created."');
     }
+
+    #will this survive???
 
 }
