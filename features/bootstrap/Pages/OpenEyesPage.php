@@ -11,7 +11,6 @@ abstract class OpenEyesPage extends Page{
 	public function checkOpenEyesTitle($expectedTitle){
 		$titleElement = $this->find('css', 'h1.badge');
 		$title = trim( $titleElement->getHtml() );
-		echo "Title found is  " . $title . " and expected " . $expectedTitle . "\n";
 		if($expectedTitle != $title){
 			throw new ElementTextException("Title was  " . $title . " instead of " . $expectedTitle, $this->getSession(), $titleElement );
 		}
