@@ -21,9 +21,17 @@ class GenerateVersionMigrationCommand extends CConsoleCommand {
 	public function run($args) {
 		$exclude = array('audit', 'audit_action', 'audit_ipaddr', 'audit_model', 'audit_module', 'audit_server', 'audit_type', 'audit_useragent', 'authassignment', 'authitem', 'authitemchild', 'eye', 'gender', 'import_source', 'pas_assignment', 'pas_patient_merged', 'report', 'report_dataset', 'report_dataset_element', 'report_dataset_element_field', 'report_dataset_element_join', 'report_dataset_related_entity', 'report_dataset_related_entity_table', 'report_dataset_related_entity_table_relation', 'report_dataset_related_entity_type', 'report_graph', 'report_graph_item', 'report_input', 'report_input_data_type', 'report_input_option', 'report_item', 'report_item_data_type', 'report_item_list_item', 'report_item_list_item_conditional', 'report_item_pair_field', 'report_query_type', 'report_validation_rule', 'report_validation_rule_type', 'tbl_audit_trail', 'tbl_migration', 'user_session');
 
+		if (!empty($args)) {
+			if (!file_exists("modules/{$args[0]}/models")) {
+				die("Path modules/{$args[0]}/models does not exist.\n");
+			}
+
+			$args[0] = $this->getPointlesslyShortenedTableSegmentForModule($args[0]);
+		}
+
 		$i = 0;
 		foreach (Yii::app()->db->getSchema()->getTables() as $table) {
-			if (!in_array($table->name,$exclude) && $this->matches($table, $args)) {
+			if ($this->matches($table, $args, $exclude)) {
 				$create = $this->createArchiveTable($table);
 
 				if ($i >0) echo "\n";
@@ -49,7 +57,7 @@ class GenerateVersionMigrationCommand extends CConsoleCommand {
 		echo "\t}\n\n\tpublic function down()\n\t{\n";
 
 		foreach (Yii::app()->db->getSchema()->getTables() as $table) {
-			if (!in_array($table->name,$exclude) && $this->matches($table, $args)) {
+			if ($this->matches($table, $args, $exclude)) {
 				echo "\t\t\$this->dropTable('{$table->name}_version');\n";
 			}
 		}
@@ -57,10 +65,35 @@ class GenerateVersionMigrationCommand extends CConsoleCommand {
 		echo "\t}\n}\n";
 	}
 
-	public function matches($table, $args)
+	public function getPointlesslyShortenedTableSegmentForModule($module)
+	{
+		$dh = opendir("modules/$module/models");
+
+		while ($file = readdir($dh)) {
+			if (!preg_match('/^\.\.?$/',$file)) {
+				$a = file_get_contents("modules/$module/models/$file");
+
+				if (preg_match('/public function tableName\(\)[\s\t\r\n]+{[\s\r\n\t]+return \'(.*?)\'/s',$a,$m)) {
+					if (preg_match('/^et_(.*?)_/',$m[1],$n)) {
+						return $n[1];
+					}
+
+					if (preg_match('/^(.*?)_/',$m[1],$n)) {
+						return $n[1];
+					}
+				}
+			} 
+		}
+
+		closedir($dh);
+
+		die("Unable to determine table segment for module $module\n");
+	}
+
+	public function matches($table, $args, $exclude)
 	{
 		if (empty($args)) {
-			return !preg_match('/^et_/',$table->name) && !preg_match('/^oph/',$table->name);
+			return !in_array($table->name,$exclude) && !preg_match('/^et_/',$table->name) && !preg_match('/^oph/',$table->name);
 		} else {
 			return preg_match('/^et_'.strtolower($args[0]).'_/',$table->name) || preg_match('/^'.strtolower($args[0]).'_/',$table->name);
 		}
