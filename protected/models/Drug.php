@@ -62,7 +62,7 @@ class Drug extends BaseActiveRecordVersioned
 	{
 		if ($this->default_scope) {
 			return array(
-				'condition' => 'discontinued = 0',
+				'condition' => 'discontinued = 0 and deleted = 0',
 			);
 		} else {
 			return array();
