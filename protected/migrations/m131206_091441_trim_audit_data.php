@@ -6,18 +6,34 @@ class m131206_091441_trim_audit_data extends CDbMigration
 	{
 		$null_ids = array();
 
-		foreach (Yii::app()->db->createCommand()->select("id,data")->from("audit")->queryAll() as $row) {
-			if (@json_decode($row['data'])) {
-				$null_ids[] = $row['id'];
+		$limit = 10000;
+		$offset = 0;
+
+		while (1) {
+			$data = Yii::app()->db->createCommand()->select("id,data")->from("audit")->order("id asc")->limit($limit)->offset($offset)->queryAll();
+
+			if (empty($data)) break;
+
+			foreach ($data as $row) {
+				if (@json_decode($row['data'])) {
+					$null_ids[] = $row['id'];
+
+					if (count($null_ids) >= 1000) {
+						$this->resetData($null_ids);
+						$null_ids = array();
+					}
+				}
 			}
 		}
 
 		if (!empty($null_ids)) {
-			$criteria = new CDbCriteria;
-			$criteria->addInCondition('id',$null_ids);
-
-			Audit::model()->updateAll(array('data' => null),$criteria);
+			$this->resetData($null_ids);
 		}
+	}
+
+	public function resetData($null_ids)
+	{
+		$this->update('audit',array('data' => null),"id in (".implode(",",$null_ids).")");
 	}
 
 	public function down()
