@@ -284,7 +284,7 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-	 * calculate the patient's age
+	 * Get the patient's age
 	 *
 	 * @return string
 	 */
@@ -294,12 +294,27 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-	* @return boolean Is patient a child?
-	*/
-	public function isChild()
+	 * Calculate the patient's age
+	 *
+	 * @param string $check_date Date to check age on (default is today)
+	 * @return string
+	 */
+	public function ageOn($check_date)
+	{
+		return Helper::getAge($this->dob, $this->date_of_death, $check_date);
+	}
+
+	/**
+	 * @param string $check_date Optional date to check age on (default is today)
+	 * @return boolean Is patient a child?
+	 */
+	public function isChild($check_date = null)
 	{
 		$age_limit = (isset(Yii::app()->params['child_age_limit'])) ? Yii::app()->params['child_age_limit'] : self::CHILD_AGE_LIMIT;
-		return ($this->getAge() < $age_limit);
+		if(!$check_date) {
+			$check_date = date('Y-m-d');
+		}
+		return ($this->ageOn($check_date) < $age_limit);
 	}
 
 	/**

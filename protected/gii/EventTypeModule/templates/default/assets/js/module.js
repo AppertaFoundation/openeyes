@@ -38,6 +38,12 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
+	handleButton($('#et_print'),function(e) {
+		printIFrameUrl(OE_print_url, null);
+		enableButtons();
+		e.preventDefault();
+	});
+
 	$('select.populate_textarea').unbind('change').change(function() {
 		if ($(this).val() != '') {
 			var cLass = $(this).parent().parent().parent().attr('class').match(/Element.*/);
