@@ -21,8 +21,31 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 {
 	private $enable_version = true;
 	private $fetch_from_version = false;
+	private $defaultScopeDisabled = false;
 	public $unique_id = null;
 	public $deleted_at = null;
+
+	/**
+	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
+	 * @return array of mandatory conditions
+	 */
+
+	public function defaultScope()
+	{
+		if ($this->defaultScopeDisabled) {
+			return array();
+		}
+
+		$table_alias = $this->getTableAlias(false,false);
+		return array(
+			'condition' => $table_alias.'.deleted = 0',
+		);
+	}
+
+	public function disableDefaultScope() {
+		$this->defaultScopeDisabled = true;
+		return $this;
+	}
 
 	/* Disable archiving on save() */
 
@@ -222,5 +245,16 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$this->fetch_from_version = false;
 
 		return parent::resetScope($resetDefault);
+	}
+
+	/* version'd objects can only be soft-deleted due to the foreign key constraint on the version tables */
+
+	public function delete()
+	{
+		$this->deleted = 1;
+
+		if (!$this->save()) {
+			throw new Exception("Unable to mark ".get_class($this)." deleted: ".print_r($this->getErrors(),true));
+		}
 	}
 }

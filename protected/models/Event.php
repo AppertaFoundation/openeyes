@@ -33,8 +33,6 @@
  */
 class Event extends BaseActiveRecordVersioned
 {
-	private $defaultScopeDisabled = false;
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className
@@ -51,28 +49,6 @@ class Event extends BaseActiveRecordVersioned
 	public function tableName()
 	{
 		return 'event';
-	}
-
-	/**
-	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
-	 * @return array of mandatory conditions
-	 */
-
-	public function defaultScope()
-	{
-		if ($this->defaultScopeDisabled) {
-			return array();
-		}
-
-		$table_alias = $this->getTableAlias(false,false);
-		return array(
-			'condition' => $table_alias.'.deleted = 0',
-		);
-	}
-
-	public function disableDefaultScope() {
-		$this->defaultScopeDisabled = true;
-		return $this;
 	}
 
 	/**
@@ -262,7 +238,7 @@ class Event extends BaseActiveRecordVersioned
 	 *
 	 * @throws Exception
 	 */
-	public function softDelete()
+	public function delete()
 	{
 		// perform this process in a transaction if one has not been created
 		$transaction = Yii::app()->db->getCurrentTransaction() === null
@@ -272,7 +248,7 @@ class Event extends BaseActiveRecordVersioned
 		try {
 			$this->deleted = 1;
 			foreach ($this->getElements() as $element) {
-				$element->softDelete();
+				$element->delete();
 			}
 			if (!$this->save()) {
 				throw new Exception("Unable to mark event deleted: ".print_r($this->event->getErrors(),true));
@@ -287,14 +263,6 @@ class Event extends BaseActiveRecordVersioned
 			}
 			throw $e;
 		}
-	}
-
-	public function delete()
-	{
-		// Delete related
-		EventIssue::model()->deleteAll('event_id = ?', array($this->id));
-
-		parent::delete();
 	}
 
 	/*
