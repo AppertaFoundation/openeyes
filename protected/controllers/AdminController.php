@@ -61,7 +61,7 @@ class AdminController extends BaseAdminController
 				if (!$user->save()) {
 					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
 				}
-				Audit::add('admin-User','add',serialize($_POST));
+				Audit::add('admin-User','add',$user->id);
 				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
 			}
 		}
@@ -114,7 +114,7 @@ class AdminController extends BaseAdminController
 					}
 				}
 
-				Audit::add('admin-User','edit',serialize(array_merge(array('id'=>$id),$_POST)));
+				Audit::add('admin-User','edit',$user->id);
 
 				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
 			}
@@ -144,7 +144,7 @@ class AdminController extends BaseAdminController
 				}
 
 				if ($result) {
-					Audit::add('admin-User','delete',serialize($_POST));
+					Audit::add('admin-User','delete');
 				}
 			}
 		}
@@ -180,7 +180,7 @@ class AdminController extends BaseAdminController
 				if (!$firm->save()) {
 					throw new Exception("Unable to save firm: ".print_r($firm->getErrors(),true));
 				}
-				Audit::add('admin-Firm','add',serialize($_POST));
+				Audit::add('admin-Firm','add',$firm->id);
 				$this->redirect('/admin/firms/'.ceil($firm->id/$this->items_per_page));
 			}
 		}
@@ -206,7 +206,7 @@ class AdminController extends BaseAdminController
 				if (!$firm->save()) {
 					throw new Exception("Unable to save firm: ".print_r($firm->getErrors(),true));
 				}
-				Audit::add('admin-Firm','edit',serialize(array_merge(array('id'=>$id),$_POST)));
+				Audit::add('admin-Firm','edit',$firm->id);
 				$this->redirect('/admin/firms/'.ceil($firm->id/$this->items_per_page));
 			}
 		} else {
@@ -338,7 +338,7 @@ class AdminController extends BaseAdminController
 				if (!$contact->save()) {
 					throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
 				}
-				Audit::add('admin-Contact','edit',serialize(array_merge(array('id'=>@$_GET['contact_id']),$_POST)));
+				Audit::add('admin-Contact','edit',$contact->id);
 				$this->redirect('/admin/contacts?q='.$contact->fullName);
 			}
 		} else {
@@ -417,7 +417,7 @@ class AdminController extends BaseAdminController
 				if (!$cl->save()) {
 					$errors = array_merge($errors,$cl->getErrors());
 				} else {
-					Audit::add('admin-ContactLocation','add',serialize($_POST));
+					Audit::add('admin-ContactLocation','add',$cl->id);
 					$this->redirect(array('/admin/editContact?contact_id='.$contact->id));
 				}
 			}
@@ -489,7 +489,7 @@ class AdminController extends BaseAdminController
 					throw new Exception("Institution contact could not be saved: " . print_r($institution->contact->getErrors(), true));
 				}
 
-				Audit::add('admin-Institution','add',serialize($_POST));
+				Audit::add('admin-Institution','add',$institution->id);
 
 				$this->redirect(array('/admin/editInstitution?institution_id='.$institution->id));
 			}
@@ -536,7 +536,7 @@ class AdminController extends BaseAdminController
 					throw new Exception("Unable to save institution address: ".print_r($address->getErrors(),true));
 				}
 
-				Audit::add('admin-Institution','edit',serialize(array_merge(array('id'=>@$_GET['institution_id']),$_POST)));
+				Audit::add('admin-Institution','edit',$institution->id);
 
 				$this->redirect('/admin/institutions');
 			}
@@ -597,7 +597,7 @@ class AdminController extends BaseAdminController
 					throw new Exception("Unable to save site address: ".print_r($address->getErrors(),true));
 				}
 
-				Audit::add('admin-Site','edit',serialize(array_merge(array('id'=>@$_GET['site_id']),$_POST)));
+				Audit::add('admin-Site','edit',$site->id);
 
 				$this->redirect('/admin/sites');
 			}
@@ -625,7 +625,7 @@ class AdminController extends BaseAdminController
 				if (!$contact->save()) {
 					throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
 				}
-				Audit::add('admin-Contact','add',serialize($_POST));
+				Audit::add('admin-Contact','add',$contact->id);
 
 				$this->redirect(array('/admin/editContact?contact_id='.$contact->id));
 			}
@@ -650,7 +650,7 @@ class AdminController extends BaseAdminController
 				if (!$contactlabel->save()) {
 					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
 				}
-				Audit::add('admin-ContactLabel','add',serialize($_POST));
+				Audit::add('admin-ContactLabel','add',$contactLabel->id);
 				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
 			}
 		}
@@ -676,7 +676,7 @@ class AdminController extends BaseAdminController
 				if (!$contactlabel->save()) {
 					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
 				}
-				Audit::add('admin-ContactLabel','edit',serialize(array_merge(array('id'=>$id),$_POST)));
+				Audit::add('admin-ContactLabel','edit',$contactLabel->id);
 
 				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
 			}
@@ -730,7 +730,7 @@ class AdminController extends BaseAdminController
 				if (!$source->save()) {
 					throw new Exception("Unable to save source: ".print_r($source->getErrors(),true));
 				}
-				Audit::add('admin-DataSource','edit',serialize(array_merge(array('id'=>$id),$_POST)));
+				Audit::add('admin-DataSource','edit',$id);
 				$this->redirect('/admin/datasources/'.ceil($source->id/$this->items_per_page));
 			}
 		} else {
@@ -756,7 +756,7 @@ class AdminController extends BaseAdminController
 				if (!$source->save()) {
 					throw new Exception("Unable to save data source: ".print_r($source->getErrors(),true));
 				}
-				Audit::add('admin-DataSource','add',serialize($_POST));
+				Audit::add('admin-DataSource','add',$source->id);
 				$this->redirect('/admin/datasources');
 			}
 		}
@@ -793,7 +793,7 @@ class AdminController extends BaseAdminController
 				}
 			}
 
-			Audit::add('admin-DataSource','delete',serialize($_POST['source']));
+			Audit::add('admin-DataSource','delete');
 		}
 
 		echo "1";
@@ -886,7 +886,7 @@ class AdminController extends BaseAdminController
 					throw new Exception("Unable to save CommissioningBody address: ".print_r($address->getErrors(),true));
 				}
 
-				Audit::add('admin-CommissioningBody',$method,serialize($audit));
+				Audit::add('admin-CommissioningBody',$method,$cb->id);
 
 				$this->redirect('/admin/commissioning_bodies');
 			}
@@ -935,7 +935,7 @@ class AdminController extends BaseAdminController
 
 		if (CommissioningBody::model()->deleteAll($criteria)) {
 			echo "1";
-			Audit::add('admin-CommissioningBody','delete',serialize($_POST));
+			Audit::add('admin-CommissioningBody','delete');
 		} else {
 			echo "0";
 		}
@@ -978,7 +978,7 @@ class AdminController extends BaseAdminController
 				if (!$cbt->save()) {
 					throw new Exception("Unable to save CommissioningBodyType : ".print_r($cbt->getErrors(),true));
 				}
-				Audit::add('admin-CommissioningBodyType',$method,serialize($audit));
+				Audit::add('admin-CommissioningBodyType',$method,$cbt->id);
 				$this->redirect('/admin/commissioning_body_types');
 			}
 		}
@@ -1021,7 +1021,7 @@ class AdminController extends BaseAdminController
 			}
 		}
 
-		Audit::add('admin-CommissioningBodyType','delete',serialize($_POST));
+		Audit::add('admin-CommissioningBodyType','delete');
 
 		echo "1";
 	}
@@ -1092,7 +1092,7 @@ class AdminController extends BaseAdminController
 					throw new Exception("Unable to save CommissioningBodyService address: ".print_r($address->getErrors(),true));
 				}
 
-				Audit::add('admin-CommissioningBodyService',$method,serialize($audit));
+				Audit::add('admin-CommissioningBodyService',$method,$cbs->id);
 
 				$this->redirect('/admin/commissioning_body_services');
 			}
@@ -1128,7 +1128,7 @@ class AdminController extends BaseAdminController
 			}
 		}
 
-		Audit::add('admin-CommissioningBodyService','delete',serialize($_POST));
+		Audit::add('admin-CommissioningBodyService','delete');
 
 		echo "1";
 	}
@@ -1170,7 +1170,7 @@ class AdminController extends BaseAdminController
 					throw new Exception("Unable to save CommissioningBodyServiceType: ".print_r($cbs->getErrors(),true));
 				}
 
-				Audit::add('admin-CommissioningBodyServiceType',$method,serialize($audit));
+				Audit::add('admin-CommissioningBodyServiceType',$method,$cbs->id);
 
 				$this->redirect('/admin/commissioning_body_service_types');
 			}
@@ -1208,7 +1208,7 @@ class AdminController extends BaseAdminController
 			throw new Exception("Unable to delete CommissioningBodyServiceTypes: ".print_r($er->getErrors(),true));
 		}
 
-		Audit::add('admin-CommissioningBodyServiceType','delete',serialize($_POST));
+		Audit::add('admin-CommissioningBodyServiceType','delete');
 
 		echo "1";
 	}

@@ -394,7 +394,7 @@ class BaseEventTypeController extends BaseController
 						$audit_data[get_class($element)] = $element->getAuditAttributes();
 					}
 
-					$event->audit('event','create',serialize($audit_data));
+					$event->audit('event','create');
 
 					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 					$this->redirect(array($this->successUri.$eventId));
@@ -464,7 +464,7 @@ class BaseEventTypeController extends BaseController
 
 		$this->logActivity('viewed event');
 
-		$this->event->audit('event','view',false);
+		$this->event->audit('event','view');
 
 		$this->title = $this->event_type->name;
 		$this->event_tabs = array(
@@ -613,7 +613,7 @@ class BaseEventTypeController extends BaseController
 						$audit_data[get_class($element)] = $element->getAuditAttributes();
 					}
 
-					$this->event->audit('event','update',serialize($audit_data));
+					$this->event->audit('event','update');
 
 					$this->event->user = Yii::app()->user->id;
 					$this->event->info = $info_text;
@@ -1088,7 +1088,7 @@ class BaseEventTypeController extends BaseController
 	protected function printLog($id, $pdf)
 	{
 		$this->logActivity("printed event (pdf=$pdf)");
-		$this->event->audit('event','print',false);
+		$this->event->audit('event','print');
 	}
 
 	public function canDelete()
@@ -1114,7 +1114,7 @@ class BaseEventTypeController extends BaseController
 		if (!empty($_POST)) {
 			$this->event->softDelete();
 
-			$this->event->audit('event','delete',false);
+			$this->event->audit('event','delete');
 
 			if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
 				$this->event->episode->deleted = 1;
@@ -1122,7 +1122,7 @@ class BaseEventTypeController extends BaseController
 					throw new Exception("Unable to save episode: ".print_r($this->event->episode->getErrors(),true));
 				}
 
-				$this->event->episode->audit('episode','delete',false);
+				$this->event->episode->audit('episode','delete');
 
 				header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
 				return true;

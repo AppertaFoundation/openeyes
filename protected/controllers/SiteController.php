@@ -107,7 +107,7 @@ class SiteController extends BaseController
 			}
 		}
 
-		Audit::add('search','search-error');
+		Audit::add('search','search-error',$query);
 
 		if (isset($query)) {
 			if (strlen($query) == 0) {

@@ -55,15 +55,15 @@ class UserIdentity extends CUserIdentity
 		 */
 		$user = User::model()->find('username = ?', array($this->username));
 		if ($user === null) {
-			Audit::add('login','login-failed',"User not found in local database: $this->username",true);
+			Audit::add('login','login-failed',null,"User not found in local database: $this->username");
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 			return false;
 		} elseif (!$force && $user->active != 1) {
-			$user->audit('login','login-failed',"User not active and so cannot login: $this->username",true);
+			$user->audit('login','login-failed',null,"User not active and so cannot login: $this->username");
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
 		} elseif (!$force && $user->access_level == 0) {
-			$user->audit('login','login-failed',"User has 0 access level and so cannot login: $this->username",true);
+			$user->audit('login','login-failed',null,"User has 0 access level and so cannot login: $this->username");
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
 		}
@@ -188,20 +188,20 @@ class UserIdentity extends CUserIdentity
 				}
 			}
 			if (!$user->save()) {
-				$user->audit('login','login-failed',"Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true),true);
+				$user->audit('login','login-failed',null,"Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true));
 				throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(),true));
 			}
 		} elseif (Yii::app()->params['auth_source'] == 'BASIC') {
 			if (!$force && !$user->validatePassword($this->password)) {
 				$this->errorCode = self::ERROR_PASSWORD_INVALID;
-				$user->audit('login','login-failed',"Login failed for user {$this->username}: invalid password",true);
+				$user->audit('login','login-failed',null,"Login failed for user {$this->username}: invalid password");
 				return false;
 			}
 		} else {
 			/**
 			 * Unknown auth_source, error
 			 */
-			$user->audit('login','login-failed',"Login failed for user {$this->username}: unknown auth source: " . Yii::app()->params['auth_source'],true);
+			$user->audit('login','login-failed',null,"Login failed for user {$this->username}: unknown auth source: " . Yii::app()->params['auth_source']);
 			throw new SystemException('Unknown auth_source: ' . Yii::app()->params['auth_source']);
 		}
 
@@ -271,7 +271,7 @@ class UserIdentity extends CUserIdentity
 		}
 
 		if (!count($firms)) {
-			$user->audit('login','login-failed',"Login failed for user {$this->username}: user has no firm rights and cannot use the system",true);
+			$user->audit('login','login-failed',null,"Login failed for user {$this->username}: user has no firm rights and cannot use the system");
 			throw new Exception('User has no firm rights and cannot use the system.');
 		}
 
@@ -304,7 +304,7 @@ class UserIdentity extends CUserIdentity
 			throw new CException('Cannot find default site');
 		}
 
-		$user->audit('login','login-successful',"User ".strtoupper($this->username)." logged in",true);
+		$user->audit('login','login-successful',null,"User ".strtoupper($this->username)." logged in");
 
 		return true;
 	}

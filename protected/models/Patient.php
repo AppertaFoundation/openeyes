@@ -619,7 +619,7 @@ class Patient extends BaseActiveRecordVersioned
 					throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
 				}
 
-				$this->audit('patient','add-allergy',$paa->getAuditAttributes());
+				$this->audit('patient','add-allergy');
 				if ($this->no_allergies_date) {
 					$this->no_allergies_date = null;
 					if (!$this->save()) {
@@ -649,7 +649,7 @@ class Patient extends BaseActiveRecordVersioned
 				throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
 			}
 
-			$this->audit('patient','remove-allergy',$paa->getAuditAttributes());
+			$this->audit('patient','remove-allergy');
 		}
 	}
 
@@ -706,7 +706,7 @@ class Patient extends BaseActiveRecordVersioned
 				if (!$paa->delete()) {
 					throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
 				}
-				$this->audit('patient', 'remove-allergy', $paa->getAuditAttributes());
+				$this->audit('patient','remove-allergy');
 			}
 			$this->no_allergies_date = date('Y-m-d H:i:s');
 			if (!$this->save()) {
@@ -872,7 +872,7 @@ class Patient extends BaseActiveRecordVersioned
 				throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
 			}
 
-			$this->audit('patient',$action,$sd->getAuditAttributes());
+			$this->audit('patient',$action);
 		}
 	}
 
@@ -898,7 +898,7 @@ class Patient extends BaseActiveRecordVersioned
 			throw new Exception('Unable to delete diagnosis: '.print_r($sd->getErrors(),true));
 		}
 
-		$this->audit('patient',"remove-$type-diagnosis",$audit_attributes);
+		$this->audit('patient',"remove-$type-diagnosis");
 	}
 
 	/**
@@ -923,7 +923,7 @@ class Patient extends BaseActiveRecordVersioned
 
 		$audit_attributes = $oph_info->getAuditAttributes();
 
-		$this->audit('patient', $action, $audit_attributes);
+		$this->audit('patient', $action);
 	}
 
 	public function getContactAddress($contact_id, $location_type=false, $location_id=false)

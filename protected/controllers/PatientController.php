@@ -122,7 +122,7 @@ class PatientController extends BaseController
 		// NOTE that this is not being used in the render
 		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
-		Audit::add('patient summary','view');
+		Audit::add('patient summary','view',$id);
 
 		$this->logActivity('viewed patient');
 
@@ -648,7 +648,7 @@ class PatientController extends BaseController
 		if (!$pca->delete()) {
 			echo "0";
 		} else {
-			$pca->patient->audit('patient','unassociate-contact',$pca->getAuditAttributes());
+			$pca->patient->audit('patient','unassociate-contact');
 			echo "1";
 		}
 	}
