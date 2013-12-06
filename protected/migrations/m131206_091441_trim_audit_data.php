@@ -15,7 +15,7 @@ class m131206_091441_trim_audit_data extends CDbMigration
 			if (empty($data)) break;
 
 			foreach ($data as $row) {
-				if (@json_decode($row['data'])) {
+				if (@unserialize($row['data'])) {
 					$null_ids[] = $row['id'];
 
 					if (count($null_ids) >= 1000) {
