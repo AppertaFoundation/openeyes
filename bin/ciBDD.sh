@@ -88,5 +88,13 @@ fi
 #run tests
 vagrant ssh -c "/var/www/bin/behat --tags=setup --profile=$PROFILE --expand --config=/var/www/behat.yml"
 #bin/behat --tags=confidence --profile=$PROFILE --expand
-vagrant ssh -c "/var/www/bin/behat --tags=regression --profile=$PROFILE --expand --config=/var/www/behat.yml"
+vagrant ssh -c "/var/www/bin/behat --tags=asa --profile=$PROFILE --expand --config=/var/www/behat.yml"
+vagrant ssh -c "/var/www/bin/behat --tags=consent --profile=$PROFILE --expand --config=/var/www/behat.yml"
+vagrant ssh -c "/var/www/bin/behat --tags=Intravitreal --profile=$PROFILE --expand --config=/var/www/behat.yml"
+vagrant ssh -c "/var/www/bin/behat --tags=operationbooking --profile=$PROFILE --expand --config=/var/www/behat.yml"
+vagrant ssh -c "/var/www/bin/behat --tags=diagnosis --profile=$PROFILE --expand --config=/var/www/behat.yml"
+vagrant ssh -c "/var/www/bin/behat --tags=phasing --profile=$PROFILE --expand --config=/var/www/behat.yml"
+vagrant ssh -c "/var/www/bin/behat --tags=prescription --profile=$PROFILE --expand --config=/var/www/behat.yml"
+#vagrant ssh -c "/var/www/bin/behat --tags=therapy --profile=$PROFILE --expand --config=/var/www/behat.yml"
+
 exit
