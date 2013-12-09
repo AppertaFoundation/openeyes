@@ -30,13 +30,44 @@ function handleButton(button, callback) {
 	});
 }
 
+/**
+ * This method prevents click event handlers from being called on disabled *link* buttons,
+ * for example: <a href="#" class="button disabled">
+ */
+function preventClickOnDisabledButton() {
+	// Remove, then bind the disable click handler.
+	$(this)
+	.off('click.disable')
+	.on('click.disable', function(e) {
+		e.stopImmediatePropagation(); // Prevent other click handlers from being executed.
+		e.stopPropagation();          // Prevent the event from bubbling.
+		e.preventDefault();           // Prevent the default action (when using a link button)
+	});
+
+	// Arrange the events so that the disable handler is always executed first.
+	var events = $._data(this, 'events').click
+	events.unshift(events.pop()); // Move the last event to the start of the event stack.
+}
+
 function disableButtons() {
-	$('button,.button').not('.cancel').addClass('inactive');
+
+	$('button,.button')
+	.not('.cancel')
+	.addClass('inactive')
+	.attr('disabled', true)
+	.each(preventClickOnDisabledButton);
+
 	$('.loader').show();
 }
 
 function enableButtons() {
-	$('button,.button').not('.cancel').removeClass('inactive');
+
+	$('button,.button')
+	.not('.cancel')
+	.removeClass('inactive')
+	.removeAttr('disabled')
+	.off('click.disable');
+
 	$('.loader').hide();
 }
 

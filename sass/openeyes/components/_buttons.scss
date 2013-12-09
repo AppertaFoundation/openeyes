@@ -159,6 +159,7 @@ button, .button, input[type="submit"] {
 			@include background(linear-gradient(#aaaaaa, #999999));
 			border-color: #999999;
 			color: #fff;
+			cursor: default;
 			text-shadow: none;
 		}
 	}
