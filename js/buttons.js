@@ -49,11 +49,11 @@ function preventClickOnDisabledButton() {
 	events.unshift(events.pop()); // Move the last event to the start of the event stack.
 }
 
-function disableButtons() {
+function disableButtons(selector) {
 
-	$('button,.button')
-	.not('.cancel')
-	.addClass('inactive')
+	selector = selector || $('button,.button').not('.cancel');
+
+	$(selector).addClass('inactive')
 	.attr('disabled', true)
 	.each(preventClickOnDisabledButton);
 
