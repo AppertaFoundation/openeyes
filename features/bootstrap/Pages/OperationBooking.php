@@ -174,7 +174,7 @@ class OperationBooking extends OpenEyesPage
     public function availableSlotExactDay ($day)
     {
         $this->getElement('availableSlotExactDate')->click();
-		$this->getSession()->wait(15000, "window.$ && $('#calendar td.available.selected_date').html().trim() == '30' ");
+		$this->getSession()->wait(15000, "window.$ && $('#calendar td.available.selected_date').html().trim() == '15' ");
 //        Need to include
     }
 
@@ -210,9 +210,8 @@ class OperationBooking extends OpenEyesPage
 
     public function availableSessionTime ()
     {
-//        $this->getSession()->wait(5000);
         $this->getElement('availableTheatreSessionTime')->click();
-        $this->getSession()->wait(10000, "$('.active') == 0");
+        $this->getSession()->wait(10000);
     }
 
     public function availableThreeWeeksTime ()

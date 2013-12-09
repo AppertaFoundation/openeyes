@@ -5,7 +5,7 @@ class Phasing extends OpenEyesPage
     protected $path = "/site/OphCiPhasing/Default/create?patient_id={parentId}";
 
     protected $elements = array(
-        'phasingLogo' => array('xpath' => "//*[@id='event_content']/h3[@class='withEventIcon']"),
+        'phasingLogo' => array('xpath' => "//*[@id='event-content']//*[contains(text(),'Phasing')]"),
 
         'phasingInstrumentRight' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_instrument_id']"),
         'phasingDilationRightYes' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_dilated_1']"),

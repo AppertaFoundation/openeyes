@@ -112,7 +112,7 @@ Feature: Create New Operation Booking Event
     Then I select Operation Eyes of "Both"
     And I select a Procedure of "327"
 
-    Then I select Yes to Consultant required
+    Then I select No to Consultant required
 
     And I select a Anaesthetic type "LAC"
 
@@ -132,7 +132,7 @@ Feature: Create New Operation Booking Event
 
     Then I change the Viewing Schedule to Emergency List
 
-    Then I select an Available theatre slot date of the "30" of the month
+    Then I select an Available theatre slot date of the "15" of the month
     And I select an Available session time
 
 #    Then I add Session comments of "Insert session comments here"
