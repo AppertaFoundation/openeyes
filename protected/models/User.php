@@ -486,7 +486,10 @@ class User extends BaseActiveRecordVersioned
 			->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->leftJoin('subspecialty s','ssa.subspecialty_id = s.id')
 			->leftJoin('user_firm uf','uf.firm_id = f.id and uf.user_id = '.Yii::app()->user->id)
-			->where("uf.id is null",array(':userId'=>Yii::app()->user->id))
+			->where("uf.id is null and f.deleted = :notdeleted and (ssa.id is null or ssa.deleted = :notdeleted) and (s.id is null or s.deleted = :notdeleted) and (uf.id is null or uf.deleted = :notdeleted)",array(
+				':userId' => Yii::app()->user->id,
+				':notdeleted' => 0,
+			))
 			->order('f.name, s.name')
 			->queryAll();
 		$data = array();

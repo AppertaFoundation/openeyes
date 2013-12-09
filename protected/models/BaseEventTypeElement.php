@@ -137,7 +137,7 @@ class BaseEventTypeElement extends BaseElement
 					->select("$table.*")
 					->from($table)
 					->join("element_type_$table","element_type_$table.{$table}_id = $table.id")
-					->where("element_type_id = ".$this->getElementType()->id)
+					->where("element_type_id = ".$this->getElementType()->id." and $table.deleted = 0 and element_type_$table.deleted = 0")
 					->order("display_order asc")
 					->queryAll() as $option) {
 
@@ -147,6 +147,7 @@ class BaseEventTypeElement extends BaseElement
 			foreach (Yii::app()->db->createCommand()
 					->select("$table.*")
 					->from($table)
+					->where("$table.deleted = 0")
 					->queryAll() as $option) {
 
 				$options[$option['id']] = $option['name'];

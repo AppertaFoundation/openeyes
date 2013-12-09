@@ -973,6 +973,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			->selectDistinct("$table.id, $table.$field")
 			->from($table)
 			->order("$table.$field")
+			->where("$table.deleted = 0")
 			->queryAll() as $row) {
 			echo '<option value="'.$row['id'].'"'.($selected == $row['id'] ? ' selected="selected"' : '').'>'.$row[$field].'</option>';
 		}
@@ -988,6 +989,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			->selectDistinct("$table.id, $table.$field")
 			->from($table)
 			->order("$table.$field")
+			->where("$table.deleted = 0")
 			->queryAll() as $row) {
 			if (!in_array($row['id'],$selected)) {
 				echo '<option value="'.$row['id'].'">'.$row[$field].'</option>';

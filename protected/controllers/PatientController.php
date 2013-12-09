@@ -892,7 +892,7 @@ class PatientController extends BaseController
 	{
 		$patients = array();
 
-		$where = '';
+		$where = "p.deleted = 0 and c.deleted = 0 ";
 		$select = "p.id as patient_id, p.hos_num, c.first_name, c.last_name";
 
 		if (empty($params['selected_diagnoses'])) {
@@ -908,8 +908,7 @@ class PatientController extends BaseController
 				$command->join("episode e$i","e$i.patient_id = p.id");
 				$command->join("eye eye_e_$i","eye_e_$i.id = e$i.eye_id");
 				$command->join("disorder disorder_e_$i","disorder_e_$i.id = e$i.disorder_id");
-				if ($i>0) $where .= ' and ';
-				$where .= "e$i.disorder_id = $disorder_id ";
+				$where .= "e$i.disorder_id = $disorder_id and e$i.deleted = 0 and disorder_e_$i.deleted = 0 ";
 				$select .= ", e$i.last_modified_date as episode{$i}_date, eye_e_$i.name as episode{$i}_eye, disorder_e_$i.term as episode{$i}_disorder";
 			}
 		}
@@ -919,8 +918,7 @@ class PatientController extends BaseController
 				$command->join("secondary_diagnosis sd$i","sd$i.patient_id = p.id");
 				$command->join("eye eye_sd_$i","eye_sd_$i.id = sd$i.eye_id");
 				$command->join("disorder disorder_sd_$i","disorder_sd_$i.id = sd$i.disorder_id");
-				if ($where) $where .= ' and ';
-				$where .= "sd$i.disorder_id = $disorder_id ";
+				$where .= "sd$i.disorder_id = $disorder_id and sd$i.deleted = 0 and disorder_sd_$i.deleted = 0 ";
 				$select .= ", sd$i.date as sd{$i}_date, sd$i.eye_id as sd{$i}_eye_id, eye_sd_$i.name as sd{$i}_eye, disorder_sd_$i.term as sd{$i}_disorder";
 			}
 		}

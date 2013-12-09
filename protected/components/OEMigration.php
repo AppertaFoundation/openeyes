@@ -233,7 +233,7 @@ class OEMigration extends CDbMigration
 		return $this->dbConnection->createCommand()
 			->select('id')
 			->from('element_type')
-			->where('class_name=:class_name', array(':class_name' => $className))
+			->where('class_name=:class_name and deleted=:notdeleted', array(':class_name' => $className, ':notdeleted' => 0))
 			->queryScalar();
 	}
 
@@ -250,7 +250,7 @@ class OEMigration extends CDbMigration
 		$group_id = $this->dbConnection->createCommand()
 			->select('id')
 			->from('event_group')
-			->where('code=:code', array(':code' => $eventTypeGroup))
+			->where('code=:code and deleted=:notdeleted', array(':code' => $eventTypeGroup, ':notdeleted' => 0))
 			->queryScalar();
 
 		if ($group_id === false) {
@@ -261,7 +261,7 @@ class OEMigration extends CDbMigration
 		$event_type_id = $this->dbConnection->createCommand()
 			->select('id')
 			->from('event_type')
-			->where('class_name = :class_name', array(':class_name' => $eventTypeClass))
+			->where('class_name = :class_name and deleted=:notdeleted', array(':class_name' => $eventTypeClass, ':notdeleted' => 0))
 			->queryScalar();
 		if($event_type_id) {
 			echo 'Updating event_type, event_type_name: ' . $eventTypeName . ' event_type_class: ' . $eventTypeClass . ' event_type_group: ' . $eventTypeGroup . "\n";
@@ -287,7 +287,7 @@ class OEMigration extends CDbMigration
 			$event_type_id = $this->dbConnection->createCommand()
 				->select('id')
 				->from('event_type')
-				->where('class_name = :class_name', array(':class_name' => $eventTypeClass))
+				->where('class_name = :class_name and deleted = :notdeleted', array(':class_name' => $eventTypeClass, ':notdeleted' => 0))
 				->queryScalar();
 			if(!$event_type_id) {
 				throw new CException('Failed to insert event type');
@@ -339,7 +339,7 @@ class OEMigration extends CDbMigration
 			$element_type_ids[] = $this->dbConnection->createCommand()
 				->select('id')
 				->from('element_type')
-				->where('class_name=:class_name', array(':class_name' => $element_type_class))
+				->where('class_name=:class_name and deleted=:notdeleted', array(':class_name' => $element_type_class, ':notdeleted' => 0))
 				->queryScalar();
 
 			$display_order++;

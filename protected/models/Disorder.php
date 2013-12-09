@@ -160,8 +160,8 @@ class Disorder extends BaseActiveRecordVersioned
 		$disorders = Yii::app()->db->createCommand()
 			->select('term')
 			->from('disorder')
-			->where('term LIKE :term',
-					array(':term' => "%{$term}%"))
+			->where('term LIKE :term and deleted = :notdeleted',
+					array(':term' => "%{$term}%", ':notdeleted' => 0))
 			->queryAll();
 
 		$data = array();

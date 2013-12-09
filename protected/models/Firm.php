@@ -128,31 +128,19 @@ class Firm extends BaseActiveRecordVersioned
 	 */
 	public function getServiceSubspecialtyOptions()
 	{
-		$sql = 'SELECT
-					service_subspecialty_assignment.id,
-					service.name AS service_name,
-					subspecialty.name AS subspecialty_name
-				FROM
-					service,
-					subspecialty,
-					service_subspecialty_assignment
-				WHERE
-					service.id = service_subspecialty_assignment.service_id
-				AND
-					subspecialty.id = service_subspecialty_assignment.subspecialty_id
-				ORDER BY
-					service.name,
-					subspecialty.name
-				';
-
-		$connection = Yii::app()->db;
-		$command = $connection->createCommand($sql);
-		$results = $command->queryAll();
-
 		$select = array();
 
-		foreach ($results as $result) {
-			$select[$result['id']] = $result['service_name'] . ' - ' . $result['subspecialty_name'];
+		foreach (Yii::app()->db->createCommand()
+			->select("ssa.id, se.name AS service_name, su.name AS subspecialty_name")
+			->from("service_subspecialty_assignment ssa")
+			->join("service se","ssa.service_id = se.id")
+			->join("subspecialty su","ssa.subspecialty_id = su.id")
+			->where("ssa.deleted = :notdeleted and se.deleted = :notdeleted and su.deleted = :notdeleted",array(
+				":notdeleted" => 0,
+			))
+			->order("se.name, su.name")
+			->queryAll() as $result) {
+			$select[$result['id']] = $result['service_name'].' - '.$result['subspecialty_name'];
 		}
 
 		return $select;
@@ -191,7 +179,10 @@ class Firm extends BaseActiveRecordVersioned
 				->select('f.id, f.name')
 				->from('firm f')
 				->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-				->where('ssa.subspecialty_id = :sid', array(':sid' => $subspecialtyId))
+				->where('ssa.subspecialty_id = :sid and f.deleted = :notdeleted and ssa.deleted = :notdeleted', array(
+					':sid' => $subspecialtyId,
+					':notdeleted' => 0,
+				))
 				->queryAll();
 
 			foreach ($list as $firm) {
@@ -230,6 +221,9 @@ class Firm extends BaseActiveRecordVersioned
 			->from('firm f')
 			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->join('subspecialty s','ssa.subspecialty_id = s.id')
+			->where('f.deleted = :notdeleted and ssa.deleted = :notdeleted and s.deleted = :notdeleted',array(
+				':notdeleted' => 0,
+			))
 			->order('f.name, s.name')
 			->queryAll();
 		$data = array();
@@ -300,8 +294,9 @@ class Firm extends BaseActiveRecordVersioned
 			->from('subspecialty su')
 			->join('service_subspecialty_assignment svc_ass', 'svc_ass.subspecialty_id = su.id')
 			->join('firm f', 'f.service_subspecialty_assignment_id = svc_ass.id')
-			->where('f.id = :fid', array(
-				':fid' => $this->id
+			->where('f.id = :fid and su.deleted = :notdeleted and svc_ass.deleted = :notdeleted and f.deleted = :notdeleted', array(
+				':fid' => $this->id,
+				':notdeleted' => 0,
 			))
 			->queryRow();
 

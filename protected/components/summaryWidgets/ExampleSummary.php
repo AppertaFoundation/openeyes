@@ -37,7 +37,7 @@ class ExampleSummary extends CWidget
 		$noEvents = Yii::app()->db->createCommand()
 			->select('count(*) AS c')
 			->from('event')
-			->where('episode_id = :epid', array(':epid'=>$this->episode_id))
+			->where('episode_id = :epid and deleted = :notdeleted', array(':epid'=>$this->episode_id, ':notdeleted' => 0))
 			->queryRow();
 
 		$this->noEvents = $noEvents['c'];

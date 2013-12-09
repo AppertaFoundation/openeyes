@@ -207,16 +207,19 @@ class Episode extends BaseActiveRecordVersioned
 				->from('episode e')
 				->join('firm f', 'e.firm_id = f.id')
 				->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-				->where('e.deleted = False'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
-					':patient_id' => $patient_id, ':subspecialty_id' => $subspecialty_id
+				->where('e.deleted = false'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id AND e.deleted = :notdeleted AND f.deleted = :notdeleted AND s_s_a.deleted = :notdeleted', array(
+					':patient_id' => $patient_id,
+					':subspecialty_id' => $subspecialty_id,
+					':notdeleted' => 0,
 				))
 				->queryRow();
 		} else {
 			$episode = Yii::app()->db->createCommand()
 				->select('e.id AS eid')
 				->from('episode e')
-				->where('e.deleted = False AND e.legacy = False AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id', array(
-					':patient_id' => $patient_id
+				->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id AND e.deleted = :notdeleted', array(
+					':patient_id' => $patient_id,
+					':notdeleted' => 0,
 				))
 				->queryRow();
 		}
