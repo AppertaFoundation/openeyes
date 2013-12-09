@@ -1,4 +1,4 @@
-@examination @regression
+@examination
 Feature: Create New Examination Regression Tests
   Regression over 2 Sites and 4 Firms
   Coverage at 60%
