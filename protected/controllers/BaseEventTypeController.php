@@ -448,6 +448,9 @@ class BaseEventTypeController extends BaseModuleController
 		}
 	}
 
+	/**
+	 * initialise the controller with the event id
+	 */
 	protected function initActionDelete()
 	{
 		$this->initWithEventId(@$_GET['id']);
@@ -820,7 +823,7 @@ class BaseEventTypeController extends BaseModuleController
 	 * The convention for the method name for the element setting is:
 	 *
 	 * setComplexAttributes_[element_class_name]($element, $data, $index)
-	 * 
+	 *
 	 * @param BaseEventTypeElement $element
 	 * @param array $data
 	 * @param integer $index
@@ -1058,6 +1061,7 @@ class BaseEventTypeController extends BaseModuleController
 	 * @param string $action
 	 * @param BaseCActiveBaseEventTypeCActiveForm $form
 	 * @param array $data
+	 * @throws Exception
 	 */
 	protected function renderOptionalElement($element, $action, $form, $data)
 	{
