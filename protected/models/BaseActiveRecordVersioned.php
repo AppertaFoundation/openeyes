@@ -253,8 +253,6 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 	{
 		$this->deleted = 1;
 
-		if (!$this->save()) {
-			throw new Exception("Unable to mark ".get_class($this)." deleted: ".print_r($this->getErrors(),true));
-		}
+		return $this->save();
 	}
 }
