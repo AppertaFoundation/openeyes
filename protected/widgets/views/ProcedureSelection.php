@@ -117,14 +117,13 @@
 				<tbody class="body">
 				<?php
 				if (!empty($selected_procedures)) {
-					foreach ($selected_procedures as $procedure) {?>
+					foreach ($selected_procedures as $procedure) {
+						$totalDuration += $procedure['default_duration'];
+				?>
 						<tr class="item">
-							<td>
-								<?php
-								$totalDuration += $procedure['default_duration'];
-								echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
-								echo $procedure['term'];
-								?>
+							<td class="procedure">
+								<span class="field"><?= CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']); ?></span>
+								<span class="value"><?= $procedure['term']; ?></span>
 							</td>
 							<?php if ($durations) {?>
 								<td class="duration">
