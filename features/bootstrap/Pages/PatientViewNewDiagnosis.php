@@ -71,7 +71,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'addEpisode' => array('xpath' => "//*[@class='secondary small add-episode']//*[@class='icon-button-small-plus-sign']"),
         'confirmCreateEpisode' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(),'Create new episode')]"),
         'latestEvent' => array('xpath' => "//*[@class='box patient-info episode-links']//*[contains(text(),'Latest Event')]"),
-        'removeAllergyButton' => array('xpath' => "//*[@id='patient_allergies']//*[contains(text(),'Remove')]"),
+        'removeAllergyButton' => array('xpath' => "//*[@id='currentAllergies']//*[contains(text(),'Remove')]"),
         'removeConfirmButton' => array('xpath' => "//*[@id='delete_allergy']/div[2]//*[contains(text(),'Remove allergy')]")
 
         );
@@ -245,24 +245,25 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         {
         $this->getElement('removeAllergyButton')->click();
         $this->getElement('removeConfirmButton')->click();
-        $this->getSession()->wait(3000,false);
         }
     }
 
     public function addAllergy ($allergy)
     {
         $this->getElement('addAllergyButton')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(1000);
         $this->getElement('selectAllergy')->selectOption($allergy);
         $this->getElement('saveAllergy')->click();
 		$this->waitForElementDisplayNone('#add_allergy');
         //$this->getSession()->wait(10000,"$('#add_allergy').css('display') == 'none'");
     }
 
+
+
     public function noAllergyTickbox ()
     {
         $this->getElement('addAllergyButton')->click();
-        $this->getSession()->wait(1000,false);
+        $this->getSession()->wait(1000);
         $this->getElement('noAllergyTickbox')->check();
         $this->getElement('saveAllergy')->click();
 		$this->waitForElementDisplayNone('#add_allergy');

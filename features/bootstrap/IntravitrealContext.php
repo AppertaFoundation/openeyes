@@ -19,6 +19,18 @@ class IntravitrealContext extends PageObjectContext
     }
 
     /**
+     * @Then /^a check is made that the Allergy "([^"]*)" warning is displayed$/
+     */
+    public function aCheckIsMadeThatTheAllergyWarningIsDisplayed($allergy)
+    {
+        /**
+         * @var Intravitreal $Intravitreal
+         */
+        $Intravitreal  = $this->getPage('Intravitreal');
+        $Intravitreal->confirmAllergyWarning($allergy);
+    }
+
+    /**
      * @Then /^I select Add Right Side$/
      */
     public function iSelectAddRightSide()
