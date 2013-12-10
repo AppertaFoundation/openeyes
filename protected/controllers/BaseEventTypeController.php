@@ -56,6 +56,11 @@ class BaseEventTypeController extends BaseController
 		return '';
 	}
 
+	public function setTitle($title)
+	{
+		$this->title=$title;
+	}
+
 	/**
 	 * Checks to see if current user can create an event type
 	 * @param EventType $event_type
