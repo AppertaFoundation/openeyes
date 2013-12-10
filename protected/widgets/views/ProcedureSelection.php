@@ -51,11 +51,10 @@
 						'name'=>'procedure_id_'.$identifier,
 						'id'=>'autocomplete_procedure_id_'.$identifier,
 						'source'=>"js:function(request, response) {
-						var existingProcedures = [];
-						$('#procedureList_$identifier').children('h4').children('div.procedureItem').map(function() {
-							var text = $.trim($(this).children('span:nth-child(2)').text());
-							existingProcedures.push(text);
-						});
+
+						var existingProcedures = $('#procedureList_$identifier .procedure .value')
+							.map(function() { return $(this).text(); })
+							.get();
 
 						$.ajax({
 							'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
