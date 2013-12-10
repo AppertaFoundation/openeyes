@@ -21,31 +21,9 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 {
 	private $enable_version = true;
 	private $fetch_from_version = false;
-	private $defaultScopeDisabled = false;
+	private $include_deleted = false;
 	public $unique_id = null;
 	public $deleted_at = null;
-
-	/**
-	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
-	 * @return array of mandatory conditions
-	 */
-
-	public function defaultScope()
-	{
-		if ($this->defaultScopeDisabled) {
-			return array();
-		}
-
-		$table_alias = $this->getTableAlias(false,false);
-		return array(
-			'condition' => $table_alias.'.deleted = 0',
-		);
-	}
-
-	public function disableDefaultScope() {
-		$this->defaultScopeDisabled = true;
-		return $this;
-	}
 
 	/* Disable archiving on save() */
 
@@ -243,6 +221,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 	{
 		$this->enable_version = true;
 		$this->fetch_from_version = false;
+		$this->include_deleted = false;
 
 		return parent::resetScope($resetDefault);
 	}
@@ -254,5 +233,51 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$this->deleted = 1;
 
 		return $this->save();
+	}
+
+	public function includeDeleted()
+	{
+		$this->include_deleted = true;
+
+		return $this;
+	}
+
+	public function excludeDeleted()
+	{
+		$this->include_deleted = false;
+
+		return $this;
+	}
+
+	public function applyScopes(&$criteria)
+	{
+		if (!$this->include_deleted) {
+			$this->filterDeletedRows($criteria);
+		}
+
+		parent::applyScopes($criteria);
+	}
+
+	/**
+	 * Apply filters to all parts of the criteria to exclude deleted rows
+	 */
+
+	private function filterDeletedRows(&$criteria)
+	{
+		if ($criteria->condition) {
+			$criteria->condition .= ' and ';
+		}
+		$criteria->condition .= ' '.$this->getTableAlias(false,false).'.deleted = :notdeleted';
+		$criteria->params[':notdeleted'] = 0;
+
+		if ($criteria->join) {
+			preg_match_all('/join (.*?) on (.*?)[\s\t]*=[\s\t]*([a-zA-Z0-9_\.]+)([\s\t]*and[\s\t]*[a-zA-Z0-9_\.]+[\s\t]*=[\s\t]*[a-zA-Z0-9_\.]+)*/',strtolower($criteria->join),$m);
+
+			foreach ($m[0] as $i => $join_clause) {
+				$criteria->join = str_replace($join_clause,$join_clause . ' and '.$m[1][$i].'.deleted = :notdeleted',$criteria->join);
+			}
+		}
+
+		return $criteria;
 	}
 }
