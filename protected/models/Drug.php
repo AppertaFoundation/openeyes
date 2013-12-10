@@ -60,13 +60,15 @@ class Drug extends BaseActiveRecordVersioned
 
 	public function defaultScope()
 	{
+		$table_alias = $this->getTableAlias(false,false);
+
 		if ($this->default_scope) {
 			return array(
-				'condition' => 'discontinued = 0 and deleted = 0',
+				'condition' => $table_alias.'.discontinued = 0 and '.$table_alias.'.deleted = 0',
 			);
-		} else {
-			return array();
 		}
+
+		return parent::defaultScope();
 	}
 
 	public function scopes()
