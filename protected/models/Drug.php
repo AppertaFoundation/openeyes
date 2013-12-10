@@ -64,11 +64,11 @@ class Drug extends BaseActiveRecordVersioned
 
 		if ($this->default_scope) {
 			return array(
-				'condition' => $table_alias.'.discontinued = 0 and '.$table_alias.'.deleted = 0',
+				'condition' => $table_alias.'.discontinued = 0',
 			);
 		}
 
-		return parent::defaultScope();
+		return array();
 	}
 
 	public function scopes()
