@@ -26,8 +26,6 @@ $this->beginContent('//patient/event_container');
 $this->moduleNameCssClass.=" highlight-fields";
 <?php echo "?>\n"?>
 
-<h2 class="event-title"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h2>
-
 <?php echo '<?php'?> $this->renderDefaultElements($this->action->id)<?php echo "?>\n"?>
 <?php echo '<?php'?> $this->renderOptionalElements($this->action->id)<?php echo "?>\n"?>
 

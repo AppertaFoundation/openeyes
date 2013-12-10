@@ -20,8 +20,6 @@
 
 <?php echo "<?php\n"?>$this->beginContent('//patient/event_container');<?php echo "?>\n"?>
 
-<h2 class="event-title"><?php echo '<?php '?>echo $this->event_type->name<?php echo '?>'?></h2>
-
 <div id="delete_event">
 	<h3>Delete event</h3>
 	<div class="alert-box alert with-icon">

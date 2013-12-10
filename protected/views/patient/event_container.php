@@ -1,7 +1,5 @@
 <?php
 
-extract($this->getEpisodes());
-
 if ($module = $this->getModule()) {
 	$module = $module->getName();
 	if (file_exists(Yii::getPathOfAlias('application.modules.'.$module.'.assets'))) {
@@ -28,6 +26,11 @@ if ($module = $this->getModule()) {
 			<?php $this->renderPartial('//patient/event_tabs')?>
 
 			<div class="event-content" id="event-content">
+
+				<h2 class="event-title"><?php echo $this->title?></h2>
+
+				<?php $this->renderPartial('//base/_messages'); ?>
+
 					<?php echo $content; ?>
 					<?php if ($this->action->id == 'view') {
 						$this->renderEventMetadata();

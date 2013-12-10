@@ -20,8 +20,6 @@
 
 <?php echo "<?php\n"?>$this->beginContent('//patient/event_container');<?php echo "?>\n"?>
 
-<h2 class="event-title"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h2>
-
 <?php echo '<?php'?> $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	'id'=>'create-form',
 	'enableAjaxValidation'=>false,

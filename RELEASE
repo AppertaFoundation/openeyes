@@ -3,6 +3,21 @@ Release History
 
 This document is intended to summarise the changes made for each release. It should be noted that this document was only introduced with version 1.4, and therefore doesn't cover earlier releases.
 
+1.5.0
+-----
++ Consolidated migrations
++ Removed Moorfields specific data
++ Refactored views
+	- Semantic HTML
+	- Rationalised layouts and templates
++ Converted CSS to use SASS (Compass)
++ Updated dialog styling
++ Added Click away protection
++ Cleaned up unit tests
++ Improved functional (behat) tests
++ Fixed pagination in admin screens
++ Added searchable procedure aliases
+
 1.4.7
 -----
 + return a generic diabetes term for diabetic patients with no type set
@@ -60,7 +75,7 @@ This document is intended to summarise the changes made for each release. It sho
 + changes to style and UI for patient sidebar
 + Confirm Site and Firm on login
 + Changed event/episode creation buttons to encourage more accurate association of events with firms/subspecialties
-+ Various enhancements to dialog behavour and css styling
++ Various enhancements to dialog behaviour and css styling
 
 + Introduced Disorder Tree functionality
 	https://github.com/openeyes/OpenEyes/wiki/Disorders
