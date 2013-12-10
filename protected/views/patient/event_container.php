@@ -1,7 +1,5 @@
 <?php
 
-extract($this->getEpisodes());
-
 if ($module = $this->getModule()) {
 	$module = $module->getName();
 	if (file_exists(Yii::getPathOfAlias('application.modules.'.$module.'.assets'))) {
