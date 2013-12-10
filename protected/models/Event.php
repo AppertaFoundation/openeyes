@@ -366,4 +366,20 @@ class Event extends BaseActiveRecord
 		}
 		return $elements;
 	}
+
+	/**
+	 * Fetch a single element of the specified class for this event
+	 *
+	 * @param $element_class
+	 */
+	public function getElementByClass($element_class)
+	{
+		return $element_class::model()->find(
+			array(
+				'condition' => 'event_id = :event_id',
+				'params' => array('event_id' => $this->id),
+				'limit' => 1,
+			)
+		);
+	}
 }
