@@ -22,8 +22,9 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 	private $enable_version = true;
 	private $fetch_from_version = false;
 	private $include_deleted = false;
-	public $unique_id = null;
+	public $version_id = null;
 	public $deleted_at = null;
+	public $activeScope = null;
 
 	/* Disable archiving on save() */
 
@@ -70,25 +71,20 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		return parent::getTableSchema();
 	}
 
-	public function isVersioned()
-	{
-		return $this->unique_id;
-	}
-
 	public function getPreviousVersion()
 	{
 		$condition = 'id = :id';
 		$params = array(':id' => $this->id);
 
-		if ($this->isVersioned()) {
-			$condition .= ' and unique_id < :unique_id';
-			$params[':unique_id'] = $this->unique_id;
+		if ($this->version_id) {
+			$condition .= ' and version_id < :version_id';
+			$params[':version_id'] = $this->version_id;
 		}
 
 		return $this->model()->fromVersion()->find(array(
 			'condition' => $condition,
 			'params' => $params,
-			'order' => 'unique_id desc',
+			'order' => 'version_id desc',
 		));
 	}
 
@@ -99,15 +95,15 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$condition = 'id = :id';
 		$params = array(':id' => $this->id);
 
-		if ($this->isVersioned()) {
-			$condition .= ' and unique_id = :unique_id';
-			$params[':unique_id'] = $this->unique_id;
+		if ($this->version_id) {
+			$condition .= ' and version_id = :version_id';
+			$params[':version_id'] = $this->version_id;
 		}
 
 		return $this->model()->fromVersion()->findAll(array(
 			'condition' => $condition,
 			'params' => $params,
-			'order' => 'unique_id desc',
+			'order' => 'version_id desc',
 		));
 	}
 
@@ -210,7 +206,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
-		if ($this->isVersioned()) {
+		if ($this->version_id) {
 			throw new Exception("save() should not be called on versiond model instances.");
 		}
 
@@ -252,32 +248,9 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 	public function applyScopes(&$criteria)
 	{
 		if (!$this->include_deleted) {
-			$this->filterDeletedRows($criteria);
+			$criteria->addCondition($this->getTableAlias(false,false).'.deleted = 0');
 		}
 
 		parent::applyScopes($criteria);
-	}
-
-	/**
-	 * Apply filters to all parts of the criteria to exclude deleted rows
-	 */
-
-	private function filterDeletedRows(&$criteria)
-	{
-		if ($criteria->condition) {
-			$criteria->condition .= ' and ';
-		}
-		$criteria->condition .= ' '.$this->getTableAlias(false,false).'.deleted = :notdeleted';
-		$criteria->params[':notdeleted'] = 0;
-
-		if ($criteria->join) {
-			preg_match_all('/join (.*?) on (.*?)[\s\t]*=[\s\t]*([a-zA-Z0-9_\.]+)([\s\t]*and[\s\t]*[a-zA-Z0-9_\.]+[\s\t]*=[\s\t]*[a-zA-Z0-9_\.]+)*/',strtolower($criteria->join),$m);
-
-			foreach ($m[0] as $i => $join_clause) {
-				$criteria->join = str_replace($join_clause,$join_clause . ' and '.$m[1][$i].'.deleted = :notdeleted',$criteria->join);
-			}
-		}
-
-		return $criteria;
 	}
 }
