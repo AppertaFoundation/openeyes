@@ -166,6 +166,102 @@ class PhasingContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I add a new Left Reading$/
+     */
+    public function iAddANewLeftReading()
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->addLeftReading();
+    }
+
+    /**
+     * @Then /^I choose a second left eye Intraocular Pressure Reading Time of "([^"]*)"$/
+     */
+    public function iChooseASecondLeftEyeIntraocularPressureReadingTimeOf($time)
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->secondLeftTime($time);
+    }
+
+    /**
+     * @Then /^I choose a second left eye Intraocular Pressure Reading of "([^"]*)"$/
+     */
+    public function iChooseASecondLeftEyeIntraocularPressureReadingOf($reading)
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->secondLeftReading($reading);
+    }
+
+    /**
+     * @Then /^I add a new Right Reading$/
+     */
+    public function iAddANewRightReading()
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->addRightReading();
+    }
+
+    /**
+     * @Then /^I choose a second right eye Intraocular Pressure Reading Time of "([^"]*)"$/
+     */
+    public function iChooseASecondRightEyeIntraocularPressureReadingTimeOf($time)
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->secondRightTime($time);
+    }
+
+    /**
+     * @Then /^I choose a second right eye Intraocular Pressure Reading of "([^"]*)"$/
+     */
+    public function iChooseASecondRightEyeIntraocularPressureReadingOf($reading)
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->secondRightReading($reading);
+    }
+
+    /**
+     * @Then /^I remove the last Right Reading$/
+     */
+    public function iRemoveTheLastRightReading()
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->removeRightReading();
+    }
+
+    /**
+     * @Then /^I remove the last Left Reading$/
+     */
+    public function iRemoveTheLastLeftReading()
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->removeLeftReading();
+    }
+
+    /**
      * @Then /^I Save the Phasing Event$/
      */
     public function iSaveThePhasingEvent()

@@ -7,7 +7,10 @@ abstract class OpenEyesPage extends Page{
 	/**
 	 * @description checks that the title is equal to the expected value
 	 * @param string $expectedTitle - the string value
+	 * @return bool
+	 * @throws Behat\Mink\Exception\ElementTextException
 	 */
+
 	public function checkOpenEyesTitle($expectedTitle){
 		$titleElement = $this->find('css', 'h1.badge');
 		$title = trim( $titleElement->getHtml() );

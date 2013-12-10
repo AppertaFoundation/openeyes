@@ -19,6 +19,9 @@
 <?php echo "?>\n"?>
 
 <?php echo "<?php\n"?>
+if ($this->canPrint()) {
+	$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'small button'));
+}
 $this->beginContent('//patient/event_container');
 $this->moduleNameCssClass.=" highlight-fields";
 <?php echo "?>\n"?>

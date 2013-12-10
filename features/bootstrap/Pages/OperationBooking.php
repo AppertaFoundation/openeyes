@@ -30,7 +30,7 @@ class OperationBooking extends OpenEyesPage
         'operationComments' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_comments']"),
         'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
         'scheduleNow' => array('xpath' => "//*[@id='et_save_and_schedule']"),
-        'availableSlotExactDate' => array('xpath' => "//*[@id='calendar']//*[contains(number(),'30')]"),
+        'availableSlotExactDate' => array('xpath' => "//*[@id='calendar']//*[contains(number(),'15')]"),
         'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
         'availableTheatreSlotDateOutsideRTT' => array('xpath' => "//*[@class='available outside_rtt']"),
         'availableThreeWeeksTime' => array ('xpath' => "//*[@id='calendar']//*[contains(text(),'27')]"),
@@ -90,21 +90,25 @@ class OperationBooking extends OpenEyesPage
 
     public function selectAnaesthetic ($type)
     {
-        if ($type==='Topical') {
-            $this->getElement('anaestheticTopical')->click();
+		$el = null;
+		if ($type==='Topical') {
+            $el = $this->getElement('anaestheticTopical');
         }
         if ($type==='LA') {
-            $this->getElement('anaestheticLa')->click();
+			$el = $this->getElement('anaestheticLa');
         }
         if ($type==='LAC') {
-            $this->getElement('anaestheticLac')->click();
+			$el = $this->getElement('anaestheticLac');
         }
         if ($type==='LAS') {
-            $this->getElement('anaestheticLas')->click();
+			$el = $this->getElement('anaestheticLas');
         }
         if ($type==='GA') {
-            $this->getElement('anaestheticGa')->click();
+			$el = $this->getElement('anaestheticGa');
         }
+		$el->focus();
+		$el->click();
+		$this->getSession()->wait(3000, "window.$ && $(\"#Element_OphTrOperationbooking_Operation_anaesthetic_type_id [name='Element_OphTrOperationbooking_Operation[anaesthetic_type_id]']:checked\").val() == " .   $el->getValue());
     }
 
     public function postOpStayYes ()
@@ -151,7 +155,7 @@ class OperationBooking extends OpenEyesPage
     {
         $this->getElement('scheduleNow')->keyPress(2191);
         $this->getElement('scheduleNow')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000,"window.$ && $('.event-title').html() == 'Schedule Operation' ");
     }
 
     public function EmergencyList ()
@@ -159,7 +163,7 @@ class OperationBooking extends OpenEyesPage
         $this->getElement('EmergencyList')->selectOption("EMG");
 		//alert is not happening anymore so call is commented out
         //$this->getSession()->getDriver()->getWebDriverSession()->accept_alert();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(15000, "window.$ && $('.alert-box.alert').last().html() == 'You are booking into the Emergency List.' ");
     }
 
     public function nextMonth ()
@@ -170,6 +174,7 @@ class OperationBooking extends OpenEyesPage
     public function availableSlotExactDay ($day)
     {
         $this->getElement('availableSlotExactDate')->click();
+		$this->getSession()->wait(15000, "window.$ && $('#calendar td.available.selected_date').html().trim() == '15' ");
 //        Need to include
     }
 
@@ -205,9 +210,8 @@ class OperationBooking extends OpenEyesPage
 
     public function availableSessionTime ()
     {
-//        $this->getSession()->wait(5000);
         $this->getElement('availableTheatreSessionTime')->click();
-        $this->getSession()->wait(10000, "$('.active') == 0");
+        $this->getSession()->wait(10000);
     }
 
     public function availableThreeWeeksTime ()

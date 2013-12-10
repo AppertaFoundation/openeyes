@@ -16,7 +16,8 @@
 
 .sidebar {
 	&.episodes-and-events {
-		padding: emCalc(5px) emCalc(8px) 0 0;
+		padding: emCalc(5px) 8px 0 0;
+		width: 14.6%;
 		.add-episode {
 			margin-left: 2px;
 		}
