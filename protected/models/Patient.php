@@ -892,8 +892,6 @@ class Patient extends BaseActiveRecordVersioned
 			$type = 'sys';
 		}
 
-		$audit_attributes = $sd->getAuditAttributes();
-
 		if (!$sd->delete()) {
 			throw new Exception('Unable to delete diagnosis: '.print_r($sd->getErrors(),true));
 		}
@@ -920,8 +918,6 @@ class Patient extends BaseActiveRecordVersioned
 		$oph_info->cvi_status_date = $cvi_status_date;
 
 		$oph_info->save();
-
-		$audit_attributes = $oph_info->getAuditAttributes();
 
 		$this->audit('patient', $action);
 	}

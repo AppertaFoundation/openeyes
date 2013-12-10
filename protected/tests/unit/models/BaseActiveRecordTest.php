@@ -117,21 +117,6 @@ class BaseActiveRecordTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers BaseActiveRecord::getAuditAttributes
-	 * @todo   Implement testGetAuditAttributes().
-	 */
-	public function testGetAuditAttributes()
-	{
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
-		$auditmodel = new Audit;
-
-		$expected = 'a:18:{s:6:"action";s:0:"";s:11:"target_type";s:0:"";s:11:"remote_addr";s:0:"";s:15:"http_user_agent";s:0:"";s:11:"server_name";s:0:"";s:11:"request_uri";s:0:"";s:21:"last_modified_user_id";s:1:"1";s:18:"last_modified_date";s:19:"1900-01-01 00:00:00";s:15:"created_user_id";s:1:"1";s:12:"created_date";s:19:"1900-01-01 00:00:00";s:2:"id";N;s:10:"patient_id";N;s:10:"episode_id";N;s:8:"event_id";N;s:7:"user_id";N;s:4:"data";N;s:7:"site_id";N;s:7:"firm_id";N;}';
-		$result = $auditmodel->getAuditAttributes();
-
-		$this->assertEquals($expected, $result, 'result match expected');
-	}
-
-	/**
 	 * @covers BaseActiveRecord::audit
 	 * @todo   Implement testAudit().
 	 */

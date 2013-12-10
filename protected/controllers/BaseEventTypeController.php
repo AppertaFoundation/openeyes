@@ -388,12 +388,6 @@ class BaseEventTypeController extends BaseController
 						$event->addIssue($this->eventIssueCreate);
 					}
 
-					$audit_data = array('event' => $event->getAuditAttributes());
-
-					foreach ($elements as $element) {
-						$audit_data[get_class($element)] = $element->getAuditAttributes();
-					}
-
 					$event->audit('event','create');
 
 					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
@@ -606,12 +600,6 @@ class BaseEventTypeController extends BaseController
 					}
 
 					$this->logActivity('updated event');
-
-					$audit_data = array('event' => $this->event->getAuditAttributes());
-
-					foreach ($elements as $element) {
-						$audit_data[get_class($element)] = $element->getAuditAttributes();
-					}
 
 					$this->event->audit('event','update');
 
