@@ -4,7 +4,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
   As an automation tester
   I want to build a template with supporting code for each web page
 
-  Scenario: Route 1: Login and add an Allergy and check that it is present in subsequent Events
+  Scenario: Route 1A: Login and add an Allergy on Patient View Page for subsequent tests
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -33,14 +33,14 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     Then I save the new CVI status
 
     Then I Remove existing Allergy
-    Then I Add Allergy "3" and Save
+    Then I Add Allergy "5" and Save
     # 5 = Tetracycline
 
     And I Add a Family History of relative "1" side "3" condition "1" and comments "Family History Comments" and Save
 
 
 
-  Scenario: Login and create a New Intravitreal Event and ensure correct Allergy warning is displayed
+  Scenario: Route 1B: Check Allergy warning on Intravitreal
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -55,3 +55,39 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     And I add a New Event "Intravitreal"
 
     Then a check is made that the Allergy "Tetracycline" warning is displayed
+
+
+  Scenario: Route 1C: Check Allergy warning on Prescription
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Prescription"
+
+    Then a check is made that the Allergy "Tetracycline" warning is displayed
+
+
+  Scenario: Route 1D: Check Allergy warning on Op Note
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "OpNote"
+
+    Then a check is made that the Allergy "Tetracycline" warning is displayed
+
+
