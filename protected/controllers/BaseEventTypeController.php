@@ -494,32 +494,44 @@ class BaseEventTypeController extends BaseModuleController
 
 			// creation
 			if (empty($errors)) {
-				$success = $this->saveEvent($_POST);
+				$transaction = Yii::app()->db->beginTransaction();
 
-				if ($success) {
-					//TODO: should this be in the save event as pass through?
-					if ($this->eventIssueCreate) {
-						$this->event->addIssue($this->eventIssueCreate);
+				try {
+					$success = $this->saveEvent($_POST);
+
+					if ($success) {
+						//TODO: should this be in the save event as pass through?
+						if ($this->eventIssueCreate) {
+							$this->event->addIssue($this->eventIssueCreate);
+						}
+						//TODO: should not be passing event?
+						$this->afterCreateElements($this->event);
+
+						$this->logActivity('created event.');
+
+						$audit_data = array('event' => $this->event->getAuditAttributes());
+
+						//TODO: should this be simply handled by the audit wrapper of the event?
+						foreach ($this->open_elements as $element) {
+							$audit_data[get_class($element)] = $element->getAuditAttributes();
+						}
+
+						$this->event->audit('event','create',serialize($audit_data));
+
+						Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
+
+						$transaction->commit();
+
+						$this->redirect(array($this->successUri.$this->event->id));
 					}
-					//TODO: should not be passing event?
-					$this->afterCreateElements($this->event);
-
-					$this->logActivity('created event.');
-
-					$audit_data = array('event' => $this->event->getAuditAttributes());
-
-					//TODO: should this be simply handled by the audit wrapper of the event?
-					foreach ($this->open_elements as $element) {
-						$audit_data[get_class($element)] = $element->getAuditAttributes();
+					else {
+						throw new Exception("could not save event");
 					}
 
-					$this->event->audit('event','create',serialize($audit_data));
-
-					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
-					$this->redirect(array($this->successUri.$this->event->id));
 				}
-				else {
-					throw new Exception("could not save event");
+				catch (Exception $e) {
+					$transaction->rollback();
+					throw $e;
 				}
 			}
 		}
@@ -629,37 +641,44 @@ class BaseEventTypeController extends BaseModuleController
 
 			$errors = $this->setAndValidateElementsFromData($_POST);
 
-			// creation
+			// update the event
 			if (empty($errors)) {
-				//TODO: setup a transaction at this point.
-				//TODO: should all the auditing be moved into the saving of the event
-				$success = $this->saveEvent($_POST);
+				$transaction = Yii::app()->db->beginTransaction();
 
-				if ($success) {
-					//TODO: should not be pasing event?
-					$this->afterUpdateElements($this->event);
-					$this->logActivity('updated event');
+				try {
+					//TODO: should all the auditing be moved into the saving of the event
+					$success = $this->saveEvent($_POST);
 
-					$audit_data = array('event' => $this->event->getAuditAttributes());
+					if ($success) {
+						//TODO: should not be pasing event?
+						$this->afterUpdateElements($this->event);
+						$this->logActivity('updated event');
 
-					foreach ($this->open_elements as $element) {
-						$audit_data[get_class($element)] = $element->getAuditAttributes();
+						$audit_data = array('event' => $this->event->getAuditAttributes());
+
+						foreach ($this->open_elements as $element) {
+							$audit_data[get_class($element)] = $element->getAuditAttributes();
+						}
+
+						$this->event->audit('event','update',serialize($audit_data));
+
+						$this->event->user = Yii::app()->user->id;
+
+						if (!$this->event->save()) {
+							throw new SystemException('Unable to update event: '.print_r($this->event->getErrors(),true));
+						}
+
+						OELog::log("Updated event {$this->event->id}");
+						$transaction->commit();
+						$this->redirect(array('default/view/'.$this->event->id));
 					}
-
-					$this->event->audit('event','update',serialize($audit_data));
-
-					$this->event->user = Yii::app()->user->id;
-
-					if (!$this->event->save()) {
-						throw new SystemException('Unable to update event: '.print_r($this->event->getErrors(),true));
+					else {
+						throw new Exception("Unable to save edits to event");
 					}
-
-					OELog::log("Updated event {$this->event->id}");
-
-					$this->redirect(array('default/view/'.$this->event->id));
 				}
-				else {
-					throw new Exception("Unable to save edits to event");
+				catch (Exception $e) {
+					$transaction->rollback();
+					throw $e;
 				}
 			}
 		}
@@ -1361,39 +1380,41 @@ class BaseEventTypeController extends BaseModuleController
 	 * Delete the event given by $id. Performs the soft delete action if it's been confirmed by $_POST
 	 *
 	 * @param $id
-	 * @return bool
 	 * @throws CHttpException
 	 * @throws Exception
 	 */
 	public function actionDelete($id)
 	{
-		// Only the event creator can delete the event, and only 24 hours after its initial creation
 		if (!$this->canDelete()) {
 			$this->redirect(array('default/view/'.$this->event->id));
-			return false;
-		}
+		} elseif (!empty($_POST)) {
+			$transaction = Yii::app()->db->beginTransaction();
+			try {
+				$this->event->softDelete();
 
-		if (!empty($_POST)) {
-			$this->event->softDelete();
+				$this->event->audit('event','delete',false);
 
-			$this->event->audit('event','delete',false);
+				if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
+					$this->event->episode->deleted = 1;
+					if (!$this->event->episode->save()) {
+						throw new Exception("Unable to save episode: ".print_r($this->event->episode->getErrors(),true));
+					}
 
-			if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
-				$this->event->episode->deleted = 1;
-				if (!$this->event->episode->save()) {
-					throw new Exception("Unable to save episode: ".print_r($this->event->episode->getErrors(),true));
+					$this->event->episode->audit('episode','delete',false);
+
+					$transaction->commit();
+					$this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
+
 				}
 
-				$this->event->episode->audit('episode','delete',false);
-
-				header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
-				return true;
+				Yii::app()->user->setFlash('success', "An event was deleted, please ensure the episode status is still correct.");
+				$transaction->commit();
+				$this->redirect(array('/patient/episode/'.$this->event->episode_id));
 			}
-
-			Yii::app()->user->setFlash('success', "An event was deleted, please ensure the episode status is still correct.");
-
-			header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
-			return true;
+			catch (Exception $e) {
+				$transaction->rollback();
+				throw $e;
+			}
 		}
 
 		$this->title = "Delete " . $this->event_type->name;

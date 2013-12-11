@@ -56,50 +56,61 @@ EOH;
 		foreach (glob($path."*.cpxmap") as $map_path) {
 			$imp_name = substr(basename($map_path), 0, -7);
 			echo "Performing $imp_name import ...\n";
-
+			$transaction = $connection->beginTransaction();
 			// Get mapping info
-			$map = file($map_path);
-			foreach ($map as $map_idx => $tbl_file) {
-				// get the table name
-				$tbl_file = rtrim($tbl_file);
-				if (preg_match("/^".$imp_name."_([^\.]+)\.csv/",$tbl_file, $match) ) {
-					$table = $match[1];
-					echo "Processing file $map_idx, $tbl_file ...\n";
-				} else {
-					echo "ERROR: bad name for file " . $tbl_file . "\n";
-					continue;
-				}
-
-				$file = file($path . $tbl_file);
-				$columns = array();
-				$row_count = 0;
-				$values = array();
-				// iterate through data rows of the table file
-				foreach ($file as $index => $line) {
-					if (!$index) {
-						$columns = str_getcsv($line, ',', '"');
+			try {
+				$map = file($map_path);
+				foreach ($map as $map_idx => $tbl_file) {
+					// get the table name
+					$tbl_file = rtrim($tbl_file);
+					if (preg_match("/^".$imp_name."_([^\.]+)\.csv/",$tbl_file, $match) ) {
+						$table = $match[1];
+						echo "Processing file $map_idx, $tbl_file ...\n";
 					} else {
-						if (!strlen(trim($line))) {
-							// skip empty line
-							continue;
-						}
-
-						if (!count($columns)) {
-							echo "ERROR: columns must be defined in first row of $tbl_file\n";
-							break;
-						}
-
-						$record = str_getcsv($line, ',', '"');
-						$data = array();
-						foreach ($columns as $i => $col) {
-							$data[$i] = $record[$i];
-						}
-						$this->insert($table, $columns, $data);
-						$row_count++;
-
+						throw new Exception("ERROR: bad name for file " . $tbl_file . "\n");
 					}
+
+					$file = file($path . $tbl_file);
+					$columns = array();
+					$row_count = 0;
+					$values = array();
+					// iterate through data rows of the table file
+					foreach ($file as $index => $line) {
+						if (!$index) {
+							$columns = str_getcsv($line, ',', '"');
+						} else {
+							if (!strlen(trim($line))) {
+								// skip empty line
+								continue;
+							}
+
+							if (!count($columns)) {
+								throw new Exception("ERROR: columns must be defined in first row of $tbl_file\n");
+								break;
+							}
+
+							$record = str_getcsv($line, ',', '"');
+							$data = array();
+							foreach ($columns as $i => $col) {
+								$data[$i] = $record[$i];
+							}
+							$this->insert($table, $columns, $data);
+							$row_count++;
+
+						}
+					}
+					echo "imported $row_count records, done.\n";
 				}
-				echo "imported $row_count records, done.\n";
+				echo "Committing data changes ...";
+				$transaction->commit();
+				echo " Done\n";
+				if (!rename($map_path, $map_path . ".done")) {
+					echo "WARN: could not rename map file";
+				}
+			}
+			catch (Exception $e) {
+				echo $e->getMessage() . "\n";
+				$transaction->rollback();
 			}
 		}
 	}
@@ -120,12 +131,12 @@ EOH;
 				if ($matches[4] == 'imp_id') {
 					// we are mapping to a row already done in this import, need to get the value or error if not available
 					if (!array_key_exists($matches[3], $this->imp_id_map)) {
-						echo "ERROR: haven't set import ids for $matches[3] - is your import order correct?\n";
+						throw new Exception("ERROR: haven't set import ids for $matches[3] - is your import order correct?\n");
 						exit;
 					}
 
 					if (!(isset($this->imp_id_map[$matches[3]][$raw_data[$i]]) ) ) {
-						echo "ERROR: cannot find import id $raw_data[$i] for $matches[2]\n";
+						throw new Exception("ERROR: cannot find import id $raw_data[$i] for $matches[2]\n");
 						exit;
 					}
 
