@@ -203,7 +203,7 @@ class Audit extends BaseActiveRecord
 		}
 	}
 
-	public static function add($target, $action, $data, $log_message=null, $properties=array())
+	public static function add($target, $action, $data=null, $log_message=null, $properties=array())
 	{
 		if (!$_target = AuditType::model()->find('name=?',array($target))) {
 			$_target = new AuditType;
