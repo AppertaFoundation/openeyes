@@ -221,6 +221,7 @@
 		$('#add_medication').slideToggle('fast');
 		$('#btn-add_medication').attr('disabled',false);
 		$('#btn-add_medication').removeClass('disabled');
+		$('div.medication_form_errors').html('').hide();
 		return false;
 	});
 	$('#drug_id').change(function() {
@@ -296,7 +297,6 @@
 			}
 		});
 
-		$('div.medication_form_errors').hide();
 		$('#add_medication').slideToggle('fast');
 		$('#btn-add_medication').attr('disabled',true);
 		$('#btn-add_medication').addClass('disabled');
