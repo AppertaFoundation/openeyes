@@ -105,7 +105,7 @@ button, .button, input[type="submit"] {
 // Delete button styles
 button, .button, input[type="submit"] {
 	&.delete {
-		&, &.disabled {
+		&, &.disabled, &[disabled] {
 			@include box-shadow(none);
 			background: none;
 			border-color: #9a091c;
