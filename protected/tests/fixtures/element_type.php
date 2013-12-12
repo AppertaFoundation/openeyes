@@ -40,34 +40,34 @@
 
  */
 return array(
-	 'elementType1' => array(
+	 'history' => array(
 		  'name' => 'History',
-		  'class_name' => 'ElementHistory',
-		  'event_type_id' => 25,
+		  'class_name' => 'BaseEventTypeElement',
+		  'event_type_id' => $this->getRecord('event_type', 'examination')->id,
 		  'display_order' => 1,
-		  'parent_element_type_id' => 1,
+		 'id' => 1,
 	 ),
-	 'elementType2' => array(
+	 'pasthistory' => array(
 		  'name' => 'Past History',
-		  'class_name' => 'ElementPastHistory',
-		  'event_type_id' => 25,
+		  'class_name' => 'BaseEventTypeElement',
+		  'event_type_id' => $this->getRecord('event_type', 'examination')->id,
 		  'display_order' => 1,
 		  'parent_element_type_id' => 1,
+		  //'parent_element_type_id' => $this->getRecord('element_type', 'history')->id,
 	 ),
-	 'elementType3' => array(
+	 'visualfunction' => array(
 		  'name' => 'Visual function',
-		  'class_name' => 'ElementVisualFunction',
-		  'event_type_id' => 25,
-		  'display_order' => 1,
-		  'parent_element_type_id' => 1,
+		  'class_name' => 'BaseEventTypeElement',
+		  'event_type_id' => $this->getRecord('event_type', 'examination')->id,
+		  'display_order' => 3,
 	 ),
-	 'elementType4' => array(
+	 'va' => array(
 		  'name' => 'Visual acuity',
-		  'class_name' => 'ElementVisualAcuity',
-		  'event_type_id' => 4,
-		  'display_order' => 1,
-		  'parent_element_type_id' => 1,
+		  'class_name' => 'BaseEventTypeElement',
+		  'event_type_id' => $this->getRecord('event_type', 'examination')->id,
+		  'display_order' => 4,
 	 ),
+	/*
 	 'elementType5' => array(
 		  'name' => 'Mini-refraction',
 		  'class_name' => 'ElementMiniRefraction',
@@ -159,4 +159,5 @@ return array(
 		  'display_order' => 1,
 		  'parent_element_type_id' => 1,
 	 )
+	*/
 );
