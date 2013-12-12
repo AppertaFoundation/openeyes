@@ -62,7 +62,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
     And I select Site "1"
-    Then I select a firm of "3"
+    Then I select a firm of "1"
 
     Then I search for hospital number "1009465"
 
@@ -78,8 +78,8 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "3"
+    And I select Site "1"
+    Then I select a firm of "1"
 
     Then I search for hospital number "1009465"
 
