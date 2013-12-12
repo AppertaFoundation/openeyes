@@ -178,6 +178,7 @@
 						$('#add-ophthalmic-diagnosis').submit();
 						return true;
 					} else {
+						$('div.ophthalmic_diagnoses_form_errors').html('');
 						for (var i in data) {
 							$('div.ophthalmic_diagnoses_form_errors').show().append('<div>'+data[i]+'</div>');
 						}
