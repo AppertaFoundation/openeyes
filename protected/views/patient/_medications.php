@@ -252,7 +252,9 @@
 		});
 	}
 
-	handleButton($('button.btn_save_medication'),function(e) {
+	$('button.btn_save_medication').click(function(e) {
+		disableButtons('.btn_save_medication,.btn_cancel_medication');
+
 		e.preventDefault();
 
 		$.ajax({
@@ -268,7 +270,7 @@
 					return;
 				}
 
-				enableButtons();
+				enableButtons('.btn_save_medication,.btn_cancel_medication');
 
 				for (var i in data) {
 					$('div.medication_form_errors').show().append('<div>'+data[i]+'</div>');
