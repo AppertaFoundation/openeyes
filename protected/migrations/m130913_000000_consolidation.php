@@ -768,7 +768,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `common_ophthalmic_disorder_ibfk_1` FOREIGN KEY (`disorder_id`) REFERENCES `disorder` (`id`),
 							 CONSTRAINT `common_ophthalmic_disorder_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
 		);
 
 		$this->execute(
@@ -805,7 +805,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `common_systemic_disorder_ibfk_1` FOREIGN KEY (`disorder_id`) REFERENCES `disorder` (`id`),
 							 CONSTRAINT `common_systemic_disorder_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
 		);
 
 		$this->execute(
@@ -1504,7 +1504,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `event_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `event_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
 		);
 
 		$this->execute(
@@ -1698,7 +1698,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `firm_user_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
 		);
 
 		$this->execute(
@@ -2650,7 +2650,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `service_subspecialty_assignment_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
 							 CONSTRAINT `service_subspecialty_assignment_ibfk_2` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
 		);
 
 		$this->execute(
