@@ -3124,8 +3124,8 @@ class m130913_000000_consolidation extends OEMigration
 			"CREATE TABLE `user` (
 							 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 							 `username` varchar(40) NOT NULL,
-							 `first_name` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-							 `last_name` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+							 `first_name` varchar(40) NOT NULL,
+							 `last_name` varchar(40) NOT NULL,
 							 `email` varchar(80) NOT NULL,
 							 `active` tinyint(1) NOT NULL,
 							 `global_firm_rights` tinyint(1) unsigned NOT NULL DEFAULT '0',
