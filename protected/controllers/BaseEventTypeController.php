@@ -692,7 +692,7 @@ class BaseEventTypeController extends BaseController
 							$generic[$elementClassName] = $_POST[$elementClassName];
 						}
 
-						for ($i = 0; $i < count($_POST[$elementClassName][$keys[0]])-1; $i++)
+						for ($i = 0; $i < count($_POST[$elementClassName][$keys[0]]); $i++)
 						{
 							$element = new $elementClassName;
 
