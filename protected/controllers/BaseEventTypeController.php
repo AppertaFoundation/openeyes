@@ -688,9 +688,8 @@ class BaseEventTypeController extends BaseController
 					$keys = array_keys($_POST[$elementClassName]);
 
 					if (is_array($_POST[$elementClassName][$keys[0]])) {
-						if (!isset($generic[$elementClassName])) {
-							$generic[$elementClassName] = $_POST[$elementClassName];
-						}
+
+						$generic[$elementClassName] = $_POST[$elementClassName];
 
 						for ($i = 0; $i < count($_POST[$elementClassName][$keys[0]]); $i++)
 						{
