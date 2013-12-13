@@ -113,7 +113,7 @@
 							</div>
 						</fieldset>
 
-						<?php $this->renderPartial('_fuzzy_date', array('form'=>$form))?>
+						<?php $this->renderPartial('_fuzzy_date', array('form'=>$form, 'label' => 'Date diagnosed'))?>
 
 						<div class="ophthalmic_diagnoses_form_errors alert-box alert hide"></div>
 
@@ -178,6 +178,7 @@
 						$('#add-ophthalmic-diagnosis').submit();
 						return true;
 					} else {
+						$('div.ophthalmic_diagnoses_form_errors').html('');
 						for (var i in data) {
 							$('div.ophthalmic_diagnoses_form_errors').show().append('<div>'+data[i]+'</div>');
 						}

@@ -257,11 +257,14 @@ $(document).ready(function() {
 	 */
 	$('.optional-elements').delegate('.remove-all', 'click', function(e) {
 		if($(this).closest('.element').length) {
-			$(this).closest('.element').find('.active_child_elements .element').each(function() {
+			$(this).closest('.element').find('.sub-elements.active .sub-element:not(.required)').each(function() {
 				removeElement(this, true);
 			})
 		} else {
-			$('.js-active-elements .element').each(function() {
+			$('.js-active-elements .sub-element:not(.required)').each(function() {
+				removeElement(this, true);
+			});
+			$('.js-active-elements .element:not(.required)').each(function() {
 				removeElement(this);
 			});
 		}
