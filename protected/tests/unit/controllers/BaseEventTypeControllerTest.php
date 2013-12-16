@@ -18,7 +18,7 @@
  */
 
 /**
- * Class BaseControllerTest
+ * Class BaseEventTypeControllerTest
  * @group controllers
  */
 class BaseEventTypeControllerTest extends CDbTestCase
