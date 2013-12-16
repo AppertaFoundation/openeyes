@@ -17,32 +17,39 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-Yii::setPathOfAlias('yiitests', Yii::getPathOfAlias('system') . '/../tests/framework');
+//Yii::import('yiitests.validators.ModelMock');
 
-return array(
-	'name' => 'OpenEyes Test',
-	'import' => array(
-		'application.modules.admin.controllers.*',
-		'application.components.*',
-		'system.cli.commands.*',
-		'system..db.schema.*',
-		'yiitests.validators.*'
-	),
-	'components' => array(
-		'fixture' => array(
-			'class' => 'system.test.CDbFixtureManager',
-		),
-		'db' => array(
-			'class'=> 'CDbConnection',
-			'connectionString' => 'mysql:host=localhost;dbname=openeyestest',
-			'username' => 'oe',
-			'password' => '_OE_TESTDB_PASSWORD_',
-		),
-		'dbTestNotConnecting' => array(
-			'class'=> 'CDbConnection',
-			'connectionString' => 'mysql:host=notArealDB;dbname=openeyestest',
-			'username' => 'oe',
-			'password' => '_OE_TESTDB_PASSWORD_',
-		),
-	),
-);
+class OEFuzzyDateValidatorTest extends CTestCase
+{
+	protected $validator;
+	protected $cModelMock;
+
+	public function setUp(){
+		$this->validator = new OEFuzzyDateValidator();
+
+		$this->cModelMock = new ModelMock();
+		$this->cModelMock->foo = 'invalid date';
+		$this->cModelMock->bar = '1909 12 23';
+	}
+
+	public function testValidateAttribute()
+	{
+		$this->validator->validateAttribute($this->cModelMock, 'bar');
+		$this->validator->validateAttribute($this->cModelMock, 'foo');
+		$invalidDateMsg  = $this->cModelMock->getErrors('foo');
+		$validDateMsg  = $this->cModelMock->getErrors('bar');
+		$this->assertTrue($this->cModelMock->hasErrors());
+		$this->assertInternalType('array', $invalidDateMsg);
+		$this->assertInternalType('array', $validDateMsg);
+
+		//var_dump( get_class_methods($this->cModelMock) );
+		//var_dump($this->cModelMock->getErrors());
+		$this->assertEquals('This is not a valid date', $invalidDateMsg);
+	}
+
+	public function tearDown(){
+		unset($this->cModelMock);
+	}
+
+}
+

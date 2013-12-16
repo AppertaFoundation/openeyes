@@ -35,7 +35,7 @@ class OEFuzzyDateValidator extends CValidator
 		$dt = $object->$attribute;
 		$_year = (integer) substr($dt,0,4);
 		$_month = (integer) substr($dt,5,2);
-		$_day = (integer) substr($dt,8,2);
+		$_day = (integer) substr($dt,8,2); echo "\nClass name " . get_class($object) . " attr: " . $attribute . " DT: " .  $dt  ." year:  "  . $_year . " month : "  . $_month ."  \n\n";
 
 		if ($_day > 0) {
 			if ($_month > 0) {
