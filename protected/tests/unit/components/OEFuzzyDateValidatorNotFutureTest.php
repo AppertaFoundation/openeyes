@@ -17,13 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class OEFuzzyDateValidatorTest extends CTestCase
+class OEFuzzyDateValidatorNotFutureTest extends CTestCase
 {
 	protected $validator;
 	protected $cModelMock;
 
 	public function setUp(){
-		$this->validator = new OEFuzzyDateValidator();
+		$this->validator = new OEFuzzyDateValidatorNotFuture();
 
 		$this->cModelMock = new ModelMock();
 		$this->cModelMock->foo = '2000 14 22';
@@ -36,6 +36,31 @@ class OEFuzzyDateValidatorTest extends CTestCase
 		$validDateMsg  = $this->cModelMock->getErrors('bar');
 		$this->assertFalse($this->cModelMock->hasErrors());
 		$this->assertInternalType('array', $validDateMsg);
+	}
+
+	public function testValidateAttributeNotFuture()
+	{
+		$this->cModelMock->bar = '2150-12-23';
+		$this->validator->validateAttribute($this->cModelMock, 'bar');
+		$notFutureDateMsg  = $this->cModelMock->getErrors('bar');
+		$this->assertTrue($this->cModelMock->hasErrors());
+		$this->assertInternalType('array', $notFutureDateMsg);
+		$this->assertEquals('The date cannot be in the future' , $notFutureDateMsg[0]);
+	}
+
+	public function testValidateAttributeNotFutureWithNoDay()
+	{
+		$this->cModelMock->bar = '2150 12';
+		$this->cModelMock->foo = '2150';
+		$this->validator->validateAttribute($this->cModelMock, 'bar');
+		$notFutureDateMsgBar  = $this->cModelMock->getErrors('bar');
+		$this->validator->validateAttribute($this->cModelMock, 'foo');
+		$notFutureDateMsgFoo  = $this->cModelMock->getErrors('bar');
+		$this->assertTrue($this->cModelMock->hasErrors());
+		$this->assertInternalType('array', $notFutureDateMsgBar);
+		$this->assertEquals('The date cannot be in the future' , $notFutureDateMsgBar[0]);
+		$this->assertInternalType('array', $notFutureDateMsgFoo);
+		$this->assertEquals('The date cannot be in the future' , $notFutureDateMsgFoo[0]);
 	}
 
 	public function testValidateAttributeIsNotAValidDate(){
