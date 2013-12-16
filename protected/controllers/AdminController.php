@@ -1326,4 +1326,28 @@ class AdminController extends BaseAdminController
 
 		echo "1";
 	}
+
+	public function actionEpisodeSummaries($subspecialty_id = null)
+	{
+		$this->render(
+			'/admin/episodeSummaries',
+			array(
+				'subspecialty_id' => $subspecialty_id,
+				'enabled_items' => EpisodeSummaryItem::model()->enabled($subspecialty_id)->findAll(),
+				'available_items' => EpisodeSummaryItem::model()->available($subspecialty_id)->findAll(),
+			)
+		);
+	}
+
+	public function actionUpdateEpisodeSummary()
+	{
+		$item_ids = @$_POST['item_ids'] ? explode(',', $_POST['item_ids']) : array();
+		$subspecialty_id = @$_POST['subspecialty_id'] ?: null;
+
+		$tx = Yii::app()->db->beginTransaction();
+		EpisodeSummaryItem::model()->assign($item_ids, $subspecialty_id);
+		$tx->commit();
+
+		$this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
+	}
 }
