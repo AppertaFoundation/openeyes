@@ -28,23 +28,47 @@ class OEFuzzyDateValidatorTest extends CTestCase
 		$this->validator = new OEFuzzyDateValidator();
 
 		$this->cModelMock = new ModelMock();
-		$this->cModelMock->foo = 'invalid date';
+		$this->cModelMock->foo = '2000 14 22';
 		$this->cModelMock->bar = '1909 12 23';
 	}
 
 	public function testValidateAttribute()
 	{
 		$this->validator->validateAttribute($this->cModelMock, 'bar');
+		$validDateMsg  = $this->cModelMock->getErrors('bar');
+		$this->assertFalse($this->cModelMock->hasErrors());
+		$this->assertInternalType('array', $validDateMsg);
+	}
+
+	public function testValidateAttributeIsNotAValidDate(){
 		$this->validator->validateAttribute($this->cModelMock, 'foo');
 		$invalidDateMsg  = $this->cModelMock->getErrors('foo');
-		$validDateMsg  = $this->cModelMock->getErrors('bar');
 		$this->assertTrue($this->cModelMock->hasErrors());
-		$this->assertInternalType('array', $invalidDateMsg);
-		$this->assertInternalType('array', $validDateMsg);
+		$this->assertEquals('This is not a valid date' , $invalidDateMsg[0]);
+	}
 
-		//var_dump( get_class_methods($this->cModelMock) );
-		//var_dump($this->cModelMock->getErrors());
-		$this->assertEquals('This is not a valid date', $invalidDateMsg);
+	public function testValidateAttributeYearIsRequired(){
+		$this->cModelMock->foo = '0000 14 22';
+		$this->validator->validateAttribute($this->cModelMock, 'foo');
+		$yearIsRequiredMsg  = $this->cModelMock->getErrors('foo');
+		$this->assertTrue($this->cModelMock->hasErrors());
+		$this->assertEquals('Year is required' , $yearIsRequiredMsg[0]);
+	}
+
+	public function testValidateAttributeMonthIsRequired(){
+		$this->cModelMock->foo = '2000 00 22';
+		$this->validator->validateAttribute($this->cModelMock, 'foo');
+		$monthIsRequiredMsg  = $this->cModelMock->getErrors('foo');
+		$this->assertTrue($this->cModelMock->hasErrors());
+		$this->assertEquals('Month is required if day is provided' , $monthIsRequiredMsg[0]);
+	}
+
+	public function testValidateAttributeInvalidMonth(){
+		$this->cModelMock->foo = '2000 14';
+		$this->validator->validateAttribute($this->cModelMock, 'foo');
+		$invalidMonthMsg  = $this->cModelMock->getErrors('foo');
+		$this->assertTrue($this->cModelMock->hasErrors());
+		$this->assertEquals('Invalid month value' , $invalidMonthMsg[0]);
 	}
 
 	public function tearDown(){
