@@ -40,6 +40,16 @@ class BaseEventTypeControllerTest extends CDbTestCase
 		parent::setUp();
 	}
 
+	protected function getEpisode()
+	{
+		return ComponentStubGenerator::generate('Episode');
+	}
+
+	protected function getElement($element_type)
+	{
+		return ComponentStubGenerator::generate('BaseEventTypeElement',
+			array('element_type' => $element_type));
+	}
 
 	/**
 	 * @covers BaseEventTypeController::current_episode
@@ -51,6 +61,10 @@ class BaseEventTypeControllerTest extends CDbTestCase
 		$this->assertEquals($this->episode('episode1')->id, $this->controller->current_episode->id);
 	}
 
+	/**
+	 * @covers BaseEventTypeController::getEventType
+	 * @todo should be part of BaseModuleController tests
+	 */
 	public function testevent_type()
 	{
 		$this->assertEquals($this->event_type('examination')->id, $this->controller->event_type->id);
@@ -58,7 +72,6 @@ class BaseEventTypeControllerTest extends CDbTestCase
 
 	/**
 	 * @covers BaseEventTypeController::getEventElements()
-	 * @todo test when controller has an event
 	 */
 	public function testgetEventElements()
 	{
@@ -69,15 +82,67 @@ class BaseEventTypeControllerTest extends CDbTestCase
 			->getMock();
 		$event_type->expects( $this->any() )->method('getDefaultElements')->will($this->returnValue(array(1,2)));
 
-		$controller = new _getEventElementsController('_getEventElementsController');
+		$controller = new _getEventElementsController();
 		$controller->event_type = $event_type;
-		$this->assertEquals(count($event_type->getDefaultElements()), count($controller->getEventElements()));
+		$this->assertEquals($event_type->getDefaultElements(), $controller->getEventElements(), 'Controller should return default elements for its event type when no event is set.');
+
+		$event = $this->getMockBuilder('Event')
+			->disableOriginalConstructor()
+			->getMock();
+		$event->expects( $this->any() )->method('getElements')->will($this->returnValue(array('4','5','6')));
+
+		$controller = new _getEventElementsController();
+		$controller->event = $event;
+		$this->assertEquals($event->getElements(), $controller->getEventElements(), 'Controller should return event elements when the event is set.');
 	}
+
+	/**
+	 * @covers BaseEventTypeController::setOpenElementsFromCurrentEvent
+	 */
+	public function testsetOpenElementsFromCurrentEvent()
+	{
+		$event_type = $this->getMockBuilder('EventType')
+			->disableOriginalConstructor()
+			->getMock();
+		$event_type->expects( $this->any() )->method('getDefaultElements')->will($this->returnValue(array($this->getElement($this->element_type('history')))));
+
+		$controller = new _getEventElementsController();
+		$controller->event_type = $event_type;
+		$this->assertEquals(null, $controller->getOpenElements(), 'Controller should start with no open elements');
+		$controller->setOpenElementsFromCurrentEvent('create');
+		$this->assertEquals($event_type->getDefaultElements(), $controller->getOpenElements(), 'Controller should set open_elements to the default elements of the event type.');
+
+		$event = $this->getMockBuilder('Event')
+			->disableOriginalConstructor()
+			->getMock();
+		$event->expects( $this->any() )->method('getElements')->will($this->returnValue(
+				array(
+					$this->getElement($this->element_type('history')),
+					$this->getElement($this->element_type('pasthistory'))
+				)
+			));
+
+		$controller = new _getEventElementsController();
+		$controller->event = $event;
+		$controller->setOpenElementsFromCurrentEvent('update');
+		$this->assertEquals($event->getElements(), $controller->getOpenElements(), 'Controller should set open_elements to the elements of the assigned event.');
+	}
+
 }
 
 class _getEventElementsController extends BaseEventTypeController
 {
+
+	public function __construct()
+	{
+		parent::__construct('_getEventElementsController');
+	}
+
 	public $event_type;
 	// expose protected method in abstract class
 	public function getEventElements() { return parent::getEventElements(); }
+	// expose protected open_elements property
+	public function getOpenElements() { return $this->open_elements; }
+	// expose protected setOpenElementsFromCurrentEvent method
+	public function setOpenElementsFromCurrentEvent($action) { parent::setOpenElementsFromCurrentEvent($action); }
 }
