@@ -132,7 +132,7 @@ class Phasing extends OpenEyesPage
 
     public function secondRightReading ($reading)
     {
-        $this->getElement('phasingPressureLeft2')->setValue($reading);
+        $this->getElement('phasingPressureRight2')->setValue($reading);
     }
 
     public function removeRightReading ()

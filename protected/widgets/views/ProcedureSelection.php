@@ -51,11 +51,10 @@
 						'name'=>'procedure_id_'.$identifier,
 						'id'=>'autocomplete_procedure_id_'.$identifier,
 						'source'=>"js:function(request, response) {
-						var existingProcedures = [];
-						$('#procedureList_$identifier').children('h4').children('div.procedureItem').map(function() {
-							var text = $.trim($(this).children('span:nth-child(2)').text());
-							existingProcedures.push(text);
-						});
+
+						var existingProcedures = $('#procedureList_$identifier .procedure .value')
+							.map(function() { return $(this).text(); })
+							.get();
 
 						$.ajax({
 							'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
@@ -117,14 +116,13 @@
 				<tbody class="body">
 				<?php
 				if (!empty($selected_procedures)) {
-					foreach ($selected_procedures as $procedure) {?>
+					foreach ($selected_procedures as $procedure) {
+						$totalDuration += $procedure['default_duration'];
+				?>
 						<tr class="item">
-							<td>
-								<?php
-								$totalDuration += $procedure['default_duration'];
-								echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
-								echo $procedure['term'];
-								?>
+							<td class="procedure">
+								<span class="field"><?= CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']); ?></span>
+								<span class="value"><?= $procedure['term']; ?></span>
 							</td>
 							<?php if ($durations) {?>
 								<td class="duration">
@@ -331,14 +329,16 @@ $('select[id^="select_procedure_id"]').unbind('change').change(function() {
 	return false;
 });
 
-$(document).ready(function() {
-	if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
-		$('#projected_duration_<?php echo $identifier?>').html((parseInt($('#projected_duration_<?php echo $identifier?>').html().match(/[0-9]+/)) * 2) + " mins");
-	}
-	$('input[name="<?php echo $class?>[eye_id]"]').click(function() {
-		updateTotalDuration('<?php echo $identifier?>');
+<?php if ($durations): ?>
+	$(document).ready(function() {
+		if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
+			$('#projected_duration_<?php echo $identifier?>').html((parseInt($('#projected_duration_<?php echo $identifier?>').html().match(/[0-9]+/)) * 2) + " mins");
+		}
+		$('input[name="<?php echo $class?>[eye_id]"]').click(function() {
+			updateTotalDuration('<?php echo $identifier?>');
+		});
 	});
-});
+<?php endif ?>
 
 function ProcedureSelectionSelectByName(name, callback, identifier)
 {

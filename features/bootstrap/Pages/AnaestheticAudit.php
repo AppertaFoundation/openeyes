@@ -104,6 +104,7 @@ class AnaestheticAudit extends OpenEyesPage
     public function editEvent ()
     {
         $this->getElement('edit')->click();
+        $this->getSession()->wait(5000);
     }
 
     public function deleteEvent ()

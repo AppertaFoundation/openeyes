@@ -104,3 +104,4 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     Then I Add Allergy "12" and Save
 
     And I Add a Family History of relative "4" side "3" condition "2" and comments "Family History Comments" and Save
+
