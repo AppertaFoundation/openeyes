@@ -105,7 +105,7 @@ button, .button, input[type="submit"] {
 // Delete button styles
 button, .button, input[type="submit"] {
 	&.delete {
-		&, &.disabled {
+		&, &.disabled, &[disabled] {
 			@include box-shadow(none);
 			background: none;
 			border-color: #9a091c;
@@ -159,6 +159,7 @@ button, .button, input[type="submit"] {
 			@include background(linear-gradient(#aaaaaa, #999999));
 			border-color: #999999;
 			color: #fff;
+			cursor: default;
 			text-shadow: none;
 		}
 	}

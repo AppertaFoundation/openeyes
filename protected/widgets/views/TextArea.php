@@ -18,7 +18,7 @@
  */
 ?>
 <?php if (!$nowrapper) {?>
-	<div class="row field-row">
+	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row"<?php if ($hidden) echo 'style="display: none"'; ?>>
 		<div class="large-<?php echo $layoutColumns['label']?> column">
 			<label for="<?php echo get_class($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
 		</div>

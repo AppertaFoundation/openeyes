@@ -1,5 +1,6 @@
 <?php
 
+
 class AddingNewEvent extends OpenEyesPage
 {
     protected $path = "OphCiExamination/default/view/{eventId}}";

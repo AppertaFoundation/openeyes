@@ -44,10 +44,8 @@
 			</tbody>
 			<tfoot class="pagination-container">
 				<tr>
-					<td colspan="2">
+					<td colspan="4">
 						<?php echo EventAction::button('Add', 'add', array(), array('class'=> 'small'))->toHtml()?>
-					</td>
-					<td colspan="2">
 						<?php echo $this->renderPartial('_pagination',array(
 							'pagination' => $pagination
 						))?>

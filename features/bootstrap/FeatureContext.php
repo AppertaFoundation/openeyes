@@ -56,8 +56,9 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		 * @var Login $loginPage
 		 */
 		if (isset($this->environment[$environment])) {
-			$this->getPage('HomePage')->open();;
-
+			$homepage = $this->getPage('HomePage');
+			$homepage->open();
+			$homepage->checkOpenEyesTitle('Please login');
 		} else {
 			throw new \Exception("Environment $environment doesn't exist");
 		}
@@ -96,10 +97,14 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	 */
 	public function takeScreenshotAfterFailedStep($event)
 	{
-		$this->stackScreenshots($event);
-		if (4 === $event->getResult()) {
-			$this->saveScreenshots();
-		}
+		try{
+            $this->stackScreenshots($event);
+
+		    if (4 === $event->getResult()) {
+		    	$this->saveScreenshots();
+		    }
+        }catch(Exception $e){
+        }
 	}
 
 	private function stackScreenshots($event)

@@ -130,4 +130,15 @@
       Then I choose a left eye Intraocular Pressure Reading of "9"
       And I add left eye comments of "Left eye comments here"
 
+      Then I add a new Left Reading
+      Then I choose a second left eye Intraocular Pressure Reading Time of "11:07"
+      Then I choose a second left eye Intraocular Pressure Reading of "6"
+
+      Then I add a new Right Reading
+#      Then I choose a second right eye Intraocular Pressure Reading Time of "15:43"
+      Then I choose a second right eye Intraocular Pressure Reading of "20"
+
+      Then I remove the last Right Reading
+      Then I remove the last Left Reading
+
       Then I Save the Phasing Event

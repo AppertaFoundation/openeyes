@@ -105,6 +105,9 @@ class Examination extends OpenEyesPage
         'leftMacularRetinal' => array ('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis1_id']//*[@value='37231002']"),
         'rightVenousRetinalBranchOcclusion' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_diagnosis2_id']//*[@value='24596005']"),
         'leftDiabeticMacularOedema' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis2_id']//*[@value='312912001']"),
+        'rightIntendedTreatment' => array('xpath' => "//select[@id='Element_OphCiExamination_InjectionManagementComplex_right_treatment_id']"),
+        'leftIntendedTreatment' => array('xpath' => "//select[@id='Element_OphCiExamination_InjectionManagementComplex_left_treatment_id']"),
+
 
         'expandVisualFields' => array ('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Visual Fields')]"),
         'expandGonioscopy' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Gonioscopy')]"),
@@ -295,17 +298,13 @@ class Examination extends OpenEyesPage
     public function dilationRight ($dilation, $drops)
     {
         $this->getElement('dilationRight')->selectOption($dilation);
-        $this->getElement('dilationRight')->click();
         $this->getElement('dropsRight')->selectOption($drops);
-        $this->getElement('dropsRight')->blur();
     }
 
     public function dilationLeft ($dilation, $drops)
     {
         $this->getElement('dilationLeft')->selectOption($dilation);
-        $this->getElement('dilationLeft')->click();
         $this->getElement('dropsLeft')->selectOption($drops);
-        $this->getElement('dropsLeft')->blur();
     }
 
     protected function isRefractionCollapsed ()
@@ -379,10 +378,18 @@ class Examination extends OpenEyesPage
         $this->getElement('expandGonioscopy')->click();
     }
 
+    protected function isAdnexalCollapsed ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('expandAdnexalComorbidity')->getXpath());
+    }
+
+
     public function expandAdnexalComorbidity ()
     {
+        if ($this->isAdnexalCollapsed()){
         $this->getElement('expandAdnexalComorbidity')->click();
         $this->getSession()->wait(5000);
+        }
     }
 
     public function leftAdnexal ($left)
@@ -616,6 +623,16 @@ class Examination extends OpenEyesPage
     {
         $this->getElement('leftSecondaryTo')->selectOption($secondary);
         $this->getSession()->wait(5000);
+    }
+
+    public function rightIntendedTreatment ($treatment)
+    {
+        $this->getElement('rightIntendedTreatment')->selectOption($treatment);
+    }
+
+    public function leftIntendedTreatment ($treatment)
+    {
+        $this->getElement('leftIntendedTreatment')->selectOption($treatment);
     }
 
     public function rightCRTIncreaseLowerThanHundredYes ()
@@ -868,7 +885,7 @@ class Examination extends OpenEyesPage
 
     public function saveExamination ()
     {
-        $this->getSession()->wait(10000);
+        $this->getSession()->wait(3000);
         $this->getElement('saveExamination')->click();
     }
 

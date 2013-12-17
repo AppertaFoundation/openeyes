@@ -27,7 +27,7 @@ class BaseEventTypeController extends BaseController
 	public $editing;
 	public $event;
 	public $event_type;
-	public $title;
+	private $title;
 	public $assetPath;
 	public $episode;
 	public $moduleNameCssClass = '';
@@ -43,6 +43,23 @@ class BaseEventTypeController extends BaseController
 	public $current_episode;
 	private $episodes = array();
 	public $renderPatientPanel = true;
+
+
+	public function getTitle()
+	{
+		if(isset($this->title)){
+			return $this->title;
+		}
+		if(isset($this->event_type)){
+			return $this->event_type->name;
+		}
+		return '';
+	}
+
+	public function setTitle($title)
+	{
+		$this->title=$title;
+	}
 
 	/**
 	 * Checks to see if current user can create an event type
@@ -398,7 +415,6 @@ class BaseEventTypeController extends BaseController
 		}
 
 		$this->editable = false;
-		$this->title = 'Create';
 		$this->event_tabs = array(
 				array(
 						'label' => 'Create',
@@ -460,7 +476,6 @@ class BaseEventTypeController extends BaseController
 
 		$this->event->audit('event','view');
 
-		$this->title = $this->event_type->name;
 		$this->event_tabs = array(
 			array(
 				'label' => 'View',
@@ -619,7 +634,6 @@ class BaseEventTypeController extends BaseController
 		}
 
 		$this->editing = true;
-		$this->title = 'Update';
 		$this->event_tabs = array(
 				array(
 						'label' => 'View',
@@ -1027,7 +1041,6 @@ class BaseEventTypeController extends BaseController
 		$this->patient = $this->event->episode->patient;
 		$this->event_type = $this->event->eventType;
 		$this->site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-		$this->title = $this->event_type->name;
 	}
 
 	/**

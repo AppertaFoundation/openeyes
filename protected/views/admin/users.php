@@ -73,11 +73,9 @@
 			</tbody>
 			<tfoot class="pagination-container">
 				<tr>
-					<td colspan="3">
+					<td colspan="9">
 						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
 						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
-					</td>
-					<td colspan="6">
 						<?php echo $this->renderPartial('_pagination',array(
 							'pagination' => $pagination
 						))?>

@@ -21,6 +21,9 @@
 	border-width: 0 5px 5px;
 	margin: 0;
 	padding: 0 emCalc(5px) emCalc(10px) emCalc(5px);
+	&.column {
+		width: 85.4%;
+	}
 	.event-content {
 		background-position: right top;
 		background-repeat: no-repeat;
