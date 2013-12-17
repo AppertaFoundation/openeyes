@@ -132,7 +132,7 @@ Feature: Create New Operation Booking Event
 
     Then I change the Viewing Schedule to Emergency List
 
-    Then I select an Available theatre slot date of the "15" of the month
+    Then I select an Available theatre slot date of next "Saturday"
     And I select an Available session time
 
 #    Then I add Session comments of "Insert session comments here"
