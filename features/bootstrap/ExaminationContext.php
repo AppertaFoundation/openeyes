@@ -273,7 +273,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->rightIntended($treatment);
+        $examination->rightIntendedTreatment($treatment);
     }
 
     /**
@@ -285,7 +285,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->leftIntended($treatment);
+        $examination->leftIntendedTreatment($treatment);
     }
 
     /**
@@ -904,31 +904,6 @@ class ExaminationContext extends PageObjectContext
         $examination= $this->getPage('Examination');
         $examination->leftSecondaryTo($secondary);
     }
-
-    /**
-     * @Given /^I select a Right Intended Treatment of "([^"]*)"$/
-     */
-    public function iSelectARightIntendedTreatmentOf($treatment)
-    {
-        /**
-         * @var Examination $examination
-         */
-        $examination= $this->getPage('Examination');
-        $examination->rightIntendedTreatment($treatment);
-    }
-
-    /**
-     * @Given /^I select a Left Intended Treatment of "([^"]*)"$/
-     */
-    public function iSelectALeftIntendedTreatmentOf($treatment)
-    {
-        /**
-         * @var Examination $examination
-         */
-        $examination= $this->getPage('Examination');
-        $examination->leftIntendedTreatment($treatment);
-    }
-
 
     /**
      * @Then /^I choose a Right CRT Increase <(\d+) of Yes$/

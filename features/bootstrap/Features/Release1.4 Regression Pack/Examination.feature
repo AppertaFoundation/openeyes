@@ -1,4 +1,4 @@
-@examination
+@examination @regression
 Feature: Create New Examination Regression Tests
   Regression over 2 Sites and 4 Firms
   Coverage at 60%
@@ -444,7 +444,7 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Clinical Management section
     And I choose to expand Cataract Management
-#    And I add Cataract Management Comments of "new glasses prescribed, "
+    And I add Cataract Management Comments of "new glasses prescribed, "
     Then I select First Eye
 
     And I choose Straightforward case

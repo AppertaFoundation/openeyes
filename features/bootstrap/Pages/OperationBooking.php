@@ -153,9 +153,9 @@ class OperationBooking extends OpenEyesPage
 
     public function scheduleNow ()
     {
-        $this->getElement('scheduleNow')->keyPress(2191);
+//        $this->getElement('scheduleNow')->keyPress(2191);
         $this->getElement('scheduleNow')->click();
-        $this->getSession()->wait(15000,"window.$ && $('.event-title').html() == 'Schedule Operation' ");
+//        $this->getSession()->wait(15000,"window.$ && $('.event-title').html() == 'Schedule Operation' ");
     }
 
     public function EmergencyList ()
