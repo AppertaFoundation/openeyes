@@ -221,6 +221,7 @@
 		$('#add_medication').slideToggle('fast');
 		$('#btn-add_medication').attr('disabled',false);
 		$('#btn-add_medication').removeClass('disabled');
+		$('div.medication_form_errors').html('').hide();
 		return false;
 	});
 	$('#drug_id').change(function() {
@@ -251,7 +252,9 @@
 		});
 	}
 
-	handleButton($('button.btn_save_medication'),function(e) {
+	$('button.btn_save_medication').click(function(e) {
+		disableButtons('.btn_save_medication,.btn_cancel_medication');
+
 		e.preventDefault();
 
 		$.ajax({
@@ -267,7 +270,7 @@
 					return;
 				}
 
-				enableButtons();
+				enableButtons('.btn_save_medication,.btn_cancel_medication');
 
 				for (var i in data) {
 					$('div.medication_form_errors').show().append('<div>'+data[i]+'</div>');
@@ -296,7 +299,6 @@
 			}
 		});
 
-		$('div.medication_form_errors').hide();
 		$('#add_medication').slideToggle('fast');
 		$('#btn-add_medication').attr('disabled',true);
 		$('#btn-add_medication').addClass('disabled');

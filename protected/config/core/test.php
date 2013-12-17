@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+Yii::setPathOfAlias('yiitests', Yii::getPathOfAlias('system') . '/../tests/framework');
+
 return array(
 	'name' => 'OpenEyes Test',
 	'import' => array(
@@ -24,6 +26,7 @@ return array(
 		'application.components.*',
 		'system.cli.commands.*',
 		'system..db.schema.*',
+		'yiitests.validators.*'
 	),
 	'components' => array(
 		'fixture' => array(
