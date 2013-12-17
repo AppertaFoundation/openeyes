@@ -127,8 +127,9 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 			if (!$this->enable_version || $this->versionToTableByPk($pk,$condition,$params)) {
 				$result = parent::updateByPk($pk,$attributes,$condition,$params);
 
-				if ($transaction && $result) {
-					$transaction->commit();
+				if ($transaction) {
+					// No big deal if $result is 0, it just means the row was unchanged so no new version row is required
+					$result ? $transaction->commit() : $transaction->rollback();
 				}
 
 				return $result;
