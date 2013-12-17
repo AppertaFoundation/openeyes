@@ -54,9 +54,10 @@
 	border-bottom: 2px solid #105dae;
 	color: $button-font-color;
 	font-size: $oe-button-primary-font-size;
-	padding: emCalc(8px) emCalc(28px);
-	text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
+	letter-spacing: 1px;
 	margin: 0;
+	padding: emCalc(8px) emCalc(23px) emCalc(6px) emCalc(23px);
+	text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
 	&:hover {
 		@include background(linear-gradient(#118afb, #1279e3));
 		border-color: #1974d1;
