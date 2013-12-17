@@ -18,13 +18,6 @@
 	@include clearfix;
 }
 
-%element-panel {
-	@extend %clearfix;
-	padding: 10px 10px 0 10px;
-	margin: 0;
-	background: #dae6f1;
-}
-
 %hide-text {
 	background-color: transparent;
 	border: 0;
