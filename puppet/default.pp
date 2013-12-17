@@ -8,6 +8,8 @@ class amp {
     include apache2
     include mysql
     include curl
+    include vim
+    include mail
     include php5
     include openeyes
     include xdebug
