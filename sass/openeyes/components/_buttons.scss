@@ -45,7 +45,7 @@
 //
 
 // Primary button (blue)
-button, .button, input[type="submit"] {
+@include buttons {
 	@include button-base;
 	@include border-radius($button-radius);
 	@include background(linear-gradient(#107be9, #1469bf));
@@ -54,7 +54,7 @@ button, .button, input[type="submit"] {
 	border-bottom: 2px solid #105dae;
 	color: $button-font-color;
 	font-size: $oe-button-primary-font-size;
-	padding: emCalc(8px) emCalc(34px);
+	padding: emCalc(8px) emCalc(28px);
 	text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
 	margin: 0;
 	&:hover {
@@ -69,7 +69,7 @@ button, .button, input[type="submit"] {
 }
 
 // Secondary button (green)
-button, .button, input[type="submit"] {
+@include buttons {
 	&.secondary {
 		@include background(linear-gradient(#43a844, #55a256));
 		border-color: #3fa522;
@@ -86,7 +86,7 @@ button, .button, input[type="submit"] {
 }
 
 // Warning button (red)
-button, .button, input[type="submit"] {
+@include buttons {
 	&.warning {
 		@include background(linear-gradient(#cf0d27, #b8152b));
 		border-color: #9a091c;
@@ -102,31 +102,6 @@ button, .button, input[type="submit"] {
 	}
 }
 
-// Delete button styles
-button, .button, input[type="submit"] {
-	&.delete {
-		&, &.disabled, &[disabled] {
-			@include box-shadow(none);
-			background: none;
-			border-color: #9a091c;
-			border: 0;
-			color: #000;
-			text-shadow: none;
-			&:hover {
-				@include background(linear-gradient(#cf0d27, #b8152b));
-				@include box-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
-				text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
-				color: #fff;
-			}
-			&:active {
-				@include background(linear-gradient(#901828, #761421));
-				border-color: #6b121e;
-				color: #fff;
-			}
-		}
-	}
-}
-
 // Cancel event button styles
 @include buttons {
 	&.cancel.event-action {
@@ -135,11 +110,13 @@ button, .button, input[type="submit"] {
 		background: none;
 		border-color: transparent;
 		color: #ad1515;
+		padding-left: emCalc(12px);
+		padding-right: emCalc(12px);
 		text-shadow: none;
 		&:active,
 		&:hover {
 			@include box-shadow(0 1px 4px rgba(0, 0, 0, 0.3));
-			background-color: #ad1515;
+			background: #ad1515;
 			border-color: #9a091c;
 			text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616;
 			color: #fff;
@@ -147,10 +124,22 @@ button, .button, input[type="submit"] {
 	}
 }
 
+// Delete button styles
+@include buttons {
+	&.delete {
+		&,
+		&.disabled,
+		&[disabled] {
+			@extend .button.cancel.event-action;
+			border: 0;
+		}
+	}
+}
+
 
 // Disabled button (grey)
 // This should always be defined after all other button variations.
-button, .button, input[type="submit"] {
+@include buttons {
 	&.disabled,
 	&[disabled] {
 		&,
@@ -166,7 +155,7 @@ button, .button, input[type="submit"] {
 }
 
 // Extend disabled to inactive buttons
-button, .button, input[type="submit"] {
+@include buttons {
 	&.inactive {
 		@extend button.disabled;
 	}
@@ -183,7 +172,7 @@ button, .button, input[type="submit"] {
 //
 // Styleguide 10.2
 
-button, .button, input[type="submit"] {
+@include buttons {
 	&.small {
 		padding: emCalc(5px) emCalc(20px);
 		font-size: $oe-button-small-font-size;
@@ -216,7 +205,7 @@ button, .button, input[type="submit"] {
 // </a>
 //
 // Styleguide 10.3
-button, .button, input[type="submit"] {
+@include buttons {
 	[class*="icon-button-small-"] {
 		margin: -6px -2px -5px -14px;
 	}
