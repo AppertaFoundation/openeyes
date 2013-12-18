@@ -88,6 +88,9 @@ select {
 	&.inline {
 		width: auto;
 	}
+	&.textMacro {
+		width: 120px;
+	}
 }
 
 /* Normalize file input width */
