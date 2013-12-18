@@ -292,4 +292,13 @@ class BaseController extends Controller
 			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_HEAD);
 		}
 	}
+
+	/**
+	 * Whether the current user is allowed to call print actions
+	 * @return boolean
+	 */
+	public function canPrint()
+	{
+		return BaseController::checkUserLevel(3);
+	}
 }
