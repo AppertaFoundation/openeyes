@@ -90,6 +90,7 @@ class Practice extends BaseActiveRecord
 	{
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'commissioningbodyassigments' => array(self::HAS_MANY, 'CommissioningBodyPracticeAssignment', 'practice_id'),
 			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioning_body_practice_assignment(practice_id, commissioning_body_id)'),
 		);
 	}
@@ -171,5 +172,59 @@ class Practice extends BaseActiveRecord
 	public function getSalutationName()
 	{
 		return Gp::UNKNOWN_SALUTATION;
+	}
+
+	/**
+	 * Delete commissioning body assignments for referential integrity
+	 * Note if patients are assigned to the practice, there will still be
+	 * a referential integrity error and the delete will fail
+	 *
+	 * @return bool
+	 */
+	protected function beforeDelete()
+	{
+		if (parent::beforeDelete()) {
+			foreach ($this->commissioningbodyassigments as $cba) {
+				$cba->delete();
+			}
+			return true;
+		}
+	}
+
+	/**
+	 * Extend parent behaviour to enforce a transaction so that we don't lose commissioning
+	 * body assignments if the delete fails part way through.
+	 *
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function delete()
+	{
+		// perform this process in a transaction if one has not been created
+		$transaction = Yii::app()->db->getCurrentTransaction() === null
+			? Yii::app()->db->beginTransaction()
+			: false;
+
+		try {
+			if (parent::delete()) {
+				if ($transaction) {
+					$transaction->commit();
+				}
+				return true;
+			}
+			else {
+				if ($transaction) {
+					$transaction->rollback();
+				}
+				return false;
+			}
+		}
+		catch (Exception $e) {
+			if ($transaction) {
+				$transaction->rollback();
+			}
+			throw $e;
+		}
+
 	}
 }
