@@ -77,6 +77,14 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 	}
 
 	/**
+	 * Can we view the previous version of the element
+	 */
+	public function canViewPrevious($element_class, $exclude_event_id = null)
+	{
+		return $this->hasPrevious($element_class, $exclude_event_id);
+	}
+
+	/**
 	 * Are there one or more previous instances of an element?
 	 * @param string $element_class
 	 * @return boolean
