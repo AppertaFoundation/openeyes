@@ -64,7 +64,8 @@ class PatientViewContext extends PageObjectContext
          * @var PatientViewNewDiagnosis $patientview
          */
         $patientview= $this->getPage('PatientViewNewDiagnosis');
-        $patientview->addEpisodeAndEvent();
+        $patientview->selectLatestEvent();
+//        $patientview->addEpisodeAndEvent();
     }
 
     /**
@@ -282,6 +283,19 @@ class PatientViewContext extends PageObjectContext
         $patientView->addAllergy($allergy);
 
     }
+
+    /**
+     * @Then /^I confirm the patient has no allergies and Save$/
+     */
+    public function iConfirmThePatientHasNoAllergies()
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->noAllergyTickbox();
+    }
+
 
     /**
      * @Given /^I Add a Family History of relative "([^"]*)" side "([^"]*)" condition "([^"]*)" and comments "([^"]*)" and Save$/

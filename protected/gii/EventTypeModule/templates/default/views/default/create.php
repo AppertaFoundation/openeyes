@@ -2,7 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2013
  * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -18,31 +18,29 @@
  */
 <?php echo "?>\n"?>
 
-<?php echo "<?php\n"?>
-	$this->breadcrumbs=array($this->module->id);
-	$this->header();
+<?php echo "<?php\n"?>$this->beginContent('//patient/event_container');<?php echo "?>\n"?>
+
+<h2 class="event-title"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h2>
+
+<?php echo '<?php'?> $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+	'id'=>'create-form',
+	'enableAjaxValidation'=>false,
+	'layoutColumns' => array(
+		'label' => 2,
+		'field' => 10
+	)
+));
+
+// Event actions
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form'=>'create-form'));
+
 <?php echo "?>\n"?>
 
-<h3 class="withEventIcon"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h3>
+<?php echo '<?php'?> $this->displayErrors($errors)<?php echo "?>\n"?>
+<?php echo '<?php'?> $this->renderDefaultElements($this->action->id, $form)<?php echo "?>\n"?>
+<?php echo '<?php'?> $this->renderOptionalElements($this->action->id, $form)<?php echo "?>\n"?>
+<?php echo '<?php'?> $this->displayErrors($errors, true)<?php echo "?>\n"?>
 
-<div>
-	<?php echo '<?php'?> $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'clinical-create',
-			'enableAjaxValidation'=>false,
-			'htmlOptions' => array('class'=>'sliding'),
-	));
+<?php echo '<?php'?> $this->endWidget()<?php echo "?>\n"?>
 
-	$this->event_actions[] = EventAction::button('Save', 'save', array('colour' => 'green'));
-	$this->renderPartial('//patient/event_actions');
-	<?php echo "?>\n"?>
-
-	<?php echo '<?php'?> $this->displayErrors($errors)<?php echo "?>\n"?>
-	<?php echo '<?php'?> $this->renderDefaultElements($this->action->id, $form)<?php echo "?>\n"?>
-	<?php echo '<?php'?> $this->renderOptionalElements($this->action->id, $form)<?php echo "?>\n"?>
-	<?php echo '<?php'?> $this->displayErrors($errors)<?php echo "?>\n"?>
-
-	<div class="cleartall"></div>
-	<?php echo '<?php'?> $this->endWidget()<?php echo "?>\n"?>
-</div>
-
-<?php echo '<?php'?> $this->footer()<?php echo "?>\n"?>
+<?php echo '<?php'?> $this->endContent()<?php echo "?>\n"?>

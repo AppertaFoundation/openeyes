@@ -18,71 +18,67 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Edit institution</h3>
-		<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-		<div>
-			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'adminform',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'focus'=>'#username'
-			))?>
-			<?php echo $form->textField($institution,'name',array('size'=>'50'))?>
-			<?php echo $form->textField($institution,'remote_id',array('size'=>'10'))?>
-			<?php echo get_class($address)?>
+<div class="box admin">
+	<h2>Edit institution</h2>
+	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'focus'=>'#username',
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5
+		)
+	))?>
+		<?php echo $form->textField($institution,'name',array('size'=>'50'))?>
+		<?php echo $form->textField($institution,'remote_id',array('size'=>'10'))?>
+		<fieldset class="field-row">
+			<legend><?php echo get_class($address)?></legend>
 			<?php echo $form->textField($address,'address1')?>
 			<?php echo $form->textField($address,'address2')?>
 			<?php echo $form->textField($address,'city')?>
 			<?php echo $form->textField($address,'county')?>
 			<?php echo $form->textField($address,'postcode')?>
 			<?php echo $form->dropDownList($address,'country_id',CHtml::listData(Country::model()->findAll(array('order'=>'name')),'id','name'))?>
-			<?php $this->endWidget()?>
-		</div>
-	</div>
+		</fieldset>
+		<?php echo $form->formActions();?>
+	<?php $this->endWidget()?>
 </div>
-<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-<div>
-	<?php echo EventAction::button('Save', 'save', array('colour' => 'green'))->toHtml()?>
-	<?php echo EventAction::button('Cancel', 'cancel', array('colour' => 'red'))->toHtml()?>
-	<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-</div>
-<div class="curvybox white contactLocations">
-	<div class="admin">
-		<h3 class="georgia">Sites</h3>
-		<form id="admin_institution_sites">
-			<ul class="grid reduceheight">
-				<li class="header">
-					<span class="column_id">ID</span>
-					<span class="column_remote_id">Remote ID</span>
-					<span class="column_name">Name</span>
-					<span class="column_address">Address</span>
-				</li>
+
+<div class="box admin">
+	<h2>Sites</h2>
+	<form id="admin_institution_sites">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Remote ID</th>
+					<th>Name</th>
+					<th>Address</th>
+				</tr>
+			</thead>
+			<tbody>
 				<?php
 				$criteria = new CDbCriteria;
 				$criteria->compare('institution_id',$institution->id);
 				$criteria->order = 'name asc';
 				foreach (Site::model()->findAll($criteria) as $i => $site) {?>
-					<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
-						<span class="column_id"><?php echo $site->id?></span>
-						<span class="column_remote_id"><?php echo $site->remote_id?>&nbsp;</span>
-						<span class="column_name"><?php echo $site->name?>&nbsp;</span>
-						<span class="column_address"><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</span>
-					</li>
+					<tr class="clickable" data-id="<?php echo $site->id?>" data-uri="admin/editsite?site_id=<?php echo $site->id?>">
+						<td><?php echo $site->id?></td>
+						<td><?php echo $site->remote_id?>&nbsp;</td>
+						<td><?php echo $site->name?>&nbsp;</td>
+						<td><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</td>
+					</tr>
 				<?php }?>
-			</ul>
-		</form>
-	</div>
+			</tbody>
+		</table>
+	</form>
 </div>
+
 <script type="text/javascript">
 	handleButton($('#et_cancel'),function(e) {
 		e.preventDefault();
 		window.location.href = baseUrl+'/admin/institutions';
-	});
-	$('li.even,li.odd').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/editsite?site_id='+$(this).attr('data-attr-id');
 	});
 </script>

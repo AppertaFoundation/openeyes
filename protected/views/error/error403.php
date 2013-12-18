@@ -22,13 +22,15 @@
 	$helpdesk_email = Yii::app()->params['helpdesk_email'];
 	$this->layout = '//layouts/error';
 ?>
-<h3>Forbidden</h3>
-<p><strong>You do not have permission to access this page</strong></p>
-<h4>Support Options</h4>
+<h2>Forbidden</h2>
+<p class="panel">
+	<strong>You do not have permission to access this page</strong>
+</p>
+<h3>Support Options</h3>
 <ul>
 	<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
 	<li>Less urgent issues email <a
 		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
 	</a></li>
 </ul>
-<div style="color: gray;"><?php echo date('r'); ?></div>
+<p class="date"><?php echo date('r'); ?></p>

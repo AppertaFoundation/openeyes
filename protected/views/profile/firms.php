@@ -18,42 +18,47 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Firms you work in</h3>
-		<div>
-			<form id="profile_firms" method="post" action="/profile/firms">
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_checkbox"><input type="checkbox" id="checkall" /></span>
-						<span class="column_name">Name</span>
-						<span class="column_subspecialty">Subspecialty</span>
-					</li>
-					<div class="sortable">
-						<?php
-						foreach ($user->firmSelections as $i => $firm) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $firm->id?>">
-								<span class="column_checkbox"><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></span>
-								<span class="column_name"><?php echo $firm->name?></span>
-								<span class="column_subspecialty"><?php echo $firm->subspecialtyText?></span>
-							</li>
-						<?php }?>
-					</div>
-				</ul>
-			</form>
+<div class="box admin">
+	<h2>Firms you work in</h2>
+	<form id="profile_firms" method="post" action="/profile/firms">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="checkall" /></th>
+					<th>Name</th>
+					<th>Subspecialty</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach ($user->firmSelections as $i => $firm) {?>
+					<tr data-attr-id="<?php echo $firm->id?>">
+						<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
+						<td><?php echo $firm->name?></td>
+						<td><?php echo $firm->subspecialtyText?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+		</table>
+	</form>
+
+	<div class="row">
+		<div class="large-6 column">
+			<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
+		</div>
+		<div class="large-6 column text-right table-actions">
+			<label for="profile_firm_id" class="inline">Add firm:</label>
+			<?php echo CHtml::dropDownList('profile_firm_id','',$user->getNotSelectedFirmList(),array('empty'=>'- Select -'))?>
+			<?php echo CHtml::link('Add all','#',array('id'=>'add_all','class'=>'field-info'))?>
 		</div>
 	</div>
-	<div>
-		Add firm: <?php echo CHtml::dropDownList('profile_firm_id','',$user->getNotSelectedFirmList(),array('empty'=>'- Select -'))?>
-		<?php echo CHtml::link('Add all','#',array('id'=>'add_all'))?>
-	</div>
+
 </div>
-<div style="margin-bottom:1em;">
-	Note: you can also set the sites you work at, <?php echo CHtml::link('click here',Yii::app()->createUrl('/profile/sites'))?> to do so.
+
+<div class="box admin">
+	<p>Note: you can also set the sites you work at, <?php echo CHtml::link('click here',Yii::app()->createUrl('/profile/sites'))?> to do so.</p>
 </div>
-<div>
-	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
-</div>
+
 <script type="text/javascript">
 	$('#profile_firm_id').change(function(e) {
 		var firm_id = $(this).val();
@@ -91,7 +96,7 @@
 				if (html == "1") {
 					window.location.reload();
 				} else {
-					new OpenEyes.Dialog.Alert({
+					new OpenEyes.UI.Dialog.Alert({
 						content: "Something went wrong trying to add the firms.	Please try again or contact support for assistance."
 					}).open();
 				}

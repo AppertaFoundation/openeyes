@@ -1,6 +1,6 @@
-<div class="admingroup curvybox">
-	<h4>Profile</h4>
-	<ul>
+<div class="box admin">
+	<h2>Profile</h2>
+	<ul class="navigation admin">
 		<?php
 		$links = array();
 		if (Yii::app()->params['profile_user_can_edit']) {

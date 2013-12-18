@@ -1,0 +1,291 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+$oe-form-input-radius: 3px !default;
+
+/* Standard Forms */
+form {
+	margin: 0 0 $form-spacing;
+	&.cancel {
+		margin-bottom: 0;
+	}
+}
+
+/* Label Styles */
+label, .label {
+	@include form-label;
+	&.right {
+		@include form-label(right, false);
+		margin: 0;
+	}
+	&.inline {
+		@include form-label(inline, false);
+		margin: 0;
+		display: inline-block;
+		padding: 0 emCalc(10px) 0 0;
+	}
+	&.align {
+		padding-top: emCalc(5px);
+	}
+	.required {
+		color: #f00;
+	}
+}
+
+/* We use this to get basic styling on all basic form elements */
+@include input-form-fields {
+	@include form-element;
+	@if not $input-include-glowing-effect {
+		@include single-transition(all, 0.15s, linear);
+	}
+	padding: emCalc(5px) emCalc(6px);
+	margin: 0;
+	&.inline {
+		display: inline-block;
+		width: auto;
+		margin: 0 emCalc(10px) 0 0;
+	}
+}
+
+
+input[type="range"] {
+	width: 100%;
+}
+
+input[readonly] {
+	&, &:focus {
+		color: #666;
+		background: #f3f3f3;
+		@include box-shadow(none);
+		border: $input-border-width $input-border-style $input-border-color;
+	}
+}
+
+textarea {
+	min-height: 4em;
+	&.address {
+		font-family: courier;
+		color: #000;
+	}
+}
+
+select {
+	font-size: $default-font-size;
+	max-width: 100%;
+	&.inline {
+		width: auto;
+	}
+}
+
+/* Normalize file input width */
+input[type="file"] {
+	width: 100%;
+}
+
+/* We add basic fieldset styling */
+fieldset {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	&.inline {
+		legend {
+			display: inline-block;
+			float: left;
+			width: auto;
+			padding-right: emCalc(15px);
+			line-height: emCalc(20px);
+			margin: 0;
+		}
+	}
+	// and legend styles
+	legend {
+		font-weight: $legend-font-weight;
+		font-size: $default-font-size;
+		background: $legend-bg;
+		padding: $legend-padding;
+		display: block;
+		margin: $legend-margin;
+		width: 100%;
+		&.column {
+			margin-bottom: 0;
+			// As the fieldset font-size is $default-font-size, we need to
+			// adjust the gutters to account for the smaller em width.
+			padding-left: $column-gutter / 2 + 1em - $default-font-size;
+			padding-right: $column-gutter / 2 + 1em - $default-font-size;
+		}
+		&.align {
+			@extend .label.align;
+		}
+	}
+	legend.column {
+		font-size: $default-font-size;
+	}
+}
+
+/* Error Handling */
+
+// .error input,
+// input.error,
+// .error textarea,
+// textarea.error {
+// 	@include form-error-color;
+// }
+
+.error label,
+label.error {
+	@include form-label-error-color;
+}
+
+.error small,
+small.error {
+	@include form-error-message;
+}
+
+/* Attach elements to the beginning or end of an input */
+
+.prefix,
+.postfix {
+	display: inline-block;
+	padding: 0 emCalc(5px);
+	&.align {
+		@extend .label.align;
+	}
+}
+
+/* Field helpers */
+.field-info {
+	font-size: $default-font-size;
+	display: inline-block;
+	select, input, textarea {
+		font-size: 1em;
+	}
+}
+
+/* Field highlight */
+.field-highlight {
+	@extend .pill;
+	display: block;
+	font-size: 1em;
+	max-width: 100%;
+	&.inline {
+		display: inline-block;
+	}
+	select {
+		width: 100%;
+	}
+}
+
+label {
+	&.highlight {
+		background: #e3f0f2;
+		padding: emCalc(5px) emCalc(14px) emCalc(6px) emCalc(10px);
+		margin-bottom: emCalc(6px);
+		@include border-radius(3px);
+		&:hover {
+			background: #fff;
+		}
+		&.booking {
+			padding: emCalc(9px) emCalc(14px) emCalc(10px) emCalc(10px);
+			&:hover {
+				background: #3665ff;
+				color: #fff;
+			}
+			img {
+				vertical-align: top;
+			}
+		}
+	}
+	input[type="checkbox"],
+	input[type="radio"] {
+		margin: 0;
+		vertical-align: top;
+	}
+}
+
+// Field sizes
+//
+// You should control the width of form fields by the field container (usually
+// using the grid.) There are, however, different field classses that change the
+// font-size and padding, and a fixed-with class to control the width. Please be
+// aware that if you use the fixed-width class, you  will need to manually accomodate
+// this width at different breakpoints.
+//
+// Markup:
+// <input type="text" class="{$modifiers}" />
+//
+// .small             - A small form field
+// .small.fixed-width - A small form field with a fixed width
+//
+// Styleguide 9.2
+
+@include input-form-fields {
+	@include border-radius($oe-form-input-radius);
+	height: auto;
+	&.small {
+		padding: emCalc(3px) emCalc(4px);
+	}
+	&.fixed-width {
+		width: emCalc(110px);
+	}
+	&.large {
+		padding: emCalc(8px) emCalc(5px);
+	}
+}
+
+// Field rows
+.field-row {
+	padding-bottom: 10px;
+	table:last-child {
+		margin-bottom: 0;
+	}
+}
+.eyedraw-row {
+	@extend .field-row;
+}
+
+.field-value {
+	font-size: $default-font-size;
+	line-height: 1.3;
+	margin: 0;
+	li {
+		font-size: 1em;
+		margin-left: 1.4em;
+	}
+	&.none {
+		color: #999;
+		font-style: italic;
+	}
+	&.highlight {
+		@include border-radius(5px);
+		background: white;
+		padding: .75em;
+		font-size: emCalc(18px);
+		margin: 0 -.75em;
+		list-style-type: none;
+		li {
+			font-size: 1em;
+			margin: 0;
+			padding: emCalc(4px) 0;
+		}
+		&.important {
+			background: #fff300;
+		}
+	}
+}
+
+.field-label {
+	@extend .field-value;
+}

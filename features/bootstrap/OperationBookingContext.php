@@ -174,7 +174,7 @@ class OperationBookingContext extends PageObjectContext
          */
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->decisionDate($date);
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
 }
 
     /**
@@ -210,10 +210,46 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
         $operationBooking->scheduleNow();
-
     }
+
+    /**
+     * @Then /^I change the Viewing Schedule to Emergency List$/
+     */
+    public function iChangeTheViewingScheduleToEmergencyList()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->EmergencyList();
+    }
+
+    /**
+     * @Then /^I select Next Month$/
+     */
+    public function iSelectNextMonth()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->nextMonth();
+    }
+
+    /**
+     * @Then /^I select an Available theatre slot date of the "([^"]*)" of the month$/
+     */
+    public function iSelectAnAvailableTheatreSlotDateOfTheOfTheMonth($day)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->availableSlotExactDay($day);
+    }
+
 
     /**
      * @Given /^I select an Available theatre slot date$/
@@ -224,7 +260,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
         $operationBooking->availableSlot();
     }
 
@@ -237,7 +273,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
     }
 
     /**
@@ -249,7 +285,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
         $operationBooking->availableSessionTime();
     }
 
@@ -286,7 +322,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000);
+        $operationBooking->getSession()->wait(3000);
         $operationBooking->confirmSlot();
     }
 }

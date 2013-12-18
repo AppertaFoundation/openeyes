@@ -24,4 +24,36 @@ class php5 {
     require => Exec['apt-update'],
     notify  => Service['apache2']
   }
+
+  package { 'php5-curl':
+      ensure  => present,
+      require => Exec['apt-update'],
+      notify  => Service['apache2']
+  }
+
+  file {'/etc/php5/cli/conf.d/buffering_settings.ini':
+    ensure => present,
+    owner => root, group => root, mode => 444,
+    content => "output_buffering = On \nzend.enable_gc = 0 \n",
+  }
+
+  #define set_php_var_cli($value, $path = 'default') {
+  #    if $path == 'default'
+  #       $path= "/etc/php5/apache/php.ini"
+  #    else
+  #       $path= "/etc/php5/cli/php.ini"
+  #    end
+  #
+  #    exec { "sed -i 's/^;*[[:space:]]*$name[[:space:]]*=.*$/$name = $value/g' $path":
+  #      unless  => "grep -xqe '$name[[:space:]]*=[[:space:]]*$value' -- $path",
+  #      path    => "/bin:/usr/bin",
+  #      require => Package['php5'],
+  #      notify  => Service['apache2'];
+  #    }
+  #}
+
+  #set_php_var_cli {
+  #    "auto_detect_line_endings":       value => 'On', path => 'cli' ;
+  #}
+
 }

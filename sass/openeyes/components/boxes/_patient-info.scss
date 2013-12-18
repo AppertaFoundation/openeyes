@@ -1,0 +1,142 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+// Patient info box
+.box {
+	&.patient-info {
+		background: #fafafa;
+		padding: emCalc(12px);
+		.box-title {
+			font-size: emCalc(13px);
+			color: #e49f10;
+			margin: 0;
+			padding: 0 0 emCalc(10px) 0;
+		}
+		.data-row {
+			padding: emCalc(10px) 0;
+			border-top: 1px dotted #ccc;
+			&:last-child {
+				padding-bottom: 0;
+			}
+			&.highlight {
+				background: goldenrod;
+				> .column {
+					padding-left: emCalc(12px);
+					padding-right: emCalc(12px);
+				}
+				.data-label {
+					color: #eee;
+				}
+				.data-value {
+					color: #666;
+				}
+			}
+		}
+		.field-label {
+			color: #777;
+		}
+		.add-data {
+			> fieldset > legend {
+				margin-bottom: emCalc(25px);
+			}
+			.field-row {
+				padding-bottom: emCalc(12px);
+				&:last-child {
+					padding-bottom: 0;
+				}
+			}
+		}
+		.toggle-trigger {
+			height: 22px;
+			width: 30px;
+			background: #dadada;
+			right: emCalc(12px);
+			&:hover {
+				background: #3665ff;
+			}
+		}
+		.add-data {
+			margin: emCalc(6px) 0 emCalc(12px) 0;
+		}
+	}
+}
+
+// Patient info episodes box
+.box {
+	&.patient-info {
+		&.episodes {
+			background: #dae6f1;
+			.box-title {
+				color: #4d5155;
+				font-weight: bold;
+				float: left;
+				padding: 0;
+			}
+			.box-info {
+				float: right;
+				font-size: $default-font-size;
+			}
+			.summary {
+				font-size: $default-font-size;
+			}
+		}
+		&.episode-links {
+			a {
+				font-size: $default-font-size;
+				@extend %anchor-hover;
+			}
+		}
+	}
+}
+
+// Patient info associated data box
+.box {
+	&.patient-info {
+		&.associated-data {
+			border: 1px solid #999;
+			.box-title {
+				@include border-radius(3px);
+				background: #999;
+				color: #fff;
+				display: inline-block;
+				padding: 5px 10px 5px 45px;
+				position: relative;
+				font-size: emCalc(12px);
+				[class*="icon-"] {
+					position: absolute;
+					left: 0;
+					top: -1px;
+				}
+			}
+			.form {
+				.buttons {
+					text-align: right;
+				}
+			}
+		}
+	}
+}
+
+// Patient info - associated contacts
+.box {
+	&.patient-info {
+		&.patient-contacts {
+			.data-label {
+				color: $form-label-font-color;
+			}
+		}
+	}
+}

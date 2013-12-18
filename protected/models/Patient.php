@@ -284,7 +284,7 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-	 * calculate the patient's age
+	 * Get the patient's age
 	 *
 	 * @return string
 	 */
@@ -294,12 +294,27 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-	* @return boolean Is patient a child?
-	*/
-	public function isChild()
+	 * Calculate the patient's age
+	 *
+	 * @param string $check_date Date to check age on (default is today)
+	 * @return string
+	 */
+	public function ageOn($check_date)
+	{
+		return Helper::getAge($this->dob, $this->date_of_death, $check_date);
+	}
+
+	/**
+	 * @param string $check_date Optional date to check age on (default is today)
+	 * @return boolean Is patient a child?
+	 */
+	public function isChild($check_date = null)
 	{
 		$age_limit = (isset(Yii::app()->params['child_age_limit'])) ? Yii::app()->params['child_age_limit'] : self::CHILD_AGE_LIMIT;
-		return ($this->getAge() < $age_limit);
+		if(!$check_date) {
+			$check_date = date('Y-m-d');
+		}
+		return ($this->ageOn($check_date) < $age_limit);
 	}
 
 	/**
@@ -395,7 +410,7 @@ class Patient extends BaseActiveRecord
 
 	public function getDisplayName()
 	{
-		return '<span class="surname">'.strtoupper($this->last_name).'</span>, <span class="given">'.$this->first_name.'</span>';
+		return '<span class="patient-surname">'.strtoupper($this->last_name).'</span>, <span class="patient-name">'.$this->first_name.'</span>';
 	}
 
 	private function randomData($field)
@@ -790,11 +805,12 @@ class Patient extends BaseActiveRecord
 		foreach ($snomeds as $id) {
 			$disorders[] = Disorder::model()->findByPk($id);
 		}
+
 		$patient_disorder_ids = $this->getAllDisorderIds();
 		$res = array();
 		foreach ($patient_disorder_ids as $p_did) {
 			foreach ($disorders as $d) {
-				if ($d->id == $p_did || $d->ancestorOfIds(array($p_did))) {
+				if (($d->id == $p_did) || $d->ancestorOfIds(array($p_did))) {
 					$res[] = Disorder::model()->findByPk($p_did);
 					break;
 				}
@@ -965,17 +981,33 @@ class Patient extends BaseActiveRecord
 		} elseif ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_II_SET)) {
 			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_II);
 		}
+
 		return null;
 	}
 
 	/**
-	 * Type of diabetes mellitus as a letter string
+	 * Get the patient diabetes type as Disorder instance - will return generic Diabetes
+	 * if no specific type available, but patient has diabetes
+	 *
+	 * @return Disorder|null
+	 */
+	public function getDiabetes()
+	{
+		$type = $this->getDiabetesType();
+		if ($type === null && $this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_SET)) {
+			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES);
+		}
+		return $type;
+	}
+
+	/**
+	 * Diabetes mellitus as a letter string
 	 *
 	 * @return string
 	 */
 	public function getDmt()
 	{
-		if ($disorder = $this->getDiabetesType()) {
+		if ($disorder = $this->getDiabetes()) {
 			return $disorder->term;
 		}
 

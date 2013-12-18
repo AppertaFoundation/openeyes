@@ -1,3 +1,27 @@
+<?
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+?>
+<?php
+/**
+ * @todo : refactor the html
+ */
+?>
 <div class="eventDetail<?php if ($last) {?> eventDetailLast<?php }?>" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
 	<div class="label"><?php echo $label?>:</div>
 	<div class="data split limitWidth">
@@ -54,7 +78,7 @@
 						'select'=>"js:function(event, ui) {
 							".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
 							if (typeof(window.callbackVerifyAddProcedure) == 'function') {
-								window.callbackVerifyAddProcedure(ui.item.value,".($durations?'1':'0').",".($short_version?'1':'0').",function(result) {
+								window.callbackVerifyAddProcedure(ui.item.value,".($durations?'1':'0').",function(result) {
 									if (result != true) {
 										$('#autocomplete_procedure_id_$identifier').val('');
 										return;
@@ -114,7 +138,7 @@
 		if (len <= 1) {
 			$('#procedureList_'+identifier).hide();
 			<?php if ($durations) {?>
-				$('div.extraDetails').hide();
+				$('#procedureList_'+identifier).find('.durations').hide();
 			<?php }?>
 		}
 
@@ -167,16 +191,10 @@
 		var subsection_field = $('select[id=subsection_id_'+identifier+']');
 		var subsection = subsection_field.val();
 		if (subsection != '') {
-			var existingProcedures = [];
-			$('#procedureList_'+identifier).children('h4').children('div.procedureItem').map(function() {
-				var text = $.trim($(subsection_field).children('span:nth-child(2)').text());
-				existingProcedures.push(text.replace(/ - .*?$/,''));
-			});
-
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
 				'type': 'POST',
-				'data': {'subsection': subsection, 'existing': existingProcedures, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
+				'data': {'subsection': subsection,'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
 				'success': function(data) {
 					$('select[name=select_procedure_id_'+identifier+']').attr('disabled', false);
 					$('select[name=select_procedure_id_'+identifier+']').html(data);
@@ -212,7 +230,7 @@
 		<?php }?>
 
 			if (typeof(window.callbackVerifyAddProcedure) == 'function') {
-				window.callbackVerifyAddProcedure(procedure,".($durations?'1':'0').",".($short_version?'1':'0').",function(result) {
+				window.callbackVerifyAddProcedure(procedure,".($durations?'1':'0').",function(result) {
 					if (result != true) {
 						select.val('');
 						return;
@@ -246,12 +264,11 @@
 	function ProcedureSelectionSelectByName(name, callback, identifier)
 	{
 		$.ajax({
-			'url': baseUrl + '/procedure/details?durations=<?php echo $durations?'1':'0'?>&short_version=<?php echo $short_version?'1':'0'?>&identifier='+identifier,
+			'url': baseUrl + '/procedure/details?durations=<?php echo $durations?'1':'0'?>&identifier='+identifier,
 			'type': 'GET',
 			'data': {'name': name},
 			'success': function(data) {
 				var enableDurations = <?php echo $durations?'true':'false'?>;
-				var shortVersion = <?php echo $short_version?'true':'false'?>;
 
 				// append selection onto procedure list
 				$('#procedureList_'+identifier).children('h4').append(data);
@@ -259,7 +276,7 @@
 
 				if (enableDurations) {
 					updateTotalDuration(identifier);
-					$('div.extraDetails').show();
+					$('#procedureList_'+identifier).find('.durations').show();
 				}
 
 				// clear out text field

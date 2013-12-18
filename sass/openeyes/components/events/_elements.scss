@@ -1,0 +1,227 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+%element-panel {
+	@extend %clearfix;
+	padding: 10px 10px 0 10px;
+	margin: 0;
+	background: #dae6f1;
+	.metadata {
+		margin-left: 0;
+		padding-top: 0;
+	}
+}
+
+.element {
+	position: relative;
+	canvas,
+	.canvas {
+		border: 1px solid #ccc;
+		display: block;
+		margin: 0;
+	}
+	.element-eyes {
+		padding: 0;
+		margin: 0;
+		position: relative;
+		overflow: hidden;
+		&:after {
+			border-right: 1px solid #fff;
+			content: " ";
+			display: block;
+			height: 100%;
+			left: 50%;
+			position: absolute;
+			top: 0;
+			width: 0;
+			z-index: 1;
+		}
+	}
+	.inactive .active-form,
+	.inactive-form {
+		display: none;
+	}
+	.inactive {
+		.inactive-form {
+			display: block;
+		}
+	}
+}
+
+.element-header {
+	@extend .clearfix;
+}
+
+.element-title {
+	color: #56a7f1;
+	font-size: $default-font-size;
+	margin: 0;
+	padding: 8px 10px;
+	.element-header & {
+		float: left;
+	}
+}
+
+.element-data {
+	@extend %element-panel;
+}
+
+.element-eye {
+	@extend %element-panel;
+	background: none;
+	&.left-eye,
+	&.right-eye {
+		@extend .large-6;
+	}
+}
+
+.eye-message {
+	font-size: $default-font-size;
+	padding: 0 0 1em 0;
+	text-align: center;
+}
+
+.element-table {
+	margin: 0;
+	&, th {
+		background: #c9ddef;
+	}
+	th[scope="row"], td:first-child {
+		@include grid-column($collapse: null, $columns: 4, $float: false);
+		font-size: $default-font-size;
+		font-weight: normal;
+	}
+	tr {
+		border: 1px solid #dae6f1;
+		&:nth-of-type(even) {
+			background: #c9ddef;
+		}
+	}
+}
+
+// ELEMENT EDIT
+$oe-element-edit-border-top: 2px dotted #8c949c;
+$oe-element-edit-title-font-style: italic;
+
+.edit {
+	.element {
+		border-top: $oe-element-edit-border-top;
+		&.on-demand {
+			@include border-radius(10px);
+			border: 7px solid #c8d3dd;
+			margin: emCalc(5px) 0;
+			&.validation-error {
+				border-color: #da3232;
+			}
+			.alert-box {
+				margin: 1em;
+			}
+		}
+		.alert-box {
+			margin: 1em 0;
+		}
+	}
+	.element-title {
+		font-style: $oe-element-edit-title-font-style;
+	}
+	.element-title-additional {
+		float: left;
+		margin-left: .5em;
+		line-height: 2em;
+		.info {
+			display: inline-block;
+			font-size: $default-font-size;
+			small {
+				display: inline-block;
+				font-size: 85%;
+				margin-left: .5em;
+			}
+		}
+	}
+	.element-fields {
+		@extend .element-data;
+	}
+	.element-eyes {
+		@extend .element-eyes;
+	}
+	.add-side {
+		font-size: $default-font-size;
+		padding: emCalc(12px);
+		text-align: center;
+	}
+	.icon-remove-side {
+		background: image-url("_elements/icons/event-optional/element-remove.png") no-repeat -10px -2px;
+		height: 16px;
+		position: absolute;
+		right: 5px;
+		top: 5px;
+		width: 16px;
+		z-index: 1;
+	}
+	.icon-add-side {
+		background: image-url("_elements/icons/event-optional/element-view.png") no-repeat -10px -4px;
+		height: 16px;
+		width: 16px;
+	}
+	.element-actions {
+		float: right;
+		padding: 6px 10px;
+	}
+	.element-action {
+		font-size: $default-font-size;
+	}
+}
+
+.view {
+	&.highlight-fields {
+		.element {
+			margin-bottom: 10px;
+		}
+		.element-data {
+			background: none;
+			padding-bottom: 0;
+			padding-top: 0;
+			&.highlight {
+				@include border-radius(5px);
+				background: #fff;
+				padding-bottom: emCalc(4px);
+				padding-top: emCalc(4px);
+			}
+			&:not(.event-types) {
+				.field-value {
+					font-size: emCalc(16px);
+				}
+			}
+		}
+
+	}
+	.element-data {
+		.data-title {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+	.element-title {
+		&.highlight {
+			background: #dae6f1;
+			color: #111;
+			float: none;
+			font-size: emCalc(14px);
+			margin-bottom: 1em;
+			padding: emCalc(12px) 10px;
+		}
+	}
+}

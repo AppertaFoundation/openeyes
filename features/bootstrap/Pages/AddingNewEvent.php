@@ -11,15 +11,15 @@ class AddingNewEvent extends Page
         'addEpisodeConfirm' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(), 'Confirm')]"),
         'addEpisodeCancel' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(), 'Cancel')]"),
         'addNewEpisodeButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Add episode')]"),
-        'expandCataractEpisode' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Cataract')]"),
-        'expandGlaucomaEpisode' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Glaucoma')]"),
-        'expandRefractiveEpisode' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Refractive')]"),
-        'expandMedicalRetinalEpisode' => array ('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Medical Retinal')]"),
+        'expandCataractEpisode' => array('xpath' => "//*[@class='episode-title']//*[contains(text(),'Cataract')]"),
+        'expandGlaucomaEpisode' => array('xpath' => "//*[@class='episode-title']//*[contains(text(),'Glaucoma')]"),
+        'expandRefractiveEpisode' => array('xpath' => "//*[@class='episode-title']//*[contains(text(),'Refractive')]"),
+        'expandMedicalRetinalEpisode' => array ('xpath' => "//*[@class='episode-title']//*[contains(text(),'Medical Retinal')]"),
         'expandSupportFirm' => array('xpath' => "//*[@class='episode closed clearfix']//*[contains(text(),'Support Services')]"),
-        'addNewCataractEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=4]"),
-        'addNewGlaucomaEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=7]"),
-        'addNewMedicalRetinalEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id=8]"),
-        'addNewSupportFirmEventButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[@data-attr-subspecialty-id='']"),
+        'addNewCataractEventButton' => array('xpath' => "//*[@class='events-container show']//*[@data-attr-subspecialty-id=4]"),
+        'addNewGlaucomaEventButton' => array('xpath' => "//*[@class='events-container show']//*[@data-attr-subspecialty-id=7]"),
+        'addNewMedicalRetinalEventButton' => array('xpath' => "//*[@class='events-container show']//*[@data-attr-subspecialty-id=8]"),
+        'addNewSupportFirmEventButton' => array('xpath' => "//*[@class='events-container show']//*[@data-attr-subspecialty-id='']"),
         'anaestheticSatisfaction' => array ('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Anaesthetic Satisfaction Audit')]"),
         'consentForm' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Consent form')]"),
         'correspondence' => array('xpath' => "//*[@id='add-new-event-dialog']//*[contains(text(), 'Correspondence')]"),
@@ -114,6 +114,6 @@ class AddingNewEvent extends Page
         if ($event==="Therapy") {
             $this->getElement('therapyApplication')->click();
         }
-        $this->getSession()->wait(3000,false);
+        $this->getSession()->wait(5000);
     }
 }

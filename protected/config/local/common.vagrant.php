@@ -91,7 +91,7 @@ $config = array(
 		'ldap_admin_dn' => 'CN=openeyes,CN=Users,dc=example,dc=com',
 		'ldap_password' => '',
 		'ldap_dn' => 'CN=Users,dc=example,dc=com',
-		'environment' => 'live',
+		'environment' => 'dev',
 		//'audit_trail' => false,
 		//'watermark' => '',
 		//'watermark_admin' => 'You are logged in as admin. So this is OpenEyes Goldenrod Edition',

@@ -1,0 +1,85 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+// Main footer
+//
+// Styles for the main footer used through the application.
+//
+// Markup:
+// <footer class="footer row">
+//     <div class="large-3 columns">
+//         <div class="info">
+//             <a href="#" data-component="support-info-link">Served, with love, by openeyes.local</a>
+//             <br />
+//             <span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
+//         </div>
+//     </div>
+//     <div class="large-6 large-centered columns help">
+//         <div class="panel">
+//             <ul class="inline-list">
+//                 <li><strong>Need help?</strong></li>
+//                 <li>helpdesk@example.com</li>
+//                 <li><strong>12345678</strong></li>
+//                 <li><a target="_new" href="/">Help Documentation</a></li>
+//             </ul>
+//         </div>
+//     </div>
+// </footer>
+//
+// Styleguide 8.1
+
+.footer {
+	@extend .clearfix;
+	background: #b3b0ae image-url("_structure/openeyes_footer.png") no-repeat right top;
+	.info {
+		font-size: emCalc(10px);
+		line-height: 1.5em;
+		padding-bottom: emCalc(5px);
+		padding-top: emCalc(5px);
+		.copyright {
+			color: #666666;
+		}
+	}
+	.help {
+		font-size: emCalc(13px);
+		text-align: left;
+		// @media #{$small} {
+			text-align: center;
+		// }
+		.panel {
+			@include panel(#e2dfdb, emCalc(10px) emCalc(10px) emCalc(10px) - emCalc(4px) emCalc(10px));
+			@include border-radius(0 0 3px 3px);
+			margin: 1px 0 0 0;
+		}
+		.inline-list {
+			display: inline-block;
+			margin: 0;
+			li {
+				border-right: 1px solid #aaaaaa;
+				display: inline-block;
+				line-height: 1;
+				list-style: none;
+				margin: 0 emCalc(16px) emCalc(4px) 0;
+				padding: 0 emCalc(16px) 0 0;
+				&:last-child {
+					padding-right: 0;
+					margin-right: 0;
+					border: 0;
+				}
+			}
+		}
+	}
+}

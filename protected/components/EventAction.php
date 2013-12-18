@@ -25,7 +25,6 @@ class EventAction
 	public $href;
 	public $htmlOptions;
 	public $options = array(
-			'colour' => 'blue',
 			'level' => 'primary',
 			'disabled' => false
 	);
@@ -34,7 +33,9 @@ class EventAction
 	{
 		$action = new self($label, 'button', $options, $htmlOptions);
 		$action->htmlOptions['name'] = $name;
-		$action->htmlOptions['type'] = 'submit';
+		if (!isset($action->htmlOptions['type'])) {
+			$action->htmlOptions['type'] = 'submit';
+		}
 		if (!isset($action->htmlOptions['id'])) {
 			$action->htmlOptions['id'] = 'et_'.strtolower($name);
 		}
@@ -65,14 +66,28 @@ class EventAction
 
 	public function toHtml()
 	{
-		$label = '<span>'.CHtml::encode($this->label).'</span>';
-		$this->htmlOptions['class'] .= ' event-action '.$this->options['level'];
+		$this->htmlOptions['class'] .= ' '.$this->options['level'];
+		$this->htmlOptions['class'] .= ' event-action';
+		$label = CHtml::encode($this->label);
+
+		if ($this->options['level'] === 'save') {
+			$this->htmlOptions['class'] .= ' button secondary small';
+		}
+		if ($this->options['level'] === 'delete') {
+			$content = '<span class="icon-button-small-trash-can"></span>';
+			$content .= '<span class="hide-offscreen">'.$label.'</span>';
+			$label = $content;
+			$this->htmlOptions['class'] .= ' button button-icon small';
+		}
+		if ($this->options['level'] === 'cancel') {
+			$this->htmlOptions['class'] .= ' button small';
+		}
+
 		if ($this->options['disabled']) {
 			$this->htmlOptions['class'] .= ' disabled';
 			$this->htmlOptions['disabled'] = 'disabled';
-		} else {
-			$this->htmlOptions['class'] .= ' '.$this->options['colour'];
 		}
+
 		if ($this->type == 'button') {
 			return CHtml::htmlButton($label, $this->htmlOptions);
 		} elseif ($this->type == 'link') {

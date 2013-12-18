@@ -18,48 +18,39 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Site</h3>
-		<div class="pagination">
-			<?php echo $this->renderPartial('_pagination',array(
-				'prefix' => '/admin/sites/',
-				'page' => $sites['page'],
-				'pages' => $sites['pages'],
-			))?>
-		</div>
-		<div>
-			<form id="admin_institution_sites">
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_id">ID</span>
-						<span class="column_remote_id">Remote ID</span>
-						<span class="column_name">Name</span>
-						<span class="column_address">Address</span>
-					</li>
-					<div class="sortable">
-						<?php
-						foreach ($sites['items'] as $i => $site) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
-								<span class="column_id"><?php echo $site->id?></span>
-								<span class="column_remote_id"><?php echo $site->remote_id?>&nbsp;</span>
-								<span class="column_name"><?php echo $site->name?>&nbsp;</span>
-								<span class="column_address"><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</span>
-							</li>
-						<?php }?>
-					</div>
-				</ul>
-			</form>
-		</div>
-	</div>
+<div class="box admin">
+	<h2>Site</h2>
+	<form id="admin_institution_sites">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Remote ID</th>
+					<th>Name</th>
+					<th>Address</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach ($sites['items'] as $i => $site) {?>
+					<tr class="clickable" data-id="<?php echo $site->id?>" data-uri="admin/editsite?site_id=<?php echo $site->id?>">
+						<td><?php echo $site->id?></td>
+						<td><?php echo $site->remote_id?></td>
+						<td><?php echo $site->name?></td>
+						<td><?php echo $site->getLetterAddress(array('delimiter'=>', '))?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot class="pagination-container">
+				<tr>
+					<td colspan="4">
+						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo $this->renderPartial('_pagination',array(
+							'pagination' => $pagination
+						))?>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
 </div>
-<div>
-	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
-	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
-</div>
-<script type="text/javascript">
-	$('li.even,li.odd').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/editsite?site_id='+$(this).attr('data-attr-id');
-	});
-</script>

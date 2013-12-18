@@ -18,46 +18,51 @@
  */
 
 ?>
-<div class="curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Contact location</h3>
-		<div>
-			<span class="label-nofloat">Contact:</span>
-			<?php echo $location->contact->fullName?>
+<div class="box admin">
+	<h2>Contact location</h2>
+	<div class="row data-row">
+		<div class="large-2 column">
+			<div class="data-label">Contact:</div>
 		</div>
-		<div>
-			<span class="label-nofloat"><?php echo $location->site_id ? 'Site' : 'Institution'?>:</span>
-			<?php echo $location->site ? $location->site->name : $location->institution->name?>
+		<div class="large-10 column">
+			<div class="data-value"><?php echo $location->contact->fullName?></div>
+		</div>
+	</div>
+	<div class="row data-row">
+		<div class="large-2 column">
+			<div class="data-label"><?php echo $location->site_id ? 'Site' : 'Institution'?>:</div>
+		</div>
+		<div class="large-10 column">
+			<div class="data-value">
+				<?php echo $location->site ? $location->site->name : $location->institution->name?>
+			</div>
 		</div>
 	</div>
 </div>
-<div class="curvybox white contactPatients">
-	<div class="admin">
-		<h3 class="georgia">Patients</h3>
-		<form id="admin_contact_patients">
-			<ul class="grid reduceheight">
-				<li class="header">
-					<span class="column_hos_num">Hos num</span>
-					<span class="column_title">Title</span>
-					<span class="column_first_name">First name</span>
-					<span class="column_last_name">Last name</span>
-				</li>
+
+<div class="box admin">
+	<h2>Patients</h2>
+	<form id="admin_contact_patients">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th>Hos num</th>
+					<th>Title</th>
+					<th>First name</th>
+					<th>Last name</th>
+				</tr>
+			</thead>
+			<tbody>
 				<?php
 				foreach ($location->patients as $i => $patient) {?>
-					<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $patient->id?>">
-						<span class="column_hos_num"><?php echo $patient->hos_num?>&nbsp;</span>
-						<span class="column_title"><?php echo $patient->title?>&nbsp;</span>
-						<span class="column_first_name"><?php echo $patient->first_name?>&nbsp;</span>
-						<span class="column_last_name"><?php echo $patient->last_name?>&nbsp;</span>
-					</li>
+					<tr class="clickable" data-id="<?php echo $patient->id?>" data-uri="patient/view/<?php echo $patient->id?>">
+						<td><?php echo $patient->hos_num?>&nbsp;</td>
+						<td><?php echo $patient->title?>&nbsp;</td>
+						<td><?php echo $patient->first_name?>&nbsp;</td>
+						<td><?php echo $patient->last_name?>&nbsp;</td>
+					</tr>
 				<?php }?>
-			</ul>
-		</form>
-	</div>
+			</tbody>
+		</table>
+	</form>
 </div>
-<script type="text/javascript">
-	$('li.even, li.odd').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/patient/view/'+$(this).attr('data-attr-id');
-	});
-</script>

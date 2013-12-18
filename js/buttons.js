@@ -16,9 +16,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-var button_colours = ["red","blue","green"];
-var button_cache = {};
-
 function handleButton(button, callback) {
 	button.click(function(e) {
 		if (!button.hasClass('inactive')) {
@@ -28,36 +25,57 @@ function handleButton(button, callback) {
 			}
 		} else {
 			e.preventDefault();
+			console.log('canceled');
 		}
 	});
 }
 
-function disableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		var selection = $('button.'+col);
-		selection.removeClass(col).addClass('inactive');
-		selection.children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
-		selection.children('a').children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
-		if(button_cache[col]) {
-			button_cache[col] = button_cache[col].add(selection);
-		} else {
-			button_cache[col] = selection;
-		}
-	}
+/**
+ * This method prevents click event handlers from being called on disabled *link* buttons,
+ * for example: <a href="#" class="button disabled">
+ */
+function preventClickOnDisabledButton() {
+	// Remove, then bind the disable click handler.
+	$(this)
+	.off('click.disable')
+	.on('click.disable', function(e) {
+		e.stopImmediatePropagation(); // Prevent other click handlers from being executed.
+		e.stopPropagation();          // Prevent the event from bubbling.
+		e.preventDefault();           // Prevent the default action (when using a link button)
+	});
+
+	// Arrange the events so that the disable handler is always executed first.
+	var events = $._data(this, 'events').click
+	events.unshift(events.pop()); // Move the last event to the start of the event stack.
+}
+
+function disableButtons(selector) {
+
+	selector = $(selector || $('button,.button').not('.cancel'));
+
+	selector
+	.addClass('inactive')
+	.each(preventClickOnDisabledButton);
+
+	// Chrome will prevent the form from being submitted if the submit button is
+	// disabled in the same event loop, this fixes that issue.
+	setTimeout(function() {
+		selector.attr('disabled', true);
+	});
+
 	$('.loader').show();
 }
 
-function enableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		if (button_cache[col]) {
-			button_cache[col].removeClass('inactive').addClass(col);
-			button_cache[col].children('span').removeClass('button-span-inactive').addClass('button-span-'+col);
-			button_cache[col].children('a').children('span').removeClass('button-span-inactive').addClass('button-span-'+col);
-		}
-	}
-	button_cache = {};
+function enableButtons(selector) {
+
+	selector = $(selector || 'button,.button');
+
+	selector
+	.not('.cancel')
+	.removeClass('inactive')
+	.removeAttr('disabled')
+	.off('click.disable');
+
 	$('.loader').hide();
 }
 

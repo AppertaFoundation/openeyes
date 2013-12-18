@@ -17,44 +17,91 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="whiteBox patientDetails" id="personal_details">
-	<div class="patient_actions">
-		<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
-	</div>
-	<h4>Personal Details:</h4>
-	<div class="data_row">
-		<div class="data_label">First name(s):</div>
-		<div class="data_value"><?php echo $this->patient->first_name?></div>
-	</div>
-	<div class="data_row">
-		<div class="data_label">Last name:</div>
-		<div class="data_value"><?php echo $this->patient->last_name?></div>
-	</div>
-	<div class="data_row">
-		<div class="data_label">Address:</div>
-		<div class="data_value"><?php echo $this->patient->getSummaryAddress()?></div>
-	</div>
-	<div class="data_row">
-		<div class="data_label">Date of Birth:</div>
-		<div class="data_value">
-			<?php echo ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?>
+<section class="box patient-info js-toggle-container">
+	<h3 class="box-title">Personal Details:</h3>
+	<a href="#" class="toggle-trigger toggle-hide js-toggle">
+		<span class="icon-showhide">
+			Show/hide this section
+		</span>
+	</a>
+	<div class="js-toggle-body">
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">First name(s):</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo $this->patient->first_name?></div>
+			</div>
+		</div>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Last name:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value"><?php echo $this->patient->last_name?></div>
+			</div>
+		</div>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Address:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value">
+					<?php echo $this->patient->getSummaryAddress()?>
+				</div>
+			</div>
+		</div>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Date of Birth:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value">
+					<?php echo ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?>
+				</div>
+			</div>
+		</div>
+
+		<div class="row data-row">
+			<?php if ($this->patient->date_of_death) { ?>
+				<div class="large-4 column">
+					<div class="data-label">Date of Death:</div>
+				</div>
+				<div class="large-8 column">
+					<div class="data-value">
+						<?php echo $this->patient->NHSDate('date_of_death') . ' (Age '.$this->patient->getAge().')' ?>
+					</div>
+				</div>
+			<?php } else {?>
+				<div class="large-4 column">
+					<div class="data-label">Age:</div>
+				</div>
+				<div class="large-8 column">
+					<div class="data-value">
+						<?php echo $this->patient->getAge()?>
+					</div>
+				</div>
+			<?php }?>
+		</div>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Gender:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value">
+					<?php echo $this->patient->getGenderString() ?>
+				</div>
+			</div>
+		</div>
+		<div class="row data-row">
+			<div class="large-4 column">
+				<div class="data-label">Ethnic Group:</div>
+			</div>
+			<div class="large-8 column">
+				<div class="data-value">
+					<?php echo $this->patient->getEthnicGroupString() ?>
+				</div>
+			</div>
 		</div>
 	</div>
-	<div class="data_row">
-		<?php if ($this->patient->date_of_death) { ?>
-		<div class="data_label">Date of Death:</div>
-		<div class="data_value"><?php echo $this->patient->NHSDate('date_of_death') . ' (Age '.$this->patient->getAge().')' ?></div>
-		<?php } else {?>
-		<div class="data_label">Age:</div>
-		<div class="data_value"><?php echo $this->patient->getAge()?></div>
-		<?php }?>
-	</div>
-	<div class="data_row">
-		<div class="data_label">Gender:</div>
-		<div class="data_value"><?php echo $this->patient->getGenderString() ?></div>
-	</div>
-	<div class="data_row">
-		<div class="data_label">Ethnic Group:</div>
-		<div class="data_value"><?php echo $this->patient->getEthnicGroupString() ?></div>
-	</div>
-</div>
+</section>

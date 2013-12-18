@@ -1,5 +1,5 @@
-@Intravitreal
-Feature: Create New Anaesthetic Satisfaction Audit
+
+Feature: Create New Intravitreal Event
   In order to cover every possible route throughout the site
   As an automation tester
   I want to build a template with supporting code for each web page
@@ -9,19 +9,20 @@ Feature: Create New Anaesthetic Satisfaction Audit
     Given I am on the OpenEyes "<environment>" homepage
     And I enter login credentials "<username>" and "<password>"
     And I select Site "1"
-    Then I select a firm of "3"
+    Then I select a firm of "1"
 
     Then I search for hospital number "<hospnumber>"
   #Then I search for patient name last name "<last>" and first name "<first>"
 
   #Then I select Add First New Episode and Confirm
-    Then I select Create or View Episodes and Events
-  #Then I select the Latest Event
-  #Then I expand the Cataract sidebar
-    Then I expand the Glaucoma sidebar
+#    Then I select Create or View Episodes and Events
+  Then I select the Latest Event
+  Then I expand the Cataract sidebar
+#    Then I expand the Glaucoma sidebar
     And I add a New Event "<EventType>"
 
     #Anaesthetic Right
+    Then I select Add Right Side
     Then I choose Right Anaesthetic Type of Topical
     Then I choose Right Anaesthetic Type of LA
 

@@ -1,0 +1,296 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+// Generic tables
+//
+// Markup:
+// <table class="{$modifiers}">
+//     <thead>
+//         <tr>
+//             <th>Cell header 1</th>
+//             <th>Cell header 2</th>
+//         </tr>
+//     </thead>
+//     <tbody>
+//         <tr>
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
+//         <tr>
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
+//     </tbody>
+// </table>
+//
+// .grid             - Styles a table like a grid (with borders)
+//
+// Styleguide 6.1
+
+// Table vars
+$oe-table-cell-font-size: emCalc(13px);
+$oe-table-footer-cell-font-size: emCalc(11px);
+$oe-table-cell-font-size-reset: 1em * 1em / $oe-table-cell-font-size;
+$oe-table-footer-cell-font-size-reset: 1em * 1em / $oe-table-footer-cell-font-size;
+
+table {
+	min-width: 100%;
+	@include table;
+	@include all-form-fields {
+		font-size: 1em;
+	}
+
+	tr {
+		th {
+			text-align: left;
+			background: #dddddd;
+			font-size: emCalc(11px);
+			&, label {
+				font-weight: bold;
+			}
+		}
+		td {
+			font-size: $oe-table-cell-font-size;
+		}
+		td, th {
+			button, .button {
+				font-size: $oe-button-primary-font-size / (1em / $oe-table-cell-font-size-reset);
+				&.small {
+					font-size: $oe-button-small-font-size / (1em / $oe-table-cell-font-size-reset);
+				}
+			}
+		}
+		&.odd {
+			background: $table-bg;
+		}
+		&.even {
+			background: $table-even-row-bg;
+		}
+	}
+	tfoot {
+		font-weight: normal;
+		tr {
+			th,
+			td {
+				font-size: $oe-table-footer-cell-font-size;
+				font-weight: bold;
+				button, .button {
+					font-size: $oe-button-primary-font-size / (1em / $oe-table-footer-cell-font-size-reset);
+					&.small {
+						font-size: $oe-button-small-font-size / (1em / $oe-table-footer-cell-font-size-reset);
+					}
+				}
+			}
+			&.even,
+			&.alt,
+			&:nth-of-type(even) {
+				background: none;
+			}
+		}
+	}
+	&.grid {
+		tr {
+			border-bottom: 1px solid #CCD;
+			&:last-child {
+				border: 0;
+			}
+		}
+		th, td {
+			border-right: 1px solid #CCD;
+		}
+		th:last-child,
+		td:last-child {
+			border-right: none;
+		}
+		tfoot {
+			border-top: 1px solid $table-border-color;
+			tr {
+				border-bottom: 0;
+			}
+		}
+	}
+	.clickable {
+		cursor: pointer;
+		&:hover {
+			background: #3665ff;
+			td {
+				color: #fff;
+			}
+		}
+	}
+	// Form fields within tables
+	td, th {
+		label {
+			font-size: emCalc(16px);
+		}
+	}
+	button, .button {
+		font-size: 1em;
+	}
+}
+
+table {
+	&.white {
+		&, tr:nth-of-type(even) {
+			background: #fff;
+		}
+	}
+}
+
+// Plain table
+//
+// Markup:
+// <table class="plain">
+//     <thead>
+//         <tr>
+//             <th>Heading 1</th>
+//             <th>Heading 2</th>
+//         </tr>
+//     </thead>
+//     <tbody>
+//         <tr>
+//             <td>
+//                 Cell 1
+//             </td>
+//             <td>
+//                 Cell 2
+//             </td>
+//         </tr>
+//     </tbody>
+// </table>
+//
+// Styleguide 6.4
+table {
+	&.plain {
+		&, td, th, tr {
+			border: 0;
+		}
+		&, tr:nth-of-type(even) {
+			background: transparent;
+		}
+	}
+}
+
+table {
+	&.blank {
+		background: none;
+		border: 0;
+		width: auto;
+		min-width: 0;
+		thead {
+			background: none;
+		}
+		th {
+			background: none;
+			font-weight: normal;
+			font-size: $default-font-size;
+			padding-left: 0;
+		}
+		tfoot {
+			background: none;
+			td {
+				padding: $table-head-padding;
+				padding-left: 0;
+				padding-right: 0;
+			}
+		}
+		tr {
+			background: none;
+		}
+		td {
+			padding: 2px 10px 2px 0;
+			img {
+				height: auto;
+				width: auto;
+			}
+		}
+	}
+}
+
+// Patient episodes table
+table {
+	&.patient-episodes {
+		border-bottom: 15px solid #ddd;
+		td, th {
+			padding: 10px;
+		}
+		.speciality {
+			background: #eae4ce;
+			td {
+				color: #69634f;
+				font-size: emCalc(12px);
+			}
+		}
+	}
+}
+
+// Patient associated data table
+table {
+	&.patient-data {
+		th, td {
+			background: #fff;
+		}
+	}
+}
+
+// Patient contacts table
+table {
+	&.patient-contacts {
+		margin-top: emCalc(10px);
+		td {
+			font-size: emCalc(11px);
+		}
+		th, td {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+		td:first-child {
+			font-size: $default-font-size;
+		}
+	}
+}
+
+// Audit logs table
+table {
+	&.audit-logs {
+		tr {
+			&.even.green {
+				background-color: #c6ebb9;
+			}
+			&.odd.green {
+				background-color: #e0f8d8;
+			}
+			&.even.red {
+				background-color: #eba694;
+			}
+			&.odd.red {
+				background-color: #e9c2b8;
+			}
+		}
+	}
+	&.log-details {
+		width: 100%;
+		table-layout: fixed;
+		th {
+			vertical-align: top;
+			width: 9%;
+		}
+		.data {
+			overflow-x: auto;
+			padding-bottom: 1px;
+		}
+	}
+}

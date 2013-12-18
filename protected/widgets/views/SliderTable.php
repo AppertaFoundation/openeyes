@@ -17,6 +17,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php
+/**
+ * @todo : refactor the html
+ */
+?>
 <script type="text/javascript">
 	var widgetSliderTable_<?php echo get_class($element)?>_<?php echo $field?> = new WidgetSliderTable({
 		'range_id': '<?php echo get_class($element)?>_<?php echo $field?>',

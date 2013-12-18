@@ -35,7 +35,7 @@ AuditLog.prototype = {
 		this.running = true;
 
 		last_id = null;
-		$('#auditListData').children('li').map(function() {
+		$('#auditListData').children('tr').map(function() {
 			if (last_id == null && $(this).attr('id') != 'undefined') {
 				last_id = $(this).attr('id').match(/[0-9]+/);
 			}
@@ -52,7 +52,7 @@ AuditLog.prototype = {
 
 					auditLog.lines = [];
 
-					auditLog.data.children('li').map(function() {
+					auditLog.data.children('tr').map(function() {
 						if (!$(this).attr('class').match(/auditextra/) && $(this).is(':hidden')) {
 							auditLog.lines.push($(this));
 						}
@@ -71,22 +71,22 @@ AuditLog.prototype = {
 		} else {
 			var line = this.lines.pop();
 
-			var even = $('#auditListData').children('li:visible').attr('class').match(/Even/);
+			var even = $('#auditListData').children('tr:visible').attr('class').match(/even/);
 
 			if (even) {
-				line.attr('class',line.attr('class').replace(/Even/,'Odd'));
+				line.attr('class',line.attr('class').replace(/even/,'odd'));
 			} else {
-				line.attr('class',line.attr('class').replace(/Odd/,'Even'));
+				line.attr('class',line.attr('class').replace(/odd/,'even'));
 			}
 
 			var lines = this.lines;
 
 			line.slideToggle('fast',function() {
-				var last_extra = auditLog.data.children('li').last();
+				var last_extra = auditLog.data.children('tr').last();
 				if (!last_extra.is(':hidden')) {
 					last_extra.slideToggle('fast',function() {
 						$(this).remove();
-						auditLog.data.children('li').last().slideToggle('fast',function() {
+						auditLog.data.children('tr').last().slideToggle('fast',function() {
 							$(this).remove();
 							if (lines == 0) {
 								setTimeout('auditLog.refresh();',1000);
@@ -97,7 +97,7 @@ AuditLog.prototype = {
 					});
 				} else {
 					last_extra.remove();
-					auditLog.data.children('li').last().slideToggle('fast',function() {
+					auditLog.data.children('tr').last().slideToggle('fast',function() {
 						$(this).remove();
 						if (lines == 0) {
 							setTimeout('auditLog.refresh();',1000);
@@ -110,10 +110,14 @@ AuditLog.prototype = {
 		}
 	},
 	loadItems : function() {
+
 		if (this.running) {
 			setTimeout('auditLog.loadItems()',50);
 			return;
 		}
+
+		var loadingMsg = $('#search-loading-msg');
+		loadingMsg.show();
 
 		$.ajax({
 			'url': baseUrl+'/audit/search',
@@ -124,9 +128,12 @@ AuditLog.prototype = {
 
 				$('.loader').hide();
 				$('#searchResults').html(s[0]);
-				$('div.pagination').html(s[1]).show();
+				$('.pagination').html(s[1]).show();
 
 				return false;
+			},
+			'complete': function() {
+				loadingMsg.hide();
 			}
 		});
 	}
@@ -145,13 +152,14 @@ $(document).ready(function() {
 
 	$('a.auditItem').die('click').live('click',function() {
 		var id = $(this).attr('id').match(/[0-9]+/);
-		$('li.auditextra'+id).slideToggle('fast');
+		$('.auditextra'+id).slideToggle('fast');
 		return false;
 	});
 
 	$('a.showData').die('click').live('click',function() {
 		var id = $(this).attr('id').match(/[0-9]+/);
 		var data = $(this).next('input').val();
+		$(this).closest('.link').hide();
 		$('#dataspan'+id).html(data);
 		return false;
 	});

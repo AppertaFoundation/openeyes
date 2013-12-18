@@ -17,53 +17,48 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="eventDetail<?php if ($last) {?> eventDetailLast<?php }?>" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-	<div class="label"><?php echo $label?>:</div>
-	<div class="data split limitWidth">
-		<div class="left">
+<div class="row field-row procedure-selection readonly" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+	<div class="large-<?php echo $layoutColumns['label'];?> column">
+		<div class="data-label"><?php echo $label?>:</div>
+	</div>
+	<div class="large-4 column">
+		<?php
+		$totalDuration = 0;
+		?>
+		<div id="procedureList_<?php echo $identifier?>" class="panel procedures readonly" style="<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
 			<?php
-			$totalDuration = 0;
-			?>
-			<div id="procedureList_<?php echo $identifier?>" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
-				<h4>
-					<?php
-					if (!empty($selected_procedures)) {
-						foreach ($selected_procedures as $procedure) {?>
-							<div class="procedureItem">
-								<span class="middle<?php echo (!$durations) ? " noDuration" : ""; ?>">
-									<?php
-										$totalDuration += $procedure['default_duration'];
-										echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
-										echo "<span>".$procedure['term'];
-										if ($short_version) {
-											echo '</span> - <span>'.$procedure['short_format'];
-										}
-										echo "</span>";
-									?>
-								</span>
-								<?php if ($durations) {?>
-									<span class="right">
-										<?php echo $procedure['default_duration']?> mins
-									</span>
-								<?php } ?>
+			if (!empty($selected_procedures)) {
+				foreach ($selected_procedures as $procedure) {?>
+					<div class="row procedureItem">
+						<div class="large-<?php echo (!$durations) ? "12" : "10"; ?> column">
+							<?php
+								$totalDuration += $procedure['default_duration'];
+								echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
+								echo "<span>".$procedure['term']."</span>";
+							?>
+						</div>
+						<?php if ($durations) {?>
+							<div class="large-2 column">
+								<div class="field-value"><?php echo $procedure['default_duration']?> mins</div>
 							</div>
-						<?php	}
-					}
-					?>
-				</h4>
-				<div class="extraDetails grid-view"<?php if (empty($selected_procedures) || !$durations) {?> style="display: none;"<?php }?>>
-					<table class="grid">
-						<tfoot>
-							<tr>
-								<th>Calculated Total Duration:</th>
-								<th id="projected_duration_<?php echo $identifier?>"><?php echo $totalDuration?> mins</th>
-								<th>Estimated Total Duration:</th>
-								<th><input type="text" value="<?php echo $total_duration?>" id="<?php echo $class?>_total_duration_<?php echo $identifier?>" name="<?php echo $class?>[total_duration_<?php echo $identifier?>]" style="width: 60px;"></th>
-							</tr>
-						</tfoot>
-					</table>
-				</div>
-			</div>
+						<?php } ?>
+					</div>
+				<?php	}
+			}?>
+		</div>
+	</div>
+	<div class="large-6 column">
+		<div<?php if (empty($selected_procedures) || !$durations) {?> style="display: none;"<?php }?>>
+			<table class="plain">
+				<tfoot>
+					<tr>
+						<th>Calculated Total Duration:</th>
+						<th id="projected_duration_<?php echo $identifier?>"><?php echo $totalDuration?> mins</th>
+						<th>Estimated Total Duration:</th>
+						<th><input type="text" value="<?php echo $total_duration?>" id="<?php echo $class?>_total_duration_<?php echo $identifier?>" name="<?php echo $class?>[total_duration_<?php echo $identifier?>]" style="width: 60px;"></th>
+					</tr>
+				</tfoot>
+			</table>
 		</div>
 	</div>
 </div>

@@ -18,16 +18,17 @@
  */
 <?php echo "?>\n"?>
 
-<h4 class="elementTypeName"><?php echo '<?php'?> echo $element->elementType->name<?php echo '?>'?></h4>
-
-<table class="subtleWhite normalText">
-	<tbody>
-<?php
-if (isset($element)) {
-	foreach ($element['fields'] as $field) {
-		echo $this->getHTMLFieldView($field)."\n";
-	}
-}
-?>
-	</tbody>
-</table>
+<section class="element">
+	<header class="element-header">
+		<h3 class="element-title"><?php echo '<?php'?> echo $element->elementType->name<?php echo '?>'?></h3>
+	</header>
+	<div class="element-data">
+		<?php
+		if (isset($element)) {
+			foreach ($element['fields'] as $field) {
+				echo $this->getHTMLFieldView($field)."\n";
+			}
+		}
+		?>
+	</div>
+</section>

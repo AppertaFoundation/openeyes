@@ -17,6 +17,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php
+/**
+ * @todo : refactor the html
+ */
+?>
 <div id="div_<?php echo get_class($element)?>_<?php echo $field?>_TextSelection" class="eventDetail">
 	<?php if (!@$htmlOptions['no_label']) {?>
 		<div class="label"><?php echo $element->getAttributeLabel($field)?>:</div>

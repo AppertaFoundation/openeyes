@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class SliderTable extends BaseCWidget
+class SliderTable extends BaseFieldWidget
 {
 	public $min = 1;
 	public $max;

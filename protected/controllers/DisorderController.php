@@ -19,8 +19,6 @@
 
 class DisorderController extends BaseController
 {
-	public $layout='column2';
-
 	public function accessRules()
 	{
 		return array(

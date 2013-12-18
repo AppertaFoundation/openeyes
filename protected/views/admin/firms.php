@@ -18,47 +18,47 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Firm</h3>
-		<div class="pagination">
-			<?php echo $this->renderPartial('_pagination',array(
-				'prefix' => '/admin/firms/',
-				'page' => $firms['page'],
-				'pages' => $firms['pages'],
-			))?>
-		</div>
-		<div>
-			<form id="admin_firms">
-				<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_checkbox"><input type="checkbox" name="selectall" id="selectall" /></span>
-						<span class="column_id">ID</span>
-						<span class="column_pas_code">PAS code</span>
-						<span class="column_name">Name</span>
-						<span class="column_subspecialty">Subspecialty</span>
-						<span class="column_consultant">Consultant</span>
-					</li>
-					<div class="sortable">
-						<?php
-						foreach ($firms['items'] as $i => $firm) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $firm->id?>">
-								<span class="column_checkbox"><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></span>
-								<span class="column_id"><?php echo $firm->id?></span>
-								<span class="column_pas_code"><?php echo $firm->pas_code?>&nbsp;</span>
-								<span class="column_name"><?php echo $firm->name?>&nbsp;</span>
-								<span class="column_subspecialty"><?php echo $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None'?>&nbsp;</span>
-								<span class="column_consultant"><?php echo $firm->consultant ? $firm->consultant->fullName : 'None'?></span>
-							</li>
-						<?php }?>
-					</div>
-				</ul>
-			</form>
-		</div>
-	</div>
-</div>
-<div>
-	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
-	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
+<div class="admin box">
+
+	<h2>Firms</h2>
+
+	<form id="admin_firms">
+		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+		<table class="grid">
+			<thead>
+				<tr>
+					<th><input type="checkbox" name="selectall" id="selectall" /></th>
+					<th>ID</th>
+					<th>PAS code</th>
+					<th>Name</th>
+					<th>Subspecialty</th>
+					<th>Consultant</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach ($firms['items'] as $i => $firm) {?>
+					<tr class="clickable" data-id="<?php echo $firm->id?>" data-uri="admin/editFirm/<?php echo $firm->id?>">
+						<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
+						<td><?php echo $firm->id?></td>
+						<td><?php echo $firm->pas_code?></td>
+						<td><?php echo $firm->name?></td>
+						<td><?php echo $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None'?></td>
+						<td><?php echo $firm->consultant ? $firm->consultant->fullName : 'None'?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot class="pagination-container">
+				<tr>
+					<td colspan="6">
+						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo $this->renderPartial('_pagination',array(
+							'pagination' => $pagination
+						))?>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
 </div>

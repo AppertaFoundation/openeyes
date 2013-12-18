@@ -16,7 +16,8 @@ default:
             base_url:           http://localhost:8888
             javascript_session: selenium2
             goutte:             ~
-            selenium2:          ~
+            selenium2:
+                browser: 'chrome'
             saucelabs:
                 connect:  true
                 browser:  'chrome'
@@ -45,3 +46,47 @@ ci:
             base_url:           http://localhost
             default_session:    saucelabs
             javascript_session: saucelabs
+
+selenium-local:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888
+            default_session:    selenium2
+            javascript_session: selenium2
+
+selenium-develop:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://admin:openeyesdevel@develop.test.openeyes.org.uk
+            default_session:    selenium2
+            javascript_session: selenium2
+
+selenium-master:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://admin:openeyesdevel@master.test.openeyes.org.uk
+            default_session:    selenium2
+            javascript_session: selenium2
+
+selenium-orbis:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://admin:openeyesdevel@orbis-master.dev.openeyes.org.uk
+            default_session:    selenium2
+            javascript_session: selenium2
+
+phantomjs:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888
+            browser_name:       "phantomjs"
+            goutte: ~
+            default_session:    selenium2
+            javascript_session: selenium2
+            selenium2:
+              browser: 'phantomjs'
+
+    formatter:
+        name:               pretty,html
+        parameters:
+            output_path:    null,jm_behat_report.html

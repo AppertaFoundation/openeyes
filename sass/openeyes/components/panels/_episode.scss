@@ -1,0 +1,209 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+// Episode panel
+//
+// This panel is used to show the episode and events.
+//
+// Markup:
+// <section class="panel episode">
+//     <div class="episode-date">12 Dec 2011</div>
+//     <a href="#" class="toggle-events-trigger hide">
+//         <span class="icon-showhide">
+//             Show/hide events for this episode
+//         </span>
+//     </a>
+//     <h4 class="episode-title">
+//         <a href="#">
+//             Adnexal
+//         </a>
+//     </h4>
+//     <div class="events-container">
+//         <button class="button secondary tiny add-event" type="button">
+//             <span class="icon-button-small-plus-sign"></span>
+//             Add event
+//         </button>
+//         <ol class="events">
+//             <li class="selected">
+//                 <a href="#">
+//                     <span class="event-type alert">
+//                         <img src="/img/operationbooking/small.png" alt="op" width="19" height="19" />
+//                     </span>
+//                     <span class="event-date">
+//                         1 Jan 2000
+//                     </span>
+//                 </a>
+//             </li>
+//             <li>
+//                 <a href="#">
+//                     <span class="event-type alert">
+//                         <img src="/img/operationbooking/small.png" alt="op" width="19" height="19" />
+//                     </span>
+//                     <span class="event-date">
+//                         1 Jan 2000
+//                     </span>
+//                 </a>
+//             </li>
+//         </ol>
+//     </div>
+// </section>
+//
+// Styleguide 16.9
+
+// Episode panel vars
+
+.panel {
+	&.episode {
+		@include border-top-left-radius(0);
+		@include border-bottom-left-radius(0);
+		border-color: #dad3ba;
+		border-width: 3px 1px 3px 0;
+		margin: 0 0 emCalc(5px) 0;
+		padding: emCalc(5px) emCalc(1px) emCalc(5px) 0;
+		position: relative;
+		&.legacy {
+			margin-top: emCalc(5px);
+			a {
+				color: #999;
+			}
+		}
+		.episode-date {
+			font-size: emCalc(11px);
+			padding-left: emCalc(7px);
+		}
+		.episode-title {
+			font-size: emCalc(15px);
+			margin: emCalc(5px) emCalc(2px) emCalc(3px) 0;
+			a {
+				background: image-url("_elements/graphic/view-episode-summary.png") right bottom no-repeat;
+				color: black;
+				display: block;
+				padding: emCalc(5px) 0 emCalc(17px) emCalc(7px);
+				@include border-radius(0 3px 3px 0);
+				&:hover {
+					background-color: #3665ff;
+					background-image: image-url("_elements/icons/event/event_open_arrow.png");
+					color: white;
+				}
+				&.selected {
+					background-color: #aaa;
+					background-image: image-url("_elements/icons/event/event_open_arrow.png");
+					color: #fff;
+				}
+			}
+			&.legacy {
+				padding: emCalc(5px) 0 emCalc(5px) emCalc(7px);
+			}
+		}
+		.add-event {
+			margin-left: emCalc(2px);
+		}
+		.events-overview {
+			@extend .clearfix;
+			display: none;
+			margin: 0;
+			padding: emCalc(2px) emCalc(5px) emCalc(2px) emCalc(8px);
+			li {
+				float: left;
+				font-size: 1em;
+				line-height: 1;
+				list-style: none;
+				margin-right: emCalc(6px);
+				img {
+					height: 12px;
+					width: 12px;
+				}
+			}
+		}
+		&.hide-events {
+			.events-overview {
+				display: block;
+			}
+			.events-container {
+				display: none;
+			}
+		}
+		.events {
+			border-top: 1px dotted #cccccc;
+			margin: emCalc(5px) 0 0 0;
+			padding: emCalc(4px) 0 0 0;
+			li {
+				font-size: 1em;
+				list-style: none;
+				margin: 0 0 emCalc(4px) 0;
+				position: relative;
+			}
+			a {
+				@include border-radius(0 6px 6px 0);
+				display: block;
+				font-size: $default-font-size;
+				padding: 0 emCalc(10px) 0 emCalc(8px);
+				&:hover {
+					background: #3665ff image-url("_elements/icons/event/event_open_arrow.png") right center no-repeat;
+					color: white;
+				}
+			}
+			.event-type {
+				display: inline-block;
+				width: 35px;
+				background: image-url("_elements/icons/event/status/quicklook.png") right top no-repeat;
+				&:hover {
+					background-image: image-url("_elements/icons/event/status/quicklook-hover.png");
+				}
+				&.alert {
+					background-image: image-url("_elements/icons/event/status/alert.png");
+					&:hover {
+						background-image: image-url("_elements/icons/event/status/alert-hover.png");
+					}
+				}
+			}
+			.event-date {
+				display: inline-block;
+				padding-left: emCalc(26px);
+				.day,
+				.mth,
+				.yr {
+					display: inline-block;
+				}
+				.day {
+					width: emCalc(26px);
+					text-align: right;
+					padding-right: 6px;
+				}
+				.mth {
+					width: emCalc(34px);
+				}
+				.yr {
+					width: emCalc(40px);
+				}
+			}
+			// Selected state
+			li {
+				&.selected {
+					a {
+						background: #aaaaaa image-url("_elements/icons/event/event_open_arrow.png") right center no-repeat;
+						color: white;
+					}
+					.event-type {
+						&.alert {
+							background-image: image-url("_elements/icons/event/status/alert-hover.png");
+						}
+					}
+				}
+			}
+		}
+	}
+}

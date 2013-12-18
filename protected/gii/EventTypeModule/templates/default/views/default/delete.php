@@ -18,20 +18,13 @@
  */
 <?php echo "?>\n"?>
 
-<?php echo "<?php\n"?>
-	$this->breadcrumbs=array($this->module->id);
-	$this->header();
-<?php echo "?>\n"?>
+<?php echo "<?php\n"?>$this->beginContent('//patient/event_container');<?php echo "?>\n"?>
 
-<h3 class="withEventIcon"><?php echo '<?php '?>echo $this->event_type->name<?php echo '?>'?></h3>
-
-<div>
-	<div class="cleartall"></div>
-</div>
+<h2 class="event-title"><?php echo '<?php '?>echo $this->event_type->name<?php echo '?>'?></h2>
 
 <div id="delete_event">
-	<h1>Delete event</h1>
-	<div class="alertBox" style="margin-top: 10px;">
+	<h3>Delete event</h3>
+	<div class="alert-box alert with-icon">
 		<strong>WARNING: This will permanently delete the event and remove it from view.<br><br>THIS ACTION CANNOT BE UNDONE.</strong>
 	</div>
 	<p>
@@ -41,12 +34,14 @@
 		echo CHtml::form(array('Default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'));
 		echo CHtml::hiddenField('event_id', $this->event->id);
 	<?php echo "?>\n"?>
-	<div class="buttonwrapper">
-		<button type="submit" class="classy red venti" id="et_deleteevent" name="et_deleteevent"><span class="button-span button-span-red">Delete event</span></button>
-		<button type="submit" class="classy green venti" id="et_canceldelete" name="et_canceldelete"><span class="button-span button-span-green">Cancel</span></button>
-		<img class="loader" src="<?php echo '<?php'?> echo Yii::app()->createUrl('img/ajax-loader.gif')<?php echo '?>'?>" alt="loading..." style="display: none;" />
-	</div>
+	<button type="submit" class="warning" id="et_deleteevent" name="et_deleteevent">
+		Delete event
+	</button>
+	<button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
+		Cancel
+	</button>
+	<img class="loader" src="<?php echo '<?php'?> echo Yii::app()->createUrl('img/ajax-loader.gif')<?php echo '?>'?>" alt="loading..." style="display: none;" />
 	<?php echo '<?php'?> echo CHtml::endForm()<?php echo "?>\n"?>
 </div>
 
-<?php echo '<?php'?> $this->footer()<?php echo '?>'?>
+<?php echo '<?php'?> $this->endContent()<?php echo '?>'?>

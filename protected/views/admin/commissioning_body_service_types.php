@@ -17,34 +17,36 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="report curvybox white">
-	<div class="reportInputs">
-		<h3 class="georgia">Commissioning body service types</h3>
-		<div>
-			<form id="admin_commissioning_body_service_types">
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_checkbox"><input type="checkbox" id="checkall" class="commissioning_body_service_type" /></span>
-						<span class="column_code">Code</span>
-						<span class="column_name">Name</span>
-					</li>
-					<div class="sortable">
-						<?php foreach (CommissioningBodyServiceType::model()->findAll(array('order'=>'name asc')) as $i => $cb) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $cb->id?>">
-								<span class="column_checkbox"><input type="checkbox" name="commissioning_body_service_type[]" value="<?php echo $cb->id?>" class="wards" /></span>
-								<span class="column_code"><?php echo $cb->shortname?></span>
-								<span class="column_name"><?php echo $cb->name?></span>
-							</li>
-						<?php }?>
-					</div>
-				</ul>
-			</form>
-		</div>
-	</div>
-</div>
-<div>
-	<?php echo EventAction::button('Add', 'add_commissioning_body_service_type', array('colour' => 'blue'))->toHtml()?>
-	<?php echo EventAction::button('Delete', 'delete_commissioning_body_service_type', array('colour' => 'blue'))->toHtml()?>
+<div class="box admin">
+	<h2>Commissioning body service types</h2>
+	<form id="admin_commissioning_body_service_types">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="checkall" class="commissioning_body_service_type" /></th>
+					<th>Code</th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach (CommissioningBodyServiceType::model()->findAll(array('order'=>'name asc')) as $i => $cb) {?>
+					<tr class="clickable" data-id="<?php echo $cb->id?>" data-uri="admin/editCommissioningBodyServiceType?commissioning_body_service_type_id=<?php echo $cb->id?>">
+						<td><input type="checkbox" name="commissioning_body_service_type[]" value="<?php echo $cb->id?>" class="wards" /></td>
+						<td><?php echo $cb->shortname?></td>
+						<td><?php echo $cb->name?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="3">
+						<?php echo EventAction::button('Add', 'add_commissioning_body_service_type', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete_commissioning_body_service_type', array(), array('class' => 'small'))->toHtml()?>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
 </div>
 <div id="confirm_delete_commissioning_body_service_types" title="Confirm delete commissioning_body_service_type" style="display: none;">
 	<div>

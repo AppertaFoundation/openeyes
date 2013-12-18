@@ -20,17 +20,25 @@
 <?php if (@$htmlOptions['nowrapper']) {?>
 	<?php echo CHtml::activeDropDownList($element,$field,$data,$htmlOptions)?>
 <?php } else {?>
-	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
+	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
+
 		<?php if (@$htmlOptions['layout'] == 'vertical') {?>
-			<div class="label"></div>
-			<div class="DropDownLabelVertical">
-				<?php echo $element->getAttributeLabel($field)?>
-			</div>
-			<div class="label"></div>
+			<div class="large-12 column end">
+				<label for="<?php echo get_class($element)?>_<?php echo $field?>">
+					<?php echo CHtml::encode($element->getAttributeLabel($field))?>
+				</label>
 		<?php } else {?>
-			<?php if (!@$htmlOptions['nolabel']) {?><div class="label"><?php echo $element->getAttributeLabel($field)?>:</div><?php }?>
+			<div class="large-<?php echo $layoutColumns['label'];?> column">
+				<?php if (!@$htmlOptions['nolabel']) {?>
+					<label for="<?php echo get_class($element)?>_<?php echo $field?>"><?php echo $element->getAttributeLabel($field)?>:</label>
+				<?php }?>
+			</div>
 		<?php }?>
-		<div class="data">
+
+		<?php if (@$htmlOptions['layout'] != 'vertical') {?>
+			<div class="large-<?php echo $layoutColumns['field'];?> column end">
+		<?php }?>
+
 			<?php if (@$htmlOptions['divided']) {?>
 				<select name="<?php echo get_class($element)?>[<?php echo $field?>]" id="<?php echo get_class($element)?>_<?php echo $field?>">
 					<?php if (isset($htmlOptions['empty'])) {?>
@@ -54,6 +62,7 @@
 				}
 				echo CHtml::activeDropDownList($element,$field,$data,$htmlOptions)?>
 			<?php }?>
+
 		</div>
 	</div>
 <?php }?>

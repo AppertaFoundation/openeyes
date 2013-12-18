@@ -17,15 +17,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class MultiSelectList extends BaseCWidget
+class MultiSelectList extends BaseFieldWidget
 {
-	public $htmlOptions;
-	public $options = array();
 	public $default_options = array();
 	public $filtered_options = array();
 	public $relation;
 	public $selected_ids = array();
 	public $relation_id_field;
+	public $options;
+	public $inline = false;
+	public $showRemoveAllLink = false;
+	public $sorted = false;
+	public $noSelectionsMessage;
 
 	public function init()
 	{

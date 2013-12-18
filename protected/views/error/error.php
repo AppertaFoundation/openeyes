@@ -22,15 +22,16 @@
 	$helpdesk_email = Yii::app()->params['helpdesk_email'];
 	$this->layout = '//layouts/error';
 ?>
-<h3>OpenEyes is broken</h3>
-<p><strong>There has been a problem trying to access OpenEyes, please
-	try again in a moment</strong></p>
-<p>If there continues to be a problem please contact support.</p>
-<h4>Support Options</h4>
+<h2>OpenEyes is broken</h2>
+<p class="panel">
+	<strong>There has been a problem trying to access OpenEyes, please try again in a moment</strong>
+</p>
+<p class="panel">If there continues to be a problem please contact support.</p>
+<h3>Support Options</h3>
 <ul>
 	<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
 	<li>Less urgent issues email <a
 		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
 	</a></li>
 </ul>
-<div style="color: gray;"><?php echo date('r'); ?></div>
+<p class="date"><?php echo date('r'); ?></p>

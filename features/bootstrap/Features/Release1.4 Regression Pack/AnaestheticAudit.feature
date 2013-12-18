@@ -1,9 +1,9 @@
-@regression
+@asa @regression
 Feature: Anaesthetic Satisfaction Audit Regression Tests
   Regression coverage of this event is approx 90%
   Across 2 Sites and 4 Firms
 
-  Scenario: Login and create a Anaesthetic Satisfaction Audit Regression Test Route 1: Site 2 Kings, Firm 3 Anderson Glaucoma
+  Scenario: Route 1: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 3 Anderson Glaucoma
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -31,7 +31,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Then I Save the Event
 
-  Scenario: Login and create a Anaesthetic Satisfaction Audit Regression Test Route 2: Site 1 Queens, Firm 1 Anderson Cataract
+  Scenario: Route 2: Login and create a Anaesthetic Satisfaction Audit: Site 1 Queens, Firm 1 Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -59,7 +59,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Then I Save the Event
 
-  Scenario: Login and create a Anaesthetic Satisfaction Audit Regression Test Route 3: Site 1 Queens, Firm 2 Broom Glaucoma
+  Scenario: Route 3: Login and create a Anaesthetic Satisfaction Audit Regression - Site 1 Queens, Firm 2 Broom Glaucoma
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -87,7 +87,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Then I Save the Event
 
-  Scenario: Login and create a Anaesthetic Satisfaction Audit Regression Test Route 4: Site 2 Kings, Firm 4 Medical Retinal
+  Scenario: Route 4: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 4 Medical Retinal
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -115,45 +115,3 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Then I Save the Event
 
-  # Respiratory Rate
-  #"1" = 8 or less
-  #"2" = 9-11
-  #"3" = 12-20
-  #"4" = 21-24
-  #"5" = 25 or above
-
-  # Oxygen Saturation
-  #"1" = 85 or lower
-  #"2" = 85-89
-  #"3" = 90-94
-  #"4" = 95 or above
-
-  # Systolic Blood Pressure
-  #"1">70 or lower
-  #"2">71-80
-  #"3">81-95
-  #"4">96-189
-  #"5">190-199
-  #"6">200 or above
-
-  # Body Temperature
-  #"1">35 or lower
-  #"2">35.1-36
-  #"3">36.1-37.4
-  #"4">37.5-38.4
-  #"5">38.5-38.9
-  #"6">39 or above
-
-  # Heart Rate
-  #"1">40 or lower
-  #"2">41-50
-  #"3">51-100
-  #"4">101-110
-  #"5">111-129
-  #"6">130 or above
-
-  # Conscious Level AVPU
-  #"2">Alert
-  #"3">Responds to VERBAL commands
-  #"4">Responds to PAIN
-  #"5">Unresponsive

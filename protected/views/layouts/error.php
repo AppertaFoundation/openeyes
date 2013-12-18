@@ -17,35 +17,37 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<!doctype html>
-<!--[if lt IE 7]><html class="no-js ie6 oldie" lang="en"><![endif]-->
-<!--[if IE 7]><html class="no-js ie7 oldie" lang="en"><![endif]-->
-<!--[if IE 8]><html class="no-js ie8 oldie" lang="en"><![endif]-->
-<!--[if gt IE 8]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<title>OpenEyes - Login</title>
-<meta name="viewport" content="width=device-width" />
-<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" />
-<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" />
-<?php Yii::app()->getClientScript()->registerCSSFile(Yii::app()->createUrl('css/style-error.css'))?>
+	<?php $this->renderPartial('//base/head/_meta'); ?>
+	<?php $this->renderPartial('//base/head/_assets'); ?>
 </head>
-<body>
-	<div id="container">
-		<div id="header" class="clearfix">
-			<?php $this->renderPartial('//base/_brand'); ?>
-		</div><!-- #header -->
-		<div id="content">
-			<div id="down-form" class="form_greyBox">
-				<?php echo $content; ?>
+<body class="open-eyes">
+
+	<div class="container main" role="main">
+
+		<header class="header row">
+			<!-- Branding (logo) -->
+			<div class="large-2 column end">
+				<?php $this->renderPartial('//base/_brand'); ?>
 			</div>
-		</div><!-- #content -->
-		<div id="help" class="clearfix"></div><!-- #help -->
-	</div><!--#container -->
-	<div id="footer">
-		<h6>&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?>&nbsp;&nbsp;|&nbsp;&nbsp;
-			<a href="<?php echo Yii::app()->createUrl('site/debuginfo')?>" id="support-info-link">served, with love, by <?php echo trim(`hostname`)?></a></h6>
-	</div><!-- #footer -->
+		</header><!-- /.header -->
+
+		<div class="container content">
+			<h1 class="badge hide-offscreen">Error</h1>
+			<div class="row">
+				<div class="large-11 small-11 small-centered large-centered column">
+					<div class="panel error">
+						<?php echo $content; ?>
+					</div>
+				</div>
+			</div>
+		</div><!-- /.content -->
+
+		<?php $this->renderPartial('//base/_footer'); ?>
+
+	</div><!-- /.main.container -->
+
 </body>
 </html>

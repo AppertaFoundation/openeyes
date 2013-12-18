@@ -1,0 +1,134 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+// Patient panel
+//
+// This panel contains the information for the current patient.
+//
+// Markup:
+// <div class="panel patient radius">
+//     <div class="patient-details">
+//         <a href="#">
+//             <span class="patient-surname">COTTRELL,</span>
+//             <span class="patient-name">Kristen (48)</span>
+//         </a>
+//     </div>
+//     <div class="hospital-number">
+//         No. 1001982
+//     </div>
+//     <div class="row">
+//         <div class="large-6 small-6 columns">
+//             <div class="nhs-number">
+//                 <span class="hide-text">
+//                     NHS number:
+//                 </span>
+//                 451 380 5322
+//             </div>
+//             <span class="icon icon-alert icon-alert-female_trans">Female</span>
+//         </div>
+//         <div class="large-6 small-6 columns text-right patient-summary-anchor">
+//             <a href="#">Patient Summary</a>
+//         </div>
+//     </div>
+// </div>
+//
+// Styleguide 16.3
+
+.panel {
+	&.patient {
+		@include panel($padding: emCalc(9px) emCalc(10px));
+		@include border-radius($global-radius);
+		@include background(image-url("_elements/icons/patient/patient-id_small.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
+		background: {
+			position: 98% 2px, top;
+			repeat: no-repeat, no-repeat;
+		};
+		border: {
+			color: #ffb212;
+			style: solid;
+			width: 2px;
+		};
+		position: relative;
+		// @media #{$small} {
+			@include border-radius(0 0 $global-radius $global-radius);
+			border-width: 0 2px 2px 2px;
+		// }
+		.stuck & {
+			border-bottom: 0;
+			margin: 0;
+			padding-bottom: 2px;
+			padding-top: 2px;
+			@include border-radius(0);
+		}
+		.patient-details {
+			padding-bottom: emCalc(4px);
+			a {
+				color: black;
+			}
+			.stuck & {
+				font-size: 91%;
+			}
+		}
+		.patient-surname {
+			font: {
+				size: emCalc(14px);
+				weight: bold;
+			};
+			text-transform: uppercase;
+		}
+		.patient-name, .patient-age {
+			font-size: emCalc(13px);
+		}
+		.hospital-number, .nhs-number {
+			font-size: emCalc(12px);
+		}
+		.patient-summary-anchor  {
+			bottom: 1em;
+			font-size: emCalc(11px);
+			position: absolute;
+			right: 0;
+			.stuck & {
+				display: none;
+			}
+		}
+		.hospital-number {
+			margin-bottom: emCalc(4px);
+			.stuck & {
+				float: left;
+			}
+		}
+		.nhs-number {
+			@include border-radius(3px);
+			background: {
+				color: #107ebd;
+				image: image-url("_elements/icons/nhs_tiny.png");
+				position: center left;
+				repeat: no-repeat;
+			};
+			color: white;
+			display: inline-block;
+			padding: emCalc(2px) emCalc(4px) emCalc(2px) 33px;
+		}
+		&.warning {
+			@include background-image(image-url("_elements/icons/patient/patient-id_small-warning.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
+			.warning {
+				.messages {
+					display: none;
+				}
+			}
+		}
+	}
+}

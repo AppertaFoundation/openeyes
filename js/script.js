@@ -17,81 +17,139 @@
  */
 
 $(document).ready(function(){
-	$('.sprite.showhide').click( function(e){
-		e.preventDefault();
-		var sprite = $(this).children('span');
-		var whiteBox = $(this).parents('.whiteBox');
 
-		if(sprite.hasClass('hide')) {
-			whiteBox.children('.data_row').slideUp("fast");
-			sprite.removeClass('hide');
-			sprite.addClass('show');
-		} else {
-			whiteBox.children('.data_row').slideDown("fast");
-			sprite.removeClass('show');
-			sprite.addClass('hide');
-		}
-	});
-
-	// show hide
-
-	$('.sprite.showhide2').click(function(e){
-		var episode_id = $(this).parent().parent().prev('input').val();
-		if (episode_id == undefined) {
-			episode_id = 'legacy';
-		}
+	$('.js-toggle').on('click', function(e) {
 
 		e.preventDefault();
-		changeState($(this).parents('.episode_nav'),$(this).children('span'),episode_id);
-	});
 
-	function changeState(wb,sp,episode_id) {
-		if (sp.hasClass('hide')) {
-			wb.children('.events').slideUp('fast');
-			sp.removeClass('hide');
-			sp.addClass('show');
-												wb.children('.minievents').slideDown('fast');
-			$.ajax({
-				'type': 'GET',
-				'url': baseUrl+'/patient/hideepisode?episode_id='+episode_id,
-				'success': function(html) {
-				}
-			});
+		var trigger = $(this);
+		var container = trigger.closest('.js-toggle-container');
+
+		if (!container.length) {
+			throw new Error('Unable to find js-toggle container.')
+		}
+
+		var body = container.find('.js-toggle-body');
+
+		if (!body.length) {
+			throw new Error('Unable to find js-toggle body.')
+		}
+
+		if (trigger.hasClass('toggle-hide')) {
+			trigger
+			.removeClass('toggle-hide')
+			.addClass('toggle-show');
+			body.slideUp('fast');
 		} else {
-			wb.children('.events').slideDown('fast');
-			sp.removeClass('show');
-			sp.addClass('hide');
-												wb.children('.minievents').slideUp('fast');
-			$.ajax({
-				'type': 'GET',
-				'url': baseUrl+'/patient/showepisode?episode_id='+episode_id,
-				'success': function(html) {
-				}
+			trigger
+			.removeClass('toggle-show')
+			.addClass('toggle-hide');
+			body.slideDown('fast', function() {
+				body.css('overflow', 'visible');
 			});
 		}
-	}
+	});
 
-	/**
-	 * Sticky stuff
-	 */
-	$('#alert_banner').waypoint('sticky', {
-		offset: -30,
-		wrapper: '<div class="alert_banner_sticky_wrapper" />'
-	});
-	$('#header').waypoint('sticky', {
-		offset: -20,
-	});
-	$('.event_tabs').waypoint('sticky', {
-		offset: 39,
-		wrapper: '<div class="event_tabs_sticky_wrapper" />'
-	});
-	$('.event_actions').waypoint('sticky', {
-		offset: 44,
-		wrapper: '<div class="event_actions_sticky_wrapper" />'
-	});
-	$('body').delegate('#header.stuck, .event_tabs.stuck, .event_actions.stuck', 'hover', function(e) {
-		$('#header, .event_tabs, .event_actions').toggleClass('hover', e.type === 'mouseenter');
-	});
+	(function sidebarEventsToggle() {
+
+		var triggers = $('.sidebar.episodes-and-events .toggle-trigger');
+		triggers.on('click', onTriggerClick);
+
+		function onTriggerClick(e) {
+
+			e.preventDefault();
+
+			var trigger = $(this);
+			var episodeContainer = trigger.closest('.episode');
+			var input = episodeContainer.find('[name="episode-id"]');
+			var episode_id = input.val() || 'legacy';
+			var state = trigger.hasClass('toggle-hide') ? 'hide' : 'show';
+
+			changeState(episodeContainer, trigger, episode_id, state);
+		}
+
+		function changeState(episodeContainer, trigger, episode_id, state) {
+
+			trigger.toggleClass('toggle-hide toggle-show');
+
+			episodeContainer
+			.find('.events-container,.events-overview')
+			.slideToggle('fast', function() {
+				$(this).css({ overflow: 'visible' });
+			});
+
+			updateEpisode(episode_id, state);
+		}
+
+		function updateEpisode(episode_id, state) {
+			$.ajax({
+				'type': 'GET',
+				'url': baseUrl+'/patient/' + state + 'episode?episode_id='+episode_id,
+			});
+		}
+	}());
+
+	(function patientWarningTooltip() {
+
+		var warning = $('.panel.patient .warning');
+		if (!warning.length) {
+			return;
+		}
+		var messages = warning.find('.messages');
+		var box = $('<div class="quicklook warning"></div>');
+
+		box.hide();
+		box.html(messages.html());
+		box.appendTo('body');
+
+		warning.hover(function() {
+
+			var offsetPos = $(this).offset();
+			var top = offsetPos.top + $(this).height() + 6;
+			var middle = offsetPos.left + $(this).width()/2;
+			var left = middle - box.width()/2 - 8;
+
+			box.css({
+				position: 'absolute',
+				top: top,
+				left: left
+			});
+			box.fadeIn('fast');
+		}, function(e){
+			box.hide();
+		});
+	}());
+
+	(function stickyElements() {
+
+		var options = {
+			enableHandler: function() {
+				this.element.width(this.element.width());
+				this.enable();
+			},
+			disableHandler: function() {
+				this.element.width('auto');
+				this.disable();
+			}
+		};
+
+		new OpenEyes.UI.StickyElement('.admin.banner', {
+			offset: 30,
+			wrapperHeight: function() {
+				return this.element.outerHeight(true);
+			}
+		});
+
+		var header = new OpenEyes.UI.StickyElement('.header', $.extend({
+			offset: 25
+		}, options));
+
+		new OpenEyes.UI.StickyElement('.event-header', $.extend({
+			offset: function() {
+				return header.element.height() * -1;
+			}
+		}, options));
+	}());
 
 	/**
 	 * Tab hover
@@ -104,6 +162,36 @@ $(document).ready(function(){
 				$(this).removeClass('hover');
 			}
 	);
+
+	/**
+	 * Warn on leaving edit mode
+	 */
+	var formHasChanged = false;
+	var submitted = false;
+
+	$("#event-content").on("change", function (e) {
+		formHasChanged = true;
+	});
+
+	//if the save button is on page
+	if($('#et_save').length){
+		$(".EyeDrawWidget").on("click", function (e) {
+			formHasChanged = true;
+		});
+	}
+
+	window.onbeforeunload = function (e) {
+		if (formHasChanged && !submitted) {
+			var message = "You have not saved your changes.", e = e || window.event;
+			if (e) {
+				e.returnValue = message;
+			}
+			return message;
+		}
+	}
+	$("form").submit(function() {
+		submitted = true;
+	});
 
 	/**
 	 * Site / firm switcher
@@ -121,7 +209,7 @@ $(document).ready(function(){
 
 			e.preventDefault();
 
-			new OpenEyes.Dialog($.extend({}, options, {
+			new OpenEyes.UI.Dialog($.extend({}, options, {
 				url: baseUrl + '/site/changesiteandfirm',
 				data: {
 					returnUrl: window.location.href,
@@ -132,7 +220,7 @@ $(document).ready(function(){
 
 		// Show the 'change firm' dialog on page load.
 		if ($('#site-and-firm-form').length) {
-			new OpenEyes.Dialog($.extend({}, options, {
+			new OpenEyes.UI.Dialog($.extend({}, options, {
 				content: $('#site-and-firm-form')
 			})).open();
 		}

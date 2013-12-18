@@ -1,0 +1,67 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+// Headings
+//
+// Styles for generic headings used throughout the site.
+//
+// Markup:
+// <h1>Page title</h1>
+// <h1 class="badge">Page title</h1>
+//
+// Styleguide 3.1
+
+// This is a placeholder selector so we can re-use this hover style for non-anchor hovers.
+%anchor-hover {
+	@include background(linear-gradient(-90deg, $anchor-font-color-hover 1px, transparent 1px) repeat-x center bottom / 2px 1px);
+}
+
+h1 {
+	&.badge {
+		@include background(linear-gradient(left, #b4b0ae 0, #fffdea 12px));
+		@include border-radius(0px 3px 3px 0px);
+		display: inline-block;
+		font-size: emCalc(13px);
+		font-weight: bold;
+		margin: 0 0 emCalc(15px) 0;;
+		padding: 5px 15px 5px 55px;
+		&.admin {
+			background: #666;
+			border-left: none;
+			border: 1px solid #999;
+			color: #fff;
+		}
+	}
+}
+
+a {
+	&:hover, .highlight {
+		@extend %anchor-hover;
+	}
+}
+
+code {
+	color: #000;
+	font-size: $default-font-size;
+	font-weight: normal;
+}
+
+span {
+	&.error {
+		border-bottom: #f00 1px dotted;
+		color: #f00;
+	}
+}

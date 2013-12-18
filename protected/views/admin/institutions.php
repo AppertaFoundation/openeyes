@@ -18,48 +18,40 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Institution</h3>
-		<div class="pagination">
-			<?php echo $this->renderPartial('_pagination',array(
-				'prefix' => '/admin/institutions/',
-				'page' => $institutions['page'],
-				'pages' => $institutions['pages'],
-			))?>
-		</div>
-		<div>
-			<form id="admin_institutions">
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_id">ID</span>
-						<span class="column_name">Name</span>
-						<span class="column_remote_id">Remote ID</span>
-						<span class="column_shortname">Short name</span>
-					</li>
-					<div class="sortable">
-						<?php
-						foreach ($institutions['items'] as $i => $institution) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $institution->id?>">
-								<span class="column_id"><?php echo $institution->id?></span>
-								<span class="column_name"><?php echo $institution->name?>&nbsp;</span>
-								<span class="column_remote_id"><?php echo $institution->remote_id?>&nbsp;</span>
-								<span class="column_shortname"><?php echo $institution->short_name?>&nbsp;</span>
-							</li>
-						<?php }?>
-					</div>
-				</ul>
-			</form>
-		</div>
-	</div>
+<div class="admin box">
+	<h2>Institution</h2>
+
+	<form id="admin_institutions">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Remote ID</th>
+					<th>Short name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach ($institutions['items'] as $i => $institution) {?>
+					<tr class="clickable" data-id="<?php echo $institution->id?>" data-uri="admin/editinstitution?institution_id=<?php echo $institution->id?>">
+						<td><?php echo $institution->id?></td>
+						<td><?php echo $institution->name?></td>
+						<td><?php echo $institution->remote_id?></td>
+						<td><?php echo $institution->short_name?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot class="pagination-container">
+				<tr>
+					<td colspan="4">
+						<?php echo EventAction::button('Add', 'add', array(), array('class'=> 'small'))->toHtml()?>
+						<?php echo $this->renderPartial('_pagination',array(
+							'pagination' => $pagination
+						))?>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
 </div>
-<div>
-	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
-	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
-</div>
-<script type="text/javascript">
-	$('li.even,li.odd').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/editinstitution?institution_id='+$(this).attr('data-attr-id');
-	});
-</script>

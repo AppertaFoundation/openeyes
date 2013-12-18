@@ -18,37 +18,35 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Contact labels</h3>
-		<div class="pagination">
-			<?php echo $this->renderPartial('_pagination',array(
-				'prefix' => '/admin/contactlabels/',
-				'page' => $contactlabels['page'],
-				'pages' => $contactlabels['pages'],
-			))?>
-		</div>
-		<div>
-			<form id="admin_contactlabels">
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_id">ID</span>
-						<span class="column_name">Name</span>
-					</li>
-					<div class="sortable">
-						<?php
-						foreach ($contactlabels['items'] as $i => $contactlabel) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $contactlabel->id?>">
-								<span class="column_id"><?php echo $contactlabel->id?></span>
-								<span class="column_name"><?php echo $contactlabel->name?>&nbsp;</span>
-							</li>
-						<?php }?>
-					</div>
-				</ul>
-			</form>
-		</div>
-	</div>
-</div>
-<div>
-	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
+<div class="admin box">
+	<h2>Contact labels</h2>
+	<form id="admin_contactlabels">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach ($contactlabels['items'] as $i => $contactlabel) {?>
+					<tr class="clickable" data-id="<?php echo $contactlabel->id?>" data-uri="admin/editContactLabel/<?php echo $contactlabel->id?>">
+						<td><?php echo $contactlabel->id?></td>
+						<td><?php echo $contactlabel->name?>&nbsp;</td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot class="pagination-container">
+				<tr>
+					<td colspan="2">
+						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
+						<?php echo $this->renderPartial('_pagination',array(
+							'pagination' => $pagination
+						))?>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
 </div>

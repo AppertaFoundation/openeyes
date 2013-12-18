@@ -18,42 +18,45 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Sites you work at</h3>
-		<div>
-			<form id="profile_sites" method="post" action="/profile/sites">
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_checkbox"><input type="checkbox" id="checkall" /></span>
-						<span class="column_name">Name</span>
-						<span class="column_address">Address</span>
-					</li>
-					<div class="sortable">
-						<?php
-						foreach ($user->siteSelections as $i => $site) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
-								<span class="column_checkbox"><input type="checkbox" name="sites[]" value="<?php echo $site->id?>" /></span>
-								<span class="column_name"><?php echo $site->name?>&nbsp;</span>
-								<span class="column_address"><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</span>
-							</li>
-						<?php }?>
-					</div>
-				</ul>
-			</form>
+<div class="box admin">
+	<h2>Sites you work at</h2>
+	<form id="profile_sites" method="post" action="/profile/sites">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="checkall" /></th>
+					<th>Name</th>
+					<th>Address</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach ($user->siteSelections as $i => $site) {?>
+					<tr data-attr-id="<?php echo $site->id?>">
+						<td><input type="checkbox" name="sites[]" value="<?php echo $site->id?>" /></td>
+						<td><?php echo $site->name?></td>
+						<td><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</td>
+					</tr>
+				<?php }?>
+			</tbody>
+		</table>
+	</form>
+
+	<div class="row">
+		<div class="large-6 column">
+			<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
+		</div>
+		<div class="large-6 column text-right table-actions">
+			<label for="profile_site_id" class="inline">Add site:</label>
+			<?php echo CHtml::dropDownList('profile_site_id','',CHtml::listData($user->getNotSelectedSiteList(),'id','name'),array('empty'=>'- Select -'))?>
+			<?php echo CHtml::link('Add all','#',array('id'=>'add_all', 'class' => 'field-info'))?>
 		</div>
 	</div>
-	<div>
-		Add site: <?php echo CHtml::dropDownList('profile_site_id','',CHtml::listData($user->getNotSelectedSiteList(),'id','name'),array('empty'=>'- Select -'))?>
-		<?php echo CHtml::link('Add all','#',array('id'=>'add_all'))?>
-	</div>
 </div>
-<div style="margin-bottom:1em;">
-	Note: you can also set the firms you work at, <?php echo CHtml::link('click here',Yii::app()->createUrl('/profile/firms'))?> to do so.
+<div class="box admin">
+	<p>Note: you can also set the firms you work at, <?php echo CHtml::link('click here',Yii::app()->createUrl('/profile/firms'))?> to do so.</p>
 </div>
-<div>
-	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
-</div>
+
 <script type="text/javascript">
 	$('#profile_site_id').change(function(e) {
 		var site_id = $(this).val();
@@ -67,7 +70,7 @@
 					if (html == "1") {
 						window.location.reload();
 					} else {
-						new OpenEyes.Dialog.Alert({
+						new OpenEyes.UI.Dialog.Alert({
 							content: "Something went wrong trying to add the site.  Please try again or contact support for assistance."
 						}).open();
 					}
@@ -95,7 +98,7 @@
 				if (html == "1") {
 					window.location.reload();
 				} else {
-					new OpenEyes.Dialog.Alert({
+					new OpenEyes.UI.Dialog.Alert({
 						content: "Something went wrong trying to add the sites.  Please try again or contact support for assistance."
 					}).open();
 				}

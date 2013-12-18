@@ -18,29 +18,23 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia"><?php echo $cbs->id ? 'Edit' : 'Add'?> commissioning body type</h3>
-		<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-		<div>
-			<?php
-			$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-				'id'=>'adminform',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'sliding'),
-				'focus'=>'#username'
-			))?>
-			<?php echo $form->textField($cbs,'name',array('size'=>'50'))?>
-			<?php echo $form->textField($cbs,'shortname',array('size'=>'10'))?>
-			<?php $this->endWidget()?>
-		</div>
-	</div>
-</div>
-<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
-<div>
-	<?php echo EventAction::button('Save', 'save', array('colour' => 'green'))->toHtml()?>
-	<?php echo EventAction::button('Cancel', 'cancel', array('colour' => 'red'))->toHtml()?>
-	<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+<div class="box admin">
+	<h2><?php echo $cbs->id ? 'Edit' : 'Add'?> commissioning body type</h2>
+	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'focus'=>'#username',
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5
+		)
+	))?>
+		<?php echo $form->textField($cbs,'name',array('size'=>'50'))?>
+		<?php echo $form->textField($cbs,'shortname',array('size'=>'10'))?>
+		<?php echo $form->formActions();?>
+	<?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
 	handleButton($('#et_cancel'),function(e) {

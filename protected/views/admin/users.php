@@ -18,66 +18,70 @@
  */
 
 ?>
-<div class="report curvybox white">
-	<div class="admin">
-		<h3 class="georgia">Users</h3>
-		<div class="pagination">
-			<?php echo $this->renderPartial('_pagination',array(
-				'prefix' => '/admin/users/',
-				'page' => $users['page'],
-				'pages' => $users['pages'],
-			))?>
+<div class="box admin">
+	<div class="row">
+		<div class="large-8 column">
+			<h2>Users</h2>
 		</div>
-		<div class="search">
+		<div class="large-4 column">
 			<?php
 			$form = $this->beginWidget('BaseEventTypeCActiveForm',array(
 				'id' => 'searchform',
 				'enableAjaxValidation' => false,
-				'htmlOptions' => array('class'=>'sliding'),
 				'focus' => '#search',
 				'action' => Yii::app()->createUrl('/admin/users'),
 			))?>
-				<span>Search:</span>
-				<input type="text" name="search" id="search" value="<?php echo strip_tags(@$_POST['search'])?>" />
+				<div class="row">
+					<div class="large-12 column">
+						<input type="text" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
+					</div>
+				</div>
 			<?php $this->endWidget()?>
 		</div>
-		<div>
-			<form id="admin_users">
-				<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_checkbox"><input type="checkbox" name="selectall" id="selectall" /></span>
-						<span class="column_id">ID</span>
-						<span class="column_username">Username</span>
-						<span class="column_title">Title</span>
-						<span class="column_firstname">First name</span>
-						<span class="column_lastname">Last name</span>
-						<span class="column_role">Access level</span>
-						<span class="column_doctor">Doctor</span>
-						<span class="column_active">Active</span>
-					</li>
-					<div class="sortable">
-						<?php
-						foreach ($users['items'] as $i => $user) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $user->id?>">
-								<span class="column_checkbox"><input type="checkbox" name="users[]" value="<?php echo $user->id?>" /></span>
-								<span class="column_id"><?php echo $user->id?></span>
-								<span class="column_username"><?php echo strtolower($user->username)?></span>
-								<span class="column_title"><?php echo $user->title?>&nbsp;</span>
-								<span class="column_firstname"><?php echo $user->first_name?></span>
-								<span class="column_lastname"><?php echo $user->last_name?></span>
-								<span class="column_role"><?php echo $user->accesslevelstring?>&nbsp;</span>
-								<span class="column_doctor"><?php echo $user->is_doctor ? 'Yes' : 'No'?></span>
-								<span class="column_active"><?php echo $user->active ? 'Yes' : 'No'?></span>
-							</li>
-						<?php }?>
-					</div>
-				</ul>
-			</form>
-		</div>
 	</div>
-</div>
-<div>
-	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
-	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
+	<form id="admin_users">
+		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+		<table class="grid">
+			<thead>
+				<tr>
+					<th><input type="checkbox" name="selectall" id="selectall" /></th>
+					<th>ID</th>
+					<th>Username</th>
+					<th>Title</th>
+					<th>First name</th>
+					<th>Last name</th>
+					<th>Access level</th>
+					<th>Doctor</th>
+					<th>Active</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				foreach ($users['items'] as $i => $user) {?>
+					<tr class="clickable" data-id="<?php echo $user->id?>" data-uri="admin/editUser/<?php echo $user->id?>">
+						<td><input type="checkbox" name="users[]" value="<?php echo $user->id?>" /></td>
+						<td><?php echo $user->id?></td>
+						<td><?php echo strtolower($user->username)?></td>
+						<td><?php echo $user->title?></td>
+						<td><?php echo $user->first_name?></td>
+						<td><?php echo $user->last_name?></td>
+						<td><?php echo $user->accesslevelstring?></td>
+						<td><?php echo $user->is_doctor ? 'Yes' : 'No'?></td>
+						<td><?php echo $user->active ? 'Yes' : 'No'?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot class="pagination-container">
+				<tr>
+					<td colspan="9">
+						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
+						<?php echo $this->renderPartial('_pagination',array(
+							'pagination' => $pagination
+						))?>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
 </div>

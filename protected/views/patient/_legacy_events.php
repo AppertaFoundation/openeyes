@@ -20,20 +20,28 @@
 $legacyletters = EventType::model()->find('class_name=?', array('OphLeEpatientletter'));
 
 if ($legacyletters && !$legacyletters->disabled && is_array($legacyepisodes)) foreach ($legacyepisodes as $i => $episode) {?>
-	<div class="episode open clearfix" style="display:block;">
-		<div class="episode_nav legacy">
-			<div class="start_date small">
-				<?php echo $episode->NHSDate('start_date') ?>
-				<span class="aBtn">
-					<a class="sprite showhide2 legacy" href="#">
-						<span class="<?php if ((!$this->event || $this->event->eventType->class_name != 'OphLeEpatientletter') && !@Yii::app()->session['episode_hide_status']['legacy']) { ?>show<?php } else { ?>hide<?php } ?>"></span>
-					</a>
-				</span>
-			</div>
-			<h4 class="legacy" style="margin-left: 8px;">Legacy events</h4>
 
+	<section class="panel episode open legacy">
 
-			<ul class="events"<?php if ((!$this->event || $this->event->eventType->class_name != 'OphLeEpatientletter') && !@Yii::app()->session['episode_hide_status']['legacy']) { ?> style="display: none;"<?php } ?>>
+		<!-- Episode date -->
+		<div class="episode-date">
+			<?php echo $episode->NHSDate('start_date'); ?>
+		</div>
+
+		<!-- Show/hide toggle icon -->
+		<a href="#" class="toggle-trigger toggle-<?php if ((!$this->event || $this->event->eventType->class_name != 'OphLeEpatientletter') && !@Yii::app()->session['episode_hide_status']['legacy']) { ?>show<?php } else { ?>hide<?php } ?>">
+			<span class="icon-showhide">
+				Show/hide events for this episode
+			</span>
+		</a>
+
+		<!-- Episode title -->
+		<h4 class="episode-title legacy">
+			Legacy events
+		</h4>
+
+		<div class="events-container <?php if ((!$this->event || $this->event->eventType->class_name != 'OphLeEpatientletter') && !@Yii::app()->session['episode_hide_status']['legacy']) { ?>hide<?php } else {?>show<?php }?>">
+			<ol class="events">
 				<?php
 				foreach ($episode->events as $event) {
 					$highlight = false;
@@ -44,32 +52,28 @@ if ($legacyletters && !$legacyletters->disabled && is_array($legacyepisodes)) fo
 
 					$event_path = Yii::app()->createUrl($event->eventType->class_name . '/Default/view') . '/';
 					?>
-					<li id="eventLi<?php echo $event->id ?>">
+					<li id="eventLi<?php echo $event->id ?>"<?php if ($highlight) { ?> class="selected"<?php }?>>
+
+						<!-- Quicklook tooltip -->
 						<div class="quicklook" style="display: none; ">
-							<span class="event"><?php echo $event->eventType->name ?></span>
-							<span class="info"><?php echo str_replace("\n", "<br/>", $event->info) ?></span>
+							<span class="event-name"><?php echo $event->eventType->name ?></span>
+							<span class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></span>
 							<?php if ($event->hasIssue()) { ?>
-								<span class="issue"><?php echo $event->getIssueText() ?></span>
+								<span class="event-issue"><?php echo $event->getIssueText() ?></span>
 							<?php } ?>
 						</div>
-						<?php if ($highlight) { ?>
-							<div class="viewing">
-							<?php } else { ?>
-								<a style="color:#999;" href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">
-								<?php } ?>
-								<span class="type<?php if ($event->hasIssue()) { ?> statusflag<?php } ?>">
-									<?php $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/'; ?>
-									<img src="<?php echo Yii::app()->createUrl($assetpath . 'img/small.png') ?>" alt="op" width="19" height="19" />
-								</span>
-								<span class="date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
-								<?php if (!$highlight) { ?>
-								</a>
-							<?php } else { ?>
-							</div>
-						<?php } ?>
+
+						<a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
+							<span class="event-type<?php if ($event->hasIssue()) { ?> alert<?php } ?>">
+								<?php $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/'; ?>
+								<img src="<?php echo Yii::app()->createUrl($assetpath . 'img/small.png') ?>" alt="op" width="19" height="19" />
+							</span>
+							<span class="event-date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
+						</a>
+
 					</li>
 				<?php } ?>
-			</ul>
+			</ol>
 		</div>
-	</div>
+	</section>
 <?php }?>

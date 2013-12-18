@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,127 +17,100 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+class ProcedureTest extends CDbTestCase {
 
+                       public $model;
+                       public $fixtures = array(
+                                                'procedures' => 'Procedure',
+                       );
 
-class ProcedureTest extends CDbTestCase
-{
-	public $model;
+                       public function setUp() {
+                                              parent::setUp();
+                                              $this->model = new Procedure;
+                       }
 
-	public $fixtures = array(
-		'procedures' => 'Procedure',
-	);
+                       public function dataProvider_ProcedureSearch() {
+                                              return array(
+                                                                       array('Foo', array('Foobar Procedure')),
+                                                                       array('Foobar', array('Foobar Procedure')),
+                                                                       array('Fo', array('Foobar Procedure')),
+                                                                       array('UB', array('Foobar Procedure')),
+                                                                       array('Bla', array('Foobar Procedure')),
+                                                                       array('wstfgl', array('Foobar Procedure')),
+                                                                       array('barfoo', array('Foobar Procedure')),
+                                                                       array('Test', array('Test Procedure')),
+                                                                       array('Test Pro', array('Test Procedure')),
+                                                                       array('Te', array('Test Procedure')),
+                                                                       array('TP', array('Test Procedure')),
+                                                                       array('leh', array('Test Procedure')),
+																	   array('Pro', array('Foobar Procedure', 'Test Procedure')),
+                                              );
+                       }
 
-	public function setUp()
-	{
-		parent::setUp();
-		$this->model = new Procedure;
-	}
+                       /**
+                        * @covers Procedure::attributeLabels
+                        * @todo   Implement testAttributeLabels().
+                        */
+                       public function testAttributeLabels() {
+                                              $expected = array(
+                                                                       'id' => 'ID',
+                                                                       'term' => 'Term',
+                                                                       'short_format' => 'Short Format',
+                                                                       'default_duration' => 'Default Duration',
+                                              );
 
-	public function dataProvider_ProcedureSearch()
-	{
-		$procedure1 = array(
-			1 => array(
-				'term' => 'Foobar Procedure',
-				'short_format' => 'FUB',
-				'duration' => 60,
-			)
-		);
-		$procedure2 = array(
-			2 => array(
-				'term' => 'Test Procedure',
-				'short_format' => 'TP',
-				'duration' => 20,
-			)
-		);
+                                              $this->assertEquals($expected, $this->model->attributeLabels());
+                       }
 
-		return array(
-			array('Foo', array('Foobar Procedure'), $procedure1),
-			array('Foobar', array('Foobar Procedure'), $procedure1),
-			array('Fo', array('Foobar Procedure'), $procedure1),
-			array('Test', array('Test Procedure'), $procedure2),
-			array('Test Pro', array('Test Procedure'), $procedure2),
-			array('Te', array('Test Procedure'), $procedure2),
-		);
-	}
+                       /**
+                        * @covers Procedure::search
+                        * @todo   Implement testSearch().
+                        */
+                       public function testSearch() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
 
-	public function testModel()
-	{
-		$this->assertEquals('Procedure', get_class(Procedure::model()));
-	}
+                       /**
+                        * @dataProvider dataProvider_ProcedureSearch
+                        */
+                       public function testGetList_ValidTerms_ReturnsValidResults($term, $data) {
+                                              $results = Procedure::getList($term);
+                                              $this->assertEquals($data, $results);
+                       }
 
-	public function testTableName()
-	{
-		$this->assertEquals('proc', $this->model->tableName());
-	}
+                       public function testGetList_InvalidTerm_ReturnsEmptyResults() {
+                                              $results = Procedure::getList('Qux');
+                                              $this->assertEquals(array(), $results);
+                       }
 
-	public function testAttributeLabels()
-	{
-		$expected = array(
-			'id' => 'ID',
-			'term' => 'Term',
-			'short_format' => 'Short Format',
-			'default_duration' => 'Default Duration',
-		);
+					   public function testGetList_RestrictBooked()
+					   {
+						   $this->assertEquals(
+							   array('Foobar Procedure'),
+							   Procedure::getList('Proc', 'booked')
+						   );
+					   }
 
-		$this->assertEquals($expected, $this->model->attributeLabels());
-	}
+					   public function testGetList_RestrictUnbooked()
+					   {
+						   $this->assertEquals(
+							   array('Test Procedure'),
+							   Procedure::getList('Proc', 'unbooked')
+						   );
+					   }
 
-	/**
-	 * @dataProvider dataProvider_ProcedureSearch
-	 */
-	public function testGetList_ValidTerms_ReturnsValidResults($term, $data, $session)
-	{
-		Yii::app()->session['Procedures'] = null;
-		$this->assertNull(Yii::app()->session['Procedures']);
+                       /**
+                        * @covers Procedure::getListBySubspecialty
+                        * @todo   Implement testGetListBySubspecialty().
+                        */
+                       public function testGetListBySubspecialty() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
 
-		$results = Procedure::getList($term);
-
-		$this->assertEquals($data, $results);
-		$this->assertEquals($session, Yii::app()->session['Procedures']);
-	}
-
-	public function testGetList_CalledTwice_AppendsSessionData()
-	{
-		Yii::app()->session['Procedures'] = null;
-		$this->assertNull(Yii::app()->session['Procedures']);
-
-		$expected = array(
-			1 => array(
-				'term' => 'Foobar Procedure',
-				'short_format' => 'FUB',
-				'duration' => 60,
-			),
-			2 => array(
-				'term' => 'Test Procedure',
-				'short_format' => 'TP',
-				'duration' => 20,
-			)
-		);
-
-		$results = Procedure::getList('Fo');
-		$this->assertEquals(array_slice($expected, 0, 1, true), Yii::app()->session['Procedures']);
-		$results = Procedure::getList('Te');
-		$this->assertEquals($expected, Yii::app()->session['Procedures']);
-	}
-
-	public function testGetList_InvalidTerm_ReturnsEmptyResults_SessionDataUnchanged()
-	{
-		Yii::app()->session['Procedures'] = null;
-		$this->assertNull(Yii::app()->session['Procedures']);
-
-		$expected = array(
-			1 => array(
-				'term' => 'Foobar Procedure',
-				'short_format' => 'FUB',
-				'duration' => 60,
-			)
-		);
-
-		$results = Procedure::getList('Fo');
-		$this->assertEquals($expected, Yii::app()->session['Procedures']);
-
-		$results = Procedure::getList('Qux');
-		$this->assertEquals(array(), $results);
-		$this->assertEquals($expected, Yii::app()->session['Procedures']);
-	}
 }

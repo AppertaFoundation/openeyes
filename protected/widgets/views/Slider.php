@@ -33,10 +33,30 @@
 		'append': '<?php echo $append?>',
 	});
 </script>
-<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
-	<div class="label"><?php echo $element->getAttributeLabel($field)?>:</div>
-	<div class="data">
-		<span class="widgetSliderValue" id="<?php echo get_class($element)?>_<?php echo $field?>_value_span"><?php echo $value_display?><?php echo $append?></span>
-		<input class="widgetSlider" type="range" id="<?php echo get_class($element)?>_<?php echo $field?>" name="<?php echo get_class($element)?>[<?php echo $field?>]" min="<?php echo $min?>" max="<?php echo $max?>" value="<?php echo $value?>" step="<?php echo $step?>" />
+
+<div class="row field-row slider">
+	<div class="large-<?php echo $layoutColumns['label']?> column">
+		<label for="<?php echo get_class($element)."_$field"?>"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</label>
+	</div>
+	<div class="large-<?php echo $layoutColumns['field']?> column end">
+		<div class="field-row">
+			<span class="widgetSliderValue slider-value" id="<?php echo get_class($element)?>_<?php echo $field?>_value_span"><?php echo $value_display?><?php echo $append?></span>
+			<input
+				class="widgetSlider slider-input<?php if (@$htmlOptions['class']) {?> <?php echo $htmlOptions['class']?><?php }?>"
+				type="range"
+				id="<?php echo get_class($element)?>_<?php echo $field?>"
+				name="<?php echo get_class($element)?>[<?php echo $field?>]"
+				min="<?php echo $min?>"
+				max="<?php echo $max?>"
+				value="<?php echo $value?>"
+				step="<?php echo $step?>"
+				style="<?php if ($width) {?>width:<?php echo $width;?><?php }?>"
+				/>
+		</div>
+		<?php if ($painScale) {?>
+			<div class="field-row">
+				<img class="field_key" id="pain_key" src="<?php echo $painScale?>" />
+			</div>
+		<?php }?>
 	</div>
 </div>

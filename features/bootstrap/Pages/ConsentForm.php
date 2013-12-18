@@ -8,7 +8,7 @@ class ConsentForm extends Page
 
     protected $elements = array(
         'unbookedProcedure' => array('xpath' => "//input[contains(@value, 'unbooked')]"),
-        'createConsentForm' => array('xpath' => "//*[@id='et_save']//*[contains(text(),'Create Consent Form')]"),
+        'createConsentForm' => array('xpath' => "//*[@class='button-bar right']//*[@id='et_save']"),
         'consentType' => array ('xpath' => "//*[@id='Element_OphTrConsent_Type_type_id']"),
         'rightEye' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_eye_id_2']"),
         'bothEyes' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_eye_id_3']"),
@@ -16,9 +16,11 @@ class ConsentForm extends Page
         'commonProcedure' => array('xpath' => "//*[@id='select_procedure_id_procedures']"),
         'procedureType' => array('xpath' => "//input[@id='autocomplete_procedure_id_procedures']"),
         'chooseLaser' => array ('xpath' => "//a[contains(text(),'Laser iridoplasty')]"),
-        'anaestheticType' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_anaesthetic_type_id_3']"),
+        'anaestheticTypeLA' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_anaesthetic_type_id_3']"),
+        'anaestheticTypeLAC' => array('xpath' => "//*[@id='Element_OphTrConsent_Procedure_anaesthetic_type_id_2']"),
         'permissionsImagesNO' => array('xpath' => "//*[@id='Element_OphTrConsent_Permissions_images_id_2']"),
-        'informationLeaflet' => array('xpath' => "//div[@id='div_Element_OphTrConsent_Other_information']/div[2]/input[2]"),
+        'permissionsImagesYES' => array('xpath' => "//*[@id='Element_OphTrConsent_Permissions_images_id_1']"),
+        'informationLeaflet' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_information']"),
         'anaestheticLeaflet' =>array('xpath' => "//*[@id='Element_OphTrConsent_Other_anaesthetic_leaflet']"),
         'witnessRequired' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_witness_required']"),
         'witnessName' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_witness_name']"),
@@ -37,6 +39,7 @@ class ConsentForm extends Page
 
  public function createConsentForm ()
  {
+
      $this->getElement('createConsentForm')->click();
  }
 
@@ -61,6 +64,7 @@ class ConsentForm extends Page
 public function commonProcedure ($common)
 {
     $this->getElement('commonProcedure')->selectOption($common);
+    $this->getSession()->wait(5000);
 }
 
 public function procedureType ($type)
@@ -73,17 +77,27 @@ public function procedureType ($type)
 
 public function anaestheticTypeLA ()
 {
-    $this->getElement('anaestheticType')->click();
+    $this->getElement('anaestheticTypeLA')->click();
 }
 
-public function permissionImages ()
+public function anaestheticTypeLAC ()
+{
+    $this->getElement('anaestheticTypeLAC')->click();
+}
+
+public function permissionImagesNo ()
 {
     $this->getElement('permissionsImagesNO')->click();
 }
 
+public function permissionImagesYes ()
+{
+    $this->getElement('permissionsImagesYES')->click();
+}
+
 public function informationLeaflet ()
 {
-    $this->getElement('informationLeaflet')->click();
+    $this->getElement('informationLeaflet')->check();
 }
 
 public function anaestheticLeaflet()
@@ -119,7 +133,8 @@ public function supplementaryConsent ()
 
 public function saveConsentForm ()
 {
-    $this->getSession()->wait(10000);
     $this->getElement('saveConsentForm')->click();
 }
+
+
 }

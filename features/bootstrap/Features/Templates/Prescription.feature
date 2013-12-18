@@ -1,4 +1,4 @@
-@prescription
+
 Feature: Create New Prescription
   In order to cover every possible route throughout the site
   As an automation tester
@@ -15,8 +15,8 @@ Feature: Create New Prescription
   #Then I search for patient name last name "<last>" and first name "<first>"
 
   #Then I select Add First New Episode and Confirm
-    Then I select Create or View Episodes and Events
-  #Then I select the Latest Event
+#    Then I select Create or View Episodes and Events
+  Then I select the Latest Event
   #Then I expand the Cataract sidebar
     Then I expand the Glaucoma sidebar
     And I add a New Event "<EventType>"

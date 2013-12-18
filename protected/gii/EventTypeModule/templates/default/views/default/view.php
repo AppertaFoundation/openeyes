@@ -19,16 +19,16 @@
 <?php echo "?>\n"?>
 
 <?php echo "<?php\n"?>
-	$this->breadcrumbs=array($this->module->id);
-	$this->header();
+if ($this->canPrint()) {
+	$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'small button'));
+}
+$this->beginContent('//patient/event_container');
+$this->moduleNameCssClass.=" highlight-fields";
 <?php echo "?>\n"?>
 
-<h3 class="withEventIcon"><?php echo '<?php'?> echo $this->event_type->name<?php echo '?>'?></h3>
+<h2 class="event-title"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h2>
 
-<div>
-	<?php echo '<?php'?> $this->renderDefaultElements($this->action->id)<?php echo "?>\n"?>
-	<?php echo '<?php'?> $this->renderOptionalElements($this->action->id)<?php echo "?>\n"?>
-	<div class="cleartall"></div>
-</div>
+<?php echo '<?php'?> $this->renderDefaultElements($this->action->id)<?php echo "?>\n"?>
+<?php echo '<?php'?> $this->renderOptionalElements($this->action->id)<?php echo "?>\n"?>
 
-<?php echo '<?php'?> $this->footer()<?php echo '?>'?>
+<?php echo '<?php'?> $this->endContent()<?php echo "?>\n"?>

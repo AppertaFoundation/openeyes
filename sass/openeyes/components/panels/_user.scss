@@ -1,0 +1,103 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+// User panel
+//
+// This panel contains the logged-in user information as well as the user-specific
+// application navigation.
+//
+// Markup:
+// <div class="panel user radius">
+//     <ul class="inline-list navigation user right">
+//         <li><a href="#">Home</a></li>
+//         <li><a href="#">Theatre Diaries</a></li>
+//         <li><a href="#">Partial bookings waiting list</a></li>
+//         <li><a href="#">Logout</a></li>
+//     </ul>
+//     <div class="row">
+//         <div class="small-4 large-4 columns">
+//             <div class="user-id">
+//                 You are logged in as:
+//                 <div class="user-name"><strong>Enoch Root</strong></div>
+//             </div>
+//         </div>
+//         <div class="small-8 large-8 columns">
+//             <div class="user-firm text-right">
+//                 Site: <strong>City Road</strong>,
+//                 Firm: <strong>Barton Keith (Glaucoma)</strong>
+//                 (<a href="#">Change</a>)
+//             </div>
+//         </div>
+//     </div>
+// </div>
+//
+// Styleguide 16.2
+
+.panel {
+	&.user {
+		@extend .clearfix;
+		@include panel(#dae6f1, 0 emCalc(10px) emCalc(5px) emCalc(10px));
+		@include border-radius($global-radius);
+		background: {
+			image: image-url("_elements/icons/user/idcard_bg.png");
+			position: left bottom;
+			repeat: no-repeat;
+		};
+		border-color: #b3b0ae;
+		margin: 0;
+		// @media #{$small} {
+			border-top: 0;
+			@include border-radius(0 0 $global-radius $global-radius);
+		// }
+		.stuck & {
+			@include border-radius(0);
+			border-bottom: 0;
+		}
+		.user-id {
+			.stuck & {
+				margin-top: 5px;
+			}
+		}
+		.user-id, .user-firm {
+			font-size: emCalc(12px);
+			min-height: emCalc(12px) * 2;
+		}
+		.user-firm {
+			padding-top: emCalc(20px);
+			.stuck & {
+				margin-top: 5px;
+			}
+		}
+		.user-name {
+			padding-top: emCalc(5px);
+			span, strong {
+				float: left;
+			}
+			strong {
+				margin: 2px 0 0 3px;
+			}
+			a:hover {
+				[class*="icon-user-panel"] {
+					background-position: 0 0;
+				}
+			}
+
+		}
+		.row {
+			clear: both;
+		}
+	}
+}

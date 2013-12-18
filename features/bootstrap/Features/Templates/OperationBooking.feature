@@ -1,4 +1,4 @@
-@operationbooking
+
 Feature: Create New Operation Booking Event
   In order to cover every possible route throughout the site
   As an automation tester
@@ -46,6 +46,9 @@ Feature: Create New Operation Booking Event
     Then I select Save and Schedule now
   # !!!THIS TEST WILL FAIL IF THERE ARE OVER 66 EVENTS - THE SAVE BUTTON WILL NOT BE IN VIEW!!!
 
+    Then I change the Viewing Schedule to Emergency List
+  # Then I select Next Month
+
     And I select an Available theatre slot date
     And I select an Available session time
 #    Then I add Session comments of "Insert session comments here"
@@ -63,30 +66,53 @@ Feature: Create New Operation Booking Event
 
   # Firm 1 = Anderson (Cataract)
 
-  # Site ID's:
-  #1  =City Road
-  #2  =Bedford
-  #11 =Boots
-  #10 =Bridge lane
-  #17 =Croydon
-  #3  =Ealing
-  #19 =Harlow
-  #18 =Homerton
-  #12 =Loxford
-  #6  =Mile End
-  #4  =Northwick Park
-  #7  =Potters Bar
-  #8  =Queen Mary's
-  #9  =St Ann's
-  #5  =St George's
-  #14 =Teddington
-  #15 =Upney lane
-  #16 =Visioncare
-  #20 =Watford
 
-  # Procedure 41 = Anterior vitrectomy
 
-  # Last name to include a comma after to match search criteria i.e Coffin,
+
+#Diagnosis Cataract
+    
+#  30041005">Acute angle-closure glaucoma
+#  24010005">Aphakia
+#  302905001">Aspergillus otomycosis
+#  232000008">Choroidal effusion
+#  33647009">Chronic angle-closure glaucoma
+#  50485007">Low tension glaucoma
+#  4210003">Ocular hypertension
+#  46168003">Pigmentary glaucoma
+#  392288006">Primary angle-closure glaucoma
+#  95217000">Pseudophakia
+#  95717004">Secondary glaucoma
+#  232064001">Wagner syndrome
+
+  # Procedure Kings
+
+# 48">Anterior capsulotomy
+# 41">Anterior vitrectomy
+# 47">Capsulectomy
+# 61">Capsulotomy (surgical)
+# 62">Capsulotomy (YAG)
+# 73">Corneal suture adjustment
+# 79">Extracapsular cataract extraction
+# 323">Extracapsular cataract extraction and insertion of IOL
+# 324">Injection into anterior chamber
+# 173">Insertion of IOL
+# 50">Irrigation of anterior chamber
+# 340">Limbal relaxing incision
+# 175">Peripheral iridectomy
+# 42">Phakoemulsification
+# 308">Phakoemulsification and IOL
+# 40">Removal of corneal suture
+# 46">Removal of IOL
+# 52">Repair of prolapsed iris
+# 45">Repositioning of IOL
+# 322">Revision of IOL
+# 53">Surgical iridotomy
+# 38">Suture of cornea
+
+
+# Operation Site ID's:
+#1 Queens
+#2 Kings
 
   # For Available theatre and session I have coded to select the first elements which are "Available" - so not to rely on potentially expired dates
   # we can alter this to allow Example Date to be used instead

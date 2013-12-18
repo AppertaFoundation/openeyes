@@ -92,6 +92,18 @@ class ConsentFormContext extends PageObjectContext
     }
 
     /**
+     * @Given /^I choose an Anaesthetic type of LAC$/
+     */
+    public function iChooseAnAnaestheticTypeOfLAC()
+    {
+        /**
+         * @var ConsentForm $consentForm
+         */
+        $consentForm = $this->getPage('ConsentForm');
+        $consentForm->anaestheticTypeLAC();
+    }
+
+    /**
      * @Given /^I add a common procedure of "([^"]*)"$/
      */
     public function iAddACommonProcedureOf($common)
@@ -106,13 +118,25 @@ class ConsentFormContext extends PageObjectContext
     /**
      * @Then /^I choose Permissions for images No$/
      */
-    public function iChoosePermissionsForImages($images)
+    public function iChoosePermissionsForImages()
     {
         /**
          * @var ConsentForm $consentForm
          */
         $consentForm = $this->getPage('ConsentForm');
-        $consentForm->permissionImages();
+        $consentForm->permissionImagesNo();
+    }
+
+    /**
+     * @Then /^I choose Permissions for images Yes$/
+     */
+    public function iChoosePermissionsForImagesYes()
+    {
+        /**
+         * @var ConsentForm $consentForm
+         */
+        $consentForm = $this->getPage('ConsentForm');
+        $consentForm->permissionImagesNo();
     }
 
     /**
@@ -128,7 +152,7 @@ class ConsentFormContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I select the Anasethetic leflet checkbox$/
+     * @Given /^I select the Anaesthetic leaflet checkbox$/
      */
     public function iSelectTheAnasetheticLefletCheckbox()
     {
@@ -210,7 +234,5 @@ class ConsentFormContext extends PageObjectContext
         $consentForm = $this->getPage('ConsentForm');
         $consentForm->saveConsentForm();
     }
-
-
 
 }

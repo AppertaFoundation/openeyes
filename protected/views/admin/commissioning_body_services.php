@@ -17,38 +17,40 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="report curvybox white">
-	<div class="reportInputs">
-		<h3 class="georgia">Commissioning body services</h3>
-		<div>
-			<form id="admin_commissioning_body_services">
-				<ul class="grid reduceheight">
-					<li class="header">
-						<span class="column_checkbox"><input type="checkbox" id="checkall" class="commissioning_body_services" /></span>
-						<span class="column_code">Code</span>
-						<span class="column_name">Name</span>
-						<span class="column_type">Type</span>
-						<span class="column_body">Commissioning body</span>
-					</li>
-					<div class="sortable">
-						<?php foreach (CommissioningBodyService::model()->findAll(array('order'=>'name asc')) as $i => $cbs) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $cbs->id?>">
-								<span class="column_checkbox"><input type="checkbox" name="commissioning_body_service[]" value="<?php echo $cbs->id?>" class="wards" /></span>
-								<span class="column_code"><?php echo $cbs->code?></span>
-								<span class="column_name"><?php echo $cbs->name?></span>
-								<span class="column_type"><?php echo $cbs->type->name?></span>
-								<span class="column_body"><?php echo $cbs->commissioning_body ? $cbs->commissioning_body->name : 'None'?></span>
-							</li>
-						<?php }?>
-					</div>
-				</ul>
-			</form>
-		</div>
-	</div>
-</div>
-<div>
-	<?php echo EventAction::button('Add', 'add_commissioning_body_service', array('colour' => 'blue'))->toHtml()?>
-	<?php echo EventAction::button('Delete', 'delete_commissioning_body_service', array('colour' => 'blue'))->toHtml()?>
+<div class="box admin">
+	<h2>Commissioning body services</h2>
+	<form id="admin_commissioning_body_services">
+		<table class="grid">
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="checkall" class="commissioning_body_services" /></th>
+					<th>Code</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Commissioning body</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach (CommissioningBodyService::model()->findAll(array('order'=>'name asc')) as $i => $cbs) {?>
+					<tr class="clickable" data-id="<?php echo $cbs->id?>" data-uri="admin/editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id?>">
+						<td><input type="checkbox" name="commissioning_body_service[]" value="<?php echo $cbs->id?>" class="wards" /></td>
+						<td><?php echo $cbs->code?></td>
+						<td><?php echo $cbs->name?></td>
+						<td><?php echo $cbs->type->name?></td>
+						<td><?php echo $cbs->commissioning_body ? $cbs->commissioning_body->name : 'None'?></td>
+					</tr>
+				<?php }?>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="5">
+						<?php echo EventAction::button('Add', 'add_commissioning_body_service', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete_commissioning_body_service', array(), array('class' => 'small'))->toHtml()?>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
 </div>
 <div id="confirm_delete_commissioning_body_services" title="Confirm delete commissioning_body_service" style="display: none;">
 	<div>

@@ -38,43 +38,74 @@ if (isset($htmlOptions['div_class'])) {
 	$div_class = "eventDetail";
 }
 
+$found = false;
+foreach($selected_ids as $id) {
+	if (isset($options[$id])) {
+		$found = true;
+		break;
+	}
+}
+
+$widgetOptionsJson = json_encode(array(
+	'sorted' => $sorted
+));
 ?>
 
-<input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" />
-<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?>"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-	<div class="label"><?php echo @$htmlOptions['label']?>:</div>
-	<div class="data">
-		<select label="<?php echo $htmlOptions['label']?>" class="MultiSelectList" name="">
-			<option value=""><?php echo $htmlOptions['empty']?></option>
-			<?php foreach ($filtered_options as $value => $option) {
-				$attributes = array('value' => $value);
-				if (isset($opts[$value])) {
-					$attributes = array_merge($attributes, $opts[$value]);
-				}
-				echo "<option";
-				foreach ($attributes as $att => $att_val) {
-					echo " " . $att . "=\"" . $att_val . "\"";
-				}
-				echo ">" . $option . "</option>";
-			}?>
-		</select>
-		<div class="MultiSelectList">
-			<ul class="MultiSelectList">
+<?php if (!@$htmlOptions['nowrapper']) {?>
+	<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?> row field-row widget"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+		<div class="large-<?php echo $layoutColumns['label'];?> column">
+			<label for="<?php echo $field?>">
+				<?php echo @$htmlOptions['label']?>:
+			</label>
+		</div>
+		<div class="large-<?php echo $layoutColumns['field'];?> column end">
+	<?php }?>
+		<div class="multi-select<?php if (!$inline) echo ' multi-select-list';?>" data-options='<?php echo $widgetOptionsJson;?>'>
+			<input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
+			<div class="multi-select-dropdown-container">
+				<select id="<?php echo $field?>" class="MultiSelectList<?php if ($showRemoveAllLink) {?> inline<?php }?>" name="">
+					<option value=""><?php echo $htmlOptions['empty']?></option>
+					<?php foreach ($filtered_options as $value => $option) {
+						$attributes = array('value' => $value);
+						if (isset($opts[$value])) {
+							$attributes = array_merge($attributes, $opts[$value]);
+						}
+						echo "<option";
+						foreach ($attributes as $att => $att_val) {
+							echo " " . $att . "=\"" . $att_val . "\"";
+						}
+						echo ">" . $option . "</option>";
+					}?>
+				</select>
+				<?php if ($showRemoveAllLink) {?>
+					<a href="#" class="remove-all<?php echo !$found ? ' hide': '';?>">Remove all</a>
+				<?php }?>
+			</div>
+			<?php if (!$found && $noSelectionsMessage) {?>
+				<div class="no-selections-msg pill"><?php echo $noSelectionsMessage;?></div>
+			<?php }?>
+			<ul class="MultiSelectList multi-select-selections<?php if (!$found) echo ' hide';?>">
 				<?php foreach ($selected_ids as $id) {
 					if (isset($options[$id])) {?>
 						<li>
-							<?php echo $options[$id] ?> (<a href="#" class="MultiSelectRemove <?php echo $id?>">remove</a>)
+							<span class="text">
+								<?php echo $options[$id] ?>
+							</span>
+							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one">Remove</a>
+							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
+							<?php if (isset($opts[$id])) {
+								foreach ($opts[$id] as $key => $val) {
+									echo " " . $key . "=\"" . $val . "\"";
+								}
+							}?>
+							/>
 						</li>
-						<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
-						<?php if (isset($opts[$id])) {
-							foreach ($opts[$id] as $key => $val) {
-								echo " " . $key . "=\"" . $val . "\"";
-							}
-						}?>
-						/>
 					<?php }?>
 				<?php }?>
 			</ul>
+
 		</div>
+<?php if (!@$htmlOptions['nowrapper']) {?>
 	</div>
 </div>
+<?php }?>

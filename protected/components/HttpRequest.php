@@ -28,6 +28,9 @@ class HttpRequest extends CHttpRequest
 		//remove the event handler CSRF if this is a route we want skipped
 		if($this->enableCsrfValidation)
 		{
+			if(!isset($_SERVER['REQUEST_URI']))
+				$_SERVER['REQUEST_URI']='';
+
 			$url=Yii::app()->getUrlManager()->parseUrl($this);
 			foreach($this->noCsrfValidationRoutes as $route)
 			{
