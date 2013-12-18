@@ -122,9 +122,10 @@ class WaitingListContext extends PageObjectContext
     public function iSelectAwaitingPatientFromTheWaitingList()
     {
         $waitingList = $this->getPage('WaitingList');
-        $waitingList->getSession()->wait(10000);
+        $waitingList->getSession()->wait(3000);
         $waitingList->clickLink($this->patient);
         $waitingList->getSession()->wait(3000);
+
     }
 
     /**

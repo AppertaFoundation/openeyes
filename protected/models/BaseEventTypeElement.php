@@ -54,6 +54,14 @@ class BaseEventTypeElement extends BaseElement
 	}
 
 	/**
+	 * Can we view the previous version of this element
+	 */
+	public function canViewPrevious()
+	{
+		return false;
+	}
+
+	/**
 	 * Return this elements children
 	 * @return array
 	 */

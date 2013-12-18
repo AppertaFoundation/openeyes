@@ -702,26 +702,28 @@ class BaseEventTypeController extends BaseController
 					$keys = array_keys($_POST[$elementClassName]);
 
 					if (is_array($_POST[$elementClassName][$keys[0]])) {
-						if (!isset($generic[$elementClassName])) {
-							$generic[$elementClassName] = $_POST[$elementClassName];
-						}
 
-						$element = new $elementClassName;
+						$generic[$elementClassName] = $_POST[$elementClassName];
 
-						foreach ($keys as $key) {
-							if ($key != '_element_id') {
-								$element->{$key} = array_shift($generic[$elementClassName][$key]);
+						for ($i = 0; $i < count($_POST[$elementClassName][$keys[0]]); $i++)
+						{
+							$element = new $elementClassName;
+
+							foreach ($keys as $key) {
+								if ($key != '_element_id') {
+									$element->{$key} = array_shift($generic[$elementClassName][$key]);
+								}
 							}
-						}
 
-						$this->setPOSTManyToMany($element);
+							$this->setPOSTManyToMany($element);
 
-						if (!$element->validate()) {
-							$proc_name = $element->procedure->term;
-							$elementName = $element->getElementType()->name;
-							foreach ($element->getErrors() as $errormsgs) {
-								foreach ($errormsgs as $error) {
-									$errors[$proc_name][] = $error;
+							if (!$element->validate()) {
+								$proc_name = $element->procedure->term;
+								$elementName = $element->getElementType()->name;
+								foreach ($element->getErrors() as $errormsgs) {
+									foreach ($errormsgs as $error) {
+										$errors[$proc_name][] = $error;
+									}
 								}
 							}
 						}
