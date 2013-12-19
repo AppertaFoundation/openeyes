@@ -17,7 +17,7 @@ Feature: Create New Laser event
     Then I expand the Glaucoma sidebar
     And I add a New Event "Laser "
 
-    #!!! THIS DATABASE SET DOESNT CONTAIN ANY LASERSITE OR LAZERS SO DO NOT RUN THIS FEATURE!!!
+
 
     Then I select a Laser site ID "2m"
     And I select a Laser of "3"
@@ -25,3 +25,7 @@ Feature: Create New Laser event
     Then I select a Right Procedure of "62"
     Then I select a Left Procedure of "363"
 
+    #!!! THIS DATABASE SET DOESNT CONTAIN ANY LASERSITE OR LAZERS SO DO NOT RUN THIS FEATURE!!!
+    #!!! THIS DATABASE SET DOESNT CONTAIN ANY LASERSITE OR LAZERS SO DO NOT RUN THIS FEATURE!!!
+    #!!! THIS DATABASE SET DOESNT CONTAIN ANY LASERSITE OR LAZERS SO DO NOT RUN THIS FEATURE!!!
+    #!!! THIS DATABASE SET DOESNT CONTAIN ANY LASERSITE OR LAZERS SO DO NOT RUN THIS FEATURE!!!

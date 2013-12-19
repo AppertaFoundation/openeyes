@@ -91,20 +91,20 @@ abstract class OpenEyesPage extends Page{
 	 * Scrolls the window to ensure the element is within the viewport.
 	 * @param  Behat\Mink\Element\NodeElement $element The element to scroll to.
 	 */
-	private function scrollWindowToElement(Behat\Mink\Element\NodeElement $element) {
+	public function scrollWindowToElement(Behat\Mink\Element\NodeElement $element) {
 		$wdSession = $this->getSession()->getDriver()->getWebDriverSession();
 		$element = $wdSession->element('xpath', $element->getXpath());
 		$elementID = $element->getID();
 		$script = <<<JS
 var element = $(arguments[0]);
-var t = element.offset().top;
+var t = element.offset().top - (element.height() / 2);
 
 // First we scroll the element to view and trigger the scroll event so that
 // the sticky elements are initiated.
 $(window).scrollTop(t).trigger('scroll');
 
 // Now we offset the height of the sticky elements.
-$('.stuck').each(function() { t -= $(this).height(); });
+$('.stuck').not('.watermark').each(function() { t -= $(this).outerHeight(true, true); });
 $(window).scrollTop(t);
 
 JS;

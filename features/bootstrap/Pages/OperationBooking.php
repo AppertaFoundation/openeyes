@@ -181,6 +181,7 @@ class OperationBooking extends OpenEyesPage
     {
         $slots = $this->findAll('xpath', $this->getElement('availableTheatreSlotDate')->getXpath());
         foreach ($slots as $slot) {
+            $this->scrollWindowToElement($slot);
             $slot->click();
             $this->getSession()->wait(10000, "$('.sessionTimes').length > 0");
             $freeSession = $this->find('css', '.sessionTimes > a > .bookable');
@@ -209,7 +210,9 @@ class OperationBooking extends OpenEyesPage
 
     public function availableSessionTime ()
     {
-        $this->getElement('availableTheatreSessionTime')->click();
+        $element = $this->getElement('availableTheatreSessionTime');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(10000);
     }
 
