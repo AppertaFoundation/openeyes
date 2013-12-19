@@ -14,6 +14,11 @@ class amp {
     include openeyes
     include xdebug
     include composer
+    include nodejs
+    include grunt
+    include bower
+    include ruby
+    include compass
 }
 
 include amp
