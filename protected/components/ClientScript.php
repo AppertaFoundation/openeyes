@@ -36,7 +36,9 @@ class ClientScript extends CClientScript
 				foreach ($script_files as $key => $script_file) {
 					// Add cache buster string to url
 					$joiner = $this->getJoiner($script_file);
-					$this->scriptFiles[$pos][$key] = $script_file . $joiner . $this->cache_buster;
+					$scriptUrl = $script_file . $joiner . $this->cache_buster;
+					unset($this->scriptFiles[$pos][$key]);
+					$this->scriptFiles[$pos][$scriptUrl] = $script_file;
 				}
 			}
 
@@ -50,7 +52,6 @@ class ClientScript extends CClientScript
 			}
 
 		}
-
 	}
 
 	protected function getJoiner($file)
