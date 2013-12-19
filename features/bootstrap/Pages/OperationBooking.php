@@ -106,6 +106,7 @@ class OperationBooking extends OpenEyesPage
 			$el = $this->getElement('anaestheticGa');
         }
 		$el->focus();
+        $this->scrollWindowToElement($el);
 		$el->click();
 		$this->getSession()->wait(3000, "window.$ && $(\"#Element_OphTrOperationbooking_Operation_anaesthetic_type_id [name='Element_OphTrOperationbooking_Operation[anaesthetic_type_id]']:checked\").val() == " .   $el->getValue());
     }
@@ -127,12 +128,17 @@ class OperationBooking extends OpenEyesPage
 
     public function priorityRoutine ()
     {
-        $this->getElement('priorityRoutine')->click();
+        $element = $this->getElement('priorityRoutine');
+        $this->scrollWindowToElement($element);
+        $element->click();
     }
 
     public function priorityUrgent ()
     {
-        $this->getElement('priorityUrgent')->check();
+        $element = $this->getElement('priorityUrgent');
+        $this->scrollWindowToElement($element);
+        $element->check();
+
     }
 
     public function decisionDate ($date)
