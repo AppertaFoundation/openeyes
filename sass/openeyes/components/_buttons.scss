@@ -67,6 +67,10 @@
 		@include background(linear-gradient(#145ea9, #104d8b));
 		border-color: #0f467e;
 	}
+	&.long {
+		padding-left: emCalc(34px);
+		padding-right: emCalc(34px);
+	}
 }
 
 // Secondary button (green)
@@ -134,31 +138,6 @@
 			@extend .button.cancel.event-action;
 			border: 0;
 		}
-	}
-}
-
-
-// Disabled button (grey)
-// This should always be defined after all other button variations.
-@include buttons {
-	&.disabled,
-	&[disabled] {
-		&,
-		&:hover,
-		&:active {
-			@include background(linear-gradient(#aaaaaa, #999999));
-			border-color: #999999;
-			color: #fff;
-			cursor: default;
-			text-shadow: none;
-		}
-	}
-}
-
-// Extend disabled to inactive buttons
-@include buttons {
-	&.inactive {
-		@extend button.disabled;
 	}
 }
 
@@ -272,5 +251,29 @@
 		button, .button, input[type="submit"] {
 			padding: emCalc(5px) emCalc(10px);
 		}
+	}
+}
+
+// Disabled button (grey)
+// This should always be defined after all other button variations.
+@include buttons {
+	&.disabled,
+	&[disabled] {
+		&,
+		&:hover,
+		&:active {
+			@include background(linear-gradient(#aaaaaa, #999999));
+			border-color: #999999;
+			color: #fff;
+			cursor: default;
+			text-shadow: none;
+		}
+	}
+}
+
+// Extend disabled to inactive buttons
+@include buttons {
+	&.inactive {
+		@extend button.disabled;
 	}
 }

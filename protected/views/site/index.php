@@ -51,7 +51,7 @@
 				</div>
 				<div class="large-3 medium-4 small-5 column text-right">
 					<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="margin-right: 10px; display: none;" />
-					<button type="submit">
+					<button type="submit" class="primary long">
 						Search
 					</button>
 				</div>

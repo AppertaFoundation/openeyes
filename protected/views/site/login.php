@@ -40,7 +40,7 @@
 
 						<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display:none" />
 
-						<button type="submit" id="login_button">
+						<button type="submit" id="login_button" class="primary long">
 							Login
 						</button>
 					</div>
