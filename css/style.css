@@ -3939,11 +3939,8 @@ tfoot.pagination-container .pagination li {
   z-index: 9;
 }
 
-/**
- * FIXME. orange makes no sense!
- */
-/* line 21, ../sass/openeyes/components/panels/_orange.scss */
-.panel.orange {
+/* line 18, ../sass/openeyes/components/panels/_admin.scss */
+.panel.admin {
   background-color: goldenrod;
   border: 0;
   display: inline-block;
@@ -3952,9 +3949,14 @@ tfoot.pagination-container .pagination li {
   padding: 0.3125em 0.625em;
   vertical-align: top;
 }
-/* line 29, ../sass/openeyes/components/panels/_orange.scss */
-.panel.orange label {
+/* line 26, ../sass/openeyes/components/panels/_admin.scss */
+.panel.admin label {
   font-weight: normal;
+}
+/* line 29, ../sass/openeyes/components/panels/_admin.scss */
+.panel.actions .panel.admin {
+  height: 33px;
+  line-height: 22px;
 }
 
 /* line 22, ../sass/openeyes/components/panels/_comments.scss */

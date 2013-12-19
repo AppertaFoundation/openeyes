@@ -14,11 +14,8 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-/**
- * FIXME. orange makes no sense!
- */
 .panel {
-	&.orange {
+	&.admin {
 		background-color: goldenrod;
 		border: 0;
 		display: inline-block;
@@ -28,6 +25,10 @@
 		vertical-align: top;
 		label {
 			font-weight: normal;
+		}
+		.panel.actions & {
+			height: 33px;
+			line-height: 22px;
 		}
 	}
 }
