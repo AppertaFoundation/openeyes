@@ -83,7 +83,7 @@ $config = array(
 	'params'=>array(
 		//'pseudonymise_patient_details' => false,
 		//'ab_testing' => false,
-		//'auth_source' => 'LDAP',
+		'auth_source' => 'BASIC',
 		// This is used in contact page
 		//'alerts_email' => 'alerts@example.com',
 		//'adminEmail' => 'webmaster@example.com',

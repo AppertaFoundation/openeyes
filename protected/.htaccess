@@ -1,3 +1,1 @@
-#TODO: uncomment once rewrite is complete.
-#We comment this out so we can link to the module assets files within the protected directory.
-#deny from all
+deny from all
