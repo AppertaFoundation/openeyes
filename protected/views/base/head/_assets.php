@@ -21,4 +21,5 @@
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.Dialog.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.Dialog.Alert.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.Dialog.Confirm.js'))?>
+<?php $cs->registerScriptFile(Yii::app()->createUrl('js/OpenEyes.UI.Widgets.js'))?>
 <?php $cs->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
