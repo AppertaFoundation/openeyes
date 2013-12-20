@@ -41,7 +41,7 @@
 				<th>Option</th>
 				<th>Frequency</th>
 				<th>Start date</th>
-				<th>Actions</th>
+				<?php if(BaseController::checkUserLevel(4)) { ?><th>Actions</th><?php } ?>
 			</tr>
 			</thead>
 			<tbody>
@@ -52,21 +52,22 @@
 					<td><?php echo $medication->option ? $medication->option->name : '-'?></td>
 					<td><?php echo $medication->frequency->name?></td>
 					<td><?php echo $medication->NHSDate('start_date')?></td>
+					<?php if(BaseController::checkUserLevel(4)) { ?>
 					<td>
 						<a href="#" class="editMedication" rel="<?php echo $medication->id?>">Edit</a>&nbsp;&nbsp;
 						<a href="#" class="removeMedication" rel="<?php echo $medication->id?>">Remove</a>
 					</td>
+					<?php } ?>
 				</tr>
 			<?php }?>
 			</tbody>
 		</table>
-		<?php if(BaseController::checkUserLevel(3)){ ?>
+		<?php if(BaseController::checkUserLevel(4)) { ?>
 		<div class="box-actions">
 			<button  id="btn-add_medication" class="secondary small">
 				Add Medication
 			</button>
 		</div>
-		<?php } ?>
 
 		<div id="add_medication" style="display: none;">
 			<?php
@@ -185,6 +186,7 @@
 			</fieldset>
 			<?php $this->endWidget()?>
 		</div>
+		<?php } ?>
 	</div>
 </section>
 
