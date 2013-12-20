@@ -17,6 +17,41 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Class BaseEventTypeController
+ *
+ * BaseEventTypeController is the base controller for modules managing events within OpenEyes.
+ *
+ * It implements a standardised design pattern to provide the general CRUD interface for module events. The controller
+ * is designed to be stateful. When an action is called, the state of the controller is determined from the POST and GET
+ * attributes of the request. Properties on the controller are populated through a series of methods, and the response
+ * is rendered based on these values, and returned to the user. The rationale behind this is that each of the methods
+ * provide discrete hooks which can be overridden in module controllers to redefine what the controller properties
+ * should be set to.
+ *
+ * The primary property of the controller to be manipulated is the {@link open_elements} which defines the elements of
+ * the event to be displayed in whatever action is being performed.
+ *
+ * An abstract class in all but name, it should be used for all event based modules. Specific methods can be implemented
+ * in module level controllers that will be called automatically by this base controller. Specifically setting defaults
+ * on elements and setting complex attributes on individual elements can be handled in specific methods, as defined by
+ * <ul>
+ * <li>{@link setElementDefaultOptions}</li>
+ * <li>{@link setElementComplexAttributesFromData}</li>
+ * <li>{@link saveElementComplexAttributesFromData}</li>
+ * </ul>
+ *
+ * It's worth noting that at the moment there is no class for Events at the module level. As a result, the controller
+ * tends to contain certain business logic that should really be part of the event. Such behaviour should be written in
+ * a way that it can be easily extracted into a separate class. The intention in the future is that this would be abstracted
+ * into (at a minimum) a helper class, or ideally into an actual event class that would contain all business logic for
+ * manipulating the event and its elements.
+ *
+ * Furthermore no $_POST, $_GET or session data should be utilised within the element models. Data should be extracted
+ * by controllers and passed to methods on the element models. In the future, models may be instantiated in different
+ * context where these globals would not be available.
+ *
+ */
 class BaseEventTypeController extends BaseModuleController
 {
 	public $model;
@@ -127,7 +162,9 @@ class BaseEventTypeController extends BaseModuleController
 
 	/**
 	 * Abstraction of getting the elements for the event being controlled to allow more complex overrides (such as workflow)
-	 * where required
+	 * where required.
+	 *
+	 * This should be overridden if the standard elements for the event are affected by the controller state.
 	 *
 	 * @return BaseEventTypeElement[]
 	 */
@@ -241,7 +278,7 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * define the name of the actions that are print actions (for checking access based on print rules)
+	 * Define the name of the actions that are print actions (for checking access based on print rules)
 	 *
 	 * @return array
 	 */
@@ -251,7 +288,7 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * setup base css/js etc requirements for the eventual action render.
+	 * Setup base css/js etc requirements for the eventual action render.
 	 *
 	 * @param $action
 	 * @return bool
@@ -283,8 +320,21 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
+	 * Redirect to the patient episodes when the controller determines the action cannot be carried out
+	 */
+	protected function redirectToPatientEpisodes()
+	{
+		$this->redirect(array("/patient/episodes/".$this->patient->id));
+	}
+
+	/**
 	 * set the defaults on the given BaseEventTypeElement
-	 * abstracted to allow controller overrides
+	 *
+	 * Looks for a methods based on the class name of the element:
+	 * setElementDefaultOptions_[element class name]
+	 *
+	 * This method is passed the element and action, which allows for controller methods to manipulate the default
+	 * values of the element (if the controller state is required for this)
 	 *
 	 * @param BaseEventTypeElement $element
 	 * @param string $action
@@ -295,6 +345,10 @@ class BaseEventTypeController extends BaseModuleController
 			$element->setDefaultOptions();
 		} elseif ($action == 'update') {
 			$element->setUpdateOptions();
+		}
+		$el_method = 'setElementDefaultOptions_' . get_class($element);
+		if (method_exists($this, $el_method)) {
+			$this->$el_method($element, $action);
 		}
 	}
 
@@ -307,10 +361,6 @@ class BaseEventTypeController extends BaseModuleController
 	{
 		foreach ($this->open_elements as $element) {
 			$this->setElementDefaultOptions($element, $action);
-			$el_method = 'setElementDefaultOptions_' . get_class($element);
-			if (method_exists($this, $el_method)) {
-				$this->$el_method($element, $action);
-			}
 		}
 	}
 
@@ -351,7 +401,11 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * abstraction of element initialisation to allow custom extension in overrides of controller
+	 * Initialise an element of $element_type for returning as an individual form. If the $previous_id is provided,
+	 * then the default values of the element will be overridden with the properties of the previous intance of the
+	 * element. Similarly, $additional allows specific values to be set on the element.
+	 *
+	 * Abstracted to allow overrides in specific module controllers
 	 *
 	 * @param ElementType $element_type
 	 * @param integer $previous_id
@@ -378,7 +432,11 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * Runs initialisation of the controller based on the action
+	 * Runs initialisation of the controller based on the action. Lost for a method name of
+	 *
+	 * initAction[$action]
+	 *
+	 * and calls it.
 	 *
 	 * @param string $action
 	 */
