@@ -1,7 +1,3 @@
-# import 'classes/*'
-
-# notice($mode)
-
 node default {
 
 	exec { 'apt-update':
