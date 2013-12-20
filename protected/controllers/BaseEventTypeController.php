@@ -393,11 +393,13 @@ class BaseEventTypeController extends BaseModuleController
 
 	/**
 	 * Can we view the previous version of the element
-	 * @TODO bring into line with other merged methods (element instance instead of class)
+	 *
+	 * @param BaseEventTypeElement $element
+	 * @return boolean
 	 */
-	public function canViewPrevious($element_class, $exclude_event_id = null)
+	public function canViewPrevious($element)
 	{
-		return $this->hasPrevious($element_class, $exclude_event_id);
+		return $this->hasPrevious($element->getElementType(), $element->event_id);
 	}
 
 	/**
@@ -432,7 +434,7 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * Runs initialisation of the controller based on the action. Lost for a method name of
+	 * Runs initialisation of the controller based on the action. Looks for a method name of
 	 *
 	 * initAction[$action]
 	 *
