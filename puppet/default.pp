@@ -1,19 +1,24 @@
-import 'classes/*'
+node default {
 
-class amp {
-    exec { 'apt-update':
-        command => '/usr/bin/apt-get update',
-    }
+	exec { 'apt-update':
+		command => '/usr/bin/apt-get update',
+	}
 
-    include apache2
-    include mysql
-    include curl
-    include vim
-    include mail
-    include php5
-    include openeyes
-    include xdebug
-    include composer
+	include core::apache2
+	include core::mysql
+	include core::curl
+	include core::mail
+	include core::php5
+	include core::openeyes
+	include core::composer
+
+	if $mode == 'dev' {
+		include dev::vim
+		include dev::xdebug
+		include dev::nodejs
+		include dev::grunt
+		include dev::bower
+		include dev::ruby
+		include dev::compass
+	}
 }
-
-include amp
