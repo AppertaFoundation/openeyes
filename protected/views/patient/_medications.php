@@ -60,12 +60,13 @@
 			<?php }?>
 			</tbody>
 		</table>
-
+		<?php if(BaseController::checkUserLevel(3)){ ?>
 		<div class="box-actions">
 			<button  id="btn-add_medication" class="secondary small">
 				Add Medication
 			</button>
 		</div>
+		<?php } ?>
 
 		<div id="add_medication" style="display: none;">
 			<?php
