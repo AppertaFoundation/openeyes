@@ -1,4 +1,4 @@
-class xdebug {
+class dev::xdebug {
 	case $operatingsystem {
 		Debian,Ubuntu:  { include xdebug::debian}
 		default: { fail "Unsupported operatingsystem ${operatingsystem}" }
@@ -104,7 +104,7 @@ class xdebug::debian {
 	package { "xdebug":
 		name   => $xdebug::params::pkg,
 		ensure => installed,
-		require => Class['php5'],
+		require => Class['core::php5'],
 	}
 }
 

@@ -1,4 +1,4 @@
-class mail {
+class core::mail {
 	package { 'postfix':
 		ensure  => present,
 		require => Exec['apt-update'],

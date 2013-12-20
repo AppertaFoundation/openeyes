@@ -43,6 +43,11 @@ Vagrant.configure("2") do |config|
 
 	config.vm.provision :puppet do |puppet|
 		puppet.manifests_path = "puppet"
-		#puppet.options = "--verbose --debug"
+		puppet.manifest_file  = "default.pp"
+    puppet.module_path    = "puppet/modules"
+		puppet.facter = {
+			'mode' => mode
+		}
+		# puppet.options = "--verbose --debug"
 	end
 end

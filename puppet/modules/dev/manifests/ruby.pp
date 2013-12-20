@@ -1,4 +1,4 @@
-class ruby {
+class dev::ruby {
 	package { 'ruby':
 		ensure  => present,
 		require => Exec['apt-update'],

@@ -1,4 +1,4 @@
-class nodejs {
+class dev::nodejs {
 
 	exec { 'nvm-install':
 		command => '/usr/bin/curl https://raw.github.com/creationix/nvm/master/install.sh | /bin/sh',

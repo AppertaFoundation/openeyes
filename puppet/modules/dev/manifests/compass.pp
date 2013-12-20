@@ -1,4 +1,4 @@
-class compass {
+class dev::compass {
 	package { 'compass':
 		provider => 'gem',
 		ensure => installed,

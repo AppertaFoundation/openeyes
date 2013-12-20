@@ -1,4 +1,4 @@
-class openeyes {
+class core::openeyes {
 	file { '/var/www/protected/runtime':
 		ensure => directory,
 		mode   => '0777',

@@ -1,4 +1,4 @@
-class mysql {
+class core::mysql {
 	package { 'mysql-server':
 		ensure  => present,
 		require => Exec['apt-update'],

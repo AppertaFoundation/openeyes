@@ -1,4 +1,4 @@
-class php5 {
+class core::php5 {
 
 	# NOTE: this repository was recently updated to include PHP 5.5 and Apache 2.4,
 	# which is not compatible with the OpenEyes application.

@@ -1,4 +1,4 @@
-class apache2 {
+class core::apache2 {
 	package { 'apache2':
 		ensure  => present,
 		require => Exec['apt-update'],
