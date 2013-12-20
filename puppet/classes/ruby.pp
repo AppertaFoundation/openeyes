@@ -4,8 +4,8 @@ class ruby {
 		require => Exec['apt-update'],
 	}
 
-  package { 'rubygems':
-    ensure  => present,
-    require => Package['ruby'],
-  }
+	package { 'rubygems':
+		ensure  => present,
+		require => Package['ruby'],
+	}
 }

@@ -1,6 +1,6 @@
 class compass {
 	package { 'compass':
-    provider => 'gem',
+		provider => 'gem',
 		ensure => installed,
 		require => Package['rubygems'],
 	}
