@@ -21,4 +21,8 @@ node default {
 		include dev::ruby
 		include dev::compass
 	}
+
+	if $mode == 'ci' {
+		include dev::xdebug
+	}
 }
