@@ -29,7 +29,7 @@ class BaseController extends Controller
 	public $selectedSiteId;
 	public $firms;
 	public $jsVars = array();
-	protected $css = array();
+	public $assetManager;
 
 	public function filters()
 	{
@@ -48,37 +48,7 @@ class BaseController extends Controller
 	}
 
 	/**
-	 * (Pre)register a CSS file with a priority to allow ordering
-	 * @param string $name
-	 * @param string $path
-	 * @param integer $priority
-	 */
-	public function registerCssFile($name, $path, $priority = 100)
-	{
-		$this->css[$name] = array(
-				'path' => $path,
-				'priority' => $priority,
-		);
-	}
-
-	/**
-	 * Registers all CSS file that were preregistered by priority
-	 */
-	protected function registerCssFiles()
-	{
-		$css_array = array();
-		foreach ($this->css as $css_item) {
-			$css_array[$css_item['path']] = $css_item['priority'];
-		}
-		arsort($css_array);
-		$clientscript = Yii::app()->clientScript;
-		foreach ($css_array as $path => $priority) {
-			$clientscript->registerCssFile($path);
-		}
-	}
-
-	/**
-	 * List of actions for which the style.css file should _not_ be included
+	 * List of print actions.
 	 * @return array:
 	 */
 	public function printActions()
@@ -97,14 +67,7 @@ class BaseController extends Controller
 
 	protected function beforeAction($action)
 	{
-
 		$app = Yii::app();
-
-		// Register base style.css unless it's a print action
-		if (!$this->isPrintAction($action->id)) {
-			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
-		}
-
 
 		if ($app->params['ab_testing']) {
 			if ($app->user->isGuest) {
@@ -126,31 +89,29 @@ class BaseController extends Controller
 			$this->selectedSiteId = $app->session['selected_site_id'];
 		}
 
-		$this->registerCssFiles();
-		$this->adjustScriptMapping();
-
 		return parent::beforeAction($action);
 	}
 
 	/**
-	 * Adjust the the client script mapping (for javascript and css files assets).
-	 *
-	 * If a Yii widget is being used in an Ajax request, all dependant scripts and
-	 * stylesheets will be outputted in the response. This method ensures the core
-	 * scripts and stylesheets are not outputted in an Ajax response.
+	 * This method is invoked after the view is rendered. We register the assets here
+	 * as assets might be pre-registered within the views.
 	 */
-	private function adjustScriptMapping() {
-		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-			$scriptMap = Yii::app()->clientScript->scriptMap;
-			$scriptMap['jquery.js'] = false;
-			$scriptMap['jquery.min.js'] = false;
-			$scriptMap['jquery-ui.js'] = false;
-			$scriptMap['jquery-ui.min.js'] = false;
-			$scriptMap['module.js'] = false;
-			$scriptMap['style.css'] = false;
-			$scriptMap['jquery-ui.css'] = false;
-			Yii::app()->clientScript->scriptMap = $scriptMap;
-		}
+	protected function afterRender()
+	{
+		// Register all assets that we pre-registered.
+		Yii::app()->getAssetManager()->registerFiles($this->isPrintRequest());
+
+		// Prevent certain assets from being outputted in certain conditions.
+		Yii::app()->getAssetManager()->adjustScriptMapping();
+	}
+
+	/**
+	 * Determine if this request is a print action.
+	 * @return boolean Is a print request?
+	 */
+	public function isPrintRequest()
+	{
+		return in_array($this->action->id, $this->printActions());
 	}
 
 	protected function setSessionPatient($patient)

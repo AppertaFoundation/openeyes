@@ -98,7 +98,6 @@ class BaseEventTypeController extends BaseModuleController
 	public $eventIssueCreate;
 	// defines additional variables to be available in view templates
 	public $extraViewProperties = array();
-	public $layout = '//layouts/events_and_episodes';
 	private $action_type_map;
 	private $episodes = array();
 	public $renderPatientPanel = true;

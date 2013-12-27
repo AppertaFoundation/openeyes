@@ -271,7 +271,6 @@ class PatientController extends BaseController
 
 	public function actionEpisodes()
 	{
-		$this->layout = '//layouts/events_and_episodes';
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
@@ -321,7 +320,6 @@ class PatientController extends BaseController
 			throw new SystemException('Episode not found: '.$id);
 		}
 
-		$this->layout = '//layouts/events_and_episodes';
 		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
@@ -364,8 +362,6 @@ class PatientController extends BaseController
 			$this->redirect(array('patient/episode/'.$this->episode->id));
 			return;
 		}
-
-		$this->layout = '//layouts/events_and_episodes';
 
 		if (!empty($_POST)) {
 			if ((@$_POST['eye_id'] && !@$_POST['DiagnosisSelection']['disorder_id'])) {
