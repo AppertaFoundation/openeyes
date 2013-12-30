@@ -154,6 +154,7 @@ class BaseEventTypeController extends BaseModuleController
 	 * Return an ACTION_TYPE_ constant representing the type of an action for authorisation purposes
 	 *
 	 * @param string $action
+	 * @throws Exception
 	 * @return string
 	 */
 	public function getActionType($action)

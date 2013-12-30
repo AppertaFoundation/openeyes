@@ -48,7 +48,68 @@ class BaseEventTypeControllerTest extends CDbTestCase
 	protected function getElement($element_type)
 	{
 		return ComponentStubGenerator::generate('BaseEventTypeElement',
-			array('element_type' => $element_type));
+			array('ElementType' => $element_type));
+	}
+
+	/**
+	 * mocks the getDefaultElements method to define the elements it should return by default
+	 *
+	 * @return PHPUnit_Framework_MockObject_MockObject
+	 */
+	protected function getEventTypeWithNoChildren()
+	{
+		$event_type = $this->getMockBuilder('EventType')
+			->disableOriginalConstructor()
+			->getMock();
+		$event_type->expects( $this->any() )->method('getDefaultElements')->will($this->returnValue(
+				array(
+					$this->getElement($this->element_type('history')),
+					$this->getElement($this->element_type('visualfunction'))
+				)
+			));
+		return $event_type;
+	}
+
+	protected function getEventTypeWithChildren()
+	{
+		$event_type = $this->getMockBuilder('EventType')
+			->disableOriginalConstructor()
+			->getMock();
+		$event_type->expects( $this->any() )->method('getDefaultElements')->will($this->returnValue(
+				array(
+					$this->getElement($this->element_type('history')),
+					$this->getElement($this->element_type('pasthistory'))
+				)
+			));
+		return $event_type;
+	}
+
+	protected function getEventWithNoChildren()
+	{
+		$event = $this->getMockBuilder('Event')
+			->disableOriginalConstructor()
+			->getMock();
+		$event->expects( $this->any() )->method('getElements')->will($this->returnValue(
+				array(
+					$this->getElement($this->element_type('history')),
+					$this->getElement($this->element_type('visualfunction'))
+				)
+			));
+		return $event;
+	}
+
+	protected function getEventWithChildren()
+	{
+		$event = $this->getMockBuilder('Event')
+			->disableOriginalConstructor()
+			->getMock();
+		$event->expects( $this->any() )->method('getElements')->will($this->returnValue(
+				array(
+					$this->getElement($this->element_type('history')),
+					$this->getElement($this->element_type('pasthistory'))
+				)
+			));
+		return $event;
 	}
 
 	/**
@@ -73,25 +134,23 @@ class BaseEventTypeControllerTest extends CDbTestCase
 	/**
 	 * @covers BaseEventTypeController::getEventElements()
 	 */
-	public function testgetEventElements()
+	public function testgetEventElements_noEvent()
 	{
-		// mock the default elements method for event type
-		// for test-able behaviour on the controller
-		$event_type = $this->getMockBuilder('EventType')
-			->disableOriginalConstructor()
-			->getMock();
-		$event_type->expects( $this->any() )->method('getDefaultElements')->will($this->returnValue(array(1,2)));
+		$event_type = $this->getEventTypeWithChildren();
 
-		$controller = new _getEventElementsController();
+		$controller = new _WrapperBaseEventTypeController();
 		$controller->event_type = $event_type;
 		$this->assertEquals($event_type->getDefaultElements(), $controller->getEventElements(), 'Controller should return default elements for its event type when no event is set.');
+	}
 
-		$event = $this->getMockBuilder('Event')
-			->disableOriginalConstructor()
-			->getMock();
-		$event->expects( $this->any() )->method('getElements')->will($this->returnValue(array('4','5','6')));
+	/**
+	 * @covers BaseEventTypeController::getEventElements()
+	 */
+	public function testgetEventElements_withEvent()
+	{
+		$event = $this->getEventWithNoChildren();
 
-		$controller = new _getEventElementsController();
+		$controller = new _WrapperBaseEventTypeController();
 		$controller->event = $event;
 		$this->assertEquals($event->getElements(), $controller->getEventElements(), 'Controller should return event elements when the event is set.');
 	}
@@ -99,43 +158,124 @@ class BaseEventTypeControllerTest extends CDbTestCase
 	/**
 	 * @covers BaseEventTypeController::setOpenElementsFromCurrentEvent
 	 */
-	public function testsetOpenElementsFromCurrentEvent()
+	public function testsetOpenElementsFromCurrentEvent_create()
 	{
-		$event_type = $this->getMockBuilder('EventType')
-			->disableOriginalConstructor()
-			->getMock();
-		$event_type->expects( $this->any() )->method('getDefaultElements')->will($this->returnValue(array($this->getElement($this->element_type('history')))));
+		$event_type = $this->getEventTypeWithNoChildren();
 
-		$controller = new _getEventElementsController();
+		$controller = new _WrapperBaseEventTypeController();
 		$controller->event_type = $event_type;
-		$this->assertEquals(null, $controller->getOpenElements(), 'Controller should start with no open elements');
+
 		$controller->setOpenElementsFromCurrentEvent('create');
 		$this->assertEquals($event_type->getDefaultElements(), $controller->getOpenElements(), 'Controller should set open_elements to the default elements of the event type.');
+	}
 
-		$event = $this->getMockBuilder('Event')
-			->disableOriginalConstructor()
-			->getMock();
-		$event->expects( $this->any() )->method('getElements')->will($this->returnValue(
-				array(
-					$this->getElement($this->element_type('history')),
-					$this->getElement($this->element_type('pasthistory'))
-				)
-			));
+	/**
+	 * @covers BaseEventTypeController::setOpenElementsFromCurrentEvent
+	 */
+	public function testsetOpenElementsFromCurrentEvent_update()
+	{
+		$event = $this->getEventWithChildren();
 
-		$controller = new _getEventElementsController();
+		$controller = new _WrapperBaseEventTypeController();
 		$controller->event = $event;
 		$controller->setOpenElementsFromCurrentEvent('update');
 		$this->assertEquals($event->getElements(), $controller->getOpenElements(), 'Controller should set open_elements to the elements of the assigned event.');
 	}
 
+	/**
+	 * @covers BaseEventTypeController::getElements()
+	 */
+	public function testgetElements_createNoChildren()
+	{
+		//Create event type with default elements
+		$event_type = $this->getEventTypeWithNoChildren();
+
+		//Assign to test controller
+		$controller = new _WrapperBaseEventTypeController();
+		$controller->event_type = $event_type;
+		$controller->setOpenElementsFromCurrentEvent('create');
+
+		//Ensure getElements returns the default elements of the test event type
+		$this->assertEquals($event_type->getDefaultElements(), $controller->getElements(), 'Controller should return all the default elements from getElements when none are children');
+	}
+
+	/**
+	 * @covers BaseEventTypeController::getElements()
+	 */
+	public function testgetElements_createWithChildren()
+	{
+		//Create event type with default elements
+		$event_type = $this->getEventTypeWithChildren();
+
+		//Assign to test controller
+		$controller = new _WrapperBaseEventTypeController();
+		$controller->event_type = $event_type;
+		$controller->setOpenElementsFromCurrentEvent('create');
+
+		$expected = array();
+		foreach ($event_type->getDefaultElements() as $el) {
+			if (!$el->getElementType()->isChild()) {
+				$expected[] = $el;
+			}
+		}
+
+		//Ensure that only parent elements are returned, not children
+		$this->assertEquals($expected, $controller->getElements(), 'Controller should only return default elements that are not children');
+	}
+
+	/**
+	 * @covers BaseEventTypeController::getElements()
+	 */
+	public function testgetElements_updateNoChildren()
+	{
+		//Create event
+		$event = $this->getEventWithNoChildren();
+
+		//Assign to test controller
+		$controller = new _WrapperBaseEventTypeController();
+		$controller->event = $event;
+		$controller->setOpenElementsFromCurrentEvent('update');
+
+		//Ensure getElements returns the default elements of the test event type
+		$this->assertEquals($event->getElements(), $controller->getElements(), 'Controller should return all the elements from getElements when none are children');
+	}
+
+	/**
+	 * @covers BaseEventTypeController::getElements()
+	 */
+	public function testgetElements_updateWithChildren()
+	{
+		//Create event
+		$event = $this->getEventWithChildren();
+
+		//Assign to test controller
+		$controller = new _WrapperBaseEventTypeController();
+		$controller->event = $event;
+		$controller->setOpenElementsFromCurrentEvent('update');
+
+		$expected = array();
+		foreach ($event->getElements() as $el) {
+			if (!$el->getElementType()->isChild()) {
+				$expected[] = $el;
+			}
+		}
+
+		//Ensure that only parent elements are returned, not children
+		$this->assertEquals($expected, $controller->getElements(), 'Controller should only return event elements that are not children');
+	}
 }
 
-class _getEventElementsController extends BaseEventTypeController
+/**
+ * Class _WrapperBaseEventTypeController
+ *
+ * wrapper class around BaseEventTypeController to expose protected methods for testing
+ */
+class _WrapperBaseEventTypeController extends BaseEventTypeController
 {
 
 	public function __construct()
 	{
-		parent::__construct('_getEventElementsController');
+		parent::__construct('_WrapperBaseEventTypeController');
 	}
 
 	public $event_type;
