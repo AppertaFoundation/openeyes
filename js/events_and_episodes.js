@@ -19,6 +19,13 @@
 $(document).ready(function(){
 	$collapsed = true;
 
+	$(document).keydown(function(event){
+		if(event.keyCode == 13) {
+			event.preventDefault();
+			return false;
+		}
+	});
+
 	(function addNewEvent() {
 
 		var template = $('#add-new-event-template');
