@@ -16,6 +16,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 {
 	private $yii;
 	private $screenshots;
+	private $screenshotPath;
 
 	protected $environment = array(
 		'master' => 'http://admin:openeyesdevel@master.test.openeyes.org.uk',
@@ -45,6 +46,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		$this->useContext('TherapyApplication', new TherapyApplicationContext($parameters));
 		$this->useContext('ConsentForm', new ConsentFormContext($parameters));
 		$this->screenshots = array();
+		$this->screenshotPath = '/tmp/behat';
 	}
 
 	/**
@@ -121,7 +123,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 					'step' => substr($step->getType() . ' ' . $step->getText(), 0, 255)
 				);
 				$path = preg_replace('/[^\-\.\w]/', '_', $path);
-				$filename = '/tmp/behat/' . implode('/', $path) . '.jpg';
+				$filename = $this->screenshotPath . DIRECTORY_SEPARATOR . implode('/', $path) . '.jpg';
 
 				if (count($this->screenshots) >= 5) {
 					$this->screenshots = array_slice($this->screenshots, 1);
@@ -140,11 +142,18 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		foreach ($this->screenshots as $screenshot) {
 			try{
 				if (!@is_dir(dirname($screenshot['filename']))) {
+					echo "\n\nCreating dir " . dirname($screenshot['filename']) . " \n";
 					@mkdir(dirname($screenshot['filename']), 0775, TRUE);
 				}
-				file_put_contents($screenshot['filename'], $screenshot['screenshotContent']);
+				$screenshotSaved = file_put_contents($screenshot['filename'], $screenshot['screenshotContent']);
+				if($screenshotSaved === false){
+					echo "\n\n ERROR saving SCREENSHOT : " . $screenshot['filename'] . " \n\n";
+				}
 			}
-			catch(Exception $e){}
+			catch(Exception $e){
+				echo "Saving screenshots Exception " . get_class($e) . " \n\nFile: " . $e->getFile() . " \n\nMessage: " . $e->getMessage() .
+						" \n\nLine: " . $e->getLine() . " \n\nCode: " . $e->getCode() . " \n\nTrace: " . $e->getTraceAsString();
+			}
 		}
 		$this->screenshots = array();
 	}
