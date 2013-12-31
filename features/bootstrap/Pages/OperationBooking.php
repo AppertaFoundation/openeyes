@@ -33,13 +33,14 @@ class OperationBooking extends OpenEyesPage
         'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
         'availableTheatreSlotDateOutsideRTT' => array('xpath' => "//*[@class='available outside_rtt']"),
         'availableThreeWeeksTime' => array ('xpath' => "//*[@id='calendar']//*[contains(text(),'27')]"),
-        'nextMonth' => array('xpath' => "//*[@id='next_month']"),
+        'nextMonth' => array('css' => '#next_month > a'),
         'availableTheatreSessionTime' => array('xpath' => "//*[@class='timeBlock available bookable']"),
         'noAnaesthetist' => array ('xpath' => "//*[@id='bookingSession1824']"),
         'sessionComments' => array('xpath' => "//*[@id='Session_comments']"),
         'sessionOperationComments' => array('xpath' => "//*[@id='operation_comments']"),
         'confirmSlot' => array('xpath' => "//*[@id='confirm_slot']"),
-        'EmergencyList' => array ('xpath' => "//select[@id='firm_id']")
+        'EmergencyList' => array ('xpath' => "//select[@id='firm_id']"),
+				'currentMonth' => array('css' => "#current_month")
     );
 
     public function diagnosisEyes ($eye)
@@ -173,12 +174,14 @@ class OperationBooking extends OpenEyesPage
 
     public function nextMonth ()
     {
-        $this->getElement('nextMonth')->click();
+			$currMonthText = $this->getElement('currentMonth')->getText();
+			$this->getElement('nextMonth')->click();
+			$this->getSession()->wait(15000, "window.$ && $('#current_month').html().trim().length > 0 && $('#current_month').html().trim() != '" . $currMonthText . "' ");
     }
 
     public function availableSlotExactDay ($day)
     {
-		$slot = $this->find('xpath' , "//*[@id='calendar']//*[contains(number(),'" . $day ."')]");
+		$slot = $this->find('xpath' , "//*[@id='calendar']//*[number()='" . $day ."']");
 		$slot->click();
 		$this->getSession()->wait(15000, "window.$ && $('#calendar td.available.selected_date').html().trim() == '" . $day . "' ");
     }
