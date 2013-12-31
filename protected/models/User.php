@@ -366,7 +366,7 @@ class User extends BaseActiveRecord
 	public function getListSurgeons()
 	{
 		$criteria = new CDbCriteria;
-		$criteria->compare('is_doctor',1);
+		$criteria->compare('is_surgeon',1);
 		$criteria->compare('active',1);
 		$criteria->order = 'last_name,first_name asc';
 		return CHtml::listData(User::model()->findAll($criteria),'id','reversedFullName');
