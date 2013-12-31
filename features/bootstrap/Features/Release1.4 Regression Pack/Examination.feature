@@ -203,7 +203,7 @@ Feature: Create New Examination Regression Tests
     And I add an Investigation of "field test, "
 
     Then I choose to expand the Clinical Management section
-    And I choose to expand Cataract Management
+    And I choose to expand Cataract Surgical Management
     And I add Cataract Management Comments of "new glasses prescribed, "
     Then I select First Eye
 
@@ -320,7 +320,7 @@ Feature: Create New Examination Regression Tests
     And I add an Investigation of "field test, "
 
     Then I choose to expand the Clinical Management section
-    And I choose to expand Cataract Management
+    And I choose to expand Cataract Surgical Management
     And I add Cataract Management Comments of "new glasses prescribed, "
     Then I select First Eye
 
@@ -443,7 +443,7 @@ Feature: Create New Examination Regression Tests
     And I add an Investigation of "field test, "
 
     Then I choose to expand the Clinical Management section
-    And I choose to expand Cataract Management
+    And I choose to expand Cataract Surgical Management
     And I add Cataract Management Comments of "new glasses prescribed, "
     Then I select First Eye
 

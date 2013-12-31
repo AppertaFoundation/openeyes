@@ -569,15 +569,15 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I choose to expand Cataract Management$/
+     * @Given /^I choose to expand Cataract Surgical Management$/
      */
-    public function iChooseToExpandCataractManagement()
+    public function iChooseToExpandCataractSurgicalManagement()
     {
         /**
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->expandCataractManagement();
+        $examination->expandCataractSurgicalManagement();
     }
 
     /**

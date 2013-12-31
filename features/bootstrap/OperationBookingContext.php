@@ -260,14 +260,14 @@ class OperationBookingContext extends PageObjectContext
 		 * @var OperationBooking $operationBooking
 		 */
 
+		$operationBooking = $this->getPage('OperationBooking');
+
 		$nextDay = date('j', strtotime('this ' . $dayOfTheWeek));
 		$today = date('j', strtotime('today'));
 
 		if($today > $nextDay){
 			$operationBooking->nextMonth();
 		}
-
-		$operationBooking = $this->getPage('OperationBooking');
 		$operationBooking->availableSlotExactDay($nextDay);
 	}
 
