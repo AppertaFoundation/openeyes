@@ -47,6 +47,33 @@ class AdminController extends BaseAdminController
 			));
 	}
 
+	public function actionEditDrug($id)
+	{
+		if (!$drug = Drug::model()->findByPk($id)) {
+			throw new Exception("Drug not found: $id");
+		}
+
+		if (!empty($_POST)) {
+
+			$drug->attributes = $_POST['Drug'];
+
+			if (!$drug->validate()) {
+				$errors = $drug->getErrors();
+			} else {
+				if (!$drug->save()) {
+					throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+				}
+
+				$this->redirect('/admin/drugs/'.ceil($drug->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/editdrug',array(
+				'drug' => $drug,
+				'errors' => @$errors,
+			));
+	}
+
 	public function actionUsers($id=false)
 	{
 		Audit::add('admin-User','list');
@@ -246,13 +273,11 @@ class AdminController extends BaseAdminController
 		$criteria->offset = $page * $this->items_per_page;
 		$criteria->limit = $this->items_per_page;
 
-/*
 		if (!empty($_REQUEST['search'])) {
 			$criteria->addSearchCondition("username",$_REQUEST['search'],true,'OR');
 			$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
 			$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
 		}
-*/
 		return array(
 			'items' => $params['model']::model()->findAll($criteria),
 		);

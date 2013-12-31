@@ -60,7 +60,7 @@
 
 			foreach ($drugs['items'] as $i => $drug) {?>
 				<tr class="clickable" data-id="<?php echo $drug->id?>" data-uri="admin/editDrug/<?php echo $drug->id?>">
-					<td><input type="checkbox" name="users[]" value="<?php echo $drug->id?>" /></td>
+					<td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id?>" /></td>
 					<td><?php echo $drug->id?></td>
 					<td><?php echo $drug->name?></td>
 					<td><?php echo $drug->type->name?></td>
