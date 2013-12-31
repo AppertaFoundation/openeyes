@@ -34,6 +34,19 @@ class AdminController extends BaseAdminController
 		$this->redirect(array('/admin/users'));
 	}
 
+	public function actionDrugs()
+	{
+		$pagination = $this->initPagination(Drug::model());
+
+		$this->render('/admin/drugs',array(
+				'drugs' => $this->getItems(array(
+						'model' => 'Drug',
+						'page' => $pagination->currentPage ,
+					)),
+				'pagination' => $pagination,
+			));
+	}
+
 	public function actionUsers($id=false)
 	{
 		Audit::add('admin-User','list');
@@ -233,13 +246,13 @@ class AdminController extends BaseAdminController
 		$criteria->offset = $page * $this->items_per_page;
 		$criteria->limit = $this->items_per_page;
 
-
+/*
 		if (!empty($_REQUEST['search'])) {
 			$criteria->addSearchCondition("username",$_REQUEST['search'],true,'OR');
 			$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
 			$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
 		}
-
+*/
 		return array(
 			'items' => $params['model']::model()->findAll($criteria),
 		);
