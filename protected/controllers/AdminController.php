@@ -55,13 +55,45 @@ class AdminController extends BaseAdminController
 
 		if (!empty($_POST)) {
 
-			$drug->attributes = $_POST['Drug'];
-
 			if (!$drug->validate()) {
 				$errors = $drug->getErrors();
 			} else {
 				if (!$drug->save()) {
 					throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+				}
+
+				$drug->attributes = $_POST['Drug'];
+
+				if(isset($_POST['allergies']))
+				{
+					$criteria=new CDbCriteria;
+					$criteria->compare('drug_id',$drug->id);
+					$allergy_assignments = DrugAllergyAssignment::model()->findAll($criteria);
+
+					$allergy_assignment_ids = array();
+					foreach($allergy_assignments as $allergy_assignment){
+						$allergy_assignment_ids[]=$allergy_assignment->allergy_id;
+					}
+
+					$posted_allergy_ids = $_POST['allergies'];
+
+					$allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids,$posted_allergy_ids);
+					$posted_allergy_ids_to_assign =  array_diff($posted_allergy_ids , $allergy_assignment_ids);
+
+					//add new allergy mappings
+					foreach($posted_allergy_ids_to_assign as $asign){
+						$allergy_assignment = new DrugAllergyAssignment();
+						$allergy_assignment->drug_id=$drug->id;
+						$allergy_assignment->allergy_id=$asign;
+						$allergy_assignment->save();
+					}
+
+					//delete redundant allergy mappings
+					foreach($allergy_assignments as $asigned){
+						if(in_array($asigned->allergy_id,$allergy_assignment_ids_to_delete)){
+							$asigned->delete();
+						}
+					}
 				}
 
 				$this->redirect('/admin/drugs/'.ceil($drug->id/$this->items_per_page));
@@ -113,6 +145,26 @@ class AdminController extends BaseAdminController
 			'errors' => @$errors,
 		));
 	}
+
+	protected function setPOSTManyToMany($element)
+	{
+		var_dump(get_class($element));
+		die('x');
+			if (get_class($element) == 'Element_OphTrIntravitrealinjection_Complications') {
+				if (isset($_POST['Element_OphTrIntravitrealinjection_Complications'][$side . '_complications']) ) {
+					$complications = array();
+
+					foreach ($_POST['Element_OphTrIntravitrealinjection_Complications'][$side . '_complications'] as $comp_id) {
+						if ($comp = OphTrIntravitrealinjection_Complication::model()->findByPk($comp_id)) {
+							$complications[] = $comp;
+						}
+					}
+					$element->{$side . '_complications'} = $complications;
+				}
+			}
+
+	}
+
 
 	public function actionEditUser($id)
 	{

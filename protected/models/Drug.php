@@ -173,16 +173,4 @@ class Drug extends BaseActiveRecord
 
 		return CHtml::listData(Drug::model()->with('subspecialtyAssignments')->findAll($criteria),'id','name');
 	}
-
-	protected function afterSave()
-	{
-		var_dump($_POST);
-		die('');
-
-		// Check to see if items have been posted
-		if (isset($_POST['comorbidities_items_valid']) && $_POST['comorbidities_items_valid']) {
-
-
-		}
-	}
 }
