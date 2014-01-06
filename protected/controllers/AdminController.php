@@ -347,12 +347,17 @@ class AdminController extends BaseAdminController
 		$criteria->limit = $this->items_per_page;
 
 		if (!empty($_REQUEST['search'])) {
-			$criteria->addSearchCondition("username",$_REQUEST['search'],true,'OR');
-			$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
-			$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
+			if($params['model']=='User'){
+				$criteria->addSearchCondition("username",$_REQUEST['search'],true,'OR');
+				$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
+				$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
+			}
+			else if($params['model']=='Drug'){
+				$criteria->addSearchCondition("name",$_REQUEST['search'],true,'OR');
+			}
 		}
 		return array(
-			'items' => $params['model']::model()->findAll($criteria),
+			'items' => $model->findAll($criteria),
 		);
 	}
 
