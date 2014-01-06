@@ -103,35 +103,36 @@ class AdminController extends BaseAdminController
 					throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
 				}
 
-				if(isset($_POST['allergies']))
-				{
-					$criteria=new CDbCriteria;
-					$criteria->compare('drug_id',$drug->id);
-					$allergy_assignments = DrugAllergyAssignment::model()->findAll($criteria);
+				$posted_allergy_ids = array();
 
-					$allergy_assignment_ids = array();
-					foreach($allergy_assignments as $allergy_assignment){
-						$allergy_assignment_ids[]=$allergy_assignment->allergy_id;
-					}
-
+				if(isset($_POST['allergies'])){
 					$posted_allergy_ids = $_POST['allergies'];
+				}
 
-					$allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids,$posted_allergy_ids);
-					$posted_allergy_ids_to_assign =  array_diff($posted_allergy_ids , $allergy_assignment_ids);
+				$criteria=new CDbCriteria;
+				$criteria->compare('drug_id',$drug->id);
+				$allergy_assignments = DrugAllergyAssignment::model()->findAll($criteria);
 
-					//add new allergy mappings
-					foreach($posted_allergy_ids_to_assign as $asign){
-						$allergy_assignment = new DrugAllergyAssignment();
-						$allergy_assignment->drug_id=$drug->id;
-						$allergy_assignment->allergy_id=$asign;
-						$allergy_assignment->save();
-					}
+				$allergy_assignment_ids = array();
+				foreach($allergy_assignments as $allergy_assignment){
+					$allergy_assignment_ids[]=$allergy_assignment->allergy_id;
+				}
 
-					//delete redundant allergy mappings
-					foreach($allergy_assignments as $asigned){
-						if(in_array($asigned->allergy_id,$allergy_assignment_ids_to_delete)){
-							$asigned->delete();
-						}
+				$allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids,$posted_allergy_ids);
+				$posted_allergy_ids_to_assign =  array_diff($posted_allergy_ids , $allergy_assignment_ids);
+
+				//add new allergy mappings
+				foreach($posted_allergy_ids_to_assign as $asign){
+					$allergy_assignment = new DrugAllergyAssignment();
+					$allergy_assignment->drug_id=$drug->id;
+					$allergy_assignment->allergy_id=$asign;
+					$allergy_assignment->save();
+				}
+
+				//delete redundant allergy mappings
+				foreach($allergy_assignments as $asigned){
+					if(in_array($asigned->allergy_id,$allergy_assignment_ids_to_delete)){
+						$asigned->delete();
 					}
 				}
 
