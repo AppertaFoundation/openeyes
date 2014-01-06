@@ -538,7 +538,14 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		if (!$this->$method()) {
-			throw new CHttpException(403);
+			switch ($actionType) {
+				case self::ACTION_TYPE_CREATE:
+				case self::ACTION_TYPE_EDIT:
+					$this->redirectToPatientEpisodes();
+					break;
+				default:
+					throw new CHttpException(403);
+			}
 		}
 	}
 
