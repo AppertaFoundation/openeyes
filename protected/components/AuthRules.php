@@ -25,36 +25,20 @@ class AuthRules
 	 */
 	public function canEditEpisode(Firm $firm, Episode $episode)
 	{
-		// Get current logged in firm's subspecialty id (null for support services firms)
-		$current_subspecialty_id = $firm->getSubspecialtyID();
-		if (!$episode->firm) {
-			// Episode has no firm, so it's either a legacy episode or a support services episode
-			if ($episode->support_services) {
-				// Support services episode, so are you logged in as a support services firm
-				return ($current_subspecialty_id == null);
-			} else {
-				// Legacy episode
-				return false;
-			}
-		} else {
-			// Episode is normal (has a firm)
-			if (!$current_subspecialty_id) {
-				// Logged in as a support services firm
-				return false;
-			} else {
-				// Logged in as a normal firm, so does episode subspecialty match
-				return ($episode->getSubspecialtyID() == $current_subspecialty_id);
-			}
-		}
+		if ($episode->legacy) return false;
 
+		if ($episode->support_services) return $firm->isSupportServicesFirm();
+
+		return ($firm->getSubspecialtyID() === $episode->getSubspecialtyID());
 	}
 
 	/**
 	 * @param Firm $firm
+	 * @param Episode $episode
 	 * @param EventType $event_type
 	 * @return boolean
 	 */
-	public function canCreateEvent(Firm $firm, EventType $event_type)
+	public function canCreateEvent(Firm $firm, Episode $episode, EventType $event_type)
 	{
 		if ($event_type->disabled) return false;
 
@@ -63,7 +47,7 @@ class AuthRules
 			return false;
 		}
 
-		return true;
+		return $this->canEditEpisode($firm, $episode);
 	}
 
 	/**
@@ -75,14 +59,7 @@ class AuthRules
 	{
 		if ($event->episode->patient->date_of_death) return false;
 
-		// Check the user's firm is of the correct subspecialty to have the
-		// rights to update this event
-		if ($firm->getSubspecialtyID() != $event->episode->getSubspecialtyID()) {
-			//The firm you are using is not associated with the subspecialty of the episode
-			return false;
-		}
-
-		return true;
+		return $this->canEditEpisode($firm, $event->episode);
 	}
 
 	/**

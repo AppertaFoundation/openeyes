@@ -554,7 +554,7 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function checkCreateAccess()
 	{
-		return $this->checkAccess('OprnCreateEvent', $this->firm, $this->event_type);
+		return $this->checkAccess('OprnCreateEvent', $this->firm, $this->episode, $this->event_type);
 	}
 
 	/**

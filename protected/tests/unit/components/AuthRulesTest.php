@@ -59,27 +59,37 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
 	public function testCanCreateEvent_Disabled()
 	{
-		$this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getDisabledEventType()));
+		$this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $this->getDisabledEventType()));
 	}
 
 	public function testCanCreateEvent_SupportServicesFirm_NonSupportServiceEventType()
 	{
-		$this->assertFalse($this->rules->canCreateEvent($this->getSupportServicesFirm(), $this->getNonSupportServicesEventType()));
+		$this->assertFalse($this->rules->canCreateEvent($this->getSupportServicesFirm(), $this->getNormalEpisode(), $this->getNonSupportServicesEventType()));
 	}
 
 	public function testCanCreateEvent_SupportServicesFirm_SupportServiceEventType()
 	{
-		$this->assertTrue($this->rules->canCreateEvent($this->getSupportServicesFirm(), $this->getSupportServicesEventType()));
+		$this->assertTrue($this->rules->canCreateEvent($this->getSupportServicesFirm(), $this->getSupportServicesEpisode(), $this->getSupportServicesEventType()));
 	}
 
 	public function testCanCreateEvent_NormalFirm_NonSupportServiceEventType()
 	{
-		$this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNonSupportServicesEventType()));
+		$this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $this->getNonSupportServicesEventType()));
 	}
 
 	public function testCanCreateEvent_NormalFirm_SupportServiceEventType()
 	{
-		$this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getSupportServicesEventType()));
+		$this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $this->getSupportServicesEventType()));
+	}
+
+	public function testCanCreateEvent_LegacyEpisode()
+	{
+		$this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getLegacyEpisode(), $this->getNonSupportServicesEventType()));
+	}
+
+	public function testCanCreateEvent_WrongSubspecialtyEpisode()
+	{
+		$this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(42), $this->getNormalEpisode(43), $this->getNonSupportServicesEventType()));
 	}
 
 	public function testCanEditEvent_PatientDeceased()
@@ -99,6 +109,12 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 	{
 		$event = $this->getEvent(array('episode' => $this->getNormalEpisode(42)));
 		$this->assertTrue($this->rules->canEditEvent($this->getNormalFirm(42), $event));
+	}
+
+	public function testCanEditEvent_LegacyEpisode()
+	{
+		$event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
+		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(), $event));
 	}
 
 	public function testCanDeleteEvent_WrongUser()
@@ -132,36 +148,46 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($this->rules->canDeleteEvent($this->getUser(1), $this->getNormalFirm(42), $event));
 	}
 
+	public function testCanDeleteEvent_LegacyEpisode()
+	{
+		$event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
+		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
+	}
+
 	private function getSupportServicesFirm()
 	{
-		return ComponentStubGenerator::generate('Firm', array('subspecialtyID' => null));
+		$firm = ComponentStubGenerator::generate('Firm', array('subspecialtyID' => null));
+		$firm->expects($this->any())->method('isSupportServicesFirm')->will($this->returnValue(true));
+		return $firm;
 	}
 
 	private function getNormalFirm($subspecialty_id = 42)
 	{
-		return ComponentStubGenerator::generate('Firm', array('subspecialtyID' => $subspecialty_id));
+		$firm = ComponentStubGenerator::generate('Firm', array('subspecialtyID' => $subspecialty_id));
+		$firm->expects($this->any())->method('isSupportServicesFirm')->will($this->returnValue(false));
+		return $firm;
+	}
+
+	private function getEpisode(array $props = array())
+	{
+		$props += array('patient' => ComponentStubGenerator::generate('Patient'));
+		return ComponentStubGenerator::generate('Episode', $props);
 	}
 
 	private function getLegacyEpisode()
 	{
-		return ComponentStubGenerator::generate(
-			'Episode', array('firm' => null, 'support_services' => false, 'subspecialtyID' => null)
-		);
+		return $this->getEpisode(array('legacy' => true));
 	}
 
 	private function getSupportServicesEpisode()
 	{
-		return ComponentStubGenerator::generate(
-			'Episode', array('firm' => null, 'support_services' => true, 'subspecialtyID' => null)
-		);
+		return $this->getEpisode(array('support_services' => true));
 	}
 
 	private function getNormalEpisode($subspecialty_id = 42)
 	{
-		return ComponentStubGenerator::generate(
-			'Episode',
+		return $this->getEpisode(
 			array(
-				'patient' => ComponentStubGenerator::generate('Patient'),
 				'firm' => $this->getNormalFirm($subspecialty_id),
 				'support_services' => false,
 				'subspecialtyID' => $subspecialty_id

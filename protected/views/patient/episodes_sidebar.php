@@ -120,6 +120,7 @@ $current_episode = @$this->current_episode;
 								if($enabled) { ?>
 									<script type="text/html" id="add-new-event-template" data-specialty='<?php echo json_encode($subspecialty_data);?>'>
 										<?php $this->renderPartial('//patient/add_new_event',array(
+												'episode' => $episode,
 												'subspecialty' => @$ssa->subspecialty,
 												'patient' => $this->patient,
 												'eventTypes' => EventType::model()->getEventTypeModules(),
