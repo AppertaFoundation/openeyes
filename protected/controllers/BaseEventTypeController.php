@@ -134,17 +134,6 @@ class BaseEventTypeController extends BaseModuleController
 		return parent::init();
 	}
 
-	/**
-	 * List of print actions.
-	 * @return array:
-	 */
-	public function printActions()
-	{
-		return array(
-			'print','printHTML','printPDF'
-		);
-	}
-
 	public function accessRules()
 	{
 		// Allow logged in users - the main authorisation check happens later in verifyActionAccess
@@ -1469,8 +1458,8 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function printPDF($id, $elements, $template='print', $params=array())
 	{
-		// Remove any existing css
-		Yii::app()->getClientScript()->reset();
+		// Remove any existing assets that have been pre-registered.
+		Yii::app()->assetManager->reset();
 
 		$this->layout = '//layouts/pdf';
 		$pdf_print = new OEPDFPrint('Openeyes', 'PDF', 'PDF');
