@@ -311,7 +311,6 @@ class PatientController extends BaseController
 		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
-			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 		));
 	}
@@ -351,7 +350,6 @@ class PatientController extends BaseController
 		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
-			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 		));
 	}

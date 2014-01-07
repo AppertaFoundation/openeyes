@@ -61,14 +61,11 @@
 	<?php }?>
 </section>
 <?php
-$editable = false;
 if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 	$latest = $episode->getLatestEvent();
 	$subspecialty = $episode->getSubspecialty();
-	$editable = true;
 }
 elseif ($latest = $this->patient->getLatestEvent()) {
-	$editable = $this->checkAccess('OprnEditEpisode', $this->firm, $latest->episode);
 	$subspecialty = $latest->episode->getSubspecialty();
 }
 
