@@ -57,7 +57,6 @@
 			</thead>
 			<tbody>
 			<?php
-
 			foreach ($drugs['items'] as $i => $drug) {?>
 				<tr class="clickable" data-id="<?php echo $drug->id?>" data-uri="admin/editdrug/<?php echo $drug->id?>">
 					<td><input type="checkbox" name="drugs[]" value="<?php echo $drug->id?>" /></td>
@@ -76,6 +75,7 @@
 			<tr>
 				<td colspan="9">
 					<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
+					<?php // echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
 					<?php echo $this->renderPartial('_pagination',array(
 							'pagination' => $pagination
 						))?>
