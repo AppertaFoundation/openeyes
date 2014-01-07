@@ -36,7 +36,7 @@
 			<tr>
 				<th>Date</th>
 				<th>Operation</th>
-				<th>Actions</th>
+				<?php if ($this->checkAccess('OprnEditPreviousOperation')) { ?><th>Actions</th><?php } ?>
 			</tr>
 			</thead>
 			<tbody>
@@ -44,16 +44,18 @@
 				<tr>
 					<td><?php echo $operation->dateText?></td>
 					<td><?php if ($operation->side) { echo $operation->side->adjective.' ';}?><?php echo $operation->operation?></td>
-					<td>
-						<a href="#" class="editOperation" rel="<?php echo $operation->id?>">Edit</a>&nbsp;&nbsp;
-						<a href="#" class="removeOperation" rel="<?php echo $operation->id?>">Remove</a>
-					</td>
+					<?php if ($this->checkAccess('OprnEditPreviousOperation')): ?>
+						<td>
+							<a href="#" class="editOperation" rel="<?php echo $operation->id?>">Edit</a>&nbsp;&nbsp;
+							<a href="#" class="removeOperation" rel="<?php echo $operation->id?>">Remove</a>
+						</td>
+					<?php endif ?>
 				</tr>
 			<?php }?>
 			</tbody>
 		</table>
 
-		<?php if (BaseController::checkUserLevel(4)) {?>
+		<?php if ($this->checkAccess('OprnEditPreviousOperation')) {?>
 			<div class="box-actions">
 				<button  id="btn-add_previous_operation" class="secondary small">
 					Add Previous operation

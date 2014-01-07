@@ -24,7 +24,7 @@ $current_episode = @$this->current_episode;
 ?>
 <aside class="large-2 column sidebar episodes-and-events">
 
-	<?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && BaseController::checkUserLevel(4)) {?>
+	<?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) {?>
 		<button class="secondary small add-episode" type="button" id="add-episode">
 			<span class="icon-button-small-plus-sign"></span>
 			Add Episode
@@ -91,7 +91,7 @@ $current_episode = @$this->current_episode;
 						<div <?php if ($episode->hidden) { ?>class="events-container hide"<?php } else { ?>class="events-container show"<?php } ?>>
 
 							<?php
-							if (BaseController::checkUserLevel(4)) {?>
+							if ($this->checkAccess('OprnEditEpisode', $this->firm, $episode)) {?>
 								<?php
 								$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 								$enabled = false;

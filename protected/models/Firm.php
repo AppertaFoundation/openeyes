@@ -293,6 +293,11 @@ class Firm extends BaseActiveRecord
 		}
 	}
 
+	/**
+	 * Get the Specialty of the Firm
+	 *
+	 * @return Specialty|null
+	 */
 	public function getSpecialty()
 	{
 		$result = Yii::app()->db->createCommand()

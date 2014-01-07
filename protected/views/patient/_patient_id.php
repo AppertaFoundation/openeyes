@@ -18,7 +18,7 @@
  */
 ?>
 <?php
-	$clinical = (BaseController::checkUserLevel(2));
+	$clinical = $this->checkAccess('OprnViewClinical');
 	$warnings = $this->patient->getWarnings($clinical);
 ?>
 

@@ -253,6 +253,12 @@ class Episode extends BaseActiveRecord
 		return Episode::model()->findByPk($episode['eid']);
 	}
 
+	/**
+	 * Get the most recent event by the given type in this episode
+	 *
+	 * @param $event_type_id
+	 * @return Event
+	 */
 	public function getMostRecentEventByType($event_type_id)
 	{
 		$criteria = new CDbCriteria;
@@ -263,6 +269,12 @@ class Episode extends BaseActiveRecord
 		return Event::model()->find($criteria);
 	}
 
+	/**
+	 * Get all the events of the given type for this episode
+	 *
+	 * @param $event_type_id
+	 * @return Event[]
+	 */
 	public function getAllEventsByType($event_type_id)
 	{
 		$criteria = new CDbCriteria;
@@ -287,6 +299,28 @@ class Episode extends BaseActiveRecord
 
 		return Event::model()->with('episode')->find($criteria);
 
+	}
+
+	/**
+	 * Get all elements of the given type from this Episode
+	 *
+	 * @param $element_type
+	 * @param integer $exclude_event_id
+	 * @return BaseEventTypeElement[]
+	 */
+	public function getElementsOfType($element_type, $exclude_event_id = null)
+	{
+		$criteria = new CDbCriteria();
+		$criteria->condition = 'event.episode_id = :episode_id';
+		$criteria->params = array(':episode_id' => $this->id);
+		if ($exclude_event_id) {
+			$criteria->condition .= ' AND event.id != :exclude_event_id';
+			$criteria->params[':exclude_event_id'] = $exclude_event_id;
+		}
+		$criteria->order = 't.id DESC';
+		$criteria->join = 'JOIN event ON event.id = t.event_id';
+		$kls = $element_type->class_name;
+		return $kls::model()->findAll($criteria);
 	}
 
 	/**
@@ -371,31 +405,6 @@ class Episode extends BaseActiveRecord
 	public function getOpen()
 	{
 		return ($this->end_date == null);
-	}
-
-	public function getEditable()
-	{
-		// Get current logged in firm's subspecialty id (null for support services firms)
-		$current_subspecialty_id = Yii::app()->getController()->firm->getSubspecialtyID();
-		if (!$this->firm) {
-			// Episode has no firm, so it's either a legacy episode or a support services episode
-			if ($this->support_services) {
-				// Support services episode, so are you logged in as a support services firm
-				return ($current_subspecialty_id == null);
-			} else {
-				// Legacy episode
-				return FALSE;
-			}
-		} else {
-			// Episode is normal (has a firm)
-			if (!$current_subspecialty_id) {
-				// Logged in as a support services firm
-				return FALSE;
-			} else {
-				// Logged in as a normal firm, so does episode subspecialty match
-				return ($this->firm->getSubspecialtyID() == $current_subspecialty_id);
-			}
-		}
 	}
 
 	protected function afterSave()

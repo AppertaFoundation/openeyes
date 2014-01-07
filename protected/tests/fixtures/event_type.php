@@ -19,9 +19,11 @@
 
 
 return array(
-	'eventType1' => array(
+	'examination' => array(
 		'name' => 'examination',
+		'class_name' => 'ExaminationEvent'
 	),
+	/*
 	'eventType2' => array(
 		'name' => 'refraction',
 	),
@@ -88,4 +90,5 @@ return array(
 	'eventType23' => array(
 		'name' => 'cvi',
 	),
+	*/
 );

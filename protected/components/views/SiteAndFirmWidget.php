@@ -21,6 +21,7 @@
 <?php
 $form = $this->beginWidget('CActiveForm', array(
 	'id' => 'site-and-firm-form',
+	'action' => '/site/changesiteandfirm',
 ));
 ?>
 	<?php echo CHtml::hiddenField('returnUrl',$this->returnUrl)?>

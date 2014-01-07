@@ -25,7 +25,7 @@ $noEpisodes = (count($episodes) <1 && count($supportserviceepisodes) <1 && count
 
 <h1 class="badge">Episodes and events</h1>
 
-<?php if($noEpisodes && BaseController::checkUserLevel(4)) { ?>
+<?php if($noEpisodes && $this->checkAccess('OprnCreateEpisode')) { ?>
 	<div class="row">
 		<div class="large-8 large-centered column">
 			<div class="box content">

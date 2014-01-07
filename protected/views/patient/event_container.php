@@ -1,11 +1,7 @@
 <?php
 
-if ($module = $this->getModule()) {
-	$module = $module->getName();
-	if (file_exists(Yii::getPathOfAlias('application.modules.'.$module.'.assets'))) {
-		Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.assets'),true).'/';
-	}
-}
+extract($this->getEpisodes());
+
 ?>
 
 <h1 class="badge">Episodes and events</h1>
