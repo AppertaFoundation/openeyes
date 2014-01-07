@@ -31,7 +31,7 @@
 					<th>Name</th>
 					<th>Location</th>
 					<th>Type</th>
-					<?php if (BaseController::checkUserLevel(4)) {?><th></th><?php }?>
+					<?php if ($this->checkAccess('OprnEditContact')) {?><th></th><?php }?>
 				</tr>
 			</thead>
 			<tbody id="patient_contacts">
@@ -40,7 +40,7 @@
 				}?>
 			</tbody>
 		</table>
-		<?php if (BaseController::checkUserLevel(4)) {?>
+		<?php if ($this->checkAccess('OprnEditContact')) {?>
 			<div class="row data-row">
 
 				<div class="large-2 column">

@@ -19,31 +19,25 @@
 
 ?>
 <div class="box admin">
-	<h2>Edit user</h2>
+	<h2>Edit Drug</h2>
 	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'adminform',
-		'enableAjaxValidation'=>false,
-		'focus'=>'#username',
-		'layoutColumns'=>array(
-			'label' => 2,
-			'field' => 4
-		)
-	))?>
-		<?php echo $form->textField($user,'username')?>
-		<?php echo $form->textField($user,'title', null, null, array('field' => 2))?>
-		<?php echo $form->textField($user,'first_name')?>
-		<?php echo $form->textField($user,'last_name')?>
-		<?php echo $form->textField($user,'email')?>
-		<?php echo $form->textField($user,'role')?>
-		<?php echo $form->textField($user,'qualifications')?>
-		<?php echo $form->radioBoolean($user,'active')?>
-		<?php echo $form->radioBoolean($user,'global_firm_rights')?>
-		<?php echo $form->radioBoolean($user,'is_doctor')?>
-		<?php echo $form->passwordField($user,'password')?>
-		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
-		<?php echo $form->multiSelectList($user, 'User[roles]', 'roles', 'name', CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'), array(), array('label' => 'Roles', 'empty' => '-- Add --'));?>
-		<?php echo $form->formActions(); ;?>
+			'id'=>'adminform',
+			'enableAjaxValidation'=>false,
+			'focus'=>'#username',
+			'layoutColumns'=>array(
+				'label' => 2,
+				'field' => 4
+			)
+		))?>
+	<?php echo $form->textField($drug,'name',array('disabled'=>true))?>
+	<?php echo $form->dropDownList($drug,'type_id',CHtml::listData(DrugType::model()->findAll(array('order' => 'name')),'id','name'))?>
+	<?php echo $form->textField($drug,'default_dose')?>
+	<?php echo $form->textField($drug,'dose_unit')?>
+	<?php echo $form->dropDownList($drug,'default_frequency_id',CHtml::listData(DrugFrequency::model()->findAll(array('order' => 'display_order')),'id','name'),array('empty' => ''))?>
+	<?php echo $form->dropDownList($drug,'default_duration_id',CHtml::listData(DrugDuration::model()->findAll(array('order' => 'display_order')),'id','name'),array('empty' => ''))?>
+	<?php echo $form->multiSelectList($drug,'allergies','allergies','id', CHtml::listData(Allergy::model()->findAll(array('order' => 'name')),'id','name'),null,array('empty' => '','label' => 'Allergies'))?>
+	<?php echo $form->formActions()?>
 	<?php $this->endWidget()?>
 </div>

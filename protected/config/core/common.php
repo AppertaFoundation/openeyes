@@ -78,7 +78,7 @@ return array(
 			'class' => 'ClientScript',
 		),
 		'user' => array(
-			'class' => 'WebUser',
+			'class' => 'CWebUser',
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,
 		),
@@ -107,7 +107,7 @@ return array(
 			'schemaCachingDuration' => 300,
 		),
 		'authManager' => array(
-			'class' => 'CDbAuthManager',
+			'class' => 'AuthManager',
 			'connectionID' => 'db',
 		),
 		'cache' => array(

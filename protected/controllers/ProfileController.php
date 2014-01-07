@@ -26,7 +26,6 @@ class ProfileController extends BaseController
 	{
 		return array(
 			array('allow','users'=>array('@')),
-			array('deny'),
 		);
 	}
 

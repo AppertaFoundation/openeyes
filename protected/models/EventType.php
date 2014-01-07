@@ -86,6 +86,11 @@ class EventType extends BaseActiveRecord
 		);
 	}
 
+	/**
+	 * Get all the event types for the modules that are currently enabled (and aren't legacy)
+	 *
+	 * @return EventType[]
+	 */
 	public function getEventTypeModules()
 	{
 		$legacy_events = EventGroup::model()->find('code=?',array('Le'));
@@ -114,18 +119,32 @@ class EventType extends BaseActiveRecord
 		));
 	}
 
+	/**
+	 * Get the Specialty for this event type (as defined by the first camelcase section of the module name)
+	 *
+	 * @return Specialty
+	 */
 	public function getSpecialty()
 	{
 		preg_match('/^([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-z]+)$/',$this->class_name,$m);
 		return Specialty::model()->find('code=?',array(strtoupper($m[1])));
 	}
 
+	/**
+	 * Get the EventGroup for the module of the event type (as defined by the second camelcase section of the module name)
+	 * @return CActiveRecord
+	 */
 	public function getEvent_group()
 	{
 		preg_match('/^([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-z]+)$/',$this->class_name,$m);
 		return EventGroup::model()->find('code=?',array($m[2]));
 	}
 
+	/**
+	 * get list data of all the currently active event types
+	 *
+	 * @return array
+	 */
 	public function getActiveList()
 	{
 		$criteria = new CDbCriteria;
@@ -144,6 +163,11 @@ class EventType extends BaseActiveRecord
 		return CHtml::listData(EventType::model()->findAll($criteria), 'id', 'name');
 	}
 
+	/**
+	 * Check if the event type is disabled
+	 *
+	 * @return bool
+	 */
 	public function getDisabled()
 	{
 		if (is_array(Yii::app()->params['modules_disabled'])) {
@@ -163,6 +187,12 @@ class EventType extends BaseActiveRecord
 		return false;
 	}
 
+	/**
+	 * string to display for the event type when it's disabled
+	 * (note this method assumes the event type is disabled, this should be checked with the disabled attribute)
+	 *
+	 * @return string
+	 */
 	public function getDisabled_title()
 	{
 		if (isset(Yii::app()->params['modules_disabled'][$this->class_name]['title'])) {
@@ -171,6 +201,12 @@ class EventType extends BaseActiveRecord
 		return "This module is disabled";
 	}
 
+	/**
+	 * String to display detailed information about a disabled event type
+	 * (note this method assumes the event type is disabled, this should be checked with the disabled attribute)
+	 *
+	 * @return string
+	 */
 	public function getDisabled_detail()
 	{
 		if (isset(Yii::app()->params['modules_disabled'][$this->class_name]['detail'])) {
@@ -179,11 +215,24 @@ class EventType extends BaseActiveRecord
 		return "The ".$this->name." module will be available in an upcoming release.";
 	}
 
+	/**
+	 * Return the module api for this event type
+	 *
+	 * @return mixed
+	 */
 	public function getApi()
 	{
 		return Yii::app()->moduleAPI->get($this->class_name);
 	}
 
+	/**
+	 * Register a short code for this event type.
+	 *
+	 * @param $code
+	 * @param $method
+	 * @param bool $description
+	 * @throws Exception
+	 */
 	public function registerShortCode($code,$method,$description=false)
 	{
 		if (!preg_match('/^[a-zA-Z]{3}$/',$code)) {
@@ -212,5 +261,35 @@ class EventType extends BaseActiveRecord
 		if (!$ps->save()) {
 			throw new Exception("Unable to save PatientShortcode: ".print_r($ps->getErrors(),true));
 		}
+	}
+
+	public function getDefaultElements()
+	{
+		$criteria = new CDbCriteria;
+		$criteria->compare('event_type_id',$this->id);
+		$criteria->compare('`default`',1);
+		$criteria->order = 'display_order asc';
+
+		$elements = array();
+		foreach (ElementType::model()->findAll($criteria) as $element_type) {
+			$element_class = $element_type->class_name;
+			$elements[] = new $element_class;
+		}
+
+		return $elements;
+	}
+
+	/**
+	 * Get all the element types that are defined for this event type
+	 *
+	 * @return BaseEventTypeElement[]
+	 */
+	public function getAllElementTypes()
+	{
+		$criteria = new CDbCriteria;
+		$criteria->compare('event_type_id',$this->id);
+		$criteria->order = 'display_order asc';
+
+		return ElementType::model()->findAll($criteria);
 	}
 }

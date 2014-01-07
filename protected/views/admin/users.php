@@ -50,8 +50,8 @@
 					<th>Title</th>
 					<th>First name</th>
 					<th>Last name</th>
-					<th>Access level</th>
 					<th>Doctor</th>
+					<th>Roles</th>
 					<th>Active</th>
 				</tr>
 			</thead>
@@ -65,8 +65,15 @@
 						<td><?php echo $user->title?></td>
 						<td><?php echo $user->first_name?></td>
 						<td><?php echo $user->last_name?></td>
-						<td><?php echo $user->accesslevelstring?></td>
 						<td><?php echo $user->is_doctor ? 'Yes' : 'No'?></td>
+						<td><?php
+							$roles = CHtml::listData($user->roles, 'name', 'name');
+							if ($roles) {
+								echo CHtml::encode(implode(', ', $roles));
+							} else {
+								echo "-";
+							}
+						?></td>
 						<td><?php echo $user->active ? 'Yes' : 'No'?></td>
 					</tr>
 				<?php }?>

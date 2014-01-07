@@ -185,6 +185,14 @@ $oe-element-edit-title-font-style: italic;
 	}
 }
 
+.edit {
+    &.highlight-fields {
+      .sub-elements {
+        margin: 10px -10px 0 -10px;
+      }
+    }
+}
+
 .view {
 	&.highlight-fields {
 		.element {
@@ -206,7 +214,10 @@ $oe-element-edit-title-font-style: italic;
 				}
 			}
 		}
-
+        .sub-elements {
+          margin: 10px -10px 0 -10px;
+          padding-top: 10px;
+        }
 	}
 	.element-data {
 		.data-title {

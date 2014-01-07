@@ -123,13 +123,16 @@ class Patient extends BaseActiveRecord
 				'condition' => 'support_services=1',
 			),
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
-				'condition' => "(legacy=0 or legacy is null)",
+				'condition' => "(patient_episode.legacy=0 or patient_episode.legacy is null)",
+				'alias' => 'patient_episode'
 			),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
 			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
-			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
+			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)',
+				'alias' => 'patient_allergies',
+				'order' => 'patient_allergies.name'),
 			'secondarydiagnoses' => array(self::HAS_MANY, 'SecondaryDiagnosis', 'patient_id'),
 			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
 			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
@@ -483,6 +486,23 @@ class Patient extends BaseActiveRecord
 
 		return Episode::model()->getCurrentEpisodeByFirm($this->id, $firm, true);
 	}
+
+	/**
+	 * Get or create an episode for the patient under the given Firm (Note that an episode will be returned if there
+	 * is match on Firm Subspecialty rather than on Firm)
+	 *
+	 * @param $firm
+	 * @param bool $include_closed
+	 * @return CActiveRecord|Episode|null
+	 */
+	public function getOrCreateEpisodeForFirm($firm, $include_closed = false)
+	{
+		if (!$episode = Episode::getCurrentEpisodeByFirm($this->id, $firm, $include_closed)) {
+			$episode = $this->addEpisode($firm);
+		}
+		return $episode;
+	}
+
 
 	/**
 	 * returns the ophthalmic information object for this patient (creates a default one if one does not exist - but does not save it)
@@ -1160,6 +1180,13 @@ class Patient extends BaseActiveRecord
 		return  $this->getOpenEpisodeOfSubspecialty($subspecialty_id) ? true : false;
 	}
 
+	/**
+	 * add an episode to the patient for the given Firm
+	 *
+	 * @param $firm
+	 * @return Episode
+	 * @throws Exception
+	 */
 	public function addEpisode($firm)
 	{
 		$episode = new Episode;

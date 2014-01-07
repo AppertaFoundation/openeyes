@@ -62,8 +62,8 @@ class UserIdentity extends CUserIdentity
 			$user->audit('login','login-failed',"User not active and so cannot login: $this->username",true);
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
-		} elseif (!$force && $user->access_level == 0) {
-			$user->audit('login','login-failed',"User has 0 access level and so cannot login: $this->username",true);
+		} elseif (!$force && !Yii::app()->getAuthManager()->checkAccess('OprnLogin', $user->id)) {
+			$user->audit('login', 'login-failed', "User has not been assigned OprnLogin and so cannot login: $this->username", true);
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
 		}
