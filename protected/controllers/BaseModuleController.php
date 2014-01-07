@@ -19,6 +19,8 @@
 
 class BaseModuleController extends BaseController {
 
+	/* @var string alias path to asset files for the module */
+	public $assetPathAlias;
 	/* @var string path to asset files for the module */
 	public $assetPath;
 	/* @var EventType event type for this controller */
@@ -31,9 +33,11 @@ class BaseModuleController extends BaseController {
 	 */
 	public function init()
 	{
+		$this->assetPathAlias = 'application.modules.'.$this->getModule()->name.'.assets';
+
 		// Set asset path
-		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
-			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
+		if (file_exists(Yii::getPathOfAlias($this->assetPathAlias))) {
+			$this->assetPath = Yii::app()->assetManager->getAliasPath('application.modules.'.$this->getModule()->name.'.assets');
 		}
 		return parent::init();
 	}
@@ -78,28 +82,24 @@ class BaseModuleController extends BaseController {
 
 	protected function registerAssets()
 	{
-		$assetManager = Yii::app()->getAssetManager();
-
-		// Set asset path
-		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
-			$this->assetPath = $assetManager->getPath('application.modules.'.$this->getModule()->name.'.assets');
-		}
-
 		if ($this->assetPath) {
+
+			$assetManager = Yii::app()->getAssetManager();
+
 			// Register module print css
 			if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/print.css')) {
-				$assetManager->registerCssFile('css/print.css', $this->assetPath, null, $assetManager::OUTPUT_PRINT);
+				$assetManager->registerCssFile('css/print.css', $this->assetPathAlias, null, AssetManager::OUTPUT_PRINT);
 			}
 			// Register module js
 			if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/module.js')) {
-				$assetManager->registerScriptFile('js/module.js', $this->assetPath, null, $assetManager::OUTPUT_SCREEN);
+				$assetManager->registerScriptFile('js/module.js', $this->assetPathAlias, 10, AssetManager::OUTPUT_SCREEN);
 			}
 			if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/'.get_class($this).'.js')) {
-				$assetManager->registerScriptFile('js/'.get_class($this).'.js', $this->assetPath);
+				$assetManager->registerScriptFile('js/'.get_class($this).'.js', $this->assetPathAlias, 10, AssetManager::OUTPUT_SCREEN);
 			}
 			// Register module css
 			if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/module.css')) {
-				$assetManager->registerCssFile('css/module.css', $this->assetPath, 10, $assetManager::OUTPUT_SCREEN);
+				$assetManager->registerCssFile('css/module.css', $this->assetPathAlias, 10, AssetManager::OUTPUT_SCREEN);
 			}
 		}
 	}

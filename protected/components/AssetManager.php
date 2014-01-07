@@ -20,7 +20,7 @@
 /**
  * This is a custom AssetManager class that provides convenient features for
  * managing assets. Using this class will also ensure that assets are published correctly.
- * You can access this class instance via: Yii::app()->getAssetManager().
+ * You can access this class instance via: Yii::app()->getAssetManager() or Yii::app()->assetManager
  *
  * @example
  * $assetManager = Yii::app()->getAssetManager();
@@ -33,10 +33,10 @@
  *
  * // Pre-register a base application stylesheet for only screen, meaning it will not
  * // be outputted for print nor AJAX requests:
- * $assetManager->registerCssFile('css/style.css', null, null, $assetManager::OUTPUT_SCREEN);
+ * $assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_SCREEN);
  *
  * // Pre-register a base application stylesheet for only print requests:
- * $assetManager->registerCssFile('css/style.css', null, null, $assetManager::OUTPUT_PRINT);
+ * $assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_PRINT);
  *
  * // Pre-register a base application script:
  * $assetManager->registerScriptFile('css/script.js');
@@ -62,14 +62,58 @@ class AssetManager extends CAssetManager
 	const OUTPUT_ALL = 'all';
 	const OUTPUT_AJAX = 'ajax';
 
+	/**
+	 * Pre-registered css files.
+	 * @var array
+	 */
 	protected $css = array();
+
+	/**
+	 * Pre-registered script files.
+	 * @var array
+	 */
 	protected $js = array();
+
+	/**
+	 * Default starting css priority.
+	 * @var integer
+	 */
 	protected $cssPriority = 200;
+
+	/**
+	 * Default starting script priority.
+	 * @var integer
+	 */
 	protected $jsPriority = 200;
+
+	/**
+	 * The base path for the base (core) assets.
+	 * @var string
+	 */
 	protected $basePath;
+
+	/**
+	 * ClientScript component reference.
+	 * @var ClientScript
+	 */
 	protected $clientScript;
-	protected $isPrintRequest = false;
-	protected $isAjaxRequest = false;
+
+	/**
+	 * Is the current request a print request.
+	 * @var boolean
+	 */
+	public $isPrintRequest = false;
+
+	/**
+	 * Is the current request an AJAX request.
+	 * @var boolean
+	 */
+	public $isAjaxRequest = false;
+
+	/**
+	 * CacheBuster component reference.
+	 * @var CacheBuster
+	 */
 	protected $cacheBuster;
 
 	/**
@@ -78,7 +122,6 @@ class AssetManager extends CAssetManager
 	public function init()
 	{
 		$this->clientScript = Yii::app()->clientScript;
-		$this->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
 		$this->cacheBuster = Yii::app()->cacheBuster;
 		parent::init();
 	}
@@ -88,15 +131,15 @@ class AssetManager extends CAssetManager
 	 * @param  string $alias The alias to the assets.
 	 * @return string        The publish assets path.
 	 */
-	public function getPath($alias = null)
+	public function getAliasPath($alias = null)
 	{
-		return $this->publish(Yii::getPathOfAlias($alias), false, -1);
+		return $this->publish(Yii::getPathOfAlias($alias ?: self::BASE_PATH_ALIAS), false, -1);
 	}
 
 	/**
 	 * Creates an absolute URL to a published asset.
 	 * @param  string $path          The path to the asset. Eg: 'img/cat.gif'
-	 * @param  string $basePathAlias The alias the base location of the asset.
+	 * @param  string $basePathAlias The alias path to the base location of the asset.
 	 * Eg: 'application.modules.mymodule.assets'
 	 * @return string                The absolute path to the published asset.
 	 */
@@ -105,7 +148,7 @@ class AssetManager extends CAssetManager
 		$basePath = '';
 
 		if ($basePathAlias !== false) {
-			$basePath = $this->getPath($basePathAlias ?: self::BASE_PATH_ALIAS).'/';
+			$basePath = $this->getAliasPath($basePathAlias).'/';
 		}
 
 		$url = Yii::app()->createUrl($basePath.$path);
@@ -118,15 +161,32 @@ class AssetManager extends CAssetManager
 	}
 
 	/**
+	 * Returns the absolute filesystem path to the published asset.
+	 * @param  string $path         Relative path to asset.
+	 * @param  null|string $alias   Alias path to the base location of the asset.
+	 * @return string The absolute path.
+	 */
+	public function getPath($path = '', $alias = null)
+	{
+		$parts = array(
+			Yii::getPathOfAlias('webroot').$this->getAliasPath($alias),
+			$path
+		);
+
+		return implode(DIRECTORY_SEPARATOR, $parts);
+	}
+
+	/**
 	 * Register a core style.
 	 * @param  string $style The core style string to be registered. Eg:
 	 * 'dir/file.css'
 	 * @param  null|integer $priority The priority for the asset. Higher priority
 	 * styles will be outputted in the page first.
 	 * @param  OUTPUT_PRINT|OUTPUT_SCREEN|OUTPUT_AJAX|OUTPUT_ALL $output The output type.
+	 * @param boolean $preRegister Pre-register the asset (if set to false, priority will be ignored)
 	 *
 	 */
-	public function registerCoreCssFile($style = '', $priority = null, $output = self::OUTPUT_ALL)
+	public function registerCoreCssFile($style = '', $priority = null, $output = self::OUTPUT_ALL, $preRegister = true)
 	{
 		$this->registerCssFile($this->clientScript->getCoreScriptUrl().'/'.$style, false, $priority, $output);
 	}
@@ -138,12 +198,18 @@ class AssetManager extends CAssetManager
 	 * Eg: 'application.modules.mymodule.assets'
 	 * @param  null|integer   $priority       The priority for the asset. Higher priority
 	 * styles will be outputted in the page first.
+	 * @param boolean $preRegister Pre-register the asset (if set to false, priority will be ignored)
 	 */
-	public function registerCssFile($style = '', $basePathAlias = null, $priority = null, $output = self::OUTPUT_ALL)
+	public function registerCssFile($style = '', $basePathAlias = null, $priority = null, $output = self::OUTPUT_ALL, $preRegister = true)
 	{
 		$priority = $priority !== null ? $priority : $this->cssPriority--;
 		$path = $this->createUrl($style, $basePathAlias);
-		$this->addOrderedCssFile($path, $priority, $output);
+
+		if ($preRegister) {
+			$this->addOrderedCssFile($path, $priority, $output);
+		} else if ($this->canOutput($output)) {
+			$this->clientScript->registerCssFile($path);
+		}
 	}
 
 	/**
@@ -162,12 +228,18 @@ class AssetManager extends CAssetManager
 	 * Eg: 'application.modules.mymodule.assets'
 	 * @param  [type] $priority The priority for the asset. Higher priority
 	 * scripts will be outputted in the page first.
+	 * @param boolean $preRegister Pre-register the asset (if set to false, priority will be ignored)
 	 */
-	public function registerScriptFile($script = '', $basePathAlias = null, $priority = null, $output = self::OUTPUT_ALL)
+	public function registerScriptFile($script = '', $basePathAlias = null, $priority = null, $output = self::OUTPUT_ALL, $preRegister = true)
 	{
 		$priority = $priority !== null ? $priority : $this->jsPriority--;
 		$path = $this->createUrl($script, $basePathAlias);
-		$this->addOrderedScriptFile($path, $priority, $output);
+
+		if ($preRegister) {
+			$this->addOrderedScriptFile($path, $priority, $output);
+		} else if ($this->canOutput($output)) {
+			$this->clientScript->registerScriptFile($path);
+		}
 	}
 
 	/**
@@ -176,7 +248,7 @@ class AssetManager extends CAssetManager
 	 * @param string $path
 	 * @param integer $priority
 	 */
-	public function addOrderedCssFile($path, $priority = 200, $output = self::OUTPUT_ALL)
+	protected function addOrderedCssFile($path, $priority = 200, $output = self::OUTPUT_ALL)
 	{
 		$this->css[$path] = array(
 			'priority' => $priority,
@@ -190,7 +262,7 @@ class AssetManager extends CAssetManager
 	 * @param string $path
 	 * @param integer $priority
 	 */
-	public function addOrderedScriptFile($path, $priority = 200, $output = self::OUTPUT_ALL)
+	protected function addOrderedScriptFile($path, $priority = 200, $output = self::OUTPUT_ALL)
 	{
 		$this->js[$path] = array(
 			'priority' => $priority,
@@ -236,6 +308,25 @@ class AssetManager extends CAssetManager
 	}
 
 	/**
+	 * Determines whether an asset should be output for the current request.
+	 * @param  OUTPUT_PRINT|OUTPUT_SCREEN|OUTPUT_AJAX|OUTPUT_ALL $output The output type.
+	 * @return boolean        Whether the asset should be output.
+	 */
+	protected function canOutput($output = null)
+	{
+		if ($output === null) {
+			return false;
+		}
+		if ($this->isPrintRequest) {
+			return in_array($output, array(self::OUTPUT_ALL, self::OUTPUT_PRINT));
+		}
+		if ($this->isAjaxRequest) {
+			return in_array($ouput, array(self::OUTPUT_ALL, self::OUTPUT_AJAX));
+		}
+		return in_array($output, array(self::OUTPUT_ALL, self::OUTPUT_SCREEN));
+	}
+
+	/**
 	 * Adjust the the client script mapping (for javascript and css files assets).
 	 *
 	 * If a Yii widget is being used in an Ajax request, all dependent scripts and
@@ -257,31 +348,11 @@ class AssetManager extends CAssetManager
 	}
 
 	/**
-	 * Determines whether an asset should be output for the current request.
-	 * @param  OUTPUT_PRINT|OUTPUT_SCREEN|OUTPUT_AJAX|OUTPUT_ALL $output The output type.
-	 * @return boolean        Whether the asset should be output.
-	 */
-	protected function canOutput($output = null)
-	{
-		if ($output === null) {
-			return false;
-		}
-		if ($this->isPrintRequest) {
-			return in_array($output, array(self::OUTPUT_ALL, self::OUTPUT_PRINT));
-		}
-		if ($this->isAjaxRequest) {
-			return in_array($ouput, array(self::OUTPUT_ALL, self::OUTPUT_AJAX));
-		}
-		return in_array($output, array(self::OUTPUT_ALL, self::OUTPUT_SCREEN));
-	}
-
-	/**
 	 * Register all assets that were preregistered by priority. This method is
 	 * required to output the assets in the page.
 	 */
-	public function registerFiles($isPrintRequest = false)
+	public function registerFiles()
 	{
-		$this->isPrintRequest = $isPrintRequest;
 		$this->registerOrderedCssFiles();
 		$this->registerOrderedScriptFiles();
 	}

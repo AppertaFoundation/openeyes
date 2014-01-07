@@ -98,6 +98,7 @@ class BaseEventTypeController extends BaseModuleController
 	public $eventIssueCreate;
 	// defines additional variables to be available in view templates
 	public $extraViewProperties = array();
+	public $layout = '//layouts/events_and_episodes';
 	private $action_type_map;
 	private $episodes = array();
 	public $renderPatientPanel = true;
@@ -131,6 +132,17 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		return parent::init();
+	}
+
+	/**
+	 * List of print actions.
+	 * @return array:
+	 */
+	public function printActions()
+	{
+		return array(
+			'print','printHTML','printPDF'
+		);
 	}
 
 	public function accessRules()
@@ -308,7 +320,7 @@ class BaseEventTypeController extends BaseModuleController
 				// nested elements behaviour
 				//TODO: possibly put this into standard js library for events
 				Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
-				Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('js/nested_elements.js'));
+				Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
 			}
 		}
 

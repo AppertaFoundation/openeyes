@@ -1,5 +1,4 @@
 <?php $assetManager = Yii::app()->getAssetManager();?>
-<?php $assetManager->registerCssFile('css/style.css',null,null,$assetManager::OUTPUT_SCREEN); ?>
 <?php $assetManager->registerCoreCssFile('jui/css/base/jquery-ui.css')?>
 <?php $assetManager->registerCoreScriptFile('jquery')?>
 <?php $assetManager->registerCoreScriptFile('jquery.ui')?>

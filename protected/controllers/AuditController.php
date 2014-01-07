@@ -55,7 +55,7 @@ class AuditController extends BaseController
 			$data = $this->getData();
 		}
 
-		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/audit.js'));
+		Yii::app()->assetManager->registerScriptFile('js/audit.js');
 		$this->renderPartial('_list', array('data' => $data), false, true);
 		echo "<!-------------------------->";
 		$this->renderPartial('_pagination', array('data' => $data), false, true);

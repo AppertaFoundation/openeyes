@@ -16,28 +16,30 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<?php $this->renderPartial('//base/head/_meta'); ?>
+	<?php $this->renderPartial('//base/head/_assets'); ?>
+	<?php $this->renderPartial('//patient/head/_assets'); ?>
+	<?php $this->renderPartial('//base/head/_tracking'); ?>
+</head>
+<body class="open-eyes">
 
+	<?php $this->renderPartial('//base/_banner_watermark'); ?>
+	<?php $this->renderPartial('//base/_debug'); ?>
 
-class ModuleAdminController extends BaseAdminController
-{
-	public $assetPathAlias;
-	public $assetPath;
+	<div class="container main" role="main">
 
-	protected function beforeAction($action)
-	{
-		$this->assetPathAlias = 'application.modules.'.$this->getModule()->name.'.assets';
-		$this->assetPath = Yii::app()->assetManager->getAliasPath($this->assetPathAlias);
+		<?php $this->renderPartial('//base/_header'); ?>
 
-		if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin.js")) {
-			Yii::app()->assetManager->registerScriptFile('js/admin.js', $this->assetPathAlias, 10);
-		}
+		<div class="container content">
+			<?php echo $content; ?>
+		</div><!-- /.content.container -->
 
-		if (file_exists("protected/modules/".$this->getModule()->name."/assets/css/admin.css")) {
-			Yii::app()->assetManager->registerCssFile('css/admin.css', $this->assetPathAlias, 10);
-		}
+		<?php $this->renderPartial('//base/_footer'); ?>
 
-		Yii::app()->assetManager->registerCssFile('css/module.css', $this->assetPathAlias);
-
-		return parent::beforeAction($action);
-	}
-}
+	</div><!-- /.main.container -->
+</body>
+</html>
