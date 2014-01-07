@@ -132,3 +132,17 @@
 		}
 	}
 }
+
+#add-new-event-dialog {
+	.add_event_disabled {
+		a {
+			color: #999;
+		}
+	}
+	.add_event_disabled:hover {
+		a {
+			background: #f6f6f6;
+		}
+	}
+
+}

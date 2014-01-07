@@ -4990,6 +4990,15 @@ tfoot.pagination-container .pagination li {
   padding: .5em;
 }
 
+/* line 138, ../sass/openeyes/components/_dialog.scss */
+#add-new-event-dialog .add_event_disabled a {
+  color: #999;
+}
+/* line 143, ../sass/openeyes/components/_dialog.scss */
+#add-new-event-dialog .add_event_disabled:hover a {
+  background: #f6f6f6;
+}
+
 /* line 19, ../sass/openeyes/components/_multi-select.scss */
 .multi-select .remove-all {
   display: inline-block;
