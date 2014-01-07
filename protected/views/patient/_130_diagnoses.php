@@ -93,7 +93,7 @@
 
 						<div class="row field-row hide" id="add_ophthalmic_diagnosis_loader">
 							<p class="large-offset-<?php echo $form->layoutColumns['label'];?> large-<?php echo $form->layoutColumns['field'];?> column end">
-								<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
+								<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
 									searching...
 							</p>
 						</div>
@@ -118,7 +118,7 @@
 						<div class="ophthalmic_diagnoses_form_errors alert-box alert hide"></div>
 
 						<div class="buttons">
-							<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_ophthalmic_diagnosis_loader" style="display: none;" />
+							<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_ophthalmic_diagnosis_loader" style="display: none;" />
 							<button type="submit" class="secondary small btn_save_ophthalmic_diagnosis">
 								Save
 							</button>
@@ -147,7 +147,7 @@
 				<input type="hidden" id="diagnosis_id" value="" />
 				<button type="submit" class="warning small btn_remove_diagnosis">Remove diagnosis</button>
 				<button type="submit" class="secondary small btn_cancel_remove_diagnosis">Cancel</button>
-				<img class="loader hide" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
+				<img class="loader hide" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
 			</div>
 		</div>
 	</div>

@@ -120,7 +120,7 @@
 					<div class="previous_operations_form_errors alert-box alert hide"></div>
 
 					<div class="buttons">
-						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
+						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
 						<button type="submit" class="secondary small btn_save_previous_operation">
 							Save
 						</button>
@@ -148,7 +148,7 @@
 			<input type="hidden" id="operation_id" value="" />
 			<button type="submit" class="warning small btn_remove_operation">Remove operation</button>
 			<button type="submit" class="secondary small btn_cancel_remove_operation">Cancel</button>
-			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 	</div>
 </div>
