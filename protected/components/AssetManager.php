@@ -42,8 +42,7 @@
  * $assetManager->registerScriptFile('css/script.js');
  *
  * // Pre-register a module stylesheet:
- * $path = $assetManager->getPath('application.modules.mymodule.assets');
- * $assetManager->registerCssFile('css/module.css', $path);
+ * $assetManager->registerCssFile('css/module.css', 'application.modules.mymodule.assets');
  *
  * // Once assets have been pre-registered, you have to register the files.
  * $assetManager->registerFiles(false);
@@ -54,6 +53,7 @@
  */
 class AssetManager extends CAssetManager
 {
+	const BASE_PATH_ALIAS = 'application.assets';
 	const OUTPUT_PRINT = 'print';
 	const OUTPUT_SCREEN = 'screen';
 	const OUTPUT_ALL = 'all';
@@ -67,15 +67,16 @@ class AssetManager extends CAssetManager
 	protected $clientScript;
 	protected $isPrintRequest = false;
 	protected $isAjaxRequest = false;
+	protected $cacheBuster;
 
 	/**
 	 * Initializes the component.
 	 */
 	public function init()
 	{
-		$this->basePath = $this->getPath('application.assets');
 		$this->clientScript = Yii::app()->clientScript;
 		$this->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
+		$this->cacheBuster = Yii::app()->cacheBuster;
 		parent::init();
 	}
 
@@ -90,27 +91,56 @@ class AssetManager extends CAssetManager
 	}
 
 	/**
+	 * Creates an absolute URL to a published asset.
+	 * @param  string $path          The path to the asset. Eg: 'img/cat.gif'
+	 * @param  string $basePathAlias The alias the base location of the asset.
+	 * Eg: 'application.modules.mymodule.assets'
+	 * @return string                The absolute path to the published asset.
+	 */
+	public function createUrl($path = null, $basePathAlias = null, $bustCache = false)
+	{
+		$basePath = '';
+
+		if ($basePathAlias !== false) {
+			$basePath = $this->getPath($basePathAlias ?: self::BASE_PATH_ALIAS).'/';
+		}
+
+		$url = $basePath.$path;
+
+		if ($bustCache) {
+			$url = $this->cacheBuster->createUrl($url);
+		}
+
+		return $url;
+	}
+
+	/**
 	 * Register a core style.
 	 * @param  string $style The core style string to be registered. Eg:
 	 * 'dir/file.css'
+	 * @param  null|integer $priority The priority for the asset. Higher priority
+	 * styles will be outputted in the page first.
+	 * @param  OUTPUT_PRINT|OUTPUT_SCREEN|OUTPUT_AJAX|OUTPUT_ALL $output The output type.
+	 *
 	 */
-	public function registerCoreCssFile($style = '')
+	public function registerCoreCssFile($style = '', $priority = null, $output = self::OUTPUT_ALL)
 	{
-		$this->registerCssFile($this->clientScript->getCoreScriptUrl().'/'.$style, $this->cssPriority--);
+		$this->registerCssFile($this->clientScript->getCoreScriptUrl().'/'.$style, false, $priority, $output);
 	}
 
 	/**
 	 * Register an application style.
-	 * @param  string         $style    The style path. Eg: 'css/style.css'
-	 * @param  null|string    $basePath The basepath for the asset.
-	 * @param  null|integer   $priority The priority for the asset. Higher priority
+	 * @param  string            $style          The style path. Eg: 'css/style.css'
+	 * @param  null|string|false $basePathAlias  The alias for the basepath.
+	 * Eg: 'application.modules.mymodule.assets'
+	 * @param  null|integer   $priority       The priority for the asset. Higher priority
 	 * styles will be outputted in the page first.
 	 */
-	public function registerCssFile($style = '', $basePath = null, $priority = null, $output = self::OUTPUT_ALL)
+	public function registerCssFile($style = '', $basePathAlias = null, $priority = null, $output = self::OUTPUT_ALL)
 	{
-		$basePath = $basePath ?: $this->basePath;
 		$priority = $priority !== null ? $priority : $this->cssPriority--;
-		$this->addOrderedCssFile($basePath.Yii::app()->createUrl($style), $priority, $output);
+		$path = $this->createUrl($style, $basePathAlias);
+		$this->addOrderedCssFile($path, $priority, $output);
 	}
 
 	/**
@@ -125,15 +155,16 @@ class AssetManager extends CAssetManager
 	/**
 	 * Register an application script.
 	 * @param  string $script   The script path. Eg: 'js/script.js'
-	 * @param  [type] $basePath The asset basepath.
+	 * @param  [type] $basePathAlias The alias for the basepath.
+	 * Eg: 'application.modules.mymodule.assets'
 	 * @param  [type] $priority The priority for the asset. Higher priority
 	 * scripts will be outputted in the page first.
 	 */
-	public function registerScriptFile($script = '', $basePath = null, $priority = null, $output = self::OUTPUT_ALL)
+	public function registerScriptFile($script = '', $basePathAlias = null, $priority = null, $output = self::OUTPUT_ALL)
 	{
-		$basePath = $basePath ?: $this->basePath;
 		$priority = $priority !== null ? $priority : $this->jsPriority--;
-		$this->addOrderedScriptFile($basePath.Yii::app()->createUrl($script), $priority, $output);
+		$path = $this->createUrl($script, $basePathAlias);
+		$this->addOrderedScriptFile($path, $priority, $output);
 	}
 
 	/**
