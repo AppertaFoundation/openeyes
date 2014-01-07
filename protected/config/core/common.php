@@ -168,6 +168,14 @@ return array(
 				'lifetime' => 300,
 			),*/
 		),
+		'cacheBuster' => array(
+			'class'=>'CacheBuster',
+		),
+		'assetManager' => array(
+			'class'=>'AssetManager',
+			// Use symbolic links to publish the assets when in debug mode.
+			'linkAssets' => defined('YII_DEBUG') && YII_DEBUG,
+		),
 	),
 	'params'=>array(
 		'pseudonymise_patient_details' => false,
