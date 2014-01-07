@@ -52,7 +52,7 @@
  * $assetManager->adjustScriptMapping();
  *
  * // Create a cache busted URL to an image in a shared folder:
- * $url = $assetManager->createUrl('shared/img/ajax-loader.gif',false,true);
+ * $url = $assetManager->createUrl('shared/img/ajax-loader.gif');
  */
 class AssetManager extends CAssetManager
 {
@@ -143,7 +143,7 @@ class AssetManager extends CAssetManager
 	 * Eg: 'application.modules.mymodule.assets'
 	 * @return string                The absolute path to the published asset.
 	 */
-	public function createUrl($path = null, $basePathAlias = null, $bustCache = false)
+	public function createUrl($path = null, $basePathAlias = null, $bustCache = true)
 	{
 		$basePath = '';
 
@@ -321,7 +321,7 @@ class AssetManager extends CAssetManager
 			return in_array($output, array(self::OUTPUT_ALL, self::OUTPUT_PRINT));
 		}
 		if ($this->isAjaxRequest) {
-			return in_array($ouput, array(self::OUTPUT_ALL, self::OUTPUT_AJAX));
+			return in_array($output, array(self::OUTPUT_ALL, self::OUTPUT_AJAX));
 		}
 		return in_array($output, array(self::OUTPUT_ALL, self::OUTPUT_SCREEN));
 	}
@@ -355,5 +355,12 @@ class AssetManager extends CAssetManager
 	{
 		$this->registerOrderedCssFiles();
 		$this->registerOrderedScriptFiles();
+	}
+
+	public function reset()
+	{
+		$this->clientScript->reset();
+		$this->css = array();
+		$this->js = array();
 	}
 }
