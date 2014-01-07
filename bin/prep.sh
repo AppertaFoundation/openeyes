@@ -67,40 +67,5 @@ vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; /var/www/protected/yiic
 #echo "generate sessions for Operation Booking"
 #vagrant ssh -c 'cd /var/www; /var/www/protected/yiic generatesessions;exit;'
 
-#make sure phantomjs is set up and running
-#PHANTOM=`ps aux | grep -c phantom`
-#if [ "$PHANTOM" = "2" ]; then
-#    echo "Phantomjs is already running"
-#else
-#    ~/phantomjs/phantomjs-1.9.2/bin/phantomjs --webdriver=8643 & PHANTOM=`ps aux | grep -c phantom`
-#    if [ "$PHANTOM" = "2" ]; then
-#        echo "Phantomjs has been started"
-#    else
-#        echo "Error starting phantomjs"
-#        exit 126;
-#    fi
-#fi
-
-if [ $# -eq 1 ]
-  then
-    PROFILE=$1
-  else
-    PROFILE=phantomjs-ci
-fi
-
-#run tests
-vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=setup --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#bin/behat --tags=confidence --profile=$PROFILE --expand
-
-vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=regression --profile=$PROFILE --expand --config=/var/www/behat.yml"
-
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=asa --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=consent --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=Intravitreal --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=operationbooking --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=diagnosis --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=phasing --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=prescription --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=therapy --profile=$PROFILE --expand --config=/var/www/behat.yml"
 
 exit

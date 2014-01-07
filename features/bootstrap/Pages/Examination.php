@@ -175,6 +175,9 @@ class Examination extends OpenEyesPage
         'conclusionOption' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_Conclusion_description']"),
 
         'saveExamination' => array('xpath' => "//*[@id='et_save']"),
+
+        'existingRightAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'38')]"),
+        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'145')]")
     );
 
     public function history ()
@@ -336,7 +339,10 @@ class Examination extends OpenEyesPage
 
     public function leftAxis ($axis)
     {
+//      HACK! I have entered the value twice in the code to stop the Axis from spinning
         $this->getElement('sphereRightAxis')->setValue($axis);
+        $this->getElement('sphereRightAxis')->setValue($axis);
+
     }
 
     public function leftType ($type)
@@ -435,7 +441,10 @@ class Examination extends OpenEyesPage
 
     public function expandDiagnoses ()
     {
-       $this->getElement('expandDiagnoses')->click();
+
+       $element = $this->getElement('expandDiagnoses');
+       $this->scrollWindowToElement($element);
+       $element->click();
        $this->getSession()->wait(5000, '$.active == 0');
     }
 
@@ -887,6 +896,34 @@ class Examination extends OpenEyesPage
     {
         $this->getSession()->wait(3000);
         $this->getElement('saveExamination')->click();
+    }
+
+    protected function doesRightAxisExist()
+    {
+        return (bool) $this->find('xpath', $this->getElement('existingRightAxisCheck')->getXpath());
+    }
+
+    protected function doesLeftAxisExist()
+    {
+        return (bool) $this->find('xpath', $this->getElement('existingLeftAxisCheck')->getXpath());
+    }
+
+    public function rightAxisCheck ()
+    {
+        if ($this->doesRightAxisExist()){
+            print "Right Axis has been Saved";
+        }
+        elseif (print "RIGHT AXIS NOT SAVED!!!");
+//        THROW EXCEPTION HERE!!!
+    }
+
+    public function leftAxisCheck ()
+    {
+        if ($this->doesLeftAxisExist()){
+            print "Left Axis has been Saved";
+        }
+        elseif (print "Left AXIS NOT SAVED!!!");
+//        THROW EXCEPTION HERE!!!
     }
 
 }

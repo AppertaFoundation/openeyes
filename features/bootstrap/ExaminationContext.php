@@ -243,13 +243,12 @@ class ExaminationContext extends PageObjectContext
      */
     public function iEnterLeftAxisDegreesOf($axis)
     {
-        //We need a Clear Field function here
+        //HACK! I have entered the value twice in the code to stop the Axis from spinning
         /**
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
         $examination->leftAxis($axis);
-        //We need to Press the tab key here
     }
 
     /**
@@ -1479,5 +1478,29 @@ class ExaminationContext extends PageObjectContext
          */
         $examination= $this->getPage('Examination');
         $examination->saveExamination();
+    }
+
+    /**
+     * @Then /^a check is made that a right Axis degrees of "([^"]*)" was entered$/
+     */
+    public function aCheckIsMadeThatARightAxisDegreesOfWasEntered($axis)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightAxisCheck($axis);
+    }
+
+    /**
+     * @Then /^a check is made that a left Axis degrees of "([^"]*)" was entered$/
+     */
+    public function aCheckIsMadeThatALeftAxisDegreesOfWasEntered($axis)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftAxisCheck($axis);
     }
 }
