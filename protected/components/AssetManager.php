@@ -50,6 +50,9 @@
  * // Once the assets have been registered, you can adjust the script mapping
  * // to prevent certain assets from being outputted in certain situations.
  * $assetManager->adjustScriptMapping();
+ *
+ * // Create a cache busted URL to an image in a shared folder:
+ * $url = $assetManager->createUrl('shared/img/ajax-loader.gif',false,true);
  */
 class AssetManager extends CAssetManager
 {
@@ -105,7 +108,7 @@ class AssetManager extends CAssetManager
 			$basePath = $this->getPath($basePathAlias ?: self::BASE_PATH_ALIAS).'/';
 		}
 
-		$url = $basePath.$path;
+		$url = Yii::app()->createUrl($basePath.$path);
 
 		if ($bustCache) {
 			$url = $this->cacheBuster->createUrl($url);
