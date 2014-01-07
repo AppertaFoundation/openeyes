@@ -34,6 +34,118 @@ class AdminController extends BaseAdminController
 		$this->redirect(array('/admin/users'));
 	}
 
+	public function actionDrugs()
+	{
+		$pagination = $this->initPagination(Drug::model());
+
+		$this->render('/admin/drugs',array(
+				'drugs' => $this->getItems(array(
+						'model' => 'Drug',
+						'page' => $pagination->currentPage ,
+					)),
+				'pagination' => $pagination,
+			));
+	}
+
+	public function actionAddDrug()
+	{
+		$drug=new Drug('create');
+
+		if (!empty($_POST)) {
+
+			$drug->attributes = $_POST['Drug'];
+
+			if (!$drug->validate()) {
+				$errors = $drug->getErrors();
+			} else {
+				if (!$drug->save()) {
+					throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+				}
+
+				if(isset($_POST['allergies']))
+				{
+					$posted_allergy_ids = $_POST['allergies'];
+
+					//add new allergy mappings
+					foreach($posted_allergy_ids as $asign){
+						$allergy_assignment = new DrugAllergyAssignment();
+						$allergy_assignment->drug_id=$drug->id;
+						$allergy_assignment->allergy_id=$asign;
+						$allergy_assignment->save();
+					}
+				}
+
+				$this->redirect('/admin/drugs/'.ceil($drug->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/adddrug',array(
+				'drug' => $drug,
+				'errors' => @$errors,
+			));
+	}
+
+	public function actionEditDrug($id)
+	{
+		if (!$drug = Drug::model()->findByPk($id)) {
+			throw new Exception("Drug not found: $id");
+		}
+		$drug->scenario = 'update';
+
+		if (!empty($_POST)) {
+
+			$drug->attributes = $_POST['Drug'];
+
+			if (!$drug->validate()) {
+				$errors = $drug->getErrors();
+			} else {
+				if (!$drug->save()) {
+					throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+				}
+
+				$posted_allergy_ids = array();
+
+				if(isset($_POST['allergies'])){
+					$posted_allergy_ids = $_POST['allergies'];
+				}
+
+				$criteria=new CDbCriteria;
+				$criteria->compare('drug_id',$drug->id);
+				$allergy_assignments = DrugAllergyAssignment::model()->findAll($criteria);
+
+				$allergy_assignment_ids = array();
+				foreach($allergy_assignments as $allergy_assignment){
+					$allergy_assignment_ids[]=$allergy_assignment->allergy_id;
+				}
+
+				$allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids,$posted_allergy_ids);
+				$posted_allergy_ids_to_assign =  array_diff($posted_allergy_ids , $allergy_assignment_ids);
+
+				//add new allergy mappings
+				foreach($posted_allergy_ids_to_assign as $asign){
+					$allergy_assignment = new DrugAllergyAssignment();
+					$allergy_assignment->drug_id=$drug->id;
+					$allergy_assignment->allergy_id=$asign;
+					$allergy_assignment->save();
+				}
+
+				//delete redundant allergy mappings
+				foreach($allergy_assignments as $asigned){
+					if(in_array($asigned->allergy_id,$allergy_assignment_ids_to_delete)){
+						$asigned->delete();
+					}
+				}
+
+				$this->redirect('/admin/drugs/'.ceil($drug->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/editdrug',array(
+				'drug' => $drug,
+				'errors' => @$errors,
+			));
+	}
+
 	public function actionUsers($id=false)
 	{
 		Audit::add('admin-User','list');
@@ -73,6 +185,7 @@ class AdminController extends BaseAdminController
 			'errors' => @$errors,
 		));
 	}
+
 
 	public function actionEditUser($id)
 	{
@@ -233,15 +346,18 @@ class AdminController extends BaseAdminController
 		$criteria->offset = $page * $this->items_per_page;
 		$criteria->limit = $this->items_per_page;
 
-
 		if (!empty($_REQUEST['search'])) {
-			$criteria->addSearchCondition("username",$_REQUEST['search'],true,'OR');
-			$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
-			$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
+			if($params['model']=='User'){
+				$criteria->addSearchCondition("username",$_REQUEST['search'],true,'OR');
+				$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
+				$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
+			}
+			else if($params['model']=='Drug'){
+				$criteria->addSearchCondition("name",$_REQUEST['search'],true,'OR');
+			}
 		}
-
 		return array(
-			'items' => $params['model']::model()->findAll($criteria),
+			'items' => $model->findAll($criteria),
 		);
 	}
 
