@@ -93,10 +93,10 @@ class BaseActiveRecordTest extends CDbTestCase
 	public function testNHSDate()
 	{
 
-		//last_modified_date = 1900-01-01 00:00:00 = 1 Jan 1900
+		$this->model->last_modified_date = '1902-01-01 00:00:00';
 		$result = $this->model->NHSDate('last_modified_date', $empty_string = '-');
 
-		$expected = '1 Jan 1900';
+		$expected = '1 Jan 1902';
 
 		$this->assertEquals($expected, $result);
 	}
@@ -108,10 +108,10 @@ class BaseActiveRecordTest extends CDbTestCase
 	public function testNHSDateAsHTML()
 	{
 
-		//last_modified_date = 1900-01-01 00:00:00 = <span class="day">1</span><span class="mth">Jan</span><span class="yr">1900</span>
+		$this->model->last_modified_date = '1902-01-01 00:00:00';
 		$result = $this->model->NHSDateAsHTML('last_modified_date', $empty_string = '-');
 
-		$expected = '<span class="day">1</span><span class="mth">Jan</span><span class="yr">1900</span>';
+		$expected = '<span class="day">1</span><span class="mth">Jan</span><span class="yr">1902</span>';
 
 		$this->assertEquals($expected, $result);
 	}
