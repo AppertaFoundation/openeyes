@@ -38,16 +38,22 @@ class AuthRules
 	 * @param EventType $event_type
 	 * @return boolean
 	 */
-	public function canCreateEvent(Firm $firm, Episode $episode, EventType $event_type)
+	public function canCreateEvent(Firm $firm = null, Episode $episode = null, EventType $event_type = null)
 	{
-		if ($event_type->disabled) return false;
+		if ($event_type) {
+			if ($event_type->disabled) return false;
 
-		if (!$event_type->support_services && !$firm->getSubspecialtyID()) {
-			// Can't create a non-support service event for a support-service firm
-			return false;
+			if (!$event_type->support_services && !$firm->getSubspecialtyID()) {
+				// Can't create a non-support service event for a support-service firm
+				return false;
+			}
 		}
 
-		return $this->canEditEpisode($firm, $episode);
+		if ($firm && $episode) {
+			return $this->canEditEpisode($firm, $episode);
+		}
+
+		return true;
 	}
 
 	/**

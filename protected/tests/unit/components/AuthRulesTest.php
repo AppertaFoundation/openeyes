@@ -92,6 +92,26 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(42), $this->getNormalEpisode(43), $this->getNonSupportServicesEventType()));
 	}
 
+	public function testCanCreateEvent_NoData()
+	{
+		$this->assertTrue($this->rules->canCreateEvent());
+	}
+
+	public function testCanCreateEvent_NoEventType()
+	{
+		$this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode()));
+	}
+
+	public function testCanCreateEvent_NoEventType_LegacyEpisode()
+	{
+		$this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getLegacyEpisode()));
+	}
+
+	public function testCanCreateEvent_NoEventType_WrongSubspecialtyEpisode()
+	{
+		$this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(42), $this->getNormalEpisode(43)));
+	}
+
 	public function testCanEditEvent_PatientDeceased()
 	{
 		$event = $this->getEvent();

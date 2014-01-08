@@ -91,17 +91,8 @@ $current_episode = @$this->current_episode;
 						<div <?php if ($episode->hidden) { ?>class="events-container hide"<?php } else { ?>class="events-container show"<?php } ?>>
 
 							<?php
-							if ($this->checkAccess('OprnEditEpisode', $this->firm, $episode)) {?>
-								<?php
-								$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-								$enabled = false;
-								if ($episode->firm) {
-									if ($firm->getSubspecialtyID() == $episode->firm->getSubspecialtyID()) {
-										$enabled = true;
-									}
-								} elseif (is_null($firm->getSubspecialtyID()) && $episode->support_services) {
-									$enabled = true;
-								}
+							if ($this->checkAccess('OprnCreateEvent')) {
+								$enabled = $this->checkAccess('OprnCreateEvent', $this->firm, $episode);
 								?>
 
 								<button
