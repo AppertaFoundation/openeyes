@@ -350,4 +350,14 @@ class Firm extends BaseActiveRecord
 	{
 		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty_id : null;
 	}
+
+	/**
+	 * Check whether this is a support services firm
+	 *
+	 * @return boolean
+	 */
+	public function isSupportServicesFirm()
+	{
+		return is_null($this->serviceSubspecialtyAssignment);
+	}
 }

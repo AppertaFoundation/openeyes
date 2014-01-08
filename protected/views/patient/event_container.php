@@ -1,9 +1,3 @@
-<?php
-
-extract($this->getEpisodes());
-
-?>
-
 <h1 class="badge">Episodes and events</h1>
 
 <div class="box content">

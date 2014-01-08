@@ -30,7 +30,7 @@
 				$assetpath = '/assets/';
 			}
 
-			if ($this->checkCreateAccess($eventType)) {
+			if ($this->checkCreateAccess($episode, $eventType)) {
 
 				?>
 				<li>

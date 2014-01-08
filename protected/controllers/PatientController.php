@@ -311,7 +311,6 @@ class PatientController extends BaseController
 		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
-			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 		));
 	}
@@ -351,7 +350,6 @@ class PatientController extends BaseController
 		$this->render('episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
-			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 		));
 	}
@@ -1528,12 +1526,13 @@ class PatientController extends BaseController
 	/**
 	 * Check create access for the specified event type
 	 *
+	 * @param Episode $episode
 	 * @param EventType $event_type
 	 * @return boolean
 	 */
-	public function checkCreateAccess(EventType $event_type)
+	public function checkCreateAccess(Episode $episode, EventType $event_type)
 	{
 		$oprn = 'OprnCreate' . ($event_type->class_name == 'OphDrPrescription' ? 'Prescription' : 'Event');
-		return $this->checkAccess($oprn, $this->firm, $event_type);
+		return $this->checkAccess($oprn, $this->firm, $episode, $event_type);
 	}
 }
