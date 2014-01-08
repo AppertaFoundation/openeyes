@@ -1480,6 +1480,8 @@ class ExaminationContext extends PageObjectContext
         $examination->saveExamination();
     }
 
+    //VALIDATION TESTS
+
     /**
      * @Then /^a check is made that a right Axis degrees of "([^"]*)" was entered$/
      */
@@ -1502,5 +1504,53 @@ class ExaminationContext extends PageObjectContext
          */
         $examination= $this->getPage('Examination');
         $examination->leftAxisCheck($axis);
+    }
+
+    /**
+     * @Then /^I select Add All optional elements$/
+     */
+    public function iSelectAddAllOptionalElements()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->addAllElements();
+    }
+
+    /**
+     * @Then /^I Confirm that the History Validation error message is displayed$/
+     */
+    public function iConfirmThatHistoryErrorMessageIsDisplayed()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->historyValidationCheck();
+    }
+
+    /**
+     * @Then /^I Confirm that the Conclusion Validation error message is displayed$/
+     */
+    public function iConfirmConlusionValidation()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->conclusionValidationCheck();
+    }
+
+    /**
+     * @Then /^I Confirm that the Dilation Validation error message is displayed$/
+     */
+    public function iConfirmDilationValidation()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->dilationValidationCheck();
     }
 }

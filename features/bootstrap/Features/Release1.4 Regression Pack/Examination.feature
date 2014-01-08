@@ -3,54 +3,53 @@ Feature: Create New Examination Regression Tests
   Regression over 2 Sites and 4 Firms
   Coverage at 60%
 
-  Scenario: Route 1: Login and create a new Examination Event: Site 1:Queens, Firm:3 Anderson Glaucoma
-
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "3"
-
-    Then I search for hospital number "1009465"
-
-    Then I select the Latest Event
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Examination"
-
-    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
-
-    And I choose to expand the Comorbidities section
-    Then I Add a Comorbiditiy of "4"
-
-    Then I choose to expand the Visual Acuity section
-    And I select a Visual Acuity of "2"
-    Then I choose a left Visual Acuity Snellen Metre "4" and a reading method of "5"
-    Then I choose a right Visual Acuity Snellen Metre "4" and a reading method of "5"
-
-    Then I choose to expand the Intraocular Pressure section
-    Then I choose a left Intraocular Pressure of "19" and Instrument "2"
-    Then I choose a right Intraocular Pressure of "29" and Instrument "2"
-
-    Then I choose to expand the Dilation section
-    Then I choose left Dilation of "2" and drops of "5"
-    Then I choose right Dilation of "6" and drops of "3"
-
-    Then I choose to expand the Refraction section
-    Then I enter left Refraction details of Sphere "1" integer "6" fraction "0.75"
-    And I enter left cylinder details of of Cylinder "-1" integer "7" fraction "0.75"
-    And I enter a left type of "5"
-    Then I enter left Axis degrees of "32"
-
-
-    Then I enter right Refraction details of Sphere "1" integer "3" fraction "0.50"
-    And I enter right cylinder details of of Cylinder "-1" integer "4" fraction "0.25"
-    Then I enter right Axis degrees of "145"
-    And I enter a right type of "1"
-
-    Then I Save the Examination
-
-    Then a check is made that a left Axis degrees of "110" was entered
-    Then a check is made that a right Axis degrees of "-80" was entered
-
+#  Scenario: Route 1: Login and create a new Examination Event: Site 1:Queens, Firm:3 Anderson Glaucoma
+#
+#    Given I am on the OpenEyes "master" homepage
+#    And I enter login credentials "admin" and "admin"
+#    And I select Site "1"
+#    Then I select a firm of "3"
+#
+#    Then I search for hospital number "1009465"
+#
+#    Then I select the Latest Event
+#    Then I expand the Glaucoma sidebar
+#    And I add a New Event "Examination"
+#
+#    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
+#
+#    And I choose to expand the Comorbidities section
+#    Then I Add a Comorbiditiy of "4"
+#
+#    Then I choose to expand the Visual Acuity section
+#    And I select a Visual Acuity of "2"
+#    Then I choose a left Visual Acuity Snellen Metre "4" and a reading method of "5"
+#    Then I choose a right Visual Acuity Snellen Metre "4" and a reading method of "5"
+#
+#    Then I choose to expand the Intraocular Pressure section
+#    Then I choose a left Intraocular Pressure of "19" and Instrument "2"
+#    Then I choose a right Intraocular Pressure of "29" and Instrument "2"
+#
+#    Then I choose to expand the Dilation section
+#    Then I choose left Dilation of "2" and drops of "5"
+#    Then I choose right Dilation of "6" and drops of "3"
+#
+#    Then I choose to expand the Refraction section
+#    Then I enter left Refraction details of Sphere "1" integer "6" fraction "0.75"
+#    And I enter left cylinder details of of Cylinder "-1" integer "7" fraction "0.75"
+#    And I enter a left type of "5"
+#    Then I enter left Axis degrees of "38"
+#
+#
+#    Then I enter right Refraction details of Sphere "1" integer "3" fraction "0.50"
+#    And I enter right cylinder details of of Cylinder "-1" integer "4" fraction "0.25"
+#    Then I enter right Axis degrees of "145"
+#    And I enter a right type of "1"
+#
+#    Then I Save the Examination
+#
+#    Then a check is made that a left Axis degrees of "38" was entered
+#    Then a check is made that a right Axis degrees of "145" was entered
 
 
 #  Scenario: Route 2:Login and create a new Examination Event: Site:1 Queens, Firm:2 Broom Glaucoma
@@ -513,3 +512,77 @@ Feature: Create New Examination Regression Tests
 #    And I choose a Conclusion option of "booked for first eye, "
 #
 #    Then I Save the Examination
+
+  Scenario: Route 7: Examination Validation Tests (Anderson Glaucoma)
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Examination"
+
+#    Then I select Add All optional elements
+
+    Then I Save the Examination
+
+    Then I Confirm that the History Validation error message is displayed
+    Then I Confirm that the Conclusion Validation error message is displayed
+
+  Scenario: Route 8: Examination Validation Tests (Anderson Cataract)
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Cataract sidebar
+    And I add a New Event "Examination"
+
+    Then I Save the Examination
+
+    Then I Confirm that the History Validation error message is displayed
+    Then I Confirm that the Dilation Validation error message is displayed
+
+  Scenario: Route 9: Examination Validation Tests (Anderson Medical Retinal)
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "4"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Medical Retinal sidebar
+    And I add a New Event "Examination"
+
+    Then I Save the Examination
+
+    Then I Confirm that the History Validation error message is displayed
+    Then I Confirm that the Dilation Validation error message is displayed
+
+  Scenario: Route 10: Examination Validation Tests (Broom Glaucoma)
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "2"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Examination"
+
+    Then I Save the Examination
+
+    Then I Confirm that the History Validation error message is displayed
+    Then I Confirm that the Dilation Validation error message is displayed
