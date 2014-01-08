@@ -85,9 +85,9 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 	public function testCanEditEvent_PatientDeceased()
 	{
 		$episode = $this->getNormalEpisode(42, '2013-11-13');
-		$event = $this->getEvent(array('created_user_id' => 1, 'episode' => $episode));
+		$event = $this->getEvent(42, array('episode' => $episode));
 
-		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(), $event));
+		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(42), $event));
 	}
 
 	public function testCanEditEvent_WrongSubspecialty()
