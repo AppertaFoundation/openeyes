@@ -31,7 +31,7 @@ $contact = $pca->location ? $pca->location->contact : $pca->contact;
 		<?php echo $contact->label->name?>
 	</td>
 	<td>
-		<?php if (BaseController::checkUserLevel(4)) {?>
+		<?php if ($this->checkAccess('OprnEditContact')) {?>
 			<?php if ($pca->location) {?>
 				<a class="editContact" rel="<?php echo $pca->id?>" href="#">
 					Edit

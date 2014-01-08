@@ -22,12 +22,14 @@ class ProtectedFileController extends BaseController
 	public function accessRules()
 	{
 		return array(
-				// Level 3 or above can do anything
 				array('allow',
-						'actions' => array('download'),
-						'expression' => 'BaseController::checkUserLevel(4)',
+					'actions' => array('download', 'view', 'thumbnail'),
+					'roles' => array('OprnViewProtectedFile'),
 				),
-				array('deny'),
+				array('allow',
+					'actions' => array('import'),
+					'roles' => array('admin'),
+				)
 		);
 	}
 

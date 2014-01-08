@@ -49,7 +49,7 @@
 			</tbody>
 		</table>
 
-		<?php if (BaseController::checkUserLevel(4)) {?>
+		<?php if ($this->checkAccess('OprnEditOphInfo')) {?>
 
 			<div class="box-actions">
 				<button id="btn-edit_oph_info" class="secondary small">
