@@ -20,9 +20,19 @@ node default {
 		include dev::bower
 		include dev::ruby
 		include dev::compass
+		notice("Running advanced xdebug config")
+    dev::xdebug::config { 'default':
+    	profiler_output_name => 'xdebug.log',
+    	remote_connect_back => 'On',
+    	remote_autostart => 1
+    }
 	}
 
 	if $mode == 'ci' {
 		include dev::xdebug
+		notice("Running advanced xdebug config")
+    dev::xdebug::config { 'default':
+    	profiler_output_name => 'xdebug.log'
+    }
 	}
 }

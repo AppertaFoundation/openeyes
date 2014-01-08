@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
 		config.vm.network "private_network", ip: custom_ip
 	end
 
-	if mode == 'bdd'
+	if mode == 'bdd' || mode == 'dev'
 		config.vm.synced_folder "/tmp/behat", "/tmp/behat", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
 	end
 
@@ -40,6 +40,8 @@ Vagrant.configure("2") do |config|
 	config.vm.provider "virtualbox" do |v|
 		v.customize ["modifyvm", :id, "--memory", 1024]
 	end
+
+	puts "Running OpenEyes install with mode: " + mode
 
 	config.vm.provision :puppet do |puppet|
 		puppet.manifests_path = "puppet"
