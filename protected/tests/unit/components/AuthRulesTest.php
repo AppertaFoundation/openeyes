@@ -84,52 +84,52 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
 	public function testCanEditEvent_PatientDeceased()
 	{
-		$episode = $this->getNormalEpisode(42, '2013-11-13');
-		$event = $this->getEvent(42, array('episode' => $episode));
-
-		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(42), $event));
+		$event = $this->getEvent();
+		$event->episode->patient->date_of_death = '2013-11-13';
+		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(), $event));
 	}
 
 	public function testCanEditEvent_WrongSubspecialty()
 	{
-		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(42), $this->getEvent(43)));
+		$event = $this->getEvent(array('episode' => $this->getNormalEpisode(43)));
+		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(42), $event));
 	}
 
 	public function testCanEditEvent_CorrectSubspecialty()
 	{
-		$this->assertTrue($this->rules->canEditEvent($this->getNormalFirm(42), $this->getEvent(42)));
+		$event = $this->getEvent(array('episode' => $this->getNormalEpisode(42)));
+		$this->assertTrue($this->rules->canEditEvent($this->getNormalFirm(42), $event));
 	}
 
 	public function testCanDeleteEvent_WrongUser()
 	{
-		$event = $this->getEvent(42, array('created_user_id' => 1));
+		$event = $this->getEvent(array('created_user_id' => 1));
 		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(2), $this->getNormalFirm(), $event));
 	}
 
 	public function testCanDeleteEvent_TooLate()
 	{
-		$event = $this->getEvent(42, array('created_user_id' => 1, 'created_date' => date('Y-m-d', time() - 86401)));
-		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(1), $this->getNormalFirm(), $event));
+		$event = $this->getEvent(array('created_date' => date('Y-m-d', time() - 86401)));
+		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
 	}
 
 	public function testCanDeleteEvent_PatientDeceased()
 	{
-		$episode = $this->getNormalEpisode(42, '2013-11-13');
-		$event = $this->getEvent(42, array('created_user_id' => 1, 'episode' => $episode));
-
-		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(1), $this->getNormalFirm(), $event));
+		$event = $this->getEvent();
+		$event->episode->patient->date_of_death = '2013-11-13';
+		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
 	}
 
 	public function testCanDeleteEvent_WrongSubspecialty()
 	{
-		$event = $this->getEvent(43, array('created_user_id' => 1));
-		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(1), $this->getNormalFirm(42), $this->getEvent(43)));
+		$event = $this->getEvent(array('episode' => $this->getNormalEpisode(43)));
+		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(42), $event));
 	}
 
 	public function testCanDeleteEvent_CorrectSubspecialty()
 	{
-		$event = $this->getEvent(42, array('created_user_id' => 1));
-		$this->assertTrue($this->rules->canDeleteEvent($this->getUser(1), $this->getNormalFirm(42), $this->getEvent(42)));
+		$event = $this->getEvent(array('episode' => $this->getNormalEpisode(42)));
+		$this->assertTrue($this->rules->canDeleteEvent($this->getUser(1), $this->getNormalFirm(42), $event));
 	}
 
 	private function getSupportServicesFirm()
@@ -156,12 +156,12 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 		);
 	}
 
-	private function getNormalEpisode($subspecialty_id = 42, $patient_date_of_death = null)
+	private function getNormalEpisode($subspecialty_id = 42)
 	{
 		return ComponentStubGenerator::generate(
 			'Episode',
 			array(
-				'patient' => ComponentStubGenerator::generate('Patient', array('date_of_death' => $patient_date_of_death)),
+				'patient' => ComponentStubGenerator::generate('Patient'),
 				'firm' => $this->getNormalFirm($subspecialty_id),
 				'support_services' => false,
 				'subspecialtyID' => $subspecialty_id
@@ -193,12 +193,12 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 		);
 	}
 
-	private function getEvent($subspecialty_id = 42, array $props = array())
+	private function getEvent(array $props = array())
 	{
 		$props += array(
-				'episode' => $this->getNormalEpisode($subspecialty_id),
-				'created_user_id' => 1,
-				'created_date' => date('Y-m-d'),
+			'episode' => $this->getNormalEpisode(42),
+			'created_user_id' => 1,
+			'created_date' => date('Y-m-d'),
 		);
 
 		return ComponentStubGenerator::generate('Event', $props);
