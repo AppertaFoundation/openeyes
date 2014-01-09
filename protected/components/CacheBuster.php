@@ -17,23 +17,47 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
+/**
+ * A basic CacheBuster component class that adds a cache busting string
+ * to the end of a URL.
+ */
 class CacheBuster extends CApplicationComponent
 {
+	/**
+	 * The time string to append to the URL.
+	 * @var string
+	 */
 	public $time;
 
-	public function createUrl($path = '')
+	/**
+	 * Create a cache busted URL.
+	 * @param  string $url  The URL to cache bust.
+	 * @param  string $time The time string to append to the url.
+	 * @return String       The cache busted URL.
+	 */
+	public function createUrl($url = '', $time = null)
 	{
-		if (!$this->time) {
-			return $path;
+		if ($time !== null) {
+			$this->time = $time;
 		}
 
-		$joiner = $this->getJoiner($path);
+		if (!$this->time) {
+			return $url;
+		}
 
-		return $path.$joiner.$this->time;
+		$joiner = $this->getJoiner($url);
+
+		return $url.$joiner.$this->time;
 	}
 
-	protected function getJoiner($path = '')
+	/**
+	 * Determine the joiner required to append the cache busting string. This checks
+	 * if the URL contains query string params and returns the appropriate joiner.
+	 * @param  string $url The URL to check.
+	 * @return string      The joiner char (either '?' or '&')
+	 */
+	protected function getJoiner($url = '')
 	{
-		return preg_match('/\?/',$path) ? '&' : '?';
+		return preg_match('/\?/',$url) ? '&' : '?';
 	}
 }
