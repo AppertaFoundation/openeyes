@@ -1,7 +1,7 @@
 <?php $assetManager = Yii::app()->getAssetManager();?>
 <?php $assetManager->registerCoreCssFile('jui/css/base/jquery-ui.css')?>
-<?php $assetManager->registerCoreScriptFile('jquery')?>
-<?php $assetManager->registerCoreScriptFile('jquery.ui')?>
+<?php $assetManager->registerCoreScript('jquery')?>
+<?php $assetManager->registerCoreScript('jquery.ui')?>
 <?php $assetManager->registerScriptFile('js/jquery.watermark.min.js')?>
 <?php $assetManager->registerScriptFile('js/mustache.js')?>
 <?php $assetManager->registerScriptFile('js/libs/uri-1.10.2.js')?>

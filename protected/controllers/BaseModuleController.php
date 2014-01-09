@@ -37,7 +37,7 @@ class BaseModuleController extends BaseController {
 
 		// Set asset path
 		if (file_exists(Yii::getPathOfAlias($this->assetPathAlias))) {
-			$this->assetPath = Yii::app()->assetManager->getAliasPath('application.modules.'.$this->getModule()->name.'.assets');
+			$this->assetPath = Yii::app()->assetManager->getPublishedPathOfAlias('application.modules.'.$this->getModule()->name.'.assets');
 		}
 		return parent::init();
 	}
