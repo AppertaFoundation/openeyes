@@ -15,6 +15,7 @@ define dev::xdebug::config (
 		$remote_host      = '',
 		$remote_port      = '',
 		$remote_autostart = '',
+		$remote_log = '',
 		$profiler_enable = '',
 		$profiler_output_name = '',
 		$idekey = '',
@@ -63,6 +64,11 @@ define dev::xdebug::config (
 		default => $remote_autostart,
 	}
 
+	$xdebug_remote_log = $remote_log ? {
+  		''      => '',
+  		default => $remote_log,
+  }
+
 	$xdebug_profiler_enable = $profiler_enable ? {
 		''      => '0',
 		default => $profiler_enable,
@@ -78,6 +84,7 @@ define dev::xdebug::config (
 		default => $idekey,
 	}
 
+
 	file { "$xdebug_ini_file_path" :
 		content => inline_template("\
 		xdebug.default_enable=<%= default_enable %>
@@ -90,6 +97,7 @@ define dev::xdebug::config (
 		xdebug.profiler_enable=<%= profiler_enable %>
 		xdebug.profiler_output_name=<%= profiler_output_name %>
 		xdebug.idekey=<%= idekey %>
+		xdebug.remote_log=<%= remote_log %>
 		xdebug.remote_handler=dbgp"),
 		ensure  => present,
 		require => Package['xdebug'],
