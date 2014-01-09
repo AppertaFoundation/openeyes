@@ -471,7 +471,7 @@ class BaseEventTypeController extends BaseModuleController
 			throw new CHttpException(404, 'Invalid patient_id.');
 		}
 
-		if (!$this->episode = $this->getEpisode($this->firm, $this->patient->id)) {
+		if (!$this->episode = $this->getEpisode()) {
 			$this->redirectToPatientEpisodes();
 		}
 	}
@@ -857,7 +857,7 @@ class BaseEventTypeController extends BaseModuleController
 		$session = Yii::app()->session;
 		$this->firm = Firm::model()->findByPk($session['selected_firm_id']);
 
-		$this->episode = $this->getEpisode($this->firm, $this->patient->id);
+		$this->episode = $this->getEpisode();
 
 		// allow additional parameters to be defined by module controllers
 		// TODO: Should valid additional parameters be a property of the controller?
@@ -925,7 +925,7 @@ class BaseEventTypeController extends BaseModuleController
 		// Clear script requirements as all the base css and js will already be on the page
 		Yii::app()->clientScript->reset();
 
-		$this->episode = $this->getEpisode($this->firm, $this->patient->id);
+		$this->episode = $this->getEpisode();
 
 		$elements = $this->episode->getElementsOfType($element_type);
 
