@@ -217,7 +217,7 @@ class AssetManager extends CAssetManager
 	public function registerCssFile($style = '', $basePathAlias = null, $priority = null, $output = self::OUTPUT_ALL, $preRegister = true)
 	{
 		$priority = $priority !== null ? $priority : $this->cssPriority--;
-		$path = $this->createUrl($style, $basePathAlias);
+		$path = $this->createUrl($style, $basePathAlias, false);
 
 		if ($preRegister) {
 			$this->addOrderedCssFile($path, $priority, $output);
@@ -247,7 +247,7 @@ class AssetManager extends CAssetManager
 	public function registerScriptFile($script = '', $basePathAlias = null, $priority = null, $output = self::OUTPUT_ALL, $preRegister = true)
 	{
 		$priority = $priority !== null ? $priority : $this->jsPriority--;
-		$path = $this->createUrl($script, $basePathAlias);
+		$path = $this->createUrl($script, $basePathAlias, false);
 
 		if ($preRegister) {
 			$this->addOrderedScriptFile($path, $priority, $output);

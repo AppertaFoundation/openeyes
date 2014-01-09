@@ -310,7 +310,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
 		$clientScript->expects($this->at(0))
 			->method($registerMethod)
-			->with($instance->createUrl("{$type}/file4.{$type}"));
+			->with($instance->createUrl("{$type}/file4.{$type}", null, false));
 
 		$instance->setClientScript($clientScript);
 
@@ -379,11 +379,11 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
 		$clientScript->expects($this->any())
 			->method('registerCssFile')
-			->with($instance->createUrl('css/style.css'));
+			->with($instance->createUrl('css/style.css', null, false));
 
 		$clientScript->expects($this->any())
 			->method('registerScriptFile')
-			->with($instance->createUrl('js/script.js'));
+			->with($instance->createUrl('js/script.js', null, false));
 
 		$instance->registerCssFile('css/style.css');
 		$instance->registerScriptFile('js/script.js');
@@ -401,19 +401,19 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
 		$clientScript->expects($this->at(0))
 			->method('registerCssFile')
-			->with($instance->createUrl('css/style2.css'));
+			->with($instance->createUrl('css/style2.css', null, false));
 
 		$clientScript->expects($this->at(1))
 			->method('registerCssFile')
-			->with($instance->createUrl('css/style1.css'));
+			->with($instance->createUrl('css/style1.css', null, false));
 
 		$clientScript->expects($this->at(2))
 			->method('registerScriptFile')
-			->with($instance->createUrl('js/script2.js'));
+			->with($instance->createUrl('js/script2.js', null, false));
 
 		$clientScript->expects($this->at(3))
 			->method('registerScriptFile')
-			->with($instance->createUrl('js/script1.js'));
+			->with($instance->createUrl('js/script1.js', null, false));
 
 		$instance->registerScriptFile('js/script1.js', null, 10);
 		$instance->registerCssFile('css/style1.css', null, 10);
@@ -434,22 +434,22 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
 		$clientScript->expects($this->at(0))
 			->method('registerCssFile')
-			->with($instance->createUrl('css/all.css'));
+			->with($instance->createUrl('css/all.css', null, false));
 
 		$clientScript->expects($this->at(1))
 			->method('registerCssFile')
-			->with($instance->createUrl('css/style.css'));
+			->with($instance->createUrl('css/style.css', null, false));
 
 		$clientScript->expects($this->exactly(2))
 				->method('registerCssFile');
 
 		$clientScript->expects($this->at(2))
 			->method('registerScriptFile')
-			->with($instance->createUrl('js/all.js'));
+			->with($instance->createUrl('js/all.js', null, false));
 
 		$clientScript->expects($this->at(3))
 			->method('registerScriptFile')
-			->with($instance->createUrl('js/style.js'));
+			->with($instance->createUrl('js/style.js', null, false));
 
 		$clientScript->expects($this->exactly(2))
 				->method('registerScriptFile');
@@ -475,22 +475,22 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
 		$clientScript->expects($this->at(0))
 			->method('registerCssFile')
-			->with($instance->createUrl('css/all.css'));
+			->with($instance->createUrl('css/all.css', null, false));
 
 		$clientScript->expects($this->at(1))
 			->method('registerCssFile')
-			->with($instance->createUrl('css/print.css'));
+			->with($instance->createUrl('css/print.css', null, false));
 
 		$clientScript->expects($this->exactly(2))
 				->method('registerCssFile');
 
 		$clientScript->expects($this->at(2))
 			->method('registerScriptFile')
-			->with($instance->createUrl('js/all.js'));
+			->with($instance->createUrl('js/all.js', null, false));
 
 		$clientScript->expects($this->at(3))
 			->method('registerScriptFile')
-			->with($instance->createUrl('js/print.js'));
+			->with($instance->createUrl('js/print.js', null, false));
 
 		$clientScript->expects($this->exactly(2))
 				->method('registerScriptFile');
@@ -517,22 +517,22 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
 		$clientScript->expects($this->at(0))
 			->method('registerCssFile')
-			->with($instance->createUrl('css/all.css'));
+			->with($instance->createUrl('css/all.css', null, false));
 
 		$clientScript->expects($this->at(1))
 			->method('registerCssFile')
-			->with($instance->createUrl('css/ajax.css'));
+			->with($instance->createUrl('css/ajax.css', null, false));
 
 		$clientScript->expects($this->exactly(2))
 				->method('registerCssFile');
 
 		$clientScript->expects($this->at(2))
 			->method('registerScriptFile')
-			->with($instance->createUrl('js/all.js'));
+			->with($instance->createUrl('js/all.js', null, false));
 
 		$clientScript->expects($this->at(3))
 			->method('registerScriptFile')
-			->with($instance->createUrl('js/ajax.js'));
+			->with($instance->createUrl('js/ajax.js', null, false));
 
 		$clientScript->expects($this->exactly(2))
 				->method('registerScriptFile');
