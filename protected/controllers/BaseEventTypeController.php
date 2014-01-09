@@ -852,7 +852,7 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		// Clear script requirements as all the base css and js will already be on the page
-		Yii::app()->clientScript->reset();
+		Yii::app()->assetManager->reset();
 
 		$this->patient = $patient;
 		$session = Yii::app()->session;
@@ -924,7 +924,7 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		// Clear script requirements as all the base css and js will already be on the page
-		Yii::app()->clientScript->reset();
+		Yii::app()->assetManager->reset();
 
 		$this->episode = $this->getEpisode();
 

@@ -73,8 +73,11 @@ class BaseController extends Controller
 		Yii::app()->assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
 		Yii::app()->assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
 
-		// We define the main stylesheet here to ensure style is *always* output first.
-		Yii::app()->assetManager->registerCssFile('css/style.css', null, 201, AssetManager::OUTPUT_SCREEN, false);
+		// Register the main stylesheet without pre-registering to ensure it's always output first.
+		Yii::app()->assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
+
+		// Prevent certain assets from being outputted in certain conditions.
+		Yii::app()->getAssetManager()->adjustScriptMapping();
 
 		if ($app->params['ab_testing']) {
 			if ($app->user->isGuest) {
@@ -107,9 +110,6 @@ class BaseController extends Controller
 	{
 		// Register all assets that we pre-registered.
 		Yii::app()->getAssetManager()->registerFiles($this->isPrintAction($this->action->id));
-
-		// Prevent certain assets from being outputted in certain conditions.
-		Yii::app()->getAssetManager()->adjustScriptMapping();
 	}
 
 	protected function setSessionPatient($patient)
