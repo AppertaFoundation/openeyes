@@ -107,17 +107,12 @@ class Event extends BaseActiveRecord
 		);
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function getEditable()
 	{
-		if (!$this->episode->editable) {
-			return FALSE;
-		}
-
-		if ($this->episode->patient->date_of_death) {
-			return FALSE;
-		}
-
-		return TRUE;
+		return $this->canUpdate();
 	}
 
 	/**
@@ -243,18 +238,71 @@ class Event extends BaseActiveRecord
 		}
 	}
 
-	// Only the event creator can delete the event, and only 24 hours after its initial creation
+	/**
+	 * Can this event be updated (edited)
+	 * @return bool
+	 */
+	public function canUpdate()
+	{
+		// Cannot edit unless episode is editable
+		if(!$this->episode->editable) {
+			return false;
+		}
+
+		// Cannot edit events for patients who have died
+		if($this->episode->patient->date_of_death) {
+			return false;
+		}
+
+		$admin_id = User::model()->find('username=?',array('admin'))->id;
+		$user_id = Yii::app()->session['user']->id;
+		// Admin can edit at an time
+		if ($user_id == $admin_id) {
+			return true;
+		}
+
+		// Events created before today should be locked
+		if(date('Ymd',strtotime($this->created_date)) < date('Ymd')) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Can this event be deleted
+	 * @return bool
+	 */
 	public function canDelete()
 	{
-		if (!BaseController::checkUserLevel(4)) return false;
+		// Cannot edit unless episode is editable
+		if(!$this->episode->editable) {
+			return false;
+		}
 
-		if ($this->episode->patient->date_of_death) return false;
+		// Cannot edit events for patients who have died
+		if($this->episode->patient->date_of_death) {
+			return false;
+		}
 
-		if (!$this->episode->editable) return false;
+		$admin_id = User::model()->find('username=?',array('admin'))->id;
+		$user_id = Yii::app()->session['user']->id;
+		// Admin can edit at an time
+		if ($user_id == $admin_id) {
+			return true;
+		}
 
-		$admin = User::model()->find('username=?',array('admin'));	 // these two lines should be replaced once we have rbac
-		if ($admin->id == Yii::app()->session['user']->id) {return true;}
-		return ($this->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($this->created_date)) <= 86400);
+		// Events created before today should be locked
+		if(date('Ymd',strtotime($this->created_date)) < date('Ymd')) {
+			return false;
+		}
+
+		// Only user who created an event can delete it
+		if($user_id != $this->created_user_id) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

@@ -443,14 +443,8 @@ class BaseEventTypeController extends BaseController
 		$elements = $this->getDefaultElements('view');
 
 		// Decide whether to display the 'edit' button in the template
-		if ($this->editable) {
-			if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
-				$this->editable = false;
-			} else {
-				if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
-					$this->editable = false;
-				}
-			}
+		if($this->editable && !$this->canUpdate()) {
+			$this->editable = false;
 		}
 		// Allow elements to override the editable status
 		if ($this->editable) {
@@ -503,6 +497,11 @@ class BaseEventTypeController extends BaseController
 		$this->moduleStateCssClass = 'edit';
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		// Check that updating is allowed
+		if (!$this->canUpdate()) {
+			$this->redirect(array('default/view/'.$this->event->id));
 		}
 
 		$this->patient = $this->event->episode->patient;
@@ -1093,12 +1092,36 @@ class BaseEventTypeController extends BaseController
 		$this->event->audit('event','print',false);
 	}
 
+	public function canUpdate()
+	{
+		if(!$this->event) {
+			return false;
+		}
+		if(!$this->event->canUpdate()) {
+			return false;
+		}
+		if(!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+			return false;
+		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
+			return false;
+		}
+		return true;
+	}
+
 	public function canDelete()
 	{
-		if($this->event){
-			return($this->event->canDelete());
+		if(!$this->event) {
+			return false;
 		}
-		return false;
+		if(!$this->event->canDelete()) {
+			return false;
+		}
+		if(!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+			return false;
+		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
+			return false;
+		}
+		return true;
 	}
 
 	public function actionDelete($id)
@@ -1107,7 +1130,7 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		// Only the event creator can delete the event, and only 24 hours after its initial creation
+		// Check that deletion is allowed
 		if (!$this->canDelete()) {
 			$this->redirect(array('default/view/'.$this->event->id));
 			return false;
