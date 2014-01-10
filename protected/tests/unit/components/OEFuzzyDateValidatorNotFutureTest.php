@@ -40,7 +40,7 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
 
 	public function testValidateAttributeNotFuture()
 	{
-		$this->cModelMock->bar = '2150-12-23';
+		$this->cModelMock->bar = date('Y-m-d', strtotime('+1 year'));
 		$this->validator->validateAttribute($this->cModelMock, 'bar');
 		$notFutureDateMsg  = $this->cModelMock->getErrors('bar');
 		$this->assertTrue($this->cModelMock->hasErrors());
@@ -50,8 +50,8 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
 
 	public function testValidateAttributeNotFutureWithNoDay()
 	{
-		$this->cModelMock->bar = '2150 12';
-		$this->cModelMock->foo = '2150';
+		$this->cModelMock->bar = date('Y-m', strtotime('+1 year'));
+		$this->cModelMock->foo = date('Y', strtotime('+1 year'));
 		$this->validator->validateAttribute($this->cModelMock, 'bar');
 		$notFutureDateMsgBar  = $this->cModelMock->getErrors('bar');
 		$this->validator->validateAttribute($this->cModelMock, 'foo');

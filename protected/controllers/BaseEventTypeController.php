@@ -253,7 +253,6 @@ class BaseEventTypeController extends BaseModuleController
 				$optional[] = new $element_type->class_name;
 			}
 		}
-
 		return $optional;
 	}
 
@@ -1686,7 +1685,7 @@ class BaseEventTypeController extends BaseModuleController
 	 * @param BaseEventTypeElement $element
 	 * @deprecated - use setElementComplexAttributesFromData instead
 	 */
-	protected function setPOSTManyToMany($element)
+	final function setPOSTManyToMany($element)
 	{
 		// placeholder function
 	}

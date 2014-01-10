@@ -24,114 +24,12 @@
 class BaseControllerTest extends CDbTestCase
 {
 	public $fixtures = array(
-		'users' => 'User',
-		'patients' => 'Patient',
-		'firms' => 'Firm',
+
 	);
 
-	protected $controller;
-
-	protected function setUp()
+	public function test_MarkIncomplete()
 	{
-		$this->controller = new BaseController('BaseController');
-		parent::setUp();
+		$this->markTestIncomplete('Tests not implemented yet');
 	}
 
-	public function testStoreData_EmptySession_StoresNothing()
-	{
-		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');
-		$this->assertNull($this->controller->firms, 'Firms should default to null.');
-		$this->assertNull($this->controller->selectedFirmId, 'Selected Firm Id should default to null.');
-		$this->assertNull($this->controller->storeData(), 'This function should have no return.');
-
-		$this->assertFalse($this->controller->showForm, 'showForm should still be false.');
-		$this->assertNull($this->controller->firms, 'Firms should still be null.');
-		$this->assertNull($this->controller->selectedFirmId, 'Selected Firm Id should still be null.');
-	}
-
-	public function testStoreData_FirmDataInSession_StoresFirms()
-	{
-		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');
-		$this->assertNull($this->controller->firms, 'Firms should default to null.');
-		$this->assertNull($this->controller->selectedFirmId, 'Selected Firm Id should default to null.');
-
-		$firms = array();
-		foreach ($this->firms as $name => $values) {
-			$firms[$values['id']] = $values['name'] .
-						' (' . $values['pas_code'] . ') (' .
-						$this->firms($name)->serviceSpecialtyAssignment->service->name .')';
-		}
-
-		Yii::app()->session['firms'] = $firms;
-		$this->assertNull($this->controller->storeData(), 'This function should have no return.');
-
-		$this->assertTrue($this->controller->showForm, 'showForm should now be true.');
-		$this->assertEquals($firms, $this->controller->firms, 'Firms should now match session data.');
-		$this->assertNull($this->controller->selectedFirmId, 'Selected Firm Id should still be null.');
-	}
-
-	public function testStoreData_FirmIdInSession_StoresFirmId()
-	{
-		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');
-		$this->assertNull($this->controller->firms, 'Firms should default to null.');
-		$this->assertNull($this->controller->selectedFirmId, 'Selected Firm Id should default to null.');
-
-		$firmId = $this->firms['firm1']['id'];
-		$firms = array();
-		foreach ($this->firms as $name => $values) {
-			$firms[$values['id']] = $values['name'] .
-						' (' . $values['pas_code'] . ') (' .
-						$this->firms($name)->serviceSpecialtyAssignment->service->name .')';
-		}
-
-		Yii::app()->session['firms'] = $firms;
-		Yii::app()->session['selected_firm_id'] = $firmId;
-		$this->assertNull($this->controller->storeData(), 'This function should have no return.');
-
-		$this->assertTrue($this->controller->showForm, 'showForm should now be true.');
-		$this->assertEquals($firms, $this->controller->firms, 'Firms should now match session data.');
-		$this->assertEquals($firmId, $this->controller->selectedFirmId, 'Firm Id should now match session data.');
-	}
-
-	public function testStoreData_PatientNameInSession_StoresPatientName()
-	{
-		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');
-		$this->assertNull($this->controller->firms, 'Firms should default to null.');
-		$this->assertNull($this->controller->selectedFirmId, 'Selected Firm Id should default to null.');
-
-		$patientName = "{$this->patients['patient1']['first_name']} {$this->patients['patient1']['last_name']}";
-
-		Yii::app()->session['patient_name'] = $patientName;
-		$this->assertNull($this->controller->storeData(), 'This function should have no return.');
-
-		$this->assertFalse($this->controller->showForm, 'showForm should still be false.');
-		$this->assertNull($this->controller->firms, 'Firms should still be null.');
-		$this->assertNull($this->controller->selectedFirmId, 'Selected Firm Id should still be null.');
-	}
-
-	public function testStoreData_FirmAndPatientInSession_StoresAllData()
-	{
-		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');
-		$this->assertNull($this->controller->firms, 'Firms should default to null.');
-		$this->assertNull($this->controller->selectedFirmId, 'Selected Firm Id should default to null.');
-
-		$firmId = $this->firms['firm1']['id'];
-		$firms = array();
-		foreach ($this->firms as $name => $values) {
-			$firms[$values['id']] = $values['name'] .
-						' (' . $values['pas_code'] . ') (' .
-						$this->firms($name)->serviceSpecialtyAssignment->service->name .')';
-		}
-
-		$patientName = "{$this->patients['patient1']['first_name']} {$this->patients['patient1']['last_name']}";
-
-		Yii::app()->session['firms'] = $firms;
-		Yii::app()->session['selected_firm_id'] = $firmId;
-		Yii::app()->session['patient_name'] = $patientName;
-		$this->assertNull($this->controller->storeData(), 'This function should have no return.');
-
-		$this->assertTrue($this->controller->showForm, 'showForm should now be true.');
-		$this->assertEquals($firms, $this->controller->firms, 'Firms should now match session data.');
-		$this->assertEquals($firmId, $this->controller->selectedFirmId, 'Firm Id should now match session data.');
-	}
 }
