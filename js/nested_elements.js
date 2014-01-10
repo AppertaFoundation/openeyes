@@ -108,18 +108,20 @@ function addElement(element, animate, is_child, previous_id, params) {
 			}
 		});
 
-		var inserted = (insert_before.length) ? insert_before.prevAll('section:first') : container.find('.sub-element:last, .element:last');
+		var inserted = (insert_before.length) ? insert_before.prevAll('section:first') : container.find('.sub-element:last, .element:last').last();
 
 		if (animate) {
-			var offTop = inserted.offset().top - 90;
-			var speed = (Math.abs($(window).scrollTop() - offTop)) * 1.5;
-			$('body').animate({
-				scrollTop : offTop
-			}, speed, null, function() {
-				$('.element-title', inserted).effect('pulsate', {
-					times : 2
-				}, 600);
-			});
+			setTimeout(function() {
+				var offTop = inserted.offset().top - 90;
+				var speed = (Math.abs($(window).scrollTop() - offTop)) * 1.5;
+				$('body').animate({
+					scrollTop : offTop
+				}, speed, null, function() {
+					$('.element-title', inserted).effect('pulsate', {
+						times : 2
+					}, 600);
+				});
+			}, 100);
 		}
 
 		// Update stick elements to cope with change in page size
