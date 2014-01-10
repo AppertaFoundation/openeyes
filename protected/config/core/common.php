@@ -43,6 +43,10 @@ return array(
 		'system.gii.generators.module.*',
 	),
 
+	'aliases' => array(
+		'Service' => 'application.Service',
+	),
+
 	'modules' => array(
 		// Gii tool
 		'gii' => array(
@@ -153,6 +157,11 @@ return array(
 			'class'=>'HttpRequest',
 			'noCsrfValidationRoutes'=>array(
 				'site/login', //disabled csrf check on login form
+			),
+		),
+		'service' => array(
+			'class' => '\\Service\ServiceManager',
+			'internal_services' => array(
 			),
 		),
 		'session' => array(
