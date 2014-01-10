@@ -247,10 +247,11 @@ class BaseEventTypeController extends BaseModuleController
 		foreach ($this->open_elements as $open) {
 			$open_et[] = get_class($open);
 		}
+
 		$optional = array();
 		foreach ($this->event_type->getAllElementTypes() as $element_type) {
 			if (!in_array($element_type->class_name, $open_et) && !$element_type->isChild()) {
-				$optional[] = new $element_type->class_name;
+				$optional[] = $element_type->getInstance();
 			}
 		}
 		return $optional;
@@ -274,7 +275,7 @@ class BaseEventTypeController extends BaseModuleController
 		$optional = array();
 		foreach ($parent_type->child_element_types as $child_type) {
 			if (!in_array($child_type->class_name, $open_et)) {
-				$optional[] = new $child_type->class_name;
+				$optional[] = $child_type->getInstance();
 			}
 		}
 
@@ -419,11 +420,12 @@ class BaseEventTypeController extends BaseModuleController
 	 * @param ElementType $element_type
 	 * @param integer $previous_id
 	 * @param array() $additional - additional attributes for the element
+	 * @return \BaseEventTypeElement
 	 */
 	protected function getElementForElementForm($element_type, $previous_id = 0, $additional)
 	{
 		$element_class = $element_type->class_name;
-		$element = new $element_class;
+		$element = $element_type->getInstance();
 		$this->setElementDefaultOptions($element, "create");
 
 		if ($previous_id && $element->canCopy()) {
@@ -1013,7 +1015,7 @@ class BaseEventTypeController extends BaseModuleController
 							$element = $el_cls_name::model()->findByPk($el_id);
 						}
 						else {
-							$element = new $el_cls_name;
+							$element = new $element_type->getInstance();
 						}
 
 						$el_attrs = array();
@@ -1030,7 +1032,7 @@ class BaseEventTypeController extends BaseModuleController
 				else {
 					if (!$this->event
 						|| !$element = $el_cls_name::model()->find('event_id=?',array($this->event->id))) {
-						$element = new $el_cls_name;
+						$element = $element_type->getInstance();
 					}
 					$element->attributes = Helper::convertNHS2MySQL($data[$el_cls_name]);
 					$this->setElementComplexAttributesFromData($element, $data);
@@ -1040,7 +1042,7 @@ class BaseEventTypeController extends BaseModuleController
 			}
 			elseif ($element_type->required) {
 				$errors['Event'][] = $element_type->name . ' is required';
-				$elements[] = new $el_cls_name;
+				$elements[] = $element_type->getInstance();
 			}
 		}
 		if (!count($elements)) {
@@ -1368,7 +1370,7 @@ class BaseEventTypeController extends BaseModuleController
 		$event->event_type_id = $this->event_type->id;
 
 		if (!$event->save()) {
-			OELog::log("Failed to creat new event for episode_id=$episode->id, event_type_id=" . $this->event_type->id);
+			OELog::log("Failed to create new event for episode_id=$episode->id, event_type_id=" . $this->event_type->id);
 			throw new Exception('Unable to save event.');
 		}
 

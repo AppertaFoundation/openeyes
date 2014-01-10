@@ -1,7 +1,5 @@
 <?php
 
-require_once('element_type_classes.php');
-
 /**
  * OpenEyes
  *
@@ -44,7 +42,7 @@ require_once('element_type_classes.php');
 return array(
 	 'history' => array(
 		'name' => 'History',
-		'class_name' => 'HistoryElementType',
+		'class_name' => 'BaseEventTypeElement',
 		'event_type_id' => $this->getRecord('event_type', 'examination')->id,
 		'display_order' => 1,
 		'id' => 1,
@@ -52,7 +50,7 @@ return array(
 	 ),
 	 'pasthistory' => array(
 		  'name' => 'Past History',
-		  'class_name' => 'PastHistoryElementType',
+		  'class_name' => 'BaseEventTypeElement',
 		  'event_type_id' => $this->getRecord('event_type', 'examination')->id,
 		  'display_order' => 1,
 		  'parent_element_type_id' => 1,
@@ -60,13 +58,13 @@ return array(
 	 ),
 	 'visualfunction' => array(
 		  'name' => 'Visual function',
-		  'class_name' => 'VisualFunctionElementType',
+		  'class_name' => 'BaseEventTypeElement',
 		  'event_type_id' => $this->getRecord('event_type', 'examination')->id,
 		  'display_order' => 3,
 	 ),
 	 'va' => array(
 		  'name' => 'Visual acuity',
-		  'class_name' => 'VisualAcuityElementType',
+		  'class_name' => 'BaseEventTypeElement',
 		  'event_type_id' => $this->getRecord('event_type', 'examination')->id,
 		  'display_order' => 4,
 	 ),
