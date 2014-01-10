@@ -214,5 +214,6 @@ return array(
 		),
 		'admin_menu' => array(
 		),
+		'enable_transactions' => true,
 	),
 );
