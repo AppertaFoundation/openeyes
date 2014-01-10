@@ -167,6 +167,7 @@ return array(
 				'Service\\CommissioningBodyService',
 				'Service\\GpService',
 				'Service\\PracticeService',
+				'Service\\PatientService',
 			),
 		),
 		'session' => array(
