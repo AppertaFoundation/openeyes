@@ -275,12 +275,12 @@ class Event extends BaseActiveRecord
 	 */
 	public function canDelete()
 	{
-		// Cannot edit unless episode is editable
+		// Cannot delete unless episode is editable
 		if(!$this->episode->editable) {
 			return false;
 		}
 
-		// Cannot edit events for patients who have died
+		// Cannot delete events for patients who have died
 		if($this->episode->patient->date_of_death) {
 			return false;
 		}
