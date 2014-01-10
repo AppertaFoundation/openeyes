@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Practitioner xmlns="http://hl7.org/fhir">
+  <identifier>
+    <label value="General National Code"/>
+    <system value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/g/general_medical_practitioner_ppd_code_de.asp"/>
+    <value value="12345"/>
+  </identifier>
+  <name>
+    <use value="usual"/>
+    <family value="Zoidberg"/>
+    <given value="John"/>
+    <prefix value="Dr"/>
+  </name>
+  <telecom>
+    <system value="phone"/>
+    <value value="01234567890"/>
+    <use value="work"/>
+  </telecom>
+</Practitioner>

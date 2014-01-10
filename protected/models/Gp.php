@@ -124,7 +124,7 @@ class Gp extends BaseActiveRecordVersioned
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
+		$criteria->compare('id',$this->id);
 		$criteria->compare('obj_prof',$this->obj_prof,true);
 		$criteria->compare('nat_id',$this->nat_id,true);
 

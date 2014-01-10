@@ -1,0 +1,23 @@
+{
+	"identifier": [
+		{
+			"label": "General National Code",
+			"system": {":match": "http://www.datadictionary.nhs.uk/data_dictionary/attributes/g/general_medical_practitioner_ppd_code_de.asp"},
+			"value": {":subst": "gnc"}
+		}
+	],
+	"name": {
+		"use": {":match": "usual"},
+		"family": [{":subst": "family_name"}],
+		"given": [{":subst": "given_name"}],
+		"prefix": [{":subst": "title"}]
+	},
+	"telecom": [
+		{
+			"system": {":match": "phone"},
+			"value": {":subst": "primary_phone"},
+			"use": "work"
+		}
+	],
+	"address": {":subst": "address"}
+}
