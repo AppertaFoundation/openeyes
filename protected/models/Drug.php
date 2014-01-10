@@ -92,7 +92,7 @@ class Drug extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required', 'on' => 'create'),
+			array('name', 'required'),
 			array('name', 'unsafe', 'on' => 'update'),
 			array('tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases, discontinued', 'safe'),
 			// The following rule is used by search().

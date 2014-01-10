@@ -40,6 +40,13 @@ class BaseEventTypeControllerTest extends CDbTestCase
 		parent::setUp();
 	}
 
+	protected function getExaminationController()
+	{
+		$module = new BaseEventTypeModule('ExaminationEvent',null);
+		return new _WrapperBaseEventTypeController('_WrapperBaseEventTypeController', $module);
+	}
+
+
 	protected function getEpisode()
 	{
 		return ComponentStubGenerator::generate('Episode');
@@ -47,8 +54,8 @@ class BaseEventTypeControllerTest extends CDbTestCase
 
 	protected function getElement($element_type)
 	{
-		return ComponentStubGenerator::generate('BaseEventTypeElement',
-			array('ElementType' => $element_type));
+		// relies on the element type class having been defined in the fixtures
+		return new $element_type->class_name;
 	}
 
 	/**
@@ -263,6 +270,74 @@ class BaseEventTypeControllerTest extends CDbTestCase
 		//Ensure that only parent elements are returned, not children
 		$this->assertEquals($expected, $controller->getElements(), 'Controller should only return event elements that are not children');
 	}
+
+	/**
+	 * @covers BaseEventTypeController::getChildElements()
+	 */
+	public function testgetChildElements_parentTypeWithChild()
+	{
+		$controller = new _WrapperBaseEventTypeController();
+		$elements = array(
+			$this->getElement($this->element_type('history')),
+			$this->getElement($this->element_type('pasthistory'))
+		);
+
+		$controller->open_elements = $elements;
+
+		$this->assertEquals(array($elements[1]), $controller->getChildElements($this->element_type('history')), 'Controller should return child element for parent.');
+	}
+
+	/**
+	 * @covers BaseEventTypeController::getChildElements()
+	 */
+	public function testgetChildElements_parentTypeWithNoChild()
+	{
+		$controller = new _WrapperBaseEventTypeController();
+		$elements = array(
+			$this->getElement($this->element_type('history')),
+			$this->getElement($this->element_type('va'))
+		);
+
+		$controller->open_elements = $elements;
+
+		$this->assertEquals(array(), $controller->getChildElements($this->element_type('history')), 'Controller should return empty array for no children.');
+	}
+
+	/**
+	 * @covers BaseEventTypeController::getChildElements()
+	 */
+	public function testgetChildElements_nonParentType()
+	{
+		$controller = new _WrapperBaseEventTypeController();
+		$elements = array(
+			$this->getElement($this->element_type('history')),
+			$this->getElement($this->element_type('va'))
+		);
+
+		$controller->open_elements = $elements;
+
+		$this->assertEquals(array(), $controller->getChildElements($this->element_type('va')), 'Controller should return empty array for non parent element type.');
+	}
+
+	public function testgetOptionalElements()
+	{
+		$controller = $this->getExaminationController();
+		$event_type = $this->getEventTypeWithChildren();
+		$event_type->expects( $this->any() )->method('getAllElementTypes')->will($this->returnValue(
+				array(
+					$this->element_type('history'),
+					$this->element_type('pasthistory'),
+					$this->element_type('visualfunction'),
+					$this->element_type('va'),
+				)
+			));
+		$controller->event_type = $event_type;
+		$controller->setOpenElementsFromCurrentEvent('create');
+		$optional = $controller->getOptionalElements();
+
+		$this->assertEquals('Visual function', $optional[0]->getElementTypeName(), 'First optional element should be Visual function.');
+		$this->assertEquals('Visual acuity', $optional[1]->getElementTypeName(), 'Second optional element should be Visual acuity.');
+	}
 }
 
 /**
@@ -273,12 +348,14 @@ class BaseEventTypeControllerTest extends CDbTestCase
 class _WrapperBaseEventTypeController extends BaseEventTypeController
 {
 
-	public function __construct()
+	public function __construct($id='_WrapperBaseEventTypeController', $module=null)
 	{
-		parent::__construct('_WrapperBaseEventTypeController');
+		parent::__construct($id, $module);
 	}
 
+	// expose protected attributes
 	public $event_type;
+	public $open_elements;
 	// expose protected method in abstract class
 	public function getEventElements() { return parent::getEventElements(); }
 	// expose protected open_elements property
@@ -286,3 +363,18 @@ class _WrapperBaseEventTypeController extends BaseEventTypeController
 	// expose protected setOpenElementsFromCurrentEvent method
 	public function setOpenElementsFromCurrentEvent($action) { parent::setOpenElementsFromCurrentEvent($action); }
 }
+
+/*
+class _WrapperElementType extends ElementType
+{
+	public function __construct($class_name) {
+		parent::__construct();
+		$this->class_name = $class_name;
+	}
+}
+
+class TestElementType extends BaseEventTypeElement
+{
+
+}
+*/

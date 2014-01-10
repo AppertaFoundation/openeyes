@@ -37,4 +37,9 @@ return array(
 		'pas_code' => 'CAAB',
 		'name' => 'Allan Firm'
 	),
+	'firm4' => array(
+		'id' => 4,
+		'service_subspecialty_assignment_id' => null,
+		'name' => 'Support Services Firm'
+	),
 );

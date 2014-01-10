@@ -1,4 +1,5 @@
 <?php
+use Behat\Behat\Exception\BehaviorException;
 
 class Examination extends OpenEyesPage
 {
@@ -175,6 +176,13 @@ class Examination extends OpenEyesPage
         'conclusionOption' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_Conclusion_description']"),
 
         'saveExamination' => array('xpath' => "//*[@id='et_save']"),
+
+        'existingRightAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'38')]"),
+        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'145')]"),
+        'addAllElements' => array('xpath' => "//*[@class='add-all']"),
+        'historyValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'History: Description cannot be blank')]"),
+        'conclusionValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Conclusion: Description cannot be blank.')]"),
+        'dilationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Dilation: Please select at least one treatment, or remove the element')]")
     );
 
     public function history ()
@@ -336,7 +344,10 @@ class Examination extends OpenEyesPage
 
     public function leftAxis ($axis)
     {
+//      HACK! I have entered the value twice in the code to stop the Axis from spinning
         $this->getElement('sphereRightAxis')->setValue($axis);
+        $this->getElement('sphereRightAxis')->setValue($axis);
+
     }
 
     public function leftType ($type)
@@ -435,7 +446,10 @@ class Examination extends OpenEyesPage
 
     public function expandDiagnoses ()
     {
-       $this->getElement('expandDiagnoses')->click();
+
+       $element = $this->getElement('expandDiagnoses');
+       $this->scrollWindowToElement($element);
+       $element->click();
        $this->getSession()->wait(5000, '$.active == 0');
     }
 
@@ -888,5 +902,92 @@ class Examination extends OpenEyesPage
         $this->getSession()->wait(3000);
         $this->getElement('saveExamination')->click();
     }
+
+    //VALIDATION TESTS
+
+    protected function doesRightAxisExist()
+    {
+        return (bool) $this->find('xpath', $this->getElement('existingRightAxisCheck')->getXpath());
+    }
+
+    protected function doesLeftAxisExist()
+    {
+        return (bool) $this->find('xpath', $this->getElement('existingLeftAxisCheck')->getXpath());
+    }
+
+    public function rightAxisCheck ()
+    {
+        if ($this->doesRightAxisExist()){
+            print "Right Axis has been Saved";
+        }
+        else {
+            throw new BehaviorException("RIGHT AXIS NOT SAVED!!!");
+       }
+    }
+
+    public function leftAxisCheck ()
+    {
+        if ($this->doesLeftAxisExist()){
+            print "Left Axis has been Saved";
+        }
+        else {
+            throw new BehaviorException("LEFT AXIS NOT SAVED!!!");
+        }
+    }
+
+    public function addAllElements ()
+    {
+        $this->getElement('addAllElements')->click();
+        $this->getSession()->wait(40000, '$.active == 0');
+    }
+
+    public function historyValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('historyValidationError')->getXpath());
+    }
+
+    public function historyValidationCheck ()
+    {
+        if ($this->historyValidationError()){
+            print "History Validation error has been displayed";
+        }
+        else{
+            throw new BehaviorException ("HISTORY VALIDATION ERROR!!!");
+        }
+    }
+
+    public function conclusionValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('conclusionValidationError')->getXpath());
+    }
+
+    public function conclusionValidationCheck ()
+    {
+        if ($this->conclusionValidationError()){
+            print "Conclusion Validation error has been displayed";
+        }
+        else{
+            throw new BehaviorException ("CONCLUSION VALIDATION ERROR!!!");
+        }
+    }
+
+    public function dilationValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('dilationValidationError')->getXpath());
+    }
+
+    public function dilationValidationCheck ()
+    {
+        if ($this->dilationValidationError()){
+            print "Dilation Validation error has been displayed";
+        }
+        else{
+            throw new BehaviorException ("DILATION VALIDATION ERROR!!!");
+        }
+    }
+
+
+
+
 
 }

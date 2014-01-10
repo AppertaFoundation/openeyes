@@ -243,13 +243,12 @@ class ExaminationContext extends PageObjectContext
      */
     public function iEnterLeftAxisDegreesOf($axis)
     {
-        //We need a Clear Field function here
+        //HACK! I have entered the value twice in the code to stop the Axis from spinning
         /**
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
         $examination->leftAxis($axis);
-        //We need to Press the tab key here
     }
 
     /**
@@ -1479,5 +1478,79 @@ class ExaminationContext extends PageObjectContext
          */
         $examination= $this->getPage('Examination');
         $examination->saveExamination();
+    }
+
+    //VALIDATION TESTS
+
+    /**
+     * @Then /^a check is made that a right Axis degrees of "([^"]*)" was entered$/
+     */
+    public function aCheckIsMadeThatARightAxisDegreesOfWasEntered($axis)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightAxisCheck($axis);
+    }
+
+    /**
+     * @Then /^a check is made that a left Axis degrees of "([^"]*)" was entered$/
+     */
+    public function aCheckIsMadeThatALeftAxisDegreesOfWasEntered($axis)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftAxisCheck($axis);
+    }
+
+    /**
+     * @Then /^I select Add All optional elements$/
+     */
+    public function iSelectAddAllOptionalElements()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->addAllElements();
+    }
+
+    /**
+     * @Then /^I Confirm that the History Validation error message is displayed$/
+     */
+    public function iConfirmThatHistoryErrorMessageIsDisplayed()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->historyValidationCheck();
+    }
+
+    /**
+     * @Then /^I Confirm that the Conclusion Validation error message is displayed$/
+     */
+    public function iConfirmConlusionValidation()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->conclusionValidationCheck();
+    }
+
+    /**
+     * @Then /^I Confirm that the Dilation Validation error message is displayed$/
+     */
+    public function iConfirmDilationValidation()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->dilationValidationCheck();
     }
 }

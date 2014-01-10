@@ -23,8 +23,9 @@ node default {
 		notice("Running advanced xdebug config")
     dev::xdebug::config { 'default':
     	profiler_output_name => 'xdebug.log',
-    	remote_connect_back => 'On',
-    	remote_autostart => 1
+    	remote_connect_back => 1,
+    	remote_enable => 1,
+    	remote_port => 9000
     }
 	}
 
