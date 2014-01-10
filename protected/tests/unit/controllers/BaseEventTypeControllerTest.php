@@ -56,7 +56,6 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 		foreach ($params as $k => $v) {
 			$et->$k = $v;
 		}
-		$this->latest = microtime(true) - $this->start;
 
 		// an element instance to return from the elementtype
 		$e = $this->getMockBuilder('BaseEventTypeElement')
