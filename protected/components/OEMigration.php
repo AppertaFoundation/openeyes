@@ -224,6 +224,31 @@ class OEMigration extends CDbMigration
 	}
 
 	/**
+	 * Create a table with the standard OE columns and options
+	 *
+	 * @param string $name
+	 * @param array $colums
+	 */
+	protected function createOETable($name, array $columns)
+	{
+		$fk_prefix = substr($name, 0, 56);
+
+		$columns = array_merge(
+			$columns,
+			array(
+				'last_modified_user_id' => 'int unsigned not null default 1',
+				'last_modified_date' => 'datetime not null default "1901-01-01 00:00:00"',
+				'created_user_id' => 'int unsigned not null default 1',
+				'created_date' => 'datetime not null default "1901-01-01 00:00:00"',
+				"constraint {$fk_prefix}_lmui_fk foreign key (last_modified_user_id) references user (id)",
+				"constraint {$fk_prefix}_cui_fk foreign key (created_user_id) references user (id)",
+			)
+		);
+
+		$this->createTable($name, $columns, 'engine=InnoDB charset=utf8 collate=utf8_bin');
+	}
+
+	/**
 	 * @description used within subclasses to find out the element_type id based on Class Name
 	 * @param $className - string
 	 * @return mixed - the value of the id. False is returned if there is no value.

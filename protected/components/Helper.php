@@ -114,6 +114,18 @@ class Helper
 	}
 
 	/**
+	 * Convert mysql format datetime to JS timestamp (milliseconds since unix epoch)
+	 *
+	 * @param string $value
+	 * @return float
+	 */
+	static public function mysqlDate2JsTimestamp($value)
+	{
+		$time = strtotime($value);
+		return $time ? $time * 1000 : null;
+	}
+
+	/**
 	 * Calculate age from dob
 	 *
 	 * If date of death provided, then returns age at point of death

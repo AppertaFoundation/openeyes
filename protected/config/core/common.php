@@ -76,6 +76,17 @@ return array(
 		),
 		'clientScript' => array(
 			'class' => 'ClientScript',
+			'packages' => array(
+				'flot' => array(
+					'js' => array(
+						'jquery.flot.js',
+						'jquery.flot.time.js',
+						'jquery.flot.navigate.js',
+					),
+					'baseUrl' => 'js/components/flot',
+					'depends' => array('jquery'),
+				),
+			),
 		),
 		'user' => array(
 			'class' => 'CWebUser',

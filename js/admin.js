@@ -146,4 +146,49 @@ $(document).ready(function() {
 		e.preventDefault();
 		/* TODO */
 	});
+
+
+	// Custom episode summaries
+
+	$('#episode-summary #subspecialty_id').change(
+		function () { window.location.href = baseUrl + '/admin/episodeSummaries?subspecialty_id=' + this.value; }
+	);
+
+	var showHideEmpty = function (el, min) {
+		if (el.find('.episode-summary-item').length > min) {
+			el.find('.episode-summary-empty').hide();
+		} else {
+			el.find('.episode-summary-empty').show();
+		}
+	}
+
+	var items_enabled = $('#episode-summary-items-enabled');
+	var items_available = $('#episode-summary-items-available');
+
+	var extractItemIds = function () {
+		$('#episode-summary #item_ids').val(
+			items_enabled.find('.episode-summary-item').map(
+				function () { return $(this).data('item-id'); }
+			).get().join(',')
+		);
+	}
+
+	showHideEmpty(items_enabled, 0);
+	showHideEmpty(items_available, 0);
+	extractItemIds();
+
+	var options = {
+		containment: '#episode-summary-items',
+		items: '.episode-summary-item',
+		change: function (e, ui) {
+			showHideEmpty($(this), 0);
+			if (ui.sender) showHideEmpty(ui.sender, 1);
+		},
+	}
+
+	items_enabled.sortable($.extend({connectWith: items_available}, options));
+	items_available.sortable($.extend({connectWith: items_enabled}, options));
+
+	$('#episode-summary form').submit(extractItemIds);
+	$('#episode-summary-cancel').click(function () { location.reload(); });
 });
