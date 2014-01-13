@@ -60,27 +60,19 @@ class Drug extends BaseActiveRecord
 
 	public function defaultScope()
 	{
-		if ($this->default_scope) {
-			return array(
-				'condition' => 'discontinued = 0',
-			);
-		} else {
-			return array();
-		}
-	}
-
-	public function scopes()
-	{
 		return array(
-			'discontinued' => array(
-				'condition' => 'discontinued in (0,1)',
-			),
+			'condition' => 'discontinued = 0',
 		);
 	}
 
 	public function discontinued()
 	{
-		$this->default_scope = false;
+		$table_alias = $this->getTableAlias(false,false);
+
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => $table_alias.'.discontinued = 1',
+		),'OR');
+
 		return $this;
 	}
 
