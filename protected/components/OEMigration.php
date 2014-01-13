@@ -107,8 +107,8 @@ class OEMigration extends CDbMigration
 					$model = $lookup['model'];
 					$field = $lookup['field'];
 					$lookup_value = $data[$lookup_column];
-					$lookup_record = BaseActiveRecord::model($model)->findByAttributes(array($field => $lookup_value));
-					$data[$lookup_column] = $lookup_record->id;
+					$lookup_record = $this->dbConnection->createCommand()->select("*")->from($table)->where("$field = :value",array(":value" => $lookup_value))->queryRow();
+					$data[$lookup_column] = $lookup_record['id'];
 				}
 
 				// Process NULLs
