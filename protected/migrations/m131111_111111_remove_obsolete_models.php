@@ -30,7 +30,7 @@ class m131111_111111_remove_obsolete_models extends CDbMigration
 							 CONSTRAINT `section_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `section_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -47,7 +47,7 @@ class m131111_111111_remove_obsolete_models extends CDbMigration
 							 CONSTRAINT `section_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `section_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -64,7 +64,7 @@ class m131111_111111_remove_obsolete_models extends CDbMigration
 							 CONSTRAINT `phrase_name_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `phrase_name_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -86,7 +86,7 @@ class m131111_111111_remove_obsolete_models extends CDbMigration
 							 CONSTRAINT `phrase_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `phrase_phrase_name_id_fk` FOREIGN KEY (`phrase_name_id`) REFERENCES `phrase_name` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -113,7 +113,7 @@ class m131111_111111_remove_obsolete_models extends CDbMigration
 							 CONSTRAINT `phrase_by_firm_phrase_name_id_fk` FOREIGN KEY (`phrase_name_id`) REFERENCES `phrase_name` (`id`),
 							 CONSTRAINT `phrase_by_firm_section_fk` FOREIGN KEY (`section_id`) REFERENCES `section` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -140,7 +140,7 @@ class m131111_111111_remove_obsolete_models extends CDbMigration
 							 CONSTRAINT `phrase_by_subspecialty_phrase_name_id_fk` FOREIGN KEY (`phrase_name_id`) REFERENCES `phrase_name` (`id`),
 							 CONSTRAINT `phrase_by_subspecialty_subspecialty_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -167,7 +167,7 @@ class m131111_111111_remove_obsolete_models extends CDbMigration
 							 CONSTRAINT `letter_template_ibfk_3` FOREIGN KEY (`cc`) REFERENCES `contact_type` (`id`),
 							 CONSTRAINT `letter_template_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 	}

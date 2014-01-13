@@ -76,7 +76,7 @@ class m131104_112734_authitems extends CDbMigration
 				'id tinyint unsigned not null primary key',
 				'name varchar(85) not null unique'
 			),
-			'engine=innodb charset=utf8 collate=utf8_bin'
+			'engine=innodb charset=utf8 collate=utf8_unicode_ci'
 		);
 		$this->getDbConnection()->getCommandBuilder()->createMultipleInsertCommand(
 			'authitem_type',
