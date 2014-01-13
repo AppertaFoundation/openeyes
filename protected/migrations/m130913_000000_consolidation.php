@@ -3160,7 +3160,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `user_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `user_last_site_id_fk` FOREIGN KEY (`last_site_id`) REFERENCES `site` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
