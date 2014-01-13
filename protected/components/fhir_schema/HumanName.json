@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"use":{"type":"NameUse","plural":false},"text":{"type":"string","plural":false},"family":{"type":"string","plural":true},"given":{"type":"string","plural":true},"prefix":{"type":"string","plural":true},"suffix":{"type":"string","plural":true},"period":{"type":"Period","plural":false}}

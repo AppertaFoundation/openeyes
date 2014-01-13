@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"code":{"type":"CodeableConcept","plural":false},"specimen":{"type":"ResourceReference","plural":true},"bodySite":{"type":"CodeableConcept","plural":false},"status":{"type":"DiagnosticOrderStatus","plural":false},"event":{"type":"DiagnosticOrder.Event","plural":true}}

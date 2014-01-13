@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"discriminator":{"type":"id","plural":false},"ordered":{"type":"boolean","plural":false},"rules":{"type":"SlicingRules","plural":false}}

@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"system":{"type":"uri","plural":false},"version":{"type":"string","plural":false},"code":{"type":"code","plural":false},"display":{"type":"string","plural":false},"primary":{"type":"boolean","plural":false},"valueSet":{"type":"ResourceReference","plural":false}}

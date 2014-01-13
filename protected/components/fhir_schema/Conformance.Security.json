@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"cors":{"type":"boolean","plural":false},"service":{"type":"CodeableConcept","plural":true},"description":{"type":"string","plural":false},"certificate":{"type":"Conformance.Certificate","plural":true}}

@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"name":{"type":"CodeableConcept","plural":false},"specimen":{"type":"ResourceReference","plural":false},"group":{"type":"DiagnosticReport.Results","plural":true},"result":{"type":"ResourceReference","plural":true}}

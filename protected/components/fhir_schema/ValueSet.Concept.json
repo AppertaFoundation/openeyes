@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"code":{"type":"code","plural":false},"abstract":{"type":"boolean","plural":false},"display":{"type":"string","plural":false},"definition":{"type":"string","plural":false},"concept":{"type":"ValueSet.Concept","plural":true}}

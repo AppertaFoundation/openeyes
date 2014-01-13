@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"purpose":{"type":"CodeableConcept","plural":false},"name":{"type":"HumanName","plural":false},"telecom":{"type":"Contact","plural":true},"address":{"type":"Address","plural":false},"gender":{"type":"CodeableConcept","plural":false}}

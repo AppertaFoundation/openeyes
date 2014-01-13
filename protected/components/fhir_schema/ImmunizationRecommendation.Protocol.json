@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"doseSequence":{"type":"integer","plural":false},"description":{"type":"string","plural":false},"authority":{"type":"ResourceReference","plural":false},"series":{"type":"string","plural":false}}
