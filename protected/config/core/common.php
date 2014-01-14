@@ -158,6 +158,7 @@ return array(
 			'class'=>'HttpRequest',
 			'noCsrfValidationRoutes'=>array(
 				'site/login', //disabled csrf check on login form
+				'api/',
 			),
 		),
 		'service' => array(
@@ -182,6 +183,19 @@ return array(
 				'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
 				'file/view/<id:\d+>/<dimensions:\d+(x\d+)?>/<name:\w+\.\w+>' => 'protectedFile/thumbnail',
 				'file/view/<id:\d+>/<name:\w+\.\w+>' => 'protectedFile/view',
+
+				// API
+				array('api/conformance', 'pattern' => 'api/metadata', 'verb' => 'GET'),
+				array('api/conformance', 'pattern' => 'api', 'verb' => 'OPTIONS'),
+				array('api/read', 'pattern' => 'api/<resource_type:\w+>/<id:[a-z0-9\-\.]{1,36}>', 'verb' => 'GET'),
+				array('api/vread', 'pattern' => 'api/<resource_type:\w+>/<id:[a-z0-9\-\.]{1,36}>/_history/<vid:\d+>', 'verb' => 'GET'),
+				array('api/update', 'pattern' => 'api/<resource_type:\w+>/<id:[a-z0-9\-\.]{1,36}>', 'verb' => 'PUT'),
+				array('api/delete', 'pattern' => 'api/<resource_type:\w+>/<id:[a-z0-9\-\.]{1,36}>', 'verb' => 'DELETE'),
+				array('api/create', 'pattern' => 'api/<resource_type:\w+>', 'verb' => 'POST'),
+				array('api/search', 'pattern' => 'api/<resource_type:\w+>', 'verb' => 'GET'),
+				array('api/search', 'pattern' => 'api/<resource_type:\w+>/_search', 'verb' => 'GET,POST'),
+				array('api/badrequest', 'pattern' => 'api/(.*)'),
+
 				'<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
 				'<controller:\w+>/<id:\d+>' => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
