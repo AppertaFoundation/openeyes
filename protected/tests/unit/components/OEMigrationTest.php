@@ -90,6 +90,26 @@ class OEMigrationTest extends CDbTestCase
 			$this->assertGreaterThan(0 , strlen($tableName ));
 			$this->assertInternalType('int' , $tableTotalRows );
 		}
+
+		$this->eraseDirectory(getcwd()."/../migrations/data/$thisConsolidation");
+	}
+
+	public function eraseDirectory($path)
+	{
+		$dh = opendir($path);
+
+		while ($file = readdir($dh)) {
+			if (!preg_match('/^\.\.?$/',$file)) {
+				if (is_file($path."/".$file)) {
+					unlink($path."/".$file);
+				} else {
+					$this->eraseDirectory("$path/$file");
+				}
+			}
+		}
+
+		closedir($dh);
+		rmdir($path);
 	}
 
 	/**
