@@ -16,8 +16,14 @@ class Laser extends OpenEyesPage
         'siteValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Site: Site cannot be blank.')]"),
         'laserValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Site: Laser cannot be blank.')]"),
         'treatmentLeftValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Left Procedures cannot be blank.')]"),
-        'treatmentRightValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Right Procedures cannot be blank.')]")
-);
+        'treatmentRightValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Right Procedures cannot be blank.')]"),
+        'removeLastProcedure' => array('xpath' => "//a[contains(text(),'Remove')]"),
+        'removeRightEye' => array('xpath' => "//*[@class='element-eye right-eye column side left']//a[contains(text(),'Remove eye')]"),
+        'addRightEye' => array('xpath' => "//*[@class='element-eye right-eye column side left inactive']//a[contains(text(),'Add right side')]"),
+        'expandComments' => array('xpath' => "//*[@class='optional-elements-list']//a[contains(text(),'Comments')]"),
+        'commentsField' => array('xpath' => "//*[@id='Element_OphTrLaser_Comments_comments']"),
+        'collapseComments' => array('xpath' => "//*[@class='icon-button-small-mini-cross']")
+    );
 
     public function laserSiteID ($site)
     {
@@ -66,6 +72,38 @@ class Laser extends OpenEyesPage
         else{
             throw new BehaviorException ("LASER VALIDATION ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY");
         }
+    }
+
+    public function removeLastProcedure ()
+    {
+        $this->getElement('removeLastProcedure')->click();
+    }
+
+    public function removeRightEye ()
+    {
+        $this->getElement('removeRightEye')->click();
+
+    }
+
+    public function addRightEye ()
+    {
+        $this->getElement('addRightEye')->click();
+    }
+
+    public function expandComments ()
+    {
+        $this->getElement('expandComments')->click();
+        $this->getSession()->wait(5000, '$.active == 0');
+    }
+
+    public function addComments ($comments)
+    {
+        $this->getElement('commentsField')->setValue($comments);
+    }
+
+    public function removeComments ()
+    {
+        $this->getElement('collapseComments')->click();
     }
 
 

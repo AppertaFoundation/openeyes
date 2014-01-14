@@ -1,5 +1,5 @@
 <?php
-
+use Behat\Behat\Exception\BehaviorException;
 class AnaestheticAudit extends OpenEyesPage
 
 {
@@ -24,6 +24,17 @@ class AnaestheticAudit extends OpenEyesPage
       'edit' => array('xpath' => "//*[@class='inline-list tabs event-actions']//*[contains(text(),'Edit')]"),
       'deleteEvent' => array('xpath' => "//*[@class=' delete event-action button button-icon small']//*[@class='icon-button-small-trash-can']"),
       'confirmDeleteEvent' => array('xpath' => "//button[@id='et_deleteevent']"),
+      'anaesthetistValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anaesthetist: Anaesthetist cannot be blank.')]"),
+      'vitalRespiratoryValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Respiratory Rate cannot be blank.')]"),
+      'vitalOxygenSaturationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Oxygen Saturation cannot be blank.')]"),
+      'vitalSystolicBloodPressureValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Systolic Blood Pressure cannot be blank.')]"),
+      'vitalBodyTempValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Body Temperature cannot be blank.')]"),
+      'vitalHeartRateValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Heart Rate cannot be blank.')]"),
+      'vitalAVPUValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Conscious Level AVPU cannot be blank.')]"),
+      'readyForDischargeValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Notes: Ready for discharge from recovery cannot be blank.')]")
+
+
+
     );
 
     public function anaesthetist ($anaesthetist)
@@ -112,6 +123,28 @@ class AnaestheticAudit extends OpenEyesPage
         $this->getElement('deleteEvent')->click();
         $this->getSession()->wait(3000);
         $this->getElement('confirmDeleteEvent')->click();
+    }
+
+    public function validationErrors ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('anaesthetistValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('vitalRespiratoryValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('vitalOxygenSaturationValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('vitalSystolicBloodPressureValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('vitalBodyTempValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('vitalHeartRateValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('vitalAVPUValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('readyForDischargeValidationError')->getXpath());
+    }
+
+    public function validationErrorCheck ()
+    {
+        if ($this->validationErrors()){
+            print "All Validation errors have been displayed correctly";
+        }
+        else{
+            throw new BehaviorException ("VALIDATION ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY!!!");
+        }
     }
 
 
