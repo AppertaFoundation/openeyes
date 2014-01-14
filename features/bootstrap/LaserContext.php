@@ -77,4 +77,102 @@ class LaserContext extends PageObjectContext
         $laserPage = $this->getPage('laser');
         $laserPage->leftProcedure($left);
     }
+
+    /**
+     * @Then /^I save the Laser Event$/
+     */
+    public function iSaveTheLaserEvent()
+    {
+        /**
+         * @var laser $laserPage
+         */
+        $laserPage = $this->getPage('laser');
+        $laserPage->saveLaser();
+    }
+
+    /**
+     * @Given /^I Confirm that the Laser Validation error messages are displayed$/
+     */
+    public function iConfirmThatTheLaserValidationErrorMessagesAreDisplayed()
+    {
+        /**
+         * @var laser $laserPage
+         */
+        $laserPage = $this->getPage('laser');
+        $laserPage->laserValiditionCheck();
+    }
+
+    /**
+     * @Given /^I remove the last added Procedure$/
+     */
+    public function iRemoveTheLastAddedProcedure()
+    {
+        /**
+         * @var laser $laserPage
+         */
+        $laserPage = $this->getPage('laser');
+        $laserPage->removeLastProcedure();
+    }
+
+    /**
+     * @Then /^I remove the right eye$/
+     */
+    public function iRemoveTheRightEye()
+    {
+        /**
+         * @var laser $laserPage
+         */
+        $laserPage = $this->getPage('laser');
+        $laserPage->removeRightEye();
+    }
+
+    /**
+     * @Given /^I add the right eye$/
+     */
+    public function iAddTheRightEye()
+    {
+        /**
+         * @var laser $laserPage
+         */
+        $laserPage = $this->getPage('laser');
+        $laserPage->addRightEye();
+    }
+
+    /**
+     * @Then /^I add expand the Comments section$/
+     */
+    public function iAddExpandTheCommentsSection()
+    {
+        /**
+         * @var laser $laserPage
+         */
+        $laserPage = $this->getPage('laser');
+        $laserPage->expandComments();
+    }
+
+    /**
+     * @Given /^I add "([^"]*)" into the Comments section$/
+     */
+    public function iAddIntoTheCommentsSection($comments)
+    {
+        /**
+         * @var laser $laserPage
+         */
+        $laserPage = $this->getPage('laser');
+        $laserPage->addComments($comments);
+    }
+
+    /**
+     * @Then /^I remove the Comments section$/
+     */
+    public function iRemoveTheCommentsSection()
+    {
+        /**
+         * @var laser $laserPage
+         */
+        $laserPage = $this->getPage('laser');
+        $laserPage->removeComments();
+    }
+
+
 }

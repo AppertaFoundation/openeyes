@@ -15,6 +15,19 @@
 
 class HelperTest extends CTestCase
 {
+	static private $tz;
+
+	static public function setUpBeforeClass()
+	{
+		self::$tz = date_default_timezone_get();
+		date_default_timezone_set('UTC');
+	}
+
+	static public function tearDownAfterClass()
+	{
+		date_default_timezone_set(self::$tz);
+	}
+
 	public function mysqlDate2JsTimestampDataProvider()
 	{
 		return array(

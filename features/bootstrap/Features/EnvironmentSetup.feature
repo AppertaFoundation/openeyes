@@ -4,7 +4,7 @@ Feature: Environment Setup on clean database
   It sets up 3 Firms Glaucoma, Medical Retina and Cataract
   Each with an event setup ready for the regression tag to be run
 
-  Scenario: Environment Setup Glaucoma
+  Scenario: Environment Setup Broom Glaucoma
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -62,7 +62,7 @@ Feature: Environment Setup on clean database
 
     Then I Save the Event
 
-  Scenario: Environment Setup Cataract
+  Scenario: Environment Setup Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
