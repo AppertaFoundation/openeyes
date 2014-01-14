@@ -24,7 +24,7 @@ class OEMigrationTest extends CDbTestCase
 	protected $fixturePath;
 
 	public $fixtures = array(
-		'event_group' => 'EventGroup',
+		'event_type' => 'EventType',
 	);
 
 	public function setUp(){
@@ -35,13 +35,16 @@ class OEMigrationTest extends CDbTestCase
 
 	public function testInitialiseData()
 	{
-		$eventGroup = new EventGroup();
-		$eventGroup->deleteAll();
-		$this->assertCount(0 , $eventGroup->findAll() );
-		$this->oeMigration->initialiseData($this->fixturePath,  null, 'oeMigrationData');
-		$eventGroupResultSet = $eventGroup->findAll();
+		$eventTypeResultSet = EventType::model()->findAll('id >= 1000');
 
-		$this->compareFixtureWithResultSet($this->event_group, $eventGroupResultSet);
+		Yii::app()->db->createCommand("delete from episode_summary")->query();
+		Yii::app()->db->createCommand("delete from episode_summary_item")->query();
+		Yii::app()->db->createCommand("delete from event_type where id >= 1000")->query();
+
+		$this->oeMigration->initialiseData($this->fixturePath,  null, 'oeMigrationData');
+		$this->compareFixtureWithResultSet($this->event_type, $eventTypeResultSet);
+
+		EventType::model()->deleteAll('id >= 1000');
 	}
 
 	public function testGetMigrationPath(){
@@ -115,12 +118,9 @@ class OEMigrationTest extends CDbTestCase
 			$this->assertCount(0 , array_diff( $thisFixture, $thisRecord ) , 'Somehow the fixture and db record are different, fixture: ' . var_export($thisFixture, true) .
 				' this record: ' .  var_export( $thisRecord, true)  );
 		}
-
 	}
 
 	public function tearDown(){
 		unset($this->oeMigration);
 	}
-
 }
-

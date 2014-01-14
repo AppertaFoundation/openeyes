@@ -92,7 +92,7 @@ class EpisodeSummaryItemTest extends CDbTestCase
 	public function testGetClassName()
 	{
 		$this->assertEquals(
-			'ExaminationEvent_Episode_Foo',
+			'OphCiExamination_Episode_Foo',
 			$this->EpisodeSummaryItem('foo')->getClassName()
 		);
 	}
