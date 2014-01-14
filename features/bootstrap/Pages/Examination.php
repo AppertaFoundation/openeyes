@@ -180,8 +180,11 @@ class Examination extends OpenEyesPage
         'existingRightAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'38')]"),
         'existingLeftAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'145')]"),
         'addAllElements' => array('xpath' => "//*[@class='add-all']"),
+        'removeAllElements' => array('xpath' => "//*[@class='remove-all']"),
+        'removeAllValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Event: Cannot create an event without at least one element')]"),
         'historyValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'History: Description cannot be blank')]"),
         'conclusionValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Conclusion: Description cannot be blank.')]"),
+        'investigationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Investigation: Description cannot be blank when there are no child elements')]"),
         'dilationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Dilation: Please select at least one treatment, or remove the element')]")
     );
 
@@ -196,7 +199,7 @@ class Examination extends OpenEyesPage
 
     protected function isComorbitiesCollapsed()
     {
-        return (bool) $this->find('xpath', $this->getElement('openComorbidities')->getXpath());;
+        return (bool) $this->find('xpath', $this->getElement('openComorbidities')->getXpath());
     }
 
     public function openComorbidities ()
@@ -455,7 +458,11 @@ class Examination extends OpenEyesPage
 
     public function diagnosesLeftEye ()
     {
-       $this->getElement('diagnosesLeftEye')->click();
+
+        $element = $this->getElement('diagnosesLeftEye');
+        $this->scrollWindowToElement($element);
+        $element->click();
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function diagnosesRightEye ()
@@ -937,8 +944,51 @@ class Examination extends OpenEyesPage
 
     public function addAllElements ()
     {
-        $this->getElement('addAllElements')->click();
+        $element = $this->getElement('addAllElements');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(40000, '$.active == 0');
+    }
+
+    public function addAllElementsValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('historyValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('dilationValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('conclusionValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('investigationValidationError')->getXpath());
+    }
+
+    public function addAllElementsValidationCheck ()
+    {
+        if ($this->addAllElementsValidationError()){
+            print "Add All errors have been displayed correctly";
+        }
+        else{
+            throw new BehaviorException ("ADD ALL ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY");
+        }
+    }
+
+    public function removeAllElements ()
+    {
+        $element = $this->getElement('removeAllElements');
+        $this->scrollWindowToElement($element);
+        $element->click();
+        $this->getSession()->wait(40000, '$.active == 0');
+    }
+
+    public function removeAllValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('removeAllValidationError')->getXpath());
+    }
+
+    public function removeAllValidationCheck ()
+    {
+        if ($this->removeAllValidationError()){
+            print "Remove All error has been displayed";
+        }
+        else{
+            throw new BehaviorException ("REMOVE ALL ERROR HAS NOT BEEN DISPLAYED!!!");
+        }
     }
 
     public function historyValidationError ()
@@ -985,9 +1035,5 @@ class Examination extends OpenEyesPage
             throw new BehaviorException ("DILATION VALIDATION ERROR!!!");
         }
     }
-
-
-
-
 
 }

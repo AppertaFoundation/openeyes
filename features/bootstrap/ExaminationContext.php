@@ -1519,6 +1519,44 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I confirm that the Add All Validation error messages have been displayed$/
+     */
+    public function iConfirmThatTheAddAllValidationErrorMessagesHaveBeenDisplayed()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->addAllElementsValidationCheck();
+    }
+
+
+
+    /**
+     * @Then /^I select Close All elements$/
+     */
+    public function iSelectCloseAllElements()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeAllElements();
+    }
+
+    /**
+     * @Then /^I confirm that the Remove All Validation error message is displayed$/
+     */
+    public function iConfirmThatTheRemoveAllValidationErrorMessageIsDisplayed()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeAllValidationCheck();
+    }
+
+    /**
      * @Then /^I Confirm that the History Validation error message is displayed$/
      */
     public function iConfirmThatHistoryErrorMessageIsDisplayed()

@@ -77,4 +77,32 @@ class LaserContext extends PageObjectContext
         $laserPage = $this->getPage('laser');
         $laserPage->leftProcedure($left);
     }
+
+    /**
+     * @Then /^I save the Laser Event$/
+     */
+    public function iSaveTheLaserEvent()
+    {
+        /**
+         * @var laser $laserPage
+         */
+        $laserPage = $this->getPage('laser');
+        $laserPage->saveLaser();
+    }
+
+    /**
+     * @Given /^I Confirm that the Laser Validation error messages are displayed$/
+     */
+    public function iConfirmThatTheLaserValidationErrorMessagesAreDisplayed()
+    {
+        /**
+         * @var laser $laserPage
+         */
+        $laserPage = $this->getPage('laser');
+        $laserPage->laserValiditionCheck();
+    }
+
+
+
+
 }
