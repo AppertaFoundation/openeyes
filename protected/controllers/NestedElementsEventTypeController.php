@@ -108,8 +108,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 			$criteria->params[':exclude_event_id'] = $exclude_event_id;
 		}
 		$criteria->order = 't.id DESC';
-		$criteria->join = 'JOIN event ON event.id = t.event_id';
-		return $element_class::model()->findAll($criteria);
+		return $element_class::model()->with('event')->findAll($criteria);
 	}
 
 
