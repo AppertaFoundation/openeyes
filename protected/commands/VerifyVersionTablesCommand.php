@@ -48,6 +48,14 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 
 			closedir($dh);
 		}
+
+		foreach (Yii::app()->db->getSchema()->getTables() as $table) {
+			if (preg_match('/_version$/',$table->name)) {
+				if (!$this->tableExists(preg_replace('/_version$/','',$table->name))) {
+					echo "Warning: orphaned version table: {$table->name}\n";
+				}
+			}
+		}
 	}
 
 	public function scanModels($path)
