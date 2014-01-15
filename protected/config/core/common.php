@@ -83,7 +83,7 @@ return array(
 						'jquery.flot.time.js',
 						'jquery.flot.navigate.js',
 					),
-					'baseUrl' => 'js/components/flot',
+					'baseUrl' => 'components/flot',
 					'depends' => array('jquery'),
 				),
 			),
@@ -167,6 +167,14 @@ return array(
 			/*'cookieParams' => array(
 				'lifetime' => 300,
 			),*/
+		),
+		'cacheBuster' => array(
+			'class'=>'CacheBuster',
+		),
+		'assetManager' => array(
+			'class'=>'AssetManager',
+			// Use symbolic links to publish the assets when in debug mode.
+			'linkAssets' => defined('YII_DEBUG') && YII_DEBUG,
 		),
 	),
 	'params'=>array(

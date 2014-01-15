@@ -176,7 +176,7 @@
 					<div class="medication_form_errors alert-box alert hide"></div>
 
 					<div class="buttons">
-						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
+						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
 						<button type="submit" class="secondary small btn_save_medication">
 							Save
 						</button>
@@ -204,7 +204,7 @@
 			<input type="hidden" id="medication_id" value="" />
 			<button type="submit" class="classy red venti btn_remove_medication"><span class="button-span button-span-red">Remove medication</span></button>
 			<button type="submit" class="classy green venti btn_cancel_remove_medication"><span class="button-span button-span-green">Cancel</span></button>
-			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 	</div>
 </div>

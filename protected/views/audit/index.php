@@ -35,7 +35,7 @@
 		<div id="searchResults"></div>
 		<div id="search-loading-msg" class="large-12 column hidden">
 			<div class="alert-box">
-				<img src="/img/ajax-loader.gif" class="spinner" /> <strong>Searching, please wait...</strong>
+				<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" class="spinner" /> <strong>Searching, please wait...</strong>
 			</div>
 		</div>
 	</form>

@@ -35,8 +35,8 @@ class ProfileController extends BaseController
 			$this->redirect('/');
 		}
 
-		$this->registerCssFile('profile.css', Yii::app()->createUrl("css/profile.css"));
-		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/profile.js"));
+		Yii::app()->assetManager->registerCssFile('css/profile.css');
+		Yii::app()->assetManager->registerScriptFile('js/profile.js');
 
 		$this->jsVars['items_per_page'] = $this->items_per_page;
 

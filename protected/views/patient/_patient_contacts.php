@@ -145,7 +145,7 @@
 				</div>
 
 				<div class="large-2 column">
-					<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader hide" alt="loading..." />
+					<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="loader hide" alt="loading..." />
 					<button id="btn-add-contact" class="secondary small hide" type="button">Add</button>
 				</div>
 			</div>
@@ -264,7 +264,7 @@
 								<button class="small btn_add_site" type="submit">Add site/institution</button>
 							</div>
 							<div class="large-7 column text-right">
-								<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_contact_loader" style="display: none;" />
+								<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_contact_loader" style="display: none;" />
 								<button class="secondary small btn_save_contact" type="submit">Save</button>
 								<button class="warning small btn_cancel_contact" type="submit">Cancel</button>
 							</div>
@@ -327,7 +327,7 @@
 								<button class="small btn_add_site" type="submit">Add site/institution</button>
 							</div>
 							<div class="large-7 column text-right">
-								<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_contact_loader" style="display: none;" />
+								<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="edit_contact_loader" style="display: none;" />
 								<button class="secondary small btn_save_editcontact" type="submit">Save</button>
 								<button class="warning small btn_cancel_editcontact" type="submit">Cancel</button>
 							</div>
@@ -383,7 +383,7 @@
 				<div class="buttons">
 					<button type="submit" class="secondary small btn_add_site_ok">Send</button>
 					<button type="submit" class="warning small btn_add_site_cancel">Cancel</button>
-					<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+					<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 				</div>
 			</div>
 		<?php }?>

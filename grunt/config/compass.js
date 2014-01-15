@@ -1,10 +1,10 @@
 module.exports = {
 	dist: {
 		options: {
-			sassDir: 'sass',
-			cssDir: 'css',
-			imagesDir: 'img',
-			generatedImagesDir: 'img/sprites',
+			sassDir: 'protected/assets/sass',
+			cssDir: 'protected/assets/css',
+			imagesDir: 'protected/assets/img',
+			generatedImagesDir: 'protected/assets/img/sprites',
 			outputStyle: 'expanded',
 			relativeAssets: true,
 			httpPath: '',

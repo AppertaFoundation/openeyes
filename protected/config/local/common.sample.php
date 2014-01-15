@@ -28,9 +28,9 @@ $config = array(
 			'timeout' => 86400
 		),
 		/*
-		'clientScript' => array(
-                	'cache_buster' => '2013062101',
-                ),
+		'cacheBuster' => array(
+			'time' => '2013062101',
+		),
 		'log' => array(
 			'routes' => array(
 				 // SQL logging

@@ -309,7 +309,7 @@ class BaseEventTypeController extends BaseModuleController
 				// nested elements behaviour
 				//TODO: possibly put this into standard js library for events
 				Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
-				Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('js/nested_elements.js'));
+				Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
 			}
 		}
 
@@ -852,7 +852,7 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		// Clear script requirements as all the base css and js will already be on the page
-		Yii::app()->clientScript->reset();
+		Yii::app()->assetManager->reset();
 
 		$this->patient = $patient;
 		$session = Yii::app()->session;
@@ -924,7 +924,7 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		// Clear script requirements as all the base css and js will already be on the page
-		Yii::app()->clientScript->reset();
+		Yii::app()->assetManager->reset();
 
 		$this->episode = $this->getEpisode();
 
@@ -1458,8 +1458,8 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function printPDF($id, $elements, $template='print', $params=array())
 	{
-		// Remove any existing css
-		Yii::app()->getClientScript()->reset();
+		// Remove any existing assets that have been pre-registered.
+		Yii::app()->assetManager->reset();
 
 		$this->layout = '//layouts/pdf';
 		$pdf_print = new OEPDFPrint('Openeyes', 'PDF', 'PDF');

@@ -138,9 +138,8 @@ class OETCPDF extends TCPDF
 	public function Header()
 	{
 		if ($this->getGroupPageNo() == 1) {
-			$image_path = Yii::app()->getBasePath() . '/../img';
-			$this->Image($image_path.'/_print/letterhead_seal.jpg', 15, 10, 25);
-			$this->Image($image_path.'/_print/letterhead_Moorfields_NHS.jpg', 95, 12, 100);
+			$this->Image(Yii::app()->assetManager->getPublishedPath('img/_print/letterhead_seal.jpg'), 15, 10, 25);
+			$this->Image(Yii::app()->assetManager->getPublishedPath('img/_print/letterhead_Moorfields_NHS.jpg'), 95, 12, 100);
 		} else {
 			if ($this->rollover) {
 				$this->setMargins(15, 18);

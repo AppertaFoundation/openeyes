@@ -168,7 +168,7 @@ $current_episode = @$this->current_episode;
 						<div class="row"><span class="label">Principal diagnosis:</span><?php echo ($episode->diagnosis) ? ($episode->diagnosis ? $episode->diagnosis->term : 'none') : 'No diagnosis' ?></div>
 						<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->getSubspecialtyText()) ?></div>
 						<div class="row"><span class="label">Consultant firm:</span><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A' ?></div>
-						<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png') ?>" alt="folder open" />
+						<img class="folderIcon" src="<?php echo Yii::app()->assetManager->createUrl('img/_elements/icons/folder_open.png') ?>" alt="folder open" />
 					</div>
 				<?php } ?>
 

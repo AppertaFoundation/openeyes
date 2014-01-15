@@ -61,7 +61,7 @@
 				<input type="hidden" id="medication_id" value="" />
 				<button type="submit" class="classy red venti btn_remove_commissioning_body_service_types"><span class="button-span button-span-red">Remove commissioning body service types(s)</span></button>
 				<button type="submit" class="classy green venti btn_cancel_remove_commissioning_body_service_types"><span class="button-span button-span-green">Cancel</span></button>
-				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+				<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 			</div>
 		</div>
 	</div>
