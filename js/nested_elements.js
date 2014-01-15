@@ -51,7 +51,11 @@ function addElement(element, animate, is_child, previous_id, params) {
 
 	$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function(data) {
 		if (is_child) {
-			var container = $(element).closest('.sub-elements.inactive').parent().find('.sub-elements:first');
+			if (element.tagName == 'LI') {
+				var container = $(element).closest('.sub-elements.inactive').parent().find('.sub-elements:first');
+			} else {
+				var container = $(element).closest('.sub-elements.active').parent().find('.sub-elements:first');
+			}
 		} else {
 			var container = $('.js-active-elements');
 		}
@@ -93,7 +97,7 @@ function addElement(element, animate, is_child, previous_id, params) {
 		var el_class = $(element).attr('data-element-type-class');
 		var initFunctionName = el_class.replace('Element_', '') + '_init';
 		if(typeof(window[initFunctionName]) == 'function') {
-			window[initFunctionName]();
+			window[initFunctionName](previous_id);
 		}
 
 		// now init any children
@@ -104,18 +108,20 @@ function addElement(element, animate, is_child, previous_id, params) {
 			}
 		});
 
-		var inserted = (insert_before.length) ? insert_before.prevAll('section:first') : container.find('.sub-element:last, .element:last');
+		var inserted = (insert_before.length) ? insert_before.prevAll('section:first') : container.find('.sub-element:last, .element:last').last();
 
 		if (animate) {
-			var offTop = inserted.offset().top - 90;
-			var speed = (Math.abs($(window).scrollTop() - offTop)) * 1.5;
-			$('body').animate({
-				scrollTop : offTop
-			}, speed, null, function() {
-				$('.element-title', inserted).effect('pulsate', {
-					times : 2
-				}, 600);
-			});
+			setTimeout(function() {
+				var offTop = inserted.offset().top - 90;
+				var speed = (Math.abs($(window).scrollTop() - offTop)) * 1.5;
+				$('body').animate({
+					scrollTop : offTop
+				}, speed, null, function() {
+					$('.element-title', inserted).effect('pulsate', {
+						times : 2
+					}, 600);
+				});
+			}, 100);
 		}
 
 		// Update stick elements to cope with change in page size
@@ -218,7 +224,14 @@ $(document).ready(function() {
 	 * View previous elements
 	 */
 	$('.js-active-elements').delegate('.viewPrevious', 'click', function(e) {
-		var element = $(this).closest('.element');
+		if ($(this).hasClass('subElement')) {
+			var elementType = 'sub-element';
+		} else {
+			var elementType = 'element';
+		}
+
+		var element = $(this).closest('.' + elementType);
+
 		if (!$(element).hasClass('clicked')) {
 			$(element).addClass('clicked');
 		}
@@ -241,10 +254,14 @@ $(document).ready(function() {
 				});
 				$('#previous_elements .copy_element').click(function() {
 					var element_id = $(this).attr('data-element-id');
-					var element = $('.js-active-elements .element.' + $(this).attr('data-element-type-class'))
+					if (elementType == 'element') {
+						var element = $('.js-active-elements .element.' + $(this).attr('data-element-type-class'));
+					} else {
+						var element = $('.js-active-elements .sub-element.' + $(this).attr('data-element-type-class'));
+					}
 					$(element).addClass('clicked');
 					$('#previous_elements').dialog('close');
-					addElement(element, false, false, element_id);
+					addElement(element, false, (elementType == 'sub-element'), element_id);
 				});
 				$(element).removeClass('clicked');
 			}

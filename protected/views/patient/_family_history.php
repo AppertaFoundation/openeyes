@@ -18,7 +18,7 @@
 					<th>Side</th>
 					<th>Condition</th>
 					<th>Comments</th>
-					<th>Actions</th>
+					<?php if ($this->checkAccess('OprnEditFamilyHistory')) { ?><th>Actions</th><?php } ?>
 				</tr>
 			</thead>
 			<tbody>
@@ -28,16 +28,18 @@
 						<td class="side"><?php echo $history->side->name?></td>
 						<td class="condition"><?php echo $history->condition->name?></td>
 						<td class="comments"><?php echo $history->comments?></td>
-						<td>
-							<a href="#" class="editFamilyHistory" rel="<?php echo $history->id?>">Edit</a>&nbsp;&nbsp;
-							<a href="#" class="removeFamilyHistory" rel="<?php echo $history->id?>">Remove</a>
-						</td>
+						<?php if ($this->checkAccess('OprnEditFamilyHistory')): ?>
+							<td>
+								<a href="#" class="editFamilyHistory" rel="<?php echo $history->id?>">Edit</a>&nbsp;&nbsp;
+								<a href="#" class="removeFamilyHistory" rel="<?php echo $history->id?>">Remove</a>
+							</td>
+						<?php endif ?>
 					</tr>
 				<?php }?>
 			</tbody>
 		</table>
 
-		<?php if (BaseController::checkUserLevel(4)) { ?>
+		<?php if ($this->checkAccess('OprnEditFamilyHistory')) { ?>
 			<div class="box-actions">
 				<button id="btn-add_family_history" class="secondary small">
 					Add Family History

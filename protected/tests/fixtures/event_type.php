@@ -17,75 +17,82 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
 return array(
-	'eventType1' => array(
-		'name' => 'examination',
+	'event_type1' => array(
+		'id' => 1000,
+		'name' => 'Operation note 2',
+		'event_group_id' => 5,
+		'class_name' => 'OphTrOperationnote',
+		'support_services' => 0,
 	),
-	'eventType2' => array(
-		'name' => 'refraction',
+	'event_type2' => array(
+		'id' => 1001,
+		'name' => 'Operation booking 2',
+		'event_group_id' => 5,
+		'class_name' => 'OphTrOperationbooking',
+		'support_services' => 0,
 	),
-	'eventType3' => array(
-		'name' => 'orthoptics',
+	'event_type3' => array(
+		'id' => 1002,
+		'name' => 'Examination 2',
+		'event_group_id' => 1,
+		'class_name' => 'OphCiExamination',
+		'support_services' => 0,
 	),
-	'eventType4' => array(
-		'name' => 'diagnosis',
+	'event_type4' => array(
+		'id' => 1003,
+		'name' => 'Consent form 2',
+		'event_group_id' => 5,
+		'class_name' => 'OphTrConsent',
+		'support_services' => 0,
 	),
-	'eventType5' => array(
-		'name' => 'ffa',
+	'event_type5' => array(
+		'id' => 1004,
+		'name' => 'Therapy application 2',
+		'event_group_id' => 2,
+		'class_name' => 'OphCoTherapyapplication',
+		'support_services' => 0,
 	),
-	'eventType6' => array(
-		'name' => 'icg',
+	'event_type6' => array(
+		'id' => 1005,
+		'name' => 'Laser 2',
+		'event_group_id' => 5,
+		'class_name' => 'OphTrLaser',
+		'support_services' => 0,
 	),
-	'eventType7' => array(
-		'name' => 'oct',
+	'event_type7' => array(
+		'id' => 1006,
+		'name' => 'Anaesthetic Satisfaction Audit 2',
+		'event_group_id' => 9,
+		'class_name' => 'OphOuAnaestheticsatisfactionaudit',
+		'support_services' => 0,
 	),
-	'eventType8' => array(
-		'name' => 'field',
+	'event_type8' => array(
+		'id' => 1007,
+		'name' => 'Correspondence 2',
+		'event_group_id' => 2,
+		'class_name' => 'OphCoCorrespondence',
+		'support_services' => 1,
 	),
-	'eventType9' => array(
-		'name' => 'ultrasound',
+	'event_type9' => array(
+		'id' => 1008,
+		'name' => 'Prescription 2',
+		'event_group_id' => 6,
+		'class_name' => 'OphDrPrescription',
+		'support_services' => 0,
 	),
-	'eventType10' => array(
-		'name' => 'xray',
+	'event_type10' => array(
+		'id' => 1009,
+		'name' => 'Ultrasound 2',
+		'event_group_id' => 4,
+		'class_name' => 'OphImUltrasound',
+		'support_services' => 0,
 	),
-	'eventType11' => array(
-		'name' => 'ctscan',
-	),
-	'eventType12' => array(
-		'name' => 'mriscan',
-	),
-	'eventType13' => array(
-		'name' => 'bloodtest',
-	),
-	'eventType14' => array(
-		'name' => 'prescription',
-	),
-	'eventType15' => array(
-		'name' => 'preassess',
-	),
-	'eventType16' => array(
-		'name' => 'anaesth',
-	),
-	'eventType17' => array(
-		'name' => 'amdapplication',
-	),
-	'eventType18' => array(
-		'name' => 'amdinjection',
-	),
-	'eventType19' => array(
-		'name' => 'injection',
-	),
-	'eventType20' => array(
-		'name' => 'laser',
-	),
-	'eventType21' => array(
-		'name' => 'letterin',
-	),
-	'eventType22' => array(
-		'name' => 'letterout',
-	),
-	'eventType23' => array(
-		'name' => 'cvi',
+	'event_type11' => array(
+		'id' => 1010,
+		'name' => 'Cataract Referral 2',
+		'event_group_id' => 2,
+		'class_name' => 'OphCoCataractReferral',
+		'support_services' => 0,
 	),
 );

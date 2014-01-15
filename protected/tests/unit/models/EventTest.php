@@ -87,18 +87,6 @@ class EventTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Event::getEditable
-     * @todo   Implement testGetEditable().
-     */
-    public function testGetEditable()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
      * @covers Event::attributeLabels
      * @todo   Implement testAttributeLabels().
      */
@@ -199,18 +187,6 @@ class EventTest extends PHPUnit_Framework_TestCase
      * @todo   Implement testDeleteIssues().
      */
     public function testDeleteIssues()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
-
-    /**
-     * @covers Event::canDelete
-     * @todo   Implement testCanDelete().
-     */
-    public function testCanDelete()
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(

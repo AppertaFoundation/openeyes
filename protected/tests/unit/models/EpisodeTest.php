@@ -221,17 +221,6 @@ class EpisodeTest extends CDbTestCase {
 	   }
 
 	   /**
-	    * @covers Episode::getEditable
-	    * @todo   Implement testGetEditable().
-	    */
-	   public function testGetEditable() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
 	    * @covers Episode::setPrincipalDiagnosis
 	    * @todo   Implement testSetPrincipalDiagnosis().
 	    */

@@ -22,9 +22,10 @@ class OEMigrationTest extends CDbTestCase
 {
 	protected $oeMigration;
 	protected $fixturePath;
+	protected $Consolidation;
 
 	public $fixtures = array(
-		'event_group' => 'EventGroup',
+		'event_type' => 'EventType',
 	);
 
 	public function setUp(){
@@ -35,13 +36,16 @@ class OEMigrationTest extends CDbTestCase
 
 	public function testInitialiseData()
 	{
-		$eventGroup = new EventGroup();
-		$eventGroup->deleteAll();
-		$this->assertCount(0 , $eventGroup->findAll() );
-		$this->oeMigration->initialiseData($this->fixturePath,  null, 'oeMigrationData');
-		$eventGroupResultSet = $eventGroup->findAll();
+		$eventTypeResultSet = EventType::model()->findAll('id >= 1000');
 
-		$this->compareFixtureWithResultSet($this->event_group, $eventGroupResultSet);
+		Yii::app()->db->createCommand("delete from episode_summary")->query();
+		Yii::app()->db->createCommand("delete from episode_summary_item")->query();
+		Yii::app()->db->createCommand("delete from event_type where id >= 1000")->query();
+
+		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
+		$this->compareFixtureWithResultSet($this->event_type, $eventTypeResultSet);
+
+		EventType::model()->deleteAll('id >= 1000');
 	}
 
 	public function testGetMigrationPath(){
@@ -77,8 +81,8 @@ class OEMigrationTest extends CDbTestCase
 
 	public function testExportData(){
 		$tables = Yii::app()->db->schema->getTables();
-		$thisConsolidation = 'm'.gmdate('ymd_His').'_consolidation';
-		$result = $this->oeMigration->exportData($thisConsolidation, $tables);
+		$this->Consolidation = 'm'.gmdate('ymd_His').'_consolidation';
+		$result = $this->oeMigration->exportData($this->Consolidation, $tables);
 		$this->assertInstanceOf('OEMigrationResult', $result);
 		$this->assertTrue($result->result);
 		$this->assertGreaterThan(0 , count($result->tables ));
@@ -113,14 +117,34 @@ class OEMigrationTest extends CDbTestCase
 			unset($thisFixture['id']); unset($thisRecord['id']);
 
 			$this->assertCount(0 , array_diff( $thisFixture, $thisRecord ) , 'Somehow the fixture and db record are different, fixture: ' . var_export($thisFixture, true) .
-				' this record: ' .  var_export( $thisRecord, true)  );
+				' this record: ' .	var_export( $thisRecord, true)	);
 		}
-
 	}
 
 	public function tearDown(){
 		unset($this->oeMigration);
+
+		if ($this->Consolidation) {
+			$this->eraseDirectory(getcwd()."/../migrations/data/$this->Consolidation");
+			$this->Consolidation = null;
+		}
 	}
 
-}
+	public function eraseDirectory($path)
+	{
+		if ($dh = opendir($path)) {
+			while ($file = readdir($dh)) {
+				if (!preg_match('/^\.\.?$/',$file)) {
+					if (is_file($path."/".$file)) {
+						unlink($path."/".$file);
+					} else {
+						$this->eraseDirectory("$path/$file");
+					}
+				}
+			}
 
+			closedir($dh);
+			rmdir($path);
+		}
+	}
+}

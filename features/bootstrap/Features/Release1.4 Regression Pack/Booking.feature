@@ -252,12 +252,12 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
     Then I should see "Operation booking (Scheduled)"
-
+#
   Scenario: Route 8: Successfully scheduling a child operation that does need a consultant but no anaesthetist
 
     Given I enter login credentials "admin" and "admin"
@@ -288,7 +288,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -324,7 +324,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -360,12 +360,12 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
     Then I should see "Operation booking (Scheduled)"
-
+#
   Scenario: Route 11: Successfully scheduling a child operation that does need a consultant and anaesthetist with no GA
 
     Given I enter login credentials "admin" and "admin"
@@ -396,7 +396,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -432,7 +432,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"

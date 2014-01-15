@@ -1,0 +1,12 @@
+id,name,event_group_id => event_group.name,class_name,support_services
+1000,"Operation note 2","Treatment events","OphTrOperationnote",0
+1001,"Operation booking 2","Treatment events","OphTrOperationbooking",0
+1002,"Examination 2","Clinical events","OphCiExamination",0
+1003,"Consent form 2","Treatment events","OphTrConsent",0
+1004,"Therapy Application 2","Communication events","OphCoTherapyapplication",0
+1005,"Laser 2","Treatment events","OphTrLaser",0
+1006,"Anaesthetic Satisfaction Audit 2","Outcomes","OphOuAnaestheticsatisfactionaudit",0
+1007,"Correspondence 2","Communication events","OphCoCorrespondence",1
+1008,"Prescription 2","Drug events","OphDrPrescription",0
+1009,"Ultrasound 2","Image events","OphImUltrasound",0
+1010,"Cataract Referral 2","Communication events","OphCoCataractReferral",0

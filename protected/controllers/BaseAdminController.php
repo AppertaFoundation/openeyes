@@ -22,6 +22,11 @@ class BaseAdminController extends BaseController
 	public $layout = '//layouts/admin';
 	public $items_per_page = 30;
 
+	public function accessRules()
+	{
+		return array(array('allow', 'roles' => array('admin')));
+	}
+
 	protected function beforeAction($action)
 	{
 		$this->registerCssFile('admin.css', Yii::app()->createUrl("css/admin.css"));

@@ -71,18 +71,14 @@ class Drug extends BaseActiveRecordVersioned
 		return array();
 	}
 
-	public function scopes()
-	{
-		return array(
-			'discontinued' => array(
-				'condition' => 'discontinued in (0,1)',
-			),
-		);
-	}
-
 	public function discontinued()
 	{
-		$this->default_scope = false;
+		$table_alias = $this->getTableAlias(false,false);
+
+		$this->getDbCriteria()->mergeWith(array(
+			'condition' => $table_alias.'.discontinued = 1',
+		),'OR');
+
 		return $this;
 	}
 
@@ -95,6 +91,7 @@ class Drug extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
+			array('name', 'unsafe', 'on' => 'update'),
 			array('tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases, discontinued', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.

@@ -15,6 +15,38 @@
 
 class HelperTest extends CTestCase
 {
+	static private $tz;
+
+	static public function setUpBeforeClass()
+	{
+		self::$tz = date_default_timezone_get();
+		date_default_timezone_set('UTC');
+	}
+
+	static public function tearDownAfterClass()
+	{
+		date_default_timezone_set(self::$tz);
+	}
+
+	public function mysqlDate2JsTimestampDataProvider()
+	{
+		return array(
+			array(null, null),
+			array('1969-12-31 23:59:59', -1000),
+			array('1970-01-01 00:00:00', 0),
+			array('2013-12-18 10:14:33', 1387361673000),
+			array('9999-12-31 23:59:59', 253402300799000),
+		);
+	}
+
+	/**
+	 * @dataProvider mysqlDate2JsTimestampDataProvider
+	 */
+	public function testMysqlDateToJsTimestamp($input, $output)
+	{
+		$this->assertEquals($output, Helper::mysqlDate2JsTimestamp($input));
+	}
+
 	public function getAgeDataProvider()
 	{
 		return array(

@@ -7,12 +7,14 @@
 			'Contacts' => '/admin/contacts',
 			'Contact labels' => '/admin/contactlabels',
 			'Data sources' => '/admin/datasources',
+			'Drugs' => '/admin/drugs',
 			'Institutions' => '/admin/institutions',
 			'Sites' => '/admin/sites',
 			'Commissioning bodies' => '/admin/commissioning_bodies',
 			'Commissioning body types' => '/admin/commissioning_body_types',
 			'Commissioning body services' => '/admin/commissioning_body_services',
 			'Commissioning body service types' => '/admin/commissioning_body_service_types',
+			'Custom episode summaries' => '/admin/episodeSummaries',
 		) as $title => $uri) {?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="selected"<?php }?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?>

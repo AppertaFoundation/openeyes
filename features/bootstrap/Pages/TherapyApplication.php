@@ -151,7 +151,9 @@ class TherapyApplication extends OpenEyesPage
 
     public function RightMyocardialYes ()
     {
-        $this->getElement('myocardialYes')->click();
+        $element = $this->getElement('myocardialYes');
+        $this->scrollWindowToElement($element);
+        $element->click();
     }
 
     public function RightMyocardialNo ()

@@ -76,9 +76,20 @@ return array(
 		),
 		'clientScript' => array(
 			'class' => 'ClientScript',
+			'packages' => array(
+				'flot' => array(
+					'js' => array(
+						'jquery.flot.js',
+						'jquery.flot.time.js',
+						'jquery.flot.navigate.js',
+					),
+					'baseUrl' => 'js/components/flot',
+					'depends' => array('jquery'),
+				),
+			),
 		),
 		'user' => array(
-			'class' => 'WebUser',
+			'class' => 'CWebUser',
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,
 		),
@@ -107,7 +118,7 @@ return array(
 			'schemaCachingDuration' => 300,
 		),
 		'authManager' => array(
-			'class' => 'CDbAuthManager',
+			'class' => 'AuthManager',
 			'connectionID' => 'db',
 		),
 		'cache' => array(
@@ -214,5 +225,6 @@ return array(
 		),
 		'admin_menu' => array(
 		),
+		'enable_transactions' => true,
 	),
 );

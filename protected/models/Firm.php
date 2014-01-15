@@ -287,6 +287,11 @@ class Firm extends BaseActiveRecordVersioned
 		}
 	}
 
+	/**
+	 * Get the Specialty of the Firm
+	 *
+	 * @return Specialty|null
+	 */
 	public function getSpecialty()
 	{
 		$result = Yii::app()->db->createCommand()
@@ -339,5 +344,15 @@ class Firm extends BaseActiveRecordVersioned
 	public function getSubspecialtyID()
 	{
 		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty_id : null;
+	}
+
+	/**
+	 * Check whether this is a support services firm
+	 *
+	 * @return boolean
+	 */
+	public function isSupportServicesFirm()
+	{
+		return is_null($this->serviceSubspecialtyAssignment);
 	}
 }

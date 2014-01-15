@@ -37,15 +37,20 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Refraction section
     Then I enter left Refraction details of Sphere "1" integer "6" fraction "0.75"
     And I enter left cylinder details of of Cylinder "-1" integer "7" fraction "0.75"
-    Then I enter left Axis degrees of "12"
     And I enter a left type of "5"
+    Then I enter left Axis degrees of "38"
+
 
     Then I enter right Refraction details of Sphere "1" integer "3" fraction "0.50"
     And I enter right cylinder details of of Cylinder "-1" integer "4" fraction "0.25"
-    Then I enter right Axis degrees of "34"
+    Then I enter right Axis degrees of "145"
     And I enter a right type of "1"
 
     Then I Save the Examination
+
+    Then a check is made that a left Axis degrees of "38" was entered
+    Then a check is made that a right Axis degrees of "145" was entered
+
 
   Scenario: Route 2:Login and create a new Examination Event: Site:1 Queens, Firm:2 Broom Glaucoma
 
@@ -203,7 +208,7 @@ Feature: Create New Examination Regression Tests
     And I add an Investigation of "field test, "
 
     Then I choose to expand the Clinical Management section
-    And I choose to expand Cataract Management
+    And I choose to expand Cataract Surgical Management
     And I add Cataract Management Comments of "new glasses prescribed, "
     Then I select First Eye
 
@@ -320,7 +325,7 @@ Feature: Create New Examination Regression Tests
     And I add an Investigation of "field test, "
 
     Then I choose to expand the Clinical Management section
-    And I choose to expand Cataract Management
+    And I choose to expand Cataract Surgical Management
     And I add Cataract Management Comments of "new glasses prescribed, "
     Then I select First Eye
 
@@ -443,7 +448,7 @@ Feature: Create New Examination Regression Tests
     And I add an Investigation of "field test, "
 
     Then I choose to expand the Clinical Management section
-    And I choose to expand Cataract Management
+    And I choose to expand Cataract Surgical Management
     And I add Cataract Management Comments of "new glasses prescribed, "
     Then I select First Eye
 
@@ -507,3 +512,113 @@ Feature: Create New Examination Regression Tests
     And I choose a Conclusion option of "booked for first eye, "
 
     Then I Save the Examination
+
+#  BLOCKED OE-3959 Scenario: Route 7: Examination Validation Tests (Anderson Glaucoma)
+#
+#    Given I am on the OpenEyes "master" homepage
+#    And I enter login credentials "admin" and "admin"
+#    And I select Site "1"
+#    Then I select a firm of "3"
+#
+#    Then I search for hospital number "1009465"
+#
+#    Then I select the Latest Event
+#    Then I expand the Glaucoma sidebar
+#    And I add a New Event "Examination"
+#
+#    Then I Save the Examination
+#
+#    Then I Confirm that the History Validation error message is displayed
+#    Then I Confirm that the Conclusion Validation error message is displayed
+#
+  Scenario: Route 8: Examination Validation Tests (Anderson Cataract)
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Cataract sidebar
+    And I add a New Event "Examination"
+
+    Then I Save the Examination
+
+    Then I Confirm that the History Validation error message is displayed
+    Then I Confirm that the Dilation Validation error message is displayed
+#
+#  BLOCKED OE-3959 Scenario: Route 9: Examination Validation Tests (Anderson Medical Retinal)
+#
+#    Given I am on the OpenEyes "master" homepage
+#    And I enter login credentials "admin" and "admin"
+#    And I select Site "1"
+#    Then I select a firm of "4"
+#
+#    Then I search for hospital number "1009465"
+#
+#    Then I select the Latest Event
+#    Then I expand the Medical Retinal sidebar
+#    And I add a New Event "Examination"
+#
+#    Then I Save the Examination
+#
+#    Then I Confirm that the History Validation error message is displayed
+#    Then I Confirm that the Dilation Validation error message is displayed
+#
+#  BLOCKED OE-3959 Scenario: Route 10: Examination Validation Tests (Broom Glaucoma)
+#
+#    Given I am on the OpenEyes "master" homepage
+#    And I enter login credentials "admin" and "admin"
+#    And I select Site "1"
+#    Then I select a firm of "2"
+#
+#    Then I search for hospital number "1009465"
+#
+#    Then I select the Latest Event
+#    Then I expand the Glaucoma sidebar
+#    And I add a New Event "Examination"
+#
+#    Then I Save the Examination
+#
+#    Then I Confirm that the History Validation error message is displayed
+#    Then I Confirm that the Dilation Validation error message is displayed
+##
+  Scenario: Route 11: Examination Validation Tests (Remove All Error)
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Examination"
+
+    Then I select Close All elements
+
+    Then I Save the Examination
+
+    Then I confirm that the Remove All Validation error message is displayed
+
+  Scenario: Route 12: Examination Validation Tests (Select All and Save Validation errors)
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Examination"
+
+    Then I select Add All optional elements
+
+    Then I Save the Examination
+
+    Then I confirm that the Add All Validation error messages have been displayed

@@ -115,3 +115,21 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Then I Save the Event
 
+  Scenario: Route 5: Validation Tests
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Satisfaction"
+
+    Then I Save the Event
+
+    Then I confirm that the ASA Validation error messages have been displayed
+

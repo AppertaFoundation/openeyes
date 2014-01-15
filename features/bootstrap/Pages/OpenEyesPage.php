@@ -46,7 +46,75 @@ abstract class OpenEyesPage extends Page{
 		$this->getSession()->wait($this->getWaitTime($waitTime) , "window.$ && $('" . $selector . "').css('display') == 'none'");
 	}
 
+	/**
+	 * Clicks link with specified locator.
+	 *
+	 * @param string $locator link id, title, text or image alt
+	 *
+	 * @throws ElementNotFoundException
+	 */
+	public function clickLink($locator){
+		$this->scrollWindowToLink($locator);
+		parent::clickLink($locator);
+	}
+
+	/**
+	 * Scrolls the window to ensure the element is within the viewport.
+	 * @param  string $xpath The element xpath string.
+	 */
+	public function scrollWindowTo($xpath) {
+		$element = new Behat\Mink\Element\NodeElement($xpath, $this->getSession());
+		$this->scrollWindowToElement($element);
+	}
+
+	/**
+	 * Scrolls the window to ensure the element is within the viewport.
+	 *
+	 * @param string $locator link id, title, text or image alt
+	 *
+	 * @throws ElementNotFoundException
+	 */
+	public function scrollWindowToLink($locator) {
+
+		$element = $this->findLink($locator);
+
+		if ($element === null) {
+			throw new ElementNotFoundException(
+				$this->getSession(), 'element', 'id|title|alt|text', $locator
+			);
+		}
+
+		$this->scrollWindowToElement($element);
+	}
+
+	/**
+	 * Scrolls the window to ensure the element is within the viewport.
+	 * @param  Behat\Mink\Element\NodeElement $element The element to scroll to.
+	 */
+	public function scrollWindowToElement(Behat\Mink\Element\NodeElement $element) {
+		$wdSession = $this->getSession()->getDriver()->getWebDriverSession();
+		$element = $wdSession->element('xpath', $element->getXpath());
+		$elementID = $element->getID();
+		$script = <<<JS
+var element = $(arguments[0]);
+var t = element.offset().top - (element.height() / 2);
+
+// First we scroll the element to view and trigger the scroll event so that
+// the sticky elements are initiated.
+$(window).scrollTop(t).trigger('scroll');
+
+// Now we offset the height of the sticky elements.
+$('.stuck').not('.watermark').each(function() { t -= $(this).outerHeight(true, true); });
+$(window).scrollTop(t);
+
+JS;
+		$wdSession->execute(array(
+			'script' => $script,
+			'args'   => array(array('ELEMENT' => $elementID))
+		));
+	}
+
 	private function getWaitTime($waitTime){
 		return $waitTime = $waitTime != null ? (int) $waitTime : 15000;
 	}
-} 
+}

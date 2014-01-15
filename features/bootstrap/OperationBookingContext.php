@@ -251,6 +251,27 @@ class OperationBookingContext extends PageObjectContext
     }
 
 
+	/**
+	 * @Then /^I select an Available theatre slot date of next "([^"]*)"$/
+	 */
+	public function iSelectAnAvailableTheatreSlotDateOfNext($dayOfTheWeek)
+	{
+		/**
+		 * @var OperationBooking $operationBooking
+		 */
+
+		$operationBooking = $this->getPage('OperationBooking');
+
+		$nextDay = date('j', strtotime('this ' . $dayOfTheWeek));
+		$today = date('j', strtotime('today'));
+
+		if($today > $nextDay){
+			$operationBooking->nextMonth();
+		}
+		$operationBooking->availableSlotExactDay($nextDay);
+	}
+
+
     /**
      * @Given /^I select an Available theatre slot date$/
      */

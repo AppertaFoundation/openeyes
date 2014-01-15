@@ -30,7 +30,8 @@ Feature: Create New Correspondence using Support Firm
 #    Then I choose a Management of "site181"
 #    And I choose Drugs "site301"
 #    Then I choose Outcome "site341"
-#    The above fields are greyed out in my data set :(
+
+#   AWAITING NEW DATA SET! The above fields are greyed out in my data set :(
 
     And I choose CC Target "patient"
 

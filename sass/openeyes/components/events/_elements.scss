@@ -14,6 +14,17 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+%element-panel {
+	@extend %clearfix;
+	padding: 10px 10px 0 10px;
+	margin: 0;
+	background: #dae6f1;
+	.metadata {
+		margin-left: 0;
+		padding-top: 0;
+	}
+}
+
 .element {
 	position: relative;
 	canvas,
@@ -174,6 +185,14 @@ $oe-element-edit-title-font-style: italic;
 	}
 }
 
+.edit {
+    &.highlight-fields {
+      .sub-elements {
+        margin: 10px -10px 0 -10px;
+      }
+    }
+}
+
 .view {
 	&.highlight-fields {
 		.element {
@@ -195,7 +214,10 @@ $oe-element-edit-title-font-style: italic;
 				}
 			}
 		}
-
+        .sub-elements {
+          margin: 10px -10px 0 -10px;
+          padding-top: 10px;
+        }
 	}
 	.element-data {
 		.data-title {

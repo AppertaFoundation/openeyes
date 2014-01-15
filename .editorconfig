@@ -10,19 +10,11 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = false
 
-[*.php]
+[*.{php,js,css,html,pp,scss}]
 indent_style = tab
 indent_size = 2
 
-[*.js]
-indent_style = tab
-indent_size = 2
-
-[*.css]
-indent_style = tab
-indent_size = 2
-
-[*.html]
+[Vagrantfile]
 indent_style = tab
 indent_size = 2
 
