@@ -106,7 +106,7 @@ class BaseController extends Controller
 	 * This method is invoked after the view is rendered. We register the assets here
 	 * as assets might be pre-registered within the views.
 	 */
-	protected function afterRender()
+	protected function afterRender($view, &$output)
 	{
 		// Register all assets that we pre-registered.
 		Yii::app()->getAssetManager()->registerFiles($this->isPrintAction($this->action->id));
