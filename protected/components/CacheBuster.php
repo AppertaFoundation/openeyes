@@ -37,17 +37,14 @@ class CacheBuster extends CApplicationComponent
 	 */
 	public function createUrl($url = '', $time = null)
 	{
-		if ($time !== null) {
-			$this->time = $time;
+		$time = $time ?: $this->time;
+
+		if ($time) {
+			$joiner = $this->getJoiner($url);
+			$url .= $joiner.$time;
 		}
 
-		if (!$this->time) {
-			return $url;
-		}
-
-		$joiner = $this->getJoiner($url);
-
-		return $url.$joiner.$this->time;
+		return $url;
 	}
 
 	/**

@@ -49,5 +49,9 @@ class CacheBusterTest extends PHPUnit_Framework_TestCase
 		// Test we can specify the time string when creating the URL.
 		$this->assertTrue((bool) preg_match('/('.$urlMatch3.')\?hello$/', $bustedUrl3),
 			'The URL should contain the correct cache busting string when specifying the time when creating the URL');
+
+		// Test that the custom time string is not added globally.
+		$this->assertTrue($cacheBuster->time !== 'hello',
+			'The custom time string should not be added globally. The global time string should be set in the config');
 	}
 }
