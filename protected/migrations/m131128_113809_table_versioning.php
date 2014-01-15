@@ -9,7 +9,7 @@ class m131128_113809_table_versioning extends OEMigration
 		$this->update('drug',array('default_route_id' => null),"default_route_id = 0");
 
 		$proc_ids = array();
-		foreach (Yii::app()->db->createCommand()->select("id")->from("proc")->queryAll() as $row) {
+		foreach ($this->dbConnection->createCommand()->select("id")->from("proc")->queryAll() as $row) {
 			$proc_ids[] = $row['id'];
 		}
 
@@ -21,7 +21,7 @@ class m131128_113809_table_versioning extends OEMigration
 
 		$this->addColumn('disorder_tree','id','int(10) unsigned NOT NULL');
 
-		foreach (Yii::app()->db->createCommand()->select("*")->from("disorder_tree")->queryAll() as $i => $row) {
+		foreach ($this->dbConnection->createCommand()->select("*")->from("disorder_tree")->queryAll() as $i => $row) {
 			$this->update('disorder_tree',array('id' => $i+1),"disorder_id = {$row['disorder_id']} and lft = {$row['lft']} and rght = {$row['rght']}");
 		}
 
@@ -4012,7 +4012,7 @@ CREATE TABLE `user_site_version` (
 		$offset = 0;
 
 		while (1) {
-			$data = Yii::app()->db->createCommand()->select("id,data")->from("audit")->where("data is not null and data != :blank",array(":blank" => ""))->order("id asc")->limit($limit)->offset($offset)->queryAll();
+			$data = $this->dbConnection->createCommand()->select("id,data")->from("audit")->where("data is not null and data != :blank",array(":blank" => ""))->order("id asc")->limit($limit)->offset($offset)->queryAll();
 
 			if (empty($data)) break;
 
