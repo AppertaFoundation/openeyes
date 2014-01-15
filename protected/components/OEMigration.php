@@ -245,7 +245,7 @@ class OEMigration extends CDbMigration
 			)
 		);
 
-		$this->createTable($name, $columns, 'engine=InnoDB charset=utf8 collate=utf8_bin');
+		$this->createTable($name, $columns, 'engine=InnoDB charset=utf8 collate=utf8_unicode_ci');
 	}
 
 	/**
