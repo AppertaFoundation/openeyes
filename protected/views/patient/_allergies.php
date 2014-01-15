@@ -107,7 +107,7 @@
 				</div>
 
 				<div class="buttons">
-					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_allergy_loader" style="display: none;" />
+					<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_allergy_loader" style="display: none;" />
 					<button class="secondary small btn_save_allergy" type="submit">Save</button>
 					<button class="warning small btn_cancel_allergy" type="submit">Cancel</button>
 				</div>
@@ -133,7 +133,7 @@
 				<input type="hidden" id="remove_allergy_id" value="" />
 				<button type="submit" class="warning small btn_remove_allergy">Remove allergy</button>
 				<button type="submit" class="secondary small btn_cancel_remove_allergy">Cancel</button>
-				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+				<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 			</div>
 		</div>
 	</div>

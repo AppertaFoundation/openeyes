@@ -5,7 +5,7 @@
 		<?php foreach (Yii::app()->getDb()->getSchema()->getTableNames() as $table) {?>
 			<option value="<?php echo $table?>"<?php if (@$_POST['dropDownFieldSQLTable'.$element_num.'Field'.$field_num] == $table) {?> selected="selected"<?php }?>><?php echo $table?></option>
 		<?php }?>
-	</select>&nbsp;<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" /><br/>
+	</select>&nbsp;<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" /><br/>
 	<?php if (isset($this->form_errors['dropDownFieldSQLTable'.$element_num.'Field'.$field_num])) {?>
 		<span style="color: #f00;"><?php echo $this->form_errors['dropDownFieldSQLTable'.$element_num.'Field'.$field_num]?></span><br/>
 	<?php }?>

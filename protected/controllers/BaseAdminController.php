@@ -29,8 +29,8 @@ class BaseAdminController extends BaseController
 
 	protected function beforeAction($action)
 	{
-		$this->registerCssFile('admin.css', Yii::app()->createUrl("css/admin.css"));
-		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
+		Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
+		Yii::app()->assetManager->registerScriptFile('js/admin.js', null, 10);
 		return parent::beforeAction($action);
 	}
 

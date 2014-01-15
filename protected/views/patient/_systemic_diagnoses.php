@@ -92,7 +92,7 @@
 
 					<div class="row field-row hide" id="add_systemic_diagnosis_loader">
 						<p class="large-offset-<?php echo $form->layoutColumns['label'];?> large-<?php echo $form->layoutColumns['field'];?> column end">
-							<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
+							<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
 								searching...
 						</p>
 					</div>
@@ -120,7 +120,7 @@
 					<div class="systemic_diagnoses_form_errors alert-box alert hide"></div>
 
 					<div class="buttons">
-						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader hide" />
+						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader hide" />
 						<button type="submit" class="secondary small btn_save_systemic_diagnosis">
 							Save
 						</button>

@@ -3,7 +3,7 @@ module.exports = {
 		'*.js',
 		'*.json',
 		'grunt/**/*.js',
-		'js/OpenEyes*',
+		'protected/assets/js/OpenEyes*',
 		'docs/templates/**/js/script.js'
 	],
 	options: {

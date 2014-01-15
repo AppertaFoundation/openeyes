@@ -20,22 +20,23 @@
 
 class ModuleAdminController extends BaseAdminController
 {
+	public $assetPathAlias;
 	public $assetPath;
 
 	protected function beforeAction($action)
 	{
-		$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
+		$this->assetPathAlias = 'application.modules.'.$this->getModule()->name.'.assets';
+		$this->assetPath = Yii::app()->assetManager->getPublishedPathOfAlias($this->assetPathAlias);
 
 		if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin.js")) {
-			Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin.js');
+			Yii::app()->assetManager->registerScriptFile('js/admin.js', $this->assetPathAlias, 10);
 		}
 
 		if (file_exists("protected/modules/".$this->getModule()->name."/assets/css/admin.css")) {
-			$this->registerCssFile('admin-module.css', $this->assetPath.'/css/admin.css');
+			Yii::app()->assetManager->registerCssFile('css/admin.css', $this->assetPathAlias, 10);
 		}
 
-		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
-		$this->registerCssFile('module.css', $this->assetPath.'/css/module.css');
+		Yii::app()->assetManager->registerCssFile('css/module.css', $this->assetPathAlias);
 
 		return parent::beforeAction($action);
 	}
