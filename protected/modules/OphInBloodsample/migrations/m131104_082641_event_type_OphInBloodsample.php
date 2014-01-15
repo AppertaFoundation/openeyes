@@ -18,7 +18,7 @@ class m131104_082641_event_type_OphInBloodsample extends CDbMigration
 
 		$this->createTable('ophinbloodsample_sample_type', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'name' => 'varchar(128) COLLATE utf8_bin NOT NULL',
+				'name' => 'varchar(128) NOT NULL',
 				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
@@ -29,7 +29,7 @@ class m131104_082641_event_type_OphInBloodsample extends CDbMigration
 				'KEY `ophinbloodsample_sample_type_cui_fk` (`created_user_id`)',
 				'CONSTRAINT `ophinbloodsample_sample_type_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
 				'CONSTRAINT `ophinbloodsample_sample_type_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
+			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 		$this->insert('ophinbloodsample_sample_type',array('id'=>1,'name'=>'Blood','display_order'=>1));
 		$this->insert('ophinbloodsample_sample_type',array('id'=>2,'name'=>'Buccal','display_order'=>2));
@@ -44,8 +44,8 @@ class m131104_082641_event_type_OphInBloodsample extends CDbMigration
 				'event_id' => 'int(10) unsigned NOT NULL',
 				'old_dna_no' => 'int(10) unsigned NOT NULL',
 				'blood_date' => 'date DEFAULT NULL',
-				'blood_location' => 'varchar(255) COLLATE utf8_bin DEFAULT \'\'',
-				'comments' => 'text COLLATE utf8_bin DEFAULT \'\'',
+				'blood_location' => 'varchar(255) DEFAULT \'\'',
+				'comments' => 'text DEFAULT \'\'',
 				'type_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'volume' => 'float NOT NULL',
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
@@ -61,7 +61,7 @@ class m131104_082641_event_type_OphInBloodsample extends CDbMigration
 				'CONSTRAINT `et_ophinbloodsample_sample_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 				'CONSTRAINT `et_ophinbloodsample_sample_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
 				'CONSTRAINT `ophinbloodsample_sample_type_fk` FOREIGN KEY (`type_id`) REFERENCES `ophinbloodsample_sample_type` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
+			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 	}
 
 	public function down()
