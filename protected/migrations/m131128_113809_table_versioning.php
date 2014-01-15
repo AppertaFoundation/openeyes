@@ -34,7 +34,7 @@ CREATE TABLE `address_version` (
 	`address1` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
 	`address2` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
 	`city` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-	`postcode` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+	`postcode` varchar(10) DEFAULT NULL,
 	`county` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
 	`country_id` int(10) unsigned NOT NULL,
 	`email` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `address_version` (
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
-	`parent_class` varchar(40) COLLATE utf8_bin NOT NULL,
+	`parent_class` varchar(40) NOT NULL,
 	`parent_id` int(10) unsigned NOT NULL,
 	`date_start` datetime DEFAULT NULL,
 	`date_end` datetime DEFAULT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE `address_version` (
 	CONSTRAINT `acv_address_country_id_fk` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`),
 	CONSTRAINT `acv_address_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_address_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('address_version','id','int(10) unsigned NOT NULL');
@@ -75,7 +75,7 @@ CREATE TABLE `address_version` (
 		$this->execute("
 CREATE TABLE `address_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -85,7 +85,7 @@ CREATE TABLE `address_type_version` (
 	KEY `acv_address_type_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_address_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_address_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('address_type_version','id','int(10) unsigned NOT NULL');
@@ -103,7 +103,7 @@ CREATE TABLE `address_type_version` (
 		$this->execute("
 CREATE TABLE `allergy_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(40) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -113,7 +113,7 @@ CREATE TABLE `allergy_version` (
 	KEY `acv_allergy_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_allergy_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_allergy_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('allergy_version','id','int(10) unsigned NOT NULL');
@@ -131,7 +131,7 @@ CREATE TABLE `allergy_version` (
 		$this->execute("
 CREATE TABLE `anaesthetic_agent_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`display_order` tinyint(3) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -142,7 +142,7 @@ CREATE TABLE `anaesthetic_agent_version` (
 	KEY `acv_et_ophtroperationnote_agent_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_et_ophtroperationnote_agent_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_et_ophtroperationnote_agent_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('anaesthetic_agent_version','id','int(10) unsigned NOT NULL');
@@ -160,7 +160,7 @@ CREATE TABLE `anaesthetic_agent_version` (
 		$this->execute("
 CREATE TABLE `anaesthetic_complication_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`display_order` tinyint(3) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -171,7 +171,7 @@ CREATE TABLE `anaesthetic_complication_version` (
 	KEY `acv_et_ophtroperationnote_age_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_et_ophtroperationnote_age_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_et_ophtroperationnote_age_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('anaesthetic_complication_version','id','int(10) unsigned NOT NULL');
@@ -189,7 +189,7 @@ CREATE TABLE `anaesthetic_complication_version` (
 		$this->execute("
 CREATE TABLE `anaesthetic_delivery_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`display_order` tinyint(3) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -200,7 +200,7 @@ CREATE TABLE `anaesthetic_delivery_version` (
 	KEY `acv_et_ophtroperationnote_del_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_et_ophtroperationnote_del_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_et_ophtroperationnote_del_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('anaesthetic_delivery_version','id','int(10) unsigned NOT NULL');
@@ -218,8 +218,8 @@ CREATE TABLE `anaesthetic_delivery_version` (
 		$this->execute("
 CREATE TABLE `anaesthetic_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
-	`code` varchar(3) COLLATE utf8_bin NOT NULL DEFAULT '',
+	`name` varchar(255) NOT NULL DEFAULT '',
+	`code` varchar(3) NOT NULL DEFAULT '',
 	`created_user_id` int(10) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL,
 	`created_date` date NOT NULL DEFAULT '1900-01-01',
@@ -229,7 +229,7 @@ CREATE TABLE `anaesthetic_type_version` (
 	KEY `acv_anaesthetic_type_last_modified_user_id_fk` (`last_modified_user_id`),
 	CONSTRAINT `acv_anaesthetic_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_anaesthetic_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('anaesthetic_type_version','id','int(10) unsigned NOT NULL');
@@ -247,7 +247,7 @@ CREATE TABLE `anaesthetic_type_version` (
 		$this->execute("
 CREATE TABLE `anaesthetist_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`display_order` tinyint(3) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -258,7 +258,7 @@ CREATE TABLE `anaesthetist_version` (
 	KEY `acv_anaesthetist_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_anaesthetist_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_anaesthetist_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('anaesthetist_version','id','int(10) unsigned NOT NULL');
@@ -276,7 +276,7 @@ CREATE TABLE `anaesthetist_version` (
 		$this->execute("
 CREATE TABLE `benefit_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(255) DEFAULT NULL,
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -286,7 +286,7 @@ CREATE TABLE `benefit_version` (
 	KEY `acv_benefit_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_benefit_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_benefit_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('benefit_version','id','int(10) unsigned NOT NULL');
@@ -304,8 +304,8 @@ CREATE TABLE `benefit_version` (
 		$this->execute("
 CREATE TABLE `commissioning_body_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
-	`code` varchar(16) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(64) NOT NULL,
+	`code` varchar(16) DEFAULT NULL,
 	`commissioning_body_type_id` int(10) unsigned NOT NULL,
 	`contact_id` int(10) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -321,7 +321,7 @@ CREATE TABLE `commissioning_body_version` (
 	CONSTRAINT `acv_commissioning_body_commissioning_body_type_id_fk` FOREIGN KEY (`commissioning_body_type_id`) REFERENCES `commissioning_body_type` (`id`),
 	CONSTRAINT `acv_commissioning_body_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_commissioning_body_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('commissioning_body_version','id','int(10) unsigned NOT NULL');
@@ -354,7 +354,7 @@ CREATE TABLE `commissioning_body_patient_assignment_version` (
 	CONSTRAINT `acv_commissioning_body_patient_assignment_cbid_fk` FOREIGN KEY (`commissioning_body_id`) REFERENCES `commissioning_body` (`id`),
 	CONSTRAINT `acv_commissioning_body_patient_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_issioning_body_patient_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('commissioning_body_patient_assignment_version','id','int(10) unsigned NOT NULL');
@@ -387,7 +387,7 @@ CREATE TABLE `commissioning_body_practice_assignment_version` (
 	CONSTRAINT `acv_commissioning_body_practice_assignment_cbid_fk` FOREIGN KEY (`commissioning_body_id`) REFERENCES `commissioning_body` (`id`),
 	CONSTRAINT `acv_commissioning_body_practice_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_issioning_body_practice_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('commissioning_body_practice_assignment_version','id','int(10) unsigned NOT NULL');
@@ -405,8 +405,8 @@ CREATE TABLE `commissioning_body_practice_assignment_version` (
 		$this->execute("
 CREATE TABLE `commissioning_body_service_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
-	`code` varchar(16) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(64) NOT NULL,
+	`code` varchar(16) DEFAULT NULL,
 	`commissioning_body_service_type_id` int(10) unsigned NOT NULL,
 	`commissioning_body_id` int(10) unsigned DEFAULT NULL,
 	`contact_id` int(10) unsigned NOT NULL,
@@ -425,7 +425,7 @@ CREATE TABLE `commissioning_body_service_version` (
 	CONSTRAINT `acv_commissioning_body_service_cid_fk` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`),
 	CONSTRAINT `acv_commissioning_body_service_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_commissioning_body_service_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('commissioning_body_service_version','id','int(10) unsigned NOT NULL');
@@ -443,8 +443,8 @@ CREATE TABLE `commissioning_body_service_version` (
 		$this->execute("
 CREATE TABLE `commissioning_body_service_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
-	`shortname` varchar(16) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(64) NOT NULL,
+	`shortname` varchar(16) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -454,7 +454,7 @@ CREATE TABLE `commissioning_body_service_type_version` (
 	KEY `acv_commissioning_body_service_type_last_modified_user_id_fk` (`last_modified_user_id`),
 	CONSTRAINT `acv_commissioning_body_service_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_commissioning_body_service_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('commissioning_body_service_type_version','id','int(10) unsigned NOT NULL');
@@ -472,8 +472,8 @@ CREATE TABLE `commissioning_body_service_type_version` (
 		$this->execute("
 CREATE TABLE `commissioning_body_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
-	`shortname` varchar(16) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(64) NOT NULL,
+	`shortname` varchar(16) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -483,7 +483,7 @@ CREATE TABLE `commissioning_body_type_version` (
 	KEY `acv_commissioning_body_type_last_modified_user_id_fk` (`last_modified_user_id`),
 	CONSTRAINT `acv_commissioning_body_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_commissioning_body_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('commissioning_body_type_version','id','int(10) unsigned NOT NULL');
@@ -534,7 +534,7 @@ CREATE TABLE `common_ophthalmic_disorder_version` (
 		$this->execute("
 CREATE TABLE `common_previous_operation_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(1024) COLLATE utf8_bin NOT NULL,
+	`name` varchar(1024) NOT NULL,
 	`display_order` tinyint(1) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -545,7 +545,7 @@ CREATE TABLE `common_previous_operation_version` (
 	KEY `acv_common_previous_operation_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_common_previous_operation_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_common_previous_operation_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('common_previous_operation_version','id','int(10) unsigned NOT NULL');
@@ -593,7 +593,7 @@ CREATE TABLE `common_systemic_disorder_version` (
 		$this->execute("
 CREATE TABLE `complication_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(255) DEFAULT NULL,
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -603,7 +603,7 @@ CREATE TABLE `complication_version` (
 	KEY `acv_complication_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_complication_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_complication_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('complication_version','id','int(10) unsigned NOT NULL');
@@ -625,15 +625,15 @@ CREATE TABLE `consultant_version` (
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
-	`gmc_number` varchar(7) COLLATE utf8_bin DEFAULT NULL,
-	`practitioner_code` varchar(8) COLLATE utf8_bin DEFAULT NULL,
-	`gender` varchar(1) COLLATE utf8_bin DEFAULT NULL,
+	`gmc_number` varchar(7) DEFAULT NULL,
+	`practitioner_code` varchar(8) DEFAULT NULL,
+	`gender` varchar(1) DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	KEY `acv_consultant_last_modified_user_id_fk` (`last_modified_user_id`),
 	KEY `acv_consultant_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_consultant_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_consultant_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('consultant_version','id','int(10) unsigned NOT NULL');
@@ -651,12 +651,12 @@ CREATE TABLE `consultant_version` (
 		$this->execute("
 CREATE TABLE `contact_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`nick_name` varchar(80) COLLATE utf8_bin DEFAULT NULL,
-	`primary_phone` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-	`title` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-	`first_name` varchar(100) COLLATE utf8_bin NOT NULL,
-	`last_name` varchar(100) COLLATE utf8_bin NOT NULL,
-	`qualifications` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+	`nick_name` varchar(80) DEFAULT NULL,
+	`primary_phone` varchar(20) DEFAULT NULL,
+	`title` varchar(20) DEFAULT NULL,
+	`first_name` varchar(100) NOT NULL,
+	`last_name` varchar(100) NOT NULL,
+	`qualifications` varchar(200) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -670,7 +670,7 @@ CREATE TABLE `contact_version` (
 	CONSTRAINT `acv_contact_contact_label_id_fk` FOREIGN KEY (`contact_label_id`) REFERENCES `contact_label` (`id`),
 	CONSTRAINT `acv_contact_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_contact_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('contact_version','id','int(10) unsigned NOT NULL');
@@ -688,7 +688,7 @@ CREATE TABLE `contact_version` (
 		$this->execute("
 CREATE TABLE `contact_label_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -698,7 +698,7 @@ CREATE TABLE `contact_label_version` (
 	KEY `acv_contact_label_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_contact_label_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_contact_label_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('contact_label_version','id','int(10) unsigned NOT NULL');
@@ -734,7 +734,7 @@ CREATE TABLE `contact_location_version` (
 	CONSTRAINT `acv_contact_location_institution_id_fk` FOREIGN KEY (`institution_id`) REFERENCES `institution` (`id`),
 	CONSTRAINT `acv_contact_location_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_contact_location_site_id_fk` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('contact_location_version','id','int(10) unsigned NOT NULL');
@@ -753,8 +753,8 @@ CREATE TABLE `contact_location_version` (
 CREATE TABLE `contact_metadata_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`contact_id` int(10) unsigned NOT NULL,
-	`key` varchar(64) COLLATE utf8_bin NOT NULL,
-	`value` varchar(64) COLLATE utf8_bin NOT NULL,
+	`key` varchar(64) NOT NULL,
+	`value` varchar(64) NOT NULL,
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -764,7 +764,7 @@ CREATE TABLE `contact_metadata_version` (
 	KEY `acv_contact_metadata_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_contact_metadata_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_contact_metadata_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('contact_metadata_version','id','int(10) unsigned NOT NULL');
@@ -782,7 +782,7 @@ CREATE TABLE `contact_metadata_version` (
 		$this->execute("
 CREATE TABLE `contact_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin NOT NULL,
+	`name` varchar(40) NOT NULL,
 	`letter_template_only` tinyint(4) NOT NULL DEFAULT '0',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -794,7 +794,7 @@ CREATE TABLE `contact_type_version` (
 	KEY `acv_contact_type_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_contact_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_contact_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('contact_type_version','id','int(10) unsigned NOT NULL');
@@ -812,8 +812,8 @@ CREATE TABLE `contact_type_version` (
 		$this->execute("
 CREATE TABLE `country_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`code` varchar(2) COLLATE utf8_bin DEFAULT NULL,
-	`name` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+	`code` varchar(2) DEFAULT NULL,
+	`name` varchar(50) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -825,7 +825,7 @@ CREATE TABLE `country_version` (
 	KEY `acv_country_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_country_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_country_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('country_version','id','int(10) unsigned NOT NULL');
@@ -843,8 +843,8 @@ CREATE TABLE `country_version` (
 		$this->execute("
 CREATE TABLE `disorder_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`fully_specified_name` varchar(255) COLLATE utf8_bin NOT NULL,
-	`term` varchar(255) COLLATE utf8_bin NOT NULL,
+	`fully_specified_name` varchar(255) NOT NULL,
+	`term` varchar(255) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -858,7 +858,7 @@ CREATE TABLE `disorder_version` (
 	CONSTRAINT `acv_disorder_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_disorder_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_disorder_specialty_fk` FOREIGN KEY (`specialty_id`) REFERENCES `specialty` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('disorder_version','id','int(10) unsigned NOT NULL');
@@ -890,7 +890,7 @@ CREATE TABLE `disorder_tree_version` (
 	KEY `acv_disorder_tree_last_modified_user_id_fk` (`last_modified_user_id`),
 	CONSTRAINT `acv_disorder_tree_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_disorder_tree_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('disorder_tree_version','id','int(10) unsigned NOT NULL');
@@ -908,21 +908,21 @@ CREATE TABLE `disorder_tree_version` (
 		$this->execute("
 CREATE TABLE `drug_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(100) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`type_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`form_id` int(10) unsigned NOT NULL DEFAULT '1',
-	`dose_unit` varchar(40) COLLATE utf8_bin DEFAULT NULL,
-	`default_dose` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`dose_unit` varchar(40) DEFAULT NULL,
+	`default_dose` varchar(40) DEFAULT NULL,
 	`default_route_id` int(10) unsigned DEFAULT NULL,
 	`default_frequency_id` int(10) unsigned DEFAULT NULL,
 	`default_duration_id` int(10) unsigned DEFAULT NULL,
 	`preservative_free` tinyint(1) unsigned NOT NULL DEFAULT '0',
-	`aliases` text COLLATE utf8_bin,
-	`tallman` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+	`aliases` text,
+	`tallman` varchar(100) DEFAULT NULL,
 	`discontinued` tinyint(1) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
 	KEY `acv_drug_last_modified_user_id_fk` (`last_modified_user_id`),
@@ -939,7 +939,7 @@ CREATE TABLE `drug_version` (
 	CONSTRAINT `acv_drug_form_id_fk` FOREIGN KEY (`form_id`) REFERENCES `drug_form` (`id`),
 	CONSTRAINT `acv_drug_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_drug_type_id_fk` FOREIGN KEY (`type_id`) REFERENCES `drug_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_version','id','int(10) unsigned NOT NULL');
@@ -972,7 +972,7 @@ CREATE TABLE `drug_allergy_assignment_version` (
 	CONSTRAINT `acv_drug_allergy_assignment_allergy_id_fk` FOREIGN KEY (`allergy_id`) REFERENCES `allergy` (`id`),
 	CONSTRAINT `acv_drug_allergy_assignment_drug_id_fk` FOREIGN KEY (`drug_id`) REFERENCES `drug` (`id`),
 	CONSTRAINT `acv_drug_allergy_assignment_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_allergy_assignment_version','id','int(10) unsigned NOT NULL');
@@ -990,7 +990,7 @@ CREATE TABLE `drug_allergy_assignment_version` (
 		$this->execute("
 CREATE TABLE `drug_duration_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(40) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1001,7 +1001,7 @@ CREATE TABLE `drug_duration_version` (
 	KEY `acv_drug_duration_cui_fk` (`created_user_id`),
 	CONSTRAINT `acv_drug_duration_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_drug_duration_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_duration_version','id','int(10) unsigned NOT NULL');
@@ -1019,7 +1019,7 @@ CREATE TABLE `drug_duration_version` (
 		$this->execute("
 CREATE TABLE `drug_form_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(40) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1029,7 +1029,7 @@ CREATE TABLE `drug_form_version` (
 	KEY `acv_drug_form_cui_fk` (`created_user_id`),
 	CONSTRAINT `acv_drug_form_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_drug_form_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_form_version','id','int(10) unsigned NOT NULL');
@@ -1047,8 +1047,8 @@ CREATE TABLE `drug_form_version` (
 		$this->execute("
 CREATE TABLE `drug_frequency_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin DEFAULT NULL,
-	`long_name` varchar(40) COLLATE utf8_bin NOT NULL,
+	`name` varchar(40) DEFAULT NULL,
+	`long_name` varchar(40) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1059,7 +1059,7 @@ CREATE TABLE `drug_frequency_version` (
 	KEY `acv_drug_frequency_cui_fk` (`created_user_id`),
 	CONSTRAINT `acv_drug_frequency_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_drug_frequency_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_frequency_version','id','int(10) unsigned NOT NULL');
@@ -1077,7 +1077,7 @@ CREATE TABLE `drug_frequency_version` (
 		$this->execute("
 CREATE TABLE `drug_route_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(40) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1088,7 +1088,7 @@ CREATE TABLE `drug_route_version` (
 	KEY `acv_drug_route_cui_fk` (`created_user_id`),
 	CONSTRAINT `acv_drug_route_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_drug_route_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_route_version','id','int(10) unsigned NOT NULL');
@@ -1106,7 +1106,7 @@ CREATE TABLE `drug_route_version` (
 		$this->execute("
 CREATE TABLE `drug_route_option_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(40) DEFAULT NULL,
 	`drug_route_id` int(10) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1119,7 +1119,7 @@ CREATE TABLE `drug_route_option_version` (
 	CONSTRAINT `acv_drug_route_option_drug_route_id_fk` FOREIGN KEY (`drug_route_id`) REFERENCES `drug_route` (`id`),
 	CONSTRAINT `acv_drug_route_option_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_drug_route_option_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_route_option_version','id','int(10) unsigned NOT NULL');
@@ -1137,7 +1137,7 @@ CREATE TABLE `drug_route_option_version` (
 		$this->execute("
 CREATE TABLE `drug_set_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(40) DEFAULT NULL,
 	`subspecialty_id` int(10) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1150,7 +1150,7 @@ CREATE TABLE `drug_set_version` (
 	CONSTRAINT `acv_drug_set_subspecialty_id_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`),
 	CONSTRAINT `acv_drug_set_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_drug_set_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_set_version','id','int(10) unsigned NOT NULL');
@@ -1176,7 +1176,7 @@ CREATE TABLE `drug_set_item_version` (
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
-	`dose` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`dose` varchar(40) DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	KEY `acv_drug_set_item_drug_id_fk` (`drug_id`),
 	KEY `acv_drug_set_item_drug_set_id_fk` (`drug_set_id`),
@@ -1190,7 +1190,7 @@ CREATE TABLE `drug_set_item_version` (
 	CONSTRAINT `acv_drug_set_item_drug_set_id_fk` FOREIGN KEY (`drug_set_id`) REFERENCES `drug_set` (`id`),
 	CONSTRAINT `acv_drug_set_item_frequency_id_fk` FOREIGN KEY (`frequency_id`) REFERENCES `drug_frequency` (`id`),
 	CONSTRAINT `acv_drug_set_item_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_set_item_version','id','int(10) unsigned NOT NULL');
@@ -1209,7 +1209,7 @@ CREATE TABLE `drug_set_item_version` (
 CREATE TABLE `drug_set_item_taper_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`item_id` int(10) unsigned NOT NULL,
-	`dose` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`dose` varchar(40) DEFAULT NULL,
 	`frequency_id` int(10) unsigned DEFAULT NULL,
 	`duration_id` int(10) unsigned DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -1225,7 +1225,7 @@ CREATE TABLE `drug_set_item_taper_version` (
 	CONSTRAINT `acv_drug_set_item_taper_d_fk` FOREIGN KEY (`duration_id`) REFERENCES `drug_duration` (`id`),
 	CONSTRAINT `acv_drug_set_item_taper_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_drug_set_item_taper_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_set_item_taper_version','id','int(10) unsigned NOT NULL');
@@ -1243,7 +1243,7 @@ CREATE TABLE `drug_set_item_taper_version` (
 		$this->execute("
 CREATE TABLE `drug_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(40) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1253,7 +1253,7 @@ CREATE TABLE `drug_type_version` (
 	KEY `acv_drug_type_cui_fk` (`created_user_id`),
 	CONSTRAINT `acv_drug_type_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_drug_type_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('drug_type_version','id','int(10) unsigned NOT NULL');
@@ -1271,8 +1271,8 @@ CREATE TABLE `drug_type_version` (
 		$this->execute("
 CREATE TABLE `element_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) COLLATE utf8_bin NOT NULL,
-	`class_name` varchar(255) COLLATE utf8_bin NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`class_name` varchar(255) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -1289,7 +1289,7 @@ CREATE TABLE `element_type_version` (
 	CONSTRAINT `acv_element_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_element_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_element_type_parent_et_fk` FOREIGN KEY (`parent_element_type_id`) REFERENCES `element_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('element_type_version','id','int(10) unsigned NOT NULL');
@@ -1323,7 +1323,7 @@ CREATE TABLE `element_type_anaesthetic_agent_version` (
 	CONSTRAINT `acv_element_type_anaesthetic_agent_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_element_type_anaesthetic_agent_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_element_type_anaesthetic_agent_anaesthetic_agent_id_fk` FOREIGN KEY (`anaesthetic_agent_id`) REFERENCES `anaesthetic_agent` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('element_type_anaesthetic_agent_version','id','int(10) unsigned NOT NULL');
@@ -1357,7 +1357,7 @@ CREATE TABLE `element_type_anaesthetic_complication_version` (
 	CONSTRAINT `acv_element_type_ac_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_element_type_ac_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_element_type_ac_anaesthetic_complication_id_fk` FOREIGN KEY (`anaesthetic_complication_id`) REFERENCES `anaesthetic_complication` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('element_type_anaesthetic_complication_version','id','int(10) unsigned NOT NULL');
@@ -1391,7 +1391,7 @@ CREATE TABLE `element_type_anaesthetic_delivery_version` (
 	CONSTRAINT `acv_element_type_anaesthetic_delivery_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_element_type_anaesthetic_delivery_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_element_type_anaesthetic_delivery_anaesthetic_delivery_id_fk` FOREIGN KEY (`anaesthetic_delivery_id`) REFERENCES `anaesthetic_delivery` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('element_type_anaesthetic_delivery_version','id','int(10) unsigned NOT NULL');
@@ -1425,7 +1425,7 @@ CREATE TABLE `element_type_anaesthetic_type_version` (
 	CONSTRAINT `acv_element_type_anaesthetic_type_fk1` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_element_type_anaesthetic_type_fk2` FOREIGN KEY (`anaesthetic_type_id`) REFERENCES `anaesthetic_type` (`id`),
 	CONSTRAINT `acv_element_type_anaesthetic_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('element_type_anaesthetic_type_version','id','int(10) unsigned NOT NULL');
@@ -1459,7 +1459,7 @@ CREATE TABLE `element_type_anaesthetist_version` (
 	CONSTRAINT `acv_element_type_anaesthetist_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_element_type_anaesthetist_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_element_type_anaesthetist_anaesthetist_id_fk` FOREIGN KEY (`anaesthetist_id`) REFERENCES `anaesthetist` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('element_type_anaesthetist_version','id','int(10) unsigned NOT NULL');
@@ -1493,7 +1493,7 @@ CREATE TABLE `element_type_eye_version` (
 	CONSTRAINT `acv_element_type_eye_fk1` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_element_type_eye_fk2` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`),
 	CONSTRAINT `acv_element_type_eye_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('element_type_eye_version','id','int(10) unsigned NOT NULL');
@@ -1527,7 +1527,7 @@ CREATE TABLE `element_type_priority_version` (
 	CONSTRAINT `acv_element_type_priority_fk1` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_element_type_priority_fk2` FOREIGN KEY (`priority_id`) REFERENCES `priority` (`id`),
 	CONSTRAINT `acv_element_type_priority_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('element_type_priority_version','id','int(10) unsigned NOT NULL');
@@ -1574,7 +1574,7 @@ CREATE TABLE `episode_version` (
 	CONSTRAINT `acv_episode_episode_status_id_fk` FOREIGN KEY (`episode_status_id`) REFERENCES `episode_status` (`id`),
 	CONSTRAINT `acv_episode_eye_id_fk` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`),
 	CONSTRAINT `acv_episode_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('episode_version','id','int(10) unsigned NOT NULL');
@@ -1592,7 +1592,7 @@ CREATE TABLE `episode_version` (
 		$this->execute("
 CREATE TABLE `episode_status_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '',
+	`name` varchar(64) NOT NULL DEFAULT '',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1901-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -1603,7 +1603,7 @@ CREATE TABLE `episode_status_version` (
 	KEY `acv_episode_status_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_episode_status_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_episode_status_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('episode_status_version','id','int(10) unsigned NOT NULL');
@@ -1621,8 +1621,8 @@ CREATE TABLE `episode_status_version` (
 		$this->execute("
 CREATE TABLE `ethnic_group_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
-	`code` varchar(1) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
+	`code` varchar(1) NOT NULL,
 	`display_order` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1633,7 +1633,7 @@ CREATE TABLE `ethnic_group_version` (
 	KEY `acv_ethnic_group_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_ethnic_group_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_ethnic_group_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('ethnic_group_version','id','int(10) unsigned NOT NULL');
@@ -1657,7 +1657,7 @@ CREATE TABLE `event_version` (
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
-	`info` varchar(1024) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+	`info` varchar(1024) CHARACTER SET utf8 DEFAULT NULL,
 	`deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
 	KEY `acv_event_1` (`episode_id`),
@@ -1688,10 +1688,10 @@ CREATE TABLE `event_version` (
 		$this->execute("
 CREATE TABLE `event_group_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
-	`code` varchar(2) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
+	`code` varchar(2) NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('event_group_version','id','int(10) unsigned NOT NULL');
@@ -1724,7 +1724,7 @@ CREATE TABLE `event_issue_version` (
 	CONSTRAINT `acv_event_issue_event_id` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`),
 	CONSTRAINT `acv_event_issue_issue_id` FOREIGN KEY (`issue_id`) REFERENCES `issue` (`id`),
 	CONSTRAINT `acv_event_issue_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('event_issue_version','id','int(10) unsigned NOT NULL');
@@ -1742,13 +1742,13 @@ CREATE TABLE `event_issue_version` (
 		$this->execute("
 CREATE TABLE `event_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin NOT NULL,
+	`name` varchar(40) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`event_group_id` int(10) unsigned NOT NULL,
-	`class_name` varchar(200) COLLATE utf8_bin NOT NULL,
+	`class_name` varchar(200) NOT NULL,
 	`support_services` tinyint(1) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `name` (`name`),
@@ -1758,7 +1758,7 @@ CREATE TABLE `event_type_version` (
 	CONSTRAINT `acv_event_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_event_type_event_group_id_fk` FOREIGN KEY (`event_group_id`) REFERENCES `event_group` (`id`),
 	CONSTRAINT `acv_event_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('event_type_version','id','int(10) unsigned NOT NULL');
@@ -1780,7 +1780,7 @@ CREATE TABLE `family_history_version` (
 	`relative_id` int(10) unsigned NOT NULL,
 	`side_id` int(10) unsigned NOT NULL,
 	`condition_id` int(10) unsigned NOT NULL,
-	`comments` varchar(1024) COLLATE utf8_bin NOT NULL,
+	`comments` varchar(1024) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -1798,7 +1798,7 @@ CREATE TABLE `family_history_version` (
 	CONSTRAINT `acv_family_history_relative_id_fk` FOREIGN KEY (`relative_id`) REFERENCES `family_history_relative` (`id`),
 	CONSTRAINT `acv_family_history_side_id_fk` FOREIGN KEY (`side_id`) REFERENCES `family_history_side` (`id`),
 	CONSTRAINT `acv_family_history_condition_id_fk` FOREIGN KEY (`condition_id`) REFERENCES `family_history_condition` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('family_history_version','id','int(10) unsigned NOT NULL');
@@ -1816,7 +1816,7 @@ CREATE TABLE `family_history_version` (
 		$this->execute("
 CREATE TABLE `family_history_condition_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`display_order` tinyint(1) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1827,7 +1827,7 @@ CREATE TABLE `family_history_condition_version` (
 	KEY `acv_family_history_condition_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_family_history_condition_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_family_history_condition_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('family_history_condition_version','id','int(10) unsigned NOT NULL');
@@ -1845,7 +1845,7 @@ CREATE TABLE `family_history_condition_version` (
 		$this->execute("
 CREATE TABLE `family_history_relative_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`display_order` tinyint(1) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1856,7 +1856,7 @@ CREATE TABLE `family_history_relative_version` (
 	KEY `acv_family_history_relative_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_family_history_relative_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_family_history_relative_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('family_history_relative_version','id','int(10) unsigned NOT NULL');
@@ -1874,7 +1874,7 @@ CREATE TABLE `family_history_relative_version` (
 		$this->execute("
 CREATE TABLE `family_history_side_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`display_order` tinyint(1) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -1885,7 +1885,7 @@ CREATE TABLE `family_history_side_version` (
 	KEY `acv_family_history_side_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_family_history_side_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_family_history_side_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('family_history_side_version','id','int(10) unsigned NOT NULL');
@@ -1904,8 +1904,8 @@ CREATE TABLE `family_history_side_version` (
 CREATE TABLE `firm_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`service_subspecialty_assignment_id` int(10) unsigned DEFAULT NULL,
-	`pas_code` varchar(4) COLLATE utf8_bin DEFAULT NULL,
-	`name` varchar(40) COLLATE utf8_bin NOT NULL,
+	`pas_code` varchar(4) DEFAULT NULL,
+	`name` varchar(40) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -1920,7 +1920,7 @@ CREATE TABLE `firm_version` (
 	CONSTRAINT `acv_firm_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_firm_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_service_subspecialty_assignment_id` FOREIGN KEY (`service_subspecialty_assignment_id`) REFERENCES `service_subspecialty_assignment` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('firm_version','id','int(10) unsigned NOT NULL');
@@ -1971,8 +1971,8 @@ CREATE TABLE `firm_user_assignment_version` (
 		$this->execute("
 CREATE TABLE `gp_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`obj_prof` varchar(20) COLLATE utf8_bin NOT NULL,
-	`nat_id` varchar(20) COLLATE utf8_bin NOT NULL,
+	`obj_prof` varchar(20) NOT NULL,
+	`nat_id` varchar(20) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -1985,7 +1985,7 @@ CREATE TABLE `gp_version` (
 	CONSTRAINT `acv_gp_contact_id_fk` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`),
 	CONSTRAINT `acv_gp_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_gp_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('gp_version','id','int(10) unsigned NOT NULL');
@@ -2003,13 +2003,13 @@ CREATE TABLE `gp_version` (
 		$this->execute("
 CREATE TABLE `institution_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) COLLATE utf8_bin NOT NULL,
-	`remote_id` varchar(10) COLLATE utf8_bin NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`remote_id` varchar(10) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
-	`short_name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`short_name` varchar(64) NOT NULL,
 	`contact_id` int(10) unsigned NOT NULL,
 	`source_id` int(10) unsigned DEFAULT NULL,
 	PRIMARY KEY (`id`),
@@ -2021,7 +2021,7 @@ CREATE TABLE `institution_version` (
 	CONSTRAINT `acv_institution_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_institution_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_institution_source_id_fk` FOREIGN KEY (`source_id`) REFERENCES `import_source` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('institution_version','id','int(10) unsigned NOT NULL');
@@ -2054,7 +2054,7 @@ CREATE TABLE `institution_consultant_assignment_version` (
 	CONSTRAINT `acv_institution_consultant_assignment_consultant_id_fk` FOREIGN KEY (`consultant_id`) REFERENCES `consultant` (`id`),
 	CONSTRAINT `acv_institution_consultant_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_institution_consultant_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('institution_consultant_assignment_version','id','int(10) unsigned NOT NULL');
@@ -2072,7 +2072,7 @@ CREATE TABLE `institution_consultant_assignment_version` (
 		$this->execute("
 CREATE TABLE `issue_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(1024) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(1024) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1901-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2082,7 +2082,7 @@ CREATE TABLE `issue_version` (
 	KEY `acv_issue_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_issue_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_issue_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('issue_version','id','int(10) unsigned NOT NULL');
@@ -2100,7 +2100,7 @@ CREATE TABLE `issue_version` (
 		$this->execute("
 CREATE TABLE `language_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(32) COLLATE utf8_bin NOT NULL,
+	`name` varchar(32) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2110,7 +2110,7 @@ CREATE TABLE `language_version` (
 	KEY `acv_language_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_language_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_language_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('language_version','id','int(10) unsigned NOT NULL');
@@ -2143,7 +2143,7 @@ CREATE TABLE `manual_contact_version` (
 	CONSTRAINT `acv_manual_contact_contact_type_id_fk_2` FOREIGN KEY (`contact_type_id`) REFERENCES `contact_type` (`id`),
 	CONSTRAINT `acv_manual_contact_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_manual_contact_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('manual_contact_version','id','int(10) unsigned NOT NULL');
@@ -2185,7 +2185,7 @@ CREATE TABLE `medication_version` (
 	CONSTRAINT `acv_medication_route_id_fk` FOREIGN KEY (`route_id`) REFERENCES `drug_route` (`id`),
 	CONSTRAINT `acv_medication_option_id_fk` FOREIGN KEY (`option_id`) REFERENCES `drug_route_option` (`id`),
 	CONSTRAINT `acv_medication_frequency_id_fk` FOREIGN KEY (`frequency_id`) REFERENCES `drug_frequency` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('medication_version','id','int(10) unsigned NOT NULL');
@@ -2203,10 +2203,10 @@ CREATE TABLE `medication_version` (
 		$this->execute("
 CREATE TABLE `nsc_grade_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(3) COLLATE utf8_bin NOT NULL,
+	`name` varchar(3) NOT NULL,
 	`type` tinyint(1) DEFAULT '0',
-	`medical_phrase` varchar(5000) COLLATE utf8_bin NOT NULL,
-	`layman_phrase` varchar(1000) COLLATE utf8_bin NOT NULL,
+	`medical_phrase` varchar(5000) NOT NULL,
+	`layman_phrase` varchar(1000) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2217,7 +2217,7 @@ CREATE TABLE `nsc_grade_version` (
 	KEY `acv_nsc_grade_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_nsc_grade_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_nsc_grade_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('nsc_grade_version','id','int(10) unsigned NOT NULL');
@@ -2246,7 +2246,7 @@ CREATE TABLE `opcs_code_version` (
 	KEY `acv_opcs_code_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_opcs_code_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_opcs_code_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('opcs_code_version','id','int(10) unsigned NOT NULL');
@@ -2264,7 +2264,7 @@ CREATE TABLE `opcs_code_version` (
 		$this->execute("
 CREATE TABLE `operative_device_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2274,7 +2274,7 @@ CREATE TABLE `operative_device_version` (
 	KEY `acv_operative_device_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_operative_device_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_operative_device_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('operative_device_version','id','int(10) unsigned NOT NULL');
@@ -2294,9 +2294,9 @@ CREATE TABLE `patient_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`pas_key` int(10) unsigned DEFAULT NULL,
 	`dob` date DEFAULT NULL,
-	`gender` varchar(1) COLLATE utf8_bin DEFAULT NULL,
-	`hos_num` varchar(40) COLLATE utf8_bin DEFAULT NULL,
-	`nhs_num` varchar(40) COLLATE utf8_bin DEFAULT NULL,
+	`gender` varchar(1) DEFAULT NULL,
+	`hos_num` varchar(40) DEFAULT NULL,
+	`nhs_num` varchar(40) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2320,7 +2320,7 @@ CREATE TABLE `patient_version` (
 	CONSTRAINT `acv_patient_gp_id_fk` FOREIGN KEY (`gp_id`) REFERENCES `gp` (`id`),
 	CONSTRAINT `acv_patient_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_patient_practice_id_fk` FOREIGN KEY (`practice_id`) REFERENCES `practice` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('patient_version','id','int(10) unsigned NOT NULL');
@@ -2353,7 +2353,7 @@ CREATE TABLE `patient_allergy_assignment_version` (
 	CONSTRAINT `acv_patient_allergy_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_patient_allergy_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_patient_allergy_assignment_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('patient_allergy_assignment_version','id','int(10) unsigned NOT NULL');
@@ -2389,7 +2389,7 @@ CREATE TABLE `patient_contact_assignment_version` (
 	CONSTRAINT `acv_patient_consultant_assignment_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`),
 	CONSTRAINT `acv_patient_contact_assignment_contact_id_fk` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`),
 	CONSTRAINT `acv_patient_contact_assignment_location_id_fk` FOREIGN KEY (`location_id`) REFERENCES `contact_location` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('patient_contact_assignment_version','id','int(10) unsigned NOT NULL');
@@ -2408,7 +2408,7 @@ CREATE TABLE `patient_contact_assignment_version` (
 CREATE TABLE `patient_oph_info_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`patient_id` int(10) unsigned NOT NULL,
-	`cvi_status_date` varchar(10) COLLATE utf8_bin NOT NULL,
+	`cvi_status_date` varchar(10) NOT NULL,
 	`cvi_status_id` int(10) unsigned NOT NULL,
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2423,7 +2423,7 @@ CREATE TABLE `patient_oph_info_version` (
 	CONSTRAINT `acv_patient_oph_info_cvi_status_id_fk` FOREIGN KEY (`cvi_status_id`) REFERENCES `patient_oph_info_cvi_status` (`id`),
 	CONSTRAINT `acv_patient_oph_info_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_patient_oph_info_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('patient_oph_info_version','id','int(10) unsigned NOT NULL');
@@ -2441,7 +2441,7 @@ CREATE TABLE `patient_oph_info_version` (
 		$this->execute("
 CREATE TABLE `patient_oph_info_cvi_status_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(128) COLLATE utf8_bin NOT NULL,
+	`name` varchar(128) NOT NULL,
 	`display_order` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1901-01-01 00:00:00',
@@ -2452,7 +2452,7 @@ CREATE TABLE `patient_oph_info_cvi_status_version` (
 	KEY `acv_patient_oph_info_cvi_status_cui_fk` (`created_user_id`),
 	CONSTRAINT `acv_patient_oph_info_cvi_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_patient_oph_info_cvi_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('patient_oph_info_cvi_status_version','id','int(10) unsigned NOT NULL');
@@ -2471,10 +2471,10 @@ CREATE TABLE `patient_oph_info_cvi_status_version` (
 CREATE TABLE `patient_shortcode_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`event_type_id` int(10) unsigned DEFAULT NULL,
-	`default_code` varchar(3) COLLATE utf8_bin NOT NULL,
-	`code` varchar(3) COLLATE utf8_bin NOT NULL,
-	`method` varchar(64) COLLATE utf8_bin NOT NULL,
-	`description` varchar(1024) COLLATE utf8_bin NOT NULL,
+	`default_code` varchar(3) NOT NULL,
+	`code` varchar(3) NOT NULL,
+	`method` varchar(64) NOT NULL,
+	`description` varchar(1024) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1901-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2486,7 +2486,7 @@ CREATE TABLE `patient_shortcode_version` (
 	CONSTRAINT `acv_patient_shortcode_event_type_id_fk` FOREIGN KEY (`event_type_id`) REFERENCES `event_type` (`id`),
 	CONSTRAINT `acv_patient_shortcode_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_patient_shortcode_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('patient_shortcode_version','id','int(10) unsigned NOT NULL');
@@ -2504,7 +2504,7 @@ CREATE TABLE `patient_shortcode_version` (
 		$this->execute("
 CREATE TABLE `period_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(128) COLLATE utf8_bin NOT NULL,
+	`name` varchar(128) NOT NULL,
 	`display_order` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1901-01-01 00:00:00',
@@ -2515,7 +2515,7 @@ CREATE TABLE `period_version` (
 	KEY `acv_period_cui_fk` (`created_user_id`),
 	CONSTRAINT `acv_period_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_period_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('period_version','id','int(10) unsigned NOT NULL');
@@ -2539,7 +2539,7 @@ CREATE TABLE `person_version` (
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`source_id` int(10) unsigned DEFAULT NULL,
-	`remote_id` varchar(40) COLLATE utf8_bin NOT NULL,
+	`remote_id` varchar(40) NOT NULL,
 	PRIMARY KEY (`id`),
 	KEY `acv_person_last_modified_user_id_fk` (`last_modified_user_id`),
 	KEY `acv_person_created_user_id_fk` (`created_user_id`),
@@ -2549,7 +2549,7 @@ CREATE TABLE `person_version` (
 	CONSTRAINT `acv_person_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_person_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_person_source_id_fk` FOREIGN KEY (`source_id`) REFERENCES `import_source` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('person_version','id','int(10) unsigned NOT NULL');
@@ -2567,8 +2567,8 @@ CREATE TABLE `person_version` (
 		$this->execute("
 CREATE TABLE `practice_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`code` varchar(64) COLLATE utf8_bin NOT NULL,
-	`phone` varchar(64) COLLATE utf8_bin NOT NULL,
+	`code` varchar(64) NOT NULL,
+	`phone` varchar(64) NOT NULL,
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2581,7 +2581,7 @@ CREATE TABLE `practice_version` (
 	CONSTRAINT `acv_practice_contact_id_fk` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`),
 	CONSTRAINT `acv_practice_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_practice_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('practice_version','id','int(10) unsigned NOT NULL');
@@ -2601,8 +2601,8 @@ CREATE TABLE `previous_operation_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`patient_id` int(10) unsigned NOT NULL,
 	`side_id` int(10) unsigned DEFAULT NULL,
-	`operation` varchar(1024) COLLATE utf8_bin NOT NULL,
-	`date` varchar(10) COLLATE utf8_bin NOT NULL,
+	`operation` varchar(1024) NOT NULL,
+	`date` varchar(10) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2616,7 +2616,7 @@ CREATE TABLE `previous_operation_version` (
 	CONSTRAINT `acv_previous_operation_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_previous_operation_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`),
 	CONSTRAINT `acv_previous_operation_side_id_fk` FOREIGN KEY (`side_id`) REFERENCES `eye` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('previous_operation_version','id','int(10) unsigned NOT NULL');
@@ -2634,7 +2634,7 @@ CREATE TABLE `previous_operation_version` (
 		$this->execute("
 CREATE TABLE `priority_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+	`name` varchar(10) DEFAULT NULL,
 	`created_user_id` int(10) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL,
 	`created_date` date NOT NULL DEFAULT '1900-01-01',
@@ -2644,7 +2644,7 @@ CREATE TABLE `priority_version` (
 	KEY `acv_priority_last_modified_user_id_fk` (`last_modified_user_id`),
 	CONSTRAINT `acv_priority_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_priority_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('priority_version','id','int(10) unsigned NOT NULL');
@@ -2665,9 +2665,9 @@ CREATE TABLE `proc_version` (
 	`term` varchar(255) CHARACTER SET latin1 NOT NULL,
 	`short_format` varchar(255) CHARACTER SET latin1 NOT NULL,
 	`default_duration` smallint(5) unsigned NOT NULL,
-	`snomed_code` varchar(20) COLLATE utf8_bin NOT NULL,
-	`snomed_term` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '0',
-	`aliases` text COLLATE utf8_bin NOT NULL,
+	`snomed_code` varchar(20) NOT NULL,
+	`snomed_term` varchar(255) NOT NULL DEFAULT '0',
+	`aliases` text NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2679,7 +2679,7 @@ CREATE TABLE `proc_version` (
 	KEY `acv_proc_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_proc_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_proc_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('proc_version','id','int(10) unsigned NOT NULL');
@@ -2712,7 +2712,7 @@ CREATE TABLE `proc_opcs_assignment_version` (
 	CONSTRAINT `acv_proc_opcs_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_proc_opcs_assignment_ibfk_1` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`),
 	CONSTRAINT `acv_proc_opcs_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('proc_opcs_assignment_version','id','int(10) unsigned NOT NULL');
@@ -2745,7 +2745,7 @@ CREATE TABLE `proc_subspecialty_assignment_version` (
 	CONSTRAINT `acv_proc_subspecialty_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_proc_subspecialty_assignment_ibfk_1` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`),
 	CONSTRAINT `acv_proc_subspecialty_assignment_ibfk_2` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('proc_subspecialty_assignment_version','id','int(10) unsigned NOT NULL');
@@ -2778,7 +2778,7 @@ CREATE TABLE `proc_subspecialty_subsection_assignment_version` (
 	CONSTRAINT `acv__subspecialty_subsection_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_proc_subspecialty_subsection_assignment_proc_id_fk` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`),
 	CONSTRAINT `acv_pssa_subspecialty_subsection_id_fk` FOREIGN KEY (`subspecialty_subsection_id`) REFERENCES `subspecialty_subsection` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('proc_subspecialty_subsection_assignment_version','id','int(10) unsigned NOT NULL');
@@ -2811,7 +2811,7 @@ CREATE TABLE `procedure_additional_version` (
 	CONSTRAINT `acv_procedure_additional_proc_id_fk` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`),
 	CONSTRAINT `acv_procedure_additional_additional_proc_id_fk` FOREIGN KEY (`additional_proc_id`) REFERENCES `proc` (`id`),
 	CONSTRAINT `acv_procedure_additional_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('procedure_additional_version','id','int(10) unsigned NOT NULL');
@@ -2844,7 +2844,7 @@ CREATE TABLE `procedure_benefit_version` (
 	CONSTRAINT `acv_procedure_benefit_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_procedure_benefit_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_procedure_benefit_proc_id_fk` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('procedure_benefit_version','id','int(10) unsigned NOT NULL');
@@ -2877,7 +2877,7 @@ CREATE TABLE `procedure_complication_version` (
 	CONSTRAINT `acv_procedure_complication_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_procedure_complication_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_procedure_complication_proc_id_fk` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('procedure_complication_version','id','int(10) unsigned NOT NULL');
@@ -2895,12 +2895,12 @@ CREATE TABLE `procedure_complication_version` (
 		$this->execute("
 CREATE TABLE `protected_file_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`uid` varchar(64) COLLATE utf8_bin NOT NULL,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
-	`title` varchar(64) COLLATE utf8_bin NOT NULL,
-	`description` varchar(64) COLLATE utf8_bin NOT NULL,
-	`mimetype` varchar(64) COLLATE utf8_bin NOT NULL,
-	`size` varchar(64) COLLATE utf8_bin NOT NULL,
+	`uid` varchar(64) NOT NULL,
+	`name` varchar(64) NOT NULL,
+	`title` varchar(64) NOT NULL,
+	`description` varchar(64) NOT NULL,
+	`mimetype` varchar(64) NOT NULL,
+	`size` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2911,7 +2911,7 @@ CREATE TABLE `protected_file_version` (
 	KEY `acv_asset_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_asset_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_asset_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('protected_file_version','id','int(10) unsigned NOT NULL');
@@ -2929,12 +2929,12 @@ CREATE TABLE `protected_file_version` (
 		$this->execute("
 CREATE TABLE `referral_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`refno` varchar(64) COLLATE utf8_bin NOT NULL,
+	`refno` varchar(64) NOT NULL,
 	`patient_id` int(10) unsigned NOT NULL,
 	`referral_type_id` int(10) unsigned NOT NULL,
 	`received_date` date NOT NULL,
 	`closed_date` date DEFAULT NULL,
-	`referrer` varchar(32) COLLATE utf8_bin NOT NULL,
+	`referrer` varchar(32) NOT NULL,
 	`firm_id` int(10) unsigned DEFAULT NULL,
 	`service_subspecialty_assignment_id` int(10) unsigned DEFAULT NULL,
 	`gp_id` int(10) unsigned DEFAULT NULL,
@@ -2957,7 +2957,7 @@ CREATE TABLE `referral_version` (
 	CONSTRAINT `acv_referral_gp_id_fk` FOREIGN KEY (`gp_id`) REFERENCES `gp` (`id`),
 	CONSTRAINT `acv_referral_referral_type_id_fk` FOREIGN KEY (`referral_type_id`) REFERENCES `referral_type` (`id`),
 	CONSTRAINT `acv_referral_service_subspecialty_assignment_id_fk` FOREIGN KEY (`service_subspecialty_assignment_id`) REFERENCES `service_subspecialty_assignment` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('referral_version','id','int(10) unsigned NOT NULL');
@@ -2986,7 +2986,7 @@ CREATE TABLE `referral_episode_assignment_version` (
 	KEY `acv_referral_episode_assignment_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_referral_episode_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_referral_episode_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('referral_episode_assignment_version','id','int(10) unsigned NOT NULL');
@@ -3004,8 +3004,8 @@ CREATE TABLE `referral_episode_assignment_version` (
 		$this->execute("
 CREATE TABLE `referral_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`code` varchar(8) COLLATE utf8_bin NOT NULL,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`code` varchar(8) NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3015,7 +3015,7 @@ CREATE TABLE `referral_type_version` (
 	KEY `acv_referral_type_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_referral_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_referral_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('referral_type_version','id','int(10) unsigned NOT NULL');
@@ -3036,7 +3036,7 @@ CREATE TABLE `secondary_diagnosis_version` (
 	`disorder_id` int(10) unsigned NOT NULL,
 	`eye_id` int(10) unsigned DEFAULT NULL,
 	`patient_id` int(10) unsigned NOT NULL,
-	`date` varchar(10) COLLATE utf8_bin NOT NULL,
+	`date` varchar(10) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3052,7 +3052,7 @@ CREATE TABLE `secondary_diagnosis_version` (
 	CONSTRAINT `acv_secondary_diagnosis_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`),
 	CONSTRAINT `acv_secondary_diagnosis_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_secondary_diagnosis_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('secondary_diagnosis_version','id','int(10) unsigned NOT NULL');
@@ -3070,7 +3070,7 @@ CREATE TABLE `secondary_diagnosis_version` (
 		$this->execute("
 CREATE TABLE `service_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin NOT NULL,
+	`name` varchar(40) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3080,7 +3080,7 @@ CREATE TABLE `service_version` (
 	KEY `acv_service_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_service_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_service_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('service_version','id','int(10) unsigned NOT NULL');
@@ -3131,7 +3131,7 @@ CREATE TABLE `service_subspecialty_assignment_version` (
 		$this->execute("
 CREATE TABLE `setting_field_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3141,7 +3141,7 @@ CREATE TABLE `setting_field_type_version` (
 	KEY `acv_setting_field_type_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_setting_field_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_setting_field_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('setting_field_type_version','id','int(10) unsigned NOT NULL');
@@ -3161,8 +3161,8 @@ CREATE TABLE `setting_firm_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`firm_id` int(10) unsigned NOT NULL,
 	`element_type_id` int(10) unsigned NOT NULL,
-	`key` varchar(64) COLLATE utf8_bin NOT NULL,
-	`value` varchar(64) COLLATE utf8_bin NOT NULL,
+	`key` varchar(64) NOT NULL,
+	`value` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3176,7 +3176,7 @@ CREATE TABLE `setting_firm_version` (
 	CONSTRAINT `acv_setting_firm_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_setting_firm_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_setting_firm_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('setting_firm_version','id','int(10) unsigned NOT NULL');
@@ -3195,8 +3195,8 @@ CREATE TABLE `setting_firm_version` (
 CREATE TABLE `setting_installation_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`element_type_id` int(10) unsigned NOT NULL,
-	`key` varchar(64) COLLATE utf8_bin NOT NULL,
-	`value` varchar(64) COLLATE utf8_bin NOT NULL,
+	`key` varchar(64) NOT NULL,
+	`value` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3208,7 +3208,7 @@ CREATE TABLE `setting_installation_version` (
 	CONSTRAINT `acv_setting_installation_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_setting_installation_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_setting_installation_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('setting_installation_version','id','int(10) unsigned NOT NULL');
@@ -3228,8 +3228,8 @@ CREATE TABLE `setting_institution_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`institution_id` int(10) unsigned NOT NULL,
 	`element_type_id` int(10) unsigned NOT NULL,
-	`key` varchar(64) COLLATE utf8_bin NOT NULL,
-	`value` varchar(64) COLLATE utf8_bin NOT NULL,
+	`key` varchar(64) NOT NULL,
+	`value` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3243,7 +3243,7 @@ CREATE TABLE `setting_institution_version` (
 	CONSTRAINT `acv_setting_institution_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_setting_institution_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_setting_institution_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('setting_institution_version','id','int(10) unsigned NOT NULL');
@@ -3264,10 +3264,10 @@ CREATE TABLE `setting_metadata_version` (
 	`element_type_id` int(10) unsigned NOT NULL,
 	`display_order` tinyint(3) unsigned DEFAULT '0',
 	`field_type_id` int(10) unsigned NOT NULL,
-	`key` varchar(64) COLLATE utf8_bin NOT NULL,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
-	`data` varchar(4096) COLLATE utf8_bin NOT NULL,
-	`default_value` varchar(64) COLLATE utf8_bin NOT NULL,
+	`key` varchar(64) NOT NULL,
+	`name` varchar(64) NOT NULL,
+	`data` varchar(4096) NOT NULL,
+	`default_value` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3281,7 +3281,7 @@ CREATE TABLE `setting_metadata_version` (
 	CONSTRAINT `acv_setting_metadata_field_type_id_fk` FOREIGN KEY (`field_type_id`) REFERENCES `setting_field_type` (`id`),
 	CONSTRAINT `acv_setting_metadata_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_setting_metadata_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('setting_metadata_version','id','int(10) unsigned NOT NULL');
@@ -3301,8 +3301,8 @@ CREATE TABLE `setting_site_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`site_id` int(10) unsigned NOT NULL,
 	`element_type_id` int(10) unsigned NOT NULL,
-	`key` varchar(64) COLLATE utf8_bin NOT NULL,
-	`value` varchar(64) COLLATE utf8_bin NOT NULL,
+	`key` varchar(64) NOT NULL,
+	`value` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3316,7 +3316,7 @@ CREATE TABLE `setting_site_version` (
 	CONSTRAINT `acv_setting_site_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_setting_site_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_setting_site_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('setting_site_version','id','int(10) unsigned NOT NULL');
@@ -3336,8 +3336,8 @@ CREATE TABLE `setting_specialty_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`specialty_id` int(10) unsigned NOT NULL,
 	`element_type_id` int(10) unsigned NOT NULL,
-	`key` varchar(64) COLLATE utf8_bin NOT NULL,
-	`value` varchar(64) COLLATE utf8_bin NOT NULL,
+	`key` varchar(64) NOT NULL,
+	`value` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3351,7 +3351,7 @@ CREATE TABLE `setting_specialty_version` (
 	CONSTRAINT `acv_setting_specialty_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_setting_specialty_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_setting_specialty_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('setting_specialty_version','id','int(10) unsigned NOT NULL');
@@ -3371,8 +3371,8 @@ CREATE TABLE `setting_subspecialty_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`subspecialty_id` int(10) unsigned NOT NULL,
 	`element_type_id` int(10) unsigned NOT NULL,
-	`key` varchar(64) COLLATE utf8_bin NOT NULL,
-	`value` varchar(64) COLLATE utf8_bin NOT NULL,
+	`key` varchar(64) NOT NULL,
+	`value` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3386,7 +3386,7 @@ CREATE TABLE `setting_subspecialty_version` (
 	CONSTRAINT `acv_setting_subspecialty_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_setting_subspecialty_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_setting_subspecialty_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('setting_subspecialty_version','id','int(10) unsigned NOT NULL');
@@ -3406,8 +3406,8 @@ CREATE TABLE `setting_user_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 	`user_id` int(10) unsigned NOT NULL,
 	`element_type_id` int(10) unsigned NOT NULL,
-	`key` varchar(64) COLLATE utf8_bin NOT NULL,
-	`value` varchar(64) COLLATE utf8_bin NOT NULL,
+	`key` varchar(64) NOT NULL,
+	`value` varchar(64) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3421,7 +3421,7 @@ CREATE TABLE `setting_user_version` (
 	CONSTRAINT `acv_setting_user_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 	CONSTRAINT `acv_setting_user_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_setting_user_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('setting_user_version','id','int(10) unsigned NOT NULL');
@@ -3439,17 +3439,17 @@ CREATE TABLE `setting_user_version` (
 		$this->execute("
 CREATE TABLE `site_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) COLLATE utf8_bin NOT NULL,
-	`remote_id` varchar(10) COLLATE utf8_bin NOT NULL,
-	`short_name` varchar(255) COLLATE utf8_bin NOT NULL,
-	`fax` varchar(255) COLLATE utf8_bin NOT NULL,
-	`telephone` varchar(255) COLLATE utf8_bin NOT NULL,
+	`name` varchar(255) NOT NULL,
+	`remote_id` varchar(10) NOT NULL,
+	`short_name` varchar(255) NOT NULL,
+	`fax` varchar(255) NOT NULL,
+	`telephone` varchar(255) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`institution_id` int(10) unsigned NOT NULL DEFAULT '1',
-	`location` varchar(64) COLLATE utf8_bin NOT NULL,
+	`location` varchar(64) NOT NULL,
 	`contact_id` int(10) unsigned NOT NULL,
 	`replyto_contact_id` int(10) unsigned DEFAULT NULL,
 	`source_id` int(10) unsigned DEFAULT NULL,
@@ -3466,7 +3466,7 @@ CREATE TABLE `site_version` (
 	CONSTRAINT `acv_site_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_site_replyto_contact_id_fk` FOREIGN KEY (`replyto_contact_id`) REFERENCES `contact` (`id`),
 	CONSTRAINT `acv_site_source_id_fk` FOREIGN KEY (`source_id`) REFERENCES `import_source` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('site_version','id','int(10) unsigned NOT NULL');
@@ -3499,7 +3499,7 @@ CREATE TABLE `site_consultant_assignment_version` (
 	CONSTRAINT `acv_site_consultant_assignment_consultant_id_fk` FOREIGN KEY (`consultant_id`) REFERENCES `consultant` (`id`),
 	CONSTRAINT `acv_site_consultant_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_site_consultant_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('site_consultant_assignment_version','id','int(10) unsigned NOT NULL');
@@ -3535,7 +3535,7 @@ CREATE TABLE `site_subspecialty_anaesthetic_agent_version` (
 	CONSTRAINT `acv_site_subspecialty_anaesthetic_site_id_fk` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
 	CONSTRAINT `acv_site_subspecialty_anaesthetic_subspecialty_id_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`),
 	CONSTRAINT `acv_site_subspecialty_anaesthetic_anaesthetic_agent_id_fk` FOREIGN KEY (`anaesthetic_agent_id`) REFERENCES `anaesthetic_agent` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('site_subspecialty_anaesthetic_agent_version','id','int(10) unsigned NOT NULL');
@@ -3571,7 +3571,7 @@ CREATE TABLE `site_subspecialty_anaesthetic_agent_default_version` (
 	CONSTRAINT `acv_site_subspecialty_anaesthetic_def_site_id_fk` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
 	CONSTRAINT `acv_site_subspecialty_anaesthetic_def_subspecialty_id_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`),
 	CONSTRAINT `acv_site_subspecialty_anaesthetic_def_anaesthetic_agent_id_fk` FOREIGN KEY (`anaesthetic_agent_id`) REFERENCES `anaesthetic_agent` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('site_subspecialty_anaesthetic_agent_default_version','id','int(10) unsigned NOT NULL');
@@ -3607,7 +3607,7 @@ CREATE TABLE `site_subspecialty_drug_version` (
 	CONSTRAINT `acv_site_subspecialty_drug_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_site_subspecialty_drug_site_id_fk` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
 	CONSTRAINT `acv_site_subspecialty_drug_subspecialty_id_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('site_subspecialty_drug_version','id','int(10) unsigned NOT NULL');
@@ -3645,7 +3645,7 @@ CREATE TABLE `site_subspecialty_operative_device_version` (
 	CONSTRAINT `acv_ss_operative_device_operative_device_id_fk` FOREIGN KEY (`operative_device_id`) REFERENCES `operative_device` (`id`),
 	CONSTRAINT `acv_ss_operative_device_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_ss_operative_device_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('site_subspecialty_operative_device_version','id','int(10) unsigned NOT NULL');
@@ -3663,13 +3663,13 @@ CREATE TABLE `site_subspecialty_operative_device_version` (
 		$this->execute("
 CREATE TABLE `specialty_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
+	`name` varchar(255) NOT NULL DEFAULT '',
 	`code` int(10) unsigned NOT NULL,
 	`specialty_type_id` int(10) unsigned NOT NULL,
-	`default_title` varchar(64) COLLATE utf8_bin NOT NULL,
+	`default_title` varchar(64) NOT NULL,
 	`default_is_surgeon` tinyint(1) unsigned NOT NULL DEFAULT '0',
-	`adjective` varchar(64) COLLATE utf8_bin NOT NULL,
-	`abbreviation` char(3) COLLATE utf8_bin NOT NULL,
+	`adjective` varchar(64) NOT NULL,
+	`abbreviation` char(3) NOT NULL,
 	`created_user_id` int(10) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL,
 	`created_date` date NOT NULL DEFAULT '1900-01-01',
@@ -3683,7 +3683,7 @@ CREATE TABLE `specialty_version` (
 	CONSTRAINT `acv_specialty_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_specialty_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_specialty_specialty_type_id_fk` FOREIGN KEY (`specialty_type_id`) REFERENCES `specialty_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('specialty_version','id','int(10) unsigned NOT NULL');
@@ -3701,7 +3701,7 @@ CREATE TABLE `specialty_version` (
 		$this->execute("
 CREATE TABLE `specialty_type_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(64) COLLATE utf8_bin NOT NULL,
+	`name` varchar(64) NOT NULL,
 	`display_order` int(10) unsigned NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
@@ -3712,7 +3712,7 @@ CREATE TABLE `specialty_type_version` (
 	KEY `acv_specialty_type_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_specialty_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_specialty_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('specialty_type_version','id','int(10) unsigned NOT NULL');
@@ -3730,8 +3730,8 @@ CREATE TABLE `specialty_type_version` (
 		$this->execute("
 CREATE TABLE `subspecialty_version` (
 	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	`name` varchar(40) COLLATE utf8_bin NOT NULL,
-	`ref_spec` varchar(3) COLLATE utf8_bin NOT NULL,
+	`name` varchar(40) NOT NULL,
+	`ref_spec` varchar(3) NOT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3744,7 +3744,7 @@ CREATE TABLE `subspecialty_version` (
 	CONSTRAINT `acv_subspecialty_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_subspecialty_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_subspecialty_specialty_id_fk` FOREIGN KEY (`specialty_id`) REFERENCES `specialty` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('subspecialty_version','id','int(10) unsigned NOT NULL');
@@ -3775,7 +3775,7 @@ CREATE TABLE `subspecialty_subsection_version` (
 	CONSTRAINT `acv_subspecialty_subsection_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_subspecialty_subsection_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_subspecialty_subsection_subspecialty_id_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('subspecialty_subsection_version','id','int(10) unsigned NOT NULL');
@@ -3799,12 +3799,12 @@ CREATE TABLE `user_version` (
 	`email` varchar(80) CHARACTER SET utf8 NOT NULL,
 	`active` tinyint(1) NOT NULL,
 	`global_firm_rights` tinyint(1) unsigned NOT NULL DEFAULT '0',
-	`title` varchar(40) COLLATE utf8_bin NOT NULL,
-	`qualifications` varchar(255) COLLATE utf8_bin NOT NULL,
-	`role` varchar(255) COLLATE utf8_bin NOT NULL,
-	`code` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-	`password` varchar(40) COLLATE utf8_bin DEFAULT NULL,
-	`salt` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+	`title` varchar(40) NOT NULL,
+	`qualifications` varchar(255) NOT NULL,
+	`role` varchar(255) NOT NULL,
+	`code` varchar(255) DEFAULT NULL,
+	`password` varchar(40) DEFAULT NULL,
+	`salt` varchar(10) DEFAULT NULL,
 	`last_modified_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -3829,7 +3829,7 @@ CREATE TABLE `user_version` (
 	CONSTRAINT `acv_user_last_firm_id_fk` FOREIGN KEY (`last_firm_id`) REFERENCES `firm` (`id`),
 	CONSTRAINT `acv_user_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_user_last_site_id_fk` FOREIGN KEY (`last_site_id`) REFERENCES `site` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('user_version','id','int(10) unsigned NOT NULL');
@@ -3862,7 +3862,7 @@ CREATE TABLE `user_firm_version` (
 	CONSTRAINT `acv_user_firm_firm_id_fk` FOREIGN KEY (`firm_id`) REFERENCES `firm` (`id`),
 	CONSTRAINT `acv_user_firm_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_user_firm_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('user_firm_version','id','int(10) unsigned NOT NULL');
@@ -3892,7 +3892,7 @@ CREATE TABLE `user_firm_preference_version` (
 	KEY `acv_user_firm_preference_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_user_firm_preference_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_user_firm_preference_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('user_firm_preference_version','id','int(10) unsigned NOT NULL');
@@ -3925,7 +3925,7 @@ CREATE TABLE `user_firm_rights_version` (
 	CONSTRAINT `acv_user_firm_rights_fk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_user_firm_rights_fk_2` FOREIGN KEY (`firm_id`) REFERENCES `firm` (`id`),
 	CONSTRAINT `acv_user_firm_rights_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('user_firm_rights_version','id','int(10) unsigned NOT NULL');
@@ -3958,7 +3958,7 @@ CREATE TABLE `user_service_rights_version` (
 	CONSTRAINT `acv_user_service_rights_fk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_user_service_rights_fk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
 	CONSTRAINT `acv_user_service_rights_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('user_service_rights_version','id','int(10) unsigned NOT NULL');
@@ -3991,7 +3991,7 @@ CREATE TABLE `user_site_version` (
 	CONSTRAINT `acv_user_site_site_id_fk` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
 	CONSTRAINT `acv_user_site_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_user_site_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
 		$this->alterColumn('user_site_version','id','int(10) unsigned NOT NULL');
