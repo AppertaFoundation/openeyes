@@ -1,6 +1,6 @@
 module.exports = {
 	sass: {
-		files: 'sass/**/*.scss',
+		files: 'protected/assets/sass/**/*.scss',
 		tasks: ['compass:dist'],
 		options: {
 			// livereload: true

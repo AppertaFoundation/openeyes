@@ -183,7 +183,7 @@ class AssetManager extends CAssetManager
 	{
 		$parts = array(
 			Yii::getPathOfAlias('webroot'),
-			$this->getPublishedPathOfAlias($alias),
+			ltrim($this->getPublishedPathOfAlias($alias), '/'),
 			$path
 		);
 

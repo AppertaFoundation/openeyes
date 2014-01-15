@@ -83,7 +83,7 @@ return array(
 						'jquery.flot.time.js',
 						'jquery.flot.navigate.js',
 					),
-					'baseUrl' => 'js/components/flot',
+					'baseUrl' => 'components/flot',
 					'depends' => array('jquery'),
 				),
 			),

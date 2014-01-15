@@ -145,6 +145,7 @@ class BaseController extends Controller
 	public function processJsVars()
 	{
 		$this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
+		$this->jsVars['OE_core_asset_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
 
 		foreach ($this->jsVars as $key => $value) {
 			$value = CJavaScript::encode($value);
