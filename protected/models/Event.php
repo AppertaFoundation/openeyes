@@ -256,6 +256,10 @@ class Event extends BaseActiveRecord
 			return true;
 		}
 
+		if ($this->delete_pending) {
+			return false;
+		}
+
 		if ($module_allows_editing !== null) {
 			return $module_allows_editing;
 		}
@@ -282,6 +286,10 @@ class Event extends BaseActiveRecord
 		}
 
 		if (Yii::app()->session['user']->id != $this->created_user_id) {
+			return false;
+		}
+
+		if ($this->delete_pending) {
 			return false;
 		}
 

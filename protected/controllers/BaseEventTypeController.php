@@ -1110,10 +1110,6 @@ class BaseEventTypeController extends BaseController
 			return false;
 		}
 
-		if ($this->event->delete_pending) {
-			return false;
-		}
-
 		if (!$this->event->canUpdate($this->moduleAllowsEditing())) {
 			return false;
 		}
@@ -1129,8 +1125,6 @@ class BaseEventTypeController extends BaseController
 
 	public function canDelete()
 	{
-		return false;
-
 		if (!$this->event) {
 			return false;
 		}
