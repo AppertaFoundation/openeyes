@@ -47,3 +47,6 @@
 	</div>
 
 <?php echo '<?php'?> $this->endContent() <?php echo '?>'?>
+<script type="text/javascript">
+	$('#delete_reason').focus();
+</script>
