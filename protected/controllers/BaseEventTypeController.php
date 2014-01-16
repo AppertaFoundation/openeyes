@@ -92,7 +92,7 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function canPrint()
 	{
-		return $this->event && !$this->event->delete_pending && BaseController::checkUserLevel(3);
+		return (!$this->event || !$this->event->delete_pending) && BaseController::checkUserLevel(3);
 	}
 
 	public function renderEventMetadata($view='//patient/event_metadata')
