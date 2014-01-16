@@ -442,9 +442,7 @@ class BaseEventTypeController extends BaseController
 
 		$elements = $this->getDefaultElements('view');
 
-		$module_edit_enabled = $this->moduleAllowsEditing();
-
-		if ($this->editable && !$this->canUpdate($module_edit_enabled)) {
+		if ($this->editable && !$this->canUpdate()) {
 			$this->editable = false;
 		}
 
@@ -1095,12 +1093,12 @@ class BaseEventTypeController extends BaseController
 		$this->event->audit('event','print',false);
 	}
 
-	public function canUpdate($module_allows_editing)
+	public function canUpdate()
 	{
 		if(!$this->event) {
 			return false;
 		}
-		if(!$this->event->canUpdate($module_allows_editing)) {
+		if(!$this->event->canUpdate($this->moduleAllowsEditing())) {
 			return false;
 		}
 		if(!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
@@ -1116,7 +1114,7 @@ class BaseEventTypeController extends BaseController
 		if(!$this->event) {
 			return false;
 		}
-		if(!$this->event->canDelete()) {
+		if(!$this->event->canDelete($this->moduleAllowsEditing())) {
 			return false;
 		}
 		if(!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {

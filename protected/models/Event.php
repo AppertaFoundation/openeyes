@@ -267,36 +267,29 @@ class Event extends BaseActiveRecord
 	 * Can this event be deleted
 	 * @return bool
 	 */
-	public function canDelete()
+	public function canDelete($module_allows_editing)
 	{
-		// Cannot delete unless episode is editable
-		if(!$this->episode->editable) {
+		if (!$this->episode->editable) {
 			return false;
 		}
 
-		// Cannot delete events for patients who have died
-		if($this->episode->patient->date_of_death) {
+		if ($this->episode->patient->date_of_death) {
 			return false;
 		}
 
-		$admin_id = User::model()->find('username=?',array('admin'))->id;
-		$user_id = Yii::app()->session['user']->id;
-		// Admin can edit at an time
-		if ($user_id == $admin_id) {
+		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
 			return true;
 		}
 
-		// Events created before today should be locked
-		if(date('Ymd',strtotime($this->created_date)) < date('Ymd')) {
+		if (Yii::app()->session['user']->id != $this->created_user_id) {
 			return false;
 		}
 
-		// Only user who created an event can delete it
-		if($user_id != $this->created_user_id) {
-			return false;
+		if ($module_allows_editing !== null) {
+			return $module_allows_editing;
 		}
 
-		return true;
+		return date('Ymd',strtotime($this->created_date)) >= date('Ymd');
 	}
 
 	/**
