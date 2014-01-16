@@ -442,18 +442,10 @@ class BaseEventTypeController extends BaseController
 
 		$elements = $this->getDefaultElements('view');
 
-		// Decide whether to display the 'edit' button in the template
-		if($this->editable && !$this->canUpdate()) {
+		$module_edit_enabled = $this->moduleAllowsEditing();
+
+		if ($this->editable && !$this->canUpdate($module_edit_enabled)) {
 			$this->editable = false;
-		}
-		// Allow elements to override the editable status
-		if ($this->editable) {
-			foreach ($elements as $element) {
-				if (!$element->isEditable()) {
-					$this->editable = false;
-					break;
-				}
-			}
 		}
 
 		$this->logActivity('viewed event');
@@ -490,6 +482,17 @@ class BaseEventTypeController extends BaseController
 		), $this->extraViewProperties);
 
 		$this->render('view', $viewData);
+	}
+
+	public function moduleAllowsEditing()
+	{
+		if ($api = Yii::app()->moduleAPI->get($this->event_type->class_name)) {
+			if (method_exists($api,'canUpdate')) {
+				return $api->canUpdate($this->event->id);
+			}
+		}
+
+		return null;
 	}
 
 	public function actionUpdate($id)
@@ -1092,12 +1095,12 @@ class BaseEventTypeController extends BaseController
 		$this->event->audit('event','print',false);
 	}
 
-	public function canUpdate()
+	public function canUpdate($module_allows_editing)
 	{
 		if(!$this->event) {
 			return false;
 		}
-		if(!$this->event->canUpdate()) {
+		if(!$this->event->canUpdate($module_allows_editing)) {
 			return false;
 		}
 		if(!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
