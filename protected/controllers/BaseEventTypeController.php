@@ -463,10 +463,18 @@ class BaseEventTypeController extends BaseController
 				'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
+
 		if ($this->canDelete()) {
 			$this->event_actions = array(
 				EventAction::link('Delete',
 					Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+					array('level' => 'delete')
+				)
+			);
+		} else {
+			$this->event_actions = array(
+				EventAction::link('Delete',
+					Yii::app()->createUrl($this->event->eventType->class_name.'/default/requestDeletion/'.$this->event->id),
 					array('level' => 'delete')
 				)
 			);
@@ -1131,33 +1139,41 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
+		$this->event_type = $this->event->eventType;
+
 		// Check that deletion is allowed
 		if (!$this->canDelete()) {
 			$this->redirect(array('default/view/'.$this->event->id));
 			return false;
 		}
 
+		$errors = array();
+
 		if (!empty($_POST)) {
-			$this->event->softDelete();
+			if (!@$_POST['delete_reason']) {
+				$errors = array('Reason' => array('Please enter a reason for deleting this event'));
+			} else {
+				$this->event->softDelete($_POST['delete_reason']);
 
-			$this->event->audit('event','delete',false);
+				$this->event->audit('event','delete',false);
 
-			if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
-				$this->event->episode->deleted = 1;
-				if (!$this->event->episode->save()) {
-					throw new Exception("Unable to save episode: ".print_r($this->event->episode->getErrors(),true));
+				if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
+					$this->event->episode->deleted = 1;
+					if (!$this->event->episode->save()) {
+						throw new Exception("Unable to save episode: ".print_r($this->event->episode->getErrors(),true));
+					}
+
+					$this->event->episode->audit('episode','delete',false);
+
+					header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
+					return true;
 				}
 
-				$this->event->episode->audit('episode','delete',false);
+				Yii::app()->user->setFlash('success', "An event was deleted, please ensure the episode status is still correct.");
 
-				header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
+				header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
 				return true;
 			}
-
-			Yii::app()->user->setFlash('success', "An event was deleted, please ensure the episode status is still correct.");
-
-			header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
-			return true;
 		}
 
 		$this->patient = $this->event->episode->patient;
@@ -1183,6 +1199,7 @@ class BaseEventTypeController extends BaseController
 		$episodes = $this->getEpisodes();
 		$viewData = array_merge(array(
 			'eventId' => $id,
+			'errors' => $errors,
 		), $episodes);
 
 		$this->render('delete', $viewData);

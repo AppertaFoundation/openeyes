@@ -297,7 +297,7 @@ class Event extends BaseActiveRecord
 	 *
 	 * @throws Exception
 	 */
-	public function softDelete()
+	public function softDelete($reason)
 	{
 		// perform this process in a transaction if one has not been created
 		$transaction = Yii::app()->db->getCurrentTransaction() === null
@@ -306,6 +306,7 @@ class Event extends BaseActiveRecord
 
 		try {
 			$this->deleted = 1;
+			$this->delete_reason = $reason;
 			foreach ($this->getElements() as $element) {
 				$element->softDelete();
 			}
