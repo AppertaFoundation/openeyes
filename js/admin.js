@@ -146,4 +146,40 @@ $(document).ready(function() {
 		e.preventDefault();
 		/* TODO */
 	});
+
+	handleButton($('#admin_event_deletion_requests #et_approve'),function(e) {
+		e.preventDefault();
+
+		var id = $(e.target).parent().parent().data('id');
+
+		$.ajax({
+			'type': 'GET',
+			'url': baseUrl+'/admin/approveEventDeletionRequest/'+id,
+			'success': function(resp) {
+				if (resp == "1") {
+					window.location.reload();
+				} else {
+					alert("Something went wrong trying to approve the deletion request.  Please try again or contact support for assistance.");
+				}
+			}
+		});
+	});
+
+	handleButton($('#admin_event_deletion_requests #et_reject'),function(e) {
+		e.preventDefault();
+
+		var id = $(e.target).parent().parent().data('id');
+
+		$.ajax({
+			'type': 'GET',
+			'url': baseUrl+'/admin/rejectEventDeletionRequest/'+id,
+			'success': function(resp) {
+				if (resp == "1") {
+					window.location.reload();
+				} else {
+					alert("Something went wrong trying to reject the deletion request.  Please try again or contact support for assistance.");
+				}
+			}
+		});
+	});
 });

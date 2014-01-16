@@ -27,6 +27,11 @@
 	<div class="alert-box alert with-icon">
 		<strong>WARNING: This will permanently delete the event and remove it from view.<br><br>THIS ACTION CANNOT BE UNDONE.</strong>
 	</div>
+	<?php echo '<?php'?> $this->displayErrors($errors)<?php echo "?>\n"?>
+	<div style="width:300px; margin-bottom: 0.6em;">
+		<p>Reason for deletion:</p>
+		<?php echo '<?php'?> echo CHtml::textArea('delete_reason','')<?php echo "?>\n"?>
+	</div>
 	<p>
 		<strong>Are you sure you want to proceed?</strong>
 	</p>

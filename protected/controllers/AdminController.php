@@ -1212,4 +1212,41 @@ class AdminController extends BaseAdminController
 
 		echo "1";
 	}
+
+	public function actionEventDeletionRequests()
+	{
+		$this->render('/admin/event_deletion_requests',array(
+			'events' => Event::model()->findAll(array(
+				'order' => 'last_modified_date asc',
+				'condition' => 'delete_pending = 1',
+			)),
+		));
+	}
+
+	public function actionApproveEventDeletionRequest($id)
+	{
+		if (!$event = Event::model()->find('id=? and delete_pending=?',array($id,1))) {
+			throw new Exception("Event not found: $id");
+		}
+
+		$event->softDelete();
+
+		echo "1";
+	}
+
+	public function actionRejectEventDeletionRequest($id)
+	{
+		if (!$event = Event::model()->find('id=? and delete_pending=?',array($id,1))) {
+			throw new Exception("Event not found: $id");
+		}
+
+		$event->delete_pending = 0;
+		$event->delete_reason = null;
+
+		if (!$event->save()) {
+			throw new Exception("Unable to reject deletion request for event: ".print_r($event->getErrors(),true));
+		}
+
+		echo "1";
+	}
 }

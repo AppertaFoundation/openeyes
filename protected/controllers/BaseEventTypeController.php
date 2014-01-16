@@ -92,7 +92,7 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function canPrint()
 	{
-		return BaseController::checkUserLevel(3);
+		return !$this->event->delete_pending && BaseController::checkUserLevel(3);
 	}
 
 	public function renderEventMetadata($view='//patient/event_metadata')
@@ -464,20 +464,22 @@ class BaseEventTypeController extends BaseController
 			);
 		}
 
-		if ($this->canDelete()) {
-			$this->event_actions = array(
-				EventAction::link('Delete',
-					Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-					array('level' => 'delete')
-				)
-			);
-		} else {
-			$this->event_actions = array(
-				EventAction::link('Delete',
-					Yii::app()->createUrl($this->event->eventType->class_name.'/default/requestDeletion/'.$this->event->id),
-					array('level' => 'delete')
-				)
-			);
+		if (!$this->event->delete_pending) {
+			if ($this->canDelete()) {
+				$this->event_actions = array(
+					EventAction::link('Delete',
+						Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+						array('level' => 'delete')
+					)
+				);
+			} else {
+				$this->event_actions = array(
+					EventAction::link('Delete',
+						Yii::app()->createUrl($this->event->eventType->class_name.'/default/requestDeletion/'.$this->event->id),
+						array('level' => 'delete')
+					)
+				);
+			}
 		}
 
 		$this->processJsVars();
@@ -508,6 +510,8 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
+		$this->event_type = $this->event->eventType;
+
 		// Check that updating is allowed
 		if (!$this->canUpdate()) {
 			$this->redirect(array('default/view/'.$this->event->id));
@@ -522,7 +526,6 @@ class BaseEventTypeController extends BaseController
 			$this->redirectToPatientEpisodes();
 		}
 
-		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 		$this->episode = $this->event->episode;
 
 		// firm changing sanity
@@ -1103,34 +1106,87 @@ class BaseEventTypeController extends BaseController
 
 	public function canUpdate()
 	{
-		if(!$this->event) {
+		if (!$this->event) {
 			return false;
 		}
-		if(!$this->event->canUpdate($this->moduleAllowsEditing())) {
+
+		if ($this->event->delete_pending) {
 			return false;
 		}
-		if(!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+
+		if (!$this->event->canUpdate($this->moduleAllowsEditing())) {
+			return false;
+		}
+
+		if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 			return false;
 		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
 			return false;
 		}
+
 		return true;
 	}
 
 	public function canDelete()
 	{
-		if(!$this->event) {
+		return false;
+
+		if (!$this->event) {
 			return false;
 		}
-		if(!$this->event->canDelete($this->moduleAllowsEditing())) {
+
+		if (!$this->event->canDelete($this->moduleAllowsEditing())) {
 			return false;
 		}
-		if(!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+
+		if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 			return false;
 		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
 			return false;
 		}
+
 		return true;
+	}
+
+	public function actionRequestDeletion($id)
+	{
+		if (!$this->event = Event::model()->findByPk($id)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		$this->patient = $this->event->episode->patient;
+		$this->event_type = $this->event->eventType;
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			if (!@$_POST['delete_reason']) {
+				$errors = array('Reason' => array('Please enter a reason for deleting this event'));
+			} else {
+				$this->event->requestDeletion($_POST['delete_reason']);
+
+				$this->event->audit('event','delete_request',false);
+
+				if (Yii::app()->params['admin_email']) {
+					mail(Yii::app()->params['admin_email'],"Request to delete an event","A request to delete an event has been submitted.  Please log in to the admin system to review the request.","From: OpenEyes");
+				}
+
+				Yii::app()->user->setFlash('success', "Your request to delete this event has been submitted.");
+
+				header('Location: '.Yii::app()->createUrl('/'.$this->event_type->class_name.'/default/view/'.$this->event->id));
+				return true;
+			}
+		}
+
+		$this->title = "Delete ".$this->event_type->name;
+		$this->event_tabs = array(array(
+				'label' => 'View',
+				'active' => true,
+		));
+
+		$this->render('request_delete', array(
+			'errors' => $errors,
+		));
 	}
 
 	public function actionDelete($id)

@@ -297,7 +297,7 @@ class Event extends BaseActiveRecord
 	 *
 	 * @throws Exception
 	 */
-	public function softDelete($reason)
+	public function softDelete($reason=false)
 	{
 		// perform this process in a transaction if one has not been created
 		$transaction = Yii::app()->db->getCurrentTransaction() === null
@@ -306,7 +306,12 @@ class Event extends BaseActiveRecord
 
 		try {
 			$this->deleted = 1;
-			$this->delete_reason = $reason;
+			$this->delete_pending = 0;
+
+			if ($reason) {
+				$this->delete_reason = $reason;
+			}
+
 			foreach ($this->getElements() as $element) {
 				$element->softDelete();
 			}
@@ -391,5 +396,15 @@ class Event extends BaseActiveRecord
 			}
 		}
 		return $elements;
+	}
+
+	public function requestDeletion($reason)
+	{
+		$this->delete_reason = $reason;
+		$this->delete_pending = 1;
+
+		if (!$this->save()) {
+			throw new Exception("Unable to mark event as delete pending: ".print_r($this->getErrors(),true));
+		}
 	}
 }
