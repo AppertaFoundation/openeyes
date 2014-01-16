@@ -492,17 +492,6 @@ class BaseEventTypeController extends BaseController
 		$this->render('view', $viewData);
 	}
 
-	public function moduleAllowsEditing()
-	{
-		if ($api = Yii::app()->moduleAPI->get($this->event_type->class_name)) {
-			if (method_exists($api,'canUpdate')) {
-				return $api->canUpdate($this->event->id);
-			}
-		}
-
-		return null;
-	}
-
 	public function actionUpdate($id)
 	{
 		$this->moduleStateCssClass = 'edit';
@@ -1110,7 +1099,7 @@ class BaseEventTypeController extends BaseController
 			return false;
 		}
 
-		if (!$this->event->canUpdate($this->moduleAllowsEditing())) {
+		if (!$this->event->canUpdate()) {
 			return false;
 		}
 
@@ -1129,7 +1118,7 @@ class BaseEventTypeController extends BaseController
 			return false;
 		}
 
-		if (!$this->event->canDelete($this->moduleAllowsEditing())) {
+		if (!$this->event->canDelete()) {
 			return false;
 		}
 

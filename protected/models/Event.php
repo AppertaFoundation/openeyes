@@ -115,6 +115,17 @@ class Event extends BaseActiveRecord
 		return $this->canUpdate();
 	}
 
+	public function moduleAllowsEditing()
+	{
+		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+			if (method_exists($api,'canUpdate')) {
+				return $api->canUpdate($this->id);
+			}
+		}
+
+		return null;
+	}
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -242,7 +253,7 @@ class Event extends BaseActiveRecord
 	 * Can this event be updated (edited)
 	 * @return bool
 	 */
-	public function canUpdate($module_allows_editing)
+	public function canUpdate()
 	{
 		if (!$this->episode->editable) {
 			return false;
@@ -260,7 +271,7 @@ class Event extends BaseActiveRecord
 			return false;
 		}
 
-		if ($module_allows_editing !== null) {
+		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
 			return $module_allows_editing;
 		}
 
@@ -271,7 +282,7 @@ class Event extends BaseActiveRecord
 	 * Can this event be deleted
 	 * @return bool
 	 */
-	public function canDelete($module_allows_editing)
+	public function canDelete()
 	{
 		if (!$this->episode->editable) {
 			return false;
@@ -293,7 +304,7 @@ class Event extends BaseActiveRecord
 			return false;
 		}
 
-		if ($module_allows_editing !== null) {
+		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
 			return $module_allows_editing;
 		}
 
