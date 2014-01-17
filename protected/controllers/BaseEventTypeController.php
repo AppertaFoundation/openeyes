@@ -1145,8 +1145,6 @@ class BaseEventTypeController extends BaseController
 
 		if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 			return false;
-		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
-			return false;
 		}
 
 		return true;
@@ -1156,6 +1154,10 @@ class BaseEventTypeController extends BaseController
 	{
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		if (isset($_POST['et_canceldelete'])) {
+			return $this->redirect(array('/'.$this->event->eventType->class_name.'/default/view/'.$id));
 		}
 
 		$this->patient = $this->event->episode->patient;
@@ -1195,6 +1197,10 @@ class BaseEventTypeController extends BaseController
 	{
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		if (isset($_POST['et_canceldelete'])) {
+			return $this->redirect(array('/'.$this->event->eventType->class_name.'/default/view/'.$id));
 		}
 
 		$this->event_type = $this->event->eventType;
