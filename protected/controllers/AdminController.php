@@ -1229,7 +1229,15 @@ class AdminController extends BaseAdminController
 			throw new Exception("Event not found: $id");
 		}
 
+		$requested_by_user_id = $event->last_modified_user_id;
+		$requested_by_datetime = $event->last_modified_date;
+
 		$event->softDelete();
+
+		$event->audit('event','delete-approved',serialize(array(
+			'requested_by_user_id' => $requested_by_user_id,
+			'requested_by_datetime' => $requested_by_datetime,
+		)));
 
 		echo "1";
 	}
@@ -1240,12 +1248,20 @@ class AdminController extends BaseAdminController
 			throw new Exception("Event not found: $id");
 		}
 
+		$requested_by_user_id = $event->last_modified_user_id;
+		$requested_by_datetime = $event->last_modified_date;
+
 		$event->delete_pending = 0;
 		$event->delete_reason = null;
 
 		if (!$event->save()) {
 			throw new Exception("Unable to reject deletion request for event: ".print_r($event->getErrors(),true));
 		}
+
+		$event->audit('event','delete-rejected',serialize(array(
+			'requested_by_user_id' => $requested_by_user_id,
+			'requested_by_datetime' => $requested_by_datetime,
+		)));
 
 		echo "1";
 	}

@@ -293,7 +293,7 @@ class Event extends BaseActiveRecord
 		}
 
 		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
-			return true;
+			//return true;
 		}
 
 		if (Yii::app()->session['user']->id != $this->created_user_id) {
@@ -425,5 +425,10 @@ class Event extends BaseActiveRecord
 		if (!$this->save()) {
 			throw new Exception("Unable to mark event as delete pending: ".print_r($this->getErrors(),true));
 		}
+
+		$this->audit('event','delete-request',serialize(array(
+			'requested_user_id' => $this->last_modified_user_id,
+			'requested_datetime' => $this->last_modified_date,
+		)));
 	}
 }
