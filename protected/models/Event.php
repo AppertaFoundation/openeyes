@@ -311,6 +311,17 @@ class Event extends BaseActiveRecord
 		return date('Ymd',strtotime($this->created_date)) >= date('Ymd');
 	}
 
+	public function showDeleteIcon()
+	{
+		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+			if (method_exists($api,'showDeleteIcon')) {
+				return $api->showDeleteIcon($this->id);
+			}
+		}
+
+		return null;
+	}
+
 	/**
 	 * marks an event as deleted and processes any softDelete methods that exist on the elements attached to it.
 	 *

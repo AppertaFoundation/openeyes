@@ -1139,6 +1139,10 @@ class BaseEventTypeController extends BaseController
 			return false;
 		}
 
+		if ($this->event->showDeleteIcon() === false) {
+			return false;
+		}
+
 		if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 			return false;
 		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
