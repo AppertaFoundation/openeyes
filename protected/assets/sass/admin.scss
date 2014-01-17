@@ -14,8 +14,8 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Import base, common & shared mixins, functions and variables.
-@import "openeyes";
-
-@import "openeyes/admin/components/forms";
-@import "openeyes/admin/components/treeview";
+@import "openeyes/copyright";
+@import "openeyes/settings/admin";
+@import "openeyes/core";
+@import "openeyes/components/admin/forms";
+@import "openeyes/components/admin/treeview";

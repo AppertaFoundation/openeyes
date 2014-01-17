@@ -34,9 +34,9 @@ h1 {
 		@include background(linear-gradient(left, #b4b0ae 0, #fffdea 12px));
 		@include border-radius(0px 3px 3px 0px);
 		display: inline-block;
-		font-size: emCalc(13px);
+		font-size: rem-calc(13px);
 		font-weight: bold;
-		margin: 0 0 emCalc(15px) 0;;
+		margin: 0 0 15px 0;;
 		padding: 5px 15px 5px 55px;
 		&.admin {
 			background: #666;

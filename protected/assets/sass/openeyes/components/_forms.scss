@@ -126,8 +126,8 @@ fieldset {
 			margin-bottom: 0;
 			// As the fieldset font-size is $default-font-size, we need to
 			// adjust the gutters to account for the smaller em width.
-			padding-left: $column-gutter / 2 + 1em - $default-font-size;
-			padding-right: $column-gutter / 2 + 1em - $default-font-size;
+			padding-left: $column-gutter / 2 + 1rem - $default-font-size;
+			padding-right: $column-gutter / 2 + 1rem - $default-font-size;
 		}
 		&.align {
 			@extend .label.align;

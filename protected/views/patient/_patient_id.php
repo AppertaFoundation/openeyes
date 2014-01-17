@@ -31,7 +31,7 @@
 		No. <?php echo $this->patient->hos_num?>
 	</div>
 	<div class="row">
-		<div class="large-6 small-6 columns">
+		<div class="large-6 column">
 
 			<!-- NHS number -->
 			<div class="nhs-number">
@@ -59,7 +59,7 @@
 			<?php } ?>
 
 		</div>
-		<div class="large-6 small-6 columns text-right patient-summary-anchor">
+		<div class="large-6 column text-right patient-summary-anchor">
 			<?php echo CHtml::link('Patient Summary',array('/patient/view/'.$this->patient->id)); ?>
 		</div>
 	</div>

@@ -29,17 +29,12 @@
 // Styleguide 7.1
 .header {
 	min-height: 70px;
-	margin: 0 0 emCalc(10px) 0;
-	// @media #{$small} {
-		margin-bottom: 0;
-	// }
 	.logo {
 		@extend .hide-text;
 		background: image-url("_structure/openeyes.png") no-repeat;
 		background-size: 100%;
 		display: block;
 		height: 70px;
-		margin-left: -1 * $column-gutter / 2;
 		max-width: 210px;
 	}
 	&.stuck {

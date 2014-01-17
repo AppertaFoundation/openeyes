@@ -32,7 +32,7 @@
 </div>
 
 <div class="row">
-	<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
+	<div class="large-8 large-centered column">
 
 		<?php $this->renderPartial('//base/_messages'); ?>
 
@@ -46,10 +46,10 @@
 				)
 			));?>
 			<div class="row">
-				<div class="large-9 medium-8 small-7 column">
+				<div class="large-9 column">
 					<?php echo CHtml::textField('query', '', array('class' => 'large', 'placeholder' => 'Enter search...')); ?>
 				</div>
-				<div class="large-3 medium-4 small-5 column text-right">
+				<div class="large-3 column text-right">
 					<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="margin-right: 10px; display: none;" />
 					<button type="submit" class="primary long">
 						Search

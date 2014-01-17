@@ -8,7 +8,10 @@ module.exports = {
 			outputStyle: 'expanded',
 			relativeAssets: true,
 			httpPath: '',
-			noLineComments: false
+			noLineComments: false,
+			importPath: [
+				'protected/assets/components/foundation/scss'
+			]
 		}
 	}
 };

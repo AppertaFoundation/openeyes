@@ -115,18 +115,10 @@ $oe-selector-form-select-fields: "select";
 				&.fixed {
 					width: $width;
 				}
-			}
-		}
-	}
-	// @media #{$small} {
-		.row {
-			&#{$row-selector} {
-				.column {
-					&.fluid {
-						@include calc("width", "100% - #{$width}");
-					}
+				&.fluid {
+					@include calc("width", "100% - #{$width}");
 				}
 			}
 		}
-	// }
+	}
 }

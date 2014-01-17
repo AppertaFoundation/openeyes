@@ -16,26 +16,26 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/* line 19, ../sass/openeyes/admin/components/_forms.scss */
+/* line 19, ../sass/openeyes/components/admin/_forms.scss */
 .admin .field-row:last-child {
   padding: 0;
 }
-/* line 23, ../sass/openeyes/admin/components/_forms.scss */
+/* line 23, ../sass/openeyes/components/admin/_forms.scss */
 .admin legend {
   font-size: 1.1em;
 }
 
-/* line 19, ../sass/openeyes/admin/components/_treeview.scss */
+/* line 19, ../sass/openeyes/components/admin/_treeview.scss */
 .admin .treeview ul {
   margin-top: 0;
   background-color: transparent;
 }
-/* line 23, ../sass/openeyes/admin/components/_treeview.scss */
+/* line 23, ../sass/openeyes/components/admin/_treeview.scss */
 .admin .treeview li {
   padding-top: 0;
   padding-bottom: 0;
 }
-/* line 26, ../sass/openeyes/admin/components/_treeview.scss */
+/* line 26, ../sass/openeyes/components/admin/_treeview.scss */
 .admin .treeview li li {
   font-size: 1em;
 }
