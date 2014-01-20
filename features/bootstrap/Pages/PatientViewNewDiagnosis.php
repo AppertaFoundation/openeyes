@@ -335,6 +335,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
     {
         $this->getElement('removeOperation')->click();
         $this->getElement('removeOperationConfirmButton')->click();
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function removeMedication ()
