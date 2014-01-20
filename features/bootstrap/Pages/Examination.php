@@ -185,7 +185,8 @@ class Examination extends OpenEyesPage
         'historyValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'History: Description cannot be blank')]"),
         'conclusionValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Conclusion: Description cannot be blank.')]"),
         'investigationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Investigation: Description cannot be blank when there are no child elements')]"),
-        'dilationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Dilation: Please select at least one treatment, or remove the element')]")
+        'dilationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Dilation: Please select at least one treatment, or remove the element')]"),
+        'removeRefractionRightSide' => array('xpath' => "//*[@class='element-eye right-eye column side right']//*[@class='icon-remove-side remove-side']"),
     );
 
     public function history ()
@@ -1034,6 +1035,11 @@ class Examination extends OpenEyesPage
         else{
             throw new BehaviorException ("DILATION VALIDATION ERROR!!!");
         }
+    }
+
+    public function removeRefractionRightSide ()
+    {
+        $this->getElement('removeRefractionRightSide')->click();
     }
 
 }

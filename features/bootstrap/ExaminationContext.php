@@ -1591,4 +1591,16 @@ class ExaminationContext extends PageObjectContext
         $examination= $this->getPage('Examination');
         $examination->dilationValidationCheck();
     }
+
+    /**
+     * @Then /^I remove Refraction right side$/
+     */
+    public function iRemoveRefractionRightSide()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeRefractionRightSide();
+    }
 }
