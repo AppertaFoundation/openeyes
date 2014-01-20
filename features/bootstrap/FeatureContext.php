@@ -46,7 +46,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		$this->useContext('TherapyApplication', new TherapyApplicationContext($parameters));
 		$this->useContext('ConsentForm', new ConsentFormContext($parameters));
 		$this->screenshots = array();
-		$this->screenshotPath = '/tmp/behat';
+		$this->screenshotPath = realpath(join(DIRECTORY_SEPARATOR, array(__DIR__, '..', '..', 'features', 'screenshots')));
 	}
 
 	/**

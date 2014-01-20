@@ -101,9 +101,9 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Then I remove the Previous Operation
 
-    And I Add Medication details medication "3" route "2" frequency "8" date from "1" and Save
+    #And I Add Medication details medication "3" route "2" frequency "8" date from "1" and Save
 
-    Then I remove the Medication
+    #Then I remove the Medication
 
     Then I edit the CVI Status "2"
     And I select a CVI Status date of day "4" month "1" year "2012"
