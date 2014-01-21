@@ -457,11 +457,12 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 	{
 		$controller = $this->getMockBuilder('_WrapperBaseEventTypeController')
 				->setConstructorArgs(array('_WrapperBaseEventTypeController',new BaseEventTypeModule('ExaminationEvent',null)))
-				->setMethods(array('setFirmFromSession','initAction', 'verifyActionAccess','setupAssetManager'))
+				->setMethods(array('setFirmFromSession','initAction', 'verifyActionAccess', 'registerAssets', 'setupAssetManager'))
 				->getMock();
 		$controller->expects($this->once())->method('setFirmFromSession');
 		$controller->expects($this->once())->method('initAction');
 		$controller->expects($this->once())->method('verifyActionAccess');
+		$controller->expects($this->once())->method('registerAssets');
 		$controller->expects($this->once())->method('setupAssetManager');
 
 		$action = new CInlineAction($controller,'create');
@@ -471,6 +472,34 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 		$controller->beforeAction($action);
 	}
 
+	/**
+	 * @covers BaseEventTypeController::redirectToPatientEpisodes()
+	 *
+	 */
+	public function testredirectToPatientEpisodes()
+	{
+		$controller = $this->getMockBuilder('_WrapperBaseEventTypeController')
+				->setConstructorArgs(array('_WrapperBaseEventTypeController',new BaseEventTypeModule('ExaminationEvent',null)))
+				->setMethods(array('redirect'))
+				->getMock();
+
+		// nulling getId allows us to set the property
+		$patient = $this->getMockBuilder('Patient')
+				->disableOriginalConstructor()
+				->setMethods(array('getId'))
+				->getMock();
+
+		$patient->id = 2;
+		$controller->patient = $patient;
+
+		// checking full url seems a little dirty, but I don't want to dwell too much on this method for now
+		$controller->expects($this->once())->method('redirect')->with($this->anything())
+				->will($this->returnCallback(function($arr) {
+							self::assertCount(1, $arr);
+							self::assertEquals("/patient/episodes/2", $arr[0]);
+						}));
+		$controller->redirectToPatientEpisodes();
+	}
 
 }
 
@@ -498,4 +527,5 @@ class _WrapperBaseEventTypeController extends BaseEventTypeController
 	// expose protected setOpenElementsFromCurrentEvent method
 	public function setOpenElementsFromCurrentEvent($action) { parent::setOpenElementsFromCurrentEvent($action); }
 	public function beforeAction($action) { parent::beforeAction($action); }
+	public function redirectToPatientEpisodes() { parent::redirectToPatientEpisodes(); }
 }
