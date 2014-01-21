@@ -1,5 +1,5 @@
 @diagnosis @regression
-Feature: Open Eyes Login and Patient Diagnosis Screen Template
+Feature: Open Eyes Login and Patient Diagnosis Screen
   In order to cover every possible route throughout the site
   As an automation tester
   I want to build a template with supporting code for each web page
