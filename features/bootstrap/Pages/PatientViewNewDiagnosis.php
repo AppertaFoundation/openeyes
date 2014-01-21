@@ -213,12 +213,11 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 		$this->waitForElementDisplayBlock('#ui-datepicker-div', 10000);
         $this->getElement('selectDateFrom')->click($datefrom);
         $this->getElement('saveMedication')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->waitForElementDisplayNone('#add_medication');
     }
 
     public function editCVIstatus ($status)
     {
-
         $this->getElement('editCVIstatusButton')->click();
         $this->getElement('cviStatus')->selectOption($status);
         $this->getSession()->wait(3000);
