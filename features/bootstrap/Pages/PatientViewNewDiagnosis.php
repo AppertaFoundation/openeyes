@@ -205,6 +205,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
     {
+        $this->waitForElementDisplayNone('#add_medication');
         $this->getElement('addMedicationButton')->click();
         $this->getElement('selectMedication')->selectOption($medication);
         $this->getElement('selectRoute')->selectOption($route);
