@@ -65,10 +65,11 @@ class BaseController extends Controller
 		return in_array($action, $this->printActions());
 	}
 
-	protected function beforeAction($action)
+	/**
+	 * Sets up the yii assetManager properties
+	 */
+	protected function setupAssetManager()
 	{
-		$app = Yii::app();
-
 		// Set AssetManager properties.
 		Yii::app()->assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
 		Yii::app()->assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
@@ -78,6 +79,13 @@ class BaseController extends Controller
 
 		// Prevent certain assets from being outputted in certain conditions.
 		Yii::app()->getAssetManager()->adjustScriptMapping();
+	}
+
+	protected function beforeAction($action)
+	{
+		$app = Yii::app();
+
+		$this->setupAssetManager();
 
 		if ($app->params['ab_testing']) {
 			if ($app->user->isGuest) {
