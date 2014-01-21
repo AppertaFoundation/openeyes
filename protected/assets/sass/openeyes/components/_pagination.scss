@@ -20,7 +20,11 @@ ul.pagination {
 	height: auto;
 	min-height: $pagination-height;
 	li {
+		height: auto;
 		margin: 0;
+		a {
+			@include border-radius(0);
+		}
 		&.label {
 			cursor: default;
 		}
@@ -66,8 +70,8 @@ tfoot.pagination-container {
 		float: right;
 		margin: 0;
 		li {
-			font-size: 1.1em;
 			font-weight: normal;
+			font-size: rem-calc(12px);
 		}
 	}
 }

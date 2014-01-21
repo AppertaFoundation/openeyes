@@ -14,13 +14,18 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Headings
+// Typography
 //
-// Styles for generic headings used throughout the site.
+// Styleguide 3
+
+// Headings
 //
 // Markup:
 // <h1>Page title</h1>
 // <h1 class="badge">Page title</h1>
+// <h2>Heading 2</h2>
+// <h3>Heading 3</h3>
+// <h4>Heading 4</h3>
 //
 // Styleguide 3.1
 
@@ -36,7 +41,7 @@ h1 {
 		display: inline-block;
 		font-size: rem-calc(13px);
 		font-weight: bold;
-		margin: 0 0 15px 0;;
+		margin: 0 0 12px 0;;
 		padding: 5px 15px 5px 55px;
 		&.admin {
 			background: #666;

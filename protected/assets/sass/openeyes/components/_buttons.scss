@@ -14,37 +14,23 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Common buttons
+
+// Buttons
 //
-// These are the generic button styles that are used throughout the application.
+// Styleguide 1
+
+// Primary buttons
 //
 // Markup:
 // <a href="#" class="button {$modifiers}">Link Button</a>
 // <button class="button {$modifiers}">Button Element</button>
 // <input type="button" class="button {$modifiers}" value="input[type='button']"/>
 //
-// .primary             - Primary button style
-// :hover               - Primary button hover state
-// :focus               - Primary button focus state
-// :active              - Primary button pressed state
-// .disabled            - Disabled state for all buttons
-// .secondary           - Secondary button
-// .secondary:hover     - Secondary button hover state
-// .secondary:focus     - Secondary button focus state
-// .secondary:active    - Secondary button pressed state
-// .warning             - Warning button
-// .warning:hover       - Warning button hover state
-// .warning:focus       - Warning button focus state
-// .warning:active      - Warning button pressed state
-// .delete				- Delete button
-// .delete:hover		- Delete button hover state
-// .delete:focus		- Delete button focus state
-// .delete:active		- Delete button active state
+// .disabled            - Disabled state
 //
-// Styleguide 10.1
-//
+// Styleguide 1.1
 
-// Primary button (blue)
+/* DONE */
 @include buttons {
 	@include button-base;
 	@include border-radius($button-radius);
@@ -55,8 +41,9 @@
 	color: $button-font-color;
 	font-size: $oe-button-primary-font-size;
 	letter-spacing: 1px;
+	line-height: 1em;
 	margin: 0;
-	padding: emCalc(8px) emCalc(23px) emCalc(6px) emCalc(23px);
+	padding: 8px 23px 6px 23px;
 	text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa;
 	&:hover {
 		@include background(linear-gradient(#118afb, #1279e3));
@@ -68,10 +55,21 @@
 		border-color: #0f467e;
 	}
 	&.long {
-		padding-left: emCalc(34px);
-		padding-right: emCalc(34px);
+		padding-left: 34px;
+		padding-right: 34px;
 	}
 }
+
+// Secondary buttons
+//
+// Markup:
+// <a href="#" class="button secondary {$modifiers}">Link Button</a>
+// <button class="button secondary {$modifiers}">Button Element</button>
+// <input type="button" class="button secondary {$modifiers}" value="input[type='button']"/>
+//
+// .disabled    - Disabled state
+//
+// Styleguide 1.2
 
 // Secondary button (green)
 @include buttons {
@@ -90,6 +88,21 @@
 	}
 }
 
+// Warning buttons
+//
+// Markup:
+// <a href="#" class="button {$modifiers}">Link Button</a>
+// <button class="button {$modifiers}">Button Element</button>
+// <input type="button" class="button {$modifiers}" value="input[type='button']"/>
+//
+// .warning             - Primary button style
+// :hover               - Primary button hover state
+// :focus               - Primary button focus state
+// :active              - Primary button pressed state
+// .disabled            - Disabled state
+//
+// Styleguide 1.3
+
 // Warning button (red)
 @include buttons {
 	&.warning {
@@ -107,6 +120,21 @@
 	}
 }
 
+// Cancel event action
+//
+// Markup:
+// <a href="#" class="button {$modifiers}">Link Button</a>
+// <button class="button {$modifiers}">Button Element</button>
+// <input type="button" class="button {$modifiers}" value="input[type='button']"/>
+//
+// .cancel.event-action - Primary button style
+// :hover               - Primary button hover state
+// :focus               - Primary button focus state
+// :active              - Primary button pressed state
+// .disabled            - Disabled state
+//
+// Styleguide 1.4
+
 // Cancel event button styles
 @include buttons {
 	&.cancel.event-action {
@@ -115,8 +143,8 @@
 		background: none;
 		border-color: transparent;
 		color: #ad1515;
-		padding-left: emCalc(12px);
-		padding-right: emCalc(12px);
+		padding-left: 10px;
+		padding-right: 10px;
 		text-shadow: none;
 		&:active,
 		&:hover {
@@ -128,6 +156,21 @@
 		}
 	}
 }
+
+// Delete button
+//
+// Markup:
+// <a href="#" class="button {$modifiers}">Link Button</a>
+// <button class="button {$modifiers}">Button Element</button>
+// <input type="button" class="button {$modifiers}" value="input[type='button']"/>
+//
+// .delete              - Primary button style
+// :hover               - Primary button hover state
+// :focus               - Primary button focus state
+// :active              - Primary button pressed state
+// .disabled            - Disabled state
+//
+// Styleguide 1.5
 
 // Delete button styles
 @include buttons {
@@ -150,17 +193,17 @@
 //
 // .small               - Small button
 //
-// Styleguide 10.2
+// Styleguide 1.6
 
 @include buttons {
 	&.small {
-		padding: emCalc(5px) emCalc(20px);
+		padding: 4px 16px;
 		font-size: $oe-button-small-font-size;
 		letter-spacing: 1px;
 	}
 	&.tiny {
-		padding: emCalc(5px) emCalc(20px);
-		font-size: emCalc(11px);
+		padding: 3px 14px 4px 14px;
+		font-size: rem-calc(11px);
 		letter-spacing: 1px;
 		line-height: 1.4;
 	}
@@ -184,22 +227,22 @@
 //     <span class="hide-offscreen">Delete</span>
 // </a>
 //
-// Styleguide 10.3
+// Styleguide 1.7
 @include buttons {
 	[class*="icon-button-small-"] {
 		margin: -6px -2px -5px -14px;
 	}
 	&.button-icon {
 		&.small {
-			padding-right: emCalc(1px);
-			padding-left: emCalc(1px);
+			padding-right: 1px;
+			padding-left: 1px;
 			[class*="icon-button-small-"] {
 				margin: -7px 0 -5px 0;
 			}
 			&.delete {
-				padding-right: emCalc(5px);
-				padding-left: emCalc(5px);
-				padding-bottom: emCalc(7px);
+				padding-right: 4px;
+				padding-left: 4px;
+				padding-bottom: 6px;
 				[class*="icon-button-small-"] {
 					margin-top: -6px;
 				}
@@ -226,15 +269,18 @@
 //     <li><a href="#" class="small button">Button 3</a></li>
 // </ul>
 //
-// Styleguide 10.4
+// Styleguide 1.8
 .button-group {
 	@include button-group-container;
 	& > li {
 		@include button-group-style;
+		button, .button {
+			border-color: #105dae;
+		}
 	}
 	button, .button, input[type="submit"] {
 		@include border-radius(0);
-		padding: emCalc(8px) emCalc(16px);
+		padding: 5px 10px;
 		margin: 0;
 	}
 	li:first-child {
@@ -249,7 +295,8 @@
 	}
 	&.small {
 		button, .button, input[type="submit"] {
-			padding: emCalc(5px) emCalc(10px);
+			padding: 4px 7px;
+			font-size: rem-calc(11px);
 		}
 	}
 }

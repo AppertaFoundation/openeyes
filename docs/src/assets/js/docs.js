@@ -64,7 +64,7 @@
 				$(this).append($(this).find('code').html());
 				$(this).find('code').remove();
 			})
-			prettyPrint()
+			if (window.prettyPrint) prettyPrint()
 		},
 		moreInfo: function() {
 			$('.jsdoc .name a').on('click', function(e){

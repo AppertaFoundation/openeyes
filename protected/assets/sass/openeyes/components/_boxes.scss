@@ -41,7 +41,7 @@ $oe-box-border-radius: $global-radius !default;
 
 .box-header {
 	@extend .clearfix;
-	margin-bottom: emCalc(12px);
+	margin-bottom: 12px;
 }
 
 .box-actions {

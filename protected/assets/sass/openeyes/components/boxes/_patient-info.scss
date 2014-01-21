@@ -18,15 +18,15 @@
 .box {
 	&.patient-info {
 		background: #fafafa;
-		padding: emCalc(12px);
+		padding: 12px;
 		.box-title {
-			font-size: emCalc(13px);
+			font-size: rem-calc(13px);
 			color: #e49f10;
 			margin: 0;
-			padding: 0 0 emCalc(10px) 0;
+			padding: 0 0 8px 0;
 		}
 		.data-row {
-			padding: emCalc(10px) 0;
+			padding: 10px 0;
 			border-top: 1px dotted #ccc;
 			&:last-child {
 				padding-bottom: 0;
@@ -34,8 +34,8 @@
 			&.highlight {
 				background: goldenrod;
 				> .column {
-					padding-left: emCalc(12px);
-					padding-right: emCalc(12px);
+					padding-left: 12px;
+					padding-right: 12px;
 				}
 				.data-label {
 					color: #eee;
@@ -50,10 +50,10 @@
 		}
 		.add-data {
 			> fieldset > legend {
-				margin-bottom: emCalc(25px);
+				margin-bottom: 20px;
 			}
 			.field-row {
-				padding-bottom: emCalc(12px);
+				padding-bottom: 12px;
 				&:last-child {
 					padding-bottom: 0;
 				}
@@ -63,13 +63,13 @@
 			height: 22px;
 			width: 30px;
 			background: #dadada;
-			right: emCalc(12px);
+			right: 12px;
 			&:hover {
 				background: #3665ff;
 			}
 		}
 		.add-data {
-			margin: emCalc(6px) 0 emCalc(12px) 0;
+			margin: 6px 0 12px 0;
 		}
 	}
 }
@@ -114,7 +114,7 @@
 				display: inline-block;
 				padding: 5px 10px 5px 45px;
 				position: relative;
-				font-size: emCalc(12px);
+				font-size: rem-calc(12px);
 				[class*="icon-"] {
 					position: absolute;
 					left: 0;

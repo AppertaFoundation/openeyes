@@ -20,9 +20,9 @@
 		background: #f00;
 		border: 0;
 		color: #fff;
-		font-size: emCalc(16px);
-		margin-bottom: emCalc(10px);
-		padding: emCalc(8px);
+		font-size: rem-calc(16px);
+		margin-bottom: 10px;
+		padding: 8px;
 		text-align: center;
 		min-width: 1230px;
 		&.admin {
@@ -39,7 +39,7 @@
 			background: #ffc0cb;
 			color: #666;
 			p {
-				font-size: emCalc(12px);
+				font-size: rem-calc(12px);
 				margin: 0;
 			}
 		}

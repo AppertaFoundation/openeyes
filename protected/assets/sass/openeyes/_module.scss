@@ -14,6 +14,10 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+
+// This file simply loads the necessary files for accessing core (global)
+// placeholders, functions and mixins. It does not output any CSS.
+
 @import "openeyes/copyright";
 @import "settings/core";
 @import "settings/module";

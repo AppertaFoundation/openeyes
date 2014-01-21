@@ -50,13 +50,13 @@ module.exports = {
 				dest: 'docs/public/'
 			},
 			{
-				cwd: 'docs/src/',
+				cwd: 'docs/src/assets',
 				expand: true,
 				src: ['js/**/*'],
 				dest: 'docs/public/assets'
 			},
 			{
-				cwd: 'docs/src/',
+				cwd: 'docs/src/assets',
 				expand: true,
 				src: ['css/**/*'],
 				dest: 'docs/public/assets'

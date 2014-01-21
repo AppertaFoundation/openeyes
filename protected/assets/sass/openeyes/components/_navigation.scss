@@ -48,11 +48,10 @@
 
 .navigation {
 	&.user {
-		margin-bottom: emCalc(6px);
+		margin-bottom: 6px;
 		margin-left: 0;
 		li {
-			font-size: emCalc(13px);
-			margin: 0 0 0 emCalc(4px);
+			margin: 0 0 0 4px;
 			&.selected {
 				a {
 					background: #1e55c1;
@@ -62,7 +61,7 @@
 		}
 		a {
 			background: #cdd9e3;
-			padding: emCalc(8px) emCalc(5px) emCalc(2px) emCalc(5px);
+			padding: 6px 4px 2px 4px;
 			&:hover,
 			&:focus {
 				background: white;
@@ -70,33 +69,6 @@
 		}
 		.stuck & {
 			display: none;
-		}
-	}
-}
-
-// Admin sidebar navigation
-.navigation {
-	&.admin {
-		list-style-type: none;
-		a {
-			@include border-radius(3px);
-			background: #fff;
-			display: block;
-			margin-bottom: 4px;
-			padding: 4px 8px;
-			&:hover {
-				background: #3665ff;
-				color: #fff;
-			}
-			&.selected {
-				background: #ccc;
-				color: #333;
-			}
-		}
-		li:last-child {
-			a {
-				margin: 0;
-			}
 		}
 	}
 }

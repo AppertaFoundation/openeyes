@@ -29,7 +29,7 @@
 						<div class="example">
 
 							<div class="tooltip alerts" style="display:block">
-								<img width="17" height="17" src="/assets/5d39527b/img/diaryIcons/booked_user.png">
+								<img width="17" height="17" src="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/booked_user.png">
 								Created by: Enoch Root
 								Last modified by: Enoch Root
 							</div>
@@ -41,6 +41,9 @@
 								<div class="event-name">Operation booking</div>
 								<div class="event-info">Insertion of orbital implant</div>
 								<div class="event-issue">Operation requires scheduling</div>
+								<ul>
+									<li>List item</li>
+								</ul>
 							</div>
 						</div>
 

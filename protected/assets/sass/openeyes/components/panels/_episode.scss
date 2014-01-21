@@ -64,34 +64,36 @@
 // Styleguide 16.9
 
 // Episode panel vars
-
+//
+//
+//
 .panel {
 	&.episode {
 		@include border-top-left-radius(0);
 		@include border-bottom-left-radius(0);
 		border-color: #dad3ba;
 		border-width: 3px 1px 3px 0;
-		margin: 0 0 emCalc(5px) 0;
-		padding: emCalc(5px) emCalc(1px) emCalc(5px) 0;
+		margin: 0 0 5px 0;
+		padding: 5px 1px 5px 0;
 		position: relative;
 		&.legacy {
-			margin-top: emCalc(5px);
+			margin-top: 5px;
 			a {
 				color: #999;
 			}
 		}
 		.episode-date {
-			font-size: emCalc(11px);
-			padding-left: emCalc(7px);
+			font-size: rem-calc(11px);
+			padding-left: 5px;
 		}
 		.episode-title {
-			font-size: emCalc(15px);
-			margin: emCalc(5px) emCalc(2px) emCalc(3px) 0;
+			font-size: rem-calc(15px);
+			margin: 5px 2px 3px 0;
 			a {
 				background: image-url("_elements/graphic/view-episode-summary.png") right bottom no-repeat;
 				color: black;
 				display: block;
-				padding: emCalc(5px) 0 emCalc(17px) emCalc(7px);
+				padding: 5px 0 16px 5px;
 				@include border-radius(0 3px 3px 0);
 				&:hover {
 					background-color: #3665ff;
@@ -105,23 +107,22 @@
 				}
 			}
 			&.legacy {
-				padding: emCalc(5px) 0 emCalc(5px) emCalc(7px);
+				padding: 5px 0 5px 5px;
 			}
 		}
 		.add-event {
-			margin-left: emCalc(2px);
+			margin-left: 1px;
 		}
 		.events-overview {
 			@extend .clearfix;
 			display: none;
 			margin: 0;
-			padding: emCalc(2px) emCalc(5px) emCalc(2px) emCalc(8px);
+			padding: 2px 5px 2px 8px;
 			li {
 				float: left;
-				font-size: 1em;
 				line-height: 1;
 				list-style: none;
-				margin-right: emCalc(6px);
+				margin-right: 6px;
 				img {
 					height: 12px;
 					width: 12px;
@@ -138,19 +139,18 @@
 		}
 		.events {
 			border-top: 1px dotted #cccccc;
-			margin: emCalc(5px) 0 0 0;
-			padding: emCalc(4px) 0 0 0;
+			margin: 5px 0 0 0;
+			padding: 4px 0 0 0;
 			li {
-				font-size: 1em;
 				list-style: none;
-				margin: 0 0 emCalc(4px) 0;
+				margin: 0 0 4px 0;
 				position: relative;
 			}
 			a {
 				@include border-radius(0 6px 6px 0);
 				display: block;
 				font-size: $default-font-size;
-				padding: 0 emCalc(10px) 0 emCalc(8px);
+				padding: 0 8px 0 6px;
 				&:hover {
 					background: #3665ff image-url("_elements/icons/event/event_open_arrow.png") right center no-repeat;
 					color: white;
@@ -172,22 +172,22 @@
 			}
 			.event-date {
 				display: inline-block;
-				padding-left: emCalc(26px);
+				padding-left: 21px;
 				.day,
 				.mth,
 				.yr {
 					display: inline-block;
 				}
 				.day {
-					width: emCalc(26px);
+					width: rem-calc(21px);
 					text-align: right;
 					padding-right: 6px;
 				}
 				.mth {
-					width: emCalc(34px);
+					width: rem-calc(28px);
 				}
 				.yr {
-					width: emCalc(40px);
+					width: rem-calc(32px);
 				}
 			}
 			// Selected state

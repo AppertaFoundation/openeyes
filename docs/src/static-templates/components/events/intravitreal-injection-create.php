@@ -17,6 +17,14 @@
 			<div class="row">
 				<div class="large-12 column">
 
+					<div class="row">
+						<div class="large-<?php echo $columns;?> column large-offset-<?php echo $offset;?>">
+							<div class="alert-box alert injection-warning">
+								Here is a warning message.
+							</div>
+						</div>
+					</div>
+
 					<!-- Site -->
 					<section class="element">
 						<header class="element-header">
@@ -303,43 +311,43 @@
 										<ul class="ed_toolbar clearfix">
 											<li class="ed_img_button action" id="moveToFrontright_38">
 												<a href="#" data-function="moveToFront">
-													<img src="/assets/fdba9aa9/moveToFront.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/moveToFront.gif">
 												</a>
 												<span class="">Move to front</span>
 											</li>
 											<li class="ed_img_button action" id="moveToBackright_38">
 												<a href="#" data-function="moveToBack">
-													<img src="/assets/fdba9aa9/moveToBack.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/moveToBack.gif" />
 												</a>
 												<span>Move to back</span>
 											</li>
 											<li class="ed_img_button action" id="deleteSelectedDoodleright_38">
 												<a href="#" data-function="deleteSelectedDoodle">
-													<img src="/assets/fdba9aa9/deleteSelectedDoodle.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/deleteSelectedDoodle.gif" />
 												</a>
 												<span>Delete</span>
 											</li>
 											<li class="ed_img_button action" id="resetEyedrawright_38">
 												<a href="#" data-function="resetEyedraw">
-													<img src="/assets/fdba9aa9/resetEyedraw.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/resetEyedraw.gif" />
 												</a>
 												<span>Reset eyedraw</span>
 											</li>
 											<li class="ed_img_button action" id="lockright_38">
 												<a href="#" data-function="lock">
-													<img src="/assets/fdba9aa9/lock.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/lock.gif" />
 												</a>
 												<span>Lock</span>
 											</li>
 											<li class="ed_img_button action" id="unlockright_38">
 												<a href="#" data-function="unlock">
-													<img src="/assets/fdba9aa9/unlock.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/unlock.gif" />
 												</a>
 												<span>Unlock</span>
 											</li>
 											<li class="ed_img_button action" id="Labelright_38">
 												<a href="#" data-function="addDoodle" data-arg="Label">
-													<img src="/assets/fdba9aa9/Label.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/Label.gif" />
 												</a>
 												<span>Label</span>
 											</li>
@@ -347,7 +355,7 @@
 										<ul class="ed_toolbar clearfix" id="ed_canvas_edit_right_38doodleToolbar0">
 											<li class="ed_img_button action" id="InjectionSiteright_38">
 												<a href="#" data-function="addDoodle" data-arg="InjectionSite">
-													<img src="/assets/fdba9aa9/InjectionSite.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/InjectionSite.gif" />
 												</a>
 												<span class="">Injection site</span>
 											</li>
@@ -373,43 +381,43 @@
 										<ul class="ed_toolbar clearfix">
 											<li class="ed_img_button action" id="moveToFrontright_38">
 												<a href="#" data-function="moveToFront">
-													<img src="/assets/fdba9aa9/moveToFront.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/moveToFront.gif" />
 												</a>
 												<span class="">Move to front</span>
 											</li>
 											<li class="ed_img_button action" id="moveToBackright_38">
 												<a href="#" data-function="moveToBack">
-													<img src="/assets/fdba9aa9/moveToBack.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/moveToBack.gif" />
 												</a>
 												<span>Move to back</span>
 											</li>
 											<li class="ed_img_button action" id="deleteSelectedDoodleright_38">
 												<a href="#" data-function="deleteSelectedDoodle">
-													<img src="/assets/fdba9aa9/deleteSelectedDoodle.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/deleteSelectedDoodle.gif" />
 												</a>
 												<span>Delete</span>
 											</li>
 											<li class="ed_img_button action" id="resetEyedrawright_38">
 												<a href="#" data-function="resetEyedraw">
-													<img src="/assets/fdba9aa9/resetEyedraw.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/resetEyedraw.gif" />
 												</a>
 												<span>Reset eyedraw</span>
 											</li>
 											<li class="ed_img_button action" id="lockright_38">
 												<a href="#" data-function="lock">
-													<img src="/assets/fdba9aa9/lock.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/lock.gif" />
 												</a>
 												<span>Lock</span>
 											</li>
 											<li class="ed_img_button action" id="unlockright_38">
 												<a href="#" data-function="unlock">
-													<img src="/assets/fdba9aa9/unlock.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/unlock.gif" />
 												</a>
 												<span>Unlock</span>
 											</li>
 											<li class="ed_img_button action" id="Labelright_38">
 												<a href="#" data-function="addDoodle" data-arg="Label">
-													<img src="/assets/fdba9aa9/Label.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/Label.gif" />
 												</a>
 												<span>Label</span>
 											</li>
@@ -417,7 +425,7 @@
 										<ul class="ed_toolbar clearfix" id="ed_canvas_edit_right_38doodleToolbar0">
 											<li class="ed_img_button action" id="InjectionSiteright_38">
 												<a href="#" data-function="addDoodle" data-arg="InjectionSite">
-													<img src="/assets/fdba9aa9/InjectionSite.gif">
+													<img src="<?php echo $assets_root_path?>assets/modules/eyedraw/img/InjectionSite.gif" />
 												</a>
 												<span class="">Injection site</span>
 											</li>

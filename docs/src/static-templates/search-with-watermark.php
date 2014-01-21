@@ -5,6 +5,11 @@
 <? include 'components/head.php'; ?>
 </head>
 <body class="open-eyes">
+
+	<div class="alert-box watermark banner">
+		Here is a watermark message.
+	</div>
+
 	<div class="container main" role="main">
 
 		<? include 'components/header-logged-in-no-patient.php'; ?>

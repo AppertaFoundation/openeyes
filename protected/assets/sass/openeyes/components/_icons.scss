@@ -14,6 +14,12 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Site icons
+//
+// Icon spritates are auto-generated using Sass.
+//
+// Styleguide 2
+
 [class*="icon-"] {
 	@extend .hide-text;
 	display: inline-block;
@@ -40,7 +46,7 @@
 // .icon-alert-overnight         - Overnight
 // .icon-alert-unconfirmed       - Unconfirmed
 //
-// Styleguide 15.1
+// Styleguide 2.1
 
 // Alert icons
 @include sprite($oe-sprite-icons-alerts, "icon-alert", 17px, 17px);
@@ -56,7 +62,7 @@
 // .icon-button-large-left-arrow        - Left arrow
 // .icon-button-large-right-arrow       - Right arrow
 //
-// Styleguide 15.2
+// Styleguide 2.2
 
 // Large button icons
 @include sprite($oe-sprite-icons-button-large, "icon-button-large", 34px, 32px);
@@ -74,7 +80,7 @@
 // .icon-button-small-trash-can			- Trash can icon
 // .icon-button-small-trash-can-hover	- Trash can icon hover
 //
-// Styleguide 15.3
+// Styleguide 2.3
 
 // Small button icons
 @include sprite($oe-sprite-icons-button-small, "icon-button-small", 24px, 24px);
@@ -91,7 +97,7 @@
 // .icon-showhide-hide          - Hide icon
 // .icon-showhide-hide-hover    - Hide icon hover state
 //
-// Styleguide 15.4
+// Styleguide 2.4
 
 // Small button icons
 @include sprite($oe-sprite-icon-showhide, "icon-showhide", 11px, 11px);
@@ -107,7 +113,7 @@
 // .icon-patient-patient-id_small-warning	- Patient warning flag
 // .icon-patient-patient-id_small			- icon-patient-patient-id_small
 //
-// Styleguide 15.5
+// Styleguide 2.5
 
 // Small button icons
 @include sprite($oe-sprite-icon-patient, "icon-patient", 30px, 30px);
@@ -122,5 +128,5 @@
 // .icon-user-panel-cog				- User profile cog
 // .icon-user-panel-cog-highlight	- User profile cog highlight (hover)
 //
-// Styleguide 15.5
+// Styleguide 2.5
 @include sprite($oe-sprite-icon-user-panel, "icon-user-panel", 16px, 14px);

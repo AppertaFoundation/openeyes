@@ -18,7 +18,7 @@
 	&.injection-warning {
 		border-color: red;
 		border-width: 2px;
-		font-size: emCalc(20px);
-		padding: emCalc(5px);
+		font-size: rem-calc(20px);
+		padding: 6px;
 	}
 }

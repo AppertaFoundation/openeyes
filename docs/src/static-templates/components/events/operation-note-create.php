@@ -223,6 +223,7 @@
 													<option>-- Select --</option>
 												</select>
 											</div>
+											<div class="no-selections-msg pill">No selections message.</div>
 											<ul class="multi-select-selections field-row">
 												<li>
 													Decentered IOL

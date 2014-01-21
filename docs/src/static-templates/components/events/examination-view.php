@@ -9,6 +9,10 @@
 			</li>
 		</ul>
 		<div class="button-bar right">
+			<a href="#" class="delete event-action button button-icon small">
+				<span class="icon-button-small-trash-can"></span>
+				<span class="hide-offscreen">Delete</span>
+			</a>
 			<a href="#" class="button small">
 				Print
 			</a>

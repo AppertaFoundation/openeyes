@@ -84,15 +84,15 @@ $large-screen: 1440px;
 // Grid Variables
 //
 
-$row-width: emCalc($medium-screen);
-$column-gutter: emCalc(24px);
+$row-width: rem-calc($medium-screen);
+$column-gutter: rem-calc(24px);
 $total-columns: 12;
 
 //
 // Typography Variables
 //
 
-$default-font-size: emCalc(13px);
+$default-font-size: rem-calc(13px);
 
 //
 // Typography Variables
@@ -111,11 +111,11 @@ $header-text-rendering: optimizeLegibility;
 
 // Heading font sizes
 
-$h1-font-size: emCalc(24px);
-$h2-font-size: emCalc(19px);
-$h3-font-size: emCalc(17px);
-$h4-font-size: emCalc(16px);
-$h5-font-size: emCalc(15px);
+$h1-font-size: rem-calc(24px);
+$h2-font-size: rem-calc(19px);
+$h3-font-size: rem-calc(17px);
+$h4-font-size: rem-calc(16px);
+$h5-font-size: rem-calc(15px);
 $h6-font-size: 1em;
 
 // These control how subheaders are styled.
@@ -134,8 +134,8 @@ $paragraph-font-family: inherit;
 $paragraph-font-weight: normal;
 $paragraph-font-size: $default-font-size;
 $paragraph-line-height: 1.2;
-$paragraph-margin-bottom: emCalc(20px);
-$paragraph-aside-font-size: emCalc(14px);
+$paragraph-margin-bottom: rem-calc(20px);
+$paragraph-aside-font-size: rem-calc(14px);
 $paragraph-aside-line-height: 1.35;
 $paragraph-aside-font-style: italic;
 $paragraph-text-rendering: optimizeLegibility;
@@ -154,21 +154,21 @@ $anchor-font-color-hover: darken($primary-color, 5%);
 $hr-border-width: 1px;
 $hr-border-style: solid;
 $hr-border-color: #dddddd;
-$hr-margin: emCalc(20px);
+$hr-margin: rem-calc(20px);
 
 // We use these to style lists
 $list-style-position: outside;
 $list-side-margin: 0;
-$list-nested-margin: emCalc(20px);
+$list-nested-margin: rem-calc(20px);
 $definition-list-header-weight: bold;
 $definition-list-header-margin-bottom: 0.3em;
-$definition-list-margin-bottom: emCalc(12px);
+$definition-list-margin-bottom: rem-calc(12px);
 
 // We use these to style blockquotes
 $blockquote-font-color: lighten($header-font-color, 30%);
-$blockquote-padding: emCalc(9px) emCalc(20px) 0 emCalc(19px);
+$blockquote-padding: rem-calc(9px) rem-calc(20px) 0 rem-calc(19px);
 $blockquote-border: 1px solid #dddddd;
-$blockquote-cite-font-size: emCalc(13px);
+$blockquote-cite-font-size: rem-calc(13px);
 $blockquote-cite-font-color: lighten($header-font-color, 20%);
 $blockquote-cite-link-color: $blockquote-cite-font-color;
 
@@ -176,8 +176,8 @@ $blockquote-cite-link-color: $blockquote-cite-font-color;
 $acronym-underline: 1px dotted #dddddd;
 
 // We use these to control padding and margin
-$microformat-padding: emCalc(10px) emCalc(12px);
-$microformat-margin: 0 0 emCalc(20px) 0;
+$microformat-padding: rem-calc(10px) rem-calc(12px);
+$microformat-margin: 0 0 rem-calc(20px) 0;
 
 // We use these to control the border styles
 $microformat-border-width: 1px;
@@ -186,13 +186,13 @@ $microformat-border-color: #dddddd;
 
 // We use these to control full name font styles
 $microformat-fullname-font-weight: bold;
-$microformat-fullname-font-size: emCalc(15px);
+$microformat-fullname-font-size: rem-calc(15px);
 
 // We use this to control the summary font styles
 $microformat-summary-font-weight: bold;
 
 // We use this to control abbr padding
-$microformat-abbr-padding: 0 emCalc(1px);
+$microformat-abbr-padding: 0 rem-calc(1px);
 
 // We use this to control abbr font styles
 $microformat-abbr-font-weight: bold;
@@ -202,23 +202,23 @@ $microformat-abbr-font-decoration: none;
 // Button Variables
 //
 // We use these to build padding for buttons.
-$button-med: emCalc(8px);
-$button-tny: emCalc(7px);
-$button-sml: emCalc(9px);
-$button-lrg: emCalc(16px);
+$button-med: rem-calc(8px);
+$button-tny: rem-calc(7px);
+$button-sml: rem-calc(9px);
+$button-lrg: rem-calc(16px);
 
 // We use this to control the display property.
 $button-display: inline-block;
-$button-margin-bottom: emCalc(20px);
+$button-margin-bottom: rem-calc(20px);
 
 // We use these to control button text styles.
 $button-font-family: inherit;
 $button-font-color: white;
 $button-font-color-alt: #333333;
-$button-font-med: emCalc(16px);
-$button-font-tny: emCalc(11px);
-$button-font-sml: emCalc(13px);
-$button-font-lrg: emCalc(20px);
+$button-font-med: rem-calc(16px);
+$button-font-tny: rem-calc(11px);
+$button-font-sml: rem-calc(13px);
+$button-font-lrg: rem-calc(20px);
 $button-font-weight: normal;
 $button-font-align: center;
 
@@ -242,10 +242,10 @@ $button-disabled-opacity: 0.6;
 //
 
 // We use this to control alert padding.
-$alert-padding-top: emCalc(11px);
+$alert-padding-top: rem-calc(11px);
 $alert-padding-default-float: $alert-padding-top;
-$alert-padding-opposite-direction: $alert-padding-top + emCalc(10px);
-$alert-padding-bottom: $alert-padding-top + emCalc(1px);
+$alert-padding-opposite-direction: $alert-padding-top + rem-calc(10px);
+$alert-padding-bottom: $alert-padding-top + rem-calc(1px);
 
 // We use these to control text style.
 $alert-font-weight: normal;
@@ -260,12 +260,12 @@ $alert-function-factor: 10%;
 $alert-border-style: solid;
 $alert-border-width: 1px;
 $alert-border-color: #fc621f;
-$alert-bottom-margin: emCalc(20px);
+$alert-bottom-margin: rem-calc(20px);
 
 // We use these to style the close buttons
 $alert-close-color: #333333;
-$alert-close-position: emCalc(5px);
-$alert-close-font-size: emCalc(22px);
+$alert-close-position: rem-calc(5px);
+$alert-close-font-size: rem-calc(22px);
 $alert-close-opacity: 0.3;
 $alert-close-opacity-hover: 0.5;
 $alert-close-padding: 5px 4px 4px;
@@ -287,8 +287,8 @@ $panel-function-factor: 10%;
 $panel-border-color: darken($panel-bg, $panel-function-factor);
 
 // We use these to set default inner padding and bottom margin
-$panel-margin-bottom: emCalc(20px);
-$panel-padding: emCalc(10px);
+$panel-margin-bottom: rem-calc(20px);
+$panel-padding: rem-calc(10px);
 
 // We use these to set default font colors
 $panel-font-color: #333333;
@@ -301,17 +301,17 @@ $panel-header-adjust: true;
 //
 
 // We use this to set the base for lots of form spacing and positioning styles
-$form-spacing: emCalc(15px);
+$form-spacing: rem-calc(15px);
 
 // We use these to style the labels in different ways
 $form-label-pointer: pointer;
 $form-label-font-size: $default-font-size;
 $form-label-font-weight: 500;
 $form-label-font-color: black;
-$form-label-bottom-margin: emCalc(5px);
+$form-label-bottom-margin: rem-calc(5px);
 $input-font-family: inherit;
 $input-font-color: rgba(0, 0, 0, 0.75);
-$input-font-size: emCalc(13px);
+$input-font-size: rem-calc(13px);
 $input-bg-color: white;
 $input-focus-bg-color: white;
 $input-border-color: #6b8aaa;
@@ -345,9 +345,9 @@ $input-prefix-font-color: #333333;
 $input-prefix-font-color-alt: white;
 
 // We use these to style the error states for inputs and labels
-$input-error-message-padding: emCalc(6px) emCalc(4px);
-$input-error-message-top: (-1 * $form-spacing) - emCalc(5px);
-$input-error-message-font-size: emCalc(12px);
+$input-error-message-padding: rem-calc(6px) rem-calc(4px);
+$input-error-message-top: (-1 * $form-spacing) - rem-calc(5px);
+$input-error-message-font-size: rem-calc(12px);
 $input-error-message-font-weight: bold;
 $input-error-message-font-color: white;
 $input-error-message-font-color-alt: #333333;
@@ -371,38 +371,38 @@ $table-border-color: #dddddd;
 
 // These control the table head styles
 $table-head-bg: whitesmoke;
-$table-head-font-size: emCalc(11px);
+$table-head-font-size: rem-calc(11px);
 $table-head-font-color: #444444;
 $table-head-font-weight: bold;
 $table-head-padding: 8px 10px;
 
 // These control the row padding and font styles
 $table-row-padding: 10px;
-$table-row-font-size: emCalc(14px);
+$table-row-font-size: rem-calc(14px);
 $table-row-font-color: #222222;
-$table-line-height: emCalc(18px);
+$table-line-height: rem-calc(18px);
 
 // These are for controlling the display and margin of tables
 $table-display: table-cell;
-$table-margin-bottom: emCalc(10px);
+$table-margin-bottom: rem-calc(10px);
 
 //
 // Pagination
 //
 
 // We use these to control the pagination container
-$pagination-height: emCalc(24px);
-$pagination-margin: emCalc(-5px);
+$pagination-height: rem-calc(24px);
+$pagination-margin: rem-calc(-5px);
 
 // We use these to set the list-item properties
 $pagination-li-float: $default-float;
-$pagination-li-height: emCalc(24px);
+$pagination-li-height: rem-calc(24px);
 $pagination-li-font-color: #222;
-$pagination-li-font-size: emCalc(14px);
-$pagination-li-margin: emCalc(5px);
+$pagination-li-font-size: rem-calc(14px);
+$pagination-li-margin: rem-calc(5px);
 
 // We use these for the pagination anchor links
-$pagination-link-pad: 0 emCalc(10px) 0 emCalc(10px);
+$pagination-link-pad: 0 rem-calc(10px) 0 rem-calc(10px);
 $pagination-link-font-color: $primary-color;
 $pagination-link-active-bg: none;
 
@@ -443,5 +443,5 @@ $oe-sprite-icon-patient: "_elements/icons/patient/*.png";
 $oe-sprite-icon-user-panel: "_user-panel/*.png";
 
 // Button sizes
-$oe-button-primary-font-size: emCalc(16px);
-$oe-button-small-font-size: emCalc(13px);
+$oe-button-primary-font-size: rem-calc(16px);
+$oe-button-small-font-size: rem-calc(13px);

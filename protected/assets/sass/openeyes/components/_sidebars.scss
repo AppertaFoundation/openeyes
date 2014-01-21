@@ -16,7 +16,7 @@
 
 .sidebar {
 	&.episodes-and-events {
-		padding: emCalc(5px) 8px 0 0;
+		padding: 5px 8px 0 0;
 		width: 14.6%;
 		.add-episode {
 			margin-left: 2px;
@@ -28,8 +28,8 @@
 	&.admin {
 		h2 {
 			border-bottom: 1px dotted #ccc;
-			margin-bottom: emCalc(5px);
-			padding-bottom: emCalc(5px);
+			margin-bottom: 6px;
+			padding-bottom: 6px;
 		}
 	}
 }

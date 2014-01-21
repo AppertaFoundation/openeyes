@@ -26,3 +26,7 @@
 @media #{$small-up} {
 	@include grid-html-classes($size: large);
 }
+
+[class*="column"] + [class*="column"].end {
+	float: $default-float !important;
+}

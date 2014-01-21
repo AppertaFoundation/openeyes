@@ -43,27 +43,26 @@
 	@include radius(5px);
 	.close {
 		@include alert-close;
+		top: 1em;
 	}
 	ul {
 		line-height: 1.4;
 		margin: 0;
 	}
 	li {
-		font-size: 1em;
-		margin-left: 1.4em;
+		margin-left: 20px;
 	}
 	p {
-		font-size: 1em;
-		margin-bottom: 1em;
+		margin-bottom: 12px;
 	}
 	&.with-icon {
 		background-position: left top;
 		background-repeat: no-repeat;
-		padding-left: emCalc(60px);
+		padding-left: 48px;
 	}
 	&.bottom {
 		margin-bottom: 0;
-		margin-top: emCalc(20px);
+		margin-top: 16px;
 	}
 	.spinner {
 		float: left;

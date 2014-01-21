@@ -19,7 +19,7 @@
 		@extend %main-panel;
 		max-width: 488px;
 		label {
-			font-size: emCalc(15px);
+			font-size: rem-calc(15px);
 		}
 		.loader {
 			margin-right: 10px;

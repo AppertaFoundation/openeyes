@@ -31,7 +31,7 @@
 		padding-right: 0;
 		a {
 			font-size: $default-font-size;
-			margin-right: emCalc(10px);
+			margin-right: 8px;
 			overflow: hidden;
 			&:last-child {
 				margin: 0;
@@ -44,11 +44,11 @@
 			}
 			span {
 				display: inline-block;
-				padding: emCalc(3px) 0 0 0;
+				padding: 2px 0 0 0;
 			}
 			img {
-				margin-left: emCalc(-5px);
-				margin-top: emCalc(-4px);
+				margin-left: -4px;
+				margin-top: -3px;
 			}
 		}
 	}
@@ -56,7 +56,7 @@
 		list-style-type: none;
 		margin: 0;
 		li {
-			line-height: 1em;
+			line-height: rem-calc(13px);
 			margin: 0;
 			&:last-child {
 				border: 0;

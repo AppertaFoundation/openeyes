@@ -5,6 +5,11 @@
 <? include 'components/head.php'; ?>
 </head>
 <body class="open-eyes">
+
+	<div class="alert-box watermark admin banner">
+		You are logged in as admin. So this is OpenEyes Goldenrod Edition
+	</div>
+
 	<div class="container main" role="main">
 
 		<? include 'components/header-logged-in-no-patient.php'; ?>

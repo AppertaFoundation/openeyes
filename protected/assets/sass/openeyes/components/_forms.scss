@@ -35,10 +35,10 @@ label, .label {
 		@include form-label(inline, false);
 		margin: 0;
 		display: inline-block;
-		padding: 0 emCalc(10px) 0 0;
+		padding: 0 10px 0 0;
 	}
 	&.align {
-		padding-top: emCalc(5px);
+		padding-top: 4px;
 	}
 	.required {
 		color: #f00;
@@ -51,12 +51,12 @@ label, .label {
 	@if not $input-include-glowing-effect {
 		@include single-transition(all, 0.15s, linear);
 	}
-	padding: emCalc(5px) emCalc(6px);
+	padding: 4px 5px;
 	margin: 0;
 	&.inline {
 		display: inline-block;
 		width: auto;
-		margin: 0 emCalc(10px) 0 0;
+		margin: 0 8px 0 0;
 	}
 }
 
@@ -108,8 +108,8 @@ fieldset {
 			display: inline-block;
 			float: left;
 			width: auto;
-			padding-right: emCalc(15px);
-			line-height: emCalc(20px);
+			padding-right: 12px;
+			line-height: 16px;
 			margin: 0;
 		}
 	}
@@ -122,19 +122,12 @@ fieldset {
 		display: block;
 		margin: $legend-margin;
 		width: 100%;
-		&.column {
-			margin-bottom: 0;
-			// As the fieldset font-size is $default-font-size, we need to
-			// adjust the gutters to account for the smaller em width.
-			padding-left: $column-gutter / 2 + 1rem - $default-font-size;
-			padding-right: $column-gutter / 2 + 1rem - $default-font-size;
-		}
 		&.align {
 			@extend .label.align;
 		}
-	}
-	legend.column {
-		font-size: $default-font-size;
+		&.column {
+			margin-bottom: 0;
+		}
 	}
 }
 
@@ -162,7 +155,7 @@ small.error {
 .prefix,
 .postfix {
 	display: inline-block;
-	padding: 0 emCalc(5px);
+	padding: 0 5px;
 	&.align {
 		@extend .label.align;
 	}
@@ -172,6 +165,7 @@ small.error {
 .field-info {
 	font-size: $default-font-size;
 	display: inline-block;
+	/* FIXME */
 	select, input, textarea {
 		font-size: 1em;
 	}
@@ -181,7 +175,6 @@ small.error {
 .field-highlight {
 	@extend .pill;
 	display: block;
-	font-size: 1em;
 	max-width: 100%;
 	&.inline {
 		display: inline-block;
@@ -194,20 +187,23 @@ small.error {
 label {
 	&.highlight {
 		background: #e3f0f2;
-		padding: emCalc(5px) emCalc(14px) emCalc(6px) emCalc(10px);
-		margin-bottom: emCalc(6px);
+		padding: 4px 11px 5px 8px;
+		margin-bottom: 5px;
 		@include border-radius(3px);
 		&:hover {
 			background: #fff;
 		}
 		&.booking {
-			padding: emCalc(9px) emCalc(14px) emCalc(10px) emCalc(10px);
+			padding: 7px 10px 8px 8px;
 			&:hover {
 				background: #3665ff;
 				color: #fff;
 			}
 			img {
 				vertical-align: top;
+			}
+			.row {
+				display: block;
 			}
 		}
 	}
@@ -238,15 +234,16 @@ label {
 	@include border-radius($oe-form-input-radius);
 	height: auto;
 	&.small {
-		padding: emCalc(3px) emCalc(4px);
+		padding: 2px 3px;
 	}
 	&.fixed-width {
-		width: emCalc(110px);
+		width: 90px;
 	}
 	&.large {
-		padding: emCalc(8px) emCalc(5px);
+		padding: 7px 4px;
 	}
 }
+
 
 // Field rows
 .field-row {
@@ -255,6 +252,7 @@ label {
 		margin-bottom: 0;
 	}
 }
+
 .eyedraw-row {
 	@extend .field-row;
 }
@@ -264,24 +262,24 @@ label {
 	line-height: 1.3;
 	margin: 0;
 	li {
-		font-size: 1em;
-		margin-left: 1.4em;
+		margin-left: 18px;
 	}
 	&.none {
 		color: #999;
 		font-style: italic;
 	}
+	/* TODO: don't think this is ever used */
 	&.highlight {
 		@include border-radius(5px);
 		background: white;
 		padding: .75em;
-		font-size: emCalc(18px);
+		font-size: rem-calc(18px);
 		margin: 0 -.75em;
 		list-style-type: none;
 		li {
 			font-size: 1em;
 			margin: 0;
-			padding: emCalc(4px) 0;
+			padding: rem-calc(4px) 0;
 		}
 		&.important {
 			background: #fff300;

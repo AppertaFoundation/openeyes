@@ -16,13 +16,41 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+/* line 3, ../sass/openeyes/components/admin/_navigation.scss */
+.navigation.admin {
+  list-style-type: none;
+  margin: 0;
+}
+/* line 6, ../sass/openeyes/components/admin/_navigation.scss */
+.navigation.admin a {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  background: #fff;
+  display: block;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+}
+/* line 12, ../sass/openeyes/components/admin/_navigation.scss */
+.navigation.admin a:hover {
+  background: #3665ff;
+  color: #fff;
+}
+/* line 16, ../sass/openeyes/components/admin/_navigation.scss */
+.navigation.admin a.selected {
+  background: #ccc;
+  color: #333;
+}
+/* line 22, ../sass/openeyes/components/admin/_navigation.scss */
+.navigation.admin li:last-child a {
+  margin: 0;
+}
+
 /* line 19, ../sass/openeyes/components/admin/_forms.scss */
 .admin .field-row:last-child {
   padding: 0;
-}
-/* line 23, ../sass/openeyes/components/admin/_forms.scss */
-.admin legend {
-  font-size: 1.1em;
 }
 
 /* line 19, ../sass/openeyes/components/admin/_treeview.scss */
@@ -34,8 +62,4 @@
 .admin .treeview li {
   padding-top: 0;
   padding-bottom: 0;
-}
-/* line 26, ../sass/openeyes/components/admin/_treeview.scss */
-.admin .treeview li li {
-  font-size: 1em;
 }

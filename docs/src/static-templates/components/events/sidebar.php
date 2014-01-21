@@ -113,7 +113,7 @@
 								<img src="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
-								1 Jan 2000
+								<span class="day">31</span><span class="mth">Jan</span><span class="yr">2014</span>
 							</span>
 						</a>
 					</li>
@@ -123,7 +123,7 @@
 								<img src="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
-								1 Jan 2000
+								<span class="day">31</span><span class="mth">Jan</span><span class="yr">2014</span>
 							</span>
 						</a>
 					</li>
@@ -163,7 +163,7 @@
 								<img src="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
-								1 Jan 2000
+								<span class="day">31</span><span class="mth">Jan</span><span class="yr">2014</span>
 							</span>
 						</a>
 					</li>
@@ -173,7 +173,7 @@
 								<img src="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
-								1 Jan 2000
+								<span class="day">31</span><span class="mth">Jan</span><span class="yr">2014</span>
 							</span>
 						</a>
 					</li>

@@ -14,6 +14,10 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Tables
+//
+// Styleguide 5
+
 // Generic tables
 //
 // Markup:
@@ -38,40 +42,30 @@
 //
 // .grid             - Styles a table like a grid (with borders)
 //
-// Styleguide 6.1
+// Styleguide 5.1
 
 // Table vars
-$oe-table-cell-font-size: emCalc(13px);
-$oe-table-footer-cell-font-size: emCalc(11px);
+$oe-table-cell-font-size: rem-calc(13px);
+$oe-table-footer-cell-font-size: rem-calc(11px);
 $oe-table-cell-font-size-reset: 1em * 1em / $oe-table-cell-font-size;
 $oe-table-footer-cell-font-size-reset: 1em * 1em / $oe-table-footer-cell-font-size;
 
 table {
 	min-width: 100%;
 	@include table;
-	@include all-form-fields {
-		font-size: 1em;
-	}
-
 	tr {
 		th {
 			text-align: left;
 			background: #dddddd;
-			font-size: emCalc(11px);
+			font-size: rem-calc(11px);
 			&, label {
+				color: $table-head-font-color;
 				font-weight: bold;
+				font-size: rem-calc(11px);
 			}
 		}
 		td {
 			font-size: $oe-table-cell-font-size;
-		}
-		td, th {
-			button, .button {
-				font-size: $oe-button-primary-font-size / (1em / $oe-table-cell-font-size-reset);
-				&.small {
-					font-size: $oe-button-small-font-size / (1em / $oe-table-cell-font-size-reset);
-				}
-			}
 		}
 		&.odd {
 			background: $table-bg;
@@ -87,12 +81,6 @@ table {
 			td {
 				font-size: $oe-table-footer-cell-font-size;
 				font-weight: bold;
-				button, .button {
-					font-size: $oe-button-primary-font-size / (1em / $oe-table-footer-cell-font-size-reset);
-					&.small {
-						font-size: $oe-button-small-font-size / (1em / $oe-table-footer-cell-font-size-reset);
-					}
-				}
 			}
 			&.even,
 			&.alt,
@@ -131,15 +119,6 @@ table {
 			}
 		}
 	}
-	// Form fields within tables
-	td, th {
-		label {
-			font-size: emCalc(16px);
-		}
-	}
-	button, .button {
-		font-size: 1em;
-	}
 }
 
 table {
@@ -162,17 +141,14 @@ table {
 //     </thead>
 //     <tbody>
 //         <tr>
-//             <td>
-//                 Cell 1
-//             </td>
-//             <td>
-//                 Cell 2
-//             </td>
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
 //         </tr>
 //     </tbody>
 // </table>
 //
-// Styleguide 6.4
+// Styleguide 5.2
+
 table {
 	&.plain {
 		&, td, th, tr {
@@ -183,6 +159,26 @@ table {
 		}
 	}
 }
+
+// Blank table
+//
+// Markup:
+// <table class="blank">
+//     <thead>
+//         <tr>
+//             <th>Heading 1</th>
+//             <th>Heading 2</th>
+//         </tr>
+//     </thead>
+//     <tbody>
+//         <tr>
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
+//     </tbody>
+// </table>
+//
+// Styleguide 5.3
 
 table {
 	&.blank {
@@ -221,6 +217,28 @@ table {
 }
 
 // Patient episodes table
+//
+// Markup:
+// <table class="patient-episodes">
+//     <thead>
+//         <tr>
+//             <th>Heading 1</th>
+//             <th>Heading 2</th>
+//         </tr>
+//     </thead>
+//     <tbody>
+//         <tr class="speciality">
+//             <td colspan="2">Speciality</td>
+//         </tr>
+//         <tr>
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
+//     </tbody>
+// </table>
+//
+// Styleguide 5.3
+
 table {
 	&.patient-episodes {
 		border-bottom: 15px solid #ddd;
@@ -231,7 +249,7 @@ table {
 			background: #eae4ce;
 			td {
 				color: #69634f;
-				font-size: emCalc(12px);
+				font-size: rem-calc(12px);
 			}
 		}
 	}
@@ -249,9 +267,9 @@ table {
 // Patient contacts table
 table {
 	&.patient-contacts {
-		margin-top: emCalc(10px);
+		margin-top: 10px;
 		td {
-			font-size: emCalc(11px);
+			font-size: rem-calc(11px);
 		}
 		th, td {
 			padding-left: 10px;
@@ -264,6 +282,36 @@ table {
 }
 
 // Audit logs table
+//
+// Markup:
+// <table class="audit-logs">
+//     <thead>
+//         <tr>
+//             <th>Heading 1</th>
+//             <th>Heading 2</th>
+//         </tr>
+//     </thead>
+//     <tbody>
+//         <tr class="even green">
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
+//         <tr class="odd green">
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
+//         <tr class="even red">
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
+//         <tr class="odd red">
+//             <td>Cell 1</td>
+//             <td>Cell 2</td>
+//         </tr>
+//     </tbody>
+// </table>
+//
+// Styleguide 5.3
 table {
 	&.audit-logs {
 		tr {
