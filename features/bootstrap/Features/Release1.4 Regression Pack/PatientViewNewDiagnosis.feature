@@ -62,14 +62,10 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
     And I select a Previous Operation date of day "4" month "1" year "2012"
     Then I save the new Previous Operation
 
-    Then I edit the CVI Status "3"
-    And I select a CVI Status date of day "4" month "1" year "2012"
-    Then I save the new CVI status
+    Then I remove the Previous Operation
 
-    Then I Remove existing Allergy
-    Then I confirm the patient has no allergies and Save
+    And I Add a Family History of relative "4" side "3" condition "2" and comments "Family History Comments" and Save
 
-    And I Add a Family History of relative "5" side "2" condition "5" and comments "Family History Comments" and Save
 
 
   Scenario: Route 3: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
@@ -94,23 +90,9 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
 
     Then I remove the Systemic Diagnosis
 
-    Then I Add a Previous Operation of "4"
-    And I select that it affects Operation side "Both"
-    And I select a Previous Operation date of day "9" month "7" year "2012"
-    Then I save the new Previous Operation
-
-    Then I remove the Previous Operation
-
     And I Add Medication details medication "3" route "2" frequency "8" date from "1" and Save
 
     Then I remove the Medication
-
-    Then I edit the CVI Status "2"
-    And I select a CVI Status date of day "4" month "1" year "2012"
-    Then I save the new CVI status
-
-    Then I Add Allergy "12" and Save
-    Then I Remove existing Allergy
 
     And I Add a Family History of relative "4" side "3" condition "2" and comments "Family History Comments" and Save
 
