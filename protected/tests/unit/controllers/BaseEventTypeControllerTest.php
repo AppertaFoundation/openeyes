@@ -501,6 +501,57 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 		$controller->redirectToPatientEpisodes();
 	}
 
+	/**
+	 * @covers BaseEventTypeController::setElementDefaultOptions()
+	 */
+	public function testsetElementDefaultOptions_create()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->getMock();
+
+		$cls = new ReflectionClass('BaseEventTypeController');
+		$method = $cls->getMethod('setElementDefaultOptions');
+		$method->setAccessible(true);
+
+		$el = $this->getMockBuilder('BaseEventTypeElement')
+				->disableOriginalConstructor()
+				->setMockClassName('SampleElement')
+				->setMethods(array('setDefaultOptions'))
+				->getMock();
+
+		$el->expects($this->once())->method('setDefaultOptions');
+
+		$method->invoke($controller, $el, 'create');
+	}
+
+	/**
+	 * @covers BaseEventTypeController::setElementDefaultOptions()
+	 */
+	public function testsetElementDefaultOptions_createCustomControllerMethod()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('setElementDefaultOptions_SampleElement'))
+				->getMock();
+
+		$cls = new ReflectionClass('BaseEventTypeController');
+		$method = $cls->getMethod('setElementDefaultOptions');
+		$method->setAccessible(true);
+
+		$el = $this->getMockBuilder('BaseEventTypeElement')
+				->disableOriginalConstructor()
+				->setMockClassName('SampleElement')
+				->setMethods(array('setDefaultOptions'))
+				->getMock();
+
+		$el->expects($this->once())->method('setDefaultOptions');
+		$controller->expects($this->once())
+				->method('setElementDefaultOptions_SampleElement')
+				->with($this->identicalTo($el), $this->identicalTo('create'));
+
+		$method->invoke($controller, $el, 'create');
+	}
 }
 
 /**
@@ -528,4 +579,5 @@ class _WrapperBaseEventTypeController extends BaseEventTypeController
 	public function setOpenElementsFromCurrentEvent($action) { parent::setOpenElementsFromCurrentEvent($action); }
 	public function beforeAction($action) { parent::beforeAction($action); }
 	public function redirectToPatientEpisodes() { parent::redirectToPatientEpisodes(); }
+
 }

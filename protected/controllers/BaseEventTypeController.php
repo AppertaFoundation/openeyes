@@ -1579,7 +1579,7 @@ class BaseEventTypeController extends BaseModuleController
 		$this->jsVars['OE_asset_path'] = $this->assetPath;
 		$this->setFirmFromSession();
 
-		$subspecialty_id = $this->firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+		$subspecialty_id = $this->firm->serviceSubspecialtyAssignment ? $this->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
 
 		parent::processJsVars();
