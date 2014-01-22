@@ -7,3 +7,5 @@ $config=dirname(__FILE__).'/../config/test.php';
 require_once($yiit); 
 
 Yii::createWebApplication($config);
+
+Yii::app()->event->observers = array();
