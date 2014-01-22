@@ -187,6 +187,7 @@ class Examination extends OpenEyesPage
         'investigationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Investigation: Description cannot be blank when there are no child elements')]"),
         'dilationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Dilation: Please select at least one treatment, or remove the element')]"),
         'removeRefractionRightSide' => array('xpath' => "//*[@class='element-eye right-eye column side right']//*[@class='icon-remove-side remove-side']"),
+        'removeAllComorbidities' => array('xpath' => "//*[@class='field-row comorbidities-multi-select']//a[contains(text(),'Remove all')]")
     );
 
     public function history ()
@@ -214,7 +215,6 @@ class Examination extends OpenEyesPage
 
     public function addComorbiditiy ($com)
     {
-        $this->getSession()->wait(3000);
         $this->getElement('addComorbidities')->selectOption($com);
     }
 
@@ -376,6 +376,7 @@ class Examination extends OpenEyesPage
     public function RightAxis ($axis)
     {
         $this->getElement('sphereLeftAxis')->setValue($axis);
+
     }
 
     public function RightType ($type)
@@ -1040,6 +1041,11 @@ class Examination extends OpenEyesPage
     public function removeRefractionRightSide ()
     {
         $this->getElement('removeRefractionRightSide')->click();
+    }
+
+    public function removeAllComorbidities ()
+    {
+        $this->getElement('removeAllComorbidities')->click();
     }
 
 }

@@ -1,7 +1,8 @@
 @examination @regression
 Feature: Create New Examination Regression Tests
   Regression over 2 Sites and 4 Firms
-  Coverage at 60%
+  Coverage at 80%
+  Right Axis Statement is doubled up to stop Right Axis spinning bug
 
   Scenario: Route 1: Login and create a new Examination Event: Site 1:Queens, Firm:3 Anderson Glaucoma
 
@@ -19,7 +20,23 @@ Feature: Create New Examination Regression Tests
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
 
     And I choose to expand the Comorbidities section
+    Then I Add a Comorbiditiy of "1"
+    Then I Add a Comorbiditiy of "2"
+    Then I Add a Comorbiditiy of "3"
     Then I Add a Comorbiditiy of "4"
+    Then I Add a Comorbiditiy of "5"
+    Then I Add a Comorbiditiy of "6"
+    Then I Add a Comorbiditiy of "7"
+    Then I Add a Comorbiditiy of "8"
+    Then I Add a Comorbiditiy of "9"
+    Then I Add a Comorbiditiy of "10"
+    Then I Add a Comorbiditiy of "11"
+    Then I Add a Comorbiditiy of "12"
+    Then I Add a Comorbiditiy of "13"
+    Then I Add a Comorbiditiy of "14"
+    Then I Add a Comorbiditiy of "15"
+
+    Then I remove all comorbidities
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "2"
@@ -43,6 +60,7 @@ Feature: Create New Examination Regression Tests
 
     Then I enter right Refraction details of Sphere "-1" integer "9" fraction "0.75"
     And I enter right cylinder details of of Cylinder "1" integer "5" fraction "0"
+    Then I enter right Axis degrees of "145"
     Then I enter right Axis degrees of "145"
     And I enter a right type of "3"
 
@@ -92,7 +110,7 @@ Feature: Create New Examination Regression Tests
     Then I remove Refraction right side
 
     Then I Save the Examination
-#
+
   Scenario: Route 3:Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
@@ -133,10 +151,11 @@ Feature: Create New Examination Regression Tests
     Then I enter right Refraction details of Sphere "-1" integer "9" fraction "0.75"
     And I enter right cylinder details of of Cylinder "1" integer "5" fraction "0"
     Then I enter right Axis degrees of "167"
+    Then I enter right Axis degrees of "167"
     And I enter a right type of "3"
 
     Then I Save the Examination
-
+#
   Scenario: Route 4: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
             Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
 
@@ -177,6 +196,7 @@ Feature: Create New Examination Regression Tests
 
     Then I enter right Refraction details of Sphere "-1" integer "9" fraction "0.75"
     And I enter right cylinder details of of Cylinder "1" integer "5" fraction "0"
+    Then I enter right Axis degrees of "167"
     Then I enter right Axis degrees of "167"
     And I enter a right type of "3"
 
@@ -295,6 +315,7 @@ Feature: Create New Examination Regression Tests
 
     Then I enter right Refraction details of Sphere "-1" integer "9" fraction "0.75"
     And I enter right cylinder details of of Cylinder "1" integer "5" fraction "0"
+    Then I enter right Axis degrees of "167"
     Then I enter right Axis degrees of "167"
     And I enter a right type of "3"
 
@@ -419,6 +440,7 @@ Feature: Create New Examination Regression Tests
     Then I enter right Refraction details of Sphere "-1" integer "9" fraction "0.75"
     And I enter right cylinder details of of Cylinder "1" integer "5" fraction "0"
     Then I enter right Axis degrees of "167"
+    Then I enter right Axis degrees of "167"
     And I enter a right type of "3"
 
     Then I choose to expand the Adnexal Comorbidity section
@@ -522,6 +544,8 @@ Feature: Create New Examination Regression Tests
     Then I select the Latest Event
     Then I expand the Glaucoma sidebar
     And I add a New Event "Examination"
+
+    Then I choose to expand the Conclusion section
 
     Then I Save the Examination
 

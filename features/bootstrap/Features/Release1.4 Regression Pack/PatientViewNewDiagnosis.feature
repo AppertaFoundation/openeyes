@@ -37,7 +37,6 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
 
     And I Add a Family History of relative "1" side "3" condition "1" and comments "Family History Comments" and Save
 
-
   Scenario: Route 2: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
     Given I am on the OpenEyes "master" homepage
@@ -65,8 +64,6 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
     Then I remove the Previous Operation
 
     And I Add a Family History of relative "4" side "3" condition "2" and comments "Family History Comments" and Save
-
-
 
   Scenario: Route 3: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
