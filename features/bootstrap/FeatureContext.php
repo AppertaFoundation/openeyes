@@ -7,6 +7,7 @@ use Behat\Behat\Context\ClosuredContextInterface,
 use Behat\Gherkin\Node\PyStringNode,
 	Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
+use Symfony\Component\Finder\Finder;
 
 use Behat\YiiExtension\Context\YiiAwareContextInterface;
 use Behat\Mink\Driver\Selenium2Driver;
@@ -30,6 +31,9 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 
 	public function __construct(array $parameters)
 	{
+		//var_dump($this);
+		//echo var_export($this->container->get('behat.console.command')->setFeaturesPaths(), true);
+		//die("life is cool");
 		$this->useContext('LoginContext', new LoginContext($parameters));
 		$this->useContext('HomepageContext', new HomepageContext($parameters));
 		$this->useContext('WaitingListContext', new WaitingListContext($parameters));
@@ -45,6 +49,9 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		$this->useContext('IntravitrealContext', new IntravitrealContext($parameters));
 		$this->useContext('TherapyApplication', new TherapyApplicationContext($parameters));
 		$this->useContext('ConsentForm', new ConsentFormContext($parameters));
+
+		$this->loadModuleContextsPages($parameters);
+
 		$this->screenshots = array();
 		$this->screenshotPath = realpath(join(DIRECTORY_SEPARATOR, array(__DIR__, '..', '..', 'features', 'screenshots')));
 	}
@@ -158,25 +165,6 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		$this->screenshots = array();
 	}
 
-	//public function __destruct(){
-	//	$this->mink->getSession()->restart();
-	//}
-
-	/**
-	 * If tests are using Selenium driver, set implicit wait
-	 * so that next step is not executed until the xpath for the
-	 * requested element becomes valid
-	 *
-	 * BeforeScenario
-	 *
-	 * public function setImplicitWait()
-	 * {
-	 * if ($this->isSelenium2Driver()) {
-	 * $webDriver = $this->getSession()->getDriver()->getWebDriverSession();
-	 * $webDriver->timeouts()->implicit_wait(array('ms' => 20000));
-	 * }
-	 * }*/
-
 	/**
 	 * clear up screenshot before new scenario is run
 	 * @BeforeScenario
@@ -184,11 +172,37 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 
 	public function clearScreenshots(){
 		$this->screenshots = array();
+	}
 
-		/*$driver = $this->mink->getSession()->getDriver();
-		if ($driver instanceof Behat\Mink\Driver\Selenium2Driver) {
-			$webDriver = $driver->getWebDriverSession();
-			$webDriver->timeouts()->implicit_wait(array('ms' => 20000));
-		}*/
+	/**
+	 * @description custom loader of features contexts and pages from Yii modules
+	 * @param $parameters
+	 */
+	private function loadModuleContextsPages($parameters){
+		$modsPath = realpath(__DIR__.'/../../protected/modules');
+
+		foreach (Finder::create()->directories()->depth(0)->in($modsPath) as $path) {
+			if (file_exists($path.'/features')) {
+				$moduleFeaturesPaths[] = $path.'/features';
+			}
+		}
+
+		foreach($moduleFeaturesPaths as $moduleFeaturesPath){
+			foreach (Finder::create()->files()->name('*Context.php')->in($moduleFeaturesPath) as $contextFileName) {
+				$contextName =  substr( $contextFileName->getBasename(), 0  , -4);
+				require_once((string) $contextFileName);
+				$this->useContext($contextName, new $contextName($parameters));
+			}
+			foreach( Finder::create()->files()->name('*.php')->in($moduleFeaturesPath . DIRECTORY_SEPARATOR . 'bootstrap' . DIRECTORY_SEPARATOR . 'Pages') as $pageObject){
+				$pageName =  substr( $pageObject->getBasename(), 0  , -4);
+				if(!class_exists($pageName) || false){
+					require_once((string) $pageObject);
+				}
+				else{
+				//	throw new Exception('Page object' . $pageName . ' was already defined somewhere. Duplicate path is ' . $pageObject);
+					$this->printDebug('Page object: ' . $pageName . ' was already defined somewhere. Duplicate path is ' . $pageObject);
+				}
+			}
+		}
 	}
 }
