@@ -442,4 +442,9 @@ class Event extends BaseActiveRecord
 			'requested_datetime' => $this->last_modified_date,
 		)));
 	}
+
+	public function isLocked()
+	{
+		return $this->delete_pending;
+	}
 }
