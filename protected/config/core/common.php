@@ -166,6 +166,7 @@ return array(
 			'internal_services' => array(
 				'Service\\CommissioningBodyService',
 				'Service\\GpService',
+				'Service\\PracticeService',
 			),
 		),
 		'session' => array(
