@@ -205,6 +205,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
     {
+        $this->waitForElementDisplayNone('#add_medication');
         $this->getElement('addMedicationButton')->click();
         $this->getElement('selectMedication')->selectOption($medication);
         $this->getElement('selectRoute')->selectOption($route);
@@ -213,12 +214,11 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 		$this->waitForElementDisplayBlock('#ui-datepicker-div', 10000);
         $this->getElement('selectDateFrom')->click($datefrom);
         $this->getElement('saveMedication')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->waitForElementDisplayNone('#add_medication');
     }
 
     public function editCVIstatus ($status)
     {
-
         $this->getElement('editCVIstatusButton')->click();
         $this->getElement('cviStatus')->selectOption($status);
         $this->getSession()->wait(3000);
@@ -326,6 +326,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function removeAndConfirm ()
     {
+        $this->waitForElementDisplayNone('#add_new_ophthalmic_diagnosis');
         $this->getElement('removeOpthalmicDiagnosisLink')->click();
         $this->getElement('removeOpthalmicDiagnosisConfirm')->click();
         $this->getSession()->wait(5000, '$.active == 0');

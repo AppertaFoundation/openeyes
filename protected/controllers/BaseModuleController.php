@@ -72,7 +72,7 @@ class BaseModuleController extends BaseController {
 
 
 		// Set the module CSS class name.
-		$this->moduleNameCssClass = strtolower(Yii::app()->getController()->module->id);
+		$this->moduleNameCssClass = strtolower($this->module->id);
 
 		// Register module assets.
 		$this->registerAssets();

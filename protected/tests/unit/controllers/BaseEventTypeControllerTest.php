@@ -23,8 +23,6 @@
  */
 class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 {
-	protected $start = null;
-	protected $latest = null;
 
 	protected function getExaminationController()
 	{
@@ -133,12 +131,20 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 			$this->getElementType('VisualFunctionElementType','visualfunction'),
 			$this->getElementType('VisualAcuityElementType', 'va'),
 		);
-		$element_types[0]->child_element_types = array($element_types[1]);
-		// define pasthistory as a child element type
-		$element_types[1]->parent_element_type = $element_types[0];
+
+		// overriding relations to define the proper parent/child relations
 		foreach ($element_types as $et) {
+			// set child arrays as no db look up
+			if ($et->name == 'history') {
+				$et->child_element_types = array($element_types[1]);
+			}
+			else {
+				$et->child_element_types = array();
+			}
+
 			if ($et->name == 'pasthistory') {
 				$et->expects( $this->any() )->method('isChild')->will($this->returnValue(true));
+				$et->parent_element_type = $element_types[0];
 			}
 			else {
 				$et->expects( $this->any() )->method('isChild')->will($this->returnValue(false));
@@ -431,14 +437,120 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers BaseEventTypeController::getChildOptionalElements()
-	 * @todo complete this test
 	 */
 	public function testgetChildOptionalElements_nonParentElement()
 	{
 		$controller = $this->getExaminationController();
 		$controller->event_type = $this->getEventTypeWithAllElementTypes();
 		$controller->setOpenElementsFromCurrentEvent('create');
-		$this->markTestIncomplete('Not had time to define this test yet.');
+
+		$element_types = $this->getAllElementTypes();
+
+		$optional = $controller->getChildOptionalElements($element_types[3]);
+		$this->assertCount(0, $optional, 'Non-parent element should return empty array of optional children');
+	}
+
+	/**
+	 * @covers BaseEventTypeController::beforeAction()
+	 */
+	public function testbeforeAction()
+	{
+		$controller = $this->getMockBuilder('_WrapperBaseEventTypeController')
+				->setConstructorArgs(array('_WrapperBaseEventTypeController',new BaseEventTypeModule('ExaminationEvent',null)))
+				->setMethods(array('setFirmFromSession','initAction', 'verifyActionAccess', 'registerAssets', 'setupAssetManager'))
+				->getMock();
+		$controller->expects($this->once())->method('setFirmFromSession');
+		$controller->expects($this->once())->method('initAction');
+		$controller->expects($this->once())->method('verifyActionAccess');
+		$controller->expects($this->once())->method('registerAssets');
+		$controller->expects($this->once())->method('setupAssetManager');
+
+		$action = new CInlineAction($controller,'create');
+		$controller->action = $action;
+		$controller->firm = true;
+		$controller->event_type = new EventType();
+		$controller->beforeAction($action);
+	}
+
+	/**
+	 * @covers BaseEventTypeController::redirectToPatientEpisodes()
+	 *
+	 */
+	public function testredirectToPatientEpisodes()
+	{
+		$controller = $this->getMockBuilder('_WrapperBaseEventTypeController')
+				->setConstructorArgs(array('_WrapperBaseEventTypeController',new BaseEventTypeModule('ExaminationEvent',null)))
+				->setMethods(array('redirect'))
+				->getMock();
+
+		// nulling getId allows us to set the property
+		$patient = $this->getMockBuilder('Patient')
+				->disableOriginalConstructor()
+				->setMethods(array('getId'))
+				->getMock();
+
+		$patient->id = 2;
+		$controller->patient = $patient;
+
+		// checking full url seems a little dirty, but I don't want to dwell too much on this method for now
+		$controller->expects($this->once())->method('redirect')->with($this->anything())
+				->will($this->returnCallback(function($arr) {
+							self::assertCount(1, $arr);
+							self::assertEquals("/patient/episodes/2", $arr[0]);
+						}));
+		$controller->redirectToPatientEpisodes();
+	}
+
+	/**
+	 * @covers BaseEventTypeController::setElementDefaultOptions()
+	 */
+	public function testsetElementDefaultOptions_create()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->getMock();
+
+		$cls = new ReflectionClass('BaseEventTypeController');
+		$method = $cls->getMethod('setElementDefaultOptions');
+		$method->setAccessible(true);
+
+		$el = $this->getMockBuilder('BaseEventTypeElement')
+				->disableOriginalConstructor()
+				->setMockClassName('SampleElement')
+				->setMethods(array('setDefaultOptions'))
+				->getMock();
+
+		$el->expects($this->once())->method('setDefaultOptions');
+
+		$method->invoke($controller, $el, 'create');
+	}
+
+	/**
+	 * @covers BaseEventTypeController::setElementDefaultOptions()
+	 */
+	public function testsetElementDefaultOptions_createCustomControllerMethod()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('setElementDefaultOptions_SampleElement'))
+				->getMock();
+
+		$cls = new ReflectionClass('BaseEventTypeController');
+		$method = $cls->getMethod('setElementDefaultOptions');
+		$method->setAccessible(true);
+
+		$el = $this->getMockBuilder('BaseEventTypeElement')
+				->disableOriginalConstructor()
+				->setMockClassName('SampleElement')
+				->setMethods(array('setDefaultOptions'))
+				->getMock();
+
+		$el->expects($this->once())->method('setDefaultOptions');
+		$controller->expects($this->once())
+				->method('setElementDefaultOptions_SampleElement')
+				->with($this->identicalTo($el), $this->identicalTo('create'));
+
+		$method->invoke($controller, $el, 'create');
 	}
 }
 
@@ -458,10 +570,14 @@ class _WrapperBaseEventTypeController extends BaseEventTypeController
 	// expose protected attributes
 	public $event_type;
 	public $open_elements;
+	public $action;
 	// expose protected method in abstract class
 	public function getEventElements() { return parent::getEventElements(); }
 	// expose protected open_elements property
 	public function getOpenElements() { return $this->open_elements; }
 	// expose protected setOpenElementsFromCurrentEvent method
 	public function setOpenElementsFromCurrentEvent($action) { parent::setOpenElementsFromCurrentEvent($action); }
+	public function beforeAction($action) { parent::beforeAction($action); }
+	public function redirectToPatientEpisodes() { parent::redirectToPatientEpisodes(); }
+
 }

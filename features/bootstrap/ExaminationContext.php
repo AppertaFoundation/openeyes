@@ -1603,4 +1603,16 @@ class ExaminationContext extends PageObjectContext
         $examination= $this->getPage('Examination');
         $examination->removeRefractionRightSide();
     }
+
+    /**
+     * @Then /^I remove all comorbidities$/
+     */
+    public function removeComorbidties()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeAllComorbidities();
+    }
 }

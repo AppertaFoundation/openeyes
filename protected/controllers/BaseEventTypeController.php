@@ -166,6 +166,21 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
+	 * Sets the firm property on the controller from the session
+	 *
+	 * @throws HttpException
+	 */
+	protected function setFirmFromSession()
+	{
+		if (!$firm_id = Yii::app()->session->get('selected_firm_id')) {
+			throw new HttpException('Firm not selected');
+		}
+		if (!$this->firm || $this->firm->id != $firm_id) {
+			$this->firm = Firm::model()->findByPk($firm_id);
+		}
+	}
+
+	/**
 	 * Abstraction of getting the elements for the event being controlled to allow more complex overrides (such as workflow)
 	 * where required.
 	 *
@@ -313,7 +328,7 @@ class BaseEventTypeController extends BaseModuleController
 			}
 		}
 
-		$this->firm = Firm::model()->findByPk(Yii::app()->session->get('selected_firm_id'));
+		$this->setFirmFromSession();
 
 		if (!isset($this->firm)) {
 			// No firm selected, reject
@@ -855,8 +870,8 @@ class BaseEventTypeController extends BaseModuleController
 		Yii::app()->assetManager->reset();
 
 		$this->patient = $patient;
-		$session = Yii::app()->session;
-		$this->firm = Firm::model()->findByPk($session['selected_firm_id']);
+
+		$this->setFirmFromSession();
 
 		$this->episode = $this->getEpisode();
 
@@ -1562,8 +1577,9 @@ class BaseEventTypeController extends BaseModuleController
 			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
 		}
 		$this->jsVars['OE_asset_path'] = $this->assetPath;
-		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+		$this->setFirmFromSession();
+
+		$subspecialty_id = $this->firm->serviceSubspecialtyAssignment ? $this->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
 
 		parent::processJsVars();
