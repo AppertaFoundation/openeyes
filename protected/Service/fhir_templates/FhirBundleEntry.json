@@ -1,0 +1,15 @@
+{
+	"title": {":subst": "title"},
+	"id": {":subst": "id"},
+	"link": [
+		{"rel": "self", "href": {":subst": "self"}}
+	],
+	"updated": {":subst": "updated"},
+	"category": [
+		{
+			"scheme": "http://hl7.org/fhir/tag/profile",
+			"term": {":subst": "profile"}
+		}
+	],
+	"content": {":subst": "resource"}
+}
