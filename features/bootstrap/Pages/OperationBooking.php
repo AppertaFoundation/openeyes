@@ -40,7 +40,8 @@ class OperationBooking extends OpenEyesPage
         'sessionOperationComments' => array('xpath' => "//*[@id='operation_comments']"),
         'confirmSlot' => array('xpath' => "//*[@id='confirm_slot']"),
         'EmergencyList' => array ('xpath' => "//select[@id='firm_id']"),
-				'currentMonth' => array('css' => "#current_month")
+	    'currentMonth' => array('css' => "#current_month"),
+        'saveButton' => array('xpath' => "//*[@id='et_save']")
     );
 
     public function diagnosisEyes ($eye)
@@ -246,5 +247,10 @@ class OperationBooking extends OpenEyesPage
     public function confirmSlot ()
     {
         $this->getElement('confirmSlot')->click();
+    }
+
+    public function save ()
+    {
+        $this->getElement('saveButton')->click();
     }
 }

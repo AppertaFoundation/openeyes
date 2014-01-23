@@ -1615,4 +1615,54 @@ class ExaminationContext extends PageObjectContext
         $examination= $this->getPage('Examination');
         $examination->removeAllComorbidities();
     }
+
+    /**
+     * @Given /^I choose to add a new left Visual Acuity reading of "([^"]*)" and a reading method of "([^"]*)"$/
+     */
+    public function iChooseToAddANewLeftVisualAcuityReadingOfAndAReadingMethodOf($reading, $method)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->addLeftVisualAcuity($reading, $method);
+    }
+
+    /**
+     * @Given /^I choose to add a new Right Visual Acuity reading of "([^"]*)" and a reading method of "([^"]*)"$/
+     */
+    public function iChooseToAddANewRightVisualAcuityReadingOfAndAReadingMethodOf($reading, $method)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->addRightVisualAcuity($reading, $method);
+    }
+
+    /**
+     * @Then /^I remove the newly added Left Visual Acuity$/
+     */
+    public function iRemoveTheNewlyAddedLeftVisualAcuity()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeSecondLeftVisualAcuity();
+    }
+
+    /**
+     * @Then /^I remove the newly added Right Visual Acuity$/
+     */
+    public function iRemoveTheNewlyAddedRightVisualAcuity()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeSecondRightVisualAcuity();
+    }
+
+
 }
