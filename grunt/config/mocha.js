@@ -3,23 +3,23 @@ module.exports = {
 		run: true,
 		reporter: 'Spec',
 		src: [
-			'protected/assets/js/specs/runner/*.html',
+			'protected/tests/js/runners/*.html',
 		]
 	},
 	all: {
 		src: [
-			'protected/assets/js/specs/runner/*.html',
-			'protected/modules/**/assets/js/specs/runner/*.html'
+			'protected/tests/js/runners/*.html',
+			'protected/modules/**/tests/js/runners/*.html'
 		]
 	},
 	core: {
 		src: [
-			'protected/assets/js/specs/runner/*.html',
+			'protected/tests/js/runners/*.html',
 		]
 	},
 	singleTest: {
 		src: [
-			'protected/assets/js/specs/runner/*.html',
+			'protected/tests/js/runners/*.html',
 		],
 		options: {
 			mocha: {

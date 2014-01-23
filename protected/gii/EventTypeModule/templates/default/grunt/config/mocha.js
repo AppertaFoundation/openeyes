@@ -2,7 +2,7 @@ module.exports = function(grunt) {
 	return {
 		test: {
 			src: [
-				'assets/js/specs/runner/*.html'
+				'tests/js/runners/*.html'
 			],
 			options: {
 				run: true,

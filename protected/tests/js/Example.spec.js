@@ -2,7 +2,7 @@
 This example spec shows some common examples.
  */
 
-
+// A basic test suite.
 describe('My fancy module', function() {
 
 	describe('A fancy feature', function() {
@@ -27,6 +27,7 @@ describe('My fancy module', function() {
 	});
 });
 
+// Some examples.
 describe('Example tests', function() {
 
 	describe('Chai assertions', function() {
@@ -142,5 +143,34 @@ describe('Example tests', function() {
 				done();
 			}, 50);
 		})
+	});
+});
+
+// Can haz AJAX?
+describe('AJAX', function() {
+
+	describe('Getting fixtures with AJAX', function() {
+
+		it('should get the test JSON file', function(done) {
+
+			$.ajax({
+				type: 'GET',
+				url: '../fixtures/ajax_test.json',
+				dataType: 'JSON'
+			})
+			.success(function() {
+				done(null);
+			})
+			.error(function() {
+				done(
+					'Unable to load the JSON file via ajax. ' +
+					'This could be due to protocol mis-match. ' +
+					'Is the test runner being served using the file protocol?'
+				);
+			});
+
+			// write your assertions here
+			expect(1).to.equal(1);
+		});
 	});
 });

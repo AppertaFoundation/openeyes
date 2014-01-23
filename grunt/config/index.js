@@ -11,6 +11,8 @@ module.exports = function(grunt) {
 		jsdoc: require('./jsdoc'),
 		docs: require('./docs'),
 		hub: require('./hub'),
-		mocha: require('./mocha')
+		mocha: require('./mocha'),
+		connect: require('./connect'),
+		test: require('./test')
 	};
 };
