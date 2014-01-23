@@ -24,7 +24,8 @@
  * @property integer $id
  * @property string $name
  * @property string $shortname
- * 
+ * @property string $correspondence_name
+ *
  */
 class CommissioningBodyServiceType extends BaseActiveRecord
 {
@@ -52,10 +53,10 @@ class CommissioningBodyServiceType extends BaseActiveRecord
 	{
 		return array(
 			array('name', 'required'),
-			array('name, shortname', 'safe'),
+			array('name, shortname, correspondence_name', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, name, correspondence_name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -94,6 +95,7 @@ class CommissioningBodyServiceType extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('correspondence_name',$this->correspondence_name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
