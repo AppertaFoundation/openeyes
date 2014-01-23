@@ -404,6 +404,9 @@ class AdminController extends BaseAdminController
 			throw new Exception("Empty search query string, this shouldn't happen");
 		}
 
+		$criteria->addCondition('t.first_name != :blank or t.last_name != :blank');
+		$criteria->params[':blank'] = '';
+
 		if (count($ex) == 1) {
 			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$_GET['q']),false);
 			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$_GET['q']),false,'OR');
