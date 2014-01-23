@@ -164,6 +164,7 @@ return array(
 		'service' => array(
 			'class' => '\\Service\ServiceManager',
 			'internal_services' => array(
+				'Service\\CommissioningBodyService',
 				'Service\\GpService',
 			),
 		),
