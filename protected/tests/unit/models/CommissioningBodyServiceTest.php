@@ -24,21 +24,15 @@ class CommissioningBodyServiceTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testgetCorrespondenceAddress_nostatic()
 	{
-		$contact_name = 'Test Name';
-		$contact = $this->getMockBuilder('Contact')
-				->disableOriginalConstructor()
-				->setMethods(array('getCorrespondenceName'))
-				->getMock();
-
-		$contact->expects($this->once())->method('getCorrespondenceName')->will($this->returnValue($contact_name));
+		$cbs_name = 'Test Name';
 		$cbs_type = new CommissioningBodyServiceType();
 		$cbs_type->correspondence_name = null;
 
 		$cbs = new CommissioningBodyService();
-		$cbs->contact = $contact;
+		$cbs->name = $cbs_name;
 		$cbs->type = $cbs_type;
 
-		$this->assertEquals($contact_name, $cbs->getCorrespondenceName(), 'Correspondence Name should be retrieved from contact when type correspondence name is null');
+		$this->assertEquals(array($cbs_name), $cbs->getCorrespondenceName(), 'Correspondence Name should be retrieved from contact when type correspondence name is null');
 	}
 
 	/**
@@ -46,19 +40,17 @@ class CommissioningBodyServiceTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testgetCorrespondenceAddress_withstatic()
 	{
+		$cbs_name = 'Test Name';
 		$cbs_type_name = 'CBS Type Test Name';
-		$contact = $this->getMockBuilder('Contact')
-				->disableOriginalConstructor()
-				->getMock();
 
 		$cbs_type = new CommissioningBodyServiceType();
 		$cbs_type->correspondence_name = $cbs_type_name;
 
 		$cbs = new CommissioningBodyService();
-		$cbs->contact = $contact;
+		$cbs->name = $cbs_name;
 		$cbs->type = $cbs_type;
 
-		$this->assertEquals($cbs_type_name, $cbs->getCorrespondenceName(), 'Correspondence Name should be retrieved from CBS Type when defined');
+		$this->assertEquals(array($cbs_name, $cbs_type_name), $cbs->getCorrespondenceName(), 'Correspondence Name should have type name appended when available in the CBS type');
 	}
 
 }

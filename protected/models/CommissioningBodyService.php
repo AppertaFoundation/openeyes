@@ -144,15 +144,14 @@ class CommissioningBodyService extends BaseActiveRecord
 	/**
 	 * Returns the appropriate name (first portion of address) for the service
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function getCorrespondenceName()
 	{
+		$cname = array($this->name);
 		if ($static_type_name = $this->type->correspondence_name) {
-			return $static_type_name;
+			$cname[] = $static_type_name;
 		}
-		else {
-			return $this->contact->getCorrespondenceName();
-		}
+		return $cname;
 	}
 }
