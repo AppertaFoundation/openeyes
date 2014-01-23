@@ -18,15 +18,15 @@
  */
 
 /**
- * This is the model class for table "commissioning_body".
+ * This is the model class for table "commissioning_body_service".
  *
- * The followings are the available columns in table 'commissioning_body':
+ * The followings are the available columns in table 'commissioning_body_service':
  * @property integer $id
  * @property string $name
  *
  * The followings are the available model relations:
  * @property Contact $contact
- * @property CommissioningBodyType $type
+ * @property CommissioningBodyServiceType $type
  * @property Practice[] $practices
  */
 class CommissioningBodyService extends BaseActiveRecord
@@ -83,7 +83,7 @@ class CommissioningBodyService extends BaseActiveRecord
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'type' => array(self::BELONGS_TO, 'CommissioningBodyServiceType', 'commissioning_body_service_type_id'),
 			// At this stage, there is a one to many relationship for bodies to services, but at some point in the future
-			// it may be necessary to update this to a many to many to relationship 
+			// it may be necessary to update this to a many to many to relationship
 			'commissioning_body' => array(self::BELONGS_TO, 'CommissioningBody', 'commissioning_body_id'),
 		);
 	}
@@ -118,21 +118,41 @@ class CommissioningBodyService extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-	
+
+	/**
+	 * Return the type short name for this service
+	 *
+	 * @return string
+	 */
 	public function getTypeShortName()
 	{
 		return $this->type ? $this->type->shortname : 'CBS';
 	}
-	
+
+	/**
+	 * Ensure we have a contact/address before returning
+	 *
+	 * @return Address|null
+	 */
 	public function getAddress()
 	{
 		if ($this->contact && $this->contact->address) {
 			return $this->contact->address;
 		}
 	}
-	
+
+	/**
+	 * Returns the appropriate name (first portion of address) for the service
+	 *
+	 * @return string
+	 */
 	public function getCorrespondenceName()
 	{
-		return $this->name;
+		if ($static_type_name = $this->type->correspondence_name) {
+			return $static_type_name;
+		}
+		else {
+			return $this->contact->getCorrespondenceName();
+		}
 	}
 }
