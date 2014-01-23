@@ -552,12 +552,40 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 
 		$method->invoke($controller, $el, 'create');
 	}
+
+	public function testsetElementOptions()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('setElementDefaultOptions'))
+				->getMock();
+
+		$cls = new ReflectionClass('BaseEventTypeController');
+		$open_elements = $cls->getProperty('open_elements');
+		$open_elements->setAccessible(true);
+		$method = $cls->getMethod('setElementOptions');
+		$method->setAccessible(true);
+
+		$ets = $this->getAllElementTypes();
+		$e1 = $ets[0]->getInstance();
+		$e2 = $ets[1]->getInstance();
+
+		$open_elements->setValue($controller, array($e1, $e2));
+		$controller->expects($this->at(0))
+				->method('setElementDefaultOptions')
+				->with($this->identicalTo($e1), $this->identicalTo('create'));
+		$controller->expects($this->at(1))
+				->method('setElementDefaultOptions')
+				->with($this->identicalTo($e2), $this->identicalTo('create'));
+		$method->invoke($controller,'create');
+	}
 }
 
 /**
  * Class _WrapperBaseEventTypeController
  *
  * wrapper class around BaseEventTypeController to expose protected methods for testing
+ * TODO: see if ReflectionClass can be used to expose these as much as possible
  */
 class _WrapperBaseEventTypeController extends BaseEventTypeController
 {
@@ -571,11 +599,9 @@ class _WrapperBaseEventTypeController extends BaseEventTypeController
 	public $event_type;
 	public $open_elements;
 	public $action;
-	// expose protected method in abstract class
+	// expose protected methods
 	public function getEventElements() { return parent::getEventElements(); }
-	// expose protected open_elements property
 	public function getOpenElements() { return $this->open_elements; }
-	// expose protected setOpenElementsFromCurrentEvent method
 	public function setOpenElementsFromCurrentEvent($action) { parent::setOpenElementsFromCurrentEvent($action); }
 	public function beforeAction($action) { parent::beforeAction($action); }
 	public function redirectToPatientEpisodes() { parent::redirectToPatientEpisodes(); }
