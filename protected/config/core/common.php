@@ -116,6 +116,7 @@ return array(
 			'class' => 'OEEventManager',
 			'observers' => array(),
 		),
+		'fhirMarshal' => array('class' => 'FhirMarshal'),
 		'log' => array(
 			'class' => 'FlushableLogRouter',
 			'autoFlush' => 1,

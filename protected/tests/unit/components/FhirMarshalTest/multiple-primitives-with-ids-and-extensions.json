@@ -1,0 +1,25 @@
+{
+	"resourceType": "Patient",
+	"address": [
+		{
+			"line": [
+				"Foo",
+				"Bar",
+				null
+			],
+			"_line": [
+				{ "id": 1 },
+				null,
+				{
+					"extension": [
+						{
+							"url": "http://example.com/1",
+							"valueString": "foo"
+						}
+					]
+				}
+			]
+		}
+	]
+}
+
