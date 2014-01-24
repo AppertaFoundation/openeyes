@@ -2,9 +2,6 @@ module.exports = {
 	options: {
 		run: true,
 		reporter: 'Spec',
-		src: [
-			'protected/tests/js/runners/*.html',
-		]
 	},
 	all: {
 		src: [
