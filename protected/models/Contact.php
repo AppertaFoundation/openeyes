@@ -157,7 +157,7 @@ class Contact extends BaseActiveRecord
 	{
 		return $this->getFullName();
 	}
-	
+
 	/**
 	 * @return string Salutaion name
 	 */
@@ -175,7 +175,15 @@ class Contact extends BaseActiveRecord
 		return $line.')';
 	}
 
-	public function findByLabel($term, $label, $exclude=false)
+	/**
+	 * Searches for contacts with the given criteria
+	 *
+	 * string $term - string to search Contact last name - will do exact match so provide wild cards as required
+	 * string $label - the exact label string to match on.
+	 * boolean $exclude - if true, search for all contacts without the given label. otherwise only that label
+	 * string $join - table to join on to force only matches of that contact type. Currently only supports person
+	 */
+	public function findByLabel($term, $label, $exclude=false, $join=null)
 	{
 		if (!$cl = ContactLabel::model()->find('name=?',array($label))) {
 			throw new Exception("Unknown contact label: $label");
@@ -190,9 +198,19 @@ class Contact extends BaseActiveRecord
 		} else {
 			$criteria->compare('contact_label_id',$cl->id);
 		}
+
 		$criteria->order = 'title, first_name, last_name';
 
-		foreach (Contact::model()->with(array('locations'=>array('with'=>array('site','institution')),'label'))->findAll($criteria) as $contact) {
+		if ($join) {
+			if (!in_array($join, array('person'))) {
+				throw new Exception('Unknown join table ' . $join);
+			}
+			// force to only match on Person contacts
+			$criteria->join = 'join ' . $join . ' model_join on model_join.contact_id = t.id';
+		}
+		$found_contacts = Contact::model()->with(array('locations'=>array('with'=>array('site','institution')),'label'))->findAll($criteria);
+
+		foreach ($found_contacts as $contact) {
 			if ($contact->locations) {
 				foreach ($contact->locations as $location) {
 					$contacts[] = array(

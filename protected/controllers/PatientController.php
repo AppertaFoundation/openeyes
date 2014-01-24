@@ -580,7 +580,7 @@ class PatientController extends BaseController
 				$contacts = Contact::model()->findByLabel($term, $specialty->default_title, true);
 				break;
 			default:
-				$contacts = Contact::model()->findByLabel($term, @$_GET['filter']);
+				$contacts = Contact::model()->findByLabel($term, @$_GET['filter'], false, 'person');
 		}
 
 		sort($contacts);
