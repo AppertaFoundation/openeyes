@@ -38,8 +38,6 @@ vendor
 
 # Bower development dependencies
 /protected/assets/components/google-code-prettify
-/protected/assets/components/jquery
-/protected/assets/components/jquery-ui
 
 # Tests
 /bin/.enabled-modules
