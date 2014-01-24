@@ -1,4 +1,5 @@
 <?php $assetManager = Yii::app()->getAssetManager();?>
+<?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
 <?php $assetManager->registerCoreScript('jquery')?>
 <?php $assetManager->registerCoreScript('jquery.ui')?>
 <?php $assetManager->registerScriptFile('mustache/mustache.js', 'application.assets.components')?>
