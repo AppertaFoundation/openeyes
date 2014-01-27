@@ -92,7 +92,7 @@ class BaseEventTypeController extends BaseController
 	 */
 	public function canPrint()
 	{
-		return BaseController::checkUserLevel(3);
+		return (!$this->event || !$this->event->delete_pending) && BaseController::checkUserLevel(3);
 	}
 
 	public function renderEventMetadata($view='//patient/event_metadata')
@@ -442,18 +442,8 @@ class BaseEventTypeController extends BaseController
 
 		$elements = $this->getDefaultElements('view');
 
-		// Decide whether to display the 'edit' button in the template
-		if($this->editable && !$this->canUpdate()) {
+		if ($this->editable && !$this->canUpdate()) {
 			$this->editable = false;
-		}
-		// Allow elements to override the editable status
-		if ($this->editable) {
-			foreach ($elements as $element) {
-				if (!$element->isEditable()) {
-					$this->editable = false;
-					break;
-				}
-			}
 		}
 
 		$this->logActivity('viewed event');
@@ -473,13 +463,25 @@ class BaseEventTypeController extends BaseController
 				'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
-		if ($this->canDelete()) {
-			$this->event_actions = array(
-				EventAction::link('Delete',
-					Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-					array('level' => 'delete')
-				)
-			);
+
+		if (!$this->event->delete_pending) {
+			if ($this->showDeleteIcon()) {
+				if ($this->canDelete()) {
+					$this->event_actions = array(
+						EventAction::link('Delete',
+							Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+							array('level' => 'delete')
+						)
+					);
+				} else {
+					$this->event_actions = array(
+						EventAction::link('Delete',
+							Yii::app()->createUrl($this->event->eventType->class_name.'/default/requestDeletion/'.$this->event->id),
+							array('level' => 'delete')
+						)
+					);
+				}
+			}
 		}
 
 		$this->processJsVars();
@@ -499,6 +501,8 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
+		$this->event_type = $this->event->eventType;
+
 		// Check that updating is allowed
 		if (!$this->canUpdate()) {
 			$this->redirect(array('default/view/'.$this->event->id));
@@ -513,7 +517,6 @@ class BaseEventTypeController extends BaseController
 			$this->redirectToPatientEpisodes();
 		}
 
-		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 		$this->episode = $this->event->episode;
 
 		// firm changing sanity
@@ -1094,34 +1097,100 @@ class BaseEventTypeController extends BaseController
 
 	public function canUpdate()
 	{
-		if(!$this->event) {
+		if (!$this->event) {
 			return false;
 		}
-		if(!$this->event->canUpdate()) {
+
+		if (!$this->event->canUpdate()) {
 			return false;
 		}
-		if(!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+
+		if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 			return false;
 		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
 			return false;
 		}
+
 		return true;
 	}
 
 	public function canDelete()
 	{
-		if(!$this->event) {
+		if (!$this->event) {
 			return false;
 		}
-		if(!$this->event->canDelete()) {
+
+		if (!$this->event->canDelete()) {
 			return false;
 		}
-		if(!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+
+		if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 			return false;
 		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
 			return false;
 		}
+
 		return true;
+	}
+
+	public function showDeleteIcon()
+	{
+		if (!$this->event) {
+			return false;
+		}
+
+		if ($this->event->showDeleteIcon() === false) {
+			return false;
+		}
+
+		if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function actionRequestDeletion($id)
+	{
+		if (!$this->event = Event::model()->findByPk($id)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		if (isset($_POST['et_canceldelete'])) {
+			return $this->redirect(array('/'.$this->event->eventType->class_name.'/default/view/'.$id));
+		}
+
+		$this->patient = $this->event->episode->patient;
+		$this->event_type = $this->event->eventType;
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			if (!@$_POST['delete_reason']) {
+				$errors = array('Reason' => array('Please enter a reason for deleting this event'));
+			} else {
+				$this->event->requestDeletion($_POST['delete_reason']);
+
+				if (Yii::app()->params['admin_email']) {
+					mail(Yii::app()->params['admin_email'],"Request to delete an event","A request to delete an event has been submitted.  Please log in to the admin system to review the request.","From: OpenEyes");
+				}
+
+				Yii::app()->user->setFlash('success', "Your request to delete this event has been submitted.");
+
+				header('Location: '.Yii::app()->createUrl('/'.$this->event_type->class_name.'/default/view/'.$this->event->id));
+				return true;
+			}
+		}
+
+		$this->title = "Delete ".$this->event_type->name;
+		$this->event_tabs = array(array(
+				'label' => 'View',
+				'active' => true,
+		));
+
+		$this->render('request_delete', array(
+			'errors' => $errors,
+		));
 	}
 
 	public function actionDelete($id)
@@ -1130,33 +1199,45 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
+		if (isset($_POST['et_canceldelete'])) {
+			return $this->redirect(array('/'.$this->event->eventType->class_name.'/default/view/'.$id));
+		}
+
+		$this->event_type = $this->event->eventType;
+
 		// Check that deletion is allowed
 		if (!$this->canDelete()) {
 			$this->redirect(array('default/view/'.$this->event->id));
 			return false;
 		}
 
+		$errors = array();
+
 		if (!empty($_POST)) {
-			$this->event->softDelete();
+			if (!@$_POST['delete_reason']) {
+				$errors = array('Reason' => array('Please enter a reason for deleting this event'));
+			} else {
+				$this->event->softDelete($_POST['delete_reason']);
 
-			$this->event->audit('event','delete',false);
+				$this->event->audit('event','delete',false);
 
-			if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
-				$this->event->episode->deleted = 1;
-				if (!$this->event->episode->save()) {
-					throw new Exception("Unable to save episode: ".print_r($this->event->episode->getErrors(),true));
+				if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
+					$this->event->episode->deleted = 1;
+					if (!$this->event->episode->save()) {
+						throw new Exception("Unable to save episode: ".print_r($this->event->episode->getErrors(),true));
+					}
+
+					$this->event->episode->audit('episode','delete',false);
+
+					header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
+					return true;
 				}
 
-				$this->event->episode->audit('episode','delete',false);
+				Yii::app()->user->setFlash('success', "An event was deleted, please ensure the episode status is still correct.");
 
-				header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
+				header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
 				return true;
 			}
-
-			Yii::app()->user->setFlash('success', "An event was deleted, please ensure the episode status is still correct.");
-
-			header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
-			return true;
 		}
 
 		$this->patient = $this->event->episode->patient;
@@ -1182,6 +1263,7 @@ class BaseEventTypeController extends BaseController
 		$episodes = $this->getEpisodes();
 		$viewData = array_merge(array(
 			'eventId' => $id,
+			'errors' => $errors,
 		), $episodes);
 
 		$this->render('delete', $viewData);

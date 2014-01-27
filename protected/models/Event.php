@@ -115,6 +115,17 @@ class Event extends BaseActiveRecord
 		return $this->canUpdate();
 	}
 
+	public function moduleAllowsEditing()
+	{
+		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+			if (method_exists($api,'canUpdate')) {
+				return $api->canUpdate($this->id);
+			}
+		}
+
+		return null;
+	}
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -244,29 +255,27 @@ class Event extends BaseActiveRecord
 	 */
 	public function canUpdate()
 	{
-		// Cannot edit unless episode is editable
-		if(!$this->episode->editable) {
+		if (!$this->episode->editable) {
 			return false;
 		}
 
-		// Cannot edit events for patients who have died
-		if($this->episode->patient->date_of_death) {
+		if ($this->episode->patient->date_of_death) {
 			return false;
 		}
 
-		$admin_id = User::model()->find('username=?',array('admin'))->id;
-		$user_id = Yii::app()->session['user']->id;
-		// Admin can edit at an time
-		if ($user_id == $admin_id) {
+		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
 			return true;
 		}
 
-		// Events created before today should be locked
-		if(date('Ymd',strtotime($this->created_date)) < date('Ymd')) {
+		if ($this->delete_pending) {
 			return false;
 		}
 
-		return true;
+		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
+			return $module_allows_editing;
+		}
+
+		return date('Ymd',strtotime($this->created_date)) >= date('Ymd');
 	}
 
 	/**
@@ -275,34 +284,42 @@ class Event extends BaseActiveRecord
 	 */
 	public function canDelete()
 	{
-		// Cannot delete unless episode is editable
-		if(!$this->episode->editable) {
+		if (!$this->episode->editable) {
 			return false;
 		}
 
-		// Cannot delete events for patients who have died
-		if($this->episode->patient->date_of_death) {
+		if ($this->episode->patient->date_of_death) {
 			return false;
 		}
 
-		$admin_id = User::model()->find('username=?',array('admin'))->id;
-		$user_id = Yii::app()->session['user']->id;
-		// Admin can edit at an time
-		if ($user_id == $admin_id) {
-			return true;
+		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
+			//return true;
 		}
 
-		// Events created before today should be locked
-		if(date('Ymd',strtotime($this->created_date)) < date('Ymd')) {
+		if (Yii::app()->session['user']->id != $this->created_user_id) {
 			return false;
 		}
 
-		// Only user who created an event can delete it
-		if($user_id != $this->created_user_id) {
+		if ($this->delete_pending) {
 			return false;
 		}
 
-		return true;
+		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
+			return $module_allows_editing;
+		}
+
+		return date('Ymd',strtotime($this->created_date)) >= date('Ymd');
+	}
+
+	public function showDeleteIcon()
+	{
+		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+			if (method_exists($api,'showDeleteIcon')) {
+				return $api->showDeleteIcon($this->id);
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -310,7 +327,7 @@ class Event extends BaseActiveRecord
 	 *
 	 * @throws Exception
 	 */
-	public function softDelete()
+	public function softDelete($reason=false)
 	{
 		// perform this process in a transaction if one has not been created
 		$transaction = Yii::app()->db->getCurrentTransaction() === null
@@ -319,6 +336,12 @@ class Event extends BaseActiveRecord
 
 		try {
 			$this->deleted = 1;
+			$this->delete_pending = 0;
+
+			if ($reason) {
+				$this->delete_reason = $reason;
+			}
+
 			foreach ($this->getElements() as $element) {
 				$element->softDelete();
 			}
@@ -403,5 +426,25 @@ class Event extends BaseActiveRecord
 			}
 		}
 		return $elements;
+	}
+
+	public function requestDeletion($reason)
+	{
+		$this->delete_reason = $reason;
+		$this->delete_pending = 1;
+
+		if (!$this->save()) {
+			throw new Exception("Unable to mark event as delete pending: ".print_r($this->getErrors(),true));
+		}
+
+		$this->audit('event','delete-request',serialize(array(
+			'requested_user_id' => $this->last_modified_user_id,
+			'requested_datetime' => $this->last_modified_date,
+		)));
+	}
+
+	public function isLocked()
+	{
+		return $this->delete_pending;
 	}
 }

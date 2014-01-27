@@ -13,6 +13,7 @@
 			'Commissioning body types' => '/admin/commissioning_body_types',
 			'Commissioning body services' => '/admin/commissioning_body_services',
 			'Commissioning body service types' => '/admin/commissioning_body_service_types',
+			'Event deletion requests' => '/admin/eventDeletionRequests',
 		) as $title => $uri) {?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="selected"<?php }?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?>
