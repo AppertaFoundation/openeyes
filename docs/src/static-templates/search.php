@@ -4,7 +4,7 @@
 <head>
 <? include 'components/head.php'; ?>
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
 		<? include 'components/header-logged-in-no-patient.php'; ?>
@@ -29,10 +29,10 @@
 				<form class="form panel search">
 					<div class="row">
 						<div class="large-9 medium-8 small-7 column">
-							<input type="text" id="search" placeholder="Enter search...">
+							<input type="text" id="search" placeholder="Enter search..." class="large" />
 						</div>
 						<div class="large-3 medium-4 small-5 column text-right">
-							<button type="submit">
+							<button type="submit" class="button long">
 								Search
 							</button>
 						</div>

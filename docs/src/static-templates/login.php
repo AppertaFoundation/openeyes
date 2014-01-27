@@ -4,7 +4,7 @@
 <head>
 <? include 'components/head.php'; ?>
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
 		<? include 'components/header.php'; ?>
@@ -32,8 +32,8 @@
 						</div>
 						<div class="row field-row text-right">
 							<div class="small-12 column">
-								<img class="loader" src="/img/ajax-loader.gif" alt="loading..." />
-								<button type="submit">
+								<img class="loader" src="<?php echo $assets_root_path;?>assets/img/ajax-loader.gif" alt="loading..." />
+								<button type="submit" class="button long">
 									Login
 								</button>
 							</div>

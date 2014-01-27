@@ -177,7 +177,7 @@
 					<h3 class="element-title">Refraction</h3>
 					<div class="element-actions">
 						<a href="#" title="View Previous" class="view-previous">
-							<img src="/img/_elements/btns/load.png" alt="View previous">
+							<img src="<?php echo $assets_root_path;?>assets/img/_elements/btns/load.png" alt="View previous">
 						</a>
 						<a href="#" class="button button-icon small">
 							<span class="icon-button-small-mini-cross"></span>
@@ -192,7 +192,7 @@
 
 						<div class="eyedraw-row row refraction">
 							<div class="fixed column">
-								<img src="/img/tmp/eyedraw-small-edit.png" class="canvas" alt="Eyedraw" />
+								<img src="<?php echo $assets_root_path?>assets/img/eyedraw/small.png" class="canvas" alt="Eyedraw" />
 							</div>
 							<div class="fluid column">
 								<div class="eyedraw-data eyedraw-row row">
@@ -276,7 +276,7 @@
 										<select class="va-selector inline" name="visualacuity_reading[0][value]" id="visualacuity_reading_0_value">
 											<option value="126">6/3</option>
 										</select>
-										<img src="img/examination/icon_info.png" style="height:20px" alt="info" />
+										<img src="<?php echo $assets_root_path?>assets/modules/OphCiExamination/assets/img/icon_info.png" style="height:20px" alt="info" />
 									</td>
 									<td>
 										<select class="method_id" name="visualacuity_reading[0][method_id]" id="visualacuity_reading_0_method_id">
@@ -298,7 +298,7 @@
 										<select class="va-selector inline" name="visualacuity_reading[1][value]" id="visualacuity_reading_1_value">
 											<option value="126">6/3</option>
 										</select>
-										<img src="img/examination/icon_info.png" style="height:20px" alt="info" />
+										<img src="<?php echo $assets_root_path?>assets/modules/OphCiExamination/assets/img/icon_info.png" style="height:20px" alt="info" />
 									</td>
 									<td>
 										<select class="method_id" name="visualacuity_reading[1][method_id]" id="visualacuity_reading_1_method_id">
@@ -1138,11 +1138,11 @@
 					<div class="optional-elements-actions">
 						<a href="#">
 							<span>Add all</span>
-							<img src="/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
+							<img src="<?php echo $assets_root_path;?>assets/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
 						</a>
 						<a href="#">
 							<span>Remove all</span>
-							<img src="/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
+							<img src="<?php echo $assets_root_path;?>assets/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
 						</a>
 					</div>
 				</header>

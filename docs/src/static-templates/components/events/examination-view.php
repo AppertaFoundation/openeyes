@@ -60,7 +60,7 @@
 							<div class="data-row">
 								<div class="row refraction">
 									<div class="column fixed">
-										<img src="/img/tmp/eyedraw/small.png" class="canvas" alt="Eyedraw" />
+										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/small.png" class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="data-value">
@@ -75,7 +75,7 @@
 							<div class="data-row">
 								<div class="row refraction">
 									<div class="column fixed">
-										<img src="/img/tmp/eyedraw/small.png" class="canvas" alt="Eyedraw" />
+										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/small.png" class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="data-value">
@@ -117,7 +117,7 @@
 							<div class="element-eye right-eye column">
 								<div class="row gonioscopy">
 									<div class="column fixed">
-										<img src="/img/tmp/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
+										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="shaffer-grade">
@@ -159,7 +159,7 @@
 							<div class="element-eye left-eye column">
 								<div class="row gonioscopy">
 									<div class="column fixed">
-										<img src="/img/tmp/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
+										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="shaffer-grade">
@@ -428,7 +428,7 @@
 							<div class="data-row">
 								<div class="row posterior-pole">
 									<div class="column fixed">
-										<img src="/img/tmp/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
+										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="row">
@@ -444,7 +444,7 @@
 							<div class="data-row">
 								<div class="row posterior-pole">
 									<div class="column fixed">
-										<img src="/img/tmp/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
+										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="row">

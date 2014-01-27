@@ -5,7 +5,7 @@
 <? include 'components/head.php'; ?>
 <link rel="stylesheet" href="/protected/modules/OphCiExamination/assets/css/module.css" />
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
 		<? include 'components/header-logged-in.php'; ?>

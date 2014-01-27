@@ -39,7 +39,7 @@
 	}
 </style>
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
 		<? include 'components/header.php'; ?>
@@ -161,6 +161,13 @@
 								<tr>
 									<td>
 										<a href="patient-summary-add-episode-no-episodes.php">No episodes</a>
+									</td>
+									<td>The 'no episodes' page when trying to create a new episode from the patient summary.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="patient-summary-add-episode-no-episodes-with-dialog.php">No episodes (with dialog)</a>
 									</td>
 									<td>The 'no episodes' page when trying to create a new episode from the patient summary.</td>
 									<td><span class="complete">Complete</span></td>

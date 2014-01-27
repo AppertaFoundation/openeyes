@@ -55,7 +55,7 @@
 							</thead>
 							<tfoot>
 								<tr>
-									<td colspan="10">
+									<td colspan="10" class="available">
 										<div class="time-left">
 											<strong>
 											520 minutes unallocated
@@ -133,7 +133,7 @@
 										12:00
 									</td>
 									<td class="hide">
-										<img src="img/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
 									</td>
 									<td>
 										<a href="/OphTrOperationbooking/default/view/136">1001982</a>
@@ -147,12 +147,12 @@
 									<td>Topical</td>
 									<td>Sedgwick</td>
 									<td class="alerts">
-										<img src="img/diaryIcons/male.png" alt="female" width="17" height="17" title="female">
-										<img src="img/diaryIcons/consultant.png" alt="female" width="17" height="17" title="female">
-										<img src="img/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
-										<img src="img/diaryIcons/warning.png" alt="female" width="17" height="17" title="female">
-										<img src="img/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
-										<img src="img/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/male.png" alt="female" width="17" height="17" title="female">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/consultant.png" alt="female" width="17" height="17" title="female">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/warning.png" alt="female" width="17" height="17" title="female">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
 									</td>
 								</tr>
 								<tr>
@@ -160,7 +160,7 @@
 										12:00
 									</td>
 									<td class="hide">
-										<img src="img/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
 									</td>
 									<td>
 										<a href="/OphTrOperationbooking/default/view/136">1001982</a>
@@ -174,9 +174,9 @@
 									<td>Topical</td>
 									<td>Sedgwick</td>
 									<td class="alerts">
-										<img src="img/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
-										<img src="img/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
-										<img src="img/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
 									</td>
 								</tr>
 							</tbody>
@@ -267,7 +267,7 @@
 										<input type="text" value="12:00" />
 									</td>
 									<td>
-										<img src="img/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
 									</td>
 									<td>
 										<a href="/OphTrOperationbooking/default/view/136">1001982</a>
@@ -281,9 +281,9 @@
 									<td>Topical</td>
 									<td>Sedgwick</td>
 									<td class="alerts">
-										<img src="img/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
-										<img src="img/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
-										<img src="img/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
 									</td>
 								</tr>
 								<tr>
@@ -291,7 +291,7 @@
 										<input type="text" value="12:00" />
 									</td>
 									<td>
-										<img src="img/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/draggable_row.png" alt="draggable_row" width="25" height="28">
 									</td>
 									<td>
 										<a href="/OphTrOperationbooking/default/view/136">1001982</a>
@@ -305,9 +305,9 @@
 									<td>Topical</td>
 									<td>Sedgwick</td>
 									<td class="alerts">
-										<img src="img/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
-										<img src="img/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
-										<img src="img/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/female.png" alt="female" width="17" height="17" title="female">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/comment.png" alt="erter" width="17" height="17" title="erter">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/diaryIcons/booked_user.png" alt="Created by: Enoch RootLast modified by: Enoch Root" width="17" height="17" title="Created by: Enoch Root Last modified by: Enoch Root">
 									</td>
 								</tr>
 							</tbody>

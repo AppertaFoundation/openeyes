@@ -4,7 +4,7 @@
 <head>
 <? include 'components/head.php'; ?>
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
 		<? include 'components/header.php'; ?>
@@ -36,7 +36,7 @@
 						</div>
 						<div class="row text-right">
 							<div class="small-12 column">
-								<button type="submit">
+								<button type="submit" class="button long">
 									Login
 								</button>
 							</div>
