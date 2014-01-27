@@ -31,16 +31,29 @@ class ComponentStubGenerator
 	{
 		$stub = PHPUnit_Framework_MockObject_Generator::getMock($class_name, array(), array(), '', false);
 
+		self::propertiesSetAndMatch($stub, $properties);
+
+		return $stub;
+	}
+
+	/**
+	 * iteratest through properties to set values on the stub that exists on the stub class. If $force is true,
+	 * will set the value regardless of whether or not the property exists on the element
+	 *
+	 * @param $stub
+	 * @param array $properties
+	 * @param bool $force
+	 */
+	static public function propertiesSetAndMatch($stub, array $properties = array(), $force = false)
+	{
 		$rf_obj = new ReflectionObject($stub);
 		foreach ($properties as $name => $value) {
-			if ($rf_obj->hasProperty($name)) {
+			if ($force || $rf_obj->hasProperty($name)) {
 				$stub->$name = $value;
 			}
 		}
 
 		$stub->__phpunit_getInvocationMocker()->addMatcher(new ComponentStubMatcher($properties));
-
-		return $stub;
 	}
 }
 
