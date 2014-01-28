@@ -270,7 +270,6 @@ class Event extends BaseActiveRecord
 		}
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Can this event be updated (edited)
 	 * @return bool
@@ -344,8 +343,6 @@ class Event extends BaseActiveRecord
 		return null;
 	}
 
-=======
->>>>>>> release/1.6
 	/**
 	 * Marks an event as deleted and processes any softDelete methods that exist on the elements attached to it.
 	 *
@@ -468,7 +465,6 @@ class Event extends BaseActiveRecord
 		return $elements;
 	}
 
-<<<<<<< HEAD
 	public function requestDeletion($reason)
 	{
 		$this->delete_reason = $reason;
@@ -487,7 +483,8 @@ class Event extends BaseActiveRecord
 	public function isLocked()
 	{
 		return $this->delete_pending;
-=======
+	}
+
 	/**
 	 * Fetch a single element of the specified class for this event
 	 *
@@ -502,6 +499,5 @@ class Event extends BaseActiveRecord
 				'limit' => 1,
 			)
 		);
->>>>>>> release/1.6
 	}
 }
