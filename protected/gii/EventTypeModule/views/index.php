@@ -1,6 +1,6 @@
 <script type="text/javascript" src="<?php echo Yii::app()->assetManager->createUrl('js/gii.js')?>"></script>
 <?php
-$dh = opendir("js");
+$dh = opendir("protected/assets/js");
 while ($file = readdir($dh)) {
 	if (preg_match('/^gii-.*\.js$/',$file)) {?>
 <script type="text/javascript" src="<?php echo Yii::app()->assetManager->createUrl('js/'.$file)?>"></script>

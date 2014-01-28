@@ -200,7 +200,7 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 				}
 				else{
 				//	throw new Exception('Page object' . $pageName . ' was already defined somewhere. Duplicate path is ' . $pageObject);
-					$this->printDebug('Page object: ' . $pageName . ' was already defined somewhere. Duplicate path is ' . $pageObject);
+					//$this->printDebug('Page object: ' . $pageName . ' was already defined somewhere. Duplicate path is ' . $pageObject);
 				}
 			}
 		}

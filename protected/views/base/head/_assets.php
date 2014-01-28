@@ -1,16 +1,13 @@
 <?php $assetManager = Yii::app()->getAssetManager();?>
-<?php $assetManager->registerCoreCssFile('jui/css/base/jquery-ui.css')?>
+<?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
 <?php $assetManager->registerCoreScript('jquery')?>
 <?php $assetManager->registerCoreScript('jquery.ui')?>
-<?php $assetManager->registerScriptFile('js/jquery.watermark.min.js')?>
-<?php $assetManager->registerScriptFile('js/mustache.js')?>
-<?php $assetManager->registerScriptFile('js/libs/uri-1.10.2.js')?>
-<?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
-<?php $assetManager->registerScriptFile('js/polyfills.js')?>
+<?php $assetManager->registerScriptFile('mustache/mustache.js', 'application.assets.components')?>
 <?php $assetManager->registerScriptFile('js/jquery.printElement.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.hoverIntent.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.autosize.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.getUrlParam.js')?>
+<?php $assetManager->registerScriptFile('js/libs/uri-1.10.2.js')?>
 <?php $assetManager->registerScriptFile('js/print.js')?>
 <?php $assetManager->registerScriptFile('js/buttons.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.js')?>

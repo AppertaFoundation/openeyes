@@ -346,4 +346,18 @@ class OperationBookingContext extends PageObjectContext
         $operationBooking->getSession()->wait(3000);
         $operationBooking->confirmSlot();
     }
+
+    /**
+     * @Then /^I select Save$/
+     */
+    public function save()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->save();
+    }
+
+
 }

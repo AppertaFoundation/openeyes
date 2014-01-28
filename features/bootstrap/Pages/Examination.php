@@ -25,6 +25,15 @@ class Examination extends OpenEyesPage
         'ETDRSreadingLeft' => array('xpath' => "//*[@id='visualacuity_reading_0_method_id']"),
         'snellenRight' => array('xpath' => "//select[@id='visualacuity_reading_1_value']"),
         'readingRight' => array('xpath' => "//select[@id='visualacuity_reading_1_method_id']"),
+        'addLeftVisualAcuityButton' => array('xpath' => "//*[@class='element-eye left-eye column right side']//*[@class='button small secondary addReading']"),
+        'addRightViusalAcuityButton' => array('xpath' => "//*[@class='element-eye right-eye column left side']//*[@class='button small secondary addReading']"),
+        'secondLeftVisualAcuityReading' => array('xpath' => "//*[@id='visualacuity_reading_2_value']"),
+        'secondLeftVisualAcuityReadingMethod' => array('xpath' => "//*[@id='visualacuity_reading_2_method_id']"),
+        'secondRightVisualAcuityReading' => array('xpath' => "//*[@id='visualacuity_reading_3_value']"),
+        'secondRightVisualAcuityReadingMethod' => array('xpath' => "//*[@id='visualacuity_reading_3_method_id']"),
+        'removeSecondLeftVisualAcuity' => array('xpath' => "//*[@data-key='3']//*[contains(text(),'Remove')]"),
+        'removeSecondRightVisualAcuity' => array('xpath' => "//*[@data-key='1']//*[contains(text(),'Remove')]"),
+
 
         'openIntraocularPressure' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Intraocular Pressure')]"),
         'intraocularRight' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_right_reading_id']"),
@@ -348,10 +357,7 @@ class Examination extends OpenEyesPage
 
     public function leftAxis ($axis)
     {
-//      HACK! I have entered the value twice in the code to stop the Axis from spinning
         $this->getElement('sphereRightAxis')->setValue($axis);
-        $this->getElement('sphereRightAxis')->setValue($axis);
-
     }
 
     public function leftType ($type)
@@ -1046,6 +1052,30 @@ class Examination extends OpenEyesPage
     public function removeAllComorbidities ()
     {
         $this->getElement('removeAllComorbidities')->click();
+    }
+
+    public function addLeftVisualAcuity ($reading, $method)
+    {
+        $this->getElement('addLeftVisualAcuityButton')->click();
+        $this->getElement('secondLeftVisualAcuityReading')->selectOption($reading);
+        $this->getElement('secondLeftVisualAcuityReadingMethod')->selectOption($method);
+    }
+
+    public function addRightVisualAcuity ($reading, $method)
+    {
+        $this->getElement('addRightViusalAcuityButton')->click();
+        $this->getElement('secondRightVisualAcuityReading')->selectOption($reading);
+        $this->getElement('secondRightVisualAcuityReadingMethod')->selectOption($method);
+    }
+
+    public function removeSecondLeftVisualAcuity ()
+    {
+        $this->getElement('removeSecondLeftVisualAcuity')->click();
+    }
+
+    public function removeSecondRightVisualAcuity ()
+    {
+        $this->getElement('removeSecondRightVisualAcuity')->click();
     }
 
 }
