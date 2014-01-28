@@ -37,8 +37,6 @@ Feature: Create New Operation Booking Event
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    # steps not needed anymore
-    #And I follow "Schedule now"
 
     And I select an Available theatre slot date
     And I select an Available session time

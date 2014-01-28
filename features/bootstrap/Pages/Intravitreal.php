@@ -97,6 +97,7 @@ class Intravitreal extends OpenEyesPage
              if ($this->isRightSideOpen())
              {
              $this->getElement('addRightSide')->click();
+             $this->getSession()->wait(5000, '$.active == 0');
              }
          }
 

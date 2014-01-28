@@ -382,12 +382,14 @@ class Examination extends OpenEyesPage
     public function RightAxis ($axis)
     {
         $this->getElement('sphereLeftAxis')->setValue($axis);
+        $this->getElement('sphereLeftAxis')->blur();
 
     }
 
     public function RightType ($type)
     {
         $this->getElement('sphereLeftType')->selectOption($type);
+        $this->getElement('sphereLeftAxis')->blur();
     }
 
     public function expandVisualFields ()
@@ -501,13 +503,17 @@ class Examination extends OpenEyesPage
 
     public function expandClinicalManagement ()
     {
-        $this->getElement('expandClinicalManagement')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $element = $this->getElement('expandClinicalManagement');
+        $this->scrollWindowToElement($element);
+        $element->click();
+        $this->getSession()->wait(8000, '$.active == 0');
     }
 
     public function expandCataractSurgicalManagement ()
     {
-        $this->getElement('expandCataractSurgicalManagement')->click();
+        $element = $this->getElement('expandCataractSurgicalManagement');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(5000, '$.active == 0');
     }
 
@@ -538,8 +544,9 @@ class Examination extends OpenEyesPage
 
     public function straightforward ()
     {
-        $this->getSession()->wait(10000);
-        $this->getElement('straightforward')->check();
+        $element = $this->getElement('straightforward');
+        $this->scrollWindowToElement($element);
+        $element->check();
     }
 
     public function postOpRefractiveTarget ($target)
@@ -550,12 +557,16 @@ class Examination extends OpenEyesPage
 
     public function discussedWithPatientYes ()
     {
-        $this->getElement('discussedWithPatientYes')->click();
+        $element = $this->getElement('discussedWithPatientYes');
+        $this->scrollWindowToElement($element);
+        $element->check();
     }
 
     public function discussedWithPatientNo ()
     {
-        $this->getElement('discussedWithPatientNo')->click();
+        $element = $this->getElement('discussedWithPatientNo');
+        $this->scrollWindowToElement($element);
+        $element->check();
     }
 
     public function suitableForSurgeon ($surgeon)
@@ -916,6 +927,7 @@ class Examination extends OpenEyesPage
     {
         $this->getSession()->wait(3000);
         $this->getElement('saveExamination')->click();
+        $this->getSession()->wait(10000);
     }
 
     //VALIDATION TESTS

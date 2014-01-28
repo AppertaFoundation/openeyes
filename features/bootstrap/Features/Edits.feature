@@ -1,4 +1,4 @@
-@editdelete
+@editdelete @regression
 Feature: These tests set up Events, Edit and Delete them.
 
   Scenario: Route 1A: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 3 Anderson Glaucoma
@@ -129,7 +129,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     And I delete the Last Event
 
-#  # BLOCKED OE-3960 Scenario: Route 3A: Login and create a Phasing Event
+#  @FIXME JIRA OE-3960 Scenario: Route 3A: Login and create a Phasing Event
 #
 #    Given I am on the OpenEyes "master" homepage
 #    And I enter login credentials "admin" and "admin"
@@ -161,7 +161,7 @@ Feature: These tests set up Events, Edit and Delete them.
 #
 #    Then I Save the Phasing Event
 #
-#  BLOCKED OE-3960  Scenario: Route 3B: Edit previously edited Phasing from Route 3A
+#  @FIXME OE-3960  Scenario: Route 3B: Edit previously edited Phasing from Route 3A
 #
 #    Given I am on the OpenEyes "master" homepage
 #    And I enter login credentials "admin" and "admin"
@@ -190,9 +190,9 @@ Feature: These tests set up Events, Edit and Delete them.
 #    Then I choose a left eye Intraocular Pressure Reading of "12"
 #    And I add left eye comments of "Left eye comments here"
 #
-#    Then I Save the Phasing Event # BLOCKED OE-3960
+#    Then I Save the Phasing Event
 #
-#    Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3B
+#    @FIXME OE-3960 Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3B
 #
 #    Given I am on the OpenEyes "master" homepage
 #    And I enter login credentials "admin" and "admin"
@@ -403,84 +403,84 @@ Feature: These tests set up Events, Edit and Delete them.
 
     And I delete the Last Event
 
-Scenario: Route 6A: Login and create a new Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
+  #@FIXME OE-3958 Scenario: Route 6A: Login and create a new Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
 
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
-
-    Then I search for hospital number "1009465"
-
-    Then I select the Latest Event
-    Then I expand the Cataract sidebar
-    And I add a New Event "Examination"
-
-    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
-
-    And I choose to expand the Comorbidities section
-    Then I Add a Comorbiditiy of "4"
-
-    Then I choose to expand the Visual Acuity section
-    And I select a Visual Acuity of "2"
-    Then I choose a left Visual Acuity Snellen Metre "4" and a reading method of "5"
-    Then I choose a right Visual Acuity Snellen Metre "4" and a reading method of "5"
-
-    Then I choose to expand the Intraocular Pressure section
-    Then I choose a left Intraocular Pressure of "19" and Instrument "2"
-    Then I choose a right Intraocular Pressure of "29" and Instrument "2"
-
-    Then I choose to expand the Dilation section
-    Then I choose left Dilation of "2" and drops of "5"
-    Then I choose right Dilation of "6" and drops of "3"
-
-    Then I choose to expand the Refraction section
-    Then I enter left Refraction details of Sphere "1" integer "6" fraction "0.75"
-    And I enter left cylinder details of of Cylinder "-1" integer "7" fraction "0.75"
-    And I enter a left type of "5"
-    Then I enter left Axis degrees of "38"
-
-    Then I enter right Refraction details of Sphere "1" integer "3" fraction "0.50"
-    And I enter right cylinder details of of Cylinder "-1" integer "4" fraction "0.25"
-    Then I enter right Axis degrees of "145"
-    And I enter a right type of "1"
-
-    Then I Save the Examination
+#    Given I am on the OpenEyes "master" homepage
+#    And I enter login credentials "admin" and "admin"
+#    And I select Site "1"
+#    Then I select a firm of "1"
 #
-Scenario: Route 6B: Edit previously created Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
-
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
-
-    Then I search for hospital number "1009465"
-
-    Then I select the Latest Event
-
-    And I edit the Last Event
-
-    And I choose to expand the Comorbidities section #BLOCKED BY OE-3958
-    Then I Add a Comorbiditiy of "2"
-
-    Then I choose to expand the Dilation section
-    Then I choose left Dilation of "1" and drops of "4"
-    Then I choose right Dilation of "1" and drops of "2"
-
-    Then I Save the Examination
-
-Scenario: Route 6C: Delete previously created/edited Examination From from Route 6A/6B
-
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
-
-    Then I search for patient name last name "Coffin," and first name "Violet"
-
-    Then I select the Latest Event
-
-    And I delete the Last Event
+#    Then I search for hospital number "1009465"
+#
+#    Then I select the Latest Event
+#    Then I expand the Cataract sidebar
+#    And I add a New Event "Examination"
+#
+#    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
+#
+#    And I choose to expand the Comorbidities section
+#    Then I Add a Comorbiditiy of "4"
+#
+#    Then I choose to expand the Visual Acuity section
+#    And I select a Visual Acuity of "2"
+#    Then I choose a left Visual Acuity Snellen Metre "4" and a reading method of "5"
+#    Then I choose a right Visual Acuity Snellen Metre "4" and a reading method of "5"
+#
+#    Then I choose to expand the Intraocular Pressure section
+#    Then I choose a left Intraocular Pressure of "19" and Instrument "2"
+#    Then I choose a right Intraocular Pressure of "29" and Instrument "2"
+#
+#    Then I choose to expand the Dilation section
+#    Then I choose left Dilation of "2" and drops of "5"
+#    Then I choose right Dilation of "6" and drops of "3"
+#
+#    Then I choose to expand the Refraction section
+#    Then I enter left Refraction details of Sphere "1" integer "6" fraction "0.75"
+#    And I enter left cylinder details of of Cylinder "-1" integer "7" fraction "0.75"
+#    And I enter a left type of "5"
+#    Then I enter left Axis degrees of "38"
+#
+#    Then I enter right Refraction details of Sphere "1" integer "3" fraction "0.50"
+#    And I enter right cylinder details of of Cylinder "-1" integer "4" fraction "0.25"
+#    Then I enter right Axis degrees of "145"
+#    And I enter a right type of "1"
+#
+#    Then I Save the Examination
+#
+#    @FIXME OE-3958 Scenario: Route 6B: Edit previously created Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
+#
+#    Given I am on the OpenEyes "master" homepage
+#    And I enter login credentials "admin" and "admin"
+#    And I select Site "1"
+#    Then I select a firm of "1"
+#
+#    Then I search for hospital number "1009465"
+#
+#    Then I select the Latest Event
+#
+#    And I edit the Last Event
+#
+#    And I choose to expand the Comorbidities section
+#    Then I Add a Comorbiditiy of "2"
+#
+#    Then I choose to expand the Dilation section
+#    Then I choose left Dilation of "1" and drops of "4"
+#    Then I choose right Dilation of "1" and drops of "2"
+#
+#    Then I Save the Examination
+#
+#    @FIXME OE-3958 Scenario: Route 6C: Delete previously created/edited Examination From from Route 6A/6B
+#
+#    Given I am on the OpenEyes "master" homepage
+#    And I enter login credentials "admin" and "admin"
+#    And I select Site "1"
+#    Then I select a firm of "1"
+#
+#    Then I search for patient name last name "Coffin," and first name "Violet"
+#
+#    Then I select the Latest Event
+#
+#    And I delete the Last Event
 
   Scenario: Route 7A: Login and create a Laser event
 

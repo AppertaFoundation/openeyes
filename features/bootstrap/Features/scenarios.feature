@@ -1,4 +1,4 @@
-@scenario
+@scenario @regression
 Feature: Open Eyes Login and Patient Diagnosis Screen Template
   In order to cover every possible route throughout the site
   As an automation tester
@@ -37,7 +37,6 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     # 5 = Tetracycline
 
     And I Add a Family History of relative "1" side "3" condition "1" and comments "Family History Comments" and Save
-
 
 
   Scenario: Route 1B: Check Allergy warning on Intravitreal
