@@ -1995,7 +1995,7 @@ class BaseEventTypeController extends BaseModuleController
 			return false;
 		}
 
-		if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+		if (!$this->checkEditAccess($this->event) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 			return false;
 		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
 			return false;
@@ -2033,7 +2033,7 @@ class BaseEventTypeController extends BaseModuleController
 			return false;
 		}
 
-		if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+		if (!$this->checkDeleteAccess($this->event) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 			return false;
 		}
 
