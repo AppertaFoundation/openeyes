@@ -64,7 +64,7 @@
 			&.clicked {
 				a {
 					&, &:hover {
-						background: #dddddd url(../img/ajax-loader.gif) no-repeat 99.5% 2px;
+						background: #dddddd image-url("ajax-loader.gif") no-repeat 99.5% 2px;
 						color: #333;
 					}
 				}

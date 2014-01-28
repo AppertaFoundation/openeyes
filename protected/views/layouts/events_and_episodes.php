@@ -25,6 +25,7 @@
 	<?php $this->renderPartial('//patient/head/_assets'); ?>
 	<?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
+
 <body class="open-eyes">
 
 	<?php $this->renderPartial('//base/_banner_watermark'); ?>

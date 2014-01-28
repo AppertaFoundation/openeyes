@@ -38,7 +38,7 @@
 	<button type="submit" class="secondary" id="et_canceldelete" name="et_canceldelete">
 		Cancel
 	</button>
-	<img class="loader" src="<?php echo '<?php'?> echo Yii::app()->createUrl('img/ajax-loader.gif')<?php echo '?>'?>" alt="loading..." style="display: none;" />
+	<img class="loader" src="<?php echo '<?php'?> echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')<?php echo '?>'?>" alt="loading..." style="display: none;" />
 	<?php echo '<?php'?> echo CHtml::endForm()<?php echo "?>\n"?>
 </div>
 

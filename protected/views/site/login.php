@@ -38,7 +38,7 @@
 				<div class="row field-row text-right">
 					<div class="small-12 column">
 
-						<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display:none" />
+						<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display:none" />
 
 						<button type="submit" id="login_button" class="primary long">
 							Login

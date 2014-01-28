@@ -65,25 +65,20 @@ if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 	$latest = $episode->getLatestEvent();
 	$subspecialty = $episode->getSubspecialty();
 }
-elseif ($latest = $this->patient->getLatestEvent()) {
-	$subspecialty = $latest->episode->getSubspecialty();
-}
 
 $msg = null;
 
-if ($latest) {
+if (@$latest) {
 	$msg = "Latest Event";
 	if ($subspecialty) {
 		// might not be a subspecialty for legacy
 		$msg .= " in " . $subspecialty->name;
 	}
 	$msg .= ": <strong>" . $latest->eventType->name . "</strong> <span class='small'>(" . $latest->NHSDate('created_date') . ")</span>";
+	echo '<div class="box patient-info episode-links">' . CHtml::link($msg,Yii::app()->createUrl('/'.$latest->eventType->class_name.'/default/view/'.$latest->id)) . '</div>';
 }
 else if ($this->checkAccess('OprnCreateEpisode')) {
 	$msg = "Create episode / add event";
-}
-
-if ($msg) {
 	echo '<div class="box patient-info episode-links">' . CHtml::link($msg,Yii::app()->createUrl('patient/episodes/'.$this->patient->id)) . '</div>';
 }
 

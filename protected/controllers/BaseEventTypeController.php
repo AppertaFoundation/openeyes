@@ -166,6 +166,21 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
+	 * Sets the firm property on the controller from the session
+	 *
+	 * @throws HttpException
+	 */
+	protected function setFirmFromSession()
+	{
+		if (!$firm_id = Yii::app()->session->get('selected_firm_id')) {
+			throw new HttpException('Firm not selected');
+		}
+		if (!$this->firm || $this->firm->id != $firm_id) {
+			$this->firm = Firm::model()->findByPk($firm_id);
+		}
+	}
+
+	/**
 	 * Abstraction of getting the elements for the event being controlled to allow more complex overrides (such as workflow)
 	 * where required.
 	 *
@@ -309,11 +324,11 @@ class BaseEventTypeController extends BaseModuleController
 				// nested elements behaviour
 				//TODO: possibly put this into standard js library for events
 				Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
-				Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('js/nested_elements.js'));
+				Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
 			}
 		}
 
-		$this->firm = Firm::model()->findByPk(Yii::app()->session->get('selected_firm_id'));
+		$this->setFirmFromSession();
 
 		if (!isset($this->firm)) {
 			// No firm selected, reject
@@ -839,11 +854,11 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		// Clear script requirements as all the base css and js will already be on the page
-		Yii::app()->clientScript->reset();
+		Yii::app()->assetManager->reset();
 
 		$this->patient = $patient;
-		$session = Yii::app()->session;
-		$this->firm = Firm::model()->findByPk($session['selected_firm_id']);
+
+		$this->setFirmFromSession();
 
 		$this->episode = $this->getEpisode();
 
@@ -911,7 +926,7 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		// Clear script requirements as all the base css and js will already be on the page
-		Yii::app()->clientScript->reset();
+		Yii::app()->assetManager->reset();
 
 		$this->episode = $this->getEpisode();
 
@@ -1427,8 +1442,8 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function printPDF($id, $elements, $template='print', $params=array())
 	{
-		// Remove any existing css
-		Yii::app()->getClientScript()->reset();
+		// Remove any existing assets that have been pre-registered.
+		Yii::app()->assetManager->reset();
 
 		$this->layout = '//layouts/pdf';
 		$pdf_print = new OEPDFPrint('Openeyes', 'PDF', 'PDF');

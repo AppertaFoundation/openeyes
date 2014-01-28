@@ -1,6 +1,6 @@
 module.exports = {
-	devFile: 'js/components/modernizr/modernizr.js',
-	outputFile: 'js/modernizr.custom.js',
+	devFile: 'protected/assets/components/modernizr/modernizr.js',
+	outputFile: 'protected/assets/js/modernizr.custom.js',
 	extra: {
 		shiv: false,
 		printshiv: false,

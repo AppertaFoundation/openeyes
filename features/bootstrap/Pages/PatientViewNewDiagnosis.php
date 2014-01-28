@@ -72,7 +72,13 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'confirmCreateEpisode' => array('xpath' => "//*[@id='add-new-episode-form']//*[contains(text(),'Create new episode')]"),
         'latestEvent' => array('xpath' => "//*[@class='box patient-info episode-links']//*[contains(text(),'Latest Event')]"),
         'removeAllergyButton' => array('xpath' => "//*[@id='currentAllergies']//*[contains(text(),'Remove')]"),
-        'removeConfirmButton' => array('xpath' => "//*[@id='delete_allergy']/div[2]//*[contains(text(),'Remove allergy')]")
+        'removeConfirmButton' => array('xpath' => "//*[@id='delete_allergy']/div[2]//*[contains(text(),'Remove allergy')]"),
+        'removeOpthalmicDiagnosisLink' => array('xpath' => "//*[@class='removeDiagnosis']"),
+        'removeOpthalmicDiagnosisConfirm' => array('xpath' => "//*[@id='delete_diagnosis']//*[contains(text(),'Remove diagnosis')]"),
+        'removeOperation' => array('xpath' => "//*[@class='removeOperation']"),
+        'removeOperationConfirmButton' => array('xpath' => "//*[@id='delete_operation']//*[contains(text(),'Remove operation')]"),
+        'removeMedication' => array('xpath' => "//*[@class='removeMedication']"),
+        'removeMedicationConfirmButton' => array('xpath' => "//*[contains(text(),'Remove medication')]"),
 
         );
 
@@ -199,29 +205,20 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
     {
+        $this->waitForElementDisplayNone('#add_medication');
         $this->getElement('addMedicationButton')->click();
-        $this->getSession()->wait(3000);
         $this->getElement('selectMedication')->selectOption($medication);
-        $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('selectRoute')->selectOption($route);
-        $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('selectFrequency')->selectOption($frequency);
-        $this->getSession()->wait(5000, "$.active == 0");
-		$this->waitForElementDisplayBlock('#ui-datepicker-div');
-		//$this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('openMedicationDate')->click();
-		$this->waitForElementDisplayBlock('#ui-datepicker-div');
-        //$this->getSession()->wait(5000, "$('#ui-datepicker-div').css('display') == 'block'");
+		$this->waitForElementDisplayBlock('#ui-datepicker-div', 10000);
         $this->getElement('selectDateFrom')->click($datefrom);
-        $this->getSession()->wait(5000, "$.active == 0");
         $this->getElement('saveMedication')->click();
-		$this->waitForElementDisplayNone('#add_medication');
-		//$this->getSession()->wait(2000, "$('#add_medication').css('display') == 'none'");
+        $this->waitForElementDisplayNone('#add_medication');
     }
 
     public function editCVIstatus ($status)
     {
-
         $this->getElement('editCVIstatusButton')->click();
         $this->getElement('cviStatus')->selectOption($status);
         $this->getSession()->wait(3000);
@@ -327,4 +324,26 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         return $this->find('xpath', $this->getElement('createNewEpisodeAddEvent')->getXpath());
     }
 
+    public function removeAndConfirm ()
+    {
+        $this->waitForElementDisplayNone('#add_new_ophthalmic_diagnosis');
+        $this->getElement('removeOpthalmicDiagnosisLink')->click();
+        $this->getElement('removeOpthalmicDiagnosisConfirm')->click();
+        $this->getSession()->wait(5000, '$.active == 0');
+    }
+
+    public function removeOperation ()
+    {
+        $this->getElement('removeOperation')->click();
+        $this->getElement('removeOperationConfirmButton')->click();
+        $this->getSession()->wait(5000, '$.active == 0');
+    }
+
+    public function removeMedication ()
+    {
+        $this->getElement('removeMedication')->click();
+        $this->getElement('removeMedicationConfirmButton')->click();
+        $this->getSession()->wait(5000, '$.active == 0');
+
+    }
 }

@@ -99,7 +99,7 @@
 
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 					<div class="buttons">
-						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_oph_info_loader" style="display: none;" />
+						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="edit_oph_info_loader" style="display: none;" />
 						<button type="submit" class="secondary small btn_save_previous_operation btn_save_oph_info">
 							Save
 						</button>

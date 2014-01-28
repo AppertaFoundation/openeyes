@@ -26,11 +26,12 @@ return array(
 		'application.components.*',
 		'system.cli.commands.*',
 		'system..db.schema.*',
+		'system.test.CDbFixtureManager',
 		'yiitests.validators.*'
 	),
 	'components' => array(
 		'fixture' => array(
-			'class' => 'system.test.CDbFixtureManager',
+			'class' => 'DbFixtureManager',
 		),
 		'db' => array(
 			'class'=> 'CDbConnection',

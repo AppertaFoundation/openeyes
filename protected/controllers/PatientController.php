@@ -107,7 +107,7 @@ class PatientController extends BaseController
 	 */
 	public function actionView($id)
 	{
-		Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/patientSummary.js'));
+		Yii::app()->assetManager->registerScriptFile('js/patientSummary.js');
 
 		$this->patient = $this->loadModel($id);
 
@@ -364,8 +364,6 @@ class PatientController extends BaseController
 			$this->redirect(array('patient/episode/'.$this->episode->id));
 			return;
 		}
-
-		$this->layout = '//layouts/events_and_episodes';
 
 		if (!empty($_POST)) {
 			if ((@$_POST['eye_id'] && !@$_POST['DiagnosisSelection']['disorder_id'])) {

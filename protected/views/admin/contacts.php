@@ -40,7 +40,7 @@
 		<div class="row field-row">
 			<div class="large-4 large-offset-2 column end">
 				<?php echo EventAction::button('Search', 'search', array(), array('class' => 'small'))->toHtml()?>
-				<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
+				<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
 			</div>
 		</div>
 	</form>
