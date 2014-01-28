@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Homepage extends Page
+class Homepage extends OpenEyesPage
 {
     protected $path = '/';
 
@@ -53,6 +51,8 @@ class Homepage extends Page
     public function searchSubmit ()
     {
         $this->getElement('searchSubmit')->press();
+		//make sure the patient page is shown after a search
+		$this->getSession()->wait(15000, "$('h1.badge').html() ==  'Patient summary' ");
     }
 
     public function followLink($link)

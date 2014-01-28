@@ -37,7 +37,7 @@
 			<tr>
 				<th>Date</th>
 				<th>Diagnosis</th>
-				<?php if (BaseController::checkUserLevel(4)) { ?><th>Actions</th><?php } ?>
+				<?php if ($this->checkAccess('OprnEditSystemicDiagnosis')) { ?><th>Actions</th><?php } ?>
 			</tr>
 			</thead>
 			<tbody>
@@ -45,7 +45,7 @@
 				<tr>
 					<td><?php echo $diagnosis->dateText?></td>
 					<td><?php echo $diagnosis->eye ? $diagnosis->eye->adjective : ''?> <?php echo $diagnosis->disorder->term?></td>
-					<?php if (BaseController::checkUserLevel(4)) { ?>
+					<?php if ($this->checkAccess('OprnEditSystemicDiagnosis')) { ?>
 						<td><a href="#" class="removeDiagnosis" rel="<?php echo $diagnosis->id?>">Remove</a></td>
 					<?php } ?>
 				</tr>
@@ -53,7 +53,7 @@
 			</tbody>
 		</table>
 
-		<?php if (BaseController::checkUserLevel(4)) { ?>
+		<?php if ($this->checkAccess('OprnEditSystemicDiagnosis')) { ?>
 			<div class="box-actions">
 				<button id="btn-add_new_systemic_diagnosis" class="secondary small">
 					Add Systemic Diagnosis
@@ -92,7 +92,7 @@
 
 					<div class="row field-row hide" id="add_systemic_diagnosis_loader">
 						<p class="large-offset-<?php echo $form->layoutColumns['label'];?> large-<?php echo $form->layoutColumns['field'];?> column end">
-							<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
+							<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" />
 								searching...
 						</p>
 					</div>
@@ -120,7 +120,7 @@
 					<div class="systemic_diagnoses_form_errors alert-box alert hide"></div>
 
 					<div class="buttons">
-						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader hide" />
+						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader hide" />
 						<button type="submit" class="secondary small btn_save_systemic_diagnosis">
 							Save
 						</button>
@@ -137,7 +137,7 @@
 	</div>
 
 </section>
-<?php if (BaseController::checkUserLevel(4)) { ?>
+<?php if ($this->checkAccess('OprnEditSystemicDiagnosis')) { ?>
 	<script type="text/javascript">
 		$('#btn-add_new_systemic_diagnosis').click(function() {
 			$('#add_new_systemic_diagnosis').slideToggle('fast');

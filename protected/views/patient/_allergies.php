@@ -45,14 +45,14 @@
 				<thead>
 					<tr>
 						<th>Allergies</th>
-						<?php if (BaseController::checkUserLevel(4)) { ?><th>Actions</th><?php } ?>
+						<?php if ($this->checkAccess('OprnEditAllergy')) { ?><th>Actions</th><?php } ?>
 					</tr>
 				</thead>
 				<tbody>
 					<?php foreach ($this->patient->allergies as $allergy) { ?>
 					<tr data-allergy-id="<?php echo $allergy->id ?>" data-allergy-name="<?php echo $allergy->name ?>">
 						<td><?php echo $allergy->name ?></td>
-						<?php if (BaseController::checkUserLevel(4)) { ?>
+						<?php if ($this->checkAccess('OprnEditAllergy')) { ?>
 							<td>
 								<a href="#" rel="<?php echo $allergy->id?>" class="small removeAllergy">
 									Remove
@@ -65,7 +65,7 @@
 			</table>
 			<?php
 		}
-		if (BaseController::checkUserLevel(4)) { ?>
+		if ($this->checkAccess('OprnEditAllergy')) { ?>
 			<div class="box-actions">
 				<button id="btn-add_allergy" class="secondary small">
 					Edit
@@ -107,7 +107,7 @@
 				</div>
 
 				<div class="buttons">
-					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_allergy_loader" style="display: none;" />
+					<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_allergy_loader" style="display: none;" />
 					<button class="secondary small btn_save_allergy" type="submit">Save</button>
 					<button class="warning small btn_cancel_allergy" type="submit">Cancel</button>
 				</div>
@@ -118,7 +118,7 @@
 	</div>
 </section>
 
-<?php if (BaseController::checkUserLevel(4)) { ?>
+<?php if (BaseController::checkAccess('OprnEditAllergy')) { ?>
 
 	<!-- Confirm deletion dialog -->
 	<div id="confirm_remove_allergy_dialog" title="Confirm remove allergy" style="display: none;">
@@ -133,7 +133,7 @@
 				<input type="hidden" id="remove_allergy_id" value="" />
 				<button type="submit" class="warning small btn_remove_allergy">Remove allergy</button>
 				<button type="submit" class="secondary small btn_cancel_remove_allergy">Cancel</button>
-				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+				<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 			</div>
 		</div>
 	</div>

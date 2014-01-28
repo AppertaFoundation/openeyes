@@ -55,42 +55,6 @@ class FirmTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers Firm::rules
-	 * @todo   Implement testRules().
-	 */
-	public function testRules()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers Firm::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers Firm::attributeLabels
-	 * @todo   Implement testAttributeLabels().
-	 */
-	public function testAttributeLabels()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers Firm::search
 	 * @todo   Implement testSearch().
 	 */
@@ -244,23 +208,13 @@ class FirmTest extends CDbTestCase
 		);
 	}
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp()
+	public function testIsSupportServicesFirm_False()
 	{
-		parent::setUp();
-		$this->object = new Firm;
+		$this->assertFalse(Firm::model()->findByPk(1)->isSupportServicesFirm());
 	}
 
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
+	public function testIsSupportServicesFirm_True()
 	{
-
+		$this->assertTrue(Firm::model()->findByPk(4)->isSupportServicesFirm());
 	}
-
 }

@@ -19,28 +19,16 @@
 
 class SiteController extends BaseController
 {
-
-	/**
-	 * Declares class-based actions.
-	 */
-	public function actions()
-	{
-		return array(
-			// page action renders "static" pages stored under 'protected/views/site/pages'
-			// They can be accessed via: index.php?r=site/page&view=FileName
-			'page'=>array(
-				'class'=>'CViewAction',
-			),
-		);
-	}
-
 	public function accessRules()
 	{
 		return array(
 			// Allow unauthenticated users to view certain pages
 			array('allow',
 				'actions'=>array('error', 'login', 'debuginfo'),
-				'users'=>array('?')
+			),
+			array('allow',
+				'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout'),
+				'users' => array('@'),
 			),
 		);
 	}
@@ -151,13 +139,15 @@ class SiteController extends BaseController
 	 */
 	public function actionChangeSiteAndFirm()
 	{
-		if (empty($_GET['returnUrl'])) {
-			throw new CHttpException(500, 'Return URL must be specified');
+		if (!$return_url = @$_GET['returnUrl']) {
+			if (!$return_url = @$_POST['returnUrl']) {
+				throw new CHttpException(500, 'Return URL must be specified');
+			}
 		}
 		if (@$_GET['patient_id']) {
 			$patient = Patient::model()->findByPk(@$_GET['patient_id']);
 		}
-		$this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $_GET['returnUrl'], 'patient'=>@$patient), false, true);
+		$this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $return_url), false, true);
 	}
 
 	/**

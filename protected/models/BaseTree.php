@@ -106,7 +106,7 @@ class BaseTree extends BaseActiveRecord
 
 	public function getText()
 	{
-		return $this->rule_order.': '.CHtml::openTag('a',array('href'=>'#','id'=>'item'.$this->id,'class'=>'treenode')).$this->textPlain.CHtml::closeTag('a')." <a href=\"#\" rel=\"$this->id\" class=\"addTreeItemHere\" ><img style=\"height:20px\" alt=\"Add tree item here\" src=\"".Yii::app()->createUrl('/img/_elements/btns/plus-sign.png')."\" /></a>\n";
+		return $this->rule_order.': '.CHtml::openTag('a',array('href'=>'#','id'=>'item'.$this->id,'class'=>'treenode')).$this->textPlain.CHtml::closeTag('a')." <a href=\"#\" rel=\"$this->id\" class=\"addTreeItemHere\" ><img style=\"height:20px\" alt=\"Add tree item here\" src=\"".Yii::app()->assetManager->createUrl('img/_elements/btns/plus-sign.png')."\" /></a>\n";
 	}
 
 	public function getListAsTree($parent=null)

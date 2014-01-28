@@ -83,7 +83,7 @@ class InitialDbMigrationCommand extends CConsoleCommand
 
 		if( $writeFile !== false  && is_file($fileFullPath) ){
 			$initialDbMigrationResult->result = true;
-			echo "New migration created successfully :" . $writeFile .".\n JSON Result: " . json_encode($initialDbMigrationResult ) . "\n";
+			//echo "New migration created successfully :" . $writeFile .".\n JSON Result: " . json_encode($initialDbMigrationResult ) . "\n";
 		}
 
 		return $initialDbMigrationResult;

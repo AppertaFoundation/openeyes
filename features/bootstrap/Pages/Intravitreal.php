@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Intravitreal extends Page
+class Intravitreal extends OpenEyesPage
 {
     protected $path ="/site/OphTrLaser/Default/create?patient_id={patientId}";
 
@@ -84,7 +82,9 @@ class Intravitreal extends Page
         //Complications
         'rightComplicationsDropdown' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Complications[right_complications]']"),
         'leftComplicationsDropdown' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Complications[left_complications]']"),
-        'saveIntravitrealInjection' => array('xpath' => "//*[@id='et_save']")
+        'saveIntravitrealInjection' => array('xpath' => "//*[@id='et_save']"),
+
+        'existingAllergyCheck' => array ('xpath' => "//*[contains(text(),'Patient is allergic to: Tetracycline')]"),
     );
 
         protected function isRightSideOpen()
@@ -99,6 +99,19 @@ class Intravitreal extends Page
              $this->getElement('addRightSide')->click();
              }
          }
+
+        protected function doesAllergyWarningExist()
+        {
+            return (bool) $this->find('xpath', $this->getElement('existingAllergyCheck')->getXpath());
+        }
+
+        public function confirmAllergyWarning ($allergy)
+        {
+            if ($this->doesAllergyWarningExist()){
+                print "Patient is allergic to: Tetracycline";
+            }
+            elseif (print "NO Tetracycline or other Allergy warning!!!");
+        }
 
          public function rightTypeTopical ()
          {

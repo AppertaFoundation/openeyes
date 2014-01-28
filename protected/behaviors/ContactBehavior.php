@@ -27,13 +27,12 @@ class ContactBehavior extends CActiveRecordBehavior
 		} else {
 			$contact = $this->owner->contact;
 		}
-
 		$address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
 
 		return $this->formatLetterAddress($contact, $address, $params);
 	}
 
-	public function formatLetterAddress($contact, $address, $params=array())
+	protected function formatLetterAddress($contact, $address, $params=array())
 	{
 		if ($address) {
 			if (method_exists($this->owner,'getLetterArray')) {
@@ -112,7 +111,7 @@ class ContactBehavior extends CActiveRecordBehavior
 
 	public function isDeceased()
 	{
-		if (isset($this->date_of_death) && $this->date_of_death) {
+		if (isset($this->owner->date_of_death) && $this->owner->date_of_death) {
 			return true;
 		}
 	}

@@ -1,4 +1,4 @@
 {
-  "directory": "js/components",
+  "directory": "protected/assets/components",
   "json": "bower.json"
 }

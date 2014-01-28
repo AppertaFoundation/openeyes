@@ -488,6 +488,23 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
+	 * Get or create an episode for the patient under the given Firm (Note that an episode will be returned if there
+	 * is match on Firm Subspecialty rather than on Firm)
+	 *
+	 * @param $firm
+	 * @param bool $include_closed
+	 * @return CActiveRecord|Episode|null
+	 */
+	public function getOrCreateEpisodeForFirm($firm, $include_closed = false)
+	{
+		if (!$episode = Episode::getCurrentEpisodeByFirm($this->id, $firm, $include_closed)) {
+			$episode = $this->addEpisode($firm);
+		}
+		return $episode;
+	}
+
+
+	/**
 	 * returns the ophthalmic information object for this patient (creates a default one if one does not exist - but does not save it)
 	 *
 	 * @return PatientOphInfo
@@ -1163,6 +1180,13 @@ class Patient extends BaseActiveRecord
 		return  $this->getOpenEpisodeOfSubspecialty($subspecialty_id) ? true : false;
 	}
 
+	/**
+	 * add an episode to the patient for the given Firm
+	 *
+	 * @param $firm
+	 * @return Episode
+	 * @throws Exception
+	 */
 	public function addEpisode($firm)
 	{
 		$episode = new Episode;

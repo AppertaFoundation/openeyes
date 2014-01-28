@@ -26,9 +26,6 @@ $this->beginContent('//patient/event_container');
 $this->moduleNameCssClass.=" highlight-fields";
 <?php echo "?>\n"?>
 
-<h2 class="event-title"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h2>
-<?php echo '<?php'?> $this->renderPartial('//base/_messages'); <?php echo "?>\n"?>
-
 <?php echo '<?php'?> if ($this->event->delete_pending) {<?php echo "?>\n"?>
 	<div class="alert-box alert with-icon">
 		This event is pending deletion and has been locked.

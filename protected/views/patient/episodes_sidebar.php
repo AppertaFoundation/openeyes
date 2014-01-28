@@ -24,7 +24,7 @@ $current_episode = @$this->current_episode;
 ?>
 <aside class="large-2 column sidebar episodes-and-events">
 
-	<?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && BaseController::checkUserLevel(4)) {?>
+	<?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) {?>
 		<button class="secondary small add-episode" type="button" id="add-episode">
 			<span class="icon-button-small-plus-sign"></span>
 			Add Episode
@@ -91,17 +91,8 @@ $current_episode = @$this->current_episode;
 						<div <?php if ($episode->hidden) { ?>class="events-container hide"<?php } else { ?>class="events-container show"<?php } ?>>
 
 							<?php
-							if (BaseController::checkUserLevel(4)) {?>
-								<?php
-								$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-								$enabled = false;
-								if ($episode->firm) {
-									if ($firm->getSubspecialtyID() == $episode->firm->getSubspecialtyID()) {
-										$enabled = true;
-									}
-								} elseif (is_null($firm->getSubspecialtyID()) && $episode->support_services) {
-									$enabled = true;
-								}
+							if ($this->checkAccess('OprnCreateEvent')) {
+								$enabled = $this->checkAccess('OprnCreateEvent', $this->firm, $episode);
 								?>
 
 								<button
@@ -120,6 +111,7 @@ $current_episode = @$this->current_episode;
 								if($enabled) { ?>
 									<script type="text/html" id="add-new-event-template" data-specialty='<?php echo json_encode($subspecialty_data);?>'>
 										<?php $this->renderPartial('//patient/add_new_event',array(
+												'episode' => $episode,
 												'subspecialty' => @$ssa->subspecialty,
 												'patient' => $this->patient,
 												'eventTypes' => EventType::model()->getEventTypeModules(),
@@ -176,7 +168,7 @@ $current_episode = @$this->current_episode;
 						<div class="row"><span class="label">Principal diagnosis:</span><?php echo ($episode->diagnosis) ? ($episode->diagnosis ? $episode->diagnosis->term : 'none') : 'No diagnosis' ?></div>
 						<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->getSubspecialtyText()) ?></div>
 						<div class="row"><span class="label">Consultant firm:</span><?php echo $episode->firm ? CHtml::encode($episode->firm->name) : 'N/A' ?></div>
-						<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png') ?>" alt="folder open" />
+						<img class="folderIcon" src="<?php echo Yii::app()->assetManager->createUrl('img/_elements/icons/folder_open.png') ?>" alt="folder open" />
 					</div>
 				<?php } ?>
 

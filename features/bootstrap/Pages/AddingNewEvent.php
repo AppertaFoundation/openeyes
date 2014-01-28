@@ -1,8 +1,7 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
-class AddingNewEvent extends Page
+class AddingNewEvent extends OpenEyesPage
 {
     protected $path = "OphCiExamination/default/view/{eventId}}";
 

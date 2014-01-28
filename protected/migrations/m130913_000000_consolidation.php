@@ -250,7 +250,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `address_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `address_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -267,7 +267,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `address_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `address_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -284,7 +284,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `allergy_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `allergy_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -302,7 +302,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `et_ophtroperationnote_agent_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `et_ophtroperationnote_agent_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -320,7 +320,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `et_ophtroperationnote_age_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `et_ophtroperationnote_age_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -338,7 +338,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `et_ophtroperationnote_del_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `et_ophtroperationnote_del_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -348,7 +348,7 @@ class m130913_000000_consolidation extends OEMigration
 							 `code` varchar(3) NOT NULL DEFAULT '',
 							 PRIMARY KEY (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -366,7 +366,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `anaesthetist_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `anaesthetist_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -422,7 +422,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `audit_useragent_id_fk` FOREIGN KEY (`useragent_id`) REFERENCES `audit_useragent` (`id`),
 							 CONSTRAINT `audit_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -439,7 +439,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `audit_action_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `audit_action_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -456,7 +456,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `audit_ipaddr_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `audit_ipaddr_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -473,7 +473,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `audit_model_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `audit_model_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -490,7 +490,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `audit_module_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `audit_module_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -507,7 +507,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `audit_server_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `audit_server_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -524,7 +524,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `audit_type_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `audit_type_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -541,7 +541,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `audit_useragent_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `audit_useragent_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -560,7 +560,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `authassignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `authassignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -580,7 +580,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `authitem_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `authitem_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -598,7 +598,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `authitemchild_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `authitemchild_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -615,7 +615,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `benefit_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `benefit_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -639,7 +639,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `commissioning_body_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `commissioning_body_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -661,7 +661,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `commissioning_body_patient_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `commissioning_body_patient_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -683,7 +683,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `commissioning_body_practice_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `commissioning_body_practice_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -710,7 +710,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `commissioning_body_service_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `commissioning_body_service_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -728,7 +728,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `commissioning_body_service_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `commissioning_body_service_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -746,7 +746,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `commissioning_body_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `commissioning_body_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -768,7 +768,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `common_ophthalmic_disorder_ibfk_1` FOREIGN KEY (`disorder_id`) REFERENCES `disorder` (`id`),
 							 CONSTRAINT `common_ophthalmic_disorder_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -786,7 +786,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `common_previous_operation_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `common_previous_operation_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -805,7 +805,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `common_systemic_disorder_ibfk_1` FOREIGN KEY (`disorder_id`) REFERENCES `disorder` (`id`),
 							 CONSTRAINT `common_systemic_disorder_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -822,7 +822,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `complication_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `complication_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -841,7 +841,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `consultant_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `consultant_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -867,7 +867,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `contact_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `contact_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -884,7 +884,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `contact_label_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `contact_label_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -909,7 +909,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `contact_location_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `contact_location_site_id_fk` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -928,7 +928,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `contact_metadata_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `contact_metadata_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -947,7 +947,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `contact_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `contact_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -967,7 +967,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `country_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `country_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -989,7 +989,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `disorder_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `disorder_specialty_fk` FOREIGN KEY (`specialty_id`) REFERENCES `specialty` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1001,7 +1001,7 @@ class m130913_000000_consolidation extends OEMigration
 							 KEY `lft` (`lft`),
 							 KEY `rght` (`rght`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1039,7 +1039,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `drug_type_id_fk` FOREIGN KEY (`type_id`) REFERENCES `drug_type` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1061,7 +1061,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_allergy_assignment_drug_id_fk` FOREIGN KEY (`drug_id`) REFERENCES `drug` (`id`),
 							 CONSTRAINT `drug_allergy_assignment_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1079,7 +1079,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_duration_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `drug_duration_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1096,7 +1096,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_form_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `drug_form_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1115,7 +1115,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_frequency_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `drug_frequency_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1133,7 +1133,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_route_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `drug_route_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1153,7 +1153,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_route_option_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `drug_route_option_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1173,7 +1173,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_set_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `drug_set_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1202,7 +1202,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_set_item_frequency_id_fk` FOREIGN KEY (`frequency_id`) REFERENCES `drug_frequency` (`id`),
 							 CONSTRAINT `drug_set_item_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1226,7 +1226,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_set_item_taper_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `drug_set_item_taper_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1243,7 +1243,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `drug_type_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `drug_type_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1268,7 +1268,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `element_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `element_type_parent_et_fk` FOREIGN KEY (`parent_element_type_id`) REFERENCES `element_type` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1291,7 +1291,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `element_type_anaesthetic_agent_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 							 CONSTRAINT `element_type_anaesthetic_agent_anaesthetic_agent_id_fk` FOREIGN KEY (`anaesthetic_agent_id`) REFERENCES `anaesthetic_agent` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1314,7 +1314,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `element_type_ac_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 							 CONSTRAINT `element_type_ac_anaesthetic_complication_id_fk` FOREIGN KEY (`anaesthetic_complication_id`) REFERENCES `anaesthetic_complication` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1337,7 +1337,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `element_type_anaesthetic_delivery_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 							 CONSTRAINT `element_type_anaesthetic_delivery_anaesthetic_delivery_id_fk` FOREIGN KEY (`anaesthetic_delivery_id`) REFERENCES `anaesthetic_delivery` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1352,7 +1352,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `element_type_anaesthetic_type_fk1` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 							 CONSTRAINT `element_type_anaesthetic_type_fk2` FOREIGN KEY (`anaesthetic_type_id`) REFERENCES `anaesthetic_type` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1375,7 +1375,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `element_type_anaesthetist_element_type_id_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`),
 							 CONSTRAINT `element_type_anaesthetist_anaesthetist_id_fk` FOREIGN KEY (`anaesthetist_id`) REFERENCES `anaesthetist` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1390,7 +1390,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `element_type_eye_fk2` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`),
 							 CONSTRAINT `element_type_eye_fk1` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1405,7 +1405,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `element_type_priority_fk2` FOREIGN KEY (`priority_id`) REFERENCES `priority` (`id`),
 							 CONSTRAINT `element_type_priority_fk1` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1441,7 +1441,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `episode_eye_id_fk` FOREIGN KEY (`eye_id`) REFERENCES `eye` (`id`),
 							 CONSTRAINT `episode_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1459,7 +1459,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `episode_status_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `episode_status_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1478,7 +1478,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `ethnic_group_created_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `ethnic_group_last_modified_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1504,7 +1504,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `event_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `event_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1514,7 +1514,7 @@ class m130913_000000_consolidation extends OEMigration
 							 `code` varchar(2) NOT NULL,
 							 PRIMARY KEY (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1536,7 +1536,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `event_issue_issue_id` FOREIGN KEY (`issue_id`) REFERENCES `issue` (`id`),
 							 CONSTRAINT `event_issue_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1559,7 +1559,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `event_type_event_group_id_fk` FOREIGN KEY (`event_group_id`) REFERENCES `event_group` (`id`),
 							 CONSTRAINT `event_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1569,7 +1569,7 @@ class m130913_000000_consolidation extends OEMigration
 							 `display_order` int(10) unsigned NOT NULL DEFAULT '1',
 							 PRIMARY KEY (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1598,7 +1598,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `family_history_side_id_fk` FOREIGN KEY (`side_id`) REFERENCES `family_history_side` (`id`),
 							 CONSTRAINT `family_history_condition_id_fk` FOREIGN KEY (`condition_id`) REFERENCES `family_history_condition` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1616,7 +1616,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `family_history_condition_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `family_history_condition_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1634,7 +1634,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `family_history_relative_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `family_history_relative_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1652,7 +1652,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `family_history_side_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `family_history_side_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1676,7 +1676,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `firm_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `service_subspecialty_assignment_id` FOREIGN KEY (`service_subspecialty_assignment_id`) REFERENCES `service_subspecialty_assignment` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1698,7 +1698,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `firm_user_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1715,7 +1715,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `gender_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `gender_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1736,7 +1736,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `gp_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `gp_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1753,7 +1753,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `import_source_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `import_source_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1778,7 +1778,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `institution_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `institution_source_id_fk` FOREIGN KEY (`source_id`) REFERENCES `import_source` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1800,7 +1800,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `institution_consultant_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `institution_consultant_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1817,7 +1817,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `issue_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `issue_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1834,7 +1834,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `language_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `language_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1861,7 +1861,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `letter_template_ibfk_3` FOREIGN KEY (`cc`) REFERENCES `contact_type` (`id`),
 							 CONSTRAINT `letter_template_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1883,7 +1883,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `manual_contact_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `manual_contact_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1914,7 +1914,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `medication_option_id_fk` FOREIGN KEY (`option_id`) REFERENCES `drug_route_option` (`id`),
 							 CONSTRAINT `medication_frequency_id_fk` FOREIGN KEY (`frequency_id`) REFERENCES `drug_frequency` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1935,7 +1935,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `nsc_grade_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `nsc_grade_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1953,7 +1953,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `opcs_code_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `opcs_code_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -1970,7 +1970,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `operative_device_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `operative_device_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2004,7 +2004,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `patient_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `patient_practice_id_fk` FOREIGN KEY (`practice_id`) REFERENCES `practice` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2026,7 +2026,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `patient_allergy_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `patient_allergy_assignment_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2051,7 +2051,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `patient_contact_assignment_contact_id_fk` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`),
 							 CONSTRAINT `patient_contact_assignment_location_id_fk` FOREIGN KEY (`location_id`) REFERENCES `contact_location` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2074,7 +2074,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `patient_oph_info_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `patient_oph_info_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2092,7 +2092,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `patient_oph_info_cvi_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `patient_oph_info_cvi_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2115,7 +2115,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `patient_shortcode_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `patient_shortcode_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2133,7 +2133,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `period_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `period_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2156,7 +2156,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `person_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `person_source_id_fk` FOREIGN KEY (`source_id`) REFERENCES `import_source` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2178,7 +2178,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `phrase_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `phrase_phrase_name_id_fk` FOREIGN KEY (`phrase_name_id`) REFERENCES `phrase_name` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2205,7 +2205,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `phrase_by_firm_phrase_name_id_fk` FOREIGN KEY (`phrase_name_id`) REFERENCES `phrase_name` (`id`),
 							 CONSTRAINT `phrase_by_firm_section_fk` FOREIGN KEY (`section_id`) REFERENCES `section` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2232,7 +2232,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `phrase_by_subspecialty_phrase_name_id_fk` FOREIGN KEY (`phrase_name_id`) REFERENCES `phrase_name` (`id`),
 							 CONSTRAINT `phrase_by_subspecialty_subspecialty_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2249,7 +2249,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `phrase_name_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `phrase_name_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2270,7 +2270,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `practice_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `practice_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2294,7 +2294,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `previous_operation_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`),
 							 CONSTRAINT `previous_operation_side_id_fk` FOREIGN KEY (`side_id`) REFERENCES `eye` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2303,7 +2303,7 @@ class m130913_000000_consolidation extends OEMigration
 							 `name` varchar(10) DEFAULT NULL,
 							 PRIMARY KEY (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2325,7 +2325,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `proc_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `proc_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2346,7 +2346,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `proc_opcs_assignment_ibfk_1` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`),
 							 CONSTRAINT `proc_opcs_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2368,7 +2368,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `proc_subspecialty_assignment_ibfk_1` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`),
 							 CONSTRAINT `proc_subspecialty_assignment_ibfk_2` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2390,7 +2390,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `proc_subspecialty_subsection_assignment_proc_id_fk` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`),
 							 CONSTRAINT `pssa_subspecialty_subsection_id_fk` FOREIGN KEY (`subspecialty_subsection_id`) REFERENCES `subspecialty_subsection` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2412,7 +2412,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `procedure_additional_additional_proc_id_fk` FOREIGN KEY (`additional_proc_id`) REFERENCES `proc` (`id`),
 							 CONSTRAINT `procedure_additional_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2434,7 +2434,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `procedure_benefit_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `procedure_benefit_proc_id_fk` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2456,7 +2456,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `procedure_complication_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `procedure_complication_proc_id_fk` FOREIGN KEY (`proc_id`) REFERENCES `proc` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2479,7 +2479,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `asset_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `asset_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2514,7 +2514,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `referral_referral_type_id_fk` FOREIGN KEY (`referral_type_id`) REFERENCES `referral_type` (`id`),
 							 CONSTRAINT `referral_service_subspecialty_assignment_id_fk` FOREIGN KEY (`service_subspecialty_assignment_id`) REFERENCES `service_subspecialty_assignment` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2532,7 +2532,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `referral_episode_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `referral_episode_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2550,7 +2550,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `referral_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `referral_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2576,7 +2576,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `secondary_diagnosis_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `secondary_diagnosis_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2594,7 +2594,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `section_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `section_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2611,7 +2611,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `section_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `section_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2628,7 +2628,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `service_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `service_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2650,7 +2650,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `service_subspecialty_assignment_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
 							 CONSTRAINT `service_subspecialty_assignment_ibfk_2` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2667,7 +2667,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `setting_field_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `setting_field_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2691,7 +2691,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `setting_firm_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `setting_firm_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2712,7 +2712,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `setting_installation_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `setting_installation_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2736,7 +2736,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `setting_institution_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `setting_institution_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2763,7 +2763,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `setting_metadata_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `setting_metadata_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2787,7 +2787,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `setting_site_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `setting_site_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2811,7 +2811,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `setting_specialty_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `setting_specialty_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2835,7 +2835,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `setting_subspecialty_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `setting_subspecialty_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2859,7 +2859,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `setting_user_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `setting_user_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2893,7 +2893,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `site_replyto_contact_id_fk` FOREIGN KEY (`replyto_contact_id`) REFERENCES `contact` (`id`),
 							 CONSTRAINT `site_source_id_fk` FOREIGN KEY (`source_id`) REFERENCES `import_source` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2915,7 +2915,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `site_consultant_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `site_consultant_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2940,7 +2940,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `site_subspecialty_anaesthetic_subspecialty_id_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`),
 							 CONSTRAINT `site_subspecialty_anaesthetic_anaesthetic_agent_id_fk` FOREIGN KEY (`anaesthetic_agent_id`) REFERENCES `anaesthetic_agent` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2965,7 +2965,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `site_subspecialty_anaesthetic_def_subspecialty_id_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`),
 							 CONSTRAINT `site_subspecialty_anaesthetic_def_anaesthetic_agent_id_fk` FOREIGN KEY (`anaesthetic_agent_id`) REFERENCES `anaesthetic_agent` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -2990,7 +2990,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `site_subspecialty_drug_site_id_fk` FOREIGN KEY (`site_id`) REFERENCES `site` (`id`),
 							 CONSTRAINT `site_subspecialty_drug_subspecialty_id_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3017,7 +3017,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `ss_operative_device_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `ss_operative_device_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3036,7 +3036,7 @@ class m130913_000000_consolidation extends OEMigration
 							 KEY `specialty_specialty_type_id_fk` (`specialty_type_id`),
 							 CONSTRAINT `specialty_specialty_type_id_fk` FOREIGN KEY (`specialty_type_id`) REFERENCES `specialty_type` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3054,7 +3054,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `specialty_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `specialty_type_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3075,7 +3075,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `subspecialty_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `subspecialty_specialty_id_fk` FOREIGN KEY (`specialty_id`) REFERENCES `specialty` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3095,7 +3095,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `subspecialty_subsection_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `subspecialty_subsection_subspecialty_id_fk` FOREIGN KEY (`subspecialty_id`) REFERENCES `subspecialty` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3117,7 +3117,7 @@ class m130913_000000_consolidation extends OEMigration
 							 KEY `idx_audit_trail_action` (`action`),
 							 KEY `idx_audit_trail_stamp` (`stamp`)
 							)
-							ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3160,7 +3160,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `user_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `user_last_site_id_fk` FOREIGN KEY (`last_site_id`) REFERENCES `site` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3182,7 +3182,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `user_firm_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `user_firm_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3201,7 +3201,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `user_firm_preference_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `user_firm_preference_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3223,7 +3223,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `user_firm_rights_fk_2` FOREIGN KEY (`firm_id`) REFERENCES `firm` (`id`),
 							 CONSTRAINT `user_firm_rights_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3245,7 +3245,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `user_service_rights_fk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
 							 CONSTRAINT `user_service_rights_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3255,7 +3255,7 @@ class m130913_000000_consolidation extends OEMigration
 							 `data` text,
 							 PRIMARY KEY (`id`)
 							)
-							ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->execute(
@@ -3277,7 +3277,7 @@ class m130913_000000_consolidation extends OEMigration
 							 CONSTRAINT `user_site_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 							 CONSTRAINT `user_site_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)
 							)
-							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin"
+							ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci"
 		);
 
 		$this->initialiseData($this->getMigrationPath());

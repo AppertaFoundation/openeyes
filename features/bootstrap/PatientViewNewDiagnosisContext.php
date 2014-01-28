@@ -308,4 +308,53 @@ class PatientViewContext extends PageObjectContext
         $patientView = $this->getPage('PatientViewNewDiagnosis');
         $patientView->addFamilyHistory($relative, $side, $condition, $comments);
     }
+
+    /**
+     * @Then /^I remove the Opthalmic Diagnosis$/
+     */
+    public function iRemoveTheOpthalmicDiagnosis()
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->removeAndConfirm();
+    }
+
+    /**
+     * @Then /^I remove the Systemic Diagnosis$/
+     */
+    public function iRemoveTheSystemicDiagnosis()
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->removeAndConfirm();
+    }
+
+    /**
+     * @Then /^I remove the Previous Operation$/
+     */
+    public function iRemoveThePreviousOperation()
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->removeOperation();
+    }
+
+    /**
+     * @Then /^I remove the Medication$/
+     */
+    public function iRemoveMedication()
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->removeMedication();
+    }
+
 }

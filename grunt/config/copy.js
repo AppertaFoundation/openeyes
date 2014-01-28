@@ -2,15 +2,15 @@ module.exports = {
 	docs: {
 		files: [
 			{
-				src: ['css/**/*'],
+				src: ['protected/assets/css/**/*'],
 				dest: 'docs/public/assets/core/'
 			},
 			{
-				src: ['img/**/*'],
+				src: ['protected/assets/img/**/*'],
 				dest: 'docs/public/assets/core/'
 			},
 			{
-				src: ['js/**/*'],
+				src: ['protected/assets/js/**/*'],
 				dest: 'docs/public/assets/core/'
 			},
 			{

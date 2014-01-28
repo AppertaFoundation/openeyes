@@ -27,7 +27,10 @@ if (!Yii::app()->user->isGuest) {
 			Yii::app()->session['shown_reminder'] = true;
 			$this->widget('SiteAndFirmWidgetReminder');
 		} else if (!empty(Yii::app()->session['confirm_site_and_firm'])) {
-			$this->widget('SiteAndFirmWidget');
+			$this->widget('SiteAndFirmWidget', array(
+				'returnUrl' => Yii::app()->request->requestUri,
+				)
+			);
 		}
 	}
 	if (empty(Yii::app()->session['user'])) {

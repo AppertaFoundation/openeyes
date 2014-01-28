@@ -186,6 +186,7 @@ class ExaminationContext extends PageObjectContext
          */
         $examination= $this->getPage('Examination');
         $examination->dilationLeft($dilation, $drops);
+        $examination->dilationLeft($dilation, $drops);
     }
 
     /**
@@ -242,13 +243,12 @@ class ExaminationContext extends PageObjectContext
      */
     public function iEnterLeftAxisDegreesOf($axis)
     {
-        //We need a Clear Field function here
+        //HACK! I have entered the value twice in the code to stop the Axis from spinning
         /**
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
         $examination->leftAxis($axis);
-        //We need to Press the tab key here
     }
 
     /**
@@ -261,6 +261,30 @@ class ExaminationContext extends PageObjectContext
          */
         $examination= $this->getPage('Examination');
         $examination->leftType($type);
+    }
+
+    /**
+     * @Then /^I select a Right Intended Treatment of "([^"]*)"$/
+     */
+    public function iSelectARightIntendedTreatmentOf($treatment)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightIntendedTreatment($treatment);
+    }
+
+    /**
+     * @Then /^I select a Left Intended Treatment of "([^"]*)"$/
+     */
+    public function iSelectALeftIntendedTreatmentOf($treatment)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftIntendedTreatment($treatment);
     }
 
     /**
@@ -544,15 +568,15 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I choose to expand Cataract Management$/
+     * @Given /^I choose to expand Cataract Surgical Management$/
      */
-    public function iChooseToExpandCataractManagement()
+    public function iChooseToExpandCataractSurgicalManagement()
     {
         /**
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->expandCataractManagement();
+        $examination->expandCataractSurgicalManagement();
     }
 
     /**
@@ -1455,4 +1479,190 @@ class ExaminationContext extends PageObjectContext
         $examination= $this->getPage('Examination');
         $examination->saveExamination();
     }
+
+    //VALIDATION TESTS
+
+    /**
+     * @Then /^a check is made that a right Axis degrees of "([^"]*)" was entered$/
+     */
+    public function aCheckIsMadeThatARightAxisDegreesOfWasEntered($axis)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightAxisCheck($axis);
+    }
+
+    /**
+     * @Then /^a check is made that a left Axis degrees of "([^"]*)" was entered$/
+     */
+    public function aCheckIsMadeThatALeftAxisDegreesOfWasEntered($axis)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftAxisCheck($axis);
+    }
+
+    /**
+     * @Then /^I select Add All optional elements$/
+     */
+    public function iSelectAddAllOptionalElements()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->addAllElements();
+    }
+
+    /**
+     * @Then /^I confirm that the Add All Validation error messages have been displayed$/
+     */
+    public function iConfirmThatTheAddAllValidationErrorMessagesHaveBeenDisplayed()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->addAllElementsValidationCheck();
+    }
+
+
+
+    /**
+     * @Then /^I select Close All elements$/
+     */
+    public function iSelectCloseAllElements()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeAllElements();
+    }
+
+    /**
+     * @Then /^I confirm that the Remove All Validation error message is displayed$/
+     */
+    public function iConfirmThatTheRemoveAllValidationErrorMessageIsDisplayed()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeAllValidationCheck();
+    }
+
+    /**
+     * @Then /^I Confirm that the History Validation error message is displayed$/
+     */
+    public function iConfirmThatHistoryErrorMessageIsDisplayed()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->historyValidationCheck();
+    }
+
+    /**
+     * @Then /^I Confirm that the Conclusion Validation error message is displayed$/
+     */
+    public function iConfirmConlusionValidation()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->conclusionValidationCheck();
+    }
+
+    /**
+     * @Then /^I Confirm that the Dilation Validation error message is displayed$/
+     */
+    public function iConfirmDilationValidation()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->dilationValidationCheck();
+    }
+
+    /**
+     * @Then /^I remove Refraction right side$/
+     */
+    public function iRemoveRefractionRightSide()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeRefractionRightSide();
+    }
+
+    /**
+     * @Then /^I remove all comorbidities$/
+     */
+    public function removeComorbidties()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeAllComorbidities();
+    }
+
+    /**
+     * @Given /^I choose to add a new left Visual Acuity reading of "([^"]*)" and a reading method of "([^"]*)"$/
+     */
+    public function iChooseToAddANewLeftVisualAcuityReadingOfAndAReadingMethodOf($reading, $method)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->addLeftVisualAcuity($reading, $method);
+    }
+
+    /**
+     * @Given /^I choose to add a new Right Visual Acuity reading of "([^"]*)" and a reading method of "([^"]*)"$/
+     */
+    public function iChooseToAddANewRightVisualAcuityReadingOfAndAReadingMethodOf($reading, $method)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->addRightVisualAcuity($reading, $method);
+    }
+
+    /**
+     * @Then /^I remove the newly added Left Visual Acuity$/
+     */
+    public function iRemoveTheNewlyAddedLeftVisualAcuity()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeSecondLeftVisualAcuity();
+    }
+
+    /**
+     * @Then /^I remove the newly added Right Visual Acuity$/
+     */
+    public function iRemoveTheNewlyAddedRightVisualAcuity()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeSecondRightVisualAcuity();
+    }
+
+
 }

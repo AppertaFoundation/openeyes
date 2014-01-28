@@ -76,9 +76,20 @@ return array(
 		),
 		'clientScript' => array(
 			'class' => 'ClientScript',
+			'packages' => array(
+				'flot' => array(
+					'js' => array(
+						'jquery.flot.js',
+						'jquery.flot.time.js',
+						'jquery.flot.navigate.js',
+					),
+					'baseUrl' => 'components/flot',
+					'depends' => array('jquery'),
+				),
+			),
 		),
 		'user' => array(
-			'class' => 'WebUser',
+			'class' => 'CWebUser',
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,
 		),
@@ -107,7 +118,7 @@ return array(
 			'schemaCachingDuration' => 300,
 		),
 		'authManager' => array(
-			'class' => 'CDbAuthManager',
+			'class' => 'AuthManager',
 			'connectionID' => 'db',
 		),
 		'cache' => array(
@@ -156,6 +167,14 @@ return array(
 			/*'cookieParams' => array(
 				'lifetime' => 300,
 			),*/
+		),
+		'cacheBuster' => array(
+			'class'=>'CacheBuster',
+		),
+		'assetManager' => array(
+			'class'=>'AssetManager',
+			// Use symbolic links to publish the assets when in debug mode.
+			'linkAssets' => defined('YII_DEBUG') && YII_DEBUG,
 		),
 	),
 	'params'=>array(
@@ -215,5 +234,6 @@ return array(
 		'admin_menu' => array(
 		),
 		'admin_email' => '',
+		'enable_transactions' => true,
 	),
 );

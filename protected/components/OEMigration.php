@@ -91,9 +91,9 @@ class OEMigration extends CDbMigration
 					$column_parts = explode('=>', $column);
 					$column = trim($column_parts[0]);
 					$lookup_parts = explode('.', $column_parts[1]);
-					$model = trim($lookup_parts[0]);
+					$lookup_table = trim($lookup_parts[0]);
 					$field = trim($lookup_parts[1]);
-					$lookup_columns[$column] = array('model' => $model, 'field' => $field);
+					$lookup_columns[$column] = array('table' => $lookup_table, 'field' => $field);
 				}
 			}
 			$row_count = 0;
@@ -104,11 +104,11 @@ class OEMigration extends CDbMigration
 
 				// Process lookup columns
 				foreach ($lookup_columns as $lookup_column => $lookup) {
-					$model = $lookup['model'];
+					$lookup_table = $lookup['table'];
 					$field = $lookup['field'];
 					$lookup_value = $data[$lookup_column];
-					$lookup_record = BaseActiveRecord::model($model)->findByAttributes(array($field => $lookup_value));
-					$data[$lookup_column] = $lookup_record->id;
+					$lookup_record = $this->dbConnection->createCommand()->select("*")->from($lookup_table)->where("$field = :value",array(":value" => $lookup_value))->queryRow();
+					$data[$lookup_column] = $lookup_record['id'];
 				}
 
 				// Process NULLs
@@ -221,6 +221,31 @@ class OEMigration extends CDbMigration
 
 		fclose($file);
 		return count($rowsQuery);
+	}
+
+	/**
+	 * Create a table with the standard OE columns and options
+	 *
+	 * @param string $name
+	 * @param array $colums
+	 */
+	protected function createOETable($name, array $columns)
+	{
+		$fk_prefix = substr($name, 0, 56);
+
+		$columns = array_merge(
+			$columns,
+			array(
+				'last_modified_user_id' => 'int unsigned not null default 1',
+				'last_modified_date' => 'datetime not null default "1901-01-01 00:00:00"',
+				'created_user_id' => 'int unsigned not null default 1',
+				'created_date' => 'datetime not null default "1901-01-01 00:00:00"',
+				"constraint {$fk_prefix}_lmui_fk foreign key (last_modified_user_id) references user (id)",
+				"constraint {$fk_prefix}_cui_fk foreign key (created_user_id) references user (id)",
+			)
+		);
+
+		$this->createTable($name, $columns, 'engine=InnoDB charset=utf8 collate=utf8_unicode_ci');
 	}
 
 	/**

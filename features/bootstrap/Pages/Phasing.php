@@ -1,13 +1,11 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Phasing extends Page
+class Phasing extends OpenEyesPage
 {
     protected $path = "/site/OphCiPhasing/Default/create?patient_id={parentId}";
 
     protected $elements = array(
-        'phasingLogo' => array('xpath' => "//*[@id='event_content']/h3[@class='withEventIcon']"),
+        'phasingLogo' => array('xpath' => "//*[@id='event-content']//*[contains(text(),'Phasing')]"),
 
         'phasingInstrumentRight' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_instrument_id']"),
         'phasingDilationRightYes' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_dilated_1']"),
@@ -15,13 +13,22 @@ class Phasing extends Page
         'phasingReadingTimeRight' => array('xpath' => "//*[@id='intraocularpressure_reading_0_measurement_timestamp']"),
         'phasingPressureRight' => array('xpath' => "//input[@id='intraocularpressure_reading_0_value']"),
         'phasingCommentsRight' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_right_comments']"),
-
         'phasingInstrumentLeft' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_left_instrument_id']"),
         'phasingDilationLeftYes' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_left_dilated_1']"),
         'phasingDilationLeftNo' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_left_dilated_0']"),
         'phasingReadingTimeLeft' => array('xpath' => "//*[@id='intraocularpressure_reading_1_measurement_timestamp']"),
         'phasingPressureLeft' => array('xpath' => "//input[@id='intraocularpressure_reading_1_value']"),
         'phasingCommentsLeft' => array('xpath' => "//*[@id='Element_OphCiPhasing_IntraocularPressure_left_comments']"),
+
+        'phasingReadingAddLeft' => array('xpath' => "//*[@class='element-eye left-eye column side right']//*[contains(text(),'Add')]"),
+        'phasingReadingTimeLeft2' => array('xpath' => "//*[@id='intraocularpressure_reading_2_measurement_timestamp']"),
+        'phasingPressureLeft2' => array('xpath' => "//input[@id='intraocularpressure_reading_2_value']"),
+
+        'phasingReadingAddRight' => array('xpath' => "//*[@class='element-eye right-eye column side left']//*[contains(text(),'Add')]"),
+        'phasingReadingTimeRight2' => array('xpath' => "//*[@id='intraocularpressure_reading_3_measurement_timestamp']"),
+        'phasingPressureRight2' => array('xpath' => "//input[@id='intraocularpressure_reading_3_value']"),
+        'removeLeft' => array('xpath' => "//*[@class='readings-right']//*[contains(text(),'Remove')]"),
+        'removeRight' => array('xpath' => "//*[@class='readings-left']//*[contains(text(),'Remove')]"),
         'savePhasingEvent' => array('xpath' => "//*[@id='et_save']")
     );
 
@@ -96,7 +103,46 @@ class Phasing extends Page
     public function leftComments ($comments)
     {
         $this->getElement('phasingCommentsLeft')->setValue($comments);
+    }
 
+    public function addLeftReading ()
+    {
+        $this->getElement('phasingReadingAddLeft')->click();
+    }
+
+    public function secondLeftTime ($time)
+    {
+        $this->getElement('phasingReadingTimeLeft2')->setValue($time);
+    }
+
+    public function secondLeftReading ($reading)
+    {
+        $this->getElement('phasingPressureLeft2')->setValue($reading);
+    }
+
+    public function addRightReading ()
+    {
+        $this->getElement('phasingReadingAddRight')->click();
+    }
+
+    public function secondRightTime ($time)
+    {
+        $this->getElement('phasingReadingTimeRight2')->setValue($time);
+    }
+
+    public function secondRightReading ($reading)
+    {
+        $this->getElement('phasingPressureRight2')->setValue($reading);
+    }
+
+    public function removeRightReading ()
+    {
+        $this->getElement('removeRight')->click();
+    }
+
+    public function removeLeftReading ()
+    {
+        $this->getElement('removeLeft')->click();
     }
 
     public function savePhasingEvent ()

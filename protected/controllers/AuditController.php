@@ -29,12 +29,9 @@ class AuditController extends BaseController
 	public function accessRules()
 	{
 		return array(
-			// Level 2 or above can do anything
 			array('allow',
-				'expression' => 'BaseController::checkUserLevel(2)',
+				'roles' => array('OprnViewClinical'),
 			),
-			// Deny anything else (default rule allows authenticated users)
-			array('deny'),
 		);
 	}
 
@@ -58,7 +55,7 @@ class AuditController extends BaseController
 			$data = $this->getData();
 		}
 
-		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/audit.js'));
+		Yii::app()->assetManager->registerScriptFile('js/audit.js');
 		$this->renderPartial('_list', array('data' => $data), false, true);
 		echo "<!-------------------------->";
 		$this->renderPartial('_pagination', array('data' => $data), false, true);

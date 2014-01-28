@@ -74,7 +74,7 @@ class User extends BaseActiveRecord
 			// Added for uniqueness of username
 			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
 			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
-			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, access_level, password, is_clinical, is_consultant, is_surgeon, has_selected_firms', 'safe'),
+			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms', 'safe'),
 		);
 
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
@@ -366,7 +366,7 @@ class User extends BaseActiveRecord
 	public function getListSurgeons()
 	{
 		$criteria = new CDbCriteria;
-		$criteria->compare('is_doctor',1);
+		$criteria->compare('is_surgeon',1);
 		$criteria->compare('active',1);
 		$criteria->order = 'last_name,first_name asc';
 		return CHtml::listData(User::model()->findAll($criteria),'id','reversedFullName');
@@ -411,26 +411,6 @@ class User extends BaseActiveRecord
 		}
 
 		return $salt;
-	}
-
-	public function getAccessLevelOptions()
-	{
-		return array(
-			0 => 'No access',
-			1 => 'Patient demographics',
-			2 => 'Read only',
-			3 => 'Read only and print',
-			4 => 'Edit but not prescribe',
-			5 => 'Full',
-		);
-	}
-
-	public function getAccesslevelstring()
-	{
-		$access_levels = $this->getAccessLevelOptions();
-		if (isset($access_levels[$this->access_level])) {
-			return $access_levels[$this->access_level];
-		}
 	}
 
 	public function findAsContacts($term)
@@ -499,5 +479,31 @@ class User extends BaseActiveRecord
 		}
 		natcasesort($data);
 		return $data;
+	}
+
+	/**
+	 * @return CAuthItem[]
+	 */
+	public function getRoles()
+	{
+		return $this->id ? Yii::app()->authManager->getRoles($this->id) : array();
+	}
+
+	/**
+	 * @param string[] $roles
+	 */
+	public function saveRoles(array $roles)
+	{
+		$old_roles = array_map(function ($role) { return $role->name; }, $this->roles);
+		$added_roles = array_diff($roles, $old_roles);
+		$removed_roles = array_diff($old_roles, $roles);
+
+		foreach ($added_roles as $role) {
+			Yii::app()->authManager->assign($role, $this->id);
+		}
+
+		foreach ($removed_roles as $role) {
+			Yii::app()->authManager->revoke($role, $this->id);
+		}
 	}
 }

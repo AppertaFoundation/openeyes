@@ -210,7 +210,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(3000);
+        //$operationBooking->getSession()->wait(3000);
         $operationBooking->scheduleNow();
     }
 
@@ -249,6 +249,27 @@ class OperationBookingContext extends PageObjectContext
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->availableSlotExactDay($day);
     }
+
+
+	/**
+	 * @Then /^I select an Available theatre slot date of next "([^"]*)"$/
+	 */
+	public function iSelectAnAvailableTheatreSlotDateOfNext($dayOfTheWeek)
+	{
+		/**
+		 * @var OperationBooking $operationBooking
+		 */
+
+		$operationBooking = $this->getPage('OperationBooking');
+
+		$nextDay = date('j', strtotime('this ' . $dayOfTheWeek));
+		$today = date('j', strtotime('today'));
+
+		if($today > $nextDay){
+			$operationBooking->nextMonth();
+		}
+		$operationBooking->availableSlotExactDay($nextDay);
+	}
 
 
     /**
@@ -325,4 +346,18 @@ class OperationBookingContext extends PageObjectContext
         $operationBooking->getSession()->wait(3000);
         $operationBooking->confirmSlot();
     }
+
+    /**
+     * @Then /^I select Save$/
+     */
+    public function save()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->save();
+    }
+
+
 }

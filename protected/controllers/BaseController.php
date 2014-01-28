@@ -19,7 +19,7 @@
 
 /**
  * A base controller class that helps display the firm dropdown and the patient name.
- * It is extended by all non-admin controllers.
+ * It is extended by all other controllers.
  */
 
 class BaseController extends Controller
@@ -28,99 +28,27 @@ class BaseController extends Controller
 	public $selectedFirmId;
 	public $selectedSiteId;
 	public $firms;
-	public $showForm = false;
-	public $patientId;
-	public $patientName;
 	public $jsVars = array();
-	protected $css = array();
+	public $assetManager;
 
-	/**
-	 * Check to see if user's level is high enough
-	 * @param integer $level
-	 * @return boolean
-	 */
-	public static function checkUserLevel($level)
-	{
-		if ($user = Yii::app()->user) {
-			return ($user->access_level >= $level);
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Set default rules to block everyone apart from admin
-	 * These should be overridden in child classes
-	 * @return array
-	 */
 	public function filters()
 	{
 		return array('accessControl');
 	}
-	public function accessRules()
-	{
-		return array(
-			array('allow',
-				'roles'=>array('admin'),
-			),
-			// Deny everyone else (this is important to add when overriding as otherwise
-			// any authenticated user may fall through and be allowed)
-			array('deny'),
-		);
-	}
 
 	public function filterAccessControl($filterChain)
 	{
+		$rules = $this->accessRules();
+		// Fallback to denying everyone
+		$rules[] = array('deny');
+
 		$filter = new CAccessControlFilter;
-		$filter->setRules($this->compileAccessRules());
+		$filter->setRules($rules);
 		$filter->filter($filterChain);
 	}
 
-	protected function compileAccessRules()
-	{
-		// Always allow admin
-		$admin_rule = array('allow', 'roles' => array('admin'));
-
-		// Always deny unauthenticated users in case rules fall through
-		// Maybe we should change this to deny everyone for safety
-		$default_rule = array('deny', 'users' => array('?'));
-
-		// Merge rules defined by controller
-		return array_merge(array($admin_rule), $this->accessRules(), array($default_rule));
-	}
-
 	/**
-	 * (Pre)register a CSS file with a priority to allow ordering
-	 * @param string $name
-	 * @param string $path
-	 * @param integer $priority
-	 */
-	public function registerCssFile($name, $path, $priority = 100)
-	{
-		$this->css[$name] = array(
-				'path' => $path,
-				'priority' => $priority,
-		);
-	}
-
-	/**
-	 * Registers all CSS file that were preregistered by priority
-	 */
-	protected function registerCssFiles()
-	{
-		$css_array = array();
-		foreach ($this->css as $css_item) {
-			$css_array[$css_item['path']] = $css_item['priority'];
-		}
-		arsort($css_array);
-		$clientscript = Yii::app()->clientScript;
-		foreach ($css_array as $path => $priority) {
-			$clientscript->registerCssFile($path);
-		}
-	}
-
-	/**
-	 * List of actions for which the style.css file should _not_ be included
+	 * List of print actions.
 	 * @return array:
 	 */
 	public function printActions()
@@ -128,16 +56,36 @@ class BaseController extends Controller
 		return array();
 	}
 
+	/**
+	 * @param string $action
+	 * @return boolean
+	 */
+	protected function isPrintAction($action)
+	{
+		return in_array($action, $this->printActions());
+	}
+
+	/**
+	 * Sets up the yii assetManager properties
+	 */
+	protected function setupAssetManager()
+	{
+		// Set AssetManager properties.
+		Yii::app()->assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
+		Yii::app()->assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
+
+		// Register the main stylesheet without pre-registering to ensure it's always output first.
+		Yii::app()->assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
+
+		// Prevent certain assets from being outputted in certain conditions.
+		Yii::app()->getAssetManager()->adjustScriptMapping();
+	}
+
 	protected function beforeAction($action)
 	{
-
 		$app = Yii::app();
 
-		// Register base style.css unless it's a print action
-		if (!in_array($action->id,$this->printActions())) {
-			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
-		}
-
+		$this->setupAssetManager();
 
 		if ($app->params['ab_testing']) {
 			if ($app->user->isGuest) {
@@ -151,8 +99,6 @@ class BaseController extends Controller
 		}
 
 		if (isset($app->session['firms']) && count($app->session['firms'])) {
-			$this->showForm = true;
-
 			$this->firms = $app->session['firms'];
 			$this->selectedFirmId = $app->session['selected_firm_id'];
 		}
@@ -161,65 +107,17 @@ class BaseController extends Controller
 			$this->selectedSiteId = $app->session['selected_site_id'];
 		}
 
-		if (isset($app->session['patient_name'])) {
-			$this->patientName = $app->session['patient_name'];
-		}
-
-		$this->registerCssFiles();
-		$this->adjustScriptMapping();
-
 		return parent::beforeAction($action);
 	}
 
 	/**
-	 * Adjust the the client script mapping (for javascript and css files assets).
-	 *
-	 * If a Yii widget is being used in an Ajax request, all dependant scripts and
-	 * stylesheets will be outputted in the response. This method ensures the core
-	 * scripts and stylesheets are not outputted in an Ajax response.
+	 * This method is invoked after the view is rendered. We register the assets here
+	 * as assets might be pre-registered within the views.
 	 */
-	private function adjustScriptMapping() {
-		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-			$scriptMap = Yii::app()->clientScript->scriptMap;
-			$scriptMap['jquery.js'] = false;
-			$scriptMap['jquery.min.js'] = false;
-			$scriptMap['jquery-ui.js'] = false;
-			$scriptMap['jquery-ui.min.js'] = false;
-			$scriptMap['module.js'] = false;
-			$scriptMap['style.css'] = false;
-			$scriptMap['jquery-ui.css'] = false;
-			Yii::app()->clientScript->scriptMap = $scriptMap;
-		}
-	}
-
-	/**
-	 * Resets the session patient information.
-	 *
-	 * This method is called when the patient id for the requested activity is not the
-	 * same as the session patient id, e.g. the user has viewed a different patient in
-	 * a different tab. As such the patient id has to be reset to prevent problems
-	 * such an event being assigned to the wrong patient.
-	 *
-	 * This code is much like that in PatientController->actionView.
-	 *
-	 * @param int $patientId
-	 */
-	public function resetSessionPatient($patientId)
+	protected function afterRender($view, &$output)
 	{
-		$patient = Patient::model()->findByPk($patientId);
-
-		if (empty($patient)) {
-			throw new Exception('Invalid patient id provided.');
-		}
-
-		$this->setSessionPatient($patient);
-
-		if (isset(Yii::app()->session['patient_id'])) {
-			$this->patientId = Yii::app()->session['patient_id'];
-		}
-		if (isset(Yii::app()->session['patient_name'])) {
-			$this->patientName = Yii::app()->session['patient_name'];
-		}
+		// Register all assets that we pre-registered.
+		Yii::app()->getAssetManager()->registerFiles($this->isPrintAction($this->action->id));
 	}
 
 	protected function setSessionPatient($patient)
@@ -229,44 +127,13 @@ class BaseController extends Controller
 		$app->session['patient_name'] = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
 	}
 
-	public function checkPatientId()
-	{
-		$app = Yii::app();
-
-		if (Yii::app()->params['ab_testing']) {
-			if (Yii::app()->user->isGuest) {
-				$identity=new UserIdentity('admin', 'admin');
-				$identity->authenticate();
-				Yii::app()->user->login($identity,0);
-				$this->selectedFirmId = 1;
-				$app->session['patient_id'] = 1;
-				$app->session['patient_name'] = 'John Smith';
-			}
-			$app->session['patient_id'] = 1;
-			$app->session['patient_name'] = 'John Smith';
-		}
-
-		if (isset($app->session['patient_id'])) {
-			$this->patientId = $app->session['patient_id'];
-			$this->patientName = $app->session['patient_name'];
-		} else {
-			throw new CHttpException(403, 'You are not authorised to perform this action.');
-		}
-	}
-
 	public function storeData()
 	{
 		$app = Yii::app();
 
 		if (!empty($app->session['firms'])) {
-			$this->showForm = true;
-
 			$this->firms = $app->session['firms'];
 			$this->selectedFirmId = $app->session['selected_firm_id'];
-		}
-
-		if (isset($app->session['patient_name'])) {
-			$this->patientName = $app->session['patient_name'];
 		}
 	}
 
@@ -286,10 +153,26 @@ class BaseController extends Controller
 	public function processJsVars()
 	{
 		$this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
+		$this->jsVars['OE_core_asset_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
 
 		foreach ($this->jsVars as $key => $value) {
 			$value = CJavaScript::encode($value);
 			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_HEAD);
 		}
+	}
+
+	/*
+	 * Convenience function for authorisation checks
+	 *
+	 * @param string $operation
+	 * @param mixed $param, ...
+	 * @return boolean
+	 */
+	public function checkAccess($operation)
+	{
+		$params = func_get_args();
+		array_shift($params);
+
+		return Yii::app()->user->checkAccess($operation, $params);
 	}
 }

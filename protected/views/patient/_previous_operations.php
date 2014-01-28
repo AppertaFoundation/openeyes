@@ -36,7 +36,7 @@
 			<tr>
 				<th>Date</th>
 				<th>Operation</th>
-				<th>Actions</th>
+				<?php if ($this->checkAccess('OprnEditPreviousOperation')) { ?><th>Actions</th><?php } ?>
 			</tr>
 			</thead>
 			<tbody>
@@ -44,16 +44,18 @@
 				<tr>
 					<td><?php echo $operation->dateText?></td>
 					<td><?php if ($operation->side) { echo $operation->side->adjective.' ';}?><?php echo $operation->operation?></td>
-					<td>
-						<a href="#" class="editOperation" rel="<?php echo $operation->id?>">Edit</a>&nbsp;&nbsp;
-						<a href="#" class="removeOperation" rel="<?php echo $operation->id?>">Remove</a>
-					</td>
+					<?php if ($this->checkAccess('OprnEditPreviousOperation')): ?>
+						<td>
+							<a href="#" class="editOperation" rel="<?php echo $operation->id?>">Edit</a>&nbsp;&nbsp;
+							<a href="#" class="removeOperation" rel="<?php echo $operation->id?>">Remove</a>
+						</td>
+					<?php endif ?>
 				</tr>
 			<?php }?>
 			</tbody>
 		</table>
 
-		<?php if (BaseController::checkUserLevel(4)) {?>
+		<?php if ($this->checkAccess('OprnEditPreviousOperation')) {?>
 			<div class="box-actions">
 				<button  id="btn-add_previous_operation" class="secondary small">
 					Add Previous operation
@@ -118,7 +120,7 @@
 					<div class="previous_operations_form_errors alert-box alert hide"></div>
 
 					<div class="buttons">
-						<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
+						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
 						<button type="submit" class="secondary small btn_save_previous_operation">
 							Save
 						</button>
@@ -146,7 +148,7 @@
 			<input type="hidden" id="operation_id" value="" />
 			<button type="submit" class="warning small btn_remove_operation">Remove operation</button>
 			<button type="submit" class="secondary small btn_cancel_remove_operation">Cancel</button>
-			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 	</div>
 </div>

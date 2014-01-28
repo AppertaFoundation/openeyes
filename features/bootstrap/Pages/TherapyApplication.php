@@ -1,8 +1,6 @@
 <?php
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class TherapyApplication extends Page
+class TherapyApplication extends OpenEyesPage
 {
     protected $path = "/site/OphCoTherapyapplication/Default/create?patient_id={parentId}";
 
@@ -153,7 +151,9 @@ class TherapyApplication extends Page
 
     public function RightMyocardialYes ()
     {
-        $this->getElement('myocardialYes')->click();
+        $element = $this->getElement('myocardialYes');
+        $this->scrollWindowToElement($element);
+        $element->click();
     }
 
     public function RightMyocardialNo ()

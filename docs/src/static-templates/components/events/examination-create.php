@@ -327,7 +327,23 @@
 					</div>
 					<div class="element-eye left-eye column">
 						<a href="#" class="icon-remove-side">Remove side</a>
-						<div class="field-row field-info">Not recorded</div>
+						<!-- <div class="field-row field-info">Not recorded</div> -->
+
+						<div class="field-row row noReadings">
+							<div class="large-4 column">
+								<div class="field-info">Not recorded</div>
+							</div>
+							<div class="large-8 column end">
+								<label class="inline">
+									<input type="checkbox" />	Unable to assess
+								</label>
+								<label class="inline">
+									<input type="checkbox" /> Eye missing
+								</label>
+							</div>
+						</div>
+
+
 						<div class="field-row">
 							<button class="button small secondary">
 								Add

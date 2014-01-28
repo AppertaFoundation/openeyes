@@ -22,16 +22,121 @@ class AdminController extends BaseAdminController
 	public $layout = 'admin';
 	public $items_per_page = 30;
 
-	public function accessRules()
-	{
-		return array(
-			array('deny'),
-		);
-	}
-
 	public function actionIndex()
 	{
 		$this->redirect(array('/admin/users'));
+	}
+
+	public function actionDrugs()
+	{
+		$pagination = $this->initPagination(Drug::model());
+
+		$this->render('/admin/drugs',array(
+				'drugs' => $this->getItems(array(
+						'model' => 'Drug',
+						'page' => $pagination->currentPage ,
+					)),
+				'pagination' => $pagination,
+			));
+	}
+
+	public function actionAddDrug()
+	{
+		$drug=new Drug('create');
+
+		if (!empty($_POST)) {
+
+			$drug->attributes = $_POST['Drug'];
+
+			if (!$drug->validate()) {
+				$errors = $drug->getErrors();
+			} else {
+				if (!$drug->save()) {
+					throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+				}
+
+				if(isset($_POST['allergies']))
+				{
+					$posted_allergy_ids = $_POST['allergies'];
+
+					//add new allergy mappings
+					foreach($posted_allergy_ids as $asign){
+						$allergy_assignment = new DrugAllergyAssignment();
+						$allergy_assignment->drug_id=$drug->id;
+						$allergy_assignment->allergy_id=$asign;
+						$allergy_assignment->save();
+					}
+				}
+
+				$this->redirect('/admin/drugs/'.ceil($drug->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/adddrug',array(
+				'drug' => $drug,
+				'errors' => @$errors,
+			));
+	}
+
+	public function actionEditDrug($id)
+	{
+		if (!$drug = Drug::model()->findByPk($id)) {
+			throw new Exception("Drug not found: $id");
+		}
+		$drug->scenario = 'update';
+
+		if (!empty($_POST)) {
+
+			$drug->attributes = $_POST['Drug'];
+
+			if (!$drug->validate()) {
+				$errors = $drug->getErrors();
+			} else {
+				if (!$drug->save()) {
+					throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+				}
+
+				$posted_allergy_ids = array();
+
+				if(isset($_POST['allergies'])){
+					$posted_allergy_ids = $_POST['allergies'];
+				}
+
+				$criteria=new CDbCriteria;
+				$criteria->compare('drug_id',$drug->id);
+				$allergy_assignments = DrugAllergyAssignment::model()->findAll($criteria);
+
+				$allergy_assignment_ids = array();
+				foreach($allergy_assignments as $allergy_assignment){
+					$allergy_assignment_ids[]=$allergy_assignment->allergy_id;
+				}
+
+				$allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids,$posted_allergy_ids);
+				$posted_allergy_ids_to_assign =  array_diff($posted_allergy_ids , $allergy_assignment_ids);
+
+				//add new allergy mappings
+				foreach($posted_allergy_ids_to_assign as $asign){
+					$allergy_assignment = new DrugAllergyAssignment();
+					$allergy_assignment->drug_id=$drug->id;
+					$allergy_assignment->allergy_id=$asign;
+					$allergy_assignment->save();
+				}
+
+				//delete redundant allergy mappings
+				foreach($allergy_assignments as $asigned){
+					if(in_array($asigned->allergy_id,$allergy_assignment_ids_to_delete)){
+						$asigned->delete();
+					}
+				}
+
+				$this->redirect('/admin/drugs/'.ceil($drug->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/editdrug',array(
+				'drug' => $drug,
+				'errors' => @$errors,
+			));
 	}
 
 	public function actionUsers($id=false)
@@ -61,6 +166,9 @@ class AdminController extends BaseAdminController
 				if (!$user->save()) {
 					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
 				}
+
+				$user->saveRoles($_POST['User']['roles']);
+
 				Audit::add('admin-User','add',serialize($_POST));
 				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
 			}
@@ -73,6 +181,7 @@ class AdminController extends BaseAdminController
 			'errors' => @$errors,
 		));
 	}
+
 
 	public function actionEditUser($id)
 	{
@@ -113,6 +222,8 @@ class AdminController extends BaseAdminController
 						throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
 					}
 				}
+
+				$user->saveRoles($_POST['User']['roles']);
 
 				Audit::add('admin-User','edit',serialize(array_merge(array('id'=>$id),$_POST)));
 
@@ -233,15 +344,18 @@ class AdminController extends BaseAdminController
 		$criteria->offset = $page * $this->items_per_page;
 		$criteria->limit = $this->items_per_page;
 
-
 		if (!empty($_REQUEST['search'])) {
-			$criteria->addSearchCondition("username",$_REQUEST['search'],true,'OR');
-			$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
-			$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
+			if($params['model']=='User'){
+				$criteria->addSearchCondition("username",$_REQUEST['search'],true,'OR');
+				$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
+				$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
+			}
+			else if($params['model']=='Drug'){
+				$criteria->addSearchCondition("name",$_REQUEST['search'],true,'OR');
+			}
 		}
-
 		return array(
-			'items' => $params['model']::model()->findAll($criteria),
+			'items' => $model->findAll($criteria),
 		);
 	}
 
@@ -289,6 +403,9 @@ class AdminController extends BaseAdminController
 		if (empty($ex)) {
 			throw new Exception("Empty search query string, this shouldn't happen");
 		}
+
+		$criteria->addCondition('t.first_name != :blank or t.last_name != :blank');
+		$criteria->params[':blank'] = '';
 
 		if (count($ex) == 1) {
 			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$_GET['q']),false);
@@ -1264,5 +1381,29 @@ class AdminController extends BaseAdminController
 		)));
 
 		echo "1";
+	}
+
+	public function actionEpisodeSummaries($subspecialty_id = null)
+	{
+		$this->render(
+			'/admin/episodeSummaries',
+			array(
+				'subspecialty_id' => $subspecialty_id,
+				'enabled_items' => EpisodeSummaryItem::model()->enabled($subspecialty_id)->findAll(),
+				'available_items' => EpisodeSummaryItem::model()->available($subspecialty_id)->findAll(),
+			)
+		);
+	}
+
+	public function actionUpdateEpisodeSummary()
+	{
+		$item_ids = @$_POST['item_ids'] ? explode(',', $_POST['item_ids']) : array();
+		$subspecialty_id = @$_POST['subspecialty_id'] ?: null;
+
+		$tx = Yii::app()->db->beginTransaction();
+		EpisodeSummaryItem::model()->assign($item_ids, $subspecialty_id);
+		$tx->commit();
+
+		$this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
 	}
 }

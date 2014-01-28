@@ -38,8 +38,15 @@ class PatientControllerTest extends CDbTestCase
 		parent::setUp();
 	}
 
+	public function test_MarkIncomplete()
+	{
+		$this->markTestIncomplete('Tests not implemented yet');
+	}
+
+	/*
 	public function testActionIndex_RendersIndexView()
 	{
+		$this->markTestSkipped('May not be required');
 		$mockController = $this->getMock('PatientController', array('render'),
 			array('PatientController'));
 		$mockController->expects($this->any())
@@ -89,7 +96,7 @@ class PatientControllerTest extends CDbTestCase
 		$this->assertEquals($patientId, Yii::app()->session['patient_id'], 'Patient id should be stored in the session.');
 		$this->assertEquals($patientName, Yii::app()->session['patient_name'], 'Patient name should be stored in the session.');
 	}
-*/
+
 	public function testActionSearch_NoPostData_RendersSearchView()
 	{
 		$patient = new Patient;
@@ -117,12 +124,13 @@ class PatientControllerTest extends CDbTestCase
 		/* note: render expects should really be never(), but because the
 		 * forward() is mocked out, it doesn't actually forward when the test runs
 		 */
+		/*
 		$mockController->expects($this->any())
 			->method('render');
 
 		$mockController->actionSearch();
 	}
-/*
+
 	public function testActionResults_RendersResultsView()
 	{
 		$_POST = array();
@@ -143,7 +151,7 @@ class PatientControllerTest extends CDbTestCase
 
 		$mockController->actionResults();
 	}
-*/
+
 	public function testGetSearch_ReturnsCorrectData()
 	{
 		$_POST['Patient'] = $this->patients['patient1'];
@@ -181,4 +189,5 @@ class PatientControllerTest extends CDbTestCase
 
 		$mockController->actionAdmin();
 	}
+	*/
 }

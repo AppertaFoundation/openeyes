@@ -29,11 +29,10 @@ Feature: Create New Therapy Application Event
     Then I select a Left Treatment of "1"
 
     Then I select Right Cerebrovascular accident Yes
-    Then I select Right Cerebrovascular accident No
+
     Then I select Right Ischaemic attack Yes
-    Then I select Right Ischaemic attack No
+
     Then I select Right Myocardial infarction Yes
-    Then I select Right Myocardial infarction No
 
     And I select a Right Consultant of "4"
 
@@ -62,8 +61,6 @@ Feature: Create New Therapy Application Event
 
     Then I select a Left Treatment of "1"
 
-    Then I select a Left Treatment of "1"
-
     Then I select a Left Standard Intervention Exists of Yes
 
     And I choose a Left Standard Intervention of "1"
@@ -86,38 +83,3 @@ Feature: Create New Therapy Application Event
       
     Then I Save the Therapy Application
 
-  Scenario: Route 2: Login and create a new Therapy Application (Queens Site, Glaucoma Firm)
-  Diagnosis: (Choroidal Retinal Neo) Secondary To: (Age related macular degeneration)
-  Treatment: Ozurdex
-  NICE COMPLIANT
-
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "2"
-
-    Then I search for hospital number "1009465"
-
-    Then I select the Latest Event
-
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Therapy"
-
-    And I select a Right Side Diagnosis of "75971007"
-    Then I select a Right Secondary To of "267718000"
-
-    Then I select a Right Treatment of "6"
-
-    Then I select Patient Venous Occlusion of "1"
-    And I select CRVO of "1"
-
-    Then I select a Left Treatment of "6"
-
-    Then I select Right Cerebrovascular accident Yes
-    Then I select Right Cerebrovascular accident No
-    Then I select Right Ischaemic attack Yes
-    Then I select Right Ischaemic attack No
-    Then I select Right Myocardial infarction Yes
-    Then I select Right Myocardial infarction No
-
-    And I select a Right Consultant of "4"

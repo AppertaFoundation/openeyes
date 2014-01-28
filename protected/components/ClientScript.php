@@ -19,8 +19,6 @@
 
 class ClientScript extends CClientScript
 {
-	public $cache_buster;
-
 	/**
 	 * Extending unifyScripts in order to hook the cache buster in at the right
 	 * point in the render method
@@ -29,38 +27,24 @@ class ClientScript extends CClientScript
 	{
 		parent::unifyScripts();
 
-		if ($this->cache_buster) {
+		$cacheBuster = Yii::app()->cacheBuster;
 
-			// JS
-			foreach ($this->scriptFiles as $pos => $script_files) {
-				foreach ($script_files as $key => $script_file) {
-					// Add cache buster string to url
-					$joiner = $this->getJoiner($script_file);
-					$scriptUrl = $script_file . $joiner . $this->cache_buster;
-					unset($this->scriptFiles[$pos][$key]);
-					$this->scriptFiles[$pos][$scriptUrl] = $script_file;
-				}
+		// JS
+		foreach ($this->scriptFiles as $pos => $scriptFiles) {
+			foreach ($scriptFiles as $key => $scriptFile) {
+				unset($this->scriptFiles[$pos][$key]);
+				// Add cache buster string to url.
+				$scriptUrl = $cacheBuster->createUrl($scriptFile);
+				$this->scriptFiles[$pos][$scriptUrl] = $scriptFile;
 			}
+		}
 
-			// CSS
-			foreach ($this->cssFiles as $css_file => $media) {
-				// Add cache buster string to url
-				unset($this->cssFiles[$css_file]);
-				$joiner = $this->getJoiner($css_file);
-				$css_file = $css_file . '?' . $this->cache_buster;
-				$this->cssFiles[$css_file] = $media;
-			}
-
+		// CSS
+		foreach ($this->cssFiles as $cssFile => $media) {
+			unset($this->cssFiles[$cssFile]);
+			// Add cache buster string to url.
+			$cssFile = $cacheBuster->createUrl($cssFile);
+			$this->cssFiles[$cssFile] = $media;
 		}
 	}
-
-	protected function getJoiner($file)
-	{
-		if (preg_match('/\?/',$file)) {
-			return '&';
-		} else {
-			return '?';
-		}
-	}
-
 }

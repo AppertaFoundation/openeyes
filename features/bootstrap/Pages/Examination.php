@@ -1,8 +1,7 @@
 <?php
+use Behat\Behat\Exception\BehaviorException;
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
-
-class Examination extends Page
+class Examination extends OpenEyesPage
 {
     protected $path = "OphCiExamination/Default/create?patient_id={patientId}";
 
@@ -26,6 +25,15 @@ class Examination extends Page
         'ETDRSreadingLeft' => array('xpath' => "//*[@id='visualacuity_reading_0_method_id']"),
         'snellenRight' => array('xpath' => "//select[@id='visualacuity_reading_1_value']"),
         'readingRight' => array('xpath' => "//select[@id='visualacuity_reading_1_method_id']"),
+        'addLeftVisualAcuityButton' => array('xpath' => "//*[@class='element-eye left-eye column right side']//*[@class='button small secondary addReading']"),
+        'addRightViusalAcuityButton' => array('xpath' => "//*[@class='element-eye right-eye column left side']//*[@class='button small secondary addReading']"),
+        'secondLeftVisualAcuityReading' => array('xpath' => "//*[@id='visualacuity_reading_2_value']"),
+        'secondLeftVisualAcuityReadingMethod' => array('xpath' => "//*[@id='visualacuity_reading_2_method_id']"),
+        'secondRightVisualAcuityReading' => array('xpath' => "//*[@id='visualacuity_reading_3_value']"),
+        'secondRightVisualAcuityReadingMethod' => array('xpath' => "//*[@id='visualacuity_reading_3_method_id']"),
+        'removeSecondLeftVisualAcuity' => array('xpath' => "//*[@data-key='3']//*[contains(text(),'Remove')]"),
+        'removeSecondRightVisualAcuity' => array('xpath' => "//*[@data-key='1']//*[contains(text(),'Remove')]"),
+
 
         'openIntraocularPressure' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Intraocular Pressure')]"),
         'intraocularRight' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_right_reading_id']"),
@@ -76,20 +84,20 @@ class Examination extends Page
         'riskComments' => array('xpath' => "//*[@id='Element_OphCiExamination_Risks_comments']"),
 
         'cataractManagementComments' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_Management_comments']"),
-        'selectFirstEye' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_eye_id_1']"),
-        'selectSecondEye' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_eye_id_2']"),
-        'cityRoad' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_city_road'][2]"),
-        'satellite' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_satellite'][2]"),
-        'straightforward' => array('xpath' => "//input[@id='Element_OphCiExamination_CataractManagement_fast_track']"),
-        'postOpRefractiveTarget' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_target_postop_refraction']"),
-        'discussedWithPatientYes' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_correction_discussed_1']"),
-        'discussedWithPatientNo' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_correction_discussed_0']"),
-        'suitableForSurgeon' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_suitable_for_surgeon_id']"),
-        'supervisedCheckbox' => array ('xpath' => "//input[@id='Element_OphCiExamination_CataractManagement_supervised']"),
-        'previousRefractiveSurgeryYes' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_previous_refractive_surgery_1']"),
-        'previousRefractiveSurgeryNo' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_previous_refractive_surgery_0']"),
-        'VitrectomisedEyeYes' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_vitrectomised_eye_1']"),
-        'VitrectomisedEyeNo' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractManagement_vitrectomised_eye_0']"),
+        'selectFirstEye' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_eye_id_1']"),
+        'selectSecondEye' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_eye_id_2']"),
+        'cityRoad' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_city_road'][2]"),
+        'satellite' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_satellite'][2]"),
+        'straightforward' => array('xpath' => "//input[@id='Element_OphCiExamination_CataractSurgicalManagement_fast_track']"),
+        'postOpRefractiveTarget' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_target_postop_refraction']"),
+        'discussedWithPatientYes' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_correction_discussed_1']"),
+        'discussedWithPatientNo' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_correction_discussed_0']"),
+        'suitableForSurgeon' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_suitable_for_surgeon_id']"),
+        'supervisedCheckbox' => array ('xpath' => "//input[@id='Element_OphCiExamination_CataractSurgicalManagement_supervised']"),
+        'previousRefractiveSurgeryYes' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_previous_refractive_surgery_1']"),
+        'previousRefractiveSurgeryNo' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_previous_refractive_surgery_0']"),
+        'VitrectomisedEyeYes' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_vitrectomised_eye_1']"),
+        'VitrectomisedEyeNo' => array('xpath' => "//*[@id='Element_OphCiExamination_CataractSurgicalManagement_vitrectomised_eye_0']"),
 
         'rightLaserStatusChoice' => array('xpath' => "//*[@id='Element_OphCiExamination_LaserManagement_right_laser_status_id']"),
         'leftLaserStatusChoice' => array('xpath' => "//*[@id='Element_OphCiExamination_LaserManagement_left_laser_status_id']"),
@@ -107,10 +115,13 @@ class Examination extends Page
         'leftMacularRetinal' => array ('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis1_id']//*[@value='37231002']"),
         'rightVenousRetinalBranchOcclusion' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_right_diagnosis2_id']//*[@value='24596005']"),
         'leftDiabeticMacularOedema' => array('xpath' => "//*[@id='Element_OphCiExamination_InjectionManagementComplex_left_diagnosis2_id']//*[@value='312912001']"),
+        'rightIntendedTreatment' => array('xpath' => "//select[@id='Element_OphCiExamination_InjectionManagementComplex_right_treatment_id']"),
+        'leftIntendedTreatment' => array('xpath' => "//select[@id='Element_OphCiExamination_InjectionManagementComplex_left_treatment_id']"),
+
 
         'expandVisualFields' => array ('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Visual Fields')]"),
         'expandGonioscopy' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Gonioscopy')]"),
-        'expandaAdnexalComorbidity' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Adnexal Comorbidity')]"),
+        'expandAdnexalComorbidity' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Adnexal Comorbidity')]"),
         'expandAnteriorSegment' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Anterior Segment')]"),
         'expandPupillaryAbnormalities' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Pupillary Abnormalities')]"),
         'expandOpticDisc' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Optic Disc')]"),
@@ -119,7 +130,7 @@ class Examination extends Page
         'expandInvestigation' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Investigation')]"),
 
         'expandClinicalManagement' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Clinical Management')]"),
-        'expandCataractManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Cataract Management')]"),
+        'expandCataractSurgicalManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Cataract Surgical Management')]"),
         'expandLaserManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Laser Management')]"),
         'expandInjectionManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Injection Management')]"),
 
@@ -174,6 +185,18 @@ class Examination extends Page
         'conclusionOption' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_Conclusion_description']"),
 
         'saveExamination' => array('xpath' => "//*[@id='et_save']"),
+
+        'existingRightAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'38')]"),
+        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'145')]"),
+        'addAllElements' => array('xpath' => "//*[@class='add-all']"),
+        'removeAllElements' => array('xpath' => "//*[@class='remove-all']"),
+        'removeAllValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Event: Cannot create an event without at least one element')]"),
+        'historyValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'History: Description cannot be blank')]"),
+        'conclusionValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Conclusion: Description cannot be blank.')]"),
+        'investigationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Investigation: Description cannot be blank when there are no child elements')]"),
+        'dilationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Dilation: Please select at least one treatment, or remove the element')]"),
+        'removeRefractionRightSide' => array('xpath' => "//*[@class='element-eye right-eye column side right']//*[@class='icon-remove-side remove-side']"),
+        'removeAllComorbidities' => array('xpath' => "//*[@class='field-row comorbidities-multi-select']//a[contains(text(),'Remove all')]")
     );
 
     public function history ()
@@ -187,7 +210,7 @@ class Examination extends Page
 
     protected function isComorbitiesCollapsed()
     {
-        return (bool) $this->find('xpath', $this->getElement('openComorbidities')->getXpath());;
+        return (bool) $this->find('xpath', $this->getElement('openComorbidities')->getXpath());
     }
 
     public function openComorbidities ()
@@ -201,7 +224,6 @@ class Examination extends Page
 
     public function addComorbiditiy ($com)
     {
-        $this->getSession()->wait(3000);
         $this->getElement('addComorbidities')->selectOption($com);
     }
 
@@ -290,21 +312,19 @@ class Examination extends Page
     {
         if ($this->isDilationCollapsed()){
             $this->getElement('openDilation')->click();
-            $this->getSession()->wait(5000);
+            $this->getSession()->wait(5000, '$.active == 0');
         }
     }
 
     public function dilationRight ($dilation, $drops)
     {
         $this->getElement('dilationRight')->selectOption($dilation);
-        $this->getElement('dilationRight')->click();
         $this->getElement('dropsRight')->selectOption($drops);
     }
 
     public function dilationLeft ($dilation, $drops)
     {
         $this->getElement('dilationLeft')->selectOption($dilation);
-        $this->getElement('dilationLeft')->click();
         $this->getElement('dropsLeft')->selectOption($drops);
     }
 
@@ -317,7 +337,7 @@ class Examination extends Page
     {
         if ($this->isRefractionCollapsed()){
         $this->getElement('expandRefraction')->click();
-        $this->getSession()->wait(10000);
+        $this->getSession()->wait(10000,'$.active == 0');
         }
     }
 
@@ -362,6 +382,7 @@ class Examination extends Page
     public function RightAxis ($axis)
     {
         $this->getElement('sphereLeftAxis')->setValue($axis);
+
     }
 
     public function RightType ($type)
@@ -379,10 +400,18 @@ class Examination extends Page
         $this->getElement('expandGonioscopy')->click();
     }
 
+    protected function isAdnexalCollapsed ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('expandAdnexalComorbidity')->getXpath());
+    }
+
+
     public function expandAdnexalComorbidity ()
     {
-        $this->getElement('expandaAdnexalComorbidity')->click();
-        $this->getSession()->wait(5000);
+        if ($this->isAdnexalCollapsed()){
+        $this->getElement('expandAdnexalComorbidity')->click();
+        $this->getSession()->wait(5000, '$.active == 0');
+        }
     }
 
     public function leftAdnexal ($left)
@@ -403,7 +432,7 @@ class Examination extends Page
     public function expandPupillaryAbnormalities ()
     {
         $this->getElement('expandPupillaryAbnormalities')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function leftPupillaryAbnormality ($left)
@@ -428,13 +457,20 @@ class Examination extends Page
 
     public function expandDiagnoses ()
     {
-       $this->getElement('expandDiagnoses')->click();
-       $this->getSession()->wait(5000);
+
+       $element = $this->getElement('expandDiagnoses');
+       $this->scrollWindowToElement($element);
+       $element->click();
+       $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function diagnosesLeftEye ()
     {
-       $this->getElement('diagnosesLeftEye')->click();
+
+        $element = $this->getElement('diagnosesLeftEye');
+        $this->scrollWindowToElement($element);
+        $element->click();
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function diagnosesRightEye ()
@@ -455,7 +491,7 @@ class Examination extends Page
     public function expandInvestigation ()
     {
         $this->getElement('expandInvestigation')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function addInvestigation ($investigation)
@@ -466,13 +502,13 @@ class Examination extends Page
     public function expandClinicalManagement ()
     {
         $this->getElement('expandClinicalManagement')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
-    public function expandCataractManagement ()
+    public function expandCataractSurgicalManagement ()
     {
-        $this->getElement('expandCataractManagement')->click();
-        $this->getSession()->wait(5000);
+        $this->getElement('expandCataractSurgicalManagement')->click();
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function cataractManagementComments ($comments)
@@ -556,7 +592,7 @@ class Examination extends Page
     public function expandLaserManagement ()
     {
         $this->getElement('expandLaserManagement')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function RightLaserStatusChoice ($laser)
@@ -582,7 +618,7 @@ class Examination extends Page
     public function expandInjectionManagement ()
     {
         $this->getElement('expandInjectionManagement')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function noTreatment ()
@@ -616,6 +652,16 @@ class Examination extends Page
     {
         $this->getElement('leftSecondaryTo')->selectOption($secondary);
         $this->getSession()->wait(5000);
+    }
+
+    public function rightIntendedTreatment ($treatment)
+    {
+        $this->getElement('rightIntendedTreatment')->selectOption($treatment);
+    }
+
+    public function leftIntendedTreatment ($treatment)
+    {
+        $this->getElement('leftIntendedTreatment')->selectOption($treatment);
     }
 
     public function rightCRTIncreaseLowerThanHundredYes ()
@@ -803,7 +849,7 @@ class Examination extends Page
     public function expandRisks ()
     {
         $this->getElement('expandRisks')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function riskComments ($comments)
@@ -814,7 +860,7 @@ class Examination extends Page
     public function expandClinicalOutcome ()
     {
         $this->getElement('expandClinicOutcome')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function clinicalOutcomeFollowUp ()
@@ -868,8 +914,168 @@ class Examination extends Page
 
     public function saveExamination ()
     {
-        $this->getSession()->wait(10000);
+        $this->getSession()->wait(3000);
         $this->getElement('saveExamination')->click();
+    }
+
+    //VALIDATION TESTS
+
+    protected function doesRightAxisExist()
+    {
+        return (bool) $this->find('xpath', $this->getElement('existingRightAxisCheck')->getXpath());
+    }
+
+    protected function doesLeftAxisExist()
+    {
+        return (bool) $this->find('xpath', $this->getElement('existingLeftAxisCheck')->getXpath());
+    }
+
+    public function rightAxisCheck ()
+    {
+        if ($this->doesRightAxisExist()){
+            print "Right Axis has been Saved";
+        }
+        else {
+            throw new BehaviorException("RIGHT AXIS NOT SAVED!!!");
+       }
+    }
+
+    public function leftAxisCheck ()
+    {
+        if ($this->doesLeftAxisExist()){
+            print "Left Axis has been Saved";
+        }
+        else {
+            throw new BehaviorException("LEFT AXIS NOT SAVED!!!");
+        }
+    }
+
+    public function addAllElements ()
+    {
+        $element = $this->getElement('addAllElements');
+        $this->scrollWindowToElement($element);
+        $element->click();
+        $this->getSession()->wait(40000, '$.active == 0');
+    }
+
+    public function addAllElementsValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('historyValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('dilationValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('conclusionValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('investigationValidationError')->getXpath());
+    }
+
+    public function addAllElementsValidationCheck ()
+    {
+        if ($this->addAllElementsValidationError()){
+            print "Add All errors have been displayed correctly";
+        }
+        else{
+            throw new BehaviorException ("ADD ALL ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY");
+        }
+    }
+
+    public function removeAllElements ()
+    {
+        $element = $this->getElement('removeAllElements');
+        $this->scrollWindowToElement($element);
+        $element->click();
+        $this->getSession()->wait(40000, '$.active == 0');
+    }
+
+    public function removeAllValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('removeAllValidationError')->getXpath());
+    }
+
+    public function removeAllValidationCheck ()
+    {
+        if ($this->removeAllValidationError()){
+            print "Remove All error has been displayed";
+        }
+        else{
+            throw new BehaviorException ("REMOVE ALL ERROR HAS NOT BEEN DISPLAYED!!!");
+        }
+    }
+
+    public function historyValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('historyValidationError')->getXpath());
+    }
+
+    public function historyValidationCheck ()
+    {
+        if ($this->historyValidationError()){
+            print "History Validation error has been displayed";
+        }
+        else{
+            throw new BehaviorException ("HISTORY VALIDATION ERROR!!!");
+        }
+    }
+
+    public function conclusionValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('conclusionValidationError')->getXpath());
+    }
+
+    public function conclusionValidationCheck ()
+    {
+        if ($this->conclusionValidationError()){
+            print "Conclusion Validation error has been displayed";
+        }
+        else{
+            throw new BehaviorException ("CONCLUSION VALIDATION ERROR!!!");
+        }
+    }
+
+    public function dilationValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('dilationValidationError')->getXpath());
+    }
+
+    public function dilationValidationCheck ()
+    {
+        if ($this->dilationValidationError()){
+            print "Dilation Validation error has been displayed";
+        }
+        else{
+            throw new BehaviorException ("DILATION VALIDATION ERROR!!!");
+        }
+    }
+
+    public function removeRefractionRightSide ()
+    {
+        $this->getElement('removeRefractionRightSide')->click();
+    }
+
+    public function removeAllComorbidities ()
+    {
+        $this->getElement('removeAllComorbidities')->click();
+    }
+
+    public function addLeftVisualAcuity ($reading, $method)
+    {
+        $this->getElement('addLeftVisualAcuityButton')->click();
+        $this->getElement('secondLeftVisualAcuityReading')->selectOption($reading);
+        $this->getElement('secondLeftVisualAcuityReadingMethod')->selectOption($method);
+    }
+
+    public function addRightVisualAcuity ($reading, $method)
+    {
+        $this->getElement('addRightViusalAcuityButton')->click();
+        $this->getElement('secondRightVisualAcuityReading')->selectOption($reading);
+        $this->getElement('secondRightVisualAcuityReadingMethod')->selectOption($method);
+    }
+
+    public function removeSecondLeftVisualAcuity ()
+    {
+        $this->getElement('removeSecondLeftVisualAcuity')->click();
+    }
+
+    public function removeSecondRightVisualAcuity ()
+    {
+        $this->getElement('removeSecondRightVisualAcuity')->click();
     }
 
 }

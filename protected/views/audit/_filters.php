@@ -119,8 +119,8 @@
 						</div>
 					</div>
 					<div class="large-2 column text-right">
-						<img class="loader hidden" src="/img/ajax-loader.gif" alt="loading..." style="margin-right:10px" />
-						<button type="submit" class="secondary">Filter</button>
+						<img class="loader hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" alt="loading..." style="margin-right:10px" />
+						<button type="submit" class="secondary long">Filter</button>
 					</div>
 				</div>
 			</div>

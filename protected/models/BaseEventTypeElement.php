@@ -26,21 +26,31 @@ class BaseEventTypeElement extends BaseElement
 	public $userId;
 	public $patientId;
 
-	protected $element_type;
+	protected $_element_type;
+	protected $_children;
 
-	// Used to display the view number set in site_element_type for any particular
-	// instance of this element
-	public $viewNumber;
-
-	// Used during creation and updating of elements
-	public $required = false;
-
+	/**
+	 * Get the ElementType for this element
+	 *
+	 * @return ElementType
+	 */
 	public function getElementType()
 	{
-		if (!$this->element_type) {
-			$this->element_type = ElementType::model()->find('class_name=?', array(get_class($this)));
+		if (!$this->_element_type) {
+
+			$this->_element_type = ElementType::model()->find('class_name=?', array(get_class($this)));
 		}
-		return $this->element_type;
+		return $this->_element_type;
+	}
+
+	/**
+	 * Return the element type name
+	 *
+	 * @return string $name
+	 */
+	public function getElementTypeName()
+	{
+		return $this->getElementType()->name;
 	}
 
 	/**
@@ -54,21 +64,57 @@ class BaseEventTypeElement extends BaseElement
 	}
 
 	/**
+	 * Can we view the previous version of this element
+	 */
+	public function canViewPrevious()
+	{
+		return false;
+	}
+
+	/**
+	 * get the child element types for this BaseEventElementType
+	 *
+	 * @return ElementType[]
+	 */
+	public function getChildElementTypes()
+	{
+		return ElementType::model()->findAll('parent_element_type_id = :element_type_id', array(':element_type_id' => $this->getElementType()->id));
+	}
+	/**
+	 * set the children for this element - allows external definition of what the children should
+	 * be (for workflows determined by controllers and the like.
+	 *
+	 * @param BaseEventTypeElement[] $children
+	 */
+	public function setChildren($children)
+	{
+		$this->_children = $children;
+	}
+
+	/**
 	 * Return this elements children
 	 * @return array
 	 */
 	public function getChildren()
 	{
-		$child_elements = array();
-		if ($this->event_id) {
-			$child_element_types = ElementType::model()->findAll('parent_element_type_id = :element_type_id', array(':element_type_id' => $this->getElementType()->id));
-			foreach ($child_element_types as $child_element_type) {
-				if ($element = self::model($child_element_type->class_name)->find('event_id = ?', array($this->event_id))) {
-					$child_elements[] = $element;
+		if ($this->_children === null) {
+			$this->_children = array();
+			foreach ($this->getChildElementTypes() as $child_element_type) {
+				if ($this->event_id) {
+					if ($element = self::model($child_element_type->class_name)->find('event_id = ?', array($this->event_id))) {
+						$this->_children[] = $element;
+					}
+				}
+				else {
+					// set the children to be based on the standard defaults - can be overridden by setting the children
+					// with setChildren method outside of the element model
+					if ($child_element_type->default) {
+						$this->_children[] = new $child_element_type->class_name;
+					}
 				}
 			}
 		}
-		return $child_elements;
+		return $this->_children;
 	}
 
 	/**
@@ -214,25 +260,6 @@ class BaseEventTypeElement extends BaseElement
 		}
 
 		return $setting->value;
-	}
-
-	/**
-	 * Here we need to provide default options for when the element is instantiated
-	 * by findByPk in ClinicalService->getElements().
-	 *
-	 * @param object $firm
-	 * @param int $patientId
-	 * @param int $userId
-	 * @param int $viewNumber
-	 * @param boolean $required
-	 */
-	public function setBaseOptions($firm = null, $patientId = null, $userId = null, $viewNumber = null, $required = false)
-	{
-		$this->firm = $firm;
-		$this->patientId = $patientId;
-		$this->userId = $userId;
-		$this->viewNumber = $viewNumber;
-		$this->required = $required;
 	}
 
 	/**

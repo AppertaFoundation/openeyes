@@ -4,224 +4,223 @@ Feature: Basic booking Time slot Available INSIDE RTT
   As a system user
   I need to be able to schedule or reschedule an Adult operation
 
-  Scenario: Route 1: Successfully scheduling an adult operation that does not need a consultant or an anaesthetist
+    Scenario: Route 1: Successfully scheduling an adult operation that does not need a consultant or an anaesthetist
 
-    Given I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
-    And there is an adult patient with operation that does not need a consultant or an anaesthetist
-    When I follow "Partial bookings waiting list"
-    And I select awaiting patient from the waiting list
-    Then I expand the Cataract sidebar
-    And I add a New Event "OpBooking"
+      Given I enter login credentials "admin" and "admin"
+      And I select Site "1"
+      Then I select a firm of "1"
+      And there is an adult patient with operation that does not need a consultant or an anaesthetist
+      When I follow "Partial bookings waiting list"
+      And I select awaiting patient from the waiting list
+      Then I expand the Cataract sidebar
+      And I add a New Event "OpBooking"
 
-    Then I select Diagnosis Eyes of "Left"
-    And I select a Diagnosis of "267626000"
-    Then I select Operation Eyes of "Left"
-    And I select a Procedure of "41"
+      Then I select Diagnosis Eyes of "Left"
+      And I select a Diagnosis of "267626000"
+      Then I select Operation Eyes of "Left"
+      And I select a Procedure of "41"
 
-    Then I select No to Consultant required
+      Then I select No to Consultant required
 
-    And I select a Anaesthetic type "Topical"
+      And I select a Anaesthetic type "Topical"
 
-    Then I select Yes to a Post Operative Stay
-    Then I select No to a Post Operative Stay
+      Then I select Yes to a Post Operative Stay
+      Then I select No to a Post Operative Stay
 
-    And I select a Operation Site of "1"
+      And I select a Operation Site of "1"
 
-    Then I select a Priority of Urgent
+      Then I select a Priority of Urgent
 
-    And I select a decision date of "14"
+      And I select a decision date of "14"
 
-    Then I select Save and Schedule now
-    And I follow "Schedule now"
-    And I click on available date in the calendar
-    And I select available theatre session from the list
-    And I press "Confirm slot"
-    Then I should see "Operation booking (Scheduled)"
+      Then I select Save and Schedule now
+      And I click on available date in the calendar
+      And I select available theatre session from the list
+      And I press "Confirm slot"
+      Then I should see "Operation booking (Scheduled)"
 
 
-  Scenario: Route 2: Successfully scheduling an adult operation that does need a consultant but no anaesthetist
+    Scenario: Route 2: Successfully scheduling an adult operation that does need a consultant but no anaesthetist
 
-    Given I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
-    And there is an adult patient with operation that does need a consultant but no anaesthetist
-    When I follow "Partial bookings waiting list"
-    And I select awaiting patient from the waiting list
-    Then I expand the Cataract sidebar
-    And I add a New Event "OpBooking"
+      Given I enter login credentials "admin" and "admin"
+      And I select Site "1"
+      Then I select a firm of "1"
+      And there is an adult patient with operation that does need a consultant but no anaesthetist
+      When I follow "Partial bookings waiting list"
+      And I select awaiting patient from the waiting list
+      Then I expand the Cataract sidebar
+      And I add a New Event "OpBooking"
 
-    Then I select Diagnosis Eyes of "Left"
-    And I select a Diagnosis of "267626000"
-    Then I select Operation Eyes of "Left"
-    And I select a Procedure of "41"
+      Then I select Diagnosis Eyes of "Left"
+      And I select a Diagnosis of "267626000"
+      Then I select Operation Eyes of "Left"
+      And I select a Procedure of "41"
 
-    Then I select No to Consultant required
+      Then I select No to Consultant required
 
-    And I select a Anaesthetic type "Topical"
+      And I select a Anaesthetic type "Topical"
 
-    Then I select Yes to a Post Operative Stay
-    Then I select No to a Post Operative Stay
+      Then I select Yes to a Post Operative Stay
+      Then I select No to a Post Operative Stay
 
-    And I select a Operation Site of "1"
+      And I select a Operation Site of "1"
 
-    Then I select a Priority of Urgent
+      Then I select a Priority of Urgent
 
-    And I select a decision date of "14"
+      And I select a decision date of "14"
 
-    Then I select Save and Schedule now
-    And I follow "Schedule now"
-    And I click on available date in the calendar
-    And I select available theatre session from the list
-    And I press "Confirm slot"
-    Then I should see "Operation booking (Scheduled)"
+      Then I select Save and Schedule now
 
-  Scenario: Route 3: Successfully scheduling an adult operation that does not need a consultant but anaesthetist with no GA
+      And I click on available date in the calendar
+      And I select available theatre session from the list
+      And I press "Confirm slot"
+      Then I should see "Operation booking (Scheduled)"
 
-    Given I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
-    And there is an adult patient with operation that does not need a consultant but anaesthetist with no GA
-    When I follow "Partial bookings waiting list"
-    And I select awaiting patient from the waiting list
-    Then I expand the Cataract sidebar
-    And I add a New Event "OpBooking"
+    Scenario: Route 3: Successfully scheduling an adult operation that does not need a consultant but anaesthetist with no GA
 
-    Then I select Diagnosis Eyes of "Left"
-    And I select a Diagnosis of "267626000"
-    Then I select Operation Eyes of "Left"
-    And I select a Procedure of "41"
+      Given I enter login credentials "admin" and "admin"
+      And I select Site "1"
+      Then I select a firm of "1"
+      And there is an adult patient with operation that does not need a consultant but anaesthetist with no GA
+      When I follow "Partial bookings waiting list"
+      And I select awaiting patient from the waiting list
+      Then I expand the Cataract sidebar
+      And I add a New Event "OpBooking"
 
-    Then I select No to Consultant required
+      Then I select Diagnosis Eyes of "Left"
+      And I select a Diagnosis of "267626000"
+      Then I select Operation Eyes of "Left"
+      And I select a Procedure of "41"
 
-    And I select a Anaesthetic type "Topical"
+      Then I select No to Consultant required
 
-    Then I select Yes to a Post Operative Stay
-    Then I select No to a Post Operative Stay
+      And I select a Anaesthetic type "Topical"
 
-    And I select a Operation Site of "1"
+      Then I select Yes to a Post Operative Stay
+      Then I select No to a Post Operative Stay
 
-    Then I select a Priority of Urgent
+      And I select a Operation Site of "1"
 
-    And I select a decision date of "14"
+      Then I select a Priority of Urgent
 
-    Then I select Save and Schedule now
-    And I follow "Schedule now"
-    And I click on available date in the calendar
-    And I select available theatre session from the list
-    And I press "Confirm slot"
-    Then I should see "Operation booking (Scheduled)"
+      And I select a decision date of "14"
 
-  Scenario: Route 4: Successfully scheduling an adult operation that does not need a consultant but anaesthetist with GA
+      Then I select Save and Schedule now
 
-    Given I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
-    And there is an adult patient with operation that does not need a consultant but anaesthetist with GA
-    When I follow "Partial bookings waiting list"
-    And I select awaiting patient from the waiting list
-    Then I expand the Cataract sidebar
-    And I add a New Event "OpBooking"
+      And I click on available date in the calendar
+      And I select available theatre session from the list
+      And I press "Confirm slot"
+      Then I should see "Operation booking (Scheduled)"
 
-    Then I select Diagnosis Eyes of "Left"
-    And I select a Diagnosis of "267626000"
-    Then I select Operation Eyes of "Left"
-    And I select a Procedure of "41"
+    Scenario: Route 4: Successfully scheduling an adult operation that does not need a consultant but anaesthetist with GA
 
-    Then I select No to Consultant required
+      Given I enter login credentials "admin" and "admin"
+      And I select Site "1"
+      Then I select a firm of "1"
+      And there is an adult patient with operation that does not need a consultant but anaesthetist with GA
+      When I follow "Partial bookings waiting list"
+      And I select awaiting patient from the waiting list
+      Then I expand the Cataract sidebar
+      And I add a New Event "OpBooking"
 
-    And I select a Anaesthetic type "Topical"
+      Then I select Diagnosis Eyes of "Left"
+      And I select a Diagnosis of "267626000"
+      Then I select Operation Eyes of "Left"
+      And I select a Procedure of "41"
 
-    Then I select Yes to a Post Operative Stay
-    Then I select No to a Post Operative Stay
+      Then I select No to Consultant required
 
-    And I select a Operation Site of "1"
+      And I select a Anaesthetic type "Topical"
 
-    Then I select a Priority of Urgent
+      Then I select Yes to a Post Operative Stay
+      Then I select No to a Post Operative Stay
 
-    And I select a decision date of "14"
+      And I select a Operation Site of "1"
 
-    Then I select Save and Schedule now
-    And I follow "Schedule now"
-    And I click on available date in the calendar
-    And I select available theatre session from the list
-    And I press "Confirm slot"
-    Then I should see "Operation booking (Scheduled)"
+      Then I select a Priority of Urgent
 
-  Scenario: Route 5: Successfully scheduling an adult operation that does need a consultant and anaesthetist with no GA
+      And I select a decision date of "14"
 
-    Given I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
-    And there is an adult patient with operation that does need a consultant and anaesthetist with no GA
-    When I follow "Partial bookings waiting list"
-    And I select awaiting patient from the waiting list
-    When I follow "Partial bookings waiting list"
-    And I select awaiting patient from the waiting list
-    Then I expand the Cataract sidebar
-    And I add a New Event "OpBooking"
+      Then I select Save and Schedule now
 
-    Then I select Diagnosis Eyes of "Left"
-    And I select a Diagnosis of "267626000"
-    Then I select Operation Eyes of "Left"
-    And I select a Procedure of "41"
+      And I click on available date in the calendar
+      And I select available theatre session from the list
+      And I press "Confirm slot"
+      Then I should see "Operation booking (Scheduled)"
 
-    Then I select No to Consultant required
+    Scenario: Route 5: Successfully scheduling an adult operation that does need a consultant and anaesthetist with no GA
 
-    And I select a Anaesthetic type "Topical"
+      Given I enter login credentials "admin" and "admin"
+      And I select Site "1"
+      Then I select a firm of "1"
+      And there is an adult patient with operation that does need a consultant and anaesthetist with no GA
+      When I follow "Partial bookings waiting list"
+      And I select awaiting patient from the waiting list
+      When I follow "Partial bookings waiting list"
+      And I select awaiting patient from the waiting list
+      Then I expand the Cataract sidebar
+      And I add a New Event "OpBooking"
 
-    Then I select Yes to a Post Operative Stay
-    Then I select No to a Post Operative Stay
+      Then I select Diagnosis Eyes of "Left"
+      And I select a Diagnosis of "267626000"
+      Then I select Operation Eyes of "Left"
+      And I select a Procedure of "41"
 
-    And I select a Operation Site of "1"
+      Then I select No to Consultant required
 
-    Then I select a Priority of Urgent
+      And I select a Anaesthetic type "Topical"
 
-    And I select a decision date of "14"
+      Then I select Yes to a Post Operative Stay
+      Then I select No to a Post Operative Stay
 
-    Then I select Save and Schedule now
-    And I follow "Schedule now"
-    And I click on available date in the calendar
-    And I select available theatre session from the list
-    And I press "Confirm slot"
-    Then I should see "Operation booking (Scheduled)"
+      And I select a Operation Site of "1"
 
-  Scenario: Route 6: Successfully scheduling an adult operation that does need a consultant and anaesthetist with GA
+      Then I select a Priority of Urgent
 
-    Given I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
-    And there is an adult patient with operation that does need a consultant and anaesthetist with GA
-    When I follow "Partial bookings waiting list"
-    And I select awaiting patient from the waiting list
-    Then I expand the Cataract sidebar
-    And I add a New Event "OpBooking"
+      And I select a decision date of "14"
 
-    Then I select Diagnosis Eyes of "Left"
-    And I select a Diagnosis of "267626000"
-    Then I select Operation Eyes of "Left"
-    And I select a Procedure of "41"
+      Then I select Save and Schedule now
 
-    Then I select No to Consultant required
+      And I click on available date in the calendar
+      And I select available theatre session from the list
+      And I press "Confirm slot"
+      Then I should see "Operation booking (Scheduled)"
 
-    And I select a Anaesthetic type "Topical"
+    Scenario: Route 6: Successfully scheduling an adult operation that does need a consultant and anaesthetist with GA
 
-    Then I select Yes to a Post Operative Stay
-    Then I select No to a Post Operative Stay
+      Given I enter login credentials "admin" and "admin"
+      And I select Site "1"
+      Then I select a firm of "1"
+      And there is an adult patient with operation that does need a consultant and anaesthetist with GA
+      When I follow "Partial bookings waiting list"
+      And I select awaiting patient from the waiting list
+      Then I expand the Cataract sidebar
+      And I add a New Event "OpBooking"
 
-    And I select a Operation Site of "1"
+      Then I select Diagnosis Eyes of "Left"
+      And I select a Diagnosis of "267626000"
+      Then I select Operation Eyes of "Left"
+      And I select a Procedure of "41"
 
-    Then I select a Priority of Urgent
+      Then I select No to Consultant required
 
-    And I select a decision date of "14"
+      And I select a Anaesthetic type "Topical"
 
-    Then I select Save and Schedule now
-    And I follow "Schedule now"
-    And I click on available date in the calendar
-    And I select available theatre session from the list
-    And I press "Confirm slot"
-    Then I should see "Operation booking (Scheduled)"
+      Then I select Yes to a Post Operative Stay
+      Then I select No to a Post Operative Stay
+
+      And I select a Operation Site of "1"
+
+      Then I select a Priority of Urgent
+
+      And I select a decision date of "14"
+
+      Then I select Save and Schedule now
+
+      And I click on available date in the calendar
+      And I select available theatre session from the list
+      And I press "Confirm slot"
+      Then I should see "Operation booking (Scheduled)"
 
   Scenario: Route 7: Successfully scheduling a child operation that does not need a consultant or an anaesthetist
 
@@ -253,12 +252,12 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    And I follow "Schedule now"
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
     Then I should see "Operation booking (Scheduled)"
-
+#
   Scenario: Route 8: Successfully scheduling a child operation that does need a consultant but no anaesthetist
 
     Given I enter login credentials "admin" and "admin"
@@ -289,7 +288,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    And I follow "Schedule now"
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -325,7 +324,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    And I follow "Schedule now"
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -361,12 +360,12 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    And I follow "Schedule now"
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
     Then I should see "Operation booking (Scheduled)"
-
+#
   Scenario: Route 11: Successfully scheduling a child operation that does need a consultant and anaesthetist with no GA
 
     Given I enter login credentials "admin" and "admin"
@@ -397,7 +396,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    And I follow "Schedule now"
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
@@ -433,7 +432,7 @@ Feature: Basic booking Time slot Available INSIDE RTT
     And I select a decision date of "14"
 
     Then I select Save and Schedule now
-    And I follow "Schedule now"
+
     And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"

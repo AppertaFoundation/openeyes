@@ -106,12 +106,4 @@ class BaseAPI
 
 		return false;
 	}
-
-	/*
-	 * Stub method to prevent crashes when getEpisodeHTML() is called for every installed module
-	 *
-	 */
-	public function getEpisodeHTML($episode_id)
-	{
-	}
 }

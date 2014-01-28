@@ -5710,6 +5710,7 @@ class PostCodeUtility
 	 */
 	public function townForOuterPostCode($_code)
 	{
+		$_code = strtoupper($_code);
 		return isset($this->towns[$_code])?$this->towns[$_code]:null;
 	}
 
@@ -5721,6 +5722,7 @@ class PostCodeUtility
 	 */
 	public function countyForOuterPostCode($_code)
 	{
+		$_code = strtoupper($_code);
 		return isset($this->counties[$_code])?$this->counties[$_code]:null;
 	}
 
@@ -5728,7 +5730,7 @@ class PostCodeUtility
 	 * Returns county for an outer post code
 	 *
 	 * @param string $_code Outer postcode
-	 * @return string County name
+	 * @return boolean
 	 */
 	public function isTown($_string)
 	{
