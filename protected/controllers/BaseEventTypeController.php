@@ -1520,6 +1520,10 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function actionDelete($id)
 	{
+		if (isset($_POST['et_canceldelete'])) {
+			return $this->redirect(array('/'.$this->event_type->class_name.'/default/view/'.$id));
+		}
+
 		if (!empty($_POST)) {
 			$transaction = Yii::app()->db->beginTransaction();
 			try {
