@@ -186,7 +186,11 @@ return array(
 			// Use symbolic links to publish the assets when in debug mode.
 			'linkAssets' => defined('YII_DEBUG') && YII_DEBUG,
 		),
+		'widgetFactory'=>array(
+			'class' => 'WidgetFactory'
+		)
 	),
+
 	'params'=>array(
 		'pseudonymise_patient_details' => false,
 		'ab_testing' => false,
