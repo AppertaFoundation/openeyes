@@ -84,6 +84,25 @@ class Event extends BaseActiveRecordVersioned
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function getEditable()
+	{
+		return $this->canUpdate();
+	}
+
+	public function moduleAllowsEditing()
+	{
+		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+			if (method_exists($api,'canUpdate')) {
+				return $api->canUpdate($this->id);
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
 	public function attributeLabels()
@@ -228,6 +247,117 @@ class Event extends BaseActiveRecordVersioned
 	}
 
 	/**
+	 * Can this event be updated (edited)
+	 * @return bool
+	 */
+	public function canUpdate()
+	{
+		if (!$this->episode->editable) {
+			return false;
+		}
+
+		if ($this->episode->patient->date_of_death) {
+			return false;
+		}
+
+		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
+			return true;
+		}
+
+		if ($this->delete_pending) {
+			return false;
+		}
+
+		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
+			return $module_allows_editing;
+		}
+
+		return date('Ymd',strtotime($this->created_date)) >= date('Ymd');
+	}
+
+	/**
+	 * Can this event be deleted
+	 * @return bool
+	 */
+	public function canDelete()
+	{
+		if (!$this->episode->editable) {
+			return false;
+		}
+
+		if ($this->episode->patient->date_of_death) {
+			return false;
+		}
+
+		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
+			//return true;
+		}
+
+		if (Yii::app()->session['user']->id != $this->created_user_id) {
+			return false;
+		}
+
+		if ($this->delete_pending) {
+			return false;
+		}
+
+		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
+			return $module_allows_editing;
+		}
+
+		return date('Ymd',strtotime($this->created_date)) >= date('Ymd');
+	}
+
+	public function showDeleteIcon()
+	{
+		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+			if (method_exists($api,'showDeleteIcon')) {
+				return $api->showDeleteIcon($this->id);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Marks an event as deleted and processes any softDelete methods that exist on the elements attached to it.
+	 *
+	 * @throws Exception
+	 */
+	public function softDelete($reason=false)
+	{
+		// perform this process in a transaction if one has not been created
+		$transaction = Yii::app()->db->getCurrentTransaction() === null
+			? Yii::app()->db->beginTransaction()
+			: false;
+
+		try {
+			$this->deleted = 1;
+			$this->delete_pending = 0;
+
+			if ($reason) {
+				$this->delete_reason = $reason;
+			}
+
+			foreach ($this->getElements() as $element) {
+				$element->softDelete();
+			}
+			if (!$this->save()) {
+				throw new Exception("Unable to mark event deleted: ".print_r($this->event->getErrors(),true));
+			}
+			if ($transaction) {
+				$transaction->commit();
+			}
+		}
+		catch (Exception $e) {
+			if ($transaction) {
+				$transaction->rollback();
+			}
+			throw $e;
+		}
+	}
+
+	/**
 	 * Deletes issues for this event before calling the parent delete method
 	 * Does not handle the removal of elements and will therefore fail if this has not been handled before being called.
 	 *
@@ -309,6 +439,26 @@ class Event extends BaseActiveRecordVersioned
 			}
 		}
 		return $elements;
+	}
+
+	public function requestDeletion($reason)
+	{
+		$this->delete_reason = $reason;
+		$this->delete_pending = 1;
+
+		if (!$this->save()) {
+			throw new Exception("Unable to mark event as delete pending: ".print_r($this->getErrors(),true));
+		}
+
+		$this->audit('event','delete-request',serialize(array(
+			'requested_user_id' => $this->last_modified_user_id,
+			'requested_datetime' => $this->last_modified_date,
+		)));
+	}
+
+	public function isLocked()
+	{
+		return $this->delete_pending;
 	}
 
 	/**

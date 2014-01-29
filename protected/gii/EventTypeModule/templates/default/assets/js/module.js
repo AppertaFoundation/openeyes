@@ -29,14 +29,7 @@ $(document).ready(function() {
 
 	handleButton($('#et_deleteevent'));
 
-	handleButton($('#et_canceldelete'),function(e) {
-		if (m = window.location.href.match(/\/delete\/[0-9]+/)) {
-			window.location.href = window.location.href.replace('/delete/','/view/');
-		} else {
-			window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
-		}
-		e.preventDefault();
-	});
+	handleButton($('#et_canceldelete'));
 
 	handleButton($('#et_print'),function(e) {
 		printIFrameUrl(OE_print_url, null);
