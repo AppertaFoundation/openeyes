@@ -243,6 +243,7 @@ return array(
 		),
 		'admin_menu' => array(
 		),
+		'admin_email' => '',
 		'enable_transactions' => true,
 	),
 );
