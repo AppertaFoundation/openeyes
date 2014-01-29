@@ -649,7 +649,7 @@ class BaseEventTypeController extends BaseModuleController
 
 						$this->logActivity('created event.');
 
-						$event->audit('event','create');
+						$this->event->audit('event','create');
 
 						Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 
