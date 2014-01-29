@@ -59,7 +59,7 @@ class BaseEventTypeController extends BaseModuleController
 	const ACTION_TYPE_PRINT = 'Print';
 	const ACTION_TYPE_EDIT = 'Edit';
 	const ACTION_TYPE_DELETE = 'Delete';
-	const ACTION_TYPE_FORM = 'Form';  // AJAX actions that are used during create and update but don't actually modify data themselves
+	const ACTION_TYPE_FORM = 'Form';	// AJAX actions that are used during create and update but don't actually modify data themselves
 
 	static private $base_action_types = array(
 		'create' => self::ACTION_TYPE_CREATE,
@@ -69,6 +69,7 @@ class BaseEventTypeController extends BaseModuleController
 		'print' => self::ACTION_TYPE_PRINT,
 		'update' => self::ACTION_TYPE_EDIT,
 		'delete' => self::ACTION_TYPE_DELETE,
+		'requestDeletion' => self::ACTION_TYPE_EDIT,
 	);
 
 	/**
@@ -1089,7 +1090,7 @@ class BaseEventTypeController extends BaseModuleController
 					}
 				}
 			}
- 		}
+		}
 
 		return $errors;
 	}
@@ -1241,7 +1242,7 @@ class BaseEventTypeController extends BaseModuleController
 	{
 		try {
 			$this->renderPartial(
-				'_optional_'  . get_class($element),
+				'_optional_'	. get_class($element),
 				array(
 					'element' => $element,
 					'data' => $data,
@@ -2018,7 +2019,7 @@ class BaseEventTypeController extends BaseModuleController
 			return false;
 		}
 
-		if (!$this->checkDeleteAccess($this->event) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+		if (!$this->checkDeleteAccess() || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 			return false;
 		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
 			return false;
@@ -2037,11 +2038,21 @@ class BaseEventTypeController extends BaseModuleController
 			return false;
 		}
 
-		if (!$this->checkDeleteAccess($this->event) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+		if (!$this->checkEditAccess() || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 			return false;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Sets the the css state
+	 */
+	protected function initActionRequestDeletion()
+	{
+		$this->moduleStateCssClass = 'view';
+
+		$this->initWithEventId(@$_GET['id']);
 	}
 
 	public function actionRequestDeletion($id)
@@ -2055,7 +2066,6 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		$this->patient = $this->event->episode->patient;
-		$this->event_type = $this->event->eventType;
 
 		$errors = array();
 
