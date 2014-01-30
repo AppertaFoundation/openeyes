@@ -1,4 +1,4 @@
-@editdelete @regression
+@editdelete
 Feature: These tests set up Events, Edit and Delete them.
 
   Scenario: Route 1A: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 3 Anderson Glaucoma
@@ -56,18 +56,19 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I Save the Event
 
-  Scenario: Route 1C: Delete previously created/edited ASA from Route1A/1B
-
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "3"
-
-    Then I search for patient name last name "Coffin," and first name "Violet"
-
-    Then I select the Latest Event
-
-    And I delete the Last Event
+#  Scenario: Route 1C: Delete previously created/edited ASA from Route1A/1B
+#
+#    Given I am on the OpenEyes "master" homepage
+#    And I enter login credentials "admin" and "admin"
+#    And I select Site "2"
+#    Then I select a firm of "3"
+#
+#    Then I search for patient name last name "Coffin," and first name "Violet"
+#
+#    Then I select the Latest Event
+#
+#    #FIXME OE-3984
+#    And I delete the Last Event
 
   Scenario: Route 2A: Login and create a new Consent Form
 
@@ -116,18 +117,19 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I save the Consent Form
 
-  Scenario: Route 2C: Delete previously created/edited Consent From from Route2A/2B
-
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "3"
-
-    Then I search for patient name last name "Coffin," and first name "Violet"
-
-    Then I select the Latest Event
-
-    And I delete the Last Event
+#  Scenario: Route 2C: Delete previously created/edited Consent From from Route2A/2B
+#
+#    Given I am on the OpenEyes "master" homepage
+#    And I enter login credentials "admin" and "admin"
+#    And I select Site "2"
+#    Then I select a firm of "3"
+#
+#    Then I search for patient name last name "Coffin," and first name "Violet"
+#
+#    Then I select the Latest Event
+#
+#      #FIXME OE-3984
+#    And I delete the Last Event
 
 #  @FIXME JIRA OE-3960 Scenario: Route 3A: Login and create a Phasing Event
 #

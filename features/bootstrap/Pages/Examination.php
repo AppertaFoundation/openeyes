@@ -46,6 +46,7 @@ class Examination extends OpenEyesPage
         'dropsLeft' => array('xpath' => "//select[@name='dilation_treatment[0][drops]']"),
         'dilationLeft' => array('xpath' => "//select[@id='dilation_drug_left']"),
         'dropsRight' => array('xpath' => "//select[@name='dilation_treatment[1][drops]']"),
+        'removeDilationLeft' => array('xpath' => "//*[@id='dilation_left']//*[contains(text(),'Remove')]"),
 
         'expandRefraction' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Refraction')]"),
 
@@ -185,6 +186,7 @@ class Examination extends OpenEyesPage
         'conclusionOption' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_Conclusion_description']"),
 
         'saveExamination' => array('xpath' => "//*[@id='et_save']"),
+        'examSavedOk' => array('xpath' => "//*[@id='flash-success']"),
 
         'existingRightAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'38')]"),
         'existingLeftAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'145')]"),
@@ -923,11 +925,27 @@ class Examination extends OpenEyesPage
         $this->getElement('conclusionOption')->selectOption($option);
     }
 
-    public function saveExamination ()
+    protected function hasExaminationSaved ()
     {
-        $this->getSession()->wait(3000);
+        return (bool) $this->find('xpath', $this->getElement('examSavedOk')->getXpath());;
+    }
+
+    public function saveExaminationAndConfirm ()
+    {
         $this->getElement('saveExamination')->click();
-        $this->getSession()->wait(10000);
+
+        if ($this->hasExaminationSaved()) {
+            print "Examination has been saved OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Examination has NOT been saved!!  WARNING!!");
+        }
+    }
+
+    public function saveExaminationOnly ()
+    {
+        $this->getElement('saveExamination')->click();
     }
 
     //VALIDATION TESTS
@@ -993,7 +1011,7 @@ class Examination extends OpenEyesPage
         $element = $this->getElement('removeAllElements');
         $this->scrollWindowToElement($element);
         $element->click();
-        $this->getSession()->wait(40000, '$.active == 0');
+        $this->getSession()->wait(8000, '$.active == 0');
     }
 
     public function removeAllValidationError ()
@@ -1088,6 +1106,12 @@ class Examination extends OpenEyesPage
     public function removeSecondRightVisualAcuity ()
     {
         $this->getElement('removeSecondRightVisualAcuity')->click();
+    }
+
+    public function removeLeftDilation ()
+    {
+        $this->getElement('removeDilationLeft')->click();
+        $this->getSession()->wait(10000);
     }
 
 }

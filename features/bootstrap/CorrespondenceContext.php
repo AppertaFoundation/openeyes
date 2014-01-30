@@ -163,7 +163,7 @@ class CorrespondenceContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I Save the Correspondence Draft$/
+     * @Then /^I Save the Correspondence Draft and confirm it has been created successfully$/
      */
     public function iSaveTheCorrespondenceDraft()
     {
@@ -171,6 +171,6 @@ class CorrespondenceContext extends PageObjectContext
          * @var correspondence $Correspondence
          */
         $Correspondence  = $this->getPage('Correspondence');
-        $Correspondence->saveDraft();
+        $Correspondence->saveCorrespondenceAndConfirm();
     }
 }

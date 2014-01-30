@@ -1,5 +1,5 @@
 <?php
-
+use Behat\Behat\Exception\BehaviorException;
 class Correspondence extends OpenEyesPage
 {
     protected $path ="/site/OphCoCorrespondence/Default/create?patient_id={patientId}";
@@ -19,7 +19,8 @@ class Correspondence extends OpenEyesPage
         'letterCc' => array('xpath' => "//select[@id='cc']"),
         'addEnclosure' => array('xpath' => "//*[@class='field-row']//*[contains(text(),'Add')]"),
         'enterEnclosure' => array('xpath' => "//div[@id='enclosureItems']/div/div/input"),
-        'saveDraft' => array('xpath' => "//*[@id='et_save_draft']")
+        'saveDraft' => array('xpath' => "//*[@id='et_save_draft']"),
+        'saveCorrespondenceOK' => array('xpath' => "//*[@id='flash-success']"),
     );
 
     public function siteDropdown ($site)
@@ -90,6 +91,22 @@ class Correspondence extends OpenEyesPage
         $this->getElement('saveDraft')->click();
     }
 
+    protected function hasConsentSaved ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('saveCorrespondenceOK')->getXpath());;
+    }
 
+    public function saveCorrespondenceAndConfirm ()
+    {
+        $this->getElement('saveDraft')->click();
+
+        if ($this->hasConsentSaved()) {
+            print "Correspondence has been saved OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Correspondence has NOT been saved!!  WARNING!!");
+        }
+    }
 
 }

@@ -69,7 +69,9 @@ Feature: Create New Examination Regression Tests
     Then I choose left Dilation of "2" and drops of "5"
     Then I choose right Dilation of "6" and drops of "3"
 
-    Then I Save the Examination
+    Then I choose to remove left Dilation treatment
+
+    Then I Save the Examination and confirm it has been created successfully
 
 #  @FIXME JIRA OE-3973
 #    Then a check is made that a left Axis degrees of "145" was entered
@@ -123,7 +125,7 @@ Feature: Create New Examination Regression Tests
 
     Then I remove Refraction right side
 
-    Then I Save the Examination
+    Then I Save the Examination and confirm it has been created successfully
 #
   Scenario: Route 3:Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract
 
@@ -168,8 +170,8 @@ Feature: Create New Examination Regression Tests
     Then I enter right Axis degrees of "167"
     And I enter a right type of "3"
 
-    Then I Save the Examination
-##
+    Then I Save the Examination and confirm it has been created successfully
+#
   Scenario: Route 4: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
             Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
 
@@ -223,13 +225,15 @@ Feature: Create New Examination Regression Tests
     And I add a left Abnormality of "2"
     And I add a right Abnormality of "4"
 
-    Then I choose to expand the Diagnoses section
-    And I choose a left eye diagnosis
-    Then I choose a diagnoses of "230670003"
-    And I choose a right eye diagnosis
-    Then I choose a diagnoses of "53889007"
-    And I choose both eyes diagnosis
-    Then I choose a diagnoses of "193570009"
+#    @FIXME OE-3975
+#    Then I choose to expand the Diagnoses section
+#    And I choose a left eye diagnosis
+#    Then I choose a diagnoses of "230670003"
+
+#    And I choose a right eye diagnosis
+#    Then I choose a diagnoses of "53889007"
+#    And I choose both eyes diagnosis
+#    Then I choose a diagnoses of "193570009"
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -261,9 +265,11 @@ Feature: Create New Examination Regression Tests
 
     And I select a Right Diagnosis of Choroidal Retinal Neovascularisation
     Then I select Right Secondary to "267718000"
+    And I select a Right Intended Treatment of "1"
 
     And I select a Left Diagnosis of Choroidal Retinal Neovascularisation
     Then I select Left Secondary to "267718000"
+    And I select a Left Intended Treatment of "7"
 
     Then I choose a Right CRT Increase <100 of Yes
 
@@ -286,8 +292,8 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Conclusion section
     And I choose a Conclusion option of "booked for first eye, "
 
-    Then I Save the Examination
-#
+    Then I Save the Examination and confirm it has been created successfully
+
 
   Scenario: ROUTE 5: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
   Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
@@ -341,14 +347,14 @@ Feature: Create New Examination Regression Tests
     And I add a left Abnormality of "2"
     And I add a right Abnormality of "4"
 
-    Then I choose to expand the Diagnoses section
-#    @FIXME OE-3975
+#  @FIXME OE-3975
+#    Then I choose to expand the Diagnoses section
 #    And I choose a left eye diagnosis
 #    Then I choose a diagnoses of "95217000"
-    And I choose a right eye diagnosis
-    Then I choose a diagnoses of "34361001"
-    And I choose both eyes diagnosis
-    Then I choose a diagnoses of "79410001"
+#    And I choose a right eye diagnosis
+#    Then I choose a diagnoses of "34361001"
+#    And I choose both eyes diagnosis
+#    Then I choose a diagnoses of "79410001"
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -411,8 +417,8 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Conclusion section
     And I choose a Conclusion option of "glasses prescribed, "
 
-    Then I Save the Examination
-#
+    Then I Save the Examination and confirm it has been created successfully
+##
   Scenario: ROUTE 6: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
   Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
     This Route focuses on the remaining additional Injection Management sections
@@ -466,14 +472,14 @@ Feature: Create New Examination Regression Tests
     And I add a left Abnormality of "2"
     And I add a right Abnormality of "4"
 
-    Then I choose to expand the Diagnoses section
 #    @FIXME OE-3975
+#    Then I choose to expand the Diagnoses section
 #    And I choose a left eye diagnosis
 #    Then I choose a diagnoses of "95217000"
-    And I choose a right eye diagnosis
-    Then I choose a diagnoses of "34361001"
-    And I choose both eyes diagnosis
-    Then I choose a diagnoses of "79410001"
+#    And I choose a right eye diagnosis
+#    Then I choose a diagnoses of "34361001"
+#    And I choose both eyes diagnosis
+#    Then I choose a diagnoses of "79410001"
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -546,8 +552,8 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Conclusion section
     And I choose a Conclusion option of "booked for first eye, "
 
-    Then I Save the Examination
-
+    Then I Save the Examination and confirm it has been created successfully
+#
   Scenario: Route 7: Examination Validation Tests (Anderson Glaucoma)
 
     Given I am on the OpenEyes "master" homepage

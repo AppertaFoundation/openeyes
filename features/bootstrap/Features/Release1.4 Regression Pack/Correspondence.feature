@@ -35,4 +35,4 @@ Feature: Create New Correspondence
 
     Given I add a New Enclosure of "Test Enclosure"
 
-    Then I Save the Correspondence Draft
+    Then I Save the Correspondence Draft and confirm it has been created successfully

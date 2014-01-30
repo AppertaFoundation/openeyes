@@ -78,8 +78,6 @@ Feature: Create New Operation Booking Event
     Then I add comments of "Insert test comments here"
 
     Then I select Save and Schedule now
-    # steps not needed anymore
-    #And I follow "Schedule now"
 
     Then I select Next Month
 
@@ -125,8 +123,6 @@ Feature: Create New Operation Booking Event
     Then I add comments of "Insert test comments here"
 
     Then I select Save and Schedule now
-    # steps not needed anymore
-    #And I follow "Schedule now"
 
     Then I change the Viewing Schedule to Emergency List
 

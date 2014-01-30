@@ -21,6 +21,7 @@ class AnaestheticAudit extends OpenEyesPage
       'dischargeYes' => array('xpath' => "//*[@id='Element_OphOuAnaestheticsatisfactionaudit_Notes_ready_for_discharge_id_1']"),
       'dischargeNo' => array('xpath' => "//*[@id='Element_OphOuAnaestheticsatisfactionaudit_Notes_ready_for_discharge_id_2']"),
       'save' => array('xpath' => "//*[@id='et_save']"),
+      'ASASavedOk' => array('xpath' => "//*[@id='flash-success']"),
       'edit' => array('xpath' => "//*[@class='inline-list tabs event-actions']//*[contains(text(),'Edit')]"),
       'deleteEvent' => array('xpath' => "//*[@class=' delete event-action button button-icon small']//*[@class='icon-button-small-trash-can']"),
       'confirmDeleteEvent' => array('xpath' => "//button[@id='et_deleteevent']"),
@@ -32,8 +33,6 @@ class AnaestheticAudit extends OpenEyesPage
       'vitalHeartRateValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Heart Rate cannot be blank.')]"),
       'vitalAVPUValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Conscious Level AVPU cannot be blank.')]"),
       'readyForDischargeValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Notes: Ready for discharge from recovery cannot be blank.')]")
-
-
 
     );
 
@@ -110,6 +109,24 @@ class AnaestheticAudit extends OpenEyesPage
     public function saveEvent ()
     {
         $this->getElement('save')->click();
+    }
+
+    protected function hasASASaved ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('ASASavedOk')->getXpath());;
+    }
+
+    public function saveASAAndConfirm ()
+    {
+        $this->getElement('save')->click();
+
+        if ($this->hasASASaved()) {
+            print "ASA has been saved OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  ASA has NOT been saved!!  WARNING!!");
+        }
     }
 
     public function editEvent ()

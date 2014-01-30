@@ -678,5 +678,17 @@ class IntravitrealContext extends PageObjectContext
         $Intravitreal->saveIntravitrealInjection();
     }
 
+    /**
+     * @Then /^I Save the Intravitreal injection and confirm it has been created successfully$/
+     */
+    public function iSaveTheIntravitrealInjectionAndConfirm()
+    {
+        /**
+         * @var Intravitreal $Intravitreal
+         */
+        $Intravitreal  = $this->getPage('Intravitreal');
+        $Intravitreal->saveIntravitrealAndConfirm();
+    }
+
 
 }

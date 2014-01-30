@@ -81,5 +81,5 @@ Feature: Create New Therapy Application Event
 
     Then I add Left Anticipated Start Date of "5"
       
-    Then I Save the Therapy Application
+    Then I Save the Therapy Application and confirm it has been created successfully
 

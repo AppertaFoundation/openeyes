@@ -72,7 +72,7 @@ Feature: Create New Intravitreal Event
     And I select Right Complications "5"
     And I select Left Complications "5"
 
-    Then I Save the Intravitreal injection
+    Then I Save the Intravitreal injection and confirm it has been created successfully
 
   Scenario: Route 2: Login and create a New Intravitreal Event
 
@@ -141,7 +141,7 @@ Feature: Create New Intravitreal Event
     And I select Right Complications "3"
     And I select Left Complications "1"
 
-    Then I Save the Intravitreal injection
+    Then I Save the Intravitreal injection and confirm it has been created successfully
 
   Scenario: Route 3: Login and create a New Intravitreal Event
 
@@ -208,7 +208,7 @@ Feature: Create New Intravitreal Event
     And I select Right Complications "2"
     And I select Left Complications "2"
 
-    Then I Save the Intravitreal injection
+    Then I Save the Intravitreal injection and confirm it has been created successfully
 
   Scenario: Route 4: Login and create a New Intravitreal Event
 
@@ -274,4 +274,4 @@ Feature: Create New Intravitreal Event
     And I select Right Complications "3"
     And I select Left Complications "3"
 
-    Then I Save the Intravitreal injection
+    Then I Save the Intravitreal injection and confirm it has been created successfully

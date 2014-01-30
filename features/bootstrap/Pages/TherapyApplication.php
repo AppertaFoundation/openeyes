@@ -1,5 +1,5 @@
 <?php
-
+use Behat\Behat\Exception\BehaviorException;
 class TherapyApplication extends OpenEyesPage
 {
     protected $path = "/site/OphCoTherapyapplication/Default/create?patient_id={parentId}";
@@ -68,7 +68,8 @@ class TherapyApplication extends OpenEyesPage
         'patientVenousYes' => array('xpath' => "//select[@name='Element_OphCoTherapyapplication_PatientSuitability[right_DecisionTreeResponse][48]']"),
         'CRVOYes' => array('xpath' => "//select[@name='Element_OphCoTherapyapplication_PatientSuitability[right_DecisionTreeResponse][49]']"),
         'consultant' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_consultant_id']"),
-        'saveTherapyApplication' => array('xpath' => "//button[@id='et_save']")
+        'saveTherapyApplication' => array('xpath' => "//button[@id='et_save']"),
+        'saveTherapyOK'=> array('xpath' => "//*[@id='flash-success']"),
     );
 
 
@@ -347,6 +348,26 @@ class TherapyApplication extends OpenEyesPage
     public function saveTherapy ()
     {
         $this->getElement('saveTherapyApplication')->click();
+    }
+
+    protected function hasTherapySaved ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('saveTherapyOK')->getXpath());;
+    }
+
+    public function saveTherapyAndConfirm ()
+    {
+        $this->getElement('saveTherapyApplication')->click();
+
+        if ($this->hasTherapySaved()) {
+            print "Therapy has been saved OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Therapy has NOT been saved!!  WARNING!!");
+        }
+
+        $this->getSession()->wait(100000);
     }
 }
 

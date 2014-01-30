@@ -1,4 +1,5 @@
 <?php
+use Behat\Behat\Exception\BehaviorException;
 
 class Phasing extends OpenEyesPage
 {
@@ -29,7 +30,8 @@ class Phasing extends OpenEyesPage
         'phasingPressureRight2' => array('xpath' => "//input[@id='intraocularpressure_reading_3_value']"),
         'removeLeft' => array('xpath' => "//*[@class='readings-right']//*[contains(text(),'Remove')]"),
         'removeRight' => array('xpath' => "//*[@class='readings-left']//*[contains(text(),'Remove')]"),
-        'savePhasingEvent' => array('xpath' => "//*[@id='et_save']")
+        'savePhasingEvent' => array('xpath' => "//*[@id='et_save']"),
+        'phasingSavedOk' => array('xpath' => "//*[@id='flash-success']")
     );
 
     protected function doesPhasingLogoExist()
@@ -40,7 +42,6 @@ class Phasing extends OpenEyesPage
     public function confirmPhasingLogoExist ()
     {
         if ($this->doesPhasingLogoExist()){
-            print "Phasing Text & Logo IS Present";
         }
         elseif (print "Logo MISSING!");
     }
@@ -148,7 +149,24 @@ class Phasing extends OpenEyesPage
     public function savePhasingEvent ()
     {
         $this->getElement('savePhasingEvent')->click();
-        $this->getSession()->wait(3000);
+    }
+
+    protected function hasPhasingSaved ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('phasingSavedOk')->getXpath());;
+    }
+
+    public function savePhasingAndConfirm ()
+    {
+        $this->getElement('savePhasingEvent')->click();
+
+        if ($this->hasPhasingSaved()) {
+            print "Phasing has been saved OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Phasing has NOT been saved!!  WARNING!!");
+        }
     }
 
 }

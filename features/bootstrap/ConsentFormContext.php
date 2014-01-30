@@ -235,4 +235,15 @@ class ConsentFormContext extends PageObjectContext
         $consentForm->saveConsentForm();
     }
 
+    /**
+     * @Then /^I save the Consent Form and confirm it has been created successfully$/
+     */
+    public function iSaveTheConsentFormAndConfirm()
+    {
+        /**
+         * @var ConsentForm $consentForm
+         */
+        $consentForm = $this->getPage('ConsentForm');
+        $consentForm->saveConsentAndConfirm();
+    }
 }
