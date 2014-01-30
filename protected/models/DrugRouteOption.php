@@ -26,7 +26,7 @@
  * @property string $name
  * @property DrugRoute $route
  */
-class DrugRouteOption extends BaseActiveRecord
+class DrugRouteOption extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

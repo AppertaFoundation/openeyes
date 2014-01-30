@@ -29,7 +29,7 @@
  * @property Disorder $disorder
  * @property Subspecialty $subspecialty
  */
-class CommonOphthalmicDisorder extends BaseActiveRecord
+class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -114,6 +114,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		$specialties = Yii::app()->db->createCommand()
 			->select('s.id, s.name')
 			->from('subspecialty s')
+			->where('deleted = 0')
 			->order('name ASC')
 			->queryAll();
 

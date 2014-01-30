@@ -34,7 +34,7 @@
  *
  */
 
-class <?php if (isset($defaults_table)) echo $defaults_table['class']; ?> extends BaseActiveRecord
+class <?php if (isset($defaults_table)) echo $defaults_table['class']; ?> extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

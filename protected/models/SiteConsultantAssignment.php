@@ -28,7 +28,7 @@
  * The followings are the available model relations:
  * @property Site $site
  */
-class SiteConsultantAssignment extends BaseActiveRecord
+class SiteConsultantAssignment extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

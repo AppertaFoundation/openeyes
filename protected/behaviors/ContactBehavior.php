@@ -27,7 +27,6 @@ class ContactBehavior extends CActiveRecordBehavior
 		} else {
 			$contact = $this->owner->contact;
 		}
-
 		$address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
 
 		return $this->formatLetterAddress($contact, $address, $params);

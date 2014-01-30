@@ -27,7 +27,7 @@
  * @property DrugDuration $duration
  * @property DrugFrequency $frequency
  */
-class DrugSetItemTaper extends BaseActiveRecord
+class DrugSetItemTaper extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

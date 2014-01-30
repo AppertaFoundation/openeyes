@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class FamilyHistoryRelative extends BaseActiveRecord
+class FamilyHistoryRelative extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

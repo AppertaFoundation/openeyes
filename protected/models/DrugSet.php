@@ -27,7 +27,7 @@
  * @property Subspecialty $subspecialty
  * @property DrugSetItem[] $items
  */
-class DrugSet extends BaseActiveRecord
+class DrugSet extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

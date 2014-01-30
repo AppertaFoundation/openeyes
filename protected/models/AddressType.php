@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class AddressType extends BaseActiveRecord
+class AddressType extends BaseActiveRecordVersioned
 {
 	public $default_scope = true;
 

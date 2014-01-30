@@ -31,10 +31,8 @@
  * @property User $user
  * @property EventType $eventType
  */
-class Event extends BaseActiveRecord
+class Event extends BaseActiveRecordVersioned
 {
-	private $defaultScopeDisabled = false;
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className
@@ -51,28 +49,6 @@ class Event extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'event';
-	}
-
-	/**
-	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
-	 * @return array of mandatory conditions
-	 */
-
-	public function defaultScope()
-	{
-		if ($this->defaultScopeDisabled) {
-			return array();
-		}
-
-		$table_alias = $this->getTableAlias(false,false);
-		return array(
-			'condition' => $table_alias.'.deleted = 0',
-		);
-	}
-
-	public function disableDefaultScope() {
-		$this->defaultScopeDisabled = true;
-		return $this;
 	}
 
 	/**
@@ -105,6 +81,25 @@ class Event extends BaseActiveRecord
 			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 			'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
 		);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function getEditable()
+	{
+		return $this->canUpdate();
+	}
+
+	public function moduleAllowsEditing()
+	{
+		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+			if (method_exists($api,'canUpdate')) {
+				return $api->canUpdate($this->id);
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -252,11 +247,84 @@ class Event extends BaseActiveRecord
 	}
 
 	/**
+	 * Can this event be updated (edited)
+	 * @return bool
+	 */
+	public function canUpdate()
+	{
+		if (!$this->episode->editable) {
+			return false;
+		}
+
+		if ($this->episode->patient->date_of_death) {
+			return false;
+		}
+
+		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
+			return true;
+		}
+
+		if ($this->delete_pending) {
+			return false;
+		}
+
+		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
+			return $module_allows_editing;
+		}
+
+		return date('Ymd',strtotime($this->created_date)) >= date('Ymd');
+	}
+
+	/**
+	 * Can this event be deleted
+	 * @return bool
+	 */
+	public function canDelete()
+	{
+		if (!$this->episode->editable) {
+			return false;
+		}
+
+		if ($this->episode->patient->date_of_death) {
+			return false;
+		}
+
+		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
+			//return true;
+		}
+
+		if (Yii::app()->session['user']->id != $this->created_user_id) {
+			return false;
+		}
+
+		if ($this->delete_pending) {
+			return false;
+		}
+
+		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
+			return $module_allows_editing;
+		}
+
+		return date('Ymd',strtotime($this->created_date)) >= date('Ymd');
+	}
+
+	public function showDeleteIcon()
+	{
+		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+			if (method_exists($api,'showDeleteIcon')) {
+				return $api->showDeleteIcon($this->id);
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Marks an event as deleted and processes any softDelete methods that exist on the elements attached to it.
 	 *
 	 * @throws Exception
 	 */
-	public function softDelete()
+	public function softDelete($reason=false)
 	{
 		// perform this process in a transaction if one has not been created
 		$transaction = Yii::app()->db->getCurrentTransaction() === null
@@ -265,6 +333,12 @@ class Event extends BaseActiveRecord
 
 		try {
 			$this->deleted = 1;
+			$this->delete_pending = 0;
+
+			if ($reason) {
+				$this->delete_reason = $reason;
+			}
+
 			foreach ($this->getElements() as $element) {
 				$element->softDelete();
 			}
@@ -365,6 +439,26 @@ class Event extends BaseActiveRecord
 			}
 		}
 		return $elements;
+	}
+
+	public function requestDeletion($reason)
+	{
+		$this->delete_reason = $reason;
+		$this->delete_pending = 1;
+
+		if (!$this->save()) {
+			throw new Exception("Unable to mark event as delete pending: ".print_r($this->getErrors(),true));
+		}
+
+		$this->audit('event','delete-request',serialize(array(
+			'requested_user_id' => $this->last_modified_user_id,
+			'requested_datetime' => $this->last_modified_date,
+		)));
+	}
+
+	public function isLocked()
+	{
+		return $this->delete_pending;
 	}
 
 	/**

@@ -70,15 +70,18 @@ class BaseController extends Controller
 	 */
 	protected function setupAssetManager()
 	{
+
+		$assetManager = Yii::app()->assetManager;
+
 		// Set AssetManager properties.
-		Yii::app()->assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
-		Yii::app()->assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
+		$assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
+		$assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
 
 		// Register the main stylesheet without pre-registering to ensure it's always output first.
-		Yii::app()->assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
+		$assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
 
 		// Prevent certain assets from being outputted in certain conditions.
-		Yii::app()->getAssetManager()->adjustScriptMapping();
+		$assetManager->adjustScriptMapping();
 	}
 
 	protected function beforeAction($action)

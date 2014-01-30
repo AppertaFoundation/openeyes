@@ -2,7 +2,7 @@
 Feature: Create New Examination Regression Tests
   Regression over 2 Sites and 4 Firms
   Coverage at 80%
-  Right Axis Statement is doubled up to stop Right Axis spinning bug
+  LEFT AXIS Statement is doubled up to stop Right Axis spinning bug
 
   Scenario: Route 1: Login and create a new Examination Event: Site 1:Queens, Firm:3 Anderson Glaucoma
 
@@ -55,8 +55,11 @@ Feature: Create New Examination Regression Tests
 
     Then I enter left Refraction details of Sphere "1" integer "6" fraction "0.75"
     And I enter left cylinder details of of Cylinder "-1" integer "7" fraction "0.75"
-    And I enter a left type of "5"
+
     Then I enter left Axis degrees of "38"
+    Then I enter left Axis degrees of "38"
+
+    And I enter a left type of "5"
 
     Then I enter right Refraction details of Sphere "-1" integer "9" fraction "0.75"
     And I enter right cylinder details of of Cylinder "1" integer "5" fraction "0"
@@ -93,6 +96,12 @@ Feature: Create New Examination Regression Tests
     Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
     Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
 
+    And I choose to add a new left Visual Acuity reading of "6" and a reading method of "4"
+    And I choose to add a new Right Visual Acuity reading of "3" and a reading method of "2"
+
+    Then I remove the newly added Left Visual Acuity
+    Then I remove the newly added Right Visual Acuity
+
     Then I choose to expand the Intraocular Pressure section
     Then I choose a left Intraocular Pressure of "8" and Instrument "4"
     Then I choose a right Intraocular Pressure of "77" and Instrument "1"
@@ -105,12 +114,13 @@ Feature: Create New Examination Regression Tests
     Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
     And I enter left cylinder details of of Cylinder "1" integer "4" fraction "0.25"
     Then I enter left Axis degrees of "56"
+    Then I enter left Axis degrees of "56"
     And I enter a left type of "2"
 
     Then I remove Refraction right side
 
     Then I Save the Examination
-
+#
   Scenario: Route 3:Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage

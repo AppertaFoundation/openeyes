@@ -32,7 +32,7 @@
  * @property integer $gp_id
  * @property integer $service_subspecialty_assignment_id // MW: this is here because sometimes the referrer is a pas_code which doesn't map to a firm with the correct subspecialty
  */
-class Referral extends BaseActiveRecord
+class Referral extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

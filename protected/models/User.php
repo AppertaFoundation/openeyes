@@ -31,7 +31,7 @@
  * @property string $salt
  * @property integer $global_firm_rights
  */
-class User extends BaseActiveRecord
+class User extends BaseActiveRecordVersioned
 {
 	/**
 	 * Used to check password and password confirmation match
@@ -202,7 +202,7 @@ class User extends BaseActiveRecord
 	 *
 	 * @return boolean
 	 */
-	public function save($runValidation = true, $attributes = null, $allow_overriding=false)
+	public function save($runValidation = true, $attributes = null, $allow_overriding=false, $save_archive=false)
 	{
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
 			/**
@@ -220,7 +220,7 @@ class User extends BaseActiveRecord
 			}
 		}
 
-		return parent::save($runValidation, $attributes, $allow_overriding);
+		return parent::save($runValidation, $attributes, $allow_overriding, $save_archive);
 	}
 
 	/**
@@ -466,7 +466,10 @@ class User extends BaseActiveRecord
 			->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->leftJoin('subspecialty s','ssa.subspecialty_id = s.id')
 			->leftJoin('user_firm uf','uf.firm_id = f.id and uf.user_id = '.Yii::app()->user->id)
-			->where("uf.id is null",array(':userId'=>Yii::app()->user->id))
+			->where("uf.id is null and f.deleted = :notdeleted and (ssa.id is null or ssa.deleted = :notdeleted) and (s.id is null or s.deleted = :notdeleted) and (uf.id is null or uf.deleted = :notdeleted)",array(
+				':userId' => Yii::app()->user->id,
+				':notdeleted' => 0,
+			))
 			->order('f.name, s.name')
 			->queryAll();
 		$data = array();

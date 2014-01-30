@@ -26,7 +26,7 @@
  * @property integer $practice_id
  *
  */
-class CommissioningBodyPracticeAssignment extends BaseActiveRecord
+class CommissioningBodyPracticeAssignment extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

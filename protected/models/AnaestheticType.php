@@ -26,7 +26,7 @@
  * @property string $code
  * @property integer $display_order
  */
-class AnaestheticType extends BaseActiveRecord
+class AnaestheticType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

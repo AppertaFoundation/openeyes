@@ -29,7 +29,7 @@
  * @property Procedure[] $procedures
  * @property Subspecialty $subspecialty
  */
-class SubspecialtySubsection extends BaseActiveRecord
+class SubspecialtySubsection extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -115,8 +115,10 @@ class SubspecialtySubsection extends BaseActiveRecord
 		$sections = Yii::app()->db->createCommand()
 			->select('id, name')
 			->from('subspecialty_subsection')
-			->where('subspecialty_id = :id',
-				array(':id'=>$subspecialtyId))
+			->where('subspecialty_id = :id and deleted = :notdeleted', array(
+				':id' => $subspecialtyId,
+				':notdeleted' => 0,
+			))
 			->order('name ASC')
 			->queryAll();
 

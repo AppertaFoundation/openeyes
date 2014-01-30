@@ -44,7 +44,7 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 	 * @param array $params
 	 * @return object
 	 */
-	protected function getElementType($class_name, $name, $params = array()) {
+	protected function getElementType($class_name, $name, $params = array(), $mock_element = null) {
 		$et = ComponentStubGenerator::generate('ElementType',
 			array_merge(array(
 				'class_name' => $class_name,
@@ -59,8 +59,9 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 		$e = $this->getMockBuilder('BaseEventTypeElement')
 			->disableOriginalConstructor()
 			->setMockClassName($class_name)
-			->setMethods(array('getElementType', 'getElementTypeName'))
 			->getMock();
+
+		//ComponentStubGenerator::propertiesSetAndMatch($e);
 
 		$e->expects( $this->any() )->method('getElementType')->will($this->returnValue($et));
 		$e->expects( $this->any() )->method('getElementTypeName')->will($this->returnValue($name));
@@ -403,10 +404,32 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testgetOptionalElements_creatingEvent()
 	{
-		$controller = $this->getExaminationController();
+		$event_type = $this->getMockBuilder('EventType')
+			->disableOriginalConstructor()
+			->setMethods(array('getAllElementTypes'))
+			->getMock();
 
-		$controller->event_type = $this->getEventTypeWithAllElementTypes();
-		$controller->setOpenElementsFromCurrentEvent('create');
+		$ets = $this->getAllElementTypes();
+
+		$event_type->expects($this->once())
+			->method('getAllElementTypes')
+			->will($this->returnValue($ets));
+
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+			->disableOriginalConstructor()
+			->setMethods(array('getEvent_Type'))
+			->getMock();
+
+		$controller->expects($this->any())
+			->method('getEvent_Type')
+			->will($this->returnValue($event_type));
+
+		$r = new ReflectionClass('BaseEventTypeController');
+		$oe_prop = $r->getProperty('open_elements');
+		$oe_prop->setAccessible(true);
+		$oe_prop->setValue($controller, array($ets[0]->getInstance()));
+
+
 		$optional = $controller->getOptionalElements();
 
 		$this->assertEquals('visualfunction', $optional[0]->getElementTypeName(), 'First optional element should be Visual function.');
@@ -493,11 +516,10 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 		$controller->patient = $patient;
 
 		// checking full url seems a little dirty, but I don't want to dwell too much on this method for now
-		$controller->expects($this->once())->method('redirect')->with($this->anything())
-				->will($this->returnCallback(function($arr) {
-							self::assertCount(1, $arr);
-							self::assertEquals("/patient/episodes/2", $arr[0]);
-						}));
+		$controller->expects($this->once())
+				->method('redirect')
+				->with($this->equalTo(array("/patient/episodes/2")));
+
 		$controller->redirectToPatientEpisodes();
 	}
 
@@ -552,12 +574,186 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 
 		$method->invoke($controller, $el, 'create');
 	}
+
+	public function testsetElementOptions()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('setElementDefaultOptions'))
+				->getMock();
+
+		$cls = new ReflectionClass('BaseEventTypeController');
+		$open_elements = $cls->getProperty('open_elements');
+		$open_elements->setAccessible(true);
+		$method = $cls->getMethod('setElementOptions');
+		$method->setAccessible(true);
+
+		$ets = $this->getAllElementTypes();
+		$e1 = $ets[0]->getInstance();
+		$e2 = $ets[1]->getInstance();
+
+		$open_elements->setValue($controller, array($e1, $e2));
+		$controller->expects($this->at(0))
+				->method('setElementDefaultOptions')
+				->with($this->identicalTo($e1), $this->identicalTo('create'));
+		$controller->expects($this->at(1))
+				->method('setElementDefaultOptions')
+				->with($this->identicalTo($e2), $this->identicalTo('create'));
+		$method->invoke($controller,'create');
+	}
+
+	/**
+	 * @covers BaseEventTypeController::hasPrevious()
+	 */
+	public function testhasPrevious_true()
+	{
+		$episode = $this->getMockBuilder('Episode')
+				->disableOriginalConstructor()
+				->setMethods(array('getElementsOfType'))
+				->getMock();
+
+		$et = $this->getElementType('HistoryElementType','history');
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(null)
+				->getMock();
+
+		$cls = new ReflectionClass('BaseEventTypeController');
+		$ep_prop = $cls->getProperty('episode');
+		$ep_prop->setAccessible(true);
+		$ep_prop->setValue($controller, $episode);
+
+		$episode->expects($this->once())
+			->method('getElementsOfType')
+			->with($this->identicalTo($et))
+			->will($this->returnValue(array($et->getInstance())));
+
+		$this->assertTrue($controller->hasPrevious($et));
+	}
+
+	/**
+	 * @covers BaseEventTypeController::hasPrevious()
+	 */
+	public function testhasPrevious_exclude_false()
+	{
+		$episode = $this->getMockBuilder('Episode')
+				->disableOriginalConstructor()
+				->setMethods(array('getElementsOfType'))
+				->getMock();
+
+		$et = $this->getElementType('HistoryElementType','history');
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(null)
+				->getMock();
+
+		$cls = new ReflectionClass('BaseEventTypeController');
+		$ep_prop = $cls->getProperty('episode');
+		$ep_prop->setAccessible(true);
+		$ep_prop->setValue($controller, $episode);
+
+		$episode->expects($this->once())
+				->method('getElementsOfType')
+				->with($this->identicalTo($et), $this->identicalTo(4))
+				->will($this->returnValue(array()));
+
+		$this->assertFalse($controller->hasPrevious($et, 4));
+	}
+
+	/**
+	 * @covers BaseEventTypeController::canCopy()
+	 */
+	public function testcanCopy_true()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('hasPrevious'))
+				->getMock();
+		$controller->expects($this->once())
+			->method('hasPrevious')
+			->will($this->returnValue(true));
+
+		$element = ComponentStubGenerator::generate('BaseEventTypeElement',
+				array('event_id' => 1));
+
+		$element->expects($this->once())
+			->method('canCopy')
+			->will($this->returnValue(true));
+		$element->expects($this->once())
+				->method('getElementType')
+				->will($this->returnValue(null));
+
+		$this->assertTrue($controller->canCopy($element));
+	}
+
+	/**
+	 * @covers BaseEventTypeController::canCopy()
+	 */
+	public function testcanCopy_false()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(null)
+				->getMock();
+
+		$element = $this->getMockBuilder('BaseEventTypeElement')
+				->disableOriginalConstructor()
+				->setMethods(array('canCopy'))
+				->getMock();
+
+		$element->expects($this->once())
+				->method('canCopy')
+				->will($this->returnValue(false));
+
+		$this->assertFalse($controller->canCopy($element));
+	}
+
+	public function testCanViewPrevious_true()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('hasPrevious'))
+				->getMock();
+
+		$et = $this->getElementType('HistoryElementType','history');
+		$e = $et->getInstance();
+		ComponentStubGenerator::propertiesSetAndMatch($e, array('event_id' => 1), true);
+
+		$controller->expects($this->once())
+			->method('hasPrevious')
+			->with($this->identicalTo($et), $this->identicalTo(1))
+			->will($this->returnValue(true));
+
+		$this->assertTrue($controller->canViewPrevious($e));
+
+	}
+
+	public function testcanViewPrevious_false()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('hasPrevious'))
+				->getMock();
+
+		$et = $this->getElementType('HistoryElementType','history');
+		$e = $et->getInstance();
+		ComponentStubGenerator::propertiesSetAndMatch($e, array('event_id' => 1), true);
+
+		$controller->expects($this->once())
+				->method('hasPrevious')
+				->with($this->identicalTo($et), $this->identicalTo(1))
+				->will($this->returnValue(false));
+
+		$this->assertFalse($controller->canViewPrevious($e));
+	}
+
 }
 
 /**
  * Class _WrapperBaseEventTypeController
  *
  * wrapper class around BaseEventTypeController to expose protected methods for testing
+ * TODO: see if ReflectionClass can be used to expose these as much as possible
  */
 class _WrapperBaseEventTypeController extends BaseEventTypeController
 {
@@ -571,11 +767,9 @@ class _WrapperBaseEventTypeController extends BaseEventTypeController
 	public $event_type;
 	public $open_elements;
 	public $action;
-	// expose protected method in abstract class
+	// expose protected methods
 	public function getEventElements() { return parent::getEventElements(); }
-	// expose protected open_elements property
 	public function getOpenElements() { return $this->open_elements; }
-	// expose protected setOpenElementsFromCurrentEvent method
 	public function setOpenElementsFromCurrentEvent($action) { parent::setOpenElementsFromCurrentEvent($action); }
 	public function beforeAction($action) { parent::beforeAction($action); }
 	public function redirectToPatientEpisodes() { parent::redirectToPatientEpisodes(); }

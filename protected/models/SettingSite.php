@@ -26,7 +26,7 @@
  * @property string $key
  * @property string $value
  */
-class SettingSite extends BaseActiveRecord
+class SettingSite extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

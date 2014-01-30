@@ -31,7 +31,7 @@
  * @property CommonSystemicDisorder[] $commonSystemicDisorders
  * @property Specialty $specialty
  */
-class Disorder extends BaseActiveRecord
+class Disorder extends BaseActiveRecordVersioned
 {
 	const SITE_LEFT = 0;
 	const SITE_RIGHT = 1;
@@ -113,6 +113,7 @@ class Disorder extends BaseActiveRecord
 		return array(
 			'treeBehavior'=>array(
 				'class' => 'TreeBehavior',
+				'idAttribute' => 'disorder_id',
 			)
 		);
 	}
@@ -159,8 +160,8 @@ class Disorder extends BaseActiveRecord
 		$disorders = Yii::app()->db->createCommand()
 			->select('term')
 			->from('disorder')
-			->where('term LIKE :term',
-					array(':term' => "%{$term}%"))
+			->where('term LIKE :term and deleted = :notdeleted',
+					array(':term' => "%{$term}%", ':notdeleted' => 0))
 			->queryAll();
 
 		$data = array();

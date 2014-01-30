@@ -27,7 +27,7 @@ if (!empty($episode)) {
 		$diagnosis = 'No diagnosis';
 	}
 
-	$episode->audit('episode summary','view',false);
+	$episode->audit('episode summary','view');
 	?>
 
 	<div class="element-data">

@@ -802,15 +802,15 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		switch ($field['type']) {
 			case 'Textbox':
 				$size = $field['textbox_max_length'] ? $field['textbox_max_length'] : '255';
-				return "varchar($size) COLLATE utf8_bin DEFAULT \'\'";
+				return "varchar($size) DEFAULT \'\'";
 			case 'Textarea':
-				return "text COLLATE utf8_bin DEFAULT \'\'";
+				return "text DEFAULT \'\'";
 			case 'Date picker':
 				return "date DEFAULT NULL";
 			case 'Dropdown list':
 				return isset($field['default_value']) ? "int(10) unsigned NOT NULL DEFAULT {$field['default_value']}" : "int(10) unsigned NOT NULL";
 			case 'Textarea with dropdown':
-				return "text COLLATE utf8_bin NOT NULL";
+				return "text NOT NULL";
 			case 'Checkbox':
 				return "tinyint(1) unsigned NOT NULL";
 			case 'Radio buttons':
@@ -821,7 +821,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$default = strlen($field['integer_default_value'])>0 ? " DEFAULT {$field['integer_default_value']}" : '';
 				return "int(10) unsigned NOT NULL$default";
 			case 'EyeDraw':
-				return "text COLLATE utf8_bin NOT NULL";
+				return "text NOT NULL";
 			case 'Multi select':
 				return false;
 			case 'Slider':
@@ -907,11 +907,15 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			return $event_type->moduleShortSuffix;
 		} else {
 			// try to derive the short suffix from the table name of an element in the class
-			$el = ElementType::model()->findall('event_type_id=:eventTypeId', array(':eventTypeId' => $event_type->id));
+			if (!$el = ElementType::model()->findall('event_type_id=:eventTypeId', array(':eventTypeId' => $event_type->id))) {
+				throw new Exception("Unable to find element_type for event_type_id = {$event_type->id}");
+			}
 
 			if (count($el)) {
 				$code = strtolower(substr($event_type->class_name, 0, 5));
-				if (!preg_match('/^et_'.$code.'([a-z0-9]+)_/', $test->tableName(), $m) ) {
+				$class = $el[0]->class_name;
+				$model = $class::model();
+				if (!preg_match('/^et_'.$code.'([a-z0-9]+)_/', $model->tableName(), $m) ) {
 					die ("ERROR: cannot determine short name for event type " . $event_type->class_name);
 				}
 				return $m[1];
@@ -973,6 +977,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			->selectDistinct("$table.id, $table.$field")
 			->from($table)
 			->order("$table.$field")
+			->where("$table.deleted = 0")
 			->queryAll() as $row) {
 			echo '<option value="'.$row['id'].'"'.($selected == $row['id'] ? ' selected="selected"' : '').'>'.$row[$field].'</option>';
 		}
@@ -988,6 +993,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			->selectDistinct("$table.id, $table.$field")
 			->from($table)
 			->order("$table.$field")
+			->where("$table.deleted = 0")
 			->queryAll() as $row) {
 			if (!in_array($row['id'],$selected)) {
 				echo '<option value="'.$row['id'].'">'.$row[$field].'</option>';

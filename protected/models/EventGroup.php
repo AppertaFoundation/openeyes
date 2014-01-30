@@ -26,7 +26,7 @@
  * @property string $code
  *
  */
-class EventGroup extends BaseActiveRecord
+class EventGroup extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

@@ -31,7 +31,7 @@
  * @property SubspecialtySubsection[] $subspecialtySubsections
  * @property Procedure[] $additional
  */
-class Procedure extends BaseActiveRecord
+class Procedure extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -142,10 +142,16 @@ class Procedure extends BaseActiveRecord
 			$where .= ' and unbooked = 0';
 		}
 
+		$where .= " and proc.deleted = :notdeleted";
+
 		return Yii::app()->db->createCommand()
 			->select('term')
 			->from('proc')
-			->where($where, array(':term' => $term, ':search' => $search))
+			->where($where, array(
+				':term' => $term,
+				':search' => $search,
+				':notdeleted' => 0,
+			))
 			->order('term')
 			->queryColumn();
 	}
@@ -162,7 +168,10 @@ class Procedure extends BaseActiveRecord
 			->select('proc.id, proc.term')
 			->from('proc')
 			->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
-			->where('psa.subspecialty_id = :id'.$where, array(':id'=>$subspecialtyId))
+			->where('psa.subspecialty_id = :id and proc.deleted = :notdeleted and psa.deleted = :notdeleted'.$where, array(
+				':id' => $subspecialtyId,
+				':notdeleted' => 0,
+			))
 			->order('proc.term ASC')
 			->queryAll();
 

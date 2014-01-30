@@ -27,7 +27,7 @@
  * The followings are the available model relations:
  * @property Event[] $events
  */
-class EventType extends BaseActiveRecord
+class EventType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

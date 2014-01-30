@@ -87,7 +87,7 @@ class ProcedureController extends BaseController
 			->select("b.name")
 			->from("benefit b")
 			->join("procedure_benefit pb","pb.benefit_id = b.id")
-			->where("pb.proc_id = $id")
+			->where("pb.proc_id = $id and b.deleted = 0 and pb.deleted = 0")
 			->order("b.name asc")
 			->queryAll() as $row) {
 			$benefits[] = $row['name'];
@@ -108,7 +108,7 @@ class ProcedureController extends BaseController
 			->select("b.name")
 			->from("complication b")
 			->join("procedure_complication pb","pb.complication_id = b.id")
-			->where("pb.proc_id = $id")
+			->where("pb.proc_id = $id and b.deleted = 0 and pb.deleted = 0")
 			->order("b.name asc")
 			->queryAll() as $row) {
 			$complications[] = $row['name'];

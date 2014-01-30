@@ -51,7 +51,7 @@
  * @property EthnicGroup $ethnic_group
  * @property CommissioningBody[] $commissioningbodies
  */
-class Patient extends BaseActiveRecord
+class Patient extends BaseActiveRecordVersioned
 {
 	const CHILD_AGE_LIMIT = 16;
 
@@ -654,7 +654,7 @@ class Patient extends BaseActiveRecord
 					throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
 				}
 
-				$this->audit('patient','add-allergy',$paa->getAuditAttributes());
+				$this->audit('patient','add-allergy');
 				if ($this->no_allergies_date) {
 					$this->no_allergies_date = null;
 					if (!$this->save()) {
@@ -684,7 +684,7 @@ class Patient extends BaseActiveRecord
 				throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
 			}
 
-			$this->audit('patient','remove-allergy',$paa->getAuditAttributes());
+			$this->audit('patient','remove-allergy');
 		}
 	}
 
@@ -741,7 +741,7 @@ class Patient extends BaseActiveRecord
 				if (!$paa->delete()) {
 					throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
 				}
-				$this->audit('patient', 'remove-allergy', $paa->getAuditAttributes());
+				$this->audit('patient','remove-allergy');
 			}
 			$this->no_allergies_date = date('Y-m-d H:i:s');
 			if (!$this->save()) {
@@ -907,7 +907,7 @@ class Patient extends BaseActiveRecord
 				throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
 			}
 
-			$this->audit('patient',$action,$sd->getAuditAttributes());
+			$this->audit('patient',$action);
 		}
 	}
 
@@ -927,13 +927,11 @@ class Patient extends BaseActiveRecord
 			$type = 'sys';
 		}
 
-		$audit_attributes = $sd->getAuditAttributes();
-
 		if (!$sd->delete()) {
 			throw new Exception('Unable to delete diagnosis: '.print_r($sd->getErrors(),true));
 		}
 
-		$this->audit('patient',"remove-$type-diagnosis",$audit_attributes);
+		$this->audit('patient',"remove-$type-diagnosis");
 	}
 
 	/**
@@ -956,9 +954,7 @@ class Patient extends BaseActiveRecord
 
 		$oph_info->save();
 
-		$audit_attributes = $oph_info->getAuditAttributes();
-
-		$this->audit('patient', $action, $audit_attributes);
+		$this->audit('patient', $action);
 	}
 
 	public function getContactAddress($contact_id, $location_type=false, $location_id=false)

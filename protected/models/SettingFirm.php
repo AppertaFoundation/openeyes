@@ -26,7 +26,7 @@
  * @property string $key
  * @property string $value
  */
-class SettingFirm extends BaseActiveRecord
+class SettingFirm extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

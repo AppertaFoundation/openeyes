@@ -23,7 +23,7 @@
  * The followings are the available columns in table 'anaesthetist':
  * @property integer $id
  */
-class Anaesthetist extends BaseActiveRecord
+class Anaesthetist extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

@@ -37,7 +37,7 @@
  * @property DrugFrequency $default_frequency
  * @property DrugDuration $default_duration
  */
-class Drug extends BaseActiveRecord
+class Drug extends BaseActiveRecordVersioned
 {
 	public $default_scope = true;
 
@@ -60,9 +60,15 @@ class Drug extends BaseActiveRecord
 
 	public function defaultScope()
 	{
-		return array(
-			'condition' => 'discontinued = 0',
-		);
+		$table_alias = $this->getTableAlias(false,false);
+
+		if ($this->default_scope) {
+			return array(
+				'condition' => $table_alias.'.discontinued = 0',
+			);
+		}
+
+		return array();
 	}
 
 	public function discontinued()

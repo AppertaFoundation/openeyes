@@ -30,7 +30,7 @@ class OEMigration extends CDbMigration
 	 */
 	public function execute($sql, $params=array(), $message = null) {
 		$message = ($message) ? $message : strtok($sql, "\n").'...';
-		echo "    > execute SQL: $message ...";
+		echo "		> execute SQL: $message ...";
 		$time=microtime(true);
 		$this->getDbConnection()->createCommand($sql)->execute($params);
 		echo " done (time: ".sprintf('%.3f', microtime(true)-$time)."s)\n";
@@ -258,7 +258,7 @@ class OEMigration extends CDbMigration
 		return $this->dbConnection->createCommand()
 			->select('id')
 			->from('element_type')
-			->where('class_name=:class_name', array(':class_name' => $className))
+			->where('class_name=:class_name and deleted=:notdeleted', array(':class_name' => $className, ':notdeleted' => 0))
 			->queryScalar();
 	}
 
@@ -275,7 +275,7 @@ class OEMigration extends CDbMigration
 		$group_id = $this->dbConnection->createCommand()
 			->select('id')
 			->from('event_group')
-			->where('code=:code', array(':code' => $eventTypeGroup))
+			->where('code=:code and deleted=:notdeleted', array(':code' => $eventTypeGroup, ':notdeleted' => 0))
 			->queryScalar();
 
 		if ($group_id === false) {
@@ -286,7 +286,7 @@ class OEMigration extends CDbMigration
 		$event_type_id = $this->dbConnection->createCommand()
 			->select('id')
 			->from('event_type')
-			->where('class_name = :class_name', array(':class_name' => $eventTypeClass))
+			->where('class_name = :class_name and deleted=:notdeleted', array(':class_name' => $eventTypeClass, ':notdeleted' => 0))
 			->queryScalar();
 		if($event_type_id) {
 			echo 'Updating event_type, event_type_name: ' . $eventTypeName . ' event_type_class: ' . $eventTypeClass . ' event_type_group: ' . $eventTypeGroup . "\n";
@@ -312,7 +312,7 @@ class OEMigration extends CDbMigration
 			$event_type_id = $this->dbConnection->createCommand()
 				->select('id')
 				->from('event_type')
-				->where('class_name = :class_name', array(':class_name' => $eventTypeClass))
+				->where('class_name = :class_name and deleted = :notdeleted', array(':class_name' => $eventTypeClass, ':notdeleted' => 0))
 				->queryScalar();
 			if(!$event_type_id) {
 				throw new CException('Failed to insert event type');
@@ -364,7 +364,7 @@ class OEMigration extends CDbMigration
 			$element_type_ids[] = $this->dbConnection->createCommand()
 				->select('id')
 				->from('element_type')
-				->where('class_name=:class_name', array(':class_name' => $element_type_class))
+				->where('class_name=:class_name and deleted=:notdeleted', array(':class_name' => $element_type_class, ':notdeleted' => 0))
 				->queryScalar();
 
 			$display_order++;
@@ -394,11 +394,11 @@ class OEMigration extends CDbMigration
 	 * @description method needed to delete records from multi key tables
 	 * @param string $tableName
 	 * @param array $fieldsValsArray
-	 *  example of fieldsValsArray
+	 *	example of fieldsValsArray
 	 * $fieldsValsArray should look like
 	 *
 	 * array(
-	 *    array('column_name'=>'value', 'column_name'=>'val'),
+	 *		array('column_name'=>'value', 'column_name'=>'val'),
 	 * )
 	 */
 	protected function deleteOEFromMultikeyTable($tableName, array $fieldsValsArray)
@@ -423,4 +423,62 @@ class OEMigration extends CDbMigration
 		}
 	}
 
+	public function createArchiveTable($table)
+	{
+		echo "Creating archive table for $table->name ...\n";
+
+		$a = Yii::app()->db->createCommand("show create table $table->name;")->queryRow();
+
+		$create = $a['Create Table'];
+
+		$create = preg_replace('/CREATE TABLE `(.*?)`/',"CREATE TABLE `{$table->name}_version`",$create);
+
+		preg_match_all('/  KEY `(.*?)`/',$create,$m);
+
+		foreach ($m[1] as $key) {
+			$_key = $key;
+
+			if (strlen($_key) <= 60) {
+				$_key = 'acv_'.$_key;
+			} else {
+				$_key[0] = 'a';
+				$_key[1] = 'c';
+				$_key[2] = 'v';
+				$_key[3] = '_';
+			}
+
+			$create = preg_replace("/KEY `{$key}`/","KEY `$_key`",$create);
+		}
+
+		preg_match_all('/CONSTRAINT `(.*?)`/',$create,$m);
+
+		foreach ($m[1] as $key) {
+			$_key = $key;
+
+			if (strlen($_key) <= 60) {
+				$_key = 'acv_'.$_key;
+			} else {
+				$_key[0] = 'a';
+				$_key[1] = 'c';
+				$_key[2] = 'v';
+				$_key[3] = '_';
+			}
+
+			$create = preg_replace("/CONSTRAINT `{$key}`/","CONSTRAINT `$_key`",$create);
+		}
+
+		Yii::app()->db->createCommand($create)->query();
+
+		$this->alterColumn("{$table->name}_version",'id','int(10) unsigned NOT NULL');
+		$this->dropPrimaryKey('id',"{$table->name}_version");
+
+		$this->createIndex("{$table->name}_aid_fk","{$table->name}_version","id");
+		$this->addForeignKey("{$table->name}_aid_fk","{$table->name}_version","id",$table->name,"id");
+
+		$this->addColumn("{$table->name}_version","version_date","datetime not null default '1900-01-01 00:00:00'");
+
+		$this->addColumn("{$table->name}_version","version_id","int(10) unsigned NOT NULL");
+		$this->addPrimaryKey("version_id","{$table->name}_version","version_id");
+		$this->alterColumn("{$table->name}_version","version_id","int(10) unsigned NOT NULL AUTO_INCREMENT");
+	}
 }

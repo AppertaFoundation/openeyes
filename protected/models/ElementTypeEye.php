@@ -25,7 +25,7 @@
  * @property string $name
  * @property string $ShortName
  */
-class ElementTypeEye extends BaseActiveRecord
+class ElementTypeEye extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

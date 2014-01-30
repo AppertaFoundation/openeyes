@@ -10,6 +10,9 @@ module.exports = function(grunt) {
 		copy: require('./copy'),
 		jsdoc: require('./jsdoc'),
 		docs: require('./docs'),
-		hub: require('./hub')
+		hub: require('./hub'),
+		mocha: require('./mocha'),
+		connect: require('./connect'),
+		test: require('./test')
 	};
 };

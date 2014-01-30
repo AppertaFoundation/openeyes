@@ -59,7 +59,7 @@ class BaseEventTypeController extends BaseModuleController
 	const ACTION_TYPE_PRINT = 'Print';
 	const ACTION_TYPE_EDIT = 'Edit';
 	const ACTION_TYPE_DELETE = 'Delete';
-	const ACTION_TYPE_FORM = 'Form';  // AJAX actions that are used during create and update but don't actually modify data themselves
+	const ACTION_TYPE_FORM = 'Form';	// AJAX actions that are used during create and update but don't actually modify data themselves
 
 	static private $base_action_types = array(
 		'create' => self::ACTION_TYPE_CREATE,
@@ -69,6 +69,7 @@ class BaseEventTypeController extends BaseModuleController
 		'print' => self::ACTION_TYPE_PRINT,
 		'update' => self::ACTION_TYPE_EDIT,
 		'delete' => self::ACTION_TYPE_DELETE,
+		'requestDeletion' => self::ACTION_TYPE_EDIT,
 	);
 
 	/**
@@ -648,14 +649,7 @@ class BaseEventTypeController extends BaseModuleController
 
 						$this->logActivity('created event.');
 
-						$audit_data = array('event' => $this->event->getAuditAttributes());
-
-						//TODO: should this be simply handled by the audit wrapper of the event?
-						foreach ($this->open_elements as $element) {
-							$audit_data[get_class($element)] = $element->getAuditAttributes();
-						}
-
-						$this->event->audit('event','create',serialize($audit_data));
+						$this->event->audit('event','create');
 
 						Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 
@@ -713,18 +707,13 @@ class BaseEventTypeController extends BaseModuleController
 			$this->editable = $this->checkEditAccess($this->event);
 		}
 		// Allow elements to override the editable status
-		if ($this->editable) {
-			foreach ($this->open_elements as $element) {
-				if (!$element->isEditable()) {
-					$this->editable = false;
-					break;
-				}
-			}
+		if ($this->editable && !$this->canUpdate()) {
+			$this->editable = false;
 		}
 
 		$this->logActivity('viewed event');
 
-		$this->event->audit('event','view',false);
+		$this->event->audit('event','view');
 
 		$this->event_tabs = array(
 			array(
@@ -738,13 +727,25 @@ class BaseEventTypeController extends BaseModuleController
 				'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
-		if ($this->checkDeleteAccess($this->event)) {
-			$this->event_actions = array(
-				EventAction::link('Delete',
-					Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-					array('level' => 'delete')
-				)
-			);
+
+		if (!$this->event->delete_pending) {
+			if ($this->showDeleteIcon()) {
+				if ($this->canDelete()) {
+					$this->event_actions = array(
+						EventAction::link('Delete',
+							Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+							array('level' => 'delete')
+						)
+					);
+				} else {
+					$this->event_actions = array(
+						EventAction::link('Delete',
+							Yii::app()->createUrl($this->event->eventType->class_name.'/default/requestDeletion/'.$this->event->id),
+							array('level' => 'delete')
+						)
+					);
+				}
+			}
 		}
 
 		$viewData = array_merge(array(
@@ -772,6 +773,10 @@ class BaseEventTypeController extends BaseModuleController
 				$this->redirect(array('default/view/'.$this->event->id));
 			}
 
+			if (!$this->canUpdate()) {
+				$this->redirect(array('default/view/'.$this->event->id));
+			}
+
 			$errors = $this->setAndValidateElementsFromData($_POST);
 
 			// update the event
@@ -787,13 +792,7 @@ class BaseEventTypeController extends BaseModuleController
 						$this->afterUpdateElements($this->event);
 						$this->logActivity('updated event');
 
-						$audit_data = array('event' => $this->event->getAuditAttributes());
-
-						foreach ($this->open_elements as $element) {
-							$audit_data[get_class($element)] = $element->getAuditAttributes();
-						}
-
-						$this->event->audit('event','update',serialize($audit_data));
+						$this->event->audit('event','update');
 
 						$this->event->user = Yii::app()->user->id;
 
@@ -1078,7 +1077,7 @@ class BaseEventTypeController extends BaseModuleController
 					}
 				}
 			}
- 		}
+		}
 
 		return $errors;
 	}
@@ -1230,7 +1229,7 @@ class BaseEventTypeController extends BaseModuleController
 	{
 		try {
 			$this->renderPartial(
-				'_optional_'  . get_class($element),
+				'_optional_'	. get_class($element),
 				array(
 					'element' => $element,
 					'data' => $data,
@@ -1331,24 +1330,6 @@ class BaseEventTypeController extends BaseModuleController
 			);
 		}
 		return $this->episodes;
-	}
-
-	/**
-	 * Called after event (and elements) has been updated
-	 * @param Event $event
-	 * @TODO: change the call for this?
-	 */
-	protected function afterUpdateElements($event)
-	{
-	}
-
-	/**
-	 * Called after event (and elements) have been created
-	 * @param Event $event
-	 * @TODO: change the call for this?
-	 */
-	protected function afterCreateElements($event)
-	{
 	}
 
 	/**
@@ -1509,6 +1490,10 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function actionDelete($id)
 	{
+		if (isset($_POST['et_canceldelete'])) {
+			return $this->redirect(array('/'.$this->event_type->class_name.'/default/view/'.$id));
+		}
+
 		if (!empty($_POST)) {
 			$transaction = Yii::app()->db->beginTransaction();
 			try {
@@ -1562,27 +1547,6 @@ class BaseEventTypeController extends BaseModuleController
 		), $episodes);
 
 		$this->render('delete', $viewData);
-	}
-
-	/**
-	 * set base js vars for use in the standard scripts for the controller
-	 */
-	public function processJsVars()
-	{
-		if ($this->patient) {
-			$this->jsVars['OE_patient_id'] = $this->patient->id;
-		}
-		if ($this->event) {
-			$this->jsVars['OE_event_id'] = $this->event->id;
-			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
-		}
-		$this->jsVars['OE_asset_path'] = $this->assetPath;
-		$this->setFirmFromSession();
-
-		$subspecialty_id = $this->firm->serviceSubspecialtyAssignment ? $this->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
-
-		parent::processJsVars();
 	}
 
 	/** START OF DEPRECATED METHODS */
@@ -1972,5 +1936,145 @@ class BaseEventTypeController extends BaseModuleController
 		$this->afterUpdateElements($event);
 
 		return true;
+	}
+
+	/**
+	 * Called after event (and elements) has been updated
+	 * @param Event $event
+	 */
+	protected function afterUpdateElements($event)
+	{
+	}
+
+	/**
+	 * Called after event (and elements) have been created
+	 * @param Event $event
+	 */
+	protected function afterCreateElements($event)
+	{
+	}
+
+	public function processJsVars()
+	{
+		if ($this->patient) {
+			$this->jsVars['OE_patient_id'] = $this->patient->id;
+		}
+		if ($this->event) {
+			$this->jsVars['OE_event_id'] = $this->event->id;
+			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
+		}
+		$this->jsVars['OE_asset_path'] = $this->assetPath;
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
+
+		parent::processJsVars();
+	}
+
+	public function canUpdate()
+	{
+		if (!$this->event) {
+			return false;
+		}
+
+		if (!$this->event->canUpdate()) {
+			return false;
+		}
+
+		if (!$this->checkEditAccess($this->event) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+			return false;
+		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function canDelete()
+	{
+		if (!$this->event) {
+			return false;
+		}
+
+		if (!$this->event->canDelete()) {
+			return false;
+		}
+
+		if (!$this->checkDeleteAccess() || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+			return false;
+		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function showDeleteIcon()
+	{
+		if (!$this->event) {
+			return false;
+		}
+
+		if ($this->event->showDeleteIcon() === false) {
+			return false;
+		}
+
+		if (!$this->checkEditAccess() || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Sets the the css state
+	 */
+	protected function initActionRequestDeletion()
+	{
+		$this->moduleStateCssClass = 'view';
+
+		$this->initWithEventId(@$_GET['id']);
+	}
+
+	public function actionRequestDeletion($id)
+	{
+		if (!$this->event = Event::model()->findByPk($id)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		if (isset($_POST['et_canceldelete'])) {
+			return $this->redirect(array('/'.$this->event->eventType->class_name.'/default/view/'.$id));
+		}
+
+		$this->patient = $this->event->episode->patient;
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			if (!@$_POST['delete_reason']) {
+				$errors = array('Reason' => array('Please enter a reason for deleting this event'));
+			} else {
+				$this->event->requestDeletion($_POST['delete_reason']);
+
+				if (Yii::app()->params['admin_email']) {
+					mail(Yii::app()->params['admin_email'],"Request to delete an event","A request to delete an event has been submitted.  Please log in to the admin system to review the request.","From: OpenEyes");
+				}
+
+				Yii::app()->user->setFlash('success', "Your request to delete this event has been submitted.");
+
+				header('Location: '.Yii::app()->createUrl('/'.$this->event_type->class_name.'/default/view/'.$this->event->id));
+				return true;
+			}
+		}
+
+		$this->title = "Delete ".$this->event_type->name;
+		$this->event_tabs = array(array(
+				'label' => 'View',
+				'active' => true,
+		));
+
+		$this->render('request_delete', array(
+			'errors' => $errors,
+		));
 	}
 }

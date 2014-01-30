@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class ProcedureComplication extends BaseActiveRecord
+class ProcedureComplication extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

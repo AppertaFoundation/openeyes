@@ -38,7 +38,7 @@
  * The following are the available model relations:
  * @property Country $country
  */
-class Address extends BaseActiveRecord
+class Address extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

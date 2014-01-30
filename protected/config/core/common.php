@@ -77,15 +77,25 @@ return array(
 		'clientScript' => array(
 			'class' => 'ClientScript',
 			'packages' => array(
+				'jquery' => array(
+					'js' => array('jquery/jquery.min.js'),
+					'basePath' => 'application.assets.components',
+				),
+				'jquery.ui' => array(
+					'js' => array('jquery-ui/ui/minified/jquery-ui.min.js'),
+					'css' => array('jquery-ui/themes/base/jquery-ui.css'),
+					'basePath' => 'application.assets.components',
+					'depends'=>array('jquery'),
+				),
 				'flot' => array(
 					'js' => array(
-						'jquery.flot.js',
-						'jquery.flot.time.js',
-						'jquery.flot.navigate.js',
+						'flot/jquery.flot.js',
+						'flot/jquery.flot.time.js',
+						'flot/jquery.flot.navigate.js',
 					),
-					'baseUrl' => 'components/flot',
+					'basePath' => 'application.assets.components',
 					'depends' => array('jquery'),
-				),
+				)
 			),
 		),
 		'user' => array(
@@ -176,7 +186,11 @@ return array(
 			// Use symbolic links to publish the assets when in debug mode.
 			'linkAssets' => defined('YII_DEBUG') && YII_DEBUG,
 		),
+		'widgetFactory'=>array(
+			'class' => 'WidgetFactory'
+		)
 	),
+
 	'params'=>array(
 		'pseudonymise_patient_details' => false,
 		'ab_testing' => false,
@@ -233,6 +247,7 @@ return array(
 		),
 		'admin_menu' => array(
 		),
+		'admin_email' => '',
 		'enable_transactions' => true,
 	),
 );

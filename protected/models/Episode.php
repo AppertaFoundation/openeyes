@@ -33,10 +33,8 @@
  * @property Event[] $events
  * @property EpisodeStatus $status
  */
-class Episode extends BaseActiveRecord
+class Episode extends BaseActiveRecordVersioned
 {
-	private $defaultScopeDisabled = false;
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Episode the static model class
@@ -52,28 +50,6 @@ class Episode extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'episode';
-	}
-
-	/**
-	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
-	 * @return array of mandatory conditions
-	 */
-
-	public function defaultScope()
-	{
-		if ($this->defaultScopeDisabled) {
-			return array();
-		}
-
-		$table_alias = $this->getTableAlias(false,false);
-		return array(
-			'condition' => $table_alias.'.deleted = 0',
-		);
-	}
-
-	public function disableDefaultScope() {
-		$this->defaultScopeDisabled = true;
-		return $this;
 	}
 
 	/**
@@ -231,16 +207,19 @@ class Episode extends BaseActiveRecord
 				->from('episode e')
 				->join('firm f', 'e.firm_id = f.id')
 				->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-				->where('e.deleted = False'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
-					':patient_id' => $patient_id, ':subspecialty_id' => $subspecialty_id
+				->where('e.deleted = false'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id AND e.deleted = :notdeleted AND f.deleted = :notdeleted AND s_s_a.deleted = :notdeleted', array(
+					':patient_id' => $patient_id,
+					':subspecialty_id' => $subspecialty_id,
+					':notdeleted' => 0,
 				))
 				->queryRow();
 		} else {
 			$episode = Yii::app()->db->createCommand()
 				->select('e.id AS eid')
 				->from('episode e')
-				->where('e.deleted = False AND e.legacy = False AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id', array(
-					':patient_id' => $patient_id
+				->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id AND e.deleted = :notdeleted', array(
+					':patient_id' => $patient_id,
+					':notdeleted' => 0,
 				))
 				->queryRow();
 		}
@@ -372,11 +351,11 @@ class Episode extends BaseActiveRecord
 		return null;
 	}
 
-	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
+	public function save($runValidation=true, $attributes=null, $allow_overriding=false, $save_version=false)
 	{
 		$previous = Episode::model()->findByPk($this->id);
 
-		if (parent::save($runValidation, $attributes, $allow_overriding)) {
+		if (parent::save($runValidation, $attributes, $allow_overriding, $save_version)) {
 			if ($previous && $previous->episode_status_id != $this->episode_status_id) {
 				$this->audit('episode','change-status',$this->episode_status_id);
 			}
@@ -435,5 +414,30 @@ class Episode extends BaseActiveRecord
 		$properties['episode_id'] = $this->id;
 		$properties['patient_id'] = $this->patient_id;
 		parent::audit($target, $action, $data, $log, $properties);
+	}
+
+	public function getEditable()
+	{
+		// Get current logged in firm's subspecialty id (null for support services firms)
+		$current_subspecialty_id = Yii::app()->getController()->firm->getSubspecialtyID();
+		if (!$this->firm) {
+			// Episode has no firm, so it's either a legacy episode or a support services episode
+			if ($this->support_services) {
+				// Support services episode, so are you logged in as a support services firm
+				return ($current_subspecialty_id == null);
+			} else {
+				// Legacy episode
+				return FALSE;
+			}
+		} else {
+			// Episode is normal (has a firm)
+			if (!$current_subspecialty_id) {
+				// Logged in as a support services firm
+				return FALSE;
+			} else {
+				// Logged in as a normal firm, so does episode subspecialty match
+				return ($this->firm->getSubspecialtyID() == $current_subspecialty_id);
+			}
+		}
 	}
 }

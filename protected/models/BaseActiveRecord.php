@@ -138,18 +138,7 @@ class BaseActiveRecord extends CActiveRecord
 		}
 	}
 
-	public function getAuditAttributes()
-	{
-		$attributes = array();
-
-		foreach ($this->getAttributes() as $key => $value) {
-			$attributes[$key] = $this->{$key};
-		}
-
-		return serialize($attributes);
-	}
-
-	public function audit($target, $action, $data=null, $log=false, $properties=array())
+	public function audit($target, $action, $data=null, $log_message=null, $properties=array())
 	{
 		foreach (array('patient_id','episode_id','event_id','user_id','site_id','firm_id') as $field) {
 			if (isset($this->{$field}) && !isset($properties[$field])) {
@@ -157,11 +146,7 @@ class BaseActiveRecord extends CActiveRecord
 			}
 		}
 
-		if ($data === null) {
-			$data = $this->getAuditAttributes();
-		}
-
-		Audit::add($target, $action, $data, $log, $properties);
+		Audit::add($target, $action, $data, $log_message, $properties);
 	}
 
 	static public function cloneObject($object, $params=array()) {
