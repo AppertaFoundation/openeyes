@@ -728,6 +728,25 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 
 	}
 
+	public function testcanViewPrevious_false()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('hasPrevious'))
+				->getMock();
+
+		$et = $this->getElementType('HistoryElementType','history');
+		$e = $et->getInstance();
+		ComponentStubGenerator::propertiesSetAndMatch($e, array('event_id' => 1), true);
+
+		$controller->expects($this->once())
+				->method('hasPrevious')
+				->with($this->identicalTo($et), $this->identicalTo(1))
+				->will($this->returnValue(false));
+
+		$this->assertFalse($controller->canViewPrevious($e));
+	}
+
 }
 
 /**
