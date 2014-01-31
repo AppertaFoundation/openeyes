@@ -71,13 +71,12 @@ class DrugTest extends CDbTestCase	{
 	*	@todo Implement testDefaultScope().
 	*/
 	public function testDefaultScope() {
-		$result	=	$this->model->defaultScope();
-
+		$result	= $this->model->defaultScope();
 		if ($this->model->default_scope) {
-			$expected	=	array('condition' => 'discontinued = 0');
+			$expected = array('condition' => 't.discontinued = 0');
 			$this->assertEquals($expected, $result);
-		}	else	{
-			$expected	=	array();
+		} else {
+			$expected = array();
 			$this->assertEquals($expected, $result);
 		}
 	}
@@ -97,9 +96,8 @@ class DrugTest extends CDbTestCase	{
 	*	@todo Implement testDiscontinued().
 	*/
 	public function testDiscontinued()	{
-		$result	=	$this->model->discontinued();
-
-		$this->assertEquals('(discontinued = 0) OR (t.discontinued = 1)', $result->getDbCriteria()->condition);
+		$result	= $this->model->discontinued();
+		$this->assertEquals('(t.discontinued = 0) OR (t.discontinued = 1)', $result->getDbCriteria()->condition);
 	}
 
 	/**
