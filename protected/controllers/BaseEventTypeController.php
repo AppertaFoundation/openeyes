@@ -1029,7 +1029,8 @@ class BaseEventTypeController extends BaseModuleController
 							$element = $el_cls_name::model()->findByPk($el_id);
 						}
 						else {
-							$element = new $element_type->getInstance();
+							$type = $element_type->getInstance();
+							$element = new $type;
 						}
 
 						$el_attrs = array();
