@@ -5,6 +5,16 @@
          convertWarningsToExceptions="true"
          stopOnFailure="false"
          verbose="true">
+    <testsuites>
+        <testsuite name="all">
+            <directory suffix="Test.php">../modules/*/tests/*</directory>
+            <directory suffix="Test.php">./</directory>
+        </testsuite>
+        <testsuite name="Modules">
+            <exclude>./</exclude>
+            <directory suffix="Test.php">../modules/*/tests/*</directory>
+        </testsuite>
+    </testsuites>
     <groups>
         <exclude>
             <group>functional</group>
