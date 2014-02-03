@@ -5,4 +5,4 @@ echo "Current script dir: $CSDIR"
 $CSDIR/modules_yii_config.sh
 
 # Run tests
-vagrant ssh -c 'cd /var/www/protected/tests/; /var/www/bin/phpunit'
+vagrant ssh -c 'cd /var/www/protected/tests/; /var/www/bin/phpunit --testsuite all --configuration phpunit_ci.xml '
