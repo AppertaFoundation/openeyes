@@ -217,4 +217,42 @@ class Helper
 			return $matches[1] * pow(1024, $units[$matches[2]]);
 		}
 	}
+
+	/**
+	 * Extract values from a list of objects or arrays using {@link CHtml value}
+	 *
+	 * @param object[]|array[] $objects
+	 * @param string attribute
+	 * @param mixed $default
+	 * @return array
+	 */
+	static public function extractValues(array $objects, $attribute, $default = null)
+	{
+		$values = array();
+		foreach ($objects as $object) {
+			$values[] = CHtml::value($object, $attribute, $default);
+		}
+		return $values;
+	}
+
+	/**
+	 * Format a list of strings with comma separators and a final 'and'
+	 *
+	 * @param string $items
+	 * @return string
+	 */
+	static public function formatList(array $items)
+	{
+		switch (count($items)) {
+			case 0:
+				return '';
+				break;
+			case 1:
+				return reset($items);
+				break;
+			default:
+				$last = array_pop($items);
+				return implode(', ', $items) . ' and ' . $last;
+		}
+	}
 }
