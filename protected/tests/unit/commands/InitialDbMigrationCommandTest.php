@@ -158,10 +158,13 @@ EOD;
 		foreach($this->foldersCreated as $folder){
 			if(is_dir($folder)){
 				if ($dh = opendir($folder)) {
-					while (($file = readdir($dh)) !== false) {
-						if($file != '.' && $file != '..'){
+					$files = scandir($folder);
+					foreach ($files  as $file) {
+						if($file != '.' && $file != '..' && is_file($folder . DIRECTORY_SEPARATOR . $file)){
 							$fullFilePath = $folder . DIRECTORY_SEPARATOR . $file ;
-							unlink($fullFilePath);
+							$fileRemoved = unlink($fullFilePath);
+							if(!$fileRemoved)
+								echo "\nCould not remove : " .$fullFilePath;
 						}
 					}
 					closedir($dh);
