@@ -1,5 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 CSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# possible sh alternative DIR=$(readlink -f $(dirname $0))
 echo "Current script dir: $CSDIR"
 
 $CSDIR/modules_yii_config.sh
