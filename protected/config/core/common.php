@@ -215,5 +215,7 @@ return array(
 		'admin_menu' => array(
 		),
 		'admin_email' => '',
+		'event_lock_days' => 0,
+		'event_lock_disable' => false,
 	),
 );
