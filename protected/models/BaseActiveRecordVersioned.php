@@ -254,4 +254,21 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 		parent::applyScopes($criteria);
 	}
+
+	/**
+	 * @description get all records including the currently selected one by id
+	 * @return $this - BaseActiveRecordVersioned
+	 */
+	public function activeWithItem($item_id)
+	{
+		if ($item_id >0) {
+			$this->includeDeleted();
+
+			$alias = $this->getTableAlias(false);
+
+			$this->getDbCriteria()->addCondition($alias.'.deleted = 0 or '.$alias.'.id = '.$laser_id);
+		}
+
+		return $this;
+	}
 }
