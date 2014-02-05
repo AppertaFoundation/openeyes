@@ -8,12 +8,12 @@
     <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
     <testsuites>
         <testsuite name="all">
-            <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
+            <directory suffix="Test.php">../modules/*/tests/*</directory>
             <directory suffix="Test.php">./</directory>
         </testsuite>
         <testsuite name="Modules">
             <exclude>./</exclude>
-            <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
+            <directory suffix="Test.php">../modules/*/tests/*</directory>
         </testsuite>
     </testsuites>
     <groups>
