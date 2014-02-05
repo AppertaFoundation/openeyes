@@ -153,14 +153,16 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 			echo "$_table_version->name\->version_id has the wrong type ({$_table_version->columns['version_id']->dbType} should be int(10) unsigned)\n";
 		}
 
-		if (!isset($_table_version->foreignKeys['id'])) {
-			echo "$_table_version->name doesn't have foreign key on column id\n";
-		} else {
-			if ($_table_version->foreignKeys['id'][0] != $_table->name) {
-				echo "$_table_version->name foreign key on id column table doesn't match\n";
-			}
-			if ($_table_version->foreignKeys['id'][1] != 'id') {
-				echo "$_table_version->name foreign key on id column column doesn't match\n";
+		if ($_table_version->hasProperty('deleted')) {
+			if (!isset($_table_version->foreignKeys['id'])) {
+				echo "$_table_version->name doesn't have foreign key on column id\n";
+			} else {
+				if ($_table_version->foreignKeys['id'][0] != $_table->name) {
+					echo "$_table_version->name foreign key on id column table doesn't match\n";
+				}
+				if ($_table_version->foreignKeys['id'][1] != 'id') {
+					echo "$_table_version->name foreign key on id column column doesn't match\n";
+				}
 			}
 		}
 	}
