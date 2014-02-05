@@ -18,6 +18,7 @@ Feature: Create New Intravitreal Event
     Then I expand the Cataract sidebar
     And I add a New Event "Intravitreal"
 
+    Then I remove the Right Side
     Then I select Add Right Side
     Then I choose Right Anaesthetic Type of Topical
     Then I choose Right Anaesthetic Type of LA
@@ -274,4 +275,4 @@ Feature: Create New Intravitreal Event
     And I select Right Complications "3"
     And I select Left Complications "3"
 
-    Then I Save the Intravitreal injection and confirm it has been created successfully
+    Then I Save the Intravitreal injection

@@ -31,6 +31,18 @@ class IntravitrealContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I remove the Right Side$/
+     */
+    public function iRemoveTheRightSide()
+    {
+        /**
+         * @var Intravitreal $Intravitreal
+         */
+        $Intravitreal  = $this->getPage('Intravitreal');
+        $Intravitreal->removeRightSide();
+    }
+
+    /**
      * @Then /^I select Add Right Side$/
      */
     public function iSelectAddRightSide()
