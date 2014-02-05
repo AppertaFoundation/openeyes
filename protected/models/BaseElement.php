@@ -20,6 +20,6 @@
 /**
  * Base class for all elements
  */
-class BaseElement extends BaseActiveRecordVersionedSoftDelete
+class BaseElement extends BaseActiveRecordVersioned
 {
 }
