@@ -79,7 +79,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'removeOperationConfirmButton' => array('xpath' => "//*[@id='delete_operation']//*[contains(text(),'Remove operation')]"),
         'removeMedication' => array('xpath' => "//*[@class='removeMedication']"),
         'removeMedicationConfirmButton' => array('xpath' => "//*[contains(text(),'Remove medication')]"),
-
+        'datePicker' => array('xpath' => "//*[@class='ui-datepicker-title']")
         );
 
     public function addOpthalmicDiagnosis ($diagnosis)
@@ -211,6 +211,8 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $this->getElement('selectRoute')->selectOption($route);
         $this->getElement('selectFrequency')->selectOption($frequency);
         $this->getElement('openMedicationDate')->click();
+        $element = $this->getElement('datePicker');
+        $this->scrollWindowToElement($element);
 		$this->waitForElementDisplayBlock('#ui-datepicker-div', 10000);
         $this->getElement('selectDateFrom')->click($datefrom);
         $this->getElement('saveMedication')->click();

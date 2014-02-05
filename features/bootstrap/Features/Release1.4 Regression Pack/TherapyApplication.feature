@@ -21,6 +21,9 @@ Feature: Create New Therapy Application Event
     Then I expand the Glaucoma sidebar
     And I add a New Event "Therapy"
 
+    Then I remove the Diagnosis right eye
+    And I add the Diagnosis right eye
+
     And I select a Right Side Diagnosis of "75971007"
     Then I select a Right Secondary To of "267718000"
 

@@ -20,6 +20,30 @@ class TherapyApplicationContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I remove the Diagnosis right eye$/
+     */
+    public function iRemoveRightEye()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->removeRightEye();
+    }
+
+    /**
+     * @Then /^I add the Diagnosis right eye$/
+     */
+    public function iAddRightEye()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->addRightEye();
+    }
+
+    /**
      * @Then /^I add Right Side$/
      */
     public function iAddRightSide()

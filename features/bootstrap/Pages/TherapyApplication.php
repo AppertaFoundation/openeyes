@@ -70,8 +70,21 @@ class TherapyApplication extends OpenEyesPage
         'consultant' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_consultant_id']"),
         'saveTherapyApplication' => array('xpath' => "//button[@id='et_save']"),
         'saveTherapyOK'=> array('xpath' => "//*[@id='flash-success']"),
+
+        'removeRightEye' => array('xpath' => "//*[@class='icon-remove-side remove-side']"),
+        'addRightEye' => array ('xpath' => "//*[@class='inactive-form']//*[contains(text(),'Add right side')]")
+
     );
 
+    public function removeRightEye ()
+    {
+        $this->getElement('removeRightEye')->click();
+    }
+
+    public function addRightEye ()
+    {
+        $this->getElement('addRightEye')->click();
+    }
 
     public function addRightSide ()
     {
@@ -366,8 +379,6 @@ class TherapyApplication extends OpenEyesPage
         else {
             throw new BehaviorException("WARNING!!!  Therapy has NOT been saved!!  WARNING!!");
         }
-
-        $this->getSession()->wait(100000);
     }
 }
 

@@ -1,4 +1,4 @@
-@examination
+@examination @regression
 Feature: Create New Examination Regression Tests
   Regression over 2 Sites and 4 Firms
   Coverage at 80%
@@ -126,7 +126,7 @@ Feature: Create New Examination Regression Tests
     Then I remove Refraction right side
 
     Then I Save the Examination and confirm it has been created successfully
-#
+
   Scenario: Route 3:Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
@@ -170,8 +170,11 @@ Feature: Create New Examination Regression Tests
     Then I enter right Axis degrees of "167"
     And I enter a right type of "3"
 
+    Then I choose to expand the Conclusion section
+    And I choose a Conclusion option of "booked for first eye, "
+
     Then I Save the Examination and confirm it has been created successfully
-#
+##
   Scenario: Route 4: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
             Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
 
@@ -201,6 +204,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a right Intraocular Pressure of "77" and Instrument "1"
 
     Then I choose to expand the Dilation section
+
     Then I choose left Dilation of "5" and drops of "4"
     Then I choose right Dilation of "2" and drops of "2"
 
@@ -294,7 +298,7 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
-
+#
   Scenario: ROUTE 5: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
   Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
 

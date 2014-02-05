@@ -1,4 +1,4 @@
-@laser
+@laser @regression
 Feature: Create New Laser event
   In order to cover every possible route throughout the site
   As an automation tester
