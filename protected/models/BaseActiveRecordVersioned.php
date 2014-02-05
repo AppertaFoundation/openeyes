@@ -21,9 +21,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 {
 	private $enable_version = true;
 	private $fetch_from_version = false;
-	private $include_deleted = false;
 	public $version_id = null;
-	public $deleted_at = null;
 	public $activeScope = null;
 
 	/* Disable archiving on save() */
@@ -218,57 +216,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 	{
 		$this->enable_version = true;
 		$this->fetch_from_version = false;
-		$this->include_deleted = false;
 
 		return parent::resetScope($resetDefault);
-	}
-
-	/* version'd objects can only be soft-deleted due to the foreign key constraint on the version tables */
-
-	public function delete()
-	{
-		$this->deleted = 1;
-
-		return $this->save();
-	}
-
-	public function includeDeleted()
-	{
-		$this->include_deleted = true;
-
-		return $this;
-	}
-
-	public function excludeDeleted()
-	{
-		$this->include_deleted = false;
-
-		return $this;
-	}
-
-	public function applyScopes(&$criteria)
-	{
-		if (!$this->include_deleted) {
-			$criteria->addCondition($this->getTableAlias(false,false).'.deleted = 0');
-		}
-
-		parent::applyScopes($criteria);
-	}
-
-	/**
-	 * @description get all records including the currently selected one by id
-	 * @return $this - BaseActiveRecordVersioned
-	 */
-	public function activeWithItem($item_id)
-	{
-		if ($item_id >0) {
-			$this->includeDeleted();
-
-			$alias = $this->getTableAlias(false);
-
-			$this->getDbCriteria()->addCondition($alias.'.deleted = 0 or '.$alias.'.id = '.$laser_id);
-		}
-
-		return $this;
 	}
 }

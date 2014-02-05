@@ -51,7 +51,7 @@
  * @property EthnicGroup $ethnic_group
  * @property CommissioningBody[] $commissioningbodies
  */
-class Patient extends BaseActiveRecordVersioned
+class Patient extends BaseActiveRecordVersionedSoftDelete
 {
 	const CHILD_AGE_LIMIT = 16;
 

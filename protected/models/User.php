@@ -31,7 +31,7 @@
  * @property string $salt
  * @property integer $global_firm_rights
  */
-class User extends BaseActiveRecordVersioned
+class User extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Used to check password and password confirmation match
@@ -466,7 +466,7 @@ class User extends BaseActiveRecordVersioned
 			->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->leftJoin('subspecialty s','ssa.subspecialty_id = s.id')
 			->leftJoin('user_firm uf','uf.firm_id = f.id and uf.user_id = '.Yii::app()->user->id)
-			->where("uf.id is null and f.deleted = :notdeleted and (ssa.id is null or ssa.deleted = :notdeleted) and (s.id is null or s.deleted = :notdeleted) and (uf.id is null or uf.deleted = :notdeleted)",array(
+			->where("uf.id is null and f.deleted = :notdeleted and (s.id is null or s.deleted = :notdeleted)",array(
 				':userId' => Yii::app()->user->id,
 				':notdeleted' => 0,
 			))

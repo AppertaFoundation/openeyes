@@ -32,7 +32,7 @@
  * @property User[] $members
  * @property User $consultant
  */
-class Firm extends BaseActiveRecordVersioned
+class Firm extends BaseActiveRecordVersionedSoftDelete
 {
 	public $subspecialty_id;
 
@@ -135,7 +135,7 @@ class Firm extends BaseActiveRecordVersioned
 			->from("service_subspecialty_assignment ssa")
 			->join("service se","ssa.service_id = se.id")
 			->join("subspecialty su","ssa.subspecialty_id = su.id")
-			->where("ssa.deleted = :notdeleted and se.deleted = :notdeleted and su.deleted = :notdeleted",array(
+			->where("se.deleted = :notdeleted",array(
 				":notdeleted" => 0,
 			))
 			->order("se.name, su.name")
@@ -179,7 +179,7 @@ class Firm extends BaseActiveRecordVersioned
 				->select('f.id, f.name')
 				->from('firm f')
 				->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-				->where('ssa.subspecialty_id = :sid and f.deleted = :notdeleted and ssa.deleted = :notdeleted', array(
+				->where('ssa.subspecialty_id = :sid and f.deleted = :notdeleted', array(
 					':sid' => $subspecialtyId,
 					':notdeleted' => 0,
 				))
@@ -221,7 +221,7 @@ class Firm extends BaseActiveRecordVersioned
 			->from('firm f')
 			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->join('subspecialty s','ssa.subspecialty_id = s.id')
-			->where('f.deleted = :notdeleted and ssa.deleted = :notdeleted and s.deleted = :notdeleted',array(
+			->where('f.deleted = :notdeleted and s.deleted = :notdeleted',array(
 				':notdeleted' => 0,
 			))
 			->order('f.name, s.name')
@@ -299,7 +299,7 @@ class Firm extends BaseActiveRecordVersioned
 			->from('subspecialty su')
 			->join('service_subspecialty_assignment svc_ass', 'svc_ass.subspecialty_id = su.id')
 			->join('firm f', 'f.service_subspecialty_assignment_id = svc_ass.id')
-			->where('f.id = :fid and su.deleted = :notdeleted and svc_ass.deleted = :notdeleted and f.deleted = :notdeleted', array(
+			->where('f.id = :fid and f.deleted = :notdeleted', array(
 				':fid' => $this->id,
 				':notdeleted' => 0,
 			))

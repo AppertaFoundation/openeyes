@@ -17,9 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/**
- * Base class for all elements
- */
-class BaseElement extends BaseActiveRecordVersionedSoftDelete
+class BaseActiveRecordVersionedSoftDelete extends BaseActiveRecordVersioned
 {
+	public function delete()
+	{
+		$this->deleted = 1;
+
+		return $this->save();
+	}
 }

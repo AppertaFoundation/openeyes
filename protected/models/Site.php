@@ -37,7 +37,7 @@
  * @property Contact $replyTo
  * @property ImportSource $import
  */
-class Site extends BaseActiveRecordVersioned
+class Site extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

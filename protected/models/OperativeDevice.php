@@ -27,7 +27,7 @@
  * The followings are the available model relations:
  * @property SiteSubspecialtyOperativeDevice $siteSubspecialtyAssignments
  */
-class OperativeDevice extends BaseActiveRecordVersioned
+class OperativeDevice extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

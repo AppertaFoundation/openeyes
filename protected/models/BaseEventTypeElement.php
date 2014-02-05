@@ -183,19 +183,24 @@ class BaseEventTypeElement extends BaseElement
 					->select("$table.*")
 					->from($table)
 					->join("element_type_$table","element_type_$table.{$table}_id = $table.id")
-					->where("element_type_id = ".$this->getElementType()->id." and element_type_$table.deleted = 0")
+					->where("element_type_id = ".$this->getElementType()->id)
 					->order("display_order asc")
 					->queryAll() as $option) {
 
 				$options[$option['id']] = $option['name'];
 			}
 		} else {
-			foreach (Yii::app()->db->createCommand()
-					->select("$table.*")
-					->from($table)
-					->where("$table.deleted = 0")
-					->queryAll() as $option) {
+			$command = Yii::app()->db->createCommand()
+				->select("$table.*")
+				->from($table);
 
+			$_table = Yii::app()->db->getSchema()->getTable($table);
+
+			if ($_table->hasProperty('deleted')) {
+				$command->where("$table.deleted = 0");
+			}
+
+			foreach ($command->queryAll() as $option) {
 				$options[$option['id']] = $option['name'];
 			}
 		}

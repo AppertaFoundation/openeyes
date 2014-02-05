@@ -37,7 +37,7 @@
  * @property DrugFrequency $default_frequency
  * @property DrugDuration $default_duration
  */
-class Drug extends BaseActiveRecordVersioned
+class Drug extends BaseActiveRecordVersionedSoftDelete
 {
 	public $default_scope = true;
 

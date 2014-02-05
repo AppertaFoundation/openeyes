@@ -25,7 +25,7 @@
  * @property string $name
  * @property string $long_name
  */
-class DrugFrequency extends BaseActiveRecordVersioned
+class DrugFrequency extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

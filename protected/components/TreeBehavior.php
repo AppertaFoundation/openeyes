@@ -66,7 +66,7 @@ class TreeBehavior extends CActiveRecordBehavior
 	protected function _treeLimits($db, $tree_table, $obj_id)
 	{
 		$query = 'SELECT ' . $this->leftAttribute . ',' . $this->rightAttribute . ' FROM ' . $tree_table .
-		' WHERE ' . $this->idAttribute . ' = ' . $db->quoteValue($obj_id) . ' and deleted = 0';
+		' WHERE ' . $this->idAttribute . ' = ' . $db->quoteValue($obj_id);
 
 		$res = $db->createCommand($query)->query();
 		$result = array();
@@ -109,7 +109,7 @@ class TreeBehavior extends CActiveRecordBehavior
 				$sql_strs[] = $this->leftAttribute . ' > ' . $l[0] . ' AND ' . $this->rightAttribute . ' <  ' . $l[1];
 			}
 
-			$query = 'SELECT id FROM ' . $tree_table . ' WHERE ((' . implode(') OR (', $sql_strs ) . ') and deleted = 0) ORDER BY lft';
+			$query = 'SELECT id FROM ' . $tree_table . ' WHERE (' . implode(') OR (', $sql_strs ) . ') ORDER BY lft';
 			$res = $db->createCommand($query)->query();
 
 			foreach ($res as $r) {
@@ -137,7 +137,7 @@ class TreeBehavior extends CActiveRecordBehavior
 			$sql_strs[] = $this->leftAttribute . ' < ' . $l[0] . ' AND ' . $this->rightAttribute . ' >  ' . $l[1];
 		}
 
-		$query = 'SELECT ' . $this->idAttribute . ' FROM ' . $table . ' WHERE ((' . implode(') OR (', $sql_strs ) . ') and deleted = 0)';
+		$query = 'SELECT ' . $this->idAttribute . ' FROM ' . $table . ' WHERE (' . implode(') OR (', $sql_strs ) . ')';
 
 		$res = $db->createCommand($query)->query();
 
@@ -217,13 +217,11 @@ class TreeBehavior extends CActiveRecordBehavior
 				$owner->treeTable() . ' AS parent ' .
 				'WHERE leaf.' . $this->leftAttribute . ' BETWEEN parent.' . $this->leftAttribute . ' AND parent.' .$this->rightAttribute .
 				' AND leaf.' . $this->idAttribute . ' = ' . $db->quoteValue($owner->id) .
-				' AND leaf.deleted = 0 ' .
 				' GROUP BY leaf.' . $this->idAttribute . ' ORDER BY leaf.' . $this->leftAttribute .
 				') AS sub_tree ' .
 			'WHERE leaf.' . $this->leftAttribute . ' BETWEEN parent.' . $this->leftAttribute . ' AND parent.' . $this->rightAttribute .
 			' AND leaf.' . $this->leftAttribute . ' BETWEEN sub_parent.' . $this->leftAttribute . ' AND sub_parent.' . $this->rightAttribute .
 			' AND sub_parent.' . $this->idAttribute . ' = sub_tree.' . $this->idAttribute . ' ' .
-			' AND leaf.deleted = 0 AND parent.deleted = 0 and sub_parent.deleted = 0 ' .
 			'GROUP BY leaf.' . $this->idAttribute . ' HAVING depth = ' .
 			'(SELECT count(*) FROM ' . $owner->treeTable() . ' AS tree WHERE tree.' . $this->idAttribute . ' = ' . $db->quoteValue($owner->id) . ') ' .
 			'ORDER BY leaf.' . $this->leftAttribute;
@@ -263,7 +261,6 @@ class TreeBehavior extends CActiveRecordBehavior
 					'SELECT id FROM ' . $owner->treeTable() . ' AS t2 ' .
 					'WHERE t2.' . $this->leftAttribute . ' < t1.' . $this->leftAttribute .
 					' AND t2.' . $this->rightAttribute . ' > t1.' . $this->rightAttribute .
-					' AND t2.deleted = 0 '.
 					' ORDER BY t2.' .$this->rightAttribute . ' - t1.' . $this->rightAttribute . ' ASC LIMIT 1)' .
 					' AS parent' .
 				' FROM ' . $owner->treeTable() . ' AS t1' .
@@ -312,7 +309,6 @@ class TreeBehavior extends CActiveRecordBehavior
 		$query = 'SELECT leaf.id FROM (SELECT leaf.'. $this->idAttribute . ' AS id, (COUNT(parent. ' . $this->idAttribute . ') -1) AS DEPTH ' .
 				'FROM ' . $owner->treeTable() . ' AS leaf, ' . $owner->treeTable() . ' AS parent ' .
 				'WHERE leaf.' . $this->leftAttribute . ' BETWEEN parent.' . $this->leftAttribute . ' AND parent.' . $this->rightAttribute .
-				' AND leaf.deleted = 0 ' .
 				' GROUP BY leaf.id) as leaf WHERE depth = 0';
 
 		print $query;

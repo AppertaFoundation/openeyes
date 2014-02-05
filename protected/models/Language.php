@@ -25,7 +25,7 @@
  * @property string $name
  *
  */
-class Language extends BaseActiveRecordVersioned
+class Language extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

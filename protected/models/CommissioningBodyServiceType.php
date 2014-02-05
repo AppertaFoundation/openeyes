@@ -27,7 +27,7 @@
  * @property string $correspondence_name
  *
  */
-class CommissioningBodyServiceType extends BaseActiveRecordVersioned
+class CommissioningBodyServiceType extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

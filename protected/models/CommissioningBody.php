@@ -29,7 +29,7 @@
  * @property CommissioningBodyType $type
  * @property Practice[] $practices
  */
-class CommissioningBody extends BaseActiveRecordVersioned
+class CommissioningBody extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

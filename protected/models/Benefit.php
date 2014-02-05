@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class Benefit extends BaseActiveRecordVersioned
+class Benefit extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

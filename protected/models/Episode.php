@@ -33,7 +33,7 @@
  * @property Event[] $events
  * @property EpisodeStatus $status
  */
-class Episode extends BaseActiveRecordVersioned
+class Episode extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -207,7 +207,7 @@ class Episode extends BaseActiveRecordVersioned
 				->from('episode e')
 				->join('firm f', 'e.firm_id = f.id')
 				->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-				->where('e.deleted = false'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id AND e.deleted = :notdeleted AND f.deleted = :notdeleted AND s_s_a.deleted = :notdeleted', array(
+				->where('e.deleted = false'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id AND e.deleted = :notdeleted AND f.deleted = :notdeleted', array(
 					':patient_id' => $patient_id,
 					':subspecialty_id' => $subspecialty_id,
 					':notdeleted' => 0,

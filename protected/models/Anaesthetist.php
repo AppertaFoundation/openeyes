@@ -23,7 +23,7 @@
  * The followings are the available columns in table 'anaesthetist':
  * @property integer $id
  */
-class Anaesthetist extends BaseActiveRecordVersioned
+class Anaesthetist extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

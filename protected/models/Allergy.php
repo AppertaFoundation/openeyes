@@ -25,7 +25,7 @@
  * @property string $name
  * @property Drug[] $drugs
  */
-class Allergy extends BaseActiveRecordVersioned
+class Allergy extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

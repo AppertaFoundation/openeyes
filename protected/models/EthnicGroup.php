@@ -27,7 +27,7 @@
  * @property integer $display_order
  *
  */
-class EthnicGroup extends BaseActiveRecordVersioned
+class EthnicGroup extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

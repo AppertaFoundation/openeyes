@@ -840,7 +840,7 @@ class PatientController extends BaseController
 	{
 		$patients = array();
 
-		$where = "p.deleted = 0 and c.deleted = 0 ";
+		$where = "p.deleted = 0 ";
 		$select = "p.id as patient_id, p.hos_num, c.first_name, c.last_name";
 
 		if (empty($params['selected_diagnoses'])) {

@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class SpecialtyType extends BaseActiveRecordVersioned
+class SpecialtyType extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

@@ -25,7 +25,7 @@
  * @property integer $name
  * @property DrugRouteOption[] $options
  */
-class DrugRoute extends BaseActiveRecordVersioned
+class DrugRoute extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

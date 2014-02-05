@@ -27,7 +27,7 @@
  * @property string $medical_phrase
  * @property string $layman_phrase
  */
-class NSCGrade extends BaseActiveRecordVersioned
+class NSCGrade extends BaseActiveRecordVersionedSoftDelete
 {
 	const RETINOPATHY = 1;
 	const MACULOPATHY = 2;

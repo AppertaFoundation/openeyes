@@ -30,7 +30,7 @@
  * @property string $start_date
  * @property string $end_date
  */
-class Medication extends BaseActiveRecordVersioned
+class Medication extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

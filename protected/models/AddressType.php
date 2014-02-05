@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class AddressType extends BaseActiveRecordVersioned
+class AddressType extends BaseActiveRecordVersionedSoftDelete
 {
 	public $default_scope = true;
 

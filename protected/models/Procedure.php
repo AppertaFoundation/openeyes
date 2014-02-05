@@ -31,7 +31,7 @@
  * @property SubspecialtySubsection[] $subspecialtySubsections
  * @property Procedure[] $additional
  */
-class Procedure extends BaseActiveRecordVersioned
+class Procedure extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -168,7 +168,7 @@ class Procedure extends BaseActiveRecordVersioned
 			->select('proc.id, proc.term')
 			->from('proc')
 			->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
-			->where('psa.subspecialty_id = :id and proc.deleted = :notdeleted and psa.deleted = :notdeleted'.$where, array(
+			->where('psa.subspecialty_id = :id and proc.deleted = :notdeleted'.$where, array(
 				':id' => $subspecialtyId,
 				':notdeleted' => 0,
 			))

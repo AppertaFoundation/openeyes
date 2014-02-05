@@ -25,7 +25,7 @@
  * @property string $name
  * @property integer $letter_template_only
  */
-class ContactType extends BaseActiveRecordVersioned
+class ContactType extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

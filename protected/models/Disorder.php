@@ -31,7 +31,7 @@
  * @property CommonSystemicDisorder[] $commonSystemicDisorders
  * @property Specialty $specialty
  */
-class Disorder extends BaseActiveRecordVersioned
+class Disorder extends BaseActiveRecordVersionedSoftDelete
 {
 	const SITE_LEFT = 0;
 	const SITE_RIGHT = 1;
