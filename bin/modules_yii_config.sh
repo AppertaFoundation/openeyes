@@ -2,8 +2,10 @@
 # define all modules to test
 if [ $# -eq 1 ]
   then
+    echo "Module Yii config adding $1"
     echo $1 > .enabled-modules
   else
+    echo "Module Yii config adding all modules"
     echo "OphCiExamination
     OphDrPrescription
     OphTrOperationbooking
