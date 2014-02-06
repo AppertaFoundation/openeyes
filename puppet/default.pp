@@ -31,6 +31,7 @@ node default {
 	}
 
 	if $mode == 'ci' {
+		include dev::security
 		include dev::xdebug
 		notice("Running advanced xdebug config")
     dev::xdebug::config { 'default':
