@@ -52,7 +52,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'selectMedication' => array('xpath' => "//select[@id='drug_id']"),
         'selectRoute' => array('xpath' => "//select[@id='route_id']"),
         'selectFrequency' => array('xpath' => "//select[@id='frequency_id']"),
-        'openMedicationDate' => array('xpath' => "//*[@id='start_date']"),
+        'openMedicationDate' => array('xpath' => "//*[@class='hasDatepicker']"),
         'hopefullFIX' => array('xpath' => "//form[@id='add-medication']/div[8]"),
         'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']//*[contains(text(),'10')]"),
         'saveMedication' => array('xpath' => "//*[@class='secondary small btn_save_medication']"),
@@ -210,9 +210,9 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $this->getElement('selectMedication')->selectOption($medication);
         $this->getElement('selectRoute')->selectOption($route);
         $this->getElement('selectFrequency')->selectOption($frequency);
-        $this->getElement('openMedicationDate')->click();
-        $element = $this->getElement('datePicker');
+        $element = $this->getElement('openMedicationDate');
         $this->scrollWindowToElement($element);
+        $this->getElement('openMedicationDate')->click();
 		$this->waitForElementDisplayBlock('#ui-datepicker-div', 10000);
         $this->getElement('selectDateFrom')->click($datefrom);
         $this->getElement('saveMedication')->click();
