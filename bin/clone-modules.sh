@@ -27,12 +27,15 @@ do
             echo "Cloning $module module..." git@github.com:openeyes/$module.git
             #git clone git@github.com:openeyes/$module.git $modules_path/$module
             git clone https://github.com/openeyes/$module $modules_path/$module
+        else
+            # Fetch latest version
+            git fetch origin
         fi
         cd $modules_path/$module
         echo "Switching module branch to $current_branch..."
-        git clean -xdf
-        git reset --hard HEAD
         git checkout $current_branch
+        git reset --hard HEAD
+        git clean -xdf
         cd $running_path
     fi
 done < $enabled_modules
