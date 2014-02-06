@@ -4417,10 +4417,6 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('opcs_code_version','deleted');
 		$this->dropColumn('operative_device','deleted');
 		$this->dropColumn('operative_device_version','deleted');
-		$this->dropColumn('pas_assignment','deleted');
-		$this->dropColumn('pas_assignment_version','deleted');
-		$this->dropColumn('pas_patient_merged','deleted');
-		$this->dropColumn('pas_patient_merged_version','deleted');
 		$this->dropColumn('patient','deleted');
 		$this->dropColumn('patient_version','deleted');
 		$this->dropColumn('patient_allergy_assignment','deleted');

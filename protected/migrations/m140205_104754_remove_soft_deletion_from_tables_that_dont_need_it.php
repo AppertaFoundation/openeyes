@@ -36,8 +36,6 @@ class m140205_104754_remove_soft_deletion_from_tables_that_dont_need_it extends 
 		'issue',
 		'language',
 		'manual_contact',
-		'pas_assignment',
-		'pas_patient_merged',
 		'patient_allergy_assignment',
 		'patient_contact_assignment',
 		'patient_oph_info',
