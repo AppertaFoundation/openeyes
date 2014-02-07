@@ -9,7 +9,6 @@ return array(
 				'last_modified_date' => '1900-01-01 00:00:00',
 				'created_user_id' => '1',
 				'created_date' => '1900-01-01 00:00:00',
-				'deleted' => '0'
 		),
 		'psa2' => array(
 				'id' => '2',
@@ -20,6 +19,5 @@ return array(
 				'last_modified_date' => '1900-01-01 00:00:00',
 				'created_user_id' => '1',
 				'created_date' => '1900-01-01 00:00:00',
-				'deleted' => '0'
 		)
 );
