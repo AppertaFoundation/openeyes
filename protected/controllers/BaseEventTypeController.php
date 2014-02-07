@@ -1193,36 +1193,38 @@ class BaseEventTypeController extends BaseModuleController
 	 * @param string $action
 	 * @param BaseCActiveBaseEventTypeCActiveForm $form
 	 * @param array $data
+	 * @param array $views A list of possible views to render.
 	 * @throws Exception
 	 */
-	protected function renderElement($element, $action, $form, $data)
+	protected function renderElement($element, $action, $form, $data, Array $views=array())
 	{
-		try {
+		if (!count($views)) {
+
 			// look for an action/element specific view file
-			$view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
-			$this->renderPartial(
-				$action . '_' . $view,
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form,
-					'child' => $element->getElementType()->isChild()
-				)
-			);
-		} catch (Exception $e) {
-			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
-				throw $e;
-			}
+			$element_view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
+			$views[] = $action . '_' .$element_view;
+
 			// otherwise use the default layout
-			$this->renderPartial(
-				'_'.$action,
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form,
-					'child' => $element->getElementType()->isChild()
-				)
-			);
+			$views[] = '_'.$action;
+		}
+
+		foreach($views as $view) {
+			try {
+				$this->renderPartial(
+					$view,
+					array(
+						'element' => $element,
+						'data' => $data,
+						'form' => $form,
+						'child' => $element->getElementType()->isChild()
+					)
+				);
+				break;
+			} catch (Exception $e) {
+				if (strpos($e->getMessage(), "cannot find the requested view") === false) {
+					throw $e;
+				}
+			}
 		}
 	}
 
