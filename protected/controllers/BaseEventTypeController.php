@@ -69,7 +69,7 @@ class BaseEventTypeController extends BaseModuleController
 		'print' => self::ACTION_TYPE_PRINT,
 		'update' => self::ACTION_TYPE_EDIT,
 		'delete' => self::ACTION_TYPE_DELETE,
-		'requestDeletion' => self::ACTION_TYPE_EDIT,
+		'requestDeletion' => self::ACTION_TYPE_EDIT
 	);
 
 	/**
@@ -1187,46 +1187,49 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * Render the individual element based on the action provided
+	 * Render the individual element based on the action provided. Note that by default
+	 * the print action will use the 'view' views. If you want the element to use
+	 * 'print' views for the 'print' action, you need to change the returned view
+	 * in the Element model by overriding the Element->getPrint_view() method.
 	 *
 	 * @param BaseEventTypeElement $element
 	 * @param string $action
 	 * @param BaseCActiveBaseEventTypeCActiveForm $form
 	 * @param array $data
-	 * @param array $views A list of possible views to render.
 	 * @throws Exception
 	 */
-	protected function renderElement($element, $action, $form, $data, Array $views=array())
+	protected function renderElement($element, $action, $form, $data)
 	{
-		if (!count($views)) {
+		try {
+			// Use the action/element specific view file (if it exists).
+			$view = isset($element->{$action.'_view'}) ? $element->{$action.'_view'} : $element->getDefaultView();
 
-			// look for an action/element specific view file
-			$element_view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
-			$views[] = $action . '_' .$element_view;
-
-			// otherwise use the default layout
-			$views[] = '_'.$action;
-		}
-
-		foreach($views as $view) {
-			try {
-				$this->renderPartial(
-					$view,
-					array(
-						'element' => $element,
-						'data' => $data,
-						'form' => $form,
-						'child' => $element->getElementType()->isChild()
-					)
-				);
-				break;
-			} catch (Exception $e) {
-				if (strpos($e->getMessage(), "cannot find the requested view") === false) {
-					throw $e;
-				}
+			$this->renderPartial(
+				$view,
+				array(
+					'element' => $element,
+					'data' => $data,
+					'form' => $form,
+					'child' => $element->getElementType()->isChild()
+				)
+			);
+		} catch (Exception $e) {
+			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
+				throw $e;
 			}
+			// Otherwise fall back to using a wrapper layout.
+			$this->renderPartial(
+				'_'.$action,
+				array(
+					'element' => $element,
+					'data' => $data,
+					'form' => $form,
+					'child' => $element->getElementType()->isChild()
+				)
+			);
 		}
 	}
+
 
 	/**
 	 * Render an optional element based on the action provided
@@ -1764,11 +1767,10 @@ class BaseEventTypeController extends BaseModuleController
 
 			$view = ($element->{$action.'_view'}) ? $element->{$action.'_view'} : $element->getDefaultView();
 			$this->renderPartial(
-				$action . '_' . $view,
+				$view,
 				array('element' => $element, 'data' => $data, 'form' => $form),
 				false, false
 			);
-
 		}
 	}
 
