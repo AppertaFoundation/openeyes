@@ -1,0 +1,34 @@
+/* ====== LETTERs (hidden in page) ====== */
+
+#letterTemplate {
+	display: block;
+	background: #fff;
+	#l_type {
+		text-align: center;
+		font-size: 6pt;
+	}
+	#l_content {
+		p {
+			margin-bottom: 1em;
+		}
+		ul {
+			margin: 0 0 1.5em 0.5em;
+		}
+		table {
+			margin-bottom: 1.5em;
+		}
+		td {
+			padding: 0.25em 0.5em;
+		}
+	}
+}
+
+#letterFooter {
+	display: block;
+	text-align: right;
+	font-size: 6pt;
+	line-height: 1.5;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}

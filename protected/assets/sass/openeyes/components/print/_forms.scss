@@ -1,0 +1,29 @@
+/* ====== FORMs (hidden in page) ====== */
+
+#printForm {
+	display: block;
+	background: #fff;
+	font-size: 7pt;
+}
+
+#printFormTemplate {
+	.title {
+		font-size: 13pt;
+		font-weight: bold;
+	}
+	table tr > td {
+		padding: 1em 0.5em;
+		border: 1px solid #eee;
+	}
+	.subTitle {
+		display: block;
+		font-size: 8pt;
+		font-weight: bold;
+		margin-top: 1em;
+		padding-top: 0.5em;
+		padding-bottom: 0.5em;
+	}
+	table.subTableNoBorders tr > td {
+		border: none;
+	}
+}

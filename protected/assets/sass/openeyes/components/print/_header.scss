@@ -1,0 +1,9 @@
+@media print {
+	.header {
+		.logo {
+			&:after {
+				content: image-url("_structure/openeyes.png");
+			}
+		}
+	}
+}
