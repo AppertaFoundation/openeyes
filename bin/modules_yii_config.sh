@@ -1,10 +1,11 @@
 #!/bin/sh
 # define all modules to test
-if [ $# -eq 1 ]
+if [ $# -eq 1 ] && [ "$1" != 'all' ]
   then
     echo "Module Yii config adding $1"
     echo $1 > .enabled-modules
-  else
+  elif [ $# -eq 1 ] && [ "$1" == 'all' ]
+  then
     echo "Module Yii config adding all modules"
     echo "OphCiExamination
     OphDrPrescription
@@ -20,6 +21,9 @@ if [ $# -eq 1 ]
     OphCoTherapyapplication
     OphTrLaser
     " > .enabled-modules
+  else
+  echo 'No module set up required, just running core!'
+  exit 0
 fi
 
 enabled_modules=".enabled-modules"

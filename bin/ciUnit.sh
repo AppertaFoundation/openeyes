@@ -6,7 +6,7 @@ echo "Current script dir: $CSDIR"
 testsuite=all
 if [ $# -eq 1 ]
   then
-    if [ $1 -eq 'all' ]
+    if [ "$1" == 'all' ]
     then
         echo "calling  $CSDIR/modules_yii_config.sh"
         $CSDIR/modules_yii_config.sh
