@@ -466,7 +466,7 @@ class User extends BaseActiveRecordVersionedSoftDelete
 			->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->leftJoin('subspecialty s','ssa.subspecialty_id = s.id')
 			->leftJoin('user_firm uf','uf.firm_id = f.id and uf.user_id = '.Yii::app()->user->id)
-			->where("uf.id is null and f.deleted = :notdeleted and (s.id is null or s.deleted = :notdeleted)",array(
+			->where("uf.id is null and f.deleted = :notdeleted",array(
 				':userId' => Yii::app()->user->id,
 				':notdeleted' => 0,
 			))

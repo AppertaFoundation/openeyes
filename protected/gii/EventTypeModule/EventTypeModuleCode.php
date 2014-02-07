@@ -973,12 +973,18 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	{
 		echo '<option value="">- No default value -</option>';
 
-		foreach (Yii::app()->db->createCommand()
+		$_table = Yii::app()->getDbConnection()->getSchema()->getTable($table);
+
+		$command = Yii::app()->db->createCommand()
 			->selectDistinct("$table.id, $table.$field")
 			->from($table)
-			->order("$table.$field")
-			->where("$table.deleted = 0")
-			->queryAll() as $row) {
+			->order("$table.$field");
+
+		if ($_table->hasProperty('deleted')) {
+			$command->where("$table.deleted = 0");
+		}
+
+		foreach ($command->queryAll() as $row) {
 			echo '<option value="'.$row['id'].'"'.($selected == $row['id'] ? ' selected="selected"' : '').'>'.$row[$field].'</option>';
 		}
 	}
@@ -989,12 +995,18 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		echo '<option value="">- Select default values -</option>';
 
-		foreach (Yii::app()->db->createCommand()
+		$_table = Yii::app()->getDbConnection()->getSchema()->getTable($table);
+
+		$command = Yii::app()->db->createCommand()
 			->selectDistinct("$table.id, $table.$field")
 			->from($table)
-			->order("$table.$field")
-			->where("$table.deleted = 0")
-			->queryAll() as $row) {
+			->order("$table.$field");
+
+		if ($_table->hasProperty('deleted')) {
+			$command->where("$table.deleted = 0");
+		}
+
+		foreach ($command->queryAll() as $row) {
 			if (!in_array($row['id'],$selected)) {
 				echo '<option value="'.$row['id'].'">'.$row[$field].'</option>';
 			}

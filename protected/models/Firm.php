@@ -135,9 +135,6 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 			->from("service_subspecialty_assignment ssa")
 			->join("service se","ssa.service_id = se.id")
 			->join("subspecialty su","ssa.subspecialty_id = su.id")
-			->where("se.deleted = :notdeleted",array(
-				":notdeleted" => 0,
-			))
 			->order("se.name, su.name")
 			->queryAll() as $result) {
 			$select[$result['id']] = $result['service_name'].' - '.$result['subspecialty_name'];
@@ -221,7 +218,7 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 			->from('firm f')
 			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->join('subspecialty s','ssa.subspecialty_id = s.id')
-			->where('f.deleted = :notdeleted and s.deleted = :notdeleted',array(
+			->where('f.deleted = :notdeleted',array(
 				':notdeleted' => 0,
 			))
 			->order('f.name, s.name')
