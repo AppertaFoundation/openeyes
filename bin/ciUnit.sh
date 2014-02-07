@@ -5,11 +5,14 @@ echo "Current script dir: $CSDIR"
 
 if [ $# -eq 1 ]
   then
-    echo "calling  $CSDIR/modules_yii_config.sh $1"
-    $CSDIR/modules_yii_config.sh $1
-  else
-    echo "calling  $CSDIR/modules_yii_config.sh"
-    $CSDIR/modules_yii_config.sh
+    if [ $1 -eq 'all' ]
+    then
+        echo "calling  $CSDIR/modules_yii_config.sh"
+        $CSDIR/modules_yii_config.sh
+    else
+        echo "calling  $CSDIR/modules_yii_config.sh $1"
+        $CSDIR/modules_yii_config.sh $1
+    fi
 fi
 
 vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; /var/www/protected/yiic migrate --interactive=0 --connectionID=testdb; \
