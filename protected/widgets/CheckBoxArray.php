@@ -23,6 +23,7 @@ class CheckBoxArray extends BaseFieldWidget
 	public $columns = array();
 	public $checked = array();
 	public $labeltext;
+	public $options;
 
 	public function init()
 	{
