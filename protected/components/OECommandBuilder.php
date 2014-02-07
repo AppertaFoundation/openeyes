@@ -62,9 +62,17 @@ class OECommandBuilder extends CDbCommandBuilder
 			throw new Exception("Missing version table: {$table->name}_version");
 		}
 
-		$command = $this->createInsertFromTableCommand($table_version,$table,$criteria);
-		if (!$command->execute()) {
-			throw new Exception("Unable to insert version row: ".print_r($command,true));
+		if ($this->getDbConnection()->createCommand()
+			->select("*")
+			->from($table->name)
+			->where($criteria->condition, $criteria->params)
+			->limit(1)
+			->queryRow()) {
+
+			$command = $this->createInsertFromTableCommand($table_version,$table,$criteria);
+			if (!$command->execute()) {
+				throw new Exception("Unable to insert version row: ".print_r($command,true));
+			}
 		}
 
 		$sql="DELETE FROM {$table->rawName}";
