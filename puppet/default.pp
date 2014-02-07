@@ -20,6 +20,7 @@ node default {
 		include dev::bower
 		include dev::ruby
 		include dev::compass
+		include dev::security
 		notice("Running advanced xdebug config")
     dev::xdebug::config { 'default':
     	profiler_output_name => 'xdebug.log',
@@ -30,6 +31,7 @@ node default {
 	}
 
 	if $mode == 'ci' {
+		include dev::security
 		include dev::xdebug
 		notice("Running advanced xdebug config")
     dev::xdebug::config { 'default':

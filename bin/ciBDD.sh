@@ -33,10 +33,6 @@ modules_conf_string=""
 echo "Cloning/checkout modules"
 bin/clone-modules.sh develop
 
-echo "hard reset all and pull"
-#bin/oe-git "reset --hard"
-bin/oe-git pull
-
 # install Yii
 git submodule update --init
 
