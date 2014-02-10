@@ -8,11 +8,14 @@ if [ $# -eq 1 ]
   then
     if [ "$1" == 'all' ] || [ "$1" == 'Modules' ]
     then
-        echo "calling  $CSDIR/modules_yii_config.sh"
-        $CSDIR/modules_yii_config.sh
         if [ "$1" == 'Modules' ]
         then
             testsuite=Modules
+            echo "calling  $CSDIR/modules_yii_config.sh $2"
+            $CSDIR/modules_yii_config.sh $2
+        else
+            echo "calling  $CSDIR/modules_yii_config.sh"
+            $CSDIR/modules_yii_config.sh
         fi
     else
         echo "calling  $CSDIR/modules_yii_config.sh $1"
