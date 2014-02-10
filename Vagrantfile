@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
 	end
 
 	moduleunit = ENV["OE_VAGRANT_MODULEUNIT"] || false
-	if mode != 'ci' && sql_port > 0
+	if moduleunit == 'ci'
   	config.vm.synced_folder "../workspace", "/var/module", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
   end
 
