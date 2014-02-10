@@ -144,6 +144,18 @@ class AnaestheticAuditContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I Save the Event and confirm it has been created successfully$/
+     */
+    public function iSaveTheEventAndConfirm()
+    {
+        /**
+         * @var AnaestheticAudit $asa
+         */
+        $asa = $this->getPage('AnaestheticAudit');
+        $asa->saveASAAndConfirm();
+    }
+
+    /**
      * @Given /^I edit the Last Event$/
      */
     public function iEditTheLastEvent()

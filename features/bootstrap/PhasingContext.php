@@ -273,4 +273,17 @@ class PhasingContext extends PageObjectContext
         $phasing->savePhasingEvent();
     }
 
+    /**
+     * @Then /^I Save the Phasing Event and confirm it has been created successfully$/
+     */
+    public function iSaveThePhasingEventAndConfirm()
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->savePhasingAndConfirm();
+    }
+
+
 }

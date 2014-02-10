@@ -29,7 +29,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     And I select the Yes option for Ready to Discharge
 
-    Then I Save the Event
+    Then I Save the Event and confirm it has been created successfully
 
   Scenario: Route 2: Login and create a Anaesthetic Satisfaction Audit: Site 1 Queens, Firm 1 Anderson Cataract
 
@@ -57,7 +57,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     And I select the No option for Ready to Discharge
 
-    Then I Save the Event
+    Then I Save the Event and confirm it has been created successfully
 
   Scenario: Route 3: Login and create a Anaesthetic Satisfaction Audit Regression - Site 1 Queens, Firm 2 Broom Glaucoma
 
@@ -85,7 +85,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     And I select the No option for Ready to Discharge
 
-    Then I Save the Event
+    Then I Save the Event and confirm it has been created successfully
 
   Scenario: Route 4: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 4 Medical Retinal
 
@@ -113,7 +113,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     And I select the No option for Ready to Discharge
 
-    Then I Save the Event
+    Then I Save the Event and confirm it has been created successfully
 
   Scenario: Route 5: Validation Tests
 

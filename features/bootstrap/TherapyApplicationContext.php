@@ -20,6 +20,30 @@ class TherapyApplicationContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I remove the Diagnosis right eye$/
+     */
+    public function iRemoveRightEye()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->removeRightEye();
+    }
+
+    /**
+     * @Then /^I add the Diagnosis right eye$/
+     */
+    public function iAddRightEye()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->addRightEye();
+    }
+
+    /**
      * @Then /^I add Right Side$/
      */
     public function iAddRightSide()
@@ -585,7 +609,7 @@ class TherapyApplicationContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I Save the Therapy Application$/
+     * @Then /^I Save the Therapy Application and confirm it has been created successfully$/
      */
     public function iSaveTheTherapyApplication()
     {
@@ -593,7 +617,7 @@ class TherapyApplicationContext extends PageObjectContext
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
-        $TherapyApplication->saveTherapy();
+        $TherapyApplication->saveTherapyAndConfirm();
     }
 
 }

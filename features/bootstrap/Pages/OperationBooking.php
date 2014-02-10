@@ -1,5 +1,4 @@
 <?php
-
 class OperationBooking extends OpenEyesPage
 {
     protected $path = "/site/OphTrOperationbooking/Default/create?patient_id={parentId}";
@@ -41,7 +40,7 @@ class OperationBooking extends OpenEyesPage
         'confirmSlot' => array('xpath' => "//*[@id='confirm_slot']"),
         'EmergencyList' => array ('xpath' => "//select[@id='firm_id']"),
 	    'currentMonth' => array('css' => "#current_month"),
-        'saveButton' => array('xpath' => "//*[@id='et_save']")
+        'saveButton' => array('xpath' => "//*[@id='et_save']"),
     );
 
     public function diagnosisEyes ($eye)

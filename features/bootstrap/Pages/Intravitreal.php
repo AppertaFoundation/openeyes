@@ -1,5 +1,5 @@
 <?php
-
+use Behat\Behat\Exception\BehaviorException;
 class Intravitreal extends OpenEyesPage
 {
     protected $path ="/site/OphTrLaser/Default/create?patient_id={patientId}";
@@ -7,7 +7,7 @@ class Intravitreal extends OpenEyesPage
     protected $elements = array (
         //Anaesthetic Right
 
-        'addRightSide' => array('xpath' => "//*[@id='clinical-create']//*[@class='side left eventDetail inactive']//*[contains(text(),'Add right side')]"),
+        'addRightSide' => array('xpath' => "//*[@class='element-eye right-eye left side column inactive']//*[contains(text(),'Add right side')]"),
         'removeRightSide' => array('xpath' => "//*[@id='clinical-create']//*[@class='side left eventDetail']//*[@class='removeSide']"),
         'rightAnaestheticTopical' => array('xpath' => "//input[@id='Element_OphTrIntravitrealinjection_Anaesthetic_right_anaesthetictype_id_1']"),
         'rightAnaestheticLA' => array('xpath' => "//input[@id='Element_OphTrIntravitrealinjection_Anaesthetic_right_anaesthetictype_id_3']"),
@@ -83,8 +83,10 @@ class Intravitreal extends OpenEyesPage
         'rightComplicationsDropdown' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Complications[right_complications]']"),
         'leftComplicationsDropdown' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Complications[left_complications]']"),
         'saveIntravitrealInjection' => array('xpath' => "//*[@id='et_save']"),
+        'IntravitrealSavedOk' => array('xpath' => "//*[@id='flash-success']"),
 
         'existingAllergyCheck' => array ('xpath' => "//*[contains(text(),'Patient is allergic to: Tetracycline')]"),
+        'removeRightEye' => array('xpath' => "//*[@class='element-eye right-eye left side column']//*[contains(text(),'Remove side')]"),
     );
 
         protected function isRightSideOpen()
@@ -92,11 +94,17 @@ class Intravitreal extends OpenEyesPage
         return (bool) $this->find('xpath', $this->getElement('addRightSide')->getXpath());
         }
 
+         public function removeRightSide ()
+         {
+             $this->getElement('removeRightEye')->click();
+         }
+
          public function addRightSide ()
          {
              if ($this->isRightSideOpen())
              {
              $this->getElement('addRightSide')->click();
+             $this->getSession()->wait(5000, '$.active == 0');
              }
          }
 
@@ -110,7 +118,9 @@ class Intravitreal extends OpenEyesPage
             if ($this->doesAllergyWarningExist()){
                 print "Patient is allergic to: Tetracycline";
             }
-            elseif (print "NO Tetracycline or other Allergy warning!!!");
+            else {
+                throw new BehaviorException ("NO Tetracycline or other Allergy warning!!!");
+            }
         }
 
          public function rightTypeTopical ()
@@ -380,5 +390,23 @@ class Intravitreal extends OpenEyesPage
         {
             $this->getElement('saveIntravitrealInjection')->click();
             $this->getSession()->wait(10000);
+        }
+
+        protected function hasIntravitrealSaved ()
+        {
+            return (bool) $this->find('xpath', $this->getElement('IntravitrealSavedOk')->getXpath());;
+        }
+
+        public function saveIntravitrealAndConfirm ()
+        {
+            $this->getElement('saveIntravitrealInjection')->click();
+
+            if ($this->hasIntravitrealSaved()) {
+                print "Intravitreal has been saved OK";
+            }
+
+            else {
+                throw new BehaviorException("WARNING!!!  Intravitreal has NOT been saved!!  WARNING!!");
+            }
         }
 }

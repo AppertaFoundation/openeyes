@@ -31,7 +31,7 @@ modules_conf_string=""
 
 #git clone modules
 echo "Cloning/checkout modules"
-bin/clone-modules.sh develop
+bin/clone-modules.sh release/1.6
 
 echo "hard reset all and pull"
 #bin/oe-git "reset --hard"

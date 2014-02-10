@@ -1,4 +1,4 @@
-@laser
+@laser @regression
 Feature: Create New Laser event
   In order to cover every possible route throughout the site
   As an automation tester
@@ -27,7 +27,7 @@ Feature: Create New Laser event
 
     And I remove the last added Procedure
 
-    Then I save the Laser Event
+    Then I save the Laser Event and confirm it has been created successfully
 
   Scenario: Route 2: Login and validate a Laser Event cannot be saved without mandatory fields
 
@@ -75,4 +75,4 @@ Feature: Create New Laser event
     Then I remove the Comments section
 
 
-    Then I save the Laser Event
+    Then I save the Laser Event and confirm it has been created successfully

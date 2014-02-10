@@ -202,6 +202,18 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I choose to remove left Dilation treatment$/
+     */
+    public function iChooseToRemoveLeftDilation()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->removeLeftDilation();
+    }
+
+    /**
      * @Then /^I choose to expand the Refraction section$/
      */
     public function iChooseToExpandTheRefractionSection()
@@ -1477,7 +1489,19 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->saveExamination();
+        $examination->saveExaminationOnly();
+    }
+
+    /**
+     * @Then /^I Save the Examination and confirm it has been created successfully$/
+     */
+    public function iSaveTheExaminationAndConfirm()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->saveExaminationAndConfirm();
     }
 
     //VALIDATION TESTS

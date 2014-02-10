@@ -117,7 +117,7 @@ class PrescriptionContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I Save the Prescription Draft$/
+     * @Then /^I Save the Prescription Draft and confirm it has been created successfully$/
      */
     public function iSaveThePrescriptionDraft()
     {
@@ -125,7 +125,7 @@ class PrescriptionContext extends PageObjectContext
          * @var Prescription $prescription
          */
         $prescription= $this->getPage('Prescription');
-        $prescription->savePrescription();
+        $prescription->savePrescriptionAndConfirm();
     }
 
 

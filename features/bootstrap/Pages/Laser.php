@@ -12,7 +12,8 @@ class Laser extends OpenEyesPage
         'laserSurgeon' => array('xpath' => "//*[@id='Element_OphTrLaser_Site_surgeon_id']"),
         'rightProcedure' => array('xpath' => ".//*[@id='treatment_right_procedures']"),
         'leftProcedure' => array('xpath' => "//*[@id='treatment_left_procedures']"),
-        'saveLaser' => array('xpath' => ".//*[@id='et_save']"),
+        'saveLaser' => array('xpath' => "//*[@id='et_save']"),
+        'saveLaserOK'=> array('xpath' => "//*[@id='flash-success']"),
         'siteValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Site: Site cannot be blank.')]"),
         'laserValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Site: Laser cannot be blank.')]"),
         'treatmentLeftValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Left Procedures cannot be blank.')]"),
@@ -54,6 +55,24 @@ class Laser extends OpenEyesPage
     public function saveLaser ()
     {
         $this->getElement('saveLaser')->click();
+    }
+
+    protected function hasLaserSaved ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('saveLaserOK')->getXpath());;
+    }
+
+    public function saveLaserAndConfirm ()
+    {
+        $this->getElement('saveLaser')->click();
+
+        if ($this->hasLaserSaved()) {
+            print "Laser has been saved OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Laser has NOT been saved!!  WARNING!!");
+        }
     }
 
     public function laserValidationError ()

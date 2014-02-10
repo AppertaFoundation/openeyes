@@ -1,5 +1,5 @@
 <?php
-
+use Behat\Behat\Exception\BehaviorException;
 class Prescription extends OpenEyesPage
 {
     protected $path = "/site/OphDrPrescription/Default/create?patient_id={parentId}";
@@ -13,7 +13,8 @@ class Prescription extends OpenEyesPage
         'prescriptionFrequencyItem0' => array('xpath' => "//*[@id='prescription_item_0_frequency_id']"),
         'prescriptionDurationItem0' => array('xpath' => "//*[@id='prescription_item_0_duration_id']"),
         'prescriptionComments' => array('xpath' => "//textarea[@id='Element_OphDrPrescription_Details_comments']"),
-        'prescriptionSaveDraft' => array('xpath' => "//*[@id='et_save_draft']")
+        'prescriptionSaveDraft' => array('xpath' => "//*[@id='et_save_draft']"),
+        'prescriptionSavedOk' => array('xpath' => "//*[@id='flash-success']"),
     );
 
     public function prescriptionDropdown ($drug)
@@ -60,9 +61,22 @@ class Prescription extends OpenEyesPage
 
     }
 
-    public function savePrescription ()
+    protected function hasPrescriptionSaved ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('prescriptionSavedOk')->getXpath());;
+    }
+
+    public function savePrescriptionAndConfirm ()
     {
         $this->getElement('prescriptionSaveDraft')->click();
+
+        if ($this->hasPrescriptionSaved()) {
+            print "Prescription has been saved OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Prescription has NOT been saved!!  WARNING!!");
+        }
     }
 
 }

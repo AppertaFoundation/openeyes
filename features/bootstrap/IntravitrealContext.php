@@ -31,6 +31,18 @@ class IntravitrealContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I remove the Right Side$/
+     */
+    public function iRemoveTheRightSide()
+    {
+        /**
+         * @var Intravitreal $Intravitreal
+         */
+        $Intravitreal  = $this->getPage('Intravitreal');
+        $Intravitreal->removeRightSide();
+    }
+
+    /**
      * @Then /^I select Add Right Side$/
      */
     public function iSelectAddRightSide()
@@ -676,6 +688,18 @@ class IntravitrealContext extends PageObjectContext
          */
         $Intravitreal  = $this->getPage('Intravitreal');
         $Intravitreal->saveIntravitrealInjection();
+    }
+
+    /**
+     * @Then /^I Save the Intravitreal injection and confirm it has been created successfully$/
+     */
+    public function iSaveTheIntravitrealInjectionAndConfirm()
+    {
+        /**
+         * @var Intravitreal $Intravitreal
+         */
+        $Intravitreal  = $this->getPage('Intravitreal');
+        $Intravitreal->saveIntravitrealAndConfirm();
     }
 
 

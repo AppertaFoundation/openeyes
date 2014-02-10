@@ -123,20 +123,20 @@ $(document).ready(function(){
 	(function stickyElements() {
 
 		var options = {
-			enableHandler: function() {
-				this.element.width(this.element.width());
-				this.enable();
+			enableHandler: function(instance) {
+				instance.element.width(instance.element.width());
+				instance.enable();
 			},
-			disableHandler: function() {
-				this.element.width('auto');
-				this.disable();
+			disableHandler: function(instance) {
+				instance.element.width('auto');
+				instance.disable();
 			}
 		};
 
 		new OpenEyes.UI.StickyElement('.admin.banner', {
 			offset: 30,
-			wrapperHeight: function() {
-				return this.element.outerHeight(true);
+			wrapperHeight: function(instance) {
+				return instance.element.outerHeight(true);
 			}
 		});
 
@@ -147,6 +147,9 @@ $(document).ready(function(){
 		new OpenEyes.UI.StickyElement('.event-header', $.extend({
 			offset: function() {
 				return header.element.height() * -1;
+			},
+			wrapperHeight: function(instance) {
+				return instance.element.outerHeight(true);
 			}
 		}, options));
 	}());

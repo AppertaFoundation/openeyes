@@ -27,6 +27,6 @@ Feature: Create New Prescription
     Then I enter a duration of "1"
     Then I enter a eyes option "1"
 
-    Then I Save the Prescription Draft
+    Then I Save the Prescription Draft and confirm it has been created successfully
 
 

@@ -29,7 +29,7 @@ Feature: Create New Consent Form
 
     And I select the Information leaflet checkbox
 
-    Then I save the Consent Form
+    Then I save the Consent Form and confirm it has been created successfully
 
   Scenario: Route 2: Login and create a new Consent Form
 
@@ -54,4 +54,4 @@ Feature: Create New Consent Form
 
     Then I choose Permissions for images Yes
 
-    Then I save the Consent Form
+    Then I save the Consent Form and confirm it has been created successfully
