@@ -120,7 +120,7 @@ class User extends BaseActiveRecord
 			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
-			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 5),
+			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 6),
 			'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'order' => 'name asc'),
 			'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
 		);

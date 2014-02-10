@@ -235,5 +235,7 @@ return array(
 		),
 		'admin_email' => '',
 		'enable_transactions' => true,
+		'event_lock_days' => 0,
+		'event_lock_disable' => false
 	),
 );
