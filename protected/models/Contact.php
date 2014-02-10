@@ -81,23 +81,18 @@ class Contact extends BaseActiveRecord
 		return array(
 			'consultant' => array(self::HAS_ONE, 'Consultant', 'contact_id'),
 			'gp' => array(self::HAS_ONE, 'Gp', 'contact_id'),
-			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id',
-				'on' => "parent_class = 'Contact'"
-			),
+			'addresses' => array(self::HAS_MANY, 'Address', 'contact_id'),
 			// Prefer H records for primary address, but fall back to others
-			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Contact'",
+			'address' => array(self::HAS_ONE, 'Address', 'contact_id',
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id," . AddressType::HOME . ") DESC, date_start DESC"
 			),
 			// Prefer H records for home address, but fall back to others
-			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Contact'",
+			'homeAddress' => array(self::HAS_ONE, 'Address', 'contact_id',
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id," . AddressType::HOME . ") DESC, date_start DESC"
 			),
 			// Prefer C records for correspond address, but fall back to others
-			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
+			'correspondAddress' => array(self::HAS_ONE, 'Address', 'contact_id',
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id," . AddressType::CORRESPOND . ") DESC, date_start DESC",
-				'on' => "parent_class = 'Contact'",
 			),
 			'label' => array(self::BELONGS_TO, 'ContactLabel', 'contact_label_id'),
 			'locations' => array(self::HAS_MANY, 'ContactLocation', 'contact_id'),
