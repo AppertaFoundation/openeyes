@@ -1,6 +1,6 @@
 #!/bin/sh
 # define all modules to test
-if [ $# -eq 1 ] && [ "$1" != 'all' ]
+if [ $# -eq 1 ] && [ "$1" != 'all' ] && [ "$1" != 'Modules' ]
   then
     echo "Module Yii config adding $1"
     echo $1 > .enabled-modules
