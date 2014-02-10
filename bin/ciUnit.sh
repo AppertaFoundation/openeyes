@@ -13,6 +13,7 @@ if [ $# -eq 1 ]
         if [ "$1" == 'Modules' ]
         then
             testsuite=Modules
+        fi
     else
         echo "calling  $CSDIR/modules_yii_config.sh $1"
         $CSDIR/modules_yii_config.sh $1
