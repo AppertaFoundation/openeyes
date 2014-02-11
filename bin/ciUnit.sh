@@ -4,7 +4,7 @@ CSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo "Current script dir: $CSDIR"
 
 testsuite=all
-if [ $# -eq 1 ]
+if [ $# -gt 0 ]
   then
     if [ "$1" == 'all' ] || [ "$1" == 'Modules' ]
     then
