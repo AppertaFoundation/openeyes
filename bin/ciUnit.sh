@@ -14,14 +14,16 @@ if [ $# -gt 0 ]
             echo "calling  $CSDIR/modules_yii_config.sh $2"
             $CSDIR/modules_yii_config.sh $2
         else
-            echo "calling  $CSDIR/modules_yii_config.sh"
-            $CSDIR/modules_yii_config.sh
+            echo "calling  $CSDIR/modules_yii_config.sh all"
+            $CSDIR/modules_yii_config.sh all
         fi
     else
         echo "calling  $CSDIR/modules_yii_config.sh $1"
         $CSDIR/modules_yii_config.sh $1
     fi
 else
+    echo "calling  $CSDIR/modules_yii_config.sh"
+    $CSDIR/modules_yii_config.sh
     testsuite=core
 fi
 
