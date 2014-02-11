@@ -74,6 +74,10 @@ class BaseController extends Controller
 		Yii::app()->assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
 		Yii::app()->assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
 
+		//FIXME: currently we are resetting the assetmanager list for PDFs because of the TCPDF processing of
+		// stylesheets. Ideally we should suppress the inclusion here. (Or we should be using a different approach
+		// to render the HTML template for the TCPDF engine)
+		
 		// Register the main stylesheet without pre-registering to ensure it's always output first.
 		Yii::app()->assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
 

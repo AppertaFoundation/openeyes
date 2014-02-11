@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+// ensure no css files are loaded
+Yii::app()->clientScript->reset();
 ?>
 <!doctype html>
 <html lang="en">
