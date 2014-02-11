@@ -527,10 +527,10 @@ class PatientController extends BaseController
 				if (!$specialty = Specialty::model()->find('code=?',array(Yii::app()->params['institution_specialty']))) {
 					throw new Exception("Unable to find specialty: ".Yii::app()->params['institution_specialty']);
 				}
-				$contacts = Contact::model()->findByLabel($term, $specialty->default_title, true);
+				$contacts = Contact::model()->findByLabel($term, $specialty->default_title, true, 'person');
 				break;
 			default:
-				$contacts = Contact::model()->findByLabel($term, @$_GET['filter']);
+				$contacts = Contact::model()->findByLabel($term, @$_GET['filter'], false, 'person');
 		}
 
 		echo CJavaScript::jsonEncode($contacts);

@@ -10,6 +10,7 @@
             <group>functional</group>
             <group>undefined</group>
             <group>elements</group>
+            <group>controllers</group>
             <group>services</group>
             <group>components</group>
         </exclude>

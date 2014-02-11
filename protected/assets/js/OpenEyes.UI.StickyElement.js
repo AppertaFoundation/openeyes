@@ -33,9 +33,9 @@
 		this.element = $(element);
 		if (!this.element.length) return;
 
-		this.options = $.extend({}, StickyElement._defauOptions, options);
+		this.options = $.extend({}, StickyElement._defaultOptions, options);
 		this.elementOffset = this.element.offset();
-		this.wrapperHeight = this.options.wrapperHeight.call(this);
+		this.wrapperHeight = this.options.wrapperHeight(this);
 
 		this.wrapElement();
 		this.bindEvents();
@@ -43,22 +43,22 @@
 
 	/**
 	 * StickyElement default options.
-	 * @name OpenEyes.UI.StickyElement#_defauOptions
+	 * @name OpenEyes.UI.StickyElement#_defaultOptions
 	 * @type {Object}
 	 */
-	StickyElement._defauOptions = {
+	StickyElement._defaultOptions = {
 		wrapperClass: 'sticky-wrapper',
 		stuckClass: 'stuck',
 		offset: 0,
 		debug: false,
-		wrapperHeight: function() {
-			return this.element.height();
+		wrapperHeight: function(instance) {
+			return instance.element.height();
 		},
-		enableHandler: function() {
-			this.enable();
+		enableHandler: function(instance) {
+			instance.enable();
 		},
-		disableHandler: function() {
-			this.disable();
+		disableHandler: function(instance) {
+			instance.disable();
 		}
 	};
 
@@ -118,10 +118,19 @@
 		var winTop = win.scrollTop();
 		var elementTop = this.elementOffset.top + offset;
 
+		// [OE-4014] This accounts for "over-scroll" that occurs when using a trackpad/touch
+		// device. Offsets are calculated relative to the document, and as we're using
+		// window.scrollTop in our calculations, we need to ensure the scroll position
+		// value never exceeds the height of the document.
+		var scrollHeight = $(document).height() - win.height();
+		if (winTop > scrollHeight) {
+			winTop -= (winTop - scrollHeight);
+		}
+
 		if (winTop >= elementTop) {
-			this.options.enableHandler.call(this);
+			this.options.enableHandler(this);
 		} else {
-			this.options.disableHandler.call(this);
+			this.options.disableHandler(this);
 		}
 	};
 
