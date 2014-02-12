@@ -21,6 +21,10 @@ if [ $# -eq 1 ] && [ "$1" != 'all' ] && [ "$1" != 'Modules' ]
     OphCoTherapyapplication
     OphTrLaser
     " > .enabled-modules
+  elif [ $# -eq 1 ] && [ "$1" == 'Modules' ]
+  then
+      echo 'No module set up required, just running single module!'
+      exit 0
   else
   echo 'No module set up required, just running core!'
   exit 0

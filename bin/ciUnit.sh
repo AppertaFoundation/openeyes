@@ -4,21 +4,26 @@ CSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo "Current script dir: $CSDIR"
 
 testsuite=all
-if [ $# -eq 1 ]
+if [ $# -gt 0 ]
   then
     if [ "$1" == 'all' ] || [ "$1" == 'Modules' ]
     then
-        echo "calling  $CSDIR/modules_yii_config.sh"
-        $CSDIR/modules_yii_config.sh
         if [ "$1" == 'Modules' ]
         then
             testsuite=Modules
+            echo "calling  $CSDIR/modules_yii_config.sh $2"
+            $CSDIR/modules_yii_config.sh $2
+        else
+            echo "calling  $CSDIR/modules_yii_config.sh all"
+            $CSDIR/modules_yii_config.sh all
         fi
     else
         echo "calling  $CSDIR/modules_yii_config.sh $1"
         $CSDIR/modules_yii_config.sh $1
     fi
 else
+    echo "calling  $CSDIR/modules_yii_config.sh"
+    $CSDIR/modules_yii_config.sh
     testsuite=core
 fi
 
