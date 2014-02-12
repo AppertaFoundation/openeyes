@@ -4,7 +4,7 @@ if [ $# -eq 1 ] && [ "$1" != 'all' ] && [ "$1" != 'Modules' ]
   then
     echo "Module Yii config adding $1"
     echo $1 > .enabled-modules
-  elif [ $# -eq 1 ] && [ "$1" == 'all' ]
+  elif [ $# -eq 1 ] && [ "$1" == "all" ]
   then
     echo "Module Yii config adding all modules"
     echo "OphCiExamination
@@ -21,11 +21,12 @@ if [ $# -eq 1 ] && [ "$1" != 'all' ] && [ "$1" != 'Modules' ]
     OphCoTherapyapplication
     OphTrLaser
     " > .enabled-modules
-  elif [ $# -eq 1 ] && [ "$1" == 'Modules' ]
+  elif [ $# -eq 1 ] && [ "$1" == "Modules" ]
   then
       echo 'No module set up required, just running single module!'
       exit 0
   else
+  echo "" > .enabled-modules
   echo 'No module set up required, just running core!'
   exit 0
 fi
