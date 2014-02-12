@@ -9,14 +9,14 @@ class dev::nodejs {
 	}
 
 	exec { 'node-install':
-		command => '/bin/bash -c "source /home/vagrant/.nvm/nvm.sh && nvm install 0.10.23 && nvm alias default 0.10.23"',
+		command => '/bin/bash -c "source /home/vagrant/.nvm/nvm.sh && nvm install 0.10.25 && nvm alias default 0.10.25"',
 		user => 'vagrant',
 		environment => 'HOME=/home/vagrant',
 		require => Exec['nvm-install']
 	}
 
 	exec { 'npm-install-app-modules':
-		command => '/bin/bash -c "source /home/vagrant/.nvm/nvm.sh && /home/vagrant/.nvm/v0.10.23/bin/npm install"',
+		command => '/home/vagrant/.nvm/v0.10.25/bin/npm --registry http://registry.npmjs.eu/ install',
 		user => 'vagrant',
 		cwd => '/var/www',
 		environment => 'HOME=/home/vagrant',
