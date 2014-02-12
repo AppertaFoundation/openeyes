@@ -17,48 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-// ensure no css files are loaded
-Yii::app()->clientScript->reset();
-?>
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title><?php echo CHtml::encode($this->pageTitle); ?></title>
-<style>
-
-h1 {
-	font-size: 1.5em;
-}
-
-h2 {
-	font-size: 1.2em;
-}
-
-table {
-	padding: 2px 4px 3px 4px;
-}
-
-th {
-	font-weight: bold;
-}
-
-li {
-	line-height: 1.5em;
-}
-
-table.borders td,
-table.borders th {
-	border: 1px solid #999;
-}
-
-.accessible {
-	font-size: 16pt;
-}
-
-</style>
-</head>
-<body>
-	<?php echo $content; ?>
-</body>
-</html>
+return array(
+	'person1' => array(
+		'id' => 1,
+		'contact_id' => 5,
+	)
+);

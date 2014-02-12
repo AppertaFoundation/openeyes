@@ -129,6 +129,8 @@ class Subspecialty extends BaseActiveRecordVersioned
 			$result[$subspecialty->id] = $subspecialty->name;
 		}
 
+		asort($result);
+
 		return $result;
 	}
 
