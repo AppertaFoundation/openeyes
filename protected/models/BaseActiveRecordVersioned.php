@@ -187,20 +187,17 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		return $command->execute();
 	}
 
-	public function versionAllToTable($condition,$params)
+	public function versionAllToTable($condition, $params=array())
 	{
-		foreach (Yii::app()->db->createCommand()
-			->select("*")
-			->from($this->tableName())
-			->where($condition, $params)
-			->queryAll() as $row) {
+		$builder = $this->getCommandBuilder();
+		$table = $this->getTableSchema();
+		$table_version = $this->getVersionTableSchema();
 
-			if (!$this->versionToTableByPk($row['id'], "id = :id", array(":id" => $row['id']))) {
-				return false;
-			}
-		}
+		$criteria = $builder->createCriteria($condition, $params);
 
-		return true;
+		$command = $builder->createInsertFromTableCommand($table_version,$table,$criteria);
+
+		return $command->execute();
 	}
 
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
