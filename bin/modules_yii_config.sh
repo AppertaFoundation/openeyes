@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # define all modules to test
 if [ $# -eq 1 ] && [ "$1" != 'all' ] && [ "$1" != 'Modules' ]
   then
