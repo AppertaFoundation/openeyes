@@ -20,7 +20,7 @@ $(document).ready(function(){
 	$collapsed = true;
 
 	$(document).keydown(function(event){
-		if(event.keyCode == 13) {
+		if(event.keyCode == 13 && $(event.target).is(':not(textarea)')) {
 			event.preventDefault();
 			return false;
 		}

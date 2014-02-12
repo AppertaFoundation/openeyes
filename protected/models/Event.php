@@ -268,11 +268,15 @@ class Event extends BaseActiveRecordVersionedSoftDelete
 			return false;
 		}
 
+		if (Yii::app()->params['event_lock_disable']) {
+			return true;
+		}
+
 		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
 			return $module_allows_editing;
 		}
 
-		return date('Ymd',strtotime($this->created_date)) >= date('Ymd');
+		return (date('Ymd') < date('Ymd',strtotime($this->created_date) + (86400 * (Yii::app()->params['event_lock_days'] + 1))));
 	}
 
 	/**
@@ -290,7 +294,7 @@ class Event extends BaseActiveRecordVersionedSoftDelete
 		}
 
 		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
-			//return true;
+			return true;
 		}
 
 		if (Yii::app()->session['user']->id != $this->created_user_id) {
@@ -301,11 +305,15 @@ class Event extends BaseActiveRecordVersionedSoftDelete
 			return false;
 		}
 
+		if (Yii::app()->params['event_lock_disable']) {
+			return true;
+		}
+
 		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
 			return $module_allows_editing;
 		}
 
-		return date('Ymd',strtotime($this->created_date)) >= date('Ymd');
+		return (date('Ymd') < date('Ymd',strtotime($this->created_date) + (86400 * (Yii::app()->params['event_lock_days'] + 1))));
 	}
 
 	public function showDeleteIcon()
