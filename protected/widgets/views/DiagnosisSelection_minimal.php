@@ -85,9 +85,11 @@
 <script type="text/javascript">
 	<?php if ($callback) {?>
 		$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-			<?php echo $callback?>($(this).children('option:selected').val(), $(this).children('option:selected').text());
-			$(this).children('option:selected').remove();
-			$('#<?php echo $class?>_<?php echo $field?>').val('');
+			if ($(this).children('option:selected').val()) {
+				<?php echo $callback?>($(this).children('option:selected').val(), $(this).children('option:selected').text());
+				$(this).children('option:selected').remove();
+				$('#<?php echo $class?>_<?php echo $field?>').val('');
+			}
 		});
 	<?php }?>
 </script>
