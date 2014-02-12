@@ -64,7 +64,6 @@ CREATE TABLE `address_version` (
 		$this->dropPrimaryKey('id','address_version');
 
 		$this->createIndex('address_aid_fk','address_version','id');
-		$this->addForeignKey('address_aid_fk','address_version','id','address','id');
 
 		$this->addColumn('address_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -361,7 +360,6 @@ CREATE TABLE `commissioning_body_patient_assignment_version` (
 		$this->dropPrimaryKey('id','commissioning_body_patient_assignment_version');
 
 		$this->createIndex('commissioning_body_patient_assignment_aid_fk','commissioning_body_patient_assignment_version','id');
-		$this->addForeignKey('commissioning_body_patient_assignment_aid_fk','commissioning_body_patient_assignment_version','id','commissioning_body_patient_assignment','id');
 
 		$this->addColumn('commissioning_body_patient_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -394,7 +392,6 @@ CREATE TABLE `commissioning_body_practice_assignment_version` (
 		$this->dropPrimaryKey('id','commissioning_body_practice_assignment_version');
 
 		$this->createIndex('commissioning_body_practice_assignment_aid_fk','commissioning_body_practice_assignment_version','id');
-		$this->addForeignKey('commissioning_body_practice_assignment_aid_fk','commissioning_body_practice_assignment_version','id','commissioning_body_practice_assignment','id');
 
 		$this->addColumn('commissioning_body_practice_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -523,7 +520,6 @@ CREATE TABLE `common_ophthalmic_disorder_version` (
 		$this->dropPrimaryKey('id','common_ophthalmic_disorder_version');
 
 		$this->createIndex('common_ophthalmic_disorder_aid_fk','common_ophthalmic_disorder_version','id');
-		$this->addForeignKey('common_ophthalmic_disorder_aid_fk','common_ophthalmic_disorder_version','id','common_ophthalmic_disorder','id');
 
 		$this->addColumn('common_ophthalmic_disorder_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -552,7 +548,6 @@ CREATE TABLE `common_previous_operation_version` (
 		$this->dropPrimaryKey('id','common_previous_operation_version');
 
 		$this->createIndex('common_previous_operation_aid_fk','common_previous_operation_version','id');
-		$this->addForeignKey('common_previous_operation_aid_fk','common_previous_operation_version','id','common_previous_operation','id');
 
 		$this->addColumn('common_previous_operation_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -582,7 +577,6 @@ CREATE TABLE `common_systemic_disorder_version` (
 		$this->dropPrimaryKey('id','common_systemic_disorder_version');
 
 		$this->createIndex('common_systemic_disorder_aid_fk','common_systemic_disorder_version','id');
-		$this->addForeignKey('common_systemic_disorder_aid_fk','common_systemic_disorder_version','id','common_systemic_disorder','id');
 
 		$this->addColumn('common_systemic_disorder_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -677,7 +671,6 @@ CREATE TABLE `contact_version` (
 		$this->dropPrimaryKey('id','contact_version');
 
 		$this->createIndex('contact_aid_fk','contact_version','id');
-		$this->addForeignKey('contact_aid_fk','contact_version','id','contact','id');
 
 		$this->addColumn('contact_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -741,7 +734,6 @@ CREATE TABLE `contact_location_version` (
 		$this->dropPrimaryKey('id','contact_location_version');
 
 		$this->createIndex('contact_location_aid_fk','contact_location_version','id');
-		$this->addForeignKey('contact_location_aid_fk','contact_location_version','id','contact_location','id');
 
 		$this->addColumn('contact_location_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -771,7 +763,6 @@ CREATE TABLE `contact_metadata_version` (
 		$this->dropPrimaryKey('id','contact_metadata_version');
 
 		$this->createIndex('contact_metadata_aid_fk','contact_metadata_version','id');
-		$this->addForeignKey('contact_metadata_aid_fk','contact_metadata_version','id','contact_metadata','id');
 
 		$this->addColumn('contact_metadata_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -897,7 +888,6 @@ CREATE TABLE `disorder_tree_version` (
 		$this->dropPrimaryKey('id','disorder_tree_version');
 
 		$this->createIndex('disorder_tree_aid_fk','disorder_tree_version','id');
-		$this->addForeignKey('disorder_tree_aid_fk','disorder_tree_version','id','disorder_tree','id');
 
 		$this->addColumn('disorder_tree_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -979,7 +969,6 @@ CREATE TABLE `drug_allergy_assignment_version` (
 		$this->dropPrimaryKey('id','drug_allergy_assignment_version');
 
 		$this->createIndex('drug_allergy_assignment_aid_fk','drug_allergy_assignment_version','id');
-		$this->addForeignKey('drug_allergy_assignment_aid_fk','drug_allergy_assignment_version','id','drug_allergy_assignment','id');
 
 		$this->addColumn('drug_allergy_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1157,7 +1146,6 @@ CREATE TABLE `drug_set_version` (
 		$this->dropPrimaryKey('id','drug_set_version');
 
 		$this->createIndex('drug_set_aid_fk','drug_set_version','id');
-		$this->addForeignKey('drug_set_aid_fk','drug_set_version','id','drug_set','id');
 
 		$this->addColumn('drug_set_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1197,7 +1185,6 @@ CREATE TABLE `drug_set_item_version` (
 		$this->dropPrimaryKey('id','drug_set_item_version');
 
 		$this->createIndex('drug_set_item_aid_fk','drug_set_item_version','id');
-		$this->addForeignKey('drug_set_item_aid_fk','drug_set_item_version','id','drug_set_item','id');
 
 		$this->addColumn('drug_set_item_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1232,7 +1219,6 @@ CREATE TABLE `drug_set_item_taper_version` (
 		$this->dropPrimaryKey('id','drug_set_item_taper_version');
 
 		$this->createIndex('drug_set_item_taper_aid_fk','drug_set_item_taper_version','id');
-		$this->addForeignKey('drug_set_item_taper_aid_fk','drug_set_item_taper_version','id','drug_set_item_taper','id');
 
 		$this->addColumn('drug_set_item_taper_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1296,7 +1282,6 @@ CREATE TABLE `element_type_version` (
 		$this->dropPrimaryKey('id','element_type_version');
 
 		$this->createIndex('element_type_aid_fk','element_type_version','id');
-		$this->addForeignKey('element_type_aid_fk','element_type_version','id','element_type','id');
 
 		$this->addColumn('element_type_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1330,7 +1315,6 @@ CREATE TABLE `element_type_anaesthetic_agent_version` (
 		$this->dropPrimaryKey('id','element_type_anaesthetic_agent_version');
 
 		$this->createIndex('element_type_anaesthetic_agent_aid_fk','element_type_anaesthetic_agent_version','id');
-		$this->addForeignKey('element_type_anaesthetic_agent_aid_fk','element_type_anaesthetic_agent_version','id','element_type_anaesthetic_agent','id');
 
 		$this->addColumn('element_type_anaesthetic_agent_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1364,7 +1348,6 @@ CREATE TABLE `element_type_anaesthetic_complication_version` (
 		$this->dropPrimaryKey('id','element_type_anaesthetic_complication_version');
 
 		$this->createIndex('element_type_anaesthetic_complication_aid_fk','element_type_anaesthetic_complication_version','id');
-		$this->addForeignKey('element_type_anaesthetic_complication_aid_fk','element_type_anaesthetic_complication_version','id','element_type_anaesthetic_complication','id');
 
 		$this->addColumn('element_type_anaesthetic_complication_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1398,7 +1381,6 @@ CREATE TABLE `element_type_anaesthetic_delivery_version` (
 		$this->dropPrimaryKey('id','element_type_anaesthetic_delivery_version');
 
 		$this->createIndex('element_type_anaesthetic_delivery_aid_fk','element_type_anaesthetic_delivery_version','id');
-		$this->addForeignKey('element_type_anaesthetic_delivery_aid_fk','element_type_anaesthetic_delivery_version','id','element_type_anaesthetic_delivery','id');
 
 		$this->addColumn('element_type_anaesthetic_delivery_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1432,7 +1414,6 @@ CREATE TABLE `element_type_anaesthetic_type_version` (
 		$this->dropPrimaryKey('id','element_type_anaesthetic_type_version');
 
 		$this->createIndex('element_type_anaesthetic_type_aid_fk','element_type_anaesthetic_type_version','id');
-		$this->addForeignKey('element_type_anaesthetic_type_aid_fk','element_type_anaesthetic_type_version','id','element_type_anaesthetic_type','id');
 
 		$this->addColumn('element_type_anaesthetic_type_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1466,7 +1447,6 @@ CREATE TABLE `element_type_anaesthetist_version` (
 		$this->dropPrimaryKey('id','element_type_anaesthetist_version');
 
 		$this->createIndex('element_type_anaesthetist_aid_fk','element_type_anaesthetist_version','id');
-		$this->addForeignKey('element_type_anaesthetist_aid_fk','element_type_anaesthetist_version','id','element_type_anaesthetist','id');
 
 		$this->addColumn('element_type_anaesthetist_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1500,7 +1480,6 @@ CREATE TABLE `element_type_eye_version` (
 		$this->dropPrimaryKey('id','element_type_eye_version');
 
 		$this->createIndex('element_type_eye_aid_fk','element_type_eye_version','id');
-		$this->addForeignKey('element_type_eye_aid_fk','element_type_eye_version','id','element_type_eye','id');
 
 		$this->addColumn('element_type_eye_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1534,7 +1513,6 @@ CREATE TABLE `element_type_priority_version` (
 		$this->dropPrimaryKey('id','element_type_priority_version');
 
 		$this->createIndex('element_type_priority_aid_fk','element_type_priority_version','id');
-		$this->addForeignKey('element_type_priority_aid_fk','element_type_priority_version','id','element_type_priority','id');
 
 		$this->addColumn('element_type_priority_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1610,7 +1588,6 @@ CREATE TABLE `episode_status_version` (
 		$this->dropPrimaryKey('id','episode_status_version');
 
 		$this->createIndex('episode_status_aid_fk','episode_status_version','id');
-		$this->addForeignKey('episode_status_aid_fk','episode_status_version','id','episode_status','id');
 
 		$this->addColumn('episode_status_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1698,7 +1675,6 @@ CREATE TABLE `event_group_version` (
 		$this->dropPrimaryKey('id','event_group_version');
 
 		$this->createIndex('event_group_aid_fk','event_group_version','id');
-		$this->addForeignKey('event_group_aid_fk','event_group_version','id','event_group','id');
 
 		$this->addColumn('event_group_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1731,7 +1707,6 @@ CREATE TABLE `event_issue_version` (
 		$this->dropPrimaryKey('id','event_issue_version');
 
 		$this->createIndex('event_issue_aid_fk','event_issue_version','id');
-		$this->addForeignKey('event_issue_aid_fk','event_issue_version','id','event_issue','id');
 
 		$this->addColumn('event_issue_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1765,7 +1740,6 @@ CREATE TABLE `event_type_version` (
 		$this->dropPrimaryKey('id','event_type_version');
 
 		$this->createIndex('event_type_aid_fk','event_type_version','id');
-		$this->addForeignKey('event_type_aid_fk','event_type_version','id','event_type','id');
 
 		$this->addColumn('event_type_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1805,7 +1779,6 @@ CREATE TABLE `family_history_version` (
 		$this->dropPrimaryKey('id','family_history_version');
 
 		$this->createIndex('family_history_aid_fk','family_history_version','id');
-		$this->addForeignKey('family_history_aid_fk','family_history_version','id','family_history','id');
 
 		$this->addColumn('family_history_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1960,7 +1933,6 @@ CREATE TABLE `firm_user_assignment_version` (
 		$this->dropPrimaryKey('id','firm_user_assignment_version');
 
 		$this->createIndex('firm_user_assignment_aid_fk','firm_user_assignment_version','id');
-		$this->addForeignKey('firm_user_assignment_aid_fk','firm_user_assignment_version','id','firm_user_assignment','id');
 
 		$this->addColumn('firm_user_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -1992,7 +1964,6 @@ CREATE TABLE `gp_version` (
 		$this->dropPrimaryKey('id','gp_version');
 
 		$this->createIndex('gp_aid_fk','gp_version','id');
-		$this->addForeignKey('gp_aid_fk','gp_version','id','gp','id');
 
 		$this->addColumn('gp_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2061,7 +2032,6 @@ CREATE TABLE `institution_consultant_assignment_version` (
 		$this->dropPrimaryKey('id','institution_consultant_assignment_version');
 
 		$this->createIndex('institution_consultant_assignment_aid_fk','institution_consultant_assignment_version','id');
-		$this->addForeignKey('institution_consultant_assignment_aid_fk','institution_consultant_assignment_version','id','institution_consultant_assignment','id');
 
 		$this->addColumn('institution_consultant_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2089,7 +2059,6 @@ CREATE TABLE `issue_version` (
 		$this->dropPrimaryKey('id','issue_version');
 
 		$this->createIndex('issue_aid_fk','issue_version','id');
-		$this->addForeignKey('issue_aid_fk','issue_version','id','issue','id');
 
 		$this->addColumn('issue_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2117,7 +2086,6 @@ CREATE TABLE `language_version` (
 		$this->dropPrimaryKey('id','language_version');
 
 		$this->createIndex('language_aid_fk','language_version','id');
-		$this->addForeignKey('language_aid_fk','language_version','id','language','id');
 
 		$this->addColumn('language_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2150,7 +2118,6 @@ CREATE TABLE `manual_contact_version` (
 		$this->dropPrimaryKey('id','manual_contact_version');
 
 		$this->createIndex('manual_contact_aid_fk','manual_contact_version','id');
-		$this->addForeignKey('manual_contact_aid_fk','manual_contact_version','id','manual_contact','id');
 
 		$this->addColumn('manual_contact_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2360,7 +2327,6 @@ CREATE TABLE `patient_allergy_assignment_version` (
 		$this->dropPrimaryKey('id','patient_allergy_assignment_version');
 
 		$this->createIndex('patient_allergy_assignment_aid_fk','patient_allergy_assignment_version','id');
-		$this->addForeignKey('patient_allergy_assignment_aid_fk','patient_allergy_assignment_version','id','patient_allergy_assignment','id');
 
 		$this->addColumn('patient_allergy_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2396,7 +2362,6 @@ CREATE TABLE `patient_contact_assignment_version` (
 		$this->dropPrimaryKey('id','patient_contact_assignment_version');
 
 		$this->createIndex('patient_contact_assignment_aid_fk','patient_contact_assignment_version','id');
-		$this->addForeignKey('patient_contact_assignment_aid_fk','patient_contact_assignment_version','id','patient_contact_assignment','id');
 
 		$this->addColumn('patient_contact_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2430,7 +2395,6 @@ CREATE TABLE `patient_oph_info_version` (
 		$this->dropPrimaryKey('id','patient_oph_info_version');
 
 		$this->createIndex('patient_oph_info_aid_fk','patient_oph_info_version','id');
-		$this->addForeignKey('patient_oph_info_aid_fk','patient_oph_info_version','id','patient_oph_info','id');
 
 		$this->addColumn('patient_oph_info_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2493,7 +2457,6 @@ CREATE TABLE `patient_shortcode_version` (
 		$this->dropPrimaryKey('id','patient_shortcode_version');
 
 		$this->createIndex('patient_shortcode_aid_fk','patient_shortcode_version','id');
-		$this->addForeignKey('patient_shortcode_aid_fk','patient_shortcode_version','id','patient_shortcode','id');
 
 		$this->addColumn('patient_shortcode_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2522,7 +2485,6 @@ CREATE TABLE `period_version` (
 		$this->dropPrimaryKey('id','period_version');
 
 		$this->createIndex('period_aid_fk','period_version','id');
-		$this->addForeignKey('period_aid_fk','period_version','id','period','id');
 
 		$this->addColumn('period_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2588,7 +2550,6 @@ CREATE TABLE `practice_version` (
 		$this->dropPrimaryKey('id','practice_version');
 
 		$this->createIndex('practice_aid_fk','practice_version','id');
-		$this->addForeignKey('practice_aid_fk','practice_version','id','practice','id');
 
 		$this->addColumn('practice_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2623,7 +2584,6 @@ CREATE TABLE `previous_operation_version` (
 		$this->dropPrimaryKey('id','previous_operation_version');
 
 		$this->createIndex('previous_operation_aid_fk','previous_operation_version','id');
-		$this->addForeignKey('previous_operation_aid_fk','previous_operation_version','id','previous_operation','id');
 
 		$this->addColumn('previous_operation_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2651,7 +2611,6 @@ CREATE TABLE `priority_version` (
 		$this->dropPrimaryKey('id','priority_version');
 
 		$this->createIndex('priority_aid_fk','priority_version','id');
-		$this->addForeignKey('priority_aid_fk','priority_version','id','priority','id');
 
 		$this->addColumn('priority_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2719,7 +2678,6 @@ CREATE TABLE `proc_opcs_assignment_version` (
 		$this->dropPrimaryKey('id','proc_opcs_assignment_version');
 
 		$this->createIndex('proc_opcs_assignment_aid_fk','proc_opcs_assignment_version','id');
-		$this->addForeignKey('proc_opcs_assignment_aid_fk','proc_opcs_assignment_version','id','proc_opcs_assignment','id');
 
 		$this->addColumn('proc_opcs_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2752,7 +2710,6 @@ CREATE TABLE `proc_subspecialty_assignment_version` (
 		$this->dropPrimaryKey('id','proc_subspecialty_assignment_version');
 
 		$this->createIndex('proc_subspecialty_assignment_aid_fk','proc_subspecialty_assignment_version','id');
-		$this->addForeignKey('proc_subspecialty_assignment_aid_fk','proc_subspecialty_assignment_version','id','proc_subspecialty_assignment','id');
 
 		$this->addColumn('proc_subspecialty_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2785,7 +2742,6 @@ CREATE TABLE `proc_subspecialty_subsection_assignment_version` (
 		$this->dropPrimaryKey('id','proc_subspecialty_subsection_assignment_version');
 
 		$this->createIndex('proc_subspecialty_subsection_assignment_aid_fk','proc_subspecialty_subsection_assignment_version','id');
-		$this->addForeignKey('proc_subspecialty_subsection_assignment_aid_fk','proc_subspecialty_subsection_assignment_version','id','proc_subspecialty_subsection_assignment','id');
 
 		$this->addColumn('proc_subspecialty_subsection_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2818,7 +2774,6 @@ CREATE TABLE `procedure_additional_version` (
 		$this->dropPrimaryKey('id','procedure_additional_version');
 
 		$this->createIndex('procedure_additional_aid_fk','procedure_additional_version','id');
-		$this->addForeignKey('procedure_additional_aid_fk','procedure_additional_version','id','procedure_additional','id');
 
 		$this->addColumn('procedure_additional_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2851,7 +2806,6 @@ CREATE TABLE `procedure_benefit_version` (
 		$this->dropPrimaryKey('id','procedure_benefit_version');
 
 		$this->createIndex('procedure_benefit_aid_fk','procedure_benefit_version','id');
-		$this->addForeignKey('procedure_benefit_aid_fk','procedure_benefit_version','id','procedure_benefit','id');
 
 		$this->addColumn('procedure_benefit_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2884,7 +2838,6 @@ CREATE TABLE `procedure_complication_version` (
 		$this->dropPrimaryKey('id','procedure_complication_version');
 
 		$this->createIndex('procedure_complication_aid_fk','procedure_complication_version','id');
-		$this->addForeignKey('procedure_complication_aid_fk','procedure_complication_version','id','procedure_complication','id');
 
 		$this->addColumn('procedure_complication_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2918,7 +2871,6 @@ CREATE TABLE `protected_file_version` (
 		$this->dropPrimaryKey('id','protected_file_version');
 
 		$this->createIndex('protected_file_aid_fk','protected_file_version','id');
-		$this->addForeignKey('protected_file_aid_fk','protected_file_version','id','protected_file','id');
 
 		$this->addColumn('protected_file_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2964,7 +2916,6 @@ CREATE TABLE `referral_version` (
 		$this->dropPrimaryKey('id','referral_version');
 
 		$this->createIndex('referral_aid_fk','referral_version','id');
-		$this->addForeignKey('referral_aid_fk','referral_version','id','referral','id');
 
 		$this->addColumn('referral_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2993,7 +2944,6 @@ CREATE TABLE `referral_episode_assignment_version` (
 		$this->dropPrimaryKey('id','referral_episode_assignment_version');
 
 		$this->createIndex('referral_episode_assignment_aid_fk','referral_episode_assignment_version','id');
-		$this->addForeignKey('referral_episode_assignment_aid_fk','referral_episode_assignment_version','id','referral_episode_assignment','id');
 
 		$this->addColumn('referral_episode_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3059,7 +3009,6 @@ CREATE TABLE `secondary_diagnosis_version` (
 		$this->dropPrimaryKey('id','secondary_diagnosis_version');
 
 		$this->createIndex('secondary_diagnosis_aid_fk','secondary_diagnosis_version','id');
-		$this->addForeignKey('secondary_diagnosis_aid_fk','secondary_diagnosis_version','id','secondary_diagnosis','id');
 
 		$this->addColumn('secondary_diagnosis_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3087,7 +3036,6 @@ CREATE TABLE `service_version` (
 		$this->dropPrimaryKey('id','service_version');
 
 		$this->createIndex('service_aid_fk','service_version','id');
-		$this->addForeignKey('service_aid_fk','service_version','id','service','id');
 
 		$this->addColumn('service_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3120,7 +3068,6 @@ CREATE TABLE `service_subspecialty_assignment_version` (
 		$this->dropPrimaryKey('id','service_subspecialty_assignment_version');
 
 		$this->createIndex('service_subspecialty_assignment_aid_fk','service_subspecialty_assignment_version','id');
-		$this->addForeignKey('service_subspecialty_assignment_aid_fk','service_subspecialty_assignment_version','id','service_subspecialty_assignment','id');
 
 		$this->addColumn('service_subspecialty_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3148,7 +3095,6 @@ CREATE TABLE `setting_field_type_version` (
 		$this->dropPrimaryKey('id','setting_field_type_version');
 
 		$this->createIndex('setting_field_type_aid_fk','setting_field_type_version','id');
-		$this->addForeignKey('setting_field_type_aid_fk','setting_field_type_version','id','setting_field_type','id');
 
 		$this->addColumn('setting_field_type_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3183,7 +3129,6 @@ CREATE TABLE `setting_firm_version` (
 		$this->dropPrimaryKey('id','setting_firm_version');
 
 		$this->createIndex('setting_firm_aid_fk','setting_firm_version','id');
-		$this->addForeignKey('setting_firm_aid_fk','setting_firm_version','id','setting_firm','id');
 
 		$this->addColumn('setting_firm_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3215,7 +3160,6 @@ CREATE TABLE `setting_installation_version` (
 		$this->dropPrimaryKey('id','setting_installation_version');
 
 		$this->createIndex('setting_installation_aid_fk','setting_installation_version','id');
-		$this->addForeignKey('setting_installation_aid_fk','setting_installation_version','id','setting_installation','id');
 
 		$this->addColumn('setting_installation_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3250,7 +3194,6 @@ CREATE TABLE `setting_institution_version` (
 		$this->dropPrimaryKey('id','setting_institution_version');
 
 		$this->createIndex('setting_institution_aid_fk','setting_institution_version','id');
-		$this->addForeignKey('setting_institution_aid_fk','setting_institution_version','id','setting_institution','id');
 
 		$this->addColumn('setting_institution_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3288,7 +3231,6 @@ CREATE TABLE `setting_metadata_version` (
 		$this->dropPrimaryKey('id','setting_metadata_version');
 
 		$this->createIndex('setting_metadata_aid_fk','setting_metadata_version','id');
-		$this->addForeignKey('setting_metadata_aid_fk','setting_metadata_version','id','setting_metadata','id');
 
 		$this->addColumn('setting_metadata_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3323,7 +3265,6 @@ CREATE TABLE `setting_site_version` (
 		$this->dropPrimaryKey('id','setting_site_version');
 
 		$this->createIndex('setting_site_aid_fk','setting_site_version','id');
-		$this->addForeignKey('setting_site_aid_fk','setting_site_version','id','setting_site','id');
 
 		$this->addColumn('setting_site_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3358,7 +3299,6 @@ CREATE TABLE `setting_specialty_version` (
 		$this->dropPrimaryKey('id','setting_specialty_version');
 
 		$this->createIndex('setting_specialty_aid_fk','setting_specialty_version','id');
-		$this->addForeignKey('setting_specialty_aid_fk','setting_specialty_version','id','setting_specialty','id');
 
 		$this->addColumn('setting_specialty_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3393,7 +3333,6 @@ CREATE TABLE `setting_subspecialty_version` (
 		$this->dropPrimaryKey('id','setting_subspecialty_version');
 
 		$this->createIndex('setting_subspecialty_aid_fk','setting_subspecialty_version','id');
-		$this->addForeignKey('setting_subspecialty_aid_fk','setting_subspecialty_version','id','setting_subspecialty','id');
 
 		$this->addColumn('setting_subspecialty_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3428,7 +3367,6 @@ CREATE TABLE `setting_user_version` (
 		$this->dropPrimaryKey('id','setting_user_version');
 
 		$this->createIndex('setting_user_aid_fk','setting_user_version','id');
-		$this->addForeignKey('setting_user_aid_fk','setting_user_version','id','setting_user','id');
 
 		$this->addColumn('setting_user_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3506,7 +3444,6 @@ CREATE TABLE `site_consultant_assignment_version` (
 		$this->dropPrimaryKey('id','site_consultant_assignment_version');
 
 		$this->createIndex('site_consultant_assignment_aid_fk','site_consultant_assignment_version','id');
-		$this->addForeignKey('site_consultant_assignment_aid_fk','site_consultant_assignment_version','id','site_consultant_assignment','id');
 
 		$this->addColumn('site_consultant_assignment_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3542,7 +3479,6 @@ CREATE TABLE `site_subspecialty_anaesthetic_agent_version` (
 		$this->dropPrimaryKey('id','site_subspecialty_anaesthetic_agent_version');
 
 		$this->createIndex('site_subspecialty_anaesthetic_agent_aid_fk','site_subspecialty_anaesthetic_agent_version','id');
-		$this->addForeignKey('site_subspecialty_anaesthetic_agent_aid_fk','site_subspecialty_anaesthetic_agent_version','id','site_subspecialty_anaesthetic_agent','id');
 
 		$this->addColumn('site_subspecialty_anaesthetic_agent_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3578,7 +3514,6 @@ CREATE TABLE `site_subspecialty_anaesthetic_agent_default_version` (
 		$this->dropPrimaryKey('id','site_subspecialty_anaesthetic_agent_default_version');
 
 		$this->createIndex('site_subspecialty_anaesthetic_agent_default_aid_fk','site_subspecialty_anaesthetic_agent_default_version','id');
-		$this->addForeignKey('site_subspecialty_anaesthetic_agent_default_aid_fk','site_subspecialty_anaesthetic_agent_default_version','id','site_subspecialty_anaesthetic_agent_default','id');
 
 		$this->addColumn('site_subspecialty_anaesthetic_agent_default_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3614,7 +3549,6 @@ CREATE TABLE `site_subspecialty_drug_version` (
 		$this->dropPrimaryKey('id','site_subspecialty_drug_version');
 
 		$this->createIndex('site_subspecialty_drug_aid_fk','site_subspecialty_drug_version','id');
-		$this->addForeignKey('site_subspecialty_drug_aid_fk','site_subspecialty_drug_version','id','site_subspecialty_drug','id');
 
 		$this->addColumn('site_subspecialty_drug_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3652,7 +3586,6 @@ CREATE TABLE `site_subspecialty_operative_device_version` (
 		$this->dropPrimaryKey('id','site_subspecialty_operative_device_version');
 
 		$this->createIndex('site_subspecialty_operative_device_aid_fk','site_subspecialty_operative_device_version','id');
-		$this->addForeignKey('site_subspecialty_operative_device_aid_fk','site_subspecialty_operative_device_version','id','site_subspecialty_operative_device','id');
 
 		$this->addColumn('site_subspecialty_operative_device_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3690,7 +3623,6 @@ CREATE TABLE `specialty_version` (
 		$this->dropPrimaryKey('id','specialty_version');
 
 		$this->createIndex('specialty_aid_fk','specialty_version','id');
-		$this->addForeignKey('specialty_aid_fk','specialty_version','id','specialty','id');
 
 		$this->addColumn('specialty_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3751,7 +3683,6 @@ CREATE TABLE `subspecialty_version` (
 		$this->dropPrimaryKey('id','subspecialty_version');
 
 		$this->createIndex('subspecialty_aid_fk','subspecialty_version','id');
-		$this->addForeignKey('subspecialty_aid_fk','subspecialty_version','id','subspecialty','id');
 
 		$this->addColumn('subspecialty_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3869,7 +3800,6 @@ CREATE TABLE `user_firm_version` (
 		$this->dropPrimaryKey('id','user_firm_version');
 
 		$this->createIndex('user_firm_aid_fk','user_firm_version','id');
-		$this->addForeignKey('user_firm_aid_fk','user_firm_version','id','user_firm','id');
 
 		$this->addColumn('user_firm_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3899,7 +3829,6 @@ CREATE TABLE `user_firm_preference_version` (
 		$this->dropPrimaryKey('id','user_firm_preference_version');
 
 		$this->createIndex('user_firm_preference_aid_fk','user_firm_preference_version','id');
-		$this->addForeignKey('user_firm_preference_aid_fk','user_firm_preference_version','id','user_firm_preference','id');
 
 		$this->addColumn('user_firm_preference_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3932,7 +3861,6 @@ CREATE TABLE `user_firm_rights_version` (
 		$this->dropPrimaryKey('id','user_firm_rights_version');
 
 		$this->createIndex('user_firm_rights_aid_fk','user_firm_rights_version','id');
-		$this->addForeignKey('user_firm_rights_aid_fk','user_firm_rights_version','id','user_firm_rights','id');
 
 		$this->addColumn('user_firm_rights_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3965,7 +3893,6 @@ CREATE TABLE `user_service_rights_version` (
 		$this->dropPrimaryKey('id','user_service_rights_version');
 
 		$this->createIndex('user_service_rights_aid_fk','user_service_rights_version','id');
-		$this->addForeignKey('user_service_rights_aid_fk','user_service_rights_version','id','user_service_rights','id');
 
 		$this->addColumn('user_service_rights_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3998,7 +3925,6 @@ CREATE TABLE `user_site_version` (
 		$this->dropPrimaryKey('id','user_site_version');
 
 		$this->createIndex('user_site_aid_fk','user_site_version','id');
-		$this->addForeignKey('user_site_aid_fk','user_site_version','id','user_site','id');
 
 		$this->addColumn('user_site_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -4036,8 +3962,6 @@ CREATE TABLE `user_site_version` (
 
 		$this->update('audit',array('data' => null),"data = ''");
 
-		$this->addColumn('address','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('address_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('address_type','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('address_type_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('allergy','deleted','tinyint(1) unsigned not null');
@@ -4056,46 +3980,26 @@ CREATE TABLE `user_site_version` (
 		$this->addColumn('benefit_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('commissioning_body','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('commissioning_body_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('commissioning_body_patient_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('commissioning_body_patient_assignment_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('commissioning_body_practice_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('commissioning_body_practice_assignment_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('commissioning_body_service','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('commissioning_body_service_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('commissioning_body_service_type','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('commissioning_body_service_type_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('commissioning_body_type','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('commissioning_body_type_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('common_ophthalmic_disorder','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('common_ophthalmic_disorder_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('common_previous_operation','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('common_previous_operation_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('common_systemic_disorder','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('common_systemic_disorder_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('complication','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('complication_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('consultant','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('consultant_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('contact','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('contact_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('contact_label','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('contact_label_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('contact_location','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('contact_location_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('contact_metadata','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('contact_metadata_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('contact_type','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('contact_type_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('country','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('country_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('disorder','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('disorder_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('disorder_tree','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('disorder_tree_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('drug_allergy_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('drug_allergy_assignment_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_duration','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_duration_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_form','deleted','tinyint(1) unsigned not null');
@@ -4106,42 +4010,10 @@ CREATE TABLE `user_site_version` (
 		$this->addColumn('drug_route_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_route_option','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_route_option_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('drug_set','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('drug_set_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('drug_set_item','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('drug_set_item_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('drug_set_item_taper','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('drug_set_item_taper_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_type','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_type_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_anaesthetic_agent','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_anaesthetic_agent_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_anaesthetic_complication','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_anaesthetic_complication_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_anaesthetic_delivery','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_anaesthetic_delivery_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_anaesthetic_type','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_anaesthetic_type_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_anaesthetist','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_anaesthetist_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_eye','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_eye_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_priority','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('element_type_priority_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('episode_status','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('episode_status_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('ethnic_group','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('ethnic_group_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('event_group','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('event_group_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('event_issue','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('event_issue_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('event_type','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('event_type_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('family_history','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('family_history_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('family_history_condition','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('family_history_condition_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('family_history_relative','deleted','tinyint(1) unsigned not null');
@@ -4150,20 +4022,8 @@ CREATE TABLE `user_site_version` (
 		$this->addColumn('family_history_side_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('firm','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('firm_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('firm_user_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('firm_user_assignment_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('gp','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('gp_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('institution','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('institution_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('institution_consultant_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('institution_consultant_assignment_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('issue','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('issue_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('language','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('language_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('manual_contact','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('manual_contact_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('medication','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('medication_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('nsc_grade','deleted','tinyint(1) unsigned not null');
@@ -4174,104 +4034,22 @@ CREATE TABLE `user_site_version` (
 		$this->addColumn('operative_device_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('patient','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('patient_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('patient_allergy_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('patient_allergy_assignment_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('patient_contact_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('patient_contact_assignment_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('patient_oph_info','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('patient_oph_info_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('patient_oph_info_cvi_status','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('patient_oph_info_cvi_status_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('patient_shortcode','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('patient_shortcode_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('period','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('period_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('person','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('person_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('practice','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('practice_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('previous_operation','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('previous_operation_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('priority','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('priority_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('proc','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('proc_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('proc_opcs_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('proc_opcs_assignment_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('proc_subspecialty_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('proc_subspecialty_assignment_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('proc_subspecialty_subsection_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('proc_subspecialty_subsection_assignment_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('procedure_additional','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('procedure_additional_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('procedure_benefit','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('procedure_benefit_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('procedure_complication','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('procedure_complication_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('protected_file','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('protected_file_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('referral','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('referral_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('referral_episode_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('referral_episode_assignment_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('referral_type','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('referral_type_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('secondary_diagnosis','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('secondary_diagnosis_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('service','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('service_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('service_subspecialty_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('service_subspecialty_assignment_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_field_type','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_field_type_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_firm','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_firm_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_installation','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_installation_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_institution','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_institution_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_metadata','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_metadata_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_site','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_site_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_specialty','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_specialty_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_subspecialty','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_subspecialty_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_user','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('setting_user_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('site','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('site_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('site_consultant_assignment','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('site_consultant_assignment_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('site_subspecialty_anaesthetic_agent','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('site_subspecialty_anaesthetic_agent_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('site_subspecialty_anaesthetic_agent_default','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('site_subspecialty_anaesthetic_agent_default_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('site_subspecialty_drug','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('site_subspecialty_drug_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('site_subspecialty_operative_device','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('site_subspecialty_operative_device_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('specialty','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('specialty_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('specialty_type','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('specialty_type_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('subspecialty','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('subspecialty_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('subspecialty_subsection','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('subspecialty_subsection_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('user','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('user_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('user_firm','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('user_firm_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('user_firm_preference','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('user_firm_preference_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('user_firm_rights','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('user_firm_rights_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('user_service_rights','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('user_service_rights_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('user_site','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('user_site_version','deleted','tinyint(1) unsigned not null');
 	}
 
 	public function resetData($null_ids)
@@ -4281,8 +4059,6 @@ CREATE TABLE `user_site_version` (
 
 	public function down()
 	{
-		$this->dropColumn('address','deleted');
-		$this->dropColumn('address_version','deleted');
 		$this->dropColumn('address_type','deleted');
 		$this->dropColumn('address_type_version','deleted');
 		$this->dropColumn('allergy','deleted');
@@ -4301,46 +4077,26 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('benefit_version','deleted');
 		$this->dropColumn('commissioning_body','deleted');
 		$this->dropColumn('commissioning_body_version','deleted');
-		$this->dropColumn('commissioning_body_patient_assignment','deleted');
-		$this->dropColumn('commissioning_body_patient_assignment_version','deleted');
-		$this->dropColumn('commissioning_body_practice_assignment','deleted');
-		$this->dropColumn('commissioning_body_practice_assignment_version','deleted');
 		$this->dropColumn('commissioning_body_service','deleted');
 		$this->dropColumn('commissioning_body_service_version','deleted');
 		$this->dropColumn('commissioning_body_service_type','deleted');
 		$this->dropColumn('commissioning_body_service_type_version','deleted');
 		$this->dropColumn('commissioning_body_type','deleted');
 		$this->dropColumn('commissioning_body_type_version','deleted');
-		$this->dropColumn('common_ophthalmic_disorder','deleted');
-		$this->dropColumn('common_ophthalmic_disorder_version','deleted');
-		$this->dropColumn('common_previous_operation','deleted');
-		$this->dropColumn('common_previous_operation_version','deleted');
-		$this->dropColumn('common_systemic_disorder','deleted');
-		$this->dropColumn('common_systemic_disorder_version','deleted');
 		$this->dropColumn('complication','deleted');
 		$this->dropColumn('complication_version','deleted');
 		$this->dropColumn('consultant','deleted');
 		$this->dropColumn('consultant_version','deleted');
-		$this->dropColumn('contact','deleted');
-		$this->dropColumn('contact_version','deleted');
 		$this->dropColumn('contact_label','deleted');
 		$this->dropColumn('contact_label_version','deleted');
-		$this->dropColumn('contact_location','deleted');
-		$this->dropColumn('contact_location_version','deleted');
-		$this->dropColumn('contact_metadata','deleted');
-		$this->dropColumn('contact_metadata_version','deleted');
 		$this->dropColumn('contact_type','deleted');
 		$this->dropColumn('contact_type_version','deleted');
 		$this->dropColumn('country','deleted');
 		$this->dropColumn('country_version','deleted');
 		$this->dropColumn('disorder','deleted');
 		$this->dropColumn('disorder_version','deleted');
-		$this->dropColumn('disorder_tree','deleted');
-		$this->dropColumn('disorder_tree_version','deleted');
 		$this->dropColumn('drug','deleted');
 		$this->dropColumn('drug_version','deleted');
-		$this->dropColumn('drug_allergy_assignment','deleted');
-		$this->dropColumn('drug_allergy_assignment_version','deleted');
 		$this->dropColumn('drug_duration','deleted');
 		$this->dropColumn('drug_duration_version','deleted');
 		$this->dropColumn('drug_form','deleted');
@@ -4351,42 +4107,10 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('drug_route_version','deleted');
 		$this->dropColumn('drug_route_option','deleted');
 		$this->dropColumn('drug_route_option_version','deleted');
-		$this->dropColumn('drug_set','deleted');
-		$this->dropColumn('drug_set_version','deleted');
-		$this->dropColumn('drug_set_item','deleted');
-		$this->dropColumn('drug_set_item_version','deleted');
-		$this->dropColumn('drug_set_item_taper','deleted');
-		$this->dropColumn('drug_set_item_taper_version','deleted');
 		$this->dropColumn('drug_type','deleted');
 		$this->dropColumn('drug_type_version','deleted');
-		$this->dropColumn('element_type','deleted');
-		$this->dropColumn('element_type_version','deleted');
-		$this->dropColumn('element_type_anaesthetic_agent','deleted');
-		$this->dropColumn('element_type_anaesthetic_agent_version','deleted');
-		$this->dropColumn('element_type_anaesthetic_complication','deleted');
-		$this->dropColumn('element_type_anaesthetic_complication_version','deleted');
-		$this->dropColumn('element_type_anaesthetic_delivery','deleted');
-		$this->dropColumn('element_type_anaesthetic_delivery_version','deleted');
-		$this->dropColumn('element_type_anaesthetic_type','deleted');
-		$this->dropColumn('element_type_anaesthetic_type_version','deleted');
-		$this->dropColumn('element_type_anaesthetist','deleted');
-		$this->dropColumn('element_type_anaesthetist_version','deleted');
-		$this->dropColumn('element_type_eye','deleted');
-		$this->dropColumn('element_type_eye_version','deleted');
-		$this->dropColumn('element_type_priority','deleted');
-		$this->dropColumn('element_type_priority_version','deleted');
-		$this->dropColumn('episode_status','deleted');
-		$this->dropColumn('episode_status_version','deleted');
 		$this->dropColumn('ethnic_group','deleted');
 		$this->dropColumn('ethnic_group_version','deleted');
-		$this->dropColumn('event_group','deleted');
-		$this->dropColumn('event_group_version','deleted');
-		$this->dropColumn('event_issue','deleted');
-		$this->dropColumn('event_issue_version','deleted');
-		$this->dropColumn('event_type','deleted');
-		$this->dropColumn('event_type_version','deleted');
-		$this->dropColumn('family_history','deleted');
-		$this->dropColumn('family_history_version','deleted');
 		$this->dropColumn('family_history_condition','deleted');
 		$this->dropColumn('family_history_condition_version','deleted');
 		$this->dropColumn('family_history_relative','deleted');
@@ -4395,20 +4119,8 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('family_history_side_version','deleted');
 		$this->dropColumn('firm','deleted');
 		$this->dropColumn('firm_version','deleted');
-		$this->dropColumn('firm_user_assignment','deleted');
-		$this->dropColumn('firm_user_assignment_version','deleted');
-		$this->dropColumn('gp','deleted');
-		$this->dropColumn('gp_version','deleted');
 		$this->dropColumn('institution','deleted');
 		$this->dropColumn('institution_version','deleted');
-		$this->dropColumn('institution_consultant_assignment','deleted');
-		$this->dropColumn('institution_consultant_assignment_version','deleted');
-		$this->dropColumn('issue','deleted');
-		$this->dropColumn('issue_version','deleted');
-		$this->dropColumn('language','deleted');
-		$this->dropColumn('language_version','deleted');
-		$this->dropColumn('manual_contact','deleted');
-		$this->dropColumn('manual_contact_version','deleted');
 		$this->dropColumn('medication','deleted');
 		$this->dropColumn('medication_version','deleted');
 		$this->dropColumn('nsc_grade','deleted');
@@ -4419,104 +4131,22 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('operative_device_version','deleted');
 		$this->dropColumn('patient','deleted');
 		$this->dropColumn('patient_version','deleted');
-		$this->dropColumn('patient_allergy_assignment','deleted');
-		$this->dropColumn('patient_allergy_assignment_version','deleted');
-		$this->dropColumn('patient_contact_assignment','deleted');
-		$this->dropColumn('patient_contact_assignment_version','deleted');
-		$this->dropColumn('patient_oph_info','deleted');
-		$this->dropColumn('patient_oph_info_version','deleted');
 		$this->dropColumn('patient_oph_info_cvi_status','deleted');
 		$this->dropColumn('patient_oph_info_cvi_status_version','deleted');
-		$this->dropColumn('patient_shortcode','deleted');
-		$this->dropColumn('patient_shortcode_version','deleted');
-		$this->dropColumn('period','deleted');
-		$this->dropColumn('period_version','deleted');
 		$this->dropColumn('person','deleted');
 		$this->dropColumn('person_version','deleted');
-		$this->dropColumn('practice','deleted');
-		$this->dropColumn('practice_version','deleted');
-		$this->dropColumn('previous_operation','deleted');
-		$this->dropColumn('previous_operation_version','deleted');
-		$this->dropColumn('priority','deleted');
-		$this->dropColumn('priority_version','deleted');
 		$this->dropColumn('proc','deleted');
 		$this->dropColumn('proc_version','deleted');
-		$this->dropColumn('proc_opcs_assignment','deleted');
-		$this->dropColumn('proc_opcs_assignment_version','deleted');
-		$this->dropColumn('proc_subspecialty_assignment','deleted');
-		$this->dropColumn('proc_subspecialty_assignment_version','deleted');
-		$this->dropColumn('proc_subspecialty_subsection_assignment','deleted');
-		$this->dropColumn('proc_subspecialty_subsection_assignment_version','deleted');
-		$this->dropColumn('procedure_additional','deleted');
-		$this->dropColumn('procedure_additional_version','deleted');
-		$this->dropColumn('procedure_benefit','deleted');
-		$this->dropColumn('procedure_benefit_version','deleted');
-		$this->dropColumn('procedure_complication','deleted');
-		$this->dropColumn('procedure_complication_version','deleted');
-		$this->dropColumn('protected_file','deleted');
-		$this->dropColumn('protected_file_version','deleted');
-		$this->dropColumn('referral','deleted');
-		$this->dropColumn('referral_version','deleted');
-		$this->dropColumn('referral_episode_assignment','deleted');
-		$this->dropColumn('referral_episode_assignment_version','deleted');
 		$this->dropColumn('referral_type','deleted');
 		$this->dropColumn('referral_type_version','deleted');
-		$this->dropColumn('secondary_diagnosis','deleted');
-		$this->dropColumn('secondary_diagnosis_version','deleted');
-		$this->dropColumn('service','deleted');
-		$this->dropColumn('service_version','deleted');
-		$this->dropColumn('service_subspecialty_assignment','deleted');
-		$this->dropColumn('service_subspecialty_assignment_version','deleted');
-		$this->dropColumn('setting_field_type','deleted');
-		$this->dropColumn('setting_field_type_version','deleted');
-		$this->dropColumn('setting_firm','deleted');
-		$this->dropColumn('setting_firm_version','deleted');
-		$this->dropColumn('setting_installation','deleted');
-		$this->dropColumn('setting_installation_version','deleted');
-		$this->dropColumn('setting_institution','deleted');
-		$this->dropColumn('setting_institution_version','deleted');
-		$this->dropColumn('setting_metadata','deleted');
-		$this->dropColumn('setting_metadata_version','deleted');
-		$this->dropColumn('setting_site','deleted');
-		$this->dropColumn('setting_site_version','deleted');
-		$this->dropColumn('setting_specialty','deleted');
-		$this->dropColumn('setting_specialty_version','deleted');
-		$this->dropColumn('setting_subspecialty','deleted');
-		$this->dropColumn('setting_subspecialty_version','deleted');
-		$this->dropColumn('setting_user','deleted');
-		$this->dropColumn('setting_user_version','deleted');
 		$this->dropColumn('site','deleted');
 		$this->dropColumn('site_version','deleted');
-		$this->dropColumn('site_consultant_assignment','deleted');
-		$this->dropColumn('site_consultant_assignment_version','deleted');
-		$this->dropColumn('site_subspecialty_anaesthetic_agent','deleted');
-		$this->dropColumn('site_subspecialty_anaesthetic_agent_version','deleted');
-		$this->dropColumn('site_subspecialty_anaesthetic_agent_default','deleted');
-		$this->dropColumn('site_subspecialty_anaesthetic_agent_default_version','deleted');
-		$this->dropColumn('site_subspecialty_drug','deleted');
-		$this->dropColumn('site_subspecialty_drug_version','deleted');
-		$this->dropColumn('site_subspecialty_operative_device','deleted');
-		$this->dropColumn('site_subspecialty_operative_device_version','deleted');
-		$this->dropColumn('specialty','deleted');
-		$this->dropColumn('specialty_version','deleted');
 		$this->dropColumn('specialty_type','deleted');
 		$this->dropColumn('specialty_type_version','deleted');
-		$this->dropColumn('subspecialty','deleted');
-		$this->dropColumn('subspecialty_version','deleted');
 		$this->dropColumn('subspecialty_subsection','deleted');
 		$this->dropColumn('subspecialty_subsection_version','deleted');
 		$this->dropColumn('user','deleted');
 		$this->dropColumn('user_version','deleted');
-		$this->dropColumn('user_firm','deleted');
-		$this->dropColumn('user_firm_version','deleted');
-		$this->dropColumn('user_firm_preference','deleted');
-		$this->dropColumn('user_firm_preference_version','deleted');
-		$this->dropColumn('user_firm_rights','deleted');
-		$this->dropColumn('user_firm_rights_version','deleted');
-		$this->dropColumn('user_service_rights','deleted');
-		$this->dropColumn('user_service_rights_version','deleted');
-		$this->dropColumn('user_site','deleted');
-		$this->dropColumn('user_site_version','deleted');
 
 		$this->dropTable('address_version');
 		$this->dropTable('address_type_version');
