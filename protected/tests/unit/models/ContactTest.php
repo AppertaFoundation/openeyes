@@ -26,7 +26,8 @@ class ContactTest extends CDbTestCase {
 		'addresses' => 'Address',
 		'contactlocations' => 'ContactLocation',
 		'sites' => 'Site',
-		'institutions' => 'Institution'
+		'institutions' => 'Institution',
+		'person' => 'Person'
 
       );
 
@@ -221,46 +222,45 @@ class ContactTest extends CDbTestCase {
 		$c5 = $this->contacts('contact5');
 		$term = strtolower(substr($c5->last_name, 0, 3));
 		$expected = array(array('line' => $c5->ContactLine(), 'contact_id' => $c5->id));
-
 		$res = Contact::model()->findByLabel($term . '%', $c5->label->name, false, 'person');
 
 		$this->assertEquals($expected, $res);
 	}
 
 	/**
-       * @covers Contact::getType
-       * @todo   Implement testGetType().
-       */
-      public function testGetType() {
+	 * @dataProvider dataProvider_Search
+	 */
+	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+	{
+		$contact = new Contact;
+		$contact->setAttributes($searchTerms);
+		$results = $contact->search();
+		$data = $results->getData();
 
-            $this->model->setAttribute('id', 1);
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
+				$expectedResults[] = $this->contacts($key);
+			}
+		}
 
-            $result = $this->model->GetType();
+		$this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
+		$this->assertEquals($expectedResults, $data, 'Actual results should match.');
+	}
 
-            $expected = $this->contacts('contact1')->GetType();
+	/**
+	 * @covers Contact::getType
+	 * @todo   Implement testGetType().
+	 */
+	public function testGetType() {
 
-            $this->assertEquals($expected, $result);
-      }
+		$this->model->setAttribute('id', 1);
 
-      /**
-       * @dataProvider dataProvider_Search
-       */
-      public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
+		$result = $this->model->GetType();
 
-            $contact = new Contact;
-            $contact->setAttributes($searchTerms);
-            $results = $contact->search();
-            $data = $results->getData();
+		$expected = $this->contacts('contact1')->GetType();
 
-            $expectedResults = array();
-            if (!empty($expectedKeys)) {
-                  foreach ($expectedKeys as $key) {
-                        $expectedResults[] = $this->contacts($key);
-                  }
-            }
-
-            $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
-            $this->assertEquals($expectedResults, $data, 'Actual results should match.');
-      }
+		$this->assertEquals($expected, $result);
+	}
 
 }
