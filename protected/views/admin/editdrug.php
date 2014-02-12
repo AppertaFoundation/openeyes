@@ -32,6 +32,8 @@
 			)
 		))?>
 	<?php echo $form->textField($drug,'name',array('disabled'=>true))?>
+	<?php echo $form->textField($drug,'tallman',array('disabled'=>true))?>
+	<?php echo $form->textField($drug,'aliases')?>
 	<?php echo $form->dropDownList($drug,'type_id',CHtml::listData(DrugType::model()->findAll(array('order' => 'name')),'id','name'))?>
 	<?php echo $form->textField($drug,'default_dose')?>
 	<?php echo $form->textField($drug,'dose_unit')?>

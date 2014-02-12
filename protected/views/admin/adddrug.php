@@ -32,6 +32,8 @@
 			)
 		))?>
 	<?php echo $form->textField($drug,'name')?>
+	<?php echo $form->textField($drug,'tallman')?>
+	<?php echo $form->textField($drug,'aliases')?>
 	<?php echo $form->dropDownList($drug,'type_id',CHtml::listData(DrugType::model()->findAll(array('order' => 'name')),'id','name'))?>
 	<?php echo $form->textField($drug,'default_dose')?>
 	<?php echo $form->textField($drug,'dose_unit')?>
@@ -40,4 +42,22 @@
 	<?php echo $form->multiSelectList($drug,'allergies','allergies','id', CHtml::listData(Allergy::model()->findAll(array('order' => 'name')),'id','name'),null,array('empty' => '','label' => 'Allergies'))?>
 	<?php echo $form->formActions()?>
 	<?php $this->endWidget()?>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var sync_tallman = true;
+			if ($("#Drug_tallman").val() != $("#Drug_name").val()) {
+				sync_tallman = false;
+			}
+			$("#Drug_name").on('input', function() {
+				if (sync_tallman) {
+					$("#Drug_tallman").val($(this).val());
+				}
+			});
+			$("#Drug_tallman").on('input', function() {
+				if ($(this).val() != $("#Drug_name").val()) {
+					sync_tallman = false;
+				}
+			});
+		});
+	</script>
 </div>
