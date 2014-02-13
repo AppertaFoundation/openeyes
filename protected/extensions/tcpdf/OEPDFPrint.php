@@ -35,6 +35,12 @@ class OEPDFPrint
 		$this->letters[] = $letter;
 	}
 
+	public function addLetterRender($letter)
+	{
+		$letter->render($this->pdf);
+	}
+
+
 	public function output()
 	{
 		foreach ($this->letters as $letter) {
