@@ -38,6 +38,7 @@ class User extends BaseActiveRecordVersionedSoftDelete
 	 * @var string
 	 */
 	public $password_repeat;
+	public $notDeletedField = 'active';
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -62,6 +63,13 @@ class User extends BaseActiveRecordVersionedSoftDelete
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
 			),
+		);
+	}
+
+	public function scopes()
+	{
+		return array(
+			'active' => array('condition' => 'active = 1'),
 		);
 	}
 
@@ -335,7 +343,7 @@ class User extends BaseActiveRecordVersionedSoftDelete
 	{
 		$users = array();
 
-		foreach (User::Model()->findAll(array('order'=>'first_name,last_name')) as $user) {
+		foreach (User::Model()->active()->findAll(array('order'=>'first_name,last_name')) as $user) {
 			$users[$user->id] = $user->first_name.' '.$user->last_name;
 		}
 
@@ -351,10 +359,9 @@ class User extends BaseActiveRecordVersionedSoftDelete
 	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('is_surgeon',1);
-		$criteria->compare('active',1);
 		$criteria->order = 'last_name,first_name asc';
 
-		return User::model()->findAll($criteria);
+		return User::model()->active()->findAll($criteria);
 	}
 
 	public function audit($target, $action, $data=null, $log=false, $properties=array())
@@ -367,9 +374,9 @@ class User extends BaseActiveRecordVersionedSoftDelete
 	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('is_surgeon',1);
-		$criteria->compare('active',1);
 		$criteria->order = 'last_name,first_name asc';
-		return CHtml::listData(User::model()->findAll($criteria),'id','reversedFullName');
+
+		return CHtml::listData(User::model()->active()->findAll($criteria),'id','reversedFullName');
 	}
 
 	public function getReportDisplay()
@@ -419,10 +426,9 @@ class User extends BaseActiveRecordVersionedSoftDelete
 
 		$criteria = new CDbCriteria;
 		$criteria->addSearchCondition("lower(`t`.last_name)",$term,false);
-		$criteria->compare('active',1);
 		$criteria->order = 'contact.title, contact.first_name, contact.last_name';
 
-		foreach (User::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $user) {
+		foreach (User::model()->with(array('contact' => array('with' => 'locations')))->active()->findAll($criteria) as $user) {
 			foreach ($user->contact->locations as $location) {
 				$contacts[] = array(
 					'line' => $user->contact->contactLine($location),

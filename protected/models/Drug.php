@@ -40,6 +40,7 @@
 class Drug extends BaseActiveRecordVersionedSoftDelete
 {
 	public $default_scope = true;
+	public $deletedField = 'discontinued';
 
 	/**
 	 * Returns the static model of the specified AR class.

@@ -28,6 +28,8 @@
  */
 class AnaestheticAgent extends BaseActiveRecordVersionedSoftDelete
 {
+	public $deletedField = 'discontinued';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return AnaestheticAgent the static model class
@@ -43,6 +45,13 @@ class AnaestheticAgent extends BaseActiveRecordVersionedSoftDelete
 	public function tableName()
 	{
 		return 'anaesthetic_agent';
+	}
+
+	public function scopes()
+	{
+		return array(
+			'active' => array('condition' => 'discontinued = 0'),
+		);
 	}
 
 	/**
@@ -65,5 +74,10 @@ class AnaestheticAgent extends BaseActiveRecordVersionedSoftDelete
 			'siteSubspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyAnaestheticAgent', 'anaesthetic_agent_id'),
 			'siteSubspecialtyAssignmentDefaults' => array(self::HAS_MANY, 'SiteSubspecialtyAnaestheticAgentDefault', 'anaesthetic_agent_id'),
 		);
+	}
+
+	public function discontinue()
+	{
+		return parent::delete();
 	}
 }

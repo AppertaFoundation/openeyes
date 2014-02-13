@@ -19,10 +19,85 @@
 
 class BaseActiveRecordVersionedSoftDelete extends BaseActiveRecordVersioned
 {
+	public $deletedField = 'deleted';
+
 	public function delete()
 	{
-		$this->deleted = 1;
+		if (isset($this->notDeletedField)) {
+			$this->{$this->notDeletedField} = 0;
+		} else {
+			$this->{$this->deletedField} = 1;
+		}
 
 		return $this->save();
+	}
+
+	public function deleteByPk($pk,$condition='',$params=array())
+	{
+		if (isset($this->notDeletedField)) {
+			$attributes = array(
+				$this->notDeletedField => 0,
+			);
+		} else {
+			$attributes = array(
+				$this->deletedField => 1,
+			);
+		}
+
+		return $this->updateByPk($pk,$attributes,$condition,$params);
+	}
+
+	public function deleteAll($condition='',$params=array())
+	{
+		if (isset($this->notDeletedField)) {
+			$attributes = array(
+				$this->notDeletedField => 0,
+			);
+		} else {
+			$attributes = array(
+				$this->deletedField => 1,
+			);
+		}
+
+		return $this->updateAll($attributes,$condition,$params);
+	}
+
+	public function deleteAllByAttributes($attributes,$condition='',$params=array())
+	{
+		if (is_object($condition)) {
+			foreach ($attributes as $key => $value) {
+				$condition->addCondition("key = :__$key");
+				$condition->params[":__$key"] = $value;
+			}
+		} else {
+			$first = true;
+
+			foreach ($attributes as $key => $value) {
+				if ($first) {
+					if ($condition) {
+						$condition = '( '.$condition.' ) and ';
+					}
+				} else {
+					$condition .= ' and ';
+				}
+
+				$condition .= "$key = :__$key ";
+				$params[":__$key"] = $value;
+
+				$first = false;
+			}
+		}
+
+		if (isset($this->notDeletedField)) {
+			$attributes = array(
+				$this->notDeletedField => 0,
+			);
+		} else {
+			$attributes = array(
+				$this->deletedField => 1,
+			);
+		}
+
+		return $this->updateAll($attributes,$condition,$params);
 	}
 }

@@ -32,6 +32,8 @@
  */
 class Medication extends BaseActiveRecordVersionedSoftDelete
 {
+	public $deletedField = 'discontinued';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Medication the static model class
