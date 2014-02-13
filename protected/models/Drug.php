@@ -91,7 +91,7 @@ class Drug extends BaseActiveRecordVersionedSoftDelete
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
+			array('name, tallman', 'required'),
 			array('name', 'unsafe', 'on' => 'update'),
 			array('tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases, discontinued', 'safe'),
 			// The following rule is used by search().
@@ -124,6 +124,10 @@ class Drug extends BaseActiveRecordVersionedSoftDelete
 	public function attributeLabels()
 	{
 		return array(
+			'type_id' => 'Type',
+			'default_duration_id' => 'Default Duration',
+			'default_frequency_id' => 'Default Frequency',
+			'default_route_id' => 'Default Route',
 		);
 	}
 
