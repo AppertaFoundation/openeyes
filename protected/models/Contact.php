@@ -42,7 +42,7 @@
  * @property string $salutationName
  * @property string $fullName
  */
-class Contact extends BaseActiveRecordVersioned
+class Contact extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.

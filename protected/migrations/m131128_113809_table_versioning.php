@@ -671,6 +671,7 @@ CREATE TABLE `contact_version` (
 		$this->dropPrimaryKey('id','contact_version');
 
 		$this->createIndex('contact_aid_fk','contact_version','id');
+		$this->addForeignKey('contact_aid_fk','contact_version','id','contact','id');
 
 		$this->addColumn('contact_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -3990,6 +3991,8 @@ CREATE TABLE `user_site_version` (
 		$this->addColumn('complication_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('consultant','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('consultant_version','deleted','tinyint(1) unsigned not null');
+		$this->addColumn('contact','deleted','tinyint(1) unsigned not null');
+		$this->addColumn('contact_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('contact_label','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('contact_label_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('contact_type','deleted','tinyint(1) unsigned not null');
@@ -4087,6 +4090,8 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('complication_version','deleted');
 		$this->dropColumn('consultant','deleted');
 		$this->dropColumn('consultant_version','deleted');
+		$this->dropColumn('contact','deleted');
+		$this->dropColumn('contact_version','deleted');
 		$this->dropColumn('contact_label','deleted');
 		$this->dropColumn('contact_label_version','deleted');
 		$this->dropColumn('contact_type','deleted');
