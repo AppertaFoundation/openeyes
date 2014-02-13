@@ -28,6 +28,8 @@
  */
 class AnaestheticType extends BaseActiveRecordVersionedSoftDelete
 {
+	public $deletedField = 'discontinued';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return AnaestheticType the static model class
