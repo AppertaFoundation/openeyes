@@ -16,35 +16,16 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title><?php echo CHtml::encode($this->pageTitle); ?></title>
-<?php Yii::app()->clientScript->registerCoreScript('jquery')?>
-</head>
-<body class="open-eyes print">
-	<?php echo $content; ?>
-	<script type="text/javascript">
-		$(document).ready(function() {
 
-			// function for printing
-			printFn = function() {
-				window.print();
-			};
-
-			// check to see if the eyedraw libraries are loaded (which implies that we have eyedraws
-			// on the page) If they are, then use that to call the print function when ready, otherwise
-			// we can just call it straight off
-			if (typeof(getOEEyeDrawChecker) === 'function') {
-				edChecker = getOEEyeDrawChecker();
-				edChecker.registerForReady(printFn);
-			} else {
-				printFn();
-			}
-		});
-	</script>
-</body>
-</html>
+<div class="container content event">
+	<?php $this->renderOpenElements('print'); ?>
+	<div class="metadata">
+		<span class="info">Examination created by <span class="user"><?php echo $this->event->user->fullname ?></span>
+			on <?php echo $this->event->NHSDate('created_date') ?>
+			at <?php echo date('H:i', strtotime($this->event->created_date)) ?></span>
+		<span class="info">Examination last modified by <span class="user"><?php echo $this->event->usermodified->fullname ?></span>
+			on <?php echo $this->event->NHSDate('last_modified_date') ?>
+			at <?php echo date('H:i', strtotime($this->event->last_modified_date)) ?></span>
+	</div>
+</div>

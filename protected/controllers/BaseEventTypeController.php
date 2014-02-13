@@ -1217,6 +1217,7 @@ class BaseEventTypeController extends BaseModuleController
 			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
 				throw $e;
 			}
+
 			// Otherwise fall back to using a wrapper layout.
 			$this->renderPartial(
 				'_'.$action,

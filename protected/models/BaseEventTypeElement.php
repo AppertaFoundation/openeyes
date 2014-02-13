@@ -278,6 +278,11 @@ class BaseEventTypeElement extends BaseElement
 		return 'view_'.$this->getDefaultView();
 	}
 
+	public function getForm_View()
+	{
+		return 'form_'.$this->getDefaultView();
+	}
+
 	public function isEditable()
 	{
 		return true;

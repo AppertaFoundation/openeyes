@@ -5436,7 +5436,6 @@ tfoot.pagination-container .pagination li {
   background: none;
   padding-bottom: 0;
   padding-top: 0;
-  /* FIXME: unsure if used anwhere */
 }
 /* line 213, ../sass/openeyes/components/events/_elements.scss */
 .view.highlight-fields .element-data.highlight, .view.highlight-fields .edit .highlight.element-fields, .edit .view.highlight-fields .highlight.element-fields, .view.highlight-fields .highlight.sub-element-data, .view.highlight-fields .edit .highlight.sub-element-fields, .edit .view.highlight-fields .highlight.sub-element-fields {
@@ -6194,17 +6193,17 @@ tfoot.pagination-container .pagination li {
   font-size: 0.8125rem;
 }
 
-/* line 1, ../sass/openeyes/components/print/_base.scss */
+/* line 17, ../sass/openeyes/components/print/_base.scss */
 .printable {
   display: none;
 }
-/* line 3, ../sass/openeyes/components/print/_base.scss */
+/* line 19, ../sass/openeyes/components/print/_base.scss */
 .printable * {
   font-size: 9pt;
 }
 
 @media print {
-  /* line 9, ../sass/openeyes/components/print/_base.scss */
+  /* line 25, ../sass/openeyes/components/print/_base.scss */
   * {
     background: transparent !important;
     color: black !important;
@@ -6213,6 +6212,7 @@ tfoot.pagination-container .pagination li {
     -ms-filter: none !important;
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   /* line 81, ../sass/openeyes/components/_print.scss */
   .content {
@@ -6227,34 +6227,41 @@ tfoot.pagination-container .pagination li {
   /* line 87, ../sass/openeyes/components/_print.scss */
 =======
   /* line 16, ../sass/openeyes/components/print/_base.scss */
+=======
+  /* line 32, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
   a {
     text-decoration: underline;
   }
-  /* line 18, ../sass/openeyes/components/print/_base.scss */
+  /* line 34, ../sass/openeyes/components/print/_base.scss */
   a:visited {
     text-decoration: underline;
   }
-  /* line 21, ../sass/openeyes/components/print/_base.scss */
+  /* line 37, ../sass/openeyes/components/print/_base.scss */
   a[href]:after {
     content: " (" attr(href) ")";
   }
 
-  /* line 25, ../sass/openeyes/components/print/_base.scss */
+  /* line 41, ../sass/openeyes/components/print/_base.scss */
   abbr[title]:after {
     content: " (" attr(title) ")";
   }
 
-  /* line 28, ../sass/openeyes/components/print/_base.scss */
+  /* line 44, ../sass/openeyes/components/print/_base.scss */
   .ir a:after {
     content: "";
   }
 
-  /* line 32, ../sass/openeyes/components/print/_base.scss */
+  /* line 48, ../sass/openeyes/components/print/_base.scss */
   a[href^="javascript:"]:after, a[href^="#"]:after {
     content: "";
   }
 
+<<<<<<< HEAD
   /* line 36, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
+=======
+  /* line 52, ../sass/openeyes/components/print/_base.scss */
 >>>>>>> [OE-3945] Print related
   pre, blockquote {
     border: 1px solid #999;
@@ -6262,14 +6269,19 @@ tfoot.pagination-container .pagination li {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* line 91, ../sass/openeyes/components/_print.scss */
 =======
   /* line 40, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
+=======
+  /* line 56, ../sass/openeyes/components/print/_base.scss */
 >>>>>>> [OE-3945] Print related
   thead {
     display: table-header-group;
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   /* line 94, ../sass/openeyes/components/_print.scss */
   tr, img {
@@ -6279,11 +6291,18 @@ tfoot.pagination-container .pagination li {
   /* line 97, ../sass/openeyes/components/_print.scss */
 =======
   /* line 43, ../sass/openeyes/components/print/_base.scss */
+=======
+  /* line 59, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
   tr {
     page-break-inside: avoid;
   }
 
+<<<<<<< HEAD
   /* line 46, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
+=======
+  /* line 62, ../sass/openeyes/components/print/_base.scss */
 >>>>>>> [OE-3945] Print related
   img {
     max-width: 100% !important;
@@ -6294,9 +6313,13 @@ tfoot.pagination-container .pagination li {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* line 104, ../sass/openeyes/components/_print.scss */
 =======
   /* line 54, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
+=======
+  /* line 70, ../sass/openeyes/components/print/_base.scss */
 >>>>>>> [OE-3945] Print related
   p, h2, h3 {
     orphans: 3;
@@ -6304,16 +6327,21 @@ tfoot.pagination-container .pagination li {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* line 108, ../sass/openeyes/components/_print.scss */
   h1, h2, h3 {
 =======
   /* line 58, ../sass/openeyes/components/print/_base.scss */
+=======
+  /* line 74, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
   h2, h3 {
 >>>>>>> [OE-3945] Print related
     page-break-after: avoid;
     clear: both;
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   /* line 112, ../sass/openeyes/components/_print.scss */
   h1 {
@@ -6334,11 +6362,15 @@ tfoot.pagination-container .pagination li {
 =======
   /* line 61, ../sass/openeyes/components/print/_base.scss */
 >>>>>>> [OE-3945] Print related
+=======
+  /* line 77, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
   table {
     width: 100%;
     border-collapse: collapse;
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   /* line 126, ../sass/openeyes/components/_print.scss */
   th,
@@ -6347,6 +6379,9 @@ tfoot.pagination-container .pagination li {
     border: 1px solid #999;
 =======
   /* line 64, ../sass/openeyes/components/print/_base.scss */
+=======
+  /* line 80, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
   td, th {
 >>>>>>> [OE-3945] Print related
     text-align: left;
@@ -6528,18 +6563,26 @@ tfoot.pagination-container .pagination li {
 
   /* PREPAPRE PAGE FOR PRINT */
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* line 248, ../sass/openeyes/components/_print.scss */
 =======
   /* line 71, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
+=======
+  /* line 87, ../sass/openeyes/components/print/_base.scss */
 >>>>>>> [OE-3945] Print related
   html {
     height: 100%;
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* line 251, ../sass/openeyes/components/_print.scss */
 =======
   /* line 74, ../sass/openeyes/components/print/_base.scss */
+>>>>>>> [OE-3945] Print related
+=======
+  /* line 90, ../sass/openeyes/components/print/_base.scss */
 >>>>>>> [OE-3945] Print related
   .printable {
     display: block !important;
@@ -6547,34 +6590,34 @@ tfoot.pagination-container .pagination li {
   }
 }
 /* ====== LETTERs (hidden in page) ====== */
-/* line 3, ../sass/openeyes/components/print/_letters.scss */
+/* line 19, ../sass/openeyes/components/print/_letters.scss */
 #letterTemplate {
   display: block;
   background: #fff;
 }
-/* line 6, ../sass/openeyes/components/print/_letters.scss */
+/* line 22, ../sass/openeyes/components/print/_letters.scss */
 #letterTemplate #l_type {
   text-align: center;
   font-size: 6pt;
 }
-/* line 11, ../sass/openeyes/components/print/_letters.scss */
+/* line 27, ../sass/openeyes/components/print/_letters.scss */
 #letterTemplate #l_content p {
   margin-bottom: 1em;
 }
-/* line 14, ../sass/openeyes/components/print/_letters.scss */
+/* line 30, ../sass/openeyes/components/print/_letters.scss */
 #letterTemplate #l_content ul {
   margin: 0 0 1.5em 0.5em;
 }
-/* line 17, ../sass/openeyes/components/print/_letters.scss */
+/* line 33, ../sass/openeyes/components/print/_letters.scss */
 #letterTemplate #l_content table {
   margin-bottom: 1.5em;
 }
-/* line 20, ../sass/openeyes/components/print/_letters.scss */
+/* line 36, ../sass/openeyes/components/print/_letters.scss */
 #letterTemplate #l_content td {
   padding: 0.25em 0.5em;
 }
 
-/* line 26, ../sass/openeyes/components/print/_letters.scss */
+/* line 42, ../sass/openeyes/components/print/_letters.scss */
 #letterFooter {
   display: block;
   text-align: right;
@@ -6586,24 +6629,24 @@ tfoot.pagination-container .pagination li {
 }
 
 /* ====== FORMs (hidden in page) ====== */
-/* line 3, ../sass/openeyes/components/print/_forms.scss */
+/* line 19, ../sass/openeyes/components/print/_forms.scss */
 #printForm {
   display: block;
   background: #fff;
   font-size: 7pt;
 }
 
-/* line 10, ../sass/openeyes/components/print/_forms.scss */
+/* line 26, ../sass/openeyes/components/print/_forms.scss */
 #printFormTemplate .title {
   font-size: 13pt;
   font-weight: bold;
 }
-/* line 14, ../sass/openeyes/components/print/_forms.scss */
+/* line 30, ../sass/openeyes/components/print/_forms.scss */
 #printFormTemplate table tr > td {
   padding: 1em 0.5em;
   border: 1px solid #eee;
 }
-/* line 18, ../sass/openeyes/components/print/_forms.scss */
+/* line 34, ../sass/openeyes/components/print/_forms.scss */
 #printFormTemplate .subTitle {
   display: block;
   font-size: 8pt;
@@ -6612,7 +6655,7 @@ tfoot.pagination-container .pagination li {
   padding-top: 0.5em;
   padding-bottom: 0.5em;
 }
-/* line 26, ../sass/openeyes/components/print/_forms.scss */
+/* line 42, ../sass/openeyes/components/print/_forms.scss */
 #printFormTemplate table.subTableNoBorders tr > td {
   border: none;
 }
