@@ -50,7 +50,7 @@ class AnaestheticType extends BaseActiveRecordVersionedSoftDelete
 	public function scopes()
 	{
 		return array(
-			'active' => 'discontinued = 0',
+			'active' => array('condition' => $this->getTableAlias(false,false).'.discontinued = 0'),
 		);
 	}
 
