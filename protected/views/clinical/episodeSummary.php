@@ -113,7 +113,7 @@ if (!empty($episode)) {
 		}
 
 		foreach ($summaryItems as $summaryItem) {
-			echo '<h3 class="data-title">' . $summaryItem->name . ':</h3>' . "\n";
+			echo '<h3 id="' . $summaryItem->getClassName() . '" class="data-title">' . $summaryItem->name . ':</h3>' . "\n";
 			Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
 			$this->widget(
 				$summaryItem->getClassName(),

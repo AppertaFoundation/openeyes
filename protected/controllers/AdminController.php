@@ -346,12 +346,12 @@ class AdminController extends BaseAdminController
 
 		if (!empty($_REQUEST['search'])) {
 			if($params['model']=='User'){
-				$criteria->addSearchCondition("username",$_REQUEST['search'],true,'OR');
-				$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
-				$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
+				$criteria->compare("LOWER(username)", strtolower($_REQUEST['search']),true, 'OR');
+				$criteria->compare("LOWER(first_name)",strtolower($_REQUEST['search']),true, 'OR');
+				$criteria->compare("LOWER(last_name)",strtolower($_REQUEST['search']),true, 'OR');
 			}
 			else if($params['model']=='Drug'){
-				$criteria->addSearchCondition("name",$_REQUEST['search'],true,'OR');
+				$criteria->compare('LOWER(name)', strtolower($_REQUEST['search']), true);
 			}
 		}
 		return array(
