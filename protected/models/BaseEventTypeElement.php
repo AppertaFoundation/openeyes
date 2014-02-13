@@ -332,7 +332,8 @@ class BaseEventTypeElement extends BaseElement
 		}
 	}
 
-	public function textWithLineBreaks($field) {
+	public function textWithLineBreaks($field)
+	{
 		return str_replace("\n","<br/>",$this->$field);
 	}
 }

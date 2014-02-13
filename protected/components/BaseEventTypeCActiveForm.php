@@ -58,7 +58,12 @@ class BaseEventTypeCActiveForm extends FormLayout
 
 	public function radioButtons($element, $field, $table=null, $selected_item=null, $maxwidth=false, $hidden=false, $no_element=false, $label_above=false, $htmlOptions=array(), $layoutColumns=array())
 	{
-		$data = $element->getFormOptions($table);
+		if (is_array($table)) {
+			$data = $table;
+		} else {
+			$data = $element->getFormOptions($table);
+		}
+
 		$this->widget('application.widgets.RadioButtonList', array(
 			'element' => $element,
 			'name' => get_class($element)."[$field]",
