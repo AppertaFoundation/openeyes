@@ -22,5 +22,12 @@
 		margin-bottom: 40px;
 		width: $row-width + 4;
 		max-width: $row-width + 4;
+		@media print {
+			border: 0;
+			font-size: 12pt;
+			padding: 0 30px;
+			margin: 0;
+			width: 1000px;
+		}
 	}
 }

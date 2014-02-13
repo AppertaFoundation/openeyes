@@ -268,7 +268,7 @@ label {
 		color: #999;
 		font-style: italic;
 	}
-	/* TODO: don't think this is ever used */
+	// TODO: don't think this is ever used
 	&.highlight {
 		@include border-radius(5px);
 		background: white;

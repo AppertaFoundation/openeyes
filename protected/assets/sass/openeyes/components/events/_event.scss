@@ -21,6 +21,12 @@
 	border-width: 0 5px 5px;
 	margin: 0;
 	padding: 0 5px 10px 5px;
+	@media print {
+		background: transparent;
+		border: 0;
+		margin: 0;
+		padding: 0;
+	}
 	&.column {
 		width: 85.4%;
 	}
@@ -56,6 +62,9 @@
 		border-top: 1px dotted #dae6f1;
 		margin: 10px;
 		padding-top: 8px;
+		@media print {
+			margin: 10px 0;
+		}
 		.info {
 			color: #888888;
 			display: inline-block;

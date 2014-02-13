@@ -18,5 +18,9 @@
 	&.content {
 		background: image-url("_structure/help_top_grad.jpg") 0 bottom no-repeat;
 		min-height: 330px;
+		@media print {
+			max-width: 100%;
+			margin: 0;
+		}
 	}
 }

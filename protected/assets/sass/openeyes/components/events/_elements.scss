@@ -27,6 +27,13 @@
 
 .element {
 	position: relative;
+	@media print {
+		page-break-inside: avoid;
+		.details {
+			border: 1px solid #000;
+			padding: 10px;
+		}
+	}
 	canvas,
 	.canvas {
 		border: 1px solid #ccc;
@@ -202,7 +209,7 @@ $oe-element-edit-title-font-style: italic;
 			background: none;
 			padding-bottom: 0;
 			padding-top: 0;
-			/* FIXME: unsure if used anwhere */
+			// FIXME: unsure if used anywhere
 			&.highlight {
 				@include border-radius(5px);
 				background: #fff;
