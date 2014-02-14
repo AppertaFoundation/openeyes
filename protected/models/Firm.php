@@ -161,22 +161,28 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 	 * Fetch an array of firm IDs and names
 	 * @return array
 	 */
-	public function getList($subspecialtyId = null)
+	public function getList($subspecialtyId = null, $include_id = null)
 	{
 		$result = array();
 
 		if (empty($subspecialtyId)) {
-			$list = Firm::model()->active()->findAll();
+			$list = Firm::model()->activeOrPk($include_id)->findAll();
 
 			foreach ($list as $firm) {
 				$result[$firm->id] = $firm->name;
 			}
 		} else {
+			if ($include_id) {
+				$deleted_clause = 'f.deleted = 0 or f.id = '.$include_id;
+			} else {
+				$deleted_clause = 'f.deleted = 0';
+			}
+
 			$list = Yii::app()->db->createCommand()
 				->select('f.id, f.name')
 				->from('firm f')
 				->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-				->where('ssa.subspecialty_id = :sid and f.deleted = 0', array(
+				->where('ssa.subspecialty_id = :sid and '.$deleted_clause,array(
 					':sid' => $subspecialtyId,
 				))
 				->queryAll();
