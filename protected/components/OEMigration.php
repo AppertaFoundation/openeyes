@@ -373,24 +373,6 @@ class OEMigration extends CDbMigration
 	}
 
 	/**
-	 * @description helper method to add element_type_eye records
-	 * @param array $eye_ids - array of integers
-	 * @param $element_type_id
-	 */
-	protected function insertOEElementTypeEye(array $eye_ids, $element_type_id)
-	{
-		$displayOrder = 1;
-		foreach ($eye_ids as $eye_id) {
-			$this->insert(
-				'element_type_eye',
-				array('element_type_id' => $element_type_id, 'eye_id' => $eye_id, 'display_order' => $displayOrder)
-			);
-			echo 'Added Element Type Eye. Element Type id: ' . $element_type_id . ' with EyeId: ' . $eye_id . ' and DisplayOrder: ' . $displayOrder;
-			$displayOrder++;
-		}
-	}
-
-	/**
 	 * @description method needed to delete records from multi key tables
 	 * @param string $tableName
 	 * @param array $fieldsValsArray
