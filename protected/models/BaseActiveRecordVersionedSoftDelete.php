@@ -101,6 +101,9 @@ class BaseActiveRecordVersionedSoftDelete extends BaseActiveRecordVersioned
 		return $this->updateAll($attributes,$condition,$params);
 	}
 
+	/*
+	 * Returns items that are not deleted
+	 */
 	public function notDeleted()
 	{
 		$alias = $this->getTableAlias(false,false);
@@ -118,21 +121,32 @@ class BaseActiveRecordVersionedSoftDelete extends BaseActiveRecordVersioned
 		return $this;
 	}
 
+	/*
+	 * Returns items that are not deleted (or inactive/discontinue/whatever makes sense for the current model)
+	 * but includes $id even if deleted
+	 * $id can also be an array of ids
+	 */
 	public function notDeletedOrPk($id)
 	{
 		$alias = $this->getTableAlias(false,false);
 
-		if (!$id) {
+		if (empty($id)) {
 			return $this->notDeleted();
+		}
+
+		if (is_array($id)) {
+			$condition = $alias.'.id in ('.implode(',',$id).')';
+		} else {
+			$condition = $alias.'.id = '.$id;
 		}
 
 		if (isset($this->notDeletedField)) {
 			$this->getDbCriteria()->mergeWith(array(
-				'condition' => $alias.'.'.$this->notDeletedField.' = 1 or '.$alias.'.id = '.$id,
+				'condition' => $alias.'.'.$this->notDeletedField.' = 1 or '.$condition,
 			));
 		} else {
 			$this->getDbCriteria()->mergeWith(array(
-				'condition' => $alias.'.'.$this->deletedField.' = 0 or '.$alias.'.id = '.$id,
+				'condition' => $alias.'.'.$this->deletedField.' = 0 or '.$condition,
 			));
 		}
 
