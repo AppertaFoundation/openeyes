@@ -118,8 +118,29 @@ class BaseActiveRecordVersionedSoftDelete extends BaseActiveRecordVersioned
 		return $this;
 	}
 
+	public function notDeletedOrPk($id)
+	{
+		$alias = $this->getTableAlias(false,false);
+
+		if (isset($this->notDeletedField)) {
+			$this->getDbCriteria()->mergeWith(array(
+				'condition' => $alias.'.'.$this->notDeletedField.' = 1 or '.$alias.'.id = '.$id,
+			));
+		} else {
+			$this->getDbCriteria()->mergeWith(array(
+				'condition' => $alias.'.'.$this->deletedField.' = 0 or '.$alias.'.id = '.$id,
+			));
+		}
+
+		return $this;
+	}
+
 	public function active()
 	{
 		return $this->notDeleted();
+	}
+
+	public function activeOrPk($id) {
+		return $this->notDeletedOrPk($id);
 	}
 }
