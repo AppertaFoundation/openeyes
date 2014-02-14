@@ -181,7 +181,7 @@
 								<label for="institution_id">Institution:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
 							</div>
 						</div>
 
@@ -199,7 +199,7 @@
 								<label for="label_id">Label:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('label_id','',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php echo CHtml::dropDownList('label_id','',CHtml::listData(ContactLabel::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
 							</div>
 						</div>
 
@@ -307,7 +307,7 @@
 								<div class="label">Institution:</div>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?>
 							</div>
 						</div>
 
