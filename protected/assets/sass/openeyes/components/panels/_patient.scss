@@ -52,6 +52,12 @@
 		@include panel($padding: 9px 10px);
 		@include border-radius($global-radius);
 		@include background(image-url("_elements/icons/patient/patient-id_small.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
+		@media print {
+			padding: {
+				top: 2px;
+				bottom: 2px;
+			}
+		}
 		background: {
 			position: 98% 2px, top;
 			repeat: no-repeat, no-repeat;
@@ -65,20 +71,24 @@
 		@include border-radius(0 0 $global-radius $global-radius);
 		border-width: 0 2px 2px 2px;
 		margin: 0;
-		.stuck & {
-			border-bottom: 0;
-			margin: 0;
-			padding-bottom: 2px;
-			padding-top: 2px;
-			@include border-radius(0);
+		@media screen {
+			.stuck & {
+				border-bottom: 0;
+				margin: 0;
+				padding-bottom: 2px;
+				padding-top: 2px;
+				@include border-radius(0);
+			}
 		}
 		.patient-details {
 			padding-bottom: 4px;
 			a {
 				color: black;
 			}
-			.stuck & {
-				font-size: 91%;
+			@media screen {
+				.stuck & {
+					font-size: 91%;
+				}
 			}
 		}
 		.patient-surname {
@@ -100,14 +110,18 @@
 			padding-right: 8px;
 			position: absolute;
 			right: 0;
-			.stuck & {
-				display: none;
+			@media screen {
+				.stuck & {
+					display: none;
+				}
 			}
 		}
 		.hospital-number {
 			margin-bottom: 3px;
-			.stuck & {
-				float: left;
+			@media screen {
+				.stuck & {
+					float: left;
+				}
 			}
 		}
 		.nhs-number {
@@ -121,6 +135,19 @@
 			color: white;
 			display: inline-block;
 			padding: 2px 3px 1px 33px;
+			@media print {
+				padding-left: 0;
+			}
+		}
+		.patient-summary-anchor {
+			@media print {
+				display: none;
+			}
+		}
+		.column, .columns {
+			@media print {
+				width: 100%;
+			}
 		}
 		&.warning {
 			@include background-image(image-url("_elements/icons/patient/patient-id_small-warning.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));

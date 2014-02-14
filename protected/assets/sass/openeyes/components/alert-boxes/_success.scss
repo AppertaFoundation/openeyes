@@ -23,6 +23,10 @@
 			min-height: 36px;
 			padding-bottom: 11px;
 			padding-top: 11px;
+			@media print {
+				background-color: $success-color !important;
+				background-image: image-url("_elements/icons/box/info.png") !important;
+			}
 		}
 	}
 }

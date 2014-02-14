@@ -53,7 +53,14 @@ $oe-table-footer-cell-font-size-reset: 1em * 1em / $oe-table-footer-cell-font-si
 table {
 	min-width: 100%;
 	@include table;
+	@media print {
+		page-break-inside: auto;
+	}
 	tr {
+		@media print {
+			page-break-inside: avoid;
+			page-break-after: auto;
+		}
 		th {
 			text-align: left;
 			background: #dddddd;
@@ -107,6 +114,11 @@ table {
 			border-top: 1px solid $table-border-color;
 			tr {
 				border-bottom: 0;
+			}
+		}
+		@media print {
+			th {
+				border-bottom: 1px solid #CCD;
 			}
 		}
 	}

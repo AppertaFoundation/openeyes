@@ -24,6 +24,10 @@
 			min-height: 36px;
 			padding-bottom: 11px;
 			padding-top: 11px;
+			@media print {
+				background-color: #ffe6b2 !important;
+				background-image: image-url("_elements/icons/box/warning.png") !important;
+			}
 		}
 	}
 }

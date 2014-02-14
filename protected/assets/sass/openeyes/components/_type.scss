@@ -41,13 +41,11 @@ h1 {
 		display: inline-block;
 		font-size: rem-calc(13px);
 		font-weight: bold;
-		margin: 0 0 12px 0;;
+		margin: 0 0 12px 0;
 		padding: 5px 15px 5px 55px;
-		&.admin {
-			background: #666;
-			border-left: none;
-			border: 1px solid #999;
-			color: #fff;
+		@media print {
+			font-size: rem-calc(20px);
+			padding-left: 10px;
 		}
 	}
 }
@@ -55,6 +53,35 @@ h1 {
 a {
 	&:hover, .highlight {
 		@extend %anchor-hover;
+	}
+}
+
+@media print {
+	a[href]:after {
+		color: #444;
+	}
+	.screen-only {
+		display: none !important;
+	}
+	.print-only {
+		position: static !important;
+		height: auto !important;
+		font-size: inherit !important;
+		font-family: inherit !important;
+		color: #000 !important;
+		line-height: inherit !important;
+	}
+	span.print-only {
+		display: inline-block !important;
+	}
+}
+
+@media screen {
+	.screen-only {
+		display: block !important;
+	}
+	span.screen-only {
+		display: inline-block !important;
 	}
 }
 

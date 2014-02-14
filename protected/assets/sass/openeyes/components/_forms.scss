@@ -91,6 +91,11 @@ select {
 	&.textMacro {
 		width: 120px;
 	}
+	@media print {
+		// Fixed Chrome print bug when selects have transparent background.
+		// See: https://code.google.com/p/chromium/issues/detail?id=282918
+		background: #fff !important;
+	}
 }
 
 /* Normalize file input width */

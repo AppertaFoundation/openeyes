@@ -24,6 +24,9 @@
 			color: #e49f10;
 			margin: 0;
 			padding: 0 0 8px 0;
+			@media print {
+				font-weight: bold;
+			}
 		}
 		.data-row {
 			padding: 10px 0;
@@ -71,6 +74,9 @@
 		.add-data {
 			margin: 6px 0 12px 0;
 		}
+		@media print {
+			page-break-inside: avoid;
+		}
 	}
 }
 
@@ -92,11 +98,17 @@
 			.summary {
 				font-size: $default-font-size;
 			}
+			@media print {
+				padding: 0;
+			}
 		}
 		&.episode-links {
 			a {
 				font-size: $default-font-size;
 				@extend %anchor-hover;
+			}
+			@media print {
+				padding: 0;
 			}
 		}
 	}
@@ -119,6 +131,9 @@
 					position: absolute;
 					left: 0;
 					top: -1px;
+				}
+				@media print {
+					padding-left: 0;
 				}
 			}
 			.form {

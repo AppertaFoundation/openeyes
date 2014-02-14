@@ -1,0 +1,12 @@
+.sidebar {
+	&.admin {
+		h2 {
+			border-bottom: 1px dotted #ccc;
+			margin-bottom: 6px;
+			padding-bottom: 6px;
+		}
+		@media print {
+			display: none;
+		}
+	}
+}

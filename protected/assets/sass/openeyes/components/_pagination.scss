@@ -24,6 +24,12 @@ ul.pagination {
 		margin: 0;
 		a {
 			@include border-radius(0);
+			// Let's not display pagination anchor urls when printing.
+			&:after {
+				@media print {
+					display: none;
+				}
+			}
 		}
 		&.label {
 			cursor: default;

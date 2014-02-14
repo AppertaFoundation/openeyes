@@ -24,6 +24,9 @@
 	@extend .hide-text;
 	display: inline-block;
 	vertical-align: middle;
+	@media print {
+		display: none;
+	}
 }
 
 // Alert icons

@@ -145,6 +145,7 @@ $(document).ready(function(){
 		}, options));
 
 		new OpenEyes.UI.StickyElement('.event-header', $.extend({
+			wrapperClass: 'sticky-wrapper sticky-wrapper-event-header',
 			offset: function() {
 				return header.element.height() * -1;
 			},

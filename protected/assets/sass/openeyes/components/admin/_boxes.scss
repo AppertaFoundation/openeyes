@@ -14,81 +14,33 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-.printable {
-	display: none;
-	* {
-		font-size: 9pt;
-	}
-}
-
-@media print {
-	* {
-		background: transparent !important;
-		color: black !important;
-		text-shadow: none !important;
-		filter: none !important;
-		-ms-filter: none !important;
-	}
-	a {
-		text-decoration: underline;
-		&:visited {
-			text-decoration: underline;
+// Admin box
+.box {
+	&.admin {
+		@include panel;
+		@include radius;
+		background: #fafafa;
+		margin: 0 0 $oe-box-gutter 0;
+		h2 {
+			margin-bottom: 12px;
 		}
-		&[href]:after {
-			content: " (" attr(href) ")";
+		.table-actions {
+			select {
+				width: auto;
+			}
 		}
-	}
-	abbr[title]:after {
-		content: " (" attr(title) ")";
-	}
-	.ir a:after {
-		content: "";
-	}
-	a {
-		&[href^="javascript:"]:after, &[href^="#"]:after {
-			content: "";
+		.box-header {
+			margin: 0;
+			.box-title {
+				float: left;
+			}
 		}
-	}
-	pre, blockquote {
-		border: 1px solid #999;
-		page-break-inside: avoid;
-	}
-	thead {
-		display: table-header-group;
-	}
-	tr {
-		page-break-inside: avoid;
-	}
-	img {
-		page-break-inside: avoid;
-		max-width: 100% !important;
-	}
-	@page {
-		margin: 0.5cm;
-	}
-
-	p, h2, h3 {
-		orphans: 3;
-		widows: 3;
-	}
-	h2, h3 {
-		page-break-after: avoid;
-	}
-	table {
-		width: 100%;
-	}
-	td, th {
-		text-align: left;
-		padding: 2px 4px;
-		vertical-align: top;
-		font-size: 14pt;
-	}
-	/* PREPAPRE PAGE FOR PRINT */
-	html {
-		height: 100%;
-	}
-	.printable {
-		display: block !important;
-		width: 1050px !important;
+		.box-actions {
+			float: right;
+		}
+		@media print {
+			border: 0;
+			padding: 0;
+		}
 	}
 }

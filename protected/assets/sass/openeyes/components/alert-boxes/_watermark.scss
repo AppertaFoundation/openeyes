@@ -25,14 +25,19 @@
 		padding: 8px;
 		text-align: center;
 		min-width: 1230px;
+		@media print {
+			min-width: 0;
+		}
 		&.admin {
 			background: #DAA520;
-			&.stuck {
-				bottom: 0;
-				margin: 0;
-				position: fixed;
-				width: 100%;
-				z-index: 100;
+			@media screen {
+				&.stuck {
+					bottom: 0;
+					margin: 0;
+					position: fixed;
+					width: 100%;
+					z-index: 100;
+				}
 			}
 		}
 		&.description {

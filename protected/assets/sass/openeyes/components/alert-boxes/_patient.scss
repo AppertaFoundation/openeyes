@@ -23,6 +23,10 @@
 			background-image: image-url("_elements/icons/box/patient-warning.png");
 			padding-bottom: 11px;
 			padding-top: 11px;
+			@media print {
+				background-color: #eb5911 !important;
+				background-image: image-url("_elements/icons/box/patient-warning.png") !important;
+			}
 		}
 	}
 }

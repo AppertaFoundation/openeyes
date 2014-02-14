@@ -47,14 +47,16 @@
 		.button-bar {
 			float: right;
 		}
-		&.stuck {
-			@include box-shadow(0 2px 4px rgba(0, 0, 0, .3));
-			@include border-top-left-radius(0);
-			@include border-top-right-radius(0);
-			position: fixed;
-			width: 100%;
-			top: 40px;
-			z-index: 9;
+		@media screen {
+			&.stuck {
+				@include box-shadow(0 2px 4px rgba(0, 0, 0, .3));
+				@include border-top-left-radius(0);
+				@include border-top-right-radius(0);
+				position: fixed;
+				width: 100%;
+				top: 40px;
+				z-index: 9;
+			}
 		}
 	}
 }

@@ -23,11 +23,16 @@
 		width: $row-width + 4;
 		max-width: $row-width + 4;
 		@media print {
-			border: 0;
-			font-size: 12pt;
-			padding: 0 30px;
-			margin: 0;
-			width: 1000px;
+			min-width: 1000px;
+			max-width: 100%;
+			border-width: 1px;
+			// When using a print layout.
+			.print & {
+				border: 0;
+				font-size: 12pt;
+				padding: 0 30px;
+				margin: 0;
+			}
 		}
 	}
 }

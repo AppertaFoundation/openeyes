@@ -80,6 +80,10 @@
 	.element-header & {
 		float: left;
 	}
+	@media print {
+		font-size: rem-calc(16px);
+		font-weight: bold;
+	}
 }
 
 .element-data {

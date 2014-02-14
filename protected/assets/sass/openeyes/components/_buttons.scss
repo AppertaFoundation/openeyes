@@ -58,6 +58,10 @@
 		padding-left: 34px;
 		padding-right: 34px;
 	}
+	@media print {
+		border: 1px solid #444 !important;
+		background: #fff !important;
+	}
 }
 
 // Secondary buttons

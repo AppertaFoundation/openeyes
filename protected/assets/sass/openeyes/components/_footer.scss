@@ -64,6 +64,9 @@
 			@include panel(#e2dfdb, 8px 8px 6px 8px);
 			@include border-radius(0 0 3px 3px);
 			margin: 1px 0 0 0;
+			@media print {
+				padding: 0;
+			}
 		}
 		.inline-list {
 			display: inline-block;
@@ -80,6 +83,9 @@
 					padding-right: 0;
 					margin-right: 0;
 					border: 0;
+				}
+				@media print {
+					float: none;
 				}
 			}
 		}

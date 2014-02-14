@@ -34,6 +34,12 @@
 			padding: 0;
 		}
 	}
+	@media print {
+		.content & {
+			border: 0 !important;
+			padding: 0 !important;
+		}
+	}
 }
 
 @import "panels/main";

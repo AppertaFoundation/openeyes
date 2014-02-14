@@ -41,6 +41,10 @@
 		font-style: normal;
 		margin: 0;
 		padding: 5px 8px;
+		@media print {
+			font-size: rem-calc(16px);
+			font-weight: bold;
+		}
 	}
 	.element-eye {
 		border-top: 1px solid #fafafa;

@@ -28,14 +28,20 @@
 		<span class="patient-age">(<?php if ($this->patient->isDeceased()) { ?>Deceased<?php } else { echo $this->patient->getAge(); } ?>)</span>
 	</div>
 	<div class="hospital-number">
-		No. <?php echo $this->patient->hos_num?>
+		<span class="screen-only">
+			No.
+		</span>
+		<span class="print-only">
+			Hosptial No.
+		</span>
+		<?php echo $this->patient->hos_num?>
 	</div>
 	<div class="row">
 		<div class="large-6 column">
 
 			<!-- NHS number -->
 			<div class="nhs-number">
-				<span class="hide-text">
+				<span class="hide-text print-only">
 					NHS number:
 				</span>
 				<?php echo $this->patient->nhsnum?>
