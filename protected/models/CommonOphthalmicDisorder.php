@@ -121,7 +121,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		}
 		if ($firm->serviceSubspecialtyAssignment) {
 			$ss_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-			$disorders = Disorder::model()->findAll(array(
+			$disorders = Disorder::model()->notDeleted()->findAll(array(
 					'condition' => 'cad.subspecialty_id = :subspecialty_id',
 					'join' => 'JOIN common_ophthalmic_disorder cad ON cad.disorder_id = t.id JOIN specialty ON specialty_id = specialty.id AND specialty.code = :ophcode',
 					'order' => 'term',
