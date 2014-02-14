@@ -136,7 +136,7 @@
 							<label for="route_id">Option:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('route_id','',CHtml::listData(DrugRoute::model()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::dropDownList('route_id','',CHtml::listData(DrugRoute::model()->active()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
 
@@ -153,7 +153,7 @@
 							<label for="frequency_id">Frequency:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('frequency_id','',CHtml::listData(DrugFrequency::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::dropDownList('frequency_id','',CHtml::listData(DrugFrequency::model()->active()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
 
