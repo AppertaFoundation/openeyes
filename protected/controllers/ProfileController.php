@@ -206,7 +206,7 @@ class ProfileController extends BaseController
 	public function actionAddFirm()
 	{
 		if (@$_POST['firm_id'] == 'all') {
-			$firms = Firm::model()->findAll();
+			$firms = Firm::model()->active()->findAll();
 		} else {
 			$firms = Firm::model()->findAllByPk(@$_POST['firm_id']);
 		}

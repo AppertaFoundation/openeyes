@@ -166,7 +166,7 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 		$result = array();
 
 		if (empty($subspecialtyId)) {
-			$list = Firm::model()->findAll();
+			$list = Firm::model()->active()->findAll();
 
 			foreach ($list as $firm) {
 				$result[$firm->id] = $firm->name;
@@ -176,9 +176,8 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 				->select('f.id, f.name')
 				->from('firm f')
 				->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-				->where('ssa.subspecialty_id = :sid and f.deleted = :notdeleted', array(
+				->where('ssa.subspecialty_id = :sid and f.deleted = 0', array(
 					':sid' => $subspecialtyId,
-					':notdeleted' => 0,
 				))
 				->queryAll();
 
@@ -197,7 +196,7 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 		$result = array();
 
 		if (empty($subspecialtyId)) {
-			$list = Firm::model()->findAll();
+			$list = Firm::model()->active()->findAll();
 
 			foreach ($list as $firm) {
 				if (!in_array($firm->name,$result)) {
@@ -218,9 +217,7 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 			->from('firm f')
 			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->join('subspecialty s','ssa.subspecialty_id = s.id')
-			->where('f.deleted = :notdeleted',array(
-				':notdeleted' => 0,
-			))
+			->where('f.deleted = 0')
 			->order('f.name, s.name')
 			->queryAll();
 		$data = array();
@@ -250,7 +247,7 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 		$criteria->compare('service_subspecialty_assignment_id',$ssa->id);
 		$criteria->order = 'name';
 
-		return CHtml::listData(Firm::model()->findAll($criteria),'id','name');
+		return CHtml::listData(Firm::model()->active()->findAll($criteria),'id','name');
 	}
 
 	public function getConsultantName()
@@ -296,9 +293,8 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 			->from('subspecialty su')
 			->join('service_subspecialty_assignment svc_ass', 'svc_ass.subspecialty_id = su.id')
 			->join('firm f', 'f.service_subspecialty_assignment_id = svc_ass.id')
-			->where('f.id = :fid and f.deleted = :notdeleted', array(
+			->where('f.id = :fid and f.deleted = 0', array(
 				':fid' => $this->id,
-				':notdeleted' => 0,
 			))
 			->queryRow();
 

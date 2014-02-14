@@ -215,7 +215,7 @@ class UserIdentity extends CUserIdentity
 		$firms = array();
 
 		if ($user->global_firm_rights) {
-			foreach (Firm::model()->with(array(
+			foreach (Firm::model()->active()->with(array(
 				'serviceSubspecialtyAssignment' => array(
 					'with' => 'subspecialty',
 				)))->findAll() as $firm) {
@@ -223,7 +223,7 @@ class UserIdentity extends CUserIdentity
 			}
 		} else {
 			// Gets the firms the user is associated with
-			foreach (Firm::model()->with(array(
+			foreach (Firm::model()->active()->with(array(
 				'firmUserAssignments' => array(
 					'condition' => 'user_id = :user_id',
 					'params' => array(
@@ -237,7 +237,7 @@ class UserIdentity extends CUserIdentity
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 
-			foreach (Firm::model()->with(array(
+			foreach (Firm::model()->active()->with(array(
 				'userFirmRights' => array(
 					'condition' => 'user_id = :user_id',
 					'params' => array(
@@ -251,7 +251,7 @@ class UserIdentity extends CUserIdentity
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 
-			foreach (Firm::model()->with(array(
+			foreach (Firm::model()->active()->with(array(
 				'serviceSubspecialtyAssignment' => array(
 					'with' => array(
 						'service' => array(
