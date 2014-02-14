@@ -1448,7 +1448,7 @@ class PatientController extends BaseController
 			}
 			$criteria->order = 'name';
 			$criteria->params = $params;
-			$drugs = Drug::model()->findAll($criteria);
+			$drugs = Drug::model()->active()->findAll($criteria);
 			$return = array();
 			foreach ($drugs as $drug) {
 				$return[] = array(
