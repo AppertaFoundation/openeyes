@@ -111,18 +111,6 @@ class BaseEventTypeElementTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers BaseEventTypeElement::getFormOptions
-	 * @todo   Implement testGetFormOptions().
-	 */
-	public function testGetFormOptions()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers BaseEventTypeElement::getSetting
 	 * @todo   Implement testGetSetting().
 	 */
