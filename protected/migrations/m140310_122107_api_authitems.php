@@ -1,6 +1,6 @@
 <?php
 
-class m140310_122107_api_authitems extends CDbMigration
+class m140310_122107_api_authitems extends OEMigration
 {
 	public function up()
 	{
@@ -9,6 +9,8 @@ class m140310_122107_api_authitems extends CDbMigration
 		$this->insert('authitem', array('name' => 'API access', 'type' => 2));
 		$this->insert('authitemchild', array('parent' => 'TaskApi', 'child' => 'OprnApi'));
 		$this->insert('authitemchild', array('parent' => 'API access', 'child' => 'TaskApi'));
+
+		$this->initialiseData($this->getMigrationPath());
 	}
 
 	public function down()

@@ -9,3 +9,4 @@ id,username,first_name,last_name,email,active,global_firm_rights,title,qualifica
 8,level4,Level,Four,four@example.com,1,1,,,,NULL,0376a3952a49a77e84f3e154c9dc59d3,r8o7BGv1Um,NULL,0,4,10126,NULL,0,0,0,1
 127,level5,Level,Five,view@email.com,1,0,Mr,,,NULL,0376a3952a49a77e84f3e154c9dc59d3,r8o7BGv1Um,NULL,0,5,10127,NULL,0,0,0,0
 128,level6,Level,Six,two@example.com,1,0,,,,NULL,0376a3952a49a77e84f3e154c9dc59d3,r8o7BGv1Um,NULL,0,6,10128,NULL,0,0,0,0
+129,api,Api,User,api@example.com,1,1,,,,NULL,f7b38e92144cc0e3adf1846cf952f965,0h7NW3k4Ar,NULL,0,0,NULL,NULL,0,0,0,0
