@@ -122,6 +122,10 @@ class BaseActiveRecordVersionedSoftDelete extends BaseActiveRecordVersioned
 	{
 		$alias = $this->getTableAlias(false,false);
 
+		if (!$id) {
+			return $this->notDeleted();
+		}
+
 		if (isset($this->notDeletedField)) {
 			$this->getDbCriteria()->mergeWith(array(
 				'condition' => $alias.'.'.$this->notDeletedField.' = 1 or '.$alias.'.id = '.$id,
