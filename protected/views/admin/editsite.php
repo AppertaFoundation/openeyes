@@ -31,7 +31,7 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->dropDownList($site,'institution_id',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('style'=>'margin-bottom:6px;'))?>
+		<?php echo $form->dropDownList($site,'institution_id',CHtml::listData(Institution::model()->active()->findAll(array('order'=>'name')),'id','name'),array('style'=>'margin-bottom:6px;'))?>
 		<?php echo $form->textField($site,'name',array('size'=>'50'))?>
 		<?php echo $form->textField($site,'remote_id',null,null,array('field' => 2))?>
 		<?php echo $form->textField($address,'address1')?>
