@@ -39,7 +39,6 @@
  */
 class Drug extends BaseActiveRecordVersionedSoftDelete
 {
-	public $default_scope = true;
 	public $deletedField = 'discontinued';
 
 	/**
@@ -57,30 +56,6 @@ class Drug extends BaseActiveRecordVersionedSoftDelete
 	public function tableName()
 	{
 		return 'drug';
-	}
-
-	public function defaultScope()
-	{
-		$table_alias = $this->getTableAlias(false,false);
-
-		if ($this->default_scope) {
-			return array(
-				'condition' => $table_alias.'.discontinued = 0',
-			);
-		}
-
-		return array();
-	}
-
-	public function discontinued()
-	{
-		$table_alias = $this->getTableAlias(false,false);
-
-		$this->getDbCriteria()->mergeWith(array(
-			'condition' => $table_alias.'.discontinued = 1',
-		),'OR');
-
-		return $this;
 	}
 
 	/**
