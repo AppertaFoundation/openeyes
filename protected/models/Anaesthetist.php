@@ -53,6 +53,13 @@ class Anaesthetist extends BaseActiveRecordVersionedSoftDelete
 		);
 	}
 
+	public function scopes()
+	{
+		return array(
+			'notDeleted' => array('condition' => 'deleted = 0'),
+		);
+	}
+
 	/**
 	 * @return array relational rules.
 	 */
