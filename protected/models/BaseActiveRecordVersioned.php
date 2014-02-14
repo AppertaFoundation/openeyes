@@ -22,7 +22,6 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 	private $enable_version = true;
 	private $fetch_from_version = false;
 	public $version_id = null;
-	public $activeScope = null;
 
 	/* Disable archiving on save() */
 

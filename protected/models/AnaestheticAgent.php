@@ -47,13 +47,6 @@ class AnaestheticAgent extends BaseActiveRecordVersionedSoftDelete
 		return 'anaesthetic_agent';
 	}
 
-	public function scopes()
-	{
-		return array(
-			'active' => array('condition' => 'discontinued = 0'),
-		);
-	}
-
 	/**
 	 * @return array validation rules for model attributes.
 	 */

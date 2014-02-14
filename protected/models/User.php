@@ -66,13 +66,6 @@ class User extends BaseActiveRecordVersionedSoftDelete
 		);
 	}
 
-	public function scopes()
-	{
-		return array(
-			'active' => array('condition' => 'active = 1'),
-		);
-	}
-
 	/**
 	 * @return array validation rules for model attributes.
 	 */

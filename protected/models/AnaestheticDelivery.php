@@ -45,13 +45,6 @@ class AnaestheticDelivery extends BaseActiveRecordVersionedSoftDelete
 		return 'anaesthetic_delivery';
 	}
 
-	public function scopes()
-	{
-		return array(
-			'active' => array('condition' => 'deleted = 0'),
-		);
-	}
-
 	/**
 	 * @return array validation rules for model attributes.
 	 */
