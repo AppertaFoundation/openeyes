@@ -31,7 +31,7 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->dropDownList($cb,'commissioning_body_type_id',CHtml::listData(CommissioningBodyType::model()->findAll(array('order'=>'name')),'id','name'),array('style'=>'margin-bottom:6px;'))?>
+		<?php echo $form->dropDownList($cb,'commissioning_body_type_id',CHtml::listData(CommissioningBodyType::model()->active()->findAll(array('order'=>'name')),'id','name'),array('style'=>'margin-bottom:6px;'))?>
 		<?php echo $form->textField($cb,'name')?>
 		<?php echo $form->textField($cb,'code',null,null,array('field' => 2))?>
 		<?php echo $form->textField($address,'address1')?>
