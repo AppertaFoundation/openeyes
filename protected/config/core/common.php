@@ -79,11 +79,11 @@ return array(
 			'packages' => array(
 				'flot' => array(
 					'js' => array(
-						'jquery.flot.js',
-						'jquery.flot.time.js',
-						'jquery.flot.navigate.js',
+						'flot/jquery.flot.js',
+						'flot/jquery.flot.time.js',
+						'flot/jquery.flot.navigate.js',
 					),
-					'baseUrl' => 'components/flot',
+					'basePath' => 'application.assets.components',
 					'depends' => array('jquery'),
 				),
 			),
