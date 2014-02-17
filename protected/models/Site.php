@@ -148,7 +148,7 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 		return $result;
 	}
 
-	public function getListForCurrentInstitution($field=false)
+	public function getListForCurrentInstitution($field=false, $include_deleted=false)
 	{
 		if (!$field) $field = 'short_name';
 
@@ -161,7 +161,13 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 
 		$result = array();
 
-		foreach (Site::model()->active()->findAll($criteria) as $site) {
+		$model = Site::model();
+
+		if (!$include_deleted) {
+			$model = $model->active();
+		}
+
+		foreach ($model->findAll($criteria) as $site) {
 			$result[$site->id] = $site->$field;
 		}
 
