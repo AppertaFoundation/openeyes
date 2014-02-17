@@ -69,7 +69,7 @@ class ProcedureController extends BaseController
 			$criteria->compare('pssa.subspecialty_subsection_id', $_POST['subsection']);
 			$criteria->order = 'term asc';
 
-			$procedures = Procedure::model()->findAll($criteria);
+			$procedures = Procedure::model()->notDeleted()->findAll($criteria);
 
 			$this->renderPartial('_procedureOptions', array('procedures' => $procedures), false, false);
 		}
@@ -77,7 +77,7 @@ class ProcedureController extends BaseController
 
 	public function actionBenefits($id)
 	{
-		if (!Procedure::model()->findByPk($id)) {
+		if (!Procedure::model()->notDeleted()->findByPk($id)) {
 			throw new Exception("Unknown procedure: $id");
 		}
 
@@ -98,7 +98,7 @@ class ProcedureController extends BaseController
 
 	public function actionComplications($id)
 	{
-		if (!Procedure::model()->findByPk($id)) {
+		if (!Procedure::model()->notDeleted()->findByPk($id)) {
 			throw new Exception("Unknown procedure: $id");
 		}
 
