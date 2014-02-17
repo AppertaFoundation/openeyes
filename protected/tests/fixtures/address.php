@@ -32,8 +32,7 @@ return array(
                                                   'county' => 'london',
                                                   'country_id' => 1,
                                                   'email' => 'bleakley1@bleakley1.com',
-                                                  'parent_id' => 1,
-                                                  'parent_class' => 'Contact'
+                                                  'contact_id' => 1,
                          ),
                          'address2' => array(
                                                   'address1' => 'flat 2',
@@ -43,8 +42,7 @@ return array(
                                                   'county' => 'london',
                                                   'country_id' => 1,
                                                   'email' => 'bleakley2@bleakley2.com',
-                                                  'parent_id' => 2,
-                                                  'parent_class' => 'Contact'
+                                                  'contact_id' => 2,
                          ),
                          'address3' => array(
                                                   'address1' => 'flat 3',
@@ -54,7 +52,6 @@ return array(
                                                   'county' => 'london',
                                                   'country_id' => 1,
                                                   'email' => 'bleakley3@bleakley3.com',
-                                                  'parent_id' => 3,
-                                                  'parent_class' => 0
+                                                  'contact_id' => 3,
                          ),
 );

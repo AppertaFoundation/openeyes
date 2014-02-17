@@ -22,8 +22,7 @@
  *
  * The followings are the available columns in table 'address':
  * @property integer $id
- * @property string $parent_class Class of parent model
- * @property integer $parent_id ID of parent record
+ * @property integer $contact_id ID of contact this address applies to
  * @property string $type Type of address (H = Home, C = Correspondence, T = Temporary)
  * @property string $date_start Date address is valid from
  * @property string $date_end Date address is valid to
@@ -66,8 +65,8 @@ class Address extends BaseActiveRecord
 			array('address1, address2, city, county', 'length', 'max' => 255),
 			array('postcode', 'length', 'max' => 10),
 			array('email', 'length', 'max' => 255),
-			array('country_id, parent_class, parent_id, type, date_start, date_end', 'safe'),
-			array('id, address1, address2, city, postcode, county, email, country_id, parent_class, parent_id, type, date_start, date_end', 'safe', 'on' => 'search'),
+			array('country_id, type, date_start, date_end', 'safe'),
+			array('id, address1, address2, city, postcode, county, email, country_id, type, date_start, date_end', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -77,8 +76,6 @@ class Address extends BaseActiveRecord
 	public function relations()
 	{
 		return array(
-			// TODO: Make this work
-			//'parent' => array(self::BELONGS_TO, $this->parent_class, 'parent_id'),
 			'country' => array(self::BELONGS_TO, 'Country', 'country_id'),
 		);
 	}

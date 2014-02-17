@@ -996,8 +996,7 @@ class AdminController extends BaseAdminController
 					throw new Exception("Unable to save CommissioningBody : ".print_r($cb->getErrors(),true));
 				}
 
-				$address->parent_class = 'Contact';
-				$address->parent_id = $contact->id;
+				$address->contact_id = $contact->id;
 
 				if (!$address->save()) {
 					throw new Exception("Unable to save CommissioningBody address: ".print_r($address->getErrors(),true));
@@ -1189,8 +1188,7 @@ class AdminController extends BaseAdminController
 
 					$cbs->contact_id = $contact->id;
 
-					$address->parent_class = 'Contact';
-					$address->parent_id = $contact->id;
+					$address->contact_id = $contact->id;
 				}
 
 				$method = $cbs->id ? 'edit' : 'add';
