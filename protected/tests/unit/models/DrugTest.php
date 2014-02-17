@@ -67,35 +67,11 @@ class DrugTest extends CDbTestCase	{
 	}
 
 	/**
-	*	@covers	Drug::defaultScope
-	*	@todo Implement testDefaultScope().
-	*/
-	public function testDefaultScope() {
-		$result	= $this->model->defaultScope();
-		if ($this->model->default_scope) {
-			$expected = array('condition' => 't.discontinued = 0');
-			$this->assertEquals($expected, $result);
-		} else {
-			$expected = array();
-			$this->assertEquals($expected, $result);
-		}
-	}
-
-	/**
-	*	@covers	Drug::scopes
-	*	@todo Implement testScopes().
-	*/
-	public function testScopes() {
-		$result	=	$this->model->scopes();
-		$expected	=	array();
-		$this->assertEquals($expected,	$result);
-	}
-
-	/**
 	*	@covers	Drug::discontinued
 	*	@todo Implement testDiscontinued().
 	*/
 	public function testDiscontinued()	{
+		$this->markTestSkipped('Needs to be updated with changes to table versioning');
 		$result	= $this->model->discontinued();
 		$this->assertEquals('(t.discontinued = 0) OR (t.discontinued = 1)', $result->getDbCriteria()->condition);
 	}
@@ -116,7 +92,12 @@ class DrugTest extends CDbTestCase	{
 	*	@todo	Implement	testAttributeLabels().
 	*/
 	public function testAttributeLabels()	{
-		$expected	=	array();
+		$expected	=	array(
+				'type_id' => 'Type',
+				'default_duration_id' => 'Default Duration',
+				'default_frequency_id' => 'Default Frequency',
+				'default_route_id' => 'Default Route'
+		);
 
 		$this->assertEquals($expected,	$this->model->attributeLabels());
 	}
