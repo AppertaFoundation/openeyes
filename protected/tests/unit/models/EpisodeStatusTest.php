@@ -19,7 +19,6 @@
  */
 class EpisodeStatusTest extends CDbTestCase
 {
-
 	/**
 	 * @var EpisodeStatus
 	 */
@@ -39,64 +38,35 @@ class EpisodeStatusTest extends CDbTestCase
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers EpisodeStatus::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
-
 		$this->assertEquals('EpisodeStatus', get_class(EpisodeStatus::model()), 'Class name should match model.');
 	}
 
 	/**
 	 * @covers EpisodeStatus::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
-
 		$this->assertEquals('episode_status', $this->model->tableName());
 	}
 
 	/**
 	 * @covers EpisodeStatus::rules
-	 * @todo   Implement testRules().
 	 */
 	public function testRules()
 	{
-
 		$this->assertTrue($this->episodestatus('episodestatus1')->validate());
 		$this->assertEmpty($this->episodestatus('episodestatus1')->errors);
 	}
 
 	/**
-	 * @covers EpisodeStatus::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers EpisodeStatus::attributeLabels
-	 * @todo   Implement testAttributeLabels().
 	 */
 	public function testAttributeLabels()
 	{
-
 		$expected = array(
 			'id' => 'ID',
 			'name' => 'Name',
@@ -108,11 +78,9 @@ class EpisodeStatusTest extends CDbTestCase
 
 	/**
 	 * @covers EpisodeStatus::search
-	 * @todo   Implement testSearch().
 	 */
 	public function testSearch()
 	{
-		$this->markTestIncomplete(' needs TLC ');
 		$this->model->setAttributes($this->episodestatus('episodestatus1')->getAttributes());
 		$this->model->setAttribute('id', 1);
 		$results = $this->model->search();
@@ -131,16 +99,21 @@ class EpisodeStatusTest extends CDbTestCase
 
 	/**
 	 * @covers EpisodeStatus::getList
-	 * @todo   Implement testGetList().
 	 */
 	public function testGetList()
 	{
+		$expected = array(
+			1 => 'New',
+			2 => 'Under investigation',
+			3 => 'Listed/booked',
+			4 => 'Post-op',
+			5 => 'Follow-up',
+			6 => 'Discharged',
+		);
 
 		$result = $this->model->getList();
-		$expected = $this->episodestatus('episodestatus1')->getList();
 
 		$this->assertEquals($expected, $result);
 
 	}
-
 }

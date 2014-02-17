@@ -19,7 +19,6 @@
  */
 class DrugSetItemTest extends CDbTestCase
 {
-
 	/**
 	 * @var DrugSetItem
 	 */
@@ -39,76 +38,35 @@ class DrugSetItemTest extends CDbTestCase
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers DrugForm::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
-
 		$this->assertEquals('DrugSetItem', get_class(DrugSetItem::model()), 'Class name should match model.');
 	}
 
 	/**
 	 * @covers DrugForm::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
-
 		$this->assertEquals('drug_set_item', $this->model->tableName());
 	}
 
 	/**
 	 * @covers DrugForm::rules
-	 * @todo   Implement testRules().
 	 */
 	public function testRules()
 	{
-
 		$this->assertTrue($this->drugsetitems('drugsetitem1')->validate());
 		$this->assertEmpty($this->drugsetitems('drugsetitem2')->errors);
 	}
 
 	/**
-	 * @covers DrugSetItem::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers DrugSetItem::attributeLabels
-	 * @todo   Implement testAttributeLabels().
-	 */
-	public function testAttributeLabels()
-	{
-
-		$expected = array();
-
-		$this->assertEquals($expected, $this->model->attributeLabels());
-	}
-
-	/**
 	 * @covers DrugSetItem::search
-	 * @todo   Implement testSearch().
 	 */
 	public function testSearch()
 	{
-		$this->markTestIncomplete(' needs TLC ');
 		$this->model->setAttributes($this->drugsetitems('drugsetitem1')->getAttributes());
 		$results = $this->model->search();
 		$data = $results->getData();

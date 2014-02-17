@@ -19,18 +19,18 @@
  */
 class ContactLabelTest extends CDbTestCase
 {
-
 	/**
 	 * @var ContactLabel
 	 */
 	public $model;
 	public $fixtures = array(
+		'Contact',
 		'contactlabels' => 'ContactLabel',
+		'Institution',
 	);
 
 	public function dataProvider_Search()
 	{
-
 		return array(
 			array(array('id' => 1, 'name' => 'contactlabel 1'), 1, array('contactlabel1')),
 			array(array('id' => 2, 'name' => 'contactlabel 2'), 1, array('contactlabel2')),
@@ -48,17 +48,7 @@ class ContactLabelTest extends CDbTestCase
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers ContactLabel::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
@@ -67,44 +57,26 @@ class ContactLabelTest extends CDbTestCase
 
 	/**
 	 * @covers ContactLabel::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
-
 		$this->assertEquals('contact_label', $this->model->tableName());
 	}
 
 	/**
 	 * @covers ContactLabel::rules
-	 * @todo   Implement testRules().
 	 */
 	public function testRules()
 	{
-
 		$this->assertTrue($this->contactlabels('contactlabel1')->validate());
 		$this->assertEmpty($this->contactlabels('contactlabel1')->errors);
 	}
 
 	/**
-	 * @covers ContactLabel::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers ContactLabel::attributeLabels
-	 * @todo   Implement testAttributeLabels().
 	 */
 	public function testAttributeLabels()
 	{
-
 		$expected = array(
 			'id' => 'ID',
 			'name' => 'Name',
@@ -114,23 +86,10 @@ class ContactLabelTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers AuditTrail::search
-	 * @todo   Implement testSearch().
-	 */
-	public function testSearch()
-	{
-
-		$this->markTestSkipped(
-			'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-		);
-	}
-
-	/**
 	 * @dataProvider dataProvider_Search
 	 */
 	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
 	{
-		$this->markTestIncomplete(' needs TLC ');
 		$contactlabel = new ContactLabel;
 		$contactlabel->setAttributes($searchTerms);
 		$results = $contactlabel->search();
@@ -148,11 +107,9 @@ class ContactLabelTest extends CDbTestCase
 
 	/**
 	 * @covers ContactLabel::staffType
-	 * @todo   Implement testStaffType().
 	 */
 	public function testStaffType()
 	{
-
 		Yii::app()->session['selected_site_id'] = 1;
 
 		$result = $this->model->staffType();

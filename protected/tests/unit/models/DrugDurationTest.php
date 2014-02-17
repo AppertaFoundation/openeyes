@@ -39,37 +39,23 @@ class DrugDurationTest extends CDbTestCase
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers DrugDuration::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
-
 		$this->assertEquals('DrugDuration', get_class(DrugDuration::model()), 'Class name should match model.');
 	}
 
 	/**
 	 * @covers DrugDuration::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
-
 		$this->assertEquals('drug_duration', $this->model->tableName());
 	}
 
 	/**
 	 * @covers DrugDuration::rules
-	 * @todo   Implement testRules().
 	 */
 	public function testRules()
 	{
@@ -78,34 +64,10 @@ class DrugDurationTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers DrugDuration::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers DrugDuration::attributeLabels
-	 * @todo   Implement testAttributeLabels().
-	 */
-	public function testAttributeLabels()
-	{
-		$expected = array();
-		$this->assertEquals($expected, $this->model->attributeLabels());
-	}
-
-	/**
 	 * @covers DrugDuration::search
-	 * @todo   Implement testSearch().
 	 */
 	public function testSearch()
 	{
-		$this->markTestSkipped(' skipped as shows null and new line, needs REFACTORING');
 		$this->model->setAttributes($this->drugduration('drugduration1')->getAttributes());
 		$results = $this->model->search();
 		$data = $results->getData();

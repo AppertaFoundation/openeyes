@@ -21,6 +21,7 @@ class CommonSystemicDisorderTest extends CDbTestCase
 {
 
 	public $fixtures = array(
+		'Disorder',
 		'specialties' => 'Specialty',
 		'commonsystemicdisorder' => 'CommonSystemicDisorder'
 	);
@@ -47,17 +48,7 @@ class CommonSystemicDisorderTest extends CDbTestCase
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers CommonSystemicDisorder::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
@@ -66,7 +57,6 @@ class CommonSystemicDisorderTest extends CDbTestCase
 
 	/**
 	 * @covers CommonSystemicDisorder::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
@@ -75,7 +65,6 @@ class CommonSystemicDisorderTest extends CDbTestCase
 
 	/**
 	 * @covers CommonSystemicDisorder::rules
-	 * @todo   Implement testRules().
 	 */
 	public function testRules()
 	{
@@ -85,21 +74,7 @@ class CommonSystemicDisorderTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers CommonSystemicDisorder::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers CommonSystemicDisorder::attributeLabels
-	 * @todo   Implement testAttributeLabels().
 	 */
 	public function testAttributeLabels()
 	{
@@ -112,30 +87,18 @@ class CommonSystemicDisorderTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers CommonSystemicDisorder::search
-	 * @todo   Implement testSearch().
-	 */
-	public function testSearch()
-	{
-		$this->markTestSkipped(
-			'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-		);
-	}
-
-	/**
 	 * @covers CommonSystemicDisorder::getList
-	 * @todo   Implement testGetList().
 	 */
 	public function testGetList()
 	{
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
 		$expected = array();
 		foreach ($this->commonsystemicdisorder as $data) {
 			$disorder = Disorder::model()->findByPk($data['disorder_id']);
 			$expected[$disorder->id] = $disorder->term;
 		}
 
-		$this->assertEquals($expected, $this->model->getList(), 'List results should match.');
+		$firm = $this->getMockBuilder('Firm')->disableOriginalConstructor()->getMock();
+		$this->assertEquals($expected, $this->model->getList($firm), 'List results should match.');
 	}
 
 	/**
@@ -143,7 +106,6 @@ class CommonSystemicDisorderTest extends CDbTestCase
 	 */
 	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
 	{
-
 		$commonsystemicdisorder = new CommonSystemicDisorder;
 		$commonsystemicdisorder->setAttributes($searchTerms);
 		$results = $commonsystemicdisorder->search();

@@ -17,102 +17,67 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class DrugSetTest extends CDbTestCase {
+class DrugSetTest extends CDbTestCase
+{
+	/**
+	 * @var DrugSet
+	 */
+	protected $model;
+	public $fixtures = array(
+		'drugsets' => 'DrugSet',
+	);
 
-	   /**
-	    * @var DrugSet
-	    */
-	   protected $model;
-	   public $fixtures = array(
-		    'drugsets' => 'DrugSet',
-	   );
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp() {
+		parent::setUp();
+		$this->model = new DrugSet;
+	}
 
-	   /**
-	    * Sets up the fixture, for example, opens a network connection.
-	    * This method is called before a test is executed.
-	    */
-	   protected function setUp() {
-		      parent::setUp();
-		      $this->model = new DrugSet;
-	   }
+	/**
+	 * @covers DrugSet::model
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('DrugSet', get_class(DrugSet::model()), 'Class name should match model.');
+	}
 
-	   /**
-	    * Tears down the fixture, for example, closes a network connection.
-	    * This method is called after a test is executed.
-	    */
-	   protected function tearDown() {
+	/**
+	 * @covers DrugForm::tableName
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('drug_set', $this->model->tableName());
+	}
 
-	   }
+	/**
+	 * @covers DrugForm::rules
+	 */
+	public function testRules()
+	{
+		$this->assertTrue($this->drugsets('drugset1')->validate());
+		$this->assertEmpty($this->drugsets('drugset1')->errors);
+	}
 
-	   /**
-	    * @covers DrugSet::model
-	    * @todo   Implement testModel().
-	    */
-	   public function testModel() {
+	/**
+	 * @covers DrugSet::search
+	 */
+	public function testSearch()
+	{
+		$this->model->setAttributes($this->drugsets('drugset1')->getAttributes());
+		$results = $this->model->search();
+		$data = $results->getData();
 
-		      $this->assertEquals('DrugSet', get_class(DrugSet::model()), 'Class name should match model.');
-	   }
-
-	   /**
-	    * @covers DrugForm::tableName
-	    * @todo   Implement testTableName().
-	    */
-	   public function testTableName() {
-
-		      $this->assertEquals('drug_set', $this->model->tableName());
-	   }
-
-	   /**
-	    * @covers DrugForm::rules
-	    * @todo   Implement testRules().
-	    */
-	   public function testRules() {
-
-		      $this->assertTrue($this->drugsets('drugset1')->validate());
-		      $this->assertEmpty($this->drugsets('drugset1')->errors);
-	   }
-
-	   /**
-	    * @covers DrugSet::relations
-	    * @todo   Implement testRelations().
-	    */
-	   public function testRelations() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers DrugSet::attributeLabels
-	    * @todo   Implement testAttributeLabels().
-	    */
-	   public function testAttributeLabels() {
-
-		      $expected = array();
-
-		      $this->assertEquals($expected, $this->model->attributeLabels());
-	   }
-
-	   /**
-	    * @covers DrugSet::search
-	    * @todo   Implement testSearch().
-	    */
-	   public function testSearch() {
-
-		      $this->model->setAttributes($this->drugsets('drugset1')->getAttributes());
-		      $results = $this->model->search();
-		      $data = $results->getData();
-
-		      $expectedKeys = array('drugset1');
-		      $expectedResults = array();
-		      if (!empty($expectedKeys)) {
-			         foreach ($expectedKeys as $key) {
-				            $expectedResults[] = $this->drugsets($key);
-			         }
-		      }
-		      $this->assertEquals(1, $results->getItemCount());
-		      $this->assertEquals($expectedResults, $data);
-	   }
-
+		$expectedKeys = array('drugset1');
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
+				$expectedResults[] = $this->drugsets($key);
+			}
+		}
+		$this->assertEquals(1, $results->getItemCount());
+		$this->assertEquals($expectedResults, $data);
+	}
 }

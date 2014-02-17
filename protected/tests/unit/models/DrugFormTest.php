@@ -17,103 +17,70 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class DrugFormTest extends CDbTestCase {
+class DrugFormTest extends CDbTestCase
+{
+	/**
+	 * @var DrugForm
+	 */
+	protected $model;
+	public $fixtures = array(
+		'drugforms' => 'DrugForm',
+	);
 
-	   /**
-	    * @var DrugForm
-	    */
-	   protected $model;
-	   public $fixtures = array(
-		    'drugforms' => 'DrugForm',
-	   );
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->model = new DrugForm;
+	}
 
-	   /**
-	    * Sets up the fixture, for example, opens a network connection.
-	    * This method is called before a test is executed.
-	    */
-	   protected function setUp() {
-		      parent::setUp();
-		      $this->model = new DrugForm;
-	   }
+	/**
+	 * @covers DrugForm::model
+	 */
+	public function testModel()
+	{
 
-	   /**
-	    * Tears down the fixture, for example, closes a network connection.
-	    * This method is called after a test is executed.
-	    */
-	   protected function tearDown() {
+		$this->assertEquals('DrugForm', get_class(DrugForm::model()), 'Class name should match model.');
+	}
 
-	   }
+	/**
+	 * @covers DrugForm::tableName
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('drug_form', $this->model->tableName());
+	}
 
-	   /**
-	    * @covers DrugForm::model
-	    * @todo   Implement testModel().
-	    */
-	   public function testModel() {
+	/**
+	 * @covers DrugForm::rules
+	 */
+	public function testRules()
+	{
+		$this->assertTrue($this->drugforms('drugform1')->validate());
+		$this->assertEmpty($this->drugforms('drugform2')->errors);
+	}
 
-		      $this->assertEquals('DrugForm', get_class(DrugForm::model()), 'Class name should match model.');
-	   }
+	/**
+	 * @covers DrugForm::search
+	 */
+	public function testSearch()
+	{
+		$this->model->setAttributes($this->drugforms('drugform1')->getAttributes());
+		$results = $this->model->search();
+		$data = $results->getData();
 
-	   /**
-	    * @covers DrugForm::tableName
-	    * @todo   Implement testTableName().
-	    */
-	   public function testTableName() {
-
-		      $this->assertEquals('drug_form', $this->model->tableName());
-	   }
-
-	   /**
-	    * @covers DrugForm::rules
-	    * @todo   Implement testRules().
-	    */
-	   public function testRules() {
-
-		      $this->assertTrue($this->drugforms('drugform1')->validate());
-		      $this->assertEmpty($this->drugforms('drugform2')->errors);
-	   }
-
-	   /**
-	    * @covers DrugForm::relations
-	    * @todo   Implement testRelations().
-	    */
-	   public function testRelations() {
-		      
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers DrugForm::attributeLabels
-	    * @todo   Implement testAttributeLabels().
-	    */
-	   public function testAttributeLabels() {
-
-		      $expected = array();
-
-		      $this->assertEquals($expected, $this->model->attributeLabels());
-	   }
-
-	   /**
-	    * @covers DrugForm::search
-	    * @todo   Implement testSearch().
-	    */
-	   public function testSearch() {
-
-		      $this->model->setAttributes($this->drugforms('drugform1')->getAttributes());
-		      $results = $this->model->search();
-		      $data = $results->getData();
-
-		      $expectedKeys = array('drugform1');
-		      $expectedResults = array();
-		      if (!empty($expectedKeys)) {
-			         foreach ($expectedKeys as $key) {
-				            $expectedResults[] = $this->drugforms($key);
-			         }
-		      }
-		      $this->assertEquals(1, $results->getItemCount());
-		      $this->assertEquals($expectedResults, $data);
-	   }
+		$expectedKeys = array('drugform1');
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
+				$expectedResults[] = $this->drugforms($key);
+			}
+		}
+		$this->assertEquals(1, $results->getItemCount());
+		$this->assertEquals($expectedResults, $data);
+	}
 
 }

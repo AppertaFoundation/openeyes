@@ -47,23 +47,11 @@ class ContactTypeTest extends CDbTestCase
 
 	/**
 	 * @covers ContactType::rules
-	 * @todo   Implement testRules().
 	 */
-	public function testRules() {
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
-		$this->assertTrue($this->contacttypes('contacttype1')->validate());
-		$this->assertEmpty($this->contacttypes('contacttype1')->errors);
-	}
-
-	/**
-	 * @covers ContactType::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations() {
-		// Remove the following lines when you implement this test.
-		//$this->markTestIncomplete(
-		//	'This test has not been implemented yet.'
-		//);
+	public function testRules()
+	{
+		$this->assertTrue($this->contactTypes('contacttype1')->validate());
+		$this->assertEmpty($this->contactTypes('contacttype1')->errors);
 	}
 
 	public function testAttributeLabels()

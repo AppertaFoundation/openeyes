@@ -136,14 +136,14 @@ class ContactLocation extends BaseActiveRecordVersioned
 	 */
 	public function getLetterAddress($params=array())
 	{
-		$owner = $this->owner->site ? $this->owner->site : $this->owner->institution;
+		$owner = $this->site ? $this->site : $this->institution;
 		if (@$params['contact']) {
 			$contactRelation = @$params['contact'];
 			$contact = $owner->$contactRelation;
 		} else {
 			$contact = $owner->contact;
 		}
-		
+
 		$address = $contact->address;
 
 		$res = $this->formatLetterAddress($this->contact, $address, $params);
@@ -152,8 +152,8 @@ class ContactLocation extends BaseActiveRecordVersioned
 
 	public function getLetterArray($include_country)
 	{
-		$address = $this->owner->site ? $this->owner->site->contact->address : $this->owner->institution->contact->address;
-		$name = $this->owner->site ? $this->owner->site->correspondenceName : $this->owner->institution->name;
+		$address = $this->site ? $this->site->contact->address : $this->institution->contact->address;
+		$name = $this->site ? $this->site->correspondenceName : $this->institution->name;
 		if (!is_array($name)) {
 			$name = array($name);
 		}

@@ -19,7 +19,6 @@
  */
 class AuditTest extends CDbTestCase
 {
-
 	/**
 	 * @var AddressType
 	 */
@@ -30,7 +29,6 @@ class AuditTest extends CDbTestCase
 
 	public function dataProvider_Search()
 	{
-
 		return array(
 			array(array('action' => 'action1'), 3, array('audit1')),
 		);
@@ -48,7 +46,6 @@ class AuditTest extends CDbTestCase
 
 	/**
 	 * @covers Audit::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
@@ -57,7 +54,6 @@ class AuditTest extends CDbTestCase
 
 	/**
 	 * @covers Audit::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
@@ -65,36 +61,10 @@ class AuditTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers Audit::rules
-	 * @todo   Implement testRules().
-	 */
-	public function testRules()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers Audit::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers Audit::attributeLabels
-	 * @todo   Implement testAttributeLabels().
 	 */
 	public function testAttributeLabels()
 	{
-
 		$expected = array(
 			'id' => 'ID',
 			'action' => 'Action',
@@ -115,25 +85,11 @@ class AuditTest extends CDbTestCase
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
 
-	/*
-		* @covers Address::search
-		* @todo   Implement testSearch().
-		*/
-
-	public function testSearch()
-	{
-
-		$this->markTestSkipped(
-			'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-		);
-	}
-
 	/**
 	 * @dataProvider dataProvider_Search
 	 */
 	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
 	{
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
 		$audit = new Audit;
 		$audit->setAttributes($searchTerms);
 		$results = $audit->search();
@@ -152,59 +108,15 @@ class AuditTest extends CDbTestCase
 
 	/**
 	 * @covers Audit::getColour
-	 * @todo   Implement testGetColour().
 	 */
 	public function testGetColour()
 	{
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
 		//test the error's color
 		$audit = new Audit;
-		$audit->action = 'search-error';
+		$audit->action = ComponentStubGenerator::generate('AuditAction', array('name' => 'search-error'));
 		$result = $audit->getColour();
 		$expected = 'Red';
 
 		$this->assertEquals($expected, $result);
 	}
-
-	/**
-	 * @covers Audit::add
-	 * @todo   Implement testAdd().
-	 */
-	public function testAdd()
-	{
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
-
-		$audit = new Audit;
-
-		//values to insert
-		$target = $this->audit('audit3')->getAttribute('target_type');
-		$action = $this->audit('audit3')->getAttribute('action');
-		$data = $this->audit('audit3')->getAttribute('data');
-
-		$_SERVER['REMOTE_ADDR'] = $this->audit('audit3')->getAttribute('remote_addr');
-		$_SERVER['HTTP_USER_AGENT'] = $this->audit('audit3')->getAttribute('http_user_agent');
-		$_SERVER['SERVER_NAME'] = $this->audit('audit3')->getAttribute('server_name');
-		$_SERVER['REQUEST_URI'] = $this->audit('audit3')->getAttribute('request_uri');
-
-		$propreties = array(
-			'id' => '99',
-			'patient_id' => '3',
-			'episode_id' => '3',
-			'event_id' => '3',
-			'user_id' => '3',
-			'data' => 'Data 3',
-			'remote_addr' => 'test',
-			'http_user_agent' => 'HTTP User Agent3',
-			'server_name' => 'Server name3',
-			'request_uri' => 'Request URI3',
-			'site_id' => '3',
-			'firm_id' => '3'
-		);
-
-		$result = $audit->add($target, $action, $data, false, $propreties)->getAttributes();
-		$expected = Audit::model()->findByPk(99)->getAttributes();
-
-		$this->assertEquals($expected, $result);
-	}
-
 }

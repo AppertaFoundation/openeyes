@@ -19,18 +19,20 @@
  */
 class ContactLocationTest extends CDbTestCase
 {
-
 	/**
 	 * @var ContactLocation
 	 */
 	public $model;
 	public $fixtures = array(
+		'Address',
+		'Contact',
+		'Institution',
+		'Site',
 		'contactlocations' => 'ContactLocation',
 	);
 
 	public function dataProvider_Search()
 	{
-
 		return array(
 			array(array('contact_id' => 1, 'site_id' => 1), 1, array('contactlocation1')),
 			array(array('contact_id' => 2, 'site_id' => 2), 1, array('contactlocation2')),
@@ -49,81 +51,45 @@ class ContactLocationTest extends CDbTestCase
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers ContactLocation::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
-
 		$this->assertEquals('ContactLocation', get_class(ContactLocation::model()), 'Class name should match model.');
 	}
 
 	/**
 	 * @covers ContactLocation::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
-
 		$this->assertEquals('contact_location', $this->model->tableName());
 	}
 
 	/**
 	 * @covers ContactLocation::behaviors
-	 * @todo   Implement testBehaviors().
 	 */
 	public function testBehaviors()
 	{
-
-		$expected = array('ContactBehavior' => array(
-			'class' => 'application.behaviors.ContactBehavior',
-		),
-		);
+		$expected = array('ContactBehavior' => array('class' => 'application.behaviors.ContactBehavior'));
 		$this->assertEquals($expected, $this->model->behaviors());
 	}
 
 	/**
 	 * @covers ContactLocation::rules
-	 * @todo   Implement testRules().
 	 */
 	public function testRules()
 	{
-
 		$this->assertTrue($this->contactlocations('contactlocation1')->validate());
 		$this->assertEmpty($this->contactlocations('contactlocation2')->errors);
 	}
 
 	/**
-	 * @covers ContactLocation::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers ContactLocation::attributeLocations
-	 * @todo   Implement testAttributeLocations().
 	 */
 	public function testAttributeLocations()
 	{
-
-		$expected = array('id' => 'ID',
-			'name' => 'Name',
-		);
+		$expected = array('id' => 'ID', 'name' => 'Name');
 
 		$this->assertEquals($expected, $this->model->attributeLocations());
 	}
@@ -142,14 +108,13 @@ class ContactLocationTest extends CDbTestCase
 
 	/**
 	 * @covers ContactLocation::__toString
-	 * @todo   Implement test__toString().
 	 */
 	public function test__toString()
 	{
-		//$expected = 'City Road';
+		$expected = 'City Road';
 		$result = $this->contactlocations('contactlocation1')->__toString();
 
-		//$this->assertContains($expected, $result, $expected . " not found");
+		$this->assertContains($expected, $result, $expected . " not found");
 		$this->assertGreaterThan(0 ,strlen($result));
 		$this->assertNotNull($result);
 	}
@@ -170,7 +135,6 @@ class ContactLocationTest extends CDbTestCase
 			'london',
 			'ec1v 0dx'
 		);
-
 
 		$result = $this->contactlocations('contactlocation1')->GetLetterAddress();
 
@@ -203,11 +167,9 @@ class ContactLocationTest extends CDbTestCase
 
 	/**
 	 * @covers ContactLocation::getPatients
-	 * @todo   Implement testGetPatients().
 	 */
 	public function testGetPatients()
 	{
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
 		$this->model->setAttribute('contact_id', 1);
 		$result = $this->contactlocations('contactlocation1')->GetPatients();
 		$expected = $this->model->getPatients();
