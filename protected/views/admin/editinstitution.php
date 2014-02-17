@@ -63,7 +63,7 @@
 				$criteria = new CDbCriteria;
 				$criteria->compare('institution_id',$institution->id);
 				$criteria->order = 'name asc';
-				foreach (Site::model()->findAll($criteria) as $i => $site) {?>
+				foreach (Site::model()->active()->findAll($criteria) as $i => $site) {?>
 					<tr class="clickable" data-id="<?php echo $site->id?>" data-uri="admin/editsite?site_id=<?php echo $site->id?>">
 						<td><?php echo $site->id?></td>
 						<td><?php echo $site->remote_id?>&nbsp;</td>

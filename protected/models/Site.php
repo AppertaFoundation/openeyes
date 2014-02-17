@@ -137,7 +137,7 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 	 */
 	public function getList()
 	{
-		$list = Site::model()->findAll(array('order' => 'short_name'));
+		$list = Site::model()->active()->findAll(array('order' => 'short_name'));
 
 		$result = array();
 
@@ -161,7 +161,7 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 
 		$result = array();
 
-		foreach (Site::model()->findAll($criteria) as $site) {
+		foreach (Site::model()->active()->findAll($criteria) as $site) {
 			$result[$site->id] = $site->$field;
 		}
 
@@ -177,7 +177,7 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 
 		$result = array();
 
-		foreach (Site::model()->with('institution')->findAll($criteria) as $site) {
+		foreach (Site::model()->active()->with('institution')->findAll($criteria) as $site) {
 			$institution = $site->institution;
 
 			$site_name = '';
@@ -244,7 +244,7 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 		$criteria->params[':institution_id'] = $institution->id;
 		$criteria->order = 'name asc';
 
-		return Site::model()->findAll($criteria);
+		return Site::model()->active()->findAll($criteria);
 	}
 	
 	public function getReplyToAddress($params = array())

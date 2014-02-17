@@ -298,7 +298,7 @@ class UserIdentity extends CUserIdentity
 		// Select site
 		if ($user->last_site_id) {
 			$app->session['selected_site_id'] = $user->last_site_id;
-		} elseif ($default_site = Site::model()->getDefaultSite()) {
+		} elseif ($default_site = Site::model()->active()->getDefaultSite()) {
 			$app->session['selected_site_id'] = $default_site->id;
 		} else {
 			throw new CException('Cannot find default site');
