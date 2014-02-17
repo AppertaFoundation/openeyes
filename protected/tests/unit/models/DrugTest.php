@@ -67,21 +67,6 @@ class DrugTest extends CDbTestCase	{
 	}
 
 	/**
-	*	@covers	Drug::defaultScope
-	*	@todo Implement testDefaultScope().
-	*/
-	public function testDefaultScope() {
-		$result	= $this->model->defaultScope();
-		if ($this->model->default_scope) {
-			$expected = array('condition' => 't.discontinued = 0');
-			$this->assertEquals($expected, $result);
-		} else {
-			$expected = array();
-			$this->assertEquals($expected, $result);
-		}
-	}
-
-	/**
 	*	@covers	Drug::scopes
 	*	@todo Implement testScopes().
 	*/
