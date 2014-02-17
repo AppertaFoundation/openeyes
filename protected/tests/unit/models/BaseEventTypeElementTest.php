@@ -20,37 +20,11 @@
 class BaseEventTypeElementTest extends CDbTestCase
 {
 	/**
-	 * @var BaseEventTypeElement
-	 */
-	protected $model;
-
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp()
-	{
-
-		//       parent::setUp();
-		//     $this->model = new BaseEventTypeElement;
-	}
-
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers BaseEventTypeElement::getElementType
 	 * @todo   Implement testGetElementType().
 	 */
 	public function testGetElementType()
 	{
-
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete(
 			'This test has not been implemented yet.'
@@ -265,5 +239,4 @@ class BaseEventTypeElementTest extends CDbTestCase
 			'This test has not been implemented yet.'
 		);
 	}
-
 }

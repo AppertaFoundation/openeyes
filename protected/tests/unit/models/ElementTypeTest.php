@@ -17,122 +17,93 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class ElementTypeTest extends CDbTestCase {
-
+class ElementTypeTest extends CDbTestCase
+{
 	/**
-	* @var ElementType
-	*/
+	 * @var ElementType
+	 */
 	protected $model;
 	public $fixtures = array(
 		'event_type' => 'EventType',
 		'elementtypes' => 'ElementType',
 	);
 
-	   /**
-	    * Sets up the fixture, for example, opens a network connection.
-	    * This method is called before a test is executed.
-	    */
-	   protected function setUp() {
-		      parent::setUp();
-		      $this->model = new ElementType;
-	   }
-
-	   /**
-	    * Tears down the fixture, for example, closes a network connection.
-	    * This method is called after a test is executed.
-	    */
-	   protected function tearDown() {
-
-	   }
-
-	   /**
-	    * @covers ElementType::model
-	    * @todo   Implement testModel().
-	    */
-	   public function testModel() {
-
-		      $this->assertEquals('ElementType', get_class(ElementType::model()), 'Class name should match model.');
-	   }
-
-	   /**
-	    * @covers ElementType::tableName
-	    * @todo   Implement testTableName().
-	    */
-	   public function testTableName() {
-
-		      $this->assertEquals('element_type', $this->model->tableName());
-	   }
-
-	   /**
-	    * @covers ElementType::rules
-	    * @todo   Implement testRules().
-	    */
-	   public function testRules() {
-
-		      $this->assertTrue($this->elementtypes('history')->validate());
-		      $this->assertEmpty($this->elementtypes('history')->errors);
-	   }
-
-	   /**
-	    * @covers ElementType::relations
-	    * @todo   Implement testRelations().
-	    */
-	   public function testRelations() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers ElementType::attributeLabels
-	    * @todo   Implement testAttributeLabels().
-	    */
-	   public function testAttributeLabels() {
-
-		      $expected = array(
-			       'id' => 'ID',
-			       'name' => 'Name',
-			       'class_name' => 'Class Name',);
-
-		      $this->assertEquals($expected, $this->model->attributeLabels());
-	   }
-
-	   /**
-	    * @covers ElementType::getDescendents
-	    * @todo   Implement testGetDescendents().
-	    */
-	   public function testGetDescendents() {
-
-		      $result = $this->model->getDescendents();
-
-		      $expected = array();
-
-
-		      $this->assertEquals($expected, $result);
-	   }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp() {
+		parent::setUp();
+		$this->model = new ElementType;
+	}
 
 	/**
-	* @covers ElementType::search
-	* @todo   Implement testSearch().
-	*/
-	/*
+	 * @covers ElementType::model
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('ElementType', get_class(ElementType::model()), 'Class name should match model.');
+	}
+
+	/**
+	 * @covers ElementType::tableName
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('element_type', $this->model->tableName());
+	}
+
+	/**
+	 * @covers ElementType::rules
+	 */
+	public function testRules()
+	{
+		$this->assertTrue($this->elementtypes('history')->validate());
+		$this->assertEmpty($this->elementtypes('history')->errors);
+	}
+
+	/**
+	 * @covers ElementType::attributeLabels
+	 */
+	public function testAttributeLabels()
+	{
+		$expected = array(
+			'id' => 'ID',
+			'name' => 'Name',
+			'class_name' => 'Class Name',);
+
+		$this->assertEquals($expected, $this->model->attributeLabels());
+	}
+
+	/**
+	 * @covers ElementType::getDescendents
+	 * @todo   Implement testGetDescendents().
+	 */
+	public function testGetDescendents()
+	{
+		$result = $this->model->getDescendents();
+
+		$expected = array();
+
+		$this->assertEquals($expected, $result);
+	}
+
+	/**
+	 * @covers ElementType::search
+	 */
 	public function testSearch()
 	{
 		$this->model->setAttributes($this->elementtypes('history')->getAttributes());
 		$results = $this->model->search();
 		$data = $results->getData();
-		echo $results->getItemCount();
-		$expectedKeys = array('history');
+
+		$expectedKeys = array('history', 'pasthistory');
 		$expectedResults = array();
 		if (!empty($expectedKeys)) {
-			 foreach ($expectedKeys as $key) {
-					$expectedResults[] = $this->elementtypes($key);
-			 }
+			foreach ($expectedKeys as $key) {
+				$expectedResults[] = $this->elementtypes($key);
+			}
 		}
-		$this->assertEquals(1, $results->getItemCount());
 		$this->assertEquals($expectedResults, $data);
 	}
-	*/
-
 }

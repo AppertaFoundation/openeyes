@@ -56,27 +56,15 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers CommonOphthalmicDisorder::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
-
 		$this->assertEquals('CommonOphthalmicDisorder', get_class(CommonOphthalmicDisorder::model()), 'Class name should match model.');
 	}
 
 	/**
 	 * @covers CommonOphthalmicDisorder::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
@@ -86,30 +74,15 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 
 	/**
 	 * @covers CommonOphthalmicDisorder::rules
-	 * @todo   Implement testRules().
 	 */
 	public function testRules()
 	{
-
 		$this->assertTrue($this->disorders('commonOphthalmicDisorder1')->validate());
 		$this->assertEmpty($this->disorders('commonOphthalmicDisorder1')->errors);
 	}
 
 	/**
-	 * @covers CommonOphthalmicDisorder::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers CommonOphthalmicDisorder::attributeLabels
-	 * @todo   Implement testAttributeLabels().
 	 */
 	public function testAttributeLabels()
 	{
@@ -123,24 +96,11 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers CommonOphthalmicDisorder::search
-	 * @todo   Implement testSearch().
-	 */
-	public function testSearch()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers CommonOphthalmicDisorder::getSubspecialtyOptions
 	 * @todo   Implement testGetSubspecialtyOptions().
 	 */
 	public function testGetSubspecialtyOptions()
 	{
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
 		$specialties = CHtml::listData(Specialty::model()->findAll(), 'id', 'name');
 		$this->assertEquals($specialties, $this->model->getSubspecialtyOptions(), 'Correct specialties found.');
 		$this->assertEquals(count($this->specialties), count($this->model->getSubspecialtyOptions()), 'Correct number of specialties found.');
@@ -181,8 +141,7 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 			}
 		}
 
-		/* 	$this->assertEquals($numResults, $results->getItemCount());
-			$this->assertEquals($expectedResults, $data); */
+		$this->assertEquals($numResults, $results->getItemCount());
+		$this->assertEquals($expectedResults, $data);
 	}
-
 }

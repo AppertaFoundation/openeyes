@@ -51,20 +51,8 @@ class PatientTest extends CDbTestCase
 	 */
 	protected function setUp()
 	{
-		$this->markTestSkipped(
-			'This test might be redundant/not needed anymore.'
-		);
 		parent::setUp();
 		$this->model = new Patient;
-	}
-
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
 	}
 
 	/**
@@ -236,7 +224,6 @@ class PatientTest extends CDbTestCase
 	 */
 	public function testGetAge()
 	{
-		$this->markTestSkipped('Too many errors in this class test, Skipping until someone can refactor it.');
 		Yii::app()->params['pseudonymise_patient_details'] = false;
 
 		$attributes = array(
@@ -262,7 +249,6 @@ class PatientTest extends CDbTestCase
 
 	public function testRandomData_ParamSetOff_ReturnsFalse()
 	{
-		$this->markTestSkipped('Too many errors in this class test, Skipping until someone can refactor it.');
 		Yii::app()->params['pseudonymise_patient_details'] = false;
 
 		$attributes = array(

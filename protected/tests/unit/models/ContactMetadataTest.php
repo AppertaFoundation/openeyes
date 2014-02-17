@@ -17,120 +17,75 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class ContactMetadataTest extends CDbTestCase {
+class ContactMetadataTest extends CDbTestCase
+{
+	/**
+	 * @var ContactMetadata
+	 */
+	protected $model;
+	public $fixtures = array(
+		'contactmetadata' => 'ContactMetadata'
+	);
 
-      /**
-       * @var ContactMetadata
-       */
-      protected $model;
-      public $fixtures = array(
-                               'contactmetadata' => 'ContactMetadata'
-      );
+	public function dataProvider_Search()
+	{
+		return array(
+			array(array('key' => 'gender'), 4, array('contactmetadata1', 'contactmetadata2', 'contactmetadata3', 'contactmetadata4')),
+			array(array('value' => 'M',), 4, array('contactmetadata1', 'contactmetadata2', 'contactmetadata3', 'contactmetadata4'))
+		);
+	}
 
-      public function dataProvider_Search() {
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->model = new ContactMetadata;
+	}
 
-            return array( 
-                                     array(array('key' => 'gender'), 4, array('contactmetadata1', 'contactmetadata2', 'contactmetadata3', 'contactmetadata4')),
-                                     array(array('value' => 'M',), 4, array('contactmetadata1', 'contactmetadata2', 'contactmetadata3', 'contactmetadata4'))
-            );
-      }
+	/**
+	 * @covers ContactMetadata::model
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('ContactMetadata', get_class(ContactMetadata::model()), 'Class name should match model.');
+	}
 
-      /**
-       * Sets up the fixture, for example, opens a network connection.
-       * This method is called before a test is executed.
-       */
-      protected function setUp() {
+	/**
+	 * @covers ContactMetadata::tableName
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('contact_metadata', $this->model->tableName());
+	}
 
-            parent::setUp();
-            $this->model = new ContactMetadata;
-      }
+	/**
+	 * @covers ContactMetadata::rules
+	 */
+	public function testRules()
+	{
+		$this->assertTrue($this->contactmetadata('contactmetadata3')->validate());
+	}
 
-      /**
-       * Tears down the fixture, for example, closes a network connection.
-       * This method is called after a test is executed.
-       */
-      protected function tearDown() {
-            
-      }
+	/**
+	 * @dataProvider dataProvider_Search
+	 */
+	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+	{
+		$this->model->setAttributes($searchTerms);
+		$results = $this->model->search();
+		$data = $results->getData();
 
-      /**
-       * @covers ContactMetadata::model
-       * @todo   Implement testModel().
-       */
-      public function testModel() {
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
+				$expectedResults[] = $this->contactmetadata($key);
+			}
+		}
 
-            $this->assertEquals('ContactMetadata', get_class(ContactMetadata::model()), 'Class name should match model.');
-      }
-
-      /**
-       * @covers ContactMetadata::tableName
-       * @todo   Implement testTableName().
-       */
-      public function testTableName() {
-
-            $this->assertEquals('contact_metadata', $this->model->tableName());
-      }
-
-      /**
-       * @covers ContactMetadata::rules
-       * @todo   Implement testRules().
-       */
-      public function testRules() {
-
-            $this->assertTrue($this->contactmetadata('contactmetadata3')->validate());
-      }
-
-      /**
-       * @covers ContactMetadata::relations
-       * @todo   Implement testRelations().
-       */
-      public function testRelations() {
-            // Remove the following lines when you implement this test.
-            $this->markTestIncomplete(
-                      'This test has not been implemented yet.'
-            );
-      }
-
-      /**
-       * @covers ContactMetadata::attributeLabels
-       * @todo   Implement testAttributeLabels().
-       */
-      public function testAttributeLabels() {
-
-            $expected = ContactMetadata::model()->attributeLabels();
-
-            $this->assertEquals($expected, $this->model->attributeLabels());
-      }
-
-      /**
-       * @covers Address::search
-       * @todo   Implement testSearch().
-       */
-      public function testSearch() {
-
-            $this->markTestSkipped(
-                      'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-            );
-      }
-
-      /**
-       * @dataProvider dataProvider_Search
-       */
-      public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
-
-            $this->model->setAttributes($searchTerms);
-            $results = $this->model->search();
-            $data = $results->getData();
-
-            $expectedResults = array();
-            if (!empty($expectedKeys)) {
-                  foreach ($expectedKeys as $key) {
-                        $expectedResults[] = $this->contactmetadata($key);
-                  }
-            }
-
-            $this->assertEquals($numResults, $results->getItemCount());
-            $this->assertEquals($expectedResults, $data);
-      }
-
+		$this->assertEquals($numResults, $results->getItemCount());
+		$this->assertEquals($expectedResults, $data);
+	}
 }

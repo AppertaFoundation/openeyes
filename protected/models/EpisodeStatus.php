@@ -96,7 +96,6 @@ class EpisodeStatus extends BaseActiveRecordVersioned
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('order',$this->order,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

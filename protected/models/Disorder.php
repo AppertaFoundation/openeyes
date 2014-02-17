@@ -84,7 +84,6 @@ class Disorder extends BaseActiveRecordVersionedSoftDelete
 		// will receive user inputs.
 		return array(
 			array('id, fully_specified_name, term', 'required'),
-			array('systemic', 'numerical', 'integerOnly' => true),
 			array('id', 'length', 'max' => 10),
 			array('fully_specified_name, term', 'length', 'max' => 255),
 			// The following rule is used by search().

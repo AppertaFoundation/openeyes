@@ -19,7 +19,6 @@
  */
 class AuditTrailTest extends CDbTestCase
 {
-
 	/**
 	 * @var AddressType
 	 */
@@ -30,9 +29,8 @@ class AuditTrailTest extends CDbTestCase
 
 	public function dataProvider_Search()
 	{
-
 		return array(
-			array(array(), 3, array('audittrail1')),
+			array(array(), array('audittrail1')),
 		);
 	}
 
@@ -47,17 +45,7 @@ class AuditTrailTest extends CDbTestCase
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers AuditTrail::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
@@ -66,77 +54,17 @@ class AuditTrailTest extends CDbTestCase
 
 	/**
 	 * @covers AuditTrail::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
-
 		$this->assertEquals('tbl_audit_trail', $this->model->tableName());
-	}
-
-	/**
-	 * @covers AuditTrail::rules
-	 * @todo   Implement testRules().
-	 */
-	public function testRules()
-	{
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
-		$this->assertTrue($this->audittrail('audittrail1')->validate());
-		$this->assertEmpty($this->audittrail('audittrail1')->errors);
-	}
-
-	/**
-	 * @covers AuditTrail::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers AuditTrail::attributeLabels
-	 * @todo   Implement testAttributeLabels().
-	 */
-	public function testAttributeLabels()
-	{
-		$expected = array(
-			'id' => 'ID',
-			'old_value' => 'Old Value',
-			'new_value' => 'New Value',
-			'action' => 'Action',
-			'model' => 'Model',
-			'field' => 'Field',
-			'stamp' => 'Stamp',
-			'user_id' => 'User',
-			'model_id' => 'Model',
-		);
-
-		$this->assertEquals($expected, $this->model->attributeLabels());
-	}
-
-	/**
-	 * @covers AuditTrail::search
-	 * @todo   Implement testSearch().
-	 */
-	public function testSearch()
-	{
-
-		$this->markTestSkipped(
-			'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-		);
 	}
 
 	/**
 	 * @dataProvider dataProvider_Search
 	 */
-	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $expectedKeys)
 	{
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
 		$audit = new AuditTrail;
 		$audit->setAttributes($searchTerms);
 		$results = $audit->search();
@@ -148,8 +76,6 @@ class AuditTrailTest extends CDbTestCase
 				$expectedResults[] = $this->audittrail($key);
 			}
 		}
-		$this->assertEquals($numResults, $results->getItemCount());
-		$this->assertEquals($expectedResults, array('0' => $data[0]));
+		$this->assertEquals($expectedResults, $data);
 	}
-
 }

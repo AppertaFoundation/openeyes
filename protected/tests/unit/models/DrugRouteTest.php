@@ -17,102 +17,70 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class DrugRouteTest extends CDbTestCase {
+class DrugRouteTest extends CDbTestCase
+{
 
-	   /**
-	    * @var DrugRoute
-	    */
-	   protected $model;
-	   public $fixtures = array(
-		    'drugroutes' => 'DrugRoute',
-	   );
+	/**
+	 * @var DrugRoute
+	 */
+	protected $model;
+	public $fixtures = array(
+		'drugroutes' => 'DrugRoute',
+	);
 
-	   /**
-	    * Sets up the fixture, for example, opens a network connection.
-	    * This method is called before a test is executed.
-	    */
-	   protected function setUp() {
-		      parent::setUp();
-		      $this->model = new DrugRoute;
-	   }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->model = new DrugRoute;
+	}
 
-	   /**
-	    * Tears down the fixture, for example, closes a network connection.
-	    * This method is called after a test is executed.
-	    */
-	   protected function tearDown() {
+	/**
+	 * @covers DrugForm::model
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('DrugRoute', get_class(DrugRoute::model()), 'Class name should match model.');
+	}
 
-	   }
+	/**
+	 * @covers DrugForm::tableName
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('drug_route', $this->model->tableName());
+	}
 
-	   /**
-	    * @covers DrugForm::model
-	    * @todo   Implement testModel().
-	    */
-	   public function testModel() {
+	/**
+	 * @covers DrugForm::rules
+	 */
+	public function testRules()
+	{
+		$this->assertTrue($this->drugroutes('drugroute1')->validate());
+		$this->assertEmpty($this->drugroutes('drugroute2')->errors);
+	}
 
-		      $this->assertEquals('DrugRoute', get_class(DrugRoute::model()), 'Class name should match model.');
-	   }
+	/**
+	 * @covers DrugRoute::search
+	 */
+	public function testSearch()
+	{
+		$this->model->setAttributes($this->drugroutes('drugroute1')->getAttributes());
+		$results = $this->model->search();
+		$data = $results->getData();
 
-	   /**
-	    * @covers DrugForm::tableName
-	    * @todo   Implement testTableName().
-	    */
-	   public function testTableName() {
-
-		      $this->assertEquals('drug_route', $this->model->tableName());
-	   }
-
-	   /**
-	    * @covers DrugForm::rules
-	    * @todo   Implement testRules().
-	    */
-	   public function testRules() {
-
-		      $this->assertTrue($this->drugroutes('drugroute1')->validate());
-		      $this->assertEmpty($this->drugroutes('drugroute2')->errors);
-	   }
-
-	   /**
-	    * @covers DrugRoute::relations
-	    * @todo   Implement testRelations().
-	    */
-	   public function testRelations() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers DrugRoute::attributeLabels
-	    * @todo   Implement testAttributeLabels().
-	    */
-	   public function testAttributeLabels() {
-
-		      $expected = array();
-
-		      $this->assertEquals($expected, $this->model->attributeLabels());
-	   }
-
-	   /**
-	    * @covers DrugRoute::search
-	    * @todo   Implement testSearch().
-	    */
-	   public function testSearch() {
-		      
-		      $this->model->setAttributes($this->drugroutes('drugroute1')->getAttributes());
-		      $results = $this->model->search();
-		      $data = $results->getData();
-
-		      $expectedKeys = array('drugroute1');
-		      $expectedResults = array();
-		      if (!empty($expectedKeys)) {
-			         foreach ($expectedKeys as $key) {
-				            $expectedResults[] = $this->drugroutes($key);
-			         }
-		      }
-		      $this->assertEquals(1, $results->getItemCount());
-		      $this->assertEquals($expectedResults, $data);
-	   }
+		$expectedKeys = array('drugroute1');
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
+				$expectedResults[] = $this->drugroutes($key);
+			}
+		}
+		$this->assertEquals(1, $results->getItemCount());
+		$this->assertEquals($expectedResults, $data);
+	}
 
 }
