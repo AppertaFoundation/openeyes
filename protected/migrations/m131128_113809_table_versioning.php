@@ -2295,7 +2295,6 @@ CREATE TABLE `patient_version` (
 		$this->dropPrimaryKey('id','patient_version');
 
 		$this->createIndex('patient_aid_fk','patient_version','id');
-		$this->addForeignKey('patient_aid_fk','patient_version','id','patient','id');
 
 		$this->addColumn('patient_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -4035,8 +4034,6 @@ CREATE TABLE `user_site_version` (
 		$this->addColumn('opcs_code_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('operative_device','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('operative_device_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('patient','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('patient_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('patient_oph_info_cvi_status','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('patient_oph_info_cvi_status_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('person','deleted','tinyint(1) unsigned not null');
@@ -4134,8 +4131,6 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('opcs_code_version','deleted');
 		$this->dropColumn('operative_device','deleted');
 		$this->dropColumn('operative_device_version','deleted');
-		$this->dropColumn('patient','deleted');
-		$this->dropColumn('patient_version','deleted');
 		$this->dropColumn('patient_oph_info_cvi_status','deleted');
 		$this->dropColumn('patient_oph_info_cvi_status_version','deleted');
 		$this->dropColumn('person','deleted');
