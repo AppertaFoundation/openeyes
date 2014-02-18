@@ -69,7 +69,6 @@
 	 * @method
 	 */
 	StickyElement.prototype.wrapElement = function() {
-		console.log(this.options);
 		this.element.wrap($('<div />', {
 			'class': this.options.wrapperClass
 		}));
