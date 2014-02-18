@@ -135,7 +135,17 @@ class BaseActiveRecordVersionedSoftDelete extends BaseActiveRecordVersioned
 		}
 
 		if (is_array($id)) {
-			$condition = $alias.'.id in ('.implode(',',$id).')';
+			$ids = array();
+			foreach ($id as $_id) {
+				if ($_id) {
+					$ids[] = $_id;
+				}
+			}
+			if (empty($ids)) {
+				return $this->notDeleted();
+			}
+
+			$condition = $alias.'.id in ('.implode(',',$ids).')';
 		} else {
 			$condition = $alias.'.id = '.$id;
 		}
