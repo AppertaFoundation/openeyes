@@ -188,8 +188,8 @@ class Examination extends OpenEyesPage
         'saveExamination' => array('xpath' => "//*[@id='et_save']"),
         'examSavedOk' => array('xpath' => "//*[@id='flash-success']"),
 
-        'existingRightAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'38')]"),
-        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'145')]"),
+        'existingRightAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'145')]"),
+        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'38')]"),
         'addAllElements' => array('xpath' => "//*[@class='add-all']"),
         'removeAllElements' => array('xpath' => "//*[@class='remove-all']"),
         'removeAllValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Event: Cannot create an event without at least one element')]"),

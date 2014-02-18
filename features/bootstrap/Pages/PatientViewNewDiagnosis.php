@@ -205,15 +205,15 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
     {
-        $this->waitForElementDisplayNone('#add_medication');
         $this->getElement('addMedicationButton')->click();
         $this->getElement('selectMedication')->selectOption($medication);
         $this->getElement('selectRoute')->selectOption($route);
         $this->getElement('selectFrequency')->selectOption($frequency);
         $element = $this->getElement('openMedicationDate');
         $this->scrollWindowToElement($element);
-        $this->getElement('openMedicationDate')->click();
-		$this->waitForElementDisplayBlock('#ui-datepicker-div', 10000);
+        $element->click();
+        $this->waitForElementDisplayNone('#ui-datepicker-title');
+//        $this->getSession()->wait(8000);
         $this->getElement('selectDateFrom')->click($datefrom);
         $this->getElement('saveMedication')->click();
         $this->waitForElementDisplayNone('#add_medication');
@@ -336,14 +336,18 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function removeOperation ()
     {
-        $this->getElement('removeOperation')->click();
+        $element = $this->getElement('removeOperation');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getElement('removeOperationConfirmButton')->click();
         $this->getSession()->wait(5000, '$.active == 0');
     }
 
     public function removeMedication ()
     {
-        $this->getElement('removeMedication')->click();
+        $element = $this->getElement('removeMedication');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getElement('removeMedicationConfirmButton')->click();
         $this->getSession()->wait(5000, '$.active == 0');
 

@@ -131,81 +131,81 @@ Feature: These tests set up Events, Edit and Delete them.
       #FIXME OE-3984
     And I delete the Last Event
 
-#  @FIXME JIRA OE-3960 Scenario: Route 3A: Login and create a Phasing Event
+Scenario: Route 3A: Login and create a Phasing Event
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465 "
+
+    Then I select the Latest Event
+
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Phasing"
+
+    Then I choose a right eye Intraocular Pressure Instrument  of "1"
+
+    And I choose right eye Dilation of Yes
+
+    Then I choose a right eye Intraocular Pressure Reading Time of "14:00"
+    Then I choose a right eye Intraocular Pressure Reading of "5"
+    And I add right eye comments of "Right eye comments here"
+
+    Then I choose a left eye Intraocular Pressure Instrument  of "5"
+
+    And I choose left eye Dilation of Yes
+
+    Then I choose a left eye Intraocular Pressure Reading Time of "14:42"
+    Then I choose a left eye Intraocular Pressure Reading of "7"
+    And I add left eye comments of "Left eye comments here"
+
+    Then I Save the Phasing Event
 #
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "1"
-#    Then I select a firm of "3"
+Scenario: Route 3B: Edit previously edited Phasing from Route 3A
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I edit the Last Event
+
+    Then I choose a right eye Intraocular Pressure Instrument  of "3"
+
+    And I choose right eye Dilation of No
+
+    Then I choose a right eye Intraocular Pressure Reading Time of "21:00"
+    Then I choose a right eye Intraocular Pressure Reading of "14"
+    And I add right eye comments of "Right eye comments here"
+
+    Then I choose a left eye Intraocular Pressure Instrument  of "4"
+
+    And I choose left eye Dilation of Yes
+
+    Then I choose a left eye Intraocular Pressure Reading Time of "04:42"
+    Then I choose a left eye Intraocular Pressure Reading of "12"
+    And I add left eye comments of "Left eye comments here"
+
+    Then I Save the Phasing Event
 #
-#    Then I search for hospital number "1009465 "
-#
-#    Then I select the Latest Event
-#
-#    Then I expand the Glaucoma sidebar
-#    And I add a New Event "Phasing"
-#
-#    Then I choose a right eye Intraocular Pressure Instrument  of "1"
-#
-#    And I choose right eye Dilation of Yes
-#
-#    Then I choose a right eye Intraocular Pressure Reading Time of "14:00"
-#    Then I choose a right eye Intraocular Pressure Reading of "5"
-#    And I add right eye comments of "Right eye comments here"
-#
-#    Then I choose a left eye Intraocular Pressure Instrument  of "5"
-#
-#    And I choose left eye Dilation of Yes
-#
-#    Then I choose a left eye Intraocular Pressure Reading Time of "14:42"
-#    Then I choose a left eye Intraocular Pressure Reading of "7"
-#    And I add left eye comments of "Left eye comments here"
-#
-#    Then I Save the Phasing Event
-#
-#  @FIXME OE-3960  Scenario: Route 3B: Edit previously edited Phasing from Route 3A
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    And I edit the Last Event
-#
-#    Then I choose a right eye Intraocular Pressure Instrument  of "3"
-#
-#    And I choose right eye Dilation of No
-#
-#    Then I choose a right eye Intraocular Pressure Reading Time of "21:00"
-#    Then I choose a right eye Intraocular Pressure Reading of "14"
-#    And I add right eye comments of "Right eye comments here"
-#
-#    Then I choose a left eye Intraocular Pressure Instrument  of "4"
-#
-#    And I choose left eye Dilation of Yes
-#
-#    Then I choose a left eye Intraocular Pressure Reading Time of "04:42"
-#    Then I choose a left eye Intraocular Pressure Reading of "12"
-#    And I add left eye comments of "Left eye comments here"
-#
-#    Then I Save the Phasing Event
-#
-#    @FIXME OE-3960 Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    And I delete the Last Event
+Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 
   Scenario: Route 4A: Login and fill in a Correspondence
 
