@@ -80,7 +80,14 @@ class OEMigration extends CDbMigration
 			$data_directory = get_class($this);
 		}
 		$data_path = $migrations_path . '/data/' . $data_directory . '/';
-		foreach (glob($data_path . "*.csv") as $file_path) {
+		$csvFiles  = glob($data_path . "*.csv");
+
+		if($this->getCliArg('testdata')){
+			$testdata_path = $migrations_path . '/testdata/' . $data_directory . '/';
+			$csvFiles = array_merge_recursive($csvFiles , glob($testdata_path . "*.csv") );
+		}
+
+		foreach ($csvFiles as $file_path) {
 			$table = substr(substr(basename($file_path), 0, -4), 3);
 			echo "Importing $table data...\n";
 			$fh = fopen($file_path, 'r');
