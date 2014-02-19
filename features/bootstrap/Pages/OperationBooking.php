@@ -36,11 +36,16 @@ class OperationBooking extends OpenEyesPage
         'availableTheatreSessionTime' => array('xpath' => "//*[@class='timeBlock available bookable']"),
         'noAnaesthetist' => array ('xpath' => "//*[@id='bookingSession1824']"),
         'sessionComments' => array('xpath' => "//*[@id='Session_comments']"),
-        'sessionOperationComments' => array('xpath' => "//*[@id='operation_comments']"),
+        'sessionOperationComments' => array('xpath' => "//*[@name='Operation[comments]']"),
+        'sessionRTTComments' => array('xpath' => "//*[@name='Operation[comments_rtt]']"),
         'confirmSlot' => array('xpath' => "//*[@id='confirm_slot']"),
         'EmergencyList' => array ('xpath' => "//select[@id='firm_id']"),
 	    'currentMonth' => array('css' => "#current_month"),
         'saveButton' => array('xpath' => "//*[@id='et_save']"),
+        'chooseWard' => array('xpath' => "//*[@id='Booking_ward_id']"),
+        'admissionTime' => array('xpath' => "//*[@id='Booking_admission_time']"),
+
+
     );
 
     public function diagnosisEyes ($eye)
@@ -234,13 +239,17 @@ class OperationBooking extends OpenEyesPage
 
     public function sessionComments ($sessionComments)
     {
-        $this->getSession()->wait(7000);
         $this->getElement('sessionComments')->setValue($sessionComments);
     }
 
     public function sessionOperationComments ($opComments)
     {
         $this->getElement('sessionOperationComments')->setValue($opComments);
+    }
+
+    public function sessionRTTComments ($RTTcomments)
+    {
+        $this->getElement('sessionRTTComments')->setValue($RTTcomments);
     }
 
     public function confirmSlot ()
@@ -252,4 +261,15 @@ class OperationBooking extends OpenEyesPage
     {
         $this->getElement('saveButton')->click();
     }
+
+    public function chooseWard ($ward)
+    {
+        $this->getElement('chooseWard')->selectOption($ward);
+    }
+
+    public function admissionTime ($time)
+    {
+        $this->getElement('admissionTime')->setValue($time);
+    }
+
 }
