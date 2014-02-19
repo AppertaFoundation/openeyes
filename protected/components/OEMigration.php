@@ -20,6 +20,7 @@
 class OEMigration extends CDbMigration
 {
 	private $migrationPath;
+	private $testdata;
 
 	/**
 	 * Executes a SQL statement.
@@ -82,7 +83,7 @@ class OEMigration extends CDbMigration
 		$data_path = $migrations_path . '/data/' . $data_directory . '/';
 		$csvFiles  = glob($data_path . "*.csv");
 
-		if($this->getCliArg('testdata')){
+		if($this->testdata){
 			$testdata_path = $migrations_path . '/testdata/' . $data_directory . '/';
 			$csvFiles = array_merge_recursive($csvFiles , glob($testdata_path . "*.csv") );
 		}
@@ -211,6 +212,10 @@ class OEMigration extends CDbMigration
 			}
 		}
 		return false;
+	}
+
+	public function setTestData($val){
+		$this->testdata = $val;
 	}
 
 	/**
