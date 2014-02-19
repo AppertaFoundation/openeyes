@@ -40,7 +40,7 @@
 	<?php echo $form->dropDownList($drug,'default_frequency_id',CHtml::listData(DrugFrequency::model()->findAll(array('order' => 'display_order')),'id','name'),array('empty' => ''))?>
 	<?php echo $form->dropDownList($drug,'default_duration_id',CHtml::listData(DrugDuration::model()->findAll(array('order' => 'display_order')),'id','name'),array('empty' => ''))?>
 	<?php echo $form->multiSelectList($drug,'allergies','allergies','id', CHtml::listData(Allergy::model()->findAll(array('order' => 'name')),'id','name'),null,array('empty' => '','label' => 'Allergies'))?>
-	<?php echo $form->formActions()?>
+	<?php echo $form->formActions(array('cancel-uri' => '/admin/drugs'))?>
 	<?php $this->endWidget()?>
 	<script type="text/javascript">
 		$(document).ready(function() {
