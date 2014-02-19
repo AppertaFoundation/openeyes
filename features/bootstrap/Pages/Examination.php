@@ -188,8 +188,8 @@ class Examination extends OpenEyesPage
         'saveExamination' => array('xpath' => "//*[@id='et_save']"),
         'examSavedOk' => array('xpath' => "//*[@id='flash-success']"),
 
-        'existingRightAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'145')]"),
-        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'38')]"),
+        'existingRightAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'38')]"),
+        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'145')]"),
         'addAllElements' => array('xpath' => "//*[@class='add-all']"),
         'removeAllElements' => array('xpath' => "//*[@class='remove-all']"),
         'removeAllValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Event: Cannot create an event without at least one element')]"),
@@ -220,7 +220,7 @@ class Examination extends OpenEyesPage
         if ($this->isComorbitiesCollapsed()) {
 
             $this->getElement('openComorbidities')->click();
-            $this->getSession()->wait(3000, '$.active == 0');
+            $this->getSession()->wait(3000, 'window.$ && $.active == 0');
         }
     }
 
@@ -238,7 +238,7 @@ class Examination extends OpenEyesPage
     {
         if ($this->isVisualAcuityCollapsed()) {
             $this->getElement('openVisualAcuity')->click();
-            $this->getSession()->wait(3000, '$.active == 0');
+            $this->getSession()->wait(3000, 'window.$ && $.active == 0');
         }
     }
 
@@ -266,7 +266,7 @@ class Examination extends OpenEyesPage
     public function leftETDRS ($metre, $method)
     {
         $this->getElement('openLeftVA')->click();
-        $this->getSession()->wait(3000, '$.active == 0');
+        $this->getSession()->wait(3000, 'window.$ && $.active == 0');
         $this->getElement('ETDRSSnellenLeft')->selectOption($metre);
         $this->getElement('ETDRSreadingLeft')->selectOption($method);
     }
@@ -274,7 +274,7 @@ class Examination extends OpenEyesPage
     public function rightETDRS ($metre, $method)
     {
         $this->getElement('openRightVA')->click();
-        $this->getSession()->wait(3000, '$.active == 0');
+        $this->getSession()->wait(3000, 'window.$ && $.active == 0');
         $this->getElement('ETDRSSnellenRight')->selectOption($metre);
         $this->getElement('ETDRSreadingRight')->selectOption($method);
     }
@@ -314,7 +314,7 @@ class Examination extends OpenEyesPage
     {
         if ($this->isDilationCollapsed()){
             $this->getElement('openDilation')->click();
-            $this->getSession()->wait(5000, '$.active == 0');
+            $this->getSession()->wait(5000, 'window.$ && $.active == 0');
         }
     }
 
@@ -339,7 +339,7 @@ class Examination extends OpenEyesPage
     {
         if ($this->isRefractionCollapsed()){
         $this->getElement('expandRefraction')->click();
-        $this->getSession()->wait(10000,'$.active == 0');
+        $this->getSession()->wait(10000,'window.$ && $.active == 0');
         }
     }
 
@@ -414,7 +414,7 @@ class Examination extends OpenEyesPage
     {
         if ($this->isAdnexalCollapsed()){
         $this->getElement('expandAdnexalComorbidity')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
         }
     }
 
@@ -436,7 +436,7 @@ class Examination extends OpenEyesPage
     public function expandPupillaryAbnormalities ()
     {
         $this->getElement('expandPupillaryAbnormalities')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function leftPupillaryAbnormality ($left)
@@ -465,7 +465,7 @@ class Examination extends OpenEyesPage
        $element = $this->getElement('expandDiagnoses');
        $this->scrollWindowToElement($element);
        $element->click();
-       $this->getSession()->wait(5000, '$.active == 0');
+       $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function diagnosesLeftEye ()
@@ -474,7 +474,7 @@ class Examination extends OpenEyesPage
         $element = $this->getElement('diagnosesLeftEye');
         $this->scrollWindowToElement($element);
         $element->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function diagnosesRightEye ()
@@ -495,7 +495,7 @@ class Examination extends OpenEyesPage
     public function expandInvestigation ()
     {
         $this->getElement('expandInvestigation')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function addInvestigation ($investigation)
@@ -508,7 +508,7 @@ class Examination extends OpenEyesPage
         $element = $this->getElement('expandClinicalManagement');
         $this->scrollWindowToElement($element);
         $element->click();
-        $this->getSession()->wait(8000, '$.active == 0');
+        $this->getSession()->wait(8000, 'window.$ && $.active == 0');
     }
 
     public function expandCataractSurgicalManagement ()
@@ -516,7 +516,7 @@ class Examination extends OpenEyesPage
         $element = $this->getElement('expandCataractSurgicalManagement');
         $this->scrollWindowToElement($element);
         $element->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function cataractManagementComments ($comments)
@@ -605,7 +605,7 @@ class Examination extends OpenEyesPage
     public function expandLaserManagement ()
     {
         $this->getElement('expandLaserManagement')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function RightLaserStatusChoice ($laser)
@@ -631,7 +631,7 @@ class Examination extends OpenEyesPage
     public function expandInjectionManagement ()
     {
         $this->getElement('expandInjectionManagement')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function noTreatment ()
@@ -862,7 +862,7 @@ class Examination extends OpenEyesPage
     public function expandRisks ()
     {
         $this->getElement('expandRisks')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function riskComments ($comments)
@@ -873,7 +873,7 @@ class Examination extends OpenEyesPage
     public function expandClinicalOutcome ()
     {
         $this->getElement('expandClinicOutcome')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function clinicalOutcomeFollowUp ()
@@ -916,7 +916,7 @@ class Examination extends OpenEyesPage
         if ($this->isConclusionCollapsed()) {
 
         $this->getElement('expandConclusion')->click();
-        $this->getSession()->wait(3000, '$.active == 0');
+        $this->getSession()->wait(3000, 'window.$ && $.active == 0');
         }
     }
 
@@ -985,7 +985,7 @@ class Examination extends OpenEyesPage
         $element = $this->getElement('addAllElements');
         $this->scrollWindowToElement($element);
         $element->click();
-        $this->getSession()->wait(40000, '$.active == 0');
+        $this->getSession()->wait(40000, 'window.$ && $.active == 0');
     }
 
     public function addAllElementsValidationError ()
@@ -1011,7 +1011,7 @@ class Examination extends OpenEyesPage
         $element = $this->getElement('removeAllElements');
         $this->scrollWindowToElement($element);
         $element->click();
-        $this->getSession()->wait(8000, '$.active == 0');
+        $this->getSession()->wait(8000, 'window.$ && $.active == 0');
     }
 
     public function removeAllValidationError ()

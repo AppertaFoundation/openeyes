@@ -52,7 +52,8 @@ class Homepage extends OpenEyesPage
     {
       $this->getElement('searchSubmit')->press();
 			//make sure the patient page is shown after a search
-			$this->getSession()->wait(15000, "window.$ && $('h1.badge').html() ==  'Patient summary' ");
+			$this->waitForTitle('Patient summary');
+			//$this->getSession()->wait(15000, "window.$ && $('h1.badge').html() ==  'Patient summary' ");
     }
 
     public function followLink($link)

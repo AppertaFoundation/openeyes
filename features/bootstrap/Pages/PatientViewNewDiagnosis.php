@@ -131,8 +131,9 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function saveOpthalmicDiagnosis ()
     {
-        $this->getElement('opthSaveButton')->press();
-        $this->getSession()->wait(10000,"$('#add_new_ophthalmic_diagnosis').css('display') == 'none'");
+      $this->getElement('opthSaveButton')->press();
+			$this->waitForElementDisplayNone('#add_new_ophthalmic_diagnosis' );
+      //$this->getSession()->wait(10000,"$('#add_new_ophthalmic_diagnosis').css('display') == 'none'");
     }
 
     public function addSystemicDiagnosis ($diagnosis)
@@ -171,7 +172,8 @@ class PatientViewNewDiagnosis extends OpenEyesPage
     public function saveSystemicDiagnosis ()
     {
         $this->getElement('sysSaveButton')->press();
-        $this->getSession()->wait(10000,"$('#add_new_systemic_diagnosis').css('display') == 'none'");
+				$this->waitForElementDisplayNone('#add_new_systemic_diagnosis' );
+        //$this->getSession()->wait(10000,"$('#add_new_systemic_diagnosis').css('display') == 'none'");
     }
 
     public function previousOperation ($operation)
@@ -199,8 +201,9 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function savePreviousOperation ()
     {
-        $this->getElement('operationSaveButton')->click();
-        $this->getSession()->wait(15000, "window.$ && $('#add_previous_operation').css('display') == 'none'");
+      $this->getElement('operationSaveButton')->click();
+			$this->waitForElementDisplayNone('#add_previous_operation' );
+      //$this->getSession()->wait(15000, "window.$ && $('#add_previous_operation').css('display') == 'none'");
     }
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
@@ -253,7 +256,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $this->getSession()->wait(1000);
         $this->getElement('selectAllergy')->selectOption($allergy);
         $this->getElement('saveAllergy')->click();
-		$this->waitForElementDisplayNone('#add_allergy');
+			$this->waitForElementDisplayNone('#add_allergy');
         //$this->getSession()->wait(10000,"$('#add_allergy').css('display') == 'none'");
     }
 
@@ -265,7 +268,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $this->getSession()->wait(1000);
         $this->getElement('noAllergyTickbox')->check();
         $this->getElement('saveAllergy')->click();
-		$this->waitForElementDisplayNone('#add_allergy');
+			$this->waitForElementDisplayNone('#add_allergy');
         //$this->getSession()->wait(10000,"$('#add_allergy').css('display') == 'none'");
     }
 
@@ -283,7 +286,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function addEpisodeAndEvent()
     {
-        $this->getSession()->wait(5000, '$.active == 10');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 10');
 
         if ($this->episodesAndEventsAreNotPresent()) {
             $this->createNewEpisodeAndEvent();
@@ -331,7 +334,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $this->waitForElementDisplayNone('#add_new_ophthalmic_diagnosis');
         $this->getElement('removeOpthalmicDiagnosisLink')->click();
         $this->getElement('removeOpthalmicDiagnosisConfirm')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function removeOperation ()
@@ -340,7 +343,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $this->scrollWindowToElement($element);
         $element->click();
         $this->getElement('removeOperationConfirmButton')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function removeMedication ()
@@ -349,7 +352,6 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $this->scrollWindowToElement($element);
         $element->click();
         $this->getElement('removeMedicationConfirmButton')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
-
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 }
