@@ -236,3 +236,16 @@ $oe-element-edit-title-font-style: italic;
 		}
 	}
 }
+
+.previous-elements {
+	.element-container {
+		margin-bottom: 10px;
+		border: 1px solid #dae6f1;
+	}
+	.element-container {
+		.actions {
+			text-align: right;
+			padding: 2px;
+		}
+	}
+}
