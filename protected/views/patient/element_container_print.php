@@ -17,9 +17,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="container content event">
-	<?php $this->renderOpenElements('print');?>
-	<?php $this->renderPartial('//print/event_metadata', array(
-		'hide_modified' => @$hide_modified
-	));?>
-</div>
+<section
+	class="<?php if (@$child) {?>sub-<?php }?>element <?php echo get_class($element)?>"
+	data-element-type-id="<?php echo $element->elementType->id?>"
+	data-element-type-class="<?php echo $element->elementType->class_name?>"
+	data-element-type-name="<?php echo $element->elementType->name?>"
+	data-element-display-order="<?php echo $element->elementType->display_order?>">
+	<h2><?php echo $element->elementType->name; ?></h2>
+	<div class="details">
+		<?php echo $content ;?>
+		<div class="sub-elements">
+			<?php $this->renderChildOpenElements($element, 'print', @$form, @$data)?>
+		</div>
+	</div>
+</section>

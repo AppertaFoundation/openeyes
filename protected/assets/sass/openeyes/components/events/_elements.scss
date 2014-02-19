@@ -29,10 +29,8 @@
 	position: relative;
 	@media print {
 		page-break-inside: avoid;
-		.details {
-			border: 1px solid #000;
-			padding: 10px;
-		}
+		border: 1px solid #000;
+		margin: 10px 10px 20px 10px;
 	}
 	canvas,
 	.canvas {
@@ -55,6 +53,9 @@
 			top: 0;
 			width: 0;
 			z-index: 1;
+			@media print {
+				display: none;
+			}
 		}
 	}
 	.inactive .active-form,
@@ -81,8 +82,8 @@
 		float: left;
 	}
 	@media print {
-		font-size: rem-calc(16px);
-		font-weight: bold;
+		font-size: rem-calc(18px);
+		font-weight: normal;
 	}
 }
 
@@ -206,14 +207,13 @@ $oe-element-edit-title-font-style: italic;
 
 .view {
 	&.highlight-fields {
-		.element {
+		.element, .sub-element-data {
 			margin-bottom: 10px;
 		}
-		.element-data {
+		.element-data, .sub-element-data {
 			background: none;
 			padding-bottom: 0;
 			padding-top: 0;
-			// FIXME: unsure if used anywhere
 			&.highlight {
 				@include border-radius(5px);
 				background: #fff;
@@ -226,7 +226,20 @@ $oe-element-edit-title-font-style: italic;
 				}
 			}
 		}
+		.sub-element {
+			border: 0;
+		}
+		.sub-element-header {
+			background: none;
+			margin: 0;
+		}
+		.sub-element-title {
+			@extend .element-title;
+			padding-left: 0;
+			padding-right: 0;
+		}
 		.sub-elements {
+			background: none;
 			margin: 10px -10px 0 -10px;
 			padding-top: 10px;
 		}

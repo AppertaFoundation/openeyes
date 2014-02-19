@@ -273,18 +273,17 @@ label {
 		color: #999;
 		font-style: italic;
 	}
-	// TODO: don't think this is ever used
 	&.highlight {
 		@include border-radius(5px);
 		background: white;
-		padding: .75em;
+		padding: 10px;
 		font-size: rem-calc(18px);
-		margin: 0 -.75em;
+		margin: 0 -10px;
 		list-style-type: none;
 		li {
-			font-size: 1em;
+			padding: 4px 0;
 			margin: 0;
-			padding: rem-calc(4px) 0;
+			font-size: rem-calc(16px);
 		}
 		&.important {
 			background: #fff300;

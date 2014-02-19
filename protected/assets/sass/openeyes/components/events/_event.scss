@@ -78,10 +78,6 @@
 		border-top: 1px dotted #dae6f1;
 		margin: 10px;
 		padding-top: 8px;
-		@media print {
-			padding: 8px 10px 0 10px;
-			margin: 10px 0;
-		}
 		.info {
 			color: #888888;
 			display: inline-block;
@@ -96,6 +92,11 @@
 	.panel {
 		&.comments {
 			@include border-radius(5px);
+		}
+	}
+	&.previous-elements {
+		.metadata {
+			margin-left: 0;
 		}
 	}
 }

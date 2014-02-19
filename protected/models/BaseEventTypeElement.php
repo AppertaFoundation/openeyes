@@ -19,12 +19,15 @@
 
 /**
  * A class that all clinical elements should extend from.
+ * @property boolean $useContainerView When rendering the element, wrap the element
+ * in a container view?
  */
 class BaseEventTypeElement extends BaseElement
 {
 	public $firm;
 	public $userId;
 	public $patientId;
+	public $useContainerView = true;
 
 	protected $_element_type;
 	protected $_children;
@@ -260,12 +263,12 @@ class BaseEventTypeElement extends BaseElement
 
 	public function getCreate_view()
 	{
-		return 'create_'.$this->getDefaultView();
+		return $this->getForm_View();
 	}
 
 	public function getUpdate_view()
 	{
-		return 'update_'.$this->getDefaultView();
+		return $this->getForm_View();
 	}
 
 	public function getView_view()
@@ -275,12 +278,42 @@ class BaseEventTypeElement extends BaseElement
 
 	public function getPrint_view()
 	{
-		return 'view_'.$this->getDefaultView();
+		return $this->getView_View();
 	}
 
 	public function getForm_View()
 	{
 		return 'form_'.$this->getDefaultView();
+	}
+
+	public function getDefaultContainerView()
+	{
+		return '//patient/element_container_view';
+	}
+
+	public function getContainer_view_view()
+	{
+		return '//patient/element_container_view';
+	}
+
+	public function getContainer_print_view()
+	{
+		return '//patient/element_container_print';
+	}
+
+	public function getContainer_form_view()
+	{
+		return '//patient/element_container_form';
+	}
+
+	public function getContainer_create_view()
+	{
+		return $this->getContainer_form_view();
+	}
+
+	public function getContainer_update_view()
+	{
+		return $this->getContainer_form_view();
 	}
 
 	public function isEditable()

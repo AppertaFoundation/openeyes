@@ -17,9 +17,23 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="container content event">
-	<?php $this->renderOpenElements('print');?>
-	<?php $this->renderPartial('//print/event_metadata', array(
-		'hide_modified' => @$hide_modified
-	));?>
+<?php
+$event = $this->event;
+$event_type = $event->eventType->name;
+?>
+<div class="metadata">
+	<?php if (!@$hide_created) { ?>
+		<span class="info">
+			<?php echo $event_type ?> created by <span class="user"><?php echo $this->event->user->fullname ?></span>
+			on <?php echo $this->event->NHSDate('created_date') ?>
+			at <?php echo date('H:i', strtotime($this->event->created_date)) ?>
+		</span>
+	<?php }?>
+	<?php if (!@$hide_modified) { ?>
+		<span class="info">
+			<?php echo $event_type ?> last modified by <span class="user"><?php echo $this->event->usermodified->fullname ?></span>
+			on <?php echo $this->event->NHSDate('last_modified_date') ?>
+			at <?php echo date('H:i', strtotime($this->event->last_modified_date)) ?>
+		</span>
+	<?php }?>
 </div>

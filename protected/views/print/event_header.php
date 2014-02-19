@@ -17,12 +17,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
+<?php
+$event = $this->event;
+$event_type = $event->eventType->name;
+?>
 <header class="header">
 
 	<div class="title">
 		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" width="100" height="83"/>
-		<h1><?php echo $eventName;?></h1>
+		<h1><?php echo $event_type;?></h1>
 	</div>
 
 	<div class="row">
@@ -54,9 +57,9 @@
 
 		<!-- Event dates -->
 		<div class="large-4 column dates">
-			<?php echo $eventName;?> Created: <strong><?php echo Helper::convertDate2NHS($this->event->created_date) ?></strong>
+			<?php echo $event_type;?> Created: <strong><?php echo Helper::convertDate2NHS($this->event->created_date) ?></strong>
 			<br />
-			<?php echo $eventName;?> Printed: <strong><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></strong>
+			<?php echo $event_type;?> Printed: <strong><?php echo Helper::convertDate2NHS(date('Y-m-d')) ?></strong>
 		</div>
 
 	</div>

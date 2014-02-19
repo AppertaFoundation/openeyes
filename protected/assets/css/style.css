@@ -1160,41 +1160,7 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1392818884') 0 0 no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1392042974') 0 0 no-repeat;
-=======
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1389792461') 0 0 no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1391005463') 0 0 no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1391524313') 0 0 no-repeat;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1392120106') 0 0 no-repeat;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1392372886') 0 0 no-repeat;
->>>>>>> [OE-3945] Print css
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1234px;
@@ -1218,41 +1184,7 @@ html, body {
 
 /* line 18, ../sass/openeyes/components/containers/_content.scss */
 .container.content {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: url('../img/_structure/help_top_grad.jpg?1392818884') 0 bottom no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: url('../img/_structure/help_top_grad.jpg?1392042974') 0 bottom no-repeat;
-=======
-  background: url('../img/_structure/help_top_grad.jpg?1389792461') 0 bottom no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: url('../img/_structure/help_top_grad.jpg?1391005463') 0 bottom no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: url('../img/_structure/help_top_grad.jpg?1391524313') 0 bottom no-repeat;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: url('../img/_structure/help_top_grad.jpg?1392120106') 0 bottom no-repeat;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: url('../img/_structure/help_top_grad.jpg?1392372886') 0 bottom no-repeat;
->>>>>>> [OE-3945] Print css
   min-height: 330px;
 }
 @media print {
@@ -2072,156 +2004,30 @@ table.log-details .data {
   padding-bottom: 1px;
 }
 
-@media print {
-  /* line 358, ../sass/openeyes/components/_tables.scss */
-  table {
-    page-break-inside: avoid;
-    position: relative;
-  }
-}
-
 /* line 30, ../sass/openeyes/components/_header.scss */
 .header {
   min-height: 70px;
 }
 /* line 32, ../sass/openeyes/components/_header.scss */
 .header .logo {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: url('../img/_structure/openeyes.png?1392818884') no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: url('../img/_structure/openeyes.png?1392042974') no-repeat;
-=======
-  background: url('../img/_structure/openeyes.png?1389792461') no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: url('../img/_structure/openeyes.png?1391005463') no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: url('../img/_structure/openeyes.png?1391524313') no-repeat;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: url('../img/_structure/openeyes.png?1392120106') no-repeat;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: url('../img/_structure/openeyes.png?1392372886') no-repeat;
->>>>>>> [OE-3945] Print css
   background-size: 100%;
   display: block;
   height: 70px;
   max-width: 210px;
 }
-<<<<<<< HEAD
-/* line 40, ../sass/openeyes/components/_header.scss */
-.header.stuck {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-  background: #a0d7f8 url('../img/_structure/miniheader/bg_gradient.png?1392818884') bottom repeat-x;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: #a0d7f8 url('../img/_structure/miniheader/bg_gradient.png?1392042974') bottom repeat-x;
-=======
-  background: #a0d7f8 url('../img/_structure/miniheader/bg_gradient.png?1389792461') bottom repeat-x;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: #a0d7f8 url('../img/_structure/miniheader/bg_gradient.png?1391005463') bottom repeat-x;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: #a0d7f8 url('../img/_structure/miniheader/bg_gradient.png?1391524313') bottom repeat-x;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: #a0d7f8 url('../img/_structure/miniheader/bg_gradient.png?1392120106') bottom repeat-x;
->>>>>>> [OE-3945] Print related updates
-  position: fixed;
-  top: 0;
-  z-index: 10;
-  border-top: none;
-  min-height: 40px;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  -ms-border-radius: 0;
-  -o-border-radius: 0;
-  border-radius: 0;
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-/* line 49, ../sass/openeyes/components/_header.scss */
-.header.stuck .logo {
-  height: 25px;
-  margin: 8px 0 0 10px;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-  background: url('../img/_structure/openeyes_small.png?1392818884') 0 0 no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: url('../img/_structure/openeyes_small.png?1392042974') 0 0 no-repeat;
-=======
-  background: url('../img/_structure/openeyes_small.png?1389792461') 0 0 no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: url('../img/_structure/openeyes_small.png?1391005463') 0 0 no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: url('../img/_structure/openeyes_small.png?1391524313') 0 0 no-repeat;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: url('../img/_structure/openeyes_small.png?1392120106') 0 0 no-repeat;
->>>>>>> [OE-3945] Print related updates
-=======
 @media print {
   /* line 32, ../sass/openeyes/components/_header.scss */
   .header .logo {
     -webkit-print-color-adjust: exact;
-    background: url('../img/_structure/openeyes.png?1392372886') no-repeat !important;
+    background: url('../img/_structure/openeyes.png?1392818884') no-repeat !important;
     background-size: 100% !important;
   }
 }
 @media screen {
   /* line 45, ../sass/openeyes/components/_header.scss */
   .header.stuck {
-    background: #a0d7f8 url('../img/_structure/miniheader/bg_gradient.png?1392372886') bottom repeat-x;
+    background: #a0d7f8 url('../img/_structure/miniheader/bg_gradient.png?1392818884') bottom repeat-x;
     position: fixed;
     top: 0;
     z-index: 10;
@@ -2240,48 +2046,13 @@ table.log-details .data {
   .header.stuck .logo {
     height: 25px;
     margin: 8px 0 0 10px;
-    background: url('../img/_structure/openeyes_small.png?1392372886') 0 0 no-repeat;
+    background: url('../img/_structure/openeyes_small.png?1392818884') 0 0 no-repeat;
   }
->>>>>>> [OE-3945] Print css
 }
 
 /* line 44, ../sass/openeyes/components/_footer.scss */
 .footer {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: #b3b0ae url('../img/_structure/openeyes_footer.png?1392818884') no-repeat right top;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1392042974') no-repeat right top;
-=======
-  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1389792461') no-repeat right top;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1391005463') no-repeat right top;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1391524313') no-repeat right top;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1392120106') no-repeat right top;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: #b3b0ae url('../img/_structure/openeyes_footer.png?1392372886') no-repeat right top;
->>>>>>> [OE-3945] Print css
 }
 /* line 47, ../sass/openeyes/components/_footer.scss */
 .footer .info {
@@ -2725,7 +2496,7 @@ input[type="text"].large, input[type="password"].large, input[type="date"].large
   color: #999;
   font-style: italic;
 }
-/* line 277, ../sass/openeyes/components/_forms.scss */
+/* line 276, ../sass/openeyes/components/_forms.scss */
 .field-value.highlight, .highlight.field-label, .highlight.data-label, .highlight.data-value {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -2733,18 +2504,18 @@ input[type="text"].large, input[type="password"].large, input[type="date"].large
   -o-border-radius: 5px;
   border-radius: 5px;
   background: white;
-  padding: .75em;
+  padding: 10px;
   font-size: 1.125rem;
-  margin: 0 -.75em;
+  margin: 0 -10px;
   list-style-type: none;
 }
-/* line 284, ../sass/openeyes/components/_forms.scss */
+/* line 283, ../sass/openeyes/components/_forms.scss */
 .field-value.highlight li, .highlight.field-label li, .highlight.data-label li, .highlight.data-value li {
-  font-size: 1em;
+  padding: 4px 0;
   margin: 0;
-  padding: 0.25rem 0;
+  font-size: 1rem;
 }
-/* line 289, ../sass/openeyes/components/_forms.scss */
+/* line 288, ../sass/openeyes/components/_forms.scss */
 .field-value.highlight.important, .highlight.important.field-label, .highlight.important.data-label, .highlight.important.data-value {
   background: #fff300;
 }
@@ -3316,41 +3087,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 22, ../sass/openeyes/components/alert-boxes/_alert.scss */
 .alert-box.alert.with-icon, .with-icon.alert-box.warning {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background-image: url('../img/_elements/icons/box/warning.png?1392818884');
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/box/warning.png?1392042974');
-=======
-  background-image: url('../img/_elements/icons/box/warning.png?1389792461');
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background-image: url('../img/_elements/icons/box/warning.png?1391005463');
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background-image: url('../img/_elements/icons/box/warning.png?1391524313');
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background-image: url('../img/_elements/icons/box/warning.png?1392120106');
->>>>>>> [OE-3945] Print related updates
-=======
-  background-image: url('../img/_elements/icons/box/warning.png?1392372886');
->>>>>>> [OE-3945] Print css
   min-height: 36px;
   padding-bottom: 11px;
   padding-top: 11px;
@@ -3359,7 +3096,7 @@ tfoot.pagination-container .pagination li {
   /* line 22, ../sass/openeyes/components/alert-boxes/_alert.scss */
   .alert-box.alert.with-icon, .with-icon.alert-box.warning {
     background-color: #ffe6b2 !important;
-    background-image: url('../img/_elements/icons/box/warning.png?1392372886') !important;
+    background-image: url('../img/_elements/icons/box/warning.png?1392818884') !important;
   }
 }
 
@@ -3372,48 +3109,14 @@ tfoot.pagination-container .pagination li {
 }
 /* line 21, ../sass/openeyes/components/alert-boxes/_issue.scss */
 .alert-box.issue.with-icon {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background-image: url('../img/_elements/icons/box/issue.png?1392818884');
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/box/issue.png?1392042974');
-=======
-  background-image: url('../img/_elements/icons/box/issue.png?1389792461');
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background-image: url('../img/_elements/icons/box/issue.png?1391005463');
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background-image: url('../img/_elements/icons/box/issue.png?1391524313');
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background-image: url('../img/_elements/icons/box/issue.png?1392120106');
->>>>>>> [OE-3945] Print related updates
-=======
-  background-image: url('../img/_elements/icons/box/issue.png?1392372886');
->>>>>>> [OE-3945] Print css
   min-height: 36px;
 }
 @media print {
   /* line 21, ../sass/openeyes/components/alert-boxes/_issue.scss */
   .alert-box.issue.with-icon {
     background-color: #fdf2e5 !important;
-    background-image: url('../img/_elements/icons/box/issue.png?1392372886') !important;
+    background-image: url('../img/_elements/icons/box/issue.png?1392818884') !important;
   }
 }
 
@@ -3425,38 +3128,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 22, ../sass/openeyes/components/alert-boxes/_patient.scss */
 .alert-box.patient.with-icon {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background-image: url('../img/_elements/icons/box/patient-warning.png?1392818884');
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/box/patient-warning.png?1392042974');
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-  padding-bottom: 0.875em;
-  padding-top: 0.875em;
-=======
-  background-image: url('../img/_elements/icons/box/patient-warning.png?1389792461');
-  padding-bottom: 0.875rem;
-  padding-top: 0.875rem;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-  background-image: url('../img/_elements/icons/box/patient-warning.png?1391005463');
-=======
-  background-image: url('../img/_elements/icons/box/patient-warning.png?1391524313');
->>>>>>> Print updates
-=======
-  background-image: url('../img/_elements/icons/box/patient-warning.png?1392120106');
->>>>>>> [OE-3945] Print related updates
-=======
-  background-image: url('../img/_elements/icons/box/patient-warning.png?1392372886');
->>>>>>> [OE-3945] Print css
   padding-bottom: 11px;
   padding-top: 11px;
 }
@@ -3464,7 +3136,7 @@ tfoot.pagination-container .pagination li {
   /* line 22, ../sass/openeyes/components/alert-boxes/_patient.scss */
   .alert-box.patient.with-icon {
     background-color: #eb5911 !important;
-    background-image: url('../img/_elements/icons/box/patient-warning.png?1392372886') !important;
+    background-image: url('../img/_elements/icons/box/patient-warning.png?1392818884') !important;
   }
 }
 
@@ -3477,41 +3149,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 21, ../sass/openeyes/components/alert-boxes/_success.scss */
 .alert-box.success.with-icon, .alert-box.info.with-icon {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background-image: url('../img/_elements/icons/box/info.png?1392818884');
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/box/info.png?1392042974');
-=======
-  background-image: url('../img/_elements/icons/box/info.png?1389792461');
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background-image: url('../img/_elements/icons/box/info.png?1391005463');
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background-image: url('../img/_elements/icons/box/info.png?1391524313');
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background-image: url('../img/_elements/icons/box/info.png?1392120106');
->>>>>>> [OE-3945] Print related updates
-=======
-  background-image: url('../img/_elements/icons/box/info.png?1392372886');
->>>>>>> [OE-3945] Print css
   min-height: 36px;
   padding-bottom: 11px;
   padding-top: 11px;
@@ -3520,7 +3158,7 @@ tfoot.pagination-container .pagination li {
   /* line 21, ../sass/openeyes/components/alert-boxes/_success.scss */
   .alert-box.success.with-icon, .alert-box.info.with-icon {
     background-color: #e0f2db !important;
-    background-image: url('../img/_elements/icons/box/info.png?1392372886') !important;
+    background-image: url('../img/_elements/icons/box/info.png?1392818884') !important;
   }
 }
 
@@ -4095,37 +3733,12 @@ tfoot.pagination-container .pagination li {
   margin-bottom: 16px;
   padding: 0 10px 5px 10px;
   background: #dae6f1;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
-  border-radius: 5px;
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/user/idcard_bg.png?1392818884');
-=======
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/user/idcard_bg.png?1392042974');
-=======
-  background-image: url('../img/_elements/icons/user/idcard_bg.png?1389792461');
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-  background-position: left bottom;
-  background-repeat: no-repeat;
-  border-color: #b3b0ae;
-  margin: 0;
-  border-top: 0;
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related updates
   -webkit-border-radius: 0 0 5px 5px;
   -moz-border-radius: 0 0 5px 5px;
   -ms-border-radius: 0 0 5px 5px;
   -o-border-radius: 0 0 5px 5px;
   border-radius: 0 0 5px 5px;
-  background-image: url('../img/_elements/icons/user/idcard_bg.png?1392372886');
+  background-image: url('../img/_elements/icons/user/idcard_bg.png?1392818884');
   background-position: left bottom;
   background-repeat: no-repeat;
   border-color: #b3b0ae;
@@ -4262,69 +3875,11 @@ tfoot.pagination-container .pagination li {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: url('../img/_elements/icons/patient/patient-id_small.png?1392818884'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
   background: url('../img/_elements/icons/patient/patient-id_small.png?1392818884'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
   background: url('../img/_elements/icons/patient/patient-id_small.png?1392818884'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
   background: url('../img/_elements/icons/patient/patient-id_small.png?1392818884'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
   background: url('../img/_elements/icons/patient/patient-id_small.png?1392818884'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392042974'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392042974'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392042974'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392042974'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392042974'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-=======
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1389792461'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1389792461'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1389792461'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1389792461'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1389792461'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1391005463'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1391005463'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1391005463'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1391005463'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1391005463'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1391524313'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1391524313'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1391524313'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1391524313'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1391524313'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392120106'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392120106'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392120106'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392120106'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392120106'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
->>>>>>> [OE-3945] Print related updates
-=======
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392372886'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392372886'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392372886'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392372886'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background: url('../img/_elements/icons/patient/patient-id_small.png?1392372886'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
->>>>>>> [OE-3945] Print css
   background-position: 98% 2px, top;
   background-repeat: no-repeat, no-repeat;
   border-color: #ffb212;
@@ -4441,41 +3996,7 @@ tfoot.pagination-container .pagination li {
   -o-border-radius: 3px;
   border-radius: 3px;
   background-color: #107ebd;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background-image: url('../img/_elements/icons/nhs_tiny.png?1392818884');
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/nhs_tiny.png?1392042974');
-=======
-  background-image: url('../img/_elements/icons/nhs_tiny.png?1389792461');
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background-image: url('../img/_elements/icons/nhs_tiny.png?1391005463');
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background-image: url('../img/_elements/icons/nhs_tiny.png?1391524313');
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background-image: url('../img/_elements/icons/nhs_tiny.png?1392120106');
->>>>>>> [OE-3945] Print related updates
-=======
-  background-image: url('../img/_elements/icons/nhs_tiny.png?1392372886');
->>>>>>> [OE-3945] Print css
   background-position: center left;
   background-repeat: no-repeat;
   color: white;
@@ -4502,69 +4023,11 @@ tfoot.pagination-container .pagination li {
 }
 /* line 152, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392818884'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
   background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392818884'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
   background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392818884'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
   background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392818884'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
   background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392818884'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392042974'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392042974'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392042974'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392042974'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392042974'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-=======
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1389792461'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1389792461'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1389792461'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1389792461'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1389792461'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1391005463'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1391005463'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1391005463'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1391005463'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1391005463'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1391524313'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1391524313'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1391524313'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1391524313'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1391524313'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392120106'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392120106'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392120106'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392120106'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392120106'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
->>>>>>> [OE-3945] Print related updates
-=======
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392372886'), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fff2d8), color-stop(100%, #ffe6b3));
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392372886'), -webkit-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392372886'), -moz-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392372886'), -o-linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
-  background-image: url('../img/_elements/icons/patient/patient-id_small-warning.png?1392372886'), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%);
->>>>>>> [OE-3945] Print css
 }
 /* line 155, ../sass/openeyes/components/panels/_patient.scss */
 .panel.patient.warning .warning .messages {
@@ -4781,41 +4244,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 92, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-title a {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: url('../img/_elements/graphic/view-episode-summary.png?1392818884') right bottom no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: url('../img/_elements/graphic/view-episode-summary.png?1392042974') right bottom no-repeat;
-=======
-  background: url('../img/_elements/graphic/view-episode-summary.png?1389792461') right bottom no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: url('../img/_elements/graphic/view-episode-summary.png?1391005463') right bottom no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: url('../img/_elements/graphic/view-episode-summary.png?1391524313') right bottom no-repeat;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: url('../img/_elements/graphic/view-episode-summary.png?1392120106') right bottom no-repeat;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: url('../img/_elements/graphic/view-episode-summary.png?1392372886') right bottom no-repeat;
->>>>>>> [OE-3945] Print css
   color: black;
   display: block;
   padding: 5px 0 16px 5px;
@@ -4828,81 +4257,13 @@ tfoot.pagination-container .pagination li {
 /* line 98, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-title a:hover {
   background-color: #3665ff;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background-image: url('../img/_elements/icons/event/event_open_arrow.png?1392818884');
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1392042974');
-=======
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1389792461');
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1391005463');
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1391524313');
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1392120106');
->>>>>>> [OE-3945] Print related updates
-=======
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1392372886');
->>>>>>> [OE-3945] Print css
   color: white;
 }
 /* line 103, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .episode-title a.selected {
   background-color: #aaa;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background-image: url('../img/_elements/icons/event/event_open_arrow.png?1392818884');
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1392042974');
-=======
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1389792461');
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1391005463');
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1391524313');
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1392120106');
->>>>>>> [OE-3945] Print related updates
-=======
-  background-image: url('../img/_elements/icons/event/event_open_arrow.png?1392372886');
->>>>>>> [OE-3945] Print css
   color: #fff;
 }
 /* line 109, ../sass/openeyes/components/panels/_episode.scss */
@@ -4964,61 +4325,14 @@ tfoot.pagination-container .pagination li {
 }
 /* line 154, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .events a:hover {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: #3665ff url('../img/_elements/icons/event/event_open_arrow.png?1392818884') right center no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: #3665ff url('../img/_elements/icons/event/event_open_arrow.png?1392042974') right center no-repeat;
-=======
-  background: #3665ff url('../img/_elements/icons/event/event_open_arrow.png?1389792461') right center no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: #3665ff url('../img/_elements/icons/event/event_open_arrow.png?1391005463') right center no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: #3665ff url('../img/_elements/icons/event/event_open_arrow.png?1391524313') right center no-repeat;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: #3665ff url('../img/_elements/icons/event/event_open_arrow.png?1392120106') right center no-repeat;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: #3665ff url('../img/_elements/icons/event/event_open_arrow.png?1392372886') right center no-repeat;
->>>>>>> [OE-3945] Print css
   color: white;
 }
 /* line 159, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type {
   display: inline-block;
   width: 35px;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: url('../img/_elements/icons/event/status/quicklook.png?1392818884') right top no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: url('../img/_elements/icons/event/status/quicklook.png?1392042974') right top no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
 }
 /* line 163, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type:hover {
@@ -5030,68 +4344,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 168, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-type.alert:hover {
-<<<<<<< HEAD
   background-image: url('../img/_elements/icons/event/status/alert-hover.png?1392818884');
-=======
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1392042974');
-=======
-  background: url('../img/_elements/icons/event/status/quicklook.png?1389792461') right top no-repeat;
-=======
-  background: url('../img/_elements/icons/event/status/quicklook.png?1391005463') right top no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-=======
-  background: url('../img/_elements/icons/event/status/quicklook.png?1391524313') right top no-repeat;
->>>>>>> Print updates
-}
-/* line 163, ../sass/openeyes/components/panels/_episode.scss */
-.panel.episode .events .event-type:hover {
-  background-image: url('../img/_elements/icons/event/status/quicklook-hover.png?1391524313');
-}
-/* line 166, ../sass/openeyes/components/panels/_episode.scss */
-.panel.episode .events .event-type.alert {
-  background-image: url('../img/_elements/icons/event/status/alert.png?1391524313');
-}
-/* line 168, ../sass/openeyes/components/panels/_episode.scss */
-.panel.episode .events .event-type.alert:hover {
-<<<<<<< HEAD
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1389792461');
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1391005463');
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1391524313');
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: url('../img/_elements/icons/event/status/quicklook.png?1392120106') right top no-repeat;
-=======
-  background: url('../img/_elements/icons/event/status/quicklook.png?1392372886') right top no-repeat;
->>>>>>> [OE-3945] Print css
-}
-/* line 163, ../sass/openeyes/components/panels/_episode.scss */
-.panel.episode .events .event-type:hover {
-  background-image: url('../img/_elements/icons/event/status/quicklook-hover.png?1392372886');
-}
-/* line 166, ../sass/openeyes/components/panels/_episode.scss */
-.panel.episode .events .event-type.alert {
-  background-image: url('../img/_elements/icons/event/status/alert.png?1392372886');
-}
-/* line 168, ../sass/openeyes/components/panels/_episode.scss */
-.panel.episode .events .event-type.alert:hover {
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1392120106');
->>>>>>> [OE-3945] Print related updates
-=======
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1392372886');
->>>>>>> [OE-3945] Print css
 }
 /* line 173, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-date {
@@ -5120,80 +4373,12 @@ tfoot.pagination-container .pagination li {
 }
 /* line 196, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected a {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: #aaaaaa url('../img/_elements/icons/event/event_open_arrow.png?1392818884') right center no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: #aaaaaa url('../img/_elements/icons/event/event_open_arrow.png?1392042974') right center no-repeat;
-=======
-  background: #aaaaaa url('../img/_elements/icons/event/event_open_arrow.png?1389792461') right center no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: #aaaaaa url('../img/_elements/icons/event/event_open_arrow.png?1391005463') right center no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: #aaaaaa url('../img/_elements/icons/event/event_open_arrow.png?1391524313') right center no-repeat;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: #aaaaaa url('../img/_elements/icons/event/event_open_arrow.png?1392120106') right center no-repeat;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: #aaaaaa url('../img/_elements/icons/event/event_open_arrow.png?1392372886') right center no-repeat;
->>>>>>> [OE-3945] Print css
   color: white;
 }
 /* line 201, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .events li.selected .event-type.alert {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background-image: url('../img/_elements/icons/event/status/alert-hover.png?1392818884');
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1392042974');
-=======
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1389792461');
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1391005463');
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1391524313');
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1392120106');
->>>>>>> [OE-3945] Print related updates
-=======
-  background-image: url('../img/_elements/icons/event/status/alert-hover.png?1392372886');
->>>>>>> [OE-3945] Print css
 }
 
 /* line 18, ../sass/openeyes/components/panels/_login.scss */
@@ -5487,14 +4672,7 @@ tfoot.pagination-container .pagination li {
   margin: 10px;
   padding-top: 8px;
 }
-@media print {
-  /* line 77, ../sass/openeyes/components/events/_event.scss */
-  .event .metadata {
-    padding: 8px 10px 0 10px;
-    margin: 10px 0;
-  }
-}
-/* line 85, ../sass/openeyes/components/events/_event.scss */
+/* line 81, ../sass/openeyes/components/events/_event.scss */
 .event .metadata .info {
   color: #888888;
   display: inline-block;
@@ -5502,17 +4680,21 @@ tfoot.pagination-container .pagination li {
   font-style: italic;
   padding-right: 15px;
 }
-/* line 92, ../sass/openeyes/components/events/_event.scss */
+/* line 88, ../sass/openeyes/components/events/_event.scss */
 .event .metadata .user {
   color: #333333;
 }
-/* line 97, ../sass/openeyes/components/events/_event.scss */
+/* line 93, ../sass/openeyes/components/events/_event.scss */
 .event .panel.comments {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
+}
+/* line 98, ../sass/openeyes/components/events/_event.scss */
+.event.previous-elements .metadata {
+  margin-left: 0;
 }
 
 /* line 18, ../sass/openeyes/components/events/_episode.scss */
@@ -5540,14 +4722,11 @@ tfoot.pagination-container .pagination li {
   /* line 28, ../sass/openeyes/components/events/_elements.scss */
   .element, .edit .optional-elements {
     page-break-inside: avoid;
-  }
-  /* line 32, ../sass/openeyes/components/events/_elements.scss */
-  .element .details, .edit .optional-elements .details {
     border: 1px solid #000;
-    padding: 10px;
+    margin: 10px 10px 20px 10px;
   }
 }
-/* line 38, ../sass/openeyes/components/events/_elements.scss */
+/* line 36, ../sass/openeyes/components/events/_elements.scss */
 .element canvas, .edit .optional-elements canvas,
 .element .canvas,
 .edit .optional-elements .canvas {
@@ -5555,14 +4734,14 @@ tfoot.pagination-container .pagination li {
   display: block;
   margin: 0;
 }
-/* line 43, ../sass/openeyes/components/events/_elements.scss */
+/* line 41, ../sass/openeyes/components/events/_elements.scss */
 .element .element-eyes, .edit .optional-elements .element-eyes, .element .sub-element-eyes, .edit .optional-elements .sub-element-eyes {
   padding: 0;
   margin: 0;
   position: relative;
   overflow: hidden;
 }
-/* line 48, ../sass/openeyes/components/events/_elements.scss */
+/* line 46, ../sass/openeyes/components/events/_elements.scss */
 .element .element-eyes:after, .edit .optional-elements .element-eyes:after, .element .sub-element-eyes:after, .edit .optional-elements .sub-element-eyes:after {
   border-right: 1px solid #fff;
   content: " ";
@@ -5574,87 +4753,84 @@ tfoot.pagination-container .pagination li {
   width: 0;
   z-index: 1;
 }
-/* line 61, ../sass/openeyes/components/events/_elements.scss */
+@media print {
+  /* line 46, ../sass/openeyes/components/events/_elements.scss */
+  .element .element-eyes:after, .edit .optional-elements .element-eyes:after, .element .sub-element-eyes:after, .edit .optional-elements .sub-element-eyes:after {
+    display: none;
+  }
+}
+/* line 62, ../sass/openeyes/components/events/_elements.scss */
 .element .inactive .active-form, .edit .optional-elements .inactive .active-form,
 .element .inactive-form,
 .edit .optional-elements .inactive-form {
   display: none;
 }
-/* line 65, ../sass/openeyes/components/events/_elements.scss */
+/* line 66, ../sass/openeyes/components/events/_elements.scss */
 .element .inactive .inactive-form, .edit .optional-elements .inactive .inactive-form {
   display: block;
 }
 
-/* line 75, ../sass/openeyes/components/events/_elements.scss */
-.element-title, .data-title, .edit .optional-elements-title {
+/* line 76, ../sass/openeyes/components/events/_elements.scss */
+.element-title, .data-title, .view.highlight-fields .sub-element-title, .edit .optional-elements-title {
   color: #56a7f1;
   font-size: 0.8125rem;
   margin: 0;
   padding: 8px 10px;
 }
-/* line 80, ../sass/openeyes/components/events/_elements.scss */
-.element-header .element-title, .edit .optional-elements-header .element-title, .sub-element-header .element-title, .element-header .data-title, .edit .optional-elements-header .data-title, .sub-element-header .data-title, .element-header .edit .optional-elements-title, .edit .element-header .optional-elements-title, .edit .optional-elements-header .optional-elements-title, .sub-element-header .edit .optional-elements-title, .edit .sub-element-header .optional-elements-title {
+/* line 81, ../sass/openeyes/components/events/_elements.scss */
+.element-header .element-title, .edit .optional-elements-header .element-title, .sub-element-header .element-title, .element-header .data-title, .edit .optional-elements-header .data-title, .sub-element-header .data-title, .element-header .view.highlight-fields .sub-element-title, .view.highlight-fields .element-header .sub-element-title, .edit .optional-elements-header .view.highlight-fields .sub-element-title, .view.highlight-fields .edit .optional-elements-header .sub-element-title, .sub-element-header .view.highlight-fields .sub-element-title, .view.highlight-fields .sub-element-header .sub-element-title, .element-header .edit .optional-elements-title, .edit .element-header .optional-elements-title, .edit .optional-elements-header .optional-elements-title, .sub-element-header .edit .optional-elements-title, .edit .sub-element-header .optional-elements-title {
   float: left;
 }
 @media print {
-  /* line 75, ../sass/openeyes/components/events/_elements.scss */
-  .element-title, .data-title, .edit .optional-elements-title {
-    font-size: 1rem;
-    font-weight: bold;
+  /* line 76, ../sass/openeyes/components/events/_elements.scss */
+  .element-title, .data-title, .view.highlight-fields .sub-element-title, .edit .optional-elements-title {
+    font-size: 1.125rem;
+    font-weight: normal;
   }
 }
 
-/* line 93, ../sass/openeyes/components/events/_elements.scss */
+/* line 94, ../sass/openeyes/components/events/_elements.scss */
 .element-eye {
   background: none;
 }
 
-/* line 102, ../sass/openeyes/components/events/_elements.scss */
+/* line 103, ../sass/openeyes/components/events/_elements.scss */
 .eye-message {
   font-size: 0.8125rem;
   padding: 0 0 13px 0;
   text-align: center;
 }
 
-/* line 108, ../sass/openeyes/components/events/_elements.scss */
+/* line 109, ../sass/openeyes/components/events/_elements.scss */
 .element-table {
   margin: 0;
 }
-/* line 110, ../sass/openeyes/components/events/_elements.scss */
+/* line 111, ../sass/openeyes/components/events/_elements.scss */
 .element-table, .element-table th {
   background: #c9ddef;
 }
-/* line 113, ../sass/openeyes/components/events/_elements.scss */
+/* line 114, ../sass/openeyes/components/events/_elements.scss */
 .element-table th[scope="row"], .element-table td:first-child {
   position: relative;
   width: 33.33333%;
   font-size: 0.8125rem;
   font-weight: normal;
 }
-/* line 118, ../sass/openeyes/components/events/_elements.scss */
+/* line 119, ../sass/openeyes/components/events/_elements.scss */
 .element-table tr {
   border: 1px solid #dae6f1;
 }
-/* line 120, ../sass/openeyes/components/events/_elements.scss */
+/* line 121, ../sass/openeyes/components/events/_elements.scss */
 .element-table tr:nth-of-type(even) {
   background: #c9ddef;
 }
 
-/* line 131, ../sass/openeyes/components/events/_elements.scss */
+/* line 132, ../sass/openeyes/components/events/_elements.scss */
 .edit .element, .edit .optional-elements {
   border-top: 2px dotted #8c949c;
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* line 122, ../sass/openeyes/components/events/_elements.scss */
+/* line 134, ../sass/openeyes/components/events/_elements.scss */
 .edit .element.on-demand, .edit .on-demand.optional-elements, .edit .sub-element.on-demand {
-=======
-/* line 129, ../sass/openeyes/components/events/_elements.scss */
-=======
-/* line 133, ../sass/openeyes/components/events/_elements.scss */
->>>>>>> [OE-3945] Print css
-.edit .element.on-demand, .edit .on-demand.optional-elements {
->>>>>>> [OE-3945] Print related updates
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   -ms-border-radius: 10px;
@@ -5663,103 +4839,48 @@ tfoot.pagination-container .pagination li {
   border: 7px solid #c8d3dd;
   margin: 5px 0;
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* line 126, ../sass/openeyes/components/events/_elements.scss */
+/* line 138, ../sass/openeyes/components/events/_elements.scss */
 .edit .element.on-demand.validation-error, .edit .on-demand.validation-error.optional-elements, .edit .validation-error.sub-element.on-demand {
   border-color: #da3232;
 }
-/* line 129, ../sass/openeyes/components/events/_elements.scss */
-<<<<<<< HEAD
+/* line 141, ../sass/openeyes/components/events/_elements.scss */
 .edit .element.on-demand .alert-box, .edit .on-demand.optional-elements .alert-box, .edit .sub-element.on-demand .alert-box {
-  margin: 1em;
-=======
-=======
-/* line 133, ../sass/openeyes/components/events/_elements.scss */
-.edit .element.on-demand.validation-error, .edit .on-demand.validation-error.optional-elements {
-  border-color: #da3232;
-}
-/* line 136, ../sass/openeyes/components/events/_elements.scss */
->>>>>>> [OE-3945] Print related updates
-=======
-/* line 137, ../sass/openeyes/components/events/_elements.scss */
-.edit .element.on-demand.validation-error, .edit .on-demand.validation-error.optional-elements {
-  border-color: #da3232;
-}
-/* line 140, ../sass/openeyes/components/events/_elements.scss */
->>>>>>> [OE-3945] Print css
-.edit .element.on-demand .alert-box, .edit .on-demand.optional-elements .alert-box {
   margin: 12px 0;
->>>>>>> [OE-3945] Fixing layout issues
 }
-/* line 144, ../sass/openeyes/components/events/_elements.scss */
+/* line 145, ../sass/openeyes/components/events/_elements.scss */
 .edit .element .alert-box, .edit .optional-elements .alert-box {
   margin: 12px 0;
 }
-/* line 148, ../sass/openeyes/components/events/_elements.scss */
-.edit .element-title, .edit .data-title, .edit .optional-elements-title {
+/* line 149, ../sass/openeyes/components/events/_elements.scss */
+.edit .element-title, .edit .data-title, .edit .view.highlight-fields .sub-element-title, .view.highlight-fields .edit .sub-element-title, .edit .optional-elements-title {
   font-style: italic;
 }
-/* line 151, ../sass/openeyes/components/events/_elements.scss */
+/* line 152, ../sass/openeyes/components/events/_elements.scss */
 .edit .element-title-additional {
   float: left;
   margin-left: 8px;
   line-height: 2rem;
 }
-/* line 155, ../sass/openeyes/components/events/_elements.scss */
+/* line 156, ../sass/openeyes/components/events/_elements.scss */
 .edit .element-title-additional .info {
   display: inline-block;
   font-size: 0.8125rem;
 }
-/* line 158, ../sass/openeyes/components/events/_elements.scss */
+/* line 159, ../sass/openeyes/components/events/_elements.scss */
 .edit .element-title-additional .info small {
   display: inline-block;
   font-size: 85%;
   margin-left: 8px;
 }
-/* line 171, ../sass/openeyes/components/events/_elements.scss */
+/* line 172, ../sass/openeyes/components/events/_elements.scss */
 .edit .add-side {
   font-size: 0.8125rem;
   padding: 10px;
   text-align: center;
 }
-/* line 176, ../sass/openeyes/components/events/_elements.scss */
+/* line 177, ../sass/openeyes/components/events/_elements.scss */
 .edit .icon-remove-side {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: url('../img/_elements/icons/event-optional/element-remove.png?1392818884') no-repeat -10px -2px;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1392042974') no-repeat -10px -2px;
-=======
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1389792461') no-repeat -10px -2px;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1391005463') no-repeat -10px -2px;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1391524313') no-repeat -10px -2px;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1392120106') no-repeat -10px -2px;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1392372886') no-repeat -10px -2px;
->>>>>>> [OE-3945] Print css
   height: 16px;
   position: absolute;
   right: 5px;
@@ -5767,73 +4888,39 @@ tfoot.pagination-container .pagination li {
   width: 16px;
   z-index: 1;
 }
-/* line 185, ../sass/openeyes/components/events/_elements.scss */
+/* line 186, ../sass/openeyes/components/events/_elements.scss */
 .edit .icon-add-side {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: url('../img/_elements/icons/event-optional/element-view.png?1392818884') no-repeat -10px -4px;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: url('../img/_elements/icons/event-optional/element-view.png?1392042974') no-repeat -10px -4px;
-=======
-  background: url('../img/_elements/icons/event-optional/element-view.png?1389792461') no-repeat -10px -4px;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: url('../img/_elements/icons/event-optional/element-view.png?1391005463') no-repeat -10px -4px;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: url('../img/_elements/icons/event-optional/element-view.png?1391524313') no-repeat -10px -4px;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: url('../img/_elements/icons/event-optional/element-view.png?1392120106') no-repeat -10px -4px;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: url('../img/_elements/icons/event-optional/element-view.png?1392372886') no-repeat -10px -4px;
->>>>>>> [OE-3945] Print css
   height: 16px;
   width: 16px;
 }
-/* line 190, ../sass/openeyes/components/events/_elements.scss */
+/* line 191, ../sass/openeyes/components/events/_elements.scss */
 .edit .element-actions, .edit .optional-elements-actions, .edit .sub-element-actions {
   float: right;
   padding: 6px 10px;
 }
-/* line 194, ../sass/openeyes/components/events/_elements.scss */
+/* line 195, ../sass/openeyes/components/events/_elements.scss */
 .edit .element-action {
   font-size: 0.8125rem;
 }
 
-/* line 201, ../sass/openeyes/components/events/_elements.scss */
+/* line 202, ../sass/openeyes/components/events/_elements.scss */
 .edit.highlight-fields .sub-elements {
   margin: 10px -10px 0 -10px;
 }
 
-/* line 209, ../sass/openeyes/components/events/_elements.scss */
-.view.highlight-fields .element, .view.highlight-fields .edit .optional-elements, .edit .view.highlight-fields .optional-elements {
+/* line 210, ../sass/openeyes/components/events/_elements.scss */
+.view.highlight-fields .element, .view.highlight-fields .edit .optional-elements, .edit .view.highlight-fields .optional-elements, .view.highlight-fields .sub-element-data {
   margin-bottom: 10px;
 }
-/* line 212, ../sass/openeyes/components/events/_elements.scss */
-.view.highlight-fields .element-data, .view.highlight-fields .edit .element-fields, .edit .view.highlight-fields .element-fields, .view.highlight-fields .sub-element-data, .view.highlight-fields .edit .sub-element-fields, .edit .view.highlight-fields .sub-element-fields {
+/* line 213, ../sass/openeyes/components/events/_elements.scss */
+.view.highlight-fields .element-data, .view.highlight-fields .edit .element-fields, .edit .view.highlight-fields .element-fields, .view.highlight-fields .sub-element-data, .view.highlight-fields .edit .sub-element-fields, .edit .view.highlight-fields .sub-element-fields, .view.highlight-fields .sub-element-data {
   background: none;
   padding-bottom: 0;
   padding-top: 0;
 }
 /* line 217, ../sass/openeyes/components/events/_elements.scss */
-.view.highlight-fields .element-data.highlight, .view.highlight-fields .edit .highlight.element-fields, .edit .view.highlight-fields .highlight.element-fields, .view.highlight-fields .highlight.sub-element-data, .view.highlight-fields .edit .highlight.sub-element-fields, .edit .view.highlight-fields .highlight.sub-element-fields {
+.view.highlight-fields .element-data.highlight, .view.highlight-fields .edit .highlight.element-fields, .edit .view.highlight-fields .highlight.element-fields, .view.highlight-fields .highlight.sub-element-data, .view.highlight-fields .edit .highlight.sub-element-fields, .edit .view.highlight-fields .highlight.sub-element-fields, .view.highlight-fields .sub-element-data.highlight {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -5844,21 +4931,36 @@ tfoot.pagination-container .pagination li {
   padding-top: 0.25rem;
 }
 /* line 224, ../sass/openeyes/components/events/_elements.scss */
-.view.highlight-fields .element-data:not(.event-types) .field-value, .view.highlight-fields .edit .element-fields:not(.event-types) .field-value, .edit .view.highlight-fields .element-fields:not(.event-types) .field-value, .view.highlight-fields .sub-element-data:not(.event-types) .field-value, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .field-value, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .field-value, .view.highlight-fields .element-data:not(.event-types) .field-label, .view.highlight-fields .edit .element-fields:not(.event-types) .field-label, .edit .view.highlight-fields .element-fields:not(.event-types) .field-label, .view.highlight-fields .sub-element-data:not(.event-types) .field-label, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .field-label, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .field-label, .view.highlight-fields .element-data:not(.event-types) .data-label, .view.highlight-fields .edit .element-fields:not(.event-types) .data-label, .edit .view.highlight-fields .element-fields:not(.event-types) .data-label, .view.highlight-fields .sub-element-data:not(.event-types) .data-label, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .data-label, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .data-label, .view.highlight-fields .element-data:not(.event-types) .data-value, .view.highlight-fields .edit .element-fields:not(.event-types) .data-value, .edit .view.highlight-fields .element-fields:not(.event-types) .data-value, .view.highlight-fields .sub-element-data:not(.event-types) .data-value, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .data-value, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .data-value {
+.view.highlight-fields .element-data:not(.event-types) .field-value, .view.highlight-fields .edit .element-fields:not(.event-types) .field-value, .edit .view.highlight-fields .element-fields:not(.event-types) .field-value, .view.highlight-fields .sub-element-data:not(.event-types) .field-value, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .field-value, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .field-value, .view.highlight-fields .element-data:not(.event-types) .field-label, .view.highlight-fields .edit .element-fields:not(.event-types) .field-label, .edit .view.highlight-fields .element-fields:not(.event-types) .field-label, .view.highlight-fields .sub-element-data:not(.event-types) .field-label, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .field-label, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .field-label, .view.highlight-fields .element-data:not(.event-types) .data-label, .view.highlight-fields .edit .element-fields:not(.event-types) .data-label, .edit .view.highlight-fields .element-fields:not(.event-types) .data-label, .view.highlight-fields .sub-element-data:not(.event-types) .data-label, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .data-label, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .data-label, .view.highlight-fields .element-data:not(.event-types) .data-value, .view.highlight-fields .edit .element-fields:not(.event-types) .data-value, .edit .view.highlight-fields .element-fields:not(.event-types) .data-value, .view.highlight-fields .sub-element-data:not(.event-types) .data-value, .view.highlight-fields .edit .sub-element-fields:not(.event-types) .data-value, .edit .view.highlight-fields .sub-element-fields:not(.event-types) .data-value, .view.highlight-fields .sub-element-data:not(.event-types) .field-value, .view.highlight-fields .sub-element-data:not(.event-types) .field-label, .view.highlight-fields .sub-element-data:not(.event-types) .data-label, .view.highlight-fields .sub-element-data:not(.event-types) .data-value {
   font-size: 1rem;
 }
 /* line 229, ../sass/openeyes/components/events/_elements.scss */
-.view.highlight-fields .sub-elements {
-  margin: 10px -10px 0 -10px;
-  padding-top: 10px;
+.view.highlight-fields .sub-element {
+  border: 0;
 }
-/* line 235, ../sass/openeyes/components/events/_elements.scss */
-.view .element-data .data-title, .view .edit .element-fields .data-title, .edit .view .element-fields .data-title, .view .sub-element-data .data-title, .view .edit .sub-element-fields .data-title, .edit .view .sub-element-fields .data-title {
+/* line 232, ../sass/openeyes/components/events/_elements.scss */
+.view.highlight-fields .sub-element-header {
+  background: none;
+  margin: 0;
+}
+/* line 236, ../sass/openeyes/components/events/_elements.scss */
+.view.highlight-fields .sub-element-title {
   padding-left: 0;
   padding-right: 0;
 }
 /* line 241, ../sass/openeyes/components/events/_elements.scss */
-.view .element-title.highlight, .view .highlight.data-title, .view .edit .highlight.optional-elements-title, .edit .view .highlight.optional-elements-title {
+.view.highlight-fields .sub-elements {
+  background: none;
+  margin: 10px -10px 0 -10px;
+  padding-top: 10px;
+}
+/* line 248, ../sass/openeyes/components/events/_elements.scss */
+.view .element-data .data-title, .view .edit .element-fields .data-title, .edit .view .element-fields .data-title, .view .sub-element-data .data-title, .view .edit .sub-element-fields .data-title, .edit .view .sub-element-fields .data-title {
+  padding-left: 0;
+  padding-right: 0;
+}
+/* line 254, ../sass/openeyes/components/events/_elements.scss */
+.view .element-title.highlight, .view .highlight.data-title, .view.highlight-fields .highlight.sub-element-title, .view .edit .highlight.optional-elements-title, .edit .view .highlight.optional-elements-title {
   background: #dae6f1;
   color: #111;
   float: none;
@@ -5867,12 +4969,12 @@ tfoot.pagination-container .pagination li {
   padding: 12px 10px;
 }
 
-/* line 241, ../sass/openeyes/components/events/_elements.scss */
+/* line 266, ../sass/openeyes/components/events/_elements.scss */
 .previous-elements .element-container {
   margin-bottom: 10px;
   border: 1px solid #dae6f1;
 }
-/* line 246, ../sass/openeyes/components/events/_elements.scss */
+/* line 271, ../sass/openeyes/components/events/_elements.scss */
 .previous-elements .element-container .actions {
   text-align: right;
   padding: 2px;
@@ -5930,80 +5032,12 @@ tfoot.pagination-container .pagination li {
 }
 /* line 66, ../sass/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list li.clicked a, .edit .sub-elements-list li.clicked a, .edit .optional-elements-list li.clicked a:hover, .edit .sub-elements-list li.clicked a:hover {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: #dddddd url('../img/ajax-loader.gif?1392818884') no-repeat 99.5% 2px;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: #dddddd url('../img/ajax-loader.gif?1392042974') no-repeat 99.5% 2px;
-=======
-  background: #dddddd url('../img/ajax-loader.gif?1389792461') no-repeat 99.5% 2px;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: #dddddd url('../img/ajax-loader.gif?1391005463') no-repeat 99.5% 2px;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: #dddddd url('../img/ajax-loader.gif?1391682314') no-repeat 99.5% 2px;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: #dddddd url('../img/ajax-loader.gif?1392120106') no-repeat 99.5% 2px;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: #dddddd url('../img/ajax-loader.gif?1392372886') no-repeat 99.5% 2px;
->>>>>>> [OE-3945] Print css
   color: #333;
 }
 /* line 72, ../sass/openeyes/components/events/_optional-elements.scss */
 .edit .optional-elements-list li a, .edit .sub-elements-list li a {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: #8c949c url('../img/_elements/icons/event-optional/element-view.png?1392818884') no-repeat right top;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: #8c949c url('../img/_elements/icons/event-optional/element-view.png?1392042974') no-repeat right top;
-=======
-  background: #8c949c url('../img/_elements/icons/event-optional/element-view.png?1389792461') no-repeat right top;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: #8c949c url('../img/_elements/icons/event-optional/element-view.png?1391005463') no-repeat right top;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: #8c949c url('../img/_elements/icons/event-optional/element-view.png?1391524313') no-repeat right top;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: #8c949c url('../img/_elements/icons/event-optional/element-view.png?1392120106') no-repeat right top;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: #8c949c url('../img/_elements/icons/event-optional/element-view.png?1392372886') no-repeat right top;
->>>>>>> [OE-3945] Print css
   border-bottom: 1px dotted #fafafa;
   color: #fff;
   display: block;
@@ -6044,36 +5078,27 @@ tfoot.pagination-container .pagination li {
   margin: 0;
   padding: 5px 8px;
 }
-@media print {
-  /* line 37, ../sass/openeyes/components/events/_sub-elements.scss */
-  .sub-element .sub-element-title {
-    font-size: 1rem;
-    font-weight: bold;
-  }
-}
-/* line 49, ../sass/openeyes/components/events/_sub-elements.scss */
+/* line 45, ../sass/openeyes/components/events/_sub-elements.scss */
 .sub-element .element-eye {
   border-top: 1px solid #fafafa;
 }
+@media print {
+  /* line 34, ../sass/openeyes/components/events/_sub-elements.scss */
+  .sub-element {
+    border: 1px solid #000;
+  }
+}
 
-/* line 54, ../sass/openeyes/components/events/_sub-elements.scss */
+/* line 53, ../sass/openeyes/components/events/_sub-elements.scss */
 .sub-element-header {
   background: #fafafa;
 }
 
-<<<<<<< HEAD
-/* line 65, ../sass/openeyes/components/events/_sub-elements.scss */
+/* line 68, ../sass/openeyes/components/events/_sub-elements.scss */
 .edit .sub-element-actions {
   padding: 1px 2px 0 0;
 }
-/* line 74, ../sass/openeyes/components/events/_sub-elements.scss */
-=======
-/* line 64, ../sass/openeyes/components/events/_sub-elements.scss */
-.edit .sub-element-actions {
-  padding: 1px 2px 0 0;
-}
-/* line 73, ../sass/openeyes/components/events/_sub-elements.scss */
->>>>>>> [OE-3945] Print css
+/* line 77, ../sass/openeyes/components/events/_sub-elements.scss */
 .edit .sub-elements-list li {
   margin-bottom: 10px;
 }
@@ -6119,41 +5144,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 43, ../sass/openeyes/components/_dialog.scss */
 .ui-dialog.dialog .ui-dialog-content.loading {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: url('../img/ajax-loader-large.gif?1392818884') center center no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: url('../img/ajax-loader-large.gif?1392042974') center center no-repeat;
-=======
-  background: url('../img/ajax-loader-large.gif?1389792461') center center no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: url('../img/ajax-loader-large.gif?1391005463') center center no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: url('../img/ajax-loader-large.gif?1391524313') center center no-repeat;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: url('../img/ajax-loader-large.gif?1392120106') center center no-repeat;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: url('../img/ajax-loader-large.gif?1392372886') center center no-repeat;
->>>>>>> [OE-3945] Print css
   padding: 20px 0 40px 0;
   text-align: center;
 }
@@ -6162,41 +5153,7 @@ tfoot.pagination-container .pagination li {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: transparent url('../img/_elements/btns/overlay/big-cross.png?1392818884') top left no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: transparent url('../img/_elements/btns/overlay/big-cross.png?1392042974') top left no-repeat;
-=======
-  background: transparent url('../img/_elements/btns/overlay/big-cross.png?1389792461') top left no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: transparent url('../img/_elements/btns/overlay/big-cross.png?1391005463') top left no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: transparent url('../img/_elements/btns/overlay/big-cross.png?1391524313') top left no-repeat;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: transparent url('../img/_elements/btns/overlay/big-cross.png?1392120106') top left no-repeat;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: transparent url('../img/_elements/btns/overlay/big-cross.png?1392372886') top left no-repeat;
->>>>>>> [OE-3945] Print css
   border: 0;
   display: block;
   float: none;
@@ -6323,41 +5280,7 @@ tfoot.pagination-container .pagination li {
 .multi-select .remove-one {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
   opacity: 0.5;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: url('../img/_elements/icons/event-optional/element-remove.png?1392818884') no-repeat -10px -2px;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1392042974') no-repeat -10px -2px;
-=======
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1389792461') no-repeat -10px -2px;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1391005463') no-repeat -10px -2px;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1391524313') no-repeat -10px -2px;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1392120106') no-repeat -10px -2px;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: url('../img/_elements/icons/event-optional/element-remove.png?1392372886') no-repeat -10px -2px;
->>>>>>> [OE-3945] Print css
   display: inline-block;
   height: 15px;
   margin-left: 2px;
@@ -6532,41 +5455,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 37, ../sass/openeyes/components/_quicklook.scss */
 .quicklook .event-issue {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   background: #fdf2e5 url('../img/_elements/icons/event/status/alert.png?1392818884') top left no-repeat;
-=======
-=======
->>>>>>> [OE-3945] Fixing layout issues
-=======
->>>>>>> [OE-3945] Print related
-<<<<<<< HEAD
-  background: #fdf2e5 url('../img/_elements/icons/event/status/alert.png?1392042974') top left no-repeat;
-=======
-  background: #fdf2e5 url('../img/_elements/icons/event/status/alert.png?1389792461') top left no-repeat;
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-<<<<<<< HEAD
->>>>>>> [OE-3945] Upgraded foundation (now using bower) and initial attempt at fixing the layout
-=======
-=======
-  background: #fdf2e5 url('../img/_elements/icons/event/status/alert.png?1391005463') top left no-repeat;
->>>>>>> [OE-3945] Fixing layout issues
-<<<<<<< HEAD
->>>>>>> [OE-3945] Fixing layout issues
-=======
-=======
-  background: #fdf2e5 url('../img/_elements/icons/event/status/alert.png?1391524313') top left no-repeat;
->>>>>>> Print updates
->>>>>>> [OE-3945] Print related
-=======
-  background: #fdf2e5 url('../img/_elements/icons/event/status/alert.png?1392120106') top left no-repeat;
->>>>>>> [OE-3945] Print related updates
-=======
-  background: #fdf2e5 url('../img/_elements/icons/event/status/alert.png?1392372886') top left no-repeat;
->>>>>>> [OE-3945] Print css
   color: #600;
   font-size: 11px;
   margin-top: 7px;
@@ -6641,391 +5530,7 @@ tfoot.pagination-container .pagination li {
   font-size: 9pt;
 }
 @media print {
-<<<<<<< HEAD
-  /* line 25, ../sass/openeyes/components/print/_base.scss */
-  * {
-    background: transparent !important;
-    color: black !important;
-    text-shadow: none !important;
-    filter: none !important;
-    -ms-filter: none !important;
-  }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /* line 81, ../sass/openeyes/components/_print.scss */
-  .content {
-    font-size: 15px;
-  }
-
-  /* line 84, ../sass/openeyes/components/_print.scss */
-  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after {
-    content: "";
-  }
-
-  /* line 87, ../sass/openeyes/components/_print.scss */
-=======
-  /* line 16, ../sass/openeyes/components/print/_base.scss */
-=======
-  /* line 32, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-  a {
-    text-decoration: underline;
-  }
-  /* line 34, ../sass/openeyes/components/print/_base.scss */
-  a:visited {
-    text-decoration: underline;
-  }
-  /* line 37, ../sass/openeyes/components/print/_base.scss */
-  a[href]:after {
-    content: " (" attr(href) ")";
-  }
-
-  /* line 41, ../sass/openeyes/components/print/_base.scss */
-  abbr[title]:after {
-    content: " (" attr(title) ")";
-  }
-
-  /* line 44, ../sass/openeyes/components/print/_base.scss */
-  .ir a:after {
-    content: "";
-  }
-
-  /* line 48, ../sass/openeyes/components/print/_base.scss */
-  a[href^="javascript:"]:after, a[href^="#"]:after {
-    content: "";
-  }
-
-<<<<<<< HEAD
-  /* line 36, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-=======
-  /* line 52, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-  pre, blockquote {
-    border: 1px solid #999;
-    page-break-inside: avoid;
-  }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /* line 91, ../sass/openeyes/components/_print.scss */
-=======
-  /* line 40, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-=======
-  /* line 56, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-  thead {
-    display: table-header-group;
-  }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /* line 94, ../sass/openeyes/components/_print.scss */
-  tr, img {
-    page-break-inside: avoid;
-  }
-
-  /* line 97, ../sass/openeyes/components/_print.scss */
-=======
-  /* line 43, ../sass/openeyes/components/print/_base.scss */
-=======
-  /* line 59, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-  tr {
-    page-break-inside: avoid;
-  }
-
-<<<<<<< HEAD
-  /* line 46, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-=======
-  /* line 62, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-  img {
-    max-width: 100% !important;
-  }
-
-  @page {
-    margin: 0.5cm;
-}
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /* line 104, ../sass/openeyes/components/_print.scss */
-=======
-  /* line 54, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-=======
-  /* line 70, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-  p, h2, h3 {
-    orphans: 3;
-    widows: 3;
-  }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /* line 108, ../sass/openeyes/components/_print.scss */
-  h1, h2, h3 {
-=======
-  /* line 58, ../sass/openeyes/components/print/_base.scss */
-=======
-  /* line 74, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-  h2, h3 {
->>>>>>> [OE-3945] Print related
-    page-break-after: avoid;
-    clear: both;
-  }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /* line 112, ../sass/openeyes/components/_print.scss */
-  h1 {
-    font-size: 1.6em;
-  }
-
-  /* line 115, ../sass/openeyes/components/_print.scss */
-  h2 {
-    font-size: 1.3em;
-  }
-
-  /* line 118, ../sass/openeyes/components/_print.scss */
-  h3 {
-    font-size: 1.2em;
-  }
-
-  /* line 121, ../sass/openeyes/components/_print.scss */
-=======
-  /* line 61, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-=======
-  /* line 77, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /* line 126, ../sass/openeyes/components/_print.scss */
-  th,
-  td {
-    width: 25%;
-    border: 1px solid #999;
-=======
-  /* line 64, ../sass/openeyes/components/print/_base.scss */
-=======
-  /* line 80, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-  td, th {
->>>>>>> [OE-3945] Print related
-    text-align: left;
-    padding: 2px 4px;
-    vertical-align: top;
-    font-size: 10pt;
-  }
-
-  /* line 134, ../sass/openeyes/components/_print.scss */
-  table.half {
-    width: 50%;
-  }
-
-  /* line 138, ../sass/openeyes/components/_print.scss */
-  table.admission_letter th,
-  table.admission_letter td {
-    font-size: 15px;
-    padding: 4px 6px;
-  }
-
-  /* line 143, ../sass/openeyes/components/_print.scss */
-  table.half td,
-  table.half th {
-    width: 50%;
-    border: none;
-  }
-
-  /* line 148, ../sass/openeyes/components/_print.scss */
-  td.tall,
-  th.tall {
-    height: 4em;
-  }
-
-  /* line 151, ../sass/openeyes/components/_print.scss */
-  .right {
-    float: right;
-  }
-
-  /* line 154, ../sass/openeyes/components/_print.scss */
-  em {
-    text-decoration: underline;
-    font-style: normal;
-  }
-
-  /* line 158, ../sass/openeyes/components/_print.scss */
-  html {
-    height: 100%;
-  }
-
-  /* line 161, ../sass/openeyes/components/_print.scss */
-  body {
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 10pt;
-    display: block !important;
-    width: 1050px !important;
-  }
-
-  /* line 167, ../sass/openeyes/components/_print.scss */
-  .pageBreak {
-    page-break-after: always;
-  }
-
-  /* line 170, ../sass/openeyes/components/_print.scss */
-  .banner {
-    height: 100px;
-  }
-
-  /* line 173, ../sass/openeyes/components/_print.scss */
-  .banner.compact {
-    height: 70px;
-  }
-
-  /* line 176, ../sass/openeyes/components/_print.scss */
-  .banner .seal {
-    float: left;
-  }
-
-  /* line 179, ../sass/openeyes/components/_print.scss */
-  .banner .seal img {
-    width: 96px;
-  }
-
-  /* line 182, ../sass/openeyes/components/_print.scss */
-  .banner .logo {
-    float: right;
-  }
-
-  /* line 185, ../sass/openeyes/components/_print.scss */
-  .banner .logo img {
-    width: 400px;
-  }
-
-  /* line 188, ../sass/openeyes/components/_print.scss */
-  .banner.compact .logo img {
-    width: 250px;
-  }
-
-  /* line 192, ../sass/openeyes/components/_print.scss */
-  .fromAddress,
-  .date {
-    padding-top: 3em;
-    clear: both;
-    float: right;
-    text-align: right;
-    padding-top: 3em;
-  }
-
-  /* line 199, ../sass/openeyes/components/_print.scss */
-  .date {
-    padding-top: 1em;
-  }
-
-  /* line 202, ../sass/openeyes/components/_print.scss */
-  .toAddress {
-    padding-left: 5em;
-    padding-top: 3em;
-    width: 250px;
-  }
-
-  /* line 207, ../sass/openeyes/components/_print.scss */
-  .red {
-    color: #f00 !important;
-  }
-
-  /* line 210, ../sass/openeyes/components/_print.scss */
-  li {
-    margin: 10px 0;
-  }
-
-  /* line 213, ../sass/openeyes/components/_print.scss */
-  a {
-    text-decoration: underline;
-  }
-  /* line 215, ../sass/openeyes/components/_print.scss */
-  a:visited {
-    text-decoration: underline;
-  }
-  /* line 218, ../sass/openeyes/components/_print.scss */
-  a[href]:after {
-    content: " (" attr(href) ")";
-  }
-
-  /* line 222, ../sass/openeyes/components/_print.scss */
-  abbr[title]:after {
-    content: " (" attr(title) ")";
-  }
-
-  /* line 225, ../sass/openeyes/components/_print.scss */
-  .ir a:after {
-    content: "";
-  }
-
-  /* line 229, ../sass/openeyes/components/_print.scss */
-  a[href^="javascript:"]:after, a[href^="#"]:after {
-    content: "";
-  }
-
-  /* line 233, ../sass/openeyes/components/_print.scss */
-  pre, blockquote {
-    border: 1px solid #999;
-    page-break-inside: avoid;
-  }
-
-  /* line 237, ../sass/openeyes/components/_print.scss */
-  thead {
-    display: table-header-group;
-  }
-
-  /* line 240, ../sass/openeyes/components/_print.scss */
-  tr {
-    page-break-inside: avoid;
-  }
-
-  /* line 243, ../sass/openeyes/components/_print.scss */
-  img {
-    page-break-inside: avoid;
-    max-width: 100% !important;
-  }
-
-  /* PREPAPRE PAGE FOR PRINT */
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /* line 248, ../sass/openeyes/components/_print.scss */
-=======
-  /* line 71, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-=======
-  /* line 87, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-  html {
-    height: 100%;
-  }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /* line 251, ../sass/openeyes/components/_print.scss */
-=======
-  /* line 74, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-=======
-  /* line 90, ../sass/openeyes/components/print/_base.scss */
->>>>>>> [OE-3945] Print related
-=======
   /* line 19, ../sass/openeyes/components/_print.scss */
->>>>>>> [OE-3945] Print css
   .printable {
     display: block !important;
     width: 1050px !important;

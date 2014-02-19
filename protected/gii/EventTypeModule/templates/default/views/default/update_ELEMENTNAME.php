@@ -18,7 +18,7 @@
  */
 <?php echo "?>\n"?>
 <?php echo '<?php'?> $this->renderPartial(
-	'form_' . get_class($element),
+	$element->form_view,
 	array('element' => $element, 'data' => $data, 'form' => $form),
 	false, false
 )<?php echo '?>'?>

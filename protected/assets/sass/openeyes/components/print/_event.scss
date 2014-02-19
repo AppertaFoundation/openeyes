@@ -14,9 +14,7 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-/*
- * This file contains print CSS used to style an event print layout.
- */
+// This file contains print CSS used to style an event print layout.
 
 @media print {
 	h2 {
@@ -28,7 +26,6 @@
 	.header {
 		padding: 0 0 10px 0;
 		border-bottom: 1px solid #000;
-		margin-bottom: 15px;
 	}
 	.title {
 		margin: 0 auto;
@@ -44,5 +41,30 @@
 	.patient {
 		border: 1px solid #000;
 		padding: 5px 10px;
+	}
+	.event {
+		.element-title {
+			padding: 0;
+			margin: 20px 0 10px 0;
+		}
+		.element {
+			border: 0;
+			margin: 0;
+			.details {
+				padding: 10px;
+				border: 1px solid #000;
+			}
+		}
+		.sub-element {
+			border: 0;
+			.sub-element-title {
+				font-size: 1rem;
+				font-weight: bold;
+			}
+		}
+		.metadata {
+			padding: 10px 0;
+			margin: 10px 0;
+		}
 	}
 }
