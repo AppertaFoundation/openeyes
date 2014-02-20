@@ -110,7 +110,8 @@ class Intravitreal extends OpenEyesPage
 
         protected function doesAllergyWarningExist()
         {
-            return (bool) $this->find('xpath', $this->getElement('existingAllergyCheck')->getXpath());
+          $this->waitForElementDisplayBlock('#flash-prescription_allergy');
+					return (bool) $this->find('xpath', $this->getElement('existingAllergyCheck')->getXpath());
         }
 
         public function confirmAllergyWarning ($allergy)
