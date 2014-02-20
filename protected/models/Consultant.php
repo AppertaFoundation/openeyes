@@ -29,7 +29,7 @@
  * The followings are the available model relations:
  * @property Contact $contact
  */
-class Consultant extends BaseActiveRecordVersioned
+class Consultant extends BaseActiveRecordVersionedSoftDelete
 {
 	/**
 	 * Returns the static model of the specified AR class.
