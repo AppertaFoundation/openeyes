@@ -2060,6 +2060,7 @@ CREATE TABLE `issue_version` (
 		$this->dropPrimaryKey('id','issue_version');
 
 		$this->createIndex('issue_aid_fk','issue_version','id');
+		$this->addForeignKey('issue_aid_fk','issue_version','id','issue','id');
 
 		$this->addColumn('issue_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -4026,6 +4027,8 @@ CREATE TABLE `user_site_version` (
 		$this->addColumn('firm_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('institution','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('institution_version','deleted','tinyint(1) unsigned not null');
+		$this->addColumn('issue','deleted','tinyint(1) unsigned not null');
+		$this->addColumn('issue_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('medication','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('medication_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('nsc_grade','deleted','tinyint(1) unsigned not null');
@@ -4123,6 +4126,7 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('firm_version','deleted');
 		$this->dropColumn('institution','deleted');
 		$this->dropColumn('institution_version','deleted');
+		$this->dropColumn('issue','deleted');
 		$this->dropColumn('medication','deleted');
 		$this->dropColumn('medication_version','deleted');
 		$this->dropColumn('nsc_grade','deleted');
