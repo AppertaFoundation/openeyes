@@ -57,6 +57,11 @@
 }
 
 .edit {
+	.sub-element {
+		&.on-demand {
+			@extend .element.on-demand;
+		}
+	}
 	.sub-element-actions {
 		@extend .element-actions;
 		padding: emCalc(1px) emCalc(2px) 0 0;
