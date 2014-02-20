@@ -164,6 +164,10 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 					echo "$_table_version->name foreign key on id column column doesn't match\n";
 				}
 			}
+		} else {
+			if (isset($_table_version->foreignKeys['id'])) {
+				echo "$_table_version->name has a foreign key on column id\n";
+			}
 		}
 	}
 }
