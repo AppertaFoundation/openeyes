@@ -33,15 +33,7 @@
 	))?>
 		<?php echo $form->textField($cbt,'name')?>
 		<?php echo $form->textField($cbt,'shortname')?>
-		<?php echo $form->formActions();?>
+		<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_bodies'));?>
 	<?php $this->endWidget()?>
 </div>
-<script type="text/javascript">
-	handleButton($('#et_cancel'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/commissioning_bodies';
-	});
-	handleButton($('#et_save'),function(e) {
-		$('#adminform').submit();
-	});
-</script>
+

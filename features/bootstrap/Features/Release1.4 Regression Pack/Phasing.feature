@@ -34,7 +34,6 @@
     Then I choose a left eye Intraocular Pressure Reading of "7"
     And I add left eye comments of "Left eye comments here"
 
-    #FIXME OE-3985
     Then I Save the Phasing Event and confirm it has been created successfully
 
     Scenario: Route 2: Login and create a Phasing Event
@@ -67,7 +66,6 @@
       Then I choose a left eye Intraocular Pressure Reading of "12"
       And I add left eye comments of "Left eye comments here"
 
-          #FIXME OE-3985
       Then I Save the Phasing Event and confirm it has been created successfully
 
     Scenario: Route 3: Login and create a Phasing Event
@@ -100,7 +98,6 @@
       Then I choose a left eye Intraocular Pressure Reading of "9"
       And I add left eye comments of "Left eye comments here"
 
-          #FIXME OE-3985
       Then I Save the Phasing Event and confirm it has been created successfully
 
     Scenario: Route 4: Login and create a Phasing Event
@@ -144,5 +141,4 @@
       Then I remove the last Right Reading
       Then I remove the last Left Reading
 
-          #FIXME OE-3985
       Then I Save the Phasing Event and confirm it has been created successfully

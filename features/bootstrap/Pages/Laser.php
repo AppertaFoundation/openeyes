@@ -112,7 +112,7 @@ class Laser extends OpenEyesPage
     public function expandComments ()
     {
         $this->getElement('expandComments')->click();
-        $this->getSession()->wait(5000, '$.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function addComments ($comments)

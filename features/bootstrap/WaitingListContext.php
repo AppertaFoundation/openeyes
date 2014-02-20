@@ -136,7 +136,7 @@ class WaitingListContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000, "$.active == 0");
+        $operationBooking->getSession()->wait(10000, "window.$ && $.active == 0");
         $operationBooking->availableSlot();
     }
 
@@ -150,7 +150,7 @@ class WaitingListContext extends PageObjectContext
          */
 
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000, "$.active == 0");
+        $operationBooking->getSession()->wait(10000, "window.$ && $.active == 0");
         $operationBooking->availableSlotOutsideRTT();
     }
 
@@ -163,7 +163,7 @@ class WaitingListContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(10000, "$.active == 0");
+        $operationBooking->getSession()->wait(10000, "window.$ && $.active == 0");
         $operationBooking->availableSessionTime();
     }
 

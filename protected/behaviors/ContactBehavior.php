@@ -149,8 +149,7 @@ class ContactBehavior extends CActiveRecordBehavior
 		if ($this->owner->isNewRecord) {
 			throw new Exception("Cannot add address to unsaved contact object");
 		}
-		$address->parent_class = 'Contact';
-		$address->parent_id = $this->owner->contact->id;
+		$address->contact_id = $this->owner->contact->id;
 		$address->save();
 	}
 

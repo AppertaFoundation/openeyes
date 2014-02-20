@@ -42,13 +42,6 @@
 			<?php echo $form->textField($address,'postcode')?>
 			<?php echo $form->dropDownList($address,'country_id',CHtml::listData(Country::model()->notDeleted()->findAll(array('order'=>'name')),'id','name'))?>
 		</fieldset>
-		<?php echo $form->formActions();?>
+		<?php echo $form->formActions(array('cancel-uri' => '/admin/institutions'));?>
 	<?php $this->endWidget()?>
 </div>
-
-<script type="text/javascript">
-	handleButton($('#et_cancel'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/institutions';
-	});
-</script>

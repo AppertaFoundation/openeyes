@@ -2,7 +2,6 @@
 Feature: Create New Examination Regression Tests
   Regression over 2 Sites and 4 Firms
   Coverage at 80%
-  LEFT AXIS Statement is doubled up to stop Right Axis spinning bug
 
   Scenario: Route 1: Login and create a new Examination Event: Site 1:Queens, Firm:3 Anderson Glaucoma
             Confirm that Refraction Axis entries are correctly validated when the Examination is saved
@@ -73,9 +72,8 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
-#  @FIXME JIRA OE-3973
-#    Then a check is made that a left Axis degrees of "145" was entered
-#    Then a check is made that a right Axis degrees of "38" was entered
+    Then a check is made that a left Axis degrees of "145" was entered
+    Then a check is made that a right Axis degrees of "38" was entered
 
 
   Scenario: Route 2:Login and create a new Examination Event: Site:1 Queens, Firm:2 Broom Glaucoma
@@ -229,15 +227,14 @@ Feature: Create New Examination Regression Tests
     And I add a left Abnormality of "2"
     And I add a right Abnormality of "4"
 
-#    @FIXME OE-3975
-#    Then I choose to expand the Diagnoses section
-#    And I choose a left eye diagnosis
-#    Then I choose a diagnoses of "230670003"
+    Then I choose to expand the Diagnoses section
+    And I choose a left eye diagnosis
+    Then I choose a diagnoses of "230670003"
 
-#    And I choose a right eye diagnosis
-#    Then I choose a diagnoses of "53889007"
-#    And I choose both eyes diagnosis
-#    Then I choose a diagnoses of "193570009"
+    And I choose a right eye diagnosis
+    Then I choose a diagnoses of "53889007"
+    And I choose both eyes diagnosis
+    Then I choose a diagnoses of "193570009"
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -351,14 +348,13 @@ Feature: Create New Examination Regression Tests
     And I add a left Abnormality of "2"
     And I add a right Abnormality of "4"
 
-#  @FIXME OE-3975
-#    Then I choose to expand the Diagnoses section
-#    And I choose a left eye diagnosis
-#    Then I choose a diagnoses of "95217000"
-#    And I choose a right eye diagnosis
-#    Then I choose a diagnoses of "34361001"
-#    And I choose both eyes diagnosis
-#    Then I choose a diagnoses of "79410001"
+    Then I choose to expand the Diagnoses section
+    And I choose a left eye diagnosis
+    Then I choose a diagnoses of "95217000"
+    And I choose a right eye diagnosis
+    Then I choose a diagnoses of "34361001"
+    And I choose both eyes diagnosis
+    Then I choose a diagnoses of "79410001"
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -476,14 +472,13 @@ Feature: Create New Examination Regression Tests
     And I add a left Abnormality of "2"
     And I add a right Abnormality of "4"
 
-#    @FIXME OE-3975
-#    Then I choose to expand the Diagnoses section
-#    And I choose a left eye diagnosis
-#    Then I choose a diagnoses of "95217000"
-#    And I choose a right eye diagnosis
-#    Then I choose a diagnoses of "34361001"
-#    And I choose both eyes diagnosis
-#    Then I choose a diagnoses of "79410001"
+    Then I choose to expand the Diagnoses section
+    And I choose a left eye diagnosis
+    Then I choose a diagnoses of "95217000"
+    And I choose a right eye diagnosis
+    Then I choose a diagnoses of "34361001"
+    And I choose both eyes diagnosis
+    Then I choose a diagnoses of "79410001"
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
