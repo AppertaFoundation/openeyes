@@ -332,7 +332,9 @@ class PatientViewNewDiagnosis extends OpenEyesPage
     public function removeAndConfirm ()
     {
         $this->waitForElementDisplayNone('#add_new_ophthalmic_diagnosis');
-        $this->getElement('removeOpthalmicDiagnosisLink')->click();
+        $element = $this->getElement('removeOpthalmicDiagnosisLink');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getElement('removeOpthalmicDiagnosisConfirm')->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }

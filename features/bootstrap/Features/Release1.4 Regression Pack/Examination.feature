@@ -2,7 +2,6 @@
 Feature: Create New Examination Regression Tests
   Regression over 2 Sites and 4 Firms
   Coverage at 80%
-  LEFT AXIS Statement is doubled up to stop Right Axis spinning bug
 
   Scenario: Route 1: Login and create a new Examination Event: Site 1:Queens, Firm:3 Anderson Glaucoma
             Confirm that Refraction Axis entries are correctly validated when the Examination is saved
