@@ -952,12 +952,14 @@ class Examination extends OpenEyesPage
 
     protected function doesRightAxisExist()
     {
-        return (bool) $this->find('xpath', $this->getElement('existingRightAxisCheck')->getXpath());
+			$this->waitForElementDisplayBlock('.element-eye.right-eye.column');
+			return (bool) $this->find('xpath', $this->getElement('existingRightAxisCheck')->getXpath());
     }
 
     protected function doesLeftAxisExist()
     {
-        return (bool) $this->find('xpath', $this->getElement('existingLeftAxisCheck')->getXpath());
+			$this->waitForElementDisplayBlock('.element-eye.left-eye.column');
+			return (bool) $this->find('xpath', $this->getElement('existingLeftAxisCheck')->getXpath());
     }
 
     public function rightAxisCheck ()
