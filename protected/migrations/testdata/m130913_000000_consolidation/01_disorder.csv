@@ -1,0 +1,19 @@
+id,fully_specified_name,term,last_modified_user_id,last_modified_date,created_user_id,created_date,specialty_id
+109006,"Anxiety disorder of childhood OR adolescence (disorder)","Anxiety disorder of childhood OR adolescence",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+122003,"Choroidal hemorrhage (disorder)","Choroidal haemorrhage",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+123008,"Channel catfish virus disease (disorder)","Channel catfish virus disease",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+127009,"Spontaneous abortion with laceration of cervix (disorder)","Spontaneous abortion with laceration of cervix",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+140004,"Chronic pharyngitis (disorder)","Chronic pharyngitis",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+147001,"Superficial foreign body of scrotum without major open wound but with infection (disorder)","Superficial foreign body of scrotum without major open wound but with infection",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+151004,"Gonococcal meningitis (disorder)","Gonococcal meningitis",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+162004,"Severe manic bipolar I disorder without psychotic features (disorder)","Severe manic bipolar I disorder without psychotic features",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+168000,"Typhlolithiasis (disorder)","Typhlolithiasis",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+171008,"Injury of ascending right colon without open wound into abdominal cavity (disorder)","Injury of ascending right colon without open wound into abdominal cavity",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+172001,"Endometritis following molar AND/OR ectopic pregnancy (disorder)","Endometritis following molar AND/OR ectopic pregnancy",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+175004,"Supraorbital neuralgia (disorder)","Supraorbital neuralgia",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+177007,"Poisoning by sawfly larvae (disorder)","Poisoning by sawfly larvae",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+181007,"Hemorrhagic bronchopneumonia (disorder)","Haemorrhagic bronchopneumonia",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+183005,"Autoimmune pancytopenia (disorder)","Autoimmune pancytopenia",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+184004,"Withdrawal arrhythmia (disorder)","Withdrawal arrhythmia",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+188001,"Injury of intercostal artery (disorder)","Injury of intercostal artery",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+192008,"Congenital syphilitic hepatomegaly (disorder)","Congenital syphilitic hepatomegaly",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL

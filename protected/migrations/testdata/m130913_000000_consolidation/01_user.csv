@@ -1,0 +1,7 @@
+id,username,first_name,last_name,email,active,global_firm_rights,title,qualifications,role,code,password,salt,last_modified_user_id,last_modified_date,created_user_id,created_date,last_firm_id,is_doctor,contact_id,last_site_id,is_clinical,is_consultant,is_surgeon,has_selected_firms
+3,"bbroom","Brenda","Broom","bbroom@openeyes.org.uk",1,1,"Miss","","",NULL,"49ce5e1189de532d9e157ed07e749c87",NULL,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL,1,3,NULL,0,1,1,1
+4,"level0","Level","Zero","zero@example.com",1,1,"","","",NULL,"49ce5e1189de532d9e157ed07e749c87",NULL,1,"2013-06-28 10:21:37",1,"1900-01-01 00:00:00",NULL,0,10122,NULL,0,0,0,1
+5,"level1","Level","One","one@example.com",1,1,"","","",NULL,"49ce5e1189de532d9e157ed07e749c87",NULL,1,"2013-06-28 10:21:55",1,"1900-01-01 00:00:00",NULL,0,10123,NULL,0,0,0,1
+6,"level2","Level","Two","two@example.com",1,1,"","","",NULL,"49ce5e1189de532d9e157ed07e749c87",NULL,1,"2013-06-28 10:22:17",1,"1900-01-01 00:00:00",NULL,0,10124,NULL,0,0,0,1
+7,"level3","Level","Three","three@example.com",1,1,"","","",NULL,"49ce5e1189de532d9e157ed07e749c87",NULL,1,"2013-06-28 10:22:54",1,"1900-01-01 00:00:00",NULL,0,10125,NULL,0,0,0,1
+8,"level4","Level","Four","four@example.com",1,1,"","","",NULL,"49ce5e1189de532d9e157ed07e749c87",NULL,1,"2013-06-28 10:51:17",1,"1900-01-01 00:00:00",NULL,0,10126,NULL,0,0,0,1

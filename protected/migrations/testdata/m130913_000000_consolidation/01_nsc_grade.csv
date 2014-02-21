@@ -1,0 +1,13 @@
+id,name,type,medical_phrase,layman_phrase,last_modified_user_id,last_modified_date,created_user_id,created_date
+1,"R0",1,"None","No diabetic retinopathy (NSC R0)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+2,"R1",1,"Microaneurysm(s)\nRetinal haemorrhage(s) ¬± any exudate","Mild to moderate non-proliferative diabetic retinopathy (NSC R1)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+3,"R2",1,"Venous beading\nVenous loop or reduplication\nIntraretinal microvascular abnormality (IRMA)\nMultiple deep, round or blot haemorrhages - Cotton Wool Spots (CWS)","Severe non-proliferative diabetic retinopathy (NSC R2)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+4,"R3",1,"New vessels on disk (NVD)\nNew vessels elsewhere (NVE)\nPre-retinal or vitreous haemorrhage\nPre-retinal fibrosis ¬± tractional retinal detachment","Proliferative diabetic retinopathy (NSC R3)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+5,"RP1",1,"Focal/grid to macula","Previous diabetic retinopathy treated with scatter laser (NSC P)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+6,"RP2",1,"Peripheral scatter","Previous diabetic retinopathy treated with scatter laser (NSC P)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+7,"RU",1,"Ungradable/unobtainable","The retina was ungradable (NSC U)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+8,"M0",2,"None","No diabetic maculopathy (NSC M0)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+9,"M1",2,"Exudate within 1 disc diameter (DD) of the centre of the fovea\nCircinate or group of exudates within the macula\nRetinal thickening within 1DD of the centre of the fovea (if stereo available)\nAny microaneurysm of haemorrhage within 1DD of the centre of the fovea only if associated with a best visual acuity of ‚â§ 6/12 (if no stereo)","Diabetic maculopathy (NSC M1)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+10,"MP1",2,"Focal/grid to macula","Previous diabetic maculopathy treated with laser (NSC P)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+11,"MP2",2,"Peripheral scatter","Previous diabetic maculopathy treated with laser (NSC P)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"
+12,"MU",2,"Ungradable/unobtainable","Macula was ungradable (NSC U)",1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00"

@@ -1,0 +1,3 @@
+id,name,remote_id,short_name,fax,telephone,last_modified_user_id,last_modified_date,created_user_id,created_date,institution_id,location,contact_id,replyto_contact_id,source_id
+1,"Queens Hospital","Q1","Queens","011 111 1111","011 111 2222",1,"2012-10-12 10:20:23",1,"2000-01-01 00:00:00",1,"",10099,NULL,1
+2,"Kings Hospital","K1","Kings","033 333 3333","033 333 4444",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",1,"",10098,NULL,1
