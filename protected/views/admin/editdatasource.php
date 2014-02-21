@@ -32,12 +32,6 @@
 		)
 	))?>
 		<?php echo $form->textField($source,'name')?>
-		<?php echo $form->formActions();?>
+		<?php echo $form->formActions(array('cancel-uri' => '/admin/datasources'));?>
 	<?php $this->endWidget()?>
 </div>
-<script type="text/javascript">
-	handleButton($('#et_cancel'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/datasources';
-	});
-</script>

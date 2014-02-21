@@ -47,8 +47,8 @@
 		</div>
 		<?php /* TODO */ ?>
 
-		<?php echo $form->formActions();?>
-	<?php $this->endWidget()?>
+		<?php echo $form->formActions(array('cancel-uri' => '/admin/contacts'))?>
+		<?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {

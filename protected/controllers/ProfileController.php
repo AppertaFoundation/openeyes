@@ -155,9 +155,9 @@ class ProfileController extends BaseController
 			if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
 				throw new Exception("Can't find institution: ".Yii::app()->params['institution_code']);
 			}
-			$sites = Site::model()->findAll('institution_id=?',array($institution->id));
+			$sites = Site::model()->active()->findAll('institution_id=?',array($institution->id));
 		} else {
-			$sites = Site::model()->findAllByPk(@$_POST['site_id']);
+			$sites = Site::model()->active()->findAllByPk(@$_POST['site_id']);
 		}
 
 		foreach ($sites as $site) {

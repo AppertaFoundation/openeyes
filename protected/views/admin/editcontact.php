@@ -38,7 +38,7 @@
 		<?php echo $form->textField($contact,'primary_phone')?>
 		<?php echo $form->textField($contact,'qualifications')?>
 		<?php echo $form->dropDownList($contact,'contact_label_id',CHtml::listData(ContactLabel::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
-		<?php echo $form->formActions(); ;?>
+		<?php echo $form->formActions(array('cancel-uri' => '/admin/contacts'))?>
 	<?php $this->endWidget()?>
 </div>
 

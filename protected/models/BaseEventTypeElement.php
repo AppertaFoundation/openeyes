@@ -65,10 +65,20 @@ class BaseEventTypeElement extends BaseElement
 
 	/**
 	 * Can we view the previous version of this element
+	 * @return boolean
 	 */
 	public function canViewPrevious()
 	{
 		return false;
+	}
+
+	/**
+	 * Is this a required element?
+	 * @return boolean
+	 */
+	public function isRequired()
+	{
+		return $this->elementType->required;
 	}
 
 	/**

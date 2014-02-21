@@ -73,7 +73,7 @@ class SiteAndFirmWidget extends CWidget
 		}
 
 		if (!$sites = $user->siteSelections) {
-			$sites = Site::model()->findAll(array(
+			$sites = Site::model()->active()->findAll(array(
 					'condition' => 'institution.source_id = :source_id and institution.remote_id = :institution_code',
 					'join' => 'JOIN institution ON institution.id = t.institution_id',
 					'order' => 'short_name',

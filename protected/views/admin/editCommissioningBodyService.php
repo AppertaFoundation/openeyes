@@ -41,15 +41,7 @@
 		<?php echo $form->textField($address,'county')?>
 		<?php echo $form->textField($address,'postcode')?>
 		<?php echo $form->dropDownList($address,'country_id',CHtml::listData(Country::model()->notDeleted()->findAll(array('order'=>'name')),'id','name'))?>
-		<?php echo $form->formActions();?>
+		<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_body_services'));?>
 	<?php $this->endWidget()?>
 </div>
-<script type="text/javascript">
-	handleButton($('#et_cancel'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/commissioning_body_services';
-	});
-	handleButton($('#et_save'),function(e) {
-		$('#adminform').submit();
-	});
-</script>
+

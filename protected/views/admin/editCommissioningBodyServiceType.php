@@ -33,15 +33,6 @@
 	))?>
 		<?php echo $form->textField($cbs,'name',array('size'=>'50'))?>
 		<?php echo $form->textField($cbs,'shortname',array('size'=>'10'))?>
-		<?php echo $form->formActions();?>
+	<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_body_service_types'));?>
 	<?php $this->endWidget()?>
 </div>
-<script type="text/javascript">
-	handleButton($('#et_cancel'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/commissioning_body_service_types';
-	});
-	handleButton($('#et_save'),function(e) {
-		$('#adminform').submit();
-	});
-</script>

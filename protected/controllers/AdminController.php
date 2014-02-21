@@ -354,6 +354,11 @@ class AdminController extends BaseAdminController
 				$criteria->compare('LOWER(name)', strtolower($_REQUEST['search']), true);
 			}
 		}
+
+		if (method_exists($model,'active')) {
+			$model->active();
+		}
+
 		return array(
 			'items' => $model->findAll($criteria),
 		);
@@ -518,7 +523,7 @@ class AdminController extends BaseAdminController
 				$criteria = new CDbCriteria;
 				$criteria->compare('institution_id',@$_POST['institution_id']);
 				$criteria->order = 'name asc';
-				$sites = CHtml::listData(Site::model()->findAll($criteria),'id','name');
+				$sites = CHtml::listData(Site::model()->active()->findAll($criteria),'id','name');
 			}
 
 			if (empty($errors)) {
@@ -996,8 +1001,7 @@ class AdminController extends BaseAdminController
 					throw new Exception("Unable to save CommissioningBody : ".print_r($cb->getErrors(),true));
 				}
 
-				$address->parent_class = 'Contact';
-				$address->parent_id = $contact->id;
+				$address->contact_id = $contact->id;
 
 				if (!$address->save()) {
 					throw new Exception("Unable to save CommissioningBody address: ".print_r($address->getErrors(),true));
@@ -1189,8 +1193,7 @@ class AdminController extends BaseAdminController
 
 					$cbs->contact_id = $contact->id;
 
-					$address->parent_class = 'Contact';
-					$address->parent_id = $contact->id;
+					$address->contact_id = $contact->id;
 				}
 
 				$method = $cbs->id ? 'edit' : 'add';

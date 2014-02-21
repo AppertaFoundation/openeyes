@@ -46,36 +46,36 @@ class AddingNewEvent extends OpenEyesPage
     public function expandCataract ()
     {
         $this->getElement('expandCataractEpisode')->click();
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
         $this->getElement('addNewCataractEventButton')->click();
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
     }
 
     public function expandGlaucoma ()
     {
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
         $this->getElement('expandGlaucomaEpisode')->click();
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
         $this->getElement('addNewGlaucomaEventButton')->click();
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
     }
 
     public function expandMedicalRetinal ()
     {
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
         $this->getElement('expandMedicalRetinalEpisode' )->click();
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
         $this->getElement('addNewMedicalRetinalEventButton')->click();
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
     }
 
     public function expandSupportFirm ()
     {
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
         $this->getElement('expandSupportFirm')->click();
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
         $this->getElement('addNewSupportFirmEventButton')->click();
-        $this->getSession()->wait(5000, '$.active ==0');
+        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
     }
 
     public function addNewEvent($event)

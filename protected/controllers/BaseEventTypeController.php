@@ -427,6 +427,16 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
+	 * Is this a required element?
+	 * @param  BaseEventTypeElement  $element
+	 * @return boolean
+	 */
+	public function isRequired($element)
+	{
+		return $element->isRequired();
+	}
+
+	/**
 	 * Initialise an element of $element_type for returning as an individual form. If the $previous_id is provided,
 	 * then the default values of the element will be overridden with the properties of the previous intance of the
 	 * element. Similarly, $additional allows specific values to be set on the element.

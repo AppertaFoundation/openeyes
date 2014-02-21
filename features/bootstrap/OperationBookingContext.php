@@ -323,7 +323,7 @@ class OperationBookingContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I add Operation comments of "([^"]*)"$/
+     * @Given/^I add Operation comments of "([^"]*)"$/
      */
     public function iAddOperationCommentsOf($opComments)
     {
@@ -332,6 +332,18 @@ class OperationBookingContext extends PageObjectContext
          */
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->sessionOperationComments($opComments);
+    }
+
+    /**
+     * @Given /^enter RTT comments of "([^"]*)"$/
+     */
+    public function enterRttCommentsOf($RTTcomments)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->sessionRTTComments($RTTcomments);
     }
 
     /**
@@ -346,6 +358,32 @@ class OperationBookingContext extends PageObjectContext
         $operationBooking->getSession()->wait(3000);
         $operationBooking->confirmSlot();
     }
+
+    /**
+     * @Then /^I select a Ward of "([^"]*)"$/
+     */
+    public function iSelectAWardOf($ward)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->chooseWard($ward);
+    }
+
+    /**
+     * @Given /^enter an admission time of "([^"]*)"$/
+     */
+    public function enterAnAdmissionTimeOf($time)
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->admissionTime($time);
+    }
+
+
 
     /**
      * @Then /^I select Save$/

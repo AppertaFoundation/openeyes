@@ -33,21 +33,12 @@
 	))?>
 		<?php echo $form->textField($contactlabel,'name')?>
 		<?php echo $form->formActions(array(
+			'cancel-uri' => '/admin/contactlabels',
 			'delete' => 'Delete'
 		));?>
 	<?php $this->endWidget()?>
 </div>
 <script type="text/javascript">
-	handleButton($('#et_cancel'),function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/contactlabels';
-	});
-
-	handleButton($('#et_save'),function(e) {
-		e.preventDefault();
-		$('#editContactLabelForm').submit();
-	});
-
 	handleButton($('#et_delete'),function(e) {
 		e.preventDefault();
 

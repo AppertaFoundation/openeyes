@@ -42,8 +42,7 @@ CREATE TABLE `address_version` (
 	`last_modified_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
-	`parent_class` varchar(40) NOT NULL,
-	`parent_id` int(10) unsigned NOT NULL,
+	`contact_id` int(10) unsigned NOT NULL,
 	`date_start` datetime DEFAULT NULL,
 	`date_end` datetime DEFAULT NULL,
 	`address_type_id` int(10) unsigned DEFAULT NULL,
@@ -51,8 +50,8 @@ CREATE TABLE `address_version` (
 	KEY `acv_address_country_id_fk` (`country_id`),
 	KEY `acv_address_last_modified_user_id_fk` (`last_modified_user_id`),
 	KEY `acv_address_created_user_id_fk` (`created_user_id`),
-	KEY `acv_address_parent_index` (`parent_class`,`parent_id`),
 	KEY `acv_address_address_type_id_fk` (`address_type_id`),
+	CONSTRAINT `acv_address_contact_id_fk` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`),
 	CONSTRAINT `acv_address_address_type_id_fk` FOREIGN KEY (`address_type_id`) REFERENCES `address_type` (`id`),
 	CONSTRAINT `acv_address_country_id_fk` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`),
 	CONSTRAINT `acv_address_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
@@ -781,7 +780,6 @@ CREATE TABLE `contact_type_version` (
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `name` (`name`),
 	KEY `acv_contact_type_last_modified_user_id_fk` (`last_modified_user_id`),
 	KEY `acv_contact_type_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_contact_type_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
@@ -811,8 +809,6 @@ CREATE TABLE `country_version` (
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `code` (`code`),
-	UNIQUE KEY `name` (`name`),
 	KEY `acv_country_last_modified_user_id_fk` (`last_modified_user_id`),
 	KEY `acv_country_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_country_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
@@ -1727,7 +1723,6 @@ CREATE TABLE `event_type_version` (
 	`class_name` varchar(200) NOT NULL,
 	`support_services` tinyint(1) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `name` (`name`),
 	KEY `acv_event_type_last_modified_user_id_fk` (`last_modified_user_id`),
 	KEY `acv_event_type_created_user_id_fk` (`created_user_id`),
 	KEY `acv_event_type_event_group_id_fk` (`event_group_id`),
@@ -2060,6 +2055,7 @@ CREATE TABLE `issue_version` (
 		$this->dropPrimaryKey('id','issue_version');
 
 		$this->createIndex('issue_aid_fk','issue_version','id');
+		$this->addForeignKey('issue_aid_fk','issue_version','id','issue','id');
 
 		$this->addColumn('issue_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2180,7 +2176,6 @@ CREATE TABLE `nsc_grade_version` (
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `name` (`name`),
 	KEY `acv_nsc_grade_last_modified_user_id_fk` (`last_modified_user_id`),
 	KEY `acv_nsc_grade_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_nsc_grade_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
@@ -2633,7 +2628,6 @@ CREATE TABLE `proc_version` (
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	`unbooked` tinyint(1) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `term` (`term`),
 	KEY `acv_proc_last_modified_user_id_fk` (`last_modified_user_id`),
 	KEY `acv_proc_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_proc_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
@@ -2859,7 +2853,6 @@ CREATE TABLE `protected_file_version` (
 	`created_user_id` int(10) unsigned NOT NULL DEFAULT '1',
 	`created_date` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `asset_uid` (`uid`),
 	KEY `acv_asset_last_modified_user_id_fk` (`last_modified_user_id`),
 	KEY `acv_asset_created_user_id_fk` (`created_user_id`),
 	CONSTRAINT `acv_asset_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
@@ -3608,8 +3601,6 @@ CREATE TABLE `specialty_version` (
 	`created_date` date NOT NULL DEFAULT '1900-01-01',
 	`last_modified_date` date NOT NULL DEFAULT '1900-01-01',
 	PRIMARY KEY (`id`),
-	UNIQUE KEY `abbreviation` (`abbreviation`),
-	UNIQUE KEY `abbreviation_2` (`abbreviation`),
 	KEY `acv_specialty_specialty_type_id_fk` (`specialty_type_id`),
 	KEY `acv_specialty_created_user_id_fk` (`created_user_id`),
 	KEY `acv_specialty_last_modified_user_id_fk` (`last_modified_user_id`),
@@ -4026,6 +4017,8 @@ CREATE TABLE `user_site_version` (
 		$this->addColumn('firm_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('institution','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('institution_version','deleted','tinyint(1) unsigned not null');
+		$this->addColumn('issue','deleted','tinyint(1) unsigned not null');
+		$this->addColumn('issue_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('medication','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('medication_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('nsc_grade','deleted','tinyint(1) unsigned not null');
@@ -4123,6 +4116,7 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('firm_version','deleted');
 		$this->dropColumn('institution','deleted');
 		$this->dropColumn('institution_version','deleted');
+		$this->dropColumn('issue','deleted');
 		$this->dropColumn('medication','deleted');
 		$this->dropColumn('medication_version','deleted');
 		$this->dropColumn('nsc_grade','deleted');
