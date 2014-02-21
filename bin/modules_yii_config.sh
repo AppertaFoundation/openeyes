@@ -38,6 +38,7 @@ modules_conf_string=""
 #git clone modules
 echo "Cloning/checkout modules"
 bin/clone-modules.sh develop
+bin/oe-git pull
 
 #set up modules in conf
 while read module
