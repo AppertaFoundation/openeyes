@@ -1,0 +1,8 @@
+id,name,letter_template_only
+1,GP,1
+2,Specialist,0
+3,"Social Worker",0
+4,"Health Visitor",0
+5,Solicitor,0
+6,Patient,0
+7,Consultant,1

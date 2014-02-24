@@ -1,0 +1,8 @@
+id,name,display_order
+1,Cataract,1
+2,Diabetes,2
+3,Glaucoma,3
+4,Maculopathy,4
+5,"Retinal detachment",5
+6,"Retinitis Pigmentosa",6
+7,Other,7

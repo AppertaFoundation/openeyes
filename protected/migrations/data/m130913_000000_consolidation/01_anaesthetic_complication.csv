@@ -1,0 +1,12 @@
+id,name,display_order
+1,"No complications",1
+2,"Eyelid haemorrhage/bruising",2
+3,"Conjunctival chemosis",3
+4,"Retro bulbar/peribulbar haemorrhage",4
+5,"Globe/optic nerve penetration",5
+6,"Inadequate akinesia",6
+7,"Patient pain - Mild",7
+8,"Patient pain - Moderate",8
+9,"Patient pain - Severe",9
+10,"Systemic problems",10
+11,"Operation cancelled due to complication",11
