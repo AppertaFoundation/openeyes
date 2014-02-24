@@ -36,7 +36,6 @@ class OEMigrationTest extends CDbTestCase
 
 	public function testInitialiseData()
 	{
-		$this->markTestSkipped('Some bad man broke you');
 		$eventTypeResultSet = EventType::model()->findAll('id >= 1000');
 
 		Yii::app()->db->createCommand("delete from episode_summary")->query();
