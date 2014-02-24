@@ -1,4 +1,4 @@
-@editdelete
+@editdelete @regression
 Feature: These tests set up Events, Edit and Delete them.
 
   Scenario: Route 1A: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 3 Anderson Glaucoma
@@ -56,19 +56,18 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I Save the Event
 
-#  Scenario: Route 1C: Delete previously created/edited ASA from Route1A/1B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    #FIXME OE-3984
-#    And I delete the Last Event
+  Scenario: Route 1C: Delete previously created/edited ASA from Route1A/1B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 
   Scenario: Route 2A: Login and create a new Consent Form
 
@@ -117,19 +116,18 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I save the Consent Form
 
-#  Scenario: Route 2C: Delete previously created/edited Consent From from Route2A/2B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#      #FIXME OE-3984
-#    And I delete the Last Event
+  Scenario: Route 2C: Delete previously created/edited Consent From from Route2A/2B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 
 Scenario: Route 3A: Login and create a Phasing Event
 
@@ -194,19 +192,18 @@ Scenario: Route 3B: Edit previously edited Phasing from Route 3A
 
     Then I Save the Phasing Event
 
-# FIXME JIRA OE-3984
-#Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    And I delete the Last Event
+Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 
   Scenario: Route 4A: Login and fill in a Correspondence
 
@@ -258,19 +255,18 @@ Scenario: Route 3B: Edit previously edited Phasing from Route 3A
 
     Then I Save the Correspondence Draft
 
-    # FIXME JIRA OE-3984
-#  Scenario: Route 4C: Delete previously created/edited Correspondence From from Route 4A/4B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    And I delete the Last Event
+  Scenario: Route 4C: Delete previously created/edited Correspondence From from Route 4A/4B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 
   Scenario: Route 5A: Login and create a New Intravitreal Event
 
@@ -394,19 +390,18 @@ Scenario: Route 3B: Edit previously edited Phasing from Route 3A
 
     Then I Save the Intravitreal injection
 
-#    # FIXME JIRA OE-3984
-#  Scenario: Route 5C: Delete previously created/edited Correspondence From from Route 5A/5B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "1"
-#    Then I select a firm of "1"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    And I delete the Last Event
+  Scenario: Route 5C: Delete previously created/edited Correspondence From from Route 5A/5B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 
   Scenario: Route 6A: Login and create a new Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
 
@@ -474,19 +469,18 @@ Scenario: Route 3B: Edit previously edited Phasing from Route 3A
 
     Then I Save the Examination
 
-#     # FIXME JIRA OE-3984
-#  Scenario: Route 6C: Delete previously created/edited Examination From from Route 6A/6B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "1"
-#    Then I select a firm of "1"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    And I delete the Last Event
+  Scenario: Route 6C: Delete previously created/edited Examination From from Route 6A/6B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 
   Scenario: Route 7A: Login and create a Laser event
 
@@ -528,19 +522,18 @@ Scenario: Route 3B: Edit previously edited Phasing from Route 3A
 
     Then I save the Laser Event
 
-#     # FIXME JIRA OE-3984
-#  Scenario: Route 7C: Delete previously created/edited Laser From from Route 7A/7B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    And I delete the Last Event
+  Scenario: Route 7C: Delete previously created/edited Laser From from Route 7A/7B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 #
   Scenario: 8A Login and create a new Prescription
 
@@ -588,19 +581,18 @@ Scenario: Route 3B: Edit previously edited Phasing from Route 3A
 
     Then I Save the Prescription Draft
 
-#    # FIXME JIRA OE-3984
-#  Scenario: Route 8C: Delete previously created/edited Prescription From from Route 8A/8B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    And I delete the Last Event
+  Scenario: Route 8C: Delete previously created/edited Prescription From from Route 8A/8B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 
   Scenario: Route 9A: Login and create a Operation Booking Anderson Glaucoma
 
@@ -660,16 +652,15 @@ Scenario: Route 3B: Edit previously edited Phasing from Route 3A
 
     Then I select Save
 
-#    # FIXME JIRA OE-3984
-#  Scenario: Route 9C: Delete previously created/edited Prescription From from Route 9A/9B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    And I delete the Last Event
+  Scenario: Route 9C: Delete previously created/edited Prescription From from Route 9A/9B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
