@@ -85,7 +85,9 @@ class OEMigration extends CDbMigration
 
 		if($this->testdata){
 			$testdata_path = $migrations_path . '/testdata/' . $data_directory . '/';
-			$csvFiles = array_merge_recursive($csvFiles , glob($testdata_path . "*.csv") );
+			$testdataCsvFiles = glob($testdata_path . "*.csv");
+			$csvFiles = array_udiff($csvFiles, $testdataCsvFiles, 'self::compare_file_basenames');
+			$csvFiles = array_merge_recursive($csvFiles , $testdataCsvFiles );
 		}
 
 		foreach ($csvFiles as $file_path) {
@@ -505,5 +507,12 @@ class OEMigration extends CDbMigration
 		$this->addColumn("{$table->name}_version","version_id","int(10) unsigned NOT NULL");
 		$this->addPrimaryKey("version_id","{$table->name}_version","version_id");
 		$this->alterColumn("{$table->name}_version","version_id","int(10) unsigned NOT NULL AUTO_INCREMENT");
+	}
+
+	private function compare_file_basenames($a,$b){
+		if(basename($a) == basename($b) ){
+			return 0;
+		}
+		return 1;
 	}
 }

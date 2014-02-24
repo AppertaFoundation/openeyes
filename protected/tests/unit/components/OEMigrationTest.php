@@ -48,6 +48,24 @@ class OEMigrationTest extends CDbTestCase
 		EventType::model()->deleteAll('id >= 1000');
 	}
 
+	/**
+	 * @depends testInitialiseData
+	 */
+	public function testInitialiseDataTestdata(){
+		$eventTypeResultSet = EventType::model()->findAll('id >= 1000');
+
+		Yii::app()->db->createCommand("delete from episode_summary")->query();
+		Yii::app()->db->createCommand("delete from episode_summary_item")->query();
+		Yii::app()->db->createCommand("delete from event_type where id >= 1009")->query();
+
+		$this->oeMigration->setTestData(true);
+
+		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
+		$this->compareFixtureWithResultSet($this->event_type, $eventTypeResultSet);
+
+		EventType::model()->deleteAll('id >= 1000');
+	}
+
 	public function testGetMigrationPath(){
 		$path = $this->oeMigration->getMigrationPath();
 		$this->assertStringEndsWith('migrations', $path );

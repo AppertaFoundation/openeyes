@@ -1,0 +1,3 @@
+id,name,event_group_id => event_group.name,class_name,support_services
+1009,"Ultrasound 2","Image events","OphImUltrasound",0
+1010,"Cataract Referral 2","Communication events","OphCoCataractReferral",0
