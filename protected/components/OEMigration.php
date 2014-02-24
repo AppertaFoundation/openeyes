@@ -21,6 +21,7 @@ class OEMigration extends CDbMigration
 {
 	private $migrationPath;
 	private $testdata;
+	private $csvFiles;
 
 	/**
 	 * Executes a SQL statement.
@@ -81,16 +82,21 @@ class OEMigration extends CDbMigration
 			$data_directory = get_class($this);
 		}
 		$data_path = $migrations_path . '/data/' . $data_directory . '/';
-		$csvFiles  = glob($data_path . "*.csv");
+		$this->csvFiles  = glob($data_path . "*.csv");
 
 		if($this->testdata){
+			//echo "\nRunning test data import\n";
 			$testdata_path = $migrations_path . '/testdata/' . $data_directory . '/';
 			$testdataCsvFiles = glob($testdata_path . "*.csv");
-			$csvFiles = array_udiff($csvFiles, $testdataCsvFiles, 'self::compare_file_basenames');
-			$csvFiles = array_merge_recursive($csvFiles , $testdataCsvFiles );
+			//echo "\nCSV FIles: " . var_export($csvFiles,true);
+			//echo "\nCSV TEST FIles: " . var_export($testdataCsvFiles,true);
+			$this->csvFiles = array_udiff($this->csvFiles, $testdataCsvFiles, 'self::compare_file_basenames');
+			//echo "\nCSVFIles after diff : " . var_export($csvFiles,true);
+			$this->csvFiles = array_merge_recursive($this->csvFiles , $testdataCsvFiles );
+			echo "\nIMPORTING CSVFIles in testdatamode : " . var_export($this->csvFiles,true);
 		}
 
-		foreach ($csvFiles as $file_path) {
+		foreach ($this->csvFiles as $file_path) {
 			$table = substr(substr(basename($file_path), 0, -4), 3);
 			echo "Importing $table data...\n";
 			$fh = fopen($file_path, 'r');
@@ -510,9 +516,22 @@ class OEMigration extends CDbMigration
 	}
 
 	private function compare_file_basenames($a,$b){
-		if(basename($a) == basename($b) ){
+		$afile = basename($a);
+		$bfile = basename($b);
+ 		if($afile == $bfile ){
 			return 0;
 		}
-		return 1;
+		else if($afile > $bfile){
+			return 1;
+		}
+		return -1;
+	}
+
+	/**
+	 * @description - return csvFiles array of files that will be imported
+	 * @return null|array
+	 */
+	public function getCsvFiles(){
+		return $this->csvFiles? $this->csvFiles : null;
 	}
 }

@@ -60,10 +60,19 @@ class OEMigrationTest extends CDbTestCase
 
 		$this->oeMigration->setTestData(true);
 
+		$this->assertNull($this->oeMigration->getCsvFiles());
+
 		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
 		$this->compareFixtureWithResultSet($this->event_type, $eventTypeResultSet);
 
 		EventType::model()->deleteAll('id >= 1000');
+		$this->assertGreaterThan(0, $this->oeMigration->getCsvFiles());
+
+		$expectedCsvArrayInTestMode = array(
+			$this->fixturePath . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'oeMigrationData' . DIRECTORY_SEPARATOR . '01_event_type.csv',
+			$this->fixturePath . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'oeMigrationData' . DIRECTORY_SEPARATOR . '01_user.csv'
+		);
+		$this->assertEquals($expectedCsvArrayInTestMode , $this->oeMigration->getCsvFiles());
 	}
 
 	public function testGetMigrationPath(){
