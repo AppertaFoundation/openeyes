@@ -39,7 +39,7 @@
 	}
 </style>
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
 		<? include 'components/header.php'; ?>
@@ -64,6 +64,16 @@
 							</thead>
 							<tbody>
 								<tr class="heading">
+									<td colspan="3"><h3>General templates</h3></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="buttons.php">Buttons</a>
+									</td>
+									<td>Variable button styles used throughout the application.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr class="heading">
 									<td colspan="3"><h3>Home templates</h3></td>
 								</tr>
 								<tr>
@@ -85,6 +95,20 @@
 										<a href="search.php">Home search (logged in)</a>
 									</td>
 									<td>The main search template.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="search-with-watermark.php">Home search with watermark message</a>
+									</td>
+									<td>The main search with watermark template.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="search-with-admin-watermark.php">Home search with admin watermark message</a>
+									</td>
+									<td>The main search with an admin watermark template.</td>
 									<td><span class="complete">Complete</span></td>
 								</tr>
 								<tr class="heading">
@@ -161,6 +185,13 @@
 								<tr>
 									<td>
 										<a href="patient-summary-add-episode-no-episodes.php">No episodes</a>
+									</td>
+									<td>The 'no episodes' page when trying to create a new episode from the patient summary.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="patient-summary-add-episode-no-episodes-with-dialog.php">No episodes (with dialog)</a>
 									</td>
 									<td>The 'no episodes' page when trying to create a new episode from the patient summary.</td>
 									<td><span class="complete">Complete</span></td>

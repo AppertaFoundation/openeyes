@@ -14,20 +14,47 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Welcome to the OpenEyes core stylesheet.
-//
-// Before even thinking of touching this stylesheet, you must read the styleguide
-// overview. The styleguide contains lots of documentation regarding conventions,
-// comments and general approach.
+@charset "UTF-8";
 
-// Import base, common & shared mixins, functions and variables.
-@import "openeyes";
+@import "openeyes/copyright";
+@import "normalize";
 
-// Import normalize styles.
-@import "openeyes/normalize";
-
-// Import foundation mixins, functions and base styles.
+@import "openeyes/settings/core";
+@import "openeyes/core";
 @import "foundation";
 
-// Import core component styles.
-@import "openeyes/core";
+@import "openeyes/components/global";
+@import "openeyes/components/containers";
+@import "openeyes/components/type";
+@import "openeyes/components/grid";
+@import "openeyes/components/lists";
+@import "openeyes/components/tables";
+@import "openeyes/components/header";
+@import "openeyes/components/footer";
+@import "openeyes/components/pills";
+@import "openeyes/components/forms";
+@import "openeyes/components/data";
+@import "openeyes/components/buttons";
+@import "openeyes/components/navigation";
+@import "openeyes/components/pagination";
+@import "openeyes/components/alert-boxes";
+@import "openeyes/components/boxes";
+@import "openeyes/components/icons";
+@import "openeyes/components/panels";
+@import "openeyes/components/search-filters";
+@import "openeyes/components/tabs";
+@import "openeyes/components/sidebars";
+@import "openeyes/components/events";
+@import "openeyes/components/dialog";
+@import "openeyes/components/multi-select";
+@import "openeyes/components/toggler";
+@import "openeyes/components/tooltips";
+@import "openeyes/components/sortable";
+@import "openeyes/components/diagnosis-selection";
+@import "openeyes/components/procedure-selection";
+@import "openeyes/components/slider";
+@import "openeyes/components/quicklook";
+@import "openeyes/components/visibility";
+@import "openeyes/components/helpers";
+@import "openeyes/components/jquery-ui";
+@import "openeyes/components/print";

@@ -22,18 +22,18 @@
 //     <a href="#" class="close">&times;</a>
 // </div>
 //
-// .success             	- Success information
-// .success.with-icon   	- Success information with icon
-// .alert               	- Alert information
-// .alert.with-icon     	- Alert information with icon
-// .issue               	- Issue information
-// .issue.with-icon     	- Issue information with icon
-// .patient					- Patient warning
-// .patient.with-icon 		- Patient warning with icon
-// .warning					- Warning
-// .watermark				- Watermark
-// .watermark.admin			- Admin watermark
-// .watermark.description	- Description watermark
+// .success               - Success information
+// .success.with-icon     - Success information with icon
+// .alert                 - Alert information
+// .alert.with-icon       - Alert information with icon
+// .issue                 - Issue information
+// .issue.with-icon       - Issue information with icon
+// .patient               - Patient warning
+// .patient.with-icon     - Patient warning with icon
+// .warning               - Warning
+// .watermark             - Watermark
+// .watermark.admin       - Admin watermark
+// .watermark.description - Description watermark
 //
 // Styleguide 12.1
 
@@ -43,27 +43,31 @@
 	@include radius(5px);
 	.close {
 		@include alert-close;
+		top: 1em;
 	}
 	ul {
 		line-height: 1.4;
 		margin: 0;
 	}
 	li {
-		font-size: 1em;
-		margin-left: 1.4em;
+		margin-left: 20px;
 	}
 	p {
-		font-size: 1em;
-		margin-bottom: 1em;
+		margin-bottom: 12px;
 	}
 	&.with-icon {
 		background-position: left top;
 		background-repeat: no-repeat;
-		padding-left: emCalc(60px);
+		padding-left: 48px;
+		@media print {
+			-webkit-print-color-adjust: exact;
+			background-position: left top !important;
+			background-repeat: no-repeat !important;
+		}
 	}
 	&.bottom {
 		margin-bottom: 0;
-		margin-top: emCalc(20px);
+		margin-top: 16px;
 	}
 	.spinner {
 		float: left;

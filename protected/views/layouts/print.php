@@ -25,26 +25,26 @@
 <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 <?php Yii::app()->clientScript->registerCoreScript('jquery')?>
 </head>
-<body>
+<body class="open-eyes print">
 	<?php echo $content; ?>
-<script type="text/javascript">
-	$(document).ready(function() {
-		// function for printing
-		printFn = function() {
-			window.print();
-		};
+	<script type="text/javascript">
+		$(document).ready(function() {
 
-		// check to see if the eyedraw libraries are loaded (which implies that we have eyedraws
-		// on the page) If they are, then use that to call the print function when ready, otherwise
-		// we can just call it straight off
-		if (typeof(getOEEyeDrawChecker) === 'function') {
-			edChecker = getOEEyeDrawChecker();
-			edChecker.registerForReady(printFn);
-		} else {
-			printFn();
-		}
-	});
+			// function for printing
+			printFn = function() {
+				window.print();
+			};
 
-</script>
+			// check to see if the eyedraw libraries are loaded (which implies that we have eyedraws
+			// on the page) If they are, then use that to call the print function when ready, otherwise
+			// we can just call it straight off
+			if (typeof(getOEEyeDrawChecker) === 'function') {
+				edChecker = getOEEyeDrawChecker();
+				edChecker.registerForReady(printFn);
+			} else {
+				printFn();
+			}
+		});
+	</script>
 </body>
 </html>

@@ -18,35 +18,31 @@
 //
 // Markup:
 // <ul class="inline-list tabs event-actions">
-//     <li class="selected">
-//         <a href="#">View</a>
-//     </li>
-//     <li>
-//         <a href="#">Edit</a>
-//     </li>
+//     <li class="selected"><a href="#">View</a></li>
+//     <li><a href="#">Edit</a></li>
 // </ul>
 //
-// Styleguide 18.3
+// Styleguide 6.1
 .tabs {
-    &.event-actions {
-        float: left;
-        li {
-            margin: 0 4px 0 0;
-            &.selected {
-                a {
-                    background: #a29d8a;
-                    color: #fff;
-                }
-            }
-        }
-        a {
-            @include border-radius(3px 3px 0 0);
-            background: #fffee7;
-            padding: 5px 10px 3px 10px;
-            &:hover {
-                background: #3665ff;
-                color: #fff;
-            }
-        }
-    }
+	&.event-actions {
+		float: left;
+		li {
+			margin: 0 4px 0 0;
+			&.selected {
+				a {
+					background: #a29d8a;
+					color: #fff;
+				}
+			}
+		}
+		a {
+			@include border-radius(3px 3px 0 0);
+			background: #fffee7;
+			padding: 5px 10px 3px 10px;
+			&:hover {
+				background: #3665ff;
+				color: #fff;
+			}
+		}
+	}
 }

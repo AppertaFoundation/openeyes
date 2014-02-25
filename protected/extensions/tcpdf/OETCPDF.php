@@ -96,6 +96,13 @@ class OETCPDF extends TCPDF
 		$this->rollover = trim($text);
 	}
 
+	public function Image($file) {
+		$args = func_get_args();
+		// Strip cache busting strings from paths.
+		$args[0] = preg_replace('/\?.*$/', '', $file);
+		call_user_func_array(array($this, 'parent::Image'), $args);
+	}
+
 	/**
 	 * @see TCPDF::Footer()
 	 */

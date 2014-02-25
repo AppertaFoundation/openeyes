@@ -4,7 +4,7 @@
 
 	<button class="secondary small add-episode" type="button">
 		<span class="icon-button-small-plus-sign"></span>
-		Add episode
+		Add Episode
 	</button>
 
 	<section class="panel episode open legacy">
@@ -36,7 +36,7 @@
 					</div>
 					<a href="#">
 						<span class="event-type">
-							<img src="img/patienteletter/small.png" alt="op" width="19" height="19" />
+							<img src="<?php echo $assets_root_path?>assets/modules/OphLeEpatientletter/assets/img/small.png" alt="op" width="19" height="19" />
 						</span>
 						<span class="event-date">
 							<span class="day">14</span><span class="mth">May</span><span class="yr">2004</span>
@@ -51,7 +51,7 @@
 					</div>
 					<a href="#">
 						<span class="event-type">
-							<img src="img/patienteletter/small.png" alt="op" width="19" height="19" />
+							<img src="<?php echo $assets_root_path?>assets/modules/OphLeEpatientletter/assets/img/small.png" alt="op" width="19" height="19" />
 						</span>
 						<span class="event-date">
 							<span class="day">21</span><span class="mth">May</span><span class="yr">2008</span>
@@ -66,7 +66,7 @@
 					</div>
 					<a href="#">
 						<span class="event-type">
-							<img src="img/patienteletter/small.png" alt="op" width="19" height="19" />
+							<img src="<?php echo $assets_root_path?>assets/modules/OphLeEpatientletter/assets/img/small.png" alt="op" width="19" height="19" />
 						</span>
 						<span class="event-date">
 							<span class="day">23</span><span class="mth">May</span><span class="yr">2008</span>
@@ -97,7 +97,7 @@
 			<ol class="events-overview">
 				<li>
 					<a href="#">
-						<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
+						<img src="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 					</a>
 				</li>
 			</ol>
@@ -110,20 +110,20 @@
 					<li class="selected">
 						<a href="#">
 							<span class="event-type">
-								<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
+								<img src="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
-								1 Jan 2000
+								<span class="day">31</span><span class="mth">Jan</span><span class="yr">2014</span>
 							</span>
 						</a>
 					</li>
 					<li>
 						<a href="#">
 							<span class="event-type alert">
-								<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
+								<img src="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
-								1 Jan 2000
+								<span class="day">31</span><span class="mth">Jan</span><span class="yr">2014</span>
 							</span>
 						</a>
 					</li>
@@ -147,7 +147,7 @@
 			<ol class="events-overview">
 				<li>
 					<a href="#">
-						<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
+						<img src="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 					</a>
 				</li>
 			</ol>
@@ -160,20 +160,20 @@
 					<li>
 						<a href="#">
 							<span class="event-type alert">
-								<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
+								<img src="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
-								1 Jan 2000
+								<span class="day">31</span><span class="mth">Jan</span><span class="yr">2014</span>
 							</span>
 						</a>
 					</li>
 					<li>
 						<a href="#">
 							<span class="event-type alert">
-								<img src="/protected/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
+								<img src="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/img/small.png" alt="op" width="19" height="19" />
 							</span>
 							<span class="event-date">
-								1 Jan 2000
+								<span class="day">31</span><span class="mth">Jan</span><span class="yr">2014</span>
 							</span>
 						</a>
 					</li>

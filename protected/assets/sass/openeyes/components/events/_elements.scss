@@ -27,6 +27,11 @@
 
 .element {
 	position: relative;
+	@media print {
+		page-break-inside: avoid;
+		border: 1px solid #000;
+		margin: 10px 10px 20px 10px;
+	}
 	canvas,
 	.canvas {
 		border: 1px solid #ccc;
@@ -48,6 +53,9 @@
 			top: 0;
 			width: 0;
 			z-index: 1;
+			@media print {
+				display: none;
+			}
 		}
 	}
 	.inactive .active-form,
@@ -73,6 +81,10 @@
 	.element-header & {
 		float: left;
 	}
+	@media print {
+		font-size: rem-calc(18px);
+		font-weight: normal;
+	}
 }
 
 .element-data {
@@ -90,7 +102,7 @@
 
 .eye-message {
 	font-size: $default-font-size;
-	padding: 0 0 1em 0;
+	padding: 0 0 13px 0;
 	text-align: center;
 }
 
@@ -122,16 +134,16 @@ $oe-element-edit-title-font-style: italic;
 		&.on-demand {
 			@include border-radius(10px);
 			border: 7px solid #c8d3dd;
-			margin: emCalc(5px) 0;
+			margin: 5px 0;
 			&.validation-error {
 				border-color: #da3232;
 			}
 			.alert-box {
-				margin: 1em;
+				margin: 12px 0;
 			}
 		}
 		.alert-box {
-			margin: 1em 0;
+			margin: 12px 0;
 		}
 	}
 	.element-title {
@@ -139,15 +151,15 @@ $oe-element-edit-title-font-style: italic;
 	}
 	.element-title-additional {
 		float: left;
-		margin-left: .5em;
-		line-height: 2em;
+		margin-left: 8px;
+		line-height: rem-calc(32px);
 		.info {
 			display: inline-block;
 			font-size: $default-font-size;
 			small {
 				display: inline-block;
 				font-size: 85%;
-				margin-left: .5em;
+				margin-left: 8px;
 			}
 		}
 	}
@@ -159,7 +171,7 @@ $oe-element-edit-title-font-style: italic;
 	}
 	.add-side {
 		font-size: $default-font-size;
-		padding: emCalc(12px);
+		padding: 10px;
 		text-align: center;
 	}
 	.icon-remove-side {
@@ -186,38 +198,51 @@ $oe-element-edit-title-font-style: italic;
 }
 
 .edit {
-    &.highlight-fields {
-      .sub-elements {
-        margin: 10px -10px 0 -10px;
-      }
-    }
+	&.highlight-fields {
+		.sub-elements {
+			margin: 10px -10px 0 -10px;
+		}
+	}
 }
 
 .view {
 	&.highlight-fields {
-		.element {
+		.element, .sub-element-data {
 			margin-bottom: 10px;
 		}
-		.element-data {
+		.element-data, .sub-element-data {
 			background: none;
 			padding-bottom: 0;
 			padding-top: 0;
 			&.highlight {
 				@include border-radius(5px);
 				background: #fff;
-				padding-bottom: emCalc(4px);
-				padding-top: emCalc(4px);
+				padding-bottom: rem-calc(4px);
+				padding-top: rem-calc(4px);
 			}
 			&:not(.event-types) {
 				.field-value {
-					font-size: emCalc(16px);
+					font-size: rem-calc(16px);
 				}
 			}
 		}
-        .sub-elements {
-          margin: 10px -10px 0 -10px;
-          padding-top: 10px;
-        }
+		.sub-element {
+			border: 0;
+		}
+		.sub-element-header {
+			background: none;
+			margin: 0;
+		}
+		.sub-element-title {
+			@extend .element-title;
+			padding-left: 0;
+			padding-right: 0;
+		}
+		.sub-elements {
+			background: none;
+			margin: 10px -10px 0 -10px;
+			padding-top: 10px;
+		}
 	}
 	.element-data {
 		.data-title {
@@ -230,9 +255,9 @@ $oe-element-edit-title-font-style: italic;
 			background: #dae6f1;
 			color: #111;
 			float: none;
-			font-size: emCalc(14px);
-			margin-bottom: 1em;
-			padding: emCalc(12px) 10px;
+			font-size: rem-calc(14px);
+			margin-bottom: 14px;
+			padding: 12px 10px;
 		}
 	}
 }

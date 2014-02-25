@@ -34,23 +34,16 @@
 //   <dt>Description list</dt>
 //   <dd>Encloses a list of pairs of terms and descriptions.</dd>
 // </dl>
-//
-// Styleguide 5.1
 
 ul,
 ol,
 dl {
-	font-size: 1em;
 	line-height: 1.6;
 	li {
 		font-size: $default-font-size;
 	}
 }
 
-// Inline Lists
-//
-//
-// Styleguide 5.2
 .inline-list {
 	@include inline-list;
 }

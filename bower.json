@@ -1,6 +1,7 @@
 {
   "name": "OpenEyes",
-  "version": "0.1.4",
+  "version": "0.1.7",
+  "private": "true",
   "ignore": [
     "**/.*",
     "node_modules"
@@ -10,12 +11,16 @@
     "flot": "~0.8.2",
     "jquery": "~1.8.3",
     "jquery-ui": "~1.9.2",
-    "mustache": "~0.8.1"
+    "mustache": "~0.8.1",
+    "foundation": "~5.0.3"
   },
   "devDependencies": {
     "google-code-prettify": "~1.0.0",
     "chai": "~1.8.1",
     "mocha": "~1.17.0",
     "sinonjs-built": "~1.7.3"
+  },
+  "resolutions": {
+    "jquery": "~1.8.3"
   }
 }

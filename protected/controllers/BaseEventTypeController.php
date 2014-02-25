@@ -69,7 +69,7 @@ class BaseEventTypeController extends BaseModuleController
 		'print' => self::ACTION_TYPE_PRINT,
 		'update' => self::ACTION_TYPE_EDIT,
 		'delete' => self::ACTION_TYPE_DELETE,
-		'requestDeletion' => self::ACTION_TYPE_EDIT,
+		'requestDeletion' => self::ACTION_TYPE_EDIT
 	);
 
 	/**
@@ -423,7 +423,7 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function canViewPrevious($element)
 	{
-		return $this->hasPrevious($element->getElementType(), $element->event_id);
+		return $element->canViewPrevious() && $this->hasPrevious($element->getElementType(), $element->event_id);
 	}
 
 	/**
@@ -898,36 +898,40 @@ class BaseEventTypeController extends BaseModuleController
 		$this->open_elements = array($element);
 
 		$form = Yii::app()->getWidgetFactory()->createWidget($this,'BaseEventTypeCActiveForm',array(
-				'id' => 'clinical-create',
-				'enableAjaxValidation' => false,
-				'htmlOptions' => array('class' => 'sliding'),
-			));
+			'id' => 'clinical-create',
+			'enableAjaxValidation' => false,
+			'htmlOptions' => array('class' => 'sliding'),
+		));
 
-		// Render called with processOutput
-		// TODO: use renderElement for this if we can
-		try {
-			// look for element specific view file
-			$this->renderPartial('create_' . $element->create_view, array(
-					'element' => $element,
-					'data' => null,
-					'form' => $form,
-					'child' => null,
-					'previous_parent_id' => $previous_id,
-				), false, true);
-		} catch (Exception $e) {
-			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
-				// it's a different, unexpected problem
-				throw $e;
-			}
-			// use the default view file
-			$this->renderPartial('_form', array(
-					'element' => $element,
-					'data' => null,
-					'form' => $form,
-					'child' => ($element_type->parent_element_type_id > 0),
-					'previous_parent_id' => $previous_id,
-				), false, true);
-		}
+		$this->renderElement($element, 'create', $form, null, array(
+			'previous_parent_id' => $previous_id
+		), false, true);
+
+		// // Render called with processOutput
+		// // TODO: use renderElement for this if we can
+		// try {
+		// 	// look for element specific view file
+		// 	$this->renderPartial($element->create_view, array(
+		// 			'element' => $element,
+		// 			'data' => null,
+		// 			'form' => $form,
+		// 			'child' => null,
+		// 			'previous_parent_id' => $previous_id,
+		// 		), false, true);
+		// } catch (Exception $e) {
+		// 	if (strpos($e->getMessage(), "cannot find the requested view") === false) {
+		// 		// it's a different, unexpected problem
+		// 		throw $e;
+		// 	}
+		// 	// use the default view file
+		// 	$this->renderPartial('_form', array(
+		// 			'element' => $element,
+		// 			'data' => null,
+		// 			'form' => $form,
+		// 			'child' => ($element_type->parent_element_type_id > 0),
+		// 			'previous_parent_id' => $previous_id,
+		// 		), false, true);
+		// }
 	}
 
 	/**
@@ -1187,44 +1191,45 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * Render the individual element based on the action provided
+	 * Render the individual element based on the action provided. Note that view names
+	 * for the associated actions are set in the model.
 	 *
 	 * @param BaseEventTypeElement $element
 	 * @param string $action
 	 * @param BaseCActiveBaseEventTypeCActiveForm $form
 	 * @param array $data
+	 * @param array $view_data Data to be passed to the view.
+	 * @param boolean $return Whether the rendering result should be returned instead of being displayed to end users.
+	 * @param boolean $processOutput Whether the rendering result should be postprocessed using processOutput.
 	 * @throws Exception
 	 */
-	protected function renderElement($element, $action, $form, $data)
+	protected function renderElement($element, $action, $form, $data, $view_data=array(), $return=false, $processOutput=false)
 	{
-		try {
-			// look for an action/element specific view file
-			$view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
-			$this->renderPartial(
-				$action . '_' . $view,
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form,
-					'child' => $element->getElementType()->isChild()
-				)
-			);
-		} catch (Exception $e) {
-			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
-				throw $e;
-			}
-			// otherwise use the default layout
-			$this->renderPartial(
-				'_'.$action,
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form,
-					'child' => $element->getElementType()->isChild()
-				)
-			);
-		}
+		// Get the view names from the model.
+		$view = isset($element->{$action.'_view'})
+			? $element->{$action.'_view'}
+			: $element->getDefaultView();
+
+		$container_view = isset($element->{'container_'.$action.'_view'})
+			? $element->{'container_'.$action.'_view'}
+			: $element->getDefaultContainerView();
+
+		$use_container_view = ($element->useContainerView && $container_view);
+
+		$view_data = array_merge(array(
+			'element' => $element,
+			'data' => $data,
+			'form' => $form,
+			'child' => $element->getElementType()->isChild(),
+			'container_view' => $container_view
+		), $view_data);
+
+		// Render the view.
+		($use_container_view) && $this->beginContent($container_view, $view_data);
+		$this->renderPartial($view, $view_data, $return, $processOutput);
+		($use_container_view) && $this->endContent();
 	}
+
 
 	/**
 	 * Render an optional element based on the action provided
@@ -1759,14 +1764,7 @@ class BaseEventTypeController extends BaseModuleController
 			if ($action == 'create' && empty($_POST)) {
 				$element->setDefaultOptions();
 			}
-
-			$view = ($element->{$action.'_view'}) ? $element->{$action.'_view'} : $element->getDefaultView();
-			$this->renderPartial(
-				$action . '_' . $view,
-				array('element' => $element, 'data' => $data, 'form' => $form),
-				false, false
-			);
-
+			$this->renderElement($element, $action, $form, $data);
 		}
 	}
 

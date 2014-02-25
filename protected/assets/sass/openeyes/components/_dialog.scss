@@ -71,7 +71,7 @@
 			text-align: right;
 		}
 		.field-row {
-			padding-bottom: emCalc(10px);
+			padding-bottom: 10px;
 		}
 		&.event,
 		&.episode {
@@ -128,7 +128,7 @@
 		}
 		&.alert .buttons,
 		&.confirm .buttons {
-			padding: .5em;
+			padding: 8px;
 		}
 	}
 }

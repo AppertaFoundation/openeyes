@@ -22,12 +22,22 @@
 .panel {
 	@include panel;
 	@include radius;
+	border-color: $panel-border-color;
 	margin-top: 0;
+	h1,h2,h3,h4,h5,h6 {
+		margin-bottom: 8px;
+	}
 	.field-row,
 	.data-row {
 		&:last-child,
 		&:only-child {
 			padding: 0;
+		}
+	}
+	@media print {
+		.content & {
+			border: 0 !important;
+			padding: 0 !important;
 		}
 	}
 }

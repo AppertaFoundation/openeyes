@@ -14,13 +14,18 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Headings
+// Typography
 //
-// Styles for generic headings used throughout the site.
+// Styleguide 3
+
+// Headings
 //
 // Markup:
 // <h1>Page title</h1>
 // <h1 class="badge">Page title</h1>
+// <h2>Heading 2</h2>
+// <h3>Heading 3</h3>
+// <h4>Heading 4</h3>
 //
 // Styleguide 3.1
 
@@ -34,15 +39,13 @@ h1 {
 		@include background(linear-gradient(left, #b4b0ae 0, #fffdea 12px));
 		@include border-radius(0px 3px 3px 0px);
 		display: inline-block;
-		font-size: emCalc(13px);
+		font-size: rem-calc(13px);
 		font-weight: bold;
-		margin: 0 0 emCalc(15px) 0;;
+		margin: 0 0 12px 0;
 		padding: 5px 15px 5px 55px;
-		&.admin {
-			background: #666;
-			border-left: none;
-			border: 1px solid #999;
-			color: #fff;
+		@media print {
+			font-size: rem-calc(20px);
+			padding-left: 10px;
 		}
 	}
 }
@@ -50,6 +53,35 @@ h1 {
 a {
 	&:hover, .highlight {
 		@extend %anchor-hover;
+	}
+}
+
+@media print {
+	a[href]:after {
+		color: #444;
+	}
+	.screen-only {
+		display: none !important;
+	}
+	.print-only {
+		position: static !important;
+		height: auto !important;
+		font-size: inherit !important;
+		font-family: inherit !important;
+		color: #000 !important;
+		line-height: inherit !important;
+	}
+	span.print-only {
+		display: inline-block !important;
+	}
+}
+
+@media screen {
+	.screen-only {
+		display: block !important;
+	}
+	span.screen-only {
+		display: inline-block !important;
 	}
 }
 

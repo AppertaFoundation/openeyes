@@ -28,11 +28,6 @@
 //
 // Styleguide 13.1
 
-// Box vars
-$oe-box-gutter: $column-gutter / 2;
-$oe-box-margin: 0 0 $oe-box-gutter 0 !default;
-$oe-box-border-radius: $global-radius !default;
-
 .box {
 	@include border-radius($oe-box-border-radius);
 	position: relative;
@@ -41,14 +36,13 @@ $oe-box-border-radius: $global-radius !default;
 
 .box-header {
 	@extend .clearfix;
-	margin-bottom: emCalc(12px);
+	margin-bottom: 12px;
 }
 
 .box-actions {
 	text-align: center;
 }
 
-@import "boxes/admin";
 @import "boxes/content";
 @import "boxes/generic";
 @import "boxes/patient-info";

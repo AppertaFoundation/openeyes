@@ -1,5 +1,5 @@
 <header class="header row">
-	<div class="large-3 columns">
+	<div class="large-2 column">
 		<div class="logo">
 		  OpenEyes
 		</div>

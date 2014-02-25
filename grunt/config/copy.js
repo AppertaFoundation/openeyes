@@ -2,16 +2,34 @@ module.exports = {
 	docs: {
 		files: [
 			{
-				src: ['protected/assets/css/**/*'],
-				dest: 'docs/public/assets/core/'
+				cwd:'protected/assets',
+				expand: true,
+				src: ['css/**/*.css'],
+				dest: 'docs/public/assets'
 			},
 			{
-				src: ['protected/assets/img/**/*'],
-				dest: 'docs/public/assets/core/'
+				cwd:'protected/assets',
+				expand: true,
+				src: ['img/**/*'],
+				dest: 'docs/public/assets'
 			},
 			{
-				src: ['protected/assets/js/**/*'],
-				dest: 'docs/public/assets/core/'
+				cwd:'protected/assets',
+				expand: true,
+				src: ['js/**/*.js'],
+				dest: 'docs/public/assets'
+			},
+			{
+				cwd:'protected/assets',
+				expand: true,
+				src: ['components/**/*'],
+				dest: 'docs/public/assets'
+			},
+			{
+				cwd: 'protected',
+				expand: true,
+				src: ['modules/**/assets/**/*'],
+				dest: 'docs/public/assets'
 			},
 			{
 				cwd: 'docs/src/',
@@ -32,13 +50,13 @@ module.exports = {
 				dest: 'docs/public/'
 			},
 			{
-				cwd: 'docs/src/',
+				cwd: 'docs/src/assets',
 				expand: true,
 				src: ['js/**/*'],
 				dest: 'docs/public/assets'
 			},
 			{
-				cwd: 'docs/src/',
+				cwd: 'docs/src/assets',
 				expand: true,
 				src: ['css/**/*'],
 				dest: 'docs/public/assets'

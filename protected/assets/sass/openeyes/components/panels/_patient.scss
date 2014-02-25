@@ -49,9 +49,15 @@
 
 .panel {
 	&.patient {
-		@include panel($padding: emCalc(9px) emCalc(10px));
+		@include panel($padding: 9px 10px);
 		@include border-radius($global-radius);
 		@include background(image-url("_elements/icons/patient/patient-id_small.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));
+		@media print {
+			padding: {
+				top: 2px;
+				bottom: 2px;
+			}
+		}
 		background: {
 			position: 98% 2px, top;
 			repeat: no-repeat, no-repeat;
@@ -62,52 +68,60 @@
 			width: 2px;
 		};
 		position: relative;
-		// @media #{$small} {
-			@include border-radius(0 0 $global-radius $global-radius);
-			border-width: 0 2px 2px 2px;
-		// }
-		.stuck & {
-			border-bottom: 0;
-			margin: 0;
-			padding-bottom: 2px;
-			padding-top: 2px;
-			@include border-radius(0);
+		@include border-radius(0 0 $global-radius $global-radius);
+		border-width: 0 2px 2px 2px;
+		margin: 0;
+		@media screen {
+			.stuck & {
+				border-bottom: 0;
+				margin: 0;
+				padding-bottom: 2px;
+				padding-top: 2px;
+				@include border-radius(0);
+			}
 		}
 		.patient-details {
-			padding-bottom: emCalc(4px);
+			padding-bottom: 4px;
 			a {
 				color: black;
 			}
-			.stuck & {
-				font-size: 91%;
+			@media screen {
+				.stuck & {
+					font-size: 91%;
+				}
 			}
 		}
 		.patient-surname {
 			font: {
-				size: emCalc(14px);
+				size: rem-calc(14px);
 				weight: bold;
 			};
 			text-transform: uppercase;
 		}
 		.patient-name, .patient-age {
-			font-size: emCalc(13px);
+			font-size: rem-calc(13px);
 		}
 		.hospital-number, .nhs-number {
-			font-size: emCalc(12px);
+			font-size: rem-calc(12px);
 		}
 		.patient-summary-anchor  {
-			bottom: 1em;
-			font-size: emCalc(11px);
+			bottom: 12px;
+			font-size: rem-calc(11px);
+			padding-right: 8px;
 			position: absolute;
 			right: 0;
-			.stuck & {
-				display: none;
+			@media screen {
+				.stuck & {
+					display: none;
+				}
 			}
 		}
 		.hospital-number {
-			margin-bottom: emCalc(4px);
-			.stuck & {
-				float: left;
+			margin-bottom: 3px;
+			@media screen {
+				.stuck & {
+					float: left;
+				}
 			}
 		}
 		.nhs-number {
@@ -120,7 +134,20 @@
 			};
 			color: white;
 			display: inline-block;
-			padding: emCalc(2px) emCalc(4px) emCalc(2px) 33px;
+			padding: 2px 3px 1px 33px;
+			@media print {
+				padding-left: 0;
+			}
+		}
+		.patient-summary-anchor {
+			@media print {
+				display: none;
+			}
+		}
+		.column, .columns {
+			@media print {
+				width: 100%;
+			}
 		}
 		&.warning {
 			@include background-image(image-url("_elements/icons/patient/patient-id_small-warning.png"), linear-gradient(top, #fff2d8 0%, #ffe6b3 100%));

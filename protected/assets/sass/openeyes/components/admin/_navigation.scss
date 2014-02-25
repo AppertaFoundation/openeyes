@@ -1,0 +1,27 @@
+// Admin sidebar navigation
+.navigation {
+	&.admin {
+		list-style-type: none;
+		margin: 0;
+		a {
+			@include border-radius(3px);
+			background: #fff;
+			display: block;
+			margin-bottom: 4px;
+			padding: 4px 8px;
+			&:hover {
+				background: #3665ff;
+				color: #fff;
+			}
+			&.selected {
+				background: #ccc;
+				color: #333;
+			}
+		}
+		li:last-child {
+			a {
+				margin: 0;
+			}
+		}
+	}
+}

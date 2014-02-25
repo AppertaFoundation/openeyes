@@ -14,20 +14,25 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Main container
-//
-// The main container wraps all content in the document and manages the main
-// background styles.
-//
-// Styleguide 2.1
-
 .container {
 	&.main {
 		@include radius;
 		background: #dae6f1 image-url("_structure/gradient_bg.jpg") 0 0 no-repeat;
 		border: 2px solid #b3b0ae;
 		margin-bottom: 40px;
-		width: $medium-screen + 4;
-		max-width: $medium-screen + 4;
+		width: $row-width + 4;
+		max-width: $row-width + 4;
+		@media print {
+			min-width: 1000px;
+			max-width: 100%;
+			border-width: 1px;
+			// When using a print layout.
+			.print & {
+				border: 0;
+				font-size: 12pt;
+				padding: 0 30px;
+				margin: 0;
+			}
+		}
 	}
 }
