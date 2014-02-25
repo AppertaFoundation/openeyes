@@ -22,6 +22,7 @@ class OEMigration extends CDbMigration
 	private $migrationPath;
 	private $testdata;
 	private $csvFiles;
+	private $insertsMap = array();
 
 	/**
 	 * Executes a SQL statement.
@@ -88,7 +89,7 @@ class OEMigration extends CDbMigration
 			//echo "\nRunning test data import\n";
 			$testdata_path = $migrations_path . '/testdata/' . $data_directory . '/';
 			$testdataCsvFiles = glob($testdata_path . "*.csv");
-			//echo "\nCSV FIles: " . var_export($csvFiles,true);
+			//echo "\nCSV FIles: " . var_export($this->csvFiles,true);
 			//echo "\nCSV TEST FIles: " . var_export($testdataCsvFiles,true);
 			$this->csvFiles = array_udiff($this->csvFiles, $testdataCsvFiles, 'self::compare_file_basenames');
 			//echo "\nCSVFIles after diff : " . var_export($csvFiles,true);
@@ -146,9 +147,11 @@ class OEMigration extends CDbMigration
 						$this->update($table, $data, $update_pk . '= :pk', array(':pk' => $pk));
 					} else {
 						$this->insert($table, $data);
+						$this->insertsMap[$table][$row_count] = $this->getInsertId($table, $data);
 					}
 				} else {
 					$this->insert($table, $data);
+					$this->insertsMap[$table][$row_count] = $this->getInsertId($table, $data);
 				}
 			}
 			fclose($fh);
@@ -533,5 +536,35 @@ class OEMigration extends CDbMigration
 	 */
 	public function getCsvFiles(){
 		return $this->csvFiles? $this->csvFiles : null;
+	}
+
+	public function getInsertId($table, $colValues){
+		$whereCondition = array();
+		$whereArray = array();
+		foreach($colValues as $colName => $colVal){
+			$whereCondition[]= " $colName = :$colName ";
+			$whereArray[":$colName"] = $colVal;
+		}
+
+		$whereCondition = implode(' AND ', $whereCondition);
+
+		$inserts = $this->dbConnection->createCommand()
+			->select('id')
+			->from($table)
+			->order('id DESC')
+			->where($whereCondition , $whereArray)
+			->queryAll();
+		if(count($inserts) >0){
+			return $inserts[0]['id'];
+		}
+
+		throw new OEMigrationException('No records matched');
+	}
+
+	public function getInsertReferentialObjectValue($object_type, $pointer){
+		if(isset($this->insertsMap[$object_type][$pointer]) )
+			 return $this->insertsMap[$object_type][$pointer];
+
+		return null;
 	}
 }

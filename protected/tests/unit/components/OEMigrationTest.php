@@ -26,6 +26,8 @@ class OEMigrationTest extends CDbTestCase
 
 	public $fixtures = array(
 		'event_type' => 'EventType',
+		'patient' => 'Patient',
+		'disorder' => 'Disorder'
 	);
 
 	public function setUp(){
@@ -69,6 +71,7 @@ class OEMigrationTest extends CDbTestCase
 		$this->assertGreaterThan(0, $this->oeMigration->getCsvFiles());
 
 		$expectedCsvArrayInTestMode = array(
+			$this->fixturePath . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'oeMigrationData' . DIRECTORY_SEPARATOR . '01_episode.csv',
 			$this->fixturePath . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'oeMigrationData' . DIRECTORY_SEPARATOR . '01_event_type.csv',
 			$this->fixturePath . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'oeMigrationData' . DIRECTORY_SEPARATOR . '01_user.csv'
 		);
@@ -129,6 +132,33 @@ class OEMigrationTest extends CDbTestCase
 		$cliArg = $this->oeMigration->getCliArg('injectedArg', array(0 => 'some.php', 1 => 'injectedArg=true'));
 		$this->assertInternalType('string', $cliArg);
 		$this->assertEquals('true', $cliArg);
+	}
+
+	/**
+	 * @depends testInitialiseData
+	 */
+	public function testGetInsertReferentialObjectValue(){
+		Yii::app()->db->createCommand("delete from event_type where id >= 1009")->query();
+		$this->oeMigration->setTestData(true);
+		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
+		$episode_id = $this->oeMigration->getInsertReferentialObjectValue('episode', 1);
+		$this->assertGreaterThan(0, (int) $episode_id);
+	}
+
+	public function testGetInsertId(){
+		//id,name,event_group_id => event_group.name,class_name,support_services
+		//1000,"Operation note 2","Treatment events","OphTrOperationnote",0
+		$insertRow = array('name' => 'TestEventType' , 'event_group_id' => '5', 'class_name' => 'OphTrTestclass' , 'support_services' => '0');
+		$this->oeMigration->insert('event_type' , $insertRow);
+		$insertId = $this->oeMigration->getInsertId('event_type' , $insertRow);
+		$this->assertGreaterThan(0, $insertId);
+	}
+
+	/**
+	 * @expectedException OEMigrationException
+	 */
+	public function testGetInsertIdUnknownRowThrowsException(){
+		$insertId = $this->oeMigration->getInsertId('event_group' , array('name' =>'NeverCreatedEventGroup'));
 	}
 
 	/**
