@@ -81,7 +81,10 @@ class Correspondence extends OpenEyesPage
 
     public function enclosure ($enclosure)
     {
-        $this->getElement('addEnclosure')->click();
+
+        $element = $this->getElement('addEnclosure');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->waitForElementDisplayBlock('#enclosureItems');
         $this->getElement('enterEnclosure')->setValue($enclosure);
     }

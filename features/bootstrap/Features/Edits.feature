@@ -1,4 +1,4 @@
-@editdelete
+@editdelete @regression
 Feature: These tests set up Events, Edit and Delete them.
 
   Scenario: Route 1A: Login and create a Anaesthetic Satisfaction Audit Regression: Site 2 Kings, Firm 3 Anderson Glaucoma
@@ -56,19 +56,18 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I Save the Event
 
-#  Scenario: Route 1C: Delete previously created/edited ASA from Route1A/1B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#    #FIXME OE-3984
-#    And I delete the Last Event
+  Scenario: Route 1C: Delete previously created/edited ASA from Route1A/1B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 
   Scenario: Route 2A: Login and create a new Consent Form
 
@@ -93,7 +92,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I choose Permissions for images No
 
-    Then I save the Consent Form
+    Then I save the Consent Form Draft
 
   Scenario: Route 2B: Edit previously created Consent from Route2A
 
@@ -117,19 +116,18 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I save the Consent Form
 
-#  Scenario: Route 2C: Delete previously created/edited Consent From from Route2A/2B
-#
-#    Given I am on the OpenEyes "master" homepage
-#    And I enter login credentials "admin" and "admin"
-#    And I select Site "2"
-#    Then I select a firm of "3"
-#
-#    Then I search for patient name last name "Coffin," and first name "Violet"
-#
-#    Then I select the Latest Event
-#
-#      #FIXME OE-3984
-#    And I delete the Last Event
+  Scenario: Route 2C: Delete previously created/edited Consent From from Route2A/2B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
 
 Scenario: Route 3A: Login and create a Phasing Event
 
@@ -193,7 +191,7 @@ Scenario: Route 3B: Edit previously edited Phasing from Route 3A
     And I add left eye comments of "Left eye comments here"
 
     Then I Save the Phasing Event
-#
+
 Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3B
 
     Given I am on the OpenEyes "master" homepage
@@ -231,7 +229,7 @@ Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3
 
     Given I add a New Enclosure of "Test Enclosure"
 
-    Then I Save the Correspondence Draft
+    Then I Save the Correspondence Draft and confirm it has been created successfully
 
   Scenario: Route 4B: Edit previously edited Correspondence from Route 4A
 
@@ -524,7 +522,7 @@ Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3
 
     Then I save the Laser Event
 
-   Scenario: Route 7C: Delete previously created/edited Laser From from Route 7A/7B
+  Scenario: Route 7C: Delete previously created/edited Laser From from Route 7A/7B
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -560,7 +558,7 @@ Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3
     Then I enter a duration of "1"
     Then I enter a eyes option "1"
 
-    Then I Save the Prescription Draft
+    Then I Save the Prescription Draft and confirm it has been created successfully
 
   Scenario: 8B Login and edit previously created new Prescription
 

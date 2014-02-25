@@ -224,7 +224,8 @@ class OperationBooking extends OpenEyesPage
 
     public function availableSessionTime ()
     {
-        $element = $this->getElement('availableTheatreSessionTime');
+        $this->waitForElementDisplayBlock('.timeBlock.available.bookable');
+		$element = $this->getElement('availableTheatreSessionTime');
         $this->scrollWindowToElement($element);
         $element->click();
         $this->getSession()->wait(10000);
@@ -264,7 +265,8 @@ class OperationBooking extends OpenEyesPage
 
     public function chooseWard ($ward)
     {
-        $this->getElement('chooseWard')->selectOption($ward);
+        $this->waitForElementDisplayBlock('#Booking_ward_id');
+		$this->getElement('chooseWard')->selectOption($ward);
     }
 
     public function admissionTime ($time)
