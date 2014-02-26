@@ -33,6 +33,7 @@ class OEMigrationTest extends CDbTestCase
 	public function setUp(){
 		parent::setUp();
 		$this->oeMigration = new OEMigration();
+		$this->oeMigration->setVerbose(false);
 		$this->fixturePath = Yii::getPathOfAlias( 'application.tests.fixtures' );
 	}
 
@@ -134,17 +135,6 @@ class OEMigrationTest extends CDbTestCase
 		$this->assertEquals('true', $cliArg);
 	}
 
-	/**
-	 * @depends testInitialiseData
-	 */
-	public function testGetInsertReferentialObjectValue(){
-		Yii::app()->db->createCommand("delete from event_type where id >= 1009")->query();
-		$this->oeMigration->setTestData(true);
-		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
-		$episode_id = $this->oeMigration->getInsertReferentialObjectValue('episode', 1);
-		$this->assertGreaterThan(0, (int) $episode_id);
-	}
-
 	public function testGetInsertId(){
 		//id,name,event_group_id => event_group.name,class_name,support_services
 		//1000,"Operation note 2","Treatment events","OphTrOperationnote",0
@@ -159,6 +149,23 @@ class OEMigrationTest extends CDbTestCase
 	 */
 	public function testGetInsertIdUnknownRowThrowsException(){
 		$insertId = $this->oeMigration->getInsertId('event_group' , array('name' =>'NeverCreatedEventGroup'));
+	}
+
+	public function testGetInsertIdNoIdColumnInTable(){
+		$insertId = $this->oeMigration->getInsertId('authassignment' , array('itemname' =>'admin', 'userid'=>'1'));
+		$this->assertNull($insertId);
+	}
+
+	/**
+	 * @depends testInitialiseData
+	 * @depends testGetInsertId
+	 */
+	public function testGetInsertReferentialObjectValue(){
+		Yii::app()->db->createCommand("delete from event_type where id >= 1009")->query();
+		$this->oeMigration->setTestData(true);
+		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
+		$episode_id = $this->oeMigration->getInsertReferentialObjectValue('episode', 1);
+		$this->assertGreaterThan(0, (int) $episode_id);
 	}
 
 	/**
