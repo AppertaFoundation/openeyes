@@ -136,23 +136,28 @@ class OEMigrationTest extends CDbTestCase
 	}
 
 	public function testGetInsertId(){
-		//id,name,event_group_id => event_group.name,class_name,support_services
-		//1000,"Operation note 2","Treatment events","OphTrOperationnote",0
 		$insertRow = array('name' => 'TestEventType' , 'event_group_id' => '5', 'class_name' => 'OphTrTestclass' , 'support_services' => '0');
 		$this->oeMigration->insert('event_type' , $insertRow);
-		$insertId = $this->oeMigration->getInsertId('event_type' , $insertRow);
+		$insertId = $this->oeMigration->getInsertId('event_type' );
 		$this->assertGreaterThan(0, $insertId);
+		$this->assertEquals(1011, $insertId);
 	}
 
 	/**
-	 * @expectedException OEMigrationException
+	 *  @expectedException OEMigrationException
+	 * @expectedExceptionMessage Table banzai does not exist
 	 */
-	public function testGetInsertIdUnknownRowThrowsException(){
-		$insertId = $this->oeMigration->getInsertId('event_group' , array('name' =>'NeverCreatedEventGroup'));
+	public function testGetInsertIdUnknownTableThrowsException(){
+		$insertId = $this->oeMigration->getInsertId('banzai' );
+	}
+
+	public function testGetInsertIdWhenNoinsertReturnsZero(){
+		$insertId = $this->oeMigration->getInsertId('audit_ipaddr' );
+		$this->assertEquals(0,$insertId);
 	}
 
 	public function testGetInsertIdNoIdColumnInTable(){
-		$insertId = $this->oeMigration->getInsertId('authassignment' , array('itemname' =>'admin', 'userid'=>'1'));
+		$insertId = $this->oeMigration->getInsertId('authassignment' );
 		$this->assertNull($insertId);
 	}
 

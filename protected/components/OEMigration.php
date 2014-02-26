@@ -541,31 +541,14 @@ class OEMigration extends CDbMigration
 		return $this->csvFiles? $this->csvFiles : null;
 	}
 
-	public function getInsertId($table, $colValues){
+	public function getInsertId($table){
+		$tableExists = $this->dbConnection->getSchema()->getTable($table);
+		if(!$tableExists)
+			throw new OEMigrationException('Table ' . $table . ' does not exist');
 		$hasId = $this->dbConnection->createCommand('SHOW COLUMNS FROM ' . $table .  ' LIKE \'id\'')->execute();
 		if(!$hasId)
 			return null;
-
-		$whereCondition = array();
-		$whereArray = array();
-		foreach($colValues as $colName => $colVal){
-			$whereCondition[]= " $colName = :$colName ";
-			$whereArray[":$colName"] = $colVal;
-		}
-
-		$whereCondition = implode(' AND ', $whereCondition);
-
-		$inserts = $this->dbConnection->createCommand()
-			->select('id')
-			->from($table)
-			->order('id DESC')
-			->where($whereCondition , $whereArray)
-			->queryAll();
-		if(count($inserts) >0){
-			return $inserts[0]['id'];
-		}
-
-		throw new OEMigrationException('No records matched');
+		return $this->dbConnection->getLastInsertID($table);
 	}
 
 	public function getInsertReferentialObjectValue($object_type, $pointer){
