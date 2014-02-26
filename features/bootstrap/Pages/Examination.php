@@ -313,7 +313,9 @@ class Examination extends OpenEyesPage
     public function openDilation ()
     {
         if ($this->isDilationCollapsed()){
-            $this->getElement('openDilation')->click();
+            $element = $this->getElement('openDilation');
+            $this->scrollWindowToElement($element);
+            $element->click();
             $this->getSession()->wait(5000, 'window.$ && $.active == 0');
         }
     }
@@ -415,7 +417,9 @@ class Examination extends OpenEyesPage
     public function expandAdnexalComorbidity ()
     {
         if ($this->isAdnexalCollapsed()){
-        $this->getElement('expandAdnexalComorbidity')->click();
+        $element = $this->getElement('expandAdnexalComorbidity');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
         }
     }
@@ -437,7 +441,9 @@ class Examination extends OpenEyesPage
 
     public function expandPupillaryAbnormalities ()
     {
-        $this->getElement('expandPupillaryAbnormalities')->click();
+        $element = $this->getElement('expandPupillaryAbnormalities');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
@@ -461,13 +467,19 @@ class Examination extends OpenEyesPage
        $this->getElement('expandPosteriorPole')->click();
     }
 
+    public function isDiagnosesCollapsed ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('expandDiagnoses')->getXpath());
+    }
+
     public function expandDiagnoses ()
     {
-
+       if ($this->isDiagnosesCollapsed()){
        $element = $this->getElement('expandDiagnoses');
        $this->scrollWindowToElement($element);
        $element->click();
        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
+       }
     }
 
     public function diagnosesLeftEye ()
@@ -496,7 +508,9 @@ class Examination extends OpenEyesPage
 
     public function expandInvestigation ()
     {
-        $this->getElement('expandInvestigation')->click();
+        $element =$this->getElement('expandInvestigation');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
@@ -863,7 +877,9 @@ class Examination extends OpenEyesPage
 
     public function expandRisks ()
     {
-        $this->getElement('expandRisks')->click();
+        $element = $this->getElement('expandRisks');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
@@ -917,7 +933,9 @@ class Examination extends OpenEyesPage
     {
         if ($this->isConclusionCollapsed()) {
 
-        $this->getElement('expandConclusion')->click();
+        $element = $this->getElement('expandConclusion');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(3000, 'window.$ && $.active == 0');
         }
     }
