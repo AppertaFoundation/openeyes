@@ -1,8 +1,6 @@
 @diagnosis @regression
 Feature: Open Eyes Login and Patient Diagnosis Screen
-  In order to cover every possible route throughout the site
-  As an automation tester
-  I want to build a template with supporting code for each web page
+         Regression coverage of this event is approx 95%
 
   Scenario: Route 1: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
@@ -38,6 +36,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
     And I Add a Family History of relative "1" side "3" condition "1" and comments "Family History Comments" and Save
 
   Scenario: Route 2: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
+            Remove Operation
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -66,6 +65,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
     And I Add a Family History of relative "4" side "3" condition "2" and comments "Family History Comments" and Save
 
   Scenario: Route 3: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
+            Remove Medication
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"

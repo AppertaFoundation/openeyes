@@ -1,10 +1,9 @@
 @correspondence @regression
 Feature: Create New Correspondence
-  In order to cover every possible route throughout the site
-  As an automation tester
-  I want to build a template with supporting code for each web page
+         Regression coverage of this event is approx 30%
 
-  Scenario: Login and fill in a Correspondence THIS TEST NEEDS SAMPLE DATE FOR INTROS - OUTCOME
+  Scenario: Login and fill in a Correspondence
+            THIS TEST NEEDS SAMPLE DATE FOR INTROS, FINDINGS, DIAGNOSIS, MANAGEMENT, DRUGS & OUTCOME
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"

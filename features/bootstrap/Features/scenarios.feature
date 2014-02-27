@@ -38,7 +38,6 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     And I Add a Family History of relative "1" side "3" condition "1" and comments "Family History Comments" and Save
 
-
   Scenario: Route 1B: Check Allergy warning on Intravitreal
 
     Given I am on the OpenEyes "master" homepage
@@ -53,9 +52,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     Then I expand the Cataract sidebar
     And I add a New Event "Intravitreal"
 
-
     Then a check is made that the Allergy "Tetracycline" warning is displayed
-
 
   Scenario: Route 1C: Check Allergy warning on Prescription
 
@@ -72,7 +69,6 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     And I add a New Event "Prescription"
 
     Then a check is made that the Allergy "Tetracycline" warning is displayed
-
 
   Scenario: Route 1D: Check Allergy warning on Op Note
 

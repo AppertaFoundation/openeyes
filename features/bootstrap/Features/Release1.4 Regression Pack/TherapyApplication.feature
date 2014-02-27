@@ -1,8 +1,6 @@
 @therapy @regression
 Feature: Create New Therapy Application Event
-  In order to cover every possible route throughout the site
-  As an automation tester
-  I want to build a template with supporting code for each web page
+         Regression coverage of this event is approx 25%
 
     Scenario: Route 1: Login and create a new Therapy Application (Queens Site, Glaucoma Firm)
     Diagnosis: (Choroidal Retinal Neo) Secondary To: (Age related macular degeneration)

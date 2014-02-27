@@ -1,8 +1,6 @@
 @consent @regression
 Feature: Create New Consent Form
-  In order to cover every possible route throughout the site
-  As an automation tester
-  I want to build a template with supporting code for each web page
+         Regression coverage of this event is approx 70%
 
   Scenario: Route 1: Login and create a new Consent Form
 

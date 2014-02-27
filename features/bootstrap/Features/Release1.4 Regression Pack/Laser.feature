@@ -1,8 +1,6 @@
 @laser @regression
 Feature: Create New Laser event
-  In order to cover every possible route throughout the site
-  As an automation tester
-  I want to build a template with supporting code for each web page
+         Regression coverage of this event is 100%
 
   Scenario: Route 1: Login and create a Laser event
 
@@ -29,7 +27,8 @@ Feature: Create New Laser event
 
     Then I save the Laser Event and confirm it has been created successfully
 
-  Scenario: Route 2: Login and validate a Laser Event cannot be saved without mandatory fields
+  Scenario: Route 2: Login and validate a Laser Event.
+            Save without mandatory fields validation check
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -73,6 +72,5 @@ Feature: Create New Laser event
     Then I add expand the Comments section
     And I add "Test comments" into the Comments section
     Then I remove the Comments section
-
 
     Then I save the Laser Event and confirm it has been created successfully

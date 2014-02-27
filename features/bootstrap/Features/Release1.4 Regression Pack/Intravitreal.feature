@@ -1,8 +1,6 @@
 @Intravitreal @regression
 Feature: Create New Intravitreal Event
-  In order to cover every possible route throughout the site
-  As an automation tester
-  I want to build a template with supporting code for each web page
+         Regression coverage of this event is approx 70%
 
   Scenario: Route 1: Login and create a New Intravitreal Event
 
@@ -58,7 +56,6 @@ Feature: Create New Intravitreal Event
 
     Then I choose A Right Lens Status of "1"
     And I choose Right Counting Fingers Checked Yes
-
 
     And I choose Right IOP Needs to be Checked No
     Then I choose Right Post Injection Drops "1"

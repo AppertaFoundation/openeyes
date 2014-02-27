@@ -1,9 +1,13 @@
 @examination @regression
 Feature: Create New Examination Regression Tests
-  Regression over 2 Sites and 4 Firms
-  Coverage at 80%
+          Regression over 2 Sites and 4 Firms
+          Regression coverage of this event is approx 70%
 
-  Scenario: Route 1: Login and create a new Examination Event: Site 1:Queens, Firm:3 Anderson Glaucoma
+  Scenario: Route 1: Login and create a new Examination Event
+            Site 1:Queens
+            Firm 3:Anderson Glaucoma
+            Add and then remove all Comorbidities
+            Viusal Fields, Intraocular Pressure, Dilation
             Confirm that Refraction Axis entries are correctly validated when the Examination is saved
 
     Given I am on the OpenEyes "master" homepage
@@ -76,8 +80,12 @@ Feature: Create New Examination Regression Tests
     Then a check is made that a right Axis degrees of "38" was entered
 
 
-  Scenario: Route 2:Login and create a new Examination Event: Site:1 Queens, Firm:2 Broom Glaucoma
-            Add a second Visual Acuity reading and then remove it. Removal of one side test.
+  Scenario: Route 2:Login and create a new Examination Event
+            Site:1 Queens
+            Firm:2 Broom Glaucoma
+            Viusal Fields, Intraocular Pressure, Dilation, Refraction
+            Add a second Visual Acuity reading and then remove it
+            Removal of one side test
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -125,7 +133,11 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
-  Scenario: Route 3:Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract
+  Scenario: Route 3:Login and create a new Examination Event
+            Site:1 Queens
+            Firm:1 Anderson Cataract
+            Viusal Fields, Intraocular Pressure, Dilation, Refraction, Conclusion
+
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -173,7 +185,9 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 ##
-  Scenario: Route 4: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
+  Scenario: Route 4: Login and create a new Examination Event
+            Site:1 Queens
+            Firm:1 Anderson Cataract
             Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
 
     Given I am on the OpenEyes "master" homepage
@@ -296,8 +310,10 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 
 #
-  Scenario: ROUTE 5: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
-  Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
+  Scenario: ROUTE 5: Login and create a new Examination Event
+            Site:1 Queens
+            Firm:1 Anderson Cataract
+            Injection management route
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -420,8 +436,7 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 ##
   Scenario: ROUTE 6: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
-  Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
-    This Route focuses on the remaining additional Injection Management sections
+            Remaining additional Injection Management sections
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -554,6 +569,7 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 #
   Scenario: Route 7: Examination Validation Tests (Anderson Glaucoma)
+            History and Conclusion validation error checks
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -574,6 +590,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the Conclusion Validation error message is displayed
 
   Scenario: Route 8: Examination Validation Tests (Anderson Cataract)
+            History and Dilation validation error checks
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -592,6 +609,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the Dilation Validation error message is displayed
 
   Scenario: Route 9: Examination Validation Tests (Anderson Medical Retinal)
+            History and Dilation validation error checks
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -612,6 +630,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the Dilation Validation error message is displayed
 
   Scenario: Route 10: Examination Validation Tests (Broom Glaucoma)
+            History and Dilation validation error checks
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -632,6 +651,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the Dilation Validation error message is displayed
 
   Scenario: Route 11: Examination Validation Tests (Remove All Error)
+            Close All elements and attempt to Save - validation errors
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -651,6 +671,7 @@ Feature: Create New Examination Regression Tests
     Then I confirm that the Remove All Validation error message is displayed
 #
   Scenario: Route 12: Examination Validation Tests (Select All and Save Validation errors)
+            Select All elements and attempt to Save - validation errors
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
