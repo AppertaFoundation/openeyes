@@ -17,8 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-
-test
 <section
 	class="<?php if (@$child) {?>sub-<?php }?>element<?php if($this->isRequired($element)) { ?> required<?php } ?> <?php echo $element->elementType->class_name?>"
 	data-element-type-id="<?php echo $element->elementType->id?>"
