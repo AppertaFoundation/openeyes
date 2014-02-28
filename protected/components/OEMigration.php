@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+
 class OEMigration extends CDbMigration
 {
 	private $migrationPath;
@@ -157,7 +158,9 @@ class OEMigration extends CDbMigration
 			}
 			fclose($fh);
 			$this->migrationEcho("$row_count records, done.\n");
+
 		}
+		//$this->checkRelations();
 	}
 
 	public function exportData($migrationName, $tables)
@@ -561,6 +564,53 @@ class OEMigration extends CDbMigration
 	private function migrationEcho($msg){
 		if($this->verbose){
 			echo $msg;
+		}
+	}
+
+	private function checkRelations(){
+		$cFileHelper = new CFileHelper();
+		$models = $cFileHelper->findFiles( Yii::getPathOfAlias('application.models'), array('fileTypes' => array('php')) );
+		foreach($models as $model){
+			$modelName = substr($model,strrpos($model, DIRECTORY_SEPARATOR)+1);
+			$modelName = substr($modelName , 0, strpos($modelName, '.php'));
+
+			if(strpos($modelName , 'Base' ) === 0 || !method_exists($modelName, 'model')){
+				echo "\nSkipping $modelName as not Contains base or has not model method";
+				continue;
+			}
+
+			try{
+				$thisModel = $modelName::model();
+				if(!$thisModel instanceof CActiveRecord){
+					echo "\nSkipping $modelName as not CactiveRecord";
+					continue;
+				}
+
+			}
+			catch(CdbException $e){
+				echo "\n skipping : " . $modelName;
+				continue;
+			}
+			catch(Exception $e){
+				echo "\nSomething wrong happened: " . $modelName . " Code: " . $e->getCode()
+					. " Message: " . $e->getMessage() . " Trace: " . $e->getTraceAsString();
+			}
+
+			$rels = $thisModel->relations();
+			$this->migrationEcho("\nChecking Model name : " . $modelName . " rels: " . var_export($rels, true));
+			foreach($rels as $rel => $relProps){
+				if($relProps[0] == 'CBelongsToRelation'){
+					foreach($thisModel->findAll() as $thisRecords){
+						$findBelongs = $thisModel->with($rel)->findByPk($thisRecords->id);
+						if(count($findBelongs) > 0 ){
+							echo "\n$modelName Relation $rel found, tot:" . count($findBelongs);
+						}
+						else{
+							echo "\n$modelName belong Relation $rel  missing \n\n";
+						}
+					}
+				}
+			}
 		}
 	}
 
