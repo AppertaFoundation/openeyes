@@ -24,12 +24,17 @@ class CheckRelationsCommand extends CConsoleCommand
 		if(isset($args[0]) &&  $args[0] == 'models'){
 			$this->checkModelsRelations();
 		}
-		else{
-			$this->checkSqlConstraints();
+		else{//
+			if(isset($args[0]) &&  $args[0] == 'savefile'){
+				$this->checkSqlConstraints(true);
+			}
+			else{
+				$this->checkSqlConstraints();
+			}
 		}
 	}
 
-	private function checkSqlConstraints(){
+	private function checkSqlConstraints($saveFile = false){
 		$foreignKeysSql="SELECT  ke.referenced_table_name parent,  ke.table_name child,  ke.constraint_name,
   		ke.column_name,  ke.referenced_column_name parent_column,  c.`IS_NULLABLE`
 		FROM
@@ -43,47 +48,62 @@ class CheckRelationsCommand extends CConsoleCommand
 
 		$dbConn = Yii::app()->getDb();
 
+		$saveString ='';
+
 		$foreignKeys = $dbConn->createCommand($foreignKeysSql)->queryAll();
 		foreach($foreignKeys as  $foreignKey){
-			//echo "\nChecking Foreign key: " . var_export($foreignKey,true);
-			///$childRowsSql = "select * from " . $foreignKey['child'];
-			//$childRows =  $dbConn->createCommand($childRowsSql)->queryAll();
-			//foreach($childRows as $childRow){
+			$corruptEcho ='';
+			$constraintCheck = "select c.*, p." . $foreignKey['parent_column']
+				. " as 'fk-" . $foreignKey['parent_column'] .  "' from " .
+				$foreignKey['child'] . " c left join " . $foreignKey['parent'] . " p on c." .
+				$foreignKey['column_name'] . " = p." . $foreignKey['parent_column'] .
+				" where p." . $foreignKey['parent_column'] . "  is null";
 
-				$constraintCheck = "select c.*, p." . $foreignKey['parent_column']
-					. " as 'fk-" . $foreignKey['parent_column'] .  "' from " .
-					$foreignKey['child'] . " c left join " . $foreignKey['parent'] . " p on c." .
-					$foreignKey['column_name'] . " = p." . $foreignKey['parent_column'] .
-					" where p." . $foreignKey['parent_column'] . "  is null";
+			if($foreignKey['IS_NULLABLE'] =='YES'){
+				$constraintCheck =  $constraintCheck .
+					" and c." . $foreignKey['column_name'] . "  is not null";
+				$corruptEcho .= "\nSkipping null, nullable ". $foreignKey['column_name'] . " table: " . $foreignKey['child'];
+			}
 
-				if($foreignKey['IS_NULLABLE'] =='YES'
-					//&& $childRow[$foreignKey['column_name']] === null
-				){
-					$constraintCheck =  $constraintCheck .
-						" and c." . $foreignKey['column_name'] . "  is not null";
-					echo "\nSkipping null, nullable ". $foreignKey['column_name'] . " table: " . $foreignKey['child'];
+			try{
+				$corruptRows = $dbConn->createCommand($constraintCheck)->queryAll();
+			}
+			catch(CDbException $e){
+				echo "\n\n ERR executing check sql: " . $dbConn->createCommand($constraintCheck)->getText() . " Msg: " .
+				$e->getMessage() . " \n Table: " . $foreignKey['child'] . " Column: "  .
+					$foreignKey['column_name']  . " Parent table: " . $foreignKey['parent'] .
+					" Parent column " . $foreignKey['parent_column'];
+			}
+
+			if(count($corruptRows) > 0 ){
+				$corruptEcho .= "\nCorrupt Relation: " . $foreignKey['constraint_name'] . " table/fk: " . $foreignKey['child'] .
+					"." . $foreignKey['column_name'] . " -> " . $foreignKey['parent'] . "." . $foreignKey['parent_column'];
+
+				$corruptEcho .= "\n" .  implode(',' , array_keys( $corruptRows[0] ) );
+				foreach($corruptRows as  $corruptRow){
+					$corruptEcho .= "\n" . implode(',' , $corruptRow);
 				}
-
-				try{
-					$corruptRows = $dbConn->createCommand($constraintCheck)->queryAll();
+				echo $corruptEcho ;
+				if($saveFile){
+					$saveString .= $corruptEcho;
 				}
-				catch(CDbException $e){
-					echo "\n\n ERR executing check sql: " . $dbConn->createCommand($constraintCheck)->getText() . " Msg: " .
-					$e->getMessage() . " \n Table: " . $foreignKey['child'] . " Column: "  .
-						$foreignKey['column_name']  . " Parent table: " . $foreignKey['parent'] .
-						" Parent column " . $foreignKey['parent_column'];
-				}
-
-				if(count($corruptRows) > 0 ){
-					echo "\nCorrupt Relation: " . $foreignKey['constraint_name'] . " table/fk: " . $foreignKey['child'] .
-						"." . $foreignKey['column_name'] . " -> " . $foreignKey['parent'] . "." . $foreignKey['parent_column'];
-					foreach($corruptRows as $corruptRow){
-						echo "\n" . implode(',' , $corruptRow);
-					}
-				}
-
-			//}
+			}
 		}
+
+		if($saveFile){
+			$this->saveFile($saveString);
+		}
+		//else{
+		//	echo $saveString;
+		//}
+	}
+
+	private function saveFile($cnt){
+		$fileName = "dbCheckReport_" . date("Y-m-d_H:i:s"). '.txt';
+		$savePath = Yii::getPathOfAlias('application.runtime');
+		$file = fopen($savePath . DIRECTORY_SEPARATOR . $fileName , 'w');
+		fwrite($file, $cnt);
+		fclose($file);
 	}
 
 	private function checkModelsRelations(){
