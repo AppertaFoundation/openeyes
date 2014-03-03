@@ -21,6 +21,65 @@ class CheckRelationsCommand extends CConsoleCommand
 {
 	public function run($args)
 	{
+		if(isset($args[0]) &&  $args[0] == 'models'){
+			$this->checkModelsRelations();
+		}
+		else{
+			$this->checkSqlConstraints();
+		}
+	}
+
+	private function checkSqlConstraints(){
+		$foreignKeysSql="SELECT  ke.referenced_table_name parent,  ke.table_name child,  ke.constraint_name,
+  		ke.column_name,  ke.referenced_column_name parent_column,  c.`IS_NULLABLE`
+		FROM
+		  information_schema.KEY_COLUMN_USAGE ke join information_schema.COLUMNS c on
+		  c.`COLUMN_NAME` = ke.`COLUMN_NAME` and c.`TABLE_NAME` = ke.`TABLE_NAME`
+		WHERE
+		  ke.referenced_table_name IS NOT NULL and ke.table_name not like '%_version'
+		  and ke.`CONSTRAINT_SCHEMA`='openeyes' and c.TABLE_SCHEMA='openeyes'
+		ORDER BY
+		  ke.table_name;";
+
+		$dbConn = Yii::app()->getDb();
+
+		$foreignKeys = $dbConn->createCommand($foreignKeysSql)->queryAll();
+		foreach($foreignKeys as  $foreignKey){
+			//echo "\nChecking Foreign key: " . var_export($foreignKey,true);
+			///$childRowsSql = "select * from " . $foreignKey['child'];
+			//$childRows =  $dbConn->createCommand($childRowsSql)->queryAll();
+			//foreach($childRows as $childRow){
+
+				$constraintCheck = "select c.*, p." . $foreignKey['parent_column'] . " from " .
+					$foreignKey['child'] . " c left join " . $foreignKey['parent'] . " p on c." .
+					$foreignKey['column_name'] . " = p." . $foreignKey['parent_column'] .
+					" where p." . $foreignKey['parent_column'] . "  is null";
+
+				if($foreignKey['IS_NULLABLE'] =='YES'
+					//&& $childRow[$foreignKey['column_name']] === null
+				){
+					$constraintCheck =  $constraintCheck .
+						" and c." . $foreignKey['column_name'] . "  is not null";
+					echo "\nSkipping null, nullable ". $foreignKey['column_name'] . " table: " . $foreignKey['child'];
+				}
+
+				try{
+					$corruptRows = $dbConn->createCommand($constraintCheck)->queryAll();
+				}
+				catch(CDbException $e){
+					echo "\n\n ERR executing check sql: " . $dbConn->createCommand($constraintCheck)->getText() . " Msg: " .
+					$e->getMessage() . " \n Table: " . $foreignKey['child'] . " Column: "  .
+						$foreignKey['column_name']  . " Parent table: " . $foreignKey['parent'] .
+						" Parent column " . $foreignKey['parent_column'];
+				}
+
+				if(count($corruptRows) > 0 )
+					echo "\nCorrupt Rows: " . var_export($corruptRows,true);
+			//}
+		}
+	}
+
+	private function checkModelsRelations(){
 		$cFileHelper = new CFileHelper();
 		$models = $cFileHelper->findFiles( Yii::getPathOfAlias('application.models'), array('fileTypes' => array('php')) );
 		foreach($models as $model){
