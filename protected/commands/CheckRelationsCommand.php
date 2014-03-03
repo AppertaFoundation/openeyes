@@ -50,7 +50,8 @@ class CheckRelationsCommand extends CConsoleCommand
 			//$childRows =  $dbConn->createCommand($childRowsSql)->queryAll();
 			//foreach($childRows as $childRow){
 
-				$constraintCheck = "select c.*, p." . $foreignKey['parent_column'] . " from " .
+				$constraintCheck = "select c.*, p." . $foreignKey['parent_column']
+					. " as 'fk-" . $foreignKey['parent_column'] .  "' from " .
 					$foreignKey['child'] . " c left join " . $foreignKey['parent'] . " p on c." .
 					$foreignKey['column_name'] . " = p." . $foreignKey['parent_column'] .
 					" where p." . $foreignKey['parent_column'] . "  is null";
@@ -73,8 +74,14 @@ class CheckRelationsCommand extends CConsoleCommand
 						" Parent column " . $foreignKey['parent_column'];
 				}
 
-				if(count($corruptRows) > 0 )
-					echo "\nCorrupt Rows: " . var_export($corruptRows,true);
+				if(count($corruptRows) > 0 ){
+					echo "\nCorrupt Relation: " . $foreignKey['constraint_name'] . " table/fk: " . $foreignKey['child'] .
+						"." . $foreignKey['column_name'] . " -> " . $foreignKey['parent'] . "." . $foreignKey['parent_column'];
+					foreach($corruptRows as $corruptRow){
+						echo "\n" . implode(',' , $corruptRow);
+					}
+				}
+
 			//}
 		}
 	}
