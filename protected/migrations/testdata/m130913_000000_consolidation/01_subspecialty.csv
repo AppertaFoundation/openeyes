@@ -1,0 +1,20 @@
+id,name,ref_spec,specialty_id
+1,"Accident & Emergency",AE,109
+2,Adnexal,AD,109
+3,Anaesthetics,AN,109
+4,Cataract,CA,109
+5,Cornea,CO,109
+6,External,EX,109
+7,Glaucoma,GL,109
+8,"Medical Retinal",MR,109
+9,Neuro-ophthalmology,PH,109
+10,Oncology,ON,109
+11,Paediatrics,PE,109
+12,"General Ophthalmology",PC,109
+13,Refractive,RF,109
+14,Strabismus,SP,109
+15,Uveitis,UV,109
+16,Vitreoretinal,VR,109
+17,Optometry,OPT,190
+18,Orthoptics,ORT,190
+19,EDD,EDD,190
