@@ -1,0 +1,4 @@
+id,username,first_name,last_name,email,active,global_firm_rights,title,qualifications,role,code,password,salt,last_firm_id,is_doctor,access_level,contact_id,last_site_id,is_clinical,is_consultant,is_surgeon,has_selected_firms
+1,admin,Enoch,Root,admin@example.com,1,0,Mr,"admin qualification","admin role",,d45409ef1eaa57f5041bf3a1b510097b,FbYJis0YG3,0,1,5,3,NULL,0,0,0,1
+2,aanderson,Andrew,Anderson,aanderson@openeyes.org.uk,1,1,Mr,,,,c710790a790ed75065a8434c00c70bfc,E8yB3P02Mq,,1,5,2,NULL,0,1,1,1
+3,bbroom,Brenda,Broom,bbroom@openeyes.org.uk,1,1,Miss,,,,49ce5e1189de532d9e157ed07e749c87,,,1,5,3,NULL,0,1,1,1

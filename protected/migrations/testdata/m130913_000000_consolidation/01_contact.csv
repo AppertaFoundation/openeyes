@@ -1,4 +1,7 @@
 id,nick_name,primary_phone,title,first_name,last_name,qualifications,last_modified_user_id,last_modified_date,created_user_id,created_date,contact_label_id
+1,Enoch,"020 7253 3411","Mr","Enoch","Root",All,1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00",3
+2,Sooty,"0444 444 4444","Mr","Andrew","Anderson",NULL,1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00",1
+3,Sooty,"0555 555 5555","Miss","Brenda","Broom",NULL,1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00",1
 9501,NULL,"02177 8550368","Mrs","Lillian","Burns",NULL,1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00",NULL
 9502,NULL,"09395 3737894","Mrs","Kimberly","Paterson",NULL,1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00",NULL
 9503,NULL,"08167 7177786","Mrs","Sandra","Branch",NULL,1,"2000-01-01 00:00:00",1,"2000-01-01 00:00:00",NULL
