@@ -47,7 +47,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'CVIDay' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_day']"),
         'CVIMonth' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_month']"),
         'CVIYear' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_year']"),
-        'saveCVI' => array('xpath' => "//*[@class='secondary small btn_save_previous_operation btn_save_oph_info']"),
+        'saveCVI' => array('xpath' => "//*[@class='secondary small btn_save_oph_info']"),
         'addMedicationButton' => array('xpath' => "//button[@id='btn-add_medication']"),
         'selectMedication' => array('xpath' => "//select[@id='drug_id']"),
         'selectRoute' => array('xpath' => "//select[@id='route_id']"),

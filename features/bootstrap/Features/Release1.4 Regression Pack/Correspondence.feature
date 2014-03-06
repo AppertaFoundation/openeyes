@@ -1,9 +1,8 @@
 @correspondence @regression
 Feature: Create New Correspondence
-         Regression coverage of this event is approx 30%
+         Regression coverage of this event is approx 95%
 
-  Scenario: Login and fill in a Correspondence
-            THIS TEST NEEDS SAMPLE DATE FOR INTROS, FINDINGS, DIAGNOSIS, MANAGEMENT, DRUGS & OUTCOME
+  Scenario: Route 1:Login and fill in a Correspondence
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -23,12 +22,12 @@ Feature: Create New Correspondence
 
     And I select Clinic Date "7"
 
-#    Then I choose an Introduction of "site21"
+    Then I choose an Introduction of "site21"
 #    And I add Findings of "examination334"
-#    And I choose a Diagnosis of "site541"
-#    Then I choose a Management of "site181"
-#    And I choose Drugs "site301"
-#    Then I choose Outcome "site341"
+    And I choose a Diagnosis of "site541"
+    Then I choose a Management of "site181"
+    And I choose Drugs "site301"
+    Then I choose Outcome "site341"
 
     And I choose CC Target "Patient19434"
 

@@ -531,6 +531,18 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
+     * @Given /^I choose a principal diagnosis$/
+     */
+    public function principalDiagnosis()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->principalDiagnosis();
+    }
+
+    /**
      * @Then /^I choose a diagnoses of "([^"]*)"$/
      */
     public function iChooseADiagnosesOf($diagnosis)

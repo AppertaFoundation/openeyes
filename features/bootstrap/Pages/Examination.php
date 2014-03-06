@@ -79,6 +79,7 @@ class Examination extends OpenEyesPage
         'diagnosesRightEye' => array('xpath' => "//*[@id='Element_OphCiExamination_Diagnoses_eye_id_2']"),
         'diagnosesBothEyes' => array('xpath' => "//*[@id='Element_OphCiExamination_Diagnoses_eye_id_3']"),
         'diagnosesCommonDiagnosis' => array('xpath' => "//*[@id='DiagnosisSelection_disorder_id']"),
+        'principalDiagnosis' => array('xpath' => "//*[@id='OphCiExamination_diagnoses']//*[@name='principal_diagnosis']"),
 
         'addInvestigation' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_Investigation_description']"),
 
@@ -487,7 +488,7 @@ class Examination extends OpenEyesPage
 
         $element = $this->getElement('diagnosesLeftEye');
         $this->scrollWindowToElement($element);
-        $element->click();
+        $element->check();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
@@ -504,6 +505,11 @@ class Examination extends OpenEyesPage
     public function diagnosesDiagnosis ($diagnosis)
     {
         $this->getElement('diagnosesCommonDiagnosis')->setValue($diagnosis);
+    }
+
+    public function principalDiagnosis ()
+    {
+        $this->getElement('principalDiagnosis')->check();
     }
 
     public function expandInvestigation ()

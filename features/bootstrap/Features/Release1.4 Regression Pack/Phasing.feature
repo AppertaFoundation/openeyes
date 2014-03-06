@@ -1,4 +1,4 @@
-  @phasing
+  @phasing @regression
   Feature: Create New Phasing Event
            Regression coverage of this event is approx 95%
 
