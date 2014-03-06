@@ -33,8 +33,7 @@ if [ $# -gt 0 ]
         testsuite=core
     fi
 else
-    echo "calling  $CSDIR/modules_yii_config.sh branchVal=develop"
-    $CSDIR/modules_yii_config.sh branch=develop
+    echo "just running core no need to call modules_yii_config.sh"
     testsuite=core
 fi
 
