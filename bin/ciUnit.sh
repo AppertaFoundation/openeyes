@@ -14,8 +14,6 @@ echo "execVal is $execVal length ${#execVal} "
 moduleNameVal=$(argValue moduleName)
 echo "moduleNameVal is $moduleNameVal length ${#moduleNameVal} "
 
-exit
-
 testsuite=all
 if [ $# -gt 0 ]
   then
