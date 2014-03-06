@@ -14,13 +14,14 @@ echo "execVal is $execVal length ${#execVal} "
 moduleNameVal=$(argValue moduleName)
 echo "moduleNameVal is $moduleNameVal length ${#moduleNameVal} "
 
-testsuite=all
+
 if [ $# -gt 0 ]
   then
     if [ "$execVal" == 'all' ]
     then
         echo "calling  $CSDIR/modules_yii_config.sh all"
         $CSDIR/modules_yii_config.sh exec=all branch=$branchVal
+        testsuite=all
     elif [ "$execVal" == 'Modules' ]
     then
         testsuite=Modules
@@ -29,6 +30,7 @@ if [ $# -gt 0 ]
     else
         echo "calling  $CSDIR/modules_yii_config.sh exec=$execVal branch=$branchVal"
         $CSDIR/modules_yii_config.sh exec=$execVal branch=$branchVal
+        testsuite=core
     fi
 else
     echo "calling  $CSDIR/modules_yii_config.sh branchVal=develop"
