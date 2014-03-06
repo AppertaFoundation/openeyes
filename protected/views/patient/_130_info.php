@@ -95,7 +95,7 @@
 					</div>
 
 					<?php
-					$this->renderPartial('_fuzzy_date', array('form'=>$form))?>
+					$this->renderPartial('_fuzzy_date', array('form'=>$form, 'date' => $info->cvi_status_date))?>
 
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 					<div class="buttons">
