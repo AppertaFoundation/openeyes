@@ -50,17 +50,12 @@ then
 else
   echo "" > .enabled-modules
   echo 'No module set up required, just running core!'
-  exit 0
+  #exit 0
 fi
 
 enabled_modules=".enabled-modules"
 modules_path="protected/modules"
 modules_conf_string=""
-
-#git clone modules
-echo "Cloning/checkout modules"
-bin/clone-modules.sh $branchVal
-bin/oe-git pull
 
 #set up modules in conf
 while read module
@@ -77,3 +72,8 @@ echo "Modules $modules_conf_string"
 #'modules' => array(
 sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.autotest.php > protected/config/local/common.php
 echo 'Moved config files'
+
+#git clone modules
+echo "Cloning/checkout modules"
+bin/clone-modules.sh $branchVal
+bin/oe-git pull
