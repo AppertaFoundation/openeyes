@@ -19,27 +19,16 @@
 
 
 return array(
-	'firm1' => array(
+	'subspecialty1' => array(
 		'id' => 1,
-		'service_subspecialty_assignment_id' => '1',
-		'pas_code' => 'AEAB',
-		'name' => 'Aylward Firm'
+		'name' => 'Subspecialty 1',
+		'ref_spec' => 'SS1',
+		'specialty_id' => 109,
 	),
-	'firm2' => array(
-		'id' => 2,
-		'service_subspecialty_assignment_id' => '2',
-		'pas_code' => 'ADCR',
-		'name' => 'Collin Firm'
-	),
-	'firm3' => array(
-		'3' => 3,
-		'service_subspecialty_assignment_id' => '2',
-		'pas_code' => 'CAAB',
-		'name' => 'Allan Firm'
-	),
-	'firm4' => array(
-		'id' => 4,
-		'service_subspecialty_assignment_id' => null,
-		'name' => 'Support Services Firm'
+	'subspecialty2' => array(
+			'id' => 2,
+			'name' => 'Subspecialty 2',
+			'ref_spec' => 'SS2',
+			'specialty_id' => 109,
 	),
 );

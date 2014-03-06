@@ -118,7 +118,12 @@ class DrugTest extends CDbTestCase	{
 	*	@todo	Implement	testAttributeLabels().
 	*/
 	public function testAttributeLabels()	{
-		$expected	=	array();
+		$expected	=	array(
+			'type_id' => 'Type',
+			'default_duration_id' => 'Default Duration',
+			'default_frequency_id' => 'Default Frequency',
+			'default_route_id' => 'Default Route'
+		);
 
 		$this->assertEquals($expected,	$this->model->attributeLabels());
 	}
