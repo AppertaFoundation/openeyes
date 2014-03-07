@@ -237,13 +237,7 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 
 	public function getListForInstitution()
 	{
-		if (empty(Yii::app()->params['institution_code'])) {
-			throw new Exception("Institution code is not set");
-		}
-
-		if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
-			throw new Exception("Institution not found: ".Yii::app()->params['institution_code']);
-		}
+		$institution = Institution::model()->getCurrent();
 
 		$criteria = new CDbCriteria;
 		$criteria->addCondition('institution_id=:institution_id');
@@ -252,7 +246,7 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 
 		return Site::model()->active()->findAll($criteria);
 	}
-	
+
 	public function getReplyToAddress($params = array())
 	{
 		if ($contact = $this->replyTo) {

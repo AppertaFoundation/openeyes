@@ -435,13 +435,7 @@ class User extends BaseActiveRecordVersionedSoftDelete
 
 	public function getNotSelectedSiteList()
 	{
-		if (empty(Yii::app()->params['institution_code'])) {
-			throw new Exception("Institution code is not set");
-		}
-
-		if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
-			throw new Exception("Institution not found: ".Yii::app()->params['institution_code']);
-		}
+		$institution = Institution::model()->getCurrent();
 
 		$site_ids = array();
 		foreach ($this->siteSelections as $site) {
