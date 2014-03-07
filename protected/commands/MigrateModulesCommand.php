@@ -37,7 +37,7 @@ DESCRIPTION
 EOD;
 	}
 
-	public function actionUp($interactive = true)
+	public function actionUp($interactive = true, $connectionID = false)
 	{
 		$commandPath = Yii::getFrameworkPath() . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'commands';
 		$modules = Yii::app()->modules;
@@ -49,6 +49,10 @@ EOD;
 				} else {
 					$args = array('yiic', 'migrate', '--migrationPath='.$module.'.migrations');
 				}
+				if($connectionID){
+					$args[] = '--connectionID=' . $connectionID;
+				}
+
 				$runner = new CConsoleCommandRunner();
 				$runner->addCommands($commandPath);
 				$runner->run($args);
