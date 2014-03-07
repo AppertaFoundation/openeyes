@@ -2,6 +2,7 @@ module.exports = {
 	options: {
 		run: true,
 		reporter: 'Spec',
+		log: true
 	},
 	all: {
 		src: [

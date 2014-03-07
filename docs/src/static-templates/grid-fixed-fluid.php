@@ -28,7 +28,7 @@
 }
 </style>
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 		<div class="container content">
 			<div class="row test">

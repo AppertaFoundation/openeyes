@@ -22,16 +22,13 @@ class FirmTest extends CDbTestCase
 {
 
 	public $fixtures = array(
-		'Consultant',
 		'services' => 'Service',
 		'specialties' => 'Specialty',
 		'serviceSubspecialtyAssignment' => 'ServiceSubspecialtyAssignment',
 		'firms' => 'Firm',
 		'FirmUserAssignments' => 'FirmUserAssignment',
 		'users' => 'User',
-		//'userContactAssignment' => 'UserContactAssignment',
 		'contacts' => 'Contact',
-		'consultants' => 'Consultant'
 	);
 
 	/**

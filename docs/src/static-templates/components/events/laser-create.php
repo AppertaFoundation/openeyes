@@ -124,7 +124,7 @@
 									<a href="#" class="icon-remove-side">Remove eye</a>
 									<div class="eyedraw-row row field-row anterior-segment">
 										<div class="fixed column">
-											<img src="img/eyedraw/large.png" />
+											<img src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
 										</div>
 									</div>
 								</div>
@@ -132,7 +132,7 @@
 									<a href="#" class="icon-remove-side">Remove eye</a>
 									<div class="eyedraw-row row field-row anterior-segment">
 										<div class="fixed column">
-											<img src="img/eyedraw/large.png" />
+											<img src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
 										</div>
 									</div>
 								</div>

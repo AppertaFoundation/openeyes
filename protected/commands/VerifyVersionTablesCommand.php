@@ -20,6 +20,8 @@
 class VerifyVersionTablesCommand extends CConsoleCommand {
 	public function run($args)
 	{
+		$this->nuke_cache();
+
 		if (isset($args[0])) {
 			if ($args[0] == 'all') {
 				$this->scanModels("models");
@@ -122,7 +124,9 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 
 		foreach ($_table->foreignKeys as $column => $properties) {
 			if (!isset($_table_version->foreignKeys[$column])) {
-				echo "$_table_version->name doesn't have a foreign key on column $column\n";
+				if ($this->table_soft_deleted_or_not_excluded($properties[0])) {
+					echo "$_table_version->name doesn't have a foreign key on column $column\n";
+				}
 			} else {
 				if ($_table_version->foreignKeys[$column][0] != $properties[0]) {
 					echo "$_table_version->name foreign key on $column table doesn't match\n";
@@ -153,7 +157,7 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 			echo "$_table_version->name\->version_id has the wrong type ({$_table_version->columns['version_id']->dbType} should be int(10) unsigned)\n";
 		}
 
-		if ($_table_version->hasProperty('deleted')) {
+		if ($this->is_soft_deleted($_table_version)) {
 			if (!isset($_table_version->foreignKeys['id'])) {
 				echo "$_table_version->name doesn't have foreign key on column id\n";
 			} else {
@@ -169,5 +173,54 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 				echo "$_table_version->name has a foreign key on column id\n";
 			}
 		}
+	}
+
+	public function nuke_cache()
+	{
+		$this->wipe_files("../cache/");
+		$this->wipe_files("cache/");
+	}
+
+	public function wipe_files($dir, $root = true)
+	{
+		$dh = opendir($dir);
+
+		while ($file = readdir($dh)) {
+			if (!preg_match('/^\.\.?$/',$file)) {
+				if (is_file("$dir/$file")) {
+					if ($file != '.gitignore') {
+						if (!@unlink("$dir/$file")) {
+							echo "Error: unable to remove $dir/$file\n";
+							exit;
+						}
+					}
+				} else {
+					$this->wipe_files("$dir/$file",false);
+				}
+			}
+		}
+
+		closedir($dh);
+
+		if (!$root) {
+			if (!@rmdir($dir)) {
+				echo "Error: unable to remove $dir/$file\n";
+				exit;
+			}
+		}
+	}
+
+	public function is_soft_deleted($table)
+	{
+		return (isset($table->columns['deleted']) || isset($table->columns['active']) || isset($table->columns['discontinued']));
+	}
+
+	public function table_soft_deleted_or_not_excluded($table_name)
+	{
+		$exclude = array('patient','practice','subspecialty','specialty','disorder','element_type','episode_status','eye','event_group','event_type','service_subspecialty_assignment','import_source','service','setting_field_type','period','protected_file','language');
+
+		if (in_array($table_name,$exclude)) return false;
+
+		return $this->is_soft_deleted(Yii::app()->db->getSchema()->getTable($table_name));
 	}
 }

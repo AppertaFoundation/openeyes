@@ -3,27 +3,37 @@ CSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # possible sh alternative DIR=$(readlink -f $(dirname $0))
 echo "Current script dir: $CSDIR"
 
-testsuite=all
+. $CSDIR/ciFunctions.sh
+
+branchVal=$(argValue branch)
+echo "branchVal is $branchVal length ${#branchVal}  "
+
+execVal=$(argValue exec)
+echo "execVal is $execVal length ${#execVal} "
+
+moduleNameVal=$(argValue moduleName)
+echo "moduleNameVal is $moduleNameVal length ${#moduleNameVal} "
+
+
 if [ $# -gt 0 ]
   then
-    if [ "$1" == 'all' ] || [ "$1" == 'Modules' ]
+    if [ "$execVal" == 'all' ]
     then
-        if [ "$1" == 'Modules' ]
-        then
-            testsuite=Modules
-            echo "calling  $CSDIR/modules_yii_config.sh $2"
-            $CSDIR/modules_yii_config.sh $2
-        else
-            echo "calling  $CSDIR/modules_yii_config.sh all"
-            $CSDIR/modules_yii_config.sh all
-        fi
+        echo "calling  $CSDIR/modules_yii_config.sh exec=all branch=$branchVal"
+        $CSDIR/modules_yii_config.sh exec=all branch=$branchVal
+        testsuite=all
+    elif [ "$execVal" == 'Modules' ]
+    then
+        testsuite=Modules
+        echo "calling  $CSDIR/modules_yii_config.sh exec=Modules branch=$branchVal moduleName=$moduleNameVal"
+        $CSDIR/modules_yii_config.sh moduleName=$moduleNameVal branch=$branchVal exec=Modules
     else
-        echo "calling  $CSDIR/modules_yii_config.sh $1"
-        $CSDIR/modules_yii_config.sh $1
+        echo "calling  $CSDIR/modules_yii_config.sh exec=$execVal branch=$branchVal"
+        $CSDIR/modules_yii_config.sh exec=$execVal branch=$branchVal
+        testsuite=core
     fi
 else
-    echo "calling  $CSDIR/modules_yii_config.sh"
-    $CSDIR/modules_yii_config.sh
+    echo "just running core no need to call modules_yii_config.sh"
     testsuite=core
 fi
 

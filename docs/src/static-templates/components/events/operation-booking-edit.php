@@ -26,10 +26,10 @@
 			</header>
 			<fieldset class="element-fields">
 				<fieldset class="row field-row">
-					<legend class="small-2 column">
+					<legend class="large-2 column">
 						Eyes:
 					</legend>
-					<div class="small-10 column">
+					<div class="large-10 column">
 						<label class="inline highlight">
 							<input type="radio" />
 							Right
@@ -45,10 +45,10 @@
 					</div>
 				</fieldset>
 				<div class="row field-row">
-					<div class="small-2 column">
+					<div class="large-2 column">
 						<label>Diagnosis:</label>
 					</div>
-					<div class="small-4 column end">
+					<div class="large-4 column end">
 						<div class="panel diagnosis">Blepharospasm</div>
 						<fieldset>
 							<legend>Change diagnosis:</legend>
@@ -72,8 +72,8 @@
 			</header>
 			<fieldset class="element-fields">
 				<fieldset class="row field-row">
-					<legend class="small-2 column">Eyes:</legend>
-					<div class="small-10 column">
+					<legend class="large-2 column">Eyes:</legend>
+					<div class="large-10 column">
 						<label class="inline highlight">
 							<input type="radio" />
 							Right
@@ -232,7 +232,7 @@
 			<div class="element-fields">
 				<fieldset class="row field-row">
 					<legend class="large-2 column">
-							Schedule options
+						Schedule options
 					</legend>
 					<div class="large-4 column end">
 						<label class="inline highlight">

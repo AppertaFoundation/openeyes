@@ -182,12 +182,7 @@ class SiteController extends BaseController
 			}
 		}
 
-		// FIXME this needs more thought
-		if (isset(Yii::app()->params['institution_code'])) {
-			$institution = Institution::model()->find('source_id=? and remote_id=?',array(1,Yii::app()->params['institution_code']));
-		} else {
-			$institution = Institution::model()->find('source_id=? and remote_id=?',array(1,'RP6'));
-		}
+		$institution = Institution::model()->getCurrent();
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('institution_id',$institution->id);

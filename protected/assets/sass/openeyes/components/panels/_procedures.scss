@@ -25,7 +25,7 @@
 		@extend .panel.procedure;
 		&.readonly {
 			.row {
-				padding-bottom: .5em;
+				padding-bottom: 8px;
 				&:last-child {
 					padding-bottom: 0;
 				}

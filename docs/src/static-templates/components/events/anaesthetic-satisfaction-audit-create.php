@@ -52,7 +52,7 @@
 									<input type="range" min="0" max="10" step="1" style="width:340px;" />
 								</div>
 								<div class="field-row">
-									<img class="field_key" id="pain_key" src="/protected/modules/OphOuAnaestheticsatisfactionaudit/assets/img/painscale_adult.png" />
+									<img class="field_key" id="pain_key" src="<?php echo $assets_root_path?>/assets/modules/OphOuAnaestheticsatisfactionaudit/assets/img/painscale_adult.png" />
 								</div>
 							</div>
 						</div>

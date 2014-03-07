@@ -45,24 +45,28 @@
 	@extend .clearfix;
 	background: #b3b0ae image-url("_structure/openeyes_footer.png") no-repeat right top;
 	.info {
-		font-size: emCalc(10px);
-		line-height: 1.5em;
-		padding-bottom: emCalc(5px);
-		padding-top: emCalc(5px);
+		font-size: rem-calc(10px);
+		line-height: rem-calc(15px);
+		padding-bottom: 3px;
+		padding-top: 3px;
 		.copyright {
 			color: #666666;
 		}
 	}
 	.help {
-		font-size: emCalc(13px);
+		font-size: rem-calc(11px);
 		text-align: left;
-		// @media #{$small} {
-			text-align: center;
-		// }
+		text-align: center;
+		&.large-centered {
+			float: none;
+		}
 		.panel {
-			@include panel(#e2dfdb, emCalc(10px) emCalc(10px) emCalc(10px) - emCalc(4px) emCalc(10px));
+			@include panel(#e2dfdb, 8px 8px 6px 8px);
 			@include border-radius(0 0 3px 3px);
 			margin: 1px 0 0 0;
+			@media print {
+				padding: 0;
+			}
 		}
 		.inline-list {
 			display: inline-block;
@@ -70,14 +74,18 @@
 			li {
 				border-right: 1px solid #aaaaaa;
 				display: inline-block;
+				font-size: rem-calc(11px);
 				line-height: 1;
 				list-style: none;
-				margin: 0 emCalc(16px) emCalc(4px) 0;
-				padding: 0 emCalc(16px) 0 0;
+				margin: 0 10px 1px 0;
+				padding: 0 10px 0 0;
 				&:last-child {
 					padding-right: 0;
 					margin-right: 0;
 					border: 0;
+				}
+				@media print {
+					float: none;
 				}
 			}
 		}

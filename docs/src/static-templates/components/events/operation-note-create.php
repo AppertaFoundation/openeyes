@@ -127,7 +127,7 @@
 							<div class="large-8 column">
 								<div class="row">
 									<div class="large-6 column">
-										<img src="img/eyedraw/large.png" />
+										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
 									</div>
 									<div class="large-6 column">
 										<div class="row field-row">
@@ -223,6 +223,7 @@
 													<option>-- Select --</option>
 												</select>
 											</div>
+											<div class="no-selections-msg pill">No selections message.</div>
 											<ul class="multi-select-selections field-row">
 												<li>
 													Decentered IOL

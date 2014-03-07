@@ -3,9 +3,9 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
-<link rel="stylesheet" href="/protected/modules/OphTrOperationbooking/assets/css/module.css" />
+<link rel="stylesheet" href="<?php echo $assets_root_path;?>assets/modules/OphTrOperationbooking/assets/css/module.css" />
 </head>
-<body>
+<body class="open-eyes">
 
 	<div class="alert-box watermark admin">
 		You are logged in as admin. So this is OpenEyes Goldenrod Edition

@@ -132,7 +132,7 @@ class OEMigration extends CDbMigration
 
 				// Process NULLs
 				foreach ($data as &$value) {
-					if ($value == 'NULL') {
+					if (strtolower($value) == 'null') {
 						$value = null;
 					}
 				}

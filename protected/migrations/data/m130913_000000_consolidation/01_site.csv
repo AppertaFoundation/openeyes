@@ -1,2 +1,2 @@
 id,name,remote_id,short_name,fax,telephone,institution_id,location,contact_id,replyto_contact_id,source_id
-1,"City Road",S,Example,"020 7123 4567","020 7123 4567",1,,5,,1
+1,"City Road",S,Example,"020 7123 4567","020 7123 4567",1,,5,null,1

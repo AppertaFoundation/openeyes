@@ -13,6 +13,7 @@ class Prescription extends OpenEyesPage
         'prescriptionFrequencyItem0' => array('xpath' => "//*[@id='prescription_item_0_frequency_id']"),
         'prescriptionDurationItem0' => array('xpath' => "//*[@id='prescription_item_0_duration_id']"),
         'prescriptionComments' => array('xpath' => "//textarea[@id='Element_OphDrPrescription_Details_comments']"),
+        'savePrescription' => array('xpath' => ""),
         'prescriptionSaveDraft' => array('xpath' => "//*[@id='et_save_draft']"),
         'prescriptionSavedOk' => array('xpath' => "//*[@id='flash-success']"),
     );
@@ -77,6 +78,11 @@ class Prescription extends OpenEyesPage
         else {
             throw new BehaviorException("WARNING!!!  Prescription has NOT been saved!!  WARNING!!");
         }
+    }
+
+    public function savePrescription ()
+    {
+        $this->getElement('prescriptionSaveDraft')->click();
     }
 
 }

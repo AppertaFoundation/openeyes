@@ -19,7 +19,7 @@
 	@include box-shadow(2px 2px 2px 0 #999);
 	color: #333;
 	display: none;
-	font-size: emCalc(12px);
+	font-size: rem-calc(12px);
 	font-style: italic;
 	padding: 3px 6px 3px 3px;
 	position: absolute;
