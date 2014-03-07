@@ -19,7 +19,7 @@ if [ $# -gt 0 ]
   then
     if [ "$execVal" == 'all' ]
     then
-        echo "calling  $CSDIR/modules_yii_config.sh all"
+        echo "calling  $CSDIR/modules_yii_config.sh exec=all branch=$branchVal"
         $CSDIR/modules_yii_config.sh exec=all branch=$branchVal
         testsuite=all
     elif [ "$execVal" == 'Modules' ]
