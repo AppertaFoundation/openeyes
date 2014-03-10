@@ -17,9 +17,14 @@
 .alert-box{
 	&.issue {
 		@include alert-style(#fdf2e5);
+		border-color: #f9dab6;
 		&.with-icon {
 			background-image: image-url("_elements/icons/box/issue.png");
 			min-height: 36px;
+			@media print {
+				background-color: #fdf2e5 !important;
+				background-image: image-url("_elements/icons/box/issue.png") !important;
+			}
 		}
 	}
 }

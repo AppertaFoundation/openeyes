@@ -45,16 +45,19 @@
 
 .panel {
 	&.search-examples {
-		font-size: emCalc(13px);
+		font-size: rem-calc(13px);
+		padding: 8px;
 	}
 	&.search {
-		padding-top: emCalc(15px);
-		padding-bottom: emCalc(15px);
+		padding-left: 8px;
+		padding-right: 8px;
+		padding-top: 15px;
+		padding-bottom: 15px;
 		input {
 			margin: 0;
 			&.large {
-				padding-top: emCalc(11px);
-				padding-bottom: emCalc(11px);
+				padding-top: 9px;
+				padding-bottom: 9px;
 			}
 		}
 	}

@@ -15,8 +15,8 @@
 ?>
 <table>
 	<thead>
-		<th class="small-6">Event type</th>
-		<th class="small-6">Item name</th>
+		<th class="large-6">Event type</th>
+		<th class="large-6">Item name</th>
 	</thead>
 	<tbody id="<?= $id ?>">
 	<?php

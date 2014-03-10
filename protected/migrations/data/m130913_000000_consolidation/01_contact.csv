@@ -1,7 +1,7 @@
 id,nick_name,primary_phone,title,first_name,last_name,qualifications,contact_label_id
-1,,,Root,Enoch,,"admin qualification",
-2,,,Example,User,,"user qualification",
+1,,,Root,Enoch,,"admin qualification",3
+2,,,Example,User,,"user qualification",3
 3,,,Mr,Enoch,Root,"admin qualification",3
 4,,,Mr,User,Example,"user qualification",3
-5,,,,,,,
-6,,,,,,,
+5,,,,,,,3
+6,,,,,,,3

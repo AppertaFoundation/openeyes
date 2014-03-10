@@ -29,13 +29,13 @@
 		}
 		label {
 			color: #ffffde;
-			font-size: emCalc(11px);
-			margin-bottom: emCalc(10px);
+			font-size: rem-calc(11px);
+			margin-bottom: 7px;
 			&:last-child {
 				margin: 0;
 			}
 			input {
-				margin-right: emCalc(5px);
+				margin-right: 3px;
 			}
 		}
 	}

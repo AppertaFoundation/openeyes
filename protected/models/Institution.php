@@ -118,4 +118,20 @@ class Institution extends BaseActiveRecordVersionedSoftDelete
 		));
 	}
 
+	/**
+	 * @return Institution
+	 */
+	public function getCurrent()
+	{
+		if (!isset(Yii::app()->params['institution_code'])) {
+			throw new Exception("Institution code is not set");
+		}
+
+		$institution = $this->find('source_id=? and remote_id=?', array(1, Yii::app()->params['institution_code']));
+		if (!$institution) {
+			throw new Exception("Institution with code '" . Yii::app()->params['institution_code'] . "' not found");
+		}
+
+		return $institution;
+	}
 }

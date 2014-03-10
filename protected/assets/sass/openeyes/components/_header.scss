@@ -29,32 +29,34 @@
 // Styleguide 7.1
 .header {
 	min-height: 70px;
-	margin: 0 0 emCalc(10px) 0;
-	// @media #{$small} {
-		margin-bottom: 0;
-	// }
 	.logo {
 		@extend .hide-text;
 		background: image-url("_structure/openeyes.png") no-repeat;
 		background-size: 100%;
 		display: block;
 		height: 70px;
-		margin-left: -1 * $column-gutter / 2;
 		max-width: 210px;
+		@media print {
+			-webkit-print-color-adjust: exact;
+			background: image-url("_structure/openeyes.png") no-repeat !important;
+			background-size: 100% !important;
+		}
 	}
 	&.stuck {
-		background: #a0d7f8 image-url("_structure/miniheader/bg_gradient.png") bottom repeat-x;
-		position: fixed;
-		top: 0;
-		z-index: 10;
-		border-top: none;
-		min-height: 40px;
-		@include border-radius(0);
-		@include box-shadow(0 2px 4px rgba(0, 0, 0, .3));
-		.logo {
-			height: 25px;
-			margin: 8px 0 0 10px;
-			background: image-url("_structure/openeyes_small.png") 0 0 no-repeat;
+		@media screen {
+			background: #a0d7f8 image-url("_structure/miniheader/bg_gradient.png") bottom repeat-x;
+			position: fixed;
+			top: 0;
+			z-index: 10;
+			border-top: none;
+			min-height: 40px;
+			@include border-radius(0);
+			@include box-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+			.logo {
+				height: 25px;
+				margin: 8px 0 0 10px;
+				background: image-url("_structure/openeyes_small.png") 0 0 no-repeat;
+			}
 		}
 	}
 }

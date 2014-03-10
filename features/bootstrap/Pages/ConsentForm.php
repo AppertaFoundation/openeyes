@@ -25,7 +25,8 @@ class ConsentForm extends OpenEyesPage
 		'interpreterRequired' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_interpreter_required']"),
 		'interpreterName' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_interpreter_name']"),
 		'supplementaryConsent' => array('xpath' => "//*[@id='Element_OphTrConsent_Other_include_supplementary_consent']"),
-		'saveConsentForm' => array('xpath' => "//*[@id='et_save_draft']"),
+        'saveConsentForm' => array('xpath' => "//*[@id='et_save']"),
+		'saveConsentFormDraft' => array('xpath' => "//*[@id='et_save_draft']"),
         'saveConsentFormOK' => array('xpath' => "//*[@id='flash-success']"),
 		'test' => array('xpath' => "//*[@id='div_Element_OphTrConsent_Other_anaesthetic_leaflet']"),
 	);
@@ -133,10 +134,15 @@ class ConsentForm extends OpenEyesPage
 		$this->getElement('supplementaryConsent')->click();
 	}
 
-	public function saveConsentForm()
+	public function saveConsentFormDraft()
 	{
-		$this->getElement('saveConsentForm')->click();
+		$this->getElement('saveConsentFormDraft')->click();
 	}
+
+    public function saveConsentForm ()
+    {
+        $this->getElement('saveConsentForm')->click();
+    }
 
     protected function hasConsentSaved ()
     {
@@ -145,7 +151,7 @@ class ConsentForm extends OpenEyesPage
 
     public function saveConsentAndConfirm ()
     {
-        $this->getElement('saveConsentForm')->click();
+        $this->getElement('saveConsentFormDraft')->click();
 
         if ($this->hasConsentSaved()) {
             print "Consent has been saved OK";

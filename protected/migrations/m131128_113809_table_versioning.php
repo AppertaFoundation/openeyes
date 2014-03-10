@@ -1143,6 +1143,7 @@ CREATE TABLE `drug_set_version` (
 		$this->dropPrimaryKey('id','drug_set_version');
 
 		$this->createIndex('drug_set_aid_fk','drug_set_version','id');
+		$this->addForeignKey('drug_set_aid_fk','drug_set_version','id','drug_set','id');
 
 		$this->addColumn('drug_set_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -2280,7 +2281,6 @@ CREATE TABLE `patient_version` (
 	CONSTRAINT `acv_patient_contact_id_fk` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`),
 	CONSTRAINT `acv_patient_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_patient_ethnic_group_id_fk` FOREIGN KEY (`ethnic_group_id`) REFERENCES `ethnic_group` (`id`),
-	CONSTRAINT `acv_patient_gp_id_fk` FOREIGN KEY (`gp_id`) REFERENCES `gp` (`id`),
 	CONSTRAINT `acv_patient_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_patient_practice_id_fk` FOREIGN KEY (`practice_id`) REFERENCES `practice` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
@@ -2348,8 +2348,7 @@ CREATE TABLE `patient_contact_assignment_version` (
 	CONSTRAINT `acv_patient_consultant_assignment_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_patient_consultant_assignment_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_patient_consultant_assignment_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`),
-	CONSTRAINT `acv_patient_contact_assignment_contact_id_fk` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`),
-	CONSTRAINT `acv_patient_contact_assignment_location_id_fk` FOREIGN KEY (`location_id`) REFERENCES `contact_location` (`id`)
+	CONSTRAINT `acv_patient_contact_assignment_contact_id_fk` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 		");
 
@@ -2899,7 +2898,6 @@ CREATE TABLE `referral_version` (
 	CONSTRAINT `acv_referral_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`),
 	CONSTRAINT `acv_referral_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`),
 	CONSTRAINT `acv_referral_firm_id_fk` FOREIGN KEY (`firm_id`) REFERENCES `firm` (`id`),
-	CONSTRAINT `acv_referral_gp_id_fk` FOREIGN KEY (`gp_id`) REFERENCES `gp` (`id`),
 	CONSTRAINT `acv_referral_referral_type_id_fk` FOREIGN KEY (`referral_type_id`) REFERENCES `referral_type` (`id`),
 	CONSTRAINT `acv_referral_service_subspecialty_assignment_id_fk` FOREIGN KEY (`service_subspecialty_assignment_id`) REFERENCES `service_subspecialty_assignment` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
@@ -4003,6 +4001,8 @@ CREATE TABLE `user_site_version` (
 		$this->addColumn('drug_route_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_route_option','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_route_option_version','deleted','tinyint(1) unsigned not null');
+		$this->addColumn('drug_set','deleted','tinyint(1) unsigned not null');
+		$this->addColumn('drug_set_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_type','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_type_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('ethnic_group','deleted','tinyint(1) unsigned not null');
@@ -4102,6 +4102,8 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('drug_route_version','deleted');
 		$this->dropColumn('drug_route_option','deleted');
 		$this->dropColumn('drug_route_option_version','deleted');
+		$this->dropColumn('drug_set','deleted');
+		$this->dropColumn('drug_set_version','deleted');
 		$this->dropColumn('drug_type','deleted');
 		$this->dropColumn('drug_type_version','deleted');
 		$this->dropColumn('ethnic_group','deleted');

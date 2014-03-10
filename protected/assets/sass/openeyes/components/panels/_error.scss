@@ -19,13 +19,16 @@
 		@extend %main-panel;
 		max-width: 520px;
 		.panel {
-			margin-bottom: emCalc(12px);
+			margin-bottom: 10px;
+		}
+		ul {
+			margin-left: 0;
 		}
 		li {
-			margin-left: 1.5em;
+			margin-left: 20px;
 		}
 		h3 {
-			padding-top: emCalc(5px);
+			padding-top: 5px;
 		}
 		.date {
 			color: gray;

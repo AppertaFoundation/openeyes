@@ -15,14 +15,19 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 .alert-box {
+	border-color: #c9c9c9;
 	&.alert {
 		@include alert-style(#ffe6b2);
 		border-color: #fc621f;
 		&.with-icon {
 			background-image: image-url("_elements/icons/box/warning.png");
 			min-height: 36px;
-			padding-bottom: emCalc(14px);
-			padding-top: emCalc(14px);
+			padding-bottom: 11px;
+			padding-top: 11px;
+			@media print {
+				background-color: #ffe6b2 !important;
+				background-image: image-url("_elements/icons/box/warning.png") !important;
+			}
 		}
 	}
 }

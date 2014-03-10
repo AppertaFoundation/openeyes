@@ -31,15 +31,15 @@
 		@include border-bottom-left-radius(0);
 		background: transparent;
 		border: 0;
-		margin: emCalc(5px) 0 0 0;
-		padding: 0 0 emCalc(2px) 0;
+		margin: 5px 0 0 0;
+		padding: 0 0 2px 0;
 		.specialty-title {
 			@include border-radius(0 5px 0 0);
 			background: #eaddaf;
 			color: #504c3c;
-			font-size: emCalc(11px);
+			font-size: rem-calc(11px);
 			margin: 0;
-			padding: emCalc(8px) emCalc(4px) emCalc(12px) emCalc(8px);
+			padding: 6px 3px 8px 6px;
 		}
 	}
 }

@@ -6,6 +6,9 @@
 			</li>
 		</ul>
 		<div class="button-bar right">
+			<a class="cancel event-action button small">
+				Cancel
+			</a>
 			<a href="#" class="button small secondary">
 				Save
 			</a>

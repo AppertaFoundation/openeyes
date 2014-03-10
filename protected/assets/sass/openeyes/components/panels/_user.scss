@@ -49,55 +49,85 @@
 .panel {
 	&.user {
 		@extend .clearfix;
-		@include panel(#dae6f1, 0 emCalc(10px) emCalc(5px) emCalc(10px));
-		@include border-radius($global-radius);
+		@include panel(#dae6f1, 0 10px 5px 10px);
+		@include border-radius(0 0 $global-radius $global-radius);
 		background: {
 			image: image-url("_elements/icons/user/idcard_bg.png");
 			position: left bottom;
 			repeat: no-repeat;
 		};
 		border-color: #b3b0ae;
+		border-top: 0;
 		margin: 0;
-		// @media #{$small} {
-			border-top: 0;
-			@include border-radius(0 0 $global-radius $global-radius);
-		// }
-		.stuck & {
-			@include border-radius(0);
-			border-bottom: 0;
+		@media screen {
+			.stuck & {
+				@include border-radius(0);
+				border-bottom: 0;
+			}
 		}
 		.user-id {
-			.stuck & {
-				margin-top: 5px;
+			@media screen {
+				.stuck & {
+					margin-top: 5px;
+				}
+			}
+			@media print {
+				padding-top: 5px;
 			}
 		}
 		.user-id, .user-firm {
-			font-size: emCalc(12px);
-			min-height: emCalc(12px) * 2;
+			font-size: rem-calc(12px);
+			min-height: rem-calc(12px) * 2;
+			@media print {
+				min-height: 0;
+			}
 		}
 		.user-firm {
-			padding-top: emCalc(20px);
-			.stuck & {
-				margin-top: 5px;
+			padding-top: 15px;
+			@media screen {
+				.stuck & {
+					margin-top: 5px;
+				}
+			}
+			.change-firm {
+				@media print {
+					display: none;
+				}
+			}
+			@media print {
+				text-align: left !important;
+				padding-top: 5px;
 			}
 		}
 		.user-name {
-			padding-top: emCalc(5px);
+			padding-top: 4px;
 			span, strong {
 				float: left;
+				@media print {
+					float: none;
+				}
 			}
 			strong {
 				margin: 2px 0 0 3px;
 			}
-			a:hover {
-				[class*="icon-user-panel"] {
-					background-position: 0 0;
+			a {
+				&:hover {
+					[class*="icon-user-panel"] {
+						background-position: 0 0;
+					}
 				}
 			}
-
+			@media print {
+				display: inline !important;
+			}
 		}
 		.row {
 			clear: both;
+		}
+		@media print {
+			.column, .columns {
+				width: 100%;
+			}
 		}
 	}
 }

@@ -32,6 +32,7 @@ modules_conf_string=""
 #git clone modules
 echo "Cloning/checkout modules"
 bin/clone-modules.sh develop
+bin/oe-git pull
 
 # install Yii
 git submodule update --init
@@ -98,6 +99,6 @@ vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=regression --profile=$PRO
 #vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=diagnosis --profile=$PROFILE --expand --config=/var/www/behat.yml"
 #vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=phasing --profile=$PROFILE --expand --config=/var/www/behat.yml"
 #vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=prescription --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=therapy --profile=$PROFILE --expand --config=/var/www/behat.yml"
+#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=scenario --profile=$PROFILE --expand --config=/var/www/behat.yml"
 
 exit

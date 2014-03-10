@@ -115,6 +115,9 @@
 					<div class="data-row">
 						<div class="field-value">
 							Some comments here.
+							<ul>
+								<li>A list item</li>
+							</ul>
 						</div>
 					</div>
 				</div>

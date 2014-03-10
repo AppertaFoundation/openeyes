@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /**
  * OpenEyes
  *
@@ -16,26 +15,152 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/* line 19, ../sass/openeyes/admin/components/_forms.scss */
+/* line 77, ../components/foundation/scss/foundation/components/_top-bar.scss */
+meta.foundation-mq-topbar {
+  font-family: "/all/";
+  width: 1230px;
+}
+
+@media print {
+  /* line 18, ../sass/openeyes/components/admin/_content.scss */
+  .admin.content {
+    width: 100%;
+  }
+}
+
+/* line 3, ../sass/openeyes/components/admin/_navigation.scss */
+.navigation.admin {
+  list-style-type: none;
+  margin: 0;
+}
+/* line 6, ../sass/openeyes/components/admin/_navigation.scss */
+.navigation.admin a {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  background: #fff;
+  display: block;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+}
+/* line 12, ../sass/openeyes/components/admin/_navigation.scss */
+.navigation.admin a:hover {
+  background: #3665ff;
+  color: #fff;
+}
+/* line 16, ../sass/openeyes/components/admin/_navigation.scss */
+.navigation.admin a.selected {
+  background: #ccc;
+  color: #333;
+}
+/* line 22, ../sass/openeyes/components/admin/_navigation.scss */
+.navigation.admin li:last-child a {
+  margin: 0;
+}
+
+/* line 19, ../sass/openeyes/components/admin/_forms.scss */
 .admin .field-row:last-child {
   padding: 0;
 }
-/* line 23, ../sass/openeyes/admin/components/_forms.scss */
-.admin legend {
-  font-size: 1.1em;
+
+/* line 19, ../sass/openeyes/components/admin/_boxes.scss */
+.box.admin {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #f3f3f3;
+  margin-bottom: 16px;
+  padding: 10px;
+  background: #f2f2f2;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: #fafafa;
+  margin: 0 0 0.75rem 0;
+}
+/* line 48, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.admin > :first-child {
+  margin-top: 0;
+}
+/* line 49, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.admin > :last-child {
+  margin-bottom: 0;
+}
+/* line 54, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.admin h1, .box.admin h2, .box.admin h3, .box.admin h4, .box.admin h5, .box.admin h6, .box.admin p {
+  color: #333333;
+}
+/* line 58, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.admin h1, .box.admin h2, .box.admin h3, .box.admin h4, .box.admin h5, .box.admin h6 {
+  line-height: 1;
+  margin-bottom: 0.625rem;
+}
+/* line 60, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.admin h1.subheader, .box.admin h2.subheader, .box.admin h3.subheader, .box.admin h4.subheader, .box.admin h5.subheader, .box.admin h6.subheader {
+  line-height: 1.4;
+}
+/* line 24, ../sass/openeyes/components/admin/_boxes.scss */
+.box.admin h2 {
+  margin-bottom: 12px;
+}
+/* line 28, ../sass/openeyes/components/admin/_boxes.scss */
+.box.admin .table-actions select {
+  width: auto;
+}
+/* line 32, ../sass/openeyes/components/admin/_boxes.scss */
+.box.admin .box-header {
+  margin: 0;
+}
+/* line 34, ../sass/openeyes/components/admin/_boxes.scss */
+.box.admin .box-header .box-title {
+  float: left;
+}
+/* line 38, ../sass/openeyes/components/admin/_boxes.scss */
+.box.admin .box-actions {
+  float: right;
+}
+@media print {
+  /* line 19, ../sass/openeyes/components/admin/_boxes.scss */
+  .box.admin {
+    border: 0;
+    padding: 0;
+  }
 }
 
-/* line 19, ../sass/openeyes/admin/components/_treeview.scss */
+/* line 19, ../sass/openeyes/components/admin/_treeview.scss */
 .admin .treeview ul {
   margin-top: 0;
   background-color: transparent;
 }
-/* line 23, ../sass/openeyes/admin/components/_treeview.scss */
+/* line 23, ../sass/openeyes/components/admin/_treeview.scss */
 .admin .treeview li {
   padding-top: 0;
   padding-bottom: 0;
 }
-/* line 26, ../sass/openeyes/admin/components/_treeview.scss */
-.admin .treeview li li {
-  font-size: 1em;
+
+/* line 3, ../sass/openeyes/components/admin/_sidebar.scss */
+.sidebar.admin h2 {
+  border-bottom: 1px dotted #ccc;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+}
+@media print {
+  /* line 2, ../sass/openeyes/components/admin/_sidebar.scss */
+  .sidebar.admin {
+    display: none;
+  }
+}
+
+/* line 19, ../sass/openeyes/components/admin/_type.scss */
+h1.badge.admin {
+  background: #666;
+  border-left: none;
+  border: 1px solid #999;
+  color: #fff;
+}
+@media print {
+  /* line 19, ../sass/openeyes/components/admin/_type.scss */
+  h1.badge.admin {
+    border: 0;
+  }
 }

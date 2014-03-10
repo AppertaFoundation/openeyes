@@ -359,7 +359,8 @@ class Examination extends OpenEyesPage
 
     public function leftAxis ($axis)
     {
-        $this->getElement('sphereRightAxis')->setValue($axis);
+		$this->waitForElementDisplayBlock('#Element_OphCiExamination_Refraction_right_axis');
+		$this->getElement('sphereRightAxis')->setValue($axis);
     }
 
     public function leftType ($type)
@@ -383,7 +384,8 @@ class Examination extends OpenEyesPage
 
     public function RightAxis ($axis)
     {
-        $this->getElement('sphereLeftAxis')->setValue($axis);
+		$this->waitForElementDisplayBlock('#Element_OphCiExamination_Refraction_left_axis');
+		$this->getElement('sphereLeftAxis')->setValue($axis);
         $this->getElement('sphereLeftAxis')->blur();
 
     }
@@ -952,12 +954,14 @@ class Examination extends OpenEyesPage
 
     protected function doesRightAxisExist()
     {
-        return (bool) $this->find('xpath', $this->getElement('existingRightAxisCheck')->getXpath());
+			$this->waitForElementDisplayBlock('.element-eye.right-eye.column');
+			return (bool) $this->find('xpath', $this->getElement('existingRightAxisCheck')->getXpath());
     }
 
     protected function doesLeftAxisExist()
     {
-        return (bool) $this->find('xpath', $this->getElement('existingLeftAxisCheck')->getXpath());
+			$this->waitForElementDisplayBlock('.element-eye.left-eye.column');
+			return (bool) $this->find('xpath', $this->getElement('existingLeftAxisCheck')->getXpath());
     }
 
     public function rightAxisCheck ()

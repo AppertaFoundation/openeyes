@@ -20,9 +20,18 @@
 	border-style: solid;
 	border-width: 0 5px 5px;
 	margin: 0;
-	padding: 0 emCalc(5px) emCalc(10px) emCalc(5px);
+	padding: 0 5px 10px 5px;
+	@media print {
+		background: transparent;
+		border: 0;
+		margin: 0;
+		padding: 0;
+	}
 	&.column {
 		width: 85.4%;
+		@media print {
+			width: 100%;
+		}
 	}
 	.event-content {
 		background-position: right top;
@@ -35,31 +44,44 @@
 		@extend .clearfix;
 		background: #eaddaf;
 		border-bottom: 5px solid #a29d8a;
-		margin: 0 emCalc(-10px);
-		padding: emCalc(6px) emCalc(10px) 0 emCalc(10px);
-		&.stuck {
-			@include box-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-			position: fixed;
-			top: 39px;
-			z-index: 9;
+		margin: 0 -10px;
+		padding: 6px 10px 0 10px;
+		@media print {
+			display: none;
+		}
+		@media screen {
+			&.stuck {
+				@include box-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+				position: fixed;
+				top: 39px;
+				z-index: 9;
+			}
+		}
+	}
+	.sticky-wrapper-event-header {
+		@media print {
+			display: none !important;
 		}
 	}
 	.event-title {
 		// We keep px units for padding as we have a background image on this element.
 		background-position: left center;
 		background-repeat: no-repeat;
-		font-size: emCalc(19px);
+		font-size: rem-calc(19px);
 		margin-left: 8px;
 		padding: 9px 0 9px 50px;
+		@media print {
+			padding-left: 0;
+		}
 	}
 	.metadata {
 		border-top: 1px dotted #dae6f1;
 		margin: 10px;
-		padding-top: emCalc(8px);
+		padding-top: 8px;
 		.info {
 			color: #888888;
 			display: inline-block;
-			font-size: emCalc(12px);
+			font-size: rem-calc(12px);
 			font-style: italic;
 			padding-right: 15px;
 		}
@@ -70,6 +92,11 @@
 	.panel {
 		&.comments {
 			@include border-radius(5px);
+		}
+	}
+	&.previous-elements {
+		.metadata {
+			margin-left: 0;
 		}
 	}
 }

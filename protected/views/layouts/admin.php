@@ -42,7 +42,7 @@
 					<aside class="large-3 column sidebar admin">
 						<?php $this->renderPartial('//admin/sidebar'); ?>
 					</aside>
-					<div class="large-9 column admin">
+					<div class="large-9 column content admin">
 						<?php echo $content; ?>
 					</div>
 				</div>

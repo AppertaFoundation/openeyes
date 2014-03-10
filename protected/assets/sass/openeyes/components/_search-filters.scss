@@ -76,7 +76,8 @@
 
 .search-filters {
 	.panel {
-		margin: 0 0 emCalc(10px) 0;
+		margin: 0 0 10px 0;
+		padding: 10px;
 	}
 }
 
@@ -118,19 +119,19 @@
 // Extra search filters vars
 $oe-search-filters-extra-label-height: 30px !default;
 $oe-search-filters-extra-label-line-height: $oe-search-filters-extra-label-height - 2 !default;
-$oe-search-filters-extra-label-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
+$oe-search-filters-extra-label-padding: 0 8px 0 6px !default;
 
 .search-filters-extra {
-	padding: emCalc(2px) 0 0 1px;
+	padding: 2px 0 0 1px;
 	label {
 		float: left;
-		font-size: emCalc(13px);
+		font-size: rem-calc(13px);
 		height: $oe-search-filters-extra-label-height;
 		line-height: $oe-search-filters-extra-label-line-height;
-		margin: 0 emCalc(12px) 0 0;
+		margin: 0 10px 0 0;
 		padding: $oe-search-filters-extra-label-padding;
 		input {
-			margin: -3px emCalc(5px) 0 0;
+			margin: -3px 4px 0 0;
 			vertical-align: middle;
 		}
 	}
@@ -143,7 +144,7 @@ $oe-search-filters-extra-label-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
 		padding: $oe-search-filters-extra-label-padding;
 		input[type="text"] {
 			display: inline-block;
-			margin: emCalc(4px) 0 0 0;
+			margin: 3px 0 0 0;
 			vertical-align: top;
 		}
 		label {
@@ -151,20 +152,20 @@ $oe-search-filters-extra-label-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
 		}
 		.to {
 			display: inline-block;
-			font-size: emCalc(13px);
+			font-size: rem-calc(13px);
 			vertical-align: top;
 		}
 	}
 	.button-group {
 		display: inline-block;
-		margin-top: emCalc(2px);
+		margin-top: 2px;
 		vertical-align: top;
 	}
 	&.audit-filters {
 		fieldset {
 			padding-left: 0;
 			.inline {
-				margin: 0 emCalc(12px);
+				margin: 0 10px;
 				float: none;
 				font-size: $default-font-size;
 				&:first-child {
