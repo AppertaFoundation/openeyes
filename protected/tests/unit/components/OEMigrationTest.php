@@ -133,16 +133,15 @@ class OEMigrationTest extends CDbTestCase
 	public function eraseDirectory($path)
 	{
 		if ($dh = opendir($path)) {
-			while ($file = readdir($dh)) {
-				if (!preg_match('/^\.\.?$/',$file)) {
-					if (is_file($path."/".$file)) {
-						unlink($path."/".$file);
-					} else {
-						$this->eraseDirectory("$path/$file");
-					}
+			$files = scandir($path);
+			foreach ($files  as $file) {
+				if($file != '.' && $file != '..' && is_file($path . DIRECTORY_SEPARATOR . $file)){
+					$fullFilePath = $path . DIRECTORY_SEPARATOR . $file ;
+					$fileRemoved = unlink($fullFilePath);
+					if(!$fileRemoved)
+						echo "\nCould not remove : " .$fullFilePath;
 				}
 			}
-
 			closedir($dh);
 			rmdir($path);
 		}

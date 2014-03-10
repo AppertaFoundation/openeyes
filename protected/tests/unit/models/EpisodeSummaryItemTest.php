@@ -17,7 +17,7 @@ class EpisodeSummaryItemTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'EventType',
-		'subspecialty' => 'SubSpecialty',
+		'subspecialty' => 'Subspecialty',
 		'EpisodeSummaryItem' => 'EpisodeSummaryItem',
 		':episode_summary',
 	);
