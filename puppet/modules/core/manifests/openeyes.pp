@@ -23,6 +23,11 @@ class core::openeyes {
 		source => '/var/www/.htaccess.sample'
 	}
 
+	file { '/var/www/protected/config/local/test.php':
+		ensure => file,
+		source => '/var/www/protected/config/local/test.sample.php'
+	}
+
 	exec { 'create application config':
 		unless  => '/usr/bin/test -e /var/www/protected/config/local/common.php',
 		command => '/bin/cp /var/www/protected/config/local/common.vagrant.php /var/www/protected/config/local/common.php;',
