@@ -56,23 +56,22 @@ return array(
 
 	// Application components
 	'components' => array(
-		'mailer' => array(
-			'class' => 'Mailer',
-			'mode' => 'sendmail',
+		'assetManager' => array(
+			'class'=>'AssetManager',
+			// Use symbolic links to publish the assets when in debug mode.
+			'linkAssets' => defined('YII_DEBUG') && YII_DEBUG,
 		),
-		'moduleAPI' => array(
-			'class' => 'ModuleAPI',
+		'authManager' => array(
+			'class' => 'AuthManager',
+			'connectionID' => 'db',
 		),
-		'request' => array(
-			'enableCsrfValidation' => true,
-			'class'=>'HttpRequest',
-			'noCsrfValidationRoutes'=>array(
-				'site/login', //disabled csrf check on login form
-			),
+		'cache' => array(
+			'class' => 'system.caching.CFileCache',
+			'cachePath' => 'cache',
+			'directoryLevel' => 1
 		),
-		'event' => array(
-			'class' => 'OEEventManager',
-			'observers' => array(),
+		'cacheBuster' => array(
+			'class'=>'CacheBuster',
 		),
 		'clientScript' => array(
 			'class' => 'ClientScript',
@@ -98,26 +97,6 @@ return array(
 				)
 			),
 		),
-		'user' => array(
-			'class' => 'CWebUser',
-			// Enable cookie-based authentication
-			'allowAutoLogin' => true,
-		),
-		'urlManager' => array(
-			'urlFormat' => 'path',
-			'showScriptName' => false,
-			'rules' => array(
-				'' => 'site/index',
-				'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
-				'file/view/<id:\d+>/<dimensions:\d+(x\d+)?>/<name:\w+\.\w+>' => 'protectedFile/thumbnail',
-				'file/view/<id:\d+>/<name:\w+\.\w+>' => 'protectedFile/view',
-				'<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
-				'<controller:\w+>/<id:\d+>' => '<controller>/view',
-				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
-				'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
-				'<controller:\w+>/<action:\w+>/<hospital_num:\d+>' => 'patient/results',
-			),
-		),
 		'db' => array(
 			'class' => 'CDbConnection',
 			'connectionString' => 'mysql:host=localhost;dbname=openeyes',
@@ -127,18 +106,13 @@ return array(
 			'charset' => 'utf8',
 			'schemaCachingDuration' => 300,
 		),
-		'authManager' => array(
-			'class' => 'AuthManager',
-			'connectionID' => 'db',
-		),
-		'cache' => array(
-			'class' => 'system.caching.CFileCache',
-			'cachePath' => 'cache',
-			'directoryLevel' => 1
-		),
 		'errorHandler' => array(
 			// use 'site/error' action to display errors
 			'errorAction' => 'site/error',
+		),
+		'event' => array(
+			'class' => 'OEEventManager',
+			'observers' => array(),
 		),
 		'log' => array(
 			'class' => 'FlushableLogRouter',
@@ -169,6 +143,20 @@ return array(
 				),
 			),
 		),
+		'mailer' => array(
+			'class' => 'Mailer',
+			'mode' => 'sendmail',
+		),
+		'moduleAPI' => array(
+			'class' => 'ModuleAPI',
+		),
+		'request' => array(
+			'enableCsrfValidation' => true,
+			'class'=>'HttpRequest',
+			'noCsrfValidationRoutes'=>array(
+				'site/login', //disabled csrf check on login form
+			),
+		),
 		'session' => array(
 			'class' => 'CDbHttpSession',
 			'connectionID' => 'db',
@@ -178,17 +166,29 @@ return array(
 				'lifetime' => 300,
 			),*/
 		),
-		'cacheBuster' => array(
-			'class'=>'CacheBuster',
+		'urlManager' => array(
+			'urlFormat' => 'path',
+			'showScriptName' => false,
+			'rules' => array(
+				'' => 'site/index',
+				'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
+				'file/view/<id:\d+>/<dimensions:\d+(x\d+)?>/<name:\w+\.\w+>' => 'protectedFile/thumbnail',
+				'file/view/<id:\d+>/<name:\w+\.\w+>' => 'protectedFile/view',
+				'<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
+				'<controller:\w+>/<id:\d+>' => '<controller>/view',
+				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+				'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+				'<controller:\w+>/<action:\w+>/<hospital_num:\d+>' => 'patient/results',
+			),
 		),
-		'assetManager' => array(
-			'class'=>'AssetManager',
-			// Use symbolic links to publish the assets when in debug mode.
-			'linkAssets' => defined('YII_DEBUG') && YII_DEBUG,
+		'user' => array(
+			'class' => 'CWebUser',
+			// Enable cookie-based authentication
+			'allowAutoLogin' => true,
 		),
 		'widgetFactory'=>array(
 			'class' => 'WidgetFactory'
-		)
+		),
 	),
 
 	'params'=>array(
