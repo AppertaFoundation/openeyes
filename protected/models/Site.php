@@ -37,7 +37,7 @@
  * @property Contact $replyTo
  * @property ImportSource $import
  */
-class Site extends BaseActiveRecordVersionedSoftDelete
+class Site extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -54,6 +54,11 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 	public function tableName()
 	{
 		return 'site';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	public function behaviors()
@@ -131,43 +136,10 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 		));
 	}
 
-	/**
-	 * Fetch an array of site IDs and names
-	 * @return array
-	 */
-	public function getList()
+	public function getListForCurrentInstitution($field = 'short_name')
 	{
-		$list = Site::model()->active()->findAll(array('order' => 'short_name'));
-
 		$result = array();
-
-		foreach ($list as $site) {
-			$result[$site->id] = $site->short_name;
-		}
-
-		return $result;
-	}
-
-	public function getListForCurrentInstitution($field=false, $include_deleted=false)
-	{
-		if (!$field) $field = 'short_name';
-
-		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-
-		$criteria = new CDbCriteria;
-		$criteria->compare('institution_id',$site->institution_id);
-		$criteria->compare('id','<>13');
-		$criteria->order = $field.' asc';
-
-		$result = array();
-
-		$model = Site::model();
-
-		if (!$include_deleted) {
-			$model = $model->active();
-		}
-
-		foreach ($model->findAll($criteria) as $site) {
+		foreach (Institution::model()->getCurrent()->sites as $site) {
 			$result[$site->id] = $site->$field;
 		}
 
@@ -176,16 +148,10 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 
 	public function getLongListForCurrentInstitution()
 	{
-		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-
-		$criteria = new CDbCriteria;
-		$criteria->compare('institution_id',$site->institution_id);
+		$institution = Institution::model()->getCurrent();
 
 		$result = array();
-
-		foreach (Site::model()->active()->with('institution')->findAll($criteria) as $site) {
-			$institution = $site->institution;
-
+		foreach ($institution->sites as $site) {
 			$site_name = '';
 
 			if ($institution->short_name && $site->name != 'Unknown') {
@@ -233,18 +199,6 @@ class Site extends BaseActiveRecordVersionedSoftDelete
 	public function getShortname()
 	{
 		return $this->short_name ? $this->short_name : $this->name;
-	}
-
-	public function getListForInstitution()
-	{
-		$institution = Institution::model()->getCurrent();
-
-		$criteria = new CDbCriteria;
-		$criteria->addCondition('institution_id=:institution_id');
-		$criteria->params[':institution_id'] = $institution->id;
-		$criteria->order = 'name asc';
-
-		return Site::model()->active()->findAll($criteria);
 	}
 
 	public function getReplyToAddress($params = array())

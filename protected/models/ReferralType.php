@@ -25,7 +25,7 @@
  * @property string $code
  * @property string $name
  */
-class ReferralType extends BaseActiveRecordVersionedSoftDelete
+class ReferralType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

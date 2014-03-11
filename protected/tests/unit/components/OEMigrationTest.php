@@ -17,7 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-//Currently failing as BaseElement doesn't have a db table. Suspect that this file needs replacing
 class OEMigrationTest extends CDbTestCase
 {
 	protected $oeMigration;

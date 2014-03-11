@@ -43,6 +43,11 @@ class EpisodeStatus extends BaseActiveRecordVersioned
 		return 'episode_status';
 	}
 
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.order');
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */

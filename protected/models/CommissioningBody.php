@@ -29,7 +29,7 @@
  * @property CommissioningBodyType $type
  * @property Practice[] $practices
  */
-class CommissioningBody extends BaseActiveRecordVersionedSoftDelete
+class CommissioningBody extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -48,7 +48,13 @@ class CommissioningBody extends BaseActiveRecordVersionedSoftDelete
 		return 'commissioning_body';
 	}
 
-	public function behaviors() {
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
+	}
+
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',

@@ -48,6 +48,11 @@ class Subspecialty extends BaseActiveRecordVersioned
 		return 'subspecialty';
 	}
 
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */

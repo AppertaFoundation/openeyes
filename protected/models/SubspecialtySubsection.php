@@ -29,7 +29,7 @@
  * @property Procedure[] $procedures
  * @property Subspecialty $subspecialty
  */
-class SubspecialtySubsection extends BaseActiveRecordVersionedSoftDelete
+class SubspecialtySubsection extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -90,6 +90,13 @@ class SubspecialtySubsection extends BaseActiveRecordVersionedSoftDelete
 		);
 	}
 
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
+		);
+	}
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -115,10 +122,7 @@ class SubspecialtySubsection extends BaseActiveRecordVersionedSoftDelete
 		$sections = Yii::app()->db->createCommand()
 			->select('id, name')
 			->from('subspecialty_subsection')
-			->where('subspecialty_id = :id and deleted = :notdeleted', array(
-				':id' => $subspecialtyId,
-				':notdeleted' => 0,
-			))
+			->where('subspecialty_id = :id and active = 1', array(':id' => $subspecialtyId))
 			->order('name ASC')
 			->queryAll();
 

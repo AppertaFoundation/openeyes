@@ -47,7 +47,7 @@
 				<label for="Firm_consultant_id">Consultant:</label>
 			</div>
 			<div class="large-5 column end">
-				<?php echo CHtml::dropDownList('Firm[consultant_id]',$firm->consultant_id,CHtml::listData(User::model()->active()->findAll(array('order'=>'first_name,last_name')),'id','fullName'),array('empty'=>'- None -'))?>
+				<?php echo CHtml::dropDownList('Firm[consultant_id]',$firm->consultant_id,CHtml::listData(User::model()->findAll(array('order'=>'first_name,last_name')),'id','fullName'),array('empty'=>'- None -'))?>
 			</div>
 		</div>
 

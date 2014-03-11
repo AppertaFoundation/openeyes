@@ -214,60 +214,8 @@ class UserIdentity extends CUserIdentity
 
 		$firms = array();
 
-		if ($user->global_firm_rights) {
-			foreach (Firm::model()->active()->with(array(
-				'serviceSubspecialtyAssignment' => array(
-					'with' => 'subspecialty',
-				)))->findAll() as $firm) {
-				$firms[$firm->id] = $this->firmString($firm);
-			}
-		} else {
-			// Gets the firms the user is associated with
-			foreach (Firm::model()->active()->with(array(
-				'firmUserAssignments' => array(
-					'condition' => 'user_id = :user_id',
-					'params' => array(
-						':user_id' => $user->id,
-					),
-				),
-				'serviceSubspecialtyAssignment' => array(
-					'with' => 'subspecialty',
-				),
-			))->findAll() as $firm) {
-				$firms[$firm->id] = $this->firmString($firm);
-			}
-
-			foreach (Firm::model()->active()->with(array(
-				'userFirmRights' => array(
-					'condition' => 'user_id = :user_id',
-					'params' => array(
-						':user_id' => $user->id,
-					),
-				),
-				'serviceSubspecialtyAssignment' => array(
-					'with' => 'subspecialty',
-				),
-			))->findAll() as $firm) {
-				$firms[$firm->id] = $this->firmString($firm);
-			}
-
-			foreach (Firm::model()->active()->with(array(
-				'serviceSubspecialtyAssignment' => array(
-					'with' => array(
-						'service' => array(
-							'userServiceRights' => array(
-								'condition' => 'user_id = :user_id',
-								'params' => array(
-									':user_id' => $user->id,
-								),
-							),
-						),
-						'subspecialty',
-					),
-				),
-			))->findAll() as $firm) {
-				$firms[$firm->id] = $this->firmString($firm);
-			}
+		foreach ($user->getAvailableFirms() as $firm) {
+			$firms[$firm->id] = $this->firmString($firm);
 		}
 
 		if (!count($firms)) {
@@ -298,7 +246,7 @@ class UserIdentity extends CUserIdentity
 		// Select site
 		if ($user->last_site_id) {
 			$app->session['selected_site_id'] = $user->last_site_id;
-		} elseif ($default_site = Site::model()->active()->getDefaultSite()) {
+		} elseif ($default_site = Site::model()->getDefaultSite()) {
 			$app->session['selected_site_id'] = $default_site->id;
 		} else {
 			throw new CException('Cannot find default site');

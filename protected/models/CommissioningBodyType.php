@@ -26,7 +26,7 @@
  * @property string $shortname
  * 
  */
-class CommissioningBodyType extends BaseActiveRecordVersionedSoftDelete
+class CommissioningBodyType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -43,6 +43,11 @@ class CommissioningBodyType extends BaseActiveRecordVersionedSoftDelete
 	public function tableName()
 	{
 		return 'commissioning_body_type';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**

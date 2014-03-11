@@ -32,7 +32,7 @@
  * @property Contact $contact
  * @property Site[] $sites
  */
-class Institution extends BaseActiveRecordVersionedSoftDelete
+class Institution extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -51,12 +51,18 @@ class Institution extends BaseActiveRecordVersionedSoftDelete
 		return 'institution';
 	}
 
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
+	}
+
 	public function behaviors()
 	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
 			),
+			'LookupTable' => 'LookupTable',
 		);
 	}
 
@@ -85,6 +91,7 @@ class Institution extends BaseActiveRecordVersionedSoftDelete
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'sites' => array(self::HAS_MANY, 'Site', 'institution_id',
+				'condition' => 'sites.active = 1',
 				'order' => 'name asc',
 			),
 		);

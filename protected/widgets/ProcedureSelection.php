@@ -52,7 +52,7 @@ class ProcedureSelection extends BaseFieldWidget
 			$this->selected_procedures = array();
 			if (isset($_POST['Procedures_'.$this->identifier]) && is_array($_POST['Procedures_'.$this->identifier])) {
 				foreach ($_POST['Procedures_'.$this->identifier] as $proc_id) {
-					$proc = Procedure::model()->notDeleted()->findByPk($proc_id);
+					$proc = Procedure::model()->findByPk($proc_id);
 					$this->selected_procedures[] = $proc;
 					if ($this->durations) {
 						$this->total_duration += $proc->default_duration;

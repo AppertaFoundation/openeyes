@@ -71,7 +71,7 @@
 								<label for="relative_id">Relative:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(FamilyHistoryRelative::model()->notDeleted()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(FamilyHistoryRelative::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
 							</div>
 						</div>
 
@@ -80,7 +80,7 @@
 								<label for="side_id">Side:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('side_id','',CHtml::listData(FamilyHistorySide::model()->notDeleted()->findAll(array('order'=>'display_order')),'id','name'))?>
+								<?php echo CHtml::dropDownList('side_id','',CHtml::listData(FamilyHistorySide::model()->findAll(array('order'=>'display_order')),'id','name'))?>
 							</div>
 						</div>
 
@@ -89,7 +89,7 @@
 								<label for="condition_id">Condition:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('condition_id','',CHtml::listData(FamilyHistoryCondition::model()->notDeleted()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php echo CHtml::dropDownList('condition_id','',CHtml::listData(FamilyHistoryCondition::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
 							</div>
 						</div>
 

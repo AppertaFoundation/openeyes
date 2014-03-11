@@ -27,7 +27,7 @@
  * The followings are the available model relations:
  * @property SiteSubspecialtyOperativeDevice $siteSubspecialtyAssignments
  */
-class OperativeDevice extends BaseActiveRecordVersionedSoftDelete
+class OperativeDevice extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -79,6 +79,13 @@ class OperativeDevice extends BaseActiveRecordVersionedSoftDelete
 	public function attributeLabels()
 	{
 		return array(
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
 		);
 	}
 

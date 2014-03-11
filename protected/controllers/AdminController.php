@@ -29,13 +29,11 @@ class AdminController extends BaseAdminController
 
 	public function actionDrugs()
 	{
-		$pagination = $this->initPagination(Drug::model());
-
+		$criteria = new CDbCriteria;
+		if (isset($_REQUEST['search'])) $criteria->compare('name', $_REQUEST['search'], true);
+		$pagination = $this->initPagination(Drug::model(), $criteria);
 		$this->render('/admin/drugs',array(
-				'drugs' => $this->getItems(array(
-						'model' => 'Drug',
-						'page' => $pagination->currentPage ,
-					)),
+				'drugs' => Drug::model()->findAll($criteria),
 				'pagination' => $pagination,
 			));
 	}
@@ -142,13 +140,18 @@ class AdminController extends BaseAdminController
 	public function actionUsers($id=false)
 	{
 		Audit::add('admin-User','list');
-		$pagination = $this->initPagination(User::model());
+
+		$criteria = new CDbCriteria;
+		if (!empty($_REQUEST['search'])) {
+			$criteria->compare("LOWER(username)", strtolower($_REQUEST['search']),true, 'OR');
+			$criteria->compare("LOWER(first_name)",strtolower($_REQUEST['search']),true, 'OR');
+			$criteria->compare("LOWER(last_name)",strtolower($_REQUEST['search']),true, 'OR');
+		}
+
+		$pagination = $this->initPagination(User::model(), $criteria);
 
 		$this->render('/admin/users',array(
-			'users' => $this->getItems(array(
-				'model' => 'User',
-				'page' => $pagination->currentPage ,
-			)),
+			'users' => User::model()->findAll($criteria),
 			'pagination' => $pagination,
 		));
 	}
@@ -267,13 +270,11 @@ class AdminController extends BaseAdminController
 	{
 		Audit::add('admin-Firm','list');
 
-		$pagination = $this->initPagination(Firm::model());
+		$criteria = new CdbCriteria;
+		$pagination = $this->initPagination(Firm::model(), $criteria);
 
 		$this->render('/admin/firms',array(
-			'firms' => $this->getItems(array(
-				'model' => 'Firm',
-				'page' => $pagination->currentPage,
-			)),
+			'firms' => Firm::model()->findAll($criteria),
 			'pagination' => $pagination,
 		));
 	}
@@ -330,40 +331,6 @@ class AdminController extends BaseAdminController
 		));
 	}
 
-	public function getItems($params)
-	{
-		$model = $params['model']::model();
-		$page = $params['page'];
-
-		$criteria = new CDbCriteria;
-		if (isset($params['order'])) {
-			$criteria->order = $params['order'];
-		} else {
-			$criteria->order = 'id asc';
-		}
-		$criteria->offset = $page * $this->items_per_page;
-		$criteria->limit = $this->items_per_page;
-
-		if (!empty($_REQUEST['search'])) {
-			if($params['model']=='User'){
-				$criteria->compare("LOWER(username)", strtolower($_REQUEST['search']),true, 'OR');
-				$criteria->compare("LOWER(first_name)",strtolower($_REQUEST['search']),true, 'OR');
-				$criteria->compare("LOWER(last_name)",strtolower($_REQUEST['search']),true, 'OR');
-			}
-			else if($params['model']=='Drug'){
-				$criteria->compare('LOWER(name)', strtolower($_REQUEST['search']), true);
-			}
-		}
-
-		if (method_exists($model,'active')) {
-			$model->active();
-		}
-
-		return array(
-			'items' => $model->findAll($criteria),
-		);
-	}
-
 	public function actionLookupUser()
 	{
 		Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
@@ -386,15 +353,13 @@ class AdminController extends BaseAdminController
 	public function actionContactlabels($id=false)
 	{
 		Audit::add('admin-ContactLabel','list');
-		$pagination = $this->initPagination(ContactLabel::model());
+
+		$criteria = new CDbCriteria;
+		$pagination = $this->initPagination(ContactLabel::model(), $criteria);
 
 		$this->render('/admin/contactlabels',array(
-			'contactlabels' => $this->getItems(array(
-				'model' => 'ContactLabel',
-				'order' => 'name asc',
-				'page' => $pagination->currentPage,
-			)),
-			'pagination' => $pagination
+			'contactlabels' => ContactLabel::model()->findAll($criteria),
+			'pagination' => $pagination,
 		));
 	}
 
@@ -520,10 +485,7 @@ class AdminController extends BaseAdminController
 			if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
 				$errors['institution_id'] = array("Please select an institution");
 			} else {
-				$criteria = new CDbCriteria;
-				$criteria->compare('institution_id',@$_POST['institution_id']);
-				$criteria->order = 'name asc';
-				$sites = CHtml::listData(Site::model()->active()->findAll($criteria),'id','name');
+				$sites = $institution->sites;
 			}
 
 			if (empty($errors)) {
@@ -566,15 +528,13 @@ class AdminController extends BaseAdminController
 	public function actionInstitutions($id=false)
 	{
 		Audit::add('admin-Institution','list');
-		$pagination = $this->initPagination(Institution::model());
+
+		$criteria = new CDbCriteria;
+		$pagination = $this->initPagination(Institution::model(), $criteria);
 
 		$this->render('/admin/institutions',array(
-			'institutions' => $this->getItems(array(
-				'model' => 'Institution',
-				'order' => 'name asc',
-				'page' => $pagination->currentPage,
-			)),
-			'pagination' => $pagination
+			'institutions' => Institution::model()->findAll($criteria),
+			'pagination' => $pagination,
 		));
 	}
 
@@ -676,15 +636,13 @@ class AdminController extends BaseAdminController
 	public function actionSites($id=false)
 	{
 		Audit::add('admin-Site','list');
-		$pagination = $this->initPagination(Site::model());
+
+		$criteria = new CDbCriteria;
+		$pagination = $this->initPagination(Site::model(), $criteria);
 
 		$this->render('/admin/sites',array(
-			'sites' => $this->getItems(array(
-				'model' => 'Site',
-				'order' => 'name asc',
-				'page' => $pagination->currentPage,
-			)),
-			'pagination' => $pagination
+			'sites' => Site::model()->findAll($criteria),
+			'pagination' => $pagination,
 		));
 	}
 
