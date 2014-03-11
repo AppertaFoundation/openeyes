@@ -41,7 +41,7 @@ class OEMigrateCommand extends MigrateCommand
 
 		if($this->testdata && $migration instanceof OEMigration){
 			$migration->setTestData(true);
-			echo '\nRunning in testdata mode';
+			echo "\nRunning in testdata mode";
 		}
 
 		if($migration->up()!==false)
