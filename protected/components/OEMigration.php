@@ -249,6 +249,32 @@ class OEMigration extends CDbMigration
 	}
 
 	/**
+	 * Create a version table for the specified existing OE table
+	 *
+	 * @param string $base_name Base table name
+	 */
+	protected function versionExistingTable($base_name)
+	{
+		$res = $this->dbConnection->createCommand('show create table ' . $this->dbConnection->quoteTableName($base_name))->queryRow();
+		$sql = $res['Create Table'];
+		$start = strpos($sql, '(');
+		$end = strrpos($sql, ')');
+		$defs = explode("\n", trim(substr($sql, $start + 1, $end - $start - 1)));
+		foreach ($defs as $n => &$def) {
+			if (preg_match('/(?:PRIMARY|FOREIGN) KEY/', $def)) {
+				unset($defs[$n]);
+				continue;
+			}
+			$def = rtrim($def, ',');
+			$def = str_replace('AUTO_INCREMENT', '', $def);
+		}
+		$defs[] = 'version_date datetime not null';
+		$defs[] = 'version_id int unsigned not null auto_increment primary key';
+
+		$this->createTable("{$base_name}_version", $defs, 'engine=InnoDB charset=utf8 collate=utf8_unicode_ci');
+	}
+
+	/**
 	 * @description used within subclasses to find out the element_type id based on Class Name
 	 * @param $className - string
 	 * @return mixed - the value of the id. False is returned if there is no value.
