@@ -146,8 +146,11 @@ class BaseActiveRecordVersionedSoftDelete extends BaseActiveRecordVersioned
 			}
 
 			$condition = $alias.'.id in ('.implode(',',$ids).')';
-		} else {
+		} else if(is_int($id)){
 			$condition = $alias.'.id = '.$id;
+		}
+		else{
+			return $this->notDeleted();
 		}
 
 		if (isset($this->notDeletedField)) {
