@@ -19,12 +19,14 @@
 
 class OEMigrateCommand extends MigrateCommand
 {
+	public $testdata = false;
 	public $args = null;
 
-	public function actionUp($args)
+	public function actionUp($args, $testdata = false)
 	{
-		$this->args = $args;
-		echo "\nargs at actionup: " . var_export($args,true);
+		if($testdata)
+			$this->testdata = true;
+
 		parent::actionUp($args);
 	}
 
@@ -37,7 +39,7 @@ class OEMigrateCommand extends MigrateCommand
 		$start=microtime(true);
 		$migration=$this->instantiateMigration($class);
 
-		if($this->getCliArg('testdata') && $migration instanceof OEMigration){
+		if($this->testdata && $migration instanceof OEMigration){
 			$migration->setTestData(true);
 			echo '\nRunning in testdata mode';
 		}
@@ -66,7 +68,6 @@ class OEMigrateCommand extends MigrateCommand
 	 * @return bool|string
 	 */
 	public function getCliArg($name, $argsInj = null){
-		//$name = trim($name);
 		if(!$argsInj){
 			$args = $this->args;
 		}
@@ -76,7 +77,6 @@ class OEMigrateCommand extends MigrateCommand
 		if(!$name || !is_string($name)){
 			return false;
 		}
-		//echo "\nargs at getCliArg: " . var_export($args,true);
 
 		foreach($args as $arg){
 			if(strpos($name , $arg) == 0){

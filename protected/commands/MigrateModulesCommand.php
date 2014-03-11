@@ -37,7 +37,7 @@ DESCRIPTION
 EOD;
 	}
 
-	public function actionUp($interactive = true, $connectionID = false)
+	public function actionUp($interactive = true, $connectionID = false, $testData = false)
 	{
 		$commandPath = Yii::getFrameworkPath() . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'commands';
 		$modules = Yii::app()->modules;
@@ -45,12 +45,15 @@ EOD;
 			if (is_dir(Yii::getPathOfAlias($module.'.migrations'))) {
 				echo "Migrating $module:\n";
 				if(!$interactive) {
-					$args = array('yiic', 'migrate', '--interactive=0', '--migrationPath='.$module.'.migrations');
+					$args = array('yiic', 'migrate', 'up', '--interactive=0', '--migrationPath='.$module.'.migrations');
 				} else {
-					$args = array('yiic', 'migrate', '--migrationPath='.$module.'.migrations');
+					$args = array('yiic', 'migrate', 'up', '--migrationPath='.$module.'.migrations');
 				}
 				if($connectionID){
 					$args[] = '--connectionID=' . $connectionID;
+				}
+				if($testData ){
+					$args[] = '--testdata' ;
 				}
 
 				$runner = new CConsoleCommandRunner();
