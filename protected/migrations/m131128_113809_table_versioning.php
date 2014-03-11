@@ -1615,7 +1615,6 @@ CREATE TABLE `ethnic_group_version` (
 		$this->dropPrimaryKey('id','ethnic_group_version');
 
 		$this->createIndex('ethnic_group_aid_fk','ethnic_group_version','id');
-		$this->addForeignKey('ethnic_group_aid_fk','ethnic_group_version','id','ethnic_group','id');
 
 		$this->addColumn('ethnic_group_version','version_date',"datetime not null default '1900-01-01 00:00:00'");
 
@@ -4005,8 +4004,6 @@ CREATE TABLE `user_site_version` (
 		$this->addColumn('drug_set_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_type','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('drug_type_version','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('ethnic_group','deleted','tinyint(1) unsigned not null');
-		$this->addColumn('ethnic_group_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('family_history_condition','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('family_history_condition_version','deleted','tinyint(1) unsigned not null');
 		$this->addColumn('family_history_relative','deleted','tinyint(1) unsigned not null');
@@ -4106,8 +4103,6 @@ CREATE TABLE `user_site_version` (
 		$this->dropColumn('drug_set_version','deleted');
 		$this->dropColumn('drug_type','deleted');
 		$this->dropColumn('drug_type_version','deleted');
-		$this->dropColumn('ethnic_group','deleted');
-		$this->dropColumn('ethnic_group_version','deleted');
 		$this->dropColumn('family_history_condition','deleted');
 		$this->dropColumn('family_history_condition_version','deleted');
 		$this->dropColumn('family_history_relative','deleted');
