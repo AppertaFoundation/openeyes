@@ -5,6 +5,8 @@ class Prescription extends OpenEyesPage
     protected $path = "/site/OphDrPrescription/Default/create?patient_id={parentId}";
 
     protected $elements = array(
+        'filterBy' => array('xpath' => "//*[@id='drug_type_id']"),
+        'noPreservative' => array('xpath' => "//*[@id='preservative_free']"),
         'prescriptionCommonDrug' => array('xpath' => "//*[@id='common_drug_id']"),
         'prescriptionStandardSet' => array('xpath' => "//*[@id='drug_set_id']"),
         'prescriptionDoseItem0' => array('xpath' => "//*[@id='prescription_item_0_dose']"),
@@ -13,10 +15,70 @@ class Prescription extends OpenEyesPage
         'prescriptionFrequencyItem0' => array('xpath' => "//*[@id='prescription_item_0_frequency_id']"),
         'prescriptionDurationItem0' => array('xpath' => "//*[@id='prescription_item_0_duration_id']"),
         'prescriptionComments' => array('xpath' => "//textarea[@id='Element_OphDrPrescription_Details_comments']"),
-        'savePrescription' => array('xpath' => ""),
+        'savePrescriptionandPrint' => array('xpath' => "//*[@id='et_save_print']"),
         'prescriptionSaveDraft' => array('xpath' => "//*[@id='et_save_draft']"),
         'prescriptionSavedOk' => array('xpath' => "//*[@id='flash-success']"),
+        'addTaper' => array('xpath' => "//*[@class='taperItem']"),
+        'firstTaperDose' => array('xpath' => "//*[@id='prescription_item_0_taper_0_dose']"),
+        'firstTaperFrequency' => array('xpath' => "//*[@id='prescription_item_0_taper_0_frequency_id']"),
+        'firstTaperDuration' => array('xpath' => "//*[@id='prescription_item_0_taper_0_duration_id']"),
+        'secondTaperDose' => array('xpath' => "//*[@id='prescription_item_0_taper_1_dose']"),
+        'secondTaperFrequency' => array('xpath' => "//*[@id='prescription_item_0_taper_1_frequency_id']"),
+        'secondTaperDuration' => array('xpath' => "//*[@id='prescription_item_0_taper_1_duration_id']"),
+        'removeThirdTaper' => array('xpath' => "//*[@data-taper='2']//*[@class='removeTaper']"),
+        'prescriptionValidationWarning' => array('xpath' => "//*[contains(text(),'Details: Items cannot be blank.')]")
+
     );
+
+    public function filterBy ($filter)
+    {
+        $this->getElement('filterBy')->selectOption($filter);
+    }
+
+    public function addTaper ()
+    {
+        $this->getElement('addTaper')->click();
+    }
+
+    public function firstTaperDose ($taper)
+    {
+        $this->getElement('firstTaperDose')->selectOption($taper);
+    }
+
+    public function firstTaperFrequency ($frequency)
+    {
+        $this->getElement('firstTaperFrequency')->selectOption($frequency);
+    }
+
+    public function firstTaperDuration ($duration)
+    {
+        $this->getElement('firstTaperDuration')->selectOption($duration);
+    }
+
+    public function secondTaperDose ($taper)
+    {
+        $this->getElement('secondTaperDose')->selectOption($taper);
+    }
+
+    public function secondTaperFrequency ($frequency)
+    {
+        $this->getElement('secondTaperFrequency')->selectOption($frequency);
+    }
+
+    public function secondTaperDuration ($duration)
+    {
+        $this->getElement('secondTaperDuration')->selectOption($duration);
+    }
+
+    public function removeThirdTaper ()
+    {
+        $this->getElement('removeThirdTaper')->click();
+    }
+
+    public function noPreservativeCheckbox ()
+    {
+        $this->getElement('noPreservative')->check();
+    }
 
     public function prescriptionDropdown ($drug)
     {
@@ -59,7 +121,6 @@ class Prescription extends OpenEyesPage
     public function comments ($comments)
     {
         $this->getElement('prescriptionComments')->setValue($comments);
-
     }
 
     protected function hasPrescriptionSaved ()
@@ -84,5 +145,22 @@ class Prescription extends OpenEyesPage
     {
         $this->getElement('prescriptionSaveDraft')->click();
     }
+
+    protected function doesPrescriptionValidationExist()
+    {
+        $this->waitForElementDisplayBlock('.alert-box.alert.with-icon ul');
+        return (bool) $this->find('xpath', $this->getElement('prescriptionValidationWarning')->getXpath());;
+    }
+
+    public function confirmPrescriptionValidationError ()
+    {
+        if ($this->doesPrescriptionValidationExist()){
+            print "Validation error is displayed OK";
+        }
+        else {
+            throw new BehaviorException ("WARNING!!! NO Please fix the following input errors WARNING!!!");
+        }
+    }
+
 
 }

@@ -191,4 +191,24 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
 
     Then I Save the Correspondence Draft and confirm it has been created successfully
 
+  Scenario: 3B: Login and create a new Prescription. Check for Validation error upon Saving
+            Site 1:Queens
+            Firm 3:Anderson Glaucoma
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Prescription"
+
+    Then I Save the Prescription Draft
+
+    And I confirm the prescription validation error has been displayed
+
 
