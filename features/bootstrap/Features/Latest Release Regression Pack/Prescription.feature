@@ -1,6 +1,6 @@
 @prescription @regression
 Feature: Create New Prescription
-         Regression coverage of this event is approx 40%
+         Regression coverage of this event is approx 95%
 
   Scenario: Route 1: Login and create a new Prescription
             Site 1:Queens
