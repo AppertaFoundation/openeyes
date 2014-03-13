@@ -207,3 +207,5 @@ id,fully_specified_name,term,last_modified_user_id,last_modified_date,created_us
 195967001,"Asthma (disorder)","Asthma",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
 230690007,"Cerebrovascular accident (disorder)","Cerebrovascular accident",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
 414545008,"Ischemic heart disease (disorder)","Ischaemic heart disease",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+73211009,"Diabetes mellitus (disorder)","Diabetes mellitus",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+74627003,"Diabetic complication (disorder)","Diabetic complication",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
