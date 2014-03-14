@@ -67,7 +67,6 @@ return array(
 		),
 		'cache' => array(
 			'class' => 'system.caching.CFileCache',
-			'cachePath' => 'cache',
 			'directoryLevel' => 1
 		),
 		'cacheBuster' => array(
