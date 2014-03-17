@@ -29,7 +29,7 @@ do
             #git clone https://github.com/openeyes/$module $modules_path/$module
         fi
         cd $modules_path/$module
-        echo "Switching module branch to $current_branch..."
+        echo "Switching module $module branch to $current_branch..."
         git checkout $current_branch
         cd $running_path
     fi
