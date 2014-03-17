@@ -131,7 +131,40 @@ class Mailer extends CComponent
 				}
 			}
 		}
+	}
 
-		return false;
+	/**
+	 *
+	 * Mailer:mail is intended as a more robust simple replacement for php mail(),
+	 * @param $to email address eg array('helpdesk@example.com'=>'OpenEyes')
+	 * @param $subject subject
+	 * @param $body body
+	 * @param $from_from address eg array('helpdesk@example.com'=>'OpenEyes')
+	 * @param $flashErrorMessageOnFail optional flassh error message to be set i email fails
+	 * @return bool mail sent successfully
+	 *
+	 */
+
+	public static function mail($to, $subject, $body, $from, $flashErrorMessageOnFail=null)
+	{
+		try {
+		$message = Yii::app()->mailer->newMessage();
+		$message->setSubject($subject);
+		$message->setFrom($from);
+		$message->setTo($to);
+		$message->setBody($body);
+		Yii::app()->mailer->sendMessage($message);
+		}
+		catch (Exception $Exception)
+		{
+			OELog::logException($Exception);
+			if($flashErrorMessageOnFail) {
+				Yii::app()->user->setFlash('warning.email-failure',$flashErrorMessageOnFail);
+			}
+			return false;
+		}
+		return true;
 	}
 }
+
+

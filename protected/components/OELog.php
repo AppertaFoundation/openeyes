@@ -37,4 +37,20 @@ class OELog
 			Yii::log($msg);
 		}
 	}
+
+	/**
+	 * Logs an exception as if it was thrown
+	 * @param $exception
+	 */
+	public static function logException($exception)
+	{
+		$category = 'exception.' . get_class($exception);
+		if ($exception instanceof CHttpException)
+			$category .= '.' . $exception->statusCode;
+		$message = $exception->__toString();
+		if (isset($_SERVER['REQUEST_URI']))
+			$message .= ' REQUEST_URI=' . $_SERVER['REQUEST_URI'];
+		Yii::log($message, CLogger::LEVEL_ERROR, $category);
+	}
+
 }
