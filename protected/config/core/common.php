@@ -220,7 +220,7 @@ return array(
 		'log_events' => true,
 		'urgent_booking_notify_hours' => 24,
 		'urgent_booking_notify_email' => array(),
-		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
+		'urgent_booking_notify_email_from' => array('helpdesk@example.com'=>'OpenEyes'),
 		'default_site_code' => '',
 		'institution_code' => 'RP6',
 		'erod_lead_time_weeks' => 3,
