@@ -131,7 +131,33 @@ class Mailer extends CComponent
 				}
 			}
 		}
+	}
 
-		return false;
+	/**
+	 * Mailer:mail is intended as a more robust simple replacement for php mail(),
+	 * @param array $to address eg array('helpdesk@example.com'=>'OpenEyes')
+	 * @param string $subject
+	 * @param string $body
+	 * @param array $from address eg array('helpdesk@example.com'=>'OpenEyes')
+	 * @return bool mail sent without error
+	 */
+	public static function mail($to, $subject, $body, $from)
+	{
+		try {
+		$message = Yii::app()->mailer->newMessage();
+		$message->setSubject($subject);
+		$message->setFrom($from);
+		$message->setTo($to);
+		$message->setBody($body);
+		Yii::app()->mailer->sendMessage($message);
+		}
+		catch (Exception $Exception)
+		{
+			OELog::logException($Exception);
+			return false;
+		}
+		return true;
 	}
 }
+
+
