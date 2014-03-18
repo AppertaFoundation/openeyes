@@ -1,6 +1,6 @@
 @asa @regression
 Feature: Anaesthetic Satisfaction Audit Regression Tests
-  Regression coverage of this event is approx 99%
+  Regression coverage of this event is 100%
   Across 2 Sites and 4 Firms
 
   Scenario: Route 1: Login and create a Anaesthetic Satisfaction Audit Regression:

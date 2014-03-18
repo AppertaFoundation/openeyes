@@ -1,6 +1,6 @@
   @phasing @regression
   Feature: Create New Phasing Event
-           Regression coverage of this event is approx 95%
+           Regression coverage of this event is 100%
 
   Scenario: Route 1: Login and create a Phasing Event
 
