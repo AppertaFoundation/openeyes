@@ -25,11 +25,12 @@
  * @property string $refno
  * @property integer $patient_id
  * @property integer $referral_type_id
+ * @property datetime $clock_start
+ * @property date $received_date
  * @property date $received_date
  * @property date $closed_date
  * @property string $referrer
  * @property integer $firm_id
- * @property integer $gp_id
  * @property integer $service_subspecialty_assignment_id // MW: this is here because sometimes the referrer is a pas_code which doesn't map to a firm with the correct subspecialty
  */
 class Referral extends BaseActiveRecord
