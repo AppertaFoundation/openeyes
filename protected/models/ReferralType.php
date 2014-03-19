@@ -93,4 +93,15 @@ class ReferralType extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	/**
+	 * Because referral types can be defined from external systems with unusual formatting
+	 * we have an override for the description
+	 *
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return ucfirst(strtolower($this->name));
+	}
 }

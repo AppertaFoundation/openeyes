@@ -88,6 +88,7 @@ class Referral extends BaseActiveRecord
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 			'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
+			'reftype' => array(self::BELONGS_TO, 'ReferralType', 'referral_type_id')
 		);
 	}
 
@@ -128,6 +129,30 @@ class Referral extends BaseActiveRecord
 		$model = parent::instantiate($attributes);
 		$model->use_pas = $this->use_pas;
 		return $model;
+	}
+
+	/**
+	 * Returns string description of the referral
+	 * 
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		$desc = array();
+		$desc[] = $this->NHSDate('received_date');
+		if ($this->firm) {
+			$desc[] = $this->firm->getNameAndSubspecialty();
+		}
+		elseif ($ssa = $this->serviceSubspecialtyAssignment) {
+			$desc[] = $ssa->subspecialty->name;
+		}
+		$desc[] = $this->reftype->getDescription();
+		$desc[] = "(" . $this->refno . ")";
+		if ($this->closed_date) {
+			$desc[] = "(closed - " . $this->NHSDate('closed_date') . ")";
+		}
+		return implode(' ', $desc);
+
 	}
 
 }
