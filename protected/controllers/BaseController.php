@@ -80,7 +80,7 @@ class BaseController extends Controller
 
 		// Register the main stylesheet (if it's not a print action), without pre-registering
 		// to ensure it's *always* output first.
-		if (!in_array($this->action->id,$this->printActions())) {
+		if (!$this->isPrintAction($this->action->id)) {
 			Yii::app()->assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
 		}
 
