@@ -27,7 +27,6 @@
  * @property integer $referral_type_id
  * @property datetime $clock_start
  * @property date $received_date
- * @property date $received_date
  * @property date $closed_date
  * @property string $referrer
  * @property integer $firm_id
