@@ -77,9 +77,12 @@ class BaseController extends Controller
 		//FIXME: currently we are resetting the assetmanager list for PDFs because of the TCPDF processing of
 		// stylesheets. Ideally we should suppress the inclusion here. (Or we should be using a different approach
 		// to render the HTML template for the TCPDF engine)
-		
-		// Register the main stylesheet without pre-registering to ensure it's always output first.
-		Yii::app()->assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
+
+		// Register the main stylesheet (if it's not a print action), without pre-registering
+		// to ensure it's *always* output first.
+		if (!in_array($this->action->id,$this->printActions())) {
+			Yii::app()->assetManager->registerCssFile('css/style.css', null, null, null, false);
+		}
 
 		// Prevent certain assets from being outputted in certain conditions.
 		Yii::app()->getAssetManager()->adjustScriptMapping();
