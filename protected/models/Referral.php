@@ -158,5 +158,4 @@ class Referral extends BaseActiveRecord
 		return implode(' ', $desc);
 
 	}
-
 }
