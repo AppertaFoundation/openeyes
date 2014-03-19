@@ -367,14 +367,14 @@ class Examination extends OpenEyesPage
         $this->getElement('dilationTimeLeft')->setValue($time);
     }
 
-    protected function hasDilationTimeErrorDisplyed ()
+    protected function hasDilationTimeErrorDisplayed ()
     {
         return (bool) $this->find('xpath', $this->getElement('dilationTimeError')->getXpath());;
     }
 
     public function dilationTimeErrorValidation()
     {
-        if ($this->hasDilationTimeErrorDisplyed()) {
+        if ($this->hasDilationTimeErrorDisplayed()) {
             print "Dilation Invalid time error displayed OK";
         }
 

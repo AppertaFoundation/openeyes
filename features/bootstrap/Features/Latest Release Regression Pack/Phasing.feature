@@ -1,6 +1,6 @@
   @phasing @regression
   Feature: Create New Phasing Event
-           Regression coverage of this event is approx 95%
+           Regression coverage of this event is 100%
 
   Scenario: Route 1: Login and create a Phasing Event
 
@@ -140,3 +140,38 @@
       Then I remove the last Left Reading
 
       Then I Save the Phasing Event and confirm it has been created successfully
+
+    Scenario: Route 5: Login and create a Phasing Event
+              Invalid time entry validation tests (Intraocular Pressing Reading Times)
+
+      Given I am on the OpenEyes "master" homepage
+      And I enter login credentials "admin" and "admin"
+      And I select Site "1"
+      Then I select a firm of "3"
+
+      Then I search for hospital number "1009465 "
+
+      Then I select the Latest Event
+
+      Then I expand the Glaucoma sidebar
+      And I add a New Event "Phasing"
+
+      Then I choose a right eye Intraocular Pressure Instrument  of "1"
+
+      And I choose right eye Dilation of Yes
+
+      Then I choose a right eye Intraocular Pressure Reading Time of "25:12"
+      Then I choose a right eye Intraocular Pressure Reading of "5"
+      And I add right eye comments of "Right eye comments here"
+
+      Then I choose a left eye Intraocular Pressure Instrument  of "5"
+
+      And I choose left eye Dilation of Yes
+
+      Then I choose a left eye Intraocular Pressure Reading Time of "09:67"
+      Then I choose a left eye Intraocular Pressure Reading of "7"
+      And I add left eye comments of "Left eye comments here"
+
+      Then I Save the Phasing Event
+
+      Then I Confirm that the Readings Invalid time error messages are displayed

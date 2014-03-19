@@ -132,3 +132,22 @@ Feature: Create New Correspondence
     Given I add a New Enclosure of "Test Enclosure"
 
     Then I Save the Correspondence Draft and confirm it has been created successfully
+
+  Scenario: Route 5:Login and fill in a Correspondence
+            Saving without mandatory fields validation tests
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select Create or View Episodes and Events
+
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Correspondence"
+
+    Then I Save the Correspondence Draft
+
+    Then I Confirm that the Mandatory fields validation error messages are displayed
