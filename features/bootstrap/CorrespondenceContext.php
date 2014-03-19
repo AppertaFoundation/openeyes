@@ -187,7 +187,7 @@ class CorrespondenceContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I Confirm that the Mandatory fields validation error messages are displayed$/
+     * @Then /^I Confirm that the Mandatory Correspondence fields validation error messages are displayed$/
      */
     public function iConfirmThatTheMandatoryFieldsValidationErrorMessagesAreDisplayed()
     {

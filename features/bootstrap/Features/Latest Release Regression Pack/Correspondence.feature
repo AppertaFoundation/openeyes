@@ -150,4 +150,4 @@ Feature: Create New Correspondence
 
     Then I Save the Correspondence Draft
 
-    Then I Confirm that the Mandatory fields validation error messages are displayed
+    Then I Confirm that the Mandatory Correspondence fields validation error messages are displayed

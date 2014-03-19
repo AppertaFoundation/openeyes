@@ -1,6 +1,6 @@
-@Intravitreal @regression
+@intravitreal @regression
 Feature: Create New Intravitreal Event
-         Regression coverage of this event is approx 70%
+         Regression coverage of this event is approx 75%
 
   Scenario: Route 1: Login and create a New Intravitreal Event
 
@@ -273,3 +273,22 @@ Feature: Create New Intravitreal Event
     And I select Left Complications "3"
 
     Then I Save the Intravitreal injection
+
+  Scenario: Route 5 : Login and create a New Intravitreal Event
+            Mandatory fields - validation error tests
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Cataract sidebar
+    And I add a New Event "Intravitreal"
+
+    Then I Save the Intravitreal injection
+
+    Then I Confirm that Intravitreal Mandatory fields validation error messages are displayed
