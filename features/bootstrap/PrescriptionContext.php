@@ -20,6 +20,30 @@ class PrescriptionContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I choose to filter by type "([^"]*)"$/
+     */
+    public function iChooseToFilterByType($filter)
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->filterBy($filter);
+    }
+
+    /**
+     * @Given /^I select the No preservative checkbox$/
+     */
+    public function iSelectTheNoPreservativeCheckbox()
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->noPreservativeCheckbox();
+    }
+
+    /**
      * @Then /^I select a Common Drug "([^"]*)"$/
      */
     public function iSelectACommonDrug($drug)
@@ -105,6 +129,102 @@ class PrescriptionContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I add a Taper$/
+     */
+    public function iAddATaper()
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->addTaper();
+    }
+
+    /**
+     * @Given /^I enter a first Taper does of "([^"]*)"$/
+     */
+    public function iEnterAFirstTaperDoesOf($taper)
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->firstTaperDose($taper);
+    }
+
+    /**
+     * @Then /^I enter a first Taper frequency of "([^"]*)"$/
+     */
+    public function iEnterAFirstTaperFrequencyOf($frequency)
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->firstTaperFrequency($frequency);
+    }
+
+    /**
+     * @Given /^I enter a first Taper duration of "([^"]*)"$/
+     */
+    public function iEnterAFirstTaperDurationOf($duration)
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->firstTaperDuration($duration);
+    }
+
+    /**
+     * @Given /^I enter a second Taper dose of "([^"]*)"$/
+     */
+    public function iEnterASecondTaperDoseOf($taper)
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->secondTaperDose($taper);
+    }
+
+    /**
+     * @Then /^I enter a second Taper frequency of "([^"]*)"$/
+     */
+    public function iEnterASecondTaperFrequencyOf($frequency)
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->secondTaperFrequency($frequency);
+    }
+
+    /**
+     * @Given /^I enter a second Taper duration of "([^"]*)"$/
+     */
+    public function iEnterASecondTaperDurationOf($duration)
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->secondTaperDuration($duration);
+    }
+
+    /**
+     * @Then /^I remove the last Taper$/
+     */
+    public function iRemoveTheLastTaper()
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->removeThirdTaper();
+    }
+
+    /**
      * @Given /^I add Prescription comments of "([^"]*)"$/
      */
     public function iAddPrescriptionCommentsOf($comments)
@@ -114,6 +234,18 @@ class PrescriptionContext extends PageObjectContext
          */
         $prescription= $this->getPage('Prescription');
         $prescription->comments($comments);
+    }
+
+    /**
+     * @Given /^I confirm the prescription validation error has been displayed$/
+     */
+    public function iConfirmThePrescriptionValidationErrorHasBeenDisplayed()
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->confirmPrescriptionValidationError();
     }
 
     /**

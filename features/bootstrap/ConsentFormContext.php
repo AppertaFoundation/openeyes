@@ -78,6 +78,18 @@ class ConsentFormContext extends PageObjectContext
         $consentForm->procedureType($type);
     }
 
+    /**
+     * @Given /^I choose an additional procedure of "([^"]*)"$/
+     */
+    public function iChooseAdditionalProcedureOf($type)
+    {
+        /**
+         * @var ConsentForm $consentForm
+         */
+        $consentForm = $this->getPage('ConsentForm');
+        $consentForm->additionalProcedure($type);
+    }
+
 
     /**
      * @Given /^I choose an Anaesthetic type of LA$/
@@ -257,5 +269,17 @@ class ConsentFormContext extends PageObjectContext
          */
         $consentForm = $this->getPage('ConsentForm');
         $consentForm->saveConsentAndConfirm();
+    }
+
+    /**
+     * @Then /^I confirm that the Consent Validation error messages have been displayed$/
+     */
+    public function iConfirmThatTheConsentValidationErrorMessagesHaveBeenDisplayed()
+    {
+        /**
+         * @var ConsentForm $consentForm
+         */
+        $consentForm = $this->getPage('ConsentForm');
+        $consentForm ->validationMessagesCheck();
     }
 }

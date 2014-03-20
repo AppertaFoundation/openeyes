@@ -159,7 +159,7 @@ class Address extends BaseActiveRecordVersioned
 		if ($include_country) {
 			if (!empty($this->country->name)) {
 				$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-				if ($site->institution->contact->address->country_id != $this->country_id) {
+				if (!$site || ($site->institution->contact->address->country_id != $this->country_id)) {
 					$address[] = $this->country->name;
 				}
 			}

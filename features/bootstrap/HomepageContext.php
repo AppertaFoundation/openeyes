@@ -107,4 +107,16 @@ class HomepageContext extends PageObjectContext
         $hp->getSession()->wait(5000, "window.$ && $.active == 0");
         $hp->clickLink($link);
     }
+
+    /**
+     * @Given /^I confirm that an Invalid Login error message is displayed$/
+     */
+    public function iConfirmThatAnInvalidLoginErrorMessageIsDisplayed()
+    {
+        /**
+         * @var Homepage $homepage
+         */
+        $homepage = $this->getPage('Homepage');
+        $homepage->isInvalidLoginShown();
+    }
 }

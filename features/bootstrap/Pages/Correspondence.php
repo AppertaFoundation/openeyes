@@ -21,6 +21,9 @@ class Correspondence extends OpenEyesPage
         'enterEnclosure' => array('xpath' => "//div[@id='enclosureItems']/div/div/input"),
         'saveDraft' => array('xpath' => "//*[@id='et_save_draft']"),
         'saveCorrespondenceOK' => array('xpath' => "//*[@id='flash-success']"),
+        'letterBlankError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Letter: Address cannot be blank.')]"),
+        'letterSalutationBlankError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Letter: Salutation cannot be blank.')]"),
+        'letterBodyBlankError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Letter: Body cannot be blank.')]")
     );
 
     public function siteDropdown ($site)
@@ -109,6 +112,25 @@ class Correspondence extends OpenEyesPage
 
         else {
             throw new BehaviorException("WARNING!!!  Correspondence has NOT been saved!!  WARNING!!");
+        }
+    }
+
+    protected function hasCorrespondenceErrorsDisplayed ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('letterBlankError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('letterSalutationBlankError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('letterBodyBlankError')->getXpath());
+
+    }
+
+    public function correspondenceMandatoryFieldsErrorValidation()
+    {
+        if ($this->hasCorrespondenceErrorsDisplayed()) {
+            print "Correspondence Mandatory fields validation errors displayed OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Correspondence Mandatory fields validation errors NOT displayed WARNING!!!");
         }
     }
 

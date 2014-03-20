@@ -185,4 +185,16 @@ class CorrespondenceContext extends PageObjectContext
         $Correspondence  = $this->getPage('Correspondence');
         $Correspondence->saveDraft();
     }
+
+    /**
+     * @Then /^I Confirm that the Mandatory Correspondence fields validation error messages are displayed$/
+     */
+    public function iConfirmThatTheMandatoryFieldsValidationErrorMessagesAreDisplayed()
+    {
+        /**
+         * @var correspondence $Correspondence
+         */
+        $Correspondence  = $this->getPage('Correspondence');
+        $Correspondence->correspondenceMandatoryFieldsErrorValidation();
+    }
 }

@@ -29,6 +29,10 @@ class ConsentForm extends OpenEyesPage
 		'saveConsentFormDraft' => array('xpath' => "//*[@id='et_save_draft']"),
         'saveConsentFormOK' => array('xpath' => "//*[@id='flash-success']"),
 		'test' => array('xpath' => "//*[@id='div_Element_OphTrConsent_Other_anaesthetic_leaflet']"),
+        'additionalProcedure' => array('xpath' => "//*[@id='select_procedure_id_additional']"),
+        'benefitValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Benefits and risks: Benefits cannot be blank')]"),
+        'riskValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Benefits and risks: Risks cannot be blank')]"),
+        'procedureValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Other: At least one procedure must be entered')]")
 	);
 
 
@@ -70,9 +74,14 @@ class ConsentForm extends OpenEyesPage
 	{
 		$this->getElement('procedureType')->click();
 		$this->getElement('procedureType')->setValue($type);
-//    $this->getSession()->wait(5000);
 		$this->getElement('chooseLaser')->click();
 	}
+
+    public function additionalProcedure ($type)
+    {
+        $this->getElement('additionalProcedure')->selectOption($type);
+
+    }
 
 	public function anaestheticTypeLA()
 	{
@@ -101,6 +110,7 @@ class ConsentForm extends OpenEyesPage
 	public function informationLeaflet()
 	{
 		$this->getElement('informationLeaflet')->check();
+        $this->getSession()->wait(10000);
 	}
 
 	public function anaestheticLeaflet()
@@ -159,6 +169,24 @@ class ConsentForm extends OpenEyesPage
 
         else {
             throw new BehaviorException("WARNING!!!  Consent has NOT been saved!!  WARNING!!");
+        }
+    }
+
+    public function validationMessagesError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('benefitValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('riskValidationError')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('procedureValidationError')->getXpath());
+
+    }
+
+    public function validationMessagesCheck ()
+    {
+        if ($this->validationMessagesError()){
+            print "Consent Form Validation errors have been displayed correctly";
+        }
+        else{
+            throw new BehaviorException ("CONSENT FORM ERRORS HAVE NOT BEEN DISPLAYED CORRECTLY");
         }
     }
 }

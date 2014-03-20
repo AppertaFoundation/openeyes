@@ -80,7 +80,7 @@ class FirmTest extends CDbTestCase
 	public function testGetServiceText()
 	{
 		$firm = $this->firms('firm1');
-		$this->assertEquals($this->services['service1']['name'], 'Accident and Emergency Service');
+		$this->assertEquals($firm->getServiceText(), $firm->serviceSubspecialtyAssignment->service->name);
 	}
 
 	/**

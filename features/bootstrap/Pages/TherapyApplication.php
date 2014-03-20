@@ -72,7 +72,28 @@ class TherapyApplication extends OpenEyesPage
         'saveTherapyOK'=> array('xpath' => "//*[@id='flash-success']"),
 
         'removeRightEye' => array('xpath' => "//*[@class='icon-remove-side remove-side']"),
-        'addRightEye' => array ('xpath' => "//*[@class='inactive-form']//*[contains(text(),'Add right side')]")
+        'addRightEye' => array ('xpath' => "//*[@class='inactive-form']//*[contains(text(),'Add right side')]"),
+
+        #Scenario 2
+        'leftPatientHasCnvYes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_2']//*[@value=1]"),
+        'leftPatientHasCnvNo' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_2']//*[@value=0]"),
+        'rightPatientHasCnvYes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_2']//*[@value=1]"),
+        'rightPatientHasCnvNo' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_2']//*[@value=0]"),
+
+        'leftPatientHasMacularOdemaYes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_14']//*[@value=1]"),
+        'leftPatientHasMacularOdemaNo' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_14']//*[@value=0]"),
+        'rightPatientHasMacularOdemaYes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_14']//*[@value=1]"),
+        'rightPatientHasMacularOdemaNo' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_14']//*[@value=0]"),
+
+        'leftPatientHasDiabeticMacularOdemaYes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_15']//*[@value=1]"),
+        'leftPatientHasDiabeticMacularOdemaNo' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_15']//*[@value=0]"),
+        'rightPatientHasDiabeticMacularOdemaYes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_15']//*[@value=1]"),
+        'rightPatientHasDiabeticMacularOdemaNo' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_15']//*[@value=0]"),
+
+        'leftPatientCRT>=400Yes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_16']//*[@value=1]"),
+        'leftPatientCRT>=400No' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_16']//*[@value=0]"),
+        'rightPatientCRT>=400Yes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_16']//*[@value=1]"),
+        'rightPatientCRT>=400No' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_16']//*[@value=0]"),
 
     );
 
@@ -145,22 +166,30 @@ class TherapyApplication extends OpenEyesPage
 
     public function RightCerebYes ()
     {
-        $this->getElement('cerebrovascularYes')->click();
+        $element =$this->getElement('cerebrovascularYes');
+        $this->scrollWindowToElement($element);
+        $element->check();
     }
 
     public function RightCerebNo ()
     {
-        $this->getElement('cerebrovascularNo')->click();
+        $element = $this->getElement('cerebrovascularNo');
+        $this->scrollWindowToElement($element);
+        $element->check();
     }
 
     public function RightIschaemicYes ()
     {
-        $this->getElement('ischaemicYes')->click();
+        $element = $this->getElement('ischaemicYes');
+        $this->scrollWindowToElement($element);
+        $element->check();
     }
 
     public function RightIschaemicNo ()
     {
-        $this->getElement('ischaemicNo')->click();
+        $element = $this->getElement('ischaemicNo');
+        $this->scrollWindowToElement($element);
+        $element->check();
     }
 
     public function RightMyocardialYes ()
@@ -172,12 +201,16 @@ class TherapyApplication extends OpenEyesPage
 
     public function RightMyocardialNo ()
     {
-        $this->getElement('myocardialNo')->click();
+        $element = $this->getElement('myocardialNo');
+        $this->scrollWindowToElement($element);
+        $element->check();;
     }
 
     public function RightConsultantSelect ($consultant)
     {
-        $this->getElement('consultant')->selectOption($consultant);
+        $element = $this->getElement('consultant');
+        $this->scrollWindowToElement($element);
+        $element->selectOption($consultant);
     }
 
     public function RightStandardExistsYes ()
@@ -379,6 +412,54 @@ class TherapyApplication extends OpenEyesPage
         else {
             throw new BehaviorException("WARNING!!!  Therapy has NOT been saved!!  WARNING!!");
         }
+    }
+
+    public function rightPatientCnvNO ()
+    {
+        $this->getSession()->wait(2000);
+        $this->getElement('rightPatientHasCnvNo')->click();
+    }
+
+    public function rightMacularOdemaYes ()
+    {
+        $this->getSession()->wait(2000);
+        $this->getElement('rightPatientHasMacularOdemaYes')->click();
+    }
+
+    public function rightDiabeticMacularOdemaYes ()
+    {
+        $this->getSession()->wait(2000);
+        $this->getElement('rightPatientHasDiabeticMacularOdemaYes')->click();
+    }
+
+    public function rightCRT400Yes ()
+    {
+        $this->getSession()->wait(2000);
+        $this->getElement('rightPatientCRT>=400Yes')->click();
+    }
+
+    public function leftPatientCnvNO ()
+    {
+        $this->getSession()->wait(2000);
+        $this->getElement('leftPatientHasCnvNo')->click();
+    }
+
+    public function leftMacularOdemaYes ()
+    {
+        $this->getSession()->wait(2000);
+        $this->getElement('leftPatientHasMacularOdemaYes')->click();
+    }
+
+    public function leftDiabeticMacularOdemaYes ()
+    {
+        $this->getSession()->wait(2000);
+        $this->getElement('leftPatientHasDiabeticMacularOdemaYes')->click();
+    }
+
+    public function leftCRT400Yes ()
+    {
+        $this->getSession()->wait(2000);
+        $this->getElement('leftPatientCRT>=400Yes')->click();
     }
 }
 

@@ -87,6 +87,28 @@ class Intravitreal extends OpenEyesPage
 
         'existingAllergyCheck' => array ('xpath' => "//*[contains(text(),'Patient is allergic to: Tetracycline')]"),
         'removeRightEye' => array('xpath' => "//*[@class='element-eye right-eye left side column']//*[contains(text(),'Remove side')]"),
+
+        //error messages
+        'anaestheticLeftTypeBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anaesthetic: Left Anaesthetic Type cannot be blank.')]"),
+        'anaestheticLeftTypeDeliveryBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anaesthetic: Left Anaesthetic Delivery cannot be blank.')]"),
+        'anaestheticLeftTypeAgent' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anaesthetic: Left Anaesthetic Agent cannot be blank.')]"),
+        'anaestheticRightTypeBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anaesthetic: Right Anaesthetic Type cannot be blank.')]"),
+        'anaestheticRightTypeDeliveryBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anaesthetic: Right Anaesthetic Delivery cannot be blank.')]"),
+        'anaestheticRightTypeAgent' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anaesthetic: Right Anaesthetic Agent cannot be blank.')]"),
+        'treatmentLeftPreInjectionAntisepticBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Left Pre Injection Antiseptic cannot be blank.')]"),
+        'treatmentLeftPreInjectionSkinCleanserBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Left Pre Injection Skin Cleanser cannot be blank.')]"),
+        'treatmentLeftDrugBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Left Drug cannot be blank.')]"),
+        'treatmentLeftNumberOfInjectionsBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Left Number of Injections cannot be blank.')]"),
+        'treatmentLeftBatchNumberBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Left Batch Number cannot be blank.')]"),
+        'treatementRightPreInjectionAntisepticBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Right Pre Injection Antiseptic cannot be blank.')]"),
+        'treatmentRightPreInjectionSkinCleanserBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Right Pre Injection Skin Cleanser cannot be blank.')]"),
+        'treatmentRightDrugBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Right Drug cannot be blank.')]"),
+        'treatmentRightNumberOfInjectionsBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Right Number of Injections cannot be blank.')]"),
+        'treatmentRightBatchNumberBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Treatment: Right Batch Number cannot be blank.')]"),
+        'anteriorSegmentLeftLensBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anterior Segment: Left Lens Status cannot be blank.')]"),
+        'anteriorSegmentRightLensBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anterior Segment: Right Lens Status cannot be blank.')]"),
+        'postInjectionExamLeftPostDropsBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Post Injection Examination: Left Post Injection Drops cannot be blank.')]"),
+        'postInjectionExamRightPostDropsBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Post Injection Examination: Right Post Injection Drops cannot be blank.')]"),
     );
 
         protected function isRightSideOpen()
@@ -390,7 +412,6 @@ class Intravitreal extends OpenEyesPage
         public function saveIntravitrealInjection ()
         {
             $this->getElement('saveIntravitrealInjection')->click();
-            $this->getSession()->wait(10000);
         }
 
         protected function hasIntravitrealSaved ()
@@ -408,6 +429,42 @@ class Intravitreal extends OpenEyesPage
 
             else {
                 throw new BehaviorException("WARNING!!!  Intravitreal has NOT been saved!!  WARNING!!");
+            }
+        }
+
+        protected function hasIntravitrealErrorsDisplayed ()
+        {
+            return (bool) $this->find('xpath', $this->getElement('anaestheticLeftTypeBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('anaestheticLeftTypeDeliveryBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('anaestheticLeftTypeAgent')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('anaestheticRightTypeBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('anaestheticRightTypeDeliveryBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('anaestheticRightTypeAgent')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('treatmentLeftPreInjectionAntisepticBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('treatmentLeftPreInjectionSkinCleanserBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('treatmentLeftDrugBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('treatmentLeftNumberOfInjectionsBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('treatmentLeftBatchNumberBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('treatementRightPreInjectionAntisepticBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('treatmentRightPreInjectionSkinCleanserBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('treatmentRightDrugBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('treatmentRightNumberOfInjectionsBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('treatmentRightBatchNumberBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('anteriorSegmentLeftLensBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('anteriorSegmentRightLensBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('postInjectionExamLeftPostDropsBlank')->getXpath()) &&
+            (bool) $this->find('xpath', $this->getElement('postInjectionExamRightPostDropsBlank')->getXpath());
+
+        }
+
+        public function intravitrealMandatoryFieldsErrorValidation()
+        {
+            if ($this->hasIntravitrealErrorsDisplayed()) {
+                print "All Intravitreal Mandatory fields validation errors displayed OK";
+            }
+
+            else {
+                throw new BehaviorException("WARNING!!!  Intravitreal Mandatory fields validation errors NOT displayed WARNING!!!");
             }
         }
 }

@@ -32,7 +32,6 @@ Feature: Environment Setup on clean database
 
     Then I Save the Event
 
-
   Scenario: Environment Setup Medical Retinal
 
     Given I am on the OpenEyes "master" homepage
@@ -116,7 +115,6 @@ Feature: Environment Setup on clean database
     And I select the Yes option for Ready to Discharge
 
     Then I Save the Event
-
 
 
 #  Scenario: Environment Setup Support Firm

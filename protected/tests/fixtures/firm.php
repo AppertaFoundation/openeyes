@@ -34,7 +34,7 @@ return array(
 	),
 	'firm3' => array(
 		'3' => 3,
-		'service_subspecialty_assignment_id' => '3',
+		'service_subspecialty_assignment_id' => '2',
 		'pas_code' => 'CAAB',
 		'name' => 'Allan Firm'
 	),

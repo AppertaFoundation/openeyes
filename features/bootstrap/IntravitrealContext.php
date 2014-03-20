@@ -702,5 +702,17 @@ class IntravitrealContext extends PageObjectContext
         $Intravitreal->saveIntravitrealAndConfirm();
     }
 
+    /**
+     * @Then /^I Confirm that Intravitreal Mandatory fields validation error messages are displayed$/
+     */
+    public function iConfirmThatIntravitrealMandatoryFieldsValidationErrorMessagesAreDisplayed()
+    {
+        /**
+         * @var Intravitreal $Intravitreal
+         */
+        $Intravitreal  = $this->getPage('Intravitreal');
+        $Intravitreal->intravitrealMandatoryFieldsErrorValidation();
+    }
+
 
 }

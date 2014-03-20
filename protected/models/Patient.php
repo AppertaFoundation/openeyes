@@ -939,6 +939,7 @@ class Patient extends BaseActiveRecordVersioned
 	 *
 	 * @param PatientOphInfoCviStatus $cvi_status
 	 * @param string $cvi_status_date - fuzzy date string of the format yyyy-mm-dd
+	 * @return true|array True or array of errors
 	 */
 	public function editOphInfo($cvi_status, $cvi_status_date)
 	{
@@ -952,9 +953,13 @@ class Patient extends BaseActiveRecordVersioned
 		$oph_info->cvi_status_id = $cvi_status->id;
 		$oph_info->cvi_status_date = $cvi_status_date;
 
-		$oph_info->save();
+		if (!$oph_info->save()) {
+			return $oph_info->errors;
+		}
 
 		$this->audit('patient', $action);
+
+		return true;
 	}
 
 	public function getContactAddress($contact_id, $location_type=false, $location_id=false)

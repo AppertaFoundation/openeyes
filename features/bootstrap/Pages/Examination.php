@@ -34,6 +34,7 @@ class Examination extends OpenEyesPage
         'removeSecondLeftVisualAcuity' => array('xpath' => "//*[@data-key='3']//*[contains(text(),'Remove')]"),
         'removeSecondRightVisualAcuity' => array('xpath' => "//*[@data-key='1']//*[contains(text(),'Remove')]"),
 
+        'expandDRGrading' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'DR Grading')]"),
 
         'openIntraocularPressure' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Intraocular Pressure')]"),
         'intraocularRight' => array('xpath' => "//*[@id='Element_OphCiExamination_IntraocularPressure_right_reading_id']"),
@@ -47,6 +48,9 @@ class Examination extends OpenEyesPage
         'dilationLeft' => array('xpath' => "//select[@id='dilation_drug_left']"),
         'dropsRight' => array('xpath' => "//select[@name='dilation_treatment[1][drops]']"),
         'removeDilationLeft' => array('xpath' => "//*[@id='dilation_left']//*[contains(text(),'Remove')]"),
+        'dilationTimeRight' => array('xpath' => "//*[@id='dilation_treatment_0_treatment_time']"),
+        'dilationTimeLeft' => array('xpath' => "//*[@id='dilation_treatment_1_treatment_time']"),
+        'dilationTimeError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Dilation: Invalid treatment time')]"),
 
         'expandRefraction' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Refraction')]"),
 
@@ -79,6 +83,7 @@ class Examination extends OpenEyesPage
         'diagnosesRightEye' => array('xpath' => "//*[@id='Element_OphCiExamination_Diagnoses_eye_id_2']"),
         'diagnosesBothEyes' => array('xpath' => "//*[@id='Element_OphCiExamination_Diagnoses_eye_id_3']"),
         'diagnosesCommonDiagnosis' => array('xpath' => "//*[@id='DiagnosisSelection_disorder_id']"),
+        'principalDiagnosis' => array('xpath' => "//*[@id='OphCiExamination_diagnoses']//*[@name='principal_diagnosis']"),
 
         'addInvestigation' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_Investigation_description']"),
 
@@ -198,7 +203,27 @@ class Examination extends OpenEyesPage
         'investigationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Investigation: Description cannot be blank when there are no child elements')]"),
         'dilationValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Dilation: Please select at least one treatment, or remove the element')]"),
         'removeRefractionRightSide' => array('xpath' => "//*[@class='element-eye right-eye column side right']//*[@class='icon-remove-side remove-side']"),
-        'removeAllComorbidities' => array('xpath' => "//*[@class='field-row comorbidities-multi-select']//a[contains(text(),'Remove all')]")
+        'removeAllComorbidities' => array('xpath' => "//*[@class='field-row comorbidities-multi-select']//a[contains(text(),'Remove all')]"),
+
+         #DR Grading
+        'diabetesTypeOne' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_secondarydiagnosis_disorder_id_46635009']"),
+        'diabetesTypeTwo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_secondarydiagnosis_disorder_id_44054006']"),
+        'leftClinicalGradingRetino' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_right_clinicalret_id']"),
+        'rightClinicalGradingRetino' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_left_clinicalret_id']"),
+        'leftNSCRetino' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_right_nscretinopathy_id']"),
+        'rightNSCRetino' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_left_nscretinopathy_id']"),
+        'leftRetinoPhotoYes' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_right_nscretinopathy_photocoagulation_1']"),
+        'leftRetinoPhotoNo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_right_nscretinopathy_photocoagulation_0']"),
+        'rightRetinoPhotoYes' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_left_nscretinopathy_photocoagulation_1']"),
+        'rightRetinoPhotoNo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_left_nscretinopathy_photocoagulation_0']"),
+        'leftClinicalGradingMaculo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_right_clinicalmac_id']"),
+        'rightClinicalGradingMaculo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_left_clinicalmac_id']"),
+        'leftNSCMaculo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_right_nscmaculopathy_id']"),
+        'rightNSCMaculo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_left_nscmaculopathy_id']"),
+        'leftMaculoPhotoYes' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_right_nscmaculopathy_photocoagulation_1']"),
+        'leftMaculoPhotoNo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_right_nscmaculopathy_photocoagulation_0']"),
+        'rightMaculoPhotoYes' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_left_nscmaculopathy_photocoagulation_1']"),
+        'rightMaculoPhotoNo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_left_nscmaculopathy_photocoagulation_0']"),
     );
 
     public function history ()
@@ -313,7 +338,9 @@ class Examination extends OpenEyesPage
     public function openDilation ()
     {
         if ($this->isDilationCollapsed()){
-            $this->getElement('openDilation')->click();
+            $element = $this->getElement('openDilation');
+            $this->scrollWindowToElement($element);
+            $element->click();
             $this->getSession()->wait(5000, 'window.$ && $.active == 0');
         }
     }
@@ -328,6 +355,32 @@ class Examination extends OpenEyesPage
     {
         $this->getElement('dilationLeft')->selectOption($dilation);
         $this->getElement('dropsLeft')->selectOption($drops);
+    }
+
+    public function dilationRightTime ($time)
+    {
+        $this->getElement('dilationTimeRight')->setValue($time);
+    }
+
+    public function dilationLeftTime ($time)
+    {
+        $this->getElement('dilationTimeLeft')->setValue($time);
+    }
+
+    protected function hasDilationTimeErrorDisplayed ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('dilationTimeError')->getXpath());;
+    }
+
+    public function dilationTimeErrorValidation()
+    {
+        if ($this->hasDilationTimeErrorDisplayed()) {
+            print "Dilation Invalid time error displayed OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Dilation Invalid time error NOT displayed WARNING!!!");
+        }
     }
 
     protected function isRefractionCollapsed ()
@@ -415,7 +468,9 @@ class Examination extends OpenEyesPage
     public function expandAdnexalComorbidity ()
     {
         if ($this->isAdnexalCollapsed()){
-        $this->getElement('expandAdnexalComorbidity')->click();
+        $element = $this->getElement('expandAdnexalComorbidity');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
         }
     }
@@ -437,7 +492,9 @@ class Examination extends OpenEyesPage
 
     public function expandPupillaryAbnormalities ()
     {
-        $this->getElement('expandPupillaryAbnormalities')->click();
+        $element = $this->getElement('expandPupillaryAbnormalities');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
@@ -461,13 +518,19 @@ class Examination extends OpenEyesPage
        $this->getElement('expandPosteriorPole')->click();
     }
 
+    public function isDiagnosesCollapsed ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('expandDiagnoses')->getXpath());
+    }
+
     public function expandDiagnoses ()
     {
-
+       if ($this->isDiagnosesCollapsed()){
        $element = $this->getElement('expandDiagnoses');
        $this->scrollWindowToElement($element);
        $element->click();
        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
+       }
     }
 
     public function diagnosesLeftEye ()
@@ -475,7 +538,7 @@ class Examination extends OpenEyesPage
 
         $element = $this->getElement('diagnosesLeftEye');
         $this->scrollWindowToElement($element);
-        $element->click();
+        $element->check();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
@@ -494,9 +557,16 @@ class Examination extends OpenEyesPage
         $this->getElement('diagnosesCommonDiagnosis')->setValue($diagnosis);
     }
 
+    public function principalDiagnosis ()
+    {
+        $this->getElement('principalDiagnosis')->check();
+    }
+
     public function expandInvestigation ()
     {
-        $this->getElement('expandInvestigation')->click();
+        $element =$this->getElement('expandInvestigation');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
@@ -863,7 +933,9 @@ class Examination extends OpenEyesPage
 
     public function expandRisks ()
     {
-        $this->getElement('expandRisks')->click();
+        $element = $this->getElement('expandRisks');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
@@ -917,7 +989,9 @@ class Examination extends OpenEyesPage
     {
         if ($this->isConclusionCollapsed()) {
 
-        $this->getElement('expandConclusion')->click();
+        $element = $this->getElement('expandConclusion');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(3000, 'window.$ && $.active == 0');
         }
     }
@@ -1118,4 +1192,101 @@ class Examination extends OpenEyesPage
         $this->getSession()->wait(10000);
     }
 
+    public function expandDRGrading ()
+    {
+        $element = $this->getElement('expandDRGrading');
+        $this->scrollWindowToElement($element);
+        $element->click();
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
+    }
+
+    public function diabetesTypeOne ()
+    {
+        $this->getElement('diabetesTypeOne')->check();
+    }
+
+    public function diabetesTypeTwo ()
+    {
+        $this->getElement('diabetesTypeTwo')->check();
+    }
+
+    public function leftClinicalGradingRetino ($grading)
+    {
+        $this->getElement('leftClinicalGradingRetino')->selectOption($grading);
+    }
+
+    public function rightClinicalGradingRetino ($grading)
+    {
+        $this->getElement('rightClinicalGradingRetino')->selectOption($grading);
+    }
+
+    public function leftNSCRetino ($nsc)
+    {
+        $this->getElement('leftNSCRetino')->selectOption($nsc);
+    }
+
+    public function rightNSCRetino ($nsc)
+    {
+        $this->getElement('rightNSCRetino')->selectOption($nsc);
+    }
+
+    public function leftRetinoPhotoYes ()
+    {
+        $this->getElement('leftRetinoPhotoYes')->check();
+    }
+
+    public function leftRetinoPhotoNo ()
+    {
+        $this->getElement('leftRetinoPhotoNo')->check();
+    }
+
+    public function rightRetinoPhotoYes ()
+    {
+        $this->getElement('rightRetinoPhotoYes')->check();
+    }
+
+    public function rightRetinoPhotoNo ()
+    {
+        $this->getElement('rightRetinoPhotoNo')->check();
+    }
+
+    public function leftClinicalGradingMaculo ($grading)
+    {
+        $this->getElement('leftClinicalGradingMaculo')->selectOption($grading);
+    }
+
+    public function rightClinicalGradingMaculo ($grading)
+    {
+        $this->getElement('rightClinicalGradingMaculo')->selectOption($grading);
+    }
+
+    public function leftNSCMaculo ($nsc)
+    {
+        $this->getElement('leftNSCMaculo')->selectOption($nsc);
+    }
+
+    public function rightNSCMaculo ($nsc)
+    {
+        $this->getElement('rightNSCMaculo')->selectOption($nsc);
+    }
+
+    public function leftMaculoPhotoYes ()
+    {
+        $this->getElement('leftMaculoPhotoYes')->check();
+    }
+
+    public function leftMaculoPhotoNo()
+    {
+        $this->getElement('leftMaculoPhotoNo')->check();
+    }
+
+    public function rightMaculoPhotoYes ()
+    {
+        $this->getElement('rightMaculoPhotoYes')->check();
+    }
+
+    public function rightMaculoPhotoNo()
+    {
+        $this->getElement('rightMaculoPhotoNo')->check();
+    }
 }
