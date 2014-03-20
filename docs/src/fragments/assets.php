@@ -1,15 +1,3 @@
-<!-- <link rel="stylesheet" href="<?php echo $assets_root_path;?>assets/css/style.css" />
-<link rel="stylesheet" href="<?php echo $assets_root_path;?>assets/js/components/google-code-prettify/src/prettify.css" />
-<link rel="stylesheet" href="<?php echo $assets_root_path;?>assets/js/components/jquery-ui/themes/base/minified/jquery-ui.min.css" />
-<script src="<?php echo $assets_root_path;?>assets/js/modernizr.custom.js"></script>
-<script src="<?php echo $assets_root_path;?>assets/js/components/jquery/jquery.min.js"></script>
-<script src="<?php echo $assets_root_path;?>assets/js/components/jquery-ui/ui/jquery-ui.js"></script>
-<script src="<?php echo $assets_root_path;?>assets/js/components/google-code-prettify/src/prettify.js"></script>
-<script src="<?php echo $assets_root_path;?>assets/js/util.js"></script>
-<script src="<?php echo $assets_root_path;?>assets/js/dialogs.js"></script>
-<script src="<?php echo $assets_root_path;?>assets/js/docs.js"></script>
- -->
-
 <link rel="stylesheet" type="text/css" href="<?php echo $assets_root_path;?>assets/components/jquery-ui/themes/base/jquery-ui.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo $assets_root_path;?>assets/css/style.css" />
 

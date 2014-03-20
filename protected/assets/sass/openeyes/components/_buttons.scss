@@ -30,7 +30,6 @@
 //
 // Styleguide 1.1
 
-/* DONE */
 @include buttons {
 	@include button-base;
 	@include border-radius($button-radius);
@@ -95,14 +94,10 @@
 // Warning buttons
 //
 // Markup:
-// <a href="#" class="button {$modifiers}">Link Button</a>
-// <button class="button {$modifiers}">Button Element</button>
-// <input type="button" class="button {$modifiers}" value="input[type='button']"/>
+// <a href="#" class="button warning {$modifiers}">Link Button</a>
+// <button class="button warning {$modifiers}">Button Element</button>
+// <input type="button" class="button warning {$modifiers}" value="input[type='button']"/>
 //
-// .warning             - Primary button style
-// :hover               - Primary button hover state
-// :focus               - Primary button focus state
-// :active              - Primary button pressed state
 // .disabled            - Disabled state
 //
 // Styleguide 1.3
@@ -127,14 +122,10 @@
 // Cancel event action
 //
 // Markup:
-// <a href="#" class="button {$modifiers}">Link Button</a>
-// <button class="button {$modifiers}">Button Element</button>
-// <input type="button" class="button {$modifiers}" value="input[type='button']"/>
+// <a href="#" class="button cancel event-action {$modifiers}">Link Button</a>
+// <button class="button cancel event-action {$modifiers}">Button Element</button>
+// <input type="button" class="button cancel event-action {$modifiers}" value="input[type='button']"/>
 //
-// .cancel.event-action - Primary button style
-// :hover               - Primary button hover state
-// :focus               - Primary button focus state
-// :active              - Primary button pressed state
 // .disabled            - Disabled state
 //
 // Styleguide 1.4
@@ -164,14 +155,10 @@
 // Delete button
 //
 // Markup:
-// <a href="#" class="button {$modifiers}">Link Button</a>
-// <button class="button {$modifiers}">Button Element</button>
-// <input type="button" class="button {$modifiers}" value="input[type='button']"/>
+// <a href="#" class="button delete {$modifiers}">Link Button</a>
+// <button class="button delete {$modifiers}">Button Element</button>
+// <input type="button" class="button delete {$modifiers}" value="input[type='button']"/>
 //
-// .delete              - Primary button style
-// :hover               - Primary button hover state
-// :focus               - Primary button focus state
-// :active              - Primary button pressed state
 // .disabled            - Disabled state
 //
 // Styleguide 1.5
@@ -195,7 +182,8 @@
 // Markup:
 // <a href="#" class="button {$modifiers}">Link Button</a>
 //
-// .small               - Small button
+// .small              - Small button
+// .tiny               - Tiny button
 //
 // Styleguide 1.6
 
