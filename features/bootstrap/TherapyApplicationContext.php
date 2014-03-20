@@ -620,4 +620,102 @@ class TherapyApplicationContext extends PageObjectContext
         $TherapyApplication->saveTherapyAndConfirm();
     }
 
+    /**
+     * @Given /^I select a Right Patient has CNV of No$/
+     */
+    public function iSelectARightPatientHasCnvOfNo()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightPatientCnvNO();
+    }
+
+    /**
+     * @Then /^I select a Right Patient has Macular Oedema of Yes$/
+     */
+    public function iSelectARightPatientHasMacularOedemaOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightMacularOdemaYes();
+    }
+
+    /**
+     * @Given /^I select a Right Patient has Diabetic Macular Oedema of Yes$/
+     */
+    public function iSelectARightPatientHasDiabeticMacularOedemaOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightDiabeticMacularOdemaYes();
+    }
+
+    /**
+     * @Then /^I select a Right CRT>=(\d+) of Yes$/
+     */
+    public function iSelectARightCrtOfYes($arg1)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightCRT400Yes();
+    }
+
+    /**
+     * @Given /^I select a Left Patient has CNV of No$/
+     */
+    public function iSelectALeftPatientHasCnvOfNo()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->leftPatientCnvNO();
+    }
+
+    /**
+     * @Then /^I select a Left Patient has Macular Oedema of Yes$/
+     */
+    public function iSelectALeftPatientHasMacularOedemaOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->leftMacularOdemaYes();
+    }
+
+    /**
+     * @Given /^I select a Left Patient has Diabetic Macular Oedema of Yes$/
+     */
+    public function iSelectALeftPatientHasDiabeticMacularOedemaOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->leftDiabeticMacularOdemaYes();
+    }
+
+    /**
+     * @Then /^I select a Left CRT>=(\d+) of Yes$/
+     */
+    public function iSelectALeftCrtOfYes($arg1)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->leftCRT400Yes();
+    }
+
+
+
 }

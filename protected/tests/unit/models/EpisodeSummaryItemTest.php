@@ -17,6 +17,7 @@ class EpisodeSummaryItemTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'EventType',
+		'subspecialty' => 'Subspecialty',
 		'EpisodeSummaryItem' => 'EpisodeSummaryItem',
 		':episode_summary',
 	);
@@ -64,7 +65,7 @@ class EpisodeSummaryItemTest extends CDbTestCase
 
 	public function testAssign_Subspecialty()
 	{
-		EpisodeSummaryItem::model()->assign(array(1, 2), 1);
+		EpisodeSummaryItem::model()->assign(array(1, 2), $this->subspecialty('subspecialty1')->id);
 		$this->assertEquals(
 			array($this->EpisodeSummaryItem('foo'), $this->EpisodeSummaryItem('bar')),
 			EpisodeSummaryItem::model()->enabled(1)->findAll()

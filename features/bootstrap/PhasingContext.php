@@ -285,5 +285,17 @@ class PhasingContext extends PageObjectContext
         $phasing->savePhasingAndConfirm();
     }
 
+    /**
+     * @Then /^I Confirm that the Readings Invalid time error messages are displayed$/
+     */
+    public function iConfirmThatTheReadingsInvalidTimeErrorMessagesAreDisplayed()
+    {
+        /**
+         * @var Phasing $phasing
+         */
+        $phasing= $this->getPage('Phasing');
+        $phasing->phasingTimeErrorValidation();
+    }
+
 
 }

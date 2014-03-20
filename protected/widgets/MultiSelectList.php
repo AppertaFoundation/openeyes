@@ -35,12 +35,12 @@ class MultiSelectList extends BaseFieldWidget
 		$this->filtered_options = $this->options;
 
 		if (empty($_POST)) {
-			if ($this->element->{$this->relation}) {
+			if ($this->element && $this->element->{$this->relation}) {
 				foreach ($this->element->{$this->relation} as $item) {
 					$this->selected_ids[] = $item->{$this->relation_id_field};
 					unset($this->filtered_options[$item->{$this->relation_id_field}]);
 				}
-			} else if (!$this->element->id) {
+			} else if (!$this->element || !$this->element->id) {
 				if (is_array($this->default_options)) {
 					$this->selected_ids = $this->default_options;
 					foreach ($this->default_options as $id) {

@@ -51,6 +51,30 @@ if (!empty($episode)) {
 		</div>
 	</section>
 
+	<div class="element element-data event-types">
+		<?php
+		$summaryItems = array();
+		if ($episode->subspecialty) {
+			$summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
+		}
+		if (!$summaryItems) {
+			$summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
+		}
+
+		foreach ($summaryItems as $summaryItem) {
+			echo '<h3 id="' . $summaryItem->getClassName() . '" class="data-title">' . $summaryItem->name . ':</h3>' . "\n";
+			Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
+			$this->widget(
+					$summaryItem->getClassName(),
+					array(
+							'episode' => $episode,
+							'event_type' => $summaryItem->event_type,
+					)
+			);
+		}
+		?>
+	</div>
+
 	<section class="element element-data">
 		<div class="row">
 			<div class="large-6 column">
@@ -100,30 +124,6 @@ if (!empty($episode)) {
 			Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?></span>
 			on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?>
 		</span>
-	</div>
-
-	<div class="element element-data event-types">
-	<?php
-		$summaryItems = array();
-		if ($episode->subspecialty) {
-			$summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
-		}
-		if (!$summaryItems) {
-			$summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
-		}
-
-		foreach ($summaryItems as $summaryItem) {
-			echo '<h3 id="' . $summaryItem->getClassName() . '" class="data-title">' . $summaryItem->name . ':</h3>' . "\n";
-			Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
-			$this->widget(
-				$summaryItem->getClassName(),
-				array(
-					'episode' => $episode,
-					'event_type' => $summaryItem->event_type,
-				)
-			);
-		}
-	?>
 	</div>
 
 <?php } else { // hide the episode border ?>

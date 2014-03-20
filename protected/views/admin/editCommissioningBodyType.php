@@ -33,7 +33,7 @@
 	))?>
 		<?php echo $form->textField($cbt,'name')?>
 		<?php echo $form->textField($cbt,'shortname')?>
-		<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_bodies'));?>
+		<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_body_types'));?>
 	<?php $this->endWidget()?>
 </div>
 

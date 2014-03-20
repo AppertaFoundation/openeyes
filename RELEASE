@@ -3,6 +3,29 @@ Release History
 
 This document is intended to summarise the changes made for each release. It should be noted that this document was only introduced with version 1.4, and therefore doesn't cover earlier releases.
 
+1.6.0
+-----
++ Rearchitect rendering/validation for event type controller
++ Flash messages are not displaying on some pages
++ Catch return in forms to supress submit
++ Administration of drugs
++ Base Controller asset path is set in the wrong place
++ Asset refactoring
++ Fix the cancel button styling
++ Episode summary enhancements
++ Rationalise db character set and collation
++ Shortcut for disabling transactions
++ Fix scrolling to elements
++ Latest event link behaviour is inconsistent
++ Page flickers when scrolling up
++ Cancelling the creation of a new Commissioning Body Type moves user back to the wrong table/page
++ User has the ability to save a CVI Status with a future date
++ Orphaned address entries
+
+1.5.6
+-----
++ Adapt multiselect widget to work without elements
+
 1.5.5
 -----
 + Added configurable time locking to all events by default

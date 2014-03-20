@@ -127,12 +127,13 @@ class _WrapperContactBehavior3 extends BaseActiveRecord
 	}
 }
 
-class ContactBehaviorTest extends PHPUnit_Framework_TestCase 
+class ContactBehaviorTest extends PHPUnit_Framework_TestCase
 {
 	private $model;
 	public $fixtures = array(
 		'contact' => 'Contact',
 		'address' => 'Address',
+		'country' => 'Country'
 	);
 
 	public function setUp()
