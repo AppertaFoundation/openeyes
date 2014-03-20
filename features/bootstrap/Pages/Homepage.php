@@ -1,5 +1,5 @@
 <?php
-
+use Behat\Behat\Exception\BehaviorException;
 class Homepage extends OpenEyesPage
 {
     protected $path = '/';
@@ -10,7 +10,8 @@ class Homepage extends OpenEyesPage
         'confirmSiteAndFirmButton' => array('xpath' => "//*[@id='site-and-firm-form']//*[@value='Confirm']"),
         'mainSearch' => array('xpath' => "//input[@id='query']"),
         'searchSubmit' => array('xpath' => "//button[@type='submit']"),
-        'changeFirmHeaderLink' => array('xpath' => "//*[@id='user_firm']//*[contains(text(), 'Change')]")
+        'changeFirmHeaderLink' => array('xpath' => "//*[@id='user_firm']//*[contains(text(), 'Change')]"),
+        'invalidLogin' => array('xpath' => "//*[contains(text(),'Invalid login.')]"),
     );
 
     public function selectSiteID($siteAddress)
@@ -59,6 +60,23 @@ class Homepage extends OpenEyesPage
     public function followLink($link)
     {
         $this->clickLink($link);
+    }
+
+    public function invalidLoginMessage ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('invalidLogin')->getXpath());
+    }
+
+    public function isInvalidLoginShown ()
+    {
+        if ($this->invalidLoginMessage()){
+            print "Invalid Login message displayed OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!! Invalid Login is NOT displayed WARNING!!!");
+        }
+
     }
 
 }
