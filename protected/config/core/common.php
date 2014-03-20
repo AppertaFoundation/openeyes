@@ -97,7 +97,7 @@ return array(
 			),
 		),
 		'db' => array(
-			'class' => 'CDbConnection',
+			'class' => 'OEDbConnection',
 			'connectionString' => 'mysql:host=localhost;dbname=openeyes',
 			'emulatePrepare' => true,
 			'username' => 'oe',

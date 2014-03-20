@@ -116,61 +116,38 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 	public function updateByPk($pk,$attributes,$condition='',$params=array())
 	{
-		$table = $this->getTableSchema();
-
-		$transaction = Yii::app()->db->getCurrentTransaction() === null ? Yii::app()->db->beginTransaction() : false;
+		$transaction = $this->dbConnection->beginInternalTransaction();
 
 		try {
-			if (!$this->enable_version || $this->versionToTableByPk($pk,$condition,$params)) {
-				$result = parent::updateByPk($pk,$attributes,$condition,$params);
+			if ($this->enable_version) $this->versionToTableByPk($pk, $condition, $params);
 
-				if ($transaction) {
-					// No big deal if $result is 0, it just means the row was unchanged so no new version row is required
-					$result ? $transaction->commit() : $transaction->rollback();
-				}
+			$result = parent::updateByPk($pk,$attributes,$condition,$params);
 
-				return $result;
-			}
+			// No big deal if $result is 0, it just means the row was unchanged so no new version row is required
+			$result ? $transaction->commit() : $transaction->rollback();
+
+			return $result;
 		} catch (Exception $e) {
-			if ($transaction) {
-				$transaction->rollback();
-			}
+			$transaction->rollback();
 			throw $e;
 		}
-
-		if ($transaction) {
-			$transaction->rollback();
-		}
-
-		return false;
 	}
 
 	public function updateAll($attributes,$condition='',$params=array())
 	{
-		$transaction = Yii::app()->db->getCurrentTransaction() === null ? Yii::app()->db->beginTransaction() : false;
+		$transaction = $this->dbConnection->beginInternalTransaction();
 
 		try {
-			if (!$this->enable_version || $this->versionAllToTable($condition,$params)) {
-				$result = parent::updateAll($attributes,$condition,$params);
+			if ($this->enable_version) $this->versionAllToTable($condition, $params);
 
-				if ($transaction && $result) {
-					$transaction->commit();
-				}
+			$result = parent::updateAll($attributes,$condition,$params);
+			$result ? $transaction->commit() : $transaction->rollback();
 
-				return $result;
-			}
+			return $result;
 		} catch (Exception $e) {
-			if ($transaction) {
-				$transaction->rollback();
-			}
+			$transaction->rollback();
 			throw $e;
 		}
-
-		if ($transaction) {
-			$transaction->rollback();
-		}
-
-		return false;
 	}
 
 	public function versionToTableByPk($pk, $condition, $params=array())
@@ -181,9 +158,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 		$criteria = $builder->createPkCriteria($table,$pk,$condition,$params);
 
-		$command = $builder->createInsertFromTableCommand($table_version,$table,$criteria);
-
-		return $command->execute();
+		$builder->createInsertFromTableCommand($table_version,$table,$criteria)->execute();
 	}
 
 	public function versionAllToTable($condition, $params=array())
@@ -194,9 +169,7 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 
 		$criteria = $builder->createCriteria($condition, $params);
 
-		$command = $builder->createInsertFromTableCommand($table_version,$table,$criteria);
-
-		return $command->execute();
+		$builder->createInsertFromTableCommand($table_version,$table,$criteria)->execute();
 	}
 
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
