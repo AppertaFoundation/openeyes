@@ -18,8 +18,9 @@
  */
 
 return array(
-		'reftype1' => array(
-				'code' => 'REF1',
-				'name' => 'Referral Type 1',
-		),
+	'reftype1' => array(
+		'id' => 1,
+		'code' => 'REF1',
+		'name' => 'Referral Type 1',
+	),
 );

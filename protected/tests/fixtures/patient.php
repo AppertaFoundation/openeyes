@@ -20,6 +20,7 @@
 
 return array(
 	'patient1' => array(
+		'id' => 1,
 		'pas_key' => '123',
 		'title' => 'Mr.',
 		'first_name' => 'John',
@@ -33,6 +34,7 @@ return array(
 		'contact_id' => 1
 	),
 	'patient2' => array(
+		'id' => 2,
 		'pas_key' => '456',
 		'title' => 'Mr.',
 		'dob' => '1972-01-01',
@@ -46,6 +48,7 @@ return array(
 		'contact_id' => 2
 	),
 	'patient3' => array(
+		'id' => 3,
 		'pas_key' => '789',
 		'title' => 'Mrs.',
 		'first_name' => 'Katherine',
