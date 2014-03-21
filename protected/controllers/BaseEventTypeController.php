@@ -204,7 +204,7 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function getEventElements()
 	{
-		if ($this->event) {
+		if ($this->event && !$this->event->isNewRecord) {
 			return $this->event->getElements();
 		}
 		else {
@@ -1331,6 +1331,7 @@ class BaseEventTypeController extends BaseModuleController
 	public function renderOptionalElements($action, $form=null,$data=null)
 	{
 		foreach ($this->getOptionalElements() as $element) {
+			error_log(get_class($element));
 			$this->renderOptionalElement($element, $action, $form, $data);
 		}
 	}
