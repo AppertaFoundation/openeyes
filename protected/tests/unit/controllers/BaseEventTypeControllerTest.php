@@ -728,6 +728,43 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 
 	}
 
+	public function testinitActionCreate()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('setPatient','getEpisode', 'getEvent_Type'))
+				->getMock();
+
+		$event_type = ComponentStubGenerator::generate('EventType', array('id' => 12));
+
+		$_REQUEST['patient_id'] = 126;
+		$episode = ComponentStubGenerator::generate('Episode', array('id' => 453));
+
+		$controller->expects($this->once())
+			->method('setPatient')
+			->with($this->equalTo($_REQUEST['patient_id']));
+
+		$controller->expects($this->once())
+				->method('getEvent_Type')
+				->will($this->returnValue($event_type));
+
+		$controller->expects($this->once())
+			->method('getEpisode')
+			->will($this->returnValue($episode));
+
+
+
+		$r = new ReflectionClass('BaseEventTypeController');
+		$iac_meth = $r->getMethod('initActionCreate');
+		$iac_meth->setAccessible(true);
+
+		$iac_meth->invoke($controller);
+
+		$this->assertTrue($controller->event->isNewRecord);
+		$this->assertSame($episode->id, $controller->event->episode_id);
+		$this->assertEquals($event_type->id, $controller->event->event_type_id);
+	}
+
 }
 
 /**

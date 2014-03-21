@@ -20,7 +20,6 @@
         <exclude>
             <group>functional</group>
             <group>undefined</group>
-            <group>controllers</group>
             <group>elements</group>
             <group>services</group>
             <group>components</group>
