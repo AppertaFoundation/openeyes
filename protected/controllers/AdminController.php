@@ -156,9 +156,11 @@ class AdminController extends BaseAdminController
 	public function actionAddUser()
 	{
 		$user = new User;
+		$request = Yii::app()->getRequest();
 
-		if (!empty($_POST)) {
-			$user->attributes = $_POST['User'];
+		if ($request->getIsPostRequest()) {
+			$userAtt = $request->getPost( 'User');
+			$user->attributes = $userAtt;
 
 			if (!$user->validate()) {
 				$errors = $user->getErrors();
@@ -167,7 +169,11 @@ class AdminController extends BaseAdminController
 					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
 				}
 
-				$user->saveRoles($_POST['User']['roles']);
+				if(!isset($userAtt['roles'])){
+					$userAtt['roles']=array();
+				}
+
+				$user->saveRoles($userAtt['roles']);
 
 				Audit::add('admin-User','add',serialize($_POST));
 				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
@@ -181,7 +187,6 @@ class AdminController extends BaseAdminController
 			'errors' => @$errors,
 		));
 	}
-
 
 	public function actionEditUser($id)
 	{
