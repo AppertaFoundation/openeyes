@@ -1226,45 +1226,6 @@ class BaseEventTypeController extends BaseModuleController
 		($use_container_view) && $this->endContent();
 	}
 
-
-	/**
-	 * Render an optional element based on the action provided
-	 *
-	 * @param BaseEventTypeElement $element
-	 * @param string $action
-	 * @param BaseCActiveBaseEventTypeCActiveForm $form
-	 * @param array $data
-	 * @throws Exception
-	 */
-	protected function renderOptionalElement($element, $action, $form, $data)
-	{
-		try {
-			$this->renderPartial(
-				'_optional_'	. get_class($element),
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form
-				),
-				false, false
-			);
-		} catch (Exception $e) {
-			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
-				throw $e;
-			}
-			$this->renderPartial(
-				'_optional_element',
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form
-				),
-				false, false
-			);
-		}
-
-
-	}
 	/**
 	 * Render the open elements for the controller state
 	 *
@@ -1275,6 +1236,7 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function renderOpenElements($action, $form=null, $data=null)
 	{
+
 		foreach ($this->getElements() as $element) {
 			$this->renderElement($element, $action, $form, $data);
 		}
@@ -1306,7 +1268,7 @@ class BaseEventTypeController extends BaseModuleController
 	public function renderOptionalElements($action, $form=null,$data=null)
 	{
 		foreach ($this->getOptionalElements() as $element) {
-			$this->renderOptionalElement($element, $action, $form, $data);
+			$this->renderElement($element, $action, $form, $data);
 		}
 	}
 
@@ -1322,7 +1284,7 @@ class BaseEventTypeController extends BaseModuleController
 	public function renderChildOptionalElements($parent_element, $action, $form=null, $data=null)
 	{
 		foreach ($this->getChildOptionalElements($parent_element->getElementType()) as $element) {
-			$this->renderOptionalElement($element, $action, $form, $data);
+			$this->renderElement($element, $action, $form, $data);
 		}
 	}
 
