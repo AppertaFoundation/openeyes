@@ -32,7 +32,7 @@
  * @property User[] $members
  * @property User $consultant
  */
-class Firm extends BaseActiveRecordVersionedSoftDelete
+class Firm extends BaseActiveRecordVersioned
 {
 	public $subspecialty_id;
 
@@ -51,6 +51,11 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 	public function tableName()
 	{
 		return 'firm';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**
@@ -102,6 +107,13 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 		);
 	}
 
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
+		);
+	}
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -123,26 +135,6 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 		));
 	}
 
-	/**
-	 * Returns an array of the service_subspecialty names - the service name plus the subspecialty name.
-	 */
-	public function getServiceSubspecialtyOptions()
-	{
-		$select = array();
-
-		foreach (Yii::app()->db->createCommand()
-			->select("ssa.id, se.name AS service_name, su.name AS subspecialty_name")
-			->from("service_subspecialty_assignment ssa")
-			->join("service se","ssa.service_id = se.id")
-			->join("subspecialty su","ssa.subspecialty_id = su.id")
-			->order("se.name, su.name")
-			->queryAll() as $result) {
-			$select[$result['id']] = $result['service_name'].' - '.$result['subspecialty_name'];
-		}
-
-		return $select;
-	}
-
 	public function getServiceText()
 	{
 		return $this->serviceSubspecialtyAssignment->service->name;
@@ -161,57 +153,27 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 	 * Fetch an array of firm IDs and names
 	 * @return array
 	 */
-	public function getList($subspecialtyId = null, $include_id = null)
+	public function getList($subspecialty_id = null, $include_id = null)
 	{
-		$result = array();
+		$cmd = Yii::app()->db->createCommand()
+			->select('f.id, f.name')
+			->from('firm f')
+			->where('f.active = 1' . ($include_id ? " or f.id = :include_id" : ""));
 
-		if (empty($subspecialtyId)) {
-			$list = Firm::model()->activeOrPk($include_id)->findAll();
-
-			foreach ($list as $firm) {
-				$result[$firm->id] = $firm->name;
-			}
-		} else {
-			if ($include_id) {
-				$deleted_clause = 'f.deleted = 0 or f.id = '.$include_id;
-			} else {
-				$deleted_clause = 'f.deleted = 0';
-			}
-
-			$list = Yii::app()->db->createCommand()
-				->select('f.id, f.name')
-				->from('firm f')
-				->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-				->where('ssa.subspecialty_id = :sid and '.$deleted_clause,array(
-					':sid' => $subspecialtyId,
-				))
-				->queryAll();
-
-			foreach ($list as $firm) {
-				$result[$firm['id']] = $firm['name'];
-			}
+		if ($subspecialty_id) {
+			$cmd->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+				->andWhere('ssa.subspecialty_id = :subspecialty_id')
+				->bindValue(':subspecialty_id', $subspecialty_id);
 		}
 
-		natcasesort($result);
-
-		return $result;
-	}
-
-	public function getListWithoutDupes()
-	{
-		$result = array();
-
-		if (empty($subspecialtyId)) {
-			$list = Firm::model()->active()->findAll();
-
-			foreach ($list as $firm) {
-				if (!in_array($firm->name,$result)) {
-					$result[$firm->id] = $firm->name;
-				}
-			}
+		if ($include_id) {
+			$cmd->bindValue(":include_id", $include_id);
 		}
 
-		natcasesort($result);
+		$result = array();
+		foreach ($cmd->queryAll() as $firm) {
+			$result[$firm['id']] = $firm['name'];
+		}
 
 		return $result;
 	}
@@ -223,7 +185,7 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 			->from('firm f')
 			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->join('subspecialty s','ssa.subspecialty_id = s.id')
-			->where('f.deleted = 0')
+			->where('f.active = 1')
 			->order('f.name, s.name')
 			->queryAll();
 		$data = array();
@@ -241,19 +203,6 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 			$list[$firm_id] = $name;
 		}
 		return $list;
-	}
-
-	public function getCataractList()
-	{
-		$specialty = Specialty::model()->find('code=?',array(130));
-		$subspecialty = Subspecialty::model()->find('specialty_id=? and name=?',array($specialty->id,'Cataract'));
-		$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($subspecialty->id));
-
-		$criteria = new CDbCriteria;
-		$criteria->compare('service_subspecialty_assignment_id',$ssa->id);
-		$criteria->order = 'name';
-
-		return CHtml::listData(Firm::model()->active()->findAll($criteria),'id','name');
 	}
 
 	public function getConsultantName()
@@ -299,9 +248,7 @@ class Firm extends BaseActiveRecordVersionedSoftDelete
 			->from('subspecialty su')
 			->join('service_subspecialty_assignment svc_ass', 'svc_ass.subspecialty_id = su.id')
 			->join('firm f', 'f.service_subspecialty_assignment_id = svc_ass.id')
-			->where('f.id = :fid and f.deleted = 0', array(
-				':fid' => $this->id,
-			))
+			->where('f.id = :fid', array(':fid' => $this->id))
 			->queryRow();
 
 		if (empty($result)) {

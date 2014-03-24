@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<? include 'components/head.php'; ?>
+<? include 'components/admin/head.php'; ?>
 </head>
 <body class="open-eyes">
 	<div class="container main" role="main">

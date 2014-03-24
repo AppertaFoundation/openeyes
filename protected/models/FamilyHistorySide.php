@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class FamilyHistorySide extends BaseActiveRecordVersionedSoftDelete
+class FamilyHistorySide extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

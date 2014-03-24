@@ -26,7 +26,7 @@
  * @property integer $display_order
  *
  */
-class AnaestheticComplication extends BaseActiveRecordVersionedSoftDelete
+class AnaestheticComplication extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

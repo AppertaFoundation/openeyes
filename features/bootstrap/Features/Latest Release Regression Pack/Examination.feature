@@ -1,9 +1,13 @@
 @examination @regression
 Feature: Create New Examination Regression Tests
-  Regression over 2 Sites and 4 Firms
-  Coverage at 80%
+          Regression over 2 Sites and 4 Firms
+          Regression coverage of this event is approx 70%
 
-  Scenario: Route 1: Login and create a new Examination Event: Site 1:Queens, Firm:3 Anderson Glaucoma
+  Scenario: Route 1: Login and create a new Examination Event
+            Site 1:Queens
+            Firm 3:Anderson Glaucoma
+            Add and then remove all Comorbidities
+            Viusal Fields, Intraocular Pressure, Dilation
             Confirm that Refraction Axis entries are correctly validated when the Examination is saved
 
     Given I am on the OpenEyes "master" homepage
@@ -67,6 +71,8 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Dilation section
     Then I choose left Dilation of "2" and drops of "5"
     Then I choose right Dilation of "6" and drops of "3"
+    And I enter a left Dilation time of "10:00"
+    And I enter a right Dilation time of "13:11"
 
     Then I choose to remove left Dilation treatment
 
@@ -75,9 +81,12 @@ Feature: Create New Examination Regression Tests
     Then a check is made that a left Axis degrees of "145" was entered
     Then a check is made that a right Axis degrees of "38" was entered
 
-
-  Scenario: Route 2:Login and create a new Examination Event: Site:1 Queens, Firm:2 Broom Glaucoma
-            Add a second Visual Acuity reading and then remove it. Removal of one side test.
+  Scenario: Route 2:Login and create a new Examination Event
+            Site:1 Queens
+            Firm:2 Broom Glaucoma
+            Viusal Fields, Intraocular Pressure, Dilation, Refraction
+            Add a second Visual Acuity reading and then remove it
+            Removal of one side test
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -113,6 +122,8 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Dilation section
     Then I choose left Dilation of "5" and drops of "4"
     Then I choose right Dilation of "2" and drops of "2"
+    And I enter a left Dilation time of "20:00"
+    And I enter a right Dilation time of "16:11"
 
     Then I choose to expand the Refraction section
     Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
@@ -125,7 +136,10 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 
-  Scenario: Route 3:Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract
+  Scenario: Route 3:Login and create a new Examination Event
+            Site:1 Queens
+            Firm:1 Anderson Cataract
+            Viusal Fields, Intraocular Pressure, Dilation, Refraction, Conclusion
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -155,6 +169,8 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Dilation section
     Then I choose left Dilation of "5" and drops of "4"
     Then I choose right Dilation of "2" and drops of "2"
+    And I enter a left Dilation time of "08:35"
+    And I enter a right Dilation time of "22:12"
 
     Then I choose to expand the Refraction section
     Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
@@ -173,7 +189,9 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 ##
-  Scenario: Route 4: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
+  Scenario: Route 4: Login and create a new Examination Event
+            Site:1 Queens
+            Firm:1 Anderson Cataract
             Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
 
     Given I am on the OpenEyes "master" homepage
@@ -205,6 +223,8 @@ Feature: Create New Examination Regression Tests
 
     Then I choose left Dilation of "5" and drops of "4"
     Then I choose right Dilation of "2" and drops of "2"
+    And I enter a left Dilation time of "08:35"
+    And I enter a right Dilation time of "22:12"
 
     Then I choose to expand the Refraction section
     Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
@@ -230,11 +250,11 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Diagnoses section
     And I choose a left eye diagnosis
     Then I choose a diagnoses of "230670003"
-
     And I choose a right eye diagnosis
     Then I choose a diagnoses of "53889007"
     And I choose both eyes diagnosis
     Then I choose a diagnoses of "193570009"
+    Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -296,8 +316,10 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 
 #
-  Scenario: ROUTE 5: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
-  Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
+  Scenario: ROUTE 5: Login and create a new Examination Event
+            Site:1 Queens
+            Firm:1 Anderson Cataract
+            Injection management route
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -327,6 +349,8 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Dilation section
     Then I choose left Dilation of "5" and drops of "4"
     Then I choose right Dilation of "2" and drops of "2"
+    And I enter a left Dilation time of "09:14"
+    And I enter a right Dilation time of "12:00"
 
     Then I choose to expand the Refraction section
     Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
@@ -355,6 +379,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a diagnoses of "34361001"
     And I choose both eyes diagnosis
     Then I choose a diagnoses of "79410001"
+    Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -420,8 +445,7 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 ##
   Scenario: ROUTE 6: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
-  Opening every additional Optional Element that can be included in Automation tests (excluding EyeDraw elements)
-    This Route focuses on the remaining additional Injection Management sections
+            Remaining additional Injection Management sections
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -451,6 +475,8 @@ Feature: Create New Examination Regression Tests
     Then I choose to expand the Dilation section
     Then I choose left Dilation of "5" and drops of "4"
     Then I choose right Dilation of "2" and drops of "2"
+    And I enter a left Dilation time of "06:05"
+    And I enter a right Dilation time of "18:45"
 
     Then I choose to expand the Refraction section
     Then I enter left Refraction details of Sphere "-1" integer "11" fraction "0.50"
@@ -479,6 +505,7 @@ Feature: Create New Examination Regression Tests
     Then I choose a diagnoses of "34361001"
     And I choose both eyes diagnosis
     Then I choose a diagnoses of "79410001"
+    Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
     And I add an Investigation of "refraction, "
@@ -554,6 +581,7 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 #
   Scenario: Route 7: Examination Validation Tests (Anderson Glaucoma)
+            History and Conclusion validation error checks
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -574,6 +602,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the Conclusion Validation error message is displayed
 
   Scenario: Route 8: Examination Validation Tests (Anderson Cataract)
+            History and Dilation validation error checks
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -586,12 +615,15 @@ Feature: Create New Examination Regression Tests
     Then I expand the Cataract sidebar
     And I add a New Event "Examination"
 
+    Then I choose to expand the Dilation section
+
     Then I Save the Examination
 
     Then I Confirm that the History Validation error message is displayed
     Then I Confirm that the Dilation Validation error message is displayed
 
   Scenario: Route 9: Examination Validation Tests (Anderson Medical Retinal)
+            History and Dilation validation error checks
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -612,6 +644,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the Dilation Validation error message is displayed
 
   Scenario: Route 10: Examination Validation Tests (Broom Glaucoma)
+            History and Dilation validation error checks
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -632,6 +665,7 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the Dilation Validation error message is displayed
 
   Scenario: Route 11: Examination Validation Tests (Remove All Error)
+            Close All elements and attempt to Save - validation errors
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -651,6 +685,7 @@ Feature: Create New Examination Regression Tests
     Then I confirm that the Remove All Validation error message is displayed
 #
   Scenario: Route 12: Examination Validation Tests (Select All and Save Validation errors)
+            Select All elements and attempt to Save - validation errors
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -668,3 +703,144 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination
 
     Then I confirm that the Add All Validation error messages have been displayed
+
+  Scenario: Route 13: Examination Validation Tests (Anderson Cataract)
+  History and Dilation Invalid Time entry validation error checks
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Cataract sidebar
+    And I add a New Event "Examination"
+
+    Then I choose to expand the Dilation section
+    Then I choose left Dilation of "5" and drops of "4"
+    Then I choose right Dilation of "2" and drops of "2"
+    And I enter a left Dilation time of "35:00"
+    And I enter a right Dilation time of "93:00"
+
+    Then I Save the Examination
+
+    Then I Confirm that the History Validation error message is displayed
+    Then I Confirm that the Dilation Invalid time error message is displayed
+
+  Scenario: Route 14: Login and create a new Examination Event
+  Site 1:Queens
+  Firm 3:Anderson Glaucoma
+  DR Grading tests
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Examination"
+
+    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
+
+    Then I choose to expand the DR Grading section
+
+    And I select a left Clinical Grading for Retinopathy of "2"
+    And I select a left NSC Retinopathy of "2"
+    And I select a left Retinopathy photocoagulation of Yes
+    And I select a left Clinical Grading for maculopathy of "2"
+    And I select a left NSC maculopathy of "3"
+    And I select a left Maculopathy photocoagulation of Yes
+
+    And I select a right Clinical Grading for Retinopathy of "2"
+    And I select a right NSC Retinopathy of "2"
+    And I select a right Retinopathy photocoagulation of No
+    And I select a right Clinical Grading for maculopathy of "2"
+    And I select a right NSC maculopathy of "4"
+    And I select a right Maculopathy photocoagulation of No
+
+    Then I Save the Examination and confirm it has been created successfully
+
+  Scenario: Route 15: Login and create a new Examination Event
+  Site 1:Queens
+  Firm 4:Anderson Medical Retinal
+  DR Grading tests
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "4"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Medical Retinal sidebar
+    And I add a New Event "Examination"
+
+    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
+
+    Then I choose to expand the DR Grading section
+
+    And I select a left Clinical Grading for Retinopathy of "1"
+    And I select a left NSC Retinopathy of "1"
+    And I select a left Retinopathy photocoagulation of Yes
+    And I select a left Clinical Grading for maculopathy of "1"
+    And I select a left NSC maculopathy of "1"
+    And I select a left Maculopathy photocoagulation of Yes
+
+    And I select a right Clinical Grading for Retinopathy of "1"
+    And I select a right NSC Retinopathy of "1"
+    And I select a right Retinopathy photocoagulation of No
+    And I select a right Clinical Grading for maculopathy of "1"
+    And I select a right NSC maculopathy of "1"
+    And I select a right Maculopathy photocoagulation of No
+
+    Then I choose to expand the Dilation section
+    Then I choose left Dilation of "5" and drops of "4"
+    Then I choose right Dilation of "2" and drops of "2"
+
+    Then I Save the Examination and confirm it has been created successfully
+
+  Scenario: Route 16: Login and create a new Examination Event
+  Site 1:Queens
+  Firm 2:Broom Glaucoma
+  DR Grading tests
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "2"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Examination"
+
+    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
+
+    Then I choose to expand the DR Grading section
+
+    And I select a left Clinical Grading for Retinopathy of "3"
+    And I select a left NSC Retinopathy of "3"
+    And I select a left Retinopathy photocoagulation of Yes
+    And I select a left Clinical Grading for maculopathy of "3"
+    And I select a left NSC maculopathy of "3"
+    And I select a left Maculopathy photocoagulation of No
+
+    And I select a right Clinical Grading for Retinopathy of "3"
+    And I select a right NSC Retinopathy of "1"
+    And I select a right Retinopathy photocoagulation of No
+    And I select a right Clinical Grading for maculopathy of "3"
+    And I select a right NSC maculopathy of "3"
+    And I select a right Maculopathy photocoagulation of Yes
+
+    Then I choose to expand the Dilation section
+    Then I choose left Dilation of "5" and drops of "4"
+    Then I choose right Dilation of "2" and drops of "2"
+
+    Then I Save the Examination and confirm it has been created successfully

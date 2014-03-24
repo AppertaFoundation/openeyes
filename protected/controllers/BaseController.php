@@ -82,7 +82,9 @@ class BaseController extends Controller
 		// to render the HTML template for the TCPDF engine)
 		
 		// Register the main stylesheet without pre-registering to ensure it's always output first.
-		$assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
+		if (!$this->isPrintAction($this->action->id)) {
+			$assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
+		}
 
 		// Prevent certain assets from being outputted in certain conditions.
 		$assetManager->adjustScriptMapping();

@@ -57,7 +57,7 @@
 			</thead>
 			<tbody>
 				<?php
-				foreach ($users['items'] as $i => $user) {?>
+				foreach ($users as $i => $user) {?>
 					<tr class="clickable" data-id="<?php echo $user->id?>" data-uri="admin/editUser/<?php echo $user->id?>">
 						<td><input type="checkbox" name="users[]" value="<?php echo $user->id?>" /></td>
 						<td><?php echo $user->id?></td>

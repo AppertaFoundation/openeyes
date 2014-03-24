@@ -714,14 +714,18 @@ class PatientTest extends CDbTestCase
 
 	/**
 	 * @covers Patient::editOphInfo
-	 * @todo   Implement testEditOphInfo().
 	 */
-	public function testEditOphInfo()
+	public function testEditOphInfo_Success()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		$cvi_status = ComponentStubGenerator::generate('PatientOphInfoCviStatus', array('id' => 1));
+		$this->assertTrue($this->patients('patient1')->editOphInfo($cvi_status, '2000-01-01'));
+	}
+
+	public function testEditOphInfo_ValidationFailure()
+	{
+		$cvi_status = ComponentStubGenerator::generate('PatientOphInfoCviStatus', array('id' => 1));
+		$errors = $this->patients('patient1')->editOphInfo($cvi_status, '2000-42-35');
+		$this->assertEquals(array('cvi_status_date' => array('This is not a valid date')), $errors);
 	}
 
 	/**

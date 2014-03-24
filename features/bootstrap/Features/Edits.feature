@@ -445,7 +445,10 @@ Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3
     Then I enter right Axis degrees of "145"
     And I enter a right type of "1"
 
-    Then I Save the Examination
+    Then I choose to expand the Conclusion section
+    And I choose a Conclusion option of "booked for first eye, "
+
+    Then I Save the Examination and confirm it has been created successfully
 
    Scenario: Route 6B: Edit previously created Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
 

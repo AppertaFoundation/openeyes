@@ -37,7 +37,7 @@
 			</thead>
 			<tbody>
 				<?php
-				foreach ($firms['items'] as $i => $firm) {?>
+				foreach ($firms as $i => $firm) {?>
 					<tr class="clickable" data-id="<?php echo $firm->id?>" data-uri="admin/editFirm/<?php echo $firm->id?>">
 						<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
 						<td><?php echo $firm->id?></td>

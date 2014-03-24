@@ -25,7 +25,7 @@
  * @property string $name
  * @property string $description
  */
-class OPCSCode extends BaseActiveRecordVersionedSoftDelete
+class OPCSCode extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

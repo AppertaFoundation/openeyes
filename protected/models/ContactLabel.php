@@ -25,7 +25,7 @@
  * @property string $name
  * @property integer $letter_template_only
  */
-class ContactLabel extends BaseActiveRecordVersionedSoftDelete
+class ContactLabel extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -42,6 +42,11 @@ class ContactLabel extends BaseActiveRecordVersionedSoftDelete
 	public function tableName()
 	{
 		return 'contact_label';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**
@@ -78,6 +83,13 @@ class ContactLabel extends BaseActiveRecordVersionedSoftDelete
 			'id' => 'ID',
 			'name' => 'Name',
 			'letter_template_only' => 'Letter Template Only',
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
 		);
 	}
 

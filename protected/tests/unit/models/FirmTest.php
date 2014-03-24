@@ -20,11 +20,11 @@
 
 class FirmTest extends CDbTestCase
 {
-
 	public $fixtures = array(
 		'services' => 'Service',
 		'specialties' => 'Specialty',
 		'serviceSubspecialtyAssignment' => 'ServiceSubspecialtyAssignment',
+		'subspecialties' => 'Subspecialty',
 		'firms' => 'Firm',
 		'FirmUserAssignments' => 'FirmUserAssignment',
 		'users' => 'User',
@@ -65,22 +65,12 @@ class FirmTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers Firm::getServiceSubspecialtyOptions
-	 */
-	public function testGetServiceSubspecialtyOptions()
-	{
-		$expected = array(1 => 'Accident and Emergency Service - Example Specialty');
-
-		$this->assertEquals($expected, Firm::model()->getServiceSubspecialtyOptions());
-	}
-
-	/**
 	 * @covers Firm::getServiceText
 	 */
 	public function testGetServiceText()
 	{
 		$firm = $this->firms('firm1');
-		$this->assertEquals($this->services['service1']['name'], 'Accident and Emergency Service');
+		$this->assertEquals($firm->getServiceText(), $firm->serviceSubspecialtyAssignment->service->name);
 	}
 
 	/**
@@ -164,7 +154,7 @@ class FirmTest extends CDbTestCase
 	 */
 	public function testGetReportDisplay()
 	{
-		$this->assertEquals('Aylward Firm (Example Specialty)', $this->firms('firm1')->getReportDisplay());
+		$this->assertEquals('Aylward Firm (Subspecialty 1)', $this->firms('firm1')->getReportDisplay());
 	}
 
 	/**
@@ -172,7 +162,7 @@ class FirmTest extends CDbTestCase
 	 */
 	public function testGetNameAndSubspecialty()
 	{
-		$this->assertEquals('Aylward Firm (Example Specialty)', $this->firms('firm1')->getNameAndSubspecialty());
+		$this->assertEquals('Aylward Firm (Subspecialty 1)', $this->firms('firm1')->getNameAndSubspecialty());
 	}
 
 	/**

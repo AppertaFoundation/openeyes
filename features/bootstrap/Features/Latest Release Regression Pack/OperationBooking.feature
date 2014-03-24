@@ -1,8 +1,6 @@
 @operationbooking @regression
 Feature: Create New Operation Booking Event
-  In order to cover every possible route throughout the site
-  As an automation tester
-  I want to build a template with supporting code for each web page
+         Regression coverage of this event is approx 50%
 
   Scenario: Route 1: Login and create a Operation Booking Anderson Glaucoma
 
@@ -48,7 +46,6 @@ Feature: Create New Operation Booking Event
     And enter RTT comments of "RTT Comments RTT Comments RTT Comments RTT Comments RTT Comments RTT Comments RTT Comments"
 
     Then I confirm the operation slot
-
 
   Scenario: Route 2: Login and create a Operation Booking Anderson Cataract
 

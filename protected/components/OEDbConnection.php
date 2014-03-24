@@ -28,4 +28,17 @@ class OEDbConnection extends CDbConnection
 			return $stub;
 		}
 	}
+
+	/**
+	 * Begin a transaction if there is not already one in progress
+	 */
+	public function beginInternalTransaction()
+	{
+		if ($this->getCurrentTransaction()) {
+			$stub = new OETransactionStub;
+			return $stub;
+		} else {
+			return $this->beginTransaction();
+		}
+	}
 }

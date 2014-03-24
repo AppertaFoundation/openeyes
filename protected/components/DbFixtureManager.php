@@ -58,6 +58,19 @@ class DbFixtureManager extends CDbFixtureManager
 	}
 
 	/**
+	 * @param string $tableName
+	 */
+	public function resetTable($tableName)
+	{
+		parent::resetTable($tableName);
+
+		$version_table = "{$tableName}_version";
+		if ($this->dbConnection->schema->getTable($version_table)) {
+			$this->truncateTable($version_table);
+		}
+	}
+
+	/**
 	 * @param string $table_name
 	 * @return array|false
 	 */

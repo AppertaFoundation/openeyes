@@ -64,20 +64,7 @@
 					<?php
 				$form = $this->beginWidget('FormLayout', array(
 						'id'=>'edit-oph_info',
-						'enableAjaxValidation'=>true,
-						'clientOptions'=>array(
-							'validateOnSubmit' => true,
-							'validateOnChange' => false,
-							'afterValidate' => "js:function(form, data, hasError) {
-								if (hasError) {
-									// mask the ajax loader image again
-									$('img.edit_oph_info_loader').hide();
-								} else {
-									return true;
-								}}"
-						),
 						'htmlOptions' => array('class'=>'form add-data'),
-						'action'=>array('patient/editophinfo'),
 						'layoutColumns'=>array(
 							'label' => 3,
 							'field' => 9
@@ -89,18 +76,20 @@
 							<label for="PatientOphInfo_cvi_status_id">Status:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::activeDropDownList($info, 'cvi_status_id', CHtml::listData(PatientOphInfoCviStatus::model()->notDeleted()->findAll(array('order'=>'display_order')),'id','name')) ?>
+							<?php echo CHtml::activeDropDownList($info, 'cvi_status_id', CHtml::listData(PatientOphInfoCviStatus::model()->active()->findAll(array('order'=>'display_order')),'id','name')) ?>
 							<?php echo $form->error($info, 'cvi_status_date'); ?>
 						</div>
 					</div>
 
 					<?php
-					$this->renderPartial('_fuzzy_date', array('form'=>$form))?>
+					$this->renderPartial('_fuzzy_date', array('form'=>$form, 'date' => $info->cvi_status_date))?>
 
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+
+					<div id="oph_info_errors" class="alert-box alert hide"></div>
 					<div class="buttons">
 						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="edit_oph_info_loader" style="display: none;" />
-						<button type="submit" class="secondary small btn_save_previous_operation btn_save_oph_info">
+						<button type="button" class="secondary small btn_save_oph_info">
 							Save
 						</button>
 						<button class="warning small btn_cancel_previous_operation btn_cancel_oph_info">
@@ -126,11 +115,30 @@
 		$('#edit_oph_info').slideToggle('fast');
 		$('#btn-edit_oph_info').attr('disabled',false);
 		$('#btn-edit_oph_info').removeClass('disabled');
+		$('#oph_info_errors').html('').hide();
 		return false;
 	});
-	$('button.btn_save_oph_info').click(function() {
-		$('.errorMessage').slideUp();
+	handleButton($('button.btn_save_oph_info'), function () {
+		$('#oph_info_errors').html('').hide();
 		$('img.edit_oph_info_loader').show();
-		return true;
+		$.post(
+			<?= json_encode($this->createUrl('patient/editOphInfo')) ?>,
+			$('#edit-oph_info').serialize(),
+			function (result) {
+				if (result == true) {
+					location.href = <?= json_encode($this->createUrl('patient/view', array('id' => $this->patient->id))) ?>;
+				} else {
+					enableButtons();
+					$('img.edit_oph_info_loader').hide();
+					for (var i in result) {
+						for (var j in result[i]) {
+							$('#oph_info_errors').append('<div>' + result[i][j] + '</div>');
+						}
+					}
+					$('#oph_info_errors').show();
+				}
+			},
+			'json'
+		);
 	});
 </script>

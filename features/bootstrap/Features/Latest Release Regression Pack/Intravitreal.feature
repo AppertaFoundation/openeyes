@@ -1,8 +1,25 @@
-@Intravitreal @regression
+@intravitreal @regression
 Feature: Create New Intravitreal Event
-  In order to cover every possible route throughout the site
-  As an automation tester
-  I want to build a template with supporting code for each web page
+         Regression coverage of this event is approx 75%
+
+  Scenario: Route 0:  Error tests : Login and create a New Intravitreal Event
+            Mandatory fields - validation error tests
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Cataract sidebar
+    And I add a New Event "Intravitreal"
+
+    Then I Save the Intravitreal injection
+
+    Then I Confirm that Intravitreal Mandatory fields validation error messages are displayed
 
   Scenario: Route 1: Login and create a New Intravitreal Event
 
@@ -58,7 +75,6 @@ Feature: Create New Intravitreal Event
 
     Then I choose A Right Lens Status of "1"
     And I choose Right Counting Fingers Checked Yes
-
 
     And I choose Right IOP Needs to be Checked No
     Then I choose Right Post Injection Drops "1"
@@ -276,3 +292,4 @@ Feature: Create New Intravitreal Event
     And I select Left Complications "3"
 
     Then I Save the Intravitreal injection
+

@@ -669,7 +669,7 @@ class PatientController extends BaseController
 		$criteria = new CDbCriteria;
 		!empty($allergy_ids) && $criteria->addNotInCondition('id',$allergy_ids);
 		$criteria->order = 'name asc';
-		return Allergy::model()->notDeleted()->findAll($criteria);
+		return Allergy::model()->active()->findAll($criteria);
 	}
 
 	public function actionHideepisode()
@@ -820,20 +820,9 @@ class PatientController extends BaseController
 
 		$cvi_status_date = $this->processDiagnosisDate();
 
-		if (Yii::app()->request->isAjaxRequest) {
-			$test = new PatientOphInfo();
-			$test->attributes = array(
-					'cvi_status_date' => $cvi_status_date,
-					'cvi_status_id' => $cvi_status->id,
-					);
+		$result = $patient->editOphInfo($cvi_status, $cvi_status_date);
 
-			echo CActiveForm::validate($test, null, false);
-			Yii::app()->end();
-		} else {
-			$patient->editOphInfo($cvi_status, $cvi_status_date);
-
-			$this->redirect(array('patient/view/'.$patient->id));
-		}
+		echo json_encode($result);
 	}
 
 	public function reportDiagnoses($params)

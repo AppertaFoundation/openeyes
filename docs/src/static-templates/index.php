@@ -313,7 +313,7 @@
 										<a href="correspondence-create.php">Correspondence create</a>
 									</td>
 									<td>The correspondence create template.</td>
-									<td><span class="not-complete">Not complete</span></td>
+									<td><span class="complete">Complete</span></td>
 								</tr>
 								<tr>
 									<td>
@@ -458,7 +458,7 @@
 										<a href="profile-info-sites.php">Profile information - sites</a>
 									</td>
 									<td>The profile template which lists the sites you work at.</td>
-									<td><span class="not-complete">Not started</span></td>
+									<td><span class="complete">Complete</span></td>
 								</tr>
 								<tr class="heading">
 									<td colspan="3"><h3>Interaction components</h3></td>
@@ -468,7 +468,7 @@
 										<a href="interaction-components-alerts-tooltip.php">Alerts tooltip</a>
 									</td>
 									<td>Shows a custom tooltip when hovering on any of the alerts icons.</td>
-									<td><span class="not-complete">Not started</span></td>
+									<td><span class="complete">Complete</span></td>
 								</tr>
 								<tr class="heading">
 									<td colspan="3"><h3>Admin templates</h3></td>
@@ -478,14 +478,14 @@
 										<a href="admin-layout.php">Admin layout</a>
 									</td>
 									<td>The main admin layout used for all admin templates.</td>
-									<td><span class="not-complete">Not started</span></td>
+									<td><span class="complete">Complete</span></td>
 								</tr>
 								<tr>
 									<td>
 										<a href="admin-users-list.php">Admin users</a>
 									</td>
 									<td>The admin users template that shows a list of users in a table.</td>
-									<td><span class="not-complete">Not started</span></td>
+									<td><span class="complete">Complete</span></td>
 								</tr>
 								<tr>
 									<td>

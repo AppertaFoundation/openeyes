@@ -53,20 +53,6 @@ class BaseActiveRecordTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers BaseActiveRecord::behaviors
-	 * @todo   Implement testBehaviors().
-	 */
-	public function testBehaviors()
-	{
-
-
-		Yii::app()->params['audit_trail'] = true;
-
-		$result = $this->model->behaviors();
-		$this->assertArrayHasKey('LoggableBehavior', $result);
-	}
-
-	/**
 	 * @covers BaseActiveRecord::save
 	 * @todo   Implement testSave().
 	 */

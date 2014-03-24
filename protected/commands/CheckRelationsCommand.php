@@ -70,7 +70,7 @@ class CheckRelationsCommand extends CConsoleCommand
 			}
 			catch(CDbException $e){
 				echo "\n\n ERR executing check sql: " . $dbConn->createCommand($constraintCheck)->getText() . " Msg: " .
-				$e->getMessage() . " \n Table: " . $foreignKey['child'] . " Column: "  .
+					$e->getMessage() . " \n Table: " . $foreignKey['child'] . " Column: "  .
 					$foreignKey['column_name']  . " Parent table: " . $foreignKey['parent'] .
 					" Parent column " . $foreignKey['parent_column'];
 			}

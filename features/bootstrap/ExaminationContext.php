@@ -202,6 +202,42 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
+     * @Given /^I enter a left Dilation time of "([^"]*)"$/
+     */
+    public function iEnterALeftDilationTimeOf($time)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->dilationLeftTime($time);
+    }
+
+    /**
+     * @Given /^I enter a right Dilation time of "([^"]*)"$/
+     */
+    public function iEnterARightDilationTimeOf($time)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->dilationRightTime($time);
+    }
+
+    /**
+     * @Then /^I Confirm that the Dilation Invalid time error message is displayed$/
+     */
+    public function iConfirmThatTheDilationInvalidTimeErrorMessageIsDisplayed()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->dilationTimeErrorValidation();
+    }
+
+    /**
      * @Then /^I choose to remove left Dilation treatment$/
      */
     public function iChooseToRemoveLeftDilation()
@@ -457,6 +493,18 @@ class ExaminationContext extends PageObjectContext
         $examination->rightPupillaryAbnormality($right);
     }
 
+    /**
+     * @Then /^I choose to expand the DR Grading section$/
+     */
+    public function iChooseToExpandTheDRGradingSection()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->expandDRGrading();
+    }
+
 
     /**
      * @Then /^I choose to expand the Optic Disc section$/
@@ -528,6 +576,18 @@ class ExaminationContext extends PageObjectContext
          */
         $examination= $this->getPage('Examination');
         $examination->diagnosesBothEyes();
+    }
+
+    /**
+     * @Given /^I choose a principal diagnosis$/
+     */
+    public function principalDiagnosis()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->principalDiagnosis();
     }
 
     /**
@@ -1688,5 +1748,221 @@ class ExaminationContext extends PageObjectContext
         $examination->removeSecondRightVisualAcuity();
     }
 
+    /**
+     * @Then /^I select a Diabetes type of Mellitus Type one$/
+     */
+    public function iSelectADiabetesTypeOfMellitusTypeone()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->diabetesTypeOne();
+    }
+
+    /**
+     * @Then /^I select a Diabetes type of Mellitus Type two$/
+     */
+    public function iSelectADiabetesTypeOfMellitusTypetwo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->diabetesTypeTwo();
+    }
+
+    /**
+     * @Given /^I select a left Clinical Grading for Retinopathy of "([^"]*)"$/
+     */
+    public function iSelectALeftClinicalGradingForRetinopathyOf($grading)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftClinicalGradingRetino($grading);
+    }
+
+    /**
+     * @Given /^I select a left NSC Retinopathy of "([^"]*)"$/
+     */
+    public function iSelectALeftNscRetinopathyOf($nsc)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftNSCRetino($nsc);
+    }
+
+    /**
+     * @Given /^I select a left Retinopathy photocoagulation of Yes$/
+     */
+    public function iSelectALeftRetinopathyPhotocoagulationOfYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftRetinoPhotoYes();
+    }
+
+    /**
+     * @Given /^I select a left Retinopathy photocoagulation of No$/
+     */
+    public function iSelectALeftRetinopathyPhotocoagulationOfNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftRetinoPhotoNo();
+    }
+
+    /**
+     * @Given /^I select a left Clinical Grading for maculopathy of "([^"]*)"$/
+     */
+    public function iSelectALeftClinicalGradingForMaculopathyOf($grading)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftClinicalGradingMaculo($grading);
+
+    }
+
+    /**
+     * @Given /^I select a left NSC maculopathy of "([^"]*)"$/
+     */
+    public function iSelectALeftNscMaculopathyOf($nsc)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftNSCMaculo($nsc);
+    }
+
+    /**
+     * @Given /^I select a left Maculopathy photocoagulation of Yes$/
+     */
+    public function iSelectALeftMaculopathyPhotocoagulationOfYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftMaculoPhotoYes();
+    }
+
+    /**
+     * @Given /^I select a left Maculopathy photocoagulation of No$/
+     */
+    public function iSelectALeftMaculopathyPhotocoagulationOfNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftMaculoPhotoNo();
+    }
+
+    /**
+     * @Given /^I select a right Clinical Grading for Retinopathy of "([^"]*)"$/
+     */
+    public function iSelectARightClinicalGradingForRetinopathyOf($grading)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightClinicalGradingRetino($grading);
+    }
+
+    /**
+     * @Given /^I select a right NSC Retinopathy of "([^"]*)"$/
+     */
+    public function iSelectARightNscRetinopathyOf($nsc)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightNSCRetino($nsc);
+    }
+
+    /**
+     * @Given /^I select a right Retinopathy photocoagulation of Yes$/
+     */
+    public function iSelectARightRetinopathyPhotocoagulationOfYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightRetinoPhotoYes();
+    }
+
+    /**
+     * @Given /^I select a right Retinopathy photocoagulation of No$/
+     */
+    public function iSelectARightRetinopathyPhotocoagulationOfNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightRetinoPhotoNo();
+    }
+
+    /**
+     * @Given /^I select a right Clinical Grading for maculopathy of "([^"]*)"$/
+     */
+    public function iSelectARightClinicalGradingForMaculopathyOf($grading)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightClinicalGradingMaculo($grading);
+    }
+
+    /**
+     * @Given /^I select a right NSC maculopathy of "([^"]*)"$/
+     */
+    public function iSelectARightNscMaculopathyOf($nsc)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightNSCMaculo($nsc);
+    }
+
+    /**
+     * @Given /^I select a right Maculopathy photocoagulation of Yes$/
+     */
+    public function iSelectARightMaculopathyPhotocoagulationOfYes()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightMaculoPhotoYes();
+    }
+
+    /**
+     * @Given /^I select a right Maculopathy photocoagulation of No$/
+     */
+    public function iSelectARightMaculopathyPhotocoagulationOfNo()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightMaculoPhotoNo();
+    }
 
 }

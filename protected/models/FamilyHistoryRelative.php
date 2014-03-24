@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class FamilyHistoryRelative extends BaseActiveRecordVersionedSoftDelete
+class FamilyHistoryRelative extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -41,6 +41,11 @@ class FamilyHistoryRelative extends BaseActiveRecordVersionedSoftDelete
 	public function tableName()
 	{
 		return 'family_history_relative';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
 	}
 
 	/**

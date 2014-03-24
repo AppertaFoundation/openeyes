@@ -31,7 +31,7 @@
  * @property CommonSystemicDisorder[] $commonSystemicDisorders
  * @property Specialty $specialty
  */
-class Disorder extends BaseActiveRecordVersionedSoftDelete
+class Disorder extends BaseActiveRecordVersioned
 {
 	const SITE_LEFT = 0;
 	const SITE_RIGHT = 1;
@@ -113,7 +113,8 @@ class Disorder extends BaseActiveRecordVersionedSoftDelete
 			'treeBehavior'=>array(
 				'class' => 'TreeBehavior',
 				'idAttribute' => 'disorder_id',
-			)
+			),
+			'LookupTable' => 'LookupTable',
 		);
 	}
 
@@ -156,20 +157,11 @@ class Disorder extends BaseActiveRecordVersionedSoftDelete
 	 */
 	public static function getDisorderOptions($term)
 	{
-		$disorders = Yii::app()->db->createCommand()
+		return Yii::app()->db->createCommand()
 			->select('term')
 			->from('disorder')
-			->where('term LIKE :term and deleted = :notdeleted',
-					array(':term' => "%{$term}%", ':notdeleted' => 0))
-			->queryAll();
-
-		$data = array();
-
-		foreach ($disorders as $disorder) {
-			$data[] = $disorder['term'];
-		}
-
-		return $data;
+			->where('term LIKE :term and active = 1', array(':term' => "%{$term}%"))
+			->queryColumn();
 	}
 
 	/**

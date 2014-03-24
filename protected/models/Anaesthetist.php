@@ -23,7 +23,7 @@
  * The followings are the available columns in table 'anaesthetist':
  * @property integer $id
  */
-class Anaesthetist extends BaseActiveRecordVersionedSoftDelete
+class Anaesthetist extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -40,6 +40,11 @@ class Anaesthetist extends BaseActiveRecordVersionedSoftDelete
 	public function tableName()
 	{
 		return 'anaesthetist';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
 	}
 
 	/**
@@ -59,5 +64,12 @@ class Anaesthetist extends BaseActiveRecordVersionedSoftDelete
 	public function relations()
 	{
 		return array();
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
+		);
 	}
 }

@@ -34,7 +34,7 @@ return array(
 			'class' => 'DbFixtureManager',
 		),
 		'db' => array(
-			'class'=> 'CDbConnection',
+			'class'=> 'OEDbConnection',
 			'connectionString' => 'mysql:host=localhost;dbname=openeyestest',
 			'username' => 'oe',
 			'password' => '_OE_TESTDB_PASSWORD_',

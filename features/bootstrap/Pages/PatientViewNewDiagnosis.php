@@ -47,7 +47,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'CVIDay' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_day']"),
         'CVIMonth' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_month']"),
         'CVIYear' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_year']"),
-        'saveCVI' => array('xpath' => "//*[@class='secondary small btn_save_previous_operation btn_save_oph_info']"),
+        'saveCVI' => array('xpath' => "//*[@class='secondary small btn_save_oph_info']"),
         'addMedicationButton' => array('xpath' => "//button[@id='btn-add_medication']"),
         'selectMedication' => array('xpath' => "//select[@id='drug_id']"),
         'selectRoute' => array('xpath' => "//select[@id='route_id']"),
@@ -84,7 +84,9 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function addOpthalmicDiagnosis ($diagnosis)
     {
-        $this->getElement('addOpthalmicDiagnosis')->press();
+        $element = $this->getElement('addOpthalmicDiagnosis');
+        $this->scrollWindowToElement($element);
+        $element->press();
         $this->getElement('selectOphthalmicDisorder')->selectOption($diagnosis);
     }
 
@@ -131,15 +133,19 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function saveOpthalmicDiagnosis ()
     {
-      $this->getElement('opthSaveButton')->press();
-			$this->waitForElementDisplayNone('#add_new_ophthalmic_diagnosis' );
+        $element = $this->getElement('opthSaveButton');
+        $this->scrollWindowToElement($element);
+        $element->click();
+	    $this->waitForElementDisplayNone('#add_new_ophthalmic_diagnosis' );
       //$this->getSession()->wait(10000,"$('#add_new_ophthalmic_diagnosis').css('display') == 'none'");
     }
 
     public function addSystemicDiagnosis ($diagnosis)
     {
         //the waits make sure the action is completed before going forward
-		$this->getElement('addSystemicDiagnosis')->press();
+		$element =$this->getElement('addSystemicDiagnosis');
+        $this->scrollWindowToElement($element);
+        $element->press();
 		$this->waitForElementDisplayBlock('#add_new_systemic_diagnosis');
 		//$this->getSession()->wait(2000,"$('#add_new_systemic_diagnosis').css('display') == 'block'");
         $this->getElement('selectSystemicDiagnosis')->selectOption($diagnosis);
@@ -171,14 +177,18 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function saveSystemicDiagnosis ()
     {
-        $this->getElement('sysSaveButton')->press();
-				$this->waitForElementDisplayNone('#add_new_systemic_diagnosis' );
+        $element =$this->getElement('sysSaveButton');
+        $this->scrollWindowToElement($element);
+        $element->press();
+        $this->waitForElementDisplayNone('#add_new_systemic_diagnosis' );
         //$this->getSession()->wait(10000,"$('#add_new_systemic_diagnosis').css('display') == 'none'");
     }
 
     public function previousOperation ($operation)
     {
-        $this->getElement('addPreviousOperation')->press();
+        $element =$this->getElement('addPreviousOperation');
+        $this->scrollWindowToElement($element);
+        $element->press();
         $this->getElement('commonOperation')->selectOption($operation);
         $this->getSession()->wait(1000,false);
     }
@@ -201,14 +211,18 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function savePreviousOperation ()
     {
-      $this->getElement('operationSaveButton')->click();
-			$this->waitForElementDisplayNone('#add_previous_operation' );
+      $element =$this->getElement('operationSaveButton');
+      $this->scrollWindowToElement($element);
+      $element->press();
+      $this->waitForElementDisplayNone('#add_previous_operation' );
       //$this->getSession()->wait(15000, "window.$ && $('#add_previous_operation').css('display') == 'none'");
     }
 
     public function medicationDetails ($medication, $route, $frequency, $datefrom)
     {
-        $this->getElement('addMedicationButton')->click();
+        $element = $this->getElement('addMedicationButton');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getElement('selectMedication')->selectOption($medication);
         $this->getElement('selectRoute')->selectOption($route);
         $this->getElement('selectFrequency')->selectOption($frequency);
@@ -245,14 +259,18 @@ class PatientViewNewDiagnosis extends OpenEyesPage
     {
         if ($this->doesRemoveAllergyExist())
         {
-        $this->getElement('removeAllergyButton')->click();
+        $element =$this->getElement('removeAllergyButton');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getElement('removeConfirmButton')->click();
         }
     }
 
     public function addAllergy ($allergy)
     {
-        $this->getElement('addAllergyButton')->click();
+        $element = $this->getElement('addAllergyButton');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(1000);
         $this->getElement('selectAllergy')->selectOption($allergy);
         $this->getElement('saveAllergy')->click();
@@ -274,12 +292,16 @@ class PatientViewNewDiagnosis extends OpenEyesPage
 
     public function addFamilyHistory ($relative, $side, $condition, $comments)
     {
-        $this->getElement('addFamilyHistoryButton')->click();
+        $element =$this->getElement('addFamilyHistoryButton');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getElement('selectRelativeID')->selectOption($relative);
         $this->getElement('selectFamilySide')->selectOption($side);
         $this->getElement('selectFamilyCondition')->selectOption($condition);
         $this->getElement('enterFamilyComments')->setValue($comments);
-        $this->getElement('saveFamilyHistory')->click();
+        $element =$this->getElement('saveFamilyHistory');
+        $this->scrollWindowToElement($element);
+        $element->click();
 		$this->waitForElementDisplayNone('#add_family_history');
         //$this->getSession()->wait(10000,"$('#add_family_history').css('display') == 'none'");
     }

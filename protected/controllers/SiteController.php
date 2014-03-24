@@ -188,8 +188,6 @@ class SiteController extends BaseController
 		$criteria->compare('institution_id',$institution->id);
 		$criteria->order = 'short_name asc';
 
-		$sites = Site::model()->active()->findAll($criteria);
-
 		// display the login form
 		$this->render('login',
 			array(

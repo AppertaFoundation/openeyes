@@ -95,17 +95,6 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
 
-	/**
-	 * @covers CommonOphthalmicDisorder::getSubspecialtyOptions
-	 * @todo   Implement testGetSubspecialtyOptions().
-	 */
-	public function testGetSubspecialtyOptions()
-	{
-		$specialties = CHtml::listData(Specialty::model()->findAll(), 'id', 'name');
-		$this->assertEquals($specialties, $this->model->getSubspecialtyOptions(), 'Correct specialties found.');
-		$this->assertEquals(count($this->specialties), count($this->model->getSubspecialtyOptions()), 'Correct number of specialties found.');
-	}
-
 	public function testGetList_MissingFirm_ThrowsException()
 	{
 		$this->setExpectedException('CException', 'Firm is required.');

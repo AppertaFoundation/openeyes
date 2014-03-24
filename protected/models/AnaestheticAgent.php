@@ -26,10 +26,8 @@
  * @property integer $display_order
  *
  */
-class AnaestheticAgent extends BaseActiveRecordVersionedSoftDelete
+class AnaestheticAgent extends BaseActiveRecordVersioned
 {
-	public $deletedField = 'discontinued';
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return AnaestheticAgent the static model class
@@ -45,6 +43,11 @@ class AnaestheticAgent extends BaseActiveRecordVersionedSoftDelete
 	public function tableName()
 	{
 		return 'anaesthetic_agent';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
 	}
 
 	/**
@@ -69,8 +72,10 @@ class AnaestheticAgent extends BaseActiveRecordVersionedSoftDelete
 		);
 	}
 
-	public function discontinue()
+	public function behaviors()
 	{
-		return parent::delete();
+		return array(
+			'LookupTable' => 'LookupTable',
+		);
 	}
 }

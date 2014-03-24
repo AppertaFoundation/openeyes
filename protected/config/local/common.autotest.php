@@ -94,7 +94,6 @@ $config = array(
 		//'ldap_password' => '',
 		//'ldap_dn' => 'CN=Users,dc=example,dc=com',
 		'environment' => 'dev',
-		//'audit_trail' => false,
 		'watermark' => '',
 		'watermark_admin' => '',
 		//'watermark_description' => '',
@@ -107,7 +106,7 @@ $config = array(
 		'urgent_booking_notify_email' => array(
 			'alerts@example.com',
 		),
-		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
+		'urgent_booking_notify_email_from' => array('OpenEyes'=>'helpdesk@example.com>'),
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP'),

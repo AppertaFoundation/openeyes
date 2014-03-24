@@ -17,9 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class PatientOphInfoCviStatus extends BaseActiveRecordVersionedSoftDelete
+class PatientOphInfoCviStatus extends BaseActiveRecordVersioned
 {
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return PatientOphInfoCviStatus the static model class
@@ -37,7 +36,12 @@ class PatientOphInfoCviStatus extends BaseActiveRecordVersionedSoftDelete
 		return 'patient_oph_info_cvi_status';
 	}
 
-/**
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
+	}
+
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
@@ -75,6 +79,13 @@ class PatientOphInfoCviStatus extends BaseActiveRecordVersionedSoftDelete
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
 		);
 	}
 

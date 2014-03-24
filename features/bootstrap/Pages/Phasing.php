@@ -31,7 +31,9 @@ class Phasing extends OpenEyesPage
         'removeLeft' => array('xpath' => "//*[@class='readings-right']//*[contains(text(),'Remove')]"),
         'removeRight' => array('xpath' => "//*[@class='readings-left']//*[contains(text(),'Remove')]"),
         'savePhasingEvent' => array('xpath' => "//*[@id='et_save']"),
-        'phasingSavedOk' => array('xpath' => "//*[@id='flash-success']")
+        'phasingSavedOk' => array('xpath' => "//*[@id='flash-success']"),
+        'rightReadingTimeInvalid' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Intraocular Pressure Phasing: Right reading (1): Invalid Time')]"),
+        'leftReadingTimeInvalid' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Intraocular Pressure Phasing: Left reading (1): Invalid Time')]")
     );
 
     protected function doesPhasingLogoExist()
@@ -168,5 +170,25 @@ class Phasing extends OpenEyesPage
             throw new BehaviorException("WARNING!!!  Phasing has NOT been saved!!  WARNING!!");
         }
     }
+
+    protected function hasPhasingTimeErrorDisplayed ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('rightReadingTimeInvalid')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('leftReadingTimeInvalid')->getXpath());
+
+    }
+
+    public function phasingTimeErrorValidation()
+    {
+        if ($this->hasPhasingTimeErrorDisplayed()) {
+            print "Phasing Reading Invalid time error displayed OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Phasing Reading Invalid time error NOT displayed WARNING!!!");
+        }
+    }
+
+
 
 }

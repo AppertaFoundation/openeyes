@@ -91,7 +91,6 @@ $config = array(
 		'ldap_password' => '',
 		'ldap_dn' => 'CN=Users,dc=example,dc=com',
 		'environment' => 'live',
-		//'audit_trail' => false,
 		//'watermark' => '',
 		//'watermark_admin' => 'You are logged in as admin. So this is OpenEyes Goldenrod Edition',
 		//'watermark_description' => '',
@@ -100,11 +99,6 @@ $config = array(
 		'google_analytics_account' => '',
 		'local_users' => array('admin','username'),
 		//'log_events' => true,
-		//'urgent_booking_notify_hours' => 24,
-		'urgent_booking_notify_email' => array(
-			'alerts@example.com',
-		),
-		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP')
