@@ -52,4 +52,5 @@ Feature: Open Eyes Login RBAC user levels
 
     Then additional checks are made for correct level two access
 
-    And a check to see printing has been enabled
+#    FIXME OE-4153
+    #And a check to see printing has been enabled
