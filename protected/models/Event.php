@@ -31,7 +31,7 @@
  * @property User $user
  * @property EventType $eventType
  */
-class Event extends BaseActiveRecordVersionedSoftDelete
+class Event extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

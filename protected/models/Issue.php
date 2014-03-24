@@ -25,7 +25,7 @@
  * @property string $name
  * @property string $ShortName
  */
-class Issue extends BaseActiveRecordVersionedSoftDelete
+class Issue extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

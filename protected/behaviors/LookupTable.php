@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -12,33 +9,34 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class OEDbConnection extends CDbConnection
+class LookupTable extends CActiveRecordBehavior
 {
-	public function beginTransaction()
+	/*
+	 * Named scope for rows that are active
+	 */
+	public function active()
 	{
-		if (Yii::app()->params['enable_transactions']) {
-			return parent::beginTransaction();
-		} else {
-			$stub = new OETransactionStub;
-			return $stub;
-		}
+		$this->owner->getDbCriteria()->compare($this->owner->getTableAlias(true) . '.active', 1);
+		return $this->owner;
 	}
 
-	/**
-	 * Begin a transaction if there is not already one in progress
+	/*
+	 * Named scope for rows that are active or match the PK(s) given
+	 *
+	 * @param mixed $id PK
 	 */
-	public function beginInternalTransaction()
+	public function activeOrPk($id)
 	{
-		if ($this->getCurrentTransaction()) {
-			$stub = new OETransactionStub;
-			return $stub;
-		} else {
-			return $this->beginTransaction();
-		}
+		$alias = $this->owner->getTableAlias(true);
+
+		$crit = new CDbCriteria;
+		$crit->compare("{$alias}.active", 1);
+		$crit->compare($alias . "." . $this->owner->metadata->tableSchema->primaryKey, $id, false, 'OR');
+		$this->owner->getDbCriteria()->mergeWith($crit);
+		return $this->owner;
 	}
 }

@@ -25,7 +25,7 @@
  * @property string $name
  * @property Drug[] $drugs
  */
-class Allergy extends BaseActiveRecordVersionedSoftDelete
+class Allergy extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -42,6 +42,11 @@ class Allergy extends BaseActiveRecordVersionedSoftDelete
 	public function tableName()
 	{
 		return 'allergy';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**
@@ -77,6 +82,13 @@ class Allergy extends BaseActiveRecordVersionedSoftDelete
 	public function attributeLabels()
 	{
 		return array(
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
 		);
 	}
 

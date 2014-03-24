@@ -93,7 +93,6 @@ $config = array(
 		//'ldap_password' => '',
 		//'ldap_dn' => 'CN=Users,dc=example,dc=com',
 		'environment' => 'dev',
-		//'audit_trail' => false,
 		'watermark' => '',
 		'watermark_admin' => '',
 		//'watermark_description' => '',

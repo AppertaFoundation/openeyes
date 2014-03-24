@@ -31,7 +31,7 @@
  * @property SubspecialtySubsection[] $subspecialtySubsections
  * @property Procedure[] $additional
  */
-class Procedure extends BaseActiveRecordVersionedSoftDelete
+class Procedure extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -98,6 +98,13 @@ class Procedure extends BaseActiveRecordVersionedSoftDelete
 		);
 	}
 
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
+		);
+	}
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -121,7 +128,6 @@ class Procedure extends BaseActiveRecordVersionedSoftDelete
 
 	/**
 	 * Get a list of procedures
-	 * Store extra data for the session
 	 *
 	 * @param string  $term          term to search by
 	 * @param string $restrict Set to 'booked' or 'unbooked' to restrict results to procedures of that type
@@ -142,7 +148,7 @@ class Procedure extends BaseActiveRecordVersionedSoftDelete
 			$where .= ' and unbooked = 0';
 		}
 
-		$where .= " and proc.deleted = :notdeleted";
+		$where .= " and proc.active = 1";
 
 		return Yii::app()->db->createCommand()
 			->select('term')
@@ -150,7 +156,6 @@ class Procedure extends BaseActiveRecordVersionedSoftDelete
 			->where($where, array(
 				':term' => $term,
 				':search' => $search,
-				':notdeleted' => 0,
 			))
 			->order('term')
 			->queryColumn();
@@ -168,10 +173,7 @@ class Procedure extends BaseActiveRecordVersionedSoftDelete
 			->select('proc.id, proc.term')
 			->from('proc')
 			->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
-			->where('psa.subspecialty_id = :id and proc.deleted = :notdeleted'.$where, array(
-				':id' => $subspecialtyId,
-				':notdeleted' => 0,
-			))
+			->where('psa.subspecialty_id = :id and proc.active = 1'.$where, array(':id' => $subspecialtyId))
 			->order('proc.term ASC')
 			->queryAll();
 

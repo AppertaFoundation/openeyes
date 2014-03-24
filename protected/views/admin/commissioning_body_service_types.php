@@ -29,7 +29,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach (CommissioningBodyServiceType::model()->active()->findAll(array('order'=>'name asc')) as $i => $cb) {?>
+				<?php foreach (CommissioningBodyServiceType::model()->findAll(array('order'=>'name asc')) as $i => $cb) {?>
 					<tr class="clickable" data-id="<?php echo $cb->id?>" data-uri="admin/editCommissioningBodyServiceType?commissioning_body_service_type_id=<?php echo $cb->id?>">
 						<td><input type="checkbox" name="commissioning_body_service_type[]" value="<?php echo $cb->id?>" class="wards" /></td>
 						<td><?php echo $cb->shortname?></td>

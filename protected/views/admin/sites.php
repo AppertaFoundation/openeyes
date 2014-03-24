@@ -32,7 +32,7 @@
 			</thead>
 			<tbody>
 				<?php
-				foreach ($sites['items'] as $i => $site) {?>
+				foreach ($sites as $i => $site) {?>
 					<tr class="clickable" data-id="<?php echo $site->id?>" data-uri="admin/editsite?site_id=<?php echo $site->id?>">
 						<td><?php echo $site->id?></td>
 						<td><?php echo $site->remote_id?></td>

@@ -26,10 +26,8 @@
  * @property string $code
  * @property integer $display_order
  */
-class AnaestheticType extends BaseActiveRecordVersionedSoftDelete
+class AnaestheticType extends BaseActiveRecordVersioned
 {
-	public $deletedField = 'discontinued';
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return AnaestheticType the static model class
@@ -47,22 +45,16 @@ class AnaestheticType extends BaseActiveRecordVersionedSoftDelete
 		return 'anaesthetic_type';
 	}
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
+	public function defaultScope()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-		);
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
 	}
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
+	public function behaviors()
 	{
-		return array();
+		return array(
+			'LookupTable' => 'LookupTable',
+		);
 	}
 }
+

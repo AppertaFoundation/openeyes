@@ -48,6 +48,11 @@ class Eye extends BaseActiveRecord
 		return 'eye';
 	}
 
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */

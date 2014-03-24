@@ -79,9 +79,9 @@ class Examination extends OpenEyesPage
         'leftAbnormality' => array('xpath' => "//*[@id='Element_OphCiExamination_PupillaryAbnormalities_left_abnormality_id']"),
         'rightAbnormality' => array('xpath' => "//*[@id='Element_OphCiExamination_PupillaryAbnormalities_right_abnormality_id']"),
 
-        'diagnosesLeftEye' => array('xpath' => "//*[@id='Element_OphCiExamination_Diagnoses_eye_id_1']"),
-        'diagnosesRightEye' => array('xpath' => "//*[@id='Element_OphCiExamination_Diagnoses_eye_id_2']"),
-        'diagnosesBothEyes' => array('xpath' => "//*[@id='Element_OphCiExamination_Diagnoses_eye_id_3']"),
+        'diagnosesLeftEye' => array('xpath' => "//*[@id='OphCiExamination_Diagnosis_eye_id_1']"),
+        'diagnosesRightEye' => array('xpath' => "//*[@id='OphCiExamination_Diagnosis_eye_id_2']"),
+        'diagnosesBothEyes' => array('xpath' => "//*[@id='OphCiExamination_Diagnosis_eye_id_3']"),
         'diagnosesCommonDiagnosis' => array('xpath' => "//*[@id='DiagnosisSelection_disorder_id']"),
         'principalDiagnosis' => array('xpath' => "//*[@id='OphCiExamination_diagnoses']//*[@name='principal_diagnosis']"),
 

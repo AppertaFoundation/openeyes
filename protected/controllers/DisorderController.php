@@ -55,7 +55,7 @@ class DisorderController extends BaseController
 
 			$criteria->params = $params;
 
-			$disorders = Disorder::model()->notDeleted()->findAll($criteria);
+			$disorders = Disorder::model()->active()->findAll($criteria);
 			$return = array();
 			foreach ($disorders as $disorder) {
 				$return[] = array(

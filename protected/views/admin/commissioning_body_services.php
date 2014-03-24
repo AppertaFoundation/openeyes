@@ -31,7 +31,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach (CommissioningBodyService::model()->active()->findAll(array('order'=>'name asc')) as $i => $cbs) {?>
+				<?php foreach (CommissioningBodyService::model()->findAll(array('order'=>'name asc')) as $i => $cbs) {?>
 					<tr class="clickable" data-id="<?php echo $cbs->id?>" data-uri="admin/editCommissioningBodyService?commissioning_body_service_id=<?php echo $cbs->id?>">
 						<td><input type="checkbox" name="commissioning_body_service[]" value="<?php echo $cbs->id?>" class="wards" /></td>
 						<td><?php echo $cbs->code?></td>

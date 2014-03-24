@@ -33,7 +33,7 @@
 			</thead>
 			<tbody>
 				<?php
-				foreach ($institutions['items'] as $i => $institution) {?>
+				foreach ($institutions as $i => $institution) {?>
 					<tr class="clickable" data-id="<?php echo $institution->id?>" data-uri="admin/editinstitution?institution_id=<?php echo $institution->id?>">
 						<td><?php echo $institution->id?></td>
 						<td><?php echo $institution->name?></td>

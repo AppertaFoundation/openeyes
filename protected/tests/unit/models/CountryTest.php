@@ -30,7 +30,7 @@ class CountryTest extends CDbTestCase
 			array(array('code' => 'US'), 1, array('us')),
 			array(array('code' => 'UK'), 1, array('uk')),
 			array(array('code' => 'IRE'), 0, array()),
-			array(array('name' => 'United'), 2, array('us', 'uk')),
+			array(array('name' => 'United'), 2, array('uk', 'us')),
 			array(array('name' => 'Can'), 1, array('can')),
 			array(array('name' => 'Ireland'), 0, array()),
 		);

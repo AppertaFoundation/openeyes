@@ -48,11 +48,6 @@ class BaseAdminController extends BaseController
 		$itemsCount = $model->count($criteria);
 		$pagination = new CPagination($itemsCount);
 		$pagination->pageSize = $this->items_per_page;
-		// not needed as $_GET['page'] is used by default
-		//if(isset($_GET['page']) && is_int($_GET['page']) )
-		//{
-		//	$pagination->currentPage = $_GET['page'];
-		//}
 		$pagination->applyLimit($criteria);
 		return $pagination;
 	}

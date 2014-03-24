@@ -152,10 +152,9 @@ class ProfileController extends BaseController
 	public function actionAddSite()
 	{
 		if (@$_POST['site_id'] == 'all') {
-			$institution = Institution::model()->getCurrent();
-			$sites = Site::model()->active()->findAll('institution_id=?',array($institution->id));
+			$sites = Institution::model()->getCurrent()->sites;
 		} else {
-			$sites = Site::model()->active()->findAllByPk(@$_POST['site_id']);
+			$sites = Site::model()->findAllByPk(@$_POST['site_id']);
 		}
 
 		foreach ($sites as $site) {
@@ -203,8 +202,10 @@ class ProfileController extends BaseController
 
 	public function actionAddFirm()
 	{
+		$user = User::model()->findByPk(Yii::app()->user->id);
+
 		if (@$_POST['firm_id'] == 'all') {
-			$firms = Firm::model()->active()->findAll();
+			$firms = $user->getAvailableFirms();
 		} else {
 			$firms = Firm::model()->findAllByPk(@$_POST['firm_id']);
 		}
@@ -217,8 +218,6 @@ class ProfileController extends BaseController
 				if (!$us->save()) {
 					throw new Exception("Unable to save UserFirm: ".print_r($us->getErrors(),true));
 				}
-
-				$user = User::model()->findByPk(Yii::app()->user->id);
 
 				$user->has_selected_firms = 1;
 				if (!$user->save()) {

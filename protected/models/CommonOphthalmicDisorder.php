@@ -72,7 +72,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 		);
 	}
@@ -109,11 +109,6 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		));
 	}
 
-	public function getSubspecialtyOptions()
-	{
-		return CHtml::listData(Subspecialty::model()->findAll(array('order'=>'name asc')),'id','name');
-	}
-
 	public static function getList($firm)
 	{
 		if (empty($firm)) {
@@ -121,7 +116,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		}
 		if ($firm->serviceSubspecialtyAssignment) {
 			$ss_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-			$disorders = Disorder::model()->notDeleted()->findAll(array(
+			$disorders = Disorder::model()->active()->findAll(array(
 					'condition' => 'cad.subspecialty_id = :subspecialty_id',
 					'join' => 'JOIN common_ophthalmic_disorder cad ON cad.disorder_id = t.id JOIN specialty ON specialty_id = specialty.id AND specialty.code = :ophcode',
 					'order' => 'term',

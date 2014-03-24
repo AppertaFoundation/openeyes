@@ -36,22 +36,6 @@ class BaseActiveRecord extends CActiveRecord
 	}
 
 	/**
-	 * Audit log
-	 */
-	public function behaviors()
-	{
-		if (Yii::app()->params['audit_trail']) {
-			return array(
-				'LoggableBehavior' => array(
-					'class' => 'application.behaviors.LoggableBehavior',
-				),
-			);
-		} else {
-			return array();
-		}
-	}
-
-	/**
 	 * Strips all html tags out of attributes to be saved.
 	 * @return boolean
 	 */

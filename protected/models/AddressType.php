@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class AddressType extends BaseActiveRecordVersionedSoftDelete
+class AddressType extends BaseActiveRecordVersioned
 {
 	// Database ids for the different address types that are hard mapped
 	const REPLYTO = 1;

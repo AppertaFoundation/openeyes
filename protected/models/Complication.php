@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class Complication extends BaseActiveRecordVersionedSoftDelete
+class Complication extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

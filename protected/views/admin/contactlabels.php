@@ -30,7 +30,7 @@
 			</thead>
 			<tbody>
 				<?php
-				foreach ($contactlabels['items'] as $i => $contactlabel) {?>
+				foreach ($contactlabels as $i => $contactlabel) {?>
 					<tr class="clickable" data-id="<?php echo $contactlabel->id?>" data-uri="admin/editContactLabel/<?php echo $contactlabel->id?>">
 						<td><?php echo $contactlabel->id?></td>
 						<td><?php echo $contactlabel->name?>&nbsp;</td>

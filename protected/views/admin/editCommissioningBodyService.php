@@ -31,8 +31,8 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->dropDownList($cbs,'commissioning_body_id',CHtml::listData(CommissioningBody::model()->active()->findAll(array('order'=>'name')),'id','name'),array('style'=>'margin-bottom:6px;'))?>
-		<?php echo $form->dropDownList($cbs,'commissioning_body_service_type_id',CHtml::listData(CommissioningBodyServiceType::model()->active()->findAll(array('order'=>'name')),'id','name'),array('style'=>'margin-bottom:6px;'))?>
+		<?php echo $form->dropDownList($cbs,'commissioning_body_id','CommissioningBody',array('style'=>'margin-bottom:6px;'))?>
+		<?php echo $form->dropDownList($cbs,'commissioning_body_service_type_id','CommissioningBodyServiceType',array('style'=>'margin-bottom:6px;'))?>
 		<?php echo $form->textField($cbs,'name')?>
 		<?php echo $form->textField($cbs,'code',null,null,array('field'=>2))?>
 		<?php echo $form->textField($address,'address1')?>
@@ -40,7 +40,7 @@
 		<?php echo $form->textField($address,'city')?>
 		<?php echo $form->textField($address,'county')?>
 		<?php echo $form->textField($address,'postcode')?>
-		<?php echo $form->dropDownList($address,'country_id',CHtml::listData(Country::model()->notDeleted()->findAll(array('order'=>'name')),'id','name'))?>
+		<?php echo $form->dropDownList($address,'country_id','Country')?>
 		<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_body_services'));?>
 	<?php $this->endWidget()?>
 </div>

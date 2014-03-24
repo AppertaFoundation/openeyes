@@ -33,7 +33,7 @@
  * @property Event[] $events
  * @property EpisodeStatus $status
  */
-class Episode extends BaseActiveRecordVersionedSoftDelete
+class Episode extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -62,7 +62,6 @@ class Episode extends BaseActiveRecordVersionedSoftDelete
 		return array(
 			array('patient_id', 'required'),
 			array('patient_id, firm_id', 'length', 'max'=>10),
-			array('end_date, deleted', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, patient_id, firm_id, start_date, end_date', 'safe', 'on'=>'search'),
@@ -207,19 +206,17 @@ class Episode extends BaseActiveRecordVersionedSoftDelete
 				->from('episode e')
 				->join('firm f', 'e.firm_id = f.id')
 				->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-				->where('e.deleted = false'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id AND e.deleted = :notdeleted AND f.deleted = :notdeleted', array(
+				->where('e.deleted = false'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
 					':patient_id' => $patient_id,
 					':subspecialty_id' => $subspecialty_id,
-					':notdeleted' => 0,
 				))
 				->queryRow();
 		} else {
 			$episode = Yii::app()->db->createCommand()
 				->select('e.id AS eid')
 				->from('episode e')
-				->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id AND e.deleted = :notdeleted', array(
+				->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id', array(
 					':patient_id' => $patient_id,
-					':notdeleted' => 0,
 				))
 				->queryRow();
 		}
