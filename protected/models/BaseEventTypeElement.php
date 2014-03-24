@@ -85,6 +85,26 @@ class BaseEventTypeElement extends BaseElement
 	}
 
 	/**
+	 * Is this element required in the UI? (Prevents the user from being able
+	 * to remove the element.)
+	 * @return boolean
+	 */
+	public function isRequiredInUI()
+	{
+		return $this->isRequired();
+	}
+
+	/**
+	 * Is this element to be hidden in the UI? (Prevents the elements from
+	 * being displayed on page load.)
+	 * @return boolean
+	 */
+	public function isHiddenInUI()
+	{
+		return false;
+	}
+
+	/**
 	 * get the child element types for this BaseEventElementType
 	 *
 	 * @return ElementType[]

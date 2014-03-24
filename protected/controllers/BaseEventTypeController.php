@@ -431,9 +431,31 @@ class BaseEventTypeController extends BaseModuleController
 	 * @param  BaseEventTypeElement  $element
 	 * @return boolean
 	 */
-	public function isRequired($element)
+	public function isRequired(BaseEventTypeElement $element)
 	{
 		return $element->isRequired();
+	}
+
+	/**
+	 * Is this element required in the UI? (Prevents the user from being able
+	 * to remove the element.)
+	 * @param  BaseEventTypeElement  $element
+	 * @return boolean
+	 */
+	public function isRequiredInUI(BaseEventTypeElement $element)
+	{
+		return $element->isRequiredInUI();
+	}
+
+	/**
+	 * Is this element to be hidden in the UI? (Prevents the elements from
+	 * being displayed on page load.)
+	 * @param  BaseEventTypeElement  $element
+	 * @return boolean
+	 */
+	public function isHiddenInUI(BaseEventTypeElement $element)
+	{
+		return $element->isHiddenInUI();
 	}
 
 	/**
