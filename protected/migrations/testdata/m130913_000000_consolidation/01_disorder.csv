@@ -209,3 +209,28 @@ id,fully_specified_name,term,last_modified_user_id,last_modified_date,created_us
 414545008,"Ischemic heart disease (disorder)","Ischaemic heart disease",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
 73211009,"Diabetes mellitus (disorder)","Diabetes mellitus",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
 74627003,"Diabetic complication (disorder)","Diabetic complication",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+267718000,"Age-related macular degeneration (disorder)","Age related macular degeneration",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+86103006,"Angioid streaks of choroid (disorder)","Angioid streaks of choroid",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+312935003,"Capillary hemangioma of retina (disorder)","Capillary haemangioma of retina",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+68478007,"Central retinal vein occlusion (disorder)","Central retinal vein occlusion",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+312956001,"Central serous chorioretinopathy (disorder)","Central serous chorioretinopathy",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+75971007,"Choroidal retinal neovascularization (disorder)","Choroidal retinal neovascularisation",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+2532009,"Choroidal rupture (disorder)","Choroidal rupture",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+360455002,"Coats' disease (disorder)","Coats' disease",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+312912001,"Diabetic macular edema (disorder)","Diabetic macular oedema",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+276436007,"Hereditary macular dystrophy (disorder)","Hereditary macular dystrophy",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+314269007,"Idiopathic choroidal neovascular membrane (disorder)","Idiopathic choroidal neovascular membrane",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+313001006,"Idiopathic polypoidal choroidal vasculopathy (disorder)","Idiopathic polypoidal choroidal vasculopathy",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+37231002,"Macular retinal edema (disorder)","Macular retinal oedema",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+414783007,"Multifocal choroiditis (disorder)","Multifocal choroiditis",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+240740001,"Presumed ocular histoplasmosis syndrome (disorder)","Ocular histoplasmosis syndrome",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+416770009,"Ocular histoplasmosis syndrome (disorder)","Ocular histoplasmosis syndrome",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+255025001,"Osteoma of choroid (disorder)","Osteoma of choroid",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+232024000,"Parafoveal telangiectasia (disorder)","Parafoveal telangiectasia",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+312950007,"Punctate inner choroidopathy (disorder)","Punctate inner choroidopathy",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+31541009,"Sarcoidosis (disorder)","Sarcoidosis",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL
+78370002,"Scleritis (disorder)","Scleritis",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+416589006,"Toxoplasma retinitis (disorder)","Toxoplasma retinitis",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+128473001,"Uveitis (disorder)","Uveitis",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+312922007,"Uveitis related cystoid macular edema (disorder)","Uveitis related cystoid macular oedema",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
+24596005,"Venous retinal branch occlusion (disorder)","Venous retinal branch occlusion",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",109
