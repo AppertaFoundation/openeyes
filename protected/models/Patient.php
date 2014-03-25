@@ -321,6 +321,16 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
+	 * Returns the date on which the patient will become an adult
+	 *
+	 * @return null|string
+	 */
+	public function getBecomesAdultDate()
+	{
+		return Helper::getDateForAge($this->dob, (isset(Yii::app()->params['child_age_limit'])) ? Yii::app()->params['child_age_limit'] : self::CHILD_AGE_LIMIT);
+	}
+
+	/**
 	* @param integer $drug_id
 	* @return boolean Is patient allergic?
 	*/

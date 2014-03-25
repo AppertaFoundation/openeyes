@@ -152,6 +152,30 @@ class Helper
 		return $dob_datetime->diff($check_datetime)->y;
 	}
 
+	/**
+	 * Given a dob and an age (in years) returns the date at which the person would reach the given age.
+	 * If given a date of death, and they will never reach the age, returns null
+	 *
+	 * @param $dob
+	 * @param $age
+	 * @param null $date_of_death
+	 * @return null|string
+	 */
+	public static function getDateForAge($dob, $age, $date_of_death = null)
+	{
+		if (!$dob) return null;
+		$dob_datetime = new DateTime($dob);
+		$age_date = $dob_datetime->add(new DateInterval('P' . $age . 'Y'));
+
+		if ($date_of_death) {
+			$dod_datetime = new DateTime($date_of_death);
+			if ($dod_datetime < $age_date) {
+				return null;
+			}
+		}
+		return $age_date->format('Y-m-d');
+	}
+
 	public static function getMonthText($month, $long=false)
 	{
 		return date($long?'F':'M',mktime(0,0,0,$month,1,date('Y')));
