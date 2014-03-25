@@ -133,13 +133,16 @@ class Referral extends BaseActiveRecord
 
 	/**
 	 * Returns string description of the referral
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getDescription()
 	{
 		$desc = array();
 		$desc[] = $this->NHSDate('received_date');
+		if ($this->clock_start && $this->NHSDATE('clock_start') != $this->NHSDate('received_date')) {
+			$desc[] = "(" . $this->NHSDATE('clock_start') . ")";
+		}
 		if ($this->firm) {
 			$desc[] = $this->firm->getNameAndSubspecialty();
 		}
@@ -151,6 +154,7 @@ class Referral extends BaseActiveRecord
 		if ($this->closed_date) {
 			$desc[] = "(closed - " . $this->NHSDate('closed_date') . ")";
 		}
+
 		return implode(' ', $desc);
 
 	}
