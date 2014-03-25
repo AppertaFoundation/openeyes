@@ -55,6 +55,34 @@ Feature: Open Eyes Login RBAC user levels
 #    FIXME OE-4153
     #And a check to see printing has been enabled
 
+  Scenario: Route 4(Prep): Create an ASA event to ensure Route 4 latest event is not Prescription
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Satisfaction"
+
+    Then I select an Anaesthetist "no"
+    And I select Satisfaction levels of Pain "2" Nausea "3"
+
+    And I tick the Vomited checkbox
+
+    Then I select Vital Signs of Respiratory Rate "3" Oxygen Saturation "3" Systolic Blood Pressure "4"
+    And I select Vital Signs of Body Temperature "5" and Heart Rate "2" Conscious Level AVPU "2"
+
+    Then I enter Comments "This test is for Site 2 Kings, Firm 3 Anderson Glaucoma"
+
+    And I select the Yes option for Ready to Discharge
+
+    Then I Save the Event and confirm it has been created successfully
+
   Scenario: Route 4: Level 4 RBAC access: Login access, edit rights, Prescription event blocked
 
     Given I am on the OpenEyes "master" homepage
@@ -68,7 +96,7 @@ Feature: Open Eyes Login RBAC user levels
     Then I select the Latest Event
 
     And I edit the Last Event
-    #level 4 access check
+    #level 4 access check using previously created ASA event form Route 4a
 
     Then I expand the Glaucoma sidebar
 
