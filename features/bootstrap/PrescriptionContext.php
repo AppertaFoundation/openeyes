@@ -105,6 +105,30 @@ class PrescriptionContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I enter a item two eyes option of "([^"]*)"$/
+     */
+    public function iEnterAItemTwoEyesOptionOf($eyes)
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->eyeOptionItem1($eyes);
+    }
+
+    /**
+     * @Then /^I enter a item three eyes option of "([^"]*)"$/
+     */
+    public function iEnterAItemThreeEyesOptionOf($eyes)
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->eyeOptionItem2($eyes);
+    }
+
+    /**
      * @Given /^I enter a frequency of "([^"]*)"$/
      */
     public function iEnterAFrequencyOf($frequency)

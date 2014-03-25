@@ -12,6 +12,8 @@ class Prescription extends OpenEyesPage
         'prescriptionDoseItem0' => array('xpath' => "//*[@id='prescription_item_0_dose']"),
         'prescriptionRouteItem0' => array('xpath' => "//*[@id='prescription_item_0_route_id']"),
         'prescriptionEyeOptionItem0' => array('xpath' => "//*[@id='prescription_item_0_route_option_id']"),
+        'prescriptionEyeOptionItem1' => array('xpath' => "//*[@id='prescription_item_1_route_option_id']"),
+        'prescriptionEyeOptionItem2' => array('xpath' => "//*[@id='prescription_item_2_route_option_id']"),
         'prescriptionFrequencyItem0' => array('xpath' => "//*[@id='prescription_item_0_frequency_id']"),
         'prescriptionDurationItem0' => array('xpath' => "//*[@id='prescription_item_0_duration_id']"),
         'prescriptionComments' => array('xpath' => "//textarea[@id='Element_OphDrPrescription_Details_comments']"),
@@ -105,6 +107,16 @@ class Prescription extends OpenEyesPage
     public function eyeOptionItem0 ($eyes)
     {
         $this->getElement('prescriptionEyeOptionItem0')->selectOption($eyes);
+    }
+
+    public function eyeOptionItem1 ($eyes)
+    {
+        $this->getElement('prescriptionEyeOptionItem1')->selectOption($eyes);
+    }
+
+    public function eyeOptionItem2 ($eyes)
+    {
+        $this->getElement('prescriptionEyeOptionItem2')->selectOption($eyes);
     }
 
     public function frequencyItem0 ($frequency)

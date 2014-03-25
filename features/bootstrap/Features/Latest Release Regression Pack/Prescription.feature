@@ -28,6 +28,9 @@ Feature: Create New Prescription
     Then I enter a duration of "1"
     Then I enter a eyes option "1"
 
+    Then I enter a item two eyes option of "1"
+    Then I enter a item three eyes option of "1"
+
     And I add Prescription comments of "TEST COMMENTS"
 
     Then I Save the Prescription Draft and confirm it has been created successfully
@@ -52,7 +55,6 @@ Feature: Create New Prescription
     And I select the No preservative checkbox
 
     Then I select a Common Drug "280"
-    And I select a Standard Set of "7"
 
     Then I enter a Dose of "3" drops
     And I enter a route of "1"
@@ -83,7 +85,6 @@ Feature: Create New Prescription
     And I add a New Event "Prescription"
 
     Then I select a Common Drug "176"
-    And I select a Standard Set of "11"
 
     Then I enter a Dose of "2" drops
     And I enter a route of "3"
@@ -128,7 +129,6 @@ Feature: Create New Prescription
     And I select the No preservative checkbox
 
     Then I select a Common Drug "569"
-    And I select a Standard Set of "10"
 
     Then I enter a Dose of "2" drops
     And I enter a route of "17"
