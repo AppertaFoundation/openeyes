@@ -3659,7 +3659,7 @@ tfoot.pagination-container .pagination li {
   background-position: 0 -14px;
 }
 
-/* line 22, ../sass/openeyes/components/_panels.scss */
+/* line 19, ../sass/openeyes/components/_panels.scss */
 .panel {
   border-style: solid;
   border-width: 1px;
@@ -3693,18 +3693,18 @@ tfoot.pagination-container .pagination li {
 .panel h1.subheader, .panel h2.subheader, .panel h3.subheader, .panel h4.subheader, .panel h5.subheader, .panel h6.subheader {
   line-height: 1.4;
 }
-/* line 27, ../sass/openeyes/components/_panels.scss */
+/* line 24, ../sass/openeyes/components/_panels.scss */
 .panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 {
   margin-bottom: 8px;
 }
-/* line 33, ../sass/openeyes/components/_panels.scss */
+/* line 30, ../sass/openeyes/components/_panels.scss */
 .panel .field-row:last-child, .panel .eyedraw-row:last-child, .panel .data-row:last-child, .panel .field-row:only-child, .panel .eyedraw-row:only-child, .panel .data-row:only-child,
 .panel .data-row:last-child,
 .panel .data-row:only-child {
   padding: 0;
 }
 @media print {
-  /* line 38, ../sass/openeyes/components/_panels.scss */
+  /* line 35, ../sass/openeyes/components/_panels.scss */
   .content .panel {
     border: 0 !important;
     padding: 0 !important;
@@ -4150,36 +4150,6 @@ tfoot.pagination-container .pagination li {
   color: #998a30;
   font-size: 0.75rem;
   font-style: italic;
-}
-
-/* line 22, ../sass/openeyes/components/panels/_session-options.scss */
-.panel.session-options {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  -ms-border-radius: 0;
-  -o-border-radius: 0;
-  border-radius: 0;
-  background: #545065;
-  border: 2px solid #602aba;
-}
-/* line 26, ../sass/openeyes/components/panels/_session-options.scss */
-.theatres-list .panel.session-options {
-  margin-bottom: 0;
-  margin-left: -0.75rem;
-}
-/* line 30, ../sass/openeyes/components/panels/_session-options.scss */
-.panel.session-options label {
-  color: #ffffde;
-  font-size: 0.6875rem;
-  margin-bottom: 7px;
-}
-/* line 34, ../sass/openeyes/components/panels/_session-options.scss */
-.panel.session-options label:last-child {
-  margin: 0;
-}
-/* line 37, ../sass/openeyes/components/panels/_session-options.scss */
-.panel.session-options label input {
-  margin-right: 3px;
 }
 
 /* line 29, ../sass/openeyes/components/panels/_specialty.scss */
