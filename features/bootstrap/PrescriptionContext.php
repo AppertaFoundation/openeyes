@@ -296,5 +296,29 @@ class PrescriptionContext extends PageObjectContext
         $prescription->savePrescriptionAndConfirm();
     }
 
+    /**
+     * @Then /^I select Repeat Prescription$/
+     */
+    public function iSelectRepeatPrescription()
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->repeatPrescription();
+    }
+
+    /**
+     * @Given /^a check is made that the Repeat Prescription is applied$/
+     */
+    public function aCheckIsMadeThatTheRepeatPrescriptionIsApplied()
+    {
+        /**
+         * @var Prescription $prescription
+         */
+        $prescription= $this->getPage('Prescription');
+        $prescription->repeatPrescriptionCheck();
+    }
+
 
 }

@@ -28,7 +28,11 @@ class Prescription extends OpenEyesPage
         'secondTaperFrequency' => array('xpath' => "//*[@id='prescription_item_0_taper_1_frequency_id']"),
         'secondTaperDuration' => array('xpath' => "//*[@id='prescription_item_0_taper_1_duration_id']"),
         'removeThirdTaper' => array('xpath' => "//*[@data-taper='2']//*[@class='removeTaper']"),
-        'prescriptionValidationWarning' => array('xpath' => "//*[contains(text(),'Details: Items cannot be blank.')]")
+        'prescriptionValidationWarning' => array('xpath' => "//*[contains(text(),'Details: Items cannot be blank.')]"),
+        'standardSetRepeatDrug1' => array('xpath' => "//*[@class='prescription-item prescriptionItem even']//*[contains(text(),'atropine 1% eye drops')]"),
+        'standardSetRepeatDrug2' => array('xpath' => "//*[@class='prescription-item prescriptionItem odd']//*[contains(text(),'chlorAMPhenicol 0.5% eye drops')]"),
+        'standardSetRepeatDrug3' => array('xpath' => "//*[@class='prescription-item prescriptionItem even']//*[contains(text(),'dexamethasone 0.1% eye drops')]"),
+        'repeatPrescription' => array('xpath' => "//*[@id='repeat_prescription']")
 
     );
 
@@ -135,6 +139,12 @@ class Prescription extends OpenEyesPage
         $this->getElement('prescriptionComments')->setValue($comments);
     }
 
+    public function repeatPrescription ()
+    {
+        $this->getElement('repeatPrescription')->click();
+        $this->getSession()->wait(3000);
+    }
+
     protected function hasPrescriptionSaved ()
     {
         return (bool) $this->find('xpath', $this->getElement('prescriptionSavedOk')->getXpath());;
@@ -171,6 +181,25 @@ class Prescription extends OpenEyesPage
         }
         else {
             throw new BehaviorException ("WARNING!!! NO Please fix the following input errors WARNING!!!");
+        }
+    }
+
+    protected function hasRepeatPrescriptionBeenApplied ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('standardSetRepeatDrug1')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('standardSetRepeatDrug2')->getXpath()) &&
+        (bool) $this->find('xpath', $this->getElement('standardSetRepeatDrug3')->getXpath());
+    }
+
+
+    public function repeatPrescriptionCheck ()
+    {
+        if ($this->hasRepeatPrescriptionBeenApplied()) {
+            print "Repeat Prescription has been applied OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Repeat Prescription has NOT been applied!!  WARNING!!");
         }
     }
 
