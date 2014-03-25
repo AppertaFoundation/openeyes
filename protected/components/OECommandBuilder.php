@@ -47,43 +47,4 @@ class OECommandBuilder extends CDbCommandBuilder
 
 		return $command;
 	}
-
-	/**
-	 * Creates a DELETE command.
-	 * @param mixed $table the table schema ({@link CDbTableSchema}) or the table name (string).
-	 * @param CDbCriteria $criteria the query criteria
-	 * @return CDbCommand delete command.
-	 */
-	public function createDeleteCommand($table,$criteria)
-	{
-		$this->ensureTable($table);
-
-		if (!$table_version = $this->getDbConnection()->getSchema()->getTable("{$table->name}_version")) {
-			throw new Exception("Missing version table: {$table->name}_version");
-		}
-
-		if ($this->getDbConnection()->createCommand()
-			->select("*")
-			->from($table->name)
-			->where($criteria->condition, $criteria->params)
-			->limit(1)
-			->queryRow()) {
-
-			$command = $this->createInsertFromTableCommand($table_version,$table,$criteria);
-			if (!$command->execute()) {
-				throw new Exception("Unable to insert version row: ".print_r($command,true));
-			}
-		}
-
-		$sql="DELETE FROM {$table->rawName}";
-		$sql=$this->applyJoin($sql,$criteria->join);
-		$sql=$this->applyCondition($sql,$criteria->condition);
-		$sql=$this->applyGroup($sql,$criteria->group);
-		$sql=$this->applyHaving($sql,$criteria->having);
-		$sql=$this->applyOrder($sql,$criteria->order);
-		$sql=$this->applyLimit($sql,$criteria->limit,$criteria->offset);
-		$command=$this->getDbConnection()->createCommand($sql);
-		$this->bindValues($command,$criteria->params);
-		return $command;
-	}
 }

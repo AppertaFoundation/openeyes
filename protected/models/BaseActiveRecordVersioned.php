@@ -114,18 +114,13 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		return new OECommandBuilder($this->getDbConnection()->getSchema());
 	}
 
-	public function updateByPk($pk,$attributes,$condition='',$params=array())
+	public function updateByPk($pk, $attributes, $condition='', $params=array())
 	{
 		$transaction = $this->dbConnection->beginInternalTransaction();
-
 		try {
-			if ($this->enable_version) $this->versionToTableByPk($pk, $condition, $params);
-
-			$result = parent::updateByPk($pk,$attributes,$condition,$params);
-
-			// No big deal if $result is 0, it just means the row was unchanged so no new version row is required
-			$result ? $transaction->commit() : $transaction->rollback();
-
+			$this->versionToTable($this->commandBuilder->createPkCriteria($this->tableName(), $pk, $condition, $params));
+			$result = parent::updateByPk($pk, $attributes, $condition, $params);
+			$transaction->commit();
 			return $result;
 		} catch (Exception $e) {
 			$transaction->rollback();
@@ -133,16 +128,13 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		}
 	}
 
-	public function updateAll($attributes,$condition='',$params=array())
+	public function updateAll($attributes, $condition='', $params=array())
 	{
 		$transaction = $this->dbConnection->beginInternalTransaction();
-
 		try {
-			if ($this->enable_version) $this->versionAllToTable($condition, $params);
-
+			$this->versionToTable($this->commandBuilder->createCriteria($condition, $params));
 			$result = parent::updateAll($attributes,$condition,$params);
-			$result ? $transaction->commit() : $transaction->rollback();
-
+			$transaction->commit();
 			return $result;
 		} catch (Exception $e) {
 			$transaction->rollback();
@@ -150,26 +142,46 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		}
 	}
 
-	public function versionToTableByPk($pk, $condition, $params=array())
+	public function deleteByPk($pk, $condition = '', $params = array())
 	{
-		$builder = $this->getCommandBuilder();
-		$table = $this->getTableSchema();
-		$table_version = $this->getVersionTableSchema();
-
-		$criteria = $builder->createPkCriteria($table,$pk,$condition,$params);
-
-		$builder->createInsertFromTableCommand($table_version,$table,$criteria)->execute();
+		$transaction = $this->dbConnection->beginInternalTransaction();
+		try {
+			$this->versionToTable($this->commandBuilder->createPkCriteria($this->tableName(), $pk, $condition, $params));
+			$result = parent::deleteByPk($pk, $condition, $params);
+			$transaction->commit();
+			return $result;
+		} catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
+		}
 	}
 
-	public function versionAllToTable($condition, $params=array())
+	public function deleteAll($condition = '', $params = array())
 	{
-		$builder = $this->getCommandBuilder();
-		$table = $this->getTableSchema();
-		$table_version = $this->getVersionTableSchema();
+		$transaction = $this->dbConnection->beginInternalTransaction();
+		try {
+			$this->versionToTable($this->commandBuilder->createCriteria($condition, $params));
+			$result = parent::deleteAll($condition, $params);
+			$transaction->commit();
+			return $result;
+		} catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
+		}
+	}
 
-		$criteria = $builder->createCriteria($condition, $params);
-
-		$builder->createInsertFromTableCommand($table_version,$table,$criteria)->execute();
+	public function deleteAllByAttributes($attributes, $condition = '', $params = array())
+	{
+		$transaction = $this->dbConnection->beginInternalTransaction();
+		try {
+			$this->versionToTable($this->commandBuilder->createColumnCriteria($this->tableName(), $attributes, $condition, $params));
+			$result = parent::deleteAllByAttributes($attributes, $condition, $params);
+			$transaction->commit();
+			return $result;
+		} catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
+		}
 	}
 
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
@@ -187,5 +199,14 @@ class BaseActiveRecordVersioned extends BaseActiveRecord
 		$this->fetch_from_version = false;
 
 		return parent::resetScope($resetDefault);
+	}
+
+	protected function versionToTable(CDbCriteria $criteria)
+	{
+		if ($this->enable_version) {
+			$this->getCommandBuilder()->createInsertFromTableCommand(
+				$this->getVersionTableSchema(), $this->getTableSchema(), $criteria
+			)->execute();
+		}
 	}
 }
