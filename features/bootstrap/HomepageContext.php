@@ -192,6 +192,18 @@ class HomepageContext extends PageObjectContext
         $homepage->printDisabled();
     }
 
+    /**
+     * @Then /^a check is made to confirm the user has correct level four access$/
+     */
+    public function aCheckIsMadeToConfirmTheUserHasCorrectLevelFourAccess()
+    {
+        /**
+         * @var Homepage $homepage
+         */
+        $homepage = $this->getPage('Homepage');
+        $homepage->levelFourAccess();
+    }
+
 
 
 }
