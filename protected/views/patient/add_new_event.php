@@ -29,8 +29,9 @@
 			} else {
 				$assetpath = '/assets/';
 			}
-
-			if ($this->checkCreateAccess($episode, $eventType)) {
+			// temporary hack to ensure that we are checking the right operation name for the event.
+			$oprn = 'OprnCreate' . ($eventType->class_name == 'OphDrPrescription' ? 'Prescription' : 'Event');
+			if ($this->checkAccess($oprn, $this->firm, $this->episode, $this->event_type)) {
 
 				?>
 				<li>

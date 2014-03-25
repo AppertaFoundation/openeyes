@@ -119,4 +119,91 @@ class HomepageContext extends PageObjectContext
         $homepage = $this->getPage('Homepage');
         $homepage->isInvalidLoginShown();
     }
+
+    /**
+     * @Then /^a check is made to confirm the user has correct level one access$/
+     */
+    public function aCheckIsMadeToConfirmTheUserHasCorrectLevelOneAccess()
+    {
+        /**
+         * @var Homepage $homepage
+         */
+        $homepage = $this->getPage('Homepage');
+        $homepage->levelOneAccess();
+    }
+
+    /**
+     * @Then /^a check is made to confirm the user has correct level two access$/
+     */
+    public function aCheckIsMadeToConfirmTheUserHasCorrectLevelTwoAccess()
+    {
+        /**
+         * @var Homepage $homepage
+         */
+        $homepage = $this->getPage('Homepage');
+        $homepage->levelTwoAccess();
+    }
+
+    /**
+     * @Then /^a check is made to confirm that Patient details information is displayed$/
+     */
+    public function aCheckIsMadeToConfirmThatPatientDetailsInformationIsDisplayed()
+    {
+        /**
+         * @var Homepage $homepage
+         */
+        $homepage = $this->getPage('Homepage');
+        $homepage->modulesCorrect();
+    }
+
+    /**
+     * @Then /^additional checks are made for correct level two access$/
+     */
+    public function additionalChecksAreMadForCorrectLevelTwoAccess()
+    {
+        /**
+         * @var Homepage $homepage
+         */
+        $homepage = $this->getPage('Homepage');
+        $homepage->levelTwoAccessAdditionalChecks();
+    }
+
+    /**
+     * @Given /^a check to see printing has been enabled$/
+     */
+    public function aCheckToSeePrintingHasBeenEnabled()
+    {
+        /**
+         * @var Homepage $homepage
+         */
+        $homepage = $this->getPage('Homepage');
+        $homepage->printAccessCheck();
+    }
+
+    /**
+     * @Given /^a check to see printing has been disabled$/
+     */
+    public function aCheckToSeePrintingHasBeenDisabled()
+    {
+        /**
+         * @var Homepage $homepage
+         */
+        $homepage = $this->getPage('Homepage');
+        $homepage->printDisabled();
+    }
+
+    /**
+     * @Then /^a check is made to confirm the user has correct level four access$/
+     */
+    public function aCheckIsMadeToConfirmTheUserHasCorrectLevelFourAccess()
+    {
+        /**
+         * @var Homepage $homepage
+         */
+        $homepage = $this->getPage('Homepage');
+        $homepage->levelFourAccess();
+    }
+
+
+
 }

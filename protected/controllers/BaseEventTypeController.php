@@ -1153,8 +1153,9 @@ class BaseEventTypeController extends BaseModuleController
 				if ($o_e->id) {
 					if (isset($oe_ids[get_class($o_e)])) {
 						$oe_ids[get_class($o_e)][] = $o_e->id;
+					} else {
+						$oe_ids[get_class($o_e)] = array($o_e->id);
 					}
-					$oe_ids[get_class($o_e)] = array($o_e->id);
 				}
 			}
 			// delete any elements that are no longer required for the event
