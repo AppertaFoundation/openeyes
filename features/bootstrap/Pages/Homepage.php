@@ -28,6 +28,7 @@ class Homepage extends OpenEyesPage
         'printButton' => array('xpath' => "//*[@id='et_print']"),
         'addNewEpisodeButton' => array('xpath' => "//*[@id='episodes_sidebar']//*[contains(text(),'Add episode')]"),
         'addEventButtons' => array('xpath' => "//*[@class='button secondary tiny add-event addEvent enabled']"),
+        'prescriptionDisabled' => array('xpath' => "//*[@title='You do not have permission to add Prescription']"),
     );
 
     public function selectSiteID($siteAddress)
@@ -200,5 +201,21 @@ class Homepage extends OpenEyesPage
         else {
             throw new BehaviorException ("WARNING!!! Level 3 RBAC Printing access NOT working WARNING!!!");
         }
+    }
+
+    protected function hasPrescriptionBeenDisabled ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('prescriptionDisabled')->getXpath());
+    }
+
+    public function levelFourAccess ()
+    {
+        if($this->hasPrescriptionBeenDisabled()){
+            print "Level 4 RBAC Prescription has been disabled OK";
+    }
+
+        else {
+            throw new BehaviorException ("WARNING!!! Level 4 RBAC Prescription IS enabled WARNING!!!");
+    }
     }
 }
