@@ -140,6 +140,9 @@ class Referral extends BaseActiveRecord
 	{
 		$desc = array();
 		$desc[] = $this->NHSDate('received_date');
+		if ($this->clock_start && $this->NHSDATE('clock_start') != $this->NHSDate('received_date')) {
+			$desc[] = "(" . $this->NHSDATE('clock_start') . ")";
+		}
 		if ($this->firm) {
 			$desc[] = $this->firm->getNameAndSubspecialty();
 		}
