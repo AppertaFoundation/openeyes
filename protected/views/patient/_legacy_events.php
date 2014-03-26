@@ -16,10 +16,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+if (isset(Yii::app()->params['legacy_event_types'])) foreach (Yii::app ()->params['legacy_event_types'] as $legacy_event_type) {
+  $legacyevents = EventType::model()->find('class_name=?', array($legacy_event_type));
 
-$legacyletters = EventType::model()->find('class_name=?', array('OphLeEpatientletter'));
-
-if ($legacyletters && !$legacyletters->disabled && is_array($legacyepisodes)) foreach ($legacyepisodes as $i => $episode) {?>
+  if ($legacyevents && !$legacyevents->disabled && is_array($legacyepisodes))
+    foreach ($legacyepisodes as $i => $episode) {?>
 
 	<section class="panel episode open legacy">
 
@@ -76,4 +77,5 @@ if ($legacyletters && !$legacyletters->disabled && is_array($legacyepisodes)) fo
 			</ol>
 		</div>
 	</section>
-<?php }?>
+<?php }
+}?>
