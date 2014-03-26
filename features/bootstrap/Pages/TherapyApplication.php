@@ -416,49 +416,49 @@ class TherapyApplication extends OpenEyesPage
 
     public function rightPatientCnvNO ()
     {
-        $this->getSession()->wait(2000);
+       $this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_2');
         $this->getElement('rightPatientHasCnvNo')->click();
     }
 
     public function rightMacularOdemaYes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_14');
         $this->getElement('rightPatientHasMacularOdemaYes')->click();
     }
 
     public function rightDiabeticMacularOdemaYes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_15');
         $this->getElement('rightPatientHasDiabeticMacularOdemaYes')->click();
     }
 
     public function rightCRT400Yes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_16');
         $this->getElement('rightPatientCRT>=400Yes')->click();
     }
 
     public function leftPatientCnvNO ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_2');
         $this->getElement('leftPatientHasCnvNo')->click();
     }
 
     public function leftMacularOdemaYes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_14');
         $this->getElement('leftPatientHasMacularOdemaYes')->click();
     }
 
     public function leftDiabeticMacularOdemaYes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_15');
         $this->getElement('leftPatientHasDiabeticMacularOdemaYes')->click();
     }
 
     public function leftCRT400Yes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_16');
         $this->getElement('leftPatientCRT>=400Yes')->click();
     }
 }
