@@ -32,7 +32,8 @@ class OECommandBuilder extends CDbCommandBuilder
 			}
 		}
 
-		$sql="INSERT INTO {$table_version->rawName} (`".implode("`,`",$columns)."`,`version_date`,`version_id`) SELECT {$table->rawName}.*, :oevalue1, :oevalue2 FROM {$table->rawName}";
+		$sql="INSERT INTO {$table_version->rawName} (`".implode("`,`",$columns)."`,`version_date`,`version_id`) " .
+			"SELECT {$table->rawName}.*, " . $this->dbConnection->quoteValue(date('Y-m-d H:i:s')) . ", NULL FROM {$table->rawName}";
 
 		$sql=$this->applyJoin($sql,$criteria->join);
 		$sql=$this->applyCondition($sql,$criteria->condition);
@@ -40,9 +41,6 @@ class OECommandBuilder extends CDbCommandBuilder
 		$sql=$this->applyLimit($sql,$criteria->limit,$criteria->offset);
 
 		$command=$this->getDbConnection()->createCommand($sql);
-
-		$command->bindValue(':oevalue1',date('Y-m-d H:i:s'));
-		$command->bindValue(':oevalue2',null);
 		$this->bindValues($command,$criteria->params);
 
 		return $command;
