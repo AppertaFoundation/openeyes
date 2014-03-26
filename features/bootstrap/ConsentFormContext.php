@@ -31,6 +31,18 @@ class ConsentFormContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I select the previously created operation "([^"]*)"$/
+     */
+    public function iSelectThePreviouslyCreatedOperation($value)
+    {
+        /**
+         * @var ConsentForm $consentForm
+         */
+        $consentForm = $this->getPage('ConsentForm');
+        $consentForm->existingOperation($value);
+    }
+
+    /**
      * @Then /^I select Add Consent Form$/
      */
     public function iSelectAddConsentForm()
