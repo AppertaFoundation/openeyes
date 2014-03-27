@@ -16,8 +16,19 @@
 
 // Actions panel
 //
-// Styleguide 16.1
-
+// Markup:
+// <div class="panel panel actions row">
+// 	<div class="large-12 column">
+// 		<div class="label">
+// 			Actions description:
+// 		</div>
+// 		<div class="button-bar">
+// 			<button class="small">Action button</button>
+// 		</div>
+// 	</div>
+// </div>
+//
+// Styleguide 13.5
 .panel {
 	&.actions {
 		border: 0;
@@ -35,6 +46,7 @@
 			margin: 0;
 		}
 		.label {
+			cursor: default;
 			display: inline-block;
 			font-size: rem-calc(13px);
 			font-weight: bold;
@@ -49,7 +61,7 @@
 		}
 		@media screen {
 			&.stuck {
-				@include box-shadow(0 2px 4px rgba(0, 0, 0, .3));
+				@include box-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 				@include border-top-left-radius(0);
 				@include border-top-right-radius(0);
 				position: fixed;

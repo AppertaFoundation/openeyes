@@ -15,6 +15,16 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 // Content box
+//
+// A content box wraps the entire body content (which is why no padding has been
+// applied).
+//
+// Markup:
+// <div class="box content">
+//     <p>Here is some content within a content box.</p>
+// </div>
+//
+// Styleguide 11.1
 .box {
 	&.content {
 		background: #dae6f1;

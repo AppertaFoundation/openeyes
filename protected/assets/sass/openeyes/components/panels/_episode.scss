@@ -16,57 +16,42 @@
 
 // Episode panel
 //
-// This panel is used to show the episode and events.
+// This panel is used to show the episode and events in the sidebar.
 //
 // Markup:
 // <section class="panel episode">
-//     <div class="episode-date">12 Dec 2011</div>
-//     <a href="#" class="toggle-events-trigger hide">
-//         <span class="icon-showhide">
-//             Show/hide events for this episode
-//         </span>
-//     </a>
-//     <h4 class="episode-title">
-//         <a href="#">
-//             Adnexal
-//         </a>
-//     </h4>
-//     <div class="events-container">
-//         <button class="button secondary tiny add-event" type="button">
-//             <span class="icon-button-small-plus-sign"></span>
-//             Add event
-//         </button>
-//         <ol class="events">
-//             <li class="selected">
-//                 <a href="#">
-//                     <span class="event-type alert">
-//                         <img src="/img/operationbooking/small.png" alt="op" width="19" height="19" />
-//                     </span>
-//                     <span class="event-date">
-//                         1 Jan 2000
-//                     </span>
-//                 </a>
-//             </li>
-//             <li>
-//                 <a href="#">
-//                     <span class="event-type alert">
-//                         <img src="/img/operationbooking/small.png" alt="op" width="19" height="19" />
-//                     </span>
-//                     <span class="event-date">
-//                         1 Jan 2000
-//                     </span>
-//                 </a>
-//             </li>
-//         </ol>
-//     </div>
+// 	<div class="episode-date">12 Dec 2011</div>
+// 	<a href="#" class="toggle-trigger toggle-hide">
+// 		<span class="icon-showhide">
+// 			Show/hide events for this episode
+// 		</span>
+// 	</a>
+// 	<h4 class="episode-title">
+// 		<a href="#">
+// 			Adnexal
+// 		</a>
+// 	</h4>
+// 	<div class="events-container">
+// 		<button class="button secondary tiny add-event" type="button">
+// 			<span class="icon-button-small-plus-sign"></span>
+// 			Add event
+// 		</button>
+// 		<ol class="events">
+// 			<li class="selected">
+// 				<a href="#">
+// 					<span class="event-type">
+// 						<img src="small.png" alt="op" width="19" height="19" />
+// 					</span>
+// 					<span class="event-date">
+// 						<span class="day">31</span><span class="mth">Jan</span><span class="yr">2014</span>
+// 					</span>
+// 				</a>
+// 			</li>
+// 		</ol>
+// 	</div>
 // </section>
 //
-// Styleguide 16.9
-
-// Episode panel vars
-//
-//
-//
+// Styleguide 13.10
 .panel {
 	&.episode {
 		@include border-top-left-radius(0);

@@ -14,6 +14,17 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Admin panel
+//
+// This panel contains features or functionality only available to admin users.
+//
+// Markup:
+// <div class="panel admin">
+// 	<label>Some admin label:</label>
+// 	<input class="small fixed-width" type="text" />
+// </div>
+//
+// Styleguide 13.6
 .panel {
 	&.admin {
 		background-color: goldenrod;

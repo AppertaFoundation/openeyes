@@ -14,7 +14,27 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-/* Default Pagination */
+// Pagination links
+//
+// A navigation list that displays a list of links to the paginated pages.
+//
+// Styleguide 9
+
+// Default pagination
+//
+// Markup:
+// <ul class="pagination">
+// 	<li class="first unavailable"><a href="#">&lt;&lt; First</a></li>
+// 	<li class="previous unavailable"><a href="#">&lt; Previous</a></li>
+// 	<li class="page current"><a href="#">1</a></li>
+// 	<li class="page"><a href="#">2</a></li>
+// 	<li class="page"><a href="#">3</a></li>
+// 	<li class="next"><a href="#">Next &gt;</a></li>
+// 	<li class="last"><a href="#">Last &gt;&gt;</a></li>
+// </ul>
+//
+// Styleguide 9.1
+
 ul.pagination {
 	@include pagination;
 	height: auto;
@@ -67,7 +87,26 @@ ul.pagination {
 	}
 }
 
-// Table pagination.
+// Table pagination
+//
+// Markup:
+// <table>
+// 	<tfoot class="pagination-container">
+// 		<tr>
+// 			<td colspan="9">
+// 				<ul class="pagination">
+// 				<li class="first unavailable"><a href="#">&lt;&lt; First</a></li>
+// 				<li class="previous unavailable"><a href="#">&lt; Previous</a></li>
+// 				<li class="page current"><a href="#">1</a></li>
+// 				<li class="page"><a href="#">2</a></li>
+// 				<li class="next"><a href="#">Next &gt;</a></li>
+// 				<li class="last"><a href="#">Last &gt;&gt;</a></li></ul>
+// 			</td>
+// 		</tr>
+// 	</tfoot>
+// </table>
+//
+// Styleguide 9.2
 tfoot.pagination-container {
 	td {
 		border: 0;

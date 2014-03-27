@@ -29,14 +29,33 @@ pre.prettyprint {
 .container.main.section-tooltips .tooltip {
 	display: block;
 }
-
+.container.main.section-quicklook .kss-mod-markup {
+	min-height: 110px;
+}
+.container.main.section-quicklook .quicklook {
+	display: block;
+	position: static;
+}
+.container.main.section-quicklook .quicklook.warning {
+	width: 200px;
+}
+.container.main.section-toggler .toggle-trigger {
+	position: static;
+}
+.container.main.section-panels .panel.specialty {
+	width: 200px;
+}
+.container.main.section-panels .kss-mod-markup > .panel.episode {
+	width: 200px;
+}
+.container.main.section-panels .panel.login {
+	margin-top: 0;
+}
+.container.main.section-panels .panel.error {
+	margin-top: 0;
+}
 
 /* Styleguide */
-
-/******************************************************************
- * Docs styles
- * NOTE: All docs classes MUST be prefixed with 'kss'.
- *****************************************************************/
 
 .kss-footer {
 	background-image: none
@@ -47,11 +66,8 @@ pre.prettyprint {
 	margin: 0 0 1em 0;
 	padding: 1em;
 }
-.kss-content {
-	padding-top: 1em;
-}
-.kss-side-nav {
-	padding: .5em;
+.kss-box > *:last-child {
+	margin: 0;
 }
 .kss-title {
 	margin-top: 0
@@ -129,7 +145,7 @@ pre.prettyprint {
 .kss-mod-markup {
 	overflow: hidden;
 }
-.kss-mod-markup *:last-child {
+.kss-mod-markup > *:last-child {
 	margin-bottom: 0;
 }
 
@@ -158,132 +174,12 @@ pre.prettyprint {
 	margin-right: 1em;
 }
 
-/******************************************************************
- * Prettify styles (syntax highlighting)
- *****************************************************************/
+/* Code styles */
 
-code {
-	margin: 0 2px;
+ pre {
+	font-size: 13px;
+	tab-size: 4;
+	background-color: #f8f8f8;
+	border-radius: 3px;
 	padding: 0 5px;
-	white-space: nowrap;
-	border: 1px solid #eaeaea;
-	background-color: #f8f8f8;
-	border-radius: 3px;
-	color: #333;
-	font-weight: normal;
-	font-family: Consolas,"Liberation Mono",Courier,monospace;
-}
-pre {
-	background-color: #f8f8f8;
-	border: 1px solid #ccc;
-	font-size: .85em;
-	line-height: 1.1em;
-	overflow: auto;
-	padding: 6px 10px;
-	border-radius: 3px;
-}
-pre>code {
-	margin: 0;
-	padding: 0;
-	white-space: pre;
-	border: none;
-	background: transparent;
-}
-
-.pln {
-	color: #000
-}
-@media screen {
-	.str {
-		color: #080
-	}
-	.kwd {
-		color: #008
-	}
-	.com {
-		color: #800
-	}
-	.typ {
-		color: #606
-	}
-	.lit {
-		color: #066
-	}
-	.pun,
-	.opn,
-	.clo {
-		color: #660
-	}
-	.tag {
-		color: #008
-	}
-	.atn {
-		color: #606
-	}
-	.atv {
-		color: #080
-	}
-	.dec,
-	.var {
-		color: #606
-	}
-	.fun {
-		color: red
-	}
-}
-@media print,projection {
-	.str {
-		color: #060
-	}
-	.kwd {
-		color: #006;
-		font-weight: 700;
-	}
-	.com {
-		color: #600;
-		font-style: italic;
-	}
-	.typ {
-		color: #404;
-		font-weight: 700;
-	}
-	.lit {
-		color: #044
-	}
-	.pun,
-	.opn,
-	.clo {
-		color: #440
-	}
-	.tag {
-		color: #006;
-		font-weight: 700;
-	}
-	.atn {
-		color: #404
-	}
-	.atv {
-		color: #060
-	}
-}
-ol.linenums {
-	margin-top: 0;
-	margin-bottom: 0;
-}
-li.L0,
-li.L1,
-li.L2,
-li.L3,
-li.L5,
-li.L6,
-li.L7,
-li.L8 {
-	list-style-type: none
-}
-li.L1,
-li.L3,
-li.L5,
-li.L7,
-li.L9 {
-	background: #eee
 }

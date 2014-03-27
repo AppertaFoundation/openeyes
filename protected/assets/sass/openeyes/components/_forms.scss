@@ -138,13 +138,6 @@ fieldset {
 
 /* Error Handling */
 
-// .error input,
-// input.error,
-// .error textarea,
-// textarea.error {
-// 	@include form-error-color;
-// }
-
 .error label,
 label.error {
 	@include form-label-error-color;

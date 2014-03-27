@@ -15,6 +15,19 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 // Patient info box
+//
+// Markup:
+// <div class="box patient-info">
+// 	<h3 class="box-title">Personal Details:</h3>
+// 	<a href="#" class="toggle-trigger toggle-hide">
+// 		<span class="icon-showhide">
+// 			Show/hide this section
+// 		</span>
+// 	</a>
+// 	<p>Here is some information in a patient-info box.</p>
+// </div>
+//
+// Styleguide 11.3
 .box {
 	&.patient-info {
 		background: #fafafa;
