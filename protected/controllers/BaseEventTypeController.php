@@ -1244,6 +1244,28 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
+	* Render an optional element
+	*
+	* @param BaseEventTypeElement $element
+	* @param string $action
+	* @param BaseCActiveBaseEventTypeCActiveForm $form
+	* @param array $data
+	* @throws Exception
+	*/
+	protected function renderOptionalElement($element, $action, $form, $data)
+	{
+		$view = $this->getViewFile('_optional_'	. get_class($element))
+			? '_optional_'	. get_class($element)
+			: '_optional_element';
+
+		$this->renderPartial($view, array(
+			'element' => $element,
+			'data' => $data,
+			'form' => $form
+		), false, false);
+	}
+
+	/**
 	 * Render the open elements that are children of the given parent element type
 	 *
 	 * @param BaseEventTypeElement $parent_element
@@ -1269,7 +1291,7 @@ class BaseEventTypeController extends BaseModuleController
 	public function renderOptionalElements($action, $form=null,$data=null)
 	{
 		foreach ($this->getOptionalElements() as $element) {
-			$this->renderElement($element, $action, $form, $data);
+			$this->renderOptionalElement($element, $action, $form, $data);
 		}
 	}
 
@@ -1285,7 +1307,7 @@ class BaseEventTypeController extends BaseModuleController
 	public function renderChildOptionalElements($parent_element, $action, $form=null, $data=null)
 	{
 		foreach ($this->getChildOptionalElements($parent_element->getElementType()) as $element) {
-			$this->renderElement($element, $action, $form, $data);
+			$this->renderOptionalElement($element, $action, $form, $data);
 		}
 	}
 
