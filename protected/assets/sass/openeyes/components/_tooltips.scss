@@ -14,6 +14,22 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Tooltips
+//
+// Styleguide 8
+
+// Tooltips
+//
+// Markup:
+// <div class="tooltip {$modifiers}">
+// 	Created by: Enoch Root,
+// 	Last modified by: Enoch Root
+// </div>
+//
+// .alerts            - Alerts tooltip
+//
+// Styleguide 8.1
+
 .tooltip {
 	@include border-radius(4px);
 	@include box-shadow(2px 2px 2px 0 #999);
@@ -23,6 +39,7 @@
 	font-style: italic;
 	padding: 3px 6px 3px 3px;
 	position: absolute;
+	border: 1px solid #444;
 	&.alerts {
 		border: 2px solid #ee9;
 		background: #ffe;

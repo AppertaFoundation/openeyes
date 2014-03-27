@@ -6,16 +6,16 @@
 <title>OpenEyes - Forms</title>
 <meta name="viewport" content="width=device-width" />
 <?php
-$assets_root_path = '../';
-include '../fragments/assets.php';
+$assets_root_path = '';
+include 'fragments/assets.php';
 ?>
 </head>
 <body>
 	<div class="container main" role="main">
 
-		<header class="header row">
+		<header class="header row static">
 			<div class="large-3 columns">
-				<a class="logo" href="../index.php">
+				<a class="logo" href="index.php">
 					OpenEyes
 				</a>
 			</div>
@@ -26,7 +26,7 @@ include '../fragments/assets.php';
 				<div class="row">
 				<aside class="large-2 column sidebar">
 
-					<div class="box generic">
+					<div class="box generic navigation">
 						<h2>Navigation</h2>
 						<ul class="side-nav">
 							<li><a href="#overview">Overview</a></li>
@@ -69,8 +69,7 @@ include '../fragments/assets.php';
 						<div class="row">
 							<div class="large-12 column">
 								<h2 id="overview">Overview</h2>
-								<p>This page lists all the possible form fields and layouts to
-								be used in the OpenEyes application. Use this documentation as a
+								<p>Use this documentation as a
 								guide to creating forms throughout the application.</p>
 
 								<p>A lot of the terminology used in this page is taken from the
@@ -89,15 +88,15 @@ include '../fragments/assets.php';
 							<div class="large-12 column">
 								<h2 id="form-layouts">Form layouts</h2>
 								<p>Each field row is wrapped in a container, and labels are used to describe the fields. Fieldsets
-								are used to wrap fields groups, like radio or checkbox groups.</p>
+								are used to wrap field groups, like radio or checkbox groups.</p>
 								<p>There are no set dimensions for the form components. This allows
 								forms to be flexible and to adapt to fit different areas of the document without
 								the need for creating additional CSS. If you want to create custom form layouts, you need to use the grid system. If you
-								are unfamiliar with how the grid system works, please view the <a href="#">grid documentation</a>.</p>
+								are unfamiliar with how the grid system works, please view the <a href="grid.php">grid documentation</a>.</p>
 
 								<h3>Basic form layouts</h3>
 
-								<form class="example" id="vertical-layout-example">
+								<form class="example box generic" id="vertical-layout-example">
 
 									<header>
 										<h3>Vertical layout</h3>
@@ -198,7 +197,7 @@ include '../fragments/assets.php';
 									</div>
 								</form>
 
-								<form class="example" id="horizontal-layout-example">
+								<form class="example box generic" id="horizontal-layout-example">
 
 									<header>
 										<h3>Horizontal layout</h3>
@@ -341,7 +340,7 @@ include '../fragments/assets.php';
 									</div>
 								</form>
 
-								<form class="example" id="horizontal-layout-example">
+								<form class="example box generic" id="horizontal-layout-example">
 
 									<header>
 										<h3>Field widths</h3>
@@ -426,7 +425,7 @@ include '../fragments/assets.php';
 								</form>
 
 
-								<form class="example" id="table-form-layout-example">
+								<form class="example box generic" id="table-layout-example">
 
 									<header>
 										<h3>Table layout</h3>
@@ -511,7 +510,7 @@ include '../fragments/assets.php';
 								to use them.</p>
 
 								<!-- Text input -->
-								<div class="example" id="text-input-example">
+								<div class="example box generic" id="text-input-example">
 									<header>
 										<h3>Text input</h3>
 									</header>
@@ -533,7 +532,7 @@ include '../fragments/assets.php';
 								</div>
 
 								<!-- Password input -->
-								<div class="example" id="password-input-example">
+								<div class="example box generic" id="password-input-example">
 									<header>
 										<h3>Password input</h3>
 									</header>
@@ -555,7 +554,7 @@ include '../fragments/assets.php';
 								</div>
 
 								<!-- Select dropdown -->
-								<div class="example" id="select-dropdown-example">
+								<div class="example box generic" id="select-dropdown-example">
 									<header>
 										<h3>Select dropdown</h3>
 									</header>
@@ -598,7 +597,7 @@ include '../fragments/assets.php';
 								</div>
 
 								<!-- Radio input -->
-								<div class="example" id="radio-input-example">
+								<div class="example box generic" id="radio-input-example">
 									<header>
 										<h3>Radio input</h3>
 									</header>
@@ -644,7 +643,7 @@ include '../fragments/assets.php';
 								</div>
 
 								<!-- Checkbox input -->
-								<div class="example" id="checkbox-input-example">
+								<div class="example box generic" id="checkbox-input-example">
 									<header>
 										<h3>Checkbox input</h3>
 									</header>
@@ -675,7 +674,7 @@ include '../fragments/assets.php';
 								</div>
 
 								<!-- Textarea input -->
-								<div class="example" id="textarea-example">
+								<div class="example box generic" id="textarea-example">
 									<header>
 										<h3>Textarea</h3>
 									</header>
@@ -728,7 +727,7 @@ include '../fragments/assets.php';
 								<p>It's important to be familiar with these custom fields so that
 								they can re-used appropriately when required.</p>
 
-								<div class="example" id="multiselect-example">
+								<div class="example box generic" id="multiselect-example">
 
 									<header>
 										<h3>Multi-select</h3>
@@ -812,7 +811,7 @@ include '../fragments/assets.php';
 
 								<!-- Highlighted field -->
 
-								<div class="example" id="highlight-example">
+								<div class="example box generic" id="highlight-example">
 
 									<header>
 										<h3>Highglight</h3>
@@ -863,7 +862,7 @@ include '../fragments/assets.php';
 
 								<!-- Select search -->
 
-								<div class="example" id="select-search-example">
+								<div class="example box generic" id="select-search-example">
 
 									<header>
 										<h3>Select search</h3>

@@ -14,6 +14,17 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Alert box
+//
+// Markup:
+// <div class="alert-box alert {$modifiers}">
+//     Alert! Some information the user needs to see, good or bad.
+//     <a href="#" class="close">&times;</a>
+// </div>
+//
+// .with-icon     - Alert box with icon
+//
+// Styleguide 7.1
 .alert-box {
 	border-color: #c9c9c9;
 	&.alert {

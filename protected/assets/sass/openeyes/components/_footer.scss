@@ -15,31 +15,6 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 // Main footer
-//
-// Styles for the main footer used through the application.
-//
-// Markup:
-// <footer class="footer row">
-//     <div class="large-3 columns">
-//         <div class="info">
-//             <a href="#" data-component="support-info-link">Served, with love, by openeyes.local</a>
-//             <br />
-//             <span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
-//         </div>
-//     </div>
-//     <div class="large-6 large-centered columns help">
-//         <div class="panel">
-//             <ul class="inline-list">
-//                 <li><strong>Need help?</strong></li>
-//                 <li>helpdesk@example.com</li>
-//                 <li><strong>12345678</strong></li>
-//                 <li><a target="_new" href="/">Help Documentation</a></li>
-//             </ul>
-//         </div>
-//     </div>
-// </footer>
-//
-// Styleguide 8.1
 
 .footer {
 	@extend .clearfix;

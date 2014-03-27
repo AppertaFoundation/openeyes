@@ -122,6 +122,13 @@ $(document).ready(function(){
 
 	(function stickyElements() {
 
+		var banner = new OpenEyes.UI.StickyElement('.admin.banner', {
+			offset: 30,
+			wrapperHeight: function(instance) {
+				return instance.element.outerHeight(true);
+			}
+		});
+
 		var options = {
 			enableHandler: function(instance) {
 				instance.element.width(instance.element.width());
@@ -133,18 +140,11 @@ $(document).ready(function(){
 			}
 		};
 
-		new OpenEyes.UI.StickyElement('.admin.banner', {
-			offset: 30,
-			wrapperHeight: function(instance) {
-				return instance.element.outerHeight(true);
-			}
-		});
-
-		var header = new OpenEyes.UI.StickyElement('.header', $.extend({
+		var header = new OpenEyes.UI.StickyElement('.header:not(.static)', $.extend({
 			offset: 25
 		}, options));
 
-		new OpenEyes.UI.StickyElement('.event-header', $.extend({
+		var eventHead = new OpenEyes.UI.StickyElement('.event-header', $.extend({
 			wrapperClass: 'sticky-wrapper sticky-wrapper-event-header',
 			offset: function() {
 				return header.element.height() * -1;
