@@ -39,7 +39,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		$this->useContext('WaitingListContext', new WaitingListContext($parameters));
 		$this->useContext('AddingNewEventContext', new AddingNewEventContext($parameters));
 		$this->useContext('PatientViewContext', new PatientViewContext($parameters));
-		$this->useContext('OperationBookingContext', new OperationBookingContext($parameters));
+        $this->useContext('OperationNoteContext', new OperationNoteContext($parameters));
+        $this->useContext('OperationBookingContext', new OperationBookingContext($parameters));
 		$this->useContext('AnaestheticAuditContext', new AnaestheticAuditContext($parameters));
 		$this->useContext('ExaminationContext', new ExaminationContext($parameters));
 		$this->useContext('LaserContext', new LaserContext($parameters));

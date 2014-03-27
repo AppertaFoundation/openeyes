@@ -32,7 +32,8 @@ class AnaestheticAudit extends OpenEyesPage
       'vitalBodyTempValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Body Temperature cannot be blank.')]"),
       'vitalHeartRateValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Heart Rate cannot be blank.')]"),
       'vitalAVPUValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Vital Signs: Conscious Level AVPU cannot be blank.')]"),
-      'readyForDischargeValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Notes: Ready for discharge from recovery cannot be blank.')]")
+      'readyForDischargeValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Notes: Ready for discharge from recovery cannot be blank.')]"),
+      'deleteSuccess' => array('xpath' => "//*[contains(text(), 'An event was deleted, please ensure the episode status is still correct.')]")
 
     );
 
@@ -135,11 +136,23 @@ class AnaestheticAudit extends OpenEyesPage
         $this->getSession()->wait(5000);
     }
 
+    protected function deleteSuccessCheck ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('deleteSuccess')->getXpath());
+    }
+
     public function deleteEvent ()
     {
         $this->getElement('deleteEvent')->click();
         $this->getSession()->wait(3000);
         $this->getElement('confirmDeleteEvent')->click();
+
+        if ($this->deleteSuccessCheck()){
+            print "Event Delete was Successful";
+        }
+        else{
+            throw new BehaviorException("WARNING!!! Deletion of event has NOT been successful WARNING!!!");
+        }
     }
 
     public function validationErrors ()
