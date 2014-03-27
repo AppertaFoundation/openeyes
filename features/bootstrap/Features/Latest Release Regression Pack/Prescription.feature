@@ -1,6 +1,6 @@
 @prescription @regression
 Feature: Create New Prescription
-         Regression coverage of this event is approx 95%
+         Regression coverage of this event is 100%
 
   Scenario: Route 1: Login and create a new Prescription
             Site 1:Queens
@@ -28,7 +28,32 @@ Feature: Create New Prescription
     Then I enter a duration of "1"
     Then I enter a eyes option "1"
 
+    Then I enter a item two eyes option of "1"
+    Then I enter a item three eyes option of "1"
+
     And I add Prescription comments of "TEST COMMENTS"
+
+    Then I Save the Prescription Draft and confirm it has been created successfully
+
+  Scenario: Route 1A: Repeat Prescription test
+  Site 1:Queens
+  Firm 3:Anderson Glaucoma
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Prescription"
+
+    Then I select Repeat Prescription
+
+    And a check is made that the Repeat Prescription is applied
 
     Then I Save the Prescription Draft and confirm it has been created successfully
 
@@ -52,7 +77,6 @@ Feature: Create New Prescription
     And I select the No preservative checkbox
 
     Then I select a Common Drug "280"
-    And I select a Standard Set of "7"
 
     Then I enter a Dose of "3" drops
     And I enter a route of "1"
@@ -83,7 +107,6 @@ Feature: Create New Prescription
     And I add a New Event "Prescription"
 
     Then I select a Common Drug "176"
-    And I select a Standard Set of "11"
 
     Then I enter a Dose of "2" drops
     And I enter a route of "3"
@@ -128,7 +151,6 @@ Feature: Create New Prescription
     And I select the No preservative checkbox
 
     Then I select a Common Drug "569"
-    And I select a Standard Set of "10"
 
     Then I enter a Dose of "2" drops
     And I enter a route of "17"
@@ -139,5 +161,3 @@ Feature: Create New Prescription
     And I add Prescription comments of "TEST COMMENTS"
 
     Then I Save the Prescription Draft and confirm it has been created successfully
-
-

@@ -442,13 +442,13 @@ class Intravitreal extends OpenEyesPage
             (bool) $this->find('xpath', $this->getElement('anaestheticRightTypeAgent')->getXpath()) &&
             (bool) $this->find('xpath', $this->getElement('treatmentLeftPreInjectionAntisepticBlank')->getXpath()) &&
             (bool) $this->find('xpath', $this->getElement('treatmentLeftPreInjectionSkinCleanserBlank')->getXpath()) &&
-            (bool) $this->find('xpath', $this->getElement('treatmentLeftDrugBlank')->getXpath()) &&
-            (bool) $this->find('xpath', $this->getElement('treatmentLeftNumberOfInjectionsBlank')->getXpath()) &&
+//            (bool) $this->find('xpath', $this->getElement('treatmentLeftDrugBlank')->getXpath()) &&
+//            (bool) $this->find('xpath', $this->getElement('treatmentLeftNumberOfInjectionsBlank')->getXpath()) &&
             (bool) $this->find('xpath', $this->getElement('treatmentLeftBatchNumberBlank')->getXpath()) &&
             (bool) $this->find('xpath', $this->getElement('treatementRightPreInjectionAntisepticBlank')->getXpath()) &&
             (bool) $this->find('xpath', $this->getElement('treatmentRightPreInjectionSkinCleanserBlank')->getXpath()) &&
-            (bool) $this->find('xpath', $this->getElement('treatmentRightDrugBlank')->getXpath()) &&
-            (bool) $this->find('xpath', $this->getElement('treatmentRightNumberOfInjectionsBlank')->getXpath()) &&
+//            (bool) $this->find('xpath', $this->getElement('treatmentRightDrugBlank')->getXpath()) &&
+//            (bool) $this->find('xpath', $this->getElement('treatmentRightNumberOfInjectionsBlank')->getXpath()) &&
             (bool) $this->find('xpath', $this->getElement('treatmentRightBatchNumberBlank')->getXpath()) &&
             (bool) $this->find('xpath', $this->getElement('anteriorSegmentLeftLensBlank')->getXpath()) &&
             (bool) $this->find('xpath', $this->getElement('anteriorSegmentRightLensBlank')->getXpath()) &&

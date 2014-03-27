@@ -78,7 +78,7 @@
 	 * via an AJAX request.
 	 * @property {string|null} [dialogClass=dialog] - A CSS class string to be added to
 	 * the main dialog container.
-	 * @property {boolean} [contrainToViewport=false] - Constrain the dialog dimensions
+	 * @property {boolean} [constrainToViewport=false] - Constrain the dialog dimensions
 	 * so that it is never displayed outside of the window viewport?
 	 * @property {integer|string} [width=400] - The dialog width.
 	 * @property {integer|string} [height=auto] - The dialog height.
@@ -272,18 +272,43 @@
 		};
 
 		if (this.options.constrainToViewport) {
-
-			var margin = 40;
-			var width = parseInt(dimensions.width, 10);
-			var height = parseInt(dimensions.height, 10);
-
-			if (!isNaN(width)) {
-				dimensions.width = Math.min(width, $(window).width() - margin);
-			}
-			if (!isNaN(height)) {
-				dimensions.height = Math.min(height, $(window).height() - margin);
-			}
+			var actualDimensions = this.getActualDimensions();
+			var offset = 40;
+			dimensions.width = Math.min(actualDimensions.width, $(window).width() - offset);
+			dimensions.height = Math.min(actualDimensions.height, $(window).height() - offset);
 		}
+
+		return dimensions;
+	};
+
+	/**
+	 * Gets the actual dimensions of the dialog. We need to ensure the dialog
+	 * is open to calculate the dimensions.
+	 * @return {object} An object containing the width and height dimensions.
+	 */
+	Dialog.prototype.getActualDimensions = function() {
+
+		var options = {
+			show: this.options.show,
+			modal: this.options.modal,
+			destroyOnClose: this.options.destroyOnClose
+		};
+
+		this.instance._setOptions($.extend(this.options, {
+			show: null,
+			destroyOnClose: false,
+			modal: false
+		}));
+
+		this.instance.open();
+
+		var dimensions = {
+			width: parseInt(this.options.width, 10) || this.instance.uiDialog.outerWidth(),
+			height: parseInt(this.options.height, 10) || this.instance.uiDialog.outerHeight()
+		};
+
+		this.instance.close();
+		this.instance._setOptions($.extend(this.options, options));
 
 		return dimensions;
 	};
@@ -309,6 +334,7 @@
 	Dialog.prototype.open = function() {
 		this.setDimensions();
 		this.instance.open();
+		this.reposition();
 	};
 
 	/**
@@ -401,7 +427,6 @@
 	Dialog.prototype.onContentLoad = function() {
 		this.removeLoadingState();
 		this.setDimensions();
-		this.reposition();
 	};
 
 	/**

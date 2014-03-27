@@ -1,6 +1,6 @@
 <?php
 
-class m140123_235959_table_versioning extends OEMigration
+class m140220_235959_table_versioning extends OEMigration
 {
 	public function up()
 	{

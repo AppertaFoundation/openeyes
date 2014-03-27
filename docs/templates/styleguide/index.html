@@ -12,14 +12,11 @@
 	<meta name="generator" content="kss-node" />
 	<meta name="viewport" content="width=device-width">
 
-	<!-- Include site stylesheets here -->
 	<link rel="stylesheet" href="../assets/css/style.css">
 	<link rel="stylesheet" href="../assets/css/docs.css" />
-
-	<!-- Include docs stylesheets here -->
-	<link rel="stylesheet" href="public/kss.css">
 </head>
-<body>
+<body data-section="{{#unless overview}}{{#eachSection rootNumber}}{{#whenDepth 1}}{{header}}{{/whenDepth}}{{/eachSection}}{{/unless}}">
+
 	<div class="container main" role="main">
 
 		<header class="header">
@@ -35,7 +32,7 @@
 				<!-- Docs nav
 				================================================== -->
 				<div class="large-2 columns">
-					<ul class="side-nav kss-side-nav kss-box">
+					<ul class="side-nav kss-side-nav kss-box box navigation">
 						<li><a href="index.html">0.0: Overview</a></li>
 						{{#eachRoot}}
 							<li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
@@ -78,7 +75,7 @@
 
 											<div class="kss-description">{{html description}}</div>
 
-											<h3 class="kss-sub-head">Examples:</h3>
+											<!-- <h3 class="kss-sub-head">Examples:</h3> -->
 											<div class="kss-mod-list">
 												<div class="kss-mod">
 													<div class="row kss-mod-overview">
@@ -89,7 +86,7 @@
 														</div>
 													</div>
 													<div class="row">
-														<div class="large-12 columns">
+														<div class="large-12 columns kss-mod-markup">
 															{{modifierMarkup}}
 														</div>
 													</div>
@@ -105,14 +102,14 @@
 															</div>
 														</div>
 														<div class="row">
-															<div class="large-12 columns">
+															<div class="large-12 columns kss-mod-markup">
 																{{modifierMarkup}}
 															</div>
 														</div>
 													</div>
 												{{/eachModifier}}
 											</div>
-											<h3 class="kss-sub-head">Markup:</h3>
+											<!-- <h3 class="kss-sub-head">Markup:</h3> -->
 											<div class="kss-markup">
 												<pre class="prettyprint lang-html">{{markup}}</pre>
 											</div>
@@ -152,7 +149,7 @@
 	<script src="../assets/components/jquery/jquery.min.js"></script>
 	<script src="../assets/components/google-code-prettify/src/prettify.js"></script>
 	<script src="public/js/kss.js"></script>
-	<script src="public/js/script.js"></script>
+	<script src="../assets/js/docs.js"></script>
 
 </body>
 </html>

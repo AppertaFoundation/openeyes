@@ -431,9 +431,31 @@ class BaseEventTypeController extends BaseModuleController
 	 * @param  BaseEventTypeElement  $element
 	 * @return boolean
 	 */
-	public function isRequired($element)
+	public function isRequired(BaseEventTypeElement $element)
 	{
 		return $element->isRequired();
+	}
+
+	/**
+	 * Is this element required in the UI? (Prevents the user from being able
+	 * to remove the element.)
+	 * @param  BaseEventTypeElement  $element
+	 * @return boolean
+	 */
+	public function isRequiredInUI(BaseEventTypeElement $element)
+	{
+		return $element->isRequiredInUI();
+	}
+
+	/**
+	 * Is this element to be hidden in the UI? (Prevents the elements from
+	 * being displayed on page load.)
+	 * @param  BaseEventTypeElement  $element
+	 * @return boolean
+	 */
+	public function isHiddenInUI(BaseEventTypeElement $element)
+	{
+		return $element->isHiddenInUI();
 	}
 
 	/**
@@ -906,32 +928,6 @@ class BaseEventTypeController extends BaseModuleController
 		$this->renderElement($element, 'create', $form, null, array(
 			'previous_parent_id' => $previous_id
 		), false, true);
-
-		// // Render called with processOutput
-		// // TODO: use renderElement for this if we can
-		// try {
-		// 	// look for element specific view file
-		// 	$this->renderPartial($element->create_view, array(
-		// 			'element' => $element,
-		// 			'data' => null,
-		// 			'form' => $form,
-		// 			'child' => null,
-		// 			'previous_parent_id' => $previous_id,
-		// 		), false, true);
-		// } catch (Exception $e) {
-		// 	if (strpos($e->getMessage(), "cannot find the requested view") === false) {
-		// 		// it's a different, unexpected problem
-		// 		throw $e;
-		// 	}
-		// 	// use the default view file
-		// 	$this->renderPartial('_form', array(
-		// 			'element' => $element,
-		// 			'data' => null,
-		// 			'form' => $form,
-		// 			'child' => ($element_type->parent_element_type_id > 0),
-		// 			'previous_parent_id' => $previous_id,
-		// 		), false, true);
-		// }
 	}
 
 	/**
@@ -1157,8 +1153,9 @@ class BaseEventTypeController extends BaseModuleController
 				if ($o_e->id) {
 					if (isset($oe_ids[get_class($o_e)])) {
 						$oe_ids[get_class($o_e)][] = $o_e->id;
+					} else {
+						$oe_ids[get_class($o_e)] = array($o_e->id);
 					}
-					$oe_ids[get_class($o_e)] = array($o_e->id);
 				}
 			}
 			// delete any elements that are no longer required for the event
@@ -1230,45 +1227,6 @@ class BaseEventTypeController extends BaseModuleController
 		($use_container_view) && $this->endContent();
 	}
 
-
-	/**
-	 * Render an optional element based on the action provided
-	 *
-	 * @param BaseEventTypeElement $element
-	 * @param string $action
-	 * @param BaseCActiveBaseEventTypeCActiveForm $form
-	 * @param array $data
-	 * @throws Exception
-	 */
-	protected function renderOptionalElement($element, $action, $form, $data)
-	{
-		try {
-			$this->renderPartial(
-				'_optional_'	. get_class($element),
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form
-				),
-				false, false
-			);
-		} catch (Exception $e) {
-			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
-				throw $e;
-			}
-			$this->renderPartial(
-				'_optional_element',
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form
-				),
-				false, false
-			);
-		}
-
-
-	}
 	/**
 	 * Render the open elements for the controller state
 	 *
@@ -1279,9 +1237,32 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function renderOpenElements($action, $form=null, $data=null)
 	{
+
 		foreach ($this->getElements() as $element) {
 			$this->renderElement($element, $action, $form, $data);
 		}
+	}
+
+	/**
+	* Render an optional element
+	*
+	* @param BaseEventTypeElement $element
+	* @param string $action
+	* @param BaseCActiveBaseEventTypeCActiveForm $form
+	* @param array $data
+	* @throws Exception
+	*/
+	protected function renderOptionalElement($element, $action, $form, $data)
+	{
+		$view = $this->getViewFile('_optional_'	. get_class($element))
+			? '_optional_'	. get_class($element)
+			: '_optional_element';
+
+		$this->renderPartial($view, array(
+			'element' => $element,
+			'data' => $data,
+			'form' => $form
+		), false, false);
 	}
 
 	/**

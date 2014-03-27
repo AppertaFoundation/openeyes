@@ -14,6 +14,17 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Patient alert box
+//
+// Markup:
+// <div class="alert-box patient {$modifiers}">
+//     Alert! Some information the user needs to see.
+//     <a href="#" class="close">&times;</a>
+// </div>
+//
+// .with-icon     - Alert box with icon
+//
+// Styleguide 7.3
 .alert-box {
 	&.patient {
 		background-color: #eb5911;

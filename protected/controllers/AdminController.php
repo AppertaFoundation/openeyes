@@ -159,9 +159,11 @@ class AdminController extends BaseAdminController
 	public function actionAddUser()
 	{
 		$user = new User;
+		$request = Yii::app()->getRequest();
 
-		if (!empty($_POST)) {
-			$user->attributes = $_POST['User'];
+		if ($request->getIsPostRequest()) {
+			$userAtt = $request->getPost( 'User');
+			$user->attributes = $userAtt;
 
 			if (!$user->validate()) {
 				$errors = $user->getErrors();
@@ -171,7 +173,11 @@ class AdminController extends BaseAdminController
 				}
 				Audit::add('admin-User','add',$user->id);
 
-				$user->saveRoles($_POST['User']['roles']);
+				if(!isset($userAtt['roles'])){
+					$userAtt['roles']=array();
+				}
+
+				$user->saveRoles($userAtt['roles']);
 
 				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
 			}
@@ -185,19 +191,20 @@ class AdminController extends BaseAdminController
 		));
 	}
 
-
 	public function actionEditUser($id)
 	{
 		if (!$user = User::model()->findByPk($id)) {
 			throw new Exception("User not found: $id");
 		}
 
-		if (!empty($_POST)) {
-			if (!$_POST['User']['password']) {
-				unset($_POST['User']['password']);
-			}
+		$request = Yii::app()->getRequest();
 
-			$user->attributes = $_POST['User'];
+		if ($request->getIsPostRequest()) {
+			$userAtt = $request->getPost( 'User');
+			if(empty($userAtt['password'])){
+				unset($userAtt['password']);
+			}
+			$user->attributes = $userAtt;
 
 			if (!$user->validate()) {
 				$errors = $user->getErrors();
@@ -228,7 +235,11 @@ class AdminController extends BaseAdminController
 
 				Audit::add('admin-User','edit',$user->id);
 
-				$user->saveRoles($_POST['User']['roles']);
+				if(!isset($userAtt['roles'])){
+					$userAtt['roles']=array();
+				}
+
+				$user->saveRoles($userAtt['roles']);
 
 				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
 			}

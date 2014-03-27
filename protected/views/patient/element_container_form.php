@@ -17,8 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php
+$section_classes = array($element->elementType->class_name);
+$section_classes[] = @$child ? 'sub-element' : 'element';
+if ($this->isRequired($element)) {
+	$section_classes[] = 'required';
+}
+if ($this->isHiddenInUI($element)) {
+	$section_classes[] = 'hide';
+}
+?>
+
 <section
-	class="<?php if (@$child) {?>sub-<?php }?>element<?php if($this->isRequired($element)) { ?> required<?php } ?> <?php echo $element->elementType->class_name?>"
+	class="<?php echo implode(' ', $section_classes);?>"
 	data-element-type-id="<?php echo $element->elementType->id?>"
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
@@ -51,7 +62,7 @@
 			<?php }?>
 
 			<!-- Remove element -->
-			<?php if (!@$child && !$this->isRequired($element)) {?>
+			<?php if (!@$child && !$this->isRequiredInUI($element)) {?>
 				<a href="#" class="button button-icon small js-remove-element">
 					<span class="icon-button-small-mini-cross"></span>
 					<span class="hide-offscreen">Remove element</span>

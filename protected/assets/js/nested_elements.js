@@ -79,8 +79,8 @@ function addElement(element, animate, is_child, previous_id, params) {
 			var cel = $(container).find('.'+element_type_class);
 			var pel = $(container).parents('.sub-element, .element');
 			var sideField = $(cel).find('input.sideField');
-			if ($(sideField).length && $(pel).find('input.sideField').length) {
-				$(sideField).val($(pel).find('.sideField').val());
+			if ($(sideField).length && $(pel).find('.element-fields input.sideField').length) {
+				$(sideField).val($(pel).find('.element-fields input.sideField').val());
 
 				if($(sideField).val() == '1') {
 					$(cel).find('.side.left').addClass('inactive');

@@ -6,8 +6,8 @@
 <title>OpenEyes - Grids</title>
 <meta name="viewport" content="width=device-width" />
 <?php
-$assets_root_path = '../';
-include '../fragments/assets.php';
+$assets_root_path = '';
+include 'fragments/assets.php';
 ?>
 <style type="text/css">
 .example .column {
@@ -24,7 +24,7 @@ include '../fragments/assets.php';
 
 		<header class="header row">
 			<div class="large-3 columns">
-				<a class="logo" href="../index.php">
+				<a class="logo" href="index.php">
 					OpenEyes
 				</a>
 			</div>
@@ -36,7 +36,7 @@ include '../fragments/assets.php';
 			<div class="row">
 
 				<aside class="large-2 column sidebar">
-					<div class="box generic">
+					<div class="box generic navigation">
 						<h2>Navigation</h2>
 						<ul class="side-nav">
 							<li><a href="#overview">Overview</a></li>

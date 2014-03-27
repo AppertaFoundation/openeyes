@@ -14,6 +14,15 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Injection warning alert box
+//
+// Markup:
+// <div class="alert-box injection-warning {$modifiers}">
+//     Alert! Some information the user needs to see.
+//     <a href="#" class="close">&times;</a>
+// </div>
+//
+// Styleguide 7.5
 .alert-box {
 	&.injection-warning {
 		border-color: red;

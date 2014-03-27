@@ -2004,11 +2004,11 @@ table.log-details .data {
   padding-bottom: 1px;
 }
 
-/* line 30, ../sass/openeyes/components/_header.scss */
+/* line 22, ../sass/openeyes/components/_header.scss */
 .header {
   min-height: 70px;
 }
-/* line 32, ../sass/openeyes/components/_header.scss */
+/* line 24, ../sass/openeyes/components/_header.scss */
 .header .logo {
   background: url('../img/_structure/openeyes.png?1395225715') no-repeat;
   background-size: 100%;
@@ -2017,7 +2017,7 @@ table.log-details .data {
   max-width: 210px;
 }
 @media print {
-  /* line 32, ../sass/openeyes/components/_header.scss */
+  /* line 24, ../sass/openeyes/components/_header.scss */
   .header .logo {
     -webkit-print-color-adjust: exact;
     background: url('../img/_structure/openeyes.png?1395225715') no-repeat !important;
@@ -2025,7 +2025,7 @@ table.log-details .data {
   }
 }
 @media screen {
-  /* line 45, ../sass/openeyes/components/_header.scss */
+  /* line 37, ../sass/openeyes/components/_header.scss */
   .header.stuck {
     background: #a0d7f8 url('../img/_structure/miniheader/bg_gradient.png?1395225715') bottom repeat-x;
     position: fixed;
@@ -2042,7 +2042,7 @@ table.log-details .data {
     -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
-  /* line 55, ../sass/openeyes/components/_header.scss */
+  /* line 47, ../sass/openeyes/components/_header.scss */
   .header.stuck .logo {
     height: 25px;
     margin: 8px 0 0 10px;
@@ -2050,32 +2050,32 @@ table.log-details .data {
   }
 }
 
-/* line 44, ../sass/openeyes/components/_footer.scss */
+/* line 19, ../sass/openeyes/components/_footer.scss */
 .footer {
   background: #b3b0ae url('../img/_structure/openeyes_footer.png?1395225715') no-repeat right top;
 }
-/* line 47, ../sass/openeyes/components/_footer.scss */
+/* line 22, ../sass/openeyes/components/_footer.scss */
 .footer .info {
   font-size: 0.625rem;
   line-height: 0.9375rem;
   padding-bottom: 3px;
   padding-top: 3px;
 }
-/* line 52, ../sass/openeyes/components/_footer.scss */
+/* line 27, ../sass/openeyes/components/_footer.scss */
 .footer .info .copyright {
   color: #666666;
 }
-/* line 56, ../sass/openeyes/components/_footer.scss */
+/* line 31, ../sass/openeyes/components/_footer.scss */
 .footer .help {
   font-size: 0.6875rem;
   text-align: left;
   text-align: center;
 }
-/* line 60, ../sass/openeyes/components/_footer.scss */
+/* line 35, ../sass/openeyes/components/_footer.scss */
 .footer .help.large-centered {
   float: none;
 }
-/* line 63, ../sass/openeyes/components/_footer.scss */
+/* line 38, ../sass/openeyes/components/_footer.scss */
 .footer .help .panel {
   border-style: solid;
   border-width: 1px;
@@ -2112,17 +2112,17 @@ table.log-details .data {
   line-height: 1.4;
 }
 @media print {
-  /* line 63, ../sass/openeyes/components/_footer.scss */
+  /* line 38, ../sass/openeyes/components/_footer.scss */
   .footer .help .panel {
     padding: 0;
   }
 }
-/* line 71, ../sass/openeyes/components/_footer.scss */
+/* line 46, ../sass/openeyes/components/_footer.scss */
 .footer .help .inline-list {
   display: inline-block;
   margin: 0;
 }
-/* line 74, ../sass/openeyes/components/_footer.scss */
+/* line 49, ../sass/openeyes/components/_footer.scss */
 .footer .help .inline-list li {
   border-right: 1px solid #aaaaaa;
   display: inline-block;
@@ -2132,14 +2132,14 @@ table.log-details .data {
   margin: 0 10px 1px 0;
   padding: 0 10px 0 0;
 }
-/* line 82, ../sass/openeyes/components/_footer.scss */
+/* line 57, ../sass/openeyes/components/_footer.scss */
 .footer .help .inline-list li:last-child {
   padding-right: 0;
   margin-right: 0;
   border: 0;
 }
 @media print {
-  /* line 74, ../sass/openeyes/components/_footer.scss */
+  /* line 49, ../sass/openeyes/components/_footer.scss */
   .footer .help .inline-list li {
     float: none;
   }
@@ -3002,7 +3002,7 @@ tfoot.pagination-container .pagination li {
   display: inline-block;
 }
 
-/* line 41, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 22, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box {
   border-style: solid;
   border-width: 1px;
@@ -3018,7 +3018,7 @@ tfoot.pagination-container .pagination li {
   -webkit-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 44, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 25, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box .close {
   font-size: 1.125rem;
   padding: 5px 4px 4px;
@@ -3035,56 +3035,56 @@ tfoot.pagination-container .pagination li {
 .alert-box .close:hover, .alert-box .close:focus {
   opacity: 0.5;
 }
-/* line 48, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 29, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box ul {
   line-height: 1.4;
   margin: 0;
 }
-/* line 52, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 33, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box li {
   margin-left: 20px;
 }
-/* line 55, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 36, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box p {
   margin-bottom: 12px;
 }
-/* line 58, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 39, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box.with-icon {
   background-position: left top;
   background-repeat: no-repeat;
   padding-left: 48px;
 }
 @media print {
-  /* line 58, ../sass/openeyes/components/_alert-boxes.scss */
+  /* line 39, ../sass/openeyes/components/_alert-boxes.scss */
   .alert-box.with-icon {
     -webkit-print-color-adjust: exact;
     background-position: left top !important;
     background-repeat: no-repeat !important;
   }
 }
-/* line 68, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 49, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box.bottom {
   margin-bottom: 0;
   margin-top: 16px;
 }
-/* line 72, ../sass/openeyes/components/_alert-boxes.scss */
+/* line 53, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box .spinner {
   float: left;
   margin-right: 10px;
 }
 
-/* line 17, ../sass/openeyes/components/alert-boxes/_alert.scss */
+/* line 28, ../sass/openeyes/components/alert-boxes/_alert.scss */
 .alert-box {
   border-color: #c9c9c9;
 }
-/* line 19, ../sass/openeyes/components/alert-boxes/_alert.scss */
+/* line 30, ../sass/openeyes/components/alert-boxes/_alert.scss */
 .alert-box.alert, .alert-box.warning {
   background-color: #ffe6b2;
   border-color: #ffe9ba;
   color: black;
   border-color: #fc621f;
 }
-/* line 22, ../sass/openeyes/components/alert-boxes/_alert.scss */
+/* line 33, ../sass/openeyes/components/alert-boxes/_alert.scss */
 .alert-box.alert.with-icon, .with-icon.alert-box.warning {
   background-image: url('../img/_elements/icons/box/warning.png?1395225715');
   min-height: 36px;
@@ -3092,61 +3092,61 @@ tfoot.pagination-container .pagination li {
   padding-top: 11px;
 }
 @media print {
-  /* line 22, ../sass/openeyes/components/alert-boxes/_alert.scss */
+  /* line 33, ../sass/openeyes/components/alert-boxes/_alert.scss */
   .alert-box.alert.with-icon, .with-icon.alert-box.warning {
     background-color: #ffe6b2 !important;
     background-image: url('../img/_elements/icons/box/warning.png?1395225715') !important;
   }
 }
 
-/* line 18, ../sass/openeyes/components/alert-boxes/_issue.scss */
+/* line 29, ../sass/openeyes/components/alert-boxes/_issue.scss */
 .alert-box.issue {
   background-color: #fdf2e5;
   border-color: #fdf3e8;
   color: black;
   border-color: #f9dab6;
 }
-/* line 21, ../sass/openeyes/components/alert-boxes/_issue.scss */
+/* line 32, ../sass/openeyes/components/alert-boxes/_issue.scss */
 .alert-box.issue.with-icon {
   background-image: url('../img/_elements/icons/box/issue.png?1395225715');
   min-height: 36px;
 }
 @media print {
-  /* line 21, ../sass/openeyes/components/alert-boxes/_issue.scss */
+  /* line 32, ../sass/openeyes/components/alert-boxes/_issue.scss */
   .alert-box.issue.with-icon {
     background-color: #fdf2e5 !important;
     background-image: url('../img/_elements/icons/box/issue.png?1395225715') !important;
   }
 }
 
-/* line 18, ../sass/openeyes/components/alert-boxes/_patient.scss */
+/* line 29, ../sass/openeyes/components/alert-boxes/_patient.scss */
 .alert-box.patient {
   background-color: #eb5911;
   border: 2px solid #fff;
   color: #fff;
 }
-/* line 22, ../sass/openeyes/components/alert-boxes/_patient.scss */
+/* line 33, ../sass/openeyes/components/alert-boxes/_patient.scss */
 .alert-box.patient.with-icon {
   background-image: url('../img/_elements/icons/box/patient-warning.png?1395225715');
   padding-bottom: 11px;
   padding-top: 11px;
 }
 @media print {
-  /* line 22, ../sass/openeyes/components/alert-boxes/_patient.scss */
+  /* line 33, ../sass/openeyes/components/alert-boxes/_patient.scss */
   .alert-box.patient.with-icon {
     background-color: #eb5911 !important;
     background-image: url('../img/_elements/icons/box/patient-warning.png?1395225715') !important;
   }
 }
 
-/* line 18, ../sass/openeyes/components/alert-boxes/_success.scss */
+/* line 29, ../sass/openeyes/components/alert-boxes/_success.scss */
 .alert-box.success, .alert-box.info {
   background-color: #e0f2db;
   border-color: #e3f3df;
   color: black;
   border-color: #99cc99;
 }
-/* line 21, ../sass/openeyes/components/alert-boxes/_success.scss */
+/* line 32, ../sass/openeyes/components/alert-boxes/_success.scss */
 .alert-box.success.with-icon, .alert-box.info.with-icon {
   background-image: url('../img/_elements/icons/box/info.png?1395225715');
   min-height: 36px;
@@ -3154,14 +3154,14 @@ tfoot.pagination-container .pagination li {
   padding-top: 11px;
 }
 @media print {
-  /* line 21, ../sass/openeyes/components/alert-boxes/_success.scss */
+  /* line 32, ../sass/openeyes/components/alert-boxes/_success.scss */
   .alert-box.success.with-icon, .alert-box.info.with-icon {
     background-color: #e0f2db !important;
     background-image: url('../img/_elements/icons/box/info.png?1395225715') !important;
   }
 }
 
-/* line 18, ../sass/openeyes/components/alert-boxes/_watermark.scss */
+/* line 31, ../sass/openeyes/components/alert-boxes/_watermark.scss */
 .alert-box.watermark {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -3178,17 +3178,17 @@ tfoot.pagination-container .pagination li {
   min-width: 1230px;
 }
 @media print {
-  /* line 18, ../sass/openeyes/components/alert-boxes/_watermark.scss */
+  /* line 31, ../sass/openeyes/components/alert-boxes/_watermark.scss */
   .alert-box.watermark {
     min-width: 0;
   }
 }
-/* line 31, ../sass/openeyes/components/alert-boxes/_watermark.scss */
+/* line 44, ../sass/openeyes/components/alert-boxes/_watermark.scss */
 .alert-box.watermark.admin {
   background: #DAA520;
 }
 @media screen {
-  /* line 34, ../sass/openeyes/components/alert-boxes/_watermark.scss */
+  /* line 47, ../sass/openeyes/components/alert-boxes/_watermark.scss */
   .alert-box.watermark.admin.stuck {
     bottom: 0;
     margin: 0;
@@ -3197,18 +3197,18 @@ tfoot.pagination-container .pagination li {
     z-index: 100;
   }
 }
-/* line 43, ../sass/openeyes/components/alert-boxes/_watermark.scss */
+/* line 56, ../sass/openeyes/components/alert-boxes/_watermark.scss */
 .alert-box.watermark.description {
   background: #ffc0cb;
   color: #666;
 }
-/* line 46, ../sass/openeyes/components/alert-boxes/_watermark.scss */
+/* line 59, ../sass/openeyes/components/alert-boxes/_watermark.scss */
 .alert-box.watermark.description p {
   font-size: 0.75rem;
   margin: 0;
 }
 
-/* line 18, ../sass/openeyes/components/alert-boxes/_injection-warning.scss */
+/* line 27, ../sass/openeyes/components/alert-boxes/_injection-warning.scss */
 .alert-box.injection-warning {
   border-color: red;
   border-width: 2px;
@@ -3659,7 +3659,7 @@ tfoot.pagination-container .pagination li {
   background-position: 0 -14px;
 }
 
-/* line 22, ../sass/openeyes/components/_panels.scss */
+/* line 19, ../sass/openeyes/components/_panels.scss */
 .panel {
   border-style: solid;
   border-width: 1px;
@@ -3693,18 +3693,18 @@ tfoot.pagination-container .pagination li {
 .panel h1.subheader, .panel h2.subheader, .panel h3.subheader, .panel h4.subheader, .panel h5.subheader, .panel h6.subheader {
   line-height: 1.4;
 }
-/* line 27, ../sass/openeyes/components/_panels.scss */
+/* line 24, ../sass/openeyes/components/_panels.scss */
 .panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 {
   margin-bottom: 8px;
 }
-/* line 33, ../sass/openeyes/components/_panels.scss */
+/* line 30, ../sass/openeyes/components/_panels.scss */
 .panel .field-row:last-child, .panel .eyedraw-row:last-child, .panel .data-row:last-child, .panel .field-row:only-child, .panel .eyedraw-row:only-child, .panel .data-row:only-child,
 .panel .data-row:last-child,
 .panel .data-row:only-child {
   padding: 0;
 }
 @media print {
-  /* line 38, ../sass/openeyes/components/_panels.scss */
+  /* line 35, ../sass/openeyes/components/_panels.scss */
   .content .panel {
     border: 0 !important;
     padding: 0 !important;
@@ -4150,36 +4150,6 @@ tfoot.pagination-container .pagination li {
   color: #998a30;
   font-size: 0.75rem;
   font-style: italic;
-}
-
-/* line 22, ../sass/openeyes/components/panels/_session-options.scss */
-.panel.session-options {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  -ms-border-radius: 0;
-  -o-border-radius: 0;
-  border-radius: 0;
-  background: #545065;
-  border: 2px solid #602aba;
-}
-/* line 26, ../sass/openeyes/components/panels/_session-options.scss */
-.theatres-list .panel.session-options {
-  margin-bottom: 0;
-  margin-left: -0.75rem;
-}
-/* line 30, ../sass/openeyes/components/panels/_session-options.scss */
-.panel.session-options label {
-  color: #ffffde;
-  font-size: 0.6875rem;
-  margin-bottom: 7px;
-}
-/* line 34, ../sass/openeyes/components/panels/_session-options.scss */
-.panel.session-options label:last-child {
-  margin: 0;
-}
-/* line 37, ../sass/openeyes/components/panels/_session-options.scss */
-.panel.session-options label input {
-  margin-right: 3px;
 }
 
 /* line 29, ../sass/openeyes/components/panels/_specialty.scss */
@@ -5380,7 +5350,7 @@ tfoot.pagination-container .pagination li {
   background-position: 0 -22px;
 }
 
-/* line 17, ../sass/openeyes/components/_tooltips.scss */
+/* line 33, ../sass/openeyes/components/_tooltips.scss */
 .tooltip, .quicklook {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -5396,8 +5366,9 @@ tfoot.pagination-container .pagination li {
   font-style: italic;
   padding: 3px 6px 3px 3px;
   position: absolute;
+  border: 1px solid #444;
 }
-/* line 26, ../sass/openeyes/components/_tooltips.scss */
+/* line 43, ../sass/openeyes/components/_tooltips.scss */
 .tooltip.alerts, .alerts.quicklook {
   border: 2px solid #ee9;
   background: #ffe;
