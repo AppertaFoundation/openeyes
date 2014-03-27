@@ -359,4 +359,12 @@ class BaseEventTypeElement extends BaseElement
 	{
 		return str_replace("\n","<br/>",$this->$field);
 	}
+
+	/**
+	 * stub method to allow elements to carry out actions related to being a part of a soft deleted event
+	 */
+	public function softDelete()
+	{
+
+	}
 }
