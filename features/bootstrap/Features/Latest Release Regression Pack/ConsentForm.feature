@@ -160,7 +160,7 @@ Feature: Create New Consent Form
     And I select a Diagnosis of "24010005"
     Then I select Operation Eyes of "Right"
     And I select a Procedure of "79"
-      # Right Extracapsular cataract extraction
+          # Right Extracapsular cataract extraction
 
     Then I select Yes to Consultant required
 

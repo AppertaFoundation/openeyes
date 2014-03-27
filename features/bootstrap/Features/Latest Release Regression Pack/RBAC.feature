@@ -1,6 +1,38 @@
 @rbac @regression
 Feature: Open Eyes Login RBAC user levels
 
+  Scenario: PREPERATION LASER EVENT: Login and create a Phasing Event
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
+
+    Then I search for hospital number "1009465 "
+
+    Then I select the Latest Event
+
+    Then I expand the Cataract sidebar
+    And I add a New Event "Phasing"
+
+    Then I choose a right eye Intraocular Pressure Instrument  of "1"
+
+    And I choose right eye Dilation of Yes
+
+    Then I choose a right eye Intraocular Pressure Reading Time of "14:00"
+    Then I choose a right eye Intraocular Pressure Reading of "5"
+    And I add right eye comments of "Right eye comments here"
+
+    Then I choose a left eye Intraocular Pressure Instrument  of "5"
+
+    And I choose left eye Dilation of Yes
+
+    Then I choose a left eye Intraocular Pressure Reading Time of "14:42"
+    Then I choose a left eye Intraocular Pressure Reading of "7"
+    And I add left eye comments of "Left eye comments here"
+
+    Then I Save the Phasing Event and confirm it has been created successfully
+
   Scenario: Route 0: Level 0 RBAC access: User with no login rights
 
     Given I am on the OpenEyes "master" homepage
@@ -36,7 +68,8 @@ Feature: Open Eyes Login RBAC user levels
 
     And a check to see printing has been disabled
 
-  Scenario: Route 3: Level 3 RBAC access: Login access,view only rights and Printing allowed??
+
+  Scenario: Route 3: Level 3 RBAC access: Login access,view only rights and Printing Events
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "level3" and "password"
@@ -52,43 +85,14 @@ Feature: Open Eyes Login RBAC user levels
 
     Then additional checks are made for correct level two access
 
-#    FIXME OE-4153
-    #And a check to see printing has been enabled
-
-  Scenario: Route 4(Prep): Create an ASA event to ensure Route 4 latest event is not Prescription
-
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "3"
-
-    Then I search for patient name last name "Coffin," and first name "Violet"
-
-    Then I select the Latest Event
-
-    Then I expand the Glaucoma sidebar
-    And I add a New Event "Satisfaction"
-
-    Then I select an Anaesthetist "no"
-    And I select Satisfaction levels of Pain "2" Nausea "3"
-
-    And I tick the Vomited checkbox
-
-    Then I select Vital Signs of Respiratory Rate "3" Oxygen Saturation "3" Systolic Blood Pressure "4"
-    And I select Vital Signs of Body Temperature "5" and Heart Rate "2" Conscious Level AVPU "2"
-
-    Then I enter Comments "This test is for Site 2 Kings, Firm 3 Anderson Glaucoma"
-
-    And I select the Yes option for Ready to Discharge
-
-    Then I Save the Event and confirm it has been created successfully
+    And a check to see printing has been enabled
 
   Scenario: Route 4: Level 4 RBAC access: Login access, edit rights, Prescription event blocked
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "level4" and "password"
     And I select Site "1"
-    Then I select a firm of "3"
+    Then I select a firm of "1"
     Then I search for hospital number "1009465"
 
     Then a check is made to confirm that Patient details information is displayed
@@ -96,9 +100,8 @@ Feature: Open Eyes Login RBAC user levels
     Then I select the Latest Event
 
     And I edit the Last Event
-    #level 4 access check using previously created ASA event form Route 4a
 
-    Then I expand the Glaucoma sidebar
+    Then I expand the Cataract sidebar
 
     Then a check is made to confirm the user has correct level four access
     #level 4 Prescription event disabled

@@ -35,7 +35,7 @@ class ConsentForm extends OpenEyesPage
         'benefitValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Benefits and risks: Benefits cannot be blank')]"),
         'riskValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Benefits and risks: Risks cannot be blank')]"),
         'procedureValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Other: At least one procedure must be entered')]"),
-        'existingOperationBooking' => array('xpath' => "//*[@class='large-6 column end']//*[@value='booking152']")
+        'existingOperationBooking' => array('xpath' => "//*[@class='highlight booking']//*[contains(text(),'Extracapsular cataract extraction')]")
 	);
 
 	public function unbookedProcedure()
@@ -45,8 +45,8 @@ class ConsentForm extends OpenEyesPage
 
     public function existingOperation ($value)
     {
-        $this->getElement('existingOperationBooking')->check();
-        $this->getSession()->wait(5000);
+        $this->getElement('existingOperationBooking')->click();
+//        $this->getSession()->wait(5000);
     }
 
 	public function createConsentForm()
