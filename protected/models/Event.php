@@ -83,14 +83,6 @@ class Event extends BaseActiveRecordVersioned
 		);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function getEditable()
-	{
-		return $this->canUpdate();
-	}
-
 	public function moduleAllowsEditing()
 	{
 		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
@@ -244,76 +236,6 @@ class Event extends BaseActiveRecordVersioned
 		foreach (EventIssue::model()->findAll('event_id=?',array($this->id)) as $event_issue) {
 			$event_issue->delete();
 		}
-	}
-
-	/**
-	 * Can this event be updated (edited)
-	 * @return bool
-	 */
-	public function canUpdate()
-	{
-		if (!$this->episode->editable) {
-			return false;
-		}
-
-		if ($this->episode->patient->date_of_death) {
-			return false;
-		}
-
-		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
-			return true;
-		}
-
-		if ($this->delete_pending) {
-			return false;
-		}
-
-		if (Yii::app()->params['event_lock_disable']) {
-			return true;
-		}
-
-		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
-			return $module_allows_editing;
-		}
-
-		return (date('Ymd') < date('Ymd',strtotime($this->created_date) + (86400 * (Yii::app()->params['event_lock_days'] + 1))));
-	}
-
-	/**
-	 * Can this event be deleted
-	 * @return bool
-	 */
-	public function canDelete()
-	{
-		if (!$this->episode->editable) {
-			return false;
-		}
-
-		if ($this->episode->patient->date_of_death) {
-			return false;
-		}
-
-		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
-			return true;
-		}
-
-		if (Yii::app()->session['user']->id != $this->created_user_id) {
-			return false;
-		}
-
-		if ($this->delete_pending) {
-			return false;
-		}
-
-		if (Yii::app()->params['event_lock_disable']) {
-			return true;
-		}
-
-		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
-			return $module_allows_editing;
-		}
-
-		return (date('Ymd') < date('Ymd',strtotime($this->created_date) + (86400 * (Yii::app()->params['event_lock_days'] + 1))));
 	}
 
 	public function showDeleteIcon()

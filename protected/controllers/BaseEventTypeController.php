@@ -59,6 +59,7 @@ class BaseEventTypeController extends BaseModuleController
 	const ACTION_TYPE_PRINT = 'Print';
 	const ACTION_TYPE_EDIT = 'Edit';
 	const ACTION_TYPE_DELETE = 'Delete';
+	const ACTION_TYPE_REQUESTDELETE = 'RequestDelete';
 	const ACTION_TYPE_FORM = 'Form';	// AJAX actions that are used during create and update but don't actually modify data themselves
 
 	static private $base_action_types = array(
@@ -69,7 +70,7 @@ class BaseEventTypeController extends BaseModuleController
 		'print' => self::ACTION_TYPE_PRINT,
 		'update' => self::ACTION_TYPE_EDIT,
 		'delete' => self::ACTION_TYPE_DELETE,
-		'requestDeletion' => self::ACTION_TYPE_EDIT
+		'requestDeletion' => self::ACTION_TYPE_REQUESTDELETE,
 	);
 
 	/**
@@ -641,6 +642,14 @@ class BaseEventTypeController extends BaseModuleController
 	/**
 	 * @return boolean
 	 */
+	public function checkRequestDeleteAccess()
+	{
+		return $this->checkAccess('OprnRequestEventDeletion', $this->firm, $this->event);
+	}
+
+	/**
+	 * @return boolean
+	 */
 	public function checkFormAccess()
 	{
 		return $this->checkAccess('OprnViewClinical');
@@ -736,11 +745,7 @@ class BaseEventTypeController extends BaseModuleController
 		$this->setOpenElementsFromCurrentEvent('view');
 		// Decide whether to display the 'edit' button in the template
 		if ($this->editable) {
-			$this->editable = $this->checkEditAccess($this->event);
-		}
-		// Allow elements to override the editable status
-		if ($this->editable && !$this->canUpdate()) {
-			$this->editable = false;
+			$this->editable = $this->checkEditAccess();
 		}
 
 		$this->logActivity('viewed event');
@@ -760,24 +765,20 @@ class BaseEventTypeController extends BaseModuleController
 			);
 		}
 
-		if (!$this->event->delete_pending) {
-			if ($this->showDeleteIcon()) {
-				if ($this->canDelete()) {
-					$this->event_actions = array(
-						EventAction::link('Delete',
-							Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-							array('level' => 'delete')
-						)
-					);
-				} else {
-					$this->event_actions = array(
-						EventAction::link('Delete',
-							Yii::app()->createUrl($this->event->eventType->class_name.'/default/requestDeletion/'.$this->event->id),
-							array('level' => 'delete')
-						)
-					);
-				}
-			}
+		if ($this->checkDeleteAccess()) {
+			$this->event_actions = array(
+				EventAction::link('Delete',
+					Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+					array('level' => 'delete')
+				)
+			);
+		} elseif ($this->checkRequestDeleteAccess()) {
+			$this->event_actions = array(
+				EventAction::link('Delete',
+					Yii::app()->createUrl($this->event->eventType->class_name.'/default/requestDeletion/'.$this->event->id),
+					array('level' => 'delete')
+				)
+			);
 		}
 
 		$viewData = array_merge(array(
@@ -802,10 +803,6 @@ class BaseEventTypeController extends BaseModuleController
 			// somethings been submitted
 			if (isset($_POST['cancel'])) {
 				// Cancel button pressed, so just bounce to view
-				$this->redirect(array('default/view/'.$this->event->id));
-			}
-
-			if (!$this->canUpdate()) {
 				$this->redirect(array('default/view/'.$this->event->id));
 			}
 
@@ -1958,61 +1955,6 @@ class BaseEventTypeController extends BaseModuleController
 		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
 
 		parent::processJsVars();
-	}
-
-	public function canUpdate()
-	{
-		if (!$this->event) {
-			return false;
-		}
-
-		if (!$this->event->canUpdate()) {
-			return false;
-		}
-
-		if (!$this->checkEditAccess($this->event) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
-			return false;
-		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
-			return false;
-		}
-
-		return true;
-	}
-
-	public function canDelete()
-	{
-		if (!$this->event) {
-			return false;
-		}
-
-		if (!$this->event->canDelete()) {
-			return false;
-		}
-
-		if (!$this->checkDeleteAccess() || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
-			return false;
-		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
-			return false;
-		}
-
-		return true;
-	}
-
-	public function showDeleteIcon()
-	{
-		if (!$this->event) {
-			return false;
-		}
-
-		if ($this->event->showDeleteIcon() === false) {
-			return false;
-		}
-
-		if (!$this->checkEditAccess() || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
