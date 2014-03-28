@@ -1,7 +1,7 @@
 @rbac @regression
 Feature: Open Eyes Login RBAC user levels
 
-  Scenario: PREPERATION LASER EVENT: Login and create a Phasing Event
+  Scenario: PREPARATION LASER EVENT: Login and create a Phasing Event
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -87,21 +87,52 @@ Feature: Open Eyes Login RBAC user levels
 
     And a check to see printing has been enabled
 
+  Scenario: Route 4 (Prep): Login and create a new Prescription
+  Site 1:Queens
+  Firm 3:Anderson Glaucoma
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Prescription"
+
+    Then I select a Common Drug "75"
+    And I select a Standard Set of "10"
+
+    Then I enter a Dose of "2" drops
+    And I enter a route of "1"
+
+    And I enter a frequency of "4"
+    Then I enter a duration of "1"
+    Then I enter a eyes option "1"
+
+    Then I enter a item two eyes option of "1"
+    Then I enter a item three eyes option of "1"
+
+    And I add Prescription comments of "TEST COMMENTS"
+
+    Then I Save the Prescription Draft and confirm it has been created successfully
+
   Scenario: Route 4: Level 4 RBAC access: Login access, edit rights, Prescription event blocked
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "level4" and "password"
     And I select Site "1"
-    Then I select a firm of "1"
+    Then I select a firm of "3"
     Then I search for hospital number "1009465"
 
     Then a check is made to confirm that Patient details information is displayed
 
     Then I select the Latest Event
 
-    And I edit the Last Event
-
-    Then I expand the Cataract sidebar
+    Then I expand the Glaucoma sidebar
 
     Then a check is made to confirm the user has correct level four access
     #level 4 Prescription event disabled
@@ -117,27 +148,7 @@ Feature: Open Eyes Login RBAC user levels
 #    Then a check is made to confirm that Patient details information is displayed
 #
 #    Then I select the Latest Event
-#
-#    And I edit the Last Event
-#    #level 4 access check
-#
-#    Then I expand the Glaucoma sidebar
-#
-#    And I add a New Event "Prescription"
-#
-#    Then I select a Common Drug "75"
-#    And I select a Standard Set of "10"
-#
-#    Then I enter a Dose of "2" drops
-#    And I enter a route of "1"
-#
-#    And I enter a frequency of "4"
-#    Then I enter a duration of "1"
-#    Then I enter a eyes option "1"
-#
-#    And I add Prescription comments of "TEST COMMENTS"
-#
-#    Then I Save the Prescription Draft and confirm it has been created successfully
+
 
 #  Scenario: Route 6: Level 6 RBAC access: TBC
 #
