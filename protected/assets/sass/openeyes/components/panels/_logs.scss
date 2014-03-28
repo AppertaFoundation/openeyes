@@ -14,6 +14,19 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Logs panel
+//
+// Markup:
+// <div class="panel logs">
+// 	<table class="blank plain log-details">
+// 		<tr>
+// 			<th scope="col">IP address:</th>
+// 			<td>10.0.2.2</td>
+// 		</tr>
+// 	</table>
+// </div>
+//
+// Styleguide 13.13
 .panel {
 	&.logs {
 		background: #fdfdfd;

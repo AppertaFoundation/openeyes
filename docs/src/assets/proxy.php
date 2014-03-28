@@ -2,8 +2,13 @@
 
 /*
  * This proxy exists to allow us to reference protected assets without
- * publishing them through YII.
+ * publishing them through YII. This proxy should only be used for development
+ * purposes, and will only run if on localhost.
  */
+
+if ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1') {
+	exit(1);
+}
 
 $path = ltrim($_SERVER['PATH_INFO'], '/');
 $ext = end(explode('.', $path));

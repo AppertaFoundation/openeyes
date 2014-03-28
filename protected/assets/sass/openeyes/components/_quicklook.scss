@@ -14,6 +14,28 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Quicklook
+//
+// A quicklook is essentially a tooltip that is styled in such a way that it can
+// support additional information.
+//
+// Styleguide 10
+
+// Default quicklook
+//
+// Markup:
+// <div class="quicklook {$modifiers}">
+// 	<div class="event-name">Operation booking</div>
+// 	<div class="event-info">Insertion of orbital implant</div>
+// 	<div class="event-issue">Operation requires scheduling</div>
+// 	<ul>
+// 		<li>List item</li>
+// 	</ul>
+// </div>
+//
+// .warning            - Warning state
+//
+// Styleguide 10.1
 .quicklook {
 	@extend .tooltip;
 	background: #fff;

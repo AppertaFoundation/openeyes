@@ -15,7 +15,20 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 // Panels
+//
+// Panels are used to outline sections of the page.
+//
+// Styleguide 13
 
+// Default panel
+//
+// Markup:
+// <div class="panel">
+// 	<h3>Panel heading</h3>
+// 	<p>Some content.</p>
+// </div>
+//
+// Styleguide 13.1
 .panel {
 	@include panel;
 	@include radius;

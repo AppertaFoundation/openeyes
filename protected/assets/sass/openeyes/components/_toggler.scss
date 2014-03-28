@@ -14,6 +14,25 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+
+// Toggler
+//
+// A styled anchor with an icon to show the visibility state of a section of a page.
+//
+// Markup:
+// <a href="#" class="toggle-trigger {$modifiers}">
+// 	<span class="icon-showhide">
+// 		Show/hide this section
+// 	</span>
+// </a>
+//
+// .toggle-hide        - Hide
+// .toggle-hide:hover  - Hide hover
+// .toggle-show        - Show
+// .toggle-show:hover  - Show hover
+//
+// Styleguide 12
+
 .toggle-trigger {
 	display: block;
 	height: 20px;

@@ -16,17 +16,8 @@
 
 // Boxes
 //
-// A box is simply a container that groups large sections of the page, for example
-// am event detail view.
-//
-// Markup:
-// <div class="box {$modifiers}">
-//     <p>Here is some content within a box.</p>
-// </div>
-//
-// .content             - Content box
-//
-// Styleguide 13.1
+// A box is simply a container with some styling that groups large sections of the page, for example
+// a event detail view.
 
 .box {
 	@include border-radius($oe-box-border-radius);

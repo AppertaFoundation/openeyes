@@ -16,7 +16,11 @@
 
 // Tabs
 //
-// Tabs are dependant on inline-lists.
+// Tabs are used to separate content into separate panes.
+//
+// Styleguide 6
+
+// Default tabs
 //
 // Markup:
 // <ul class="inline-list">
@@ -24,9 +28,8 @@
 //     <li><a href="#">Tab 2</a></li>
 // </ul>
 //
-// Styleguide 6
+// Styleguide 6.1
 
-// Default tabs styles.
 .tabs {
 	margin: 0;
 }

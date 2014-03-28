@@ -14,17 +14,25 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Specialy panel
+// Specialty panel
 //
-// This panel wraps the episdes and events when viewing a module.
+// This panel wraps the episodes and events list in the sidebar.
 //
 // Markup:
 // <div class="panel specialty">
-//     <h3 class="specialty-title">Ophthalmology</h3>
+// 	<h3 class="specialty-title">Ophthalmology</h3>
+// 	<section class="panel episode">
+// 		<div class="episode-date">12 Dec 2011</div>
+// 		<h4 class="episode-title">
+// 			<a href="#">
+// 				Adnexal
+// 			</a>
+// 		</h4>
+// 		<!-- Events here -->
+// 	</section>
 // </div>
 //
-// Styleguide 16.8
-
+// Styleguide 13.8
 .panel {
 	&.specialty {
 		@include border-top-left-radius(0);

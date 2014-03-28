@@ -17,15 +17,7 @@
 // Side navigation
 //
 // A navigation component for displaying page-specifc navigation links in a sidebar.
-//
-// Markup:
-// <ul class="side-nav">
-//     <li><a href="#">Link 1</a></li>
-//     <li><a href="#">Link 2</a></li>
-//     <li><a href="#">Link 3</a></li>
-// </ul>
-//
-// Styleguide 11.1
+
 .side-nav {
 	@include side-nav;
 	padding-top: 0;
@@ -35,16 +27,6 @@
 //
 // This panel contains the logged-in user information as well as the user-specific
 // application navigation.
-//
-// Markup:
-// <ul class="inline-list navigation-user">
-//     <li class="selected"><a href="#">Home</a></li>
-//     <li><a href="#">Theatre Diaries</a></li>
-//     <li><a href="#">Partial bookings waiting list</a></li>
-//     <li><a href="#">Logout</a></li>
-// </ul>
-//
-// Styleguide 11.2
 
 .navigation {
 	&.user {

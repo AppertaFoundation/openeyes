@@ -15,15 +15,6 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 // Common helper classes
-//
-// Common helper classes
-//
-// Markup:
-// <div class="{$modifiers}">Lorem ipsim...</div>
-//
-// .clearfix             - Clear any floated child elements. This class must be added to a container element.
-//
-// Styleguide 21.1
 
 .clearfix {
 	@extend %clearfix;
