@@ -18,20 +18,23 @@
  */
 
 /**
- * This is the model class for table "referral".
+ * This is the model class for table "RTT".
  *
- * The followings are the available columns in table 'referral':
+ * The followings are the available columns in table 'rtt':
  * @property integer $id
- * @property string $refno
- * @property integer $patient_id
- * @property integer $referral_type_id
- * @property date $received_date
- * @property date $closed_date
- * @property string $referrer
- * @property integer $firm_id
- * @property integer $service_subspecialty_assignment_id // MW: this is here because sometimes the referrer is a pas_code which doesn't map to a firm with the correct subspecialty
+ * @property string $clock_start
+ * @property string $clock_end
+ * @property string $breach
+ * @property integer $referral_id
+ * @property boolean $active
+ * @property string comments
+ * @property integer last_modified_user_id
+ * @property string last_modified_date
+ * @property integer created_user_id
+ * @property string created_date
  */
-class Referral extends BaseActiveRecord
+
+class RTT extends BaseActiveRecord
 {
 
 	public $use_pas = TRUE;
@@ -62,7 +65,7 @@ class Referral extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'referral';
+		return 'rtt';
 	}
 
 	/**
@@ -84,10 +87,7 @@ class Referral extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-			'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
-			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
-			'reftype' => array(self::BELONGS_TO, 'ReferralType', 'referral_type_id')
+				'referral' => array(self::BELONGS_TO, 'Referral', 'referral_id'),
 		);
 	}
 
@@ -97,7 +97,7 @@ class Referral extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
+				'id' => 'ID',
 		);
 	}
 
@@ -115,7 +115,7 @@ class Referral extends BaseActiveRecord
 		$criteria->compare('id',$this->id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
 
@@ -130,31 +130,4 @@ class Referral extends BaseActiveRecord
 		return $model;
 	}
 
-	/**
-	 * Returns string description of the referral
-	 *
-	 * @return string
-	 */
-	public function getDescription()
-	{
-		$desc = array();
-		$desc[] = $this->NHSDate('received_date');
-		if ($this->clock_start && $this->NHSDATE('clock_start') != $this->NHSDate('received_date')) {
-			$desc[] = "(" . $this->NHSDATE('clock_start') . ")";
-		}
-		if ($this->firm) {
-			$desc[] = $this->firm->getNameAndSubspecialty();
-		}
-		elseif ($ssa = $this->serviceSubspecialtyAssignment) {
-			$desc[] = $ssa->subspecialty->name;
-		}
-		$desc[] = $this->reftype->getDescription();
-		$desc[] = "(" . $this->refno . ")";
-		if ($this->closed_date) {
-			$desc[] = "(closed - " . $this->NHSDate('closed_date') . ")";
-		}
-
-		return implode(' ', $desc);
-
-	}
 }

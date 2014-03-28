@@ -7,7 +7,6 @@ class m140317_171751_update_referral_model extends CDbMigration
 		$this->dropForeignKey('referral_gp_id_fk', 'referral');
 		$this->dropColumn('referral','gp_id');
 		$this->addColumn('referral','clock_start', 'datetime');
-
 	}
 
 	public function down()
