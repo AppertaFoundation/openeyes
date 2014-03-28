@@ -87,7 +87,8 @@ class Referral extends BaseActiveRecord
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 			'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
-			'reftype' => array(self::BELONGS_TO, 'ReferralType', 'referral_type_id')
+			'reftype' => array(self::BELONGS_TO, 'ReferralType', 'referral_type_id'),
+			'rtts' => array(self::HAS_MANY, 'RTT', 'referral_id')
 		);
 	}
 
@@ -156,5 +157,21 @@ class Referral extends BaseActiveRecord
 
 		return implode(' ', $desc);
 
+	}
+
+	/**
+	 * Get the active RTTs attached to this referral
+	 *
+	 * @return RTT[]
+	 */
+	public function getActiveRTT()
+	{
+		$res = array();
+		foreach ($this->rtts as $rtt) {
+			if ($rtt->active) {
+				$res[] = $rtt;
+			}
+		}
+		return $res;
 	}
 }
