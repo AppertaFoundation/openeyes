@@ -20,74 +20,11 @@
 class OEMigrateCommand extends MigrateCommand
 {
 	public $testdata = false;
-	public $args = null;
 
-	public function actionUp($args, $testdata = false)
+	protected function instantiateMigration($class)
 	{
-		if($testdata)
-			$this->testdata = true;
-
-		parent::actionUp($args);
-	}
-
-	protected function migrateUp($class)
-	{
-		if($class===self::BASE_MIGRATION)
-			return;
-
-		echo "*** applying $class\n";
-		$start=microtime(true);
-		$migration=$this->instantiateMigration($class);
-
-		if($this->testdata && $migration instanceof OEMigration){
-			$migration->setTestData(true);
-			echo "\nRunning in testdata mode";
-		}
-
-		if($migration->up()!==false)
-		{
-			$this->getDbConnection()->createCommand()->insert($this->migrationTable, array(
-					'version'=>$class,
-					'apply_time'=>time(),
-			));
-			$time=microtime(true)-$start;
-			echo "*** applied $class (time: ".sprintf("%.3f",$time)."s)\n\n";
-		}
-		else
-		{
-			$time=microtime(true)-$start;
-			echo "*** failed to apply $class (time: ".sprintf("%.3f",$time)."s)\n\n";
-			return false;
-		}
-	}
-
-	/**
-	 * @description - Helper method to verify if a cli argument exists and, if it has a value assigned, return it
-	 * @param $name - string
-	 * @param null $argsInj - (array if provided only for injection purposes)
-	 * @return bool|string
-	 */
-	public function getCliArg($name, $argsInj = null){
-		if(!$argsInj){
-			$args = $this->args;
-		}
-		else{
-			$args = $argsInj;
-		}
-		if(!$name || !is_string($name)){
-			return false;
-		}
-
-		foreach($args as $arg){
-			if(strpos($name , $arg) == 0){
-				if(strlen($name) == strlen($arg)){
-					return true;
-				}
-				else if( $equalPos = strpos($arg, '=')){
-					return substr($arg , $equalPos+1);
-				}
-			}
-		}
-		return false;
+		$migration = parent::instantiateMigration($class);
+		$migration->setTestData((bool) $this->testdata);
+		return $migration;
 	}
 }
