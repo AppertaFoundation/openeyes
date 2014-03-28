@@ -32,7 +32,7 @@ do
             git fetch origin
         fi
         cd $modules_path/$module
-        echo "Switching module branch to $current_branch..."
+        echo "Switching module $module branch to $current_branch..."
         git checkout $current_branch
         git reset --hard HEAD
         git clean -xdf

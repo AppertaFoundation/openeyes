@@ -1,6 +1,8 @@
 <?php
 use Behat\Behat\Exception\BehaviorException;
 class ConsentForm extends OpenEyesPage
+
+
 {
 	protected $path = "OphTrConsent/default/view/{eventId}}";
 
@@ -32,14 +34,20 @@ class ConsentForm extends OpenEyesPage
         'additionalProcedure' => array('xpath' => "//*[@id='select_procedure_id_additional']"),
         'benefitValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Benefits and risks: Benefits cannot be blank')]"),
         'riskValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Benefits and risks: Risks cannot be blank')]"),
-        'procedureValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Other: At least one procedure must be entered')]")
+        'procedureValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Other: At least one procedure must be entered')]"),
+        'existingOperationBooking' => array('xpath' => "//*[@class='highlight booking']//*[contains(text(),'Extracapsular cataract extraction')]")
 	);
-
 
 	public function unbookedProcedure()
 	{
 		$this->getElement('unbookedProcedure')->check();
 	}
+
+    public function existingOperation ($value)
+    {
+        $this->getElement('existingOperationBooking')->click();
+//        $this->getSession()->wait(5000);
+    }
 
 	public function createConsentForm()
 	{
