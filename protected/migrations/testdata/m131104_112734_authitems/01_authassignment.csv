@@ -1,0 +1,37 @@
+itemname,userid,bizrule,data
+"Edit",1,NULL,NULL
+"Edit",2,NULL,NULL
+"Edit",3,NULL,NULL
+"Edit",8,NULL,NULL
+"Edit",127,NULL,"N;"
+"Edit",128,NULL,"N;"
+"Edit theatre session",128,NULL,"N;"
+"Prescribe",1,NULL,NULL
+"Prescribe",2,NULL,NULL
+"Prescribe",3,NULL,NULL
+"Prescribe",127,NULL,"N;"
+"Prescribe",128,NULL,"N;"
+"Print",1,NULL,NULL
+"Print",2,NULL,NULL
+"Print",3,NULL,NULL
+"Print",7,NULL,NULL
+"Print",8,NULL,NULL
+"Print",127,NULL,"N;"
+"Print",128,NULL,"N;"
+"User",1,NULL,NULL
+"User",2,NULL,NULL
+"User",3,NULL,NULL
+"User",5,NULL,NULL
+"User",6,NULL,NULL
+"User",7,NULL,NULL
+"User",8,NULL,NULL
+"User",127,NULL,"N;"
+"User",128,NULL,"N;"
+"View clinical",1,NULL,NULL
+"View clinical",2,NULL,NULL
+"View clinical",3,NULL,NULL
+"View clinical",6,NULL,NULL
+"View clinical",7,NULL,NULL
+"View clinical",8,NULL,NULL
+"View clinical",127,NULL,"N;"
+"View clinical",128,NULL,"N;"
