@@ -184,6 +184,9 @@ return array(
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,
 		),
+		'version' => array(
+			'class' => 'Version',
+		),
 		'widgetFactory'=>array(
 			'class' => 'WidgetFactory'
 		),
