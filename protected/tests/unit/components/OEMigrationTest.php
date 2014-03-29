@@ -123,17 +123,6 @@ class OEMigrationTest extends CDbTestCase
 		}
 	}
 
-	public function testGetCliArg(){
-		$cliArg = $this->oeMigration->getCliArg(array());
-		$this->assertFalse($cliArg);
-		$cliArg = $this->oeMigration->getCliArg('injectedArg', array(0 => 'some.php', 1 => 'injectedArg'));
-		$this->assertTrue($cliArg);
-		$this->assertInternalType('boolean' , $cliArg);
-		$cliArg = $this->oeMigration->getCliArg('injectedArg', array(0 => 'some.php', 1 => 'injectedArg=true'));
-		$this->assertInternalType('string', $cliArg);
-		$this->assertEquals('true', $cliArg);
-	}
-
 	public function testGetInsertId(){
 		$insertRow = array('name' => 'TestEventType' , 'event_group_id' => '5', 'class_name' => 'OphTrTestclass' , 'support_services' => '0');
 		$this->oeMigration->insert('event_type' , $insertRow);

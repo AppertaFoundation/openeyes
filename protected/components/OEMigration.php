@@ -198,37 +198,6 @@ class OEMigration extends CDbMigration
 		$this->migrationPath = $path;
 	}
 
-	/**
-	 * @description - Helper method to verify if a cli argument exists and, if it has a value assigned, return it
-	 * @param $name - string
-	 * @param null $argvInj - (array if provided only for injection purposes)
-	 * @return bool|string
-	 */
-	public function getCliArg($name, $argvInj = null){
-		//$name = trim($name);
-		if(!$argvInj){
-			global $argv;
-		}
-		else{
-			$argv = $argvInj;
-		}
-		if(!$name && !is_string($name)){
-			return false;
-		}
-
-		foreach($argv as $arg){
-			if(strpos($name , $arg) == 0){
-				if(strlen($name) == strlen($arg)){
-					return true;
-				}
-				else if( $equalPos = strpos($arg, '=')){
-					return substr($arg , $equalPos+1);
-				}
-			}
-		}
-		return false;
-	}
-
 	public function setTestData($val){
 		$this->testdata = $val;
 	}
