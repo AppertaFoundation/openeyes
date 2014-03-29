@@ -24,7 +24,10 @@ class OEMigrateCommand extends MigrateCommand
 	protected function instantiateMigration($class)
 	{
 		$migration = parent::instantiateMigration($class);
-		$migration->setTestData((bool) $this->testdata);
+		if($this->testdata && $migration instanceof OEMigration){
+			$migration->setTestData(true);
+			echo "\nRunning in testdata mode";
+		}
 		return $migration;
 	}
 }
