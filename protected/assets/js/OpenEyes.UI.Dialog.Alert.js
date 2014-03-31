@@ -26,9 +26,9 @@
 	 * AlertDialog constructor. The AlertDialog extends the base Dialog and provides
 	 * an 'Ok' button for the user to click on.
 	 * @constructor
-	 * @memberOf OpenEyes.UI.Dialog
+	 * @name OpenEyes.UI.Dialog.Alert
 	 * @tutorial dialog_alert
-	 * @extends {Dialog}
+	 * @extends OpenEyes.UI.Dialog
 	 * @example
 	 * var alert = new OpenEyes.UI.Dialog.Alert({
 	 *   content: 'Here is some content.'
@@ -48,7 +48,7 @@
 	/**
 	 * The default alert dialog options. These options will be merged into the
 	 * default dialog options.
-	 * @name AlertDialog#_defaultOptions
+	 * @name OpenEyes.UI.Dialog.Alert#_defaultOptions
 	 * @private
 	 */
 	AlertDialog._defaultOptions = {
@@ -62,7 +62,7 @@
 	/**
 	 * Get the dialog content. Do some basic content formatting, then compile
 	 * and return the alert dialog template.
-	 * @name AlertDialog#getContent
+	 * @name OpenEyes.UI.Dialog.Alert#getContent
 	 * @method
 	 * @private
 	 * @param {string} content - The main alert dialog content to display.
@@ -84,7 +84,7 @@
 
 	/**
 	 * Bind events
-	 * @name AlertDialog#bindEvents
+	 * @name OpenEyes.UI.Dialog.Alert#bindEvents
 	 * @method
 	 * @private
 	 */
@@ -97,7 +97,7 @@
 
 	/**
 	 * 'OK' button click handler. Simply close the dialog on click.
-	 * @name AlertDialog#onButtonClick
+	 * @name OpenEyes.UI.Dialog.Alert#onButtonClick
 	 * @method
 	 * @private
 	 */

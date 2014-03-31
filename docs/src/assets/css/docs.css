@@ -21,6 +21,9 @@ pre.prettyprint {
 .side-nav li:last-child {
 	margin: 0;
 }
+.side-nav .heading {
+	font-weight: bold;
+}
 
 /* Styleguide sections */
 .container.main.section-tooltips .kss-mod-markup {

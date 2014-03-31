@@ -34,8 +34,8 @@ include 'fragments/assets.php';
 							<li><a href="jsdoc/index.html">Javascript API</a></li>
 							<li><a href="static-templates/index.php">Site templates</a></li>
 							<li><a href="forms.php">Forms</a></li>
-							<li><a href="grids.php">Grids</a></li>
-							<li><a href="elements.php">Elements</a></li>
+							<!-- <li><a href="grids.php">Grids</a></li> -->
+							<!-- <li><a href="elements.php">Elements</a></li> -->
 						</ul>
 					</div>
 				</aside>

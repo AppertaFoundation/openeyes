@@ -32,18 +32,21 @@
 
 				<!-- Docs nav
 				================================================== -->
-				<div class="large-2 columns">
-					<ul class="side-nav kss-side-nav kss-box box navigation">
-						<li><a href="index.html">0.0: Overview</a></li>
-						{{#eachRoot}}
-							<li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
-						{{/eachRoot}}
-					</ul>
+				<div class="large-2 column">
+					<div class="kss-box box generic navigation">
+						<h2>Navigation</h2>
+						<ul class="side-nav kss-side-nav">
+							<li><a href="index.html">0.0: Overview</a></li>
+							{{#eachRoot}}
+								<li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
+							{{/eachRoot}}
+						</ul>
+					</div>
 				</div>
 
 				<!-- Docs body
 				================================================== -->
-				<div class="large-10 columns">
+				<div class="large-10 column">
 
 					<div class="main kss-main">
 
@@ -80,14 +83,14 @@
 											<div class="kss-mod-list">
 												<div class="kss-mod">
 													<div class="row kss-mod-overview">
-														<div class="large-9 kss-mod-description columns">
+														<div class="large-9 kss-mod-description column">
 															<p>Default styling</p>
 														</div>
-														<div class="large-3 columns">
+														<div class="large-3 column">
 														</div>
 													</div>
 													<div class="row">
-														<div class="large-12 columns kss-mod-markup">
+														<div class="large-12 column kss-mod-markup">
 															{{modifierMarkup}}
 														</div>
 													</div>
@@ -95,15 +98,15 @@
 												{{#eachModifier}}
 													<div class="kss-mod">
 														<div class="row kss-mod-overview">
-															<div class="large-9 columns kss-mod-description">
+															<div class="large-9 column kss-mod-description">
 																{{html description}}
 															</div>
-															<div class="large-3 columns kss-mod-name text-right">
+															<div class="large-3 column kss-mod-name text-right">
 																<span>{{name}}</span>
 															</div>
 														</div>
 														<div class="row">
-															<div class="large-12 columns kss-mod-markup">
+															<div class="large-12 column kss-mod-markup">
 																{{modifierMarkup}}
 															</div>
 														</div>
@@ -131,7 +134,7 @@
 		</div>
 
 		<footer class="footer row kss-footer">
-			<div class="large-12 columns">
+			<div class="large-12 column">
 					<div class="info">
 							<span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
 					</div>

@@ -19,8 +19,10 @@
 
 	/**
 	 * Emitter
-	 * @name Emitter
-	 * @constructor
+	 * @class OpenEyes.Util.EventEmitter
+	 * @name OpenEyes.Util.EventEmitter
+	 * @memberOf OpenEyes
+	 * @tutorial emitter
 	 */
 	function Emitter() {
 		this.events = {};
@@ -28,7 +30,7 @@
 
 	/**
 	 * Adds a new handler (function) for a given event.
-	 * @name Emitter#on
+	 * @name OpenEyes.Util.EventEmitter#on
 	 * @method
 	 * @param {string} type - The event type.
 	 * @param {function} handler - The callback handler for the event type.
@@ -49,7 +51,7 @@
 
 	/**
 	 * Remove a specific handler, or all handlers for a given event.
-	 * @name Emitter#off
+	 * @name OpenEyes.Util.EventEmitter#off
 	 * @method
 	 * @param {string} type - The event type.
 	 * @param {function} [handler] - The callback handler to remove for the given event (optional)
@@ -80,7 +82,7 @@
 
 	/**
 	 * Executes all handlers for a given event.
-	 * @name Emitter#emit
+	 * @name OpenEyes.Util.EventEmitter#emit
 	 * @method
 	 * @param {string} type - The event type.
 	 * @param {mixed} data - Event data to be passed to all the event handlers.
@@ -104,7 +106,7 @@
 
 	/**
 	 * Binds all methods of this object to the object itself.
-	 * @name Emitter#bindAll
+	 * @name OpenEyes.Util.EventEmitter#bindAll
 	 * @method
 	 * @private
 	 * @param {boolean} [inherited=false] - Bind to inherited methods?
@@ -116,7 +118,7 @@
 	/**
 	 * Execute a callback handler for a given event. Callback handlers are stored
 	 * within the 'options' property of this object, and have the format of 'onEventName'.
-	 * @name Emitter#trigger
+	 * @name OpenEyes.Util.EventEmitter#trigger
 	 * @method
 	 * @param {string} type - The event type.
 	 * @param {mixed} data - Event data to be passed to all the event handlers.

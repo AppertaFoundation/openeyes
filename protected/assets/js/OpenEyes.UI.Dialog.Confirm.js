@@ -26,9 +26,9 @@
 	 * ConfirmDialog constructor. The ConfirmDialog extends the base Dialog and provides
 	 * an 'Ok' and 'Cancel' button for the user to click on.
 	 * @constructor
-	 * @memberOf OpenEyes.UI.Dialog
+	 * @name OpenEyes.UI.Dialog.Confirm
 	 * @tutorial dialog_confirm
-	 * @extends {Dialog}
+	 * @extends OpenEyes.UI.Dialog
 	 * @example
 	 * var alert = new OpenEyes.UI.Dialog.Confirm({
 	 *   content: 'Here is some content.'
@@ -48,7 +48,7 @@
 	/**
 	 * The default confirm dialog options. These options will be merged into the
 	 * default dialog options.
-	 * @name ConfirmDialog#_defaultOptions
+	 * @name OpenEyes.UI.Dialog.Confirm#_defaultOptions
 	 * @property {object} _defaultOptions - The default options.
 	 * @private
 	 */
@@ -65,7 +65,7 @@
 	/**
 	 * Get the dialog content. Do some basic content formatting, then compile
 	 * and return the alert dialog template.
-	 * @name ConfirmDialog#getContent
+	 * @name OpenEyes.UI.Dialog.Confirm#getContent
 	 * @method
 	 * @private
 	 * @param {string} content - The main alert dialog content to display.
@@ -85,7 +85,7 @@
 
 	/**
 	 * Bind events
-	 * @name ConfirmDialog#bindEvents
+	 * @name OpenEyes.UI.Dialog.Confirm#bindEvents
 	 * @method
 	 * @private
 	 */
@@ -99,8 +99,8 @@
 
 	/**
 	 * 'OK' button click handler. Simply close the dialog on click.
-	 * @name ConfirmDialog#onButtonClick
-	 * @fires ConfirmDialog#ok
+	 * @name OpenEyes.UI.Dialog.Confirm#onButtonClick
+	 * @fires OpenEyes.UI.Dialog.Confirm#ok
 	 * @method
 	 * @private
 	 */
@@ -111,15 +111,15 @@
 		/**
 		 * Emitted after the use has clicked on the 'OK' button.
 		 *
-		 * @event ConfirmDialog#ok
+		 * @event OpenEyes.UI.Dialog.Confirm#ok
 		 */
 		this.emit('ok');
 	};
 
 	/**
 	 * 'Cancel' button click handler. Simply closes the dialog on click.
-	 * @name ConfirmDialog#onButtonClick
-	 * @fires ConfirmDialog#cancel
+	 * @name OpenEyes.UI.Dialog.Confirm#onButtonClick
+	 * @fires OpenEyes.UI.Dialog.Confirm#cancel
 	 * @method
 	 * @private
 	 */
@@ -130,7 +130,7 @@
 		/**
 		 * Emitted after the use has clicked on the 'Cancel' button.
 		 *
-		 * @event ConfirmDialog#cancel
+		 * @event OpenEyes.UI.Dialog.Confirm#cancel
 		 */
 		this.emit('cancel');
 	};
@@ -138,7 +138,7 @@
 	/**
 	 * Content load success handler. Sets the dialog content to be the response of
 	 * the content request.
-	 * @name ConfirmDialog#onContentLoadSuccess
+	 * @name OpenEyes.UI.Dialog.Confirm#onContentLoadSuccess
 	 * @method
 	 * @private
 	 */
