@@ -30,6 +30,11 @@
  * @property string $referrer
  * @property integer $firm_id
  * @property integer $service_subspecialty_assignment_id // MW: this is here because sometimes the referrer is a pas_code which doesn't map to a firm with the correct subspecialty
+ *
+ * @property RTT[] $rtts
+ * @property Firm $firm
+ * @property ServiceSubspecialtyAssignment $serviceSubpsecialtyAssignment
+ * @property ReferralType $reftype
  */
 class Referral extends BaseActiveRecord
 {
@@ -140,9 +145,7 @@ class Referral extends BaseActiveRecord
 	{
 		$desc = array();
 		$desc[] = $this->NHSDate('received_date');
-		if ($this->clock_start && $this->NHSDATE('clock_start') != $this->NHSDate('received_date')) {
-			$desc[] = "(" . $this->NHSDATE('clock_start') . ")";
-		}
+
 		if ($this->firm) {
 			$desc[] = $this->firm->getNameAndSubspecialty();
 		}
