@@ -14,7 +14,6 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-
 // Buttons
 //
 // Styleguide 1
@@ -63,6 +62,7 @@
 	}
 }
 
+
 // Secondary buttons
 //
 // Markup:
@@ -91,6 +91,7 @@
 	}
 }
 
+
 // Warning buttons
 //
 // Markup:
@@ -118,6 +119,7 @@
 		}
 	}
 }
+
 
 // Cancel event action
 //
@@ -152,6 +154,7 @@
 	}
 }
 
+
 // Delete button
 //
 // Markup:
@@ -174,6 +177,7 @@
 		}
 	}
 }
+
 
 // Button sizes
 //
@@ -200,6 +204,7 @@
 		line-height: 1.4;
 	}
 }
+
 
 // Button icons
 //
@@ -250,43 +255,49 @@
 	}
 }
 
+
 // Button groups
 //
 // Button can be grouped.
 //
 // Markup:
 // <ul class="button-group">
-//     <li><a href="#" class="small button">Button 1</a></li>
-//     <li><a href="#" class="small button">Button 2</a></li>
-//     <li><a href="#" class="small button">Button 3</a></li>
+//     <li><a href="#" class="small button {$modifiers}">Button 1</a></li>
+//     <li><a href="#" class="small button {$modifiers}">Button 2</a></li>
+//     <li><a href="#" class="small button {$modifiers}">Button 3</a></li>
 // </ul>
+//
+// .disabled               - Disabled state
 //
 // Styleguide 1.8
 .button-group {
 	@include button-group-container;
 	& > li {
 		@include button-group-style;
-		button, .button {
+		@include buttons {
 			border-color: #105dae;
+			&.disabled {
+				border-color: #999;
+			}
 		}
 	}
-	button, .button, input[type="submit"] {
+	@include buttons {
 		@include border-radius(0);
 		padding: 5px 10px;
 		margin: 0;
 	}
 	li:first-child {
-		button, .button, input[type="submit"] {
+		@include buttons {
 			@include border-radius($button-radius 0 0 $button-radius);
 		}
 	}
 	li:last-child {
-		button, .button, input[type="submit"] {
+		@include buttons {
 			@include border-radius(0 $button-radius $button-radius 0);
 		}
 	}
 	&.small {
-		button, .button, input[type="submit"] {
+		@include buttons {
 			padding: 4px 7px;
 			font-size: rem-calc(11px);
 		}
@@ -309,6 +320,7 @@
 		}
 	}
 }
+
 
 // Extend disabled to inactive buttons
 @include buttons {

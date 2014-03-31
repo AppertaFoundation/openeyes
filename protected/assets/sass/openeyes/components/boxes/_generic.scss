@@ -20,8 +20,6 @@
 // <div class="box generic">
 //     <p>Here is some content within a generic box.</p>
 // </div>
-//
-// Styleguide 11.2
 .box {
 	&.generic {
 		@include panel;

@@ -216,7 +216,7 @@
 							<div class="data-row">
 								<div class="row anterior-segment">
 									<div class="column fixed">
-										<img src="img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
+										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="data-row description">
@@ -272,7 +272,7 @@
 							<div class="data-row">
 								<div class="row anterior-segment">
 									<div class="column fixed">
-										<img src="img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
+										<img src="<?php echo $assets_root_path?>assets/img/eyedraw/medium.png" class="canvas" alt="Eyedraw" />
 									</div>
 									<div class="column fluid">
 										<div class="data-row description">

@@ -175,11 +175,11 @@
 						<div class="optional-elements-actions">
 							<a href="#">
 								<span>Add all</span>
-								<img src="/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
+								<img src="<?php echo $assets_root_path?>assets/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
 							</a>
 							<a href="#">
 								<span>Remove all</span>
-								<img src="/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
+								<img src="<?php echo $assets_root_path?>assets/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
 							</a>
 						</div>
 					</header>

@@ -6,7 +6,8 @@
  * purposes, and will only run if on localhost.
  */
 
-if ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1') {
+if ($_SERVER['REMOTE_ADDR'] !== '127.0.0.1' && $_SERVER['REMOTE_ADDR'] !== '10.0.2.2') {
+	echo "Can only be run on localhost";
 	exit(1);
 }
 
@@ -29,6 +30,7 @@ $path = implode(DIRECTORY_SEPARATOR, $loc);
 $path = realpath($path);
 
 if (!$path) {
+	echo "File not found";
 	exit(1);
 }
 

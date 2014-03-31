@@ -42,7 +42,13 @@
 <body class="open-eyes">
 	<div class="container main" role="main">
 
-		<? include 'components/header.php'; ?>
+		<header class="header row static">
+			<div class="large-2 column">
+				<a class="logo" href="../index.php">
+					OpenEyes
+				</a>
+			</div>
+		</header>
 
 		<div class="container content">
 			<h1 class="badge">OpenEyes templates</h1>
@@ -63,16 +69,6 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr class="heading">
-									<td colspan="3"><h3>General templates</h3></td>
-								</tr>
-								<tr>
-									<td>
-										<a href="buttons.php">Buttons</a>
-									</td>
-									<td>Variable button styles used throughout the application.</td>
-									<td><span class="complete">Complete</span></td>
-								</tr>
 								<tr class="heading">
 									<td colspan="3"><h3>Home templates</h3></td>
 								</tr>
@@ -126,40 +122,6 @@
 										<a href="error.php">Error</a>
 									</td>
 									<td>The error template used for all application errors.</td>
-									<td><span class="complete">Complete</span></td>
-								</tr>
-								<tr class="heading">
-									<td colspan="3"><h3>Theatre diaries</h3></td>
-								</tr>
-								<tr>
-									<td>
-										<a href="theatre-diaries.php">Theatre diaries</a>
-									</td>
-									<td>The main theatre diaries template.</td>
-									<td><span class="complete">Complete</span></td>
-								</tr>
-								<tr>
-									<td>
-										<a href="theatre-diaries-searching.php">Theatre diaries searching</a>
-									</td>
-									<td>The theatre diaries template showing a searching message.</td>
-									<td><span class="complete">Complete</span></td>
-								</tr>
-								<tr>
-									<td>
-										<a href="theatre-diaries-no-results.php">Theatre diaries no results</a>
-									</td>
-									<td>The theatre diaries template showing a no-results message.</td>
-									<td><span class="complete">Complete</span></td>
-								</tr>
-								<tr class="heading">
-									<td colspan="3"><h3>Waiting list</h3></td>
-								</tr>
-								<tr>
-									<td>
-										<a href="waiting-list.php">Waiting list</a>
-									</td>
-									<td>The main waiting list template.</td>
 									<td><span class="complete">Complete</span></td>
 								</tr>
 								<tr class="heading">
@@ -238,6 +200,34 @@
 								</tr>
 								<tr>
 									<td>
+										<a href="waiting-list.php">Waiting list</a>
+									</td>
+									<td>The main waiting list template.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="theatre-diaries.php">Theatre diaries</a>
+									</td>
+									<td>The main theatre diaries template.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="theatre-diaries-searching.php">Theatre diaries searching</a>
+									</td>
+									<td>The theatre diaries template showing a searching message.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="theatre-diaries-no-results.php">Theatre diaries no results</a>
+									</td>
+									<td>The theatre diaries template showing a no-results message.</td>
+									<td><span class="complete">Complete</span></td>
+								</tr>
+								<tr>
+									<td>
 										<a href="operation-booking-edit.php">Operation booking edit</a>
 									</td>
 									<td>The operation booking edit template - shows an example of adding and listing procedures.</td>
@@ -261,7 +251,7 @@
 									<td>
 										<a href="operation-booking-schedule.php">Operation booking schedule</a>
 									</td>
-									<td>The operation booking schedule template.</td>
+									<td>The operation booking schedule template. NOTE: This template has not been refactored. CSS and markup used for this template is legacy.</td>
 									<td><span class="complete">Complete</span></td>
 								</tr>
 								<tr class="heading">
@@ -493,6 +483,16 @@
 									</td>
 									<td>The admin user edit template which shows a basic edit form.</td>
 									<td><span class="not-complete">Not started</span></td>
+								</tr>
+								<tr class="heading">
+									<td colspan="3"><h3>Component templates</h3></td>
+								</tr>
+								<tr>
+									<td>
+										<a href="buttons.php">Buttons</a>
+									</td>
+									<td>Variable button styles used throughout the application.</td>
+									<td><span class="complete">Complete</span></td>
 								</tr>
 							</tbody>
 						</table>

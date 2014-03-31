@@ -44,6 +44,11 @@
 
 			var win = $(window);
 			var nav = $('.box.navigation');
+
+			if (!nav.length) {
+				return;
+			}
+
 			var navOffset = nav.offset();
 
 			function onWinScroll() {

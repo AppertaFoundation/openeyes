@@ -900,7 +900,7 @@
 										</select>
 									</div>
 									<span class="grade-info-icon" data-info-type="clinicalret">
-										<img src="/assets/a922e08e/img/icon_info.png" style="height:20px">
+										<img src="<?php echo $assets_root_path?>assets/modules/OphCiExamination/assets/img/icon_info.png" style="height:20px">
 									</span>
 									<div class="quicklook grade-info" style="display: none;">
 										<div id="Element_OphCiExamination_DRGrading_right_all_clinicalret_desc" class="grade-info-all ui-dialog-content ui-widget-content" data-select-id="Element_OphCiExamination_DRGrading_right_clinicalret_id" style="width: auto; min-height: 83px; height: auto;" scrolltop="0" scrollleft="0">
@@ -958,7 +958,7 @@
 											<option value="1" class="none" data-code="NO">R0</option>
 										</select>
 									</div>
-									<span class="grade-info-icon" data-info-type="retinopathy"><img src="/assets/a922e08e/img/icon_info.png" style="height:20px"></span>
+									<span class="grade-info-icon" data-info-type="retinopathy"><img src="<?php echo $assets_root_path?>assets/modules/OphCiExamination/assets/img/icon_info.png" style="height:20px"></span>
 								</div>
 							</div>
 
@@ -1003,7 +1003,7 @@
 											<option value="1" class="none" data-code="NO">M0</option>
 										</select>
 									</div>
-									<span class="grade-info-icon" data-info-type="maculopathy"><img src="/assets/a922e08e/img/icon_info.png" style="height:20px"></span>
+									<span class="grade-info-icon" data-info-type="maculopathy"><img src="<?php echo $assets_root_path?>assets/modules/OphCiExamination/assets/img/icon_info.png" style="height:20px"></span>
 								</div>
 							</div>
 							<div class="inactive-form">
