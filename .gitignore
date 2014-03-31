@@ -36,9 +36,6 @@ vendor
 /bin/webunit
 /docs/public
 
-# Bower development dependencies
-/protected/assets/components/google-code-prettify
-
 # Tests
 /bin/.enabled-modules
 /jm_behat_report.html
