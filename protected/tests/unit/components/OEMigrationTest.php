@@ -26,7 +26,9 @@ class OEMigrationTest extends CDbTestCase
 	public $fixtures = array(
 		'event_type' => 'EventType',
 		'patient' => 'Patient',
-		'disorder' => 'Disorder'
+		'disorder' => 'Disorder',
+		'episode'=>'Episode',
+		'event'=>'Event'
 	);
 
 	public function setUp(){
@@ -159,6 +161,17 @@ class OEMigrationTest extends CDbTestCase
 		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
 		$episode_id = $this->oeMigration->getInsertReferentialObjectValue('episode', 1);
 		$this->assertGreaterThan(0, (int) $episode_id);
+		$this->assertequals(5, (int) $episode_id);
+
+		$newOeMigration = new OEMigration();
+		$newOeMigration->setTestData(true);
+		$newOeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData2');
+		$newEpisodeId = $newOeMigration->getInsertReferentialObjectValue('episode', 1);
+		$newEpisodeId2 = $newOeMigration->getInsertReferentialObjectValue('episode', 2);
+		$this->assertGreaterThan(0, (int) $newEpisodeId );
+		$this->assertequals(6, (int) $newEpisodeId );
+		$this->assertGreaterThan(0, (int) $newEpisodeId2 );
+		$this->assertequals(7, (int) $newEpisodeId2 );
 	}
 
 	/**
