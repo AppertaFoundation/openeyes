@@ -18,6 +18,8 @@
 //
 // A box is simply a container with some styling that groups large sections of the page, for example
 // a event detail view. Panels are used to group page sections within boxes.
+//
+// Styleguide 14
 
 .box {
 	@include border-radius($oe-box-border-radius);

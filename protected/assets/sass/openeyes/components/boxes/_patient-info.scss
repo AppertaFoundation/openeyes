@@ -27,7 +27,7 @@
 // 	<p>Here is some information in a patient-info box.</p>
 // </div>
 //
-// Styleguide 11.3
+// Styleguide 14.3
 .box {
 	&.patient-info {
 		background: #fafafa;
@@ -94,6 +94,45 @@
 }
 
 // Patient info episodes box
+//
+// Used to display the patient episodes.
+//
+// Markup:
+// <section class="box patient-info episodes">
+// 	<header class="box-header">
+// 		<h3 class="box-title">All Episodes</h3>
+// 		<div class="box-info">
+// 			<strong>open 1 &nbsp;|&nbsp;closed 0</strong>
+// 		</div>
+// 	</header>
+// 	<table class="patient-episodes grid">
+// 		<thead>
+// 			<tr>
+// 				<th>Start Date</th>
+// 				<th>End Date</th>
+// 				<th>Firm</th>
+// 				<th>Subspecialty</th>
+// 				<th>Eye</th>
+// 				<th>Diagnosis</th>
+// 			</tr>
+// 		</thead>
+// 		<tbody>
+// 			<tr class="speciality">
+// 				<td colspan="6">Ophthalmology</td>
+// 			</tr>
+// 			<tr class="clickable all-episode ">
+// 				<td>27 Mar 2014</td>
+// 				<td></td>
+// 				<td>Abou-Rayyah Yassir</td>
+// 				<td>Adnexal</td>
+// 				<td>No diagnosis</td>
+// 				<td>No diagnosis</td>
+// 			</tr>
+// 		</tbody>
+// 	</table>
+// </section>
+//
+// Styleguide 14.4
 .box {
 	&.patient-info {
 		&.episodes {
@@ -128,6 +167,34 @@
 }
 
 // Patient info associated data box
+//
+// Used to display any other (editable) associated patient data.
+//
+// Markup:
+// <section class="box patient-info associated-data js-toggle-container">
+// 	<header class="box-header">
+// 		<h3 class="box-title">Other ophthalmic diagnoses</h3>
+// 		<a class="toggle-trigger toggle-hide js-toggle" href="#">
+// 			<span class="icon-showhide">Show/hide this section</span>
+// 		</a>
+// 	</header>
+// 	<div class="js-toggle-body">
+// 		<table class="plain patient-data">
+// 			<thead>
+// 				<tr>
+// 					<th>Date</th>
+// 					<th>Diagnosis</th>
+// 					<th>Actions</th>
+// 				</tr>
+// 			</thead>
+// 		</table>
+// 		<div class="box-actions">
+// 			<button class="secondary small" id="btn-add_new_ophthalmic_diagnosis">Add Ophthalmic Diagnosis</button>
+// 		</div>
+// 	</div>
+// </section>
+//
+// Styleguide 14.5
 .box {
 	&.patient-info {
 		&.associated-data {

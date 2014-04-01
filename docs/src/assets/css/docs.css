@@ -57,6 +57,11 @@ pre.prettyprint {
 .container.main.section-panels .panel.error {
 	margin-top: 0;
 }
+.container.main.section-boxes .box.patient-info,
+.container.main.section-boxes .box.episodes,
+.container.main.section-boxes .box.associated-data {
+	width: 550px;
+}
 
 /* Styleguide */
 

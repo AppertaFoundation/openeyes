@@ -257,3 +257,7 @@ pre {
 .more-info pre {
 	margin-bottom: 0;
 }
+
+.box.generic header.jsdoc-header h2 {
+	margin-bottom: 20px;
+}

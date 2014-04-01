@@ -1,14 +1,9 @@
 # Overview
 
-Welcome to the OpenEyes living CSS Styleguide.
+Welcome to the OpenEyes living CSS Styleguide. This styleguide contains common components
+that are used throughout the application.
 
 The content of this styleguide is generated from the comments found in the Sass files.
-We use KSS to format our comments and to generate this styleguide. When adding new styles
-or updating existing styles, you **must** keep the comments up-to-date.
-
-This is a living styleguide, and will grow and evolve as the stylesheet grows and evolves.
-
-Use this styleguide to get an understanding of the various UI components we use, and how to add new or change existing styles.
 
 ## Introduction
 

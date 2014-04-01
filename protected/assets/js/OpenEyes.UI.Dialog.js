@@ -69,13 +69,14 @@
 	 * @name OpenEyes.UI.Dialog#_defaultOptions
 	 * @property {mixed} [content=null] - Content to be displayed in the dialog.
 	 * This option accepts multiple types, including strings, DOM elements, jQuery instances, etc.
-	 * @property {string|null} [title=null] - The dialog title.
-	 * @property {string|null} [iframe=null] - A URL string to load the dialog content
-	 * in via an iFrame.
+	 * @property {boolean} [destroyOnClose=true] - Destroy the dialog when it is closed?
 	 * @property {string|null} [url=null] - A URL string to load the dialog content in via an
 	 * AJAX request.
 	 * @property {object|null} [data=null] - Request data used when loading dialog content
 	 * via an AJAX request.
+	 * @property {string|null} [iframe=null] - A URL string to load the dialog content
+	 * in via an iFrame.
+	 * @property {string|null} [title=null] - The dialog title.
 	 * @property {string|null} [dialogClass=dialog] - A CSS class string to be added to
 	 * the main dialog container.
 	 * @property {boolean} [constrainToViewport=false] - Constrain the dialog dimensions

@@ -49,7 +49,6 @@
 	 * The default confirm dialog options. These options will be merged into the
 	 * default dialog options.
 	 * @name OpenEyes.UI.Dialog.Confirm#_defaultOptions
-	 * @property {object} _defaultOptions - The default options.
 	 * @private
 	 */
 	ConfirmDialog._defaultOptions = {
