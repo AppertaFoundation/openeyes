@@ -50,11 +50,49 @@ h1 {
 	}
 }
 
+// Paragraphs
+//
+// Markup:
+// <p>Here is some text in the first paragraph.</p>
+// <p>Here is some text in the second paragraph.</p>
+//
+// Styleguide 3.2
+
+// Links
+//
+// Markup:
+// <p>Here is <a hef="#">a link</a>.</p>
+//
+// Styleguide 3.3
 a {
 	&:hover, .highlight {
 		@extend %anchor-hover;
 	}
 }
+
+// Lists
+//
+// Markup:
+// <ul>
+// 	<li>List item 1</li>
+// 	<li>List item 2
+// 		<ul>
+// 			<li>Second level - Item 1</li>
+// 		</ul>
+// 	</li>
+// 	<li>List item 3</li>
+// </ul>
+// <ol>
+// 	<li>List item 1</li>
+// 		<li>List item 2
+// 		<ol>
+// 			<li>Second level - Item 1</li>
+// 		</ol>
+// 	</li>
+// 	<li>List item 3</li>
+// </ol>
+//
+// Styleguide 3.4
 
 @media print {
 	a[href]:after {

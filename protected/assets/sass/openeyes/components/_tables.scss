@@ -16,11 +16,13 @@
 
 // Tables
 //
-// Tables are used to display tabular data. Tables should containe thead, tbody and tfoot sections.
+// Tables are used to display tabular data. Tables should contain thead, tbody and tfoot sections.
 //
 // Styleguide 5
 
 // Generic tables
+//
+// Tables will be zebra striped without having to add additional classes to rows.
 //
 // Markup:
 // <table class="{$modifiers}">
@@ -43,6 +45,7 @@
 // </table>
 //
 // .grid             - Styles a table like a grid (with borders)
+// .clickable        - Show a styled hover states on table rows
 //
 // Styleguide 5.1
 
@@ -131,6 +134,11 @@ table {
 			td {
 				color: #fff;
 			}
+		}
+	}
+	&.clickable {
+		tr {
+			@extend .clickable;
 		}
 	}
 }
