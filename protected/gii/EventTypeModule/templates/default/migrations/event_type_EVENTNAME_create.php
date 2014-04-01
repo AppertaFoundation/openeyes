@@ -4,27 +4,21 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 {
 	public function up()
 	{
-		// --- EVENT TYPE ENTRIES ---
-
-		// create an event_type entry for this event type name if one doesn't already exist
 		if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'<?php echo $this->moduleID; ?>'))->queryRow()) {
 			$group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name',array(':name'=>'<?php echo $this->eventGroupName; ?>'))->queryRow();
 			$this->insert('event_type', array('class_name' => '<?php echo $this->moduleID;?>', 'name' => '<?php echo $this->moduleSuffix; ?>','event_group_id' => $group['id']));
 		}
-		// select the event_type id for this event type name
-		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'<?php echo $this->moduleID; ?>'))->queryRow();
 
-		// --- ELEMENT TYPE ENTRIES ---
+		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'<?php echo $this->moduleID; ?>'))->queryRow();
 
 <?php
 			if (isset($elements)) {
 				foreach ($elements as $element) {
 ?>
-		// create an element_type entry for this element type name if one doesn't already exist
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'<?php echo $element['name'];?>',':eventTypeId'=>$event_type['id']))->queryRow()) {
 			$this->insert('element_type', array('name' => '<?php echo $element['name'];?>','class_name' => '<?php echo $element['class_name'];?>', 'event_type_id' => $event_type['id'], 'display_order' => 1));
 		}
-		// select the element_type_id for this element type name
+
 		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id=:eventTypeId and name=:name', array(':eventTypeId'=>$event_type['id'],':name'=>'<?php echo $element['name'];?>'))->queryRow();
 <?php
 				}
@@ -35,8 +29,6 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 		if (isset($elements)) {
 			foreach ($elements as $element) {
 				foreach ($element['lookup_tables'] as $lookup_table) {?>
-		// element lookup table <?php echo $lookup_table['name']?>
-
 		$this->createTable('<?php echo $lookup_table['name']?>', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'name' => 'varchar(128) COLLATE utf8_bin NOT NULL',
@@ -62,7 +54,6 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 <?php }?>
 
 <?php foreach ($element['defaults_tables'] as $default_table) {?>
-		// defaults table
 		$this->createTable('<?php echo $default_table['name']?>', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'value_id' => 'int(10) unsigned NOT NULL',
@@ -82,7 +73,6 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 <?php }?>
 <?php }?>
 
-		// create the table for this element type: et_modulename_elementtypename
 		$this->createTable('<?php echo $element['table_name'];?>', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'event_id' => 'int(10) unsigned NOT NULL',
@@ -93,11 +83,11 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 						$field_label = $element['fields'][$count]['label'];
 						$field_type = $this->getDBFieldSQLType($element['fields'][$count]);
 						if ($field_type) {?>
-				'<?php echo $field_name?>' => '<?php echo $field_type?>', // <?php echo $field_label?>
+				'<?php echo $field_name?>' => '<?php echo $field_type?>',
 
 <?php }
 if (isset($field['extra_report'])) {?>
-				'<?php echo $field_name?>2' => '<?php echo $field_type?>', // <?php echo $field_label?>2
+				'<?php echo $field_name?>2' => '<?php echo $field_type?>',
 
 <?php }
 						$count++;
@@ -149,8 +139,6 @@ if (isset($field['extra_report'])) {?>
 
 	public function down()
 	{
-		// --- drop any element related tables ---
-		// --- drop element tables ---
 <?php
 		if (isset($elements)) {
 			foreach ($elements as $element) {
@@ -169,7 +157,6 @@ if (isset($field['extra_report'])) {?>
 
 <?php }} ?>
 
-		// --- delete event entries ---
 		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'<?php echo $this->moduleID; ?>'))->queryRow();
 
 		foreach ($this->dbConnection->createCommand()->select('id')->from('event')->where('event_type_id=:event_type_id', array(':event_type_id'=>$event_type['id']))->queryAll() as $row) {
@@ -177,16 +164,8 @@ if (isset($field['extra_report'])) {?>
 			$this->delete('event', 'id='.$row['id']);
 		}
 
-		// --- delete entries from element_type ---
 		$this->delete('element_type', 'event_type_id='.$event_type['id']);
-
-		// --- delete entries from event_type ---
 		$this->delete('event_type', 'id='.$event_type['id']);
-
-		// echo "m000000_000001_event_type_<?php echo $this->moduleID; ?> does not support migration down.\n";
-		// return false;
-		echo "If you are removing this module you may also need to remove references to it in your configuration files\n";
-		return true;
 	}
 }
 

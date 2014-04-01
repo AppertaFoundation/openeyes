@@ -6,21 +6,17 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 	{
 		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'<?php echo $this->moduleSuffix; ?>'))->queryRow();
 
-		// --- ELEMENT TYPE ENTRIES ---
-
 <?php
 			if (isset($elements)) {
 				foreach ($elements as $element) {
 					if ($element['mode'] == 'create') {
 ?>
-		// create an element_type entry for this element type name if one doesn't already exist
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'<?php echo $element['name'];?>',':eventTypeId'=>$event_type['id']))->queryRow()) {
 			$this->insert('element_type', array('name' => '<?php echo $element['name'];?>','class_name' => '<?php echo $element['class_name'];?>', 'event_type_id' => $event_type['id'], 'display_order' => 1));
 		}
 <?php
 					}
 ?>
-		// select the element_type_id for this element type name
 		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id=:eventTypeId and name=:name', array(':eventTypeId'=>$event_type['id'],':name'=>'<?php echo $element['name'];?>'))->queryRow();
 <?php
 				}
@@ -31,8 +27,6 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 		if (isset($elements)) {
 			foreach ($elements as $element) {
 				foreach ($element['lookup_tables'] as $lookup_table) {?>
-		// element lookup table <?php echo $lookup_table['name']?>
-
 		$this->createTable('<?php echo $lookup_table['name']?>', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'name' => 'varchar(128) COLLATE utf8_bin NOT NULL',
@@ -58,7 +52,6 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 <?php }?>
 
 <?php foreach ($element['defaults_tables'] as $default_table) {?>
-		// defaults table
 		$this->createTable('<?php echo $default_table['name']?>', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'value_id' => 'int(10) unsigned NOT NULL',
@@ -80,7 +73,6 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 
 <?php
 				if ($element['mode'] == 'create') {?>
-		// create the table for this element type: et_modulename_elementtypename
 		$this->createTable('<?php echo $element['table_name'];?>', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'event_id' => 'int(10) unsigned NOT NULL',
@@ -91,11 +83,11 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 						$field_label = $element['fields'][$count]['label'];
 						$field_type = $this->getDBFieldSQLType($element['fields'][$count]);
 						if ($field_type) {?>
-				'<?php echo $field_name?>' => '<?php echo $field_type?>', // <?php echo $field_label?>
+				'<?php echo $field_name?>' => '<?php echo $field_type?>',
 
 <?php }
 						if (isset($field['extra_report'])) {?>
-				'<?php echo $field_name?>2' => '<?php echo $field_type?>', // <?php echo $field_label?>2
+				'<?php echo $field_name?>2' => '<?php echo $field_type?>',
 
 <?php }
 						$count++;
@@ -121,7 +113,6 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
 <?php } else {?>
-		// update the element type table with the new fields
 <?php
 						$number = $element['number']; $count = 1;
 						foreach ($element['fields'] as $field => $value) {
@@ -176,9 +167,6 @@ if (isset($field['extra_report'])) {?>
 
 	public function down()
 	{
-		// --- drop any element related tables ---
-		// --- drop element tables ---
-
 		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'<?php echo $this->moduleSuffix; ?>'))->queryRow();
 
 <?php
@@ -190,7 +178,6 @@ if (isset($field['extra_report'])) {?>
 if ($element['mode'] == 'create') {?>
 		$this->dropTable('<?php echo $element['table_name']; ?>');
 <?php } else {?>
-			// update the element type table with the new fields
 <?php
 					$number = $element['number']; $count = 1;
 					foreach ($element['fields'] as $field => $value) {
