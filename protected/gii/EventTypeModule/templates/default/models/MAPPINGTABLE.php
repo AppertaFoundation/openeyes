@@ -62,13 +62,9 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
 			array('element_id, <?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id', 'safe'),
 			array('element_id, <?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id', 'required'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
 			array('id, element_id, <?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id', 'safe', 'on' => 'search'),
 		);
 	}
@@ -78,8 +74,6 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
 			'element' => array(self::BELONGS_TO, '<?php if (isset($mapping_table)) echo $mapping_table['element_class']?>', 'element_id'),
 			'<?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>' => array(self::BELONGS_TO, '<?php if (isset($mapping_table)) echo $mapping_table['lookup_class']?>', '<?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id'),
@@ -105,39 +99,14 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 	 */
 	public function search()
 	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
 		$criteria = new CDbCriteria;
 
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('name', $this->name, true);
 
 		return new CActiveDataProvider(get_class($this), array(
-				'criteria' => $criteria,
-			));
-	}
-
-	/**
-	 * Set default values for forms on create
-	 */
-	public function setDefaultOptions()
-	{
-	}
-
-	protected function beforeSave()
-	{
-		return parent::beforeSave();
-	}
-
-	protected function afterSave()
-	{
-		return parent::afterSave();
-	}
-
-	protected function beforeValidate()
-	{
-		return parent::beforeValidate();
+			'criteria' => $criteria,
+		));
 	}
 }
 <?php echo '?>';?>
