@@ -494,6 +494,13 @@
 									<td>Variable button styles used throughout the application.</td>
 									<td><span class="complete">Complete</span></td>
 								</tr>
+								<tr>
+									<td>
+										<a href="grid.php">The grid</a>
+									</td>
+									<td>Template showing the foundation 12 column grid. </td>
+									<td><span class="not-complete">Not started</span></td>
+								</tr>
 							</tbody>
 						</table>
 					</div>
