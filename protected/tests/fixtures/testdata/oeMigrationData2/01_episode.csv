@@ -1,0 +1,3 @@
+patient_id,firm_id,episode_status_id,legacy,deleted,eye_id,disorder_id,support_services
+1,1,1,0,0,1,1,1
+1,2,1,0,0,1,1,0
