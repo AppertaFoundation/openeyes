@@ -135,6 +135,9 @@ class ContactBehaviorTest extends CDbTestCase
 		'address' => 'Address',
 		'country' => 'Country',
 		'patient' => 'Patient',
+		'episode' => 'Episode',
+		'event' => 'Event',
+		'user'	=> 'User'
 	);
 
 	public function setUp()
@@ -406,7 +409,7 @@ class ContactBehaviorTest extends CDbTestCase
 
 	public function testAfterDelete()
 	{
-		$patient = $this->patient('patient1');
+		$patient = $this->patient('patient4');
 		$contact_id = $patient->contact_id;
 		$patient->delete();
 

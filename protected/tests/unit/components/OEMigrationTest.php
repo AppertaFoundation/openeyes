@@ -28,7 +28,9 @@ class OEMigrationTest extends CDbTestCase
 		'patient' => 'Patient',
 		'disorder' => 'Disorder',
 		'episode'=>'Episode',
-		'event'=>'Event'
+		'event'=>'Event',
+		'firm'=>'Firm',
+		'episode_status' => 'EpisodeStatus',
 	);
 
 	public function setUp(){
