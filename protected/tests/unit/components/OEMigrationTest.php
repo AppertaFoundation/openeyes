@@ -164,6 +164,10 @@ class OEMigrationTest extends CDbTestCase
 		$episode_id = $this->oeMigration->getInsertReferentialObjectValue('episode', 1);
 		$this->assertGreaterThan(0, (int) $episode_id);
 		$this->assertequals(5, (int) $episode_id);
+		//lets try with strings
+		$episode_id2 = $this->oeMigration->getInsertReferentialObjectValue('episode', '1');
+		$this->assertGreaterThan(0, (int) $episode_id2);
+		$this->assertequals(5, (int) $episode_id2);
 
 		$newOeMigration = new OEMigration();
 		$newOeMigration->setTestData(true);
