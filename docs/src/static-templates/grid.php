@@ -217,6 +217,32 @@
 				</div>
 
 				<div class="row example">
+					<div class="large-1 column">
+						<div class="content-box">
+							1 column
+						</div>
+					</div>
+					<div class="large-11 column">
+						<div class="content-box">
+							11 columns
+						</div>
+					</div>
+				</div>
+
+				<div class="row example">
+					<div class="large-2 column">
+						<div class="content-box">
+							2 columns
+						</div>
+					</div>
+					<div class="large-10 column">
+						<div class="content-box">
+							10 columns
+						</div>
+					</div>
+				</div>
+
+				<div class="row example">
 					<div class="large-3 column">
 						<div class="content-box">
 							3 columns
@@ -225,6 +251,97 @@
 					<div class="large-9 column">
 						<div class="content-box">
 							9 columns
+						</div>
+					</div>
+				</div>
+
+				<div class="row example">
+					<div class="large-4 column">
+						<div class="content-box">
+							4 columns
+						</div>
+					</div>
+					<div class="large-8 column">
+						<div class="content-box">
+							8 columns
+						</div>
+					</div>
+				</div>
+
+				<div class="row example">
+					<div class="large-5 column">
+						<div class="content-box">
+							5 columns
+						</div>
+					</div>
+					<div class="large-7 column">
+						<div class="content-box">
+							7 columns
+						</div>
+					</div>
+				</div>
+
+				<div class="row example">
+					<div class="large-7 column">
+						<div class="content-box">
+							7 columns
+						</div>
+					</div>
+					<div class="large-5 column">
+						<div class="content-box">
+							5 columns
+						</div>
+					</div>
+				</div>
+
+				<div class="row example">
+					<div class="large-8 column">
+						<div class="content-box">
+							8 columns
+						</div>
+					</div>
+					<div class="large-4 column">
+						<div class="content-box">
+							4 columns
+						</div>
+					</div>
+				</div>
+
+				<div class="row example">
+					<div class="large-9 column">
+						<div class="content-box">
+							9 columns
+						</div>
+					</div>
+					<div class="large-3 column">
+						<div class="content-box">
+							3 columns
+						</div>
+					</div>
+				</div>
+
+				<div class="row example">
+					<div class="large-10 column">
+						<div class="content-box">
+							10 columns
+						</div>
+					</div>
+					<div class="large-2 column">
+						<div class="content-box">
+							2 columns
+						</div>
+					</div>
+				</div>
+
+				<div class="row example">
+					<div class="large-11 column">
+						<div class="content-box">
+							11 columns
+						</div>
+					</div>
+					<div class="large-1 column">
+						<div class="content-box">
+							1 column
 						</div>
 					</div>
 				</div>
