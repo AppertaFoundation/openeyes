@@ -1,0 +1,41 @@
+{
+	"identifier": [
+		{
+			"use": "official",
+			"label": "NHS Number",
+			"system": {":match": "http://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp"},
+			"value": {":subst": "nhs_num"}
+		},
+		{
+			"label": {":match": "Hospital Number"},
+			"value": {":subst": "hos_num"}
+		}
+	],
+	"name": [
+		{
+			"use": {":match": "usual"},
+			"family": [{":subst": "family_name"}],
+			"given": [{":subst": "given_name"}],
+			"prefix": [{":subst": "title"}]
+		}
+	],
+	"telecom": [
+		{
+			"system": {":match": "phone"},
+			"value": {":subst": "primary_phone"},
+			"use": "home"
+		}
+	],
+	"gender": {
+		"coding": [
+			{
+				"system": {":match": "http://hl7.org/fhir/v3/AdministrativeGender"},
+				"code": {":subst": "gender"}
+			}
+		]
+	},
+	"birthDate": {":subst": "birth_date"},
+	"deceasedDateTime": {":subst": "date_of_death"},
+	"address": {":subst": "addresses"},
+	"careProvider": {":subst": "care_providers"}
+}

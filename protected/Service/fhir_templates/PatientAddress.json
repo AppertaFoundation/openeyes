@@ -1,0 +1,25 @@
+{
+	"extension": [
+		{
+			"url": "http://openeyes.org.uk/fhir/profile/extensions#preferredCorrespondAddress",
+			"valueBoolean": {":subst": "correspond"}
+		},
+		{
+			"url": "http://openeyes.org.uk/fhir/profile/extensions#preferredTransportAddress",
+			"valueBoolean": {":subst": "transport"}
+		}
+	],
+	"use": {":subst": "use"},
+	"line": [
+		{":subst": "line1"},
+		{":subst": "line2"}
+	],
+	"city": {":subst": "city"},
+	"state": {":subst": "state"},
+	"zip": {":subst": "zip"},
+	"country": {":subst": "country"},
+	"period": {
+		"start": {":subst": "date_start"},
+		"end": {":subst": "date_end"}
+	}
+}

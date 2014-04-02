@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"use":{"type":"AddressUse","plural":false},"text":{"type":"string","plural":false},"line":{"type":"string","plural":true},"city":{"type":"string","plural":false},"state":{"type":"string","plural":false},"zip":{"type":"string","plural":false},"country":{"type":"string","plural":false},"period":{"type":"Period","plural":false}}

@@ -1,0 +1,17 @@
+{
+	"resourceType": "Bundle",
+	"title": {":subst": "title"},
+	"id": {":subst": "id"},
+	"link": [
+		{
+			"rel": "self",
+			"href": {":subst": "self_url"}
+		},
+		{
+			"rel": "base",
+			"href": {":subst": "base_url"}
+		}
+	],
+	"updated": {":subst": "updated"},
+	"entry": {":subst": "entries"}
+}

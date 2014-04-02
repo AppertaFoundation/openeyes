@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"system":{"type":"uri","plural":false},"code":{"type":"code","plural":false},"equivalence":{"type":"ConceptMapEquivalence","plural":false},"comments":{"type":"string","plural":false},"product":{"type":"ConceptMap.DependsOn","plural":true}}

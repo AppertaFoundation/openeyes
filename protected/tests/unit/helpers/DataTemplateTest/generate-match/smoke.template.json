@@ -1,0 +1,14 @@
+{
+	"id": {":subst": "id"},
+	"type": {":match": "foo"},
+	"things": [
+		{
+			"name": {":match": "thing1"},
+			"value": {":subst": "thing1"}
+		},
+		{
+			"name": {":match": "thing2"},
+			"value": {":subst": "thing2"}
+		}
+	]
+}

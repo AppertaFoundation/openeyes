@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"title":{"type":"string","plural":false},"code":{"type":"CodeableConcept","plural":false},"subject":{"type":"ResourceReference","plural":false},"content":{"type":"ResourceReference","plural":false},"section":{"type":"Composition.Section","plural":true}}

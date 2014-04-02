@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"type":{"type":"CodeableConcept","plural":false},"outcome":{"type":"CodeableConcept","plural":false},"onsetAge":{"type":"Age","plural":false},"onsetRange":{"type":"Range","plural":false},"onsetString":{"type":"string","plural":false},"note":{"type":"string","plural":false}}

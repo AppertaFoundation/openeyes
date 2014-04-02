@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patient xmlns="http://hl7.org/fhir">
+  <identifier>
+    <use value="official"/>
+    <label value="NHS Number"/>
+    <system value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp"/>
+    <value value="123456789"/>
+  </identifier>
+  <identifier>
+    <label value="Hospital Number"/>
+    <value value="0123456"/>
+  </identifier>
+  <name>
+    <use value="usual"/>
+    <family value="Lister"/>
+    <given value="Dave"/>
+    <prefix value="Mr"/>
+  </name>
+  <telecom>
+    <system value="phone"/>
+    <value value="01234 567890"/>
+    <use value="home"/>
+  </telecom>
+  <gender>
+    <coding>
+      <system value="http://hl7.org/fhir/v3/AdministrativeGender"/>
+      <code value="M"/>
+    </coding>
+  </gender>
+  <birthDate value="1958-01-10"/>
+  <address>
+    <extension url="http://openeyes.org.uk/fhir/profile/extensions#preferredCorrespondAddress">
+      <valueBoolean value="true"/>
+    </extension>
+    <extension url="http://openeyes.org.uk/fhir/profile/extensions#preferredTransportAddress">
+      <valueBoolean value="false"/>
+    </extension>
+    <line value="231 Fake Street"/>
+    <city value="Sheffield"/>
+    <state value="Yorkshire"/>
+    <zip value="S10 1BE"/>
+    <country value="United Kingdom"/>
+    <period>
+      <start value="1999-09-01"/>
+    </period>
+  </address>
+  <address>
+    <extension url="http://openeyes.org.uk/fhir/profile/extensions#preferredCorrespondAddress">
+      <valueBoolean value="false"/>
+    </extension>
+    <extension url="http://openeyes.org.uk/fhir/profile/extensions#preferredTransportAddress">
+      <valueBoolean value="true"/>
+    </extension>
+    <line value="123 Fake Street"/>
+    <city value="London"/>
+    <zip value="NW3 5GP"/>
+    <country value="United Kingdom"/>
+  </address>
+  <address>
+    <extension url="http://openeyes.org.uk/fhir/profile/extensions#preferredCorrespondAddress">
+      <valueBoolean value="false"/>
+    </extension>
+    <extension url="http://openeyes.org.uk/fhir/profile/extensions#preferredTransportAddress">
+      <valueBoolean value="false"/>
+    </extension>
+    <line value="321 Fake Street"/>
+    <city value="Newcastle"/>
+    <zip value="NE10 3RE"/>
+    <country value="United Kingdom"/>
+    <period>
+      <start value="2005-10-11"/>
+      <end value="2015-05-12"/>
+    </period>
+  </address>
+  <careProvider>
+    <reference value="Practitioner/gp-1"/>
+  </careProvider>
+  <careProvider>
+    <reference value="Organization/prac-3"/>
+  </careProvider>
+  <careProvider>
+    <reference value="Organization/cb-2"/>
+  </careProvider>
+</Patient>

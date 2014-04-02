@@ -182,21 +182,20 @@ class Patient extends BaseActiveRecordVersioned
 	 * @param array $params
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search($params = null)
+	public function search($params = array())
 	{
-		if (!is_array($params)) {
-			$params = array(
-				'pageSize' => 20,
-				'currentPage' => 0,
-				'sortBy' => 'hos_num*1',
-				'sortDir' => 'asc',
-			);
-		}
+		$params += array(
+			'pageSize' => 20,
+			'currentPage' => 0,
+			'sortBy' => 'hos_num*1',
+			'sortDir' => 'asc',
+		);
 
 		$criteria=new CDbCriteria;
+		$criteria->compare('t.id', $this->id);
 		$criteria->join = "JOIN contact ON contact_id = contact.id";
-		$criteria->compare('LOWER(contact.first_name)',strtolower($params['first_name']), false);
-		$criteria->compare('LOWER(contact.last_name)',strtolower($params['last_name']), false);
+		if (isset($params['first_name'])) $criteria->compare('LOWER(contact.first_name)',strtolower($params['first_name']), false);
+		if (isset($params['last_name'])) $criteria->compare('LOWER(contact.last_name)',strtolower($params['last_name']), false);
 		if (strlen($this->nhs_num) == 10) {
 			$criteria->compare('nhs_num',$this->nhs_num, false);
 		} else {

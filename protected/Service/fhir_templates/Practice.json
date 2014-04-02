@@ -1,0 +1,18 @@
+{
+	"identifier": [
+		{
+			"use": "official",
+			"label": "Organisation Code",
+			"system": {":match": "http://www.datadictionary.nhs.uk/data_dictionary/attributes/o/org/organisation_code_de.asp"},
+			"value": {":subst": "code"}
+		}
+	],
+	"telecom": [
+		{
+			"system": {":match": "phone"},
+			"value": {":subst": "primary_phone"},
+			"use": "work"
+		}
+	],
+	"address": [ {":subst": "address"} ]
+}

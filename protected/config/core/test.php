@@ -46,4 +46,7 @@ return array(
 			'password' => '_OE_TESTDB_PASSWORD_',
 		),
 	),
+	'params' => array(
+		'rest_test_base_url' => 'http://localhost/api',
+	),
 );

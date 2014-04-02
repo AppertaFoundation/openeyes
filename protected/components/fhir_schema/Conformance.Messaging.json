@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"endpoint":{"type":"uri","plural":false},"reliableCache":{"type":"integer","plural":false},"documentation":{"type":"string","plural":false},"event":{"type":"Conformance.Event","plural":true}}

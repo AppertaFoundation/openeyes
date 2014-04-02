@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"severity":{"type":"IssueSeverity","plural":false},"type":{"type":"Coding","plural":false},"details":{"type":"string","plural":false},"location":{"type":"string","plural":true}}

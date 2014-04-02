@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patient xmlns="http://hl7.org/fhir">
+  <address>
+    <line id="1" value="Foo"/>
+    <line value="Bar"/>
+    <line>
+      <extension url="http://example.com/1">
+        <valueString value="foo"/>
+      </extension>
+    </line>
+  </address>
+</Patient>

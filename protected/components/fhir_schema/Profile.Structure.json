@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"type":{"type":"code","plural":false},"name":{"type":"string","plural":false},"publish":{"type":"boolean","plural":false},"purpose":{"type":"string","plural":false},"element":{"type":"Profile.Element","plural":true},"searchParam":{"type":"Profile.SearchParam","plural":true}}

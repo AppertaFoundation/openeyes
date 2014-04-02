@@ -1,0 +1,19 @@
+<Organization xmlns="http://hl7.org/fhir">
+  <identifier>
+    <use value="official"/>
+    <label value="Organisation Code"/>
+    <system value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/o/org/organisation_code_de.asp"/>
+    <value value="12345"/>
+  </identifier>
+  <telecom>
+    <system value="phone"/>
+    <value value="01234567890"/>
+    <use value="work"/>
+  </telecom>
+  <address>
+    <line value="123 Fake Street"/>
+    <city value="London"/>
+    <zip value="NW3 5JK"/>
+    <country value="United Kingdom"/>
+  </address>
+</Organization>
