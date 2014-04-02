@@ -544,13 +544,10 @@ class OEMigration extends CDbMigration
 	}
 
 	public function getInsertId($table){
-		$tableExists = $this->dbConnection->getSchema()->getTable($table);
-		if(!$tableExists)
-			throw new OEMigrationException('Table ' . $table . ' does not exist');
-		$hasId = $this->dbConnection->createCommand('SHOW COLUMNS FROM ' . $table .  ' LIKE \'id\'')->execute();
-		if(!$hasId)
-			return null;
-		return $this->dbConnection->getLastInsertID($table);
+		$schema = $this->dbConnection->getSchema()->getTable($table);
+		if (!$schema) throw new OEMigrationException('Table ' . $table . ' does not exist');
+		if ($schema->primaryKey != 'id') return null;
+		return $this->dbConnection->getLastInsertID($schema->sequenceName);
 	}
 
 	public function getInsertReferentialObjectValue($object_type, $pointer){
