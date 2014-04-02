@@ -112,7 +112,7 @@ class LaserContext extends PageObjectContext
          * @var laser $laserPage
          */
         $laserPage = $this->getPage('laser');
-        $laserPage->laserValiditionCheck();
+        $laserPage->laserValidationCheck();
     }
 
     /**

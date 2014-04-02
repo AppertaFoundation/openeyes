@@ -403,9 +403,16 @@ class OperationNoteContext extends PageObjectContext
         $opNote->saveOpNote();
     }
 
-
-
-
-
+    /**
+     * @Then /^I save the Operation Note and confirm it has been created successfully$/
+     */
+    public function iSaveTheOperationNoteAndConfirmItHasBeenCreatedSuccessfully()
+    {
+        /**
+         * @var OperationNote $opNote
+         */
+        $opNote = $this->getPage('OperationNote');
+        $opNote->saveOpNoteAndConfirm();
+    }
 
 }

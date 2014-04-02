@@ -1,4 +1,6 @@
 <?php
+use Behat\Behat\Exception\BehaviorException;
+
 class OperationNote extends OpenEyesPage
 {
     protected $path = "/site/OphTrOperationbooking/Default/create?patient_id={parentId}";
@@ -36,9 +38,8 @@ class OperationNote extends OpenEyesPage
         'perOpDrug' => array('xpath' => "//*[@id='Drug']"),
         'operationComments' => array('xpath' => "//*[@id='Element_OphTrOperationnote_Comments_comments']"),
         'postOpInstructions' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphTrOperationnote_Comments_postop_instructions']"),
-        'saveOpNote' => array('xpath' => "//*[@id='et_save']")
-
-
+        'saveOpNote' => array('xpath' => "//*[@id='et_save']"),
+        'savedOkMessage' => array('xpath' => "//*[contains(text(),'Operation note created')]")
     );
 
     public function emergencyBooking ()
@@ -154,7 +155,7 @@ class OperationNote extends OpenEyesPage
     public function anaestheticAgent ($agent)
     {
 //        $this->getElement('anaestheticAgents')->selectOption($agent);
-        #TEST DATA REQUIRED HERE
+        #TODO TEST DATA REQUIRED HERE
     }
 
     public function complications ($complication)
@@ -185,7 +186,7 @@ class OperationNote extends OpenEyesPage
     public function perOpDrug ($drug)
     {
 //        $this->getElement('perOpDrug')->selectOption($drug);
-          #TEST DATA REQUIRED HERE
+          #TODO TEST DATA REQUIRED HERE
     }
 
     public function operationComments ($comments)
@@ -196,12 +197,32 @@ class OperationNote extends OpenEyesPage
     public function postOpInstructions ($instructions)
     {
 //        $this->getElement('postOpInstructions')->selectOption($instructions);
-        #TEST DATA REQUIRED HERE
+        #TODO TEST DATA REQUIRED HERE
     }
 
     public function saveOpNote ()
     {
         $this->getElement('saveOpNote')->click();
     }
+
+    protected function hasOpNoteSaved ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('savedOkMessage')->getXpath());;
+    }
+
+    public function saveOpNoteAndConfirm ()
+    {
+        $this->getElement('saveOpNote')->click();
+
+        if ($this->hasOpNoteSaved()) {
+            print "Operation Note has been saved OK";
+        }
+
+        else {
+            throw new BehaviorException("WARNING!!!  Operation Note has NOT been saved!!  WARNING!!");
+        }
+    }
+
+
 
 }
