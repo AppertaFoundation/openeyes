@@ -19,6 +19,9 @@
 .row.example {
 	margin-bottom: 16px;
 }
+.row.centered-example {
+	margin-bottom: 0;
+}
 .col-width {
 	display: block;
 	font-size: 12px;
@@ -35,12 +38,8 @@
 			<h1 class="badge">OpenEyes Grid</h1>
 
 			<div class="box content">
-				<div class="row">
-					<div class="large-12 column">
-						<h2>Overview</h2>
-					</div>
-				</div>
 				<div class="box generic">
+					<h2>Overview</h2>
 					<p>We use a grid to layout the interface. There's many advantages to using a grid, but mostly it allows for consistency and for responsive layouts. We use
 					the zurb foundation grid which is extremely flexible</p>
 					<ul>
@@ -56,13 +55,17 @@
 						<li>Each column will have a gutter width of 12px on either side, thus you'll have a 12px margin on either side of the grid, and
 							a 24px gutter width between columns</li>
 					</ul>
-					<p><em><strong>Please note:</strong> Although we have tried to use the grid to layout everything, in some cases we had to customize the grid to fit in with existing designs (like the events sidebar).</em></p>
+					<p>
+						<em><strong>Please note:</strong>
+						Although we have tried to use the grid to layout everything, in some cases we had to customize the grid to fit in with existing designs (like the events sidebar), thus
+						the traditional 12 column does not fit in to the event screens.</em></p>
 				</div>
 
-				<div class="row">
-					<div class="large-12 column">
-						<h2>Example columns</h2>
-					</div>
+				<hr />
+
+				<div class="box generic">
+					<h2>Example columns</h2>
+					<p>This demonstrates how split a 12 column grid into even column widths.</p>
 				</div>
 
 				<!-- 12 columns -->
@@ -210,9 +213,15 @@
 					</div>
 				</div>
 
+				<hr />
+
+				<div class="box generic">
+					<h2>Different length columns</h2>
+					<p>This demonstrates how split a 12 column grid into even variable columns widths.</p>
+				</div>
+
 				<div class="row">
 					<div class="large-12 column">
-						<h2>Different length columns</h2>
 					</div>
 				</div>
 
@@ -346,10 +355,12 @@
 					</div>
 				</div>
 
-				<div class="row">
-					<div class="large-12 column">
-						<h2>Nested columns</h2>
-					</div>
+				<hr />
+
+				<div class="box generic">
+					<h2>Nested columns</h2>
+					<p>Columns can be nested infinitely. Remember, column widths are set as a percentage of
+					the container width.</p>
 				</div>
 
 				<div class="row example">
@@ -373,6 +384,90 @@
 									8 columns
 								</div>
 							</div>
+						</div>
+					</div>
+				</div>
+
+				<hr />
+
+				<div class="box generic">
+					<h2>Centered columns</h2>
+				</div>
+
+				<div class="row example centered-example">
+					<div class="large-1 large-centered column">
+						<div class="content-box">
+							1 column centered
+						</div>
+					</div>
+				</div>
+				<div class="row example centered-example">
+					<div class="large-2 large-centered column">
+						<div class="content-box">
+							2 columns centered
+						</div>
+					</div>
+				</div>
+				<div class="row example centered-example">
+					<div class="large-3 large-centered column">
+						<div class="content-box">
+							3 columns centered
+						</div>
+					</div>
+				</div>
+				<div class="row example centered-example">
+					<div class="large-4 large-centered column">
+						<div class="content-box">
+							4 columns centered
+						</div>
+					</div>
+				</div>
+				<div class="row example centered-example">
+					<div class="large-5 large-centered column">
+						<div class="content-box">
+							5 columns centered
+						</div>
+					</div>
+				</div>
+				<div class="row example centered-example">
+					<div class="large-6 large-centered column">
+						<div class="content-box">
+							6 columns centered
+						</div>
+					</div>
+				</div>
+				<div class="row example centered-example">
+					<div class="large-7 large-centered column">
+						<div class="content-box">
+							7 columns centered
+						</div>
+					</div>
+				</div>
+				<div class="row example centered-example">
+					<div class="large-8 large-centered column">
+						<div class="content-box">
+							8 columns centered
+						</div>
+					</div>
+				</div>
+				<div class="row example centered-example">
+					<div class="large-9 large-centered column">
+						<div class="content-box">
+							9 columns centered
+						</div>
+					</div>
+				</div>
+				<div class="row example centered-example">
+					<div class="large-10 large-centered column">
+						<div class="content-box">
+							10 columns centered
+						</div>
+					</div>
+				</div>
+				<div class="row example centered-example">
+					<div class="large-11 large-centered column">
+						<div class="content-box">
+							11 columns centered
 						</div>
 					</div>
 				</div>

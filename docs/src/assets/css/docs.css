@@ -63,6 +63,38 @@ pre.prettyprint {
 	width: 550px;
 }
 
+/* Toggle grid */
+
+.show-grid-anchor {
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	background: rgba(255,255,255,0.5);
+	padding: 4px;
+	font-size: 13px;
+	z-index: 999;
+}
+.show-grid-anchor:hover {
+	background: rgba(255,255,255,0.5);
+}
+.grid-overlay {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 998;
+	display: none;
+}
+.grid-overlay.style-1 {
+	background: url(../img/grid/columns.png) no-repeat center top;
+	opacity: 0.6;
+}
+.grid-overlay.style-2 {
+	background: url(../img/grid/columns-green.png) no-repeat center top;
+	opacity: 0.3;
+}
+
 /* Styleguide */
 
 .kss-footer {

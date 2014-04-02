@@ -4,6 +4,7 @@
 
 		function init() {
 			addSectionClassName();
+			initGridTools();
 			initSyntaxHighlight();
 			initNavBar();
 			initMarkupAnchors();
@@ -17,6 +18,37 @@
 				section = section.replace(/\s+/g, '-').toLowerCase();
 				$('.container.main').addClass('section-'+section);
 			}
+		}
+
+		function initGridTools() {
+
+			if ($(document.body).hasClass('jsdoc')) {
+				return;
+			}
+
+			var anchor = $('<a href="#" class="show-grid-anchor">Toggle grid</a>');
+			anchor.appendTo(document.body);
+
+			var grid = $('<div />', { 'class': 'grid-overlay' });
+			grid.appendTo(document.body);
+
+			var style = 0;
+
+			anchor.on('click', function(e) {
+				e.preventDefault();
+				if (!style) {
+					grid.show();
+				}
+				style++;
+				if (style === 3) {
+					style = 0;
+					grid.hide();
+				} else {
+					grid.removeClass(function(index, className) {
+						return (className.match(/(style-[0-9]+)/g) || []).join(' ');
+					}).addClass('style-'+style);
+				}
+			});
 		}
 
 		/** Add syntax highlighting to code blocks */
