@@ -12,6 +12,7 @@ module.exports = function(grunt) {
 		docs: require('./docs'),
 		hub: require('./hub'),
 		mocha: require('./mocha'),
+		connect: require('./connect'),
 		test: require('./test')
 	};
 };
