@@ -16,7 +16,7 @@
  * @property MeasurementType $measurementType
  * @property Patient $patient
  */
-class BasePatientMeasurement extends BaseActiveRecord {
+class BasePatientMeasurement extends BaseActiveRecordVersioned {
 
 	public $patient_measurement_id;
 	public $patientMeasurement;
