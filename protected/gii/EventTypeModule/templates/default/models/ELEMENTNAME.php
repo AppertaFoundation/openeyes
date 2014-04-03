@@ -65,8 +65,6 @@ if (isset($element)) {
 
 class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEventTypeElement
 {
-	public $service;
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return the static model class
