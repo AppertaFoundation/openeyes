@@ -22,7 +22,10 @@ class PatientTest extends CDbTestCase
 	public $model;
 	public $fixtures = array(
 		'patients' => 'Patient',
-		'addresses' => 'Address'
+		'addresses' => 'Address',
+		'Disorder',
+		'SecondaryDiagnosis',
+		'Specialty',
 	);
 
 	public function dataProvider_Search()
@@ -56,33 +59,12 @@ class PatientTest extends CDbTestCase
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers Patient::model
 	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
 		$this->assertEquals('Patient', get_class(Patient::model()), 'Class name should match model.');
-	}
-
-	/**
-	 * @covers Patient::behaviors
-	 * @todo   Implement testBehaviors().
-	 */
-	public function testBehaviors()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
 	}
 
 	/**
@@ -98,48 +80,10 @@ class PatientTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers Patient::tableName
-	 * @todo   Implement testTableName().
-	 */
-	public function testTableName()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers Patient::rules
-	 * @todo   Implement testRules().
-	 */
-	public function testRules()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers Patient::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers Patient::attributeLabels
-	 * @todo   Implement testAttributeLabels().
 	 */
 	public function testAttributeLabels()
 	{
-
 		$expected = array(
 			'id' => 'ID',
 			'pas_key' => 'PAS Key',
@@ -160,19 +104,6 @@ class PatientTest extends CDbTestCase
 	 */
 	public function testSearch_nr()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers Patient::search
-	 * @todo   Implement testSearch().
-	 */
-	public function testSearch()
-	{
-
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete(
 			'This test has not been implemented yet.'
@@ -1053,14 +984,15 @@ class PatientTest extends CDbTestCase
 
 	/**
 	 * @covers Patient::getSdl
-	 * @todo   Implement testGetSdl().
 	 */
 	public function testGetSdl()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		$this->assertEquals('left myopia, right retinal lattice degeneration and bilateral posterior vitreous detachment', $this->patients('patient2')->getSdl());
+	}
+
+	public function testGetSyd()
+	{
+		$this->assertEquals('diabetes mellitus type 1 and essential hypertension', $this->patients('patient2')->getSyd());
 	}
 
 	/**
@@ -1158,5 +1090,4 @@ class PatientTest extends CDbTestCase
 			'This test has not been implemented yet.'
 		);
 	}
-
 }

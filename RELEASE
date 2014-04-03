@@ -22,6 +22,10 @@ This document is intended to summarise the changes made for each release. It sho
 + User has the ability to save a CVI Status with a future date
 + Orphaned address entries
 
+1.5.7
+-----
++ Add systemic diagnoses shortcode
+
 1.5.6
 -----
 + Adapt multiselect widget to work without elements

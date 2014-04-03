@@ -75,7 +75,7 @@ class ComponentStubMatcher implements PHPUnit_Framework_MockObject_Matcher_Invoc
 	{
 		if ($invocation->methodName == '__set') {
 			$this->properties[$invocation->parameters[0]] = $invocation->parameters[1];
-		} elseif ($invocation->methodName == '__get') {
+		} elseif ($invocation->methodName == '__get' || $invocation->methodName == '__isset') {
 			return array_key_exists($invocation->parameters[0], $this->properties);
 		} else {
 			return $this->methodNameToProperty($invocation, true);
@@ -86,6 +86,8 @@ class ComponentStubMatcher implements PHPUnit_Framework_MockObject_Matcher_Invoc
 	{
 		if ($invocation->methodName == '__get') {
 			return $this->properties[$invocation->parameters[0]];
+		} else if ($invocation->methodName == '__isset') {
+			return isset($this->properties[$invocation->parameters[0]]);
 		} else {
 			return $this->methodNameToProperty($invocation, false);
 		}
