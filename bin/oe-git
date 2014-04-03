@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ ! $1 ]; then
+if [ ! "$1" ]; then
 	echo "A wrapper for git which operates on OpenEyes core and all cloned modules"
 	echo "Usage is the same as git, git help follows"
 	echo ""
