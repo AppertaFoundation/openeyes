@@ -22,7 +22,7 @@ $(document).ready(function() {
 		if (m = window.location.href.match(/\/update\/[0-9]+/)) {
 			window.location.href = window.location.href.replace('/update/','/view/');
 		} else {
-			window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
+			window.location.href = baseUrl+'/patient/episodes/'+OE_patient_id;
 		}
 		e.preventDefault();
 	});
