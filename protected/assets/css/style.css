@@ -4674,6 +4674,19 @@ tfoot.pagination-container .pagination li {
 .event.episode {
   border-color: #a29d8a;
 }
+/* line 20, ../sass/openeyes/components/events/_episode.scss */
+.event.episode .event-content {
+  background-image: url('../img/_elements/icons/event/watermark/_episode.png?1396605975');
+}
+
+/* line 28, ../sass/openeyes/components/events/_episode.scss */
+.episodes-list .event-header {
+  padding: 0;
+}
+/* line 30, ../sass/openeyes/components/events/_episode.scss */
+.episodes-list .event-header .button-bar {
+  display: none;
+}
 
 /* line 17, ../sass/openeyes/components/events/_elements.scss */
 .element-data, .edit .element-fields, .sub-element-data, .edit .sub-element-fields, .element-eye, .sub-elements {

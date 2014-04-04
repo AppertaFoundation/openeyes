@@ -28,12 +28,12 @@
 
 		<?php $this->renderPartial('//patient/episodes_sidebar')?>
 
-		<div class="large-10 column event episode highlight-fields view">
+		<div class="large-10 column event episode highlight-fields view <?php echo isset($cssClass) ? $cssClass : '';?>">
 
 			<?php $this->renderPartial('//patient/event_tabs')?>
 
 			<div class="event-content">
-					<?php echo $content; ?>
+				<?php echo $content; ?>
 			</div>
 		</div>
 	</div>

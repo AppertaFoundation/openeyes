@@ -17,5 +17,18 @@
 .event {
 	&.episode {
 		border-color: #a29d8a;
+		.event-content {
+			background-image: image-url("_elements/icons/event/watermark/_episode.png");
+		}
+	}
+}
+
+.episodes-list {
+	// Hide the event header for the episodes list view.
+	.event-header {
+		padding: 0;
+		.button-bar {
+			display: none;
+		}
 	}
 }

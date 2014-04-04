@@ -312,6 +312,7 @@ class PatientController extends BaseController
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
 			'site' => $site,
+			'cssClass' => 'episodes-list'
 		));
 	}
 

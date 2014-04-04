@@ -37,73 +37,82 @@ if (!empty($episode)) {
 
 	<?php $this->renderPartial('//base/_messages'); ?>
 
-	<section class="element element-data">
-		<h3 class="data-title">Principal diagnosis:</h3>
-		<div class="data-value highlight">
-			<?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?>
+	<div class="row">
+		<div class="large-9 column">
+
+			<section class="element element-data">
+				<h3 class="data-title">Principal diagnosis:</h3>
+				<div class="data-value highlight">
+					<?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?>
+				</div>
+			</section>
+
+			<section class="element element-data">
+				<h3 class="data-title">Principal eye:</h3>
+				<div class="data-value highlight">
+					<?php echo $episode->eye ? $episode->eye->name : 'None'?>
+				</div>
+			</section>
+
+			<?php
+				$summaryItems = array();
+				if ($episode->subspecialty) {
+					$summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
+				}
+				if (!$summaryItems) {
+					$summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
+				}
+			?>
+			<?php if (count($summaryItems)) {?>}
+				<div class="element element-data event-types">
+					<?php
+					foreach ($summaryItems as $summaryItem) {
+						echo '<h3 id="' . $summaryItem->getClassName() . '" class="data-title">' . $summaryItem->name . ':</h3>' . "\n";
+						Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
+						$this->widget(
+								$summaryItem->getClassName(),
+								array(
+										'episode' => $episode,
+										'event_type' => $summaryItem->event_type,
+								)
+						);
+					}
+					?>
+				</div>
+			<?php }?>
+
+			<section class="element element-data">
+				<div class="row">
+					<div class="large-6 column">
+						<h3 class="data-title">Start Date:</h3>
+						<div class="data-value">
+							<?php echo $episode->NHSDate('start_date')?>
+						</div>
+					</div>
+					<div class="large-6 column">
+						<h3 class="data-title">End date:</h3>
+						<div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></div>
+					</div>
+				</div>
+			</section>
+
+			<section class="element element-data">
+				<div class="row">
+					<div class="large-6 column">
+						<h3 class="data-title">Subspecialty:</h3>
+						<div class="data-value">
+							<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>
+						</div>
+					</div>
+					<div class="large-6 column">
+						<h3 class="data-title">Consultant firm:</h3>
+						<div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None'?></div>
+					</div>
+				</div>
+			</section>
+
 		</div>
-	</section>
-
-	<section class="element element-data">
-		<h3 class="data-title">Principal eye:</h3>
-		<div class="data-value highlight">
-			<?php echo $episode->eye ? $episode->eye->name : 'None'?>
-		</div>
-	</section>
-
-	<div class="element element-data event-types">
-		<?php
-		$summaryItems = array();
-		if ($episode->subspecialty) {
-			$summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
-		}
-		if (!$summaryItems) {
-			$summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
-		}
-
-		foreach ($summaryItems as $summaryItem) {
-			echo '<h3 id="' . $summaryItem->getClassName() . '" class="data-title">' . $summaryItem->name . ':</h3>' . "\n";
-			Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
-			$this->widget(
-					$summaryItem->getClassName(),
-					array(
-							'episode' => $episode,
-							'event_type' => $summaryItem->event_type,
-					)
-			);
-		}
-		?>
 	</div>
-
-	<section class="element element-data">
-		<div class="row">
-			<div class="large-6 column">
-				<h3 class="data-title">Start Date:</h3>
-				<div class="data-value">
-					<?php echo $episode->NHSDate('start_date')?>
-				</div>
-			</div>
-			<div class="large-6 column">
-				<h3 class="data-title">End date:</h3>
-				<div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></div>
-			</div>
-		</div>
-	</section>
-
-	<section class="element element-data">
-		<div class="row">
-			<div class="large-6 column">
-				<h3 class="data-title">Subspecialty:</h3>
-				<div class="data-value">
-					<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>
-				</div>
-			</div>
-			<div class="large-6 column">
-				<h3 class="data-title">Consultant firm:</h3>
-				<div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None'?></div>
-			</div>
-		</div>
-	</section>
 
 	<div class="metadata">
 		<span class="info">
@@ -112,12 +121,16 @@ if (!empty($episode)) {
 		</span>
 	</div>
 
-	<section class="element element-data">
-		<h3 class="data-title">Episode Status:</h3>
-		<div class="data-value highlight">
-			<?php echo $episode->status->name?>
+	<div class="row">
+		<div class="large-9 column">
+			<section class="element element-data">
+				<h3 class="data-title">Episode Status:</h3>
+				<div class="data-value highlight">
+					<?php echo $episode->status->name?>
+				</div>
+			</section>
 		</div>
-	</section>
+	</div>
 
 	<div class="metadata">
 		<span class="info">
@@ -126,81 +139,4 @@ if (!empty($episode)) {
 		</span>
 	</div>
 
-<?php } else { // hide the episode border ?>
-	<script type="text/javascript">
-		$('div#episodes_details').hide();
-	</script>
-<?php }?>
-
-<script type="text/javascript">
-	$('#closelink').click(function() {
-		$('#dialog-confirm').dialog({
-			resizable: false,
-			height: 140,
-			modal: false,
-			buttons: {
-				"Close episode": function() {
-					$.ajax({
-						url: $('#closelink').attr('href'),
-						type: 'GET',
-						success: function(data) {
-							$('#episodes_details').show();
-							$('#episodes_details').html(data);
-						}
-					});
-					$(this).dialog('close');
-				},
-				Cancel: function() {
-					$(this).dialog('close');
-				}
-			},
-			open: function() {
-				$(this).parents('.ui-dialog-buttonpane button:eq(1)').focus();
-			}
-		});
-		return false;
-	});
-</script>
-
-<?php if (empty($episode->end_date)) {?>
-	<div style="text-align:right; position:relative; ">
-		<!--button id="close-episode" type="submit" value="submit" class="wBtn_close-episode ir">Close Episode</button-->
-
-		<div id="close-episode-popup" class="popup red" style="display: none;">
-			<p style="text-align:left;">You are closing this episode. This can not be undone. Once an episode is closed it can not be re-opened.</p>
-			<p><strong>Are you sure?</strong></p>
-			<div class="action_options">
-				<span class="aBtn"><a id="yes-close-episode" href="#"><strong>Yes, I am</strong></a></span>
-				<span class="aBtn"><a id="no-close-episode" href="#"><strong>No, cancel this.</strong></a></span>
-			</div>
-		</div>
-	</div>
-
-	<script type="text/javascript">
-		$('#close-episode').unbind('click').click(function(e) {
-			e.preventDefault();
-			$('#close-episode-popup').slideToggle(100);
-			return false;
-		});
-
-		$('#no-close-episode').unbind('click').click(function(e) {
-			e.preventDefault();
-			$('#close-episode-popup').slideToggle(100);
-			return false;
-		});
-
-		$('#yes-close-episode').unbind('click').click(function(e) {
-			e.preventDefault();
-			$('#close-episode-popup').slideToggle(100);
-			$.ajax({
-				url: '<?php echo Yii::app()->createUrl('clinical/closeepisode/'.$episode->id)?>',
-				success: function(data) {
-					$('#event-content').html(data);
-					return false;
-				}
-			});
-
-			return false;
-		});
-	</script>
-<?php }?>
+<?php } ?>
