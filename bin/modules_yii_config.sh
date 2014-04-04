@@ -37,7 +37,7 @@ then
     OphTrIntravitrealinjection
     OphCoTherapyapplication
     OphTrLaser
-    MEHPAS
+    mehpas
     " > .enabled-modules
 elif [ "$execVal" == "SingleModule" ]
 then
