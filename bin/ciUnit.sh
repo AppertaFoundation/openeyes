@@ -6,6 +6,13 @@ echo "Current script dir: $CSDIR"
 . $CSDIR/ciFunctions.sh
 
 branchVal=$(argValue branch)
+
+if [ "${#branchVal}" == "0" ]
+then
+    branchVal=develop
+fi
+git checkout $branchVal
+
 echo "branchVal is $branchVal length ${#branchVal}  "
 
 execVal=$(argValue exec)

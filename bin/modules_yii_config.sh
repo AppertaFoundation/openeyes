@@ -7,11 +7,6 @@ echo "Current script dir: $CSDIR"
 
 branchVal=$(argValue branch)
 
-if [ "${#branchVal}" == "0" ]
-then
-    branchVal=develop
-fi
-
 echo "BbranchVal is $branchVal"
 
 execVal=$(argValue exec)
