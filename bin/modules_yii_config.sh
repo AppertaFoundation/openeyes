@@ -77,5 +77,5 @@ echo 'Moved config files'
 #git clone modules
 echo "Cloning/checkout modules"
 bin/clone-modules.sh $branchVal
-git checkout $branchVal
-bin/oe-git pull
+#git checkout $branchVal
+#bin/oe-git pull

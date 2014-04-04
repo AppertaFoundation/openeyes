@@ -28,8 +28,8 @@ do
             #git clone git@github.com:openeyes/$module.git $modules_path/$module
             git clone https://github.com/openeyes/$module $modules_path/$module
         else
-            # Fetch latest version
-            git fetch origin
+            # Pull latest version
+            git pull #fetch does not update files
         fi
         cd $modules_path/$module
         echo "Switching module $module branch to $current_branch..."
