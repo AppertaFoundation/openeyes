@@ -11,12 +11,12 @@ else
 fi
 
 if [ ! -f $enabled_modules ]; then
-    echo "File $enabled_modules doesn't exists. Please create one."
+    echo "clone-modules.sh: File $enabled_modules doesn't exists. Please create one."
     exit 1
 fi
 
 if [ ! -f $local_config_file ]; then
-    echo "File $local_config_file doesn't exists. Please create one."
+    echo "clone-modules.sh: File $local_config_file doesn't exists. Please create one."
     exit 1
 fi
 
@@ -24,7 +24,7 @@ while read module
 do
     if [ ! -e $module ]; then 
         if [ ! -d "$modules_path/$module" ]; then
-            echo "Cloning $module module..." git@github.com:openeyes/$module.git
+            echo "clone-modules.sh: Cloning $module module..." git@github.com:openeyes/$module.git
             #git clone git@github.com:openeyes/$module.git $modules_path/$module
             git clone https://github.com/openeyes/$module $modules_path/$module
         else
@@ -32,10 +32,13 @@ do
             git pull #fetch does not update files
         fi
         cd $modules_path/$module
-        echo "Switching module $module branch to $current_branch..."
+        echo "clone-modules.sh: Switching module $module branch to $current_branch..."
         git checkout $current_branch
+        echo "clone-modules.sh: git reset --hard HEAD"
         git reset --hard HEAD
+        echo "clone-modules.sh: git clean -xdf"
         git clean -xdf
+        echo "clone-modules.sh: cd $running_path"
         cd $running_path
     fi
 done < $enabled_modules
