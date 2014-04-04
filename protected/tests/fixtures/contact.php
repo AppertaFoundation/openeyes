@@ -71,5 +71,13 @@ return array(
 		'last_name' => 'Shore',
 		'qualifications' => '',
 		'contact_label_id' => 1
-	)
+	),
+	'contact6' => array(
+		'id' => 6,
+		'nick_name' => 'Dave',
+		'primary_phone' => '01234 567 890',
+		'title' => 'Mr',
+		'first_name' => 'Dave',
+		'last_name' => 'Lister',
+	),
 );
