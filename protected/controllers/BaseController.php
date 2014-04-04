@@ -80,11 +80,9 @@ class BaseController extends Controller
 		//FIXME: currently we are resetting the assetmanager list for PDFs because of the TCPDF processing of
 		// stylesheets. Ideally we should suppress the inclusion here. (Or we should be using a different approach
 		// to render the HTML template for the TCPDF engine)
-		
+
 		// Register the main stylesheet without pre-registering to ensure it's always output first.
-		if (!$this->isPrintAction($this->action->id)) {
-			$assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
-		}
+		$assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
 
 		// Prevent certain assets from being outputted in certain conditions.
 		$assetManager->adjustScriptMapping();
