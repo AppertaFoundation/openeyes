@@ -102,6 +102,39 @@ class ComponentStubGeneratorTest extends PHPUnit_Framework_TestCase
 		$this->stub->other_get_method_prop = 'baz';
 		$this->assertEquals('baz', $this->stub->getOther_get_method_prop());
 	}
+
+	public function testIsset_NormalProp()
+	{
+		$this->assertTrue(isset($this->stub->normal_prop));
+	}
+
+	public function testIsset_MagicGetProp()
+	{
+		$this->assertTrue(isset($this->stub->magic_get_prop));
+	}
+
+	public function testIsset_GetMethodProp()
+	{
+		$this->assertTrue(isset($this->stub->get_method_prop));
+	}
+
+	public function testIsset_AddedNormalProp()
+	{
+		$this->stub->other_normal_prop = 'baz';
+		$this->assertTrue(isset($this->stub->other_normal_prop));
+	}
+
+	public function testIsset_AddedMagicGetProp()
+	{
+		$this->stub->other_magic_get_prop = 'baz';
+		$this->assertTrue(isset($this->stub->other_magic_get_prop));
+	}
+
+	public function testIsset_AddedGetMethodProp()
+	{
+		$this->stub->other_get_method_prop = 'baz';
+		$this->assertTrue(isset($this->stub->other_get_method_prop));
+	}
 }
 
 class ComponentStubGeneratorTest_ExampleComponent extends CComponent

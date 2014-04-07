@@ -65,8 +65,6 @@ if (isset($element)) {
 
 class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEventTypeElement
 {
-	public $service;
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return the static model class
@@ -89,13 +87,9 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
 			array('event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['type'] != 'Multi select') echo $field['name'] . ", "; if ($field['type'] == 'EyeDraw' && @$field['extra_report']) { echo $field['name'].'2, '; } } } ?>', 'safe'),
 			array('<?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['required'] && $field['type'] != 'Multi select') { echo $field['name'] . ", "; } } } ?>', 'required'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
 			array('id, event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['type'] != 'Multi select') echo $field['name'] . ", "; } } ?>', 'safe', 'on' => 'search'),
 <?php if (isset($element))
 	foreach ($element['fields'] as $field) {
@@ -136,8 +130,6 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
 			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
 			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
@@ -174,9 +166,6 @@ if (isset($element)) {
 	 */
 	public function search()
 	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
 		$criteria = new CDbCriteria;
 
 		$criteria->compare('id', $this->id, true);
@@ -198,7 +187,6 @@ if (isset($element)) {
 	public function getSelectedEye()
 	{
 		if (Yii::app()->getController()->getAction()->id == 'create') {
-			// Get the procedure list and eye from the most recent booking for the episode of the current user's subspecialty
 			if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
 				throw new SystemException('Patient not found: '.@$_GET['patient_id']);
 			}
@@ -220,7 +208,6 @@ if (isset($element)) {
 
 	public function getEye()
 	{
-		// Insert your code to retrieve the current eye here
 		return new Eye;
 	}
 <?php }?>
@@ -246,11 +233,6 @@ if (isset($element)) {
 <?php }?>
 <?php }?>
 <?php }?>
-
-	protected function beforeSave()
-	{
-		return parent::beforeSave();
-	}
 
 	protected function afterSave()
 	{
@@ -291,11 +273,6 @@ if (isset($element)) {
 		}?>
 
 		return parent::afterSave();
-	}
-
-	protected function beforeValidate()
-	{
-		return parent::beforeValidate();
 	}
 }
 <?php echo '?>';?>

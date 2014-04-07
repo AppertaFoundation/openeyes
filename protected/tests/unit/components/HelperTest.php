@@ -76,4 +76,63 @@ class HelperTest extends CTestCase
 	{
 		$this->assertEquals($expected, Helper::getAge($dob, $date_of_death, $check_date));
 	}
+
+	public function testExtractValues()
+	{
+		$objects = array(
+			array('disorder' => array('term' => 'term1')),
+			array('disorder' => array('term' => 'term2')),
+			array('disorder' => array()),
+			array(),
+			ComponentStubGenerator::generate(
+				'SecondaryDiagnosis',
+				array('disorder' => ComponentStubGenerator::generate('Disorder', array('term' => 'term3')))
+			),
+			ComponentStubGenerator::generate(
+				'SecondaryDiagnosis',
+				array('disorder' => ComponentStubGenerator::generate('Disorder', array('term' => 'term4')))
+			),
+			ComponentStubGenerator::generate(
+				'SecondaryDiagnosis',
+				array('disorder' => ComponentStubGenerator::generate('Disorder', array('term' => null)))
+			),
+			ComponentStubGenerator::generate(
+				'SecondaryDiagnosis',
+				array()
+			),
+		);
+
+		$expected = array(
+			'term1',
+			'term2',
+			'termDefault',
+			'termDefault',
+			'term3',
+			'term4',
+			'termDefault',
+			'termDefault',
+		);
+
+		$this->assertEquals($expected, Helper::extractValues($objects, 'disorder.term', 'termDefault'));
+	}
+
+	public function testFormatList_Empty()
+	{
+		$this->assertEquals('', Helper::formatList(array()));
+	}
+
+	public function testFormatList_One()
+	{
+		$this->assertEquals('foo', Helper::formatList(array('foo')));
+	}
+
+	public function testFormatList_Two()
+	{
+		$this->assertEquals('foo and bar', Helper::formatList(array('foo', 'bar')));
+	}
+
+	public function testFormatList_Three()
+	{
+		$this->assertEquals('foo, bar and baz', Helper::formatList(array('foo', 'bar', 'baz')));
+	}
 }

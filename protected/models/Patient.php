@@ -1059,14 +1059,17 @@ class Patient extends BaseActiveRecordVersioned
 			}
 		}
 
-		if (count($diagnoses) >1) {
-			$last = array_pop($diagnoses);
-			return implode(', ',$diagnoses).' and '.$last;
-		}
+		return Helper::formatList($diagnoses);
+	}
 
-		if (!empty($diagnoses)) {
-			return array_pop($diagnoses);
-		}
+	/**
+	 * Systemic diagnoses shortcode
+	 *
+	 * @return string
+	 */
+	public function getSyd()
+	{
+		return strtolower(Helper::formatList(Helper::extractValues($this->getSystemicDiagnoses(), 'disorder.term')));
 	}
 
 	public function addPreviousOperation($operation, $side_id, $date)

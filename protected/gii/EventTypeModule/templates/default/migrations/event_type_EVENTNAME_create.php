@@ -126,11 +126,11 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 						$field_label = $element['fields'][$count]['label'];
 						$field_type = $this->getDBFieldSQLType($element['fields'][$count]);
 						if ($field_type) {?>
-				'<?php echo $field_name?>' => '<?php echo $field_type?>', // <?php echo $field_label?>
+				'<?php echo $field_name?>' => '<?php echo $field_type?>',
 
 <?php }
 if (isset($field['extra_report'])) {?>
-				'<?php echo $field_name?>2' => '<?php echo $field_type?>', // <?php echo $field_label?>2
+				'<?php echo $field_name?>2' => '<?php echo $field_type?>',
 
 <?php }
 						$count++;

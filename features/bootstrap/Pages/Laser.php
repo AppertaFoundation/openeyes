@@ -83,7 +83,7 @@ class Laser extends OpenEyesPage
         (bool) $this->find('xpath', $this->getElement('treatmentRightValidationError')->getXpath());
     }
 
-    public function laserValiditionCheck ()
+    public function laserValidationCheck ()
     {
         if ($this->laserValidationError()){
             print "Laser validation errors have been displayed correctly";

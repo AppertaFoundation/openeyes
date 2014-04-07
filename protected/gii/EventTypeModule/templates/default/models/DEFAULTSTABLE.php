@@ -109,29 +109,7 @@ class <?php if (isset($defaults_table)) echo $defaults_table['class']; ?> extend
 		$criteria->compare('name', $this->name, true);
 
 		return new CActiveDataProvider(get_class($this), array(
-				'criteria' => $criteria,
-			));
-	}
-
-	/**
-	 * Set default values for forms on create
-	 */
-	public function setDefaultOptions()
-	{
-	}
-
-	protected function beforeSave()
-	{
-		return parent::beforeSave();
-	}
-
-	protected function afterSave()
-	{
-		return parent::afterSave();
-	}
-
-	protected function beforeValidate()
-	{
-		return parent::beforeValidate();
+			'criteria' => $criteria,
+		));
 	}
 }
