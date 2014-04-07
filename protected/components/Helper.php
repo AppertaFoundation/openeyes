@@ -245,8 +245,9 @@ class Helper
 			mt_rand(8, 11), mt_rand(0, 4095),
 			mt_rand(0, 4294967295), mt_rand(0, 65535)
 		);
+	}
 
-	/**	
+	/**
 	 * Extract values from a list of objects or arrays using {@link CHtml value}
 	 *
 	 * @param object[]|array[] $objects
