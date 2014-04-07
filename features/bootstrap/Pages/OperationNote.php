@@ -39,7 +39,7 @@ class OperationNote extends OpenEyesPage
         'operationComments' => array('xpath' => "//*[@id='Element_OphTrOperationnote_Comments_comments']"),
         'postOpInstructions' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphTrOperationnote_Comments_postop_instructions']"),
         'saveOpNote' => array('xpath' => "//*[@id='et_save']"),
-        'savedOkMessage' => array('xpath' => "//*[contains(text(),'Operation note created')]")
+        'savedOkMessage' => array('xpath' => "//*[@id='flash-success'][@class='alert-box with-icon info'][contains(text(), 'Operation note created.')]")
     );
 
     public function emergencyBooking ()

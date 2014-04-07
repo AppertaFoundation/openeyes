@@ -9,7 +9,7 @@ class Laser extends OpenEyesPage
 
         'laserSiteID' => array ('xpath' => "//*[@id='Element_OphTrLaser_Site_site_id']"),
         'laserID' => array('xpath' => "//*[@id='Element_OphTrLaser_Site_laser_id']"),
-        'laserSurgeon' => array('xpath' => "//*[@id='Element_OphTrLaser_Site_surgeon_id']"),
+        'laserOperator' => array('xpath' => "//*[@id='Element_OphTrLaser_Site_operator_id']"),
         'rightProcedure' => array('xpath' => ".//*[@id='treatment_right_procedures']"),
         'leftProcedure' => array('xpath' => "//*[@id='treatment_left_procedures']"),
         'saveLaser' => array('xpath' => "//*[@id='et_save']"),
@@ -36,9 +36,9 @@ class Laser extends OpenEyesPage
         $this->getElement('laserID')->selectOption($ID);
     }
 
-    public function laserSurgeon ($surgeon)
+    public function laserOperator ($operator)
     {
-        $this->getElement('laserSurgeon')->selectOption($surgeon);
+        $this->getElement('laserOperator')->selectOption($operator);
 
     }
 

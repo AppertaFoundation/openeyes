@@ -43,15 +43,15 @@ class LaserContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I select a Laser Surgeon of "([^"]*)"$/
+     * @Given /^I select a Laser Operator of "([^"]*)"$/
      */
-    public function iSelectALaserSurgeonOf($surgeon)
+    public function iSelectALaserSurgeonOf($operartor)
     {
         /**
          * @var laser $laserPage
          */
         $laserPage = $this->getPage('laser');
-        $laserPage->laserSurgeon($surgeon);
+        $laserPage->laserOperator($operartor);
     }
 
     /**

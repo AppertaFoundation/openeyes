@@ -17,6 +17,8 @@ Feature: Create New Intravitreal Event
     Then I expand the Cataract sidebar
     And I add a New Event "Intravitreal"
 
+    Then I select Add Left Side
+
     Then I Save the Intravitreal injection
 
     Then I Confirm that Intravitreal Mandatory fields validation error messages are displayed
@@ -35,8 +37,8 @@ Feature: Create New Intravitreal Event
     Then I expand the Cataract sidebar
     And I add a New Event "Intravitreal"
 
-    Then I remove the Right Side
-    Then I select Add Right Side
+#    Then I remove the Right Side
+    Then I select Add Left Side
     Then I choose Right Anaesthetic Type of Topical
     Then I choose Right Anaesthetic Type of LA
 
@@ -90,7 +92,7 @@ Feature: Create New Intravitreal Event
     And I select Left Complications "5"
 
     Then I Save the Intravitreal injection and confirm it has been created successfully
-
+#
   Scenario: Route 2: Login and create a New Intravitreal Event
 
     Given I am on the OpenEyes "master" homepage
@@ -174,7 +176,7 @@ Feature: Create New Intravitreal Event
     Then I expand the Cataract sidebar
     And I add a New Event "Intravitreal"
 
-    Then I select Add Right Side
+    Then I select Add Left Side
 
     Then I choose Right Anaesthetic Type of LA
 
@@ -241,7 +243,7 @@ Feature: Create New Intravitreal Event
     Then I expand the Medical Retinal sidebar
     And I add a New Event "Intravitreal"
 
-    Then I select Add Right Side
+    Then I select Add Left Side
     Then I choose Right Anaesthetic Type of Topical
 
     Then I choose Right Anaesthetic Delivery of Subconjunctival

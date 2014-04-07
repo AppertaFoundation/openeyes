@@ -22,6 +22,7 @@ class Intravitreal extends OpenEyesPage
         'rightAnaestheticAgent' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_right_anaestheticagent_id']"),
 
         //Anaesthetic Left
+        'addLeftSide' => array('xpath' => "//*[@class='element-eye left-eye right side column inactive']//*[contains(text(),'Add left side')]"),
         'leftAnaestheticTopical' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaesthetictype_id_1']"),
         'leftAnaestheticLA' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaesthetictype_id_3']"),
         'leftDeliveryRetrobulbar' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaestheticdelivery_id_1']"),
@@ -87,6 +88,7 @@ class Intravitreal extends OpenEyesPage
 
         'existingAllergyCheck' => array ('xpath' => "//*[contains(text(),'Patient is allergic to: Tetracycline')]"),
         'removeRightEye' => array('xpath' => "//*[@class='element-eye right-eye left side column']//*[contains(text(),'Remove side')]"),
+        'removeLeftEye' => array('xpath' => "//*[@class='element-eye left-eye right side column']//*[contains(text(),'Remove side')]"),
 
         //error messages
         'anaestheticLeftTypeBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anaesthetic: Left Anaesthetic Type cannot be blank.')]"),
@@ -129,6 +131,25 @@ class Intravitreal extends OpenEyesPage
              $this->getSession()->wait(5000, 'window.$ && $.active == 0');
              }
          }
+
+        protected function isLeftSideOpen()
+        {
+            return (bool) $this->find('xpath', $this->getElement('addLeftSide')->getXpath());
+        }
+
+        public function removeLeftside ()
+        {
+            $this->getElement('removeLeftEye')->click();
+        }
+
+        public function addLeftSide ()
+        {
+            if ($this->isLeftSideOpen())
+            {
+                $this->getElement('addLeftSide')->click();
+                $this->getSession()->wait(5000, 'window.$ && $.active == 0');
+            }
+        }
 
         protected function doesAllergyWarningExist()
         {
