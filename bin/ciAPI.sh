@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export OE_VAGRANT_MODE=ci
+
 vagrant destroy --force
 vagrant up
 
