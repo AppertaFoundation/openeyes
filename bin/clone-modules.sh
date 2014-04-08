@@ -34,8 +34,8 @@ do
         cd $modules_path/$module
         echo "clone-modules.sh: Switching module $module branch to $current_branch..."
         git checkout $current_branch
-        echo "clone-modules.sh: git reset --hard HEAD"
-        git reset --hard HEAD
+        echo "clone-modules.sh: git reset --hard origin/HEAD"
+        git reset --hard origin/HEAD
         echo "clone-modules.sh: git clean -xdf"
         git clean -xdf
         echo "clone-modules.sh: cd $running_path"
