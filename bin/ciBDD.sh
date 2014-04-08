@@ -1,4 +1,10 @@
-#!/usr/bin/env sh
+#!/bin/bash
+CSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# possible sh alternative DIR=$(readlink -f $(dirname $0))
+echo "Current script dir: $CSDIR"
+. $CSDIR/ciFunctions.sh
+
+
 #make sure selenium is running before going ahead
 #SELENIUM=`ps aux | grep -c selenium`
 #if [ $SELENIUM -gt 1 ]
@@ -29,10 +35,16 @@ enabled_modules=".enabled-modules"
 modules_path="protected/modules"
 modules_conf_string=""
 
+branchVal=$(argValue branch)
+
+if [ "${#branchVal}" == "0" ]
+then
+    branchVal=develop
+fi
+
 #git clone modules
-echo "Cloning/checkout modules"
-bin/clone-modules.sh develop
-bin/oe-git pull
+echo "Cloning/checkout modules branch=$branchVal"
+bin/clone-modules.sh $branchVal
 
 # install Yii
 git submodule update --init
