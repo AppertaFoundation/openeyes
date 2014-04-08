@@ -75,14 +75,15 @@ class ConsentForm extends OpenEyesPage
 	public function commonProcedure($common)
 	{
 		$this->getElement('commonProcedure')->selectOption($common);
-		$this->getSession()->wait(5000);
+		$this->waitForElementDisplayBlock('#procedureList_procedures');
 	}
 
 	public function procedureType($type)
 	{
 		$this->getElement('procedureType')->click();
 		$this->getElement('procedureType')->setValue($type);
-		$this->getElement('chooseLaser')->click();
+
+//		$this->getElement('chooseLaser')->click();
 	}
 
     public function additionalProcedure ($type)
@@ -118,7 +119,6 @@ class ConsentForm extends OpenEyesPage
 	public function informationLeaflet()
 	{
 		$this->getElement('informationLeaflet')->check();
-        $this->getSession()->wait(10000);
 	}
 
 	public function anaestheticLeaflet()

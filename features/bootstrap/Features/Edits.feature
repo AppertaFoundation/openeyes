@@ -92,7 +92,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I choose Permissions for images No
 
-    Then I save the Consent Form Draft
+    Then I save the Consent Form and confirm it has been created successfully
 
   Scenario: Route 2B: Edit previously created Consent from Route2A
 
@@ -161,7 +161,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I Save the Phasing Event
 #
-Scenario: Route 3B: Edit previously edited Phasing from Route 3A
+  Scenario: Route 3B: Edit previously edited Phasing from Route 3A
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -192,7 +192,7 @@ Scenario: Route 3B: Edit previously edited Phasing from Route 3A
 
     Then I Save the Phasing Event
 
-Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3B
+  Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3B
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -282,7 +282,7 @@ Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3
     Then I expand the Cataract sidebar
     And I add a New Event "Intravitreal"
 
-    Then I select Add Right Side
+    Then I select Add Left Side
     Then I choose Right Anaesthetic Type of Topical
     Then I choose Right Anaesthetic Type of LA
 
@@ -450,7 +450,7 @@ Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3
 
     Then I Save the Examination and confirm it has been created successfully
 
-   Scenario: Route 6B: Edit previously created Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
+  Scenario: Route 6B: Edit previously created Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -500,7 +500,7 @@ Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3
 
     Then I select a Laser site ID "1"
     And I select a Laser of "2"
-    And I select a Laser Surgeon of "2"
+    And I select a Laser Operator of "2"
     Then I select a Right Procedure of "62"
     Then I select a Left Procedure of "363"
 
@@ -519,7 +519,7 @@ Scenario: Route 3C: Delete previously created/edited Phasing From from Route3A/3
 
     And I edit the Last Event
 
-    And I select a Laser Surgeon of "1"
+    And I select a Laser Operator of "3"
     Then I select a Right Procedure of "370"
     Then I select a Left Procedure of "176"
 

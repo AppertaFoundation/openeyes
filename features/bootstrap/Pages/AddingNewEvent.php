@@ -53,7 +53,7 @@ class AddingNewEvent extends OpenEyesPage
 
     public function expandGlaucoma ()
     {
-        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
+
         $this->getElement('expandGlaucomaEpisode')->click();
         $this->getSession()->wait(5000, 'window.$ && $.active ==0');
         $this->getElement('addNewGlaucomaEventButton')->click();
@@ -62,7 +62,7 @@ class AddingNewEvent extends OpenEyesPage
 
     public function expandMedicalRetinal ()
     {
-        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
+
         $this->getElement('expandMedicalRetinalEpisode' )->click();
         $this->getSession()->wait(5000, 'window.$ && $.active ==0');
         $this->getElement('addNewMedicalRetinalEventButton')->click();
@@ -71,7 +71,7 @@ class AddingNewEvent extends OpenEyesPage
 
     public function expandSupportFirm ()
     {
-        $this->getSession()->wait(5000, 'window.$ && $.active ==0');
+
         $this->getElement('expandSupportFirm')->click();
         $this->getSession()->wait(5000, 'window.$ && $.active ==0');
         $this->getElement('addNewSupportFirmEventButton')->click();
@@ -113,6 +113,5 @@ class AddingNewEvent extends OpenEyesPage
         if ($event==="Therapy") {
             $this->getElement('therapyApplication')->click();
         }
-        $this->getSession()->wait(5000);
     }
 }

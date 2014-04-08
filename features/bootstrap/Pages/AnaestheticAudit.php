@@ -133,7 +133,7 @@ class AnaestheticAudit extends OpenEyesPage
     public function editEvent ()
     {
         $this->getElement('edit')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(5000, 'window.$ && $(".event-actions .selected a").text() == "Edit"');
     }
 
     protected function deleteSuccessCheck ()
@@ -144,7 +144,7 @@ class AnaestheticAudit extends OpenEyesPage
     public function deleteEvent ()
     {
         $this->getElement('deleteEvent')->click();
-        $this->getSession()->wait(3000);
+        $this->getSession()->wait(5000, "window.$ && $('#et_deleteevent').css('display') == 'inline-block'");
         $this->getElement('confirmDeleteEvent')->click();
 
         if ($this->deleteSuccessCheck()){

@@ -17,7 +17,7 @@ Feature: Create New Laser event
 
     Then I select a Laser site ID "1"
     And I select a Laser of "2"
-    And I select a Laser Surgeon of "2"
+    And I select a Laser Operator of "2"
     Then I select a Right Procedure of "62"
     Then I select a Right Procedure of "177"
     Then I select a Left Procedure of "363"
@@ -60,7 +60,7 @@ Feature: Create New Laser event
 
     Then I select a Laser site ID "1"
     And I select a Laser of "2"
-    And I select a Laser Surgeon of "2"
+    And I select a Laser Operator of "2"
 
     Then I remove the right eye
 
