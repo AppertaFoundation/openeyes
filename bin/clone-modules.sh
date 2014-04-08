@@ -28,16 +28,15 @@ do
             #git clone git@github.com:openeyes/$module.git $modules_path/$module
             git clone https://github.com/openeyes/$module $modules_path/$module
         else
-            # Pull latest version
-            git pull #fetch does not update files
+            cd $modules_path/$module
+            echo "clone-modules.sh: Switching module $module branch to $current_branch..."
+            git checkout $current_branch
+            echo "clone-modules.sh: git reset --hard origin/$current_branch and then pull"
+            git reset --hard origin/$current_branch
+            git pull
+            echo "clone-modules.sh: git clean -xdf"
+            git clean -xdf
         fi
-        cd $modules_path/$module
-        echo "clone-modules.sh: Switching module $module branch to $current_branch..."
-        git checkout $current_branch
-        echo "clone-modules.sh: git reset --hard origin/$current_branch"
-        git reset --hard origin/$current_branch
-        echo "clone-modules.sh: git clean -xdf"
-        git clean -xdf
         echo "clone-modules.sh: cd $running_path"
         cd $running_path
     fi
