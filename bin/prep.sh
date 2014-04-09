@@ -31,7 +31,13 @@ modules_conf_string=""
 
 #git clone modules
 echo "Cloning/checkout modules"
-bin/clone-modules.sh release/1.6
+
+branch="$1"
+if [ -z "$branch" ]; then
+    branch="develop"
+fi
+
+bin/clone-modules.sh "$branch"
 
 echo "hard reset all and pull"
 #bin/oe-git "reset --hard"

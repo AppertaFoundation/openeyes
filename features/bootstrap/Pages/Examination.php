@@ -262,7 +262,9 @@ class Examination extends OpenEyesPage
     public function openVisualAcuity ()
     {
         if ($this->isVisualAcuityCollapsed()) {
-            $this->getElement('expandVisualAcuity')->click();
+            $element = $this->getElement('expandVisualAcuity');
+            $this->scrollWindowToElement($element);
+            $element->click();
             $this->getSession()->wait(3000, 'window.$ && $.active == 0');
         }
     }
@@ -314,6 +316,7 @@ class Examination extends OpenEyesPage
 {
     if ($this->isIntraocularPressureCollapsed()){
         $this->getElement('openIntraocularPressure')->click();
+        $this->getSession()->wait(3000, 'window.$ && $.active == 0');
     }
 }
 
@@ -581,7 +584,7 @@ class Examination extends OpenEyesPage
         $element = $this->getElement('expandClinicalManagement');
         $this->scrollWindowToElement($element);
         $element->click();
-        $this->getSession()->wait(8000, 'window.$ && $.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
     public function expandCataractSurgicalManagement ()
@@ -720,13 +723,13 @@ class Examination extends OpenEyesPage
     public function rightChoroidalRetinal ()
     {
         $this->getElement('rightChoroidalRetinal')->click();
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(1000);
     }
 
     public function rightSecondaryTo ($secondary)
     {
         $this->getElement('rightSecondaryTo')->selectOption($secondary);
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(1000);
     }
 
     public function leftChoroidalRetinal ()
@@ -737,17 +740,19 @@ class Examination extends OpenEyesPage
     public function leftSecondaryTo ($secondary)
     {
         $this->getElement('leftSecondaryTo')->selectOption($secondary);
-        $this->getSession()->wait(5000);
+        $this->getSession()->wait(1000);
     }
 
     public function rightIntendedTreatment ($treatment)
     {
         $this->getElement('rightIntendedTreatment')->selectOption($treatment);
+        $this->getSession()->wait(1000);
     }
 
     public function leftIntendedTreatment ($treatment)
     {
         $this->getElement('leftIntendedTreatment')->selectOption($treatment);
+        $this->getSession()->wait(1000);
     }
 
     public function rightCRTIncreaseLowerThanHundredYes ()
@@ -904,7 +909,9 @@ class Examination extends OpenEyesPage
 
     public function rightFailedLaserYes ()
     {
-        $this->getElement('rightFailedLaserYes')->click();
+        $element = $this->getElement('rightFailedLaserYes');
+        $this->scrollWindowToElement($element);
+        $element->click();
     }
 
     public function rightFailedLaserNo()

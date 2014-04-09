@@ -281,7 +281,7 @@ class Intravitreal extends OpenEyesPage
         public function rightPreInjectionIOPDropsCheckbox ()
         {
             $this->getElement('rightPreInjectionIOPTickbox')->check();
-            $this->getSession()->wait(5000);
+//            $this->getSession()->wait(5000);
         }
 
         public function rightPreInjectionIOPDropsLoweringDrops ($drops)
@@ -332,7 +332,7 @@ class Intravitreal extends OpenEyesPage
         public function leftPreInjectionIOPDropsCheckbox ()
         {
             $this->getElement('leftPreInjectionIOPTickbox')->check();
-            $this->getSession()->wait(5000);
+//            $this->getSession()->wait(5000);
         }
     
         public function leftPreInjectionIOPDropsLoweringDrops ($drops)

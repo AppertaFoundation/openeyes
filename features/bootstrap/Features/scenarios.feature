@@ -179,7 +179,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen Template
     And I select Clinic Date "7"
 
     Then I choose an Introduction of "site21"
-    And I add Findings of "examination334"
+    And I add Findings of "examination25"
     And I choose a Diagnosis of "site541"
     Then I choose a Management of "site181"
     And I choose Drugs "site301"

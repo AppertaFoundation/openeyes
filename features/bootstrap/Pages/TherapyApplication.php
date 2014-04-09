@@ -109,7 +109,7 @@ class TherapyApplication extends OpenEyesPage
 
     public function addRightSide ()
     {
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
         $this->getElement('addRightSide')->click();
     }
 
@@ -144,7 +144,7 @@ class TherapyApplication extends OpenEyesPage
 //        $this->getSession()->wait(7000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('rightAngiogramDate')->click();
         $this->getElement('rightAngiogramDate')->click();
-        $this->getSession()->wait(5000);
+//        $this->getSession()->wait(5000);
         $this->getElement('calendarDate')->click();
     }
 
@@ -159,7 +159,7 @@ class TherapyApplication extends OpenEyesPage
 //        $this->getSession()->wait(7000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('leftAngiogramDate')->click();
         $this->getElement('leftAngiogramDate')->click();
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
         $this->getElement('calendarDate')->click();
 
     }
@@ -241,13 +241,13 @@ class TherapyApplication extends OpenEyesPage
     public function RightStandardAdditional ()
     {
         $this->getElement('standardAdditional')->check();
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
     }
 
     public function RightStandardDeviation ()
     {
         $this->getElement('standardDeviation')->check();
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
     }
 
     public function RightAdditionalOrDeviationComments ($details)
@@ -325,13 +325,13 @@ class TherapyApplication extends OpenEyesPage
     public function LeftStandardAdditional ()
     {
         $this->getElement('leftstandardAdditional')->check();
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
     }
 
     public function LeftStandardDeviation ()
     {
         $this->getElement('leftstandardDeviation')->check();
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
     }
 
     public function LeftAdditionalOrDeviationComments ($details)
@@ -381,14 +381,14 @@ class TherapyApplication extends OpenEyesPage
 
     public function patientVenousYes ($option)
     {
-        $this->getSession()->wait(5000);
+//        $this->getSession()->wait(5000);
         $this->getElement('patientVenousYes')->selectOption($option);
     }
 
     public function CRVOyes ($option)
     {
         $this->getElement('CRVOYes')->selectOption($option);
-        $this->getSession()->wait(5000);
+//        $this->getSession()->wait(5000);
     }
 
     public function saveTherapy ()

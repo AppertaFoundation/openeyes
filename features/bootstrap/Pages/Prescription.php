@@ -89,13 +89,13 @@ class Prescription extends OpenEyesPage
     public function prescriptionDropdown ($drug)
     {
         $this->getElement('prescriptionCommonDrug')->selectOption($drug);
-        $this->getSession()->wait(3000);
+        $this->getSession()->wait(1000);
     }
 
     public function standardSet ($set)
     {
         $this->getElement('prescriptionStandardSet')->selectOption($set);
-        $this->getSession()->wait(3000);
+        $this->getSession()->wait(1000);
     }
 
     public function item0DoseDrops ($drops)
@@ -131,7 +131,7 @@ class Prescription extends OpenEyesPage
     public function durationItem1 ($duration)
     {
         $this->getElement('prescriptionDurationItem0')->setValue($duration);
-        $this->getSession()->wait(3000);
+        $this->getSession()->wait(1000);
     }
 
     public function comments ($comments)
@@ -142,7 +142,7 @@ class Prescription extends OpenEyesPage
     public function repeatPrescription ()
     {
         $this->getElement('repeatPrescription')->click();
-        $this->getSession()->wait(3000);
+        $this->getSession()->wait(1000);
     }
 
     protected function hasPrescriptionSaved ()
