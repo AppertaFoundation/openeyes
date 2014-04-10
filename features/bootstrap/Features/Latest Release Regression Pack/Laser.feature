@@ -3,6 +3,8 @@ Feature: Create New Laser event
          Regression coverage of this event is 100%
 
   Scenario: Route 1: Login and create a Laser event
+            Site 2:  Kings
+            Firm 3:  Anderson Glaucoma
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -28,6 +30,8 @@ Feature: Create New Laser event
     Then I save the Laser Event and confirm it has been created successfully
 
   Scenario: Route 2: Login and validate a Laser Event.
+            Site 2:  Kings
+            Firm 3:  Anderson Glaucoma
             Save without mandatory fields validation check
 
     Given I am on the OpenEyes "master" homepage
@@ -45,12 +49,15 @@ Feature: Create New Laser event
 
     And I Confirm that the Laser Validation error messages are displayed
 
-  Scenario: Route 1: Login and create a Laser event
+  Scenario: Route 3: Login and create a Laser event
+            Site 1: Queens
+            Firm 2: Broom Glaucoma
+
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "3"
+    And I select Site "1"
+    Then I select a firm of "2"
 
     Then I search for hospital number "1009465"
 
