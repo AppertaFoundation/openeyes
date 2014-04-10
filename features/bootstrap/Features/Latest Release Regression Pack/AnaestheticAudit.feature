@@ -3,7 +3,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
   Regression coverage of this event is 100%
   Across 2 Sites and 4 Firms
 
-  Scenario: Route 1: Login and create a Anaesthetic Satisfaction Audit Regression:
+  Scenario: Route 1: Login and create a Anaesthetic Satisfaction Audit:
             Site 2:  Kings
             Firm 3:  Anderson Glaucoma
 
@@ -63,7 +63,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Then I Save the Event and confirm it has been created successfully
 
-  Scenario: Route 3: Login and create a Anaesthetic Satisfaction Audit Regression:
+  Scenario: Route 3: Login and create a Anaesthetic Satisfaction Audit:
             Site 1: Queens
             Firm 2: Broom Glaucoma
 
@@ -93,7 +93,7 @@ Feature: Anaesthetic Satisfaction Audit Regression Tests
 
     Then I Save the Event and confirm it has been created successfully
 
-  Scenario: Route 4: Login and create a Anaesthetic Satisfaction Audit Regression
+  Scenario: Route 4: Login and create a Anaesthetic Satisfaction Audit:
             Site 2: Kings
             Firm 4: Medical Retinal
 

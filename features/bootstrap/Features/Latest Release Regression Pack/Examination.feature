@@ -444,7 +444,8 @@ Feature: Create New Examination Regression Tests
 
     Then I Save the Examination and confirm it has been created successfully
 ##
-  Scenario: ROUTE 6: Login and create a new Examination Event: Site:1 Queens, Firm:1 Anderson Cataract.
+  Scenario: ROUTE 6: Login and create a new Examination Event:
+            Site:1 Queens, Firm:1 Anderson Cataract.
             Remaining additional Injection Management sections
 
     Given I am on the OpenEyes "master" homepage
@@ -730,9 +731,9 @@ Feature: Create New Examination Regression Tests
     Then I Confirm that the Dilation Invalid time error message is displayed
 
   Scenario: Route 14: Login and create a new Examination Event
-  Site 1:Queens
-  Firm 3:Anderson Glaucoma
-  DR Grading tests
+            Site 1:Queens
+            Firm 3:Anderson Glaucoma
+            DR Grading tests
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -766,9 +767,9 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 
   Scenario: Route 15: Login and create a new Examination Event
-  Site 1:Queens
-  Firm 4:Anderson Medical Retinal
-  DR Grading tests
+            Site 1:Queens
+            Firm 4:Anderson Medical Retinal
+            DR Grading tests
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -806,9 +807,9 @@ Feature: Create New Examination Regression Tests
     Then I Save the Examination and confirm it has been created successfully
 
   Scenario: Route 16: Login and create a new Examination Event
-  Site 1:Queens
-  Firm 2:Broom Glaucoma
-  DR Grading tests
+            Site 1:Queens
+            Firm 2:Broom Glaucoma
+            DR Grading tests
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"

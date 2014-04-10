@@ -229,9 +229,10 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $element = $this->getElement('openMedicationDate');
         $this->scrollWindowToElement($element);
         $element->click();
-        $this->waitForElementDisplayNone('#ui-datepicker-title');
-//        $this->getSession()->wait(8000);
+        $this->waitForElementDisplayBlock('#ui-datepicker-div');
+//        $this->getSession()->wait(3000);
         $this->getElement('selectDateFrom')->click($datefrom);
+        $this->waitForElementDisplayNone('#ui-datepicker-div');
         $this->getElement('saveMedication')->click();
         $this->waitForElementDisplayNone('#add_medication');
     }

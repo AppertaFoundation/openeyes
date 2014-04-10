@@ -150,6 +150,7 @@ class OperationBooking extends OpenEyesPage
     public function decisionDate ($date)
     {
         $this->getElement('decisionDate')->selectOption($date);
+        $this->getSession()->wait(3000);
     }
 
     public function operationComments ($comments)
@@ -228,7 +229,7 @@ class OperationBooking extends OpenEyesPage
 		$element = $this->getElement('availableTheatreSessionTime');
         $this->scrollWindowToElement($element);
         $element->click();
-        $this->getSession()->wait(10000);
+        $this->waitForElementDisplayBlock('Session_comments');
     }
 
     public function availableThreeWeeksTime ()

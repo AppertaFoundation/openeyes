@@ -3,6 +3,8 @@ Feature: Create New Intravitreal Event
          Regression coverage of this event is approx 75%
 
   Scenario: Route 0:  Error tests : Login and create a New Intravitreal Event
+            Site 1:  Queens
+            Firm 1:  Anderson Cataract
             Mandatory fields - validation error tests
 
     Given I am on the OpenEyes "master" homepage
@@ -24,6 +26,8 @@ Feature: Create New Intravitreal Event
     Then I Confirm that Intravitreal Mandatory fields validation error messages are displayed
 
   Scenario: Route 1: Login and create a New Intravitreal Event
+            Site 1:  Queens
+            Firm 1:  Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -94,6 +98,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 #
   Scenario: Route 2: Login and create a New Intravitreal Event
+            Site 2:  Kings
+            Firm 2:  Broom Glaucoma
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -163,6 +169,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
   Scenario: Route 3: Login and create a New Intravitreal Event
+            Site 1:  Queens
+            Firm 1:  Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -230,6 +238,8 @@ Feature: Create New Intravitreal Event
     Then I Save the Intravitreal injection and confirm it has been created successfully
 
   Scenario: Route 4: Login and create a New Intravitreal Event
+            Site 1:  Queens
+            Firm 4:  Anderson Medical Retinal
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"

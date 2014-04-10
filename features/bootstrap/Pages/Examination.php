@@ -1071,7 +1071,7 @@ class Examination extends OpenEyesPage
         $element = $this->getElement('addAllElements');
         $this->scrollWindowToElement($element);
         $element->click();
-        $this->getSession()->wait(40000, 'window.$ && $.active == 0');
+        $this->getSession()->wait(8000, 'window.$ && $.active == 0');
     }
 
     public function addAllElementsValidationError ()
