@@ -69,7 +69,7 @@ do
                 if grep -q $moduledep "$enabled_modules";then
                     echo "modules_yii_config: $moduledep  ALREADY enabled"
                 else
-                    modules_conf_string="$modules_conf_string '$moduledep',"
+                    modules_conf_string="'$moduledep', $modules_conf_string "
                 fi
             done < "$modules_path/$module/moduledeps"
         fi
