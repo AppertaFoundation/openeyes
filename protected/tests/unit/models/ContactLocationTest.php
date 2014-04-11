@@ -106,14 +106,14 @@ class ContactLocationTest extends CDbTestCase
 
 	/**
 	 * @covers ContactLocation::search
-	 * @todo   Implement testSearch().
 	 */
 	public function testSearch()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		$conLoc = $this->contactlocations('contactlocation1');
+		$conLoc->id = 2;
+		$result = $this->contactlocations('contactlocation1')->search();
+		$result = $result->getData();
+		$this->assertEquals('Collin', $result[0]->contact->nick_name);
 	}
 
 	/**

@@ -22,11 +22,9 @@
  *
  * The followings are the available columns in table 'contact_location':
  * @property integer $id
- * @property string $name
- * @property integer $letter_template_only
- * @property Institution $institution
- * @property Contact $contact
- * @property Site $site
+ * @property Institution $institution_id
+ * @property Contact $contact_id
+ * @property Site $site_id
  */
 class ContactLocation extends BaseActiveRecordVersioned
 {
@@ -64,7 +62,7 @@ class ContactLocation extends BaseActiveRecordVersioned
 		return array(
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,13 +97,9 @@ class ContactLocation extends BaseActiveRecordVersioned
 	 */
 	public function search()
 	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
+		// Warning: Please modify the following code to remove attributes that should not be searched.
 		$criteria=new CDbCriteria;
-
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
