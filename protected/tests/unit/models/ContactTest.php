@@ -206,7 +206,6 @@ class ContactTest extends CDbTestCase {
 
 	/**
 	 * @dataProvider dataProvider_Search
-	 * @covers testSearch_WithValidTerms_ReturnsExpectedResults
 	 * @covers Contact::search
 	 */
 	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
