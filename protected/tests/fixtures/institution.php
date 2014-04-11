@@ -24,5 +24,6 @@ return array(
 		'short_name' => 'Moorfields',
 		'source_id' => 1,
 		'remote_id' => 'foo',
+		'contact_id' => 1,
 	),
 );
