@@ -67,29 +67,7 @@ class DrugTest extends CDbTestCase	{
 	}
 
 	/**
-	*	@covers	Drug::discontinued
-	*	@todo Implement testDiscontinued().
-	*/
-	public function testDiscontinued()	{
-		$this->markTestSkipped('Needs to be updated with changes to table versioning');
-		$result	= $this->model->discontinued();
-		$this->assertEquals('(t.discontinued = 0) OR (t.discontinued = 1)', $result->getDbCriteria()->condition);
-	}
-
-	/**
-	*	@covers	Drug::relations
-	*	@todo Implement testRelations().
-	*/
-	public function testRelations()	{
-		//	Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	*	@covers	Drug::attributeLabels
-	*	@todo	Implement	testAttributeLabels().
 	*/
 	public function testAttributeLabels()	{
 		$expected	=	array(
