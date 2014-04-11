@@ -61,6 +61,18 @@ do
         modules_conf_string="$modules_conf_string '$module',\
         \
         "
+        if [ -r $modules_path/$module/moduledeps ];then
+            echo "modules_yii_config: Setting up $module dependencies in common.php"
+            while read -r moduledep || [[ -n "$moduledep" ]]
+            do
+                echo "modules_yii_config: configuring dependency: $moduledep "
+                if grep -q $moduledep "$enabled_modules";then
+                    echo "modules_yii_config: $moduledep  ALREADY enabled"
+                else
+                    modules_conf_string="$modules_conf_string '$moduledep',"
+                fi
+            done < "$modules_path/$module/moduledeps"
+        fi
     fi
 done < $enabled_modules
 echo "modules_yii_config: Modules $modules_conf_string"
