@@ -42,6 +42,13 @@ EOD;
 		$commandPath = Yii::getPathOfAlias('application.commands');
 		$modules = Yii::app()->modules;
 		foreach ($modules as $module => $module_settings) {
+			// handle namespaced modules
+			try {
+				$m = Yii::app()->getModule($module);
+			}
+			catch (Exception $e) {
+				continue;
+			}
 			if (is_dir(Yii::getPathOfAlias($module.'.migrations'))) {
 				echo "Migrating $module:\n";
 				if(!$interactive) {

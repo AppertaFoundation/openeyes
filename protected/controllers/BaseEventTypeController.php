@@ -1021,18 +1021,19 @@ class BaseEventTypeController extends BaseModuleController
 		// only process data for elements that are part of the element type set for the controller event type
 		foreach ($this->event_type->getAllElementTypes() as $element_type) {
 			$el_cls_name = $element_type->class_name;
-			if (isset($data[$el_cls_name])) {
-				$keys = array_keys($data[$el_cls_name]);
+			$f_key = CHtml::modelName($el_cls_name);
+			if (isset($data[$f_key])) {
+				$keys = array_keys($data[$f_key]);
 
-				if (is_array($data[$el_cls_name][$keys[0]])) {
+				if (is_array($data[$f_key][$keys[0]])) {
 					// there is more than one element of this type
-					if ($this->event && !$data[$el_cls_name]['_element_id']) {
+					if ($this->event && !$data[$f_key]['_element_id']) {
 						throw new Exception("missing _element_id for multiple elements for editing an event");
 					}
 
 					// iterate through each to define the multiple instances we require
-					for ($i=0; $i<count($data[$el_cls_name][$keys[0]]); $i++) {
-						if ($el_id = $data[$el_cls_name]['_element_id'][$i]) {
+					for ($i=0; $i<count($data[$f_key][$keys[0]]); $i++) {
+						if ($el_id = $data[$f_key]['_element_id'][$i]) {
 							$element = $el_cls_name::model()->findByPk($el_id);
 						}
 						else {
@@ -1042,7 +1043,7 @@ class BaseEventTypeController extends BaseModuleController
 						$el_attrs = array();
 						foreach ($keys as $key) {
 							if ($key != '_element_id') {
-								$el_attrs[$key] = $data[$el_cls_name][$key][$i];
+								$el_attrs[$key] = $data[$f_key][$key][$i];
 							}
 						}
 						$element->attributes = Helper::convertNHS2MySQL($el_attrs);
@@ -1055,7 +1056,7 @@ class BaseEventTypeController extends BaseModuleController
 						|| !$element = $el_cls_name::model()->find('event_id=?',array($this->event->id))) {
 						$element = $element_type->getInstance();
 					}
-					$element->attributes = Helper::convertNHS2MySQL($data[$el_cls_name]);
+					$element->attributes = Helper::convertNHS2MySQL($data[$f_key]);
 					$this->setElementComplexAttributesFromData($element, $data);
 
 					$elements[] = $element;

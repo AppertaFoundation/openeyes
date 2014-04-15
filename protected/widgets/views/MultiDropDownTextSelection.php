@@ -22,13 +22,13 @@
  * @todo : refactor the html
  */
 ?>
-<div id="div_<?php echo get_class($element)?>_<?php echo $field?>_TextSelection" class="eventDetail">
+<div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>_TextSelection" class="eventDetail">
 	<?php if (!@$htmlOptions['no_label']) {?>
 		<div class="label"><?php echo $element->getAttributeLabel($field)?>:</div>
 	<?php }?>
 	<div class="data">
 		<?php foreach ($options as $name => $data) {?>
-			<select class="dropDownTextSelection<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>" id="dropDownTextSelection_<?php echo get_class($element)?>_<?php echo $field?>"<?php if (@$htmlOptions['remove_selections'] === false) {?> data-remove-selections="false"<?php }?>>
+			<select class="dropDownTextSelection<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>" id="dropDownTextSelection_<?php echo CHtml::modelName($element)?>_<?php echo $field?>"<?php if (@$htmlOptions['remove_selections'] === false) {?> data-remove-selections="false"<?php }?>>
 				<?php if (isset($data['empty'])) {?>
 					<option value=""><?php echo $data['empty']?></option>
 				<?php } else {?>

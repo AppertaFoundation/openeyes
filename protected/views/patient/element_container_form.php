@@ -18,7 +18,7 @@
  */
 ?>
 <?php
-$section_classes = array($element->elementType->class_name);
+$section_classes = array(CHtml::modelName($element->elementType->class_name));
 $section_classes[] = @$child ? 'sub-element' : 'element';
 if ($this->isRequired($element)) {
 	$section_classes[] = 'required';
@@ -31,7 +31,7 @@ if ($this->isHiddenInUI($element)) {
 <section
 	class="<?php echo implode(' ', $section_classes);?>"
 	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
+	data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
 

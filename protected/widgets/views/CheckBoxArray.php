@@ -25,11 +25,11 @@
 <div class="element-fields">
 	<div class="row field-row">
 		<?php foreach ($fields as $field) {?>
-			<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0',array('id' => get_class($element)."_".$field."_hidden"))?>
+			<?php echo CHtml::hiddenField(CHtml::modelName($element)."[$field]",'0',array('id' => CHtml::modelName($element)."_".$field."_hidden"))?>
 			<?php if (!@$htmlOptions['no-label']) {?>
 				<label>
 			<?php }?>
-			<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],$htmlOptions)?>
+			<?php echo CHtml::checkBox(CHtml::modelName($element)."[$field]",$checked[$field],$htmlOptions)?>
 			<?php if (!@$htmlOptions['no-label']) {?>
 				<?php echo CHtml::encode($element->getAttributeLabel($field))?>
 				</label>

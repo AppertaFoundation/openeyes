@@ -18,17 +18,17 @@
  */
 ?>
 <script type="text/javascript">
-	var remap_<?php echo get_class($element)?>_<?php echo $field?> = {};
+	var remap_<?php echo CHtml::modelName($element)?>_<?php echo $field?> = {};
 	<?php if (is_array($remap_values) && !empty($remap_values)) {
 		foreach ($remap_values as $remap_value => $remap) {?>
-			remap_<?php echo get_class($element)?>_<?php echo $field?>['<?php echo $remap_value?>'] = '<?php echo $remap?>';
+			remap_<?php echo CHtml::modelName($element)?>_<?php echo $field?>['<?php echo $remap_value?>'] = '<?php echo $remap?>';
 		<?php }
 	}?>
-	var widgetSlider_<?php echo get_class($element)?>_<?php echo $field?> = new WidgetSlider({
+	var widgetSlider_<?php echo CHtml::modelName($element)?>_<?php echo $field?> = new WidgetSlider({
 		'prefix_positive': '<?php echo $prefix_positive?>',
-		'range_id': '<?php echo get_class($element)?>_<?php echo $field?>',
+		'range_id': '<?php echo CHtml::modelName($element)?>_<?php echo $field?>',
 		'force_dp': '<?php echo $force_dp?>',
-		'remap': remap_<?php echo get_class($element)?>_<?php echo $field?>,
+		'remap': remap_<?php echo CHtml::modelName($element)?>_<?php echo $field?>,
 		'null': '<?php echo $null?>',
 		'append': '<?php echo $append?>',
 	});
@@ -36,16 +36,16 @@
 
 <div class="row field-row slider">
 	<div class="large-<?php echo $layoutColumns['label']?> column">
-		<label for="<?php echo get_class($element)."_$field"?>"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</label>
+		<label for="<?php echo CHtml::modelName($element)."_$field"?>"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</label>
 	</div>
 	<div class="large-<?php echo $layoutColumns['field']?> column end">
 		<div class="field-row">
-			<span class="widgetSliderValue slider-value" id="<?php echo get_class($element)?>_<?php echo $field?>_value_span"><?php echo $value_display?><?php echo $append?></span>
+			<span class="widgetSliderValue slider-value" id="<?php echo CHtml::modelName($element)?>_<?php echo $field?>_value_span"><?php echo $value_display?><?php echo $append?></span>
 			<input
 				class="widgetSlider slider-input<?php if (@$htmlOptions['class']) {?> <?php echo $htmlOptions['class']?><?php }?>"
 				type="range"
-				id="<?php echo get_class($element)?>_<?php echo $field?>"
-				name="<?php echo get_class($element)?>[<?php echo $field?>]"
+				id="<?php echo CHtml::modelName($element)?>_<?php echo $field?>"
+				name="<?php echo CHtml::modelName($element)?>[<?php echo $field?>]"
 				min="<?php echo $min?>"
 				max="<?php echo $max?>"
 				value="<?php echo $value?>"

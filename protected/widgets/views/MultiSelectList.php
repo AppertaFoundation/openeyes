@@ -29,7 +29,7 @@ if (isset($htmlOptions['div_id'])) {
 } else {
 	// for legacy, this is the original definition of the div id that was created for the multiselect
 	// not recommended as it doesn't allow for sided uniqueness
-	$div_id = "div_" . get_class($element) . "_" . @$htmlOptions['label'];
+	$div_id = "div_" . CHtml::modelName($element) . "_" . @$htmlOptions['label'];
 }
 
 if (isset($htmlOptions['div_class'])) {
@@ -61,7 +61,7 @@ $widgetOptionsJson = json_encode(array(
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 	<?php }?>
 		<div class="multi-select<?php if (!$inline) echo ' multi-select-list';?>" data-options='<?php echo $widgetOptionsJson;?>'>
-			<input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
+			<input type="hidden" name="<?php echo CHtml::modelName($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
 			<div class="multi-select-dropdown-container">
 				<select id="<?php echo $field?>" class="MultiSelectList<?php if ($showRemoveAllLink) {?> inline<?php }?>" name="">
 					<option value=""><?php echo $htmlOptions['empty']?></option>

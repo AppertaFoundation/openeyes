@@ -18,16 +18,16 @@
  */
 ?>
 <?php if (!$nowrapper) {?>
-	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="row field-row"<?php if ($hidden) echo 'style="display: none"'; ?>>
+	<div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="row field-row"<?php if ($hidden) echo 'style="display: none"'; ?>>
 		<div class="large-<?php echo $layoutColumns['label']?> column">
-			<label for="<?php echo get_class($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
+			<label for="<?php echo CHtml::modelName($element)."_$field"?>"><?php if ($label) echo CHtml::encode($element->getAttributeLabel($field)).':'?></label>
 		</div>
 		<div class="large-<?php echo $layoutColumns['field']?> column end">
 	<?php }?>
 	<?php
 	$attr = array(
-		'id'=>get_class($element).'_'.$field,
-		'name'=>get_class($element).'['.$field.']',
+		'id'=>CHtml::modelName($element).'_'.$field,
+		'name'=>CHtml::modelName($element).'['.$field.']',
 		'placeholder'=>@$htmlOptions['placeholder']
 	);
 	if ($rows) $attr['rows'] = $rows;
@@ -37,7 +37,7 @@
 			<?php echo CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>><?php echo CHtml::encode($value)?></textarea>
 		<?php if (!$nowrapper) {?>
 			<?php if ($button) {?>
-				<button type="submit" class="<?php echo $button['colour']?> <?php echo $button['size']?>" id="<?php echo get_class($element)?>_<?php echo $button['id']?>" name="<?php echo get_class($element)?>_<?php echo $button['id']?>">
+				<button type="submit" class="<?php echo $button['colour']?> <?php echo $button['size']?>" id="<?php echo CHtml::modelName($element)?>_<?php echo $button['id']?>" name="<?php echo CHtml::modelName($element)?>_<?php echo $button['id']?>">
 					<?php echo $button['label']?>
 				</button>
 			<?php }?>

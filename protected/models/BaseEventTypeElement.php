@@ -278,7 +278,8 @@ class BaseEventTypeElement extends BaseElement
 
 	public function getDefaultView()
 	{
-		return get_class($this);
+		$kls = explode('\\', get_class($this));
+		return end($kls);
 	}
 
 	public function getCreate_view()
