@@ -999,7 +999,9 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function setElementComplexAttributesFromData($element, $data, $index = null)
 	{
-		$element_method = "setComplexAttributes_" . get_class($element);
+		$kls = explode('\\', get_class($element));
+		$stub = end($kls);
+		$element_method = "setComplexAttributes_" . $stub;
 		if (method_exists($this, $element_method)) {
 			$this->$element_method($element, $data, $index);
 		}
@@ -1118,7 +1120,9 @@ class BaseEventTypeController extends BaseModuleController
 
 		foreach ($this->open_elements as $element) {
 			$el_cls_name = get_class($element);
-			$element_method = "saveComplexAttributes_" . get_class($element);
+			$kls = explode('\\', $el_cls_name);
+			$stub = end($kls);
+			$element_method = "saveComplexAttributes_" . $stub;
 			if (method_exists($this, $element_method)) {
 				// there's custom behaviour for setting additional relations on this element class
 				if (!isset($counter_by_cls[$el_cls_name])) {
