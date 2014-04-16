@@ -39,7 +39,7 @@ class DiagnosisSelection extends BaseFieldWidget
 
 	public function run()
 	{
-		$this->class = get_class($this->element);
+		$this->class = CHTML::modelName($this->element);
 		if (empty($_POST) || !array_key_exists($this->class, $_POST)) {
 			if (empty($this->element->event_id)) {
 				if ($this->default) {
