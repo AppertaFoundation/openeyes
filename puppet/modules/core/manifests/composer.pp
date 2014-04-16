@@ -15,6 +15,7 @@ class core::composer {
 		cwd => '/var/www',
 		command => "/var/www/composer.phar install --prefer-source --no-interaction --working-dir /var/www",
 		#command => "/var/www/composer.phar install --no-interaction",
-		require => Exec["download_composer"]
+		require => Exec["download_composer"],
+		timeout => 600, # This can take a long time
 	}
 }
