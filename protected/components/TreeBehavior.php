@@ -109,11 +109,11 @@ class TreeBehavior extends CActiveRecordBehavior
 				$sql_strs[] = $this->leftAttribute . ' > ' . $l[0] . ' AND ' . $this->rightAttribute . ' <  ' . $l[1];
 			}
 
-			$query = 'SELECT id FROM ' . $tree_table . ' WHERE (' . implode(') OR (', $sql_strs ) . ') ORDER BY lft';
+			$query = 'SELECT ' . $this->idAttribute . ' FROM ' . $tree_table . ' WHERE (' . implode(') OR (', $sql_strs ) . ') ORDER BY lft';
 			$res = $db->createCommand($query)->query();
 
 			foreach ($res as $r) {
-				$ids[] = $r['id'];
+				$ids[] = $r[$this->idAttribute];
 			}
 		}
 
@@ -143,7 +143,7 @@ class TreeBehavior extends CActiveRecordBehavior
 
 		$ids = array();
 		foreach ($res as $r) {
-			$ids[] = $r['id'];
+			$ids[] = $r[$this->idAttribute];
 		}
 
 		return $ids;
