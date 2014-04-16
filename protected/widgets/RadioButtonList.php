@@ -35,7 +35,7 @@ class RadioButtonList extends SelectionWidget
 				$this->value = $this->element->{$this->field};
 			}
 		} else {
-			$this->value = @$_POST[get_class($this->element)][$this->field];
+			$this->value = @$_POST[CHtml::modelName($this->element)][$this->field];
 		}
 
 		if ($this->no_element) {
