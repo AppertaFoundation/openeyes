@@ -371,7 +371,10 @@ class BaseEventTypeController extends BaseModuleController
 		} elseif ($action == 'update') {
 			$element->setUpdateOptions();
 		}
-		$el_method = 'setElementDefaultOptions_' . get_class($element);
+
+		$kls = explode('\\', get_class($element));
+		$stub = end($kls);
+		$el_method = 'setElementDefaultOptions_' . $stub;
 		if (method_exists($this, $el_method)) {
 			$this->$el_method($element, $action);
 		}
