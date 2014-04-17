@@ -25,10 +25,6 @@ class ServiceManager extends \CApplicationComponent
 	public function init()
 	{
 		foreach ($this->internal_services as $service_class) {
-			if (!is_a($service_class, 'Service\\InternalService', true)) {
-				throw new \Exception("Invalid internal service: '{$service_class}'");
-			}
-
 			$resource_class = $service_class::getResourceClass();
 
 			$this->service_config[$service_class::getServiceName()] = array(
