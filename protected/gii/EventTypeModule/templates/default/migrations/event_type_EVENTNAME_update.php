@@ -157,52 +157,6 @@ class m<?php if (isset($migrationid)) { echo $migrationid; } ?>_event_type_<?php
 				'CONSTRAINT `<?php echo $foreign_key['name']?>` FOREIGN KEY (`<?php echo $foreign_key['field']?>`) REFERENCES `<?php echo $foreign_key['table']?>` (`id`)',
 <?php }?>
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
-
-		$this->createTable('<?php echo $element['table_name']?>_version', array(
-				'id' => 'int(10) unsigned NOT NULL',
-				'event_id' => 'int(10) unsigned NOT NULL',
-<?php } else {?>
-<?php
-					$number = $element['number']; $count = 1;
-					foreach ($element['fields'] as $field => $value) {
-						$field_name = $element['fields'][$count]['name'];
-						$field_label = $element['fields'][$count]['label'];
-						$field_type = $this->getDBFieldSQLType($element['fields'][$count]);
-						if ($field_type) {?>
-				'<?php echo $field_name?>' => '<?php echo $field_type?>', // <?php echo $field_label?>
-
-<?php }
-						if (isset($field['extra_report'])) {?>
-				'<?php echo $field_name?>2' => '<?php echo $field_type?>', // <?php echo $field_label?>2
-
-<?php }
-						$count++;
-					}
-				?>
-				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
-				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
-				'deleted' => 'tinyint(1) unsigned not null',
-				'version_date' => "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'",
-				'version_id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'PRIMARY KEY (`version_id`)',
-				'KEY `acv_<?php echo $element['lmui_key']?>` (`last_modified_user_id`)',
-				'KEY `acv_<?php echo $element['cui_key']?>` (`created_user_id`)',
-				'KEY `acv_<?php echo $element['ev_key']?>` (`event_id`)',
-				'KEY `<?php echo $element['table_name']?>_aid_fk` (`id`)',
-<?php foreach ($element['foreign_keys'] as $foreign_key) {?>
-				'KEY `acv_<?php echo $foreign_key['name']?>` (`<?php echo $foreign_key['field']?>`)',
-<?php }?>
-				'CONSTRAINT `acv_<?php echo $element['lmui_key']?>` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_<?php echo $element['cui_key']?>` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `acv_<?php echo $element['ev_key']?>` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-<?php foreach ($element['foreign_keys'] as $foreign_key) {?>
-				'CONSTRAINT `acv_<?php echo $foreign_key['name']?>` FOREIGN KEY (`<?php echo $foreign_key['field']?>`) REFERENCES `<?php echo $foreign_key['table']?>` (`id`)',
-<?php }?>
-				'CONSTRAINT `<?php echo $element['table_name']?>_aid_fk` FOREIGN KEY (`id`) REFERENCES `<?php echo $element['table_name']?>` (`id`)',
-			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
-
 <?php } else {
 						$number = $element['number']; $count = 1;
 						foreach ($element['fields'] as $field => $value) {
