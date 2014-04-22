@@ -29,6 +29,6 @@ do
 		echo "########"
 		echo "($(basename $module)) git $1"
 		cd "$module"
-		git "$1"
+		git $1
 	fi
 done
