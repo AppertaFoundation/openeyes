@@ -3,7 +3,7 @@ CSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # possible sh alternative DIR=$(readlink -f $(dirname $0))
 echo "modules_yii_config: Current script dir: $CSDIR"
 
-. $CSDIR/ciFunctions.sh
+. "$CSDIR"/ciFunctions.sh
 
 branchVal=$(argValue branch)
 
@@ -56,17 +56,17 @@ modules_conf_string=""
 while read module
 do
     echo "modules_yii_config: attempting to add module $module"
-    if [ ! -e $module ]; then
+    if [ ! -e "$module" ]; then
         echo "modules_yii_config: Adding $module to conf string..."
         modules_conf_string="$modules_conf_string '$module',\
         \
         "
-        if [ -r $modules_path/$module/moduledeps ];then
+        if [ -r "$modules_path/$module/moduledeps" ];then
             echo "modules_yii_config: Setting up $module dependencies in common.php"
             while read -r moduledep || [[ -n "$moduledep" ]]
             do
                 echo "modules_yii_config: configuring dependency: $moduledep "
-                if grep -q $moduledep "$enabled_modules";then
+                if grep -q "$moduledep" "$enabled_modules";then
                     echo "modules_yii_config: $moduledep  ALREADY enabled"
                 else
                     modules_conf_string="'$moduledep', $modules_conf_string "
@@ -74,7 +74,7 @@ do
             done < "$modules_path/$module/moduledeps"
         fi
     fi
-done < $enabled_modules
+done < "$enabled_modules"
 echo "modules_yii_config: Modules $modules_conf_string"
 #'modules' => array(
 sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.autotest.php > protected/config/local/common.php

@@ -2,7 +2,7 @@
 CSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # possible sh alternative DIR=$(readlink -f $(dirname $0))
 echo "Current script dir: $CSDIR"
-. $CSDIR/ciFunctions.sh
+. "$CSDIR/ciFunctions.sh"
 
 
 #make sure selenium is running before going ahead
@@ -44,7 +44,7 @@ fi
 
 #git clone modules
 echo "Cloning/checkout modules branch=$branchVal"
-bin/clone-modules.sh $branchVal
+bin/clone-modules.sh "$branchVal"
 
 # install Yii
 git submodule update --init
@@ -53,13 +53,13 @@ git submodule update --init
 while read module
 do
     echo "attempting to add module $module"s
-    if [ ! -e $module ]; then
+    if [ ! -e "$module" ]; then
         echo "Adding $module to conf string..."
         modules_conf_string="$modules_conf_string '$module',\
         \
         "
     fi
-done < $enabled_modules
+done < "$enabled_modules"
 echo "Modules $modules_conf_string"
 #'modules' => array(
 sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.autotest.php > protected/config/local/common.php
@@ -91,26 +91,27 @@ vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; /var/www/protected/yiic
 #    fi
 #fi
 
-if [ $# -eq 1 ]
-  then
-    PROFILE=$1
-  else
-    PROFILE=phantomjs-ci
+profileVal=$(argValue profile)
+
+if [ "${#profileVal}" == "0" ]
+then
+    profileVal=phantomjs-ci
 fi
 
+
 #run tests
-vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=setup --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#bin/behat --tags=confidence --profile=$PROFILE --expand
+vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=setup --profile=$profileVal --expand --config=/var/www/behat.yml"
+#bin/behat --tags=confidence --profile=$profileVal --expand
 
-vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=regression --profile=$PROFILE --expand --config=/var/www/behat.yml"
+vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=regression --profile=$profileVal --expand --config=/var/www/behat.yml"
 
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=asa --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=consent --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=Intravitreal --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=operationbooking --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=diagnosis --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=phasing --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=prescription --profile=$PROFILE --expand --config=/var/www/behat.yml"
-#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=scenario --profile=$PROFILE --expand --config=/var/www/behat.yml"
+#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=asa --profile=$profileVal --expand --config=/var/www/behat.yml"
+#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=consent --profile=$profileVal --expand --config=/var/www/behat.yml"
+#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=Intravitreal --profile=$profileVal --expand --config=/var/www/behat.yml"
+#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=operationbooking --profile=$profileVal --expand --config=/var/www/behat.yml"
+#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=diagnosis --profile=$profileVal --expand --config=/var/www/behat.yml"
+#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=phasing --profile=$profileVal --expand --config=/var/www/behat.yml"
+#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=prescription --profile=$profileVal --expand --config=/var/www/behat.yml"
+#vagrant ssh -c "cd /var/www; /var/www/bin/behat --tags=scenario --profile=$profileVal --expand --config=/var/www/behat.yml"
 
 exit
