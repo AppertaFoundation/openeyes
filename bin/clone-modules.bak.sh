@@ -6,7 +6,7 @@ function setupModule {
     loc_running_path="$3"
     loc_current_branch="$4"
     if [ ! -d "$loc_modules_path/$loc_module" ]; then
-        echo "clone-modules.sh: Cloning $loc_module module..." "git@github.com:openeyes/$module.git"
+        echo "clone-modules.sh: Cloning $loc_module module..." git@github.com:openeyes/$module.git
         #git clone git@github.com:openeyes/$module.git $modules_path/$module
         git clone "https://github.com/openeyes/$loc_module" "$loc_modules_path/$loc_module"
     else
@@ -35,6 +35,11 @@ fi
 
 if [ ! -f "$enabled_modules" ]; then
     echo "clone-modules.sh: File $enabled_modules doesn't exists. Please create one."
+    exit 1
+fi
+
+if [ ! -f $local_config_file ]; then
+    echo "clone-modules.sh: File $local_config_file doesn't exists. Please create one."
     exit 1
 fi
 
