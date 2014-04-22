@@ -8,7 +8,7 @@ if [ ! '$1' ]; then
 fi
 
 # Find yiic
-while [ $PWD != "/" ];
+while [ "$PWD" != "/" ];
 do
 	if [ -f ./protected/yiic ]; then break;	fi
 	cd ..
@@ -21,14 +21,14 @@ echo "Found OpenEyes root"
 
 echo "########"
 echo "(OpenEyes) git $1"
-git $1
+git "$1"
 
-find $PWD/protected/modules -maxdepth 1 -mindepth 1 -type d -print0 | while read -d $'\0' module
+find "$PWD"/protected/modules -maxdepth 1 -mindepth 1 -type d -print0 | while read -d $'\0' module
 do
-	if [ -d $module/.git ]; then
+	if [ -d "$module/.git" ]; then
 		echo "########"
 		echo "($(basename $module)) git $1"
-		cd $module
-		git $1
-	fi	
+		cd "$module"
+		git "$1"
+	fi
 done

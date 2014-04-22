@@ -3,7 +3,7 @@
 
 if [ $# -eq 1 ]
   then
-    VERSION=$1
+    VERSION="$1"
   else
     VERSION=2.37.0
 fi

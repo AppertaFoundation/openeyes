@@ -2,7 +2,7 @@
 CSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # possible sh alternative DIR=$(readlink -f $(dirname $0))
 echo "Current script dir: $CSDIR"
-. $CSDIR/ciFunctions.sh
+. "$CSDIR/ciFunctions.sh"
 
 
 #make sure selenium is running before going ahead
@@ -44,7 +44,7 @@ fi
 
 #git clone modules
 echo "Cloning/checkout modules branch=$branchVal"
-bin/clone-modules.sh $branchVal
+bin/clone-modules.sh "$branchVal"
 
 # install Yii
 git submodule update --init
@@ -53,13 +53,13 @@ git submodule update --init
 while read module
 do
     echo "attempting to add module $module"s
-    if [ ! -e $module ]; then
+    if [ ! -e "$module" ]; then
         echo "Adding $module to conf string..."
         modules_conf_string="$modules_conf_string '$module',\
         \
         "
     fi
-done < $enabled_modules
+done < "$enabled_modules"
 echo "Modules $modules_conf_string"
 #'modules' => array(
 sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.autotest.php > protected/config/local/common.php
@@ -93,7 +93,7 @@ vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; /var/www/protected/yiic
 
 if [ $# -eq 1 ]
   then
-    PROFILE=$1
+    PROFILE="$1"
   else
     PROFILE=phantomjs-ci
 fi

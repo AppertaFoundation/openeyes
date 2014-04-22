@@ -1,6 +1,6 @@
 #!/bin/bash
 # Find yiic
-while [ $PWD != "/" ];
+while [ "$PWD" != "/" ];
 do
 	if [ -f ./protected/yiic ]; then break;	fi
 	cd ..
