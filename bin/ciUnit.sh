@@ -3,7 +3,7 @@ CSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # possible sh alternative DIR=$(readlink -f $(dirname $0))
 echo "Current script dir: $CSDIR"
 
-. $CSDIR/ciFunctions.sh
+. "$CSDIR/ciFunctions.sh"
 
 branchVal=$(argValue branch)
 
@@ -11,7 +11,7 @@ if [ "${#branchVal}" == "0" ]
 then
     branchVal=develop
 fi
-git checkout $branchVal
+git checkout "$branchVal"
 
 echo "ciUnit: branchVal is $branchVal length ${#branchVal}  "
 
@@ -27,16 +27,16 @@ if [ $# -gt 0 ]
     if [ "$execVal" == 'all' ]
     then
         echo "ciUnit: calling  $CSDIR/modules_yii_config.sh exec=all branch=$branchVal"
-        $CSDIR/modules_yii_config.sh exec=all branch=$branchVal
+        "$CSDIR"/modules_yii_config.sh exec=all branch=$branchVal
         testsuite=all
     elif [ "$execVal" == 'Modules' ]
     then
         testsuite=Modules
         echo "ciUnit: calling  $CSDIR/modules_yii_config.sh exec=Modules branch=$branchVal moduleName=$moduleNameVal"
-        $CSDIR/modules_yii_config.sh moduleName=$moduleNameVal branch=$branchVal exec=Modules
+        "$CSDIR"/modules_yii_config.sh moduleName=$moduleNameVal branch=$branchVal exec=Modules
     else
         echo "ciUnit: calling  $CSDIR/modules_yii_config.sh exec=$execVal branch=$branchVal"
-        $CSDIR/modules_yii_config.sh exec=$execVal branch=$branchVal
+        "$CSDIR"/modules_yii_config.sh exec=$execVal branch=$branchVal
         testsuite=core
     fi
 else
