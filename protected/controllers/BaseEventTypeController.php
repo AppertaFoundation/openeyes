@@ -1193,6 +1193,84 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
+	 * Get the prefix name of this controller, used for path calculations for element views
+	 *
+	 * @return string
+	 */
+	protected function getControllerPrefix()
+	{
+		$kls = explode('\\', get_class($this));
+		return strtolower(str_replace('Controller', '', $kls[count($kls)-1]));
+	}
+
+	/**
+	 * Return the path alias for the module the element belongs to based on its namespace
+	 *
+	 * @param BaseEventTypeElement $element
+	 * @return string
+	 */
+	public function getElementModulePathAlias(\BaseEventTypeElement $element)
+	{
+		$kls = explode('\\', get_class($element));
+		if (count($kls) > 1) {
+			return implode('.', array_slice($kls, 0, count($kls)-2));
+		}
+		return $this->assetPathAlias;
+	}
+
+	/**
+	 * Return the asset path for the given element (by interrogating namespace)
+	 *
+	 * @param BaseEventTypeElement $element
+	 * @return string
+	 */
+	public function getAssetPathForElement(\BaseEventTypeElement $element) {
+		if ($alias = $this->getElementModulePathAlias($element)) {
+			return Yii::app()->assetManager->getPublishedPathOfAlias($alias.'.assets');
+		}
+		else {
+			return $this->assetPath;
+		}
+	}
+	/**
+	 * calculate the alias dot notated path to an element view
+	 *
+	 * @param BaseEventTypeElement $element
+	 * @return string
+	 */
+	protected function getElementViewPathAlias(\BaseEventTypeElement $element)
+	{
+		if ($alias = $this->getElementModulePathAlias($element)) {
+			return $alias . '.views.' . $this->getControllerPrefix() . '.';
+		}
+		return '';
+	}
+
+	/**
+	 * Extend the parent method to support inheritance of modules (and rendering the element views from the parent module)
+	 *
+	 * @param string $view
+	 * @param null $data
+	 * @param bool $return
+	 * @param bool $processOutput
+	 * @return string
+	 */
+	public function renderPartial($view,$data=null,$return=false,$processOutput=false)
+	{
+		if ($this->getViewFile($view) === false) {
+			foreach ($this->getModule()->getModuleInheritanceList() as $mod) {
+				// assuming that any inheritance maintains the controller name here.
+				$view_path = implode('.', array($mod->id, 'views', $this->getControllerPrefix(), $view));
+				if ($this->getViewFile($view_path)) {
+					$view = $view_path;
+					break;
+				}
+			}
+		}
+		return parent::renderPartial($view, $data, $return, $processOutput);
+	}
+
+	/**
 	 * Render the individual element based on the action provided. Note that view names
 	 * for the associated actions are set in the model.
 	 *
@@ -1228,7 +1306,7 @@ class BaseEventTypeController extends BaseModuleController
 
 		// Render the view.
 		($use_container_view) && $this->beginContent($container_view, $view_data);
-		$this->renderPartial($view, $view_data, $return, $processOutput);
+		$this->renderPartial($this->getElementViewPathAlias($element) . $view, $view_data, $return, $processOutput);
 		($use_container_view) && $this->endContent();
 	}
 
@@ -1259,9 +1337,10 @@ class BaseEventTypeController extends BaseModuleController
 	*/
 	protected function renderOptionalElement($element, $action, $form, $data)
 	{
-		$view = $this->getViewFile('_optional_'	. get_class($element))
-			? '_optional_'	. get_class($element)
-			: '_optional_element';
+		$el_view = $this->getElementViewPathAlias($element) . '_optional_'	. $element->getDefaultView();
+		$view = $this->getViewFile($el_view)
+			? $el_view
+			: $this->getElementViewPathAlias($element) . '_optional_element';
 
 		$this->renderPartial($view, array(
 			'element' => $element,

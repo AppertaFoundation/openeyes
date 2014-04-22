@@ -17,8 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-Yii::setPathOfAlias('OEModule', dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'modules');
-
 return array(
 	'name' => 'OpenEyes',
 
@@ -47,6 +45,7 @@ return array(
 
 	'aliases' => array(
 		'Service' => 'application.Service',
+		'OEModule'=> 'application.modules',
 	),
 
 	'modules' => array(

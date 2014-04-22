@@ -41,4 +41,21 @@ class ModuleAPI extends CApplicationComponent
 
 		return false;
 	}
+
+	protected $_module_class_map;
+
+	/**
+	 * Simple mapping function from module class name to it's id.
+	 *
+	 * @param $class_name
+	 * @return mixed
+	 */
+	public function moduleIDFromClass($class_name) {
+		if (!$this->_module_class_map) {
+			foreach (Yii::app()->getModules() as $id => $mc) {
+				$this->_module_class_map[$mc['class']] = $id;
+			}
+		}
+		return @$this->_module_class_map[$class_name];
+	}
 }

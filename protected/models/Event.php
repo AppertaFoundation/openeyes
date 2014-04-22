@@ -356,11 +356,7 @@ class Event extends BaseActiveRecordVersioned
 	{
 		$elements = array();
 		if ($this->id) {
-			$criteria = new CDbCriteria;
-			$criteria->compare('event_type_id', $this->event_type_id);
-			$criteria->order = 'display_order asc';
-
-			foreach (ElementType::model()->findAll($criteria) as $element_type) {
+			foreach ($this->eventType->getAllElementTypes() as $element_type) {
 				$element_class = $element_type->class_name;
 
 				foreach ($element_class::model()->findAll('event_id = ?',array($this->id)) as $element) {

@@ -23,4 +23,38 @@
 
 class BaseModule extends CWebModule
 {
+
+	/**
+	 * Returns the module parent class if it is also an installed module
+	 *
+	 * @return mixed
+	 */
+	protected function getInheritedModule()
+	{
+		$r = new ReflectionClass($this);
+		$parent = $r->getParentClass();
+		if ($id = Yii::app()->moduleAPI->moduleIDFromClass('\\'.$parent->name)) {
+			return Yii::app()->getModule($id);
+		}
+	}
+
+	private $_inheritance_list;
+
+	/**
+	 * Builds and returns the list of modules relevant to this specific module as defined by inheritance
+	 *
+	 * @return array
+	 */
+	public function getModuleInheritanceList()
+	{
+		$module = $this;
+		if (!$this->_inheritance_list) {
+			$this->_inheritance_list = array();
+			while (method_exists($module, 'getInheritedModule') &&
+					$module = $module->getInheritedModule()) {
+				$this->_inheritance_list[] = $module;
+			}
+		}
+		return $this->_inheritance_list;
+	}
 }

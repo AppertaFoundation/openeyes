@@ -47,6 +47,7 @@ EOD;
 				$m = Yii::app()->getModule($module);
 			}
 			catch (Exception $e) {
+				echo "Cannot migrate module {$module}:\n" . $e->getMessage();
 				continue;
 			}
 			if (is_dir(Yii::getPathOfAlias($module.'.migrations'))) {
