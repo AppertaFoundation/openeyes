@@ -74,8 +74,6 @@ Feature: Create New Examination Regression Tests
     And I enter a left Dilation time of "10:00"
     And I enter a right Dilation time of "13:11"
 
-    Then I choose to remove left Dilation treatment
-
     Then I Save the Examination and confirm it has been created successfully
 
     Then a check is made that a left Axis degrees of "145" was entered
