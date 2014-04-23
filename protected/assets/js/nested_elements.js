@@ -50,6 +50,13 @@ function addElement(element, animate, is_child, previous_id, params) {
 	$.extend(params, core_params);
 
 	$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function(data) {
+		var new_element = $(data);
+
+		if (element.tagName !== 'LI') {
+			new_element.find(".sub-elements.active").replaceWith($(element).find(".sub-elements.active"));
+			new_element.find(".sub-elements.inactive").replaceWith($(element).find(".sub-elements.inactive"));
+		}
+
 		if (is_child) {
 			if (element.tagName == 'LI') {
 				var container = $(element).closest('.sub-elements.inactive').parent().find('.sub-elements:first');
@@ -68,9 +75,9 @@ function addElement(element, animate, is_child, previous_id, params) {
 			insert_before = insert_before.nextAll('.sub-element, .element').first();
 		}
 		if (insert_before.length) {
-			insert_before.before(data);
+			insert_before.before(new_element);
 		} else {
-			$(container).append(data);
+			$(container).append(new_element);
 		}
 
 		if (is_child) {
