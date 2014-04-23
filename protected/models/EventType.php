@@ -40,24 +40,6 @@ class EventType extends BaseActiveRecordVersioned
 
 	protected $_module_class_map;
 
-	protected $parent_event_types = array();
-
-	protected function afterFind()
-	{
-		parent::afterFind();
-		// check for parent event types
-		$module = Yii::app()->getModule($this->class_name);
-
-		foreach ($module->getModuleInheritanceList() as $inherited) {
-			if ($et = EventType::model()->find('class_name = ?', array($inherited->name)) ) {
-				$this->parent_event_types[] = $et;
-			}
-			else {
-				throw new Exception('inherited event type module not found: ' . $inherited->name);
-			}
-		}
-	}
-
 	/**
 	 * @return string the associated database table name
 	 */
@@ -300,6 +282,22 @@ class EventType extends BaseActiveRecordVersioned
 	}
 
 	/**
+	 * Returns the parent(s) of this event type.
+	 *
+	 * @return EventType[]
+	 */
+	public function getParentEventTypes()
+	{
+		$res = array();
+		if ($this->parent_event_type_id) {
+			$parent = self::model()->findByPk($this->parent_event_type_id);
+			$res = $parent->getParentEventTypes();
+			$res[] = $parent;
+		}
+		return $res;
+	}
+
+	/**
 	 * Get all the element types that are defined for this event type
 	 *
 	 * @return BaseEventTypeElement[]
@@ -308,7 +306,7 @@ class EventType extends BaseActiveRecordVersioned
 	{
 		$criteria = new CDbCriteria;
 		$ids = array($this->id);
-		foreach ($this->parent_event_types as $parent) {
+		foreach ($this->getParentEventTypes() as $parent) {
 			$ids[] = $parent->id;
 		}
 		$criteria->addInCondition('event_type_id',$ids);
