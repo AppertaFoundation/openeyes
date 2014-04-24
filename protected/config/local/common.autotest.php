@@ -116,6 +116,7 @@ $config = array(
 		'OphCoTherapyapplication_applicant_email' => 'email@example.com',
 		'OphCoTherapyapplication_chief_pharmacist' => 'John Smith',
 		'OphCoTherapyapplication_chief_pharmacist_contact' => '12345678',
+		'OphCoTherapyapplication_cc_application' => false,
 	),
 );
 
