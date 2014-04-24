@@ -161,6 +161,10 @@ class ExceptionLogRoute extends CLogRoute
 				$n++;
 			}
 
+			if (isset($_POST['LoginForm']['password'])) {
+				$_POST['LoginForm']['password'] = '*******';
+			}
+
 			file_put_contents($this->getLogPath().DIRECTORY_SEPARATOR.$logfile,"SERVER:\n\n".print_r($_SERVER,true)."\n\nPOST:\n\n".print_r($_POST,true));
 
 			$request_type = !empty($_POST) ? 'POST' : 'GET';
