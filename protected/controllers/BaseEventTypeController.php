@@ -1215,7 +1215,7 @@ class BaseEventTypeController extends BaseModuleController
 		if (count($kls) > 1) {
 			return implode('.', array_slice($kls, 0, count($kls)-2));
 		}
-		return $this->assetPathAlias;
+		return $this->modulePathAlias;
 	}
 
 	/**

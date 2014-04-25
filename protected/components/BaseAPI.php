@@ -26,7 +26,7 @@ class BaseAPI
 	 */
 	protected function getEventType()
 	{
-		$module_class = preg_replace('/_API$/','',get_class($this));
+		$module_class = preg_replace('/^(.*\\\\)?(.*)_API$/','$2',get_class($this));
 
 		if (!$event_type = EventType::model()->find('class_name=?',array($module_class))) {
 			throw new Exception("Module is not migrated: $module_class");
