@@ -86,19 +86,19 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
 		// Test the url matches when specifying a path alias.
 		$url = $instance->createUrl($path, $alias, false);
-		$expectedUrl = Yii::app()->createUrl($instance->getPublishedPathOfAlias($alias).'/'.$path);
-		$this->assertEquals($url, $expectedUrl,
+		$expectedUrl = $instance->getPublishedPathOfAlias($alias) . DIRECTORY_SEPARATOR . $path;
+		$this->assertEquals($expectedUrl, $url,
 			'The URL should match when specifying a path alias');
 
 		// Test the url matches when *when no alias is specified*.
 		$url = $instance->createUrl($path, null, false);
-		$this->assertEquals($url, $expectedUrl,
+		$this->assertEquals($expectedUrl, $url,
 			'The URL should match when no alias is specified');
 
 		// Test the url matches when an alias path is prevented from being preprended to the path.
 		$url = $instance->createUrl($path, false, false);
 		$expectedUrl = Yii::app()->createUrl($path);
-		$this->assertEquals($url, $expectedUrl,
+		$this->assertEquals($expectedUrl, $url,
 			'The URL should match when an alias is prevented from being prepended to the path');
 
 		// Test a cache buster string is appended to url.
@@ -111,16 +111,16 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 		$expectedUrl1 = Yii::app()->cacheBuster->createUrl(Yii::app()->createUrl($path));
 		$expectedUrl2 = Yii::app()->cacheBuster->createUrl(Yii::app()->createUrl($path2));
 
-		$this->assertEquals($url1, $expectedUrl1,
+		$this->assertEquals($expectedUrl1, $url1,
 			'The URL, without query string params, should be cache busted');
 
-		$this->assertEquals($url2, $expectedUrl2,
+		$this->assertEquals($expectedUrl2, $url2,
 			'The URL, with query string params, should be cache busted');
 
 		// Test default params.
 		$url = $instance->createUrl($path);
-		$expectedUrl = Yii::app()->cacheBuster->createUrl(Yii::app()->createUrl($instance->getPublishedPathOfAlias($alias).'/'.$path));
-		$this->assertEquals($url, $expectedUrl,
+		$expectedUrl = $instance->getPublishedPathOfAlias($alias).DIRECTORY_SEPARATOR.$path;
+		$this->assertEquals($expectedUrl, $url,
 			'The URL should match the expected format when no additional params are specified');
 	}
 

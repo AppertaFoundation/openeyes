@@ -159,12 +159,13 @@ class AssetManager extends CAssetManager
 	public function createUrl($path = null, $basePathAlias = null, $bustCache = true)
 	{
 		$basePath = '';
-
 		if ($basePathAlias !== false) {
 			$basePath = $this->getPublishedPathOfAlias($basePathAlias).'/';
+			$url = $basePath . $path;
 		}
-
-		$url = Yii::app()->createUrl($basePath.$path);
+		else {
+			$url = Yii::app()->createUrl($path);
+		}
 
 		if ($bustCache) {
 			$url = $this->cacheBuster->createUrl($url);
