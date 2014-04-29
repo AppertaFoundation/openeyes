@@ -40,7 +40,7 @@ class Api_PracticeTest extends FhirTestCase
 	public function testDelete()
 	{
 		$source = file_get_contents(__DIR__ . '/files/Practice.xml');
-		$this->post('Organization', $source, array('Category' => Service\Practice::getOeFhirProfile() . "; scheme=http://hl7.org/fhir/tag/profile"));
+		$this->post('Organization', $source, array('Category' => services\Practice::getOeFhirProfile() . "; scheme=http://hl7.org/fhir/tag/profile"));
 		$this->delete(preg_replace('|/_history/.*$|', '', $this->response->getLocation()));
 		$this->assertResponseCode(204);
 	}
@@ -48,18 +48,18 @@ class Api_PracticeTest extends FhirTestCase
 	public function testCreate()
 	{
 		$source = file_get_contents(__DIR__ . '/files/Practice.xml');
-		$this->post('Organization', $source, array('Category' => Service\Practice::getOeFhirProfile() . "; scheme=http://hl7.org/fhir/tag/profile"));
+		$this->post('Organization', $source, array('Category' => services\Practice::getOeFhirProfile() . "; scheme=http://hl7.org/fhir/tag/profile"));
 		$this->get($this->response->getLocation());
 		$this->assertXmlEquals($source);
 	}
 
 	public function testSearchByOrgCode()
 	{
-		$this->get('Organization?identifier=F002&_profile=' . urlencode(Service\Practice::getOeFhirProfile()));
+		$this->get('Organization?identifier=F002&_profile=' . urlencode(services\Practice::getOeFhirProfile()));
 		$this->assertXPathEquals('feed', 'local-name()');
 		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
 		$this->assertUrlEquals(
-			$this->client->getBaseUrl() . '/Organization?identifier=F002&_profile=' . urlencode(Service\Practice::getOeFhirProfile()),
+			$this->client->getBaseUrl() . '/Organization?identifier=F002&_profile=' . urlencode(services\Practice::getOeFhirProfile()),
 			$this->xPathEval('string(./atom:link[@rel="self"]/@href)')
 		);
 		$this->assertXPathCount(1, './atom:entry');

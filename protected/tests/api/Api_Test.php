@@ -279,42 +279,42 @@ class Api_Test extends FhirTestCase
 
 	public function testSearchProfileDoesMatch()
 	{
-		$this->get('Patient?_count=1&_profile=' . urlencode(Service\Patient::getOeFhirProfile()));
+		$this->get('Patient?_count=1&_profile=' . urlencode(services\Patient::getOeFhirProfile()));
 		$this->assertXPathEquals('feed', 'local-name()');
 		$this->assertXPathCount(1, './atom:entry');
 	}
 
 	public function testSearchRequiredProfileDoesMatch()
 	{
-		$this->get('Practitioner?_count=1&_profile=' . urlencode(Service\Gp::getOeFhirProfile()));
+		$this->get('Practitioner?_count=1&_profile=' . urlencode(services\Gp::getOeFhirProfile()));
 		$this->assertXPathEquals('feed', 'local-name()');
 		$this->assertXPathCount(1, './atom:entry');
 	}
 
 	public function testSearchByIdInvalidIdFormat()
 	{
-		$this->get('Organization?_id=foobar-1&_profile=' . urlencode(Service\Practice::getOeFhirProfile()));
+		$this->get('Organization?_id=foobar-1&_profile=' . urlencode(services\Practice::getOeFhirProfile()));
 		$this->assertXPathEquals('feed', 'local-name()');
 		$this->assertXPathCount(0, './atom:entry');
 	}
 
 	public function testSearchByIdProfileDoesntMatchIdPrefix()
 	{
-		$this->get('Organization?_id=cb-1&_profile=' . urlencode(Service\Practice::getOeFhirProfile()));
+		$this->get('Organization?_id=cb-1&_profile=' . urlencode(services\Practice::getOeFhirProfile()));
 		$this->assertXPathEquals('feed', 'local-name()');
 		$this->assertXPathCount(0, './atom:entry');
 	}
 
 	public function testCantSearchByIdDirectly()
 	{
-		$this->get('Practitioner?id=1&_profile=' . urlencode(Service\Gp::getOeFhirProfile()));
-		$this->assertXPathEquals($this->client->getBaseUrl() . '/Practitioner?_profile=' . urlencode(Service\Gp::getOeFhirProfile()), 'string(./atom:link[@rel="self"]/@href)');
+		$this->get('Practitioner?id=1&_profile=' . urlencode(services\Gp::getOeFhirProfile()));
+		$this->assertXPathEquals($this->client->getBaseUrl() . '/Practitioner?_profile=' . urlencode(services\Gp::getOeFhirProfile()), 'string(./atom:link[@rel="self"]/@href)');
 		$this->assertXPathFound('./atom:entry/atom:id[text()!="' . $this->client->getBaseUrl() . '/Practitioner/gp-1"]');
 	}
 
 	public function testSearchUrls()
 	{
-		$url = 'Practitioner?_profile=' . urlencode(Service\Gp::getOeFhirProfile());
+		$url = 'Practitioner?_profile=' . urlencode(services\Gp::getOeFhirProfile());
 		$this->get($url);
 		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
 		$this->assertXPathEquals("{$this->client->getBaseUrl()}/{$url}", 'string(./atom:link[@rel="self"]/@href)');
@@ -324,7 +324,7 @@ class Api_Test extends FhirTestCase
 
 	public function testSearchCategories()
 	{
-		$url = 'Practitioner?_profile=' . urlencode(Service\Gp::getOeFhirProfile());
+		$url = 'Practitioner?_profile=' . urlencode(services\Gp::getOeFhirProfile());
 		$this->get($url);
 		$this->assertXPathEquals(
 			'http://openeyes.org.uk/fhir/' . Yii::app()->version->coreVersion . '/profile/Practitioner/Gp',

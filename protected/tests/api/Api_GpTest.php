@@ -37,7 +37,7 @@ class Api_GpTest extends FhirTestCase
 	public function testDelete()
 	{
 		$source = file_get_contents(__DIR__ . '/files/Gp.xml');
-		$this->post('Practitioner', $source, array('Category' => Service\Gp::getOeFhirProfile() . "; scheme=http://hl7.org/fhir/tag/profile"));
+		$this->post('Practitioner', $source, array('Category' => services\Gp::getOeFhirProfile() . "; scheme=http://hl7.org/fhir/tag/profile"));
 		$this->delete(preg_replace('|/_history/.*$|', '', $this->response->getLocation()));
 		$this->assertResponseCode(204);
 	}
@@ -45,18 +45,18 @@ class Api_GpTest extends FhirTestCase
 	public function testCreate()
 	{
 		$source = file_get_contents(__DIR__ . '/files/Gp.xml');
-		$this->post('Practitioner', $source, array('Category' => Service\Gp::getOeFhirProfile() . "; scheme=http://hl7.org/fhir/tag/profile"));
+		$this->post('Practitioner', $source, array('Category' => services\Gp::getOeFhirProfile() . "; scheme=http://hl7.org/fhir/tag/profile"));
 		$this->get($this->response->getLocation());
 		$this->assertXmlEquals($source);
 	}
 
 	public function testSearchByIdFound()
 	{
-		$this->get('Practitioner?_id=gp-1&_profile=' . urlencode(Service\Gp::getOeFhirProfile()));
+		$this->get('Practitioner?_id=gp-1&_profile=' . urlencode(services\Gp::getOeFhirProfile()));
 		$this->assertXPathEquals('feed', 'local-name()');
 		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
 		$this->assertUrlEquals(
-			$this->client->getBaseUrl() . '/Practitioner?_id=gp-1&_profile=' . urlencode(Service\Gp::getOeFhirProfile()),
+			$this->client->getBaseUrl() . '/Practitioner?_id=gp-1&_profile=' . urlencode(services\Gp::getOeFhirProfile()),
 			$this->xPathEval('string(./atom:link[@rel="self"]/@href)')
 		);
 		$this->assertXPathCount(1, './atom:entry');
@@ -66,11 +66,11 @@ class Api_GpTest extends FhirTestCase
 
 	public function testSearchByIdNotFound()
 	{
-		$this->get('Practitioner?_id=gp-666666&_profile=' . urlencode(Service\Gp::getOeFhirProfile()));
+		$this->get('Practitioner?_id=gp-666666&_profile=' . urlencode(services\Gp::getOeFhirProfile()));
 		$this->assertXPathEquals('feed', 'local-name()');
 		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
 		$this->assertUrlEquals(
-			$this->client->getBaseUrl() . '/Practitioner?_id=gp-666666&_profile=' . urlencode(Service\Gp::getOeFhirProfile()),
+			$this->client->getBaseUrl() . '/Practitioner?_id=gp-666666&_profile=' . urlencode(services\Gp::getOeFhirProfile()),
 			$this->xPathEval('string(./atom:link[@rel="self"]/@href)')
 		);
 		$this->assertXPathCount(0, './atom:entry');
@@ -78,11 +78,11 @@ class Api_GpTest extends FhirTestCase
 
 	public function testSearchByGnc()
 	{
-		$this->get('Practitioner?identifier=QRST&_profile=' . urlencode(Service\Gp::getOeFhirProfile()));
+		$this->get('Practitioner?identifier=QRST&_profile=' . urlencode(services\Gp::getOeFhirProfile()));
 		$this->assertXPathEquals('feed', 'local-name()');
 		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
 		$this->assertUrlEquals(
-			$this->client->getBaseUrl() . '/Practitioner?identifier=QRST&_profile=' . urlencode(Service\Gp::getOeFhirProfile()),
+			$this->client->getBaseUrl() . '/Practitioner?identifier=QRST&_profile=' . urlencode(services\Gp::getOeFhirProfile()),
 			$this->xPathEval('string(./atom:link[@rel="self"]/@href)')
 		);
 		$this->assertXPathCount(1, './atom:entry');

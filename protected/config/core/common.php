@@ -31,7 +31,6 @@ return array(
 		'application.models.elements.*',
 		'application.components.*',
 		'application.extensions.tcpdf.*',
-		'application.services.*',
 		'application.modules.*',
 		'application.commands.*',
 		'application.commands.shell.*',
@@ -44,7 +43,7 @@ return array(
 	),
 
 	'aliases' => array(
-		'Service' => 'application.Service',
+		'services' => 'application.services',
 		'OEModule'=> 'application.modules',
 	),
 
@@ -163,12 +162,12 @@ return array(
 			),
 		),
 		'service' => array(
-			'class' => '\\Service\ServiceManager',
+			'class' => 'services\ServiceManager',
 			'internal_services' => array(
-				'Service\\CommissioningBodyService',
-				'Service\\GpService',
-				'Service\\PracticeService',
-				'Service\\PatientService',
+				'services\CommissioningBodyService',
+				'services\GpService',
+				'services\PracticeService',
+				'services\PatientService',
 			),
 		),
 		'session' => array(

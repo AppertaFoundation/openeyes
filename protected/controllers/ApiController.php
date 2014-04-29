@@ -107,7 +107,7 @@ class ApiController extends CController
 	{
 		$e = $event->exception;
 
-		if ($e instanceof Service\ServiceException) {
+		if ($e instanceof services\ServiceException) {
 			$this->sendResource($e->toFhirOutcome(), $e->httpStatus);
 		}
 
@@ -226,7 +226,7 @@ class ApiController extends CController
 			$tx = Yii::app()->db->beginTransaction();
 			$ref->fhirUpdate($input);
 			$tx->commit();
-		} catch(\Service\NotFound $e) {
+		} catch(\services\NotFound $e) {
 			$this->sendError("Client defined IDs are not supported ({$e->getMessage()})", 405);
 		}
 
@@ -266,13 +266,13 @@ class ApiController extends CController
 	{
 		$service = Yii::app()->service->getFhirService($resource_type, $this->profile_tags);
 		if (!$service) {
-			throw new Service\ProcessingNotSupported("No matching profile found to create resource of type '{$resource_type}'");
+			throw new services\ProcessingNotSupported("No matching profile found to create resource of type '{$resource_type}'");
 		}
 
 		$fhirObject = $this->parseInput();
 
 		if (strtolower($fhirObject->resourceType) != strtolower($resource_type)) {
-			throw new Service\InvalidValue("Invalid resource type '{$fhirObject->resourceType}', expecting '{$resource_type}'");
+			throw new services\InvalidValue("Invalid resource type '{$fhirObject->resourceType}', expecting '{$resource_type}'");
 		}
 
 		$tx = Yii::app()->db->beginTransaction();
@@ -329,7 +329,7 @@ class ApiController extends CController
 			$indexed_resources[$url] = $resource;
 		}
 
-		$bundle = Service\FhirBundle::create("Search results", $self_url, $base_url, $indexed_resources);
+		$bundle = services\FhirBundle::create("Search results", $self_url, $base_url, $indexed_resources);
 
 		$this->sendBundle($bundle);
 	}
@@ -367,10 +367,10 @@ class ApiController extends CController
 
 	public function actionConformance()
 	{
-		$statement = new \Service\FhirConformanceStatement(
+		$statement = new \services\FhirConformanceStatement(
 			array(
 				'publisher' => Institution::model()->getCurrent()->name,
-				'date' => new \Service\Date,
+				'date' => new \services\Date,
 				'description' => 'OpenEyes at ' . Institution::model()->getCurrent()->short_name,
 				'url' => $this->createAbsoluteUrl('api/'),
 				'fhir_version' => self::FHIR_VERSION,
@@ -390,7 +390,7 @@ class ApiController extends CController
 	protected function getRef($resource_type, $id)
 	{
 		if (!$ref = Yii::app()->service->fhirIdToReference($resource_type, $id)) {
-			throw new \Service\NotFound("Unrecognised resource type or ID: {$resource_type}/{$id}");
+			throw new \services\NotFound("Unrecognised resource type or ID: {$resource_type}/{$id}");
 		}
 		return $ref;
 	}
@@ -414,7 +414,7 @@ class ApiController extends CController
 				if (($errors = libxml_get_errors())) {
 					$issues = array();
 					foreach ($errors as $error) {
-						$issues[] = new Service\FhirOutcomeIssue(
+						$issues[] = new services\FhirOutcomeIssue(
 							array(
 								'severity' => self::$xml_error_map[$error->level],
 								'type' => FhirValueSet::ISSUETYPE_INVALID_STRUCTURE,
@@ -422,7 +422,7 @@ class ApiController extends CController
 							)
 						);
 					}
-					$this->sendResource(new Service\FhirOutcome(array('issues' => $issues)), 400);
+					$this->sendResource(new services\FhirOutcome(array('issues' => $issues)), 400);
 				} else {
 					$this->sendError("Invalid XML input");
 				}
@@ -434,15 +434,15 @@ class ApiController extends CController
 
 	protected function sendInfo($message, $status = 200)
 	{
-		$this->sendResource(Service\FhirOutcome::singleIssue(FhirValueSet::ISSUESEVERITY_INFORMATION, null, $message), $status);
+		$this->sendResource(services\FhirOutcome::singleIssue(FhirValueSet::ISSUESEVERITY_INFORMATION, null, $message), $status);
 	}
 
 	protected function sendError($message, $status = 400, $type = 0)
 	{
-		$this->sendResource(Service\FhirOutcome::singleIssue(FhirValueSet::ISSUESEVERITY_FATAL, $type, $message), $status);
+		$this->sendResource(services\FhirOutcome::singleIssue(FhirValueSet::ISSUESEVERITY_FATAL, $type, $message), $status);
 	}
 
-	protected function sendResource(Service\Resource $resource, $status = 200)
+	protected function sendResource(services\Resource $resource, $status = 200)
 	{
 		header("Category: {$resource->getOeFhirProfile()}; scheme=http://hl7.org/fhir/tag/profile");
 
@@ -461,7 +461,7 @@ class ApiController extends CController
 		}
 	}
 
-	protected function sendBundle(Service\FhirBundle $bundle)
+	protected function sendBundle(services\FhirBundle $bundle)
 	{
 		$data = $bundle->toFhir();
 
