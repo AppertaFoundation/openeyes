@@ -79,19 +79,17 @@ class SiteController extends BaseController
 				return;
 			}
 
-			// Patient name (assume two strings separated by space and/or comma is a name)
-			if(preg_match('/^(P|Patient)\s*[:;]\s*([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)
-					|| preg_match('/^([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)) {
-				$delimiter = (isset($matches[4])) ? trim($matches[3]) : trim($matches[2]);
-				if ($delimiter) {
-					$firstname = (isset($matches[4])) ? $matches[4] : $matches[3];
-					$surname = (isset($matches[4])) ? $matches[2] : $matches[1];
+			// Patient name
+			if (preg_match('/^(?:P(?:atient)?[:;\s]*)?(.*[ ,].*)$/', $query, $m)) {
+				$name = $m[1];
+
+				if (strpos($name, ',') !== false) {
+					list ($surname, $firstname) = explode(',', $name, 2);
 				} else {
-					$firstname = (isset($matches[4])) ? $matches[2] : $matches[1];
-					$surname = (isset($matches[4])) ? $matches[4] : $matches[3];
+					list ($firstname, $surname) = explode(' ', $name, 2);
 				}
-				$this->redirect(array('patient/search', 'first_name' => $firstname, 'last_name' => $surname));
-				return;
+
+				$this->redirect(array('patient/search', 'first_name' => trim($firstname), 'last_name' => trim($surname)));
 			}
 		}
 
