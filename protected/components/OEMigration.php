@@ -258,9 +258,10 @@ class OEMigration extends CDbMigration
 	 * Create a table with the standard OE columns and options
 	 *
 	 * @param string $name
-	 * @param array $colums
+	 * @param array $columns
+	 * @param boolean $versioned
 	 */
-	protected function createOETable($name, array $columns)
+	protected function createOETable($name, array $columns, $versioned = false)
 	{
 		$fk_prefix = substr($name, 0, 56);
 
@@ -277,6 +278,23 @@ class OEMigration extends CDbMigration
 		);
 
 		$this->createTable($name, $columns, 'engine=InnoDB charset=utf8 collate=utf8_unicode_ci');
+
+		if ($versioned) {
+			foreach ($columns as $n => &$column) {
+				if ($column == 'pk') $column = 'integer not null';
+				if (preg_match('/^constraint/i', $column)) unset($columns[$n]);
+			}
+
+			$columns = array_merge(
+				$columns,
+				array(
+					'version_date' => 'datetime not null',
+					'version_id' => 'pk',
+				)
+			);
+
+			$this->createTable("{$name}_version", $columns, 'engine=InnoDB charset=utf8 collate=utf8_unicode_ci');
+		}
 	}
 
 	/**
