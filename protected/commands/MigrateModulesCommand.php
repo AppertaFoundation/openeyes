@@ -42,20 +42,12 @@ EOD;
 		$commandPath = Yii::getPathOfAlias('application.commands');
 		$modules = Yii::app()->modules;
 		foreach ($modules as $module => $module_settings) {
-			// handle namespaced modules
-			try {
-				$m = Yii::app()->getModule($module);
-			}
-			catch (Exception $e) {
-				echo "Cannot migrate module {$module}:\n" . $e->getMessage();
-				continue;
-			}
-			if (is_dir(Yii::getPathOfAlias($module.'.migrations'))) {
+			if (is_dir(Yii::getPathOfAlias('application.modules.'.$module.'.migrations'))) {
 				echo "Migrating $module:\n";
 				if(!$interactive) {
-					$args = array('yiic', 'oemigrate', '--interactive=0', '--migrationPath='.$module.'.migrations');
+					$args = array('yiic', 'oemigrate', '--interactive=0', '--migrationPath=application.modules.'.$module.'.migrations');
 				} else {
-					$args = array('yiic', 'oemigrate', '--migrationPath='.$module.'.migrations');
+					$args = array('yiic', 'oemigrate', '--migrationPath=application.modules.'.$module.'.migrations');
 				}
 				if($connectionID){
 					$args[] = '--connectionID=' . $connectionID;
