@@ -847,7 +847,7 @@ Feature: Create New Examination Regression Tests
   Scenario: Route 17 :Login and create a new Examination Event
             Site:1 Queens
             Firm:2 Broom Glaucoma
-            Visual Fields Unable to assess and Eye Missing checkboxes
+            Visual Fields: Unable to assess and Eye Missing checkboxes
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
