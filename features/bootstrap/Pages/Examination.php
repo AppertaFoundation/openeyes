@@ -594,6 +594,7 @@ class Examination extends OpenEyesPage
     {
         $element = $this->getElement('expandClinicalManagement');
         $this->scrollWindowToElement($element);
+        $this->getSession()->wait(2000);
         $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
@@ -602,6 +603,7 @@ class Examination extends OpenEyesPage
     {
         $element = $this->getElement('expandCataractSurgicalManagement');
         $this->scrollWindowToElement($element);
+        $this->getSession()->wait(2000);
         $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
