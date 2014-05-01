@@ -35,6 +35,7 @@ vendor
 /bin/phpunit
 /bin/webunit
 /docs/public
+/protected/assets/img/fieldImages/*
 
 # Tests
 /bin/.enabled-modules

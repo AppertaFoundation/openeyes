@@ -31,7 +31,7 @@ class FieldImages extends CActiveRecordBehavior
 		}
 
 		if(!$cFile){// injection to allow function mocking
-			$cFile = CFileHelper;
+			$cFile = 'CFileHelper';
 		}
 
 		//$alias = $path ? $path : self::FIELDS_IMAGES_ALIAS;
