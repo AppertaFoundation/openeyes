@@ -25,18 +25,18 @@ class core::openeyes {
 
 	file { '/var/www/protected/config/local/test.php':
 		ensure => file,
-		source => '/var/www/protected/config/local/test.sample.php'
+		source => '/var/www/protected/config/local.sample/test.sample.php'
 	}
 
 	exec { 'create application config':
 		unless  => '/usr/bin/test -e /var/www/protected/config/local/common.php',
-		command => '/bin/cp /var/www/protected/config/local/common.vagrant.php /var/www/protected/config/local/common.php;',
+		command => '/bin/cp /var/www/protected/config/local.sample/common.vagrant.php /var/www/protected/config/local/common.php;',
 		require => Service['mysql'],
 	}
 	#required to provide a testdb connection id to yiic migrate
 	exec { 'create console config':
 		unless  => '/usr/bin/test -e /var/www/protected/config/local/console.php',
-		command => '/bin/cp /var/www/protected/config/local/console.vagrant.php /var/www/protected/config/local/console.php;',
+		command => '/bin/cp /var/www/protected/config/local.sample/console.vagrant.php /var/www/protected/config/local/console.php;',
 		require => Service['mysql'],
 	}
 

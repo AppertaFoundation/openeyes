@@ -77,7 +77,7 @@ do
 done < "$enabled_modules"
 echo "modules_yii_config: Modules $modules_conf_string"
 #'modules' => array(
-sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.autotest.php > protected/config/local/common.php
+sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local.sample/common.autotest.php > protected/config/local/common.php
 echo 'modules_yii_config: Moved config files'
 
 #git clone modules

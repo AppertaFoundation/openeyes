@@ -59,7 +59,7 @@ do
 done < "$enabled_modules"
 echo "Modules $modules_conf_string"
 #'modules' => array(
-sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.autotest.php > protected/config/local/common.php
+sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local.sample/common.autotest.php > protected/config/local/common.php
 echo 'Moved config files'
 
 echo "import test sql - delete/create db"
