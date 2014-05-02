@@ -57,7 +57,7 @@ class FieldImages extends CActiveRecordBehavior
 
 		foreach($imgs as $img){
 			if(preg_match($pattern, $img))
-				$matchImgs[]= $assetManager->getPublishedPathOfAlias(self::FIELDS_IMAGES_ALIAS) . DIRECTORY_SEPARATOR . $img;
+				$matchImgs[]= $assetManager->getPublishedPathOfAlias(self::FIELDS_IMAGES_ALIAS) . $img;
 		}
 
 		if(empty($matchImgs)){
