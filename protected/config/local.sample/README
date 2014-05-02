@@ -1,4 +1,4 @@
-For local configuration, copy common.sample.php to common.php and edit as required.
+For local configuration, copy local.sample/common.sample.php to local/common.php and edit as required.
 
 Web, console and test configurations may be overridden separately if required in a similar way.
 
