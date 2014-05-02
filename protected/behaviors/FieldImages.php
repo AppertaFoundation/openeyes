@@ -24,7 +24,7 @@ class FieldImages extends CActiveRecordBehavior
 	 * @param string path - optional parameter for alias injection while testing
 	 * @return array|null - list of field images for class
 	 */
-	public function getFieldImages(  $cFile = null)
+	public function getFieldImages(  $cFile = null, $assetManager = null)
 	{
 		if(!method_exists($this->owner, 'fieldImages')){
 			throw new FieldImagesException('fieldImages method not implemented in : ' . get_class($this->owner));
@@ -34,15 +34,19 @@ class FieldImages extends CActiveRecordBehavior
 			$cFile = 'CFileHelper';
 		}
 
+		if(!$assetManager){// injection to allow function mocking
+			$assetManager = Yii::app()->assetManager;
+		}
+
 		//$alias = $path ? $path : self::FIELDS_IMAGES_ALIAS;
 		$imgsPath = Yii::getPathOfAlias(self::FIELDS_IMAGES_ALIAS);
 
 		$imgs = $cFile::findFiles($imgsPath, array('fileTypes' => $this->imgTypes));
 
-		return $this->getMatchingImgs($imgs);
+		return $this->getMatchingImgs($imgs, $assetManager);
 	}
 
-	private function getMatchingImgs($imgs){
+	private function getMatchingImgs($imgs, $assetManager){
 		$matchImgs = array();
 		$className = get_class($this->owner);
 		$fields = implode( '|',$this->owner->fieldImages() );
@@ -53,7 +57,7 @@ class FieldImages extends CActiveRecordBehavior
 
 		foreach($imgs as $img){
 			if(preg_match($pattern, $img))
-				$matchImgs[]= $img;
+				$matchImgs[]= $assetManager->getPublishedPathOfAlias(self::FIELDS_IMAGES_ALIAS) . DIRECTORY_SEPARATOR . $img;
 		}
 
 		if(empty($matchImgs)){

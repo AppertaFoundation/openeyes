@@ -16,6 +16,7 @@
 class FieldImagesTest extends CDbTestCase
 {
 	private $yiiMock;
+	private $assetManagerMock;
 	public function setUp()
 	{
 		$this->getFixtureManager()->dbConnection->createCommand(
@@ -37,6 +38,12 @@ class FieldImagesTest extends CDbTestCase
 			'CFileHelper',          // name of class to mock
 			array('findFiles') // list of methods to mock
 		);
+
+		$this->assetManagerMock =$this->getMock('AssetManager');
+		// Configure the stub.
+		$this->assetManagerMock->expects($this->any())
+			->method('getPublishedPathOfAlias')
+			->will($this->returnValue(''));
 	}
 
 	public function tearDown()
@@ -62,7 +69,7 @@ class FieldImagesTest extends CDbTestCase
 			->will($this->returnValue( array() ));
 
 		$results = FiledImagesTest_TestClass::model()
-			->getFieldImages( $yiiMock);
+			->getFieldImages( $yiiMock, $this->assetManagerMock);
 		$this->assertNull( $results);
 	}
 
@@ -78,7 +85,7 @@ class FieldImagesTest extends CDbTestCase
 		);
 
 		$results = FiledImagesTest_TestClass::model()
-			->getFieldImages( $yiiMock);
+			->getFieldImages( $yiiMock, $this->assetManagerMock);
 		$this->assertEquals(2, count($results) );
 	}
 	///FiledImagesTest_TestClass-field-0.jpg

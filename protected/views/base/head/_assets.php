@@ -19,4 +19,5 @@
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.Alert.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.Confirm.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Widgets.js')?>
+<?php $assetManager->registerScriptFile('js/OpenEyes.UI.FieldImages.js')?>
 <?php $assetManager->registerScriptFile('js/script.js')?>
