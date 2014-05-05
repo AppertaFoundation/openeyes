@@ -99,8 +99,7 @@ class BaseModuleController extends BaseController {
 			}
 			$paths[] = $module->name;
 
-			$kls = explode('\\', get_class($this));
-			$controller_name = $kls[count($kls)-1];
+			$controller_name = Helper::getNSShortname($this);
 
 			foreach ($paths as $p) {
 				$asset_path_alias = 'application.modules.'.$p.'.assets';

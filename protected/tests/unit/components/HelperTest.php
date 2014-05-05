@@ -13,6 +13,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'HelperTestNS.php';
+
 class HelperTest extends CTestCase
 {
 	static private $tz;
@@ -135,4 +137,12 @@ class HelperTest extends CTestCase
 	{
 		$this->assertEquals('foo, bar and baz', Helper::formatList(array('foo', 'bar', 'baz')));
 	}
+
+	public function testgetNSShortname()
+	{
+		$test = new HelperTestNS\models\NamespacedElement();
+
+		$this->assertEquals('NamespacedElement', Helper::getNSShortname($test));
+	}
+
 }

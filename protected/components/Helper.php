@@ -284,4 +284,11 @@ class Helper
 				return implode(', ', $items) . ' and ' . $last;
 		}
 	}
+
+	public static function getNSShortname($instance)
+	{
+		$r = new ReflectionClass($instance);
+		return $r->getShortName();
+	}
+
 }

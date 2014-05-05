@@ -23,7 +23,6 @@
         <exclude>
             <group>functional</group>
             <group>undefined</group>
-            <group>controllers</group>
             <group>elements</group>
             <group>services</group>
             <group>components</group>
@@ -33,7 +32,6 @@
     <filter>
         <blacklist>
             <directory suffix=".php">../../../yii/</directory>
-            <directory suffix=".php">./unit/controllers/</directory>
         </blacklist>
         <whitelist>
             <directory suffix=".php">../models</directory>

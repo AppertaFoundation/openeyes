@@ -372,9 +372,7 @@ class BaseEventTypeController extends BaseModuleController
 			$element->setUpdateOptions();
 		}
 
-		$kls = explode('\\', get_class($element));
-		$stub = end($kls);
-		$el_method = 'setElementDefaultOptions_' . $stub;
+		$el_method = 'setElementDefaultOptions_' . Helper::getNSShortname($element);
 		if (method_exists($this, $el_method)) {
 			$this->$el_method($element, $action);
 		}
@@ -1002,9 +1000,7 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function setElementComplexAttributesFromData($element, $data, $index = null)
 	{
-		$kls = explode('\\', get_class($element));
-		$stub = end($kls);
-		$element_method = "setComplexAttributes_" . $stub;
+		$element_method = "setComplexAttributes_" . Helper::getNSShortname($element);
 		if (method_exists($this, $element_method)) {
 			$this->$element_method($element, $data, $index);
 		}
@@ -1123,9 +1119,7 @@ class BaseEventTypeController extends BaseModuleController
 
 		foreach ($this->open_elements as $element) {
 			$el_cls_name = get_class($element);
-			$kls = explode('\\', $el_cls_name);
-			$stub = end($kls);
-			$element_method = "saveComplexAttributes_" . $stub;
+			$element_method = "saveComplexAttributes_" . Helper::getNSShortname($element);
 			if (method_exists($this, $element_method)) {
 				// there's custom behaviour for setting additional relations on this element class
 				if (!isset($counter_by_cls[$el_cls_name])) {
@@ -1199,21 +1193,23 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function getControllerPrefix()
 	{
-		$kls = explode('\\', get_class($this));
-		return strtolower(str_replace('Controller', '', $kls[count($kls)-1]));
+		return strtolower(str_replace('Controller', '', Helper::getNSShortname($this)));
 	}
 
 	/**
 	 * Return the path alias for the module the element belongs to based on its namespace
+	 * (assumes elements exist in a namespace below the module namespace)
 	 *
 	 * @param BaseEventTypeElement $element
 	 * @return string
 	 */
 	public function getElementModulePathAlias(\BaseEventTypeElement $element)
 	{
-		$kls = explode('\\', get_class($element));
-		if (count($kls) > 1) {
-			return implode('.', array_slice($kls, 0, count($kls)-2));
+		$r = new ReflectionClass($element);
+
+		if ($r->inNamespace()) {
+			$ns_parts = explode('\\',$r->getNamespaceName());
+			return implode('.',array_slice($ns_parts,0,count($ns_parts)-1));
 		}
 		return $this->modulePathAlias;
 	}

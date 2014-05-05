@@ -38,8 +38,6 @@ class EventType extends BaseActiveRecordVersioned
 		return parent::model($className);
 	}
 
-	protected $_module_class_map;
-
 	/**
 	 * @return string the associated database table name
 	 */
