@@ -22,7 +22,7 @@ class FieldImages extends CActiveRecordBehavior
 
 	/*
 	 * @param string path - optional parameter for alias injection while testing
-	 * @return array|null - list of field images for class
+	 * @return array - list of field images for class
 	 */
 	public function getFieldImages(  $cFile = null, $assetManager = null)
 	{
@@ -38,9 +38,7 @@ class FieldImages extends CActiveRecordBehavior
 			$assetManager = Yii::app()->assetManager;
 		}
 
-		//$alias = $path ? $path : self::FIELDS_IMAGES_ALIAS;
 		$imgsPath = Yii::getPathOfAlias(self::FIELDS_IMAGES_ALIAS);
-
 		$imgs = $cFile::findFiles($imgsPath, array('fileTypes' => $this->imgTypes));
 
 		return $this->getMatchingImgs($imgs, $assetManager);
@@ -53,15 +51,15 @@ class FieldImages extends CActiveRecordBehavior
 
 		//\bname_name-(filippo|pino)-(6|5|9).jpg+\b
 
-		$pattern = "/" . $className . "-" . "(" . $fields . ")-.*.jpg/i";
+		$pattern = "/" . $className . "-" . "(" . $fields . ")-(.*).jpg/i";
 
 		foreach($imgs as $img){
-			if(preg_match($pattern, $img))
-				$matchImgs[]= $assetManager->getPublishedPathOfAlias(self::FIELDS_IMAGES_ALIAS) . $img;
+			if(preg_match($pattern, $img, $matches))
+				$matchImgs[$matches[2]]= $assetManager->getPublishedPathOfAlias(self::FIELDS_IMAGES_ALIAS) . $img;
 		}
 
 		if(empty($matchImgs)){
-			return null;
+			return array();
 		}
 		return $matchImgs;
 	}

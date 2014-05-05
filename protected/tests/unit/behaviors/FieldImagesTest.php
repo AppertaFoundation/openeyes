@@ -70,7 +70,7 @@ class FieldImagesTest extends CDbTestCase
 
 		$results = FiledImagesTest_TestClass::model()
 			->getFieldImages( $yiiMock, $this->assetManagerMock);
-		$this->assertNull( $results);
+		$this->assertEmpty( $results);
 	}
 
 	public function testGetFieldImages()
@@ -79,16 +79,20 @@ class FieldImagesTest extends CDbTestCase
 		$yiiMock::staticExpects($this->any())
 			->method('findFiles')
 			->will($this->returnValue(
-				array('somepath/somefile.jpg', 'somepath/FiledImagesTest_TestClass-field-0.jpg'
-				, 'somepath/FiledImagesTest_TestClass-field-1.jpg')
+				array('somepath/somefile.jpg', 'somepath/FiledImagesTest_TestClass-field-3.jpg'
+				, 'somepath/FiledImagesTest_TestClass-field-5.jpg')
 			)
 		);
 
 		$results = FiledImagesTest_TestClass::model()
 			->getFieldImages( $yiiMock, $this->assetManagerMock);
+		$this->assertInternalType('array',$results);
 		$this->assertEquals(2, count($results) );
+		$this->assertTrue(isset($results['3']));
+		$this->assertTrue(isset($results['5']));
+		$this->assertEquals('somepath/FiledImagesTest_TestClass-field-3.jpg', $results['3']);
+		$this->assertEquals('somepath/FiledImagesTest_TestClass-field-5.jpg', $results['5']);
 	}
-	///FiledImagesTest_TestClass-field-0.jpg
 }
 
 class FiledImagesTest_TestClass extends BaseActiveRecord
