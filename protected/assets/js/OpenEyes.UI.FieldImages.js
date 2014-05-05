@@ -36,10 +36,6 @@
 		EventEmitter.call(this);
 
 		this.options = $.extend(true, {}, FieldImages._defaultOptions, options);
-
-        //$(document).ready(function() {
-        //    this.setFieldButtons();
-        //});
 		//this.create();
 		//this.bindEvents();
 	}
@@ -97,7 +93,7 @@
             if($('#' + selectId)){
                 this.options.idToImages[selectId]
                 jQuery('<img/>', {
-                    src: '../img/fieldImages/cog.png',
+                    src: OE_core_asset_path + '/img/fieldImages/cog.png',
                     alt: 'Opens ' + selectId + ' field images'
                 }).insertAfter( '#' + selectId );
             }
