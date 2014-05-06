@@ -52,7 +52,8 @@
     FieldImages._defaultOptions = {
         title: "Field Images",
         images: null,
-        idToImages:null
+        idToImages:null,
+        dialogInstance:null
 	};
 
 	/**
@@ -67,11 +68,11 @@
         console.log( "Getting vals " + JSON.stringify(this.options.idToImages[fieldElId ]) );
         console.log( "Getting vals selects " + JSON.stringify(this.options.idToImages[fieldElId ]['selects']) );
 
-        var dialog = new OpenEyes.UI.Dialog({
+        this.options.dialog = new OpenEyes.UI.Dialog({
             title: this.options.title,
-            content: this.createImagesDiv(this.options.idToImages[fieldElId ])
+            content: this.createImagesDiv(this.options.idToImages[fieldElId ], fieldElId)
         });
-        dialog.open();
+        this.options.dialog.open();
 	};
 
 
@@ -81,9 +82,9 @@
      * @method
      * @private
      */
-    FieldImages.prototype.createImagesDiv = function(fieldElId) {
-        console.log("In create images div:" + JSON.stringify( fieldElId ) );
-        //return JSON.stringify(dropDown) + " " + $(dropDown).id
+    FieldImages.prototype.createImagesDiv = function(fieldElId, selectId) {
+        console.log("In create images div fieldID top:" + JSON.stringify( fieldElId ) );
+        //console.log("In create images div dialog:" + JSON.stringify( dialog ) );
         var wrapper = jQuery('<div/>', {
             class:  "fieldsWrapper"
         });
@@ -93,23 +94,32 @@
             if(fieldElId['id'] in this.options.images){
                 console.log("In create images div fieldID:" + fieldElId['id'] );
                 if(sval in this.options.images[fieldElId['id']]){
-
                     imgPath = this.options.images[fieldElId['id']][sval];
                     console.log("In create images div fieldID -> imgPath :" + imgPath );
                 }
             }
             var el = jQuery('<div/>', {
-                style: 'width:200px;height:129px;margin:3px;float:left'
+                class: 'ui-field-image'
+            }).click({selectId: selectId, val: sval, fieldImgInstance: this},function(e) {
+                //console.log("Data: " + JSON.stringify(e.data) )
+                $( "#"+ e.data.selectId).val(e.data.val);
+                e.data.fieldImgInstance.options.dialog.close();
+            });
+            var valPar = jQuery('<p class="ui-field-image-val">' + sval + '</p>', {
             });
             if(imgPath){
                 $(el).css("background-image", "url("+ imgPath + ")");
+                $(valPar).appendTo(el);
             }
             else{
                 $(el).css("background-color", "#999");
+                $(valPar).appendTo(el);
+                jQuery('<p class="ui-field-image-no-preview">No Preview</p>', {
+                }).appendTo(el)
             }
+
             $(el).appendTo(wrapper);
         }
-        //return this.options.idToImages +   " " + JSON.stringify(selectVals);
         return wrapper;
     };
 
