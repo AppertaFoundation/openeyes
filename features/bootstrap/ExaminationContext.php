@@ -1965,4 +1965,52 @@ class ExaminationContext extends PageObjectContext
         $examination->rightMaculoPhotoNo();
     }
 
+    /**
+     * @Given /^I select Left Unable to assess checkbox$/
+     */
+    public function iSelectLeftUnableToAssessCheckbox()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftUnableAssess();
+    }
+
+    /**
+     * @Given /^I select Left Eye Missing checkbox$/
+     */
+    public function iSelectLeftEyeMissingCheckbox()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftEyeMissing();
+    }
+
+    /**
+     * @Given /^I select Right Unable to assess checkbox$/
+     */
+    public function iSelectRightUnableToAssessCheckbox()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightUnableAssess();
+    }
+
+    /**
+     * @Given /^I select Right Eye Missing checkbox$/
+     */
+    public function iSelectRightEyeMissingCheckbox()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightEyeMissing();
+    }
+
 }
