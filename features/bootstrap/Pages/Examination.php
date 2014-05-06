@@ -226,6 +226,13 @@ class Examination extends OpenEyesPage
         'leftMaculoPhotoNo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_right_nscmaculopathy_photocoagulation_0']"),
         'rightMaculoPhotoYes' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_left_nscmaculopathy_photocoagulation_1']"),
         'rightMaculoPhotoNo' => array('xpath' => "//*[@id='Element_OphCiExamination_DRGrading_left_nscmaculopathy_photocoagulation_0']"),
+
+        'leftUnableToAssess' => array('xpath' => "//*[@id='Element_OphCiExamination_VisualAcuity_left_unable_to_assess']"),
+        'rightUnableToAssess' => array('xpath' => "//*[@id='Element_OphCiExamination_VisualAcuity_right_unable_to_assess']"),
+        'leftEyeMissing' => array('xpath' => "//*[@id='Element_OphCiExamination_VisualAcuity_left_eye_missing']"),
+        'rightEyeMissing' => array('xpath' => "//*[@id='Element_OphCiExamination_VisualAcuity_right_eye_missing']"),
+
+
     );
 
     public function history ()
@@ -587,6 +594,7 @@ class Examination extends OpenEyesPage
     {
         $element = $this->getElement('expandClinicalManagement');
         $this->scrollWindowToElement($element);
+        $this->getSession()->wait(2000);
         $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
@@ -595,6 +603,7 @@ class Examination extends OpenEyesPage
     {
         $element = $this->getElement('expandCataractSurgicalManagement');
         $this->scrollWindowToElement($element);
+        $this->getSession()->wait(2000);
         $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
@@ -1303,5 +1312,25 @@ class Examination extends OpenEyesPage
     public function rightMaculoPhotoNo()
     {
         $this->getElement('rightMaculoPhotoNo')->check();
+    }
+
+    public function leftUnableAssess ()
+    {
+        $this->getElement('leftUnableToAssess')->check();
+    }
+
+    public function rightUnableAssess ()
+    {
+        $this->getElement('rightUnableToAssess')->check();
+    }
+
+    public function leftEyeMissing ()
+    {
+        $this->getElement('leftEyeMissing')->check();
+    }
+
+    public function rightEyeMissing ()
+    {
+        $this->getElement('rightEyeMissing')->check();
     }
 }

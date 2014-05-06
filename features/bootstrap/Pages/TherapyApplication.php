@@ -95,6 +95,15 @@ class TherapyApplication extends OpenEyesPage
         'rightPatientCRT>=400Yes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_16']//*[@value=1]"),
         'rightPatientCRT>=400No' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_16']//*[@value=0]"),
 
+
+        #Scenario 3
+        'rightOcularConditionRareYes' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_condition_rare_1']"),
+        'rightOcularConditionRareNo' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_condition_rare_0']"),
+        'rightIncidenceDetails' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_incidence']"),
+        'rightPatientSignificantlyDifferent' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_patient_different']"),
+        'rightPatientLikelyToGain' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_patient_gain']"),
+
+
     );
 
     public function removeRightEye ()
@@ -461,6 +470,33 @@ class TherapyApplication extends OpenEyesPage
 		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_16');
         $this->getElement('leftPatientCRT>=400Yes')->click();
     }
+
+    public function rightOcularConditionRareYes ()
+    {
+        $this->getElement('rightOcularConditionRareYes')->check();
+    }
+
+    public function rightOcularConditionRareNo()
+    {
+        $this->getElement('rightOcularConditionRareNo')->check();
+    }
+
+    public function rightIncidenceDetails ($comments)
+    {
+        $this->getElement('rightIncidenceDetails')->setValue($comments);
+    }
+
+    public function rightPatientSignificantlyDifferent ($comments)
+    {
+        $this->getElement('rightPatientSignificantlyDifferent')->setValue($comments);
+    }
+
+    public function rightPatientLikelyToGainBenefit ($comments)
+    {
+        $this->getElement('rightPatientLikelyToGain')->setValue($comments);
+    }
+
+
 }
 
 

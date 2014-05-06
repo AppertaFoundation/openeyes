@@ -39,7 +39,7 @@ Feature: Create New Operation Booking Event
     And I select an Available theatre slot date
     And I select an Available session time
 
-    Then I select a Ward of "2"
+#    Then I select a Ward of "2"
     And enter an admission time of "11:20"
     Then I add Session comments of "Session Comments Session Comments Session Comments Session Comments Session Comments"
     And I add Operation comments of "Operation Comments Operation Comments Operation Comments Operation Comments Operation Comments"

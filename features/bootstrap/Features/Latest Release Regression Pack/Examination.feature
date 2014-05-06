@@ -843,3 +843,34 @@ Feature: Create New Examination Regression Tests
     Then I choose right Dilation of "2" and drops of "2"
 
     Then I Save the Examination and confirm it has been created successfully
+
+  Scenario: Route 17 :Login and create a new Examination Event
+            Site:1 Queens
+            Firm:2 Broom Glaucoma
+            Visual Fields: Unable to assess and Eye Missing checkboxes
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "2"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "Examination"
+
+    Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
+
+    And I choose to expand the Comorbidities section
+    Then I Add a Comorbiditiy of "4"
+
+    Then I choose to expand the Visual Acuity section
+
+    And I select Left Unable to assess checkbox
+    And I select Left Eye Missing checkbox
+
+    And I select Right Unable to assess checkbox
+    And I select Right Eye Missing checkbox
+
+    Then I Save the Examination and confirm it has been created successfully
