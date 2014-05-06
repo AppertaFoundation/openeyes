@@ -135,8 +135,9 @@
                 this.options.idToImages[selectId]
                 jQuery('<img/>', {
                     id: selectId + "_cog",
-                    src: OE_core_asset_path + '/img/fieldImages/cog.png',
-                    alt: 'Opens ' + selectId + ' field images'
+                    src: OE_core_asset_path + '/img/_elements/icons/event/small/images_photo.png',
+                    alt: 'Opens ' + selectId + ' field images',
+                    class: 'ui-field-images-icon'
                 }).insertAfter( '#' + selectId );
 
                 var this_ = this;
