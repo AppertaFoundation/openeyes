@@ -46,6 +46,8 @@ class OEMigrationTest extends CDbTestCase
 
 		Yii::app()->db->createCommand("delete from episode_summary")->query();
 		Yii::app()->db->createCommand("delete from episode_summary_item")->query();
+		Yii::app()->db->createCommand("delete from event where event_type_id >= 1000")->query();
+		Yii::app()->db->createCommand("delete from event_type where id >= 1000 and parent_event_type_id is not null")->query();
 		Yii::app()->db->createCommand("delete from event_type where id >= 1000")->query();
 
 		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
@@ -128,11 +130,13 @@ class OEMigrationTest extends CDbTestCase
 	}
 
 	public function testGetInsertId(){
+		$res = Yii::app()->db->createCommand("select max(id) as mx_id from event_type")->queryRow();
+
 		$insertRow = array('name' => 'TestEventType' , 'event_group_id' => '5', 'class_name' => 'OphTrTestclass' , 'support_services' => '0');
 		$this->oeMigration->insert('event_type' , $insertRow);
 		$insertId = $this->oeMigration->getInsertId('event_type' );
 		$this->assertGreaterThan(0, $insertId);
-		$this->assertEquals(1011, $insertId);
+		$this->assertEquals($res['mx_id']+1, $insertId);
 	}
 
 	/**
