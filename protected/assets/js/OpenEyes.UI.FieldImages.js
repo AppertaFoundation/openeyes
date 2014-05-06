@@ -99,7 +99,7 @@
                 }
             }
             var el = jQuery('<div/>', {
-                style: 'width:200px;height:129px'
+                style: 'width:200px;height:129px;margin:3px;float:left'
             });
             if(imgPath){
                 $(el).css("background-image", "url("+ imgPath + ")");
