@@ -79,6 +79,7 @@ class HelperTest extends CTestCase
 		$this->assertEquals($expected, Helper::getAge($dob, $date_of_death, $check_date));
 	}
 
+
 	public function testExtractValues()
 	{
 		$objects = array(
@@ -138,6 +139,7 @@ class HelperTest extends CTestCase
 		$this->assertEquals('foo, bar and baz', Helper::formatList(array('foo', 'bar', 'baz')));
 	}
 
+
 	public function testgetNSShortname()
 	{
 		$test = new HelperTestNS\models\NamespacedElement();
@@ -145,4 +147,20 @@ class HelperTest extends CTestCase
 		$this->assertEquals('NamespacedElement', Helper::getNSShortname($test));
 	}
 
+	public function getDateForAgeProvider()
+	{
+		return array(
+				array('2015-05-12', '2004-05-12', 11),
+				array('2015-05-12', '2004-05-12', 11, '2016-04-11'),
+				array(null, '2004-05-12', 11, '2009-04-11'),
+		);
+	}
+
+	/**
+	 * @dataProvider getDateForAgeProvider
+	 */
+	public function testgetDateForAge($expected, $dob, $age, $date_of_death = null)
+	{
+		$this->assertEquals($expected, Helper::getDateForAge($dob, $age, $date_of_death));
+	}
 }

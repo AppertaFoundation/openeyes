@@ -18,15 +18,27 @@
  */
 
 /**
- * This is the model class for table "referral_type".
+ * This is the model class for table "RTT".
  *
- * The followings are the available columns in table 'referral':
+ * The followings are the available columns in table 'rtt':
  * @property integer $id
- * @property string $code
- * @property string $name
+ * @property string $clock_start
+ * @property string $clock_end
+ * @property string $breach
+ * @property integer $referral_id
+ * @property boolean $active
+ * @property string comments
+ * @property integer last_modified_user_id
+ * @property string last_modified_date
+ * @property integer created_user_id
+ * @property string created_date
  */
-class ReferralType extends BaseActiveRecordVersioned
+
+class RTT extends BaseActiveRecord
 {
+
+	public $use_pas = TRUE;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Referral the static model class
@@ -37,11 +49,23 @@ class ReferralType extends BaseActiveRecordVersioned
 	}
 
 	/**
+	 * Suppress PAS integration
+	 * @return Referral
+	 */
+	public function noPas()
+	{
+		// Clone to avoid singleton problems with use_pas flag
+		$model = clone $this;
+		$model->use_pas = FALSE;
+		return $model;
+	}
+
+	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'referral_type';
+		return 'rtt';
 	}
 
 	/**
@@ -63,6 +87,7 @@ class ReferralType extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+				'referral' => array(self::BELONGS_TO, 'Referral', 'referral_id'),
 		);
 	}
 
@@ -72,7 +97,7 @@ class ReferralType extends BaseActiveRecordVersioned
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
+				'id' => 'ID',
 		);
 	}
 
@@ -90,18 +115,19 @@ class ReferralType extends BaseActiveRecordVersioned
 		$criteria->compare('id',$this->id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
 
 	/**
-	 * Because referral types can be defined from external systems with unusual formatting
-	 * we have an override for the description
-	 *
-	 * @return string
+	 * Pass through use_pas flag to allow pas supression
+	 * @see CActiveRecord::instantiate()
 	 */
-	public function getDescription()
+	protected function instantiate($attributes)
 	{
-		return ucfirst(strtolower($this->name));
+		$model = parent::instantiate($attributes);
+		$model->use_pas = $this->use_pas;
+		return $model;
 	}
+
 }

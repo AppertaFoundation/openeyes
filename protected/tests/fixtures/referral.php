@@ -17,62 +17,38 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
 return array(
-	'patient1' => array(
+	'referral1' => array(
 		'id' => 1,
-		'pas_key' => '123',
-		'title' => 'Mr.',
-		'first_name' => 'John',
-		'last_name' => 'Jones',
-		'dob' => '1970-01-01',
-		'gender' => 'M',
-		'hos_num' => 12345,
-		'nhs_num' => 54321,
-		'practice_id' => 1,
-		'address_id' => 1,
-		'contact_id' => 1
+		'refno' => 234,
+		'patient_id' => 1,
+		'referral_type_id' => 1,
+		'received_date' => date('Y-m-d', strtotime('-20 days')),
+		'referrer' => 'TEST'
 	),
-	'patient2' => array(
-		'id' => 2,
-		'pas_key' => '456',
-		'title' => 'Mr.',
-		'dob' => '1972-01-01',
-		'gender' => 'M',
-		'first_name' => 'John',
-		'last_name' => 'Jones',
-		'hos_num' => 23456,
-		'nhs_num' => 65432,
-		'practice_id' => 2,
-		'address_id' => 2,
-		'contact_id' => 2
+	'referral2' => array(
+			'id' => 2,
+			'refno' => 134,
+			'patient_id' => 2,
+			'referral_type_id' => 1,
+			'received_date' => date('Y-m-d', strtotime('-15 days')),
+			'referrer' => 'TEST'
 	),
-	'patient3' => array(
-		'id' => 3,
-		'pas_key' => '789',
-		'title' => 'Mrs.',
-		'first_name' => 'Katherine',
-		'last_name' => 'Smith',
-		'dob' => '1960-01-01',
-		'gender' => 'F',
-		'hos_num' => 34567,
-		'nhs_num' => 76543,
-		'practice_id' => 3,
-		'address_id' => 3,
-		'contact_id' => 3
+	'referral3' => array(
+			'id' => 3,
+			'refno' => 534,
+			'patient_id' => 1,
+			'referral_type_id' => 1,
+			'received_date' => date('Y-m-d', strtotime('-5 days')),
+			'referrer' => 'TEST'
 	),
-	'patient4' => array(
-		'pas_key' => '123',
-		'title' => 'Mrs.',
-		'first_name' => 'Carla',
-		'last_name' => 'Bruni',
-		'dob' => '1977-01-01',
-		'gender' => 'F',
-		'hos_num' => 34321,
-		'nhs_num' => 76567,
-		'practice_id' => 3,
-		'practice_id' => 3,
-		'address_id' => 4,
-		'contact_id' => 4
-	),
+		'referral4' => array(
+				'id' => 4,
+				'refno' => 634,
+				'patient_id' => 1,
+				'referral_type_id' => 1,
+				'received_date' => date('Y-m-d', strtotime('-25 days')),
+				'closed_date' => date('Y-m-d', strtotime('-13 days')),
+				'referrer' => 'TEST'
+		),
 );
