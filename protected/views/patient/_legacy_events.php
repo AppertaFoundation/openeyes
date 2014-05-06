@@ -19,7 +19,7 @@
 if ($legacyepisodes) {
     $episode = $legacyepisodes[0];
     ?>
-    <section class="panel episode open legacy">
+    <section class="panel episode open legacy"> 
         <!-- Show/hide toggle icon -->
         <a href="#" class="toggle-trigger toggle-<?php if ((!$this->event || $this->event->eventType->class_name != 'OphLeEpatientletter') && !@Yii::app()->session['episode_hide_status']['legacy']) { ?>show<?php } else { ?>hide<?php } ?>">
             <span class="icon-showhide">
