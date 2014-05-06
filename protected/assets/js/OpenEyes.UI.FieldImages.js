@@ -62,11 +62,14 @@
 	 * @method
 	 * @private
 	 */
-    FieldImages.prototype.create = function() {
+    FieldImages.prototype.createDiag = function(fieldElId) {
+        console.log("Creating diag for :" + fieldElId );
+        console.log( "Getting vals " + JSON.stringify(this.options.idToImages[fieldElId ]) );
+        console.log( "Getting vals selects " + JSON.stringify(this.options.idToImages[fieldElId ]['selects']) );
 
         var dialog = new OpenEyes.UI.Dialog({
-        	title: this.options.title,
-        	content: this.createImagesDiv()
+            title: this.options.title,
+            content: this.createImagesDiv(this.options.idToImages[fieldElId ])
         });
         dialog.open();
 	};
@@ -78,8 +81,36 @@
      * @method
      * @private
      */
-    FieldImages.prototype.createImagesDiv = function() {
-        return this.options.idToImages +   " " + JSON.stringify(this.options.images);
+    FieldImages.prototype.createImagesDiv = function(fieldElId) {
+        console.log("In create images div:" + JSON.stringify( fieldElId ) );
+        //return JSON.stringify(dropDown) + " " + $(dropDown).id
+        var wrapper = jQuery('<div/>', {
+            class:  "fieldsWrapper"
+        });
+        for(var sval in fieldElId['selects']){
+            console.log("In create images div, processing select :" + JSON.stringify( sval ) + " <- " + fieldElId['id']);
+            var imgPath = null;
+            if(fieldElId['id'] in this.options.images){
+                console.log("In create images div fieldID:" + fieldElId['id'] );
+                if(sval in this.options.images[fieldElId['id']]){
+
+                    imgPath = this.options.images[fieldElId['id']][sval];
+                    console.log("In create images div fieldID -> imgPath :" + imgPath );
+                }
+            }
+            var el = jQuery('<div/>', {
+                style: 'width:200px;height:129px'
+            });
+            if(imgPath){
+                $(el).css("background-image", "url("+ imgPath + ")");
+            }
+            else{
+                $(el).css("background-color", "#999");
+            }
+            $(el).appendTo(wrapper);
+        }
+        //return this.options.idToImages +   " " + JSON.stringify(selectVals);
+        return wrapper;
     };
 
     /**
@@ -93,12 +124,21 @@
             if($('#' + selectId)){
                 this.options.idToImages[selectId]
                 jQuery('<img/>', {
+                    id: selectId + "_cog",
                     src: OE_core_asset_path + '/img/fieldImages/cog.png',
                     alt: 'Opens ' + selectId + ' field images'
                 }).insertAfter( '#' + selectId );
+
+                var this_ = this;
+
+                $( '#' + selectId + "_cog").click( function() {
+                    var sId = this.id.substr(0, (this.id.length - 4) );
+                    console.log("SetFieldButtonsTrying to open diag" +  JSON.stringify(sId) );
+                    this_.createDiag( sId);
+                });
             }
             else{console.log("Dropdown " + selectId + " does not exist!");}
-            console.log("Dropdown " + selectId + " processed!");
+            //console.log("Dropdown " + selectId + " processed!");
         }
         console.log("Dropdowns " + JSON.stringify(this.options.idToImages) + " processed!");
         //return this.options.idToImages +   " " + JSON.stringify(this.options.images);
