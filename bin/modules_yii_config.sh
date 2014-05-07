@@ -58,9 +58,15 @@ do
     echo "modules_yii_config: attempting to add module $module"
     if [ ! -e "$module" ]; then
         echo "modules_yii_config: Adding $module to conf string..."
-        modules_conf_string="$modules_conf_string '$module',\
-        \
-        "
+        if [ "$module" = "OphCiExamination" ]; then
+            modules_conf_string="$modules_conf_string '$module' => array('class' => '\\OEModule\\OphCiExamination\\OphCiExaminationModule'),\
+            \
+            "
+        else
+            modules_conf_string="$modules_conf_string '$module',\
+            \
+            "
+        fi
         if [ -r "$modules_path/$module/moduledeps" ];then
             echo "modules_yii_config: Setting up $module dependencies in common.php"
             while read -r moduledep || [[ -n "$moduledep" ]]

@@ -55,16 +55,22 @@ do
     echo "attempting to add module $module"s
     if [ ! -e "$module" ]; then
         echo "Adding $module to conf string..."
-        modules_conf_string="$modules_conf_string '$module',\
-        \
-        "
+        if [ "$module" = "OphCiExamination" ]; then
+            modules_conf_string="$modules_conf_string '$module' => array('class' => '\\OEModule\\OphCiExamination\\OphCiExaminationModule'),\
+            \
+            "
+        else
+            modules_conf_string="$modules_conf_string '$module',\
+            \
+            "
+        fi
     fi
 done < "$enabled_modules"
 echo "Modules $modules_conf_string"
 #'modules' => array(
 sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local.sample/common.autotest.php > protected/config/local/common.php
 echo 'Moved config files'
-
+exit;
 echo "import test sql - delete/create db"
 vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes -e "drop database openeyes; create database openeyes;";'
 echo "import test sql - import testdata.sql"
