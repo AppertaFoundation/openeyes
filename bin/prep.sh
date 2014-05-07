@@ -52,9 +52,15 @@ do
     echo "attempting to add module $module"s
     if [ ! -e "$module" ]; then
         echo "Adding $module to conf string..."
-        modules_conf_string="$modules_conf_string '$module',\
-        \
-        "
+        if [ "$module" = "OphCiExamination" ]; then
+            modules_conf_string="$modules_conf_string '$module' => array('class' => '\\OEModule\\OphCiExamination\\OphCiExaminationModule'),\
+            \
+            "
+        else
+            modules_conf_string="$modules_conf_string '$module',\
+            \
+            "
+        fi
     fi
 done < "$enabled_modules"
 echo "Modules $modules_conf_string"
