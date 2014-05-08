@@ -32,10 +32,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testModel()
 	{
-			// Remove the following lines when you implement this test.
-			$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-			);
+		$this->assertEquals('Event', get_class(Event::model()), 'Class name should match model.');
 	}
 
 	/**
@@ -44,10 +41,7 @@ class EventTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testTableName()
 	{
-			// Remove the following lines when you implement this test.
-			$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-			);
+		$this->assertEquals('event', $this->object->tableName());
 	}
 
 	/**
