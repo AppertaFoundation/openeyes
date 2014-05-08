@@ -63,7 +63,7 @@ class Event extends BaseActiveRecordVersioned
 			array('episode_id, event_type_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, episode_id, event_type_id, created_date', 'safe', 'on'=>'search'),
+			array('id, episode_id, event_type_id, created_date, accomplished_date', 'safe', 'on'=>'search'),
 		);
 	}
 

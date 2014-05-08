@@ -24,6 +24,11 @@ class EpisodeTest extends CDbTestCase
 	 */
 	protected $model;
 
+	public $fixtures = array(
+		'episode' => 'Episode',
+		'event' => 'Event',
+	);
+
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
@@ -40,6 +45,17 @@ class EpisodeTest extends CDbTestCase
 	public function testModel()
 	{
 		$this->assertEquals('Episode', get_class(Episode::model()), 'Class name should match model.');
+	}
+
+	/**
+	 * @covers Episode::relations
+	 */
+	public function testRelations()
+	{
+		//test events relation sorting
+		$events = $this->episode('episode2')->events;
+		$this->assertLessThanOrEqual($events[1]->accomplished_date, $events[0]->accomplished_date,
+			'AccomplishedDate: '. $events[0]->accomplished_date . ' > ' . $events[1]->accomplished_date);
 	}
 
 	/**
