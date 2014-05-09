@@ -83,6 +83,19 @@ class Event extends BaseActiveRecordVersioned
 		);
 	}
 
+	/**
+	 * Make sure accomplished date is set
+	 * @return boolean
+	 */
+	protected function beforeSave()
+	{
+		if ( $this->accomplished_date == "1900-01-01 00:00:00" || $this->accomplished_date == "0000-00-00 00:00:00") {
+			$this->accomplished_date = date('Y-m-d H:i:s');
+		}
+
+		return parent::beforeSave();
+	}
+
 	public function moduleAllowsEditing()
 	{
 		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {

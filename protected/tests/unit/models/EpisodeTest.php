@@ -49,13 +49,16 @@ class EpisodeTest extends CDbTestCase
 
 	/**
 	 * @covers Episode::relations
+	 * @todo   cover more relations if required, only event is covered for the moment.
 	 */
 	public function testRelations()
 	{
 		//test events relation sorting
 		$events = $this->episode('episode2')->events;
-		$this->assertLessThanOrEqual($events[1]->accomplished_date, $events[0]->accomplished_date,
-			'AccomplishedDate: '. $events[0]->accomplished_date . ' > ' . $events[1]->accomplished_date);
+		$events[0]->save();//only when saving the accomplished date is set to created_date when null
+		$this->assertNotNull($events[0]->accomplished_date);
+		$this->assertLessThanOrEqual($events[0]->accomplished_date, $events[1]->accomplished_date,
+			'AccomplishedDate 0 : '. $events[0]->accomplished_date . ' > CreatedDate 1 :' . $events[1]->created_date);
 	}
 
 	/**
