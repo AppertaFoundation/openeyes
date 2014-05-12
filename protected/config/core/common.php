@@ -238,4 +238,5 @@ return array(
 		'event_lock_days' => 0,
 		'event_lock_disable' => false
 	),
+	'Mailer_mode' => 'normal',
 );
