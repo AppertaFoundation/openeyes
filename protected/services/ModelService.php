@@ -63,6 +63,10 @@ abstract class ModelService extends InternalService
 	 */
 	public function read($id)
 	{
+		if (!$this->supportsOperation(self::OP_READ)) {
+			throw new ProcessingNotSupported("Read operation not supported");
+		}
+
 		return $this->modelToResource($this->readModel($id));
 	}
 
@@ -104,10 +108,6 @@ abstract class ModelService extends InternalService
 	 */
 	protected function readModel($id)
 	{
-		if (!$this->supportsOperation(self::OP_READ)) {
-			throw new ProcessingNotSupported("Read operation not supported");
-		}
-
 		if (!($model = $this->model->findByPk($id))) {
 			throw new NotFound(static::getServiceName() . " with ID '$id' not found");
 		}

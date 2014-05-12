@@ -262,12 +262,13 @@ class Helper
 	static public function generateUuid()
 	{
 		return sprintf(
-			"%08x-%04x-4%03x-%01x%03x-%08x%04x",
-			mt_rand(0, 4294967295),
+			"%04x%04x-%04x-4%03x-%01x%03x-%04%04x%04x",
+			mt_rand(0, 2147483647),
+			mt_rand(0, 2147483647),
 			mt_rand(0, 65535),
 			mt_rand(0, 4095),
 			mt_rand(8, 11), mt_rand(0, 4095),
-			mt_rand(0, 4294967295), mt_rand(0, 65535)
+			mt_rand(0, 2147483647), mt_rand(0, 65535)
 		);
 	}
 
