@@ -1393,7 +1393,6 @@ class BaseEventTypeController extends BaseModuleController
 	public function renderOptionalElements($action, $form=null,$data=null)
 	{
 		foreach ($this->getOptionalElements() as $element) {
-			error_log(get_class($element));
 			$this->renderOptionalElement($element, $action, $form, $data);
 		}
 	}
