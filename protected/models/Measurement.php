@@ -32,6 +32,31 @@ abstract class Measurement extends BaseActiveRecordVersioned
 		$this->getPatientMeasurement()->patient_id = $id;
 	}
 
+	/**
+	 * Attach this measurement to an Episode or Event
+	 *
+	 * @param Episode|Event $entity
+	 * @param boolean $origin
+	 * @return MeasurementReference
+	 */
+	public function attach($entity, $origin = false)
+	{
+		$ref = new MeasurementReference;
+		$ref->patient_measurement_id = $this->getPatientMeasurement()->id;
+		$ref->origin = $origin;
+
+		if ($entity instanceof Episode) {
+			$ref->episode_id = $entity->id;
+		} elseif ($entity instanceof Event) {
+			$ref->event_id = $entity->id;
+		} else {
+			throw new Exception("Can only attach measurements to Episodes or Events, was passed an object of type " . get_class($entity));
+		}
+
+		$ref->save();
+		return $ref;
+	}
+
 	protected function afterValidate()
 	{
 		$this->getPatientMeasurement()->validate();
