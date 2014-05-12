@@ -47,7 +47,11 @@ if ($this->isHiddenInUI($element)) {
 		<!-- Additional element title information -->
 		<?php if (isset($this->clips['element-title-additional'])){?>
 			<div class="element-title-additional">
-				<?php $this->renderClip('element-title-additional');?>
+				<?php
+				$this->renderClip('element-title-additional');
+				// don't want the header clip to repeat in child elements
+				unset($this->clips['element-title-additional']);
+				?>
 			</div>
 		<?php }?>
 
