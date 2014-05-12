@@ -108,6 +108,16 @@ $config = array(
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP')
+		// There are ways to configure the mailer so that it either won't send email or will divert it
+		// To divert:
+		/*
+        'Mailer_mode' => 'divert',
+        'Mailer_divert_addresses' => array(
+			'foo@example.org',
+        ),
+		*/
+		// To disable:
+        // 'Mailer_mode' => 'disabled',
 	),
 );
 
