@@ -63,7 +63,7 @@ if (!empty($episode)) {
 					$summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
 				}
 			?>
-			<?php if (count($summaryItems)) {?>}
+			<?php if (count($summaryItems)) {?>
 				<div class="element element-data event-types">
 					<?php
 					foreach ($summaryItems as $summaryItem) {
