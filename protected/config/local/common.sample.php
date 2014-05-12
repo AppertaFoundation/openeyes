@@ -111,13 +111,13 @@ $config = array(
 		// There are ways to configure the mailer so that it either won't send email or will divert it
 		// To divert:
 		/*
-        'Mailer_mode' => 'divert',
-        'Mailer_divert_addresses' => array(
+        'mailer_mode' => 'divert',
+        'mailer_divert_addresses' => array(
 			'foo@example.org',
         ),
 		*/
 		// To disable:
-        // 'Mailer_mode' => 'disabled',
+        // 'mailer_mode' => 'disabled',
 	),
 );
 

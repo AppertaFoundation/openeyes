@@ -122,9 +122,9 @@ class Mailer extends CComponent
 		$params = Yii::app()->params;
 
 		// 1. Verify we have a list of addresses to divert to
-		if (!array_key_exists('Mailer_divert_addresses', $params))
+		if (!array_key_exists('mailer_divert_addresses', $params))
 			return;
-		$diverts = $params['Mailer_divert_addresses'];
+		$diverts = $params['mailer_divert_addresses'];
 
 		// 2. Prepend the intended list of recipients
 		$orig_rcpts = $message->getHeaders()->get('To');
@@ -145,7 +145,7 @@ class Mailer extends CComponent
 	{
 		$params = Yii::app()->params;
 
-		switch (@$params['Mailer_mode']) {
+		switch (@$params['mailer_mode']) {
 			case 'disable':
 			case 'disabled':
 				return;
