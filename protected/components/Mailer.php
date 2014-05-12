@@ -146,6 +146,7 @@ class Mailer extends CComponent
 		$params = Yii::app()->params;
 
 		switch (@$params['Mailer_mode']) {
+			case 'disable':
 			case 'disabled':
 				return;
 			case 'divert':
