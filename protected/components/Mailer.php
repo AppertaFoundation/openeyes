@@ -100,12 +100,10 @@ class Mailer extends CComponent
 	}
 
 	/**
-	 * Send an email
-	 *
+	 * Sends a message to the recipient, unless they're forbidden
 	 * @param Swift_Message $message
 	 */
-	public function sendMessage($message)
-	{
+	protected function directlySendMessage($message) {
 		$mailer = $this->getMailer();
 
 		if ($this->recipientForbidden($message)) {
@@ -114,6 +112,47 @@ class Mailer extends CComponent
 		}
 
 		return $mailer->send($message);
+	}
+
+	/**
+	 * Diverts an email from its original destination. Useful for testing things in nearlive
+	 * @param Swift_Message $message
+	 */
+	protected function divertMessage($message) {
+		$params = Yii::app()->params;
+
+		// 1. Verify we have a list of addresses to divert to
+		if (!array_key_exists('Mailer_divert_addresses', $params))
+			return;
+		$diverts = $params['Mailer_divert_addresses'];
+
+		// 2. Prepend the intended list of recipients
+		$orig_rcpts = $message->getHeaders()->get('To');
+		if (is_array($orig_rcpts))
+			$orig_rcpts = implode(", ", $orig_rcpts);
+		// 3. Divert the mail to the divert addresses
+		$message->setTo($diverts);
+		$message->getHeaders()->addTextHeader('X-Original-Rcpt', $orig_rcpts);
+		return $this->directlySendMessage($message);
+	}
+
+	/**
+	 * Send an email
+	 *
+	 * @param Swift_Message $message
+	 */
+	public function sendMessage($message)
+	{
+		$params = Yii::app()->params;
+
+		switch (@$params['Mailer_mode']) {
+			case false: //Disable
+				return;
+			case 'divert':
+				return $this->divertMessage($message);
+			default:
+				return $this->directlySendMessage($message);
+		}
 	}
 
 	/**
