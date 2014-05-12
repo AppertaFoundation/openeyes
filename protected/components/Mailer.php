@@ -122,14 +122,16 @@ class Mailer extends CComponent
 		$params = Yii::app()->params;
 
 		// 1. Verify we have a list of addresses to divert to
-		if (!array_key_exists('mailer_divert_addresses', $params))
+		if (!isset($params['mailer_divert_addresses'])) {
 			return;
+		}
 		$diverts = $params['mailer_divert_addresses'];
 
 		// 2. Prepend the intended list of recipients
 		$orig_rcpts = $message->getHeaders()->get('To');
-		if (is_array($orig_rcpts))
+		if (is_array($orig_rcpts)) {
 			$orig_rcpts = implode(", ", $orig_rcpts);
+		}
 		// 3. Divert the mail to the divert addresses
 		$message->setTo($diverts);
 		$message->getHeaders()->addTextHeader('X-Original-Rcpt', $orig_rcpts);

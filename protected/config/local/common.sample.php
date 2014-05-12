@@ -107,17 +107,16 @@ $config = array(
 		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
-		'specialty_sort' => array(130, 'SUP')
+		'specialty_sort' => array(130, 'SUP'),
+		'mailer_mode' => 'normal',
 		// There are ways to configure the mailer so that it either won't send email or will divert it
 		// To divert:
-		/*
-        'mailer_mode' => 'divert',
-        'mailer_divert_addresses' => array(
-			'foo@example.org',
-        ),
-		*/
+		//'mailer_mode' => 'divert',
+		//'mailer_divert_addresses' => array(
+		//	'foo@example.org',
+		//),
 		// To disable:
-        // 'mailer_mode' => 'disabled',
+		//'mailer_mode' => 'disabled',
 	),
 );
 
