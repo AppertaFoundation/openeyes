@@ -30,7 +30,7 @@ class ModuleAPI extends CApplicationComponent
 					}
 				}
 
-				if (file_exists(Yii::app()->basePath."/modules/$moduleName/components/{$moduleName}_API.php")) {
+				if (file_exists(Yii::getPathOfAlias("application.modules.{$moduleName}.components") . DIRECTORY_SEPARATOR . "{$moduleName}_API.php")) {
 					$APIClass_prefix = '';
 					$ns_components = explode('\\', get_class($module));
 					if (count($ns_components) > 1) {
