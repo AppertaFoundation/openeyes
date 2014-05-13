@@ -78,15 +78,15 @@ class Examination extends OpenEyesPage
         'sphereRightAxis' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_right_axis']"),
         'sphereRightType' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_right_type_id']"),
 
-        'leftAdnexalComorbidity' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_AdnexalComorbidity_left_description']"),
-        'rightAdnexalComorbidity' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_AdnexalComorbidity_right_description']"),
+        'leftAdnexalComorbidity' => array('xpath' => "//*[@id='dropDownTextSelection_OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_left_description']"),
+        'rightAdnexalComorbidity' => array('xpath' => "//*[@id='dropDownTextSelection_OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_right_description']"),
 
         'leftAbnormality' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_PupillaryAbnormalities_left_abnormality_id']"),
         'rightAbnormality' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_PupillaryAbnormalities_right_abnormality_id']"),
 
-        'diagnosesLeftEye' => array('xpath' => "//*[@id='OphCiExamination_Diagnosis_eye_id_1']"),
-        'diagnosesRightEye' => array('xpath' => "//*[@id='OphCiExamination_Diagnosis_eye_id_2']"),
-        'diagnosesBothEyes' => array('xpath' => "//*[@id='OphCiExamination_Diagnosis_eye_id_3']"),
+        'diagnosesLeftEye' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_Diagnosis_eye_id_1']"),
+        'diagnosesRightEye' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_Diagnosis_eye_id_2']"),
+        'diagnosesBothEyes' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_Diagnosis_eye_id_3']"),
         'diagnosesCommonDiagnosis' => array('xpath' => "//*[@id='DiagnosisSelection_disorder_id']"),
         'principalDiagnosis' => array('xpath' => "//*[@id='OphCiExamination_diagnoses']//*[@name='principal_diagnosis']"),
 
