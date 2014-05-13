@@ -25,12 +25,16 @@ class Examination extends OpenEyesPage
         'ETDRSreadingLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_0_value']"),
         'snellenRight' => array('xpath' => "//select[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_1_value']"),
         'readingRight' => array('xpath' => "//select[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_1_method_id']"),
+
         'addLeftVisualAcuityButton' => array('xpath' => "//*[@class='element-eye left-eye column right side']//*[@class='button small secondary addReading']"),
         'addRightViusalAcuityButton' => array('xpath' => "//*[@class='element-eye right-eye column left side']//*[@class='button small secondary addReading']"),
-        'secondLeftVisualAcuityReading' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_2_value']"),
-        'secondLeftVisualAcuityReadingMethod' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_2_method_id']"),
-        'secondRightVisualAcuityReading' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_3_value']"),
-        'secondRightVisualAcuityReadingMethod' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_3_method_id']"),
+
+        'secondLeftVisualAcuityReading' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_1_value']"),
+        'secondLeftVisualAcuityReadingMethod' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_1_method_id']"),
+
+        'secondRightVisualAcuityReading' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_3_value']"),
+        'secondRightVisualAcuityReadingMethod' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_3_method_id']"),
+
         'removeSecondLeftVisualAcuity' => array('xpath' => "//*[@data-key='3']//*[contains(text(),'Remove')]"),
         'removeSecondRightVisualAcuity' => array('xpath' => "//*[@data-key='1']//*[contains(text(),'Remove')]"),
 
@@ -194,8 +198,8 @@ class Examination extends OpenEyesPage
         'saveExamination' => array('xpath' => "//*[@id='et_save']"),
         'examSavedOk' => array('xpath' => "//*[@id='flash-success']"),
 
-        'existingRightAxisCheck' => array('xpath' => "//*[@class='element OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'145')]"),
-        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'38')]"),
+        'existingRightAxisCheck' => array('xpath' => "//*[@class='element-eye right-eye column']//*[contains(text(),'145')]"),
+        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element-eye left-eye column']//*[contains(text(),'38')]"),
         'addAllElements' => array('xpath' => "//*[@class='add-all']"),
         'removeAllElements' => array('xpath' => "//*[@class='remove-all']"),
         'removeAllValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Event: Cannot create an event without at least one element')]"),
@@ -281,6 +285,7 @@ class Examination extends OpenEyesPage
     public function selectVisualAcuity ($unit)
     {
         $this->waitForElementDisplayBlock('#visualacuity_unit_change');
+
         $this->getElement('visualAcuityUnitChange')->selectOption($unit);
         $this->waitForElementDisplayBlock('#visualacuity_unit_change');
 //        $this->getSession()->wait(5000);
@@ -1189,6 +1194,7 @@ class Examination extends OpenEyesPage
     public function addLeftVisualAcuity ($reading, $method)
     {
         $this->getElement('addLeftVisualAcuityButton')->click();
+        $this->getSession()->wait(2000);
         $this->getElement('secondLeftVisualAcuityReading')->selectOption($reading);
         $this->getElement('secondLeftVisualAcuityReadingMethod')->selectOption($method);
     }
@@ -1196,6 +1202,7 @@ class Examination extends OpenEyesPage
     public function addRightVisualAcuity ($reading, $method)
     {
         $this->getElement('addRightViusalAcuityButton')->click();
+        $this->getSession()->wait(2000);
         $this->getElement('secondRightVisualAcuityReading')->selectOption($reading);
         $this->getElement('secondRightVisualAcuityReadingMethod')->selectOption($method);
     }
