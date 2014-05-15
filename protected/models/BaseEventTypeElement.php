@@ -32,6 +32,8 @@ class BaseEventTypeElement extends BaseElement
 	protected $_element_type;
 	protected $_children;
 
+	private $settings = array();
+
 	/**
 	 * Get the ElementType for this element
 	 *
@@ -197,6 +199,14 @@ class BaseEventTypeElement extends BaseElement
 	}
 
 	public function getSetting($key)
+	{
+		if (!array_key_exists($key, $this->settings)) {
+			$this->settings[$key] = $this->loadSetting($key);
+		}
+		return $this->settings[$key];
+	}
+
+	protected function loadSetting($key)
 	{
 		$element_type = ElementType::model()->find('class_name=?',array(get_class($this)));
 
@@ -367,5 +377,48 @@ class BaseEventTypeElement extends BaseElement
 	public function softDelete()
 	{
 
+	}
+
+	/**
+	 * Returns true if the specified multiselect relation has the value $value_string
+	 */
+	public function hasMultiSelectValue($relation, $value_string) {
+		foreach ($this->$relation as $item) {
+			if ($item->name == $value_string) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Updates multiselect items in the database, deleting items not passed in $ids
+	 */
+	public function updateMultiSelectData($model, $ids, $relation_field)
+	{
+		$_ids = array();
+
+		foreach ($ids as $id) {
+			if (!$assignment = $model::model()->find("element_id=? and $relation_field=?",array($this->id,$id))) {
+				$assignment = new $model;
+				$assignment->element_id = $this->id;
+				$assignment->$relation_field = $id;
+
+				if (!$assignment->save()) {
+					throw new Exception("Unable to save assignment: ".print_r($assignment->getErrors(),true));
+				}
+			}
+
+			$_ids[] = $assignment->id;
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('element_id = :element_id');
+		$criteria->params[':element_id'] = $this->id;
+
+		!empty($_ids) && $criteria->addNotInCondition('id',$_ids);
+
+		$model::model()->deleteAll($criteria);
 	}
 }
