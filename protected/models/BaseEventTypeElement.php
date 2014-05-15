@@ -32,6 +32,8 @@ class BaseEventTypeElement extends BaseElement
 	protected $_element_type;
 	protected $_children;
 
+	private $settings = array();
+
 	/**
 	 * Get the ElementType for this element
 	 *
@@ -197,6 +199,14 @@ class BaseEventTypeElement extends BaseElement
 	}
 
 	public function getSetting($key)
+	{
+		if (!array_key_exists($key, $this->settings)) {
+			$this->settings[$key] = $this->loadSetting($key);
+		}
+		return $this->settings[$key];
+	}
+
+	protected function loadSetting($key)
 	{
 		$element_type = ElementType::model()->find('class_name=?',array(get_class($this)));
 
