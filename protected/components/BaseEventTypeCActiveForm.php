@@ -116,7 +116,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 	{
 		$this->widget('application.widgets.TextField', array(
 			'element' => $element,
-			'name' => CHtml::modelName($element)."[$field]",
+			'name' => @$htmlOptions['name'] ?: CHtml::modelName($element)."[$field]",
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
 			'links' => $links,
