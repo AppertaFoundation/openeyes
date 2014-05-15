@@ -63,7 +63,7 @@ $widgetOptionsJson = json_encode(array(
 		<div class="multi-select<?php if (!$inline) echo ' multi-select-list';?>" data-options='<?php echo $widgetOptionsJson;?>'>
 			<input type="hidden" name="<?php echo CHtml::modelName($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
 			<div class="multi-select-dropdown-container">
-				<select id="<?php echo $field?>" class="MultiSelectList<?php if ($showRemoveAllLink) {?> inline<?php }?>" name="">
+				<select id="<?php echo $field?>" class="MultiSelectList<?php if ($showRemoveAllLink) {?> inline<?php }?><?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>" name=""<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>
 					<option value=""><?php echo $htmlOptions['empty']?></option>
 					<?php foreach ($filtered_options as $value => $option) {
 						$attributes = array('value' => $value);
@@ -91,7 +91,7 @@ $widgetOptionsJson = json_encode(array(
 							<span class="text">
 								<?php echo $options[$id] ?>
 							</span>
-							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one">Remove</a>
+							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>"<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>Remove</a>
 							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
 							<?php if (isset($opts[$id])) {
 								foreach ($opts[$id] as $key => $val) {

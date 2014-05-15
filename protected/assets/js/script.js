@@ -322,3 +322,11 @@ function inArray(needle, haystack) {
 	}
 	return false;
 }
+
+function arrayIndex(needle, haystack) {
+	var length = haystack.length;
+	for(var i = 0; i < length; i++) {
+		if(haystack[i] == needle) return i;
+	}
+	return false;
+}
