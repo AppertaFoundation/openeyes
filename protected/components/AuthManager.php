@@ -19,6 +19,7 @@
 class AuthManager extends CDbAuthManager
 {
 	private $rulesets = array();
+	private $user_assignments = array();
 
 	public function __construct()
 	{
@@ -67,5 +68,13 @@ class AuthManager extends CDbAuthManager
 	public function registerRuleset($namespace, $ruleset)
 	{
 		$this->rulesets[$namespace] = $ruleset;
+	}
+
+	public function getAuthAssignments($user_id)
+	{
+		if (!isset($this->user_assignments[$user_id])) {
+			$this->user_assignments[$user_id] = parent::getAuthAssignments($user_id);
+		}
+		return $this->user_assignments[$user_id];
 	}
 }
