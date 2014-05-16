@@ -1,0 +1,7 @@
+name,display_order
+Allergy,10
+Intolerance,20
+Non-responder,30
+Systemic side effects,40
+Local side effects,50
+Tachyphylaxis,60
