@@ -29,7 +29,7 @@
 						echo Helper::convertMySQL2NHS($medication->start_date) . " - ";
 						if (!$current) {
 							echo Helper::convertMySQL2NHS($medication->end_date);
-							if ($medication->stop_reason) echo " ({$medication->stop_reason->name})";
+							if ($medication->stop_reason) echo " (reason for stopping: {$medication->stop_reason->name})";
 						}
 					?>
 				</td>
