@@ -25,6 +25,79 @@
  */
 class BaseActiveRecord extends CActiveRecord
 {
+	// flag to automatically update related objects on the record
+	// (whilst developing this feature, will allow other elements to continue to work)
+	protected $_auto_update_relations = false;
+	// internal property that tracks "many" relations that that have been auto updated
+	protected $_updated_relations = array();
+
+	/**
+	 * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
+	 * to assign to the attribute. Sets up the afterSave method to saves these objects if they have validated.
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 * @return mixed|void
+	 */
+	public function __set($name,$value)
+	{
+		// Only perform this override if turned on for the given model
+		if ($this->_auto_update_relations
+				&& is_array($value) && count($value)
+				&& isset($this->getMetaData()->relations[$name])) {
+			$rel = $this->getMetaData()->relations[$name];
+			$cls = get_class($rel);
+			if ($cls == self::HAS_MANY) {
+				$rel_cls = $rel->className;
+				$pk_attr = $rel_cls::getMetaData()->tableSchema->primaryKey;
+				// not supporting composite primary keys at this point
+				if (is_string($pk_attr)) {
+					$m_set = array();
+					// looks like a list of attribute values, try to find or instantiate the classes
+					foreach ($value as $v) {
+						if (is_array($v)) {
+							if (array_key_exists($pk_attr, $v) && isset($v[$pk_attr])) {
+								$m = $rel_cls::model()->findByPk($v[$pk_attr]);
+							}
+							else {
+								$m = new $rel_cls();
+							}
+							$m->attributes = array_merge($this->getRelationsDefaults($name), $v);
+							// set foreign key on the related object
+							$m->{$rel->foreignKey} = $this->getPrimaryKey();
+						}
+						elseif (is_object($v)) {
+							$m = $v;
+						}
+						else {
+							// try to find the instance
+							if (!$m = $rel_cls::model()->findByPk($v)) {
+								throw new Exception("Unable to understand value " . print_r($v, true) . " for {$name}");
+							}
+						}
+						$m_set[] = $m;
+					}
+					// make the assignment
+					$this->$name = $m_set;
+					$this->_updated_relations[] = $name;
+					return;
+				}
+			}
+		}
+		parent::__set($name, $value);
+	}
+
+	// record property that defines relation model property defaults to be assigned during
+	// setting of models through attribute assignment
+	protected $_relation_defaults = array();
+
+	public function getRelationsDefaults($name) {
+		if (isset($this->_relation_defaults[$name])) {
+			return $this->_relation_defaults[$name];
+		}
+		return array();
+	}
+
 	/**
 	 * Override to use LSB
 	 *
@@ -101,6 +174,106 @@ class BaseActiveRecord extends CActiveRecord
 		}
 
 		return parent::save($runValidation, $attributes);
+	}
+
+	/**
+	 * Save the given objects for the through relation
+	 *
+	 * @param $name
+	 * @param $rel
+	 * @param $thru
+	 * @param $new_objs
+	 * @throws Exception
+	 */
+	private function afterSaveThruRelation($name, $rel, $thru, $new_objs)
+	{
+		$thru_cls = $thru->className;
+		// get the criteria from the named relation to apply to the through relation
+		$criteria = new CDbCriteria();
+		$criteria->addCondition($rel->on);
+		$orig_objs = $this->getRelated($thru->name, true, $criteria);
+		$orig_by_id = array();
+		foreach ($orig_objs as $orig) {
+			$orig_by_id[$orig->{$rel->foreignKey}] = $orig;
+		}
+		$rel_cls = $rel->className;
+		$rel_pk_attr = $rel_cls::getMetaData()->tableSchema->primaryKey;
+
+		foreach ($new_objs as $new) {
+			if ($save = @$orig_by_id[$new->$rel_pk_attr]) {
+				unset($orig_by_id[$new->$rel_pk_attr]);
+			}
+			else {
+				$save = new $thru_cls();
+			}
+			$save->attributes = $this->getRelationsDefaults($name);
+			$save->{$thru->foreignKey} = $this->getPrimaryKey();
+			$save->{$rel->foreignKey} = $new->getPrimaryKey();
+			if (!$save->save()) {
+				throw new Exception("unable to save new through relation {$thru->name} for {$name}" . print_r($save->getErrors(), true));
+			}
+		}
+		foreach ($orig_by_id as $orig) {
+			if (!$orig->delete()) {
+				throw new Exception("unable to delete redundant through relation {$thru->name} with id {$orig->getPrimaryKey()} for {$name}");
+			}
+		}
+
+	}
+
+	/**
+	 * Save objects to the given relation
+	 *
+	 * @param $name
+	 * @param $rel
+	 * @param $new_objs
+	 * @param $orig_objs
+	 * @throws Exception
+	 */
+	private function afterSaveRelation($name, $rel, $new_objs, $orig_objs)
+	{
+		$saved_ids = array();
+		foreach ($new_objs as $i => $new) {
+			$new->{$rel->foreignKey} = $this->getPrimaryKey();
+			if (!$new->save()) {
+				throw new Exception('Unable to save {$name} item {$i}');
+			}
+			$saved_ids[] = $new->id;
+		}
+		foreach ($orig_objs as $orig) {
+			if (!in_array($orig->id, $saved_ids)) {
+				if (!$orig->delete()) {
+					throw new Exception('Unable to delete removed {$name} with pk {$orig->primaryKey}');
+				}
+			}
+		}
+	}
+
+	/**
+	 * Saves related objects now that we have a pk for the instance
+	 *
+	 * @throws Exception
+	 */
+	protected function afterSave()
+	{
+		foreach (array_unique($this->_updated_relations) as $name) {
+			$rel = $this->getMetaData()->relations[$name];
+			$new_objs = $this->$name;
+			$orig_objs = $this->getRelated($name, true);
+			if ($thru_name = $rel->through) {
+				// This is a through relationship so need to update the assignment table
+				$thru = $this->getMetaData()->relations[$thru_name];
+				if ($thru->className == $rel->className) {
+					$this->afterSaveRelation($name, $rel, $new_objs, $orig_objs);
+				} else {
+					$this->afterSaveThruRelation($name, $rel, $thru, $new_objs);
+				}
+			}
+			else {
+				$this->afterSaveRelation($name, $rel, $new_objs, $orig_objs);
+			}
+		}
+		parent::afterSave();
 	}
 
 	/**
