@@ -33,35 +33,25 @@
 	</header>
 
 	<div class="js-toggle-body">
-		<table class="plain patient-data">
-			<thead>
-			<tr>
-				<th>Medication</th>
-				<th>Route</th>
-				<th>Option</th>
-				<th>Frequency</th>
-				<th>Start date</th>
-				<?php if ($this->checkAccess('OprnEditMedication')) { ?><th>Actions</th><?php } ?>
-			</tr>
-			</thead>
-			<tbody>
-			<?php foreach ($this->patient->medications as $medication) {?>
-				<tr>
-					<td><?php echo $medication->drug->name?></td>
-					<td><?php echo $medication->route->name?></td>
-					<td><?php echo $medication->option ? $medication->option->name : '-'?></td>
-					<td><?php echo $medication->frequency->name?></td>
-					<td><?php echo $medication->NHSDate('start_date')?></td>
-					<?php if ($this->checkAccess('OprnEditMedication')): ?>
-						<td>
-							<a href="#" class="editMedication" rel="<?php echo $medication->id?>">Edit</a>&nbsp;&nbsp;
-							<a href="#" class="removeMedication" rel="<?php echo $medication->id?>">Remove</a>
-						</td>
-					<?php endif ?>
-				</tr>
-			<?php }?>
-			</tbody>
-		</table>
+		<?php
+			$this->renderPartial(
+				"/medication/list",
+				array(
+					"medications" => $this->patient->medications,
+					"current" => true,
+				)
+			);
+		?>
+
+		<?php
+			$this->renderPartial(
+				"/medication/list",
+				array(
+					"medications" => $this->patient->previous_medications,
+					"current" => false,
+				)
+			);
+		?>
 
 		<?php if ($this->checkAccess('OprnEditMedication')): ?>
 			<div class="box-actions">
@@ -133,7 +123,7 @@
 
 					<div class="field-row row">
 						<div class="<?php echo $form->columns('label');?>">
-							<label for="route_id">Option:</label>
+							<label for="route_id">Route:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
 							<?php echo CHtml::dropDownList('route_id','',CHtml::listData(DrugRoute::model()->active()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
