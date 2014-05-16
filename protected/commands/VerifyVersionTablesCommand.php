@@ -154,8 +154,8 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 
 		if (!isset($_table_version->columns['version_id'])) {
 			echo "$_table_version->name doesn't have column version_id\n";
-		} else if ($_table_version->columns['version_id']->dbType != 'int(10) unsigned') {
-			echo "$_table_version->name\->version_id has the wrong type ({$_table_version->columns['version_id']->dbType} should be int(10) unsigned)\n";
+		} else if (!in_array($_table_version->columns['version_id']->dbType,array('int(11)','int(10) unsigned'))) {
+			echo "$_table_version->name\->version_id has the wrong type ({$_table_version->columns['version_id']->dbType} should be int(11) or int(10) unsigned)\n";
 		}
 
 		/*if ($this->is_soft_deleted($_table_version)) {
