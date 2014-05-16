@@ -15,43 +15,34 @@
 ?>
 <?php if ($medications): ?>
 	<h4><?= $current ? "Current" : "Previous" ?></h4>
-	<table class="plain patient-data">
-		<thead>
-		<tr>
-			<th>Medication</th>
-			<th>Dose</th>
-			<th>Route</th>
-			<th>Option</th>
-			<th>Frequency</th>
-			<th>Start date</th>
-			<?php if (!$current): ?>
-				<th>End date</th>
-				<th>Stop reason</th>
-			<?php endif ?>
-			<?php if ($this->checkAccess('OprnEditMedication')) { ?><th>Actions</th><?php } ?>
-		</tr>
-		</thead>
-		<tbody>
-		<?php foreach ($medications as $medication) {?>
+	<?php foreach ($medications as $medication): ?>
+		<table class="plain patient-data">
+			<tr><th>Medication</th><td><?= $medication->drug->name ?></td></tr>
 			<tr>
-				<td><?= $medication->drug->name ?></td>
-				<td><?= $medication->dose ?: '-' ?></td>
-				<td><?= $medication->route->name ?></td>
-				<td><?= $medication->option ? $medication->option->name : '-' ?></td>
-				<td><?= $medication->frequency->name ?></td>
-				<td><?= Helper::convertMySQL2NHS($medication->start_date) ?></td>
-				<?php if (!$current): ?>
-					<td><?= Helper::convertMySQL2NHS($medication->end_date) ?></td>
-					<td><?= $medication->stop_reason ? $medication->stop_reason->name : '-' ?></td>
-				<?php endif ?>
-				<?php if ($this->checkAccess('OprnEditMedication')): ?>
+				<th>Administration</th>
+				<td><?= $medication->dose ?> <?= $medication->route->name?> <?= $medication->option ? "({$medication->option->name})" : "" ?> <?= $medication->frequency->name?></td>
+			</tr>
+			<tr>
+				<th>Date</th>
+				<td>
+					<?php
+						echo Helper::convertMySQL2NHS($medication->start_date) . " - ";
+						if (!$current) {
+							echo Helper::convertMySQL2NHS($medication->end_date);
+							if ($medication->stop_reason) echo " ({$medication->stop_reason->name})";
+						}
+					?>
+				</td>
+			</tr>
+			<?php if ($this->checkAccess('OprnEditMedication')): ?>
+				<tr>
+					<th>Actions</th>
 					<td>
 						<a href="#" class="editMedication" rel="<?= $medication->id?>">Edit</a>&nbsp;&nbsp;
 						<?php if ($current) { ?><a href="#" class="removeMedication" rel="<?= $medication->id?>">Remove</a><?php } ?>
 					</td>
-				<?php endif ?>
-			</tr>
-		<?php }?>
-		</tbody>
-	</table>
+				</tr>
+			<?php endif ?>
+		</table>
+	<?php endforeach ?>
 <?php endif ?>
