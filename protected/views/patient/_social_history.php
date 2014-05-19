@@ -34,15 +34,16 @@
 					<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-					<?php echo CHtml::dropDownList('occupation_id', CHtml::listData(SocialHistoryOccupation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-					<?php echo CHtml::dropDownList('driving_status_id', CHtml::listData(SocialHistoryDrivingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-					<?php echo CHtml::dropDownList('smoking_status_id', CHtml::listData(SocialHistorySmokingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
-					<?php echo CHtml::dropDownList('accommodation_id', CHtml::listData(SocialHistoryAccommodation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'))?>
+
+					<?php echo CHtml::dropDownList('occupation_id','- Please select -', CHtml::listData(SocialHistoryOccupation::model()->findAll(array('order'=> 'display_order asc')),'id','name'))?>
+					<?php echo CHtml::dropDownList('driving_status_id','- Please select -', CHtml::listData(SocialHistoryDrivingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'))?>
+					<?php echo CHtml::dropDownList('smoking_status_id','- Please select -', CHtml::listData(SocialHistorySmokingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'))?>
+					<?php echo CHtml::dropDownList('accommodation_id','- Please select -', CHtml::listData(SocialHistoryAccommodation::model()->findAll(array('order'=> 'display_order asc')),'id','name'))?>
 					<?php echo CHtml::textArea ('comments')?>
 					<?php echo CHtml::textField( 'type_of_job')?>
-					<?php // echo CHtml::radioButtonList('carer',)?>
+					<?php echo CHtml::dropDownList('carer','test',CHtml::listData(SocialHistoryAccommodation::model()->findAll(array('order'=> 'display_order asc')),'id','name'))?>
 					<?php echo CHtml::textArea ( 'alcohol_intake')?>
-					<?php // echo CHtml::radioButtonList('substance_misuse')?>
+					<?php echo CHtml::dropDownList('substance_misuse','test',CHtml::listData(SocialHistoryAccommodation::model()->findAll(array('order'=> 'display_order asc')),'id','name'))?>
 
 					<div class="buttons">
 						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_family_history_loader" style="display: none;" />
