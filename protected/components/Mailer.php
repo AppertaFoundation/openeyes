@@ -136,6 +136,7 @@ class Mailer extends CComponent
 
 		Yii::trace("We intend to divert a message. Original $orig_rcpts", 'oe.Mailer');
 		// 1. Verify we have a list of addresses to divert to
+
 		if (!$params['Mailer_divert_addresses']) {
 			Yii::trace('No divert addresses found, dropping mail instead', 'oe.Mailer');
 			return;
@@ -145,6 +146,7 @@ class Mailer extends CComponent
 
 		// 2. Prepend the intended list of recipients
 		$message->setBody("!! OpenEyes Mailer: Original $orig_rcpts\n" . $message->getBody());
+
 		// 3. Divert the mail to the divert addresses
 		Yii::trace("Diverting message, to: " . print_r($diverts,true),'oe.Mailer');
 		$message->setTo($diverts);
@@ -169,13 +171,6 @@ class Mailer extends CComponent
 					. ', to: ' . var_export($message->getTo()),
 					'oe.Mailer'
 				);
-				return;
-			case 'divert':
-				Yii::trace("Diverting message", 'oe.Mailer');
-				return $this->divertMessage($message);
-			default:
-				Yii::trace("Sending message, to: " . print_r($message->getTo(),true), 'oe.Mailer');
-				return $this->directlySendMessage($message);
 		}
 	}
 
