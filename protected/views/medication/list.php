@@ -12,12 +12,14 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+$medications = $current ? $patient->medications : $patient->previous_medications;
 ?>
 <?php if ($medications): ?>
 	<h4><?= $current ? "Current" : "Previous" ?></h4>
 	<?php foreach ($medications as $medication): ?>
 		<table class="plain patient-data">
-			<tr><th>Medication</th><td><?= $medication->drug->name ?></td></tr>
+			<tr><th width="128">Medication</th><td><?= $medication->drug->name ?></td></tr>
 			<tr>
 				<th>Administration</th>
 				<td><?= $medication->dose ?> <?= $medication->route->name?> <?= $medication->option ? "({$medication->option->name})" : "" ?> <?= $medication->frequency->name?></td>
@@ -38,8 +40,7 @@
 				<tr>
 					<th>Actions</th>
 					<td>
-						<a href="#" class="editMedication" rel="<?= $medication->id?>">Edit</a>&nbsp;&nbsp;
-						<?php if ($current) { ?><a href="#" class="removeMedication" rel="<?= $medication->id?>">Remove</a><?php } ?>
+						<a href="#" class="medication_edit" data-id="<?= $medication->id ?>">Edit</a>
 					</td>
 				</tr>
 			<?php endif ?>

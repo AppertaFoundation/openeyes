@@ -13,168 +13,102 @@
  */
 
 $(document).ready(function () {
-	$('#btn-add_medication').click(function() {
-		$('#add_medication #route_id').val('');
-		$('#add_medication #drug_id').val('');
-		$('#add_medication #frequency_id').val('');
-		$('#add_medication #start_date').val('');
-		$('div.routeOption .date').html('');
-		$('div.routeOption').hide();
+	function loadForm(medication_id) {
+		disableButtons('#medication .button');
 
-		$('#add_medication').slideToggle('fast');
-		$('#btn-add_medication').attr('disabled',true);
-		$('#btn-add_medication').addClass('disabled');
-	});
-	$('button.btn_cancel_medication').click(function() {
-		$('#add_medication').slideToggle('fast');
-		$('#btn-add_medication').attr('disabled',false);
-		$('#btn-add_medication').removeClass('disabled');
-		$('div.medication_form_errors').html('').hide();
-		return false;
-	});
-	$('#drug_id').change(function() {
-		if ($(this).val() != '') {
-			selectMedication($(this).val(),$(this).children('option:selected').text());
-			$('#drug_id').val('');
-		}
-	});
-
-	function selectMedication(id, name)
-	{
-		$('#selectedMedicationName').text(name).show();
-		$('#selectedMedicationID').val(id);
-
-		$.ajax({
-			'type': 'GET',
-			'dataType': 'json',
-			'url': baseUrl+'/patient/DrugDefaults?drug_id='+id,
-			'success': function(data) {
-				if (data['route_id']) {
-					$('#route_id').val(data['route_id']);
-					$('#route_id').change();
-				}
-				if (data['frequency_id']) {
-					$('#frequency_id').val(data['frequency_id']);
-				}
+		$.get(
+			baseUrl + "/medication/form",
+			{ patient_id: OE_patient_id, medication_id: medication_id},
+			function (form) {
+				$("#medication_form").html(form).slideDown('fast');
+				enableButtons('#medication .button');
+				$('#medication_add').attr('disabled',true).addClass('disabled');
 			}
+		);
+	}
+
+	function closeForm() {
+		$('#medication_form').html('').slideUp('fast');
+		$('#medication_add').attr('disabled',false).removeClass('disabled');
+	}
+
+	function selectMedication(id, name) {
+		$('#medication_form input[name=drug_id]').val(id);
+		$('#medication_drug_name').text(name).show();
+
+		disableButtons('#medication .button');
+		$.getJSON(baseUrl + '/medication/drugdefaults', { drug_id: id }, function (res) {
+			for (var name in res) {
+				$('#medication_form [name=' + name + ']').val(res[name]).change();
+			}
+			enableButtons('#medication .button');
 		});
 	}
 
-	$('button.btn_save_medication').click(function(e) {
-		disableButtons('.btn_save_medication,.btn_cancel_medication');
+	$('#medication')
+		.on('click', '#medication_add', function () {
+			loadForm();
+		})
 
-		e.preventDefault();
+		.on('click', '.medication_edit', function () {
+			loadForm($(this).data('id'));
+			return false;
+		})
 
-		$.ajax({
-			'type': 'POST',
-			'data': $('#add-medication').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
-			'dataType': 'json',
-			'url': baseUrl+'/patient/validateAddMedication',
-			'success': function(data) {
-				$('div.medication_form_errors').html('').hide();
+		.on('click', '#medication_cancel', closeForm)
 
-				if (data.length == 0) {
-					$('#add-medication').submit();
-					return;
-				}
-
-				enableButtons('.btn_save_medication,.btn_cancel_medication');
-
-				for (var i in data) {
-					$('div.medication_form_errors').show().append('<div>'+data[i]+'</div>');
-				}
+		.on('change', '[name=drug_select]', function () {
+			if ($(this).val()) {
+				selectMedication($(this).val(), $(this).find('option:selected').text());
 			}
-		});
-	});
-	$('.editMedication').click(function(e) {
-		var medication_id = $(this).attr('rel');
+			$(this).val(null);
+		})
 
-		$('#edit_medication_id').val(medication_id);
+		.on('autocompleteselect', '[name=drug_autocomplete]', function (e, ui) {
+			selectMedication(ui.item.id, ui.item.value);
+			$(this).val('');
+			return false;
+		})
 
-		$.ajax({
-			'type': 'GET',
-			'dataType': 'json',
-			'url': baseUrl+'/patient/getMedication?medication_id='+medication_id,
-			'success': function(data) {
-				$('#add_medication #route_id').val(data['route_id']);
-				$('#selectedMedicationID').val(data['drug_id']);
-				$('#selectedMedicationName').text(data['drug_name']).show();
-				$('#add_medication #frequency_id').val(data['frequency_id']);
-				$('#add_medication #start_date').val(data['start_date']);
-				$('div.routeOption .data').html(data['route_options']);
-				$('div.routeOption').show();
-				$('#add_medication #option_id').val(data['option_id']);
+		.on('change', '[name=route_id]', function () {
+			var route_id = $(this).val(), option_div = $('#medication_route_option');
+
+			if (route_id) {
+				$.get(
+					baseUrl + "/medication/drugrouteoptions",
+					{route_id: route_id},
+					function (res) { option_div.html(res); }
+				);
+			} else {
+				option_div.html('');
 			}
-		});
+		})
 
-		$('#add_medication').slideToggle('fast');
-		$('#btn-add_medication').attr('disabled',true);
-		$('#btn-add_medication').addClass('disabled');
+		.on('click', '#medication_save', function (e) {
+			disableButtons('#medication .button');
 
-		e.preventDefault();
-	});
-	$('#route_id').change(function() {
-		var route_id = $(this).val();
+			$.ajax(baseUrl + "/medication/save", {
+				type: 'POST',
+				data: $('#medication_form form').serialize(),
+				success: function (res) {
+					$('#medication_list').html(res);
+					closeForm();
+				},
+				error: function (xhr) {
+					if (xhr.status != 422) return;
 
-		if (route_id == '') {
-			$('div.routeOption').hide();
-			$('div.routeOption .data').html('');
-		} else {
-			$.ajax({
-				'type': 'GET',
-				'url': baseUrl+'/patient/getDrugRouteOptions?route_id='+route_id,
-				'success': function(html) {
-					$('div.routeOption .data').html(html);
-					if (html.length >0) {
-						$('div.routeOption').show();
-					} else {
-						$('div.routeOption').hide();
+					var errors = $.parseJSON(xhr.responseText), error_div = $('#medication_form_errors');
+					error_div.html('');
+					for (var field in errors) {
+						for (var i in errors[field]) {
+							error_div.append('<div>' + errors[field][i] + '</div>');
+						}
 					}
-				}
+					error_div.show();
+				},
+				complete: function () {
+					enableButtons('#medication .button');
+				},
 			});
-		}
-	});
-
-	$('.removeMedication').live('click',function() {
-		$('#medication_id').val($(this).attr('rel'));
-
-		$('#confirm_remove_medication_dialog').dialog({
-			resizable: false,
-			modal: true,
-			width: 560
 		});
-
-		return false;
-	});
-
-	$('button.btn_remove_medication').click(function() {
-		$("#confirm_remove_medication_dialog").dialog("close");
-
-		$.ajax({
-			'type': 'GET',
-			'url': baseUrl+'/patient/removeMedication?patient_id='+OE_patient_id+'&medication_id='+$('#medication_id').val(),
-			'success': function(html) {
-				if (html == 'success') {
-					$('a.removeMedication[rel="'+$('#medication_id').val()+'"]').parent().parent().remove();
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance."
-					}).open();
-				}
-			},
-			'error': function() {
-				new OpenEyes.UI.Dialog.Alert({
-					content: "Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance."
-				}).open();
-			}
-		});
-
-		return false;
-	});
-
-	$('button.btn_cancel_remove_medication').click(function() {
-		$("#confirm_remove_medication_dialog").dialog("close");
-		return false;
-	});
 });
-

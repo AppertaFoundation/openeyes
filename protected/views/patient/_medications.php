@@ -19,183 +19,25 @@
 
 Yii::app()->assetManager->registerScriptFile('js/medication.js');
 ?>
-<section class="box patient-info associated-data js-toggle-container">
+<section id="medication" class="box patient-info associated-data js-toggle-container">
 
 	<header class="box-header">
-		<h3 class="box-title">
-			<span class="icon-patient-clinician-hd_flag"></span>
-			Medication
-		</h3>
-		<a href="#" class="toggle-trigger toggle-hide js-toggle">
-			<span class="icon-showhide">
-				Show/hide this section
-			</span>
-		</a>
+		<h3 class="box-title"><span class="icon-patient-clinician-hd_flag"></span>Medication</h3>
+		<img src="<?= Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="loader hidden"/>
+		<a href="#" class="toggle-trigger toggle-hide js-toggle"><span class="icon-showhide">Show/hide this section</span></a>
 	</header>
 
 	<div class="js-toggle-body">
-		<?php
-			$this->renderPartial(
-				"/medication/list",
-				array(
-					"medications" => $this->patient->medications,
-					"current" => true,
-				)
-			);
-		?>
-
-		<?php
-			$this->renderPartial(
-				"/medication/list",
-				array(
-					"medications" => $this->patient->previous_medications,
-					"current" => false,
-				)
-			);
-		?>
+		<div id="medication_list">
+			<?php $this->renderPartial("/medication/list", array("patient" => $this->patient, "current" => true)); ?>
+			<?php $this->renderPartial("/medication/list", array("patient" => $this->patient, "current" => false)); ?>
+		</div>
 
 		<?php if ($this->checkAccess('OprnEditMedication')): ?>
 			<div class="box-actions">
-				<button  id="btn-add_medication" class="secondary small">
-					Add Medication
-				</button>
+				<button type="button" id="medication_add" class="secondary small">Add Medication</button>
 			</div>
-
-			<div id="add_medication" style="display: none;">
-				<?php
-				$form = $this->beginWidget('FormLayout', array(
-					'id'=>'add-medication',
-					'enableAjaxValidation'=>false,
-					'htmlOptions' => array('class'=>'sliding form add-data'),
-					'action'=>array('patient/addMedication'),
-					'layoutColumns'=>array(
-						'label' => 3,
-						'field' => 9
-					),
-				))?>
-				<fieldset class="field-row">
-
-					<legend><strong>Add medication</strong></legend>
-
-					<input type="hidden" name="edit_medication_id" id="edit_medication_id" value="" />
-					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-
-					<div class="patientMedication field-row row">
-						<div class="<?php echo $form->columns('label');?>">
-							<label for="drug_id">Medication:</label>
-						</div>
-						<div class="<?php echo $form->columns('field');?>">
-
-							<div class="field-row hide" id="selectedMedicationName" style="font-weight: bold;">
-							</div>
-
-							<div class="field-row">
-								<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->getSubspecialtyID()),array('empty'=>'- Select -'))?>
-							</div>
-
-							<div class="patientMedication field-row">
-								<div class="label"></div>
-								<?php
-								$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-										'name' => 'drug_id',
-										'id' => 'autocomplete_drug_id',
-										'source' => "js:function(request, response) {
-											$.getJSON('".$this->createUrl('DrugList')."', {
-												term : request.term,
-											}, response);
-										}",
-										'options' => array(
-										'select' => "js:function(event, ui) {
-												$('#selectedMedicationName').text(ui.item.value).show();
-												$('#selectedMedicationID').val(ui.item.id);
-												$(this).val('');
-												return false;
-											}",
-										),
-										'htmlOptions' => array(
-											'placeholder' => 'or search formulary',
-										),
-									))?>
-							</div>
-						</div>
-					</div>
-
-					<input type="hidden" name="selectedMedicationID" id="selectedMedicationID" value="" />
-
-					<div class="field-row row">
-						<div class="<?php echo $form->columns('label');?>">
-							<label for="route_id">Route:</label>
-						</div>
-						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('route_id','',CHtml::listData(DrugRoute::model()->active()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
-						</div>
-					</div>
-
-					<div class="patientMedication routeOption row field-row" style="display: none;">
-						<div class="<?php echo $form->columns('label');?>">
-							<label for="option_id">Option:</label>
-						</div>
-						<div class="data <?php echo $form->columns('field');?>">
-						</div>
-					</div>
-
-					<div class="field-row row">
-						<div class="<?php echo $form->columns('label');?>">
-							<label for="frequency_id">Frequency:</label>
-						</div>
-						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('frequency_id','',CHtml::listData(DrugFrequency::model()->active()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
-						</div>
-					</div>
-
-					<div class="field-row row">
-						<div class="<?php echo $form->columns('label');?>">
-							<label for="start_date">Date from:</label>
-						</div>
-						<div class="<?php echo $form->columns(3, true);?>">
-							<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-								'name'=>'start_date',
-								'id'=>'start_date',
-								'options'=>array(
-									'showAnim'=>'fold',
-									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-								),
-							))?>
-						</div>
-					</div>
-
-					<div class="medication_form_errors alert-box alert hide"></div>
-
-					<div class="buttons">
-						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
-						<button type="submit" class="secondary small btn_save_medication">
-							Save
-						</button>
-						<button class="warning small btn_cancel_medication">
-							Cancel
-						</button>
-					</div>
-				</fieldset>
-				<?php $this->endWidget()?>
-			</div>
+			<div id="medication_form" class="hidden"></div>
 		<?php endif ?>
 	</div>
 </section>
-
-<!-- Confirm deletion dialog. FIXME -->
-<div id="confirm_remove_medication_dialog" title="Confirm remove medication" style="display: none;">
-	<div id="delete_medication">
-		<div class="alert-box alert with-icon">
-			<strong>WARNING: This will remove the medication from the patient record.</strong>
-		</div>
-		<p>
-			<strong>Are you sure you want to proceed?</strong>
-		</p>
-		<div class="buttons">
-			<input type="hidden" id="medication_id" value="" />
-			<button type="submit" class="warning small btn_remove_medication"><span class="button-span button-span-red">Remove medication</span></button>
-			<button type="submit" class="secondary small btn_cancel_remove_medication"><span class="button-span button-span-green">Cancel</span></button>
-			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-		</div>
-	</div>
-</div>

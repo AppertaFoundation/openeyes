@@ -29,15 +29,6 @@
 class DrugRouteOption extends BaseActiveRecordVersioned
 {
 	/**
-	 * Returns the static model of the specified AR class.
-	 * @return DrugRouteOption the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
-
-	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -50,13 +41,8 @@ class DrugRouteOption extends BaseActiveRecordVersioned
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-				array('drug_route_id, name', 'required'),
-				// The following rule is used by search().
-				// Please remove those attributes that should not be searched.
-				array('id, drug_route_id, name', 'safe', 'on'=>'search'),
+			array('drug_route_id, name', 'required'),
 		);
 	}
 
@@ -65,39 +51,8 @@ class DrugRouteOption extends BaseActiveRecordVersioned
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
-				'route' => array(self::BELONGS_TO, 'DrugRoute', 'drug_route_id'),
+			'route' => array(self::BELONGS_TO, 'DrugRoute', 'drug_route_id'),
 		);
 	}
-
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-		);
-	}
-
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-
-		return new CActiveDataProvider(get_class($this), array(
-				'criteria'=>$criteria,
-		));
-	}
-
 }

@@ -47,6 +47,8 @@ class Medication extends BaseActiveRecordVersioned
 	{
 		return array(
 			array('drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id', 'safe'),
+			array('drug_id, route_id, frequency_id, start_date', 'required'),
+			array('option_id', 'validateOptionId'),
 		);
 	}
 
@@ -62,5 +64,22 @@ class Medication extends BaseActiveRecordVersioned
 			'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
 			'stop_reason' => array(self::BELONGS_TO, 'MedicationStopReason', 'stop_reason_id'),
 		);
+	}
+
+	public function attributeLabels()
+	{
+		return array(
+			'drug_id' => 'Medication',
+			'route_id' => 'Route',
+			'option_id' => 'Option',
+			'frequency_id' => 'Frequency',
+		);
+	}
+
+	public function validateOptionId()
+	{
+		if (!$this->option_id && $this->route && $this->route->options) {
+			$this->addError('option_id', "Must specify an option for route '{$this->route->name}'");
+		}
 	}
 }

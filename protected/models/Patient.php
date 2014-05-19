@@ -1153,25 +1153,6 @@ class Patient extends BaseActiveRecordVersioned
 		}
 	}
 
-	public function updateMedication($m, $params)
-	{
-		$m->patient_id = $this->id;
-		$m->drug_id = $params['drug_id'];
-		$m->route_id = $params['route_id'];
-		$m->option_id = $params['option_id'];
-		$m->frequency_id = $params['frequency_id'];
-		$m->start_date = date('Y-m-d',strtotime($params['start_date']));
-
-		if (!$m->save()) {
-			throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
-		}
-	}
-
-	public function addMedication($params)
-	{
-		$this->updateMedication(new Medication, $params);
-	}
-
 	/**
 	 * return the open episode of the given subspecialty if there is one, null otherwise
 	 *
