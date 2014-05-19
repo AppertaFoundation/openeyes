@@ -47,7 +47,7 @@ class BaseActiveRecord extends CActiveRecord
 				&& isset($this->getMetaData()->relations[$name])) {
 			$rel = $this->getMetaData()->relations[$name];
 			$cls = get_class($rel);
-			if ($cls == self::HAS_MANY) {
+			if ($cls == self::HAS_MANY || $cls == self::MANY_MANY) {
 				$rel_cls = $rel->className;
 				$pk_attr = $rel_cls::getMetaData()->tableSchema->primaryKey;
 				// not supporting composite primary keys at this point
@@ -87,10 +87,17 @@ class BaseActiveRecord extends CActiveRecord
 		parent::__set($name, $value);
 	}
 
-	// record property that defines relation model property defaults to be assigned during
-	// setting of models through attribute assignment
+	// relation defaults are properties that need to be set on related models to define the records completely within the database
+	// e.g. the side field on a record defines in the database that a record is a left or right record. So we need this attribute
+	// to be set when setting the left or right attribute of owning record.
 	protected $_relation_defaults = array();
 
+	/**
+	 * Convenience method wrapper on the relation defaults property
+	 *
+	 * @param $name
+	 * @return array
+	 */
 	public function getRelationsDefaults($name) {
 		if (isset($this->_relation_defaults[$name])) {
 			return $this->_relation_defaults[$name];
@@ -185,7 +192,7 @@ class BaseActiveRecord extends CActiveRecord
 	 * @param $new_objs
 	 * @throws Exception
 	 */
-	private function afterSaveThruRelation($name, $rel, $thru, $new_objs)
+	private function afterSaveThruHasMany($name, $rel, $thru, $new_objs)
 	{
 		$thru_cls = $thru->className;
 		// get the criteria from the named relation to apply to the through relation
@@ -230,7 +237,7 @@ class BaseActiveRecord extends CActiveRecord
 	 * @param $orig_objs
 	 * @throws Exception
 	 */
-	private function afterSaveRelation($name, $rel, $new_objs, $orig_objs)
+	private function afterSaveHasMany($name, $rel, $new_objs, $orig_objs)
 	{
 		$saved_ids = array();
 		foreach ($new_objs as $i => $new) {
@@ -250,6 +257,55 @@ class BaseActiveRecord extends CActiveRecord
 	}
 
 	/**
+	 * @param $name
+	 * @param \CManyManyRelation $rel
+	 * @param $new_objs
+	 * @param $orig_objs
+	 * @throws Exception
+	 */
+	private function afterSaveManyMany($name, $rel, $new_objs, $orig_objs)
+	{
+		// get the table name and foreign keys
+		$tbl_name = $rel->getJunctionTableName();
+		$tbl_keys = $rel->getJunctionForeignKeys();
+		if (count($tbl_keys) != 2) {
+			throw new Exception('You must extend afterSaveManyMany to support multi key many many relationship');
+		}
+
+		$orig_by_id = array();
+		foreach ($orig_objs as $orig) {
+			$orig_by_id[] = $orig->getPrimaryKey();
+		}
+
+		// array of ids that should be saved
+		foreach ($new_objs as $new) {
+			if (in_array($new->getPrimaryKey(), $orig_by_id)) {
+				unset($orig_by_id[$new->getPrimaryKey()]);
+			}
+			else {
+				// insert statement
+				$builder = $this->getCommandBuilder();
+				$criteria = new CDbCriteria();
+				$cmd = $builder->createInsertCommand($tbl_name, array($tbl_keys[0] => $this->getPrimaryKey(), $tbl_keys[1] => $new->getPrimaryKey()));
+				if (!$cmd->execute()) {
+					throw new Exception("unable to insert many to many record for relation {$name} with pk {$new->getPrimaryKey()}");
+				}
+
+			}
+		}
+		foreach ($orig_by_id as $remove_id) {
+			// delete statement
+			$builder = $this->getCommandBuilder();
+			$criteria = new CDbCriteria();
+			$criteria->addColumnCondition(array($tbl_keys[0] => $this->getPrimaryKey(), $tbl_keys[1] => $remove_id));
+			$cmd = $builder->createDeleteCommand($tbl_name, $criteria);
+			if (!$cmd->execute()) {
+				throw new Exception("unable to delete removed many to many record for relation {$name} with pk {$remove_id}");
+			}
+		}
+	}
+
+	/**
 	 * Saves related objects now that we have a pk for the instance
 	 *
 	 * @throws Exception
@@ -260,17 +316,22 @@ class BaseActiveRecord extends CActiveRecord
 			$rel = $this->getMetaData()->relations[$name];
 			$new_objs = $this->$name;
 			$orig_objs = $this->getRelated($name, true);
-			if ($thru_name = $rel->through) {
-				// This is a through relationship so need to update the assignment table
-				$thru = $this->getMetaData()->relations[$thru_name];
-				if ($thru->className == $rel->className) {
-					$this->afterSaveRelation($name, $rel, $new_objs, $orig_objs);
-				} else {
-					$this->afterSaveThruRelation($name, $rel, $thru, $new_objs);
+			if (get_class($rel) == self::MANY_MANY) {
+				$this->afterSaveManyMany($name, $rel, $new_objs, $orig_objs);
+			} else {
+				if ($thru_name = $rel->through) {
+					// This is a through relationship so need to update the assignment table
+					$thru = $this->getMetaData()->relations[$thru_name];
+					if ($thru->className == $rel->className) {
+						// same behaviour when the thru relation is the same class
+						$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
+					} else {
+						$this->afterSaveThruHasMany($name, $rel, $thru, $new_objs);
+					}
 				}
-			}
-			else {
-				$this->afterSaveRelation($name, $rel, $new_objs, $orig_objs);
+				else {
+					$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
+				}
 			}
 		}
 		parent::afterSave();
@@ -278,7 +339,9 @@ class BaseActiveRecord extends CActiveRecord
 
 	/**
 	 * Returns a date field in NHS format
+	 *
 	 * @param string $attribute
+	 * @param string $empty_string - what to return if not able to convert
 	 * @return string
 	 */
 	public function NHSDate($attribute, $empty_string = '-')
@@ -322,5 +385,47 @@ class BaseActiveRecord extends CActiveRecord
 		}
 
 		return $object;
+	}
+
+	/**
+	 * Iterate through relations and remove the records that will break constraints
+	 *
+	 * @return bool
+	 * @throws Exception
+	 */
+	protected function beforeDelete()
+	{
+		if ($this->_auto_update_relations) {
+			$deleted_classes = array();
+			foreach ($this->relations() as $rel_name => $rel_def) {
+				if ($rel_def[0] == self::MANY_MANY) {
+					$rel = $this->getMetaData()->relations[$rel_name];
+					$tbl_name = $rel->getJunctionTableName();
+					$tbl_keys = $rel->getJunctionForeignKeys();
+					if (count($tbl_keys) == 2) {
+						// if the relationship is more complex, this needs to be handled in the record class itself.
+						$builder = $this->getCommandBuilder();
+						$criteria = new CDbCriteria();
+						$criteria->addColumnCondition(array($tbl_keys[0] => $this->getPrimaryKey()));
+						$cmd = $builder->createDeleteCommand($tbl_name, $criteria);
+						if (!$cmd->execute()) {
+							throw new Exception("unable to delete entries for many many relation {$rel_name}");
+						}
+					}
+				}
+				elseif ($rel_def[0] == self::HAS_MANY) {
+					$rel = $this->getMetaData()->relations[$rel_name];
+					$rel_cls = $rel->className;
+					if (!in_array($rel_cls, $deleted_classes)){
+						// only need to delete once for any given class as the we are ignoring the conditions added to the relation
+						// beyond the fk relation to this owning object (can't envision a relation based on a different fk relation
+						// to the same model)
+						$rel_cls::model()->deleteAllByAttributes(array($rel->foreignKey => $this->getPrimaryKey()));
+						$deleted_classes[] = $rel_cls;
+					}
+				}
+			}
+		}
+		return parent::beforeDelete();
 	}
 }
