@@ -393,6 +393,7 @@ class BaseActiveRecord extends CActiveRecord
 	 * @return bool
 	 * @throws Exception
 	 */
+
 	protected function beforeDelete()
 	{
 		if ($this->_auto_update_relations) {
@@ -415,13 +416,16 @@ class BaseActiveRecord extends CActiveRecord
 				}
 				elseif ($rel_def[0] == self::HAS_MANY) {
 					$rel = $this->getMetaData()->relations[$rel_name];
-					$rel_cls = $rel->className;
-					if (!in_array($rel_cls, $deleted_classes)){
-						// only need to delete once for any given class as the we are ignoring the conditions added to the relation
-						// beyond the fk relation to this owning object (can't envision a relation based on a different fk relation
-						// to the same model)
-						$rel_cls::model()->deleteAllByAttributes(array($rel->foreignKey => $this->getPrimaryKey()));
-						$deleted_classes[] = $rel_cls;
+					if (!$rel->through) {
+						// if the relationship is 'through', then the delete is handled by that relationship so we ignore it
+						$rel_cls = $rel->className;
+						if (!in_array($rel_cls, $deleted_classes)){
+							// only need to delete once for any given class as the we are ignoring the conditions added to the relation
+							// beyond the fk relation to this owning object (can't envision a relation based on a different fk relation
+							// to the same model)
+							$rel_cls::model()->deleteAllByAttributes(array($rel->foreignKey => $this->getPrimaryKey()));
+							$deleted_classes[] = $rel_cls;
+						}
 					}
 				}
 			}
