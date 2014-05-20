@@ -188,9 +188,133 @@ class BaseActiveRecordTest extends CDbTestCase
 		$this->assertTrue(is_array($test->many_many));
 		$this->assertInstanceOf('RelationTestClass', $test->many_many[0], 'should set relation class when behaviour turned on');
 		$this->assertEquals('test2', $test->many_many[0]->getPrimaryKey());
-
-
 	}
+
+	public function testafterSave()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+		$hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'element_id', array('through' => 'has_many'));
+		$mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+							'has_many' => $hm_cls,
+						)
+				));
+
+		$test->expects($this->any())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		// fake the attribute having been set by __set
+		$new_hm = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('save', 'getPrimaryKey'))
+				->getMock();
+		$new_hm->expects($this->once())
+			->method('save')
+			->will($this->returnValue(true));
+		$new_hm->expects($this->any())
+			->method('getPrimaryKey')
+			->will($this->returnValue(5));
+
+		$test->has_many = array($new_hm);
+
+		// fake the original values for the has_many relation value on the test instance
+		$orig_hm = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('delete', 'getPrimaryKey'))
+				->getMock();
+		$orig_hm->expects($this->any())
+			->method('getPrimaryKey')
+			->will($this->returnValue(3));
+		$orig_hm->expects($this->once())
+			->method('delete')
+			->will($this->returnValue(true));
+
+		$test->expects($this->once())
+			->method('getRelated')
+			->with('has_many')
+			->will($this->returnValue(array($orig_hm)));
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
+
+	public function testafterSave_setNull()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+								'has_many' => $hm_cls,
+						)
+				));
+
+		$test->expects($this->any())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		$test->has_many = null;
+
+		// fake the original values for the has_many relation value on the test instance
+		$orig_hm = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('delete', 'getPrimaryKey'))
+				->getMock();
+		$orig_hm->expects($this->any())
+				->method('getPrimaryKey')
+				->will($this->returnValue(3));
+		$orig_hm->expects($this->once())
+				->method('delete')
+				->will($this->returnValue(true));
+
+		$test->expects($this->once())
+				->method('getRelated')
+				->with('has_many')
+				->will($this->returnValue(array($orig_hm)));
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
+}
+
+class RelationOwnerSaveClass extends BaseActiveRecord
+{
+	public $has_many;
+	public $has_many_thru;
+	public $many_many;
+	public $the_pk;
 
 }
 

@@ -28,8 +28,6 @@ class BaseActiveRecord extends CActiveRecord
 	// flag to automatically update related objects on the record
 	// (whilst developing this feature, will allow other elements to continue to work)
 	protected $_auto_update_relations = false;
-	// internal property that tracks "many" relations that that have been auto updated
-	protected $_updated_relations = array();
 
 	/**
 	 * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
@@ -81,9 +79,8 @@ class BaseActiveRecord extends CActiveRecord
 						}
 						$m_set[] = $m;
 					}
-					// reset the value for it to be set
+					// reset the value for it to be set by parent method
 					$value = $m_set;
-					$this->_updated_relations[] = $name;
 				}
 			}
 		}
@@ -243,15 +240,17 @@ class BaseActiveRecord extends CActiveRecord
 	private function afterSaveHasMany($name, $rel, $new_objs, $orig_objs)
 	{
 		$saved_ids = array();
-		foreach ($new_objs as $i => $new) {
-			$new->{$rel->foreignKey} = $this->getPrimaryKey();
-			if (!$new->save()) {
-				throw new Exception('Unable to save {$name} item {$i}');
+		if ($new_objs) {
+			foreach ($new_objs as $i => $new) {
+				$new->{$rel->foreignKey} = $this->getPrimaryKey();
+				if (!$new->save()) {
+					throw new Exception('Unable to save {$name} item {$i}');
+				}
+				$saved_ids[] = $new->getPrimaryKey();
 			}
-			$saved_ids[] = $new->id;
 		}
 		foreach ($orig_objs as $orig) {
-			if (!in_array($orig->id, $saved_ids)) {
+			if (!in_array($orig->getPrimaryKey(), $saved_ids)) {
 				if (!$orig->delete()) {
 					throw new Exception('Unable to delete removed {$name} with pk {$orig->primaryKey}');
 				}
@@ -315,25 +314,26 @@ class BaseActiveRecord extends CActiveRecord
 	 */
 	protected function afterSave()
 	{
-		foreach (array_unique($this->_updated_relations) as $name) {
-			$rel = $this->getMetaData()->relations[$name];
-			$new_objs = $this->$name;
-			$orig_objs = $this->getRelated($name, true);
-			if (get_class($rel) == self::MANY_MANY) {
-				$this->afterSaveManyMany($name, $rel, $new_objs, $orig_objs);
-			} else {
-				if ($thru_name = $rel->through) {
-					// This is a through relationship so need to update the assignment table
-					$thru = $this->getMetaData()->relations[$thru_name];
-					if ($thru->className == $rel->className) {
-						// same behaviour when the thru relation is the same class
-						$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
-					} else {
-						$this->afterSaveThruHasMany($name, $rel, $thru, $new_objs);
+		if ($this->_auto_update_relations) {
+			foreach ($this->getMetaData()->relations as $name => $rel) {
+				$new_objs = $this->$name;
+				$orig_objs = $this->getRelated($name, true);
+				if (get_class($rel) == self::MANY_MANY) {
+					$this->afterSaveManyMany($name, $rel, $new_objs, $orig_objs);
+				} else {
+					if ($thru_name = $rel->through) {
+						// This is a through relationship so need to update the assignment table
+						$thru = $this->getMetaData()->relations[$thru_name];
+						if ($thru->className == $rel->className) {
+							// same behaviour when the thru relation is the same class
+							$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
+						} else {
+							$this->afterSaveThruHasMany($name, $rel, $thru, $new_objs);
+						}
 					}
-				}
-				else {
-					$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
+					else {
+						$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
+					}
 				}
 			}
 		}
