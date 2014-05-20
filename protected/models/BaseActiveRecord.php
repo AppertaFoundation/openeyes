@@ -329,23 +329,26 @@ class BaseActiveRecord extends CActiveRecord
 	{
 		if ($this->_auto_update_relations) {
 			foreach ($this->getMetaData()->relations as $name => $rel) {
-				$new_objs = $this->$name;
-				$orig_objs = $this->getRelated($name, true);
-				if (get_class($rel) == self::MANY_MANY) {
-					$this->afterSaveManyMany($name, $rel, $new_objs, $orig_objs);
-				} else {
-					if ($thru_name = $rel->through) {
-						// This is a through relationship so need to update the assignment table
-						$thru = $this->getMetaData()->relations[$thru_name];
-						if ($thru->className == $rel->className) {
-							// same behaviour when the thru relation is the same class
-							$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
-						} else {
-							$this->afterSaveThruHasMany($name, $rel, $thru, $new_objs);
+				$rel_cls = get_class($rel);
+				if (in_array($rel_cls, array(self::HAS_MANY, self::MANY_MANY))) {
+					$new_objs = $this->$name;
+					$orig_objs = $this->getRelated($name, true);
+					if ($rel_cls == self::MANY_MANY) {
+						$this->afterSaveManyMany($name, $rel, $new_objs, $orig_objs);
+					} else {
+						if ($thru_name = $rel->through) {
+							// This is a through relationship so need to update the assignment table
+							$thru = $this->getMetaData()->relations[$thru_name];
+							if ($thru->className == $rel->className) {
+								// same behaviour when the thru relation is the same class
+								$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
+							} else {
+								$this->afterSaveThruHasMany($name, $rel, $thru, $new_objs);
+							}
 						}
-					}
-					else {
-						$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
+						else {
+							$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
+						}
 					}
 				}
 			}
