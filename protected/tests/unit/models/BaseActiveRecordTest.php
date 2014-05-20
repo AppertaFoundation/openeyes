@@ -111,4 +111,140 @@ class BaseActiveRecordTest extends CDbTestCase
 		$this->markTestSkipped('this has been already implemented in the audittest model');
 	}
 
+	public function test__set_has_many()
+	{
+		$test = $this->getMockBuilder('BaseActiveRecord')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+
+		$meta = $this->getMockBuilder('CActiveRecordMetaData')
+				->disableOriginalConstructor()
+				->getMock();
+
+		$meta->relations = array(
+				'has_many' => $hm_cls,
+		);
+
+		$test->expects($this->any())
+			->method('getMetaData')
+			->will($this->returnValue($meta));
+		$test->expects($this->any())
+			->method('getPrimaryKey')
+			->will($this->returnValue(1));
+
+		$test->__set('has_many',array('test'));
+		$this->assertTrue(is_array($test->has_many));
+		$this->assertEquals('test', $test->has_many[0], 'should pass through assignment when behaviour turned off');
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$test->__set('has_many', array('test2'));
+		$this->assertTrue(is_array($test->has_many));
+		$this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
+
+		$rdp = $r->getProperty('_relation_defaults');
+		$rdp->setAccessible(true);
+		$rdp->setValue($test, array('has_many' => array('default_prop' => 'test')));
+
+		$test->__set('has_many',array(array('test_value' => 'a string')));
+		$this->assertTrue(is_array($test->has_many));
+		$this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
+		$this->assertEquals('a string', $test->has_many[0]->test_value);
+		$this->assertEquals('test', $test->has_many[0]->default_prop, 'should have picked up default property value');
+	}
+
+	public function test__set_many_many()
+	{
+		$mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+												)),
+						'relations' => array(
+								'many_many' => $mm_cls,
+						)
+				));
+
+		$test = new ManyManyOwnerTestClass();
+		$test->md = $meta;
+
+		$test->many_many = array('test');
+		$this->assertTrue(is_array($test->many_many));
+		$this->assertEquals('test', $test->many_many[0], 'should pass through assignment when behaviour turned off');
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$test->many_many = array('test2');
+		$this->assertTrue(is_array($test->many_many));
+		$this->assertInstanceOf('RelationTestClass', $test->many_many[0], 'should set relation class when behaviour turned on');
+		$this->assertEquals('test2', $test->many_many[0]->getPrimaryKey());
+
+
+	}
+
+}
+
+class ManyManyOwnerTestClass extends BaseActiveRecord
+{
+	public $the_pk;
+	public $md;
+
+	public function __construct()
+	{}
+
+	public function getMetaData()
+	{
+		return $this->md;
+	}
+}
+
+class RelationTestClass extends BaseActiveRecord
+{
+	public $default_prop;
+	public $test_value;
+	public $element_id;
+	public $test_pk;
+
+	public function __construct()
+	{}
+
+	public function rules()
+	{
+		return array(
+			array('default_prop, test_value, element_id', 'safe')
+		);
+	}
+
+	public function getMetaData()
+	{
+		return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+					'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+								'primaryKey' => 'test_pk',
+								'columns' => array('test_pk', 'default_prop')))
+				));
+	}
+
+
+	public function find($condition='',$params=array())
+	{
+		return ComponentStubGenerator::generate(get_class(self), $params);
+	}
+
+	public function findByPk($pk)
+	{
+		$cls = __CLASS__;
+		$res = new $cls();
+		$res->setPrimaryKey($pk);
+		return $res;
+	}
 }

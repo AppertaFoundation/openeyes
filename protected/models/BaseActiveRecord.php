@@ -35,8 +35,12 @@ class BaseActiveRecord extends CActiveRecord
 	 * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
 	 * to assign to the attribute. Sets up the afterSave method to saves these objects if they have validated.
 	 *
+	 * NOTE once a property is set, this magic method will not be called by php for setting it again, unless the property
+	 * is unset first.
+	 *
 	 * @param string $name
 	 * @param mixed $value
+	 * @throws Exception
 	 * @return mixed|void
 	 */
 	public function __set($name,$value)
@@ -53,9 +57,9 @@ class BaseActiveRecord extends CActiveRecord
 				// not supporting composite primary keys at this point
 				if (is_string($pk_attr)) {
 					$m_set = array();
-					// looks like a list of attribute values, try to find or instantiate the classes
 					foreach ($value as $v) {
 						if (is_array($v)) {
+							// looks like a list of attribute values, try to find or instantiate the classes
 							if (array_key_exists($pk_attr, $v) && isset($v[$pk_attr])) {
 								$m = $rel_cls::model()->findByPk($v[$pk_attr]);
 							}
@@ -77,10 +81,9 @@ class BaseActiveRecord extends CActiveRecord
 						}
 						$m_set[] = $m;
 					}
-					// make the assignment
-					$this->$name = $m_set;
+					// reset the value for it to be set
+					$value = $m_set;
 					$this->_updated_relations[] = $name;
-					return;
 				}
 			}
 		}
