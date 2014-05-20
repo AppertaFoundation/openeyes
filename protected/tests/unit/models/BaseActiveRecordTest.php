@@ -252,6 +252,7 @@ class BaseActiveRecordTest extends CDbTestCase
 										)),
 						'relations' => array(
 							'has_many' => $hm_cls,
+							'has_many_thru' => $hmt_cls,
 							'many_many' => $mm_cls,
 						)
 				));
@@ -269,12 +270,20 @@ class BaseActiveRecordTest extends CDbTestCase
 			->with($this->equalTo('has_many'), $this->equalTo(true))
 			->will($this->returnValue(array($this->getRelationMockForDelete(3))));
 
+		$hmt = $this->getRelationMockForSave(8);
+		$test->has_many_thru = array($hmt);
+
+		$test->expects($this->at(3))
+			->method('getRelated')
+			->with($this->equalTo('has_many_thru'), $this->equalTo(true))
+			->will($this->returnValue(array($this->getRelationMockForDelete(2), $hmt)));
+
 		// many many relations will not use save/delete methods, as they use command builder,
 		// so we want a bare bones relation mock
 		$mm = $this->getRelationMock(12);
 		$test->many_many = array($mm, $this->getRelationMock(13));
 
-		$test->expects($this->at(3))
+		$test->expects($this->at(5))
 				->method('getRelated')
 				->with('many_many')
 				->will($this->returnValue(array($this->getRelationMock(7), $mm)));
@@ -407,9 +416,9 @@ class BaseActiveRecordTest extends CDbTestCase
 		$as->invoke($test);
 	}
 
-	public function testafterSave_manymany()
+	public function testbeforeDelete()
 	{
-
+		$this->markTestIncomplete('Not quite sure how to test this yet, so putting on hold for now');
 	}
 }
 
