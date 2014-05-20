@@ -307,6 +307,69 @@ class BaseActiveRecordTest extends CDbTestCase
 
 		$as->invoke($test);
 	}
+
+	public function testAfterSaveNewValues()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+								'has_many' => $hm_cls,
+						)
+				));
+
+		$test->expects($this->any())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		// fake the attribute having been set by __set
+		$new_hm = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('save', 'getPrimaryKey'))
+				->getMock();
+		$new_hm->expects($this->once())
+				->method('save')
+				->will($this->returnValue(true));
+		$new_hm->expects($this->any())
+				->method('getPrimaryKey')
+				->will($this->returnValue(5));
+
+		$new_hm2 = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('save', 'getPrimaryKey'))
+				->getMock();
+		$new_hm2->expects($this->once())
+				->method('save')
+				->will($this->returnValue(true));
+		$new_hm2->expects($this->any())
+				->method('getPrimaryKey')
+				->will($this->returnValue(6));
+
+		$test->has_many = array($new_hm, $new_hm2);
+
+		$test->expects($this->once())
+				->method('getRelated')
+				->with('has_many')
+				->will($this->returnValue(null));
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
 }
 
 class RelationOwnerSaveClass extends BaseActiveRecord
