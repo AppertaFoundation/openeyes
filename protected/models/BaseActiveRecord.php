@@ -418,9 +418,10 @@ class BaseActiveRecord extends CActiveRecord
 	{
 		if ($this->_auto_update_relations) {
 			$deleted_classes = array();
-			foreach ($this->relations() as $rel_name => $rel_def) {
-				if ($rel_def[0] == self::MANY_MANY) {
-					$rel = $this->getMetaData()->relations[$rel_name];
+			$record_relations = $this->getMetaData()->relations;
+			foreach ($record_relations as $rel_name => $rel) {
+				$rel_type = get_class($rel);
+				if ($rel_type == self::MANY_MANY) {
 					$tbl_name = $rel->getJunctionTableName();
 					$tbl_keys = $rel->getJunctionForeignKeys();
 					if (count($tbl_keys) == 2) {
@@ -434,8 +435,7 @@ class BaseActiveRecord extends CActiveRecord
 						}
 					}
 				}
-				elseif ($rel_def[0] == self::HAS_MANY) {
-					$rel = $this->getMetaData()->relations[$rel_name];
+				elseif ($rel_type == self::HAS_MANY) {
 					if (!$rel->through) {
 						// if the relationship is 'through', then the delete is handled by that relationship so we ignore it
 						$rel_cls = $rel->className;
