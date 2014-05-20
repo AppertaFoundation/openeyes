@@ -200,26 +200,32 @@ class BaseActiveRecord extends CActiveRecord
 		$criteria->addCondition($rel->on);
 		$orig_objs = $this->getRelated($thru->name, true, $criteria);
 		$orig_by_id = array();
-		foreach ($orig_objs as $orig) {
-			$orig_by_id[$orig->{$rel->foreignKey}] = $orig;
+
+		if ($orig_objs) {
+			foreach ($orig_objs as $orig) {
+				$orig_by_id[$orig->{$rel->foreignKey}] = $orig;
+			}
 		}
 		$rel_cls = $rel->className;
 		$rel_pk_attr = $rel_cls::getMetaData()->tableSchema->primaryKey;
 
-		foreach ($new_objs as $new) {
-			if ($save = @$orig_by_id[$new->$rel_pk_attr]) {
-				unset($orig_by_id[$new->$rel_pk_attr]);
-			}
-			else {
-				$save = new $thru_cls();
-			}
-			$save->attributes = $this->getRelationsDefaults($name);
-			$save->{$thru->foreignKey} = $this->getPrimaryKey();
-			$save->{$rel->foreignKey} = $new->getPrimaryKey();
-			if (!$save->save()) {
-				throw new Exception("unable to save new through relation {$thru->name} for {$name}" . print_r($save->getErrors(), true));
+		if ($new_objs) {
+			foreach ($new_objs as $new) {
+				if ($save = @$orig_by_id[$new->$rel_pk_attr]) {
+					unset($orig_by_id[$new->$rel_pk_attr]);
+				}
+				else {
+					$save = new $thru_cls();
+				}
+				$save->attributes = $this->getRelationsDefaults($name);
+				$save->{$thru->foreignKey} = $this->getPrimaryKey();
+				$save->{$rel->foreignKey} = $new->getPrimaryKey();
+				if (!$save->save()) {
+					throw new Exception("unable to save new through relation {$thru->name} for {$name}" . print_r($save->getErrors(), true));
+				}
 			}
 		}
+
 		foreach ($orig_by_id as $orig) {
 			if (!$orig->delete()) {
 				throw new Exception("unable to delete redundant through relation {$thru->name} with id {$orig->getPrimaryKey()} for {$name}");
@@ -249,10 +255,12 @@ class BaseActiveRecord extends CActiveRecord
 				$saved_ids[] = $new->getPrimaryKey();
 			}
 		}
-		foreach ($orig_objs as $orig) {
-			if (!in_array($orig->getPrimaryKey(), $saved_ids)) {
-				if (!$orig->delete()) {
-					throw new Exception('Unable to delete removed {$name} with pk {$orig->primaryKey}');
+		if ($orig_objs) {
+			foreach ($orig_objs as $orig) {
+				if (!in_array($orig->getPrimaryKey(), $saved_ids)) {
+					if (!$orig->delete()) {
+						throw new Exception('Unable to delete removed {$name} with pk {$orig->primaryKey}');
+					}
 				}
 			}
 		}
@@ -275,26 +283,31 @@ class BaseActiveRecord extends CActiveRecord
 		}
 
 		$orig_by_id = array();
-		foreach ($orig_objs as $orig) {
-			$orig_by_id[] = $orig->getPrimaryKey();
+		if ($orig_objs) {
+			foreach ($orig_objs as $orig) {
+				$orig_by_id[] = $orig->getPrimaryKey();
+			}
 		}
 
 		// array of ids that should be saved
-		foreach ($new_objs as $new) {
-			if (in_array($new->getPrimaryKey(), $orig_by_id)) {
-				unset($orig_by_id[$new->getPrimaryKey()]);
-			}
-			else {
-				// insert statement
-				$builder = $this->getCommandBuilder();
-				$criteria = new CDbCriteria();
-				$cmd = $builder->createInsertCommand($tbl_name, array($tbl_keys[0] => $this->getPrimaryKey(), $tbl_keys[1] => $new->getPrimaryKey()));
-				if (!$cmd->execute()) {
-					throw new Exception("unable to insert many to many record for relation {$name} with pk {$new->getPrimaryKey()}");
+		if ($new_objs) {
+			foreach ($new_objs as $new) {
+				if (in_array($new->getPrimaryKey(), $orig_by_id)) {
+					unset($orig_by_id[$new->getPrimaryKey()]);
 				}
+				else {
+					// insert statement
+					$builder = $this->getCommandBuilder();
+					$criteria = new CDbCriteria();
+					$cmd = $builder->createInsertCommand($tbl_name, array($tbl_keys[0] => $this->getPrimaryKey(), $tbl_keys[1] => $new->getPrimaryKey()));
+					if (!$cmd->execute()) {
+						throw new Exception("unable to insert many to many record for relation {$name} with pk {$new->getPrimaryKey()}");
+					}
 
+				}
 			}
 		}
+
 		foreach ($orig_by_id as $remove_id) {
 			// delete statement
 			$builder = $this->getCommandBuilder();
