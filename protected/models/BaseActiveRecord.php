@@ -285,15 +285,16 @@ class BaseActiveRecord extends CActiveRecord
 		$orig_by_id = array();
 		if ($orig_objs) {
 			foreach ($orig_objs as $orig) {
-				$orig_by_id[] = $orig->getPrimaryKey();
+				$orig_by_id[$orig->getPrimaryKey()] = $orig;
 			}
 		}
 
 		// array of ids that should be saved
 		if ($new_objs) {
 			foreach ($new_objs as $new) {
-				if (in_array($new->getPrimaryKey(), $orig_by_id)) {
-					unset($orig_by_id[$new->getPrimaryKey()]);
+				$pk = $new->getPrimaryKey();
+				if (@$orig_by_id[$pk]) {
+					unset($orig_by_id[$pk]);
 				}
 				else {
 					// insert statement
@@ -307,8 +308,8 @@ class BaseActiveRecord extends CActiveRecord
 				}
 			}
 		}
-
-		foreach ($orig_by_id as $remove_id) {
+		print_r(array_keys($orig_by_id));
+		foreach (array_keys($orig_by_id) as $remove_id) {
 			// delete statement
 			$builder = $this->getCommandBuilder();
 			$criteria = new CDbCriteria();
