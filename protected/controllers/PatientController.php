@@ -81,8 +81,12 @@ class PatientController extends BaseController
 				'roles' => array('OprnEditMedication'),
 			),
 			array('allow',
-				'actions' => array('addFamilyHistory', 'removeFamilyHistory'),
-				'roles' => array('OprnEditFamilyHistory')
+					'actions' => array('addFamilyHistory', 'removeFamilyHistory'),
+					'roles' => array('OprnEditFamilyHistory')
+			),
+			array('allow',
+					'actions' => array('editSocialHistory', 'editSocialHistory'),
+					'roles' => array('OprnEditSocialHistory')
 			),
 		);
 	}
@@ -1014,6 +1018,14 @@ class PatientController extends BaseController
 		}
 
 		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
+	public function actionEditSocialHistory()
+	{
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+		var_dump($patient);die();
 	}
 
 	public function actionAddFamilyHistory()

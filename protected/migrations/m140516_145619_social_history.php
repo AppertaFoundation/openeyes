@@ -93,7 +93,44 @@ class m140516_145619_social_history extends CDbMigration
 		$this->insert('socialhistory_accommodation',array('name'=>'Lives in sheltered housing','display_order'=>6));
 		$this->insert('socialhistory_accommodation',array('name'=>'Nursing home','display_order'=>7));
 
+		$this->createTable('socialhistory_carer', array(
+				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+				'name' => 'varchar(128) NOT NULL',
+				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+				'deleted' => 'tinyint(1) unsigned not null',
+				'PRIMARY KEY (`id`)',
+				'KEY `socialhistory_carer_lmui_fk` (`last_modified_user_id`)',
+				'KEY `socialhistory_carer_cui_fk` (`created_user_id`)',
+				'CONSTRAINT `socialhistory_carer_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `socialhistory_carer_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
+
+		$this->insert('socialhistory_carer',array('name'=>'Yes','display_order'=>1));
+		$this->insert('socialhistory_carer',array('name'=>'No','display_order'=>2));
+
+		$this->createTable('socialhistory_substance_misuse', array(
+				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+				'name' => 'varchar(128) NOT NULL',
+				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+				'deleted' => 'tinyint(1) unsigned not null',
+				'PRIMARY KEY (`id`)',
+				'KEY `socialhistory_substance_misuse_lmui_fk` (`last_modified_user_id`)',
+				'KEY `socialhistory_substance_misuse_cui_fk` (`created_user_id`)',
+				'CONSTRAINT `socialhistory_substance_misuse_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `socialhistory_substance_misuse_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+
+		$this->insert('socialhistory_substance_misuse',array('name'=>'Yes','display_order'=>1));
+		$this->insert('socialhistory_substance_misuse',array('name'=>'No','display_order'=>2));
 
 		$this->createTable('socialhistory', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -109,11 +146,11 @@ class m140516_145619_social_history extends CDbMigration
 
 				'type_of_job' => 'varchar(255) COLLATE utf8_bin DEFAULT \'\'',
 
-				'carer' => 'tinyint(1) unsigned NOT NULL',
+				'carer_id' => 'int(10) unsigned NOT NULL',
 
-				'alcohol_intake' => 'varchar(255) COLLATE utf8_bin DEFAULT \'\'',
+				'alcohol_intake' => 'varchar(255) DEFAULT \'\'',
 
-				'substance_misuse' => 'tinyint(1) unsigned NOT NULL',
+				'substance_misuse_id' => 'int(10) unsigned NOT NULL',
 
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
@@ -126,24 +163,28 @@ class m140516_145619_social_history extends CDbMigration
 				'KEY `socialhistory_driving_status_fk` (`driving_status_id`)',
 				'KEY `socialhistory_smoking_status_fk` (`smoking_status_id`)',
 				'KEY `socialhistory_accommodation_fk` (`accommodation_id`)',
+				'KEY `socialhistory_carer_fk` (`carer_id`)',
+				'KEY `socialhistory_substance_misuse_fk` (`substance_misuse_id`)',
 				'CONSTRAINT `socialhistory_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
 				'CONSTRAINT `socialhistory_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 				'CONSTRAINT `socialhistory_occupation_fk` FOREIGN KEY (`occupation_id`) REFERENCES `socialhistory_occupation` (`id`)',
 				'CONSTRAINT `socialhistory_driving_status_fk` FOREIGN KEY (`driving_status_id`) REFERENCES `socialhistory_driving_status` (`id`)',
 				'CONSTRAINT `socialhistory_smoking_status_fk` FOREIGN KEY (`smoking_status_id`) REFERENCES `socialhistory_smoking_status` (`id`)',
 				'CONSTRAINT `socialhistory_accommodation_fk` FOREIGN KEY (`accommodation_id`) REFERENCES `socialhistory_accommodation` (`id`)',
+				'CONSTRAINT `socialhistory_carer_fk` FOREIGN KEY (`carer_id`) REFERENCES `socialhistory_carer` (`id`)',
+				'CONSTRAINT `socialhistory_substance_misuse_fk` FOREIGN KEY (`substance_misuse_id`) REFERENCES `socialhistory_substance_misuse` (`id`)',
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 	}
 
 	public function down()
 	{
 		$this->dropTable('socialhistory');
-
-
 		$this->dropTable('socialhistory_occupation');
 		$this->dropTable('socialhistory_driving_status');
 		$this->dropTable('socialhistory_smoking_status');
 		$this->dropTable('socialhistory_accommodation');
+		$this->dropTable('socialhistory_carer');
+		$this->dropTable('socialhistory_substance_misuse');
 	}
 
 }

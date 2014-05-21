@@ -18,7 +18,7 @@
  */
 
 /**
- * This is the model class for table "socialhistory".
+ * This is the model class for table "et_socialhistory".
  *
  * The followings are the available columns in table:
  * @property string $id
@@ -29,21 +29,26 @@
  * @property integer $accommodation_id
  * @property string $comments
  * @property string $type_of_job
- * @property integer $carer
+ * @property integer $carer_id
  * @property string $alcohol_intake
- * @property integer $substance_misuse
+ * @property integer $substance_misuse_id
  *
  * The followings are the available model relations:
  *
+ * @property ElementType $element_type
+ * @property EventType $eventType
+ * @property Event $event
  * @property User $user
  * @property User $usermodified
- * @property SocialHistory_Occupation $occupation
- * @property SocialHistory_DrivingStatus $driving_status
- * @property SocialHistory_SmokingStatus $smoking_status
- * @property SocialHistory_Accommodation $accommodation
+ * @property SocialHistoryOccupation $occupation
+ * @property SocialHistoryDrivingStatus $driving_status
+ * @property SocialHistorySmokingStatus $smoking_status
+ * @property SocialHistoryAccommodation $accommodation
+ * @property SocialHistoryCarer $carer
+ * @property SocialHistorySubstanceMisuse $substance_misuse
  */
 
-class SocialHistory  extends  BaseActiveRecordVersioned
+class Element_SocialHistory  extends  BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -67,10 +72,12 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 	 */
 	public function rules()
 	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
 		return array(
-				array('event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer, alcohol_intake, substance_misuse, ', 'safe'),
-				array('occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer, alcohol_intake, substance_misuse, ', 'required'),
-				array('id, event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer, alcohol_intake, substance_misuse, ', 'safe', 'on' => 'search'),
+				array('event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe'),
+				array('occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'required'),
+				array('id, event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -82,10 +89,12 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 		return array(
 				'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 				'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-				'occupation' => array(self::BELONGS_TO, 'SocialHistory_Occupation', 'occupation_id'),
-				'driving_status' => array(self::BELONGS_TO, 'SocialHistory_DrivingStatus', 'driving_status_id'),
-				'smoking_status' => array(self::BELONGS_TO, 'SocialHistory_SmokingStatus', 'smoking_status_id'),
-				'accommodation' => array(self::BELONGS_TO, 'SocialHistory_Accommodation', 'accommodation_id'),
+				'occupation' => array(self::BELONGS_TO, 'SocialHistoryOccupation', 'occupation_id'),
+				'driving_status' => array(self::BELONGS_TO, 'SocialHistoryDrivingStatus', 'driving_status_id'),
+				'smoking_status' => array(self::BELONGS_TO, 'SocialHistorySmokingStatus', 'smoking_status_id'),
+				'accommodation' => array(self::BELONGS_TO, 'SocialHistoryAccommodation', 'accommodation_id'),
+				'carer' => array(self::BELONGS_TO, 'SocialHistoryCarer', 'carer_id'),
+				'substance_misuse' => array(self::BELONGS_TO, 'SocialHistorySubstanceMisuse', 'substance_misuse_id'),
 		);
 	}
 
@@ -95,16 +104,15 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 	public function attributeLabels()
 	{
 		return array(
-				'id' => 'ID',
 				'occupation_id' => 'Occupation',
 				'driving_status_id' => 'Driving Status',
 				'smoking_status_id' => 'Smoking Status',
 				'accommodation_id' => 'Accommodation',
 				'comments' => 'Comments',
 				'type_of_job' => 'Type of job',
-				'carer' => 'Carer',
+				'carer_id' => 'Carer',
 				'alcohol_intake' => 'Alcohol Intake',
-				'substance_misuse' => 'Substance Misuse',
+				'substance_misuse_id' => 'Substance Misuse',
 		);
 	}
 
@@ -115,17 +123,15 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 	public function search()
 	{
 		$criteria = new CDbCriteria;
-
-		$criteria->compare('id', $this->id, true);
 		$criteria->compare('occupation_id', $this->occupation_id);
 		$criteria->compare('driving_status_id', $this->driving_status_id);
 		$criteria->compare('smoking_status_id', $this->smoking_status_id);
 		$criteria->compare('accommodation_id', $this->accommodation_id);
 		$criteria->compare('comments', $this->comments);
 		$criteria->compare('type_of_job', $this->type_of_job);
-		$criteria->compare('carer', $this->carer);
+		$criteria->compare('carer_id', $this->carer_id);
 		$criteria->compare('alcohol_intake', $this->alcohol_intake);
-		$criteria->compare('substance_misuse', $this->substance_misuse);
+		$criteria->compare('substance_misuse_id', $this->substance_misuse_id);
 
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria' => $criteria,
