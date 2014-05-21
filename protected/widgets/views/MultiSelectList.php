@@ -61,7 +61,7 @@ $widgetOptionsJson = json_encode(array(
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 	<?php }?>
 		<div class="multi-select<?php if (!$inline) echo ' multi-select-list';?>" data-options='<?php echo $widgetOptionsJson;?>'>
-			<input type="hidden" id="<?php echo CHtml::modelName($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
+			<input type="hidden" name="<?php echo CHtml::modelName($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
 			<div class="multi-select-dropdown-container">
 				<select id="<?php echo $field?>" class="MultiSelectList<?php if ($showRemoveAllLink) {?> inline<?php }?>" name="">
 					<option value=""><?php echo $htmlOptions['empty']?></option>
