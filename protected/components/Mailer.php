@@ -171,6 +171,13 @@ class Mailer extends CComponent
 					. ', to: ' . var_export($message->getTo()),
 					'oe.Mailer'
 				);
+				return;
+			case 'divert':
+				Yii::trace("Diverting message", 'oe.Mailer');
+				return $this->divertMessage($message);
+			default:
+				Yii::trace("Sending message, to: " . print_r($message->getTo(),true), 'oe.Mailer');
+				return $this->directlySendMessage($message);
 		}
 	}
 
