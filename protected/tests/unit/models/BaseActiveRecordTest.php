@@ -111,4 +111,439 @@ class BaseActiveRecordTest extends CDbTestCase
 		$this->markTestSkipped('this has been already implemented in the audittest model');
 	}
 
+	public function test__set_has_many()
+	{
+		$test = $this->getMockBuilder('BaseActiveRecord')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+
+		$meta = $this->getMockBuilder('CActiveRecordMetaData')
+				->disableOriginalConstructor()
+				->getMock();
+
+		$meta->relations = array(
+				'has_many' => $hm_cls,
+		);
+
+		$test->expects($this->any())
+			->method('getMetaData')
+			->will($this->returnValue($meta));
+		$test->expects($this->any())
+			->method('getPrimaryKey')
+			->will($this->returnValue(1));
+
+		$test->__set('has_many',array('test'));
+		$this->assertTrue(is_array($test->has_many));
+		$this->assertEquals('test', $test->has_many[0], 'should pass through assignment when behaviour turned off');
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$test->__set('has_many', array('test2'));
+		$this->assertTrue(is_array($test->has_many));
+		$this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
+
+		$rdp = $r->getProperty('_relation_defaults');
+		$rdp->setAccessible(true);
+		$rdp->setValue($test, array('has_many' => array('default_prop' => 'test')));
+
+		$test->__set('has_many',array(array('test_value' => 'a string')));
+		$this->assertTrue(is_array($test->has_many));
+		$this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
+		$this->assertEquals('a string', $test->has_many[0]->test_value);
+		$this->assertEquals('test', $test->has_many[0]->default_prop, 'should have picked up default property value');
+	}
+
+	public function test__set_many_many()
+	{
+		$mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+												)),
+						'relations' => array(
+								'many_many' => $mm_cls,
+						)
+				));
+
+		$test = new ManyManyOwnerTestClass();
+		$test->md = $meta;
+
+		$test->many_many = array('test');
+		$this->assertTrue(is_array($test->many_many));
+		$this->assertEquals('test', $test->many_many[0], 'should pass through assignment when behaviour turned off');
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$test->many_many = array('test2');
+		$this->assertTrue(is_array($test->many_many));
+		$this->assertInstanceOf('RelationTestClass', $test->many_many[0], 'should set relation class when behaviour turned on');
+		$this->assertEquals('test2', $test->many_many[0]->getPrimaryKey());
+	}
+
+	public function getRelationMock($pk)
+	{
+		$mock = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getPrimaryKey'))
+				->getMock();
+		$mock->expects($this->any())
+				->method('getPrimaryKey')
+				->will($this->returnValue($pk));
+
+		return $mock;
+	}
+
+	public function getRelationMockForSave($pk)
+	{
+		$mock = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('save', 'getPrimaryKey'))
+				->getMock();
+		$mock->expects($this->once())
+				->method('save')
+				->will($this->returnValue(true));
+		$mock->expects($this->any())
+				->method('getPrimaryKey')
+				->will($this->returnValue($pk));
+
+		return $mock;
+	}
+
+	public function getRelationMockForDelete($pk)
+	{
+		$mock = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('delete', 'getPrimaryKey'))
+				->getMock();
+		$mock->expects($this->any())
+				->method('getPrimaryKey')
+				->will($this->returnValue($pk));
+		$mock->expects($this->once())
+				->method('delete')
+				->will($this->returnValue(true));
+
+		return $mock;
+	}
+
+	public function testafterSave()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey', 'getCommandBuilder'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+		$hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'element_id', array('through' => 'has_many'));
+		$mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+							'has_many' => $hm_cls,
+							'has_many_thru' => $hmt_cls,
+							'many_many' => $mm_cls,
+						)
+				));
+
+		$test->expects($this->any())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		// fake the attribute having been set by __set
+		$test->has_many = array($this->getRelationMockForSave(5));
+
+		// fake the original values for the has_many relation value on the test instance
+		$test->expects($this->at(1))
+			->method('getRelated')
+			->with($this->equalTo('has_many'), $this->equalTo(true))
+			->will($this->returnValue(array($this->getRelationMockForDelete(3))));
+
+		$hmt = $this->getRelationMockForSave(8);
+		$test->has_many_thru = array($hmt);
+
+		$test->expects($this->at(3))
+			->method('getRelated')
+			->with($this->equalTo('has_many_thru'), $this->equalTo(true))
+			->will($this->returnValue(array($this->getRelationMockForDelete(2), $hmt)));
+
+		// many many relations will not use save/delete methods, as they use command builder,
+		// so we want a bare bones relation mock
+		$mm = $this->getRelationMock(12);
+		$test->many_many = array($mm, $this->getRelationMock(13));
+
+		$test->expects($this->at(5))
+				->method('getRelated')
+				->with('many_many')
+				->will($this->returnValue(array($this->getRelationMock(7), $mm)));
+
+		// many many uses command builder to update the assignment table
+		$ins_cmd = $this->getMockBuilder('CDbCommand')
+				->disableOriginalConstructor()
+				->setMethods(array('execute'))
+				->getMock();
+
+		$ins_cmd->expects($this->once())
+			->method('execute')
+			->will($this->returnValue(true));
+
+		$cmd_builder = $this->getMockBuilder('CDbCommandBuilder')
+				->disableOriginalConstructor()
+				->setMethods(array('createInsertCommand', 'createDeleteCommand'))
+				->getMock();
+
+		$cmd_builder->expects($this->any())
+			->method('createInsertCommand')
+			->will($this->returnValue($ins_cmd));
+
+		$del_cmd = $this->getMockBuilder('CDbCommand')
+				->disableOriginalConstructor()
+				->setMethods(array('execute'))
+				->getMock();
+		$del_cmd->expects($this->once())
+				->method('execute')
+				->will($this->returnValue(true));
+
+		$cmd_builder->expects($this->any())
+				->method('createDeleteCommand')
+				->will($this->returnValue($del_cmd));
+
+		$test->expects($this->any())
+			->method('getCommandBuilder')
+			->will($this->returnValue($cmd_builder));
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
+
+	public function testafterSave_setNull()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+								'has_many' => $hm_cls,
+						)
+				));
+
+		$test->expects($this->any())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		$test->has_many = null;
+
+		// fake the original values for the has_many relation value on the test instance
+		$test->expects($this->once())
+				->method('getRelated')
+				->with('has_many')
+				->will($this->returnValue(array($this->getRelationMockForDelete(3))));
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
+
+	public function testAfterSaveNewValues()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+								'has_many' => $hm_cls,
+						)
+				));
+
+		$test->expects($this->any())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		// fake the attribute having been set by __set
+		$test->has_many = array($this->getRelationMockForSave(5), $this->getRelationMockForSave(6));
+
+		$test->expects($this->once())
+				->method('getRelated')
+				->with('has_many')
+				->will($this->returnValue(null));
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
+
+	public function testbeforeDelete()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey', 'getCommandBuilder'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+		$hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'element_id', array('through' => 'has_many'));
+		$mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+								//'has_many' => $hm_cls,
+								//'has_many_thru' => $hmt_cls,
+								'many_many' => $mm_cls,
+						)
+				));
+
+		$test->expects($this->any())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		$test->expects($this->any())
+			->method('getPrimaryKey')
+			->will($this->returnValue('TestPK'));
+
+		// many many uses command builder behaviour to delete assignment table entries
+		$del_cmd = $this->getMockBuilder('CDbCommand')
+				->disableOriginalConstructor()
+				->setMethods(array('execute'))
+				->getMock();
+
+		$del_cmd->expects($this->once())
+				->method('execute')
+				->will($this->returnValue(true));
+
+		$cmd_builder = $this->getMockBuilder('CDbCommandBuilder')
+				->disableOriginalConstructor()
+				->setMethods(array('createDeleteCommand'))
+				->getMock();
+
+		$cmd_builder->expects($this->any())
+				->method('createDeleteCommand')
+				->with($this->equalTo('many_many_ass'))
+				->will($this->returnValue($del_cmd));
+
+		$test->expects($this->any())
+				->method('getCommandBuilder')
+				->will($this->returnValue($cmd_builder));
+
+		$r = new ReflectionClass($test);
+		$m = $r->getMethod('beforeDelete');
+		$m->setAccessible(true);
+
+		$p = $r->getProperty('_auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$m->invoke($test);
+
+		$this->markTestIncomplete('has many uses static model method so cannot complete the test.');
+	}
+}
+
+class RelationOwnerSaveClass extends BaseActiveRecord
+{
+	public $has_many;
+	public $has_many_thru;
+	public $many_many;
+	public $the_pk;
+
+}
+
+class ManyManyOwnerTestClass extends BaseActiveRecord
+{
+	public $the_pk;
+	public $md;
+
+	public function __construct()
+	{}
+
+	public function getMetaData()
+	{
+		return $this->md;
+	}
+}
+
+class RelationTestClass extends BaseActiveRecord
+{
+	public $default_prop;
+	public $test_value;
+	public $element_id;
+	public $test_pk;
+
+	public function __construct()
+	{}
+
+	public function rules()
+	{
+		return array(
+			array('default_prop, test_value, element_id', 'safe')
+		);
+	}
+
+	public function getMetaData()
+	{
+		return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+					'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+								'primaryKey' => 'test_pk',
+								'columns' => array('test_pk', 'default_prop')))
+				));
+	}
+
+
+	public function find($condition='',$params=array())
+	{
+		return ComponentStubGenerator::generate(get_class(self), $params);
+	}
+
+	public function findByPk($pk)
+	{
+		$cls = __CLASS__;
+		$res = new $cls();
+		$res->setPrimaryKey($pk);
+		return $res;
+	}
 }
