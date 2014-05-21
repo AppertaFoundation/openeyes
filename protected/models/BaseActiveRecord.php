@@ -27,7 +27,7 @@ class BaseActiveRecord extends CActiveRecord
 {
 	// flag to automatically update related objects on the record
 	// (whilst developing this feature, will allow other elements to continue to work)
-	protected $_auto_update_relations = false;
+	protected $auto_update_relations = false;
 
 	/**
 	 * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
@@ -44,7 +44,7 @@ class BaseActiveRecord extends CActiveRecord
 	public function __set($name,$value)
 	{
 		// Only perform this override if turned on for the given model
-		if ($this->_auto_update_relations
+		if ($this->auto_update_relations
 				&& is_array($value) && count($value)
 				&& isset($this->getMetaData()->relations[$name])) {
 			$rel = $this->getMetaData()->relations[$name];
@@ -90,7 +90,7 @@ class BaseActiveRecord extends CActiveRecord
 	// relation defaults are properties that need to be set on related models to define the records completely within the database
 	// e.g. the side field on a record defines in the database that a record is a left or right record. So we need this attribute
 	// to be set when setting the left or right attribute of owning record.
-	protected $_relation_defaults = array();
+	protected $relation_defaults = array();
 
 	/**
 	 * Convenience method wrapper on the relation defaults property
@@ -99,8 +99,8 @@ class BaseActiveRecord extends CActiveRecord
 	 * @return array
 	 */
 	public function getRelationsDefaults($name) {
-		if (isset($this->_relation_defaults[$name])) {
-			return $this->_relation_defaults[$name];
+		if (isset($this->relation_defaults[$name])) {
+			return $this->relation_defaults[$name];
 		}
 		return array();
 	}
@@ -327,7 +327,7 @@ class BaseActiveRecord extends CActiveRecord
 	 */
 	protected function afterSave()
 	{
-		if ($this->_auto_update_relations) {
+		if ($this->auto_update_relations) {
 			$record_relations = $this->getMetaData()->relations;
 			foreach ($record_relations as $name => $rel) {
 				$rel_cls = get_class($rel);
@@ -416,7 +416,7 @@ class BaseActiveRecord extends CActiveRecord
 
 	protected function beforeDelete()
 	{
-		if ($this->_auto_update_relations) {
+		if ($this->auto_update_relations) {
 			$deleted_classes = array();
 			$record_relations = $this->getMetaData()->relations;
 			foreach ($record_relations as $rel_name => $rel) {
