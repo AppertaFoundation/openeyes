@@ -190,11 +190,13 @@ class Mailer extends CComponent
 	public function recipientForbidden($message)
 	{
 		if (!empty(Yii::app()->params['restrict_email_domains'])) {
-			$addresses = array_merge(
-				$message->getTo()||array(),
-				$message->getCc()||array(),
-				$message->getBcc()||array()
-			);
+			$to = $message->getTo();
+			$cc = $message->getCc();
+			$bcc = $message->getBcc();
+			$to = ($to ? $to : array());
+			$cc = ($cc ? $cc : array());
+			$bcc = ($bcc ? $bcc : array());
+			$addresses = array_merge($to, $cc, $bcc);
 			foreach ($addresses as $email => $name) {
 				$domain = preg_replace('/^.*?@/','',$email);
 				if (!in_array($domain,Yii::app()->params['restrict_email_domains'])) {
