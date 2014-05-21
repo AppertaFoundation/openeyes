@@ -329,27 +329,43 @@ class BaseActiveRecord extends CActiveRecord
 	{
 		if ($this->auto_update_relations) {
 			$record_relations = $this->getMetaData()->relations;
+			// build a list of relations we need to update and the thru relations
+			// that should be ignored (because the actual relations we're interested in will update these)
+			$thru_rels = array();
+			$many_rels = array();
 			foreach ($record_relations as $name => $rel) {
-				$rel_cls = get_class($rel);
-				if (in_array($rel_cls, array(self::HAS_MANY, self::MANY_MANY))) {
-					$new_objs = $this->$name;
-					$orig_objs = $this->getRelated($name, true);
-					if ($rel_cls == self::MANY_MANY) {
-						$this->afterSaveManyMany($name, $rel, $new_objs, $orig_objs);
-					} else {
-						if ($thru_name = $rel->through) {
-							// This is a through relationship so need to update the assignment table
-							$thru = $record_relations[$thru_name];
-							if ($thru->className == $rel->className) {
-								// same behaviour when the thru relation is the same class
-								$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
-							} else {
-								$this->afterSaveThruHasMany($name, $rel, $thru, $new_objs);
-							}
-						}
-						else {
+				if (in_array(get_class($rel), array(self::HAS_MANY, self::MANY_MANY))) {
+					$many_rels[] = $name;
+					if ($rel->through) {
+						$thru_rels[] = $rel->through;
+					}
+				}
+			}
+			foreach ($many_rels as $name) {
+				if (in_array($name, $thru_rels)) {
+					continue;
+				}
+				$rel = $record_relations[$name];
+				$new_objs = $this->$name;
+				$orig_objs = $this->getRelated($name, true);
+
+				if (get_class($rel) == self::MANY_MANY) {
+					foreach ($orig_objs as $obj) {
+					}
+					$this->afterSaveManyMany($name, $rel, $new_objs, $orig_objs);
+				} else {
+					if ($thru_name = $rel->through) {
+						// This is a through relationship so need to update the assignment table
+						$thru = $record_relations[$thru_name];
+						if ($thru->className == $rel->className) {
+							// same behaviour when the thru relation is the same class
 							$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
+						} else {
+							$this->afterSaveThruHasMany($name, $rel, $thru, $new_objs);
 						}
+					}
+					else {
+						$this->afterSaveHasMany($name, $rel, $new_objs, $orig_objs);
 					}
 				}
 			}

@@ -140,7 +140,7 @@ class BaseActiveRecordTest extends CDbTestCase
 		$this->assertEquals('test', $test->has_many[0], 'should pass through assignment when behaviour turned off');
 
 		$r = new ReflectionClass($test);
-		$p = $r->getProperty('_auto_update_relations');
+		$p = $r->getProperty('auto_update_relations');
 		$p->setAccessible(true);
 		$p->setValue($test, true);
 
@@ -148,7 +148,7 @@ class BaseActiveRecordTest extends CDbTestCase
 		$this->assertTrue(is_array($test->has_many));
 		$this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
 
-		$rdp = $r->getProperty('_relation_defaults');
+		$rdp = $r->getProperty('relation_defaults');
 		$rdp->setAccessible(true);
 		$rdp->setValue($test, array('has_many' => array('default_prop' => 'test')));
 
@@ -180,7 +180,7 @@ class BaseActiveRecordTest extends CDbTestCase
 		$this->assertEquals('test', $test->many_many[0], 'should pass through assignment when behaviour turned off');
 
 		$r = new ReflectionClass($test);
-		$p = $r->getProperty('_auto_update_relations');
+		$p = $r->getProperty('auto_update_relations');
 		$p->setAccessible(true);
 		$p->setValue($test, true);
 
@@ -243,7 +243,8 @@ class BaseActiveRecordTest extends CDbTestCase
 				->getMock();
 
 		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
-		$hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'element_id', array('through' => 'has_many'));
+		$hmt_ass_cls = new CHasManyRelation('has_many_thru_ass', 'RelationTestAssClass', 'element_id');
+		$hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'rel_id', array('through' => 'has_many_thru_ass'));
 		$mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
 
 		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
@@ -253,11 +254,12 @@ class BaseActiveRecordTest extends CDbTestCase
 						'relations' => array(
 							'has_many' => $hm_cls,
 							'has_many_thru' => $hmt_cls,
+							'has_many_thru_ass' => $hmt_ass_cls,
 							'many_many' => $mm_cls,
 						)
 				));
 
-		$test->expects($this->any())
+		$test->expects($this->at(0))
 				->method('getMetaData')
 				->will($this->returnValue($meta));
 
@@ -270,20 +272,20 @@ class BaseActiveRecordTest extends CDbTestCase
 			->with($this->equalTo('has_many'), $this->equalTo(true))
 			->will($this->returnValue(array($this->getRelationMockForDelete(3))));
 
-		$hmt = $this->getRelationMockForSave(8);
+		$hmt = $this->getRelationMock(8);
 		$test->has_many_thru = array($hmt);
 
 		$test->expects($this->at(3))
 			->method('getRelated')
 			->with($this->equalTo('has_many_thru'), $this->equalTo(true))
-			->will($this->returnValue(array($this->getRelationMockForDelete(2), $hmt)));
+			->will($this->returnValue(array($this->getRelationMock(2), $hmt)));
 
 		// many many relations will not use save/delete methods, as they use command builder,
 		// so we want a bare bones relation mock
 		$mm = $this->getRelationMock(12);
 		$test->many_many = array($mm, $this->getRelationMock(13));
 
-		$test->expects($this->at(5))
+		$test->expects($this->at(6))
 				->method('getRelated')
 				->with('many_many')
 				->will($this->returnValue(array($this->getRelationMock(7), $mm)));
@@ -324,7 +326,7 @@ class BaseActiveRecordTest extends CDbTestCase
 			->will($this->returnValue($cmd_builder));
 
 		$r = new ReflectionClass($test);
-		$p = $r->getProperty('_auto_update_relations');
+		$p = $r->getProperty('auto_update_relations');
 		$p->setAccessible(true);
 		$p->setValue($test, true);
 
@@ -365,7 +367,7 @@ class BaseActiveRecordTest extends CDbTestCase
 				->will($this->returnValue(array($this->getRelationMockForDelete(3))));
 
 		$r = new ReflectionClass($test);
-		$p = $r->getProperty('_auto_update_relations');
+		$p = $r->getProperty('auto_update_relations');
 		$p->setAccessible(true);
 		$p->setValue($test, true);
 
@@ -406,7 +408,7 @@ class BaseActiveRecordTest extends CDbTestCase
 				->will($this->returnValue(null));
 
 		$r = new ReflectionClass($test);
-		$p = $r->getProperty('_auto_update_relations');
+		$p = $r->getProperty('auto_update_relations');
 		$p->setAccessible(true);
 		$p->setValue($test, true);
 
@@ -474,7 +476,7 @@ class BaseActiveRecordTest extends CDbTestCase
 		$m = $r->getMethod('beforeDelete');
 		$m->setAccessible(true);
 
-		$p = $r->getProperty('_auto_update_relations');
+		$p = $r->getProperty('auto_update_relations');
 		$p->setAccessible(true);
 		$p->setValue($test, true);
 
@@ -546,4 +548,49 @@ class RelationTestClass extends BaseActiveRecord
 		$res->setPrimaryKey($pk);
 		return $res;
 	}
+}
+
+class RelationTestAssClass extends BaseActiveRecord
+{
+	public $rel_id;
+	public $element_id;
+
+	public function __construct()
+	{}
+
+	public function rules()
+	{
+		return array(
+				array('default_prop, test_value, element_id', 'safe')
+		);
+	}
+
+	public function getMetaData()
+	{
+		return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'id',
+												'columns' => array('id', 'element_id', 'rel_id')))
+				));
+	}
+
+
+	public function find($condition='',$params=array())
+	{
+		return ComponentStubGenerator::generate(get_class(self), $params);
+	}
+
+	public function findByPk($pk)
+	{
+		$cls = __CLASS__;
+		$res = new $cls();
+		$res->setPrimaryKey($pk);
+		return $res;
+	}
+
+	public function save()
+	{
+		return true;
+	}
+
 }
