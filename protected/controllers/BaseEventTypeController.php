@@ -1043,7 +1043,7 @@ class BaseEventTypeController extends BaseModuleController
 			if (isset($data[$f_key])) {
 				$keys = array_keys($data[$f_key]);
 
-				if (is_array($data[$f_key][$keys[0]]) && !property_exists($el_cls_name, $keys[0])) {
+				if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
 					// there is more than one element of this type
 					$pk_field = $el_cls_name::model()->tableSchema->primaryKey;
 					foreach ($data[$f_key] as $i => $attrs) {
