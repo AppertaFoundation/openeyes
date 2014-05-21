@@ -8,6 +8,10 @@ TBC
 + support for module namespacing
 + support for automatically handling HAS_MANY and MANY_MANY relations in BaseActiveRecord
 
+1.6.5
+-----
++ Add reports auth role
+
 1.6.4
 -----
 + Exclude deleted events when fetching elements
