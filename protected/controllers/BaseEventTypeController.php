@@ -1043,28 +1043,20 @@ class BaseEventTypeController extends BaseModuleController
 			if (isset($data[$f_key])) {
 				$keys = array_keys($data[$f_key]);
 
-				if (is_array($data[$f_key][$keys[0]])) {
+				if (is_array($data[$f_key][$keys[0]]) && !property_exists($el_cls_name, $keys[0])) {
 					// there is more than one element of this type
-					if (!$this->event->isNewRecord && !$data[$f_key]['_element_id']) {
-						throw new Exception("missing _element_id for multiple elements for editing an event");
-					}
-
-					// iterate through each to define the multiple instances we require
-					for ($i=0; $i<count($data[$f_key][$keys[0]]); $i++) {
-						if ($el_id = $data[$f_key]['_element_id'][$i]) {
-							$element = $el_cls_name::model()->findByPk($el_id);
+					$pk_field = $el_cls_name::model()->tableSchema->primaryKey;
+					foreach ($data[$f_key] as $i => $attrs) {
+						if (!$this->event->isNewRecord && !isset($attrs[$pk_field])) {
+							throw new Exception("missing primary key field for multiple elements for editing an event");
+						}
+						if ($pk = @$attrs[$pk_field]) {
+							$element = $el_cls_name::model()->findByPk($pk);
 						}
 						else {
 							$element = $element_type->getInstance();
 						}
-
-						$el_attrs = array();
-						foreach ($keys as $key) {
-							if ($key != '_element_id') {
-								$el_attrs[$key] = $data[$f_key][$key][$i];
-							}
-						}
-						$element->attributes = Helper::convertNHS2MySQL($el_attrs);
+						$element->attributes = Helper::convertNHS2MySQL($attrs);
 						$this->setElementComplexAttributesFromData($element, $data, $i);
 						$element->event = $this->event;
 						$elements[] = $element;
