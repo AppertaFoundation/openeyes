@@ -318,7 +318,7 @@ class Episode extends BaseActiveRecord
 			$criteria->params[':exclude_event_id'] = $exclude_event_id;
 		}
 		$criteria->order = 't.id DESC';
-		$criteria->join = 'JOIN event ON event.id = t.event_id';
+		$criteria->join = 'JOIN event ON event.id = t.event_id and event.deleted = 0';
 		$kls = $element_type->class_name;
 		return $kls::model()->findAll($criteria);
 	}
