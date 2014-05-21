@@ -45,6 +45,13 @@ $(document).ready(function () {
 		});
 	}
 
+	function getFuzzyDate(name) {
+		var fieldset = $('#medication .' + name);
+		return fieldset.find('[name=fuzzy_year]').val() + '-' +
+			fieldset.find('[name=fuzzy_month]').val() + '-' +
+			fieldset.find('[name=fuzzy_day]').val();
+	}
+
 	$('#medication')
 		.on('click', '#medication_add', function () {
 			loadForm();
@@ -84,12 +91,25 @@ $(document).ready(function () {
 			}
 		})
 
-		.on('click', '#medication_save', function (e) {
-			disableButtons('#medication .button');
+		.on('click', '[name=current]', function () {
+			if ($(this).val()) {
+				$('#medication_end').slideUp();
+			} else {
+				$('#medication_end').slideDown();
+			}
+		})
 
+		.on('click', '#medication_save', function (e) {
+			var form = $('#medication_form form');
+
+			form.find('[name=start_date]').val(getFuzzyDate('medication_start_date'));
+			if (!form.find('[name=current]:checked').val()) {
+				form.find('[name=end_date]').val(getFuzzyDate('medication_end_date'));
+			}
+
+			disableButtons('#medication .button');
 			$.ajax(baseUrl + "/medication/save", {
-				type: 'POST',
-				data: $('#medication_form form').serialize(),
+				type: 'POST', data: form.serialize(),
 				success: function (res) {
 					$('#medication_list').html(res);
 					closeForm();

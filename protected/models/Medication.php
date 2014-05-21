@@ -73,6 +73,7 @@ class Medication extends BaseActiveRecordVersioned
 			'route_id' => 'Route',
 			'option_id' => 'Option',
 			'frequency_id' => 'Frequency',
+			'stop_reason_id' => 'Reason for stopping',
 		);
 	}
 
@@ -81,5 +82,11 @@ class Medication extends BaseActiveRecordVersioned
 		if (!$this->option_id && $this->route && $this->route->options) {
 			$this->addError('option_id', "Must specify an option for route '{$this->route->name}'");
 		}
+	}
+
+	public function beforeSave()
+	{
+		if (!$this->end_date) $this->stop_reason_id = null;
+		return parent::beforeSave();
 	}
 }

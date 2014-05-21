@@ -36,7 +36,7 @@ if (isset($date)) {
 		<div class="row">
 			<div class="large-4 column">
 				<select name="fuzzy_day">
-					<option value="">Day (optional)</option>
+					<option value="0">Day (optional)</option>
 					<?php for ($i=1;$i<=31;$i++) {?>
 						<option value="<?= $i?>"<?= ($i == $sel_day) ? " selected" : ""?>><?= $i?></option>
 					<?php }?>
@@ -44,7 +44,7 @@ if (isset($date)) {
 			</div>
 			<div class="large-4 column">
 				<select name="fuzzy_month">
-					<option value="">Month (optional)</option>
+					<option value="0">Month (optional)</option>
 				<?php foreach (array('January','February','March','April','May','June','July','August','September','October','November','December') as $i => $month) {?>
 					<option value="<?= $i+1?>"<?= ($i+1 == $sel_month) ? " selected" : ""?>><?= $month?></option>
 				<?php }?>

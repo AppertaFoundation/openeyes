@@ -55,28 +55,31 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 		</div>
 	</div>
 
+	<?php $form->widget('application.widgets.TextField', array('element' => $medication, 'field' => 'dose', 'name' => 'dose')); ?>
+
 	<?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'route_id', 'data' => 'DrugRoute', 'htmlOptions' => array('name' => 'route_id', 'empty' => '- Select -'))); ?>
 
 	<div id="medication_route_option">
 		<?php if ($medication->route) $this->renderPartial('route_option', array('medication' => $medication, 'route' => $medication->route)); ?>
 	</div>
 
-	<?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'frequency_id', 'data' => 'DrugFrequency', 'htmlOptions' =>array('name' => 'frequency_id', 'empty' => '- Select -'))); ?>
+	<?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'frequency_id', 'data' => 'DrugFrequency', 'htmlOptions' => array('name' => 'frequency_id', 'empty' => '- Select -'))); ?>
 
-	<div class="field-row row">
-		<div class="<?= $form->columns('label');?>">
-			<label for="start_date">Date from:</label>
+	<input type="hidden" name="start_date">
+	<?php $this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => $medication->start_date, 'class' => 'medication_start_date', 'label' => 'Date from')); ?>
+
+	<div class="row field-row">
+		<div class="<?= $form->columns('label') ?>"><label for="current">Current:</label></div>
+		<div class="<?= $form->columns('field') ?>">
+			<label class="inline"><?= CHtml::radioButton('current', !$medication->end_date, array('value' => true)) ?> Yes</label>
+			<label class="inline"><?= CHtml::radioButton('current', $medication->end_date, array('value' => false)) ?> No</label>
 		</div>
-		<div class="<?= $form->columns(3, true);?>">
-			<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'name'=>'start_date',
-				'id'=>'start_date',
-				'options'=>array(
-					'showAnim'=>'fold',
-					'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-				),
-			))?>
-		</div>
+	</div>
+
+	<div id="medication_end" class="<?= $medication->end_date ? "" : "hidden" ?>">
+		<input type="hidden" name="end_date">
+		<?php $this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => $medication->end_date, 'class' => 'medication_end_date', 'label' => 'Date to')); ?>
+		<?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'stop_reason_id', 'data' => 'MedicationStopReason', 'htmlOptions' => array('name' => 'stop_reason_id', 'empty' => '- Select -'))); ?>
 	</div>
 
 	<div id="medication_form_errors" class="alert-box alert hide"></div>

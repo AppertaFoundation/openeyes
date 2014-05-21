@@ -28,9 +28,9 @@ $medications = $current ? $patient->medications : $patient->previous_medications
 				<th>Date</th>
 				<td>
 					<?php
-						echo Helper::convertMySQL2NHS($medication->start_date) . " - ";
+						echo Helper::formatFuzzyDate($medication->start_date) . " - ";
 						if (!$current) {
-							echo Helper::convertMySQL2NHS($medication->end_date);
+							echo Helper::formatFuzzyDate($medication->end_date);
 							if ($medication->stop_reason) echo " (reason for stopping: {$medication->stop_reason->name})";
 						}
 					?>

@@ -62,8 +62,7 @@ class MedicationController extends BaseController
 
 	public function actionDrugDefaults($drug_id)
 	{
-		$drug = $this->fetchModel('Drug', $drug_id);
-		echo json_encode(array('route_id' => $drug->default_route_id, 'frequency_id' => $drug->default_frequency_id));
+		echo json_encode($this->fetchModel('Drug', $drug_id)->getDefaults());
 	}
 
 	public function actionDrugRouteOptions($route_id)
@@ -83,6 +82,9 @@ class MedicationController extends BaseController
 		$medication = $this->fetchModel('Medication', @$_POST['medication_id'], true);
 
 		$medication->patient_id = $patient->id;
+
+		if (!@$_POST['dose']) $_POST['dose'] = null;
+		if (!@$_POST['end_date']) $_POST['end_date'] = null;
 		$medication->attributes = $_POST;
 
 		if ($medication->save()) {
