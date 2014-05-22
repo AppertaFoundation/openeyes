@@ -120,7 +120,7 @@ class Mailer extends CComponent
 	 */
 	protected function directlySendMessage($message) {
 		$mailer = $this->getMailer();
-		Yii::trace("Sending message to: " . $message->getTo(), 'oe.Mailer');
+		Yii::trace("Sending message to: " . print_r($message->getTo(), true), 'oe.Mailer');
 		$message = $this->censorMessage($message);
 		return $mailer->send($message);
 	}
@@ -136,18 +136,18 @@ class Mailer extends CComponent
 		Yii::trace("We intend to divert a message. Original $orig_rcpts", 'oe.Mailer');
 
 		// 1. Verify we have a list of addresses to divert to
-		if (!$params['Mailer_divert_addresses']) {
+		if (!$params['mailer_divert_addresses']) {
 			Yii::trace('No divert addresses found, dropping mail instead', 'oe.Mailer');
 			return;
 		}
 
-		$diverts = $params['Mailer_divert_addresses'];
+		$diverts = $params['mailer_divert_addresses'];
 
 		// 2. Prepend the intended list of recipients
 		$message->setBody("!! OpenEyes Mailer: Original $orig_rcpts\n" . $message->getBody());
 
 		// 3. Divert the mail to the divert addresses
-		Yii::trace("Diverting message, to: " . print_r($diverts, true),'oe.Mailer');
+		Yii::trace("Diverting message, to: " . print_r($diverts, true), 'oe.Mailer');
 		$message->setTo($diverts);
 		return $this->directlySendMessage($message);
 	}
@@ -158,16 +158,13 @@ class Mailer extends CComponent
 	 */
 	public function sendMessage($message)
 	{
-		switch ($mailerMode = Yii::app()->params['Mailer_mode']) {
+		switch ($mailerMode = Yii::app()->params['mailer_mode']) {
 			case false:
 			case 'disable':
 			case 'disabled':
-				Yii::trace(
-					'Dropping message (disabled): ' . print_r($mailerMode, true)
-					. ', to: ' . print_r($message->getTo(), true),
-					'oe.Mailer'
-				);
-				return;
+				Yii::trace('Dropping message (disabled): ' . print_r($mailerMode, true)
+					. ', to: ' . print_r($message->getTo(), true), 'oe.Mailer');
+				return 1;
 			case 'divert':
 				Yii::trace("Diverting message", 'oe.Mailer');
 				return $this->divertMessage($message);
