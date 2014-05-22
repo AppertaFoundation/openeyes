@@ -21,6 +21,7 @@ $(document).ready(function () {
 			{ patient_id: OE_patient_id, medication_id: medication_id},
 			function (form) {
 				$("#medication_form").html(form).slideDown('fast');
+				$('body').animate({ scrollTop: $('#medication_form').offset().top - 90 });
 				enableButtons('#medication .button');
 				$('#medication_add').attr('disabled',true).addClass('disabled');
 			}
@@ -68,6 +69,7 @@ $(document).ready(function () {
 			$('#medication_stop [name=medication_id').val($(this).data('id'));
 			$('#medication_stop .drug_name').text($(this).data('drug-name'));
 			$('#medication_stop').slideDown('fast');
+			$('body').animate({ scrollTop: $('#medication_stop').offset().top - 90 });
 			$('#medication_add').attr('disabled',true).addClass('disabled');
 			return false;
 		})
