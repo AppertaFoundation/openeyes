@@ -140,7 +140,7 @@ class Mailer extends CComponent
 			$message = $this->censorMessage($message);
 			return $mailer->send($message);
 		} else {
-			Yii::trace("No mailer configured, message sending suppressed", 'oe.Mailer');
+			Yii::log("No mailer configured, message sending suppressed");
 			return true;
 		}
 	}
@@ -152,9 +152,9 @@ class Mailer extends CComponent
 	 */
 	protected function divertMessage($message)
 	{
-		$orig_rcpts = $message->getHeaders()->get('To');
-		$message->setBody("!! OpenEyes Mailer: Original $orig_rcpts\n" . $message->getBody());
-		Yii::log("Diverting message from: $orig_rcpts, to: " . print_r($this->divert, true));
+		$orig_rcpts = implode(', ',array_keys($message->getTo()));
+		$message->setBody("!! OpenEyes Mailer: Original recipients: $orig_rcpts\n\n" . $message->getBody());
+		Yii::log("Diverting message from: $orig_rcpts, to: " . implode(', ', $this->divert));
 		$message->setTo($this->divert);
 		return $this->directlySendMessage($message);
 	}
