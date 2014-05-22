@@ -134,23 +134,26 @@ class m140516_145619_social_history extends CDbMigration
 
 		$this->createTable('socialhistory', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'occupation_id' => 'int(10) unsigned NOT NULL',
 
-				'driving_status_id' => 'int(10) unsigned NOT NULL',
+				'patient_id' => 'int(10) unsigned NOT NULL',
 
-				'smoking_status_id' => 'int(10) unsigned NOT NULL',
+				'occupation_id' => 'int(10) unsigned',
 
-				'accommodation_id' => 'int(10) unsigned NOT NULL',
+				'driving_status_id' => 'int(10) unsigned',
+
+				'smoking_status_id' => 'int(10) unsigned',
+
+				'accommodation_id' => 'int(10) unsigned',
 
 				'comments' => 'text COLLATE utf8_bin DEFAULT \'\'',
 
 				'type_of_job' => 'varchar(255) COLLATE utf8_bin DEFAULT \'\'',
 
-				'carer_id' => 'int(10) unsigned NOT NULL',
+				'carer_id' => 'int(10) unsigned',
 
 				'alcohol_intake' => 'varchar(255) DEFAULT \'\'',
 
-				'substance_misuse_id' => 'int(10) unsigned NOT NULL',
+				'substance_misuse_id' => 'int(10) unsigned',
 
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
@@ -159,6 +162,7 @@ class m140516_145619_social_history extends CDbMigration
 				'PRIMARY KEY (`id`)',
 				'KEY `socialhistory_lmui_fk` (`last_modified_user_id`)',
 				'KEY `socialhistory_cui_fk` (`created_user_id`)',
+				'KEY `socialhistory_patientid_fk` (`patient_id`)',
 				'KEY `socialhistory_occupation_fk` (`occupation_id`)',
 				'KEY `socialhistory_driving_status_fk` (`driving_status_id`)',
 				'KEY `socialhistory_smoking_status_fk` (`smoking_status_id`)',
@@ -171,6 +175,7 @@ class m140516_145619_social_history extends CDbMigration
 				'CONSTRAINT `socialhistory_driving_status_fk` FOREIGN KEY (`driving_status_id`) REFERENCES `socialhistory_driving_status` (`id`)',
 				'CONSTRAINT `socialhistory_smoking_status_fk` FOREIGN KEY (`smoking_status_id`) REFERENCES `socialhistory_smoking_status` (`id`)',
 				'CONSTRAINT `socialhistory_accommodation_fk` FOREIGN KEY (`accommodation_id`) REFERENCES `socialhistory_accommodation` (`id`)',
+				'CONSTRAINT `socialhistory_patient_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`)',
 				'CONSTRAINT `socialhistory_carer_fk` FOREIGN KEY (`carer_id`) REFERENCES `socialhistory_carer` (`id`)',
 				'CONSTRAINT `socialhistory_substance_misuse_fk` FOREIGN KEY (`substance_misuse_id`) REFERENCES `socialhistory_substance_misuse` (`id`)',
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');

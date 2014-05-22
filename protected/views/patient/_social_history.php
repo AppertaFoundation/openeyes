@@ -31,29 +31,7 @@
 	</header>
 
 	<div class="js-toggle-body">
-		<table class="plain patient-data">
-			<thead>
-			<tr>
-				<th>Date</th>
-				<th>Operation</th>
-				<?php if ($this->checkAccess('OprnEditSocialHistory')) { ?><th>Actions</th><?php } ?>
-			</tr>
-			</thead>
-			<tbody>
-			<?php foreach ($this->patient->previousOperations as $operation) {?>
-				<tr>
-					<td><?php echo $operation->dateText?></td>
-					<td><?php if ($operation->side) { echo $operation->side->adjective.' ';}?><?php echo $operation->operation?></td>
-					<?php if ($this->checkAccess('OprnEditSocialHistory')): ?>
-						<td>
-							<a href="#" class="editOperation" rel="<?php echo $operation->id?>">Edit</a>&nbsp;&nbsp;
-							<a href="#" class="removeOperation" rel="<?php echo $operation->id?>">Remove</a>
-						</td>
-					<?php endif ?>
-				</tr>
-			<?php }?>
-			</tbody>
-		</table>
+
 
 		<?php if ($this->checkAccess('OprnEditSocialHistory')) {?>
 			<div class="box-actions">
@@ -142,7 +120,7 @@
 							<label for="carer_id">Carer:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('occupation_id','',CHtml::listData(SocialHistoryCarer::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::dropDownList('occupation_id','',CHtml::listData(SocialHistoryCarer::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -', 'options'=>array(2=>array('selected'=>'selected'))))?>
 						</div>
 					</div>
 
@@ -163,10 +141,7 @@
 							<?php echo CHtml::dropDownList('substance_misuse_id','',CHtml::listData(SocialHistorySubstanceMisuse::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
-
-
 					<div class="previous_operations_form_errors alert-box alert hide"></div>
-
 					<div class="buttons">
 						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
 						<button type="submit" class="secondary small btn_save_social_history">
