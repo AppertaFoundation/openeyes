@@ -109,6 +109,14 @@ $(document).ready(function () {
 			}
 		})
 
+		.on('click', '#medication_from_today', function () {
+			var d = new Date();
+
+			$('#medication_form .medication_start_date [name=fuzzy_day]').val(d.getDate());
+			$('#medication_form .medication_start_date [name=fuzzy_month]').val(d.getMonth() + 1);
+			$('#medication_form .medication_start_date [name=fuzzy_year]').val(d.getFullYear());
+		})
+
 		.on('click', '[name=current]', function () {
 			if ($(this).val()) {
 				$('#medication_end').slideUp();

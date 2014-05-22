@@ -73,6 +73,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 		<div class="<?= $form->columns('field') ?>">
 			<label class="inline"><?= CHtml::radioButton('current', !$medication->end_date, array('value' => true)) ?> Yes</label>
 			<label class="inline"><?= CHtml::radioButton('current', $medication->end_date, array('value' => false)) ?> No</label>
+			<button id="medication_from_today" type="button" class="tiny right">From today</button>
 		</div>
 	</div>
 

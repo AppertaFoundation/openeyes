@@ -27,7 +27,7 @@ Yii::app()->assetManager->registerScriptFile('js/medication.js');
 	</header>
 
 	<div class="js-toggle-body">
-		<div id="medication_list"><?php $this->renderPartial("/medication/lists", array("patient" => $this->patient)); ?></bdiv>
+		<div id="medication_list"><?php $this->renderPartial("/medication/lists", array("patient" => $this->patient)); ?></div>
 		<?php if ($this->checkAccess('OprnEditMedication')): ?>
 			<div class="box-actions">
 				<button type="button" id="medication_add" class="secondary small">Add Medication</button>
