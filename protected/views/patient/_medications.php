@@ -20,7 +20,6 @@
 Yii::app()->assetManager->registerScriptFile('js/medication.js');
 ?>
 <section id="medication" class="box patient-info associated-data js-toggle-container">
-
 	<header class="box-header">
 		<h3 class="box-title"><span class="icon-patient-clinician-hd_flag"></span>Medication</h3>
 		<img src="<?= Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" class="loader hidden"/>
@@ -28,11 +27,7 @@ Yii::app()->assetManager->registerScriptFile('js/medication.js');
 	</header>
 
 	<div class="js-toggle-body">
-		<div id="medication_list">
-			<?php $this->renderPartial("/medication/list", array("patient" => $this->patient, "current" => true)); ?>
-			<?php $this->renderPartial("/medication/list", array("patient" => $this->patient, "current" => false)); ?>
-		</div>
-
+		<div id="medication_list"><?php $this->renderPartial("/medication/lists", array("patient" => $this->patient)); ?></bdiv>
 		<?php if ($this->checkAccess('OprnEditMedication')): ?>
 			<div class="box-actions">
 				<button type="button" id="medication_add" class="secondary small">Add Medication</button>
@@ -42,3 +37,16 @@ Yii::app()->assetManager->registerScriptFile('js/medication.js');
 		<?php endif ?>
 	</div>
 </section>
+<div id="medication_delete_confirm" title="Confirm delete medication" class="hidden">
+	<?php $this->beginWidget('CActiveForm'); ?>
+	<input type="hidden" name="patient_id" value="<?= $this->patient->id ?>">
+	<input type="hidden" name="medication_id">
+	<div class="alert-box alert with-icon"><strong>WARNING: This will remove the medication from the patient record.</strong></div>
+	<p><strong>Are you sure you want to proceed?</strong></p>
+	<div class="buttons">
+		<img class="loader hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading...">
+		<button type="button" class="medication_confirm warning small">Remove medication</button>
+		<button type="button" class="medication_cancel secondary small">Cancel</button>
+	</div>
+	<?php $this->endWidget(); ?>
+</div>

@@ -64,6 +64,12 @@ $(document).ready(function () {
 			return false;
 		})
 
+		.on('click', '.medication_delete', function () {
+			$('#medication_delete_confirm [name=medication_id]').val($(this).data('id'));
+			$('#medication_delete_confirm').dialog({resizable: false, modal: true, width: 560});
+			return false;
+		})
+
 		.on('click', '.medication_stop', function () {
 			closeForms();
 			$('#medication_stop [name=medication_id').val($(this).data('id'));
@@ -158,5 +164,22 @@ $(document).ready(function () {
 					enableButtons('#medication .button');
 				},
 			});
-		});
+		})
+
+	$('#medication_delete_confirm .medication_confirm').click(function () {
+		disableButtons('#medication_delete_confirm .button');
+		$.post(
+			baseUrl + "/medication/delete",
+			$('#medication_delete_confirm form').serialize(),
+			function (res) {
+				$('#medication_list').html(res);
+				$('#medication_delete_confirm').dialog('close');
+				enableButtons('#medication_delete_confirm .button');
+			}
+		);
+	});
+
+	$('#medication_delete_confirm .medication_cancel').click(function () {
+		$('#medication_delete_confirm').dialog('close');
+	});
 });

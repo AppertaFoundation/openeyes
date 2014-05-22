@@ -88,8 +88,7 @@ class MedicationController extends BaseController
 		$medication->attributes = $_POST;
 
 		if ($medication->save()) {
-			$this->renderPartial('list', array("patient" => $patient, "current" => true));
-			$this->renderPartial('list', array("patient" => $patient, "current" => false));
+			$this->renderPartial('lists', array("patient" => $patient));
 		} else {
 			header('HTTP/1.1 422');
 			echo json_encode($medication->errors);
@@ -107,7 +106,18 @@ class MedicationController extends BaseController
 		$medication->stop_reason_id = @$_POST['stop_reason_id'] ?: null;
 		$medication->save();
 
-		$this->renderPartial('list', array("patient" => $patient, "current" => true));
-		$this->renderPartial('list', array("patient" => $patient, "current" => false));
+		$this->renderPartial('lists', array("patient" => $patient));
+	}
+
+	public function actionDelete()
+	{
+		$patient = $this->fetchModel('Patient', @$_POST['patient_id']);
+		$medication = $this->fetchModel('Medication', @$_POST['medication_id']);
+
+		if ($patient->id != $medication->patient_id) throw new Exception("Patient ID mismatch");
+
+		$medication->delete();
+
+		$this->renderPartial('lists', array("patient" => $patient));
 	}
 }

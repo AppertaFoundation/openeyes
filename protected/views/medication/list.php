@@ -40,8 +40,9 @@ $medications = $current ? $patient->medications : $patient->previous_medications
 				<tr>
 					<th>Actions</th>
 					<td>
-						<a href="#" class="medication_edit" data-id="<?= $medication->id ?>">Edit</a>
-						<?php if ($current) { ?>| <a href="#" class="medication_stop" data-id="<?= $medication->id ?>" data-drug-name="<?= $medication->drug->name ?>">Stop</a><?php } ?>
+						<a href="#" class="medication_edit" data-id="<?= $medication->id ?>">Edit</a> |
+						<?php if ($current) { ?><a href="#" class="medication_stop" data-id="<?= $medication->id ?>" data-drug-name="<?= $medication->drug->name ?>">Stop</a> |<?php } ?>
+						<a href="#" class="medication_delete" data-id="<?= $medication->id ?>">Delete</a>
 					</td>
 				</tr>
 			<?php endif ?>
