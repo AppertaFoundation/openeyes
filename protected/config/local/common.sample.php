@@ -27,6 +27,12 @@ $config = array(
 		'session' => array(
 			'timeout' => 86400
 		),
+		'mailer' => array(
+			// Setting the mailer mode to null will suppress email
+			//'mode' => null
+			// Mail can be diverted by setting the divert array
+			//'divert' => array('foo@example.org', 'bar@example.org')
+		),
 		/*
 		'cacheBuster' => array(
 			'time' => '2013062101',
@@ -108,15 +114,6 @@ $config = array(
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP'),
-		'mailer_mode' => 'normal',
-		// There are ways to configure the mailer so that it either won't send email or will divert it
-		// To divert:
-		//'mailer_mode' => 'divert',
-		//'mailer_divert_addresses' => array(
-		//	'foo@example.org',
-		//),
-		// To disable:
-		//'mailer_mode' => 'disabled',
 	),
 );
 

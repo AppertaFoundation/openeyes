@@ -19,26 +19,38 @@
 
 class Mailer extends CComponent
 {
-	// can be mail, smtp, or sendmail
-	public $mode = '';
+	/**
+	 * Can be mail, smtp, sendmail. If empty then mail is disabled and messages are dropped silently
+	 * @var string
+	 */
+	public $mode;
+
+	/**
+	 * Addresses to which we should divert emails to. If empty then no diversion.
+	 * @var array
+	 */
+	public $divert = array();
 
 	public $sendmail_command = '/usr/sbin/sendmail -bs';
 
-	// configuration for smtp
+	/**
+	 * Configuration for SMTP
+	 */
 	public $host;
 	public $port = 25;
 
-	// ssl or tls
+	/**
+	 * SSL or TLS
+	 */
 	public $security;
 	public $username;
 	public $password;
 
 	protected $_transport;
-
 	protected $_mailer;
 
 	/**
-	 * initialise the component by pulling in the appropriate SwiftMailer classes
+	 * Initialise the component by pulling in the appropriate SwiftMailer classes
 	 */
 	public function init()
 	{
@@ -55,7 +67,7 @@ class Mailer extends CComponent
 	 */
 	protected function getTransport()
 	{
-		if (!$this->_transport) {
+		if (!$this->_transport && $this->mode) {
 			if ($this->mode == 'sendmail') {
 				$this->_transport = Swift_SendmailTransport::newInstance($this->sendmail_command);
 			} elseif ($this->mode == 'smtp') {
@@ -72,7 +84,7 @@ class Mailer extends CComponent
 			} elseif ($this->mode == 'mail') {
 				$this->_transport = Swift_MailTransport::newInstance();
 			} else {
-				throw new Exception('unrecognised email mode ' . $this->mode);
+				throw new CException('Unrecognised email mode ' . $this->mode);
 			}
 		}
 
@@ -81,10 +93,11 @@ class Mailer extends CComponent
 
 	/**
 	 * Get the SwiftMailer object with the configured transport
+	 * @return Swift_Mailer
 	 */
 	protected function getMailer()
 	{
-		if (!$this->_mailer) {
+		if (!$this->_mailer && $this->mode) {
 			$this->_mailer = Swift_Mailer::newInstance($this->getTransport());
 		}
 		return $this->_mailer;
@@ -92,6 +105,7 @@ class Mailer extends CComponent
 
 	/**
 	 * Instantiate an appropriate SwiftMailer email message object
+	 * @return Swift_Message
 	 */
 	public function newMessage()
 	{
@@ -117,60 +131,45 @@ class Mailer extends CComponent
 	/**
 	 * Sends a message to the recipient, censors if they are forbidden
 	 * @param Swift_Message $message
+	 * @return bool
 	 */
 	protected function directlySendMessage($message) {
 		$mailer = $this->getMailer();
-		Yii::trace("Sending message to: " . print_r($message->getTo(), true), 'oe.Mailer');
-		$message = $this->censorMessage($message);
-		return $mailer->send($message);
+		if($mailer) {
+			Yii::trace("Sending message to: " . print_r($message->getTo(), true), 'oe.Mailer');
+			$message = $this->censorMessage($message);
+			return $mailer->send($message);
+		} else {
+			Yii::trace("No mailer configured, message sending suppressed", 'oe.Mailer');
+			return true;
+		}
 	}
 
 	/**
 	 * Diverts an email from its original destination. Useful for testing things in nearlive
 	 * @param Swift_Message $message
+	 * @return bool
 	 */
 	protected function divertMessage($message)
 	{
-		$params = Yii::app()->params;
 		$orig_rcpts = $message->getHeaders()->get('To');
-		Yii::trace("We intend to divert a message. Original $orig_rcpts", 'oe.Mailer');
-
-		// 1. Verify we have a list of addresses to divert to
-		if (!$params['mailer_divert_addresses']) {
-			Yii::trace('No divert addresses found, dropping mail instead', 'oe.Mailer');
-			return;
-		}
-
-		$diverts = $params['mailer_divert_addresses'];
-
-		// 2. Prepend the intended list of recipients
 		$message->setBody("!! OpenEyes Mailer: Original $orig_rcpts\n" . $message->getBody());
-
-		// 3. Divert the mail to the divert addresses
-		Yii::trace("Diverting message, to: " . print_r($diverts, true), 'oe.Mailer');
-		$message->setTo($diverts);
+		Yii::log("Diverting message from: $orig_rcpts, to: " . print_r($this->divert, true));
+		$message->setTo($this->divert);
 		return $this->directlySendMessage($message);
 	}
 
 	/**
 	 * Send an email
 	 * @param Swift_Message $message
+	 * @return bool
 	 */
 	public function sendMessage($message)
 	{
-		switch ($mailerMode = Yii::app()->params['mailer_mode']) {
-			case false:
-			case 'disable':
-			case 'disabled':
-				Yii::trace('Dropping message (disabled): ' . print_r($mailerMode, true)
-					. ', to: ' . print_r($message->getTo(), true), 'oe.Mailer');
-				return true;
-			case 'divert':
-				Yii::trace("Diverting message", 'oe.Mailer');
-				return $this->divertMessage($message);
-			default:
-				Yii::trace("Sending message, to: " . print_r($message->getTo(), true), 'oe.Mailer');
-				return $this->directlySendMessage($message);
+		if(!empty($this->divert)) {
+			return $this->divertMessage($message);
+		} else {
+			return $this->directlySendMessage($message);
 		}
 	}
 
