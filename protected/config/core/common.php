@@ -238,5 +238,6 @@ return array(
 		'event_lock_days' => 0,
 		'event_lock_disable' => false,
 		'mailer_mode' => 'normal',
+		'mailer_divert_addresses' => array(),
 	),
 );

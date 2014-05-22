@@ -164,7 +164,7 @@ class Mailer extends CComponent
 			case 'disabled':
 				Yii::trace('Dropping message (disabled): ' . print_r($mailerMode, true)
 					. ', to: ' . print_r($message->getTo(), true), 'oe.Mailer');
-				return 1;
+				return true;
 			case 'divert':
 				Yii::trace("Diverting message", 'oe.Mailer');
 				return $this->divertMessage($message);
