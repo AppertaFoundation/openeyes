@@ -78,15 +78,19 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 
 	<div id="medication_end" class="<?= $medication->end_date ? "" : "hidden" ?>">
 		<input type="hidden" name="end_date">
-		<?php $this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => $medication->end_date, 'class' => 'medication_end_date', 'label' => 'Date to')); ?>
-		<?php $form->widget('application.widgets.DropDownList', array('element' => $medication, 'field' => 'stop_reason_id', 'data' => 'MedicationStopReason', 'htmlOptions' => array('name' => 'stop_reason_id', 'empty' => '- Select -'))); ?>
+		<?php
+
+		$this->renderPartial('/patient/_fuzzy_date', array('form' => $form, 'date' => $medication->end_date, 'class' => 'medication_end_date', 'label' => 'Date to'));
+		$this->renderPartial('stop_reason', array('form' => $form, 'medication' => $medication));
+
+		?>
 	</div>
 
 	<div id="medication_form_errors" class="alert-box alert hide"></div>
 
 	<div class="buttons">
-		<button type="button" id="medication_save" class="secondary small">Save</button>
-		<button type="button" id="medication_cancel" class="warning small">Cancel</button>
+		<button type="button" class="medication_save secondary small">Save</button>
+		<button type="button" class="medication_cancel warning small">Cancel</button>
 	</div>
 </fieldset>
 <?php

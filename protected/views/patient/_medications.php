@@ -37,7 +37,8 @@ Yii::app()->assetManager->registerScriptFile('js/medication.js');
 			<div class="box-actions">
 				<button type="button" id="medication_add" class="secondary small">Add Medication</button>
 			</div>
-			<div id="medication_form" class="hidden"></div>
+			<div id="medication_form" class="medication_form hidden"></div>
+			<div id="medication_stop" class="medication_form hidden"><?php $this->renderPartial("/medication/stop") ?></div>
 		<?php endif ?>
 	</div>
 </section>

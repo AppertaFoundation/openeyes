@@ -27,8 +27,8 @@ $(document).ready(function () {
 		);
 	}
 
-	function closeForm() {
-		$('#medication_form').html('').slideUp('fast');
+	function closeForms() {
+		$('.medication_form').slideUp('fast');
 		$('#medication_add').attr('disabled',false).removeClass('disabled');
 	}
 
@@ -45,8 +45,8 @@ $(document).ready(function () {
 		});
 	}
 
-	function getFuzzyDate(name) {
-		var fieldset = $('#medication .' + name);
+	function getFuzzyDate(selector) {
+		var fieldset = $(selector);
 		return fieldset.find('[name=fuzzy_year]').val() + '-' +
 			fieldset.find('[name=fuzzy_month]').val() + '-' +
 			fieldset.find('[name=fuzzy_day]').val();
@@ -58,11 +58,21 @@ $(document).ready(function () {
 		})
 
 		.on('click', '.medication_edit', function () {
+			closeForms();
 			loadForm($(this).data('id'));
 			return false;
 		})
 
-		.on('click', '#medication_cancel', closeForm)
+		.on('click', '.medication_stop', function () {
+			closeForms();
+			$('#medication_stop [name=medication_id').val($(this).data('id'));
+			$('#medication_stop .drug_name').text($(this).data('drug-name'));
+			$('#medication_stop').slideDown('fast');
+			$('#medication_add').attr('disabled',true).addClass('disabled');
+			return false;
+		})
+
+		.on('click', '.medication_cancel', closeForms)
 
 		.on('change', '[name=drug_select]', function () {
 			if ($(this).val()) {
@@ -99,12 +109,12 @@ $(document).ready(function () {
 			}
 		})
 
-		.on('click', '#medication_save', function (e) {
+		.on('click', '#medication_form .medication_save', function (e) {
 			var form = $('#medication_form form');
 
-			form.find('[name=start_date]').val(getFuzzyDate('medication_start_date'));
+			form.find('[name=start_date]').val(getFuzzyDate('#medication_form .medication_start_date'));
 			if (!form.find('[name=current]:checked').val()) {
-				form.find('[name=end_date]').val(getFuzzyDate('medication_end_date'));
+				form.find('[name=end_date]').val(getFuzzyDate('#medication_form .medication_end_date'));
 			}
 
 			disableButtons('#medication .button');
@@ -112,7 +122,7 @@ $(document).ready(function () {
 				type: 'POST', data: form.serialize(),
 				success: function (res) {
 					$('#medication_list').html(res);
-					closeForm();
+					closeForms();
 				},
 				error: function (xhr) {
 					if (xhr.status != 422) return;
@@ -127,6 +137,22 @@ $(document).ready(function () {
 					error_div.show();
 				},
 				complete: function () {
+					enableButtons('#medication .button');
+				},
+			});
+		})
+
+		.on('click', '#medication_stop .medication_save', function () {
+			var form = $('#medication_stop form');
+
+			form.find('[name=end_date]').val(getFuzzyDate('#medication_stop .medication_end_date'));
+
+			disableButtons('#medication .button');
+			$.ajax(baseUrl + "/medication/stop", {
+				type: "POST", data: form.serialize(),
+				success: function (res) {
+					$('#medication_list').html(res);
+					closeForms();
 					enableButtons('#medication .button');
 				},
 			});
