@@ -1,5 +1,4 @@
 <?php
-
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -10,15 +9,21 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-namespace ModuleAPITestNS;
 
-class TestModule extends \BaseEventTypeModule
-{}
+class MeasurementTypeTest extends CDbTestCase
+{
+	public $fixtures = array(
+		'measurement_type' => 'MeasurementType',
+	);
 
-namespace ModuleAPITestNS\components;
-
-class TestModule_API extends \ModuleAPI
-{}
+	public function testfindByClassName()
+	{
+		$this->assertEquals(
+			$this->measurement_type('height'),
+			MeasurementType::model()->findByClassName('MeasurementTest_HeightMeasurement')
+		);
+	}
+}

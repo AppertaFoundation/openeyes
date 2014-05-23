@@ -25,22 +25,28 @@ class Examination extends OpenEyesPage
         'ETDRSreadingLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_0_value']"),
         'snellenRight' => array('xpath' => "//select[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_1_value']"),
         'readingRight' => array('xpath' => "//select[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_1_method_id']"),
+
         'addLeftVisualAcuityButton' => array('xpath' => "//*[@class='element-eye left-eye column right side']//*[@class='button small secondary addReading']"),
         'addRightViusalAcuityButton' => array('xpath' => "//*[@class='element-eye right-eye column left side']//*[@class='button small secondary addReading']"),
-        'secondLeftVisualAcuityReading' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_2_value']"),
-        'secondLeftVisualAcuityReadingMethod' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_2_method_id']"),
-        'secondRightVisualAcuityReading' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_3_value']"),
-        'secondRightVisualAcuityReadingMethod' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_3_method_id']"),
+
+        'secondLeftVisualAcuityReading' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_1_value']"),
+        'secondLeftVisualAcuityReadingMethod' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_readings_1_method_id']"),
+
+        'secondRightVisualAcuityReading' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_3_value']"),
+        'secondRightVisualAcuityReadingMethod' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_3_method_id']"),
+
         'removeSecondLeftVisualAcuity' => array('xpath' => "//*[@data-key='3']//*[contains(text(),'Remove')]"),
         'removeSecondRightVisualAcuity' => array('xpath' => "//*[@data-key='1']//*[contains(text(),'Remove')]"),
 
         'expandDRGrading' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'DR Grading')]"),
 
         'openIntraocularPressure' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Intraocular Pressure')]"),
-        'intraocularRight' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_right_reading_id']"),
-        'instrumentRight' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_right_instrument_id']"),
-        'intraocularLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_left_reading_id']"),
-        'instrumentLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_left_instrument_id']"),
+        'addIntraocularRight' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_add_left']"),
+        'intraocularRight' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_left_values_0_reading_id']"),
+        'instrumentRight' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_left_values_0_instrument_id']"),
+        'addIntraocularLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_add_right']"),
+        'intraocularLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_right_values_0_reading_id']"),
+        'instrumentLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_right_values_0_instrument_id']"),
 
         'openDilation' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Dilation')]"),
         'dilationRight' => array('xpath' => "//select[@id='dilation_drug_right']"),
@@ -74,15 +80,15 @@ class Examination extends OpenEyesPage
         'sphereRightAxis' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_right_axis']"),
         'sphereRightType' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_right_type_id']"),
 
-        'leftAdnexalComorbidity' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_AdnexalComorbidity_left_description']"),
-        'rightAdnexalComorbidity' => array('xpath' => "//*[@id='dropDownTextSelection_Element_OphCiExamination_AdnexalComorbidity_right_description']"),
+        'leftAdnexalComorbidity' => array('xpath' => "//*[@id='dropDownTextSelection_OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_left_description']"),
+        'rightAdnexalComorbidity' => array('xpath' => "//*[@id='dropDownTextSelection_OEModule_OphCiExamination_models_Element_OphCiExamination_AdnexalComorbidity_right_description']"),
 
         'leftAbnormality' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_PupillaryAbnormalities_left_abnormality_id']"),
         'rightAbnormality' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_PupillaryAbnormalities_right_abnormality_id']"),
 
-        'diagnosesLeftEye' => array('xpath' => "//*[@id='OphCiExamination_Diagnosis_eye_id_1']"),
-        'diagnosesRightEye' => array('xpath' => "//*[@id='OphCiExamination_Diagnosis_eye_id_2']"),
-        'diagnosesBothEyes' => array('xpath' => "//*[@id='OphCiExamination_Diagnosis_eye_id_3']"),
+        'diagnosesLeftEye' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_Diagnosis_eye_id_1']"),
+        'diagnosesRightEye' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_Diagnosis_eye_id_2']"),
+        'diagnosesBothEyes' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_Diagnosis_eye_id_3']"),
         'diagnosesCommonDiagnosis' => array('xpath' => "//*[@id='DiagnosisSelection_disorder_id']"),
         'principalDiagnosis' => array('xpath' => "//*[@id='OphCiExamination_diagnoses']//*[@name='principal_diagnosis']"),
 
@@ -194,8 +200,8 @@ class Examination extends OpenEyesPage
         'saveExamination' => array('xpath' => "//*[@id='et_save']"),
         'examSavedOk' => array('xpath' => "//*[@id='flash-success']"),
 
-        'existingRightAxisCheck' => array('xpath' => "//*[@class='element OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction']//*[@class='element-eye right-eye column']//*[contains(text(),'145')]"),
-        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction']//*[@class='element-eye left-eye column']//*[contains(text(),'38')]"),
+        'existingRightAxisCheck' => array('xpath' => "//*[@class='element-eye right-eye column']//*[contains(text(),'145')]"),
+        'existingLeftAxisCheck' => array('xpath' => "//*[@class='element-eye left-eye column']//*[contains(text(),'38')]"),
         'addAllElements' => array('xpath' => "//*[@class='add-all']"),
         'removeAllElements' => array('xpath' => "//*[@class='remove-all']"),
         'removeAllValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Event: Cannot create an event without at least one element')]"),
@@ -281,6 +287,7 @@ class Examination extends OpenEyesPage
     public function selectVisualAcuity ($unit)
     {
         $this->waitForElementDisplayBlock('#visualacuity_unit_change');
+
         $this->getElement('visualAcuityUnitChange')->selectOption($unit);
         $this->waitForElementDisplayBlock('#visualacuity_unit_change');
 //        $this->getSession()->wait(5000);
@@ -331,13 +338,17 @@ class Examination extends OpenEyesPage
 
     public function leftIntracocular ($pressure, $instrument)
     {
-//        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(10000);
+        $this->getElement('addIntraocularLeft')->click();
+        $this->getSession()->wait(3000);
         $this->getElement('intraocularLeft')->selectOption($pressure);
         $this->getElement('instrumentLeft')->selectOption($instrument);
     }
 
     public function rightIntracocular ($pressure, $instrument)
     {
+        $this->getElement('addIntraocularRight')->click();
+        $this->getSession()->wait(3000);
         $this->getElement('intraocularRight')->selectOption($pressure);
         $this->getElement('instrumentRight')->selectOption($instrument);
 
@@ -1189,6 +1200,7 @@ class Examination extends OpenEyesPage
     public function addLeftVisualAcuity ($reading, $method)
     {
         $this->getElement('addLeftVisualAcuityButton')->click();
+        $this->getSession()->wait(2000);
         $this->getElement('secondLeftVisualAcuityReading')->selectOption($reading);
         $this->getElement('secondLeftVisualAcuityReadingMethod')->selectOption($method);
     }
@@ -1196,6 +1208,7 @@ class Examination extends OpenEyesPage
     public function addRightVisualAcuity ($reading, $method)
     {
         $this->getElement('addRightViusalAcuityButton')->click();
+        $this->getSession()->wait(2000);
         $this->getElement('secondRightVisualAcuityReading')->selectOption($reading);
         $this->getElement('secondRightVisualAcuityReadingMethod')->selectOption($method);
     }

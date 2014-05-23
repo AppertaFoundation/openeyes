@@ -38,7 +38,7 @@ abstract class SelectionWidget extends BaseFieldWidget
 			if ($lookup->asa('LookupTable')) {
 				$lookup->activeOrPk($this->element->{$this->field});
 			}
-			$this->data = CHtml::listData($lookup->findAll(), $this->lookup_id_field, $this->lookup_name_field);
+			$this->data = CHtml::listData($lookup->cache(60)->findAll(), $this->lookup_id_field, $this->lookup_name_field);
 		}
 	}
 }

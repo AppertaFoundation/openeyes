@@ -13,8 +13,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'ModuleAPITestNS.php';
-
 class ModuleAPITest extends CDbTestCase
 {
 	protected $orig_modules;
@@ -30,6 +28,8 @@ class ModuleAPITest extends CDbTestCase
 		parent::setUp();
 		$this->orig_modules = Yii::app()->getModules();
 		Yii::app()->setModules(array('TestModule' => array('class' => 'ModuleAPITestNS\TestModule')));
+		Yii::setPathOfAlias('ModuleAPITestNS', __DIR__ . '/ModuleAPITest');
+		Yii::setPathOfAlias('application.modules.TestModule.components', __DIR__ . '/ModuleAPITest/components');
 		// create temporary event type for testing
 		$event_type = new EventType();
 		$event_type->name = 'Test Module';
@@ -42,6 +42,8 @@ class ModuleAPITest extends CDbTestCase
 	{
 		parent::tearDown();
 		Yii::app()->setModules($this->orig_modules);
+		Yii::setPathOfAlias('ModuleAPITestNS', null);
+		Yii::setPathOfAlias('application.modules.TestModule.components', null);
 		if ($this->test_event_type) {
 			$this->test_event_type->noVersion()->delete();
 		}

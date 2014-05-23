@@ -122,7 +122,7 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 			}
 		}
 
-		foreach ($_table->foreignKeys as $column => $properties) {
+		/*foreach ($_table->foreignKeys as $column => $properties) {
 			if (!isset($_table_version->foreignKeys[$column])) {
 				if ($this->table_soft_deleted_or_not_excluded($properties[0])) {
 					echo "$_table_version->name doesn't have a foreign key on column $column\n";
@@ -144,6 +144,7 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 				}
 			}
 		}
+		*/
 
 		if (!isset($_table_version->columns['version_date'])) {
 			echo "$_table_version->name doesn't have column version_date\n";
@@ -153,11 +154,11 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 
 		if (!isset($_table_version->columns['version_id'])) {
 			echo "$_table_version->name doesn't have column version_id\n";
-		} else if ($_table_version->columns['version_id']->dbType != 'int(10) unsigned') {
-			echo "$_table_version->name\->version_id has the wrong type ({$_table_version->columns['version_id']->dbType} should be int(10) unsigned)\n";
+		} else if (!in_array($_table_version->columns['version_id']->dbType,array('int(11)','int(10) unsigned'))) {
+			echo "$_table_version->name\->version_id has the wrong type ({$_table_version->columns['version_id']->dbType} should be int(11) or int(10) unsigned)\n";
 		}
 
-		if ($this->is_soft_deleted($_table_version)) {
+		/*if ($this->is_soft_deleted($_table_version)) {
 			if (!isset($_table_version->foreignKeys['id'])) {
 				echo "$_table_version->name doesn't have foreign key on column id\n";
 			} else {
@@ -173,12 +174,12 @@ class VerifyVersionTablesCommand extends CConsoleCommand {
 				echo "$_table_version->name has a foreign key on column id\n";
 			}
 		}
+		*/
 	}
 
 	public function nuke_cache()
 	{
-		$this->wipe_files("../cache/");
-		$this->wipe_files("cache/");
+		$this->wipe_files("runtime/cache/");
 	}
 
 	public function wipe_files($dir, $root = true)

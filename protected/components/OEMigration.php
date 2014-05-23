@@ -88,13 +88,13 @@ class OEMigration extends CDbMigration
 		$this->csvFiles  = glob($data_path . "*.csv");
 
 		if($this->testdata){
-			//echo "\nRunning test data import\n";
+			echo "\nRunning test data import\n";
 			$testdata_path = $migrations_path . '/testdata/' . $data_directory . '/';
 			$testdataCsvFiles = glob($testdata_path . "*.csv");
 			//echo "\nCSV FIles: " . var_export($this->csvFiles,true);
 			//echo "\nCSV TEST FIles: " . var_export($testdataCsvFiles,true);
 			$this->csvFiles = array_udiff($this->csvFiles, $testdataCsvFiles, 'self::compare_file_basenames');
-			//echo "\nCSVFIles after diff : " . var_export($csvFiles,true);
+			//echo "\nCSVFIles after diff : " . var_export($this->csvFiles,true);
 			$this->csvFiles = array_merge_recursive($this->csvFiles , $testdataCsvFiles );
 			//echo "\nIMPORTING CSVFIles in testdatamode : " . var_export($this->csvFiles,true);
 		}
@@ -298,6 +298,21 @@ class OEMigration extends CDbMigration
 	}
 
 	/**
+	 * Convenience function to drop OE tables from db - versioned defaults to false to mirroe createOETable
+	 *
+	 * @param $name
+	 * @param bool $versioned
+	 */
+	protected function dropOETable($name, $versioned = false)
+	{
+		if ($versioned) {
+			$this->dropTable("{$name}_version");
+		}
+
+		$this->dropTable($name);
+	}
+
+	/**
 	 * Create a version table for the specified existing OE table
 	 *
 	 * @param string $base_name Base table name
@@ -316,6 +331,7 @@ class OEMigration extends CDbMigration
 			}
 			$def = rtrim($def, ',');
 			$def = str_replace('AUTO_INCREMENT', '', $def);
+			$def = str_replace('UNIQUE', '', $def);
 		}
 		$defs[] = 'version_date datetime not null';
 		$defs[] = 'version_id int unsigned not null auto_increment primary key';

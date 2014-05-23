@@ -21,15 +21,16 @@ class ModuleAPI extends CApplicationComponent
 {
 	public function get($moduleName)
 	{
-		try {
-			if ($module = Yii::app()->getModule($moduleName)) {
-				if ($et = EventType::model()->find('class_name = ?', array($moduleName))) {
-					// if the module has been inherited from, and has its own API, should return that instead
-					if ($child = EventType::model()->find('parent_event_type_id = ?', array($et->id))) {
-						if ($child_api = self::get($child->class_name)) {
-							return $child_api;
-						}
+		if ($module = Yii::app()->getModule($moduleName)) {
+			if ($et = EventType::model()->find('class_name = ?', array($moduleName))) {
+				// if the module has been inherited from, and has its own API, should return that instead
+				if ($child = EventType::model()->find('parent_event_type_id = ?', array($et->id))) {
+					if ($child_api = self::get($child->class_name)) {
+						return $child_api;
 					}
+				}
+
+				if (file_exists(Yii::getPathOfAlias("application.modules.{$moduleName}.components") . DIRECTORY_SEPARATOR . "{$moduleName}_API.php")) {
 					$APIClass_prefix = '';
 					$ns_components = explode('\\', get_class($module));
 					if (count($ns_components) > 1) {
@@ -42,12 +43,10 @@ class ModuleAPI extends CApplicationComponent
 						return new $APIClass;
 					}
 				}
-				else {
-					Yii::log('Event type not found for API call for ' . $moduleName);
-				}
 			}
-		} catch (Exception $e) {
-			return false;
+			else {
+				Yii::log('Event type not found for API call for ' . $moduleName);
+			}
 		}
 
 		return false;
