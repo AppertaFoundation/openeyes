@@ -674,6 +674,14 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function checkAdminAccess()
+	{
+		return $this->checkAccess('admin');
+	}
+
+	/**
 	 * Carries out the base create action
 	 *
 	 * @return bool|string
@@ -1155,6 +1163,10 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function saveEvent($data)
 	{
+		if(isset($data['Event']['accomplished_date'])){
+			$this->event->accomplished_date = Helper::convertNHS2MySQL($data['Event']['accomplished_date']);
+		}
+
 		if (!$this->event->isNewRecord) {
 			// this is an edit, so need to work out what we are deleting
 			$oe_ids = array();
@@ -1330,6 +1342,12 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function renderOpenElements($action, $form=null, $data=null)
 	{
+		if($form && (($action == strtolower (self::ACTION_TYPE_CREATE) ) || $this->checkAdminAccess()) ){
+			echo $form->datePicker($this->event, 'accomplished_date', array(), array(), array(
+				'label' => $form->layoutColumns['label'],
+				'field' => 3
+			));
+		}
 
 		foreach ($this->getElements() as $element) {
 			$this->renderElement($element, $action, $form, $data);

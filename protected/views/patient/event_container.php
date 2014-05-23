@@ -21,6 +21,17 @@
 
 				<?php $this->renderPartial('//base/_messages'); ?>
 
+				<?php
+				if($this->action->id == 'view'){?>
+					<div class="row data-row">
+						<div class="large-4 column">
+							<div class="data-label"><?php echo $this->event->getAttributeLabel( 'accomplished_date') ?>:</div>
+						</div>
+						<div class="large-8 column">
+							<div class="data-value"><?php echo $this->event->NHSDate('accomplished_date') ?></div>
+						</div>
+					</div>
+				<?php } ?>
 					<?php echo $content; ?>
 					<?php if ($this->action->id == 'view') {
 						$this->renderEventMetadata();

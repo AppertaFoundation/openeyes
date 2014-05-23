@@ -78,7 +78,7 @@ class Episode extends BaseActiveRecordVersioned
 		return array(
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-			'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => 'events.created_date asc'),
+			'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => ' events.accomplished_date asc, events.created_date asc'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
