@@ -34,6 +34,77 @@
 
 
 		<?php if ($this->checkAccess('OprnEditSocialHistory')) {?>
+
+			<?php
+			$this->patient->id;
+			$social_history = SocialHistory::model()->find('patient_id=?',array($this->patient->id));
+			?>
+
+			<table class="plain patient-data">
+				<thead>
+				<tr>
+					<th>Social History</th>
+					<th>Status</th>
+				</tr>
+				</thead>
+				<tbody>
+				<?php if (isset($social_history->occupation)){ ?>
+				<tr>
+					<td>Occupation</td>
+					<td><?php echo CHtml::encode($social_history->occupation->name)?></td>
+				</tr>
+				<?php }
+				if (isset($social_history->driving_status)){ ?>
+				<tr>
+					<td>Driving Status</td>
+					<td><?php echo CHtml::encode($social_history->driving_status->name)?></td>
+				</tr>
+				<?php }
+				if (isset($social_history->smoking_status)){ ?>
+				<tr>
+					<td>Smoking Status</td>
+					<td><?php echo CHtml::encode($social_history->smoking_status->name)?></td>
+				</tr>
+				<?php }
+				if (isset($social_history->accommodation)){ ?>
+				<tr>
+					<td>Accommodation</td>
+					<td><?php echo CHtml::encode($social_history->accommodation->name)?></td>
+				</tr>
+				<?php }
+				if (@!empty($social_history->comments)){ ?>
+				<tr>
+					<td>Comments</td>
+					<td><?php echo CHtml::encode($social_history->comments)?></td>
+				</tr>
+				<?php }
+				if (@!empty($social_history->type_of_job)){ ?>
+				<tr>
+					<td>Type of Job</td>
+					<td><?php echo CHtml::encode($social_history->type_of_job)?></td>
+				</tr>
+				<?php }
+				if (isset($social_history->carer)){ ?>
+				<tr>
+					<td>Carer</td>
+					<td><?php echo CHtml::encode($social_history->carer->name)?></td>
+				</tr>
+				<?php }
+				if (@!empty($social_history->alcohol_intake)){ ?>
+				<tr>
+					<td>Alcohol Intake</td>
+					<td><?php echo CHtml::encode($social_history->alcohol_intake)?></td>
+				</tr>
+				<?php }
+				if (isset($social_history->substance_miuse)){ ?>
+				<tr>
+					<td>Substance Misuse</td>
+					<td><?php echo CHtml::encode($social_history->substance_misuse->name)?></td>
+				</tr>
+				<?php } ?>
+				</tbody>
+			</table>
+
 			<div class="box-actions">
 				<button  id="btn-add_social_history" class="secondary small">
 					Edit
@@ -53,12 +124,6 @@
 								'field' => 9
 						),
 				))?>
-
-				<?php
-				$this->patient->id;
-				$social_history = SocialHistory::model()->find('patient_id=?',array($this->patient->id));
-
-				?>
 
 				<fieldset class="field-row">
 
@@ -126,7 +191,7 @@
 							<label for="carer_id">Carer:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::activeDropDownList($social_history, 'occupation_id',CHtml::listData(SocialHistoryCarer::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -', 'options'=>array(2=>array('selected'=>'selected'))))?>
+							<?php echo CHtml::activeDropDownList($social_history, 'carer_id',CHtml::listData(SocialHistoryCarer::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -', 'options'=>array(2=>array('selected'=>'selected'))))?>
 						</div>
 					</div>
 

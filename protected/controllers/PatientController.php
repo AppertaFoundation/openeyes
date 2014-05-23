@@ -1029,7 +1029,7 @@ class PatientController extends BaseController
 			$social_history = new SocialHistory();
 		}
 		$social_history->patient_id = $patient->id;
-		$social_history->attributes =$_POST;
+		$social_history->attributes =$_POST['SocialHistory'];
 		if (!$social_history->save()) {
 			throw new Exception("Unable to save social history: ".print_r($social_history->getErrors(),true));
 		}
