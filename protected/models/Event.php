@@ -415,4 +415,13 @@ class Event extends BaseActiveRecordVersioned
 			)
 		);
 	}
+
+	public function isAccDateDifferentFromCreated(){
+		$accDate = new DateTime($this->accomplished_date);
+		$creDate = new DateTime($this->created_date);
+		if($creDate->format('Y-m-d') != $accDate->format('Y-m-d')){
+			return true;
+		}
+		return false;
+	}
 }

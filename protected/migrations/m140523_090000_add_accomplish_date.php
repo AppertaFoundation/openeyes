@@ -1,6 +1,6 @@
 <?php
 
-class m140508_140000_add_accomplish_date extends OEMigration
+class m140523_090000_add_accomplish_date extends OEMigration
 {
 	public function up()
 	{
