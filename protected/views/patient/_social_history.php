@@ -54,6 +54,12 @@
 						),
 				))?>
 
+				<?php
+				$this->patient->id;
+				$social_history = SocialHistory::model()->find('patient_id=?',array($this->patient->id));
+
+				?>
+
 				<fieldset class="field-row">
 
 					<legend><strong>Social History</strong></legend>
@@ -66,7 +72,7 @@
 							<label for="occupation_id">Occupation:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('occupation_id','',CHtml::listData(SocialHistoryOccupation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::activeDropDownList($social_history, 'occupation_id' ,CHtml::listData(SocialHistoryOccupation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
 
@@ -75,7 +81,7 @@
 							<label for="relative_id">Driving Status:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('driving_status_id','',CHtml::listData(SocialHistoryDrivingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::activeDropDownList($social_history,'driving_status_id',CHtml::listData(SocialHistoryDrivingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
 
@@ -84,7 +90,7 @@
 							<label for="relative_id">Smoking Status:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('smoking_status_id','',CHtml::listData(SocialHistorySmokingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::activeDropDownList($social_history,'smoking_status_id',CHtml::listData(SocialHistorySmokingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
 
@@ -93,7 +99,7 @@
 							<label for="relative_id">Accommodation:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(SocialHistoryAccommodation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::activeDropDownList($social_history, 'accommodation_id',CHtml::listData(SocialHistoryAccommodation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
 
@@ -102,7 +108,7 @@
 							<label for="comments">Comments:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textArea('comments','')?>
+							<?php echo CHtml::activeTextArea($social_history,'comments')?>
 						</div>
 					</div>
 
@@ -111,7 +117,7 @@
 							<label for="type_of_job">Type of Job:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textField('type_of_job','')?>
+							<?php echo CHtml::activeTextField($social_history, 'type_of_job')?>
 						</div>
 					</div>
 
@@ -120,7 +126,7 @@
 							<label for="carer_id">Carer:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('occupation_id','',CHtml::listData(SocialHistoryCarer::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -', 'options'=>array(2=>array('selected'=>'selected'))))?>
+							<?php echo CHtml::activeDropDownList($social_history, 'occupation_id',CHtml::listData(SocialHistoryCarer::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -', 'options'=>array(2=>array('selected'=>'selected'))))?>
 						</div>
 					</div>
 
@@ -129,7 +135,7 @@
 							<label for="relative_id">Alcohol Intake:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textField('alcohol_intake','')?>
+							<?php echo CHtml::activeTextField($social_history, 'alcohol_intake')?>
 						</div>
 					</div>
 
@@ -138,7 +144,7 @@
 							<label for="carer_id">Substance Misuse:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('substance_misuse_id','',CHtml::listData(SocialHistorySubstanceMisuse::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::activeDropDownList($social_history, 'substance_misuse_id',CHtml::listData(SocialHistorySubstanceMisuse::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
 					<div class="previous_operations_form_errors alert-box alert hide"></div>
