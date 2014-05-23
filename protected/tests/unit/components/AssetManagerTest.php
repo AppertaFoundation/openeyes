@@ -119,7 +119,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
 		// Test default params.
 		$url = $instance->createUrl($path);
-		$expectedUrl = $instance->getPublishedPathOfAlias($alias).DIRECTORY_SEPARATOR.$path;
+		$expectedUrl = Yii::app()->cacheBuster->createUrl($instance->getPublishedPathOfAlias($alias).DIRECTORY_SEPARATOR.$path);
 		$this->assertEquals($expectedUrl, $url,
 			'The URL should match the expected format when no additional params are specified');
 	}
@@ -351,15 +351,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 		$instance->isAjaxRequest = true;
 		$instance->adjustScriptMapping();
 
-		$expectedMapping = array(
-			'jquery.js' => false,
-			'jquery.min.js' => false,
-			'jquery-ui.js' => false,
-			'jquery-ui.min.js' => false,
-			'module.js' => false,
-			'style.css' => false,
-			'jquery-ui.css' => false
-		);
+		$expectedMapping = AssetManager::$scriptMapping;
 
 		$this->assertEquals(Yii::app()->clientScript->scriptMap, $expectedMapping,
 			'The clientScript script mapping should match the expected mapping if the request is AJAX');
