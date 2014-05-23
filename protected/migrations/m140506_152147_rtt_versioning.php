@@ -15,15 +15,4 @@ class m140506_152147_rtt_versioning extends OEMigration
 		$this->dropColumn('referral_version','clock_start');
 		$this->addColumn('referral_version', 'gp_id', 'integer');
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }
