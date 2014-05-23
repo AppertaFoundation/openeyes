@@ -51,8 +51,7 @@ class MedicationController extends BaseController
 			foreach (Drug::model()->active()->findAll($criteria) as $drug) {
 				$return[] = array(
 					'label' => $drug->tallmanlabel,
-					'value' => $drug->tallman,
-					'id' => $drug->id,
+					'value' => $drug->id,
 				);
 			}
 		}

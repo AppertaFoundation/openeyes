@@ -133,7 +133,7 @@ class Drug extends BaseActiveRecordVersioned
 		$criteria->compare('subspecialty_id',$subspecialty_id);
 		$criteria->order = 'name asc';
 
-		return CHtml::listData(Drug::model()->with('subspecialtyAssignments')->findAll($criteria),'id','name');
+		return CHtml::listData(Drug::model()->with('subspecialtyAssignments')->findAll($criteria),'id','label');
 	}
 
 	/**

@@ -90,7 +90,7 @@ $(document).ready(function () {
 		})
 
 		.on('autocompleteselect', '[name=drug_autocomplete]', function (e, ui) {
-			selectMedication(ui.item.id, ui.item.value);
+			selectMedication(ui.item.value, ui.item.label);
 			$(this).val('');
 			return false;
 		})
