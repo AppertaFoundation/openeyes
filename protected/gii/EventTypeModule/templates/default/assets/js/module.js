@@ -8,7 +8,7 @@ $(document).ready(function() {
 				foreach ($element['fields'] as $field) {
 					if ($field['type'] == 'EyeDraw' && @$field['extra_report']) {?>
 			if ($('#<?php echo $element['class_name']?>_<?php echo $field['name']?>2').length >0) {
-				$('#<?php echo $element['class_name']?>_<?php echo $field['name']?>2').val(ed_drawing_edit_<?php echo $field['eyedraw_class']?>.report());
+				$('#<?php echo $element['class_name']?>_<?php echo $field['name']?>2').val(ED.getInstance('ed_drawing_edit_<?php echo $field['eyedraw_class']?>').report());
 			}
 					<?php }
 				}
