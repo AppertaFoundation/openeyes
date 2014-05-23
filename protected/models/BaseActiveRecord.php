@@ -342,7 +342,7 @@ class BaseActiveRecord extends CActiveRecord
 				}
 			}
 			foreach ($many_rels as $name) {
-				if (in_array($name, $thru_rels)) {
+				if (in_array($name, $thru_rels) || !in_array($name, $this->safeAttributeNames)) {
 					continue;
 				}
 				$rel = $record_relations[$name];
