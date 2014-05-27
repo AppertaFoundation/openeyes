@@ -104,5 +104,6 @@ try {
 	}
 	$this->renderPartial('_allergies');
 	$this->renderPartial('_family_history');
+	$this->renderPartial('_social_history');
 }
 ?>

@@ -77,12 +77,16 @@ class PatientController extends BaseController
 				'roles' => array('OprnEditPreviousOperation'),
 			),
 			array('allow',
-				'actions' => array('drugList', 'drugDefaults', 'getDrugRouteOptions', 'validateAddMedication', 'addMedication', 'getMedication', 'removeMedication'),
-				'roles' => array('OprnEditMedication'),
+					'actions' => array('drugList', 'drugDefaults', 'getDrugRouteOptions', 'validateAddMedication', 'addMedication', 'getMedication', 'removeMedication'),
+					'roles' => array('OprnEditMedication'),
 			),
 			array('allow',
 				'actions' => array('addFamilyHistory', 'removeFamilyHistory'),
 				'roles' => array('OprnEditFamilyHistory')
+			),
+			array('allow',
+				'actions' => array('editSocialHistory', 'editSocialHistory'),
+				'roles' => array('OprnEditSocialHistory')
 			),
 		);
 	}
@@ -1014,6 +1018,25 @@ class PatientController extends BaseController
 		}
 
 		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
+	public function actionEditSocialHistory()
+	{
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+		if (!$social_history = SocialHistory::model()->find('patient_id=?',array($patient->id))) {
+			$social_history = new SocialHistory();
+		}
+		$social_history->patient_id = $patient->id;
+		$social_history->attributes =$_POST['SocialHistory'];
+		if (!$social_history->save()) {
+			throw new Exception("Unable to save social history: ".print_r($social_history->getErrors(),true));
+		}
+		else {
+			$this->redirect(array('patient/view/'.$patient->id));
+		}
+
 	}
 
 	public function actionAddFamilyHistory()
