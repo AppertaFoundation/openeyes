@@ -27,7 +27,7 @@
  * @property string $comments
  * @property string $type_of_job
  * @property integer $carer_id
- * @property string $alcohol_intake
+ * @property integer $alcohol_intake
  * @property integer $substance_misuse_id
  *
  * relations:
@@ -59,6 +59,7 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 		return array(
 			array('event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe'),
 			array('id, event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe', 'on' => 'search'),
+			array('alcohol_intake', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 	}
 
