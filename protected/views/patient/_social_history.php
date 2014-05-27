@@ -145,7 +145,7 @@
 					</div>
 				</div>
 
-				<div class="field-row row">
+				<div class="field-row row" id="social_history_type_of_job_show_hide" <?php if(@!$social_history->type_of_job->name=='Other (specify)'){?>style="display:none"<?php }?>>
 					<div class="<?php echo $form->columns('label');?>">
 						<label for="type_of_job">Type of Job:</label>
 					</div>
@@ -255,6 +255,16 @@
 </div>
 
 <script type="text/javascript">
+	$('#SocialHistory_occupation_id').change(function() {
+		if ($('#SocialHistory_occupation_id option:selected').text()=='Other (specify)'){
+			$('#social_history_type_of_job_show_hide').show();
+			$('#SocialHistory_type_of_job').focus();
+		}
+		else {
+			$('#social_history_type_of_job_show_hide').hide();
+			$('#SocialHistory_type_of_job').val('');
+		}
+	});
 	$('#btn-add_social_history').click(function() {
 		event.preventDefault();
 		$('#add_social_history').slideToggle('fast');
