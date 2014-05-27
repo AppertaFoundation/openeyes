@@ -29,210 +29,191 @@
 			</span>
 	</a>
 </header>
-
 <div class="js-toggle-body">
-
-
-	<?php if ($this->checkAccess('OprnEditSocialHistory')) {?>
-		<?php
-		$this->patient->id;
-		$social_history = SocialHistory::model()->find('patient_id=?',array($this->patient->id));
-		?>
-
-		<table class="plain patient-data">
-			<thead>
+<?php if ($this->checkAccess('OprnEditSocialHistory')) {?>
+	<?php
+	$this->patient->id;
+	$social_history = SocialHistory::model()->find('patient_id=?',array($this->patient->id));
+	?>
+	<table class="plain patient-data">
+		<thead>
+		<tr>
+			<th>Social History</th>
+			<th>Status</th>
+		</tr>
+		</thead>
+		<tbody>
+		<?php if (isset($social_history->occupation)){ ?>
 			<tr>
-				<th>Social History</th>
-				<th>Status</th>
+				<td>Occupation</td>
+				<td><?php echo CHtml::encode($social_history->occupation->name)?></td>
 			</tr>
-			</thead>
-			<tbody>
-			<?php if (isset($social_history->occupation)){ ?>
-				<tr>
-					<td>Occupation</td>
-					<td><?php echo CHtml::encode($social_history->occupation->name)?></td>
-				</tr>
-			<?php }
-			if (@!empty($social_history->type_of_job)){ ?>
-				<tr>
-					<td>Type of Job</td>
-					<td><?php echo CHtml::encode($social_history->type_of_job)?></td>
-				</tr>
-			<?php }
-			if (isset($social_history->driving_status)){ ?>
-				<tr>
-					<td>Driving Status</td>
-					<td><?php echo CHtml::encode($social_history->driving_status->name)?></td>
-				</tr>
-			<?php }
-			if (isset($social_history->smoking_status)){ ?>
-				<tr>
-					<td>Smoking Status</td>
-					<td><?php echo CHtml::encode($social_history->smoking_status->name)?></td>
-				</tr>
-			<?php }
-			if (isset($social_history->accommodation)){ ?>
-				<tr>
-					<td>Accommodation</td>
-					<td><?php echo CHtml::encode($social_history->accommodation->name)?></td>
-				</tr>
-			<?php }
-			if (@!empty($social_history->comments)){ ?>
-				<tr>
-					<td>Comments</td>
-					<td><?php echo CHtml::encode($social_history->comments)?></td>
-				</tr>
-			<?php }
-			if (isset($social_history->carer)){ ?>
-				<tr>
-					<td>Carer</td>
-					<td><?php echo CHtml::encode($social_history->carer->name)?></td>
-				</tr>
-			<?php }
-			if (isset($social_history->alcohol_intake)){ ?>
-				<tr>
-					<td>Alcohol Intake</td>
-					<td><?php echo CHtml::encode($social_history->alcohol_intake)?></td>
-				</tr>
-			<?php }
-			if (isset($social_history->substance_miuse)){ ?>
-				<tr>
-					<td>Substance Misuse</td>
-					<td><?php echo CHtml::encode($social_history->substance_misuse->name)?></td>
-				</tr>
-			<?php } ?>
-			</tbody>
-		</table>
+		<?php }
+		if (@!empty($social_history->type_of_job)){ ?>
+			<tr>
+				<td>Type of Job</td>
+				<td><?php echo CHtml::encode($social_history->type_of_job)?></td>
+			</tr>
+		<?php }
+		if (isset($social_history->driving_status)){ ?>
+			<tr>
+				<td>Driving Status</td>
+				<td><?php echo CHtml::encode($social_history->driving_status->name)?></td>
+			</tr>
+		<?php }
+		if (isset($social_history->smoking_status)){ ?>
+			<tr>
+				<td>Smoking Status</td>
+				<td><?php echo CHtml::encode($social_history->smoking_status->name)?></td>
+			</tr>
+		<?php }
+		if (isset($social_history->accommodation)){ ?>
+			<tr>
+				<td>Accommodation</td>
+				<td><?php echo CHtml::encode($social_history->accommodation->name)?></td>
+			</tr>
+		<?php }
+		if (@!empty($social_history->comments)){ ?>
+			<tr>
+				<td>Comments</td>
+				<td><?php echo CHtml::encode($social_history->comments)?></td>
+			</tr>
+		<?php }
+		if (isset($social_history->carer)){ ?>
+			<tr>
+				<td>Carer</td>
+				<td><?php echo CHtml::encode($social_history->carer->name)?></td>
+			</tr>
+		<?php }
+		if (isset($social_history->alcohol_intake)){ ?>
+			<tr>
+				<td>Alcohol Intake</td>
+				<td><?php echo CHtml::encode($social_history->alcohol_intake)?></td>
+			</tr>
+		<?php }
+		if (isset($social_history->substance_miuse)){ ?>
+			<tr>
+				<td>Substance Misuse</td>
+				<td><?php echo CHtml::encode($social_history->substance_misuse->name)?></td>
+			</tr>
+		<?php } ?>
+		</tbody>
+	</table>
+	<div class="box-actions">
+		<button  id="btn-add_social_history" class="secondary small">
+			Edit
+		</button>
+	</div>
 
+	<div id="add_social_history" style="display: none;">
 
+		<?php
+		$form = $this->beginWidget('FormLayout', array(
+			'id'=>'add-previous_operation',
+			'enableAjaxValidation'=>false,
+			'htmlOptions' => array('class'=>'form add-data'),
+			'action'=>array('patient/editSocialHistory'),
+			'layoutColumns'=>array(
+				'label' => 3,
+				'field' => 9
+			),
+		));
 
-		<div class="box-actions">
-			<button  id="btn-add_social_history" class="secondary small">
-				Edit
-			</button>
-		</div>
-
-		<div id="add_social_history" style="display: none;">
-
-			<?php
-			$form = $this->beginWidget('FormLayout', array(
-				'id'=>'add-previous_operation',
-				'enableAjaxValidation'=>false,
-				'htmlOptions' => array('class'=>'form add-data'),
-				'action'=>array('patient/editSocialHistory'),
-				'layoutColumns'=>array(
-					'label' => 3,
-					'field' => 9
-				),
-			));
-
-			if(!$social_history)	$social_history = new SocialHistory();
-			?>
-
-			<fieldset class="field-row">
-
-				<legend><strong>Social History</strong></legend>
-
-				<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
-				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-
-				<div class="field-row row">
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="occupation_id">Occupation:</label>
-					</div>
-					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::activeDropDownList($social_history, 'occupation_id' ,CHtml::listData(SocialHistoryOccupation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
-					</div>
+		if(!$social_history)	$social_history = new SocialHistory();
+		?>
+		<fieldset class="field-row">
+			<legend><strong>Social History</strong></legend>
+			<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
+			<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+			<div class="field-row row">
+				<div class="<?php echo $form->columns('label');?>">
+					<label for="occupation_id">Occupation:</label>
 				</div>
-
-				<div class="field-row row" id="social_history_type_of_job_show_hide" <?php if(@!$social_history->type_of_job->name=='Other (specify)'){?>style="display:none"<?php }?>>
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="type_of_job">Type of Job:</label>
-					</div>
-					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::activeTextField($social_history, 'type_of_job')?>
-					</div>
+				<div class="<?php echo $form->columns('field');?>">
+					<?php echo CHtml::activeDropDownList($social_history, 'occupation_id' ,CHtml::listData(SocialHistoryOccupation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 				</div>
-
-				<div class="field-row row">
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="relative_id">Driving Status:</label>
-					</div>
-					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::activeDropDownList($social_history,'driving_status_id',CHtml::listData(SocialHistoryDrivingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
-					</div>
+			</div>
+			<div class="field-row row" id="social_history_type_of_job_show_hide" <?php if(@!$social_history->type_of_job->name=='Other (specify)'){?>style="display:none"<?php }?>>
+				<div class="<?php echo $form->columns('label');?>">
+					<label for="type_of_job">Type of Job:</label>
 				</div>
-
-				<div class="field-row row">
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="relative_id">Smoking Status:</label>
-					</div>
-					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::activeDropDownList($social_history,'smoking_status_id',CHtml::listData(SocialHistorySmokingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
-					</div>
+				<div class="<?php echo $form->columns('field');?>">
+					<?php echo CHtml::activeTextField($social_history, 'type_of_job')?>
 				</div>
-
-				<div class="field-row row">
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="relative_id">Accommodation:</label>
-					</div>
-					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::activeDropDownList($social_history, 'accommodation_id',CHtml::listData(SocialHistoryAccommodation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
-					</div>
+			</div>
+			<div class="field-row row">
+				<div class="<?php echo $form->columns('label');?>">
+					<label for="relative_id">Driving Status:</label>
 				</div>
-
-				<div class="field-row row">
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="comments">Comments:</label>
-					</div>
-					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::activeTextArea($social_history,'comments')?>
-					</div>
+				<div class="<?php echo $form->columns('field');?>">
+					<?php echo CHtml::activeDropDownList($social_history,'driving_status_id',CHtml::listData(SocialHistoryDrivingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 				</div>
-
-				<div class="field-row row">
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="carer_id">Carer:</label>
-					</div>
-					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::activeDropDownList($social_history, 'carer_id',CHtml::listData(SocialHistoryCarer::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
-					</div>
+			</div>
+			<div class="field-row row">
+				<div class="<?php echo $form->columns('label');?>">
+					<label for="relative_id">Smoking Status:</label>
 				</div>
-
-				<div class="field-row row">
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="relative_id">Alcohol Intake:</label>
-					</div>
-					<div class="large-2 column">
-						<?php echo CHtml::activeTextField($social_history, 'alcohol_intake')?>
-					</div>
-					<div class="large-3 column end">
-						<p>units/week</p>
-					</div>
+				<div class="<?php echo $form->columns('field');?>">
+					<?php echo CHtml::activeDropDownList($social_history,'smoking_status_id',CHtml::listData(SocialHistorySmokingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 				</div>
-
-				<div class="field-row row">
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="carer_id">Substance Misuse:</label>
-					</div>
-					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::activeDropDownList($social_history, 'substance_misuse_id',CHtml::listData(SocialHistorySubstanceMisuse::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
-					</div>
+			</div>
+			<div class="field-row row">
+				<div class="<?php echo $form->columns('label');?>">
+					<label for="relative_id">Accommodation:</label>
 				</div>
-				<div class="previous_operations_form_errors alert-box alert hide"></div>
-				<div class="buttons">
-					<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
-					<button type="submit" class="secondary small btn_save_social_history">
-						Save
-					</button>
-					<button class="warning small btn_cancel_social_history">
-						Cancel
-					</button>
+				<div class="<?php echo $form->columns('field');?>">
+					<?php echo CHtml::activeDropDownList($social_history, 'accommodation_id',CHtml::listData(SocialHistoryAccommodation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 				</div>
-			</fieldset>
-			<?php $this->endWidget()?>
-		</div>
-	<?php }?>
+			</div>
+			<div class="field-row row">
+				<div class="<?php echo $form->columns('label');?>">
+					<label for="comments">Comments:</label>
+				</div>
+				<div class="<?php echo $form->columns('field');?>">
+					<?php echo CHtml::activeTextArea($social_history,'comments')?>
+				</div>
+			</div>
+			<div class="field-row row">
+				<div class="<?php echo $form->columns('label');?>">
+					<label for="carer_id">Carer:</label>
+				</div>
+				<div class="<?php echo $form->columns('field');?>">
+					<?php echo CHtml::activeDropDownList($social_history, 'carer_id',CHtml::listData(SocialHistoryCarer::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+				</div>
+			</div>
+			<div class="field-row row">
+				<div class="<?php echo $form->columns('label');?>">
+					<label for="relative_id">Alcohol Intake:</label>
+				</div>
+				<div class="large-2 column">
+					<?php echo CHtml::activeTextField($social_history, 'alcohol_intake')?>
+				</div>
+				<div class="large-3 column end">
+					<p>units/week</p>
+				</div>
+			</div>
+			<div class="field-row row">
+				<div class="<?php echo $form->columns('label');?>">
+					<label for="carer_id">Substance Misuse:</label>
+				</div>
+				<div class="<?php echo $form->columns('field');?>">
+					<?php echo CHtml::activeDropDownList($social_history, 'substance_misuse_id',CHtml::listData(SocialHistorySubstanceMisuse::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+				</div>
+			</div>
+			<div class="previous_operations_form_errors alert-box alert hide"></div>
+			<div class="buttons">
+				<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
+				<button type="submit" class="secondary small btn_save_social_history">
+					Save
+				</button>
+				<button class="warning small btn_cancel_social_history">
+					Cancel
+				</button>
+			</div>
+		</fieldset>
+		<?php $this->endWidget()?>
+	</div>
+<?php }?>
 </div>
 </section>
 
