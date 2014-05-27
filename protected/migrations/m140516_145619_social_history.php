@@ -151,7 +151,7 @@ class m140516_145619_social_history extends CDbMigration
 
 				'carer_id' => 'int(10) unsigned',
 
-				'alcohol_intake' => 'varchar(255) DEFAULT \'\'',
+				'alcohol_intake' => 'int(10) unsigned',
 
 				'substance_misuse_id' => 'int(10) unsigned',
 
