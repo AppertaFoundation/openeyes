@@ -56,7 +56,7 @@ class MedicationController extends BaseController
 			}
 		}
 
-		echo CJSON::encode($return);
+		echo json_encode($return);
 	}
 
 	public function actionDrugDefaults($drug_id)

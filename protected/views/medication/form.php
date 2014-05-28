@@ -30,7 +30,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 		<div class="<?= $form->columns('field');?>">
 
 			<input type="hidden" name="drug_id" value="<?= $medication->drug_id ?>"/>
-			<div class="field-row data-value" id="medication_drug_name"><?= $medication->drug ? CHtml::encode($medication->drug->label) : "" ?></div>
+			<div class="field-row data-value" id="medication_drug_name"><?= $medication->drug_id ? CHtml::encode($medication->drug->label) : "" ?></div>
 
 			<div class="field-row">
 				<?= CHtml::dropDownList('drug_select','', Drug::model()->listBySubspecialty($firm->getSubspecialtyID()), array('empty' => '- Select -'))?>
@@ -44,7 +44,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 					array(
 						'name' => 'drug_autocomplete',
 						'source' => new CJavaScriptExpression(
-							'function (req, res) { $.getJSON(' . CJSON::encode($this->createUrl('medication/finddrug')) . ', req, res); }'
+							'function (req, res) { $.getJSON(' . json_encode($this->createUrl('medication/finddrug')) . ', req, res); }'
 						),
 						'htmlOptions' => array('placeholder' => 'or search formulary'),
 					)
