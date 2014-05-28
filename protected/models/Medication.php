@@ -33,15 +33,6 @@
 class Medication extends BaseActiveRecordVersioned
 {
 	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Medication the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
-
-	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -54,13 +45,10 @@ class Medication extends BaseActiveRecordVersioned
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-			array('patient_id, drug_id, route_id, option_id, frequency_id, start_date, end_date', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id', 'safe'),
+			array('drug_id, route_id, frequency_id, start_date', 'required'),
+			array('option_id', 'validateOptionId'),
 		);
 	}
 
@@ -69,43 +57,36 @@ class Medication extends BaseActiveRecordVersioned
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
 			'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
 			'route' => array(self::BELONGS_TO, 'DrugRoute', 'route_id'),
 			'option' => array(self::BELONGS_TO, 'DrugRouteOption', 'option_id'),
 			'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
+			'stop_reason' => array(self::BELONGS_TO, 'MedicationStopReason', 'stop_reason_id'),
 		);
 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'name' => 'Name',
+			'drug_id' => 'Medication',
+			'route_id' => 'Route',
+			'option_id' => 'Option',
+			'frequency_id' => 'Frequency',
+			'stop_reason_id' => 'Reason for stopping',
 		);
 	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
+	public function validateOptionId()
 	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
+		if (!$this->option_id && $this->route && $this->route->options) {
+			$this->addError('option_id', "Must specify an option for route '{$this->route->name}'");
+		}
+	}
 
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
-		));
+	public function beforeSave()
+	{
+		if (!$this->end_date) $this->stop_reason_id = null;
+		return parent::beforeSave();
 	}
 }

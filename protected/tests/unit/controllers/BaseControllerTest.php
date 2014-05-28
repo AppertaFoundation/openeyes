@@ -23,13 +23,49 @@
  */
 class BaseControllerTest extends CDbTestCase
 {
-	public $fixtures = array(
+	private $controller;
 
+	public $fixtures = array(
+		'user' => 'User',
 	);
 
-	public function test_MarkIncomplete()
+	public function setUp()
 	{
-		$this->markTestIncomplete('Tests not implemented yet');
+		parent::setUp();
+
+		$this->controller = $this->getMockForAbstractClass('BaseController', array('BaseControllerTest'));
 	}
 
+	public function testFetchModelSuccess()
+	{
+		$this->assertEquals(
+			$this->user('user1'),
+			$this->controller->fetchModel('User', $this->user('user1')->id)
+		);
+	}
+
+	/**
+	 * @expectedException CHttpException
+	 * @expectedExceptionMessage User with PK 'foo' not found
+	 */
+	public function testFetchModelNotFound()
+	{
+		$this->controller->fetchModel('User', 'foo');
+	}
+
+	/**
+	 * @expectedException CHttpException
+	 * @expectedExceptionMessage User with PK '' not found
+	 */
+	public function testFetchModelEmptyPkDontCreate()
+	{
+		$this->controller->fetchModel('User', null);
+	}
+
+	public function testFetchModelEmptyPkCreate()
+	{
+		$user = $this->controller->fetchModel('User', null, true);
+		$this->assertInstanceOf('User', $user);
+		$this->assertTrue($user->isNewRecord);
+	}
 }

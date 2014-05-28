@@ -138,6 +138,7 @@ class Patient extends BaseActiveRecordVersioned
 			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
 			'familyHistory' => array(self::HAS_MANY, 'FamilyHistory', 'patient_id', 'order' => 'created_date'),
 			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is null'),
+			'previous_medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is not null'),
 			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioning_body_patient_assignment(patient_id, commissioning_body_id)'),
 			'referrals' => array(self::HAS_MANY, 'Referral', 'patient_id'),
 			'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
@@ -1150,25 +1151,6 @@ class Patient extends BaseActiveRecordVersioned
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			return $episode->firm->serviceSubspecialtyAssignment->service->name;
 		}
-	}
-
-	public function updateMedication($m, $params)
-	{
-		$m->patient_id = $this->id;
-		$m->drug_id = $params['drug_id'];
-		$m->route_id = $params['route_id'];
-		$m->option_id = $params['option_id'];
-		$m->frequency_id = $params['frequency_id'];
-		$m->start_date = date('Y-m-d',strtotime($params['start_date']));
-
-		if (!$m->save()) {
-			throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
-		}
-	}
-
-	public function addMedication($params)
-	{
-		$this->updateMedication(new Medication, $params);
 	}
 
 	/**

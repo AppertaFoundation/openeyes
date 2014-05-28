@@ -66,15 +66,10 @@ class Drug extends BaseActiveRecordVersioned
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
 			array('name, tallman', 'required'),
 			array('name', 'unsafe', 'on' => 'update'),
 			array('tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, name, tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -83,16 +78,14 @@ class Drug extends BaseActiveRecordVersioned
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
-				'allergies' => array(self::MANY_MANY, 'Allergy', 'drug_allergy_assignment(drug_id, allergy_id)'),
-				'type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
-				'form' => array(self::BELONGS_TO, 'DrugForm', 'form_id'),
-				'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
-				'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
-				'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
-				'subspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyDrug', 'drug_id'),
+			'allergies' => array(self::MANY_MANY, 'Allergy', 'drug_allergy_assignment(drug_id, allergy_id)'),
+			'type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
+			'form' => array(self::BELONGS_TO, 'DrugForm', 'form_id'),
+			'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
+			'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
+			'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
+			'subspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyDrug', 'drug_id'),
 		);
 	}
 
@@ -134,31 +127,23 @@ class Drug extends BaseActiveRecordVersioned
 		}
 	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
-		));
-	}
-
 	public function listBySubspecialty($subspecialty_id)
 	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('subspecialty_id',$subspecialty_id);
-		$criteria->order = 'name asc';
 
-		return CHtml::listData(Drug::model()->with('subspecialtyAssignments')->findAll($criteria),'id','name');
+		return CHtml::listData(Drug::model()->with('subspecialtyAssignments')->findAll($criteria),'id','label');
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getDefaults()
+	{
+		return array(
+			'dose' => "{$this->default_dose} {$this->dose_unit}",
+			'route_id' => $this->default_route_id,
+			'frequency_id' => $this->default_frequency_id,
+		);
 	}
 }
