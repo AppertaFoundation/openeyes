@@ -133,4 +133,9 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 		$this->assertEquals($numResults, $results->getItemCount());
 		$this->assertEquals($expectedResults, $data);
 	}
+
+	public function testgetListWithSecondaryTo()
+	{
+		$this->markTestIncomplete('Needs to be written post glaucoma haste');
+	}
 }

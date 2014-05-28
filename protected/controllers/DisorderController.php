@@ -90,4 +90,30 @@ class DisorderController extends BaseController
 			echo "<option value=\"$cd->disorder_id\">".$cd->disorder->term."</option>";
 		}
 	}
+
+	/**
+	 * Returns a JSON response. Empty if the provided disorder id is not in the common list for the
+	 * current session firm subspecialty. Otherwise, contains details of disorder, and all secondary to disorders
+	 * configured for the disorder/subspecialty
+	 *
+	 * @param $id
+	 */
+	public function actionIsCommonOphthalmicWithSecondary($id)
+	{
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		$result = array();
+		if ($subspecialty_id = $firm->getSubspecialtyID()) {
+			if ($cd = CommonOphthalmicDisorder::model()->with(array('disorder', 'secondary_to_disorders'))->findByAttributes(array('disorder_id'=> $id, 'subspecialty_id' => $subspecialty_id)) ) {
+				$result['disorder'] = array('id' => $cd->disorder_id, 'term' => $cd->disorder->term);
+				$secondary_to = "";
+				if ($sts = $cd->secondary_to_disorders) {
+					$result['secondary_to'] = array();
+					foreach ($sts as $st) {
+						$result['secondary_to'][] = array('id' => $st->id, 'term' => $st->term);
+					}
+				}
+				echo CJSON::encode($result);
+			}
+		}
+	}
 }

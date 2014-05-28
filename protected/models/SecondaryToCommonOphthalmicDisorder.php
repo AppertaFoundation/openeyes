@@ -18,24 +18,25 @@
  */
 
 /**
- * This is the model class for table "common_ophthalmic_disorder".
+ * This is the model class for table "secondaryto_common_oph_disorder".
+ * This model allows for the definition of "secondary to" options for disorders specified in CommonOphthalmicDisorder
+ * They should be provided as choices in disorder widgets that use the common disorder drop downs in diagnoses selection.
  *
  * The followings are the available columns in table 'common_ophthalmic_disorder':
  * @property integer $id
  * @property integer $disorder_id
- * @property integer $subspecialty_id
+ * @property integer $parent_id
+ * @property integer $display_order
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
- * @property Subspecialty $subspecialty
- * @property SecondaryToCommonOphthalmicDisorder[] $secondary_to
- * @property Disorder[] $secondary_to_disorders
+ * @property CommonOphthalmicDisorder $parent
  */
-class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
+class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return CommonOphthalmicDisorder the static model class
+	 * @return SecondaryToCommonOphthalmicDisorder the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -47,7 +48,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 	 */
 	public function tableName()
 	{
-		return 'common_ophthalmic_disorder';
+		return 'secondaryto_common_oph_disorder';
 	}
 
 	/**
@@ -58,11 +59,12 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('disorder_id, subspecialty_id', 'required'),
-			array('disorder_id, subspecialty_id', 'length', 'max'=>10),
+				array('disorder_id, parent_id', 'required'),
+				array('disorder_id, parent_id', 'length', 'max'=>10),
+				array('disorder_id, parent_id, display_order', 'safe').
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
+				array('id, disorder_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -74,10 +76,8 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
-			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-			'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
-			'secondary_to_disorders' => array(self::HAS_MANY, 'Disorder', 'disorder_id', 'through' => 'secondary_to'),
+				'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
+				'subspecialty' => array(self::BELONGS_TO, 'CommonOphthalmicDisorder', 'parent_id'),
 		);
 	}
 
@@ -87,9 +87,8 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'disorder_id' => 'Disorder',
-			'subspecialty_id' => 'Subspecialty',
+				'id' => 'ID',
+				'disorder_id' => 'Disorder',
 		);
 	}
 
@@ -106,52 +105,10 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('disorder_id',$this->disorder_id,true);
-		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
 
-	public static function getList($firm)
-	{
-		if (empty($firm)) {
-			throw new CException('Firm is required.');
-		}
-		if ($firm->serviceSubspecialtyAssignment) {
-			$ss_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-			$disorders = Disorder::model()->active()->findAll(array(
-					'condition' => 'cad.subspecialty_id = :subspecialty_id',
-					'join' => 'JOIN common_ophthalmic_disorder cad ON cad.disorder_id = t.id JOIN specialty ON specialty_id = specialty.id AND specialty.code = :ophcode',
-					'order' => 'term',
-					'params' => array(':subspecialty_id' => $ss_id, ':ophcode' => 130),
-			));
-			return CHtml::listData($disorders, 'id', 'term');
-		}
-		return array();
-	}
-
-	/**
-	 * @param Firm $firm
-	 * @return array
-	 * @throws CException
-	 */
-	public static function getListWithSecondaryTo(Firm $firm)
-	{
-		if (empty($firm)) {
-			throw new CException('Firm is required');
-		}
-		$disorders = array();
-		$secondary_to = array();
-		if ($ss_id = $firm->getSubspecialtyID()) {
-			$cods = self::model()->with(array('disorder', 'secondary_to_disorders'))->findAllByAttributes(array('subspecialty_id' => $ss_id));
-			foreach ($cods as $cod) {
-				$disorders[] = $cod->disorder;
-				if ($secondary_tos = $cod->secondary_to_disorders) {
-					$secondary_to[$cod->disorder_id] = CHtml::listData($secondary_tos, 'id', 'term');
-				}
-			}
-		}
-		return array(CHtml::listData($disorders, 'id', 'term'), $secondary_to);
-	}
 }
