@@ -13,7 +13,6 @@
 	],
 	"name": [
 		{
-			"use": {":match": "usual"},
 			"family": [{":subst": "family_name"}],
 			"given": [{":subst": "given_name"}],
 			"prefix": [{":subst": "title"}]
