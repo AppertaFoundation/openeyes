@@ -77,7 +77,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// class name for the relations automatically generated below.
 		return array(
 				'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
-				'subspecialty' => array(self::BELONGS_TO, 'CommonOphthalmicDisorder', 'parent_id'),
+				'parent' => array(self::BELONGS_TO, 'CommonOphthalmicDisorder', 'parent_id'),
 		);
 	}
 

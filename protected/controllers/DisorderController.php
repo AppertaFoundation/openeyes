@@ -105,12 +105,20 @@ class DisorderController extends BaseController
 		if ($subspecialty_id = $firm->getSubspecialtyID()) {
 			if ($cd = CommonOphthalmicDisorder::model()->with(array('disorder', 'secondary_to_disorders'))->findByAttributes(array('disorder_id'=> $id, 'subspecialty_id' => $subspecialty_id)) ) {
 				$result['disorder'] = array('id' => $cd->disorder_id, 'term' => $cd->disorder->term);
-				$secondary_to = "";
 				if ($sts = $cd->secondary_to_disorders) {
 					$result['secondary_to'] = array();
 					foreach ($sts as $st) {
 						$result['secondary_to'][] = array('id' => $st->id, 'term' => $st->term);
 					}
+				}
+				echo CJSON::encode($result);
+			}
+			elseif ($sts = SecondaryToCommonOphthalmicDisorder::model()->with(array('disorder', 'parent',))
+						->findAll('t.disorder_id = :disorder_id AND parent.subspecialty_id = :subspecialty_id', array(":disorder_id" => $id, ":subspecialty_id" => $subspecialty_id))) {
+				$result['disorder'] = array('id' => $sts[0]->disorder_id, 'term' => $sts[0]->disorder->term);
+				$result['owned_by'] = array();
+				foreach ($sts as $st) {
+					$result['owned_by'][] = array('id' => $st->parent->disorder_id);
 				}
 				echo CJSON::encode($result);
 			}

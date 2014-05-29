@@ -42,7 +42,7 @@
 		<div class="dropdown-row">
 			<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, $list_options) : ""?>
 		</div>
-		<div class="autocomplete-row">
+		<div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
 			<?php
 			$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					'name' => "{$class}[$field]",
@@ -119,6 +119,7 @@
 		}
 		$('#<?= "{$class}_{$field}_secondary_to"?>').html(options);
 	}
+
 	$('#<?= "{$class}_{$field}_secondary_to"?>').change(function() {
 		var primary_selected = $('#<?php echo $class?>_<?php echo $field?>').children('option:selected');
 		var selected = $(this).children('option:selected');
@@ -128,6 +129,7 @@
 				<?php echo $callback?>(selected.val(), selected.text());
 			}
 			$('#div_<?= "{$class}_{$field}_secondary_to"?>').hide();
+			$('#div_<?= "{$class}_{$field}_autocomplete_row"?>').show();
 			primary_selected.remove();
 			$('#<?php echo $class?>_<?php echo $field?>').val('');
 		}
@@ -142,9 +144,12 @@
 					if (selected.data('secondary-to')) {
 						updateSecondaryList(selected.data('secondary-to'));
 						$('#div_<?= "{$class}_{$field}_secondary_to"?>').show();
+						$('#div_<?= "{$class}_{$field}_autocomplete_row"?>').hide();
+
 					}
 					else {
 						$('#div_<?= "{$class}_{$field}_secondary_to"?>').hide();
+						$('#div_<?= "{$class}_{$field}_autocomplete_row"?>').show();
 						<?php echo $callback?>(selected.val(), selected.text());
 						selected.remove();
 						$('#<?php echo $class?>_<?php echo $field?>').val('');
