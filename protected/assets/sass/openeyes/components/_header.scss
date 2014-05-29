@@ -39,7 +39,7 @@
 			background: #a0d7f8 image-url("_structure/miniheader/bg_gradient.png") bottom repeat-x;
 			position: fixed;
 			top: 0;
-			z-index: 10;
+			z-index: 200;
 			border-top: none;
 			min-height: 40px;
 			@include border-radius(0);

@@ -331,6 +331,7 @@ class OEMigration extends CDbMigration
 			}
 			$def = rtrim($def, ',');
 			$def = str_replace('AUTO_INCREMENT', '', $def);
+			$def = str_replace('UNIQUE', '', $def);
 		}
 		$defs[] = 'version_date datetime not null';
 		$defs[] = 'version_id int unsigned not null auto_increment primary key';

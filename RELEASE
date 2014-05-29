@@ -3,6 +3,19 @@ Release History
 
 This document is intended to summarise the changes made for each release. It should be noted that this document was only introduced with version 1.4, and therefore doesn't cover earlier releases.
 
+TBC
+---
++ support for module namespacing
++ support for automatically handling HAS_MANY and MANY_MANY relations in BaseActiveRecord
+
+1.6.5
+-----
++ Add reports auth role
+
+1.6.4
+-----
++ Exclude deleted events when fetching elements
+
 1.6.3
 -----
 + Don't delete child elements when copying data from previous events

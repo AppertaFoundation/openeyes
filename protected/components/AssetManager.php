@@ -63,6 +63,18 @@ class AssetManager extends CAssetManager
 	const OUTPUT_ALL = 'all';
 	const OUTPUT_AJAX = 'ajax';
 
+	public static $scriptMapping = array(
+		'jquery.js' => false,
+		'jquery.min.js' => false,
+		'jquery-ui.js' => false,
+		'jquery-ui.min.js' => false,
+		'mustache.js' => false,
+		'eventemitter2.js' => false,
+		'module.js' => false,
+		'style.css' => false,
+		'jquery-ui.css' => false
+	);
+
 	/**
 	 * Is the current request a print request.
 	 * @var boolean
@@ -350,14 +362,7 @@ class AssetManager extends CAssetManager
 	 */
 	public function adjustScriptMapping() {
 		if ($this->isAjaxRequest) {
-			$scriptMap = $this->clientScript->scriptMap;
-			$scriptMap['jquery.js'] = false;
-			$scriptMap['jquery.min.js'] = false;
-			$scriptMap['jquery-ui.js'] = false;
-			$scriptMap['jquery-ui.min.js'] = false;
-			$scriptMap['module.js'] = false;
-			$scriptMap['style.css'] = false;
-			$scriptMap['jquery-ui.css'] = false;
+			$scriptMap = array_merge($this->clientScript->scriptMap, self::$scriptMapping);
 			$this->clientScript->scriptMap = $scriptMap;
 		}
 	}

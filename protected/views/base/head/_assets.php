@@ -3,6 +3,7 @@
 <?php $assetManager->registerCoreScript('jquery')?>
 <?php $assetManager->registerCoreScript('jquery.ui')?>
 <?php $assetManager->registerScriptFile('mustache/mustache.js', 'application.assets.components')?>
+<?php $assetManager->registerScriptFile('eventemitter2/lib/eventemitter2.js', 'application.assets.components')?>
 <?php $assetManager->registerScriptFile('js/jquery.printElement.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.hoverIntent.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.autosize.js')?>

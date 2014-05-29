@@ -12,7 +12,7 @@ class Examination extends OpenEyesPage
         'eye' => array('xpath' => "//*[@id='dropDownTextSelection_OEModule_OphCiExamination_models_Element_OphCiExamination_History_description']//*[@value='left eye, ']"),
         'duration' => array('xpath' => "//*[@id='dropDownTextSelection_OEModule_OphCiExamination_models_Element_OphCiExamination_History_description']//*[@value='1 week, ']"),
         'openComorbidities' => array('xpath' => "//div[@class='sub-elements inactive']//*[@data-element-type-name='Comorbidities']"),
-        'addComorbidities' => array('xpath' => "//select[@id='comorbidities_items']"),
+        'addComorbidities' => array('xpath' => "//select[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_Comorbidities_items']"),
         'expandVisualAcuity' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Visual Acuity')]"),
         'visualAcuityUnitChange' => array('xpath' => "//*[@id='visualacuity_unit_change']"),
         'openRightVA' => array('xpath' => "//*[@class='element-eye left-eye column right side']//*[@class='button small secondary addReading']"),
@@ -41,10 +41,12 @@ class Examination extends OpenEyesPage
         'expandDRGrading' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'DR Grading')]"),
 
         'openIntraocularPressure' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Intraocular Pressure')]"),
-        'intraocularRight' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_right_reading_id']"),
-        'instrumentRight' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_right_instrument_id']"),
-        'intraocularLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_left_reading_id']"),
-        'instrumentLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_left_instrument_id']"),
+        'addIntraocularRight' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_add_left']"),
+        'intraocularRight' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_left_values_0_reading_id']"),
+        'instrumentRight' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_left_values_0_instrument_id']"),
+        'addIntraocularLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_IntraocularPressure_add_right']"),
+        'intraocularLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_right_values_0_reading_id']"),
+        'instrumentLeft' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_OphCiExamination_IntraocularPressure_Value_right_values_0_instrument_id']"),
 
         'openDilation' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Dilation')]"),
         'dilationRight' => array('xpath' => "//select[@id='dilation_drug_right']"),
@@ -336,13 +338,17 @@ class Examination extends OpenEyesPage
 
     public function leftIntracocular ($pressure, $instrument)
     {
-//        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(10000);
+        $this->getElement('addIntraocularLeft')->click();
+        $this->getSession()->wait(3000);
         $this->getElement('intraocularLeft')->selectOption($pressure);
         $this->getElement('instrumentLeft')->selectOption($instrument);
     }
 
     public function rightIntracocular ($pressure, $instrument)
     {
+        $this->getElement('addIntraocularRight')->click();
+        $this->getSession()->wait(3000);
         $this->getElement('intraocularRight')->selectOption($pressure);
         $this->getElement('instrumentRight')->selectOption($instrument);
 

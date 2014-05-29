@@ -96,8 +96,10 @@ class ProcedureSelection extends BaseFieldWidget
 			}
 		} else {
 			// Doesn't matter if removed_stack contains non-common procedures as lists are reloaded using ajax on removal
-			foreach ($this->selected_procedures as $selected_procedure) {
-				$this->removed_stack[] = "{id: $selected_procedure->id, name: '$selected_procedure->term'}";
+			if (!empty($this->selected_procedures)) {
+				foreach ($this->selected_procedures as $selected_procedure) {
+					$this->removed_stack[] = "{id: $selected_procedure->id, name: '$selected_procedure->term'}";
+				}
 			}
 		}
 

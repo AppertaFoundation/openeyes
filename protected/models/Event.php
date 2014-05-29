@@ -63,7 +63,7 @@ class Event extends BaseActiveRecordVersioned
 			array('episode_id, event_type_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, episode_id, event_type_id, created_date', 'safe', 'on'=>'search'),
+			array('id, episode_id, event_type_id, created_date, accomplished_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -81,6 +81,19 @@ class Event extends BaseActiveRecordVersioned
 			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 			'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
 		);
+	}
+
+	/**
+	 * Make sure accomplished date is set
+	 * @return boolean
+	 */
+	protected function beforeSave()
+	{
+		if ( $this->accomplished_date == "1900-01-01 00:00:00" || $this->accomplished_date == "0000-00-00 00:00:00") {
+			$this->accomplished_date = date('Y-m-d H:i:s');
+		}
+
+		return parent::beforeSave();
 	}
 
 	public function moduleAllowsEditing()
@@ -401,5 +414,14 @@ class Event extends BaseActiveRecordVersioned
 				'limit' => 1,
 			)
 		);
+	}
+
+	public function isAccDateDifferentFromCreated(){
+		$accDate = new DateTime($this->accomplished_date);
+		$creDate = new DateTime($this->created_date);
+		if($creDate->format('Y-m-d') != $accDate->format('Y-m-d')){
+			return true;
+		}
+		return false;
 	}
 }

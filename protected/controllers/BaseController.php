@@ -182,4 +182,20 @@ class BaseController extends Controller
 
 		return Yii::app()->user->checkAccess($operation, $params);
 	}
+
+	/**
+	 * Fetch a model instance and throw 404 if not found; optionally create a new instance if pk is empty
+	 *
+	 * @param string $class_name
+	 * @param scalar $pk
+	 * @param bool $create
+	 */
+	public function fetchModel($class_name, $pk = null, $create = false)
+	{
+		if (!$pk && $create) return new $class_name;
+
+		$model = $class_name::model()->findByPk($pk);
+		if (!$model) throw new CHttpException(404, "{$class_name} with PK '{$pk}' not found");
+		return $model;
+	}
 }
