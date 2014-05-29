@@ -1163,8 +1163,8 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function saveEvent($data)
 	{
-		if(isset($data['Event']['accomplished_date'])){
-			$this->event->accomplished_date = Helper::convertNHS2MySQL($data['Event']['accomplished_date']);
+		if(isset($data['Event']['event_date'])){
+			$this->event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
 		}
 
 		if (!$this->event->isNewRecord) {
@@ -1343,7 +1343,7 @@ class BaseEventTypeController extends BaseModuleController
 	public function renderOpenElements($action, $form=null, $data=null)
 	{
 		if($form && (($action == strtolower (self::ACTION_TYPE_CREATE) ) || $this->checkAdminAccess()) ){
-			echo $form->datePicker($this->event, 'accomplished_date', array(), array(), array(
+			echo $form->datePicker($this->event, 'event_date', array(), array(), array(
 				'label' => $form->layoutColumns['label'],
 				'field' => 3
 			));
