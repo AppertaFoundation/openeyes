@@ -93,6 +93,7 @@ EOH;
 				}
 			}
 			echo "Committing changes ...\n";
+			$transaction->commit();
 			echo "{$count} records created\n";
 			if ($warnings) {
 				echo "There were " . count($warnings) . " warnings:\n";
