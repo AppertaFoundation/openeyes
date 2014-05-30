@@ -184,7 +184,7 @@ $(document).ready(function(){
 		});
 	}
 
-	window.onbeforeunload = function (e) {
+	$(window).bind('beforeunload', function (e) {
 		if (formHasChanged && !submitted) {
 			var message = "You have not saved your changes.", e = e || window.event;
 			if (e) {
@@ -192,7 +192,8 @@ $(document).ready(function(){
 			}
 			return message;
 		}
-	}
+	});
+
 	$("form").submit(function() {
 		submitted = true;
 	});
