@@ -6,7 +6,6 @@
     <value value="12345"/>
   </identifier>
   <name>
-    <use value="usual"/>
     <family value="Zoidberg"/>
     <given value="John"/>
     <prefix value="Dr"/>

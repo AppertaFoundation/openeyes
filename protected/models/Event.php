@@ -33,6 +33,8 @@
  */
 class Event extends BaseActiveRecordVersioned
 {
+	private $defaultScopeDisabled = false;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className
@@ -49,6 +51,28 @@ class Event extends BaseActiveRecordVersioned
 	public function tableName()
 	{
 		return 'event';
+	}
+
+	/**
+	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
+	 * @return array of mandatory conditions
+	 */
+
+	public function defaultScope()
+	{
+		if ($this->defaultScopeDisabled) {
+			return array();
+		}
+
+		$table_alias = $this->getTableAlias(false,false);
+		return array(
+			'condition' => $table_alias.'.deleted = 0',
+		);
+	}
+
+	public function disableDefaultScope() {
+		$this->defaultScopeDisabled = true;
+		return $this;
 	}
 
 	/**
