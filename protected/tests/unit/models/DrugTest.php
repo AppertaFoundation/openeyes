@@ -113,26 +113,6 @@ class DrugTest extends CDbTestCase	{
 	 }
 
 	/**
-	* @covers Drug::search
-	* @todo	Implement testSearch().
-	*/
-	public function testSearch() {
-		$this->model->setAttributes($this->drugs('drug1')->getAttributes());
-		$results = $this->model->search();
-		$data = $results->getData();
-
-		$expectedKeys = array('drug1');
-		$expectedResults = array();
-		if (!empty($expectedKeys)) {
-			foreach ($expectedKeys as $key) {
-				$expectedResults[] = $this->drugs($key);
-			}
-		}
-		$this->assertEquals(1, $results->getItemCount());
-		$this->assertEquals($expectedResults, $data);
-	}
-
-	/**
 	* @covers Drug::listBySubspecialty
 	* @todo	Implement testListBySubspecialty().
 	*/

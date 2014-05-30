@@ -61,25 +61,4 @@ class DrugRouteOptionTest extends CDbTestCase
 		$this->assertTrue($this->drugrouteoptions('drugrouteoption1')->validate());
 		$this->assertEmpty($this->drugrouteoptions('drugrouteoption2')->errors);
 	}
-
-	/**
-	 * @covers DrugRouteOption::search
-	 */
-	public function testSearch()
-	{
-		$this->model->setAttributes($this->drugrouteoptions('drugrouteoption1')->getAttributes());
-		$this->model->setAttribute('id', 1);
-		$results = $this->model->search();
-		$data = $results->getData();
-
-		$expectedKeys = array('drugrouteoption1');
-		$expectedResults = array();
-		if (!empty($expectedKeys)) {
-			foreach ($expectedKeys as $key) {
-		        $expectedResults[] = $this->drugrouteoptions($key);
-			}
-		}
-		$this->assertEquals(1, $results->getItemCount());
-		$this->assertEquals($expectedResults, $data);
-	}
 }
