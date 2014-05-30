@@ -114,6 +114,7 @@
 	<?php if ($secondary_to) { ?>
 	function updateSecondaryList(data) {
 		var options = '<option value="">- Please Select -</option><option value="NONE">None</option>';
+		data.sort(function(a, b) { return a.term < b.term ? -1 : 1});
 		for (var i in data) {
 			options += '<option value="' + data[i].id + '">' + data[i].term + '</option>';
 		}
@@ -145,7 +146,6 @@
 						updateSecondaryList(selected.data('secondary-to'));
 						$('#div_<?= "{$class}_{$field}_secondary_to"?>').show();
 						$('#div_<?= "{$class}_{$field}_autocomplete_row"?>').hide();
-
 					}
 					else {
 						$('#div_<?= "{$class}_{$field}_secondary_to"?>').hide();
@@ -159,6 +159,11 @@
 					selected.remove();
 					$('#<?php echo $class?>_<?php echo $field?>').val('');
 				<?php } ?>
+			}
+			else {
+				// reset form
+				$('#div_<?= "{$class}_{$field}_secondary_to"?>').hide();
+				$('#div_<?= "{$class}_{$field}_autocomplete_row"?>').show();
 			}
 		});
 	<?php }?>
