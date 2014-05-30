@@ -60,7 +60,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		return array(
 				array('disorder_id, parent_id', 'required'),
 				array('disorder_id, parent_id', 'length', 'max'=>10),
-				array('disorder_id, parent_id', 'safe').
+				array('disorder_id, parent_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 				array('id, disorder_id', 'safe', 'on'=>'search'),
