@@ -144,7 +144,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		$disorders = array();
 		$secondary_to = array();
 		if ($ss_id = $firm->getSubspecialtyID()) {
-			$cods = self::model()->with(array('disorder', 'secondary_to_disorders'))->findAllByAttributes(array('subspecialty_id' => $ss_id));
+			$cods = self::model()->with(array('disorder', 'secondary_to_disorders'))->findAllByAttributes(array('subspecialty_id' => $ss_id), array('order' => 'disorder.term'));
 			foreach ($cods as $cod) {
 				$disorders[] = $cod->disorder;
 				if ($secondary_tos = $cod->secondary_to_disorders) {

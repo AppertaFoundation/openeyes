@@ -8,7 +8,6 @@ class m140527_104913_commondisorder_secondarychoices extends OEMigration
 						'id' => 'pk',
 						'disorder_id' => 'int(10) unsigned NOT NULL',
 						'parent_id' => 'int(10) unsigned NOT NULL',
-						'display_order' => 'integer NOT NULL',
 				), true);
 
 		$this->addForeignKey('secondaryto_common_oph_disorder_did_fk',
