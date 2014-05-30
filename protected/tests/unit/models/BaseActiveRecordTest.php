@@ -239,7 +239,7 @@ class BaseActiveRecordTest extends CDbTestCase
 	{
 		$test = $this->getMockBuilder('RelationOwnerSaveClass')
 				->disableOriginalConstructor()
-				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey', 'getCommandBuilder'))
+				->setMethods(array('getMetaData', 'getSafeAttributeNames', 'getRelated', 'getPrimaryKey', 'getCommandBuilder'))
 				->getMock();
 
 		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
@@ -263,11 +263,15 @@ class BaseActiveRecordTest extends CDbTestCase
 				->method('getMetaData')
 				->will($this->returnValue($meta));
 
+		$test->expects($this->at(1))
+			->method('getSafeAttributeNames')
+			->will($this->returnValue(array('has_many', 'has_many_thru', 'many_many')));
+
 		// fake the attribute having been set by __set
 		$test->has_many = array($this->getRelationMockForSave(5));
 
 		// fake the original values for the has_many relation value on the test instance
-		$test->expects($this->at(1))
+		$test->expects($this->at(2))
 			->method('getRelated')
 			->with($this->equalTo('has_many'), $this->equalTo(true))
 			->will($this->returnValue(array($this->getRelationMockForDelete(3))));
@@ -275,7 +279,7 @@ class BaseActiveRecordTest extends CDbTestCase
 		$hmt = $this->getRelationMock(8);
 		$test->has_many_thru = array($hmt);
 
-		$test->expects($this->at(3))
+		$test->expects($this->at(4))
 			->method('getRelated')
 			->with($this->equalTo('has_many_thru'), $this->equalTo(true))
 			->will($this->returnValue(array($this->getRelationMock(2), $hmt)));
@@ -285,7 +289,7 @@ class BaseActiveRecordTest extends CDbTestCase
 		$mm = $this->getRelationMock(12);
 		$test->many_many = array($mm, $this->getRelationMock(13));
 
-		$test->expects($this->at(6))
+		$test->expects($this->at(7))
 				->method('getRelated')
 				->with('many_many')
 				->will($this->returnValue(array($this->getRelationMock(7), $mm)));
@@ -340,7 +344,7 @@ class BaseActiveRecordTest extends CDbTestCase
 	{
 		$test = $this->getMockBuilder('RelationOwnerSaveClass')
 				->disableOriginalConstructor()
-				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey'))
+				->setMethods(array('getMetaData', 'getSafeAttributeNames', 'getRelated', 'getPrimaryKey'))
 				->getMock();
 
 		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
@@ -357,6 +361,10 @@ class BaseActiveRecordTest extends CDbTestCase
 		$test->expects($this->any())
 				->method('getMetaData')
 				->will($this->returnValue($meta));
+
+		$test->expects($this->any())
+			->method('getSafeAttributeNames')
+			->will($this->returnValue(array('has_many')));
 
 		$test->has_many = null;
 
@@ -381,7 +389,7 @@ class BaseActiveRecordTest extends CDbTestCase
 	{
 		$test = $this->getMockBuilder('RelationOwnerSaveClass')
 				->disableOriginalConstructor()
-				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey'))
+				->setMethods(array('getMetaData', 'getSafeAttributeNames', 'getRelated', 'getPrimaryKey'))
 				->getMock();
 
 		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
@@ -398,6 +406,10 @@ class BaseActiveRecordTest extends CDbTestCase
 		$test->expects($this->any())
 				->method('getMetaData')
 				->will($this->returnValue($meta));
+
+		$test->expects($this->any())
+				->method('getSafeAttributeNames')
+				->will($this->returnValue(array('has_many')));
 
 		// fake the attribute having been set by __set
 		$test->has_many = array($this->getRelationMockForSave(5), $this->getRelationMockForSave(6));
@@ -541,7 +553,7 @@ class RelationTestClass extends BaseActiveRecord
 		return ComponentStubGenerator::generate(get_class(self), $params);
 	}
 
-	public function findByPk($pk)
+	public function findByPk($pk,$condition='',$params=array())
 	{
 		$cls = __CLASS__;
 		$res = new $cls();
@@ -580,7 +592,7 @@ class RelationTestAssClass extends BaseActiveRecord
 		return ComponentStubGenerator::generate(get_class(self), $params);
 	}
 
-	public function findByPk($pk)
+	public function findByPk($pk,$condition='',$params=array())
 	{
 		$cls = __CLASS__;
 		$res = new $cls();
@@ -588,7 +600,7 @@ class RelationTestAssClass extends BaseActiveRecord
 		return $res;
 	}
 
-	public function save()
+	public function save($runValidation=true,$attributes=null, $allow_overriding=false)
 	{
 		return true;
 	}

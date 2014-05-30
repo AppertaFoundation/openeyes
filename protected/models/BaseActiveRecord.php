@@ -207,7 +207,7 @@ class BaseActiveRecord extends CActiveRecord
 			}
 		}
 		$rel_cls = $rel->className;
-		$rel_pk_attr = $rel_cls::getMetaData()->tableSchema->primaryKey;
+		$rel_pk_attr = $rel_cls::model()->getMetaData()->tableSchema->primaryKey;
 
 		if ($new_objs) {
 			foreach ($new_objs as $new) {
@@ -341,8 +341,9 @@ class BaseActiveRecord extends CActiveRecord
 					}
 				}
 			}
+			$safe_attributes = $this->getSafeAttributeNames();
 			foreach ($many_rels as $name) {
-				if (in_array($name, $thru_rels) || !in_array($name, $this->safeAttributeNames)) {
+				if (in_array($name, $thru_rels) || !in_array($name, $safe_attributes)) {
 					continue;
 				}
 				$rel = $record_relations[$name];
