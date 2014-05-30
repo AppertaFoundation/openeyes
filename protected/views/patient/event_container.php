@@ -22,20 +22,22 @@
 				<?php $this->renderPartial('//base/_messages'); ?>
 
 				<?php
-				if($this->action->id == 'view'){?>
+				if($this->action->id == 'view'){
+					if($this->event->isEventDateDifferentFromCreated()){?>
 					<div class="row data-row">
-						<div class="large-4 column">
-							<div class="data-label"><?php echo $this->event->getAttributeLabel( 'accomplished_date') ?>:</div>
+						<div class="large-2 column" style="margin-left: 10px;">
+							<div class="data-label"><?php echo $this->event->getAttributeLabel( 'event_date') ?>:</div>
 						</div>
-						<div class="large-8 column">
-							<div class="data-value"><?php echo $this->event->NHSDate('accomplished_date') ?></div>
+						<div class="large-9 column end">
+							<div class="data-value"><?php echo $this->event->NHSDate('event_date') ?></div>
 						</div>
 					</div>
-				<?php } ?>
-					<?php echo $content; ?>
-					<?php if ($this->action->id == 'view') {
+		<?php 		}
+				}
+				echo $content;
+				if ($this->action->id == 'view') {
 						$this->renderEventMetadata();
-					} ?>
+				} ?>
 			</div>
 		</div>
 	</div>

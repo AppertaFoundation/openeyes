@@ -51,7 +51,7 @@ class BaseActiveRecord extends CActiveRecord
 			$cls = get_class($rel);
 			if ($cls == self::HAS_MANY || $cls == self::MANY_MANY) {
 				$rel_cls = $rel->className;
-				$pk_attr = $rel_cls::getMetaData()->tableSchema->primaryKey;
+				$pk_attr = $rel_cls::model()->getMetaData()->tableSchema->primaryKey;
 				// not supporting composite primary keys at this point
 				if (is_string($pk_attr)) {
 					$m_set = array();

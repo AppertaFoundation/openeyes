@@ -152,7 +152,7 @@ $current_episode = @$this->current_episode;
 												?>
 												<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
 											</span>
-											<span class="event-date <?php echo ($event->isAccDateDifferentFromCreated())?' acc_date':'' ?>"> <?php echo $event->accomplished_date? $event->NHSDateAsHTML('accomplished_date') : $event->NHSDateAsHTML('created_date'); ?></span>
+											<span class="event-date <?php echo ($event->isEventDateDifferentFromCreated())?' ev_date':'' ?>"> <?php echo $event->event_date? $event->NHSDateAsHTML('event_date') : $event->NHSDateAsHTML('created_date'); ?></span>
 										</a>
 
 									</li>
