@@ -64,10 +64,6 @@
 	 * @private
 	 */
     FieldImages.prototype.createDiag = function(fieldElId) {
-        console.log("Creating diag for :" + fieldElId );
-        console.log( "Getting vals " + JSON.stringify(this.options.idToImages[fieldElId ]) );
-        console.log( "Getting vals selects " + JSON.stringify(this.options.idToImages[fieldElId ]['selects']) );
-
         this.options.dialog = new OpenEyes.UI.Dialog({
             title: this.options.title,
             content: this.createImagesDiv(this.options.idToImages[fieldElId ], fieldElId)
@@ -83,25 +79,19 @@
      * @private
      */
     FieldImages.prototype.createImagesDiv = function(fieldElId, selectId) {
-        console.log("In create images div fieldID top:" + JSON.stringify( fieldElId ) );
-        //console.log("In create images div dialog:" + JSON.stringify( dialog ) );
         var wrapper = jQuery('<div/>', {
             class:  "fieldsWrapper"
         });
         for(var sval in fieldElId['selects']){
-            console.log("In create images div, processing select :" + JSON.stringify( sval ) + " <- " + fieldElId['id']);
             var imgPath = null;
             if(fieldElId['id'] in this.options.images){
-                console.log("In create images div fieldID:" + fieldElId['id'] );
                 if(sval in this.options.images[fieldElId['id']]){
                     imgPath = this.options.images[fieldElId['id']][sval];
-                    console.log("In create images div fieldID -> imgPath :" + imgPath );
                 }
             }
             var el = jQuery('<div/>', {
                 class: 'ui-field-image'
             }).click({selectId: selectId, val: sval, fieldImgInstance: this},function(e) {
-                //console.log("Data: " + JSON.stringify(e.data) )
                 $( "#"+ e.data.selectId).val(e.data.val);
                 e.data.fieldImgInstance.options.dialog.close();
             });
@@ -144,14 +134,10 @@
 
                 $( '#' + selectId + "_cog").click( function() {
                     var sId = this.id.substr(0, (this.id.length - 4) );
-                    console.log("SetFieldButtonsTrying to open diag" +  JSON.stringify(sId) );
                     this_.createDiag( sId);
                 });
             }
-            else{console.log("Dropdown " + selectId + " does not exist!");}
-            //console.log("Dropdown " + selectId + " processed!");
         }
-        console.log("Dropdowns " + JSON.stringify(this.options.idToImages) + " processed!");
         //return this.options.idToImages +   " " + JSON.stringify(this.options.images);
     };
 
