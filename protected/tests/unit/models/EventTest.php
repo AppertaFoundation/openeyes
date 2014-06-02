@@ -53,11 +53,11 @@ class EventTest extends CDbTestCase
 	public function testBeforeSave()
 	{
 		$event = $this->event('event1');
-		$this->assertNotNull( $event->accomplished_date );
-		$event->accomplished_date = date('Y-m-d H:i:s');
+		$this->assertNotNull( $event->event_date );
+		$event->event_date = date('Y-m-d H:i:s');
 		$event->save();
-		$this->assertNotEquals( '0000-00-00 00:00:00', $event->accomplished_date );
-		$this->assertNotEquals( '1900-01-01 00:00:00', $event->accomplished_date );
+		$this->assertNotEquals( '0000-00-00 00:00:00', $event->event_date );
+		$this->assertNotEquals( '1900-01-01 00:00:00', $event->event_date );
 	}
 
 	/**
