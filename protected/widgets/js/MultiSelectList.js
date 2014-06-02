@@ -58,13 +58,21 @@ $(document).ready(function() {
 
 			var input = $(inp_str);
 
-			var remove = $('<a />', {
+			var remote_data = {
 				'href': '#',
 				'class': 'MultiSelectRemove remove-one '+selected.val(),
 				'text': 'Remove',
 				'data-name': fieldName+'[]',
 				'data-text': selected.text()
-			});
+			};
+
+			if ($(this).hasClass('linked-fields')) {
+				remote_data['class'] += ' linked-fields';
+				remote_data['data-linked-fields'] = $(this).data('linked-fields');
+				remote_data['data-linked-values'] = $(this).data('linked-values');
+			}
+
+			var remove = $('<a />', remote_data);
 
 			var item = $('<li><span class="text">'+selected.text()+'</span></li>');
 			item.append(remove);
@@ -124,6 +132,20 @@ $(document).ready(function() {
 		if (!selections.children().length) {
 			selections.add(removeAll).addClass('hide');
 			noSelectionsMsg.removeClass('hide');
+		}
+
+		if ($(this).hasClass('linked-fields')) {
+			if (inArray($(this).data('text'),$(this).data('linked-values').split(','))) {
+				var element_name = container.children('input[type="hidden"]').attr('name').replace(/\[.*$/,'');
+				var fields = $(this).data('linked-fields').split(',');
+				var values = $(this).data('linked-values').split(',');
+
+				for (var i in fields) {
+					if (values.length == 1 || i == arrayIndex($(this).data('text'),values)) {
+						hide_linked_field(element_name,fields[i]);
+					}
+				}
+			}
 		}
 
 		select.trigger('MultiSelectChanged');

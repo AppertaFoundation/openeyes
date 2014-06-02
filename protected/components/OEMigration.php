@@ -340,6 +340,32 @@ class OEMigration extends CDbMigration
 	}
 
 	/**
+	 * @param string $event_type Class name of event type
+	 * @param string $name Name of event
+	 * @param array $params Supported values and defaults are: display_order (1), default (false), required (false), parent_name (null)
+	 */
+	protected function createElementType($event_type, $name, array $params = array())
+	{
+		$row = array(
+			'name' => $name,
+			'class_name' => "Element_{$event_type}_" . str_replace(' ', '', $name),
+			'event_type_id' => $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = ?', array($event_type))->queryScalar(),
+			'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,
+			'default' => isset($params['default']) ? $params['default'] : false,
+			'required' => isset($params['required']) ? $params['required'] : false,
+		);
+
+		if (isset($params['parent_name'])) {
+			$parent_class = "Element_{$event_type}_{$params['parent_name']}";
+			$row['parent_element_type_id'] = $this->getIdOfElementTypeByClassName($parent_class);
+		}
+
+		$this->insert('element_type', $row);
+
+		return $this->dbConnection->lastInsertID;
+	}
+
+	/**
 	 * @description used within subclasses to find out the element_type id based on Class Name
 	 * @param $className - string
 	 * @return mixed - the value of the id. False is returned if there is no value.
