@@ -66,7 +66,7 @@ foreach ($legacyepisodes as $i => $episode) {?>
 								<?php $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/'; ?>
 								<img src="<?php echo Yii::app()->createUrl($assetpath . 'img/small.png') ?>" alt="op" width="19" height="19" />
 							</span>
-							<span class="event-date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
+							<span class="event-date"> <?php echo $event->NHSDateAsHTML('event_date'); ?></span>
 						</a>
 
 					</li>
