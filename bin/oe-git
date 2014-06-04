@@ -21,7 +21,7 @@ echo "Found OpenEyes root"
 
 echo "########"
 echo "(OpenEyes) git $1"
-git "$1"
+git $1
 
 find "$PWD"/protected/modules -maxdepth 1 -mindepth 1 -type d -print0 | while read -d $'\0' module
 do
