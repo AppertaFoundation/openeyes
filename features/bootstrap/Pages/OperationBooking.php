@@ -63,7 +63,9 @@ class OperationBooking extends OpenEyesPage
 
     public function diagnosis ($diagnosis)
     {
-        $this->getElement('operationDiagnosis')->setValue($diagnosis);
+        $element =$this->getElement('operationDiagnosis');
+        $this->scrollWindowToElement($element);
+        $element->setValue($diagnosis);
     }
 
     public function operationEyes ($opEyes)
@@ -85,7 +87,9 @@ class OperationBooking extends OpenEyesPage
 
     public function consultantYes ()
     {
-        $this->getElement('consultantYes')->click();
+        $element = $this->getElement('consultantYes');
+        $this->scrollWindowToElement($element);
+        $element->click();
     }
 
     public function consultantNo ()
@@ -188,7 +192,8 @@ class OperationBooking extends OpenEyesPage
     public function availableSlotExactDay ($day)
     {
 		$slot = $this->find('xpath' , "//*[@id='calendar']//*[number()='" . $day ."']");
-		$slot->click();
+		$this->scrollWindowToElement($slot);
+        $slot->click();
 		$this->getSession()->wait(15000, "window.$ && $('#calendar td.available.selected_date').html().trim() == '" . $day . "' ");
     }
 
