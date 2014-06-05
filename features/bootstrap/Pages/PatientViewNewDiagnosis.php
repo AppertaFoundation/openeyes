@@ -48,14 +48,14 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'CVIMonth' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_month']"),
         'CVIYear' => array('xpath' => "//*[@id='edit-oph_info']//select[@name='fuzzy_year']"),
         'saveCVI' => array('xpath' => "//*[@class='secondary small btn_save_oph_info']"),
-        'addMedicationButton' => array('xpath' => "//button[@id='btn-add_medication']"),
-        'selectMedication' => array('xpath' => "//select[@id='drug_id']"),
+        'addMedicationButton' => array('xpath' => "//*[@class='box-actions']//*[contains(text(),'Add Medication')]"),
+        'selectMedication' => array('xpath' => "//*[@id='drug_select']"),
         'selectRoute' => array('xpath' => "//select[@id='route_id']"),
         'selectFrequency' => array('xpath' => "//select[@id='frequency_id']"),
         'openMedicationDate' => array('xpath' => "//*[@class='hasDatepicker']"),
         'hopefullFIX' => array('xpath' => "//form[@id='add-medication']/div[8]"),
-        'selectDateFrom' => array('xpath' => "//*[@id='ui-datepicker-div']//*[contains(text(),'10')]"),
-        'saveMedication' => array('xpath' => "//*[@class='secondary small btn_save_medication']"),
+        'selectDateFrom' => array('xpath' => "//*[@class='row field-row fuzzy_date medication_start_date']//select[@name='fuzzy_day']"),
+        'saveMedication' => array('xpath' => "//*[@class='medication_save secondary small']"),
         'addAllergyButton' => array('xpath' => "//*[@id='btn-add_allergy']"),
         'selectAllergy' => array('xpath' => "//select[@id='allergy_id']"),
         'noAllergyTickbox' => array('xpath' => "//*[@id='no_allergies']"),
@@ -76,8 +76,8 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'removeOpthalmicDiagnosisLink' => array('xpath' => "//*[@class='removeDiagnosis']"),
         'removeOpthalmicDiagnosisConfirm' => array('xpath' => "//*[@id='delete_diagnosis']//*[contains(text(),'Remove diagnosis')]"),
         'removeOperation' => array('xpath' => "//*[@class='removeOperation']"),
-        'removeOperationConfirmButton' => array('xpath' => "//*[@id='delete_operation']//*[contains(text(),'Remove operation')]"),
-        'removeMedication' => array('xpath' => "//*[@class='removeMedication']"),
+        'removeOperationConfirmButton' => array('xpath' => "html/body/div[2]/div[2]/div/div[2]/button[1]"),
+        'removeMedication' => array('xpath' => "//*[@id='medication_list']//*[contains(text(),'Delete')]"),
         'removeMedicationConfirmButton' => array('xpath' => "//*[contains(text(),'Remove medication')]"),
         'datePicker' => array('xpath' => "//*[@class='ui-datepicker-title']")
         );
@@ -223,16 +223,18 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $element = $this->getElement('addMedicationButton');
         $this->scrollWindowToElement($element);
         $element->click();
+        $this->getSession()->wait(2000);
         $this->getElement('selectMedication')->selectOption($medication);
         $this->getElement('selectRoute')->selectOption($route);
         $this->getElement('selectFrequency')->selectOption($frequency);
-        $element = $this->getElement('openMedicationDate');
-        $this->scrollWindowToElement($element);
-        $element->click();
-        $this->waitForElementDisplayBlock('#ui-datepicker-div');
-        $this->getSession()->wait(3000);
+//        $elemento = $this->getElement('openMedicationDate');
+//        $this->scrollWindowToElement($elemento);
+//        $this->getSession()->wait(10000);
+//        $elemento->click();
+//        $this->waitForElementDisplayBlock('#ui-datepicker-div');
+//        $this->getSession()->wait(3000);
         $this->getElement('selectDateFrom')->click($datefrom);
-        $this->waitForElementDisplayNone('#ui-datepicker-div');
+//        $this->waitForElementDisplayNone('#ui-datepicker-div');
         $this->getElement('saveMedication')->click();
         $this->waitForElementDisplayNone('#add_medication');
     }
