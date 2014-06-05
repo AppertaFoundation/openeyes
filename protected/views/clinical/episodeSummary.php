@@ -63,56 +63,55 @@ if (!empty($episode)) {
 					$summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
 				}
 			?>
-			<?php if (count($summaryItems)) {?>
-				<div class="element element-data event-types">
-					<?php
-					foreach ($summaryItems as $summaryItem) {
-						echo '<h3 id="' . $summaryItem->getClassName() . '" class="data-title">' . $summaryItem->name . ':</h3>' . "\n";
-						Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
-						$this->widget(
-								$summaryItem->getClassName(),
-								array(
-										'episode' => $episode,
-										'event_type' => $summaryItem->event_type,
-								)
-						);
-					}
-					?>
-				</div>
-			<?php }?>
-
-			<section class="element element-data">
-				<div class="row">
-					<div class="large-6 column">
-						<h3 class="data-title">Start Date:</h3>
-						<div class="data-value">
-							<?php echo $episode->NHSDate('start_date')?>
-						</div>
-					</div>
-					<div class="large-6 column">
-						<h3 class="data-title">End date:</h3>
-						<div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></div>
-					</div>
-				</div>
-			</section>
-
-			<section class="element element-data">
-				<div class="row">
-					<div class="large-6 column">
-						<h3 class="data-title">Subspecialty:</h3>
-						<div class="data-value">
-							<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>
-						</div>
-					</div>
-					<div class="large-6 column">
-						<h3 class="data-title">Consultant firm:</h3>
-						<div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None'?></div>
-					</div>
-				</div>
-			</section>
-
 		</div>
 	</div>
+	<?php if (count($summaryItems)) {?>
+		<div class="element element-data event-types">
+			<?php
+			foreach ($summaryItems as $summaryItem) {
+				echo '<h3 id="' . $summaryItem->getClassName() . '" class="data-title">' . $summaryItem->name . ':</h3>' . "\n";
+				Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
+				$this->widget(
+						$summaryItem->getClassName(),
+						array(
+								'episode' => $episode,
+								'event_type' => $summaryItem->event_type,
+						)
+				);
+			}
+			?>
+		</div>
+	<?php }?>
+
+	<section class="element element-data">
+		<div class="row">
+			<div class="large-6 column">
+				<h3 class="data-title">Start Date:</h3>
+				<div class="data-value">
+					<?php echo $episode->NHSDate('start_date')?>
+				</div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="data-title">End date:</h3>
+				<div class="data-value"><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></div>
+			</div>
+		</div>
+	</section>
+
+	<section class="element element-data">
+		<div class="row">
+			<div class="large-6 column">
+				<h3 class="data-title">Subspecialty:</h3>
+				<div class="data-value">
+					<?php echo $episode->support_services ? 'Support services' : $episode->firm->getSubspecialtyText()?>
+				</div>
+			</div>
+			<div class="large-6 column">
+				<h3 class="data-title">Consultant firm:</h3>
+				<div class="data-value"><?php echo $episode->firm ? $episode->firm->name : 'None'?></div>
+			</div>
+		</div>
+	</section>
 
 	<div class="metadata">
 		<span class="info">
