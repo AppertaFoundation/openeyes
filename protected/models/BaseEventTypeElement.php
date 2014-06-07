@@ -327,7 +327,7 @@ class BaseEventTypeElement extends BaseElement
 	}
 
 	public function textWithLineBreaks($field) {
-		return str_replace("\n","<br/>",$this->$field);
+		return CHtml::encode($this->$field);
 	}
 
 	/**
