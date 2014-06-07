@@ -27,7 +27,7 @@
 						<td class="relative"><?php echo $history->relative->name?></td>
 						<td class="side"><?php echo $history->side->name?></td>
 						<td class="condition"><?php echo $history->condition->name?></td>
-						<td class="comments"><?php echo $history->comments?></td>
+						<td class="comments"><?php echo CHtml::encode($history->comments)?></td>
 						<?php if ($this->checkAccess('OprnEditFamilyHistory')): ?>
 							<td>
 								<a href="#" class="editFamilyHistory" rel="<?php echo $history->id?>">Edit</a>&nbsp;&nbsp;
