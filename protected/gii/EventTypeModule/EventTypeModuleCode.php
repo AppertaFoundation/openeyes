@@ -969,6 +969,18 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	{
 		echo '<option value="">- No default value -</option>';
 
+		if (!$_table = Yii::app()->db->getSchema()->getTable($table)) {
+			throw new Exception("Table not found: $table");
+		}
+
+		if (!isset($_table->columns[$field])) {
+			throw new Exception("$table has no attribute '$field'");
+		}
+
+		if (in_array($table,array('user','audit','authitem','authitem_type','authitemchild'))) {
+			throw new Exception('Refusing to allow retrieval of dangerous table');
+		}
+
 		foreach (Yii::app()->db->createCommand()
 			->selectDistinct("$table.id, $table.$field")
 			->from($table)
@@ -983,6 +995,18 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		if (!$selected) $selected = array();
 
 		echo '<option value="">- Select default values -</option>';
+
+		if (!$_table = Yii::app()->db->getSchema()->getTable($table)) {
+			throw new Exception("Table not found: $table");
+		}
+		
+		if (!isset($_table->columns[$field])) {
+			throw new Exception("$table has no attribute '$field'");
+		}
+
+		if (in_array($table,array('user','audit','authitem','authitem_type','authitemchild'))) {
+			throw new Exception('Refusing to allow retrieval of dangerous table');
+		}
 
 		foreach (Yii::app()->db->createCommand()
 			->selectDistinct("$table.id, $table.$field")
