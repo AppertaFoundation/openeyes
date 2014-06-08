@@ -32,7 +32,7 @@
 				<option value=""><?php echo $htmlOptions['empty']?></option>
 			<?php }?>
 			<?php foreach ($data as $id => $option) {?>
-				<option value="<?php echo $id?>"<?php if ($id == $selected_value) {?> selected="selected"<?php }?>><?php echo $option?></option>
+				<option value="<?php echo $id?>"<?php if ($id == $selected_value) {?> selected="selected"<?php }?>><?php echo CHtml::encode($option)?></option>
 			<?php }?>
 		</select>
 		<?php if (!@$htmlOptions['nowrapper']) {?>

@@ -52,7 +52,7 @@ return array(
 		'gii' => array(
 			'class' => 'system.gii.GiiModule',
 			'password' => 'openeyes',
-			'ipFilters'=> array('*')
+			'ipFilters'=> array('127.0.0.1')
 		),
 		'oldadmin',
 	),

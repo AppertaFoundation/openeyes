@@ -30,12 +30,12 @@
 		<?php foreach ($options as $name => $data) {?>
 			<select class="dropDownTextSelection<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>" id="dropDownTextSelection_<?php echo CHtml::modelName($element)?>_<?php echo $field?>"<?php if (@$htmlOptions['remove_selections'] === false) {?> data-remove-selections="false"<?php }?>>
 				<?php if (isset($data['empty'])) {?>
-					<option value=""><?php echo $data['empty']?></option>
+					<option value=""><?php echo CHtml::encode($data['empty'])?></option>
 				<?php } else {?>
 					<option value="">- Please select -</option>
 				<?php }?>
 				<?php foreach ($data['options'] as $id => $content) {?>
-					<option value="<?php echo $id?>"><?php echo $content?></option>
+					<option value="<?php echo $id?>"><?php echo CHtml::encode($content)?></option>
 				<?php }?>
 			</select>
 		<?php }?>

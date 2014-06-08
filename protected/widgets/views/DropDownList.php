@@ -47,7 +47,7 @@
 					<?php foreach ($data as $i => $optgroup) {?>
 						<optgroup label="---------------">
 							<?php foreach ($optgroup as $id => $option) {?>
-								<option value="<?php echo $id?>"<?php if ($id == $value) {?> selected="selected"<?php }?>><?php echo $option?></option>
+								<option value="<?php echo $id?>"<?php if ($id == $value) {?> selected="selected"<?php }?>><?php echo CHtml::encode($option)?></option>
 							<?php }?>
 						</optgroup>
 					<?php }?>
