@@ -74,7 +74,7 @@ $widgetOptionsJson = json_encode(array(
 						foreach ($attributes as $att => $att_val) {
 							echo " " . $att . "=\"" . $att_val . "\"";
 						}
-						echo ">" . $option . "</option>";
+						echo ">" . CHtml::encode($option) . "</option>";
 					}?>
 				</select>
 				<?php if ($showRemoveAllLink) {?>
@@ -89,7 +89,7 @@ $widgetOptionsJson = json_encode(array(
 					if (isset($options[$id])) {?>
 						<li>
 							<span class="text">
-								<?php echo $options[$id] ?>
+								<?php echo CHtml::encode($options[$id])?>
 							</span>
 							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one">Remove</a>
 							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"

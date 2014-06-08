@@ -36,7 +36,7 @@
 			}?>
 			<label class="inline highlight">
 				<?php echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), $options); ?>
-		 		<?php echo $data_value?>
+		 		<?php echo CHtml::encode($data_value)?>
 	 		</label>
 	<?php }?>
 
@@ -71,7 +71,7 @@
 
 						echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), $options);
 					?>
-					<?php echo $data_value?>
+					<?php echo CHtml::encode($data_value)?>
 				</label>
 			<?php }?>
 		</div>

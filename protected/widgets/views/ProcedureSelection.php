@@ -148,7 +148,7 @@
 							Calculated Total Duration:
 						</td>
 						<td id="projected_duration_<?php echo $identifier?>">
-							<?php echo $totalDuration?> mins
+							<?php echo CHtml::encode($totalDuration)?> mins
 						</td>
 						<td>
 							Estimated Total Duration:
