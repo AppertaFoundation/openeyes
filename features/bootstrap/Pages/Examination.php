@@ -340,7 +340,7 @@ class Examination extends OpenEyesPage
     {
 //        $this->getSession()->wait(10000);
         $this->getElement('addIntraocularLeft')->click();
-        $this->getSession()->wait(3000);
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
         $this->getElement('intraocularLeft')->selectOption($pressure);
         $this->getElement('instrumentLeft')->selectOption($instrument);
     }
@@ -348,7 +348,7 @@ class Examination extends OpenEyesPage
     public function rightIntracocular ($pressure, $instrument)
     {
         $this->getElement('addIntraocularRight')->click();
-        $this->getSession()->wait(3000);
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
         $this->getElement('intraocularRight')->selectOption($pressure);
         $this->getElement('instrumentRight')->selectOption($instrument);
 
