@@ -332,13 +332,13 @@ class Examination extends OpenEyesPage
 {
     if ($this->isIntraocularPressureCollapsed()){
         $this->getElement('openIntraocularPressure')->click();
-        $this->getSession()->wait(3000, 'window.$ && $.active == 0');
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 }
 
     public function leftIntracocular ($pressure, $instrument)
     {
-//        $this->getSession()->wait(10000);
+        $this->getSession()->wait(2000);
         $this->getElement('addIntraocularLeft')->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
         $this->getElement('intraocularLeft')->selectOption($pressure);
@@ -347,6 +347,7 @@ class Examination extends OpenEyesPage
 
     public function rightIntracocular ($pressure, $instrument)
     {
+        $this->getSession()->wait(2000);
         $this->getElement('addIntraocularRight')->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
         $this->getElement('intraocularRight')->selectOption($pressure);
