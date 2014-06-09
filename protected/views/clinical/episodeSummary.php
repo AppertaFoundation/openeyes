@@ -40,6 +40,13 @@ if (!empty($episode)) {
 	<div class="row">
 		<div class="large-9 column">
 
+			<section class="eelement element-data">
+				<h3 class="data-title">Overview</h3>
+				<div class="data-value highlight">
+					<?= $episode->patient->genderString ?>, <?= $episode->patient->age ?>, CVI status: <?= $episode->patient->ophInfo->cvi_status->name ?>
+				</div>
+			</section>
+
 			<section class="element element-data">
 				<h3 class="data-title">Principal diagnosis:</h3>
 				<div class="data-value highlight">
