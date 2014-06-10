@@ -1343,12 +1343,7 @@ class BaseEventTypeController extends BaseModuleController
 	public function renderOpenElements($action, $form=null, $data=null)
 	{
 		if($form && (($action == strtolower (self::ACTION_TYPE_CREATE) ) || $this->checkAdminAccess()) ){
-			echo $form->datePicker($this->event, 'event_date', array(), array(
-				'style' => 'margin-left:8px',
-			), array(
-				'label' => 2,
-				'field' => 2
-			));
+			$this->renderPartial('//patient/event_date', array('form'=>$form));
 		}
 
 		foreach ($this->getElements() as $element) {
