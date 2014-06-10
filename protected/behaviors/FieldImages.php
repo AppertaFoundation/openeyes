@@ -46,7 +46,7 @@ class FieldImages extends CActiveRecordBehavior
 
 	private function getMatchingImgs($imgs, $assetManager){
 		$matchImgs = array();
-		$className = get_class($this->owner);
+		$className = CHtml::modelName($this->owner);
 		$fields = implode( '|',$this->owner->fieldImages() );
 
 		//\bname_name-(filippo|pino)-(6|5|9).jpg+\b
