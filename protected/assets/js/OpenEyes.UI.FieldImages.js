@@ -32,12 +32,8 @@
 	 * });
 	 */
 	function FieldImages(options) {
-
 		EventEmitter.call(this);
-
 		this.options = $.extend(true, {}, FieldImages._defaultOptions, options);
-		//this.create();
-		//this.bindEvents();
 	}
 
 	Util.inherits(EventEmitter, FieldImages);
@@ -45,15 +41,15 @@
 	/**
 	 * The default dialog options. Custom options will be merged with these.
 	 * @name OpenEyes.UI.FieldImages#_defaultOptions
-     * @property {string} [title=null] - Dialog title
-     * @property {array} [images=null] - Images available for fields
+		 * @property {string} [title=null] - Dialog title
+		 * @property {array} [images=null] - Images available for fields
 	 * @property {array} [idToImages=null] - Html ID to images relation
 	 */
-    FieldImages._defaultOptions = {
-        title: "Field Images",
-        images: null,
-        idToImages:null,
-        dialogInstance:null
+	FieldImages._defaultOptions = {
+		title: "Field Images",
+		images: null,
+		idToImages:null,
+		dialogInstance:null
 	};
 
 	/**
@@ -63,165 +59,85 @@
 	 * @method
 	 * @private
 	 */
-    FieldImages.prototype.createDiag = function(fieldElId) {
-        this.options.dialog = new OpenEyes.UI.Dialog({
-            title: this.options.title,
-            content: this.createImagesDiv(this.options.idToImages[fieldElId ], fieldElId)
-        });
-        this.options.dialog.open();
-	};
-
-
-    /**
-     * Creates the Images container
-     * @name OpenEyes.UI.FieldImages#createImagesDiv
-     * @method
-     * @private
-     */
-    FieldImages.prototype.createImagesDiv = function(fieldElId, selectId) {
-        var wrapper = jQuery('<div/>', {
-            class:  "fieldsWrapper"
-        });
-        for(var sval in fieldElId['selects']){
-            var imgPath = null;
-            if(fieldElId['id'] in this.options.images){
-                if(sval in this.options.images[fieldElId['id']]){
-                    imgPath = this.options.images[fieldElId['id']][sval];
-                }
-            }
-            var el = jQuery('<div/>', {
-                class: 'ui-field-image'
-            }).click({selectId: selectId, val: sval, fieldImgInstance: this},function(e) {
-                $( "#"+ e.data.selectId).val(e.data.val);
-                e.data.fieldImgInstance.options.dialog.close();
-            });
-            var valPar = jQuery('<p class="ui-field-image-val">' + sval + '</p>', {
-            });
-            if(imgPath){
-                $(el).css("background-image", "url("+ imgPath + ")");
-                $(valPar).appendTo(el);
-            }
-            else{
-                $(el).css("background-color", "#999");
-                $(valPar).appendTo(el);
-                jQuery('<p class="ui-field-image-no-preview">No Preview</p>', {
-                }).appendTo(el)
-            }
-
-            $(el).appendTo(wrapper);
-        }
-        return wrapper;
-    };
-
-    /**
-     * Sets fields  buttons in dom
-     * @name OpenEyes.UI.FieldImages#setFieldButtons
-     * @method
-     * @private
-     */
-    FieldImages.prototype.setFieldButtons = function() {
-        for (var selectId in this.options.idToImages) {
-            if($('#' + selectId)){
-                this.options.idToImages[selectId]
-                jQuery('<img/>', {
-                    id: selectId + "_cog",
-                    src: OE_core_asset_path + '/img/_elements/icons/event/small/images_photo.png',
-                    alt: 'Opens ' + selectId + ' field images',
-                    class: 'ui-field-images-icon'
-                }).insertAfter( '#' + selectId );
-
-                var this_ = this;
-
-                $( '#' + selectId + "_cog").click( function() {
-                    var sId = this.id.substr(0, (this.id.length - 4) );
-                    this_.createDiag( sId);
-                });
-            }
-        }
-        //return this.options.idToImages +   " " + JSON.stringify(this.options.images);
-    };
-
-	/**
-	 * Add content to FieldImages dialog.
-	 * @name OpenEyes.UI.FieldImages#setContent
-	 * @method
-	 * @public
-	 */
-    FieldImages.prototype.setContent = function(content) {
-		this.content.html(content);
-	};
-
-	/**
-	 * Binds common dialog event handlers.
-	 * @name OpenEyes.UI.FieldImages#create
-	 * @method
-	 * @private
-	 */
-	FieldImages.prototype.bindEvents = function() {
-		this.content.on({
-			dialogclose: this.onFieldImagesClose.bind(this),
-			dialogopen: this.onFieldImagesOpen.bind(this)
+	FieldImages.prototype.createDiag = function(fieldElId) {
+		this.options.dialog = new OpenEyes.UI.Dialog({
+			title: this.options.title,
+			content: this.createImagesDiv(this.options.idToImages[fieldElId ], fieldElId)
 		});
+		this.options.dialog.open();
+	};
+
+		/**
+		 * Creates the Images container
+		 * @name OpenEyes.UI.FieldImages#createImagesDiv
+		 * @method
+		 * @private
+		 */
+	FieldImages.prototype.createImagesDiv = function(fieldElId, selectId) {
+		var wrapper = $('<div/>', {
+			'class':  "fieldsWrapper"
+		});
+		for(var sval in fieldElId['selects']){
+			var imgPath = null;
+			if(fieldElId['id'] in this.options.images){
+				if(sval in this.options.images[fieldElId['id']]){
+					imgPath = this.options.images[fieldElId['id']][sval];
+				}
+			}
+			var el = $('<div/>', {
+					class: 'ui-field-image'
+			}).click({
+				selectId: selectId,
+				val: sval,
+				fieldImgInstance: this
+			},function(e) {
+				$( "#"+ e.data.selectId).val(e.data.val);
+				e.data.fieldImgInstance.options.dialog.close();
+			});
+			var valPar = $('<p class="ui-field-image-val">' + sval + '</p>');
+			if(imgPath){
+				$(el).css("background-image", "url("+ imgPath + ")");
+				$(valPar).appendTo(el);
+			}
+			else{
+				$(el).css("background-color", "#999");
+				$(valPar).appendTo(el);
+				$('<p class="ui-field-image-no-preview">No Preview</p>').appendTo(el)
+			}
+
+			$(el).appendTo(wrapper);
+		}
+		return wrapper;
 	};
 
 	/**
-	 * Sets the fieldImages title.
-	 * @name OpenEyes.UI.FieldImages#setTitle
-	 * @method
-	 * @public
-	 */
-	FieldImages.prototype.setIdToImages = function(idToImages) {
-		this.instance.option('idToImages', idToImages);
-	};
-
-    /**
-     * Sets the fieldImages title.
-     * @name OpenEyes.UI.FieldImages#setTitle
-     * @method
-     * @public
-     */
-    FieldImages.prototype.setTitle = function(title) {
-        this.instance.option('title', title);
-    };
-
-	/** Event handlers */
-
-	/**
-	 * Emit the 'open' event after the dialog has opened.
-	 * @name OpenEyes.UI.FieldImages#onFieldImagesOpen
-	 * @fires OpenEyes.UI.FieldImages#open
+	 * Sets fields  buttons in dom
+	 * @name OpenEyes.UI.FieldImages#setFieldButtons
 	 * @method
 	 * @private
 	 */
-	FieldImages.prototype.onFieldImagesOpen = function() {
-		/**
-		 * Emitted after the dialog has opened.
-		 *
-		 * @event OpenEyes.UI.FieldImages#open
-		 */
-		this.emit('open');
-	};
+	FieldImages.prototype.setFieldButtons = function() {
+		for (var selectId in this.options.idToImages) {
 
-	/**
-	 * Emit the 'close' event after the dialog has closed, and optionally destroy
-	 * the dialog.
-	 * @name OpenEyes.UI.FieldImages#onFieldImagesClose
-	 * @fires OpenEyes.UI.FieldImages#close
-	 * @method
-	 * @private
-	 */
-	FieldImages.prototype.onFieldImagesClose = function() {
-		/**
-		 * Emitted after the dialog has closed.
-		 *
-		 * @event OpenEyes.UI.FieldImages#close
-		 */
-		this.emit('close');
+			if($('#' + selectId)){
+				this.options.idToImages[selectId]
+				$('<img/>', {
+					id: selectId + "_cog",
+					src: OE_core_asset_path + '/img/_elements/icons/event/small/images_photo.png',
+					alt: 'Opens ' + selectId + ' field images',
+					'class': 'ui-field-images-icon'
+				}).insertAfter( '#' + selectId );
 
-		if (this.options.destroyOnClose) {
-			this.destroy();
+				var this_ = this;
+
+				$( '#' + selectId + "_cog").click( function() {
+					var sId = this.id.substr(0, (this.id.length - 4) );
+					this_.createDiag( sId);
+				});
+			}
 		}
 	};
+
 	exports.FieldImages = FieldImages;
 
 }(OpenEyes.UI, OpenEyes.Util, OpenEyes.Util.EventEmitter));
