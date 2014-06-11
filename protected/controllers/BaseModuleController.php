@@ -68,7 +68,7 @@ class BaseModuleController extends BaseController {
 	 */
 	protected function beforeAction($action)
 	{
-		if ($this->event_type->disabled) {
+		if ($this->event_type && $this->event_type->disabled) {
 			// disabled module
 			$this->redirectToPatientEpisodes();
 		}
