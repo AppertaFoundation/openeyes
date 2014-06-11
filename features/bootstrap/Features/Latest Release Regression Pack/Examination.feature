@@ -242,7 +242,7 @@ Feature: Create New Examination Regression Tests
     And I add a right Adnexal Comorbidity of "conjunctivitis, "
 
     Then I choose to expand the Pupillary Abnormalities section
-    And I add a left Abnormality of "2"
+    And I add a left Abnormality of "3"
     And I add a right Abnormality of "4"
 
     Then I choose to expand the Diagnoses section
@@ -367,7 +367,7 @@ Feature: Create New Examination Regression Tests
     And I add a right Adnexal Comorbidity of "conjunctivitis, "
 
     Then I choose to expand the Pupillary Abnormalities section
-    And I add a left Abnormality of "2"
+    And I add a left Abnormality of "3"
     And I add a right Abnormality of "4"
 
     Then I choose to expand the Diagnoses section
@@ -494,7 +494,7 @@ Feature: Create New Examination Regression Tests
     And I add a right Adnexal Comorbidity of "conjunctivitis, "
 
     Then I choose to expand the Pupillary Abnormalities section
-    And I add a left Abnormality of "2"
+    And I add a left Abnormality of "3"
     And I add a right Abnormality of "4"
 
     Then I choose to expand the Diagnoses section

@@ -1701,7 +1701,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I choose to add a new left Visual Acuity reading of "([^"]*)" and a reading method of "([^"]*)"$/
+     * @Given /^I choose to add a new left Visual Function reading of "([^"]*)" and a reading method of "([^"]*)"$/
      */
     public function iChooseToAddANewLeftVisualAcuityReadingOfAndAReadingMethodOf($reading, $method)
     {
@@ -1713,7 +1713,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I choose to add a new Right Visual Acuity reading of "([^"]*)" and a reading method of "([^"]*)"$/
+     * @Given /^I choose to add a new Right Visual Function reading of "([^"]*)" and a reading method of "([^"]*)"$/
      */
     public function iChooseToAddANewRightVisualAcuityReadingOfAndAReadingMethodOf($reading, $method)
     {
@@ -1725,7 +1725,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I remove the newly added Left Visual Acuity$/
+     * @Then /^I remove the newly added Left Visual Function$/
      */
     public function iRemoveTheNewlyAddedLeftVisualAcuity()
     {
@@ -1737,7 +1737,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I remove the newly added Right Visual Acuity$/
+     * @Then /^I remove the newly added Right Visual Function$/
      */
     public function iRemoveTheNewlyAddedRightVisualAcuity()
     {
