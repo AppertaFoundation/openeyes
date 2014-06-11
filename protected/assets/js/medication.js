@@ -72,7 +72,7 @@ $(document).ready(function () {
 
 		.on('click', '.medication_stop', function () {
 			closeForms();
-			$('#medication_stop [name=medication_id').val($(this).data('id'));
+			$('#medication_stop [name=medication_id]').val($(this).data('id'));
 			$('#medication_stop .drug_name').text($(this).data('drug-name'));
 			$('#medication_stop').slideDown('fast');
 			$('body').animate({ scrollTop: $('#medication_stop').offset().top - 90 });
