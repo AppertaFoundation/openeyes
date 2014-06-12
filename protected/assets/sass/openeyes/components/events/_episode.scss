@@ -20,6 +20,58 @@
 		.event-content {
 			background-image: image-url("_elements/icons/event/watermark/_episode.png");
 		}
+		&.view {
+			.event-types {
+				.collapsible {
+					@include border-radius(6px);
+					border: 1px solid #7dabd4;
+					margin-left: -.75rem;
+					margin-right: -.75rem;
+					margin-bottom: 10px;
+					.data-title {
+						@extend %clearfix;
+						@include border-radius(6px);
+						background: #f3f3f3;
+						padding-left: 10px;
+						padding-right: 10px;
+						cursor: pointer;
+					}
+					.summary-content {
+						@include border-radius(6px);
+						padding: 0 .75rem;
+						& > div {
+							@include border-radius(8px);
+							border: 6px solid #f3f3f3;
+							border-top: 0;
+							padding-top: 10px;
+						}
+					}
+					.heading {
+						float: left;
+					}
+					.toggle-trigger {
+						@include border-radius(0 0 3px 3px);
+						float: right;
+						position: static;
+						width: auto;
+						background: #dadada;
+						margin-top: -8px;
+						padding: 0 10px;
+						&:hover {
+							background: #3665ff;
+							color: #fff;
+						}
+					}
+				}
+			}
+			table {
+				&.grid.plain {
+					th {
+						background: none;
+					}
+				}
+			}
+		}
 	}
 }
 

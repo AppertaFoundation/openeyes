@@ -40,7 +40,7 @@ if (!empty($episode)) {
 	<div class="row">
 		<div class="large-9 column">
 
-			<section class="eelement element-data">
+			<section class="element element-data">
 				<h3 class="data-title">Overview</h3>
 				<div class="data-value highlight">
 					<?= $episode->patient->genderString ?>, <?= $episode->patient->age ?>, CVI status: <?= $episode->patient->ophInfo->cvi_status->name ?>
@@ -60,34 +60,99 @@ if (!empty($episode)) {
 					<?php echo $episode->eye ? $episode->eye->name : 'None'?>
 				</div>
 			</section>
-
-			<?php
-				$summaryItems = array();
-				if ($episode->subspecialty) {
-					$summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
-				}
-				if (!$summaryItems) {
-					$summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
-				}
-			?>
 		</div>
 	</div>
+
+	<?php
+		$summaryItems = array();
+		if ($episode->subspecialty) {
+			$summaryItems = EpisodeSummaryItem::model()->enabled($episode->subspecialty->id)->findAll();
+		}
+		if (!$summaryItems) {
+			$summaryItems = EpisodeSummaryItem::model()->enabled()->findAll();
+		}
+	?>
+
 	<?php if (count($summaryItems)) {?>
 		<div class="element element-data event-types">
-			<?php
-			foreach ($summaryItems as $summaryItem) {
-				echo '<h3 id="' . $summaryItem->getClassName() . '" class="data-title">' . $summaryItem->name . ':</h3>' . "\n";
+			<?php foreach ($summaryItems as $summaryItem) {
 				Yii::import("{$summaryItem->event_type->class_name}.widgets.{$summaryItem->getClassName()}");
-				$this->widget(
-						$summaryItem->getClassName(),
-						array(
-								'episode' => $episode,
-								'event_type' => $summaryItem->event_type,
-						)
-				);
-			}
-			?>
+				$widget = $this->createWidget($summaryItem->getClassName(), array(
+					'episode' => $episode,
+					'event_type' => $summaryItem->event_type,
+				));
+				$className = '';
+				if ($widget->collapsible) {
+					$className .= 'collapsible';
+					if ($widget->openOnPageLoad) {
+						$className .= ' open';
+					}
+				}
+				?>
+				<div class="<?php echo $className;?>">
+					<h3 id="<?= $summaryItem->getClassName();?>" class="data-title">
+						<?= $summaryItem->name; ?>
+						<?php if ($widget->collapsible){
+							$text = $widget->openOnPageLoad ? 'hide' : 'show';
+							$toggleClassName = $widget->openOnPageLoad ? 'toggle-hide' : 'toggle-show';
+						?>
+							<a href="#" class="toggle-trigger toggle-<?php echo $toggleClassName;?>">
+								<span class="text"><?php echo $text ;?></span>
+								<span class="icon-showhide">
+									Show/hide
+								</span>
+							</a>
+						<?php }?>
+					</h3>
+					<div class="summary-content">
+						<?php $widget->run(); ?>
+					</div>
+				</div>
+			<?php } ?>
 		</div>
+		<script>
+		$(function() {
+
+			$('.event-types .collapsible').each(function() {
+
+				var container = $(this);
+				var content = container.find('.summary-content');
+				var toggler = container.find('.toggle-trigger');
+
+				container
+				.on('open.collapsible', function() {
+					content.show();
+					toggler.find('.text').html('hide');
+					toggler.addClass('toggle-hide');
+				})
+				.on('close.collapsible', function() {
+					content.hide();
+					toggler.find('.text').html('show');
+					toggler.addClass('toggle-show');
+				})
+				.on('click.collapsible', '.data-title', function(e) {
+					e.preventDefault();
+					toggler.removeClass('toggle-hide toggle-show');
+					container.trigger(content.is(':visible') ? 'close' : 'open');
+				});
+
+				if (!container.hasClass('open')) {
+					container.trigger('close.collapsible');
+				}
+			});
+
+			// Open the container on page load if location hash matches id.
+			var hash = window.location.hash;
+			if (hash) {
+				var elem = $(hash);
+				var container = elem.closest('.collapsible');
+				if (container.length) {
+					container.trigger('open');
+					window.location.hash = hash.replace(/#/, '');
+				}
+			}
+		});
+		</script>
 	<?php }?>
 
 	<section class="element element-data">
