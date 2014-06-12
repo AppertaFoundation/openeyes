@@ -28,15 +28,27 @@ class MedicationController extends BaseController
 	 */
 	public function actionForm($patient_id, $medication_id = null)
 	{
-		$this->renderPartial(
-			'form',
-			array(
-				"patient" => $this->fetchModel('Patient', $patient_id),
-				"medication" => $this->fetchModel('Medication', $medication_id, true),
-				"firm" => Firm::model()->findByPk($this->selectedFirmId),
-			),
-			false, true
-		);
+		if($medication_id == 'adherence')
+		{
+			$this->renderPartial(
+				'adherence',
+				array(
+					"patient" => $this->fetchModel('Patient', $patient_id),
+				),
+				false, true
+			);
+		}
+		else {
+			$this->renderPartial(
+				'form',
+				array(
+					"patient" => $this->fetchModel('Patient', $patient_id),
+					"medication" => $this->fetchModel('Medication', $medication_id, true),
+					"firm" => Firm::model()->findByPk($this->selectedFirmId),
+				),
+				false, true
+			);
+		}
 	}
 
 	public function actionFindDrug()
@@ -77,20 +89,41 @@ class MedicationController extends BaseController
 
 	public function actionSave()
 	{
-		$patient = $this->fetchModel('Patient', @$_POST['patient_id']);
-		$medication = $this->fetchModel('Medication', @$_POST['medication_id'], true);
+		if(@$_POST['MedicationAdherence']){
+			$patient = $this->fetchModel('Patient', @$_POST['patient_id']);
 
-		$medication->patient_id = $patient->id;
+			$medication_adherence = MedicationAdherence::model()->find('patient_id=:patient_id', array(':patient_id'=>$patient->id ));
+			if(!$medication_adherence) {
+				$medication_adherence= new MedicationAdherence();
+				$medication_adherence->patient_id=$patient->id;
+			}
+			$medication_adherence->medication_adherence_level_id = $_POST['MedicationAdherence']['level'];
+			$medication_adherence->comments = $_POST['MedicationAdherence']['comments'];
 
-		if (!@$_POST['dose']) $_POST['dose'] = null;
-		if (!@$_POST['end_date']) $_POST['end_date'] = null;
-		$medication->attributes = $_POST;
+			if ($medication_adherence->save()) {
+				$this->renderPartial('lists', array("patient" => $patient));
+			} else {
+				header('HTTP/1.1 422');
+				echo json_encode($medication_adherence->errors);
+			}
+		}
+		else
+		{
+			$patient = $this->fetchModel('Patient', @$_POST['patient_id']);
+			$medication = $this->fetchModel('Medication', @$_POST['medication_id'], true);
 
-		if ($medication->save()) {
-			$this->renderPartial('lists', array("patient" => $patient));
-		} else {
-			header('HTTP/1.1 422');
-			echo json_encode($medication->errors);
+			$medication->patient_id = $patient->id;
+
+			if (!@$_POST['dose']) $_POST['dose'] = null;
+			if (!@$_POST['end_date']) $_POST['end_date'] = null;
+			$medication->attributes = $_POST;
+
+			if ($medication->save()) {
+				$this->renderPartial('lists', array("patient" => $patient));
+			} else {
+				header('HTTP/1.1 422');
+				echo json_encode($medication->errors);
+			}
 		}
 	}
 
