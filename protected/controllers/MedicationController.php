@@ -89,7 +89,7 @@ class MedicationController extends BaseController
 
 	public function actionSave()
 	{
-		if(@$_POST['medication_adherence_level']){
+		if(@$_POST['MedicationAdherence']){
 			$patient = $this->fetchModel('Patient', @$_POST['patient_id']);
 
 			$medication_adherence = MedicationAdherence::model()->find('patient_id=:patient_id', array(':patient_id'=>$patient->id ));
@@ -97,7 +97,8 @@ class MedicationController extends BaseController
 				$medication_adherence= new MedicationAdherence();
 				$medication_adherence->patient_id=$patient->id;
 			}
-			$medication_adherence->medication_adherence_level_id = $_POST['medication_adherence_level'];
+			$medication_adherence->medication_adherence_level_id = $_POST['MedicationAdherence']['level'];
+			$medication_adherence->comments = $_POST['MedicationAdherence']['comments'];
 
 			if ($medication_adherence->save()) {
 				$this->renderPartial('lists', array("patient" => $patient));

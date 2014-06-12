@@ -5,7 +5,13 @@
 		<div class="row field-row">
 			<div class="<?= $form->columns('label') ?>"><label for="adherence">Adherence:</label></div>
 			<div class="<?= $form->columns('field') ?>">
-				<?php echo CHtml::dropDownList('medication_adherence_level', '', CHtml::listData(MedicationAdherenceLevel::model()->findAll(array('order' => 'display_order')), 'id', 'name'))?>
+				<?= CHtml::activeDropDownList($patient->adherence,'level', CHtml::listData(MedicationAdherenceLevel::model()->findAll(array('order' => 'display_order')), 'id', 'name'))?>
+			</div>
+		</div>
+		<div class="row field-row">
+			<div class="<?= $form->columns('label') ?>"><label for="adherence">Comments:</label></div>
+			<div class="<?= $form->columns('field') ?>">
+				<?= CHtml::activeTextArea($patient->adherence,'comments')?>
 			</div>
 		</div>
 	</fieldset>

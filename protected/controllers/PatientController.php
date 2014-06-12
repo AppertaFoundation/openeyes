@@ -1382,6 +1382,4 @@ class PatientController extends BaseController
 		$oprn = 'OprnCreate' . ($event_type->class_name == 'OphDrPrescription' ? 'Prescription' : 'Event');
 		return $this->checkAccess($oprn, $this->firm, $episode, $event_type);
 	}
-
-
 }
