@@ -283,6 +283,7 @@ class OEMigration extends CDbMigration
 			foreach ($columns as $n => &$column) {
 				if ($column == 'pk') $column = 'integer not null';
 				if (preg_match('/^constraint/i', $column)) unset($columns[$n]);
+				$column = str_ireplace(' unique','',$column);
 			}
 
 			$columns = array_merge(

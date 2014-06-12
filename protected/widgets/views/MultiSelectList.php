@@ -74,7 +74,7 @@ $widgetOptionsJson = json_encode(array(
 						foreach ($attributes as $att => $att_val) {
 							echo " " . $att . "=\"" . $att_val . "\"";
 						}
-						echo ">" . CHtml::encode($option) . "</option>";
+						echo ">" . strip_tags($option) . "</option>";
 					}?>
 				</select>
 				<?php if ($showRemoveAllLink) {?>
