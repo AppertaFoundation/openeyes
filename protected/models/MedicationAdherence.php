@@ -45,6 +45,7 @@ class MedicationAdherence extends BaseActiveRecordVersioned
 		return array(
 			array('patient_id, medication_adherence_level_id, comments', 'safe'),
 			array('patient_id, medication_adherence_level_id', 'required'),
+			array('comments', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 	}
 
