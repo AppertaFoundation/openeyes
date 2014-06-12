@@ -54,8 +54,8 @@ class MedicationAdherence extends BaseActiveRecordVersioned
 	public function relations()
 	{
 		return array(
-			'patient' => array(self::BELONGS_TO, 'patient', 'patient_id'),
-			'medication_adherence_level' => array(self::BELONGS_TO, 'medication_adherence_level', 'medication_adherence_level_id'),
+			'patient' => array(self::BELONGS_TO, 'patient', 'id'),
+			'level' => array(self::BELONGS_TO, 'medicationadherencelevel', 'medication_adherence_level_id'),
 		);
 	}
 

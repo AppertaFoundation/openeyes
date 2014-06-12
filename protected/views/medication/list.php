@@ -51,7 +51,7 @@ $medications = $current ? $patient->medications : $patient->previous_medications
 	<table class="plain patient-data">
 		<tr>
 			<th width="128">Adherence</th>
-			<td>Not Recorded</td>
+			<td><?=@$patient->adherence ? $patient->adherence->level->name : 'Not Recorded'?></td>
 		</tr>
 		<?php if ($this->checkAccess('OprnEditMedication')): ?>
 			<tr>

@@ -18,6 +18,7 @@ class m140610_143459_medication_adherence_and_comments extends OEMigration
 		$this->createOETable(
 			'medication_adherence',
 			array(
+				'id' => 'pk',
 				'patient_id' => 'int(11) unsigned unique not null',
 				'medication_adherence_level_id' => 'int(11) not null',
 				'comments' => 'text',

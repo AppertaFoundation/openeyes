@@ -96,13 +96,14 @@ class MedicationController extends BaseController
 			if(!$medication_adherence) {
 				$medication_adherence= new MedicationAdherence();
 				$medication_adherence->patient_id=$patient->id;
-				$medication_adherence->medication_adherence_level_id = $_POST['medication_adherence_level'];
-				if ($medication_adherence->save()) {
-					$this->renderPartial('lists', array("patient" => $patient));
-				} else {
-					header('HTTP/1.1 422');
-					echo json_encode($medication_adherence->errors);
-				}
+			}
+			$medication_adherence->medication_adherence_level_id = $_POST['medication_adherence_level'];
+
+			if ($medication_adherence->save()) {
+				$this->renderPartial('lists', array("patient" => $patient));
+			} else {
+				header('HTTP/1.1 422');
+				echo json_encode($medication_adherence->errors);
 			}
 		}
 		else
