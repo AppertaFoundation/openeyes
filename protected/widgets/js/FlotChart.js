@@ -38,7 +38,7 @@
 		}
 
 		var labels = $(
-			'<div class="row">' +
+			'<div class="row" style="padding-bottom:5px">' +
 			'<div class="column small-6"><span class="data-value">' + left_label + '</span></div>' +
 			'<div class="column small-6"><span class="data-value right">' + right_label + '</span></div>' +
 			'</div>'
@@ -48,6 +48,7 @@
 	}
 
 	function addSlider(plot, x_min, x_max, values, min_range) {
+
 		var slider = $('<div></div>');
 		slider.slider({
 			min: x_min,
@@ -125,6 +126,8 @@
 		});
 
 		slider.insertAfter(plot.getPlaceholder());
+
+		slider.wrap('<div style="padding-top:10px"></div>');
 	}
 
 	function addTooltips(plot, point_labels) {
