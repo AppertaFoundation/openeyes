@@ -39,6 +39,7 @@ class FieldImages extends CActiveRecordBehavior
 		}
 
 		$imgsPath = Yii::getPathOfAlias(self::FIELDS_IMAGES_ALIAS);
+
 		$imgs = $cFile::findFiles($imgsPath, array('fileTypes' => $this->imgTypes));
 
 		return $this->getMatchingImgs($imgs, $assetManager);
@@ -46,7 +47,7 @@ class FieldImages extends CActiveRecordBehavior
 
 	private function getMatchingImgs($imgs, $assetManager){
 		$matchImgs = array();
-		$className = get_class($this->owner);
+		$className = CHtml::modelName($this->owner);
 		$fields = implode( '|',$this->owner->fieldImages() );
 
 		//\bname_name-(filippo|pino)-(6|5|9).jpg+\b
@@ -56,7 +57,7 @@ class FieldImages extends CActiveRecordBehavior
 		foreach($imgs as $img){
 			if(preg_match($pattern, $img, $matches)){
 				$matchImgs[$matches[2]]= $assetManager->getPublishedPathOfAlias(self::FIELDS_IMAGES_ALIAS) .
-					DIRECTORY_SEPARATOR . $matches[0];
+					DIRECTORY_SEPARATOR . basename($matches[0]);
 			}
 		}
 

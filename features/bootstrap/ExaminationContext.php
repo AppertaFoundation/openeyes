@@ -55,7 +55,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I choose to expand the Visual Acuity section$/
+     * @Then /^I choose to expand the Visual Function section$/
      */
     public function iChooseToExpandTheVisualAcuitySection()
     {
@@ -68,7 +68,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I select a Visual Acuity of "([^"]*)"$/
+     * @Given /^I select a Visual Function of "([^"]*)"$/
      */
     public function iSelectAVisualAcuityOf($unit)
     {
@@ -76,12 +76,12 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->selectVisualAcuity($unit);
+        $examination->selectVisualFunction($unit);
 
     }
 
     /**
-     * @Then /^I choose a left Visual Acuity Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+     * @Then /^I choose a left Visual Function Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
      */
     public function SnellenMetreAndAReading($metre, $method)
     {
@@ -89,11 +89,11 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->leftVisualAcuity($metre, $method);
+        $examination->leftVisualFunction($metre, $method);
     }
 
     /**
-     * @Then /^I choose a right Visual Acuity Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+     * @Then /^I choose a right Visual Function Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
      */
     public function RightVisualAcuitySnellenMetre($metre, $method)
     {
@@ -101,11 +101,11 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->rightVisualAcuity($metre, $method);
+        $examination->rightVisualFunction($metre, $method);
     }
 
     /**
-     * @Then /^I choose a left Visual Acuity ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+     * @Then /^I choose a left Visual Function ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
      */
     public function iChooseALeftVisualAcuityEtdrsLettersSnellenMetreAndAReadingMethodOf($metre, $method)
     {
@@ -117,7 +117,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I choose a right Visual Acuity ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
+     * @Then /^I choose a right Visual Function ETDRS Letters Snellen Metre "([^"]*)" and a reading method of "([^"]*)"$/
      */
     public function iChooseARightVisualAcuityEtdrsLettersSnellenMetreAndAReadingMethodOf($metre, $method)
     {
@@ -1701,7 +1701,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I choose to add a new left Visual Acuity reading of "([^"]*)" and a reading method of "([^"]*)"$/
+     * @Given /^I choose to add a new left Visual Function reading of "([^"]*)" and a reading method of "([^"]*)"$/
      */
     public function iChooseToAddANewLeftVisualAcuityReadingOfAndAReadingMethodOf($reading, $method)
     {
@@ -1713,7 +1713,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I choose to add a new Right Visual Acuity reading of "([^"]*)" and a reading method of "([^"]*)"$/
+     * @Given /^I choose to add a new Right Visual Function reading of "([^"]*)" and a reading method of "([^"]*)"$/
      */
     public function iChooseToAddANewRightVisualAcuityReadingOfAndAReadingMethodOf($reading, $method)
     {
@@ -1725,7 +1725,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I remove the newly added Left Visual Acuity$/
+     * @Then /^I remove the newly added Left Visual Function$/
      */
     public function iRemoveTheNewlyAddedLeftVisualAcuity()
     {
@@ -1737,7 +1737,7 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I remove the newly added Right Visual Acuity$/
+     * @Then /^I remove the newly added Right Visual Function$/
      */
     public function iRemoveTheNewlyAddedRightVisualAcuity()
     {

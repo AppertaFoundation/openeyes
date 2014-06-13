@@ -366,10 +366,6 @@ class BaseEventTypeElement extends BaseElement
 		}
 	}
 
-	public function textWithLineBreaks($field) {
-		return str_replace("\n",'<br/>',CHtml::encode($this->$field));
-	}
-
 	/**
 	 * stub method to allow elements to carry out actions related to being a part of a soft deleted event
 	 */

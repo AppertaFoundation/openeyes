@@ -13,7 +13,7 @@ class Examination extends OpenEyesPage
         'duration' => array('xpath' => "//*[@id='dropDownTextSelection_OEModule_OphCiExamination_models_Element_OphCiExamination_History_description']//*[@value='1 week, ']"),
         'openComorbidities' => array('xpath' => "//div[@class='sub-elements inactive']//*[@data-element-type-name='Comorbidities']"),
         'addComorbidities' => array('xpath' => "//select[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_Comorbidities_items']"),
-        'expandVisualAcuity' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Visual Function')]"),
+        'expandVisualFunction' => array('xpath' => "//*[@class='optional-elements-list']//*[contains(text(),'Visual Function')]"),
         'visualAcuityUnitChange' => array('xpath' => "//*[@id='visualacuity_unit_change']"),
         'openRightVA' => array('xpath' => "//*[@class='element-eye left-eye column right side']//*[@class='button small secondary addReading']"),
         'snellenLeft' => array('xpath' => "//select[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_readings_0_value']"),
@@ -269,22 +269,22 @@ class Examination extends OpenEyesPage
         $this->getElement('addComorbidities')->selectOption($com);
     }
 
-    protected function isVisualAcuityCollapsed()
+    protected function isVisualFunctionCollapsed()
     {
-        return (bool) $this->find('xpath', $this->getElement('expandVisualAcuity')->getXpath());
+        return (bool) $this->find('xpath', $this->getElement('expandVisualFunction')->getXpath());
     }
 
     public function openVisualAcuity ()
     {
-        if ($this->isVisualAcuityCollapsed()) {
-            $element = $this->getElement('expandVisualAcuity');
+        if ($this->isVisualFunctionCollapsed()) {
+            $element = $this->getElement('expandVisualFunction');
             $this->scrollWindowToElement($element);
             $element->click();
             $this->getSession()->wait(3000, 'window.$ && $.active == 0');
         }
     }
 
-    public function selectVisualAcuity ($unit)
+    public function selectVisualFunction ($unit)
     {
         $this->waitForElementDisplayBlock('#visualacuity_unit_change');
 
@@ -293,14 +293,14 @@ class Examination extends OpenEyesPage
 //        $this->getSession()->wait(5000);
     }
 
-    public function leftVisualAcuity ($metre, $method)
+    public function leftVisualFunction ($metre, $method)
     {
         $this->getElement('openLeftVA')->click();
         $this->getElement('snellenLeft')->selectOption($metre);
         $this->getElement('readingLeft')->selectOption($method);
     }
 
-    public function rightVisualAcuity ($metre, $method)
+    public function rightVisualFunction ($metre, $method)
     {
         $this->getElement('openRightVA')->click();
         $this->getElement('snellenRight')->selectOption($metre);

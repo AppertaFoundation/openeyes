@@ -466,4 +466,8 @@ class BaseActiveRecord extends CActiveRecord
 		}
 		return parent::beforeDelete();
 	}
+
+	public function textWithLineBreaks($field) {
+		return str_replace("\n",'<br/>',CHtml::encode($this->$field));
+	}
 }

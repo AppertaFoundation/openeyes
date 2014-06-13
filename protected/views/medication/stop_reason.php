@@ -18,7 +18,7 @@ $form->widget(
 	array(
 		'element' => $medication,
 		'field' => 'stop_reason_id',
-		'data' => 'MedicationStopReason',
+		'data' => CHtml::listData(MedicationStopReason::model()->findAll(array('order'=>'name asc')),'id','name'),
 		'htmlOptions' => array('name' => 'stop_reason_id', 'empty' => '- Select -')
 	)
 );

@@ -142,6 +142,7 @@ class Patient extends BaseActiveRecordVersioned
 			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioning_body_patient_assignment(patient_id, commissioning_body_id)'),
 			'referrals' => array(self::HAS_MANY, 'Referral', 'patient_id'),
 			'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
+			'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
 		);
 	}
 
