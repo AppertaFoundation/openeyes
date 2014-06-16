@@ -81,8 +81,8 @@ $widgetOptionsJson = json_encode(array(
 					<a href="#" class="remove-all<?php echo !$found ? ' hide': '';?>">Remove all</a>
 				<?php }?>
 			</div>
-			<?php if (!$found && $noSelectionsMessage) {?>
-				<div class="no-selections-msg pill"><?php echo $noSelectionsMessage;?></div>
+			<?php if ($noSelectionsMessage) {?>
+				<div class="no-selections-msg pill<?php if ($found) {?> hide<?php }?>"><?php echo $noSelectionsMessage;?></div>
 			<?php }?>
 			<ul class="MultiSelectList multi-select-selections<?php if (!$found) echo ' hide';?>">
 				<?php foreach ($selected_ids as $id) {
