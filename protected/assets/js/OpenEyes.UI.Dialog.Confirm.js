@@ -38,7 +38,7 @@
 	function ConfirmDialog(options) {
 
 		options = $.extend(true, {}, ConfirmDialog._defaultOptions, options);
-		options.content = !options.url ? this.getContent(options) : '';
+		options.content = !options.url ? options.content : '';
 
 		Dialog.call(this, options);
 	}

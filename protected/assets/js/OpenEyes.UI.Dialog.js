@@ -134,6 +134,10 @@
 	 * @public
 	 */
 	Dialog.prototype.setContent = function(content) {
+		if (typeof(this.getContent) == 'function') {
+			var options = $.extend({}, this.options, {content: content});
+			content = this.getContent(options);
+		}
 		this.content.html(content);
 	};
 

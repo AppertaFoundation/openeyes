@@ -29,23 +29,20 @@ class ModuleAPI extends CApplicationComponent
 						return $child_api;
 					}
 				}
-
-				if (file_exists(Yii::getPathOfAlias("application.modules.{$moduleName}.components") . DIRECTORY_SEPARATOR . "{$moduleName}_API.php")) {
-					$APIClass_prefix = '';
-					$ns_components = explode('\\', get_class($module));
-					if (count($ns_components) > 1) {
-						// we're namespaced so the class for the api will also be namespaced.
-						$APIClass_prefix = implode('\\', array_slice($ns_components, 0, count($ns_components)-1)) . '\components\\';
-					}
-
-					$APIClass = $APIClass_prefix . $moduleName.'_API';
-					if (class_exists($APIClass)) {
-						return new $APIClass;
-					}
-				}
 			}
-			else {
-				Yii::log('Event type not found for API call for ' . $moduleName);
+
+			if (file_exists(Yii::getPathOfAlias("application.modules.{$moduleName}.components") . DIRECTORY_SEPARATOR . "{$moduleName}_API.php")) {
+				$APIClass_prefix = '';
+				$ns_components = explode('\\', get_class($module));
+				if (count($ns_components) > 1) {
+					// we're namespaced so the class for the api will also be namespaced.
+					$APIClass_prefix = implode('\\', array_slice($ns_components, 0, count($ns_components)-1)) . '\components\\';
+				}
+
+				$APIClass = $APIClass_prefix . $moduleName.'_API';
+				if (class_exists($APIClass)) {
+					return new $APIClass;
+				}
 			}
 		}
 

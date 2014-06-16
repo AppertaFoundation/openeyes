@@ -38,7 +38,6 @@
 	function AlertDialog(options) {
 
 		options = $.extend(true, {}, AlertDialog._defaultOptions, options);
-		options.content = this.getContent(options);
 
 		Dialog.call(this, options);
 	}
