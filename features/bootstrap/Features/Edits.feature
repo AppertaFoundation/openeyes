@@ -421,10 +421,10 @@ Scenario: Route 3A: Login and create a Phasing Event
     And I choose to expand the Comorbidities section
     Then I Add a Comorbiditiy of "4"
 
-    Then I choose to expand the Visual Acuity section
-    And I select a Visual Acuity of "2"
-    Then I choose a left Visual Acuity Snellen Metre "4" and a reading method of "5"
-    Then I choose a right Visual Acuity Snellen Metre "4" and a reading method of "5"
+    Then I choose to expand the Visual Function section
+    And I select a Visual Function of "2"
+    Then I choose a left Visual Function Snellen Metre "4" and a reading method of "5"
+    Then I choose a right Visual Function Snellen Metre "4" and a reading method of "5"
 
     Then I choose to expand the Intraocular Pressure section
     Then I choose a left Intraocular Pressure of "19" and Instrument "2"
