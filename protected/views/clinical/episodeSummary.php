@@ -43,7 +43,7 @@ if (!empty($episode)) {
 			<section class="element element-data">
 				<h3 class="data-title">Overview</h3>
 				<div class="data-value highlight">
-					<?= $episode->patient->genderString ?>, <?= $episode->patient->age ?>, CVI status: <?= $episode->patient->ophInfo->cvi_status->name ?>
+					<?= $episode->patient->genderString ?>, <?= $episode->patient->age ?>, CVI status: <?= $episode->patient->ophInfo->cvi_status->name ?>, Driving status: <?= @$episode->patient->socialhistory->driving_status ? $episode->patient->socialhistory->driving_status->name : 'Unknown'?>
 				</div>
 			</section>
 
