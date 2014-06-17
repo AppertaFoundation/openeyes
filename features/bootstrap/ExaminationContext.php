@@ -2013,4 +2013,136 @@ class ExaminationContext extends PageObjectContext
         $examination->rightEyeMissing();
     }
 
+    /**
+     * @Then /^I choose to expand the Overall Management section$/
+     */
+    public function iChooseToExpandTheOverallManagementSection()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->expandOverallManagement();
+    }
+
+    /**
+     * @Given /^I choose a Clinical Interval of "([^"]*)"$/
+     */
+    public function iChooseAClinicalIntervalOf($interval)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->clinicalInterval($interval);
+    }
+
+    /**
+     * @Given /^I choose a Photo of "([^"]*)"$/
+     */
+    public function iChooseAPhotoOf($photo)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->photo($photo);
+    }
+
+    /**
+     * @Given /^I choose a OCT of "([^"]*)"$/
+     */
+    public function iChooseAOctOf($oct)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->OCT($oct);
+    }
+
+    /**
+     * @Given /^I choose a Visual Fields of "([^"]*)"$/
+     */
+    public function iChooseAVisualFieldsOf($visual)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->visualFields($visual);
+    }
+
+    /**
+     * @Given /^I choose Overall Management Section Comments of "([^"]*)"$/
+     */
+    public function iChooseOverallManagementSectionCommentsOf($comments)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->overallComments($comments);
+    }
+
+    /**
+     * @Given /^I choose a Right Target IOP of "([^"]*)"$/
+     */
+    public function iChooseARightTargetIopOf($iop)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightIOP($iop);
+    }
+
+    /**
+     * @Given /^I choose a Right Gonio of "([^"]*)"$/
+     */
+    public function iChooseARightGonioOf($gonio)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightGonio($gonio);
+    }
+
+    /**
+     * @Given /^I choose a Left Target IOP of "([^"]*)"$/
+     */
+    public function iChooseALeftTargetIopOf($iop)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftIOP($iop);
+    }
+
+    /**
+     * @Given /^I choose a Left Gonio of "([^"]*)"$/
+     */
+    public function iChooseALeftGonioOf($gonio)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftGonio($gonio);
+    }
+
+    /**
+     * @Then /^I choose to expand the Current Management section$/
+     */
+    public function iChooseToExpandTheCurrentManagementSection()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->expandCurrentManagement();
+    }
+
 }

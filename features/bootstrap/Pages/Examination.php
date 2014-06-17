@@ -147,6 +147,21 @@ class Examination extends OpenEyesPage
         'expandLaserManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Laser Management')]"),
         'expandInjectionManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Injection Management')]"),
 
+        'expandOverallManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Overall Management')]"),
+        'OverallClinicInterval' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_clinic_internal_id']"),
+        'OverallPhoto' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_photo_id']"),
+        'OverallOCT' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_oct_id']"),
+        'OverallVisualFields' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_hfa_id']"),
+        'OverallComments' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_comments']"),
+        'OverallLeftTargetIOP'=> array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_right_target_iop']"),
+        'OverallLeftGonio' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_right_gonio_id']"),
+        'OverallRightTargetIOP'=> array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_left_target_iop']"),
+        'OverallRightGonio' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_left_gonio_id']"),
+
+
+        'expandCurrentManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Current Management Plan')]"),
+
+
         'rightCrtIncreaseLowerHundredYes' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_right_Answer_1_1']"),
         'rightCrtIncreaseLowerHundredNo' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_right_Answer_1_0']"),
         'rightCrtIncreaseMoreThanHundredYes' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_right_Answer_2_1']"),
@@ -1347,4 +1362,64 @@ class Examination extends OpenEyesPage
     {
         $this->getElement('rightEyeMissing')->check();
     }
+
+    public function expandOverallManagement ()
+    {
+        $this->getElement('expandOverallManagement')->click();
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
+    }
+
+    public function clinicalInterval ($interval)
+    {
+        $this->getElement('OverallClinicInterval')->selectOption($interval);
+    }
+
+    public function photo ($photo)
+    {
+        $this->getElement('OverallPhoto')->selectOption($photo);
+    }
+
+    public function OCT ($oct)
+    {
+        $this->getElement('OverallOCT')->selectOption($oct);
+    }
+
+    public function visualFields ($visual)
+    {
+        $this->getElement('OverallVisualFields')->selectOption($visual);
+    }
+
+    public function overallComments ($comments)
+    {
+        $this->getElement('OverallComments')->setValue($comments);
+    }
+
+    public function rightIOP ($iop)
+    {
+        $this->getElement('OverallLeftTargetIOP')->selectOption($iop);
+    }
+
+    public function leftIOP ($iop)
+    {
+        $this->getElement('OverallRightTargetIOP')->selectOption($iop);
+    }
+
+    public function rightGonio ($gonio)
+    {
+        $this->getElement('OverallLeftGonio')->selectOption($gonio);
+    }
+
+    public function leftGonio ($gonio)
+    {
+        $this->getElement('OverallRightGonio')->selectOption($gonio);
+    }
+
+    public function expandCurrentManagement ()
+    {
+        $this->getElement('expandCurrentManagement')->click();
+    }
+
+
+
+
 }
