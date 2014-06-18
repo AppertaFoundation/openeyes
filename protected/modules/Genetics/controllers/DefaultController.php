@@ -31,6 +31,17 @@ class DefaultController extends BaseEventTypeController
 		$this->redirect(Yii::app()->createUrl('/Genetics/default/pedigrees'));
 	}
 
+	static protected $action_types = array(
+		'index' => self::ACTION_TYPE_FORM,
+		'Pedigrees' => self::ACTION_TYPE_FORM,
+		'AddPedigree' => self::ACTION_TYPE_FORM,
+		'Genes' => self::ACTION_TYPE_FORM,
+		'AddGene' => self::ACTION_TYPE_FORM,
+		'Inheritance' => self::ACTION_TYPE_FORM,
+		'AddInheritance' => self::ACTION_TYPE_FORM,
+		'EditInheritance' => self::ACTION_TYPE_FORM,
+		);
+
 	public function actionPedigrees()
 	{
 		$errors = array();

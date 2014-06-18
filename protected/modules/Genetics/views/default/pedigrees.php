@@ -73,7 +73,6 @@
 													'htmlOptions' => array(
 														'fieldLabel' => 'Principal diagnosis',
 													),
-													'allowClear' => true,
 												))?>
 											</td>
 										</tr>
