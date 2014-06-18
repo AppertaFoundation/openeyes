@@ -349,7 +349,7 @@ class Event extends BaseActiveRecordVersioned
 		$criteria = new CDbCriteria;
 		$criteria->condition = 'episode_id = :e_id AND event_type_id = :et_id';
 		$criteria->limit = 1;
-		$criteria->order = 'created_date DESC';
+		$criteria->order = ' event_date DESC, created_date DESC';
 		$criteria->params = array(':e_id'=>$this->episode_id, ':et_id'=>$this->event_type_id);
 
 		return Event::model()->find($criteria);

@@ -26,6 +26,8 @@ class PatientTest extends CDbTestCase
 		'Disorder',
 		'SecondaryDiagnosis',
 		'Specialty',
+		'Event',
+		'Episode'
 	);
 
 	public function dataProvider_Search()
@@ -1087,5 +1089,13 @@ class PatientTest extends CDbTestCase
 		$this->markTestIncomplete(
 			'This test has not been implemented yet.'
 		);
+	}
+	/**
+	 * @covers Patient::getLatestEvent
+	 */
+	public function testGetLatestEvent()
+	{
+		$event = $this->patients('patient1')->getLatestEvent();
+		$this->assertEquals('someinfo3', $event->info);
 	}
 }

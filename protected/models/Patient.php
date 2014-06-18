@@ -1214,7 +1214,7 @@ class Patient extends BaseActiveRecordVersioned
 		$criteria = new CDbCriteria();
 		$criteria->addCondition('episode.patient_id = :pid');
 		$criteria->params = array(':pid' => $this->id);
-		$criteria->order = "t.created_date DESC";
+		$criteria->order = "t.event_date DESC, t.created_date DESC";
 		$criteria->limit = 1;
 
 		return Event::model()->with('episode')->find($criteria);
