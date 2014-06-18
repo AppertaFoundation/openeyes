@@ -160,6 +160,29 @@ class Examination extends OpenEyesPage
 
 
         'expandCurrentManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Current Management Plan')]"),
+        'referralOtherService' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_other_service']"),
+        'referralRefraction' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_refraction']"),
+        'referralLVA'=> array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_lva']"),
+        'referralOrthoptics' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_orthoptics']"),
+        'referralCLClinic' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_cl_clinic']"),
+
+        'investigationsVF' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_vf']"),
+        'investigationsUS' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_us']"),
+        'investigationsBiometry' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_biometry']"),
+        'investigationsOCT' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_oct']"),
+        'investigationsHRT' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_hrt']"),
+        'investigationsDiscPhotos' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_disc_photos']"),
+        'investigationsEDT' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_edt']"),
+
+        'rightGlaucomaStatus' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_glaucoma_status_id']"),
+        'rightDropProblems' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_drop-related_prob_id']"),
+        'rightDrops' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_drops_id']"),
+        'rightSurgery' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_right_surgery_id']"),
+
+        'leftGlaucomaStatus' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_left_glaucoma_status_id']"),
+        'leftDropProblems' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_left_drop-related_prob_id']"),
+        'leftDrops' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_left_drops_id']"),
+        'leftSurgery' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_left_surgery_id']"),
 
 
         'rightCrtIncreaseLowerHundredYes' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_right_Answer_1_1']"),
@@ -1416,8 +1439,112 @@ class Examination extends OpenEyesPage
 
     public function expandCurrentManagement ()
     {
-        $this->getElement('expandCurrentManagement')->click();
+        $element = $this->getElement('expandCurrentManagement');
+        $this->scrollWindowToElement($element);
+        $element->click();
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
+
+    public function referralOther ()
+    {
+        $this->getElement('referralOtherService')->check();
+    }
+
+    public function referralRefraction ()
+    {
+        $this->getElement('referralRefraction')->check();
+    }
+
+    public function referralLVA ()
+    {
+        $this->getElement('referralLVA')->check();
+    }
+
+    public function referralOrthoptics ()
+    {
+        $this->getElement('referralOrthoptics')->check();
+    }
+
+    public function referralCLClinic ()
+    {
+        $this->getElement('referralCLClinic')->check();
+    }
+
+    public function investigationsVF ()
+    {
+        $this->getElement('investigationsVF')->check();
+    }
+
+    public function investigationsUS ()
+    {
+        $this->getElement('investigationsUS')->check();
+    }
+
+    public function investigationsBiometry ()
+    {
+        $this->getElement('investigationsBiometry')->check();
+    }
+
+    public function investigationsOCT ()
+    {
+        $this->getElement('investigationsOCT')->check();
+    }
+
+    public function investigationsHRT ()
+    {
+        $this->getElement('investigationsHRT')->check();
+    }
+
+    public function investigationsDiscPhotos ()
+    {
+        $this->getElement('investigationsDiscPhotos')->check();
+    }
+
+    public function investigationsEDT ()
+    {
+        $this->getElement('investigationsEDT')->check();
+    }
+
+    public function leftGlaucomaStatus ($status)
+    {
+        $this->getElement('rightGlaucomaStatus')->selectOption($status);
+    }
+
+    public function leftDropProblems ($problem)
+    {
+        $this->getElement('rightDropProblems')->selectOption($problem);
+    }
+
+    public function leftDrops ($drops)
+    {
+        $this->getElement('rightDrops')->selectOption($drops);
+    }
+
+    public function leftSurgery ($surgery)
+    {
+        $this->getElement('rightSurgery')->selectOption($surgery);
+    }
+
+    public function rightGlaucomaStatus ($status)
+    {
+        $this->getElement('leftGlaucomaStatus')->selectOption($status);
+    }
+
+    public function rightDropProblems ($problem)
+    {
+        $this->getElement('leftDropProblems')->selectOption($problem);
+    }
+
+    public function rightDrops ($drops)
+    {
+        $this->getElement('leftDrops')->selectOption($drops);
+    }
+
+    public function rightSurgery ($surgery)
+    {
+        $this->getElement('leftSurgery')->selectOption($surgery);
+    }
+
 
 
 

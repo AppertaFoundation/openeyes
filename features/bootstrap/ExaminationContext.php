@@ -2145,4 +2145,244 @@ class ExaminationContext extends PageObjectContext
         $examination->expandCurrentManagement();
     }
 
+    /**
+     * @Given /^I choose a Referral of Other Service$/
+     */
+    public function iChooseAReferralOfOtherService()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->referralOther();
+    }
+
+    /**
+     * @Given /^I choose a Referral of Refraction$/
+     */
+    public function iChooseAReferralOfRefraction()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->referralRefraction();
+    }
+
+    /**
+     * @Given /^I choose a Referral of LVA$/
+     */
+    public function iChooseAReferralOfLva()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->referralLVA();
+    }
+
+    /**
+     * @Given /^I choose a Referral of Orthopics$/
+     */
+    public function iChooseAReferralOfOrthopics()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->referralOrthoptics();
+    }
+
+    /**
+     * @Given /^I choose a Referral of CL clinic$/
+     */
+    public function iChooseAReferralOfClClinic()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->referralCLClinic();
+    }
+
+    /**
+     * @Then /^I choose Investigations of VF$/
+     */
+    public function iChooseInvestigationsOfVf()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->investigationsVF();
+    }
+
+    /**
+     * @Then /^I choose Investigations of US$/
+     */
+    public function iChooseInvestigationsOfUs()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->investigationsUS();
+    }
+
+    /**
+     * @Then /^I choose Investigations of Biometry$/
+     */
+    public function iChooseInvestigationsOfBiometry()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->investigationsBiometry();
+    }
+
+    /**
+     * @Then /^I choose Investigations of OCT$/
+     */
+    public function iChooseInvestigationsOfOct()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->investigationsOCT();
+    }
+
+    /**
+     * @Then /^I choose Investigations of HRT$/
+     */
+    public function iChooseInvestigationsOfHrt()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->investigationsHRT();
+    }
+
+    /**
+     * @Then /^I choose Investigations of Disc Photos$/
+     */
+    public function iChooseInvestigationsOfDiscPhotos()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->investigationsDiscPhotos();
+    }
+
+    /**
+     * @Then /^I choose Investigations of EDT$/
+     */
+    public function iChooseInvestigationsOfEdt()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->investigationsEDT();
+    }
+
+    /**
+     * @Given /^I select a Left Glaucoma Status of "([^"]*)"$/
+     */
+    public function iSelectALeftGlaucomaStatusOf($status)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftGlaucomaStatus($status);
+    }
+
+    /**
+     * @Given /^I select a Left Drop related problem of "([^"]*)"$/
+     */
+    public function iSelectALeftDropRelatedProblemOf($problem)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftDropProblems($problem);
+    }
+
+    /**
+     * @Given /^I select a Left Drops of "([^"]*)"$/
+     */
+    public function iSelectALeftDropsOf($drops)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftDrops($drops);
+    }
+
+    /**
+     * @Given /^I select a Left Surgery of "([^"]*)"$/
+     */
+    public function iSelectALeftSurgeryOf($surgery)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftSurgery($surgery);
+    }
+
+    /**
+     * @Given /^I select a Right Glaucoma Status of "([^"]*)"$/
+     */
+    public function iSelectARightGlaucomaStatusOf($status)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightGlaucomaStatus($status);
+    }
+
+    /**
+     * @Given /^I select a Right Drop related problem of "([^"]*)"$/
+     */
+    public function iSelectARightDropRelatedProblemOf($problem)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightDropProblems($problem);
+    }
+
+    /**
+     * @Given /^I select a Right Drops of "([^"]*)"$/
+     */
+    public function iSelectARightDropsOf($drops)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightDrops($drops);
+    }
+
+    /**
+     * @Given /^I select a Right Surgery of "([^"]*)"$/
+     */
+    public function iSelectARightSurgeryOf($surgery)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightSurgery($surgery);
+    }
+
 }
