@@ -18,7 +18,9 @@ require_once dirname(__FILE__) . '/NamespacedBaseAPI.php';
 class BaseAPITest extends CDbTestCase
 {
 	public $fixtures = array(
-		'event_types' => 'EventType'
+		'event_types' => 'EventType',
+		'events' => 'Event',
+		'episodes' =>'Episode'
 	);
 
 	public function testgetModuleClass_unnamespaced()
@@ -62,6 +64,18 @@ class BaseAPITest extends CDbTestCase
 		$m->setAccessible(true);
 
 		$this->assertEquals($this->event_types('event_type1'), $m->invoke($test));
+	}
+
+	public function testGetMostRecentEventInEpisode(){
+		$test = $this->getMockBuilder('BaseAPI')
+			->disableOriginalConstructor()
+			->setMethods(null)
+			->setMockClassName('TestModule_API')
+			->getMock();
+		$event = $this->events('event2');
+		$expectedEvent = $this->events('event3');
+		$resultEvent = $test->getMostRecentEventInEpisode($event->episode_id, $event->event_type_id);
+		$this->assertEquals($expectedEvent->info, $resultEvent->info);
 	}
 
 }
