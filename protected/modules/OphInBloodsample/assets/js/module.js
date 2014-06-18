@@ -44,7 +44,7 @@ $(document).ready(function() {
 
 		var html = $('#add-new-test-template').html();
 
-		var dialog = new OpenEyes.Dialog({
+		var dialog = new OpenEyes.UI.Dialog({
 			destroyOnClose: false,
 			title: 'Add a new test',
 			content: html,
