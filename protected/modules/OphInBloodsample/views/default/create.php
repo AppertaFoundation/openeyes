@@ -17,28 +17,25 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$this->beginContent('//patient/event_container'); ?>
-	<?php
-		$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
-	?>
+$this->beginContent('//patient/event_container');
 
-	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
+$this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
+$this->renderPartial('//base/_messages');
 
-	<?php $this->renderPartial('//base/_messages'); ?>
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+	'id'=>'clinical-create',
+	'enableAjaxValidation'=>false,
+	'layoutColumns' => array(
+		'label' => 4,
+		'field' => 8
+	)
+));
 
-	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'clinical-create',
-		'enableAjaxValidation'=>false,
-		'layoutColumns' => array(
-			'label' => 4,
-			'field' => 8
-		)
-	));
-	?>
-		<?php $this->displayErrors($errors)?>
-		<?php $this->renderOpenElements($this->action->id, $form); ?>
-		<?php $this->renderOptionalElements($this->action->id, $form); ?>
-		<?php $this->displayErrors($errors, true)?>
+$this->displayErrors($errors);
+$this->renderOpenElements($this->action->id, $form);
+$this->renderOptionalElements($this->action->id, $form);
+$this->displayErrors($errors, true);
 
-	<?php $this->endWidget()?>
-<?php $this->endContent()?>
+$this->endWidget();
+
+$this->endContent();

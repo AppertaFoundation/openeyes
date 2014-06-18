@@ -22,9 +22,6 @@
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<header class="element-header">
-		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
-	</header>
 	<fieldset class="element-fields">
 		<?php echo $form->dropDownList($element, 'type_id', CHtml::listData(OphInBloodsample_Sample_Type::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'),false,array('label' => 3, 'field' => 9))?>
 		<?php echo $form->datePicker($element, 'blood_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 9))?>
