@@ -280,7 +280,7 @@ class Episode extends BaseActiveRecordVersioned
 		$criteria = new CDbCriteria;
 		$criteria->compare('episode_id',$this->id);
 		$criteria->compare('event_type_id',$event_type_id);
-		$criteria->order = 'created_date desc';
+		$criteria->order = 'event_date asc';
 		return Event::model()->findAll($criteria);
 	}
 
