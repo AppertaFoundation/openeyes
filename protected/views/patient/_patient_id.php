@@ -52,12 +52,12 @@
 				<?php echo $this->patient->getGenderString() ?>
 			</span>
 
-			<!-- need to genericise this, but as a temporary measure for demo purposes -->
-			<?php if ($ticket_api = Yii::app()->moduleAPI->get('PatientTicketing')) {
-				if ($tickets = OEModule\PatientTicketing\models\Ticket::model()->findByAttributes(array('patient_id' => $this->patient->id))) {?>
-					<span><a href="<?= $this->createURL("//PatientTicketing/default/", array('patient_id' => $this->patient->id)) ?>">Q</a></span>
-				<?php }
-			} ?>
+			<?php foreach (Yii::app()->params['patient_summary_id_widgets'] as $w) {
+				$this->widget($w['class'], array(
+							'patient' => $this->patient,
+						));
+			}?>
+
 			<!-- Warnings -->
 			<?php if ($warnings) {
 				$msgs = array();
