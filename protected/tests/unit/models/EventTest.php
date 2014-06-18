@@ -218,14 +218,11 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::getLatestOfTypeInEpisode
-	 * @todo   Implement testGetLatestOfTypeInEpisode().
 	 */
 	public function testGetLatestOfTypeInEpisode()
 	{
-			// Remove the following lines when you implement this test.
-			$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-			);
+		$event = $this->event('event2')->getLatestOfTypeInEpisode();
+		$this->assertEquals('someinfo3', $event->info);
 	}
 
 	/**

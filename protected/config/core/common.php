@@ -98,11 +98,12 @@ return array(
 				),
 				'flot' => array(
 					'js' => array(
-						'flot/jquery.flot.js',
-						'flot/jquery.flot.time.js',
-						'flot/jquery.flot.navigate.js',
+						'components/flot/jquery.flot.js',
+						'components/flot/jquery.flot.time.js',
+						'components/flot/jquery.flot.navigate.js',
+						'js/jquery.flot.dashes.js'
 					),
-					'basePath' => 'application.assets.components',
+					'basePath' => 'application.assets',
 					'depends' => array('jquery'),
 				)
 			),
