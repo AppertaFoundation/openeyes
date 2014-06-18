@@ -88,6 +88,7 @@ class Event extends BaseActiveRecordVersioned
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, episode_id, event_type_id, created_date, event_date', 'safe', 'on'=>'search'),
+			array('event_date', 'checkEventDate'),
 		);
 	}
 
@@ -118,6 +119,20 @@ class Event extends BaseActiveRecordVersioned
 		}
 
 		return parent::beforeSave();
+	}
+
+	public function checkEventDate($attribute,$params)
+	{
+
+		if(isset($attribute))
+			if(! strtotime($this->{$attribute}))
+			{
+				$this->addError($attribute,'Event date is not valid.');
+			}
+			else if(strtotime($this->{$attribute}) > strtotime(date('Y-m-d  H:i:s'))) {
+				$this->addError($attribute,'Event date cannot be in the future.');
+			}
+
 	}
 
 	public function moduleAllowsEditing()
