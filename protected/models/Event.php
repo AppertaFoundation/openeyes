@@ -123,15 +123,23 @@ class Event extends BaseActiveRecordVersioned
 
 	public function checkEventDate($attribute,$params)
 	{
-		if(isset($attribute))
-			if(!date_create_from_format('Y-m-d',Helper::convertNHS2MySQL($this->{$attribute})))
-			{
-				$this->addError($attribute,'Event date is not valid.');
+		if(isset($attribute)){
+
+			$date_from_picker = date_parse_from_format('j M Y',$this->{$attribute});
+			$date_for_db = date_parse_from_format('Y-m-d',$this->{$attribute});
+
+			if (!checkdate($date_from_picker['month'], $date_from_picker['day'],$date_from_picker['year'])){
+				if (!checkdate($date_for_db['month'], $date_for_db['day'], $date_for_db['year']))
+				{
+					$this->addError($attribute,'Event date is not valid.');
+				}
 			}
-			else if(strtotime($this->{$attribute}) > strtotime(date('Y-m-d  H:i:s'))) {
+			if(strtotime($this->{$attribute}) > strtotime(date('Y-m-d  H:i:s'))) {
 				$this->addError($attribute,'Event date cannot be in the future.');
 			}
+		}
 	}
+
 
 	public function moduleAllowsEditing()
 	{
