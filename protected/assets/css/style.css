@@ -5634,6 +5634,11 @@ tfoot.pagination-container .pagination li {
   opacity: 0.8;
 }
 
+/* line 23, ../sass/openeyes/components/_eyedraw.scss */
+.ed-toolbar-panel {
+  display: none;
+}
+
 /* Add print CSS for specific components to the relevant component files.*/
 /* line 19, ../sass/openeyes/components/_print.scss */
 .printable {
