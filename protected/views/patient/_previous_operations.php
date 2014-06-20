@@ -21,7 +21,7 @@
 	<header class="box-header">
 		<h3 class="box-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
-			Previous operations
+			Previous ophthalmic surgery
 		</h3>
 		<a href="#" class="toggle-trigger toggle-hide js-toggle">
 			<span class="icon-showhide">
@@ -58,7 +58,7 @@
 		<?php if ($this->checkAccess('OprnEditPreviousOperation')) {?>
 			<div class="box-actions">
 				<button  id="btn-add_previous_operation" class="secondary small">
-					Add Previous operation
+					Add Previous ophthalmic surgery
 				</button>
 			</div>
 
@@ -78,7 +78,7 @@
 
 				<fieldset class="field-row">
 
-					<legend><strong>Add Previous operation</strong></legend>
+					<legend><strong>Add previous ophthalmic surgery</strong></legend>
 
 					<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />

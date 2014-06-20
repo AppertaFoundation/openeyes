@@ -181,6 +181,11 @@ class Helper
 		return date($long?'F':'M',mktime(0,0,0,$month,1,date('Y')));
 	}
 
+	public static function padFuzzyDate($day, $month, $year)
+	{
+		return str_pad(@$day,4,'0',STR_PAD_LEFT).'-'.str_pad(@$month,2,'0',STR_PAD_LEFT).'-'.str_pad(@$year,2,'0',STR_PAD_LEFT);
+	}
+
 	/**
 	 * generate string representation of a fuzzy date (fuzzy dates are strings of the format
 	 * yyyy-mm-dd, where mm and dd can be 00 to indicate not being set)
@@ -206,7 +211,7 @@ class Helper
 			return (string) $year;
 		}
 
-		return 'Unknown';
+		return 'Undated';
 	}
 
 	/**

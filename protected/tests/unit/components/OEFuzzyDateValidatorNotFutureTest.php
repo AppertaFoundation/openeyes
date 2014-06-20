@@ -75,7 +75,7 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
 		$this->validator->validateAttribute($this->cModelMock, 'foo');
 		$yearIsRequiredMsg  = $this->cModelMock->getErrors('foo');
 		$this->assertTrue($this->cModelMock->hasErrors());
-		$this->assertEquals('Year is required' , $yearIsRequiredMsg[0]);
+		$this->assertEquals('Year is required if month is provided' , $yearIsRequiredMsg[0]);
 	}
 
 	public function testValidateAttributeMonthIsRequired(){

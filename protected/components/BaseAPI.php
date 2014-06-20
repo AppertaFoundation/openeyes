@@ -92,7 +92,7 @@ class BaseAPI
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type_id);
 		$criteria->compare('episode_id',$episode_id);
-		$criteria->order = 'created_date desc';
+		$criteria->order = 'event_date desc, created_date desc';
 
 		return Event::model()->find($criteria);
 	}
@@ -106,7 +106,7 @@ class BaseAPI
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type_id);
 		$criteria->compare('episode_id',$episode_id);
-		$criteria->order = 'created_date desc';
+		$criteria->order = 'event_date desc, created_date desc';
 
 		foreach (Event::model()->findAll($criteria) as $event) {
 			if ($element = $model::model()->find('event_id=?',array($event->id))) {

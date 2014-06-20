@@ -264,7 +264,7 @@ class Episode extends BaseActiveRecordVersioned
 		$criteria = new CDbCriteria;
 		$criteria->compare('episode_id',$this->id);
 		$criteria->compare('event_type_id',$event_type_id);
-		$criteria->order = 'created_date desc';
+		$criteria->order = 'event_date desc, created_date desc';
 		$criteria->limit = 1;
 		return Event::model()->find($criteria);
 	}
@@ -280,7 +280,7 @@ class Episode extends BaseActiveRecordVersioned
 		$criteria = new CDbCriteria;
 		$criteria->compare('episode_id',$this->id);
 		$criteria->compare('event_type_id',$event_type_id);
-		$criteria->order = 'created_date desc';
+		$criteria->order = 'event_date asc';
 		return Event::model()->findAll($criteria);
 	}
 
@@ -294,7 +294,7 @@ class Episode extends BaseActiveRecordVersioned
 		$criteria = new CDbCriteria();
 		$criteria->addCondition('episode_id = :eid');
 		$criteria->params = array(':eid' => $this->id);
-		$criteria->order = "t.created_date DESC";
+		$criteria->order = "t.event_date DESC, t.created_date DESC";
 		$criteria->limit = 1;
 
 		return Event::model()->with('episode')->find($criteria);

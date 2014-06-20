@@ -111,7 +111,9 @@ class Laser extends OpenEyesPage
 
     public function expandComments ()
     {
-        $this->getElement('expandComments')->click();
+        $element = $this->getElement('expandComments');
+        $this->scrollWindowToElement($element);
+        $element->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
@@ -122,7 +124,10 @@ class Laser extends OpenEyesPage
 
     public function removeComments ()
     {
-        $this->getElement('collapseComments')->click();
+        $element = $this->getElement('collapseComments');
+        $this->scrollWindowToElement($element);
+        $element->click();
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
 
 

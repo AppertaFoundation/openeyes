@@ -5580,23 +5580,6 @@ tfoot.pagination-container .pagination li {
   font-size: 0.8125rem;
 }
 
-/* Add print CSS for specific components to the relevant component files.*/
-/* line 19, ../sass/openeyes/components/_print.scss */
-.printable {
-  display: none;
-}
-/* line 21, ../sass/openeyes/components/_print.scss */
-.printable * {
-  font-size: 9pt;
-}
-@media print {
-  /* line 19, ../sass/openeyes/components/_print.scss */
-  .printable {
-    display: block !important;
-    width: 1050px !important;
-  }
-}
-
 /* line 17, ../sass/openeyes/components/_field-images.scss */
 .ui-field-image {
   background: #666;
@@ -5634,4 +5617,41 @@ tfoot.pagination-container .pagination li {
 .ui-field-images-dropdown {
   width: 50px;
   padding: 2px;
+}
+
+/* line 23, ../sass/openeyes/components/_chart.scss */
+.chart .legend table {
+  cursor: move;
+  min-width: 0;
+  width: auto;
+}
+/* line 27, ../sass/openeyes/components/_chart.scss */
+.chart .legend table tr {
+  float: left;
+}
+/* line 30, ../sass/openeyes/components/_chart.scss */
+.chart .legend table:hover {
+  opacity: 0.8;
+}
+
+/* line 23, ../sass/openeyes/components/_eyedraw.scss */
+.ed-toolbar-panel {
+  display: none;
+}
+
+/* Add print CSS for specific components to the relevant component files.*/
+/* line 19, ../sass/openeyes/components/_print.scss */
+.printable {
+  display: none;
+}
+/* line 21, ../sass/openeyes/components/_print.scss */
+.printable * {
+  font-size: 9pt;
+}
+@media print {
+  /* line 19, ../sass/openeyes/components/_print.scss */
+  .printable {
+    display: block !important;
+    width: 1050px !important;
+  }
 }

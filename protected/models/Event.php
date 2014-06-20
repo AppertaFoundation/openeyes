@@ -88,6 +88,7 @@ class Event extends BaseActiveRecordVersioned
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, episode_id, event_type_id, created_date, event_date', 'safe', 'on'=>'search'),
+			array('event_date', 'checkEventDate'),
 		);
 	}
 
@@ -119,6 +120,26 @@ class Event extends BaseActiveRecordVersioned
 
 		return parent::beforeSave();
 	}
+
+	public function checkEventDate($attribute,$params)
+	{
+		if(isset($attribute)){
+
+			$date_from_picker = date_parse_from_format('j M Y',$this->{$attribute});
+			$date_for_db = date_parse_from_format('Y-m-d',$this->{$attribute});
+
+			if (!checkdate($date_from_picker['month'], $date_from_picker['day'],$date_from_picker['year'])){
+				if (!checkdate($date_for_db['month'], $date_for_db['day'], $date_for_db['year']))
+				{
+					$this->addError($attribute,'Event date is not valid.');
+				}
+			}
+			if(strtotime($this->{$attribute}) > strtotime(date('Y-m-d  H:i:s'))) {
+				$this->addError($attribute,'Event date cannot be in the future.');
+			}
+		}
+	}
+
 
 	public function moduleAllowsEditing()
 	{
@@ -349,7 +370,7 @@ class Event extends BaseActiveRecordVersioned
 		$criteria = new CDbCriteria;
 		$criteria->condition = 'episode_id = :e_id AND event_type_id = :et_id';
 		$criteria->limit = 1;
-		$criteria->order = 'created_date DESC';
+		$criteria->order = ' event_date DESC, created_date DESC';
 		$criteria->params = array(':e_id'=>$this->episode_id, ':et_id'=>$this->event_type_id);
 
 		return Event::model()->find($criteria);
