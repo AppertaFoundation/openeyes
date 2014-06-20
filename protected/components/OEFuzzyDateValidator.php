@@ -41,7 +41,6 @@ class OEFuzzyDateValidator extends CValidator
 	{
 		$dt = $object->$attribute;
 
-
 		$this->year = (integer) substr($dt,0,4);
 		$this->month = (integer) substr($dt,5,2);
 		$this->day = (integer) substr($dt,8,2);
@@ -55,10 +54,6 @@ class OEFuzzyDateValidator extends CValidator
 
 		if($this->month > 0 && (!$this->year > 0)) {
 			$this->addError($object, $attribute, 'Year is required if month is provided');
-		}
-
-		if(!$this->year > 0) {
-			$this->validateEmptyDate();
 		}
 
 		if ($this->day > 0 && $this->month > 0 && $this->year > 0) {
@@ -84,16 +79,7 @@ class OEFuzzyDateValidator extends CValidator
 		}
 	}
 
-
 	protected function validateFuzzyYear()
 	{
-
 	}
-
-	protected function validateEmptyDate()
-	{
-
-	}
-
-
 }
