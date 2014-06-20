@@ -20,56 +20,28 @@
 /**
  * Validator for OpenEyes fuzzy dates
  */
-class OEFuzzyDateValidatorNotFuture extends CValidator
+class OEFuzzyDateValidatorNotFuture extends OEFuzzyDateValidator
 {
-	/**
-	 * Validate a fuzzy date attribute
-	 *
-	 * Dates must be in the format (yyyy-mm-dd). mm and dd can be 00 to indicate the level of fuzziness of the date
-	 *
-	 * This works the same as OEFuzzyDateValidator except that the date cannot be in the future
-	 *
-	 * @param CModel $object the object being validated
-	 * @param string $attribute the attribute being validated
-	 */
-	public function validateAttribute($object, $attribute)
+	protected function validateCompleteDate()
 	{
-		$dt = $object->$attribute;
-		$_year = (integer) substr($dt,0,4);
-		$_month = (integer) substr($dt,5,2);
-		$_day = (integer) substr($dt,8,2);
-
-		if ($_day > 0) {
-			if ($_month > 0) {
-				if ($_year > 0) {
-					// simply check this is a valid date
-					if (!checkdate($_month, $_day, $_year)) {
-						$this->addError($object, $attribute, 'This is not a valid date');
-					} elseif (strtotime($dt) > time()) {
-						$this->addError($object, $attribute, 'The date cannot be in the future');
-					}
-				} else {
-					$this->addError($object, $attribute, 'Year is required');
-				}
-			} else {
-				$this->addError($object, $attribute, 'Month is required if day is provided');
-			}
-		} elseif ($_month > 12) {
-			$this->addError($object, $attribute, 'Invalid month value');
-		} else {
-			if ($_month >0) {
-				if ($_year >0) {
-					if (strtotime($_year."-".$_month."-01") > time()) {
-						$this->addError($object, $attribute, 'The date cannot be in the future');
-					}
-				}
-			} else {
-				if ($_year >0) {
-					if ($_year > date('Y')) {
-						$this->addError($object, $attribute, 'The date cannot be in the future');
-					}
-				}
-			}
+		if (strtotime($this->object->{$this->attribute}) > time()) {
+			$this->addError($this->object, $this->attribute, 'The date cannot be in the future');
 		}
+		parent::validateCompleteDate();
+	}
+
+	protected function validateFuzzyYear()
+	{
+		if ($this->year > date('Y')) {
+			$this->addError($this->object, $this->attribute, 'The date cannot be in the future');
+		}
+	}
+
+	protected function validateFuzzyMonthYear()
+	{
+		if (strtotime($this->year."-".$this->month."-01") > time()) {
+			$this->addError($this->object, $this->attribute, 'The date cannot be in the future');
+		}
+		parent::validateFuzzyMonthYear();
 	}
 }

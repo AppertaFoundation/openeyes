@@ -52,6 +52,7 @@ if (isset($date)) {
 			</div>
 			<div class="large-4 column end">
 				<select name="fuzzy_year">
+					<option value="0">Year (optional)</option>
 				<?php for ($i=date('Y')-50;$i<=date('Y');$i++) {?>
 					<option value="<?= $i?>"<?= ($i == $sel_year) ? " selected" : ""?>><?= $i?></option>
 				<?php }?>
