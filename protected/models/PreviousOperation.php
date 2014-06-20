@@ -56,7 +56,7 @@ class PreviousOperation extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('date, operation, patient_id', 'required'),
+			array('operation, patient_id', 'required'),
 			array('date, side_id, operation, patient_id', 'safe'),
 			array('date', 'OEFuzzyDateValidatorNotFuture'),
 			// The following rule is used by search().

@@ -37,7 +37,7 @@ EOH;
 	public $reset_parent = false;
 	public $defaultAction = 'import';
 
-	protected $required_cols = array('parent_disorder_id', 'subspecialty_code', 'disorder_id');
+	protected $required_cols = array('parent_disorder_id', 'subspecialty_code');
 
 	public function actionImport($args)
 	{
@@ -48,6 +48,10 @@ EOH;
 
 		if (!file_exists($filename)) {
 			$this->usageError("Cannot find import file " . $filename);
+		}
+
+		if (!$this->reset_parent) {
+			$this->required_cols[] = 'disorder_id';
 		}
 
 		$connection = Yii::app()->db;
@@ -77,26 +81,30 @@ EOH;
 					foreach ($columns as $i => $col) {
 						$data[$col] = $record[$i];
 					}
-					if ($st_disorder = $this->getDisorder($data['disorder_id'])) {
-						$subspecialty = $this->getSubspecialty($data['subspecialty_code']);
-
+					if (!$subspecialty = $this->getSubspecialty($data['subspecialty_code'])) {
+						$warnings[] = "no subspecialty found for {$data['subspecialty_code']}";
+					}
+					else {
 						if ($this->reset_parent) {
 							$this->resetSubspecialty($subspecialty);
 						}
-
 						if ($cod = $this->getCOD($data['parent_disorder_id'], $subspecialty)) {
-							$st = new SecondaryToCommonOphthalmicDisorder();
-							$st->parent_id = $cod->id;
-							$st->disorder_id = $st_disorder->id;
-							$st->save();
-							$count++;
+							if ($st_disorder = $this->getDisorder($data['disorder_id'])) {
+								$st = new SecondaryToCommonOphthalmicDisorder();
+								$st->parent_id = $cod->id;
+								$st->disorder_id = $st_disorder->id;
+								$st->save();
+								$count++;
+							}
+							else {
+								if (!$this->reset_parent) {
+									$warnings[] = "Cannot find disorder with id {$data['disorder_id']}";
+								}
+							}
 						}
 						else {
 							$warnings[] = "{$data['parent_disorder_id']} not a common disorder for {$subspecialty->name}";
 						}
-					}
-					else {
-						$warnings[] = "Cannot find disorder with id {$data['disorder_id']}";
 					}
 				}
 			}
