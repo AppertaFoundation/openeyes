@@ -19,6 +19,8 @@
 
 class BaseModuleController extends BaseController {
 
+	/* @var Firm - the firm that user is logged in as for current action action */
+	public $firm;
 	/* @var string alias path for the module of this controller */
 	public $modulePathAlias;
 	/* @var string alias path to asset files for the module */
@@ -59,6 +61,21 @@ class BaseModuleController extends BaseController {
 	}
 
 	/**
+	 * Sets the firm property on the controller from the session
+	 *
+	 * @throws HttpException
+	 */
+	protected function setFirmFromSession()
+	{
+		if (!$firm_id = Yii::app()->session->get('selected_firm_id')) {
+			throw new HttpException('Firm not selected');
+		}
+		if (!$this->firm || $this->firm->id != $firm_id) {
+			$this->firm = Firm::model()->findByPk($firm_id);
+		}
+	}
+
+	/**
 	 * Sets up various standard js and css files for modules
 	 *
 	 * @param CAction $action
@@ -72,7 +89,6 @@ class BaseModuleController extends BaseController {
 			// disabled module
 			$this->redirectToPatientEpisodes();
 		}
-
 
 		// Set the module CSS class name.
 		$this->moduleNameCssClass = strtolower($this->module->id);

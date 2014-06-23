@@ -80,8 +80,6 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	static protected $action_types = array();
 
-	/* @var Firm */
-	public $firm;
 	/* @var Patient */
 	public $patient;
 	/* @var Site */
@@ -165,21 +163,6 @@ class BaseEventTypeController extends BaseModuleController
 			throw new Exception("Action '{$action}' has no type associated with it");
 		}
 		return $this->action_type_map[strtolower($action)];
-	}
-
-	/**
-	 * Sets the firm property on the controller from the session
-	 *
-	 * @throws HttpException
-	 */
-	protected function setFirmFromSession()
-	{
-		if (!$firm_id = Yii::app()->session->get('selected_firm_id')) {
-			throw new HttpException('Firm not selected');
-		}
-		if (!$this->firm || $this->firm->id != $firm_id) {
-			$this->firm = Firm::model()->findByPk($firm_id);
-		}
 	}
 
 	/**
