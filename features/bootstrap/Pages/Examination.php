@@ -148,7 +148,7 @@ class Examination extends OpenEyesPage
         'expandInjectionManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Injection Management')]"),
 
         'expandOverallManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Overall Management')]"),
-        'OverallClinicInterval' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_clinic_internal_id']"),
+        'OverallClinicInterval' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_clinic_interval_id']"),
         'OverallPhoto' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_photo_id']"),
         'OverallOCT' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_oct_id']"),
         'OverallVisualFields' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_hfa_id']"),
@@ -159,7 +159,7 @@ class Examination extends OpenEyesPage
         'OverallRightGonio' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_left_gonio_id']"),
 
 
-        'expandCurrentManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Current Management Plan')]"),
+        'expandCurrentManagement' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Current Management plan')]"),
         'referralOtherService' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_other_service']"),
         'referralRefraction' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_refraction']"),
         'referralLVA'=> array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_CurrentManagementPlan_lva']"),

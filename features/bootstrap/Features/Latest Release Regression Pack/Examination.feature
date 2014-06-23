@@ -1001,9 +1001,9 @@ Feature: Create New Examination Regression Tests
     And I choose a Visual Fields of "5"
     And I choose Overall Management Section Comments of "Automation Test Comments"
     And I choose a Right Target IOP of "15"
-    And I choose a Right Gonio of "6"
+    And I choose a Right Gonio of "2"
     And I choose a Left Target IOP of "15"
-    And I choose a Left Gonio of "6"
+    And I choose a Left Gonio of "3"
 
     Then I choose to expand the Current Management section
 
