@@ -91,7 +91,7 @@ class Prescription extends OpenEyesPage
     public function prescriptionDropdown ($drug)
     {
         $this->getElement('prescriptionCommonDrug')->selectOption($drug);
-        $this->getSession()->wait(1000);
+        $this->getSession()->wait(3000);
     }
 
     public function standardSet ($set)

@@ -55,6 +55,19 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I choose to expand the Visual Function section$/
+     */
+    public function iChooseToExpandTheVisualFunctionSection()
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination = $this->getPage('Examination');
+        $examination->openVisualFunction();
+
+    }
+
+    /**
      * @Then /^I choose to expand the Visual Acuity section$/
      */
     public function iChooseToExpandTheVisualAcuitySection()

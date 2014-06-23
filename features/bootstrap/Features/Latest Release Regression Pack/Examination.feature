@@ -36,9 +36,9 @@ Feature: Create New Examination Regression Tests
     Then I Add a Comorbiditiy of "10"
     Then I Add a Comorbiditiy of "11"
     Then I Add a Comorbiditiy of "12"
-    Then I Add a Comorbiditiy of "13"
-    Then I Add a Comorbiditiy of "14"
-    Then I Add a Comorbiditiy of "15"
+#    Then I Add a Comorbiditiy of "13"
+#    Then I Add a Comorbiditiy of "14"
+#    Then I Add a Comorbiditiy of "15"
 
     Then I remove all comorbidities
 
@@ -58,6 +58,8 @@ Feature: Create New Examination Regression Tests
     Then I enter right Axis degrees of "38"
     Then I enter right Axis degrees of "38"
     And I enter a right type of "3"
+
+    Then I choose to expand the Visual Function section
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "2"
@@ -102,10 +104,12 @@ Feature: Create New Examination Regression Tests
     And I choose to expand the Comorbidities section
     Then I Add a Comorbiditiy of "4"
 
+    Then I choose to expand the Visual Function section
+
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
-    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
-    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
+    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
+    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
     And I choose to add a new left Visual Acuity reading of "6" and a reading method of "4"
     And I choose to add a new Right Visual Acuity reading of "3" and a reading method of "2"
@@ -155,10 +159,12 @@ Feature: Create New Examination Regression Tests
     And I choose to expand the Comorbidities section
     Then I Add a Comorbiditiy of "8"
 
+    Then I choose to expand the Visual Function section
+
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
-    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
-    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
+    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
+    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
     Then I choose to expand the Intraocular Pressure section
     Then I choose a left Intraocular Pressure of "8" and Instrument "4"
@@ -212,8 +218,8 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
-    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
-    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
+    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
+    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
     Then I choose to expand the Intraocular Pressure section
     Then I choose a left Intraocular Pressure of "8" and Instrument "4"
@@ -337,10 +343,12 @@ Feature: Create New Examination Regression Tests
     And I choose to expand the Comorbidities section
     Then I Add a Comorbiditiy of "8"
 
+    Then I choose to expand the Visual Function section
+
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
-    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
-    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
+    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
+    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
     Then I choose to expand the Intraocular Pressure section
     Then I choose a left Intraocular Pressure of "8" and Instrument "4"
@@ -464,10 +472,12 @@ Feature: Create New Examination Regression Tests
     And I choose to expand the Comorbidities section
     Then I Add a Comorbiditiy of "8"
 
+    Then I choose to expand the Visual Function section
+
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "1"
-    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
-    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "145" and a reading method of "2"
+    Then I choose a left Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
+    Then I choose a right Visual Acuity ETDRS Letters Snellen Metre "119" and a reading method of "2"
 
     Then I choose to expand the Intraocular Pressure section
     Then I choose a left Intraocular Pressure of "8" and Instrument "4"
