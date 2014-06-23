@@ -1160,7 +1160,7 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.jpg?1395225715') 0 0 no-repeat;
+  background: #dae6f1 url('../img/_structure/gradient_bg.png?1403530486') 0 0 repeat-x;
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1234px;
@@ -1184,7 +1184,7 @@ html, body {
 
 /* line 18, ../sass/openeyes/components/containers/_content.scss */
 .container.content {
-  background: url('../img/_structure/help_top_grad.jpg?1395225715') 0 bottom no-repeat;
+  background: url('../img/_structure/help_top_grad.jpg?1403530605') 0 bottom no-repeat;
   min-height: 330px;
 }
 @media print {

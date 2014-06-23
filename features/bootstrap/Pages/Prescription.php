@@ -78,7 +78,9 @@ class Prescription extends OpenEyesPage
 
     public function removeThirdTaper ()
     {
-        $this->getElement('removeThirdTaper')->click();
+        $element = $this->getElement('removeThirdTaper');
+        $this->scrollWindowToElement($element);
+        $element->click();
     }
 
     public function noPreservativeCheckbox ()
