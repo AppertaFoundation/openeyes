@@ -17,7 +17,7 @@
 .container {
 	&.main {
 		@include radius;
-		background: #dae6f1 image-url("_structure/gradient_bg.jpg") 0 0 no-repeat;
+		background: #dae6f1 image-url("_structure/gradient_bg.png") 0 0 repeat-x;
 		border: 2px solid #b3b0ae;
 		margin-bottom: 40px;
 		width: $row-width + 4;
