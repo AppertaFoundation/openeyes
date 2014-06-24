@@ -52,6 +52,14 @@
 				<?php echo $this->patient->getGenderString() ?>
 			</span>
 
+			<?php if ($widgets = Yii::app()->params['patient_summary_id_widgets']) {
+				foreach ($widgets as $w) {
+					$this->widget($w['class'], array(
+									'patient' => $this->patient,
+							));
+				}
+			}?>
+
 			<!-- Warnings -->
 			<?php if ($warnings) {
 				$msgs = array();

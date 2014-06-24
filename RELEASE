@@ -7,6 +7,7 @@ TBC
 ---
 + support for module namespacing
 + support for automatically handling HAS_MANY and MANY_MANY relations in BaseActiveRecord
++ implemented the patient_summary_id_widgets config parameter to support modules adding additional links
 
 1.6.5
 -----
