@@ -15,34 +15,34 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 .ui-field-image {
-  background: #666;
-  width:200px;
-  height:129px;
-  margin:3px;
-  float:left;
-  text-align:center;
-  font-size:16px
+	background: #666;
+	width: 200px;
+	height: 129px;
+	margin: 3px;
+	float: left;
+	text-align: center;
+	font-size: 16px;
 }
 
 .ui-field-image-val {
-  background-color:yellow;
-  margin:1px;
-  width:20px
-}
-.ui-field-image-no-preview{
-  position:relative;
-  top:30%;
-  background-color: #fff;
-  width: 100px;
-  margin-left: 50px;
-  padding:5px 0
+	background-color: yellow;
+	margin: 1px;
+	width: 20px;
 }
 
-.ui-field-images-icon{
-  padding:3px
+.ui-field-image-no-preview {
+	position: relative;
+	top: 30%;
+	background-color: #fff;
+	width: 100px;
+	margin-left: 50px;
+	padding: 5px 0;
 }
 
-.ui-field-images-dropdown{
-  width:50px;
-  padding:2px;
+.ui-field-images-icon {
+	padding: 3px 0 3px 3px;
+}
+
+.ui-field-images-dropdown {
+	width: 50px;
 }
