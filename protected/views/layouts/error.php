@@ -21,6 +21,7 @@
 <html lang="en">
 <head>
 	<?php $this->renderPartial('//base/head/_meta'); ?>
+	<?php $this->renderPartial('//base/head/_assets'); ?>
 </head>
 <body class="open-eyes">
 
