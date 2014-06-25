@@ -1,6 +1,6 @@
 <?php
 
-class m140625_123445_remove_textbox_from_common_operations extends CDbMigration
+class m140625_123445_remove_textbox_from_common_operations extends OEMigration
 {
 	public function up()
 	{
