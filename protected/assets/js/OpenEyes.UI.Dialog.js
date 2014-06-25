@@ -432,6 +432,7 @@
 	Dialog.prototype.onContentLoad = function() {
 		this.removeLoadingState();
 		this.setDimensions();
+		this.reposition();
 	};
 
 	/**
