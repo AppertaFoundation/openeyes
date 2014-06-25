@@ -2099,6 +2099,18 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
+     * @Given /^I choose a Gonio of "([^"]*)"$/
+     */
+    public function iChooseAGonioOf($gonio)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->gonioDropdown($gonio);
+    }
+
+    /**
      * @Given /^I choose a Right Target IOP of "([^"]*)"$/
      */
     public function iChooseARightTargetIopOf($iop)

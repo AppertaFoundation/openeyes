@@ -155,6 +155,7 @@ class Examination extends OpenEyesPage
         'OverallVisualFields' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_hfa_id']"),
         'OverallComments' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_comments']"),
         'OverallLeftTargetIOP'=> array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_right_target_iop']"),
+        'gonioDropdown' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_gonio_id']"),
         'OverallLeftGonio' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_right_gonio_id']"),
         'OverallRightTargetIOP'=> array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_left_target_iop']"),
         'OverallRightGonio' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_OverallManagementPlan_left_gonio_id']"),
@@ -1442,6 +1443,11 @@ class Examination extends OpenEyesPage
     public function leftIOP ($iop)
     {
         $this->getElement('OverallRightTargetIOP')->selectOption($iop);
+    }
+
+    public function gonioDropdown ($gonio)
+    {
+        $this->getElement('gonioDropdown')->selectOption($gonio);
     }
 
     public function rightGonio ($gonio)
