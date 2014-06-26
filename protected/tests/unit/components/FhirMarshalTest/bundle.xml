@@ -2,12 +2,25 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Search results</title>
   <id>http://example.com</id>
-  <updated>2014-01-27T18:00:08+00:00</updated>
+  <link rel="self" href="http://example.com"/>
   <os:totalResults xmlns:os="http://a9.com/-/spec/opensearch/1.1/">100</os:totalResults>
+  <updated>2014-01-27T18:00:08+00:00</updated>
+  <author>
+    <name>Nathan Barley</name>
+    <uri>http://example.com</uri>
+  </author>
+  <category term="http://example.com" label="foo" scheme="http://hl7.org/fhir/tag"/>
   <entry>
     <title>Entry 1</title>
     <id>http://example.com/1</id>
+    <link rel="self" href="http://example.com"/>
     <updated>2014-01-27T18:00:08+00:00</updated>
+    <published>2014-01-27T18:00:08+00:00</published>
+    <author>
+      <name>Nathan Barley</name>
+      <uri>http://example.com</uri>
+    </author>
+    <category term="http://example.com" label="foo" scheme="http://hl7.org/fhir/tag"/>
     <content type="text/xml">
       <Patient xmlns="http://hl7.org/fhir">
         <active value="true"/>

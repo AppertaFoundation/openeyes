@@ -2,13 +2,20 @@
 	"resourceType": "Bundle",
 	"title": "Search results",
 	"id": "http://example.com",
-	"updated": "2014-01-27T18:00:08+00:00",
+	"link": [ { "rel": "self", "href": "http://example.com" } ],
 	"totalResults": 100,
+	"updated": "2014-01-27T18:00:08+00:00",
+	"author": { "name": "Nathan Barley", "uri": "http://example.com" },
+	"category": [ { "term": "http://example.com", "label": "foo", "scheme": "http://hl7.org/fhir/tag" } ],
 	"entry": [
 		{
 			"title": "Entry 1",
 			"id": "http://example.com/1",
+			"link": [ { "rel": "self", "href": "http://example.com" } ],
 			"updated": "2014-01-27T18:00:08+00:00",
+			"published": "2014-01-27T18:00:08+00:00",
+			"author": { "name": "Nathan Barley", "uri": "http://example.com" },
+			"category": [ { "term": "http://example.com", "label": "foo", "scheme": "http://hl7.org/fhir/tag" } ],
 			"content": {
 				"resourceType": "Patient",
 				"active": true
