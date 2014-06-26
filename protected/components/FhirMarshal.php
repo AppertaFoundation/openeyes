@@ -162,6 +162,8 @@ class FhirMarshal extends CApplicationComponent
 		foreach ($element->childNodes as $child) {
 			if (!$child instanceof DOMElement) continue;
 
+			$os_prefix = $child->lookupPrefix("http://a9.com/-/spec/opensearch/1.1/");
+
 			switch ($child->tagName) {
 				case 'link':
 					$link = new StdClass;
@@ -177,6 +179,9 @@ class FhirMarshal extends CApplicationComponent
 				case 'uri':
 				case 'div':
 					$obj->{$child->tagName} = $child->textContent;
+					break;
+				case "{$os_prefix}:totalResults":
+					$obj->totalResults = $child->textContent;
 					break;
 				case 'author':
 				case 'content':
@@ -328,7 +333,12 @@ class FhirMarshal extends CApplicationComponent
 			$values = is_array($value) ? $value : array($value);
 
 			foreach ($values as $value) {
-				$el = $doc->createElement($name);
+				if ($name == 'totalResults') {
+					$el = $doc->createElementNs("http://a9.com/-/spec/opensearch/1.1/", "os:totalResults");
+				} else {
+					$el = $doc->createElement($name);
+				}
+
 				switch ($name) {
 					case 'link': // value contains attributes
 					case 'category':
@@ -339,6 +349,7 @@ class FhirMarshal extends CApplicationComponent
 					case 'title': // value is text content
 					case 'id':
 					case 'updated':
+					case 'totalResults':
 						$el->appendChild($doc->createTextNode($value));
 						$parent->appendChild($el);
 						break;

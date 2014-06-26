@@ -3,6 +3,7 @@
   <title>Search results</title>
   <id>http://example.com</id>
   <updated>2014-01-27T18:00:08+00:00</updated>
+  <os:totalResults xmlns:os="http://a9.com/-/spec/opensearch/1.1/">100</os:totalResults>
   <entry>
     <title>Entry 1</title>
     <id>http://example.com/1</id>

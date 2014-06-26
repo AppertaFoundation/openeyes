@@ -3,6 +3,7 @@
 	"title": "Search results",
 	"id": "http://example.com",
 	"updated": "2014-01-27T18:00:08+00:00",
+	"totalResults": 100,
 	"entry": [
 		{
 			"title": "Entry 1",
