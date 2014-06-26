@@ -23,9 +23,7 @@
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<header class="element-header">
-		<h3 class="element-title"><?php echo $element->elementType->name; ?></h3>
-	</header>
+
 	<div class="element-fields">
 		<?php echo $form->dropDownList($element, 'gene_id', CHtml::listData(PedigreeGene::model()->findAll(array('order'=>'name asc')),'id','name'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
 		<?php echo $form->dropDownList($element, 'method_id', CHtml::listData(OphInGenetictest_Test_Method::model()->findAll(array('order'=>'name asc')),'id','name'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
