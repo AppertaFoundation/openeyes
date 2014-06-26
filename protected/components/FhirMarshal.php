@@ -162,9 +162,9 @@ class FhirMarshal extends CApplicationComponent
 		foreach ($element->childNodes as $child) {
 			if (!$child instanceof DOMElement) continue;
 
-			$os_prefix = $child->lookupPrefix("http://a9.com/-/spec/opensearch/1.1/");
+			$local_name = preg_replace('/^.*:/', '', $child->tagName);
 
-			switch ($child->tagName) {
+			switch ($local_name) {
 				case 'link':
 					$link = new StdClass;
 					foreach ($child->attributes as $name => $value) {
@@ -178,10 +178,8 @@ class FhirMarshal extends CApplicationComponent
 				case 'name':
 				case 'uri':
 				case 'div':
-					$obj->{$child->tagName} = $child->textContent;
-					break;
-				case "{$os_prefix}:totalResults":
-					$obj->totalResults = $child->textContent;
+				case 'totalResults':
+					$obj->{$local_name} = $child->textContent;
 					break;
 				case 'author':
 				case 'content':
