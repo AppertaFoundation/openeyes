@@ -35,13 +35,11 @@ $this->beginContent('//patient/event_container');?>
 // Event actions
 $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'secondary'), array('class'=>'button small', 'form'=>'clinical-create'));
 
-?>
+$this->displayErrors($errors);
+$this->renderOpenElements($this->action->id, $form);
+$this->renderOptionalElements($this->action->id, $form);
+$this->displayErrors($errors, true);
 
-<?php $this->displayErrors($errors)?>
-<?php $this->renderDefaultElements($this->action->id, $form)?>
-<?php $this->renderOptionalElements($this->action->id, $form)?>
-<?php $this->displayErrors($errors, true)?>
+$this->endWidget();
 
-<?php $this->endWidget()?>
-
-<?php $this->endContent()?>
+$this->endContent()?>
