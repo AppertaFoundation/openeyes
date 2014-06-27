@@ -64,18 +64,20 @@ class EventType extends BaseActiveRecordVersioned
         );
     }
 
-    /**
-     * @return array relational rules.
-     */
-    public function relations()
-    {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-            'events' => array(self::HAS_MANY, 'Event', 'event_type_id'),
-            'elementTypes' => array(self::HAS_MANY, 'ElementType', 'event_type_id'),
-        );
-    }
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'events' => array(self::HAS_MANY, 'Event', 'event_type_id'),
+			'elementTypes' => array(self::HAS_MANY, 'ElementType', 'event_type_id'),
+            'parent' => array(self::BELONGS_TO, 'Event', 'parent_id'),
+            'children' => array(self::HAS_MANY, 'Event', 'parent_id'),
+		);
+	}
 
     /**
      * @return array customized attribute labels (name=>label)
