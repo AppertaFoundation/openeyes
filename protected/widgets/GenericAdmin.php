@@ -1,0 +1,38 @@
+<?php
+
+class GenericAdmin extends BaseCWidget
+{
+	public $model;
+	public $data;
+	public $errors;
+	public $extra_fields = array();
+
+	public function init()
+	{
+		$model = $this->model;
+
+		if (!$this->extra_fields) {
+			$this->extra_fields = array();
+		}
+
+		if (empty($_POST['id'])) {
+			$this->data = $model::model()->findAll(array('order'=>'display_order asc'));
+		} else {
+			$this->data = array();
+
+			foreach ($_POST['id'] as $i => $id) {
+				$item = new $model;
+				$item->id = $id;
+				$item->name = $_POST['name'][$i];
+
+				foreach ($this->extra_fields as $field) {
+					$item->{$field['field']} = $_POST[$field['field']][$i];
+				}
+
+				$this->data[] = $item;
+			}
+		}
+
+		return parent::init();
+	}
+}

@@ -21,6 +21,7 @@ class BaseAdminController extends BaseController
 {
 	public $layout = '//layouts/admin';
 	public $items_per_page = 30;
+	public $form_errors;
 
 	public function accessRules()
 	{
@@ -32,15 +33,20 @@ class BaseAdminController extends BaseController
 		Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
 		Yii::app()->assetManager->registerScriptFile('js/admin.js', null, 10);
 		$this->jsVars['items_per_page'] = $this->items_per_page;
+
+		if (!empty($_POST['GenericAdminModel'])) {
+			$this->handleGenericAdmin();
+		}
+
 		return parent::beforeAction($action);
 	}
 
 	/**
 	 *	@description Initialise and handle admin pagination
-	 *  @author bizmate
-	 * 	@param class $model
-	 * 	@param string $criteria
-	 * 	@return CPagination
+	 *	@author bizmate
+	 *	@param class $model
+	 *	@param string $criteria
+	 *	@return CPagination
 	 */
 	protected function initPagination($model, $criteria = null)
 	{
@@ -50,5 +56,60 @@ class BaseAdminController extends BaseController
 		$pagination->pageSize = $this->items_per_page;
 		$pagination->applyLimit($criteria);
 		return $pagination;
+	}
+
+	public function handleGenericAdmin()
+	{
+		$model = $_POST['GenericAdminModel'];
+
+		$ids = array();
+
+		$to_save = array();
+
+		if (!empty($_POST['id'])) {
+			foreach ($_POST['id'] as $i => $id) {
+				if ($id) {
+					$item = $model::model()->findByPk($id);
+				} else {
+					$item = new $model;
+				}
+
+				$item->name = $_POST['name'][$i];
+				$item->display_order = $i+1;
+
+				if (!empty($_POST['_extra_fields'])) {
+					foreach ($_POST['_extra_fields'] as $field) {
+						$item->$field = $_POST[$field][$i];
+					}
+				}
+
+				if (!$item->validate()) {
+					$errors = $item->getErrors();
+					foreach ($errors as $error) {
+						$this->form_errors[$i] = $error[0];
+					}
+				} else {
+					$to_save[] = $item;
+				}
+
+				$ids[] = $item->id;
+			}
+		}
+
+		if (empty($this->form_errors)) {
+			foreach ($to_save as $item) {
+				if (!$item->save()) {
+					throw new Exception("Unable to save admin list item: ".print_r($item->getErrors(),true));
+				}
+			}
+
+			$criteria = new CDbCriteria;
+
+			!empty($ids) && $criteria->addNotInCondition('id',$ids);
+
+			$model::model()->deleteAll($criteria);
+
+			Yii::app()->user->setFlash('success', "List updated.");
+		}
 	}
 }

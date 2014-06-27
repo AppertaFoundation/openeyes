@@ -16,7 +16,7 @@
 
 .container {
 	&.content {
-		background: image-url("_structure/help_top_grad.jpg") 0 bottom no-repeat;
+		background: image-url("_structure/help_top_grad.png") 0 bottom repeat-x;
 		min-height: 330px;
 		@media print {
 			min-height: 0;

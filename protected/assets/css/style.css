@@ -1160,7 +1160,7 @@ html, body {
 .container.main {
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  background: #dae6f1 url('../img/_structure/gradient_bg.png?1403530761') 0 0 repeat-x;
+  background: #dae6f1 url('../img/_structure/gradient_bg.png?1403619695') 0 0 repeat-x;
   border: 2px solid #b3b0ae;
   margin-bottom: 40px;
   width: 1234px;
@@ -1184,7 +1184,7 @@ html, body {
 
 /* line 18, ../sass/openeyes/components/containers/_content.scss */
 .container.content {
-  background: url('../img/_structure/help_top_grad.jpg?1403530761') 0 bottom no-repeat;
+  background: url('../img/_structure/help_top_grad.png?1403786291') 0 bottom repeat-x;
   min-height: 330px;
 }
 @media print {
@@ -2523,6 +2523,11 @@ input[type="text"].large, input[type="password"].large, input[type="date"].large
 /* line 281, ../sass/openeyes/components/_forms.scss */
 .field-value.highlight.important, .highlight.important.field-label, .highlight.important.data-label, .highlight.important.data-value {
   background: #fff300;
+}
+
+/* line 292, ../sass/openeyes/components/_forms.scss */
+.generic-admin .reorder {
+  width: 2em;
 }
 
 /* line 96, ../sass/openeyes/_mixins.scss */
@@ -4327,7 +4332,7 @@ tfoot.pagination-container .pagination li {
 /* line 158, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .events .ev_date {
   padding-left: 21px;
-  background: url('../img/_elements/icons/event/small/datetime-past.png?1402303225') left center no-repeat;
+  background: url('../img/_elements/icons/event/small/datetime-past.png?1403619695') left center no-repeat;
 }
 /* line 162, ../sass/openeyes/components/panels/_episode.scss */
 .panel.episode .events .event-date {
@@ -4686,7 +4691,7 @@ tfoot.pagination-container .pagination li {
 }
 /* line 20, ../sass/openeyes/components/events/_episode.scss */
 .event.episode .event-content {
-  background-image: url('../img/_elements/icons/event/watermark/_episode.png?1396605975');
+  background-image: url('../img/_elements/icons/event/watermark/_episode.png?1403619695');
 }
 /* line 25, ../sass/openeyes/components/events/_episode.scss */
 .event.episode.view .event-types .collapsible {
