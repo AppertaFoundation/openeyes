@@ -18,7 +18,6 @@
  */
 ?>
 <?php $this->beginContent('//patient/event_container'); ?>
-	<h2 class="event-title"><?php echo $this->event_type->name ?></h2>
 	<?php
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'clinical-create',
@@ -42,7 +41,7 @@
 		);
 		?>
 		<?php  $this->displayErrors($errors)?>
-		<?php  $this->renderDefaultElements($this->action->id, $form)?>
+		<?php  $this->renderOpenElements($this->action->id, $form)?>
 		<?php  $this->renderOptionalElements($this->action->id, $form)?>
 		<?php  $this->displayErrors($errors, true)?>
 	<?php $this->endWidget()?>
