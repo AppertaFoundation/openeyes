@@ -24,6 +24,9 @@ if ($this->checkPrintAccess()) {
 	$this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small'));
 	$this->event_actions[] = EventAction::button('Print all', 'printall', null, array('id' => 'et_print_all', 'class' => 'small'));
 }
+if ($this->event_type->children) {
+	$this->event_actions[] = EventAction::button('Add child', 'add_test',null,array('class'=>'button small'));
+}
 ?>
 	<?php $this->renderOpenElements($this->action->id); ?>
 	<?php $this->renderOptionalElements($this->action->id); ?>

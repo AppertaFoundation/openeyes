@@ -28,7 +28,7 @@
 			$assetpath = '/assets/';
 		}
 
-		if (!$eventType->disabled && $this->checkEventAccess($eventType)) {?>
+		if ($access=1) {?>
 			<li>
 				<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id.'&parent_event_id='.$parent_event_id)?>
 			</li>
