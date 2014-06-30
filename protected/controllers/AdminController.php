@@ -27,6 +27,14 @@ class AdminController extends BaseAdminController
 		$this->redirect(array('/admin/users'));
 	}
 
+	public function actionEditMedicationStopReason()
+	{
+		$this->render('//admin/generic_admin',array(
+			'title' => 'Edit Medication Stop Reason',
+			'model' => 'MedicationStopReason',
+		));
+	}
+
 	public function actionDrugs()
 	{
 		$criteria = new CDbCriteria;
