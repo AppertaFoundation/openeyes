@@ -226,6 +226,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $this->getSession()->wait(2000);
         $this->getElement('selectMedication')->selectOption($medication);
         $this->getElement('selectRoute')->selectOption($route);
+        $this->getSession()->wait(2000);
         $this->getElement('selectFrequency')->selectOption($frequency);
 //        $elemento = $this->getElement('openMedicationDate');
 //        $this->scrollWindowToElement($elemento);

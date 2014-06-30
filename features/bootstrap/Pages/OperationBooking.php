@@ -83,6 +83,8 @@ class OperationBooking extends OpenEyesPage
     public function procedure ($procedure)
     {
         $this->getElement('operationProcedure')->setValue($procedure);
+        $this->getSession()->wait(2000);
+
     }
 
     public function consultantYes ()
@@ -99,26 +101,27 @@ class OperationBooking extends OpenEyesPage
 
     public function selectAnaesthetic ($type)
     {
-		$el = null;
+		$element = null;
 		if ($type==='Topical') {
-            $el = $this->getElement('anaestheticTopical');
+            $element = $this->getElement('anaestheticTopical');
         }
         if ($type==='LA') {
-			$el = $this->getElement('anaestheticLa');
+			$element = $this->getElement('anaestheticLa');
         }
         if ($type==='LAC') {
-			$el = $this->getElement('anaestheticLac');
+			$element = $this->getElement('anaestheticLac');
         }
         if ($type==='LAS') {
-			$el = $this->getElement('anaestheticLas');
+			$element = $this->getElement('anaestheticLas');
         }
         if ($type==='GA') {
-			$el = $this->getElement('anaestheticGa');
+			$element = $this->getElement('anaestheticGa');
         }
-		$el->focus();
-        $this->scrollWindowToElement($el);
-		$el->click();
-		$this->getSession()->wait(3000, "window.$ && $(\"#Element_OphTrOperationbooking_Operation_anaesthetic_type_id [name='Element_OphTrOperationbooking_Operation[anaesthetic_type_id]']:checked\").val() == " .   $el->getValue());
+//		$element->focus();
+        $this->scrollWindowToElement($element);
+        $this->getSession()->wait(2000);
+		$element->click();
+		$this->getSession()->wait(3000);
     }
 
     public function postOpStayYes ()
