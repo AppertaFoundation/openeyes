@@ -22,7 +22,9 @@ class MedicationStopReason extends BaseActiveRecordVersioned
 
 	public function rules()
 	{
-		return array('name, display_order, active', 'safe');
+		return array(
+			array('name, display_order, active', 'safe'),
+		);
 	}
 
 	public function behaviors()
