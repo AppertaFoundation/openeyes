@@ -48,6 +48,8 @@ class Medication extends BaseActiveRecordVersioned
 		return array(
 			array('drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id', 'safe'),
 			array('drug_id, route_id, frequency_id, start_date', 'required'),
+			array('start_date', 'OEFuzzyDateValidatorNotFuture'),
+			array('end_date', 'OEFuzzyDateValidator'),
 			array('option_id', 'validateOptionId'),
 		);
 	}

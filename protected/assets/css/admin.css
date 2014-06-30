@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /**
  * OpenEyes
  *
@@ -26,6 +27,14 @@ meta.foundation-mq-topbar {
   .admin.content {
     width: 100%;
   }
+}
+
+/* line 24, ../sass/openeyes/components/admin/_content.scss */
+.notice {
+  background-color: #FF8080;
+  width: 100%;
+  display:block;
+  padding:2px;
 }
 
 /* line 3, ../sass/openeyes/components/admin/_navigation.scss */

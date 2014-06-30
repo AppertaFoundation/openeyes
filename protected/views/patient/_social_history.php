@@ -88,10 +88,10 @@
 		if (isset($social_history->alcohol_intake)){ ?>
 			<tr>
 				<td>Alcohol Intake</td>
-				<td><?php echo CHtml::encode($social_history->alcohol_intake)?></td>
+				<td><?php echo CHtml::encode($social_history->alcohol_intake)?> units/week</td>
 			</tr>
 		<?php }
-		if (isset($social_history->substance_miuse)){ ?>
+		if (isset($social_history->substance_misuse)){ ?>
 			<tr>
 				<td>Substance Misuse</td>
 				<td><?php echo CHtml::encode($social_history->substance_misuse->name)?></td>
@@ -217,45 +217,53 @@
 </div>
 </section>
 
-<!-- Confirm deletion dialog -->
-<div id="confirm_remove_operation_dialog" title="Confirm remove operation" style="display: none;">
-	<div id="delete_operation">
-		<div class="alert-box alert with-icon">
-			<strong>WARNING: This will remove the operation from the patient record.</strong>
-		</div>
-		<p>
-			<strong>Are you sure you want to proceed?</strong>
-		</p>
-		<div class="buttons">
-			<input type="hidden" id="operation_id" value="" />
-			<button type="submit" class="warning small btn_remove_operation">Remove operation</button>
-			<button type="submit" class="secondary small btn_cancel_remove_operation">Cancel</button>
-			<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
-		</div>
-	</div>
-</div>
-
 <script type="text/javascript">
-	$('#SocialHistory_occupation_id').change(function() {
-		if ($('#SocialHistory_occupation_id option:selected').text()=='Other (specify)'){
-			$('#social_history_type_of_job_show_hide').show();
-			$('#SocialHistory_type_of_job').focus();
-		}
-		else {
-			$('#social_history_type_of_job_show_hide').hide();
-			$('#SocialHistory_type_of_job').val('');
-		}
-	});
-	$('#btn-add_social_history').click(function() {
-		event.preventDefault();
-		$('#add_social_history').slideToggle('fast');
-		$('#btn-add_social_history').attr('disabled',true);
-		$('#btn-add_social_history').addClass('disabled');
-	});
-	$('button.btn_cancel_social_history').click(function() {
-		event.preventDefault();
-		$('#add_social_history').slideToggle('fast');
-		$('#btn-add_social_history').attr('disabled',false);
-		$('#btn-add_social_history').removeClass('disabled');
-	});
+$(function () {
+
+    var btnAdd = $('#btn-add_social_history'),
+	toggleAdd = $('#add_social_history'),
+	btnSave = $('.btn_save_social_history'),
+	btnCancel = $('.btn_cancel_social_history'),
+	selectOccupation = $('#SocialHistory_occupation_id'),
+	toggleJobType = $('#social_history_type_of_job_show_hide'),
+	textJobType = $('#SocialHistory_type_of_job'),
+	occupationIsOther = function() {
+	    return $('#SocialHistory_occupation_id option:selected').text() == 'Other (specify)'; 
+	},
+	setJobType = function() {
+            if (occupationIsOther()) {
+		toggleJobType.show();
+		textJobType.focus();
+            } else {
+		toggleJobType.hide();
+		textJobType.val('');
+            }
+	};
+
+    selectOccupation.change(setJobType);
+    setJobType();		// need to also update on first run
+
+    btnSave.click(function() {
+	if(occupationIsOther() && textJobType.val() == '') {
+	    new OpenEyes.UI.Dialog.Alert({
+		content: "Please specify the 'Type of Job' for the occupation of 'Other'."
+	    }).open();
+	    return false;
+	}
+	return true;
+    });
+
+    btnAdd.click(function(event) {
+        event.preventDefault();
+        toggleAdd.slideToggle('fast');
+        btnAdd.attr('disabled', true).addClass('disabled');
+    });
+
+    btnCancel.click(function(event) {
+        event.preventDefault();
+        toggleAdd.slideToggle('fast');
+        btnAdd.attr('disabled', false).removeClass('disabled');
+    });
+
+});
 </script>
