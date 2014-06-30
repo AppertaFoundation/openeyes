@@ -88,10 +88,10 @@
 		if (isset($social_history->alcohol_intake)){ ?>
 			<tr>
 				<td>Alcohol Intake</td>
-				<td><?php echo CHtml::encode($social_history->alcohol_intake)?></td>
+				<td><?php echo CHtml::encode($social_history->alcohol_intake)?> units/week</td>
 			</tr>
 		<?php }
-		if (isset($social_history->substance_miuse)){ ?>
+		if (isset($social_history->substance_misuse)){ ?>
 			<tr>
 				<td>Substance Misuse</td>
 				<td><?php echo CHtml::encode($social_history->substance_misuse->name)?></td>
