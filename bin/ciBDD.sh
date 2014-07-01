@@ -80,6 +80,9 @@ if [ "$OE_VAGRANT_SUBFOLDER" = "yes" ]; then
     echo "run migrations - subfolder"
     vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; /var/www/subfolder/protected/yiic migrate --interactive=0 --testdata; \
     /var/www/subfolder/protected/yiic migratemodules --interactive=0 --testdata;exit;'
+
+    echo "generating sessions"
+    vagrant ssh -c 'cd /var/www; /var/www/subfolder/protected/yiic generatesessions;exit;'
 else
     echo "import test sql - import testdata.sql"
     vagrant ssh -c '/usr/bin/mysql -u openeyes -poe_test openeyes < /var/www/features/testdata.sql;'
@@ -87,6 +90,9 @@ else
     echo "run migrations"
     vagrant ssh -c 'cd /var/www;  echo "running oe-migrate"; /var/www/protected/yiic migrate --interactive=0 --testdata; \
     /var/www/protected/yiic migratemodules --interactive=0 --testdata;exit;'
+
+    echo "generating sessions"
+    vagrant ssh -c 'cd /var/www; /var/www/protected/yiic generatesessions;exit;'
 fi
 
 
