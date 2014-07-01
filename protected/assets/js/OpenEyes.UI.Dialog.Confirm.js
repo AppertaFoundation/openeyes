@@ -96,6 +96,21 @@
 
 	/** Event handlers */
 
+	ConfirmDialog.prototype.onDialogClose = function(e) {
+
+		Dialog.prototype.onDialogClose.apply(this, arguments);
+
+		// If user pressed escape key.
+		if (e && e.keyCode && e.keyCode === 27) {
+			this.emit('cancel');
+		}
+
+		// If user clicked on close button.
+		if ($(e.srcElement).hasClass('ui-dialog-titlebar-close')) {
+			this.emit('cancel');
+		}
+	}
+
 	/**
 	 * 'OK' button click handler. Simply close the dialog on click.
 	 * @name OpenEyes.UI.Dialog.Confirm#onButtonClick
