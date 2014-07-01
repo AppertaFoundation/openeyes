@@ -31,7 +31,7 @@ class MedicationController extends BaseController
 		if($medication_id == 'adherence')
 		{
 			$this->renderPartial(
-				'adherence',
+				'adherence_form',
 				array(
 					"patient" => $this->fetchModel('Patient', $patient_id),
 				),
