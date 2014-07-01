@@ -194,7 +194,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$("form").submit(function() {
+	$(this).on('submit', 'form', function() {
 		submitted = true;
 	});
 
