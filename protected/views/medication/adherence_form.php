@@ -31,8 +31,8 @@
  */
 
 $form = $this->beginWidget('FormLayout', array(
-		'layoutColumns' => array('label' => 3, 'field' => 9)
-	));
+	'layoutColumns' => array('label' => 3, 'field' => 9)
+));
 
 $adherence = $patient->adherence;
 if($adherence === null) {
@@ -41,28 +41,28 @@ if($adherence === null) {
 }
 
 ?>
-	<input type="hidden" name="patient_id" id="medication_id" value="<?= $patient->id ?>"/>
-	<fieldset class="field-row">
-		<legend><strong>Adherence</strong></legend>
-		<div class="row field-row">
-			<div class="<?= $form->columns('label') ?>"><label for="adherence">Adherence:</label></div>
-			<div class="<?= $form->columns('field') ?>"><?=
-	CHtml::activeDropDownList(
-		$adherence, 'level',
-		CHtml::listData(MedicationAdherenceLevel::model()->
-			findAll(array('order' => 'display_order')), 'id', 'name')
-	)
-?></div>
-		</div>
-		<div class="row field-row">
-			<div class="<?= $form->columns('label') ?>"><label for="adherence">Comments:</label></div>
-			<div class="<?= $form->columns('field') ?>">
-				<?= CHtml::activeTextArea($adherence, 'comments') ?>
-			</div>
-		</div>
-	</fieldset>
-	<div class="buttons">
-		<button type="button" class="medication_save secondary small">Save</button>
-		<button type="button" class="medication_cancel warning small">Cancel</button>
+<input type="hidden" name="patient_id" id="medication_id" value="<?= $patient->id ?>"/>
+<fieldset class="field-row">
+	<legend><strong>Adherence</strong></legend>
+	<div class="row field-row">
+		<div class="<?= $form->columns('label') ?>"><label for="adherence">Adherence:</label></div>
+		<div class="<?= $form->columns('field') ?>"><?=
+			CHtml::activeDropDownList(
+				$adherence, 'level',
+				CHtml::listData(MedicationAdherenceLevel::model()->
+					findAll(array('order' => 'display_order')), 'id', 'name')
+			)
+			?></div>
 	</div>
+	<div class="row field-row">
+		<div class="<?= $form->columns('label') ?>"><label for="adherence">Comments:</label></div>
+		<div class="<?= $form->columns('field') ?>">
+			<?= CHtml::activeTextArea($adherence, 'comments') ?>
+		</div>
+	</div>
+</fieldset>
+<div class="buttons">
+	<button type="button" class="medication_save secondary small">Save</button>
+	<button type="button" class="medication_cancel warning small">Cancel</button>
+</div>
 <?php $this->endWidget(); ?>
