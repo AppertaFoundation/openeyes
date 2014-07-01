@@ -31,6 +31,7 @@
 			font-size: $default-font-size;
 		}
 	}
-}
 
-.ui-autocomplete { z-index:200 !important; }
+	//jquery uses inline styles to render auto complete so !important is needed to apply the z-index
+	.ui-autocomplete { z-index:200 !important; }
+}

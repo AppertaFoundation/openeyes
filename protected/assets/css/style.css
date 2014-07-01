@@ -5584,9 +5584,8 @@ tfoot.pagination-container .pagination li {
 .open-eyes .ui-widget input, .open-eyes .ui-widget select, .open-eyes .ui-widget textarea {
   font-size: 0.8125rem;
 }
-
 /* line 36, ../sass/openeyes/components/_jquery-ui.scss */
-.ui-autocomplete {
+.open-eyes .ui-autocomplete {
   z-index: 200 !important;
 }
 
