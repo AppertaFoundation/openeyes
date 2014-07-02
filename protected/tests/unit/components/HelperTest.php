@@ -32,13 +32,18 @@ class HelperTest extends CTestCase
 
 	public function mysqlDate2JsTimestampDataProvider()
 	{
-		return array(
+		$dates =  array(
 			array(null, null),
 			array('1969-12-31 23:59:59', -1000),
 			array('1970-01-01 00:00:00', 0),
 			array('2013-12-18 10:14:33', 1387361673000),
-			array('9999-12-31 23:59:59', 253402300799000),
 		);
+
+		if(PHP_INT_SIZE===8) { // 64 bit
+		$dates[] =	array('9999-12-31 23:59:59', 253402300799000);
+		}
+
+		return $dates;
 	}
 
 	/**

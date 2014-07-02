@@ -89,7 +89,7 @@ class OEMigration extends CDbMigration
 
 		if($this->testdata){
 			echo "\nRunning test data import\n";
-			$testdata_path = $migrations_path . '/testdata/' . $data_directory . '/';
+			$testdata_path = $migrations_path . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . $data_directory . DIRECTORY_SEPARATOR;
 			$testdataCsvFiles = glob($testdata_path . "*.csv");
 			//echo "\nCSV FIles: " . var_export($this->csvFiles,true);
 			//echo "\nCSV TEST FIles: " . var_export($testdataCsvFiles,true);
