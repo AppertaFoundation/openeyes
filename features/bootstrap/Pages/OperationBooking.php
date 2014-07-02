@@ -29,6 +29,8 @@ class OperationBooking extends OpenEyesPage
         'operationComments' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_comments']"),
         'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
         'scheduleNow' => array('xpath' => "//*[@id='et_save_and_schedule']"),
+        'duplicateProcedureOk' => array('xpath' => "//*[@class='secondary small confirm ok']"),
+        'duplicateProcedureCancel' => array('xpath' => "//*[@class='warning small confirm cancel']"),
         'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
         'availableTheatreSlotDateOutsideRTT' => array('xpath' => "//*[@class='available outside_rtt']"),
         'availableThreeWeeksTime' => array ('xpath' => "//*[@id='calendar']//*[contains(text(),'27')]"),
@@ -175,6 +177,18 @@ class OperationBooking extends OpenEyesPage
         //$this->getElement('scheduleNow')->keyPress(2191);
         $this->getElement('scheduleNow')->click();
         $this->getSession()->wait(15000,"window.$ && $('.event-title').html() == 'Schedule Operation' ");
+    }
+
+    public function duplicateProcedureOk ()
+    {
+        if ($this->isDuplicateProcedurePopUpShown()) {
+        $this->getElement('duplicateProcedureOk')->click();
+        }
+    }
+
+    public function isDuplicateProcedurePopUpShown ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('duplicateProcedureOk')->getXpath());
     }
 
     public function EmergencyList ()

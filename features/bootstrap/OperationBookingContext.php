@@ -215,6 +215,18 @@ class OperationBookingContext extends PageObjectContext
     }
 
     /**
+     * @Given /^I select OK to Duplicate procedure if requested$/
+     */
+    public function okToDuplicateProcedure()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->duplicateProcedureOk();
+    }
+
+    /**
      * @Then /^I change the Viewing Schedule to Emergency List$/
      */
     public function iChangeTheViewingScheduleToEmergencyList()

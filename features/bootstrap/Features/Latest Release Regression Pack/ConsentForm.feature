@@ -178,6 +178,8 @@ Feature: Create New Consent Form
 
     Then I select Save and Schedule now
 
+    And I select OK to Duplicate procedure if requested
+
     Then I select Next Month
 
     And I select an Available theatre slot date

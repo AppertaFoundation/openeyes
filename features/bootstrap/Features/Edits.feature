@@ -633,6 +633,8 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I select Save and Schedule now
 
+    And I select OK to Duplicate procedure if requested
+
     And I select an Available theatre slot date
     And I select an Available session time
 

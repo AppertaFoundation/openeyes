@@ -36,6 +36,8 @@ Feature: Create New Operation Booking Event
 
     Then I select Save and Schedule now
 
+    And I select OK to Duplicate procedure if requested
+
     And I select an Available theatre slot date
     And I select an Available session time
 
@@ -82,6 +84,8 @@ Feature: Create New Operation Booking Event
 
     Then I select Save and Schedule now
 
+    And I select OK to Duplicate procedure if requested
+
     Then I select Next Month
 
     And I select an Available theatre slot date
@@ -126,6 +130,8 @@ Feature: Create New Operation Booking Event
     Then I add comments of "Insert test comments here"
 
     Then I select Save and Schedule now
+
+    And I select OK to Duplicate procedure if requested
 
     Then I change the Viewing Schedule to Emergency List
 
