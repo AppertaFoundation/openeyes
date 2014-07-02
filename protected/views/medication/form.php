@@ -46,6 +46,13 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 						'source' => new CJavaScriptExpression(
 							'function (req, res) { $.getJSON(' . json_encode($this->createUrl('medication/finddrug')) . ', req, res); }'
 						),
+						'options' => array(
+							'minLength' => 3,
+							'focus' => "js:function(e,ui) {
+								$('#drug_autocomplete').val(ui.item.label);
+								e.preventDefault();
+							}"
+						),
 						'htmlOptions' => array('placeholder' => 'or search formulary'),
 					)
 				);
