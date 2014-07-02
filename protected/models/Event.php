@@ -110,21 +110,16 @@ class Event extends BaseActiveRecordVersioned
 
 	/**
 	 * Make sure event date is set
-	 * @return boolean
 	 */
-	protected function beforeSave()
+	protected function afterConstruct()
 	{
-		if ( $this->event_date == "1900-01-01 00:00:00" || $this->event_date == "0000-00-00 00:00:00") {
-			$this->event_date = date('Y-m-d H:i:s');
-		}
-
-		return parent::beforeSave();
+		$this->event_date = date('Y-m-d H:i:s');
+		parent::afterConstruct();
 	}
 
 	public function checkEventDate($attribute,$params)
 	{
 		if(isset($attribute)){
-
 			$date_from_picker = date_parse_from_format('j M Y',$this->{$attribute});
 			$date_for_db = date_parse_from_format('Y-m-d',$this->{$attribute});
 
