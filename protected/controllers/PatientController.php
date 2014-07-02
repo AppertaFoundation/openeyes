@@ -391,6 +391,7 @@ class PatientController extends BaseController
 		}
 
 		$this->patient = $this->episode->patient;
+		$this->layout = '//layouts/events_and_episodes';
 
 		$episodes = $this->patient->episodes;
 		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
