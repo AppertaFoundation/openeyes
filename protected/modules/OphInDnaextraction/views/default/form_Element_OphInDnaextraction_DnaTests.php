@@ -25,7 +25,7 @@
 	<header class="element-header">
 		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
 	</header>
-	<?php echo $form->hiddenInput($element, 'stub')?>
+	<input type="hidden" name="<?php echo CHtml::modelName($element);?>[force_validation]" />
 	<fieldset class="element-fields">
 		<div class="row field-row">
 			<div class="large-3 column">
