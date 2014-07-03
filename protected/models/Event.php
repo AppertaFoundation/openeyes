@@ -123,6 +123,8 @@ class Event extends BaseActiveRecordVersioned
 		if(isset($this->{$attribute})){
 			$check_date = null;
 
+			// Found that date_parse_from_format was not strictly respecting the 4 digit year in the format, so
+			// pre-regex to ensure that we don't get year confusion with 2 digit year entries
 			if ($m = preg_match('/^\d\d{0,1} \w+ \d\d\d\d$/', $this->$attribute)) {
 				$check_date = date_parse_from_format('j M Y',$this->{$attribute});
 			}
