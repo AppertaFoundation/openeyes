@@ -22,9 +22,6 @@
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<header class="element-header">
-		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
-	</header>
 	<fieldset class="element-fields">
 		<?php echo $form->dropDownList($element, 'box_id', CHtml::listData(OphInDnaextraction_DnaExtraction_Box::model()->findAll(array('order'=>'display_order')),'id','value'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
 		<?php echo $form->dropDownList($element, 'letter_id', CHtml::listData(OphInDnaextraction_DnaExtraction_Letter::model()->findAll(array('order'=>'display_order')),'id','value'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>

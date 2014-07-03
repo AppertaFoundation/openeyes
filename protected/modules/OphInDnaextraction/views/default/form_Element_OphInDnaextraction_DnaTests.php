@@ -22,9 +22,6 @@
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<header class="element-header">
-		<h3 class="element-title"><?php  echo $element->elementType->name; ?></h3>
-	</header>
 	<input type="hidden" name="<?php echo CHtml::modelName($element);?>[force_validation]" />
 	<fieldset class="element-fields">
 		<div class="row field-row">
