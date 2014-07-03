@@ -140,4 +140,9 @@ class DefaultController extends BaseEventTypeController
 			}
 		}
 	}
+
+	public function isRequiredInUI(BaseEventTypeElement $element)
+	{
+		return true;
+	}
 }
