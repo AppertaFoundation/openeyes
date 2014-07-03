@@ -114,7 +114,6 @@ class Event extends BaseActiveRecordVersioned
 	protected function afterConstruct()
 	{
 		$this->event_date = date('Y-m-d H:i:s');
-		echo $this->event_date;
 		parent::afterConstruct();
 	}
 
