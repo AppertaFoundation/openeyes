@@ -22,6 +22,7 @@ tags
 /protected/views/elements/ElementExample/
 /protected/config/db_dw.php
 /protected/config/db_muu.php
+/protected/config/local
 /protected/views/patient/custom/info/php
 /protected/commands/
 vendor
