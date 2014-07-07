@@ -119,17 +119,22 @@ class Event extends BaseActiveRecordVersioned
 
 	public function checkEventDate($attribute,$params)
 	{
-		if(isset($attribute)){
-			$date_from_picker = date_parse_from_format('j M Y',$this->{$attribute});
-			$date_for_db = date_parse_from_format('Y-m-d',$this->{$attribute});
+		if(isset($this->{$attribute})){
+			$check_date = null;
 
-			if (!checkdate($date_from_picker['month'], $date_from_picker['day'],$date_from_picker['year'])){
-				if (!checkdate($date_for_db['month'], $date_for_db['day'], $date_for_db['year']))
-				{
-					$this->addError($attribute,'Event date is not valid.');
-				}
+			// Found that date_parse_from_format was not strictly respecting the 4 digit year in the format, so
+			// pre-regex to ensure that we don't get year confusion with 2 digit year entries
+			if ($m = preg_match('/^\d\d{0,1} \w+ \d\d\d\d$/', $this->$attribute)) {
+				$check_date = date_parse_from_format('j M Y',$this->{$attribute});
 			}
-			if(strtotime($this->{$attribute}) > strtotime(date('Y-m-d  H:i:s'))) {
+			elseif ($m = preg_match('/^\d\d\d\d-\d\d{0,1}-\d\d{0,1}( \d\d:\d\d:\d\d){0,1}$/', $this->$attribute)) {
+				$check_date = date_parse_from_format('Y-m-d',$this->{$attribute});
+			}
+
+			if (!$check_date || !checkdate($check_date['month'], $check_date['day'], $check_date['year'])) {
+				$this->addError($attribute,'Event date is not valid.' . $this->$attribute);
+			}
+			elseif (strtotime($this->{$attribute}) > strtotime(date('Y-m-d  H:i:s'))) {
 				$this->addError($attribute,'Event date cannot be in the future.');
 			}
 		}
