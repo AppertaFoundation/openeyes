@@ -85,6 +85,11 @@ class core::openeyes {
       source => '/var/www/.htaccess.sample'
     }
 
+    file { '/var/www/protected/config/local':
+      ensure => directory,
+      mode   => '0775',
+    }
+
     file { '/var/www/protected/config/local/test.php':
       ensure => file,
       source => '/var/www/protected/config/local.sample/test.sample.php'
