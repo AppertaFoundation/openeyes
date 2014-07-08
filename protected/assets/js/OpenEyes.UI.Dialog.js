@@ -276,6 +276,9 @@
 			height: this.options.height
 		};
 
+		// We're just ensuring the maximum height of the dialog does not exceed either
+		// the specified height (set in the options), or the height of the viewport. We're
+		// not 'fitting' to the viewport.
 		if (this.options.constrainToViewport) {
 			var actualDimensions = this.getActualDimensions();
 			var offset = 40;
@@ -293,27 +296,23 @@
 	 */
 	Dialog.prototype.getActualDimensions = function() {
 
-		var options = {
-			show: this.options.show,
-			modal: this.options.modal,
-			destroyOnClose: this.options.destroyOnClose
-		};
+		var isOpen = this.instance.isOpen();
+		var destroyOnClose = this.options.destroyOnClose;
 
-		this.instance._setOptions($.extend(this.options, {
-			show: null,
-			destroyOnClose: false,
-			modal: false
-		}));
-
-		this.instance.open();
+		if (!isOpen) {
+			this.options.destroyOnClose = false;
+			this.instance.open();
+		}
 
 		var dimensions = {
 			width: parseInt(this.options.width, 10) || this.instance.uiDialog.outerWidth(),
 			height: parseInt(this.options.height, 10) || this.instance.uiDialog.outerHeight()
 		};
 
-		this.instance.close();
-		this.instance._setOptions($.extend(this.options, options));
+		if (!isOpen) {
+			this.instance.close();
+			this.options.destroyOnClose = destroyOnClose;
+		}
 
 		return dimensions;
 	};
