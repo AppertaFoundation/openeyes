@@ -23,7 +23,6 @@
 	data-element-type-class="<?php echo $element->elementType->class_name?>"
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
-	<h2><?php echo $element->elementType->name; ?></h2>
 	<div class="details">
 		<?php echo $content ;?>
 		<div class="sub-elements">
