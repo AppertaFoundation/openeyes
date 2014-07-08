@@ -1,4 +1,5 @@
 <?php
+use Behat\Behat\Exception\BehaviorException;
 class OperationBooking extends OpenEyesPage
 {
     protected $path = "/site/OphTrOperationbooking/Default/create?patient_id={parentId}";
@@ -46,6 +47,7 @@ class OperationBooking extends OpenEyesPage
         'saveButton' => array('xpath' => "//*[@id='et_save']"),
         'chooseWard' => array('xpath' => "//*[@id='Booking_ward_id']"),
         'admissionTime' => array('xpath' => "//*[@id='Booking_admission_time']"),
+        'consultantValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Operation: The booked session does not have a consultant present, you must change the session or cancel the booking before making this change')]"),
 
 
     );
@@ -284,6 +286,7 @@ class OperationBooking extends OpenEyesPage
     public function save ()
     {
         $this->getElement('saveButton')->click();
+        $this->getSession()->wait(5000);
     }
 
     public function chooseWard ($ward)
@@ -295,6 +298,21 @@ class OperationBooking extends OpenEyesPage
     public function admissionTime ($time)
     {
         $this->getElement('admissionTime')->setValue($time);
+    }
+
+    public function consultantValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('consultantValidationError')->getXpath());
+    }
+
+    public function consultantValidationCheck ()
+    {
+        if ($this->consultantValidationError()){
+            print "Consultant Validation error has been displayed";
+        }
+        else{
+            throw new BehaviorException ("CONSULTANT BOOKING VALIDATION ERROR!!!");
+        }
     }
 
 }

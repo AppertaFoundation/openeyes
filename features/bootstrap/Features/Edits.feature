@@ -640,7 +640,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I confirm the operation slot
 
-  Scenario: 9B Login and edit previously created new Operation Booking
+  Scenario: 9B Login and edit previously created new Operation Booking, Consultant Error Check
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -659,7 +659,86 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I select Save
 
+    And I select OK to Duplicate procedure if requested
+
+    Then I confirm that You must change the session or cancel the booking error is displayed
+
   Scenario: Route 9C: Delete previously created/edited Prescription From from Route 9A/9B
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for patient name last name "Coffin," and first name "Violet"
+
+    Then I select the Latest Event
+
+    And I delete the Last Event
+
+  Scenario: Route 10A: Login and create a Operation Booking Anderson Glaucoma
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Glaucoma sidebar
+    And I add a New Event "OpBooking"
+
+    Then I select Diagnosis Eyes of "Left"
+    And I select a Diagnosis of "30041005"
+    Then I select Operation Eyes of "Left"
+    And I select a Procedure of "41"
+
+    Then I select Yes to Consultant required
+
+    And I select a Anaesthetic type "Topical"
+
+    Then I select Yes to a Post Operative Stay
+    Then I select No to a Post Operative Stay
+
+    And I select a Operation Site of "1"
+
+    Then I select a Priority of Urgent
+
+    And I select a decision date of "14"
+
+    Then I select Save and Schedule now
+
+    And I select OK to Duplicate procedure if requested
+
+    And I select an Available theatre slot date
+    And I select an Available session time
+
+    Then I confirm the operation slot
+
+  Scenario: 10B Login and edit previously created new Operation Booking
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "2"
+    Then I select a firm of "3"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    And I edit the Last Event
+
+    Then I select Diagnosis Eyes of "Right"
+
+    Then I select a Priority of Urgent
+
+    Then I select Save
+
+    And I select OK to Duplicate procedure if requested
+
+  Scenario: Route 10C: Delete previously created/edited Prescription From from Route 10A/10B
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"

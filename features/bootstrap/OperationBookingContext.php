@@ -405,4 +405,16 @@ class OperationBookingContext extends PageObjectContext
         $operationBooking->save();
     }
 
+    /**
+     * @Then /^I confirm that You must change the session or cancel the booking error is displayed$/
+     */
+    public function consultantErrorValidation()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->consultantValidationCheck();
+    }
+
 }
