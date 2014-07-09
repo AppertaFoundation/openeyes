@@ -81,7 +81,7 @@ class User extends BaseActiveRecord
 			return array_merge(
 				$commonRules,
 				array(
-					array('username', 'match', 'pattern' => '/^[\w|_]+$/', 'message' => 'Only letters, numbers and underscores are allowed for usernames.'),
+					array('username', 'match', 'pattern' => '/^[\w|\.\-_\+@]+$/', 'message' => 'Only letters, numbers and underscores are allowed for usernames.'),
 					array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
 					array('username, password, first_name, last_name', 'length', 'max' => 40),
 					array('password', 'length', 'min' => 5, 'message' => 'Passwords must be at least 6 characters long.'),
