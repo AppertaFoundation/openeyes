@@ -194,7 +194,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$("form").submit(function() {
+	$(this).on('submit', 'form', function() {
 		submitted = true;
 	});
 
@@ -234,6 +234,10 @@ $(document).ready(function(){
 	$('#checkall').click(function() {
 		$('input.'+$(this).attr('class')).attr('checked',$(this).is(':checked') ? 'checked' : false);
 	});
+
+    $(this).on('click', '.alert-box .close' , function(e) {
+        $(e.srcElement).closest('.alert-box').fadeOut(500);
+    });
 });
 
 function changeState(wb,sp) {

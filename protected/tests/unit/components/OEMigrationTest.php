@@ -50,7 +50,9 @@ class OEMigrationTest extends CDbTestCase
 		Yii::app()->db->createCommand("delete from event_type where id >= 1000 and parent_event_type_id is not null")->query();
 		Yii::app()->db->createCommand("delete from event_type where id >= 1000")->query();
 
+		ob_start();
 		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
+		ob_end_clean();
 		$this->compareFixtureWithResultSet($this->event_type, $eventTypeResultSet);
 
 		EventType::model()->deleteAll('id >= 1000');
@@ -70,7 +72,9 @@ class OEMigrationTest extends CDbTestCase
 
 		$this->assertNull($this->oeMigration->getCsvFiles());
 
+		ob_start();
 		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
+		ob_end_clean();
 		$this->compareFixtureWithResultSet($this->event_type, $eventTypeResultSet);
 
 		EventType::model()->deleteAll('id >= 1000');
@@ -133,7 +137,9 @@ class OEMigrationTest extends CDbTestCase
 		$res = Yii::app()->db->createCommand("select max(id) as mx_id from event_type")->queryRow();
 
 		$insertRow = array('name' => 'TestEventType' , 'event_group_id' => '5', 'class_name' => 'OphTrTestclass' , 'support_services' => '0');
+		ob_start();
 		$this->oeMigration->insert('event_type' , $insertRow);
+		ob_end_clean();
 		$insertId = $this->oeMigration->getInsertId('event_type' );
 		$this->assertGreaterThan(0, $insertId);
 		$this->assertEquals($res['mx_id']+1, $insertId);
@@ -164,7 +170,9 @@ class OEMigrationTest extends CDbTestCase
 	public function testGetInsertReferentialObjectValue(){
 		Yii::app()->db->createCommand("delete from event_type where id >= 1009")->query();
 		$this->oeMigration->setTestData(true);
+		ob_start();
 		$this->oeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData');
+		ob_end_clean();
 		$episode_id = $this->oeMigration->getInsertReferentialObjectValue('episode', 1);
 		$this->assertGreaterThan(0, (int) $episode_id);
 		$this->assertequals(5, (int) $episode_id);
@@ -175,7 +183,9 @@ class OEMigrationTest extends CDbTestCase
 
 		$newOeMigration = new OEMigration();
 		$newOeMigration->setTestData(true);
+		ob_start();
 		$newOeMigration->initialiseData($this->fixturePath,	null, 'oeMigrationData2');
+		ob_end_clean();
 		$newEpisodeId = $newOeMigration->getInsertReferentialObjectValue('episode', 1);
 		$newEpisodeId2 = $newOeMigration->getInsertReferentialObjectValue('episode', 2);
 		$this->assertGreaterThan(0, (int) $newEpisodeId );

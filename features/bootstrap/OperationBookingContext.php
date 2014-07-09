@@ -215,6 +215,18 @@ class OperationBookingContext extends PageObjectContext
     }
 
     /**
+     * @Given /^I select OK to Duplicate procedure if requested$/
+     */
+    public function okToDuplicateProcedure()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->duplicateProcedureOk();
+    }
+
+    /**
      * @Then /^I change the Viewing Schedule to Emergency List$/
      */
     public function iChangeTheViewingScheduleToEmergencyList()
@@ -391,6 +403,18 @@ class OperationBookingContext extends PageObjectContext
          */
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->save();
+    }
+
+    /**
+     * @Then /^I confirm that You must change the session or cancel the booking error is displayed$/
+     */
+    public function consultantErrorValidation()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->consultantValidationCheck();
     }
 
 }

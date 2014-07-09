@@ -86,7 +86,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
 		// Test the url matches when specifying a path alias.
 		$url = $instance->createUrl($path, $alias, false);
-		$expectedUrl = $instance->getPublishedPathOfAlias($alias) . DIRECTORY_SEPARATOR . $path;
+		$expectedUrl = $instance->getPublishedPathOfAlias($alias) .'/'. $path;
 		$this->assertEquals($expectedUrl, $url,
 			'The URL should match when specifying a path alias');
 
@@ -119,7 +119,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
 		// Test default params.
 		$url = $instance->createUrl($path);
-		$expectedUrl = Yii::app()->cacheBuster->createUrl($instance->getPublishedPathOfAlias($alias).DIRECTORY_SEPARATOR.$path);
+		$expectedUrl = Yii::app()->cacheBuster->createUrl($instance->getPublishedPathOfAlias($alias).'/'.$path);
 		$this->assertEquals($expectedUrl, $url,
 			'The URL should match the expected format when no additional params are specified');
 	}

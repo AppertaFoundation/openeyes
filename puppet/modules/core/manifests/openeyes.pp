@@ -24,6 +24,11 @@ class core::openeyes {
 		source => '/var/www/subfolder/.htaccess.sample'
 	}
 
+	file { '/var/www/subfolder/protected/config/local':
+		ensure => directory,
+		mode   => '0775',
+	}
+
 	file { '/var/www/subfolder/protected/config/local/test.php':
 		ensure => file,
 		source => '/var/www/subfolder/protected/config/local.sample/test.sample.php'
@@ -78,6 +83,11 @@ class core::openeyes {
     file { '/var/www/.htaccess':
       ensure => file,
       source => '/var/www/.htaccess.sample'
+    }
+
+    file { '/var/www/protected/config/local':
+      ensure => directory,
+      mode   => '0775',
     }
 
     file { '/var/www/protected/config/local/test.php':

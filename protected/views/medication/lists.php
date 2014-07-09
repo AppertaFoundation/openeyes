@@ -15,3 +15,4 @@
 
 $this->renderPartial('/medication/list', array("patient" => $patient, "current" => true));
 $this->renderPartial('/medication/list', array("patient" => $patient, "current" => false));
+$this->renderPartial('/medication/adherence', array("patient" => $patient));

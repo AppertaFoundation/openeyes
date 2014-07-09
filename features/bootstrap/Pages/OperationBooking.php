@@ -1,4 +1,5 @@
 <?php
+use Behat\Behat\Exception\BehaviorException;
 class OperationBooking extends OpenEyesPage
 {
     protected $path = "/site/OphTrOperationbooking/Default/create?patient_id={parentId}";
@@ -29,6 +30,8 @@ class OperationBooking extends OpenEyesPage
         'operationComments' => array('xpath' => "//*[@id='Element_OphTrOperationbooking_Operation_comments']"),
         'scheduleLater' => array('xpath' => "//*[@id='et_schedulelater']"),
         'scheduleNow' => array('xpath' => "//*[@id='et_save_and_schedule']"),
+        'duplicateProcedureOk' => array('xpath' => "//*[@class='secondary small confirm ok']"),
+        'duplicateProcedureCancel' => array('xpath' => "//*[@class='warning small confirm cancel']"),
         'availableTheatreSlotDate' => array('xpath' => "//*[@class='available']"),
         'availableTheatreSlotDateOutsideRTT' => array('xpath' => "//*[@class='available outside_rtt']"),
         'availableThreeWeeksTime' => array ('xpath' => "//*[@id='calendar']//*[contains(text(),'27')]"),
@@ -44,6 +47,7 @@ class OperationBooking extends OpenEyesPage
         'saveButton' => array('xpath' => "//*[@id='et_save']"),
         'chooseWard' => array('xpath' => "//*[@id='Booking_ward_id']"),
         'admissionTime' => array('xpath' => "//*[@id='Booking_admission_time']"),
+        'consultantValidationError' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Operation: The booked session does not have a consultant present, you must change the session or cancel the booking before making this change')]"),
 
 
     );
@@ -83,6 +87,8 @@ class OperationBooking extends OpenEyesPage
     public function procedure ($procedure)
     {
         $this->getElement('operationProcedure')->setValue($procedure);
+        $this->getSession()->wait(2000);
+
     }
 
     public function consultantYes ()
@@ -99,26 +105,27 @@ class OperationBooking extends OpenEyesPage
 
     public function selectAnaesthetic ($type)
     {
-		$el = null;
+		$element = null;
 		if ($type==='Topical') {
-            $el = $this->getElement('anaestheticTopical');
+            $element = $this->getElement('anaestheticTopical');
         }
         if ($type==='LA') {
-			$el = $this->getElement('anaestheticLa');
+			$element = $this->getElement('anaestheticLa');
         }
         if ($type==='LAC') {
-			$el = $this->getElement('anaestheticLac');
+			$element = $this->getElement('anaestheticLac');
         }
         if ($type==='LAS') {
-			$el = $this->getElement('anaestheticLas');
+			$element = $this->getElement('anaestheticLas');
         }
         if ($type==='GA') {
-			$el = $this->getElement('anaestheticGa');
+			$element = $this->getElement('anaestheticGa');
         }
-		$el->focus();
-        $this->scrollWindowToElement($el);
-		$el->click();
-		$this->getSession()->wait(3000, "window.$ && $(\"#Element_OphTrOperationbooking_Operation_anaesthetic_type_id [name='Element_OphTrOperationbooking_Operation[anaesthetic_type_id]']:checked\").val() == " .   $el->getValue());
+//		$element->focus();
+        $this->scrollWindowToElement($element);
+        $this->getSession()->wait(2000);
+		$element->click();
+		$this->getSession()->wait(3000);
     }
 
     public function postOpStayYes ()
@@ -172,6 +179,18 @@ class OperationBooking extends OpenEyesPage
         //$this->getElement('scheduleNow')->keyPress(2191);
         $this->getElement('scheduleNow')->click();
         $this->getSession()->wait(15000,"window.$ && $('.event-title').html() == 'Schedule Operation' ");
+    }
+
+    public function duplicateProcedureOk ()
+    {
+        if ($this->isDuplicateProcedurePopUpShown()) {
+        $this->getElement('duplicateProcedureOk')->click();
+        }
+    }
+
+    public function isDuplicateProcedurePopUpShown ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('duplicateProcedureOk')->getXpath());
     }
 
     public function EmergencyList ()
@@ -267,6 +286,7 @@ class OperationBooking extends OpenEyesPage
     public function save ()
     {
         $this->getElement('saveButton')->click();
+        $this->getSession()->wait(5000);
     }
 
     public function chooseWard ($ward)
@@ -278,6 +298,21 @@ class OperationBooking extends OpenEyesPage
     public function admissionTime ($time)
     {
         $this->getElement('admissionTime')->setValue($time);
+    }
+
+    public function consultantValidationError ()
+    {
+        return (bool) $this->find('xpath', $this->getElement('consultantValidationError')->getXpath());
+    }
+
+    public function consultantValidationCheck ()
+    {
+        if ($this->consultantValidationError()){
+            print "Consultant Validation error has been displayed";
+        }
+        else{
+            throw new BehaviorException ("CONSULTANT BOOKING VALIDATION ERROR!!!");
+        }
     }
 
 }

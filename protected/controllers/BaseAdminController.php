@@ -76,6 +76,11 @@ class BaseAdminController extends BaseController
 
 				$item->name = $_POST['name'][$i];
 				$item->display_order = $i+1;
+				//handle models with active flag
+				$attributes = $item->getAttributes();
+				if (array_key_exists('active',$attributes)) {
+					$item->active = (isset($_POST['active'][$i]) || $item->isNewRecord)? 1 : 0;
+				}
 
 				if (!empty($_POST['_extra_fields'])) {
 					foreach ($_POST['_extra_fields'] as $field) {
@@ -110,6 +115,8 @@ class BaseAdminController extends BaseController
 			$model::model()->deleteAll($criteria);
 
 			Yii::app()->user->setFlash('success', "List updated.");
+
+			$this->redirect('/' . $this->route);
 		}
 	}
 }

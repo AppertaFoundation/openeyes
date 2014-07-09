@@ -90,8 +90,8 @@ class FieldImagesTest extends CDbTestCase
 		$this->assertEquals(2, count($results) );
 		$this->assertTrue(isset($results['3']));
 		$this->assertTrue(isset($results['5']));
-		$this->assertEquals('/FiledImagesTest_TestClass-field-3.jpg', $results['3']);
-		$this->assertEquals('/FiledImagesTest_TestClass-field-5.jpg', $results['5']);
+		$this->assertEquals(DIRECTORY_SEPARATOR.'FiledImagesTest_TestClass-field-3.jpg', $results['3']);
+		$this->assertEquals(DIRECTORY_SEPARATOR.'FiledImagesTest_TestClass-field-5.jpg', $results['5']);
 	}
 }
 

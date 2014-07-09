@@ -52,13 +52,13 @@ function addElement(element, animate, is_child, previous_id, params) {
 	$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function(data) {
 		var new_element = $(data);
 
-		if (element.tagName !== 'LI') {
+		if ($(element).prop('tagName') !== 'LI') {
 			new_element.find(".sub-elements.active").replaceWith($(element).find(".sub-elements.active"));
 			new_element.find(".sub-elements.inactive").replaceWith($(element).find(".sub-elements.inactive"));
 		}
 
 		if (is_child) {
-			if (element.tagName == 'LI') {
+			if ($(element).prop('tagName') == 'LI') {
 				var container = $(element).closest('.sub-elements.inactive').parent().find('.sub-elements:first');
 			} else {
 				var container = $(element).closest('.sub-elements.active').parent().find('.sub-elements:first');

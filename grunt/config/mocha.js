@@ -6,8 +6,9 @@ module.exports = {
 	},
 	all: {
 		src: [
-			'protected/tests/js/runners/*.html',
-			'protected/modules/**/tests/js/runners/*.html'
+			'protected/tests/js/runners/**/*.html',
+			'protected/modules/**/tests/js/runners/**/*.html',
+			'!protected/modules/eyedraw/tests/js/runners/index.html'
 		]
 	},
 	core: {

@@ -102,6 +102,12 @@
 	 */
 	AlertDialog.prototype.onButtonClick = function() {
 		this.close();
+		/**
+		 * Emitted after the use has clicked on the 'OK' button.
+		 *
+		 * @event OpenEyes.UI.Dialog.Alert#ok
+		 */
+		this.emit('ok');
 	};
 
 	exports.Alert = AlertDialog;

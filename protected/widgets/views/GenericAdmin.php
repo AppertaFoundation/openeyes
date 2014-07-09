@@ -28,7 +28,13 @@
 					<?php echo $model::model()->getAttributeLabel($field['field'])?>
 				</th>
 			<?php }?>
+			<?php
+			$attributes = $model::model()->getAttributes();
+			if (array_key_exists('active',$attributes)) {?>
+			<th>Active</th>
+			<?php } else{?>
 			<th>Actions</th>
+			<?php }?>
 		</tr>
 	</thead>
 	<tbody>
@@ -52,7 +58,12 @@
 					</td>
 				<?php }?>
 				<td>
+					<?php if (isset($row->active)) {
+						echo CHtml::checkBox('active[' . $i . ']',$row->active);
+					}
+					else{?>
 					<a href="#" class="deleteRow">delete</a>
+					<?php }?>
 				</td>
 			</tr>
 		<?php }?>
