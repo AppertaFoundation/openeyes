@@ -33,8 +33,11 @@ class OEDateValidator extends CValidator
 			}
 
 			if (!$check_date || !checkdate($check_date['month'], $check_date['day'], $check_date['year'])) {
-				$this->addError($object, $attribute,'Date is not valid.' . $object->$attribute);
+				$this->addError($object, $attribute,'Date is not in valid format.' . $object->$attribute);
+				return false;
 			}
+
+			return true;
 		}
 	}
 }
