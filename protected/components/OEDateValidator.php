@@ -25,15 +25,17 @@ class OEDateValidator extends CValidator
 		if(isset($object->{$attribute})){
 			$check_date = null;
 
-			if ($m = preg_match('/^\d\d{0,1} \w+ \d\d\d\d$/', $object->$attribute)) {
-				$check_date = date_parse_from_format('j M Y',$object->{$attribute});
-			}
-			elseif ($m = preg_match('/^\d\d\d\d-\d\d{0,1}-\d\d{0,1}( \d\d:\d\d:\d\d){0,1}$/', $object->$attribute)) {
+			if ($m = preg_match('/^\d\d\d\d-\d\d{0,1}-\d\d{0,1}( \d\d:\d\d:\d\d){0,1}$/', $object->$attribute)) {
 				$check_date = date_parse_from_format('Y-m-d',$object->{$attribute});
 			}
 
 			if (!$check_date || !checkdate($check_date['month'], $check_date['day'], $check_date['year'])) {
-				$this->addError($object, $attribute,'Date is not in valid format:' . $object->$attribute);
+				if(strtotime($object->{$attribute})!=false){
+					$this->addError($object, $attribute,'Date is not in valid format: ' . $object->$attribute);
+				}
+				else {
+					$this->addError($object, $attribute,'Date is not valid: ' . $object->$attribute);
+				}
 				return false;
 			}
 
