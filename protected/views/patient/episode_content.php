@@ -17,17 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="box content row">
+<div class="column event episode highlight-fields view <?php echo isset($cssClass) ? $cssClass : '';?>">
 
-	<?php if ($this->patient->isDeceased()) {?>
-		<div id="deceased-notice" class="alert-box alert with-icon">
-			This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
-		</div>
-	<?php }?>
+	<header class="event-header">
+		<?php $this->renderPartial('//patient/event_tabs')?>
+	</header>
 
-	<?php $this->renderPartial('//patient/episodes_sidebar')?>
-	<?php $this->renderPartial('//patient/episode_content', array(
-		'cssClass' => $cssClass,
-		'content' => $content
-	))?>
+	<div class="event-content">
+		<?php echo $content; ?>
+	</div>
 </div>
