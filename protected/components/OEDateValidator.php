@@ -22,7 +22,7 @@ class OEDateValidator extends CValidator
 {
 	public function validateAttribute($object, $attribute)
 	{
-		if(isset($object->{$attribute})){
+		if(isset($object->{$attribute}) && !empty($object->{$attribute})){
 			$check_date = null;
 
 			if ($m = preg_match('/^\d\d\d\d-\d\d{0,1}-\d\d{0,1}( \d\d:\d\d:\d\d){0,1}$/', $object->$attribute)) {
@@ -31,10 +31,10 @@ class OEDateValidator extends CValidator
 
 			if (!$check_date || !checkdate($check_date['month'], $check_date['day'], $check_date['year'])) {
 				if(strtotime($object->{$attribute})!=false){
-					$this->addError($object, $attribute,'Date is not in valid format: ' . $object->$attribute);
+					$this->addError($object, $attribute,$object->getAttributeLabel($attribute).' is not in valid format: ' . $object->$attribute);
 				}
 				else {
-					$this->addError($object, $attribute,'Date is not valid: ' . $object->$attribute);
+					$this->addError($object, $attribute,$object->getAttributeLabel($attribute).' is not valid: ' . $object->$attribute);
 				}
 				return false;
 			}
