@@ -48,7 +48,7 @@ Feature: Create New Examination Regression Tests
     And I enter left cylinder details of of Cylinder "-1" integer "7" fraction "0.75"
 
     Then I enter left Axis degrees of "145"
-    Then I enter left Axis degrees of "145"
+#    Then I enter left Axis degrees of "145"
 
     And I enter a left type of "5"
 
@@ -56,7 +56,7 @@ Feature: Create New Examination Regression Tests
     And I enter right cylinder details of of Cylinder "1" integer "5" fraction "0"
 
     Then I enter right Axis degrees of "38"
-    Then I enter right Axis degrees of "38"
+#    Then I enter right Axis degrees of "38"
     And I enter a right type of "3"
 
     Then I choose to expand the Visual Function section
