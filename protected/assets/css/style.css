@@ -4602,6 +4602,8 @@ tfoot.pagination-container .pagination li {
   background-repeat: no-repeat;
   border-style: solid;
   border-width: 5px;
+  /* This exists to support legacy event styles where border color
+     was set on .event */
   border-color: inherit;
   padding: 5px 5px 10px 5px;
 }
@@ -4690,12 +4692,9 @@ tfoot.pagination-container .pagination li {
   margin-left: 0;
 }
 
-/* line 18, ../sass/openeyes/components/events/_episode.scss */
-.event.episode {
-  border-color: #C2BCA5;
-}
-/* line 20, ../sass/openeyes/components/events/_episode.scss */
+/* line 19, ../sass/openeyes/components/events/_episode.scss */
 .event.episode .event-content {
+  border-color: #C2BCA5;
   background-image: url('../img/_elements/icons/event/watermark/_episode.png?1403699572');
 }
 /* line 25, ../sass/openeyes/components/events/_episode.scss */
