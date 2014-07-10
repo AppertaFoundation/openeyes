@@ -1407,7 +1407,7 @@ class Examination extends OpenEyesPage
     public function expandOverallManagement ()
     {
         $this->getElement('expandOverallManagement')->click();
-        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
+        $this->getSession()->wait(8000, 'window.$ && $.active == 0');
     }
 
     public function clinicalInterval ($interval)
