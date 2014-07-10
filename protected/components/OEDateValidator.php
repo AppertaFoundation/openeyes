@@ -34,7 +34,7 @@ class OEDateValidator extends CValidator
 					$this->addError($object, $attribute,$object->getAttributeLabel($attribute).' is not in valid format: ' . $object->$attribute);
 				}
 				else {
-					$this->addError($object, $attribute,$object->getAttributeLabel($attribute).' is not valid: ' . $object->$attribute);
+					$this->addError($object, $attribute,$object->getAttributeLabel($attribute).' is not a valid date: ' . $object->$attribute);
 				}
 				return false;
 			}
