@@ -33,15 +33,15 @@ Vagrant.configure("2") do |config|
 
 	moduleunit = ENV["OE_VAGRANT_MODULEUNIT"] || false
 	if moduleunit == 'ci'
-  	    config.vm.synced_folder "../workspace", "/var/module", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
-    end
+		config.vm.synced_folder "../workspace", "/var/module", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
+	end
 
-    runsubfolder = ENV["OE_VAGRANT_SUBFOLDER"] || false
-    if runsubfolder  == 'yes'
-        config.vm.synced_folder "./", "/var/www/subfolder", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
-    else
-        config.vm.synced_folder "./", "/var/www", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
-    end
+	runsubfolder = ENV["OE_VAGRANT_SUBFOLDER"] || false
+	if runsubfolder  == 'yes'
+		config.vm.synced_folder "./", "/var/www/subfolder", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
+	else
+		config.vm.synced_folder "./", "/var/www", id: "vagrant-root", :mount_options => ["dmode=777,fmode=777"]
+	end
 
 	config.vm.provider "virtualbox" do |v|
 		v.customize ["modifyvm", :id, "--memory", 1024]
