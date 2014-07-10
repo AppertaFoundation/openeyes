@@ -65,9 +65,9 @@ define dev::xdebug::config (
 	}
 
 	$xdebug_remote_log = $remote_log ? {
-  		''      => '',
-  		default => $remote_log,
-  }
+			''      => '',
+			default => $remote_log,
+	}
 
 	$xdebug_profiler_enable = $profiler_enable ? {
 		''      => '0',
@@ -126,5 +126,3 @@ class dev::xdebug::params {
 		/Debian|Ubuntu/ => 'php5-cli',
 	}
 }
-
-
