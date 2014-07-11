@@ -36,7 +36,9 @@
 								<?php if (Yii::app()->params['helpdesk_phone']) {?>
 									<li><strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></li>
 								<?php } ?>
-								<li><?php echo CHtml::link('Help Documentation','http://mehhome/about/trust-wide-projects/openeyes/training-arrangements/',array('target'=>'_blank'))?></li>
+								<?php if (Yii::app()->params['help_url']) {?>
+									<li><?php echo CHtml::link('Help Documentation', Yii::app()->params['help_url'], array('target'=>'_blank')) ?></li>
+								<?php } ?>
 						</ul>
 				</div>
 		</div>
