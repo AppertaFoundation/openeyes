@@ -24,7 +24,7 @@ class OEDateValidatorNotFuture extends OEDateValidator
 	{
 		if(parent::validateAttribute($object, $attribute)) {
 			if (strtotime($object->{$attribute}) > strtotime(date('Y-m-d  H:i:s'))) {
-				$this->addError($object, $attribute,'Date cannot be in the future: ');
+				$this->addError($object, $attribute, $object->getAttributeLabel($attribute).' cannot be in the future.');
 			}
 		}
 	}

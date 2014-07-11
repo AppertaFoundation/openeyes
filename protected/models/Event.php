@@ -83,12 +83,12 @@ class Event extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_type_id', 'required'),
+			array('event_type_id, event_date', 'required'),
 			array('episode_id, event_type_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, episode_id, event_type_id, created_date, event_date', 'safe', 'on'=>'search'),
-			array('event_date', 'checkEventDate'),
+			array('event_date', 'OEDateValidatorNotFuture'),
 		);
 	}
 
@@ -116,30 +116,6 @@ class Event extends BaseActiveRecordVersioned
 		$this->event_date = date('Y-m-d H:i:s');
 		parent::afterConstruct();
 	}
-
-	public function checkEventDate($attribute,$params)
-	{
-		if(isset($this->{$attribute})){
-			$check_date = null;
-
-			// Found that date_parse_from_format was not strictly respecting the 4 digit year in the format, so
-			// pre-regex to ensure that we don't get year confusion with 2 digit year entries
-			if ($m = preg_match('/^\d\d{0,1} \w+ \d\d\d\d$/', $this->$attribute)) {
-				$check_date = date_parse_from_format('j M Y',$this->{$attribute});
-			}
-			elseif ($m = preg_match('/^\d\d\d\d-\d\d{0,1}-\d\d{0,1}( \d\d:\d\d:\d\d){0,1}$/', $this->$attribute)) {
-				$check_date = date_parse_from_format('Y-m-d',$this->{$attribute});
-			}
-
-			if (!$check_date || !checkdate($check_date['month'], $check_date['day'], $check_date['year'])) {
-				$this->addError($attribute,'Event date is not valid.' . $this->$attribute);
-			}
-			elseif (strtotime($this->{$attribute}) > strtotime(date('Y-m-d  H:i:s'))) {
-				$this->addError($attribute,'Event date cannot be in the future.');
-			}
-		}
-	}
-
 
 	public function moduleAllowsEditing()
 	{
