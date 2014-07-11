@@ -29,7 +29,7 @@ class Helper
 
 	/**
 	 * Convert NHS dates to MySQL format.
-	 * Strings that do not match the NHS format are returned unchanged.
+	 * Strings that do not match the NHS format are returned unchanged or are not valid dates.
 	 *
 	 * @param string|array $data Data containing one or more NHS dates
 	 * @param array $fields Fields (keys) to convert (optional, if empty then all fields are checked for dates)
@@ -47,7 +47,10 @@ class Helper
 				if (is_array($data[$key])) {
 					$data[$key] = Helper::convertNHS2MySQL($data[$key], $fields);
 				} elseif (is_string($data[$key]) && preg_match(self::NHS_DATE_REGEX, $data[$key])) {
-					$data[$key] = date('Y-m-d',strtotime($data[$key]));
+					$check_date = date_parse_from_format('j M Y',$data[$key]);
+					if(checkdate($check_date['month'], $check_date['day'], $check_date['year'])){
+						$data[$key] = date('Y-m-d',strtotime($data[$key]));
+					}
 				}
 			}
 

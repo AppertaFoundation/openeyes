@@ -193,8 +193,6 @@ Feature: Create New Therapy Application Event
 
     Then I select a Left Treatment of "5"
 
-    Then I select a Left Treatment of "5"
-
     And I select a Left Patient has CNV of No
 
     Then I select a Left Patient has Macular Oedema of Yes

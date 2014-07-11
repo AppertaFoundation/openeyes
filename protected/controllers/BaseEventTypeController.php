@@ -1093,7 +1093,7 @@ class BaseEventTypeController extends BaseModuleController
 		if(isset($data['Event']['event_date']))
 		{
 			$event = $this->event;
-			$event->event_date = $data['Event']['event_date'];
+			$event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
 			if (!$event->validate()) {
 				foreach ($event->getErrors() as $errormsgs) {
 					foreach ($errormsgs as $error) {
@@ -1160,10 +1160,6 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function saveEvent($data)
 	{
-		if(isset($data['Event']['event_date'])){
-			$this->event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
-		}
-
 		if (!$this->event->isNewRecord) {
 			// this is an edit, so need to work out what we are deleting
 			$oe_ids = array();

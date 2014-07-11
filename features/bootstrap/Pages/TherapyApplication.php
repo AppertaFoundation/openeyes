@@ -455,7 +455,8 @@ class TherapyApplication extends OpenEyesPage
 
     public function leftMacularOdemaYes ()
     {
-		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_14');
+		$this->getSession()->wait(2000);
+        $this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_14');
         $this->getElement('leftPatientHasMacularOdemaYes')->click();
     }
 
