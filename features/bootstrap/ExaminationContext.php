@@ -2410,4 +2410,52 @@ class ExaminationContext extends PageObjectContext
         $examination->rightSurgery($surgery);
     }
 
+    /**
+     * @Given /^I choose a Right Risks of "([^"]*)"$/
+     */
+    public function iChooseARightRisksOf($risks)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightRisks($risks);
+    }
+
+    /**
+     * @Then /^I choose Right Injection Management Comments of "([^"]*)"$/
+     */
+    public function iChooseRightInjectionManagementCommentsOf($comments)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->rightInjectionComments($comments);
+    }
+
+    /**
+     * @Given /^I choose a Left Risks of "([^"]*)"$/
+     */
+    public function iChooseALeftRisksOf($risks)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftRisks($risks);
+    }
+
+    /**
+     * @Then /^I choose Left Injection Management Comments of "([^"]*)"$/
+     */
+    public function iChooseLeftInjectionManagementCommentsOf($comments)
+    {
+        /**
+         * @var Examination $examination
+         */
+        $examination= $this->getPage('Examination');
+        $examination->leftInjectionComments($comments);
+    }
+
 }

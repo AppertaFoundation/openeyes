@@ -106,6 +106,8 @@ Feature: Coding only
     Then I choose a Right Previous Ozurdex Yes
     Then I choose a Right Previous Ozurdex No
 
+    And I choose a Right Risks of "1"
+    Then I choose Right Injection Management Comments of "Automation Test Comments"
 
     And I select a Left Diagnosis of Macular retinal oedema
     Then I select Left Secondary of Diabetic macular oedema
@@ -121,6 +123,9 @@ Feature: Coding only
     Then I choose a Left Unsuitable Laser of No
     Then I choose a Left Previous Anti VEGF of Yes
     Then I choose a Left Previous Anti VEGF of No
+
+    And I choose a Left Risks of "1"
+    Then I choose Left Injection Management Comments of "Automation Test Comments"
 
     Then I choose to expand the Overall Management section
     And I choose a Clinical Interval of "1"

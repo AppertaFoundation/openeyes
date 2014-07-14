@@ -277,6 +277,10 @@ class Examination extends OpenEyesPage
         'rightUnableToAssess' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_unable_to_assess']"),
         'leftEyeMissing' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_left_eye_missing']"),
         'rightEyeMissing' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity_right_eye_missing']"),
+        'rightRisks' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_right_risks']"),
+        'leftRisks' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_left_risks']"),
+        'rightInjectionComments' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_right_comments']"),
+        'leftInjectionComments' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_left_comments']"),
 
 
     );
@@ -1566,6 +1570,26 @@ class Examination extends OpenEyesPage
     public function rightSurgery ($surgery)
     {
         $this->getElement('leftSurgery')->selectOption($surgery);
+    }
+
+    public function rightRisks ($risks)
+    {
+        $this->getElement('leftRisks')->selectOption($risks);
+    }
+
+    public function leftRisks ($risks)
+    {
+        $this->getElement('rightRisks')->selectOption($risks);
+    }
+
+    public function rightInjectionComments ($comments)
+    {
+        $this->getElement('leftInjectionComments')->setValue($comments);
+    }
+
+    public function leftInjectionComments ($comments)
+    {
+        $this->getElement('rightInjectionComments')->setValue($comments);
     }
 
 
