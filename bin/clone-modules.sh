@@ -9,6 +9,8 @@ function setupModule {
         echo "clone-modules.sh: Cloning $loc_module module..." "git@github.com:openeyes/$module.git"
         #git clone git@github.com:openeyes/$module.git $modules_path/$module
         git clone "https://github.com/openeyes/$loc_module" "$loc_modules_path/$loc_module"
+        cd "$loc_modules_path/$loc_module"
+        git checkout "$loc_current_branch"
     else
         cd "$loc_modules_path/$loc_module"
         echo "clone-modules.sh: Switching module $loc_module branch to $loc_current_branch..."

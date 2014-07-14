@@ -24,6 +24,13 @@
 	data-element-type-name="<?php echo $element->elementType->name?>"
 	data-element-display-order="<?php echo $element->elementType->display_order?>">
 	<div class="details">
+		<!-- Element title -->
+		<?php if (!@$child) {?>
+			<h3 class="element-title"><?php echo $element->elementType->name?></h3>
+		<?php }else{?>
+			<h4 class="sub-element-title"><?php echo $element->elementType->name?></h4>
+		<?php }?>
+
 		<?php echo $content ;?>
 		<div class="sub-elements">
 			<?php $this->renderChildOpenElements($element, 'print', @$form, @$data)?>
