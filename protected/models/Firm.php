@@ -175,6 +175,8 @@ class Firm extends BaseActiveRecordVersioned
 			$result[$firm['id']] = $firm['name'];
 		}
 
+		natcasesort($result);
+
 		return $result;
 	}
 
