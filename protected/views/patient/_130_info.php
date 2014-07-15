@@ -89,7 +89,7 @@
 					<div id="oph_info_errors" class="alert-box alert hide"></div>
 					<div class="buttons">
 						<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="edit_oph_info_loader" style="display: none;" />
-						<button type="button" class="secondary small btn_save_oph_info">
+						<button type="submit" class="secondary small btn_save_oph_info">
 							Save
 						</button>
 						<button class="warning small btn_cancel_previous_operation btn_cancel_oph_info">
