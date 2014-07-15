@@ -85,7 +85,7 @@ $warnings = $this->patient->getWarnings($clinical);
 			<?php $this->renderPartial('_patient_commissioningbodies')?>
 			<?php $this->renderPartial('_patient_contacts')?>
 		</div>
-		<div class="large-6 column">
+		<div class="large-6 column" id="patient-summary-form-container">
 			<?php if ($this->checkAccess('OprnViewClinical')) {?>
 				<?php $this->renderPartial('_patient_episodes',array(
 					'episodes' => $episodes,

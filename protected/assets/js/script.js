@@ -177,6 +177,10 @@ $(document).ready(function(){
 		formHasChanged = true;
 	});
 
+	$('#patient-summary-form-container').on("change", function (e) {
+		formHasChanged = true;
+	});
+
 	//if the save button is on page
 	if($('#et_save').length){
 		$(".EyeDrawWidget").on("click", function (e) {

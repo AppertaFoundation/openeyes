@@ -994,6 +994,8 @@ Feature: Create New Examination Regression Tests
     Then I choose a Right Previous Ozurdex Yes
     Then I choose a Right Previous Ozurdex No
 
+    And I choose a Right Risks of "1"
+    Then I choose Right Injection Management Comments of "Automation Test Comments"
 
     And I select a Left Diagnosis of Macular retinal oedema
     Then I select Left Secondary of Diabetic macular oedema
@@ -1010,6 +1012,9 @@ Feature: Create New Examination Regression Tests
     Then I choose a Left Previous Anti VEGF of Yes
     Then I choose a Left Previous Anti VEGF of No
 
+    And I choose a Left Risks of "1"
+    Then I choose Left Injection Management Comments of "Automation Test Comments"
+
     Then I choose to expand the Overall Management section
     And I choose a Clinical Interval of "1"
     And I choose a Photo of "1"
@@ -1018,25 +1023,25 @@ Feature: Create New Examination Regression Tests
     And I choose Overall Management Section Comments of "Automation Test Comments"
     And I choose a Gonio of "2"
     And I choose a Right Target IOP of "15"
-#    And I choose a Right Gonio of "2"
+  #    And I choose a Right Gonio of "2"
     And I choose a Left Target IOP of "15"
-#    And I choose a Left Gonio of "3"
+  #    And I choose a Left Gonio of "3"
 
     Then I choose to expand the Current Management section
 
-#    And I choose a Referral of Other Service
-#    And I choose a Referral of Refraction
-#    And I choose a Referral of LVA
-#    And I choose a Referral of Orthopics
-#    And I choose a Referral of CL clinic
-#
-#    Then I choose Investigations of VF
-#    Then I choose Investigations of US
-#    Then I choose Investigations of Biometry
-#    Then I choose Investigations of OCT
-#    Then I choose Investigations of HRT
-#    Then I choose Investigations of Disc Photos
-#    Then I choose Investigations of EDT
+  #    And I choose a Referral of Other Service
+  #    And I choose a Referral of Refraction
+  #    And I choose a Referral of LVA
+  #    And I choose a Referral of Orthopics
+  #    And I choose a Referral of CL clinic
+  #
+  #    Then I choose Investigations of VF
+  #    Then I choose Investigations of US
+  #    Then I choose Investigations of Biometry
+  #    Then I choose Investigations of OCT
+  #    Then I choose Investigations of HRT
+  #    Then I choose Investigations of Disc Photos
+  #    Then I choose Investigations of EDT
 
     And I select a Left Glaucoma Status of "1"
     And I select a Left Drop related problem of "2"
