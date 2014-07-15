@@ -201,6 +201,7 @@
 				$('img.add_previous_operation_loader').hide();
 
 				if (ok) {
+					$(window).off('beforeunload');
 					window.location.reload();
 				}
 			}
