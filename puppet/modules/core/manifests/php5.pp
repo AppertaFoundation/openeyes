@@ -5,21 +5,27 @@ class core::php5 {
 		notify  => Service['apache2']
 	}
 
-	package { 'php5-curl':
+	package { 'php5-cli':
 		ensure  => present,
 		require => Exec['apt-update'],
+		notify  => Service['apache2']
+	}
+
+	package { 'php5-curl':
+		ensure  => present,
+		require => [ Exec['apt-update'], Package['php5', 'php5-cli']],
 		notify  => Service['apache2']
 	}
 
 	package { 'php5-imagick':
 		ensure  => present,
-		require => Exec['apt-update'],
+		require => [ Exec['apt-update'], Package['php5', 'php5-cli']],
 		notify  => Service['apache2']
 	}
 
 	package { 'php5-gd':
 		ensure  => present,
-		require => Exec['apt-update'],
+		require => [ Exec['apt-update'], Package['php5', 'php5-cli']],
 		notify  => Service['apache2']
 	}
 
@@ -33,5 +39,6 @@ class core::php5 {
 		ensure => present,
 		owner => root, group => root, mode => 444,
 		content => "output_buffering = On \nzend.enable_gc = 0 \ndate.timezone = Europe/London",
+		require => Package['php5-cli']
 	}
 }
