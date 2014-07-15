@@ -9,7 +9,7 @@ class core::composer {
 			cwd => '/var/www/subfolder',
 			command => "/usr/bin/curl -sS https://getcomposer.org/installer | /usr/bin/php",
 			creates => "/var/www/subfolder/composer.phar",
-			require => Package['curl','git']
+			require => Package['curl','git', 'php5-cli']
 		}
 
 		exec { "run_composer_install":
@@ -24,7 +24,7 @@ class core::composer {
 			cwd => '/var/www',
 			command => "/usr/bin/curl -sS https://getcomposer.org/installer | /usr/bin/php",
 			creates => "/var/www/composer.phar",
-			require => Package['curl','git']
+			require => Package['curl','git', 'php5-cli']
 		}
 
 		exec { "run_composer_install":
