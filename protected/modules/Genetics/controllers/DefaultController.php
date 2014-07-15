@@ -37,6 +37,7 @@ class DefaultController extends BaseEventTypeController
 		'AddPedigree' => self::ACTION_TYPE_FORM,
 		'Genes' => self::ACTION_TYPE_FORM,
 		'AddGene' => self::ACTION_TYPE_FORM,
+		'EditGene' => self::ACTION_TYPE_FORM,
 		'Inheritance' => self::ACTION_TYPE_FORM,
 		'AddInheritance' => self::ACTION_TYPE_FORM,
 		'EditInheritance' => self::ACTION_TYPE_FORM,
