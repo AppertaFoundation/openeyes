@@ -423,6 +423,18 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I choose to expand the Visual Function section
 
+    Then I select a Left RAPD
+    And I add Left RAPD comments of "Left RAPD Automation test comments"
+
+    Then I select a Right RAPD
+    And I add Right RAPD comments of "Left RAPD Automation test comments"
+
+    Then I choose to expand the Colour Vision section
+    And I choose a Left Colour Vision of "1"
+    And I choose A Left Colour Vision Value of "8"
+    And I choose a Right Colour Vision of "2"
+    And I choose A Right Colour Vision Value of "4"
+
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "2"
     Then I choose a left Visual Acuity Snellen Metre "4" and a reading method of "5"

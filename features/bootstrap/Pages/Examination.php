@@ -282,6 +282,19 @@ class Examination extends OpenEyesPage
         'rightInjectionComments' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_right_comments']"),
         'leftInjectionComments' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_InjectionManagementComplex_left_comments']"),
 
+        'leftRAPD' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualFunction_left_rapd']"),
+        'rightRAPD' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualFunction_right_rapd']"),
+        'leftRAPDComments' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualFunction_left_comments']"),
+        'rightRAPDComments' => array('xpath' => "//*[@id='OEModule_OphCiExamination_models_Element_OphCiExamination_VisualFunction_right_comments']"),
+
+        'expandColourVision' => array('xpath' => "//*[@class='sub-elements-list']//*[contains(text(),'Colour Vision')]"),
+        'leftColourVision' => array('xpath' => "//*[@id='colourvision_method_left']"),
+        'rightColourVision' => array('xpath' => "//*[@id='colourvision_method_right']"),
+        'leftColourVisionValue' => array('xpath' => "//select[@name='OEModule_OphCiExamination_models_Element_OphCiExamination_ColourVision[left_readings][0][value_id]']"),
+        'rightColourVisionValue' => array('xpath' => "//select[@name='OEModule_OphCiExamination_models_Element_OphCiExamination_ColourVision[right_readings][0][value_id]']"),
+
+
+
 
     );
 
@@ -1592,8 +1605,53 @@ class Examination extends OpenEyesPage
         $this->getElement('rightInjectionComments')->setValue($comments);
     }
 
+    public function leftRAPD ()
+    {
+        $this->getElement('leftRAPD')->check();
+    }
 
+    public function rightRAPD ()
+    {
+        $this->getElement('rightRAPD')->check();
+    }
 
+    public function leftRAPDComments ($comments)
+    {
+        $this->getElement('leftRAPDComments')->setValue($comments);
+    }
 
+    public function rightRAPDComments ($comments)
+    {
+        $this->getElement('rightRAPDComments')->setValue($comments);
+    }
+
+    public function openColourVision ()
+    {
+        $element = $this->getElement('expandColourVision');
+        $this->scrollWindowToElement($element);
+//        $this->getSession()->wait(2000);
+        $element->click();
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
+    }
+
+    public function leftColourVision ($vision)
+    {
+        $this->getElement('leftColourVision')->selectOption($vision);
+    }
+
+    public function rightColourVision ($vision)
+    {
+        $this->getElement('rightColourVision')->selectOption($vision);
+    }
+
+    public function leftColourVisionValue ($value)
+    {
+        $this->getElement('leftColourVisionValue')->selectOption($value);
+    }
+
+    public function rightColourVisionValue ($value)
+    {
+        $this->getElement('rightColourVisionValue')->selectOption($value);
+    }
 
 }
