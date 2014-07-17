@@ -22,10 +22,11 @@ foreach ($legacyepisodes as $i => $episode) {?>
 	<section class="panel episode open legacy">
 
 		<!-- Episode date -->
+		<!--
 		<div class="episode-date">
 			<?php echo $episode->NHSDate('start_date'); ?>
 		</div>
-
+		-->
 		<!-- Show/hide toggle icon -->
 		<a href="#" class="toggle-trigger toggle-<?php if ((!$this->event || $this->event->episode_id != $episode->id) && !@Yii::app()->session['episode_hide_status']['legacy']) { ?>show<?php } else { ?>hide<?php } ?>">
 			<span class="icon-showhide">

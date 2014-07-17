@@ -33,7 +33,7 @@ class PatientService extends ModelService
 		$model = $this->getSearchModel();
 		if (isset($params['id'])) $model->id = $params['id'];
 		if (isset($params['identifier'])) {
-			$model->hos_num = $params['identifier'];
+			$model->hos_num = sprintf('%07s', $params['identifier']);
 			$model->nhs_num = $params['identifier'];
 		}
 

@@ -444,9 +444,7 @@ class BaseActiveRecord extends CActiveRecord
 						$criteria = new CDbCriteria();
 						$criteria->addColumnCondition(array($tbl_keys[0] => $this->getPrimaryKey()));
 						$cmd = $builder->createDeleteCommand($tbl_name, $criteria);
-						if (!$cmd->execute()) {
-							throw new Exception("unable to delete entries for many many relation {$rel_name}");
-						}
+						$cmd->execute();
 					}
 				}
 				elseif ($rel_type == self::HAS_MANY) {
