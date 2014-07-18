@@ -62,17 +62,17 @@ class Contact extends BaseActiveRecordVersioned
         return 'contact';
     }
 
-    /**
-     * @return array validation rules for model attributes.
-     */
-    public function rules()
-    {
-        return array(
-            array('nick_name', 'length', 'max' => 80),
-            array('title, first_name, last_name, nick_name, primary_phone, qualifications, contact_label_id', 'safe'),
-            array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
-        );
-    }
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		return array(
+			array('nick_name', 'length', 'max' => 80),
+			array('title, first_name, last_name, nick_name, primary_phone, qualifications, maiden_name, contact_label_id', 'safe'),
+			array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
+		);
+	}
 
     /**
      * @return array relational rules.
