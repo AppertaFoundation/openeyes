@@ -17,123 +17,92 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class CountryTest extends CDbTestCase {
+class CountryTest extends CDbTestCase
+{
+	public $model;
+	public $fixtures = array(
+		'countries' => 'Country'
+	);
 
-      public $model;
-      public $fixtures = array(
-                               'countries' => 'Country'
-      );
+	public function dataProvider_Search()
+	{
+		return array(
+			array(array('code' => 'US'), 1, array('us')),
+			array(array('code' => 'UK'), 1, array('uk')),
+			array(array('code' => 'IRE'), 0, array()),
+			array(array('name' => 'United'), 2, array('uk', 'us')),
+			array(array('name' => 'Can'), 1, array('can')),
+			array(array('name' => 'Ireland'), 0, array()),
+		);
+	}
 
-      public function dataProvider_Search() {
-            return array(
-                                     array(array('code' => 'US'), 1, array('us')),
-                                     array(array('code' => 'UK'), 1, array('uk')),
-                                     array(array('code' => 'IRE'), 0, array()),
-                                     array(array('name' => 'United'), 2, array('us', 'uk')),
-                                     array(array('name' => 'Can'), 1, array('can')),
-                                     array(array('name' => 'Ireland'), 0, array()),
-            );
-      }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->model = new Country;
+	}
 
-      /**
-       * Sets up the fixture, for example, opens a network connection.
-       * This method is called before a test is executed.
-       */
-      protected function setUp() {
-            parent::setUp();
-            $this->model = new Country;
-      }
+	/**
+	 * @covers Country::model
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('Country', get_class(Country::model()), 'Class name should match model.');
+	}
 
-      /**
-       * Tears down the fixture, for example, closes a network connection.
-       * This method is called after a test is executed.
-       */
-      protected function tearDown() {
-            
-      }
+	/**
+	 * @covers Country::tableName
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('country', $this->model->tableName());
+	}
 
-      /**
-       * @covers Country::model
-       * @todo   Implement testModel().
-       */
-      public function testModel() {
-            
-            $this->assertEquals('Country', get_class(Country::model()), 'Class name should match model.');
-            
-      }
+	/**
+	 * @covers Country::rules
+	 */
+	public function testRules()
+	{
+		$this->assertTrue($this->countries('us')->validate());
+		$this->assertEmpty($this->countries('us')->errors);
+	}
 
-      /**
-       * @covers Country::tableName
-       * @todo   Implement testTableName().
-       */
-      public function testTableName() {
+	/**
+	 * @covers Country::attributeLabels
+	 */
+	public function testAttributeLabels()
+	{
+		$expected = array(
+			'id' => 'ID',
+			'code' => 'Code',
+			'name' => 'Name',
+		);
 
-            $this->assertEquals('country', $this->model->tableName());
-      }
+		$this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
+	}
 
-      /**
-       * @covers Country::rules
-       * @todo   Implement testRules().
-       */
-      public function testRules() {
-            
-            $this->assertTrue($this->countries('us')->validate());
-            $this->assertEmpty($this->countries('us')->errors);
-      }
+	/**
+	 * @dataProvider dataProvider_Search
+	 */
+	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+	{
+		$country = new Country;
+		$country->setAttributes($searchTerms);
+		$results = $country->search();
+		$data = $results->getData();
 
-      /**
-       * @covers Country::relations
-       * @todo   Implement testRelations().
-       */
-      public function testRelations() {
-            // Remove the following lines when you implement this test.
-            $this->markTestIncomplete(
-                      'This test has not been implemented yet.'
-            );
-      }
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
+				$expectedResults[] = $this->countries($key);
+			}
+		}
 
-      /**
-       * @covers Country::attributeLabels
-       * @todo   Implement testAttributeLabels().
-       */
-      public function testAttributeLabels() {
-            $expected = array(
-                                     'id' => 'ID',
-                                     'code' => 'Code',
-                                     'name' => 'Name',
-            );
-
-            $this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
-      }
-
-      /**
-       * @covers Country::search
-       * @todo   Implement testSearch().
-       */
-      public function testSearch() {
-            $this->markTestSkipped(
-                      'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-            );
-      }
-
-      /**
-       * @dataProvider dataProvider_Search
-       */
-      public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
-            $country = new Country;
-            $country->setAttributes($searchTerms);
-            $results = $country->search();
-            $data = $results->getData();
-
-            $expectedResults = array();
-            if (!empty($expectedKeys)) {
-                  foreach ($expectedKeys as $key) {
-                        $expectedResults[] = $this->countries($key);
-                  }
-            }
-
-            $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
-            $this->assertEquals($expectedResults, $data, 'Actual results should match.');
-      }
-
+		$this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
+		$this->assertEquals($expectedResults, $data, 'Actual results should match.');
+	}
 }

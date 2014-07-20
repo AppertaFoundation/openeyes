@@ -20,6 +20,6 @@
 /**
  * Base class for all elements
  */
-class BaseElement extends BaseActiveRecord
+class BaseElement extends BaseActiveRecordVersioned
 {
 }

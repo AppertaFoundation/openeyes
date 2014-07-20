@@ -3,9 +3,9 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
-<link rel="stylesheet" href="/protected/modules/OphCoCorrespondence/assets/css/module.css" />
+<link rel="stylesheet" href="<?php echo $assets_root_path?>/assets/modules/OphCoCorrespondence/assets/css/module.css" />
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
 		<? include 'components/header-logged-in.php'; ?>

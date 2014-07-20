@@ -1,0 +1,15 @@
+<Organization xmlns="http://hl7.org/fhir">
+  <identifier>
+    <use value="official"/>
+    <label value="Organisation Code"/>
+    <system value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/o/org/organisation_code_de.asp"/>
+    <value value="CCG0042"/>
+  </identifier>
+  <name value="Test CCG 42"/>
+  <address>
+    <line value="123 Fake Street"/>
+    <city value="London"/>
+    <zip value="NW3 5JK"/>
+    <country value="United Kingdom"/>
+  </address>
+</Organization>

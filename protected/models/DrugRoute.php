@@ -25,17 +25,8 @@
  * @property integer $name
  * @property DrugRouteOption[] $options
  */
-class DrugRoute extends BaseActiveRecord
+class DrugRoute extends BaseActiveRecordVersioned
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return DrugRoute the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
-
 	/**
 	 * @return string the associated database table name
 	 */
@@ -49,53 +40,31 @@ class DrugRoute extends BaseActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-				array('name', 'required'),
-				// The following rule is used by search().
-				// Please remove those attributes that should not be searched.
-				array('id, name', 'safe', 'on'=>'search'),
+			array('name', 'required'),
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
 		);
 	}
 
 	/**
-	 * @return array relational rules.
+	 * Get active options for this route
+	 *
+	 * @param int $id Also retrieve the option matching this id if passed
+	 * @return DrugRouteOption[]
 	 */
-	public function relations()
+	public function getOptions($id = null)
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-				'options' => array(self::HAS_MANY, 'DrugRouteOption', 'drug_route_id'),
-		);
-	}
+		$crit = new CDbCriteria;
+		$crit->compare('active', true);
+		$crit->compare('id', $id, false, 'OR');
+		$crit->compare('drug_route_id', $this->id);
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-		);
-	}
-
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-
-		return new CActiveDataProvider(get_class($this), array(
-				'criteria'=>$criteria,
-		));
+		return DrugRouteOption::model()->findAll($crit);
 	}
 }

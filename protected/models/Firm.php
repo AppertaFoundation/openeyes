@@ -32,7 +32,7 @@
  * @property User[] $members
  * @property User $consultant
  */
-class Firm extends BaseActiveRecord
+class Firm extends BaseActiveRecordVersioned
 {
 	public $subspecialty_id;
 
@@ -51,6 +51,11 @@ class Firm extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'firm';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**
@@ -102,6 +107,13 @@ class Firm extends BaseActiveRecord
 		);
 	}
 
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
+		);
+	}
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -123,41 +135,6 @@ class Firm extends BaseActiveRecord
 		));
 	}
 
-	/**
-	 * Returns an array of the service_subspecialty names - the service name plus the subspecialty name.
-	 */
-	public function getServiceSubspecialtyOptions()
-	{
-		$sql = 'SELECT
-					service_subspecialty_assignment.id,
-					service.name AS service_name,
-					subspecialty.name AS subspecialty_name
-				FROM
-					service,
-					subspecialty,
-					service_subspecialty_assignment
-				WHERE
-					service.id = service_subspecialty_assignment.service_id
-				AND
-					subspecialty.id = service_subspecialty_assignment.subspecialty_id
-				ORDER BY
-					service.name,
-					subspecialty.name
-				';
-
-		$connection = Yii::app()->db;
-		$command = $connection->createCommand($sql);
-		$results = $command->queryAll();
-
-		$select = array();
-
-		foreach ($results as $result) {
-			$select[$result['id']] = $result['service_name'] . ' - ' . $result['subspecialty_name'];
-		}
-
-		return $select;
-	}
-
 	public function getServiceText()
 	{
 		return $this->serviceSubspecialtyAssignment->service->name;
@@ -176,46 +153,26 @@ class Firm extends BaseActiveRecord
 	 * Fetch an array of firm IDs and names
 	 * @return array
 	 */
-	public function getList($subspecialtyId = null)
+	public function getList($subspecialty_id = null, $include_id = null)
 	{
-		$result = array();
+		$cmd = Yii::app()->db->createCommand()
+			->select('f.id, f.name')
+			->from('firm f')
+			->where('f.active = 1' . ($include_id ? " or f.id = :include_id" : ""));
 
-		if (empty($subspecialtyId)) {
-			$list = Firm::model()->findAll();
-
-			foreach ($list as $firm) {
-				$result[$firm->id] = $firm->name;
-			}
-		} else {
-			$list = Yii::app()->db->createCommand()
-				->select('f.id, f.name')
-				->from('firm f')
-				->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-				->where('ssa.subspecialty_id = :sid', array(':sid' => $subspecialtyId))
-				->queryAll();
-
-			foreach ($list as $firm) {
-				$result[$firm['id']] = $firm['name'];
-			}
+		if ($subspecialty_id) {
+			$cmd->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+				->andWhere('ssa.subspecialty_id = :subspecialty_id')
+				->bindValue(':subspecialty_id', $subspecialty_id);
 		}
 
-		natcasesort($result);
+		if ($include_id) {
+			$cmd->bindValue(":include_id", $include_id);
+		}
 
-		return $result;
-	}
-
-	public function getListWithoutDupes()
-	{
 		$result = array();
-
-		if (empty($subspecialtyId)) {
-			$list = Firm::model()->findAll();
-
-			foreach ($list as $firm) {
-				if (!in_array($firm->name,$result)) {
-					$result[$firm->id] = $firm->name;
-				}
-			}
+		foreach ($cmd->queryAll() as $firm) {
+			$result[$firm['id']] = $firm['name'];
 		}
 
 		natcasesort($result);
@@ -230,6 +187,7 @@ class Firm extends BaseActiveRecord
 			->from('firm f')
 			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->join('subspecialty s','ssa.subspecialty_id = s.id')
+			->where('f.active = 1')
 			->order('f.name, s.name')
 			->queryAll();
 		$data = array();
@@ -247,19 +205,6 @@ class Firm extends BaseActiveRecord
 			$list[$firm_id] = $name;
 		}
 		return $list;
-	}
-
-	public function getCataractList()
-	{
-		$specialty = Specialty::model()->find('code=?',array(130));
-		$subspecialty = Subspecialty::model()->find('specialty_id=? and name=?',array($specialty->id,'Cataract'));
-		$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($subspecialty->id));
-
-		$criteria = new CDbCriteria;
-		$criteria->compare('service_subspecialty_assignment_id',$ssa->id);
-		$criteria->order = 'name';
-
-		return CHtml::listData(Firm::model()->findAll($criteria),'id','name');
 	}
 
 	public function getConsultantName()
@@ -305,9 +250,7 @@ class Firm extends BaseActiveRecord
 			->from('subspecialty su')
 			->join('service_subspecialty_assignment svc_ass', 'svc_ass.subspecialty_id = su.id')
 			->join('firm f', 'f.service_subspecialty_assignment_id = svc_ass.id')
-			->where('f.id = :fid', array(
-				':fid' => $this->id
-			))
+			->where('f.id = :fid', array(':fid' => $this->id))
 			->queryRow();
 
 		if (empty($result)) {

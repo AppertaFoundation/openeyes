@@ -7,7 +7,6 @@
 			'Contacts' => '/admin/contacts',
 			'Contact labels' => '/admin/contactlabels',
 			'Data sources' => '/admin/datasources',
-			'Drugs' => '/admin/drugs',
 			'Institutions' => '/admin/institutions',
 			'Sites' => '/admin/sites',
 			'Commissioning bodies' => '/admin/commissioning_bodies',
@@ -16,6 +15,8 @@
 			'Commissioning body service types' => '/admin/commissioning_body_service_types',
 			'Event deletion requests' => '/admin/eventDeletionRequests',
 			'Custom episode summaries' => '/admin/episodeSummaries',
+			'Medication Stop Reason'=>'/admin/editmedicationstopreason',
+
 		) as $title => $uri) {?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="selected"<?php }?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?>

@@ -22,6 +22,7 @@ class Intravitreal extends OpenEyesPage
         'rightAnaestheticAgent' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_right_anaestheticagent_id']"),
 
         //Anaesthetic Left
+        'addLeftSide' => array('xpath' => "//*[@class='element-eye left-eye right side column inactive']//*[contains(text(),'Add left side')]"),
         'leftAnaestheticTopical' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaesthetictype_id_1']"),
         'leftAnaestheticLA' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaesthetictype_id_3']"),
         'leftDeliveryRetrobulbar' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Anaesthetic_left_anaestheticdelivery_id_1']"),
@@ -37,7 +38,7 @@ class Intravitreal extends OpenEyesPage
         'rightPreInjectionAntiseptic' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_pre_antisept_drug_id']"),
         'rightPreInjectionSkinCleanser' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_pre_skin_drug_id']"),
         'rightPreInjectionIOPTickbox' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_pre_ioplowering_required']"),
-        'rightPerInjectionIOPDrops' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Treatment[right_pre_ioploweringdrugs]']"),
+        'rightPerInjectionIOPDrops' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Treatment_right_pre_ioploweringdrugs']"),
         'rightDrug' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_drug_id']"),
         'rightNumberOfInjections' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_number']"),
         'rightBatchNumber' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_right_batch_number']"),
@@ -51,7 +52,7 @@ class Intravitreal extends OpenEyesPage
         'leftPreInjectionAntiseptic' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_pre_antisept_drug_id']"),
         'leftPreInjectionSkinCleanser' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_pre_skin_drug_id']"),
         'leftPreInjectionIOPTickbox' => array('xpath' => "//div[@id='div_Element_OphTrIntravitrealinjection_Treatment_left_pre_ioplowering_required']/div[2]/input[2]"),
-        'leftPerInjectionIOPDrops' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Treatment[left_pre_ioploweringdrugs]']"),
+        'leftPerInjectionIOPDrops' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Treatment_left_pre_ioploweringdrugs']"),
         'leftDrug' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_drug_id']"),
         'leftNumberOfInjections' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_number']"),
         'leftBatchNumber' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Treatment_left_batch_number']"),
@@ -80,13 +81,14 @@ class Intravitreal extends OpenEyesPage
         'leftPostInjectionDrops' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_PostInjectionExamination_left_drops_id']"),
 
         //Complications
-        'rightComplicationsDropdown' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Complications[right_complications]']"),
-        'leftComplicationsDropdown' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Complications[left_complications]']"),
+        'rightComplicationsDropdown' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Complications_right_complications']"),
+        'leftComplicationsDropdown' => array('xpath' => "//select[@id='Element_OphTrIntravitrealinjection_Complications_left_complications']"),
         'saveIntravitrealInjection' => array('xpath' => "//*[@id='et_save']"),
         'IntravitrealSavedOk' => array('xpath' => "//*[@id='flash-success']"),
 
         'existingAllergyCheck' => array ('xpath' => "//*[contains(text(),'Patient is allergic to: Tetracycline')]"),
         'removeRightEye' => array('xpath' => "//*[@class='element-eye right-eye left side column']//*[contains(text(),'Remove side')]"),
+        'removeLeftEye' => array('xpath' => "//*[@class='element-eye left-eye right side column']//*[contains(text(),'Remove side')]"),
 
         //error messages
         'anaestheticLeftTypeBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anaesthetic: Left Anaesthetic Type cannot be blank.')]"),
@@ -125,10 +127,33 @@ class Intravitreal extends OpenEyesPage
          {
              if ($this->isRightSideOpen())
              {
-             $this->getElement('addRightSide')->click();
+             $element = $this->getElement('addRightSide');
+             $this->scrollWindowToElement($element);
+             $element->click();
              $this->getSession()->wait(5000, 'window.$ && $.active == 0');
              }
+
+             $this->getSession()->wait(2000);
          }
+
+        protected function isLeftSideOpen()
+        {
+            return (bool) $this->find('xpath', $this->getElement('addLeftSide')->getXpath());
+        }
+
+        public function removeLeftside ()
+        {
+            $this->getElement('removeLeftEye')->click();
+        }
+
+        public function addLeftSide ()
+        {
+            if ($this->isLeftSideOpen())
+            {
+                $this->getElement('addLeftSide')->click();
+                $this->getSession()->wait(5000, 'window.$ && $.active == 0');
+            }
+        }
 
         protected function doesAllergyWarningExist()
         {
@@ -148,12 +173,16 @@ class Intravitreal extends OpenEyesPage
 
          public function rightTypeTopical ()
          {
-             $this->getElement('rightAnaestheticTopical')->click();
+             $element = $this->getElement('rightAnaestheticTopical');
+             $this->scrollWindowToElement($element);
+             $element->click();
          }
 
          public function rightTypeLA ()
          {
-             $this->getElement('rightAnaestheticLA')->click();
+             $element = $this->getElement('rightAnaestheticLA');
+             $this->scrollWindowToElement($element);
+             $element->click();
          }
 
          public function rightDeliveryRetrobulbar ()
@@ -199,12 +228,16 @@ class Intravitreal extends OpenEyesPage
         //Left
         public function leftTypeTopical ()
         {
-            $this->getElement('leftAnaestheticTopical')->click();
+            $element = $this->getElement('leftAnaestheticTopical');
+            $this->scrollWindowToElement($element);
+            $element->click();
         }
 
         public function leftTypeLA ()
         {
-            $this->getElement('leftAnaestheticLA')->click();
+            $element = $this->getElement('leftAnaestheticLA');
+            $this->scrollWindowToElement($element);
+            $element->click();
         }
 
         public function leftDeliveryRetrobulbar ()
@@ -260,7 +293,7 @@ class Intravitreal extends OpenEyesPage
         public function rightPreInjectionIOPDropsCheckbox ()
         {
             $this->getElement('rightPreInjectionIOPTickbox')->check();
-            $this->getSession()->wait(5000);
+//            $this->getSession()->wait(5000);
         }
 
         public function rightPreInjectionIOPDropsLoweringDrops ($drops)
@@ -302,43 +335,43 @@ class Intravitreal extends OpenEyesPage
         {
             $this->getElement('leftPreInjectionAntiseptic')->selectOption($antiseptic);
         }
-    
+
         public function leftPreInjectionSkinCleanser ($skin)
         {
             $this->getElement('leftPreInjectionSkinCleanser')->selectOption($skin);
         }
-    
+
         public function leftPreInjectionIOPDropsCheckbox ()
         {
             $this->getElement('leftPreInjectionIOPTickbox')->check();
-            $this->getSession()->wait(5000);
+//            $this->getSession()->wait(5000);
         }
-    
+
         public function leftPreInjectionIOPDropsLoweringDrops ($drops)
         {
             $this->getElement('leftPerInjectionIOPDrops')->selectOption($drops);
         }
-    
+
         public function leftDrug ($drug)
         {
             $this->getElement('leftDrug')->selectOption($drug);
         }
-    
+
         public function leftInjections ($injections)
         {
             $this->getElement('leftNumberOfInjections')->setValue($injections);
         }
-    
+
         public function leftBatchNumber ($batch)
         {
             $this->getElement('leftBatchNumber')->setValue($batch);
         }
-    
+
         public function leftInjectionGivenBy ($injection)
         {
             $this->getElement('leftInjectionGivenBy')->selectOption($injection);
         }
-    
+
         public function leftInjectionTime ($time)
         {
             $this->getElement('leftInjectionTime')->setValue($time);
@@ -378,22 +411,22 @@ class Intravitreal extends OpenEyesPage
         {
             $this->getElement('leftCountingFingersYes')->click();
         }
-    
+
         public function leftCountingFingersNo ()
         {
             $this->getElement('leftCountingFingersNo')->check();
         }
-    
+
         public function leftIOPNeedsToBeCheckedYes ()
         {
             $this->getElement('leftIOPCheckYes')->check();
         }
-    
+
         public function leftIOPNeedsToBeCheckedNo ()
         {
             $this->getElement('leftIOPCheckNo')->check();
         }
-    
+
         public function leftPostInjectionDrops ($drops)
         {
             $this->getElement('leftPostInjectionDrops')->selectOption($drops);

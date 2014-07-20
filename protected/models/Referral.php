@@ -29,11 +29,18 @@
  * @property date $closed_date
  * @property string $referrer
  * @property integer $firm_id
- * @property integer $gp_id
  * @property integer $service_subspecialty_assignment_id // MW: this is here because sometimes the referrer is a pas_code which doesn't map to a firm with the correct subspecialty
+ *
+ * @property RTT[] $rtts
+ * @property Firm $firm
+ * @property ServiceSubspecialtyAssignment $serviceSubpsecialtyAssignment
+ * @property ReferralType $reftype
  */
-class Referral extends BaseActiveRecord
+class Referral extends BaseActiveRecordVersioned
 {
+
+	public $use_pas = TRUE;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Referral the static model class
@@ -41,6 +48,18 @@ class Referral extends BaseActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Suppress PAS integration
+	 * @return Referral
+	 */
+	public function noPas()
+	{
+		// Clone to avoid singleton problems with use_pas flag
+		$model = clone $this;
+		$model->use_pas = FALSE;
+		return $model;
 	}
 
 	/**
@@ -73,6 +92,8 @@ class Referral extends BaseActiveRecord
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 			'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
+			'reftype' => array(self::BELONGS_TO, 'ReferralType', 'referral_type_id'),
+			'rtts' => array(self::HAS_MANY, 'RTT', 'referral_id')
 		);
 	}
 
@@ -102,5 +123,58 @@ class Referral extends BaseActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	/**
+	 * Pass through use_pas flag to allow pas supression
+	 * @see CActiveRecord::instantiate()
+	 */
+	protected function instantiate($attributes)
+	{
+		$model = parent::instantiate($attributes);
+		$model->use_pas = $this->use_pas;
+		return $model;
+	}
+
+	/**
+	 * Returns string description of the referral
+	 *
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		$desc = array();
+		$desc[] = $this->NHSDate('received_date');
+
+		if ($this->firm) {
+			$desc[] = $this->firm->getNameAndSubspecialty();
+		}
+		elseif ($ssa = $this->serviceSubspecialtyAssignment) {
+			$desc[] = $ssa->subspecialty->name;
+		}
+		$desc[] = $this->reftype->getDescription();
+		$desc[] = "(" . $this->refno . ")";
+		if ($this->closed_date) {
+			$desc[] = "(closed - " . $this->NHSDate('closed_date') . ")";
+		}
+
+		return implode(' ', $desc);
+
+	}
+
+	/**
+	 * Get the active RTTs attached to this referral
+	 *
+	 * @return RTT[]
+	 */
+	public function getActiveRTT()
+	{
+		$res = array();
+		foreach ($this->rtts as $rtt) {
+			if ($rtt->active) {
+				$res[] = $rtt;
+			}
+		}
+		return $res;
 	}
 }

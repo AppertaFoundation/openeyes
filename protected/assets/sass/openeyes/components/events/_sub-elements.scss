@@ -40,10 +40,13 @@
 		font-size: $default-font-size;
 		font-style: normal;
 		margin: 0;
-		padding: emCalc(6px) emCalc(10px);
+		padding: 5px 8px;
 	}
 	.element-eye {
 		border-top: 1px solid #fafafa;
+	}
+	@media print {
+		border: 1px solid #000;
 	}
 }
 
@@ -64,7 +67,7 @@
 	}
 	.sub-element-actions {
 		@extend .element-actions;
-		padding: emCalc(1px) emCalc(2px) 0 0;
+		padding: 1px 2px 0 0;
 	}
 	.sub-element-fields {
 		@extend .element-data;

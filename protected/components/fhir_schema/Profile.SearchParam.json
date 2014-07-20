@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"name":{"type":"string","plural":false},"type":{"type":"SearchParamType","plural":false},"documentation":{"type":"string","plural":false},"xpath":{"type":"string","plural":false},"target":{"type":"code","plural":true}}

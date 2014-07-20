@@ -29,8 +29,8 @@ class LoginContext extends PageObjectContext
          */
         $loginPage = $this->getPage('Login');
         $loginPage->open();
-        $loginPage->maximizeBrowserWindow();
-//        $loginPage->halfBrowserWindow();
+//        $loginPage->maximizeBrowserWindow();
+        $loginPage->halfBrowserWindow();
         $loginPage->loginWith($user, $password);
     }
 

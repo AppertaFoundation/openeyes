@@ -203,7 +203,7 @@ class Audit extends BaseActiveRecord
 		}
 	}
 
-	public static function add($target, $action, $data=null, $log=false, $properties=array())
+	public static function add($target, $action, $data=null, $log_message=null, $properties=array())
 	{
 		if (!$_target = AuditType::model()->find('name=?',array($target))) {
 			$_target = new AuditType;
@@ -273,7 +273,7 @@ class Audit extends BaseActiveRecord
 			$username = User::model()->findByPk($properties['user_id'])->username;
 		}
 
-		$log && OELog::log($data,@$username);
+		$log_message && OELog::log($log_message,@$username);
 
 		return $audit;
 	}

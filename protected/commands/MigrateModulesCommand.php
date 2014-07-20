@@ -37,21 +37,25 @@ DESCRIPTION
 EOD;
 	}
 
-	public function actionUp($interactive = true, $connectionID = false)
+	public function actionUp($interactive = true, $connectionID = false, $testdata = false)
 	{
-		$commandPath = Yii::getFrameworkPath() . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'commands';
+		$commandPath = Yii::getPathOfAlias('application.commands');
 		$modules = Yii::app()->modules;
 		foreach ($modules as $module => $module_settings) {
-			if (is_dir(Yii::getPathOfAlias($module.'.migrations'))) {
+			if (is_dir(Yii::getPathOfAlias('application.modules.'.$module.'.migrations'))) {
 				echo "Migrating $module:\n";
 				if(!$interactive) {
-					$args = array('yiic', 'migrate', '--interactive=0', '--migrationPath='.$module.'.migrations');
+					$args = array('yiic', 'oemigrate', '--interactive=0', '--migrationPath=application.modules.'.$module.'.migrations');
 				} else {
-					$args = array('yiic', 'migrate', '--migrationPath='.$module.'.migrations');
+					$args = array('yiic', 'oemigrate', '--migrationPath=application.modules.'.$module.'.migrations');
 				}
 				if($connectionID){
 					$args[] = '--connectionID=' . $connectionID;
 				}
+				if($testdata ){
+					$args[] = '--testdata' ;
+				}
+				//echo "\nMigratemodules ARGS : " . var_export( $args, true );
 
 				$runner = new CConsoleCommandRunner();
 				$runner->addCommands($commandPath);

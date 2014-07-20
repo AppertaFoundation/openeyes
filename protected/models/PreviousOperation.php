@@ -29,7 +29,7 @@
  * The followings are the available model relations:
  * @property Patient $patient
  */
-class PreviousOperation extends BaseActiveRecord
+class PreviousOperation extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -56,7 +56,7 @@ class PreviousOperation extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('date, operation, patient_id', 'required'),
+			array('operation, patient_id', 'required'),
 			array('date, side_id, operation, patient_id', 'safe'),
 			array('date', 'OEFuzzyDateValidatorNotFuture'),
 			// The following rule is used by search().

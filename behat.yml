@@ -107,6 +107,23 @@ phantomjs-ci:
         name:               pretty,junit,html
         parameters:
             output_path:    null,junit_behat_reports,jm_behat_report.html
+phantomjs-ci-sub:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888/subfolder
+            browser_name:       "phantomjs"
+            goutte: ~
+            default_session:    selenium2
+            javascript_session: selenium2
+            selenium2:
+              browser: 'phantomjs'
+              wd_host: 10.0.2.2:4444/wd/hub
+              capabilities: { "browser": "phantomjs"}
+
+    formatter:
+        name:               pretty,junit,html
+        parameters:
+            output_path:    null,/var/www/subfolder/junit_behat_reports,/var/www/subfolder/jm_behat_report.html
 selenium-ci:
     extensions:
         Behat\MinkExtension\Extension:

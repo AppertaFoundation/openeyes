@@ -39,6 +39,7 @@ class Correspondence extends OpenEyesPage
     public function macro ($macro)
     {
         $this->getElement('macro')->selectOption($macro);
+        $this->getSession()->wait(2000);
     }
 
     public function clinicDate ($date)

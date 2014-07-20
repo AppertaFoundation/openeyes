@@ -41,7 +41,7 @@
 				<label for="institution_id">Institution:</label>
 			</div>
 			<div class="large-5 column end">
-				<?php echo CHtml::dropDownList('institution_id',@$_POST['institution_id'],CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Please select -'))?>
+				<?php echo CHtml::dropDownList('institution_id',@$_POST['institution_id'],CHtml::listData(Institution::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Please select -'))?>
 			</div>
 		</div>
 		<div class="row field-row">

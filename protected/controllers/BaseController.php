@@ -70,22 +70,22 @@ class BaseController extends Controller
 	 */
 	protected function setupAssetManager()
 	{
+
+		$assetManager = Yii::app()->assetManager;
+
 		// Set AssetManager properties.
-		Yii::app()->assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
-		Yii::app()->assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
+		$assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
+		$assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
 
 		//FIXME: currently we are resetting the assetmanager list for PDFs because of the TCPDF processing of
 		// stylesheets. Ideally we should suppress the inclusion here. (Or we should be using a different approach
 		// to render the HTML template for the TCPDF engine)
 
-		// Register the main stylesheet (if it's not a print action), without pre-registering
-		// to ensure it's *always* output first.
-		if (!$this->isPrintAction($this->action->id)) {
-			Yii::app()->assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
-		}
+		// Register the main stylesheet without pre-registering to ensure it's always output first.
+		$assetManager->registerCssFile('css/style.css', null, null, AssetManager::OUTPUT_ALL, false);
 
 		// Prevent certain assets from being outputted in certain conditions.
-		Yii::app()->getAssetManager()->adjustScriptMapping();
+		$assetManager->adjustScriptMapping();
 	}
 
 	protected function beforeAction($action)
@@ -181,5 +181,21 @@ class BaseController extends Controller
 		array_shift($params);
 
 		return Yii::app()->user->checkAccess($operation, $params);
+	}
+
+	/**
+	 * Fetch a model instance and throw 404 if not found; optionally create a new instance if pk is empty
+	 *
+	 * @param string $class_name
+	 * @param scalar $pk
+	 * @param bool $create
+	 */
+	public function fetchModel($class_name, $pk = null, $create = false)
+	{
+		if (!$pk && $create) return new $class_name;
+
+		$model = $class_name::model()->findByPk($pk);
+		if (!$model) throw new CHttpException(404, "{$class_name} with PK '{$pk}' not found");
+		return $model;
 	}
 }

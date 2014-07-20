@@ -25,7 +25,7 @@
  * @property string $code
  * @property string $name
  */
-class ReferralType extends BaseActiveRecord
+class ReferralType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -92,5 +92,16 @@ class ReferralType extends BaseActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	/**
+	 * Because referral types can be defined from external systems with unusual formatting
+	 * we have an override for the description
+	 *
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return ucfirst(strtolower($this->name));
 	}
 }

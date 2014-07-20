@@ -1,0 +1,4 @@
+{
+	"resourceType": "OperationOutcome",
+	"issue": {":subst": "issues"}
+}

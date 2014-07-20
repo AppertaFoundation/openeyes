@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patient xmlns="http://hl7.org/fhir">
+  <deceasedBoolean id="1">
+    <extension url="http://example.com/1">
+      <valueString value="foo"/>
+    </extension>
+    <extension url="http://example.com/2">
+      <valueInteger value="1"/>
+    </extension>
+  </deceasedBoolean>
+</Patient>

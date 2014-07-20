@@ -17,126 +17,94 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class CommonPreviousOperationTest extends CDbTestCase {
+class CommonPreviousOperationTest extends CDbTestCase
+{
+	/**
+	 * @var CommonPreviousOperation
+	 */
+	public $model;
+	public $fixtures = array(
+		'commonpreviousops' => 'CommonPreviousOperation',
+	);
 
-                       /**
-                        * @var CommonPreviousOperation
-                        */
-                       public $model;
-                       public $fixtures = array(
-                                                'commonpreviousops' => 'CommonPreviousOperation',
-                       );
+	public function dataProvider_Search() {
 
-                       public function dataProvider_Search() {
+		return array(
+			array(array('id' => 1, 'name' => 'commonpreviousop 1'), 1, array('commonpreviousop1')),
+			array(array('id' => 2, 'name' => 'commonpreviousop 2'), 1, array('commonpreviousop2')),
+		);
+	}
 
-                                              return array(
-                                                                       array(array('id' => 1, 'name' => 'commonpreviousop 1'), 1, array('commonpreviousop1')),
-                                                                       array(array('id' => 2, 'name' => 'commonpreviousop 2'), 1, array('commonpreviousop2')),
-                                              );
-                       }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->model = new CommonPreviousOperation;
+	}
 
-                       /**
-                        * Sets up the fixture, for example, opens a network connection.
-                        * This method is called before a test is executed.
-                        */
-                       protected function setUp() {
+	/**
+	 * @covers CommonPreviousOperation::model
+	 */
+	public function testModel()
+	{
 
-                                              parent::setUp();
-                                              $this->model = new CommonPreviousOperation;
-                       }
+		$this->assertEquals('CommonPreviousOperation', get_class(CommonPreviousOperation::model()), 'Class name should match model.');
+	}
 
-                       /**
-                        * Tears down the fixture, for example, closes a network connection.
-                        * This method is called after a test is executed.
-                        */
-                       protected function tearDown() {
-                                              
-                       }
+	/**
+	 * @covers CommonPreviousOperation::tableName
+	 */
+	public function testTableName()
+	{
 
-                       /**
-                        * @covers CommonPreviousOperation::model
-                        * @todo   Implement testModel().
-                        */
-                       public function testModel() {
+		$this->assertEquals('common_previous_operation', $this->model->tableName());
+	}
 
-                                              $this->assertEquals('CommonPreviousOperation', get_class(CommonPreviousOperation::model()), 'Class name should match model.');
-                       }
+	/**
+	 * @covers CommonPreviousOperation::rules
+	 */
+	public function testRules()
+	{
 
-                       /**
-                        * @covers CommonPreviousOperation::tableName
-                        * @todo   Implement testTableName().
-                        */
-                       public function testTableName() {
+		$this->assertTrue($this->commonpreviousops('commonpreviousop1')->validate());
+		$this->assertEmpty($this->commonpreviousops('commonpreviousop1')->errors);
+	}
 
-                                              $this->assertEquals('common_previous_operation', $this->model->tableName());
-                       }
+	/**
+	 * @covers CommonPreviousOperation::attributeLabels
+	 */
+	public function testAttributeLabels()
+	{
+		$expected = array(
+			'id' => 'ID',
+			'name' => 'Name',
+		);
 
-                       /**
-                        * @covers CommonPreviousOperation::rules
-                        * @todo   Implement testRules().
-                        */
-                       public function testRules() {
+		$this->assertEquals($expected, $this->model->attributeLabels());
+	}
 
-                                              $this->assertTrue($this->commonpreviousops('commonpreviousop1')->validate());
-                                              $this->assertEmpty($this->commonpreviousops('commonpreviousop1')->errors);
-                       }
+	/**
+	 * @dataProvider dataProvider_Search
+	 */
+	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+	{
+		$commonpreviousop = new CommonPreviousOperation;
+		$commonpreviousop->setAttributes($searchTerms);
+		$commonpreviousopresults = $commonpreviousop->search();
+		$commonpreviousopdata = $commonpreviousopresults->getData();
 
-                       /**
-                        * @covers CommonPreviousOperation::relations
-                        * @todo   Implement testRelations().
-                        */
-                       public function testRelations() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
 
-                       /**
-                        * @covers CommonPreviousOperation::attributeLabels
-                        * @todo   Implement testAttributeLabels().
-                        */
-                       public function testAttributeLabels() {
+				$expectedResults[] = $this->commonpreviousops($key);
+			}
+		}
 
-                                              $expected = array(
-                                                                       'id' => 'ID',
-                                                                       'name' => 'Name',
-                                              );
-
-                                              $this->assertEquals($expected, $this->model->attributeLabels());
-                       }
-
-                       /**
-                        * @covers CommonPreviousOperation::search
-                        * @todo   Implement testSearch().
-                        */
-                       public function testSearch() {
-                                              $this->markTestSkipped(
-                                                        'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-                                              );
-                       }
-
-                       /**
-                        * @dataProvider dataProvider_Search
-                        */
-                       public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
-
-
-                                              $commonpreviousop = new CommonPreviousOperation;
-                                              $commonpreviousop->setAttributes($searchTerms);
-                                              $commonpreviousopresults = $commonpreviousop->search();
-                                              $commonpreviousopdata = $commonpreviousopresults->getData();
-
-                                              $expectedResults = array();
-                                              if (!empty($expectedKeys)) {
-                                                                     foreach ($expectedKeys as $key) {
-
-                                                                                            $expectedResults[] = $this->commonpreviousops($key);
-                                                                     }
-                                              }
-
-                                              $this->assertEquals($numResults, $commonpreviousopresults->getItemCount());
-                                              $this->assertEquals($expectedResults, $commonpreviousopdata);
-                       }
-
+		$this->assertEquals($numResults, $commonpreviousopresults->getItemCount());
+		$this->assertEquals($expectedResults, $commonpreviousopdata);
+	}
 }

@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class DrugType extends BaseActiveRecord
+class DrugType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -41,6 +41,11 @@ class DrugType extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'drug_type';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**
@@ -75,6 +80,13 @@ class DrugType extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
 		);
 	}
 

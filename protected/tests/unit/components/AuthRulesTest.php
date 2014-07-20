@@ -19,7 +19,15 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
+		Yii::app()->params['event_lock_days'] = 1;
 		$this->rules = new AuthRules;
+	}
+
+	public function tearDown()
+	{
+		unset(Yii::app()->params['event_lock_days']);
+		unset(Yii::app()->params['event_lock_disable']);
+		Yii::app()->setComponent('user', null);
 	}
 
 	public function testCanEditEpisode_SupportServicesFirm_SupportServicesEpisode()
@@ -112,6 +120,12 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(42), $this->getNormalEpisode(43)));
 	}
 
+	public function testCanEditEvent_DeletePending()
+	{
+		$event = $this->getEvent(array('delete_pending' => true));
+		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(), $event));
+	}
+
 	public function testCanEditEvent_PatientDeceased()
 	{
 		$event = $this->getEvent();
@@ -137,16 +151,50 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(), $event));
 	}
 
-	public function testCanDeleteEvent_WrongUser()
+	public function testCanEditEvent_EventLockingDisabled()
 	{
-		$event = $this->getEvent(array('created_user_id' => 1));
-		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(2), $this->getNormalFirm(), $event));
+		Yii::app()->params['event_lock_disable'] = true;
+		$event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
+		$this->assertTrue($this->rules->canEditEvent($this->getNormalFirm(), $event));
 	}
 
-	public function testCanDeleteEvent_TooLate()
+	public function testCanEditEvent_Admin()
 	{
-		$event = $this->getEvent(array('created_date' => date('Y-m-d', time() - 86401)));
-		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
+		$this->becomeAdminUser();
+		$event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
+		$this->assertTrue($this->rules->canEditEvent($this->getNormalFirm(), $event));
+	}
+
+	public function testCanEditEvent_ModuleAllows()
+	{
+		$event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
+		$event->expects($this->any())->method('moduleAllowsEditing')->will($this->returnValue(true));
+		$this->assertTrue($this->rules->canEditEvent($this->getNormalFirm(), $event));
+	}
+
+	public function testCanEditEvent_ModuleDisallows()
+	{
+		$event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
+		$event->expects($this->any())->method('moduleAllowsEditing')->will($this->returnValue(false));
+		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(), $event));
+	}
+
+	public function testCanEditEvent_TimeLocked()
+	{
+		$event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('2 days ago'))));
+		$this->assertFalse($this->rules->canEditEvent($this->getNormalFirm(), $event));
+	}
+
+	public function testCanEditEvent_NotTimeLocked()
+	{
+		$event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('yesterday'))));
+		$this->assertTrue($this->rules->canEditEvent($this->getNormalFirm(), $event));
+	}
+
+	public function testCanDeleteEvent_WrongUser()
+	{
+		$event = $this->getEvent(array('created_user_id' => 1, 'created_date' => date('Y-m-d H:i:s')));
+		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(2), $this->getNormalFirm(), $event));
 	}
 
 	public function testCanDeleteEvent_PatientDeceased()
@@ -172,6 +220,84 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 	{
 		$event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
 		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
+	}
+
+	public function testCanDeleteEvent_EventLockingDisabled()
+	{
+		Yii::app()->params['event_lock_disable'] = true;
+		$event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
+		$this->assertTrue($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
+	}
+
+	public function testCanDeleteEvent_Admin()
+	{
+		$this->becomeAdminUser();
+		$event = $this->getEvent(array('created_user_id' => 1, 'created_date' => '1999-12-31 23:59:59'));
+		$this->assertTrue($this->rules->canDeleteEvent($this->getUser(2), $this->getNormalFirm(), $event));
+	}
+
+	public function testCanDeleteEvent_ModuleAllows()
+	{
+		$event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
+		$event->expects($this->any())->method('moduleAllowsEditing')->will($this->returnValue(true));
+		$this->assertTrue($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
+	}
+
+	public function testCanDeleteEvent_ModuleDisallows()
+	{
+		$event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
+		$event->expects($this->any())->method('moduleAllowsEditing')->will($this->returnValue(false));
+		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
+	}
+
+	public function testCanDeleteEvent_TimeLocked()
+	{
+		$event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('2 days ago'))));
+		$this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
+	}
+
+	public function testCanDeleteEvent_NotTimeLocked()
+	{
+		$event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('yesterday'))));
+		$this->assertTrue($this->rules->canDeleteEvent($this->getUser(), $this->getNormalFirm(), $event));
+	}
+
+	public function testCanRequestEventDeletion_DeletePending()
+	{
+		$event = $this->getEvent(array('delete_pending' => true));
+		$this->assertFalse($this->rules->canRequestEventDeletion($this->getNormalFirm(), $event));
+	}
+
+	public function testCanRequestEventDeletion_ModuleDisallows()
+	{
+		$event = $this->getEvent();
+		$event->expects($this->any())->method('showDeleteIcon')->will($this->returnValue(false));
+		$this->assertFalse($this->rules->canRequestEventDeletion($this->getNormalFirm(), $event));
+	}
+
+	public function testCanRequestEventDeletion_PatientDeceased()
+	{
+		$event = $this->getEvent();
+		$event->episode->patient->date_of_death = '2013-11-13';
+		$this->assertFalse($this->rules->canRequestEventDeletion($this->getNormalFirm(), $event));
+	}
+
+	public function testCanRequestEventDeletion_WrongSubspecialty()
+	{
+		$event = $this->getEvent(array('episode' => $this->getNormalEpisode(43)));
+		$this->assertFalse($this->rules->canRequestEventDeletion($this->getNormalFirm(42), $event));
+	}
+
+	public function testCanRequestEventDeletion_CorrectSubspecialty()
+	{
+		$event = $this->getEvent(array('episode' => $this->getNormalEpisode(42)));
+		$this->assertTrue($this->rules->canRequestEventDeletion($this->getNormalFirm(42), $event));
+	}
+
+	public function testCanRequestEventDeletion_LegacyEpisode()
+	{
+		$event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
+		$this->assertFalse($this->rules->canRequestEventDeletion($this->getNormalFirm(), $event));
 	}
 
 	private function getSupportServicesFirm()
@@ -253,5 +379,12 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 	private function getUser($id = 1)
 	{
 		return ComponentStubGenerator::generate('User', array('id' => $id));
+	}
+
+	private function becomeAdminUser()
+	{
+		$user = $this->getMockBuilder('CWebUser')->disableOriginalConstructor()->getMock();
+		$user->expects($this->any())->method('checkAccess')->with('admin')->will($this->returnValue(true));
+		Yii::app()->setComponent('user', $user);
 	}
 }

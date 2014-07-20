@@ -36,10 +36,12 @@ Feature: Create New Operation Booking Event
 
     Then I select Save and Schedule now
 
+    And I select OK to Duplicate procedure if requested
+
     And I select an Available theatre slot date
     And I select an Available session time
 
-    Then I select a Ward of "2"
+#    Then I select a Ward of "2"
     And enter an admission time of "11:20"
     Then I add Session comments of "Session Comments Session Comments Session Comments Session Comments Session Comments"
     And I add Operation comments of "Operation Comments Operation Comments Operation Comments Operation Comments Operation Comments"
@@ -81,6 +83,8 @@ Feature: Create New Operation Booking Event
     Then I add comments of "Insert test comments here"
 
     Then I select Save and Schedule now
+
+    And I select OK to Duplicate procedure if requested
 
     Then I select Next Month
 
@@ -126,6 +130,8 @@ Feature: Create New Operation Booking Event
     Then I add comments of "Insert test comments here"
 
     Then I select Save and Schedule now
+
+    And I select OK to Duplicate procedure if requested
 
     Then I change the Viewing Schedule to Emergency List
 

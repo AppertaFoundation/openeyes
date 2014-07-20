@@ -1,0 +1,25 @@
+{
+  "name": "sinonjs-built",
+  "version": "1.7.3",
+  "homepage": "https://github.com/fabiosantoscode/sinon-built",
+  "authors": [
+    "Christian Johansen"
+  ],
+  "description": "Test spies, stubs and mocks for JavaScript. http://cjohansen.no/sinon/",
+  "keywords": [
+    "spies",
+    "mocks",
+    "spy",
+    "mock",
+    "unit",
+    "testing"
+  ],
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

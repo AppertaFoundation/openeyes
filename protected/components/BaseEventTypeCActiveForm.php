@@ -56,12 +56,11 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
-	public function radioButtons($element, $field, $table=null, $selected_item=null, $maxwidth=false, $hidden=false, $no_element=false, $label_above=false, $htmlOptions=array(), $layoutColumns=array())
+	public function radioButtons($element, $field, $data, $selected_item=null, $maxwidth=false, $hidden=false, $no_element=false, $label_above=false, $htmlOptions=array(), $layoutColumns=array())
 	{
-		$data = $element->getFormOptions($table);
 		$this->widget('application.widgets.RadioButtonList', array(
 			'element' => $element,
-			'name' => get_class($element)."[$field]",
+			'name' => CHtml::modelName($element)."[$field]",
 			'field' => $field,
 			'data' => $data,
 			'selected_item' => $selected_item,
@@ -78,7 +77,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 	{
 		$this->widget('application.widgets.RadioButtonList', array(
 			'element' => $element,
-			'name' => get_class($element)."[$field]",
+			'name' => CHtml::modelName($element)."[$field]",
 			'field' => $field,
 			'data' => array(
 				1 => 'Yes',
@@ -94,7 +93,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 	{
 		$this->widget('application.widgets.DatePicker', array(
 			'element' => $element,
-			'name' => get_class($element)."[$field]",
+			'name' => CHtml::modelName($element)."[$field]",
 			'field' => $field,
 			'options' => $options,
 			'htmlOptions' => $htmlOptions,
@@ -117,7 +116,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 	{
 		$this->widget('application.widgets.TextField', array(
 			'element' => $element,
-			'name' => get_class($element)."[$field]",
+			'name' => @$htmlOptions['name'] ?: CHtml::modelName($element)."[$field]",
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
 			'links' => $links,
@@ -131,7 +130,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 
 		$this->widget('application.widgets.TextField', array(
 			'element' => $element,
-			'name' => get_class($element)."[$field]",
+			'name' => CHtml::modelName($element)."[$field]",
 			'field' => $field,
 			'htmlOptions' => $htmlOptions,
 			'layoutColumns' => $layoutColumns

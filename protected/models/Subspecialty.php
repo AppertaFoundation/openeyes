@@ -29,7 +29,7 @@
  * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
  * @property Specialty $specialty
  */
-class Subspecialty extends BaseActiveRecord
+class Subspecialty extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -46,6 +46,11 @@ class Subspecialty extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'subspecialty';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**

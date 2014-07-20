@@ -25,7 +25,7 @@
  * @property string $name
  * @property string $ShortName
  */
-class ReferralEpisodeAssignment extends BaseActiveRecord
+class ReferralEpisodeAssignment extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

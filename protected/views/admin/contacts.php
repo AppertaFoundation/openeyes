@@ -34,7 +34,7 @@
 				<label for="label">Label:</label>
 			</div>
 			<div class="large-4 column end">
-				<?php echo CHtml::dropDownList('label',@$_GET['label'],CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Any label -'))?>
+				<?php echo CHtml::dropDownList('label',@$_GET['label'],CHtml::listData(ContactLabel::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Any label -'))?>
 			</div>
 		</div>
 		<div class="row field-row">

@@ -29,7 +29,7 @@
  * @property SubspecialtySubsection $subspecialtySubsection
  * @property Procedure $proc
  */
-class ProcedureSubspecialtySubsectionAssignment extends BaseActiveRecord
+class ProcedureSubspecialtySubsectionAssignment extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

@@ -22,6 +22,7 @@
 		addAxisLabels(plot, options.yaxes, yaxis_labels);
 		addSlider(plot, xaxis.panRange[0], xaxis.panRange[1], [xaxis.min, xaxis.max], xaxis.zoomRange[0]);
 		addTooltips(plot, point_labels);
+		adjustLegend(plot);
 	}
 
 	function addAxisLabels(plot, yaxes, yaxis_labels) {
@@ -38,7 +39,7 @@
 		}
 
 		var labels = $(
-			'<div class="row">' +
+			'<div class="row" style="padding-bottom:5px">' +
 			'<div class="column small-6"><span class="data-value">' + left_label + '</span></div>' +
 			'<div class="column small-6"><span class="data-value right">' + right_label + '</span></div>' +
 			'</div>'
@@ -48,6 +49,7 @@
 	}
 
 	function addSlider(plot, x_min, x_max, values, min_range) {
+
 		var slider = $('<div></div>');
 		slider.slider({
 			min: x_min,
@@ -125,10 +127,22 @@
 		});
 
 		slider.insertAfter(plot.getPlaceholder());
+
+		slider.wrap('<div style="padding-top:10px"></div>');
 	}
 
 	function addTooltips(plot, point_labels) {
-		var tooltip = $('<div class="quicklook tooltip" style="position: absolute; display: none;"></div').appendTo('body');
+
+		var tooltip = new OpenEyes.UI.Tooltip({
+			offset: {
+				x: 10,
+				y: 10
+			},
+			viewPortOffset: {
+				x: 0,
+				y: 32 // height of sticky footer
+			}
+		});
 
 		var hoverItem = null;
 		plot.getPlaceholder().on("plothover", function (e, pos, item) {
@@ -136,7 +150,8 @@
 				if (item != hoverItem) {
 					var label = point_labels[item.series.label][item.dataIndex];
 					if (label) {
-						tooltip.css('left', item.pageX + 10).css('top', item.pageY + 10).html(label).show();
+						tooltip.setContent(label);
+						tooltip.show(item.pageX, item.pageY);
 					} else {
 						tooltip.hide();
 					}
@@ -150,6 +165,52 @@
 			tooltip.hide();
 			hoverItem = null;
 		});
+	}
+
+	function adjustLegend(plot) {
+
+		var options = plot.getOptions();
+		if (options.legend.container) return;
+
+		var placeholder = plot.getPlaceholder();
+		var data = plot.getData();
+
+		var legendX = -1;
+		var legendY = -1;
+
+		plot.hooks.draw.push(function (plot, ctx) {
+
+			var table = placeholder.find('.legend>table');
+
+			// Hide the legend background div
+			table.prev('div').hide();
+
+			// Restore the position of the dragged legend
+			if (legendX !== -1) table.css('left', legendX);
+			if (legendY !== -1)	table.css('top', legendY);
+
+			// Allow the legend to be dragged around
+			table.draggable({
+				containment: placeholder,
+				drag: function() {
+					legendX = table.css('left'),
+					legendY = table.css('top')
+				}
+			});
+
+			var legendBoxes = table.find('.legendColorBox');
+			data.forEach(function(d, i) {
+				if (!d.dashes.show) return;
+				var box = legendBoxes.eq(i).find('>div>div');
+				box.css({
+					width: box.outerWidth(),
+					height: box.outerHeight(),
+					border: 0,
+					background: 'linear-gradient(90deg, '+(d.color)+' 50%, #ffffff 50%)'
+				});
+			});
+		});
+		plot.draw();
 	}
 
 	exports.FlotChart = {

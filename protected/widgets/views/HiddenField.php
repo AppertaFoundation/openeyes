@@ -17,4 +17,4 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php echo CHtml::hiddenField(get_class($element)."[".$field."]", $value, $htmlOptions)?>
+<?php echo CHtml::hiddenField(CHtml::modelName($element)."[".$field."]", $value, $htmlOptions)?>

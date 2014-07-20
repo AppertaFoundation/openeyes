@@ -1,9 +1,9 @@
 <?php
 
 return array(
-	array(
+	'example' => array(
 		'id' => 1,
-		'name' => 'Ophthamology',
+		'name' => 'Example Specialty',
 		'code' => 130,
 	),
 );

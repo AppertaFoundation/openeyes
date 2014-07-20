@@ -31,7 +31,7 @@
  * @property User $user
  * @property EventType $eventType
  */
-class Event extends BaseActiveRecord
+class Event extends BaseActiveRecordVersioned
 {
 	private $defaultScopeDisabled = false;
 
@@ -83,11 +83,12 @@ class Event extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_type_id', 'required'),
+			array('event_type_id, event_date', 'required'),
 			array('episode_id, event_type_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, episode_id, event_type_id, created_date', 'safe', 'on'=>'search'),
+			array('id, episode_id, event_type_id, created_date, event_date', 'safe', 'on'=>'search'),
+			array('event_date', 'OEDateValidatorNotFuture'),
 		);
 	}
 
@@ -108,11 +109,12 @@ class Event extends BaseActiveRecord
 	}
 
 	/**
-	 * @return bool
+	 * Make sure event date is set
 	 */
-	public function getEditable()
+	protected function afterConstruct()
 	{
-		return $this->canUpdate();
+		$this->event_date = date('Y-m-d H:i:s');
+		parent::afterConstruct();
 	}
 
 	public function moduleAllowsEditing()
@@ -270,76 +272,6 @@ class Event extends BaseActiveRecord
 		}
 	}
 
-	/**
-	 * Can this event be updated (edited)
-	 * @return bool
-	 */
-	public function canUpdate()
-	{
-		if (!$this->episode->editable) {
-			return false;
-		}
-
-		if ($this->episode->patient->date_of_death) {
-			return false;
-		}
-
-		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
-			return true;
-		}
-
-		if ($this->delete_pending) {
-			return false;
-		}
-
-		if (Yii::app()->params['event_lock_disable']) {
-			return true;
-		}
-
-		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
-			return $module_allows_editing;
-		}
-
-		return (date('Ymd') < date('Ymd',strtotime($this->created_date) + (86400 * (Yii::app()->params['event_lock_days'] + 1))));
-	}
-
-	/**
-	 * Can this event be deleted
-	 * @return bool
-	 */
-	public function canDelete()
-	{
-		if (!$this->episode->editable) {
-			return false;
-		}
-
-		if ($this->episode->patient->date_of_death) {
-			return false;
-		}
-
-		if (Yii::app()->session['user']->id == User::model()->find('username=?',array('admin'))->id) {
-			return true;
-		}
-
-		if (Yii::app()->session['user']->id != $this->created_user_id) {
-			return false;
-		}
-
-		if ($this->delete_pending) {
-			return false;
-		}
-
-		if (Yii::app()->params['event_lock_disable']) {
-			return true;
-		}
-
-		if (($module_allows_editing = $this->moduleAllowsEditing()) !== null) {
-			return $module_allows_editing;
-		}
-
-		return (date('Ymd') < date('Ymd',strtotime($this->created_date) + (86400 * (Yii::app()->params['event_lock_days'] + 1))));
-	}
-
 	public function showDeleteIcon()
 	{
 		if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
@@ -414,7 +346,7 @@ class Event extends BaseActiveRecord
 		$criteria = new CDbCriteria;
 		$criteria->condition = 'episode_id = :e_id AND event_type_id = :et_id';
 		$criteria->limit = 1;
-		$criteria->order = 'created_date DESC';
+		$criteria->order = ' event_date DESC, created_date DESC';
 		$criteria->params = array(':e_id'=>$this->episode_id, ':et_id'=>$this->event_type_id);
 
 		return Event::model()->find($criteria);
@@ -458,11 +390,7 @@ class Event extends BaseActiveRecord
 	{
 		$elements = array();
 		if ($this->id) {
-			$criteria = new CDbCriteria;
-			$criteria->compare('event_type_id', $this->event_type_id);
-			$criteria->order = 'display_order asc';
-
-			foreach (ElementType::model()->findAll($criteria) as $element_type) {
+			foreach ($this->eventType->getAllElementTypes() as $element_type) {
 				$element_class = $element_type->class_name;
 
 				foreach ($element_class::model()->findAll('event_id = ?',array($this->id)) as $element) {
@@ -507,5 +435,14 @@ class Event extends BaseActiveRecord
 				'limit' => 1,
 			)
 		);
+	}
+
+	public function isEventDateDifferentFromCreated(){
+		$evDate = new DateTime($this->event_date);
+		$creDate = new DateTime($this->created_date);
+		if($creDate->format('Y-m-d') != $evDate->format('Y-m-d')){
+			return true;
+		}
+		return false;
 	}
 }

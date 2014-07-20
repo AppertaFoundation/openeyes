@@ -60,23 +60,11 @@ class ContactTest extends CDbTestCase {
 
       /**
        * @covers Contact::rules
-       * @todo   Implement testRules().
        */
       public function testRules() {
 
             $this->assertTrue($this->contacts('contact1')->validate());
             $this->assertEmpty($this->contacts('contact1')->errors);
-      }
-
-      /**
-       * @covers Contact::relations
-       * @todo   Implement testRelations().
-       */
-      public function testRelations() {
-            // Remove the following lines when you implement this test.
-            $this->markTestIncomplete(
-                      'This test has not been implemented yet.'
-            );
       }
 
       /**
@@ -96,17 +84,6 @@ class ContactTest extends CDbTestCase {
 
 		$this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
 	}
-
-      /**
-       * @covers Contact::search
-       * @todo   Implement testSearch().
-       */
-      public function testSearch() {
-
-            $this->markTestSkipped(
-                      'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-            );
-      }
 
 	/**
 	* @covers Contact::getFullName
@@ -208,7 +185,7 @@ class ContactTest extends CDbTestCase {
 		$label = $this->contactlabels('contactlabel1');
 		$res = Contact::model()->findByLabel('aylw%', $label->name);
 		$c1 = $this->contacts('contact1');
-		$expected = array(array('line' => $c1->ContactLine('City Road'), 'contact_location_id' => $this->contactlocations('contactlocation1')->id));
+		$expected = array(array('line' => $c1->ContactLine('City Road, flat 1, flitchley'), 'contact_location_id' => $this->contactlocations('contactlocation1')->id));
 
 		$this->assertEquals($expected, $res, 'Should match the first contact with wildcard appended to term');
 	}
@@ -229,6 +206,7 @@ class ContactTest extends CDbTestCase {
 
 	/**
 	 * @dataProvider dataProvider_Search
+	 * @covers Contact::search
 	 */
 	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
 	{
@@ -250,16 +228,12 @@ class ContactTest extends CDbTestCase {
 
 	/**
 	 * @covers Contact::getType
-	 * @todo   Implement testGetType().
 	 */
 	public function testGetType() {
 
 		$this->model->setAttribute('id', 1);
-
 		$result = $this->model->GetType();
-
 		$expected = $this->contacts('contact1')->GetType();
-
 		$this->assertEquals($expected, $result);
 	}
 

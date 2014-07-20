@@ -4,7 +4,7 @@
 <head>
 <? include 'components/head.php'; ?>
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
 		<? include 'components/header.php'; ?>
@@ -12,7 +12,7 @@
 		<div class="container content">
 			<h1 class="badge hide-offscreen">Error</h1>
 			<div class="row">
-				<div class="large-11 small-11 small-centered large-centered column">
+				<div class="large-11 large-centered column">
 					<div class="panel error">
 						<h2>Page not found</h2>
 						<p class="panel">

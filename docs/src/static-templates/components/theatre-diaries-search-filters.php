@@ -82,16 +82,16 @@
 							<fieldset class="inline highlight">
 								<label>
 									<input type="radio" name="date-filter" />
-									Or select date range:
+									or select date range:
 								</label>
 								<input class="small fixed-width" type="text" name="date-start" />
 								<span class="to">to</span>
 								<input class="small fixed-width" type="text" name="date-end" />
 
 								<ul class="button-group small">
-				          <li><a href="#" class="small button">Last week</a></li>
-				          <li><a href="#" class="small button">Next week</a></li>
-				        </ul>
+									<li><a href="#" class="small button">Last week</a></li>
+									<li><a href="#" class="small button">Next week</a></li>
+								</ul>
 							</fieldset>
 						</div>
 					</div>

@@ -24,10 +24,8 @@
  * @property integer $id
  * @property string $name
  */
-class AddressType extends BaseActiveRecord
+class AddressType extends BaseActiveRecordVersioned
 {
-	public $default_scope = true;
-
 	// Database ids for the different address types that are hard mapped
 	const REPLYTO = 1;
 	const HOME = 2;

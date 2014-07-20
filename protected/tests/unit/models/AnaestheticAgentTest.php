@@ -17,66 +17,36 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class AnaestheticAgentTest extends CDbTestCase {
+class AnaestheticAgentTest extends CDbTestCase
+{
+	/**
+	 * @var AddressType
+	 */
+	public $model;
 
-                       /**
-                        * @var AddressType
-                        */
-                       public $model; 
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->model = new AnaestheticAgent;
+	}
 
-                       /**
-                        * Sets up the fixture, for example, opens a network connection.
-                        * This method is called before a test is executed.
-                        */
-                       protected function setUp() {
-                                              parent::setUp();
-                                              $this->model = new AnaestheticAgent;
-                       }
+	/**
+	 * @covers AnaestheticAgent::model
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('AnaestheticAgent', get_class(AnaestheticAgent::model()), 'Class name should match model.');
+	}
 
-                       /**
-                        * Tears down the fixture, for example, closes a network connection.
-                        * This method is called after a test is executed.
-                        */
-                       protected function tearDown() {
-                                              
-                       }
-
-                       /**
-                        * @covers AnaestheticAgent::model
-                        * @todo   Implement testModel().
-                        */
-                       public function testModel() {
-                                          $this->assertEquals('AnaestheticAgent', get_class(AnaestheticAgent::model()), 'Class name should match model.');
-                       }
-
-                       /**
-                        * @covers AnaestheticAgent::tableName
-                        * @todo   Implement testTableName().
-                        */
-                       public function testTableName() {
-                                              $this->assertEquals('anaesthetic_agent', $this->model->tableName());
-                       }
-
-                       /**
-                        * @covers AnaestheticAgent::rules
-                        * @todo   Implement testRules().
-                        */
-                       public function testRules() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
-
-                       /**
-                        * @covers AnaestheticAgent::relations
-                        * @todo   Implement testRelations().
-                        */
-                       public function testRelations() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
-
+	/**
+	 * @covers AnaestheticAgent::tableName
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('anaesthetic_agent', $this->model->tableName());
+	}
 }

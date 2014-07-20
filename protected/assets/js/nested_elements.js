@@ -52,13 +52,13 @@ function addElement(element, animate, is_child, previous_id, params) {
 	$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", params, function(data) {
 		var new_element = $(data);
 
-		if (element.tagName !== 'LI') {
+		if ($(element).prop('tagName') !== 'LI') {
 			new_element.find(".sub-elements.active").replaceWith($(element).find(".sub-elements.active"));
 			new_element.find(".sub-elements.inactive").replaceWith($(element).find(".sub-elements.inactive"));
 		}
 
 		if (is_child) {
-			if (element.tagName == 'LI') {
+			if ($(element).prop('tagName') == 'LI') {
 				var container = $(element).closest('.sub-elements.inactive').parent().find('.sub-elements:first');
 			} else {
 				var container = $(element).closest('.sub-elements.active').parent().find('.sub-elements:first');
@@ -101,15 +101,28 @@ function addElement(element, animate, is_child, previous_id, params) {
 		$('#event-content textarea.autosize:visible').autosize();
 		showActiveChildElements();
 
-		var el_class = $(element).attr('data-element-type-class');
-		var initFunctionName = el_class.replace('Element_', '') + '_init';
+		var elClass = $(element).attr('data-element-type-class');
+		var initFunctionName;
+		if (typeof OE_MODEL_PREFIX != 'undefined') {
+			initFunctionName = elClass.replace(OE_MODEL_PREFIX+'Element_', '') + '_init';
+		}
+		else {
+			initFunctionName = elClass.replace('Element_', '') + '_init';
+		}
+
 		if(typeof(window[initFunctionName]) == 'function') {
 			window[initFunctionName](previous_id);
 		}
 
 		// now init any children
-		$(".element." + el_class).find('.active_child_elements').find('.element').each(function() {
-			var initFunctionName = $(this).attr('data-element-type-class').replace('Element_', '') + '_init';
+		$(".element." + elClass).find('.active_child_elements').find('.element').each(function() {
+			var initFunctionName;
+			if (typeof OE_MODEL_PREFIX != 'undefined') {
+				initFunctionName = $(this).attr('data-element-type-class').replace(OE_MODEL_PREFIX + 'Element_', '') + '_init';
+			}
+			else {
+				initFunctionName = $(this).attr('data-element-type-class').replace('Element_', '') + '_init';
+			}
 			if(typeof(window[initFunctionName]) == 'function') {
 				window[initFunctionName]();
 			}

@@ -19,9 +19,13 @@
 
 return array(
 	'name'=>'OpenEyes Console',
+	'import' => array(
+			'application.components.*',
+			'system.cli.commands.*',
+	),
 	'commandMap' => array(
 		'migrate' => array(
-			'class' => 'system.cli.commands.MigrateCommand',
+			'class' => 'application.commands.OEMigrateCommand',
 			'migrationPath' => 'application.migrations',
 			'migrationTable' => 'tbl_migration',
 			'connectionID' => 'db'

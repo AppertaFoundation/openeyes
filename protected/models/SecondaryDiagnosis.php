@@ -33,7 +33,7 @@
  * @property Patient $patient
  * @property Episode $episode
  */
-class SecondaryDiagnosis extends BaseActiveRecord
+class SecondaryDiagnosis extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

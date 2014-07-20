@@ -26,7 +26,7 @@
  * @property integer $display_order
  *
  */
-class AnaestheticAgent extends BaseActiveRecord
+class AnaestheticAgent extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -43,6 +43,11 @@ class AnaestheticAgent extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'anaesthetic_agent';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
 	}
 
 	/**
@@ -64,6 +69,13 @@ class AnaestheticAgent extends BaseActiveRecord
 		return array(
 			'siteSubspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyAnaestheticAgent', 'anaesthetic_agent_id'),
 			'siteSubspecialtyAssignmentDefaults' => array(self::HAS_MANY, 'SiteSubspecialtyAnaestheticAgentDefault', 'anaesthetic_agent_id'),
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
 		);
 	}
 }

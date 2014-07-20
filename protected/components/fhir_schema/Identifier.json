@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"use":{"type":"IdentifierUse","plural":false},"label":{"type":"string","plural":false},"system":{"type":"uri","plural":false},"value":{"type":"string","plural":false},"period":{"type":"Period","plural":false},"assigner":{"type":"ResourceReference","plural":false}}

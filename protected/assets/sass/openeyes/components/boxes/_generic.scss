@@ -15,16 +15,27 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 // Generic box
+//
+// A generic box contains basic styling and can be used to wrap any section of the page.
+//
+// Markup:
+// <div class="box generic">
+//     <p>Here is some content within a generic box.</p>
+// </div>
+//
+// Styleguide 14.2
 .box {
 	&.generic {
-    	@include panel;
+		@include panel;
 		background: #fff;
+		border-color: #d9d9d9;
 		margin-top: 0;
-		padding: emCalc(12px);
+		padding: 12px;
 		p:last-child {
 			margin: 0;
 		}
 		h1,h2,h3,h4,h5 {
+			margin-bottom: 10px;
 			margin-top: 0;
 			line-height: 1;
 		}

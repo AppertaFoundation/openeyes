@@ -37,7 +37,7 @@
  * The following are the available model relations:
  * @property Country $country
  */
-class Address extends BaseActiveRecord
+class Address extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -77,6 +77,7 @@ class Address extends BaseActiveRecord
 	{
 		return array(
 			'country' => array(self::BELONGS_TO, 'Country', 'country_id'),
+			'type' => array(self::BELONGS_TO, 'AddressType', 'address_type_id'),
 		);
 	}
 

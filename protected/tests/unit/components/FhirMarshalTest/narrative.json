@@ -1,0 +1,7 @@
+{
+	"resourceType": "Patient",
+	"text": {
+		"status": "generated",
+		"div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">This is the narrative</div>"
+	}
+}

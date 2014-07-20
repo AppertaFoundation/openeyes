@@ -23,7 +23,7 @@
 		<?php unset($htmlOptions['hidden'])?>
 
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
-			<label for="<?php echo get_class($element)."_".$field."_0";?>">
+			<label for="<?php echo CHtml::modelName($element)."_".$field."_0";?>">
 				<?php echo CHtml::encode($element->getAttributeLabel($field))?>:
 			</label>
 		</div>
@@ -32,7 +32,7 @@
 
 	<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		'name'=>$name,
-		'id'=>get_class($element)."_".$field."_0",
+		'id'=>CHtml::modelName($element)."_".$field."_0",
 		// additional javascript options for the date picker plugin
 		'options'=>array_merge($options,array(
 			'showAnim'=>'fold',

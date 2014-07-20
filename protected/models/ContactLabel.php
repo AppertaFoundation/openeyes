@@ -25,7 +25,7 @@
  * @property string $name
  * @property integer $letter_template_only
  */
-class ContactLabel extends BaseActiveRecord
+class ContactLabel extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -42,6 +42,11 @@ class ContactLabel extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'contact_label';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**
@@ -81,6 +86,13 @@ class ContactLabel extends BaseActiveRecord
 		);
 	}
 
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
+		);
+	}
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -94,7 +106,6 @@ class ContactLabel extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('letter_template_only', 0);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

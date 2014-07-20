@@ -26,7 +26,7 @@
  * @property string $code
  *
  */
-class Specialty extends BaseActiveRecord
+class Specialty extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

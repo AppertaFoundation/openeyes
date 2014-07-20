@@ -1,256 +1,28 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+/* Add print CSS for specific components to the relevant component files.*/
+
 .printable {
 	display: none;
 	* {
 		font-size: 9pt;
 	}
-}
-
-/* ====== LETTERs (hidden in page) ====== */
-
-#letterTemplate {
-	display: block;
-	background: #fff;
-	#l_type {
-		text-align: center;
-		font-size: 6pt;
-	}
-	#l_content {
-		p {
-			margin-bottom: 1em;
-		}
-		ul {
-			margin: 0 0 1.5em 0.5em;
-		}
-		table {
-			margin-bottom: 1.5em;
-		}
-		td {
-			padding: 0.25em 0.5em;
-		}
-	}
-}
-
-#letterFooter {
-	display: block;
-	text-align: right;
-	font-size: 6pt;
-	line-height: 1.5;
-	position: absolute;
-	bottom: 0;
-	right: 0;
-}
-
-/* ====== FORMs (hidden in page) ====== */
-
-#printForm {
-	display: block;
-	background: #fff;
-	font-size: 7pt;
-}
-
-#printFormTemplate {
-	.title {
-		font-size: 13pt;
-		font-weight: bold;
-	}
-	table tr > td {
-		padding: 1em 0.5em;
-		border: 1px solid #eee;
-	}
-	.subTitle {
-		display: block;
-		font-size: 8pt;
-		font-weight: bold;
-		margin-top: 1em;
-		padding-top: 0.5em;
-		padding-bottom: 0.5em;
-	}
-	table.subTableNoBorders tr > td {
-		border: none;
-	}
-}
-
-@media print {
-	* {
-		background: transparent !important;
-		color: black !important;
-		text-shadow: none !important;
-		filter: none !important;
-		-ms-filter: none !important;
-	}
-	.content {
-		font-size: 15px;
-	}
-	.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after {
-		content: "";
-	}
-	pre,blockquote {
-		border: 1px solid #999;
-		page-break-inside: avoid;
-	}
-	thead {
-		display: table-header-group;
-	}
-	tr,img {
-		page-break-inside: avoid;
-	}
-	img {
-		max-width: 100% !important;
-	}
-	@page {
-		margin: 0.5cm;
-	}
-
-	p,h2,h3 {
-		orphans: 3;
-		widows: 3;
-	}
-	h1,h2,h3 {
-		page-break-after: avoid;
-		clear: both;
-	}
-	h1 {
-		font-size: 1.6em;
-	}
-	h2 {
-		font-size: 1.3em;
-	}
-	h3 {
-		font-size: 1.2em;
-	}
-	table {
-		width: 100%;
-		border-collapse: collapse;
-	}
-	th,
-	td {
-		width: 25%;
-		border: 1px solid #999;
-		text-align: left;
-		padding: 2px 4px;
-		vertical-align: top;
-		font-size: 10pt;
-	}
-	table.half {
-		width: 50%;
-	}
-	table.admission_letter th,
-	table.admission_letter td {
-		font-size: 15px;
-		padding: 4px 6px;
-	}
-	table.half td,
-	table.half th {
-		width: 50%;
-		border: none;
-	}
-	td.tall,
-	th.tall {
-		height: 4em;
-	}
-	.right {
-		float: right;
-	}
-	em {
-		text-decoration: underline;
-		font-style: normal;
-	}
-	html {
-		height: 100%;
-	}
-	body {
-		font-family: Helvetica, Arial, sans-serif;
-		font-size: 10pt;
+	@media print {
 		display: block !important;
 		width: 1050px !important;
 	}
-	.pageBreak {
-		page-break-after: always;
-	}
-	.banner {
-		height: 100px;
-	}
-	.banner.compact {
-		height: 70px;
-	}
-	.banner .seal {
-		float: left;
-	}
-	.banner .seal img {
-		width: 96px;
-	}
-	.banner .logo {
-		float: right;
-	}
-	.banner .logo img {
-		width: 400px;
-	}
-	.banner.compact .logo img {
-		width: 250px;
-	}
-	.fromAddress,
-	.date {
-		padding-top: 3em;
-		clear: both;
-		float: right;
-		text-align: right;
-		padding-top: 3em;
-	}
-	.date {
-		padding-top: 1em;
-	}
-	.toAddress {
-		padding-left: 5em;
-		padding-top: 3em;
-		width: 250px;
-	}
-	.red {
-		color: #f00 !important;
-	}
-	li {
-		margin: 10px 0;
-	}
-	a {
-		text-decoration: underline;
-		&:visited {
-			text-decoration: underline;
-		}
-		&[href]:after {
-			content: " (" attr(href) ")";
-		}
-	}
-	abbr[title]:after {
-		content: " (" attr(title) ")";
-	}
-	.ir a:after {
-		content: "";
-	}
-	a {
-		&[href^="javascript:"]:after, &[href^="#"]:after {
-			content: "";
-		}
-	}
-	pre, blockquote {
-		border: 1px solid #999;
-		page-break-inside: avoid;
-	}
-	thead {
-		display: table-header-group;
-	}
-	tr {
-		page-break-inside: avoid;
-	}
-	img {
-		page-break-inside: avoid;
-		max-width: 100% !important;
-	}
-	/* PREPAPRE PAGE FOR PRINT */
-	html {
-		height: 100%;
-	}
-	.printable {
-		display: block !important;
-		width: 1050px !important;
-	}
-	/* max width 1050px */
 }

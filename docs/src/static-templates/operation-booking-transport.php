@@ -3,12 +3,12 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
-<link rel="stylesheet" href="/protected/modules/OphTrOperationbooking/assets/css/module.css" />
+<link rel="stylesheet" href="<?php echo $assets_root_path?>assets/modules/OphTrOperationbooking/assets/css/module.css" />
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
-		<? include 'components/header-logged-in.php'; ?>
+		<? include 'components/header-logged-in-no-patient.php'; ?>
 
 		<div class="container content">
 			<h1 class="badge">Transport</h1>

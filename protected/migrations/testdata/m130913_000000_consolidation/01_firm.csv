@@ -1,0 +1,6 @@
+id,service_subspecialty_assignment_id,pas_code,name,last_modified_user_id,last_modified_date,created_user_id,created_date,consultant_id
+1,5,"AA1","Anderson Firm",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",2
+2,8,"BBB","Broom Firm",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",3
+3,8,"AA2","Anderson Firm",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",2
+4,9,"AA2","Anderson Firm",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",2
+5,NULL,NULL,"Support Firm",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",NULL

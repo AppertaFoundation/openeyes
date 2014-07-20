@@ -37,7 +37,7 @@
  * @property Contact $replyTo
  * @property ImportSource $import
  */
-class Site extends BaseActiveRecord
+class Site extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -54,6 +54,11 @@ class Site extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'site';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	public function behaviors()
@@ -131,37 +136,10 @@ class Site extends BaseActiveRecord
 		));
 	}
 
-	/**
-	 * Fetch an array of site IDs and names
-	 * @return array
-	 */
-	public function getList()
+	public function getListForCurrentInstitution($field = 'short_name')
 	{
-		$list = Site::model()->findAll(array('order' => 'short_name'));
-
 		$result = array();
-
-		foreach ($list as $site) {
-			$result[$site->id] = $site->short_name;
-		}
-
-		return $result;
-	}
-
-	public function getListForCurrentInstitution($field=false)
-	{
-		if (!$field) $field = 'short_name';
-
-		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-
-		$criteria = new CDbCriteria;
-		$criteria->compare('institution_id',$site->institution_id);
-		$criteria->compare('id','<>13');
-		$criteria->order = $field.' asc';
-
-		$result = array();
-
-		foreach (Site::model()->findAll($criteria) as $site) {
+		foreach (Institution::model()->getCurrent()->sites as $site) {
 			$result[$site->id] = $site->$field;
 		}
 
@@ -170,16 +148,10 @@ class Site extends BaseActiveRecord
 
 	public function getLongListForCurrentInstitution()
 	{
-		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-
-		$criteria = new CDbCriteria;
-		$criteria->compare('institution_id',$site->institution_id);
+		$institution = Institution::model()->getCurrent();
 
 		$result = array();
-
-		foreach (Site::model()->with('institution')->findAll($criteria) as $site) {
-			$institution = $site->institution;
-
+		foreach ($institution->sites as $site) {
 			$site_name = '';
 
 			if ($institution->short_name && $site->name != 'Unknown') {
@@ -229,24 +201,6 @@ class Site extends BaseActiveRecord
 		return $this->short_name ? $this->short_name : $this->name;
 	}
 
-	public function getListForInstitution()
-	{
-		if (empty(Yii::app()->params['institution_code'])) {
-			throw new Exception("Institution code is not set");
-		}
-
-		if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
-			throw new Exception("Institution not found: ".Yii::app()->params['institution_code']);
-		}
-
-		$criteria = new CDbCriteria;
-		$criteria->addCondition('institution_id=:institution_id');
-		$criteria->params[':institution_id'] = $institution->id;
-		$criteria->order = 'name asc';
-
-		return Site::model()->findAll($criteria);
-	}
-	
 	public function getReplyToAddress($params = array())
 	{
 		if ($contact = $this->replyTo) {

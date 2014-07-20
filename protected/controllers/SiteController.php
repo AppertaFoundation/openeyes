@@ -79,23 +79,21 @@ class SiteController extends BaseController
 				return;
 			}
 
-			// Patient name (assume two strings separated by space and/or comma is a name)
-			if(preg_match('/^(P|Patient)\s*[:;]\s*([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)
-					|| preg_match('/^([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)) {
-				$delimiter = (isset($matches[4])) ? trim($matches[3]) : trim($matches[2]);
-				if ($delimiter) {
-					$firstname = (isset($matches[4])) ? $matches[4] : $matches[3];
-					$surname = (isset($matches[4])) ? $matches[2] : $matches[1];
+			// Patient name
+			if (preg_match('/^(?:P(?:atient)?[:;\s]*)?(.*[ ,].*)$/', $query, $m)) {
+				$name = $m[1];
+
+				if (strpos($name, ',') !== false) {
+					list ($surname, $firstname) = explode(',', $name, 2);
 				} else {
-					$firstname = (isset($matches[4])) ? $matches[2] : $matches[1];
-					$surname = (isset($matches[4])) ? $matches[4] : $matches[3];
+					list ($firstname, $surname) = explode(' ', $name, 2);
 				}
-				$this->redirect(array('patient/search', 'first_name' => $firstname, 'last_name' => $surname));
-				return;
+
+				$this->redirect(array('patient/search', 'first_name' => trim($firstname), 'last_name' => trim($surname)));
 			}
 		}
 
-		Audit::add('search','search-error');
+		Audit::add('search','search-error',$query);
 
 		if (isset($query)) {
 			if (strlen($query) == 0) {
@@ -182,18 +180,11 @@ class SiteController extends BaseController
 			}
 		}
 
-		// FIXME this needs more thought
-		if (isset(Yii::app()->params['institution_code'])) {
-			$institution = Institution::model()->find('source_id=? and remote_id=?',array(1,Yii::app()->params['institution_code']));
-		} else {
-			$institution = Institution::model()->find('source_id=? and remote_id=?',array(1,'RP6'));
-		}
+		$institution = Institution::model()->getCurrent();
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('institution_id',$institution->id);
 		$criteria->order = 'short_name asc';
-
-		$sites = Site::model()->findAll($criteria);
 
 		// display the login form
 		$this->render('login',

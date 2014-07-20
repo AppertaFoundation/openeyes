@@ -134,6 +134,7 @@ $(document).ready(function() {
 				if (m) {
 					window.location.href = baseUrl+'/admin/editUser/'+m[0];
 				} else {
+					enableButtons();
 					new OpenEyes.UI.Dialog.Alert({
 						content: "User not found"
 					}).open();

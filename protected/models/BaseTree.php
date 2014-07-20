@@ -20,7 +20,7 @@
 /**
  * Base tree class
  */
-class BaseTree extends BaseActiveRecord
+class BaseTree extends BaseActiveRecordVersioned
 {
 	public $textFields = array();
 	public $textFieldsDropdown = array();

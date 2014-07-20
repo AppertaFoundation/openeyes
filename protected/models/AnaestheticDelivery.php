@@ -26,7 +26,7 @@
  * @property integer $display_order
  *
  */
-class AnaestheticDelivery extends BaseActiveRecord
+class AnaestheticDelivery extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -43,6 +43,11 @@ class AnaestheticDelivery extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'anaesthetic_delivery';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
 	}
 
 	/**
@@ -62,5 +67,12 @@ class AnaestheticDelivery extends BaseActiveRecord
 	public function relations()
 	{
 		return array();
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
+		);
 	}
 }

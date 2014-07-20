@@ -30,28 +30,56 @@ class OEFuzzyDateValidator extends CValidator
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
+
+	protected $object;
+	protected $attribute;
+	protected $year;
+	protected $month;
+	protected $day;
+
 	public function validateAttribute($object, $attribute)
 	{
 		$dt = $object->$attribute;
-		$_year = (integer) substr($dt,0,4);
-		$_month = (integer) substr($dt,5,2);
-		$_day = (integer) substr($dt,8,2);
 
-		if ($_day > 0) {
-			if ($_month > 0) {
-				if ($_year > 0) {
-					// simply check this is a valid date
-					if (!checkdate($_month, $_day, $_year)) {
-						$this->addError($object, $attribute, 'This is not a valid date');
-					}
-				} else {
-					$this->addError($object, $attribute, 'Year is required');
-				}
-			} else {
-				$this->addError($object, $attribute, 'Month is required if day is provided');
-			}
-		} elseif ($_month > 12) {
-			$this->addError($object, $attribute, 'Invalid month value');
+		$this->year = (integer) substr($dt,0,4);
+		$this->month = (integer) substr($dt,5,2);
+		$this->day = (integer) substr($dt,8,2);
+		$this->object = $object;
+		$this->attribute = $attribute;
+
+
+		if ($this->day > 0 && !$this->month > 0)  {
+			$this->addError($object, $attribute, 'Month is required if day is provided');
 		}
+
+		if($this->month > 0 && (!$this->year > 0)) {
+			$this->addError($object, $attribute, 'Year is required if month is provided');
+		}
+
+		if ($this->day > 0 && $this->month > 0 && $this->year > 0) {
+			$this->validateCompleteDate();
+		} else if ($this->month > 0 && $this->year > 0) {
+			$this->validateFuzzyMonthYear();
+		}	else if ($this->year > 0) {
+			$this->validateFuzzyYear();
+		}
+	}
+
+	protected function validateCompleteDate()
+	{
+		if (!checkdate($this->month, $this->day, $this->year)) {
+			$this->addError($this->object, $this->attribute, 'This is not a valid date');
+		}
+	}
+
+	protected function validateFuzzyMonthYear()
+	{
+		if ($this->month > 12) {
+			$this->addError($this->object, $this->attribute, 'Invalid month value');
+		}
+	}
+
+	protected function validateFuzzyYear()
+	{
 	}
 }

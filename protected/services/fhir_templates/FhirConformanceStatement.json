@@ -1,0 +1,18 @@
+{
+	"publisher": {":subst": "publisher"},
+	"date": {":subst": "date"},
+	"implementation": {
+		"description": {":subst": "description"},
+		"url": {":subst": "url"}
+	},
+	"fhirVersion": {":subst": "fhir_version"},
+	"acceptUnknown": {":subst": "accept_unknown"},
+	"format": ["xml", "json"],
+	"profile": {":subst": "profiles"},
+	"rest": [
+		{
+			"mode": "server",
+			"resource": {":subst": "server_resources"}
+		}
+	]
+}

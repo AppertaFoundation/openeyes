@@ -18,22 +18,22 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 return array(
-                         'contactlocation1' => array(
-                                                  'id'=> 1,
-                                                  'contact_id' => 1,
-                                                  'site_id' => 1,
-                                                  'institution_id' =>1
-                         ),
-                         'contactlocation2' => array(
-                                                  'id'=> 2,
-                                                  'contact_id' =>2 ,
-                                                  'site_id' => 2,
-                                                  'institution_id' =>1
-                         ),
-                         'contactlocation3' => array(
-                                                  'id'=> 3,
-                                                  'contact_id' => 3,
-                                                  'site_id' => 3,
-                                                  'institution_id' =>1
-                         ),
+	'contactlocation1' => array(
+		'id' => 1,
+		'contact_id' => 1,
+		'site_id' => 1,
+		'institution_id' => 1
+	),
+	'contactlocation2' => array(
+		'id' => 2,
+		'contact_id' => 2,
+		'site_id' => 2,
+		'institution_id' => 1
+	),
+	'contactlocation3' => array(
+		'id' => 3,
+		'contact_id' => 3,
+		'site_id' => 3,
+		'institution_id' => 1
+	),
 );

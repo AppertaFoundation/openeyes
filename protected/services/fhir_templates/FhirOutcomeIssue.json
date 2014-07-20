@@ -1,0 +1,9 @@
+{
+	"severity": {":subst": "severity"},
+	"type": {
+		"system": "http://hl7.org/fhir/issue-type",
+		"code": {":subst": "type"}
+	},
+	"details": {":subst": "details"},
+	"location": [{":subst": "location"}]
+}

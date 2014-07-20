@@ -33,7 +33,7 @@
  * @property User $usermodified
  */
 
-class <?php if (isset($lookup_table)) echo $lookup_table['class']?> extends BaseActiveRecord
+class <?php if (isset($lookup_table)) echo $lookup_table['class']?> extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

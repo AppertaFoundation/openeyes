@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"path":{"type":"string","plural":false},"representation":{"type":"PropertyRepresentation","plural":true},"name":{"type":"string","plural":false},"slicing":{"type":"Profile.Slicing","plural":false},"definition":{"type":"Profile.Definition","plural":false}}

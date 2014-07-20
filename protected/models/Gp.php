@@ -28,7 +28,7 @@
  * The followings are the available model relations:
  * @property Contact $contact
  */
-class Gp extends BaseActiveRecord
+class Gp extends BaseActiveRecordVersioned
 {
 	const UNKNOWN_SALUTATION = 'Doctor';
 	const UNKNOWN_NAME = 'The General Practitioner';
@@ -70,7 +70,7 @@ class Gp extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Gp';
+		return 'gp';
 	}
 
 	/**
@@ -124,7 +124,7 @@ class Gp extends BaseActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
+		$criteria->compare('id',$this->id);
 		$criteria->compare('obj_prof',$this->obj_prof,true);
 		$criteria->compare('nat_id',$this->nat_id,true);
 

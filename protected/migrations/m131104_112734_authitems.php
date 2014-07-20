@@ -1,6 +1,6 @@
 <?php
 
-class m131104_112734_authitems extends CDbMigration
+class m131104_112734_authitems extends OEMigration
 {
 	private $authitems = array(
 		array('name' => 'OprnLogin', 'type' => 0),

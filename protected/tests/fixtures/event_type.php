@@ -95,4 +95,12 @@ return array(
 		'class_name' => 'OphCoCataractReferral',
 		'support_services' => 0,
 	),
+	'event_type12' => array(
+		'id' => 1011,
+		'name' => 'Inheriting Examination',
+		'event_group_id' => 1,
+		'class_name' => 'OphCiInheritExamination',
+		'support_services' => 0,
+		'parent_event_type_id' => 1002,
+	)
 );

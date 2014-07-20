@@ -59,6 +59,7 @@ class BaseEventTypeController extends BaseModuleController
 	const ACTION_TYPE_PRINT = 'Print';
 	const ACTION_TYPE_EDIT = 'Edit';
 	const ACTION_TYPE_DELETE = 'Delete';
+	const ACTION_TYPE_REQUESTDELETE = 'RequestDelete';
 	const ACTION_TYPE_FORM = 'Form';	// AJAX actions that are used during create and update but don't actually modify data themselves
 
 	static private $base_action_types = array(
@@ -69,7 +70,7 @@ class BaseEventTypeController extends BaseModuleController
 		'print' => self::ACTION_TYPE_PRINT,
 		'update' => self::ACTION_TYPE_EDIT,
 		'delete' => self::ACTION_TYPE_DELETE,
-		'requestDeletion' => self::ACTION_TYPE_EDIT,
+		'requestDeletion' => self::ACTION_TYPE_REQUESTDELETE,
 	);
 
 	/**
@@ -79,8 +80,6 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	static protected $action_types = array();
 
-	/* @var Firm */
-	public $firm;
 	/* @var Patient */
 	public $patient;
 	/* @var Site */
@@ -167,17 +166,15 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * Sets the firm property on the controller from the session
+	 * Sets the patient object on the controller
 	 *
-	 * @throws HttpException
+	 * @param $patient_id
+	 * @throws CHttpException
 	 */
-	protected function setFirmFromSession()
+	protected function setPatient($patient_id)
 	{
-		if (!$firm_id = Yii::app()->session->get('selected_firm_id')) {
-			throw new HttpException('Firm not selected');
-		}
-		if (!$this->firm || $this->firm->id != $firm_id) {
-			$this->firm = Firm::model()->findByPk($firm_id);
+		if (!$this->patient = Patient::model()->findByPk($patient_id)) {
+			throw new CHttpException(404, 'Invalid patient_id.');
 		}
 	}
 
@@ -191,7 +188,7 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function getEventElements()
 	{
-		if ($this->event) {
+		if ($this->event && !$this->event->isNewRecord) {
 			return $this->event->getElements();
 		}
 		else {
@@ -370,7 +367,8 @@ class BaseEventTypeController extends BaseModuleController
 		} elseif ($action == 'update') {
 			$element->setUpdateOptions();
 		}
-		$el_method = 'setElementDefaultOptions_' . get_class($element);
+
+		$el_method = 'setElementDefaultOptions_' . Helper::getNSShortname($element);
 		if (method_exists($this, $el_method)) {
 			$this->$el_method($element, $action);
 		}
@@ -423,7 +421,39 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function canViewPrevious($element)
 	{
-		return $this->hasPrevious($element->getElementType(), $element->event_id);
+		return $element->canViewPrevious() && $this->hasPrevious($element->getElementType(), $element->event_id);
+	}
+
+	/**
+	 * Is this a required element?
+	 * @param  BaseEventTypeElement  $element
+	 * @return boolean
+	 */
+	public function isRequired(BaseEventTypeElement $element)
+	{
+		return $element->isRequired();
+	}
+
+	/**
+	 * Is this element required in the UI? (Prevents the user from being able
+	 * to remove the element.)
+	 * @param  BaseEventTypeElement  $element
+	 * @return boolean
+	 */
+	public function isRequiredInUI(BaseEventTypeElement $element)
+	{
+		return $element->isRequiredInUI();
+	}
+
+	/**
+	 * Is this element to be hidden in the UI? (Prevents the elements from
+	 * being displayed on page load.)
+	 * @param  BaseEventTypeElement  $element
+	 * @return boolean
+	 */
+	public function isHiddenInUI(BaseEventTypeElement $element)
+	{
+		return $element->isHiddenInUI();
 	}
 
 	/**
@@ -484,13 +514,17 @@ class BaseEventTypeController extends BaseModuleController
 	{
 		$this->moduleStateCssClass = 'edit';
 
-		if (!$this->patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
-			throw new CHttpException(404, 'Invalid patient_id.');
-		}
+		$this->setPatient($_REQUEST['patient_id']);
 
 		if (!$this->episode = $this->getEpisode()) {
 			$this->redirectToPatientEpisodes();
 		}
+
+		// we instantiate an event object for use with validation rules that are dependent
+		// on episode and patient status
+		$this->event = new Event();
+		$this->event->episode_id = $this->episode->id;
+		$this->event->event_type_id = $this->event_type->id;
 	}
 
 	/**
@@ -609,9 +643,25 @@ class BaseEventTypeController extends BaseModuleController
 	/**
 	 * @return boolean
 	 */
+	public function checkRequestDeleteAccess()
+	{
+		return $this->checkAccess('OprnRequestEventDeletion', $this->firm, $this->event);
+	}
+
+	/**
+	 * @return boolean
+	 */
 	public function checkFormAccess()
 	{
 		return $this->checkAccess('OprnViewClinical');
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function checkAdminAccess()
+	{
+		return $this->checkAccess('admin');
 	}
 
 	/**
@@ -649,14 +699,7 @@ class BaseEventTypeController extends BaseModuleController
 
 						$this->logActivity('created event.');
 
-						$audit_data = array('event' => $this->event->getAuditAttributes());
-
-						//TODO: should this be simply handled by the audit wrapper of the event?
-						foreach ($this->open_elements as $element) {
-							$audit_data[get_class($element)] = $element->getAuditAttributes();
-						}
-
-						$this->event->audit('event','create',serialize($audit_data));
+						$this->event->audit('event','create');
 
 						Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 
@@ -711,16 +754,12 @@ class BaseEventTypeController extends BaseModuleController
 		$this->setOpenElementsFromCurrentEvent('view');
 		// Decide whether to display the 'edit' button in the template
 		if ($this->editable) {
-			$this->editable = $this->checkEditAccess($this->event);
-		}
-		// Allow elements to override the editable status
-		if ($this->editable && !$this->canUpdate()) {
-			$this->editable = false;
+			$this->editable = $this->checkEditAccess();
 		}
 
 		$this->logActivity('viewed event');
 
-		$this->event->audit('event','view',false);
+		$this->event->audit('event','view');
 
 		$this->event_tabs = array(
 			array(
@@ -735,24 +774,20 @@ class BaseEventTypeController extends BaseModuleController
 			);
 		}
 
-		if (!$this->event->delete_pending) {
-			if ($this->showDeleteIcon()) {
-				if ($this->canDelete()) {
-					$this->event_actions = array(
-						EventAction::link('Delete',
-							Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-							array('level' => 'delete')
-						)
-					);
-				} else {
-					$this->event_actions = array(
-						EventAction::link('Delete',
-							Yii::app()->createUrl($this->event->eventType->class_name.'/default/requestDeletion/'.$this->event->id),
-							array('level' => 'delete')
-						)
-					);
-				}
-			}
+		if ($this->checkDeleteAccess()) {
+			$this->event_actions = array(
+				EventAction::link('Delete',
+					Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+					array('level' => 'delete')
+				)
+			);
+		} elseif ($this->checkRequestDeleteAccess()) {
+			$this->event_actions = array(
+				EventAction::link('Delete',
+					Yii::app()->createUrl($this->event->eventType->class_name.'/default/requestDeletion/'.$this->event->id),
+					array('level' => 'delete')
+				)
+			);
 		}
 
 		$viewData = array_merge(array(
@@ -780,10 +815,6 @@ class BaseEventTypeController extends BaseModuleController
 				$this->redirect(array('default/view/'.$this->event->id));
 			}
 
-			if (!$this->canUpdate()) {
-				$this->redirect(array('default/view/'.$this->event->id));
-			}
-
 			$errors = $this->setAndValidateElementsFromData($_POST);
 
 			// update the event
@@ -799,13 +830,7 @@ class BaseEventTypeController extends BaseModuleController
 						$this->afterUpdateElements($this->event);
 						$this->logActivity('updated event');
 
-						$audit_data = array('event' => $this->event->getAuditAttributes());
-
-						foreach ($this->open_elements as $element) {
-							$audit_data[get_class($element)] = $element->getAuditAttributes();
-						}
-
-						$this->event->audit('event','update',serialize($audit_data));
+						$this->event->audit('event','update');
 
 						$this->event->user = Yii::app()->user->id;
 
@@ -901,36 +926,14 @@ class BaseEventTypeController extends BaseModuleController
 		$this->open_elements = array($element);
 
 		$form = Yii::app()->getWidgetFactory()->createWidget($this,'BaseEventTypeCActiveForm',array(
-				'id' => 'clinical-create',
-				'enableAjaxValidation' => false,
-				'htmlOptions' => array('class' => 'sliding'),
-			));
+			'id' => 'clinical-create',
+			'enableAjaxValidation' => false,
+			'htmlOptions' => array('class' => 'sliding'),
+		));
 
-		// Render called with processOutput
-		// TODO: use renderElement for this if we can
-		try {
-			// look for element specific view file
-			$this->renderPartial('create_' . $element->create_view, array(
-					'element' => $element,
-					'data' => null,
-					'form' => $form,
-					'child' => null,
-					'previous_parent_id' => $previous_id,
-				), false, true);
-		} catch (Exception $e) {
-			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
-				// it's a different, unexpected problem
-				throw $e;
-			}
-			// use the default view file
-			$this->renderPartial('_form', array(
-					'element' => $element,
-					'data' => null,
-					'form' => $form,
-					'child' => ($element_type->parent_element_type_id > 0),
-					'previous_parent_id' => $previous_id,
-				), false, true);
-		}
+		$this->renderElement($element, 'create', $form, null, array(
+			'previous_parent_id' => $previous_id
+		), false, true);
 	}
 
 	/**
@@ -1005,7 +1008,7 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function setElementComplexAttributesFromData($element, $data, $index = null)
 	{
-		$element_method = "setComplexAttributes_" . get_class($element);
+		$element_method = "setComplexAttributes_" . Helper::getNSShortname($element);
 		if (method_exists($this, $element_method)) {
 			$this->$element_method($element, $data, $index);
 		}
@@ -1027,43 +1030,37 @@ class BaseEventTypeController extends BaseModuleController
 		// only process data for elements that are part of the element type set for the controller event type
 		foreach ($this->event_type->getAllElementTypes() as $element_type) {
 			$el_cls_name = $element_type->class_name;
-			if (isset($data[$el_cls_name])) {
-				$keys = array_keys($data[$el_cls_name]);
+			$f_key = CHtml::modelName($el_cls_name);
+			if (isset($data[$f_key])) {
+				$keys = array_keys($data[$f_key]);
 
-				if (is_array($data[$el_cls_name][$keys[0]])) {
+				if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
 					// there is more than one element of this type
-					if ($this->event && !$data[$el_cls_name]['_element_id']) {
-						throw new Exception("missing _element_id for multiple elements for editing an event");
-					}
-
-					// iterate through each to define the multiple instances we require
-					for ($i=0; $i<count($data[$el_cls_name][$keys[0]]); $i++) {
-						if ($el_id = $data[$el_cls_name]['_element_id'][$i]) {
-							$element = $el_cls_name::model()->findByPk($el_id);
+					$pk_field = $el_cls_name::model()->tableSchema->primaryKey;
+					foreach ($data[$f_key] as $i => $attrs) {
+						if (!$this->event->isNewRecord && !isset($attrs[$pk_field])) {
+							throw new Exception("missing primary key field for multiple elements for editing an event");
+						}
+						if ($pk = @$attrs[$pk_field]) {
+							$element = $el_cls_name::model()->findByPk($pk);
 						}
 						else {
 							$element = $element_type->getInstance();
 						}
-
-						$el_attrs = array();
-						foreach ($keys as $key) {
-							if ($key != '_element_id') {
-								$el_attrs[$key] = $data[$el_cls_name][$key][$i];
-							}
-						}
-						$element->attributes = Helper::convertNHS2MySQL($el_attrs);
+						$element->attributes = Helper::convertNHS2MySQL($attrs);
 						$this->setElementComplexAttributesFromData($element, $data, $i);
+						$element->event = $this->event;
 						$elements[] = $element;
 					}
 				}
 				else {
-					if (!$this->event
+					if ($this->event->isNewRecord
 						|| !$element = $el_cls_name::model()->find('event_id=?',array($this->event->id))) {
 						$element = $element_type->getInstance();
 					}
-					$element->attributes = Helper::convertNHS2MySQL($data[$el_cls_name]);
+					$element->attributes = Helper::convertNHS2MySQL($data[$f_key]);
 					$this->setElementComplexAttributesFromData($element, $data);
-
+					$element->event = $this->event;
 					$elements[] = $element;
 				}
 			}
@@ -1087,6 +1084,20 @@ class BaseEventTypeController extends BaseModuleController
 				foreach ($element->getErrors() as $errormsgs) {
 					foreach ($errormsgs as $error) {
 						$errors[$name][] = $error;
+					}
+				}
+			}
+		}
+
+		//event date
+		if(isset($data['Event']['event_date']))
+		{
+			$event = $this->event;
+			$event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+			if (!$event->validate()) {
+				foreach ($event->getErrors() as $errormsgs) {
+					foreach ($errormsgs as $error) {
+						$errors['Event'][] = $error;
 					}
 				}
 			}
@@ -1123,7 +1134,7 @@ class BaseEventTypeController extends BaseModuleController
 
 		foreach ($this->open_elements as $element) {
 			$el_cls_name = get_class($element);
-			$element_method = "saveComplexAttributes_" . get_class($element);
+			$element_method = "saveComplexAttributes_" . Helper::getNSShortname($element);
 			if (method_exists($this, $element_method)) {
 				// there's custom behaviour for setting additional relations on this element class
 				if (!isset($counter_by_cls[$el_cls_name])) {
@@ -1149,7 +1160,7 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function saveEvent($data)
 	{
-		if ($this->event) {
+		if (!$this->event->isNewRecord) {
 			// this is an edit, so need to work out what we are deleting
 			$oe_ids = array();
 			foreach ($this->open_elements as $o_e) {
@@ -1170,7 +1181,11 @@ class BaseEventTypeController extends BaseModuleController
 			}
 		}
 		else {
-			$this->event = $this->createEvent($this->getOrCreateEpisode());
+			if (!$this->event->save()) {
+				OELog::log("Failed to create new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
+				throw new Exception('Unable to save event.');
+			}
+			OELog::log("Created new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
 		}
 
 		foreach ($this->open_elements as $element) {
@@ -1191,83 +1206,125 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * Render the individual element based on the action provided
+	 * Get the prefix name of this controller, used for path calculations for element views
 	 *
-	 * @param BaseEventTypeElement $element
-	 * @param string $action
-	 * @param BaseCActiveBaseEventTypeCActiveForm $form
-	 * @param array $data
-	 * @throws Exception
+	 * @return string
 	 */
-	protected function renderElement($element, $action, $form, $data)
+	protected function getControllerPrefix()
 	{
-		try {
-			// look for an action/element specific view file
-			$view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
-			$this->renderPartial(
-				$action . '_' . $view,
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form,
-					'child' => $element->getElementType()->isChild()
-				)
-			);
-		} catch (Exception $e) {
-			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
-				throw $e;
-			}
-			// otherwise use the default layout
-			$this->renderPartial(
-				'_'.$action,
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form,
-					'child' => $element->getElementType()->isChild()
-				)
-			);
-		}
+		return strtolower(str_replace('Controller', '', Helper::getNSShortname($this)));
 	}
 
 	/**
-	 * Render an optional element based on the action provided
+	 * Return the path alias for the module the element belongs to based on its namespace
+	 * (assumes elements exist in a namespace below the module namespace)
+	 *
+	 * @param BaseEventTypeElement $element
+	 * @return string
+	 */
+	public function getElementModulePathAlias(\BaseEventTypeElement $element)
+	{
+		$r = new ReflectionClass($element);
+
+		if ($r->inNamespace()) {
+			$ns_parts = explode('\\',$r->getNamespaceName());
+			return implode('.',array_slice($ns_parts,0,count($ns_parts)-1));
+		}
+		return $this->modulePathAlias;
+	}
+
+	/**
+	 * Return the asset path for the given element (by interrogating namespace)
+	 *
+	 * @param BaseEventTypeElement $element
+	 * @return string
+	 */
+	public function getAssetPathForElement(\BaseEventTypeElement $element) {
+		if ($alias = $this->getElementModulePathAlias($element)) {
+			return Yii::app()->assetManager->getPublishedPathOfAlias($alias.'.assets');
+		}
+		else {
+			return $this->assetPath;
+		}
+	}
+	/**
+	 * calculate the alias dot notated path to an element view
+	 *
+	 * @param BaseEventTypeElement $element
+	 * @return string
+	 */
+	protected function getElementViewPathAlias(\BaseEventTypeElement $element)
+	{
+		if ($alias = $this->getElementModulePathAlias($element)) {
+			return $alias . '.views.' . $this->getControllerPrefix() . '.';
+		}
+		return '';
+	}
+
+	/**
+	 * Extend the parent method to support inheritance of modules (and rendering the element views from the parent module)
+	 *
+	 * @param string $view
+	 * @param null $data
+	 * @param bool $return
+	 * @param bool $processOutput
+	 * @return string
+	 */
+	public function renderPartial($view,$data=null,$return=false,$processOutput=false)
+	{
+		if ($this->getViewFile($view) === false) {
+			foreach ($this->getModule()->getModuleInheritanceList() as $mod) {
+				// assuming that any inheritance maintains the controller name here.
+				$view_path = implode('.', array($mod->id, 'views', $this->getControllerPrefix(), $view));
+				if ($this->getViewFile($view_path)) {
+					$view = $view_path;
+					break;
+				}
+			}
+		}
+		return parent::renderPartial($view, $data, $return, $processOutput);
+	}
+
+	/**
+	 * Render the individual element based on the action provided. Note that view names
+	 * for the associated actions are set in the model.
 	 *
 	 * @param BaseEventTypeElement $element
 	 * @param string $action
 	 * @param BaseCActiveBaseEventTypeCActiveForm $form
 	 * @param array $data
+	 * @param array $view_data Data to be passed to the view.
+	 * @param boolean $return Whether the rendering result should be returned instead of being displayed to end users.
+	 * @param boolean $processOutput Whether the rendering result should be postprocessed using processOutput.
 	 * @throws Exception
 	 */
-	protected function renderOptionalElement($element, $action, $form, $data)
+	protected function renderElement($element, $action, $form, $data, $view_data=array(), $return=false, $processOutput=false)
 	{
-		try {
-			$this->renderPartial(
-				'_optional_'	. get_class($element),
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form
-				),
-				false, false
-			);
-		} catch (Exception $e) {
-			if (strpos($e->getMessage(), "cannot find the requested view") === false) {
-				throw $e;
-			}
-			$this->renderPartial(
-				'_optional_element',
-				array(
-					'element' => $element,
-					'data' => $data,
-					'form' => $form
-				),
-				false, false
-			);
-		}
+		// Get the view names from the model.
+		$view = isset($element->{$action.'_view'})
+			? $element->{$action.'_view'}
+			: $element->getDefaultView();
 
+		$container_view = isset($element->{'container_'.$action.'_view'})
+			? $element->{'container_'.$action.'_view'}
+			: $element->getDefaultContainerView();
 
+		$use_container_view = ($element->useContainerView && $container_view);
+
+		$view_data = array_merge(array(
+			'element' => $element,
+			'data' => $data,
+			'form' => $form,
+			'child' => $element->getElementType()->isChild(),
+			'container_view' => $container_view
+		), $view_data);
+
+		// Render the view.
+		($use_container_view) && $this->beginContent($container_view, $view_data);
+		$this->renderPartial($this->getElementViewPathAlias($element) . $view, $view_data, $return, $processOutput);
+		($use_container_view) && $this->endContent();
 	}
+
 	/**
 	 * Render the open elements for the controller state
 	 *
@@ -1278,9 +1335,36 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	public function renderOpenElements($action, $form=null, $data=null)
 	{
+		if($form && (($action == strtolower (self::ACTION_TYPE_CREATE) ) || $this->checkAdminAccess()) ){
+			$this->renderPartial('//patient/event_date', array('form'=>$form));
+		}
+
 		foreach ($this->getElements() as $element) {
 			$this->renderElement($element, $action, $form, $data);
 		}
+	}
+
+	/**
+	* Render an optional element
+	*
+	* @param BaseEventTypeElement $element
+	* @param string $action
+	* @param BaseCActiveBaseEventTypeCActiveForm $form
+	* @param array $data
+	* @throws Exception
+	*/
+	protected function renderOptionalElement($element, $action, $form, $data)
+	{
+		$el_view = $this->getElementViewPathAlias($element) . '_optional_'	. $element->getDefaultView();
+		$view = $this->getViewFile($el_view)
+			? $el_view
+			: $this->getElementViewPathAlias($element) . '_optional_element';
+
+		$this->renderPartial($view, array(
+			'element' => $element,
+			'data' => $data,
+			'form' => $form
+		), false, false);
 	}
 
 	/**
@@ -1347,24 +1431,6 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * Called after event (and elements) has been updated
-	 * @param Event $event
-	 * @TODO: change the call for this?
-	 */
-	protected function afterUpdateElements($event)
-	{
-	}
-
-	/**
-	 * Called after event (and elements) have been created
-	 * @param Event $event
-	 * @TODO: change the call for this?
-	 */
-	protected function afterCreateElements($event)
-	{
-	}
-
-	/**
 	 * Get the current episode for the firm and patient
 	 *
 	 * @return Episode
@@ -1373,40 +1439,6 @@ class BaseEventTypeController extends BaseModuleController
 	{
 		return Episode::model()->getCurrentEpisodeByFirm($this->patient->id, $this->firm);
 	}
-
-	/**
-	 * Create an episode for the firm and patient if it doesn't already exist. Return the episode.
-	 *
-	 * @return Episode
-	 */
-	public function getOrCreateEpisode()
-	{
-		return $this->patient->getOrCreateEpisodeForFirm($this->firm);
-	}
-
-	/**
-	 * Create the event instance of the given type, based on the elements to process and the user id given.
-	 *
-	 * @param Episode $episode
-	 * @return Event
-	 * @throws Exception
-	 */
-	public function createEvent($episode)
-	{
-		$event = new Event();
-		$event->episode_id = $episode->id;
-		$event->event_type_id = $this->event_type->id;
-
-		if (!$event->save()) {
-			OELog::log("Failed to create new event for episode_id=$episode->id, event_type_id=" . $this->event_type->id);
-			throw new Exception('Unable to save event.');
-		}
-
-		OELog::log("Created new event for episode_id=$episode->id, event_type_id=" . $this->event_type->id);
-
-		return $event;
-	}
-
 
 	/**
 	 * Render the given errors with the standard template
@@ -1582,8 +1614,24 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * set base js vars for use in the standard scripts for the controller
+	 * Called after event (and elements) has been updated
+	 * @param Event $event
 	 */
+	protected function afterUpdateElements($event)
+	{
+	}
+
+	/**
+	 * Called after event (and elements) have been created
+	 * @param Event $event
+	 */
+	protected function afterCreateElements($event)
+	{
+	}
+
+	/**
+	 * set base js vars for use in the standard scripts for the controller
+ 	 */
 	public function processJsVars()
 	{
 		if ($this->patient) {
@@ -1594,456 +1642,11 @@ class BaseEventTypeController extends BaseModuleController
 			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
 		}
 		$this->jsVars['OE_asset_path'] = $this->assetPath;
-		$this->setFirmFromSession();
-
-		$subspecialty_id = $this->firm->serviceSubspecialtyAssignment ? $this->firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
 
 		parent::processJsVars();
-	}
-
-	/** START OF DEPRECATED METHODS */
-
-	/**
-	 * Whether the current user is allowed to call print actions
-	 *
-	 * @return boolean
-	 *
-	 * @deprecated Use checkPrintAccess
-	 */
-	public function canPrint()
-	{
-		return $this->checkPrintAccess();
-	}
-
-	/**
-	 * Get all the elements for an event, the current module or an event_type
-	 *
-	 * @param string $action
-	 * @param int $event_type_id
-	 * @param Event $event
-	 * @return BaseEventTypeElement[]
-	 *
-	 * @deprecated use open_elements attribute instead
-	 */
-	public function getDefaultElements($action, $event_type_id = null, $event = null)
-	{
-		return $this->open_elements;
-
-		if (!$event && isset($this->event)) {
-			$event = $this->event;
-		}
-
-		if (isset($event->event_type_id)) {
-			$event_type = EventType::model()->find('id = ?',array($event->event_type_id));
-		} elseif ($event_type_id) {
-			$event_type = EventType::model()->find('id = ?',array($event_type_id));
-		} else {
-			$event_type = EventType::model()->find('class_name = ?',array($this->getModule()->name));
-		}
-
-		$criteria = new CDbCriteria;
-		$criteria->compare('event_type_id',$event_type->id);
-		$criteria->order = 'display_order asc';
-
-		$elements = array();
-
-		if (empty($_POST)) {
-			if (isset($event->event_type_id)) {
-				foreach (ElementType::model()->findAll($criteria) as $element_type) {
-					$element_class = $element_type->class_name;
-
-					foreach ($element_class::model()->findAll(array('condition'=>'event_id=?','params'=>array($event->id),'order'=>'id asc')) as $element) {
-						$elements[] = $element;
-					}
-				}
-			} else {
-				$criteria->compare('`default`',1);
-
-				foreach (ElementType::model()->findAll($criteria) as $element_type) {
-					$element_class = $element_type->class_name;
-					$elements[] = new $element_class;
-				}
-			}
-		} else {
-			foreach ($_POST as $key => $value) {
-				if (preg_match('/^Element|^OEElement/',$key)) {
-					if ($element_type = ElementType::model()->find('class_name=?',array($key))) {
-						$element_class = $element_type->class_name;
-
-						$keys = array_keys($value);
-
-						if (is_array($value[$keys[0]])) {
-							if (isset($event->event_type_id)) {
-								foreach ($element_class::model()->findAll(array('condition'=>'event_id=?','params'=>array($event->id),'order'=>'id asc')) as $element) {
-									$elements[] = $element;
-								}
-							} else {
-								if ($action != 'update' || !$element_type->default) {
-									for ($i=0; $i<count($value[$keys[0]]); $i++) {
-										$element = new $element_class;
-
-										foreach ($keys as $_key) {
-											if ($_key != '_element_id') {
-												$element[$_key] = $value[$_key][$i];
-											}
-										}
-
-										$elements[] = $element;
-									}
-								}
-							}
-						} else {
-							if (isset($event->event_type_id) && ($element = $element_class::model()->find('event_id = ?',array($event->id)))) {
-								$elements[] = $element;
-							} else {
-								if ($action != 'update' || !$element_type->default) {
-									$elements[] = new $element_class;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return $elements;
-	}
-
-	/**
-	 * Stub method:
-	 *
-	 * Use this for any many to many relations defined on your elements. This is called prior to validation
-	 * so should set values without actually touching the database. To do that, the createElements and updateElements
-	 * methods should be extended to handle the POST values.
-	 *
-	 * @param BaseEventTypeElement $element
-	 * @deprecated - use setElementComplexAttributesFromData instead
-	 */
-	final function setPOSTManyToMany($element)
-	{
-		// placeholder function
-	}
-
-	/**
-	 * Uses the POST values to define elements and their field values without hitting the db, and then performs validation
-	 *
-	 * @param BaseEventTypeElement[] - $elements
-	 * @return array - $errors
-	 * @deprecated - use setAndValidateElementsFromData($data)
-	 */
-	protected function validatePOSTElements($elements)
-	{
-		$this->setAndValidateElementsFromData($_POST);
-		$errors = array();
-		foreach ($elements as $element) {
-			$elementClassName = get_class($element);
-
-			if ($element->required || isset($_POST[$elementClassName])) {
-				if (isset($_POST[$elementClassName])) {
-					$keys = array_keys($_POST[$elementClassName]);
-
-					if (is_array($_POST[$elementClassName][$keys[0]])) {
-						for ($i=0; $i<count($_POST[$elementClassName][$keys[0]]); $i++) {
-							$element = new $elementClassName;
-
-							foreach ($keys as $key) {
-								if ($key != '_element_id') {
-									$element->{$key} = $_POST[$elementClassName][$key][$i];
-								}
-							}
-
-							$this->setPOSTManyToMany($element);
-
-							if (!$element->validate()) {
-								$proc_name = $element->procedure->term;
-								$elementName = $element->getElementType()->name;
-								foreach ($element->getErrors() as $errormsgs) {
-									foreach ($errormsgs as $error) {
-										$errors[$proc_name][] = $error;
-									}
-								}
-							}
-						}
-					}
-					else
-					{
-						$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
-						$this->setPOSTManyToMany($element);
-						if (!$element->validate()) {
-							$elementName = $element->getElementType()->name;
-							foreach ($element->getErrors() as $errormsgs) {
-								foreach ($errormsgs as $error) {
-									$errors[$elementName][] = $error;
-								}
-							}
-						}
-					}
-				}
-			}
-
-		}
-
-		return $errors;
-	}
-
-	/**
-	 * Render the default elements for the controller state
-	 *
-	 * @param $action
-	 * @param bool $form
-	 * @param bool $data
-	 *
-	 * @deprecated - use renderOpenElements($action, $form, $data)
-	 */
-	public function renderDefaultElements($action, $form=false, $data=false)
-	{
-		foreach ($this->getDefaultElements($action) as $element) {
-			if ($action == 'create' && empty($_POST)) {
-				$element->setDefaultOptions();
-			}
-
-			$view = ($element->{$action.'_view'}) ? $element->{$action.'_view'} : $element->getDefaultView();
-			$this->renderPartial(
-				$action . '_' . $view,
-				array('element' => $element, 'data' => $data, 'form' => $form),
-				false, false
-			);
-
-		}
-	}
-
-	/**
-	 * Create the elements for an event with the given data. Returns false if there are errors, otherwise
-	 * returns the event that is created for the elements
-	 *
-	 * @param $elements
-	 * @param $data
-	 * @param $firm
-	 * @param $patientId
-	 * @param $userId
-	 * @param $eventTypeId
-	 * @return bool|string
-	 * @throws Exception
-	 *
-	 * @deprecated - use saveEvent($data)
-	 */
-	public function createElements($elements, $data, $firm, $patientId, $userId, $eventTypeId)
-	{
-		$valid = true;
-		$elementsToProcess = array();
-
-		// Go through the array of elements to see which the user is attempting to
-		// create, which are required and whether they pass validation.
-		foreach ($elements as $element) {
-			$elementClassName = get_class($element);
-
-			if ($element->required || isset($data[$elementClassName])) {
-				if (isset($data[$elementClassName])) {
-					$keys = array_keys($data[$elementClassName]);
-
-					if (is_array($data[$elementClassName][$keys[0]])) {
-						for ($i=0; $i<count($data[$elementClassName][$keys[0]]); $i++) {
-							$element = new $elementClassName;
-
-							foreach ($keys as $key) {
-								if ($key != '_element_id') {
-									$element->{$key} = $data[$elementClassName][$key][$i];
-								}
-							}
-
-							$this->setPOSTManyToMany($element);
-
-							if (!$element->validate()) {
-								$valid = false;
-							} else {
-								$elementsToProcess[] = $element;
-							}
-						}
-					} else {
-						$element->attributes = Helper::convertNHS2MySQL($data[$elementClassName]);
-
-						$this->setPOSTManyToMany($element);
-
-						if (!$element->validate()) {
-							$valid = false;
-						} else {
-							$elementsToProcess[] = $element;
-						}
-					}
-				}
-			}
-		}
-
-		if (!$valid) {
-			return false;
-		}
-
-		/**
-		 * Create the event. First check to see if there is currently an episode for this
-		 * subspecialty for this patient. If so, add the new event to it. If not, create an
-		 * episode and add it to that.
-		 */
-		$episode = $this->getOrCreateEpisode($firm, $patientId);
-		$event = $this->createEvent($episode, $userId, $eventTypeId, $elementsToProcess);
-
-		// Create elements for the event
-		foreach ($elementsToProcess as $element) {
-			$element->event_id = $event->id;
-			// No need to validate as it has already been validated and the event id was just generated.
-			if (!$element->save(false)) {
-				throw new Exception('Unable to save element ' . get_class($element) . '.');
-			}
-		}
-
-		$this->afterCreateElements($event);
-
-		return $event->id;
-	}
-
-	/**
-	 * Update elements based on arrays passed over from $_POST data
-	 *
-	 * @param BaseEventTypeElement[] $elements
-	 * @param array $data $_POST data to update
-	 * @param Event $event the associated event
-	 *
-	 * @throws SystemException
-	 * @return bool true if all elements succeeded, false otherwise
-	 *
-	 * @deprecated - use saveEvent($data)
-	 */
-	public function updateElements($elements, $data, $event)
-	{
-		$success = true;
-		$toDelete = array();
-		$toSave = array();
-
-		foreach ($elements as $element) {
-			$elementClassName = get_class($element);
-			$needsValidation = false;
-
-			if (isset($data[$elementClassName])) {
-				$keys = array_keys($data[$elementClassName]);
-
-				if (is_array($data[$elementClassName][$keys[0]])) {
-					if (!$element->id || in_array($element->id,$data[$elementClassName]['_element_id'])) {
-						$i = array_search($element->id,$data[$elementClassName]['_element_id']);
-
-						$properties = array();
-						foreach ($data[$elementClassName] as $key => $values) {
-							$properties[$key] = $values[$i];
-						}
-						$element->attributes = Helper::convertNHS2MySQL($properties);
-
-						$toSave[] = $element;
-						$needsValidation = true;
-					} else {
-						$toDelete[] = $element;
-					}
-				} else {
-					$element->attributes = Helper::convertNHS2MySQL($data[$elementClassName]);
-					$toSave[] = $element;
-					$needsValidation = true;
-				}
-			} elseif ($element->required) {
-				// The form has failed to provide an array of data for a required element.
-				// This isn't supposed to happen - a required element should at least have the
-				// $data[$elementClassName] present, even if there's nothing in it.
-				$success = false;
-			} elseif ($element->event_id) {
-				// This element already exists, isn't required and has had its data deleted.
-				// Therefore it needs to be deleted.
-				$toDelete[] = $element;
-			}
-
-			if ($needsValidation) {
-				$this->setPOSTManyToMany($element);
-				if (!$element->validate()) {
-					$success = false;
-				}
-			}
-		}
-
-		if (!$success) {
-			// An element failed validation or a required element didn't have an
-			// array of data provided for it.
-			return false;
-		}
-
-		foreach ($toSave as $element) {
-			if (!isset($element->event_id)) {
-				$element->event_id = $event->id;
-			}
-
-			if (!$element->save()) {
-				OELog::log("Unable to save element: $element->id ($elementClassName): ".print_r($element->getErrors(),true));
-				throw new SystemException('Unable to save element: '.print_r($element->getErrors(),true));
-			}
-		}
-
-		foreach ($toDelete as $element) {
-			$element->delete();
-		}
-
-		$this->afterUpdateElements($event);
-
-		return true;
-	}
-
-	public function canUpdate()
-	{
-		if (!$this->event) {
-			return false;
-		}
-
-		if (!$this->event->canUpdate()) {
-			return false;
-		}
-
-		if (!$this->checkEditAccess($this->event) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
-			return false;
-		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
-			return false;
-		}
-
-		return true;
-	}
-
-	public function canDelete()
-	{
-		if (!$this->event) {
-			return false;
-		}
-
-		if (!$this->event->canDelete()) {
-			return false;
-		}
-
-		if (!$this->checkDeleteAccess() || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
-			return false;
-		} else if ($this->firm->getSubspecialtyID() != $this->event->episode->getSubspecialtyID()) {
-			return false;
-		}
-
-		return true;
-	}
-
-	public function showDeleteIcon()
-	{
-		if (!$this->event) {
-			return false;
-		}
-
-		if ($this->event->showDeleteIcon() === false) {
-			return false;
-		}
-
-		if (!$this->checkEditAccess() || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
@@ -2056,6 +1659,13 @@ class BaseEventTypeController extends BaseModuleController
 		$this->initWithEventId(@$_GET['id']);
 	}
 
+	/**
+	 * Action to process delete requests for an event
+	 *
+	 * @param $id
+	 * @return bool|void
+	 * @throws CHttpException
+	 */
 	public function actionRequestDeletion($id)
 	{
 		if (!$this->event = Event::model()->findByPk($id)) {

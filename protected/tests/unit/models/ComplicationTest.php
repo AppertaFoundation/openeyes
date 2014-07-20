@@ -17,65 +17,42 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class ComplicationTest extends CDbTestCase {
+class ComplicationTest extends CDbTestCase
+{
+	/**
+	 * @var Complication
+	 */
+	public $model;
 
-                       /**
-                        * @var Complication
-                        */
-                       public $model;
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp() {
+		$this->model = new Complication;
+	}
 
-                       /**
-                        * Sets up the fixture, for example, opens a network connection.
-                        * This method is called before a test is executed.
-                        */
-                       protected function setUp() {
-                                              $this->model = new Complication;
-                       }
+	/**
+	 * @covers Complication::model
+	 */
+	public function testModel() {
+		$this->assertEquals('Complication', get_class(Complication::model()), 'Class name should match model.');
+	}
 
-                       /**
-                        * Tears down the fixture, for example, closes a network connection.
-                        * This method is called after a test is executed.
-                        */
-                       protected function tearDown() {
-                                              
-                       }
+	/**
+	 * @covers Complication::tableName
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('complication', $this->model->tableName());
+	}
 
-                       /**
-                        * @covers Complication::model
-                        * @todo   Implement testModel().
-                        */
-                       public function testModel() {
-                                              
-                                               $this->assertEquals('Complication', get_class(Complication::model()), 'Class name should match model.');
-                       }
-
-                       /**
-                        * @covers Complication::tableName
-                        * @todo   Implement testTableName().
-                        */
-                       public function testTableName() {
-                                              
-                                              $this->assertEquals('complication', $this->model->tableName());
-                       }
-
-                       /**
-                        * @covers Complication::rules
-                        * @todo   Implement testRules().
-                        */
-                       public function testRules() {
-                                              $this->assertTrue($this->model->validate());
-                                              $this->assertEmpty($this->model->errors);
-                       }
-
-                       /**
-                        * @covers Complication::relations
-                        * @todo   Implement testRelations().
-                        */
-                       public function testRelations() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
-                       }
-
+	/**
+	 * @covers Complication::rules
+	 */
+	public function testRules()
+	{
+		$this->assertTrue($this->model->validate());
+		$this->assertEmpty($this->model->errors);
+	}
 }

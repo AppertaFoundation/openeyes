@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class DrugDuration extends BaseActiveRecord
+class DrugDuration extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -41,6 +41,11 @@ class DrugDuration extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'drug_duration';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
 	}
 
 	/**
@@ -75,6 +80,13 @@ class DrugDuration extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
 		);
 	}
 

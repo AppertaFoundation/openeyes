@@ -42,23 +42,25 @@ $noEpisodes = (count($episodes) <1 && count($supportserviceepisodes) <1 && count
 	</div>
 <?php } else {
 
-		$this->beginContent('//patient/episodes_container');
+	$this->beginContent('//patient/episodes_container', array(
+		'cssClass' => isset($cssClass) ? $cssClass : ''
+	));
 
-		if ($current_episode) {
-			if ($this->editing) {
-				$this->renderPartial('/clinical/updateEpisode',
-					array('episode' => $current_episode, 'error' => $error)
-				);
-			} else {
-				$this->renderPartial('/clinical/episodeSummary',
-					array('episode' => $current_episode)
-				);
-			}
-		} else if (count($legacyepisodes)) {?>
-			<h2>No episodes</h2>
-			<div class="alert-box alert with-icon">
-				There are currently no episodes for this patient, please click the Add episode button to open a new episode.
-			</div>
-		<?php }
-		$this->endContent();
+	if ($current_episode) {
+		if ($this->editing) {
+			$this->renderPartial('/clinical/updateEpisode',
+				array('episode' => $current_episode, 'error' => $error)
+			);
+		} else {
+			$this->renderPartial('/clinical/episodeSummary',
+				array('episode' => $current_episode)
+			);
+		}
+	} else if (count($legacyepisodes)) {?>
+		<h2>No episodes</h2>
+		<div class="alert-box alert with-icon">
+			There are currently no episodes for this patient, please click the Add episode button to open a new episode.
+		</div>
+	<?php }
+	$this->endContent();
 }?>

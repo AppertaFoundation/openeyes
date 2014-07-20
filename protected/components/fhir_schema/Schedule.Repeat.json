@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"frequency":{"type":"integer","plural":false},"when":{"type":"EventTiming","plural":false},"duration":{"type":"decimal","plural":false},"units":{"type":"UnitsOfTime","plural":false},"count":{"type":"integer","plural":false},"end":{"type":"dateTime","plural":false}}

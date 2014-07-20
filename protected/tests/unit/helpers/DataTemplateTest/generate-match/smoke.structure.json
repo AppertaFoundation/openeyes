@@ -1,0 +1,14 @@
+{
+	"id": 12345,
+	"type": "foo",
+	"things": [
+		{
+			"name": "thing1",
+			"value": 100
+		},
+		{
+			"name": "thing2",
+			"value": "bar"
+		}
+	]
+}

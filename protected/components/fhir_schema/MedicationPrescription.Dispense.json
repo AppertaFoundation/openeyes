@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"medication":{"type":"ResourceReference","plural":false},"validityPeriod":{"type":"Period","plural":false},"numberOfRepeatsAllowed":{"type":"integer","plural":false},"quantity":{"type":"Quantity","plural":false},"expectedSupplyDuration":{"type":"Duration","plural":false}}

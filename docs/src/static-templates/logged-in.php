@@ -4,7 +4,7 @@
 <head>
 <? include 'components/head.php'; ?>
 </head>
-<body>
+<body class="open-eyes">
 
 	<? include 'components/alert-logged-in.php'; ?>
 

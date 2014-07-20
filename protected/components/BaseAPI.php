@@ -19,14 +19,24 @@
 
 class BaseAPI
 {
-	/*
+	/**
+	 * Returns the non-namespaced module class of the module API Instance
+	 *
+	 * @return mixed
+	 */
+	protected function getModuleClass()
+	{
+		return preg_replace('/^(.*\\\\)?(.*)_API$/','$2',get_class($this));
+	}
+
+	/**
 	 * gets the event type for the api instance
 	 *
 	 * @return EventType $event_type
 	 */
 	protected function getEventType()
 	{
-		$module_class = preg_replace('/_API$/','',get_class($this));
+		$module_class = $this->getModuleClass();
 
 		if (!$event_type = EventType::model()->find('class_name=?',array($module_class))) {
 			throw new Exception("Module is not migrated: $module_class");
@@ -82,7 +92,7 @@ class BaseAPI
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type_id);
 		$criteria->compare('episode_id',$episode_id);
-		$criteria->order = 'created_date desc';
+		$criteria->order = 'event_date desc, created_date desc';
 
 		return Event::model()->find($criteria);
 	}
@@ -96,7 +106,7 @@ class BaseAPI
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type_id);
 		$criteria->compare('episode_id',$episode_id);
-		$criteria->order = 'created_date desc';
+		$criteria->order = 'event_date desc, created_date desc';
 
 		foreach (Event::model()->findAll($criteria) as $event) {
 			if ($element = $model::model()->find('event_id=?',array($event->id))) {

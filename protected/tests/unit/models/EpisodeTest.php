@@ -17,229 +17,216 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class EpisodeTest extends CDbTestCase {
+class EpisodeTest extends CDbTestCase
+{
+	/**
+	 * @var Episode
+	 */
+	protected $model;
 
-	   /**
-	    * @var Episode
-	    */
-	   protected $model;
+	public $fixtures = array(
+		'episode' => 'Episode',
+		'event' => 'Event',
+	);
 
-	   /**
-	    * Sets up the fixture, for example, opens a network connection.
-	    * This method is called before a test is executed.
-	    */
-	   protected function setUp() {
-		      parent::setUp();
-		      $this->model = new Episode;
-	   }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->model = new Episode;
+	}
 
-	   /**
-	    * Tears down the fixture, for example, closes a network connection.
-	    * This method is called after a test is executed.
-	    */
-	   protected function tearDown() {
+	/**
+	 * @covers Episode::model
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('Episode', get_class(Episode::model()), 'Class name should match model.');
+	}
 
-	   }
+	/**
+	 * @covers Episode::relations
+	 * @todo   cover more relations if required, only event is covered for the moment.
+	 */
+	public function testRelations()
+	{
+		//test events relation sorting
+		$events = $this->episode('episode2')->events;
+		$events[0]->save();//only when saving the event date is set to created_date when null
+		$this->assertNotNull($events[0]->event_date);
+		$this->assertLessThanOrEqual($events[1]->event_date, $events[0]->event_date,
+			'EventDate 0 : '. $events[0]->event_date . ' > EventDate 1 :' . $events[1]->event_date);
+	}
 
-	   /**
-	    * @covers Episode::model
-	    * @todo   Implement testModel().
-	    */
-	   public function testModel() {
+	/**
+	 * @covers Episode::tableName
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('episode', $this->model->tableName());
+	}
 
-		      $this->assertEquals('Episode', get_class(Episode::model()), 'Class name should match model.');
-	   }
+	/**
+	 * @covers Episode::attributeLabels
+	 */
+	public function testAttributeLabels()
+	{
+		$expected = array(
+			'id' => 'ID',
+			'patient_id' => 'Patient',
+			'firm_id' => 'Firm',
+			'start_date' => 'Start Date',
+			'end_date' => 'End Date',
+			'episode_status_id' => 'Current Status',
+		);
 
-	   /**
-	    * @covers Episode::tableName
-	    * @todo   Implement testTableName().
-	    */
-	   public function testTableName() {
+		$this->assertEquals($expected, $this->model->attributeLabels());
+	}
 
-		      $this->assertEquals('episode', $this->model->tableName());
-	   }
+	/**
+	 * @covers Episode::search
+	 * @todo   Implement testSearch().
+	 */
+	public function testSearch()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-	   /**
-	    * @covers Episode::defaultScope
-	    * @todo   Implement testDefaultScope().
-	    */
-	   public function testDefaultScope() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
+	/**
+	 * @covers Episode::hasEventOfType
+	 * @todo   Implement testHasEventOfType().
+	 */
+	public function testHasEventOfType()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-	   /**
-	    * @covers Episode::rules
-	    * @todo   Implement testRules().
-	    */
-	   public function testRules() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
+	/**
+	 * @covers Episode::getBySubspecialtyAndPatient
+	 * @todo   Implement testGetBySubspecialtyAndPatient().
+	 */
+	public function testGetBySubspecialtyAndPatient()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-	   /**
-	    * @covers Episode::relations
-	    * @todo   Implement testRelations().
-	    */
-	   public function testRelations() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
+	/**
+	 * @covers Episode::getPrincipalDiagnosisDisorderTerm
+	 * @todo   Implement testGetPrincipalDiagnosisDisorderTerm().
+	 */
+	public function testGetPrincipalDiagnosisDisorderTerm()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-	   /**
-	    * @covers Episode::attributeLabels
-	    * @todo   Implement testAttributeLabels().
-	    */
-	   public function testAttributeLabels() {
+	/**
+	 * @covers Episode::getCurrentEpisodeByFirm
+	 * @todo   Implement testGetCurrentEpisodeByFirm().
+	 */
+	public function testGetCurrentEpisodeByFirm()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-		      $expected = array(
-			       'id' => 'ID',
-			       'patient_id' => 'Patient',
-			       'firm_id' => 'Firm',
-			       'start_date' => 'Start Date',
-			       'end_date' => 'End Date',
-			       'episode_status_id' => 'Current Status',
-		      );
+	/**
+	 * @covers Episode::getMostRecentEventByType
+	 * @todo   Implement testGetMostRecentEventByType().
+	 */
+	public function testGetMostRecentEventByType()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-		      $this->assertEquals($expected, $this->model->attributeLabels());
-	   }
+	/**
+	 * @covers Episode::getAllEventsByType
+	 * @todo   Implement testGetAllEventsByType().
+	 */
+	public function testGetAllEventsByType()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-	   /**
-	    * @covers Episode::search
-	    * @todo   Implement testSearch().
-	    */
-	   public function testSearch() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
+	/**
+	 * @covers Episode::save
+	 * @todo   Implement testSave().
+	 */
+	public function testSave()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-	   /**
-	    * @covers Episode::hasEventOfType
-	    * @todo   Implement testHasEventOfType().
-	    */
-	   public function testHasEventOfType() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
+	/**
+	 * @covers Episode::getHidden
+	 * @todo   Implement testGetHidden().
+	 */
+	public function testGetHidden()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-	   /**
-	    * @covers Episode::getBySubspecialtyAndPatient
-	    * @todo   Implement testGetBySubspecialtyAndPatient().
-	    */
-	   public function testGetBySubspecialtyAndPatient() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
+	/**
+	 * @covers Episode::getOpen
+	 * @todo   Implement testGetOpen().
+	 */
+	public function testGetOpen()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-	   /**
-	    * @covers Episode::getPrincipalDiagnosisDisorderTerm
-	    * @todo   Implement testGetPrincipalDiagnosisDisorderTerm().
-	    */
-	   public function testGetPrincipalDiagnosisDisorderTerm() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
+	/**
+	 * @covers Episode::setPrincipalDiagnosis
+	 * @todo   Implement testSetPrincipalDiagnosis().
+	 */
+	public function testSetPrincipalDiagnosis()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 
-	   /**
-	    * @covers Episode::getCurrentEpisodeByFirm
-	    * @todo   Implement testGetCurrentEpisodeByFirm().
-	    */
-	   public function testGetCurrentEpisodeByFirm() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers Episode::getMostRecentEventByType
-	    * @todo   Implement testGetMostRecentEventByType().
-	    */
-	   public function testGetMostRecentEventByType() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers Episode::getAllEventsByType
-	    * @todo   Implement testGetAllEventsByType().
-	    */
-	   public function testGetAllEventsByType() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers Episode::save
-	    * @todo   Implement testSave().
-	    */
-	   public function testSave() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers Episode::getHidden
-	    * @todo   Implement testGetHidden().
-	    */
-	   public function testGetHidden() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers Episode::getOpen
-	    * @todo   Implement testGetOpen().
-	    */
-	   public function testGetOpen() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers Episode::setPrincipalDiagnosis
-	    * @todo   Implement testSetPrincipalDiagnosis().
-	    */
-	   public function testSetPrincipalDiagnosis() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers Episode::audit
-	    * @todo   Implement testAudit().
-	    */
-	   public function testAudit() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
+	/**
+	 * @covers Episode::audit
+	 * @todo   Implement testAudit().
+	 */
+	public function testAudit()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+			'This test has not been implemented yet.'
+		);
+	}
 }

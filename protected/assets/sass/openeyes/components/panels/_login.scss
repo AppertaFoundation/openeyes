@@ -14,12 +14,27 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Login panel
+//
+// Markup:
+// <form class="form panel login">
+// 		<div class="row field-row">
+// 			<div class="large-4 column">
+// 				<label for="username" class="align">Username:</label>
+// 			</div>
+// 			<div class="large-8 column">
+// 				<input type="text" id="username" class="large" placeholder="Enter username...">
+// 			</div>
+// 		</div>
+// </form>
+//
+// Styleguide 13.11
 .panel {
 	&.login {
 		@extend %main-panel;
 		max-width: 488px;
 		label {
-			font-size: emCalc(15px);
+			font-size: rem-calc(15px);
 		}
 		.loader {
 			margin-right: 10px;

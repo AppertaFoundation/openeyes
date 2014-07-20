@@ -14,12 +14,28 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
+// Issue alert box
+//
+// Markup:
+// <div class="alert-box issue {$modifiers}">
+//     Alert! Some information the user needs to see.
+//     <a href="#" class="close">&times;</a>
+// </div>
+//
+// .with-icon     - Alert box with icon
+//
+// Styleguide 7.4
 .alert-box{
 	&.issue {
 		@include alert-style(#fdf2e5);
+		border-color: #f9dab6;
 		&.with-icon {
 			background-image: image-url("_elements/icons/box/issue.png");
 			min-height: 36px;
+			@media print {
+				background-color: #fdf2e5 !important;
+				background-image: image-url("_elements/icons/box/issue.png") !important;
+			}
 		}
 	}
 }

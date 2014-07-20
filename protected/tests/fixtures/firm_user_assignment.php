@@ -31,4 +31,8 @@ return array(
 		'firm_id' => 3,
 		'user_id' => 1
 	),
+	'JaneBloggsCollinFirm' => array(
+		'firm_id' => 2,
+		'user_id' => 2,
+	),
 );

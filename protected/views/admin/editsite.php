@@ -31,7 +31,7 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->dropDownList($site,'institution_id',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('style'=>'margin-bottom:6px;'))?>
+		<?php echo $form->dropDownList($site,'institution_id','Institution',array('style'=>'margin-bottom:6px;'))?>
 		<?php echo $form->textField($site,'name',array('size'=>'50'))?>
 		<?php echo $form->textField($site,'remote_id',null,null,array('field' => 2))?>
 		<?php echo $form->textField($address,'address1')?>
@@ -39,7 +39,7 @@
 		<?php echo $form->textField($address,'city')?>
 		<?php echo $form->textField($address,'county')?>
 		<?php echo $form->textField($address,'postcode')?>
-		<?php echo $form->dropDownList($address,'country_id',CHtml::listData(Country::model()->findAll(array('order'=>'name')),'id','name'))?>
+		<?php echo $form->dropDownList($address,'country_id','Country')?>
 		<?php echo $form->formActions(array('cancel-url' => '/admin/sites'));?>
 	<?php $this->endWidget()?>
 </div>

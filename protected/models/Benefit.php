@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class Benefit extends BaseActiveRecord
+class Benefit extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

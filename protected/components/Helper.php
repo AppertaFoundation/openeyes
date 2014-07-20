@@ -29,7 +29,7 @@ class Helper
 
 	/**
 	 * Convert NHS dates to MySQL format.
-	 * Strings that do not match the NHS format are returned unchanged.
+	 * Strings that do not match the NHS format are returned unchanged or are not valid dates.
 	 *
 	 * @param string|array $data Data containing one or more NHS dates
 	 * @param array $fields Fields (keys) to convert (optional, if empty then all fields are checked for dates)
@@ -47,7 +47,10 @@ class Helper
 				if (is_array($data[$key])) {
 					$data[$key] = Helper::convertNHS2MySQL($data[$key], $fields);
 				} elseif (is_string($data[$key]) && preg_match(self::NHS_DATE_REGEX, $data[$key])) {
-					$data[$key] = date('Y-m-d',strtotime($data[$key]));
+					$check_date = date_parse_from_format('j M Y',$data[$key]);
+					if(checkdate($check_date['month'], $check_date['day'], $check_date['year'])){
+						$data[$key] = date('Y-m-d',strtotime($data[$key]));
+					}
 				}
 			}
 
@@ -152,9 +155,38 @@ class Helper
 		return $dob_datetime->diff($check_datetime)->y;
 	}
 
+	/**
+	 * Given a dob and an age (in years) returns the date at which the person would reach the given age.
+	 * If given a date of death, and they will never reach the age, returns null
+	 *
+	 * @param $dob
+	 * @param $age
+	 * @param null $date_of_death
+	 * @return null|string
+	 */
+	public static function getDateForAge($dob, $age, $date_of_death = null)
+	{
+		if (!$dob) return null;
+		$dob_datetime = new DateTime($dob);
+		$age_date = $dob_datetime->add(new DateInterval('P' . $age . 'Y'));
+
+		if ($date_of_death) {
+			$dod_datetime = new DateTime($date_of_death);
+			if ($dod_datetime < $age_date) {
+				return null;
+			}
+		}
+		return $age_date->format('Y-m-d');
+	}
+
 	public static function getMonthText($month, $long=false)
 	{
 		return date($long?'F':'M',mktime(0,0,0,$month,1,date('Y')));
+	}
+
+	public static function padFuzzyDate($day, $month, $year)
+	{
+		return str_pad(@$day,4,'0',STR_PAD_LEFT).'-'.str_pad(@$month,2,'0',STR_PAD_LEFT).'-'.str_pad(@$year,2,'0',STR_PAD_LEFT);
 	}
 
 	/**
@@ -182,7 +214,7 @@ class Helper
 			return (string) $year;
 		}
 
-		return 'Unknown';
+		return 'Undated';
 	}
 
 	/**
@@ -231,6 +263,26 @@ class Helper
 	}
 
 	/**
+	 * Generate a version 4 UUID
+	 *
+	 * @return string
+	 */
+	static public function generateUuid()
+	{
+		return sprintf(
+			"%04x%04x-%04x-4%03x-%01x%03x-%04x%04x%04x",
+			mt_rand(0, 65535),
+			mt_rand(0, 65535),
+			mt_rand(0, 65535),
+			mt_rand(0, 4095),
+			mt_rand(8, 11), mt_rand(0, 4095),
+			mt_rand(0, 65535),
+			mt_rand(0, 65535),
+			mt_rand(0, 65535)
+		);
+	}
+
+	/**
 	 * Extract values from a list of objects or arrays using {@link CHtml value}
 	 *
 	 * @param object[]|array[] $objects
@@ -267,4 +319,11 @@ class Helper
 				return implode(', ', $items) . ' and ' . $last;
 		}
 	}
+
+	public static function getNSShortname($instance)
+	{
+		$r = new ReflectionClass($instance);
+		return $r->getShortName();
+	}
+
 }

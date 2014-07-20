@@ -27,7 +27,7 @@
  * The followings are the available model relations:
  * @property ServiceSubspecialtyAssignment[] $serviceSubspecialtyAssignments
  */
-class Service extends BaseActiveRecord
+class Service extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

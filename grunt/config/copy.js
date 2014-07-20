@@ -2,52 +2,53 @@ module.exports = {
 	docs: {
 		files: [
 			{
-				src: ['protected/assets/css/**/*'],
-				dest: 'docs/public/assets/core/'
-			},
-			{
-				src: ['protected/assets/img/**/*'],
-				dest: 'docs/public/assets/core/'
-			},
-			{
-				src: ['protected/assets/js/**/*'],
-				dest: 'docs/public/assets/core/'
-			},
-			{
-				cwd: 'docs/src/',
+				cwd: 'protected/assets',
 				expand: true,
-				src: ['components/**/*'],
-				dest: 'docs/public/'
-			},
-			{
-				cwd: 'docs/src/',
-				expand: true,
-				src: ['fragments/**/*'],
-				dest: 'docs/public/'
-			},
-			{
-				cwd: 'docs/src/',
-				expand: true,
-				src: ['static-templates/**/*'],
-				dest: 'docs/public/'
-			},
-			{
-				cwd: 'docs/src/',
-				expand: true,
-				src: ['js/**/*'],
+				src: [
+					'css/**/*.css',
+					'img/**/*',
+					'js/**/*.js',
+					'components/**/*',
+				],
 				dest: 'docs/public/assets'
 			},
 			{
-				cwd: 'docs/src/',
+				cwd: 'protected',
 				expand: true,
-				src: ['css/**/*'],
+				src: [
+					'modules/**/assets/**/*'
+				],
 				dest: 'docs/public/assets'
+			},
+			{
+				cwd: 'protected/modules/eyedraw',
+				expand: true,
+				src: [
+					'css/**/*.css',
+					'img/**/*',
+				],
+				dest: 'docs/public/assets/modules/eyedraw'
 			},
 			{
 				cwd: 'docs/src/',
 				expand: true,
-				src: ['index.php'],
+				src: [
+					'*.php',
+					'fragments/**/*',
+					'static-templates/**/*',
+
+				],
 				dest: 'docs/public/'
+			},
+			{
+				cwd: 'docs/src/assets',
+				expand: true,
+				src: [
+					'js/**/*',
+					'css/**/*',
+					'img/**/*'
+					],
+				dest: 'docs/public/assets'
 			}
 		]
 	}

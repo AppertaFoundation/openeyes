@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"date":{"type":"dateTime","plural":false},"detail":{"type":"ResourceReference","plural":false},"reported":{"type":"boolean","plural":false}}

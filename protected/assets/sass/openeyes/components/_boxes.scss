@@ -16,22 +16,10 @@
 
 // Boxes
 //
-// A box is simply a container that groups large sections of the page, for example
-// am event detail view.
+// A box is simply a container with some styling that groups large sections of the page, for example
+// a event detail view. Panels are used to group page sections within boxes.
 //
-// Markup:
-// <div class="box {$modifiers}">
-//     <p>Here is some content within a box.</p>
-// </div>
-//
-// .content             - Content box
-//
-// Styleguide 13.1
-
-// Box vars
-$oe-box-gutter: $column-gutter / 2;
-$oe-box-margin: 0 0 $oe-box-gutter 0 !default;
-$oe-box-border-radius: $global-radius !default;
+// Styleguide 14
 
 .box {
 	@include border-radius($oe-box-border-radius);
@@ -41,14 +29,13 @@ $oe-box-border-radius: $global-radius !default;
 
 .box-header {
 	@extend .clearfix;
-	margin-bottom: emCalc(12px);
+	margin-bottom: 12px;
 }
 
 .box-actions {
 	text-align: center;
 }
 
-@import "boxes/admin";
 @import "boxes/content";
 @import "boxes/generic";
 @import "boxes/patient-info";

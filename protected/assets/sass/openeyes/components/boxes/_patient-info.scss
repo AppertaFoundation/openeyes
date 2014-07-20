@@ -15,18 +15,34 @@
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
 // Patient info box
+//
+// Markup:
+// <div class="box patient-info">
+// 	<h3 class="box-title">Personal Details:</h3>
+// 	<a href="#" class="toggle-trigger toggle-hide">
+// 		<span class="icon-showhide">
+// 			Show/hide this section
+// 		</span>
+// 	</a>
+// 	<p>Here is some information in a patient-info box.</p>
+// </div>
+//
+// Styleguide 14.3
 .box {
 	&.patient-info {
 		background: #fafafa;
-		padding: emCalc(12px);
+		padding: 12px;
 		.box-title {
-			font-size: emCalc(13px);
+			font-size: rem-calc(13px);
 			color: #e49f10;
 			margin: 0;
-			padding: 0 0 emCalc(10px) 0;
+			padding: 0 0 8px 0;
+			@media print {
+				font-weight: bold;
+			}
 		}
 		.data-row {
-			padding: emCalc(10px) 0;
+			padding: 10px 0;
 			border-top: 1px dotted #ccc;
 			&:last-child {
 				padding-bottom: 0;
@@ -34,8 +50,8 @@
 			&.highlight {
 				background: goldenrod;
 				> .column {
-					padding-left: emCalc(12px);
-					padding-right: emCalc(12px);
+					padding-left: 12px;
+					padding-right: 12px;
 				}
 				.data-label {
 					color: #eee;
@@ -50,10 +66,10 @@
 		}
 		.add-data {
 			> fieldset > legend {
-				margin-bottom: emCalc(25px);
+				margin-bottom: 20px;
 			}
 			.field-row {
-				padding-bottom: emCalc(12px);
+				padding-bottom: 12px;
 				&:last-child {
 					padding-bottom: 0;
 				}
@@ -63,18 +79,60 @@
 			height: 22px;
 			width: 30px;
 			background: #dadada;
-			right: emCalc(12px);
+			right: 12px;
 			&:hover {
 				background: #3665ff;
 			}
 		}
 		.add-data {
-			margin: emCalc(6px) 0 emCalc(12px) 0;
+			margin: 6px 0 12px 0;
+		}
+		@media print {
+			page-break-inside: avoid;
 		}
 	}
 }
 
 // Patient info episodes box
+//
+// Used to display the patient episodes.
+//
+// Markup:
+// <section class="box patient-info episodes">
+// 	<header class="box-header">
+// 		<h3 class="box-title">All Episodes</h3>
+// 		<div class="box-info">
+// 			<strong>open 1 &nbsp;|&nbsp;closed 0</strong>
+// 		</div>
+// 	</header>
+// 	<table class="patient-episodes grid">
+// 		<thead>
+// 			<tr>
+// 				<th>Start Date</th>
+// 				<th>End Date</th>
+// 				<th>Firm</th>
+// 				<th>Subspecialty</th>
+// 				<th>Eye</th>
+// 				<th>Diagnosis</th>
+// 			</tr>
+// 		</thead>
+// 		<tbody>
+// 			<tr class="speciality">
+// 				<td colspan="6">Ophthalmology</td>
+// 			</tr>
+// 			<tr class="clickable all-episode ">
+// 				<td>27 Mar 2014</td>
+// 				<td></td>
+// 				<td>Abou-Rayyah Yassir</td>
+// 				<td>Adnexal</td>
+// 				<td>No diagnosis</td>
+// 				<td>No diagnosis</td>
+// 			</tr>
+// 		</tbody>
+// 	</table>
+// </section>
+//
+// Styleguide 14.4
 .box {
 	&.patient-info {
 		&.episodes {
@@ -92,17 +150,51 @@
 			.summary {
 				font-size: $default-font-size;
 			}
+			@media print {
+				padding: 0;
+			}
 		}
 		&.episode-links {
 			a {
 				font-size: $default-font-size;
 				@extend %anchor-hover;
 			}
+			@media print {
+				padding: 0;
+			}
 		}
 	}
 }
 
 // Patient info associated data box
+//
+// Used to display any other (editable) associated patient data.
+//
+// Markup:
+// <section class="box patient-info associated-data js-toggle-container">
+// 	<header class="box-header">
+// 		<h3 class="box-title">Other ophthalmic diagnoses</h3>
+// 		<a class="toggle-trigger toggle-hide js-toggle" href="#">
+// 			<span class="icon-showhide">Show/hide this section</span>
+// 		</a>
+// 	</header>
+// 	<div class="js-toggle-body">
+// 		<table class="plain patient-data">
+// 			<thead>
+// 				<tr>
+// 					<th>Date</th>
+// 					<th>Diagnosis</th>
+// 					<th>Actions</th>
+// 				</tr>
+// 			</thead>
+// 		</table>
+// 		<div class="box-actions">
+// 			<button class="secondary small" id="btn-add_new_ophthalmic_diagnosis">Add Ophthalmic Diagnosis</button>
+// 		</div>
+// 	</div>
+// </section>
+//
+// Styleguide 14.5
 .box {
 	&.patient-info {
 		&.associated-data {
@@ -114,11 +206,14 @@
 				display: inline-block;
 				padding: 5px 10px 5px 45px;
 				position: relative;
-				font-size: emCalc(12px);
+				font-size: rem-calc(12px);
 				[class*="icon-"] {
 					position: absolute;
 					left: 0;
 					top: -1px;
+				}
+				@media print {
+					padding-left: 0;
 				}
 			}
 			.form {

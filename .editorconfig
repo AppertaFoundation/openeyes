@@ -10,7 +10,7 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = false
 
-[*.{php,js,css,html,pp,scss}]
+[*.{php,js,css,html,pp,scss,json,sh,less}]
 indent_style = tab
 indent_size = 2
 

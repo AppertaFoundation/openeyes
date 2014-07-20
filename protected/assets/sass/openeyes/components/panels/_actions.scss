@@ -16,15 +16,26 @@
 
 // Actions panel
 //
-// Styleguide 16.1
-
+// Markup:
+// <div class="panel panel actions row">
+// 	<div class="large-12 column">
+// 		<div class="label">
+// 			Actions description:
+// 		</div>
+// 		<div class="button-bar">
+// 			<button class="small">Action button</button>
+// 		</div>
+// 	</div>
+// </div>
+//
+// Styleguide 13.5
 .panel {
 	&.actions {
 		border: 0;
-		margin: 0 0 emCalc(10px) 0;
+		margin: 0 0 10px 0;
 		padding: 0;
 		button, .button {
-			margin: emCalc(4px) emCalc(10px) emCalc(6px) 0;
+			margin: 3px 8px 5px 0;
 			vertical-align: middle;
 			&:last-child {
 				margin-right: 0;
@@ -35,25 +46,29 @@
 			margin: 0;
 		}
 		.label {
+			cursor: default;
 			display: inline-block;
-			font-size: emCalc(13px);
+			font-size: rem-calc(13px);
 			font-weight: bold;
-			padding: emCalc(10px) 0;
+			padding: 8px 0;
 		}
+		/* Unsure if used */
 		.panel-latest-letter {
-			width: emCalc(120px);
+			width: rem-calc(120px);
 		}
 		.button-bar {
 			float: right;
 		}
-		&.stuck {
-			@include box-shadow(0 2px 4px rgba(0, 0, 0, .3));
-			@include border-top-left-radius(0);
-			@include border-top-right-radius(0);
-			position: fixed;
-			width: 100%;
-			top: 40px;
-			z-index: 9;
+		@media screen {
+			&.stuck {
+				@include box-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+				@include border-top-left-radius(0);
+				@include border-top-right-radius(0);
+				position: fixed;
+				width: 100%;
+				top: 40px;
+				z-index: 9;
+			}
 		}
 	}
 }

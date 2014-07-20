@@ -1,26 +1,21 @@
 #!/bin/bash
 CSDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # possible sh alternative DIR=$(readlink -f $(dirname $0))
-echo "Current script dir: $CSDIR"
+echo "modules_yii_config: Current script dir: $CSDIR"
 
-. $CSDIR/ciFunctions.sh
+. "$CSDIR"/ciFunctions.sh
 
 branchVal=$(argValue branch)
 
-if [ "${#branchVal}" == "0" ]
-then
-    branchVal=develop
-fi
-
-echo "BbranchVal is $branchVal"
+echo "modules_yii_config: branchVal is $branchVal"
 
 execVal=$(argValue exec)
-echo "BexecVal is $execVal"
+echo "modules_yii_config: execVal is $execVal"
 
 moduleNameVal=$(argValue moduleName)
-echo "BmoduleNameVal is $moduleNameVal"
+echo "modules_yii_config: moduleNameVal is $moduleNameVal"
 
-# define all modules to test
+echo "modules_yii_config: define all modules to test"
 if  [ "$execVal" == "all" ]
 then
     echo "Module Yii config adding all modules"
@@ -37,7 +32,7 @@ then
     OphTrIntravitrealinjection
     OphCoTherapyapplication
     OphTrLaser
-    " > .enabled-modules
+    mehpas" > .enabled-modules
 elif [ "$execVal" == "SingleModule" ]
 then
       #as single unit test modules are set in a parent script in jenkins their code is
@@ -60,20 +55,39 @@ modules_conf_string=""
 #set up modules in conf
 while read module
 do
-    echo "attempting to add module $module"s
-    if [ ! -e $module ]; then
-        echo "Adding $module to conf string..."
-        modules_conf_string="$modules_conf_string '$module',\
-        \
-        "
+    echo "modules_yii_config: attempting to add module $module"
+    if [ ! -e "$module" ]; then
+        echo "modules_yii_config: Adding $module to conf string..."
+        if [ "$module" = "OphCiExamination" ]; then
+            modules_conf_string="$modules_conf_string '$module' => array('class' => '\\OEModule\\OphCiExamination\\OphCiExaminationModule'),\
+            \
+            "
+        else
+            modules_conf_string="$modules_conf_string '$module',\
+            \
+            "
+        fi
+        if [ -r "$modules_path/$module/moduledeps" ];then
+            echo "modules_yii_config: Setting up $module dependencies in common.php"
+            while read -r moduledep || [[ -n "$moduledep" ]]
+            do
+                echo "modules_yii_config: configuring dependency: $moduledep "
+                if grep -q "$moduledep" "$enabled_modules";then
+                    echo "modules_yii_config: $moduledep  ALREADY enabled"
+                else
+                    modules_conf_string="'$moduledep', $modules_conf_string "
+                fi
+            done < "$modules_path/$module/moduledeps"
+        fi
     fi
-done < $enabled_modules
-echo "Modules $modules_conf_string"
+done < "$enabled_modules"
+echo "modules_yii_config: Modules $modules_conf_string"
 #'modules' => array(
-sed "s/\/\/PLACEHOLDER/$modules_conf_string/g" protected/config/local/common.autotest.php > protected/config/local/common.php
-echo 'Moved config files'
+sed "s/\/\/PLACEHOLDER/${modules_conf_string//\\/\\\\}/g" protected/config/local.sample/common.autotest.php > protected/config/local/common.php
+echo 'modules_yii_config: Moved config files'
 
 #git clone modules
-echo "Cloning/checkout modules"
+echo "modules_yii_config: Cloning/checkout modules with branch: $branchVal"
 bin/clone-modules.sh $branchVal
-bin/oe-git pull
+#git checkout $branchVal
+#bin/oe-git pull

@@ -22,13 +22,11 @@
  *
  * The followings are the available columns in table 'contact_location':
  * @property integer $id
- * @property string $name
- * @property integer $letter_template_only
- * @property Institution $institution
- * @property Contact $contact
- * @property Site $site
+ * @property Institution $institution_id
+ * @property Contact $contact_id
+ * @property Site $site_id
  */
-class ContactLocation extends BaseActiveRecord
+class ContactLocation extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -64,7 +62,7 @@ class ContactLocation extends BaseActiveRecord
 		return array(
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,13 +97,9 @@ class ContactLocation extends BaseActiveRecord
 	 */
 	public function search()
 	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
+		// Warning: Please modify the following code to remove attributes that should not be searched.
 		$criteria=new CDbCriteria;
-
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
@@ -136,14 +130,14 @@ class ContactLocation extends BaseActiveRecord
 	 */
 	public function getLetterAddress($params=array())
 	{
-		$owner = $this->owner->site ? $this->owner->site : $this->owner->institution;
+		$owner = $this->site ? $this->site : $this->institution;
 		if (@$params['contact']) {
 			$contactRelation = @$params['contact'];
 			$contact = $owner->$contactRelation;
 		} else {
 			$contact = $owner->contact;
 		}
-		
+
 		$address = $contact->address;
 
 		$res = $this->formatLetterAddress($this->contact, $address, $params);
@@ -152,8 +146,8 @@ class ContactLocation extends BaseActiveRecord
 
 	public function getLetterArray($include_country)
 	{
-		$address = $this->owner->site ? $this->owner->site->contact->address : $this->owner->institution->contact->address;
-		$name = $this->owner->site ? $this->owner->site->correspondenceName : $this->owner->institution->name;
+		$address = $this->site ? $this->site->contact->address : $this->institution->contact->address;
+		$name = $this->site ? $this->site->correspondenceName : $this->institution->name;
 		if (!is_array($name)) {
 			$name = array($name);
 		}

@@ -716,6 +716,66 @@ class TherapyApplicationContext extends PageObjectContext
         $TherapyApplication->leftCRT400Yes();
     }
 
+    /**
+     * @Given /^I select Is this ocular condition rare of Yes$/
+     */
+    public function iSelectIsThisOcularConditionRareOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightOcularConditionRareYes();
+    }
+
+    /**
+     * @Given /^I select Is this ocular condition rare of No$/
+     */
+    public function iSelectIsThisOcularConditionRareOfNo()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightOcularConditionRareNo();
+    }
+
+    /**
+     * @Then /^I add Right incidence details of "([^"]*)"$/
+     */
+    public function iAddRightIncidenceDetailsOf($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightIncidenceDetails($comments);
+    }
+
+    /**
+     * @Given /^I add How is the patient significantly different comments "([^"]*)"$/
+     */
+    public function iAddHowIsThePatientSignificantlyDifferentComments($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightPatientSignificantlyDifferent($comments);
+    }
+
+    /**
+     * @Then /^I add How is the patient likely to gain comments "([^"]*)"$/
+     */
+    public function iAddHowIsThePatientLikelyToGainComments($comments)
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->rightPatientLikelyToGainBenefit($comments);
+    }
+
 
 
 }

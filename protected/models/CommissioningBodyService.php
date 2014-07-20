@@ -29,7 +29,7 @@
  * @property CommissioningBodyServiceType $type
  * @property Practice[] $practices
  */
-class CommissioningBodyService extends BaseActiveRecord
+class CommissioningBodyService extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

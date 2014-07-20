@@ -802,15 +802,15 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		switch ($field['type']) {
 			case 'Textbox':
 				$size = $field['textbox_max_length'] ? $field['textbox_max_length'] : '255';
-				return "varchar($size) COLLATE utf8_bin DEFAULT \'\'";
+				return "varchar($size) DEFAULT \'\'";
 			case 'Textarea':
-				return "text COLLATE utf8_bin DEFAULT \'\'";
+				return "text DEFAULT \'\'";
 			case 'Date picker':
 				return "date DEFAULT NULL";
 			case 'Dropdown list':
 				return isset($field['default_value']) ? "int(10) unsigned NOT NULL DEFAULT {$field['default_value']}" : "int(10) unsigned NOT NULL";
 			case 'Textarea with dropdown':
-				return "text COLLATE utf8_bin NOT NULL";
+				return "text NOT NULL";
 			case 'Checkbox':
 				return "tinyint(1) unsigned NOT NULL";
 			case 'Radio buttons':
@@ -821,7 +821,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$default = strlen($field['integer_default_value'])>0 ? " DEFAULT {$field['integer_default_value']}" : '';
 				return "int(10) unsigned NOT NULL$default";
 			case 'EyeDraw':
-				return "text COLLATE utf8_bin NOT NULL";
+				return "text NOT NULL";
 			case 'Multi select':
 				return false;
 			case 'Slider':
@@ -907,11 +907,15 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			return $event_type->moduleShortSuffix;
 		} else {
 			// try to derive the short suffix from the table name of an element in the class
-			$el = ElementType::model()->findall('event_type_id=:eventTypeId', array(':eventTypeId' => $event_type->id));
+			if (!$el = ElementType::model()->findall('event_type_id=:eventTypeId', array(':eventTypeId' => $event_type->id))) {
+				throw new Exception("Unable to find element_type for event_type_id = {$event_type->id}");
+			}
 
 			if (count($el)) {
 				$code = strtolower(substr($event_type->class_name, 0, 5));
-				if (!preg_match('/^et_'.$code.'([a-z0-9]+)_/', $test->tableName(), $m) ) {
+				$class = $el[0]->class_name;
+				$model = $class::model();
+				if (!preg_match('/^et_'.$code.'([a-z0-9]+)_/', $model->tableName(), $m) ) {
 					die ("ERROR: cannot determine short name for event type " . $event_type->class_name);
 				}
 				return $m[1];
@@ -969,11 +973,28 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	{
 		echo '<option value="">- No default value -</option>';
 
-		foreach (Yii::app()->db->createCommand()
+		if (!$_table = Yii::app()->db->getSchema()->getTable($table)) {
+			throw new Exception("Table not found: $table");
+		}
+
+		if (!isset($_table->columns[$field])) {
+			throw new Exception("$table has no attribute '$field'");
+		}
+
+		if (in_array($table,array('user','audit','authitem','authitem_type','authitemchild'))) {
+			throw new Exception('Refusing to allow retrieval of dangerous table');
+		}
+
+		$command = Yii::app()->db->createCommand()
 			->selectDistinct("$table.id, $table.$field")
 			->from($table)
-			->order("$table.$field")
-			->queryAll() as $row) {
+			->order("$table.$field");
+
+		if ($_table->hasProperty('deleted')) {
+			$command->where("$table.deleted = 0");
+		}
+
+		foreach ($command->queryAll() as $row) {
 			echo '<option value="'.$row['id'].'"'.($selected == $row['id'] ? ' selected="selected"' : '').'>'.$row[$field].'</option>';
 		}
 	}
@@ -984,11 +1005,28 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		echo '<option value="">- Select default values -</option>';
 
-		foreach (Yii::app()->db->createCommand()
+		if (!$_table = Yii::app()->db->getSchema()->getTable($table)) {
+			throw new Exception("Table not found: $table");
+		}
+		
+		if (!isset($_table->columns[$field])) {
+			throw new Exception("$table has no attribute '$field'");
+		}
+
+		if (in_array($table,array('user','audit','authitem','authitem_type','authitemchild'))) {
+			throw new Exception('Refusing to allow retrieval of dangerous table');
+		}
+
+		$command = Yii::app()->db->createCommand()
 			->selectDistinct("$table.id, $table.$field")
 			->from($table)
-			->order("$table.$field")
-			->queryAll() as $row) {
+			->order("$table.$field");
+
+		if ($_table->hasProperty('deleted')) {
+			$command->where("$table.deleted = 0");
+		}
+
+		foreach ($command->queryAll() as $row) {
 			if (!in_array($row['id'],$selected)) {
 				echo '<option value="'.$row['id'].'">'.$row[$field].'</option>';
 			}
@@ -1619,7 +1657,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	{
 		$foreign_keys = array();
 
-		foreach (Yii::app()->db->createCommand("show create table `$table`")->queryAll() as $row) {
+		foreach (Yii::app()->db->createCommand("show create table ".mysql_escape_string($table))->queryAll() as $row) {
 			foreach (explode(chr(10),$row['Create Table']) as $line) {
 				if (preg_match('/CONSTRAINT `(.*?)` FOREIGN KEY \(`(.*?)`\) REFERENCES `(.*?)` \(`(.*?)`\)/',$line,$m)) {
 					$foreign_keys[] = array(
@@ -1635,11 +1673,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $foreign_keys;
 	}
 
-	public function rawSQLQuery($sql)
-	{
-		Yii::app()->db->createCommand($sql)->query();
-	}
-
 	public function handleModuleNameChange($current_class, $target_class)
 	{
 		@rename(Yii::app()->basePath.'/modules/'.$current_class,Yii::app()->basePath.'/modules/'.$target_class);
@@ -1647,16 +1680,26 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		$this->event_type->name = $_POST['EventTypeModuleCode']['moduleSuffix'];
 		$this->event_type->class_name = $target_class;
 
-		$this->rawSQLQuery("UPDATE event_type SET name = '{$this->event_type->name}',class_name = '$target_class',event_group_id={$this->event_group->id} WHERE id = {$this->event_type->id}");
+		Yii::app()->db->createCommand()
+			->update("event_type",array(
+				'name' => $this->event_type->name,
+				'class_name' => $target_class,
+				'event_group_id' => $this->event_group->id,
+			),
+			"id = :id",
+			array(":id" => $this->event_type->id)
+		);
 
 		foreach (ElementType::model()->findAll('event_type_id=:eventTypeId',array(':eventTypeId'=>$this->event_type->id)) as $element_type) {
 			$element_class_name = 'Element_'.$target_class.'_'.preg_replace("/ /", "", ucwords(strtolower($element_type->name)));
-			$this->rawSQLQuery("UPDATE element_type SET class_name = '$element_class_name' WHERE id = $element_type->id");
+
+			Yii::app()->db->createCommand()->update("element_type",array('class_name' => $element_class_name),'id = :id',array(':id' => $element_type->id));
 		}
 
-		foreach (Yii::app()->db->createCommand()->select('version')->from('tbl_migration')->where("version like '%_$current_class'")->queryAll() as $tbl_migration) {
+		foreach (Yii::app()->db->createCommand()->select('version')->from('tbl_migration')->where("version like :current_class",array(':current_class' => '%_$current_class'))->queryAll() as $tbl_migration) {
 			$version = str_replace($current_class,$target_class,$tbl_migration['version']);
-			$this->rawSQLQuery("UPDATE tbl_migration SET version='$version' where version='{$tbl_migration['version']}'");
+
+			Yii::app()->db->createCommand()->update('tbl_migration',array('version' => $version),'version = :v',array(':v' => $tbl_migration['version']));
 		}
 
 		$this->changeAllInstancesOfString(Yii::app()->basePath.'/modules/'.$target_class,$current_class,$target_class);
@@ -1675,16 +1718,16 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					if (strncmp($foreign_key['name'],$from_table_prefix,strlen($from_table_prefix)) == 0) {
 						$new_key_name = str_replace($from_table_prefix,$to_table_prefix,$foreign_key['name']);
 
-						$this->rawSQLQuery("ALTER TABLE `$table_name` DROP FOREIGN KEY `{$foreign_key['name']}`;");
-						$this->rawSQLQuery("DROP INDEX `{$foreign_key['name']}` ON `$table_name`;");
-						$this->rawSQLQuery("CREATE INDEX `$new_key_name` ON `$table_name` (`{$foreign_key['field']}`);");
-						$this->rawSQLQuery("ALTER TABLE `$table_name` ADD FOREIGN KEY `$new_key_name` (`{$foreign_key['field']}`) REFERENCES `{$foreign_key['remote_table']}` (`{$foreign_key['remote_field']}`);");
+						Yii::app()->db->createCommand("ALTER TABLE ".mysql_escape_string($table_name)." DROP FOREIGN KEY ".mysql_escape_string($foreign_key['name']).";")->execute();
+						Yii::app()->db->createCommand("DROP INDEX ".mysql_escape_string($foreign_key['name'])." ON ".mysql_escape_string($table_name).";")->execute();
+						Yii::app()->db->createCommand("CREATE INDEX ".mysql_escape_string($new_key_name)." ON ".mysql_escape_string($table_name)." (".mysql_escape_string($foreign_key['field']).")")->execute();
+						Yii::app()->db->createCommand("ALTER TABLE ".mysql_escape_string($table_name)." ADD FOREIGN KEY ".mysql_escape_string($new_key_name)." (".mysql_escape_string($foreign_key['field']).") REFERENCES ".mysql_escape_string($foreign_key['remote_table'])." (".mysql_escape_string($foreign_key['remote_field']).");")->execute();
 					}
 				}
 
 				$new_table_name = str_replace($from_table_prefix,$to_table_prefix,$table_name);
 
-				$this->rawSQLQuery("RENAME TABLE `$table_name` TO `$new_table_name`");
+				Yii::app()->db->createCommand("RENAME TABLE ".mysql_escape_string($table_name)." TO ".mysql_escape_string($new_table_name).";");
 			}
 		}
 
