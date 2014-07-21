@@ -37,7 +37,7 @@ class PatientService extends ModelService
 			$model->nhs_num = $params['identifier'];
 		}
 
-		$searchParams = array('pageSize' => null);
+		$searchParams = array('pageSize' => 5);
 		if (isset($params['family'])) $searchParams['last_name'] = $params['family'];
 		if (isset($params['given'])) $searchParams['first_name'] = $params['given'];
 
