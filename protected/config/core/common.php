@@ -218,6 +218,7 @@ return array(
 		),
 		'user' => array(
 			'class' => 'OEWebUser',
+			'loginRequiredAjaxResponse' => 'Login required.',
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,
 		),
