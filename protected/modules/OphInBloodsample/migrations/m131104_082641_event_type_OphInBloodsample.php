@@ -1,5 +1,5 @@
 <?php 
-class m131104_082641_event_type_OphInBloodsample extends CDbMigration
+class m131104_082641_event_type_OphInBloodsample extends OEMigration
 {
 	public function up()
 	{
@@ -62,6 +62,9 @@ class m131104_082641_event_type_OphInBloodsample extends CDbMigration
 				'CONSTRAINT `et_ophinbloodsample_sample_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
 				'CONSTRAINT `ophinbloodsample_sample_type_fk` FOREIGN KEY (`type_id`) REFERENCES `ophinbloodsample_sample_type` (`id`)',
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
+
+		$this->versionExistingTable('et_ophinbloodsample_sample');
+		$this->versionExistingTable('ophinbloodsample_sample_type');
 	}
 
 	public function down()
@@ -78,6 +81,9 @@ class m131104_082641_event_type_OphInBloodsample extends CDbMigration
 
 		$this->delete('element_type', 'event_type_id='.$event_type['id']);
 		$this->delete('event_type', 'id='.$event_type['id']);
+
+		$this->dropTable('et_ophinbloodsample_sample_version');
+		$this->dropTable('ophinbloodsample_sample_type_version');
 
 		echo "If you are removing this module you may also need to remove references to it in your configuration files\n";
 	}
