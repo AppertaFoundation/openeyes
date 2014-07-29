@@ -19,9 +19,9 @@
 
 $this->beginContent('//patient/event_container')?>
 	<?php
-		if ($this->canPrint()) {
-			$this->event_actions[] = EventAction::button('Print', 'print',null,array('class'=>'button small'));
-		}
+	if ($this->checkPrintAccess()) {
+		$this->event_actions[] = EventAction::button('Print', 'print', null, array('class' => 'small'));
+	}
 	?>
 	<h2 class="event-title"><?php echo $this->event_type->name?></h2>
 	<?php $this->renderDefaultElements($this->action->id)?>
