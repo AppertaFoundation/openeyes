@@ -10,7 +10,7 @@ class m140728_101512_version_tables extends OEMigration
 
 	public function down()
 	{
-		$this->dropTable('et_ophindnaextraction_dnaextraction');
-		$this->dropTable('et_ophindnaextraction_dnatests');
+		$this->dropTable('et_ophindnaextraction_dnaextraction_version');
+		$this->dropTable('et_ophindnaextraction_dnatests_version');
 	}
 }
