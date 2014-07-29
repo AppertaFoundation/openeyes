@@ -2,6 +2,11 @@
 
 class DefaultController extends BaseEventTypeController
 {
+
+	static protected $action_types = array(
+		'addTransaction' => self::ACTION_TYPE_FORM,
+	);
+
 	public function actionCreate()
 	{
 		parent::actionCreate();
