@@ -68,12 +68,12 @@ class DefaultController extends BaseEventTypeController
 	/*
 	 * Validate element related models
 	 */
-	protected function validatePOSTElements($elements)
-	{
-		$errors = parent::validatePOSTElements($elements);
 
-		foreach ($elements as $element) {
-			if ($element->getElementType()->class_name == 'Element_OphInDnaextraction_DnaTests') {
+	protected function setAndValidateElementsFromData($data)
+	{
+		$errors = parent::setAndValidateElementsFromData($data);
+
+		if (!empty($data['date'])) {
 				foreach ($this->getFormTransactions() as $transaction) {
 					if (!$transaction->validate()) {
 						foreach ($transaction->getErrors() as $errormsgs) {
@@ -83,65 +83,33 @@ class DefaultController extends BaseEventTypeController
 						}
 					}
 				}
-			}
 		}
 
 		return $errors;
 	}
 
-	/*
-	 * Process related items on event creation
-	 */
-	public function createElements($elements, $data, $firm, $patientId, $userId, $eventTypeId)
+	protected function saveComplexAttributes_Element_OphInDnaextraction_DnaTests($element, $data, $index)
 	{
-		if ($id = parent::createElements($elements, $data, $firm, $patientId, $userId, $eventTypeId)) {
-			$this->storePOSTManyToMany($elements);
+		$item_ids = array();
+
+		foreach ($this->getFormTransactions() as $transaction) {
+			$transaction->element_id = $element->id;
+
+			if (!$transaction->save()) {
+				throw new Exception("Unable to save transaction: ".print_r($transaction->getErrors(),true));
+			}
+
+			$item_ids[] = $transaction->id;
 		}
 
-		return $id;
-	}
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('element_id = :element_id');
+		$criteria->addNotInCondition('id',$item_ids);
+		$criteria->params[':element_id'] = $element->id;
 
-	/*
-	 * Process related items on event update
-	 */
-	public function updateElements($elements, $data, $event)
-	{
-		if (parent::updateElements($elements, $data, $event)) {
-			// update has been successful, now need to deal with many to many changes
-			$this->storePOSTManyToMany($elements);
-		}
-		return true;
-	}
-
-	/*
-	 * Store related items
-	 */
-	protected function storePOSTManyToMany($elements)
-	{
-		foreach ($elements as $element) {
-			if (get_class($element) == 'Element_OphInDnaextraction_DnaTests') {
-				$item_ids = array();
-
-				foreach ($this->getFormTransactions() as $transaction) {
-					$transaction->element_id = $element->id;
-
-					if (!$transaction->save()) {
-						throw new Exception("Unable to save transaction: ".print_r($transaction->getErrors(),true));
-					}
-
-					$item_ids[] = $transaction->id;
-				}
-
-				$criteria = new CDbCriteria;
-				$criteria->addCondition('element_id = :element_id');
-				$criteria->addNotInCondition('id',$item_ids);
-				$criteria->params[':element_id'] = $element->id;
-
-				foreach (OphInDnaextraction_DnaTests_Transaction::model()->findAll($criteria) as $transaction) {
-					if (!$transaction->delete()) {
-						throw new Exception("Unable to delete transaction: ".print_r($transaction->getErrors(),true));
-					}
-				}
+		foreach (OphInDnaextraction_DnaTests_Transaction::model()->findAll($criteria) as $transaction) {
+			if (!$transaction->delete()) {
+				throw new Exception("Unable to delete transaction: ".print_r($transaction->getErrors(),true));
 			}
 		}
 	}
