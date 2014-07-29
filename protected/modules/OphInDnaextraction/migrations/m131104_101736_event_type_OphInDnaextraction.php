@@ -29,7 +29,7 @@ class m131104_101736_event_type_OphInDnaextraction extends CDbMigration
 				'orientry' => 'varchar(8) COLLATE utf8_bin DEFAULT \'\'',
 				'extracted_date' => 'date DEFAULT NULL',
 				'extracted_by' => 'varchar(255) COLLATE utf8_bin NOT NULL',
-				'comments' => 'text COLLATE utf8_bin DEFAULT \'\'',
+				'comments' => 'text COLLATE utf8_bin',
 				'dna_concentration' => 'float NULL',
 				'volume' => 'int(10) unsigned NULL',
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
