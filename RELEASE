@@ -3,11 +3,22 @@ Release History
 
 This document is intended to summarise the changes made for each release. It should be noted that this document was only introduced with version 1.4, and therefore doesn't cover earlier releases.
 
-TBC
+1.7
 ---
++ additional patient level data elements:
+	- social history
+	- operation history
+	- medication history
+	- family history
++ beta implementation of FHIR API - core infrastructure and patient demographics
++ support for patient measurements
++ backdated events
++ table versioning
 + support for module namespacing
 + support for automatically handling HAS_MANY and MANY_MANY relations in BaseActiveRecord
 + implemented the patient_summary_id_widgets config parameter to support modules adding additional links
++ generic admin widgets
++ print layout enhancements
 
 1.6.5
 -----
