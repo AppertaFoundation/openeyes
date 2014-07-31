@@ -180,7 +180,7 @@ return array(
 			),
 		),
 		'session' => array(
-			'class' => 'CDbHttpSession',
+			'class' => 'OESession',
 			'connectionID' => 'db',
 			'sessionTableName' => 'user_session',
 			'autoCreateSessionTable' => false
@@ -217,7 +217,8 @@ return array(
 			),
 		),
 		'user' => array(
-			'class' => 'CWebUser',
+			'class' => 'OEWebUser',
+			'loginRequiredAjaxResponse' => 'Login required.',
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,
 		),
