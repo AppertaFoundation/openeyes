@@ -24,9 +24,9 @@
 			<tbody>
 				<?php foreach ($this->patient->familyHistory as $history) {?>
 					<tr>
-						<td class="relative"><?php echo $history->relative->name?></td>
+						<td class="relative" data-relativeId="<?= $history->relative_id ?>"><?php echo $history->getRelativeName(); ?></td>
 						<td class="side"><?php echo $history->side->name?></td>
-						<td class="condition"><?php echo $history->condition->name?></td>
+						<td class="condition" data-conditionId="<?= $history->condition_id ?>"><?php echo $history->getConditionName(); ?></td>
 						<td class="comments"><?php echo CHtml::encode($history->comments)?></td>
 						<?php if ($this->checkAccess('OprnEditFamilyHistory')): ?>
 							<td>
@@ -71,7 +71,26 @@
 								<label for="relative_id">Relative:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(FamilyHistoryRelative::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php
+								$relatives = FamilyHistoryRelative::model()->findAll(array('order'=>'display_order'));
+								$relatives_opts = array(
+										'options' => array(),
+										'empty'=>'- select -',
+								);
+								foreach ($relatives as $rel) {
+									$relatives_opts['options'][$rel->id] = array('data-other' => $rel->is_other ? '1' : '0');
+								}
+								echo CHtml::dropDownList('relative_id','',CHtml::listData($relatives,'id','name'),$relatives_opts)
+								?>
+							</div>
+						</div>
+
+						<div class="field-row row hidden" id="family-history-o-rel-wrapper">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="comments">Other Relative:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::textField('other_relative','')?>
 							</div>
 						</div>
 
@@ -89,7 +108,26 @@
 								<label for="condition_id">Condition:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('condition_id','',CHtml::listData(FamilyHistoryCondition::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php
+								$conditions = FamilyHistoryCondition::model()->findAll(array('order'=>'display_order'));
+								$conditions_opts = array(
+										'options' => array(),
+										'empty'=>'- select -',
+								);
+								foreach ($conditions as $con) {
+									$conditions_opts['options'][$con->id] = array('data-other' => $con->is_other ? '1' : '0');
+								}
+								echo CHtml::dropDownList('condition_id','',CHtml::listData($conditions,'id','name'),$conditions_opts);
+								?>
+							</div>
+						</div>
+
+						<div class="field-row row hidden" id="family-history-o-con-wrapper">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="comments">Other Condition:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::textField('other_condition','')?>
 							</div>
 						</div>
 
@@ -153,6 +191,33 @@
 		$('#btn-add_family_history').removeClass('disabled');
 		return false;
 	});
+
+	$(document).on('change', '#relative_id', function() {
+		if ($(this).find(':selected').data('other') == '1') {
+			// show the rel other
+			$('#family-history-o-rel-wrapper').show();
+		}
+		else {
+			// hide the rel other
+			$('#family-history-o-rel-wrapper').hide();
+			// empty any text entered
+			$('#family-history-o-rel-wrapper').find('input').each(function() {$(this).val('');});
+		}
+	});
+
+	$(document).on('change', '#condition_id', function() {
+		if ($(this).find(':selected').data('other') == '1') {
+			// show the condition other
+			$('#family-history-o-con-wrapper').show();
+		}
+		else {
+			// hide the condition other
+			$('#family-history-o-con-wrapper').hide();
+			// empty any text entered
+			$('#family-history-o-con-wrapper').find('input').each(function() {$(this).val('');});
+		}
+	});
+
 	$('button.btn_save_family_history').click(function() {
 		if ($('#relative_id').val() == '') {
 			new OpenEyes.UI.Dialog.Alert({
@@ -181,24 +246,20 @@
 		var history_id = $(this).attr('rel');
 
 		$('#edit_family_history_id').val(history_id);
-		var relative = tr.find('.relative').text();
-		$('#relative_id').children('option').map(function() {
-			if ($(this).text() == relative) {
-				$(this).attr('selected','selected');
-			}
-		});
+		var relative = tr.find('.relative').data('relativeid');
+		$('#relative_id').val(relative);
+		$('#relative_id').trigger('change');
+
 		var side = tr.find('.side').text();
 		$('#side_id').children('option').map(function() {
 			if ($(this).text() == side) {
 				$(this).attr('selected','selected');
 			}
 		});
-		var condition = tr.find('.condition').text();
-		$('#condition_id').children('option').map(function() {
-			if ($(this).text() == condition) {
-				$(this).attr('selected','selected');
-			}
-		});
+		var condition = tr.find('.condition').data('conditionid');
+		$('#condition_id').val(condition);
+		$('#condition_id').trigger('change');
+
 		$('#add_family_history #comments').val(tr.find('.comments').text());
 		$('#add_family_history').slideToggle('fast');
 		$('#btn-add_family_history').attr('disabled',true);

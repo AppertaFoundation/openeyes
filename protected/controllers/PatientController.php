@@ -997,15 +997,21 @@ class PatientController extends BaseController
 				throw new Exception("Family history not found: ".@$_POST['edit_family_history_id']);
 			}
 			$fh->relative_id = $relative->id;
+			if ($relative->is_other) {
+				$fh->other_relative = @$_POST['other_relative'];
+			}
 			$fh->side_id = $side->id;
 			$fh->condition_id = $condition->id;
+			if ($condition->is_other) {
+				$fh->other_condition = @$_POST['other_condition'];
+			}
 			$fh->comments = @$_POST['comments'];
 
 			if (!$fh->save()) {
 				throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
 			}
 		} else {
-			$patient->addFamilyHistory($relative->id,$side->id,$condition->id,@$_POST['comments']);
+			$patient->addFamilyHistory($relative->id,@$_POST['other_relative'],$side->id,$condition->id,@$_POST['other_condition'], @$_POST['comments']);
 		}
 
 		$this->redirect(array('patient/view/'.$patient->id));

@@ -51,7 +51,7 @@ class FamilyHistory extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('patient_id, relative_id, side_id, condition_id, comments','safe'),
+			array('patient_id, relative_id, other_relative, side_id, condition_id, other_condition, comments','safe'),
 			array('patient_id, relative_id, side_id, condition_id','required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -101,5 +101,45 @@ class FamilyHistory extends BaseActiveRecordVersioned
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	/**
+	 * Wrapper function for getting the relative name for this family history (checks for other value)
+	 *
+	 * @return mixed|string
+	 */
+	public function getRelativeName()
+	{
+		if ($this->relative) {
+			if ($this->relative->is_other) {
+				return $this->other_relative;
+			}
+			else {
+				return $this->relative->name;
+			}
+		}
+		else {
+			return 'N/A';
+		}
+	}
+
+	/**
+	 * Wrapper function for getting the condition name for this family history (checks for other value)
+	 *
+	 * @return mixed|string
+	 */
+	public function getConditionName()
+	{
+		if ($this->condition) {
+			if ($this->condition->is_other) {
+				return $this->other_condition;
+			}
+			else {
+				return $this->condition->name;
+			}
+		}
+		else {
+			return 'N/A';
+		}
 	}
 }

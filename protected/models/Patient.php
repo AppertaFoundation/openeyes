@@ -1100,9 +1100,37 @@ class Patient extends BaseActiveRecordVersioned
 		}
 	}
 
-	public function addFamilyHistory($relative_id,$side_id,$condition_id,$comments)
+	/**
+	 * Adds FamilyHistory entry to the patient if it's not a duplicate
+	 *
+	 * @param $relative_id
+	 * @param $other_relative
+	 * @param $side_id
+	 * @param $condition_id
+	 * @param $other_condition
+	 * @param $comments
+	 * @throws Exception
+	 */
+	public function addFamilyHistory($relative_id,$other_relative,$side_id,$condition_id,$other_condition,$comments)
 	{
-		if (!$fh = FamilyHistory::model()->find('patient_id=? and relative_id=? and side_id=? and condition_id=?',array($this->id,$relative_id,$side_id,$condition_id))) {
+		$check_sql = 'patient_id=? and relative_id=? and side_id=? and condition_id=?';
+		$params = array($this->id,$relative_id,$side_id,$condition_id);
+		if ($other_relative) {
+			$check_sql .= ' and other_relative=?';
+			$params[] = $other_relative;
+		}
+		else {
+			$check_sql .= ' and other_relative is null';
+		}
+		if ($other_condition) {
+			$check_sql .= ' and other_condition=?';
+			$params[] = $other_condition;
+		}
+		else {
+			$check_sql .= ' and other_condition is null';
+		}
+
+		if (!$fh = FamilyHistory::model()->find($check_sql,$params)) {
 			$fh = new FamilyHistory;
 			$fh->patient_id = $this->id;
 			$fh->relative_id = $relative_id;
