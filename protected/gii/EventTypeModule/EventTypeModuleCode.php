@@ -1008,7 +1008,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		if (!$_table = Yii::app()->db->getSchema()->getTable($table)) {
 			throw new Exception("Table not found: $table");
 		}
-		
+
 		if (!isset($_table->columns[$field])) {
 			throw new Exception("$table has no attribute '$field'");
 		}
@@ -1556,18 +1556,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 			if ($this->shouldUpdateFile($model)) {
 				$this->updateModel(Yii::app()->basePath.'/'.$model, $element);
-			}
-
-			$create = "modules/$this->moduleID/views/default/create_{$element['class_name']}.php";
-
-			if ($this->shouldUpdateFile($create)) {
-				$this->updateFormView(Yii::app()->basePath.'/'.$create, $element, 'create');
-			}
-
-			$update = "modules/$this->moduleID/views/default/update_{$element['class_name']}.php";
-
-			if ($this->shouldUpdateFile($update)) {
-				$this->updateFormView(Yii::app()->basePath.'/'.$update, $element, 'update');
 			}
 
 			$form = "modules/$this->moduleID/views/default/form_{$element['class_name']}.php";
