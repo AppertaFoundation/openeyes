@@ -65,6 +65,7 @@ class Medication extends BaseActiveRecordVersioned
 			'option' => array(self::BELONGS_TO, 'DrugRouteOption', 'option_id'),
 			'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
 			'stop_reason' => array(self::BELONGS_TO, 'MedicationStopReason', 'stop_reason_id'),
+			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id')
 		);
 	}
 
@@ -91,4 +92,37 @@ class Medication extends BaseActiveRecordVersioned
 		if (!$this->end_date) $this->stop_reason_id = null;
 		return parent::beforeSave();
 	}
+
+	/**
+	 * Will remove the patient adherence element if it is no longer relevant
+	 *
+	 */
+	protected function removePatientAdherence()
+	{
+		$medications = $this->patient->medications;
+		error_log(count($medications));
+		if (!count($medications)) {
+			// delete the adherence as no longer applies
+			if ($ad = $this->patient->adherence) {
+				$ad->delete();
+			}
+		}
+
+	}
+
+	public function afterSave()
+	{
+		error_log("after save");
+		if ($this->end_date) {
+			$this->removePatientAdherence();
+		}
+		return parent::afterSave();
+	}
+
+	public function afterDelete()
+	{
+		$this->removePatientAdherence();
+		return parent::afterDelete();
+	}
+
 }
