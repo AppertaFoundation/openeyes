@@ -25,6 +25,11 @@
  */
 class BaseActiveRecord extends CActiveRecord
 {
+	/**
+	 * Order by clause to be applied by SelectionWidget
+	 */
+	const SELECTION_ORDER = '';
+
 	// flag to automatically update related objects on the record
 	// (whilst developing this feature, will allow other elements to continue to work)
 	protected $auto_update_relations = false;
