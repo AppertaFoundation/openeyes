@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"key":{"type":"id","plural":false},"name":{"type":"string","plural":false},"severity":{"type":"ConstraintSeverity","plural":false},"human":{"type":"string","plural":false},"xpath":{"type":"string","plural":false}}

@@ -35,7 +35,7 @@ class ProfileController extends BaseController
 			$this->redirect('/');
 		}
 
-		Yii::app()->assetManager->registerCssFile('css/profile.css');
+		Yii::app()->assetManager->registerCssFile('css/admin.css');
 		Yii::app()->assetManager->registerScriptFile('js/profile.js');
 
 		$this->jsVars['items_per_page'] = $this->items_per_page;
@@ -152,10 +152,7 @@ class ProfileController extends BaseController
 	public function actionAddSite()
 	{
 		if (@$_POST['site_id'] == 'all') {
-			if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
-				throw new Exception("Can't find institution: ".Yii::app()->params['institution_code']);
-			}
-			$sites = Site::model()->findAll('institution_id=?',array($institution->id));
+			$sites = Institution::model()->getCurrent()->sites;
 		} else {
 			$sites = Site::model()->findAllByPk(@$_POST['site_id']);
 		}
@@ -205,8 +202,10 @@ class ProfileController extends BaseController
 
 	public function actionAddFirm()
 	{
+		$user = User::model()->findByPk(Yii::app()->user->id);
+
 		if (@$_POST['firm_id'] == 'all') {
-			$firms = Firm::model()->findAll();
+			$firms = $user->getAvailableFirms();
 		} else {
 			$firms = Firm::model()->findAllByPk(@$_POST['firm_id']);
 		}
@@ -219,8 +218,6 @@ class ProfileController extends BaseController
 				if (!$us->save()) {
 					throw new Exception("Unable to save UserFirm: ".print_r($us->getErrors(),true));
 				}
-
-				$user = User::model()->findByPk(Yii::app()->user->id);
 
 				$user->has_selected_firms = 1;
 				if (!$user->save()) {

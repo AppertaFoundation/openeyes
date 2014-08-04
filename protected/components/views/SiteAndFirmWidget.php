@@ -21,7 +21,7 @@
 <?php
 $form = $this->beginWidget('CActiveForm', array(
 	'id' => 'site-and-firm-form',
-	'action' => '/site/changesiteandfirm',
+	'action' => Yii::app()->createUrl('/site/changesiteandfirm'),
 ));
 ?>
 	<?php echo CHtml::hiddenField('returnUrl',$this->returnUrl)?>
@@ -73,5 +73,19 @@ $form = $this->beginWidget('CActiveForm', array(
 			<?php echo CHtml::submitButton('Confirm', array('class' => 'secondary small')); ?>
 		</div>
 	</div>
+
+<?php
+if (Yii::app()->components['user']->loginRequiredAjaxResponse){
+	Yii::app()->clientScript->registerScript('ajaxLoginRequired', '
+            jQuery("body").ajaxComplete(
+                function(event, request, options) {
+                    if (request.responseText == "'.Yii::app()->components['user']->loginRequiredAjaxResponse.'") {
+                        window.location.href = "'.Yii::app()->createUrl('/site/login').'"
+                    }
+                }
+            );
+        ');
+}
+?>
 
 <?php $this->endWidget(); ?>

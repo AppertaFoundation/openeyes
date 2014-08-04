@@ -48,6 +48,11 @@ class Eye extends BaseActiveRecord
 		return 'eye';
 	}
 
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -56,16 +61,6 @@ class Eye extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-		);
-	}
-
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array(
-			'elementTypes' => array(self::HAS_MANY, 'ElementTypeEye', 'eye_id'),
 		);
 	}
 

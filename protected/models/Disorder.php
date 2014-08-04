@@ -31,7 +31,7 @@
  * @property CommonSystemicDisorder[] $commonSystemicDisorders
  * @property Specialty $specialty
  */
-class Disorder extends BaseActiveRecord
+class Disorder extends BaseActiveRecordVersioned
 {
 	const SITE_LEFT = 0;
 	const SITE_RIGHT = 1;
@@ -84,7 +84,6 @@ class Disorder extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('id, fully_specified_name, term', 'required'),
-			array('systemic', 'numerical', 'integerOnly' => true),
 			array('id', 'length', 'max' => 10),
 			array('fully_specified_name, term', 'length', 'max' => 255),
 			// The following rule is used by search().
@@ -113,7 +112,9 @@ class Disorder extends BaseActiveRecord
 		return array(
 			'treeBehavior'=>array(
 				'class' => 'TreeBehavior',
-			)
+				'idAttribute' => 'disorder_id',
+			),
+			'LookupTable' => 'LookupTable',
 		);
 	}
 
@@ -156,20 +157,11 @@ class Disorder extends BaseActiveRecord
 	 */
 	public static function getDisorderOptions($term)
 	{
-		$disorders = Yii::app()->db->createCommand()
+		return Yii::app()->db->createCommand()
 			->select('term')
 			->from('disorder')
-			->where('term LIKE :term',
-					array(':term' => "%{$term}%"))
-			->queryAll();
-
-		$data = array();
-
-		foreach ($disorders as $disorder) {
-			$data[] = $disorder['term'];
-		}
-
-		return $data;
+			->where('term LIKE :term and active = 1', array(':term' => "%{$term}%"))
+			->queryColumn();
 	}
 
 	/**

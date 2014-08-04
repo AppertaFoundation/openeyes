@@ -21,7 +21,7 @@
 	<header class="box-header">
 		<h3 class="box-title">
 			<span class="icon-patient-clinician-hd_flag"></span>
-			Previous operations
+			Previous ophthalmic surgery
 		</h3>
 		<a href="#" class="toggle-trigger toggle-hide js-toggle">
 			<span class="icon-showhide">
@@ -43,7 +43,7 @@
 			<?php foreach ($this->patient->previousOperations as $operation) {?>
 				<tr>
 					<td><?php echo $operation->dateText?></td>
-					<td><?php if ($operation->side) { echo $operation->side->adjective.' ';}?><?php echo $operation->operation?></td>
+					<td><?php if ($operation->side) { echo $operation->side->adjective.' ';}?><?php echo CHtml::encode($operation->operation)?></td>
 					<?php if ($this->checkAccess('OprnEditPreviousOperation')): ?>
 						<td>
 							<a href="#" class="editOperation" rel="<?php echo $operation->id?>">Edit</a>&nbsp;&nbsp;
@@ -58,7 +58,7 @@
 		<?php if ($this->checkAccess('OprnEditPreviousOperation')) {?>
 			<div class="box-actions">
 				<button  id="btn-add_previous_operation" class="secondary small">
-					Add Previous operation
+					Add Previous ophthalmic surgery
 				</button>
 			</div>
 
@@ -78,7 +78,7 @@
 
 				<fieldset class="field-row">
 
-					<legend><strong>Add Previous operation</strong></legend>
+					<legend><strong>Add previous ophthalmic surgery</strong></legend>
 
 					<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
 					<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
@@ -88,7 +88,7 @@
 							<label for="common_previous_operation">Common operations:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
 
@@ -201,6 +201,7 @@
 				$('img.add_previous_operation_loader').hide();
 
 				if (ok) {
+					$(window).off('beforeunload');
 					window.location.reload();
 				}
 			}
@@ -234,24 +235,32 @@
 	$('.removeOperation').live('click',function() {
 		$('#operation_id').val($(this).attr('rel'));
 
-		$('#confirm_remove_operation_dialog').dialog({
+		var removeOpDialog = $('#confirm_remove_operation_dialog').dialog({
 			resizable: false,
 			modal: true,
-			width: 560
+			width: 560,
+			autoOpen: false
 		});
+		removeOpDialog.dialog('open');
 
 		return false;
 	});
 
-	$('button.btn_remove_operation').click(function() {
-		$("#confirm_remove_operation_dialog").dialog("close");
 
+	$(document).on('click','.btn_cancel_remove_operation', function() {
+		$(this).closest('.ui-dialog-content').dialog('close');
+	});
+
+	$(document).on('click','.btn_remove_operation', function() {
+		$(this).closest('.ui-dialog-content').dialog('close');
+
+		var opid = $(this).prev('#operation_id').val();
 		$.ajax({
 			'type': 'GET',
-			'url': baseUrl+'/patient/removePreviousOperation?patient_id=<?php echo $this->patient->id?>&operation_id='+$('#operation_id').val(),
+			'url': baseUrl+'/patient/removePreviousOperation?patient_id=<?php echo $this->patient->id?>&operation_id='+opid,
 			'success': function(html) {
 				if (html == 'success') {
-					$('a.removeOperation[rel="'+$('#operation_id').val()+'"]').parent().parent().remove();
+					$('a.removeOperation[rel="'+opid+'"]').parent().parent().remove();
 				} else {
 					new OpenEyes.UI.Dialog.Alert({
 						content: "Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance."
@@ -265,11 +274,6 @@
 			}
 		});
 
-		return false;
-	});
-
-	$('button.btn_cancel_remove_operation').click(function() {
-		$("#confirm_remove_operation_dialog").dialog("close");
 		return false;
 	});
 </script>

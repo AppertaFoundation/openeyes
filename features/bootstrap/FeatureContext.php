@@ -182,6 +182,8 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 	private function loadModuleContextsPages($parameters){
 		$modsPath = realpath(__DIR__.'/../../protected/modules');
 
+		$moduleFeaturesPaths = array();
+
 		foreach (Finder::create()->directories()->depth(0)->in($modsPath) as $path) {
 			if (file_exists($path.'/features')) {
 				$moduleFeaturesPaths[] = $path.'/features';

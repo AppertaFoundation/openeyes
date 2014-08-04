@@ -28,8 +28,10 @@
  * The followings are the available model relations:
  * @property Disorder $disorder
  * @property Subspecialty $subspecialty
+ * @property SecondaryToCommonOphthalmicDisorder[] $secondary_to
+ * @property Disorder[] $secondary_to_disorders
  */
-class CommonOphthalmicDisorder extends BaseActiveRecord
+class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -72,8 +74,10 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+			'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
+			'secondary_to_disorders' => array(self::HAS_MANY, 'Disorder', 'disorder_id', 'through' => 'secondary_to'),
 		);
 	}
 
@@ -109,17 +113,6 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		));
 	}
 
-	public function getSubspecialtyOptions()
-	{
-		$specialties = Yii::app()->db->createCommand()
-			->select('s.id, s.name')
-			->from('subspecialty s')
-			->order('name ASC')
-			->queryAll();
-
-		return CHtml::listData($specialties, 'id', 'name');
-	}
-
 	public static function getList($firm)
 	{
 		if (empty($firm)) {
@@ -127,7 +120,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		}
 		if ($firm->serviceSubspecialtyAssignment) {
 			$ss_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-			$disorders = Disorder::model()->findAll(array(
+			$disorders = Disorder::model()->active()->findAll(array(
 					'condition' => 'cad.subspecialty_id = :subspecialty_id',
 					'join' => 'JOIN common_ophthalmic_disorder cad ON cad.disorder_id = t.id JOIN specialty ON specialty_id = specialty.id AND specialty.code = :ophcode',
 					'order' => 'term',
@@ -138,4 +131,27 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		return array();
 	}
 
+	/**
+	 * @param Firm $firm
+	 * @return array
+	 * @throws CException
+	 */
+	public static function getListWithSecondaryTo(Firm $firm)
+	{
+		if (empty($firm)) {
+			throw new CException('Firm is required');
+		}
+		$disorders = array();
+		$secondary_to = array();
+		if ($ss_id = $firm->getSubspecialtyID()) {
+			$cods = self::model()->with(array('disorder', 'secondary_to_disorders'))->findAllByAttributes(array('subspecialty_id' => $ss_id), array('order' => 'disorder.term'));
+			foreach ($cods as $cod) {
+				$disorders[] = $cod->disorder;
+				if ($secondary_tos = $cod->secondary_to_disorders) {
+					$secondary_to[$cod->disorder_id] = CHtml::listData($secondary_tos, 'id', 'term');
+				}
+			}
+		}
+		return array(CHtml::listData($disorders, 'id', 'term'), $secondary_to);
+	}
 }

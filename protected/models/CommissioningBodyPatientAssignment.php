@@ -26,7 +26,7 @@
  * @property integer $patient_id
  *
  */
-class CommissioningBodyPatientAssignment extends BaseActiveRecord
+class CommissioningBodyPatientAssignment extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

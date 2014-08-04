@@ -67,55 +67,7 @@ class DrugTest extends CDbTestCase	{
 	}
 
 	/**
-	*	@covers	Drug::defaultScope
-	*	@todo Implement testDefaultScope().
-	*/
-	public function testDefaultScope() {
-		$result	=	$this->model->defaultScope();
-
-		if ($this->model->default_scope) {
-			$expected	=	array('condition' => 'discontinued = 0');
-			$this->assertEquals($expected, $result);
-		}	else	{
-			$expected	=	array();
-			$this->assertEquals($expected, $result);
-		}
-	}
-
-	/**
-	*	@covers	Drug::scopes
-	*	@todo Implement testScopes().
-	*/
-	public function testScopes() {
-		$result	=	$this->model->scopes();
-		$expected	=	array();
-		$this->assertEquals($expected,	$result);
-	}
-
-	/**
-	*	@covers	Drug::discontinued
-	*	@todo Implement testDiscontinued().
-	*/
-	public function testDiscontinued()	{
-		$result	=	$this->model->discontinued();
-
-		$this->assertEquals('(discontinued = 0) OR (t.discontinued = 1)', $result->getDbCriteria()->condition);
-	}
-
-	/**
-	*	@covers	Drug::relations
-	*	@todo Implement testRelations().
-	*/
-	public function testRelations()	{
-		//	Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	*	@covers	Drug::attributeLabels
-	*	@todo	Implement	testAttributeLabels().
 	*/
 	public function testAttributeLabels()	{
 		$expected	=	array(
@@ -159,26 +111,6 @@ class DrugTest extends CDbTestCase	{
 				$this->assertEquals($expected, $result);
 		 }
 	 }
-
-	/**
-	* @covers Drug::search
-	* @todo	Implement testSearch().
-	*/
-	public function testSearch() {
-		$this->model->setAttributes($this->drugs('drug1')->getAttributes());
-		$results = $this->model->search();
-		$data = $results->getData();
-
-		$expectedKeys = array('drug1');
-		$expectedResults = array();
-		if (!empty($expectedKeys)) {
-			foreach ($expectedKeys as $key) {
-				$expectedResults[] = $this->drugs($key);
-			}
-		}
-		$this->assertEquals(1, $results->getItemCount());
-		$this->assertEquals($expectedResults, $data);
-	}
 
 	/**
 	* @covers Drug::listBySubspecialty

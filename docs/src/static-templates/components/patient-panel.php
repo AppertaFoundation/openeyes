@@ -10,7 +10,7 @@
 		No. 1001982
 	</div>
 	<div class="row">
-		<div class="large-6 small-6 columns">
+		<div class="large-6 columns">
 			<div class="nhs-number">
 				<span class="hide-text">
 					NHS number:
@@ -23,7 +23,7 @@
 				<span class="messages">Diabetes</span>
 			</span>
 		</div>
-		<div class="large-6 small-6 columns text-right patient-summary-anchor">
+		<div class="large-6 columns text-right patient-summary-anchor">
 			<a href="#">Patient Summary</a>
 		</div>
 	</div>

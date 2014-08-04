@@ -14,10 +14,15 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Theatre booking session comments panel
+// Comments panel
 //
-// Styleguide 16.7
-
+// Markup:
+// <div class="panel comments">
+// 	<h4>Session comments</h4>
+// 	<textarea placeholder="Enter session comments..."></textarea>
+// </div>
+//
+// Styleguide 13.7
 .panel {
 	&.comments {
 		@include border-radius(0);
@@ -29,7 +34,7 @@
 		}
 		h4 {
 			color: #998a30;
-			font-size: emCalc(12px);
+			font-size: rem-calc(12px);
 			font-style: italic;
 		}
 	}

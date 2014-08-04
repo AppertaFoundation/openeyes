@@ -2,8 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2013-2014
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -16,6 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'BaseEventTypeControllerTestNS.php';
 
 /**
  * Class BaseEventTypeControllerTest
@@ -575,6 +576,34 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 		$method->invoke($controller, $el, 'create');
 	}
 
+	/**
+	 * @covers BaseEventTypeController::setElementDefaultOptions()
+	 */
+	public function testsetElementDefaultOptions_createCustomControllerMethodNS()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeControllerTestNS\TestNSController')
+				->disableOriginalConstructor()
+				->setMethods(array('setElementDefaultOptions_TestNamespacedElement'))
+				->getMock();
+
+		$cls = new ReflectionClass('BaseEventTypeControllerTestNS\TestNSController');
+		$method = $cls->getMethod('setElementDefaultOptions');
+		$method->setAccessible(true);
+
+		$el = $this->getMockBuilder('BaseEventTypeControllerTestNS\models\NamespacedElement')
+			->disableOriginalConstructor()
+			->setMockClassName('TestNamespacedElement')
+			->setMethods(array('setDefaultOptions'))
+			->getMock();
+
+		$el->expects($this->once())->method('setDefaultOptions');
+		$controller->expects($this->once())
+				->method('setElementDefaultOptions_TestNamespacedElement')
+				->with($this->identicalTo($el), $this->identicalTo('create'));
+
+		$method->invoke($controller, $el, 'create');
+	}
+
 	public function testsetElementOptions()
 	{
 		$controller = $this->getMockBuilder('BaseEventTypeController')
@@ -708,7 +737,7 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($controller->canCopy($element));
 	}
 
-	public function testCanViewPrevious_true()
+	public function testcanViewPrevious_true()
 	{
 		$controller = $this->getMockBuilder('BaseEventTypeController')
 				->disableOriginalConstructor()
@@ -718,6 +747,9 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 		$et = $this->getElementType('HistoryElementType','history');
 		$e = $et->getInstance();
 		ComponentStubGenerator::propertiesSetAndMatch($e, array('event_id' => 1), true);
+		$e->expects($this->once())
+			->method('canViewPrevious')
+			->will($this->returnValue(true));
 
 		$controller->expects($this->once())
 			->method('hasPrevious')
@@ -726,6 +758,322 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 
 		$this->assertTrue($controller->canViewPrevious($e));
 
+	}
+
+	public function testcanViewPrevious_false()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('hasPrevious'))
+				->getMock();
+
+		$et = $this->getElementType('HistoryElementType','history');
+		$e = $et->getInstance();
+		ComponentStubGenerator::propertiesSetAndMatch($e, array('event_id' => 1), true);
+		$e->expects($this->once())
+				->method('canViewPrevious')
+				->will($this->returnValue(true));
+
+		$controller->expects($this->once())
+				->method('hasPrevious')
+				->with($this->identicalTo($et), $this->identicalTo(1))
+				->will($this->returnValue(false));
+
+		$this->assertFalse($controller->canViewPrevious($e));
+	}
+
+	public function testgetControllerPrefix()
+	{
+		$test = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array())
+				->setMockClassName('ADifferentNameForTheController')
+				->getMock();
+
+		$r = new ReflectionClass($test);
+		$m = $r->getMethod('getControllerPrefix');
+		$m->setAccessible(true);
+
+		$this->assertEquals('adifferentnameforthe', $m->invoke($test));
+	}
+
+	public function testgetControllerPrefix_NS()
+	{
+		$test = $this->getMockBuilder('BaseEventTypeControllerTestNS\TestNSController')
+				->disableOriginalConstructor()
+				->setMethods(array())
+				->setMockClassName('ANamespacedController')
+				->getMock();
+
+		$r = new ReflectionClass($test);
+		$m = $r->getMethod('getControllerPrefix');
+		$m->setAccessible(true);
+
+		$this->assertEquals('anamespaced', $m->invoke($test));
+	}
+
+	public function testgetElementModulePathAlias()
+	{
+		// non namespaced should just return the modulePathAlias for the controller
+		$test = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(null)
+				->getMock();
+
+		$test->modulePathAlias = 'A Test Alias';
+		$el = $this->getMockBuilder('BaseEventTypeElement')
+				->disableOriginalConstructor()
+				->getMock();
+
+		$this->assertEquals('A Test Alias', $test->getElementModulePathAlias($el));
+	}
+
+	public function testgetElementModulePathAlias_NS()
+	{
+		$test = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(null)
+				->getMock();
+
+		$test->modulePathAlias = 'A Test Alias';
+		$el = new BaseEventTypeControllerTestNS\models\NamespacedElement();
+
+		$this->assertEquals('BaseEventTypeControllerTestNS', $test->getElementModulePathAlias($el));
+	}
+
+	public function testgetAssetPathForElement_same()
+	{
+		$test = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('getElementModulePathAlias'))
+				->getMock();
+		$test->assetPath = "Test Asset Path";
+
+		$test->expects($this->once())
+			->method('getElementModulePathAlias')
+			->will($this->returnValue(false));
+
+		$el = new BaseEventTypeControllerTestNS\models\NamespacedElement();
+
+		$this->assertEquals("Test Asset Path", $test->getAssetPathForElement($el));
+	}
+
+	public function testgetAssetPathForElement_different()
+	{
+		Yii::app()->assetManager->setBasePath(Yii::getPathOfAlias('application.tests.assets'));
+
+		$test = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('getElementModulePathAlias'))
+				->getMock();
+		$test->assetPath = "Test Asset Path";
+
+		$test->expects($this->once())
+				->method('getElementModulePathAlias')
+				->will($this->returnValue("AssetManagerPath"));
+
+		$el = new BaseEventTypeControllerTestNS\models\NamespacedElement();
+
+		$this->assertEquals(Yii::app()->assetManager->getPublishedPathofAlias('AssetManagerPath.alias'), $test->getAssetPathForElement($el));
+	}
+
+	public function testgetElementViewPathAlias_null()
+	{
+		$test = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('getElementModulePathAlias'))
+				->getMock();
+
+		$r = new ReflectionClass($test);
+		$m = $r->getMethod('getElementViewPathAlias');
+		$m->setAccessible(true);
+
+		$el = $this->getMockBuilder('BaseEventTypeElement')
+				->disableOriginalConstructor()
+				->getMock();
+
+		$test->expects($this->once())
+				->method('getElementModulePathAlias')
+				->with($this->identicalTo($el))
+				->will($this->returnValue(null));
+
+		$this->assertEquals('', $m->invokeArgs($test, array($el)));
+	}
+
+	public function testgetElementViewPathAlias_value()
+	{
+		$test = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('getElementModulePathAlias','getControllerPrefix'))
+				->getMock();
+
+		$r = new ReflectionClass($test);
+		$m = $r->getMethod('getElementViewPathAlias');
+		$m->setAccessible(true);
+
+		$el = $this->getMockBuilder('BaseEventTypeElement')
+				->disableOriginalConstructor()
+				->getMock();
+
+		$test->expects($this->once())
+				->method('getElementModulePathAlias')
+				->with($this->identicalTo($el))
+				->will($this->returnValue("value"));
+
+		$test->expects($this->once())
+			->method('getControllerPrefix')
+			->will($this->returnValue('prefix'));
+
+		$this->assertEquals('value.views.prefix.', $m->invokeArgs($test, array($el)));
+	}
+
+	public function testrenderPartial()
+	{
+		$test_view_str = 'simpleTestView';
+		$test = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('getViewFile','renderFile'))
+				->getMock();
+
+		$test->expects($this->any())
+			->method('getViewFile')
+			->with($this->equalTo($test_view_str))
+			->will($this->returnValue('found/file'));
+
+		$test->expects($this->once())
+			->method('renderFile')
+			->with($this->equalTo('found/file'))
+			->will($this->returnValue('test output'));
+
+		$this->assertEquals('test output', $test->renderPartial($test_view_str, null, true));
+
+	}
+	public function testrenderPartial_parent()
+	{
+		$test_view_str = 'aTestView';
+		$test = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('getViewFile','getModule', 'getControllerPrefix','renderFile'))
+				->getMock();
+
+		$module = $this->getMockBuilder('BaseEventTypeModule')
+				->disableOriginalConstructor()
+				->setMethods(array('getModuleInheritanceList'))
+				->getMock();
+
+		$p_module = $this->getMockBuilder('BaseEventTypeModule')
+				->disableOriginalConstructor()
+				->setMethods(null)
+				->getMock();
+
+		$p_module->setId('ParentModule');
+
+		$module->expects($this->once())
+			->method('getModuleInheritanceList')
+			->will($this->returnValue(array($p_module)));
+
+		$test->expects($this->at(0))
+				->method('getViewFile')
+				->will($this->returnValue(false));
+
+		$test->expects($this->once())
+			->method('getModule')
+			->will($this->returnValue($module));
+		$test->expects($this->once())
+			->method('getControllerPrefix')
+			->will($this->returnValue('prefix'));
+
+		$test->expects($this->at(3))
+			->method('getViewFile')
+			->with('ParentModule.views.prefix.'.$test_view_str)
+			->will($this->returnValue('a/fake/file'));
+
+		$test->expects($this->at(5))
+			->method('getViewFile')
+			->will($this->returnValue(true));
+
+		$test->expects($this->once())
+			->method('renderFile')
+			->will($this->returnValue('successful output'));
+
+		$this->assertEquals('successful output', $test->renderPartial($test_view_str, null, true));
+	}
+
+	public function testrenderOptionalElement()
+	{
+		$test = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('getElementViewPathAlias', 'getViewFile', 'renderPartial'))
+				->getMock();
+
+		$r = new ReflectionClass($test);
+		$m = $r->getMethod('renderOptionalElement');
+		$m->setAccessible(true);
+
+		$el = $this->getMockBuilder('BaseEventTypeElement')
+				->disableOriginalConstructor()
+				->setMethods(array('getDefaultView'))
+				->getMock();
+		$el->expects($this->once())
+			->method('getDefaultView')
+			->will($this->returnValue('default_view'));
+
+		$test->expects($this->once())
+			->method('getElementViewPathAlias')
+			->with($this->identicalTo($el))
+			->will($this->returnValue('el.view.alias'));
+		$test->expects($this->any())
+			->method('getViewFile')
+			->with($this->equalTo('el.view.alias_optional_default_view'))
+			->will($this->returnValue('view/file'));
+		$test->expects($this->once())
+			->method('renderPartial')
+			->with($this->equalTo('el.view.alias_optional_default_view'));
+
+		$m->invokeArgs($test, array($el, 'create', null, null));
+
+	}
+
+	public function testrenderElement()
+	{
+		$this->markTestIncomplete('To test');
+	}
+
+	public function testinitActionCreate()
+	{
+		$controller = $this->getMockBuilder('BaseEventTypeController')
+				->disableOriginalConstructor()
+				->setMethods(array('setPatient','getEpisode', 'getEvent_Type'))
+				->getMock();
+
+		$event_type = ComponentStubGenerator::generate('EventType', array('id' => 12));
+
+		$_REQUEST['patient_id'] = 126;
+		$episode = ComponentStubGenerator::generate('Episode', array('id' => 453));
+
+		$controller->expects($this->once())
+			->method('setPatient')
+			->with($this->equalTo($_REQUEST['patient_id']));
+
+		$controller->expects($this->once())
+				->method('getEvent_Type')
+				->will($this->returnValue($event_type));
+
+		$controller->expects($this->once())
+			->method('getEpisode')
+			->will($this->returnValue($episode));
+
+
+
+		$r = new ReflectionClass('BaseEventTypeController');
+		$iac_meth = $r->getMethod('initActionCreate');
+		$iac_meth->setAccessible(true);
+
+		$iac_meth->invoke($controller);
+
+		$this->assertTrue($controller->event->isNewRecord);
+		$this->assertSame($episode->id, $controller->event->episode_id);
+		$this->assertEquals($event_type->id, $controller->event->event_type_id);
 	}
 
 }

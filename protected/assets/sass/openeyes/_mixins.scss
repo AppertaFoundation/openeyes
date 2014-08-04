@@ -58,7 +58,7 @@
 }
 
 $oe-selector-form-input-fields: 'input[type="text"],input[type="password"],input[type="date"],input[type="datetime"],input[type="datetime-local"],input[type="month"],input[type="week"],input[type="email"],input[type="number"],input[type="search"],input[type="tel"],input[type="time"],input[type="url"],textarea';
-$oe-selector-form-button-fields: "button, .button";
+$oe-selector-form-button-fields: 'button, .button, input[type="submit"]';
 $oe-selector-form-select-fields: "select";
 
 // Apply a set of rules to input form fields.
@@ -115,18 +115,14 @@ $oe-selector-form-select-fields: "select";
 				&.fixed {
 					width: $width;
 				}
-			}
-		}
-	}
-	// @media #{$small} {
-		.row {
-			&#{$row-selector} {
-				.column {
-					&.fluid {
-						@include calc("width", "100% - #{$width}");
+				&.fluid {
+					@include calc("width", "100% - #{$width}");
+					@media print {
+						margin-top: 1em;
+						width: 100%;
 					}
 				}
 			}
 		}
-	// }
+	}
 }

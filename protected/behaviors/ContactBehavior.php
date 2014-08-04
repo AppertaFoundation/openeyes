@@ -166,4 +166,14 @@ class ContactBehavior extends CActiveRecordBehavior
 			}
 		}
 	}
+
+	public function afterDelete($event)
+	{
+		if ($this->owner->contact_id) {
+			Address::model()->deleteAll('contact_id = :contact_id', array(':contact_id' => $this->owner->contact_id));
+			Contact::model()->deleteByPk($this->owner->contact_id);
+		}
+
+		parent::afterDelete($event);
+	}
 }

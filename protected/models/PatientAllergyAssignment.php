@@ -25,7 +25,7 @@
  * @property integer $patient_id
  * @property integer $allergy_id
  */
-class PatientAllergyAssignment extends BaseActiveRecord
+class PatientAllergyAssignment extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

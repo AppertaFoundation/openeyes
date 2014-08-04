@@ -26,6 +26,8 @@ class PatientTest extends CDbTestCase
 		'Disorder',
 		'SecondaryDiagnosis',
 		'Specialty',
+		'Event',
+		'Episode'
 	);
 
 	public function dataProvider_Search()
@@ -164,7 +166,6 @@ class PatientTest extends CDbTestCase
 	 */
 	public function testGetAge()
 	{
-		$this->markTestSkipped('Too many errors in this class test, Skipping until someone can refactor it.');
 		Yii::app()->params['pseudonymise_patient_details'] = false;
 
 		$attributes = array(
@@ -190,7 +191,6 @@ class PatientTest extends CDbTestCase
 
 	public function testRandomData_ParamSetOff_ReturnsFalse()
 	{
-		$this->markTestSkipped('Too many errors in this class test, Skipping until someone can refactor it.');
 		Yii::app()->params['pseudonymise_patient_details'] = false;
 
 		$attributes = array(
@@ -1089,5 +1089,13 @@ class PatientTest extends CDbTestCase
 		$this->markTestIncomplete(
 			'This test has not been implemented yet.'
 		);
+	}
+	/**
+	 * @covers Patient::getLatestEvent
+	 */
+	public function testGetLatestEvent()
+	{
+		$event = $this->patients('patient1')->getLatestEvent();
+		$this->assertEquals('someinfo3', $event->info);
 	}
 }

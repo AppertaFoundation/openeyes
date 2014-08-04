@@ -40,7 +40,7 @@
 			<?php echo $form->textField($address,'city')?>
 			<?php echo $form->textField($address,'county')?>
 			<?php echo $form->textField($address,'postcode')?>
-			<?php echo $form->dropDownList($address,'country_id',CHtml::listData(Country::model()->findAll(array('order'=>'name')),'id','name'))?>
+			<?php echo $form->dropDownList($address,'country_id','Country')?>
 		</fieldset>
 		<?php echo $form->formActions(array('cancel-uri' => '/admin/institutions'));?>
 	<?php $this->endWidget()?>

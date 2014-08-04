@@ -24,10 +24,25 @@
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 <?php } ?>
+		<?php
+			$list_options = array('empty' => 'Select a commonly used diagnosis');
+			if ($secondary_to) {
+				$list_options['options'] = array();
+				foreach ($secondary_to as $id => $lst) {
+					if (count($lst)) {
+						$list_options['options'][$id] = array();
+					}
+					$data = array();
+					foreach ($lst as $sid => $term) {
+						$data[] = array('id' => $sid, 'term' => $term);
+					}
+					$list_options['options'][$id]['data-secondary-to'] = CJSON::encode($data);
+				}
+			}?>
 		<div class="dropdown-row">
-			<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis')) : ""?>
+			<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, $list_options) : ""?>
 		</div>
-		<div class="autocomplete-row">
+		<div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
 			<?php
 			$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					'name' => "{$class}[$field]",
@@ -78,17 +93,77 @@
 			));
 			?>
 		</div>
-<?php if (!$nowrapper) {?>
+
+		<?php if (!$nowrapper) {?>
 	</div>
-</div>
-<?php } ?>
+	</div>
+		<?php }
+		if ($secondary_to) {?>
+		<div id="div_<?php echo "{$class}_{$field}_secondary_to"?>" class="row field-row hidden">
+		<?php if (!$nowrapper) {?>
+			<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
+				<label for="<?php echo "{$class}_{$field}_secondary_to";?>">Secondary To:</label>
+			</div>
+		<?php } ?>
+			<div class="large-<?php echo $layoutColumns['field'];?> column end">
+				<?php echo CHtml::dropDownList("{$class}[{$field}_secondary_to]", '', array(), array())?>
+			</div>
+		</div>
+		<?php } ?>
 <script type="text/javascript">
-	<?php if ($callback) {?>
+	<?php if ($secondary_to) { ?>
+	function updateSecondaryList(data) {
+		var options = '<option value="">- Please Select -</option><option value="NONE">None</option>';
+		data.sort(function(a, b) { return a.term < b.term ? -1 : 1});
+		for (var i in data) {
+			options += '<option value="' + data[i].id + '">' + data[i].term + '</option>';
+		}
+		$('#<?= "{$class}_{$field}_secondary_to"?>').html(options);
+	}
+
+	$('#<?= "{$class}_{$field}_secondary_to"?>').change(function() {
+		var primary_selected = $('#<?php echo $class?>_<?php echo $field?>').children('option:selected');
+		var selected = $(this).children('option:selected');
+		if (selected.val()) {
+			<?php echo $callback?>(primary_selected.val(), primary_selected.text());
+			if (selected.val() != 'NONE') {
+				<?php echo $callback?>(selected.val(), selected.text());
+			}
+			$('#div_<?= "{$class}_{$field}_secondary_to"?>').hide();
+			$('#div_<?= "{$class}_{$field}_autocomplete_row"?>').show();
+			primary_selected.remove();
+			$('#<?php echo $class?>_<?php echo $field?>').val('');
+		}
+	});
+	<?php } ?>
+
+	<?php if ($secondary_to || $callback) {?>
 		$('#<?php echo $class?>_<?php echo $field?>').change(function() {
 			if ($(this).children('option:selected').val()) {
-				<?php echo $callback?>($(this).children('option:selected').val(), $(this).children('option:selected').text());
-				$(this).children('option:selected').remove();
-				$('#<?php echo $class?>_<?php echo $field?>').val('');
+				var selected = $(this).children('option:selected');
+				<?php if ($secondary_to) {?>
+					if (selected.data('secondary-to')) {
+						updateSecondaryList(selected.data('secondary-to'));
+						$('#div_<?= "{$class}_{$field}_secondary_to"?>').show();
+						$('#div_<?= "{$class}_{$field}_autocomplete_row"?>').hide();
+					}
+					else {
+						$('#div_<?= "{$class}_{$field}_secondary_to"?>').hide();
+						$('#div_<?= "{$class}_{$field}_autocomplete_row"?>').show();
+						<?php echo $callback?>(selected.val(), selected.text());
+						selected.remove();
+						$('#<?php echo $class?>_<?php echo $field?>').val('');
+					}
+				<?php } else { ?>
+					<?php echo $callback?>(selected.val(), selected.text());
+					selected.remove();
+					$('#<?php echo $class?>_<?php echo $field?>').val('');
+				<?php } ?>
+			}
+			else {
+				// reset form
+				$('#div_<?= "{$class}_{$field}_secondary_to"?>').hide();
+				$('#div_<?= "{$class}_{$field}_autocomplete_row"?>').show();
 			}
 		});
 	<?php }?>

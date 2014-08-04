@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"origin":{"type":"Quantity","plural":false},"period":{"type":"decimal","plural":false},"factor":{"type":"decimal","plural":false},"lowerLimit":{"type":"decimal","plural":false},"upperLimit":{"type":"decimal","plural":false},"dimensions":{"type":"integer","plural":false},"data":{"type":"SampledDataDataType","plural":false}}

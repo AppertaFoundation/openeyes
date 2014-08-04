@@ -21,6 +21,7 @@
 <html lang="en">
 <head>
 	<?php $this->renderPartial('//base/head/_meta'); ?>
+	<?php $this->renderPartial('//base/head/_assets'); ?>
 </head>
 <body class="open-eyes">
 
@@ -36,7 +37,7 @@
 		<div class="container content">
 			<h1 class="badge hide-offscreen">Error</h1>
 			<div class="row">
-				<div class="large-11 small-11 small-centered large-centered column">
+				<div class="large-11 large-centered column">
 					<div class="panel error">
 						<?php echo $content; ?>
 					</div>

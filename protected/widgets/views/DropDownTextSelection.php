@@ -29,13 +29,13 @@
 		$htmlOptions['class'] .= ' delimited';
 		unset($htmlOptions['delimited']);
 	}
-	$htmlOptions['id'] = 'dropDownTextSelection_'.get_class($element).'_'.$field;
+	$htmlOptions['id'] = 'dropDownTextSelection_'.CHtml::modelName($element).'_'.$field;
 	if (!@$htmlOptions['empty']) {
 		$htmlOptions['empty'] = '- Please select -';
 	}
 ?>
 <?php if (!$no_wrapper) { ?>
-<div id="div_<?php echo get_class($element) ?>_<?php echo $field ?>_TextSelection" class="row field-row">
+<div id="div_<?php echo CHtml::modelName($element) ?>_<?php echo $field ?>_TextSelection" class="row field-row">
 	<div class="large-<?php echo $layoutColumns['label'];?> column">
 		<label for="<?php echo $htmlOptions['id'];?>">
 			<?php echo CHtml::encode($element->getAttributeLabel($field)) ?>:

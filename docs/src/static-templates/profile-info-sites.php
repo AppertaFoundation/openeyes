@@ -2,10 +2,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<? include 'components/head.php'; ?>
-<link rel="stylesheet" href="/protected/modules/OphTrConsent/assets/css/module.css" />
+<? include 'components/admin/head.php'; ?>
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
 		<? include 'components/header-logged-in.php'; ?>

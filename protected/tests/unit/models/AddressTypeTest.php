@@ -49,7 +49,6 @@ class AddressTypeTest extends CDbTestCase
 
 	/**
 	 * @covers AddressType::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
@@ -58,7 +57,6 @@ class AddressTypeTest extends CDbTestCase
 
 	/**
 	 * @covers AddressType::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
@@ -68,7 +66,6 @@ class AddressTypeTest extends CDbTestCase
 
 	/**
 	 * @covers AuditTrail::rules
-	 * @todo   Implement testRules().
 	 */
 	public function testRules()
 	{
@@ -78,37 +75,13 @@ class AddressTypeTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers AddressType::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers AddressType::attributeLabels
-	 * @todo   Implement testAttributeLabels().
 	 */
 	public function testAttributeLabels()
 	{
 		$expected = array();
 
 		$this->assertEquals($expected, $this->model->attributeLabels());
-	}
-
-	/**
-	 * @covers AddressType::search
-	 * @todo   Implement testSearch().
-	 */
-	public function testSearch()
-	{
-		$this->markTestSkipped(
-			'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-		);
 	}
 
 	/**

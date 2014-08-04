@@ -19,9 +19,14 @@
  */
 class UserTest extends CDbTestCase
 {
-
 	public $fixtures = array(
-		'users' => 'User'
+		'firms' => 'Firm',
+		'FirmUserAssignment',
+		'Service',
+		'ServiceSubspecialtyAssignment',
+		'users' => 'User',
+		'UserFirmRights',
+		'UserServiceRights',
 	);
 
 	public function dataProvider_Search()
@@ -35,95 +40,10 @@ class UserTest extends CDbTestCase
 	}
 
 	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->model = new User;
-	}
-
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
-	 * @covers User::model
-	 * @todo   Implement testModel().
-	 */
-	public function testModel()
-	{
-		$this->assertEquals('User', get_class(User::model()), 'Class name should match model.');
-	}
-
-	/**
-	 * @covers User::tableName
-	 * @todo   Implement testTableName().
-	 */
-	public function testTableName()
-	{
-		$this->assertEquals('user', $this->model->tableName());
-	}
-
-	/**
-	 * @covers User::behaviors
-	 * @todo   Implement testBehaviors().
-	 */
-	public function testBehaviors()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers User::rules
-	 * @todo   Implement testRules().
-	 */
-	public function testRules()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers User::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers User::changeFirm
 	 * @todo   Implement testChangeFirm().
 	 */
 	public function testChangeFirm()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers User::attributeLabels
-	 * @todo   Implement testAttributeLabels().
-	 */
-	public function testAttributeLabels()
 	{
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete(
@@ -298,18 +218,6 @@ class UserTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers User::getList
-	 * @todo   Implement testGetList().
-	 */
-	public function testGetList()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
 	 * @covers User::getSurgeons
 	 * @todo   Implement testGetSurgeons().
 	 */
@@ -381,16 +289,30 @@ class UserTest extends CDbTestCase
 		);
 	}
 
-	/**
-	 * @covers User::getAccesslevelstring
-	 * @todo   Implement testGetAccesslevelstring().
-	 */
-	public function testGetAccesslevelstring()
+	public function testGetAvailableFirms_GlobalRights()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		$firms = $this->users('user1')->getAvailableFirms();
+		$this->assertCount(count($this->firms), $firms);
 	}
 
+	public function testGetAvailableFirms_FirmUserAssignment()
+	{
+		$firms = $this->users('user2')->getAvailableFirms();
+		$this->assertCount(1, $firms);
+		$this->assertEquals('Collin Firm', $firms[0]->name);
+	}
+
+	public function testGetAvailableFirms_UserFirmRights()
+	{
+		$firms = $this->users('user3')->getAvailableFirms();
+		$this->assertCount(1, $firms);
+		$this->assertEquals('Allan Firm', $firms[0]->name);
+	}
+
+	public function testGetAvailableFirms_UserServiceRights()
+	{
+		$firms = $this->users('admin')->getAvailableFirms();
+		$this->assertCount(1, $firms);
+		$this->assertEquals('Aylward Firm', $firms[0]->name);
+	}
 }

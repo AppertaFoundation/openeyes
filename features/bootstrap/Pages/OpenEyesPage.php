@@ -35,7 +35,7 @@ abstract class OpenEyesPage extends Page{
 	 * @param string $selector -  css selector for the element we need to check for its display property
 	 */
 	public function waitForElementDisplayBlock($selector, $waitTime = null ){
-		$this->getSession()->wait($this->getWaitTime($waitTime) , "window.$ && $('" . $selector . "').css('display') == 'block'");
+		$this->getSession()->wait($this->getWaitTime($waitTime) , "window.$ && ($('" . $selector . "').css('display') == 'block' || $('" . $selector . "').css('display') == 'inline-block' )");
 	}
 
 	/**

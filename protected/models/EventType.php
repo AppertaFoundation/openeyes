@@ -27,7 +27,7 @@
  * The followings are the available model relations:
  * @property Event[] $events
  */
-class EventType extends BaseActiveRecord
+class EventType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -280,6 +280,22 @@ class EventType extends BaseActiveRecord
 	}
 
 	/**
+	 * Returns the parent(s) of this event type.
+	 *
+	 * @return EventType[]
+	 */
+	public function getParentEventTypes()
+	{
+		$res = array();
+		if ($this->parent_event_type_id) {
+			$parent = self::model()->findByPk($this->parent_event_type_id);
+			$res = $parent->getParentEventTypes();
+			$res[] = $parent;
+		}
+		return $res;
+	}
+
+	/**
 	 * Get all the element types that are defined for this event type
 	 *
 	 * @return BaseEventTypeElement[]
@@ -287,7 +303,11 @@ class EventType extends BaseActiveRecord
 	public function getAllElementTypes()
 	{
 		$criteria = new CDbCriteria;
-		$criteria->compare('event_type_id',$this->id);
+		$ids = array($this->id);
+		foreach ($this->getParentEventTypes() as $parent) {
+			$ids[] = $parent->id;
+		}
+		$criteria->addInCondition('event_type_id',$ids);
 		$criteria->order = 'display_order asc';
 
 		return ElementType::model()->findAll($criteria);

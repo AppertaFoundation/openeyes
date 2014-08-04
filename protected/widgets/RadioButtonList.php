@@ -17,10 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class RadioButtonList extends BaseFieldWidget
+class RadioButtonList extends SelectionWidget
 {
-	public $name;
-	public $data;
 	public $selected_item;
 	public $maxwidth;
 	public $no_element = false;
@@ -28,6 +26,8 @@ class RadioButtonList extends BaseFieldWidget
 
 	public function init()
 	{
+		parent::init();
+
 		if (empty($_POST)) {
 			if ($this->selected_item) {
 				$this->value = $this->selected_item;
@@ -35,7 +35,7 @@ class RadioButtonList extends BaseFieldWidget
 				$this->value = $this->element->{$this->field};
 			}
 		} else {
-			$this->value = @$_POST[get_class($this->element)][$this->field];
+			$this->value = @$_POST[CHtml::modelName($this->element)][$this->field];
 		}
 
 		if ($this->no_element) {

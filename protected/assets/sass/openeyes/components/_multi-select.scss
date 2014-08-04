@@ -38,7 +38,7 @@
 	.no-selections-msg {
 		background: #efe;
 		display: block;
-		margin: .9em 0 0 0;
+		margin: 12px 0 0 0;
 		&.hide {
 			display: none;
 		}
@@ -48,7 +48,7 @@
 .multi-select-selections {
 	display: block;
 	list-style-type: none;
-	margin: .8em 0 0 0;
+	margin: 13px 0 0 0;
 	li {
 		@extend .pill;
 		background: #ffe;
@@ -73,7 +73,7 @@
 			background: #fff;
 			display: block;
 			margin: 0;
-			padding: emCalc(2px) emCalc(5px);
+			padding: 2px 4px;
 		}
 	}
 }

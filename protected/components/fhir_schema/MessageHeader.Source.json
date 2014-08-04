@@ -1,0 +1,1 @@
+{"extension":{"type":"Extension","plural":true},"modifierExtension":{"type":"Extension","plural":true},"name":{"type":"string","plural":false},"software":{"type":"string","plural":false},"version":{"type":"string","plural":false},"contact":{"type":"Contact","plural":false},"endpoint":{"type":"uri","plural":false}}

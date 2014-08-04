@@ -24,7 +24,7 @@
  * @property integer $id
  * @property string $name
  */
-class EpisodeStatus extends BaseActiveRecord
+class EpisodeStatus extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -41,6 +41,11 @@ class EpisodeStatus extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'episode_status';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.order');
 	}
 
 	/**
@@ -96,7 +101,6 @@ class EpisodeStatus extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('order',$this->order,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

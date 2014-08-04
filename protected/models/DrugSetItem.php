@@ -29,7 +29,7 @@
  * @property DrugFrequency $frequency
  * @property DrugDuration $duration
  */
-class DrugSetItem extends BaseActiveRecord
+class DrugSetItem extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

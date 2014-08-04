@@ -3,9 +3,11 @@
 <html lang="en">
 <head>
 <? include 'components/head.php'; ?>
-<link rel="stylesheet" href="/protected/modules/OphCiExamination/assets/css/module.css" />
+<script src="<?php echo $assets_root_path;?>assets/modules/OphCiExamination/assets/js/module.js"></script>
+<link rel="stylesheet" href="<?php echo $assets_root_path?>assets/modules/OphCiExamination/assets/css/module.css" />
+<link rel="stylesheet" href="<?php echo $assets_root_path?>assets/modules/eyedraw/css/oe-eyedraw.css" />
 </head>
-<body>
+<body class="open-eyes">
 	<div class="container main" role="main">
 
 		<? include 'components/header-logged-in.php'; ?>
@@ -21,6 +23,12 @@
 			</div>
 		</div>
 		<? include 'components/footer.php'; ?>
+		<script>
+		OphCiExamination_DRGrading_init();
+		function getSplitElementSide() {
+			return 'right';
+		}
+		</script>
 	</div>
 </body>
 </html>

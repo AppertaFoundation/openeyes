@@ -174,7 +174,7 @@ class OperationBookingContext extends PageObjectContext
          */
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->decisionDate($date);
-        $operationBooking->getSession()->wait(3000);
+
 }
 
     /**
@@ -212,6 +212,18 @@ class OperationBookingContext extends PageObjectContext
         $operationBooking = $this->getPage('OperationBooking');
         //$operationBooking->getSession()->wait(3000);
         $operationBooking->scheduleNow();
+    }
+
+    /**
+     * @Given /^I select OK to Duplicate procedure if requested$/
+     */
+    public function okToDuplicateProcedure()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->duplicateProcedureOk();
     }
 
     /**
@@ -281,7 +293,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(3000);
+//        $operationBooking->getSession()->wait(3000);
         $operationBooking->availableSlot();
     }
 
@@ -294,7 +306,7 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(3000);
+//        $operationBooking->getSession()->wait(3000);
     }
 
     /**
@@ -354,7 +366,6 @@ class OperationBookingContext extends PageObjectContext
          * @var OperationBooking $operationBooking
          */
         $operationBooking = $this->getPage('OperationBooking');
-        $operationBooking->getSession()->wait(3000);
         $operationBooking->confirmSlot();
     }
 
@@ -382,8 +393,6 @@ class OperationBookingContext extends PageObjectContext
         $operationBooking->admissionTime($time);
     }
 
-
-
     /**
      * @Then /^I select Save$/
      */
@@ -396,5 +405,16 @@ class OperationBookingContext extends PageObjectContext
         $operationBooking->save();
     }
 
+    /**
+     * @Then /^I confirm that You must change the session or cancel the booking error is displayed$/
+     */
+    public function consultantErrorValidation()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->consultantValidationCheck();
+    }
 
 }

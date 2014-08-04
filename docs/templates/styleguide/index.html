@@ -12,14 +12,12 @@
 	<meta name="generator" content="kss-node" />
 	<meta name="viewport" content="width=device-width">
 
-	<!-- Include site stylesheets here -->
-	<link rel="stylesheet" href="../assets/core/css/style.css">
+	<link rel="stylesheet" href="../assets/components/google-code-prettify/src/prettify.css" />
+	<link rel="stylesheet" href="../assets/css/style.css" />
 	<link rel="stylesheet" href="../assets/css/docs.css" />
-
-	<!-- Include docs stylesheets here -->
-	<link rel="stylesheet" href="public/kss.css">
 </head>
-<body>
+<body data-section="{{#unless overview}}{{#eachSection rootNumber}}{{#whenDepth 1}}{{header}}{{/whenDepth}}{{/eachSection}}{{/unless}}">
+
 	<div class="container main" role="main">
 
 		<header class="header">
@@ -34,18 +32,21 @@
 
 				<!-- Docs nav
 				================================================== -->
-				<div class="large-2 columns">
-					<ul class="side-nav kss-side-nav kss-box">
-						<li><a href="index.html">0.0: Overview</a></li>
-						{{#eachRoot}}
-							<li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
-						{{/eachRoot}}
-					</ul>
+				<div class="large-2 column">
+					<div class="kss-box box generic navigation">
+						<h2>Navigation</h2>
+						<ul class="side-nav kss-side-nav">
+							<li><a href="index.html">0.0: Overview</a></li>
+							{{#eachRoot}}
+								<li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
+							{{/eachRoot}}
+						</ul>
+					</div>
 				</div>
 
 				<!-- Docs body
 				================================================== -->
-				<div class="large-10 columns">
+				<div class="large-10 column">
 
 					<div class="main kss-main">
 
@@ -78,18 +79,18 @@
 
 											<div class="kss-description">{{html description}}</div>
 
-											<h3 class="kss-sub-head">Examples:</h3>
+											<!-- <h3 class="kss-sub-head">Examples:</h3> -->
 											<div class="kss-mod-list">
 												<div class="kss-mod">
 													<div class="row kss-mod-overview">
-														<div class="large-9 kss-mod-description columns">
+														<div class="large-9 kss-mod-description column">
 															<p>Default styling</p>
 														</div>
-														<div class="large-3 columns">
+														<div class="large-3 column">
 														</div>
 													</div>
 													<div class="row">
-														<div class="large-12 columns">
+														<div class="large-12 column kss-mod-markup">
 															{{modifierMarkup}}
 														</div>
 													</div>
@@ -97,22 +98,22 @@
 												{{#eachModifier}}
 													<div class="kss-mod">
 														<div class="row kss-mod-overview">
-															<div class="large-9 columns kss-mod-description">
+															<div class="large-9 column kss-mod-description">
 																{{html description}}
 															</div>
-															<div class="large-3 columns kss-mod-name text-right">
+															<div class="large-3 column kss-mod-name text-right">
 																<span>{{name}}</span>
 															</div>
 														</div>
 														<div class="row">
-															<div class="large-12 columns">
+															<div class="large-12 column kss-mod-markup">
 																{{modifierMarkup}}
 															</div>
 														</div>
 													</div>
 												{{/eachModifier}}
 											</div>
-											<h3 class="kss-sub-head">Markup:</h3>
+											<!-- <h3 class="kss-sub-head">Markup:</h3> -->
 											<div class="kss-markup">
 												<pre class="prettyprint lang-html">{{markup}}</pre>
 											</div>
@@ -133,7 +134,7 @@
 		</div>
 
 		<footer class="footer row kss-footer">
-			<div class="large-12 columns">
+			<div class="large-12 column">
 					<div class="info">
 							<span class="copyright">&copy; Copyright OpenEyes Foundation 2011–2013</span>
 					</div>
@@ -148,11 +149,11 @@
 	</footer>
 	 -->
 	<!-- SCRIPTS -->
-	<script src="../assets/core/js/modernizr.custom.js"></script>
-	<script src="../assets/core/js/components/jquery/jquery.min.js"></script>
-	<script src="../assets/core/js/components/google-code-prettify/src/prettify.js"></script>
+	<script src="../assets/js/modernizr.custom.js"></script>
+	<script src="../assets/components/jquery/jquery.min.js"></script>
+	<script src="../assets/components/google-code-prettify/src/prettify.js"></script>
 	<script src="public/js/kss.js"></script>
-	<script src="public/js/script.js"></script>
+	<script src="../assets/js/docs.js"></script>
 
 </body>
 </html>

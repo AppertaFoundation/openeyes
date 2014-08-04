@@ -178,6 +178,8 @@ Feature: Create New Consent Form
 
     Then I select Save and Schedule now
 
+    And I select OK to Duplicate procedure if requested
+
     Then I select Next Month
 
     And I select an Available theatre slot date
@@ -190,10 +192,10 @@ Feature: Create New Consent Form
 
 
   Scenario: Route 6B: Login and create a new Consent Form choosing a previously created Operation Booking (from Route 6A)
-  Site 2: Kings
-  Firm: Anderson Glaucoma
-  Type 1 chosen
-  2x Additional Procedures
+            Site 2: Kings
+            Firm: Anderson Glaucoma
+            Type 1 chosen
+            2x Additional Procedures
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"

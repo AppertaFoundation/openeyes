@@ -33,7 +33,7 @@
  * @property Event[] $events
  * @property EpisodeStatus $status
  */
-class Episode extends BaseActiveRecord
+class Episode extends BaseActiveRecordVersioned
 {
 	private $defaultScopeDisabled = false;
 
@@ -86,7 +86,6 @@ class Episode extends BaseActiveRecord
 		return array(
 			array('patient_id', 'required'),
 			array('patient_id, firm_id', 'length', 'max'=>10),
-			array('end_date, deleted', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, patient_id, firm_id, start_date, end_date', 'safe', 'on'=>'search'),
@@ -103,7 +102,7 @@ class Episode extends BaseActiveRecord
 		return array(
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-			'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => 'events.created_date asc'),
+			'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => ' events.event_date asc, events.created_date asc'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
@@ -231,16 +230,17 @@ class Episode extends BaseActiveRecord
 				->from('episode e')
 				->join('firm f', 'e.firm_id = f.id')
 				->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-				->where('e.deleted = False'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
-					':patient_id' => $patient_id, ':subspecialty_id' => $subspecialty_id
+				->where('e.deleted = false'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
+					':patient_id' => $patient_id,
+					':subspecialty_id' => $subspecialty_id,
 				))
 				->queryRow();
 		} else {
 			$episode = Yii::app()->db->createCommand()
 				->select('e.id AS eid')
 				->from('episode e')
-				->where('e.deleted = False AND e.legacy = False AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id', array(
-					':patient_id' => $patient_id
+				->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id', array(
+					':patient_id' => $patient_id,
 				))
 				->queryRow();
 		}
@@ -264,7 +264,7 @@ class Episode extends BaseActiveRecord
 		$criteria = new CDbCriteria;
 		$criteria->compare('episode_id',$this->id);
 		$criteria->compare('event_type_id',$event_type_id);
-		$criteria->order = 'created_date desc';
+		$criteria->order = 'event_date desc, created_date desc';
 		$criteria->limit = 1;
 		return Event::model()->find($criteria);
 	}
@@ -280,7 +280,7 @@ class Episode extends BaseActiveRecord
 		$criteria = new CDbCriteria;
 		$criteria->compare('episode_id',$this->id);
 		$criteria->compare('event_type_id',$event_type_id);
-		$criteria->order = 'created_date desc';
+		$criteria->order = 'event_date asc';
 		return Event::model()->findAll($criteria);
 	}
 
@@ -294,7 +294,7 @@ class Episode extends BaseActiveRecord
 		$criteria = new CDbCriteria();
 		$criteria->addCondition('episode_id = :eid');
 		$criteria->params = array(':eid' => $this->id);
-		$criteria->order = "t.created_date DESC";
+		$criteria->order = "t.event_date DESC, t.created_date DESC";
 		$criteria->limit = 1;
 
 		return Event::model()->with('episode')->find($criteria);
@@ -372,11 +372,11 @@ class Episode extends BaseActiveRecord
 		return null;
 	}
 
-	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
+	public function save($runValidation=true, $attributes=null, $allow_overriding=false, $save_version=false)
 	{
 		$previous = Episode::model()->findByPk($this->id);
 
-		if (parent::save($runValidation, $attributes, $allow_overriding)) {
+		if (parent::save($runValidation, $attributes, $allow_overriding, $save_version)) {
 			if ($previous && $previous->episode_status_id != $this->episode_status_id) {
 				$this->audit('episode','change-status',$this->episode_status_id);
 			}
@@ -435,30 +435,5 @@ class Episode extends BaseActiveRecord
 		$properties['episode_id'] = $this->id;
 		$properties['patient_id'] = $this->patient_id;
 		parent::audit($target, $action, $data, $log, $properties);
-	}
-
-	public function getEditable()
-	{
-		// Get current logged in firm's subspecialty id (null for support services firms)
-		$current_subspecialty_id = Yii::app()->getController()->firm->getSubspecialtyID();
-		if (!$this->firm) {
-			// Episode has no firm, so it's either a legacy episode or a support services episode
-			if ($this->support_services) {
-				// Support services episode, so are you logged in as a support services firm
-				return ($current_subspecialty_id == null);
-			} else {
-				// Legacy episode
-				return FALSE;
-			}
-		} else {
-			// Episode is normal (has a firm)
-			if (!$current_subspecialty_id) {
-				// Logged in as a support services firm
-				return FALSE;
-			} else {
-				// Logged in as a normal firm, so does episode subspecialty match
-				return ($this->firm->getSubspecialtyID() == $current_subspecialty_id);
-			}
-		}
 	}
 }

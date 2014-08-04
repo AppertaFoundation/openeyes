@@ -124,7 +124,7 @@
 									<a href="#" class="icon-remove-side">Remove eye</a>
 									<div class="eyedraw-row row field-row anterior-segment">
 										<div class="fixed column">
-											<img src="img/eyedraw/large.png" />
+											<img src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
 										</div>
 									</div>
 								</div>
@@ -132,7 +132,7 @@
 									<a href="#" class="icon-remove-side">Remove eye</a>
 									<div class="eyedraw-row row field-row anterior-segment">
 										<div class="fixed column">
-											<img src="img/eyedraw/large.png" />
+											<img src="<?php echo $assets_root_path?>assets/img/eyedraw/large.png" />
 										</div>
 									</div>
 								</div>
@@ -175,11 +175,11 @@
 						<div class="optional-elements-actions">
 							<a href="#">
 								<span>Add all</span>
-								<img src="/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
+								<img src="<?php echo $assets_root_path?>assets/img/_elements/icons/event-optional/element-added.png" alt="Add all" />
 							</a>
 							<a href="#">
 								<span>Remove all</span>
-								<img src="/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
+								<img src="<?php echo $assets_root_path?>assets/img/_elements/icons/event-optional/element-remove.png" alt="Remove all" />
 							</a>
 						</div>
 					</header>

@@ -40,7 +40,7 @@
 			<?php echo $form->textField($address,'city')?>
 			<?php echo $form->textField($address,'county')?>
 			<?php echo $form->textField($address,'postcode')?>
-			<?php echo $form->dropDownList($address,'country_id',CHtml::listData(Country::model()->findAll(array('order'=>'name')),'id','name'))?>
+			<?php echo $form->dropDownList($address,'country_id','Country')?>
 		</fieldset>
 		<?php echo $form->formActions();?>
 	<?php $this->endWidget()?>
@@ -60,10 +60,7 @@
 			</thead>
 			<tbody>
 				<?php
-				$criteria = new CDbCriteria;
-				$criteria->compare('institution_id',$institution->id);
-				$criteria->order = 'name asc';
-				foreach (Site::model()->findAll($criteria) as $i => $site) {?>
+				foreach ($institution->sites as $site) { ?>
 					<tr class="clickable" data-id="<?php echo $site->id?>" data-uri="admin/editsite?site_id=<?php echo $site->id?>">
 						<td><?php echo $site->id?></td>
 						<td><?php echo $site->remote_id?>&nbsp;</td>

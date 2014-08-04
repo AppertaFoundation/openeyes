@@ -22,22 +22,18 @@
  * @todo : refactor the html
  */
 ?>
-					<div class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($labeltext)?>:</div>
-						<?php if (!empty($columns)) {
-							foreach ($columns as $i => $data) {?>
-								<div class="datacol<?php echo $i+1?>">
-									<?php foreach ($data as $n => $field) {?>
-										<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],array('style' => 'margin-bottom: 20px;'))?> <?php echo CHtml::encode($element->getAttributeLabel($field))?>
-										<?php if (($n+1) < count($data)) {?><br/><?php }?>
-									<?php }?>
-								</div>
-							<?php }?>
-						<?php } else {?>
-							<div class="data">
-								<?php foreach ($fields as $field) {?>
-									<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],array('style' => 'margin-bottom: 20px;'))?> <?php echo CHtml::encode($element->getAttributeLabel($field))?><br/>
-								<?php }?>
-							</div>
-						<?php }?>
-					</div>
+<div class="element-fields">
+	<div class="row field-row">
+		<?php foreach ($fields as $field) {?>
+			<?php echo CHtml::hiddenField(CHtml::modelName($element)."[$field]",'0',array('id' => CHtml::modelName($element)."_".$field."_hidden"))?>
+			<?php if (!@$htmlOptions['no-label']) {?>
+				<label>
+			<?php }?>
+			<?php echo CHtml::checkBox(CHtml::modelName($element)."[$field]",$checked[$field],$htmlOptions)?>
+			<?php if (!@$htmlOptions['no-label']) {?>
+				<?php echo CHtml::encode($element->getAttributeLabel($field))?>
+				</label>
+			<?php }?>
+		<?php }?>
+	</div>
+</div>

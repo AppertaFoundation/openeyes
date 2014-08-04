@@ -17,102 +17,69 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class DrugFrequencyTest extends CDbTestCase {
+class DrugFrequencyTest extends CDbTestCase
+{
+	/**
+	 * @var DrugFrequency
+	 */
+	protected $model;
+	public $fixtures = array(
+		'drugfrequencies' => 'DrugFrequency',
+	);
 
-	   /**
-	    * @var DrugFrequency
-	    */
-	   protected $model;
-	   public $fixtures = array(
-		    'drugfrequencies' => 'DrugFrequency',
-	   );
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->model = new DrugFrequency;
+	}
 
-	   /**
-	    * Sets up the fixture, for example, opens a network connection.
-	    * This method is called before a test is executed.
-	    */
-	   protected function setUp() {
-		      parent::setUp();
-		      $this->model = new DrugFrequency;
-	   }
+	/**
+	 * @covers DrugForm::model
+	 */
+	public function testModel()
+	{
+		$this->assertEquals('DrugFrequency', get_class(DrugFrequency::model()), 'Class name should match model.');
+	}
 
-	   /**
-	    * Tears down the fixture, for example, closes a network connection.
-	    * This method is called after a test is executed.
-	    */
-	   protected function tearDown() {
-		      
-	   }
+	/**
+	 * @covers DrugForm::tableName
+	 */
+	public function testTableName()
+	{
+		$this->assertEquals('drug_frequency', $this->model->tableName());
+	}
 
-	   /**
-	    * @covers DrugForm::model
-	    * @todo   Implement testModel().
-	    */
-	   public function testModel() {
+	/**
+	 * @covers DrugForm::rules
+	 */
+	public function testRules()
+	{
+		$this->assertTrue($this->drugfrequencies('drugfrequency1')->validate());
+		$this->assertEmpty($this->drugfrequencies('drugfrequency2')->errors);
+	}
 
-		      $this->assertEquals('DrugFrequency', get_class(DrugFrequency::model()), 'Class name should match model.');
-	   }
+	/**
+	 * @covers DrugFrequency::search
+	 */
+	public function testSearch()
+	{
+		$this->model->setAttributes($this->drugfrequencies('drugfrequency1')->getAttributes());
+		$results = $this->model->search();
+		$data = $results->getData();
 
-	   /**
-	    * @covers DrugForm::tableName
-	    * @todo   Implement testTableName().
-	    */
-	   public function testTableName() {
-
-		      $this->assertEquals('drug_frequency', $this->model->tableName());
-	   }
-
-	   /**
-	    * @covers DrugForm::rules
-	    * @todo   Implement testRules().
-	    */
-	   public function testRules() {
-
-		      $this->assertTrue($this->drugfrequencies('drugfrequency1')->validate());
-		      $this->assertEmpty($this->drugfrequencies('drugfrequency2')->errors);
-	   }
-
-	   /**
-	    * @covers DrugFrequency::relations
-	    * @todo   Implement testRelations().
-	    */
-	   public function testRelations() {
-		      // Remove the following lines when you implement this test.
-		      $this->markTestIncomplete(
-		                'This test has not been implemented yet.'
-		      );
-	   }
-
-	   /**
-	    * @covers DrugFrequency::attributeLabels
-	    * @todo   Implement testAttributeLabels().
-	    */
-	   public function testAttributeLabels() {
-
-		      $expected = array();
-
-		      $this->assertEquals($expected, $this->model->attributeLabels());
-	   }
-
-	   /**
-	    * @covers DrugFrequency::search
-	    * @todo   Implement testSearch().
-	    */
-	   public function testSearch() {
-
-		      $this->model->setAttributes($this->drugfrequencies('drugfrequency1')->getAttributes());
-		      $results = $this->model->search();
-		      $data = $results->getData();
-
-		      $expectedKeys = array('drugfrequency1');
-		      $expectedResults = array();
-		      if (!empty($expectedKeys)) {
-			         foreach ($expectedKeys as $key) {
-				            $expectedResults[] = $this->drugfrequencies($key);
-			         }
-		      }
-		      $this->assertEquals(1, $results->getItemCount());
-		      $this->assertEquals($expectedResults, $data);
-	   }
+		$expectedKeys = array('drugfrequency1');
+		$expectedResults = array();
+		if (!empty($expectedKeys)) {
+			foreach ($expectedKeys as $key) {
+				$expectedResults[] = $this->drugfrequencies($key);
+			}
+		}
+		$this->assertEquals(1, $results->getItemCount());
+		$this->assertEquals($expectedResults, $data);
+	}
 
 }

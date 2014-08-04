@@ -34,12 +34,18 @@ class DiagnosisSelection extends BaseFieldWidget
 	public $loader = false;
 	public $nowrapper = false;
 	public $options = array();
+	public $secondary_to = array();
 	// text in diagnosis search box
 	public $placeholder = 'or type the first few characters of a diagnosis';
 
 	public function run()
 	{
-		$this->class = get_class($this->element);
+		if ($this->element) {
+			$this->class = CHTML::modelName($this->element);
+		} else {
+			$this->class = get_class($this);
+		}
+
 		if (empty($_POST) || !array_key_exists($this->class, $_POST)) {
 			if (empty($this->element->event_id)) {
 				if ($this->default) {

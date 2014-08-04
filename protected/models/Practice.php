@@ -29,7 +29,7 @@
  * @property Contact $contact
  * @property CommissioningBody[] $commissioningbodies
  */
-class Practice extends BaseActiveRecord
+class Practice extends BaseActiveRecordVersioned
 {
 	public $use_pas = TRUE;
 

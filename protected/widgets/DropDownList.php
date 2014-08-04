@@ -17,7 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DropDownList extends BaseFieldWidget
+class DropDownList extends SelectionWidget
 {
-	public $data;
 }

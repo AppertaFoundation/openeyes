@@ -1,0 +1,940 @@
+id,name,last_modified_user_id,last_modified_date,created_user_id,created_date,type_id,form_id,dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id,preservative_free,aliases,tallman,discontinued
+1,"Abidec drops",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",34,4,"mL","1",10,NULL,NULL,0,"ABIDEC","ABIDEC drops",0
+2,"Acetazolamide 250mg modified release capsules",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",17,1,"capsule(s)","1",10,10,NULL,0,"DIAMOX","acetazolamide 250mg modified release capsules",0
+3,"Acetazolamide 250mg tablets",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",17,32,"tablet(s)","1",10,NULL,NULL,0,"DIAMOX","acetazolamide 250mg tablets",0
+4,"Acetazolamide 250mg in 5ml suspension",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",17,20,"mg",NULL,10,NULL,NULL,0,NULL,"acetazolamide 250mg in 5mL suspension",0
+5,"Acetazolamide 500mg injection",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",17,12,"mg",NULL,7,NULL,NULL,0,"DIAMOX","acetazolamide 500mg injection",0
+6,"Acetylcholine 1% intraocular irrigation",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",23,13,"mL",NULL,1,NULL,NULL,1,NULL,"acetylCHOline 1% intraocular irrigation",0
+7,"Acetylcysteine 10% eye drops",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,0,NULL,"acetylCYSteine 10% eye drops",0
+8,"Acetylcysteine 10% eye drops",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,1,NULL,"acetylCYSteine 10% eye drops",0
+9,"Acetylcysteine 20% eye drops",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,0,NULL,"acetylCYSteine 20% eye drops",0
+10,"Acetylcysteine 5% eye drops",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,0,"ILUBE","acetylCYSteine 5% eye drops",0
+11,"Acetylcysteine 5% eye drops",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,1,NULL,"acetylCYSteine 5% eye drops",0
+12,"Aciclovir 200mg tablets",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",11,32,"tablet(s)","1",10,6,6,0,NULL,"aciclovir 200mg tablets",0
+13,"Aciclovir 200mg in 5ml sugar free suspension",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",11,20,"mg",NULL,10,6,6,0,NULL,"aciclovir 200mg in 5mL sugar free suspension",0
+14,"Aciclovir 250mg injection",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",11,12,"mg",NULL,7,NULL,NULL,0,NULL,"aciclovir 250mg injection",0
+15,"Aciclovir 3% eye ointment",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",11,5,"strip","1",1,6,NULL,0,"ZOVIRAX","aciclovir 3% eye ointment",0
+16,"Aciclovir 400mg tablets",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",11,32,"tablet(s)","1",10,6,6,0,NULL,"aciclovir 400mg tablets",0
+17,"Aciclovir 500mg injection",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",11,12,"mg",NULL,7,NULL,NULL,0,NULL,"aciclovir 500mg injection",0
+18,"Aciclovir 800mg dispersible tablets",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",11,32,"tablet(s)","1",10,6,6,0,NULL,"aciclovir 800mg dispersible tablets",0
+19,"Adenosine 6mg in 2ml injection",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"adENOsine 6mg in 2mL injection",0
+20,"Adrenaline 0.1% eye drops",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",32,4,"drop(s)","1",1,NULL,NULL,1,"epinephrine","adrenaline 0.1% eye drops",0
+21,"Adrenaline 1 in 1,000 1mg in 1ml injection",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",32,12,"mg",NULL,7,NULL,NULL,0,"epinephrine","adrenaline 1 in 1,000 1mg in 1mL injection",0
+22,"Adrenaline 1 in 1,000 1mg in 1ml syringe",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",32,12,"mg",NULL,7,NULL,NULL,0,"epinephrine","adrenaline 1 in 1,000 1mg in 1mL syringe",0
+23,"Adrenaline 300 micrograms in 0.3ml syringe",1,"2012-10-12 10:20:24",1,"1900-01-01 00:00:00",32,12,"mg",NULL,7,NULL,NULL,0,"epinephrine","adrenaline 300 micrograms in 0.3mL syringe",0
+24,"Adrenaline 0.01% eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",32,4,"drop(s)","1",1,NULL,NULL,1,"epinephrine","adrenaline 0.01% eye drops",0
+25,"Adrenaline 1 in 10,000  1mg in 10ml syringe",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",32,12,"mg",NULL,7,NULL,NULL,0,"epinephrine","adrenaline 1 in 10,000  1mg in 10mL syringe",0
+26,"Aerochamber standard",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",14,3,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"AEROCHAMBER STANDARD",0
+27,"Albendazole 400mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"alBENdazole 400mg tablets",0
+28,"Alendronic acid 70mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,18,NULL,0,"FOSAMAX","alendronic acid 70mg tablets",0
+29,"Alfentanyl 1mg in 2ml injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",16,12,"mg",NULL,7,NULL,NULL,0,NULL,"alFENtanyl 1mg in 2mL injection",0
+30,"Allopurinol 100mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"allopurinol 100mg tablets",0
+31,"Allopurinol 300mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"allopurinol 300mg tablets",0
+32,"Alteplase 20mg injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"alteplase 20mg injection",0
+33,"Amantadine 100mg capsules",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"amantadine 100mg capsules",0
+34,"Amiclair protein remover tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",26,32,"tablet(s)",NULL,NULL,NULL,NULL,0,NULL,"AMICLAIR protein remover tablets",0
+35,"Amiclair protein remover tablets starter pack",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",26,32,"pack(s)","1",NULL,NULL,NULL,0,NULL,"AMICLAIR protein remover tablets starter pack",0
+36,"Amikacin 0.4mg in 0.1ml intravitreal injection pre-pack",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",3,12,"mg",NULL,6,NULL,NULL,0,NULL,"amikacin 0.4mg in 0.1mL intravitreal injection pre-pack",0
+37,"Amikacin 2.5% eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,NULL,"amikacin 2.5% eye drops",0
+38,"Amikacin 500mg in 2ml injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,NULL,NULL,0,NULL,"amikacin 500mg in 2mL injection",0
+39,"Amiloride 5mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"amiLORide 5mg tablets",0
+40,"Aminophylline 250mg in 10ml injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"amiNOPhylline 250mg in 10mL injection",0
+41,"Amiodarone 100mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"amiodarone 100mg tablets",0
+42,"Amiodarone 150mg in 3ml injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"amiodarone 150mg in 3mL injection",0
+43,"Amiodarone 300mg in 10ml syringe",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"amiodarone 300mg in 10mL syringe",0
+44,"Amitriptyline 10mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"amitriptyline 10mg tablets",0
+45,"Amitriptyline 25mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"amitriptyline 25mg tablets",0
+46,"Amitriptyline 50mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"amitriptyline 50mg tablets",0
+47,"Amlodipine 10mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"amlodipine 10mg tablets",0
+48,"Amlodipine 5mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"amlodipine 5mg tablets",0
+49,"Amoxicillin 125mg in 5ml sugar free suspension",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,9,NULL,0,NULL,"amoxicillin 125mg in 5mL sugar free suspension",0
+50,"Amoxicillin 250mg capsules",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",3,1,"capsule(s)","1",10,9,7,0,NULL,"amoxicillin 250mg capsules",0
+51,"Amoxicillin 250mg injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,9,NULL,0,NULL,"amoxicillin 250mg injection",0
+52,"Amoxicillin 250mg in 5ml sugar free suspension",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",3,20,"mg","250",10,9,NULL,0,NULL,"amoxicillin 250mg in 5mL sugar free suspension",0
+53,"Amoxicillin 3g sugar free sachet",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",3,25,"g","3",10,11,NULL,0,NULL,"amoxicillin 3g sugar free sachet",0
+54,"Amoxicillin 500mg injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,9,NULL,0,NULL,"amoxicillin 500mg injection",0
+55,"Amphotericin 0.15% eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",7,4,"drop(s)","1",1,NULL,NULL,1,NULL,"amphotericin 0.15% eye drops",0
+57,"Amphotericin 50mg deoxycholate injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",7,12,"mg",NULL,7,NULL,NULL,0,"FUNGIZONE","amphotericin 50mg deoxycholate injection",0
+58,"Amphotericin 50mg liposomal injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",7,12,"mg",NULL,7,NULL,NULL,0,"AMBISOME","amphotericin 50mg liposomal injection",0
+59,"Amphotericin 5 micrograms in 0.1ml intravitreal injection pre-pack",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",7,12,"microgram(s)",NULL,6,NULL,NULL,0,NULL,"amphotericin 5 micrograms in 0.1mL intravitreal injection pre-pack",0
+60,"Apraclonidine 0.5% eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,9,10,0,"IOPIDINE","apraclonidine 0.5% eye drops",0
+61,"Apraclonidine 1% single use eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,NULL,NULL,1,"IOPIDINE","apraclonidine 1% single use eye drops",0
+62,"Aqueous cream",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",27,2,"unit(s)",NULL,18,NULL,NULL,0,NULL,"aqueous cream",0
+63,"Ascorbic acid 500mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",34,32,"tablet(s)","1",10,NULL,NULL,0,"VITAMIN C","ascorbic acid 500mg tablets",0
+64,"Ascorbic acid 50mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",34,32,"tablet(s)","1",10,NULL,NULL,0,"VITAMIN C","ascorbic acid 50mg tablets",0
+65,"Aspirin 300mg dispersible tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",1,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"aspirin 300mg dispersible tablets",0
+66,"Aspirin 75mg dispersible tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",1,32,"tablet(s)","1",10,11,NULL,0,NULL,"aspirin 75mg dispersible tablets",0
+67,"Aspirin 75mg enteric-coated tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",1,32,"tablet(s)","1",10,11,NULL,0,NULL,"aspirin 75mg enteric-coated tablets",0
+68,"Atenolol 25mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"atenolol 25mg tablets",0
+69,"Atenolol 50mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"atenolol 50mg tablets",0
+70,"Atorvastatin 10mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"atorvastatin 10mg tablets",0
+71,"Atorvastatin 20mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"atorvastatin 20mg tablets",0
+72,"Atracurium 25mg in 2.5ml injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"atracurium 25mg in 2.5mL injection",0
+73,"Atracurium 50mg in 5ml injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"atracurium 50mg in 5mL injection",0
+74,"Atropine 1/8% eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,0,NULL,"atropine 1/8% eye drops",0
+75,"Atropine 1% eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,9,NULL,0,NULL,"atropine 1% eye drops",0
+76,"Atropine 1% eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,9,NULL,1,NULL,"atropine 1% eye drops",0
+77,"Atropine 1% single use eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,9,NULL,1,"atropine 1% MINIMS","atropine 1% single use eye drops",0
+78,"Atropine 3mg in 10ml syringe",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"atropine 3mg in 10mL syringe",0
+79,"Atropine 400 micrograms in 1ml injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,12,"microgram(s)",NULL,7,NULL,NULL,0,NULL,"atropine 400 micrograms in 1mL injection",0
+80,"Atropine 500 micrograms in 5ml solution",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,20,"mL",NULL,7,NULL,NULL,0,NULL,"atropine 500 micrograms in 5mL solution",0
+81,"Atropine 500 micrograms in 5ml sugar free solution",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,20,"microgram(s)",NULL,10,NULL,NULL,0,NULL,"atropine 500 micrograms in 5mL sugar free solution",0
+82,"Atropine 500 microgram in 5ml solution",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,20,"mL","",7,NULL,NULL,0,"","atropine 500 microgram in 5mL solution",0
+83,"Atropine 600 micrograms in 1ml injection",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",29,12,"microgram(s)",NULL,7,NULL,NULL,0,NULL,"atropine 600 micrograms in 1mL injection",0
+84,"Autodrop compliance aid",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",14,3,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"AUTODROP compliance aid",0
+85,"Brinzolamide 1% with timolol 0.5% eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,0,"AZARGA","brinzolamide 1% with timolol 0.5% eye drops",0
+86,"Azathioprine 25mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",19,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"azathioPRIne 25mg tablets",0
+87,"Azathioprine 50mg tablets",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",19,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"azathioPRIne 50mg tablets",0
+88,"Azithromycin 1.5% single use eye drops",1,"2012-10-12 10:20:25",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,10,4,0,"AZYTER","azithroMYCin 1.5% single use eye drops",0
+89,"Azithromycin 200mg in 5ml suspension",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,11,NULL,0,NULL,"azithroMYCin 200mg in 5mL suspension",0
+90,"Azithromycin 250mg capsules",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",3,1,"capsule(s)",NULL,10,11,NULL,0,NULL,"azithroMYCin 250mg capsules",0
+91,"Azithromycin 250mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",3,32,"tablet(s)",NULL,10,11,NULL,0,NULL,"azithroMYCin 250mg tablets",0
+92,"Azithromycin 500mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",3,32,"tablet(s)",NULL,10,11,NULL,0,NULL,"azithroMYCin 500mg tablets",0
+93,"Baclofen 10mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"baclofen 10mg tablets",0
+94,"Balanced salt solution 500ml",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",21,13,"mL",NULL,1,NULL,NULL,0,"BSS","balanced salt solution 500mL",0
+95,"Balanced salt solution 19ml",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",21,13,"mL",NULL,1,NULL,NULL,1,"BSS","balanced salt solution 19mL",0
+96,"Balneum plus cream",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",27,2,"unit(s)",NULL,18,NULL,NULL,0,NULL,"BALNEUM PLUS CREAM",0
+97,"Bcg intradermal vaccine powder and solvent for injection",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",31,12,"mL",NULL,5,NULL,NULL,0,"CALMETTE-GUERIN","BCG intradermal vaccine powder and solvent for injection",0
+98,"Beclometasone 100 micrograms inhaler",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",20,11,"puff(s)","2",3,10,NULL,0,NULL,"beclometasone 100 micrograms inhaler",0
+99,"Beclometasone 200 micrograms inhaler",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",20,11,"puff(s)","2",3,10,NULL,0,NULL,"beclometasone 200 micrograms inhaler",0
+100,"Beclometasone 50 micrograms aqueous nasal spray",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",28,29,"spray(s)","2",16,NULL,NULL,0,NULL,"beclometasone 50 micrograms aqueous nasal spray",0
+101,"Beclometasone 50 micrograms inhaler",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",20,11,"puff(s)","2",3,10,NULL,0,NULL,"beclometasone 50 micrograms inhaler",0
+102,"Bendroflumethiazide 2.5mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"bendroflumethiazide 2.5mg tablets",0
+103,"Oxybuprocaine 0.4% single use eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",22,4,"drop(s)","1",1,NULL,NULL,1,"OXYBUPROCAINE MINIMS, BENOXINATE","oxybuprocaine 0.4% single use eye drops",0
+104,"Benzoin compound tincture",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",26,10,"inhalation(s)",NULL,3,NULL,NULL,0,"FRIAR\"S BALSAM","beNZOin compound tincture",0
+105,"Benzylpenicillin 600mg injection",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,8,NULL,0,NULL,"benzylpenicillin 600mg injection",0
+106,"Betahistine 8mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",8,32,"tablet(s)","1",10,9,NULL,0,NULL,"betahistine 8mg tablets",0
+107,"Betamethasone 0.1% eye ointment",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",28,5,"strip","1",1,NULL,NULL,0,"BETNESOL","betamethasone 0.1% eye ointment",0
+108,"Betamethasone 0.1% eye/ear/nose drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,"BETNESOL","betamethasone 0.1% eye/ear/nose drops",0
+109,"Betamethasone 0.1% with neomycin 0.5% eye/ear/nose drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,"BETNESOL-N","betamethasone 0.1% with neomycin 0.5% eye/ear/nose drops",0
+110,"Betamethasone sodium phosphate 4mg in 1ml injection",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",28,12,"mg",NULL,NULL,NULL,NULL,0,"BETNESOL","betamethasone sodium phosphate 4mg in 1mL injection",0
+111,"Betamethasone valerate 0.1% cream",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",27,2,"fingertip(s)","1",18,NULL,NULL,0,"BETNOVATE","betamethasone valerate 0.1% cream",0
+112,"Betamethasone valerate 0.1% ointment",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",27,19,"fingertip(s)","1",18,NULL,NULL,0,"BETNOVATE","betamethasone valerate 0.1% ointment",0
+113,"Betaxolol 0.25% eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,0,"BETOPTIC","betAXOlol 0.25% eye drops",0
+114,"Betaxolol 0.25% single use eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,1,"BETOPTIC","betAXOlol 0.25% single use eye drops",0
+115,"Bevacizumab 1.25mg in 0.05ml syringe",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",10,12,"mg","1.25",6,NULL,NULL,0,NULL,"bevacizumab 1.25mg in 0.05mL syringe",0
+116,"Bevacizumab 5mg in 0.2ml syringe",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",10,12,"mg",NULL,13,NULL,NULL,0,NULL,"bevacizumab 5mg in 0.2mL syringe",0
+117,"Bimatoprost 0.1mg in 1ml eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,14,10,0,"LUMIGAN","bimatoprost 0.1mg in 1mL eye drops",0
+119,"Bimatoprost 0.3mg in 1ml eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,14,10,0,"LUMIGAN","bimatoprost 0.3mg in 1mL eye drops",0
+120,"Bisoprolol 1.25mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"bisoprolol 1.25mg tablets",0
+121,"Bisoprolol 5mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"bisoprolol 5mg tablets",0
+123,"Boston advance cleaning & conditioning solutions multipack",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",12,27,"n/a",NULL,19,19,NULL,0,NULL,"BOSTON ADVANCE CLEANING & CONDITIONING SOLUTIONS MULTIPACK",0
+124,"Boston advance contact lens cleaner",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",12,27,"n/a",NULL,19,19,NULL,0,NULL,"BOSTON ADVANCE CONTACT LENS CLEANER",0
+125,"Boston advance contact lens conditioner",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",12,27,"n/a",NULL,19,19,NULL,0,NULL,"BOSTON ADVANCE CONTACT LENS CONDITIONER",0
+126,"Boston advance starter pack",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",12,27,"n/a",NULL,19,19,NULL,0,NULL,"BOSTON ADVANCE STARTER PACK",0
+127,"Botulinum a toxin 100 units injection (botox)",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",26,12,"unit(s)",NULL,9,NULL,NULL,0,"BOTOX","botulinum A toxin 100 units injection (BOTOX)",0
+128,"Botulinum a toxin 500 units injection (dysport)",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",26,12,"unit(s)",NULL,9,NULL,NULL,0,"DYSPORT","botulinum A toxin 500 units injection (DYSPORT)",0
+129,"Brimonidine 0.2% eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,0,"ALPHAGAN","briMONidine 0.2% eye drops",0
+130,"Brinzolamide 10mg in 1ml eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,9,10,0,"AZOPT","briNZOlamide 10mg in 1mL eye drops",0
+131,"Bromocriptine 2.5mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"bromocriptine 2.5mg tablets",0
+132,"Budesonide 200micrograms turbohaler",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",20,11,"inhalation(s)","1",3,10,NULL,0,NULL,"budesonide 200micrograms turbohaler",0
+133,"Bumetanide 1mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"bumetanide 1mg tablets",0
+134,"Bupivacaine 0.5% injection",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",22,12,"mL",NULL,NULL,NULL,NULL,0,NULL,"bupivacaine 0.5% injection",0
+135,"Calamine lotion",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",27,14,"mL",NULL,18,NULL,NULL,0,NULL,"calamine Lotion",0
+136,"Calcium carbonate d3 chewable tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"CALCICHEW D3 CHEWABLE TABLETS","calcium carbonate D3 chewable tablets",0
+137,"Calcium carbonate d3 forte chewable tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"CALCICHEW D3 FORTE","calcium carbonate D3 FORTE chewable tablets",0
+138,"Calcium carbonate 1.25g chewable tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"CALCICHEW","calcium carbonate 1.25g chewable tablets",0
+139,"Folinic acid 15mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,16,NULL,0,"FOLINIC ACID","folinic acid 15mg tablets",0
+140,"Calcium gluconate 10% injection",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,12,"mL",NULL,7,NULL,NULL,0,NULL,"calcium gluconate 10% injection",0
+141,"Calcium resonium powder",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,25,"g","15",10,NULL,NULL,0,NULL,"calcium resonium powder",0
+142,"Candesartan 4mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"candesartan 4mg tablets",0
+143,"Capsaican 0.075% cream",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",27,2,"thin layer",NULL,18,NULL,NULL,0,NULL,"capsaican 0.075% cream",0
+144,"Captopril 12.5mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"captopril 12.5mg tablets",0
+145,"Carbamazepine 100mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"carbamazepine 100mg tablets",0
+147,"Carbamazepine 100mg in 5ml sugar free liquid",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,20,"mg",NULL,10,NULL,NULL,0,NULL,"carbamazepine 100mg in 5mL sugar free liquid",0
+148,"Carbamazepine 200mg modified release tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"carbamazepine 200mg modified release tablets",0
+149,"Carbamazepine 200mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"carbamazepine 200mg tablets",0
+150,"Carbimazole 5mg tablets",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"carbiMAZole 5mg tablets",0
+151,"Carmellose 0.5% single use eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,1,"CELLUVISC","carMELLose 0.5% single use eye drops",1
+152,"Carmellose 1% single use eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,1,"CELLUVISC","carMELLose 1% single use eye drops",0
+153,"Carmellose sodium 0.5% with glycerine 0.9% eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,0,"OPTIVE","carMELLose sodium 0.5% with glycerine 0.9% eye drops",0
+154,"Carteolol 1% eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,0,"TEOPTIC","carTEOlol 1% eye drops",0
+155,"Carteolol 2% eye drops",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,0,"TEOPTIC","carTEOlol 2% eye drops",0
+156,"Cefaclor 250mg in 5ml suspension",1,"2012-10-12 10:20:26",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,9,NULL,0,NULL,"cefACLor 250mg in 5mL suspension",0
+157,"Cefalexin 125mg in 5ml suspension",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,NULL,NULL,0,NULL,"cefALExin 125mg in 5mL suspension",0
+158,"Cefalexin 250mg capsules",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,1,"capsule(s)","1",10,8,7,0,NULL,"cefALExin 250mg capsules",0
+159,"Cefalexin 250mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,8,7,0,NULL,"cefALExin 250mg tablets",0
+160,"Cefalexin 250mg in 5ml suspension",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,NULL,NULL,0,NULL,"cefALExin 250mg in 5mL suspension",0
+161,"Ceftazidime 1g injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,12,"g",NULL,7,9,NULL,0,NULL,"cefTAZidime 1g injection",0
+162,"Ceftazidime 2g injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,12,"g",NULL,7,10,NULL,0,NULL,"cefTAZidime 2g injection",0
+163,"Ceftazidime 5% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,NULL,"cefTAZidime 5% eye drops",0
+164,"Ceftriaxone 1g injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,12,"g",NULL,NULL,NULL,4,0,NULL,"cefTRIaxone 1g injection",0
+165,"Ceftriaxone 2g injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,12,"g",NULL,7,NULL,NULL,0,NULL,"cefTRIaxone 2g injection",0
+166,"Cefuroxime 125mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"cefUROxime 125mg tablets",0
+167,"Cefuroxime 1mg in 0.1ml intracameral injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,12,"mg","1",4,NULL,NULL,0,NULL,"cefUROxime 1mg in 0.1mL intracameral injection",0
+170,"Cefuroxime 1mg in 0.1ml intracameral prefilled syringe",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,12,"mg","1",4,NULL,NULL,0,NULL,"cefUROxime 1mg in 0.1mL intracameral prefilled syringe",0
+171,"Cefuroxime 250mg injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"cefUROxime 250mg injection",0
+172,"Cefuroxime 5% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,NULL,"cefUROxime 5% eye drops",0
+173,"Cefuroxime 750mg injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,NULL,NULL,0,NULL,"cefUROxime 750mg injection",0
+174,"Cetirizine 10mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",8,32,"tablet(s)","1",10,11,NULL,0,NULL,"cetirizine 10mg tablets",0
+175,"Cetirizine 5mg in 5ml solution",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",8,20,"mg",NULL,10,NULL,NULL,0,NULL,"cetirizine 5mg in 5mL solution",0
+176,"Chloramphenicol 0.5% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,8,NULL,0,NULL,"chlorAMPhenicol 0.5% eye drops",0
+177,"Chloramphenicol 0.5% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,8,NULL,1,NULL,"chlorAMPhenicol 0.5% eye drops",0
+178,"Chloramphenicol 0.5% single use eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,8,NULL,1,"CHLORAMPHENICOL MINIMS","chlorAMPhenicol 0.5% single use eye drops",0
+179,"Chloramphenicol 1% eye ointment",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,5,"strip","1",1,14,NULL,0,NULL,"chlorAMPhenicol 1% eye ointment",0
+180,"Chlordiazepoxide 5mg capsules",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"chlorDIAzepoxide 5mg capsules",0
+181,"Chlorhexidine 0.015% cetrimide 0.15% sachets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",9,26,"sachet(s)","1",18,NULL,NULL,0,NULL,"chlorHEXidine 0.015% cetrimide 0.15% sachets",0
+183,"Chlorhexidine digluconate 0.02% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",2,4,"drop(s)","1",1,NULL,NULL,1,NULL,"chlorHEXidine digluconate 0.02% eye drops",0
+184,"Chlorhexidine digluconate 0.2% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",7,4,"drop(s)","1",1,NULL,NULL,1,NULL,"chlorHEXidine digluconate 0.2% eye drops",0
+186,"Chlorhexidine gluconate 0.2% mouthwash",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",9,17,"mL","10",10,10,NULL,0,"CORSODYL","chlorHEXidine gluconate 0.2% mouthwash",0
+188,"Chlorphenamine 10mg in 1ml injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",8,12,"mg",NULL,7,NULL,NULL,0,NULL,"chlorPHEnamine 10mg in 1mL injection",0
+189,"Chlorphenamine 4mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",8,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"chlorPHEnamine 4mg tablets",0
+190,"Chlorphenamine 2mg in 5ml syrup",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",8,20,"mg",NULL,10,8,NULL,0,NULL,"chlorPHEnamine 2mg in 5mL syrup",0
+191,"Chlorpromazine 100mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"chlorPROmazine 100mg tablets",0
+192,"Chlorpromazine 25mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"chlorPROmazine 25mg tablets",0
+193,"Chlorpromazine 25mg in 1ml injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,12,"mg",NULL,2,NULL,NULL,0,NULL,"chlorPROmazine 25mg in 1mL injection",0
+194,"Ciclosporin 0.2% eye ointment",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",19,5,"strip","1",1,10,NULL,0,"OPTIMMUNE, cyclosporin","ciclosporin 0.2% eye ointment",0
+195,"Ciclosporin 100mg capsules",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",19,1,"capsule(s)",NULL,10,10,NULL,0,"NEORAL, cyclosporin","ciclosporin 100mg capsules",0
+196,"Ciclosporin 100mg in 1ml solution",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",19,20,"mg",NULL,10,10,NULL,0,"NEORAL, cyclosporin","ciclosporin 100mg in 1mL solution",0
+197,"Ciclosporin 2% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",19,4,"drop(s)","1",1,NULL,NULL,1,"cyclosporin","ciclosporin 2% eye drops",0
+198,"Ciclosporin 25mg capsules",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",19,1,"capsule(s)",NULL,10,10,NULL,0,"NEORAL, cyclosporin","ciclosporin 25mg capsules",0
+199,"Ciclosporin 50mg capsules",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",19,1,"capsule(s)",NULL,10,10,NULL,0,"NEORAL, cyclosporin","ciclosporin 50mg capsules",0
+200,"Cilazapril 2.5mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"cilazapril 2.5mg tablets",0
+201,"Ciprofloxacin 100mg in 50ml infusion",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,9,"mg",NULL,7,10,NULL,0,NULL,"ciprofloxacin 100mg in 50mL infusion",0
+202,"Ciprofloxacin 250mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,10,NULL,0,NULL,"ciprofloxacin 250mg tablets",0
+203,"Ciprofloxacin 250mg in 5ml suspension",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,10,NULL,0,NULL,"ciprofloxacin 250mg in 5mL suspension",0
+204,"Ciprofloxacin 500mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,10,NULL,0,NULL,"ciprofloxacin 500mg tablets",0
+206,"Ciprofloxacin 750mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,10,NULL,0,NULL,"ciprofloxacin 750mg tablets",0
+207,"Citalopram 20mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"citalopram 20mg tablets",0
+208,"Sodium citrate 10.11% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",26,4,"drop(s)","1",1,NULL,NULL,1,"CITRATE","sodium citrate 10.11% eye drops",0
+209,"Clarithromycin 1% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,NULL,"CLArithromycin 1% eye drops",0
+210,"Clarithromycin 2% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,NULL,"CLArithromycin 2% eye drops",0
+211,"Clarithromycin 250mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,10,NULL,0,NULL,"CLArithromycin 250mg tablets",0
+212,"Clarithromycin 500mg injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,10,NULL,0,NULL,"CLArithromycin 500mg injection",0
+213,"Clindamycin 150mg capsules",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,1,"capsule(s)","2",10,8,NULL,0,"DALACIN C","CLINdamycin 150mg capsules",0
+214,"Clindamycin 300mg in 2ml injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,NULL,NULL,0,NULL,"CLINdamycin 300mg in 2mL injection",0
+216,"Clobetasol 0.05% cream",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",27,2,"fingertip(s)","1",18,NULL,NULL,0,"DERMOVATE","clobetaSOL 0.05% cream",0
+217,"Clobetasol 0.05% ointment",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",27,19,"fingertip(s)","1",18,NULL,NULL,0,"DERMOVATE","clobetaSOL 0.05% ointment",0
+218,"Clobetasone 0.05% cream",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",27,2,"fingertip(s)","1",18,NULL,NULL,0,"EUMOVATE","clobetasONE 0.05% cream",0
+219,"Clobetasone 0.05% ointment",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",27,19,"fingertip(s)","1",18,NULL,NULL,0,"EUMOVATE","clobetasONE 0.05% ointment",0
+220,"Clomethiazole 192mg capsules",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"cloMEThiazole 192mg capsules",0
+221,"Clomipramine 10mg capsules",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"cloMIPramine 10mg capsules",0
+222,"Clonazepam 2mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"clonAZEpam 2mg tablets",0
+223,"Clonidine 150 micrograms in 1ml injection",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,12,"microgram(s)",NULL,7,NULL,NULL,0,NULL,"clonIDIne 150 micrograms in 1mL injection",0
+224,"Clopidogrel 300mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",4,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"cloPIDogrel 300mg tablets",0
+225,"Clopidogrel 75mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",4,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"cloPIDogrel 75mg tablets",0
+226,"Clotrimazole 1% cream",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",7,2,"thin layer",NULL,18,NULL,NULL,0,NULL,"cloTRImazole 1% cream",0
+227,"Clotrimazole 1% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",7,4,"drop(s)","1",1,NULL,NULL,1,NULL,"cloTRImazole 1% eye drops",0
+228,"Clotrimazole 500mg pessary",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",7,24,"pessary(s)",NULL,12,14,NULL,0,NULL,"cloTRImazole 500mg pessary",0
+229,"Co-amilofruse 5/40 tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"amiloride with furosemide","co-amiloFRUse 5/40 tablets",0
+230,"Co-amilozide 5/50 tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"amiloride with hydrochlorothiazide","co-amiloZIDe 5/50 tablets",0
+231,"Co-amoxiclav 125/31 sugar free suspension",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,20,"mL",NULL,10,9,NULL,0,"amoxicillin with clavulanic acid","co-amOXIclav 125/31 sugar free suspension",0
+232,"Co-amoxiclav 250/62 sugar free suspension",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,20,"mL",NULL,10,9,NULL,0,"amoxicillin with clavulanic acid","co-amOXIclav 250/62 sugar free suspension",0
+233,"Co-amoxiclav 375mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,9,7,0,"amoxicillin with clavulanic acid","co-amOXIclav 375mg tablets",0
+234,"Co-amoxiclav 625mg tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,9,7,0,"amoxicillin with clavulanic acid","co-amOXIclav 625mg tablets",0
+235,"Co-beneldopa 12.5/50 capsules",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,1,"capsule(s)",NULL,10,NULL,NULL,0,"benserazide with levodopa","co-BENeldopa 12.5/50 capsules",0
+236,"Cocaine 4% eye drops",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",22,4,"drop(s)","1",1,NULL,NULL,1,NULL,"cocaine 4% eye drops",0
+237,"Co-careldopa 25/100 tablets",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"carbidopa with levodopa","co-CAReldopa 25/100 tablets",0
+239,"Co-codamol 30/500 capsules",1,"2012-10-12 10:20:27",1,"1900-01-01 00:00:00",1,1,"capsule(s)","1",10,8,6,0,"codeine with paracetamol","co-CODamol 30/500 capsules",0
+240,"Co-codamol 8/500 effervescent tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",1,32,"tablet(s)",NULL,10,8,6,0,"codeine with paracetamol","co-CODamol 8/500 effervescent tablets",0
+242,"Co-codamol 8/500 tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",1,32,"tablet(s)",NULL,10,8,6,0,"codeine with paracetamol","co-CODamol 8/500 tablets",0
+243,"Codeine 15mg in 5ml linctus",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",1,20,"mg",NULL,10,8,6,0,NULL,"codeine 15mg in 5mL linctus",0
+244,"Codeine phosphate 15mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",1,32,"tablet(s)",NULL,10,8,6,0,NULL,"codeine phosphate 15mg tablets",0
+245,"Codeine phosphate 30mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",1,32,"tablet(s)","1",10,8,6,0,NULL,"codeine phosphate 30mg tablets",0
+246,"Codeine phosphate 60mg in 1ml injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",1,12,"mg",NULL,2,NULL,NULL,0,NULL,"codeine phosphate 60mg in 1mL injection",0
+247,"Codydramol 10/500 tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",1,32,"tablet(s)",NULL,10,8,6,0,NULL,"coDYDramol 10/500 tablets",0
+248,"Cofluampicil 250/250 capsules",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",3,1,"capsule(s)","1",10,8,7,0,NULL,"cofluampicil 250/250 capsules",0
+249,"Collodion flexible",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",27,27,"unit(s)",NULL,18,NULL,NULL,0,NULL,"COLLODION FLEXIBLE",0
+250,"Brimonidine 0.2% with timolol 0.5% eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,0,"COMBIGAN","brimonidine 0.2% with timolol 0.5% eye drops",0
+251,"Zidovudine 300mg with lamivudine 150mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",11,32,"tablet(s)",NULL,10,NULL,NULL,0,"COMBIVIR","zidovudine 300mg with lamivudine 150mg tablets",0
+252,"Compound sodium lactate 1000ml infusion",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",21,9,"mL",NULL,NULL,NULL,NULL,0,"HARTMANN\"S","compound sodium lactate 1000mL infusion",0
+253,"Compound sodium lactate 500ml infusion",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",21,9,"mL",NULL,NULL,NULL,NULL,0,"HARTMANN\"S","compound sodium lactate 500mL infusion",0
+254,"Contact lens case",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",14,3,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"CONTACT LENS CASE",0
+255,"Dorzolamide 2% with timolol 0.5% eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,0,"COSOPT","dorzolamide 2% with timolol 0.5% eye drops",0
+256,"Dorzolamide 2% with timolol 0.5% single use eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,1,"COSOPT","dorzolamide 2% with timolol 0.5% single use eye drops",0
+257,"Atenolol 50mg with chlortalidone 12.5mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"co-TENidone 50/12.5 tablets","atenolol 50mg with chlortalidone 12.5mg tablets",0
+258,"Triamterene 50mg with hydrochlorothiazide 25mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"co-triAMTerzide 50/25 tablets","triamterene 50mg with hydrochlorothiazide 25mg tablets",0
+259,"Co-trimoxazole 480mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",3,32,"tablet(s)","2",10,10,7,0,NULL,"co-trimoxazole 480mg tablets",0
+260,"Cyclizine 50mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",6,32,"tablet(s)","1",10,9,NULL,0,NULL,"cyclizine 50mg tablets",0
+261,"Cyclizine 50mg in 1ml injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",6,12,"mg",NULL,NULL,9,NULL,0,NULL,"cyclizine 50mg in 1mL injection",0
+262,"Cyclopentolate 0.5% eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,0,"MYDRILATE","cyclopentolate 0.5% eye drops",0
+263,"Cyclopentolate 0.5% single use eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,1,"CYCLOPENTOLATE MINIMS","cyclopentolate 0.5% single use eye drops",0
+264,"Cyclopentolate 1% eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,8,NULL,1,NULL,"cyclopentolate 1% eye drops",0
+265,"Cyclopentolate 1% eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,8,NULL,0,"MYDRILATE","cyclopentolate 1% eye drops",0
+266,"Cyclopentolate 1% single use eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,1,"CYCLOPENTOLATE MINIMS","cyclopentolate 1% single use eye drops",0
+268,"Cyclophosphamide 50mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",19,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"cycloPHOsphamide 50mg tablets",0
+269,"Daily cleaner bausch and lomb",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",12,27,"bottle(s)",NULL,NULL,NULL,NULL,0,NULL,"DAILY CLEANER BAUSCH AND LOMB",0
+270,"Miconazole 2% with hydrocortisone 1% cream",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",7,2,"thin layer",NULL,18,NULL,NULL,0,"DAKTACORT","miconazole 2% with hydrocortisone 1% cream",0
+271,"Dantrolene 20mg injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"dantrolene 20mg injection",0
+272,"Dapsone 100mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"dapsone 100mg tablets",0
+273,"Dapsone 50mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"dapsone 50mg tablets",0
+274,"Dermol lotion",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",27,14,"mL",NULL,18,NULL,NULL,0,NULL,"DERMOL LOTION",0
+275,"Dexamethasone base 3.3mg in 1ml injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",28,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"dexamethasone base 3.3mg in 1mL injection",0
+276,"Dexamethasone base 4mg in 1ml injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",28,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"dexamethasone base 4mg in 1mL injection",0
+278,"Dexamethasone 0.1% eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,"MAXIDEX","dexamethasone 0.1% eye drops",0
+279,"Dexamethasone 0.1% eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,1,NULL,"dexamethasone 0.1% eye drops",0
+280,"Dexamethasone 0.1% single use eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,1,"DEXAMETHASONE MINIMS","dexamethasone 0.1% single use eye drops",0
+281,"Dexamethasone 2mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",28,32,"tablet(s)",NULL,10,NULL,NULL,0,NULL,"dexamethasone 2mg tablets",0
+282,"Dexamethasone 0.7mg intravitreal implant",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",28,8,"implant","1",6,NULL,NULL,0,"OZURDEX","dexamethasone 0.7mg intravitreal implant",0
+283,"Dexamethasone phosphate 8mg in 2ml injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",28,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"dexamethasone phosphate 8mg in 2mL injection",0
+285,"Dextran 40 10% in glucose 5% infusion",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"dextran 40 10% in glucose 5% infusion",1
+286,"Dextran 40 10% in sodium chloride 0.9% infusion",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"dextran 40 10% in sodium chloride 0.9% infusion",0
+287,"Diamorphine 5mg injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",1,12,"mg",NULL,7,NULL,NULL,0,NULL,"diaMORphine 5mg injection",0
+288,"Diazepam 10mg rectal tubes",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",18,33,"mL",NULL,11,NULL,NULL,0,NULL,"diazepam 10mg rectal tubes",0
+289,"Diazepam 10mg in 2ml emulsion injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",18,12,"mg",NULL,7,NULL,NULL,0,NULL,"diazepam 10mg in 2mL emulsion injection",0
+290,"Diazepam 10mg in 2ml injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",18,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"diazepam 10mg in 2mL injection",0
+291,"Diazepam 2.5mg rectal tubes",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",18,33,"mL",NULL,11,NULL,NULL,0,NULL,"diazepam 2.5mg rectal tubes",0
+292,"Diazepam 2mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",18,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"diazepam 2mg tablets",0
+293,"Diazepam 2mg in 5ml solution",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",18,20,"mg",NULL,10,NULL,NULL,0,NULL,"diazepam 2mg in 5mL solution",0
+294,"Diazepam 5mg rectal tubes",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",18,33,"mL",NULL,11,NULL,NULL,0,NULL,"diazepam 5mg rectal tubes",0
+295,"Diazepam 5mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",18,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"diazepam 5mg tablets",0
+296,"Dibromopropamidine 0.15% eye ointment",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",2,5,"strip","1",1,NULL,NULL,0,"BROLENE","dibromopropamidine 0.15% eye ointment",0
+297,"Diclofenac sodium 0.1% single use eye drops",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,4,"drop(s)","1",1,NULL,NULL,1,"VOLTAROL","diclofenac sodium 0.1% single use eye drops",0
+299,"Diclofenac sodium 100mg modified release tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"diclofenac sodium 100mg modified release tablets",0
+300,"Diclofenac sodium 100mg suppositories",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,31,"suppository(s)","1",11,NULL,NULL,0,NULL,"diclofenac sodium 100mg suppositories",0
+301,"Diclofenac sodium 12.5mg suppositories",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,31,"suppository(s)","1",11,NULL,NULL,0,NULL,"diclofenac sodium 12.5mg suppositories",0
+302,"Diclofenac sodium 25mg enteric coated tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"diclofenac sodium 25mg enteric coated tablets",0
+303,"Diclofenac sodium 25mg suppositories",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,31,"suppository(s)","1",11,NULL,NULL,0,NULL,"diclofenac sodium 25mg suppositories",0
+304,"Diclofenac sodium 50mg dispersible tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"diclofenac sodium 50mg dispersible tablets",0
+305,"Diclofenac sodium 50mg enteric coated tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"diclofenac sodium 50mg enteric coated tablets",0
+306,"Diclofenac sodium 50mg suppositories",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,31,"suppository(s)","1",11,NULL,NULL,0,NULL,"diclofenac sodium 50mg suppositories",0
+307,"Diclofenac sodium 75mg modified release tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"diclofenac sodium 75mg modified release tablets",0
+308,"Diclofenac sodium 75mg in 3ml injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",25,12,"mg",NULL,7,NULL,NULL,0,NULL,"diclofenac sodium 75mg in 3mL injection",0
+309,"Digoxin 500 micrograms in 2ml injection",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",29,12,"microgram(s)",NULL,7,NULL,NULL,0,NULL,"digoxin 500 micrograms in 2mL injection",0
+310,"Digoxin 62.5 micrograms tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"digoxin 62.5 micrograms tablets",0
+311,"Dihydrocodeine 30mg tablets",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",1,32,"tablet(s)","1",10,8,NULL,0,NULL,"dihydrocodeine 30mg tablets",0
+312,"Diltiazem 120mg modified release tablets (tildiem retard)",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"TILDIEM RETARD","diltiazem 120mg modified release tablets (TILDIEM RETARD)",0
+313,"Diltiazem 200mg modified release capsules (adizem-xl)",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,"ADIZEM-XL","diltiazem 200mg modified release capsules (ADIZEM-XL)",0
+314,"Diltiazem 300mg modified release capsules (adizem-xl)",1,"2012-10-12 10:20:28",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,"ADIZEM-XL","diltiazem 300mg modified release capsules (ADIZEM-XL)",0
+315,"Diltiazem 60mg modified release capsules (dilzem sr)",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,"DILZEM SR","diltiazem 60mg modified release capsules (DILZEM SR)",0
+316,"Diltiazem 60mg modified release tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"diltiazem 60mg modified release tablets",0
+317,"Diltiazem 90mg modified release capsules (adizem-sr)",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,"ADIZEM-SR","diltiazem 90mg modified release capsules (ADIZEM-SR)",0
+318,"Diltiazem 90mg modified release tablets (calcicard cr)",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"CALCICARD CR","diltiazem 90mg modified release tablets (CALCICARD CR)",0
+319,"Diltiazem 90mg modified release tablets (tildiem retard)",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"TILDIEM RETARD","diltiazem 90mg modified release tablets (TILDIEM RETARD)",0
+320,"Dioralyte relief sachets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,25,"sachet(s)","1",10,NULL,NULL,0,NULL,"DIORALYTE RELIEF SACHETS",0
+321,"Dioralyte sachets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,25,"sachet(s)","1",10,NULL,NULL,0,NULL,"DIORALYTE SACHETS",0
+322,"Dipyridamole 100mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",4,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"dipyridamole 100mg tablets",0
+323,"Dipyridamole 200mg modified release capsules",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",4,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"dipyridamole 200mg modified release capsules",0
+324,"Disodium edetate 0.37% eye drops",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",26,4,"drop(s)","1",1,NULL,NULL,0,"EDTA","disodium edetate 0.37% eye drops",0
+325,"Disodium edetate 0.37% solution",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",26,27,"mL",NULL,1,NULL,NULL,1,"EDTA","disodium edetate 0.37% solution",0
+326,"Dobutamine 250mg in 20ml concentrate for infusion",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"dobutamine 250mg in 20mL concentrate for infusion",0
+328,"Docusate sodium 100mg capsules",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"docusate sodium 100mg capsules",0
+329,"Domperidone 10mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",6,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"domperidone 10mg tablets",0
+330,"Domperidone 30mg suppositories",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",6,31,"suppository(s)","1",11,NULL,NULL,0,NULL,"domperidone 30mg suppositories",0
+331,"Domperidone 5mg in 5ml sugar free suspension",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",6,20,"mg",NULL,10,NULL,NULL,0,NULL,"domperidone 5mg in 5mL sugar free suspension",0
+332,"Dopamine 200mg in 5ml concentrate for infusion",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"dopamine 200mg in 5mL concentrate for infusion",0
+333,"Dorzolamide 2% eye drops",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,9,10,0,"TRUSOPT","dorzolamide 2% eye drops",0
+334,"Dorzolamide 2% single use eye drops",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,9,10,1,"TRUSOPT","dorzolamide 2% single use eye drops",0
+336,"Dosulepin 25mg capsules",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,"dothierpin","doSULepin 25mg capsules",0
+337,"Dosulepin 75mg capsules",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,"dothierpin","doSULepin 75mg capsules",0
+338,"Doxazosin 1mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"doXAZosin 1mg tablets",0
+339,"Doxazosin 2mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"doXAZosin 2mg tablets",0
+340,"Doxazosin 4mg modified release tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"doXAZosin 4mg modified release tablets",0
+341,"Doxepin 25mg capsules",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"doXEPin 25mg capsules",0
+342,"Doxycycline 50mg capsules",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,1,"capsule(s)","2",10,11,12,0,NULL,"doxycycline 50mg capsules",0
+343,"Paraffin eye ointment lanolin free",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",30,5,"strip","1",1,19,NULL,0,"DUOLUBE","paraffin eye ointment lanolin free",0
+344,"Travoprost 0.04% with timolol 0.5% eye drops",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,11,10,0,"DUOTRAV","travoprost 0.04% with timolol 0.5% eye drops",0
+345,"E45 cream",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",27,2,"unit(s)",NULL,18,19,NULL,0,"E45","E45 CREAM",0
+346,"Econazole 1% eye drops",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",7,4,"drop(s)","1",1,NULL,NULL,1,NULL,"econazole 1% eye drops",0
+347,"Edrophonium 10mg in 1ml injection",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"edrophonium 10mg in 1mL injection",0
+348,"Emedastine 0.05% eye drops",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",8,4,"drop(s)","1",1,10,NULL,0,"EMADINE","emedastine 0.05% eye drops",0
+349,"Lidocaine 2.5% with prilocaine 2.5% cream",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",22,2,"thick layer",NULL,18,NULL,NULL,0,"EMLA","lidocaine 2.5% with prilocaine 2.5% cream",0
+350,"Enalapril 2.5mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"enalapril 2.5mg tablets",0
+351,"Enalapril 5mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"enalapril 5mg tablets",0
+352,"Enoxaparin 20mg  2,000 units in 0.2ml syringe",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",4,12,"mg","20",15,11,NULL,0,"CLEXANE","enoxaparin 20mg  2,000 units in 0.2mL syringe",0
+353,"Enoxaparin 40mg  4,000 units in 0.4ml syringe",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",4,12,"mg","20",15,11,NULL,0,"CLEXANE","enoxaparin 40mg  4,000 units in 0.4mL syringe",0
+354,"Epaderm cream",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",27,2,"unit(s)",NULL,18,NULL,NULL,0,NULL,"EPADERM CREAM",0
+355,"Ephedrine 0.5% nose drops",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",32,4,"drop(s)","1",8,NULL,NULL,0,NULL,"ePHEdrine 0.5% nose drops",0
+356,"Ephedrine 30mg in 1ml injection",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",32,12,"mg",NULL,7,NULL,NULL,0,NULL,"ePHEdrine 30mg in 1mL injection",0
+357,"Erythromycin 0.5% eye ointment",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,5,"strip","1",1,NULL,NULL,0,NULL,"erythromycin 0.5% eye ointment",0
+358,"Erythromycin 125mg in 5ml suspension",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,8,NULL,0,NULL,"erythromycin 125mg in 5mL suspension",0
+359,"Erythromycin 250mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,8,7,0,NULL,"erythromycin 250mg tablets",0
+360,"Erythromycin 250mg in 5ml sugar free suspension",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,20,"mg","250",10,8,NULL,0,NULL,"erythromycin 250mg in 5mL sugar free suspension",0
+361,"Erythromycin lactobionate 1g injection",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,12,"g",NULL,7,NULL,NULL,0,NULL,"erythromycin lactobionate 1g injection",0
+362,"Esmolol 10mg in 1ml infusion",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"esmolol 10mg in 1mL infusion",0
+363,"Ethambutol 100mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"ethambutol 100mg tablets",0
+365,"Ethanol injection",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",26,27,"mL",NULL,1,NULL,NULL,0,"absolute alcohol, dehydrated alcohol","ethanol injection",0
+366,"Ethanol 20% sterile solution",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",26,27,"mL",NULL,NULL,NULL,NULL,1,"alcohol","ethanol 20% sterile solution",0
+367,"Ethanol 70% sterile solution",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",26,12,"unit(s)","1",NULL,NULL,NULL,1,"alcohol","ethanol 70% sterile solution",0
+368,"Ethyl chloride spray",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",22,29,"spray(s)",NULL,18,NULL,NULL,0,NULL,"ethyl chloride spray",0
+369,"Etomidate 20mg in 10ml injection",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",16,12,"mg",NULL,7,NULL,NULL,0,NULL,"etomidate 20mg in 10mL injection",0
+370,"Eye eye crystal contact lens cleaner",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",12,27,"bottle(s)",NULL,NULL,NULL,NULL,0,"EYE EYE","EYE EYE CRYSTAL CONTACT LENS CLEANER",0
+371,"Ezetimibe 10mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"ezetimibe 10mg tablets",0
+372,"Famciclovir 250mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",11,32,"tablet(s)","2",10,NULL,NULL,0,NULL,"famciclovir 250mg tablets",0
+373,"Felodipine 2.5mg modified release tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,11,NULL,0,NULL,"felodipine 2.5mg modified release tablets",0
+374,"Fentanyl 100 micrograms in 2ml injection",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",1,12,"microgram(s)",NULL,7,NULL,NULL,0,NULL,"fentanyl 100 micrograms in 2mL injection",0
+375,"Ferrous sulphate 200mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"ferrous sulphate 200mg tablets",0
+376,"Finasteride 5mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"finasteride 5mg tablets",0
+377,"Flecainide 50mg tablets",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"flecainide 50mg tablets",0
+378,"Flucloxacillin 125mg in 5ml syrup",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,8,NULL,0,NULL,"flucLOXacillin 125mg in 5mL syrup",0
+379,"Flucloxacillin 250mg capsules",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,1,"capsule(s)","1",10,8,7,0,NULL,"flucLOXacillin 250mg capsules",0
+381,"Flucloxacillin 250mg injection",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,8,NULL,0,NULL,"flucLOXacillin 250mg injection",0
+382,"Flucloxacillin 250mg in 5ml syrup",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,20,"mg","250",10,8,NULL,0,NULL,"flucLOXacillin 250mg in 5mL syrup",0
+383,"Flucloxacillin 500mg capsules",1,"2012-10-12 10:20:29",1,"1900-01-01 00:00:00",3,1,"capsule(s)","1",10,8,7,0,NULL,"flucLOXacillin 500mg capsules",0
+384,"Flucloxacillin 500mg injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,8,NULL,0,NULL,"flucLOXacillin 500mg injection",0
+385,"Fluconazole 200mg capsules",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",7,1,"capsule(s)","1",10,10,NULL,0,NULL,"flucONAzole 200mg capsules",0
+386,"Fluconazole 200mg in 100ml infusion",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",7,9,"mg",NULL,7,10,NULL,0,NULL,"flucONAzole 200mg in 100mL infusion",0
+387,"Fluconazole 50mg capsules",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",7,1,"capsule(s)","1",10,11,NULL,0,NULL,"flucONAzole 50mg capsules",0
+388,"Fluconazole 50mg in 5ml suspension",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",7,20,"mg",NULL,10,11,NULL,0,NULL,"flucONAzole 50mg in 5mL suspension",0
+389,"Flucytosine 500mg tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",7,32,"tablet(s)",NULL,10,8,NULL,0,NULL,"flucYTOsine 500mg tablets",0
+390,"Flumazenil 500 micrograms in 5ml injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",16,12,"microgram(s)",NULL,7,NULL,NULL,0,NULL,"fluMAZenil 500 micrograms in 5mL injection",0
+391,"Fluocinolone acetonide 0.025% gel",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",28,7,"fingertip(s)","1",18,NULL,NULL,0,"SYNALAR","fluoCINolone acetonide 0.025% gel",0
+392,"Fluorescein 10% injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",15,12,"mL","5",7,NULL,NULL,0,"ANATERA","fluoREScein 10% injection",0
+394,"Fluorescein sodium 2% single use eye drops",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",15,4,"drop(s)","1",1,NULL,NULL,1,"FLUORESCEIN MINIMS","fluoREScein sodium 2% single use eye drops",0
+395,"Fluorescein sodium 20% injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",15,12,"mL","5",7,NULL,NULL,0,NULL,"fluoREScein sodium 20% injection",0
+396,"Fluorescein sodium 1mg strips",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",15,30,"strip","1",1,NULL,NULL,0,NULL,"fluoREScein sodium 1mg strips",0
+397,"Fluorometholone 0.1% eye drops",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,"FML","fluoROMetholone 0.1% eye drops",0
+399,"Fluorouracil 10mg in 0.2ml syringe",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",13,12,"mg",NULL,13,NULL,NULL,0,NULL,"fluoroURAcil 10mg in 0.2ml syringe",0
+400,"Fluorouracil 250mg in 10ml injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",13,12,"mg",NULL,18,NULL,NULL,0,NULL,"fluoroURAcil 250mg in 10mL injection",0
+401,"Fluorouracil 500mg in 10ml injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",13,12,"mg",NULL,18,NULL,NULL,0,NULL,"fluoroURAcil 500mg in 10mL injection",0
+402,"Fluoxetine 20mg capsules",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,11,NULL,0,NULL,"fluoXETine 20mg capsules",0
+403,"Flurbiprofen 50mg tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",25,32,"tablet(s)","1",10,9,NULL,0,"FROBEN","flurBIProfen 50mg tablets",0
+404,"Fluticasone 125 micrograms inhaler",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",20,11,"puff(s)","2",3,10,NULL,0,NULL,"fluticasone 125 micrograms inhaler",0
+405,"Fluticasone 50 micrograms inhaler",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",20,11,"puff(s)","2",3,10,NULL,0,NULL,"fluticasone 50 micrograms inhaler",0
+406,"Folic acid 5mg tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"folic acid 5mg tablets",0
+407,"Foscarnet 24mg in 1ml injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",11,12,"mg","2.4",6,NULL,NULL,0,NULL,"foscarnet 24mg in 1ml injection",0
+409,"Fusidic acid 2% ointment",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",3,19,"thin layer",NULL,18,NULL,NULL,0,"FUCIDIN","fusidic acid 2% ointment",0
+410,"Hydrocortisone acetate 1% with fusidic acid 2% ointment",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",3,19,"thin layer","1",18,NULL,NULL,0,"FUCIDIN H","hydrocortisone acetate 1% with fusidic acid 2% ointment",0
+412,"Furosemide 20mg tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"furosemide 20mg tablets",0
+413,"Furosemide 20mg in 2ml injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"furosemide 20mg in 2mL injection",0
+414,"Furosemide 40mg tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"furosemide 40mg tablets",0
+415,"Fusidic acid 1% eye drops",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,10,NULL,0,"FUCITHALMIC","fusidic acid 1% eye drops",0
+416,"Fusidic acid 2% cream",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",3,2,"thin layer",NULL,18,NULL,NULL,0,"FUCIDIN","fusidic acid 2% cream",0
+417,"Gabapentin 100mg capsules",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"gabapentin 100mg capsules",0
+418,"Gabapentin 300mg capsules",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"gabapentin 300mg capsules",0
+419,"Ganciclovir 0.15% eye gel",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",11,7,"strip","1",1,NULL,NULL,0,"VIRGAN","ganciclovir 0.15% eye gel",0
+420,"Ganciclovir 4.5mg intravitreal implant",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",11,8,"implant","1",6,NULL,NULL,0,"VITRASERT","ganciclovir 4.5mg intravitreal implant",0
+421,"Bimatoprost 0.03% with timolol 0.5% eye drops",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,11,10,0,"GANFORT","bimatoprost 0.03% with timolol 0.5% eye drops",0
+422,"Gaviscon infant oral powder sachet",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,25,"sachet(s)","1",10,NULL,NULL,0,"GAVISCON","GAVISCON INFANT ORAL POWDER SACHET",0
+423,"Gaviscon liquid",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,20,"mL",NULL,10,NULL,NULL,0,"GAVISCON","GAVISCON LIQUID",0
+424,"Gelatin sponge absorbable 7 x 5 x 1cm",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",26,28,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"gelatin sponge absorbable 7 x 5 x 1cm",0
+425,"Gelofusine infusion",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"gelofusine infusion",0
+426,"Gentamicin 0.3% eye drops",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,0,"GENTICIN","gentamicin 0.3% eye drops",0
+427,"Gentamicin 0.3% eye drops",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,NULL,"gentamicin 0.3% eye drops",0
+428,"Gentamicin 1.5% forte eye drops",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,0,NULL,"gentamicin 1.5% FORTE eye drops",0
+429,"Gentamicin 1.5% forte eye drops",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,NULL,"gentamicin 1.5% FORTE eye drops",0
+430,"Gentamicin 80mg in 2ml injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,11,NULL,0,NULL,"gentamicin 80mg in 2mL injection",0
+431,"Glibenclamide 5mg tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",5,32,"tablet(s)","1",10,11,10,0,NULL,"gliBENclamide 5mg tablets",0
+432,"Gliclazide 30mg modified release tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",5,32,"tablet(s)","1",10,11,10,0,NULL,"gliCLAzide 30mg modified release tablets",0
+433,"Gliclazide 80mg tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",5,32,"tablet(s)","1",10,11,10,0,NULL,"gliCLAzide 80mg tablets",0
+434,"Glimepiride 2mg tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",5,32,"tablet(s)","1",10,11,10,0,NULL,"gliMEPiride 2mg tablets",0
+435,"Glipizide 5mg tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",5,32,"tablet(s)","1",10,11,10,0,NULL,"gliPIZide 5mg tablets",0
+436,"Glucagon 1mg injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,12,"mg","1",NULL,NULL,NULL,0,NULL,"gluCAGon 1mg injection",0
+437,"Glucose 10% infusion",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"glucose 10% infusion",0
+438,"Glucose 5% infusion",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"glucose 5% infusion",0
+440,"Glucose 50% infusion",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"glucose 50% infusion",0
+442,"Glucose 50% syringe",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,12,"mL",NULL,7,NULL,NULL,0,NULL,"glucose 50% syringe",0
+444,"Glycerol 1g suppositories",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,31,"suppository(s)","1",11,NULL,NULL,0,"glycerin","glycerol 1g suppositories",0
+445,"Glycerol 2g suppositories",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,31,"suppository(s)","1",11,NULL,NULL,0,"glycerin","glycerol 2g suppositories",0
+446,"Glycerol 4g suppositories",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,31,"suppository(s)","1",11,NULL,NULL,0,"glycerin","glycerol 4g suppositories",0
+447,"Glycerol 50% eye drops",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",26,4,"drop(s)","1",1,NULL,NULL,1,"glycerin","glycerol 50% eye drops",0
+448,"Glycerol 50% oral solution",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",17,20,"mL","",10,NULL,NULL,0,"glycerin","glycerol 50% oral solution",0
+449,"Glyceryl trinitrate 10mg in 24 hours patch",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,23,"patch(s)","1",17,NULL,NULL,0,"GTN","glyceryl trinitrate 10mg in 24 hours patch",0
+450,"Glyceryl trinitrate 400 micrograms sub-lingual spray",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,29,"spray(s)",NULL,14,NULL,NULL,0,"GTN","glyceryl trinitrate 400 micrograms sub-lingual spray",0
+451,"Glyceryl trinitrate 500 micrograms sub-lingual tablets",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",14,NULL,NULL,0,"GTN","glyceryl trinitrate 500 micrograms sub-lingual tablets",0
+452,"Glyceryl trinitrate 50mg in 10ml injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,"GTN","glyceryl trinitrate 50mg in 10mL injection",0
+453,"Glyceryl trinitrate 5mg in 24 hours patch",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,23,"patch(s)","1",17,NULL,NULL,0,"GTN","glyceryl trinitrate 5mg in 24 hours patch",0
+454,"Glycopyrronium 500 micrograms with neostigmine 2.5mg in 1ml injection",1,"2012-10-12 10:20:30",1,"1900-01-01 00:00:00",29,12,"microgram(s)",NULL,7,NULL,NULL,0,NULL,"glycopyrronium 500 micrograms with neostigmine 2.5mg in 1mL injection",0
+455,"Glycopyrronium 200 micrograms in 1ml injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",29,12,"microgram(s)",NULL,7,NULL,NULL,0,"glycopyrrolate","glycopyrronium 200 micrograms in 1mL injection",0
+456,"Glycopyrronium 600 micrograms in 3ml injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",29,12,"microgram(s)",NULL,7,NULL,NULL,0,"glycopyrrolate","glycopyrronium 600 micrograms in 3mL injection",0
+457,"H1n1 pandemic vaccine baxter brand injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",31,12,"mL",NULL,NULL,NULL,NULL,0,NULL,"H1N1 PANDEMIC VACCINE BAXTER BRAND injection",0
+458,"H1n1 pandemic vaccine gsk stock injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",31,12,"mL",NULL,NULL,NULL,NULL,0,NULL,"H1N1 PANDEMIC VACCINE GSK STOCK injection",0
+459,"Haloperidol 5mg tablets",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"haloperidol 5mg tablets",0
+460,"Haloperidol 5mg in 1ml injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",29,12,"mg",NULL,2,NULL,NULL,0,NULL,"haloperidol 5mg in 1mL injection",0
+461,"Hand cream",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",27,2,"unit(s)",NULL,18,NULL,NULL,0,NULL,"hand cream",0
+462,"Heparin 5,000 units in 1ml eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",4,4,"drop(s)","1",1,NULL,NULL,1,NULL,"heparin 5,000 units in 1mL eye drops",0
+463,"Heparin sodium 1,000 units in 1ml injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",4,12,"unit(s)",NULL,7,NULL,NULL,0,NULL,"heparin sodium 1,000 units in 1mL injection",0
+464,"Heparin sodium 5,000 units in 0.2ml injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",4,12,"unit(s)",NULL,15,NULL,NULL,0,NULL,"heparin sodium 5,000 units in 0.2mL injection",0
+465,"Heparin sodium 5,000 units in 1ml injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",4,12,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"heparin sodium 5,000 units in 1mL injection",0
+466,"Hepatitis a vaccine syringe (havrix monodose)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",31,12,"mL",NULL,2,NULL,NULL,0,"HAVRIX MONODOSE","hepatitis A vaccine syringe (HAVRIX MONODOSE)",0
+467,"Hepatitis b 10 micrograms in 1ml vaccine syringe",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",31,12,"microgram(s)",NULL,2,NULL,NULL,0,"HBVAX PRO","hepatitis B 10 micrograms in 1mL vaccine syringe",0
+469,"Hepatitis b 20 micrograms in 1ml vaccine syringe",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",31,12,"microgram(s)",NULL,2,NULL,NULL,0,"ENGERIX B","hepatitis B 20 micrograms in 1mL vaccine syringe",0
+471,"Hexamidine 0.1% eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",2,4,"drop(s)","1",1,NULL,NULL,1,"DESOMEDINE","hexamidine 0.1% eye drops",0
+472,"Cyanoacrylate glue",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",26,7,"drop(s)","1",1,NULL,NULL,0,"HISTOACRYL TISSUE ADHESIVE","cyanoacrylate glue",0
+473,"Hiv post-exposure prophylaxis pack",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",29,21,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"HIV post-exposure prophylaxis pack",0
+474,"Homatropine 1% eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,0,NULL,"homatropine 1% eye drops",0
+475,"Homatropine 1% eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,1,NULL,"homatropine 1% eye drops",0
+476,"Homatropine 2% eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,0,NULL,"homatropine 2% eye drops",0
+477,"Homatropine 2% eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,1,NULL,"homatropine 2% eye drops",0
+478,"Hpmc 2% in balanced salt solution injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",33,12,"mL",NULL,4,NULL,NULL,0,NULL,"HPMC 2% in balanced salt solution injection",0
+480,"Hyaluronidase 1,500 units injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",26,12,"unit(s)",NULL,1,NULL,NULL,0,NULL,"hyaluronidase 1,500 units injection",0
+481,"Hydralazine 20mg injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"hydRALazine 20mg injection",0
+482,"Hydrocortisone 0.5% cream",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",27,2,"fingertip(s)","1",18,NULL,NULL,0,NULL,"hydrocortisone 0.5% cream",0
+483,"Hydrocortisone 0.5% ointment",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",27,19,"fingertip(s)","1",18,NULL,NULL,0,NULL,"hydrocortisone 0.5% ointment",0
+484,"Hydrocortisone 1% cream",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",27,2,"fingertip(s)","1",18,NULL,NULL,0,NULL,"hydrocortisone 1% cream",0
+485,"Hydrocortisone 1% ointment",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",27,19,"fingertip(s)","1",18,NULL,NULL,0,NULL,"hydrocortisone 1% ointment",0
+486,"Hydrocortisone 10mg tablets",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",28,32,"tablet(s)",NULL,10,NULL,NULL,0,NULL,"hydrocortisone 10mg tablets",0
+487,"Hydrocortisone sodium succinate 100mg injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",28,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"hydrocortisone sodium succinate 100mg injection",0
+488,"Hydrogen peroxide 6% solution",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",9,27,"mL",NULL,NULL,NULL,NULL,0,NULL,"hydROGen peroxide 6% solution",0
+489,"Hydrous ointment",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",27,19,"unit(s)","1",18,19,NULL,0,NULL,"hydrous ointment",0
+490,"Hydroxypropyl guar eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,0,"SYSTANE","hydroxypropyl guar eye drops",0
+491,"Hydroxypropyl guar single use eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,1,"SYSTANE","hydroxypropyl guar single use eye drops",0
+492,"Hyoscine 1mg in 72 hours patch",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",24,23,"patch(s)","1",17,NULL,NULL,0,NULL,"hyoscine 1mg in 72 hours patch",0
+493,"Hyoscine 1/2% eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,0,NULL,"hyoscine 1/2% eye drops",0
+494,"Hyoscine 1/8% eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,0,NULL,"hyoscine 1/8% eye drops",0
+495,"Hyoscine butylbromide 400 micrograms injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",29,12,"microgram(s)",NULL,NULL,NULL,NULL,0,NULL,"hyoscine butylbromide 400 micrograms injection",0
+496,"Glucose 40% gel 25g tube",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",29,7,"tube(s)","1",10,NULL,NULL,0,"HYPOSTOP, GLUCOGEL","glucose 40% gel 25g tube",0
+497,"Hypromellose 0.3% eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,0,NULL,"hypromellose 0.3% eye drops",0
+498,"Hypromellose 0.3% eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,1,NULL,"hypromellose 0.3% eye drops",0
+501,"Hypromellose 0.3% single use eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,1,"HYDROMOOR","hypromellose 0.3% single use eye drops",0
+502,"Hypromellose 1% eye drops",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,0,"ISOPTO ALKALINE","hypromellose 1% eye drops",0
+503,"Ibuprofen 100mg in 5ml sugar free suspension",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",25,20,"mg",NULL,10,9,7,0,NULL,"ibuprofen 100mg in 5mL sugar free suspension",0
+504,"Ibuprofen 200mg tablets",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",25,32,"tablet(s)","1",10,9,NULL,0,NULL,"ibuprofen 200mg tablets",0
+507,"Ibuprofen 400mg tablets",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",25,32,"tablet(s)","1",10,9,NULL,0,NULL,"ibuprofen 400mg tablets",0
+508,"Brilliant blue g 0.125mg in 0.5ml syringe",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",15,12,"mL",NULL,6,NULL,NULL,0,"ILM-BLUE SYRINGE","brilliant blue G 0.125mg in 0.5mL syringe",0
+509,"Indapamide 2.5mg tablets",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"indapamide 2.5mg tablets",0
+511,"Indocyanine green 25mg injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",15,12,"mL","5",7,NULL,NULL,0,"ICG","indocyanine green 25mg injection",0
+512,"Influenza vaccine injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",31,12,"mL",NULL,NULL,NULL,NULL,0,NULL,"influenza vaccine injection",0
+513,"Lidocaine 2% with chlorhexidine 0.25% sterile gel",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",22,7,"mL",NULL,18,NULL,NULL,0,"INSTILLAGEL","lidocaine 2% with chlorhexidine 0.25% sterile gel",0
+514,"Insulin detemir human 300 units in 3ml cartridge (levemir)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"LEVEMIR","insulin detemir human 300 units in 3mL cartridge (LEVEMIR)",0
+515,"Insulin detemir human 300 units in 3ml pen (flexpen)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"FLEXPEN","insulin detemir human 300 units in 3mL pen (FLEXPEN)",0
+516,"Insulin glargine human 100 units in 1ml injection (lantus)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"LANTUS","insulin glargine human 100 units in 1mL injection (LANTUS)",0
+517,"Insulin glulisine human 100 units in 1ml injection (apidra)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"APIDRA","insulin glulisine human 100 units in 1mL injection (APIDRA)",0
+518,"Insulin lispro human 100 units in 1 ml injection (humalog)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"HUMALOG","insulin lispro human 100 units in 1 mL injection (HUMALOG)",0
+519,"Insulin soluble human 100 units in 1ml injection (actrapid)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"ACTRAPID","insulin soluble human 100 units in 1mL injection (ACTRAPID)",0
+520,"Insulin aspart human 100 units in 1ml injection (novorapid)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"NOVORAPID","insulin aspart human 100 units in 1mL injection (NOVORAPID)",0
+521,"Insulin isophane human 100 units in 1ml injection (insulatard)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"INSULATARD","insulin isophane human 100 units in 1mL injection (INSULATARD)",0
+523,"Insulin isophane human 100 units in 1ml injection (humulin i)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"HUMULIN I","insulin isophane human 100 units in 1mL injection (HUMULIN I)",0
+524,"Humulin m3 injection",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"insulin soluble 30% with isophane 70% human 100 units in 1mL","HUMULIN M3 injection",0
+525,"Insulin isophane bovine 100 units in 1ml injection (hypurin bovine isophane)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"HYPURIN BOVINE ISOPHANE","insulin isophane bovine 100 units in 1mL injection (HYPURIN BOVINE ISOPHANE)",0
+526,"Insulin zinc suspension bovine 100 unit in 1ml injection (hypurin bovine lente)",1,"2012-10-12 10:20:31",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"HYPURIN BOVINE LENTE","insulin zinc suspension bovine 100 unit in 1mL injection (HYPURIN BOVINE LENTE)",0
+527,"Insulin soluble bovine 100 units in 1ml injection (hypurin bovine neutral)",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"HYPURIN BOVINE NEUTRAL","insulin soluble bovine 100 units in 1mL injection (HYPURIN BOVINE NEUTRAL)",0
+528,"Insulin protamine zinc bovine 100 units in 1ml injection (hypurin bovine protamine zinc)",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"HYPURIN BOVINE PROTAMINE ZINC","insulin protamine zinc bovine 100 units in 1mL injection (HYPURIN BOVINE PROTAMINE ZINC)",0
+529,"Hypurin porcine 30/70 mix injection",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"insulin soluble 30% with isophane 70% porcine 100 units in 1mL","HYPURIN PORCINE 30/70 MIX injection",0
+530,"Insulin isophane human 100 units in 1ml injection (insulatard)",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"INSULATARD","insulin isophane human 100 units in 1mL injection (INSULATARD)",0
+531,"Insuman comb 15 cartridge",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"insulin soluble 15% with isophane 85% human 300 units in 3mL","INSUMAN COMB 15 cartridge",0
+532,"Insuman comb 25 cartridge",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"insulin soluble 25% with isophane 75% human 300 units in 3mL","INSUMAN COMB 25 cartridge",0
+533,"Insuman comb 50 cartridge",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"insulin soluble 50% with isophane 50% human 300 units in 3mL","INSUMAN COMB 50 cartridge",0
+535,"Humalog mix25 300 units in 3ml cartridge",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"insulin lispro 25% with lispro protamine 75% human","HUMALOG MIX25 300 units in 3mL cartridge",0
+536,"Insulin mixtard 30 300 units in 3ml cartridge",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"MIXTARD 30","insulin MIXTARD 30 300 units in 3mL cartridge",0
+537,"Insulin biphasic aspart human 300 units in 3ml pen (novomix 30 flexpen)",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",5,12,"unit(s)",NULL,15,NULL,NULL,0,"NOVOMIX 30 FLEXPEN","insulin biphasic aspart human 300 units in 3mL pen (NOVOMIX 30 FLEXPEN)",0
+538,"Interferon alfa 2a 1 million units in 1ml eye drops",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",19,4,"drop(s)","1",1,NULL,NULL,1,NULL,"interferon alfa 2a 1 million units in 1mL eye drops",0
+539,"Intralipid 20% infusion",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"INTRALIPID 20% infusion",0
+540,"Iodine tincture",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",9,27,"mL",NULL,18,NULL,NULL,0,NULL,"iodine tincture",0
+541,"Ipratropium 20 micrograms inhaler",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",20,11,"puff(s)","2",3,9,NULL,0,NULL,"ipratropium 20 micrograms inhaler",0
+542,"Ipratropium 250 micrograms in 1ml nebuliser solution",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,18,"nebule(s)",NULL,3,NULL,NULL,0,NULL,"ipratropium 250 micrograms in 1mL nebuliser solution",0
+543,"Ipratropium 500 micrograms in 2ml nebuliser solution",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,18,"nebule(s)",NULL,3,NULL,NULL,0,NULL,"ipratropium 500 micrograms in 2mL nebuliser solution",0
+544,"Irbesartan 150mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"irbesartan 150mg tablets",0
+545,"Irbesartan 75mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"irbesartan 75mg tablets",0
+546,"Isoflurane volatile liquid",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",16,10,"%",NULL,3,NULL,NULL,0,NULL,"isoflurane volatile liquid",0
+547,"Isoniazid 100mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"isoniazid 100mg tablets",0
+548,"Isoniazid 50mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"isoniazid 50mg tablets",0
+549,"Isosorbide dinitrate 10mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"isosorbide DINitrate 10mg tablets",0
+550,"Isosorbide mononitrate 10mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"isosorbide MONOnitrate 10mg tablets",0
+551,"Isosorbide mononitrate 20mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"isosorbide MONOnitrate 20mg tablets",0
+552,"Isosorbide mononitrate 60mg modified release tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"isosorbide MONOnitrate 60mg modified release tablets",0
+553,"Itraconazole 100mg capsules",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",7,1,"capsule(s)",NULL,10,NULL,NULL,0,NULL,"itraconazole 100mg capsules",0
+554,"Ketamine 100mg in 1ml injection",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",16,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"ketamine 100mg in 1mL injection",0
+555,"Ketamine 10mg in 1ml injection",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",16,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"ketamine 10mg in 1mL injection",0
+556,"Ketoconazole 200mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",7,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"ketoCONazole 200mg tablets",0
+557,"Ketorolac 0.5% eye drops",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",25,4,"drop(s)","1",1,9,NULL,0,"ACULAR","ketoROLac 0.5% eye drops",0
+558,"Ketorolac trometamol 30mg in 1ml injection",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",1,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"ketoROLac trometamol 30mg in 1mL injection",0
+560,"Labetalol 100mg in 20ml injection",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"labetalol 100mg in 20mL injection",0
+561,"Lacidipine 2mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"lacidipine 2mg tablets",0
+562,"Lacidipine 4mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"lacidipine 4mg tablets",0
+563,"Paraffin eye ointment (lacri-lube)",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",30,5,"strip","1",1,14,NULL,0,"LACRI-LUBE","paraffin eye ointment (LACRI-LUBE)",1
+564,"Lactulose solution",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,20,"mL",NULL,10,NULL,NULL,0,NULL,"lactulose solution",0
+565,"Lamotrigine 100mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"lamotrigine 100mg tablets",0
+566,"Lamotrigine 25mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"lamotrigine 25mg tablets",0
+567,"Lansoprazole 15mg dispersible tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"lansoprazole 15mg dispersible tablets",0
+569,"Latanoprost 0.005% eye drops",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,14,10,0,"XALATAN","latanoprost 0.005% eye drops",0
+570,"Lensplus ocupure saline solution",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",12,27,"bottle(s)",NULL,NULL,NULL,NULL,0,NULL,"LENSPLUS OCUPURE SALINE SOLUTION",0
+571,"Levetiracetam 250mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"levETIracetam 250mg tablets",0
+572,"Levetiracetam 500mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"levETIracetam 500mg tablets",0
+573,"Levobunolol 0.5% eye drops",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,0,"BETAGAN","levoBUNolol 0.5% eye drops",0
+574,"Levobunolol 0.5% single use eye drops",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,1,"BETAGAN","levoBUNolol 0.5% single use eye drops",0
+575,"Levobupivacaine 50mg in 10ml injection",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",22,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"levoBUPivacaine 50mg in 10mL injection",0
+576,"Levofloxacin 0.5% eye drops",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,0,"OFTAQUIX","levoFLOXacin 0.5% eye drops",0
+577,"Levofloxacin 0.5% single use eye drops",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,"OFTAQUIX","levoFLOXacin 0.5% single use eye drops",0
+578,"Levothyroxine 100 micrograms tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"levoTHYroxine 100 micrograms tablets",0
+579,"Levothyroxine 25 micrograms tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"levoTHYroxine 25 micrograms tablets",0
+580,"Lidocaine 2% with adrenaline 1 in 200,000 injection",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",22,12,"mg",NULL,NULL,NULL,NULL,0,"lignocaine with epinephrine","lidocaine 2% with adrenaline 1 in 200,000 injection",0
+581,"Lidocaine 10% spray",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",22,29,"spray(s)",NULL,NULL,NULL,NULL,0,"lignocaine","lidocaine 10% spray",0
+582,"Lidocaine 2% injection",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",22,12,"mL",NULL,NULL,NULL,NULL,0,"lignocaine","lidocaine 2% injection",0
+583,"Light liquid paraffin eye drops",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,1,NULL,"light liquid paraffin eye drops",0
+584,"Lipiodol ultra fluid injection",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",26,12,"mL",NULL,NULL,NULL,NULL,0,NULL,"LIPIODOL ULTRA FLUID INJECTION",0
+585,"Liquid paraffin 50% with white soft paraffin 50% ointment",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",27,19,"unit(s)","1",18,NULL,NULL,0,"50:50 OINTMENT","liquid paraffin 50% with white soft paraffin 50% ointment",0
+586,"Carbomer 0.25% eye gel",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",30,7,"drop(s)","1",1,19,10,0,"LIQUIVISC","carbomer 0.25% eye gel",1
+587,"Lisinopril 2.5mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"lisinopril 2.5mg tablets",0
+588,"Lisinopril 20mg tablets",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"lisinopril 20mg tablets",0
+589,"Lithium carbonate 200mg modified release tablets (priadel)",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"PRIADEL","lithium carbonate 200mg modified release tablets (PRIADEL)",0
+590,"Lithium carbonate 250mg tablets (camcolit)",1,"2012-10-12 10:20:32",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"CAMCOLIT","lithium carbonate 250mg tablets (CAMCOLIT)",0
+591,"Lithium carbonate 400mg modified release tablets (camcolit)",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"CAMCOLIT","lithium carbonate 400mg modified release tablets (CAMCOLIT)",0
+592,"Lithium carbonate 400mg modified release tablets (priadel)",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"PRIADEL","lithium carbonate 400mg modified release tablets (PRIADEL)",0
+593,"Lithium carbonate 450mg modified release tablets (liskonum)",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"LISKONUM","lithium carbonate 450mg modified release tablets (LISKONUM)",0
+594,"Lodoxamide 0.1% eye drops",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",8,4,"drop(s)","1",1,8,NULL,0,"ALOMIDE","loDOXamide 0.1% eye drops",0
+595,"Lofepramine 70mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"loFEPramine 70mg tablets",0
+596,"Loperamide 2mg capsules",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"loPERamide 2mg capsules",0
+597,"Loratidine 10mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",8,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"loraTIDine 10mg tablets",0
+598,"Lorazepam 1mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"loraZEPam 1mg tablets",0
+599,"Losartan 50mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"loSARtan 50mg tablets",0
+600,"Loteprednol etabonate 0.5% eye drops",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,"LOTEMAX","loTEPrednol etabonate 0.5% eye drops",0
+601,"Lubricating jelly",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",27,7,"unit(s)",NULL,18,NULL,NULL,0,"KY LUBRICATING JELLY","lubricating jelly",0
+602,"Magnesium hydroxide mixture bp",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,20,"mL",NULL,10,NULL,NULL,0,NULL,"magnesium hydroxide mixture BP",0
+604,"Magnesium sulphate 20% injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"magnesium sulphate 20% injection",0
+607,"Magnesium trisilicate mixture",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,20,"mL",NULL,10,NULL,NULL,0,NULL,"magnesium trisilicate mixture",0
+608,"Mannitol 10% infusion",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",17,9,"mL",NULL,7,NULL,NULL,0,NULL,"mannitol 10% infusion",0
+609,"Mannitol 20% infusion",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",17,9,"mL",NULL,7,NULL,NULL,0,NULL,"mannitol 20% infusion",0
+610,"Maxitrol eye drops",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,"dexamethasone 0.1% with neomycin 0.35% with polymyxin B sulphate 6,000 units in 1mL eye drops","MAXITROL eye drops",0
+611,"Maxitrol eye ointment",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",28,5,"strip","1",1,14,NULL,0,"dexamethasone 0.1% with neomycin 0.35% with polymyxin B sulphate 6,000 units in 1g eye ointment","MAXITROL eye ointment",0
+612,"Measles mumps rubella vaccine",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",31,12,"mL","0.5",NULL,NULL,NULL,0,"MMR","MEASLES MUMPS RUBELLA VACCINE",0
+613,"Mebeverine 135mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"meBEVerine 135mg tablets",0
+614,"Mefenamic acid 250mg capsules",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",25,1,"capsule(s)","1",10,9,NULL,0,NULL,"meFENamic acid 250mg capsules",0
+615,"Melatonin 2mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"CIRCADIN","meLATonin 2mg tablets",0
+616,"Meloxicam 15mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"meLOXicam 15mg tablets",0
+617,"Metaraminol 10mg in 1ml injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"meTARaminol 10mg in 1mL injection",0
+618,"Metformin 500mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",5,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"metFORmin 500mg tablets",0
+619,"Metformin 850mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",5,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"metFORmin 850mg tablets",0
+621,"Methadone 1mg in 1ml sugar free solution",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,20,"mL",NULL,10,NULL,NULL,0,NULL,"methaDONE 1mg in 1mL sugar free solution",0
+622,"Methotrexate 15mg in 0.3ml pre-filled syringe",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",19,12,"mg",NULL,NULL,NULL,NULL,0,"METOJECT","methoTREXate 15mg in 0.3mL pre-filled syringe",0
+623,"Methotrexate 2.5mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",19,32,"tablet(s)",NULL,10,18,NULL,0,NULL,"methoTREXate 2.5mg tablets",0
+624,"Methotrexate 800 micrograms in 0.2ml intravitreal injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",13,12,"microgram(s)",NULL,6,NULL,NULL,0,NULL,"methoTREXate 800 micrograms in 0.2mL intravitreal injection",0
+625,"Methylprednisolone 100mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",28,32,"tablet(s)","5",10,11,6,0,NULL,"methylPREDnisolone 100mg tablets",0
+626,"Methylprednisolone acetate 40mg in 1ml injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",28,12,"mg",NULL,NULL,NULL,NULL,0,"DEPO-MEDRONE","methylPREDnisolone acetate 40mg in 1mL injection",0
+627,"Methylprednisolone sodium succinate 1g injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",28,12,"g",NULL,7,11,NULL,0,"SOLU-MEDRONE","methylPREDnisolone sodium succinate 1g injection",0
+628,"Methylprednisolone sodium succinate 40mg injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",28,12,"mg",NULL,NULL,NULL,NULL,0,"SOLU-MEDRONE","methylPREDnisolone sodium succinate 40mg injection",0
+629,"Methylprednisolone sodium succinate 500mg injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",28,12,"mg",NULL,NULL,NULL,NULL,0,"SOLU-MEDRONE","methylPREDnisolone sodium succinate 500mg injection",0
+630,"Metoclopramide 10mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",6,32,"tablet(s)","1",10,9,NULL,0,NULL,"metoCLOPramide 10mg tablets",0
+631,"Metoclopramide 10mg in 2ml injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",6,12,"mg",NULL,NULL,9,NULL,0,NULL,"metoCLOPramide 10mg in 2mL injection",0
+632,"Metoclopramide 5mg in 5ml syrup",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",6,20,"mg",NULL,10,9,NULL,0,NULL,"metoCLOPramide 5mg in 5mL syrup",0
+633,"Metoprolol 5mg in 5ml injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"metoPROLol 5mg in 5mL injection",0
+634,"Metronidazole 200mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,9,7,0,NULL,"metroniDAZole 200mg tablets",0
+635,"Metronidazole 200mg in 5ml suspension",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,9,7,0,NULL,"metroniDAZole 200mg in 5mL suspension",0
+636,"Metronidazole 500mg in 100ml infusion",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,9,NULL,0,NULL,"metroniDAZole 500mg in 100mL infusion",0
+637,"Miconazole 1% eye drops",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",7,4,"drop(s)","1",1,NULL,NULL,1,NULL,"miCONazole 1% eye drops",0
+638,"Miconazole 2% cream",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",7,2,"thin layer",NULL,18,NULL,NULL,0,NULL,"miCONazole 2% cream",0
+639,"Midazolam 2mg in 2ml injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",18,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"miDAZolam 2mg in 2mL injection",0
+640,"Midazolam 2.5mg in 1ml solution",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",18,20,"mL",NULL,NULL,NULL,NULL,0,NULL,"miDAZolam 2.5mg in 1mL solution",0
+641,"Mirtazipine 15mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,14,NULL,0,NULL,"mirtaZIPine 15mg tablets",0
+642,"Mitomycin 0.02% eye drops",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",13,4,"drop(s)","1",1,NULL,NULL,1,NULL,"mitoMYCin 0.02% eye drops",0
+643,"Mitomycin 0.04% eye drops",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",13,4,"drop(s)","1",1,NULL,NULL,1,NULL,"mitoMYCin 0.04% eye drops",0
+644,"Mitomycin 2mg injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",13,12,"mg",NULL,18,NULL,NULL,0,NULL,"mitoMYCin 2mg injection",0
+645,"Mivacurium 10mg in 5ml injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"mivacurium 10mg in 5mL injection",0
+646,"Morphine sulphate 10mg in 1ml injection",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",1,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"morphine sulphate 10mg in 1mL injection",0
+647,"Morphine sulphate 10mg in 5ml solution",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",1,20,"mg",NULL,10,NULL,NULL,0,"ORAMORPH","morphine sulphate 10mg in 5mL solution",0
+648,"Movicol paediatric sachets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,25,"sachet(s)","1",10,NULL,NULL,0,NULL,"MOVICOL PAEDIATRIC SACHETS",0
+649,"Movicol sachets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",29,25,"sachet(s)","1",10,NULL,NULL,0,NULL,"MOVICOL SACHETS",0
+650,"Moxifloxacin 0.5% eye drops",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,"MOXIVIG","moxifloxacin 0.5% eye drops",0
+652,"Moxifloxacin 400mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,11,8,0,NULL,"moxifloxacin 400mg tablets",0
+653,"Mrsa decolonisation pack",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",26,21,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"MRSA DECOLONISATION PACK",0
+654,"Mupirocin 2% nasal ointment",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",3,19,"unit(s)",NULL,16,NULL,NULL,0,"BACTROBAN","mupirocin 2% nasal ointment",0
+655,"Mycophenolate mofetil 1g in 5ml suspension (cellcept)",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",19,20,"mg",NULL,10,10,NULL,1,"CELLCEPT","mycophenolate mofetil 1g in 5mL suspension (CELLCEPT)",0
+656,"Mycophenolate mofetil 250mg capsules",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",19,1,"capsule(s)","2",10,10,NULL,0,NULL,"mycophenolate mofetil 250mg capsules",0
+657,"Mycophenolate mofetil 250mg capsules (cellcept)",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",19,1,"capsule(s)","2",10,10,NULL,0,"CELLCEPT","mycophenolate mofetil 250mg capsules (CELLCEPT)",0
+658,"Mycophenolate mofetil 500mg tablets",1,"2012-10-12 10:20:33",1,"1900-01-01 00:00:00",19,32,"tablet(s)","2",10,10,NULL,0,NULL,"mycophenolate mofetil 500mg tablets",0
+659,"Mycophenolate mofetil 500mg tablets (cellcept)",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",19,32,"tablet(s)","2",10,10,NULL,0,"CELLCEPT","mycophenolate mofetil 500mg tablets (CELLCEPT)",0
+660,"Mycophenolic acid 360mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",19,32,"tablet(s)","1",10,10,NULL,0,"MYFORTIC","mycophenoLIC acid 360mg tablets",0
+661,"Mydricaine no 2 injection",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",24,12,"mL","0.3",13,11,NULL,0,"atropine 1mg with adrenaline 1 in 1,000 0.12mL with procaine 6mg in 0.3mL injection","MYDRICAINE No 2 injection",0
+662,"Mydricaine no 1 injection",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",24,12,"mL","0.3",13,11,NULL,0,"atropine 0.5mg with adrenaline 1 in 1,000 0.06mL with procaine 3mg in 0.3mL injection","MYDRICAINE No 1 injection",0
+663,"Naloxone 2mg in 2ml syringe",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"naLOXone 2mg in 2mL syringe",0
+664,"Naloxone 400 micrograms in 1ml injection",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,12,"microgram(s)",NULL,NULL,NULL,NULL,0,NULL,"naLOXone 400 micrograms in 1mL injection",0
+666,"Naproxen 250mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",25,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"naPROxen 250mg tablets",0
+667,"Chlorhexidine 0.1% with neomycin sulphate 0.5% nasal cream",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",3,2,"thin layer","1",8,NULL,NULL,0,"NASEPTIN","chlorhexidine 0.1% with neomycin sulphate 0.5% nasal cream",0
+668,"Nedocromil sodium 2% eye drops",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",8,4,"drop(s)","1",1,10,NULL,0,"RAPITIL","nedocromil sodium 2% eye drops",0
+669,"Neostigmine 2.5mg in 1ml injection",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"neostigmine 2.5mg in 1mL injection",0
+670,"Nicorandil 10mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"nicorandil 10mg tablets",0
+671,"Nifedipine 10mg capsules",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"nifedipine 10mg capsules",0
+672,"Nifedipine 10mg modifed release tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"ADALAT RETARD","nifedipine 10mg modifed release tablets",0
+673,"Nifedipine 20mg modified release tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"ADALAT LA","nifedipine 20mg modified release tablets",0
+674,"Nifedipine 20mg modified release tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"ADALAT RETARD","nifedipine 20mg modified release tablets",0
+675,"Nifedipine 30mg modified release tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"ADALAT LA","nifedipine 30mg modified release tablets",0
+676,"Nifedipine 5mg capsules",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"nifedipine 5mg capsules",0
+677,"Nimodipine 30mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"niMODipine 30mg tablets",0
+678,"Nitrous oxide size e",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"nitrous oxide SIZE E",0
+679,"Nitrous oxide size g",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"nitrous oxide SIZE G",0
+680,"Nystatin 100,000 units in 1ml suspension",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",7,20,"mL",NULL,10,NULL,NULL,0,NULL,"nystatin 100,000 units in 1mL suspension",0
+681,"Octenisan antimicrobial wash lotion",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",3,27,"mL",NULL,18,NULL,NULL,0,NULL,"OCTENISAN ANTIMICROBIAL WASH LOTION",0
+682,"Ofloxacin 400mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"ofloxacin 400mg tablets",0
+683,"Olanzapine 10mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"olanZAPine 10mg tablets",0
+684,"Olanzapine 2.5mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"olanZAPine 2.5mg tablets",0
+685,"Olanzapine 5mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"olanZAPine 5mg tablets",0
+686,"Olopatadine 1mg in 1ml eye drops",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",8,4,"drop(s)","1",1,10,NULL,0,"OPATANOL","olopatadine 1mg in 1mL eye drops",0
+687,"Omeprazole 20mg capsules",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,11,NULL,0,NULL,"omeprazole 20mg capsules",0
+688,"Omeprazole 20mg dispersible tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,11,NULL,0,NULL,"omeprazole 20mg dispersible tablets",0
+689,"Iohexol 350mg in 1 ml injection",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",26,12,"mL",NULL,NULL,NULL,NULL,0,"OMNIPAQUE","iohexol 350mg in 1 mL injection",0
+690,"Ondansetron 4mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",6,32,"tablet(s)",NULL,10,NULL,NULL,0,NULL,"ondansetron 4mg tablets",0
+691,"Ondansetron 4mg oral lyophilisates",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",6,34,"wafer(s)",NULL,10,NULL,NULL,0,"WAFERS, ZOFRAN MELT","ondansetron 4mg oral lyophilisates",0
+692,"Ondansetron 4mg in 2ml injection",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",6,12,"mg",NULL,7,NULL,NULL,0,NULL,"ondansetron 4mg in 2mL injection",0
+693,"Ondansetron 4mg in 5ml sugar free syrup",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",6,20,"mg",NULL,10,NULL,NULL,0,NULL,"ondansetron 4mg in 5mL sugar free syrup",0
+694,"Ondansetron 8mg in 4ml injection",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",6,12,"mg",NULL,7,NULL,NULL,0,NULL,"ondansetron 8mg in 4mL injection",0
+695,"Optifree express system",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",12,27,"bottle(s)",NULL,NULL,NULL,NULL,0,NULL,"OPTIFREE EXPRESS SYSTEM",0
+696,"Optifree replenish contact lens solution",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",12,27,"bottle(s)",NULL,NULL,NULL,NULL,0,NULL,"OPTIFREE REPLENISH CONTACT LENS SOLUTION",0
+697,"Optifree replenish starter pack",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",12,27,"pack(s)","1",NULL,NULL,NULL,0,NULL,"OPTIFREE REPLENISH STARTER PACK",0
+699,"Oseltamivir 12mg in 1ml oral suspension",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",11,20,"mL",NULL,10,NULL,NULL,0,"TAMIFLU","oseltamivir 12mg in 1mL oral suspension",0
+700,"Oseltamivir 30mg capsules",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",11,1,"capsule(s)","1",10,11,NULL,0,"TAMIFLU","oseltamivir 30mg capsules",0
+701,"Oseltamivir 45mg capsules",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",11,1,"capsule(s)","1",10,11,NULL,0,"TAMIFLU","oseltamivir 45mg capsules",0
+702,"Oseltamivir 75mg capsules",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",11,1,"capsule(s)","1",10,11,NULL,0,"TAMIFLU","oseltamivir 75mg capsules",0
+703,"Oxazepam 10mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",18,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"oxazepam 10mg tablets",0
+704,"Oxygen size c",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"oxygen SIZE C",0
+705,"Oxygen size cd",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"oxygen SIZE CD",0
+706,"Oxygen size d",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"oxygen SIZE D",0
+707,"Oxygen size e",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"oxygen SIZE E",0
+708,"Oxygen size f",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"oxygen SIZE F",0
+709,"Oxygen size g",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"oxygen SIZE G",0
+710,"Oxygen size hx",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"oxygen SIZE HX",0
+711,"Oxygen size j",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",16,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"oxygen SIZE J",0
+712,"Oxysept 1 step",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",12,27,"bottle(s)",NULL,NULL,NULL,NULL,0,"OXYSEPT","OXYSEPT 1 STEP",0
+713,"Vitamin b with vitamin c iv high potency injection",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",34,12,"mL",NULL,7,NULL,NULL,0,"PABRINEX IV HIGH POTENCY INJECTION","vitamin B with vitamin C IV High Potency injection",0
+715,"Paracetamol 120mg suppositories",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",1,31,"suppository(s)","1",11,19,NULL,0,NULL,"paracetamol 120mg suppositories",0
+716,"Paracetamol 120mg in 5ml sugar free suspension",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",1,20,"mg",NULL,10,19,NULL,0,NULL,"paracetamol 120mg in 5mL sugar free suspension",0
+717,"Paracetamol 240mg suppositories",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",1,31,"suppository(s)","1",11,19,NULL,0,NULL,"paracetamol 240mg suppositories",0
+718,"Paracetamol 250mg in 5ml sugar free suspension",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",1,20,"mg",NULL,10,19,NULL,0,NULL,"paracetamol 250mg in 5mL sugar free suspension",0
+720,"Paracetamol 500mg soluble tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",1,32,"tablet(s)",NULL,10,19,NULL,0,NULL,"paracetamol 500mg soluble tablets",0
+721,"Paracetamol 500mg suppositories",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",1,31,"suppository(s)","1",11,19,NULL,0,NULL,"paracetamol 500mg suppositories",0
+722,"Paracetamol 500mg tablets",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",1,32,"tablet(s)",NULL,10,19,NULL,0,NULL,"paracetamol 500mg tablets",0
+723,"Paracetamol 10mg in 1ml infusion",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",1,9,"mL",NULL,7,NULL,NULL,0,"PERFALGAN","paracetamol 10mg in 1mL infusion",0
+724,"Paraffin yellow soft bp ointment",1,"2012-10-12 10:20:34",1,"1900-01-01 00:00:00",27,19,"unit(s)",NULL,18,19,NULL,0,NULL,"paraffin yellow soft BP ointment",0
+725,"Paroxetine 20mg tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"parOXEtine 20mg tablets",0
+726,"Penicillin 0.3% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,NULL,"penicillin 0.3% eye drops",0
+727,"Peppermint oil 0.2ml enteric-coated modified release capsules",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,"COLPERMIN","peppermint oil 0.2mL enteric-coated modified release capsules",0
+730,"Perindopril 2mg tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"perindopril 2mg tablets",0
+731,"Pethidine 50mg in 1ml injection",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",1,12,"mg",NULL,2,NULL,NULL,0,NULL,"pethidine 50mg in 1mL injection",0
+732,"Phenoxymethylpenicillin 125mg in 5ml solution",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,8,7,0,"penicillin V","phenOXYmethylpenicillin 125mg in 5mL solution",0
+733,"Phenoxymethylpenicillin 250mg tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,8,7,0,"penicillin V","phenOXYmethylpenicillin 250mg tablets",0
+734,"Phenoxymethylpenicillin 250mg in 5ml solution",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",3,20,"mg",NULL,10,8,7,0,"penicillin V","phenOXYmethylpenicillin 250mg in 5mL solution",0
+735,"Phentolamine 10mg in 1ml injection",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"phenTOLamine 10mg in 1mL injection",0
+736,"Phenylephrine 0.6% intracameral injection",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",24,12,"mL",NULL,4,NULL,NULL,0,NULL,"phenyLEPhrine 0.6% intracameral injection",0
+737,"Phenylephrine 10% single use eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,1,"PHENYLEPHRINE MINIMS","phenyLEPhrine 10% single use eye drops",0
+738,"Phenylephrine 2.5% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,0,NULL,"phenyLEPhrine 2.5% eye drops",0
+739,"Phenylephrine 2.5% single use eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,1,"PHENYLEPHRINE MINIMS","phenyLEPhrine 2.5% single use eye drops",0
+740,"Phenylephrine 5% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,0,NULL,"phenyLEPhrine 5% eye drops",0
+741,"Phenytoin 100mg capsules",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"phenyTOIN 100mg capsules",0
+742,"Phenytoin 100mg tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"phenyTOIN 100mg tablets",0
+743,"Phenytoin 250mg in 5ml injection",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"phenyTOIN 250mg in 5mL injection",0
+744,"Phenytoin 25mg capsules",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"phenyTOIN 25mg capsules",0
+745,"Phenytoin 50mg capsules",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"phenyTOIN 50mg capsules",0
+746,"Pilocarpine 0.1% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",26,4,"drop(s)","1",1,NULL,NULL,0,NULL,"pilocarpine 0.1% eye drops",0
+747,"Pilocarpine 0.25% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,0,NULL,"pilocarpine 0.25% eye drops",0
+748,"Pilocarpine 0.5% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,0,NULL,"pilocarpine 0.5% eye drops",0
+749,"Pilocarpine 0.5% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,1,NULL,"pilocarpine 0.5% eye drops",0
+750,"Pilocarpine 1% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,0,NULL,"pilocarpine 1% eye drops",0
+751,"Pilocarpine 1% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,1,NULL,"pilocarpine 1% eye drops",0
+752,"Pilocarpine 2% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,0,NULL,"pilocarpine 2% eye drops",0
+753,"Pilocarpine 2% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,1,NULL,"pilocarpine 2% eye drops",0
+754,"Pilocarpine 2% single use eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,1,NULL,"pilocarpine 2% single use eye drops",0
+755,"Pilocarpine 3% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,0,NULL,"pilocarpine 3% eye drops",0
+756,"Pilocarpine 4% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,0,NULL,"pilocarpine 4% eye drops",0
+757,"Pilocarpine 4% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,1,NULL,"pilocarpine 4% eye drops",0
+758,"Pilocarpine 5mg tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"pilocarpine 5mg tablets",0
+759,"Pilocarpine 6% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,1,NULL,"pilocarpine 6% eye drops",0
+760,"Pilocarpine 6% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,0,NULL,"pilocarpine 6% eye drops",0
+761,"Pilocarpine 8% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,8,10,0,NULL,"pilocarpine 8% eye drops",0
+762,"Piroxicam 20mg tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",25,32,"tablet(s)","1",10,11,NULL,0,"FELDENE MELT","piroxicam 20mg tablets",0
+763,"Plaster remover",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",27,27,"mL",NULL,NULL,NULL,NULL,0,NULL,"plaster remover",0
+764,"Polihexanide 0.02% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",2,4,"drop(s)","1",1,NULL,NULL,1,"PHMB","polihexanide 0.02% eye drops",0
+765,"Polihexanide 0.06% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",2,4,"drop(s)","1",1,NULL,NULL,1,"PHMB","polihexanide 0.06% eye drops",0
+767,"Polyvinyl alcohol 1.4% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,NULL,0,"SNO-TEARS","polyvinyl alcohol 1.4% eye drops",0
+768,"Polyvinyl alcohol 1.4% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,NULL,1,"PVA","polyvinyl alcohol 1.4% eye drops",0
+769,"Polyvinyl alcohol 1.4% single use eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,NULL,1,"REFRESH","polyvinyl alcohol 1.4% single use eye drops",0
+770,"Potassium ascorbate 10% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",26,4,"drop(s)","1",1,NULL,NULL,1,"vitamin C, ascorbic acid","potassium ascorbate 10% eye drops",0
+771,"Potassium chloride 0.3% in glucose 5% infusion",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"potassium chloride 0.3% in glucose 5% infusion",0
+772,"Potassium chloride 0.3% in sodium chloride 0.9% infusion",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,NULL,"potassium chloride 0.3% in sodium chloride 0.9% infusion",0
+773,"Potassium chloride 12 mmol effervescent tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"SANDO-K","potassium chloride 12 mmol effervescent tablets",0
+774,"Povidone iodine 10% antiseptic solution",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",9,27,"mL","1",18,NULL,NULL,0,"VIDENE","povidone iodine 10% antiseptic solution",0
+775,"Povidone iodine 5% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",9,4,"drop(s)","1",1,NULL,NULL,1,NULL,"povidone iodine 5% eye drops",0
+779,"Pravastatin 10mg tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"pravastatin 10mg tablets",0
+780,"Pravastatin 40mg tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"pravastatin 40mg tablets",0
+781,"Prednisolone 0.001% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,NULL,"prednisolone 0.001% eye drops",1
+782,"Prednisolone 0.003% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,NULL,"prednisolone 0.003% eye drops",0
+783,"Prednisolone 0.01% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,1,NULL,"prednisolone 0.01% eye drops",0
+784,"Prednisolone 0.01% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,NULL,"prednisolone 0.01% eye drops",0
+785,"Prednisolone 0.03% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,1,NULL,"prednisolone 0.03% eye drops",0
+786,"Prednisolone 0.03% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,NULL,"prednisolone 0.03% eye drops",0
+787,"Prednisolone 0.1% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,1,NULL,"prednisolone 0.1% eye drops",0
+788,"Prednisolone 0.1% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,NULL,"prednisolone 0.1% eye drops",0
+789,"Prednisolone 0.3% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,1,NULL,"prednisolone 0.3% eye drops",0
+790,"Prednisolone 0.3% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,NULL,"prednisolone 0.3% eye drops",0
+791,"Prednisolone 0.5% eye/ear drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,"PREDSOL","prednisolone 0.5% eye/ear drops",0
+792,"Prednisolone 0.5% single use eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,1,"PREDNISOLONE MINIMS","prednisolone 0.5% single use eye drops",0
+793,"Prednisolone 1% eye drops",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,"PRED FORTE","prednisolone 1% eye drops",0
+794,"Prednisolone 1mg tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,32,"mg",NULL,10,11,NULL,0,NULL,"prednisolone 1mg tablets",0
+795,"Prednisolone 2.5mg enteric-coated tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,32,"mg",NULL,10,11,NULL,0,NULL,"prednisolone 2.5mg enteric-coated tablets",0
+796,"Prednisolone 25mg tablets",1,"2012-10-12 10:20:35",1,"1900-01-01 00:00:00",28,32,"mg",NULL,10,11,NULL,0,NULL,"prednisolone 25mg tablets",0
+797,"Prednisolone 5mg enteric-coated tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",28,32,"mg",NULL,10,11,NULL,0,NULL,"prednisolone 5mg enteric-coated tablets",0
+798,"Prednisolone 5mg soluble tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",28,32,"mg",NULL,10,11,NULL,0,NULL,"prednisolone 5mg soluble tablets",0
+799,"Prednisolone 5mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",28,32,"mg",NULL,10,11,NULL,0,NULL,"prednisolone 5mg tablets",0
+801,"Pregabalin 25mg capsules",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"preGABalin 25mg capsules",0
+802,"Prochlorperazine 12.5mg in 1ml injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",6,12,"mg",NULL,2,NULL,NULL,0,NULL,"prochlorPERazine 12.5mg in 1mL injection",0
+803,"Prochlorperazine 3mg buccal tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",6,32,"tablet(s)","1",10,NULL,NULL,0,"BUCCASTEM","prochlorPERazine 3mg buccal tablets",0
+804,"Prochlorperazine 5mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",6,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"prochlorPERazine 5mg tablets",0
+805,"Prochlorperazine 5mg in 5ml syrup",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",6,20,"mg",NULL,10,10,NULL,0,NULL,"prochlorPERazine 5mg in 5mL syrup",0
+806,"Procyclidine 5mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"proCYClidine 5mg tablets",0
+807,"Promazine 25mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"proMAZine 25mg tablets",0
+808,"Promethazine 10mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",8,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"proMEThazine 10mg tablets",0
+809,"Promethazine 25mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",8,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"proMEThazine 25mg tablets",0
+810,"Promethazine 25mg in 1ml injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",8,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"proMEThazine 25mg in 1mL injection",0
+811,"Promethazine 5mg in 5ml elixir",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",8,20,"mg",NULL,10,NULL,NULL,0,NULL,"proMEThazine 5mg in 5mL elixir",0
+812,"Propamidine 0.1% eye drops",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",2,4,"drop(s)","1",1,NULL,NULL,0,"BROLENE","proPAMidine 0.1% eye drops",0
+813,"Propantheline 15mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"proPANtheline 15mg tablets",0
+815,"Propofol 2% injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",16,12,"mg",NULL,7,NULL,NULL,0,NULL,"proPOFol 2% injection",0
+816,"Propofol 1% injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",16,12,"mL",NULL,7,NULL,NULL,0,NULL,"proPOFol 1% injection",0
+818,"Propranolol 10mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"proPRANolol 10mg tablets",0
+819,"Propranolol 1mg in 1ml injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",16,12,"mg",NULL,7,NULL,NULL,0,NULL,"proPRANolol 1mg in 1mL injection",0
+820,"Propranolol 40mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"proPRANolol 40mg tablets",0
+821,"Proxymetacaine 0.5% with fluorescein 0.25% single use eye drops",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",22,4,"drop(s)","1",1,NULL,NULL,1,"PROXYMETACAINE AND FLUORESCEIN MINIMS","proxymetacaine 0.5% with fluorescein 0.25% single use eye drops",0
+822,"Proxymetacaine 0.5% single use eye drops",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",22,4,"drop(s)","1",1,NULL,NULL,1,"PROXYMETACAINE MINIMS","proxymetacaine 0.5% single use eye drops",0
+823,"Pyridostigmine 60mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"pyridoSTIgmine 60mg tablets",0
+824,"Pyridoxine 10mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",34,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"pyridoXINe 10mg tablets",0
+825,"Pyridoxine 50mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",34,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"pyridoXINe 50mg tablets",0
+826,"Pyrimethamine 25mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,10,NULL,0,NULL,"pyriMEThamine 25mg tablets",0
+827,"Quattro contact lens multifunctional solution",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",12,27,"bottle(s)",NULL,NULL,NULL,NULL,0,NULL,"QUATTRO CONTACT LENS MULTIFUNCTIONAL SOLUTION",0
+828,"Quattro contact lens starter pack",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",12,27,"pack(s)","1",NULL,NULL,NULL,0,NULL,"QUATTRO CONTACT LENS STARTER PACK",0
+829,"Quinine sulphate 200mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"quinine sulphate 200mg tablets",0
+830,"Quinine sulphate 300mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"quinine sulphate 300mg tablets",0
+831,"Ramipril 1.25mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"ramipril 1.25mg tablets",0
+832,"Ramipril 5mg capsules",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,11,NULL,0,NULL,"ramipril 5mg capsules",0
+833,"Ramipril 5mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"ramipril 5mg tablets",0
+834,"Ranibizumab 10mg in 1ml injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",10,12,"mg","0.5",6,NULL,NULL,0,"LUCENTIS","raniBIZumab 10mg in 1mL injection",0
+835,"Ranitidine 150mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,10,NULL,0,NULL,"ranitidine 150mg tablets",0
+837,"Ranitidine 50mg in 2ml injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"ranitidine 50mg in 2mL injection",0
+838,"Ranitidine 75mg in 5ml sugar free syrup",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,20,"mg",NULL,10,10,NULL,0,NULL,"ranitidine 75mg in 5mL sugar free syrup",0
+839,"Regard contact lens solution",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",12,27,"bottle(s)",NULL,NULL,NULL,NULL,0,NULL,"REGARD CONTACT LENS SOLUTION",0
+840,"Remifentanyl 1mg injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",16,12,"mg",NULL,7,NULL,NULL,0,NULL,"remifentanyl 1mg injection",0
+841,"Repaglinide 500 micrograms tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",5,32,"tablet(s)","1",10,9,NULL,0,NULL,"repaglinide 500 micrograms tablets",0
+842,"Rifampicin 150mg with isoniazid 100mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,"RIFINAH 150/100","rifampicin 150mg with isoniazid 100mg tablets",0
+843,"Rifampicin 300mg with isoniazid 150mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,"RIFINAH 300/150","rifampicin 300mg with isoniazid 150mg tablets",0
+844,"Rimexolone 1% eye drops",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",28,4,"drop(s)","1",1,NULL,NULL,0,"VEXOL","RIMexolone 1% eye drops",0
+845,"Risperidone 1mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"RISperidone 1mg tablets",0
+846,"Rivaroxaban 10mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",4,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"rivaroxaban 10mg tablets",0
+847,"Rocuronium 50mg in 5ml injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",16,12,"mg",NULL,7,NULL,NULL,0,NULL,"rocuronium 50mg in 5mL injection",0
+849,"Alteplase 25 micrograms in 0.1ml intravitreal injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",26,12,"microgram(s)",NULL,6,NULL,NULL,0,"TPA, rTPA, tissue plasminogen activator","alteplase 25 micrograms in 0.1mL intravitreal injection",0
+850,"Salbutamol 100 micrograms inhaler",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",20,11,"puff(s)","2",3,8,NULL,0,NULL,"salbutamol 100 micrograms inhaler",0
+851,"Salbutamol 2.5mg in 2.5ml nebuliser solution",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,18,"nebule(s)",NULL,3,NULL,NULL,0,NULL,"salbutamol 2.5mg in 2.5mL nebuliser solution",0
+852,"Salbutamol 500 micrograms in 1ml injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,12,"microgram(s)",NULL,NULL,NULL,NULL,0,NULL,"salbutamol 500 micrograms in 1mL injection",0
+853,"Salmeterol 25 micrograms inhaler",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",20,11,"puff(s)","2",3,NULL,NULL,0,NULL,"salmeterol 25 micrograms inhaler",0
+854,"Salmeterol 50 micrograms accuhaler",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",20,11,"puff(s)","2",3,10,NULL,0,NULL,"salmeterol 50 micrograms accuhaler",0
+856,"Senna 7.5mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"senna 7.5mg tablets",0
+857,"Senna 7.5mg in 5ml syrup",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,20,"mg",NULL,10,NULL,NULL,0,NULL,"senna 7.5mg in 5mL syrup",0
+858,"Sertraline 50mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"sertraline 50mg tablets",0
+859,"Sevoflurane volatile liquid",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",16,10,"%",NULL,3,NULL,NULL,0,NULL,"sevoflurane volatile liquid",0
+860,"Silicone oil 1,300 cps injection",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",33,12,"mL",NULL,6,NULL,NULL,0,"OXANE 1300","silicone oil 1,300 cps injection",0
+861,"Simple eye ointment",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",30,5,"strip","1",1,14,NULL,0,NULL,"simple eye ointment",0
+862,"Simple linctus",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,20,"mL",NULL,10,NULL,NULL,0,NULL,"simple linctus",0
+863,"Simvastatin 10mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"simvastatin 10mg tablets",0
+864,"Sirolimus 1mg tablets",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",19,32,"tablet(s)",NULL,10,11,NULL,0,"RAPAMUNE, rapamycin","sirolimus 1mg tablets",0
+867,"Sodium bicarbonate 4.2% syringe",1,"2012-10-12 10:20:36",1,"1900-01-01 00:00:00",29,12,"mL",NULL,7,NULL,NULL,0,NULL,"sodium bicarbonate 4.2% syringe",0
+868,"Sodium chloride 0.9% eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,NULL,1,"saline","sodium chloride 0.9% eye drops",0
+869,"Sodium chloride 0.9% with glucose 5% infusion",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,"dextrose saline","sodium chloride 0.9% with glucose 5% infusion",0
+871,"Sodium chloride 0.9% infusion",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,9,"mL",NULL,7,NULL,NULL,0,"saline","sodium chloride 0.9% infusion",0
+874,"Sodium chloride 0.9% injection",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,12,"mL",NULL,7,NULL,NULL,0,"saline","sodium chloride 0.9% injection",0
+876,"Sodium chloride 0.9% irrigation",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",21,13,"drop(s)",NULL,18,19,NULL,1,"saline","sodium chloride 0.9% irrigation",0
+878,"Sodium chloride 0.9% irrigation sachets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",21,13,"sachet(s)","1",1,19,NULL,1,"saline","sodium chloride 0.9% irrigation sachets",0
+879,"Sodium chloride 0.9% single use eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,NULL,1,"SODIUM CHLORIDE MINIMS","sodium chloride 0.9% single use eye drops",0
+880,"Sodium chloride 0.9% sterile eye irrigation (amidose)",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",21,13,"drop(s)",NULL,1,19,NULL,0,"AMIDOSE, saline","sodium chloride 0.9% sterile eye irrigation (AMIDOSE)",0
+881,"Sodium chloride 5% eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",26,4,"drop(s)","1",1,8,NULL,1,"saline","sodium chloride 5% eye drops",0
+882,"Sodium chloride 5% eye ointment",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",26,5,"strip","1",1,14,NULL,0,NULL,"sodium chloride 5% eye ointment",0
+883,"Sodium cromoglycate 2% eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",8,4,"drop(s)","1",1,8,NULL,1,NULL,"sodium CROmoglycate 2% eye drops",0
+884,"Sodium cromoglycate 2% eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",8,4,"drop(s)","1",1,8,NULL,0,NULL,"sodium CROmoglycate 2% eye drops",0
+885,"Sodium cromoglycate 2% single use eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",8,4,"drop(s)","1",1,8,NULL,1,"CATACROM","sodium CROmoglycate 2% single use eye drops",0
+887,"Sodium hyaluronate 0.1% eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,NULL,1,"HYLO-TEAR","sodium hyaluronate 0.1% eye drops",0
+889,"Sodium hyaluronate 0.15% single use eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,NULL,1,"LUBRISTIL","sodium hyaluronate 0.15% single use eye drops",0
+891,"Sodium hyaluronate 23mg in 1ml intraocular injection",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",33,12,"mg",NULL,4,NULL,NULL,1,"HEALON 5","sodium hyaluronate 23mg in 1mL intraocular injection",0
+892,"Sodium hyaluronate 14mg in 1ml intraocular injection",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",33,12,"mg",NULL,4,NULL,NULL,0,"HEALONID GV","sodium hyaluronate 14mg in 1mL intraocular injection",0
+893,"Sodium hyaluronate 10mg in 1ml intraocular injection",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",33,12,"mg",NULL,4,NULL,NULL,0,"PROVISC","sodium hyaluronate 10mg in 1mL intraocular injection",0
+894,"Sodium valproate 200mg enteric-coated tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"sodium valproate 200mg enteric-coated tablets",0
+895,"Sodium valproate 200mg modified release tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"sodium valproate 200mg modified release tablets",0
+896,"Sodium valproate 300mg modified release tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"sodium valproate 300mg modified release tablets",0
+897,"Sodium valproate 500mg enteric-coated tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"sodium valproate 500mg enteric-coated tablets",0
+898,"Sofradex",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,0,"dexamethasone 0.05% with framycetin 0.5% with gramicidin 0.005% eye/ear drops","SOFRADEX",0
+899,"Spectinomycin 2g injection",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",3,12,"g","2",2,11,NULL,0,NULL,"spECTinomycin 2g injection",0
+900,"Spiramycin 1g tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"spirAMYcin 1g tablets",0
+901,"Spironolactone 25mg tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"spirONOlactone 25mg tablets",0
+902,"Sulfadiazine 500mg tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"sulfaDIAzine 500mg tablets",0
+903,"Sulfasalazine 500mg enteric-coated tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"sulfaSALazine 500mg enteric-coated tablets",0
+905,"Sulphur hexafluoride sf6 intraocular gas",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",26,6,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"sulphur hexafluoride SF6 intraocular gas",0
+906,"Sulpiride 200mg tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"sulPIRide 200mg tablets",0
+907,"Sumatriptan 20mg in 0.1ml nasal spray",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,29,"spray(s)",NULL,16,NULL,NULL,0,NULL,"sumatriptan 20mg in 0.1mL nasal spray",0
+909,"Suxamethonium 100mg in 2ml injection",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",16,12,"mg",NULL,7,NULL,NULL,0,NULL,"suxamethonium 100mg in 2mL injection",0
+910,"Suxamethonium 100mg in 2ml syringe",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",16,12,"mg",NULL,7,NULL,NULL,0,NULL,"suxamethonium 100mg in 2mL syringe",0
+911,"Budesonide 200 micrograms with formoterol 6 micrograms turbohaler",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",20,11,"inhalation(s)","1",3,10,NULL,0,"SYMBICORT 200/6","budesonide 200 micrograms with formoterol 6 micrograms turbohaler",0
+912,"Tacrolimus 1mg capsules",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",19,1,"capsule(s)",NULL,10,10,NULL,0,"PROGRAF","tacrolimus 1mg capsules",0
+913,"Tacrolimus 500 micrograms capsules",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",19,1,"capsule(s)",NULL,10,10,NULL,0,"PROGRAF","tacrolimus 500 micrograms capsules",0
+914,"Tacrolimus 5mg capsules",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",19,1,"capsule(s)",NULL,10,10,NULL,0,"PROGRAF","tacrolimus 5mg capsules",0
+915,"Tafluprost 15 micrograms in 1ml single use eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,14,10,1,"SAFLUTAN","tafluprost 15 micrograms in 1mL single use eye drops",0
+916,"Tamoxifen 10mg tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"tamoxifen 10mg tablets",0
+917,"Tamoxifen 20mg tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"tamoxifen 20mg tablets",0
+918,"Hypromellose 0.3% with dextran \"70\" 0.1% eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,0,"TEARS NATURALE","hypromellose 0.3% with dextran \"70\" 0.1% eye drops",0
+919,"Teicoplanin 200mg injection",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",3,12,"mg",NULL,7,11,NULL,0,NULL,"teicoplanin 200mg injection",0
+920,"Temazepam 10mg tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",18,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"temazepam 10mg tablets",0
+921,"Temazepam 10mg in 5ml sugar free solution",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",18,20,"mg",NULL,10,14,NULL,0,NULL,"temazepam 10mg in 5mL sugar free solution",0
+922,"Terbinafine 1% cream",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",7,2,"thin layer",NULL,18,NULL,NULL,0,NULL,"terBINafine 1% cream",0
+923,"Terbinafine 250mg tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",7,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"terBINafine 250mg tablets",0
+924,"Terbutaline 500 micrograms turbohaler",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",20,11,"inhalation(s)","1",3,NULL,NULL,0,NULL,"terBUTaline 500 micrograms turbohaler",0
+925,"Diphtheria with tetanus with poliomyelitis vaccine syringe",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",31,12,"mL",NULL,2,NULL,NULL,0,"REVAXIS","diphtheria with tetanus with poliomyelitis vaccine syringe",0
+926,"Tetracaine 1% single use eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",22,4,"drop(s)","1",1,NULL,NULL,1,"amethocaine, TETRACAINE MINIMS","tetracaine 1% single use eye drops",0
+927,"Tetracaine 4% gel",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",22,7,"tube(s)","1",18,NULL,NULL,0,"amethocaine, AMETOP","tetracaine 4% gel",0
+928,"Tetracycline 250mg tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,8,7,0,NULL,"tetraCYCline 250mg tablets",0
+929,"Theophylline 200mg modified release tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"UNIPHYLLIN","theophylline 200mg modified release tablets",0
+930,"Theophylline 300mg modified release tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"UNIPHYLLIN CONTINUS","theophylline 300mg modified release tablets",0
+931,"Thiamine 100mg tablets",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",34,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"thiamine 100mg tablets",0
+932,"Thiopental 500mg injection",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",16,12,"mg",NULL,7,NULL,NULL,0,NULL,"thiopental 500mg injection",0
+933,"Timolol 0.1% single use eye gel",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",17,7,"drop(s)","1",1,11,10,1,"TIOPEX","timolol 0.1% single use eye gel",0
+934,"Timolol 0.1% eye gel",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",17,7,"drop(s)","1",1,11,10,0,"NYOGEL","timolol 0.1% eye gel",0
+935,"Timolol 0.25% eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,0,"TIMOPTOL","timolol 0.25% eye drops",0
+936,"Timolol 0.25% eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,1,NULL,"timolol 0.25% eye drops",0
+937,"Timolol 0.25% eye gel (Timoptol-LA)",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",17,7,"drop(s)","1",1,11,10,0,NULL,"timolol 0.25% eye gel (Timoptol-LA)",0
+938,"Timolol 0.5% eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,1,NULL,"timolol 0.5% eye drops",1
+939,"Timolol 0.5% eye gel (Timoptol-LA)",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",17,7,"drop(s)","1",1,11,10,0,NULL,"timolol 0.5% eye gel (Timoptol-LA)",0
+940,"Timolol 0.25% single use eye drops",1,"2012-10-12 10:20:37",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,1,"TIMOPTOL","timolol 0.25% single use eye drops",0
+941,"Timolol 0.5% single use eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,10,10,1,"TIMOPTOL","timolol 0.5% single use eye drops",0
+943,"Tolbutamide 500mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",5,32,"tablet(s)","1",10,9,NULL,0,NULL,"tolbutamide 500mg tablets",0
+944,"Total care daily cleaner",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",12,27,"bottle(s)",NULL,NULL,NULL,NULL,0,NULL,"TOTAL CARE DAILY CLEANER",0
+945,"Total care disinfecting storing & wetting solution",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",12,27,"bottle(s)",NULL,NULL,NULL,NULL,0,NULL,"TOTAL CARE DISINFECTING STORING & WETTING SOLUTION",0
+946,"Total care starter pack",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",12,27,"pack(s)","1",NULL,NULL,NULL,0,NULL,"TOTAL CARE STARTER PACK",0
+947,"Tramadol 50mg capsules",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",1,1,"capsule(s)",NULL,10,NULL,NULL,0,NULL,"tramadol 50mg capsules",0
+949,"Tramadol 50mg in 1ml injection",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",1,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"tramadol 50mg in 1mL injection",0
+950,"Trandolapril 2mg capsules",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"tranDOLapril 2mg capsules",0
+951,"Tranexamic acid 500mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"tranEXAmic acid 500mg tablets",0
+952,"Travoprost 40 micrograms in 1ml eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,14,10,0,"TRAVATAN","travoprost 40 micrograms in 1mL eye drops",0
+954,"Trazodone 50mg capsules",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"trazodone 50mg capsules",0
+955,"Trazodone 50mg in 5ml sugar free liquid",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,20,"mg",NULL,10,NULL,NULL,0,NULL,"trazodone 50mg in 5mL sugar free liquid",0
+956,"Tretinoin 0.05% eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",13,4,"drop(s)","1",1,NULL,NULL,1,"all-trans retinoic acid","tretinoin 0.05% eye drops",0
+957,"Triamcinolone acetonide 40mg in 1ml injection",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",28,12,"mg",NULL,NULL,NULL,NULL,0,"KENALOG","triAMCinolone acetonide 40mg in 1mL injection",0
+958,"Trifluorothymidine 1% eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",11,4,"drop(s)","1",1,NULL,NULL,0,"F3T, Trifluridine","triFLUorothymidine 1% eye drops",0
+959,"Trifluorothymidine 1% eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",11,4,"drop(s)","1",1,NULL,NULL,1,"F3T, Trifluridine","triFLUorothymidine 1% eye drops",0
+960,"Trihexyphenidyl 2mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,"benzhexol","triHEXyphenidyl 2mg tablets",0
+961,"Trimethoprim 200mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",3,32,"tablet(s)","1",10,10,7,0,NULL,"triMEThoprim 200mg tablets",0
+962,"Tropicamide 0.5% single use eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,1,"TROPICAMIDE MINIMS","tropicamide 0.5% single use eye drops",0
+963,"Tropicamide 1% eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,0,"MYDRIACYL","tropicamide 1% eye drops",0
+964,"Tropicamide 1% single use eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",24,4,"drop(s)","1",1,NULL,NULL,1,"TROPICAMIDE MINIMS","tropicamide 1% single use eye drops",0
+965,"Tenofovir 245mg with emtricitabine 200mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",11,32,"tablet(s)","1",10,NULL,NULL,0,"TRUVADA","tenofovir 245mg with emtricitabine 200mg tablets",0
+966,"Trypan blue 0.06% injection",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",15,12,"mL",NULL,NULL,NULL,NULL,0,"VISION BLUE","trypan blue 0.06% injection",0
+968,"Tuberculin purified protein derivative 20 units in 1ml injection",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",31,12,"unit(s)",NULL,5,NULL,NULL,0,"MANTOUX","tuberculin purified protein derivative 20 units in 1mL injection",0
+969,"Benzocaine 5mg with tyrothricin 1mg lozenges",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,16,"lozenge(s)","1",10,19,NULL,0,"TYROZETS","benzocaine 5mg with tyrothricin 1mg lozenges",0
+970,"Valaciclovir 500mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",11,32,"tablet(s)",NULL,10,NULL,NULL,0,"VALTREX","valACIclovir 500mg tablets",0
+971,"Valganciclovir 450mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",11,32,"tablet(s)",NULL,10,NULL,NULL,0,"VALCYTE","valGANciclovir 450mg tablets",0
+973,"Vancomycin 1.4% eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,0,NULL,"vancomycin 1.4% eye drops",0
+974,"Vancomycin 2mg in 0.1ml intravitreal injection pre-pack",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",3,12,"mg",NULL,6,NULL,NULL,0,NULL,"vancomycin 2mg in 0.1mL intravitreal injection pre-pack",0
+975,"Vancomycin 5% eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",3,4,"drop(s)","1",1,NULL,NULL,1,NULL,"vancomycin 5% eye drops",0
+976,"Vancomycin 500mg injection",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",3,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"vancomycin 500mg injection",0
+977,"Varicella vaccine powder and solvent for solution for injection (varilix)",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",31,12,"mL",NULL,15,NULL,NULL,0,"VARILIX","varicella vaccine powder and solvent for solution for injection (VARILIX)",0
+978,"Vecuronium 10mg injection",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",16,12,"mg",NULL,7,NULL,NULL,0,NULL,"vecuronium 10mg injection",0
+980,"Venlafaxine 75mg modified release capsules",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,1,"capsule(s)","1",10,NULL,NULL,0,NULL,"venlafaxine 75mg modified release capsules",0
+981,"Venlafaxine 75mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"venlafaxine 75mg tablets",0
+982,"Verapamil 40mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"veRAPamil 40mg tablets",0
+983,"Verapamil 5mg in 2ml injection",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,12,"mg",NULL,7,NULL,NULL,0,NULL,"veRAPamil 5mg in 2mL injection",0
+984,"Verteporfin 15mg infusion",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",15,9,"mg",NULL,7,NULL,NULL,0,"VISUDYNE","verTEPorfin 15mg infusion",0
+985,"Carbomer 0.2% eye gel",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",30,7,"drop(s)","1",1,19,10,0,"VISCOTEARS","carbomer 0.2% eye gel",0
+986,"Volumatic adult",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",14,3,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"VOLUMATIC ADULT",0
+987,"Volumatic paediatric",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",14,3,"unit(s)",NULL,NULL,NULL,NULL,0,NULL,"VOLUMATIC PAEDIATRIC",0
+988,"Voriconazole 1% eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",7,4,"drop(s)","1",1,NULL,NULL,1,NULL,"voriconazole 1% eye drops",0
+989,"Voriconazole 200mg infusion",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",7,9,"mL",NULL,7,NULL,NULL,0,"VFEND","voriconazole 200mg infusion",0
+990,"Voriconazole 200mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",7,32,"tablet(s)",NULL,10,10,NULL,0,"VFEND","voriconazole 200mg tablets",0
+991,"Voriconazole 50mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",7,32,"tablet(s)",NULL,10,10,NULL,0,"VFEND","voriconazole 50mg tablets",0
+992,"Warfarin 1mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",4,32,"tablet(s)",NULL,10,NULL,NULL,0,NULL,"warfarin 1mg tablets",0
+993,"Warfarin 3mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",4,32,"tablet(s)",NULL,10,NULL,NULL,0,NULL,"warfarin 3mg tablets",0
+994,"Warfarin 5mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",4,32,"tablet(s)","1",10,NULL,NULL,0,NULL,"warfarin 5mg tablets",0
+997,"Water for injections",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",29,12,"mL",NULL,NULL,NULL,NULL,0,NULL,"water for injections",0
+998,"Latanoprost 0.005% with timolol 0.5% eye drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",17,4,"drop(s)","1",1,11,10,0,"XALACOM","latanoprost 0.005% with timolol 0.5% eye drops",0
+999,"Xylometazoline 0.05% nose drops",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",32,4,"drop(s)","1",8,NULL,NULL,0,"OTRIVINE","xylometazoline 0.05% nose drops",0
+1000,"Xylometazoline 0.1% nasal spray",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",32,29,"spray(s)",NULL,16,NULL,NULL,0,"OTRIVINE","xylometazoline 0.1% nasal spray",0
+1001,"Zanamivir 5mg inhalation blisters with device",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",11,11,"inhalation(s)","2",3,NULL,NULL,0,NULL,"zanamivir 5mg inhalation blisters with device",0
+1002,"Zolpidem 10mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",18,32,"tablet(s)","1",10,14,10,0,NULL,"zoLPIdem 10mg tablets",0
+1003,"Zopiclone 7.5mg tablets",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",18,32,"tablet(s)","1",10,14,10,0,NULL,"zoPIClone 7.5mg tablets",0
+1006,"Trypan blue 0.15% with brilliant blue g 0.025% injection",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",15,12,"mL",NULL,6,NULL,NULL,0,"MEMBRANEBLUE-DUAL","trypan blue 0.15% with brilliant blue G 0.025% injection",0
+1007,"Dexamethasone 3.3mg in 1ml injection hospira",1,"2012-10-12 10:20:38",1,"1900-01-01 00:00:00",28,12,"mL","0.1",6,NULL,NULL,0,NULL,"dexamethasone 3.3mg in 1mL injection HOSPIRA",0
+1008,"Ciclosporin 0.06% eye drops",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",19,4,"drops(s)","1",1,NULL,NULL,1,"cyclosporin","ciclosporin 0.06% eye drops",0
+1009,"Interferon alfa 2b 1 million units in 1ml eye drops",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",19,4,"drop(s)","1",1,NULL,NULL,1,NULL,"interferon alfa 2b 1 million units in 1mL eye drops",0
+1010,"Ensure plus banana",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",26,20,"bottle(s)","1",10,NULL,NULL,0,NULL,"ENSURE PLUS Banana",0
+1011,"Sodium phosphate 9.4g in 118ml enema",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",26,35,"mL",NULL,11,NULL,NULL,0,"FLEET READY-TO-USE ENEMA","sodium phosphate 9.4g in 118mL enema",0
+1012,"Lidocaine 1% intracameral injection",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",22,12,"mL",NULL,4,NULL,NULL,0,NULL,"lidocaine 1% intracameral injection",0
+1013,"Sodium hyaluronate 0.2% eye drops",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",30,4,"drop(s)","1",1,19,10,1,"HYLO-FORTE","sodium hyaluronate 0.2% eye drops",0
+1014,"Prilocaine 1% injection",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",22,12,"mg",NULL,NULL,NULL,NULL,0,NULL,"prilocaine 1% injection",0
+1015,"Triamcinolone acetonide 10mg in 1ml injection",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",28,12,"mg",NULL,NULL,NULL,NULL,0,"ADCORTYL","triamCINolone acetonide 10mg in 1mL injection",0
+1016,"Botulinum a toxin 50 units injection (xeomin)",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",26,12,"unit(s)",NULL,9,NULL,NULL,0,"XEOMIN","botulinum A toxin 50 units injection (XEOMIN)",0
+1017,"Botulinum b toxin 2,500 units in 0.5ml injection (neurobloc)",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",26,12,"unit(s)",NULL,9,NULL,NULL,0,"NEUROBLOC","botulinum B toxin 2,500 units in 0.5mL injection (NEUROBLOC)",0
+1018,"Methotrexate 30mg in 0.6ml pre-filled syringe",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",19,12,"mg",NULL,15,NULL,NULL,0,"METOJECT","methoTREXate 30mg in 0.6mL pre-filled syringe",0
+1019,"Mydriasert ophthalmic insert",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",24,8,"implant",NULL,1,NULL,NULL,0,"phenylephrine 5.4mg with tropicamide 280 micrograms","MYDRIASERT ophthalmic insert",0
+1020,"Paraffin eye ointment with vitamin A (VitA-POS)",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",30,5,"strip","1",1,14,NULL,1,NULL,"paraffin eye ointment with vitamin A (VitA-POS)",0
+1021,"Sterimar Nasal Spray",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",26,29,"spray(s)",NULL,16,NULL,NULL,1,NULL,"STERIMAR NASAL SPRAY",0
+1022,"Sugammadex 100mg in 1mL injection",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",16,12,"mg",NULL,NULL,NULL,NULL,1,"BRIDION","sugammadex 100mg in 1mL injection",0

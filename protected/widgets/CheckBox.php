@@ -33,7 +33,7 @@ class CheckBox extends BaseFieldWidget
 				$this->checked[$this->field] = false;
 			}
 		} else {
-			$this->checked[$this->field] = (boolean) @$_POST[get_class($this->element)][$this->field];
+			$this->checked[$this->field] = (boolean) @$_POST[CHtml::modelName($this->element)][$this->field];
 		}
 	}
 }

@@ -14,47 +14,38 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Search panels
+// Search panel
 //
 // Markup:
-// <!-- Search panel examples -->
-// <div class="panel search-examples">
-//     Find a patient by
-//     <strong>Hospital Number</strong>,
-//     <strong>NHS Number</strong>,
-//     <strong>Firstname Surname</strong> or
-//     <strong>Surname, Firstname</strong>.
-// </div>
-// <!-- Search panel form -->
-// <div class="large-12 column">
-//     <form class="form search panel">
-//         <div class="row">
-//             <div class="large-9 column">
-//                 <input type="text" id="search" placeholder="Enter search...">
-//             </div>
-//             <div class="large-3 column text-right">
-//                 <button type="submit">
-//                     Search
-//                 </button>
-//             </div>
-//         </div>
-//     </form>
-// </div>
+// <form class="form panel search">
+// 	<div class="row">
+// 		<div class="large-9 column">
+// 			<input type="text" id="search" placeholder="Enter search..." class="large" />
+// 		</div>
+// 		<div class="large-3 column text-right">
+// 			<button type="submit" class="button long">
+// 				Search
+// 			</button>
+// 		</div>
+// 	</div>
+// </form>
 //
-// Styleguide 16.4
-
+// Styleguide 13.4
 .panel {
 	&.search-examples {
-		font-size: emCalc(13px);
+		font-size: rem-calc(13px);
+		padding: 8px;
 	}
 	&.search {
-		padding-top: emCalc(15px);
-		padding-bottom: emCalc(15px);
+		padding-left: 8px;
+		padding-right: 8px;
+		padding-top: 15px;
+		padding-bottom: 15px;
 		input {
 			margin: 0;
 			&.large {
-				padding-top: emCalc(11px);
-				padding-bottom: emCalc(11px);
+				padding-top: 9px;
+				padding-bottom: 9px;
 			}
 		}
 	}

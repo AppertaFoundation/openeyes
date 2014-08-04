@@ -31,7 +31,7 @@
  * @property string $salt
  * @property integer $global_firm_rights
  */
-class User extends BaseActiveRecord
+class User extends BaseActiveRecordVersioned
 {
 	/**
 	 * Used to check password and password confirmation match
@@ -115,13 +115,13 @@ class User extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'user_id'),
-			'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)'),
+			'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)', 'condition' => 'firms.active = 1'),
 			'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
 			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
 			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 6),
-			'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'order' => 'name asc'),
+			'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'condition' => 'firmSelections.active = 1', 'order' => 'name asc'),
 			'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
 		);
 	}
@@ -202,7 +202,7 @@ class User extends BaseActiveRecord
 	 *
 	 * @return boolean
 	 */
-	public function save($runValidation = true, $attributes = null, $allow_overriding=false)
+	public function save($runValidation = true, $attributes = null, $allow_overriding=false, $save_archive=false)
 	{
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
 			/**
@@ -220,7 +220,7 @@ class User extends BaseActiveRecord
 			}
 		}
 
-		return parent::save($runValidation, $attributes, $allow_overriding);
+		return parent::save($runValidation, $attributes, $allow_overriding, $save_archive);
 	}
 
 	/**
@@ -331,17 +331,6 @@ class User extends BaseActiveRecord
 		return false;
 	}
 
-	public function getList()
-	{
-		$users = array();
-
-		foreach (User::Model()->findAll(array('order'=>'first_name,last_name')) as $user) {
-			$users[$user->id] = $user->first_name.' '.$user->last_name;
-		}
-
-		return $users;
-	}
-
 	/**
 	 * Returns the users that are eligible to be considered surgeons.
 	 *
@@ -369,6 +358,7 @@ class User extends BaseActiveRecord
 		$criteria->compare('is_surgeon',1);
 		$criteria->compare('active',1);
 		$criteria->order = 'last_name,first_name asc';
+
 		return CHtml::listData(User::model()->findAll($criteria),'id','reversedFullName');
 	}
 
@@ -419,7 +409,7 @@ class User extends BaseActiveRecord
 
 		$criteria = new CDbCriteria;
 		$criteria->addSearchCondition("lower(`t`.last_name)",$term,false);
-		$criteria->compare('active',1);
+		$criteria->compare('active', 1);
 		$criteria->order = 'contact.title, contact.first_name, contact.last_name';
 
 		foreach (User::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $user) {
@@ -436,23 +426,15 @@ class User extends BaseActiveRecord
 
 	public function getNotSelectedSiteList()
 	{
-		if (empty(Yii::app()->params['institution_code'])) {
-			throw new Exception("Institution code is not set");
-		}
-
-		if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
-			throw new Exception("Institution not found: ".Yii::app()->params['institution_code']);
-		}
-
 		$site_ids = array();
 		foreach ($this->siteSelections as $site) {
 			$site_ids[] = $site->id;
 		}
 
 		$criteria = new CDbCriteria;
-		$criteria->addCondition('institution_id=:institution_id');
+		$criteria->compare('institution_id', Institution::model()->getCurrent()->id);
+		$criteria->compare('active', 1);
 		$criteria->addNotInCondition('id',$site_ids);
-		$criteria->params[':institution_id'] = $institution->id;
 		$criteria->order = 'name asc';
 
 		return Site::model()->findAll($criteria);
@@ -466,7 +448,7 @@ class User extends BaseActiveRecord
 			->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->leftJoin('subspecialty s','ssa.subspecialty_id = s.id')
 			->leftJoin('user_firm uf','uf.firm_id = f.id and uf.user_id = '.Yii::app()->user->id)
-			->where("uf.id is null",array(':userId'=>Yii::app()->user->id))
+			->where("uf.id is null and f.active = 1")
 			->order('f.name, s.name')
 			->queryAll();
 		$data = array();
@@ -505,5 +487,25 @@ class User extends BaseActiveRecord
 		foreach ($removed_roles as $role) {
 			Yii::app()->authManager->revoke($role, $this->id);
 		}
+	}
+
+	/**
+	 * Return all firms that the user has access rights to
+	 *
+	 * @return Firm[]
+	 */
+	public function getAvailableFirms()
+	{
+		$crit = new CDbCriteria;
+		$crit->compare('active', 1);
+		if (!$this->global_firm_rights) {
+			$crit->join = "left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = :user_id " .
+				"left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = :user_id " .
+				"left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id " .
+				"left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = :user_id ";
+			$crit->addCondition("fua.id is not null or ufr.id is not null or usr.id is not null");
+			$crit->params['user_id'] = $this->id;
+		}
+		return Firm::model()->findAll($crit);
 	}
 }

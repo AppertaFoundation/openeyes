@@ -20,7 +20,7 @@
 // stylesheet is commonly loaded after the main stylesheet.
 .open-eyes {
 	.ui-widget {
-		font-size: 1em;
+		font-size: .9rem;
 		input, select, textarea, button {
 			font-family: Helvetica, Arial, sans-serif;
 		}
@@ -31,4 +31,7 @@
 			font-size: $default-font-size;
 		}
 	}
+
+	//jquery uses inline styles to render auto complete so !important is needed to apply the z-index
+	.ui-autocomplete { z-index:200 !important; }
 }

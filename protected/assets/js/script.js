@@ -122,6 +122,13 @@ $(document).ready(function(){
 
 	(function stickyElements() {
 
+		var banner = new OpenEyes.UI.StickyElement('.admin.banner', {
+			offset: 30,
+			wrapperHeight: function(instance) {
+				return instance.element.outerHeight(true);
+			}
+		});
+
 		var options = {
 			enableHandler: function(instance) {
 				instance.element.width(instance.element.width());
@@ -133,18 +140,12 @@ $(document).ready(function(){
 			}
 		};
 
-		new OpenEyes.UI.StickyElement('.admin.banner', {
-			offset: 30,
-			wrapperHeight: function(instance) {
-				return instance.element.outerHeight(true);
-			}
-		});
-
-		var header = new OpenEyes.UI.StickyElement('.header', $.extend({
+		var header = new OpenEyes.UI.StickyElement('.header:not(.static)', $.extend({
 			offset: 25
 		}, options));
 
-		new OpenEyes.UI.StickyElement('.event-header', $.extend({
+		var eventHead = new OpenEyes.UI.StickyElement('.event-header', $.extend({
+			wrapperClass: 'sticky-wrapper sticky-wrapper-event-header',
 			offset: function() {
 				return header.element.height() * -1;
 			},
@@ -176,6 +177,10 @@ $(document).ready(function(){
 		formHasChanged = true;
 	});
 
+	$('#patient-summary-form-container').on("change", function (e) {
+		formHasChanged = true;
+	});
+
 	//if the save button is on page
 	if($('#et_save').length){
 		$(".EyeDrawWidget").on("click", function (e) {
@@ -183,7 +188,7 @@ $(document).ready(function(){
 		});
 	}
 
-	window.onbeforeunload = function (e) {
+	$(window).on('beforeunload', function (e) {
 		if (formHasChanged && !submitted) {
 			var message = "You have not saved your changes.", e = e || window.event;
 			if (e) {
@@ -191,8 +196,9 @@ $(document).ready(function(){
 			}
 			return message;
 		}
-	}
-	$("form").submit(function() {
+	});
+
+	$(document).on('submit', 'form', function() {
 		submitted = true;
 	});
 
@@ -232,6 +238,10 @@ $(document).ready(function(){
 	$('#checkall').click(function() {
 		$('input.'+$(this).attr('class')).attr('checked',$(this).is(':checked') ? 'checked' : false);
 	});
+
+    $(this).on('click', '.alert-box .close' , function(e) {
+        $(e.srcElement).closest('.alert-box').fadeOut(500);
+    });
 });
 
 function changeState(wb,sp) {
@@ -318,6 +328,14 @@ function inArray(needle, haystack) {
 	var length = haystack.length;
 	for(var i = 0; i < length; i++) {
 		if(haystack[i] == needle) return true;
+	}
+	return false;
+}
+
+function arrayIndex(needle, haystack) {
+	var length = haystack.length;
+	for(var i = 0; i < length; i++) {
+		if(haystack[i] == needle) return i;
 	}
 	return false;
 }

@@ -2,7 +2,9 @@
 Feature: Create New Correspondence
          Regression coverage of this event is approx 95%
 
-  Scenario: Route 1:Login and fill in a Correspondence
+  Scenario: Route 1:Login and fill in a Correspondence Event
+            Site 1:  Queens
+            Firm 3:  Anderson Glaucoma
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -34,7 +36,9 @@ Feature: Create New Correspondence
 
     Then I Save the Correspondence Draft and confirm it has been created successfully
 
-  Scenario: Route 2:Login and fill in a Correspondence
+  Scenario: Route 2:Login and fill in a Correspondence Event
+            Site 1:  Queens
+            Firm 3:  Anderson Glaucoma
             Alternative Diagnosis, Management, Drugs & Outcome options
 
     Given I am on the OpenEyes "master" homepage
@@ -67,8 +71,10 @@ Feature: Create New Correspondence
 
     Then I Save the Correspondence Draft and confirm it has been created successfully
 
-  Scenario: Route 3:Login and fill in a Correspondence
-  Alternative Diagnosis, Management, Drugs & Outcome options
+  Scenario: Route 3:Login and fill in a Correspondence Event
+            Site 1:  Queens
+            Firm 3:  Anderson Glaucoma
+            Alternative Diagnosis, Management, Drugs & Outcome options
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -100,8 +106,10 @@ Feature: Create New Correspondence
 
     Then I Save the Correspondence Draft and confirm it has been created successfully
 
-  Scenario: Route 4:Login and fill in a Correspondence
-  Alternative Diagnosis, Management, Drugs & Outcome options
+  Scenario: Route 4:Login and fill in a Correspondence Event
+            Site 1:  Queens
+            Firm 3:  Anderson Glaucoma
+            Alternative Diagnosis, Management, Drugs & Outcome options
 
     Given I am on the OpenEyes "master" homepage
     And I enter login credentials "admin" and "admin"
@@ -133,7 +141,9 @@ Feature: Create New Correspondence
 
     Then I Save the Correspondence Draft and confirm it has been created successfully
 
-  Scenario: Route 5:Login and fill in a Correspondence
+  Scenario: Route 5:Login and fill in a Correspondence Event
+            Site 1:  Queens
+            Firm 3:  Anderson Glaucoma
             Saving without mandatory fields validation tests
 
     Given I am on the OpenEyes "master" homepage

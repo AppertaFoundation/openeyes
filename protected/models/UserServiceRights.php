@@ -29,7 +29,7 @@
  * @property User $user
  * @property Service $service
  */
-class UserServiceRights extends BaseActiveRecord
+class UserServiceRights extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

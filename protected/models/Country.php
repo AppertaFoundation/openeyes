@@ -25,7 +25,7 @@
  * @property string $code
  * @property string $name
  */
-class Country extends BaseActiveRecord
+class Country extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -42,6 +42,11 @@ class Country extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'country';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**
@@ -80,6 +85,13 @@ class Country extends BaseActiveRecord
 			'id' => 'ID',
 			'code' => 'Code',
 			'name' => 'Name',
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
 		);
 	}
 

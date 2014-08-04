@@ -20,6 +20,7 @@
 
 return array(
 	'patient1' => array(
+		'id' => 1,
 		'pas_key' => '123',
 		'title' => 'Mr.',
 		'first_name' => 'John',
@@ -33,6 +34,7 @@ return array(
 		'contact_id' => 1
 	),
 	'patient2' => array(
+		'id' => 2,
 		'pas_key' => '456',
 		'title' => 'Mr.',
 		'dob' => '1972-01-01',
@@ -46,6 +48,7 @@ return array(
 		'contact_id' => 2
 	),
 	'patient3' => array(
+		'id' => 3,
 		'pas_key' => '789',
 		'title' => 'Mrs.',
 		'first_name' => 'Katherine',
@@ -57,5 +60,19 @@ return array(
 		'practice_id' => 3,
 		'address_id' => 3,
 		'contact_id' => 3
+	),
+	'patient4' => array(
+		'pas_key' => '123',
+		'title' => 'Mrs.',
+		'first_name' => 'Carla',
+		'last_name' => 'Bruni',
+		'dob' => '1977-01-01',
+		'gender' => 'F',
+		'hos_num' => 34321,
+		'nhs_num' => 76567,
+		'practice_id' => 3,
+		'practice_id' => 3,
+		'address_id' => 4,
+		'contact_id' => 4
 	),
 );

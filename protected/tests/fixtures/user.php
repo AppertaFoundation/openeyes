@@ -49,7 +49,7 @@ return array(
 		'active' => 0,
 		'salt' => '4d36f32441',
 		'password' => '19187c5d5985482d352a9d6ffa1d6759', // pw: 12345
-		'global_firm_rights' => 1,
+		'global_firm_rights' => 0,
                                                  'contact_id' =>3 
 	),
 	'admin' => array(

@@ -23,4 +23,5 @@
 
 class BaseEventTypeModule extends BaseModule
 {
+
 }

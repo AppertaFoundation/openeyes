@@ -27,15 +27,15 @@ include 'fragments/assets.php';
 
 				<aside class="large-2 column sidebar">
 
-					<div class="box generic">
+					<div class="box generic navigation">
 						<h2>Navigation</h2>
 						<ul class="side-nav">
 							<li><a href="styleguide/index.html">Styleguide</a></li>
 							<li><a href="jsdoc/index.html">Javascript API</a></li>
 							<li><a href="static-templates/index.php">Site templates</a></li>
-							<li><a href="components/forms.php">Forms</a></li>
-							<li><a href="components/grids.php">Grids</a></li>
-							<li><a href="components/elements.php">Elements</a></li>
+							<li><a href="forms.php">Forms</a></li>
+							<!-- <li><a href="grids.php">Grids</a></li> -->
+							<!-- <li><a href="elements.php">Elements</a></li> -->
 						</ul>
 					</div>
 				</aside>

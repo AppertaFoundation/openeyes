@@ -69,7 +69,7 @@ class ProcedureController extends BaseController
 			$criteria->compare('pssa.subspecialty_subsection_id', $_POST['subsection']);
 			$criteria->order = 'term asc';
 
-			$procedures = Procedure::model()->findAll($criteria);
+			$procedures = Procedure::model()->active()->findAll($criteria);
 
 			$this->renderPartial('_procedureOptions', array('procedures' => $procedures), false, false);
 		}
@@ -87,7 +87,7 @@ class ProcedureController extends BaseController
 			->select("b.name")
 			->from("benefit b")
 			->join("procedure_benefit pb","pb.benefit_id = b.id")
-			->where("pb.proc_id = $id")
+			->where("pb.proc_id = $id and b.active = 1")
 			->order("b.name asc")
 			->queryAll() as $row) {
 			$benefits[] = $row['name'];
@@ -108,7 +108,7 @@ class ProcedureController extends BaseController
 			->select("b.name")
 			->from("complication b")
 			->join("procedure_complication pb","pb.complication_id = b.id")
-			->where("pb.proc_id = $id")
+			->where("pb.proc_id = $id and b.active = 1")
 			->order("b.name asc")
 			->queryAll() as $row) {
 			$complications[] = $row['name'];

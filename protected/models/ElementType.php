@@ -30,7 +30,7 @@
  * @property ElementType $parent_element_type
  * @property ElementType[] $child_element_types
  */
-class ElementType extends BaseActiveRecord
+class ElementType extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

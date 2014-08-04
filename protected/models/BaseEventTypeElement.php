@@ -19,15 +19,20 @@
 
 /**
  * A class that all clinical elements should extend from.
+ * @property boolean $useContainerView When rendering the element, wrap the element
+ * in a container view?
  */
 class BaseEventTypeElement extends BaseElement
 {
 	public $firm;
 	public $userId;
 	public $patientId;
+	public $useContainerView = true;
 
 	protected $_element_type;
 	protected $_children;
+
+	private $settings = array();
 
 	/**
 	 * Get the ElementType for this element
@@ -65,8 +70,38 @@ class BaseEventTypeElement extends BaseElement
 
 	/**
 	 * Can we view the previous version of this element
+	 * @return boolean
 	 */
 	public function canViewPrevious()
+	{
+		return false;
+	}
+
+	/**
+	 * Is this a required element?
+	 * @return boolean
+	 */
+	public function isRequired()
+	{
+		return $this->elementType->required;
+	}
+
+	/**
+	 * Is this element required in the UI? (Prevents the user from being able
+	 * to remove the element.)
+	 * @return boolean
+	 */
+	public function isRequiredInUI()
+	{
+		return $this->isRequired();
+	}
+
+	/**
+	 * Is this element to be hidden in the UI? (Prevents the elements from
+	 * being displayed on page load.)
+	 * @return boolean
+	 */
+	public function isHiddenInUI()
 	{
 		return false;
 	}
@@ -163,46 +198,15 @@ class BaseEventTypeElement extends BaseElement
 		$this->Controller->renderPartial();
 	}
 
-	public function getFormOptions($table)
+	public function getSetting($key)
 	{
-		$options = array();
-
-		$table_exists = false;
-
-		foreach (Yii::app()->db->createCommand("show tables;")->query() as $_table) {
-			foreach ($_table as $key => $value) {
-				if ("element_type_$table" == $value) {
-					$table_exists = true;
-					break;
-				}
-			}
+		if (!array_key_exists($key, $this->settings)) {
+			$this->settings[$key] = $this->loadSetting($key);
 		}
-
-		if ($table_exists) {
-			foreach (Yii::app()->db->createCommand()
-					->select("$table.*")
-					->from($table)
-					->join("element_type_$table","element_type_$table.{$table}_id = $table.id")
-					->where("element_type_id = ".$this->getElementType()->id)
-					->order("display_order asc")
-					->queryAll() as $option) {
-
-				$options[$option['id']] = $option['name'];
-			}
-		} else {
-			foreach (Yii::app()->db->createCommand()
-					->select("$table.*")
-					->from($table)
-					->queryAll() as $option) {
-
-				$options[$option['id']] = $option['name'];
-			}
-		}
-
-		return $options;
+		return $this->settings[$key];
 	}
 
-	public function getSetting($key)
+	protected function loadSetting($key)
 	{
 		$element_type = ElementType::model()->find('class_name=?',array(get_class($this)));
 
@@ -284,27 +288,63 @@ class BaseEventTypeElement extends BaseElement
 
 	public function getDefaultView()
 	{
-		return get_class($this);
+		$kls = explode('\\', get_class($this));
+		return end($kls);
 	}
 
 	public function getCreate_view()
 	{
-		return $this->getDefaultView();
+		return $this->getForm_View();
 	}
 
 	public function getUpdate_view()
 	{
-		return $this->getDefaultView();
+		return $this->getForm_View();
 	}
 
 	public function getView_view()
 	{
-		return $this->getDefaultView();
+		return 'view_'.$this->getDefaultView();
 	}
 
 	public function getPrint_view()
 	{
-		return $this->getDefaultView();
+		return $this->getView_View();
+	}
+
+	public function getForm_View()
+	{
+		return 'form_'.$this->getDefaultView();
+	}
+
+	public function getDefaultContainerView()
+	{
+		return '//patient/element_container_view';
+	}
+
+	public function getContainer_view_view()
+	{
+		return '//patient/element_container_view';
+	}
+
+	public function getContainer_print_view()
+	{
+		return '//patient/element_container_print';
+	}
+
+	public function getContainer_form_view()
+	{
+		return '//patient/element_container_form';
+	}
+
+	public function getContainer_create_view()
+	{
+		return $this->getContainer_form_view();
+	}
+
+	public function getContainer_update_view()
+	{
+		return $this->getContainer_form_view();
 	}
 
 	public function isEditable()
@@ -326,15 +366,54 @@ class BaseEventTypeElement extends BaseElement
 		}
 	}
 
-	public function textWithLineBreaks($field) {
-		return str_replace("\n","<br/>",$this->$field);
-	}
-
 	/**
 	 * stub method to allow elements to carry out actions related to being a part of a soft deleted event
 	 */
 	public function softDelete()
 	{
 
+	}
+
+	/**
+	 * Returns true if the specified multiselect relation has the value $value_string
+	 */
+	public function hasMultiSelectValue($relation, $value_string) {
+		foreach ($this->$relation as $item) {
+			if ($item->name == $value_string) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Updates multiselect items in the database, deleting items not passed in $ids
+	 */
+	public function updateMultiSelectData($model, $ids, $relation_field)
+	{
+		$_ids = array();
+
+		foreach ($ids as $id) {
+			if (!$assignment = $model::model()->find("element_id=? and $relation_field=?",array($this->id,$id))) {
+				$assignment = new $model;
+				$assignment->element_id = $this->id;
+				$assignment->$relation_field = $id;
+
+				if (!$assignment->save()) {
+					throw new Exception("Unable to save assignment: ".print_r($assignment->getErrors(),true));
+				}
+			}
+
+			$_ids[] = $assignment->id;
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('element_id = :element_id');
+		$criteria->params[':element_id'] = $this->id;
+
+		!empty($_ids) && $criteria->addNotInCondition('id',$_ids);
+
+		$model::model()->deleteAll($criteria);
 	}
 }

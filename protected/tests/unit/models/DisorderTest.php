@@ -31,7 +31,6 @@ class DisorderTest extends CDbTestCase
 
 	public function dataProvider_Search()
 	{
-
 		return array(
 			array(array('term' => 'Myopia'), 1, array('disorder1')),
 			array(array('term' => 'foobar'), 0, array()),
@@ -44,23 +43,12 @@ class DisorderTest extends CDbTestCase
 	 */
 	protected function setUp()
 	{
-
 		parent::setUp();
 		$this->model = new Disorder;
 	}
 
 	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
-	/**
 	 * @covers Disorder::model
-	 * @todo   Implement testModel().
 	 */
 	public function testModel()
 	{
@@ -69,7 +57,6 @@ class DisorderTest extends CDbTestCase
 
 	/**
 	 * @covers Disorder::tableName
-	 * @todo   Implement testTableName().
 	 */
 	public function testTableName()
 	{
@@ -79,54 +66,11 @@ class DisorderTest extends CDbTestCase
 
 	/**
 	 * @covers Disorder::rules
-	 * @todo   Implement testRules().
 	 */
 	public function testRules()
 	{
-
-		//         $this->assertTrue($this->disorders('disorder1')->validate());
-		//       $this->assertEmpty($this->disorders('disorder1')->errors);
-	}
-
-	/**
-	 * @covers Disorder::relations
-	 * @todo   Implement testRelations().
-	 */
-	public function testRelations()
-	{
-
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers Disorder::attributeLabels
-	 * @todo   Implement testAttributeLabels().
-	 */
-	public function testAttributeLabels()
-	{
-		$this->markTestSkipped(' skipped as generating errors needs REFACTORING');
-		$expected = array(
-			'id' => 'ID',
-			'fully_specified_name' => 'Fully Specified Name',
-			'term' => 'Term',
-			//       'systemic' => 'Systemic',
-		);
-
-		$this->assertEquals($expected, $this->model->attributeLabels());
-	}
-
-	/**
-	 * @covers Disorder::search
-	 * @todo   Implement testSearch().
-	 */
-	public function testSearch()
-	{
-		$this->markTestSkipped(
-			'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
-		);
+		$this->assertTrue($this->disorders('disorder1')->validate());
+		$this->assertEmpty($this->disorders('disorder1')->errors);
 	}
 
 	/**
@@ -135,10 +79,9 @@ class DisorderTest extends CDbTestCase
 	 */
 	public function testGetDisorderOptions()
 	{
+		$expected = array('Myopia');
 
 		$result = $this->disorders('disorder1')->GetDisorderOptions('Myopia');
-		$expected = $this->model->getDisorderOptions('Myopia');
-
 
 		$this->assertEquals($expected, $result);
 	}

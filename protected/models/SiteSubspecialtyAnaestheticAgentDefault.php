@@ -25,7 +25,7 @@
  * @property string $name
  * @property string $ShortName
  */
-class SiteSubspecialtyAnaestheticAgentDefault extends BaseActiveRecord
+class SiteSubspecialtyAnaestheticAgentDefault extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

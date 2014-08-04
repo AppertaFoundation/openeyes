@@ -17,40 +17,17 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'BaseEventTypeElementTestNS.php';
+
 class BaseEventTypeElementTest extends CDbTestCase
 {
-	/**
-	 * @var BaseEventTypeElement
-	 */
-	protected $model;
-
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 */
-	protected function setUp()
-	{
-
-		//       parent::setUp();
-		//     $this->model = new BaseEventTypeElement;
-	}
-
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
-	{
-
-	}
-
 	/**
 	 * @covers BaseEventTypeElement::getElementType
 	 * @todo   Implement testGetElementType().
 	 */
 	public function testGetElementType()
 	{
-
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete(
 			'This test has not been implemented yet.'
@@ -104,18 +81,6 @@ class BaseEventTypeElementTest extends CDbTestCase
 	public function testRender()
 	{
 
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers BaseEventTypeElement::getFormOptions
-	 * @todo   Implement testGetFormOptions().
-	 */
-	public function testGetFormOptions()
-	{
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete(
 			'This test has not been implemented yet.'
@@ -196,14 +161,20 @@ class BaseEventTypeElementTest extends CDbTestCase
 
 	/**
 	 * @covers BaseEventTypeElement::getDefaultView
-	 * @todo   Implement testGetDefaultView().
 	 */
 	public function testGetDefaultView()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		$test = $this->getMockBuilder('\BaseEventTypeElement')
+				->disableOriginalConstructor()
+				->setMethods(null)
+				->getMock();
+
+		$r = new ReflectionClass($test);
+		$this->assertEquals($r->getShortName(), $test->getDefaultView());
+
+		$ns_test = new BaseEventTypeElementTestNS\models\NamespacedElement();
+		$this->assertEquals('NamespacedElement', $ns_test->getDefaultView());
+
 	}
 
 	/**
@@ -277,5 +248,4 @@ class BaseEventTypeElementTest extends CDbTestCase
 			'This test has not been implemented yet.'
 		);
 	}
-
 }

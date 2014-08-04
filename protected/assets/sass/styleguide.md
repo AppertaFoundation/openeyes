@@ -1,21 +1,13 @@
 # Overview
 
-Welcome to the OpenEyes living CSS Styleguide.
+Welcome to the OpenEyes living CSS Styleguide. This styleguide contains common components
+that are used throughout the application.
 
 The content of this styleguide is generated from the comments found in the Sass files.
-We use KSS to format our comments and to generate this styleguide. When adding new styles
-or updating existing styles, you **must** keep the comments up-to-date.
-
-This is a living styleguide, and will grow and evolve as the stylesheet grows and evolves.
-
-Use this styleguide to get an understanding of the various UI components we use, and how to add new or change existing styles.
 
 ## Introduction
 
 Most elements used throughout the system will be defined in this core stylesheet.
-There should be few reasons to override these styles, and if we find we are doing so,
-then we should try make the core styles more generic and adapatable rather than
-overriding them in the module stylesheets.
 
 ## Sass and Compass
 
@@ -23,9 +15,6 @@ We use Sass to develop our CSS, and use compass to provide us with useful mixins
 use the compass mixins wherever possible.
 
 ### Compass mixins
-
-Compass mixins allow us, for one example, to create cross-browser compatible CSS3,
-and thus it's important that we use these mixins wherever possible.
 
 Please be familiar with the following compass mixins:
 
@@ -50,10 +39,10 @@ Conventions allow for code readability and maintainability. You must follow
 the following conventions if you want to make changes to the stylesheet.
 
 * When in doubt, follow the conventions you see used in the foundation files.
-* 4 spaces for indentation.
+* Tabs for indentation.
 * Components should be decoupled from each other.
-* Never use inline styles, this is a slippery slope and must be avoided.
-* Never use `!important`, this is a slippery slope and must be avoided.
+* Never use inline styles.
+* Never use `!important`.
 * Never use ID's for styling. This avoids specificity issues.
 * Separate rules with new lines, eg:
 
@@ -102,12 +91,10 @@ the following conventions if you want to make changes to the stylesheet.
 
 ## Variables
 
-* Use variables for all values.
 * To avoid conlicts with foundation variables, we have to namespace our variables,
   thus you must prefix the variable names with 'oe-'.
-* Add default variables values in the component file, and copy those variables
-  into the _variables file. This allows use to create different themes in the future
-  by simply using a different _variables file.
+* Add default variables values in the components file, and copy those variables
+  into the settings file (which will override the defaults).
 
 ## Framework
 
@@ -125,24 +112,3 @@ If the interface is to ever be responsive, we *must* use the foundation grid sys
 the interface. There should be very few reason to position elements without using the grid
 system. The foundation grid system is a 12 column grid and allows us to control wrapping of
 columns at 3 different screen widths.
-
-## Variables and themeing
-
-All values used in the stylesheet are stored in variables. We use a global '_variables.scss'
-file to store the values. This allows us to easily theme the interface by simply changing the values
-of these variables.
-
-The following rules have to use ems, and thus you need to use the emCalc() function to convert pixels to ems:
-
-* margin
-* padding (unless you're offsetting a background image, then just use pixels)
-* font-size
-
-## HTML formatting
-
-* Always provide a label for a form field
-* Feel free to wrap checkboxes or radios in a label, eg:
-
-        <label>
-            <input type="checkbox" />
-        </label>

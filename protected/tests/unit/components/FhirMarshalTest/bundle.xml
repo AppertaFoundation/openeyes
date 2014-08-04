@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Search results</title>
+  <id>http://example.com</id>
+  <updated>2014-01-27T18:00:08+00:00</updated>
+  <entry>
+    <title>Entry 1</title>
+    <id>http://example.com/1</id>
+    <updated>2014-01-27T18:00:08+00:00</updated>
+    <content type="text/xml">
+      <Patient xmlns="http://hl7.org/fhir">
+        <active value="true"/>
+      </Patient>
+    </content>
+  </entry>
+</feed>

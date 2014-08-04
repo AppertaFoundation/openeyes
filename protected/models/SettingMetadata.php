@@ -30,7 +30,7 @@
  * @property string $data
  * @property string $default_value
  */
-class SettingMetadata extends BaseActiveRecord
+class SettingMetadata extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

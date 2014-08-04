@@ -14,123 +14,32 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-// Default search filters
-//
-// Search filters are displayed in a table.
-//
-// Markup:
-// <div class="search-filters {$modifiers}">
-//     <div class="row">
-//         <div class="large-12 column">
-//             <table class="grid">
-//                 <thead>
-//                     <tr>
-//                         <th>Site:</th>
-//                         <th>Theatre:</th>
-//                         <th>Subspeciality:</th>
-//                         <th>Firm:</th>
-//                         <th>Ward:</th>
-//                         <th>Emergency list:</th>
-//                     </tr>
-//                 </thead>
-//                 <tbody>
-//                     <tr>
-//                         <td>
-//                             <select>
-//                                 <option>All sites</option>
-//                             </select>
-//                         </td>
-//                         <td>
-//                             <select>
-//                                 <option>All theatres</option>
-//                             </select>
-//                         </td>
-//                         <td>
-//                             <select>
-//                                 <option>All specialities</option>
-//                             </select>
-//                         </td>
-//                         <td>
-//                             <select>
-//                                 <option>All firms</option>
-//                             </select>
-//                         </td>
-//                         <td>
-//                             <select>
-//                                 <option>All wards</option>
-//                             </select>
-//                         </td>
-//                         <td>
-//                             <input type="checkbox" />
-//                         </td>
-//                     </tr>
-//                 </tbody>
-//             </table>
-//         </div>
-//     </div>
-// </div>
-//
-// .theatre-diaries             - Theatre diaries search filters
-//
-// Styleguide 17.1
 
+// Search filters are displayed in a table.
 .search-filters {
 	.panel {
-		margin: 0 0 emCalc(10px) 0;
+		margin: 0 0 10px 0;
+		padding: 10px;
 	}
 }
 
-// Extra search filters
-//
-// Extra search filters are displayed outside of the search filters table.
-//
-// Markup:
-// <div class="search-filters-extra clearfix">
-//     <label class="highlight">
-//         <input type="radio" name="date-filter" />
-//         Today
-//     </label>
-//     <label class="highlight">
-//         <input type="radio" name="date-filter" />
-//         Next 7 days
-//     </label>
-//     <label class="highlight">
-//         <input type="radio" name="date-filter" />
-//         Next 30 days
-//     </label>
-//     <fieldset class="highlight">
-//         <label>
-//             <input type="radio" name="date-filter" />
-//             Or select date range:
-//         </label>
-//         <input class="small fixed-width" type="text" name="date-start" />
-//         <span class="to">to</span>
-//         <input class="small fixed-width" type="text" name="date-end" />
-//         <ul class="button-group">
-//           <li><a href="#" class="small button">Last week</a></li>
-//           <li><a href="#" class="small button">Next week</a></li>
-//         </ul>
-//     </fieldset>
-// </div>
-//
-// Styleguide 17.2
 
-// Extra search filters vars
+// Extra search filters are displayed outside of the search filters table.
 $oe-search-filters-extra-label-height: 30px !default;
 $oe-search-filters-extra-label-line-height: $oe-search-filters-extra-label-height - 2 !default;
-$oe-search-filters-extra-label-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
+$oe-search-filters-extra-label-padding: 0 8px 0 6px !default;
 
 .search-filters-extra {
-	padding: emCalc(2px) 0 0 1px;
+	padding: 2px 0 0 1px;
 	label {
 		float: left;
-		font-size: emCalc(13px);
+		font-size: rem-calc(13px);
 		height: $oe-search-filters-extra-label-height;
 		line-height: $oe-search-filters-extra-label-line-height;
-		margin: 0 emCalc(12px) 0 0;
+		margin: 0 10px 0 0;
 		padding: $oe-search-filters-extra-label-padding;
 		input {
-			margin: -3px emCalc(5px) 0 0;
+			margin: -3px 4px 0 0;
 			vertical-align: middle;
 		}
 	}
@@ -143,7 +52,7 @@ $oe-search-filters-extra-label-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
 		padding: $oe-search-filters-extra-label-padding;
 		input[type="text"] {
 			display: inline-block;
-			margin: emCalc(4px) 0 0 0;
+			margin: 3px 0 0 0;
 			vertical-align: top;
 		}
 		label {
@@ -151,20 +60,20 @@ $oe-search-filters-extra-label-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
 		}
 		.to {
 			display: inline-block;
-			font-size: emCalc(13px);
+			font-size: rem-calc(13px);
 			vertical-align: top;
 		}
 	}
 	.button-group {
 		display: inline-block;
-		margin-top: emCalc(2px);
+		margin-top: 2px;
 		vertical-align: top;
 	}
 	&.audit-filters {
 		fieldset {
 			padding-left: 0;
 			.inline {
-				margin: 0 emCalc(12px);
+				margin: 0 10px;
 				float: none;
 				font-size: $default-font-size;
 				&:first-child {
@@ -174,4 +83,3 @@ $oe-search-filters-extra-label-padding: 0 emCalc(10px) 0 emCalc(8px) !default;
 		}
 	}
 }
-

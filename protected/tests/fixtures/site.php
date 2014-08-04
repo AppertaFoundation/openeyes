@@ -23,5 +23,6 @@ return array(
 		'name' => 'City Road',
 		'short_name' => 'City Road',
 		'institution_id' => 1,
+		'contact_id' => 1,
 	),
 );

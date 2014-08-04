@@ -5,7 +5,7 @@ var self = this;
 <dt>
     <h4 class="name" id="<?js= id ?>">
     	<a href="#<?js= id.replace(/:/g, '_') ?>">
-    		<?js= (kind === 'class' ? 'new ' : '') + name + (kind !== 'event' ? data.signature : '') + ' ' + data.attribs ?>
+    		<?js= (kind === 'class' ? 'new ' : '') + (kind === 'class' ? longname : name) + (kind !== 'event' ? data.signature : '') + ' ' + data.attribs ?>
     	</a>
     </h4>
 
@@ -14,7 +14,6 @@ var self = this;
     <?js } ?>
 </dt>
 <dd>
-
     <div class="more-info" id="more-info-<?js= id.replace(/:/g, '_') ?>">
 
     <?js if (data.description) { ?>

@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-while [ $PWD != "/" ];
+while [ "$PWD" != "/" ];
 do
 	if [ -f ./protected/yiic ]; then break;	fi
 	cd ..

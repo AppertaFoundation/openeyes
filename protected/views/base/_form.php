@@ -39,6 +39,18 @@ if (!Yii::app()->user->isGuest) {
 	$user = Yii::app()->session['user'];
 	$menu = array();
 	foreach (Yii::app()->params['menu_bar_items'] as $menu_item) {
+		if (isset($menu_item['restricted'])) {
+			$allowed = false;
+			foreach ($menu_item['restricted'] as $authitem) {
+				if (Yii::app()->user->checkAccess($authitem)) {
+					$allowed = true;
+					break;
+				}
+			}
+			if (!$allowed) {
+				continue;
+			}
+		}
 		$menu[$menu_item['position']] = $menu_item;
 	}
 	ksort($menu);

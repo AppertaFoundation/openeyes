@@ -95,6 +95,15 @@ class TherapyApplication extends OpenEyesPage
         'rightPatientCRT>=400Yes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_16']//*[@value=1]"),
         'rightPatientCRT>=400No' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_16']//*[@value=0]"),
 
+
+        #Scenario 3
+        'rightOcularConditionRareYes' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_condition_rare_1']"),
+        'rightOcularConditionRareNo' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_condition_rare_0']"),
+        'rightIncidenceDetails' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_incidence']"),
+        'rightPatientSignificantlyDifferent' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_patient_different']"),
+        'rightPatientLikelyToGain' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_patient_gain']"),
+
+
     );
 
     public function removeRightEye ()
@@ -109,7 +118,7 @@ class TherapyApplication extends OpenEyesPage
 
     public function addRightSide ()
     {
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
         $this->getElement('addRightSide')->click();
     }
 
@@ -144,7 +153,7 @@ class TherapyApplication extends OpenEyesPage
 //        $this->getSession()->wait(7000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('rightAngiogramDate')->click();
         $this->getElement('rightAngiogramDate')->click();
-        $this->getSession()->wait(5000);
+//        $this->getSession()->wait(5000);
         $this->getElement('calendarDate')->click();
     }
 
@@ -159,7 +168,7 @@ class TherapyApplication extends OpenEyesPage
 //        $this->getSession()->wait(7000, "$('#ui-datepicker-div').css('display') == 'block'");
         $this->getElement('leftAngiogramDate')->click();
         $this->getElement('leftAngiogramDate')->click();
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
         $this->getElement('calendarDate')->click();
 
     }
@@ -241,13 +250,13 @@ class TherapyApplication extends OpenEyesPage
     public function RightStandardAdditional ()
     {
         $this->getElement('standardAdditional')->check();
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
     }
 
     public function RightStandardDeviation ()
     {
         $this->getElement('standardDeviation')->check();
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
     }
 
     public function RightAdditionalOrDeviationComments ($details)
@@ -325,13 +334,13 @@ class TherapyApplication extends OpenEyesPage
     public function LeftStandardAdditional ()
     {
         $this->getElement('leftstandardAdditional')->check();
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
     }
 
     public function LeftStandardDeviation ()
     {
         $this->getElement('leftstandardDeviation')->check();
-        $this->getSession()->wait(3000);
+//        $this->getSession()->wait(3000);
     }
 
     public function LeftAdditionalOrDeviationComments ($details)
@@ -381,14 +390,14 @@ class TherapyApplication extends OpenEyesPage
 
     public function patientVenousYes ($option)
     {
-        $this->getSession()->wait(5000);
+//        $this->getSession()->wait(5000);
         $this->getElement('patientVenousYes')->selectOption($option);
     }
 
     public function CRVOyes ($option)
     {
         $this->getElement('CRVOYes')->selectOption($option);
-        $this->getSession()->wait(5000);
+//        $this->getSession()->wait(5000);
     }
 
     public function saveTherapy ()
@@ -416,51 +425,79 @@ class TherapyApplication extends OpenEyesPage
 
     public function rightPatientCnvNO ()
     {
-        $this->getSession()->wait(2000);
+       $this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_2');
         $this->getElement('rightPatientHasCnvNo')->click();
     }
 
     public function rightMacularOdemaYes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_14');
         $this->getElement('rightPatientHasMacularOdemaYes')->click();
     }
 
     public function rightDiabeticMacularOdemaYes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_15');
         $this->getElement('rightPatientHasDiabeticMacularOdemaYes')->click();
     }
 
     public function rightCRT400Yes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_16');
         $this->getElement('rightPatientCRT>=400Yes')->click();
     }
 
     public function leftPatientCnvNO ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_2');
         $this->getElement('leftPatientHasCnvNo')->click();
     }
 
     public function leftMacularOdemaYes ()
     {
-        $this->getSession()->wait(2000);
+		$this->getSession()->wait(2000);
+        $this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_14');
         $this->getElement('leftPatientHasMacularOdemaYes')->click();
     }
 
     public function leftDiabeticMacularOdemaYes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_15');
         $this->getElement('leftPatientHasDiabeticMacularOdemaYes')->click();
     }
 
     public function leftCRT400Yes ()
     {
-        $this->getSession()->wait(2000);
+		$this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_16');
         $this->getElement('leftPatientCRT>=400Yes')->click();
     }
+
+    public function rightOcularConditionRareYes ()
+    {
+        $this->getElement('rightOcularConditionRareYes')->check();
+    }
+
+    public function rightOcularConditionRareNo()
+    {
+        $this->getElement('rightOcularConditionRareNo')->check();
+    }
+
+    public function rightIncidenceDetails ($comments)
+    {
+        $this->getElement('rightIncidenceDetails')->setValue($comments);
+    }
+
+    public function rightPatientSignificantlyDifferent ($comments)
+    {
+        $this->getElement('rightPatientSignificantlyDifferent')->setValue($comments);
+    }
+
+    public function rightPatientLikelyToGainBenefit ($comments)
+    {
+        $this->getElement('rightPatientLikelyToGain')->setValue($comments);
+    }
+
+
 }
 
 

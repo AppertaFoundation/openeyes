@@ -21,7 +21,7 @@ Feature: Create New Anaesthetic Satisfaction Audit
 
     Then I select a Laser site ID "<LaserSite>"
     And I select a Laser of "<Laser>"
-    And I select a Laser Surgeon of "<Surgeon>"
+    And I select a Laser Operator of "<Surgeon>"
     Then I select a Right Procedure of "62"
     Then I select a Left Procedure of "363"
 

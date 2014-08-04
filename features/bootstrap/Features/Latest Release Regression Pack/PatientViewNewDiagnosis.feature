@@ -33,7 +33,7 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
     Then I Remove existing Allergy
     Then I Add Allergy "5" and Save
 
-    And I Add a Family History of relative "1" side "3" condition "1" and comments "Family History Comments" and Save
+    And I Add a Family History of relative "1" side "1" condition "1" and comments "Family History Comments" and Save
 
   Scenario: Route 2: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
             Remove Operation
@@ -60,7 +60,8 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
     And I select a Previous Operation date of day "4" month "1" year "2012"
     Then I save the new Previous Operation
 
-    Then I remove the Previous Operation
+#    Then I remove the Previous Operation
+#    FIX-ME
 
     And I Add a Family History of relative "4" side "3" condition "2" and comments "Family History Comments" and Save
 

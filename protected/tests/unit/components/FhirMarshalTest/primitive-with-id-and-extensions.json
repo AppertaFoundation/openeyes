@@ -1,0 +1,16 @@
+{
+	"resourceType": "Patient",
+	"_deceasedBoolean": {
+		"id" : "1",
+		"extension": [
+			{
+				"url": "http://example.com/1",
+				"valueString": "foo"
+			},
+			{
+				"url": "http://example.com/2",
+				"valueInteger": 1
+			}
+		]
+	}
+}

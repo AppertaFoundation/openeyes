@@ -25,7 +25,7 @@
  * @property string $name
  *
  */
-class UserFirm extends BaseActiveRecord
+class UserFirm extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.

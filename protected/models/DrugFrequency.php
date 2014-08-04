@@ -25,7 +25,7 @@
  * @property string $name
  * @property string $long_name
  */
-class DrugFrequency extends BaseActiveRecord
+class DrugFrequency extends BaseActiveRecordVersioned
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -42,6 +42,11 @@ class DrugFrequency extends BaseActiveRecord
 	public function tableName()
 	{
 		return 'drug_frequency';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
 	}
 
 	/**
@@ -76,6 +81,13 @@ class DrugFrequency extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+		);
+	}
+
+	public function behaviors()
+	{
+		return array(
+			'LookupTable' => 'LookupTable',
 		);
 	}
 

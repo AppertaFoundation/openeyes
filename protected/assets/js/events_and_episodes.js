@@ -112,6 +112,65 @@ $(document).ready(function(){
 		}
 	});
 
+	// Handle form fields that have linked fields to show/hide
+	$(this).on('change', 'select.linked-fields', function() {
+
+		var fields = $(this).data('linked-fields').split(',');
+		var values = $(this).data('linked-values').split(',');
+
+		if ($(this).hasClass('MultiSelectList')) {
+			var element_name = $(this).parent().prev('input').attr('name').replace(/\[.*$/,'');
+		} else {
+			var element_name = $(this).attr('name').replace(/\[.*$/,'');
+
+			for (var i in fields) {
+				hide_linked_field(element_name,fields[i]);
+			}
+		}
+
+		if (inArray($(this).children('option:selected').text(),values)) {
+			var vi = arrayIndex($(this).children('option:selected').text(),values);
+
+			for (var i in fields) {
+				if (values.length == 1 || i == vi) {
+					show_linked_field(element_name,fields[i],i==0);
+				}
+			}
+		}
+	});
+
+	$(this).on('click', 'input[type="radio"].linked-fields', function() {
+		var element_name = $(this).attr('name').replace(/\[.*$/,'');
+
+		var fields = $(this).data('linked-fields').split(',');
+		var values = $(this).data('linked-values').split(',');
+
+		if (inArray($(this).parent().text().trim(),values)) {
+			for (var i in fields) {
+				show_linked_field(element_name,fields[i],i==0);
+			}
+		} else {
+			for (var i in fields) {
+				hide_linked_field(element_name,fields[i]);
+			}
+		}
+	});
+
+	$(this).on('click', 'input[type="checkbox"].linked-fields', function() {
+		var element_name = $(this).attr('name').replace(/\[.*$/,'');
+
+		var fields = $(this).data('linked-fields').split(',');
+
+		if ($(this).is(':checked')) {
+			for (var i in fields) {
+				show_linked_field(element_name,fields[i],i==0);
+			}
+		} else {
+			for (var i in fields) {
+				hide_linked_field(element_name,fields[i]);
+			}
+		}
+	});
 });
 
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
@@ -222,5 +281,30 @@ WidgetSliderTable.prototype = {
 		var val = element.val();
 
 		$('#'+this.range_id+'_value_span').text(this.data[val]);
+	}
+}
+
+function show_linked_field(element_name,field_name,focus)
+{
+	$('fieldset#'+element_name+'_'+field_name).show();
+	$('#div_'+element_name+'_'+field_name).show();
+	if (focus) {
+		$('#'+element_name+'_'+field_name).focus();
+	}
+}
+
+function hide_linked_field(element_name,field_name)
+{
+	$('fieldset#'+element_name+'_'+field_name).hide();
+	$('#div_'+element_name+'_'+field_name).hide();
+
+	$('input[name="'+element_name+'['+field_name+']"][type="radio"]').removeAttr('checked');
+	$('input[name="'+element_name+'['+field_name+']"][type="text"]').val('');
+	$('select[name="'+element_name+'['+field_name+']"]').val('');
+
+	if ($('#'+field_name).hasClass('MultiSelectList')) {
+		$('a.MultiSelectRemove[data-name="'+field_name+'[]"]').map(function() {
+			$(this).click();
+		});
 	}
 }
