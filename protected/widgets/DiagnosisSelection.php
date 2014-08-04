@@ -81,6 +81,13 @@ class DiagnosisSelection extends BaseFieldWidget
                 }
             }
         }
+
+        if ($this->element == null) {
+            if ($disorder = Disorder::model()->findByPk($this->value)) {
+                $this->label = $disorder->term;
+            }
+        }
+
         parent::run();
     }
 
