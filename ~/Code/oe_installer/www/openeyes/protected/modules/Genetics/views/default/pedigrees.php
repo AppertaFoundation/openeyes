@@ -140,7 +140,7 @@
 			<tfoot class="pagination-container">
 				<tr>
 					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'id'=>'add_pedigree'))->toHtml()?>
 						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
 					</td>
 					<td colspan="6">

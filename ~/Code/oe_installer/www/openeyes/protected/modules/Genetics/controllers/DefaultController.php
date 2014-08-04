@@ -46,7 +46,7 @@ class DefaultController extends BaseEventTypeController
 				'roles' => array('OprnSearchPedigree'),
 			),
 			array('allow',
-				'actions' => array('EditGene', 'AddGene', 'Inheritance', 'AddInheritance', 'EditInheritance'),
+				'actions' => array('EditGene', 'AddGene', 'Inheritance', 'AddInheritance', 'EditInheritance', 'AddPedigree', 'EditPedigree'),
 				'roles' => array('OprnEditPedigree'),
 			),
 		);
@@ -56,6 +56,7 @@ class DefaultController extends BaseEventTypeController
 		'index' => self::ACTION_TYPE_FORM,
 		'Pedigrees' => self::ACTION_TYPE_FORM,
 		'AddPedigree' => self::ACTION_TYPE_FORM,
+		'EditPedigree' => self::ACTION_TYPE_FORM,
 		'Genes' => self::ACTION_TYPE_FORM,
 		'AddGene' => self::ACTION_TYPE_FORM,
 		'EditGene' => self::ACTION_TYPE_FORM,
