@@ -64,6 +64,7 @@
 											<td colspan="4">
 												<?php $form->widget('application.widgets.DiagnosisSelection',array(
 													'value' => @$_GET['disorder-id'],
+													'field' => 'principal_diagnosis',
 													'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
 													'layoutColumns' => array(
 														'label' => $form->layoutColumns['label'],
