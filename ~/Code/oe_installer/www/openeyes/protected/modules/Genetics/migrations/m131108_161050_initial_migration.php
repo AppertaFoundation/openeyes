@@ -69,7 +69,7 @@ class m131108_161050_initial_migration extends OEMigration
 		$this->createTable('patient_pedigree',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'patient_id' => 'int(10) unsigned NOT NULL',
-				'pedigree_id' => 'int(10) unsigned NOT NULL',
+				'pedigree_id' => 'int(10) unsigned',
 				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT \'1\'',
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT \'1\'',
