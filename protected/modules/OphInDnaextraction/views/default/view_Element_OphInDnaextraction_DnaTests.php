@@ -23,7 +23,6 @@
 	</header>
 	<div class="row field-row">
 		<div class="large-3 column">
-			<label>Tests:</label>
 		</div>
 		<div class="large-9 column">
 			<table>
@@ -33,7 +32,6 @@
 						<th>Investigator</th>
 						<th>Study</th>
 						<th>Volume</th>
-						<th></th>
 					</tr>
 				</thead>
 				<tbody>
