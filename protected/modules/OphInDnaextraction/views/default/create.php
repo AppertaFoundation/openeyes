@@ -36,6 +36,7 @@ $this->beginContent('//patient/event_container'); ?>
 		<?php $this->displayErrors($errors)?>
 		<?php $this->renderOpenElements($this->action->id, $form)?>
 		<?php $this->renderOptionalElements($this->action->id, $form)?>
+		<?php echo CHtml::hiddenField('Event[parent_id]',CHtml::encode(isset($_GET['parent_event_id']) ? $_GET['parent_event_id'] : null))?>
 		<?php $this->displayErrors($errors, true)?>
 
 	<?php $this->endWidget()?>
