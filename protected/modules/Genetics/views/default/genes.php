@@ -39,7 +39,7 @@
 			<?php $this->endWidget()?>
 		</div>
 	</div>
-	<?php echo $this->renderPartial('//elements/form_errors',array('errors'=>$errors))?>
+	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 	<form id="admin_genes" method="post">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 		<table class="grid">
