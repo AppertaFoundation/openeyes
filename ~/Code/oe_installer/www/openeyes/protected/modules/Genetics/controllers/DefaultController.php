@@ -34,7 +34,6 @@ class DefaultController extends BaseEventTypeController
 	protected function beforeAction($action)
 	{
 		Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
-		Yii::app()->assetManager->registerScriptFile('js/admin.js', null, 10);
 		return parent::beforeAction($action);
 	}
 
@@ -421,7 +420,7 @@ class DefaultController extends BaseEventTypeController
 				return $this->redirect(array('/Genetics/default/genes'));
 			}
 
-			$gene->attributes = $_POST['Pedigree'];
+			$gene->attributes = $_POST['PedigreeGene'];
 
 			if (!$gene->save()) {
 				$errors = $gene->getErrors();
