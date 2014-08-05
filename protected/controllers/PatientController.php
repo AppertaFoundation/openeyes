@@ -40,7 +40,7 @@ class PatientController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('search', 'ajaxSearch', 'view'),
+                'actions' => array('search', 'ajaxSearch', 'view', 'parentEvent'),
                 'users' => array('@'),
             ),
             array('allow',
@@ -251,6 +251,19 @@ class PatientController extends BaseController
            echo CJavaScript::jsonEncode($result);
            Yii::app()->end();
        }
+
+    public function actionParentEvent($id)
+    {
+        if (!$event = Event::model()->findByPk($id)) {
+            throw new Exception("Event not found: $id");
+        }
+
+        if (!$event->parent) {
+            throw new Exception("Event has no parent: $id");
+        }
+
+        $this->redirect(Yii::app()->createUrl('/'.$event->parent->eventType->class_name.'/default/view/'.$event->parent_id));
+    }
 
     public function actionEpisodes()
     {
