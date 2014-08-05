@@ -21,8 +21,8 @@
 	<header class="sub-element-header">
 		<h3 class="sub-element-title"><?php echo $element->elementType->name?></h3>
 		&nbsp;&nbsp;
-		<?php echo CHtml::link("edit",Yii::app()->createUrl('/'.$this->event_type->class_name.'/default/update/'.$element->event_id))?>&nbsp;&nbsp;
-		<?php echo CHtml::link("delete",Yii::app()->createUrl('/'.$this->event_type->class_name.'/default/delete/'.$element->event_id))?>
+		<?php echo CHtml::link("edit",Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/update/'.$element->event_id))?>&nbsp;&nbsp;
+		<?php echo CHtml::link("delete",Yii::app()->createUrl('/'.$element->elementType->eventType->class_name.'/default/delete/'.$element->event_id))?>
 	</header>
 	<div class="sub-element-data">
 		<div class="row data-row">
