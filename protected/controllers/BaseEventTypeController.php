@@ -757,7 +757,11 @@ class BaseEventTypeController extends BaseModuleController
 
                         $transaction->commit();
 
-                        $this->redirect(array($this->successUri.$this->event->id));
+                        if ($this->event->parent_id) {
+                            $this->redirect(Yii::app()->createUrl('/'.$this->event->parent->eventType->class_name.'/default/view/'.$this->event->parent_id));
+                        } else {
+                            $this->redirect(array($this->successUri.$this->event->id));
+                        }
                     } else {
                         throw new Exception('could not save event');
                     }
@@ -892,7 +896,11 @@ class BaseEventTypeController extends BaseModuleController
 
                         OELog::log("Updated event {$this->event->id}");
                         $transaction->commit();
-                        $this->redirect(array('default/view/'.$this->event->id));
+                        if ($this->event->parent_id) {
+                            $this->redirect(Yii::app()->createUrl('/'.$this->event->parent->eventType->class_name.'/default/view/'.$this->event->parent_id));
+                        } else {
+                            $this->redirect(array('default/view/'.$this->event->id));
+                        }
                     } else {
                         throw new Exception('Unable to save edits to event');
                     }
