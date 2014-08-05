@@ -60,10 +60,19 @@ class MedicationController extends BaseController
 			$criteria->compare('LOWER(name)', strtolower($term), true, 'OR');
 			$criteria->compare('LOWER(aliases)', strtolower($term), true, 'OR');
 
+			foreach (MedicationDrug::model()->findAll($criteria) as $md) {
+				$return[] = array(
+						'label' => $md->name,
+						'value' => $md->id,
+						'type' => 'md',
+				);
+			}
+
 			foreach (Drug::model()->active()->findAll($criteria) as $drug) {
 				$return[] = array(
 					'label' => $drug->tallmanlabel,
 					'value' => $drug->id,
+					'type' => 'd'
 				);
 			}
 		}

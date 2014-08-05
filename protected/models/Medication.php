@@ -25,6 +25,7 @@
  * @property integer $patient_id
  * @property integer $route_id
  * @property integer $drug_id
+ * @property integer $medication_drug_id
  * @property integer $option_id
  * @property integer $frequency_id
  * @property string $start_date
@@ -46,8 +47,8 @@ class Medication extends BaseActiveRecordVersioned
 	public function rules()
 	{
 		return array(
-			array('drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id', 'safe'),
-			array('drug_id, route_id, frequency_id, start_date', 'required'),
+			array('medication_drug_id, drug_id, route_id, option_id, dose, frequency_id, start_date, end_date, stop_reason_id', 'safe'),
+			array('route_id, frequency_id, start_date', 'required'),
 			array('start_date', 'OEFuzzyDateValidatorNotFuture'),
 			array('end_date', 'OEFuzzyDateValidator'),
 			array('option_id', 'validateOptionId'),
@@ -60,6 +61,7 @@ class Medication extends BaseActiveRecordVersioned
 	public function relations()
 	{
 		return array(
+			'medication_drug' => array(self::BELONGS_TO, 'MedicationDrug', 'medication_drug_id'),
 			'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
 			'route' => array(self::BELONGS_TO, 'DrugRoute', 'route_id'),
 			'option' => array(self::BELONGS_TO, 'DrugRouteOption', 'option_id'),
@@ -78,6 +80,14 @@ class Medication extends BaseActiveRecordVersioned
 			'frequency_id' => 'Frequency',
 			'stop_reason_id' => 'Reason for stopping',
 		);
+	}
+
+	public function afterValidate()
+	{
+		if ($this->drug_id && $this->medication_drug_id) {
+			$this->addError('drug_id', "Cannot have two different drug types in the same medication record");
+		}
+		return parent::afterValidate();
 	}
 
 	public function validateOptionId()
@@ -125,4 +135,21 @@ class Medication extends BaseActiveRecordVersioned
 		return parent::afterDelete();
 	}
 
+	/**
+	 * Wrapper for the drug name for display
+	 *
+	 * @return string
+	 */
+	public function getDrugLabel()
+	{
+		if ($this->drug) {
+			return $this->drug->label;
+		}
+		elseif($this->medication_drug) {
+			return $this->medication_drug->name;
+		}
+		else {
+			return "";
+		}
+	}
 }
