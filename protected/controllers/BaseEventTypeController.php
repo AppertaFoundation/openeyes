@@ -1114,7 +1114,7 @@ class BaseEventTypeController extends BaseModuleController
         }
         return $elements;
     }
-    
+
     /**
      * Set the attributes of the given $elements from the given structured array.
      * Returns any validation errors that arise.
@@ -1160,10 +1160,13 @@ class BaseEventTypeController extends BaseModuleController
             }
         }
 
-        //event date
+        //event date and parent validation
         if (isset($data['Event']['event_date'])) {
             $event = $this->event;
             $event->event_date = Helper::convertNHS2MySQL($data['Event']['event_date']);
+            if(isset($data['Event']['parent_id'])){
+                $event->parent_id = $data['Event']['parent_id'];
+            }
             if (!$event->validate()) {
                 foreach ($event->getErrors() as $errormsgs) {
                     foreach ($errormsgs as $error) {
