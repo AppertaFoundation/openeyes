@@ -27,7 +27,22 @@ class MedicationDrugImportCommand extends CConsoleCommand
 	public function getHelp()
 	{
 		return <<<EOH
-Import data from various different data sources into the Medication Drug model.
+Import data from various different data sources into the Medication Drug model. Implemented initially to provide support
+for importing medication drugs from the DM+D dataset. Specifically, the XML vtm and vmp files.
+
+Note, the import can be run multiple times without duplicating entries, because there is a unique constraint on the
+external_code, and external_source attributes of the medication_drug table. This means that updates from the DM+D dataset
+can easily be applied by running the same import.
+
+Options:
+type - The type of data being imported - currently supports vtm or vmp
+external_source - the name of the source data, any string, defaults to dmd (up to different installations to be consistent)
+import_size - the number of rows that will be batch inserted at one time, defaults to 20.
+filter_list - array of words from drug names that should be filtered out from the import (only supported by vmp import).
+
+Usage:
+
+./yiic medicationdrugimport [options] import [datafile]
 
 EOH;
 	}
@@ -36,7 +51,7 @@ EOH;
 
 	public $type = 'vtm';
 	public $external_source = 'dmd';
-	public $import_size = 5;
+	public $import_size = 20;
 
 	public $filter_list = array('Cotton garment','dressing','bandage','lancets', 'stockinette', 'needles', 'catheter',
 			'device', 'gloves', 'Vaginal insert', 'pessary', 'wipes', 'needle', 'hosiery', 'syringe', 'adhesive', 'tops', 'baby grow',
