@@ -55,7 +55,7 @@ EOH;
 
 	public $filter_list = array('Cotton garment','dressing','bandage','lancets', 'stockinette', 'needles', 'catheter',
 			'device', 'gloves', 'Vaginal insert', 'pessary', 'wipes', 'needle', 'hosiery', 'syringe', 'adhesive', 'tops', 'baby grow',
-			'shorts', 'leggings', 'vest', 'mittens', 'briefs', 'boxer shorts', 'nebuliser');
+			'shorts', 'leggings', 'vest', 'mittens', 'briefs', 'boxer shorts', 'nebuliser', 'bread', 'yogurt');
 
 	public function actionImport($args)
 	{
