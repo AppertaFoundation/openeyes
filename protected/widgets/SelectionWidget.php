@@ -26,7 +26,7 @@ abstract class SelectionWidget extends BaseFieldWidget
 	public $data;
 
 	public $lookup_id_field = 'id';
-	public $lookup_name_field = 'name';
+	public $lookup_name_field = null;
 
 	public function init()
 	{
@@ -41,7 +41,7 @@ abstract class SelectionWidget extends BaseFieldWidget
 			$this->data = CHtml::listData(
 				$lookup->cache(60)->findAll(array('order' => $lookup::SELECTION_ORDER)),
 				$this->lookup_id_field,
-				$this->lookup_name_field
+				$this->lookup_name_field ?: $lookup::SELECTION_LABEL_FIELD
 			);
 		}
 	}

@@ -26,6 +26,11 @@
 class BaseActiveRecord extends CActiveRecord
 {
 	/**
+	 * Label field used by SelectionWidget
+	 */
+	const SELECTION_LABEL_FIELD = 'name';
+
+	/**
 	 * Order by clause to be applied by SelectionWidget
 	 */
 	const SELECTION_ORDER = '';
