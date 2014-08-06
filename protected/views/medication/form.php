@@ -57,17 +57,6 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 						'htmlOptions' => array('placeholder' => 'or search'),
 					)
 				);
-
-				Yii::app()->clientScript->registerScript('OE.Medication.search-highlight', "
-					$('#drug_autocomplete').data('autocomplete')._renderItem = function( ul, item ) {
-						var re = new RegExp( '(' + $.ui.autocomplete.escapeRegex(this.term) + ')', 'gi' );
-						var highlightedResult = item.label.replace( re, '<b>$1</b>' );
-						return $( '<li></li>' )
-							.data( 'item.autocomplete', item )
-							.append( '<a>' + highlightedResult + '</a>' )
-							.appendTo( ul );
-					};
-				");
 				?>
 			</div>
 		</div>
