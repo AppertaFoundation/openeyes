@@ -51,12 +51,12 @@ Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach ($this->patient->allergies as $allergy) { ?>
-					<tr data-allergy-id="<?php echo $allergy->id ?>" data-allergy-name="<?php echo $allergy->name ?>">
-						<td><?php echo $allergy->name ?></td>
+					<?php foreach ($this->patient->allergyAssignments as $aa) { ?>
+					<tr data-assignment-id="<?= $aa->id ?>" data-allergy-id="<?= $aa->allergy->id ?>" data-allergy-name="<?= $aa->allergy->name ?>">
+						<td><?= CHtml::encode($aa->name) ?></td>
 						<?php if ($this->checkAccess('OprnEditAllergy')) { ?>
 							<td>
-								<a href="#" rel="<?php echo $allergy->id?>" class="small removeAllergy">
+								<a href="#" rel="<?php echo $aa->id?>" class="small removeAllergy">
 									Remove
 								</a>
 							</td>
@@ -105,6 +105,11 @@ Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 					</div>
 					<div class="<?php echo $form->columns('field');?>">
 						<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'))?>
+					</div>
+				</div>
+				<div id="allergy_other" class="row field-row hidden">
+					<div class="<?php echo $form->columns('field');?> large-offset-3">
+						<?= CHtml::textField('other'); ?>
 					</div>
 				</div>
 

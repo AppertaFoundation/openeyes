@@ -22,6 +22,14 @@ $(document).ready(function () {
 		}
 	});
 
+	$('#allergy_id').change(function () {
+		if ($(this).find(':selected').text() == 'Other') {
+			$('#allergy_other').slideDown('fast');
+		} else {
+			$('#allergy_other').slideUp('fast');
+		}
+	});
+
 	$('#btn-add_allergy').click(function() {
 		$('#add_allergy').slideToggle('fast');
 		$('#btn-add_allergy').attr('disabled',true);
@@ -37,6 +45,12 @@ $(document).ready(function () {
 		if ($('#allergy_id').val() == '' && !$('#no_allergies')[0].checked) {
 			new OpenEyes.UI.Dialog.Alert({
 				content: "Please select an allergy or confirm patient has no allergies"
+			}).open();
+			return false;
+		}
+		if ($('#allergy_id :selected').text() == 'Other' && $('#allergy_other input').val().trim() == '') {
+			new OpenEyes.UI.Dialog.Alert({
+				content: "Please enter an allergy"
 			}).open();
 			return false;
 		}
@@ -60,18 +74,21 @@ $(document).ready(function () {
 	$('button.btn_remove_allergy').click(function() {
 		$("#confirm_remove_allergy_dialog").dialog("close");
 
+		var aa_id = $('#remove_allergy_id').val();
+
 		$.ajax({
 			'type': 'GET',
-			'url': baseUrl+'/patient/removeAllergy?patient_id=' + OE_patient_id + '&allergy_id='+$('#remove_allergy_id').val(),
+			'url': baseUrl+'/patient/removeAllergy?patient_id=' + OE_patient_id + '&assignment_id=' + aa_id,
 			'success': function(html) {
 				if (html == 'success') {
-					var allergy_id = $('#remove_allergy_id').val();
-					var row = $('#currentAllergies tr[data-allergy-id="' + allergy_id + '"]');
+					var row = $('#currentAllergies tr[data-assignment-id="' + aa_id + '"]');
+					var allergy_id = row.data('allergy-id');
 					var allergy_name = row.data('allergy-name');
 					row.remove();
-					$('#allergy_id').append('<option value="'+allergy_id+'">'+allergy_name+'</option>');
-					sort_selectbox($('#allergy_id'));
-
+					if (allergy_name != "Other") {
+						$('#allergy_id').append('<option value="'+allergy_id+'">'+allergy_name+'</option>');
+						sort_selectbox($('#allergy_id'));
+					}
 				} else {
 					new OpenEyes.UI.Dialog.Alert({
 						content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
