@@ -30,7 +30,7 @@ class AdminController extends BaseAdminController
 	public function actionEditPreviousOperation()
 	{
 		$this->render('//admin/generic_admin',array(
-			'title' => 'Edit Previous Operation Choices',
+			'title' => 'Edit Previous Ophthalmic Surgery Choices',
 			'model' => 'CommonPreviousOperation',
 		));
 	}
