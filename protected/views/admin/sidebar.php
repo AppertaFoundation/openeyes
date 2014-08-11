@@ -16,6 +16,7 @@
 			'Event deletion requests' => '/admin/eventDeletionRequests',
 			'Custom episode summaries' => '/admin/episodeSummaries',
 			'Medication Stop Reason'=>'/admin/editmedicationstopreason',
+			'Previous Ophthalmic Surgery'=>'/admin/editpreviousoperation',
 
 		) as $title => $uri) {?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="selected"<?php }?>>

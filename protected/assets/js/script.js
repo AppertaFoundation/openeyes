@@ -18,6 +18,16 @@
 
 $(document).ready(function(){
 
+	// override the behaviour for showing search results
+	$.ui.autocomplete.prototype._renderItem = function( ul, item ) {
+		var re = new RegExp( '(' + $.ui.autocomplete.escapeRegex(this.term) + ')', 'gi' );
+		var highlightedResult = item.label.replace( re, '<span class="autocomplete-match">$1</span>' );
+		return $( '<li></li>' )
+				.data( 'item.autocomplete', item )
+				.append( '<a>' + highlightedResult + '</a>' )
+				.appendTo( ul );
+	};
+
 	$('.js-toggle').on('click', function(e) {
 
 		e.preventDefault();

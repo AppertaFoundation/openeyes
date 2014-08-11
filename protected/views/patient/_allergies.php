@@ -16,6 +16,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 ?>
 <section class="box patient-info associated-data js-toggle-container">
 	<header class="box-header">
@@ -49,12 +51,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach ($this->patient->allergies as $allergy) { ?>
-					<tr data-allergy-id="<?php echo $allergy->id ?>" data-allergy-name="<?php echo $allergy->name ?>">
-						<td><?php echo $allergy->name ?></td>
+					<?php foreach ($this->patient->allergyAssignments as $aa) { ?>
+					<tr data-assignment-id="<?= $aa->id ?>" data-allergy-id="<?= $aa->allergy->id ?>" data-allergy-name="<?= $aa->allergy->name ?>">
+						<td><?= CHtml::encode($aa->name) ?></td>
 						<?php if ($this->checkAccess('OprnEditAllergy')) { ?>
 							<td>
-								<a href="#" rel="<?php echo $allergy->id?>" class="small removeAllergy">
+								<a href="#" rel="<?php echo $aa->id?>" class="small removeAllergy">
 									Remove
 								</a>
 							</td>
@@ -105,6 +107,11 @@
 						<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'))?>
 					</div>
 				</div>
+				<div id="allergy_other" class="row field-row hidden">
+					<div class="<?php echo $form->columns('field');?> large-offset-3">
+						<?= CHtml::textField('other'); ?>
+					</div>
+				</div>
 
 				<div class="buttons">
 					<img src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" class="add_allergy_loader" style="display: none;" />
@@ -137,87 +144,4 @@
 			</div>
 		</div>
 	</div>
-
-	<script type="text/javascript">
-		$('#no_allergies').bind('change', function() {
-			if ($(this)[0].checked) {
-				$('#allergy_field').hide().find('select').attr('disabled', 'disabled');
-			}
-			else {
-				$('#allergy_field').show().find('select').removeAttr('disabled');
-			}
-		});
-
-		$('#btn-add_allergy').click(function() {
-			$('#relative_id').val('');
-			$('#add_allergy').slideToggle('fast');
-			$('#btn-add_allergy').attr('disabled',true);
-			$('#btn-add_allergy').addClass('disabled');
-		});
-		$('button.btn_cancel_allergy').click(function() {
-			$('#add_allergy').slideToggle('fast');
-			$('#btn-add_allergy').attr('disabled',false);
-			$('#btn-add_allergy').removeClass('disabled');
-			return false;
-		});
-		$('button.btn_save_allergy').click(function() {
-			if ($('#allergy_id').val() == '' && !$('#no_allergies')[0].checked) {
-				new OpenEyes.UI.Dialog.Alert({
-					content: "Please select an allergy or confirm patient has no allergies"
-				}).open();
-				return false;
-			}
-			$('img.add_allergy_loader').show();
-			return true;
-		});
-
-
-		$('.removeAllergy').live('click',function() {
-			$('#remove_allergy_id').val($(this).attr('rel'));
-
-			$('#confirm_remove_allergy_dialog').dialog({
-				resizable: false,
-				modal: true,
-				width: 560
-			});
-
-			return false;
-		});
-
-		$('button.btn_remove_allergy').click(function() {
-			$("#confirm_remove_allergy_dialog").dialog("close");
-
-			$.ajax({
-				'type': 'GET',
-				'url': baseUrl+'/patient/removeAllergy?patient_id=<?php echo $this->patient->id?>&allergy_id='+$('#remove_allergy_id').val(),
-				'success': function(html) {
-					if (html == 'success') {
-						var allergy_id = $('#remove_allergy_id').val();
-						var row = $('#currentAllergies tr[data-allergy-id="' + allergy_id + '"]');
-						var allergy_name = row.data('allergy-name');
-						row.remove();
-						$('#allergy_id').append('<option value="'+allergy_id+'">'+allergy_name+'</option>');
-						sort_selectbox($('#allergy_id'));
-
-					} else {
-						new OpenEyes.UI.Dialog.Alert({
-							content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
-						}).open();
-					}
-				},
-				'error': function() {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
-					}).open();
-				}
-			});
-
-			return false;
-		});
-
-		$('button.btn_cancel_remove_allergy').click(function() {
-			$("#confirm_remove_allergy_dialog").dialog("close");
-			return false;
-		});
-	</script>
 <?php } ?>

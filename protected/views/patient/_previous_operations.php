@@ -88,7 +88,7 @@
 							<label for="common_previous_operation">Common operations:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty'=>'- Select -'))?>
+							<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 						</div>
 					</div>
 
@@ -97,7 +97,7 @@
 							<label for="previous_operation">Operation:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textField('previous_operation','')?>
+							<?php echo CHtml::textField('previous_operation','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 						</div>
 					</div>
 

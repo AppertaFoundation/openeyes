@@ -31,12 +31,12 @@
 				'field' => 4
 			)
 		))?>
-	<?php echo $form->textField($drug,'name')?>
-	<?php echo $form->textField($drug,'tallman')?>
-	<?php echo $form->textField($drug,'aliases')?>
+	<?php echo $form->textField($drug,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+	<?php echo $form->textField($drug,'tallman',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+	<?php echo $form->textField($drug,'aliases',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 	<?php echo $form->dropDownList($drug,'type_id','DrugType')?>
-	<?php echo $form->textField($drug,'default_dose')?>
-	<?php echo $form->textField($drug,'dose_unit')?>
+	<?php echo $form->textField($drug,'default_dose',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+	<?php echo $form->textField($drug,'dose_unit',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 	<?php echo $form->dropDownList($drug,'default_frequency_id','DrugFrequency',array('empty' => ''))?>
 	<?php echo $form->dropDownList($drug,'default_duration_id','DrugDuration',array('empty' => ''))?>
 	<?php echo $form->multiSelectList($drug,'allergies','allergies','id', CHtml::listData(Allergy::model()->active()->findAll(array('order' => 'name')),'id','name'),null,array('empty' => '','label' => 'Allergies'))?>

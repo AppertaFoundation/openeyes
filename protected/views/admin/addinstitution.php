@@ -31,15 +31,15 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->textField($institution,'name')?>
-		<?php echo $form->textField($institution,'remote_id', null, null, array('field' => 2))?>
+		<?php echo $form->textField($institution,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($institution,'remote_id', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
 		<fieldset class="field-row">
 			<legend>Address</legend>
-			<?php echo $form->textField($address,'address1')?>
-			<?php echo $form->textField($address,'address2')?>
-			<?php echo $form->textField($address,'city')?>
-			<?php echo $form->textField($address,'county')?>
-			<?php echo $form->textField($address,'postcode')?>
+			<?php echo $form->textField($address,'address1',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+			<?php echo $form->textField($address,'address2',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+			<?php echo $form->textField($address,'city',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+			<?php echo $form->textField($address,'county',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+			<?php echo $form->textField($address,'postcode',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 			<?php echo $form->dropDownList($address,'country_id','Country')?>
 		</fieldset>
 		<?php echo $form->formActions(array('cancel-uri' => '/admin/institutions'));?>

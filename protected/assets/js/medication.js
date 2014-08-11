@@ -33,17 +33,26 @@ $(document).ready(function () {
 		$('#medication_add').attr('disabled',false).removeClass('disabled');
 	}
 
-	function selectMedication(id, name) {
-		$('#medication_form input[name=drug_id]').val(id);
-		$('#medication_drug_name').text(name).show();
+	function selectMedication(id, name, type) {
+		if (type == 'd') {
+			$('#medication_form input[name=drug_id]').val(id);
+			$('#medication_form input[name=medication_drug_id]').val('');
+			$('#medication_drug_name').text(name).show();
+			// only have default routes etc for pharmacy drug set.
+			disableButtons('#medication .button');
+			$.getJSON(baseUrl + '/medication/drugdefaults', { drug_id: id }, function (res) {
+				for (var name in res) {
+					$('#medication_form [name=' + name + ']').val(res[name]).change();
+				}
+				enableButtons('#medication .button');
+			});
+		}
+		else {
+			$('#medication_form input[name=drug_id]').val('');
+			$('#medication_form input[name=medication_drug_id]').val(id);
+			$('#medication_drug_name').text(name).show();
+		}
 
-		disableButtons('#medication .button');
-		$.getJSON(baseUrl + '/medication/drugdefaults', { drug_id: id }, function (res) {
-			for (var name in res) {
-				$('#medication_form [name=' + name + ']').val(res[name]).change();
-			}
-			enableButtons('#medication .button');
-		});
 	}
 
 	function getFuzzyDate(selector) {
@@ -84,13 +93,14 @@ $(document).ready(function () {
 
 		.on('change', '[name=drug_select]', function () {
 			if ($(this).val()) {
-				selectMedication($(this).val(), $(this).find('option:selected').text());
+				// at the moment assume the entire short list is based on pharmacy drugs as it is using the pharmacy list
+				selectMedication($(this).val(), $(this).find('option:selected').text(), 'd');
 			}
 			$(this).val(null);
 		})
 
 		.on('autocompleteselect', '[name=drug_autocomplete]', function (e, ui) {
-			selectMedication(ui.item.value, ui.item.label);
+			selectMedication(ui.item.value, ui.item.name, ui.item.type);
 			$(this).val('');
 			return false;
 		})

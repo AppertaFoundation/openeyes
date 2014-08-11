@@ -31,7 +31,7 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->textField($source,'name')?>
+		<?php echo $form->textField($source,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->formActions(array('cancel-uri' => '/admin/datasources'));?>
 	<?php $this->endWidget()?>
 </div>

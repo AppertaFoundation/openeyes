@@ -18,6 +18,10 @@ class MeasurementReference extends BaseActiveRecordVersioned
 
 	protected function beforeSave()
 	{
+		if ($this->episode_id && $this->event_id) {
+			throw new Exception("Measurement references cannot reference both an episode and an event");
+		}
+
 		foreach ($this->findAll('patient_measurement_id = ?', array($this->patient_measurement_id)) as $existing) {
 			if ($this->episode_id && $this->episode_id == $existing->episode_id) {
 				throw new Exception("Measurement reference already exists from episode {$this->episode_id} to patient measurement {$this->patient_measurement_id}");

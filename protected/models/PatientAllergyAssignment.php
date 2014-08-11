@@ -100,4 +100,12 @@ class PatientAllergyAssignment extends BaseActiveRecordVersioned
 			'criteria'=>$criteria,
 		));
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->allergy->name == 'Other' ? $this->other : $this->allergy->name;
+	}
 }

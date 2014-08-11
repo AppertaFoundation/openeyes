@@ -51,19 +51,44 @@ class MedicationController extends BaseController
 		}
 	}
 
+	/**
+	 * Searches across MedicationDrug and Drug models for the given term. If the term only matches
+	 * on an alias, the alias will be included in the returned label for that entry.
+	 *
+	 * Distinguishes between the data types to ensure relationship defined correctly.
+	 */
 	public function actionFindDrug()
 	{
 		$return = array();
 
-		if (isset($_GET['term']) && $term = $_GET['term']) {
+		if (isset($_GET['term']) && $term = strtolower($_GET['term'])) {
 			$criteria = new CDbCriteria();
-			$criteria->compare('LOWER(name)', strtolower($term), true, 'OR');
-			$criteria->compare('LOWER(aliases)', strtolower($term), true, 'OR');
+			$criteria->compare('LOWER(name)', $term, true, 'OR');
+			$criteria->compare('LOWER(aliases)', $term, true, 'OR');
+
+			foreach (MedicationDrug::model()->findAll($criteria) as $md) {
+				$label = $md->name;
+				if (strpos(strtolower($md->name), $term) === false) {
+					$label .= " (" . $md->aliases . ")";
+				}
+				$return[] = array(
+						'name' => $md->name,
+						'label' => $label,
+						'value' => $md->id,
+						'type' => 'md',
+				);
+			}
 
 			foreach (Drug::model()->active()->findAll($criteria) as $drug) {
+				$label = $drug->tallmanlabel;
+				if (strpos(strtolower($drug->name), $term) === false) {
+					$label .= " (" . $drug->aliases . ")";
+				}
 				$return[] = array(
-					'label' => $drug->tallmanlabel,
+					'name' => $drug->tallmanlabel,
+					'label' => $label,
 					'value' => $drug->id,
+					'type' => 'd'
 				);
 			}
 		}

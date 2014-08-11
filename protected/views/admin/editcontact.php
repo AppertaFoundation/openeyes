@@ -31,12 +31,12 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->textField($contact,'title', null, null, array('field' => 2))?>
-		<?php echo $form->textField($contact,'first_name')?>
-		<?php echo $form->textField($contact,'last_name')?>
-		<?php echo $form->textField($contact,'nick_name')?>
-		<?php echo $form->textField($contact,'primary_phone')?>
-		<?php echo $form->textField($contact,'qualifications')?>
+		<?php echo $form->textField($contact,'title', array('autocomplete'=>Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
+		<?php echo $form->textField($contact,'first_name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($contact,'last_name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($contact,'nick_name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($contact,'primary_phone',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($contact,'qualifications',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->dropDownList($contact,'contact_label_id',CHtml::listData(ContactLabel::model()->active()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
 		<?php echo $form->formActions(array('cancel-uri' => '/admin/contacts'))?>
 	<?php $this->endWidget()?>
