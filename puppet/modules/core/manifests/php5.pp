@@ -5,6 +5,17 @@ class core::php5 {
 		notify  => Service['apache2']
 	}
 
+	package { 'php5-cli':
+		ensure  => present,
+		require => Exec['apt-update']
+	}
+
+	package { 'libapache2-mod-php5':
+		ensure  => present,
+		require => Exec['apt-update'],
+		notify  => Service['apache2']
+	}
+
 	package { 'php5-curl':
 		ensure  => present,
 		require => Exec['apt-update'],

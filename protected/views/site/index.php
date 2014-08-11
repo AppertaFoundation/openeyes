@@ -47,7 +47,7 @@
 			));?>
 			<div class="row">
 				<div class="large-9 column">
-					<?php echo CHtml::textField('query', '', array('class' => 'large', 'placeholder' => 'Enter search...')); ?>
+					<?php echo CHtml::textField('query', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'large', 'placeholder' => 'Enter search...')); ?>
 				</div>
 				<div class="large-3 column text-right">
 					<img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="margin-right: 10px; display: none;" />

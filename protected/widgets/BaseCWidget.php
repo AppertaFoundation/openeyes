@@ -53,6 +53,8 @@ class BaseCWidget extends CWidget
 		if (file_exists("protected/widgets/js/".get_class($this).".js")) {
 			$this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js');
 		}
+
+		$this->htmlOptions['autocomplete'] = Yii::app()->params['html_autocomplete'];
 	}
 
 	public function render($view, $data=null, $return=false)
