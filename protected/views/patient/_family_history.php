@@ -98,7 +98,7 @@
 								<label for="comments">Comments:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('comments','')?>
+								<?php echo CHtml::textField('comments','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 

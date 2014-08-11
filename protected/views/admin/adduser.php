@@ -31,21 +31,21 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->textField($user,'username',array(),array(array(
+		<?php echo $form->textField($user,'username',array('autocomplete'=>Yii::app()->params['html_autocomplete']),array(array(
 			'id' => 'lookup_user',
 			'title' => 'Lookup user',
 			'href' => '#',
 		)))?>
-		<?php echo $form->textField($user,'title', null, null, array('field' => 2))?>
-		<?php echo $form->textField($user,'first_name')?>
-		<?php echo $form->textField($user,'last_name')?>
-		<?php echo $form->textField($user,'email')?>
-		<?php echo $form->textField($user,'role')?>
-		<?php echo $form->textField($user,'qualifications')?>
+		<?php echo $form->textField($user,'title', array('autocomplete'=>Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
+		<?php echo $form->textField($user,'first_name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($user,'last_name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($user,'email',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($user,'role',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($user,'qualifications',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->radioBoolean($user,'active')?>
 		<?php echo $form->radioBoolean($user,'global_firm_rights')?>
 		<?php echo $form->radioBoolean($user,'is_doctor')?>
-		<?php echo $form->passwordField($user,'password')?>
+		<?php echo $form->passwordField($user,'password',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
 		<?php echo $form->multiSelectList($user, 'User[roles]', 'roles', 'name', CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'), array(), array('label' => 'Roles', 'empty' => '-- Add --'));?>
 		<?php echo $form->formActions();?>

@@ -112,7 +112,7 @@
 									)
 								))?>
 								<label class="inline" for="hos_num">Hos num:</label>
-								<?php echo CHtml::textField('hos_num',@$_POST['hos_num'],array('class'=>'small fixed-width'))?>
+								<?php echo CHtml::textField('hos_num',@$_POST['hos_num'],array('autocomplete'=>Yii::app()->params['html_autocomplete'],'class'=>'small fixed-width'))?>
 								<?php echo CHtml::link('View all',array('audit/'),array('class'=>'inline'))?>
 								<?php echo CHtml::link("Auto update on",'#',array('class'=>'inline','id'=>'auto_update_toggle'))?>
 							</fieldset>

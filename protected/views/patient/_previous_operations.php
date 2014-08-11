@@ -97,7 +97,7 @@
 							<label for="previous_operation">Operation:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textField('previous_operation','')?>
+							<?php echo CHtml::textField('previous_operation','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 						</div>
 					</div>
 
