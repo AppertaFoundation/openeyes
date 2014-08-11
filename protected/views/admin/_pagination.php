@@ -25,7 +25,8 @@ if(isset($pagination)){
 		'cssFile' => false,
 		'selectedPageCssClass' => 'current',
 		'hiddenPageCssClass' => 'unavailable',
-		'header' => false,
+		'header' => @$header,
+		'footer' => @$footer,
 		'htmlOptions' => array(
 			'class' => 'pagination'
 		)

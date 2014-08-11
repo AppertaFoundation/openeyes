@@ -119,6 +119,13 @@ tfoot.pagination-container {
 			font-size: rem-calc(12px);
 		}
 	}
+	.pagination-view-all {
+		float: right;
+		margin-left: 12px;
+		line-height: 1.8;
+		font-size: 0.75rem;
+		font-weight: normal;
+	}
 }
 
 /* Pagination centered wrapper */
