@@ -90,7 +90,7 @@
 								<label for="comments">Other Relative:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('other_relative','')?>
+								<?php echo CHtml::textField('other_relative','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -127,7 +127,7 @@
 								<label for="comments">Other Condition:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('other_condition','')?>
+								<?php echo CHtml::textField('other_condition','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 

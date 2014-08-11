@@ -138,7 +138,7 @@
 					<label for="type_of_job">Type of Job:</label>
 				</div>
 				<div class="<?php echo $form->columns('field');?>">
-					<?php echo CHtml::activeTextField($social_history, 'type_of_job')?>
+					<?php echo CHtml::activeTextField($social_history, 'type_of_job',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 				</div>
 			</div>
 			<div class="field-row row">
@@ -186,7 +186,7 @@
 					<label for="relative_id">Alcohol Intake:</label>
 				</div>
 				<div class="large-2 column">
-					<?php echo CHtml::activeTextField($social_history, 'alcohol_intake')?>
+					<?php echo CHtml::activeTextField($social_history, 'alcohol_intake',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 				</div>
 				<div class="large-3 column end">
 					<p>units/week</p>

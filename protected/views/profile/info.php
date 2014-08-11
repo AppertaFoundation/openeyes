@@ -44,7 +44,7 @@
 		<?php echo $form->textField($user, 'first_name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => !Yii::app()->params['profile_user_can_edit']));?>
 		<?php echo $form->textField($user, 'last_name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => !Yii::app()->params['profile_user_can_edit']));?>
 		<?php echo $form->textField($user, 'email', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => !Yii::app()->params['profile_user_can_edit']));?>
-		<?php echo $form->textField($user, 'qualifications', array('autocomplete' => 'readonly' => !Yii::app()->params['profile_user_can_edit']));?>
+		<?php echo $form->textField($user, 'qualifications', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'readonly' => !Yii::app()->params['profile_user_can_edit']));?>
 
 		<?php if (Yii::app()->params['profile_user_can_edit']) {?>
 			<div class="row field-row">

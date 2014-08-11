@@ -109,7 +109,7 @@ Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 				</div>
 				<div id="allergy_other" class="row field-row hidden">
 					<div class="<?php echo $form->columns('field');?> large-offset-3">
-						<?= CHtml::textField('other'); ?>
+						<?= CHtml::textField('other','',array('autocomplete'=>Yii::app()->params['html_autocomplete'])); ?>
 					</div>
 				</div>
 
