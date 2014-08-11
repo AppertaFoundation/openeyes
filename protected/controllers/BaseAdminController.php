@@ -97,15 +97,19 @@ class BaseAdminController extends BaseController
 					$to_save[] = $item;
 				}
 
-				$ids[] = $item->id;
+				if ($item->id) {
+					$ids[] = $item->id;
+				}
 			}
 		}
 
 		if (empty($this->form_errors)) {
+
 			foreach ($to_save as $item) {
 				if (!$item->save()) {
 					throw new Exception("Unable to save admin list item: ".print_r($item->getErrors(),true));
 				}
+				$ids[] = $item->id;
 			}
 
 			$criteria = new CDbCriteria;
@@ -116,7 +120,9 @@ class BaseAdminController extends BaseController
 
 			Yii::app()->user->setFlash('success', "List updated.");
 
-			$this->redirect('/' . $this->route);
+			$this->redirect(
+				$this->createUrl('/'.$this->route,$_GET)
+			);
 		}
 	}
 }
