@@ -45,7 +45,7 @@
 				</td>
 				<td>
 					<?php echo CHtml::hiddenField('id[]',$row->id)?>
-					<?php echo CHtml::textField('name[]',$row->name)?>
+					<?php echo CHtml::textField('name[]',$row->name,array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 					<?php if (isset($errors[$i])) {?>
 						<span class="error">
 							<?php echo $errors[$i]?>
@@ -73,7 +73,7 @@
 			</td>
 			<td>
 				<?php echo CHtml::hiddenField('id[]','',array('disabled' => 'disabled'))?>
-				<?php echo CHtml::textField('name[]','',array('disabled' => 'disabled'))?>
+				<?php echo CHtml::textField('name[]','',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => 'disabled'))?>
 			</td>
 			<?php foreach ($extra_fields as $field) {?>
 				<td>

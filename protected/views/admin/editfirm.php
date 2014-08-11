@@ -31,8 +31,8 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->textField($firm,'pas_code')?>
-		<?php echo $form->textField($firm,'name')?>
+		<?php echo $form->textField($firm,'pas_code',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($firm,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 
 		<div id="div_Firm_subspecialty_id" class="row field-row">
 			<div class="large-2 column">

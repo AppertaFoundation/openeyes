@@ -26,7 +26,7 @@
 				<label for="q">Search:</label>
 			</div>
 			<div class="large-4 column end">
-				<?php echo CHtml::textField('q',@$_GET['q'])?>
+				<?php echo CHtml::textField('q',@$_GET['q'],array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 			</div>
 		</div>
 		<div class="row field-row">
