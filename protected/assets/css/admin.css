@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /**
  * OpenEyes
  *
@@ -31,10 +30,9 @@ meta.foundation-mq-topbar {
 
 /* line 24, ../sass/openeyes/components/admin/_content.scss */
 .notice {
-  background-color: #FF8080;
+  background-color: red;
+  color: white;
   width: 100%;
-  display:block;
-  padding:2px;
 }
 
 /* line 3, ../sass/openeyes/components/admin/_navigation.scss */
@@ -72,6 +70,11 @@ meta.foundation-mq-topbar {
 /* line 19, ../sass/openeyes/components/admin/_forms.scss */
 .admin .field-row:last-child {
   padding: 0;
+}
+
+/* line 25, ../sass/openeyes/components/admin/_forms.scss */
+table.generic-admin tr {
+  vertical-align: top;
 }
 
 /* line 19, ../sass/openeyes/components/admin/_boxes.scss */

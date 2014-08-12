@@ -16,6 +16,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+
+
+
 $(document).ready(function() {
 	$('.editRow').die('click').live('click',function(e) {
 		e.preventDefault();
@@ -30,12 +33,38 @@ $(document).ready(function() {
 		$(this).closest('tr').remove();
 	});
 
-	$('.generic-admin tbody').sortable({helper:'clone'});
+	$('.generic-admin tbody').sortable({
+		helper:'clone',
+		update: function(event, ui) {
+			var i = 1;
+			$('.generic-admin tbody tr').each(function() {
+				$(this).find('input[name^="display_order"]').val(i++);
+			});
+		}
+	});
+
+	function getNextKey() {
+		var keys = $('table.generic-admin tr').map(function(index, el) {
+			v = parseInt($(el).attr('data-row'));
+			return isNaN(v) ? -Infinity : v;
+		}).get();
+		var v = Math.max.apply(null, keys);
+		if (v >= 0) {
+			return v+1;
+		}
+		return 0;
+	}
 
 	$('.generic-admin-add').unbind('click').click(function(e) {
 		e.preventDefault();
 
-		$('.generic-admin tbody').append('<tr>' + $('.generic-admin .newRow').html().replace(/ disabled="disabled"/g,'') + '</tr>');
+		var template = $('.generic-admin .newRow').html();
+		var data = {
+			"key" : getNextKey()
+		};
+		var form = Mustache.render(template, data).replace(/ disabled="disabled"/g,'');
+
+		$('.generic-admin tbody').append('<tr data-row="'+data.key+'">' + form + '</tr>');
 		$('.generic-admin tbody').children('tr:last').children('td:nth-child(2)').children('input').focus();
 	});
 });

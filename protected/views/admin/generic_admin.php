@@ -33,6 +33,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'model' => $model,
 		'errors' => $this->form_errors,
 		'extra_fields' => @$extra_fields,
+		'extra_links' => @$extra_links,
 	))?>
 </div>
 <?php $this->endWidget(); ?>

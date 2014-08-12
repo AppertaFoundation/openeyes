@@ -6,6 +6,7 @@ class GenericAdmin extends BaseCWidget
 	public $data;
 	public $errors;
 	public $extra_fields = array();
+	public $extra_links = array();
 
 	public function init()
 	{
@@ -30,7 +31,7 @@ class GenericAdmin extends BaseCWidget
 				}
 
 				foreach ($this->extra_fields as $field) {
-					$item->{$field['field']} = $_POST[$field['field']][$i];
+					$item->{$field['field']} = @$_POST[$field['field']][$i];
 				}
 
 				$this->data[] = $item;

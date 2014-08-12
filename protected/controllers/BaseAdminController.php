@@ -75,7 +75,7 @@ class BaseAdminController extends BaseController
 				}
 
 				$item->name = $_POST['name'][$i];
-				$item->display_order = $i+1;
+				$item->display_order = $_POST['display_order'][$i];
 				//handle models with active flag
 				$attributes = $item->getAttributes();
 				if (array_key_exists('active',$attributes)) {
@@ -83,8 +83,9 @@ class BaseAdminController extends BaseController
 				}
 
 				if (!empty($_POST['_extra_fields'])) {
+
 					foreach ($_POST['_extra_fields'] as $field) {
-						$item->$field = $_POST[$field][$i];
+						$item->$field = @$_POST[$field][$i];
 					}
 				}
 

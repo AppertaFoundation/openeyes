@@ -39,13 +39,14 @@
 	</thead>
 	<tbody>
 		<?php foreach ($data as $i => $row) {?>
-			<tr>
+			<tr data-row="<?= $i ?>">
 				<td class="reorder">
 					<span>&uarr;&darr;</span>
 				</td>
 				<td>
-					<?php echo CHtml::hiddenField('id[]',$row->id)?>
-					<?php echo CHtml::textField('name[]',$row->name,array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+					<?php echo CHtml::hiddenField("id[{$i}]",$row->id)?>
+					<?php echo CHtml::hiddenField("display_order[{$i}]",$row->display_order)?>
+					<?php echo CHtml::textField("name[{$i}]",$row->name,array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 					<?php if (isset($errors[$i])) {?>
 						<span class="error">
 							<?php echo $errors[$i]?>
@@ -54,7 +55,7 @@
 				</td>
 				<?php foreach ($extra_fields as $field) {?>
 					<td>
-						<?php $this->render('_generic_admin_'.$field['type'],array('row' => $row, 'params' => $field))?>
+						<?php $this->render('_generic_admin_'.$field['type'],array('row' => $row, 'params' => $field, 'i' => $i))?>
 					</td>
 				<?php }?>
 				<td>
@@ -67,17 +68,19 @@
 				</td>
 			</tr>
 		<?php }?>
-		<tr class="newRow" style="display: none">
+		<tr id="admin-new-row" class="newRow" style="display: none">
+			<input type="hidden" name="row-key" value="{{key}}" />
 			<td>
 				<span>&uarr;&darr;</span>
 			</td>
 			<td>
-				<?php echo CHtml::hiddenField('id[]','',array('disabled' => 'disabled'))?>
-				<?php echo CHtml::textField('name[]','',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => 'disabled'))?>
+				<?php echo CHtml::hiddenField('id[{{key}}]','',array('disabled' => 'disabled'))?>
+				<?php echo CHtml::hiddenField('display_order[{{key}}]','{{key}}',array('disabled' => 'disabled'))?>
+				<?php echo CHtml::textField('name[{{key}}]','',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => 'disabled'))?>
 			</td>
 			<?php foreach ($extra_fields as $field) {?>
 				<td>
-					<?php $this->render('_generic_admin_'.$field['type'],array('row' => null, 'params' => $field, 'disabled' => 'disabled'))?>
+					<?php $this->render('_generic_admin_'.$field['type'],array('row' => null, 'params' => $field, 'disabled' => 'disabled', 'i' => '{{key}}'))?>
 				</td>
 			<?php }?>
 			<td>
