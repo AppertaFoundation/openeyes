@@ -53,7 +53,7 @@ class SettingInstallation extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('element_type_id, key, value', 'required'),
+			array('key, value', 'required'),
 			array('element_type_id, key, value', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.

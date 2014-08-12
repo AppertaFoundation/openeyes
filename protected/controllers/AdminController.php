@@ -1396,4 +1396,37 @@ class AdminController extends BaseAdminController
 
 		$this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
 	}
+
+	public function actionSettings()
+	{
+		$this->render('/admin/settings');
+	}
+
+	public function actionEditSetting()
+	{
+		if (!$metadata = SettingMetadata::model()->find('`key`=?',array(@$_GET['key']))) {
+			$this->redirect(array('/admin/settings'));
+		}
+
+		$errors = array();
+
+		foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {
+			if (@$_POST[$metadata->key]) {
+				if (!$setting = $metadata->getSetting($metadata->key,null,true)) {
+					$setting = new SettingInstallation;
+					$setting->key = $metadata->key;
+				}
+
+				$setting->value = @$_POST[$metadata->key];
+
+				if (!$setting->save()) {
+					$errors = $setting->errors;
+				} else {
+					$this->redirect(array('/admin/settings'));
+				}
+			}
+		}
+
+		$this->render('/admin/edit_setting',array('metadata' => $metadata, 'errors' => $errors));
+	}
 }

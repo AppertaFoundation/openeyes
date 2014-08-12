@@ -227,4 +227,15 @@ $(document).ready(function() {
 
 	$('#episode-summary form').submit(extractItemIds);
 	$('#episode-summary-cancel').click(function () { location.reload(); });
+
+	$('#admin_settings tr.clickable').click(function(e) {
+		e.preventDefault();
+
+		window.location.href = baseUrl+'/admin/editSetting?key=' + $(this).data('key');
+	});
+
+	$('#settingsform #et_cancel').unbind('click').click(function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/admin/settings';
+	});
 });
