@@ -200,7 +200,7 @@ class BaseEventTypeElement extends BaseElement
 
 	public function getSetting($key)
 	{
-		return SettingMetadata::model()->getSetting($key, $this);
+		return SettingMetadata::model()->getSetting($key, return SettingMetadata::model()->getSetting($key, ElementType::model()->find('class_name=?',array(CHtml::modelName($this)))););
 	}
 
 	/**
