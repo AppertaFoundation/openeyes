@@ -21,7 +21,7 @@
 	<thead>
 		<tr>
 			<th>Order</th>
-			<th>Name</th>
+			<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
 			<?php foreach ($extra_fields as $field) {?>
 				<th>
 					<?php echo $model::model()->getAttributeLabel($field['field'])?>
@@ -45,7 +45,7 @@
 				<td>
 					<?php echo CHtml::hiddenField("id[{$i}]",$row->id)?>
 					<?php echo CHtml::hiddenField("display_order[{$i}]",$row->display_order)?>
-					<?php echo CHtml::textField("name[{$i}]",$row->name,array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+					<?php echo CHtml::textField("{$label_field}[{$i}]",$row->{$label_field},array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 					<?php if (isset($errors[$i])) {?>
 						<span class="error">
 							<?php echo $errors[$i]?>
@@ -75,7 +75,7 @@
 			<td>
 				<?php echo CHtml::hiddenField('id[{{key}}]','',array('disabled' => 'disabled'))?>
 				<?php echo CHtml::hiddenField('display_order[{{key}}]','{{key}}',array('disabled' => 'disabled'))?>
-				<?php echo CHtml::textField('name[{{key}}]','',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => 'disabled'))?>
+				<?php echo CHtml::textField("{$label_field}[{{key}}]",'',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => 'disabled'))?>
 			</td>
 			<?php foreach ($extra_fields as $field) {?>
 				<td>

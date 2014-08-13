@@ -61,6 +61,7 @@ class BaseAdminController extends BaseController
 	protected function genericAdmin($title, $model, array $options = array())
 	{
 		$options += array(
+			'label_field' => $model::SELECTION_LABEL_FIELD,
 			'extra_fields' => array(),
 		);
 
@@ -75,7 +76,7 @@ class BaseAdminController extends BaseController
 					$item = new $model;
 				}
 
-				$item->name = $_POST['name'][$i];
+				$item->{$options['label_field']} = $_POST[$options['label_field']][$i];
 				$item->display_order = $_POST['display_order'][$i];
 				//handle models with active flag
 				$attributes = $item->getAttributes();
