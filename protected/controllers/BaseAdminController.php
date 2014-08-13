@@ -121,6 +121,8 @@ class BaseAdminController extends BaseController
 				}
 
 				if (empty($errors)) {
+					$tx = Yii::app()->db->beginTransaction();
+
 					$ids = array();
 
 					foreach ($items as $item) {
@@ -136,6 +138,8 @@ class BaseAdminController extends BaseController
 					$this->addFilterCriteria($criteria, $options['filter_fields']);
 
 					$model::model()->deleteAll($criteria);
+
+					$tx->commit();
 
 					Yii::app()->user->setFlash('success', "List updated.");
 
