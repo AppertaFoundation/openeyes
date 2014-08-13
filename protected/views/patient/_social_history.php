@@ -218,52 +218,60 @@
 </section>
 
 <script type="text/javascript">
-$(function () {
+	$(function () {
 
-    var btnAdd = $('#btn-add_social_history'),
-	toggleAdd = $('#add_social_history'),
-	btnSave = $('.btn_save_social_history'),
-	btnCancel = $('.btn_cancel_social_history'),
-	selectOccupation = $('#SocialHistory_occupation_id'),
-	toggleJobType = $('#social_history_type_of_job_show_hide'),
-	textJobType = $('#SocialHistory_type_of_job'),
-	occupationIsOther = function() {
-	    return $('#SocialHistory_occupation_id option:selected').text() == 'Other (specify)'; 
-	},
-	setJobType = function() {
-            if (occupationIsOther()) {
-		toggleJobType.show();
-		textJobType.focus();
-            } else {
-		toggleJobType.hide();
-		textJobType.val('');
-            }
-	};
+		var btnAdd = $('#btn-add_social_history'),
+			toggleAdd = $('#add_social_history'),
+			btnSave = $('.btn_save_social_history'),
+			btnCancel = $('.btn_cancel_social_history'),
+			smokingStatus = $('#SocialHistory_smoking_status_id'),
+			selectOccupation = $('#SocialHistory_occupation_id'),
+			toggleJobType = $('#social_history_type_of_job_show_hide'),
+			textJobType = $('#SocialHistory_type_of_job'),
+			occupationIsOther = function() {
+				return $('#SocialHistory_occupation_id option:selected').text() == 'Other (specify)';
+			},
+			setJobType = function() {
+				if (occupationIsOther()) {
+					toggleJobType.show();
+					textJobType.focus();
+				} else {
+					toggleJobType.hide();
+					textJobType.val('');
+				}
+			};
 
-    selectOccupation.change(setJobType);
-    setJobType();		// need to also update on first run
+		selectOccupation.change(setJobType);
+		setJobType();		// need to also update on first run
 
-    btnSave.click(function() {
-	if(occupationIsOther() && textJobType.val() == '') {
-	    new OpenEyes.UI.Dialog.Alert({
-		content: "Please specify the 'Type of Job' for the employment status of 'Other'."
-	    }).open();
-	    return false;
-	}
-	return true;
-    });
+		btnSave.click(function() {
+			alertText = [];
+			if(occupationIsOther() && textJobType.val() == '') {
+				alertText.push("Please specify the 'Type of Job' for the employment status of 'Other'.")
+			}
+			if(!smokingStatus.val()) {
+				alertText.push("Please specify the smoking status")
+			}
+			if(alertText.length > 0) {
+				new OpenEyes.UI.Dialog.Alert({
+					content: alertText.join("\n")
+				}).open();
+				return false;
+			}
+			return true;
+		});
 
-    btnAdd.click(function(event) {
-        event.preventDefault();
-        toggleAdd.slideToggle('fast');
-        btnAdd.attr('disabled', true).addClass('disabled');
-    });
+		btnAdd.click(function(event) {
+			event.preventDefault();
+			toggleAdd.slideToggle('fast');
+			btnAdd.attr('disabled', true).addClass('disabled');
+		});
 
-    btnCancel.click(function(event) {
-        event.preventDefault();
-        toggleAdd.slideToggle('fast');
-        btnAdd.attr('disabled', false).removeClass('disabled');
-    });
+		btnCancel.click(function(event) {
+			event.preventDefault();
+			toggleAdd.slideToggle('fast');
+			btnAdd.attr('disabled', false).removeClass('disabled');
+		});
 
-});
+	});
 </script>
