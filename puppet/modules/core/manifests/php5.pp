@@ -18,12 +18,6 @@ class core::php5 {
 
 	package { 'php5-curl':
 		ensure  => present,
-		require => Exec['apt-update'],
-		notify  => Service['apache2']
-	}
-
-	package { 'php5-curl':
-		ensure  => present,
 		require => [ Exec['apt-update'], Package['php5', 'php5-cli']],
 		notify  => Service['apache2']
 	}
