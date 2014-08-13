@@ -20,6 +20,8 @@
 
 
 $(document).ready(function() {
+	$('select.generic-admin-filter').change(function () { this.form.submit(); });
+
 	$('.editRow').die('click').live('click',function(e) {
 		e.preventDefault();
 

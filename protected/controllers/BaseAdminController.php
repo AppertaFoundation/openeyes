@@ -63,64 +63,83 @@ class BaseAdminController extends BaseController
 		$options += array(
 			'label_field' => $model::SELECTION_LABEL_FIELD,
 			'extra_fields' => array(),
+			'filter_fields' => array(),
+			'filters_ready' => true,
 		);
+
+		foreach ($options['filter_fields'] as &$filter_field) {
+			$filter_field['value'] = @$_GET[$filter_field['field']];
+
+			if (!$filter_field['value'] && !$model::model()->metadata->columns[$filter_field['field']]->allowNull) {
+				$options['filters_ready'] = false;
+			}
+		}
 
 		$items = array();
 		$errors = array();
 
-		if (Yii::app()->request->isPostRequest) {
-			foreach ((array) @$_POST['id'] as $i => $id) {
-				if ($id) {
-					$item = $model::model()->findByPk($id);
-				} else {
-					$item = new $model;
-				}
-
-				$item->{$options['label_field']} = $_POST[$options['label_field']][$i];
-				$item->display_order = $_POST['display_order'][$i];
-				//handle models with active flag
-				$attributes = $item->getAttributes();
-				if (array_key_exists('active',$attributes)) {
-					$item->active = (isset($_POST['active'][$i]) || $item->isNewRecord)? 1 : 0;
-				}
-
-				foreach ($options['extra_fields'] as $field) {
-					$name = $field['field'];
-					$item->$name = @$_POST[$name][$i];
-				}
-
-				if (!$item->validate()) {
-					$errors = $item->getErrors();
-					foreach ($errors as $error) {
-						$errors[$i] = $error[0];
+		if ($options['filters_ready']) {
+			if (Yii::app()->request->isPostRequest) {
+				foreach ((array) @$_POST['id'] as $i => $id) {
+					if ($id) {
+						$item = $model::model()->findByPk($id);
+					} else {
+						$item = new $model;
 					}
-				}
 
-				$items[] = $item;
-			}
-
-			if (empty($errors)) {
-				$ids = array();
-
-				foreach ($items as $item) {
-					if (!$item->save()) {
-						throw new Exception("Unable to save admin list item: ".print_r($item->getErrors(),true));
+					$item->{$options['label_field']} = $_POST[$options['label_field']][$i];
+					$item->display_order = $_POST['display_order'][$i];
+					//handle models with active flag
+					$attributes = $item->getAttributes();
+					if (array_key_exists('active',$attributes)) {
+						$item->active = (isset($_POST['active'][$i]) || $item->isNewRecord)? 1 : 0;
 					}
-					$ids[] = $item->id;
+
+					foreach ($options['extra_fields'] as $field) {
+						$name = $field['field'];
+						$item->$name = @$_POST[$name][$i];
+					}
+
+					foreach ($options['filter_fields'] as $field) {
+						$item->{$field['field']} = $field['value'];
+					}
+
+					if (!$item->validate()) {
+						$errors = $item->getErrors();
+						foreach ($errors as $error) {
+							$errors[$i] = $error[0];
+						}
+					}
+
+					$items[] = $item;
 				}
 
-				$criteria = new CDbCriteria;
+				if (empty($errors)) {
+					$ids = array();
 
-				!empty($ids) && $criteria->addNotInCondition('id',$ids);
+					foreach ($items as $item) {
+						if (!$item->save()) {
+							throw new Exception("Unable to save admin list item: ".print_r($item->getErrors(),true));
+						}
+						$ids[] = $item->id;
+					}
 
-				$model::model()->deleteAll($criteria);
+					$criteria = new CDbCriteria;
 
-				Yii::app()->user->setFlash('success', "List updated.");
+					!empty($ids) && $criteria->addNotInCondition('id',$ids);
+					$this->addFilterCriteria($criteria, $options['filter_fields']);
 
-				$this->redirect('/' . $this->route);
+					$model::model()->deleteAll($criteria);
+
+					Yii::app()->user->setFlash('success', "List updated.");
+
+					$this->redirect(Yii::app()->request->url);
+				}
+			} else {
+				$crit = new CDbCriteria(array('order' => 'display_order'));
+				$this->addFilterCriteria($crit, $options['filter_fields']);
+				$items = $model::model()->findAll($crit);
 			}
-		} else {
-			$items = $model::model()->findAll(array('order' => 'display_order asc'));
 		}
 
 		$this->render('//admin/generic_admin', array(
@@ -130,5 +149,12 @@ class BaseAdminController extends BaseController
 			'errors' => $errors,
 			'options' => $options,
 		));
+	}
+
+	private function addFilterCriteria(CDbCriteria $crit, array $filter_fields)
+	{
+		foreach ($filter_fields as $filter_field) {
+			$crit->compare($filter_field['field'], $filter_field['value']);
+		}
 	}
 }
