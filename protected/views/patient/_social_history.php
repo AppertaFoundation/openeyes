@@ -45,7 +45,7 @@
 		<tbody>
 		<?php if (isset($social_history->occupation)){ ?>
 			<tr>
-				<td>Occupation</td>
+				<td>Employment Status</td>
 				<td><?php echo CHtml::encode($social_history->occupation->name)?></td>
 			</tr>
 		<?php }
@@ -127,7 +127,7 @@
 			<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 			<div class="field-row row">
 				<div class="<?php echo $form->columns('label');?>">
-					<label for="occupation_id">Occupation:</label>
+					<label for="occupation_id">Employment Status:</label>
 				</div>
 				<div class="<?php echo $form->columns('field');?>">
 					<?php echo CHtml::activeDropDownList($social_history, 'occupation_id' ,CHtml::listData(SocialHistoryOccupation::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
@@ -246,7 +246,7 @@ $(function () {
     btnSave.click(function() {
 	if(occupationIsOther() && textJobType.val() == '') {
 	    new OpenEyes.UI.Dialog.Alert({
-		content: "Please specify the 'Type of Job' for the occupation of 'Other'."
+		content: "Please specify the 'Type of Job' for the employment status of 'Other'."
 	    }).open();
 	    return false;
 	}

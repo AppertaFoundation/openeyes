@@ -82,7 +82,7 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 	public function attributeLabels()
 	{
 		return array(
-			'occupation_id' => 'Occupation',
+			'occupation_id' => 'Employment Status',
 			'driving_status_id' => 'Driving Status',
 			'smoking_status_id' => 'Smoking Status',
 			'accommodation_id' => 'Accommodation',
