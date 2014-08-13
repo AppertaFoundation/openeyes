@@ -62,8 +62,6 @@ class BaseAdminController extends BaseController
 	{
 		$model = $_POST['GenericAdminModel'];
 
-		$ids = array();
-
 		$to_save = array();
 
 		if (!empty($_POST['id'])) {
@@ -97,16 +95,17 @@ class BaseAdminController extends BaseController
 				} else {
 					$to_save[] = $item;
 				}
-
-				$ids[] = $item->id;
 			}
 		}
 
 		if (empty($this->form_errors)) {
+			$ids = array();
+
 			foreach ($to_save as $item) {
 				if (!$item->save()) {
 					throw new Exception("Unable to save admin list item: ".print_r($item->getErrors(),true));
 				}
+				$ids[] = $item->id;
 			}
 
 			$criteria = new CDbCriteria;
