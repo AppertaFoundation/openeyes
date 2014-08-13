@@ -19,5 +19,5 @@
 
 $model = $params['model'];
 $htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
-$value = $row ? $row->{$params['field']} : '';
-echo CHtml::dropDownList($params['field']."[{$i}]",$value,CHtml::listData($model::model()->findAll(array('order'=>'display_order asc')),'id','name'),$htmlOptions);
+$value = $row ? $row->{$params['field']} : null;
+echo CHtml::dropDownList($params['field']."[{$i}]", $value, SelectionHelper::listData($model, $value), $htmlOptions);
