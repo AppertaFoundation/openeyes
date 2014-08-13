@@ -67,10 +67,16 @@ class BaseAdminController extends BaseController
 			'filters_ready' => true,
 		);
 
+		$columns = $model::model()->metadata->columns;
+
+		foreach ($options['extra_fields'] as &$extra_field) {
+			$extra_field['allow_null'] = $columns[$extra_field['field']]->allowNull;
+		}
+
 		foreach ($options['filter_fields'] as &$filter_field) {
 			$filter_field['value'] = @$_GET[$filter_field['field']];
 
-			if (!$filter_field['value'] && !$model::model()->metadata->columns[$filter_field['field']]->allowNull) {
+			if (!$filter_field['value'] && !$columns[$filter_field['field']]->allowNull) {
 				$options['filters_ready'] = false;
 			}
 		}
