@@ -26,14 +26,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
   )
 ))?>
 <?php $this->renderPartial('//base/_messages')?>
-<input type="hidden" name="GenericAdminModel" value="<?php echo $model?>" />
 <div class="box admin">
 	<h2><?php echo $title?></h2>
-	<?php $this->widget('GenericAdmin', array(
-		'model' => $model,
-		'errors' => $this->form_errors,
-		'extra_fields' => @$extra_fields,
-		'extra_links' => @$extra_links,
-	))?>
+	<?php $this->widget('GenericAdmin', array('model' => $model, 'items' => $items, 'errors' => $errors) + $options); ?>
 </div>
 <?php $this->endWidget(); ?>

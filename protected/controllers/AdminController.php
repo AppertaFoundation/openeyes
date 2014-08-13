@@ -29,18 +29,12 @@ class AdminController extends BaseAdminController
 
 	public function actionEditPreviousOperation()
 	{
-		$this->render('//admin/generic_admin',array(
-			'title' => 'Edit Previous Ophthalmic Surgery Choices',
-			'model' => 'CommonPreviousOperation',
-		));
+		$this->genericAdmin('Edit Previous Ophthalmic Surgery Choices', 'CommonPreviousOperation');
 	}
 
 	public function actionEditMedicationStopReason()
 	{
-		$this->render('//admin/generic_admin',array(
-			'title' => 'Edit Medication Stop Reason',
-			'model' => 'MedicationStopReason',
-		));
+		$this->genericAdmin('Edit Medication Stop Reason', 'MedicationStopReason');
 	}
 
 	public function actionDrugs()

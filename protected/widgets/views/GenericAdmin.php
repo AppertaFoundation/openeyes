@@ -24,7 +24,6 @@
 			<th>Name</th>
 			<?php foreach ($extra_fields as $field) {?>
 				<th>
-					<?php echo CHtml::hiddenField('_extra_fields[]',$field['field'])?>
 					<?php echo $model::model()->getAttributeLabel($field['field'])?>
 				</th>
 			<?php }?>
@@ -38,7 +37,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach ($data as $i => $row) {?>
+		<?php foreach ($items as $i => $row) {?>
 			<tr data-row="<?= $i ?>">
 				<td class="reorder">
 					<span>&uarr;&darr;</span>
