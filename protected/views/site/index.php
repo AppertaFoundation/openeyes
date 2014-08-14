@@ -17,8 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<h1 class="badge">Search</h1>
-
+<?php $this->renderPartial('search_header'); ?>
 <div class="row">
 	<div class="large-8 medium-9 small-12 small-centered medium-centered large-centered column">
 		<div class="panel search-examples">
