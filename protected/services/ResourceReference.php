@@ -29,9 +29,7 @@ abstract class ResourceReference implements FhirCompatible
 			throw new ProcessingNotSupported("Unsupported FHIR resource reference: {$url}");
 		}
 
-		if (!($ref = \Yii::app()->service->fhirIdToReference($m[1], $m[2]))) {
-			throw new InvalidValue("Invalid local resource reference: {$url}");
-		}
+		return \Yii::app()->service->fhirIdToReference($m[1], $m[2]);
 
 		return $ref;
 	}
