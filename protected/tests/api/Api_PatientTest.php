@@ -177,4 +177,10 @@ class Api_PatientTest extends FhirTestCase
 		$this->get($this->response->getLocation());
 		$this->assertXmlEquals(file_get_contents(__DIR__ . '/files/Patient-default-country.xml'));
 	}
+
+	public function testHosNumRequired()
+	{
+		$this->setExpectedHttpError(422);
+		$this->post('Patient', file_get_contents(__DIR__ . '/files/Patient-no-hosnum.xml'));
+	}
 }
