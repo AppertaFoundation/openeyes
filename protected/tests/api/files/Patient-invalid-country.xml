@@ -4,12 +4,12 @@
     <use value="official"/>
     <label value="NHS Number"/>
     <system value="http://example.com/nhs_num"/>
-    <value value="123456789"/>
+    <value value="999999992"/>
   </identifier>
   <identifier>
     <label value="Hospital Number"/>
     <system value="http://example.com/hos_num"/>
-    <value value="0123456"/>
+    <value value="9999992"/>
   </identifier>
   <name>
     <family value="Lister"/>

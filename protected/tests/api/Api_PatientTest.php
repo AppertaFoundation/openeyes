@@ -79,7 +79,7 @@ class Api_PatientTest extends FhirTestCase
 
 	public function testUpdate()
 	{
-		$source = file_get_contents(__DIR__ . '/files/Patient.xml');
+		$source = file_get_contents(__DIR__ . '/files/Patient-update.xml');
 		$this->put('Patient/19969', $source);
 
 		$this->get('Patient/19969');
@@ -88,7 +88,7 @@ class Api_PatientTest extends FhirTestCase
 
 	public function testCreate()
 	{
-		$source = file_get_contents(__DIR__ . '/files/Patient.xml');
+		$source = file_get_contents(__DIR__ . '/files/Patient-create.xml');
 		$this->post('Patient', $source);
 
 		$this->get($this->response->getLocation());
@@ -182,5 +182,13 @@ class Api_PatientTest extends FhirTestCase
 	{
 		$this->setExpectedHttpError(422);
 		$this->post('Patient', file_get_contents(__DIR__ . '/files/Patient-no-hosnum.xml'));
+	}
+
+	public function testDuplicateHosNum()
+	{
+		$source = file_get_contents(__DIR__ . '/files/Patient-dupe.xml');
+		$this->post('Patient', $source);
+		$this->setExpectedHttpError(409);
+		$this->post('Patient', $source);
 	}
 }
