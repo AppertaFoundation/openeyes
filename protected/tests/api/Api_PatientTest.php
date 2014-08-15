@@ -168,6 +168,13 @@ class Api_PatientTest extends FhirTestCase
 		$this->assertXPathCount(1, './atom:entry');
 		$this->assertXPathEquals($this->client->getBaseUrl() . '/Patient/18474', 'string(./atom:entry/atom:id/text())');
 		$this->assertXPathEquals('Patient', 'local-name(./atom:entry/atom:content/*)');
+	}
 
+	public function testCountryDefaultsToUk()
+	{
+		$this->post('Patient', file_get_contents(__DIR__ . '/files/Patient-invalid-country.xml'));
+
+		$this->get($this->response->getLocation());
+		$this->assertXmlEquals(file_get_contents(__DIR__ . '/files/Patient-default-country.xml'));
 	}
 }
