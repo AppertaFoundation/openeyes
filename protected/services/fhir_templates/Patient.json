@@ -22,8 +22,7 @@
 	"telecom": [
 		{
 			"system": {":match": "phone"},
-			"value": {":subst": "primary_phone"},
-			"use": "home"
+			"value": {":subst": "primary_phone"}
 		}
 	],
 	"gender": {

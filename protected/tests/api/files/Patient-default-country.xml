@@ -19,7 +19,6 @@
   <telecom>
     <system value="phone"/>
     <value value="01234 567890"/>
-    <use value="home"/>
   </telecom>
   <gender>
     <coding>
