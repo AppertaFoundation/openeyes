@@ -46,6 +46,17 @@ class Patient extends Resource
 		return parent::getServiceClass($fhirType);
 	}
 
+	static protected function getFhirTemplate()
+	{
+		return \DataTemplate::fromJsonFile(
+			__DIR__ . '/fhir_templates/Patient.json',
+			array(
+				'system_uri_nhs_num' => \Yii::app()->params['fhir_system_uris']['nhs_num'],
+				'system_uri_hos_num' => \Yii::app()->params['fhir_system_uris']['hos_num'],
+			)
+		);
+	}
+
 	public $nhs_num;
 	public $hos_num;
 

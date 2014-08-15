@@ -22,7 +22,7 @@ class Api_PatientTest extends FhirTestCase
 		$this->assertXPathEquals('1007913', 'string(./fhir:identifier/fhir:label[@value="Hospital Number"]/../fhir:value/@value)');
 		$this->assertXPathEquals(
 			'1053991374',
-			'string(./fhir:identifier/fhir:system[@value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp"]/../fhir:value/@value)'
+			'string(./fhir:identifier/fhir:system[@value="http://example.com/nhs_num"]/../fhir:value/@value)'
 		);
 		$this->assertXPathEquals('Mrs', 'string(./fhir:name/fhir:prefix/@value)');
 		$this->assertXPathEquals('Agnes', 'string(./fhir:name/fhir:given/@value)');

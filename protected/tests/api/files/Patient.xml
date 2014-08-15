@@ -3,11 +3,12 @@
   <identifier>
     <use value="official"/>
     <label value="NHS Number"/>
-    <system value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp"/>
+    <system value="http://example.com/nhs_num"/>
     <value value="123456789"/>
   </identifier>
   <identifier>
     <label value="Hospital Number"/>
+    <system value="http://example.com/hos_num"/>
     <value value="0123456"/>
   </identifier>
   <name>

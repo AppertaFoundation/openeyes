@@ -24,4 +24,14 @@ class Practice extends Resource
 
 	public $primary_phone;
 	public $address = null;
+
+	static protected function getFhirTemplate()
+	{
+		return \DataTemplate::fromJsonFile(
+			__DIR__ . '/fhir_templates/Practice.json',
+			array(
+				'system_uri_practice_code' => \Yii::app()->params['fhir_system_uris']['practice_code'],
+			)
+		);
+	}
 }
