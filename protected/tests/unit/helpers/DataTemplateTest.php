@@ -39,14 +39,15 @@ class DataTemplateTest extends PHPUnit_Framework_TestCase
 			$name = $m[1];
 
 			$structure_path = str_replace('.template.json', '.structure.json', $template_path);
-			$values_path = str_replace('.template.json', '.values.json', $template_path);
+			$structure = json_decode(file_get_contents($structure_path));
 
-			$data[] = array(
-				$name,
-				DataTemplate::fromJsonFile($template_path),
-				json_decode(file_get_contents($structure_path)),
-				file_exists($values_path) ? json_decode(file_get_contents($values_path), true) : array(),
-			);
+			$values_path = str_replace('.template.json', '.values.json', $template_path);
+			$values = file_exists($values_path) ? json_decode(file_get_contents($values_path), true) : array();
+
+			$consts_path = str_replace('.template.json', '.consts.json', $template_path);
+			$consts = file_exists($consts_path) ? json_decode(file_get_contents($consts_path), true) : array();
+
+			$data[] = array($name, DataTemplate::fromJsonFile($template_path, $consts), $structure, $values);
 		}
 
 		return $data;
@@ -65,6 +66,7 @@ class DataTemplateTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testMatch($name, $template, $structure, $values)
 	{
+		Yii::log(CVarDumper::dumpAsString($template));
 		$this->assertEquals($values, $template->match($structure));
 	}
 
@@ -74,5 +76,14 @@ class DataTemplateTest extends PHPUnit_Framework_TestCase
 	public function testMatchFailure($name, $template, $structure)
 	{
 		$this->assertNull($template->match($structure));
+	}
+
+	/**
+	 * @expectedException Exception
+	 * @expectedExceptionMessage Missing template constant: 'const1'
+	 */
+	public function testMissingConstant()
+	{
+		DataTemplate::fromJsonFile(__DIR__ . '/' . __CLASS__ . '/generate-match/const.template.json');
 	}
 }
