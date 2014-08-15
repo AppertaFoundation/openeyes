@@ -130,6 +130,20 @@ class Api_PatientTest extends FhirTestCase
 		$this->assertXPathEquals('Patient', 'local-name(./atom:entry/atom:content/*)');
 	}
 
+	public function testSearchByHosNum_Namespaced()
+	{
+		$this->get('Patient?identifier=http://example.com/hos_num|1007913');
+		$this->assertXPathEquals('feed', 'local-name()');
+		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
+		$this->assertUrlEquals(
+			$this->client->getBaseUrl() . '/Patient?identifier=http://example.com/hos_num|1007913',
+			$this->xPathEval('string(./atom:link[@rel="self"]/@href)')
+		);
+		$this->assertXPathCount(1, './atom:entry');
+		$this->assertXPathEquals($this->client->getBaseUrl() . '/Patient/17885', 'string(./atom:entry/atom:id/text())');
+		$this->assertXPathEquals('Patient', 'local-name(./atom:entry/atom:content/*)');
+	}
+
 	public function testSearchByNhsNum()
 	{
 		$this->get('Patient?identifier=1053991374');
@@ -142,6 +156,32 @@ class Api_PatientTest extends FhirTestCase
 		$this->assertXPathCount(1, './atom:entry');
 		$this->assertXPathEquals($this->client->getBaseUrl() . '/Patient/17885', 'string(./atom:entry/atom:id/text())');
 		$this->assertXPathEquals('Patient', 'local-name(./atom:entry/atom:content/*)');
+	}
+
+	public function testSearchByNhsNum_Namespaced()
+	{
+		$this->get('Patient?identifier=http://example.com/nhs_num|1053991374');
+		$this->assertXPathEquals('feed', 'local-name()');
+		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
+		$this->assertUrlEquals(
+			$this->client->getBaseUrl() . '/Patient?identifier=http://example.com/nhs_num|1053991374',
+			$this->xPathEval('string(./atom:link[@rel="self"]/@href)')
+		);
+		$this->assertXPathCount(1, './atom:entry');
+		$this->assertXPathEquals($this->client->getBaseUrl() . '/Patient/17885', 'string(./atom:entry/atom:id/text())');
+		$this->assertXPathEquals('Patient', 'local-name(./atom:entry/atom:content/*)');
+	}
+
+	public function testSearchByIdentifier_UnknownNamespace()
+	{
+		$this->get('Patient?identifier=http://example.com/foo|bar');
+		$this->assertXPathEquals('feed', 'local-name()');
+		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
+		$this->assertUrlEquals(
+			$this->client->getBaseUrl() . '/Patient?identifier=http://example.com/foo|bar',
+			$this->xPathEval('string(./atom:link[@rel="self"]/@href)')
+		);
+		$this->assertXPathCount(0, './atom:entry');
 	}
 
 	public function testSearchByFamilyName()

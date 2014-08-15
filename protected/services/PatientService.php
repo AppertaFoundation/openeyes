@@ -32,9 +32,25 @@ class PatientService extends ModelService
 	{
 		$model = $this->getSearchModel();
 		if (isset($params['id'])) $model->id = $params['id'];
+
 		if (isset($params['identifier'])) {
-			$model->hos_num = sprintf('%07s', $params['identifier']);
-			$model->nhs_num = $params['identifier'];
+			if (strpos($params['identifier'], '|') !== false) {
+				list ($namespace, $identifier) = explode('|', $params['identifier'], 2);
+
+				switch ($namespace) {
+					case \Yii::app()->params['fhir_system_uris']['hos_num']:
+						$model->hos_num = sprintf('%07s', $identifier);
+						break;
+					case \Yii::app()->params['fhir_system_uris']['nhs_num']:
+						$model->nhs_num = $identifier;
+						break;
+					default:
+						return array();
+				}
+			} else {
+				$model->hos_num = sprintf('%07s', $params['identifier']);
+				$model->nhs_num = $params['identifier'];
+			}
 		}
 
 		$searchParams = array('pageSize' => 5);
