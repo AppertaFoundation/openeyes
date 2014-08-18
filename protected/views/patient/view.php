@@ -79,6 +79,21 @@ $warnings = $this->patient->getWarnings($clinical);
 
 	<div class="row">
 		<div class="large-6 column">
+			<?php if (($refresh_url = Yii::app()->params['patient_refresh_url'])): ?>
+				<section class="box patient-info">
+					<div class="row data-row">
+						<?php $last_updated = strtotime($this->patient->last_modified_date) ?>
+						<div class="large-4 column data-label">Last updated:</div>
+						<div class="large-5 column data-value"><?= date(Helper::NHS_DATE_FORMAT . ' H:i', $last_updated) ?></div>
+						<div class="large-3 column">
+							<?= CHtml::beginForm($refresh_url) ?>
+								<input type="hidden" name="patient_id" value="<?= $this->patient->id ?>">
+								<button class="small <?php if ($last_updated > (time() - 300)) echo " disabled" ?>">Refresh</button>
+							<?= CHtml::endForm() ?>
+						</div>
+					</div>
+				</section>
+			<?php endif ?>
 			<?php $this->renderPartial('_patient_details')?>
 			<?php $this->renderPartial('_patient_contact_details')?>
 			<?php $this->renderPartial('_patient_gp')?>
