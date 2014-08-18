@@ -15,10 +15,10 @@
 $(document).ready(function () {
 	$('#no_allergies').bind('change', function() {
 		if ($(this)[0].checked) {
-			$('#allergy_field').hide().find('select').attr('disabled', 'disabled');
+			$('.allergy_field').hide().find('select').attr('disabled', 'disabled');
 		}
 		else {
-			$('#allergy_field').show().find('select').removeAttr('disabled');
+			$('.allergy_field').show().find('select').removeAttr('disabled');
 		}
 	});
 
