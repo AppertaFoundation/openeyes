@@ -68,6 +68,7 @@ class TherapyApplication extends OpenEyesPage
         'patientVenousYes' => array('xpath' => "//select[@name='Element_OphCoTherapyapplication_PatientSuitability[right_DecisionTreeResponse][48]']"),
         'CRVOYes' => array('xpath' => "//select[@name='Element_OphCoTherapyapplication_PatientSuitability[right_DecisionTreeResponse][49]']"),
         'consultant' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_consultant_id']"),
+        'intendedSite' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_site_id']"),
         'saveTherapyApplication' => array('xpath' => "//button[@id='et_save']"),
         'saveTherapyOK'=> array('xpath' => "//*[@id='flash-success']"),
 
@@ -79,6 +80,7 @@ class TherapyApplication extends OpenEyesPage
         'leftPatientHasCnvNo' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_2']//*[@value=0]"),
         'rightPatientHasCnvYes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_2']//*[@value=1]"),
         'rightPatientHasCnvNo' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_2']//*[@value=0]"),
+        'rightPatientNoCnvPDTRoute' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_right_DecisionTreeResponse_33']//*[@value=0]"),
 
         'leftPatientHasMacularOdemaYes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_14']//*[@value=1]"),
         'leftPatientHasMacularOdemaNo' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_14']//*[@value=0]"),
@@ -102,6 +104,9 @@ class TherapyApplication extends OpenEyesPage
         'rightIncidenceDetails' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_incidence']"),
         'rightPatientSignificantlyDifferent' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_patient_different']"),
         'rightPatientLikelyToGain' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_ExceptionalCircumstances_right_patient_gain']"),
+
+        'leftVenousOcclusionYes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_48']//*[@value=1]"),
+        'leftCRVOYes' => array('xpath' => "//select[@id='Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_49']//*[@value=1]"),
 
 
     );
@@ -220,6 +225,13 @@ class TherapyApplication extends OpenEyesPage
         $element = $this->getElement('consultant');
         $this->scrollWindowToElement($element);
         $element->selectOption($consultant);
+    }
+
+    public function RightIntendedSite ($site)
+    {
+        $element = $this->getElement('intendedSite');
+        $this->scrollWindowToElement($element);
+        $element->setValue($site);
     }
 
     public function RightStandardExistsYes ()
@@ -453,6 +465,14 @@ class TherapyApplication extends OpenEyesPage
         $this->getElement('leftPatientHasCnvNo')->click();
     }
 
+    public function rightPatientCnvNoPDTRoute ()
+    {
+//        $this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_33');
+        $this->getElement('rightPatientNoCnvPDTRoute')->click();
+        $this->getSession()->wait(5000);
+    }
+
+
     public function leftMacularOdemaYes ()
     {
 		$this->getSession()->wait(2000);
@@ -495,6 +515,18 @@ class TherapyApplication extends OpenEyesPage
     public function rightPatientLikelyToGainBenefit ($comments)
     {
         $this->getElement('rightPatientLikelyToGain')->setValue($comments);
+    }
+
+    public function leftPatientVenousOcclusionYes ()
+    {
+        $this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_48');
+        $this->getElement('leftVenousOcclusionYes')->click();
+    }
+
+    public function leftPatientCRVOYes ()
+    {
+        $this->waitForElementDisplayBlock('#Element_OphCoTherapyapplication_PatientSuitability_left_DecisionTreeResponse_49');
+        $this->getElement('leftCRVOYes')->click();
     }
 
 
