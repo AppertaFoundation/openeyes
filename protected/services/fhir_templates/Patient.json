@@ -7,7 +7,7 @@
 			"value": {":subst": "nhs_num"}
 		},
 		{
-			"label": {":match": "Hospital Number"},
+			"label": "Hospital Number",
 			"system": {":match": "{{system_uri_hos_num}}"},
 			"value": {":subst": "hos_num"}
 		}
