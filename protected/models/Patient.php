@@ -656,7 +656,7 @@ class Patient extends BaseActiveRecordVersioned
 	 * @param string $other
 	 * @throws Exception
 	 */
-	public function addAllergy(Allergy $allergy, $other = null)
+	public function addAllergy(Allergy $allergy, $other = null, $comments = null)
 	{
 		if ($allergy->name == 'Other') {
 			if (!$other) throw new Exception("No 'other' allergy specified");
@@ -671,6 +671,7 @@ class Patient extends BaseActiveRecordVersioned
 			$paa = new PatientAllergyAssignment;
 			$paa->patient_id = $this->id;
 			$paa->allergy_id = $allergy->id;
+			$paa->comments = $comments;
 			$paa->other = $other;
 			if (!$paa->save()) {
 				throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
