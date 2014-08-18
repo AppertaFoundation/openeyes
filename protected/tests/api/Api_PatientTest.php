@@ -231,4 +231,13 @@ class Api_PatientTest extends FhirTestCase
 		$this->setExpectedHttpError(409);
 		$this->post('Patient', $source);
 	}
+
+	public function testUndifferentiatedGender()
+	{
+		$source = file_get_contents(__DIR__ . '/files/Patient-un-gender.xml');
+		$this->post('Patient', $source);
+
+		$this->get($this->response->getLocation());
+		$this->assertXmlEquals($source);
+	}
 }

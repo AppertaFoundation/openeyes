@@ -17,25 +17,26 @@ namespace services;
 
 class Patient extends Resource
 {
-	static public function fromFhir($fhirObject)
+	static public function fromFhirValues(array $values)
 	{
-		$patient = parent::fromFhir($fhirObject);
+		if (@$values['gender'] == 'UN') $values['gender'] = 'O';
 
-		foreach ($patient->care_providers as $ref) {
+		foreach ((array)@$values['care_providers'] as $ref) {
 			switch ($ref->getServiceName()) {
 				case 'Gp':
-					$patient->gp_ref = $ref;
+					$values['gp_ref'] = $ref;
 					break;
 				case 'Practice':
-					$patient->prac_ref = $ref;
+					$values['prac_ref'] = $ref;
 					break;
 				case 'CommissioningBody':
-					$patient->cb_refs[] = $ref;
+					$values['cb_refs'][] = $ref;
 					break;
 			}
 		}
+		unset($values['care_providers']);
 
-		return $patient;
+		return parent::fromFhirValues($values);
 	}
 
 	static public function getServiceClass($fhirType)
@@ -72,8 +73,6 @@ class Patient extends Resource
 	public $primary_phone;
 	public $addresses = array();
 
-	public $care_providers = array();
-
 	public $gp_ref = null;
 	public $prac_ref = null;
 	public $cb_refs = array();
@@ -104,5 +103,16 @@ class Patient extends Resource
 			$cbs[] = $cb_ref->resolve();
 		}
 		return $cbs;
+	}
+
+	public function toFhirValues()
+	{
+		$values = parent::toFhirValues();
+
+		if (!in_array($values['gender'], array(null, 'F', 'M'))) $values['gender'] = 'UN';
+
+		$values['care_providers'] = array_filter(array_merge(array($values['gp_ref'], $values['prac_ref']), $values['cb_refs']));
+
+		return $values;
 	}
 }
