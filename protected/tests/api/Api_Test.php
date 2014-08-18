@@ -334,7 +334,7 @@ class Api_Test extends FhirTestCase
 
 	public function testCreateHeaders()
 	{
-		$source = file_get_contents(__DIR__ . '/files/Patient.xml');
+		$source = file_get_contents(__DIR__ . '/files/Patient-headers.xml');
 		$this->post('Patient', $source);
 		$this->assertRegexp('|^' . preg_quote($this->client->getBaseUrl(), '|') . '/Patient/\d+/_history/\d+$|', $this->response->getLocation());
 		$this->assertRegexp('/^"\d+"$/', $this->response->getETag());
@@ -361,7 +361,7 @@ class Api_Test extends FhirTestCase
 	public function testCreateNonRequiredProfileDoesntMatch()
 	{
 		// This is ok, they can claim to support any profile they like
-		$this->post('Patient', file_get_contents(__DIR__ . '/files/Patient.xml'), array('Category' => 'http://example.com/profile/Patient; scheme=http://hl7.org/fhir/tag/profile'));
+		$this->post('Patient', file_get_contents(__DIR__ . '/files/Patient-profile.xml'), array('Category' => 'http://example.com/profile/Patient; scheme=http://hl7.org/fhir/tag/profile'));
 	}
 
 	public function testCreateWrongResourceType()
