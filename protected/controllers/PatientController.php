@@ -617,7 +617,7 @@ class PatientController extends BaseController
 				$patient->setNoAllergies();
 			} else  {
 				$allergy = $this->fetchModel('Allergy', @$_POST['allergy_id']);
-				$patient->addAllergy($allergy, @$_POST['other']);
+				$patient->addAllergy($allergy, @$_POST['other'], @$_POST['comments']);
 			}
 		}
 
