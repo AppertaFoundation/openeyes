@@ -536,20 +536,77 @@ class Patient extends BaseActiveRecordVersioned
 		return $info;
 	}
 
-	/* Patient as subject, eg man, woman, boy girl */
+	public function getGenderString()
+	{
+		switch ($this->gender) {
+			case 'F':
+				return 'Female';
+			case 'M':
+				return 'Male';
+			case null:
+				return 'Unknown';
+			default:
+				return 'Other';
+		}
+	}
 
 	public function getSub()
 	{
 		if ($this->isChild()) {
-			return ($this->gender == 'F' ? 'girl' : 'boy');
+			switch ($this->gender) {
+				case 'F':
+					return 'girl';
+				case 'M':
+					return 'boy';
+				default:
+					return 'child';
+			}
 		} else {
-			return ($this->gender == 'M' ? 'man' : 'woman');
+			switch ($this->gender) {
+				case 'F':
+					return 'woman';
+				case 'M':
+					return 'man';
+				default:
+					return 'person';
+			}
 		}
 	}
 
 	public function getPro()
 	{
-		return ($this->gender == 'F' ? 'she' : 'he');
+		switch ($this->gender) {
+			case 'F':
+				return 'she';
+			case 'M':
+				return 'he';
+			default:
+				return 'they';
+		}
+	}
+
+	public function getObj()
+	{
+		switch ($this->gender) {
+			case 'F':
+				return 'her';
+			case 'M':
+				return 'him';
+			default:
+				return 'them';
+		}
+	}
+
+	public function getPos()
+	{
+		switch ($this->gender) {
+			case 'F':
+				return 'her';
+			case 'M':
+				return 'his';
+			default:
+				return 'their';
+		}
 	}
 
 	public function getEpd()
@@ -575,11 +632,6 @@ class Patient extends BaseActiveRecordVersioned
 		}
 	}
 
-	public function getGenderString()
-	{
-		return ($this->gender == 'F' ? 'Female' : 'Male');
-	}
-
 	public function getEthnicGroupString()
 	{
 		if ($this->ethnic_group) {
@@ -587,16 +639,6 @@ class Patient extends BaseActiveRecordVersioned
 		} else {
 			return 'Unknown';
 		}
-	}
-
-	public function getObj()
-	{
-		return ($this->gender == 'F' ? 'her' : 'him');
-	}
-
-	public function getPos()
-	{
-		return ($this->gender == 'M' ? 'his' : 'her');
 	}
 
 	public function getTitle()
