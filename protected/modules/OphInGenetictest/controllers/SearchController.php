@@ -22,6 +22,15 @@ class SearchController extends BaseController
 	public $layout = '//layouts/advanced_search';
 	public $items_per_page = 30;
 
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'actions' => array('GeneticTests'),
+				'roles' => array('OprnSearchPedigree'),
+			));
+	}
+
 	public function getUri($elements)
 	{
 		$uri = preg_replace('/\?.*$/','',$_SERVER['REQUEST_URI']);
@@ -56,8 +65,9 @@ class SearchController extends BaseController
 
 	public function actionGeneticTests()
 	{
-		$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
+		$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
 		Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
+		Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
 
 		$where = "e.deleted = :zero and ep.deleted = :zero";
 		$whereParams = array(':zero' => 0);
