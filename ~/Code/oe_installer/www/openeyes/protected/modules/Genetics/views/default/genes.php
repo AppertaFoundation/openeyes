@@ -51,7 +51,6 @@
 					<th>ID</th>
 					<th>Name</th>
 					<th>Location</th>
-					<th>Priority</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -63,7 +62,6 @@
 						<td><?php echo CHtml::link($gene->id,Yii::app()->createUrl('/Genetics/default/editGene/'.$gene->id))?></td>
 						<td><?php echo $gene->name?></td>
 						<td><?php echo $gene->location?></td>
-						<td><?php echo $gene->priority?></td>
 					</tr>
 				<?php }?>
 			</tbody>
