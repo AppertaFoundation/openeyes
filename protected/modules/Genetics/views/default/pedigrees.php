@@ -113,7 +113,9 @@
 					<th>Base change</th>
 					<th>Amino acid change</th>
 					<th>Disorder</th>
+					<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
 					<th>Edit</th>
+					<?php } ?>
 				</tr>
 			</thead>
 			<tbody>
@@ -136,7 +138,9 @@
 						<td><?php echo $pedigree->base_change?></td>
 						<td><?php echo $pedigree->amino_acid_change?></td>
 						<td><?php echo $pedigree->disorder ? $pedigree->disorder->term : ''?></td>
+						<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
 							<td><?php echo CHtml::link('Edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pedigree->id))?></td>
+						<?php } ?>
 					</tr>
 				<?php }?>
 			</tbody>
