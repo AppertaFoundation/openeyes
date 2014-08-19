@@ -17,10 +17,5 @@ return array(
 				),
 			),
 		),
-		'advanced_search' => array(
-			'Genetics' => array(
-				'Genetic patients by diagnosis' => 'geneticPatients',
-			),
-		),
 	)
 );
