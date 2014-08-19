@@ -106,7 +106,9 @@
 		<table class="grid">
 			<thead>
 				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
+					<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
+						<th><input type="checkbox" name="selectall" id="selectall" /></th>
+					<?php } ?>
 					<th>Inheritance</th>
 					<th>Consanguinity</th>
 					<th>Gene</th>
@@ -121,7 +123,9 @@
 			<tbody>
 				<?php foreach ($pedigrees as $pedigree) {?>
 					<tr>
-						<td><input type="checkbox" name="pedigrees[]" value="<?php echo $pedigree->id?>" /></td>
+						<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
+							<td><input type="checkbox" name="pedigrees[]" value="<?php echo $pedigree->id?>" /></td>
+						<?php } ?>
 						<td>
 							<?php if ($pedigree->inheritance) {
 								//echo CHtml::link($pedigree->inheritance->name,Yii::app()->createUrl('/Genetics/default/editInheritance/'.$pedigree->inheritance->id));
@@ -146,10 +150,13 @@
 			</tbody>
 			<tfoot class="pagination-container">
 				<tr>
+
+						<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
 					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'id'=>'add_pedigree'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
+							<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'id'=>'add_pedigree'))->toHtml()?>
+							<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
 					</td>
+						<?php } ?>
 					<td colspan="6">
 						<?php echo $this->renderPartial('_pagination',array(
 							'pagination' => $pagination
