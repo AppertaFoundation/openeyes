@@ -45,7 +45,9 @@
 		<table class="grid">
 			<thead>
 				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
+					<?php if ($this->checkAccess('OprnEditGene')) { ?>
+						<th><input type="checkbox" name="selectall" id="selectall" /></th>
+					<?php } ?>
 					<th>ID</th>
 					<th>Name</th>
 					<th>Location</th>
@@ -55,7 +57,9 @@
 			<tbody>
 				<?php foreach ($genes as $gene) {?>
 					<tr>
-						<td><input type="checkbox" name="genes[]" value="<?php echo $gene->id?>" /></td>
+						<?php if ($this->checkAccess('OprnEditGene')) { ?>
+							<td><input type="checkbox" name="genes[]" value="<?php echo $gene->id?>" /></td>
+						<?php } ?>
 						<td><?php echo CHtml::link($gene->id,Yii::app()->createUrl('/Genetics/default/editGene/'.$gene->id))?></td>
 						<td><?php echo $gene->name?></td>
 						<td><?php echo $gene->location?></td>
@@ -65,10 +69,12 @@
 			</tbody>
 			<tfoot class="pagination-container">
 				<tr>
-					<td colspan="3">
-						<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'id'=>'add_gene'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
-					</td>
+					<?php if ($this->checkAccess('OprnEditGene')) { ?>
+						<td colspan="3">
+							<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'id'=>'add_gene'))->toHtml()?>
+							<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
+						</td>
+					<?php } ?>
 					<td colspan="6">
 						<?php echo $this->renderPartial('_pagination',array(
 							'pagination' => $pagination
