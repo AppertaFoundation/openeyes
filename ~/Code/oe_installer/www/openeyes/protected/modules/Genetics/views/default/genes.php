@@ -48,9 +48,11 @@
 					<?php if ($this->checkAccess('OprnEditGene')) { ?>
 						<th><input type="checkbox" name="selectall" id="selectall" /></th>
 					<?php } ?>
-					<th>ID</th>
 					<th>Name</th>
 					<th>Location</th>
+					<?php if ($this->checkAccess('OprnEditGene')) { ?>
+						<th>Edit</th>
+					<?php } ?>
 				</tr>
 			</thead>
 			<tbody>
@@ -59,9 +61,11 @@
 						<?php if ($this->checkAccess('OprnEditGene')) { ?>
 							<td><input type="checkbox" name="genes[]" value="<?php echo $gene->id?>" /></td>
 						<?php } ?>
-						<td><?php echo CHtml::link($gene->id,Yii::app()->createUrl('/Genetics/default/editGene/'.$gene->id))?></td>
 						<td><?php echo $gene->name?></td>
 						<td><?php echo $gene->location?></td>
+						<?php if ($this->checkAccess('OprnEditGene')) { ?>
+							<td><?php echo CHtml::link('Edit',Yii::app()->createUrl('/Genetics/default/editGene/'.$gene->id))?></td>
+						<?php } ?>
 					</tr>
 				<?php }?>
 			</tbody>
