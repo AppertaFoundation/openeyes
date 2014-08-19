@@ -16,8 +16,8 @@ class m140819_110429_edit_gene_rbac extends CDbMigration
 		$this->insert('authitem',array('name'=>'OprnViewGene', 'type' => 0));
 		$this->insert('authitem',array('name'=>'OprnEditGene', 'type' => 0));
 
-		$this->insert('authitemchild',array('parent'=>'TaskEditPedigreeData','child'=>'OprnViewGene'));
-		$this->insert('authitemchild',array('parent'=>'TaskViewPedigreeData','child'=>'OprnEditGene'));
+		$this->insert('authitemchild',array('parent'=>'TaskEditGeneData','child'=>'OprnEditGene'));
+		$this->insert('authitemchild',array('parent'=>'TaskViewGeneData','child'=>'OprnViewGene'));
 
 	}
 
