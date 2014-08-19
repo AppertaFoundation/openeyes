@@ -107,7 +107,6 @@
 			<thead>
 				<tr>
 					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>ID</th>
 					<th>Inheritance</th>
 					<th>Consanguinity</th>
 					<th>Gene</th>
@@ -120,7 +119,6 @@
 				<?php foreach ($pedigrees as $pedigree) {?>
 					<tr>
 						<td><input type="checkbox" name="pedigrees[]" value="<?php echo $pedigree->id?>" /></td>
-						<td><?php echo CHtml::link($pedigree->id,Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pedigree->id))?></td>
 						<td>
 							<?php if ($pedigree->inheritance) {
 								echo CHtml::link($pedigree->inheritance->name,Yii::app()->createUrl('/Genetics/default/editInheritance/'.$pedigree->inheritance->id));
