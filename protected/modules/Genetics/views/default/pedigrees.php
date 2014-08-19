@@ -113,6 +113,7 @@
 					<th>Base change</th>
 					<th>Amino acid change</th>
 					<th>Disorder</th>
+					<th>Edit</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -121,18 +122,21 @@
 						<td><input type="checkbox" name="pedigrees[]" value="<?php echo $pedigree->id?>" /></td>
 						<td>
 							<?php if ($pedigree->inheritance) {
-								echo CHtml::link($pedigree->inheritance->name,Yii::app()->createUrl('/Genetics/default/editInheritance/'.$pedigree->inheritance->id));
+								//echo CHtml::link($pedigree->inheritance->name,Yii::app()->createUrl('/Genetics/default/editInheritance/'.$pedigree->inheritance->id));
+								echo $pedigree->inheritance->name;
 							}?>
 						</td>
 						<td><?php echo $pedigree->consanguinity ? 'Yes' : 'No'?>
 						<td>
 							<?php if ($pedigree->gene) {
-								echo CHtml::link($pedigree->gene->name,Yii::app()->createUrl('/Genetics/default/editGene/'.$pedigree->gene_id));
+								//echo CHtml::link($pedigree->gene->name,Yii::app()->createUrl('/Genetics/default/editGene/'.$pedigree->gene_id));
+								echo $pedigree->gene->name;
 							}?>
 						</td>
 						<td><?php echo $pedigree->base_change?></td>
 						<td><?php echo $pedigree->amino_acid_change?></td>
 						<td><?php echo $pedigree->disorder ? $pedigree->disorder->term : ''?></td>
+							<td><?php echo CHtml::link('Edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pedigree->id))?></td>
 					</tr>
 				<?php }?>
 			</tbody>
