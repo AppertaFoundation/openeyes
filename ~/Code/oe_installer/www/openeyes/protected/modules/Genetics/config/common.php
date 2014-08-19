@@ -1,4 +1,5 @@
 <?php
+
 return array(
 	'params' => array(
 		'menu_bar_items' => array(
@@ -6,6 +7,7 @@ return array(
 				'title' => 'Pedigrees',
 				'uri' => 'Genetics/default/index',
 				'position' => 40,
+				'restricted' => array('TaskViewPedigreeData'),
 			),
 		),
 		'module_partials' => array(
