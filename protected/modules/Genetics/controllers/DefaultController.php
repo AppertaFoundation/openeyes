@@ -45,8 +45,12 @@ class DefaultController extends BaseEventTypeController
 				'roles' => array('OprnSearchPedigree'),
 			),
 			array('allow',
-				'actions' => array('EditGene', 'AddGene', 'Inheritance', 'AddInheritance', 'EditInheritance', 'AddPedigree', 'EditPedigree'),
+				'actions' => array('EditGene', 'AddGene', 'AddInheritance', 'EditInheritance', 'AddPedigree', 'EditPedigree'),
 				'roles' => array('OprnEditPedigree'),
+			),
+			array('allow',
+				'actions' => array('EditGene', 'AddGene'),
+				'roles' => array('OprnEditGene'),
 			),
 		);
 	}
