@@ -58,6 +58,7 @@ $(document).ready(function() {
 			'url': baseUrl+'/OphInDnaextraction/default/addTransaction?i='+i,
 			'success': function(html) {
 				$('tbody.transactions').append(html);
+				$('#no-tests').hide();
 			}
 		});
 	});
@@ -65,6 +66,10 @@ $(document).ready(function() {
 	$('.removeTransaction').die('click').live('click',function(e) {
 		e.preventDefault();
 		$(this).parent().parent().remove();
+		if(!$('.removeTransaction').length) {
+			$('#no-tests').show();
+		}
+		
 	});
 });
 

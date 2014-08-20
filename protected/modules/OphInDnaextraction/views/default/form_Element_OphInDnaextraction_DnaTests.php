@@ -52,7 +52,7 @@
 							}
 						} else {?>
 							<tr>
-								<td colspan="4">
+								<td id="no-tests" colspan="4">
 									No tests have been logged for this DNA.
 								</td>
 							</tr>
