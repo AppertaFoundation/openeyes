@@ -2,9 +2,19 @@
 
 class DefaultController extends BaseEventTypeController
 {
-	protected function beforeAction($action)
+
+	public function accessRules()
 	{
-		return parent::beforeAction($action);
+		return array(
+			array('allow',
+				'actions' => array('Create', 'Update', 'View' , 'Print'),
+				'roles' => array('OprnEditGeneticTest'),
+			),
+			array('allow',
+				'actions' => array('View' , 'Print'),
+				'roles' => array('OprnViewGeneticTest'),
+			),
+		);
 	}
 
 	public function actionCreate()
