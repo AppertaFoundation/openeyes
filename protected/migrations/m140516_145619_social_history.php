@@ -22,7 +22,7 @@ class m140516_145619_social_history extends CDbMigration
 		$this->insert('socialhistory_occupation',array('name'=>'Employed','display_order'=>1));
 		$this->insert('socialhistory_occupation',array('name'=>'Self-employed','display_order'=>2));
 		$this->insert('socialhistory_occupation',array('name'=>'Unemployed','display_order'=>3));
-		$this->insert('socialhistory_occupation',array('name'=>'Sickness','display_order'=>4));
+		$this->insert('socialhistory_occupation',array('name'=>'Disability Benefits','display_order'=>4));
 		$this->insert('socialhistory_occupation',array('name'=>'Student','display_order'=>5));
 		$this->insert('socialhistory_occupation',array('name'=>'Retired','display_order'=>6));
 		$this->insert('socialhistory_occupation',array('name'=>'Other (specify)','display_order'=>7));
