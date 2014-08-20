@@ -11,7 +11,7 @@ class DefaultController extends BaseEventTypeController
 	{
 		return array(
 			array('allow',
-				'actions' => array('Create', 'Update', 'View' , 'Print'),
+				'actions' => array('Create', 'Update', 'View' , 'Print' ,'AddTransaction'),
 				'roles' => array('OprnEditDNAExtraction'),
 			),
 			array('allow',
@@ -21,10 +21,6 @@ class DefaultController extends BaseEventTypeController
 		);
 	}
 
-	public function checkFormAccess()
-	{
-		return $this->checkAccess('OprnEditDNAExtraction');
-	}
 
 	public function actionCreate()
 	{
