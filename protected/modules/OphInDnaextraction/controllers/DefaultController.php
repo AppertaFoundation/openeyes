@@ -7,6 +7,25 @@ class DefaultController extends BaseEventTypeController
 		'addTransaction' => self::ACTION_TYPE_FORM,
 	);
 
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'actions' => array('Create', 'Update', 'View' , 'Print'),
+				'roles' => array('OprnEditDNAExtraction'),
+			),
+			array('allow',
+				'actions' => array('View' , 'Print'),
+				'roles' => array('OprnViewDNAExtraction'),
+			),
+		);
+	}
+
+	public function checkFormAccess()
+	{
+		return $this->checkAccess('OprnEditDNAExtraction');
+	}
+
 	public function actionCreate()
 	{
 		parent::actionCreate();
