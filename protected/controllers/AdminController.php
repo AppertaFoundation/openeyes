@@ -1390,4 +1390,29 @@ class AdminController extends BaseAdminController
 
 		$this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
 	}
+
+	public function actionSocialHistory()
+	{
+		$this->render('socialhistory');
+	}
+
+	public function actionSocialHistoryOccupation()
+	{
+		$this->genericAdmin('Employment Status', 'SocialHistoryOccupation');
+	}
+
+	public function actionSocialHistoryDrivingStatus()
+	{
+		$this->genericAdmin('Driving Status', 'SocialHistoryDrivingStatus');
+	}
+
+	public function actionSocialHistorySmokingStatus()
+	{
+		$this->genericAdmin('Smoking Status', 'SocialHistorySmokingStatus');
+	}
+
+	public function actionSocialHistoryAccommodation()
+	{
+		$this->genericAdmin('Accommodation', 'SocialHistoryAccommodation');
+	}
 }
