@@ -70,7 +70,11 @@ class BaseAdminController extends BaseController
 		$columns = $model::model()->metadata->columns;
 
 		foreach ($options['extra_fields'] as &$extra_field) {
-			$extra_field['allow_null'] = $columns[$extra_field['field']]->allowNull;
+			switch ($extra_field['type']) {
+				case 'lookup':
+					$extra_field['allow_null'] = $columns[$extra_field['field']]->allowNull;
+					break;
+			}
 		}
 
 		foreach ($options['filter_fields'] as &$filter_field) {
