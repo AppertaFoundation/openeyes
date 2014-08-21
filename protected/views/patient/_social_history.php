@@ -154,7 +154,7 @@
 					<label for="relative_id">Smoking Status:</label>
 				</div>
 				<div class="<?php echo $form->columns('field');?>">
-					<?php echo CHtml::activeDropDownList($social_history,'smoking_status_id',CHtml::listData(SocialHistorySmokingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+					<?php echo CHtml::activeDropDownList($social_history,'smoking_status_id',CHtml::listData(SocialHistorySmokingStatus::model()->activeOrPk($social_history->smoking_status_id)->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
 				</div>
 			</div>
 			<div class="field-row row">
