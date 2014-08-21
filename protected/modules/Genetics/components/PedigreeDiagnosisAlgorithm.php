@@ -18,28 +18,30 @@
  */
 
 /**
- * Class DiagnosisObserver
+ * Class PedigreeDiagnosisAlgorithm
  */
-class DiagnosisObserver
+class PedigreeDiagnosisAlgorithm
 {
-	/**
-	 * @param array $params
-	 */
-	public function patientAddDiagnosis(array $params)
+	public function CalculatePedigreeDiagnosisByPatient(Patient $patient)
 	{
-		if(!(array_key_exists('diagnosis',$params) && is_a($params['diagnosis'],'SecondaryDiagnosis'))) {
-			throw new Exception('Parameters Incorrect');
+		if ($patient_pedigree = PatientPedigree::model()->find('patient_id=?',array($patient->id))) {
+			$pedigree = $patient_pedigree->pedigree;
+			$pedigree_members = $pedigree->members;
+			$all_member_diagnoses_count = array();
+			foreach ($pedigree_members as $member){
+				$member_diagnoses = $member->patient->systemicDiagnoses;
+				foreach($member_diagnoses as $member_diagnoses){
+					if(array_key_exists($member_diagnoses->disorder_id,$all_member_diagnoses_count)) {
+						$all_member_diagnoses_count[$member_diagnoses->disorder_id]  += 1;
+					}
+					else {
+						$all_member_diagnoses_count[$member_diagnoses->disorder_id] = 1;
+					}
+				}
+			}
+			$most_common_diagnoses = array_keys($all_member_diagnoses_count, max($all_member_diagnoses_count));
+			$most_common_diagnosis = $most_common_diagnoses[0];
 		}
-
-		$secondary_diagnosis = $params['diagnosis'];
-		$disorder_id = PedigreeDiagnosisAlgorithm::CalculatePedigreeDiagnosisByPatient($secondary_diagnosis->patient);
-		var_dump($disorder_id);
-		die();
-
-	}
-
-	public function patientRemoveDiagnosis(array $params)
-	{
-
+		return $most_common_diagnosis;
 	}
 }
