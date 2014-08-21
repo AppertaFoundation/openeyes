@@ -664,7 +664,7 @@ class Patient extends BaseActiveRecordVersioned
 
         return $info;
     }
-    
+
     public function getGenderString()
     {
         switch ($this->gender) {
@@ -1021,7 +1021,7 @@ class Patient extends BaseActiveRecordVersioned
 
     /**
      * Check if the patient has a given risk.
-     * 
+     *
      * @param $riskCompare
      *
      * @return bool
@@ -1218,6 +1218,8 @@ class Patient extends BaseActiveRecordVersioned
                 throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(), true));
             }
 
+            Yii::app()->event->dispatch('patient_add_diagnosis', array('diagnosis' => $sd));
+
             $this->audit('patient', $action);
         }
     }
@@ -1241,6 +1243,8 @@ class Patient extends BaseActiveRecordVersioned
         if (!$sd->delete()) {
             throw new Exception('Unable to delete diagnosis: '.print_r($sd->getErrors(), true));
         }
+
+        Yii::app()->event->dispatch('patient_remove_diagnosis', array('diagnosis' => $sd));
 
         $this->audit('patient', "remove-$type-diagnosis");
     }
