@@ -115,7 +115,7 @@ class ImportHscicDataCommand extends CConsoleCommand
 			$contact->first_name = $m[2];
 			$contact->last_name = $this->tidy($m[1]);
 		} else {
-			$contact->nick_name = $data['name'];
+			$contact->last_name = $data['name'];
 		}
 
 		if (!$contact->save()) throw new Exception("Failed to save contact: " . print_r($contact->errors, true));
