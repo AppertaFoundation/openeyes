@@ -1,6 +1,10 @@
 <?php
 
 return array(
+	'import' => array(
+		'application.modules.genetics.models.*',
+		'application.modules.genetics.components.*',
+	),
 	'params' => array(
 		'menu_bar_items' => array(
 			'pedigrees' => array(
@@ -17,5 +21,23 @@ return array(
 				),
 			),
 		),
-	)
+	),
+	'components' => array(
+	'event' => array(
+		'observers' => array(
+			'patient_add_diagnosis' => array(
+				array(
+					'class' => 'DiagnosisObserver',
+					'method' => 'patientAddDiagnosis',
+				),
+			),
+			'patient_remove_diagnosis' => array(
+				array(
+					'class' => 'DiagnosesObserver',
+					'method' => 'patientRemoveDiagnosis',
+				),
+			),
+		),
+	),
+),
 );
