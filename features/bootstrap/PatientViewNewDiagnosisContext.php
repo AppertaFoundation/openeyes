@@ -362,95 +362,121 @@ class PatientViewContext extends PageObjectContext
      */
     public function iExpandSocialHistory()
     {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->addSocialHistory();
     }
 
     /**
      * @Given /^I add an Occupation of "([^"]*)"$/
      */
-    public function iAddAnOccupationOf($arg1)
+    public function iAddAnOccupationOf($occupation)
     {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->occupationType($occupation);
     }
 
     /**
      * @Given /^I add an Occupation Other type of "([^"]*)"$/
      */
-    public function iAddAnOccupationOtherTypeOf($arg1)
+    public function iAddAnOccupationOtherTypeOf($other)
     {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->occupationOtherType($other);
     }
 
     /**
      * @Then /^I add a Driving status of "([^"]*)"$/
      */
-    public function iAddADrivingStatusOf($arg1)
+    public function iAddADrivingStatusOf($status)
     {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->drivingStatus($status);
     }
 
     /**
      * @Given /^I add a Smoking status of "([^"]*)"$/
      */
-    public function iAddASmokingStatusOf($arg1)
+    public function iAddASmokingStatusOf($status)
     {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->smokingStatus($status);
     }
 
     /**
      * @Given /^I add an Accommodation status of "([^"]*)"$/
      */
-    public function iAddAnAccommodationStatusOf($arg1)
+    public function iAddAnAccommodationStatusOf($status)
     {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->accommodationStatus($status);
     }
 
     /**
      * @Then /^I add Social Comments of "([^"]*)"$/
      */
-    public function iAddSocialCommentsOf($arg1)
+    public function iAddSocialCommentsOf($comments)
     {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->socialComments($comments);
     }
 
     /**
-     * @Given /^I select Yes to Carer$/
+     * @Given /^I select a Carer status of "([^"]*)"$/
      */
-    public function iSelectYesToCarer()
+    public function iSelectACarerStatusOf($carer)
     {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->carerStatus($carer);
     }
 
     /**
-     * @Given /^I select No to Carer$/
+     * @Given /^I select a Substance Misuse status of "([^"]*)"$/
      */
-    public function iSelectNoToCarer()
+    public function iSelectASubstanceMisuseStatusOf($substance)
     {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->substanceMisuse($substance);
     }
+
+
 
     /**
      * @Then /^I set an Alcohol intake of "([^"]*)" units a week$/
      */
-    public function iSetAnAlcoholIntakeOfUnitsAWeek($arg1)
+    public function iSetAnAlcoholIntakeOfUnitsAWeek($units)
     {
-        throw new PendingException();
-    }
-
-    /**
-     * @Given /^I select Yes to Substance Misuse$/
-     */
-    public function iSelectYesToSubstanceMisuse()
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @Given /^I select No to Substance Misuse$/
-     */
-    public function iSelectNoToSubstanceMisuse()
-    {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->alcoholIntake($units);
     }
 
     /**
@@ -458,7 +484,11 @@ class PatientViewContext extends PageObjectContext
      */
     public function iSaveTheSocialHistory()
     {
-        throw new PendingException();
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->saveSocialHistory();
     }
 
 }
