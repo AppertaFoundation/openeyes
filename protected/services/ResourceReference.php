@@ -25,7 +25,7 @@ abstract class ResourceReference implements FhirCompatible
 	{
 		$url = $fhir_object->reference;
 
-		if (!preg_match('|^(.*)/(.+)$|', $url, $m)) {
+		if (!preg_match('|([A-Za-z]+)/([0-9a-z.-]+)$|', $url, $m)) {
 			throw new ProcessingNotSupported("Unsupported FHIR resource reference: {$url}");
 		}
 
