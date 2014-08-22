@@ -1398,21 +1398,21 @@ class AdminController extends BaseAdminController
 
 	public function actionSocialHistoryOccupation()
 	{
-		$this->genericAdmin('Employment Status', 'SocialHistoryOccupation');
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('occupation_id'), 'SocialHistoryOccupation');
 	}
 
 	public function actionSocialHistoryDrivingStatus()
 	{
-		$this->genericAdmin('Driving Status', 'SocialHistoryDrivingStatus');
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('driving_status_id'), 'SocialHistoryDrivingStatus');
 	}
 
 	public function actionSocialHistorySmokingStatus()
 	{
-		$this->genericAdmin('Smoking Status', 'SocialHistorySmokingStatus');
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('smoking_status_id'), 'SocialHistorySmokingStatus');
 	}
 
 	public function actionSocialHistoryAccommodation()
 	{
-		$this->genericAdmin('Accommodation', 'SocialHistoryAccommodation');
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('accommodation_id'), 'SocialHistoryAccommodation');
 	}
 }

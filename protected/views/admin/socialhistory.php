@@ -17,9 +17,9 @@
 <div class="box admin">
 	<h2>Social History</h2>
 	<ul>
-		<li><a href="/admin/socialHistoryOccupation">Employment Status</a></li>
-		<li><a href="/admin/socialHistoryDrivingStatus">Driving Status</a></li>
-		<li><a href="/admin/socialHistorySmokingStatus">Smoking Status</a></li>
-		<li><a href="/admin/socialHistoryAccommodation">Accommodation</a></li>
+		<li><a href="/admin/socialHistoryOccupation"><?= CHtml::encode(SocialHistory::model()->getAttributeLabel('occupation_id')) ?></a></li>
+		<li><a href="/admin/socialHistoryDrivingStatus"><?= CHtml::encode(SocialHistory::model()->getAttributeLabel('driving_status_id')) ?></a></li>
+		<li><a href="/admin/socialHistorySmokingStatus"><?= CHtml::encode(SocialHistory::model()->getAttributeLabel('smoking_status_id')) ?></a></li>
+		<li><a href="/admin/socialHistoryAccommodation"><?= CHtml::encode(SocialHistory::model()->getAttributeLabel('accommodation_id')) ?></a></li>
 	</ul>
 </div>
