@@ -357,4 +357,108 @@ class PatientViewContext extends PageObjectContext
         $patientView->removeMedication();
     }
 
+    /**
+     * @Then /^I expand Social History$/
+     */
+    public function iExpandSocialHistory()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I add an Occupation of "([^"]*)"$/
+     */
+    public function iAddAnOccupationOf($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I add an Occupation Other type of "([^"]*)"$/
+     */
+    public function iAddAnOccupationOtherTypeOf($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then /^I add a Driving status of "([^"]*)"$/
+     */
+    public function iAddADrivingStatusOf($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I add a Smoking status of "([^"]*)"$/
+     */
+    public function iAddASmokingStatusOf($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I add an Accommodation status of "([^"]*)"$/
+     */
+    public function iAddAnAccommodationStatusOf($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then /^I add Social Comments of "([^"]*)"$/
+     */
+    public function iAddSocialCommentsOf($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I select Yes to Carer$/
+     */
+    public function iSelectYesToCarer()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I select No to Carer$/
+     */
+    public function iSelectNoToCarer()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then /^I set an Alcohol intake of "([^"]*)" units a week$/
+     */
+    public function iSetAnAlcoholIntakeOfUnitsAWeek($arg1)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I select Yes to Substance Misuse$/
+     */
+    public function iSelectYesToSubstanceMisuse()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given /^I select No to Substance Misuse$/
+     */
+    public function iSelectNoToSubstanceMisuse()
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then /^I Save the Social History$/
+     */
+    public function iSaveTheSocialHistory()
+    {
+        throw new PendingException();
+    }
+
 }

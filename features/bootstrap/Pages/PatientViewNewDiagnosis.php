@@ -79,7 +79,27 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'removeOperationConfirmButton' => array('xpath' => "html/body/div[2]/div[2]/div/div[2]/button[1]"),
         'removeMedication' => array('xpath' => "//*[@id='medication_list']//*[contains(text(),'Delete')]"),
         'removeMedicationConfirmButton' => array('xpath' => "//*[contains(text(),'Remove medication')]"),
-        'datePicker' => array('xpath' => "//*[@class='ui-datepicker-title']")
+        'datePicker' => array('xpath' => "//*[@class='ui-datepicker-title']"),
+
+        'addSocialHistory' => array('xpath' => "//*[@id='btn-add_social_history']"),
+        'occupationType' => array('xpath' => "//*[@id='SocialHistory_occupation_id']"),
+        'occupationTypeOther' => array('xpath' => "//*[@id='SocialHistory_type_of_job']"),
+        'drivingStatus' => array('xpath' => "//*[@id='SocialHistory_driving_status_id']"),
+        'smokingStatus' => array('xpath' => "//*[@id='SocialHistory_smoking_status_id']"),
+        'accommodationStatus' => array('xpath' => "//*[@id='SocialHistory_accommodation_id']"),
+        'socialComments' => array ('xpath' => "//*[@id='SocialHistory_comments']"),
+        'carer' => array('xpath' => "//*[@id='SocialHistory_carer_id']"),
+        'alcoholIntake' => array ('xpath' => "//*[@id='SocialHistory_alcohol_intake']"),
+        'substanceMisuse' => array('xpath' => "//*[@id='SocialHistory_substance_misuse_id']"),
+        'saveSocialHistory' => array ('xpath' => "//*[@class='secondary small btn_save_social_history']"),
+
+
+
+
+
+
+
+
         );
 
     public function addOpthalmicDiagnosis ($diagnosis)
