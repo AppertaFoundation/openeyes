@@ -30,8 +30,6 @@ abstract class ResourceReference implements FhirCompatible
 		}
 
 		return \Yii::app()->service->fhirIdToReference($m[1], $m[2]);
-
-		return $ref;
 	}
 
 	/**
