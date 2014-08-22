@@ -726,5 +726,29 @@ class IntravitrealContext extends PageObjectContext
         $Intravitreal->intravitrealMandatoryFieldsErrorValidation();
     }
 
+    /**
+     * @Then /^I add Right Complications Comments of "([^"]*)"$/
+     */
+    public function iAddRightComplicationsCommentsOf($comments)
+    {
+        /**
+         * @var Intravitreal $Intravitreal
+         */
+        $Intravitreal  = $this->getPage('Intravitreal');
+        $Intravitreal->rightComplicationComments($comments);
+    }
+
+    /**
+     * @Then /^I add Left Complications Comments of "([^"]*)"$/
+     */
+    public function iAddLeftComplicationsCommentsOf($comments)
+    {
+        /**
+         * @var Intravitreal $Intravitreal
+         */
+        $Intravitreal  = $this->getPage('Intravitreal');
+        $Intravitreal->leftComplicationComments($comments);
+    }
+
 
 }

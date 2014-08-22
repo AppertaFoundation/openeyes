@@ -111,6 +111,9 @@ class Intravitreal extends OpenEyesPage
         'anteriorSegmentRightLensBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Anterior Segment: Right Lens Status cannot be blank.')]"),
         'postInjectionExamLeftPostDropsBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Post Injection Examination: Left Post Injection Drops cannot be blank.')]"),
         'postInjectionExamRightPostDropsBlank' => array('xpath' => "//*[@class='alert-box alert with-icon']//*[contains(text(),'Post Injection Examination: Right Post Injection Drops cannot be blank.')]"),
+
+        'leftComplicationsComments' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Complications_left_oth_descrip']"),
+        'rightComplicationsComments' => array('xpath' => "//*[@id='Element_OphTrIntravitrealinjection_Complications_right_oth_descrip']"),
     );
 
         protected function isRightSideOpen()
@@ -499,5 +502,15 @@ class Intravitreal extends OpenEyesPage
             else {
                 throw new BehaviorException("WARNING!!!  Intravitreal Mandatory fields validation errors NOT displayed WARNING!!!");
             }
+        }
+
+        public function leftComplicationComments ($comments)
+        {
+            $this->getElement('leftComplicationsComments')->setValue($comments);
+        }
+
+        public function rightComplicationComments ($comments)
+        {
+            $this->getElement('rightComplicationsComments')->setValue($comments);
         }
 }
