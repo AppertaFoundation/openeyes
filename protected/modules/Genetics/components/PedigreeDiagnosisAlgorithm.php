@@ -22,26 +22,45 @@
  */
 class PedigreeDiagnosisAlgorithm
 {
-	public function CalculatePedigreeDiagnosisByPatient(Patient $patient)
+
+	public function calculatePedigreeDiagnosisByPatient(Patient $patient)
 	{
-		if ($patient_pedigree = PatientPedigree::model()->find('patient_id=?',array($patient->id))) {
+		if ($pedigree = $this->findPedigreeByPatient($patient)) {
+			return $this->mostCommonDiagnosis($pedigree->$members);
+		}
+	}
+
+	private function findPedigreeByPatient(Patient $patient)
+	{
+		if($patient_pedigree = PatientPedigree::model()->find('patient_id=?',array($patient->id))) {
 			$pedigree = $patient_pedigree->pedigree;
-			$pedigree_members = $pedigree->members;
-			$all_member_diagnoses_count = array();
-			foreach ($pedigree_members as $member){
-				$member_diagnoses = $member->patient->systemicDiagnoses;
-				foreach($member_diagnoses as $member_diagnoses){
-					if(array_key_exists($member_diagnoses->disorder_id,$all_member_diagnoses_count)) {
-						$all_member_diagnoses_count[$member_diagnoses->disorder_id]  += 1;
-					}
-					else {
-						$all_member_diagnoses_count[$member_diagnoses->disorder_id] = 1;
-					}
+			return $pedigree;
+		}
+		return false;
+	}
+	
+	private function mostCommonDiagnosis($pedigree_members)
+	{
+		$diagnoses_count = $this->countDiagnoses($pedigree_members);
+		$most_common = array_keys($diagnoses_count, max($diagnoses_count)); //maybe equal first
+		return $most_common[0]; //slice off top result if joint first
+	}
+
+	private function countDiagnoses($pedigree_members)
+	{
+		$table_results = array();
+		foreach ($pedigree_members as $member){
+			$member_diagnoses = $member->patient->systemicDiagnoses;
+			foreach($member_diagnoses as $diagnosis){
+				$diagnosis_disorder_id = $diagnosis->disorder_id;
+				if(array_key_exists($diagnosis_disorder_id, $table_results)) {
+					$table_results[$diagnosis_disorder_id]  += 1;
+				}
+				else {
+					$table_results[$diagnosis_disorder_id] = 1;
 				}
 			}
-			$most_common_diagnoses = array_keys($all_member_diagnoses_count, max($all_member_diagnoses_count));
-			$most_common_diagnosis = $most_common_diagnoses[0];
 		}
-		return $most_common_diagnosis;
+		return $table_results;
 	}
 }
