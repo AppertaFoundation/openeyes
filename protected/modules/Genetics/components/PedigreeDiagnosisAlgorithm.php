@@ -23,10 +23,15 @@
 class PedigreeDiagnosisAlgorithm
 {
 
-	public function calculatePedigreeDiagnosisByPatient(Patient $patient)
+	public function updatePedigreeDiagnosisByPatient(Patient $patient)
 	{
-		if ($pedigree = $this->findPedigreeByPatient($patient)) {
-			return $this->mostCommonDiagnosis($pedigree->$members);
+		if ($pedigree = self::findPedigreeByPatient($patient)) {
+			$disorder_id = self::mostCommonDiagnosis($pedigree->$members);
+			$pedigree->disorder_id = $disorder_id;
+			$pedigree->save();
+		}
+		else {
+			throw new Exception('Patient has no pedigree');
 		}
 	}
 
@@ -41,7 +46,7 @@ class PedigreeDiagnosisAlgorithm
 	
 	private function mostCommonDiagnosis($pedigree_members)
 	{
-		$diagnoses_count = $this->countDiagnoses($pedigree_members);
+		$diagnoses_count = self::countDiagnoses($pedigree_members);
 		$most_common = array_keys($diagnoses_count, max($diagnoses_count)); //maybe equal first
 		return $most_common[0]; //slice off top result if joint first
 	}
@@ -61,6 +66,7 @@ class PedigreeDiagnosisAlgorithm
 				}
 			}
 		}
+
 		return $table_results;
 	}
 }
