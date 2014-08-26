@@ -26,7 +26,7 @@ class PedigreeDiagnosisAlgorithm
 	public function updatePedigreeDiagnosisByPatient(Patient $patient)
 	{
 		if ($pedigree = self::findPedigreeByPatient($patient)) {
-			$disorder_id = self::mostCommonDiagnosis($pedigree->$members);
+			$disorder_id = self::mostCommonDiagnosis($pedigree->members);
 			$pedigree->disorder_id = $disorder_id;
 			$pedigree->save();
 		}
