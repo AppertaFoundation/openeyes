@@ -33,7 +33,7 @@ return array(
 			),
 			'patient_remove_diagnosis' => array(
 				array(
-					'class' => 'DiagnosesObserver',
+					'class' => 'DiagnosisObserver',
 					'method' => 'patientRemoveDiagnosis',
 				),
 			),

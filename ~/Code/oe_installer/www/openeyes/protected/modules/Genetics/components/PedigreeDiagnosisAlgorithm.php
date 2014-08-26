@@ -43,12 +43,17 @@ class PedigreeDiagnosisAlgorithm
 		}
 		return false;
 	}
-	
+
 	private function mostCommonDiagnosis($pedigree_members)
 	{
 		$diagnoses_count = self::countDiagnoses($pedigree_members);
-		$most_common = array_keys($diagnoses_count, max($diagnoses_count)); //maybe equal first
-		return $most_common[0]; //slice off top result if joint first
+		if(empty($diagnoses_count)) {
+			return null;
+		}
+		else {
+			$most_common = array_keys($diagnoses_count, max($diagnoses_count)); //maybe equal first
+			return $most_common[0]; //slice off top result if joint first
+		}
 	}
 
 	private function countDiagnoses($pedigree_members)
@@ -56,7 +61,7 @@ class PedigreeDiagnosisAlgorithm
 		$table_results = array();
 		foreach ($pedigree_members as $member){
 			$systemic_diagnoses = $member->patient->systemicDiagnoses;
-			$ophthalmic_diagnoses = $member->patient->getOphthalmicDiagnoses;
+			$ophthalmic_diagnoses = $member->patient->OphthalmicDiagnoses;
 			$member_diagnoses = array_merge($systemic_diagnoses,$ophthalmic_diagnoses);
 			if(!empty($member_diagnoses)) {
 				foreach($member_diagnoses as $diagnosis){

@@ -30,20 +30,28 @@ class DiagnosisObserver
 		if(!(array_key_exists('diagnosis',$params) && is_a($params['diagnosis'],'SecondaryDiagnosis'))) {
 			throw new Exception('Parameters Incorrect');
 		}
-
 		$secondary_diagnosis = $params['diagnosis'];
-
-		try {
-			PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($secondary_diagnosis->patient);
-		}
-		catch (Exception $exp) {
-				if(!$exp->getMessage() == 'Patient has no pedigree')
-				throw $exp;
-		}
+		self::updatePedigreeDiagnosis($secondary_diagnosis->patient);
 	}
 
 	public function patientRemoveDiagnosis(array $params)
 	{
+		if(!(array_key_exists('patient',$params) && is_a($params['patient'],'patient'))) {
+			throw new Exception('Parameters Incorrect');
+		}
+		$patient = $params['patient'];
+		self::updatePedigreeDiagnosis($patient);
+	}
 
+	private function updatePedigreeDiagnosis($patient)
+	{
+		try {
+			PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($patient);
+		}
+		catch (Exception $exp) {
+			if(!$exp->getMessage() == 'Patient has no pedigree'){
+				throw $exp;
+			}
+		}
 	}
 }
