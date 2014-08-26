@@ -32,10 +32,14 @@ class DiagnosisObserver
 		}
 
 		$secondary_diagnosis = $params['diagnosis'];
-		$disorder_id = PedigreeDiagnosisAlgorithm::CalculatePedigreeDiagnosisByPatient($secondary_diagnosis->patient);
-		var_dump($disorder_id);
-		die();
 
+		try {
+			PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($secondary_diagnosis->patient);
+		}
+		catch (Exception $exp) {
+				if(!$exp->getMessage() == 'Patient has no pedigree')
+				throw $exp;
+		}
 	}
 
 	public function patientRemoveDiagnosis(array $params)
