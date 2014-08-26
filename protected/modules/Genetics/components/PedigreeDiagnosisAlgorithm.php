@@ -55,14 +55,18 @@ class PedigreeDiagnosisAlgorithm
 	{
 		$table_results = array();
 		foreach ($pedigree_members as $member){
-			$member_diagnoses = $member->patient->systemicDiagnoses;
-			foreach($member_diagnoses as $diagnosis){
-				$diagnosis_disorder_id = $diagnosis->disorder_id;
-				if(array_key_exists($diagnosis_disorder_id, $table_results)) {
-					$table_results[$diagnosis_disorder_id]  += 1;
-				}
-				else {
-					$table_results[$diagnosis_disorder_id] = 1;
+			$systemic_diagnoses = $member->patient->systemicDiagnoses;
+			$ophthalmic_diagnoses = $member->patient->getOphthalmicDiagnoses;
+			$member_diagnoses = array_merge($systemic_diagnoses,$ophthalmic_diagnoses);
+			if(!empty($member_diagnoses)) {
+				foreach($member_diagnoses as $diagnosis){
+					$diagnosis_disorder_id = $diagnosis->disorder_id;
+					if(array_key_exists($diagnosis_disorder_id, $table_results)) {
+						$table_results[$diagnosis_disorder_id]  += 1;
+					}
+					else {
+						$table_results[$diagnosis_disorder_id] = 1;
+					}
 				}
 			}
 		}
