@@ -28,7 +28,7 @@
 		<?php if ($pp = $api->findPatientPedigree($patient->id)) {?>
 			<div class="row data-row">
 				<div class="large-4 column">
-					<div class="data-label">ID:</div>
+					<div class="data-label">Pedigree ID:</div>
 				</div>
 				<div class="large-8 column">
 					<div class="data-value"><?php echo $pp->pedigree_id?> (<?php echo CHtml::link('edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pp->pedigree_id))?>)</div>
