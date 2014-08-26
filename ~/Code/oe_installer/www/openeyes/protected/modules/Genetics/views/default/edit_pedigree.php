@@ -34,16 +34,6 @@
 		<?php echo $form->dropDownList($pedigree,'inheritance_id',CHtml::listData(PedigreeInheritance::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- None -'))?>
 		<?php echo $form->dropDownList($pedigree,'gene_id',CHtml::listData(PedigreeGene::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- None -'))?>
 		<?php echo $form->radioBoolean($pedigree,'consanguinity')?>
-		<?php $form->widget('application.widgets.DiagnosisSelection',array(
-			'field' => 'disorder_id',
-			'element' => $pedigree,
-			'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-			'layoutColumns' => array(
-				'label' => $form->layoutColumns['label'],
-				'field' => 4,
-			),
-			'default' => false,
-		))?>
 		<?php echo $form->textField($pedigree,'base_change')?>
 		<?php echo $form->textField($pedigree,'amino_acid_change')?>
 		<?php echo $form->textArea($pedigree,'comments')?>
