@@ -135,7 +135,7 @@
 						<td><?php echo $pedigree->consanguinity ? 'Yes' : 'No'?>
 						<td>
 							<?php if ($pedigree->gene) {
-								//echo CHtml::link($pedigree->gene->name,Yii::app()->createUrl('/Genetics/default/editGene/'.$pedigree->gene_id));
+								echo InternetLink::geneName($pedigree->gene->name);
 								echo $pedigree->gene->name;
 							}?>
 						</td>
