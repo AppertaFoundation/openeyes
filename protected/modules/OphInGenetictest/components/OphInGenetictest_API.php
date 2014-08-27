@@ -36,4 +36,14 @@ class OphInGenetictest_API extends BaseAPI
 				),
 			));
 	}
+
+	public function getEventsByPatient($patient)
+	{
+		$events = array();
+		$episodes = $patient->episodes;
+		foreach ($episodes as $episode) {
+			$events += $this->getEventsInEpisode($patient, $episode);
+		}
+		return $events;
+	}
 }
