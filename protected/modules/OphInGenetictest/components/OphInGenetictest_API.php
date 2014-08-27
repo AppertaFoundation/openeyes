@@ -42,7 +42,8 @@ class OphInGenetictest_API extends BaseAPI
 		$events = array();
 		$episodes = $patient->episodes;
 		foreach ($episodes as $episode) {
-			$events += $this->getEventsInEpisode($patient, $episode);
+			foreach ($this->getEventsInEpisode($patient, $episode) as $key => $event)
+				$events[] = $event;
 		}
 		return $events;
 	}
