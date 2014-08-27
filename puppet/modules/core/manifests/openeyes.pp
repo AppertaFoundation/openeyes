@@ -10,6 +10,11 @@ class core::openeyes {
 			mode   => '0777',
 		}
 
+		file { '/var/www/subfolder/protected/files':
+			ensure => directory,
+			mode   => '0777',
+		}
+
 		file { '/var/www/subfolder/index.php':
 			ensure => file,
 			source => '/var/www/subfolder/index.example.php'
@@ -67,6 +72,11 @@ class core::openeyes {
 		}
 
 		file { '/var/www/assets':
+			ensure => directory,
+			mode   => '0777',
+		}
+
+		file { '/var/www/protected/files':
 			ensure => directory,
 			mode   => '0777',
 		}
