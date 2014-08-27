@@ -34,14 +34,6 @@
 					<div class="data-value"><?php echo $pp->pedigree_id?> (<?php echo CHtml::link('edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pp->pedigree_id))?>)</div>
 				</div>
 			</div>
-			<div class="row data-row">
-				<div class="large-4 column">
-					<div class="data-label"><?php echo $pp->pedigree->getAttributeLabel('comments')?>:</div>
-				</div>
-				<div class="large-8 column">
-					<div class="data-value"><?php echo CHtml::encode($pp->pedigree->comments)?></div>
-				</div>
-			</div>
 		<?php }else{?>
 			<div class="row data-row">
 				<div class="large-12 column">
@@ -51,18 +43,60 @@
 		<?php }?>
 		<?php
 		if ($api = Yii::app()->moduleAPI->get('OphInBloodsample')) {
-			foreach ($api->getEventsByPatient($this->patient) as $event) {
-				$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
-				<a href="<?php echo $event_path . $event->id ?>" data-id="<?php echo $event->id ?>">
-					<?php
-					if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
-						$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
-					} else {
-						$assetpath = '/assets/';
-					}
-					?>
-					<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
-				</a>
+			if($events = $api->getEventsByPatient($this->patient)) {?>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label">Blood Sample Events:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value">
+							<?php foreach ($events as $event) {
+								echo EventNavigation::SmallIcon($event);
+							}
+							?>
+						</div>
+					</div>
+				</div>
+			<?php
+			}
+		}
+		?>
+		<?php
+		if ($api = Yii::app()->moduleAPI->get('OphInDnaextraction')) {
+			if($events = $api->getEventsByPatient($this->patient)) {?>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label">DNA Extraction Events:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value">
+							<?php foreach ($events as $event) {
+								echo EventNavigation::SmallIcon($event);
+							}
+							?>
+						</div>
+					</div>
+				</div>
+			<?php
+			}
+		}
+		?>
+		<?php
+		if ($api = Yii::app()->moduleAPI->get('OphInGenetictest')) {
+			if($events = $api->getEventsByPatient($this->patient)) {?>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label">Genetic Test Events:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value">
+							<?php foreach ($events as $event) {
+								echo EventNavigation::SmallIcon($event);
+							}
+							?>
+						</div>
+					</div>
+				</div>
 			<?php
 			}
 		}
