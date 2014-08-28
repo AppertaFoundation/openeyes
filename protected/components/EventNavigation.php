@@ -19,9 +19,9 @@
 
 class EventNavigation
 {
-		public function SmallIcon ($event)
+		public static function SmallIcon ($event)
 		{
-			$this->renderPartial('/patient/event_small_icon_link',array(
+			return Yii::app()->controller->renderPartial('/patient/event_small_icon_link',array(
 				'event' => $event,
 			));
 		}
