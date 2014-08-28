@@ -34,6 +34,16 @@
 					<div class="data-value"><?php echo $pp->pedigree_id?> (<?php echo CHtml::link('edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pp->pedigree_id))?>)</div>
 				</div>
 			</div>
+			<?php if (!empty($pp->comments)) {?>
+				<div class="row data-row">
+					<div class="large-4 column">
+						<div class="data-label"><?php echo $pp->pedigree->getAttributeLabel('comments')?>:</div>
+					</div>
+					<div class="large-8 column">
+						<div class="data-value"><?php echo CHtml::encode($pp->pedigree->comments)?></div>
+					</div>
+				</div>
+			<?php } ?>
 		<?php }else{?>
 			<div class="row data-row">
 				<div class="large-12 column">
