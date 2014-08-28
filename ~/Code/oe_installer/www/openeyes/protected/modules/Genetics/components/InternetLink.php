@@ -19,7 +19,7 @@
 
 class InternetLink extends BaseAPI
 {
-	public function geneName($pedigree_name)
+	public static function geneName($pedigree_name)
 	{
 		$regex = '/\w*/';
 		if (preg_match($regex, $pedigree_name, $part)) {
