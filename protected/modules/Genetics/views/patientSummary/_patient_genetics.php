@@ -37,10 +37,10 @@
 			<?php if (!empty($pp->comments)) {?>
 				<div class="row data-row">
 					<div class="large-4 column">
-						<div class="data-label"><?php echo $pp->pedigree->getAttributeLabel('comments')?>:</div>
+						<div class="data-label"><?php echo $pp->getAttributeLabel('comments')?>:</div>
 					</div>
 					<div class="large-8 column">
-						<div class="data-value"><?php echo CHtml::encode($pp->pedigree->comments)?></div>
+						<div class="data-value"><?php echo CHtml::encode($pp->comments)?></div>
 					</div>
 				</div>
 			<?php } ?>
