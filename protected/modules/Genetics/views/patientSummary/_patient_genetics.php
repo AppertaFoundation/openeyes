@@ -34,13 +34,13 @@
 					<div class="data-value"><?php echo $pp->pedigree_id?> (<?php echo CHtml::link('edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pp->pedigree_id))?>)</div>
 				</div>
 			</div>
-			<?php if (!empty($pp->comments)) {?>
+			<?php if ($genetics_patient = GeneticsPatient::model()->find('patient_id=?',array($patient->id))) {?>
 				<div class="row data-row">
 					<div class="large-4 column">
-						<div class="data-label"><?php echo $pp->getAttributeLabel('comments')?>:</div>
+						<div class="data-label"><?php echo $genetics_patient->getAttributeLabel('comments')?>:</div>
 					</div>
 					<div class="large-8 column">
-						<div class="data-value"><?php echo CHtml::encode($pp->comments)?></div>
+						<div class="data-value"><?php echo  Yii::app()->format->ntext($genetics_patient->comments)?></div>
 					</div>
 				</div>
 			<?php } ?>
