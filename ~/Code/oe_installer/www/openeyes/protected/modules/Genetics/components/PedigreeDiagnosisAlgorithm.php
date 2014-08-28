@@ -23,7 +23,7 @@
 class PedigreeDiagnosisAlgorithm
 {
 
-	public function updatePedigreeDiagnosisByPatient(Patient $patient)
+	public static function updatePedigreeDiagnosisByPatient(Patient $patient)
 	{
 		if ($pedigree = self::findPedigreeByPatient($patient)) {
 			$disorder_id = self::mostCommonDiagnosis($pedigree->members);
@@ -35,7 +35,7 @@ class PedigreeDiagnosisAlgorithm
 		}
 	}
 
-	private function findPedigreeByPatient(Patient $patient)
+	private static function findPedigreeByPatient(Patient $patient)
 	{
 		if($patient_pedigree = PatientPedigree::model()->find('patient_id=?',array($patient->id))) {
 			$pedigree = $patient_pedigree->pedigree;
@@ -44,7 +44,7 @@ class PedigreeDiagnosisAlgorithm
 		return false;
 	}
 
-	private function mostCommonDiagnosis($pedigree_members)
+	private static function mostCommonDiagnosis($pedigree_members)
 	{
 		$diagnoses_count = self::countDiagnoses($pedigree_members);
 		if(empty($diagnoses_count)) {
@@ -56,7 +56,7 @@ class PedigreeDiagnosisAlgorithm
 		}
 	}
 
-	private function countDiagnoses($pedigree_members)
+	private static function countDiagnoses($pedigree_members)
 	{
 		$table_results = array();
 		foreach ($pedigree_members as $member){
