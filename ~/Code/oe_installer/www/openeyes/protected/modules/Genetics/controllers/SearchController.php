@@ -22,9 +22,25 @@ class SearchController extends BaseController
 	public $layout = '//layouts/advanced_search';
 	public $items_per_page = 30;
 
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'actions' => array('GeneticPatients'),
+				'roles' => array('OprnSearchPedigree'),
+			));
+	}
+
+	protected function beforeAction($action)
+	{
+		Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
+		return parent::beforeAction($action);
+	}
+
+
 	public function actionGeneticPatients()
 	{
-		$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
+		$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
 		Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
 
 		$pagination = $this->initPagination(Pedigree::model());

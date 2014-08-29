@@ -18,7 +18,7 @@
  */
 ?>
 <div class="box admin">
-	<h2>Patient search by diagnosis</h2>
+	<h2>Advanced Patient Search</h2>
 
 	<div class="large-12 column">
 		<?php
@@ -43,7 +43,6 @@
 								'htmlOptions' => array(
 									'hide_label' => true,
 								),
-								'allowClear' => true,
 							))?>
 						</div>
 						<div class="large-3 column">
