@@ -110,6 +110,13 @@ $config = array(
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
 		'specialty_sort' => array(130, 'SUP'),
+		'fhir_system_uris' => array(
+			'nhs_num' => 'http://example.com/nhs_num',
+			'hos_num' => 'http://example.com/hos_num',
+			'gp_code' => 'http://example.com/gp_code',
+			'practice_code' => 'http://example.com/practice_code',
+			'cb_code' => 'http://example.com/cb_code',
+		),
 		'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
 		'OphCoTherapyapplication_compliant_recipient_email' => array('email@example.com' => 'Email Test'),
 		'OphCoTherapyapplication_noncompliant_recipient_email' => array('email2@example.com' => 'Email Test 2'),

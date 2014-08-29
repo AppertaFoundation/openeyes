@@ -19,7 +19,7 @@ class Api_PracticeTest extends FhirTestCase
 	{
 		$this->get('Organization/prac-1');
 		$this->assertXPathEquals('Organization', 'local-name()');
-		$this->assertXPathEquals('F001', 'string(./fhir:identifier/fhir:system[@value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/o/org/organisation_code_de.asp"]/../fhir:value/@value)');
+		$this->assertXPathEquals('F001', 'string(./fhir:identifier/fhir:system[@value="http://example.com/practice_code"]/../fhir:value/@value)');
 		$this->assertXPathEquals('0111 111 1111', 'string(./fhir:telecom/fhir:system[@value="phone"]/../fhir:value/@value)');
 		$this->assertXPathFound('./fhir:address/fhir:line[@value="83, Wintour Lane"]');
 		$this->assertXPathFound('./fhir:address/fhir:line[@value="Northop"]');

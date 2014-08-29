@@ -1,4 +1,3 @@
-<?php
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -13,25 +12,14 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-namespace services;
-
-class Practice extends Resource
-{
-	static protected $fhir_type = 'Organization';
-	static protected $fhir_prefix = 'prac';
-
-	public $code;
-
-	public $primary_phone;
-	public $address = null;
-
-	static protected function getFhirTemplate()
-	{
-		return \DataTemplate::fromJsonFile(
-			__DIR__ . '/fhir_templates/Practice.json',
-			array(
-				'system_uri_practice_code' => \Yii::app()->params['fhir_system_uris']['practice_code'],
-			)
-		);
+.tabs.search {
+	li {
+		@include border-radius(5px);
+		padding: 5px 10px 3px 10px;
+		width: 128px;
+		text-align: center;
+		&.selected {
+			background: #cdd9e3;
+		}
 	}
 }

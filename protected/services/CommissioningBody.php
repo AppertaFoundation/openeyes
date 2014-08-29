@@ -23,4 +23,14 @@ class CommissioningBody extends Resource
 	public $code;
 	public $name;
 	public $address = null;
+
+	static protected function getFhirTemplate()
+	{
+		return \DataTemplate::fromJsonFile(
+			__DIR__ . '/fhir_templates/CommissioningBody.json',
+			array(
+				'system_uri_cb_code' => \Yii::app()->params['fhir_system_uris']['cb_code'],
+			)
+		);
+	}
 }

@@ -2,7 +2,7 @@
 	"identifier": [
 		{
 			"label": "General National Code",
-			"system": {":match": "http://www.datadictionary.nhs.uk/data_dictionary/attributes/g/general_medical_practitioner_ppd_code_de.asp"},
+			"system": {":match": "{{system_uri_gp_code}}"},
 			"value": {":subst": "gnc"}
 		}
 	],

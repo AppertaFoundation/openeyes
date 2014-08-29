@@ -19,7 +19,7 @@ class Api_CommissioningBodyTest extends FhirTestCase
 	{
 		$this->get('Organization/cb-1');
 		$this->assertXPathEquals('Organization', 'local-name()');
-		$this->assertXPathEquals('CCG0001', 'string(./fhir:identifier/fhir:system[@value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/o/org/organisation_code_de.asp"]/../fhir:value/@value)');
+		$this->assertXPathEquals('CCG0001', 'string(./fhir:identifier/fhir:system[@value="http://example.com/cb_code"]/../fhir:value/@value)');
 		$this->assertXPathEquals('Test CCG 1', 'string(./fhir:name/@value)');
 		$this->assertXPathEquals('123 Test Street', 'string(./fhir:address/fhir:line/@value)');
 		$this->assertXPathEquals('London', 'string(./fhir:address/fhir:city/@value)');

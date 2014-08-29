@@ -22,7 +22,7 @@ class Api_PatientTest extends FhirTestCase
 		$this->assertXPathEquals('1007913', 'string(./fhir:identifier/fhir:label[@value="Hospital Number"]/../fhir:value/@value)');
 		$this->assertXPathEquals(
 			'1053991374',
-			'string(./fhir:identifier/fhir:system[@value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp"]/../fhir:value/@value)'
+			'string(./fhir:identifier/fhir:system[@value="http://example.com/nhs_num"]/../fhir:value/@value)'
 		);
 		$this->assertXPathEquals('Mrs', 'string(./fhir:name/fhir:prefix/@value)');
 		$this->assertXPathEquals('Agnes', 'string(./fhir:name/fhir:given/@value)');
@@ -79,7 +79,7 @@ class Api_PatientTest extends FhirTestCase
 
 	public function testUpdate()
 	{
-		$source = file_get_contents(__DIR__ . '/files/Patient.xml');
+		$source = file_get_contents(__DIR__ . '/files/Patient-update.xml');
 		$this->put('Patient/19969', $source);
 
 		$this->get('Patient/19969');
@@ -88,7 +88,7 @@ class Api_PatientTest extends FhirTestCase
 
 	public function testCreate()
 	{
-		$source = file_get_contents(__DIR__ . '/files/Patient.xml');
+		$source = file_get_contents(__DIR__ . '/files/Patient-create.xml');
 		$this->post('Patient', $source);
 
 		$this->get($this->response->getLocation());
@@ -130,6 +130,20 @@ class Api_PatientTest extends FhirTestCase
 		$this->assertXPathEquals('Patient', 'local-name(./atom:entry/atom:content/*)');
 	}
 
+	public function testSearchByHosNum_Namespaced()
+	{
+		$this->get('Patient?identifier=http://example.com/hos_num|1007913');
+		$this->assertXPathEquals('feed', 'local-name()');
+		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
+		$this->assertUrlEquals(
+			$this->client->getBaseUrl() . '/Patient?identifier=http://example.com/hos_num|1007913',
+			$this->xPathEval('string(./atom:link[@rel="self"]/@href)')
+		);
+		$this->assertXPathCount(1, './atom:entry');
+		$this->assertXPathEquals($this->client->getBaseUrl() . '/Patient/17885', 'string(./atom:entry/atom:id/text())');
+		$this->assertXPathEquals('Patient', 'local-name(./atom:entry/atom:content/*)');
+	}
+
 	public function testSearchByNhsNum()
 	{
 		$this->get('Patient?identifier=1053991374');
@@ -142,6 +156,32 @@ class Api_PatientTest extends FhirTestCase
 		$this->assertXPathCount(1, './atom:entry');
 		$this->assertXPathEquals($this->client->getBaseUrl() . '/Patient/17885', 'string(./atom:entry/atom:id/text())');
 		$this->assertXPathEquals('Patient', 'local-name(./atom:entry/atom:content/*)');
+	}
+
+	public function testSearchByNhsNum_Namespaced()
+	{
+		$this->get('Patient?identifier=http://example.com/nhs_num|1053991374');
+		$this->assertXPathEquals('feed', 'local-name()');
+		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
+		$this->assertUrlEquals(
+			$this->client->getBaseUrl() . '/Patient?identifier=http://example.com/nhs_num|1053991374',
+			$this->xPathEval('string(./atom:link[@rel="self"]/@href)')
+		);
+		$this->assertXPathCount(1, './atom:entry');
+		$this->assertXPathEquals($this->client->getBaseUrl() . '/Patient/17885', 'string(./atom:entry/atom:id/text())');
+		$this->assertXPathEquals('Patient', 'local-name(./atom:entry/atom:content/*)');
+	}
+
+	public function testSearchByIdentifier_UnknownNamespace()
+	{
+		$this->get('Patient?identifier=http://example.com/foo|bar');
+		$this->assertXPathEquals('feed', 'local-name()');
+		$this->assertXPathEquals($this->client->getBaseUrl(), 'string(./atom:link[@rel="base"]/@href)');
+		$this->assertUrlEquals(
+			$this->client->getBaseUrl() . '/Patient?identifier=http://example.com/foo|bar',
+			$this->xPathEval('string(./atom:link[@rel="self"]/@href)')
+		);
+		$this->assertXPathCount(0, './atom:entry');
 	}
 
 	public function testSearchByFamilyName()
@@ -168,6 +208,36 @@ class Api_PatientTest extends FhirTestCase
 		$this->assertXPathCount(1, './atom:entry');
 		$this->assertXPathEquals($this->client->getBaseUrl() . '/Patient/18474', 'string(./atom:entry/atom:id/text())');
 		$this->assertXPathEquals('Patient', 'local-name(./atom:entry/atom:content/*)');
+	}
 
+	public function testCountryDefaultsToUk()
+	{
+		$this->post('Patient', file_get_contents(__DIR__ . '/files/Patient-invalid-country.xml'));
+
+		$this->get($this->response->getLocation());
+		$this->assertXmlEquals(file_get_contents(__DIR__ . '/files/Patient-default-country.xml'));
+	}
+
+	public function testHosNumRequired()
+	{
+		$this->setExpectedHttpError(422);
+		$this->post('Patient', file_get_contents(__DIR__ . '/files/Patient-no-hosnum.xml'));
+	}
+
+	public function testDuplicateHosNum()
+	{
+		$source = file_get_contents(__DIR__ . '/files/Patient-dupe.xml');
+		$this->post('Patient', $source);
+		$this->setExpectedHttpError(409);
+		$this->post('Patient', $source);
+	}
+
+	public function testUndifferentiatedGender()
+	{
+		$source = file_get_contents(__DIR__ . '/files/Patient-un-gender.xml');
+		$this->post('Patient', $source);
+
+		$this->get($this->response->getLocation());
+		$this->assertXmlEquals($source);
 	}
 }

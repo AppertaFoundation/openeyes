@@ -38,6 +38,15 @@ abstract class DataObject implements FhirCompatible
 	}
 
 	/**
+	 * @param array $values
+	 * @return DataObject
+	 */
+	static public function fromFhirValues(array $values)
+	{
+		return new static($values);
+	}
+
+	/**
 	 * Convert a FHIR object into a service layer object
 	 *
 	 * @param StdClass $fhirObject
@@ -73,7 +82,7 @@ abstract class DataObject implements FhirCompatible
 			throw new InvalidStructure("Failed to match object of type '{$fhir_type}': " . implode("; ", $warnings));
 		}
 
-		return new static($values);
+		return static::fromFhirValues($values);
 	}
 
 	static protected function getServiceClass($fhir_type)
@@ -125,13 +134,21 @@ abstract class DataObject implements FhirCompatible
 	}
 
 	/**
+	 * @return array
+	 */
+	public function toFhirValues()
+	{
+		return get_object_vars($this);
+	}
+
+	/**
 	 * Convert this object to it's FHIR representation
 	 *
 	 * @return StdClass
 	 */
 	public function toFhir()
 	{
-		$values = get_object_vars($this);
+		$values = $this->toFhirValues();
 		$this->subObjectsToFhir($values);
 
 		return static::getFhirTemplate()->generate($values);

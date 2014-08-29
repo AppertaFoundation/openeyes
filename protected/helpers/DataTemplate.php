@@ -20,9 +20,10 @@ class DataTemplate
 {
 	/**
 	 * @param string $filename
+	 * @param array $consts
 	 * @return DataTemplate
 	 */
-	static public function fromJsonFile($filename)
+	static public function fromJsonFile($filename, array $consts = array())
 	{
 		$rawTemplate = json_decode(file_get_contents($filename));
 		if (is_null($rawTemplate)) {
@@ -31,28 +32,33 @@ class DataTemplate
 		if (is_scalar($rawTemplate)) {
 			throw new Exception("Data templates must be objects or arrays, '{$filename}' is scalar");
 		}
-		return self::preprocess($rawTemplate);
+
+		return self::preprocess($rawTemplate, $consts);
 	}
 
 	/**
 	 * @param object|array $rawTemplate
+	 * @param array $consts
 	 * @return DataTemplate
 	 */
-	static protected function preprocess($rawTemplate)
+	static protected function preprocess($rawTemplate, array $consts)
 	{
 		$template = array();
 
 		foreach ($rawTemplate as $key => $value) {
 			switch (gettype($value)) {
 				case 'object':
-					if (($directive = self::preprocessDirective($value))) {
+					if (($directive = self::preprocessDirective($value, $consts))) {
 						$template[$key] = $directive;
 					} else {
-						$template[$key] = self::preprocess($value);
+						$template[$key] = self::preprocess($value, $consts);
 					}
 					break;
 				case 'array':
-					$template[$key] = self::preprocess($value);
+					$template[$key] = self::preprocess($value, $consts);
+					break;
+				case 'string':
+					$template[$key] = self::replaceConsts($value, $consts);
 					break;
 				default:
 					$template[$key] = $value;
@@ -68,9 +74,10 @@ class DataTemplate
 
 	/**
 	 * @param object $object
+	 * @param array $consts
 	 * @return DataTemplateDirective|null
 	 */
-	static protected function preprocessDirective($object)
+	static protected function preprocessDirective($object, array $consts)
 	{
 		$vars = get_object_vars($object);
 		if (count($vars) != 1) return null;
@@ -82,7 +89,28 @@ class DataTemplate
 		$class = 'DataTemplateDirective' . lcfirst($m[1]);
 		if (!class_exists($class)) return null;
 
-		return new $class($vars[$key]);
+		$value = $vars[$key];
+		if (is_string($value)) $value = self::replaceConsts($value, $consts);
+
+		return new $class($value);
+	}
+
+	/**
+	 * @param string $value
+	 * @param array $consts
+	 * @return string
+	 */
+	static protected function replaceConsts($value, array $consts)
+	{
+		if (preg_match('/^{{(\w+)}}$/', $value, $m)) {
+			if (!array_key_exists($m[1], $consts)) {
+				throw new Exception("Missing template constant: '{$m[1]}'");
+			}
+
+			return $consts[$m[1]];
+		}
+
+		return $value;
 	}
 }
 

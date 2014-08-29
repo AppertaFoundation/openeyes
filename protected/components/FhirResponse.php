@@ -13,25 +13,37 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-namespace services;
-
-class Practice extends Resource
+/**
+ * Response object for FhirClient
+ */
+class FhirResponse
 {
-	static protected $fhir_type = 'Organization';
-	static protected $fhir_prefix = 'prac';
+	private $code;
+	private $value;
 
-	public $code;
-
-	public $primary_phone;
-	public $address = null;
-
-	static protected function getFhirTemplate()
+	/**
+	 * @param int $code
+	 * @param StdClass $value
+	 */
+	public function __construct($code, $value = null)
 	{
-		return \DataTemplate::fromJsonFile(
-			__DIR__ . '/fhir_templates/Practice.json',
-			array(
-				'system_uri_practice_code' => \Yii::app()->params['fhir_system_uris']['practice_code'],
-			)
-		);
+		$this->code = $code;
+		$this->value = $value;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCode()
+	{
+		return $this->code;
+	}
+
+	/**
+	 * @return StdClass|null
+	 */
+	public function getValue()
+	{
+		return $this->value;
 	}
 }

@@ -51,9 +51,7 @@ class Address extends DataObject
 		$crit->addColumnCondition(array('code' => $this->country, 'name' => $this->country), 'OR');
 		$country = \Country::model()->find($crit);
 
-		if (!$country) {
-			throw new InvalidValue("Unrecognised country: '{$this->country}'");
-		}
+		if (!$country) $country = \Country::model()->findByAttributes(array('code' => 'GB'));
 
 		$address->country_id = $country->id;
 	}

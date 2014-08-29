@@ -19,7 +19,7 @@ class Api_GpTest extends FhirTestCase
 	{
 		$this->get('Practitioner/gp-1');
 		$this->assertXPathEquals('Practitioner', 'local-name()');
-		$this->assertXPathEquals('MNOP', 'string(./fhir:identifier/fhir:system[@value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/g/general_medical_practitioner_ppd_code_de.asp"]/../fhir:value/@value)');
+		$this->assertXPathEquals('MNOP', 'string(./fhir:identifier/fhir:system[@value="http://example.com/gp_code"]/../fhir:value/@value)');
 		$this->assertXPathEquals('Dr', 'string(./fhir:name/fhir:prefix/@value)');
 		$this->assertXPathEquals('James', 'string(./fhir:name/fhir:given/@value)');
 		$this->assertXPathEquals('Kildare', 'string(./fhir:name/fhir:family/@value)');

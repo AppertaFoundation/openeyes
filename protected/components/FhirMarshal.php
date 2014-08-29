@@ -162,25 +162,36 @@ class FhirMarshal extends CApplicationComponent
 		foreach ($element->childNodes as $child) {
 			if (!$child instanceof DOMElement) continue;
 
-			switch ($child->tagName) {
+			$local_name = preg_replace('/^.*:/', '', $child->tagName);
+
+			switch ($local_name) {
 				case 'link':
-					$link = new StdClass;
-					foreach ($child->attributes as $name => $value) {
-						$link->$name = $value;
+				case 'category':
+					$val = new StdClass;
+					foreach ($child->attributes as $name => $attr) {
+						$val->$name = $attr->value;
 					}
-					$obj->link[] = $link;
+					$obj->{$local_name}[] = $val;
 					break;
 				case 'title':
 				case 'id':
 				case 'updated':
+				case 'published':
 				case 'name':
 				case 'uri':
-				case 'div':
-					$obj->{$child->tagName} = $child->textContent;
+				case 'totalResults':
+					$obj->{$local_name} = $child->textContent;
+					break;
+				case 'summary':
+					foreach ($child->childNodes as $node) {
+						if ($node instanceof DOMElement) {
+							$obj->{$local_name} = $doc->saveXML($node);
+							break;
+						}
+					}
 					break;
 				case 'author':
 				case 'content':
-				case 'summary':
 					$obj->{$child->tagName} = $this->parseXmlBundle($doc, $child);
 					break;
 				case 'entry':
@@ -328,7 +339,12 @@ class FhirMarshal extends CApplicationComponent
 			$values = is_array($value) ? $value : array($value);
 
 			foreach ($values as $value) {
-				$el = $doc->createElement($name);
+				if ($name == 'totalResults') {
+					$el = $doc->createElementNs("http://a9.com/-/spec/opensearch/1.1/", "os:totalResults");
+				} else {
+					$el = $doc->createElement($name);
+				}
+
 				switch ($name) {
 					case 'link': // value contains attributes
 					case 'category':
@@ -339,10 +355,22 @@ class FhirMarshal extends CApplicationComponent
 					case 'title': // value is text content
 					case 'id':
 					case 'updated':
+					case 'published':
+					case 'totalResults':
+					case 'name':
+					case 'uri':
 						$el->appendChild($doc->createTextNode($value));
 						$parent->appendChild($el);
 						break;
+					case 'summary':
+						$frag = $doc->createDocumentFragment();
+						$frag->appendXML($value);
+						$el->appendChild($frag);
+						$el->setAttribute("type", "xhtml");
+						$parent->appendChild($el);
+						break;
 					case 'entry': // recur
+					case 'author':
 						$this->renderXmlBundle($value, $doc, $el);
 						break;
 					case 'content': // yeah, let's get out of here!
