@@ -57,7 +57,8 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 	public function rules()
 	{
 		return array(
-			array('event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe'),
+			array('event_id, occupation_id, driving_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe'),
+			array('smoking_status_id','required'),
 			array('id, event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe', 'on' => 'search'),
 			array('alcohol_intake', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
@@ -82,7 +83,7 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 	public function attributeLabels()
 	{
 		return array(
-			'occupation_id' => 'Occupation',
+			'occupation_id' => 'Employment',
 			'driving_status_id' => 'Driving Status',
 			'smoking_status_id' => 'Smoking Status',
 			'accommodation_id' => 'Accommodation',
@@ -112,4 +113,3 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 		));
 	}
 }
-?>

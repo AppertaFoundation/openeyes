@@ -31,14 +31,7 @@
  */
 class Subspecialty extends BaseActiveRecordVersioned
 {
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Subspecialty the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+	const SELECTION_ORDER = 'name';
 
 	/**
 	 * @return string the associated database table name
@@ -46,11 +39,6 @@ class Subspecialty extends BaseActiveRecordVersioned
 	public function tableName()
 	{
 		return 'subspecialty';
-	}
-
-	public function defaultScope()
-	{
-		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**
