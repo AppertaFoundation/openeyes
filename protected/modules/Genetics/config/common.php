@@ -21,6 +21,11 @@ return array(
 				),
 			),
 		),
+		'advanced_search' => array(
+			'Genetics' => array(
+				'Advanced Patient Search' => 'geneticPatients',
+			),
+		),
 	),
 	'components' => array(
 	'event' => array(
