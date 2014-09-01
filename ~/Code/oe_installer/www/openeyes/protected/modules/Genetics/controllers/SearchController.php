@@ -50,40 +50,50 @@ class SearchController extends BaseController
 
 		$total_items = $count_command->queryScalar();
 
-			//	->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
+		//	->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
 //					":disorder_id" => $_GET['disorder-id'],
 //				))
 //				->queryScalar();
 
-			$pages = ceil($total_items / $this->items_per_page);
-			$page = 1;
+		$pages = ceil($total_items / $this->items_per_page);
+		$page = 1;
 
-			if (@$_GET['page'] && $_GET['page'] >= 1 and $_GET['page'] <= $pages) {
-				$page = $_GET['page'];
-			}
+		if (@$_GET['page'] && $_GET['page'] >= 1 and $_GET['page'] <= $pages) {
+			$page = $_GET['page'];
+		}
 
-			$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
+		$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
-			switch (@$_GET['sortby']) {
-				case 'hos_num':
-				case 'title':
-				case 'gender':
-					$order = @$_GET['sortby'].' '.$dir;
-					break;
-				case 'patient_name':
-					$order = "last_name $dir, first_name $dir";
-					break;
-				case 'gene':
-					$order = "gene.name $dir";
-					break;
-				case 'diagnosis':
-					$order = "disorder.term $dir";
-					break;
-				default:
-					$order = "last_name $dir, first_name $dir";
-			}
+		switch (@$_GET['sortby']) {
+			case 'hos_num':
+				$order = "hos_num $dir";
+				break;
+			case 'title':
+				$order = "title $dir";
+				break;
+			case 'gender':
+				$order = "gender $dir";
+				break;
+			case 'patient_name':
+				$order = "last_name $dir, first_name $dir";
+				break;
+			case 'dob':
+				$order = "patient.dob $dir";
+				break;
+			case 'yob':
+				$order = "patient.yob $dir";
+				break;
+			case 'status':
+				$order = "pedigree_status.name $dir";
+				break;
+			case 'pedigree_id':
+				$order = "pedigree.id $dir";
+				break;
+			default:
+				$order = "last_name $dir, first_name $dir";
+		}
 
-			//				->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
+		//				->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
 //				":disorder_id" => $_GET['disorder-id'],
 //			))
 
@@ -93,19 +103,19 @@ class SearchController extends BaseController
 
 		$patients = array();
 
-			foreach ($search_command
-				->queryAll() as $row) {
-				$patients[] = $row;
-			}
+		foreach ($search_command
+			->queryAll() as $row) {
+			$patients[] = $row;
+		}
 
-/*
-		} else {
-			$total_items = 0;
-			$pages = 1;
-			$page = 1;
+		/*
+				} else {
+					$total_items = 0;
+					$pages = 1;
+					$page = 1;
 
-			$patient_pedigrees = array();
-		}*/
+					$patient_pedigrees = array();
+				}*/
 
 		$this->render('geneticPatients',array(
 			'patients' => $patients,
