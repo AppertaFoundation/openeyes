@@ -27,6 +27,7 @@
 			'enableAjaxValidation' => false,
 			'focus' => '#search',
 			'action' => Yii::app()->createUrl('/Genetics/search/geneticPatients'),
+			'method' => 'GET',
 		))?>
 		<div class="large-12 column">
 			<div class="panel">
@@ -43,16 +44,16 @@
 							<tbody>
 							<tr>
 								<td>
-									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Subject ID'))?>
+									<?php echo CHtml::textField('subject-id', @$_GET['subject-id'], array('placeholder' => 'Subject ID'))?>
 								</td>
 								<td>
-									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'MEH Number'))?>
+									<?php echo CHtml::textField('meh-number', @$_GET['meh-number'], array('placeholder' => 'MEH Number'))?>
 								</td>
 								<td>
-									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Pedigree ID'))?>
+									<?php echo CHtml::textField('pedigree-id', @$_GET['pedigree-id'], array('placeholder' => 'Pedigree ID'))?>
 								</td>
 								<td>
-									<button id="search_patients" class="secondary" type="submit">
+									<button id="search_genetics_patients" class="secondary" type="submit">
 										Search
 									</button>
 								</td>
@@ -66,18 +67,19 @@
 							</thead>
 							<tr>
 								<td>
-									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Firstname'))?>
+									<?php echo CHtml::textField('first-name', @$_GET['first-name'], array('placeholder' => 'First name'))?>
 								</td>
 								<td>
-									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Surname'))?>
+									<?php echo CHtml::textField('last-name', @$_GET['last-name'], array('placeholder' => 'Last name'))?>
 								</td>
 								<td>
-									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Age or DOB'))?>
+									<?php echo CHtml::textField('dob', @$_GET['dob'], array('placeholder' => 'Age or DOB'))?>
 								</td>
 								<td>
 
 								</td>
 							</tr>
+							<?php /*
 							<tr>
 								<td colspan="4">
 									<?php $form->widget('application.widgets.DiagnosisSelection',array(
@@ -94,7 +96,8 @@
 										),
 									))?>
 								</td>
-							</tr>
+							</tr> */
+							?>
 							</tbody>
 						</table>
 					</div>

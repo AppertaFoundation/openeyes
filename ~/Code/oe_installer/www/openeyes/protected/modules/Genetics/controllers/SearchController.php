@@ -120,11 +120,11 @@ class SearchController extends BaseController
 
 	private function buildSearchCommand($select)
 	{
-		$subject_id = @$_GET['subject_id'];
-		$meh_number = @$_GET['meh_number'];
-		$pedigree_id = @$_GET['pedigree_id'];
-		$first_name = @$_GET['first_name'];
-		$surname = @$_GET['surname'];
+		$subject_id = @$_GET['subject-id'];
+		$meh_number = @$_GET['meh-number'];
+		$pedigree_id = @$_GET['pedigree-id'];
+		$first_name = @$_GET['first-name'];
+		$last_name = @$_GET['last-name'];
 		$dob = @$_GET['dob'];
 		$disorder_id = @$_GET['disorder_id'];
 
@@ -132,6 +132,7 @@ class SearchController extends BaseController
 			->select("count(patient.id) as count")
 			->from("patient")
 			->join("patient_pedigree","patient_pedigree.patient_id = patient.id")
+			->join("pedigree","patient_pedigree.pedigree_id = pedigree.id")
 			->join("pedigree_status","patient_pedigree.status_id = pedigree_status.id")
 			->join("contact","patient.contact_id = contact.id")
 			->leftJoin("secondary_diagnosis","secondary_diagnosis.patient_id = patient.id")
@@ -143,6 +144,18 @@ class SearchController extends BaseController
 
 		if ($first_name) {
 			$command->andWhere('contact.first_name=:first_name', array(':first_name'=>$first_name));
+		}
+
+		if ($last_name) {
+			$command->andWhere('contact.last_name=:last_name', array(':first_name'=>$last_name));
+		}
+
+		if ($dob) {
+			$command->andWhere('patient.dob=:dob', array(':dob'=>$dob));
+		}
+
+		if ($pedigree_id) {
+			$command->andWhere('pedigree.id=:pedigree_id', array(':pedigree_id'=>$pedigree_id));
 		}
 
 		return $command;
@@ -162,9 +175,11 @@ class SearchController extends BaseController
 
 		$first = true;
 		foreach (array_merge($request,$elements) as $key => $value) {
-			$uri .= $first ? '?' : '&';
-			$first = false;
-			$uri .= "$key=$value";
+			if(!is_array($value)) {
+				$uri .= $first ? '?' : '&';
+				$first = false;
+				$uri .= "$key=$value";
+			}
 		}
 
 		return $uri;
