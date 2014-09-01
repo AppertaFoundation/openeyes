@@ -118,7 +118,9 @@
 		this.content = $('<div />', { id: this.options.id });
 
 		// Add default content (if any exists)
-		this.setContent(this.options.content);
+		if (!this.options.url) {
+			this.setContent(this.options.content);
+		}
 
 		// Create the jQuery UI dialog.
 		this.content.dialog(this.options);
