@@ -129,8 +129,10 @@
 						<th><?php echo CHtml::link('Title',$this->getUri(array('sortby'=>'title')))?></th>
 						<th><?php echo CHtml::link('Patient name',$this->getUri(array('sortby'=>'patient_name')))?></th>
 						<th><?php echo CHtml::link('Gender',$this->getUri(array('sortby'=>'gender')))?></th>
-						<th><?php echo CHtml::link('Pedigree gene',$this->getUri(array('sortby'=>'gene')))?></th>
-						<th><?php echo CHtml::link('Pedigree diagnosis',$this->getUri(array('sortby'=>'diagnosis')))?></th>
+						<th><?php echo CHtml::link('DOB',$this->getUri(array('sortby'=>'gene')))?></th>
+						<th><?php echo CHtml::link('Year',$this->getUri(array('sortby'=>'diagnosis')))?></th>
+						<th><?php echo CHtml::link('Status',$this->getUri(array('sortby'=>'diagnosis')))?></th>
+						<th><?php echo CHtml::link('Family',$this->getUri(array('sortby'=>'diagnosis')))?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -140,9 +142,11 @@
 							<td><?php echo $patient['hos_num']?></td>
 							<td><?php echo $patient['title']?>
 							<td><?php echo strtoupper($patient['last_name'])?>, <?php echo $patient['first_name']?></td>
-							<td><?php echo $patient['gender']?>
-							<td>
-							<td>
+							<td><?php echo $patient['gender']?></td>
+							<td><?php echo $patient['dob']?></td>
+							<td><?php echo $patient['yob']?></td>
+							<td><?php echo $patient['name']?></td>
+							<td><?php echo $patient['pedigree_id']?></td>
 						</tr>
 					<?php }?>
 				</tbody>

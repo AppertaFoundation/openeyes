@@ -45,47 +45,10 @@ class SearchController extends BaseController
 
 		$pagination = $this->initPagination(Pedigree::model());
 
-		$subject_id = @$_GET['subject_id'];
-		$meh_number = @$_GET['meh_number'];
-		$pedigree_id = @$_GET['pedigree_id'];
-		$first_name = @$_GET['first_name'];
-		$surname = @$_GET['surname'];
-		$dob = @$_GET['dob'];
-		$disorder_id = @$_GET['disorder_id'];
+		$count_command = $this->buildSearchCommand("count(patient.id) as count");
+		$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,pedigree_id,pedigree_status.name,patient.yob");
 
-		$criteria = new CDbCriteria;
-
-
-			$command = Yii::app()->db->createCommand()
-				->select("count(patient.id) as count")
-				->from("patient")
-				->join("patient_pedigree","patient_pedigree.patient_id = patient.id")
-				->join("contact","patient.contact_id = contact.id")
-				->leftJoin("secondary_diagnosis","secondary_diagnosis.patient_id = patient.id")
-				->leftJoin("episode","episode.patient_id = patient.id");
-
-		$total_items = $command->queryScalar();
-
-		$command = Yii::app()->db->createCommand()
-			->select("patient.id,patient.hos_num,contact.first_name,contact.maiden_name,contact.last_name,contact.title,patient.gender")
-			->from("patient")
-			->join("patient_pedigree","patient_pedigree.patient_id = patient.id")
-			->join("contact","patient.contact_id = contact.id")
-			->leftJoin("secondary_diagnosis","secondary_diagnosis.patient_id = patient.id")
-			->leftJoin("episode","episode.patient_id = patient.id");
-
-
-		if ($meh_number) {
-			$command->andWhere('patient.hos_num=:meh_number', array(':meh_number'=>$meh_number));
-		}
-
-		if ($first_name) {
-			$command->andWhere('contact.first_name=:first_name', array(':first_name'=>$first_name));
-		}
-
-		$total_items = $command->queryScalar();
-
-
+		$total_items = $count_command->queryScalar();
 
 			//	->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
 //					":disorder_id" => $_GET['disorder-id'],
@@ -124,7 +87,7 @@ class SearchController extends BaseController
 //				":disorder_id" => $_GET['disorder-id'],
 //			))
 
-		$command->order($order)
+		$search_command->order($order)
 			->offset(($page-1) * $this->items_per_page)
 			->limit($this->items_per_page)
 			->select("*")
@@ -132,11 +95,10 @@ class SearchController extends BaseController
 
 		$patients = array();
 
-			foreach ($command
+			foreach ($search_command
 				->queryAll() as $row) {
 				$patients[] = $row;
 			}
-
 
 /*
 		} else {
@@ -153,6 +115,37 @@ class SearchController extends BaseController
 			'page' => $page,
 			'pages' => $pages,
 		));
+	}
+
+
+	private function buildSearchCommand($select)
+	{
+		$subject_id = @$_GET['subject_id'];
+		$meh_number = @$_GET['meh_number'];
+		$pedigree_id = @$_GET['pedigree_id'];
+		$first_name = @$_GET['first_name'];
+		$surname = @$_GET['surname'];
+		$dob = @$_GET['dob'];
+		$disorder_id = @$_GET['disorder_id'];
+
+		$command = Yii::app()->db->createCommand()
+			->select("count(patient.id) as count")
+			->from("patient")
+			->join("patient_pedigree","patient_pedigree.patient_id = patient.id")
+			->join("pedigree_status","patient_pedigree.status_id = pedigree_status.id")
+			->join("contact","patient.contact_id = contact.id")
+			->leftJoin("secondary_diagnosis","secondary_diagnosis.patient_id = patient.id")
+			->leftJoin("episode","episode.patient_id = patient.id");
+
+		if ($meh_number) {
+			$command->andWhere('patient.hos_num=:meh_number', array(':meh_number'=>$meh_number));
+		}
+
+		if ($first_name) {
+			$command->andWhere('contact.first_name=:first_name', array(':first_name'=>$first_name));
+		}
+
+		return $command;
 	}
 
 	public function getUri($elements)
@@ -186,4 +179,5 @@ class SearchController extends BaseController
 		$pagination->applyLimit($criteria);
 		return $pagination;
 	}
+
 }
