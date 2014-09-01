@@ -109,7 +109,7 @@
 	<form id="admin_sequences">
 		<input type="hidden" id="select_all" value="0" />
 
-		<?php if (count($patient_pedigrees) <1) {?>
+		<?php if (count($patients) <1) {?>
 			<div class="alert-box no_results">
 				<span class="column_no_results">
 					<?php if (@$_GET['gene-id'] || @$_GET['disorder-id']) {?>
@@ -121,7 +121,7 @@
 			</div>
 		<?php }?>
 
-		<?php if (!empty($patient_pedigrees)) {?>
+		<?php if (!empty($patients)) {?>
 			<table class="grid">
 				<thead>
 					<tr>
@@ -135,14 +135,14 @@
 				</thead>
 				<tbody>
 					<?php
-					foreach ($patient_pedigrees as $i => $patient_pedigree) {?>
-						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/patient/view/'.$patient_pedigree->patient_id)?>">
-							<td><?php echo $patient_pedigree->patient->hos_num?></td>
-							<td><?php echo $patient_pedigree->patient->title?>
-							<td><?php echo strtoupper($patient_pedigree->patient->last_name)?>, <?php echo $patient_pedigree->patient->first_name?></td>
-							<td><?php echo $patient_pedigree->patient->gender?>
-							<td><?php echo $patient_pedigree->pedigree->gene ? $patient_pedigree->pedigree->gene->name : 'None'?>
-							<td><?php echo $patient_pedigree->pedigree->disorder ? $patient_pedigree->pedigree->disorder->term : 'None'?>
+					foreach ($patients as $patient) {?>
+						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/patient/view/'.$patient['id'])?>">
+							<td><?php echo $patient['hos_num']?></td>
+							<td><?php echo $patient['title']?>
+							<td><?php echo strtoupper($patient['last_name'])?>, <?php echo $patient['first_name']?></td>
+							<td><?php echo $patient['gender']?>
+							<td>
+							<td>
 						</tr>
 					<?php }?>
 				</tbody>

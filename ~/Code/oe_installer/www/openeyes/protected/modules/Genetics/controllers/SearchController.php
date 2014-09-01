@@ -45,19 +45,52 @@ class SearchController extends BaseController
 
 		$pagination = $this->initPagination(Pedigree::model());
 
-		if (@$_GET['disorder-id']) {
-			Yii::app()->event->dispatch('start_batch_mode');
+		$subject_id = @$_GET['subject_id'];
+		$meh_number = @$_GET['meh_number'];
+		$pedigree_id = @$_GET['pedigree_id'];
+		$first_name = @$_GET['first_name'];
+		$surname = @$_GET['surname'];
+		$dob = @$_GET['dob'];
+		$disorder_id = @$_GET['disorder_id'];
 
-			$total_items = Yii::app()->db->createCommand()
-				->select("count(p.id) as count")
-				->from("patient p")
-				->join("patient_pedigree pp","pp.patient_id = p.id")
-				->leftJoin("secondary_diagnosis sd","sd.patient_id = p.id")
-				->leftJoin("episode ep","ep.patient_id = p.id")
-				->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
-					":disorder_id" => $_GET['disorder-id'],
-				))
-				->queryScalar();
+		$criteria = new CDbCriteria;
+
+
+			$command = Yii::app()->db->createCommand()
+				->select("count(patient.id) as count")
+				->from("patient")
+				->join("patient_pedigree","patient_pedigree.patient_id = patient.id")
+				->join("contact","patient.contact_id = contact.id")
+				->leftJoin("secondary_diagnosis","secondary_diagnosis.patient_id = patient.id")
+				->leftJoin("episode","episode.patient_id = patient.id");
+
+		$total_items = $command->queryScalar();
+
+		$command = Yii::app()->db->createCommand()
+			->select("patient.id,patient.hos_num,contact.first_name,contact.maiden_name,contact.last_name,contact.title,patient.gender")
+			->from("patient")
+			->join("patient_pedigree","patient_pedigree.patient_id = patient.id")
+			->join("contact","patient.contact_id = contact.id")
+			->leftJoin("secondary_diagnosis","secondary_diagnosis.patient_id = patient.id")
+			->leftJoin("episode","episode.patient_id = patient.id");
+
+
+		if ($meh_number) {
+			$command->andWhere('patient.hos_num=:meh_number', array(':meh_number'=>$meh_number));
+		}
+
+		if ($first_name) {
+			$command->andWhere('contact.first_name=:first_name', array(':first_name'=>$first_name));
+		}
+
+		$total_items = $command->queryScalar();
+
+
+
+			//	->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
+//					":disorder_id" => $_GET['disorder-id'],
+//				))
+//				->queryScalar();
 
 			$pages = ceil($total_items / $this->items_per_page);
 			$page = 1;
@@ -87,58 +120,35 @@ class SearchController extends BaseController
 					$order = "last_name $dir, first_name $dir";
 			}
 
-			$pp_ids = array();
-			
-			foreach (Yii::app()->db->createCommand()
-				->select("pp.id")
-				->from("patient p")
-				->join("contact c","p.contact_id = c.id")
-				->join("patient_pedigree pp","pp.patient_id = p.id")
-				->leftJoin("secondary_diagnosis sd","sd.patient_id = p.id")
-				->leftJoin("episode ep","ep.patient_id = p.id")
-				->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
-					":disorder_id" => $_GET['disorder-id'],
-				))
-				->order($order)
-				->offset(($page-1) * $this->items_per_page)
-				->limit($this->items_per_page)
+			//				->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
+//				":disorder_id" => $_GET['disorder-id'],
+//			))
+
+		$command->order($order)
+			->offset(($page-1) * $this->items_per_page)
+			->limit($this->items_per_page)
+			->select("*")
+			->from("patient");
+
+		$patients = array();
+
+			foreach ($command
 				->queryAll() as $row) {
-				$pp_ids[] = $row['id'];
+				$patients[] = $row;
 			}
 
-			$pp_map = array();
 
-			$criteria = new CDbCriteria;
-			$criteria->addInCondition('t.id',$pp_ids);
-
-			foreach (PatientPedigree::model()
-				->with(array(
-					'patient',
-					'pedigree' => array(
-						'gene',
-						'disorder',
-					),
-				))
-				->findAll($criteria) as $pp) {
-				$pp_map[$pp->id] = $pp;
-			}
-
-			$patient_pedigrees = array();
-
-			foreach ($pp_ids as $pp_id) {
-				$patient_pedigrees[] = $pp_map[$pp_id];
-			}
-
+/*
 		} else {
 			$total_items = 0;
 			$pages = 1;
 			$page = 1;
 
 			$patient_pedigrees = array();
-		}
+		}*/
 
 		$this->render('geneticPatients',array(
-			'patient_pedigrees' => $patient_pedigrees,
+			'patients' => $patients,
 			'pagination' => $pagination,
 			'page' => $page,
 			'pages' => $pages,
