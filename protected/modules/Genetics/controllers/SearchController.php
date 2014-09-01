@@ -89,9 +89,7 @@ class SearchController extends BaseController
 
 		$search_command->order($order)
 			->offset(($page-1) * $this->items_per_page)
-			->limit($this->items_per_page)
-			->select("*")
-			->from("patient");
+			->limit($this->items_per_page);
 
 		$patients = array();
 
@@ -129,7 +127,7 @@ class SearchController extends BaseController
 		$disorder_id = @$_GET['disorder_id'];
 
 		$command = Yii::app()->db->createCommand()
-			->select("count(patient.id) as count")
+			->select($select)
 			->from("patient")
 			->join("patient_pedigree","patient_pedigree.patient_id = patient.id")
 			->join("pedigree","patient_pedigree.pedigree_id = pedigree.id")
