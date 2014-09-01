@@ -28,31 +28,79 @@
 			'focus' => '#search',
 			'action' => Yii::app()->createUrl('/Genetics/search/geneticPatients'),
 		))?>
-			<div class="large-12 column">
-				<div class="panel">
-					<div class="row">
-						<div class="large-9 column">
-							<?php $form->widget('application.widgets.DiagnosisSelection',array(
-								'value' => @$_GET['disorder-id'],
-								'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-								'layoutColumns' => array(
-									'label' => $form->layoutColumns['label'],
-									'field' => 8,
-								),
-								'default' => false,
-								'htmlOptions' => array(
-									'hide_label' => true,
-								),
-							))?>
-						</div>
-						<div class="large-3 column">
-							<button id="search_patients" class="secondary" type="submit">
-								Search
-							</button>
-						</div>
+		<div class="large-12 column">
+			<div class="panel">
+				<div class="row">
+					<div class="large-12 column">
+						<table class="grid">
+							<thead>
+							<tr>
+								<th>Subject ID:</th>
+								<th>MEH Number:</th>
+								<th>Pedigree ID:</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Subject ID'))?>
+								</td>
+								<td>
+									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'MEH Number'))?>
+								</td>
+								<td>
+									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Pedigree ID'))?>
+								</td>
+								<td>
+									<button id="search_patients" class="secondary" type="submit">
+										Search
+									</button>
+								</td>
+							</tr>
+							<thead>
+							<tr>
+								<th>Firstname:</th>
+								<th>Surname:</th>
+								<th>Age or DOB:</th>
+							</tr>
+							</thead>
+							<tr>
+								<td>
+									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Firstname'))?>
+								</td>
+								<td>
+									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Surname'))?>
+								</td>
+								<td>
+									<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Age or DOB'))?>
+								</td>
+								<td>
+
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<?php $form->widget('application.widgets.DiagnosisSelection',array(
+										'value' => @$_GET['disorder-id'],
+										'field' => 'principal_diagnosis',
+										'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+										'layoutColumns' => array(
+											'label' => $form->layoutColumns['label'],
+											'field' => 4,
+										),
+										'default' => false,
+										'htmlOptions' => array(
+											'fieldLabel' => 'Principal diagnosis',
+										),
+									))?>
+								</td>
+							</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
+		</div>
 		<?php $this->endWidget()?>
 	</div>
 
