@@ -101,12 +101,8 @@ class SearchController extends BaseController
 			->offset(($page-1) * $this->items_per_page)
 			->limit($this->items_per_page);
 
-		$patients = array();
 
-		foreach ($search_command
-			->queryAll() as $row) {
-			$patients[] = $row;
-		}
+		$patients[] = $search_command->queryAll();
 
 		/*
 				} else {
