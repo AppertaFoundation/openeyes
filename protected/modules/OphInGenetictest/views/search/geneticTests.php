@@ -108,7 +108,7 @@
 		<?php $this->endWidget()?>
 	</div>
 
-	<h2>Genetics patients</h2>
+	<h2>Genetic test events</h2>
 
 	<form id="admin_sequences">
 		<input type="hidden" id="select_all" value="0" />
