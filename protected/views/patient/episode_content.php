@@ -21,6 +21,7 @@
 
 	<header class="event-header">
 		<?php $this->renderPartial('//patient/event_tabs')?>
+		<?php $this->renderPartial('//patient/event_actions'); ?>
 	</header>
 
 	<div class="event-content">
