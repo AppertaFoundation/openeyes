@@ -149,6 +149,26 @@ class AdminController extends BaseAdminController
 			));
 	}
 
+	public function actionUserFind()
+	{
+		$res = array();
+		if (Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
+			$criteria = new CDbCriteria;
+			$criteria->compare("LOWER(username)", strtolower($_REQUEST['search']),true, 'OR');
+			$criteria->compare("LOWER(first_name)",strtolower($_REQUEST['search']),true, 'OR');
+			$criteria->compare("LOWER(last_name)",strtolower($_REQUEST['search']),true, 'OR');
+			foreach (User::model()->findAll($criteria) as $user) {
+				$res[] = array(
+					'id' => $user->id,
+					'label' => $user->getFullName() . '(' . $user->username . ')',
+					'value' => $user->getFullName(),
+					'username' => $user->username,
+				);
+			}
+		}
+		echo CJSON::encode($res);
+	}
+
 	public function actionUsers($id=false)
 	{
 		Audit::add('admin-User','list');

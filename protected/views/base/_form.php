@@ -51,7 +51,15 @@ if (!Yii::app()->user->isGuest) {
 				continue;
 			}
 		}
-		$menu[$menu_item['position']] = $menu_item;
+		if (isset($menu_item['api'])) {
+			$api = Yii::app()->moduleAPI->get($menu_item['api']);
+			foreach ($api->getMenuItems($menu_item['position']) as $item) {
+				$menu[$item['position']] = $item;
+			}
+		}
+		else {
+			$menu[$menu_item['position']] = $menu_item;
+		}
 	}
 	ksort($menu);
 	?>
