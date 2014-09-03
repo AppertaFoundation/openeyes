@@ -185,3 +185,9 @@ h1.badge.admin {
 .reportSummary {
   margin-top: 2em;
 }
+
+/* line 45, ../sass/reports.scss */
+.lettersReport input[name="phrases[]"] {
+  width: 23em;
+  display: inline;
+}

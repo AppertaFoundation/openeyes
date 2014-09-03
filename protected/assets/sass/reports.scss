@@ -40,3 +40,10 @@
 .reportSummary {
 	margin-top: 2em;
 }
+
+.lettersReport {
+	input[name="phrases[]"] {
+		width: 23em;
+		display: inline;
+	}
+}

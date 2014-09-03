@@ -25,7 +25,7 @@ class ReportController extends BaseReportController
 	{
 		return array(
 			array('allow',
-				'actions' => array('index', 'validateDiagnoses', 'diagnoses', 'downloadDiagnoses'),
+				'actions' => array('index', 'validateDiagnoses', 'diagnoses', 'downloadDiagnoses', 'letters', 'validateLetters'),
 				'roles' => array('admin','OprnGenerateReport'),
 			)
 		);
@@ -239,5 +239,154 @@ class ReportController extends BaseReportController
 				echo "\"\",\"\",\"\",\"\",\"\",\"" . $_diagnosis['eye'].' '.$_diagnosis['disorder'].' ('.$_diagnosis['type'].")\"\n";
 			}
 		}
+	}
+
+	public function getLetters()
+	{
+		$params = array();
+
+		$et_correspondence = EventType::model()->find('class_name=?',array('OphCoCorrespondence'));
+		$et_legacyletters = EventType::model()->find('class_name=?',array('OphLeEpatientletter'));
+
+		$where_clauses = array();
+		$where_params = array();
+		$where_operator = ' '.$_POST['condition'].' ';
+
+		$type_clauses = array();
+
+		$select = array('c.first_name','c.last_name','p.dob','p.hos_num','e.created_date','ep.patient_id');
+
+		$data = Yii::app()->db->createCommand()
+			->from("event e")
+			->join("episode ep","e.episode_id = ep.id")
+			->join("patient p","ep.patient_id = p.id")
+			->join("contact c","p.contact_id = c.id");
+
+		if ($et_correspondence && @$_POST['match_correspondence']) {
+			$data->leftJoin("et_ophcocorrespondence_letter l","l.event_id = e.id");
+			$clause = "(l.id is not null and e.event_type_id = :correspondenceID and ( ";
+			$where_params[':correspondenceID'] = $et_correspondence->id;
+
+			$where_clause = array();
+
+			foreach ($_POST['phrases'] as $i => $phrase) {
+				$where_params[':body'.$i] = '%'.strtolower($phrase).'%';
+				if ($i >0) {
+					$clause .= $where_operator;
+				}
+				$clause .= " lower(l.body) like :body$i";
+			}
+
+			$clause .= " )";
+
+			if (@$_POST['author_id']) {
+				$clause .= " and l.created_user_id = :authorID";
+				$where_params[':authorID'] = $_POST['author_id'];
+			}
+
+			$where_clauses[] = $clause." )";
+			$select[] = 'l.id as lid';
+			$select[] = 'l.event_id';
+		}
+
+		if ($et_legacyletters && @$_POST['match_legacy_letters']) {
+			$data->leftJoin("et_ophleepatientletter_epatientletter l2","l2.event_id = e.id");
+			$clause = "(l2.id is not null and e.event_type_id = :legacyID and ( ";
+			$where_params[':legacyID'] = $et_legacyletters->id;
+
+			$where_clause = array();
+
+			foreach ($_POST['phrases'] as $i => $phrase) {
+				$where_params[':lbody'.$i] = '%'.strtolower($phrase).'%';
+				if ($i >0) {
+					$clause .= $where_operator;
+				}
+				$clause .= " lower(l2.letter_html) like :lbody$i";
+			}
+
+			$clause .= ') ';
+
+			if (@$_POST['author_id']) {
+				if (!$author = User::model()->findByPk($_POST['author_id'])) {
+					throw new Exception("User not found: {$_POST['author_id']}");
+				}
+
+				$clause .= " and lower(l2.letter_html) like :authorName";
+				$where_params[':authorName'] = '%'.strtolower($author->fullName).'%';
+			}
+
+			$where_clauses[] = $clause." )";
+			$select[] = 'l2.id as l2id';
+			$select[] = 'l2.event_id as l2_event_id';
+		}
+
+		$where = " ( ".implode(' or ',$where_clauses)." ) ";
+
+		if (@$_POST['start-date']) {
+			$where .= " and e.created_date >= :dateFrom";
+			$where_params[':dateFrom'] = date('Y-m-d',strtotime($_POST['start-date']))." 00:00:00";
+		}
+		if (@$_POST['end-date']) {
+			$where .= " and e.created_date <= :dateTo";
+			$where_params[':dateTo'] = date('Y-m-d',strtotime($_POST['end-date']))." 23:59:59";
+		}
+
+		$results = array();
+
+		foreach ($data->where($where,$where_params)
+			->select(implode(',',$select))
+			->order("e.created_date asc")
+			->queryAll() as $i => $row) {
+
+			if (@$row['lid']) {
+				$row['type'] = 'Correspondence';
+				$row['link'] = 'http://openeyes.moorfields.nhs.uk/OphCoCorrespondence/default/view/'.$row['event_id'];
+			} else {
+				$row['type'] = 'Legacy letter';
+				$row['link'] = 'http://openeyes.moorfields.nhs.uk/OphLeEpatientletter/default/view/'.$row['l2_event_id'];
+			}
+
+			$results[] = $row;
+		}
+
+		return $results;
+	}
+
+	public function actionLetters()
+	{
+		if (!empty($_POST)) {
+			$this->renderPartial('_letters',array('letters' => $this->getLetters()));
+		} else {
+			$this->render('letters');
+		}
+	}
+
+	public function actionValidateLetters()
+	{
+		$errors = array();
+
+		$blank = true;
+		foreach ($_POST['phrases'] as $phrase) {
+			if ($phrase) $blank = false;
+		}
+
+		if ($blank) {
+			$errors[] = 'Please enter at least one letter phrase';
+		}
+
+		if (!strtotime(@$_POST['start-date'])) {
+			$errors[] = 'Start date is required';
+		}
+		if (!strtotime(@$_POST['end-date'])) {
+			$errors[] = 'End date is required';
+		}
+
+		if (empty($errors)) {
+			if (strtotime($_POST['end-date']) < strtotime($_POST['start-date'])) {
+				$errors[] = 'Start date cannot precede end date';
+			}
+		}
+
+		echo json_encode($errors);
 	}
 }

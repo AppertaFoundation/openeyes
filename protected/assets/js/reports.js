@@ -71,4 +71,53 @@ $(document).ready(function() {
 
 		$('#current_report').submit();
 	});
+
+	$('#add_letter_phrase').click(function(e) {
+		e.preventDefault();
+
+		$('.phraseList').append('<div><input type="text" name="phrases[]" value="" /> <a href="#" class="removePhrase">remove</a></div>');
+		$('.phraseList').find('input[name="phrases[]"]:last').focus();
+	});
+
+	$('.removePhrase').die('click').live('click',function(e) {
+		e.preventDefault();
+
+		$(this).closest('div').remove();
+	});
+
+	handleButton($('#letters_report'),function(e) {
+		$('div.reportSummary').hide();
+
+		$.ajax({
+			'type': 'POST',
+			'data': $('#report-letters').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+			'dataType': 'json',
+			'url': baseUrl+'/report/validateLetters',
+			'success': function(errors) {
+				if (errors.length == 0) {
+					$('.errors').hide();
+					$.ajax({
+						'type': 'POST',
+						'data': $('#report-letters').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+						'url': baseUrl+'/report/letters',
+						'success': function(html) {
+							enableButtons();
+							$('div.reportSummary').html(html).show();
+						}
+					});
+				} else {
+					$('.errors').children('ul').html('');
+
+					for (var i in errors) {
+						$('.errors').children('ul').append('<li>' + errors[i] + '</li>');
+					}
+
+					$('.errors').show();
+					enableButtons();
+				}
+			}
+		});
+
+		e.preventDefault();
+	});
 });
