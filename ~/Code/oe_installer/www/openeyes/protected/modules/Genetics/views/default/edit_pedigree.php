@@ -33,7 +33,14 @@
 	))?>
 		<?php echo $form->dropDownList($pedigree,'inheritance_id',CHtml::listData(PedigreeInheritance::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- None -'))?>
 		<?php echo $form->dropDownList($pedigree,'gene_id',CHtml::listData(PedigreeGene::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- None -'))?>
-		<?php echo $form->radioBoolean($pedigree,'consanguinity')?>
+		<fieldset id="Pedigree_diagnosis" class="row field-row">
+			<legend class="large-2 column">Pedigree Diagnosis:</legend>
+			<input type="hidden" value="" name="Pedigree[consanguinity]">
+			<div class="large-4 column end">
+				<div id="enteredDiagnosisText" class="panel diagnosis hide" style="display: block;"><?php echo $pedigree->disorder->fully_specified_name?></div>
+			</div>
+		</fieldset>
+	<?php echo $form->radioBoolean($pedigree,'consanguinity')?>
 		<?php echo $form->textField($pedigree,'base_change')?>
 		<?php echo $form->textField($pedigree,'amino_acid_change')?>
 		<?php echo $form->textArea($pedigree,'comments')?>

@@ -102,7 +102,7 @@ class SearchController extends BaseController
 			->limit($this->items_per_page);
 
 
-		$patients[] = $search_command->queryAll();
+		$patients = $search_command->queryAll();
 
 		/*
 				} else {
