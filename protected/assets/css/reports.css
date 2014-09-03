@@ -171,3 +171,17 @@ h1.badge.admin {
     border: 0;
   }
 }
+
+/* line 32, ../sass/reports.scss */
+.report-fields label {
+  display: inline-block;
+}
+/* line 35, ../sass/reports.scss */
+.report-fields input[type=radio] {
+  display: inline-block;
+}
+
+/* line 40, ../sass/reports.scss */
+.reportSummary {
+  margin-top: 2em;
+}

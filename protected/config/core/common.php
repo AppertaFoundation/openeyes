@@ -270,14 +270,19 @@ return array(
 		'profile_user_can_change_password' => true,
 		'menu_bar_items' => array(
 			'home' => array(
-			'title' => 'Home',
-			'uri' => '',
-			'position' => 1,
+				'title' => 'Home',
+				'uri' => '',
+				'position' => 1,
+			),
+			'reports' => array(
+				'title' => 'Reports',
+				'uri' => 'report',
+				'position' => 50,
 			),
 			'logout' => array(
-			'title' => 'Logout',
-			'uri' => 'site/logout',
-			'position' => 9999,
+				'title' => 'Logout',
+				'uri' => 'site/logout',
+				'position' => 9999,
 			),
 		),
 		'admin_menu' => array(
@@ -285,6 +290,8 @@ return array(
 		'admin_email' => '',
 		'enable_transactions' => true,
 		'event_lock_days' => 0,
-		'event_lock_disable' => false
+		'event_lock_disable' => false,
+		'reports' => array(
+		),
 	),
 );
