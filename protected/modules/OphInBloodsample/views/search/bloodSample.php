@@ -133,6 +133,7 @@
 						<th><?php echo CHtml::link('Patient name',$this->getUri(array('sortby'=>'patient_name')))?></th>
 						<th><?php echo CHtml::link('Date Taken',$this->getUri(array('sortby'=>'gender')))?></th>
 						<th><?php echo CHtml::link('Sample Type',$this->getUri(array('sortby'=>'dob')))?></th>
+						<th><?php echo CHtml::link('Volume',$this->getUri(array('sortby'=>'yob')))?></th>
 						<th><?php echo CHtml::link('Comment',$this->getUri(array('sortby'=>'yob')))?></th>
 
 					</tr>
@@ -140,13 +141,14 @@
 				<tbody>
 					<?php
 					foreach ($patients as $patient) {?>
-						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/patient/view/'.$patient['id'])?>">
+						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGenetictest/default/view/'.$patient['id'])?>">
 							<td><?php echo $patient['hos_num']?></td>
 							<td><?php echo $patient['title']?>
 							<td><?php echo strtoupper($patient['last_name'])?>, <?php echo $patient['first_name']?></td>
-							<td><?php echo $patient['gender']?></td>
-							<td><?php echo $patient['dob']?></td>
-							<td><?php echo $patient['yob']?></td>
+							<td><?php echo $patient['event_date']?></td>
+							<td><?php echo $patient['name']?></td>
+							<td><?php echo $patient['volume']?></td>
+							<td><?php echo $patient['comments']?></td>
 						</tr>
 					<?php }?>
 				</tbody>

@@ -14,6 +14,11 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
+	$('tr.clickable').click(function(e) {
+		e.preventDefault();
+		window.location.href = $(this).data('uri');
+	});
+	
 	handleButton($('#et_deleteevent'));
 
 	handleButton($('#et_canceldelete'),function(e) {

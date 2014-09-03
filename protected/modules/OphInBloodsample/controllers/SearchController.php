@@ -45,7 +45,7 @@ class SearchController extends BaseController
 		$pagination = $this->initPagination(Pedigree::model());
 
 		$count_command = $this->buildSearchCommand("count(et_ophinbloodsample_sample.id) as count");
-		$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob");
+		$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophinbloodsample_sample_type.name,et_ophinbloodsample_sample.volume,et_ophinbloodsample_sample.comments");
 
 		$total_items = $count_command->queryScalar();
 
@@ -120,6 +120,7 @@ class SearchController extends BaseController
 			->join("event","et_ophinbloodsample_sample.event_id = event.id")
 			->join("episode","event.episode_id = episode.id")
 			->join("patient","episode.patient_id = patient.id")
+			->join("ophinbloodsample_sample_type","et_ophinbloodsample_sample.type_id = ophinbloodsample_sample_type.id")
 			->join("contact","patient.contact_id = contact.id");
 
 		if ($meh_number) {
