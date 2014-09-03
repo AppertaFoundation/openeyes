@@ -19,8 +19,6 @@
 
 class ReportController extends BaseReportController
 {
-	public $layout = 'reports';
-
 	public function accessRules()
 	{
 		return array(

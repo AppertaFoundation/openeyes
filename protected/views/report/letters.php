@@ -17,8 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="box report">
+<div class="box reports">
 	<div class="report-fields lettersReport">
+		<h2>Letters report</h2>
 		<?php
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'report-letters',

@@ -1,6 +1,6 @@
-<div class="box admin">
+<div class="box reports">
 	<h2>Core</h2>
-	<ul class="navigation admin">
+	<ul class="navigation reports">
 		<?php foreach (array(
 			'Diagnoses' => '/report/diagnoses',
 			'Letters' => '/report/letters',
@@ -16,9 +16,9 @@
 	</ul>
 </div>
 <?php foreach (ModuleReports::getAll() as $module => $items) {?>
-	<div class="admin box">
+	<div class="reports box">
 		<h2><?php echo $module?></h2>
-		<ul class="navigation admin">
+		<ul class="navigation reports">
 			<?php foreach ($items as $item => $uri) {
 				$e = explode('/',$uri);
 				$action = array_pop($e)?>

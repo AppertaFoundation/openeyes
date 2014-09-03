@@ -14,32 +14,33 @@
 // * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
 // * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 
-@import "openeyes/copyright";
-@import "openeyes/settings/core";
-@import "openeyes/settings/admin";
-@import "openeyes/core";
-@import "foundation";
-
-@import "openeyes/components/reports/boxes";
-@import "openeyes/components/reports/navigation";
-@import "openeyes/components/reports/sidebar";
-
-.report-fields {
-	label {
-		display: inline-block;
-	}
-	input[type=radio] {
-		display: inline-block;
-	}
-}
-
-.reportSummary {
-	margin-top: 2em;
-}
-
-.lettersReport {
-	input[name="phrases[]"] {
-		width: 23em;
-		display: inline;
+// Admin box
+.box {
+	&.reports {
+		@include panel;
+		@include radius;
+		background: #fafafa;
+		margin: 0 0 $oe-box-gutter 0;
+		h2 {
+			margin-bottom: 12px;
+		}
+		.table-actions {
+			select {
+				width: auto;
+			}
+		}
+		.box-header {
+			margin: 0;
+			.box-title {
+				float: left;
+			}
+		}
+		.box-actions {
+			float: right;
+		}
+		@media print {
+			border: 0;
+			padding: 0;
+		}
 	}
 }
