@@ -9,7 +9,7 @@ $(document).ready(function() {
 
 	$('#search_genetics_patients').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/Genetics/search/geneticPatients?first-name='+$('#first-name').val()+'&last-name='+$('#last-name').val()+'&pedigree-id='+$('#pedigree-id').val()+'&dob='+$('#dob').val()+'&comments='+$('#comments').val()+'&disorder-id='+$('#savedDiagnosis').val()+'&part-first-name='+$('#part_first_name').is(':checked')+'&part-last-name='+$('#part_last_name').is(':checked');
+		window.location.href = baseUrl+'/Genetics/search/geneticPatients?first-name='+$('#first-name').val()+'&last-name='+$('#last-name').val()+'&pedigree-id='+$('#pedigree-id').val()+'&dob='+$('#dob').val()+'&comments='+$('#comments').val()+'&disorder-id='+$('#savedDiagnosis').val()+'&part-first-name='+$('#part_first_name').is(':checked')+'&part-last-name='+$('#part_last_name').is(':checked')+'&search=search';
 	});
 
 	$('tr.clickable').click(function(e) {

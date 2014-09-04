@@ -40,81 +40,71 @@ class SearchController extends BaseController
 
 	public function actionGeneticPatients()
 	{
+
+		$pages = 1;
+		$page = 1;
+		$results = array();
+
 		$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
 		Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
 
 		$pagination = $this->initPagination(Pedigree::model());
 
-		$count_command = $this->buildSearchCommand("count(patient.id) as count");
-		$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,pedigree_id,pedigree_status.name,patient.yob");
+		if(@$_GET['search']) {
 
-		$total_items = $count_command->queryScalar();
+			$count_command = $this->buildSearchCommand("count(patient.id) as count");
+			$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,pedigree_id,pedigree_status.name,patient.yob,genetics_patient.comments");
 
-		//	->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
-//					":disorder_id" => $_GET['disorder-id'],
-//				))
-//				->queryScalar();
+			$total_items = $count_command->queryScalar();
 
-		$pages = ceil($total_items / $this->items_per_page);
-		$page = 1;
+			$pages = ceil($total_items / $this->items_per_page);
+			$page = 1;
 
-		if (@$_GET['page'] && $_GET['page'] >= 1 and $_GET['page'] <= $pages) {
-			$page = $_GET['page'];
+			if (@$_GET['page'] && $_GET['page'] >= 1 and $_GET['page'] <= $pages) {
+				$page = $_GET['page'];
+			}
+
+			$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
+
+			switch (@$_GET['sortby']) {
+				case 'hos_num':
+					$order = "hos_num $dir";
+					break;
+				case 'title':
+					$order = "title $dir";
+					break;
+				case 'gender':
+					$order = "gender $dir";
+					break;
+				case 'patient_name':
+					$order = "last_name $dir, first_name $dir";
+					break;
+				case 'dob':
+					$order = "patient.dob $dir";
+					break;
+				case 'yob':
+					$order = "patient.yob $dir";
+					break;
+				case 'status':
+					$order = "pedigree_status.name $dir";
+					break;
+				case 'pedigree_id':
+					$order = "pedigree.id $dir";
+					break;
+				default:
+					$order = "last_name $dir, first_name $dir";
+			}
+
+			$search_command->order($order)
+				->offset(($page-1) * $this->items_per_page)
+				->limit($this->items_per_page);
+
+			$results = $search_command->queryAll();
+
 		}
-
-		$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
-
-		switch (@$_GET['sortby']) {
-			case 'hos_num':
-				$order = "hos_num $dir";
-				break;
-			case 'title':
-				$order = "title $dir";
-				break;
-			case 'gender':
-				$order = "gender $dir";
-				break;
-			case 'patient_name':
-				$order = "last_name $dir, first_name $dir";
-				break;
-			case 'dob':
-				$order = "patient.dob $dir";
-				break;
-			case 'yob':
-				$order = "patient.yob $dir";
-				break;
-			case 'status':
-				$order = "pedigree_status.name $dir";
-				break;
-			case 'pedigree_id':
-				$order = "pedigree.id $dir";
-				break;
-			default:
-				$order = "last_name $dir, first_name $dir";
-		}
-
-		//				->where("sd.disorder_id = :disorder_id or ep.disorder_id = :disorder_id",array(
-//				":disorder_id" => $_GET['disorder-id'],
-//			))
-
-		$search_command->order($order)
-			->offset(($page-1) * $this->items_per_page)
-			->limit($this->items_per_page);
-
-
-		$patients = $search_command->queryAll();
-
-		/*
-				} else {
-					$total_items = 0;
-					$pages = 1;
-					$page = 1;
-
-					$patient_pedigrees = array();
-				}*/
 
 		$this->render('geneticPatients',array(
-			'patients' => $patients,
+			'results' => $results,
 			'pagination' => $pagination,
 			'page' => $page,
 			'pages' => $pages,
@@ -129,6 +119,7 @@ class SearchController extends BaseController
 		$last_name = @$_GET['last-name'];
 		$dob = @$_GET['dob'];
 		$disorder_id = @$_GET['disorder-id'];
+		$comments = @$_GET['comments'];
 
 		$command = Yii::app()->db->createCommand()
 			->select($select)
@@ -138,7 +129,8 @@ class SearchController extends BaseController
 			->join("pedigree_status","patient_pedigree.status_id = pedigree_status.id")
 			->join("contact","patient.contact_id = contact.id")
 			->leftJoin("secondary_diagnosis","secondary_diagnosis.patient_id = patient.id")
-			->leftJoin("episode","episode.patient_id = patient.id");
+			->leftJoin("episode","episode.patient_id = patient.id")
+			->leftJoin("genetics_patient","genetics_patient.patient_id = patient.id");
 
 
 		if ($first_name) {
@@ -159,6 +151,10 @@ class SearchController extends BaseController
 
 		if ($disorder_id) {
 			$command->andWhere('secondary_diagnosis.disorder_id=:disorder_id', array(':disorder_id'=>$disorder_id));
+		}
+
+		if ($comments) {
+			$command->andWhere((array('like', 'genetics_patient.comments', '%'.$comments.'%')));
 		}
 
 		return $command;
