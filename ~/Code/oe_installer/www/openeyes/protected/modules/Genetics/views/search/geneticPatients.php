@@ -127,7 +127,7 @@
 	<form id="admin_sequences">
 		<input type="hidden" id="select_all" value="0" />
 
-		<?php if (count($patients) <1) {?>
+		<?php if (count($results) <1) {?>
 			<div class="alert-box no_results">
 				<span class="column_no_results">
 					<?php if (@$_GET['gene-id'] || @$_GET['disorder-id']) {?>
@@ -139,32 +139,30 @@
 			</div>
 		<?php }?>
 
-		<?php if (!empty($patients)) {?>
+		<?php if (!empty($results)) {?>
 			<table class="grid">
 				<thead>
 					<tr>
 						<th><?php echo CHtml::link('Hospital no',$this->getUri(array('sortby'=>'hos_num')))?></th>
-						<th><?php echo CHtml::link('Title',$this->getUri(array('sortby'=>'title')))?></th>
 						<th><?php echo CHtml::link('Patient name',$this->getUri(array('sortby'=>'patient_name')))?></th>
 						<th><?php echo CHtml::link('Gender',$this->getUri(array('sortby'=>'gender')))?></th>
 						<th><?php echo CHtml::link('DOB',$this->getUri(array('sortby'=>'dob')))?></th>
 						<th><?php echo CHtml::link('Year',$this->getUri(array('sortby'=>'yob')))?></th>
-						<th><?php echo CHtml::link('Status',$this->getUri(array('sortby'=>'status')))?></th>
 						<th><?php echo CHtml::link('Family',$this->getUri(array('sortby'=>'pedigree_id')))?></th>
+						<th><?php echo CHtml::link('Comments',$this->getUri(array('sortby'=>'comments')))?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php
-					foreach ($patients as $patient) {?>
-						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/patient/view/'.$patient['id'])?>">
-							<td><?php echo $patient['hos_num']?></td>
-							<td><?php echo $patient['title']?>
-							<td><?php echo strtoupper($patient['last_name'])?>, <?php echo $patient['first_name']?></td>
-							<td><?php echo $patient['gender']?></td>
-							<td><?php echo $patient['dob']?></td>
-							<td><?php echo $patient['yob']?></td>
-							<td><?php echo $patient['name']?></td>
-							<td><?php echo $patient['pedigree_id']?></td>
+					foreach ($results as $result) {?>
+						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/patient/view/'.$result['id'])?>">
+							<td><?php echo $result['hos_num']?></td>
+							<td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
+							<td><?php echo $result['gender']?></td>
+							<td><?php echo $result['dob']?></td>
+							<td><?php echo $result['yob']?></td>
+							<td><?php echo $result['pedigree_id']?></td>
+							<td class="large-5"><?php echo $result['comments']?></td>
 						</tr>
 					<?php }?>
 				</tbody>
