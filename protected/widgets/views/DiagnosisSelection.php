@@ -26,6 +26,12 @@
 		<!-- Here we show the selected diagnosis -->
 		<div id="enteredDiagnosisText" class="panel diagnosis<?php if (!$label) {?> hide<?php }?>">
 			<?php echo $label?>
+			<?php
+			$clear_diagnosis='';
+			if ($allowClear) {
+				$clear_diagnosis = Chtml::link('(Remove)',"#",array("id"=>"clear-diagnosis-widget"));
+				echo $clear_diagnosis;
+			} ?>
 		</div>
 
 		<div class="field-row">
@@ -51,7 +57,7 @@
                     'minLength' => '3',
                     'select' => "js:function(event, ui) {
 						$('#".$class.'_'.$field."_0').val('');
-						$('#enteredDiagnosisText').html(ui.item.value);
+						$('#enteredDiagnosisText').html(ui.item.value+' $clear_diagnosis ');
 						$('#enteredDiagnosisText').show();
 						$('input[id=savedDiagnosis]').val(ui.item.id);
 						$('#".$class.'_'.$field."').focus();
@@ -71,7 +77,11 @@
 
 <script type="text/javascript">
 	$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-		$('#enteredDiagnosisText').html($('option:selected', this).text());
+		$('#enteredDiagnosisText').html($('option:selected', this).text()
+		<?php if ($allowClear) { ?>
+		+' <?php echo $clear_diagnosis ?>'
+		<?php } ?>
+		);
 		$('#enteredDiagnosisText').show();
 		$('#savedDiagnosis').val($(this).val());
 	});
