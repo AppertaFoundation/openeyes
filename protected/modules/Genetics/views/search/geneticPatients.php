@@ -36,21 +36,26 @@
 						<table class="grid">
 							<thead>
 							<tr>
-								<th>Subject ID:</th>
-								<th>MEH Number:</th>
+								<th>First name:</th>
+								<th>Last name:</th>
 								<th>Pedigree ID:</th>
 							</tr>
 							</thead>
 							<tbody>
 							<tr>
 								<td>
-									<?php echo CHtml::textField('subject-id', @$_GET['subject-id'], array('placeholder' => 'Subject ID'))?>
+									<?php echo CHtml::textField('first-name', @$_GET['first-name'], array('placeholder' => 'First name'))?>
+									<br />
+									<?php echo CHtml::checkBox('part_first_name',false) ?> Search part word
 								</td>
 								<td>
-									<?php echo CHtml::textField('meh-number', @$_GET['meh-number'], array('placeholder' => 'MEH Number'))?>
+									<?php echo CHtml::textField('last-name', @$_GET['last-name'], array('placeholder' => 'Last name'))?>
+									<br />
+									<?php echo CHtml::checkBox('part_last_name',false) ?> Search part word
 								</td>
 								<td>
 									<?php echo CHtml::textField('pedigree-id', @$_GET['pedigree-id'], array('placeholder' => 'Pedigree ID'))?>
+									<br /><br />
 								</td>
 								<td>
 									<button id="search_genetics_patients" class="secondary" type="submit">
@@ -60,23 +65,33 @@
 							</tr>
 							<thead>
 							<tr>
-								<th>Firstname:</th>
-								<th>Surname:</th>
 								<th>Age or DOB:</th>
+								<th colspan="2">Comments</th>
 							</tr>
 							</thead>
 							<tr>
 								<td>
-									<?php echo CHtml::textField('first-name', @$_GET['first-name'], array('placeholder' => 'First name'))?>
-								</td>
-								<td>
-									<?php echo CHtml::textField('last-name', @$_GET['last-name'], array('placeholder' => 'Last name'))?>
-								</td>
-								<td>
 									<?php echo CHtml::textField('dob', @$_GET['dob'], array('placeholder' => 'Age or DOB'))?>
 								</td>
-								<td>
-
+								<td colspan="2">
+									<?php echo CHtml::textField('comments', @$_GET['comments'], array('placeholder' => 'Comments'))?>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3">
+									<?php $form->widget('application.widgets.DiagnosisSelection',array(
+										'value' => @$_GET['disorder-id'],
+										'field' => 'principal_diagnosis',
+										'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+										'layoutColumns' => array(
+											'label' => $form->layoutColumns['label'],
+											'field' => 4,
+										),
+										'default' => false,
+										'htmlOptions' => array(
+											'fieldLabel' => 'Principal diagnosis',
+										),
+									))?>
 								</td>
 							</tr>
 							<?php /*

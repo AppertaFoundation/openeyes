@@ -124,13 +124,11 @@ class SearchController extends BaseController
 
 	private function buildSearchCommand($select)
 	{
-		$subject_id = @$_GET['subject-id'];
-		$meh_number = @$_GET['meh-number'];
 		$pedigree_id = @$_GET['pedigree-id'];
 		$first_name = @$_GET['first-name'];
 		$last_name = @$_GET['last-name'];
 		$dob = @$_GET['dob'];
-		$disorder_id = @$_GET['disorder_id'];
+		$disorder_id = @$_GET['disorder-id'];
 
 		$command = Yii::app()->db->createCommand()
 			->select($select)
@@ -142,9 +140,6 @@ class SearchController extends BaseController
 			->leftJoin("secondary_diagnosis","secondary_diagnosis.patient_id = patient.id")
 			->leftJoin("episode","episode.patient_id = patient.id");
 
-		if ($meh_number) {
-			$command->andWhere('patient.hos_num=:meh_number', array(':meh_number'=>$meh_number));
-		}
 
 		if ($first_name) {
 			$command->andWhere('contact.first_name=:first_name', array(':first_name'=>$first_name));
@@ -160,6 +155,10 @@ class SearchController extends BaseController
 
 		if ($pedigree_id) {
 			$command->andWhere('pedigree.id=:pedigree_id', array(':pedigree_id'=>$pedigree_id));
+		}
+
+		if ($disorder_id) {
+			$command->andWhere('secondary_diagnosis.disorder_id=:disorder_id', array(':disorder_id'=>$disorder_id));
 		}
 
 		return $command;

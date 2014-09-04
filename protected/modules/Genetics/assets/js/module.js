@@ -7,9 +7,9 @@ $(document).ready(function() {
 		window.location.href = baseUrl+'/Genetics/default/pedigrees?family-id='+$('#family-id').val()+'&gene-id='+$('#gene-id').val()+'&consanguineous='+$('#consanguineous').val()+'&disorder-id='+$('#savedDiagnosis').val();
 	});
 
-	$('#search_patients').click(function(e) {
+	$('#search_genetics_patients').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/Genetics/search/geneticPatients?disorder-id='+$('#savedDiagnosis').val();
+		window.location.href = baseUrl+'/Genetics/search/geneticPatients?first-name='+$('#first-name').val()+'&last-name='+$('#last-name').val()+'&pedigree-id='+$('#pedigree-id').val()+'&dob='+$('#dob').val()+'&comments='+$('#comments').val()+'&disorder-id='+$('#savedDiagnosis').val()+'&part-first-name='+$('#part_first_name').is(':checked')+'&part-last-name='+$('#part_last_name').is(':checked');
 	});
 
 	$('tr.clickable').click(function(e) {
