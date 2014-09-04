@@ -120,6 +120,8 @@ class SearchController extends BaseController
 		$dob = @$_GET['dob'];
 		$disorder_id = @$_GET['disorder-id'];
 		$comments = @$_GET['comments'];
+		$part_first_name = @$_GET['part-first-name'];
+		$part_last_name = @$_GET['part-last-name'];
 
 		$command = Yii::app()->db->createCommand()
 			->select($select)
@@ -134,15 +136,33 @@ class SearchController extends BaseController
 
 
 		if ($first_name) {
-			$command->andWhere('contact.first_name=:first_name', array(':first_name'=>$first_name));
+			if($part_first_name=='true'){
+				$command->andWhere((array('like', 'contact.first_name', '%'.$first_name.'%')));
+			}else {
+				$command->andWhere('contact.first_name=:first_name', array(':first_name'=>$first_name));
+			}
 		}
 
 		if ($last_name) {
-			$command->andWhere('contact.last_name=:last_name', array(':first_name'=>$last_name));
+			if($part_last_name=='true'){
+				$command->andWhere((array('like', 'contact.last_name', '%'.$last_name.'%')));
+			}else {
+				$command->andWhere('contact.last_name=:last_name', array(':last_name'=>$last_name));
+			}
 		}
 
 		if ($dob) {
-			$command->andWhere('patient.dob=:dob', array(':dob'=>$dob));
+			if(strlen($dob) >3) {
+				$command->andWhere('patient.dob=:dob', array(':dob'=>$dob));
+			} else {
+				$age = $dob; //dob is actually an age
+				//calculate possible dob range or yob for entered age
+				$possible_yob_1 = date('Y', strtotime($age . ' years ago'));
+				$possible_yob_2 = $possible_yob_1 - 1;
+				$start_dob = date('Y-m-d', strtotime($age+1 . ' years ago'));
+				$end_dob = date('Y-m-d', strtotime($age . ' years ago'));
+				$command->andWhere('(patient.yob=:yob_1 or patient.yob=:yob_2 and patient.dob is null) or (patient.dob>:start_dob and patient.dob < :end_dob)', array(':yob_1'=>$possible_yob_1,':yob_2'=>$possible_yob_2, ":start_dob"=>$start_dob, ":end_dob"=>$end_dob));
+			}
 		}
 
 		if ($pedigree_id) {
