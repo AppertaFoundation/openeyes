@@ -46,12 +46,12 @@
 								<td>
 									<?php echo CHtml::textField('first-name', @$_GET['first-name'], array('placeholder' => 'First name'))?>
 									<br />
-									<?php echo CHtml::checkBox('part_first_name',false) ?> Search part word
+									<?php echo CHtml::checkBox('part_first_name',@$_GET['part-first-name']=='true') ?> Search part word
 								</td>
 								<td>
 									<?php echo CHtml::textField('last-name', @$_GET['last-name'], array('placeholder' => 'Last name'))?>
 									<br />
-									<?php echo CHtml::checkBox('part_last_name',false) ?> Search part word
+									<?php echo CHtml::checkBox('part_last_name', @$_GET['part-last-name']=='true') ?> Search part word
 								</td>
 								<td>
 									<?php echo CHtml::textField('pedigree-id', @$_GET['pedigree-id'], array('placeholder' => 'Pedigree ID'))?>
@@ -71,7 +71,7 @@
 							</thead>
 							<tr>
 								<td>
-									<?php echo CHtml::textField('dob', @$_GET['dob'], array('placeholder' => 'Age or DOB'))?>
+									<?php echo CHtml::textField('dob', @$_GET['dob'], array('placeholder' => 'Age or DOB (yyyy-mm-dd)'))?>
 								</td>
 								<td colspan="2">
 									<?php echo CHtml::textField('comments', @$_GET['comments'], array('placeholder' => 'Comments'))?>
@@ -88,6 +88,7 @@
 											'field' => 4,
 										),
 										'default' => false,
+										'allowClear' => true,
 										'htmlOptions' => array(
 											'fieldLabel' => 'Principal diagnosis',
 										),
@@ -131,9 +132,9 @@
 			<div class="alert-box no_results">
 				<span class="column_no_results">
 					<?php if (@$_GET['gene-id'] || @$_GET['disorder-id']) {?>
-						No genetics patients were found with the selected diagnosis.
+						No genetics patients were found.
 					<?php }else{?>
-						Please select a diagnosis to search for patients.
+						Please enter criteria to search for patients.
 					<?php }?>
 				</span>
 			</div>
