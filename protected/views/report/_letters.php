@@ -17,6 +17,20 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<form id="current_report" action="<?php echo Yii::app()->createUrl('report/downloadLetters')?>" method="post">
+	<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+	<input type="hidden" name="start_date" value="<?php echo $report->start_date?>" />
+	<input type="hidden" name="end_date" value="<?php echo $report->end_date?>" />
+	<?php foreach ($report->phrases as $phrase) {
+		if ($phrase) {?>
+			<input type="hidden" name="phrases[]" value="<?php echo CHtml::encode($phrase)?>" />
+		<?php }?>
+	<?php }?>
+	<input type="hidden" name="condition_type" value="<?php echo $report->condition_type?>" />
+	<input type="hidden" name="match_correspondence" value="<?php echo $report->match_correspondence?>" />
+	<input type="hidden" name="match_legacy_letters" value="<?php echo $report->match_legacy_letters?>" />
+	<input type="hidden" name="author_id" value="<?php echo $report->author_id?>" />
+</form>
 <table>
 	<thead>
 		<tr>
@@ -29,14 +43,14 @@
 			<th>Link</th>
 		</tr>
 	<tbody>
-		<?php if (empty($letters)) {?>
+		<?php if (empty($report->letters)) {?>
 			<tr>
 				<td colspan="6">
 					No letters were found with the selected search criteria.
 				</td>
 			</tr>
 		<?php }else{?>
-			<?php foreach ($letters as $letter) {?>
+			<?php foreach ($report->letters as $letter) {?>
 				<tr>
 					<td><?php echo $letter['hos_num']?></td>
 					<td><?php echo $letter['dob'] ? date('j M Y',strtotime($letter['dob'])) : 'Unknown'?></td>
@@ -50,3 +64,6 @@
 		<?php }?>
 	</tbody>
 </table>
+<div>
+	<button type="submit" class="classy blue mini" id="letters_report_download" name="run"><span class="button-span button-span-blue">Download report</span></button>
+</div>

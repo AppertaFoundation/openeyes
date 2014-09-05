@@ -19,19 +19,19 @@
 ?>
 <form id="current_report" action="<?php echo Yii::app()->createUrl('report/downloadDiagnoses')?>" method="post">
 	<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-	<input type="hidden" name="start-date" value="<?php echo $_POST['start-date']?>" />
-	<input type="hidden" name="end-date" value="<?php echo $_POST['end-date']?>" />
-	<?php if (!empty($_POST['principal'])) {?>
-		<?php foreach ($_POST['principal'] as $disorder_id) {?>
+	<input type="hidden" name="start_date" value="<?php echo $report->start_date?>" />
+	<input type="hidden" name="end_date" value="<?php echo $report->end_date?>" />
+	<?php if (!empty($report->principal)) {?>
+		<?php foreach ($report->principal as $disorder_id) {?>
 			<input type="hidden" name="principal[]" value="<?php echo $disorder_id?>" />
 		<?php }?>
 	<?php }?>
-	<?php if (!empty($_POST['secondary'])) {?>
-		<?php foreach ($_POST['secondary'] as $disorder_id) {?>
+	<?php if (!empty($report->secondary)) {?>
+		<?php foreach ($report->secondary as $disorder_id) {?>
 			<input type="hidden" name="secondary[]" value="<?php echo $disorder_id?>" />
 		<?php }?>
 	<?php }?>
-	<input type="hidden" name="condition" value="<?php echo $_POST['condition']?>" />
+	<input type="hidden" name="condition_type" value="<?php echo $report->condition_type?>" />
 </form>
 <table>
 	<thead>
@@ -44,14 +44,14 @@
 			<th>Diagnoses</th>
 		</tr>
 	<tbody>
-		<?php if (empty($diagnoses)) {?>
+		<?php if (empty($report->diagnoses)) {?>
 			<tr>
 				<td colspan="6">
 					No patients were found with the selected search criteria.
 				</td>
 			</tr>
 		<?php }else{?>
-			<?php foreach ($diagnoses as $ts => $diagnosis) {?>
+			<?php foreach ($report->diagnoses as $ts => $diagnosis) {?>
 				<tr>
 					<td><?php echo $diagnosis['hos_num']?></td>
 					<td><?php echo $diagnosis['dob'] ? date('j M Y',strtotime($diagnosis['dob'])) : 'Unknown'?></td>

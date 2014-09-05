@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php Yii::app()->assetManager->registerScriptFile('js/report_diagnoses.js')?>
 <div class="box reports">
 	<div class="report-fields">
 		<h2>Diagnoses report</h2>
@@ -29,13 +30,13 @@
 
 		<div class="row field-row">
 			<div class="large-2 column">
-				<label for="start-date">
+				<label for="start_date">
 					Start date:
 				</label>
 			</div>
 			<div class="large-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'name' => 'start-date',
+					'name' => 'start_date',
 					'options' => array(
 						'showAnim' => 'fold',
 						'dateFormat' => Helper::NHS_DATE_FORMAT_JS
@@ -47,13 +48,13 @@
 
 		<div class="row field-row">
 			<div class="large-2 column">
-				<label for="start-date">
+				<label for="end_date">
 					End date:
 				</label>
 			</div>
 			<div class="large-2 column end">
 				<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'name' => 'end-date',
+					'name' => 'end_date',
 					'options' => array(
 						'showAnim' => 'fold',
 						'dateFormat' => Helper::NHS_DATE_FORMAT_JS
@@ -97,7 +98,7 @@
 			<div class="large-2 column">
 			</div>
 			<div class="large-9 column end">
-				<input type="radio" name="condition" id="condition_or" value="or" checked="checked" />
+				<input type="radio" name="condition_type" id="condition_or" value="or" checked="checked" />
 				<label for="condition_or">
 					Match patients with <strong>any</strong> of these diagnoses
 				</label>
@@ -107,7 +108,7 @@
 			<div class="large-2 column">
 			</div>
 			<div class="large-9 column end">
-				<input type="radio" name="condition" id="condition_and" value="and" />
+				<input type="radio" name="condition_type" id="condition_and" value="and" />
 				<label for="condition_and">
 					Match patients with <strong>all</strong> of these diagnoses
 				</label>
