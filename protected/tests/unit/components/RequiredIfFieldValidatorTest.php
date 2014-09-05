@@ -30,10 +30,11 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
 		$this->val->value = 2;
 
 		$object = ComponentStubGenerator::generate('CActiveRecord', array('f1' => 1, 'f2' => null));
+		$object->expects($this->never())->method('addError');
 
 		$this->val->validateAttribute($object, 'f2');
 
-		$this->assertEmpty($object->getErrors());
+		$object->__phpunit_verify();
 	}
 
 	public function testBasicField_NotMissing()
@@ -42,10 +43,11 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
 		$this->val->value = 2;
 
 		$object = ComponentStubGenerator::generate('CActiveRecord', array('f1' => 2, 'f2' => 1));
+		$object->expects($this->never())->method('addError');
 
 		$this->val->validateAttribute($object, 'f2');
 
-		$this->assertEmpty($object->getErrors());
+		$object->__phpunit_verify();
 	}
 
 	public function testBasicField_Missing()
@@ -70,10 +72,11 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
 
 		$related = ComponentStubGenerator::generate('CActiveRecord', array('f1' => 1));
 		$object = ComponentStubGenerator::generate('CActiveRecord', array('f2' => null, 'rel' => $related));
+		$object->expects($this->never())->method('addError');
 
 		$this->val->validateAttribute($object, 'f2');
 
-		$this->assertEmpty($object->getErrors());
+		$object->__phpunit_verify();
 	}
 
 	public function testSingleRelation_NotMissing()
@@ -84,10 +87,11 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
 
 		$related = ComponentStubGenerator::generate('CActiveRecord', array('f1' => 2));
 		$object = ComponentStubGenerator::generate('CActiveRecord', array('f2' => 1, 'rel' => $related));
+		$object->expects($this->never())->method('addError');
 
 		$this->val->validateAttribute($object, 'f2');
 
-		$this->assertEmpty($object->getErrors());
+		$object->__phpunit_verify();
 	}
 
 	public function testSingleRelation_Missing()
@@ -118,10 +122,11 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
 			ComponentStubGenerator::generate('CActiveRecord', array('f1' => 3)),
 		);
 		$object = ComponentStubGenerator::generate('CActiveRecord', array('f2' => null, 'rel' => $related));
+		$object->expects($this->never())->method('addError');
 
 		$this->val->validateAttribute($object, 'f2');
 
-		$this->assertEmpty($object->getErrors());
+		$object->__phpunit_verify();
 	}
 
 	public function testMultipleRelation_NotMissing()
@@ -135,10 +140,11 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
 			ComponentStubGenerator::generate('CActiveRecord', array('f1' => 2)),
 		);
 		$object = ComponentStubGenerator::generate('CActiveRecord', array('f2' => 1, 'rel' => $related));
+		$object->expects($this->never())->method('addError');
 
 		$this->val->validateAttribute($object, 'f2');
 
-		$this->assertEmpty($object->getErrors());
+		$object->__phpunit_verify();
 	}
 
 	public function testMultipleRelation_Missing()
