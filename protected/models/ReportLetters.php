@@ -73,6 +73,10 @@ class ReportLetters extends CModel
 			$this->addError('phrases','Please enter at least one letter phrase');
 		}
 
+		if (!$this->match_correspondence && !$this->match_legacy_letters) {
+			$this->addError('match_correspondence','Please select which type of letters you want to search');
+		}
+
 		return parent::afterValidate();
 	}
 
