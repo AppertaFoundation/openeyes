@@ -31,6 +31,12 @@ class BaseReportController extends BaseController
 	protected function beforeAction($action)
 	{
 		Yii::app()->assetManager->registerCssFile('css/reports.css', null, 10);
+		Yii::app()->assetManager->registerScriptFile('js/reports.js');
+
+		if (file_exists(getcwd() . '/protected/assets/js/report_' . $action->id . '.js')) {
+			Yii::app()->assetManager->registerScriptFile('js/report_' . $action->id . '.js');
+		}
+
 		$this->jsVars['items_per_page'] = $this->items_per_page;
 
 		return parent::beforeAction($action);

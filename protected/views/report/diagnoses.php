@@ -17,16 +17,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php Yii::app()->assetManager->registerScriptFile('js/report_diagnoses.js')?>
 <div class="box reports">
 	<div class="report-fields">
 		<h2>Diagnoses report</h2>
 		<?php
 		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'report-diagnoses',
+			'id'=>'report-form',
 			'enableAjaxValidation'=>false,
-			'layoutColumns'=>array('label'=>2,'field'=>10),
+			'layoutColumns' => array('label'=>2,'field'=>10),
 		))?>
+
+		<input type="hidden" name="report-name" value="Diagnoses" />
 
 		<div class="row field-row">
 			<div class="large-2 column">
@@ -125,7 +126,7 @@
 	</div>
 
 	<div style="margin-top: 2em;">
-		<button type="submit" class="classy blue mini" id="diagnoses_report" name="run"><span class="button-span button-span-blue">Run report</span></button>
+		<button type="submit" class="classy blue mini" id="run-report" name="run"><span class="button-span button-span-blue">Run report</span></button>
 		<img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
 	</div>
 

@@ -23,25 +23,10 @@ class ReportController extends BaseReportController
 	{
 		return array(
 			array('allow',
-				'actions' => array('index', 'diagnoses', 'downloadDiagnoses', 'letters', 'downloadLetters'),
+				'actions' => array('index', 'diagnoses', 'letters', 'runReport', 'downloadReport'),
 				'roles' => array('admin','OprnGenerateReport'),
 			)
 		);
-	}
-
-	protected function array2Csv(array $data)
-	{
-		if (count($data) == 0) {
-			return null;
-		}
-		ob_start();
-		$df = fopen("php://output", 'w');
-		fputcsv($df, array_keys(reset($data)));
-		foreach ($data as $row) {
-			fputcsv($df, $row);
-		}
-		fclose($df);
-		return ob_get_clean();
 	}
 
 	protected function sendCsvHeaders($filename)
@@ -59,43 +44,20 @@ class ReportController extends BaseReportController
 
 	public function actionDiagnoses()
 	{
-		if (!empty($_POST)) {
-			$report = new ReportDiagnoses;
-			$report->attributes = $_POST;
-
-			if (!$report->validate()) {
-				echo json_encode($report->errors);
-				return;
-			}
-
-			$report->run();
-
-			echo json_encode(array(
-				'_report' => $this->renderPartial('_diagnoses',array('report' => $report),true)
-			));
-		} else {
-			$this->render('diagnoses');
-		}
-	}
-
-	public function actionDownloadDiagnoses()
-	{
-		$this->sendCsvHeaders('diagnoses.csv');
-
-		$report = new ReportDiagnoses;
-		$report->attributes = $_POST;
-
-		if (!$report->validate()) {
-			throw new Exception("Invalid parameters");
-		}
-
-		echo $report->toCSV();
+		$this->render('diagnoses');
 	}
 
 	public function actionLetters()
 	{
+		$this->render('letters');
+	}
+
+	public function actionRunReport()
+	{
 		if (!empty($_POST)) {
-			$report = new ReportLetters;
+			$report_class = 'Report'.$_POST['report-name'];
+
+			$report = new $report_class;
 			$report->attributes = $_POST;
 
 			if (!$report->validate()) {
@@ -106,23 +68,25 @@ class ReportController extends BaseReportController
 			$report->run();
 
 			echo json_encode(array(
-				'_report' => $this->renderPartial('_letters',array('report' => $report),true)
+				'_report' => $this->renderPartial('_'.strtolower($_POST['report-name']),array('report' => $report),true)
 			));
-		} else {
-			$this->render('letters');
 		}
 	}
 
-	public function actionDownloadLetters()
+	public function actionDownloadReport()
 	{
-		$this->sendCsvHeaders('letters.csv');
+		$this->sendCsvHeaders($_POST['report-name'].'.csv');
 
-		$report = new ReportLetters;
+		$report_class = 'Report'.$_POST['report-name'];
+
+		$report = new $report_class;
 		$report->attributes = $_POST;
 
 		if (!$report->validate()) {
 			throw new Exception("Invalid parameters");
 		}
+
+		$report->run();
 
 		echo $report->toCSV();
 	}

@@ -175,14 +175,55 @@ class ReportLetters extends CModel
 
 			if (@$row['lid']) {
 				$row['type'] = 'Correspondence';
-				$row['link'] = 'http://openeyes.moorfields.nhs.uk/OphCoCorrespondence/default/view/'.$row['event_id'];
+				$row['link'] = 'http'. (@$_SERVER['https'] ? 's' : '').'://'.@$_SERVER['SERVER_NAME'].'/OphCoCorrespondence/default/view/'.$row['event_id'];
 			} else {
 				$row['type'] = 'Legacy letter';
-				$row['link'] = 'http://openeyes.moorfields.nhs.uk/OphLeEpatientletter/default/view/'.$row['l2_event_id'];
+				$row['link'] = 'http'. (@$_SERVER['https'] ? 's' : '').'://'.@$_SERVER['SERVER_NAME'].'/OphLeEpatientletter/default/view/'.$row['l2_event_id'];
 			}
 
 			$this->letters[] = $row;
 		}
+	}
+
+	public function description()
+	{
+		if ($this->match_correspondence) {
+			$description = 'Correspondence';
+		}
+
+		if ($this->match_legacy_letters) {
+			if (@$description) {
+				$description .= ' and legacy letters';
+			} else {
+				$description = 'Legacy letters';
+			}
+		}
+
+		$description .= ' containing '.($this->condition_type == 'and' ? 'all' : 'any')." of these phrases:\n";
+
+		foreach ($this->phrases as $phrase) {
+			if ($phrase) {
+				$description .= $phrase."\n";
+			}
+		}
+
+		if ($this->start_date || $this->end_date || $this->author_id) {
+			$description .= "written";
+
+			if ($this->start_date && $this->end_date) {
+				$description .= " between ".$this->start_date." and ".$this->end_date;
+			} else if ($this->start_date) {
+				$description .= " after ".$this->start_date;
+			} else if ($this->end_date) {
+				$description .= " before ".$this->end_date;
+			}
+
+			if ($this->author_id) {
+				$description .= " by ".User::model()->findByPk($this->author_id)->fullName;
+			}
+		}
+
+		return $description;
 	}
 
 	/**
@@ -192,9 +233,9 @@ class ReportLetters extends CModel
 	 */
 	public function toCSV()
 	{
-		$this->run();
+		$output = $this->description()."\n\n";
 
-		$output = Patient::model()->getAttributeLabel('hos_num').",".Patient::model()->getAttributeLabel('dob').",".Patient::model()->getAttributeLabel('first_name').",".Patient::model()->getAttributeLabel('last_name').",Date,Type,Link\n";
+		$output .= Patient::model()->getAttributeLabel('hos_num').",".Patient::model()->getAttributeLabel('dob').",".Patient::model()->getAttributeLabel('first_name').",".Patient::model()->getAttributeLabel('last_name').",Date,Type,Link\n";
 
 		foreach ($this->letters as $letter) {
 			$output .= "\"{$letter['hos_num']}\",\"".($letter['dob'] ? date('j M Y',strtotime($letter['dob'])) : 'Unknown')."\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"".date('j M Y',strtotime($letter['created_date']))."\",\"".$letter['type']."\",\"".$letter['link']."\"\n";

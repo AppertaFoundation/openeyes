@@ -222,6 +222,25 @@ class ReportDiagnoses extends CModel
 		}
 	}
 
+	public function description()
+	{
+		$description = 'Patients with '.($this->condition_type == 'or' ? 'any' : 'all')." of these diagnoses:\n";
+
+		if (!empty($this->principal)) {
+			foreach ($this->principal as $disorder_id) {
+				$description .= Disorder::model()->findByPk($disorder_id)->term." (Principal)\n";
+			}
+		}
+
+		if (!empty($this->secondary)) {
+			foreach ($this->secondary as $disorder_id) {
+				$description .= Disorder::model()->findByPk($disorder_id)->term." (Secondary)\n";
+			}
+		}
+
+		return $description . "Between ".$this->start_date." and ".$this->end_date;
+	}
+
 	/**
 	 * Output the report in CSV format
 	 *
@@ -229,9 +248,9 @@ class ReportDiagnoses extends CModel
 	 */
 	public function toCSV()
 	{
-		$this->run();
+		$output = $this->description()."\n\n";
 
-		$output = Patient::model()->getAttributeLabel('hos_num').",".Patient::model()->getAttributeLabel('dob').",".Patient::model()->getAttributeLabel('first_name').",".Patient::model()->getAttributeLabel('last_name').",Date,Diagnoses\n";
+		$output .= Patient::model()->getAttributeLabel('hos_num').",".Patient::model()->getAttributeLabel('dob').",".Patient::model()->getAttributeLabel('first_name').",".Patient::model()->getAttributeLabel('last_name').",Date,Diagnoses\n";
 
 		foreach ($this->diagnoses as $ts => $diagnosis) {
 			$output .= "\"{$diagnosis['hos_num']}\",\"".($diagnosis['dob'] ? date('j M Y',strtotime($diagnosis['dob'])) : 'Unknown')."\",\"{$diagnosis['first_name']}\",\"{$diagnosis['last_name']}\",\"".date('j M Y',$ts)."\",\"";

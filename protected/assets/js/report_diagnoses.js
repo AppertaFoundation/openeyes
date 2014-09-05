@@ -29,38 +29,4 @@ $(document).ready(function() {
 
 		return false;
 	});
-
-	handleButton($('#diagnoses_report'),function(e) {
-		$('div.reportSummary').hide();
-
-		$.ajax({
-			'type': 'POST',
-			'data': $('#report-diagnoses').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-			'dataType': 'json',
-			'url': baseUrl+'/report/diagnoses',
-			'success': function(errors) {
-				if (typeof(errors['_report']) != 'undefined') {
-					enableButtons();
-					$('div.reportSummary').html(errors['_report']).show();
-				} else {
-					$('.errors').children('ul').html('');
-
-					for (var i in errors) {
-						$('.errors').children('ul').append('<li>' + errors[i][0] + '</li>');
-					}
-
-					$('.errors').show();
-					enableButtons();
-				}
-			}
-		});
-
-		e.preventDefault();
-	});
-
-	$('#diagnoses_report_download').die('click').live('click',function(e) {
-		e.preventDefault();
-
-		$('#current_report').submit();
-	});
 });

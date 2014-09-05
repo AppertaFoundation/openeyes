@@ -17,8 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<form id="current_report" action="<?php echo Yii::app()->createUrl('report/downloadLetters')?>" method="post">
+<form id="current_report" action="<?php echo Yii::app()->createUrl('report/downloadReport')?>" method="post">
 	<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+	<input type="hidden" name="report-name" value="Letters" />
 	<input type="hidden" name="start_date" value="<?php echo $report->start_date?>" />
 	<input type="hidden" name="end_date" value="<?php echo $report->end_date?>" />
 	<?php foreach ($report->phrases as $phrase) {
@@ -65,5 +66,5 @@
 	</tbody>
 </table>
 <div>
-	<button type="submit" class="classy blue mini" id="letters_report_download" name="run"><span class="button-span button-span-blue">Download report</span></button>
+	<button type="submit" class="classy blue mini" id="download-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
 </div>
