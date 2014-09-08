@@ -22,6 +22,9 @@ class BaseReportController extends BaseController
 	public $layout = '//layouts/reports';
 	public $items_per_page = 30;
 	public $form_errors;
+	public $modulePathAlias;
+	public $assetPathAlias;
+	public $assetPath;
 
 	public function accessRules()
 	{
@@ -30,16 +33,32 @@ class BaseReportController extends BaseController
 
 	protected function beforeAction($action)
 	{
+		parent::beforeAction($action);
+
 		Yii::app()->assetManager->registerCssFile('css/reports.css', null, 10);
 		Yii::app()->assetManager->registerScriptFile('js/reports.js');
 
-		if (file_exists(getcwd() . '/protected/assets/js/report_' . $action->id . '.js')) {
-			Yii::app()->assetManager->registerScriptFile('js/report_' . $action->id . '.js');
+		if ($this->module) {
+			$this->modulePathAlias = 'application.modules.'.$this->getModule()->name;
+			$this->assetPathAlias = $this->modulePathAlias .'.assets';
+
+			// Set asset path
+			if (file_exists(Yii::getPathOfAlias($this->assetPathAlias))) {
+				$this->assetPath = Yii::app()->assetManager->getPublishedPathOfAlias('application.modules.'.$this->getModule()->name.'.assets');
+			}
+		
+			if (file_exists(getcwd() . '/protected/modules/' . $this->module->id . '/assets/js/reports.js')) {
+				Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/reports.js", CClientScript::POS_END);
+			}
+		} else {
+			if (file_exists(getcwd() . '/protected/assets/js/report_' . $action->id . '.js')) {
+				Yii::app()->assetManager->registerScriptFile('js/report_' . $action->id . '.js');
+			}
 		}
 
 		$this->jsVars['items_per_page'] = $this->items_per_page;
 
-		return parent::beforeAction($action);
+		return true;
 	}
 
 	protected function initPagination($model, $criteria = null)
@@ -50,5 +69,60 @@ class BaseReportController extends BaseController
 		$pagination->pageSize = $this->items_per_page;
 		$pagination->applyLimit($criteria);
 		return $pagination;
+	}
+
+	protected function sendCsvHeaders($filename)
+	{
+		header("Content-type: text/csv");
+		header("Content-Disposition: attachment; filename=$filename");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+	}
+
+	public function actionRunReport()
+	{
+		if (!empty($_POST)) {
+			if ($this->module) {
+				$report_class = $this->module->id.'_Report'.$_POST['report-name'];
+			} else {
+				$report_class = 'Report'.$_POST['report-name'];
+			}
+
+			$report = new $report_class;
+			$report->attributes = $_POST;
+
+			if (!$report->validate()) {
+				echo json_encode($report->errors);
+				return;
+			}
+
+			$report->run();
+
+			echo json_encode(array(
+				'_report' => $this->renderPartial($report->getView(),array('report' => $report),true)
+			));
+		}
+	}
+
+	public function actionDownloadReport()
+	{
+		$this->sendCsvHeaders($_POST['report-name'].'.csv');
+
+		if ($this->module) {
+			$report_class = $this->module->id.'_Report'.$_POST['report-name'];
+		} else {
+			$report_class = 'Report'.$_POST['report-name'];
+		}
+
+		$report = new $report_class;
+		$report->attributes = $_POST;
+
+		if (!$report->validate()) {
+			throw new Exception("Invalid parameters");
+		}
+
+		$report->run();
+
+		echo $report->toCSV();
 	}
 }

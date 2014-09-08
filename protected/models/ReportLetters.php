@@ -16,7 +16,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ReportLetters extends CModel
+class ReportLetters extends BaseReport
 {
 	public $match_correspondence;
 	public $match_legacy_letters;

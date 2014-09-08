@@ -67,6 +67,7 @@ class Patient extends BaseActiveRecordVersioned
 		return parent::model($className);
 	}
 
+/*
 	public function behaviors()
 	{
 		return array(
@@ -75,6 +76,7 @@ class Patient extends BaseActiveRecordVersioned
 			),
 		);
 	}
+	*/
 
 	/**
 	 * Suppress PAS integration
