@@ -133,7 +133,7 @@
 	<form id="admin_sequences">
 		<input type="hidden" id="select_all" value="0" />
 
-		<?php if (count($patients) <1) {?>
+		<?php if (count($results) <1) {?>
 			<div class="alert-box no_results">
 				<span class="column_no_results">
 					<?php if (@$_GET['search']) {?>
@@ -145,7 +145,7 @@
 			</div>
 		<?php }?>
 
-		<?php if (!empty($patients)) {?>
+		<?php if (!empty($results)) {?>
 			<table class="grid">
 				<thead>
 					<tr>
@@ -160,14 +160,14 @@
 				</thead>
 				<tbody>
 					<?php
-					foreach ($patients as $patient) {?>
-						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGenetictest/default/view/'.$patient['id'])?>">
-							<td><?php echo $patient['hos_num']?></td>
-							<td><?php echo strtoupper($patient['last_name'])?>, <?php echo $patient['first_name']?></td>
-							<td><?php echo $patient['event_date']?></td>
-							<td><?php echo $patient['name']?></td>
-							<td><?php echo $patient['volume']?></td>
-							<td><?php echo $patient['comments']?></td>
+					foreach ($results as $result) {?>
+						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInBloodsample/default/view/'.$result['id'])?>">
+							<td><?php echo $result['hos_num']?></td>
+							<td><?php echo strtoupper($result['last_name'])?>, <?php echo $result['first_name']?></td>
+							<td><?php echo $result['event_date']?></td>
+							<td><?php echo $result['name']?></td>
+							<td><?php echo $result['volume']?></td>
+							<td><?php echo $result['comments']?></td>
 						</tr>
 					<?php }?>
 				</tbody>

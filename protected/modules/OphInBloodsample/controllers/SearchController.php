@@ -60,7 +60,7 @@ class SearchController extends BaseController
 				$page = $_GET['page'];
 			}
 
-			$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophinbloodsample_sample_type.name,et_ophinbloodsample_sample.volume,et_ophinbloodsample_sample.comments", $page);
+			$search_command =  $this->buildSearchCommand("event.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophinbloodsample_sample_type.name,et_ophinbloodsample_sample.volume,et_ophinbloodsample_sample.comments", $page);
 
 			$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
@@ -99,7 +99,7 @@ class SearchController extends BaseController
 		$pagination->setPageSize($this->items_per_page);
 
 		$this->render('bloodSample',array(
-			'patients' => $results,
+			'results' => $results,
 			'pagination' => $pagination,
 			'page' => $page,
 			'pages' => $pages,
