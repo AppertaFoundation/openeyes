@@ -92,7 +92,7 @@ class DefaultController extends BaseEventTypeController
 			}
 		}
 
-		$pagination = $this->initPagination(Pedigree::model());
+
 
 		$criteria = new CDbCriteria;
 
@@ -116,6 +116,34 @@ class DefaultController extends BaseEventTypeController
 			$criteria->params[':disorder_id'] = $_GET['disorder-id'];
 		}
 
+		$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
+
+		switch (@$_GET['sortby']) {
+			case 'inheritance':
+				$order = "inheritance.name $dir";
+				break;
+			case 'consanguinity':
+				$order = "consanguinity $dir";
+				break;
+			case 'gene':
+				$order = "gene.name $dir";
+				break;
+			case 'base-change':
+				$order = "base_change $dir";
+				break;
+			case 'amino-acid-change':
+				$order = "amino_acid_change $dir";
+				break;
+			case 'disorder':
+				$order = "disorder.fully_specified_name $dir";
+				break;
+			default:
+				$order = "";
+		}
+
+		$criteria->order = $order;
+		$pagination = $this->initPagination(Pedigree::model(),$criteria);
+
 		$this->render('pedigrees',array(
 			'pedigrees' => $this->getItems(array(
 				'model' => 'Pedigree',
@@ -126,6 +154,7 @@ class DefaultController extends BaseEventTypeController
 				),
 				'page' => (Integer)@$_GET['page'],
 				'criteria' => $criteria,
+				'order'=>$order,
 			)),
 			'pagination' => $pagination,
 			'errors' => $errors,
@@ -153,7 +182,7 @@ class DefaultController extends BaseEventTypeController
 			}
 		}
 
-		$criteria->order = 't.id asc';
+		$criteria->order = $params['order'];
 		$criteria->offset = ($this->page-1) * $this->items_per_page;
 		$criteria->limit = $this->items_per_page;
 
@@ -338,6 +367,8 @@ class DefaultController extends BaseEventTypeController
 			$criteria = new CDbCriteria;
 			$criteria->addInCondition('id',$_POST['genes']);
 
+
+
 			foreach (PedigreeGene::model()->findAll($criteria) as $gene) {
 				try {
 					$gene->delete();
@@ -383,6 +414,28 @@ class DefaultController extends BaseEventTypeController
 			}
 		}
 		return $return;
+	}
+
+	public function getUri($elements)
+	{
+		$uri = preg_replace('/\?.*$/','',$_SERVER['REQUEST_URI']);
+
+		$request = $_REQUEST;
+
+		if (isset($elements['sortby']) && $elements['sortby'] == @$request['sortby']) {
+			$request['order'] = (@$request['order'] == 'desc') ? 'asc' : 'desc';
+		} elseif (isset($request['sortby']) && isset($elements['sortby']) && $request['sortby'] != $elements['sortby']) {
+			$request['order'] = 'asc';
+		}
+
+		$first = true;
+		foreach (array_merge($request,$elements) as $key => $value) {
+			$uri .= $first ? '?' : '&';
+			$first = false;
+			$uri .= "$key=$value";
+		}
+
+		return $uri;
 	}
 
 	public function actionAddGene()
