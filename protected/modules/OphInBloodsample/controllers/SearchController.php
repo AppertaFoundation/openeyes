@@ -106,13 +106,10 @@ class SearchController extends BaseController
 
 	private function buildSearchCommand($select)
 	{
-		$subject_id = @$_GET['subject-id'];
-		$meh_number = @$_GET['meh-number'];
-		$pedigree_id = @$_GET['pedigree-id'];
-		$first_name = @$_GET['first-name'];
-		$last_name = @$_GET['last-name'];
-		$dob = @$_GET['dob'];
-		$disorder_id = @$_GET['disorder_id'];
+		$date_from = @$_GET['date-from'];
+		$date_to = @$_GET['date-to'];
+		$sample_type = @$_GET['sample-type'];
+		$disorder_id = @$_GET['disorder-id'];
 
 		$command = Yii::app()->db->createCommand()
 			->select($select)
@@ -121,14 +118,23 @@ class SearchController extends BaseController
 			->join("episode","event.episode_id = episode.id")
 			->join("patient","episode.patient_id = patient.id")
 			->join("ophinbloodsample_sample_type","et_ophinbloodsample_sample.type_id = ophinbloodsample_sample_type.id")
-			->join("contact","patient.contact_id = contact.id");
+			->join("contact","patient.contact_id = contact.id")
+			->leftJoin("secondary_diagnosis","secondary_diagnosis.patient_id = patient.id");
 
-		if ($meh_number) {
-			$command->andWhere('patient.hos_num=:meh_number', array(':meh_number'=>$meh_number));
+		if ($date_from) {
+			$command->andWhere('blood_date <= :date_from', array(':date_from'=>Helper::convertNHS2MySQL($date_from)));
 		}
 
-		if ($first_name) {
-			$command->andWhere('contact.first_name=:first_name', array(':first_name'=>$first_name));
+		if ($date_to) {
+			$command->andWhere('blood_date >= :date_to', array(':date_to'=>Helper::convertNHS2MySQL($date_to)));
+		}
+
+		if ($sample_type) {
+			$command->andWhere('type_id = :type_id', array(':type_id'=>$sample_type));
+		}
+
+		if ($disorder_id) {
+			$command->andWhere('secondary_diagnosis.disorder_id = :disorder_id', array(':disorder_id'=>$disorder_id));
 		}
 
 		return $command;

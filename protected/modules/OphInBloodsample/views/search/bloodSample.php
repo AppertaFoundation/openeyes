@@ -36,47 +36,64 @@
 						<table class="grid">
 							<thead>
 							<tr>
-								<th>Subject ID:</th>
-								<th>MEH Number:</th>
-								<th>Pedigree ID:</th>
+								<th>Date Taken From:</th>
+								<th>Date Taken To:</th>
+								<th>Sample Type:</th>
 							</tr>
 							</thead>
 							<tbody>
 							<tr>
 								<td>
-									<?php echo CHtml::textField('subject-id', @$_GET['subject-id'], array('placeholder' => 'Subject ID'))?>
+									<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+										'name' => 'date-from',
+										'id' => 'date-from',
+										'options' => array(
+											'showAnim'=>'fold',
+											'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
+										),
+										'value' => @$_GET['date-from'],
+									))?>
 								</td>
 								<td>
-									<?php echo CHtml::textField('meh-number', @$_GET['meh-number'], array('placeholder' => 'MEH Number'))?>
+									<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+										'name' => 'date-to',
+										'id' => 'date-to',
+										'options' => array(
+											'showAnim'=>'fold',
+											'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
+										),
+										'value' => @$_GET['date-to'],
+									))?>
 								</td>
 								<td>
-									<?php echo CHtml::textField('pedigree-id', @$_GET['pedigree-id'], array('placeholder' => 'Pedigree ID'))?>
+									<?php echo CHtml::dropDownList('sample-type',@$_GET['sample-type'],CHtml::listData(OphInBloodsample_Sample_Type::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- All -'))?>
 								</td>
 								<td>
-									<button id="search_genetics_patients" class="secondary" type="submit">
+									<button id="search_blood_sample" class="secondary" type="submit">
 										Search
 									</button>
 								</td>
 							</tr>
-							<thead>
+						</tbody>
+							</table>
+						<table class="grid">
+							<tbody>
 							<tr>
-								<th>Firstname:</th>
-								<th>Surname:</th>
-								<th>Age or DOB:</th>
-							</tr>
-							</thead>
-							<tr>
-								<td>
-									<?php echo CHtml::textField('first-name', @$_GET['first-name'], array('placeholder' => 'First name'))?>
-								</td>
-								<td>
-									<?php echo CHtml::textField('last-name', @$_GET['last-name'], array('placeholder' => 'Last name'))?>
-								</td>
-								<td>
-									<?php echo CHtml::textField('dob', @$_GET['dob'], array('placeholder' => 'Age or DOB'))?>
-								</td>
-								<td>
-
+								<td colspan="3">
+									<?php $form->widget('application.widgets.DiagnosisSelection',array(
+										'value' => @$_GET['disorder-id'],
+										'field' => 'principal_diagnosis',
+										'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+										'layoutColumns' => array(
+											'label' => $form->layoutColumns['label'],
+											'field' => 4,
+										),
+										'default' => false,
+										'allowClear' => true,
+										'htmlOptions' => array(
+											'fieldLabel' => 'Principal diagnosis',
+										),
+									))?>
 								</td>
 							</tr>
 							<?php /*

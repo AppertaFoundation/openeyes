@@ -30,6 +30,11 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 
+	$('#search_blood_sample').click(function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/OphInBloodsample/search/bloodSample?date-from='+$('#date-from').val()+'&date-to='+$('#date-to').val()+'&sample-type='+$('#sample-type').val()+'&disorder-id='+$('#savedDiagnosis').val()+'&search=search';
+	});
+
 	$('select.populate_textarea').unbind('change').change(function() {
 		if ($(this).val() != '') {
 			var cLass = $(this).parent().parent().parent().attr('class').match(/Element.*/);
