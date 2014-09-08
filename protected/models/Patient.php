@@ -423,6 +423,16 @@ class Patient extends BaseActiveRecordVersioned
 		return trim(implode(' ',array($this->title, $this->first_name, $this->last_name)));
 	}
 
+	/**
+	 * get the Patient name according to HSCIC guidelines
+	 *
+	 * @return string
+	 */
+	public function getHSCICName()
+	{
+		return trim(implode(' ',array(strtoupper($this->last_name) . ",", $this->first_name, '('. $this->title . ')')));
+	}
+
 	public function getDisplayName()
 	{
 		return '<span class="patient-surname">'.strtoupper($this->last_name).'</span>, <span class="patient-name">'.$this->first_name.'</span>';
