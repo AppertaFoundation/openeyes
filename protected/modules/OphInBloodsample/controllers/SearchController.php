@@ -61,7 +61,6 @@ class SearchController extends BaseController
 			}
 
 			$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophinbloodsample_sample_type.name,et_ophinbloodsample_sample.volume,et_ophinbloodsample_sample.comments", $page);
-			$search_command->limit($this->items_per_page, $page-1);
 
 			$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
