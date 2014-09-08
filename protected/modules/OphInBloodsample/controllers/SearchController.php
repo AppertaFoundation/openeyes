@@ -43,27 +43,25 @@ class SearchController extends BaseController
 		$pages = 1;
 		$page = 1;
 		$results = array();
+		$total_items=0;
 
+		$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
+		Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
 
 		if(@$_GET['search']) {
 
-
-			$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
-			Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
+			$page = 1;
 
 			$count_command = $this->buildSearchCommand("count(et_ophinbloodsample_sample.id) as count");
-			$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophinbloodsample_sample_type.name,et_ophinbloodsample_sample.volume,et_ophinbloodsample_sample.comments");
-
 			$total_items = $count_command->queryScalar();
-
-			$pagination = $this->initPagination($total_items);
-
 			$pages = ceil($total_items / $this->items_per_page);
-			$page = 1;
 
 			if (@$_GET['page'] && $_GET['page'] >= 1 and $_GET['page'] <= $pages) {
 				$page = $_GET['page'];
 			}
+
+			$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophinbloodsample_sample_type.name,et_ophinbloodsample_sample.volume,et_ophinbloodsample_sample.comments", $page);
+			$search_command->limit($this->items_per_page, $page-1);
 
 			$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
@@ -98,7 +96,8 @@ class SearchController extends BaseController
 				->queryAll();
 		}
 
-
+		$pagination = new CPagination($total_items);
+		$pagination->setPageSize($this->items_per_page);
 
 		$this->render('bloodSample',array(
 			'patients' => $results,
@@ -172,17 +171,5 @@ class SearchController extends BaseController
 		return $uri;
 	}
 
-	private function initPagination($model, $criteria = null)
-	{
-		$pagination = new CPagination($itemsCount);
-		$pagination->pageSize = $this->items_per_page;
-		$pagination->applyLimit($criteria);
-		return $pagination;
-	}
-
-	public function actionDnaExtractions()
-	{
-
-	}
 }
 
