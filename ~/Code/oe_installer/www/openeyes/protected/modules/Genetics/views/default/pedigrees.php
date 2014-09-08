@@ -109,12 +109,12 @@
 					<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
 						<th><input type="checkbox" name="selectall" id="selectall" /></th>
 					<?php } ?>
-					<th>Inheritance</th>
-					<th>Consanguinity</th>
-					<th>Gene</th>
-					<th>Base change</th>
-					<th>Amino acid change</th>
-					<th>Disorder</th>
+					<th><?php echo CHtml::link('Inheritance',$this->getUri(array('sortby'=>'inheritance')))?></th>
+					<th><?php echo CHtml::link('Consanguinity',$this->getUri(array('sortby'=>'consanguinity')))?></th>
+					<th><?php echo CHtml::link('Gene',$this->getUri(array('sortby'=>'gene')))?></th>
+					<th><?php echo CHtml::link('Base change',$this->getUri(array('sortby'=>'base-change')))?></th>
+					<th><?php echo CHtml::link('Amino acid change',$this->getUri(array('sortby'=>'amino-acid-change')))?></th>
+					<th><?php echo CHtml::link('Disorder',$this->getUri(array('sortby'=>'disorder')))?></th>
 					<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
 					<th>Edit</th>
 					<?php } ?>

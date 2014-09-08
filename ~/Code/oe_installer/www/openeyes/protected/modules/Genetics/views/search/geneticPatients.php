@@ -63,20 +63,30 @@
 									</button>
 								</td>
 							</tr>
+							</tbody>
+							</table>
+						<table class="grid">
 							<thead>
 							<tr>
 								<th>Age or DOB:</th>
-								<th colspan="2">Comments</th>
+								<th>Comments</th>
 							</tr>
 							</thead>
+							<tbody>
 							<tr>
-								<td>
+								<td width="246">
 									<?php echo CHtml::textField('dob', @$_GET['dob'], array('placeholder' => 'Age or DOB (yyyy-mm-dd)'))?>
 								</td>
-								<td colspan="2">
+								<td>
 									<?php echo CHtml::textField('comments', @$_GET['comments'], array('placeholder' => 'Comments'))?>
 								</td>
 							</tr>
+							</tbody>
+							</table>
+						<table class="grid">
+							<thead>
+							</thead>
+							<tbody>
 							<tr>
 								<td colspan="3">
 									<?php $form->widget('application.widgets.DiagnosisSelection',array(
