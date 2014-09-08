@@ -39,64 +39,69 @@ class SearchController extends BaseController
 
 	public function actionBloodSample()
 	{
-		$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
-		Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
 
-		$pagination = $this->initPagination(Pedigree::model());
-
-		$count_command = $this->buildSearchCommand("count(et_ophinbloodsample_sample.id) as count");
-		$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophinbloodsample_sample_type.name,et_ophinbloodsample_sample.volume,et_ophinbloodsample_sample.comments");
-
-		$total_items = $count_command->queryScalar();
-
-		$pages = ceil($total_items / $this->items_per_page);
+		$pages = 1;
 		$page = 1;
+		$results = array();
 
-		if (@$_GET['page'] && $_GET['page'] >= 1 and $_GET['page'] <= $pages) {
-			$page = $_GET['page'];
+
+		if(@$_GET['search']) {
+
+
+			$assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
+			Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
+
+			$count_command = $this->buildSearchCommand("count(et_ophinbloodsample_sample.id) as count");
+			$search_command =  $this->buildSearchCommand("patient.id,patient.hos_num,contact.first_name,event.event_date,contact.maiden_name,contact.last_name,contact.title,patient.gender,patient.dob,patient.yob,ophinbloodsample_sample_type.name,et_ophinbloodsample_sample.volume,et_ophinbloodsample_sample.comments");
+
+			$total_items = $count_command->queryScalar();
+
+			$pagination = $this->initPagination($total_items);
+
+			$pages = ceil($total_items / $this->items_per_page);
+			$page = 1;
+
+			if (@$_GET['page'] && $_GET['page'] >= 1 and $_GET['page'] <= $pages) {
+				$page = $_GET['page'];
+			}
+
+			$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
+
+			switch (@$_GET['sortby']) {
+				case 'hos_num':
+					$order = "hos_num $dir";
+					break;
+				case 'patient_name':
+					$order = "last_name $dir, first_name $dir";
+					break;
+				case 'date_taken':
+					$order = "blood_date $dir";
+					break;
+				case 'sample_type':
+					$order = "ophinbloodsample_sample_type.name $dir";
+					break;
+				case 'volume':
+					$order = "volume $dir";
+					break;
+				case 'comment':
+					$order = "comments $dir";
+					break;
+				default:
+					$order = "last_name $dir, first_name $dir";
+			}
+
+			$search_command->order($order)
+				->offset(($page-1) * $this->items_per_page)
+				->limit($this->items_per_page);
+
+			$results = $search_command
+				->queryAll();
 		}
 
-		$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
-
-		switch (@$_GET['sortby']) {
-			case 'hos_num':
-				$order = "hos_num $dir";
-				break;
-			case 'title':
-				$order = "title $dir";
-				break;
-			case 'gender':
-				$order = "gender $dir";
-				break;
-			case 'patient_name':
-				$order = "last_name $dir, first_name $dir";
-				break;
-			case 'dob':
-				$order = "patient.dob $dir";
-				break;
-			case 'yob':
-				$order = "patient.yob $dir";
-				break;
-			case 'status':
-				$order = "pedigree_status.name $dir";
-				break;
-			case 'pedigree_id':
-				$order = "pedigree.id $dir";
-				break;
-			default:
-				$order = "last_name $dir, first_name $dir";
-		}
-
-		$search_command->order($order)
-			->offset(($page-1) * $this->items_per_page)
-			->limit($this->items_per_page);
-
-		$patients = $search_command
-			->queryAll();
 
 
 		$this->render('bloodSample',array(
-			'patients' => $patients,
+			'patients' => $results,
 			'pagination' => $pagination,
 			'page' => $page,
 			'pages' => $pages,
@@ -110,6 +115,7 @@ class SearchController extends BaseController
 		$date_to = @$_GET['date-to'];
 		$sample_type = @$_GET['sample-type'];
 		$disorder_id = @$_GET['disorder-id'];
+		$comment = @$_GET['comment'];
 
 		$command = Yii::app()->db->createCommand()
 			->select($select)
@@ -133,6 +139,9 @@ class SearchController extends BaseController
 			$command->andWhere('type_id = :type_id', array(':type_id'=>$sample_type));
 		}
 
+		if ($comment) {
+			$command->andWhere((array('like', 'comments', '%'.$comment.'%')));
+		}
 		if ($disorder_id) {
 			$command->andWhere('secondary_diagnosis.disorder_id = :disorder_id', array(':disorder_id'=>$disorder_id));
 		}
@@ -165,8 +174,6 @@ class SearchController extends BaseController
 
 	private function initPagination($model, $criteria = null)
 	{
-		$criteria = is_null($criteria) ? new CDbCriteria() : $criteria;
-		$itemsCount = $model->count($criteria);
 		$pagination = new CPagination($itemsCount);
 		$pagination->pageSize = $this->items_per_page;
 		$pagination->applyLimit($criteria);

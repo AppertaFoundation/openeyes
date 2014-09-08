@@ -39,6 +39,7 @@
 								<th>Date Taken From:</th>
 								<th>Date Taken To:</th>
 								<th>Sample Type:</th>
+								<th>Comments:</th>
 							</tr>
 							</thead>
 							<tbody>
@@ -67,6 +68,9 @@
 								</td>
 								<td>
 									<?php echo CHtml::dropDownList('sample-type',@$_GET['sample-type'],CHtml::listData(OphInBloodsample_Sample_Type::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- All -'))?>
+								</td>
+								<td>
+									<?php echo CHtml::textField('comment',@$_GET['comment'])?>
 								</td>
 								<td>
 									<button id="search_blood_sample" class="secondary" type="submit">
@@ -132,10 +136,10 @@
 		<?php if (count($patients) <1) {?>
 			<div class="alert-box no_results">
 				<span class="column_no_results">
-					<?php if (@$_GET['gene-id'] || @$_GET['disorder-id']) {?>
-						No genetics patients were found with the selected diagnosis.
+					<?php if (@$_GET['search']) {?>
+						No results found for current criteria.
 					<?php }else{?>
-						Please select a diagnosis to search for patients.
+						Please enter criteria to search for samples.
 					<?php }?>
 				</span>
 			</div>
@@ -146,12 +150,11 @@
 				<thead>
 					<tr>
 						<th><?php echo CHtml::link('Hospital no',$this->getUri(array('sortby'=>'hos_num')))?></th>
-						<th><?php echo CHtml::link('Title',$this->getUri(array('sortby'=>'title')))?></th>
 						<th><?php echo CHtml::link('Patient name',$this->getUri(array('sortby'=>'patient_name')))?></th>
-						<th><?php echo CHtml::link('Date Taken',$this->getUri(array('sortby'=>'gender')))?></th>
-						<th><?php echo CHtml::link('Sample Type',$this->getUri(array('sortby'=>'dob')))?></th>
-						<th><?php echo CHtml::link('Volume',$this->getUri(array('sortby'=>'yob')))?></th>
-						<th><?php echo CHtml::link('Comment',$this->getUri(array('sortby'=>'yob')))?></th>
+						<th><?php echo CHtml::link('Date Taken',$this->getUri(array('sortby'=>'date_taken')))?></th>
+						<th><?php echo CHtml::link('Sample Type',$this->getUri(array('sortby'=>'sample_type')))?></th>
+						<th><?php echo CHtml::link('Volume',$this->getUri(array('sortby'=>'volume')))?></th>
+						<th><?php echo CHtml::link('Comment',$this->getUri(array('sortby'=>'comment')))?></th>
 
 					</tr>
 				</thead>
@@ -160,7 +163,6 @@
 					foreach ($patients as $patient) {?>
 						<tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGenetictest/default/view/'.$patient['id'])?>">
 							<td><?php echo $patient['hos_num']?></td>
-							<td><?php echo $patient['title']?>
 							<td><?php echo strtoupper($patient['last_name'])?>, <?php echo $patient['first_name']?></td>
 							<td><?php echo $patient['event_date']?></td>
 							<td><?php echo $patient['name']?></td>
