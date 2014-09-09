@@ -74,6 +74,7 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, box, letter, number, key_address, extracted_date, extracted_by_id, comments, dna_concentration, volume, ', 'safe', 'on' => 'search'),
 			array('dna_concentration', 'numerical', 'numberPattern' => '/^\s*[\+\-]?\d+\.?\d*\s*$/',),
+			array('number_id', 'boxAvailable'),
 		);
 	}
 
@@ -95,6 +96,19 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
 			'letter' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaExtraction_Letter', 'letter_id'),
 			'number' => array(self::BELONGS_TO, 'OphInDnaextraction_DnaExtraction_Number', 'number_id'),
 		);
+	}
+
+	public function boxAvailable($attribute,$params)
+	{
+		$box = Yii::app()->db->createCommand()
+			->select('count(box_id)')
+			->from("et_ophindnaextraction_dnaextraction")
+			->where("box_id=:box_id and letter_id=:letter_id and number_id=:number_id and not event_id=:event_id", array(":box_id"=>$this->box_id,":letter_id"=>$this->letter_id,":number_id"=>$this->number_id, ":event_id"=>$this->event_id))
+			->queryScalar();
+
+		if($box>0) {
+			$this->addError($attribute, 'this box number is already in use.');
+		}
 	}
 
 	/**

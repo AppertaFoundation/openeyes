@@ -24,5 +24,5 @@ $this->beginContent('//patient/event_container')?>
 	}
 	?>
 <?php $this->renderOpenElements($this->action->id); ?>
-<?php //$this->renderOptionalElements($this->action->id); ?>
+<?php $this->renderOptionalElements($this->action->id); ?>
 <?php $this->endContent()?>
