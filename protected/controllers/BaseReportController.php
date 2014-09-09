@@ -117,8 +117,17 @@ class BaseReportController extends BaseController
 		$report = new $report_class;
 		$report->attributes = $_POST;
 
+		if (@$_POST['validate_only']) {
+			if (!$report->validate()) {
+				echo json_encode($report->errors);
+			} else {
+				echo json_encode(array());
+			}
+			return;
+		}
+
 		if (!$report->validate()) {
-			throw new Exception("Invalid parameters");
+			throw new Exception("Report errors: ".print_r($report->errors,true));
 		}
 
 		$report->run();

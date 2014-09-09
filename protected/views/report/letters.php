@@ -25,6 +25,7 @@
 			'id'=>'report-form',
 			'enableAjaxValidation'=>false,
 			'layoutColumns'=>array('label'=>2,'field'=>10),
+			'action' => Yii::app()->createUrl('/report/downloadReport'),
 		))?>
 
 		<input type="hidden" name="report-name" value="Letters" />
@@ -159,7 +160,8 @@
 	</div>
 
 	<div style="margin-top: 2em;">
-		<button type="submit" class="classy blue mini" id="run-report" name="run"><span class="button-span button-span-blue">Run report</span></button>
+		<button type="submit" class="classy blue mini display-report" name="run"><span class="button-span button-span-blue">Display report</span></button>
+		<button type="submit" class="classy blue mini download-report" name="run"><span class="button-span button-span-blue">Download report</span></button>
 		<img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
 	</div>
 
