@@ -48,8 +48,8 @@
 					<?php if ($this->checkAccess('OprnEditGene')) { ?>
 						<th><input type="checkbox" name="selectall" id="selectall" /></th>
 					<?php } ?>
-					<th>Name</th>
-					<th>Location</th>
+					<th><?php echo CHtml::link('Name',$this->getUri(array('sortby'=>'name')))?></th>
+					<th><?php echo CHtml::link('Location',$this->getUri(array('sortby'=>'location')))?></th>
 					<?php if ($this->checkAccess('OprnEditGene')) { ?>
 						<th>Edit</th>
 					<?php } ?>
