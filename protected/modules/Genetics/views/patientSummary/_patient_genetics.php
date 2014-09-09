@@ -62,6 +62,10 @@
 						<div class="data-value">
 							<?php foreach ($events as $event) {
 								echo EventNavigation::SmallIcon($event);
+								echo ' '.Helper::convertMySQL2NHS($event->event_date);
+								?>
+								<br />
+							<?php
 							}
 							?>
 						</div>
@@ -82,6 +86,10 @@
 						<div class="data-value">
 							<?php foreach ($events as $event) {
 								echo EventNavigation::SmallIcon($event);
+								echo ' '.Helper::convertMySQL2NHS($event->event_date);
+								?>
+								<br />
+							<?php
 							}
 							?>
 						</div>
@@ -102,6 +110,10 @@
 						<div class="data-value">
 							<?php foreach ($events as $event) {
 								echo EventNavigation::SmallIcon($event);
+								echo ' '.Helper::convertMySQL2NHS($event->event_date);
+								?>
+								<br />
+							<?php
 							}
 							?>
 						</div>
