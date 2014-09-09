@@ -26,7 +26,6 @@
 		<?php echo $form->dropDownList($element, 'box_id', CHtml::listData(OphInDnaextraction_DnaExtraction_Box::model()->findAll(array('order'=>'display_order')),'id','value'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
 		<?php echo $form->dropDownList($element, 'letter_id', CHtml::listData(OphInDnaextraction_DnaExtraction_Letter::model()->findAll(array('order'=>'display_order')),'id','value'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
 		<?php echo $form->dropDownList($element, 'number_id', CHtml::listData(OphInDnaextraction_DnaExtraction_Number::model()->findAll(array('order'=>'display_order')),'id','value'), array('empty' => '- Select -'), false, array('label' => 3, 'field' => 9))?>
-		<?php echo $form->textField($element, 'orientry', array(), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->datePicker($element, 'extracted_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->textField($element, 'extracted_by', array(), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>

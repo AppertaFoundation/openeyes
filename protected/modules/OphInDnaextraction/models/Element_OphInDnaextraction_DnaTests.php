@@ -26,7 +26,6 @@
  * @property integer $box_id
  * @property integer $letter_id
  * @property integer $number_id
- * @property string $orientry
  * @property string $extracted_date
  * @property integer $extracted_by_id
  * @property string $comments

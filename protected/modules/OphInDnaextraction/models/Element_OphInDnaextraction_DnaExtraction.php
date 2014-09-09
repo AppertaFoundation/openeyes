@@ -26,7 +26,6 @@
  * @property integer $box_id
  * @property integer $letter_id
  * @property integer $number_id
- * @property string $orientry
  * @property string $extracted_date
  * @property integer $extracted_by_id
  * @property string $comments
@@ -69,11 +68,11 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, box, letter, number, orientry, extracted_date, extracted_by, comments, dna_concentration, volume, ', 'safe'),
+			array('event_id, box, letter, number, extracted_date, extracted_by, comments, dna_concentration, volume, ', 'safe'),
 			array('box_id, letter_id, number_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, box, letter, number, orientry, key_address, extracted_date, extracted_by_id, comments, dna_concentration, volume, ', 'safe', 'on' => 'search'),
+			array('id, event_id, box, letter, number, key_address, extracted_date, extracted_by_id, comments, dna_concentration, volume, ', 'safe', 'on' => 'search'),
 			array('dna_concentration', 'numerical', 'numberPattern' => '/^\s*[\+\-]?\d+\.?\d*\s*$/',),
 		);
 	}
@@ -109,7 +108,6 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
 			'box' => 'Box',
 			'letter' => 'Letter',
 			'number' => 'Number',
-			'orientry' => 'Orientry',
 			'key_address' => 'Key address',
 			'extracted_date' => 'Extracted date',
 			'extracted_by_id' => 'Extracted by',
@@ -138,7 +136,6 @@ class Element_OphInDnaextraction_DnaExtraction extends BaseEventTypeElement
 		$criteria->compare('box', $this->box);
 		$criteria->compare('letter', $this->letter);
 		$criteria->compare('number', $this->number);
-		$criteria->compare('orientry', $this->orientry);
 		$criteria->compare('key_address', $this->key_address);
 		$criteria->compare('extracted_date', $this->extracted_date);
 		$criteria->compare('extracted_by_id', $this->extracted_by_id);
