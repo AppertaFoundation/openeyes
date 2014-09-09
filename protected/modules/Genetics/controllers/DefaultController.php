@@ -118,6 +118,8 @@ class DefaultController extends BaseEventTypeController
 
 		$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
+		$order = "inheritance.name $dir";
+
 		switch (@$_GET['sortby']) {
 			case 'inheritance':
 				$order = "inheritance.name $dir";
@@ -137,8 +139,6 @@ class DefaultController extends BaseEventTypeController
 			case 'disorder':
 				$order = "disorder.fully_specified_name $dir";
 				break;
-			default:
-				$order = "";
 		}
 
 		$criteria->order = $order;
@@ -381,12 +381,28 @@ class DefaultController extends BaseEventTypeController
 			}
 		}
 
-		$pagination = $this->initPagination(PedigreeGene::model());
+		$criteria = new CDbCriteria;
+
+		$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
+		$order = "name $dir";
+
+		switch (@$_GET['sortby']) {
+			case 'name':
+				$order = "name $dir";
+				break;
+			case 'location':
+				$order = "location $dir";
+				break;
+		}
+
+		$criteria->order = $order;
+		$pagination = $this->initPagination(PedigreeGene::model(),$criteria);
 
 		$this->render('genes',array(
 			'genes' => $this->getItems(array(
 				'model' => 'PedigreeGene',
 				'page' => (Integer)@$_GET['page'],
+				'order' => $order,
 			)),
 			'pagination' => $pagination,
 			'errors' => $errors,
