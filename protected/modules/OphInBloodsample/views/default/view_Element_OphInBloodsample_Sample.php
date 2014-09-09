@@ -37,14 +37,6 @@
 		</div>
 		<div class="row data-row">
 			<div class="large-2 column">
-				<div class="data-label"><?php echo $element->getAttributeLabel('blood_location')?>:</div>
-			</div>
-			<div class="large-10 column">
-				<div class="data-value"><?php echo CHtml::encode($element->blood_location)?></div>
-			</div>
-		</div>
-		<div class="row data-row">
-			<div class="large-2 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('volume')?>:</div>
 			</div>
 			<div class="large-10 column">

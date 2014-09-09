@@ -69,11 +69,11 @@ class Element_OphInBloodsample_Sample extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, old_dna_no, subject_id, blood_date, blood_location, comments, type_id, volume', 'safe'),
+			array('event_id, old_dna_no, subject_id, blood_date, comments, type_id, volume', 'safe'),
 			array('type_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, old_dna_no, subject_id, blood_date, blood_location, comments, type_id, ', 'safe', 'on' => 'search'),
+			array('id, event_id, old_dna_no, subject_id, blood_date, comments, type_id, ', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -105,7 +105,6 @@ class Element_OphInBloodsample_Sample extends BaseEventTypeElement
 			'old_dna_no' => 'Old DNA no',
 			'subject_id' => 'Subject',
 			'blood_date' => 'Blood date',
-			'blood_location' => 'Blood location',
 			'comments' => 'Comments',
 			'type_id' => 'Type',
 		);
@@ -127,7 +126,6 @@ class Element_OphInBloodsample_Sample extends BaseEventTypeElement
 		$criteria->compare('old_dna_no', $this->old_dna_no);
 		$criteria->compare('subject_id', $this->subject_id);
 		$criteria->compare('blood_date', $this->blood_date);
-		$criteria->compare('blood_location', $this->blood_location);
 		$criteria->compare('comments', $this->comments);
 		$criteria->compare('type_id', $this->type_id);
 

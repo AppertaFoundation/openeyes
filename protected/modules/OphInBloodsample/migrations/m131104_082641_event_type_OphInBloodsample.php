@@ -44,7 +44,6 @@ class m131104_082641_event_type_OphInBloodsample extends OEMigration
 				'event_id' => 'int(10) unsigned NOT NULL',
 				'old_dna_no' => 'int(10) unsigned',
 				'blood_date' => 'date DEFAULT NULL',
-				'blood_location' => 'varchar(255) DEFAULT \'\'',
 				'comments' => 'text',
 				'type_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'volume' => 'float NOT NULL',

@@ -25,7 +25,6 @@
 	<fieldset class="element-fields">
 		<?php echo $form->dropDownList($element, 'type_id', CHtml::listData(OphInBloodsample_Sample_Type::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'),false,array('label' => 3, 'field' => 9))?>
 		<?php echo $form->datePicker($element, 'blood_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 9))?>
-		<?php echo $form->textField($element, 'blood_location', array(), array(), array('label' => 3, 'field' => 9))?>
 		<?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 9))?>
 		<?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 9))?>
 	</fieldset>
