@@ -41,7 +41,7 @@ class DefaultController extends BaseEventTypeController
 	{
 		return array(
 			array('allow',
-				'actions' => array('Pedigrees', 'Index', 'Genes'),
+				'actions' => array('Pedigrees', 'Index', 'Genes', 'ViewPedigree'),
 				'roles' => array('OprnSearchPedigree'),
 			),
 			array('allow',
@@ -60,6 +60,7 @@ class DefaultController extends BaseEventTypeController
 		'Pedigrees' => self::ACTION_TYPE_FORM,
 		'AddPedigree' => self::ACTION_TYPE_FORM,
 		'EditPedigree' => self::ACTION_TYPE_FORM,
+		'ViewPedigree' => self::ACTION_TYPE_FORM,
 		'Genes' => self::ACTION_TYPE_FORM,
 		'AddGene' => self::ACTION_TYPE_FORM,
 		'EditGene' => self::ACTION_TYPE_FORM,
@@ -248,6 +249,20 @@ class DefaultController extends BaseEventTypeController
 		}
 
 		$this->render('edit_pedigree',array(
+			'pedigree' => $pedigree,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionViewPedigree($id)
+	{
+		if (!$pedigree = Pedigree::model()->findByPk($id)) {
+			throw new Exception("Pedigree not found: $id");
+		}
+
+		$errors = array();
+
+		$this->render('view_pedigree',array(
 			'pedigree' => $pedigree,
 			'errors' => $errors,
 		));
