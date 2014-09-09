@@ -31,6 +31,7 @@ class UserController extends BaseController
 		$crit->compare('first_name', $term, true);
 		$crit->compare('last_name', $term, true, 'OR');
 		$crit->compare('active', true);
+		$crit->order = 'last_name,first_name';
 
 		$results = array();
 		foreach (User::model()->findAll($crit) as $user) {
