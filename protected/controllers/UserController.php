@@ -36,7 +36,7 @@ class UserController extends BaseController
 		foreach (User::model()->findAll($crit) as $user) {
 			$results[] = array(
 				'id' => $user->id,
-				'value' => $user->getFullName(),
+				'value' => $user->getReversedFullName(),
 			);
 		}
 
