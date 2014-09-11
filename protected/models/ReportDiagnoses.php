@@ -62,164 +62,154 @@ class ReportDiagnoses extends BaseReport
 		return parent::afterValidate();
 	}
 
+	public function filterDiagnoses()
+	{
+		$secondary = array();
+
+		foreach ($this->secondary as $disorder_id) {
+			if (empty($this->principal) || !in_array($disorder_id,$this->principal)) {
+				$secondary[] = $disorder_id;
+			}
+		}
+
+		return $secondary;
+	}
+
+	public function getDbCommand()
+	{
+		return Yii::app()->db->createCommand()
+			->from("patient p")
+			->join("contact c","p.contact_id = c.id");
+	}
+
 	public function run()
 	{
 		if (!empty($this->secondary)) {
-			$secondary = array();
-			foreach ($this->secondary as $disorder_id) {
-				if (empty($this->principal) || !in_array($disorder_id,$this->principal)) {
-					$secondary[] = $disorder_id;
-				}
-			}
-
-			$this->secondary = $secondary;
+			$this->secondary = $this->filterDiagnoses();
 		}
 
 		$this->diagnoses = array();
 
-		$eyes = CHtml::listData(Eye::model()->findAll(),'id','name');
-
 		$select = "p.hos_num, c.first_name, c.last_name, p.dob";
 
-		$query = Yii::app()->db->createCommand()
-			->from("patient p")
-			->join("contact c","p.contact_id = c.id");
+		$query = $this->getDbCommand();
 
 		$condition = '';
-		$conditions = array();
+		$or_conditions = array();
 		$whereParams = array();
 
-		$join_method = $this->condition_type == 'and' ? 'join' : 'leftJoin';
-
-		if (!empty($this->principal)) {
-			$i = 0;
-			foreach ($this->principal as $disorder_id) {
-				$select .= ", e$i.created_date as pd{$i}_date, pd{$i}.fully_specified_name as pd{$i}_fully_specified_name, e{$i}.eye_id as pd{$i}_eye";
-
-				$whereParams[":pd$i"] = $disorder_id;
-
-				$episode_join = "e$i.patient_id = p.id and e$i.disorder_id = :pd$i";
-
-				if ($this->start_date) {
-					$episode_join .= " and e$i.created_date >= :start_date";
-				}
-				if ($this->end_date) {
-					$episode_join .= " and e$i.created_date <= :end_date";
-				}
-
-				$query->$join_method("episode e$i",$episode_join);
-				$query->$join_method("disorder pd$i","pd$i.id = e$i.disorder_id");
-
-				if ($this->condition_type == 'or') {
-					$conditions[] = "pd$i.id is not null";
-				}
-
-				$i++;
-			}
-		}
-
-		if (!empty($this->secondary)) {
-			$i = 0;
-			foreach ($this->secondary as $disorder_id) {
-				$select .= ", sd$i.created_date as sd{$i}_date, sdis{$i}.fully_specified_name as sd{$i}_fully_specified_name, sd{$i}.eye_id as sd{$i}_eye";
-
-				$whereParams[":sd$i"] = $disorder_id;
-
-				$sd_join = "sd$i.patient_id = p.id and sd$i.disorder_id = :sd$i";
-
-				if ($this->start_date) {
-					$sd_join .= " and sd$i.created_date >= :start_date";
-				}
-				if ($this->end_date) {
-					$sd_join .= " and sd$i.created_date <= :end_date";
-				}
-
-				$query->$join_method("secondary_diagnosis sd$i",$sd_join);
-				$query->$join_method("disorder sdis$i","sdis$i.id = sd$i.disorder_id");
-
-				if ($this->condition_type == 'or') {
-					$conditions[] = "sdis$i.id is not null";
-				}
-
-				$i++;
-			}
-		}
+		!empty($this->principal) && $this->joinDisorders('Principal', $this->principal, $select, $whereParams, $or_conditions, $query);
+		!empty($this->secondary) && $this->joinDisorders('Secondary', $this->secondary, $select, $whereParams, $or_conditions, $query);
 
 		$query->select($select);
 
 		if ($this->condition_type == 'or') {
-			if ($condition) {
-				$condition .= " and ";
-			}
-			$condition .= "( ".implode(' or ',$conditions)." )";
-		}
-
-		if ($this->start_date) {
-			$whereParams[':start_date'] = date('Y-m-d',strtotime($this->start_date)).' 00:00:00';
-		}
-		if ($this->end_date) {
-			$whereParams[':end_date'] = date('Y-m-d',strtotime($this->end_date)).' 23:59:59';
+			$condition = "( ".implode(' or ',$or_conditions)." )";
 		}
 
 		$query->where($condition,$whereParams);
 
 		foreach ($query->queryAll() as $item) {
-			$_diagnoses = array();
-
-			if (!empty($this->principal)) {
-				for ($i=0; $i<count($this->principal); $i++) {
-					if ($item["pd{$i}_date"]) {
-						$ts = strtotime($item["pd{$i}_date"]);
-
-						while (isset($_diagnoses[$ts])) {
-							$ts++;
-						}
-
-						$_diagnoses[$ts] = array(
-							'type' => 'Principal',
-							'disorder' => $item["pd{$i}_fully_specified_name"],
-							'date' => $item["pd{$i}_date"],
-							'eye' => $eyes[$item["pd{$i}_eye"]],
-						);
-					}
-				}
-			}
-
-			if (!empty($this->secondary)) {
-				for ($i=0; $i<count($this->secondary); $i++) {
-					if ($item["sd{$i}_date"]) {
-						$ts = strtotime($item["sd{$i}_date"]);
-
-						while (isset($_diagnoses[$ts])) {
-							$ts++;
-						}
-
-						$_diagnoses[$ts] = array(
-							'type' => 'Secondary',
-							'disorder' => $item["sd{$i}_fully_specified_name"],
-							'date' => $item["sd{$i}_date"],
-							'eye' => $eyes[$item["sd{$i}_eye"]],
-						);
-					}
-				}
-			}
-
-			ksort($_diagnoses);
-			reset($_diagnoses);
-			$ts = key($_diagnoses);
-
-			while (isset($this->diagnoses[$ts])) {
-				$ts++;
-			}
-
-			$this->diagnoses[$ts] = array(
-				'hos_num' => $item['hos_num'],
-				'dob' => $item['dob'],
-				'first_name' => $item['first_name'],
-				'last_name' => $item['last_name'],
-				'diagnoses' => $_diagnoses,
-			);
+			$this->addDiagnosesResultItem($item);
 		}
+	}
+
+	public function joinDisorders($type, $list, &$select, &$whereParams, &$or_conditions, &$query)
+	{
+		$join_table = ($type == 'Principal')
+			? array('episode','e')
+			: array('secondary_diagnosis','sd');
+		$date_field = ($type == 'Principal')
+			? 'created_date'
+			: 'date';
+		$select_prefix = ($type == 'Principal') ? 'pdis' : 'sdis';
+
+		$i = 0;
+		foreach ($list as $disorder_id) {
+			$select .= ", {$join_table[1]}$i.$date_field as {$select_prefix}{$i}_date, {$select_prefix}{$i}.fully_specified_name as {$select_prefix}{$i}_fully_specified_name, {$join_table[1]}{$i}.eye_id as {$select_prefix}{$i}_eye";
+
+			$whereParams[":{$select_prefix}$i"] = $disorder_id;
+
+			$join_condition = "{$join_table[1]}$i.patient_id = p.id and {$join_table[1]}$i.disorder_id = :{$select_prefix}$i";
+
+			if ($this->start_date) {
+				$join_condition .= " and {$join_table[1]}$i.$date_field >= :start_date";
+				$whereParams[':start_date'] = date('Y-m-d',strtotime($this->start_date)).' 00:00:00';
+			}
+			if ($this->end_date) {
+				$join_condition .= " and {$join_table[1]}$i.$date_field <= :end_date";
+				$whereParams[':end_date'] = date('Y-m-d',strtotime($this->end_date)).' 23:59:59';
+			}
+
+			$join_method = $this->condition_type == 'and' ? 'join' : 'leftJoin';
+
+			$query->$join_method("{$join_table[0]} {$join_table[1]}$i",$join_condition);
+			$query->$join_method("disorder {$select_prefix}$i","{$select_prefix}$i.id = {$join_table[1]}$i.disorder_id");
+
+			if ($this->condition_type == 'or') {
+				$or_conditions[] = "{$select_prefix}$i.id is not null";
+			}
+
+			$i++;
+		}
+	}
+
+	public function addDiagnosesResultItem($item)
+	{
+		$diagnoses = array();
+
+		!empty($this->principal) && $diagnoses = $this->getDiagnosesForRow('Principal', $item, $this->principal, $diagnoses);
+		!empty($this->secondary) && $diagnoses = $this->getDiagnosesForRow('Secondary', $item, $this->secondary, $diagnoses);
+
+		ksort($diagnoses);
+		reset($diagnoses);
+
+		$ts = key($diagnoses);
+
+		while (isset($this->diagnoses[$ts])) {
+			$ts++;
+		}
+
+		$this->diagnoses[$ts] = array(
+			'hos_num' => $item['hos_num'],
+			'dob' => $item['dob'],
+			'first_name' => $item['first_name'],
+			'last_name' => $item['last_name'],
+			'diagnoses' => $diagnoses,
+		);
+	}
+
+	public function getDiagnosesForRow($type, $item, $list, $diagnoses)
+	{
+		$eyes = CHtml::listData(Eye::model()->findAll(),'id','name');
+
+		$field_prefix = ($type == 'Principal') ? 'pdis' : 'sdis';
+
+		for ($i=0; $i<count($list); $i++) {
+			if ($item["{$field_prefix}{$i}_date"]) {
+				$ts = $this->getFreeTimestampIndex($item["{$field_prefix}{$i}_date"],$diagnoses);
+
+				$diagnoses[$ts] = array(
+					'type' => $type,
+					'disorder' => $item["{$field_prefix}{$i}_fully_specified_name"],
+					'date' => $item["{$field_prefix}{$i}_date"],
+					'eye' => $eyes[$item["{$field_prefix}{$i}_eye"]],
+				);
+			}
+		}
+
+		return $diagnoses;
+	}
+
+	public function getFreeTimestampIndex($date, $list)
+	{
+		$ts = strtotime($date);
+		
+		while (isset($list[$ts])) {
+			$ts++;
+		}
+
+		return $ts;
 	}
 
 	public function description()
