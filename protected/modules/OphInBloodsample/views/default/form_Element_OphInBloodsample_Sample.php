@@ -26,7 +26,8 @@
 		));
 
 	$form->activeWidget('DatePicker', $element,'blood_date',
-		array('options' => array('maxDate' => 'today'),
+		array(
+			'options' => array('maxDate' => 'today'),
 		));
 
 	$form->activeWidget('TextField', $element, 'volume');
