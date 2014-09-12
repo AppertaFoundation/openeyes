@@ -18,6 +18,14 @@
  */
 class BaseEventTypeCActiveForm extends FormLayout
 {
+    public function activeWidget($className,$element,$field,$properties=array(),$captureOutput=false)
+    {
+        $properties['element'] = $element;
+        $properties['field'] = $field;
+
+        return parent::widget($className,$properties,$captureOutput);
+    }
+
     /**
      * @param CModel $model
      * @param string $field
@@ -127,7 +135,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'layoutColumns' => $layoutColumns
 		));
 	}
-        
+
     /**
 	 * @param $element
 	 * @param $field
@@ -146,7 +154,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 				1 => 'Yes',
 				0 => 'No',
 				2 => 'Unknown'
-                                
+
 			),
 			'selected_item' => $element->$field,
 			'htmlOptions' => $htmlOptions,
