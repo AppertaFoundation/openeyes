@@ -17,31 +17,31 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-	<fieldset class="element-fields">
-		<?php
-		$form->activeWidget(
-			'DropDownList',$element,
-			'type_id',
-			array(
-				'data' => CHtml::listData(OphInBloodsample_Sample_Type::model()->findAll(array('order'=> 'display_order asc')),'id','name'),
-				'htmlOptions'=>array('empty'=>'- Please select -'),
-			));
+<fieldset class="element-fields">
+	<?php
+	$form->activeWidget(
+		'DropDownList',$element,
+		'type_id',
+		array(
+			'data' => CHtml::listData(OphInBloodsample_Sample_Type::model()->findAll(array('order'=> 'display_order asc')),'id','name'),
+			'htmlOptions'=>array('empty'=>'- Please select -'),
+		));
 
-		$form->activeWidget(
-			'DatePicker', $element,
-			'blood_date',
-			array(
-				'options' => array('maxDate' => 'today'),
-			));
+	$form->activeWidget(
+		'DatePicker', $element,
+		'blood_date',
+		array(
+			'options' => array('maxDate' => 'today'),
+		));
 
-		$form->activeWidget('TextField', $element, 'volume');
+	$form->activeWidget('TextField', $element, 'volume');
 
-		$form->widget(
-			'caption',
-			array(
-				'label'=>'Volume Remaining',
-				'value'=>(intval($element->volume) - $this->usedVolume()),
-			));
+	$form->widget(
+		'caption',
+		array(
+			'label'=>'Volume Remaining',
+			'value'=>(intval($element->volume) - $this->usedVolume()),
+		));
 
-		$form->activeWidget('TextField', $element, 'comments')?>
-	</fieldset>
+	$form->activeWidget('TextField', $element, 'comments')?>
+</fieldset>
