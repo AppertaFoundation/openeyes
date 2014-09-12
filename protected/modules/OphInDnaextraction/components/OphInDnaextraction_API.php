@@ -29,4 +29,12 @@ class OphInDnaextraction_API extends BaseAPI
 		}
 		return $events;
 	}
+
+	public function getVolume($event_id)
+	{
+		if (!$element = Element_OphInDnaextraction_DnaExtraction::model()->find('event_id = ?', array($event_id))) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+		return intVal($element->volume);
+	}
 }
