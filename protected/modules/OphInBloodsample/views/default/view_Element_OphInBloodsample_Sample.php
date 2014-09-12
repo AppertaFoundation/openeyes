@@ -45,6 +45,14 @@
 		</div>
 		<div class="row data-row">
 			<div class="large-2 column">
+				<div class="data-label">Volume Remaining:</div>
+			</div>
+			<div class="large-10 column">
+				<div class="data-value"><?php echo intval($element->volume) - $this->usedVolume() ?></div>
+			</div>
+		</div>
+		<div class="row data-row">
+			<div class="large-2 column">
 				<div class="data-label"><?php echo $element->getAttributeLabel('comments')?>:</div>
 			</div>
 			<div class="large-10 column">
