@@ -17,15 +17,31 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<section class="element <?php echo $element->elementType->class_name?>"
-	data-element-type-id="<?php echo $element->elementType->id?>"
-	data-element-type-class="<?php echo $element->elementType->class_name?>"
-	data-element-type-name="<?php echo $element->elementType->name?>"
-	data-element-display-order="<?php echo $element->elementType->display_order?>">
 	<fieldset class="element-fields">
-		<?php echo $form->dropDownList($element, 'type_id', CHtml::listData(OphInBloodsample_Sample_Type::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Please select -'),false,array('label' => 3, 'field' => 9))?>
-		<?php echo $form->datePicker($element, 'blood_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 9))?>
-		<?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 9))?>
-		<?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 9))?>
+		<?php
+		$form->activeWidget(
+			'DropDownList',$element,
+			'type_id',
+			array(
+				'data' => CHtml::listData(OphInBloodsample_Sample_Type::model()->findAll(array('order'=> 'display_order asc')),'id','name'),
+				'htmlOptions'=>array('empty'=>'- Please select -'),
+			));
+
+		$form->activeWidget(
+			'DatePicker', $element,
+			'blood_date',
+			array(
+				'options' => array('maxDate' => 'today'),
+			));
+
+		$form->activeWidget('TextField', $element, 'volume');
+
+		$form->widget(
+			'caption',
+			array(
+				'label'=>'Volume Remaining',
+				'value'=>(intval($element->volume) - $this->usedVolume()),
+			));
+
+		$form->activeWidget('TextField', $element, 'comments')?>
 	</fieldset>
-</section>
