@@ -17,7 +17,7 @@ class m131114_151248_event_type_OphInGenetictest extends OEMigration
 
 		if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphInGenetictest'))->queryRow()) {
 			$group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name',array(':name'=>'Investigation events'))->queryRow();
-			$this->insert('event_type', array('class_name' => 'OphInGenetictest', 'name' => 'Genetic test','event_group_id' => $group['id'],'parent_id' => $parent_id));
+			$this->insert('event_type', array('class_name' => 'OphInGenetictest', 'name' => 'Genetic Results','event_group_id' => $group['id'],'parent_id' => $parent_id));
 		}
 		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphInGenetictest'))->queryRow();
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'Test',':eventTypeId'=>$event_type['id']))->queryRow()) {
