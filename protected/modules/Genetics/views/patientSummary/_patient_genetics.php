@@ -56,7 +56,7 @@
 			if($events = $api->getEventsByPatient($this->patient)) {?>
 				<div class="row data-row">
 					<div class="large-4 column">
-						<div class="data-label">Blood Sample Events:</div>
+						<div class="data-label">DNA Sample Events:</div>
 					</div>
 					<div class="large-8 column">
 						<div class="data-value">
@@ -104,7 +104,7 @@
 			if($events = $api->getEventsByPatient($this->patient)) {?>
 				<div class="row data-row">
 					<div class="large-4 column">
-						<div class="data-label">Genetic Test Events:</div>
+						<div class="data-label">Genetic Result Events:</div>
 					</div>
 					<div class="large-8 column">
 						<div class="data-value">
