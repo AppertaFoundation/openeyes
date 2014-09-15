@@ -116,7 +116,12 @@
 		<?php if (count($genetic_tests) <1) {?>
 			<div class="alert-box no_results">
 				<span class="column_no_results">
-					No genetic tests were found with the selected criteria.
+		<?php if (@$_GET['query']) {?>
+			No genetic results were found with the selected criteria.
+		<?php }
+		else { ?>
+			Enter criteria to search for genetic results.
+		<?php }?>
 				</span>
 			</div>
 		<?php }?>

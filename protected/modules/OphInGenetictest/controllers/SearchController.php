@@ -69,6 +69,12 @@ class SearchController extends BaseController
 		Yii::app()->clientScript->registerScriptFile($assetPath.'/js/module.js');
 		Yii::app()->assetManager->registerCssFile('css/admin.css', null, 10);
 
+		$tests = array();
+		$pages = 0;
+		$page = 0;
+
+		if(@$_GET['search']) {
+
 		$where = "e.deleted = :zero and ep.deleted = :zero";
 		$whereParams = array(':zero' => 0);
 
@@ -199,11 +205,13 @@ class SearchController extends BaseController
 			$test_map[$test->id] = $test;
 		}
 
-		$tests = array();
+
 
 		foreach ($test_ids as $test_id) {
 			$tests[] = $test_map[$test_id];
 		}
+		}
+
 
 		$this->render('geneticTests',array(
 			'genetic_tests' => $tests,
