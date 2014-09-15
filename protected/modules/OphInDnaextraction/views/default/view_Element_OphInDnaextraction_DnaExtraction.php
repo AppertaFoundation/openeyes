@@ -104,4 +104,13 @@
 			</div>
 		</div>
 	</div>
+	<div class="element-data">
+	<?php
+	$this->widget('Caption',
+		array(
+			'label'=>'Volume Remaining',
+			'value'=>(intval($element->volume) - $this->usedVolume()),
+		));
+	?>
+	</div>
 </section>

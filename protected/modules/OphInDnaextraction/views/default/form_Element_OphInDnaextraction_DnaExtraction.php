@@ -29,7 +29,15 @@
 		<?php echo $form->datePicker($element, 'extracted_date', array('maxDate' => 'today'), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->textField($element, 'extracted_by', array(), array(), array('label' => 3, 'field' => 2))?>
 		<?php echo $form->textField($element, 'dna_concentration', array(), array(), array('label' => 3, 'field' => 2))?>
-		<?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2))?>
+		<?php echo $form->textField($element, 'volume', array(), array(), array('label' => 3, 'field' => 2));
+		if($this->action->id=="update") {
+			$form->widget('Caption',
+				array(
+					'label'=>'Volume Remaining',
+					'value'=>(intval($element->volume) - $this->usedVolume()),
+				));
+		}
+		?>
 		<?php echo $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5))?>
 	</fieldset>
 </section>

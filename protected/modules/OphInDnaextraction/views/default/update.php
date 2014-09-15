@@ -25,8 +25,8 @@
 			'enableAjaxValidation'=>false,
 			'focus'=>'#procedure_id',
 			'layoutColumns' => array(
-				'label' => 2,
-				'field' => 10
+				'label' => 3,
+				'field' => 9
 			)
 		));
 		// Event actions

@@ -28,8 +28,8 @@ $this->beginContent('//patient/event_container'); ?>
 		'id'=>'clinical-create',
 		'enableAjaxValidation'=>false,
 		'layoutColumns' => array(
-			'label' => 4,
-			'field' => 8
+			'label' => 3,
+			'field' => 9
 		)
 	));
 	?>
