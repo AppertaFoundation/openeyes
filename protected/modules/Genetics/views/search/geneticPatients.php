@@ -38,7 +38,6 @@
 							<tr>
 								<th>First name:</th>
 								<th>Last name:</th>
-								<th>Pedigree ID:</th>
 							</tr>
 							</thead>
 							<tbody>
@@ -52,10 +51,6 @@
 									<?php echo CHtml::textField('last-name', @$_GET['last-name'], array('placeholder' => 'Last name'))?>
 									<br />
 									<?php echo CHtml::checkBox('part_last_name', @$_GET['part-last-name']=='true') ?> Search part word
-								</td>
-								<td>
-									<?php echo CHtml::textField('pedigree-id', @$_GET['pedigree-id'], array('placeholder' => 'Pedigree ID'))?>
-									<br /><br />
 								</td>
 								<td>
 									<button id="search_genetics_patients" class="secondary" type="submit">
