@@ -46,6 +46,12 @@ class OEMigrationTest extends CDbTestCase
 
 		Yii::app()->db->createCommand("delete from episode_summary")->query();
 		Yii::app()->db->createCommand("delete from episode_summary_item")->query();
+		if (Yii::app()->db->schema->getTable('et_ophleepatientletter_epatientletter')) {
+			Yii::app()->db->createCommand("delete from et_ophleepatientletter_epatientletter")->query();
+		}
+		if (Yii::app()->db->schema->getTable('et_ophcocorrespondence_letter')) {
+			Yii::app()->db->createCommand("delete from et_ophcocorrespondence_letter")->query();
+		}
 		Yii::app()->db->createCommand("delete from event where event_type_id >= 1000")->query();
 		Yii::app()->db->createCommand("delete from event_type where id >= 1000 and parent_event_type_id is not null")->query();
 		Yii::app()->db->createCommand("delete from event_type where id >= 1000")->query();
@@ -66,6 +72,7 @@ class OEMigrationTest extends CDbTestCase
 
 		Yii::app()->db->createCommand("delete from episode_summary")->query();
 		Yii::app()->db->createCommand("delete from episode_summary_item")->query();
+		Yii::app()->db->createCommand("delete from event where event_type_id >= 1000")->query();
 		Yii::app()->db->createCommand("delete from event_type where id >= 1009")->query();
 
 		$this->oeMigration->setTestData(true);
@@ -168,6 +175,7 @@ class OEMigrationTest extends CDbTestCase
 	 * @depends testGetInsertId
 	 */
 	public function testGetInsertReferentialObjectValue(){
+		Yii::app()->db->createCommand("delete from event where event_type_id >= 1000")->query();
 		Yii::app()->db->createCommand("delete from event_type where id >= 1009")->query();
 		$this->oeMigration->setTestData(true);
 		ob_start();
