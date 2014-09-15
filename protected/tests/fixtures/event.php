@@ -20,6 +20,7 @@
 
 return array(
 	'event1' => array(
+		'id' => 1,
 		'episode_id' => 1,
 		'created_user_id' => 1,
 		'event_type_id' => 1,
@@ -33,6 +34,7 @@ return array(
 		'delete_pending'=> false,
 	),
 	'event2' => array(
+		'id' => 2,
 		'episode_id' => 2,
 		'created_user_id' => 1,
 		'event_type_id' => 1,
@@ -46,6 +48,7 @@ return array(
 		'delete_pending'=> false,
 	),
 	'event3' => array(
+		'id' => 3,
 		'episode_id' => 2,
 		'created_user_id' => 1,
 		'event_type_id' => 1,
@@ -59,6 +62,7 @@ return array(
 		'delete_pending'=> false,
 	),
 	'event4' => array(
+		'id' => 4,
 		'episode_id' => 3,
 		'created_user_id' => 1,
 		'event_type_id' => 1,
@@ -72,9 +76,24 @@ return array(
 		'delete_pending'=> false,
 	),
 	'event5' => array(
+		'id' => 5,
 		'episode_id' => 4,
 		'created_user_id' => 1,
 		'event_type_id' => 1,
+		'last_modified_user_id'=>1,
+		'last_modified_date' => date('Y-m-d 00:00:00'),
+		'created_date' => date('Y-m-d 00:00:00'),
+		'event_date' => null,
+		'info'=>'someinfo',
+		'deleted'=> false,
+		'delete_reason' => null,
+		'delete_pending'=> false,
+	),
+	'event6' => array(
+		'id' => 6,
+		'episode_id' => 4,
+		'created_user_id' => 1,
+		'event_type_id' => 1007,
 		'last_modified_user_id'=>1,
 		'last_modified_date' => date('Y-m-d 00:00:00'),
 		'created_date' => date('Y-m-d 00:00:00'),

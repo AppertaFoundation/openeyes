@@ -23,7 +23,7 @@ class ReportController extends BaseReportController
 	{
 		return array(
 			array('allow',
-				'actions' => array('index', 'diagnoses', 'letters', 'runReport', 'downloadReport'),
+				'actions' => array('index', 'diagnoses', 'runReport', 'downloadReport'),
 				'roles' => array('admin','OprnGenerateReport'),
 			)
 		);
@@ -37,10 +37,5 @@ class ReportController extends BaseReportController
 	public function actionDiagnoses()
 	{
 		$this->render('diagnoses');
-	}
-
-	public function actionLetters()
-	{
-		$this->render('letters');
 	}
 }

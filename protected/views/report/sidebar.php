@@ -3,7 +3,6 @@
 	<ul class="navigation reports">
 		<?php foreach (array(
 			'Diagnoses' => '/report/diagnoses',
-			'Letters' => '/report/letters',
 		) as $title => $uri) {?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/report\//','',$uri)) {?> class="selected"<?php }?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/report\//','',$uri)) {?>
