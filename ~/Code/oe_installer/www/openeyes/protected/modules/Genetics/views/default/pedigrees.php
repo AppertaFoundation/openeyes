@@ -37,17 +37,32 @@
 							<div class="large-12 column">
 								<table class="grid">
 									<thead>
+									<tr>
+										<th width="200px">Family ID:</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Enter family ID here...'))?>
+										</td>
+										<td>
+											<button id="search_pedigree_family_id" class="secondary" type="submit">
+												Search
+											</button>
+										</td>
+									</tr>
+									</tbody>
+								</table>
+								<table class="grid">
+									<thead>
 										<tr>
-											<th>Family ID:</th>
 											<th>Causative gene:</th>
 											<th>Consanguineous:</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<td>
-												<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Enter family ID here...'))?>
-											</td>
 											<td>
 												<?php echo CHtml::dropDownList('gene-id',@$_GET['gene-id'],CHtml::listData(PedigreeGene::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- All -'))?>
 											</td>
@@ -115,9 +130,7 @@
 					<th><?php echo CHtml::link('Base change',$this->getUri(array('sortby'=>'base-change')))?></th>
 					<th><?php echo CHtml::link('Amino acid change',$this->getUri(array('sortby'=>'amino-acid-change')))?></th>
 					<th><?php echo CHtml::link('Disorder',$this->getUri(array('sortby'=>'disorder')))?></th>
-					<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
-					<th>Edit</th>
-					<?php } ?>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -142,9 +155,12 @@
 						<td><?php echo $pedigree->base_change?></td>
 						<td><?php echo $pedigree->amino_acid_change?></td>
 						<td><?php echo $pedigree->disorder ? $pedigree->disorder->term : ''?></td>
-						<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
-							<td><?php echo CHtml::link('Edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pedigree->id))?></td>
-						<?php } ?>
+						<td>
+							<?php echo CHtml::link('View',Yii::app()->createUrl('/Genetics/default/viewPedigree/'.$pedigree->id))?>
+							<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
+								&nbsp<?php echo CHtml::link('Edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pedigree->id))?>
+							<?php } ?>
+						</td>
 					</tr>
 				<?php }?>
 			</tbody>

@@ -4,7 +4,12 @@
 $(document).ready(function() {
 	$('#search_pedigrees').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/Genetics/default/pedigrees?family-id='+$('#family-id').val()+'&gene-id='+$('#gene-id').val()+'&consanguineous='+$('#consanguineous').val()+'&disorder-id='+$('#savedDiagnosis').val();
+		window.location.href = baseUrl+'/Genetics/default/pedigrees?&gene-id='+$('#gene-id').val()+'&consanguineous='+$('#consanguineous').val()+'&disorder-id='+$('#savedDiagnosis').val();
+	});
+
+	$('#search_pedigree_family_id').click(function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/Genetics/default/pedigrees?family-id='+$('#family-id').val();
 	});
 
 	$('#search_genetics_patients').click(function(e) {
