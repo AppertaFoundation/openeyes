@@ -5,7 +5,7 @@ class m131104_082641_event_type_OphInBloodsample extends OEMigration
 	{
 		if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphInBloodsample'))->queryRow()) {
 			$group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name',array(':name'=>'Investigation events'))->queryRow();
-			$this->insert('event_type', array('class_name' => 'OphInBloodsample', 'name' => 'Blood sample','event_group_id' => $group['id']));
+			$this->insert('event_type', array('class_name' => 'OphInBloodsample', 'name' => 'DNA sample','event_group_id' => $group['id']));
 		}
 
 		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphInBloodsample'))->queryRow();
