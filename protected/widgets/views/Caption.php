@@ -20,7 +20,7 @@
 <?php if (@$htmlOptions['nowrapper']) {?>
 	<?php echo $value?>
 <?php } else {?>
-	<div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="row field-row"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
+	<div id="div_<?php echo CHtml::modelName($element)?>_<?php echo $field?>" class="<?php if($this->controller->action->id=="view") { ?>row data-row<?php } else {?>row field-row<?php } ?>"<?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
 		<div class="large-<?php echo $layoutColumns['label'];?> column">
 			<?php
 			if($label) {
@@ -30,11 +30,25 @@
 				$labelText = empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label'];
 			}
 			$labelText .= ':';
-			echo Chtml::label($labelText, Chtml::getIdByName($name));
+			if($this->controller->action->id=="view") {
+				?>
+				<div class="data-label"><?= $labelText?></div>
+			<?php
+			}
+			else {
+				echo Chtml::label($labelText, Chtml::getIdByName($name));
+			}
 			?>
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column<?php if(empty($htmlOptions['append-text']) || empty($layoutColumns['append-text'])){?> end<?php }?>">
-			<?php echo $value?>
+			<?php if($this->controller->action->id=="view") { ?>
+				<div class="data-value">
+					<?php echo $value?>
+				</div>
+			<?php
+			} else 	{
+				echo $value;
+			} ?>
 		</div>
 	</div>
 <?php }?>
