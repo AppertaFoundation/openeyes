@@ -659,4 +659,9 @@ class OEMigration extends CDbMigration
     {
         $this->verbose = $verbose;
     }
+
+    public function setEventTypeRBACSuffix($class_name,$rbac_operation_suffix) {
+        $event_type_id=$this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>$class_name))->queryScalar();
+        $this->update('event_type',array('rbac_operation_suffix'=>$rbac_operation_suffix),"id = $event_type_id");
+    }
 }
