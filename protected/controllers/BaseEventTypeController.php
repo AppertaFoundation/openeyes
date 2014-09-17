@@ -1707,4 +1707,33 @@ class BaseEventTypeController extends BaseModuleController
 			'errors' => $errors,
 		));
 	}
+
+	/**
+	 * Get open element by class name
+	 *
+	 * @param string $class_name
+	 * @return Object
+	 */
+	public function getOpenElementByClassName($class_name)
+	{
+		if (!empty($this->open_elements)) {
+			foreach ($this->open_elements as $element) {
+				if (CHtml::modelName($element) == $class_name) {
+					return $element;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Set the open elements (for unit testing)
+	 *
+	 * @param Array $open_elements
+	 */
+	public function setOpenElements($open_elements)
+	{
+		$this->open_elements = $open_elements;
+	}
 }
