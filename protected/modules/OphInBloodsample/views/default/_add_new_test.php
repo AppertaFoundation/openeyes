@@ -28,7 +28,7 @@
 			$assetpath = '/assets/';
 		}
 
-		if ($access=1) {?>
+		if ($this->checkAccess('OprnCreateEvent', $this->firm, Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm), $eventType)) { ?>
 			<li>
 				<?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$patient->id.'&parent_event_id='.$parent_event_id)?>
 			</li>
