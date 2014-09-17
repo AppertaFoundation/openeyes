@@ -22,5 +22,5 @@ if (isset($params['empty'])) {
 	$htmlOptions['empty'] = $params['empty'];
 }
 $value = $row ? $row->{$params['field']} : '';
-$data = AuthItem::model()->findAll(array('condition' => 'name like ?','order' => 'name asc','params' => array('Oprn%')));
+$data = AuthItem::model()->findAll(array('condition' => 'name not like ? and name not like ?','order' => 'name asc','params' => array('Oprn%','Task%')));
 echo CHtml::dropDownList($params['field'].'[]',$value,CHtml::listData($data,'name','name'),$htmlOptions);
