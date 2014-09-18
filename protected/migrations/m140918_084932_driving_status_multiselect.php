@@ -27,28 +27,32 @@ class m140918_084932_driving_status_multiselect extends OEMigration
 		$this->versionExistingTable('socialhistory_driving_status_assignment');
 
 		foreach ($this->dbConnection->createCommand()->select("*")->from("socialhistory")->order("id asc")->queryAll() as $row) {
-			$this->insert('socialhistory_driving_status_assignment',array(
-				'id' => $row['id'],
-				'socialhistory_id' => $row['id'],
-				'driving_status_id' => $row['driving_status_id'],
-				'last_modified_user_id' => $row['last_modified_user_id'],
-				'last_modified_date' => $row['last_modified_date'],
-				'created_user_id' => $row['created_user_id'],
-				'created_date' => $row['created_date'],
-			));
+			if ($row['driving_status_id'] !== null) {
+				$this->insert('socialhistory_driving_status_assignment',array(
+					'id' => $row['id'],
+					'socialhistory_id' => $row['id'],
+					'driving_status_id' => $row['driving_status_id'],
+					'last_modified_user_id' => $row['last_modified_user_id'],
+					'last_modified_date' => $row['last_modified_date'],
+					'created_user_id' => $row['created_user_id'],
+					'created_date' => $row['created_date'],
+				));
+			}
 
 			foreach ($this->dbConnection->createCommand()->select("*")->from("socialhistory_version")->where("id = {$row['id']}")->order("version_id asc")->queryAll() as $v) {
-				$this->insert('socialhistory_driving_status_assignment_version',array(
-					'id' => $row['id'],
-					'version_id' => $v['version_id'],
-					'version_date' => $v['version_date'],
-					'socialhistory_id' => $row['id'],
-					'driving_status_id' => $v['driving_status_id'],
-					'last_modified_user_id' => $v['last_modified_user_id'],
-					'last_modified_date' => $v['last_modified_date'],
-					'created_user_id' => $v['created_user_id'],
-					'created_date' => $v['created_date'],
-				));
+				if ($v['driving_status_id'] !== null) {
+					$this->insert('socialhistory_driving_status_assignment_version',array(
+						'id' => $row['id'],
+						'version_id' => $v['version_id'],
+						'version_date' => $v['version_date'],
+						'socialhistory_id' => $row['id'],
+						'driving_status_id' => $v['driving_status_id'],
+						'last_modified_user_id' => $v['last_modified_user_id'],
+						'last_modified_date' => $v['last_modified_date'],
+						'created_user_id' => $v['created_user_id'],
+						'created_date' => $v['created_date'],
+					));
+				}
 			}
 		}
 
