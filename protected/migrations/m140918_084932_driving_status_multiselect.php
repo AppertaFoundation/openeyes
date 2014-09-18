@@ -74,7 +74,7 @@ class m140918_084932_driving_status_multiselect extends OEMigration
 
 				foreach ($this->dbConnection->createCommand()->select("*")->from("socialhistory_driving_status_assignment_version")->where("id={$row['id']}")->order("version_id asc")->queryAll() as $v) {
 					$this->update('socialhistory_version',array(
-							'driving_status_id' => $row['driving_status_id'],
+							'driving_status_id' => $v['driving_status_id'],
 						),
 						"version_id = {$v['version_id']}"
 					);
