@@ -57,7 +57,7 @@
 		<?php }
 		if (!empty($social_history->driving_statuses)) {?>
 			<tr>
-				<td><?= CHtml::encode($social_history->getAttributeLabel('driving_statuses')) ?></td>
+				<td class="driving_statuses"><?= CHtml::encode($social_history->getAttributeLabel('driving_statuses')) ?></td>
 				<td>
 					<?php foreach ($social_history->driving_statuses as $item) {?>
 						<?php echo $item->name?><br/>
@@ -147,7 +147,7 @@
 			</div>
 			<div class="field-row row">
 				<div class="<?php echo $form->columns('label');?>">
-					<label for="relative_id"><?= CHtml::encode($social_history->getAttributeLabel('driving_statuses')) ?>:</label>
+					<label for="driving_statuses"><?= CHtml::encode($social_history->getAttributeLabel('driving_statuses')) ?>:</label>
 				</div>
 				<div class="<?php echo $form->columns('field');?>">
 					<input type="hidden" name="SocialHistory[driving_statuses]" value="" />
