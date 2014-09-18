@@ -44,6 +44,8 @@
 
 class SocialHistory  extends  BaseActiveRecordVersioned
 {
+	protected $auto_update_relations = true;
+
 	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
@@ -57,7 +59,7 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 	public function rules()
 	{
 		return array(
-			array('event_id, occupation_id, driving_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe'),
+			array('event_id, occupation_id, driving_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, driving_statuses', 'safe'),
 			array('smoking_status_id','required'),
 			array('id, event_id, occupation_id, driving_status_id, smoking_status_id, accommodation_id, comments, type_of_job, carer_id, alcohol_intake, substance_misuse_id, ', 'safe', 'on' => 'search'),
 			array('alcohol_intake', 'default', 'setOnEmpty' => true, 'value' => null),
@@ -70,11 +72,11 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'occupation' => array(self::BELONGS_TO, 'SocialHistoryOccupation', 'occupation_id'),
-			'driving_status' => array(self::BELONGS_TO, 'SocialHistoryDrivingStatus', 'driving_status_id'),
+			'driving_status_assignments' => array(self::HAS_MANY, 'SocialHistoryDrivingStatusAssignment', 'socialhistory_id', 'order' => 'display_order asc'),
+			'driving_statuses' => array(self::HAS_MANY, 'SocialHistoryDrivingStatus', 'driving_status_id', 'through' => 'driving_status_assignments'),
 			'smoking_status' => array(self::BELONGS_TO, 'SocialHistorySmokingStatus', 'smoking_status_id'),
 			'accommodation' => array(self::BELONGS_TO, 'SocialHistoryAccommodation', 'accommodation_id'),
 			'carer' => array(self::BELONGS_TO, 'SocialHistoryCarer', 'carer_id'),
-			'substance_misuse' => array(self::BELONGS_TO, 'SocialHistorySubstanceMisuse', 'substance_misuse_id'),
 			'substance_misuse' => array(self::BELONGS_TO, 'SocialHistorySubstanceMisuse', 'substance_misuse_id'),
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 		);
@@ -84,7 +86,7 @@ class SocialHistory  extends  BaseActiveRecordVersioned
 	{
 		return array(
 			'occupation_id' => 'Employment',
-			'driving_status_id' => 'Driving Status',
+			'driving_statuses' => 'Driving Status',
 			'smoking_status_id' => 'Smoking Status',
 			'accommodation_id' => 'Accommodation',
 			'comments' => 'Comments',
