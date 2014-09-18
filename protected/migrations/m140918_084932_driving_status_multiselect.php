@@ -28,6 +28,7 @@ class m140918_084932_driving_status_multiselect extends OEMigration
 
 		foreach ($this->dbConnection->createCommand()->select("*")->from("socialhistory")->order("id asc")->queryAll() as $row) {
 			$this->insert('socialhistory_driving_status_assignment',array(
+				'id' => $row['id'],
 				'socialhistory_id' => $row['id'],
 				'driving_status_id' => $row['driving_status_id'],
 				'last_modified_user_id' => $row['last_modified_user_id'],
@@ -36,11 +37,9 @@ class m140918_084932_driving_status_multiselect extends OEMigration
 				'created_date' => $row['created_date'],
 			));
 
-			$id = $this->dbConnection->createCommand()->select("max(id)")->from("socialhistory_driving_status_assignment")->queryScalar();
-
 			foreach ($this->dbConnection->createCommand()->select("*")->from("socialhistory_version")->where("id = {$row['id']}")->order("version_id asc")->queryAll() as $v) {
 				$this->insert('socialhistory_driving_status_assignment_version',array(
-					'id' => $id,
+					'id' => $row['id'],
 					'version_id' => $v['version_id'],
 					'version_date' => $v['version_date'],
 					'socialhistory_id' => $row['id'],
@@ -73,9 +72,9 @@ class m140918_084932_driving_status_multiselect extends OEMigration
 
 				$this->update('socialhistory',array('driving_status_id' => $row['driving_status_id']),"id = {$row['socialhistory_id']}");
 
-				foreach ($this->dbConnection->createCommand()->select("*")->from("socialhistory_driving_status_assignment_version")->where("socialhistory_id={$row['id']}")->order("version_id asc")->queryAll() as $v) {
+				foreach ($this->dbConnection->createCommand()->select("*")->from("socialhistory_driving_status_assignment_version")->where("id={$row['id']}")->order("version_id asc")->queryAll() as $v) {
 					$this->update('socialhistory_version',array(
-							'driving_status_id' => $v['driving_status_id'],
+							'driving_status_id' => $row['driving_status_id'],
 						),
 						"version_id = {$v['version_id']}"
 					);
