@@ -299,6 +299,16 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->rules->canRequestEventDeletion($this->getNormalFirm(), $event));
     }
 
+    public function testDefaultCanCreateEventWithNoSuffix()
+    {
+        $this->becomeNormalUserWithCreatePermission();
+        $event_type = ComponentStubGenerator::generate(
+            'EventType',
+            array()
+        );
+        $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
+    }
+
     public function testCanEditEventEventTypeSuffix()
     {
         $this->becomeTestUserWithCreatePermission();
@@ -307,6 +317,26 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
             array('rbac_operation_suffix' => 'Test')
         );
         $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
+    }
+
+    public function testCantCreateEventEventTypeSuffix()
+    {
+        $this->becomeTestUserWithNoCreatePermission();
+        $event_type = ComponentStubGenerator::generate(
+            'EventType',
+            array('rbac_operation_suffix' => 'Test')
+        );
+        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
+    }
+
+    public function testUserCanEditEventWithNoEventTypeSuffix()
+    {
+        $this->becomeTestUserWithNoCreatePermission();
+        $event_type = ComponentStubGenerator::generate(
+            'EventType',
+            array()
+        );
+        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
 
     public function testCantEditEventEventTypeSuffix()
@@ -421,6 +451,13 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $user = $this->getMockBuilder('CWebUser')->disableOriginalConstructor()->getMock();
         $user->expects($this->any())->method('checkAccess')->with('OprnCreateTest')->will($this->returnValue(false));
+        Yii::app()->setComponent('user', $user);
+    }
+
+    private function becomeNormalUserWithCreatePermission()
+    {
+        $user = $this->getMockBuilder('CWebUser')->disableOriginalConstructor()->getMock();
+        $user->expects($this->any())->method('checkAccess')->with('OprnCreateEvent')->will($this->returnValue(false));
         Yii::app()->setComponent('user', $user);
     }
 }
