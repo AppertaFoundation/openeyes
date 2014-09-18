@@ -43,11 +43,11 @@ class m140918_084932_driving_status_multiselect extends OEMigration
 					'version_id' => $v['version_id'],
 					'version_date' => $v['version_date'],
 					'socialhistory_id' => $row['id'],
-					'driving_status_id' => $row['driving_status_id'],
-					'last_modified_user_id' => $row['last_modified_user_id'],
-					'last_modified_date' => $row['last_modified_date'],
-					'created_user_id' => $row['created_user_id'],
-					'created_date' => $row['created_date'],
+					'driving_status_id' => $v['driving_status_id'],
+					'last_modified_user_id' => $v['last_modified_user_id'],
+					'last_modified_date' => $v['last_modified_date'],
+					'created_user_id' => $v['created_user_id'],
+					'created_date' => $v['created_date'],
 				));
 			}
 		}
