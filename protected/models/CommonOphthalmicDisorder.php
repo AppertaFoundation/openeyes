@@ -58,7 +58,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('disorder_id, subspecialty_id', 'required'),
+			array('subspecialty_id', 'required'),
 			array('disorder_id, subspecialty_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -152,6 +152,23 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 				}
 			}
 		}
-		return array(CHtml::listData($disorders, 'id', 'term'), $secondary_to);
+
+		$_disorders = array();
+		$_secondary = array();
+
+		if ($cod = self::model()->find('subspecialty_id=? and disorder_id is null',array($ss_id))) {
+			$_disorders['NONE'] = 'None';
+			$_secondary['NONE'] = CHtml::listData(SecondaryToCommonOphthalmicDisorder::model()->findAll(array('condition' => 'parent_id = :pid','params' => array(':pid' => $cod->id))),'disorder_id','disorder.term');
+		}
+
+		foreach (CHtml::listData($disorders,'id','term') as $id => $term) {
+			$_disorders[$id] = $term;
+		}
+
+		foreach ($secondary_to as $parent_id => $disorders) {
+			$_secondary[$parent_id] = $disorders;
+		}
+
+		return array($_disorders, $_secondary);
 	}
 }
