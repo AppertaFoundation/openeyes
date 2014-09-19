@@ -38,7 +38,9 @@
 			<legend class="large-2 column">Pedigree Diagnosis:</legend>
 			<input type="hidden" value="" name="Pedigree[consanguinity]">
 			<div class="large-4 column end">
+				<?php if ($pedigree->id) { ?>
 				<div id="enteredDiagnosisText" class="panel diagnosis hide" style="display: block;"><?php echo $pedigree->disorder->fully_specified_name?></div>
+				<?php } ?>
 			</div>
 		</fieldset>
 	<?php echo $form->radioBoolean($pedigree,'consanguinity')?>

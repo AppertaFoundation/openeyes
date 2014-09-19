@@ -38,6 +38,20 @@
 						There are no family members in this pedigree.
 					</td>
 				</tr>
+
+				<tfoot class="pagination-container">
+				<tr>
+					<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
+						<td colspan="3">
+							<?php echo EventAction::button('Add Patient to Family', 'add', null, array('class' => 'small', 'id'=>'add_pedigree'))->toHtml()?>
+							<?php echo EventAction::button('Remove Patient Patient from Family', 'delete', null, array('class' => 'small'))->toHtml()?>
+						</td>
+					<?php } ?>
+					<td colspan="6">
+
+					</td>
+				</tr>
+				</tfoot>
 			<?php }?>
 			</tbody>
 		</table>
