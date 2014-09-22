@@ -33,15 +33,15 @@
 		)
 	));
 
-	$form->activeWidget('textField',$patient_pedigree,'pedigree_id',
+	$form->activeWidget('TextField',$patient_pedigree,'pedigree_id',
 		array(
 			'htmlOptions' => array('label'=>'Pedigree ID')));
 
-	$form->activeWidget('textField',$patient_pedigree, 'patient_id',
+	$form->activeWidget('TextField',$patient_pedigree, 'patient_id',
 		array(
 		'htmlOptions' => array('label'=>'Patient ID')));
 
-	$form->activeWidget('dropDownList',$patient_pedigree, 'status_id',
+	$form->activeWidget('DropDownList',$patient_pedigree, 'status_id',
 		array(
 			'htmlOptions' => array('label'=>'Status'),
 			'data' => CHtml::listData(PedigreeStatus::model()->findAll(array()),'id','name')
