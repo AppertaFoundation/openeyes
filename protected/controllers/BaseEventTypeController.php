@@ -105,6 +105,8 @@ class BaseEventTypeController extends BaseModuleController
 
 	protected $open_elements;
 
+	public $dont_redirect = false;
+
 	public function getTitle()
 	{
 		if(isset($this->title)){
@@ -1574,13 +1576,22 @@ class BaseEventTypeController extends BaseModuleController
 					$this->event->episode->audit('episode','delete',false);
 
 					$transaction->commit();
-					$this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
 
+					if (!$this->dont_redirect) {
+						$this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
+					} else {
+						return true;
+					}
 				}
 
 				Yii::app()->user->setFlash('success', "An event was deleted, please ensure the episode status is still correct.");
 				$transaction->commit();
-				$this->redirect(array('/patient/episode/'.$this->event->episode_id));
+
+				if (!$this->dont_redirect) {
+					$this->redirect(array('/patient/episode/'.$this->event->episode_id));
+				}
+
+				return true;
 			}
 			catch (Exception $e) {
 				$transaction->rollback();
