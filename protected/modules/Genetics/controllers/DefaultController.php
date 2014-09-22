@@ -45,7 +45,7 @@ class DefaultController extends BaseEventTypeController
 				'roles' => array('OprnSearchPedigree'),
 			),
 			array('allow',
-				'actions' => array('EditGene', 'AddGene', 'AddInheritance', 'EditInheritance', 'AddPedigree', 'EditPedigree'),
+				'actions' => array('EditGene', 'AddGene', 'AddInheritance', 'EditInheritance', 'AddPedigree', 'EditPedigree','AddPatientToPedigree'),
 				'roles' => array('OprnEditPedigree'),
 			),
 			array('allow',
@@ -67,6 +67,7 @@ class DefaultController extends BaseEventTypeController
 		'Inheritance' => self::ACTION_TYPE_FORM,
 		'AddInheritance' => self::ACTION_TYPE_FORM,
 		'EditInheritance' => self::ACTION_TYPE_FORM,
+		'AddPatientToPedigree' => self::ACTION_TYPE_FORM,
 		);
 
 	public function actionPedigrees()
@@ -250,6 +251,40 @@ class DefaultController extends BaseEventTypeController
 
 		$this->render('edit_pedigree',array(
 			'pedigree' => $pedigree,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionAddPatientToPedigree()
+	{
+		$patient_pedigree = new PatientPedigree();
+
+		$errors = array();
+
+		$patient_pedigree->pedigree_id = @$_GET['pedigree'];
+		$patient_pedigree->patient_id = @$_GET['patient'];
+
+		if (!empty($_POST)) {
+			if (isset($_POST['cancel'])) {
+				return $this->redirect(array('/Genetics/default/index'));
+			}
+
+
+			$patient_pedigree->patient_id = $_POST['PatientPedigree']['patient_id'];
+			$patient_pedigree->pedigree_id = $_POST['PatientPedigree']['pedigree_id'];
+			$patient_pedigree->status_id = $_POST['PatientPedigree']['status_id'];
+
+
+			if (!$patient_pedigree->save()) {
+				$errors = $patient_pedigree->getErrors();
+			} else {
+				PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($patient_pedigree->patient_id);
+				return $this->redirect(array('/Genetics/default/ViewPedigree'));
+			}
+		}
+
+		$this->render('add_patient_to_pedigree',array(
+			'patient_pedigree' => $patient_pedigree,
 			'errors' => $errors,
 		));
 	}

@@ -17,6 +17,22 @@ $(document).ready(function() {
 		window.location.href = baseUrl+'/Genetics/search/geneticPatients?first-name='+$('#first-name').val()+'&last-name='+$('#last-name').val()+'&dob='+$('#dob').val()+'&comments='+$('#comments').val()+'&disorder-id='+$('#savedDiagnosis').val()+'&part-first-name='+$('#part_first_name').is(':checked')+'&part-last-name='+$('#part_last_name').is(':checked')+'&search=search';
 	});
 
+	$('#add_patient_pedigree').click(function(e) {
+
+		var pedigreeId = '';
+		if($(this).data('pedigreeId')){
+			pedigreeId = $(this).data('pedigreeId');
+		}
+
+		var patientId = '';
+		if($(this).data('patientId')){
+			patientId = $(this).data('patientId');
+		}
+
+		e.preventDefault();
+		window.location.href = baseUrl+'/Genetics/default/addPatientToPedigree/?patient='+patientId+'&pedigree='+pedigreeId
+	});
+
 	$('tr.clickable').click(function(e) {
 		e.preventDefault();
 		window.location.href = $(this).data('uri');

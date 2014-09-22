@@ -131,9 +131,7 @@ class SearchController extends BaseController
 			->join("pedigree_status","patient_pedigree.status_id = pedigree_status.id")
 			->join("contact","patient.contact_id = contact.id")
 			->leftJoin("secondary_diagnosis","secondary_diagnosis.patient_id = patient.id")
-			->leftJoin("episode","episode.patient_id = patient.id")
 			->leftJoin("genetics_patient","genetics_patient.patient_id = patient.id");
-
 
 		if ($first_name) {
 			if($part_first_name=='true'){

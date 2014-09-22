@@ -40,13 +40,13 @@ class DiagnosisObserver
 			throw new Exception('Parameters Incorrect');
 		}
 		$patient = $params['patient'];
-		self::updatePedigreeDiagnosis($patient);
+		self::updatePedigreeDiagnosis($patient->id);
 	}
 
 	private function updatePedigreeDiagnosis($patient)
 	{
 		try {
-			PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($patient);
+			PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($patient->id);
 		}
 		catch (Exception $exp) {
 			if(!$exp->getMessage() == 'Patient has no pedigree'){
