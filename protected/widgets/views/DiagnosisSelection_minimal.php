@@ -109,7 +109,9 @@
 
 									if ($('#DiagnosisSelection_disorder_id_secondary_to').is(':visible')) {
 										var primary_selected = $('#{$class}_$field').children('option:selected');
-										".($callback ? $callback."(primary_selected.val(), primary_selected.text());" : "")."
+										if (primary_selected.val() != 'NONE') {
+											".($callback ? $callback."(primary_selected.val(), primary_selected.text());" : "")."
+										}
 									}
 									".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
 									$('#{$class}_{$field}_0').val('');
