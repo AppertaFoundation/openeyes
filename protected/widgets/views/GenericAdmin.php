@@ -28,18 +28,19 @@
 					<?php echo $model::model()->getAttributeLabel($field['field'])?>
 				</th>
 			<?php }?>
-			<?php
-			$attributes = $model::model()->getAttributes();
-			if (array_key_exists('active',$attributes)) {?>
-			<th>Active</th>
+			<?php if ($model::model()->hasAttribute('active')) {?>
+				<th>Active</th>
 			<?php } else{?>
-			<th>Actions</th>
+				<th>Actions</th>
+			<?php }
+			if ($model::model()->hasAttribute('default')) {?>
+				<th>Default</th>
 			<?php }?>
 		</tr>
 	</thead>
 	<tbody>
 		<?php foreach ($data as $i => $row) {?>
-			<tr>
+			<tr data-i="<?php echo $i?>">
 				<td class="reorder">
 					<span>&uarr;&darr;</span>
 				</td>
@@ -60,11 +61,15 @@
 				<td>
 					<?php if (isset($row->active)) {
 						echo CHtml::checkBox('active[' . $i . ']',$row->active);
-					}
-					else{?>
-					<a href="#" class="deleteRow">delete</a>
+					} else{?>
+						<a href="#" class="deleteRow">delete</a>
 					<?php }?>
 				</td>
+				<?php if (isset($row->default)) {?>
+					<td>
+						<?php echo CHtml::radioButton('default',$row->default,array('value' => $i))?>
+					</td>
+				<?php }?>
 			</tr>
 		<?php }?>
 		<tr class="newRow" style="display: none">
@@ -83,6 +88,11 @@
 			<td>
 				<a href="#" class="deleteRow">delete</a>
 			</td>
+			<?php if ($model::model()->hasAttribute('default')) {?>
+				<td>
+					<?php echo CHtml::radioButton('default',false)?>
+				</td>
+			<?php }?>
 		</tr>
 	</tbody>
 </table>
