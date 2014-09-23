@@ -41,7 +41,8 @@
 			?>
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column<?php if(empty($htmlOptions['append-text']) || empty($layoutColumns['append-text'])){?> end<?php }?>">
-			<?php if($this->controller->action->id=="view") { ?>
+			<?php
+			if(!(strtolower($this->controller->action->id)=="create" || strtolower($this->controller->action->id)=="update")) { ?>
 				<div class="data-value">
 					<?php echo $value?>
 				</div>
