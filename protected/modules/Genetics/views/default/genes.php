@@ -61,7 +61,12 @@
 						<?php if ($this->checkAccess('OprnEditGene')) { ?>
 							<td><input type="checkbox" name="genes[]" value="<?php echo $gene->id?>" /></td>
 						<?php } ?>
-						<td><?php echo $gene->name?></td>
+						<td>
+							<?php
+								echo InternetLink::geneName($gene->name);
+								echo $gene->name;
+							?>
+						</td>
 						<td><?php echo $gene->location?></td>
 						<?php if ($this->checkAccess('OprnEditGene')) { ?>
 							<td><?php echo CHtml::link('Edit',Yii::app()->createUrl('/Genetics/default/editGene/'.$gene->id))?></td>
