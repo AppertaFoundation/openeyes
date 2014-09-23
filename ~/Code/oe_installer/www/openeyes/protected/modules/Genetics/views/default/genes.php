@@ -33,7 +33,7 @@
 			))?>
 				<div class="row">
 					<div class="large-12 column">
-						<input type="text" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
+						
 					</div>
 				</div>
 			<?php $this->endWidget()?>
