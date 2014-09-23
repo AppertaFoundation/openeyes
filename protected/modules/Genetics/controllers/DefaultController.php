@@ -69,11 +69,12 @@ class DefaultController extends BaseEventTypeController
 		'EditInheritance' => self::ACTION_TYPE_FORM,
 		'AddPatientToPedigree' => self::ACTION_TYPE_FORM,
 		'RemovePatient'=> self::ACTION_TYPE_FORM,
-		);
+	);
 
 	public function actionPedigrees()
 	{
 		$errors = array();
+
 
 		if (isset($_POST['add'])) {
 			$this->redirect(Yii::app()->createUrl('/Genetics/default/addPedigree'));
@@ -95,60 +96,62 @@ class DefaultController extends BaseEventTypeController
 			}
 		}
 
+		$pedigrees = array();
+		$pagination = null;
 
+		if (@$_GET['search']) {
 
-		$criteria = new CDbCriteria;
+			$criteria = new CDbCriteria;
 
-		if (@$_GET['family-id']) {
-			$criteria->addCondition('t.id = :id');
-			$criteria->params[':id'] = $_GET['family-id'];
-		}
+			if (@$_GET['family-id']) {
+				$criteria->addCondition('t.id = :id');
+				$criteria->params[':id'] = $_GET['family-id'];
+			}
 
-		if (@$_GET['gene-id']) {
-			$criteria->addCondition('gene_id = :gene_id');
-			$criteria->params[':gene_id'] = $_GET['gene-id'];
-		}
+			if (@$_GET['gene-id']) {
+				$criteria->addCondition('gene_id = :gene_id');
+				$criteria->params[':gene_id'] = $_GET['gene-id'];
+			}
 
-		if (strlen(@$_GET['consanguineous']) >0) {
-			$criteria->addCondition('consanguinity = :consanguineous');
-			$criteria->params[':consanguineous'] = $_GET['consanguineous'];
-		}
+			if (strlen(@$_GET['consanguineous']) >0) {
+				$criteria->addCondition('consanguinity = :consanguineous');
+				$criteria->params[':consanguineous'] = $_GET['consanguineous'];
+			}
 
-		if (@$_GET['disorder-id']) {
-			$criteria->addCondition('disorder_id = :disorder_id');
-			$criteria->params[':disorder_id'] = $_GET['disorder-id'];
-		}
+			if (@$_GET['disorder-id']) {
+				$criteria->addCondition('disorder_id = :disorder_id');
+				$criteria->params[':disorder_id'] = $_GET['disorder-id'];
+			}
 
-		$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
+			$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
-		$order = "inheritance.name $dir";
+			$order = "inheritance.name $dir";
 
-		switch (@$_GET['sortby']) {
-			case 'inheritance':
-				$order = "inheritance.name $dir";
-				break;
-			case 'consanguinity':
-				$order = "consanguinity $dir";
-				break;
-			case 'gene':
-				$order = "gene.name $dir";
-				break;
-			case 'base-change':
-				$order = "base_change $dir";
-				break;
-			case 'amino-acid-change':
-				$order = "amino_acid_change $dir";
-				break;
-			case 'disorder':
-				$order = "disorder.fully_specified_name $dir";
-				break;
-		}
+			switch (@$_GET['sortby']) {
+				case 'inheritance':
+					$order = "inheritance.name $dir";
+					break;
+				case 'consanguinity':
+					$order = "consanguinity $dir";
+					break;
+				case 'gene':
+					$order = "gene.name $dir";
+					break;
+				case 'base-change':
+					$order = "base_change $dir";
+					break;
+				case 'amino-acid-change':
+					$order = "amino_acid_change $dir";
+					break;
+				case 'disorder':
+					$order = "disorder.fully_specified_name $dir";
+					break;
+			}
 
-		$criteria->order = $order;
-		$pagination = $this->initPagination(Pedigree::model(),$criteria);
+			$criteria->order = $order;
+			$pagination = $this->initPagination(Pedigree::model(),$criteria);
 
-		$this->render('pedigrees',array(
-			'pedigrees' => $this->getItems(array(
+			$pedigrees = $this->getItems(array(
 				'model' => 'Pedigree',
 				'with' => array(
 					'inheritance',
@@ -158,7 +161,11 @@ class DefaultController extends BaseEventTypeController
 				'page' => (Integer)@$_GET['page'],
 				'criteria' => $criteria,
 				'order'=>$order,
-			)),
+			));
+		}
+
+		$this->render('pedigrees',array(
+			'pedigrees' => $pedigrees,
 			'pagination' => $pagination,
 			'errors' => $errors,
 		));
@@ -166,6 +173,7 @@ class DefaultController extends BaseEventTypeController
 
 	public function getItems($params)
 	{
+
 		if (isset($params['criteria'])) {
 			$criteria = $params['criteria'];
 		} else {
@@ -356,9 +364,9 @@ class DefaultController extends BaseEventTypeController
 
 		$this->render('inheritance',array(
 			'inheritance' => $this->getItems(array(
-				'model' => 'PedigreeInheritance',
-				'page' => (Integer)@$_GET['page'],
-			)),
+					'model' => 'PedigreeInheritance',
+					'page' => (Integer)@$_GET['page'],
+				)),
 			'pagination' => $pagination,
 			'errors' => $errors,
 		));
@@ -475,10 +483,10 @@ class DefaultController extends BaseEventTypeController
 
 		$this->render('genes',array(
 			'genes' => $this->getItems(array(
-				'model' => 'PedigreeGene',
-				'page' => (Integer)@$_GET['page'],
-				'order' => $order,
-			)),
+					'model' => 'PedigreeGene',
+					'page' => (Integer)@$_GET['page'],
+					'order' => $order,
+				)),
 			'pagination' => $pagination,
 			'errors' => $errors,
 		));
