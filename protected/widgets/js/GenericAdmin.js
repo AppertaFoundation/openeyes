@@ -36,12 +36,9 @@ $(document).ready(function() {
 		helper: 'clone',
 		start: function() {
 			$('.generic-admin tbody').data('default',$('.generic-admin tbody tr').find('input[type="radio"][name="default"]:checked').closest('tr').data('i'));
-			console.log($('.generic-admin tbody').data('default'));
 		},
 		stop: function() {
 			GenericAdmin_ReindexDefault();
-			console.log($('.generic-admin tbody').data('default'));
-			console.log($('.generic-admin tbody tr[data-i="' + $('.generic-admin tbody').data('default') + '"]').length);
 			$('.generic-admin tbody tr[data-i="' + $('.generic-admin tbody').data('default') + '"]').find('input[type="radio"][name="default"]').prop('checked',true);
 		}
 	});

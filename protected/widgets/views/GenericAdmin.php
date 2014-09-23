@@ -59,13 +59,13 @@
 					</td>
 				<?php }?>
 				<td>
-					<?php if (isset($row->active)) {
+					<?php if ($model::model()->hasAttribute('active')) {
 						echo CHtml::checkBox('active[' . $i . ']',$row->active);
 					} else{?>
 						<a href="#" class="deleteRow">delete</a>
 					<?php }?>
 				</td>
-				<?php if (isset($row->default)) {?>
+				<?php if ($model::model()->hasAttribute('default')) {?>
 					<td>
 						<?php echo CHtml::radioButton('default',$row->default,array('value' => $i))?>
 					</td>
