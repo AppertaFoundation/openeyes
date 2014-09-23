@@ -95,6 +95,18 @@
 			<?php }?>
 		</tr>
 	</tbody>
+	<?php if ($model::model()->hasAttribute('default')) {?>
+		<tfoot>
+			<tr>
+				<td colspan="4" class="generic-admin-no-default">
+					No default
+				</td>
+				<td>
+					<?php echo CHtml::radioButton('default',!$has_default,array('value' => 'NONE'))?>
+				</td>
+			</tr>
+		</tfoot>
+	<?php }?>
 </table>
 <div>
 	<?php echo EventAction::button('Add', 'admin-add', null, array('class' => 'generic-admin-add small secondary'))->toHtml()?>&nbsp;

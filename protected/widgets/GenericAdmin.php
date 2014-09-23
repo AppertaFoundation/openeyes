@@ -6,6 +6,7 @@ class GenericAdmin extends BaseCWidget
 	public $data;
 	public $errors;
 	public $extra_fields = array();
+	public $has_default = false;
 
 	public function init()
 	{
@@ -34,6 +35,14 @@ class GenericAdmin extends BaseCWidget
 				}
 
 				$this->data[] = $item;
+			}
+		}
+
+		if ($model::model()->hasAttribute('default')) {
+			foreach ($this->data as $item) {
+				if ($item->default) {
+					$this->has_default = true;
+				}
 			}
 		}
 

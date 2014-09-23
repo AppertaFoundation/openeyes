@@ -89,7 +89,7 @@ class BaseAdminController extends BaseController
 				}
 
 				if ($item->hasAttribute('default')) {
-					if (isset($_POST['default']) && $_POST['default'] == $i) {
+					if (isset($_POST['default']) && $_POST['default'] != 'NONE' && $_POST['default'] == $i) {
 						$item->default = 1;
 					} else {
 						$item->default = 0;
