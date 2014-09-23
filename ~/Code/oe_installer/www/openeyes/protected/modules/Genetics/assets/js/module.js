@@ -9,7 +9,7 @@ $(document).ready(function() {
 
 	$('#search_pedigree_family_id').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/Genetics/default/pedigrees?family-id='+$('#family-id').val();
+		window.location.href = baseUrl+'/Genetics/default/pedigrees?family-id='+$('#family-id').val()+'&search=search';
 	});
 
 	$('#search_genetics_patients').click(function(e) {
