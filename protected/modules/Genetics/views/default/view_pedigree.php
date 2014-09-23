@@ -1,6 +1,53 @@
 <div class="box admin">
 	<div>
-		<h2>Family members</h2>
+		<h2>Pedigree ID: <?=$pedigree->id?></h2>
+		<?php
+		$this->widget('Caption',
+			array(
+				'label'=>'Inheritance',
+				'value'=>@$pedigree->inheritance->name,
+			));
+		$this->widget('Caption',
+			array(
+				'label'=>'Gene',
+				'value'=>@$pedigree->gene->name,
+			));
+		?>
+		<fieldset id="Pedigree_diagnosis" class="row field-row">
+			<legend class="large-2 column">Pedigree Diagnosis:</legend>
+			<input type="hidden" value="" name="Pedigree[consanguinity]">
+			<div class="large-4 column end">
+				<?php if ($pedigree->disorder) { ?>
+					<div id="enteredDiagnosisText" class="panel diagnosis hide" style="display: block;"><?php echo $pedigree->disorder->fully_specified_name?></div>
+				<?php } else { ?>
+					<div id="enteredDiagnosisText" class="panel diagnosis hide" style="display: block;">No Pedigree Diagnosis</div>
+				<?php } ?>
+			</div>
+		</fieldset>
+
+
+		<?php
+		$this->widget('Caption',
+			array(
+				'label'=>'Consanguinity',
+				'value'=>@$pedigree->consanguinity,
+			));
+		$this->widget('Caption',
+			array(
+				'label'=>'Base Change',
+				'value'=>@$pedigree->base_change,
+			));
+		$this->widget('Caption',
+			array(
+				'label'=>'Amino Acid Change',
+				'value'=>@$pedigree->amino_acid_change,
+			));
+		$this->widget('Caption',
+			array(
+				'label'=>'Comments',
+				'value'=>@Yii::app()->format->ntext($pedigree->comments),
+			));
+		?>
 		<table class="grid">
 			<thead>
 			<tr>
@@ -13,12 +60,13 @@
 				<th>Gender</th>
 				<th>Status</th>
 				<th>DNA available</th>
+				<th>Actions</th>
 			</tr>
 			</thead>
 			<tbody>
 			<?php if ($pedigree->members) {
 				foreach ($pedigree->members as $pm) {?>
-					<tr class="hover" data-hover="<?php echo $pm->getHoverText()?>">
+					<tr>
 						<td><?php echo CHtml::link($pm->patient->id,Yii::app()->createUrl('/patient/view/'.$pm->patient_id))?></td>
 						<td><?php echo $pm->patient->hos_num?></td>
 						<td><?php echo $pm->patient->title?></td>
@@ -30,6 +78,7 @@
 						<td>
 							<?php echo Element_OphInDnaextraction_DnaExtraction::model()->with(array('event' => array('with' => 'episode')))->find('patient_id=?',array($pm->patient_id)) ? 'Yes' : 'No'?>
 						</td>
+						<td><?php echo CHtml::link('Remove',Yii::app()->createUrl('/Genetics/default/removePatient/'.$pm->patient_id))?></td>
 					</tr>
 				<?php }
 			} else {?>
@@ -43,7 +92,7 @@
 				<tr>
 					<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
 						<td colspan="6">
-							<?php echo EventAction::button('Add Patient to Pedigree', 'add', null, array('class' => 'small', 'id'=>'add_patient_pedigree', 'data-pedigree-id'=>@$_GET['id']))->toHtml()?>
+							<?php echo EventAction::button('Add patient to pedigree', 'add', null, array('class' => 'small', 'id'=>'add_patient_pedigree', 'data-pedigree-id'=>@$_GET['id']))->toHtml()?>
 						</td>
 					<?php } ?>
 				</tr>

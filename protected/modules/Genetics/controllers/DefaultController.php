@@ -45,7 +45,7 @@ class DefaultController extends BaseEventTypeController
 				'roles' => array('OprnSearchPedigree'),
 			),
 			array('allow',
-				'actions' => array('EditGene', 'AddGene', 'AddInheritance', 'EditInheritance', 'AddPedigree', 'EditPedigree','AddPatientToPedigree'),
+				'actions' => array('EditGene', 'AddGene', 'AddInheritance', 'EditInheritance', 'AddPedigree', 'EditPedigree','AddPatientToPedigree','RemovePatient'),
 				'roles' => array('OprnEditPedigree'),
 			),
 			array('allow',
@@ -68,6 +68,7 @@ class DefaultController extends BaseEventTypeController
 		'AddInheritance' => self::ACTION_TYPE_FORM,
 		'EditInheritance' => self::ACTION_TYPE_FORM,
 		'AddPatientToPedigree' => self::ACTION_TYPE_FORM,
+		'RemovePatient'=> self::ACTION_TYPE_FORM,
 		);
 
 	public function actionPedigrees()
@@ -269,17 +270,27 @@ class DefaultController extends BaseEventTypeController
 				return $this->redirect(array('/Genetics/default/index'));
 			}
 
-
 			$patient_pedigree->patient_id = $_POST['PatientPedigree']['patient_id'];
-			$patient_pedigree->pedigree_id = $_POST['PatientPedigree']['pedigree_id'];
-			$patient_pedigree->status_id = $_POST['PatientPedigree']['status_id'];
 
+			if (!Patient::model()->find('id=?', array($_POST['PatientPedigree']['patient_id']))) {
+				$errors[] = array('Patient'=> 'Patient not found');
+			}
+			else if (!Pedigree::model()->find('id=?', array($_POST['PatientPedigree']['pedigree_id']))) {
+				$errors[] = array('Pedigree'=> 'Pedigree not found');
+			}
+			else if (PatientPedigree::model()->find('patient_id=?', array($_POST['PatientPedigree']['patient_id']))) {
+				$errors[] = array('Patient'=> 'Patient already in pedigree');
+			}
+			else {
+				$patient_pedigree->pedigree_id = $_POST['PatientPedigree']['pedigree_id'];
+				$patient_pedigree->status_id = $_POST['PatientPedigree']['status_id'];
 
-			if (!$patient_pedigree->save()) {
-				$errors = $patient_pedigree->getErrors();
-			} else {
-				PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($patient_pedigree->patient_id);
-				return $this->redirect(array('/Genetics/default/ViewPedigree'));
+				if (!$patient_pedigree->save()) {
+					$errors = $patient_pedigree->getErrors();
+				} else {
+					PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPatient($patient_pedigree->patient_id);
+					return $this->redirect(array('/Genetics/default/ViewPedigree/'.$patient_pedigree->pedigree_id));
+				}
 			}
 		}
 
@@ -301,6 +312,20 @@ class DefaultController extends BaseEventTypeController
 			'pedigree' => $pedigree,
 			'errors' => $errors,
 		));
+	}
+
+	public function actionRemovePatient($id)
+	{
+		if (!$patient_pedigree = PatientPedigree::model()->find('patient_id=?', array($id))) {
+			throw new Exception("Patient not found: $id");
+		}
+
+		$pedigree_id = $patient_pedigree->pedigree_id;
+		$patient_pedigree->delete();
+
+		PedigreeDiagnosisAlgorithm::updatePedigreeDiagnosisByPedigreeID($pedigree_id);
+
+		$this->redirect(array('/Genetics/default/viewPedigree/'.$pedigree_id));
 	}
 
 	public function actionInheritance()
