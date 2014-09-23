@@ -31,74 +31,74 @@
 				'focus' => '#search',
 				'action' => Yii::app()->createUrl('/Genetics/default/pedigrees'),
 			))?>
-				<div class="large-12 column">
-					<div class="panel">
-						<div class="row">
-							<div class="large-12 column">
-								<table class="grid">
-									<thead>
-									<tr>
-										<th width="200px">Family ID:</th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-										<td>
-											<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Enter family ID here...'))?>
-										</td>
-										<td>
-											<button id="search_pedigree_family_id" class="secondary" type="submit">
-												Search
-											</button>
-										</td>
-									</tr>
-									</tbody>
-								</table>
-								<table class="grid">
-									<thead>
-										<tr>
-											<th>Causative gene:</th>
-											<th>Consanguineous:</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<?php echo CHtml::dropDownList('gene-id',@$_GET['gene-id'],CHtml::listData(PedigreeGene::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- All -'))?>
-											</td>
-											<td>
-												<?php echo CHtml::dropDownList('consanguineous',@$_GET['consanguineous'],array(1 => 'Yes', 0 => 'No'),array('empty' => '- All -'))?>
-											</td>
-											<td>
-												<button id="search_pedigrees" class="secondary" type="submit">
-													Search
-												</button>
-											</td>
-										</tr>
-										<tr>
-											<td colspan="4">
-												<?php $form->widget('application.widgets.DiagnosisSelection',array(
-													'value' => @$_GET['disorder-id'],
-													'field' => 'principal_diagnosis',
-													'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-													'layoutColumns' => array(
-														'label' => $form->layoutColumns['label'],
-														'field' => 4,
-													),
-													'default' => false,
-													'htmlOptions' => array(
-														'fieldLabel' => 'Principal diagnosis',
-													),
-												))?>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
+			<div class="large-12 column">
+				<div class="panel">
+					<div class="row">
+						<div class="large-12 column">
+							<table class="grid">
+								<thead>
+								<tr>
+									<th width="200px">Family ID:</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td>
+										<?php echo CHtml::textField('family-id', @$_GET['family-id'], array('placeholder' => 'Enter family ID here...'))?>
+									</td>
+									<td>
+										<button id="search_pedigree_family_id" class="secondary" type="submit">
+											Search
+										</button>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+							<table class="grid">
+								<thead>
+								<tr>
+									<th>Causative gene:</th>
+									<th>Consanguineous:</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td>
+										<?php echo CHtml::dropDownList('gene-id',@$_GET['gene-id'],CHtml::listData(PedigreeGene::model()->findAll(array('order'=>'name asc')),'id','name'),array('empty' => '- All -'))?>
+									</td>
+									<td>
+										<?php echo CHtml::dropDownList('consanguineous',@$_GET['consanguineous'],array(1 => 'Yes', 0 => 'No'),array('empty' => '- All -'))?>
+									</td>
+									<td>
+										<button id="search_pedigrees" class="secondary" type="submit">
+											Search
+										</button>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<?php $form->widget('application.widgets.DiagnosisSelection',array(
+											'value' => @$_GET['disorder-id'],
+											'field' => 'principal_diagnosis',
+											'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+											'layoutColumns' => array(
+												'label' => $form->layoutColumns['label'],
+												'field' => 4,
+											),
+											'default' => false,
+											'htmlOptions' => array(
+												'fieldLabel' => 'Principal diagnosis',
+											),
+										))?>
+									</td>
+								</tr>
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>
-				<?php /*
+			</div>
+			<?php /*
 				<div class="row">
 					<div class="large-3 column">
 						<label>Family ID:</label>
@@ -118,8 +118,22 @@
 	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 	<form id="admin_pedigrees" method="post">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
-		<table class="grid">
-			<thead>
+
+		<?php if (count($pedigrees) <1) {?>
+			<div class="alert-box no_results">
+				<span class="column_no_results">
+					<?php if (@$_GET['search']) {?>
+						No results found for current criteria.
+					<?php }else{?>
+						Please enter criteria to search pedigrees.
+					<?php }?>
+				</span>
+			</div>
+		<?php } else { ?>
+
+
+			<table class="grid">
+				<thead>
 				<tr>
 					<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
 						<th><input type="checkbox" name="selectall" id="selectall" /></th>
@@ -132,54 +146,59 @@
 					<th><?php echo CHtml::link('Disorder',$this->getUri(array('sortby'=>'disorder')))?></th>
 					<th></th>
 				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ($pedigrees as $pedigree) {?>
-					<tr>
-						<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
-							<td><input type="checkbox" name="pedigrees[]" value="<?php echo $pedigree->id?>" /></td>
-						<?php } ?>
-						<td>
-							<?php if ($pedigree->inheritance) {
-								//echo CHtml::link($pedigree->inheritance->name,Yii::app()->createUrl('/Genetics/default/editInheritance/'.$pedigree->inheritance->id));
-								echo $pedigree->inheritance->name;
-							}?>
-						</td>
-						<td><?php echo $pedigree->consanguinity ? 'Yes' : 'No'?>
-						<td>
-							<?php if ($pedigree->gene) {
-								echo InternetLink::geneName($pedigree->gene->name);
-								echo $pedigree->gene->name;
-							}?>
-						</td>
-						<td><?php echo $pedigree->base_change?></td>
-						<td><?php echo $pedigree->amino_acid_change?></td>
-						<td><?php echo $pedigree->disorder ? $pedigree->disorder->term : ''?></td>
-						<td>
-							<?php echo CHtml::link('View',Yii::app()->createUrl('/Genetics/default/viewPedigree/'.$pedigree->id))?>
+				</thead>
+
+
+				<?php if (!empty($pedigrees)) {?>
+					<tbody>
+					<?php foreach ($pedigrees as $pedigree) {?>
+						<tr>
 							<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
-								&nbsp<?php echo CHtml::link('Edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pedigree->id))?>
+								<td><input type="checkbox" name="pedigrees[]" value="<?php echo $pedigree->id?>" /></td>
 							<?php } ?>
-						</td>
-					</tr>
-				<?php }?>
-			</tbody>
-			<tfoot class="pagination-container">
+							<td>
+								<?php if ($pedigree->inheritance) {
+									//echo CHtml::link($pedigree->inheritance->name,Yii::app()->createUrl('/Genetics/default/editInheritance/'.$pedigree->inheritance->id));
+									echo $pedigree->inheritance->name;
+								}?>
+							</td>
+							<td><?php echo $pedigree->consanguinity ? 'Yes' : 'No'?>
+							<td>
+								<?php if ($pedigree->gene) {
+									echo InternetLink::geneName($pedigree->gene->name);
+									echo $pedigree->gene->name;
+								}?>
+							</td>
+							<td><?php echo $pedigree->base_change?></td>
+							<td><?php echo $pedigree->amino_acid_change?></td>
+							<td><?php echo $pedigree->disorder ? $pedigree->disorder->term : ''?></td>
+							<td>
+								<?php echo CHtml::link('View',Yii::app()->createUrl('/Genetics/default/viewPedigree/'.$pedigree->id))?>
+								<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
+									&nbsp<?php echo CHtml::link('Edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pedigree->id))?>
+								<?php } ?>
+							</td>
+						</tr>
+					<?php }?>
+					</tbody>
+				<?php } ?>
+				<tfoot class="pagination-container">
 				<tr>
 
-						<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
-					<td colspan="3">
+					<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
+						<td colspan="3">
 							<?php echo EventAction::button('Add', 'add', null, array('class' => 'small', 'id'=>'add_pedigree'))->toHtml()?>
 							<?php echo EventAction::button('Delete', 'delete', null, array('class' => 'small'))->toHtml()?>
-					</td>
-						<?php } ?>
+						</td>
+					<?php } ?>
 					<td colspan="6">
 						<?php echo $this->renderPartial('_pagination',array(
 							'pagination' => $pagination
 						))?>
 					</td>
 				</tr>
-			</tfoot>
-		</table>
+				</tfoot>
+			</table>
+		<?php }?>
 	</form>
 </div>

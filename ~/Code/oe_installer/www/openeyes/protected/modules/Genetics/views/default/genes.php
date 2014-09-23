@@ -55,6 +55,7 @@
 					<?php } ?>
 				</tr>
 			</thead>
+
 			<tbody>
 				<?php foreach ($genes as $gene) {?>
 					<tr>
