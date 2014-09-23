@@ -26,13 +26,28 @@ class PedigreeDiagnosisAlgorithm
 	public static function updatePedigreeDiagnosisByPatient($patient_id)
 	{
 		if ($pedigree = self::findPedigreeByPatient($patient_id)) {
-			$disorder_id = self::mostCommonDiagnosis($pedigree->members);
-			$pedigree->disorder_id = $disorder_id;
-			$pedigree->save();
+			self::updatePedigreeDiagnosisByPedigree($pedigree);
 		}
 		else {
 			throw new Exception('Patient has no pedigree');
 		}
+	}
+
+	public static function updatePedigreeDiagnosisByPedigreeID($pedigree_id)
+	{
+		if ($pedigree = Pedigree::model()->find('id=?',array($pedigree_id))) {
+			self::updatePedigreeDiagnosisByPedigree($pedigree);
+		}
+		else {
+			throw new Exception('Pedigree not found');
+		}
+	}
+
+	public static function updatePedigreeDiagnosisByPedigree($pedigree)
+	{
+			$disorder_id = self::mostCommonDiagnosis($pedigree->members);
+			$pedigree->disorder_id = $disorder_id;
+			$pedigree->save();
 	}
 
 	private static function findPedigreeByPatient($patient_id)
