@@ -145,7 +145,7 @@
 					<th><?php echo CHtml::link('Base change',$this->getUri(array('sortby'=>'base-change')))?></th>
 					<th><?php echo CHtml::link('Amino acid change',$this->getUri(array('sortby'=>'amino-acid-change')))?></th>
 					<th><?php echo CHtml::link('Disorder',$this->getUri(array('sortby'=>'disorder')))?></th>
-					<th></th>
+					<th>Actions</th>
 				</tr>
 				</thead>
 
@@ -157,7 +157,7 @@
 							<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
 								<td><input type="checkbox" name="pedigrees[]" value="<?php echo $pedigree->id?>" /></td>
 							<?php } ?>
-							<td><?php echo $pedigree->id?></td>
+							<td><?php echo CHtml::link($pedigree->id,Yii::app()->createUrl('/Genetics/default/viewPedigree/'.$pedigree->id))?></td>
 							<td>
 								<?php if ($pedigree->inheritance) {
 									//echo CHtml::link($pedigree->inheritance->name,Yii::app()->createUrl('/Genetics/default/editInheritance/'.$pedigree->inheritance->id));
@@ -177,7 +177,7 @@
 							<td>
 								<?php echo CHtml::link('View',Yii::app()->createUrl('/Genetics/default/viewPedigree/'.$pedigree->id))?>
 								<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
-									&nbsp<?php echo CHtml::link('Edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pedigree->id))?>
+									<?php echo '&nbsp;'.CHtml::link('Edit',Yii::app()->createUrl('/Genetics/default/editPedigree/'.$pedigree->id))?>
 								<?php } ?>
 							</td>
 						</tr>
