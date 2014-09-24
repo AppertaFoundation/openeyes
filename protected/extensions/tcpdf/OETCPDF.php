@@ -201,7 +201,7 @@ class OETCPDF extends TCPDF
 	 */
 	public function ReplyToAddress($address)
 	{
-		$this->setY(90);
+		$this->setY($this->body_start+2);
 		$this->MultiCell(0, 0, $address, 0, 'L');
 		if ($this->body_start < $this->getY()) {
 			$this->body_start = $this->getY();
