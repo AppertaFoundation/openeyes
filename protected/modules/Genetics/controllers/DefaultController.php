@@ -125,7 +125,7 @@ class DefaultController extends BaseEventTypeController
 
 			$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
-			$order = "inheritance.name $dir";
+			$order = "t.id desc";
 
 			switch (@$_GET['sortby']) {
 				case 'inheritance':
@@ -145,6 +145,9 @@ class DefaultController extends BaseEventTypeController
 					break;
 				case 'disorder':
 					$order = "disorder.fully_specified_name $dir";
+					break;
+				case 'id':
+					$order = "t.id $dir";
 					break;
 			}
 

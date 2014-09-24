@@ -59,6 +59,8 @@
 				<th>DoB</th>
 				<th>Gender</th>
 				<th>Status</th>
+				<th>Father</th>
+				<th>Mother</th>
 				<th>DNA available</th>
 				<th>Actions</th>
 			</tr>
@@ -75,6 +77,8 @@
 						<td><?php echo $pm->patient->dob ? $pm->patient->NHSDate('dob') : $pm->patient->yob?></td>
 						<td><?php echo $pm->patient->gender == 'M' ? 'Male' : 'Female'?></td>
 						<td><?php echo $pm->status->name?></td>
+						<td><?php echo $pm->patient->father_id?></td>
+						<td><?php echo $pm->patient->mother_id?></td>
 						<td>
 							<?php echo Element_OphInDnaextraction_DnaExtraction::model()->with(array('event' => array('with' => 'episode')))->find('patient_id=?',array($pm->patient_id)) ? 'Yes' : 'No'?>
 						</td>

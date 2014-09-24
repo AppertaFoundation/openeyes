@@ -138,6 +138,7 @@
 					<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
 						<th><input type="checkbox" name="selectall" id="selectall" /></th>
 					<?php } ?>
+					<th><?php echo CHtml::link('ID',$this->getUri(array('sortby'=>'id')))?></th>
 					<th><?php echo CHtml::link('Inheritance',$this->getUri(array('sortby'=>'inheritance')))?></th>
 					<th><?php echo CHtml::link('Consanguinity',$this->getUri(array('sortby'=>'consanguinity')))?></th>
 					<th><?php echo CHtml::link('Gene',$this->getUri(array('sortby'=>'gene')))?></th>
@@ -156,6 +157,7 @@
 							<?php if ($this->checkAccess('OprnEditPedigree')) { ?>
 								<td><input type="checkbox" name="pedigrees[]" value="<?php echo $pedigree->id?>" /></td>
 							<?php } ?>
+							<td><?php echo $pedigree->id?></td>
 							<td>
 								<?php if ($pedigree->inheritance) {
 									//echo CHtml::link($pedigree->inheritance->name,Yii::app()->createUrl('/Genetics/default/editInheritance/'.$pedigree->inheritance->id));
