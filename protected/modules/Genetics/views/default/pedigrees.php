@@ -59,6 +59,7 @@
 								<tr>
 									<th>Causative gene:</th>
 									<th>Consanguineous:</th>
+									<th>Molecular Diagnosis:</th>
 								</tr>
 								</thead>
 								<tbody>
@@ -68,6 +69,9 @@
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('consanguineous',@$_GET['consanguineous'],array(1 => 'Yes', 0 => 'No'),array('empty' => '- All -'))?>
+									</td>
+									<td>
+										<?php echo CHtml::checkBox('molecular-diagnosis',@$_GET['molecular-diagnosis']=="true")?> Required
 									</td>
 									<td>
 										<button id="search_pedigrees" class="secondary" type="submit">
