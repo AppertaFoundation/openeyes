@@ -128,7 +128,7 @@
 		<?php $this->endWidget()?>
 	</div>
 
-	<h2>Blood sample events</h2>
+	<h2>DNA samples</h2>
 
 	<form id="admin_sequences">
 		<input type="hidden" id="select_all" value="0" />

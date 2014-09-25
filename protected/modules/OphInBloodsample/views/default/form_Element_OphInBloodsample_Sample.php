@@ -32,13 +32,6 @@
 
 	$form->activeWidget('TextField', $element, 'volume');
 
-	if($this->action->id=="update") {
-		$form->widget('Caption',
-			array(
-				'label'=>'Volume Remaining',
-				'value'=>(intval($element->volume) - $this->usedVolume()),
-			));
-	}
 
 	$form->activeWidget('TextField', $element, 'comments')?>
 </fieldset>

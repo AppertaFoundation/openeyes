@@ -3,15 +3,13 @@
 class DefaultController extends BaseEventTypeController
 {
 
-	public function usedVolume(){
+	public function volumeRemaining($event_id){
 
-		$used_volume = 0;
+		$volume_remaining = 0;
 		if ($api = Yii::app()->moduleAPI->get('OphInDnaextraction')){
-			foreach($this->event->children as $event){
-				$used_volume =+ $api->getVolume($event->id);
-			}
+			$volume_remaining = $api->volumeRemaining($event_id);
 		}
-		return $used_volume;
+		return $volume_remaining;
 	}
 
 
