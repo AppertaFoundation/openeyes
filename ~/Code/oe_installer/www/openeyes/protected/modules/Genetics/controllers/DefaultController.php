@@ -123,6 +123,10 @@ class DefaultController extends BaseEventTypeController
 				$criteria->params[':disorder_id'] = $_GET['disorder-id'];
 			}
 
+			if (@$_GET['molecular-diagnosis']=="true") {
+				$criteria->addCondition('gene_id is not null');
+			}
+
 			$dir = @$_GET['order'] == 'desc' ? 'desc' : 'asc';
 
 			$order = "t.id desc";
