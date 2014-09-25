@@ -9,7 +9,7 @@ class m131115_142803_dna_tests_element extends OEMigration
 
 		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'OphInDnaextraction'))->queryRow();
 
-		$this->insert('element_type', array('name' => 'DNA tests','class_name' => 'Element_OphInDnaextraction_DnaTests', 'event_type_id' => $event_type['id'], 'display_order' => 2));
+		$this->insert('element_type', array('name' => 'DNA Withdrawals','class_name' => 'Element_OphInDnaextraction_DnaTests', 'event_type_id' => $event_type['id'], 'display_order' => 2));
 
 		$this->createTable('et_ophindnaextraction_dnatests', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',

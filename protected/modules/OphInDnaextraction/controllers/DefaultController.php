@@ -21,15 +21,10 @@ class DefaultController extends BaseEventTypeController
 		);
 	}
 
-	public function usedVolume()
+	public function volumeRemaining($event_id)
 	{
-		$used_volume = 0;
-		$element = Element_OphInDnaextraction_DnaTests::model()->find('event_id = ?', array($this->event->id));
-		$transactions = OphInDnaextraction_DnaTests_Transaction::model()->findAll('element_id = ?', array($element->id));
-		foreach($transactions as $transaction){
-			$used_volume+=$transaction->volume;
-		}
-		return $used_volume;
+		$api = Yii::app()->moduleAPI->get('OphInDnaextraction');
+		return $api->volumeRemaining($event_id);
 	}
 
 

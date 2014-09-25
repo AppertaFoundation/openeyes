@@ -109,7 +109,7 @@
 	$this->widget('Caption',
 		array(
 			'label'=>'Volume Remaining',
-			'value'=>(intval($element->volume) - $this->usedVolume()),
+			'value'=>$this->volumeRemaining($element->event_id),
 		));
 	?>
 	</div>

@@ -30,11 +30,18 @@ class OphInDnaextraction_API extends BaseAPI
 		return $events;
 	}
 
-	public function getVolume($event_id)
+	public function volumeRemaining($event_id)
 	{
 		if (!$element = Element_OphInDnaextraction_DnaExtraction::model()->find('event_id = ?', array($event_id))) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
-		return intVal($element->volume);
+		$used_volume=0;
+		$volume = intval($element->volume);
+		$transactions_element = Element_OphInDnaextraction_DnaTests::model()->find('event_id = ?', array($event_id));
+		$transactions = OphInDnaextraction_DnaTests_Transaction::model()->findAll('element_id = ?', array($transactions_element ->id));
+		foreach($transactions as $transaction){
+			$used_volume+=$transaction->volume;
+		}
+		return $volume - $used_volume;
 	}
 }
