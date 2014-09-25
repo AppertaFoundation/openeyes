@@ -26,6 +26,7 @@ class m131104_101736_event_type_OphInDnaextraction extends CDbMigration
 				'box' => 'varchar(5) COLLATE utf8_bin',
 				'letter' => 'varchar(2) COLLATE utf8_bin',
 				'number' => 'varchar(5) COLLATE utf8_bin',
+				'orientry' => 'varchar(8) COLLATE utf8_bin',
 				'extracted_date' => 'date DEFAULT NULL',
 				'extracted_by' => 'varchar(255) COLLATE utf8_bin',
 				'comments' => 'text COLLATE utf8_bin',
