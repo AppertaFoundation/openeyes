@@ -50,7 +50,7 @@
 			<div id="div_<?php echo "{$class}_{$field}_secondary_to"?>" class="row field-row hidden">
 				<?php if (!$nowrapper) {?>
 					<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
-						<label for="<?php echo "{$class}_{$field}_secondary_to";?>">Secondary To:</label>
+						<label for="<?php echo "{$class}_{$field}_secondary_to";?>">Associated with:</label>
 					</div>
 				<?php }?>
 				<div class="large-<?php echo $layoutColumns['field'];?> column end">
