@@ -664,4 +664,44 @@ class OEMigration extends CDbMigration
         $event_type_id=$this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>$class_name))->queryScalar();
         $this->update('event_type',array('rbac_operation_suffix'=>$rbac_operation_suffix),"id = $event_type_id");
     }
+
+    public function addRole($role_name) {
+        $this->insert('authitem',array('name'=>$role_name, 'type' => 2));
+    }
+
+    public function addTask($task_name) {
+        $this->insert('authitem',array('name'=>$task_name, 'type' => 1));
+    }
+
+    public function addOperation($oprn_name) {
+        $this->insert('authitem',array('name'=>$oprn_name, 'type' => 0));
+    }
+
+    public function addTaskToRole($task_name, $role_name) {
+        $this->insert('authitemchild',array('parent'=>$role_name,'child'=>$task_name));
+    }
+
+    public function addOperationToTask($oprn_name, $task_name) {
+        $this->insert('authitemchild',array('parent'=>$task_name,'child'=>$oprn_name));
+    }
+
+    public function removeOperationFromTask($oprn_name, $task_name) {
+        $this->delete('authitemchild','parent = :task_name and child = :oprn_name', array(":task_name"=>$task_name,':oprn_name'=>$oprn_name));
+    }
+
+    public function removeTaskFromRole($task_name, $role_name) {
+        $this->delete('authitemchild','parent = :role_name and child = :task_name', array(":role_name"=>$role_name,':task_name'=>$task_name));
+    }
+
+    public function removeRole($role_name) {
+        $this->delete('authitem',"name = :name and type=2", array(':name'=>$role_name));
+    }
+
+    public function removeTask($task_name) {
+        $this->delete('authitem',"name = :name and type=1", array(':name'=>$task_name));
+    }
+
+    public function removeOperation($oprn_name) {
+        $this->delete('authitem',"name = :name and type=0", array(':name'=>$oprn_name));
+    }
 }
