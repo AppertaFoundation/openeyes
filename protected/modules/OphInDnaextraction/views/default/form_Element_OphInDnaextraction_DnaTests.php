@@ -48,7 +48,8 @@
 
 						if ($transactions) {
 							foreach ($transactions as $i => $transaction) {
-								$this->renderPartial('_dna_test', array('transaction' => $transaction, 'i' => $i));
+								$disabled = !$this->checkAccess('OprnEditGeneticsWithdrawals');
+								$this->renderPartial('_dna_test', array('transaction' => $transaction, 'i' => $i, 'disabled'=>$disabled));
 							}
 						} else {?>
 							<tr>

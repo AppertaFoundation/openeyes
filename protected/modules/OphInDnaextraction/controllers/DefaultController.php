@@ -60,6 +60,7 @@ class DefaultController extends BaseEventTypeController
 		$this->renderPartial('_dna_test', array(
 			'i' => $_GET['i'],
 			'transaction' => $transaction,
+			'disabled' => false,
 		));
 	}
 
