@@ -105,6 +105,8 @@ class BaseEventTypeController extends BaseModuleController
 
 	protected $open_elements;
 
+	public $dont_redirect = false;
+
 	public function getTitle()
 	{
 		if(isset($this->title)){
@@ -1574,13 +1576,22 @@ class BaseEventTypeController extends BaseModuleController
 					$this->event->episode->audit('episode','delete',false);
 
 					$transaction->commit();
-					$this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
 
+					if (!$this->dont_redirect) {
+						$this->redirect(array('/patient/episodes/'.$this->event->episode->patient->id));
+					} else {
+						return true;
+					}
 				}
 
 				Yii::app()->user->setFlash('success', "An event was deleted, please ensure the episode status is still correct.");
 				$transaction->commit();
-				$this->redirect(array('/patient/episode/'.$this->event->episode_id));
+
+				if (!$this->dont_redirect) {
+					$this->redirect(array('/patient/episode/'.$this->event->episode_id));
+				}
+
+				return true;
 			}
 			catch (Exception $e) {
 				$transaction->rollback();
@@ -1706,5 +1717,34 @@ class BaseEventTypeController extends BaseModuleController
 		$this->render('request_delete', array(
 			'errors' => $errors,
 		));
+	}
+
+	/**
+	 * Get open element by class name
+	 *
+	 * @param string $class_name
+	 * @return Object
+	 */
+	public function getOpenElementByClassName($class_name)
+	{
+		if (!empty($this->open_elements)) {
+			foreach ($this->open_elements as $element) {
+				if (CHtml::modelName($element) == $class_name) {
+					return $element;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Set the open elements (for unit testing)
+	 *
+	 * @param Array $open_elements
+	 */
+	public function setOpenElements($open_elements)
+	{
+		$this->open_elements = $open_elements;
 	}
 }
