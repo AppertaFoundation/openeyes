@@ -31,7 +31,10 @@ Import data from csv that defines disorders to appear as "secondary to" options 
 for importing secondary to options where data has already been set up for the common opthalmic disoders. The secondary to feature was a later
 addition to the drop down list short cut in diagnosis selection.
 
+if reset_parent is set to true, then all current common disorders for any subspecialty in the import file will be removed.
+
 EOH;
+
 	}
 
 	public $reset_parent = false;
@@ -79,7 +82,7 @@ EOH;
 					$record = str_getcsv($line, ',', '"');
 					$data = array();
 					foreach ($columns as $i => $col) {
-						$data[$col] = $record[$i];
+						$data[$col] = @$record[$i];
 					}
 					if (!$subspecialty = $this->getSubspecialty($data['subspecialty_code'])) {
 						$warnings[] = "no subspecialty found for {$data['subspecialty_code']}";
