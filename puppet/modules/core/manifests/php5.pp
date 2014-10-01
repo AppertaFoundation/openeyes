@@ -44,6 +44,6 @@ class core::php5 {
 		ensure => present,
 		owner => root, group => root, mode => 444,
 		content => "output_buffering = On \nzend.enable_gc = 0 \ndate.timezone = Europe/London",
-		require => Package['php5-cli']
+		require => Package['php5-cli', 'php5', 'libapache2-mod-php5']
 	}
 }
