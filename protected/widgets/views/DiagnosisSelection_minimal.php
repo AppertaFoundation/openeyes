@@ -17,10 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php $primary_selector_id = "{$class}_{$field}"; ?>
+
 <?php if (!$nowrapper) {?>
 	<div class="row field-row diagnosis-selection">
 		<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
-			<label for="<?php echo "{$class}_{$field}";?>">Diagnosis:</label>
+			<label for="<?php echo $primary_selector_id ;?>">Diagnosis:</label>
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 <?php }?>
@@ -47,10 +49,10 @@
 
 	<?php if ($secondary_to) {?>
 		<?php if (!$nowrapper) {?>
-			<div id="div_<?php echo "{$class}_{$field}_secondary_to"?>" class="row field-row hidden">
+			<div id="div_<?php echo "{$primary_selector_id}_secondary_to"?>" class="row field-row hidden">
 				<?php if (!$nowrapper) {?>
 					<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
-						<label for="<?php echo "{$class}_{$field}_secondary_to";?>">Associated with:</label>
+						<label for="<?php echo "{$primary_selector_id}_secondary_to";?>">Associated with:</label>
 					</div>
 				<?php }?>
 				<div class="large-<?php echo $layoutColumns['field'];?> column end">
@@ -75,7 +77,7 @@
 				<?php
 				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						'name' => "{$class}[$field]",
-						'id' => "{$class}_{$field}_0",
+						'id' => "{$primary_selector_id}_0",
 						'value'=>'',
 						'source'=>"js:function(request, response) {
 							$.ajax({
@@ -108,14 +110,14 @@
 								'select' => "js:function(event, ui) {
 
 									if ($('#DiagnosisSelection_disorder_id_secondary_to').is(':visible')) {
-										var primary_selected = $('#{$class}_$field').children('option:selected');
+										var primary_selected = $('#{$primary_selector_id}').children('option:selected');
 										if (primary_selected.val() != 'NONE') {
 											".($callback ? $callback."(primary_selected.val(), primary_selected.text());" : "")."
 										}
 									}
 									".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
-									$('#{$class}_{$field}_0').val('');
-									$('#{$class}_{$field}').children('option').map(function() {
+									$('#{$primary_selector_id}_0').val('');
+									$('#{$primary_selector_id}').children('option').map(function() {
 										if ($(this).val() == ui.item.id) {
 											$(this).remove();
 										}
@@ -134,6 +136,33 @@
 		</div>
 	<?php }?>
 <script type="text/javascript">
+	function updatePrimaryList(disorder, secondary_to) {
+		var html = '<option value="'+disorder.id+'"';
+		if (secondary_to) {
+			html += ' data-secondary-to="'+JSON.stringify(secondary_to).replace(/\"/g, "&quot;")+'"';
+		}
+		html += '>'+disorder.term+'</option>';
+
+		var none = '';
+		var empty = '';
+		$('#<?= $primary_selector_id ?>').children().each(function() {
+			if ($(this).val() == 'NONE') {
+				none = $(this)[0].outerHTML;
+			}
+			else if ($(this).val()) {
+				html += $(this)[0].outerHTML;
+			}
+			else {
+				empty = $(this)[0].outerHTML;
+			}
+		});
+		// sort_selectbox keeps the first element at the top.
+		$('#<?= $primary_selector_id ?>').html(empty + html);
+		sort_selectbox($('#<?= $primary_selector_id ?>'));
+		//prepend none
+		$('#<?= $primary_selector_id ?> option').eq(1).before($(none));
+	}
+
 	<?php if ($secondary_to) {?>
 	function updateSecondaryList(data, include_none) {
 		var options = '<option value="">- Please Select -</option>';
@@ -151,20 +180,20 @@
 				options += '<option value="' + data[i].id + '">' + data[i].term + '</option>';
 			}
 		}
-		$('#<?= "{$class}_{$field}_secondary_to"?>').html(options);
+		$('#<?= "{$primary_selector_id}_secondary_to"?>').html(options);
 	}
 
-	$('#<?= "{$class}_{$field}_secondary_to"?>').change(function() {
-		var primary_selected = $('#<?php echo $class?>_<?php echo $field?>').children('option:selected');
+	$('#<?= "{$primary_selector_id}_secondary_to"?>').change(function() {
+		var primary_selected = $('#<?= $primary_selector_id ?>').children('option:selected');
 		var selected = $(this).children('option:selected');
 		if (selected.val()) {
 			if (primary_selected.val() != 'NONE') {
-				<?php echo $callback?>(primary_selected.val(), primary_selected.text());
+				<?= $callback?>(primary_selected.val(), primary_selected.text());
 			}
 			if (selected.val() != 'NONE') {
-				<?php echo $callback?>(selected.val(), selected.text());
+				<?= $callback?>(selected.val(), selected.text());
 			}
-			$('#div_<?= "{$class}_{$field}_secondary_to"?>').hide();
+			$('#div_<?= "{$primary_selector_id}_secondary_to"?>').hide();
 			if (primary_selected.val() != 'NONE') {
 				primary_selected.remove();
 			}
@@ -180,23 +209,23 @@
 				<?php if ($secondary_to) {?>
 					if (selected.data('secondary-to')) {
 						updateSecondaryList(selected.data('secondary-to'), selected.val() != 'NONE');
-						$('#div_<?= "{$class}_{$field}_secondary_to"?>').show();
+						$('#div_<?= "{$primary_selector_id}_secondary_to"?>').show();
 					}
 					else {
-						$('#div_<?= "{$class}_{$field}_secondary_to"?>').hide();
+						$('#div_<?= "{$primary_selector_id}_secondary_to"?>').hide();
 						<?php echo $callback?>(selected.val(), selected.text());
 						selected.remove();
-						$('#<?php echo $class?>_<?php echo $field?>').val('');
+						$('#<?= $primary_selector_id ?>').val('');
 					}
 				<?php } else {?>
 					<?php echo $callback?>(selected.val(), selected.text());
 					selected.remove();
-					$('#<?php echo $class?>_<?php echo $field?>').val('');
+					$('#<?= $primary_selector_id ?>').val('');
 				<?php }?>
 			}
 			else {
 				// reset form
-				$('#div_<?= "{$class}_{$field}_secondary_to"?>').hide();
+				$('#div_<?= "{$primary_selector_id}_secondary_to"?>').hide();
 			}
 		});
 	<?php }?>
