@@ -2,8 +2,8 @@
 
 return array(
 	'import' => array(
-		'application.modules.genetics.models.*',
-		'application.modules.genetics.components.*',
+		'application.modules.Genetics.models.*',
+		'application.modules.Genetics.components.*',
 	),
 	'params' => array(
 		'menu_bar_items' => array(
