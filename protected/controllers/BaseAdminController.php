@@ -90,7 +90,9 @@ class BaseAdminController extends BaseController
 
 		if ($options['filters_ready']) {
 			if (Yii::app()->request->isPostRequest) {
+				$j = 0;
 				foreach ((array) @$_POST['id'] as $i => $id) {
+					$j++;
 					if ($id) {
 						$item = $model::model()->findByPk($id);
 					} else {
@@ -98,7 +100,7 @@ class BaseAdminController extends BaseController
 					}
 
 					$item->{$options['label_field']} = $_POST[$options['label_field']][$i];
-					$item->display_order = $_POST['display_order'][$i];
+					$item->display_order = $j + 1;
 					//handle models with active flag
 					$attributes = $item->getAttributes();
 					if (array_key_exists('active',$attributes)) {
@@ -110,18 +112,33 @@ class BaseAdminController extends BaseController
 						$item->$name = @$_POST[$name][$i];
 					}
 
-					foreach ($options['filter_fields'] as $field) {
-						$item->{$field['field']} = $field['value'];
+					if ($item->hasAttribute('default')) {
+						if (isset($_POST['default']) && $_POST['default'] != 'NONE' && $_POST['default'] == $i) {
+							$item->default = 1;
+						} else {
+							$item->default = 0;
+						}
 					}
 
 					if (!$item->validate()) {
 						$errors = $item->getErrors();
 						foreach ($errors as $error) {
-							$errors[$i] = $error[0];
+							$this->form_errors[$i] = $error[0];
 						}
-					}
 
-					$items[] = $item;
+						foreach ($options['filter_fields'] as $field) {
+							$item->{$field['field']} = $field['value'];
+						}
+
+						if (!$item->validate()) {
+							$errors = $item->getErrors();
+							foreach ($errors as $error) {
+								$errors[$i] = $error[0];
+							}
+						}
+					} else {
+						$items[] = $item;
+					}
 				}
 
 				if (empty($errors)) {

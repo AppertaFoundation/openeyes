@@ -16,9 +16,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
-
-
 $(document).ready(function() {
 	$('select.generic-admin-filter').change(function () { this.form.submit(); });
 
@@ -33,40 +30,51 @@ $(document).ready(function() {
 		e.preventDefault();
 
 		$(this).closest('tr').remove();
+
+		GenericAdmin_ReindexDefault();
 	});
 
 	$('.generic-admin tbody').sortable({
-		helper:'clone',
-		update: function(event, ui) {
-			var i = 1;
-			$('.generic-admin tbody tr').each(function() {
-				$(this).find('input[name^="display_order"]').val(i++);
-			});
+		helper: 'clone',
+		start: function() {
+			$('.generic-admin tbody').data('default',$('.generic-admin tbody tr').find('input[type="radio"][name="default"]:checked').closest('tr').data('row'));
+		},
+		stop: function() {
+			//GenericAdmin_ReindexDefault();
+			$('.generic-admin tbody tr[data-row="' + $('.generic-admin tbody').data('default') + '"]').find('input[type="radio"][name="default"]').prop('checked',true);
 		}
 	});
-
-	function getNextKey() {
-		var keys = $('table.generic-admin tr').map(function(index, el) {
-			v = parseInt($(el).attr('data-row'));
-			return isNaN(v) ? -Infinity : v;
-		}).get();
-		var v = Math.max.apply(null, keys);
-		if (v >= 0) {
-			return v+1;
-		}
-		return 0;
-	}
 
 	$('.generic-admin-add').unbind('click').click(function(e) {
 		e.preventDefault();
 
-		var template = $('.generic-admin .newRow').html();
-		var data = {
-			"key" : getNextKey()
-		};
-		var form = Mustache.render(template, data).replace(/ disabled="disabled"/g,'');
+		var i = $('.generic-admin tbody tr').length;
+		var j = 0;
 
-		$('.generic-admin tbody').append('<tr data-row="'+data.key+'">' + form + '</tr>');
+		$('.generic-admin tbody tr').map(function() {
+			if (parseInt($(this).data('row')) > j) {
+				j = parseInt($(this).data('row'));
+			}
+		});
+
+		$('.generic-admin tbody').append('<tr data-row="' + (j+1) + '">' + $('.generic-admin .newRow').html().replace(/ disabled="disabled"/g,'') + '</tr>');
 		$('.generic-admin tbody').children('tr:last').children('td:nth-child(2)').children('input').focus();
+		$('.generic-admin tbody tr:last').find('input[type="radio"][name="default"]').attr('value',i-1);
 	});
 });
+
+
+function GenericAdmin_ReindexDefault()
+{
+	var i = 0;
+
+	$('.generic-admin tbody tr').map(function() {
+		var def = $(this).find('input[type="radio"][name="default"]');
+
+		if (def.length >0) {
+			def.attr('value',i);
+		}
+
+		i += 1;
+	});
+}
