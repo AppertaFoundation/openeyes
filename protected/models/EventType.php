@@ -140,12 +140,29 @@ class EventType extends BaseActiveRecordVersioned
 		return EventGroup::model()->find('code=?',array($m[2]));
 	}
 
-	/**
-	 * get list data of all the currently active event types
+	/*
+	 * get list data of all the event types that are currently enabled on the instance
 	 *
 	 * @return array
 	 */
+
 	public function getActiveList()
+	{
+		$event_types = array_keys(Yii::app()->modules);
+
+		$criteria = new CDbCriteria;
+		$criteria->order = 'name asc';
+		$criteria->addInCondition('class_name',$event_types);
+
+		return CHtml::listData(EventType::model()->findAll($criteria), 'id', 'name');
+	}
+
+	/**
+	 * get list data of all the event types for which >0 events exist
+	 *
+	 * @return array
+	 */
+	public function getEventTypeInUseList()
 	{
 		$criteria = new CDbCriteria;
 		$criteria->distinct = true;

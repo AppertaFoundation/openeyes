@@ -29,6 +29,7 @@ class MultiSelectList extends BaseFieldWidget
 	public $showRemoveAllLink = false;
 	public $sorted = false;
 	public $noSelectionsMessage;
+	public $sortable;
 
 	public function init()
 	{
@@ -64,11 +65,6 @@ class MultiSelectList extends BaseFieldWidget
 					unset($this->filtered_options[$id]);
 				}
 			}
-		}
-
-		// if the widget has javascript, load it in
-		if (file_exists("protected/widgets/js/".get_class($this).".js")) {
-			$this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js');
 		}
 
 		//NOTE: don't call parent init as the field behaviour doesn't work for the relations attribute with models
