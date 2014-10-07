@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$model = $params['model'];
 $htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
-if ($params['allow_null']) $htmlOptions['empty'] = '-';
-$value = $row ? $row->{$params['field']} : null;
-echo CHtml::dropDownList($params['field']."[]", $value, SelectionHelper::listData($model, $value), $htmlOptions);
+if (isset($params['empty'])) {
+	$htmlOptions['empty'] = $params['empty'];
+}
+$value = $row ? $row->{$params['field']} : '';
+$data = AuthItem::model()->findAll(array('condition' => 'type=2','order' => 'name asc'));
+echo CHtml::dropDownList($params['field'].'[]',$value,CHtml::listData($data,'name','name'),$htmlOptions);

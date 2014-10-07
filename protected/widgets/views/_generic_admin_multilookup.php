@@ -20,7 +20,7 @@
 $htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
 $this->widget('MultiSelectList', array(
 				'element' => $row,
-				'field' => $params['field'] . "[{$i}]",
+				'field' => $params['field'] . "[$i]",
 				'relation' => $params['field'],
 				'relation_id_field' => 'id',
 				'htmlOptions' => @$params['htmlOptions'],

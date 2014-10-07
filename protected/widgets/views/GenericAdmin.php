@@ -46,11 +46,13 @@
 						</th>
 					<?php }?>
 					<?php
-					$attributes = $model::model()->getAttributes();
-					if (array_key_exists('active',$attributes)) {?>
-					<th>Active</th>
+					if ($model::model()->hasAttribute('active')) {?>
+						<th>Active</th>
 					<?php } else{?>
-					<th>Actions</th>
+						<th>Actions</th>
+					<?php }
+					if ($model::model()->hasAttribute('default')) {?>
+						<th>Default</th>
 					<?php }?>
 				</tr>
 			</thead>
@@ -62,7 +64,6 @@
 						</td>
 						<td>
 							<?php echo CHtml::hiddenField("id[{$i}]",$row->id)?>
-							<?php echo CHtml::hiddenField("display_order[{$i}]",$row->display_order)?>
 							<?php echo CHtml::textField("{$label_field}[{$i}]",$row->{$label_field},array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							<?php if (isset($errors[$i])) {?>
 								<span class="error">
@@ -76,39 +77,58 @@
 							</td>
 						<?php }?>
 						<td>
-							<?php if (isset($row->active)) {
+							<?php if ($model::model()->hasAttribute('active')) {
 								echo CHtml::checkBox('active[' . $i . ']',$row->active);
-							}
-							else{?>
-							<a href="#" class="deleteRow">delete</a>
+							} else{?>
+								<a href="#" class="deleteRow">delete</a>
 							<?php }?>
 						</td>
+						<?php if ($model::model()->hasAttribute('default')) {?>
+							<td>
+								<?php echo CHtml::radioButton('default',$row->default,array('value' => $i))?>
+							</td>
+						<?php }?>
 					</tr>
 				<?php }?>
 				<tr id="admin-new-row" class="newRow" style="display: none">
-					<input type="hidden" name="row-key" value="{{key}}" />
 					<td>
 						<span>&uarr;&darr;</span>
 					</td>
 					<td>
-						<?php echo CHtml::hiddenField('id[{{key}}]','',array('disabled' => 'disabled'))?>
-						<?php echo CHtml::hiddenField('display_order[{{key}}]','{{key}}',array('disabled' => 'disabled'))?>
-						<?php echo CHtml::textField("{$label_field}[{{key}}]",'',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => 'disabled'))?>
+						<?php echo CHtml::hiddenField('id[]','',array('disabled' => 'disabled'))?>
+						<?php echo CHtml::textField('name[]','',array('disabled' => 'disabled'))?>
 					</td>
 					<?php foreach ($extra_fields as $field) {?>
 						<td>
-							<?php $this->render('_generic_admin_'.$field['type'],array('row' => null, 'params' => $field, 'disabled' => 'disabled', 'i' => '{{key}}'))?>
+							<?php $this->render('_generic_admin_'.$field['type'],array('row' => null, 'params' => $field, 'disabled' => 'disabled', 'i' => $i))?>
 						</td>
 					<?php }?>
 					<td>
 						<a href="#" class="deleteRow">delete</a>
 					</td>
+					<?php if ($model::model()->hasAttribute('default')) {?>
+						<td>
+							<?php echo CHtml::radioButton('default',false)?>
+						</td>
+					<?php }?>
 				</tr>
 			</tbody>
+			<?php if ($model::model()->hasAttribute('default')) {?>
+				<tfoot>
+					<tr>
+						<td colspan="4" class="generic-admin-no-default">
+							No default
+						</td>
+						<td>
+							<?php echo CHtml::radioButton('default',!$has_default,array('value' => 'NONE'))?>
+						</td>
+					</tr>
+				</tfoot>
+			<?php }?>
 		</table>
 		<div>
 			<?php echo EventAction::button('Add', 'admin-add', null, array('class' => 'generic-admin-add small secondary'))->toHtml()?>&nbsp;
 			<?php echo EventAction::button('Save', 'admin-save', null, array('class' => 'generic-admin-save small primary'))->toHtml()?>&nbsp;
 		</div>
 	<?= CHtml::endForm() ?>
-<?php endif;
+<?php endif ?>

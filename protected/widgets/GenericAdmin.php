@@ -10,4 +10,27 @@ class GenericAdmin extends BaseCWidget
 	public $filter_fields;
 	public $filter_values;
 	public $filters_ready;
+	public $has_default = false;
+	public $data;
+
+	public function init()
+	{
+		$model = $this->model;
+
+		if (!$this->extra_fields) {
+			$this->extra_fields = array();
+		}
+
+		if ($model::model()->hasAttribute('default')) {
+			if (!empty($this->items)) {
+				foreach ($this->items as $item) {
+					if ($item->default) {
+						$this->has_default = true;
+					}
+				}
+			}
+		}
+
+		return parent::init();
+	}
 }
