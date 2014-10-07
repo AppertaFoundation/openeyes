@@ -633,6 +633,32 @@ class Patient extends BaseActiveRecordVersioned
 		}
 	}
 
+	public function getEdl()
+	{
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		if ($episode && $disorder = $episode->diagnosis) {
+
+			if ($episode->eye->id == Eye::BOTH || $episode->eye->id == Eye::LEFT ) {
+				return  ucfirst(strtolower($disorder->term));
+			}
+			return 'No diagnosis';
+		}
+	}
+
+	public function getEdr()
+	{
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		if ($episode && $disorder = $episode->diagnosis) {
+
+			if ($episode->eye->id == Eye::BOTH || $episode->eye->id == Eye::RIGHT ) {
+				return  ucfirst(strtolower($disorder->term));
+			}
+			return 'No diagnosis';
+		}
+	}
+
 	public function getEps()
 	{
 		$episode = $this->getEpisodeForCurrentSubspecialty();
