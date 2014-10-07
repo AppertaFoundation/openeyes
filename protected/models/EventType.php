@@ -148,11 +148,15 @@ class EventType extends BaseActiveRecordVersioned
 
 	public function getActiveList()
 	{
+		$legacy = EventGroup::model()->find('name=?',array('Legacy data'));
+
 		$event_types = array_keys(Yii::app()->modules);
 
 		$criteria = new CDbCriteria;
 		$criteria->order = 'name asc';
 		$criteria->addInCondition('class_name',$event_types);
+		$criteria->addCondition('event_group_id != :egi');
+		$criteria->params[':egi'] = $legacy->id;
 
 		return CHtml::listData(EventType::model()->findAll($criteria), 'id', 'name');
 	}
