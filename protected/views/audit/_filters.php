@@ -73,7 +73,7 @@
 										<?php echo CHtml::dropDownList('target_type', @$_POST['target_type'], CHtml::listData(AuditType::model()->findAll(array('order'=>'name')),'id','name'), array('empty' => 'All targets'))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getActiveList(), array('empty' => 'All event types'))?>
+										<?php echo CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getEventTypeInUseList(), array('empty' => 'All event types'))?>
 									</td>
 								</tr>
 							</tbody>

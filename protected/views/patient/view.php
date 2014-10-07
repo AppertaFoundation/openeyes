@@ -75,7 +75,9 @@ $warnings = $this->patient->getWarnings($clinical);
 				</div>
 			</div>
 		<?php }?>
-	</div>
+
+		<?php $this->renderPartial('//patient/_patient_alerts')?>
+		</div>
 
 	<div class="row">
 		<div class="large-6 column">

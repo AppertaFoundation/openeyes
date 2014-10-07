@@ -84,7 +84,7 @@ $widgetOptionsJson = json_encode(array(
 			<?php if ($noSelectionsMessage) {?>
 				<div class="no-selections-msg pill<?php if ($found) {?> hide<?php }?>"><?php echo $noSelectionsMessage;?></div>
 			<?php }?>
-			<ul class="MultiSelectList multi-select-selections<?php if (!$found) echo ' hide';?>">
+			<ul class="MultiSelectList multi-select-selections<?php if (!$found) echo ' hide';?><?php if ($sortable){?> sortable<?php }?>">
 				<?php foreach ($selected_ids as $id) {
 					if (isset($options[$id])) {?>
 						<li>
@@ -109,3 +109,7 @@ $widgetOptionsJson = json_encode(array(
 	</div>
 </div>
 <?php }?>
+<?php
+	$this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js');
+?>
+<script type="text/javascript" src="<?php echo $this->assetFolder?>/MultiSelectList.js"></script>

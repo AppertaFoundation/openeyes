@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,9 +17,4 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-$model = $params['model'];
-$htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
-if ($params['allow_null']) $htmlOptions['empty'] = '-';
-$value = $row ? $row->{$params['field']} : null;
-echo CHtml::dropDownList($params['field']."[]", $value, SelectionHelper::listData($model, $value), $htmlOptions);
+return array();

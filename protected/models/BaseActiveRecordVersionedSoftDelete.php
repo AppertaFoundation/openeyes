@@ -146,7 +146,7 @@ class BaseActiveRecordVersionedSoftDelete extends BaseActiveRecordVersioned
 			}
 
 			$condition = $alias.'.id in ('.implode(',',$ids).')';
-		} else if(is_int($id)){
+		} else if(is_int($id) || ctype_digit($id)){
 			$condition = $alias.'.id = '.$id;
 		}
 		else{
