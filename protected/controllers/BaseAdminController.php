@@ -120,25 +120,17 @@ class BaseAdminController extends BaseController
 						}
 					}
 
+					foreach ($options['filter_fields'] as $field) {
+						$item->{$field['field']} = $field['value'];
+					}
+
 					if (!$item->validate()) {
 						$errors = $item->getErrors();
 						foreach ($errors as $error) {
-							$this->form_errors[$i] = $error[0];
+							$errors[$i] = $error[0];
 						}
-
-						foreach ($options['filter_fields'] as $field) {
-							$item->{$field['field']} = $field['value'];
-						}
-
-						if (!$item->validate()) {
-							$errors = $item->getErrors();
-							foreach ($errors as $error) {
-								$errors[$i] = $error[0];
-							}
-						}
-					} else {
-						$items[] = $item;
 					}
+					$items[] = $item;
 				}
 
 				if (empty($errors)) {
