@@ -17,12 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-?>
 
-<?php
-foreach (Yii::app()->params['patient_alert_widgets'] as $paw) {
-	$this->widget($paw['class'], array(
-		'patient' => $this->patient,
-	));
+if(isset(Yii::app()->params['patient_alert_widgets'])){
+	foreach (Yii::app()->params['patient_alert_widgets'] as $paw) {
+		$this->widget($paw['class'], array(
+			'patient' => $this->patient,
+		));
+	}
 }
+
 ?>
