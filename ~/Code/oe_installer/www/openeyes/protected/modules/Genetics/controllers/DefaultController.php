@@ -282,7 +282,7 @@ class DefaultController extends BaseEventTypeController
 
 		if (!empty($_POST)) {
 			if (isset($_POST['cancel'])) {
-				return $this->redirect(array('/Genetics/default/index'));
+				return $this->redirect(array('/Genetics/default/ViewPedigree/'.$patient_pedigree->pedigree_id));
 			}
 
 			$patient_pedigree->patient_id = $_POST['PatientPedigree']['patient_id'];
