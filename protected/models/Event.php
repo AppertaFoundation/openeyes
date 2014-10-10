@@ -437,12 +437,59 @@ class Event extends BaseActiveRecordVersioned
 		);
 	}
 
-	public function isEventDateDifferentFromCreated(){
+	public function isEventDateDifferentFromCreated()
+	{
 		$evDate = new DateTime($this->event_date);
 		$creDate = new DateTime($this->created_date);
 		if($creDate->format('Y-m-d') != $evDate->format('Y-m-d')){
 			return true;
 		}
 		return false;
+	}
+
+	public function getImageDirectory()
+	{
+		return Yii::app()->assetManager->basePath."/events/event_{$this->id}_".strtotime($this->last_modified_date);
+	}
+
+	public function hasEventImage($name)
+	{
+		return file_exists($this->imageDirectory."/$name.png");
+	}
+
+	public function getPDF()
+	{
+		return $this->imageDirectory."/event.pdf";
+	}
+
+	public function hasPDF()
+	{
+		return file_exists($this->PDF);
+	} 
+
+	protected function getLockKey()
+	{
+		return "openeyes.event:$this->id";
+	}
+
+	public function lock()
+	{
+		$cmd = $this->dbConnection->createCommand('SELECT GET_LOCK(?, 1)');
+
+		while (!$cmd->queryScalar(array($this->lockKey)));
+	}
+
+	public function unlock()
+	{
+		$this->dbConnection->createCommand('SELECT RELEASE_LOCK(?)')->execute(array($this->lockKey));
+	}
+
+	public function getBarCodeHTML()
+	{
+		require_once(Yii::app()->basePath.'/extensions/tcpdf/tcpdf/barcodes.php');
+
+		$barcode = new TCPDFBarcode("E:$this->id", 'C128');
+
+		return $barcode->getBarcodeHTML(1,8);
 	}
 }

@@ -93,9 +93,55 @@ function printIFrameUrl(url, data) {
 	// re-enable the buttons
 	$('#print_content_iframe').load(function() {
 		enableButtons();
+
+		var iframe = document.getElementById('print_content_iframe');
+		iframe.focus();
+		iframe.contentWindow.print();
+	});
+}
+
+function printEvent()
+{
+	var data = {canvas: {}};
+	var has_canvas_data = false;
+
+	$('canvas.ed-canvas-display').map(function() {
+		data['canvas'][$(this).data('drawing-name')] = $(this).get(0).toDataURL();
 	});
 
+	data['last_modified_date'] = OE_event_last_modified;
+
+	$.ajax({
+		'type': 'POST',
+		'url': baseUrl + '/' + OE_module_class + '/default/saveCanvasImages/' + OE_event_id,
+		'data': $.param(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+		'success': function(resp) {
+			switch (resp) {
+				case "ok":
+					printIFrameUrl(OE_print_url, null);
+					break;
+				case "outofdate":
+					$.cookie('print',1);
+					window.location.reload();
+					break;
+				default:
+					alert("Something went wrong trying to print the event. Please try again or contact support for assistance.");
+					break;
+			}
+		}
+	});
 }
+
+$(document).ready(function() {
+	if ($.cookie('print') == 1) {
+		disableButtons();
+
+		$.removeCookie('print');
+		setTimeout(function() {
+			printEvent();
+		}, 2000);
+	}
+});
 
 /*
  * DEPRECATED - should migrate to using printIFrameUrl

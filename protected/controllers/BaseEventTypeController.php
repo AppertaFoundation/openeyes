@@ -68,6 +68,8 @@ class BaseEventTypeController extends BaseModuleController
 		'elementForm' => self::ACTION_TYPE_FORM,
 		'viewPreviousElements' => self::ACTION_TYPE_FORM,
 		'print' => self::ACTION_TYPE_PRINT,
+		'PDFprint' => self::ACTION_TYPE_PRINT,
+		'saveCanvasImages' => self::ACTION_TYPE_PRINT,
 		'update' => self::ACTION_TYPE_EDIT,
 		'delete' => self::ACTION_TYPE_DELETE,
 		'requestDeletion' => self::ACTION_TYPE_REQUESTDELETE,
@@ -797,6 +799,8 @@ class BaseEventTypeController extends BaseModuleController
 			'eventId' => $id,
 		), $this->extraViewProperties);
 
+		$this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
+
 		$this->render('view', $viewData);
 	}
 
@@ -1475,6 +1479,38 @@ class BaseEventTypeController extends BaseModuleController
 		}
 	}
 
+	public function actionPDFPrint($id)
+	{
+		if (!$event = Event::model()->findByPk($id)) {
+			throw new Exception("Event not found: $id");
+		}
+
+		$event->lock();
+
+		if (!$event->hasPDF()) {
+			ob_start();
+			$this->actionPrint($id);
+			$html = ob_get_contents();
+			ob_end_clean();
+
+			$wk = new WKHtmlToPDF;
+			if (!$wk->generateEventPDF($event, $html)) {
+				$event->unlock();
+
+				throw new Exception("Failed to generate PDF for event $event->id");
+			}
+		}
+
+		$event->unlock();
+
+		$pdf = $event->PDF;
+
+		header('Content-Type: application/pdf');
+		header('Content-Length: '.filesize($pdf));
+
+		readfile($pdf);
+	}
+
 	/**
 	 * Initialise print action
 	 *
@@ -1642,7 +1678,7 @@ class BaseEventTypeController extends BaseModuleController
 
 	/**
 	 * set base js vars for use in the standard scripts for the controller
- 	 */
+	 */
 	public function processJsVars()
 	{
 		if ($this->patient) {
@@ -1650,7 +1686,12 @@ class BaseEventTypeController extends BaseModuleController
 		}
 		if ($this->event) {
 			$this->jsVars['OE_event_id'] = $this->event->id;
-			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
+
+			if (Yii::app()->params['event_print_method'] == 'pdf') {
+				$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/PDFprint/".$this->event->id);
+			} else {
+				$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
+			}
 		}
 		$this->jsVars['OE_asset_path'] = $this->assetPath;
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
@@ -1746,5 +1787,52 @@ class BaseEventTypeController extends BaseModuleController
 	public function setOpenElements($open_elements)
 	{
 		$this->open_elements = $open_elements;
+	}
+
+	public function actionSaveCanvasImages($id)
+	{
+		if (!$event = Event::model()->findByPk($id)) {
+			throw new Exception("Event not found: $id");
+		}
+
+		if (strtotime($event->last_modified_date) != @$_POST['last_modified_date']) {
+			echo "outofdate";
+			return;
+		}
+
+		$event->lock();
+
+		if (!file_exists($event->imageDirectory)) {
+			if (!@mkdir($event->imageDirectory,0755,true)) {
+				throw new Exception("Unable to create directory: $event->imageDirectory");
+			}
+		}
+
+		if (!empty($_POST['canvas'])) {
+			foreach ($_POST['canvas'] as $drawingName => $blob) {
+				if (!file_exists($event->imageDirectory."/$drawingName.png")) {
+					if (!@file_put_contents($event->imageDirectory."/$drawingName.png", base64_decode(preg_replace('/^data\:image\/png;base64,/','',$blob)))) {
+						throw new Exception("Failed to write to $event->imageDirectory/$drawingName.png: check permissions.");
+					}
+				}
+			}
+		}
+
+		ob_start();
+		$this->actionPrint($id);
+		$html = ob_get_contents();
+		ob_end_clean();
+
+		$event->unlock();
+
+		// Verify we have all the images by detecting eyedraw canvas elements in the page.
+		// If we don't, the "outofdate" response will trigger a page-refresh so we can re-send the canvas elements to the
+		// server as PNGs.
+		if (preg_match('/<canvas.*?class="ed-canvas-display"/is',$html)) {
+			echo "outofdate";
+			return;
+		}
+
+		echo "ok";
 	}
 }
