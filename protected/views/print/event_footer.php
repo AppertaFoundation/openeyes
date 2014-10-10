@@ -18,10 +18,10 @@
 		<div style="width: 48%; float: left">
 			{{FOOTER_LEFT}}
 		</div>
-		<div style="width: 37%; float: left; margin-left: auto; margin-right: auto;">
+		<div style="width: 35%; float: left; margin-left: auto; margin-right: auto;">
 			{{FOOTER_MIDDLE}}
 		</div>
-		<div style="width: 15%; float: right">
+		<div style="width: 17%; float: right">
 			{{FOOTER_RIGHT}}
 		</div>
 	</body>
