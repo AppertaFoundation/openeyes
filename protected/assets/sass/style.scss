@@ -61,3 +61,12 @@
 @import "openeyes/components/chart";
 @import "openeyes/components/eyedraw";
 @import "openeyes/components/print";
+
+.moveTicket {
+	ul {
+		list-style-type: none;
+	}
+	li {
+		margin-bottom: 6px;
+	}
+}

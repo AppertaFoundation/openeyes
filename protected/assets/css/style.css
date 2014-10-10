@@ -5719,3 +5719,12 @@ tfoot.pagination-container .pagination-view-all {
     width: 1050px !important;
   }
 }
+
+/* line 66, ../sass/style.scss */
+.moveTicket ul {
+  list-style-type: none;
+}
+/* line 69, ../sass/style.scss */
+.moveTicket li {
+  margin-bottom: 6px;
+}
