@@ -100,7 +100,7 @@ function printIFrameUrl(url, data) {
 	});
 }
 
-function printEvent()
+function printEvent(printOptions)
 {
 	var data = {canvas: {}};
 	var has_canvas_data = false;
@@ -118,7 +118,7 @@ function printEvent()
 		'success': function(resp) {
 			switch (resp) {
 				case "ok":
-					printIFrameUrl(OE_print_url, null);
+					printIFrameUrl(OE_print_url, printOptions);
 					break;
 				case "outofdate":
 					$.cookie('print',1);
@@ -138,7 +138,7 @@ $(document).ready(function() {
 
 		$.removeCookie('print');
 		setTimeout(function() {
-			printEvent();
+			printEvent(null);
 		}, 2000);
 	}
 });
