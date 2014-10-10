@@ -84,7 +84,7 @@ class WKHtmlToPDF
 			Yii::app()->end();
 		}
 
-		$res = shell_exec("wkhtmltopdf --footer-html '{$event->imageDirectory}/footer.html' --print-media-type '{$event->imageDirectory}/event.html' '{$event->imageDirectory}/event.pdf' 2>&1");
+		$res = shell_exec("{$this->wkhtmltopdf} --footer-html '{$event->imageDirectory}/footer.html' --print-media-type '{$event->imageDirectory}/event.html' '{$event->imageDirectory}/event.pdf' 2>&1");
 
 		if (!file_exists("$event->imageDirectory/event.pdf") || filesize("$event->imageDirectory/event.pdf") == 0) {
 			return false;
