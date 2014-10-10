@@ -42,7 +42,7 @@ class WKHtmlToPDF
 		}
 	}
 
-	public function generateEventPDF($event, $html)
+	public function generateEventPDF($event, $html, $output_html=false)
 	{
 		$html = str_replace('href="/assets/','href="'.Yii::app()->assetManager->basePath.'/',$html);
 		$html = str_replace('src="/assets/','src="'.Yii::app()->assetManager->basePath.'/',$html);
@@ -77,6 +77,11 @@ class WKHtmlToPDF
 
 		if (!@file_put_contents("$event->imageDirectory/footer.html",$footer)) {
 			throw new Exception("Unable to write to $event->imageDirectory/footer.html: check permissions.");
+		}
+
+		if ($output_html) {
+			echo $html.$footer;
+			Yii::app()->end();
 		}
 
 		$res = shell_exec("wkhtmltopdf --footer-html '{$event->imageDirectory}/footer.html' --print-media-type '{$event->imageDirectory}/event.html' '{$event->imageDirectory}/event.pdf' 2>&1");

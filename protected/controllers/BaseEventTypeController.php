@@ -1306,6 +1306,10 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function renderElement($element, $action, $form, $data, $view_data=array(), $return=false, $processOutput=false)
 	{
+		if (strcasecmp($action,'PDFPrint') == 0 || strcasecmp($action,'saveCanvasImages') == 0) {
+			$action = 'print';
+		}
+
 		// Get the view names from the model.
 		$view = isset($element->{$action.'_view'})
 			? $element->{$action.'_view'}
@@ -1494,7 +1498,7 @@ class BaseEventTypeController extends BaseModuleController
 			ob_end_clean();
 
 			$wk = new WKHtmlToPDF;
-			if (!$wk->generateEventPDF($event, $html)) {
+			if (!$wk->generateEventPDF($event, $html, @$_GET['html'])) {
 				$event->unlock();
 
 				throw new Exception("Failed to generate PDF for event $event->id");
