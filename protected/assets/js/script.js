@@ -28,7 +28,7 @@ $(document).ready(function(){
 				.appendTo( ul );
 	};
 
-	$('.js-toggle').on('click', function(e) {
+	$(document).on('click', '.js-toggle', function(e) {
 
 		e.preventDefault();
 
@@ -182,6 +182,10 @@ $(document).ready(function(){
 	 */
 	var formHasChanged = false;
 	var submitted = false;
+
+	$(document).on("change", '#patient-alerts form', function(e) {
+		formHasChanged = true;
+	});
 
 	$("#event-content").on("change", function (e) {
 		formHasChanged = true;

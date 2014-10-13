@@ -19,11 +19,14 @@
 
 
 if(isset(Yii::app()->params['patient_alert_widgets'])){
+?>
+<span id="patient-alerts">
+<?php
 	foreach (Yii::app()->params['patient_alert_widgets'] as $paw) {
 		$this->widget($paw['class'], array(
 			'patient' => $this->patient,
 		));
 	}
 }
-
 ?>
+</span>
