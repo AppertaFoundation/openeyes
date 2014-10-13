@@ -65,7 +65,6 @@
 						</td>
 						<td>
 							<?php echo CHtml::hiddenField("id[{$i}]",$row->id)?>
-							<?php echo CHtml::hiddenField("display_order[{$i}]",$row->display_order)?>
 							<?php echo CHtml::textField("{$label_field}[{$i}]",$row->{$label_field},array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							<?php if (isset($errors[$i])) {?>
 								<span class="error">
