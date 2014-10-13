@@ -65,6 +65,7 @@ startxref
 		$pdf->inject('print(true);');
 
 		$output = file_get_contents($tmp_file);
+		@unlink($tmp_file);
 
 		$this->assertEquals("%PDF-1.4
 1 0 obj
@@ -159,6 +160,7 @@ startxref
 		$pdf->inject('print(true);');
 
 		$output = file_get_contents($tmp_file);
+		@unlink($tmp_file);
 
 		$this->assertEquals("%PDF-1.4
 1 0 obj
@@ -260,6 +262,7 @@ startxref
 		$pdf->inject('print(true);');
 
 		$output = file_get_contents($tmp_file);
+		@unlink($tmp_file);
 
 		$this->assertEquals("%PDF-1.4
 1 0 obj
@@ -370,6 +373,7 @@ startxref
 		$pdf->inject('print(true);');
 
 		$output = file_get_contents($tmp_file);
+		@unlink($tmp_file);
 
 		$this->assertEquals("%PDF-1.4
 1 0 obj
