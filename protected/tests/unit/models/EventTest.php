@@ -62,7 +62,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::defaultScope
-	 * @todo   Implement testDefaultScope().
+	 * @todo	 Implement testDefaultScope().
 	 */
 	public function testDefaultScope()
 	{
@@ -74,7 +74,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::rules
-	 * @todo   Implement testRules().
+	 * @todo	 Implement testRules().
 	 */
 	public function testRules()
 	{
@@ -86,7 +86,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::relations
-	 * @todo   Implement testRelations().
+	 * @todo	 Implement testRelations().
 	 */
 	public function testRelations()
 	{
@@ -98,7 +98,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::attributeLabels
-	 * @todo   Implement testAttributeLabels().
+	 * @todo	 Implement testAttributeLabels().
 	 */
 	public function testAttributeLabels()
 	{
@@ -110,7 +110,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::search
-	 * @todo   Implement testSearch().
+	 * @todo	 Implement testSearch().
 	 */
 	public function testSearch()
 	{
@@ -122,7 +122,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::hasIssue
-	 * @todo   Implement testHasIssue().
+	 * @todo	 Implement testHasIssue().
 	 */
 	public function testHasIssue()
 	{
@@ -134,7 +134,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::getIssueText
-	 * @todo   Implement testGetIssueText().
+	 * @todo	 Implement testGetIssueText().
 	 */
 	public function testGetIssueText()
 	{
@@ -146,7 +146,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::expandIssueText
-	 * @todo   Implement testExpandIssueText().
+	 * @todo	 Implement testExpandIssueText().
 	 */
 	public function testExpandIssueText()
 	{
@@ -158,7 +158,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::getInfoText
-	 * @todo   Implement testGetInfoText().
+	 * @todo	 Implement testGetInfoText().
 	 */
 	public function testGetInfoText()
 	{
@@ -170,7 +170,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::addIssue
-	 * @todo   Implement testAddIssue().
+	 * @todo	 Implement testAddIssue().
 	 */
 	public function testAddIssue()
 	{
@@ -182,7 +182,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::deleteIssue
-	 * @todo   Implement testDeleteIssue().
+	 * @todo	 Implement testDeleteIssue().
 	 */
 	public function testDeleteIssue()
 	{
@@ -194,7 +194,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::deleteIssues
-	 * @todo   Implement testDeleteIssues().
+	 * @todo	 Implement testDeleteIssues().
 	 */
 	public function testDeleteIssues()
 	{
@@ -206,7 +206,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::delete
-	 * @todo   Implement testDelete().
+	 * @todo	 Implement testDelete().
 	 */
 	public function testDelete()
 	{
@@ -227,7 +227,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::isLatestOfTypeInEpisode
-	 * @todo   Implement testIsLatestOfTypeInEpisode().
+	 * @todo	 Implement testIsLatestOfTypeInEpisode().
 	 */
 	public function testIsLatestOfTypeInEpisode()
 	{
@@ -239,7 +239,7 @@ class EventTest extends CDbTestCase
 
 	/**
 	 * @covers Event::audit
-	 * @todo   Implement testAudit().
+	 * @todo	 Implement testAudit().
 	 */
 	public function testAudit()
 	{
@@ -265,7 +265,119 @@ class EventTest extends CDbTestCase
 		$this->assertEquals(null, $event->getElements());
 
 		$this->markTestIncomplete('At the moment this does not test that we are actually querying the element types for the event type of the event.');
-
 	}
 
+	public function testGetImageDirectory()
+	{
+		Yii::app()->assetManager->basePath = Yii::app()->basePath."/assets";
+
+		$event = $this->event('event1');
+
+		$this->assertEquals(Yii::app()->basePath."/assets/events/event_{$event->id}_".(strtotime($event->last_modified_date)), $event->getImageDirectory());
+	}
+
+	public function testHasEventImage_False()
+	{
+		Yii::app()->assetManager->basePath = Yii::app()->basePath."/assets";
+
+		$event = $this->event('event1');
+
+		$this->assertFalse($event->hasEventImage('testing2398493242'));
+	}
+
+	public function testHasEventImage_True()
+	{
+		Yii::app()->assetManager->basePath = Yii::app()->basePath."/assets";
+
+		$event = $this->event('event1');
+
+		$dirname = dirname($event->getImageDirectory()."/testing2398493242.png");
+		if (!file_exists($dirname)) {
+			if (!@mkdir($dirname,0755,true)) {
+				$this->markTestIncomplete('Skipping due to filesystem permissions');
+				return;
+			}
+		}
+
+		if (!@file_put_contents($event->getImageDirectory()."/testing2398493242.png", "test")) {
+			$this->markTestIncomplete('Skipping due to filesystem permissions');
+			return;
+		}
+
+		$this->assertTrue($event->hasEventImage('testing2398493242'));
+
+		@unlink($event->getImageDirectory()."/testing2398493242.png");
+	}
+
+	public function testGetPDF()
+	{
+		$event = $this->event('event1');
+
+		return $this->assertEquals($event->getImageDirectory().'/event.pdf', $event->getPDF());
+	}
+
+	public function testHasPDF_True()
+	{
+		Yii::app()->assetManager->basePath = Yii::app()->basePath."/assets";
+	 
+		$event = $this->event('event1');
+
+		$dirname = dirname($event->getImageDirectory()."/event.pdf");
+		if (!file_exists($dirname)) {
+			if (!@mkdir($dirname,0755,true)) {
+				$this->markTestIncomplete('Skipping due to filesystem permissions');
+				return;
+			}
+		}
+
+		if (!@file_put_contents($event->getImageDirectory()."/event.pdf", "test")) {
+			$this->markTestIncomplete('Skipping due to filesystem permissions');
+			return;
+		}
+		
+		$this->assertTrue($event->hasPDF());
+
+		@unlink($event->getImageDirectory()."/event.pdf");
+	}
+
+	public function testHasPDF_False()
+	{
+		Yii::app()->assetManager->basePath = Yii::app()->basePath."/assets";
+
+		$event = $this->event('event1');
+
+		$this->assertFalse($event->hasPDF());
+	}
+
+	public function testGetBarCodeHTML()
+	{
+		$event = $this->event('event1');
+
+		$html = $event->getBarCodeHTML();
+
+		$this->assertEquals('<div style="font-size:0;position:relative;width:68px;height:8px;">
+<div style="background-color:black;width:2px;height:8px;position:absolute;left:0px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:1px;height:8px;position:absolute;left:3px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:1px;height:8px;position:absolute;left:6px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:1px;height:8px;position:absolute;left:11px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:2px;height:8px;position:absolute;left:15px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:1px;height:8px;position:absolute;left:18px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:3px;height:8px;position:absolute;left:22px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:1px;height:8px;position:absolute;left:27px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:2px;height:8px;position:absolute;left:30px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:1px;height:8px;position:absolute;left:33px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:3px;height:8px;position:absolute;left:36px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:2px;height:8px;position:absolute;left:41px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:1px;height:8px;position:absolute;left:44px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:2px;height:8px;position:absolute;left:48px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:1px;height:8px;position:absolute;left:53px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:2px;height:8px;position:absolute;left:55px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:3px;height:8px;position:absolute;left:60px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:1px;height:8px;position:absolute;left:64px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:2px;height:8px;position:absolute;left:66px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:0px;height:8px;position:absolute;left:68px;top:0px;">&nbsp;</div>
+<div style="background-color:black;width:0px;height:8px;position:absolute;left:68px;top:0px;">&nbsp;</div>
+</div>
+', $html);
+	}
 }
