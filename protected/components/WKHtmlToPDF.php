@@ -42,7 +42,7 @@ class WKHtmlToPDF
 		}
 	}
 
-	public function generateEventPDF($event, $html, $output_html=false)
+	public function generateEventPDF($event, $html, $output_html=false, $inject_autoprint_js=true)
 	{
 		$html = str_replace('href="/assets/','href="'.Yii::app()->assetManager->basePath.'/',$html);
 		$html = str_replace('src="/assets/','src="'.Yii::app()->assetManager->basePath.'/',$html);
@@ -92,6 +92,11 @@ class WKHtmlToPDF
 
 		@unlink("$event->imageDirectory/event.html");
 		@unlink("$event->imageDirectory/footer.html");
+
+		if ($inject_autoprint_js) {
+			$pdf = new OEPDFInject("$event->imageDirectory/event.pdf");
+			$pdf->inject('print(true);');
+		}
 
 		return true;
 	}

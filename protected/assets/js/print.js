@@ -93,10 +93,6 @@ function printIFrameUrl(url, data) {
 	// re-enable the buttons
 	$('#print_content_iframe').load(function() {
 		enableButtons();
-
-		var iframe = document.getElementById('print_content_iframe');
-		iframe.focus();
-		iframe.contentWindow.print();
 	});
 }
 
