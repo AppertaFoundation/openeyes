@@ -18,6 +18,12 @@
 
 $(document).ready(function() {
 
+	$(this).on('init', '.multi-select', function() {
+		$('.multi-select-selections.sortable').sortable();
+	});
+
+	$('.multi-select-selections.sortable').sortable();
+
 	// Prevent the events from being bound multiple times.
 	if ($(this).data('multi-select-events')) {
 		return;

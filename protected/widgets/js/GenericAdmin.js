@@ -34,11 +34,11 @@ $(document).ready(function() {
 
 	$('.generic-admin tbody').sortable({
 		helper:'clone',
-		update: function(event, ui) {
-			var i = 1;
-			$('.generic-admin tbody tr').each(function() {
-				$(this).find('input[name^="display_order"]').val(i++);
-			});
+		start: function() {
+			$('.generic-admin tbody').data('default',$('.generic-admin tbody tr').find('input[type="radio"][name="default"]:checked').closest('tr').data('row'));
+		},
+		stop: function() {
+			$('.generic-admin tbody tr[data-row="' + $('.generic-admin tbody').data('default') + '"]').find('input[type="radio"][name="default"]').prop('checked',true);
 		}
 	});
 

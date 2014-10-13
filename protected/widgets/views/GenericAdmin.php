@@ -46,8 +46,7 @@
 						</th>
 					<?php }?>
 					<?php
-					$attributes = $model::model()->getAttributes();
-					if (array_key_exists('active',$attributes)) {?>
+					if ($model::model()->hasAttribute('active')) {?>
 					<th>Active</th>
 					<?php } else{?>
 					<th>Actions</th>
@@ -99,7 +98,6 @@
 					</td>
 					<td>
 						<?php echo CHtml::hiddenField('id[{{key}}]','',array('disabled' => 'disabled'))?>
-						<?php echo CHtml::hiddenField('display_order[{{key}}]','{{key}}',array('disabled' => 'disabled'))?>
 						<?php echo CHtml::textField("{$label_field}[{{key}}]",'',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => 'disabled'))?>
 					</td>
 					<?php foreach ($extra_fields as $field) {?>
