@@ -35,66 +35,135 @@ class WKHtmlToPDF
 			}
 		}
 
-		$banner = shell_exec($this->wkhtmltopdf." 2>&1");
+		$banner = $this->execute($this->wkhtmltopdf." 2>&1");
 
 		if (preg_match('/reduced functionality/i',$banner)) {
 			throw new Exception("wkhtmltopdf has not been compiled with patched QT and so cannot be used.");
 		}
 	}
 
-	public function generateEventPDF($event, $html, $output_html=false, $inject_autoprint_js=true)
+	protected function execute($command)
 	{
-		$html = str_replace('href="/assets/','href="'.Yii::app()->assetManager->basePath.'/',$html);
-		$html = str_replace('src="/assets/','src="'.Yii::app()->assetManager->basePath.'/',$html);
+		return shell_exec($command);
+	}
 
-		$docref = "E:$event->id/".strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32)).'/{{PAGE}}';
+	public function getAssetManager()
+	{
+		return Yii::app()->assetManager;
+	}
 
-		if (!file_exists($event->imageDirectory)) {
-			if (!@mkdir($event->imageDirectory,0755,true)) {
-				throw new Exception("Unable to create directory: $event->imageDirectory: check permissions.");
+	public function remapAssetPaths($html)
+	{
+		$html = str_replace('href="/assets/','href="'.$this->getAssetManager()->basePath.'/',$html);
+		$html = str_replace('src="/assets/','src="'.$this->getAssetManager()->basePath.'/',$html);
+
+		return $html;
+	}
+
+	public function generateDocRef($event_id)
+	{
+		return "E:$event_id/".strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32)).'/{{PAGE}}';
+	}
+
+	public function findOrCreateDirectory($path)
+	{
+		if (!file_exists($path)) {
+			if (!@mkdir($path,0755,true)) {
+				throw new Exception("Unable to create directory: $path: check permissions.");
 			}
 		}
+	}
 
-		if (!@file_put_contents("$event->imageDirectory/event.html",$html)) {
-			throw new Exception("Unable to write to $event->imageDirectory/event.html: check permissions.");
+	public function readFile($path)
+	{
+		if (!$data = @file_get_contents($path)) {
+			throw new Exception("File not found: $path");
 		}
 
-		if (!$footer = @file_get_contents(Yii::app()->basePath."/views/print/event_footer.php")) {
-			throw new Exception("Footer partial not found");
+		return $data;
+	}
+
+	public function writeFile($path, $data)
+	{
+		if (!@file_put_contents($path,$data)) {
+			throw new Exception("Unable to write to $path: check permissions.");
 		}
+	}
 
-		$footer = str_replace('{{FOOTER_LEFT}}',Yii::app()->params['wkhtmltopdf_footer_left'],$footer);
-		$footer = str_replace('{{FOOTER_MIDDLE}}',Yii::app()->params['wkhtmltopdf_footer_middle'],$footer);
-		$footer = str_replace('{{FOOTER_RIGHT}}',Yii::app()->params['wkhtmltopdf_footer_right'],$footer);
+	public function deleteFile($path)
+	{
+		if (!@unlink($path)) {
+			throw new Exception("Unable to delete $path: check permissions.");
+		}
+	}
 
-		$footer = str_replace('{{PATIENT_NAME}}',$event->episode->patient->getHSCICName(),$footer);
-		$footer = str_replace('{{PATIENT_HOSNUM}}',$event->episode->patient->hos_num,$footer);
-		$footer = str_replace('{{PATIENT_NHSNUM}}',$event->episode->patient->nhs_num,$footer);
-		$footer = str_replace('{{BARCODE}}',$event->barCodeHTML,$footer);
+	public function fileExists($path)
+	{
+		return @file_exists($path);
+	}
+
+	public function fileSize($path)
+	{
+		return @filesize($path);
+	}
+
+	public function formatFooter($footer, $left, $middle, $right, $patient, $barcode_html, $docref)
+	{
+		$footer = str_replace('{{FOOTER_LEFT}}',$left,$footer);
+		$footer = str_replace('{{FOOTER_MIDDLE}}',$middle,$footer);
+		$footer = str_replace('{{FOOTER_RIGHT}}',$right,$footer);
+		$footer = str_replace('{{PATIENT_NAME}}',$patient->getHSCICName(),$footer);
+		$footer = str_replace('{{PATIENT_HOSNUM}}',$patient->hos_num,$footer);
+		$footer = str_replace('{{PATIENT_NHSNUM}}',$patient->nhs_num,$footer);
+		$footer = str_replace('{{BARCODE}}',$barcode_html,$footer);
 		$footer = str_replace('{{DOCREF}}',$docref,$footer);
 		$footer = str_replace('{{PAGE}}','<span class="page"></span>',$footer);
 		$footer = str_replace('{{PAGES}}','<span class="topage"></span>',$footer);
 
-		if (!@file_put_contents("$event->imageDirectory/footer.html",$footer)) {
-			throw new Exception("Unable to write to $event->imageDirectory/footer.html: check permissions.");
-		}
+		return $footer;
+	}
+
+	public function getPDFInject($path)
+	{
+		return new OEPDFInject($path);
+	}
+
+	public function generateEventPDF($event, $html, $output_html=false, $inject_autoprint_js=true)
+	{
+		$html = $this->remapAssetPaths($html);
+		$docref = $this->generateDocRef($event->id);
+
+		$this->findOrCreateDirectory($event->imageDirectory);
+		$this->writeFile("$event->imageDirectory/event.html",$html);
+
+		$footer = $this->formatFooter(
+			$this->readFile(Yii::app()->basePath."/views/print/event_footer.php"),
+			Yii::app()->params['wkhtmltopdf_footer_left'],
+			Yii::app()->params['wkhtmltopdf_footer_middle'],
+			Yii::app()->params['wkhtmltopdf_footer_right'],
+			$event->episode->patient,
+			$event->barCodeHTML,
+			$docref
+		);
+
+		$this->writeFile("$event->imageDirectory/footer.html",$footer);
 
 		if ($output_html) {
 			echo $html.$footer;
-			Yii::app()->end();
+			return true;
 		}
 
-		$res = shell_exec("{$this->wkhtmltopdf} --footer-html '{$event->imageDirectory}/footer.html' --print-media-type '{$event->imageDirectory}/event.html' '{$event->imageDirectory}/event.pdf' 2>&1");
+		$res = $this->execute("{$this->wkhtmltopdf} --footer-html '{$event->imageDirectory}/footer.html' --print-media-type '{$event->imageDirectory}/event.html' '{$event->imageDirectory}/event.pdf' 2>&1");
 
-		if (!file_exists("$event->imageDirectory/event.pdf") || filesize("$event->imageDirectory/event.pdf") == 0) {
+		if (!$this->fileExists("$event->imageDirectory/event.pdf") || $this->fileSize("$event->imageDirectory/event.pdf") == 0) {
 			return false;
 		}
 
-		@unlink("$event->imageDirectory/event.html");
-		@unlink("$event->imageDirectory/footer.html");
+		$this->deleteFile("$event->imageDirectory/event.html");
+		$this->deleteFile("$event->imageDirectory/footer.html");
 
 		if ($inject_autoprint_js) {
-			$pdf = new OEPDFInject("$event->imageDirectory/event.pdf");
+			$pdf = $this->getPDFInject("$event->imageDirectory/event.pdf");
 			$pdf->inject('print(true);');
 		}
 

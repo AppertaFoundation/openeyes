@@ -1507,6 +1507,10 @@ class BaseEventTypeController extends BaseModuleController
 
 		$event->unlock();
 
+		if (@$_GET['html']) {
+			return Yii::app()->end();
+		}
+
 		$pdf = $event->PDF;
 
 		header('Content-Type: application/pdf');

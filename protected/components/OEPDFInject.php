@@ -28,6 +28,10 @@ class OEPDFInject
 			if (preg_match('/^%PDF-(.*?)$/',$line,$m)) {
 				$this->version = $m[1];
 			} else if (preg_match('/^([0-9]+) [0-9]+ obj$/',$line,$m)) {
+				if (!$this->version) {
+					throw new Exception("Invalid file or not a PDF.");
+				}
+
 				$current_object = $m[1];
 				$this->objects[$m[1]] = array('raw' => '');
 
@@ -39,6 +43,10 @@ class OEPDFInject
 			} else if ($line == "xref") {
 				break;
 			} else {
+				if (!$this->version) {
+					throw new Exception("Invalid file or not a PDF.");
+				}
+
 				$this->objects[$current_object]['raw'] .= "$line\n";
 			}
 		}
