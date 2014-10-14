@@ -79,7 +79,7 @@ function printIFrameUrl(url, data) {
 	if (data) {
 		url += '?' + $.param(data);
 	}
-	
+
 	$('#print_content_iframe').remove();
 	var iframe = $('<iframe></iframe>');
 	iframe.attr({
@@ -89,7 +89,7 @@ function printIFrameUrl(url, data) {
 		style: 'display: none;',
 	});
 	$('body').append(iframe);
-	
+
 	// re-enable the buttons
 	$('#print_content_iframe').load(function() {
 		enableButtons();
@@ -133,11 +133,28 @@ $(document).ready(function() {
 		disableButtons();
 
 		$.removeCookie('print');
-		setTimeout(function() {
-			printEvent(null);
-		}, 2000);
+		setTimeout(function() { printWhenReady(); }, 500);
 	}
 });
+
+function printWhenReady()
+{
+	var ready = true;
+
+	$('canvas.ed-canvas-display').map(function() {
+		var drawing = window.ED ? ED.getInstance($(this).data('drawing-name')) : false;
+
+		if (!drawing || !drawing.isReady) {
+			ready = false;
+		}
+	});
+
+	if (ready) {
+		printEvent(null);
+	} else {
+		setTimeout(function() { printWhenReady(); }, 500);
+	}
+}
 
 /*
  * DEPRECATED - should migrate to using printIFrameUrl
