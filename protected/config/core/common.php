@@ -290,7 +290,7 @@ return array(
 		'event_print_method' => 'html',
 		// use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
 		'wkhtmltopdf_path' => '',
-		'wkhtmltopdf_footer_left' => '<p style="font-size: 6pt; margin-bottom: 2px;">{{DOCREF}}</p>{{BARCODE}}<p style="font-size: 6pt; margin:0; padding-top: 1px;">{{PATIENT_NAME}}<br/>Hosp no: {{PATIENT_HOSNUM}}, NHS no: {{PATIENT_NHSNUM}}</p>',
+		'wkhtmltopdf_footer_left' => '<p style="font-size: 6pt; margin-bottom: 2px;">{{DOCREF}}</p>{{BARCODE}}<p style="font-size: 6pt; margin:0; padding-top: 1px;">{{PATIENT_NAME}}<br/>Hosp No: {{PATIENT_HOSNUM}}, NHS No: {{PATIENT_NHSNUM}}</p>',
 		'wkhtmltopdf_footer_middle' => '<p style="font-size: 6pt;">Page {{PAGE}} of {{PAGES}}</p>',
 		'wkhtmltopdf_footer_right' => '<p style="font-size: 6pt;">OpenEyes</p>',
 	),

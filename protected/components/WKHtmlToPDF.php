@@ -114,7 +114,7 @@ class WKHtmlToPDF
 		$footer = str_replace('{{FOOTER_RIGHT}}',$right,$footer);
 		$footer = str_replace('{{PATIENT_NAME}}',$patient->getHSCICName(true),$footer);
 		$footer = str_replace('{{PATIENT_HOSNUM}}',$patient->hos_num,$footer);
-		$footer = str_replace('{{PATIENT_NHSNUM}}',$patient->nhs_num,$footer);
+		$footer = str_replace('{{PATIENT_NHSNUM}}',$patient->nhsnum,$footer);
 		$footer = str_replace('{{BARCODE}}',$barcode_html,$footer);
 		$footer = str_replace('{{DOCREF}}',$docref,$footer);
 		$footer = str_replace('{{PAGE}}','<span class="page"></span>',$footer);
