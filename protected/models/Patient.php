@@ -428,9 +428,10 @@ class Patient extends BaseActiveRecordVersioned
 	 *
 	 * @return string
 	 */
-	public function getHSCICName()
+	public function getHSCICName($bold=false)
 	{
-		return trim(implode(' ',array(strtoupper($this->last_name) . ",", $this->first_name, '('. $this->title . ')')));
+		$last_name = $bold ? "<strong>".strtoupper($this->last_name)."</strong>" : strtoupper($this->last_name);
+		return trim(implode(' ',array($last_name . ",", $this->first_name, '('. $this->title . ')')));
 	}
 
 	public function getDisplayName()

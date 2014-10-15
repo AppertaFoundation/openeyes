@@ -145,7 +145,7 @@ class WKHtmlToPDFTest extends CTestCase
 		$patient->contact->last_name = 'Smith';
 		$patient->contact->title = 'Lord';
 
-		$this->assertEquals('test '.$patient->getHSCICName().' one two three',$wk->formatFooter('test {{PATIENT_NAME}} one two three',0,0,0,$patient,0,0));
+		$this->assertEquals('test '.$patient->getHSCICName(true).' one two three',$wk->formatFooter('test {{PATIENT_NAME}} one two three',0,0,0,$patient,0,0));
 	}
 
 	public function testFormatFooter_PatientHosNum()
@@ -247,7 +247,7 @@ class WKHtmlToPDFTest extends CTestCase
 		$middle = 'This is the middle, {{PATIENT_HOSNUM}} {{PATIENT_NHSNUM}} {{PAGES}}';
 		$right = 'This is the right, {{DOCREF}} {{PAGE}} {{PAGES}}';
 
-		$this->assertEquals('This is the left, KRINKLE, Henry (Mr) barc0de <span class="page"></span> This is the middle, 12345 54321 <span class="topage"></span> This is the right, d0cr3f <span class="page"></span> <span class="topage"></span>',$wk->formatFooter('{{FOOTER_LEFT}} {{FOOTER_MIDDLE}} {{FOOTER_RIGHT}}',$left,$middle,$right,$patient,'barc0de','d0cr3f'));
+		$this->assertEquals('This is the left, '.$patient->getHSCICName(true).' barc0de <span class="page"></span> This is the middle, 12345 54321 <span class="topage"></span> This is the right, d0cr3f <span class="page"></span> <span class="topage"></span>',$wk->formatFooter('{{FOOTER_LEFT}} {{FOOTER_MIDDLE}} {{FOOTER_RIGHT}}',$left,$middle,$right,$patient,'barc0de','d0cr3f'));
 	}
 
 	public function testGetPDFInject()
