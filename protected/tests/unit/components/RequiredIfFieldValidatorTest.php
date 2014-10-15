@@ -160,4 +160,31 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
 
 		$object->__phpunit_verify();
 	}
+
+	public function testZeroIsAValue()
+	{
+		$this->val->field = 'f1';
+		$this->val->value = 2;
+
+		$object = ComponentStubGenerator::generate('CActiveRecord', array('f1' => 2, 'f2' => 0));
+		$object->expects($this->never())->method('addError');
+
+		$this->val->validateAttribute($object, 'f2');
+
+		$object->__phpunit_verify();
+	}
+
+	public function testEmptyStringIsNotAValue()
+	{
+		$this->val->field = 'f1';
+		$this->val->value = 2;
+
+		$object = ComponentStubGenerator::generate('CActiveRecord', array('f1' => 2, 'f2' => ''));
+		$object->expects($this->any())->method('getAttributeLabel')->with('f2')->will($this->returnValue('field 2'));
+		$object->expects($this->once())->method('addError')->with('f2', 'field 2 cannot be blank');
+
+		$this->val->validateAttribute($object, 'f2');
+
+		$object->__phpunit_verify();
+	}
 }

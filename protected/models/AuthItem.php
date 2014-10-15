@@ -17,13 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
-$this->widget('MultiSelectList', array(
-			'element' => $row,
-			'field' => $params['field'] . "[{$i}]",
-			'relation' => $params['field'],
-			'relation_id_field' => 'id',
-			'htmlOptions' => @$params['htmlOptions'],
-			'options' => @$params['options'],
-			'noSelectionsMessage' => @$params['noSelectionsMessage']
-	));
+class AuthItem extends BaseActiveRecord
+{
+	public function tableName()
+	{
+		return 'authitem';
+	}
+}

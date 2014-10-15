@@ -42,15 +42,17 @@
 					<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
 					<?php foreach ($extra_fields as $field) {?>
 						<th>
+							<?php echo CHtml::hiddenField('_extra_fields[]',$field['field'])?>
 							<?php echo $model::model()->getAttributeLabel($field['field'])?>
 						</th>
 					<?php }?>
-					<?php
-					$attributes = $model::model()->getAttributes();
-					if (array_key_exists('active',$attributes)) {?>
-					<th>Active</th>
+					<?php if ($model::model()->hasAttribute('active')) {?>
+						<th>Active</th>
 					<?php } else{?>
-					<th>Actions</th>
+						<th>Actions</th>
+					<?php }
+					if ($model::model()->hasAttribute('default')) {?>
+						<th>Default</th>
 					<?php }?>
 				</tr>
 			</thead>
@@ -83,6 +85,11 @@
 							<a href="#" class="deleteRow">delete</a>
 							<?php }?>
 						</td>
+						<?php if ($model::model()->hasAttribute('default')) {?>
+							<td>
+								<?php echo CHtml::radioButton('default',$row->default,array('value' => $i))?>
+							</td>
+						<?php }?>
 					</tr>
 				<?php }?>
 				<tr id="admin-new-row" class="newRow" style="display: none">
@@ -105,6 +112,18 @@
 					</td>
 				</tr>
 			</tbody>
+			<?php if ($model::model()->hasAttribute('default')) {?>
+				<tfoot>
+					<tr>
+						<td colspan="4" class="generic-admin-no-default">
+							No default
+						</td>
+						<td>
+							<?php echo CHtml::radioButton('default',!$has_default,array('value' => 'NONE'))?>
+						</td>
+					</tr>
+				</tfoot>
+			<?php }?>
 		</table>
 		<div>
 			<?php echo EventAction::button('Add', 'admin-add', null, array('class' => 'generic-admin-add small secondary'))->toHtml()?>&nbsp;

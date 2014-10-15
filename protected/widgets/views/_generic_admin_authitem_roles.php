@@ -18,12 +18,9 @@
  */
 
 $htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
-$this->widget('MultiSelectList', array(
-			'element' => $row,
-			'field' => $params['field'] . "[{$i}]",
-			'relation' => $params['field'],
-			'relation_id_field' => 'id',
-			'htmlOptions' => @$params['htmlOptions'],
-			'options' => @$params['options'],
-			'noSelectionsMessage' => @$params['noSelectionsMessage']
-	));
+if (isset($params['empty'])) {
+	$htmlOptions['empty'] = $params['empty'];
+}
+$value = $row ? $row->{$params['field']} : '';
+$data = AuthItem::model()->findAll(array('condition' => 'type=2','order' => 'name asc'));
+echo CHtml::dropDownList($params['field']."[$i]",$value,CHtml::listData($data,'name','name'),$htmlOptions);
