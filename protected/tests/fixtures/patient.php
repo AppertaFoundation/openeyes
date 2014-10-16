@@ -75,4 +75,32 @@ return array(
 		'address_id' => 4,
 		'contact_id' => 4
 	),
+	'patient5' => array(
+		'pas_key' => '1010',
+		'title' => 'Mrs',
+		'first_name' => 'Carla',
+		'last_name' => 'Bruni',
+		'dob' => '1977-01-01',
+		'gender' => 'F',
+		'hos_num' => 34321,
+		'nhs_num' => 76567,
+		'practice_id' => 3,
+		'practice_id' => 3,
+		'address_id' => 4,
+		'contact_id' => 5
+	),
+	'patient6' => array(
+		'pas_key' => '10107',
+		'title' => 'Mrs',
+		'first_name' => 'Carla',
+		'last_name' => 'Bruni',
+		'dob' => '1977-01-01',
+		'gender' => 'F',
+		'hos_num' => 34321,
+		'nhs_num' => 76567,
+		'practice_id' => 3,
+		'practice_id' => 3,
+		'address_id' => 4,
+		'contact_id' => 6
+	),
 );

@@ -41,6 +41,20 @@ return array(
 		'patient_id' => 3,
 		'firm_id' => 2,
 		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 1
+		'eye_id' => 1,
+	),
+	'episode5' => array(
+		'patient_id' => 5,
+		'firm_id' => 2,
+		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
+		'eye_id' => 1,
+		'disorder_id' => 7,
+	),
+	'episode6' => array(
+		'patient_id' => 6,
+		'firm_id' => 2,
+		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
+		'eye_id' => 1,
+		'disorder_id' => 7,
 	),
 );

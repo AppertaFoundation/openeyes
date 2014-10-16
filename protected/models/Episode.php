@@ -212,6 +212,10 @@ class Episode extends BaseActiveRecordVersioned
 	*/
 	public static function getCurrentEpisodeByFirm($patient_id, $firm, $include_closed = false)
 	{
+		if (!$firm) {
+			throw new Exception("Invalid firm");
+		}
+
 		return Episode::model()->getCurrentEpisodeBySubspecialtyId($patient_id, $firm->getSubspecialtyID(), $include_closed);
 	}
 
