@@ -457,14 +457,16 @@ class Event extends BaseActiveRecordVersioned
 		return file_exists($this->imageDirectory."/$name.png");
 	}
 
-	public function getPDF()
+	public function getPDF($pdf_print_suffix=null)
 	{
-		return $this->imageDirectory."/event.pdf";
+		return $pdf_print_suffix ? "$this->imageDirectory/event_$pdf_print_suffix.pdf" : "$this->imageDirectory/event.pdf";
 	}
 
-	public function hasPDF()
+	public function hasPDF($pdf_print_suffix=null)
 	{
-		return file_exists($this->PDF);
+		$pdf = $this->getPDF($pdf_print_suffix);
+
+		return file_exists($pdf) && filesize($pdf) >0;
 	} 
 
 	protected function getLockKey()

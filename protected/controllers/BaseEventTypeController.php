@@ -106,8 +106,9 @@ class BaseEventTypeController extends BaseModuleController
 	public $renderPatientPanel = true;
 
 	protected $open_elements;
-
 	public $dont_redirect = false;
+	public $pdf_print_suffix = null;
+	public $pdf_print_documents = 1;
 
 	public function getTitle()
 	{
@@ -1472,15 +1473,7 @@ class BaseEventTypeController extends BaseModuleController
 	public function actionPrint($id)
 	{
 		$this->printInit($id);
-
-		$pdf = (isset($_GET['pdf']) && $_GET['pdf']);
-		$this->printLog($id, $pdf);
-		//TODO: check on whether we need to pass the elements to the print after all
-		if ($pdf) {
-			$this->printPDF($id, $this->open_elements);
-		} else {
-			$this->printHTML($id, $this->open_elements);
-		}
+		$this->printHTML($id, $this->open_elements);
 	}
 
 	public function actionPDFPrint($id)
@@ -1491,18 +1484,15 @@ class BaseEventTypeController extends BaseModuleController
 
 		$event->lock();
 
-		if (!$event->hasPDF()) {
+		if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
 			ob_start();
 			$this->actionPrint($id);
 			$html = ob_get_contents();
 			ob_end_clean();
 
 			$wk = new WKHtmlToPDF;
-			if (!$wk->generateEventPDF($event, $html, @$_GET['html'])) {
-				$event->unlock();
-
-				throw new Exception("Failed to generate PDF for event $event->id");
-			}
+			$wk->setDocuments($this->pdf_print_documents);
+			$wk->generateEventPDF($event, $html, @$_GET['html'], $this->pdf_print_suffix);
 		}
 
 		$event->unlock();
@@ -1511,7 +1501,7 @@ class BaseEventTypeController extends BaseModuleController
 			return Yii::app()->end();
 		}
 
-		$pdf = $event->PDF;
+		$pdf = $event->getPDF($this->pdf_print_suffix);
 
 		header('Content-Type: application/pdf');
 		header('Content-Length: '.filesize($pdf));
@@ -1539,7 +1529,6 @@ class BaseEventTypeController extends BaseModuleController
 	/**
 	 * Render HTML print layout
 	 *
-	 * @TODO: are we still doing html printing at all?
 	 * @param integer $id event id
 	 * @param BaseEventTypeElement[] $elements
 	 * @param string $template

@@ -316,7 +316,7 @@ class EventTest extends CDbTestCase
 		return $this->assertEquals($event->getImageDirectory().'/event.pdf', $event->getPDF());
 	}
 
-	public function testHasPDF_True()
+	public function testHasPDF_Event_True()
 	{
 		Yii::app()->assetManager->basePath = Yii::app()->basePath."/assets";
 	 
@@ -340,13 +340,46 @@ class EventTest extends CDbTestCase
 		@unlink($event->getImageDirectory()."/event.pdf");
 	}
 
-	public function testHasPDF_False()
+	public function testHasPDF_Event_False()
 	{
 		Yii::app()->assetManager->basePath = Yii::app()->basePath."/assets";
 
 		$event = $this->event('event1');
 
 		$this->assertFalse($event->hasPDF());
+	}
+
+	public function testHasPDF_Other_True()
+	{
+		Yii::app()->assetManager->basePath = Yii::app()->basePath."/assets";
+	
+		$event = $this->event('event1');
+
+		$dirname = dirname($event->getImageDirectory()."/event_testing.pdf");
+		if (!file_exists($dirname)) {
+			if (!@mkdir($dirname,0755,true)) {
+				$this->markTestIncomplete('Skipping due to filesystem permissions');
+				return;
+			}
+		}
+
+		if (!@file_put_contents($event->getImageDirectory()."/event_testing.pdf", "test")) {
+			$this->markTestIncomplete('Skipping due to filesystem permissions');
+			return;
+		}
+	 
+		$this->assertTrue($event->hasPDF('testing'));
+
+		@unlink($event->getImageDirectory()."/event_testing.pdf");
+	}
+
+	public function testHasPDF_Other_False()
+	{
+		Yii::app()->assetManager->basePath = Yii::app()->basePath."/assets";
+
+		$event = $this->event('event1');
+
+		$this->assertFalse($event->hasPDF('testing'));
 	}
 
 	public function testGetBarCodeHTML()

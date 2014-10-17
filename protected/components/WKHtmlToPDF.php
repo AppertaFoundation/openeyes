@@ -20,6 +20,7 @@
 class WKHtmlToPDF
 {
 	protected $wkhtmltopdf;
+	protected $documents = 1;
 
 	public function __construct()
 	{
@@ -117,6 +118,7 @@ class WKHtmlToPDF
 		$footer = str_replace('{{PATIENT_NHSNUM}}',$patient->nhsnum,$footer);
 		$footer = str_replace('{{BARCODE}}',$barcode_html,$footer);
 		$footer = str_replace('{{DOCREF}}',$docref,$footer);
+		$footer = str_replace('{{DOCUMENTS}}',$this->documents,$footer);
 		$footer = str_replace('{{PAGE}}','<span class="page"></span>',$footer);
 		$footer = str_replace('{{PAGES}}','<span class="topage"></span>',$footer);
 
@@ -128,13 +130,23 @@ class WKHtmlToPDF
 		return new OEPDFInject($path);
 	}
 
-	public function generateEventPDF($event, $html, $output_html=false, $inject_autoprint_js=true)
+	public function setDocuments($count)
 	{
-		$html = $this->remapAssetPaths($html);
+		$this->documents = $count;
+	}
+
+	public function generateEventPDF($event, $html, $output_html=false, $pdf_print_suffix = null, $inject_autoprint_js=true)
+	{
+		!$output_html && $html = $this->remapAssetPaths($html);
 		$docref = $this->generateDocRef($event->id);
 
 		$this->findOrCreateDirectory($event->imageDirectory);
-		$this->writeFile("$event->imageDirectory/event.html",$html);
+
+		$html_file = $pdf_print_suffix ? "$event->imageDirectory/event_$pdf_print_suffix.html" : "$event->imageDirectory/event.html";
+		$pdf_file = $pdf_print_suffix ? "$event->imageDirectory/event_$pdf_print_suffix.pdf" : "$event->imageDirectory/event.pdf";
+		$footer_file = $pdf_print_suffix ? "$event->imageDirectory/footer_$pdf_print_suffix.html" : "$event->imageDirectory/footer.html";
+
+		$this->writeFile($html_file, $html);
 
 		$footer = $this->formatFooter(
 			$this->readFile(Yii::app()->basePath."/views/print/event_footer.php"),
@@ -146,24 +158,28 @@ class WKHtmlToPDF
 			$docref
 		);
 
-		$this->writeFile("$event->imageDirectory/footer.html",$footer);
+		$this->writeFile($footer_file, $footer);
 
 		if ($output_html) {
 			echo $html.$footer;
 			return true;
 		}
 
-		$res = $this->execute("{$this->wkhtmltopdf} --footer-html '{$event->imageDirectory}/footer.html' --print-media-type '{$event->imageDirectory}/event.html' '{$event->imageDirectory}/event.pdf' 2>&1");
+		$res = $this->execute("{$this->wkhtmltopdf} --footer-html '$footer_file' --print-media-type '$html_file' '$pdf_file' 2>&1");
 
-		if (!$this->fileExists("$event->imageDirectory/event.pdf") || $this->fileSize("$event->imageDirectory/event.pdf") == 0) {
-			return false;
+		if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
+			if ($this->fileSize($pdf_file) == 0) {
+				$this->deleteFile($pdf_file);
+			}
+
+			throw new Exception("Unable to generate $pdf_file: $res");
 		}
 
-		$this->deleteFile("$event->imageDirectory/event.html");
-		$this->deleteFile("$event->imageDirectory/footer.html");
+		$this->deleteFile($html_file);
+		$this->deleteFile($footer_file);
 
 		if ($inject_autoprint_js) {
-			$pdf = $this->getPDFInject("$event->imageDirectory/event.pdf");
+			$pdf = $this->getPDFInject($pdf_file);
 			$pdf->inject('print(true);');
 		}
 

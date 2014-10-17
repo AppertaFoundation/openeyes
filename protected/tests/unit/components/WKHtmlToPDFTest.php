@@ -173,7 +173,7 @@ class WKHtmlToPDFTest extends CTestCase
 		$patient->contact = new Contact;
 		$patient->nhs_num = 3423435;
 
-		$this->assertEquals('test '.$patient->nhs_num.' one two three',$wk->formatFooter('test {{PATIENT_NHSNUM}} one two three',0,0,0,$patient,0,0));
+		$this->assertEquals('test '.$patient->nhsnum.' one two three',$wk->formatFooter('test {{PATIENT_NHSNUM}} one two three',0,0,0,$patient,0,0));
 	}
 
 	public function testFormatFooter_Barcode()
@@ -247,7 +247,7 @@ class WKHtmlToPDFTest extends CTestCase
 		$middle = 'This is the middle, {{PATIENT_HOSNUM}} {{PATIENT_NHSNUM}} {{PAGES}}';
 		$right = 'This is the right, {{DOCREF}} {{PAGE}} {{PAGES}}';
 
-		$this->assertEquals('This is the left, '.$patient->getHSCICName(true).' barc0de <span class="page"></span> This is the middle, 12345 54321 <span class="topage"></span> This is the right, d0cr3f <span class="page"></span> <span class="topage"></span>',$wk->formatFooter('{{FOOTER_LEFT}} {{FOOTER_MIDDLE}} {{FOOTER_RIGHT}}',$left,$middle,$right,$patient,'barc0de','d0cr3f'));
+		$this->assertEquals('This is the left, '.$patient->getHSCICName(true).' barc0de <span class="page"></span> This is the middle, 12345 543 21  <span class="topage"></span> This is the right, d0cr3f <span class="page"></span> <span class="topage"></span>',$wk->formatFooter('{{FOOTER_LEFT}} {{FOOTER_MIDDLE}} {{FOOTER_RIGHT}}',$left,$middle,$right,$patient,'barc0de','d0cr3f'));
 	}
 
 	public function testGetPDFInject()
@@ -333,9 +333,12 @@ class WKHtmlToPDFTest extends CTestCase
 			->method('fileSize')
 			->will($this->returnValue(1));
 
-		$result = $wk->generateEventPDF($event, 'test', false, false);
+		$wk->expects($this->never())
+			->method('deleteFile');
 
-		$this->assertFalse($result);
+		$this->setExpectedException('Exception','Unable to generate /blah/one/two/seven/event.pdf: ');
+
+		$wk->generateEventPDF($event, 'test', false, null, false);
 	}
 
 	public function testGenerateEventPDF_FileSize()
@@ -347,13 +350,21 @@ class WKHtmlToPDFTest extends CTestCase
 
 		$wk->expects($this->any())
 			->method('fileExists')
+			->with('/event.pdf')
 			->will($this->returnValue(true));
 
 		$wk->expects($this->any())
 			->method('fileSize')
+			->with('/event.pdf')
 			->will($this->returnValue(0));
 
-		$result = $wk->generateEventPDF($this->getTestEvent(), 'test', false, false);
+		$wk->expects($this->once())
+			->method('deleteFile')
+			->with('/event.pdf');
+
+		$this->setExpectedException('Exception','Unable to generate /event.pdf: ');
+
+		$result = $wk->generateEventPDF($this->getTestEvent(), 'test', false, null, false);
 
 		$this->assertFalse($result);
 	}
@@ -367,13 +378,15 @@ class WKHtmlToPDFTest extends CTestCase
 
 		$wk->expects($this->any())
 			->method('fileExists')
+			->with('/event.pdf')
 			->will($this->returnValue(true));
 
 		$wk->expects($this->any())
 			->method('fileSize')
+			->with('/event.pdf')
 			->will($this->returnValue(1));
 
-		$result = $wk->generateEventPDF($this->getTestEvent(), 'test', false, false);
+		$result = $wk->generateEventPDF($this->getTestEvent(), 'test', false, null, false);
 
 		$this->assertTrue($result);
 	}
@@ -385,10 +398,8 @@ class WKHtmlToPDFTest extends CTestCase
 			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFInject','getAssetManager','deleteFile','fileExists','fileSize'))
 			->getMock();
 
-		$wk->expects($this->once())
-			->method('remapAssetPaths')
-			->with('test')
-			->will($this->returnValue('dsiofjdsifjsdf ksdfj sdiof jsdiofj oisdfjiosdfjosd'));
+		$wk->expects($this->never())
+			->method('remapAssetPaths');
 
 		$wk->expects($this->once())
 			->method('formatFooter')
@@ -403,13 +414,13 @@ class WKHtmlToPDFTest extends CTestCase
 			->will($this->returnValue(1));
 
 		ob_start();
-		$result = $wk->generateEventPDF($this->getTestEvent(), 'test', true, false);
+		$result = $wk->generateEventPDF($this->getTestEvent(), 'test', true, null, false);
 		$html = ob_get_contents();
 		ob_end_clean();
 
 		$this->assertTrue($result);
 
-		$this->assertEquals("dsiofjdsifjsdf ksdfj sdiof jsdiofj oisdfjiosdfjosdFOOTER39 4u10239ru89ef298 dfu29 8uef9wu9ew8fu 98wfu9ewuf we", $html);
+		$this->assertEquals("testFOOTER39 4u10239ru89ef298 dfu29 8uef9wu9ew8fu 98wfu9ewuf we", $html);
 	}
 
 	public function testGenerateEventPDF_JSInject()
@@ -441,6 +452,28 @@ class WKHtmlToPDFTest extends CTestCase
 			->with('/event.pdf')
 			->will($this->returnValue($pdf));
 
-		$wk->generateEventPDF($this->getTestEvent(), 'test', false, true);
+		$wk->generateEventPDF($this->getTestEvent(), 'test', false, null, true);
+	}
+
+	public function testGenerateEventPDF_Suffix()
+	{
+		$wk = $this->getMockBuilder('WKHtmlToPDF')
+			->disableOriginalConstructor()
+			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFInject','getAssetManager','deleteFile','fileExists','fileSize'))
+			->getMock();
+
+		$wk->expects($this->any())
+			->method('fileExists')
+			->with('/event_testing.pdf')
+			->will($this->returnValue(true));
+
+		$wk->expects($this->any())
+			->method('fileSize')
+			->with('/event_testing.pdf')
+			->will($this->returnValue(1));
+
+		$result = $wk->generateEventPDF($this->getTestEvent(), 'test', false, 'testing', false);
+
+		$this->assertTrue($result);
 	}
 }
