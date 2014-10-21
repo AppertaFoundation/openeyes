@@ -29,7 +29,6 @@ $event_type = $event->eventType->name;
 		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" width="100" height="83" />
 	</div>
 	<div class="row">
-		<!-- Patient details -->
 		<div class="large-4 column patient">
 			<strong><?php echo $this->patient->contact->fullName?></strong>
 			<br />
