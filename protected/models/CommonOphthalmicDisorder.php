@@ -33,6 +33,9 @@
  */
 class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
+	const SELECTION_LABEL_FIELD = 'disorder_id';
+	const SELECTION_LABEL_RELATION = 'disorder';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return CommonOphthalmicDisorder the static model class

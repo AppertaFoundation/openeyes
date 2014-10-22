@@ -37,6 +37,36 @@ class AdminController extends BaseAdminController
 		$this->genericAdmin('Edit Medication Stop Reason', 'MedicationStopReason');
 	}
 
+	public function actionEditCommonOphthalmicDisorder()
+	{
+		$this->genericAdmin('CommonOphthalmicDisorder', 'CommonOphthalmicDisorder',
+			array(
+				'label_relation' => 'disorder',
+				'label_field_type' => 'search_lookup',
+				'label_field_model' => 'Disorder',
+				'new_row_url' => Yii::app()->createUrl('/admin/newCommonOphthalmicDisorderRow'),
+				'filter_fields' => array(
+					array('field' => 'subspecialty_id', 'model' => 'Subspecialty'),
+				),
+			));
+	}
+
+	public function actionNewCommonOphthalmicDisorderRow($key)
+	{
+		$this->genericAdmin('CommonOphthalmicDisorder', 'CommonOphthalmicDisorder',
+			array(
+				'label_relation' => 'disorder',
+				'label_field_type' => 'search_lookup',
+				'label_field_model' => 'Disorder',
+				'new_row_url' => Yii::app()->createUrl('/admin/newCommonOphthalmicDisorderRow'),
+				'filter_fields' => array(
+					array('field' => 'subspecialty_id', 'model' => 'Subspecialty'),
+				),
+			),
+			$key
+		);
+	}
+
 	public function actionDrugs()
 	{
 		$criteria = new CDbCriteria;

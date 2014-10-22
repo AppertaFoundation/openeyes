@@ -57,16 +57,30 @@ $(document).ready(function() {
 		return 0;
 	}
 
+	function appendRow(form) {
+		$('.generic-admin tbody').append(form);
+		$('.generic-admin tbody').children('tr:last').children('td:nth-child(2)').children('input').focus();
+	}
+
 	$('.generic-admin-add').unbind('click').click(function(e) {
 		e.preventDefault();
 
-		var template = $('.generic-admin .newRow').html();
 		var data = {
 			"key" : getNextKey()
 		};
-		var form = Mustache.render(template, data).replace(/ disabled="disabled"/g,'');
+		var template = $('.generic-admin .newRow').html();
 
-		$('.generic-admin tbody').append('<tr data-row="'+data.key+'">' + form + '</tr>');
-		$('.generic-admin tbody').children('tr:last').children('td:nth-child(2)').children('input').focus();
+		if (template > 0) {
+			appendRow('<tr data-row="'+data.key+'">' + Mustache.render(template, data).replace(/ disabled="disabled"/g,'') + '</tr>');
+		}
+		else {
+			$.ajax({
+				'url': $(this).data('new-row-url'),
+				'data': {'key': data.key, 'model': $(this).data('model')},
+				'success': function(resp) {
+					appendRow(resp);
+				}
+			});
+		}
 	});
 });
