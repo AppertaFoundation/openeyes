@@ -180,30 +180,35 @@ $(document).ready(function(){
 	/**
 	 * Warn on leaving edit mode
 	 */
-	var formHasChanged = false;
+	window.formHasChanged = false;
+	window.changedTickets = {};
+	window.patientTicketChanged = false;
+
 	var submitted = false;
 
-	$(document).on("change", '#patient-alerts form', function(e) {
-		formHasChanged = true;
+
+  $('#patient-alerts form').on("change", function(e) {
+		window.changedTickets[$(e.target).closest('#PatientTicketing-queue-assignment').data('queue')]=true;
+		window.patientTicketChanged = true;
 	});
 
 	$("#event-content").on("change", function (e) {
-		formHasChanged = true;
+		window.formHasChanged = true;
 	});
 
 	$('#patient-summary-form-container').on("change", function (e) {
-		formHasChanged = true;
+		window.formHasChanged = true;
 	});
 
 	//if the save button is on page
 	if($('#et_save').length){
 		$(".EyeDrawWidget").on("click", function (e) {
-			formHasChanged = true;
+			window.formHasChanged = true;
 		});
 	}
 
 	$(window).on('beforeunload', function (e) {
-		if (formHasChanged && !submitted) {
+		if ((window.formHasChanged || window.patientTicketChanged) && !submitted) {
 			var message = "You have not saved your changes.", e = e || window.event;
 			if (e) {
 				e.returnValue = message;
