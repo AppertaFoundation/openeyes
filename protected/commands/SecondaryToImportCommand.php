@@ -92,15 +92,16 @@ EOH;
 							$this->resetSubspecialty($subspecialty);
 						}
 						if ($cod = $this->getCOD($data['parent_disorder_id'], $subspecialty)) {
-							if ($st_disorder = $this->getDisorder($data['disorder_id'])) {
+							if ($data['disorder_id'] && $st_disorder = $this->getDisorder($data['disorder_id'])) {
 								$st = new SecondaryToCommonOphthalmicDisorder();
 								$st->parent_id = $cod->id;
 								$st->disorder_id = $st_disorder->id;
+								$st->display_order = $this->getNextDisplayOrderForParent($cod);
 								$st->save();
 								$count++;
 							}
 							else {
-								if (!$this->reset_parent) {
+								if ($data['disorder_id'] && !$this->reset_parent) {
 									$warnings[] = "Cannot find disorder with id {$data['disorder_id']}";
 								}
 							}
@@ -180,6 +181,7 @@ EOH;
 			}
 
 			if (!$cod = CommonOphthalmicDisorder::model()->find($criteria) && $this->reset_parent) {
+				$display_order = $this->getNextDisplayOrderForSubspecialty($subspecialty);
 				$_disorder_id = Disorder::model()->findByPk($disorder_id) ? $disorder_id : null;
 
 				$cod = new CommonOphthalmicDisorder();
@@ -204,6 +206,60 @@ EOH;
 			CommonOphthalmicDisorder::model()->deleteAllByAttributes(array('subspecialty_id' => $subspecialty->id));
 			$this->reset_subspecialty_ids[] = $subspecialty->id;
 		}
+	}
+
+	protected $display_order = array();
+
+	/**
+	 * Wrapper to track the display order for Common Disorders
+	 *
+	 * @param $subspecialty
+	 * @return mixed
+	 */
+	public function getNextDisplayOrderForSubspecialty($subspecialty)
+	{
+		if (!array_key_exists($subspecialty->id, $this->display_order)) {
+			$criteria = new CDbCriteria;
+			$criteria->addCondition('subspecialty_id = :si');
+			$criteria->params[':si'] = $subspecialty->id;
+			$criteria->order = 'display_order desc';
+			$criteria->limit = 1;
+			if ($cod = CommonOphthalmicDisorder::model()->find($criteria)) {
+				$this->display_order[$subspecialty->id] = $cod->display_order;
+			}
+			else {
+				$this->display_order[$subspecialty->id] = 0;
+			}
+		}
+
+		return ++$this->display_order[$subspecialty->id];
+	}
+
+	protected $second_display_order = array();
+
+	/**
+	 * Wrapper to handle ordering for secondary to disorders
+	 *
+	 * @param $cod
+	 * @return mixed
+	 */
+	public function getNextDisplayOrderForParent($cod)
+	{
+		if (!array_key_exists($cod->id, $this->second_display_order)) {
+			$criteria = new CDbCriteria;
+			$criteria->addCondition('parent_id = :id');
+			$criteria->params[':id'] = $cod->id;
+			$criteria->order = 'display_order desc';
+			$criteria->limit = 1;
+			if ($st = SecondaryToCommonOphthalmicDisorder::model()->find($criteria)) {
+				$this->second_display_order[$cod->id] = $st->display_order;
+			}
+			else {
+				$this->second_display_order[$cod->id] = 0;
+			}
+		}
+
+		return ++$this->second_display_order[$cod->id];
 	}
 
 }
