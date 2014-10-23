@@ -31,9 +31,20 @@ class BaseActiveRecord extends CActiveRecord
 	const SELECTION_LABEL_FIELD = 'name';
 
 	/**
+	 * Label relation field used in admin etc
+	 */
+	const SELECTION_LABEL_RELATION = null;
+
+	/**
 	 * Order by clause to be applied by SelectionWidget
 	 */
 	const SELECTION_ORDER = '';
+
+	/**
+	 * With clause for selection query in SelectionWidget
+	 */
+	const SELECTION_WITH = null;
+
 
 	// flag to automatically update related objects on the record
 	// (whilst developing this feature, will allow other elements to continue to work)

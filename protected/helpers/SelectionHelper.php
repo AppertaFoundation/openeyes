@@ -28,12 +28,13 @@ class SelectionHelper
 	static public function listData($class, $value = null)
 	{
 		$lookup = $class::model();
+
 		if ($lookup->asa('LookupTable')) {
 			$lookup->activeOrPk($value);
 		}
 		return CHtml::listData(
-			$lookup->cache(60)->findAll(array('order' => $lookup::SELECTION_ORDER)),
-			'id', $lookup::SELECTION_LABEL_FIELD
+			$lookup->cache(60)->with($lookup::SELECTION_WITH)->findAll(array('order' => $lookup::SELECTION_ORDER)),
+			'id', method_exists($lookup, 'getSelectionLabel') ? 'selectionLabel' : $lookup::SELECTION_LABEL_FIELD
 		);
 	}
 }

@@ -57,8 +57,22 @@ $(document).ready(function() {
 		return 0;
 	}
 
+	function getNextDisplayOrder() {
+		var keys = $('table.generic-admin tr').map(function(index, el) {
+			v = parseInt($(el).find('input[name^="display_order"]').val());
+			return isNaN(v) ? -Infinity : v;
+		}).get();
+		var v = Math.max.apply(null, keys);
+		if (v >= 0) {
+			return v+1;
+		}
+		return 1;
+	}
+
 	function appendRow(form) {
+		var dOrder = getNextDisplayOrder();
 		$('.generic-admin tbody').append(form);
+		$('.generic-admin tbody').children('tr:last').find('input[name^="display_order"]').val(dOrder);
 		$('.generic-admin tbody').children('tr:last').children('td:nth-child(2)').children('input').focus();
 	}
 
@@ -70,7 +84,7 @@ $(document).ready(function() {
 		};
 		var template = $('.generic-admin .newRow').html();
 
-		if (template > 0) {
+		if (template) {
 			appendRow('<tr data-row="'+data.key+'">' + Mustache.render(template, data).replace(/ disabled="disabled"/g,'') + '</tr>');
 		}
 		else {

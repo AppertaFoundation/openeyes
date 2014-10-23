@@ -90,7 +90,7 @@ class BaseAdminController extends BaseController
 		$items = array();
 		$errors = array();
 
-		if ($key) {
+		if ($key !== null) {
 			$items = array($key => new $model);
 			$options['get_row'] = true;
 			$this->renderPartial('//admin/generic_admin', array(

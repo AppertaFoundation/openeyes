@@ -20,10 +20,15 @@ class m141020_101017_common_oph_disorder_sort extends CDbMigration
 			$this->update('common_ophthalmic_disorder', array(
 					'display_order' => $display_order++), 'id = :id', array(':id' => $c['id']));
 		}
+
+		$this->addColumn('secondaryto_common_oph_disorder', 'display_order', 'int(10) unsigned DEFAULT 1');
+		$this->addColumn('secondaryto_common_oph_disorder_version', 'display_order', 'int(10) unsigned DEFAULT 1');
 	}
 
 	public function down()
 	{
+		$this->dropColumn('secondaryto_common_oph_disorder_version', 'display_order');
+		$this->dropColumn('secondaryto_common_oph_disorder', 'display_order');
 		$this->dropColumn('common_ophthalmic_disorder', 'display_order');
 		$this->dropColumn('common_ophthalmic_disorder_version', 'display_order');
 	}

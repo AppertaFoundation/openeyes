@@ -33,6 +33,8 @@
  */
 class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
+	const SELECTION_LABEL_FIELD = 'disorder_id';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return SecondaryToCommonOphthalmicDisorder the static model class
@@ -48,6 +50,11 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 	public function tableName()
 	{
 		return 'secondaryto_common_oph_disorder';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
 	}
 
 	/**
@@ -88,6 +95,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		return array(
 				'id' => 'ID',
 				'disorder_id' => 'Disorder',
+				'parent_id' => 'Parent'
 		);
 	}
 

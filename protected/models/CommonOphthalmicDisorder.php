@@ -35,6 +35,8 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
 	const SELECTION_LABEL_FIELD = 'disorder_id';
 	const SELECTION_LABEL_RELATION = 'disorder';
+	const SELECTION_ORDER = 'subspecialty.name, t.display_order';
+	const SELECTION_WITH = 'subspecialty';
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -51,6 +53,11 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 	public function tableName()
 	{
 		return 'common_ophthalmic_disorder';
+	}
+
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
 	}
 
 	/**
@@ -173,5 +180,18 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		}
 
 		return array($_disorders, $_secondary);
+	}
+
+	public function getSelectionLabel() {
+
+		$lbl = $this->subspecialty->name . " - ";
+
+		if ($this->disorder) {
+			$lbl .= $this->disorder->term;
+		}
+		else {
+			$lbl .= 'None';
+		}
+		return $lbl;
 	}
 }

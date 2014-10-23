@@ -17,7 +17,21 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php
+$htmlOptions = array();
+$collapse_style = "";
+$expand_style = "";
+if (!$row->isNewRecord) {
+	$htmlOptions['style'] = "display: none;";
+	$collapse_style = "display: none;";
+}
+else {
+	$expand_style = "display: none;";
+}
+?>
 <span id="<?= "display_{$params['field']}_{$i}"?>"><?= ($row && $row->{$params['relation']}) ? $row->{$params['relation']}->term : '' ?></span>
+<span id="<?= "expand_{$params['field']}_{$i}"?>" style="<?= $expand_style ?>">[e]</span>
+<span id="<?= "collapse_{$params['field']}_{$i}"?>" style="<?= $collapse_style ?>">[x]</span>
 <input type="hidden" name="<?= "{$params['field']}[$i]" ?>" id="<?="{$params['field']}_{$i}"?>" value="<?= $row->{$params['field']} ?>"/>
 <?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -43,5 +57,19 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				return false;
 			}",
 		),
-		//'htmlOptions'=>array('style'=>'width: 90%;',)
+		'htmlOptions'=>$htmlOptions
 	)); ?>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#<?= "expand_{$params['field']}_{$i}"?>').on('click', function() {
+			$('#<?= "autocomplete_{$params['field']}_{$i}" ?>').show();
+			$(this).hide();
+			$('#<?= "collapse_{$params['field']}_{$i}"?>').show();
+		});
+		$('#<?= "collapse_{$params['field']}_{$i}"?>').on('click', function() {
+			$('#<?= "autocomplete_{$params['field']}_{$i}" ?>').hide();
+			$(this).hide();
+			$('#<?= "expand_{$params['field']}_{$i}"?>').show();
+		});
+	});
+</script>

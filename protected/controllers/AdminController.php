@@ -39,7 +39,7 @@ class AdminController extends BaseAdminController
 
 	public function actionEditCommonOphthalmicDisorder()
 	{
-		$this->genericAdmin('CommonOphthalmicDisorder', 'CommonOphthalmicDisorder',
+		$this->genericAdmin('Common Ophthalmic Disorder', 'CommonOphthalmicDisorder',
 			array(
 				'label_relation' => 'disorder',
 				'label_field_type' => 'search_lookup',
@@ -53,7 +53,7 @@ class AdminController extends BaseAdminController
 
 	public function actionNewCommonOphthalmicDisorderRow($key)
 	{
-		$this->genericAdmin('CommonOphthalmicDisorder', 'CommonOphthalmicDisorder',
+		$this->genericAdmin('Common Ophthalmic Disorder', 'CommonOphthalmicDisorder',
 			array(
 				'label_relation' => 'disorder',
 				'label_field_type' => 'search_lookup',
@@ -65,6 +65,20 @@ class AdminController extends BaseAdminController
 			),
 			$key
 		);
+	}
+
+	public function actionEditSecondaryToCommonOphthalmicDisorder()
+	{
+		$this->genericAdmin('Secondary Common Ophthalmic Disorder', 'SecondaryToCommonOphthalmicDisorder',
+			array(
+				'label_relation' => 'disorder',
+				'label_field_type' => 'search_lookup',
+				'label_field_model' => 'Disorder',
+				'new_row_url' => Yii::app()->createUrl('/admin/newCommonOphthalmicDisorderRow'),
+				'filter_fields' => array(
+					array('field' => 'parent_id', 'model' => 'CommonOphthalmicDisorder')
+				),
+			));
 	}
 
 	public function actionDrugs()

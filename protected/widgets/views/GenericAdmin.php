@@ -67,35 +67,10 @@
 }
 
 if (!$get_row && $filters_ready) {
-				if (!$this->new_row_url) {?>
-					<tr id="admin-new-row" class="newRow" style="display: none">
-						<input type="hidden" name="row-key" value="{{key}}" />
-						<td>
-							<span>&uarr;&darr;</span>
-						</td>
-						<td>
-							<?php echo CHtml::hiddenField('id[{{key}}]','',array('disabled' => 'disabled'))?>
-							<?php echo CHtml::hiddenField('display_order[{{key}}]','{{key}}',array('disabled' => 'disabled'))?>
-							<?php
-								if ($this->label_field_type) {
-									$this->render('_generic_admin_' . $this->label_field_type, array('row' => $row,
-											'params' => array('relation' => $this->label_relation, 'field' => $this->label_field, 'model' => $this->label_field_model, 'allow_null' => false),
-											'i' => '{{key}}'));
-								} else {
-									echo CHtml::textField("{$label_field}[{{key}}]",$row->{$label_field},array('autocomplete'=>Yii::app()->params['html_autocomplete'], 'disabled' => 'disabled'));
-								}
-							//echo CHtml::textField("{$label_field}[{{key}}]",'',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => 'disabled'))?>
-						</td>
-						<?php foreach ($extra_fields as $field) {?>
-							<td>
-								<?php $this->render('_generic_admin_'.$field['type'],array('row' => null, 'params' => $field, 'disabled' => 'disabled', 'i' => '{{key}}'))?>
-							</td>
-						<?php }?>
-						<td>
-							<a href="#" class="deleteRow">delete</a>
-						</td>
-					</tr>
-				<?php } ?>
+				if (!$this->new_row_url) {
+					$this->render('_generic_admin_row', array('row_class' => 'newRow', 'row_style' => 'display: none;', 'disabled' => true,
+							'i' => '{{key}}', 'row' => new $model, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model));
+				} ?>
 			</tbody>
 		</table>
 		<div>
