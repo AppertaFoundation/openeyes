@@ -21,6 +21,9 @@ class WKHtmlToPDF
 {
 	protected $wkhtmltopdf;
 	protected $documents = 1;
+	protected $docrefs = array();
+	protected $barcodes = array();
+	protected $patients = array();
 
 	public function __construct()
 	{
@@ -59,11 +62,6 @@ class WKHtmlToPDF
 		$html = str_replace('src="/assets/','src="'.$this->getAssetManager()->basePath.'/',$html);
 
 		return $html;
-	}
-
-	public function generateDocRef($event_id)
-	{
-		return "E:$event_id/".strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32)).'/{{PAGE}}';
 	}
 
 	public function findOrCreateDirectory($path)
@@ -108,16 +106,31 @@ class WKHtmlToPDF
 		return @filesize($path);
 	}
 
-	public function formatFooter($footer, $left, $middle, $right, $patient, $barcode_html, $docref)
+	public function formatFooter($footer, $left, $middle, $right)
 	{
+		$patient_names = array();
+		$patient_hosnums = array();
+		$patient_nhsnums = array();
+
+		foreach ($this->patients as $patient) {
+			$patient_names[] = $patient->getHSCICName(true);
+			$patient_hosnums[] = $patient->hos_num;
+			$patient_nhsnums[] = $patient->nhsnum;
+		}
+
 		$footer = str_replace('{{FOOTER_LEFT}}',$left,$footer);
 		$footer = str_replace('{{FOOTER_MIDDLE}}',$middle,$footer);
 		$footer = str_replace('{{FOOTER_RIGHT}}',$right,$footer);
-		$footer = str_replace('{{PATIENT_NAME}}',$patient->getHSCICName(true),$footer);
-		$footer = str_replace('{{PATIENT_HOSNUM}}',$patient->hos_num,$footer);
-		$footer = str_replace('{{PATIENT_NHSNUM}}',$patient->nhsnum,$footer);
-		$footer = str_replace('{{BARCODE}}',$barcode_html,$footer);
-		$footer = str_replace('{{DOCREF}}',$docref,$footer);
+		$footer = str_replace('{{PATIENT_NAMES}}',CJavaScript::encode($patient_names),$footer);
+		$footer = str_replace('{{PATIENT_HOSNUMS}}',CJavaScript::encode($patient_hosnums),$footer);
+		$footer = str_replace('{{PATIENT_NHSNUMS}}',CJavaScript::encode($patient_nhsnums),$footer);
+		$footer = str_replace('{{PATIENT_NAME}}','<span class="patient_name"></span>',$footer);
+		$footer = str_replace('{{PATIENT_HOSNUM}}','<span class="patient_hosnum"></span>',$footer);
+		$footer = str_replace('{{PATIENT_NHSNUM}}','<span class="patient_nhsnum"></span>',$footer);
+		$footer = str_replace('{{BARCODES}}',CJavaScript::encode($this->barcodes),$footer);
+		$footer = str_replace('{{BARCODE}}','<span class="barcode"></span>',$footer);
+		$footer = str_replace('{{DOCREF}}','<span class="docref"></span>',$footer);
+		$footer = str_replace('{{DOCREFS}}',CJavaScript::encode($this->docrefs),$footer);
 		$footer = str_replace('{{DOCUMENTS}}',$this->documents,$footer);
 		$footer = str_replace('{{PAGE}}','<span class="page"></span>',$footer);
 		$footer = str_replace('{{PAGES}}','<span class="topage"></span>',$footer);
@@ -135,27 +148,56 @@ class WKHtmlToPDF
 		$this->documents = $count;
 	}
 
-	public function generateEventPDF($event, $html, $output_html=false, $pdf_print_suffix = null, $inject_autoprint_js=true)
+	public function setDocref($docref)
+	{
+		$this->docrefs = array($docref);
+	}
+
+	public function setDocrefs($docrefs)
+	{
+		$this->docrefs = $docrefs;
+	}
+
+	public function setBarcode($barcode_html)
+	{
+		$this->barcodes = array($barcode_html);
+	}
+
+	public function setBarcodes($barcodes)
+	{
+		$this->barcodes = $barcodes;
+	}
+
+	public function setPatient($patient)
+	{
+		$this->patients = array($patient);
+	}
+
+	public function setPatients($patients)
+	{
+		$this->patients = $patients;
+	}
+
+	public function generatePDF($imageDirectory, $prefix, $suffix, $html, $output_html=false, $inject_autoprint_js=true)
 	{
 		!$output_html && $html = $this->remapAssetPaths($html);
-		$docref = $this->generateDocRef($event->id);
 
-		$this->findOrCreateDirectory($event->imageDirectory);
+		$this->findOrCreateDirectory($imageDirectory);
 
-		$html_file = $pdf_print_suffix ? "$event->imageDirectory/event_$pdf_print_suffix.html" : "$event->imageDirectory/event.html";
-		$pdf_file = $pdf_print_suffix ? "$event->imageDirectory/event_$pdf_print_suffix.pdf" : "$event->imageDirectory/event.pdf";
-		$footer_file = $pdf_print_suffix ? "$event->imageDirectory/footer_$pdf_print_suffix.html" : "$event->imageDirectory/footer.html";
+		$html_file = $suffix ? "$imageDirectory/{$prefix}_$suffix.html" : "$imageDirectory/$prefix.html";
+		$pdf_file = $suffix ? "$imageDirectory/{$prefix}_$suffix.pdf" : "$imageDirectory/$prefix.pdf";
+		$footer_file = $suffix ? "$imageDirectory/footer_$suffix.html" : "$imageDirectory/footer.html";
 
 		$this->writeFile($html_file, $html);
 
 		$footer = $this->formatFooter(
-			$this->readFile(Yii::app()->basePath."/views/print/event_footer.php"),
+			$this->readFile(Yii::app()->basePath."/views/print/pdf_footer.php"),
 			Yii::app()->params['wkhtmltopdf_footer_left'],
 			Yii::app()->params['wkhtmltopdf_footer_middle'],
 			Yii::app()->params['wkhtmltopdf_footer_right'],
-			$event->episode->patient,
-			$event->barCodeHTML,
-			$docref
+			$this->patients,
+			$this->barcodes,
+			$this->docrefs
 		);
 
 		$this->writeFile($footer_file, $footer);

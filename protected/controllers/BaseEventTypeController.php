@@ -109,6 +109,7 @@ class BaseEventTypeController extends BaseModuleController
 	public $dont_redirect = false;
 	public $pdf_print_suffix = null;
 	public $pdf_print_documents = 1;
+	public $pdf_print_html = null;
 
 	public function getTitle()
 	{
@@ -1485,14 +1486,21 @@ class BaseEventTypeController extends BaseModuleController
 		$event->lock();
 
 		if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
-			ob_start();
-			$this->actionPrint($id);
-			$html = ob_get_contents();
-			ob_end_clean();
+			if (!$this->pdf_print_html) {
+				ob_start();
+				$this->actionPrint($id);
+				$this->pdf_print_html = ob_get_contents();
+				ob_end_clean();
+			}
 
 			$wk = new WKHtmlToPDF;
+
 			$wk->setDocuments($this->pdf_print_documents);
-			$wk->generateEventPDF($event, $html, @$_GET['html'], $this->pdf_print_suffix);
+			$wk->setDocref($event->docref);
+			$wk->setPatient($event->episode->patient);
+			$wk->setBarcode($event->barcodeHTML);
+
+			$wk->generatePDF($event->imageDirectory, "event", $this->pdf_print_suffix, $this->pdf_print_html, (boolean)@$_GET['html']);
 		}
 
 		$event->unlock();

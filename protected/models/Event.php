@@ -494,4 +494,9 @@ class Event extends BaseActiveRecordVersioned
 
 		return $barcode->getBarcodeHTML(1,8);
 	}
+
+	public function getDocref()
+	{
+		return "E:$this->id/".strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32)).'/{{PAGE}}';
+	}
 }
