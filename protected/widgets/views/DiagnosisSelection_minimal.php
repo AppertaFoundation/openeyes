@@ -28,6 +28,7 @@
 <?php }?>
 			<?php
 			$list_options = array('empty' => 'Select a commonly used diagnosis');
+
 			if ($secondary_to) {
 				$list_options['options'] = array();
 				foreach ($secondary_to as $id => $lst) {
@@ -35,12 +36,19 @@
 						$list_options['options'][$id] = array();
 					}
 					$data = array();
+					$second_order = 1;
 					foreach ($lst as $sid => $term) {
-						$data[] = array('id' => $sid, 'term' => $term);
+						$data[] = array('id' => $sid, 'term' => $term, 'order' => $second_order++);
 					}
 					$list_options['options'][$id]['data-secondary-to'] = CJSON::encode($data);
 				}
-			}?>
+			}
+
+			$order = 1;
+			foreach ($options as $i => $opt) {
+				$list_options['options'][$i]['data-order'] = $order++;
+			}
+			?>
 			<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, $list_options) : ""?>
 <?php if (!$nowrapper) {?>
 		</div>
@@ -137,7 +145,7 @@
 	<?php }?>
 <script type="text/javascript">
 	function updatePrimaryList(disorder, secondary_to) {
-		var html = '<option value="'+disorder.id+'"';
+		var html = '<option value="'+disorder.id+'" data-order="'+disorder.order+'"';
 		if (secondary_to) {
 			html += ' data-secondary-to="'+JSON.stringify(secondary_to).replace(/\"/g, "&quot;")+'"';
 		}
@@ -165,11 +173,12 @@
 
 	<?php if ($secondary_to) {?>
 	function updateSecondaryList(data, include_none) {
+		debugger;
 		var options = '<option value="">- Please Select -</option>';
 		if (include_none) {
 			options += '<option value="NONE">None</option>';
 		}
-		data.sort(function(a, b) { return a.term < b.term ? -1 : 1});
+		data.sort(function(a, b) { return a.order < b.order ? -1 : 1});
 		for (var i in data) {
 			if (data[i].id == 'NONE') {
 				options += '<option value="' + data[i].id + '">' + data[i].term + '</option>';

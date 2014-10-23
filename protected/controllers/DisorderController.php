@@ -87,7 +87,7 @@ class DisorderController extends BaseController
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
 		if ($cd = CommonOphthalmicDisorder::model()->find('disorder_id=? and subspecialty_id=?',array($id,$firm->serviceSubspecialtyAssignment->subspecialty_id))) {
-			echo "<option value=\"$cd->disorder_id\">".$cd->disorder->term."</option>";
+			echo "<option value=\"$cd->disorder_id\" data-order=\"{$cd->display_order}\">".$cd->disorder->term."</option>";
 		}
 	}
 
@@ -104,11 +104,11 @@ class DisorderController extends BaseController
 		$result = array();
 		if ($subspecialty_id = $firm->getSubspecialtyID()) {
 			if ($cd = CommonOphthalmicDisorder::model()->with(array('disorder', 'secondary_to_disorders'))->findByAttributes(array('disorder_id'=> $id, 'subspecialty_id' => $subspecialty_id)) ) {
-				$result['disorder'] = array('id' => $cd->disorder_id, 'term' => $cd->disorder->term);
+				$result['disorder'] = array('id' => $cd->disorder_id, 'term' => $cd->disorder->term, 'order' => $cd->display_order);
 				if ($sts = $cd->secondary_to_disorders) {
 					$result['secondary_to'] = array();
 					foreach ($sts as $st) {
-						$result['secondary_to'][] = array('id' => $st->id, 'term' => $st->term);
+						$result['secondary_to'][] = array('id' => $st->id, 'term' => $st->term, 'order' => $st->display_order);
 					}
 				}
 				echo CJSON::encode($result);
