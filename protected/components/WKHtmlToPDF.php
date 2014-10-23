@@ -118,6 +118,20 @@ class WKHtmlToPDF
 			$patient_nhsnums[] = $patient->nhsnum;
 		}
 
+		while (count($patient_names) < $this->documents) {
+			$patient_names[] = $patient_names[count($patient_names)-1];
+			$patient_hosnums[] = $patient_hosnums[count($patient_hosnums)-1];
+			$patient_nhsnums[] = $patient_nhsnums[count($patient_nhsnums)-1];
+		}
+
+		while (count($this->barcodes) < $this->documents) {
+			$this->barcodes[] = $this->barcodes[count($this->barcodes)-1];
+		}
+
+		while (count($this->docrefs) < $this->documents) {
+			$this->docrefs[] = $this->docrefs[count($this->docrefs)-1];
+		}
+
 		$footer = str_replace('{{FOOTER_LEFT}}',$left,$footer);
 		$footer = str_replace('{{FOOTER_MIDDLE}}',$middle,$footer);
 		$footer = str_replace('{{FOOTER_RIGHT}}',$right,$footer);
