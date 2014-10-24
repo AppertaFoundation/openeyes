@@ -221,12 +221,12 @@ class WKHtmlToPDF
 			return true;
 		}
 
-		$top_margin = Yii::app()->params['wkhtmltopdf_top_margin'];
-		$bottom_margin = Yii::app()->params['wkhtmltopdf_bottom_margin'];
-		$left_margin = Yii::app()->params['wkhtmltopdf_left_margin'];
-		$right_margin = Yii::app()->params['wkhtmltopdf_right_margin'];
+		$top_margin = Yii::app()->params['wkhtmltopdf_top_margin'] ? "-T ".Yii::app()->params['wkhtmltopdf_top_margin'] : '';
+		$bottom_margin = Yii::app()->params['wkhtmltopdf_bottom_margin'] ? "-B ".Yii::app()->params['wkhtmltopdf_bottom_margin'] : '';
+		$left_margin = Yii::app()->params['wkhtmltopdf_left_margin'] ? "-L ".Yii::app()->params['wkhtmltopdf_left_margin'] : '';
+		$right_margin = Yii::app()->params['wkhtmltopdf_right_margin'] ? "-R ".Yii::app()->params['wkhtmltopdf_right_margin'] : '';
 
-		$res = $this->execute("{$this->wkhtmltopdf} --footer-html '$footer_file' --print-media-type -T $top_margin -B $bottom_margin -L $left_margin -R $right_margin '$html_file' '$pdf_file' 2>&1");
+		$res = $this->execute("{$this->wkhtmltopdf} --footer-html '$footer_file' --print-media-type $top_margin $bottom_margin $left_margin $right_margin '$html_file' '$pdf_file' 2>&1");
 
 		if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
 			if ($this->fileSize($pdf_file) == 0) {
