@@ -71,6 +71,19 @@ class MultiSelectList extends BaseFieldWidget
 			$this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js');
 		}
 
+		// if the widget has javascript, load it in
+		if (file_exists("protected/widgets/js/".get_class($this).".js")) {
+			$assetManager = Yii::app()->getAssetManager();
+			$asset_folder = $assetManager->publish('protected/widgets/js');
+			// Workaround for ensuring js included with ajax requests that are using renderPartial
+			if (Yii::app()->request->isAjaxRequest) {
+				Yii::app()->clientScript->registerScriptFile($asset_folder ."/" .get_class($this).".js", CClientScript::POS_BEGIN);
+			}
+			else {
+				$assetManager->registerScriptFile("js/".get_class($this).".js", "application.widgets");
+			}
+		}
+		
 		//NOTE: don't call parent init as the field behaviour doesn't work for the relations attribute with models
 	}
 }
