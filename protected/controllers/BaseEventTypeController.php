@@ -1552,32 +1552,6 @@ class BaseEventTypeController extends BaseModuleController
 	}
 
 	/**
-	 * Render PDF print layout
-	 *
-	 * @param integer $id event id
-	 * @param BaseEventTypeElement[] $elements
-	 * @param string $template
-	 * @param array $params
-	 */
-	protected function printPDF($id, $elements, $template='print', $params=array())
-	{
-		// Remove any existing assets that have been pre-registered.
-		Yii::app()->assetManager->reset();
-
-		$this->layout = '//layouts/pdf';
-		$pdf_print = new OEPDFPrint('Openeyes', 'PDF', 'PDF');
-		$oeletter = new OELetter();
-		$oeletter->setBarcode('E:'.$id);
-		$body = $this->render($template, array_merge($params,array(
-			'elements' => $elements,
-			'eventId' => $id,
-		)), true);
-		$oeletter->addBody($body);
-		$pdf_print->addLetter($oeletter);
-		$pdf_print->output();
-	}
-
-	/**
 	 * Log print action
 	 * @param integer $id event id
 	 * @param boolean $pdf

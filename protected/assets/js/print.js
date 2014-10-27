@@ -17,55 +17,6 @@
  */
 
 /*
-function printPDF(url, data) {
-	$('#print_pdf_iframe').remove();
-	var iframe = $('<iframe></iframe>');
-	iframe.attr({
-		id: 'print_pdf_iframe',
-		src: url + '?' + $.param(data),
-		style: 'display: none;'
-	});
-	$('body').append(iframe);
-	
-	// re-enable the buttons
-	$('#print_pdf_iframe').load(function() {
-		enableButtons();
-	});
-}
-
-$(document).ready(function() {
-	$('body').append('<div class="printable" id="printable"></div>');
-});
-
-function clearPrintContent() {
-	$('#printable').empty();
-}
-
-function appendPrintContent(content) {
-	$('#printable').append(content);
-}
-
-function printContent(csspath) {
-
-	var css = [ { href: baseUrl+'/css/printcontent.css', media: 'all' } ];
-	if (csspath) {
-		css = [ { href: csspath+'/print.css', media: 'all' } ];
-	}
-
-	$('#printable').printElement({
-		pageTitle : 'OpenEyes printout',
-		//leaveOpen: true,
-		//printMode: 'popup',
-		printBodyOptions : {
-			styleToAdd : 'width: auto !important; margin: 0.75em !important;',
-			classNameToAdd : 'openeyesPrintout'
-		},
-		overrideElementCSS : css,
-	});
-}
-*/
-
-/*
  * creates an iframe in the current document, and populates with the given url and GET data
  * 
  * NOTE: the call to print the iFrame must be part of the document returned by the server. By having
