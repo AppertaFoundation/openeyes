@@ -41,7 +41,9 @@ class MultiSelectList extends BaseFieldWidget
 
 		if ($model::model()->hasAttribute('display_order')) {
 			foreach ($this->options as $value => $option) {
-				$this->htmlOptions['options'][$value]['data-display_order'] = $model::model()->findByPk($value)->display_order;
+				if ($item = $model::model()->findByPk($value)) {
+					$this->htmlOptions['options'][$value]['data-display_order'] = $item->display_order;
+				}
 			}
 		}
 
