@@ -208,7 +208,15 @@ $(document).ready(function(){
 	}
 
 	$(window).on('beforeunload', function (e) {
-		if ((window.formHasChanged || window.patientTicketChanged) && !submitted) {
+		if ((window.formHasChanged && !submitted) || window.patientTicketChanged) {
+			if(submitted)
+			{
+				setTimeout(function() {
+					setTimeout(function() {
+						enableButtons();
+					}, 1000);
+				},1);
+			}
 			var message = "You have not saved your changes.", e = e || window.event;
 			if (e) {
 				e.returnValue = message;
