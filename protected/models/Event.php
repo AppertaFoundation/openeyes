@@ -449,7 +449,7 @@ class Event extends BaseActiveRecordVersioned
 
 	public function getImageDirectory()
 	{
-		return Yii::app()->assetManager->basePath."/events/event_{$this->id}_".strtotime($this->last_modified_date);
+		return Yii::app()->basePath."/runtime/cache/events/event_{$this->id}_".strtotime($this->last_modified_date);
 	}
 
 	public function hasEventImage($name)
