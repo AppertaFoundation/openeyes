@@ -173,7 +173,6 @@
 
 	<?php if ($secondary_to) {?>
 	function updateSecondaryList(data, include_none) {
-		debugger;
 		var options = '<option value="">- Please Select -</option>';
 		if (include_none) {
 			options += '<option value="NONE">None</option>';
