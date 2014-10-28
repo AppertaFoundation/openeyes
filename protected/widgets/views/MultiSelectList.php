@@ -85,11 +85,12 @@ $widgetOptionsJson = json_encode(array(
 				<div class="no-selections-msg pill<?php if ($found) {?> hide<?php }?>"><?php echo $noSelectionsMessage;?></div>
 			<?php }?>
 			<ul class="MultiSelectList multi-select-selections<?php if (!$found) echo ' hide';?>">
+				<input type="hidden" name="<?php echo $field?>" />
 				<?php foreach ($selected_ids as $id) {
 					if (isset($options[$id])) {?>
 						<li>
 							<span class="text">
-								<?php echo CHtml::encode($options[$id])?>
+								<?php echo htmlspecialchars($options[$id],ENT_QUOTES,Yii::app()->charset, false)?>
 							</span>
 							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>"<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>Remove</a>
 							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
