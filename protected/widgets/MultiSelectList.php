@@ -29,10 +29,21 @@ class MultiSelectList extends BaseFieldWidget
 	public $showRemoveAllLink = false;
 	public $sorted = false;
 	public $noSelectionsMessage;
+	public $widgetOptionsJson;
 
 	public function init()
 	{
 		$this->filtered_options = $this->options;
+
+		$relations = $this->element->relations();
+		$relation = $relations[$this->relation];
+		$model = $relation[1];
+
+		if ($model::model()->hasAttribute('display_order')) {
+			foreach ($this->options as $value => $option) {
+				$this->htmlOptions['options'][$value]['data-display_order'] = $model::model()->findByPk($value)->display_order;
+			}
+		}
 
 		if (empty($_POST)) {
 			if ($this->element && $this->element->{$this->relation}) {
@@ -83,7 +94,7 @@ class MultiSelectList extends BaseFieldWidget
 				$assetManager->registerScriptFile("js/".get_class($this).".js", "application.widgets");
 			}
 		}
-		
+
 		//NOTE: don't call parent init as the field behaviour doesn't work for the relations attribute with models
 	}
 }
