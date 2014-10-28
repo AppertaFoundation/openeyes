@@ -488,8 +488,6 @@ class Event extends BaseActiveRecordVersioned
 
 	public function getBarCodeHTML()
 	{
-		require_once(Yii::app()->basePath.'/extensions/tcpdf/tcpdf/barcodes.php');
-
 		$barcode = new TCPDFBarcode("E:$this->id", 'C128');
 
 		return $barcode->getBarcodeHTML(1,8);
