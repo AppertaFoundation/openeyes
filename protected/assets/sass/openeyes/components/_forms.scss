@@ -282,6 +282,7 @@ label {
 			background: #fff300;
 		}
 	}
+	word-wrap: break-word;
 }
 
 .field-label {
@@ -292,4 +293,8 @@ label {
 	.reorder {
 		width: 2em;
 	}
+}
+
+.generic-admin-no-default {
+	text-align: right;
 }

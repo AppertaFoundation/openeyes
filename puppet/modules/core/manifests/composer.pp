@@ -1,8 +1,4 @@
 class core::composer {
-	package { 'git':
-		ensure => present,
-		require => Exec['apt-update']
-	}
 
 	if $runsubfolder == 'yes' {
 		exec { "download_composer":

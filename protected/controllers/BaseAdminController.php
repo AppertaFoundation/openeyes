@@ -104,6 +104,7 @@ class BaseAdminController extends BaseController
 		else {
 			if ($options['filters_ready']) {
 				if (Yii::app()->request->isPostRequest) {
+					$j = 0;
 					foreach ((array) @$_POST['id'] as $i => $id) {
 						if ($id) {
 							$item = $model::model()->findByPk($id);
@@ -124,6 +125,14 @@ class BaseAdminController extends BaseController
 							$item->$name = @$_POST[$name][$i];
 						}
 
+						if ($item->hasAttribute('default')) {
+							if (isset($_POST['default']) && $_POST['default'] != 'NONE' && $_POST['default'] == $j) {
+								$item->default = 1;
+							} else {
+								$item->default = 0;
+							}
+						}
+
 						foreach ($options['filter_fields'] as $field) {
 							$item->{$field['field']} = $field['value'];
 						}
@@ -136,6 +145,7 @@ class BaseAdminController extends BaseController
 						}
 
 						$items[] = $item;
+						$j++;
 					}
 
 					if (empty($errors)) {
@@ -156,7 +166,6 @@ class BaseAdminController extends BaseController
 						$this->addFilterCriteria($criteria, $options['filter_fields']);
 
 						$model::model()->deleteAll($criteria);
-
 						$tx->commit();
 
 						Yii::app()->user->setFlash('success', "List updated.");

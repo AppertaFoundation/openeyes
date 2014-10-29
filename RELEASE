@@ -3,6 +3,21 @@ Release History
 
 This document is intended to summarise the changes made for each release. It should be noted that this document was only introduced with version 1.4, and therefore doesn't cover earlier releases.
 
+1.7.3
+-----
+
++ additional support fields for RTT
++ additional roles for operation scheduling
++ made eyedraw reset function work properly
+
+1.7.2
+-----
++ style update for word wrapping on data items
+
+1.7.1
+-----
++ minor tweak to letter layout to ensure reply-to address does not collide with date
+
 1.7
 ---
 + additional patient level data elements:
