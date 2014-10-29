@@ -59,4 +59,9 @@
 			<a href="#" class="deleteRow">delete</a>
 		<?php }?>
 	</td>
+	<?php if ($model::model()->hasAttribute('default')) {?>
+		<td>
+			<?php echo CHtml::radioButton('default',$row->default,array('value' => $i))?>
+		</td>
+	<?php }?>
 </tr>
