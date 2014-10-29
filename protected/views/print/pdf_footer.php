@@ -54,13 +54,13 @@
 	}
 	</script>
 	<body style="margin: 0; padding: 0; margin-bottom: 61.6em;" onload="subst()">
-		<div style="width: 48%; float: left; font-size: 6pt;">
+		<div style="width: 46%; float: left; font-size: 6pt;">
 			{{FOOTER_LEFT}}
 		</div>
 		<div style="width: 35%; float: left; margin-left: auto; margin-right: auto; font-size: 6pt;">
 			{{FOOTER_MIDDLE}}
 		</div>
-		<div style="width: 17%; float: right; font-size: 6pt;">
+		<div style="width: 19%; float: right; font-size: 6pt;">
 			{{FOOTER_RIGHT}}
 		</div>
 	</body>
