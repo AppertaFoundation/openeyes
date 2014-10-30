@@ -294,7 +294,7 @@ return array(
 		'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
 		'wkhtmltopdf_footer_right' => 'OpenEyes',
 		'wkhtmltopdf_top_margin' => '10mm',
-		'wkhtmltopdf_bottom_margin' => '10mm',
+		'wkhtmltopdf_bottom_margin' => '12mm',
 		'wkhtmltopdf_left_margin' => '17mm',
 		'wkhtmltopdf_right_margin' => '17mm',
 	),

@@ -53,7 +53,7 @@
 		}
 	}
 	</script>
-	<body style="margin: 0; padding: 0; margin-bottom: 61.6em;" onload="subst()">
+	<body style="margin: 0; padding: 0; margin-bottom: 68.6em;" onload="subst()">
 		<div style="width: 46%; float: left; font-size: 6pt;">
 			{{FOOTER_LEFT}}
 		</div>
