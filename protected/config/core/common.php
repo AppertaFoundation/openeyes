@@ -289,7 +289,7 @@ return array(
 		// html|pdf, pdf requires wkhtmltopdf with patched QT
 		'event_print_method' => 'html',
 		// use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
-		'wkhtmltopdf_path' => '',
+		'wkhtmltopdf_path' => '/usr/local/bin/wkhtmltopdf',
 		'wkhtmltopdf_footer_left' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}',
 		'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
 		'wkhtmltopdf_footer_right' => 'OpenEyes',
