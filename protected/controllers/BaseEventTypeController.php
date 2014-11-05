@@ -1496,6 +1496,7 @@ class BaseEventTypeController extends BaseModuleController
 
 			$wk = new WKHtmlToPDF;
 
+			$wk->setCanvasImagePath($event->imageDirectory);
 			$wk->setDocuments($this->pdf_print_documents);
 			$wk->setDocref($event->docref);
 			$wk->setPatient($event->episode->patient);

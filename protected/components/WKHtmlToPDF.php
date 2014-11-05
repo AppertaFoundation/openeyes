@@ -24,6 +24,7 @@ class WKHtmlToPDF
 	protected $docrefs = array();
 	protected $barcodes = array();
 	protected $patients = array();
+	protected $canvas_image_path;
 
 	public function __construct()
 	{
@@ -60,6 +61,17 @@ class WKHtmlToPDF
 	{
 		$html = str_replace('href="/assets/','href="'.$this->getAssetManager()->basePath.'/',$html);
 		$html = str_replace('src="/assets/','src="'.$this->getAssetManager()->basePath.'/',$html);
+
+		return $html;
+	}
+
+	public function remapCanvasImagePaths($html)
+	{
+		preg_match_all('/<img src="\/.*?\/default\/eventImage\?event_id=[0-9]+&image_name=(.*?)"/',$html,$m);
+
+		foreach ($m[0] as $i => $img) {
+			$html = str_replace($img, "<img src=\"$this->canvas_image_path/{$m[1][$i]}.png\"", $html);
+		}
 
 		return $html;
 	}
@@ -192,9 +204,15 @@ class WKHtmlToPDF
 		$this->patients = $patients;
 	}
 
+	public function setCanvasImagePath($image_path)
+	{
+		$this->canvas_image_path = $image_path;
+	}
+
 	public function generatePDF($imageDirectory, $prefix, $suffix, $html, $output_html=false, $inject_autoprint_js=true)
 	{
 		!$output_html && $html = $this->remapAssetPaths($html);
+		!$output_html && $html = $this->remapCanvasImagePaths($html);
 
 		$this->findOrCreateDirectory($imageDirectory);
 
