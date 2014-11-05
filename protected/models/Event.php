@@ -454,7 +454,12 @@ class Event extends BaseActiveRecordVersioned
 
 	public function hasEventImage($name)
 	{
-		return file_exists($this->imageDirectory."/$name.png");
+		return file_exists($this->getImagePath($name));
+	}
+
+	public function getImagePath($name)
+	{
+		return $this->imageDirectory."/$name.png";
 	}
 
 	public function getPDF($pdf_print_suffix=null)

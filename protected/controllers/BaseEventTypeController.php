@@ -73,6 +73,7 @@ class BaseEventTypeController extends BaseModuleController
 		'update' => self::ACTION_TYPE_EDIT,
 		'delete' => self::ACTION_TYPE_DELETE,
 		'requestDeletion' => self::ACTION_TYPE_REQUESTDELETE,
+		'eventImage' => self::ACTION_TYPE_VIEW,
 	);
 
 	/**
@@ -1813,5 +1814,22 @@ class BaseEventTypeController extends BaseModuleController
 		}
 
 		echo "ok";
+	}
+
+	public function actionEventImage()
+	{
+		if (!$event = Event::model()->findByPk(@$_GET['event_id'])) {
+			throw new Exception("Event not found: ".@$_GET['event_id']);
+		}
+
+		if (!$event->hasEventImage(@$_GET['image_name'])) {
+			throw new Exception("Event $event->id image missing: ".@$_GET['image_name']);
+		}
+
+		$path = $event->getImagePath(@$_GET['image_name']);
+
+		header('Content-Type: image/png');
+		header('Content-Length: '.filesize($path));
+		readfile($path);
 	}
 }
