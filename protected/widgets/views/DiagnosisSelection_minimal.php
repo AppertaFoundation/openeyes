@@ -60,7 +60,7 @@
 			<div id="div_<?php echo "{$primary_selector_id}_secondary_to"?>" class="row field-row hidden">
 				<?php if (!$nowrapper) {?>
 					<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
-						<label for="<?php echo "{$primary_selector_id}_secondary_to";?>">Associated with:</label>
+						<label for="<?php echo "{$primary_selector_id}_secondary_to";?>">Associated diagnosis:</label>
 					</div>
 				<?php }?>
 				<div class="large-<?php echo $layoutColumns['field'];?> column end">
