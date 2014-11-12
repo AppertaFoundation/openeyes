@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -17,44 +16,32 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-return array(
-	'episode1' => array(
-		'patient_id' => 1,
-		'firm_id' => 1,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-30 days')),
-		'end_date'=>null,
-		'created_date' => date('Y-m-d H:i:s'),
-	),
-	'episode2' => array(
-		'patient_id' => 1,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 3
-	),
-	'episode3' => array(
-		'patient_id' => 2,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 2
-	),
-	'episode4' => array(
-		'patient_id' => 3,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 1,
-	),
-	'episode5' => array(
-		'patient_id' => 5,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 1,
-		'disorder_id' => 7,
-	),
-	'episode6' => array(
-		'patient_id' => 6,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 1,
-		'disorder_id' => 7,
-	),
-);
+?>
+<?php
+$event = $this->event;
+$event_type = $event->eventType->name;
+?>
+<header class="header">
+	<div class="letter-logo">
+		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_Moorfields_NHS.jpg')?>" alt="letterhead_logo" />
+	</div>
+	<div class="seal">
+		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" width="100" height="83" />
+	</div>
+	<div class="row">
+		<div class="large-4 column patient">
+			<strong><?php echo $this->patient->contact->fullName?></strong>
+			<br />
+			<?php echo $this->patient->getLetterAddress(array(
+				'delimiter' => '<br/>',
+			))?>
+			<br />
+			<br />
+			Hospital No: <strong><?php echo $this->patient->hos_num ?></strong>
+			<br />
+			NHS No: <strong><?php echo $this->patient->nhsnum ?></strong>
+			<br />
+			DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
+		</div>
+	</div>
+</header>

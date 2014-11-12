@@ -7,6 +7,7 @@
 <?php $assetManager->registerScriptFile('js/jquery.printElement.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.hoverIntent.min.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.autosize.js')?>
+<?php $assetManager->registerScriptFile('js/jquery.cookie.js')?>
 <?php $assetManager->registerScriptFile('js/jquery.getUrlParam.js')?>
 <?php $assetManager->registerScriptFile('js/libs/uri-1.10.2.js')?>
 <?php $assetManager->registerScriptFile('js/print.js')?>

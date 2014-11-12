@@ -437,12 +437,69 @@ class Event extends BaseActiveRecordVersioned
 		);
 	}
 
-	public function isEventDateDifferentFromCreated(){
+	public function isEventDateDifferentFromCreated()
+	{
 		$evDate = new DateTime($this->event_date);
 		$creDate = new DateTime($this->created_date);
 		if($creDate->format('Y-m-d') != $evDate->format('Y-m-d')){
 			return true;
 		}
 		return false;
+	}
+
+	public function getImageDirectory()
+	{
+		return Yii::app()->basePath."/runtime/cache/events/event_{$this->id}_".strtotime($this->last_modified_date);
+	}
+
+	public function hasEventImage($name)
+	{
+		return file_exists($this->getImagePath($name));
+	}
+
+	public function getImagePath($name)
+	{
+		return $this->imageDirectory."/$name.png";
+	}
+
+	public function getPDF($pdf_print_suffix=null)
+	{
+		return $pdf_print_suffix ? "$this->imageDirectory/event_$pdf_print_suffix.pdf" : "$this->imageDirectory/event.pdf";
+	}
+
+	public function hasPDF($pdf_print_suffix=null)
+	{
+		$pdf = $this->getPDF($pdf_print_suffix);
+
+		return file_exists($pdf) && filesize($pdf) >0;
+	} 
+
+	protected function getLockKey()
+	{
+		return "openeyes.event:$this->id";
+	}
+
+	public function lock()
+	{
+		$cmd = $this->dbConnection->createCommand('SELECT GET_LOCK(?, 1)');
+
+		while (!$cmd->queryScalar(array($this->lockKey)));
+	}
+
+	public function unlock()
+	{
+		$this->dbConnection->createCommand('SELECT RELEASE_LOCK(?)')->execute(array($this->lockKey));
+	}
+
+	public function getBarCodeHTML()
+	{
+		$barcode = new TCPDFBarcode("E:$this->id", 'C128');
+
+		return $barcode->getBarcodeHTML(1,8);
+	}
+
+	public function getDocref()
+	{
+		return "E:$this->id/".strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32)).'/{{PAGE}}';
 	}
 }

@@ -5677,3 +5677,8 @@ tfoot.pagination-container .pagination li {
     width: 1050px !important;
   }
 }
+
+/* line 30, ../sass/openeyes/components/_print.scss */
+.letter-logo {
+  float: right;
+}
