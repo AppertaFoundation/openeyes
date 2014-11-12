@@ -31,7 +31,7 @@ class MedicationDrugImport
 			'spring', 'truss', 'plug', 'colostomy', 'contraceptive'
 	);
 
-	public function import($filename, $type, $external_source, $import_size)
+	public function import($filename, $type=null, $external_source=null, $import_size=null)
 	{
 		if (!$filename) {
 			$this->usageError('Import filename required');
@@ -41,9 +41,9 @@ class MedicationDrugImport
 			$this->usageError("Cannot find import file " . $filename);
 		}
 
-		$this->type = $type;
-		$this->external_source = $external_source;
-		$this->import_size = $import_size;
+		$type && $this->type = $type;
+		$external_source && $this->external_source = $external_source;
+		$import_size && $this->import_size = $import_size;
 
 		$connection = Yii::app()->db;
 		$cmd = $connection->createCommand('ALTER TABLE medication_drug DISABLE KEYS;');
