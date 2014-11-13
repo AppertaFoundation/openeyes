@@ -33,7 +33,7 @@ $config = array(
 	),
 );
 
-if (preg_match('/\/protected\/modules\/deploy\/yiic$/',$_SERVER['SCRIPT_FILENAME']) || preg_match('/\/protected\/modules\/deploy$/',$_SERVER['PWD'])) {
+if (preg_match('/\/protected\/modules\/deploy\/yiic$/',@$_SERVER['SCRIPT_FILENAME']) || preg_match('/\/protected\/modules\/deploy$/',@$_SERVER['PWD'])) {
 	$config['commandMap']['migrate']['class'] = 'MigrateCommand';
 	$config['commandMap']['migrate']['migrationPath'] = 'application.modules.deploy.migrations';
 	$config['commandMap']['migrate']['migrationTable'] = 'tbl_migration_deploy';
