@@ -60,7 +60,10 @@
 				new OpenEyes.UI.Dialog.Alert({
 					content: "Please enter a search term"
 				})
-				.on('close', $('#q').focus)
+				.on('close', function() {
+					enableButtons();
+					$('#q').focus;
+				})
 				.open();
 				enableButtons();
 			} else {
