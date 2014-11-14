@@ -22,6 +22,13 @@ if (isset($htmlOptions['options'])) {
 	$opts = $htmlOptions['options'];
 } else {
 	$opts = array();
+	if($auto_data_order) {
+		$data_order=0;
+		foreach($options as $id => $option){
+			$data_order++;
+			$opts[(string)$id] = array('data-order' => $data_order);
+		}
+	}
 }
 
 if (isset($htmlOptions['div_id'])) {
