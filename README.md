@@ -40,5 +40,7 @@ We are beginning to evolve some documentation for developers on [our github wiki
 
 Issues in the core should be logged through the [github issues system](https://github.com/openeyes/OpenEyes/issues) for the moment.  Though we will be making our internal JIRA system available in due course, and will transition logged issues across to this so that we can keep everything in one place  Links for this will follow when this becomes available.
 
+Printing
+--------
 
-
+OpenEyes now supports full PDF printing using wkhtmltopdf, but it needs to be compiled with a patched QT library in order to work properly.  You can find instructions for doing this [here](https://github.com/openeyes/OpenEyes/wiki/Compiling-WKHtmlToPDF-to-enable-PDF-printing).

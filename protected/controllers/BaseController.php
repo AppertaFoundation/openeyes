@@ -168,6 +168,8 @@ class BaseController extends Controller
 		$this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
 		$this->jsVars['OE_core_asset_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
 		$this->jsVars['OE_html_autocomplete'] = Yii::app()->params['html_autocomplete'];
+		$this->jsVars['OE_event_print_method'] = Yii::app()->params['event_print_method'];
+		$this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
 
 		foreach ($this->jsVars as $key => $value) {
 			$value = CJavaScript::encode($value);
