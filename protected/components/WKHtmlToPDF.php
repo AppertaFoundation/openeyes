@@ -216,14 +216,14 @@ class WKHtmlToPDF
 
 		$this->findOrCreateDirectory($imageDirectory);
 
-		$html_file = $suffix ? "$imageDirectory/{$prefix}_$suffix.html" : "$imageDirectory/$prefix.html";
-		$pdf_file = $suffix ? "$imageDirectory/{$prefix}_$suffix.pdf" : "$imageDirectory/$prefix.pdf";
-		$footer_file = $suffix ? "$imageDirectory/footer_$suffix.html" : "$imageDirectory/footer.html";
+		$html_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "{$prefix}_$suffix.html" : "$imageDirectory" . DIRECTORY_SEPARATOR . "$prefix.html";
+		$pdf_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "{$prefix}_$suffix.pdf" : "$imageDirectory" . DIRECTORY_SEPARATOR . "$prefix.pdf";
+		$footer_file = $suffix ? "$imageDirectory" . DIRECTORY_SEPARATOR . "footer_$suffix.html" : "$imageDirectory" . DIRECTORY_SEPARATOR . "footer.html";
 
 		$this->writeFile($html_file, $html);
 
 		$footer = $this->formatFooter(
-			$this->readFile(Yii::app()->basePath."/views/print/pdf_footer.php"),
+			$this->readFile(Yii::app()->basePath.DIRECTORY_SEPARATOR."views" . DIRECTORY_SEPARATOR . "print" . DIRECTORY_SEPARATOR . "pdf_footer.php"),
 			Yii::app()->params['wkhtmltopdf_footer_left'],
 			Yii::app()->params['wkhtmltopdf_footer_middle'],
 			Yii::app()->params['wkhtmltopdf_footer_right'],
@@ -244,7 +244,7 @@ class WKHtmlToPDF
 		$left_margin = Yii::app()->params['wkhtmltopdf_left_margin'] ? "-L ".Yii::app()->params['wkhtmltopdf_left_margin'] : '';
 		$right_margin = Yii::app()->params['wkhtmltopdf_right_margin'] ? "-R ".Yii::app()->params['wkhtmltopdf_right_margin'] : '';
 
-		$res = $this->execute("{$this->wkhtmltopdf} --footer-html '$footer_file' --print-media-type $top_margin $bottom_margin $left_margin $right_margin '$html_file' '$pdf_file' 2>&1");
+		$res = $this->execute(escapeshellarg($this->wkhtmltopdf)." --footer-html ".escapeshellarg($footer_file)." --print-media-type $top_margin $bottom_margin $left_margin $right_margin ".escapeshellarg($html_file)." ".escapeshellarg($pdf_file)." 2>&1");
 
 		if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
 			if ($this->fileSize($pdf_file) == 0) {
