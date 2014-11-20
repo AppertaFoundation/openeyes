@@ -88,6 +88,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 			'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
 			'secondary_to_disorders' => array(self::HAS_MANY, 'Disorder', 'disorder_id', 'through' => 'secondary_to'),
+			'group' => array(self::BELONGS_TO, 'CommonOphthalmicDisorderGroup', 'group_id'),
 		);
 	}
 
@@ -100,6 +101,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 			'id' => 'ID',
 			'disorder_id' => 'Disorder',
 			'subspecialty_id' => 'Subspecialty',
+			'group_id' => 'Group',
 		);
 	}
 
@@ -146,7 +148,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 	 * @return array
 	 * @throws CException
 	 */
-	public static function getListWithSecondaryTo(Firm $firm)
+	public static function getListByGroupWithSecondaryTo(Firm $firm)
 	{
 		if (empty($firm)) {
 			throw new CException('Firm is required');
@@ -154,9 +156,9 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		$disorders = array();
 		$secondary_to = array();
 		if ($ss_id = $firm->getSubspecialtyID()) {
-			$cods = self::model()->with(array('disorder', 'secondary_to_disorders'))->findAllByAttributes(array('subspecialty_id' => $ss_id));
+			$cods = self::model()->with(array('group', 'disorder', 'secondary_to_disorders'))->findAllByAttributes(array('subspecialty_id' => $ss_id));
 			foreach ($cods as $cod) {
-				$disorders[] = $cod->disorder;
+				$disorders[$cod->group ? $cod->group->name : null][] = $cod->disorder;
 				if ($secondary_tos = $cod->secondary_to_disorders) {
 					$secondary_to[$cod->disorder_id] = CHtml::listData($secondary_tos, 'id', 'term');
 				}
@@ -171,8 +173,10 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 			$_secondary['NONE'] = CHtml::listData(SecondaryToCommonOphthalmicDisorder::model()->findAll(array('condition' => 'parent_id = :pid','params' => array(':pid' => $cod->id))),'disorder_id','disorder.term');
 		}
 
-		foreach (CHtml::listData($disorders,'id','term') as $id => $term) {
-			$_disorders[$id] = $term;
+		foreach ($disorders as $group => $disorder_list) {
+			foreach ($disorder_list as $disorder) {
+				$_disorders[$group][$disorder->id] = $disorder->term;
+			}
 		}
 
 		foreach ($secondary_to as $parent_id => $disorders) {

@@ -17,33 +17,36 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-?>
-<?php
-	$html_options = array('autocomplete'=>Yii::app()->params['html_autocomplete']);
-	if (@$disabled) {
-		$html_options['disabled'] = 'disabled';
-	}
-?>
+$html_options = array('autocomplete'=>Yii::app()->params['html_autocomplete']);
+if (@$disabled) {
+	$html_options['disabled'] = 'disabled';
+}?>
 <tr class="<?= @$row_class ?>" data-row="<?= $i ?>" style="<?= @$row_style ?>">
 	<td class="reorder">
 		<span>&uarr;&darr;</span>
 	</td>
 	<td>
-		<?php echo CHtml::hiddenField("id[{$i}]",$row->id, $html_options) ?>
-		<?php echo CHtml::hiddenField("display_order[{$i}]",$row->display_order ? $row->display_order : $i, $html_options)?>
 		<?php
+		echo CHtml::hiddenField("id[{$i}]",$row->id, $html_options);
+		echo CHtml::hiddenField("display_order[{$i}]",$row->display_order ? $row->display_order : $i, $html_options);
+
 		if ($label_field_type) {
-			$this->render('application.widgets.views._generic_admin_' . $label_field_type, array('row' => $row,
-					'params' => array('relation' => $label_relation, 'field' => $label_field, 'model' => $label_field_model, 'allow_null' => false),
+			$this->render('application.widgets.views._generic_admin_' . $label_field_type, array(
+					'row' => $row,
+					'params' => array(
+						'relation' => $label_relation,
+						'field' => $label_field,
+						'model' => $label_field_model,
+						'allow_null' => false
+					),
 					'i' => $i));
 		} else {
 			echo CHtml::textField("{$label_field}[{$i}]",$row->{$label_field},$html_options);
-		}
-		?>
+		}?>
 		<?php if (isset($errors[$i])) {?>
 			<span class="error">
-									<?php echo $errors[$i]?>
-								</span>
+				<?php echo $errors[$i]?>
+			</span>
 		<?php }?>
 	</td>
 	<?php foreach ($extra_fields as $field) {?>
@@ -54,8 +57,7 @@
 	<td>
 		<?php if (isset($row->active)) {
 			echo CHtml::checkBox('active[' . $i . ']',$row->active);
-		}
-		else{?>
+		} else {?>
 			<a href="#" class="deleteRow">delete</a>
 		<?php }?>
 	</td>

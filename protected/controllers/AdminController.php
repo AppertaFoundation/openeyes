@@ -37,6 +37,11 @@ class AdminController extends BaseAdminController
 		$this->genericAdmin('Edit Medication Stop Reason', 'MedicationStopReason');
 	}
 
+	public function actionEditCommonOphthalmicDisorderGroups()
+	{
+		$this->genericAdmin('Common Ophthalmic Disorder Groups', 'CommonOphthalmicDisorderGroup');
+	}
+
 	public function actionEditCommonOphthalmicDisorder()
 	{
 		$this->genericAdmin('Common Ophthalmic Disorder', 'CommonOphthalmicDisorder',
@@ -48,6 +53,9 @@ class AdminController extends BaseAdminController
 				'filter_fields' => array(
 					array('field' => 'subspecialty_id', 'model' => 'Subspecialty'),
 				),
+				'extra_fields' => array(
+					array('field' => 'group_id', 'type' => 'lookup', 'model' => 'CommonOphthalmicDisorderGroup'),
+				)
 			));
 	}
 
@@ -62,6 +70,9 @@ class AdminController extends BaseAdminController
 				'filter_fields' => array(
 					array('field' => 'subspecialty_id', 'model' => 'Subspecialty'),
 				),
+				'extra_fields' => array(
+					array('field' => 'group_id', 'type' => 'lookup', 'model' => 'CommonOphthalmicDisorderGroup'),
+				)
 			),
 			$key
 		);

@@ -18,6 +18,7 @@
 			'Medication Stop Reason'=>'/admin/editmedicationstopreason',
 			'Previous Ophthalmic Surgery'=>'/admin/editpreviousoperation',
 			'Social History'=>'/admin/socialhistory',
+			'Common Ophthalmic Disorder Groups' => '/admin/editcommonophthalmicdisordergroups',
 			'Common Ophthalmic Disorders' => '/admin/editcommonophthalmicdisorder',
 		 	'Secondary Common Ophthalmic Disorders' => '/admin/editsecondarytocommonophthalmicdisorder',
 

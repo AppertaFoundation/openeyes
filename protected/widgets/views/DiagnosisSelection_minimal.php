@@ -212,8 +212,11 @@
 
 	<?php if ($secondary_to || $callback) {?>
 		$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-			if ($(this).children('option:selected').val()) {
-				var selected = $(this).children('option:selected');
+			var selected = $(this).children('option:selected');
+			if (selected.length <1) {
+				selected = $(this).children('optgroup').children('option:selected');
+			}
+			if (selected.val()) {
 				<?php if ($secondary_to) {?>
 					if (selected.data('secondary-to')) {
 						updateSecondaryList(selected.data('secondary-to'), selected.val() != 'NONE');
