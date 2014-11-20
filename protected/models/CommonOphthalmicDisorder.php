@@ -101,7 +101,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 			'id' => 'ID',
 			'disorder_id' => 'Disorder',
 			'subspecialty_id' => 'Subspecialty',
-			'alternate_disorder_id' => 'Primary Disorder',
+			'alternate_disorder_id' => 'Alternate Disorder',
 		);
 	}
 
