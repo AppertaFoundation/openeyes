@@ -55,6 +55,8 @@ class AdminController extends BaseAdminController
 						'type' => 'search_lookup',
 						'options' => \CHtml::listData(\CommonOphthalmicDisorder::model()->findAll(), 'id', 'name'),
 					),
+					array('field' => 'alternate_disorder_label', 'type' => 'text',
+						'model' => 'CommonOphthalmicDisorder'),
 				),
 			));
 	}
