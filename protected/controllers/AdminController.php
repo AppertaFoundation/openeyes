@@ -81,6 +81,28 @@ class AdminController extends BaseAdminController
 			));
 	}
 
+	public function actionManageFindings()
+	{
+		$this->genericAdmin(
+			'Findings',
+			'Finding',
+			array(
+				'extra_fields' => array(
+					array(
+						'field' => 'subspecialties',
+						'type' => 'multilookup',
+						'noSelectionsMessage' => 'All Subspecialties',
+						'htmlOptions' => array(
+							'empty' => '- Please Select -',
+							'nowrapper' => true
+						),
+						'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name')
+					),
+				),
+			)
+		);
+	}
+
 	public function actionDrugs()
 	{
 		$criteria = new CDbCriteria;
