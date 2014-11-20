@@ -69,10 +69,10 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('subspecialty_id', 'required'),
-			array('disorder_id, subspecialty_id', 'length', 'max'=>10),
+			array('disorder_id, alternate_disorder_id, subspecialty_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
+			array('id, disorder_id, alternate_disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -85,6 +85,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// class name for the relations automatically generated below.
 		return array(
 			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
+			'alternate_disorder' => array(self::BELONGS_TO, 'Disorder', 'alternate_disorder_id', 'condition' => 'alternate_disorder.active = 1'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 			'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
 			'secondary_to_disorders' => array(self::HAS_MANY, 'Disorder', 'disorder_id', 'through' => 'secondary_to'),
@@ -100,6 +101,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 			'id' => 'ID',
 			'disorder_id' => 'Disorder',
 			'subspecialty_id' => 'Subspecialty',
+			'alternate_disorder_id' => 'Primary Disorder',
 		);
 	}
 
@@ -116,6 +118,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('disorder_id',$this->disorder_id,true);
+		$criteria->compare('alternate_disorder_id',$this->subspecialty_id,true);
 		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
