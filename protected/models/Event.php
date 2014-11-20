@@ -449,7 +449,7 @@ class Event extends BaseActiveRecordVersioned
 
 	public function getImageDirectory()
 	{
-		return Yii::app()->basePath."/runtime/cache/events/event_{$this->id}_".strtotime($this->last_modified_date);
+		return Yii::app()->basePath.DIRECTORY_SEPARATOR."runtime" . DIRECTORY_SEPARATOR . "cache" . DIRECTORY_SEPARATOR . "events" . DIRECTORY_SEPARATOR . "event_{$this->id}_".strtotime($this->last_modified_date);
 	}
 
 	public function hasEventImage($name)
@@ -464,7 +464,7 @@ class Event extends BaseActiveRecordVersioned
 
 	public function getPDF($pdf_print_suffix=null)
 	{
-		return $pdf_print_suffix ? "$this->imageDirectory/event_$pdf_print_suffix.pdf" : "$this->imageDirectory/event.pdf";
+		return $pdf_print_suffix ? "$this->imageDirectory" . DIRECTORY_SEPARATOR . "event_$pdf_print_suffix.pdf" : "$this->imageDirectory" . DIRECTORY_SEPARATOR . "event.pdf";
 	}
 
 	public function hasPDF($pdf_print_suffix=null)
