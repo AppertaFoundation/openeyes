@@ -23,6 +23,7 @@ class MultiSelectList extends BaseFieldWidget
 	public $filtered_options = array();
 	public $relation;
 	public $selected_ids = array();
+	public $descriptions = array();
 	public $relation_id_field;
 	public $options;
 	public $inline = false;
@@ -30,14 +31,19 @@ class MultiSelectList extends BaseFieldWidget
 	public $sorted = false;
 	public $noSelectionsMessage;
 	public $widgetOptionsJson;
+	public $model;
 
 	public function init()
 	{
 		$this->filtered_options = $this->options;
 
-		$relations = $this->element->relations();
-		$relation = $relations[$this->relation];
-		$model = $relation[1];
+		if (!$this->model) {
+			$relations = $this->element->relations();
+			$relation = $relations[$this->relation];
+			$model = $relation[1];
+		} else {
+			$model = $this->model;
+		}
 
 		if ($model::model()->hasAttribute('display_order')) {
 			foreach ($this->options as $value => $option) {
@@ -47,10 +53,29 @@ class MultiSelectList extends BaseFieldWidget
 			}
 		}
 
+		if (@$this->htmlOptions['requires_description_field']) {
+			$requires_description_field = $this->htmlOptions['requires_description_field'];
+
+			foreach ($this->options as $value => $option) {
+				if ($item = $model::model()->findByPk($value)) {
+					if ($item->$requires_description_field) {
+						$this->htmlOptions['options'][$value]['data-requires-description'] = true;
+					}
+				}
+			}
+		}
+
 		if (empty($_POST)) {
 			if ($this->element && $this->element->{$this->relation}) {
 				foreach ($this->element->{$this->relation} as $item) {
 					$this->selected_ids[] = $item->{$this->relation_id_field};
+
+					$_item = $model::model()->findByPk($item->{$this->relation_id_field});
+
+					if (@$requires_description_field && $_item->$requires_description_field) {
+						$this->descriptions[$item->{$this->relation_id_field}] = $item->description;
+					}
+
 					unset($this->filtered_options[$item->{$this->relation_id_field}]);
 				}
 			} else if (!$this->element || !$this->element->id) {
@@ -71,16 +96,22 @@ class MultiSelectList extends BaseFieldWidget
 			// when the field being used contains the appropriate square brackets for defining the associative array, the original (above)
 			// approach for retrieving the posted value does not work. The following (more standard) approach does
 			else if (isset($_POST[CHtml::modelName($this->element)][$this->relation])) {
-				if(is_array($_POST[CHtml::modelName($this->element)][$this->relation])){
+				if (is_array($_POST[CHtml::modelName($this->element)][$this->relation])) {
 					foreach ($_POST[CHtml::modelName($this->element)][$this->relation] as $id) {
-						$this->selected_ids[] = $id;
-						unset($this->filtered_options[$id]);
+						if (is_array($id)) {
+							$this->selected_ids[] = $id['id'];
+							unset($this->filtered_options[$id['id']]);
+
+							$item = $model::model()->findByPk($id['id']);
+
+							if (@$requires_description_field && $item->$requires_description_field) {
+								$this->descriptions[$id['id']] = @$id['description'];
+							}
+						}
 					}
-				}
-				else{
+				} else {
 					$this->selected_ids = array();
 				}
-
 			}
 			else if(!isset($_POST[$this->field]) && !isset($_POST[CHtml::modelName($this->element)][$this->relation])){
 				$this->selected_ids = array();
@@ -97,11 +128,11 @@ class MultiSelectList extends BaseFieldWidget
 		if (file_exists("protected/widgets/js/".get_class($this).".js")) {
 			$assetManager = Yii::app()->getAssetManager();
 			$asset_folder = $assetManager->publish('protected/widgets/js');
+
 			// Workaround for ensuring js included with ajax requests that are using renderPartial
 			if (Yii::app()->request->isAjaxRequest) {
 				Yii::app()->clientScript->registerScriptFile($asset_folder ."/" .get_class($this).".js", CClientScript::POS_BEGIN);
-			}
-			else {
+			} else {
 				$assetManager->registerScriptFile("js/".get_class($this).".js", "application.widgets");
 			}
 		}

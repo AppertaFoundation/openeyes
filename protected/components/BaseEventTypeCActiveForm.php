@@ -173,7 +173,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
-	public function multiSelectList($element, $field, $relation, $relation_id_field, $options, $default_options, $htmlOptions=array(), $hidden=false, $inline=false, $noSelectionsMessage=null, $showRemoveAllLink=false, $sorted=false, $layoutColumns=array())
+	public function multiSelectList($element, $field, $relation, $relation_id_field, $options, $default_options, $htmlOptions=array(), $hidden=false, $inline=false, $noSelectionsMessage=null, $showRemoveAllLink=false, $sorted=false, $layoutColumns=array(), $model=null)
 	{
 		$this->widget('application.widgets.MultiSelectList', array(
 			'element' => $element,
@@ -188,7 +188,8 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'noSelectionsMessage' => $noSelectionsMessage,
 			'showRemoveAllLink' => $showRemoveAllLink,
 			'sorted' => $sorted,
-			'layoutColumns' => $layoutColumns
+			'layoutColumns' => $layoutColumns,
+			'model' => $model
 		));
 	}
 
