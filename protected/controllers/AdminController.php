@@ -48,6 +48,16 @@ class AdminController extends BaseAdminController
 				'filter_fields' => array(
 					array('field' => 'subspecialty_id', 'model' => 'Subspecialty'),
 				),
+				'extra_fields' => array(
+					array(
+						'field' => 'alternate_disorder_id',
+						'relation' => 'alternate_disorder',
+						'type' => 'search_lookup',
+						'options' => \CHtml::listData(\CommonOphthalmicDisorder::model()->findAll(), 'id', 'name'),
+					),
+					array('field' => 'alternate_disorder_label', 'type' => 'text',
+						'model' => 'CommonOphthalmicDisorder'),
+				),
 			));
 	}
 
@@ -61,6 +71,16 @@ class AdminController extends BaseAdminController
 				'new_row_url' => Yii::app()->createUrl('/admin/newCommonOphthalmicDisorderRow'),
 				'filter_fields' => array(
 					array('field' => 'subspecialty_id', 'model' => 'Subspecialty'),
+				),
+				'extra_fields' => array(
+					array(
+						'field' => 'alternate_disorder_id',
+						'relation' => 'alternate_disorder',
+						'type' => 'search_lookup',
+						'options' => \CHtml::listData(\CommonOphthalmicDisorder::model()->findAll(), 'id', 'name'),
+					),
+					array('field' => 'alternate_disorder_label', 'type' => 'text',
+						'model' => 'CommonOphthalmicDisorder'),
 				),
 			),
 			$key

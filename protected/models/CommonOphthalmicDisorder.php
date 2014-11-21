@@ -71,10 +71,9 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('subspecialty_id', 'required'),
-			array('disorder_id, finding_id, subspecialty_id', 'length', 'max'=>10),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, disorder_id, finding_id, subspecialty_id', 'safe', 'on'=>'search'),
+			array('disorder_id, finding_id, alternate_disorder_id, subspecialty_id', 'length', 'max'=>10),
+			array('alternate_disorder_label','RequiredIfFieldValidator','field' => 'alternate_disorder_id', 'value' => true),
+			array('id, disorder_id, finding_id, alternate_disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -96,6 +95,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		return array(
 			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
 			'finding' => array(self::BELONGS_TO, 'Finding', 'finding_id', 'condition' => 'finding.active = 1'),
+			'alternate_disorder' => array(self::BELONGS_TO, 'Disorder', 'alternate_disorder_id', 'condition' => 'alternate_disorder.active = 1'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 			'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
 			'secondary_to_disorders' => array(self::HAS_MANY, 'Disorder', 'disorder_id', 'through' => 'secondary_to'),
@@ -111,7 +111,8 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 			'id' => 'ID',
 			'disorder_id' => 'Disorder',
 			'finding_id' => 'Finding',
-			'subspecialty_id' => 'Subspecialty'
+			'subspecialty_id' => 'Subspecialty',
+			'alternate_disorder_id' => 'Alternate Disorder'
 		);
 	}
 
@@ -129,6 +130,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('disorder_id',$this->disorder_id,true);
 		$criteria->compare('finding_id',$this->finding_id,true);
+		$criteria->compare('alternate_disorder_id',$this->subspecialty_id,true);
 		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
