@@ -98,20 +98,21 @@ class Finding extends \BaseActiveRecordVersioned
 		));
 	}
 
-	public function bySubspecialty($subspecialty)
+	/**
+	 * @param Subspecialty $subspecialty
+	 * @return Finding
+	 */
+	public function bySubspecialty(Subspecialty $subspecialty)
 	{
-		// FIXME: This set of criteria makes no sense and needs defining correctly
 		$criteria = array(
-			'join' => 'left join findings_subspec_assignment on findings_subspec_assignment.finding_id = t.id',
-			'condition' => 'findings_subspec_assignment.subspecialty_id is null',
+			'join' => 'left join findings_subspec_assignment fsa on fsa.finding_id = t.id',
+			'condition' => 'fsa.subspecialty_id is null',
 		);
 		if ($subspecialty) {
-			$criteria['condition'] .= ' OR findings_subspec_assignment.subspecialty_id = :subspecialty_id';
+			$criteria['condition'] .= ' OR fsa.subspecialty_id = :subspecialty_id';
 			$criteria['params'] = array(':subspecialty_id' => $subspecialty->id);
 		}
-
 		$this->getDbCriteria()->mergeWith($criteria);
-
 		return $this;
 	}
 

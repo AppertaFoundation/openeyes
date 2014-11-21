@@ -23,10 +23,12 @@
  * The followings are the available columns in table 'common_ophthalmic_disorder':
  * @property integer $id
  * @property integer $disorder_id
+ * @property integer $finding_id
  * @property integer $subspecialty_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
+ * @property Finding $finding
  * @property Subspecialty $subspecialty
  * @property SecondaryToCommonOphthalmicDisorder[] $secondary_to
  * @property Disorder[] $secondary_to_disorders
@@ -69,11 +71,19 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('subspecialty_id', 'required'),
-			array('disorder_id, subspecialty_id', 'length', 'max'=>10),
+			array('disorder_id, finding_id, subspecialty_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
+			array('id, disorder_id, finding_id, subspecialty_id', 'safe', 'on'=>'search'),
 		);
+	}
+
+	protected function afterValidate()
+	{
+		if($this->disorder_id && $this->finding_id) {
+			$this->addError('disorder_id','Cannot set both disorder and finding');
+			$this->addError('finding_id','Cannot set both disorder and finding');
+		}
 	}
 
 	/**
@@ -85,6 +95,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// class name for the relations automatically generated below.
 		return array(
 			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
+			'finding' => array(self::BELONGS_TO, 'Finding', 'finding_id', 'condition' => 'finding.active = 1'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 			'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
 			'secondary_to_disorders' => array(self::HAS_MANY, 'Disorder', 'disorder_id', 'through' => 'secondary_to'),
@@ -99,7 +110,8 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		return array(
 			'id' => 'ID',
 			'disorder_id' => 'Disorder',
-			'subspecialty_id' => 'Subspecialty',
+			'finding_id' => 'Finding',
+			'subspecialty_id' => 'Subspecialty'
 		);
 	}
 
@@ -116,6 +128,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('disorder_id',$this->disorder_id,true);
+		$criteria->compare('finding_id',$this->finding_id,true);
 		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
