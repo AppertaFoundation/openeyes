@@ -103,6 +103,14 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		);
 	}
 
+	protected function afterValidate()
+	{
+		if($this->disorder_id && $this->finding_id) {
+			$this->addError('disorder_id','Cannot set both disorder and finding');
+			$this->addError('finding_id','Cannot set both disorder and finding');
+		}
+	}
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
