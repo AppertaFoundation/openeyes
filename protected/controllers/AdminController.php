@@ -112,11 +112,43 @@ class AdminController extends BaseAdminController
 				'label_relation' => 'disorder',
 				'label_field_type' => 'search_lookup',
 				'label_field_model' => 'Disorder',
+				'new_row_url' => Yii::app()->createUrl('/admin/newsecondarytocommonophthalmicdisorderrow'),
+				'filter_fields' => array(
+					array('field' => 'parent_id', 'model' => 'CommonOphthalmicDisorder')
+				),
+				'extra_fields' => array(
+					array(
+						'field' => 'finding_id',
+						'relation' => 'finding',
+						'type' => 'search_lookup',
+						'model' => 'Finding'
+					),
+				)
+			));
+	}
+
+	public function actionNewSecondaryToCommonOphthalmicDisorderRow($key)
+	{
+		$this->genericAdmin('Secondary Common Ophthalmic Disorder', 'SecondaryToCommonOphthalmicDisorder',
+			array(
+				'label_relation' => 'disorder',
+				'label_field_type' => 'search_lookup',
+				'label_field_model' => 'Disorder',
 				'new_row_url' => Yii::app()->createUrl('/admin/newCommonOphthalmicDisorderRow'),
 				'filter_fields' => array(
 					array('field' => 'parent_id', 'model' => 'CommonOphthalmicDisorder')
 				),
-			));
+				'extra_fields' => array(
+					array(
+						'field' => 'finding_id',
+						'relation' => 'finding',
+						'type' => 'search_lookup',
+						'model' => 'Finding'
+					),
+				)
+			),
+			$key
+		);
 	}
 
 	public function actionManageFindings()

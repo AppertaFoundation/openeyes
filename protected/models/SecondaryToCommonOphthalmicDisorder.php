@@ -25,10 +25,12 @@
  * The followings are the available columns in table 'common_ophthalmic_disorder':
  * @property integer $id
  * @property integer $disorder_id
+ * @property integer $finding_id
  * @property integer $parent_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
+ * @property Finding $finding
  * @property CommonOphthalmicDisorder $parent
  */
 class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
@@ -65,12 +67,12 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-				array('disorder_id, parent_id', 'required'),
-				array('disorder_id, parent_id', 'length', 'max'=>10),
-				array('disorder_id, parent_id', 'safe'),
+				array('parent_id', 'required'),
+				array('disorder_id, finding_id, parent_id', 'length', 'max'=>10),
+				array('disorder_id, finding_id, parent_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-				array('id, disorder_id', 'safe', 'on'=>'search'),
+				array('id, disorder_id, finding_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -83,6 +85,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// class name for the relations automatically generated below.
 		return array(
 				'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
+				'finding' => array(self::BELONGS_TO, 'Finding', 'finding_id', 'condition' => 'finding.active = 1'),
 				'parent' => array(self::BELONGS_TO, 'CommonOphthalmicDisorder', 'parent_id'),
 		);
 	}
@@ -95,6 +98,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		return array(
 				'id' => 'ID',
 				'disorder_id' => 'Disorder',
+				'finding_id' => 'Finding',
 				'parent_id' => 'Parent'
 		);
 	}
@@ -112,6 +116,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('disorder_id',$this->disorder_id,true);
+		$criteria->compare('finding_id',$this->finding_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria'=>$criteria,
