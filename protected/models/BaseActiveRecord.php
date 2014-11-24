@@ -50,6 +50,16 @@ class BaseActiveRecord extends CActiveRecord
 	// (whilst developing this feature, will allow other elements to continue to work)
 	protected $auto_update_relations = false;
 
+	public function canAutocomplete()
+	{
+		return false;
+	}
+
+	public function getAutocompleteField()
+	{
+		return 'name';
+	}
+
 	/**
 	 * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
 	 * to assign to the attribute. Sets up the afterSave method to saves these objects if they have validated.
