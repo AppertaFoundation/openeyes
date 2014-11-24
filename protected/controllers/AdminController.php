@@ -118,6 +118,10 @@ class AdminController extends BaseAdminController
 						),
 						'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name')
 					),
+					array(
+						'field' => 'requires_description',
+						'type' => 'boolean',
+					),
 				),
 			)
 		);
