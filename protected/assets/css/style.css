@@ -5414,6 +5414,12 @@ tfoot.pagination-container .pagination li {
   padding: 2px 4px;
 }
 
+/* line 81, ../sass/openeyes/components/_multi-select.scss */
+.multi-select-descriptions {
+  margin-top: 1em;
+  margin-left: 0.2em;
+}
+
 /* line 36, ../sass/openeyes/components/_toggler.scss */
 .toggle-trigger {
   display: block;
