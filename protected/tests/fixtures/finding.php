@@ -33,5 +33,6 @@ return array(
 		'name' => 'Finding 3',
 		'display_order' => 3,
 		'active'=>1,
+		'requires_description' => 1,
 	),
 );
