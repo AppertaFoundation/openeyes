@@ -28,8 +28,9 @@ if (!$row->isNewRecord) {
 else {
 	$expand_style = "display: none;";
 }
+$search_field = $params['model']::model()->getAutocompleteField();
 ?>
-<span id="<?= "display_{$params['field']}_{$i}"?>"><?= ($row && $row->{$params['relation']}) ? $row->{$params['relation']}->term : '' ?></span>
+<span id="<?= "display_{$params['field']}_{$i}"?>"><?= ($row && $row->{$params['relation']}) ? $row->{$params['relation']}->$search_field : '' ?></span>
 <span id="<?= "expand_{$params['field']}_{$i}"?>" style="<?= $expand_style ?>">[e]</span>
 <span id="<?= "collapse_{$params['field']}_{$i}"?>" style="<?= $collapse_style ?>">[x]</span>
 <input type="hidden" name="<?= "{$params['field']}[$i]" ?>" id="<?="{$params['field']}_{$i}"?>" value="<?= $row->{$params['field']} ?>"/>
@@ -39,9 +40,13 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		'id'=>"autocomplete_{$params['field']}_{$i}",
 		'source'=>"js:function(request, response) {
 						$.ajax({
-							'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
+							'url': '" . Yii::app()->createUrl('/autocomplete/search') . "',
 							'type':'GET',
-							'data':{'term': request.term},
+							'data':{
+								'term': request.term,
+								'model': '".$params['model']."',
+								'field': '".$search_field."'
+							},
 							'success': function(data) {
 								data = $.parseJSON(data);
 								response(data);

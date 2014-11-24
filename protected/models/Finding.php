@@ -78,8 +78,16 @@ class Finding extends \BaseActiveRecordVersioned
 	public function behaviors()
 	{
 		return array(
-			'LookupTable' => 'LookupTable',
+			'LookupTable' => 'LookupTable'
 		);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function canAutocomplete()
+	{
+		return true;
 	}
 
 	/**

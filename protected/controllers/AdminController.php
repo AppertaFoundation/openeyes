@@ -50,13 +50,22 @@ class AdminController extends BaseAdminController
 				),
 				'extra_fields' => array(
 					array(
+						'field' => 'finding_id',
+						'relation' => 'finding',
+						'type' => 'search_lookup',
+						'model' => 'Finding'
+					),
+					array(
 						'field' => 'alternate_disorder_id',
 						'relation' => 'alternate_disorder',
 						'type' => 'search_lookup',
-						'options' => \CHtml::listData(\CommonOphthalmicDisorder::model()->findAll(), 'id', 'name'),
+						'model' => 'Disorder',
 					),
-					array('field' => 'alternate_disorder_label', 'type' => 'text',
-						'model' => 'CommonOphthalmicDisorder'),
+					array(
+						'field' => 'alternate_disorder_label',
+						'type' => 'text',
+						'model' => 'CommonOphthalmicDisorder'
+					),
 				),
 			));
 	}
@@ -74,13 +83,22 @@ class AdminController extends BaseAdminController
 				),
 				'extra_fields' => array(
 					array(
+						'field' => 'finding_id',
+						'relation' => 'finding',
+						'type' => 'search_lookup',
+						'model' => 'Finding'
+					),
+					array(
 						'field' => 'alternate_disorder_id',
 						'relation' => 'alternate_disorder',
 						'type' => 'search_lookup',
-						'options' => \CHtml::listData(\CommonOphthalmicDisorder::model()->findAll(), 'id', 'name'),
+						'model' => 'Disorder',
 					),
-					array('field' => 'alternate_disorder_label', 'type' => 'text',
-						'model' => 'CommonOphthalmicDisorder'),
+					array(
+						'field' => 'alternate_disorder_label',
+						'type' => 'text',
+						'model' => 'CommonOphthalmicDisorder'
+					),
 				),
 			),
 			$key
@@ -839,7 +857,7 @@ class AdminController extends BaseAdminController
 				if (!$contactlabel->save()) {
 					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
 				}
-				Audit::add('admin-ContactLabel','add',$contactLabel->id);
+				Audit::add('admin-ContactLabel','add',$contactlabel->id);
 				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
 			}
 		}
@@ -865,7 +883,7 @@ class AdminController extends BaseAdminController
 				if (!$contactlabel->save()) {
 					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
 				}
-				Audit::add('admin-ContactLabel','edit',$contactLabel->id);
+				Audit::add('admin-ContactLabel','edit',$contactlabel->id);
 
 				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
 			}
