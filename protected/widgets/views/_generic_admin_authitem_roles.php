@@ -17,26 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$config = array(
-	'name'=>'OpenEyes Console',
-	'import' => array(
-			'application.components.*',
-			'system.cli.commands.*',
-	),
-	'commandMap' => array(
-		'migrate' => array(
-			'class' => 'application.commands.OEMigrateCommand',
-			'migrationPath' => 'application.migrations',
-			'migrationTable' => 'tbl_migration',
-			'connectionID' => 'db'
-		),
-	),
-);
-
-if (preg_match('/\/protected\/modules\/deploy\/yiic$/',@$_SERVER['SCRIPT_FILENAME']) || preg_match('/\/protected\/modules\/deploy$/',@$_SERVER['PWD'])) {
-	$config['commandMap']['migrate']['class'] = 'MigrateCommand';
-	$config['commandMap']['migrate']['migrationPath'] = 'application.modules.deploy.migrations';
-	$config['commandMap']['migrate']['migrationTable'] = 'tbl_migration_deploy';
+$htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
+if (isset($params['empty'])) {
+	$htmlOptions['empty'] = $params['empty'];
 }
-
-return $config;
+$value = $row ? $row->{$params['field']} : '';
+$data = AuthItem::model()->findAll(array('condition' => 'type=2','order' => 'name asc'));
+echo CHtml::dropDownList($params['field'].'[]',$value,CHtml::listData($data,'name','name'),$htmlOptions);

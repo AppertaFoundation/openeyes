@@ -16,27 +16,16 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-$config = array(
-	'name'=>'OpenEyes Console',
-	'import' => array(
-			'application.components.*',
-			'system.cli.commands.*',
-	),
-	'commandMap' => array(
-		'migrate' => array(
-			'class' => 'application.commands.OEMigrateCommand',
-			'migrationPath' => 'application.migrations',
-			'migrationTable' => 'tbl_migration',
-			'connectionID' => 'db'
-		),
-	),
-);
-
-if (preg_match('/\/protected\/modules\/deploy\/yiic$/',@$_SERVER['SCRIPT_FILENAME']) || preg_match('/\/protected\/modules\/deploy$/',@$_SERVER['PWD'])) {
-	$config['commandMap']['migrate']['class'] = 'MigrateCommand';
-	$config['commandMap']['migrate']['migrationPath'] = 'application.modules.deploy.migrations';
-	$config['commandMap']['migrate']['migrationTable'] = 'tbl_migration_deploy';
+?>
+<?php
+if (!isset($id) && isset($this->event_type)) {
+	$id = $this->event_type->class_name.'_print';
 }
-
-return $config;
+?>
+<div class="container main" id="<?php echo @$id;?>" style="margin-bottom: 10em;">
+	<?php $this->renderPartial('//print/letter_header')?>
+	<?php $this->renderPartial('//print/letter_content', array(
+		'hide_modified' => @$hide_modified,
+		'hide_created' => @$hide_created
+	));?>
+</div>

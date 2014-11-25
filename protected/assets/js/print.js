@@ -17,55 +17,6 @@
  */
 
 /*
-function printPDF(url, data) {
-	$('#print_pdf_iframe').remove();
-	var iframe = $('<iframe></iframe>');
-	iframe.attr({
-		id: 'print_pdf_iframe',
-		src: url + '?' + $.param(data),
-		style: 'display: none;'
-	});
-	$('body').append(iframe);
-	
-	// re-enable the buttons
-	$('#print_pdf_iframe').load(function() {
-		enableButtons();
-	});
-}
-
-$(document).ready(function() {
-	$('body').append('<div class="printable" id="printable"></div>');
-});
-
-function clearPrintContent() {
-	$('#printable').empty();
-}
-
-function appendPrintContent(content) {
-	$('#printable').append(content);
-}
-
-function printContent(csspath) {
-
-	var css = [ { href: baseUrl+'/css/printcontent.css', media: 'all' } ];
-	if (csspath) {
-		css = [ { href: csspath+'/print.css', media: 'all' } ];
-	}
-
-	$('#printable').printElement({
-		pageTitle : 'OpenEyes printout',
-		//leaveOpen: true,
-		//printMode: 'popup',
-		printBodyOptions : {
-			styleToAdd : 'width: auto !important; margin: 0.75em !important;',
-			classNameToAdd : 'openeyesPrintout'
-		},
-		overrideElementCSS : css,
-	});
-}
-*/
-
-/*
  * creates an iframe in the current document, and populates with the given url and GET data
  * 
  * NOTE: the call to print the iFrame must be part of the document returned by the server. By having
@@ -79,7 +30,7 @@ function printIFrameUrl(url, data) {
 	if (data) {
 		url += '?' + $.param(data);
 	}
-	
+
 	$('#print_content_iframe').remove();
 	var iframe = $('<iframe></iframe>');
 	iframe.attr({
@@ -89,12 +40,71 @@ function printIFrameUrl(url, data) {
 		style: 'display: none;',
 	});
 	$('body').append(iframe);
-	
+
 	// re-enable the buttons
 	$('#print_content_iframe').load(function() {
 		enableButtons();
 	});
+}
 
+function printEvent(printOptions)
+{
+	var data = {canvas: {}};
+	var has_canvas_data = false;
+
+	$('canvas.ed-canvas-display').map(function() {
+		data['canvas'][$(this).data('drawing-name')] = $(this).get(0).toDataURL();
+	});
+
+	data['last_modified_date'] = OE_event_last_modified;
+
+	$.ajax({
+		'type': 'POST',
+		'url': baseUrl + '/' + OE_module_class + '/default/saveCanvasImages/' + OE_event_id,
+		'data': $.param(data) + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+		'success': function(resp) {
+			switch (resp) {
+				case "ok":
+					printIFrameUrl(OE_print_url, printOptions);
+					break;
+				case "outofdate":
+					$.cookie('print',1);
+					window.location.reload();
+					break;
+				default:
+					alert("Something went wrong trying to print the event. Please try again or contact support for assistance.");
+					break;
+			}
+		}
+	});
+}
+
+$(document).ready(function() {
+	if ($.cookie('print') == 1) {
+		disableButtons();
+
+		$.removeCookie('print');
+		setTimeout(function() { printWhenReady(); }, 500);
+	}
+});
+
+function printWhenReady()
+{
+	var ready = true;
+
+	$('canvas.ed-canvas-display').map(function() {
+		var drawing = window.ED ? ED.getInstance($(this).data('drawing-name')) : false;
+
+		if (!drawing || !drawing.isReady) {
+			ready = false;
+		}
+	});
+
+	if (ready) {
+		printEvent(null);
+	} else {
+		setTimeout(function() { printWhenReady(); }, 500);
+	}
 }
 
 /*

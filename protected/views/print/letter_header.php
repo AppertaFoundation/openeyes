@@ -16,27 +16,32 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-$config = array(
-	'name'=>'OpenEyes Console',
-	'import' => array(
-			'application.components.*',
-			'system.cli.commands.*',
-	),
-	'commandMap' => array(
-		'migrate' => array(
-			'class' => 'application.commands.OEMigrateCommand',
-			'migrationPath' => 'application.migrations',
-			'migrationTable' => 'tbl_migration',
-			'connectionID' => 'db'
-		),
-	),
-);
-
-if (preg_match('/\/protected\/modules\/deploy\/yiic$/',@$_SERVER['SCRIPT_FILENAME']) || preg_match('/\/protected\/modules\/deploy$/',@$_SERVER['PWD'])) {
-	$config['commandMap']['migrate']['class'] = 'MigrateCommand';
-	$config['commandMap']['migrate']['migrationPath'] = 'application.modules.deploy.migrations';
-	$config['commandMap']['migrate']['migrationTable'] = 'tbl_migration_deploy';
-}
-
-return $config;
+?>
+<?php
+$event = $this->event;
+$event_type = $event->eventType->name;
+?>
+<header class="header">
+	<div class="letter-logo">
+		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_Moorfields_NHS.jpg')?>" alt="letterhead_logo" />
+	</div>
+	<div class="seal">
+		<img src="<?php echo Yii::app()->assetManager->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" width="100" height="83" />
+	</div>
+	<div class="row">
+		<div class="large-4 column patient">
+			<strong><?php echo $this->patient->contact->fullName?></strong>
+			<br />
+			<?php echo $this->patient->getLetterAddress(array(
+				'delimiter' => '<br/>',
+			))?>
+			<br />
+			<br />
+			Hospital No: <strong><?php echo $this->patient->hos_num ?></strong>
+			<br />
+			NHS No: <strong><?php echo $this->patient->nhsnum ?></strong>
+			<br />
+			DOB: <strong><?php echo Helper::convertDate2NHS($this->patient->dob) ?> (<?php echo $this->patient->getAge()?>)</strong>
+		</div>
+	</div>
+</header>

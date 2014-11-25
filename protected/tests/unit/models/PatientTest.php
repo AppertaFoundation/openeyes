@@ -1098,4 +1098,14 @@ class PatientTest extends CDbTestCase
 		$event = $this->patients('patient1')->getLatestEvent();
 		$this->assertEquals('someinfo3', $event->info);
 	}
+
+	public function testGetHSCICName_NotBold()
+	{
+		$this->assertEquals("AYLWARD, Jim (Mr)",$this->patients('patient1')->getHSCICName());
+	}
+
+	public function testGetHSCICName_Bold()
+	{
+		$this->assertEquals("<strong>AYLWARD</strong>, Jim (Mr)",$this->patients('patient1')->getHSCICName(true));
+	}
 }

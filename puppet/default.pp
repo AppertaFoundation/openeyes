@@ -7,6 +7,7 @@ node default {
 	include core::apache2
 	include core::mysql
 	include core::curl
+	include core::git
 	include core::mail
 	include core::php5
 	include core::openeyes

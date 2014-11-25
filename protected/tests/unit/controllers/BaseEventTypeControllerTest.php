@@ -1076,6 +1076,24 @@ class BaseEventTypeControllerTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($event_type->id, $controller->event->event_type_id);
 	}
 
+	public function testGetOpenElementByClassName()
+	{
+		$bec = new BaseEventTypeController(null);
+
+		$patient = new Patient;
+		$patient->id = 32842934723;
+
+		$episode = new Episode;
+		$episode->firm_id = 213423423;
+
+		$bec->setOpenElements(array($patient,$episode));
+
+		$this->assertEquals($patient,$bec->getOpenElementByClassName('Patient'));
+		$this->assertEquals($episode,$bec->getOpenElementByClassName('Episode'));
+		$this->assertNull($bec->getOpenElementByClassName('Event'));
+		$this->assertNull($bec->getOpenElementByClassName('Element_OphTrOperationbooking_Operation'));
+		$this->assertNull($bec->getOpenElementByClassName('Drug'));
+	}
 }
 
 /**
