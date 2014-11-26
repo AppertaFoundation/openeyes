@@ -123,6 +123,10 @@ class AdminController extends BaseAdminController
 						'type' => 'search_lookup',
 						'model' => 'Finding'
 					),
+					array(
+						'field' => 'letter_macro_text',
+						'type' => 'text',
+					),
 				)
 			));
 	}
@@ -144,6 +148,10 @@ class AdminController extends BaseAdminController
 						'relation' => 'finding',
 						'type' => 'search_lookup',
 						'model' => 'Finding'
+					),
+					array(
+						'field' => 'letter_macro_text',
+						'type' => 'text',
 					),
 				)
 			),
