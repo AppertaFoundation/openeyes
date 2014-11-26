@@ -35,4 +35,10 @@ return array(
 		'active'=>1,
 		'requires_description' => 1,
 	),
+	'ex_finding4' => array(
+		'id' => 4,
+		'name' => 'Finding 4',
+		'display_order' => 4,
+		'active'=>1,
+	),
 );
