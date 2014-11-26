@@ -88,6 +88,7 @@
 								}
 							});
 						}",
+					//FIXME: need to deal with searches when the first list has been selected from
 					'options' => array(
 						'minLength'=>'3',
 						'select' => "js:function(event, ui) {
@@ -143,12 +144,11 @@
 	{
 		for (var i in selectionConfig) {
 			var obj = selectionConfig[i];
-			debugger;
 			if (obj.type == condition.type && obj.id == condition.id) {
 				// check at least one of the second options is not currently filtered out.
-				if (obj.second) {
-					for (var j in obj.second) {
-						if (!checkFilter(filterList, obj.second[j])) {
+				if (obj.secondary) {
+					for (var j in obj.secondary) {
+						if (!checkFilter(filterList, obj.secondary[j])) {
 							return true;
 						}
 					}
@@ -199,7 +199,6 @@
 				html += '<option value="' + obj.type + '-' + obj.id + '">' + obj.label + '</option>';
 			}
 		}
-		debugger;
 		firstSelection.html(html);
 	}
 
@@ -276,9 +275,9 @@
 	 */
 	function DiagnosisSelection_addCondition(condition)
 	{
-		if (curr.id) {
+		if (condition.id) {
 			<?php if (@$callback) {
-				echo $callback . "(curr.type, curr.id, curr.label);";
+				echo $callback . "(condition.type, condition.id, condition.label);";
 			} else {
 				echo "console.log('NO CALLBACK SPECIFIED');";
 			}?>
@@ -290,8 +289,9 @@
 	 */
 	function DiagnosisSelection_reset()
 	{
-		$('#<?php echo $class?>_<?php echo $field?>').val();
+		$('#<?php echo $class?>_<?php echo $field?>').val('');
 		$('#<?= "{$class_field}_secondary_to"?>').val('');
+		DiagnosisSelection_updateSelections();
 	}
 
 	// call straight away to set up the dropdowns correctly.
@@ -307,8 +307,10 @@
 			updateSecondList(filterConditions);
 		}
 		else {
-			DiagnosisSelection_addCondition(curr);
-			DiagnosisSelection_reset();
+			if (curr.id) {
+				DiagnosisSelection_addCondition(curr);
+				DiagnosisSelection_reset();
+			}
 		}
 	});
 	$('#<?= "{$class_field}_secondary_to"?>').on('change', function() {
