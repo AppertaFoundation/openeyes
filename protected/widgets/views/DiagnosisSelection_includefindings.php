@@ -249,11 +249,11 @@
 				}
 			}
 			secondarySelection.html(html);
-			$('#div_<?= "{$class_field}_secondary_to"?>').show();
+			$('#div_<?= "{$class_field}_secondary_to"?>').slideDown();
 		}
 		else {
 			secondarySelection.html('');
-			$('#div_<?= "{$class_field}_secondary_to"?>').hide();
+			$('#div_<?= "{$class_field}_secondary_to"?>').slideUp();
 		}
 	}
 
@@ -266,10 +266,13 @@
 		<?php if (@$filterCallback) { ?>
 			filterConditions = <?= @$filterCallback . "();" ?>
 		<?php } ?>
+
 		var firstVal = firstSelection.val();
-		updateFirstList(filterConditions);
-		firstSelection.val(firstVal);
-		updateSecondList(filterConditions);
+		$('#div_<?= "{$class_field}_secondary_to"?>').slideUp(function() {
+			updateFirstList(filterConditions);
+			firstSelection.val(firstVal);
+			updateSecondList(filterConditions);
+		});
 
 	}
 
