@@ -43,7 +43,7 @@
 		<?php echo $form->radioBoolean($user,'is_doctor')?>
 		<?php echo $form->passwordField($user,'password',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
-		<?php echo $form->multiSelectList($user, 'User[roles]', 'roles', 'name', CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'), array(), array('label' => 'Roles', 'empty' => '-- Add --'));?>
+		<?php echo $form->multiSelectList($user, 'User[roles]', 'roles', 'name', CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'), array(), array('label' => 'Roles', 'empty' => '-- Add --'), false, false, null, false, false, array(), 'AuthItem');?>
 		<?php echo $form->formActions(); ;?>
 	<?php $this->endWidget()?>
 </div>
