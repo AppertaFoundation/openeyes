@@ -17,6 +17,45 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$htmlOptions = @$disabled ? array('disabled' => 'disabled') : array();
-$value = $row ? $row->{$params['field']} : null;
-echo CHtml::textField($params['field']."[{$i}]", $value, $htmlOptions);
+return array(
+	array(
+		'id' => 1,
+		'parent_id' => 4,
+		'disorder_id' => 2,
+		'letter_macro_text' => 'testing blahblah7',
+	),
+	array(
+		'id' => 2,
+		'parent_id' => 4,
+		'disorder_id' => 3,
+	),
+	array(
+		'id' => 3,
+		'parent_id' => 5,
+		'disorder_id' => 5,
+		'letter_macro_text' => 'combined finding maculoppithy',
+	),
+	array(
+		'id' => 4,
+		'parent_id' => 4,
+		'finding_id' => 2,
+		'letter_macro_text' => 'test test 1234',
+	),
+	array(
+		'id' => 5,
+		'parent_id' => 6,
+		'finding_id' => 1,
+		'letter_macro_text' => 'test test 1234',
+	),
+	array(
+		'id' => 6,
+		'parent_id' => 6,
+		'finding_id' => 2,
+	),
+	array(
+		'id' => 7,
+		'parent_id' => 6,
+		'disorder_id' => 3,
+		'letter_macro_text' => 'test test 4567',
+	),
+);

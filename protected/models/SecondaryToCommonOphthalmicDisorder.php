@@ -69,7 +69,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		return array(
 				array('parent_id', 'required'),
 				array('disorder_id, finding_id, parent_id', 'length', 'max'=>10),
-				array('disorder_id, finding_id, parent_id', 'safe'),
+				array('disorder_id, finding_id, parent_id, letter_macro_text', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 				array('id, disorder_id, finding_id', 'safe', 'on'=>'search'),
@@ -96,10 +96,11 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 	public function attributeLabels()
 	{
 		return array(
-				'id' => 'ID',
-				'disorder_id' => 'Disorder',
-				'finding_id' => 'Finding',
-				'parent_id' => 'Parent'
+			'id' => 'ID',
+			'disorder_id' => 'Disorder',
+			'finding_id' => 'Finding',
+			'parent_id' => 'Parent',
+			'letter_macro_text' => 'Letter macro text',
 		);
 	}
 
