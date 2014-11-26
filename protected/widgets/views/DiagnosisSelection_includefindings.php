@@ -116,6 +116,7 @@
 	var selectionConfig = <?= CJSON::encode($options); ?>;
 	var firstSelection = $('#<?= $class_field ?>');
 	var secondarySelection = $('#<?= "{$class_field}_secondary_to"?>');
+	var firstEmpty = 'Select a commonly used diagnosis';
 
 	/**
 	 * Generates an object from the given jquery selector for a select list
@@ -190,15 +191,20 @@
 	 * @param filterList {id: string, type: 'disorder'|'finding', label: string}[]
 	 */
 	function updateFirstList(filterList) {
-		// FIXME: need the empty selection
 		var html = '';
+		// FIXME: doesn't support complete empty lists for the dropdown
+		if (firstEmpty.length) {
+			html += '<option>' + firstEmpty + '</option>';
+		}
 
 		for (var i in selectionConfig) {
 			var obj = selectionConfig[i];
-			if (!checkFilter(filterList, obj)) {
+			// don't show the null option in the first list
+			if (!checkFilter(filterList, obj) && obj.type != 'none') {
 				html += '<option value="' + obj.type + '-' + obj.id + '">' + obj.label + '</option>';
 			}
 		}
+
 		firstSelection.html(html);
 	}
 
@@ -209,14 +215,13 @@
 	 * @param filterList {id: string, type: 'disorder'|'finding', label: string}[]
 	 */
 	function updateSecondList(filterList) {
-		currentFirst = firstSelection.val();
+		currentFirst = getSelectedObj(firstSelection);
 		var options = null;
 
-		if (currentFirst) {
-			curr = getSelectedObj(firstSelection);
+		if (currentFirst.id) {
 
-			var type = curr.type;
-			var id = curr.id;
+			var type = currentFirst.type;
+			var id = currentFirst.id;
 			// need to look for the list for this primary selection
 			for (var i in selectionConfig) {
 				var obj = selectionConfig[i];
@@ -285,12 +290,13 @@
 	}
 
 	/**
-	 * Reset the dropdown selections (TODO: may also want to rebuild the lists as well)
+	 * Reset the dropdown selections
 	 */
 	function DiagnosisSelection_reset()
 	{
 		$('#<?php echo $class?>_<?php echo $field?>').val('');
 		$('#<?= "{$class_field}_secondary_to"?>').val('');
+		// FIXME: this might be duplication here?
 		DiagnosisSelection_updateSelections();
 	}
 
@@ -308,8 +314,12 @@
 		}
 		else {
 			if (curr.id) {
-				DiagnosisSelection_addCondition(curr);
-				DiagnosisSelection_reset();
+				// slide this up just to give additional visual cue that a single selection has been made
+				// (for when the second list is showing)
+				$('#div_<?= "{$class_field}_secondary_to"?>').slideUp(function() {
+					DiagnosisSelection_addCondition(curr);
+					DiagnosisSelection_reset();
+				});
 			}
 		}
 	});
