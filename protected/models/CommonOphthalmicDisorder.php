@@ -147,7 +147,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		} else if($this->finding) {
 			return 'finding';
 		} else {
-			return 'NONE';
+			return 'none';
 		}
 	}
 
@@ -224,7 +224,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 				$disorder['type'] = $cod->type;
 				$disorder['id'] = $cod->disorderOrFinding ? $cod->disorderOrFinding->id : null;
 				$disorder['label'] = $cod->disorderOrFinding ? $cod->disorderOrFinding->term : 'None';
-				$disorder['alternate_id'] = 42;
+				$disorder['alternate_id'] = 42; // FIXME: Implement
 				$disorder['secondary'] = $cod->getSecondaryToList();
 				$disorders[] = $disorder;
 			}

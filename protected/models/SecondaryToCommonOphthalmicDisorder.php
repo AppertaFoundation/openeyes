@@ -121,7 +121,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		} else if($this->finding) {
 			return 'finding';
 		} else {
-			return 'NONE';
+			return 'none';
 		}
 	}
 
