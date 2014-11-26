@@ -98,7 +98,6 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 			'alternate_disorder' => array(self::BELONGS_TO, 'Disorder', 'alternate_disorder_id', 'condition' => 'alternate_disorder.active = 1'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 			'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
-			'secondary_to_disorders' => array(self::HAS_MANY, 'Disorder', 'disorder_id', 'through' => 'secondary_to'),
 		);
 	}
 
@@ -138,25 +137,70 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		));
 	}
 
-	public static function getList($firm)
+	/**
+	 * @return string
+	 */
+	public function getType()
+	{
+		if($this->disorder) {
+			return 'disorder';
+		} else if($this->finding) {
+			return 'finding';
+		} else {
+			return 'NONE';
+		}
+	}
+
+	/**
+	 * @return Disorder|Finding
+	 */
+	public function getDisorderOrFinding() {
+		if($this->disorder) {
+			return $this->disorder;
+		} else if($this->finding) {
+			return $this->finding;
+		}
+	}
+
+	/**
+	 * Fetch options list of disorders (and optionally findings)
+	 * @param Firm $firm
+	 * @param bool $include_findings
+	 * @return array
+	 * @throws CException
+	 */
+	public static function getList(Firm $firm, $include_findings = false)
 	{
 		if (empty($firm)) {
 			throw new CException('Firm is required.');
 		}
+		$disorders = array();
 		if ($firm->serviceSubspecialtyAssignment) {
-			$ss_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-			$disorders = Disorder::model()->active()->findAll(array(
-					'condition' => 'cad.subspecialty_id = :subspecialty_id',
-					'join' => 'JOIN common_ophthalmic_disorder cad ON cad.disorder_id = t.id JOIN specialty ON specialty_id = specialty.id AND specialty.code = :ophcode',
-					'order' => 'term',
-					'params' => array(':subspecialty_id' => $ss_id, ':ophcode' => 130),
+			$ss_id = $firm->getSubspecialtyID();
+			$join = 'JOIN disorder ON disorder.id = t.disorder_id AND disorder.active = 1';
+			$prefix = '';
+			if($include_findings) {
+				$join = 'LEFT '.$join.' LEFT JOIN finding ON finding.id = t.finding_id AND finding.active = 1';
+				$prefix = 'disorder-';
+			}
+			$cods = self::model()->findAll(array(
+				'condition' => 't.subspecialty_id = :subspecialty_id',
+				'join' => $join,
+				'params' => array(':subspecialty_id' => $ss_id),
 			));
-			return CHtml::listData($disorders, 'id', 'term');
+			foreach($cods as $cod) {
+				if($cod->finding) {
+					$disorders['finding-'.$cod->finding->id] = $cod->finding->name;
+				} else if($cod->disorder) {
+					$disorders[$prefix.$cod->disorder->id] = $cod->disorder->term;
+				}
+			}
 		}
-		return array();
+		return $disorders;
 	}
 
 	/**
+	 * Fetch array of disorders and associated secondary to disorders (and optionally findings)
 	 * @param Firm $firm
 	 * @return array
 	 * @throws CException
@@ -167,46 +211,48 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 			throw new CException('Firm is required');
 		}
 		$disorders = array();
-		$secondary_to = array();
 		if ($ss_id = $firm->getSubspecialtyID()) {
-			$cods = self::model()->with(array('disorder', 'secondary_to_disorders'))->findAllByAttributes(array('subspecialty_id' => $ss_id));
+			$join = 'LEFT JOIN disorder ON disorder.id = t.disorder_id AND disorder.active = 1';
+			$join .= ' LEFT JOIN finding ON finding.id = t.finding_id AND finding.active = 1';
+			$cods = self::model()->findAll(array(
+				'condition' => 't.subspecialty_id = :subspecialty_id',
+				'join' => $join,
+				'params' => array(':subspecialty_id' => $ss_id),
+			));
 			foreach ($cods as $cod) {
-				$disorders[] = $cod->disorder;
-				if ($secondary_tos = $cod->secondary_to_disorders) {
-					$secondary_to[$cod->disorder_id] = CHtml::listData($secondary_tos, 'id', 'term');
-				}
+				$disorder = array();
+				$disorder['type'] = $cod->type;
+				$disorder['id'] = $cod->disorderOrFinding ? $cod->disorderOrFinding->id : null;
+				$disorder['label'] = $cod->disorderOrFinding ? $cod->disorderOrFinding->term : 'None';
+				$disorder['alternate_id'] = 42;
+				$disorder['secondary'] = $cod->getSecondaryToList();
+				$disorders[] = $disorder;
 			}
 		}
-
-		$_disorders = array();
-		$_secondary = array();
-
-		if ($cod = self::model()->find('subspecialty_id=? and disorder_id is null',array($ss_id))) {
-			$_disorders['NONE'] = 'None';
-			$_secondary['NONE'] = CHtml::listData(SecondaryToCommonOphthalmicDisorder::model()->findAll(array('condition' => 'parent_id = :pid','params' => array(':pid' => $cod->id))),'disorder_id','disorder.term');
-		}
-
-		foreach (CHtml::listData($disorders,'id','term') as $id => $term) {
-			$_disorders[$id] = $term;
-		}
-
-		foreach ($secondary_to as $parent_id => $disorders) {
-			$_secondary[$parent_id] = $disorders;
-		}
-
-		return array($_disorders, $_secondary);
+		return $disorders;
 	}
 
-	public function getSelectionLabel() {
+	/**
+	 * Fetch array of secondary disorders/findings
+	 * @return array
+	 */
+	public function getSecondaryToList()
+	{
+		$secondaries = array();
+		foreach($this->secondary_to as $secondary_to) {
+			$secondary = array();
+			$secondary['type'] = $secondary_to->type;
+			$secondary['id'] = $secondary_to->disorderOrFinding ? $secondary_to->disorderOrFinding->id : null;
+			$secondary['label'] = $secondary_to->conditionLabel;
+			$secondaries[] = $secondary;
+		}
+		return $secondaries;
+	}
 
+	public function getSelectionLabel()
+	{
 		$lbl = $this->subspecialty->name . " - ";
-
-		if ($this->disorder) {
-			$lbl .= $this->disorder->term;
-		}
-		else {
-			$lbl .= 'None';
-		}
+		$lbl .= $this->disorderOrFinding ? $this->disorderOrFinding->term : 'None';
 		return $lbl;
 	}
 }

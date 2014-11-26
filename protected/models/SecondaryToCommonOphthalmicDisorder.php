@@ -112,6 +112,44 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getType()
+	{
+		if($this->disorder) {
+			return 'disorder';
+		} else if($this->finding) {
+			return 'finding';
+		} else {
+			return 'NONE';
+		}
+	}
+
+	/**
+	 * @return Disorder|Finding
+	 */
+	public function getDisorderOrFinding()
+	{
+		if($this->disorder) {
+			return $this->disorder;
+		} else if($this->finding) {
+			return $this->finding;
+		}
+	}
+
+	public function getConditionLabel()
+	{
+		// FIXME: Add label column (moved from COD alternative label)
+		if(false /*$this->label*/) {
+			return $this->label;
+		} else if($this->getDisorderOrFinding()) {
+			return $this->getDisorderOrFinding()->term;
+		} else {
+			return 'None';
+		}
+	}
+
+	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
