@@ -224,7 +224,14 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 				$disorder['type'] = $cod->type;
 				$disorder['id'] = $cod->disorderOrFinding ? $cod->disorderOrFinding->id : null;
 				$disorder['label'] = $cod->disorderOrFinding ? $cod->disorderOrFinding->term : 'None';
-				$disorder['alternate_id'] = 42; // FIXME: Implement
+				$disorder['alternate'] = $cod->alternate_disorder_id ?
+					array(
+						'id' => $cod->alternate_disorder_id,
+						'label' => $cod->alternate_disorder->term,
+						'selection_label' => $cod->alternate_disorder_label,
+						// only allow disorder alternates at this point so type is hard code
+						'type' => 'disorder'
+					) : null;
 				$disorder['secondary'] = $cod->getSecondaryToList();
 				$disorders[] = $disorder;
 			}

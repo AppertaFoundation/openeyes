@@ -161,6 +161,18 @@
 	}
 
 	/**
+	 * Goes through the configuration to find the alternate condition
+	 */
+	function getAlternate(condition) {
+		for (var i in selectionConfig) {
+			var obj = selectionConfig[i];
+			if (obj.type == condition.type && obj.id == condition.id) {
+				return obj.alternate;
+			}
+		}
+	}
+
+	/**
 	 * Check whether the given object should be filtered or not given the filter list
 	 *
 	 * @param filterList
@@ -201,6 +213,10 @@
 			var obj = selectionConfig[i];
 			// don't show the null option in the first list
 			if (!checkFilter(filterList, obj) && obj.type != 'none') {
+				// filter out if the alternate is already present as well
+				if (obj.alternate && checkFilter(filterList, obj.alternate)) {
+					continue;
+				}
 				html += '<option value="' + obj.type + '-' + obj.id + '">' + obj.label + '</option>';
 			}
 		}
@@ -217,7 +233,7 @@
 	function updateSecondList(filterList) {
 		currentFirst = getSelectedObj(firstSelection);
 		var options = null;
-
+		var alternate = null;
 		if (currentFirst.id) {
 
 			var type = currentFirst.type;
@@ -227,6 +243,7 @@
 				var obj = selectionConfig[i];
 				if (obj.type == type && obj.id == id) {
 					options = obj.secondary;
+					alternate = obj.alternate;
 					break;
 				}
 			}
@@ -242,6 +259,9 @@
 		}
 		if (options) {
 			var html = '<option value="">- Please Select -</option>';
+			if (alternate && !checkFilter(filterList, alternate)) {
+				html += '<option value="alternate-' + alternate.id + '">' + alternate.selection_label + '</option>';
+			}
 			for (var i in options) {
 				var obj = options[i];
 				if (!checkFilter(filterList, obj)) {
@@ -299,8 +319,19 @@
 	{
 		$('#<?php echo $class?>_<?php echo $field?>').val('');
 		$('#<?= "{$class_field}_secondary_to"?>').val('');
+		firstSelection.removeAttr('disabled');
+		secondarySelection.removeAttr('disabled');
 		// FIXME: this might be duplication here?
 		DiagnosisSelection_updateSelections();
+	}
+
+	/**
+	 * Turn off the selectors
+	 */
+	function DiagnosisSelection_disable()
+	{
+		firstSelection.attr('disabled', 'disabled');
+		secondarySelection.attr('disabled', 'disabled');
 	}
 
 	// call straight away to set up the dropdowns correctly.
@@ -313,7 +344,9 @@
 		<?php } ?>
 		curr = getSelectedObj(firstSelection);
 		if (hasSecondList(curr, filterConditions)) {
-			updateSecondList(filterConditions);
+			$('#div_<?= "{$class_field}_secondary_to"?>').slideUp(function() {
+				updateSecondList(filterConditions);
+			});
 		}
 		else {
 			if (curr.id) {
@@ -326,16 +359,23 @@
 			}
 		}
 	});
+
 	$('#<?= "{$class_field}_secondary_to"?>').on('change', function() {
-		<?php if (@$callback) { ?>
 			currSecond = getSelectedObj(secondarySelection);
 			if (currSecond.id) {
+				DiagnosisSelection_disable();
+				// check if the type is alternate
+				// if it is, select that, otherwise do the normal addition
 				currFirst = getSelectedObj(firstSelection);
-				DiagnosisSelection_addCondition(currFirst);
-				DiagnosisSelection_addCondition(currSecond);
+				if (currSecond.type == 'alternate') {
+					DiagnosisSelection_addCondition(getAlternate(currFirst));
+				}
+				else {
+					DiagnosisSelection_addCondition(currFirst);
+					DiagnosisSelection_addCondition(currSecond);
+				}
 				DiagnosisSelection_reset();
 			}
-		<?php } ?>
 	});
 
 </script>
