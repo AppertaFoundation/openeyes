@@ -137,7 +137,30 @@
 	}
 
 	/**
-	 * function to check whether the given object should be filtered or not given the filter list
+	 * Checks if there is a second list for the given type and id.
+	 */
+	function hasSecondList(condition, filterList)
+	{
+		for (var i in selectionConfig) {
+			var obj = selectionConfig[i];
+			debugger;
+			if (obj.type == condition.type && obj.id == condition.id) {
+				// check at least one of the second options is not currently filtered out.
+				if (obj.second) {
+					for (var j in obj.second) {
+						if (!checkFilter(filterList, obj.second[j])) {
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check whether the given object should be filtered or not given the filter list
 	 *
 	 * @param filterList
 	 * @param obj
@@ -230,7 +253,11 @@
 		}
 	}
 
-	function DiagnosisSelection_updateSelections() {
+	/**
+	 * Will set up both dropdown lists based on the config.
+	 */
+	function DiagnosisSelection_updateSelections()
+	{
 		var filterConditions = [];
 		<?php if (@$filterCallback) { ?>
 			filterConditions = <?= @$filterCallback . "();" ?>
@@ -242,20 +269,56 @@
 
 	}
 
+	/**
+	 * Wrapper to the callback function for adding condition from dropdown.
+	 *
+	 * @param condition {id: string, type: 'disorder'|'finding', label: string}
+	 */
+	function DiagnosisSelection_addCondition(condition)
+	{
+		if (curr.id) {
+			<?php if (@$callback) {
+				echo $callback . "(curr.type, curr.id, curr.label);";
+			} else {
+				echo "console.log('NO CALLBACK SPECIFIED');";
+			}?>
+		}
+	}
+
+	/**
+	 * Reset the dropdown selections (TODO: may also want to rebuild the lists as well)
+	 */
+	function DiagnosisSelection_reset()
+	{
+		$('#<?php echo $class?>_<?php echo $field?>').val();
+		$('#<?= "{$class_field}_secondary_to"?>').val('');
+	}
+
+	// call straight away to set up the dropdowns correctly.
 	DiagnosisSelection_updateSelections();
+
 	$('#<?php echo $class?>_<?php echo $field?>').on('change', function() {
 		var filterConditions = [];
 		<?php if (@$filterCallback) { ?>
 		filterConditions = <?= @$filterCallback . "();" ?>
 		<?php } ?>
-		updateSecondList(filterConditions);
-		//FIXME: if there are no secondary options we need to just select the condition chosen
+		curr = getSelectedObj(firstSelection);
+		if (hasSecondList(curr, filterConditions)) {
+			updateSecondList(filterConditions);
+		}
+		else {
+			DiagnosisSelection_addCondition(curr);
+			DiagnosisSelection_reset();
+		}
 	});
 	$('#<?= "{$class_field}_secondary_to"?>').on('change', function() {
 		<?php if (@$callback) { ?>
-			curr = getSelectedObj(secondarySelection);
-			if (curr.id) {
-				<?=$callback . "(curr.type, curr.id, curr.label);"?>
+			currSecond = getSelectedObj(secondarySelection);
+			if (currSecond.id) {
+				currFirst = getSelectedObj(firstSelection);
+				DiagnosisSelection_addCondition(currFirst);
+				DiagnosisSelection_addCondition(currSecond);
+				DiagnosisSelection_reset();
 			}
 		<?php } ?>
 	});
