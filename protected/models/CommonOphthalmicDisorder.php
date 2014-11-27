@@ -271,6 +271,6 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 	 */
 	public function getSelectionLabel()
 	{
-		return $this->subspecialty->name . " - " . $this->disorderOrFinding ? $this->disorderOrFinding->term : 'None';
+		return $this->subspecialty->name . " - " . ($this->disorderOrFinding ? $this->disorderOrFinding->term : 'None');
 	}
 }
