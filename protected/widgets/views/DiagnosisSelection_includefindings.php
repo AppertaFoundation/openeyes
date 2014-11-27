@@ -209,8 +209,14 @@
 			html += '<option>' + firstEmpty + '</option>';
 		}
 
+		currentGroup = null;
 		for (var i in selectionConfig) {
 			var obj = selectionConfig[i];
+			var group = obj.group;
+			if(currentGroup !== group && currentGroup !== null) {
+				html += '<option disabled="disabled">----------</option>';
+			}
+			currentGroup = group;
 			// don't show the null option in the first list
 			if (!checkFilter(filterList, obj) && obj.type != 'none') {
 				// filter out if the alternate is already present as well

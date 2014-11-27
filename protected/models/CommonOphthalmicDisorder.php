@@ -24,11 +24,13 @@
  * @property integer $id
  * @property integer $disorder_id
  * @property integer $finding_id
+ * @property integer $group_id
  * @property integer $subspecialty_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
  * @property Finding $finding
+ * @property Group $group
  * @property Subspecialty $subspecialty
  * @property SecondaryToCommonOphthalmicDisorder[] $secondary_to
  * @property Disorder[] $secondary_to_disorders
@@ -71,9 +73,9 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('subspecialty_id', 'required'),
-			array('disorder_id, finding_id, alternate_disorder_id, subspecialty_id', 'length', 'max'=>10),
+			array('disorder_id, finding_id, group_id, alternate_disorder_id, subspecialty_id', 'length', 'max'=>10),
 			array('alternate_disorder_label','RequiredIfFieldValidator','field' => 'alternate_disorder_id', 'value' => true),
-			array('id, disorder_id, finding_id, alternate_disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
+			array('id, disorder_id, finding_id, group_id, alternate_disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -131,6 +133,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('disorder_id',$this->disorder_id,true);
 		$criteria->compare('finding_id',$this->finding_id,true);
+		$criteria->compare('group_id',$this->group_id,true);
 		$criteria->compare('alternate_disorder_id',$this->subspecialty_id,true);
 		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
 
@@ -226,15 +229,17 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 				'group'
 			))->findAll(array(
 				'condition' => 't.subspecialty_id = :subspecialty_id',
+				'order' => '(group_id IS NULL) DESC, group.display_order',
 				'params' => array(':subspecialty_id' => $ss_id),
 			));
 			foreach ($cods as $cod) {
 				if($cod->type) {
 					$disorder = array();
+					$group = ($cod->group) ? $cod->group->name : '';
 					$disorder['type'] = $cod->type;
 					$disorder['id'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->id : null;
 					$disorder['label'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->term : 'None';
-					$disorder['group'] = ($cod->group) ? $cod->group->name : null;
+					$disorder['group'] = $group;
 					$disorder['alternate'] = $cod->alternate_disorder_id ?
 						array(
 							'id' => $cod->alternate_disorder_id,
