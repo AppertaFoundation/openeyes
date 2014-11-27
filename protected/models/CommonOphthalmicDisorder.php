@@ -83,6 +83,22 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 			$this->addError('disorder_id','Cannot set both disorder and finding');
 			$this->addError('finding_id','Cannot set both disorder and finding');
 		}
+		if ($this->subspecialty_id && !$this->disorder_id && !$this->finding_id) {
+			// check this is the only COD for the subspecialty that has no disorder or finding
+			$criteria =  new CDbCriteria();
+			$criteria->addCondition('subspecialty_id = :sid');
+			$criteria->addColumnCondition(array('disorder_id' => null, 'finding_id' => null));
+			$params = array(':sid' => $this->subspecialty_id);
+			if ($this->id) {
+				$criteria->addCondition('id != :id');
+				$params[':id'] = $this->id;
+			}
+			$criteria->params = $params;
+			// run query and raise validation error if any are found
+			if (self::count($criteria)) {
+				$this->addError('subspecialty_id', "Cannot have more than one null entry for the subspecialty");
+			}
+		}
 	}
 
 	/**
