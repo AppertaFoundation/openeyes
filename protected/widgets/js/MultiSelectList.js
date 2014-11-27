@@ -39,6 +39,7 @@ $(document).ready(function() {
 
 			var container = select.closest('.multi-select');
 			var selections = container.find('.multi-select-selections');
+			var descriptions = container.find('.multi-select-descriptions');
 			var inputField = container.find('.multi-select-list-name');
 			var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];
 			var noSelectionsMsg = container.find('.no-selections-msg');
@@ -50,7 +51,14 @@ $(document).ready(function() {
 				attrs[this.nodeName] = this.nodeValue;
 			});
 
-			var inp_str = '<input type="hidden" name="'+fieldName+'[]"';
+			var i = 0;
+			selections.find('input[type="hidden"]').map(function() {
+				while (parseInt($(this).data('i')) >= i) {
+					i++;
+				}
+			});
+
+			var inp_str = '<input type="hidden" name="'+fieldName+'[' + i + '][id]" data-i="' + i + '"';
 			for (var key in attrs) {
 				inp_str += ' ' + key + '="' + attrs[key] + '"';
 			}
@@ -78,12 +86,28 @@ $(document).ready(function() {
 			item.append(remove);
 			item.append(input);
 
-			selections
-			.append(item)
-			.removeClass('hide');
+			selections.append(item).removeClass('hide');
 
 			noSelectionsMsg.addClass('hide');
 			removeAll.removeClass('hide');
+
+			if (selected.data('requires-description')) {
+				descriptions.append(
+					'<div class="row data-row" data-option="' + selected.text() + '">' +
+						'<div class="large-2 column">' +
+							'<div class="data-label">' +
+								selected.text() + ':' +
+							'</div>' +
+						'</div>' +
+						'<div class="large-4 column end">' +
+							'<div class="data-value">' +
+								'<textarea name="' + fieldName + '[' + i + '][description]" data-option="' + selected.text() + '"></textarea>' +
+							'</div>' +
+						'</div>' +
+					'</div>');
+
+				container.find('textarea[data-option="' + selected.text() + '"]').focus();
+			}
 
 			selected.remove();
 			select.val('');
@@ -104,6 +128,7 @@ $(document).ready(function() {
 		var anchor = $(this);
 		var container = anchor.closest('.multi-select');
 		var selections = container.find('.multi-select-selections');
+		var descriptions = container.find('.multi-select-descriptions');
 		var noSelectionsMsg = container.find('.no-selections-msg');
 		var removeAll = container.find('.remove-all');
 		var input = anchor.closest('li').find('input');
@@ -136,6 +161,7 @@ $(document).ready(function() {
 
 		anchor.closest('li').remove();
 		input.remove();
+		descriptions.find('div[data-option="' + text + '"]').remove();
 
 		if (!selections.children().length) {
 			selections.add(removeAll).addClass('hide');

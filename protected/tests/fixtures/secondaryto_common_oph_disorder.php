@@ -18,34 +18,44 @@
  */
 
 return array(
-	'commonOphthalmicDisorder1' => array(
+	array(
 		'id' => 1,
-		'disorder_id' => 1,
-		'subspecialty_id' => 1
-	),
-	'commonOphthalmicDisorder2' => array(
-		'id' => 2,
+		'parent_id' => 4,
 		'disorder_id' => 2,
-		'subspecialty_id' => 1
+		'letter_macro_text' => 'testing blahblah7',
 	),
-	'commonOphthalmicDisorder3' => array(
-		'id' => 3,
+	array(
+		'id' => 2,
+		'parent_id' => 4,
 		'disorder_id' => 3,
-		'subspecialty_id' => 2
 	),
-	'commonOphthalmicDisorder4' => array(
+	array(
+		'id' => 3,
+		'parent_id' => 5,
+		'disorder_id' => 5,
+		'letter_macro_text' => 'combined finding maculoppithy',
+	),
+	array(
 		'id' => 4,
-		'disorder_id' => 4,
-		'subspecialty_id' => 2
+		'parent_id' => 4,
+		'finding_id' => 2,
+		'letter_macro_text' => 'test test 1234',
 	),
-	'commonOphthalmicDisorder5' => array(
+	array(
 		'id' => 5,
+		'parent_id' => 6,
 		'finding_id' => 1,
-		'subspecialty_id' => 2
+		'letter_macro_text' => 'test test 1234',
 	),
-	'commonOphthalmicDisorder6' => array(
+	array(
 		'id' => 6,
-		'finding_id' => 3,
-		'subspecialty_id' => 2
+		'parent_id' => 6,
+		'finding_id' => 2,
+	),
+	array(
+		'id' => 7,
+		'parent_id' => 6,
+		'disorder_id' => 3,
+		'letter_macro_text' => 'test test 4567',
 	),
 );

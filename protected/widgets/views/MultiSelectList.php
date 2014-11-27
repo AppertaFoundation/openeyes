@@ -47,7 +47,8 @@ foreach($selected_ids as $id) {
 }
 
 $widgetOptionsJson = json_encode(array(
-	'sorted' => $sorted
+	'sorted' => $sorted,
+	'requires_description_field' => @$htmlOptions['requires_description_field']
 ));
 ?>
 
@@ -86,14 +87,14 @@ $widgetOptionsJson = json_encode(array(
 			<?php }?>
 			<ul class="MultiSelectList multi-select-selections<?php if (!$found) echo ' hide';?>">
 				<input type="hidden" name="<?php echo $field?>" />
-				<?php foreach ($selected_ids as $id) {
+				<?php foreach ($selected_ids as $i => $id) {
 					if (isset($options[$id])) {?>
 						<li>
 							<span class="text">
 								<?php echo htmlspecialchars($options[$id],ENT_QUOTES,Yii::app()->charset, false)?>
 							</span>
 							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>"<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>Remove</a>
-							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
+							<input type="hidden" name="<?php echo $field?>[<?php echo $i?>][id]" data-i="<?php echo $i?>" value="<?php echo $id?>"
 							<?php if (isset($opts[$id])) {
 								foreach ($opts[$id] as $key => $val) {
 									echo " " . $key . "=\"" . $val . "\"";
@@ -104,7 +105,24 @@ $widgetOptionsJson = json_encode(array(
 					<?php }?>
 				<?php }?>
 			</ul>
-
+			<div class="multi-select-descriptions">
+				<?php foreach ($selected_ids as $i => $id) {
+					if (isset($descriptions[$id])) {?>
+						<div class="row data-row" data-option="<?php echo $options[$id]?>">
+							<div class="large-2 column">
+								<div class="data-label">
+									<?php echo $options[$id]?>
+								</div>
+							</div>
+							<div class="large-4 column end">
+								<div class="data-value">
+									<?php echo CHtml::textArea($field."[$i][description]",$descriptions[$id])?>
+								</div>
+							</div>
+						</div>
+					<?php }
+				}?>
+			</div>
 		</div>
 <?php if (!@$htmlOptions['nowrapper']) {?>
 	</div>

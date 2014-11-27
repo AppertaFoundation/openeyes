@@ -2,8 +2,7 @@
 /**
  * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -12,40 +11,34 @@
  * @package OpenEyes
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 return array(
-	'commonOphthalmicDisorder1' => array(
+	'ex_finding1' => array(
 		'id' => 1,
-		'disorder_id' => 1,
-		'subspecialty_id' => 1
+		'name' => 'Finding 1',
+		'display_order' => 1,
+		'active'=>1
 	),
-	'commonOphthalmicDisorder2' => array(
+	'ex_finding2' => array(
 		'id' => 2,
-		'disorder_id' => 2,
-		'subspecialty_id' => 1
+		'name' => 'Finding 2',
+		'display_order' => 2,
+		'active'=>1,
 	),
-	'commonOphthalmicDisorder3' => array(
+	'ex_finding3' => array(
 		'id' => 3,
-		'disorder_id' => 3,
-		'subspecialty_id' => 2
+		'name' => 'Finding 3',
+		'display_order' => 3,
+		'active'=>1,
+		'requires_description' => 1,
 	),
-	'commonOphthalmicDisorder4' => array(
+	'ex_finding4' => array(
 		'id' => 4,
-		'disorder_id' => 4,
-		'subspecialty_id' => 2
-	),
-	'commonOphthalmicDisorder5' => array(
-		'id' => 5,
-		'finding_id' => 1,
-		'subspecialty_id' => 2
-	),
-	'commonOphthalmicDisorder6' => array(
-		'id' => 6,
-		'finding_id' => 3,
-		'subspecialty_id' => 2
+		'name' => 'Finding 4',
+		'display_order' => 4,
+		'active'=>1,
 	),
 );

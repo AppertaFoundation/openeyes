@@ -38,14 +38,26 @@ class RequiredIfFieldValidator extends CValidator
 					}
 				}
 			} else {
-				$required = ($related->{$this->field} == $this->value);
+				$required = ($this->expand($related,$this->field) == $this->value);
 			}
 		} else {
-			$required = ($object->{$this->field} == $this->value);
+			$required = ($this->expand($object,$this->field) == $this->value);
 		}
 
 		if ($required && $this->isEmpty($object->$attribute, true)) {
 			$this->addError($object, $attribute, $this->message);
 		}
+	}
+
+	public function expand($object, $attribute)
+	{
+		if ($pos = strpos($attribute,'.')) {
+			$first = substr($attribute,0,$pos);
+			$second = substr($attribute,$pos+1,strlen($attribute));
+
+			return $this->expand($object->$first, $second);
+		}
+
+		return $object->$attribute;
 	}
 }

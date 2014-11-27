@@ -17,12 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $primary_selector_id = "{$class}_{$field}"; ?>
+<?php $class_field = "{$class}_{$field}"; ?>
 
 <?php if (!$nowrapper) {?>
 	<div class="row field-row diagnosis-selection">
 		<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
-			<label for="<?php echo $primary_selector_id ;?>">Diagnosis:</label>
+			<label for="<?php echo $class_field ;?>">Diagnosis:</label>
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 <?php }?>
@@ -57,10 +57,10 @@
 
 	<?php if ($secondary_to) {?>
 		<?php if (!$nowrapper) {?>
-			<div id="div_<?php echo "{$primary_selector_id}_secondary_to"?>" class="row field-row hidden">
+			<div id="div_<?php echo "{$class_field}_secondary_to"?>" class="row field-row hidden">
 				<?php if (!$nowrapper) {?>
 					<div class="large-<?php echo $layoutColumns['label'];?> column<?php if (!$label) {?> hide<?php }?>">
-						<label for="<?php echo "{$primary_selector_id}_secondary_to";?>">Associated diagnosis:</label>
+						<label for="<?php echo "{$class_field}_secondary_to";?>">Associated diagnosis:</label>
 					</div>
 				<?php }?>
 				<div class="large-<?php echo $layoutColumns['field'];?> column end">
@@ -85,7 +85,7 @@
 				<?php
 				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						'name' => "{$class}[$field]",
-						'id' => "{$primary_selector_id}_0",
+						'id' => "{$class_field}_0",
 						'value'=>'',
 						'source'=>"js:function(request, response) {
 							$.ajax({
@@ -118,14 +118,14 @@
 								'select' => "js:function(event, ui) {
 
 									if ($('#DiagnosisSelection_disorder_id_secondary_to').is(':visible')) {
-										var primary_selected = $('#{$primary_selector_id}').children('option:selected');
+										var primary_selected = $('#{$class_field}').children('option:selected');
 										if (primary_selected.val() != 'NONE') {
 											".($callback ? $callback."(primary_selected.val(), primary_selected.text());" : "")."
 										}
 									}
 									".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
-									$('#{$primary_selector_id}_0').val('');
-									$('#{$primary_selector_id}').children('option').map(function() {
+									$('#{$class_field}_0').val('');
+									$('#{$class_field}').children('option').map(function() {
 										if ($(this).val() == ui.item.id) {
 											$(this).remove();
 										}
@@ -153,7 +153,7 @@
 
 		var none = '';
 		var empty = '';
-		$('#<?= $primary_selector_id ?>').children().each(function() {
+		$('#<?= $class_field ?>').children().each(function() {
 			if ($(this).val() == 'NONE') {
 				none = $(this)[0].outerHTML;
 			}
@@ -165,10 +165,10 @@
 			}
 		});
 		// sort_selectbox keeps the first element at the top.
-		$('#<?= $primary_selector_id ?>').html(empty + html);
-		sort_selectbox($('#<?= $primary_selector_id ?>'));
+		$('#<?= $class_field ?>').html(empty + html);
+		sort_selectbox($('#<?= $class_field ?>'));
 		//prepend none
-		$('#<?= $primary_selector_id ?> option').eq(1).before($(none));
+		$('#<?= $class_field ?> option').eq(1).before($(none));
 	}
 
 	<?php if ($secondary_to) {?>
@@ -188,11 +188,11 @@
 				options += '<option value="' + data[i].id + '">' + data[i].term + '</option>';
 			}
 		}
-		$('#<?= "{$primary_selector_id}_secondary_to"?>').html(options);
+		$('#<?= "{$class_field}_secondary_to"?>').html(options);
 	}
 
-	$('#<?= "{$primary_selector_id}_secondary_to"?>').change(function() {
-		var primary_selected = $('#<?= $primary_selector_id ?>').children('option:selected');
+	$('#<?= "{$class_field}_secondary_to"?>').change(function() {
+		var primary_selected = $('#<?= $class_field ?>').children('option:selected');
 		var selected = $(this).children('option:selected');
 		if (selected.val()) {
 			if (primary_selected.val() != 'NONE') {
@@ -201,7 +201,7 @@
 			if (selected.val() != 'NONE') {
 				<?= $callback?>(selected.val(), selected.text());
 			}
-			$('#div_<?= "{$primary_selector_id}_secondary_to"?>').hide();
+			$('#div_<?= "{$class_field}_secondary_to"?>').hide();
 			if (primary_selected.val() != 'NONE') {
 				primary_selected.remove();
 			}
@@ -220,23 +220,23 @@
 				<?php if ($secondary_to) {?>
 					if (selected.data('secondary-to')) {
 						updateSecondaryList(selected.data('secondary-to'), selected.val() != 'NONE');
-						$('#div_<?= "{$primary_selector_id}_secondary_to"?>').show();
+						$('#div_<?= "{$class_field}_secondary_to"?>').show();
 					}
 					else {
-						$('#div_<?= "{$primary_selector_id}_secondary_to"?>').hide();
+						$('#div_<?= "{$class_field}_secondary_to"?>').hide();
 						<?php echo $callback?>(selected.val(), selected.text());
 						selected.remove();
-						$('#<?= $primary_selector_id ?>').val('');
+						$('#<?= $class_field ?>').val('');
 					}
 				<?php } else {?>
 					<?php echo $callback?>(selected.val(), selected.text());
 					selected.remove();
-					$('#<?= $primary_selector_id ?>').val('');
+					$('#<?= $class_field ?>').val('');
 				<?php }?>
 			}
 			else {
 				// reset form
-				$('#div_<?= "{$primary_selector_id}_secondary_to"?>').hide();
+				$('#div_<?= "{$class_field}_secondary_to"?>').hide();
 			}
 		});
 	<?php }?>

@@ -21,7 +21,7 @@
 			'Common Ophthalmic Disorder Groups' => '/admin/editcommonophthalmicdisordergroups',
 			'Common Ophthalmic Disorders' => '/admin/editcommonophthalmicdisorder',
 		 	'Secondary Common Ophthalmic Disorders' => '/admin/editsecondarytocommonophthalmicdisorder',
-
+			'Findings' => 'admin/managefindings'
 		) as $title => $uri) {?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="selected"<?php }?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?>
