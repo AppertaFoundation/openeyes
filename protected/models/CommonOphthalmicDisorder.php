@@ -93,9 +93,9 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
-			'finding' => array(self::BELONGS_TO, 'Finding', 'finding_id', 'condition' => 'finding.active = 1'),
-			'alternate_disorder' => array(self::BELONGS_TO, 'Disorder', 'alternate_disorder_id', 'condition' => 'alternate_disorder.active = 1'),
+			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'on' => 'disorder.active = 1'),
+			'finding' => array(self::BELONGS_TO, 'Finding', 'finding_id', 'on' => 'finding.active = 1'),
+			'alternate_disorder' => array(self::BELONGS_TO, 'Disorder', 'alternate_disorder_id', 'on' => 'alternate_disorder.active = 1'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 			'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
 		);
@@ -146,6 +146,9 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 			return 'disorder';
 		} else if($this->finding) {
 			return 'finding';
+		} else if($this->disorder_id || $this->finding_id) {
+			// Finding or disorder is inactive
+			return null;
 		} else {
 			return 'none';
 		}
@@ -177,15 +180,17 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		$disorders = array();
 		if ($firm->serviceSubspecialtyAssignment) {
 			$ss_id = $firm->getSubspecialtyID();
-			$join = 'JOIN disorder ON disorder.id = t.disorder_id AND disorder.active = 1';
+			$with = array('disorder');
 			$prefix = '';
 			if($include_findings) {
-				$join = 'LEFT '.$join.' LEFT JOIN finding ON finding.id = t.finding_id AND finding.active = 1';
+				$with = array(
+					'disorder' => array('joinType' => 'LEFT JOIN'),
+					'finding' => array('joinType' => 'LEFT JOIN')
+				);
 				$prefix = 'disorder-';
 			}
-			$cods = self::model()->findAll(array(
+			$cods = self::model()->with($with)->findAll(array(
 				'condition' => 't.subspecialty_id = :subspecialty_id',
-				'join' => $join,
 				'params' => array(':subspecialty_id' => $ss_id),
 			));
 			foreach($cods as $cod) {
@@ -212,28 +217,30 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		}
 		$disorders = array();
 		if ($ss_id = $firm->getSubspecialtyID()) {
-			$join = 'LEFT JOIN disorder ON disorder.id = t.disorder_id AND disorder.active = 1';
-			$join .= ' LEFT JOIN finding ON finding.id = t.finding_id AND finding.active = 1';
-			$cods = self::model()->findAll(array(
+			$cods = self::model()->with(array(
+				'finding' => array('joinType' => 'LEFT JOIN'),
+				'disorder' => array('joinType' => 'LEFT JOIN')
+			))->findAll(array(
 				'condition' => 't.subspecialty_id = :subspecialty_id',
-				'join' => $join,
 				'params' => array(':subspecialty_id' => $ss_id),
 			));
 			foreach ($cods as $cod) {
-				$disorder = array();
-				$disorder['type'] = $cod->type;
-				$disorder['id'] = $cod->disorderOrFinding ? $cod->disorderOrFinding->id : null;
-				$disorder['label'] = $cod->disorderOrFinding ? $cod->disorderOrFinding->term : 'None';
-				$disorder['alternate'] = $cod->alternate_disorder_id ?
-					array(
-						'id' => $cod->alternate_disorder_id,
-						'label' => $cod->alternate_disorder->term,
-						'selection_label' => $cod->alternate_disorder_label,
-						// only allow disorder alternates at this point so type is hard code
-						'type' => 'disorder'
-					) : null;
-				$disorder['secondary'] = $cod->getSecondaryToList();
-				$disorders[] = $disorder;
+				if($cod->type) {
+					$disorder = array();
+					$disorder['type'] = $cod->type;
+					$disorder['id'] = $cod->disorderOrFinding ? $cod->disorderOrFinding->id : null;
+					$disorder['label'] = $cod->disorderOrFinding ? $cod->disorderOrFinding->term : 'None';
+					$disorder['alternate'] = $cod->alternate_disorder_id ?
+						array(
+							'id' => $cod->alternate_disorder_id,
+							'label' => $cod->alternate_disorder->term,
+							'selection_label' => $cod->alternate_disorder_label,
+							// only allow disorder alternates at this point so type is hard code
+							'type' => 'disorder'
+						) : null;
+					$disorder['secondary'] = $cod->getSecondaryToList();
+					$disorders[] = $disorder;
+				}
 			}
 		}
 		return $disorders;
@@ -247,19 +254,23 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 	{
 		$secondaries = array();
 		foreach($this->secondary_to as $secondary_to) {
-			$secondary = array();
-			$secondary['type'] = $secondary_to->type;
-			$secondary['id'] = $secondary_to->disorderOrFinding ? $secondary_to->disorderOrFinding->id : null;
-			$secondary['label'] = $secondary_to->conditionLabel;
-			$secondaries[] = $secondary;
+			if($secondary_to->type) {
+				$secondary = array();
+				$secondary['type'] = $secondary_to->type;
+				$secondary['id'] = $secondary_to->disorderOrFinding ? $secondary_to->disorderOrFinding->id : null;
+				$secondary['label'] = $secondary_to->conditionLabel;
+				$secondaries[] = $secondary;
+			}
 		}
 		return $secondaries;
 	}
 
+	/**
+	 * Label for use in dropdowns
+	 * @return string
+	 */
 	public function getSelectionLabel()
 	{
-		$lbl = $this->subspecialty->name . " - ";
-		$lbl .= $this->disorderOrFinding ? $this->disorderOrFinding->term : 'None';
-		return $lbl;
+		return $this->subspecialty->name . " - " . $this->disorderOrFinding ? $this->disorderOrFinding->term : 'None';
 	}
 }
