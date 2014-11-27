@@ -229,7 +229,6 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 				'group'
 			))->findAll(array(
 				'condition' => 't.subspecialty_id = :subspecialty_id',
-				'order' => '(group_id IS NULL) DESC, group.display_order',
 				'params' => array(':subspecialty_id' => $ss_id),
 			));
 			foreach ($cods as $cod) {

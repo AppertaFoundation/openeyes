@@ -213,17 +213,17 @@
 		for (var i in selectionConfig) {
 			var obj = selectionConfig[i];
 			var group = obj.group;
-			if(currentGroup !== group && currentGroup !== null) {
-				html += '<option disabled="disabled">----------</option>';
-			}
-			currentGroup = group;
 			// don't show the null option in the first list
 			if (!checkFilter(filterList, obj) && obj.type != 'none') {
 				// filter out if the alternate is already present as well
 				if (obj.alternate && checkFilter(filterList, obj.alternate)) {
 					continue;
 				}
+				if(currentGroup !== group) {
+					html += '<option disabled="disabled">----------</option>';
+				}
 				html += '<option value="' + obj.type + '-' + obj.id + '">' + obj.label + '</option>';
+				currentGroup = group;
 			}
 		}
 
