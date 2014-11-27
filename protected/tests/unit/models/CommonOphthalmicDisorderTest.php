@@ -26,6 +26,7 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 		'subspecialties' => 'Subspecialty',
 		'serviceSubspecialtyAssignments' => 'ServiceSubspecialtyAssignment',
 		'actual_disorders' => 'Disorder',
+		'findings' => 'Finding',
 		'disorders' => 'CommonOphthalmicDisorder'
 	);
 
@@ -105,16 +106,21 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 		$this->model->getList(null);
 	}
 
-	/**
-	 * @covers CommonOphthalmicDisorder::getList
-	 * @todo   Implement testGetList().
-	 */
-	public function testGetList()
+	public function dataProvider_getList()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
+		return array(
+			array('firm2', false, 2),
+			array('firm2', true, 4)
 		);
+	}
+
+	/**
+	 * @dataProvider dataProvider_getList
+	 */
+	public function testGetList($firmkey, $get_findings, $result_count)
+	{
+		$res = CommonOphthalmicDisorder::getList($this->firms($firmkey), $get_findings);
+		$this->assertCount($result_count, $res);
 	}
 
 	/**
@@ -122,6 +128,7 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 	 */
 	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
 	{
+		$this->markTestIncomplete('Temporarily suspended as search isnt really used');
 		$disorder = new CommonOphthalmicDisorder;
 		$disorder->setAttributes($searchTerms);
 		$results = $disorder->search();
