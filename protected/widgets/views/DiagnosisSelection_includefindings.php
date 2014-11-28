@@ -132,7 +132,12 @@
 		if (selected) {
 			selSplit = selected.val().split('-');
 			obj.type = selSplit[0];
-			obj.id = selSplit[1];
+			if (obj.type == 'disorder' || obj.type == 'finding' || obj.type == 'alternate') {
+				obj.id = selSplit[1];
+			}
+			else {
+				obj.type = 'none';
+			}
 			obj.label = selected.text();
  		}
 		return obj;
@@ -292,7 +297,6 @@
 		<?php if (@$filterCallback) { ?>
 			filterConditions = <?= @$filterCallback . "();" ?>
 		<?php } ?>
-
 		var firstVal = firstSelection.val();
 		$('#div_<?= "{$class_field}_secondary_to"?>').slideUp(function() {
 			updateFirstList(filterConditions);
@@ -341,7 +345,9 @@
 	}
 
 	// call straight away to set up the dropdowns correctly.
-	DiagnosisSelection_updateSelections();
+	$(document).ready(function() {
+		DiagnosisSelection_updateSelections();
+	});
 
 	$('#<?php echo $class?>_<?php echo $field?>').on('change', function() {
 		var filterConditions = [];
