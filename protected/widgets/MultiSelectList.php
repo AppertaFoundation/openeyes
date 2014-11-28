@@ -39,27 +39,31 @@ class MultiSelectList extends BaseFieldWidget
 
 		if (!$this->model) {
 			$relations = $this->element->relations();
-			$relation = $relations[$this->relation];
-			$model = $relation[1];
+			if($relation = $relations[$this->relation]) {
+				$relation = $relations[$this->relation];
+				$model = $relation[1];
+			}
 		} else {
 			$model = $this->model;
 		}
 
-		if ($model::model()->hasAttribute('display_order')) {
-			foreach ($this->options as $value => $option) {
-				if ($item = $model::model()->findByPk($value)) {
-					$this->htmlOptions['options'][$value]['data-display_order'] = $item->display_order;
+		if(!empty($model)) {
+			if ($model::model()->hasAttribute('display_order')) {
+				foreach ($this->options as $value => $option) {
+					if ($item = $model::model()->findByPk($value)) {
+						$this->htmlOptions['options'][$value]['data-display_order'] = $item->display_order;
+					}
 				}
 			}
-		}
 
-		if (@$this->htmlOptions['requires_description_field']) {
-			$requires_description_field = $this->htmlOptions['requires_description_field'];
+			if (@$this->htmlOptions['requires_description_field']) {
+				$requires_description_field = $this->htmlOptions['requires_description_field'];
 
-			foreach ($this->options as $value => $option) {
-				if ($item = $model::model()->findByPk($value)) {
-					if ($item->$requires_description_field) {
-						$this->htmlOptions['options'][$value]['data-requires-description'] = true;
+				foreach ($this->options as $value => $option) {
+					if ($item = $model::model()->findByPk($value)) {
+						if ($item->$requires_description_field) {
+							$this->htmlOptions['options'][$value]['data-requires-description'] = true;
+						}
 					}
 				}
 			}
@@ -70,10 +74,12 @@ class MultiSelectList extends BaseFieldWidget
 				foreach ($this->element->{$this->relation} as $item) {
 					$this->selected_ids[] = $item->{$this->relation_id_field};
 
-					$_item = $model::model()->findByPk($item->{$this->relation_id_field});
+					if(!empty($model)) {
+						$_item = $model::model()->findByPk($item->{$this->relation_id_field});
 
-					if (@$requires_description_field && $_item->$requires_description_field) {
-						$this->descriptions[$item->{$this->relation_id_field}] = $item->description;
+						if (@$requires_description_field && $_item->$requires_description_field) {
+							$this->descriptions[$item->{$this->relation_id_field}] = $item->description;
+						}
 					}
 
 					unset($this->filtered_options[$item->{$this->relation_id_field}]);
@@ -89,8 +95,8 @@ class MultiSelectList extends BaseFieldWidget
 		} else {
 			if (isset($_POST[$this->field])) {
 				foreach ($_POST[$this->field] as $id) {
-					$this->selected_ids[] = $id;
-					unset($this->filtered_options[$id]);
+					$this->selected_ids[] = $id['id'];
+					unset($this->filtered_options[$id['id']]);
 				}
 			}
 			// when the field being used contains the appropriate square brackets for defining the associative array, the original (above)
