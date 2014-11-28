@@ -210,10 +210,8 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 				'params' => array(':subspecialty_id' => $ss_id),
 			));
 			foreach($cods as $cod) {
-				if($cod->finding) {
-					if ($include_findings) {
-						$disorders['finding-'.$cod->finding->id] = $cod->finding->name;
-					}
+				if($cod->finding && $include_findings) {
+					$disorders['finding-'.$cod->finding->id] = $cod->finding->name;
 				} else if($cod->disorder) {
 					$disorders[$prefix.$cod->disorder->id] = $cod->disorder->term;
 				}

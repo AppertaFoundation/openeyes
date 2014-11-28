@@ -132,7 +132,7 @@
 		if (selected) {
 			selSplit = selected.val().split('-');
 			obj.type = selSplit[0];
-			if (obj.type == 'disorder' || obj.type == 'finding') {
+			if (obj.type == 'disorder' || obj.type == 'finding' || obj.type == 'alternate') {
 				obj.id = selSplit[1];
 			}
 			else {
