@@ -349,10 +349,16 @@ class AdminController extends BaseAdminController
 				Audit::add('admin-User','add',$user->id);
 
 				if(!isset($userAtt['roles'])){
-					$userAtt['roles']=array();
+					$roles=array();
+				}
+				else
+				{
+					foreach($userAtt['roles'] as $i=>$role){
+						$roles[] = $role['id'];
+					}
 				}
 
-				$user->saveRoles($userAtt['roles']);
+				$user->saveRoles($roles);
 
 				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
 			}
