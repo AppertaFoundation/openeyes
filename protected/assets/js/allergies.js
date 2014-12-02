@@ -85,6 +85,12 @@ $(document).ready(function () {
 					var allergy_id = row.data('allergy-id');
 					var allergy_name = row.data('allergy-name');
 					row.remove();
+					if($('.removeAllergy').length == 0) {
+						$('#currentAllergies').replaceWith(function() {
+							return '<p class="allergy-status">Patient allergy status is unknown</p>';
+						});
+						$('.allergies_confirm_no').show();
+					}
 					if (allergy_name != "Other") {
 						$('#allergy_id').append('<option value="'+allergy_id+'">'+allergy_name+'</option>');
 						sort_selectbox($('#allergy_id'));

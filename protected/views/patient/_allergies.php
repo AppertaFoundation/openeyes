@@ -89,12 +89,14 @@ Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 					),
 				))?>
 
-				<div class="row field-row familyHistory">
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="no_allergies">Confirm patient has no allergies:</label>
-					</div>
-					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::checkBox('no_allergies', $this->patient->no_allergies_date ? true : false); ?>
+				<div class="allergies_confirm_no field-row row" <?php if ($this->patient->hasAllergyStatus() && !$this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>
+					<div class="allergies">
+						<div class="<?php echo $form->columns('label');?>">
+							<label for="no_allergies">Confirm patient has no allergies:</label>
+						</div>
+						<div class="<?php echo $form->columns('field');?>">
+							<?php echo CHtml::checkBox('no_allergies', $this->patient->no_allergies_date ? true : false); ?>
+						</div>
 					</div>
 				</div>
 
