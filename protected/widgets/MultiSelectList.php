@@ -39,7 +39,7 @@ class MultiSelectList extends BaseFieldWidget
 
 		if (!$this->model) {
 			$relations = $this->element->relations();
-			if($relation = $relations[$this->relation]) {
+			if(!empty($relations[$this->relation])) {
 				$relation = $relations[$this->relation];
 				$model = $relation[1];
 			}
@@ -108,10 +108,12 @@ class MultiSelectList extends BaseFieldWidget
 							$this->selected_ids[] = $id['id'];
 							unset($this->filtered_options[$id['id']]);
 
-							$item = $model::model()->findByPk($id['id']);
+							if(!empty($model)) {
+								$item = $model::model()->findByPk($id['id']);
 
-							if (@$requires_description_field && $item->$requires_description_field) {
-								$this->descriptions[$id['id']] = @$id['description'];
+								if (@$requires_description_field && $item->$requires_description_field) {
+									$this->descriptions[$id['id']] = @$id['description'];
+								}
 							}
 						}
 					}

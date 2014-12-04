@@ -26,6 +26,7 @@ class BaseCWidget extends CWidget
 	public $assetFolder;
 	public $hidden = false;
 	public $htmlOptions = array();
+	public $scriptPriority = 90;
 
 	public function init()
 	{
@@ -37,7 +38,7 @@ class BaseCWidget extends CWidget
 		if (file_exists("protected/widgets/js/".get_class($this).".js")) {
 			$assetManager = Yii::app()->getAssetManager();
 			$asset_folder = $assetManager->publish('protected/widgets/js');
-			$assetManager->registerScriptFile("js/".get_class($this).".js", "application.widgets");
+			$assetManager->registerScriptFile("js/".get_class($this).".js", "application.widgets",$this->scriptPriority);
 		}
 
 		$this->htmlOptions['autocomplete'] = Yii::app()->params['html_autocomplete'];

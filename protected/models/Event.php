@@ -469,6 +469,8 @@ class Event extends BaseActiveRecordVersioned
 
 	public function hasPDF($pdf_print_suffix=null)
 	{
+		// Temporary fix related to OEM-281
+		return false;
 		$pdf = $this->getPDF($pdf_print_suffix);
 
 		return file_exists($pdf) && filesize($pdf) >0;
