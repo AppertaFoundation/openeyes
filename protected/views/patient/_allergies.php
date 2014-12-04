@@ -32,43 +32,37 @@ Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 		</a>
 	</header>
 	<div class="js-toggle-body">
-		<?php
-		if (!$this->patient->hasAllergyStatus()) {
-			?>
-			<p class="allergy-status">Patient allergy status is unknown</p>
-			<?php
-		} elseif ($this->patient->no_allergies_date) {
-			?>
-			<p class="allergy-status">Patient has no known allergies</p>
-			<?php
-		} else {
-			?>
-			<table class="plain patient-data" id="currentAllergies">
-				<thead>
-					<tr>
-						<th>Allergies</th>
-						<th>Comments</th>
-						<?php if ($this->checkAccess('OprnEditAllergy')) { ?><th>Actions</th><?php } ?>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ($this->patient->allergyAssignments as $aa) { ?>
-					<tr data-assignment-id="<?= $aa->id ?>" data-allergy-id="<?= $aa->allergy->id ?>" data-allergy-name="<?= $aa->allergy->name ?>">
-						<td><?= CHtml::encode($aa->name) ?></td>
-						<td><?= CHtml::encode($aa->comments) ?></td>
-						<?php if ($this->checkAccess('OprnEditAllergy')) { ?>
-							<td>
-								<a href="#" rel="<?php echo $aa->id?>" class="small removeAllergy">
-									Remove
-								</a>
-							</td>
-						<?php } ?>
-					</tr>
+
+		<p class="allergy-status-unknown" <?php if (!(empty($this->patient->allergyAssignments)) || $this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>Patient allergy status is unknown</p>
+
+		<p class="allergy-status-none" <?php if (!$this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>Patient has no known allergies</p>
+
+		<table class="plain patient-data" id="currentAllergies" <?php if (empty($this->patient->allergyAssignments)) { echo 'style="display: none;"'; }?>>
+			<thead>
+			<tr>
+				<th>Allergies</th>
+				<th>Comments</th>
+				<?php if ($this->checkAccess('OprnEditAllergy')) { ?><th>Actions</th><?php } ?>
+			</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($this->patient->allergyAssignments as $aa) { ?>
+				<tr data-assignment-id="<?= $aa->id ?>" data-allergy-id="<?= $aa->allergy->id ?>" data-allergy-name="<?= $aa->allergy->name ?>">
+					<td><?= CHtml::encode($aa->name) ?></td>
+					<td><?= CHtml::encode($aa->comments) ?></td>
+					<?php if ($this->checkAccess('OprnEditAllergy')) { ?>
+						<td>
+							<a href="#" rel="<?php echo $aa->id?>" class="small removeAllergy">
+								Remove
+							</a>
+						</td>
 					<?php } ?>
-				</tbody>
-			</table>
-			<?php
-		}
+				</tr>
+			<?php } ?>
+			</tbody>
+		</table>
+		<?php
+
 		if ($this->checkAccess('OprnEditAllergy')) { ?>
 			<div class="box-actions">
 				<button id="btn-add_allergy" class="secondary small">
@@ -103,7 +97,7 @@ Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 				<input type="hidden" name="edit_allergy_id" id="edit_allergy_id" value="" />
 				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-				<div class="row field-row familyHistory allergy_field" <?php if ($this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>
+				<div class="row field-row allergy_field" <?php if ($this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>
 					<div class="<?php echo $form->columns('label');?>">
 						<label for="allergy_id">Add allergy:</label>
 					</div>

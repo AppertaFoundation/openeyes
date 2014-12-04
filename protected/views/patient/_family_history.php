@@ -33,44 +33,39 @@ Yii::app()->assetManager->registerScriptFile('js/family_history.js');
 		</a>
 	</header>
 	<div class="js-toggle-body">
-		<?php if ($this->patient->no_family_history_date) {
-		?>
-		<p class="allergy-status">Patient has no family history</p>
-		<?php
-		} elseif (empty($this->patient->familyHistory)) {
-			?>
-			<p class="allergy-status">Patient family history is unknown</p>
-		<?php
-		} else {
-			?>
-		<table id="family_history_table" class="plain patient-data">
+
+		<p class="family-history-status-none" <?php if (!$this->patient->no_family_history_date) { echo 'style="display: none;"'; }?>>Patient has no known family history</p>
+
+		<p class="family-history-status-unknown"  <?php if (!empty($this->patient->familyHistory) || $this->patient->no_family_history_date) { echo 'style="display: none;"'; }?>>Patient family history is unknown</p>
+
+		<table id="currentFamilyHistory" class="plain patient-data" <?php if (empty($this->patient->familyHistory)) { echo 'style="display: none;"'; }?>>
 			<thead>
-				<tr>
-					<th>Relative</th>
-					<th>Side</th>
-					<th>Condition</th>
-					<th>Comments</th>
-					<?php if ($this->checkAccess('OprnEditFamilyHistory')) { ?><th>Actions</th><?php } ?>
-				</tr>
+			<tr>
+				<th>Relative</th>
+				<th>Side</th>
+				<th>Condition</th>
+				<th>Comments</th>
+				<?php if ($this->checkAccess('OprnEditFamilyHistory')) { ?><th>Actions</th><?php } ?>
+			</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($this->patient->familyHistory as $history) {?>
-					<tr>
-						<td class="relative" data-relativeId="<?= $history->relative_id ?>"><?php echo $history->getRelativeName(); ?></td>
-						<td class="side"><?php echo $history->side->name?></td>
-						<td class="condition" data-conditionId="<?= $history->condition_id ?>"><?php echo $history->getConditionName(); ?></td>
-						<td class="comments"><?php echo CHtml::encode($history->comments)?></td>
-						<?php if ($this->checkAccess('OprnEditFamilyHistory')): ?>
-							<td>
-								<a href="#" class="editFamilyHistory" rel="<?php echo $history->id?>">Edit</a>&nbsp;&nbsp;
-								<a href="#" class="removeFamilyHistory" rel="<?php echo $history->id?>">Remove</a>
-							</td>
-						<?php endif ?>
-					</tr>
-				<?php }?>
+			<?php foreach ($this->patient->familyHistory as $history) {?>
+				<tr>
+					<td class="relative" data-relativeId="<?= $history->relative_id ?>"><?php echo $history->getRelativeName(); ?></td>
+					<td class="side"><?php echo $history->side->name?></td>
+					<td class="condition" data-conditionId="<?= $history->condition_id ?>"><?php echo $history->getConditionName(); ?></td>
+					<td class="comments"><?php echo CHtml::encode($history->comments)?></td>
+					<?php if ($this->checkAccess('OprnEditFamilyHistory')): ?>
+						<td>
+							<a href="#" class="editFamilyHistory" rel="<?php echo $history->id?>">Edit</a>&nbsp;&nbsp;
+							<a href="#" class="removeFamilyHistory" rel="<?php echo $history->id?>">Remove</a>
+						</td>
+					<?php endif ?>
+				</tr>
+			<?php }?>
 			</tbody>
 		</table>
-		<?php } ?>
+
 
 		<?php if ($this->checkAccess('OprnEditFamilyHistory')) { ?>
 			<div class="box-actions">
@@ -99,7 +94,7 @@ Yii::app()->assetManager->registerScriptFile('js/family_history.js');
 						<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
 						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-						<div class="family_history_confirm_no field-row row" <?php if (!empty($this->patient->familyHistory)) { echo 'style="display: none;"'; }?>>
+						<div class="family-history-confirm-no field-row row" <?php if (!empty($this->patient->familyHistory)) { echo 'style="display: none;"'; }?>>
 						<div class="familyHistory">
 							<div class="<?php echo $form->columns('label');?>">
 								<label for="no_family_history">Confirm patient has no family history:</label>

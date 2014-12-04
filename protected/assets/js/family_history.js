@@ -139,10 +139,9 @@ $(document).ready(function () {
 				if (html == 'success') {
 					$('a.removeFamilyHistory[rel="'+$('#family_history_id').val()+'"]').parent().parent().remove();
 					if($('.removeFamilyHistory').length == 0) {
-						$('#family_history_table').replaceWith(function() {
-							return '<p class="allergy-status">Patient family history is unknown</p>';
-						});
-						$('.family_history_confirm_no').show();
+						$('#currentFamilyHistory').hide();
+						$('.family-history-status-unknown').show();
+						$('.family-history-confirm-no').show();
 					}
 				} else {
 					new OpenEyes.UI.Dialog.Alert({
