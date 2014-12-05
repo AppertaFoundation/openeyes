@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,49 +17,24 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class BaseActiveRecordTest extends OEDbTestCase
+class BaseActiveRecordTest extends CDbTestCase
 {
+
+	/**
+	 * @var AddressType
+	 */
 	public $model;
-
+	/*   public $fixtures = array(
+		 'alllergies' => 'Allergy',
+		 ); */
 	public $testattributes = array(
-		'name' => 'allergy test',
+		'name' => 'allergy test'
 	);
 
-	public $fixtures = array(
-		'items' => 'RelationTest_Item',
-		'item_assignments' => 'RelationTest_Item_Assignment',
-	);
-
-	public static function setUpBeforeClass()
-	{
-		self::createTestTable('relationtest_item',array(
-			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-			'name' => 'varchar(64) not null',
-		));
-
-		self::createTestTable('relationtest_element',array(
-			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-		));
-
-		self::createTestTable('relationtest_item_assignment',array(
-				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-				'element_id' => 'int(10) unsigned NOT NULL',
-				'item_id' => 'int(10) unsigned NOT NULL',
-				'display_order' => 'tinyint(1) unsigned not null',
-			),
-			array(
-				'relationtest_item_assignment_element_id_fk' => array('element_id','relationtest_element','id'),
-				'relationtest_item_assignment_item_id_fk' => array('item_id','relationtest_item','id'),
-			));
-	}
-
-	public static function tearDownAfterClass()
-	{
-		self::dropTable('relationtest_item_assignment');
-		self::dropTable('relationtest_element');
-		self::dropTable('relationtest_item');
-	}
-
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
 	protected function setUp()
 	{
 		parent::setUp();
@@ -68,8 +44,17 @@ class BaseActiveRecordTest extends OEDbTestCase
 	}
 
 	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 */
+	protected function tearDown()
+	{
+
+	}
+
+	/**
 	 * @covers BaseActiveRecord::save
-	 * @todo	 Implement testSave().
+	 * @todo   Implement testSave().
 	 */
 	public function testSave()
 	{
@@ -89,16 +74,22 @@ class BaseActiveRecordTest extends OEDbTestCase
 
 	/**
 	 * @covers BaseActiveRecord::NHSDate
-	 * @todo	 Implement testNHSDate().
+	 * @todo   Implement testNHSDate().
 	 */
 	public function testNHSDate()
-	{ $this->model->last_modified_date = '1902-01-01 00:00:00'; $result = $this->model->NHSDate('last_modified_date', $empty_string = '-'); $expected = '1 Jan 1902'; 
+	{
+
+		$this->model->last_modified_date = '1902-01-01 00:00:00';
+		$result = $this->model->NHSDate('last_modified_date', $empty_string = '-');
+
+		$expected = '1 Jan 1902';
+
 		$this->assertEquals($expected, $result);
 	}
 
 	/**
 	 * @covers BaseActiveRecord::NHSDateAsHTML
-	 * @todo	 Implement testNHSDateAsHTML().
+	 * @todo   Implement testNHSDateAsHTML().
 	 */
 	public function testNHSDateAsHTML()
 	{
@@ -113,652 +104,614 @@ class BaseActiveRecordTest extends OEDbTestCase
 
 	/**
 	 * @covers BaseActiveRecord::audit
-	 * @todo	 Implement testAudit().
+	 * @todo   Implement testAudit().
 	 */
 	public function testAudit()
 	{
 		$this->markTestSkipped('this has been already implemented in the audittest model');
 	}
 
-	public function test__setHasMany_AutoUpdateRelations()
+	public function test__set_has_many()
 	{
-		$element = new RelationTest_Element_HasMany;
-		$element->auto_update_relations = true;
-
-		$element->attributes = array('items' => array(
-			array('item_id' => 1),
-			array('item_id' => 3),
-			array('item_id' => 4)
-		));
-
-		$this->assertCount(3, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[0]);
-		$this->assertEquals(1, $element->items[0]->item_id);
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[1]);
-		$this->assertEquals(3, $element->items[1]->item_id);
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[2]);
-		$this->assertEquals(4, $element->items[2]->item_id);
-	}
-
-	public function test__setHasMany_NoAutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_HasMany;
-		$element->auto_update_relations = false;
-		
-		$data = array('items' => array(2,4,1));
-		
-		$element->attributes = $data;
-
-		$this->assertEquals(array(2,4,1), $element->items);
-	}
-
-	public function test__setManyMany_AutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_ManyMany;
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-
-		$this->assertCount(3, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[0]);
-		$this->assertEquals(2, $element->items[0]->id);
-		$this->assertEquals('item 2', $element->items[0]->name);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[1]);
-		$this->assertEquals(4, $element->items[1]->id);
-		$this->assertEquals('item 4', $element->items[1]->name);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[2]);
-		$this->assertEquals(1, $element->items[2]->id);
-		$this->assertEquals('item 1', $element->items[2]->name);
-	}
-
-	public function test__setManyMany_NoAutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_ManyMany;
-		$element->auto_update_relations = false;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-
-		$this->assertEquals(array(2,4,1), $element->items);
-	}
-
-	public function testAfterSave_HasMany_AutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_HasMany;
-		$element->auto_update_relations = true;
-
-		$element->attributes = array('items' => array(
-			array('item_id' => 2),
-			array('item_id' => 1),
-			array('item_id' => 4),
-		));
-
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasMany::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[0]);
-		$this->assertEquals(2, $element->items[0]->item_id);
-		$this->assertEquals(1, $element->items[0]->display_order);
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[1]);
-		$this->assertEquals(1, $element->items[1]->item_id);
-		$this->assertEquals(2, $element->items[1]->display_order);
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[2]);
-		$this->assertEquals(4, $element->items[2]->item_id);
-		$this->assertEquals(3, $element->items[2]->display_order);
-
-		$element->auto_update_relations = true;
-		$element->attributes = array('items' => array(
-			array('item_id' => 2),
-			array('item_id' => 4),
-		));
-
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasMany::model()->findByPk($element->id);
-
-		$this->assertCount(2, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[0]);
-		$this->assertEquals(2, $element->items[0]->item_id);
-		$this->assertEquals(1, $element->items[0]->display_order);
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[1]);
-		$this->assertEquals(4, $element->items[1]->item_id);
-		$this->assertEquals(2, $element->items[1]->display_order);
-	}
-
-	public function testAfterSave_HasMany_NoAutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_HasMany;
-		$element->auto_update_relations = false;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasMany::model()->findByPk($element->id);
-
-		$this->assertEquals(array(), $element->items);
-	}
-
-	public function testAfterSave_HasManyThrough_AutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_HasManyThrough;
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasManyThrough::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[0]);
-		$this->assertEquals(2, $element->items[0]->id);
-		$this->assertEquals('item 2', $element->items[0]->name);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[1]);
-		$this->assertEquals(4, $element->items[1]->id);
-		$this->assertEquals('item 4', $element->items[1]->name);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[2]);
-		$this->assertEquals(1, $element->items[2]->id);
-		$this->assertEquals('item 1', $element->items[2]->name);
-
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(2));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasManyThrough::model()->findByPk($element->id);
-
-		$this->assertCount(1, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[0]);
-		$this->assertEquals(2, $element->items[0]->id);
-		$this->assertEquals('item 2', $element->items[0]->name);
-	}
-
-	public function testAfterSave_HasManyThrough_NoAutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_HasManyThrough;
-		$element->auto_update_relations = false;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasManyThrough::model()->findByPk($element->id);
-
-		$this->assertCount(0, $element->items);
-	}
-
-	public function testAfterSave_ManyMany_AutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_ManyMany;
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_ManyMany::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[0]);
-		$this->assertEquals(2, $element->items[0]->id);
-		$this->assertEquals('item 2', $element->items[0]->name);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[1]);
-		$this->assertEquals(4, $element->items[1]->id);
-		$this->assertEquals('item 4', $element->items[1]->name);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[2]);
-		$this->assertEquals(1, $element->items[2]->id);
-		$this->assertEquals('item 1', $element->items[2]->name);
-
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(4));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_ManyMany::model()->findByPk($element->id);
-
-		$this->assertCount(1, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[0]);
-		$this->assertEquals(4, $element->items[0]->id);
-		$this->assertEquals('item 4', $element->items[0]->name);
-	}
-
-	public function testAfterSave_ManyMany_NoAutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_ManyMany;
-		$element->auto_update_relations = false;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_ManyMany::model()->findByPk($element->id);
-
-		$this->assertCount(0, $element->items);
-	}
-
-	public function testAfterSave_HasMany_AutoUpdateRelations_SetNull()
-	{
-		$element = new RelationTest_Element_HasMany;
-		$element->auto_update_relations = true;
-
-		$element->attributes = array('items' => array(
-			array('item_id' => 2),
-			array('item_id' => 1),
-			array('item_id' => 4),
-		));
-
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasMany::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[0]);
-		$this->assertEquals(2, $element->items[0]->item_id);
-		$this->assertEquals(1, $element->items[0]->display_order);
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[1]);
-		$this->assertEquals(1, $element->items[1]->item_id);
-		$this->assertEquals(2, $element->items[1]->display_order);
-		$this->assertInstanceOf('RelationTest_Item_Assignment', $element->items[2]);
-		$this->assertEquals(4, $element->items[2]->item_id);
-		$this->assertEquals(3, $element->items[2]->display_order);
-
-		$element->auto_update_relations = true;
-
-		$element->attributes = array('items' => null);
-
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasMany::model()->findByPk($element->id);
-
-		$this->assertCount(0, $element->items);
-	}
-
-	public function testAfterSave_HasManyThrough_AutoUpdateRelations_SetNull()
-	{
-		$element = new RelationTest_Element_HasManyThrough;
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasManyThrough::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[0]);
-		$this->assertEquals(2, $element->items[0]->id);
-		$this->assertEquals('item 2', $element->items[0]->name);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[1]);
-		$this->assertEquals(4, $element->items[1]->id);
-		$this->assertEquals('item 4', $element->items[1]->name);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[2]);
-		$this->assertEquals(1, $element->items[2]->id);
-		$this->assertEquals('item 1', $element->items[2]->name);
-
-		$element->auto_update_relations = true;
-
-		$data = array('items' => null);
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasManyThrough::model()->findByPk($element->id);
-
-		$this->assertCount(0, $element->items);
-	}
-
-	public function testAfterSave_ManyMany_AutoUpdateRelations_SetNull()
-	{
-		$element = new RelationTest_Element_ManyMany;
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_ManyMany::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[0]);
-		$this->assertEquals(2, $element->items[0]->id);
-		$this->assertEquals('item 2', $element->items[0]->name);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[1]);
-		$this->assertEquals(4, $element->items[1]->id);
-		$this->assertEquals('item 4', $element->items[1]->name);
-
-		$this->assertInstanceOf('RelationTest_Item', $element->items[2]);
-		$this->assertEquals(1, $element->items[2]->id);
-		$this->assertEquals('item 1', $element->items[2]->name);
-
-		$element->auto_update_relations = true;
-
-		$data = array('items' => null);
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_ManyMany::model()->findByPk($element->id);
-
-		$this->assertCount(0, $element->items);
-	}
-
-	public function testBeforeDelete_HasMany_AutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_HasMany;
-		$element->auto_update_relations = true;
-
-		$element->attributes = array('items' => array(
-			array('item_id' => 2),
-			array('item_id' => 1),
-			array('item_id' => 4),
-		));
-
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasMany::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$count = RelationTest_Item_Assignment::model()->count();
-
-		$element->auto_update_relations = true;
-		$element->delete();
-
-		$this->assertEquals($count-3, RelationTest_Item_Assignment::model()->count());
-	}
-
-	public function testBeforeDelete_HasMany_NoAutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_HasMany;
-		$element->auto_update_relations = true;
-
-		$element->attributes = array('items' => array(
-			array('item_id' => 2),
-			array('item_id' => 1),
-			array('item_id' => 4),
-		));
-
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasMany::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$count = RelationTest_Item_Assignment::model()->count();
-
-		$this->setExpectedException('CDbException');
-
-		$element->auto_update_relations = false;
-		$element->delete();
-	}
-
-	public function testBeforeDelete_HasManyThrough_AutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_HasManyThrough;
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasManyThrough::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$count = RelationTest_Item_Assignment::model()->count();
-
-		$element->auto_update_relations = true;
-		$element->delete();
-
-		$this->assertEquals($count-3, RelationTest_Item_Assignment::model()->count());
-	}
-
-	public function testBeforeDelete_HasManyThrough_NoAutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_HasManyThrough;
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_HasManyThrough::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$count = RelationTest_Item_Assignment::model()->count();
-
-		$this->setExpectedException('CDbException');
-
-		$element->auto_update_relations = false;
-		$element->delete();
-	}
-
-	public function testBeforeDelete_ManyMany_AutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_ManyMany;
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_ManyMany::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$count = RelationTest_Item_Assignment::model()->count();
-
-		$element->auto_update_relations = true;
-		$element->delete();
-
-		$this->assertEquals($count-3, RelationTest_Item_Assignment::model()->count());
-	}
-
-	public function testBeforeDelete_ManyMany_NoAutoUpdateRelations()
-	{
-		$element = new RelationTest_Element_ManyMany;
-		$element->auto_update_relations = true;
-
-		$data = array('items' => array(2,4,1));
-
-		$element->attributes = $data;
-		$result = $element->save();
-
-		$this->assertTrue($result);
-
-		$element = RelationTest_Element_ManyMany::model()->findByPk($element->id);
-
-		$this->assertCount(3, $element->items);
-
-		$count = RelationTest_Item_Assignment::model()->count();
-
-		$this->setExpectedException('CDbException');
-
-		$element->auto_update_relations = false;
-		$element->delete();
-	}
-}
-
-class RelationTest_Item extends BaseActiveRecord
-{
-	public function rules()
-	{
-		return array(
-			array('name', 'safe'),
+		$test = $this->getMockBuilder('BaseActiveRecord')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+
+		$meta = $this->getMockBuilder('CActiveRecordMetaData')
+				->disableOriginalConstructor()
+				->getMock();
+
+		$meta->relations = array(
+				'has_many' => $hm_cls,
 		);
+
+		$test->expects($this->any())
+			->method('getMetaData')
+			->will($this->returnValue($meta));
+		$test->expects($this->any())
+			->method('getPrimaryKey')
+			->will($this->returnValue(1));
+
+		$test->__set('has_many',array('test'));
+		$this->assertTrue(is_array($test->has_many));
+		$this->assertEquals('test', $test->has_many[0], 'should pass through assignment when behaviour turned off');
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$test->__set('has_many', array('test2'));
+		$this->assertTrue(is_array($test->has_many));
+		$this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
+
+		$rdp = $r->getProperty('relation_defaults');
+		$rdp->setAccessible(true);
+		$rdp->setValue($test, array('has_many' => array('default_prop' => 'test')));
+
+		$test->__set('has_many',array(array('test_value' => 'a string')));
+		$this->assertTrue(is_array($test->has_many));
+		$this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
+		$this->assertEquals('a string', $test->has_many[0]->test_value);
+		$this->assertEquals('test', $test->has_many[0]->default_prop, 'should have picked up default property value');
 	}
 
-	public function tableName()
+	public function test__set_many_many()
 	{
-		return 'relationtest_item';
+		$mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+												)),
+						'relations' => array(
+								'many_many' => $mm_cls,
+						)
+				));
+
+		$test = new ManyManyOwnerTestClass();
+		$test->md = $meta;
+
+		$test->many_many = array('test');
+		$this->assertTrue(is_array($test->many_many));
+		$this->assertEquals('test', $test->many_many[0], 'should pass through assignment when behaviour turned off');
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$test->many_many = array('test2');
+		$this->assertTrue(is_array($test->many_many));
+		$this->assertInstanceOf('RelationTestClass', $test->many_many[0], 'should set relation class when behaviour turned on');
+		$this->assertEquals('test2', $test->many_many[0]->getPrimaryKey());
+	}
+
+	public function getRelationMock($pk)
+	{
+		$mock = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getPrimaryKey'))
+				->getMock();
+		$mock->expects($this->any())
+				->method('getPrimaryKey')
+				->will($this->returnValue($pk));
+
+		return $mock;
+	}
+
+	public function getRelationMockForSave($pk)
+	{
+		$mock = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('save', 'getPrimaryKey'))
+				->getMock();
+		$mock->expects($this->once())
+				->method('save')
+				->will($this->returnValue(true));
+		$mock->expects($this->any())
+				->method('getPrimaryKey')
+				->will($this->returnValue($pk));
+
+		return $mock;
+	}
+
+	public function getRelationMockForDelete($pk)
+	{
+		$mock = $this->getMockBuilder('RelationTestClass')
+				->disableOriginalConstructor()
+				->setMethods(array('delete', 'getPrimaryKey'))
+				->getMock();
+		$mock->expects($this->any())
+				->method('getPrimaryKey')
+				->will($this->returnValue($pk));
+		$mock->expects($this->once())
+				->method('delete')
+				->will($this->returnValue(true));
+
+		return $mock;
+	}
+
+	public function getRelationAssMock($pk, $rel_id)
+	{
+		$mock = $this->getMockBuilder('RelationTestAssClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getPrimaryKey'))
+				->getMock();
+		$mock->rel_id = $rel_id;
+		$mock->expects($this->any())
+			->method('getPrimaryKey')
+			->will($this->returnValue($pk));
+
+		return $mock;
+	}
+
+	public function getRelationAssMockForDelete($pk, $rel_id)
+	{
+		$mock = $this->getMockBuilder('RelationTestAssClass')
+				->disableOriginalConstructor()
+				->setMethods(array('delete'))
+				->getMock();
+		$mock->rel_id = $rel_id;
+		$mock->expects($this->any())
+				->method('getPrimaryKey')
+				->will($this->returnValue($pk));
+		$mock->expects($this->once())
+				->method('delete')
+				->will($this->returnValue(true));
+
+		return $mock;
+	}
+
+	public function testafterSave_hasMany()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getSafeAttributeNames', 'getRelated', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+								'has_many' => $hm_cls,
+						)
+				));
+		$test->expects($this->once())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		$test->expects($this->once())
+				->method('getSafeAttributeNames')
+				->will($this->returnValue(array('has_many')));
+
+		$new_vals = array($this->getRelationMockForSave(5));
+		$orig_vals = array($this->getRelationMockForDelete(3));
+		// fake the attribute having been set by __set
+		$test->has_many = $new_vals;
+
+		// fake the original values for the has_many relation value on the test instance
+		$test->expects($this->once())
+				->method('getRelated')
+				->with($this->equalTo('has_many'), $this->equalTo(true))
+				->will($this->returnValue($orig_vals));
+
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
+
+	public function testafterSave_hasManyThru()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getSafeAttributeNames', 'getRelated', 'getPrimaryKey', 'getCommandBuilder'))
+				->getMock();
+
+		$hmt_ass_cls = new CHasManyRelation('has_many_thru_ass', 'RelationTestAssClass', 'element_id');
+		$hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'rel_id', array('through' => 'has_many_thru_ass'));
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+								'has_many_thru' => $hmt_cls,
+								'has_many_thru_ass' => $hmt_ass_cls,
+						)
+				));
+
+		$test->expects($this->once())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		$test->expects($this->once())
+				->method('getSafeAttributeNames')
+				->will($this->returnValue(array('has_many_thru')));
+
+		$hmt = $this->getRelationMock(8);
+		$test->has_many_thru = array($hmt);
+
+		$test->expects($this->at(2))
+				->method('getRelated')
+				->with($this->equalTo('has_many_thru'), $this->equalTo(true))
+				->will($this->returnValue(array($this->getRelationMock(2), $hmt)));
+
+		// consistent assignment objects with the getRelated call above
+		$test->expects($this->at(3))
+				->method('getRelated')
+				->with($this->equalTo('has_many_thru_ass'), $this->equalTo(true))
+				->will($this->returnValue(array($this->getRelationAssMockForDelete(1,2), $this->getRelationAssMock(2,8))));
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
+
+	public function testafterSave_manyMany()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getSafeAttributeNames', 'getRelated', 'getPrimaryKey', 'getCommandBuilder'))
+				->getMock();
+
+		$mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+							'many_many' => $mm_cls,
+						)
+				));
+
+		$test->expects($this->once())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		$test->expects($this->once())
+			->method('getSafeAttributeNames')
+			->will($this->returnValue(array('many_many')));
+
+		// many many relations will not use save/delete methods, as they use command builder,
+		// so we want a bare bones relation mock
+		$mm = $this->getRelationMock(12);
+		$test->many_many = array($mm, $this->getRelationMock(13));
+
+		$test->expects($this->once())
+				->method('getRelated')
+				->with('many_many')
+				->will($this->returnValue(array($this->getRelationMock(7), $mm)));
+
+		// many many uses command builder to update the assignment table
+		$ins_cmd = $this->getMockBuilder('CDbCommand')
+				->disableOriginalConstructor()
+				->setMethods(array('execute'))
+				->getMock();
+
+		$ins_cmd->expects($this->once())
+			->method('execute')
+			->will($this->returnValue(true));
+
+		$cmd_builder = $this->getMockBuilder('CDbCommandBuilder')
+				->disableOriginalConstructor()
+				->setMethods(array('createInsertCommand', 'createDeleteCommand'))
+				->getMock();
+
+		$cmd_builder->expects($this->any())
+			->method('createInsertCommand')
+			->will($this->returnValue($ins_cmd));
+
+		$del_cmd = $this->getMockBuilder('CDbCommand')
+				->disableOriginalConstructor()
+				->setMethods(array('execute'))
+				->getMock();
+		$del_cmd->expects($this->once())
+				->method('execute')
+				->will($this->returnValue(true));
+
+		$cmd_builder->expects($this->any())
+				->method('createDeleteCommand')
+				->will($this->returnValue($del_cmd));
+
+		$test->expects($this->any())
+			->method('getCommandBuilder')
+			->will($this->returnValue($cmd_builder));
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
+	
+	public function testafterSave_setNull()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getSafeAttributeNames', 'getRelated', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+								'has_many' => $hm_cls,
+						)
+				));
+
+		$test->expects($this->any())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		$test->expects($this->any())
+			->method('getSafeAttributeNames')
+			->will($this->returnValue(array('has_many')));
+
+		$test->has_many = null;
+
+		// fake the original values for the has_many relation value on the test instance
+		$test->expects($this->once())
+				->method('getRelated')
+				->with('has_many')
+				->will($this->returnValue(array($this->getRelationMockForDelete(3))));
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
+
+	public function testAfterSaveNewValues()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getSafeAttributeNames', 'getRelated', 'getPrimaryKey'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+								'has_many' => $hm_cls,
+						)
+				));
+
+		$test->expects($this->any())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		$test->expects($this->any())
+				->method('getSafeAttributeNames')
+				->will($this->returnValue(array('has_many')));
+
+		// fake the attribute having been set by __set
+		$test->has_many = array($this->getRelationMockForSave(5), $this->getRelationMockForSave(6));
+
+		$test->expects($this->once())
+				->method('getRelated')
+				->with('has_many')
+				->will($this->returnValue(null));
+
+		$r = new ReflectionClass($test);
+		$p = $r->getProperty('auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$as = $r->getMethod('afterSave');
+		$as->setAccessible(true);
+
+		$as->invoke($test);
+	}
+
+	public function testbeforeDelete()
+	{
+		$test = $this->getMockBuilder('RelationOwnerSaveClass')
+				->disableOriginalConstructor()
+				->setMethods(array('getMetaData', 'getRelated', 'getPrimaryKey', 'getCommandBuilder'))
+				->getMock();
+
+		$hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+		$hmt_cls = new CHasManyRelation('has_many_thru', 'RelationTestClass', 'element_id', array('through' => 'has_many'));
+		$mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
+
+		$meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'the_pk',
+										)),
+						'relations' => array(
+								//'has_many' => $hm_cls,
+								//'has_many_thru' => $hmt_cls,
+								'many_many' => $mm_cls,
+						)
+				));
+
+		$test->expects($this->any())
+				->method('getMetaData')
+				->will($this->returnValue($meta));
+
+		$test->expects($this->any())
+			->method('getPrimaryKey')
+			->will($this->returnValue('TestPK'));
+
+		// many many uses command builder behaviour to delete assignment table entries
+		$del_cmd = $this->getMockBuilder('CDbCommand')
+				->disableOriginalConstructor()
+				->setMethods(array('execute'))
+				->getMock();
+
+		$del_cmd->expects($this->once())
+				->method('execute')
+				->will($this->returnValue(true));
+
+		$cmd_builder = $this->getMockBuilder('CDbCommandBuilder')
+				->disableOriginalConstructor()
+				->setMethods(array('createDeleteCommand'))
+				->getMock();
+
+		$cmd_builder->expects($this->any())
+				->method('createDeleteCommand')
+				->with($this->equalTo('many_many_ass'))
+				->will($this->returnValue($del_cmd));
+
+		$test->expects($this->any())
+				->method('getCommandBuilder')
+				->will($this->returnValue($cmd_builder));
+
+		$r = new ReflectionClass($test);
+		$m = $r->getMethod('beforeDelete');
+		$m->setAccessible(true);
+
+		$p = $r->getProperty('auto_update_relations');
+		$p->setAccessible(true);
+		$p->setValue($test, true);
+
+		$m->invoke($test);
+
+		$this->markTestIncomplete('has many uses static model method so cannot complete the test.');
 	}
 }
 
-class RelationTest_Element_HasMany extends BaseActiveRecord
+class RelationOwnerSaveClass extends BaseActiveRecord
 {
-	public $auto_update_relations;
+	public $has_many;
+	public $has_many_thru;
+	public $many_many;
+	public $the_pk;
+
+}
+
+class ManyManyOwnerTestClass extends BaseActiveRecord
+{
+	public $the_pk;
+	public $md;
+
+	public function __construct()
+	{}
+
+	public function getMetaData()
+	{
+		return $this->md;
+	}
+}
+
+class RelationTestClass extends BaseActiveRecord
+{
+	public $default_prop;
+	public $test_value;
+	public $element_id;
+	public $test_pk;
+
+	public function __construct()
+	{}
 
 	public function rules()
 	{
 		return array(
-			array('items', 'safe'),
+			array('default_prop, test_value, element_id', 'safe')
 		);
 	}
 
-	public function tableName()
+	public function getMetaData()
 	{
-		return 'relationtest_element';
+		return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+					'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+								'primaryKey' => 'test_pk',
+								'columns' => array('test_pk', 'default_prop')))
+				));
 	}
 
-	public function relations()
+
+	public function find($condition='',$params=array())
 	{
-		return array(
-			'items' => array(self::HAS_MANY, 'RelationTest_Item_Assignment', 'element_id', 'order' => 'display_order asc'),
-		);
+		return ComponentStubGenerator::generate(get_class(self), $params);
+	}
+
+	public function findByPk($pk,$condition='',$params=array())
+	{
+		$cls = __CLASS__;
+		$res = new $cls();
+		$res->setPrimaryKey($pk);
+		return $res;
 	}
 }
 
-class RelationTest_Element_HasManyThrough extends BaseActiveRecord
+class RelationTestAssClass extends BaseActiveRecord
 {
-	public $auto_update_relations;
+	public $rel_id;
+	public $element_id;
+
+	public function __construct()
+	{}
 
 	public function rules()
 	{
 		return array(
-			array('items', 'safe'),
+				array('default_prop, test_value, element_id', 'safe')
 		);
 	}
 
-	public function tableName()
+	public function getMetaData()
 	{
-		return 'relationtest_element';
+		return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+						'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+												'primaryKey' => 'id',
+												'columns' => array('id', 'element_id', 'rel_id')))
+				));
 	}
 
-	public function relations()
-	{
-		return array(
-			'item_assignments' => array(self::HAS_MANY, 'RelationTest_Item_Assignment', 'element_id', 'order' => 'display_order asc'),
-			'items' => array(self::HAS_MANY, 'RelationTest_Item', 'item_id', 'through' => 'item_assignments', 'order' => 'display_order asc'),
-		);
-	}
-}
 
-class RelationTest_Item_Assignment extends BaseActiveRecord
-{
-	public function rules()
+	public function find($condition='',$params=array())
 	{
-		return array(
-			array('item_id, display_order', 'safe'),
-		);
+		return ComponentStubGenerator::generate(get_class(self), $params);
 	}
 
-	public function tableName()
+	public function findByPk($pk,$condition='',$params=array())
 	{
-		return 'relationtest_item_assignment';
-	}
-}
-
-class RelationTest_Element_ManyMany extends BaseActiveRecord
-{
-	public $auto_update_relations;
-
-	public function rules()
-	{
-		return array(
-			array('items', 'safe'),
-		);
+		$cls = __CLASS__;
+		$res = new $cls();
+		$res->setPrimaryKey($pk);
+		return $res;
 	}
 
-	public function tableName()
+	public function save($runValidation=true,$attributes=null, $allow_overriding=false)
 	{
-		return 'relationtest_element';
+		return true;
 	}
 
-	public function relations()
-	{
-		return array(
-			'items' => array(self::MANY_MANY, 'RelationTest_Item', 'relationtest_item_assignment(element_id, item_id)', 'order' => 'display_order asc'),
-		);
-	}
 }
