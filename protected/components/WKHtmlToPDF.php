@@ -164,9 +164,9 @@ class WKHtmlToPDF
 		return $footer;
 	}
 
-	public function getPDFInject($path)
+	public function getPDFOptions($path)
 	{
-		return new OEPDFInject($path);
+		return new OEPDFOptions($path);
 	}
 
 	public function setDocuments($count)
@@ -257,9 +257,13 @@ class WKHtmlToPDF
 		$this->deleteFile($html_file);
 		$this->deleteFile($footer_file);
 
-		if ($inject_autoprint_js) {
-			$pdf = $this->getPDFInject($pdf_file);
-			$pdf->inject('print(true);');
+		if ($pdf = $this->getPDFOptions($pdf_file)) {
+			if ($inject_autoprint_js) {
+				$pdf->injectJS('print(true);');
+			}
+
+			$pdf->disablePrintScaling();
+			$pdf->write();
 		}
 
 		return true;
