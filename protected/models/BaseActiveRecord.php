@@ -40,6 +40,24 @@ class BaseActiveRecord extends CActiveRecord
 	protected $auto_update_relations = false;
 
 	/**
+	 * Shortened name of this model class, useful for namespaced modules
+	 *
+	 * @return string
+	 */
+	static public function getShortModelName()
+	{
+		$name = get_called_class();
+
+		if (preg_match('/^OEModule\\\\(\w+)\\\\models\\\\(\w+)$/', $name, $matches)) {
+			list (, $module, $base_name) = $matches;
+			$base_name = str_replace("{$module}_", "", $base_name);
+			return "{$module}.{$base_name}";
+		} else {
+			return $name;
+		}
+	}
+
+	/**
 	 * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
 	 * to assign to the attribute. Sets up the afterSave method to saves these objects if they have validated.
 	 *
