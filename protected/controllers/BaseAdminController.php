@@ -90,18 +90,23 @@ class BaseAdminController extends BaseController
 
 		if ($options['filters_ready']) {
 			if (Yii::app()->request->isPostRequest) {
+				$tx = Yii::app()->db->beginTransaction();
 				$j = 0;
+
 				foreach ((array) @$_POST['id'] as $i => $id) {
 					if ($id) {
 						$item = $model::model()->findByPk($id);
+						$new = false;
 					} else {
 						$item = new $model;
+						$new = true;
 					}
+
+					$attributes = $item->getAttributes();
 
 					$item->{$options['label_field']} = $_POST[$options['label_field']][$i];
 					$item->display_order = $j++;
-					//handle models with active flag
-					$attributes = $item->getAttributes();
+
 					if (array_key_exists('active',$attributes)) {
 						$item->active = (isset($_POST['active'][$i]) || $item->isNewRecord)? 1 : 0;
 					}
@@ -123,33 +128,23 @@ class BaseAdminController extends BaseController
 						$item->{$field['field']} = $field['value'];
 					}
 
-					if (!$item->validate()) {
-						$errors = $item->getErrors();
-						foreach ($errors as $error) {
-							$errors[$i] = $error[0];
+					if ($new || $item->getAttributes() != $attributes) {
+						if (!$item->save()) {
+							$errors = $item->getErrors();
+							foreach ($errors as $error) {
+								$errors[$i] = $error[0];
+							}
 						}
+						Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array('module' => $this->module->id, 'model' => $model::getShortModelName()));
 					}
 
 					$items[] = $item;
 				}
 
 				if (empty($errors)) {
-					$tx = Yii::app()->db->beginTransaction();
-
-					$ids = array();
-
-					foreach ($items as $item) {
-						$new = $item->isNewRecord;
-						if (!$item->save()) {
-							throw new Exception("Unable to save admin list item: ".print_r($item->getErrors(),true));
-						}
-						Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array('module' => $this->module->id, 'model' => $model::getShortModelName()));
-						$ids[] = $item->id;
-					}
-
 					$criteria = new CDbCriteria;
 
-					!empty($ids) && $criteria->addNotInCondition('id',$ids);
+					if ($items) $criteria->addNotInCondition('id', array_map(function ($i) { return $i->id; }, $items));
 					$this->addFilterCriteria($criteria, $options['filter_fields']);
 
 					$to_delete = $model::model()->findAll($criteria);
@@ -163,6 +158,8 @@ class BaseAdminController extends BaseController
 					Yii::app()->user->setFlash('success', "List updated.");
 
 					$this->redirect(Yii::app()->request->url);
+				} else {
+					$tx->rollback();
 				}
 			} else {
 				$crit = new CDbCriteria(array('order' => 'display_order'));
