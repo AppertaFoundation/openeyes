@@ -173,9 +173,9 @@ class BaseEventTypeCActiveForm extends FormLayout
 		));
 	}
 
-	public function multiSelectList($element, $field, $relation, $relation_id_field, $options, $default_options, $htmlOptions=array(), $hidden=false, $inline=false, $noSelectionsMessage=null, $showRemoveAllLink=false, $sorted=false, $layoutColumns=array(), $model=null)
+	public function multiSelectListFreeText($element, $field, $relation, $relation_id_field, $options, $default_options, $htmlOptions=array(), $hidden=false, $inline=false, $noSelectionsMessage=null, $showRemoveAllLink=false, $sorted=false, $layoutColumns=array(), $model=null)
 	{
-		$this->widget('application.widgets.MultiSelectList', array(
+		$this->widget('application.widgets.MultiSelectListFreeText', array(
 			'element' => $element,
 			'field' => $field,
 			'relation' => $relation,
@@ -190,6 +190,25 @@ class BaseEventTypeCActiveForm extends FormLayout
 			'sorted' => $sorted,
 			'layoutColumns' => $layoutColumns,
 			'model' => $model
+		));
+	}
+
+	public function multiSelectList($element, $field, $relation, $relation_id_field, $options, $default_options, $htmlOptions=array(), $hidden=false, $inline=false, $noSelectionsMessage=null, $showRemoveAllLink=false, $sorted=false, $layoutColumns=array())
+	{
+		$this->widget('application.widgets.MultiSelectList', array(
+			'element' => $element,
+			'field' => $field,
+			'relation' => $relation,
+			'relation_id_field' => $relation_id_field,
+			'options' => $options,
+			'default_options' => $default_options,
+			'htmlOptions' => $htmlOptions,
+			'hidden' => $hidden,
+			'inline' => $inline,
+			'noSelectionsMessage' => $noSelectionsMessage,
+			'showRemoveAllLink' => $showRemoveAllLink,
+			'sorted' => $sorted,
+			'layoutColumns' => $layoutColumns
 		));
 	}
 

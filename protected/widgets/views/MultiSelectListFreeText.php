@@ -22,19 +22,12 @@ if (isset($htmlOptions['options'])) {
 	$opts = $htmlOptions['options'];
 } else {
 	$opts = array();
-	if($auto_data_order) {
-		$data_order=0;
-		foreach($options as $id => $option){
-			$data_order++;
-			$opts[(string)$id] = array('data-order' => $data_order);
-		}
-	}
 }
 
 if (isset($htmlOptions['div_id'])) {
 	$div_id = $htmlOptions['div_id'];
 } else {
-	// for legacy, this is the original definition of the div id that was created for the multiselect
+	// for legacy, this is the original definition of the div id that was created for the MultiSelectFreeText
 	// not recommended as it doesn't allow for sided uniqueness
 	$div_id = "div_" . CHtml::modelName($element) . "_" . @$htmlOptions['label'];
 }
@@ -54,7 +47,8 @@ foreach($selected_ids as $id) {
 }
 
 $widgetOptionsJson = json_encode(array(
-	'sorted' => $sorted
+	'sorted' => $sorted,
+	'requires_description_field' => @$htmlOptions['requires_description_field']
 ));
 ?>
 
@@ -67,10 +61,10 @@ $widgetOptionsJson = json_encode(array(
 		</div>
 		<div class="large-<?php echo $layoutColumns['field'];?> column end">
 	<?php }?>
-		<div class="multi-select<?php if (!$inline) echo ' multi-select-list';?>" data-options='<?php echo $widgetOptionsJson;?>'>
-			<input type="hidden" name="<?php echo CHtml::modelName($element)?>[MultiSelectList_<?php echo $field?>]" class="multi-select-list-name" />
-			<div class="multi-select-dropdown-container">
-				<select id="<?php echo CHtml::getIdByName($field)?>" class="MultiSelectList<?php if ($showRemoveAllLink) {?> inline<?php }?><?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>" name=""<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>
+		<div class="multi-select-free-text<?php if (!$inline) echo ' multi-select-free-text-list';?>" data-options='<?php echo $widgetOptionsJson;?>'>
+			<input type="hidden" name="<?php echo CHtml::modelName($element)?>[MultiSelectFreeTextList_<?php echo $field?>]" class="multi-select-free-text-list-name" />
+			<div class="multi-select-free-text-dropdown-container">
+				<select id="<?php echo CHtml::getIdByName($field)?>" class="MultiSelectFreeTextList<?php if ($showRemoveAllLink) {?> inline<?php }?><?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>" name=""<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>
 					<option value=""><?php echo $htmlOptions['empty']?></option>
 					<?php foreach ($filtered_options as $value => $option) {
 						$attributes = array('value' => $value);
@@ -91,15 +85,16 @@ $widgetOptionsJson = json_encode(array(
 			<?php if ($noSelectionsMessage) {?>
 				<div class="no-selections-msg pill<?php if ($found) {?> hide<?php }?>"><?php echo $noSelectionsMessage;?></div>
 			<?php }?>
-			<ul class="MultiSelectList multi-select-selections<?php if (!$found) echo ' hide';?><?php if ($sortable){?> sortable<?php }?>">
-				<?php foreach ($selected_ids as $id) {
+			<ul class="MultiSelectFreeTextList multi-select-free-text-selections<?php if (!$found) echo ' hide';?>">
+				<input type="hidden" name="<?php echo $field?>" />
+				<?php foreach ($selected_ids as $i => $id) {
 					if (isset($options[$id])) {?>
 						<li>
 							<span class="text">
-								<?php echo CHtml::encode($options[$id])?>
+								<?php echo htmlspecialchars($options[$id],ENT_QUOTES,Yii::app()->charset, false)?>
 							</span>
-							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectRemove remove-one<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>"<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>Remove</a>
-							<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>"
+							<a href="#" data-text="<?php echo $options[$id] ?>" class="MultiSelectFreeTextRemove remove-one<?php if (isset($htmlOptions['class'])) {?> <?php echo $htmlOptions['class']?><?php }?>"<?php if (isset($htmlOptions['data-linked-fields'])) {?> data-linked-fields="<?php echo $htmlOptions['data-linked-fields']?>"<?php }?><?php if (isset($htmlOptions['data-linked-values'])) {?> data-linked-values="<?php echo $htmlOptions['data-linked-values']?>"<?php }?>>Remove</a>
+							<input type="hidden" name="<?php echo $field?>[<?php echo $i?>][id]" data-i="<?php echo $i?>" value="<?php echo $id?>"
 							<?php if (isset($opts[$id])) {
 								foreach ($opts[$id] as $key => $val) {
 									echo " " . $key . "=\"" . $val . "\"";
@@ -110,13 +105,26 @@ $widgetOptionsJson = json_encode(array(
 					<?php }?>
 				<?php }?>
 			</ul>
-
+			<div class="multi-select-free-text-descriptions">
+				<?php foreach ($selected_ids as $i => $id) {
+					if (isset($descriptions[$id])) {?>
+						<div class="row data-row" data-option="<?php echo $options[$id]?>">
+							<div class="large-2 column">
+								<div class="data-label">
+									<?php echo $options[$id]?>
+								</div>
+							</div>
+							<div class="large-4 column end">
+								<div class="data-value">
+									<?php echo CHtml::textArea($field."[$i][description]",$descriptions[$id])?>
+								</div>
+							</div>
+						</div>
+					<?php }
+				}?>
+			</div>
 		</div>
 <?php if (!@$htmlOptions['nowrapper']) {?>
 	</div>
 </div>
 <?php }?>
-<?php
-	$this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js');
-?>
-<script type="text/javascript" src="<?php echo $this->assetFolder?>/MultiSelectList.js"></script>

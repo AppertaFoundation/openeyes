@@ -18,35 +18,30 @@
 
 $(document).ready(function() {
 
-	$(this).on('init', '.multi-select', function() {
-		$('.multi-select-selections.sortable').sortable();
-	});
-
-	$('.multi-select-selections.sortable').sortable();
-
 	// Prevent the events from being bound multiple times.
-	if ($(this).data('multi-select-events')) {
+	if ($(this).data('multi-select-free-text-events')) {
 		return;
 	}
-	$(this).data('multi-select-events', true);
+	$(this).data('multi-select-free-text-events', true);
 
-	$(this).on('click', '.multi-select .remove-all', function(e) {
+	$(this).on('click', '.multi-select-free-text .remove-all', function(e) {
 		e.preventDefault();
-		var container = $(this).closest('.multi-select');
+		var container = $(this).closest('.multi-select-free-text');
 		container.find('.remove-one').trigger('click');
 	});
 
-	$(this).on('change', 'select.MultiSelectList', function() {
+	$(this).on('change', 'select.MultiSelectFreeTextList', function() {
 
 		var select = $(this);
 		var selected = select.children('option:selected');
 
 		if (selected.val().length >0) {
 
-			var container = select.closest('.multi-select');
-			var selections = container.find('.multi-select-selections');
-			var inputField = container.find('.multi-select-list-name');
-			var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];
+			var container = select.closest('.multi-select-free-text');
+			var selections = container.find('.multi-select-free-text-selections');
+			var descriptions = container.find('.multi-select-free-text-descriptions');
+			var inputField = container.find('.multi-select-free-text-list-name');
+			var fieldName = inputField.attr('name').match(/\[MultiSelectFreeTextList_(.*?)\]$/)[1];
 			var noSelectionsMsg = container.find('.no-selections-msg');
 			var removeAll = container.find('.remove-all');
 			var options = container.data('options');
@@ -56,7 +51,14 @@ $(document).ready(function() {
 				attrs[this.nodeName] = this.nodeValue;
 			});
 
-			var inp_str = '<input type="hidden" name="'+fieldName+'[]"';
+			var i = 0;
+			selections.find('input[type="hidden"]').map(function() {
+				while (parseInt($(this).data('i')) >= i) {
+					i++;
+				}
+			});
+
+			var inp_str = '<input type="hidden" name="'+fieldName+'[' + i + '][id]" data-i="' + i + '"';
 			for (var key in attrs) {
 				inp_str += ' ' + key + '="' + attrs[key] + '"';
 			}
@@ -66,7 +68,7 @@ $(document).ready(function() {
 
 			var remote_data = {
 				'href': '#',
-				'class': 'MultiSelectRemove remove-one '+selected.val(),
+				'class': 'MultiSelectFreeTextRemove remove-one '+selected.val(),
 				'text': 'Remove',
 				'data-name': fieldName+'[]',
 				'data-text': selected.text()
@@ -84,12 +86,28 @@ $(document).ready(function() {
 			item.append(remove);
 			item.append(input);
 
-			selections
-			.append(item)
-			.removeClass('hide');
+			selections.append(item).removeClass('hide');
 
 			noSelectionsMsg.addClass('hide');
 			removeAll.removeClass('hide');
+
+			if (selected.data('requires-description')) {
+				descriptions.append(
+					'<div class="row data-row" data-option="' + selected.text() + '">' +
+						'<div class="large-2 column">' +
+							'<div class="data-label">' +
+								selected.text() + ':' +
+							'</div>' +
+						'</div>' +
+						'<div class="large-4 column end">' +
+							'<div class="data-value">' +
+								'<textarea name="' + fieldName + '[' + i + '][description]" data-option="' + selected.text() + '"></textarea>' +
+							'</div>' +
+						'</div>' +
+					'</div>');
+
+				container.find('textarea[data-option="' + selected.text() + '"]').focus();
+			}
 
 			selected.remove();
 			select.val('');
@@ -101,15 +119,16 @@ $(document).ready(function() {
 			}
 		}
 
-		select.trigger('MultiSelectChanged');
+		select.trigger('MultiSelectFreeTextChanged');
 		return false;
 	});
 
-	$(this).on('click', 'a.MultiSelectRemove', 'click',function(e) {
+	$(this).on('click', 'a.MultiSelectFreeTextRemove', 'click',function(e) {
 		e.preventDefault();
 		var anchor = $(this);
-		var container = anchor.closest('.multi-select');
-		var selections = container.find('.multi-select-selections');
+		var container = anchor.closest('.multi-select-free-text');
+		var selections = container.find('.multi-select-free-text-selections');
+		var descriptions = container.find('.multi-select-free-text-descriptions');
 		var noSelectionsMsg = container.find('.no-selections-msg');
 		var removeAll = container.find('.remove-all');
 		var input = anchor.closest('li').find('input');
@@ -132,8 +151,17 @@ $(document).ready(function() {
 		select.append('<option' + attr_str + '>'+text+'</option>');
 		sort_selectbox(select);
 
+		if (attr_str.match(/display_order/)) {
+			select.append(select.find('option').sort(function(a,b) {
+				return parseInt($(a).data('display_order')) > parseInt($(b).data('display_order'));
+			}));
+		}
+
+		select.val('');
+
 		anchor.closest('li').remove();
 		input.remove();
+		descriptions.find('div[data-option="' + text + '"]').remove();
 
 		if (!selections.children().length) {
 			selections.add(removeAll).addClass('hide');
@@ -154,7 +182,7 @@ $(document).ready(function() {
 			}
 		}
 
-		select.trigger('MultiSelectChanged');
+		select.trigger('MultiSelectFreeTextChanged');
 
 		return false;
 	});
