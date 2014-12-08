@@ -147,7 +147,6 @@ endobj\n";
 	protected function addJSToCatalog($catalog)
 	{
 		$js_obj1 = $this->highest+1;
-		$js_obj2 = $this->highest+2;
 
 		if (preg_match('/^<<.*?'.'>>[\r\n]*$/',$catalog)) {
 			if (preg_match('/\/Names <</',$catalog)) {
