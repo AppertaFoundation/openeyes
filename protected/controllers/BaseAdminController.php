@@ -139,9 +139,11 @@ class BaseAdminController extends BaseController
 					$ids = array();
 
 					foreach ($items as $item) {
+						$new = $item->isNewRecord;
 						if (!$item->save()) {
 							throw new Exception("Unable to save admin list item: ".print_r($item->getErrors(),true));
 						}
+						Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array('module' => $this->module->id, 'model' => $model::getShortModelName()));
 						$ids[] = $item->id;
 					}
 
@@ -150,7 +152,12 @@ class BaseAdminController extends BaseController
 					!empty($ids) && $criteria->addNotInCondition('id',$ids);
 					$this->addFilterCriteria($criteria, $options['filter_fields']);
 
-					$model::model()->deleteAll($criteria);
+					$to_delete = $model::model()->findAll($criteria);
+					foreach ($to_delete as $item) {
+						if (!$item->delete()) throw new Exception("Unable to delete {$model}:{$item->primaryKey}");
+						Audit::add('admin', 'delete', $item->primaryKey, null, array('module' => $this->module->id, 'model' => $model::getShortModelName()));
+					}
+
 					$tx->commit();
 
 					Yii::app()->user->setFlash('success', "List updated.");
