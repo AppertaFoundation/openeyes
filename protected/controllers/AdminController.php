@@ -349,16 +349,10 @@ class AdminController extends BaseAdminController
 				Audit::add('admin-User','add',$user->id);
 
 				if(!isset($userAtt['roles'])){
-					$roles=array();
-				}
-				else
-				{
-					foreach($userAtt['roles'] as $i=>$role){
-						$roles[] = $role['id'];
-					}
+					$userAtt['roles']=array();
 				}
 
-				$user->saveRoles($roles);
+				$user->saveRoles($userAtt['roles']);
 
 				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
 			}
@@ -417,16 +411,10 @@ class AdminController extends BaseAdminController
 				Audit::add('admin-User','edit',$user->id);
 
 				if(!isset($userAtt['roles'])){
-					$roles=array();
-				}
-				else
-				{
-					foreach($userAtt['roles'] as $i=>$role){
-						$roles[] = $role['id'];
-					}
+					$userAtt['roles']=array();
 				}
 
-				$user->saveRoles($roles);
+				$user->saveRoles($userAtt['roles']);
 
 				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
 			}
