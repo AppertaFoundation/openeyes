@@ -63,44 +63,45 @@
 					'id' => "{$class_field}_0",
 					'value'=>'',
 					'source'=>"js:function(request, response) {
-							$.ajax({
-								'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
-								'type':'GET',
-								'data':{'term': request.term, 'code': '$code'},
-								'success':function(data) {
-									data = $.parseJSON(data);
+						$.ajax({
+							'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
+							'type':'GET',
+							'data':{'term': request.term, 'code': '$code'},
+							'success':function(data) {
+								data = $.parseJSON(data);
 
-									var result = [];
+								var result = [];
 
-									for (var i = 0; i < data.length; i++) {
-										var ok = true;
-										$('#selected_diagnoses').children('input').map(function() {
-											if ($(this).val() == data[i]['id']) {
-												ok = false;
-											}
-										});
-										if (ok) {
-											result.push(data[i]);
+								for (var i = 0; i < data.length; i++) {
+									var ok = true;
+									$('#selected_diagnoses').children('input').map(function() {
+										if ($(this).val() == data[i]['id']) {
+											ok = false;
 										}
+									});
+									if (ok) {
+										result.push(data[i]);
 									}
-
-									response(result);
 								}
-							});
-						}",
-					//FIXME: need to deal with searches when the first list has been selected from
+
+								response(result);
+							}
+						});
+					}",
 					'options' => array(
 						'minLength'=>'3',
 						'select' => "js:function(event, ui) {
-									".($callback ? $callback."('disorder', ui.item.id, ui.item.value);" : '')."
-									$('#{$class_field}_0').val('');
-									$('#{$class_field}').children('option').map(function() {
-										if ($(this).val() == ui.item.id) {
-											$(this).remove();
-										}
-									});
-									return false;
-								}",
+							currFirst = getSelectedObj(firstSelection);
+							DiagnosisSelection_addCondition(currFirst);
+							".($callback ? $callback."('disorder', ui.item.id, ui.item.value);" : '')."
+							$('#{$class_field}_0').val('');
+							$('#{$class_field}').children('option').map(function() {
+								if ($(this).val() == ui.item.id) {
+									$(this).remove();
+								}
+							});
+							return false;
+						}",
 					),
 					'htmlOptions' => array(
 						'placeholder' => $placeholder,
@@ -294,9 +295,9 @@
 	function DiagnosisSelection_updateSelections()
 	{
 		var filterConditions = [];
-		<?php if (@$filterCallback) { ?>
+		<?php if (@$filterCallback) {?>
 			filterConditions = <?= @$filterCallback . "();" ?>
-		<?php } ?>
+		<?php }?>
 		var firstVal = firstSelection.val();
 		$('#div_<?= "{$class_field}_secondary_to"?>').slideUp(function() {
 			updateFirstList(filterConditions);
@@ -351,9 +352,9 @@
 
 	$('#<?php echo $class?>_<?php echo $field?>').on('change', function() {
 		var filterConditions = [];
-		<?php if (@$filterCallback) { ?>
+		<?php if (@$filterCallback) {?>
 		filterConditions = <?= @$filterCallback . "();" ?>
-		<?php } ?>
+		<?php }?>
 		curr = getSelectedObj(firstSelection);
 		if (hasSecondList(curr, filterConditions)) {
 			$('#div_<?= "{$class_field}_secondary_to"?>').slideUp(function() {
