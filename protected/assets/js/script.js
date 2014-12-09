@@ -322,6 +322,8 @@ function selectSort(a, b) {
 		// custom ordering
 		if ($(a).data('order')) {
 			return ($(a).data('order') > $(b).data('order')) ? 1 : -1;
+		} else if ($(a).data('display_order')) {
+			return ($(a).data('display_order') > $(b).data('display_order')) ? 1 : -1;
 		}
 
 		return (a.innerHTML > b.innerHTML) ? 1 : -1;
@@ -331,7 +333,9 @@ var rootItem = null;
 
 function sort_selectbox(element) {
 	rootItem = element.children('option:first').text();
+	var rootVal = element.children('option:first').val();
 	element.append(element.children('option').sort(selectSort));
+	element.val(rootVal);
 }
 
 function inArray(needle, haystack) {

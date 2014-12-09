@@ -151,14 +151,6 @@ $(document).ready(function() {
 		select.append('<option' + attr_str + '>'+text+'</option>');
 		sort_selectbox(select);
 
-		if (attr_str.match(/display_order/)) {
-			select.append(select.find('option').sort(function(a,b) {
-				return parseInt($(a).data('display_order')) > parseInt($(b).data('display_order'));
-			}));
-		}
-
-		select.val('');
-
 		anchor.closest('li').remove();
 		input.remove();
 		descriptions.find('div[data-option="' + text + '"]').remove();
