@@ -18,12 +18,6 @@
 
 $(document).ready(function() {
 
-	$(this).on('init', '.multi-select', function() {
-		$('.multi-select-selections.sortable').sortable();
-	});
-
-	$('.multi-select-selections.sortable').sortable();
-
 	// Prevent the events from being bound multiple times.
 	if ($(this).data('multi-select-events')) {
 		return;
@@ -85,8 +79,8 @@ $(document).ready(function() {
 			item.append(input);
 
 			selections
-			.append(item)
-			.removeClass('hide');
+				.append(item)
+				.removeClass('hide');
 
 			noSelectionsMsg.addClass('hide');
 			removeAll.removeClass('hide');
@@ -131,6 +125,14 @@ $(document).ready(function() {
 
 		select.append('<option' + attr_str + '>'+text+'</option>');
 		sort_selectbox(select);
+
+		if (attr_str.match(/display_order/)) {
+			select.append(select.find('option').sort(function(a,b) {
+				return parseInt($(a).data('display_order')) > parseInt($(b).data('display_order'));
+			}));
+		}
+
+		select.val('');
 
 		anchor.closest('li').remove();
 		input.remove();
