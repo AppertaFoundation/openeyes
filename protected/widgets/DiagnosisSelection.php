@@ -30,6 +30,7 @@ class DiagnosisSelection extends BaseFieldWidget
 	public $default = true;
 	public $layout = false;
 	public $callback = false;
+	public $filterCallback;
 	public $selected = array();
 	public $loader = false;
 	public $nowrapper = false;

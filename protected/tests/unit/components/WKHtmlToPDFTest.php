@@ -293,7 +293,7 @@ class WKHtmlToPDFTest extends CTestCase
 		$this->assertEquals('This is the left, <span class="patient_name"></span> <span class="barcode"></span> <span class="page"></span> This is the middle, <span class="patient_hosnum"></span> <span class="patient_nhsnum"></span> <span class="topage"></span> This is the right, <span class="docref"></span> <span class="page"></span> <span class="topage"></span>',$wk->formatFooter('{{FOOTER_LEFT}} {{FOOTER_MIDDLE}} {{FOOTER_RIGHT}}',$left,$middle,$right,$patient,'barc0de','d0cr3f'));
 	}
 
-	public function testGetPDFInject()
+	public function testGetPDFOptions()
 	{
 		$wk = $this->getMockBuilder('WKHtmlToPDF')
 			->setMethods(array('readFile'))
@@ -302,7 +302,7 @@ class WKHtmlToPDFTest extends CTestCase
 
 		$this->setExpectedException('Exception','Invalid file or not a PDF.');
 
-		$wk->getPDFInject(__FILE__);
+		$wk->getPDFOptions(__FILE__);
 	}
 
 	public function getTestEvent()
@@ -330,7 +330,7 @@ class WKHtmlToPDFTest extends CTestCase
 	{
 		$wk = $this->getMockBuilder('WKHtmlToPDF')
 			->disableOriginalConstructor()
-			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFInject','getAssetManager','deleteFile','fileExists','fileSize'))
+			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFOptions','getAssetManager','deleteFile','fileExists','fileSize'))
 			->getMock();
 
 		Yii::app()->params['wkhtmltopdf_path'] = __FILE__;
@@ -383,7 +383,7 @@ class WKHtmlToPDFTest extends CTestCase
 	{
 		$wk = $this->getMockBuilder('WKHtmlToPDF')
 			->disableOriginalConstructor()
-			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFInject','getAssetManager','deleteFile','fileExists','fileSize'))
+			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFOptions','getAssetManager','deleteFile','fileExists','fileSize'))
 			->getMock();
 
 		$wk->expects($this->any())
@@ -411,7 +411,7 @@ class WKHtmlToPDFTest extends CTestCase
 	{
 		$wk = $this->getMockBuilder('WKHtmlToPDF')
 			->disableOriginalConstructor()
-			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFInject','getAssetManager','deleteFile','fileExists','fileSize'))
+			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFOptions','getAssetManager','deleteFile','fileExists','fileSize'))
 			->getMock();
 
 		$wk->expects($this->any())
@@ -433,7 +433,7 @@ class WKHtmlToPDFTest extends CTestCase
 	{
 		$wk = $this->getMockBuilder('WKHtmlToPDF')
 			->disableOriginalConstructor()
-			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFInject','getAssetManager','deleteFile','fileExists','fileSize'))
+			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFOptions','getAssetManager','deleteFile','fileExists','fileSize'))
 			->getMock();
 
 		$wk->expects($this->never())
@@ -465,7 +465,7 @@ class WKHtmlToPDFTest extends CTestCase
 	{
 		$wk = $this->getMockBuilder('WKHtmlToPDF')
 			->disableOriginalConstructor()
-			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFInject','getAssetManager','deleteFile','fileExists','fileSize'))
+			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFOptions','getAssetManager','deleteFile','fileExists','fileSize'))
 			->getMock();
 
 		$wk->expects($this->any())
@@ -476,17 +476,49 @@ class WKHtmlToPDFTest extends CTestCase
 			->method('fileSize')
 			->will($this->returnValue(1));
 
-		$pdf = $this->getMockBuilder('OEPDFInject')
+		$pdf = $this->getMockBuilder('OEPDFOptions')
 			->disableOriginalConstructor()
-			->setMethods(array('inject'))
+			->setMethods(array('injectJS','disablePrintScaling'))
 			->getMock();
 
 		$pdf->expects($this->once())
-			->method('inject')
+			->method('injectJS')
 			->with('print(true);');
 
 		$wk->expects($this->once())
-			->method('getPDFInject')
+			->method('getPDFOptions')
+			->with('/event.pdf')
+			->will($this->returnValue($pdf));
+
+		$wk->generatePDF("", 'event', '', 'test', false, true);
+	}
+
+	public function testGenerateEventPDF_DisablePrintScaling()
+	{
+		$wk = $this->getMockBuilder('WKHtmlToPDF')
+			->disableOriginalConstructor()
+			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFOptions','getAssetManager','deleteFile','fileExists','fileSize'))
+			->getMock();
+
+		$wk->expects($this->any())
+			->method('fileExists')
+			->will($this->returnValue(true));
+
+		$wk->expects($this->any())
+			->method('fileSize')
+			->will($this->returnValue(1));
+
+		$pdf = $this->getMockBuilder('OEPDFOptions')
+			->disableOriginalConstructor()
+			->setMethods(array('injectJS'))
+			->getMock();
+
+		$pdf->expects($this->once())
+			->method('injectJS')
+			->with('print(true);');
+
+		$wk->expects($this->once())
+			->method('getPDFOptions')
 			->with('/event.pdf')
 			->will($this->returnValue($pdf));
 
@@ -497,7 +529,7 @@ class WKHtmlToPDFTest extends CTestCase
 	{
 		$wk = $this->getMockBuilder('WKHtmlToPDF')
 			->disableOriginalConstructor()
-			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFInject','getAssetManager','deleteFile','fileExists','fileSize'))
+			->setMethods(array('remapAssetPaths','generateDocRef','findOrCreateDirectory','writeFile','formatFooter','execute','getPDFOptions','getAssetManager','deleteFile','fileExists','fileSize'))
 			->getMock();
 
 		$wk->expects($this->any())

@@ -121,7 +121,6 @@ class Medication extends BaseActiveRecordVersioned
 
 	public function afterSave()
 	{
-		error_log("after save");
 		if ($this->end_date) {
 			$this->removePatientAdherence();
 		}

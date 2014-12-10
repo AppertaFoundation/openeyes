@@ -55,10 +55,14 @@
 				<td><?php echo CHtml::encode($social_history->type_of_job)?></td>
 			</tr>
 		<?php }
-		if (isset($social_history->driving_status)){ ?>
+		if (!empty($social_history->driving_statuses)) {?>
 			<tr>
-				<td><?= CHtml::encode($social_history->getAttributeLabel('driving_status_id')) ?></td>
-				<td><?php echo CHtml::encode($social_history->driving_status->name)?></td>
+				<td class="driving_statuses"><?= CHtml::encode($social_history->getAttributeLabel('driving_statuses')) ?></td>
+				<td>
+					<?php foreach ($social_history->driving_statuses as $item) {?>
+						<?php echo $item->name?><br/>
+					<?php }?>
+				</td>
 			</tr>
 		<?php }
 		if (isset($social_history->smoking_status)){ ?>
@@ -143,10 +147,27 @@
 			</div>
 			<div class="field-row row">
 				<div class="<?php echo $form->columns('label');?>">
-					<label for="relative_id"><?= CHtml::encode($social_history->getAttributeLabel('driving_status_id')) ?>:</label>
+					<label for="driving_statuses"><?= CHtml::encode($social_history->getAttributeLabel('driving_statuses')) ?>:</label>
 				</div>
 				<div class="<?php echo $form->columns('field');?>">
-					<?php echo CHtml::activeDropDownList($social_history,'driving_status_id',CHtml::listData(SocialHistoryDrivingStatus::model()->findAll(array('order'=> 'display_order asc')),'id','name'),array('empty'=>'- Select -'))?>
+					<input type="hidden" name="SocialHistory[driving_statuses]" value="" />
+					<?php
+						$this->widget('application.widgets.MultiSelectList', array(
+							'element' => $social_history,
+							'field' => 'SocialHistory[driving_statuses]',
+							'relation' => 'driving_status_assignments',
+							'relation_id_field' => 'driving_status_id',
+							'options' => CHtml::listData(SocialHistoryDrivingStatus::model()->findAll(array('order'=>'display_order asc')),'id','name'),
+							'default_options' => array(),
+							'htmlOptions' => array('empty' => '- Select -','label' => $social_history->getAttributeLabel('driving_statuses'),'nowrapper' => true),
+							'hidden' => false,
+							'inline' => false,
+							'noSelectionsMessage' => null,
+							'showRemoveAllLink' => false,
+							'sorted' => false,
+							'layoutColumns' => array('field' => 4)
+						));
+					?>
 				</div>
 			</div>
 			<div class="field-row row">
