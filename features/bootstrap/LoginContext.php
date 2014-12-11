@@ -34,4 +34,16 @@ class LoginContext extends PageObjectContext
         $loginPage->loginWith($user, $password);
     }
 
+	/**
+	 * @Given /^I am logged in as "([^"]*)" with site "([^"]*)" and firm "([^"]*)"$/
+	 */
+	public function iAmLoggedInWithSiteAndFirm($user, $site, $firm)
+	{
+		$this->iEnterLoginCredentials($user, $user);
+
+		$homePage = $this->getPage('Homepage');
+		$homePage->selectSiteID($site);
+		$homePage->selectFirm($firm);
+		$homePage->confirmSelection();
+	}
 }

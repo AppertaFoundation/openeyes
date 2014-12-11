@@ -4,10 +4,7 @@ Feature: Create New Operation Booking Event
 
   Scenario: Route 1: Login and create a Operation Booking Anderson Glaucoma
 
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "3"
+    Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Glaucoma)"
 
     Then I search for hospital number "1009465"
 
@@ -51,10 +48,7 @@ Feature: Create New Operation Booking Event
 
   Scenario: Route 2: Login and create a Operation Booking Anderson Cataract
 
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
+    Given I am logged in as "admin" with site "Queens" and firm "Anderson Firm (Cataract)"
 
     Then I search for hospital number "1009465"
 
@@ -98,10 +92,7 @@ Feature: Create New Operation Booking Event
 
   Scenario: Route 3: Login and create a Operation Booking Anderson Medical Retinal
 
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "4"
+    Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Medical Retinal)"
 
     Then I search for hospital number "1009465"
 
