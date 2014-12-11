@@ -13,43 +13,43 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
-class AutoSave
+class AutoSaveTest extends PHPUnit_Framework_TestCase
 {
-	public static function get($key)
+
+	public function testAutoSave()
 	{
-		if($auto_save = Yii::app()->session['autosave']){
-			if(isset($auto_save[$key])){
-				return $auto_save[$key];
-			}
-		}
-		return;
+		$key = 'test_key';
+		$value = 'test_value';
+
+		AutoSave::add($key,$value);
+
+		$this->assertEquals(Autosave::get($key) ,$value);
 	}
 
-	public static function add($key, $data)
+	public function testAutoSaveRemove()
 	{
-		$auto_save = Yii::app()->session['autosave'];
-		$auto_save[$key] = $data;
-		Yii::app()->session['autosave'] = $auto_save;
+		$key = 'test_key';
+		$value = 'test_value';
+
+		AutoSave::add($key,$value);
+		AutoSave::remove($key);
+
+		$this->assertNull(Autosave::get($key));
 	}
 
-	public static function remove($key)
+	public function testAutoSaveRemoveByPrefix()
 	{
-		$auto_save = Yii::app()->session['autosave'];
-		unset($auto_save[$key]);
-		Yii::app()->session['autosave'] = $auto_save;
+		AutoSave::add('red','value');
+		AutoSave::add('really','value');
+		AutoSave::add('reaper','value');
+
+		AutoSave::removeAllByPrefix('rea');
+
+		$this->assertEquals(Autosave::get('red'), 'value');
+		$this->assertNull(Autosave::get('really'));
+		$this->assertNull(Autosave::get('reaper'));
+
 	}
 
-	public static function removeAllByPrefix($prefix)
-	{
-		if($auto_save = Yii::app()->session['autosave'])
-		{
-			foreach ($auto_save as $key => $value){
-				if(substr($key,0,strlen($prefix))===$prefix){
-					unset($auto_save[$key]);
-				}
-			}
-			Yii::app()->session['autosave'] = $auto_save;
-		}
-	}
+
 }
