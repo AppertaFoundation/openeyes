@@ -3,6 +3,13 @@ Release History
 
 This document is intended to summarise the changes made for each release. It should be noted that this document was only introduced with version 1.4, and therefore doesn't cover earlier releases.
 
+1.8.0
+-----
++ enhancements and bugfixes to several of the patient summary widgets
++ added support for protected/files being a mounted share
++ various bugfixes and enhancements
++ enhanced wkhtmltopdf support and related bugfixes
+
 1.7.5
 + added support for additional characters in usernames
 
