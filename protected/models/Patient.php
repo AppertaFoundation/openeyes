@@ -779,25 +779,37 @@ class Patient extends BaseActiveRecordVersioned
 	 */
 	public function setNoAllergies()
 	{
-		$transaction = Yii::app()->db->beginTransaction();
-		try {
-			foreach (PatientAllergyAssignment::model()->findAll('patient_id = ?', array($this->id)) as $paa) {
-				if (!$paa->delete()) {
-					throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
-				}
-				$this->audit('patient','remove-allergy');
-			}
-			$this->no_allergies_date = date('Y-m-d H:i:s');
-			if (!$this->save()) {
-				throw new Exception('Unable to set no allergy date:' .  print_r($this->getErrors(), true));
-			}
-			$this->audit('patient', 'set-noallergydate');
-			$transaction->commit();
+		if (!empty($this->allergyAssignments)) {
+			throw new Exception('Unable to set no allergy date as patient still has allergies assigned');
 		}
-		catch (Exception $e) {
-			$transaction->rollback();
-			throw $e;
+
+		$this->no_allergies_date = date('Y-m-d H:i:s');
+		if (!$this->save()) {
+			throw new Exception('Unable to set no allergy date:' .  print_r($this->getErrors(), true));
 		}
+
+		$this->audit('patient', 'set-noallergydate');
+	}
+
+
+	/**
+	 * marks the patient as having no family history
+	 *
+	 * @throws Exception
+	 */
+	public function setNoFamilyHistory()
+	{
+		if (!empty($this->familyHistory)) {
+			throw new Exception('Unable to set no family history date as patient still has family history assigned');
+		}
+
+		$this->no_family_history_date = date('Y-m-d H:i:s');
+
+		if (!$this->save()) {
+			throw new Exception('Unable to set no family history:' .  print_r($this->getErrors(), true));
+		}
+
+		$this->audit('patient', 'set-nofamilyhistorydate');
 	}
 
 	/*
@@ -1174,6 +1186,13 @@ class Patient extends BaseActiveRecordVersioned
 
 		if (!$fh->save()) {
 			throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+		}
+
+		if ($this->no_family_history_date) {
+			$this->no_family_history_date = null;
+			if (!$this->save()) {
+				throw new Exception('Could not remove no family history flag: ' . print_r($this->getErrors(), true));
+			};
 		}
 	}
 

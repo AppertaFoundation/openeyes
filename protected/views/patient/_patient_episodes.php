@@ -74,7 +74,7 @@ if (@$latest) {
 		// might not be a subspecialty for legacy
 		$msg .= " in " . $subspecialty->name;
 	}
-	$msg .= ": <strong>" . $latest->eventType->name . "</strong> <span class='small'>(" . $latest->NHSDate('created_date') . ")</span>";
+	$msg .= ": <strong>" . $latest->eventType->name . "</strong> <span class='small'>(" . $latest->NHSDate('event_date') . ")</span>";
 	echo '<div class="box patient-info episode-links">' . CHtml::link($msg,Yii::app()->createUrl('/'.$latest->eventType->class_name.'/default/view/'.$latest->id)) . '</div>';
 }
 else if ($this->checkAccess('OprnCreateEpisode')) {

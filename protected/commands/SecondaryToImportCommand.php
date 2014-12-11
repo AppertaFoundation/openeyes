@@ -31,13 +31,13 @@ Import data from csv that defines disorders to appear as "secondary to" options 
 for importing secondary to options where data has already been set up for the common opthalmic disoders. The secondary to feature was a later
 addition to the drop down list short cut in diagnosis selection.
 
+if reset_parent is set to true, then all current common disorders for any subspecialty in the import file will be removed.
+
 EOH;
 	}
 
 	public $reset_parent = false;
 	public $defaultAction = 'import';
-
-	protected $required_cols = array('parent_disorder_id', 'subspecialty_code');
 
 	public function actionImport($args)
 	{
@@ -50,146 +50,7 @@ EOH;
 			$this->usageError("Cannot find import file " . $filename);
 		}
 
-		if (!$this->reset_parent) {
-			$this->required_cols[] = 'disorder_id';
-		}
-
-		$connection = Yii::app()->db;
-		$transaction = $connection->beginTransaction();
-		try {
-			SecondaryToCommonOphthalmicDisorder::model()->deleteAll();
-			$file = file($filename);
-			$columns = array();
-			$count = 0;
-			$warnings = array();
-			foreach ($file as $index => $line) {
-				if (!$index) {
-					$columns = str_getcsv($line, ',', '"');
-					foreach ($this->required_cols as $req) {
-						if (!in_array($req, $columns)) {
-							throw new Exception("Missing required column '{$req}' from file {$filename}");
-						}
-					}
-				}
-				else {
-					if (!strlen(trim($line))) {
-						// skip empty line
-						continue;
-					}
-					$record = str_getcsv($line, ',', '"');
-					$data = array();
-					foreach ($columns as $i => $col) {
-						$data[$col] = $record[$i];
-					}
-					if (!$subspecialty = $this->getSubspecialty($data['subspecialty_code'])) {
-						$warnings[] = "no subspecialty found for {$data['subspecialty_code']}";
-					}
-					else {
-						if ($this->reset_parent) {
-							$this->resetSubspecialty($subspecialty);
-						}
-						if ($cod = $this->getCOD($data['parent_disorder_id'], $subspecialty)) {
-							if ($st_disorder = $this->getDisorder($data['disorder_id'])) {
-								$st = new SecondaryToCommonOphthalmicDisorder();
-								$st->parent_id = $cod->id;
-								$st->disorder_id = $st_disorder->id;
-								$st->save();
-								$count++;
-							}
-							else {
-								if (!$this->reset_parent) {
-									$warnings[] = "Cannot find disorder with id {$data['disorder_id']}";
-								}
-							}
-						}
-						else {
-							$warnings[] = "{$data['parent_disorder_id']} not a common disorder for {$subspecialty->name}";
-						}
-					}
-				}
-			}
-			echo "Committing changes ...\n";
-			$transaction->commit();
-			echo "{$count} records created\n";
-			if ($warnings) {
-				echo "There were " . count($warnings) . " warnings:\n";
-				foreach ($warnings as $warn) {
-					echo $warn . "\n";
-				}
-			}
-		}
-		catch (Exception $e) {
-			$transaction->rollback();
-			$this->usageError($e->getMessage());
-		}
+		$sti = new SecondaryToImport;
+		$sti->import($filename, $this->reset_parent);
 	}
-
-	protected $disorders = array();
-
-	/**
-	 * Cache wrapper for searching for and retrieving disorder by id
-	 * @param $id
-	 * @return Disorder|null
-	 */
-	protected function getDisorder($id)
-	{
-		if (!array_key_exists($id, $this->disorders)) {
-			$this->disorders[$id] = Disorder::model()->findByPk($id);
-		}
-		return $this->disorders[$id];
-	}
-
-	protected $subspecialty = array();
-
-	/**
-	 * Cache wrapper for searching and retrieving subspecialty by ref spec code
-	 *
-	 * @param $code
-	 * @return Subspecialty|null
-	 */
-	protected function getSubspecialty($code)
-	{
-		if (!array_key_exists($code, $this->subspecialty)) {
-			$this->subspecialty[$code] = Subspecialty::model()->findByAttributes(array('ref_spec' => $code));
-		}
-		return $this->subspecialty[$code];
-	}
-
-	protected $cod = array();
-	/**
-	 * If script is set up to define the COD it will create one if it can't be found.
-	 *
-	 * @param $disorder_id
-	 * @param $subspecialty
-	 */
-	protected function getCOD($disorder_id, $subspecialty)
-	{
-		$key = "{$disorder_id}:{$subspecialty->id}";
-		if (!array_key_exists($key, $this->cod)) {
-			if (!$cod = CommonOphthalmicDisorder::model()->findByAttributes(array('disorder_id' => $disorder_id, 'subspecialty_id' => $subspecialty->id))
-				&& $this->reset_parent) {
-				$cod = new CommonOphthalmicDisorder();
-				$cod->disorder_id = $disorder_id;
-				$cod->subspecialty_id = $subspecialty->id;
-				$cod->save();
-			}
-			$this->cod[$key] = $cod;
-		}
-		return $this->cod[$key];
-	}
-
-	protected $reset_subspecialty_ids = array();
-
-	/**
-	 * Remmoves the parent list for the given subspecialty if it's not already been removed
-	 * @param $subspecialty
-	 */
-	public function resetSubspecialty($subspecialty)
-	{
-		if (!in_array($subspecialty->id, $this->reset_subspecialty_ids)) {
-			CommonOphthalmicDisorder::model()->deleteAllByAttributes(array('subspecialty_id' => $subspecialty->id));
-			$this->reset_subspecialty_ids[] = $subspecialty->id;
-		}
-	}
-
 }

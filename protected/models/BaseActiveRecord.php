@@ -31,13 +31,52 @@ class BaseActiveRecord extends CActiveRecord
 	const SELECTION_LABEL_FIELD = 'name';
 
 	/**
+	 * Label relation field used in admin etc
+	 */
+	const SELECTION_LABEL_RELATION = null;
+
+	/**
 	 * Order by clause to be applied by SelectionWidget
 	 */
 	const SELECTION_ORDER = '';
 
+	/**
+	 * With clause for selection query in SelectionWidget
+	 */
+	const SELECTION_WITH = null;
+
+
 	// flag to automatically update related objects on the record
 	// (whilst developing this feature, will allow other elements to continue to work)
 	protected $auto_update_relations = false;
+
+	public function canAutocomplete()
+	{
+		return false;
+	}
+
+	public function getAutocompleteField()
+	{
+		return 'name';
+	}
+
+	/**
+	 * Shortened name of this model class, useful for namespaced modules
+	 *
+	 * @return string
+	 */
+	static public function getShortModelName()
+	{
+		$name = get_called_class();
+
+		if (preg_match('/^OEModule\\\\(\w+)\\\\models\\\\(\w+)$/', $name, $matches)) {
+			list (, $module, $base_name) = $matches;
+			$base_name = str_replace("{$module}_", "", $base_name);
+			return "{$module}.{$base_name}";
+		} else {
+			return $name;
+		}
+	}
 
 	/**
 	 * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
@@ -66,7 +105,11 @@ class BaseActiveRecord extends CActiveRecord
 				if (is_string($pk_attr)) {
 					$m_set = array();
 					foreach ($value as $v) {
-						if (is_array($v)) {
+						if (isset($v['id'])) {
+							if (!$m = $rel_cls::model()->findByPk($v['id'])) {
+								throw new Exception("Unable to understand value " . print_r($v['id'], true) . " for {$name}");
+							}
+						} elseif (is_array($v)) {
 							// looks like a list of attribute values, try to find or instantiate the classes
 							if (array_key_exists($pk_attr, $v) && isset($v[$pk_attr])) {
 								$m = $rel_cls::model()->findByPk($v[$pk_attr]);

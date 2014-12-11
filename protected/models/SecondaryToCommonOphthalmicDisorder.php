@@ -25,14 +25,18 @@
  * The followings are the available columns in table 'common_ophthalmic_disorder':
  * @property integer $id
  * @property integer $disorder_id
+ * @property integer $finding_id
  * @property integer $parent_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
+ * @property Finding $finding
  * @property CommonOphthalmicDisorder $parent
  */
 class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
+	const SELECTION_LABEL_FIELD = 'disorder_id';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return SecondaryToCommonOphthalmicDisorder the static model class
@@ -50,6 +54,11 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		return 'secondaryto_common_oph_disorder';
 	}
 
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -58,12 +67,12 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-				array('disorder_id, parent_id', 'required'),
-				array('disorder_id, parent_id', 'length', 'max'=>10),
-				array('disorder_id, parent_id', 'safe'),
+				array('parent_id', 'required'),
+				array('disorder_id, finding_id, parent_id', 'length', 'max'=>10),
+				array('disorder_id, finding_id, parent_id, letter_macro_text', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-				array('id, disorder_id', 'safe', 'on'=>'search'),
+				array('id, disorder_id, finding_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -76,6 +85,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// class name for the relations automatically generated below.
 		return array(
 				'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
+				'finding' => array(self::BELONGS_TO, 'Finding', 'finding_id', 'condition' => 'finding.active = 1'),
 				'parent' => array(self::BELONGS_TO, 'CommonOphthalmicDisorder', 'parent_id'),
 		);
 	}
@@ -86,9 +96,61 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 	public function attributeLabels()
 	{
 		return array(
-				'id' => 'ID',
-				'disorder_id' => 'Disorder',
+			'id' => 'ID',
+			'disorder_id' => 'Disorder',
+			'finding_id' => 'Finding',
+			'parent_id' => 'Parent',
+			'letter_macro_text' => 'Letter macro text',
 		);
+	}
+
+	protected function afterValidate()
+	{
+		if($this->disorder_id && $this->finding_id) {
+			$this->addError('disorder_id','Cannot set both disorder and finding');
+			$this->addError('finding_id','Cannot set both disorder and finding');
+		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getType()
+	{
+		if($this->disorder) {
+			return 'disorder';
+		} else if($this->finding) {
+			return 'finding';
+		} else if($this->disorder_id || $this->finding_id) {
+			// Finding or disorder is inactive
+			return null;
+		} else {
+			return 'none';
+		}
+	}
+
+	/**
+	 * @return Disorder|Finding
+	 */
+	public function getDisorderOrFinding()
+	{
+		if($this->disorder) {
+			return $this->disorder;
+		} else if($this->finding) {
+			return $this->finding;
+		}
+	}
+
+	public function getConditionLabel()
+	{
+		// FIXME: Add label column (moved from COD alternative label)
+		if(false /*$this->label*/) {
+			return $this->label;
+		} else if($this->getDisorderOrFinding()) {
+			return $this->getDisorderOrFinding()->term;
+		} else {
+			return 'None';
+		}
 	}
 
 	/**
@@ -104,6 +166,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('disorder_id',$this->disorder_id,true);
+		$criteria->compare('finding_id',$this->finding_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria'=>$criteria,

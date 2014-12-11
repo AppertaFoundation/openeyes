@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class OEPDFInjectTest extends CTestCase
+class OEPDFOptionsTest extends CTestCase
 {
 	public function testInject_Catalog_OneLine_WithoutNames()
 	{
@@ -61,8 +61,9 @@ startxref
 
 		file_put_contents($tmp_file, $im_a_pdf);
 
-		$pdf = new OEPDFInject($tmp_file);
-		$pdf->inject('print(true);');
+		$pdf = new OEPDFOptions($tmp_file);
+		$pdf->injectJS('print(true);');
+		$pdf->write();
 
 		$output = file_get_contents($tmp_file);
 		@unlink($tmp_file);
@@ -156,8 +157,9 @@ startxref
 
 		file_put_contents($tmp_file, $im_a_pdf);
 
-		$pdf = new OEPDFInject($tmp_file);
-		$pdf->inject('print(true);');
+		$pdf = new OEPDFOptions($tmp_file);
+		$pdf->injectJS('print(true);');
+		$pdf->write();
 
 		$output = file_get_contents($tmp_file);
 		@unlink($tmp_file);
@@ -258,8 +260,9 @@ startxref
 
 		file_put_contents($tmp_file, $im_a_pdf);
 
-		$pdf = new OEPDFInject($tmp_file);
-		$pdf->inject('print(true);');
+		$pdf = new OEPDFOptions($tmp_file);
+		$pdf->injectJS('print(true);');
+		$pdf->write();
 
 		$output = file_get_contents($tmp_file);
 		@unlink($tmp_file);
@@ -369,8 +372,9 @@ startxref
 
 		file_put_contents($tmp_file, $im_a_pdf);
 
-		$pdf = new OEPDFInject($tmp_file);
-		$pdf->inject('print(true);');
+		$pdf = new OEPDFOptions($tmp_file);
+		$pdf->injectJS('print(true);');
+		$pdf->write();
 
 		$output = file_get_contents($tmp_file);
 		@unlink($tmp_file);
@@ -422,6 +426,197 @@ trailer
 << /Size 5 /Root 4 0 R /Info 1 0 R >>
 startxref
 437
+%%EOF
+", $output);
+	}
+
+	public function testDisablePrintScalingtest_Catalog_OneLine()
+	{
+		$tmp_dir = sys_get_temp_dir();
+
+		$im_a_pdf = "%PDF-1.4
+1 0 obj
+<<
+/Title My Test PDF
+/Creator MW
+/Producer was awesome
+/CreationDate timeless
+>>
+endobj
+2 0 obj
+<<
+I'm an object :D
+>>
+endobj
+3 0 obj
+34234325
+endobj
+4 0 obj
+<< /Type /Catalog /Pages 2 0 R /Outlines 37 0 R /PageMode /UseOutlines /Dests 36 0 R >>
+endobj
+xref
+0 4
+0000000000 65535 f
+0000000009 00000 n
+0000000106 00000 n
+0000000144 00000 n
+0000000168 00000 n
+trailer
+<<
+/Size 4
+/Info 1 0 R
+/Root 4 0 R
+>>
+startxref
+271
+%%EOF
+";
+
+		$tmp_file = $tmp_dir."/testInject_Catalog_OneLine_WithoutNames_".time().".pdf";
+
+		file_put_contents($tmp_file, $im_a_pdf);
+
+		$pdf = new OEPDFOptions($tmp_file);
+		$pdf->disablePrintScaling();
+		$pdf->write();
+
+		$output = file_get_contents($tmp_file);
+		@unlink($tmp_file);
+
+		$this->assertEquals("%PDF-1.4
+1 0 obj
+<<
+/Title My Test PDF
+/Creator MW
+/Producer was awesome
+/CreationDate timeless
+>>
+endobj
+2 0 obj
+<<
+I'm an object :D
+>>
+endobj
+3 0 obj
+34234325
+endobj
+4 0 obj
+<< /Type /Catalog /Pages 2 0 R /Outlines 37 0 R /PageMode /UseOutlines /Dests 36 0 R /ViewerPreferences << /Direction/L2R/PrintScaling/None >> >>
+endobj
+xref
+0 4
+0000000000 65535 f
+0000000009 00000 n
+0000000106 00000 n
+0000000144 00000 n
+0000000168 00000 n
+trailer
+<< /Size 4 /Root 4 0 R /Info 1 0 R >>
+startxref
+329
+%%EOF
+", $output);
+	}
+
+	public function testDisablePrintScaling_Catalog_MultiLine_WithoutNames()
+	{
+		$tmp_dir = sys_get_temp_dir();
+
+		$im_a_pdf = "%PDF-1.4
+1 0 obj
+<<
+/Title My Test PDF
+/Creator MW
+/Producer was awesome
+/CreationDate timeless
+>>
+endobj
+2 0 obj
+<<
+I'm an object :D
+>>
+endobj
+3 0 obj
+34234325
+endobj
+4 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+/Outlines 37 0 R
+/PageMode
+/UseOutlines
+/Dests 36 0 R
+>>
+endobj
+xref
+0 4
+0000000000 65535 f
+0000000009 00000 n
+0000000106 00000 n
+0000000144 00000 n
+0000000168 00000 n
+trailer
+<<
+/Size 4
+/Info 1 0 R
+/Root 4 0 R
+>>
+startxref
+271
+%%EOF
+";
+
+		$tmp_file = $tmp_dir."/testInject_Catalog_MultiLine_WithoutNames_".time().".pdf";
+
+		file_put_contents($tmp_file, $im_a_pdf);
+
+		$pdf = new OEPDFOptions($tmp_file);
+		$pdf->disablePrintScaling();
+		$pdf->write();
+
+		$output = file_get_contents($tmp_file);
+		@unlink($tmp_file);
+
+		$this->assertEquals("%PDF-1.4
+1 0 obj
+<<
+/Title My Test PDF
+/Creator MW
+/Producer was awesome
+/CreationDate timeless
+>>
+endobj
+2 0 obj
+<<
+I'm an object :D
+>>
+endobj
+3 0 obj
+34234325
+endobj
+4 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+/Outlines 37 0 R
+/PageMode
+/UseOutlines
+/Dests 36 0 R
+/ViewerPreferences << /Direction/L2R/PrintScaling/None >>
+>>
+endobj
+xref
+0 4
+0000000000 65535 f
+0000000009 00000 n
+0000000106 00000 n
+0000000144 00000 n
+0000000168 00000 n
+trailer
+<< /Size 4 /Root 4 0 R /Info 1 0 R >>
+startxref
+329
 %%EOF
 ", $output);
 	}
