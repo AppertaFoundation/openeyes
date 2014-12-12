@@ -613,10 +613,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
   Scenario: Route 9A: Login and create a Operation Booking Anderson Glaucoma
 
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "3"
+    Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Glaucoma)"
 
     Then I search for hospital number "1009465"
 
@@ -631,8 +628,15 @@ Scenario: Route 3A: Login and create a Phasing Event
     And I select a Procedure of "41"
 
     Then I select No to Consultant required
+    And I select "No" for "Any other doctor to do"
+
+    And I select "No" for "Does the patient require pre-op assessment by an anaesthetist"
 
     And I select a Anaesthetic type "Topical"
+
+    And I select "Patient preference" for "Anaesthetic choice"
+
+    And I select "No" for "Patient needs to stop medication"
 
     Then I select Yes to a Post Operative Stay
     Then I select No to a Post Operative Stay
@@ -642,6 +646,10 @@ Scenario: Route 3A: Login and create a Phasing Event
     Then I select a Priority of Urgent
 
     And I select a decision date of "14"
+
+    And I select "Yes" for "Admission discussed with patient"
+
+    And I select "As soon as possible" for "Schedule options"
 
     Then I select Save and Schedule now
 
