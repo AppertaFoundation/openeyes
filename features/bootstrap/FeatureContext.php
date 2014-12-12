@@ -101,8 +101,11 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 			} else {
 				throw new Exception("Couldn't figure out how to select option '$option' in fieldset '$label'");
 			}
+		} else if(($label = $page->find('xpath', ".//label[contains(normalize-space(string(.)), '${label}')]")) &&
+			($id = $label->getAttribute('for')) && ($select = $page->find('css', "select#{$id}"))) {
+			$select->selectOption($option);
 		} else {
-			throw new Exception("Couldn't find fieldset '$label'");
+			throw new Exception("Couldn't find option field '$label'");
 		}
 	}
 
