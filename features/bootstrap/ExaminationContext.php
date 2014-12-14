@@ -102,7 +102,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->leftVisualFunction($metre, $method);
+        $examination->selectLeftVA($metre, $method);
     }
 
     /**
@@ -114,7 +114,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->rightVisualFunction($metre, $method);
+        $examination->selectRightVA($metre, $method);
     }
 
     /**
@@ -126,7 +126,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->leftETDRS($metre, $method);
+        $examination->selectLeftVA($metre, $method);
     }
 
     /**
@@ -138,7 +138,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->rightETDRS($metre, $method);
+        $examination->selectRightVA($metre, $method);
     }
 
     /**
@@ -1722,7 +1722,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->addLeftVisualAcuity($reading, $method);
+        $examination->addLeftVA($reading, $method);
     }
 
     /**
@@ -1734,7 +1734,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->addRightVisualAcuity($reading, $method);
+        $examination->addRightVA($reading, $method);
     }
 
     /**
@@ -1746,7 +1746,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->removeSecondLeftVisualAcuity();
+        $examination->removeSecondLeftVA();
     }
 
     /**
@@ -1758,7 +1758,7 @@ class ExaminationContext extends PageObjectContext
          * @var Examination $examination
          */
         $examination= $this->getPage('Examination');
-        $examination->removeSecondRightVisualAcuity();
+        $examination->removeSecondRightVA();
     }
 
     /**
