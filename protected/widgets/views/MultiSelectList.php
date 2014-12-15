@@ -92,6 +92,7 @@ $widgetOptionsJson = json_encode(array(
 				<div class="no-selections-msg pill<?php if ($found) {?> hide<?php }?>"><?php echo $noSelectionsMessage;?></div>
 			<?php }?>
 			<ul class="MultiSelectList multi-select-selections<?php if (!$found) echo ' hide';?><?php if ($sortable){?> sortable<?php }?>">
+				<input type="hidden" name="<?php echo $field?>" value="" />
 				<?php foreach ($selected_ids as $id) {
 					if (isset($options[$id])) {?>
 						<li>
@@ -110,7 +111,6 @@ $widgetOptionsJson = json_encode(array(
 					<?php }?>
 				<?php }?>
 			</ul>
-
 		</div>
 <?php if (!@$htmlOptions['nowrapper']) {?>
 	</div>

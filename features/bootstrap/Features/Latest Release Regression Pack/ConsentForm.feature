@@ -144,10 +144,7 @@ Feature: Create New Consent Form
 
   Scenario: Route 6A: Login and create a Operation Booking for Route 6B test
 
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
+    Given I am logged in as "admin" with site "Queens" and firm "Anderson Firm (Cataract)"
 
     Then I search for hospital number "1009465"
 
@@ -162,9 +159,17 @@ Feature: Create New Consent Form
     And I select a Procedure of "79"
           # Right Extracapsular cataract extraction
 
-    Then I select Yes to Consultant required
+    Then I select No to Consultant required
+
+    And I select "No" for "Any other doctor to do"
+
+    And I select "No" for "Does the patient require pre-op assessment by an anaesthetist"
 
     And I select a Anaesthetic type "LA"
+
+    And I select "Patient preference" for "Anaesthetic choice"
+
+    And I select "No" for "Patient needs to stop medication"
 
     Then I select Yes to a Post Operative Stay
 
@@ -173,6 +178,10 @@ Feature: Create New Consent Form
     Then I select a Priority of Routine
 
     And I select a decision date of "10"
+
+    And I select "Yes" for "Admission discussed with patient"
+
+    And I select "As soon as possible" for "Schedule options"
 
     Then I add comments of "Insert test comments here"
 
