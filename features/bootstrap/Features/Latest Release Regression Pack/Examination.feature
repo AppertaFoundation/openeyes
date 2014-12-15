@@ -303,11 +303,11 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Diagnoses section
     And I choose a left eye diagnosis
-    Then I choose a diagnoses of "230670003"
+    And I select "Familial infantile myasthenia" for "Diagnosis"
     And I choose a right eye diagnosis
-    Then I choose a diagnoses of "53889007"
+    And I select "Nuclear cataract" for "Diagnosis"
     And I choose both eyes diagnosis
-    Then I choose a diagnoses of "193570009"
+    And I select "Cataract" for "Diagnosis"
     Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
@@ -442,11 +442,7 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Diagnoses section
     And I choose a left eye diagnosis
-    Then I choose a diagnoses of "95217000"
-    And I choose a right eye diagnosis
-    Then I choose a diagnoses of "34361001"
-    And I choose both eyes diagnosis
-    Then I choose a diagnoses of "79410001"
+    And I select "Pseudophakia" for "Diagnosis"
     Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
@@ -582,12 +578,8 @@ Feature: Create New Examination Regression Tests
     And I add a right Abnormality of "4"
 
     Then I choose to expand the Diagnoses section
-    And I choose a left eye diagnosis
-    Then I choose a diagnoses of "95217000"
     And I choose a right eye diagnosis
-    Then I choose a diagnoses of "34361001"
-    And I choose both eyes diagnosis
-    Then I choose a diagnoses of "79410001"
+    And I select "Traumatic cataract" for "Diagnosis"
     Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section
@@ -1045,12 +1037,8 @@ Feature: Create New Examination Regression Tests
     And I add a right Abnormality of "4"
 
     Then I choose to expand the Diagnoses section
-    And I choose a left eye diagnosis
-    Then I choose a diagnoses of "95217000"
-    And I choose a right eye diagnosis
-    Then I choose a diagnoses of "34361001"
     And I choose both eyes diagnosis
-    Then I choose a diagnoses of "79410001"
+    And I select "Congenital cataract" for "Diagnosis"
     Then I choose a principal diagnosis
 
     Then I choose to expand the Investigation section

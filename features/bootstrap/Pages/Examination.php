@@ -651,11 +651,6 @@ class Examination extends OpenEyesPage
         $this->getElement('diagnosesBothEyes')->click();
     }
 
-    public function diagnosesDiagnosis ($diagnosis)
-    {
-        $this->getElement('diagnosesCommonDiagnosis')->setValue($diagnosis);
-    }
-
     public function principalDiagnosis ()
     {
         $this->getElement('principalDiagnosis')->check();

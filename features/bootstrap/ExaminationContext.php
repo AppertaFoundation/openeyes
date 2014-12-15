@@ -604,18 +604,6 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
-     * @Then /^I choose a diagnoses of "([^"]*)"$/
-     */
-    public function iChooseADiagnosesOf($diagnosis)
-    {
-        /**
-         * @var Examination $examination
-         */
-        $examination= $this->getPage('Examination');
-        $examination->diagnosesDiagnosis($diagnosis);
-    }
-
-    /**
      * @Then /^I choose to expand the Investigation section$/
      */
     public function iChooseToExpandTheInvestigationSection()
