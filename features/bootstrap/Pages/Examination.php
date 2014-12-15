@@ -20,6 +20,7 @@ class Examination extends OpenEyesPage
 		'addRightVisualAcuity' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .right-eye button.addReading"),
 		'firstRightVisualAcuityReading' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .right-eye .va_readings tr:nth-of-type(1) .va-selector"),
 		'firstRightVisualAcuityCorrection' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .right-eye .va_readings tr:nth-of-type(1) .method_id"),
+		'removeFirstRightVisualAcuity' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .right-eye .va_readings tr:nth-of-type(1) .removeReading"),
 		'secondRightVisualAcuityReading' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .right-eye .va_readings tr:nth-of-type(2) .va-selector"),
 		'secondRightVisualAcuityCorrection' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .right-eye .va_readings tr:nth-of-type(2) .method_id"),
 		'removeSecondRightVisualAcuity' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .right-eye .va_readings tr:nth-of-type(2) .removeReading"),
@@ -27,6 +28,7 @@ class Examination extends OpenEyesPage
 		'addLeftVisualAcuity' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .left-eye button.addReading"),
 		'firstLeftVisualAcuityReading' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .left-eye .va_readings tr:nth-of-type(1) .va-selector"),
 		'firstLeftVisualAcuityCorrection' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .left-eye .va_readings tr:nth-of-type(1) .method_id"),
+		'removeFirstLeftVisualAcuity' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .left-eye .va_readings tr:nth-of-type(1) .removeReading"),
 		'secondLeftVisualAcuityReading' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .left-eye .va_readings tr:nth-of-type(2) .va-selector"),
 		'secondLeftVisualAcuityCorrection' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .left-eye .va_readings tr:nth-of-type(2) .method_id"),
 		'removeSecondLeftVisualAcuity' => array('css' => ".OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .left-eye .va_readings tr:nth-of-type(2) .removeReading"),
@@ -376,6 +378,16 @@ class Examination extends OpenEyesPage
         $this->getSession()->wait(2000);
         $this->getElement('secondRightVisualAcuityReading')->selectOption($reading);
         $this->getElement('secondRightVisualAcuityCorrection')->selectOption($method);
+    }
+
+    public function removeFirstLeftVA()
+    {
+        $this->getElement('removeFirstLeftVisualAcuity')->click();
+    }
+
+    public function removeFirstRightVA()
+    {
+        $this->getElement('removeFirstRightVisualAcuity')->click();
     }
 
     public function removeSecondLeftVA()

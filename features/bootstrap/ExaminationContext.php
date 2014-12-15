@@ -1738,6 +1738,24 @@ class ExaminationContext extends PageObjectContext
     }
 
     /**
+     * @Then /^I remove the initial Left Visual Acuity$/
+     */
+    public function iRemoveTheInitialLeftVisualAcuity()
+    {
+        $examination= $this->getPage('Examination');
+        $examination->removeFirstLeftVA();
+    }
+
+    /**
+     * @Then /^I remove the initial Right Visual Acuity$/
+     */
+    public function iRemoveTheInitialRightVisualAcuity()
+    {
+        $examination= $this->getPage('Examination');
+        $examination->removeFirstRightVA();
+    }
+
+    /**
      * @Then /^I remove the newly added Left Visual Acuity$/
      */
     public function iRemoveTheNewlyAddedLeftVisualAcuity()

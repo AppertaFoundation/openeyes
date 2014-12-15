@@ -965,9 +965,11 @@ Feature: Create New Examination Regression Tests
 
     Then I choose to expand the Visual Acuity section
 
+    And I remove the initial Left Visual Acuity
     And I select Left Unable to assess checkbox
     And I select Left Eye Missing checkbox
 
+    And I remove the initial Right Visual Acuity
     And I select Right Unable to assess checkbox
     And I select Right Eye Missing checkbox
 
