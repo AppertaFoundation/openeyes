@@ -120,7 +120,7 @@ Feature: Create New Operation Note Event
 
     Then I select Procedure Right Eye
 
-    And I select a common Procedure of "139"
+    And I select "Anterior vitrectomy" for "Add a procedure"
 
     Then I choose Anaesthetic Type of LAC
 
