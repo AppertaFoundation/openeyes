@@ -86,6 +86,29 @@ class FeatureContext extends PageObjectContext implements YiiAwareContextInterfa
 		$addNewEvent->addNewEpisode();
 	}
 
+	/**
+	 * @When /^I select "([^"]*)" for "([^"]*)"$/
+	 */
+	public function selectOption($option, $label)
+	{
+		$page = $this->mink->getSession()->getPage();
+
+		if (($fieldset = $page->find('xpath', ".//fieldset[(./legend[contains(normalize-space(string(.)), '${label}')])]"))) {
+			if (($field = $fieldset->find('xpath', ".//label[contains(normalize-space(string(.)), '${option}')]/input[@type='checkbox' or @type='radio']"))) {
+				$field->check();
+			} else if ($select = $fieldset->find('css', 'select')) {
+				$select->selectOption($option);
+			} else {
+				throw new Exception("Couldn't figure out how to select option '$option' in fieldset '$label'");
+			}
+		} else if(($label = $page->find('xpath', ".//label[contains(normalize-space(string(.)), '${label}')]")) &&
+			($id = $label->getAttribute('for')) && ($select = $page->find('css', "select#{$id}"))) {
+			$select->selectOption($option);
+		} else {
+			throw new Exception("Couldn't find option field '$label'");
+		}
+	}
+
 	public function setMink(\Behat\Mink\Mink $mink)
 	{
 		$this->mink = $mink;
