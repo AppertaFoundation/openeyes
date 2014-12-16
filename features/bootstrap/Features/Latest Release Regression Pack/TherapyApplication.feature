@@ -35,7 +35,8 @@ Feature: Create New Therapy Application Event
 
     Then I select Right Myocardial infarction Yes
 
-    And I select a Right Consultant of "4"
+    And I select "Anderson Firm" for "Consultant"
+    And I select "Yes" for "Patient consents to share data"
 
     Then I select a Right Standard Intervention Exists of Yes
 
@@ -135,7 +136,8 @@ Feature: Create New Therapy Application Event
 
     Then I select Right Myocardial infarction Yes
 
-    And I select a Right Consultant of "4"
+    And I select "Anderson Firm" for "Consultant"
+    And I select "Yes" for "Patient consents to share data"
 
     Then I Save the Therapy Application and confirm it has been created successfully
 
@@ -170,7 +172,8 @@ Feature: Create New Therapy Application Event
 
     Then I select Right Myocardial infarction Yes
 
-    And I select a Right Consultant of "4"
+    And I select "Anderson Firm" for "Consultant"
+    And I select "Yes" for "Patient consents to share data"
 
     Then I select a Right Standard Intervention Exists of No
 
@@ -243,6 +246,8 @@ Feature: Create New Therapy Application Event
     And I select a Left Patient has a Venous Occlusion of Yes
 
     And I select a Left Patient has a CRVO of Yes
+
+    And I select "Yes" for "Patient consents to share data"
 
     Then I Save the Therapy Application and confirm it has been created successfully
 

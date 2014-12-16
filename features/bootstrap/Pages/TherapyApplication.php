@@ -67,7 +67,6 @@ class TherapyApplication extends OpenEyesPage
 
         'patientVenousYes' => array('xpath' => "//select[@name='Element_OphCoTherapyapplication_PatientSuitability[right_DecisionTreeResponse][48]']"),
         'CRVOYes' => array('xpath' => "//select[@name='Element_OphCoTherapyapplication_PatientSuitability[right_DecisionTreeResponse][49]']"),
-        'consultant' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_consultant_id']"),
         'intendedSite' => array('xpath' => "//*[@id='Element_OphCoTherapyapplication_MrServiceInformation_site_id']"),
         'saveTherapyApplication' => array('xpath' => "//button[@id='et_save']"),
         'saveTherapyOK'=> array('xpath' => "//*[@id='flash-success']"),
@@ -218,13 +217,6 @@ class TherapyApplication extends OpenEyesPage
         $element = $this->getElement('myocardialNo');
         $this->scrollWindowToElement($element);
         $element->check();;
-    }
-
-    public function RightConsultantSelect ($consultant)
-    {
-        $element = $this->getElement('consultant');
-        $this->scrollWindowToElement($element);
-        $element->selectOption($consultant);
     }
 
     public function RightIntendedSite ($site)
