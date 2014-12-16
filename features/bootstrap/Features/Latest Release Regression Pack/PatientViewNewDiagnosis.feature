@@ -131,12 +131,12 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
     Then I expand Social History
     And I add an Occupation of "7"
     And I add an Occupation Other type of "Nuclear Scientist"
-    Then I add a Driving status of "3"
+    And I select "Motor vehicle" for "Driving Status"
     And I add a Smoking status of "2"
     And I add an Accommodation status of "3"
     Then I add Social Comments of "Test Social comments"
     And I select a Carer status of "1"
-    Then I set an Alcohol intake of "10" units a week
+    Then I set an Alcohol intake of "100" units a week
     And I select a Substance Misuse status of "1"
     Then I Save the Social History
 

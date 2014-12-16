@@ -147,7 +147,7 @@
 			</div>
 			<div class="field-row row">
 				<div class="<?php echo $form->columns('label');?>">
-					<label for="driving_statuses"><?= CHtml::encode($social_history->getAttributeLabel('driving_statuses')) ?>:</label>
+					<label for="<?= CHtml::modelName($social_history) ?>_driving_statuses"><?= CHtml::encode($social_history->getAttributeLabel('driving_statuses')) ?>:</label>
 				</div>
 				<div class="<?php echo $form->columns('field');?>">
 					<input type="hidden" name="SocialHistory[driving_statuses]" value="" />
