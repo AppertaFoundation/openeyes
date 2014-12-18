@@ -34,5 +34,13 @@ return array(
 		'snomed_term' => 'Bleh',
 		'default_duration' => 20,
 		'unbooked' => 1,
+	),
+	'procedure3' => array(
+		'term' => 'Test Procedure 2',
+		'short_format' => 'PP',
+		'snomed_code' => '67891',
+		'snomed_term' => 'Blah',
+		'default_duration' => 23,
+		'unbooked' => 1,
 	)
 );
