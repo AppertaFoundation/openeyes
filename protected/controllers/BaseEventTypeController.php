@@ -1486,6 +1486,9 @@ class BaseEventTypeController extends BaseModuleController
 
 		$event->lock();
 
+		// Ensure exclusivity of PDF to avoid race conditions
+		$this->pdf_print_suffix .= Yii::app()->user->id.'_'.rand();
+
 		if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
 			if (!$this->pdf_print_html) {
 				ob_start();
@@ -1517,6 +1520,7 @@ class BaseEventTypeController extends BaseModuleController
 		header('Content-Length: '.filesize($pdf));
 
 		readfile($pdf);
+		@unlink($pdf);
 	}
 
 	/**

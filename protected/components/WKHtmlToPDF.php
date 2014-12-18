@@ -103,8 +103,10 @@ class WKHtmlToPDF
 
 	public function deleteFile($path)
 	{
-		if (!@unlink($path)) {
-			throw new Exception("Unable to delete $path: check permissions.");
+		if (@file_exists($path)) {
+			if (!@unlink($path)) {
+				throw new Exception("Unable to delete $path: check permissions.");
+			}
 		}
 	}
 
