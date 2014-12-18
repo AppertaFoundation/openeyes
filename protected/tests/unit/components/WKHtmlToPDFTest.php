@@ -546,4 +546,100 @@ class WKHtmlToPDFTest extends CTestCase
 
 		$this->assertTrue($result);
 	}
+
+	public function testConstructor_SetParams_Left()
+	{
+		Yii::app()->params['wkhtmltopdf_footer_left'] = 'fisjfisdjfodsfs';
+
+		$wk = new WKHtmlToPDF;
+
+		$this->assertEquals('fisjfisdjfodsfs',$wk->left);
+	}
+
+	public function testConstructor_SetParams_Right()
+	{
+		Yii::app()->params['wkhtmltopdf_footer_right'] = 'fjsdoifh2923ewc';
+
+		$wk = new WKHtmlToPDF;
+
+		$this->assertEquals('fjsdoifh2923ewc',$wk->right);
+	}
+
+	public function testConstructor_SetParams_Middle()
+	{
+		Yii::app()->params['wkhtmltopdf_footer_middle'] = '2j398fh29ewcdewdc92e';
+
+		$wk = new WKHtmlToPDF;
+
+		$this->assertEquals('2j398fh29ewcdewdc92e',$wk->middle);
+	}
+
+	public function testConstructor_SetParams_TopMargin()
+	{
+		Yii::app()->params['wkhtmltopdf_top_margin'] = '2d9h2cd8hw9812h9wh923';
+
+		$wk = new WKHtmlToPDF;
+
+		$this->assertEquals('2d9h2cd8hw9812h9wh923',$wk->top_margin);
+	}
+
+	public function testConstructor_SetParams_BottomMargin()
+	{
+		Yii::app()->params['wkhtmltopdf_bottom_margin'] = '390fh2908chj09wecjhe298';
+
+		$wk = new WKHtmlToPDF;
+
+		$this->assertEquals('390fh2908chj09wecjhe298',$wk->bottom_margin);
+	}
+
+	public function testConstructor_SetParams_LeftMargin()
+	{
+		Yii::app()->params['wkhtmltopdf_left_margin'] = '1298dy19d8yw9d8219d';
+	 
+		$wk = new WKHtmlToPDF;
+ 
+		$this->assertEquals('1298dy19d8yw9d8219d',$wk->left_margin);
+	}
+
+	public function testConstructor_SetParams_RightMargin()
+	{
+		Yii::app()->params['wkhtmltopdf_right_margin'] = '2398rfeh29cucI(HDSU*(H(';
+	
+		$wk = new WKHtmlToPDF;
+
+		$this->assertEquals('2398rfeh29cucI(HDSU*(H(',$wk->right_margin);
+	}
+
+	public function testSetCustomTag()
+	{
+		$wk = new WKHtmlToPDF;
+
+		$this->assertEmpty($wk->custom_tags);
+
+		$wk->setCustomTag('one','two');
+		$this->assertEquals(array('one'=>'two'),$wk->custom_tags);
+
+		$wk->setCustomTag('123123','x9x9x9x');
+		$this->assertEquals(array('one'=>'two','123123'=>'x9x9x9x'),$wk->custom_tags);
+	}
+
+	public function testFormatFooter_CustomTags()
+	{
+		$wk = $this->getMockBuilder('WKHtmlToPDF')
+			->setMethods(array('readFile'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$patient = new Patient;
+		$patient->contact = new Contact;
+
+		$wk->setPatient($patient);
+		$wk->setDocuments(1);
+		$wk->setBarcode('blah');
+		$wk->setDocref(133);
+		$wk->setCustomTag('one','two');
+		$wk->setCustomTag('123123','x9x9x9x');
+
+		$this->assertEquals("test <span class=\"page\"></span> {'one':'two','123123':'x9x9x9x'} one two three",$wk->formatFooter('test {{PAGE}} {{CUSTOM_TAGS}} one two three',0,0,0,$patient,0,0));
+	}
 }

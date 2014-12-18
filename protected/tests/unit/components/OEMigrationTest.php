@@ -53,6 +53,10 @@ class OEMigrationTest extends CDbTestCase
 			Yii::app()->db->createCommand("delete from ophtroperationbooking_operation_procedures_procedures")->execute();
 			Yii::app()->db->createCommand("delete from et_ophtroperationbooking_operation")->execute();
 		}
+		if (Yii::app()->db->schema->getTable('et_ophtrconsent_procedure')) {
+			Yii::app()->db->createCommand("delete from ophtrconsent_procedure_procedures_procedures")->execute();
+			Yii::app()->db->createCommand("delete from et_ophtrconsent_procedure")->execute();
+		}
 		Yii::app()->db->createCommand("delete from event where event_type_id >= 1000")->query();
 		Yii::app()->db->createCommand("delete from event_type where id >= 1000 and parent_event_type_id is not null")->query();
 		Yii::app()->db->createCommand("delete from event_type where id >= 1000")->query();
