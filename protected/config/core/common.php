@@ -298,5 +298,6 @@ return array(
 		'wkhtmltopdf_bottom_margin' => '18mm',
 		'wkhtmltopdf_left_margin' => '20mm',
 		'wkhtmltopdf_right_margin' => '20mm',
+		'wkhtmltopdf_nice_level' => false,
 	),
 );
