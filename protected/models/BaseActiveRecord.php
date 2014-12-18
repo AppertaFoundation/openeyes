@@ -87,11 +87,7 @@ class BaseActiveRecord extends CActiveRecord
 				if (is_string($pk_attr)) {
 					$m_set = array();
 					foreach ($value as $v) {
-						if (isset($v['id'])) {
-							if (!$m = $rel_cls::model()->findByPk($v['id'])) {
-								throw new Exception("Unable to understand value " . print_r($v['id'], true) . " for {$name}");
-							}
-						} elseif (is_array($v)) {
+						if (is_array($v)) {
 							// looks like a list of attribute values, try to find or instantiate the classes
 							if (array_key_exists($pk_attr, $v) && isset($v[$pk_attr])) {
 								$m = $rel_cls::model()->findByPk($v[$pk_attr]);
