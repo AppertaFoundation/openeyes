@@ -16,6 +16,8 @@
 class MeasurementReferenceTest extends CDbTestCase
 {
 	public $fixtures = array(
+		'ep' => 'Episode',
+		'ev' => 'Event',
 		'ref' => 'MeasurementReference',
 		'pm' => 'PatientMeasurement',
 	);
@@ -54,6 +56,19 @@ class MeasurementReferenceTest extends CDbTestCase
 		$ref->patient_measurement_id = $this->pm('height')->id;
 		$ref->episode_id = 2;
 		$ref->origin = true;
+		$ref->save();
+	}
+
+	/**
+	 * @expectedException Exception
+	 * @expectedExceptionMessage Measurement references cannot reference both an episode and an event
+	 */
+	public function testEpisodeIdAndEventIdSet()
+	{
+		$ref = new MeasurementReference;
+		$ref->patient_measurement_id = $this->pm('height')->id;
+		$ref->episode_id = 2;
+		$ref->event_id = 2;
 		$ref->save();
 	}
 }

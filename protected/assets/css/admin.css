@@ -72,6 +72,11 @@ meta.foundation-mq-topbar {
   padding: 0;
 }
 
+/* line 25, ../sass/openeyes/components/admin/_forms.scss */
+table.generic-admin tr {
+  vertical-align: top;
+}
+
 /* line 19, ../sass/openeyes/components/admin/_boxes.scss */
 .box.admin {
   border-style: solid;

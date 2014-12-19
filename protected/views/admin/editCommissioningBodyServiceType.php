@@ -31,8 +31,8 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->textField($cbs,'name',array('size'=>'50'))?>
-		<?php echo $form->textField($cbs,'shortname',array('size'=>'10'))?>
+		<?php echo $form->textField($cbs,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete'],'size'=>'50'))?>
+		<?php echo $form->textField($cbs,'shortname',array('autocomplete'=>Yii::app()->params['html_autocomplete'],'size'=>'10'))?>
 	<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_body_service_types'));?>
 	<?php $this->endWidget()?>
 </div>

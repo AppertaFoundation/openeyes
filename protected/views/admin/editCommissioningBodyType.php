@@ -31,8 +31,8 @@
 			'field' => 5
 		)
 	))?>
-		<?php echo $form->textField($cbt,'name')?>
-		<?php echo $form->textField($cbt,'shortname')?>
+		<?php echo $form->textField($cbt,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($cbt,'shortname',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_body_types'));?>
 	<?php $this->endWidget()?>
 </div>

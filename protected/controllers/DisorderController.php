@@ -87,41 +87,8 @@ class DisorderController extends BaseController
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
 		if ($cd = CommonOphthalmicDisorder::model()->find('disorder_id=? and subspecialty_id=?',array($id,$firm->serviceSubspecialtyAssignment->subspecialty_id))) {
-			echo "<option value=\"$cd->disorder_id\">".$cd->disorder->term."</option>";
+			echo "<option value=\"$cd->disorder_id\" data-order=\"{$cd->display_order}\">".$cd->disorder->term."</option>";
 		}
 	}
 
-	/**
-	 * Returns a JSON response. Empty if the provided disorder id is not in the common list for the
-	 * current session firm subspecialty. Otherwise, contains details of disorder, and all secondary to disorders
-	 * configured for the disorder/subspecialty
-	 *
-	 * @param $id
-	 */
-	public function actionIsCommonOphthalmicWithSecondary($id)
-	{
-		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-		$result = array();
-		if ($subspecialty_id = $firm->getSubspecialtyID()) {
-			if ($cd = CommonOphthalmicDisorder::model()->with(array('disorder', 'secondary_to_disorders'))->findByAttributes(array('disorder_id'=> $id, 'subspecialty_id' => $subspecialty_id)) ) {
-				$result['disorder'] = array('id' => $cd->disorder_id, 'term' => $cd->disorder->term);
-				if ($sts = $cd->secondary_to_disorders) {
-					$result['secondary_to'] = array();
-					foreach ($sts as $st) {
-						$result['secondary_to'][] = array('id' => $st->id, 'term' => $st->term);
-					}
-				}
-				echo CJSON::encode($result);
-			}
-			elseif ($sts = SecondaryToCommonOphthalmicDisorder::model()->with(array('disorder', 'parent',))
-						->findAll('t.disorder_id = :disorder_id AND parent.subspecialty_id = :subspecialty_id', array(":disorder_id" => $id, ":subspecialty_id" => $subspecialty_id))) {
-				$result['disorder'] = array('id' => $sts[0]->disorder_id, 'term' => $sts[0]->disorder->term);
-				$result['owned_by'] = array();
-				foreach ($sts as $st) {
-					$result['owned_by'][] = array('id' => $st->parent->disorder_id);
-				}
-				echo CJSON::encode($result);
-			}
-		}
-	}
 }

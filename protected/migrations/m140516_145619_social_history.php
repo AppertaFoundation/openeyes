@@ -22,7 +22,7 @@ class m140516_145619_social_history extends CDbMigration
 		$this->insert('socialhistory_occupation',array('name'=>'Employed','display_order'=>1));
 		$this->insert('socialhistory_occupation',array('name'=>'Self-employed','display_order'=>2));
 		$this->insert('socialhistory_occupation',array('name'=>'Unemployed','display_order'=>3));
-		$this->insert('socialhistory_occupation',array('name'=>'Sickness','display_order'=>4));
+		$this->insert('socialhistory_occupation',array('name'=>'Disability Benefits','display_order'=>4));
 		$this->insert('socialhistory_occupation',array('name'=>'Student','display_order'=>5));
 		$this->insert('socialhistory_occupation',array('name'=>'Retired','display_order'=>6));
 		$this->insert('socialhistory_occupation',array('name'=>'Other (specify)','display_order'=>7));
@@ -64,11 +64,10 @@ class m140516_145619_social_history extends CDbMigration
 				'CONSTRAINT `socialhistory_smoking_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
-		$this->insert('socialhistory_smoking_status',array('name'=>'Non-smoker','display_order'=>1));
+		$this->insert('socialhistory_smoking_status',array('name'=>'Never Smoked','display_order'=>1));
 		$this->insert('socialhistory_smoking_status',array('name'=>'Smoker','display_order'=>2));
-		$this->insert('socialhistory_smoking_status',array('name'=>'Ex smoker','display_order'=>3));
-		$this->insert('socialhistory_smoking_status',array('name'=>'Never smoked tobacco','display_order'=>4));
-		$this->insert('socialhistory_smoking_status',array('name'=>'Tobacco smoking consumption unknown','display_order'=>5));
+		$this->insert('socialhistory_smoking_status',array('name'=>'Ex Smoker','display_order'=>3));
+		$this->insert('socialhistory_smoking_status',array('name'=>'Unknown','display_order'=>4));
 
 		$this->createTable('socialhistory_accommodation', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',

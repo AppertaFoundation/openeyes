@@ -611,25 +611,14 @@ class PatientController extends BaseController
 	public function actionAddAllergy()
 	{
 		if (!empty($_POST)) {
-			if (!isset($_POST['patient_id']) || !$patient_id = $_POST['patient_id']) {
-				throw new Exception('Patient ID required');
-			}
-			if (!$patient = Patient::model()->findByPk($patient_id)) {
-				throw new Exception('Patient not found: '.$patient_id);
-			}
+			$patient = $this->fetchModel('Patient', @$_POST['patient_id']);
+
 			if (@$_POST['no_allergies']) {
 				$patient->setNoAllergies();
+			} else  {
+				$allergy = $this->fetchModel('Allergy', @$_POST['allergy_id']);
+				$patient->addAllergy($allergy, @$_POST['other'], @$_POST['comments']);
 			}
-			else  {
-				if (!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
-					throw new Exception('Allergy ID required');
-				}
-				if (!$allergy = Allergy::model()->findByPk($allergy_id)) {
-					throw new Exception('Allergy not found: '.$allergy_id);
-				}
-				$patient->addAllergy($allergy_id);
-			}
-
 		}
 
 		$this->redirect(array('patient/view/'.$patient->id));
@@ -642,20 +631,7 @@ class PatientController extends BaseController
 	 */
 	public function actionRemoveAllergy()
 	{
-		if (!isset($_GET['patient_id']) || !$patient_id = $_GET['patient_id']) {
-			throw new Exception('Patient ID required');
-		}
-		if (!$patient = Patient::model()->findByPk($patient_id)) {
-			throw new Exception('Patient not found: '.$patient_id);
-		}
-		if (!isset($_GET['allergy_id']) || !$allergy_id = $_GET['allergy_id']) {
-			throw new Exception('Allergy ID required');
-		}
-		if (!$allergy = Allergy::model()->findByPk($allergy_id)) {
-			throw new Exception('Allergy not found: '.$allergy_id);
-		}
-		$patient->removeAllergy($allergy_id);
-
+		PatientAllergyAssignment::model()->deleteByPk(@$_GET['assignment_id']);
 		echo 'success';
 	}
 
@@ -666,7 +642,7 @@ class PatientController extends BaseController
 	{
 		$allergy_ids = array();
 		foreach ($this->patient->allergies as $allergy) {
-			$allergy_ids[] = $allergy->id;
+			if ($allergy->name != 'Other') $allergy_ids[] = $allergy->id;
 		}
 		$criteria = new CDbCriteria;
 		!empty($allergy_ids) && $criteria->addNotInCondition('id',$allergy_ids);
@@ -980,32 +956,43 @@ class PatientController extends BaseController
 			throw new Exception("Patient not found:".@$_POST['patient_id']);
 		}
 
-		if (!$relative = FamilyHistoryRelative::model()->findByPk(@$_POST['relative_id'])) {
-			throw new Exception("Unknown relative: ".@$_POST['relative_id']);
-		}
+		if (@$_POST['no_family_history']) {
+			$patient->setNoFamilyHistory();
+		} else  {
 
-		if (!$side = FamilyHistorySide::model()->findByPk(@$_POST['side_id'])) {
-			throw new Exception("Unknown side: ".@$_POST['side_id']);
-		}
-
-		if (!$condition = FamilyHistoryCondition::model()->findByPk(@$_POST['condition_id'])) {
-			throw new Exception("Unknown condition: ".@$_POST['condition_id']);
-		}
-
-		if (@$_POST['edit_family_history_id']) {
-			if (!$fh = FamilyHistory::model()->findByPk(@$_POST['edit_family_history_id'])) {
-				throw new Exception("Family history not found: ".@$_POST['edit_family_history_id']);
+			if (!$relative = FamilyHistoryRelative::model()->findByPk(@$_POST['relative_id'])) {
+				throw new Exception("Unknown relative: ".@$_POST['relative_id']);
 			}
-			$fh->relative_id = $relative->id;
-			$fh->side_id = $side->id;
-			$fh->condition_id = $condition->id;
-			$fh->comments = @$_POST['comments'];
 
-			if (!$fh->save()) {
-				throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+			if (!$side = FamilyHistorySide::model()->findByPk(@$_POST['side_id'])) {
+				throw new Exception("Unknown side: ".@$_POST['side_id']);
 			}
-		} else {
-			$patient->addFamilyHistory($relative->id,$side->id,$condition->id,@$_POST['comments']);
+
+			if (!$condition = FamilyHistoryCondition::model()->findByPk(@$_POST['condition_id'])) {
+				throw new Exception("Unknown condition: ".@$_POST['condition_id']);
+			}
+
+			if (@$_POST['edit_family_history_id']) {
+				if (!$fh = FamilyHistory::model()->findByPk(@$_POST['edit_family_history_id'])) {
+					throw new Exception("Family history not found: ".@$_POST['edit_family_history_id']);
+				}
+				$fh->relative_id = $relative->id;
+				if ($relative->is_other) {
+					$fh->other_relative = @$_POST['other_relative'];
+				}
+				$fh->side_id = $side->id;
+				$fh->condition_id = $condition->id;
+				if ($condition->is_other) {
+					$fh->other_condition = @$_POST['other_condition'];
+				}
+				$fh->comments = @$_POST['comments'];
+
+				if (!$fh->save()) {
+					throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+				}
+			} else {
+				$patient->addFamilyHistory($relative->id,@$_POST['other_relative'],$side->id,$condition->id,@$_POST['other_condition'], @$_POST['comments']);
+			}
 		}
 
 		$this->redirect(array('patient/view/'.$patient->id));

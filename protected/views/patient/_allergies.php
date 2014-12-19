@@ -16,6 +16,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+Yii::app()->assetManager->registerScriptFile('js/allergies.js');
 ?>
 <section class="box patient-info associated-data js-toggle-container">
 	<header class="box-header">
@@ -30,41 +32,37 @@
 		</a>
 	</header>
 	<div class="js-toggle-body">
-		<?php
-		if (!$this->patient->hasAllergyStatus()) {
-			?>
-			<p class="allergy-status">Patient allergy status is unknown</p>
-			<?php
-		} elseif ($this->patient->no_allergies_date) {
-			?>
-			<p class="allergy-status">Patient has no known allergies</p>
-			<?php
-		} else {
-			?>
-			<table class="plain patient-data" id="currentAllergies">
-				<thead>
-					<tr>
-						<th>Allergies</th>
-						<?php if ($this->checkAccess('OprnEditAllergy')) { ?><th>Actions</th><?php } ?>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ($this->patient->allergies as $allergy) { ?>
-					<tr data-allergy-id="<?php echo $allergy->id ?>" data-allergy-name="<?php echo $allergy->name ?>">
-						<td><?php echo $allergy->name ?></td>
-						<?php if ($this->checkAccess('OprnEditAllergy')) { ?>
-							<td>
-								<a href="#" rel="<?php echo $allergy->id?>" class="small removeAllergy">
-									Remove
-								</a>
-							</td>
-						<?php } ?>
-					</tr>
+
+		<p class="allergy-status-unknown" <?php if (!(empty($this->patient->allergyAssignments)) || $this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>Patient allergy status is unknown</p>
+
+		<p class="allergy-status-none" <?php if (!$this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>Patient has no known allergies</p>
+
+		<table class="plain patient-data" id="currentAllergies" <?php if (empty($this->patient->allergyAssignments)) { echo 'style="display: none;"'; }?>>
+			<thead>
+			<tr>
+				<th>Allergies</th>
+				<th>Comments</th>
+				<?php if ($this->checkAccess('OprnEditAllergy')) { ?><th>Actions</th><?php } ?>
+			</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($this->patient->allergyAssignments as $aa) { ?>
+				<tr data-assignment-id="<?= $aa->id ?>" data-allergy-id="<?= $aa->allergy->id ?>" data-allergy-name="<?= $aa->allergy->name ?>">
+					<td><?= CHtml::encode($aa->name) ?></td>
+					<td><?= CHtml::encode($aa->comments) ?></td>
+					<?php if ($this->checkAccess('OprnEditAllergy')) { ?>
+						<td>
+							<a href="#" rel="<?php echo $aa->id?>" class="small removeAllergy">
+								Remove
+							</a>
+						</td>
 					<?php } ?>
-				</tbody>
-			</table>
-			<?php
-		}
+				</tr>
+			<?php } ?>
+			</tbody>
+		</table>
+		<?php
+
 		if ($this->checkAccess('OprnEditAllergy')) { ?>
 			<div class="box-actions">
 				<button id="btn-add_allergy" class="secondary small">
@@ -85,24 +83,42 @@
 					),
 				))?>
 
-				<div class="row field-row familyHistory">
-					<div class="<?php echo $form->columns('label');?>">
-						<label for="no_allergies">Confirm patient has no allergies:</label>
-					</div>
-					<div class="<?php echo $form->columns('field');?>">
-						<?php echo CHtml::checkBox('no_allergies', $this->patient->no_allergies_date ? true : false); ?>
+				<div class="allergies_confirm_no field-row row" <?php if ($this->patient->hasAllergyStatus() && !$this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>
+					<div class="allergies">
+						<div class="<?php echo $form->columns('label');?>">
+							<label for="no_allergies">Confirm patient has no allergies:</label>
+						</div>
+						<div class="<?php echo $form->columns('field');?>">
+							<?php echo CHtml::checkBox('no_allergies', $this->patient->no_allergies_date ? true : false); ?>
+						</div>
 					</div>
 				</div>
 
 				<input type="hidden" name="edit_allergy_id" id="edit_allergy_id" value="" />
 				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
-				<div class="row field-row familyHistory" id="allergy_field" <?php if ($this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>
+				<div class="row field-row allergy_field" <?php if ($this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>
 					<div class="<?php echo $form->columns('label');?>">
 						<label for="allergy_id">Add allergy:</label>
 					</div>
 					<div class="<?php echo $form->columns('field');?>">
 						<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'))?>
+					</div>
+				</div>
+				<div id="allergy_other" class="row field-row hidden">
+					<div class="<?php echo $form->columns('label');?>">
+						<label for="allergy_id">Other allergy:</label>
+					</div>
+					<div class="<?php echo $form->columns('field');?>">
+						<?= CHtml::textField('other','',array('autocomplete'=>Yii::app()->params['html_autocomplete'])); ?>
+					</div>
+				</div>
+				<div class="field-row row allergy_field" <?php if ($this->patient->no_allergies_date) { echo 'style="display: none;"'; }?>>
+					<div class="<?php echo $form->columns('label');?>">
+						<label for="comments">Comments:</label>
+					</div>
+					<div class="<?php echo $form->columns('field');?>">
+						<?php echo CHtml::textField('comments','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 					</div>
 				</div>
 
@@ -137,87 +153,4 @@
 			</div>
 		</div>
 	</div>
-
-	<script type="text/javascript">
-		$('#no_allergies').bind('change', function() {
-			if ($(this)[0].checked) {
-				$('#allergy_field').hide().find('select').attr('disabled', 'disabled');
-			}
-			else {
-				$('#allergy_field').show().find('select').removeAttr('disabled');
-			}
-		});
-
-		$('#btn-add_allergy').click(function() {
-			$('#relative_id').val('');
-			$('#add_allergy').slideToggle('fast');
-			$('#btn-add_allergy').attr('disabled',true);
-			$('#btn-add_allergy').addClass('disabled');
-		});
-		$('button.btn_cancel_allergy').click(function() {
-			$('#add_allergy').slideToggle('fast');
-			$('#btn-add_allergy').attr('disabled',false);
-			$('#btn-add_allergy').removeClass('disabled');
-			return false;
-		});
-		$('button.btn_save_allergy').click(function() {
-			if ($('#allergy_id').val() == '' && !$('#no_allergies')[0].checked) {
-				new OpenEyes.UI.Dialog.Alert({
-					content: "Please select an allergy or confirm patient has no allergies"
-				}).open();
-				return false;
-			}
-			$('img.add_allergy_loader').show();
-			return true;
-		});
-
-
-		$('.removeAllergy').live('click',function() {
-			$('#remove_allergy_id').val($(this).attr('rel'));
-
-			$('#confirm_remove_allergy_dialog').dialog({
-				resizable: false,
-				modal: true,
-				width: 560
-			});
-
-			return false;
-		});
-
-		$('button.btn_remove_allergy').click(function() {
-			$("#confirm_remove_allergy_dialog").dialog("close");
-
-			$.ajax({
-				'type': 'GET',
-				'url': baseUrl+'/patient/removeAllergy?patient_id=<?php echo $this->patient->id?>&allergy_id='+$('#remove_allergy_id').val(),
-				'success': function(html) {
-					if (html == 'success') {
-						var allergy_id = $('#remove_allergy_id').val();
-						var row = $('#currentAllergies tr[data-allergy-id="' + allergy_id + '"]');
-						var allergy_name = row.data('allergy-name');
-						row.remove();
-						$('#allergy_id').append('<option value="'+allergy_id+'">'+allergy_name+'</option>');
-						sort_selectbox($('#allergy_id'));
-
-					} else {
-						new OpenEyes.UI.Dialog.Alert({
-							content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
-						}).open();
-					}
-				},
-				'error': function() {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "Sorry, an internal error occurred and we were unable to remove the allergy.\n\nPlease contact support for assistance."
-					}).open();
-				}
-			});
-
-			return false;
-		});
-
-		$('button.btn_cancel_remove_allergy').click(function() {
-			$("#confirm_remove_allergy_dialog").dialog("close");
-			return false;
-		});
-	</script>
 <?php } ?>

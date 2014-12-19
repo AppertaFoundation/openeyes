@@ -30,7 +30,8 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 		<div class="<?= $form->columns('field');?>">
 
 			<input type="hidden" name="drug_id" value="<?= $medication->drug_id ?>"/>
-			<div class="field-row data-value" id="medication_drug_name"><?= $medication->drug_id ? CHtml::encode($medication->drug->label) : "" ?></div>
+			<input type="hidden" name="medication_drug_id" value="<?= $medication->medication_drug_id ?>"/>
+			<div class="field-row data-value" id="medication_drug_name"><?= CHtml::encode($medication->getDrugLabel()) ?></div>
 
 			<div class="field-row">
 				<?= CHtml::dropDownList('drug_select','', Drug::model()->listBySubspecialty($firm->getSubspecialtyID()), array('empty' => '- Select -'))?>
@@ -53,10 +54,9 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 								e.preventDefault();
 							}"
 						),
-						'htmlOptions' => array('placeholder' => 'or search formulary'),
+						'htmlOptions' => array('placeholder' => 'or search'),
 					)
 				);
-
 				?>
 			</div>
 		</div>

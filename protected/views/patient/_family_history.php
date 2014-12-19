@@ -1,3 +1,25 @@
+<?php
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+
+Yii::app()->assetManager->registerScriptFile('js/family_history.js');
+?>
+
 <section class="box patient-info associated-data js-toggle-container">
 	<header class="box-header">
 		<h3 class="box-title">
@@ -11,33 +33,39 @@
 		</a>
 	</header>
 	<div class="js-toggle-body">
-		<table class="plain patient-data">
+
+		<p class="family-history-status-none" <?php if (!$this->patient->no_family_history_date) { echo 'style="display: none;"'; }?>>Patient has no known family history</p>
+
+		<p class="family-history-status-unknown"  <?php if (!empty($this->patient->familyHistory) || $this->patient->no_family_history_date) { echo 'style="display: none;"'; }?>>Patient family history is unknown</p>
+
+		<table id="currentFamilyHistory" class="plain patient-data" <?php if (empty($this->patient->familyHistory)) { echo 'style="display: none;"'; }?>>
 			<thead>
-				<tr>
-					<th>Relative</th>
-					<th>Side</th>
-					<th>Condition</th>
-					<th>Comments</th>
-					<?php if ($this->checkAccess('OprnEditFamilyHistory')) { ?><th>Actions</th><?php } ?>
-				</tr>
+			<tr>
+				<th>Relative</th>
+				<th>Side</th>
+				<th>Condition</th>
+				<th>Comments</th>
+				<?php if ($this->checkAccess('OprnEditFamilyHistory')) { ?><th>Actions</th><?php } ?>
+			</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($this->patient->familyHistory as $history) {?>
-					<tr>
-						<td class="relative"><?php echo $history->relative->name?></td>
-						<td class="side"><?php echo $history->side->name?></td>
-						<td class="condition"><?php echo $history->condition->name?></td>
-						<td class="comments"><?php echo CHtml::encode($history->comments)?></td>
-						<?php if ($this->checkAccess('OprnEditFamilyHistory')): ?>
-							<td>
-								<a href="#" class="editFamilyHistory" rel="<?php echo $history->id?>">Edit</a>&nbsp;&nbsp;
-								<a href="#" class="removeFamilyHistory" rel="<?php echo $history->id?>">Remove</a>
-							</td>
-						<?php endif ?>
-					</tr>
-				<?php }?>
+			<?php foreach ($this->patient->familyHistory as $history) {?>
+				<tr>
+					<td class="relative" data-relativeId="<?= $history->relative_id ?>"><?php echo $history->getRelativeName(); ?></td>
+					<td class="side"><?php echo $history->side->name?></td>
+					<td class="condition" data-conditionId="<?= $history->condition_id ?>"><?php echo $history->getConditionName(); ?></td>
+					<td class="comments"><?php echo CHtml::encode($history->comments)?></td>
+					<?php if ($this->checkAccess('OprnEditFamilyHistory')): ?>
+						<td>
+							<a href="#" class="editFamilyHistory" rel="<?php echo $history->id?>">Edit</a>&nbsp;&nbsp;
+							<a href="#" class="removeFamilyHistory" rel="<?php echo $history->id?>">Remove</a>
+						</td>
+					<?php endif ?>
+				</tr>
+			<?php }?>
 			</tbody>
 		</table>
+
 
 		<?php if ($this->checkAccess('OprnEditFamilyHistory')) { ?>
 			<div class="box-actions">
@@ -66,12 +94,44 @@
 						<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
 						<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
+						<div class="family-history-confirm-no field-row row" <?php if (!empty($this->patient->familyHistory)) { echo 'style="display: none;"'; }?>>
+						<div class="familyHistory">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="no_family_history">Confirm patient has no family history:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::checkBox('no_family_history', $this->patient->no_family_history_date ? true : false); ?>
+							</div>
+						</div>
+						</div>
+
+						<div class="family_history_field field-row" <?php if ($this->patient->no_family_history_date) { echo 'style="display: none;"'; }?>>
+
 						<div class="field-row row">
 							<div class="<?php echo $form->columns('label');?>">
 								<label for="relative_id">Relative:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(FamilyHistoryRelative::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php
+								$relatives = FamilyHistoryRelative::model()->findAll(array('order'=>'display_order'));
+								$relatives_opts = array(
+										'options' => array(),
+										'empty'=>'- select -',
+								);
+								foreach ($relatives as $rel) {
+									$relatives_opts['options'][$rel->id] = array('data-other' => $rel->is_other ? '1' : '0');
+								}
+								echo CHtml::dropDownList('relative_id','',CHtml::listData($relatives,'id','name'),$relatives_opts)
+								?>
+							</div>
+						</div>
+
+						<div class="field-row row hidden" id="family-history-o-rel-wrapper">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="comments">Other Relative:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::textField('other_relative','')?>
 							</div>
 						</div>
 
@@ -89,7 +149,26 @@
 								<label for="condition_id">Condition:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::dropDownList('condition_id','',CHtml::listData(FamilyHistoryCondition::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+								<?php
+								$conditions = FamilyHistoryCondition::model()->findAll(array('order'=>'display_order'));
+								$conditions_opts = array(
+										'options' => array(),
+										'empty'=>'- select -',
+								);
+								foreach ($conditions as $con) {
+									$conditions_opts['options'][$con->id] = array('data-other' => $con->is_other ? '1' : '0');
+								}
+								echo CHtml::dropDownList('condition_id','',CHtml::listData($conditions,'id','name'),$conditions_opts);
+								?>
+							</div>
+						</div>
+
+						<div class="field-row row hidden" id="family-history-o-con-wrapper">
+							<div class="<?php echo $form->columns('label');?>">
+								<label for="comments">Other Condition:</label>
+							</div>
+							<div class="<?php echo $form->columns('field');?>">
+								<?php echo CHtml::textField('other_condition','')?>
 							</div>
 						</div>
 
@@ -98,8 +177,10 @@
 								<label for="comments">Comments:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('comments','')?>
+								<?php echo CHtml::textField('comments','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							</div>
+						</div>
+
 						</div>
 
 						<div class="buttons">
@@ -136,116 +217,3 @@
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript">
-	$('#btn-add_family_history').click(function() {
-		$('#relative_id').val('');
-		$('div.familyHistory #side_id').val('');
-		$('#condition_id').val('');
-		$('#add_family_history #comments').val('');
-		$('#add_family_history').slideToggle('fast');
-		$('#btn-add_family_history').attr('disabled',true);
-		$('#btn-add_family_history').addClass('disabled');
-	});
-	$('button.btn_cancel_family_history').click(function() {
-		$('#add_family_history').slideToggle('fast');
-		$('#btn-add_family_history').attr('disabled',false);
-		$('#btn-add_family_history').removeClass('disabled');
-		return false;
-	});
-	$('button.btn_save_family_history').click(function() {
-		if ($('#relative_id').val() == '') {
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Please select a relative."
-			}).open();
-			return false;
-		}
-		if ($('#side_id').val() == '') {
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Please select a side."
-			}).open();
-			return false;
-		}
-		if ($('#condition_id').val() == '') {
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Please select a condition."
-			}).open();
-			return false;
-		}
-		$('img.add_family_history_loader').show();
-		return true;
-	});
-	$('a.editFamilyHistory').click(function(e) {
-
-		var tr = $(this).closest('tr');
-		var history_id = $(this).attr('rel');
-
-		$('#edit_family_history_id').val(history_id);
-		var relative = tr.find('.relative').text();
-		$('#relative_id').children('option').map(function() {
-			if ($(this).text() == relative) {
-				$(this).attr('selected','selected');
-			}
-		});
-		var side = tr.find('.side').text();
-		$('#side_id').children('option').map(function() {
-			if ($(this).text() == side) {
-				$(this).attr('selected','selected');
-			}
-		});
-		var condition = tr.find('.condition').text();
-		$('#condition_id').children('option').map(function() {
-			if ($(this).text() == condition) {
-				$(this).attr('selected','selected');
-			}
-		});
-		$('#add_family_history #comments').val(tr.find('.comments').text());
-		$('#add_family_history').slideToggle('fast');
-		$('#btn-add_family_history').attr('disabled',true);
-		$('#btn-add_family_history').addClass('disabled');
-
-		e.preventDefault();
-	});
-
-	$('.removeFamilyHistory').live('click',function() {
-		$('#family_history_id').val($(this).attr('rel'));
-
-		$('#confirm_remove_family_history_dialog').dialog({
-			resizable: false,
-			modal: true,
-			width: 560
-		});
-
-		return false;
-	});
-
-	$('button.btn_remove_family_history').click(function() {
-		$("#confirm_remove_family_history_dialog").dialog("close");
-
-		$.ajax({
-			'type': 'GET',
-			'url': baseUrl+'/patient/removeFamilyHistory?patient_id=<?php echo $this->patient->id?>&family_history_id='+$('#family_history_id').val(),
-			'success': function(html) {
-				if (html == 'success') {
-					$('a.removeFamilyHistory[rel="'+$('#family_history_id').val()+'"]').parent().parent().remove();
-				} else {
-					new OpenEyes.UI.Dialog.Alert({
-						content: "Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance."
-					}).open();
-				}
-			},
-			'error': function() {
-				new OpenEyes.UI.Dialog.Alert({
-					content: "Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance."
-				}).open();
-			}
-		});
-
-		return false;
-	});
-
-	$('button.btn_cancel_remove_family_history').click(function() {
-		$("#confirm_remove_family_history_dialog").dialog("close");
-		return false;
-	});
-</script>

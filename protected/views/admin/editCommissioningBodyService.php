@@ -33,13 +33,13 @@
 	))?>
 		<?php echo $form->dropDownList($cbs,'commissioning_body_id','CommissioningBody',array('style'=>'margin-bottom:6px;'))?>
 		<?php echo $form->dropDownList($cbs,'commissioning_body_service_type_id','CommissioningBodyServiceType',array('style'=>'margin-bottom:6px;'))?>
-		<?php echo $form->textField($cbs,'name')?>
-		<?php echo $form->textField($cbs,'code',null,null,array('field'=>2))?>
-		<?php echo $form->textField($address,'address1')?>
-		<?php echo $form->textField($address,'address2')?>
-		<?php echo $form->textField($address,'city')?>
-		<?php echo $form->textField($address,'county')?>
-		<?php echo $form->textField($address,'postcode')?>
+		<?php echo $form->textField($cbs,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($cbs,'code',array('autocomplete'=>Yii::app()->params['html_autocomplete']),null,array('field'=>2))?>
+		<?php echo $form->textField($address,'address1',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($address,'address2',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($address,'city',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($address,'county',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($address,'postcode',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->dropDownList($address,'country_id','Country')?>
 		<?php echo $form->formActions(array('cancel-uri' => '/admin/commissioning_body_services'));?>
 	<?php $this->endWidget()?>

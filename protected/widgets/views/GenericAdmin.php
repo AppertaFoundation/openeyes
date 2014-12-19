@@ -17,98 +17,80 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<table class="generic-admin">
-	<thead>
-		<tr>
-			<th>Order</th>
-			<th>Name</th>
-			<?php foreach ($extra_fields as $field) {?>
-				<th>
-					<?php echo CHtml::hiddenField('_extra_fields[]',$field['field'])?>
-					<?php echo $model::model()->getAttributeLabel($field['field'])?>
-				</th>
-			<?php }?>
-			<?php if ($model::model()->hasAttribute('active')) {?>
-				<th>Active</th>
-			<?php } else{?>
-				<th>Actions</th>
-			<?php }
-			if ($model::model()->hasAttribute('default')) {?>
-				<th>Default</th>
-			<?php }?>
-		</tr>
-	</thead>
-	<tbody>
-		<?php foreach ($data as $i => $row) {?>
-			<tr data-i="<?php echo $i?>">
-				<td class="reorder">
-					<span>&uarr;&darr;</span>
-				</td>
-				<td>
-					<?php echo CHtml::hiddenField('id[]',$row->id)?>
-					<?php echo CHtml::textField('name[]',$row->name)?>
-					<?php if (isset($errors[$i])) {?>
-						<span class="error">
-							<?php echo $errors[$i]?>
-						</span>
+
+<?php if (!$get_row) {
+
+	if ($filter_fields) { ?>
+		<form method="get">
+			<?php foreach ($filter_fields as $filter_field) { ?>
+				<div class="row field-row">
+					<div class="large-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
+					<div class="large-5 column end"><?=
+						CHtml::dropDownList(
+							$filter_field['field'], $filter_field['value'],
+							SelectionHelper::listData($filter_field['model']),
+							array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
+						);
+					?></div>
+				</div>
+			<?php } ?>
+		</form>
+	<?php }
+	if ($filters_ready) { ?>
+		<?= CHtml::beginForm() ?>
+		<table class="generic-admin">
+			<thead>
+				<tr>
+					<th>Order</th>
+					<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
+					<?php foreach ($extra_fields as $field) {?>
+						<th>
+							<?php echo CHtml::hiddenField('_extra_fields[]',$field['field'])?>
+							<?php echo $model::model()->getAttributeLabel($field['field'])?>
+						</th>
 					<?php }?>
-				</td>
-				<?php foreach ($extra_fields as $field) {?>
-					<td>
-						<?php $this->render('_generic_admin_'.$field['type'],array('row' => $row, 'params' => $field))?>
-					</td>
-				<?php }?>
-				<td>
-					<?php if ($model::model()->hasAttribute('active')) {
-						echo CHtml::checkBox('active[' . $i . ']',$row->active);
-					} else{?>
-						<a href="#" class="deleteRow">delete</a>
+					<?php if ($model::model()->hasAttribute('active')) {?>
+						<th>Active</th>
+					<?php } else{?>
+						<th>Actions</th>
+					<?php }
+					if ($model::model()->hasAttribute('default')) {?>
+						<th>Default</th>
 					<?php }?>
-				</td>
-				<?php if ($model::model()->hasAttribute('default')) {?>
-					<td>
-						<?php echo CHtml::radioButton('default',$row->default,array('value' => $i))?>
-					</td>
-				<?php }?>
-			</tr>
-		<?php }?>
-		<tr class="newRow" style="display: none">
-			<td>
-				<span>&uarr;&darr;</span>
-			</td>
-			<td>
-				<?php echo CHtml::hiddenField('id[]','',array('disabled' => 'disabled'))?>
-				<?php echo CHtml::textField('name[]','',array('disabled' => 'disabled'))?>
-			</td>
-			<?php foreach ($extra_fields as $field) {?>
-				<td>
-					<?php $this->render('_generic_admin_'.$field['type'],array('row' => null, 'params' => $field, 'disabled' => 'disabled'))?>
-				</td>
-			<?php }?>
-			<td>
-				<a href="#" class="deleteRow">delete</a>
-			</td>
+				</tr>
+			</thead>
+			<tbody>
+
+	<?php }
+}
+?>
+
+<?php foreach ($items as $i => $row) {
+	$this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model));
+}
+
+if (!$get_row && $filters_ready) {
+				if (!$this->new_row_url) {
+					$this->render('_generic_admin_row', array('row_class' => 'newRow', 'row_style' => 'display: none;', 'disabled' => true,
+							'i' => '{{key}}', 'row' => new $model, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model));
+				} ?>
+			</tbody>
 			<?php if ($model::model()->hasAttribute('default')) {?>
-				<td>
-					<?php echo CHtml::radioButton('default',false)?>
-				</td>
+				<tfoot>
+					<tr>
+						<td colspan="4" class="generic-admin-no-default">
+							No default
+						</td>
+						<td>
+							<?php echo CHtml::radioButton('default',!$has_default,array('value' => 'NONE'))?>
+						</td>
+					</tr>
+				</tfoot>
 			<?php }?>
-		</tr>
-	</tbody>
-	<?php if ($model::model()->hasAttribute('default')) {?>
-		<tfoot>
-			<tr>
-				<td colspan="4" class="generic-admin-no-default">
-					No default
-				</td>
-				<td>
-					<?php echo CHtml::radioButton('default',!$has_default,array('value' => 'NONE'))?>
-				</td>
-			</tr>
-		</tfoot>
-	<?php }?>
-</table>
-<div>
-	<?php echo EventAction::button('Add', 'admin-add', null, array('class' => 'generic-admin-add small secondary'))->toHtml()?>&nbsp;
-	<?php echo EventAction::button('Save', 'admin-save', null, array('class' => 'generic-admin-save small primary'))->toHtml()?>&nbsp;
-</div>
+		</table>
+		<div>
+			<?php echo EventAction::button('Add', 'admin-add', null, array('class' => 'generic-admin-add small secondary', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url))->toHtml()?>&nbsp;
+			<?php echo EventAction::button('Save', 'admin-save', null, array('class' => 'generic-admin-save small primary'))->toHtml()?>&nbsp;
+		</div>
+	<?= CHtml::endForm() ?>
+<?php }

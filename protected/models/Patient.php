@@ -133,6 +133,7 @@ class Patient extends BaseActiveRecordVersioned
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)',
 				'alias' => 'patient_allergies',
 				'order' => 'patient_allergies.name'),
+			'allergyAssignments' => array(self::HAS_MANY, 'PatientAllergyAssignment', 'patient_id'),
 			'secondarydiagnoses' => array(self::HAS_MANY, 'SecondaryDiagnosis', 'patient_id'),
 			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
 			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'CASE WHEN Date IS NULL THEN 1 ELSE 0 END, Date'),
@@ -658,95 +659,46 @@ class Patient extends BaseActiveRecordVersioned
 	}
 
 	/**
-	 * adds an allergy to the patient by id
+	 * adds an allergy to the patient
 	 *
-	 * @param $allergy_id
+	 * @param Allergy $allergy
+	 * @param string $other
 	 * @throws Exception
 	 */
-	public function addAllergy($allergy_id)
+	public function addAllergy(Allergy $allergy, $other = null, $comments = null)
 	{
-		if (!PatientAllergyAssignment::model()->find('patient_id=? and allergy_id=?',array($this->id,$allergy_id))) {
-			$transaction = Yii::app()->db->beginTransaction();
-			try {
-				$paa = new PatientAllergyAssignment;
-				$paa->patient_id = $this->id;
-				$paa->allergy_id = $allergy_id;
-				if (!$paa->save()) {
-					throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
-				}
-
-				$this->audit('patient','add-allergy');
-				if ($this->no_allergies_date) {
-					$this->no_allergies_date = null;
-					if (!$this->save()) {
-						throw new Exception('Could not remove no allergy flag: ' . print_r($this->getErrors(), true));
-					};
-				}
-				$this->audit('patient','remove-noallergydate');
-				$transaction->commit();
-			}
-			catch (Exception $e) {
-				$transaction->rollback();
-				throw $e;
-			}
-		}
-	}
-
-	/**
-	 * remove the allergy identified by $allergy_id from the patient
-	 *
-	 * @param $allergy_id
-	 * @throws Exception
-	 */
-	public function removeAllergy($allergy_id)
-	{
-		if ($paa = PatientAllergyAssignment::model()->find('patient_id=? and allergy_id=?',array($this->id,$allergy_id))) {
-			if (!$paa->delete()) {
-				throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
-			}
-
-			$this->audit('patient','remove-allergy');
-		}
-	}
-
-	/**
-	 * set patient allergies to be the allergies identified by the array of ids. Other allergies will be removed
-	 * @param $allergy_ids
-	 * @throws Exception
-	 */
-	public function assignAllergies($allergy_ids)
-	{
-		$insert_allergy_ids = $allergy_ids;
-		$remove_allergy_ids = array();
-
-		// Check existing allergies
-		foreach ($this->allergies as $allergy) {
-			if (($key = array_search($allergy->id, $insert_allergy_ids)) !== false) {
-				// Allergy unchanged, don't remove or insert
-				unset($insert_allergy_ids[$key]);
-			} else {
-				// Allergy removed
-				$remove_allergy_ids[] = $allergy->id;
+		if ($allergy->name == 'Other') {
+			if (!$other) throw new Exception("No 'other' allergy specified");
+		} else {
+			if (PatientAllergyAssignment::model()->exists('patient_id=? and allergy_id=?', array($this->id, $allergy->id))) {
+				throw new Exception("Patient is already assigned allergy '{$allergy->name}'");
 			}
 		}
 
-		// Insert new allergies
-		foreach ($insert_allergy_ids as $allergy_id) {
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
 			$paa = new PatientAllergyAssignment;
 			$paa->patient_id = $this->id;
-			$paa->allergy_id = $allergy_id;
-
+			$paa->allergy_id = $allergy->id;
+			$paa->comments = $comments;
+			$paa->other = $other;
 			if (!$paa->save()) {
-				throw new Exception("Unable to save patient_allergy_assignment: ".print_r($paa->getErrors(),true));
+				throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
 			}
+
+			$this->audit('patient','add-allergy');
+			if ($this->no_allergies_date) {
+				$this->no_allergies_date = null;
+				if (!$this->save()) {
+					throw new Exception('Could not remove no allergy flag: ' . print_r($this->getErrors(), true));
+				};
+			}
+			$this->audit('patient','remove-noallergydate');
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
 		}
-
-		$criteria = new CDbCriteria;
-		$criteria->addCondition('patient_id = :patient_id');
-		$criteria->params[':patient_id'] = $this->id;
-		$criteria->addInCondition('allergy_id',$remove_allergy_ids);
-
-		PatientAllergyAssignment::model()->deleteAll($criteria);
 	}
 
 	/**
@@ -756,25 +708,37 @@ class Patient extends BaseActiveRecordVersioned
 	 */
 	public function setNoAllergies()
 	{
-		$transaction = Yii::app()->db->beginTransaction();
-		try {
-			foreach (PatientAllergyAssignment::model()->findAll('patient_id = ?', array($this->id)) as $paa) {
-				if (!$paa->delete()) {
-					throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
-				}
-				$this->audit('patient','remove-allergy');
-			}
-			$this->no_allergies_date = date('Y-m-d H:i:s');
-			if (!$this->save()) {
-				throw new Exception('Unable to set no allergy date:' .  print_r($this->getErrors(), true));
-			}
-			$this->audit('patient', 'set-noallergydate');
-			$transaction->commit();
+		if (!empty($this->allergyAssignments)) {
+			throw new Exception('Unable to set no allergy date as patient still has allergies assigned');
 		}
-		catch (Exception $e) {
-			$transaction->rollback();
-			throw $e;
+
+		$this->no_allergies_date = date('Y-m-d H:i:s');
+		if (!$this->save()) {
+			throw new Exception('Unable to set no allergy date:' .  print_r($this->getErrors(), true));
 		}
+
+		$this->audit('patient', 'set-noallergydate');
+	}
+
+
+	/**
+	 * marks the patient as having no family history
+	 *
+	 * @throws Exception
+	 */
+	public function setNoFamilyHistory()
+	{
+		if (!empty($this->familyHistory)) {
+			throw new Exception('Unable to set no family history date as patient still has family history assigned');
+		}
+
+		$this->no_family_history_date = date('Y-m-d H:i:s');
+
+		if (!$this->save()) {
+			throw new Exception('Unable to set no family history:' .  print_r($this->getErrors(), true));
+		}
+
+		$this->audit('patient', 'set-nofamilyhistorydate');
 	}
 
 	/*
@@ -1109,9 +1073,37 @@ class Patient extends BaseActiveRecordVersioned
 		}
 	}
 
-	public function addFamilyHistory($relative_id,$side_id,$condition_id,$comments)
+	/**
+	 * Adds FamilyHistory entry to the patient if it's not a duplicate
+	 *
+	 * @param $relative_id
+	 * @param $other_relative
+	 * @param $side_id
+	 * @param $condition_id
+	 * @param $other_condition
+	 * @param $comments
+	 * @throws Exception
+	 */
+	public function addFamilyHistory($relative_id,$other_relative,$side_id,$condition_id,$other_condition,$comments)
 	{
-		if (!$fh = FamilyHistory::model()->find('patient_id=? and relative_id=? and side_id=? and condition_id=?',array($this->id,$relative_id,$side_id,$condition_id))) {
+		$check_sql = 'patient_id=? and relative_id=? and side_id=? and condition_id=?';
+		$params = array($this->id,$relative_id,$side_id,$condition_id);
+		if ($other_relative) {
+			$check_sql .= ' and other_relative=?';
+			$params[] = $other_relative;
+		}
+		else {
+			$check_sql .= ' and other_relative is null';
+		}
+		if ($other_condition) {
+			$check_sql .= ' and other_condition=?';
+			$params[] = $other_condition;
+		}
+		else {
+			$check_sql .= ' and other_condition is null';
+		}
+
+		if (!$fh = FamilyHistory::model()->find($check_sql,$params)) {
 			$fh = new FamilyHistory;
 			$fh->patient_id = $this->id;
 			$fh->relative_id = $relative_id;
@@ -1123,6 +1115,13 @@ class Patient extends BaseActiveRecordVersioned
 
 		if (!$fh->save()) {
 			throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+		}
+
+		if ($this->no_family_history_date) {
+			$this->no_family_history_date = null;
+			if (!$this->save()) {
+				throw new Exception('Could not remove no family history flag: ' . print_r($this->getErrors(), true));
+			};
 		}
 	}
 
@@ -1334,9 +1333,9 @@ class Patient extends BaseActiveRecordVersioned
 							'details' => implode(', ', $terms)
 					);
 				}
-				if ($this->allergies) {
-					foreach ($this->allergies as $allergy) {
-						$allergies[] = $allergy->name;
+				if ($this->allergyAssignments) {
+					foreach ($this->allergyAssignments as $aa) {
+						$allergies[] = $aa->name;
 					}
 					$this->_clinical_warnings[] = array(
 						'short_msg' => 'Allergies',

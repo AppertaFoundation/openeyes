@@ -17,6 +17,8 @@
  */
 
 $(document).ready(function() {
+	$('select.generic-admin-filter').change(function () { this.form.submit(); });
+
 	$('.editRow').die('click').live('click',function(e) {
 		e.preventDefault();
 
@@ -32,32 +34,71 @@ $(document).ready(function() {
 		GenericAdmin_ReindexDefault();
 	});
 
+	function getNextKey() {
+		var keys = $('table.generic-admin tr').map(function(index, el) {
+			v = parseInt($(el).attr('data-row'));
+			return isNaN(v) ? -Infinity : v;
+		}).get();
+		var v = Math.max.apply(null, keys);
+		if (v >= 0) {
+			return v+1;
+		}
+		return 0;
+	}
+
+
 	$('.generic-admin tbody').sortable({
 		helper: 'clone',
 		start: function() {
-			$('.generic-admin tbody').data('default',$('.generic-admin tbody tr').find('input[type="radio"][name="default"]:checked').closest('tr').data('i'));
+			$('.generic-admin tbody').data('default',$('.generic-admin tbody tr').find('input[type="radio"][name="default"]:checked').closest('tr').data('row'));
 		},
 		stop: function() {
 			GenericAdmin_ReindexDefault();
-			$('.generic-admin tbody tr[data-i="' + $('.generic-admin tbody').data('default') + '"]').find('input[type="radio"][name="default"]').prop('checked',true);
+			$('.generic-admin tbody tr[data-row="' + $('.generic-admin tbody').data('default') + '"]').find('input[type="radio"][name="default"]').prop('checked',true);
 		}
 	});
+
+	function getNextDisplayOrder() {
+		var keys = $('table.generic-admin tr').map(function(index, el) {
+			v = parseInt($(el).find('input[name^="display_order"]').val());
+			return isNaN(v) ? -Infinity : v;
+		}).get();
+		var v = Math.max.apply(null, keys);
+		if (v >= 0) {
+			return v+1;
+		}
+		return 1;
+	}
+
+	function appendRow(form) {
+		var dOrder = getNextDisplayOrder();
+		$('.generic-admin tbody').append(form);
+		$('.generic-admin tbody').children('tr:last').find('input[name^="display_order"]').val(dOrder);
+		$('.generic-admin tbody').children('tr:last').children('td:nth-child(2)').children('input').focus();
+		//TODO: what is i?
+		$('.generic-admin tbody tr:last').find('input[type="radio"][name="default"]').attr('value',i-1);
+	}
 
 	$('.generic-admin-add').unbind('click').click(function(e) {
 		e.preventDefault();
 
-		var i = $('.generic-admin tbody tr').length;
-		var j = 0;
+		var data = {
+			"key" : getNextKey()
+		};
+		var template = $('.generic-admin .newRow').html();
 
-		$('.generic-admin tbody tr').map(function() {
-			if (parseInt($(this).data('i')) > j) {
-				j = parseInt($(this).data('i'));
-			}
-		});
-
-		$('.generic-admin tbody').append('<tr data-i="' + (j+1) + '">' + $('.generic-admin .newRow').html().replace(/ disabled="disabled"/g,'') + '</tr>');
-		$('.generic-admin tbody').children('tr:last').children('td:nth-child(2)').children('input').focus();
-		$('.generic-admin tbody tr:last').find('input[type="radio"][name="default"]').attr('value',i-1);
+		if (template) {
+			appendRow('<tr data-row="'+data.key+'">' + Mustache.render(template, data).replace(/ disabled="disabled"/g,'') + '</tr>');
+		}
+		else {
+			$.ajax({
+				'url': $(this).data('new-row-url'),
+				'data': {'key': data.key, 'model': $(this).data('model')},
+				'success': function(resp) {
+					appendRow(resp);
+				}
+			});
+		}
 	});
 });
 
@@ -67,6 +108,12 @@ function GenericAdmin_ReindexDefault()
 	var i = 0;
 
 	$('.generic-admin tbody tr').map(function() {
+		var display_order = $(this).find('input[name^="display_order"]');
+
+		if (display_order.length > 0) {
+			display_order.val(i+1);
+		}
+
 		var def = $(this).find('input[type="radio"][name="default"]');
 
 		if (def.length >0) {

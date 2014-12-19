@@ -3,38 +3,38 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ba64bd50abc619ebb7ef5f9f5c3873f4",
+    "hash": "9b6a4bc113f70ae06e7f0230fadd66e8",
     "packages": [
 
     ],
     "packages-dev": [
         {
             "name": "behat/behat",
-            "version": "v2.4.6",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Behat.git",
-                "reference": "v2.4.6"
+                "reference": "b7e0e98dd7b50f2fccfbfad0d6495b0e022856b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/v2.4.6",
-                "reference": "v2.4.6",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/b7e0e98dd7b50f2fccfbfad0d6495b0e022856b3",
+                "reference": "b7e0e98dd7b50f2fccfbfad0d6495b0e022856b3",
                 "shasum": ""
             },
             "require": {
-                "behat/gherkin": ">=2.2.9,<2.3",
+                "behat/gherkin": "~2.2.9",
                 "php": ">=5.3.1",
-                "symfony/config": ">=2.0,<3.0",
-                "symfony/console": ">=2.0,<3.0",
-                "symfony/dependency-injection": ">=2.0,<3.0",
-                "symfony/event-dispatcher": ">=2.0,<3.0",
-                "symfony/finder": ">=2.0,<3.0",
-                "symfony/translation": ">=2.0,<3.0",
-                "symfony/yaml": ">=2.0,<3.0"
+                "symfony/config": "~2.0",
+                "symfony/console": "~2.0",
+                "symfony/dependency-injection": "~2.0",
+                "symfony/event-dispatcher": "~2.0",
+                "symfony/finder": "~2.0",
+                "symfony/translation": "~2.0",
+                "symfony/yaml": "~2.0"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=3.7.19.0,<3.8"
+                "phpunit/phpunit": "~3.7.19"
             },
             "suggest": {
                 "behat/mink-extension": "for integration with Mink testing framework",
@@ -73,7 +73,7 @@
                 "Behat",
                 "Symfony2"
             ],
-            "time": "2013-06-06 10:46:48"
+            "time": "2013-08-11 16:11:33"
         },
         {
             "name": "behat/gherkin",
@@ -81,12 +81,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Gherkin.git",
-                "reference": "v2.2.9"
+                "reference": "cca2c477921ca38578d6e9759ea5e450f29c2d8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Gherkin/zipball/v2.2.9",
-                "reference": "v2.2.9",
+                "url": "https://api.github.com/repos/Behat/Gherkin/zipball/cca2c477921ca38578d6e9759ea5e450f29c2d8f",
+                "reference": "cca2c477921ca38578d6e9759ea5e450f29c2d8f",
                 "shasum": ""
             },
             "require": {
@@ -142,17 +142,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Mink.git",
-                "reference": "v1.5.0"
+                "reference": "0769e6d9726c140a54dbf827a438c0f9912749fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Mink/zipball/v1.5.0",
-                "reference": "v1.5.0",
+                "url": "https://api.github.com/repos/Behat/Mink/zipball/0769e6d9726c140a54dbf827a438c0f9912749fe",
+                "reference": "0769e6d9726c140a54dbf827a438c0f9912749fe",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.1",
-                "symfony/css-selector": ">=2.0,<3.0"
+                "symfony/css-selector": "~2.0"
             },
             "suggest": {
                 "behat/mink-browserkit-driver": "extremely fast headless driver for Symfony\\Kernel-based apps (Sf2, Silex)",
@@ -197,19 +197,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkBrowserKitDriver.git",
-                "reference": "v1.1.0"
+                "reference": "63960c8fcad4529faad1ff33e950217980baa64c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkBrowserKitDriver/zipball/v1.1.0",
-                "reference": "v1.1.0",
+                "url": "https://api.github.com/repos/Behat/MinkBrowserKitDriver/zipball/63960c8fcad4529faad1ff33e950217980baa64c",
+                "reference": "63960c8fcad4529faad1ff33e950217980baa64c",
                 "shasum": ""
             },
             "require": {
-                "behat/mink": ">=1.5,<1.6",
+                "behat/mink": "~1.5.0",
                 "php": ">=5.3.1",
-                "symfony/browser-kit": ">=2.0,<3.0",
-                "symfony/dom-crawler": ">=2.0,<3.0"
+                "symfony/browser-kit": "~2.0",
+                "symfony/dom-crawler": "~2.0"
             },
             "require-dev": {
                 "silex/silex": "@dev"
@@ -248,32 +248,29 @@
         },
         {
             "name": "behat/mink-extension",
-            "version": "v1.1.4",
+            "version": "v1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkExtension.git",
-                "reference": "v1.1.4"
+                "reference": "b885b9407cba50a954f72c69ed1b2f8d3bc694f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkExtension/zipball/v1.1.4",
-                "reference": "v1.1.4",
+                "url": "https://api.github.com/repos/Behat/MinkExtension/zipball/b885b9407cba50a954f72c69ed1b2f8d3bc694f8",
+                "reference": "b885b9407cba50a954f72c69ed1b2f8d3bc694f8",
                 "shasum": ""
             },
             "require": {
-                "behat/behat": ">=2.4.5,<2.5",
-                "behat/mink": ">=1.4.3,<1.6-dev",
-                "php": ">=5.3.2"
+                "behat/behat": "~2.5.0",
+                "behat/mink": "~1.5",
+                "php": ">=5.3.2",
+                "symfony/config": "~2.2"
             },
             "require-dev": {
-                "behat/mink-goutte-driver": ">=1.0,<2.0"
+                "behat/mink-goutte-driver": "~1.0",
+                "fabpot/goutte": "~1.0"
             },
             "type": "behat-extension",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1.x-dev"
-                }
-            },
             "autoload": {
                 "psr-0": {
                     "Behat\\MinkExtension": "src/"
@@ -298,7 +295,7 @@
                 "test",
                 "web"
             ],
-            "time": "2013-06-04 12:18:22"
+            "time": "2014-05-15 19:27:39"
         },
         {
             "name": "behat/mink-goutte-driver",
@@ -306,12 +303,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkGoutteDriver.git",
-                "reference": "v1.0.9"
+                "reference": "fa1b073b48761464feb0b05e6825da44b20118d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkGoutteDriver/zipball/v1.0.9",
-                "reference": "v1.0.9",
+                "url": "https://api.github.com/repos/Behat/MinkGoutteDriver/zipball/fa1b073b48761464feb0b05e6825da44b20118d8",
+                "reference": "fa1b073b48761464feb0b05e6825da44b20118d8",
                 "shasum": ""
             },
             "require": {
@@ -357,17 +354,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkSelenium2Driver.git",
-                "reference": "v1.1.1"
+                "reference": "bcf1b537de37db6db0822d9e7bd97e600fd7a476"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkSelenium2Driver/zipball/v1.1.1",
-                "reference": "v1.1.1",
+                "url": "https://api.github.com/repos/Behat/MinkSelenium2Driver/zipball/bcf1b537de37db6db0822d9e7bd97e600fd7a476",
+                "reference": "bcf1b537de37db6db0822d9e7bd97e600fd7a476",
                 "shasum": ""
             },
             "require": {
-                "behat/mink": ">=1.5,<1.6",
-                "instaclick/php-webdriver": ">=1.0.12.0,<1.1",
+                "behat/mink": "~1.5.0",
+                "instaclick/php-webdriver": "~1.0.12",
                 "php": ">=5.3.1"
             },
             "type": "mink-driver",
@@ -411,23 +408,31 @@
         },
         {
             "name": "behat/yii-extension",
-            "version": "v1.0.0",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/YiiExtension.git",
-                "reference": "v1.0.0"
+                "reference": "1405643c21217c95904ff16880107f10eed51edc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/YiiExtension/zipball/v1.0.0",
-                "reference": "v1.0.0",
+                "url": "https://api.github.com/repos/Behat/YiiExtension/zipball/1405643c21217c95904ff16880107f10eed51edc",
+                "reference": "1405643c21217c95904ff16880107f10eed51edc",
                 "shasum": ""
             },
             "require": {
-                "behat/behat": ">=2.4.0,<2.4.x-dev",
+                "behat/behat": "~2.5",
                 "php": ">=5.3.2"
             },
+            "suggest": {
+                "behat/mink-wunit-driver": "to register the MinkWUnitDriver with MinkExtension"
+            },
             "type": "behat-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "Behat\\YiiExtension": "src/"
@@ -440,18 +445,17 @@
             "authors": [
                 {
                     "name": "Konstantin Kudryashov",
-                    "email": "ever.zet@gmail.com",
-                    "homepage": "http://everzet.com"
+                    "email": "ever.zet@gmail.com"
                 }
             ],
             "description": "Yii framework extension for Behat",
-            "homepage": "http://mink.behat.org",
+            "homepage": "http://behat.org",
             "keywords": [
                 "BDD",
                 "framework",
                 "web"
             ],
-            "time": "2013-02-25 14:12:45"
+            "time": "2014-03-12 00:26:27"
         },
         {
             "name": "fabpot/goutte",

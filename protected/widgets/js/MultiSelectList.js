@@ -79,8 +79,8 @@ $(document).ready(function() {
 			item.append(input);
 
 			selections
-			.append(item)
-			.removeClass('hide');
+				.append(item)
+				.removeClass('hide');
 
 			noSelectionsMsg.addClass('hide');
 			removeAll.removeClass('hide');

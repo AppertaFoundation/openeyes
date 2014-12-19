@@ -10,6 +10,7 @@ node default {
 	include core::git
 	include core::mail
 	include core::php5
+	include core::wkhtmltox
 	include core::openeyes
 	include core::composer
 

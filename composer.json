@@ -1,12 +1,12 @@
 {
     "require-dev": {
-        "behat/behat": "~2.4.5",
-        "behat/mink":  "~1.5.0",
+        "behat/behat": "~2",
+        "behat/mink":  "~1",
 
-        "behat/yii-extension":          "~1.0.0",
-        "behat/mink-extension":         "~1.1.4",
-        "behat/mink-goutte-driver":     "~1.0.8",
-        "behat/mink-selenium2-driver":  "~1.1.1",
+        "behat/yii-extension":          "~1",
+        "behat/mink-extension":         "~1",
+        "behat/mink-goutte-driver":     "~1",
+        "behat/mink-selenium2-driver":  "~1",
 
         "sensiolabs/behat-page-object-extension": "1.0.1",
 

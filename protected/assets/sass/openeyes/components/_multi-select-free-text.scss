@@ -1,0 +1,84 @@
+// * OpenEyes
+// *
+// * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+// * (C) OpenEyes Foundation, 2011-2013
+// * This file is part of OpenEyes.
+// * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+// *
+// * @package OpenEyes
+// * @link http://www.openeyes.org.uk
+// * @author OpenEyes <info@openeyes.org.uk>
+// * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+// * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+// * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+
+// Default multi-select-free-text style
+.multi-select-free-text {
+	.remove-all {
+		display: inline-block;
+		font-size: $default-font-size;
+		margin-left: 10px;
+	}
+	.remove-one {
+		@include opacity(0.5);
+		@extend %hide-text;
+		background: image-url("_elements/icons/event-optional/element-remove.png") no-repeat -10px -2px;
+		display: inline-block;
+		height: 15px;
+		margin-left: 2px;
+		margin-top: 1px;
+		vertical-align: top;
+		width: 14px;
+		&:hover {
+			@include opacity(1);
+		}
+	}
+	.no-selections-msg {
+		background: #efe;
+		display: block;
+		margin: 12px 0 0 0;
+		&.hide {
+			display: none;
+		}
+	}
+}
+
+.multi-select-free-text-selections {
+	display: block;
+	list-style-type: none;
+	margin: 13px 0 0 0;
+	li {
+		@extend .pill;
+		background: #ffe;
+		margin-bottom: 2px;
+		margin-top: 0;
+		padding: 4px 6px;
+		position: relative;
+		&:first-child {
+			margin-left: 0;
+		}
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+}
+
+// multi-select-free-text list style
+.multi-select-free-text-list {
+	.multi-select-free-text-selections {
+		li {
+			@include border-radius(0);
+			background: #fff;
+			display: block;
+			margin: 0;
+			padding: 2px 4px;
+		}
+	}
+}
+
+.multi-select-free-text-descriptions {
+	margin-top: 1em;
+	margin-left: 0.2em;
+}

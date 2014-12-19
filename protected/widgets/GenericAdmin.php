@@ -3,9 +3,18 @@
 class GenericAdmin extends BaseCWidget
 {
 	public $model;
-	public $data;
+	public $items;
 	public $errors;
+	public $label_field;
+	public $label_relation;
+	public $label_field_type;
+	public $label_field_model;
+	public $new_row_url;
 	public $extra_fields = array();
+	public $filter_fields;
+	public $filter_values;
+	public $filters_ready;
+	public $get_row = false;
 	public $has_default = false;
 
 	public function init()
@@ -16,30 +25,8 @@ class GenericAdmin extends BaseCWidget
 			$this->extra_fields = array();
 		}
 
-		if (empty($_POST['id'])) {
-			$this->data = $model::model()->findAll(array('order'=>'display_order asc'));
-		} else {
-			$this->data = array();
-
-			foreach ($_POST['id'] as $i => $id) {
-				$item = new $model;
-				$item->id = $id;
-				$item->name = $_POST['name'][$i];
-				$attributes = $item->getAttributes();
-				if (array_key_exists('active',$attributes)) {
-					$item->active = (isset($_POST['active'][$i]) || intval($id) == 0)? 1 : 0;
-				}
-
-				foreach ($this->extra_fields as $field) {
-					$item->{$field['field']} = $_POST[$field['field']][$i];
-				}
-
-				$this->data[] = $item;
-			}
-		}
-
 		if ($model::model()->hasAttribute('default')) {
-			foreach ($this->data as $item) {
+			foreach ($this->items as $item) {
 				if ($item->default) {
 					$this->has_default = true;
 				}

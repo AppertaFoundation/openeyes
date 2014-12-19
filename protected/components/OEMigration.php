@@ -343,13 +343,14 @@ class OEMigration extends CDbMigration
 	/**
 	 * @param string $event_type Class name of event type
 	 * @param string $name Name of event
-	 * @param array $params Supported values and defaults are: display_order (1), default (false), required (false), parent_name (null)
+	 * @param array $params Supported values and defaults are: class_name, display_order (1), default (false), required (false), parent_name (null)
+	 * @return int Element type ID
 	 */
 	protected function createElementType($event_type, $name, array $params = array())
 	{
 		$row = array(
 			'name' => $name,
-			'class_name' => "Element_{$event_type}_" . str_replace(' ', '', $name),
+			'class_name' => isset($params['class_name']) ? $params['class_name'] : "Element_{$event_type}_" . str_replace(' ', '', $name),
 			'event_type_id' => $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name = ?', array($event_type))->queryScalar(),
 			'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,
 			'default' => isset($params['default']) ? $params['default'] : false,

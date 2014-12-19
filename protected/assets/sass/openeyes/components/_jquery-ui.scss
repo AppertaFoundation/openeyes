@@ -34,4 +34,5 @@
 
 	//jquery uses inline styles to render auto complete so !important is needed to apply the z-index
 	.ui-autocomplete { z-index:200 !important; }
+	.autocomplete-match { font-weight: bold; }
 }

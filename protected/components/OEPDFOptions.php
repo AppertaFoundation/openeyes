@@ -1,5 +1,5 @@
 <?php
-class OEPDFInject
+class OEPDFOptions
 {
 	public $file;
 	public $version;
@@ -9,6 +9,8 @@ class OEPDFInject
 	public $info = null;
 	public $highest = 0;
 	public $catalog = array();
+	public $js = null;
+	public $print_scaling = true;
 
 	function __construct($file)
 	{
@@ -65,13 +67,34 @@ class OEPDFInject
 		}
 	}
 
-	function inject($js)
+	function injectJS($js)
+	{
+		$this->js = $js;
+	}
+
+	function disablePrintScaling()
+	{
+		$this->print_scaling = false;
+	}
+
+	function enablePrintScaling()
+	{
+		$this->print_scaling = true;
+	}
+
+	function write()
 	{
 		$output = "%PDF-$this->version\n";
 
 		foreach ($this->objects as $n => $object) {
 			if ($n == $this->root) {
-				$object['raw'] = $this->addJSToCatalog($object['raw']);
+				if ($this->js) {
+					$object['raw'] = $this->addJSToCatalog($object['raw']);
+				}
+
+				if (!$this->print_scaling) {
+					$object['raw'] = $this->disablePrintScalingOption($object['raw']);
+				}
 			}
 
 			$this->catalog[$n] = strlen($output);
@@ -79,11 +102,14 @@ class OEPDFInject
 			$output .= "$n 0 obj\n{$object['raw']}endobj\n";
 		}
 
-		$this->catalog[$this->highest+1] = strlen($output);
-		$output .= $this->getJSBlock1();
+		if ($this->js) {
+			$this->catalog[$this->highest+1] = strlen($output);
 
-		$this->catalog[$this->highest+2] = strlen($output);
-		$output .= $this->getJSBlock2($js);
+			$output .= $this->getJSBlock1();
+
+			$this->catalog[$this->highest+2] = strlen($output);
+			$output .= $this->getJSBlock2($this->js);
+		}
 
 		$output .= $this->getXref(strlen($output));
 
@@ -121,7 +147,6 @@ endobj\n";
 	protected function addJSToCatalog($catalog)
 	{
 		$js_obj1 = $this->highest+1;
-		$js_obj2 = $this->highest+2;
 
 		if (preg_match('/^<<.*?'.'>>[\r\n]*$/',$catalog)) {
 			if (preg_match('/\/Names <</',$catalog)) {
@@ -140,9 +165,28 @@ endobj\n";
 		return $catalog;
 	}
 
+	protected function disablePrintScalingOption($catalog)
+	{
+		if (preg_match('/^<<.*?>>[\r\n]$/',$catalog)) {
+			return preg_replace('/>>[\r\n]$/',"/ViewerPreferences << /Direction/L2R/PrintScaling/None >> >>\n",$catalog);
+		} else {
+			$_catalog = '';
+
+			foreach (explode(chr(10),trim($catalog)) as $line) {
+				if ($line == '>>') {
+					$_catalog .= "/ViewerPreferences << /Direction/L2R/PrintScaling/None >>\n";
+				}
+				$_catalog .= $line."\n";
+			}
+
+			return $_catalog;
+		}
+	}
+
 	protected function getXref($xref_offset)
 	{
-		$xref = "xref\n0 ".(count($this->objects)+2)."\n0000000000 65535 f\n";
+		$count = (count($this->objects) + ($this->js ? 2 : 0));
+		$xref = "xref\n0 ".$count."\n0000000000 65535 f\n";
 
 		ksort($this->catalog);
 
@@ -150,6 +194,6 @@ endobj\n";
 			$xref .= str_pad($offset,10,"0",STR_PAD_LEFT)." 00000 n\n";
 		}
 
-		return $xref . "trailer\n<< /Size ".(count($this->objects)+1)." /Root ".$this->root." 0 R ".($this->info ? "/Info $this->info 0 R " : "").">>\nstartxref\n$xref_offset\n%%EOF\n";
+		return $xref . "trailer\n<< /Size ".(count($this->objects) + ($this->js ? 1 : 0))." /Root ".$this->root." 0 R ".($this->info ? "/Info $this->info 0 R " : "").">>\nstartxref\n$xref_offset\n%%EOF\n";
 	}
 }

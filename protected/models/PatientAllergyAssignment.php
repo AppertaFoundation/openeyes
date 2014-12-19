@@ -24,6 +24,7 @@
  * @property integer $id
  * @property integer $patient_id
  * @property integer $allergy_id
+ * @property string $comments
  */
 class PatientAllergyAssignment extends BaseActiveRecordVersioned
 {
@@ -56,6 +57,7 @@ class PatientAllergyAssignment extends BaseActiveRecordVersioned
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name', 'safe', 'on'=>'search'),
+			array('comments', 'default', 'setOnEmpty' => true, 'value' => null),
 		);
 	}
 
@@ -99,5 +101,13 @@ class PatientAllergyAssignment extends BaseActiveRecordVersioned
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->allergy->name == 'Other' ? $this->other : $this->allergy->name;
 	}
 }

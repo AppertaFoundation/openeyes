@@ -293,6 +293,7 @@ return array(
 		'event_lock_disable' => false,
 		'reports' => array(
 		),
+		'html_autocomplete' => 'off',
 		// html|pdf, pdf requires wkhtmltopdf with patched QT
 		'event_print_method' => 'html',
 		// use this to set a specific path to the wkhtmltopdf binary. if this is not set it will search the current path.
@@ -301,8 +302,9 @@ return array(
 		'wkhtmltopdf_footer_middle' => 'Page {{PAGE}} of {{PAGES}}',
 		'wkhtmltopdf_footer_right' => 'OpenEyes',
 		'wkhtmltopdf_top_margin' => '10mm',
-		'wkhtmltopdf_bottom_margin' => '12mm',
-		'wkhtmltopdf_left_margin' => '17mm',
-		'wkhtmltopdf_right_margin' => '17mm',
+		'wkhtmltopdf_bottom_margin' => '18mm',
+		'wkhtmltopdf_left_margin' => '20mm',
+		'wkhtmltopdf_right_margin' => '20mm',
+		'wkhtmltopdf_nice_level' => false,
 	),
 );

@@ -6,6 +6,7 @@
 	function subst() {
 		var documents = {{DOCUMENTS}};
 		var document_no = 0;
+		var custom_tags = {{CUSTOM_TAGS}};
 
 		var vars={};
 		var x=window.location.search.substring(1).split('&');
@@ -51,16 +52,24 @@
 			var y = document.getElementsByClassName(x[i]);
 			for (var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
 		}
+
+		for (var i in custom_tags) {
+			var y = document.getElementsByClassName('wkhtmltopdf-footer-left');
+
+			for (var j=0; j<y.length; j++) {
+				y[j].innerHTML = y[j].innerHTML.replace('{{' + i + '}}', '<div>' + custom_tags[i] + '</div>');
+			}
+		}
 	}
 	</script>
 	<body style="margin: 0; padding: 0; margin-bottom: 68.6em;" onload="subst()">
-		<div style="width: 46%; float: left; font-size: 6pt;">
+		<div class="wkhtmltopdf-footer-left" style="width: 45%; float: left; margin: 0; font-size: 6pt;">
 			{{FOOTER_LEFT}}
 		</div>
-		<div style="width: 35%; float: left; margin-left: auto; margin-right: auto; font-size: 6pt;">
+		<div class="wkhtmltopdf-footer-middle" style="width: 10%; float: left; margin: 0 auto; text-align: center; font-size: 6pt;">
 			{{FOOTER_MIDDLE}}
 		</div>
-		<div style="width: 19%; float: right; font-size: 6pt;">
+		<div class="wkhtmltopdf-footer-right" style="width: 45%; float: right; margin: 0; text-align: right; font-size: 6pt;">
 			{{FOOTER_RIGHT}}
 		</div>
 	</body>

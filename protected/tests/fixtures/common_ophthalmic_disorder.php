@@ -17,18 +17,35 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-
 return array(
 	'commonOphthalmicDisorder1' => array(
+		'id' => 1,
 		'disorder_id' => 1,
 		'subspecialty_id' => 1
 	),
 	'commonOphthalmicDisorder2' => array(
+		'id' => 2,
 		'disorder_id' => 2,
 		'subspecialty_id' => 1
 	),
 	'commonOphthalmicDisorder3' => array(
+		'id' => 3,
 		'disorder_id' => 3,
+		'subspecialty_id' => 2
+	),
+	'commonOphthalmicDisorder4' => array(
+		'id' => 4,
+		'disorder_id' => 4,
+		'subspecialty_id' => 2
+	),
+	'commonOphthalmicDisorder5' => array(
+		'id' => 5,
+		'finding_id' => 1,
+		'subspecialty_id' => 2
+	),
+	'commonOphthalmicDisorder6' => array(
+		'id' => 6,
+		'finding_id' => 3,
 		'subspecialty_id' => 2
 	),
 );

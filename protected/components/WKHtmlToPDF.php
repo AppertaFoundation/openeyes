@@ -25,6 +25,14 @@ class WKHtmlToPDF
 	protected $barcodes = array();
 	protected $patients = array();
 	protected $canvas_image_path;
+	public $custom_tags = array();
+	public $left;
+	public $middle;
+	public $right;
+	public $top_margin;
+	public $bottom_margin;
+	public $left_margin;
+	public $right_margin;
 
 	public function __construct()
 	{
@@ -45,6 +53,15 @@ class WKHtmlToPDF
 		if (preg_match('/reduced functionality/i',$banner)) {
 			throw new Exception("wkhtmltopdf has not been compiled with patched QT and so cannot be used.");
 		}
+
+		$this->left = Yii::app()->params['wkhtmltopdf_footer_left'];
+		$this->middle = Yii::app()->params['wkhtmltopdf_footer_middle'];
+		$this->right = Yii::app()->params['wkhtmltopdf_footer_right'];
+
+		$this->top_margin = Yii::app()->params['wkhtmltopdf_top_margin'];
+		$this->bottom_margin = Yii::app()->params['wkhtmltopdf_bottom_margin'];
+		$this->left_margin = Yii::app()->params['wkhtmltopdf_left_margin'];
+		$this->right_margin = Yii::app()->params['wkhtmltopdf_right_margin'];
 	}
 
 	protected function execute($command)
@@ -103,8 +120,10 @@ class WKHtmlToPDF
 
 	public function deleteFile($path)
 	{
-		if (!@unlink($path)) {
-			throw new Exception("Unable to delete $path: check permissions.");
+		if (@file_exists($path)) {
+			if (!@unlink($path)) {
+				throw new Exception("Unable to delete $path: check permissions.");
+			}
 		}
 	}
 
@@ -160,13 +179,14 @@ class WKHtmlToPDF
 		$footer = str_replace('{{DOCUMENTS}}',$this->documents,$footer);
 		$footer = str_replace('{{PAGE}}','<span class="page"></span>',$footer);
 		$footer = str_replace('{{PAGES}}','<span class="topage"></span>',$footer);
+		$footer = str_replace('{{CUSTOM_TAGS}}',CJavaScript::encode($this->custom_tags),$footer);
 
 		return $footer;
 	}
 
-	public function getPDFInject($path)
+	public function getPDFOptions($path)
 	{
-		return new OEPDFInject($path);
+		return new OEPDFOptions($path);
 	}
 
 	public function setDocuments($count)
@@ -209,6 +229,41 @@ class WKHtmlToPDF
 		$this->canvas_image_path = $image_path;
 	}
 
+	public function setLeft($left)
+	{
+		$this->left = $left;
+	}
+
+	public function setMiddle($middle)
+	{
+		$this->middle = $middle;
+	}
+
+	public function setRight($right)
+	{
+		$this->right = $right;
+	}
+
+	public function setMarginTop($top_margin)
+	{
+		$this->top_margin = $top_margin;
+	}
+
+	public function setMarginBottom($bottom_margin)
+	{
+		$this->bottom_margin = $bottom_margin;
+	}
+
+	public function setMarginLeft($left_margin)
+	{
+		$this->left_margin = $left_margin;
+	}
+
+	public function setMarginRight($right_margin)
+	{
+		$this->right_margin = $right_margin;
+	}
+
 	public function generatePDF($imageDirectory, $prefix, $suffix, $html, $output_html=false, $inject_autoprint_js=true)
 	{
 		!$output_html && $html = $this->remapAssetPaths($html);
@@ -224,9 +279,9 @@ class WKHtmlToPDF
 
 		$footer = $this->formatFooter(
 			$this->readFile(Yii::app()->basePath.DIRECTORY_SEPARATOR."views" . DIRECTORY_SEPARATOR . "print" . DIRECTORY_SEPARATOR . "pdf_footer.php"),
-			Yii::app()->params['wkhtmltopdf_footer_left'],
-			Yii::app()->params['wkhtmltopdf_footer_middle'],
-			Yii::app()->params['wkhtmltopdf_footer_right'],
+			$this->left,
+			$this->middle,
+			$this->right,
 			$this->patients,
 			$this->barcodes,
 			$this->docrefs
@@ -239,12 +294,14 @@ class WKHtmlToPDF
 			return true;
 		}
 
-		$top_margin = Yii::app()->params['wkhtmltopdf_top_margin'] ? "-T ".Yii::app()->params['wkhtmltopdf_top_margin'] : '';
-		$bottom_margin = Yii::app()->params['wkhtmltopdf_bottom_margin'] ? "-B ".Yii::app()->params['wkhtmltopdf_bottom_margin'] : '';
-		$left_margin = Yii::app()->params['wkhtmltopdf_left_margin'] ? "-L ".Yii::app()->params['wkhtmltopdf_left_margin'] : '';
-		$right_margin = Yii::app()->params['wkhtmltopdf_right_margin'] ? "-R ".Yii::app()->params['wkhtmltopdf_right_margin'] : '';
+		$top_margin = $this->top_margin ? "-T ".$this->top_margin : '';
+		$bottom_margin = $this->bottom_margin ? "-B ".$this->bottom_margin : '';
+		$left_margin = $this->left_margin ? "-L ".$this->left_margin : '';
+		$right_margin = $this->right_margin ? "-R ".$this->right_margin : '';
 
-		$res = $this->execute(escapeshellarg($this->wkhtmltopdf)." --footer-html ".escapeshellarg($footer_file)." --print-media-type $top_margin $bottom_margin $left_margin $right_margin ".escapeshellarg($html_file)." ".escapeshellarg($pdf_file)." 2>&1");
+		$nice = Yii::app()->params['wkhtmltopdf_nice_level'] ? 'nice -n'.Yii::app()->params['wkhtmltopdf_nice_level'].' ' : '';
+
+		$res = $this->execute($nice . escapeshellarg($this->wkhtmltopdf)." --footer-html ".escapeshellarg($footer_file)." --print-media-type $top_margin $bottom_margin $left_margin $right_margin ".escapeshellarg($html_file)." ".escapeshellarg($pdf_file)." 2>&1");
 
 		if (!$this->fileExists($pdf_file) || $this->fileSize($pdf_file) == 0) {
 			if ($this->fileSize($pdf_file) == 0) {
@@ -257,11 +314,20 @@ class WKHtmlToPDF
 		$this->deleteFile($html_file);
 		$this->deleteFile($footer_file);
 
-		if ($inject_autoprint_js) {
-			$pdf = $this->getPDFInject($pdf_file);
-			$pdf->inject('print(true);');
+		if ($pdf = $this->getPDFOptions($pdf_file)) {
+			if ($inject_autoprint_js) {
+				$pdf->injectJS('print(true);');
+			}
+
+			$pdf->disablePrintScaling();
+			$pdf->write();
 		}
 
 		return true;
+	}
+
+	public function setCustomTag($tag_name, $value)
+	{
+		$this->custom_tags[$tag_name] = $value;
 	}
 }

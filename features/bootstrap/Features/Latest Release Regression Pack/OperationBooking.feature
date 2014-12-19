@@ -4,10 +4,7 @@ Feature: Create New Operation Booking Event
 
   Scenario: Route 1: Login and create a Operation Booking Anderson Glaucoma
 
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "3"
+    Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Glaucoma)"
 
     Then I search for hospital number "1009465"
 
@@ -22,10 +19,16 @@ Feature: Create New Operation Booking Event
     And I select a Procedure of "41"
 
     Then I select No to Consultant required
+    And I select "No" for "Any other doctor to do"
+
+    And I select "No" for "Does the patient require pre-op assessment by an anaesthetist"
 
     And I select a Anaesthetic type "Topical"
 
-    Then I select Yes to a Post Operative Stay
+    And I select "Patient preference" for "Anaesthetic choice"
+
+    And I select "No" for "Patient needs to stop medication"
+
     Then I select No to a Post Operative Stay
 
     And I select a Operation Site of "1"
@@ -33,6 +36,10 @@ Feature: Create New Operation Booking Event
     Then I select a Priority of Urgent
 
     And I select a decision date of "14"
+
+    And I select "Yes" for "Admission discussed with patient"
+
+    And I select "As soon as possible" for "Schedule options"
 
     Then I select Save and Schedule now
 
@@ -51,10 +58,7 @@ Feature: Create New Operation Booking Event
 
   Scenario: Route 2: Login and create a Operation Booking Anderson Cataract
 
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "1"
-    Then I select a firm of "1"
+    Given I am logged in as "admin" with site "Queens" and firm "Anderson Firm (Cataract)"
 
     Then I search for hospital number "1009465"
 
@@ -69,8 +73,17 @@ Feature: Create New Operation Booking Event
     And I select a Procedure of "79"
 
     Then I select Yes to Consultant required
+    And I select "Anderson Andrew" for "Named Consultant"
+
+    And I select "No" for "Any other doctor to do"
+
+    And I select "No" for "Does the patient require pre-op assessment by an anaesthetist"
 
     And I select a Anaesthetic type "LA"
+
+    And I select "Patient preference" for "Anaesthetic choice"
+
+    And I select "No" for "Patient needs to stop medication"
 
     Then I select Yes to a Post Operative Stay
 
@@ -81,6 +94,10 @@ Feature: Create New Operation Booking Event
     And I select a decision date of "10"
 
     Then I add comments of "Insert test comments here"
+
+    And I select "Yes" for "Admission discussed with patient"
+
+    And I select "As soon as possible" for "Schedule options"
 
     Then I select Save and Schedule now
 
@@ -98,10 +115,7 @@ Feature: Create New Operation Booking Event
 
   Scenario: Route 3: Login and create a Operation Booking Anderson Medical Retinal
 
-    Given I am on the OpenEyes "master" homepage
-    And I enter login credentials "admin" and "admin"
-    And I select Site "2"
-    Then I select a firm of "4"
+    Given I am logged in as "admin" with site "Kings" and firm "Anderson Firm (Medical Retinal)"
 
     Then I search for hospital number "1009465"
 
@@ -116,8 +130,15 @@ Feature: Create New Operation Booking Event
     And I select a Procedure of "327"
 
     Then I select No to Consultant required
+    And I select "No" for "Any other doctor to do"
+
+    And I select "No" for "Does the patient require pre-op assessment by an anaesthetist"
 
     And I select a Anaesthetic type "LAC"
+
+    And I select "Patient preference" for "Anaesthetic choice"
+
+    And I select "No" for "Patient needs to stop medication"
 
     Then I select No to a Post Operative Stay
 
@@ -128,6 +149,10 @@ Feature: Create New Operation Booking Event
     And I select a decision date of "3"
 
     Then I add comments of "Insert test comments here"
+
+    And I select "Yes" for "Admission discussed with patient"
+
+    And I select "As soon as possible" for "Schedule options"
 
     Then I select Save and Schedule now
 

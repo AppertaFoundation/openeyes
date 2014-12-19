@@ -208,7 +208,7 @@
 								<label for="title">Title:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('title','')?>
+								<?php echo CHtml::textField('title','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -217,7 +217,7 @@
 								<label for="first_name">First name:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('first_name','')?>
+								<?php echo CHtml::textField('first_name','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -226,7 +226,7 @@
 								<label for="last_name">Last name:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('last_name','')?>
+								<?php echo CHtml::textField('last_name','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -235,7 +235,7 @@
 								<label for="nick_name">Nick name:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('nick_name','')?>
+								<?php echo CHtml::textField('nick_name','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -244,7 +244,7 @@
 								<label for="primary_phone">Primary phone:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('primary_phone','')?>
+								<?php echo CHtml::textField('primary_phone','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -253,7 +253,7 @@
 								<label for="qualifications">Qualifications:</label>
 							</div>
 							<div class="<?php echo $form->columns('field');?>">
-								<?php echo CHtml::textField('qualifications','')?>
+								<?php echo CHtml::textField('qualifications','',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 							</div>
 						</div>
 
@@ -357,7 +357,7 @@
 							<label for="newsite_from">From:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textField('newsite_from',User::model()->findByPk(Yii::app()->user->id)->email)?>
+							<?php echo CHtml::textField('newsite_from',User::model()->findByPk(Yii::app()->user->id)->email,array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 						</div>
 					</div>
 					<div class="row field-row">
@@ -365,7 +365,7 @@
 							<label for="newsite_subject">Subject:</label>
 						</div>
 						<div class="<?php echo $form->columns('field');?>">
-							<?php echo CHtml::textField('newsite_subject','Please add the following site/institution')?>
+							<?php echo CHtml::textField('newsite_subject','Please add the following site/institution',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 						</div>
 					</div>
 					<div class="row field-row">

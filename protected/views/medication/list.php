@@ -19,7 +19,7 @@ $medications = $current ? $patient->medications : $patient->previous_medications
 	<h4><?= $current ? "Current" : "Previous" ?></h4>
 	<?php foreach ($medications as $medication): ?>
 		<table class="plain patient-data">
-			<tr><th width="128">Medication</th><td><?= $medication->drug->label ?></td></tr>
+			<tr><th width="128">Medication</th><td><?= $medication->getDrugLabel() ?></td></tr>
 			<tr>
 				<th>Administration</th>
 				<td><?= $medication->dose ?> <?= $medication->route->name?> <?= $medication->option ? "({$medication->option->name})" : "" ?> <?= $medication->frequency->name?></td>
@@ -41,7 +41,7 @@ $medications = $current ? $patient->medications : $patient->previous_medications
 					<th>Actions</th>
 					<td>
 						<a href="#" class="medication_edit" data-id="<?= $medication->id ?>">Edit</a> |
-						<?php if ($current) { ?><a href="#" class="medication_stop" data-id="<?= $medication->id ?>" data-drug-name="<?= $medication->drug->label ?>">Stop</a> |<?php } ?>
+						<?php if ($current) { ?><a href="#" class="medication_stop" data-id="<?= $medication->id ?>" data-drug-name="<?= $medication->getDrugLabel() ?>">Stop</a> |<?php } ?>
 						<a href="#" class="medication_delete" data-id="<?= $medication->id ?>">Delete</a>
 					</td>
 				</tr>

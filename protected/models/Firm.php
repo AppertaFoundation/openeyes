@@ -34,6 +34,8 @@
  */
 class Firm extends BaseActiveRecordVersioned
 {
+	const SELECTION_ORDER = 'name';
+
 	public $subspecialty_id;
 
 	/**
@@ -51,11 +53,6 @@ class Firm extends BaseActiveRecordVersioned
 	public function tableName()
 	{
 		return 'firm';
-	}
-
-	public function defaultScope()
-	{
-		return array('order' => $this->getTableAlias(true, false) . '.name');
 	}
 
 	/**

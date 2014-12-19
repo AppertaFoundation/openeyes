@@ -27,12 +27,177 @@ class AdminController extends BaseAdminController
 		$this->redirect(array('/admin/users'));
 	}
 
+	public function actionEditPreviousOperation()
+	{
+		$this->genericAdmin('Edit Previous Ophthalmic Surgery Choices', 'CommonPreviousOperation');
+	}
+
 	public function actionEditMedicationStopReason()
 	{
-		$this->render('//admin/generic_admin',array(
-			'title' => 'Edit Medication Stop Reason',
-			'model' => 'MedicationStopReason',
-		));
+		$this->genericAdmin('Edit Medication Stop Reason', 'MedicationStopReason');
+	}
+
+	public function actionEditCommonOphthalmicDisorderGroups()
+	{
+		$this->genericAdmin('Common Ophthalmic Disorder Groups', 'CommonOphthalmicDisorderGroup');
+	}
+
+	public function actionEditCommonOphthalmicDisorder()
+	{
+		$this->genericAdmin('Common Ophthalmic Disorder', 'CommonOphthalmicDisorder',
+			array(
+				'label_relation' => 'disorder',
+				'label_field_type' => 'search_lookup',
+				'label_field_model' => 'Disorder',
+				'new_row_url' => Yii::app()->createUrl('/admin/newCommonOphthalmicDisorderRow'),
+				'filter_fields' => array(
+					array('field' => 'subspecialty_id', 'model' => 'Subspecialty'),
+				),
+				'extra_fields' => array(
+					array(
+						'field' => 'group_id',
+						'type' => 'lookup',
+						'model' => 'CommonOphthalmicDisorderGroup'
+					),
+					array(
+						'field' => 'finding_id',
+						'relation' => 'finding',
+						'type' => 'search_lookup',
+						'model' => 'Finding'
+					),
+					array(
+						'field' => 'alternate_disorder_id',
+						'relation' => 'alternate_disorder',
+						'type' => 'search_lookup',
+						'model' => 'Disorder',
+					),
+					array(
+						'field' => 'alternate_disorder_label',
+						'type' => 'text',
+						'model' => 'CommonOphthalmicDisorder'
+					)
+				)
+			));
+	}
+
+	public function actionNewCommonOphthalmicDisorderRow($key)
+	{
+		$this->genericAdmin('Common Ophthalmic Disorder', 'CommonOphthalmicDisorder',
+			array(
+				'label_relation' => 'disorder',
+				'label_field_type' => 'search_lookup',
+				'label_field_model' => 'Disorder',
+				'new_row_url' => Yii::app()->createUrl('/admin/newCommonOphthalmicDisorderRow'),
+				'filter_fields' => array(
+					array('field' => 'subspecialty_id', 'model' => 'Subspecialty'),
+				),
+				'extra_fields' => array(
+					array(
+						'field' => 'group_id',
+						'type' => 'lookup',
+						'model' => 'CommonOphthalmicDisorderGroup'
+					),
+					array(
+						'field' => 'finding_id',
+						'relation' => 'finding',
+						'type' => 'search_lookup',
+						'model' => 'Finding'
+					),
+					array(
+						'field' => 'alternate_disorder_id',
+						'relation' => 'alternate_disorder',
+						'type' => 'search_lookup',
+						'model' => 'Disorder',
+					),
+					array(
+						'field' => 'alternate_disorder_label',
+						'type' => 'text',
+						'model' => 'CommonOphthalmicDisorder'
+					)
+				)
+			),
+			$key
+		);
+	}
+
+	public function actionEditSecondaryToCommonOphthalmicDisorder()
+	{
+		$this->genericAdmin('Secondary Common Ophthalmic Disorder', 'SecondaryToCommonOphthalmicDisorder',
+			array(
+				'label_relation' => 'disorder',
+				'label_field_type' => 'search_lookup',
+				'label_field_model' => 'Disorder',
+				'new_row_url' => Yii::app()->createUrl('/admin/newsecondarytocommonophthalmicdisorderrow'),
+				'filter_fields' => array(
+					array('field' => 'parent_id', 'model' => 'CommonOphthalmicDisorder')
+				),
+				'extra_fields' => array(
+					array(
+						'field' => 'finding_id',
+						'relation' => 'finding',
+						'type' => 'search_lookup',
+						'model' => 'Finding'
+					),
+					array(
+						'field' => 'letter_macro_text',
+						'type' => 'text',
+					),
+				)
+			));
+	}
+
+	public function actionNewSecondaryToCommonOphthalmicDisorderRow($key)
+	{
+		$this->genericAdmin('Secondary Common Ophthalmic Disorder', 'SecondaryToCommonOphthalmicDisorder',
+			array(
+				'label_relation' => 'disorder',
+				'label_field_type' => 'search_lookup',
+				'label_field_model' => 'Disorder',
+				'new_row_url' => Yii::app()->createUrl('/admin/newCommonOphthalmicDisorderRow'),
+				'filter_fields' => array(
+					array('field' => 'parent_id', 'model' => 'CommonOphthalmicDisorder')
+				),
+				'extra_fields' => array(
+					array(
+						'field' => 'finding_id',
+						'relation' => 'finding',
+						'type' => 'search_lookup',
+						'model' => 'Finding'
+					),
+					array(
+						'field' => 'letter_macro_text',
+						'type' => 'text',
+					),
+				)
+			),
+			$key
+		);
+	}
+
+	public function actionManageFindings()
+	{
+		$this->genericAdmin(
+			'Findings',
+			'Finding',
+			array(
+				'extra_fields' => array(
+					array(
+						'field' => 'subspecialties',
+						'type' => 'multilookup',
+						'noSelectionsMessage' => 'All Subspecialties',
+						'htmlOptions' => array(
+							'empty' => '- Please Select -',
+							'nowrapper' => true
+						),
+						'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name')
+					),
+					array(
+						'field' => 'requires_description',
+						'type' => 'boolean',
+					),
+				),
+			)
+		);
 	}
 
 	public function actionDrugs()
@@ -751,7 +916,7 @@ class AdminController extends BaseAdminController
 				if (!$contactlabel->save()) {
 					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
 				}
-				Audit::add('admin-ContactLabel','add',$contactLabel->id);
+				Audit::add('admin-ContactLabel','add',$contactlabel->id);
 				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
 			}
 		}
@@ -777,7 +942,7 @@ class AdminController extends BaseAdminController
 				if (!$contactlabel->save()) {
 					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
 				}
-				Audit::add('admin-ContactLabel','edit',$contactLabel->id);
+				Audit::add('admin-ContactLabel','edit',$contactlabel->id);
 
 				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
 			}
@@ -1387,5 +1552,30 @@ class AdminController extends BaseAdminController
 		$tx->commit();
 
 		$this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
+	}
+
+	public function actionSocialHistory()
+	{
+		$this->render('socialhistory');
+	}
+
+	public function actionSocialHistoryOccupation()
+	{
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('occupation_id'), 'SocialHistoryOccupation');
+	}
+
+	public function actionSocialHistoryDrivingStatus()
+	{
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('driving_status_id'), 'SocialHistoryDrivingStatus');
+	}
+
+	public function actionSocialHistorySmokingStatus()
+	{
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('smoking_status_id'), 'SocialHistorySmokingStatus');
+	}
+
+	public function actionSocialHistoryAccommodation()
+	{
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('accommodation_id'), 'SocialHistoryAccommodation');
 	}
 }
