@@ -29,6 +29,8 @@ class BaseReport extends CModel
 		$model = CHtml::modelName($this);
 
 		if (strstr($model,'_')) {
+			$segments = explode('_',$model);
+
 			$model = array_pop(explode('_',$model));
 		}
 
