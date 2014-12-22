@@ -1486,6 +1486,9 @@ class BaseEventTypeController extends BaseModuleController
 
 		$event->lock();
 
+		// Ensure exclusivity of PDF to avoid race conditions
+		$this->pdf_print_suffix .= Yii::app()->user->id.'_'.rand();
+
 		if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
 			if (!$this->pdf_print_html) {
 				ob_start();
@@ -1502,6 +1505,26 @@ class BaseEventTypeController extends BaseModuleController
 			$wk->setPatient($event->episode->patient);
 			$wk->setBarcode($event->barcodeHTML);
 
+			foreach (array('left','middle','right') as $section) {
+				if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
+					$setMethod = 'set'.ucfirst($section);
+					$wk->$setMethod(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name]);
+				}
+			}
+
+			foreach (array('top','bottom','left','right') as $margin) {
+				if (isset(Yii::app()->params['wkhtmltopdf_'.$margin.'_margin_'.$this->event_type->class_name])) {
+					$setMethod = 'setMargin'.ucfirst($margin);
+					$wk->$setMethod(Yii::app()->params['wkhtmltopdf_'.$margin.'_margin_'.$this->event_type->class_name]);
+				}
+			}
+
+			foreach (PDFFooterTag::model()->findAll('event_type_id = ?',array($this->event_type->id)) as $pdf_footer_tag) {
+				if ($api = Yii::app()->moduleAPI->get($this->event_type->class_name)) {
+					$wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
+				}
+			}
+
 			$wk->generatePDF($event->imageDirectory, "event", $this->pdf_print_suffix, $this->pdf_print_html, (boolean)@$_GET['html']);
 		}
 
@@ -1517,6 +1540,7 @@ class BaseEventTypeController extends BaseModuleController
 		header('Content-Length: '.filesize($pdf));
 
 		readfile($pdf);
+		@unlink($pdf);
 	}
 
 	/**
