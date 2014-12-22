@@ -68,9 +68,12 @@ class BaseEventTypeController extends BaseModuleController
 		'elementForm' => self::ACTION_TYPE_FORM,
 		'viewPreviousElements' => self::ACTION_TYPE_FORM,
 		'print' => self::ACTION_TYPE_PRINT,
+		'PDFprint' => self::ACTION_TYPE_PRINT,
+		'saveCanvasImages' => self::ACTION_TYPE_PRINT,
 		'update' => self::ACTION_TYPE_EDIT,
 		'delete' => self::ACTION_TYPE_DELETE,
 		'requestDeletion' => self::ACTION_TYPE_REQUESTDELETE,
+		'eventImage' => self::ACTION_TYPE_VIEW,
 	);
 
 	/**
@@ -104,8 +107,10 @@ class BaseEventTypeController extends BaseModuleController
 	public $renderPatientPanel = true;
 
 	protected $open_elements;
-
 	public $dont_redirect = false;
+	public $pdf_print_suffix = null;
+	public $pdf_print_documents = 1;
+	public $pdf_print_html = null;
 
 	public function getTitle()
 	{
@@ -797,6 +802,8 @@ class BaseEventTypeController extends BaseModuleController
 			'eventId' => $id,
 		), $this->extraViewProperties);
 
+		$this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
+
 		$this->render('view', $viewData);
 	}
 
@@ -1302,6 +1309,10 @@ class BaseEventTypeController extends BaseModuleController
 	 */
 	protected function renderElement($element, $action, $form, $data, $view_data=array(), $return=false, $processOutput=false)
 	{
+		if (strcasecmp($action,'PDFPrint') == 0 || strcasecmp($action,'saveCanvasImages') == 0) {
+			$action = 'print';
+		}
+
 		// Get the view names from the model.
 		$view = isset($element->{$action.'_view'})
 			? $element->{$action.'_view'}
@@ -1464,15 +1475,72 @@ class BaseEventTypeController extends BaseModuleController
 	public function actionPrint($id)
 	{
 		$this->printInit($id);
+		$this->printHTML($id, $this->open_elements);
+	}
 
-		$pdf = (isset($_GET['pdf']) && $_GET['pdf']);
-		$this->printLog($id, $pdf);
-		//TODO: check on whether we need to pass the elements to the print after all
-		if ($pdf) {
-			$this->printPDF($id, $this->open_elements);
-		} else {
-			$this->printHTML($id, $this->open_elements);
+	public function actionPDFPrint($id)
+	{
+		if (!$event = Event::model()->findByPk($id)) {
+			throw new Exception("Event not found: $id");
 		}
+
+		$event->lock();
+
+		// Ensure exclusivity of PDF to avoid race conditions
+		$this->pdf_print_suffix .= Yii::app()->user->id.'_'.rand();
+
+		if (!$event->hasPDF($this->pdf_print_suffix) || @$_GET['html']) {
+			if (!$this->pdf_print_html) {
+				ob_start();
+				$this->actionPrint($id);
+				$this->pdf_print_html = ob_get_contents();
+				ob_end_clean();
+			}
+
+			$wk = new WKHtmlToPDF;
+
+			$wk->setCanvasImagePath($event->imageDirectory);
+			$wk->setDocuments($this->pdf_print_documents);
+			$wk->setDocref($event->docref);
+			$wk->setPatient($event->episode->patient);
+			$wk->setBarcode($event->barcodeHTML);
+
+			foreach (array('left','middle','right') as $section) {
+				if (isset(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name])) {
+					$setMethod = 'set'.ucfirst($section);
+					$wk->$setMethod(Yii::app()->params['wkhtmltopdf_footer_'.$section.'_'.$this->event_type->class_name]);
+				}
+			}
+
+			foreach (array('top','bottom','left','right') as $margin) {
+				if (isset(Yii::app()->params['wkhtmltopdf_'.$margin.'_margin_'.$this->event_type->class_name])) {
+					$setMethod = 'setMargin'.ucfirst($margin);
+					$wk->$setMethod(Yii::app()->params['wkhtmltopdf_'.$margin.'_margin_'.$this->event_type->class_name]);
+				}
+			}
+
+			foreach (PDFFooterTag::model()->findAll('event_type_id = ?',array($this->event_type->id)) as $pdf_footer_tag) {
+				if ($api = Yii::app()->moduleAPI->get($this->event_type->class_name)) {
+					$wk->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($event->id));
+				}
+			}
+
+			$wk->generatePDF($event->imageDirectory, "event", $this->pdf_print_suffix, $this->pdf_print_html, (boolean)@$_GET['html']);
+		}
+
+		$event->unlock();
+
+		if (@$_GET['html']) {
+			return Yii::app()->end();
+		}
+
+		$pdf = $event->getPDF($this->pdf_print_suffix);
+
+		header('Content-Type: application/pdf');
+		header('Content-Length: '.filesize($pdf));
+
+		readfile($pdf);
+		@unlink($pdf);
 	}
 
 	/**
@@ -1495,7 +1563,6 @@ class BaseEventTypeController extends BaseModuleController
 	/**
 	 * Render HTML print layout
 	 *
-	 * @TODO: are we still doing html printing at all?
 	 * @param integer $id event id
 	 * @param BaseEventTypeElement[] $elements
 	 * @param string $template
@@ -1508,32 +1575,6 @@ class BaseEventTypeController extends BaseModuleController
 			'elements' => $elements,
 			'eventId' => $id,
 		));
-	}
-
-	/**
-	 * Render PDF print layout
-	 *
-	 * @param integer $id event id
-	 * @param BaseEventTypeElement[] $elements
-	 * @param string $template
-	 * @param array $params
-	 */
-	protected function printPDF($id, $elements, $template='print', $params=array())
-	{
-		// Remove any existing assets that have been pre-registered.
-		Yii::app()->assetManager->reset();
-
-		$this->layout = '//layouts/pdf';
-		$pdf_print = new OEPDFPrint('Openeyes', 'PDF', 'PDF');
-		$oeletter = new OELetter();
-		$oeletter->setBarcode('E:'.$id);
-		$body = $this->render($template, array_merge($params,array(
-			'elements' => $elements,
-			'eventId' => $id,
-		)), true);
-		$oeletter->addBody($body);
-		$pdf_print->addLetter($oeletter);
-		$pdf_print->output();
 	}
 
 	/**
@@ -1642,7 +1683,7 @@ class BaseEventTypeController extends BaseModuleController
 
 	/**
 	 * set base js vars for use in the standard scripts for the controller
- 	 */
+	 */
 	public function processJsVars()
 	{
 		if ($this->patient) {
@@ -1650,7 +1691,12 @@ class BaseEventTypeController extends BaseModuleController
 		}
 		if ($this->event) {
 			$this->jsVars['OE_event_id'] = $this->event->id;
-			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
+
+			if (Yii::app()->params['event_print_method'] == 'pdf') {
+				$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/PDFprint/".$this->event->id);
+			} else {
+				$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
+			}
 		}
 		$this->jsVars['OE_asset_path'] = $this->assetPath;
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
@@ -1746,5 +1792,69 @@ class BaseEventTypeController extends BaseModuleController
 	public function setOpenElements($open_elements)
 	{
 		$this->open_elements = $open_elements;
+	}
+
+	public function actionSaveCanvasImages($id)
+	{
+		if (!$event = Event::model()->findByPk($id)) {
+			throw new Exception("Event not found: $id");
+		}
+
+		if (strtotime($event->last_modified_date) != @$_POST['last_modified_date']) {
+			echo "outofdate";
+			return;
+		}
+
+		$event->lock();
+
+		if (!file_exists($event->imageDirectory)) {
+			if (!@mkdir($event->imageDirectory,0755,true)) {
+				throw new Exception("Unable to create directory: $event->imageDirectory");
+			}
+		}
+
+		if (!empty($_POST['canvas'])) {
+			foreach ($_POST['canvas'] as $drawingName => $blob) {
+				if (!file_exists($event->imageDirectory."/$drawingName.png")) {
+					if (!@file_put_contents($event->imageDirectory."/$drawingName.png", base64_decode(preg_replace('/^data\:image\/png;base64,/','',$blob)))) {
+						throw new Exception("Failed to write to $event->imageDirectory/$drawingName.png: check permissions.");
+					}
+				}
+			}
+		}
+
+		ob_start();
+		$this->actionPrint($id);
+		$html = ob_get_contents();
+		ob_end_clean();
+
+		$event->unlock();
+
+		// Verify we have all the images by detecting eyedraw canvas elements in the page.
+		// If we don't, the "outofdate" response will trigger a page-refresh so we can re-send the canvas elements to the
+		// server as PNGs.
+		if (preg_match('/<canvas.*?class="ed-canvas-display"/is',$html)) {
+			echo "outofdate";
+			return;
+		}
+
+		echo "ok";
+	}
+
+	public function actionEventImage()
+	{
+		if (!$event = Event::model()->findByPk(@$_GET['event_id'])) {
+			throw new Exception("Event not found: ".@$_GET['event_id']);
+		}
+
+		if (!$event->hasEventImage(@$_GET['image_name'])) {
+			throw new Exception("Event $event->id image missing: ".@$_GET['image_name']);
+		}
+
+		$path = $event->getImagePath(@$_GET['image_name']);
+
+		header('Content-Type: image/png');
+		header('Content-Length: '.filesize($path));
+		readfile($path);
 	}
 }

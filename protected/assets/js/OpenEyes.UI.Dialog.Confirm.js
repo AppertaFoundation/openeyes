@@ -149,18 +149,6 @@
 		this.emit('cancel');
 	};
 
-	/**
-	 * Content load success handler. Sets the dialog content to be the response of
-	 * the content request.
-	 * @name OpenEyes.UI.Dialog.Confirm#onContentLoadSuccess
-	 * @method
-	 * @private
-	 */
-	ConfirmDialog.prototype.onContentLoadSuccess = function(response) {
-		this.options.content = response;
-		Dialog.prototype.onContentLoadSuccess.call(this, this.getContent(this.options));
-	};
-
 	exports.Confirm = ConfirmDialog;
 
 }(OpenEyes.UI.Dialog, OpenEyes.Util));

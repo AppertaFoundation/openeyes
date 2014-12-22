@@ -31,13 +31,52 @@ class BaseActiveRecord extends CActiveRecord
 	const SELECTION_LABEL_FIELD = 'name';
 
 	/**
+	 * Label relation field used in admin etc
+	 */
+	const SELECTION_LABEL_RELATION = null;
+
+	/**
 	 * Order by clause to be applied by SelectionWidget
 	 */
 	const SELECTION_ORDER = '';
 
+	/**
+	 * With clause for selection query in SelectionWidget
+	 */
+	const SELECTION_WITH = null;
+
+
 	// flag to automatically update related objects on the record
 	// (whilst developing this feature, will allow other elements to continue to work)
 	protected $auto_update_relations = false;
+
+	public function canAutocomplete()
+	{
+		return false;
+	}
+
+	public function getAutocompleteField()
+	{
+		return 'name';
+	}
+
+	/**
+	 * Shortened name of this model class, useful for namespaced modules
+	 *
+	 * @return string
+	 */
+	static public function getShortModelName()
+	{
+		$name = get_called_class();
+
+		if (preg_match('/^OEModule\\\\(\w+)\\\\models\\\\(\w+)$/', $name, $matches)) {
+			list (, $module, $base_name) = $matches;
+			$base_name = str_replace("{$module}_", "", $base_name);
+			return "{$module}.{$base_name}";
+		} else {
+			return $name;
+		}
+	}
 
 	/**
 	 * If an array of arrays is passed for a HAS_MANY relation attribute, will create appropriate objects
@@ -218,7 +257,7 @@ class BaseActiveRecord extends CActiveRecord
 		}
 
 		if ($new_objs) {
-			foreach ($new_objs as $new) {
+			foreach ($new_objs as $i => $new) {
 				if ($save = @$orig_by_id[$new->getPrimaryKey()]) {
 					unset($orig_by_id[$new->getPrimaryKey()]);
 				}
@@ -228,7 +267,14 @@ class BaseActiveRecord extends CActiveRecord
 				$save->attributes = $this->getRelationsDefaults($name);
 				$save->{$thru->foreignKey} = $this->getPrimaryKey();
 				$save->{$rel->foreignKey} = $new->getPrimaryKey();
-				if (!$save->save()) {
+
+				if ($save->hasAttribute('display_order')) {
+					$save->display_order = $i+1;
+				}
+
+				$a = $save->save();
+
+				if (!$a) {//save->save()) {
 					throw new Exception("unable to save new through relation {$thru->name} for {$name}" . print_r($save->getErrors(), true));
 				}
 			}
@@ -256,6 +302,11 @@ class BaseActiveRecord extends CActiveRecord
 		if ($new_objs) {
 			foreach ($new_objs as $i => $new) {
 				$new->{$rel->foreignKey} = $this->getPrimaryKey();
+
+				if ($new->hasAttribute('display_order')) {
+					$new->display_order = $i+1;
+				}
+
 				if (!$new->save()) {
 					throw new Exception('Unable to save {$name} item {$i}');
 				}
@@ -297,7 +348,9 @@ class BaseActiveRecord extends CActiveRecord
 		}
 		// array of ids that should be saved
 		if ($new_objs) {
-			foreach ($new_objs as $new) {
+			$_table = Yii::app()->db->schema->getTable($tbl_name);
+
+			foreach ($new_objs as $i => $new) {
 				$pk = $new->getPrimaryKey();
 				if (@$orig_by_id[$pk]) {
 					unset($orig_by_id[$pk]);
@@ -306,11 +359,17 @@ class BaseActiveRecord extends CActiveRecord
 					// insert statement
 					$builder = $this->getCommandBuilder();
 					$criteria = new CDbCriteria();
-					$cmd = $builder->createInsertCommand($tbl_name, array($tbl_keys[0] => $this->getPrimaryKey(), $tbl_keys[1] => $new->getPrimaryKey()));
+					$data = array($tbl_keys[0] => $this->getPrimaryKey(), $tbl_keys[1] => $new->getPrimaryKey());
+
+					if (isset($_table->columns['display_order'])) {
+						$data['display_order'] = $i+1;
+					}
+
+					$cmd = $builder->createInsertCommand($tbl_name, $data);
+
 					if (!$cmd->execute()) {
 						throw new Exception("unable to insert many to many record for relation {$name} with pk {$new->getPrimaryKey()}");
 					}
-
 				}
 			}
 		}

@@ -23,16 +23,25 @@
  * The followings are the available columns in table 'common_ophthalmic_disorder':
  * @property integer $id
  * @property integer $disorder_id
+ * @property integer $finding_id
+ * @property integer $group_id
  * @property integer $subspecialty_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
+ * @property Finding $finding
+ * @property Group $group
  * @property Subspecialty $subspecialty
  * @property SecondaryToCommonOphthalmicDisorder[] $secondary_to
  * @property Disorder[] $secondary_to_disorders
  */
 class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
+	const SELECTION_LABEL_FIELD = 'disorder_id';
+	const SELECTION_LABEL_RELATION = 'disorder';
+	const SELECTION_ORDER = 'subspecialty.name, t.display_order';
+	const SELECTION_WITH = 'subspecialty';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return CommonOphthalmicDisorder the static model class
@@ -50,6 +59,11 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		return 'common_ophthalmic_disorder';
 	}
 
+	public function defaultScope()
+	{
+		return array('order' => $this->getTableAlias(true, false) . '.display_order');
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -58,12 +72,35 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('disorder_id, subspecialty_id', 'required'),
-			array('disorder_id, subspecialty_id', 'length', 'max'=>10),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
+			array('subspecialty_id', 'required'),
+			array('disorder_id, finding_id, group_id, alternate_disorder_id, subspecialty_id', 'length', 'max'=>10),
+			array('alternate_disorder_label','RequiredIfFieldValidator','field' => 'alternate_disorder_id', 'value' => true),
+			array('id, disorder_id, finding_id, group_id, alternate_disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
 		);
+	}
+
+	protected function afterValidate()
+	{
+		if($this->disorder_id && $this->finding_id) {
+			$this->addError('disorder_id','Cannot set both disorder and finding');
+			$this->addError('finding_id','Cannot set both disorder and finding');
+		}
+		if ($this->subspecialty_id && !$this->disorder_id && !$this->finding_id) {
+			// check this is the only COD for the subspecialty that has no disorder or finding
+			$criteria =  new CDbCriteria();
+			$criteria->addCondition('subspecialty_id = :sid');
+			$criteria->addColumnCondition(array('disorder_id' => null, 'finding_id' => null));
+			$params = array(':sid' => $this->subspecialty_id);
+			if ($this->id) {
+				$criteria->addCondition('id != :id');
+				$params[':id'] = $this->id;
+			}
+			$criteria->params = $params;
+			// run query and raise validation error if any are found
+			if (self::count($criteria)) {
+				$this->addError('subspecialty_id', "Cannot have more than one null entry for the subspecialty");
+			}
+		}
 	}
 
 	/**
@@ -74,10 +111,12 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
+			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'on' => 'disorder.active = 1'),
+			'finding' => array(self::BELONGS_TO, 'Finding', 'finding_id', 'on' => 'finding.active = 1'),
+			'alternate_disorder' => array(self::BELONGS_TO, 'Disorder', 'alternate_disorder_id', 'on' => 'alternate_disorder.active = 1'),
 			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 			'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
-			'secondary_to_disorders' => array(self::HAS_MANY, 'Disorder', 'disorder_id', 'through' => 'secondary_to'),
+			'group' => array(self::BELONGS_TO, 'CommonOphthalmicDisorderGroup', 'group_id'),
 		);
 	}
 
@@ -89,7 +128,10 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		return array(
 			'id' => 'ID',
 			'disorder_id' => 'Disorder',
+			'finding_id' => 'Finding',
 			'subspecialty_id' => 'Subspecialty',
+			'group_id' => 'Group',
+			'alternate_disorder_id' => 'Alternate Disorder'
 		);
 	}
 
@@ -106,6 +148,9 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('disorder_id',$this->disorder_id,true);
+		$criteria->compare('finding_id',$this->finding_id,true);
+		$criteria->compare('group_id',$this->group_id,true);
+		$criteria->compare('alternate_disorder_id',$this->subspecialty_id,true);
 		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
@@ -113,45 +158,144 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 		));
 	}
 
-	public static function getList($firm)
+	/**
+	 * @return string
+	 */
+	public function getType()
+	{
+		if($this->disorder) {
+			return 'disorder';
+		} else if($this->finding) {
+			return 'finding';
+		} else if($this->disorder_id || $this->finding_id) {
+			// Finding or disorder is inactive
+			return null;
+		} else {
+			return 'none';
+		}
+	}
+
+	/**
+	 * @return Disorder|Finding
+	 */
+	public function getDisorderOrFinding() {
+		if($this->disorder) {
+			return $this->disorder;
+		} else if($this->finding) {
+			return $this->finding;
+		}
+	}
+
+	/**
+	 * Fetch options list of disorders (and optionally findings)
+	 * @param Firm $firm
+	 * @param bool $include_findings
+	 * @return array
+	 * @throws CException
+	 */
+	public static function getList(Firm $firm, $include_findings = false)
 	{
 		if (empty($firm)) {
 			throw new CException('Firm is required.');
 		}
+		$disorders = array();
 		if ($firm->serviceSubspecialtyAssignment) {
-			$ss_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-			$disorders = Disorder::model()->active()->findAll(array(
-					'condition' => 'cad.subspecialty_id = :subspecialty_id',
-					'join' => 'JOIN common_ophthalmic_disorder cad ON cad.disorder_id = t.id JOIN specialty ON specialty_id = specialty.id AND specialty.code = :ophcode',
-					'order' => 'term',
-					'params' => array(':subspecialty_id' => $ss_id, ':ophcode' => 130),
+			$ss_id = $firm->getSubspecialtyID();
+			$with = array('disorder');
+			$prefix = '';
+			if($include_findings) {
+				$with = array(
+					'disorder' => array('joinType' => 'LEFT JOIN'),
+					'finding' => array('joinType' => 'LEFT JOIN')
+				);
+				$prefix = 'disorder-';
+			}
+			$cods = self::model()->with($with)->findAll(array(
+				'condition' => 't.subspecialty_id = :subspecialty_id',
+				'params' => array(':subspecialty_id' => $ss_id),
 			));
-			return CHtml::listData($disorders, 'id', 'term');
+			foreach($cods as $cod) {
+				if($cod->finding && $include_findings) {
+					$disorders['finding-'.$cod->finding->id] = $cod->finding->name;
+				} else if($cod->disorder) {
+					$disorders[$prefix.$cod->disorder->id] = $cod->disorder->term;
+				}
+			}
 		}
-		return array();
+		return $disorders;
 	}
 
 	/**
+	 * Fetch array of disorders and associated secondary to disorders (and optionally findings)
 	 * @param Firm $firm
 	 * @return array
 	 * @throws CException
 	 */
-	public static function getListWithSecondaryTo(Firm $firm)
+	public static function getListByGroupWithSecondaryTo(Firm $firm)
 	{
 		if (empty($firm)) {
 			throw new CException('Firm is required');
 		}
 		$disorders = array();
-		$secondary_to = array();
 		if ($ss_id = $firm->getSubspecialtyID()) {
-			$cods = self::model()->with(array('disorder', 'secondary_to_disorders'))->findAllByAttributes(array('subspecialty_id' => $ss_id), array('order' => 'disorder.term'));
+
+			$cods = self::model()->with(array(
+				'finding' => array('joinType' => 'LEFT JOIN'),
+				'disorder' => array('joinType' => 'LEFT JOIN'),
+				'group'
+			))->findAll(array(
+				'condition' => 't.subspecialty_id = :subspecialty_id',
+				'params' => array(':subspecialty_id' => $ss_id),
+			));
 			foreach ($cods as $cod) {
-				$disorders[] = $cod->disorder;
-				if ($secondary_tos = $cod->secondary_to_disorders) {
-					$secondary_to[$cod->disorder_id] = CHtml::listData($secondary_tos, 'id', 'term');
+				if($cod->type) {
+					$disorder = array();
+					$group = ($cod->group) ? $cod->group->name : '';
+					$disorder['type'] = $cod->type;
+					$disorder['id'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->id : null;
+					$disorder['label'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->term : 'None';
+					$disorder['group'] = $group;
+					$disorder['alternate'] = $cod->alternate_disorder_id ?
+						array(
+							'id' => $cod->alternate_disorder_id,
+							'label' => $cod->alternate_disorder->term,
+							'selection_label' => $cod->alternate_disorder_label,
+							// only allow disorder alternates at this point so type is hard code
+							'type' => 'disorder'
+						) : null;
+					$disorder['secondary'] = $cod->getSecondaryToList();
+					$disorders[] = $disorder;
 				}
 			}
 		}
-		return array(CHtml::listData($disorders, 'id', 'term'), $secondary_to);
+		return $disorders;
+	}
+
+	/**
+	 * Fetch array of secondary disorders/findings
+	 * @return array
+	 */
+	public function getSecondaryToList()
+	{
+		$secondaries = array();
+		foreach($this->secondary_to as $secondary_to) {
+			if($secondary_to->type) {
+				$secondary = array();
+				$secondary['type'] = $secondary_to->type;
+				$secondary['id'] = $secondary_to->disorderOrFinding ? $secondary_to->disorderOrFinding->id : null;
+				$secondary['label'] = $secondary_to->conditionLabel;
+				$secondaries[] = $secondary;
+			}
+		}
+		return $secondaries;
+	}
+
+	/**
+	 * Label for use in dropdowns
+	 * @return string
+	 */
+	public function getSelectionLabel()
+	{
+		return $this->subspecialty->name . " - " . ($this->disorderOrFinding ? $this->disorderOrFinding->term : 'None');
 	}
 }

@@ -20,16 +20,27 @@
 
 class OEDateValidator extends CValidator
 {
+
+	public function validateValue($value)
+	{
+		$check_date = null;
+
+		if ($m = preg_match('/^\d\d\d\d-\d\d{0,1}-\d\d{0,1}( \d\d:\d\d:\d\d){0,1}$/', $value)) {
+			$check_date = date_parse_from_format('Y-m-d',$value);
+		}
+
+		if (!$check_date || !checkdate($check_date['month'], $check_date['day'], $check_date['year'])) {
+			return false;
+		}
+
+		return true;
+	}
+
 	public function validateAttribute($object, $attribute)
 	{
 		if(isset($object->{$attribute}) && !empty($object->{$attribute})){
-			$check_date = null;
 
-			if ($m = preg_match('/^\d\d\d\d-\d\d{0,1}-\d\d{0,1}( \d\d:\d\d:\d\d){0,1}$/', $object->$attribute)) {
-				$check_date = date_parse_from_format('Y-m-d',$object->{$attribute});
-			}
-
-			if (!$check_date || !checkdate($check_date['month'], $check_date['day'], $check_date['year'])) {
+			if (!$this->validateValue($object->{$attribute})) {
 				if(strtotime($object->{$attribute})!=false){
 					$this->addError($object, $attribute,$object->getAttributeLabel($attribute).' is not in valid format: ' . $object->$attribute);
 				}

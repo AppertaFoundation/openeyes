@@ -956,38 +956,43 @@ class PatientController extends BaseController
 			throw new Exception("Patient not found:".@$_POST['patient_id']);
 		}
 
-		if (!$relative = FamilyHistoryRelative::model()->findByPk(@$_POST['relative_id'])) {
-			throw new Exception("Unknown relative: ".@$_POST['relative_id']);
-		}
+		if (@$_POST['no_family_history']) {
+			$patient->setNoFamilyHistory();
+		} else  {
 
-		if (!$side = FamilyHistorySide::model()->findByPk(@$_POST['side_id'])) {
-			throw new Exception("Unknown side: ".@$_POST['side_id']);
-		}
+			if (!$relative = FamilyHistoryRelative::model()->findByPk(@$_POST['relative_id'])) {
+				throw new Exception("Unknown relative: ".@$_POST['relative_id']);
+			}
 
-		if (!$condition = FamilyHistoryCondition::model()->findByPk(@$_POST['condition_id'])) {
-			throw new Exception("Unknown condition: ".@$_POST['condition_id']);
-		}
+			if (!$side = FamilyHistorySide::model()->findByPk(@$_POST['side_id'])) {
+				throw new Exception("Unknown side: ".@$_POST['side_id']);
+			}
 
-		if (@$_POST['edit_family_history_id']) {
-			if (!$fh = FamilyHistory::model()->findByPk(@$_POST['edit_family_history_id'])) {
-				throw new Exception("Family history not found: ".@$_POST['edit_family_history_id']);
+			if (!$condition = FamilyHistoryCondition::model()->findByPk(@$_POST['condition_id'])) {
+				throw new Exception("Unknown condition: ".@$_POST['condition_id']);
 			}
-			$fh->relative_id = $relative->id;
-			if ($relative->is_other) {
-				$fh->other_relative = @$_POST['other_relative'];
-			}
-			$fh->side_id = $side->id;
-			$fh->condition_id = $condition->id;
-			if ($condition->is_other) {
-				$fh->other_condition = @$_POST['other_condition'];
-			}
-			$fh->comments = @$_POST['comments'];
 
-			if (!$fh->save()) {
-				throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+			if (@$_POST['edit_family_history_id']) {
+				if (!$fh = FamilyHistory::model()->findByPk(@$_POST['edit_family_history_id'])) {
+					throw new Exception("Family history not found: ".@$_POST['edit_family_history_id']);
+				}
+				$fh->relative_id = $relative->id;
+				if ($relative->is_other) {
+					$fh->other_relative = @$_POST['other_relative'];
+				}
+				$fh->side_id = $side->id;
+				$fh->condition_id = $condition->id;
+				if ($condition->is_other) {
+					$fh->other_condition = @$_POST['other_condition'];
+				}
+				$fh->comments = @$_POST['comments'];
+
+				if (!$fh->save()) {
+					throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+				}
+			} else {
+				$patient->addFamilyHistory($relative->id,@$_POST['other_relative'],$side->id,$condition->id,@$_POST['other_condition'], @$_POST['comments']);
 			}
-		} else {
-			$patient->addFamilyHistory($relative->id,@$_POST['other_relative'],$side->id,$condition->id,@$_POST['other_condition'], @$_POST['comments']);
 		}
 
 		$this->redirect(array('patient/view/'.$patient->id));

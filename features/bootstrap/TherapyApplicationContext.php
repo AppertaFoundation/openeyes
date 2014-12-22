@@ -235,18 +235,6 @@ class TherapyApplicationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I select a Right Consultant of "([^"]*)"$/
-     */
-    public function iSelectAConsultantOf($consultant)
-    {
-        /**
-         * @var TherapyApplication $TherapyApplication
-         */
-        $TherapyApplication = $this->getPage("TherapyApplication");
-        $TherapyApplication->RightConsultantSelect($consultant);
-    }
-
-    /**
      * @Given /^I select an Intended Site of "([^"]*)"$/
      */
     public function iSelectAnIntendedSiteOf($site)

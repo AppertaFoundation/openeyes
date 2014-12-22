@@ -118,6 +118,16 @@ class Disorder extends BaseActiveRecordVersioned
 		);
 	}
 
+	public function canAutocomplete()
+	{
+		return true;
+	}
+
+	public function getAutocompleteField()
+	{
+		return 'term';
+	}
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */

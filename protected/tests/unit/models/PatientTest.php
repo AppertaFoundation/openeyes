@@ -189,6 +189,60 @@ class PatientTest extends CDbTestCase
 		$this->assertEquals($age, $patient->getAge());
 	}
 
+	public function testGetEdl_BothEyes()
+	{
+		Yii::app()->session['selected_firm_id']=1;
+		$patient = Patient::model()->findByPk(1);
+		$episode = Episode::model()->findByPk(1);
+		$episode->setPrincipalDiagnosis(1,Eye::BOTH);
+		$this->assertEquals($patient->getEdl(), 'Myopia');
+	}
+
+	public function testGetEdl_LeftEye()
+	{
+		Yii::app()->session['selected_firm_id']=1;
+		$patient = Patient::model()->findByPk(1);
+		$episode = Episode::model()->findByPk(1);
+		$episode->setPrincipalDiagnosis(1,Eye::LEFT);
+		$this->assertEquals($patient->getEdl(), 'Myopia');
+	}
+
+	public function testGetEdl_NotSet()
+	{
+		Yii::app()->session['selected_firm_id']=1;
+		$patient = Patient::model()->findByPk(1);
+		$episode = Episode::model()->findByPk(1);
+		$episode->setPrincipalDiagnosis(1,Eye::RIGHT);
+		$this->assertEquals($patient->getEdl(), 'No diagnosis');
+	}
+
+	public function testGetEdr_BothEyes()
+	{
+		Yii::app()->session['selected_firm_id']=1;
+		$patient = Patient::model()->findByPk(1);
+		$episode = Episode::model()->findByPk(1);
+		$episode->setPrincipalDiagnosis(1,Eye::BOTH);
+		$this->assertEquals($patient->getEdr(), 'Myopia');
+	}
+
+	public function testGetEdr_RightEye()
+	{
+		Yii::app()->session['selected_firm_id']=1;
+		$patient = Patient::model()->findByPk(1);
+		$episode = Episode::model()->findByPk(1);
+		$episode->setPrincipalDiagnosis(1,Eye::RIGHT);
+		$this->assertEquals($patient->getEdr(), 'Myopia');
+	}
+
+	public function testGetEdr_NotSet()
+	{
+		Yii::app()->session['selected_firm_id']=1;
+		$patient = Patient::model()->findByPk(1);
+		$episode = Episode::model()->findByPk(1);
+		$episode->setPrincipalDiagnosis(1,Eye::LEFT);
+		$this->assertEquals($patient->getEdr(), 'No diagnosis');
+	}
+
 	public function testRandomData_ParamSetOff_ReturnsFalse()
 	{
 		Yii::app()->params['pseudonymise_patient_details'] = false;
@@ -1097,5 +1151,15 @@ class PatientTest extends CDbTestCase
 	{
 		$event = $this->patients('patient1')->getLatestEvent();
 		$this->assertEquals('someinfo3', $event->info);
+	}
+
+	public function testGetHSCICName_NotBold()
+	{
+		$this->assertEquals("AYLWARD, Jim (Mr)",$this->patients('patient1')->getHSCICName());
+	}
+
+	public function testGetHSCICName_Bold()
+	{
+		$this->assertEquals("<strong>AYLWARD</strong>, Jim (Mr)",$this->patients('patient1')->getHSCICName(true));
 	}
 }

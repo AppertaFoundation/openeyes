@@ -57,8 +57,10 @@ class BaseAdminController extends BaseController
 	 * @param string $title
 	 * @param string $model
 	 * @param array $options
+	 * @param integer $key - if provided will only generate a single row for a null instance of the $model (for ajax additions)
+	 *
 	 */
-	protected function genericAdmin($title, $model, array $options = array())
+	protected function genericAdmin($title, $model, array $options = array(), $key = null)
 	{
 		$options += array(
 			'label_field' => $model::SELECTION_LABEL_FIELD,
@@ -88,91 +90,110 @@ class BaseAdminController extends BaseController
 		$items = array();
 		$errors = array();
 
-		if ($options['filters_ready']) {
-			if (Yii::app()->request->isPostRequest) {
-				$j = 0;
-				foreach ((array) @$_POST['id'] as $i => $id) {
-					if ($id) {
-						$item = $model::model()->findByPk($id);
-					} else {
-						$item = new $model;
-					}
 
-					$item->{$options['label_field']} = $_POST[$options['label_field']][$i];
-					$item->display_order = $j;
-					//handle models with active flag
-					$attributes = $item->getAttributes();
-					if (array_key_exists('active',$attributes)) {
-						$item->active = (isset($_POST['active'][$i]) || $item->isNewRecord)? 1 : 0;
-					}
-
-					foreach ($options['extra_fields'] as $field) {
-						$name = $field['field'];
-						$item->$name = @$_POST[$name][$i];
-					}
-
-					if ($item->hasAttribute('default')) {
-						if (isset($_POST['default']) && $_POST['default'] != 'NONE' && $_POST['default'] == $j) {
-							$item->default = 1;
-						} else {
-							$item->default = 0;
-						}
-					}
-
-					foreach ($options['filter_fields'] as $field) {
-						$item->{$field['field']} = $field['value'];
-					}
-
-					if (!$item->validate()) {
-						$errors = $item->getErrors();
-						foreach ($errors as $error) {
-							$errors[$i] = $error[0];
-						}
-					}
-
-					$items[] = $item;
-
-					$j++;
-				}
-
-				if (empty($errors)) {
-					$tx = Yii::app()->db->beginTransaction();
-
-					$ids = array();
-
-					foreach ($items as $item) {
-						if (!$item->save()) {
-							throw new Exception("Unable to save admin list item: ".print_r($item->getErrors(),true));
-						}
-						$ids[] = $item->id;
-					}
-
-					$criteria = new CDbCriteria;
-
-					!empty($ids) && $criteria->addNotInCondition('id',$ids);
-					$this->addFilterCriteria($criteria, $options['filter_fields']);
-
-					$model::model()->deleteAll($criteria);
-					$tx->commit();
-
-					Yii::app()->user->setFlash('success', "List updated.");
-
-					$this->redirect(Yii::app()->request->url);
-				}
-			} else {
-				$crit = new CDbCriteria(array('order' => 'display_order'));
-				$this->addFilterCriteria($crit, $options['filter_fields']);
-				$items = $model::model()->findAll($crit);
-			}
+		if ($key !== null) {
+			$items = array($key => new $model);
+			$options['get_row'] = true;
+			$this->renderPartial('//admin/generic_admin', array(
+					'title' => $title,
+					'model' => $model,
+					'items' => $items,
+					'errors' => $errors,
+					'options' => $options,
+				), false, true);
 		}
+		else {
+			if ($options['filters_ready']) {
+				if (Yii::app()->request->isPostRequest) {
+					$tx = Yii::app()->db->beginTransaction();
+					$j = 0;
 
-		$this->render('//admin/generic_admin', array(
-			'title' => $title,
-			'model' => $model,
-			'items' => $items,
-			'errors' => $errors,
-			'options' => $options,
-		));
+					foreach ((array) @$_POST['id'] as $i => $id) {
+						if ($id) {
+							$item = $model::model()->findByPk($id);
+							$new = false;
+						} else {
+							$item = new $model;
+							$new = true;
+						}
+
+						$attributes = $item->getAttributes();
+
+						$item->{$options['label_field']} = $_POST[$options['label_field']][$i];
+						$item->display_order = $j++;
+
+						if (array_key_exists('active',$attributes)) {
+							$item->active = (isset($_POST['active'][$i]) || $item->isNewRecord)? 1 : 0;
+						}
+
+						foreach ($options['extra_fields'] as $field) {
+							$name = $field['field'];
+							$item->$name = @$_POST[$name][$i];
+						}
+
+						if ($item->hasAttribute('default')) {
+							if (isset($_POST['default']) && $_POST['default'] != 'NONE' && $_POST['default'] == $j) {
+								$item->default = 1;
+							} else {
+								$item->default = 0;
+							}
+						}
+
+						foreach ($options['filter_fields'] as $field) {
+							$item->{$field['field']} = $field['value'];
+						}
+
+
+						if ($new || $item->getAttributes() != $attributes) {
+							if (!$item->save()) {
+								$errors = $item->getErrors();
+								foreach ($errors as $error) {
+									$errors[$i] = $error[0];
+								}
+							}
+							Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array('module' => $this->module->id, 'model' => $model::getShortModelName()));
+						}
+
+						$items[] = $item;
+						$j++;
+					}
+
+					if (empty($errors)) {
+						$criteria = new CDbCriteria;
+
+						if ($items) $criteria->addNotInCondition('id', array_map(function ($i) { return $i->id; }, $items));
+						$this->addFilterCriteria($criteria, $options['filter_fields']);
+
+						$to_delete = $model::model()->findAll($criteria);
+						foreach ($to_delete as $item) {
+							if (!$item->delete()) throw new Exception("Unable to delete {$model}:{$item->primaryKey}");
+							Audit::add('admin', 'delete', $item->primaryKey, null, array('module' => $this->module->id, 'model' => $model::getShortModelName()));
+						}
+
+						$tx->commit();
+
+							Yii::app()->user->setFlash('success', "List updated.");
+
+						$this->redirect(Yii::app()->request->url);
+					} else {
+						$tx->rollback();
+					}
+				}
+				else {
+					$crit = new CDbCriteria(array('order' => 'display_order'));
+					$this->addFilterCriteria($crit, $options['filter_fields']);
+					$items = $model::model()->findAll($crit);
+				}
+			}
+
+			$this->render('//admin/generic_admin', array(
+				'title' => $title,
+				'model' => $model,
+				'items' => $items,
+				'errors' => $errors,
+				'options' => $options,
+			));
+		}
 	}
 
 	private function addFilterCriteria(CDbCriteria $crit, array $filter_fields)

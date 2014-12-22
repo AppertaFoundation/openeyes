@@ -26,7 +26,7 @@ function showActiveChildElements() {
 	});
 }
 
-function addElement(element, animate, is_child, previous_id, params) {
+function addElement(element, animate, is_child, previous_id, params, callback) {
 
 	if (typeof (animate) === 'undefined')
 		animate = true;
@@ -151,6 +151,11 @@ function addElement(element, animate, is_child, previous_id, params) {
 		if(typeof updateTextMacros == 'function') {
 			updateTextMacros();
 		}
+
+		if(callback) {
+			callback();
+		}
+
 	});
 
 }
@@ -196,6 +201,8 @@ function removeElement(element, is_child) {
 	if(typeof updateTextMacros == 'function') {
 		updateTextMacros();
 	}
+
+	$('.js-active-elements').trigger('ElementRemoved', [ element_type_class ]);
 }
 
 $(document).ready(function() {
@@ -270,7 +277,7 @@ $(document).ready(function() {
 					modal: true,
 					close: function(event, ui) {
 						$(this).remove();
-					},
+					}
 				});
 				$('#previous_elements .copy_element').click(function() {
 					var element_id = $(this).attr('data-element-id');

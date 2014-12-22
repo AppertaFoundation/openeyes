@@ -17,24 +17,28 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if ($filter_fields): ?>
-	<form method="get">
-		<?php foreach ($filter_fields as $filter_field): ?>
-			<div class="row field-row">
-				<div class="large-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
-				<div class="large-5 column end"><?=
-					CHtml::dropDownList(
-						$filter_field['field'], $filter_field['value'],
-						SelectionHelper::listData($filter_field['model']),
-						array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
-					);
-				?></div>
-			</div>
-		<?php endforeach ?>
-	</form>
-<?php endif ?>
-<?php if ($filters_ready): ?>
-	<?= CHtml::beginForm() ?>
+
+<?php if (!$get_row) {
+
+	if ($filter_fields) { ?>
+		<form method="get">
+			<?php foreach ($filter_fields as $filter_field) { ?>
+				<div class="row field-row">
+					<div class="large-2 column"><label for="<?= $filter_field['field'] ?>"><?= CHtml::encode($model::model()->getAttributeLabel($filter_field['field'])); ?></label></div>
+					<div class="large-5 column end"><?=
+						CHtml::dropDownList(
+							$filter_field['field'], $filter_field['value'],
+							SelectionHelper::listData($filter_field['model']),
+							array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
+						);
+					?></div>
+				</div>
+			<?php } ?>
+		</form>
+	<?php }
+	if ($filters_ready) { ?>
+		<?= CHtml::beginForm() ?>
+
 		<table class="generic-admin">
 			<thead>
 				<tr>
@@ -57,60 +61,19 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($items as $i => $row) {?>
-					<tr data-row="<?= $i ?>">
-						<td class="reorder">
-							<span>&uarr;&darr;</span>
-						</td>
-						<td>
-							<?php echo CHtml::hiddenField("id[{$i}]",$row->id)?>
-							<?php echo CHtml::hiddenField("display_order[{$i}]",$row->display_order)?>
-							<?php echo CHtml::textField("{$label_field}[{$i}]",$row->{$label_field},array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-							<?php if (isset($errors[$i])) {?>
-								<span class="error">
-									<?php echo $errors[$i]?>
-								</span>
-							<?php }?>
-						</td>
-						<?php foreach ($extra_fields as $field) {?>
-							<td>
-								<?php $this->render('_generic_admin_'.$field['type'],array('row' => $row, 'params' => $field, 'i' => $i))?>
-							</td>
-						<?php }?>
-						<td>
-							<?php if (isset($row->active)) {
-								echo CHtml::checkBox('active[' . $i . ']',$row->active);
-							}
-							else{?>
-							<a href="#" class="deleteRow">delete</a>
-							<?php }?>
-						</td>
-						<?php if ($model::model()->hasAttribute('default')) {?>
-							<td>
-								<?php echo CHtml::radioButton('default',$row->default,array('value' => $i))?>
-							</td>
-						<?php }?>
-					</tr>
-				<?php }?>
-				<tr id="admin-new-row" class="newRow" style="display: none">
-					<input type="hidden" name="row-key" value="{{key}}" />
-					<td>
-						<span>&uarr;&darr;</span>
-					</td>
-					<td>
-						<?php echo CHtml::hiddenField('id[{{key}}]','',array('disabled' => 'disabled'))?>
-						<?php echo CHtml::hiddenField('display_order[{{key}}]','{{key}}',array('disabled' => 'disabled'))?>
-						<?php echo CHtml::textField("{$label_field}[{{key}}]",'',array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => 'disabled'))?>
-					</td>
-					<?php foreach ($extra_fields as $field) {?>
-						<td>
-							<?php $this->render('_generic_admin_'.$field['type'],array('row' => null, 'params' => $field, 'disabled' => 'disabled', 'i' => '{{key}}'))?>
-						</td>
-					<?php }?>
-					<td>
-						<a href="#" class="deleteRow">delete</a>
-					</td>
-				</tr>
+	<?php }
+}
+?>
+
+<?php foreach ($items as $i => $row) {
+	$this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model));
+}
+
+if (!$get_row && $filters_ready) {
+				if (!$this->new_row_url) {
+					$this->render('_generic_admin_row', array('row_class' => 'newRow', 'row_style' => 'display: none;', 'disabled' => true,
+							'i' => '{{key}}', 'row' => new $model, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model));
+				} ?>
 			</tbody>
 			<?php if ($model::model()->hasAttribute('default')) {?>
 				<tfoot>
@@ -126,8 +89,8 @@
 			<?php }?>
 		</table>
 		<div>
-			<?php echo EventAction::button('Add', 'admin-add', null, array('class' => 'generic-admin-add small secondary'))->toHtml()?>&nbsp;
+			<?php echo EventAction::button('Add', 'admin-add', null, array('class' => 'generic-admin-add small secondary', 'data-model' => $model, 'data-new-row-url' => @$this->new_row_url))->toHtml()?>&nbsp;
 			<?php echo EventAction::button('Save', 'admin-save', null, array('class' => 'generic-admin-save small primary'))->toHtml()?>&nbsp;
 		</div>
 	<?= CHtml::endForm() ?>
-<?php endif;
+<?php }

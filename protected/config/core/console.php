@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-return array(
+$config = array(
 	'name'=>'OpenEyes Console',
 	'import' => array(
 			'application.components.*',
@@ -32,3 +32,11 @@ return array(
 		),
 	),
 );
+
+if (preg_match('/\/protected\/modules\/deploy\/yiic$/',@$_SERVER['SCRIPT_FILENAME']) || preg_match('/\/protected\/modules\/deploy$/',@$_SERVER['PWD'])) {
+	$config['commandMap']['migrate']['class'] = 'MigrateCommand';
+	$config['commandMap']['migrate']['migrationPath'] = 'application.modules.deploy.migrations';
+	$config['commandMap']['migrate']['migrationTable'] = 'tbl_migration_deploy';
+}
+
+return $config;

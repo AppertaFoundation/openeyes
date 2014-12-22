@@ -18,6 +18,12 @@
 
 $(document).ready(function() {
 
+	$(this).on('init', '.multi-select', function() {
+		$('.multi-select-selections.sortable').sortable();
+	});
+
+	$('.multi-select-selections.sortable').sortable();
+
 	// Prevent the events from being bound multiple times.
 	if ($(this).data('multi-select-events')) {
 		return;
@@ -79,8 +85,8 @@ $(document).ready(function() {
 			item.append(input);
 
 			selections
-			.append(item)
-			.removeClass('hide');
+				.append(item)
+				.removeClass('hide');
 
 			noSelectionsMsg.addClass('hide');
 			removeAll.removeClass('hide');

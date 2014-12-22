@@ -4,10 +4,11 @@
  */
 class EventTypeTest extends CDbTestCase
 {
-
 	public $fixtures = array(
 		'event_types' => 'EventType',
 		'element_types' => 'ElementType',
+		'events' => 'Event',
+		'episodes' => 'Episode',
 	);
 
 	/**
@@ -143,18 +144,6 @@ class EventTypeTest extends CDbTestCase
 	}
 
 	/**
-	 * @covers EventType::getActiveList
-	 * @todo   Implement testGetActiveList().
-	 */
-	public function testGetActiveList()
-	{
-			// Remove the following lines when you implement this test.
-			$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-			);
-	}
-
-	/**
 	 * @covers EventType::getDisabled
 	 * @todo   Implement testGetDisabled().
 	 */
@@ -218,5 +207,40 @@ class EventTypeTest extends CDbTestCase
 			$this->element_types('va'),
 			$this->element_types('inherited_event_element'),
 			), $test->getAllElementTypes());
+	}
+
+	public function testGetEventTypeInUseList()
+	{
+		$list = array();
+
+		foreach ($this->event_types as $event_type) {
+			if (rand(0,1) == 0) {
+				$list[$event_type['id']] = $event_type['name'];
+			}
+		}
+
+		foreach ($list as $event_type_id => $event_name) {
+			Yii::app()->db->createCommand()->insert('event',array(
+				'episode_id' => 1,
+				'event_type_id' => $event_type_id,
+				'created_user_id' => 1,
+				'last_modified_user_id' => 1,
+			));
+		}
+
+		$this->assertEquals($list, EventType::model()->getEventTypeInUseList());
+	}
+
+	public function testGetActiveList()
+	{
+		$list = array();
+
+		foreach ($this->event_types as $event_type) {
+			if (isset(Yii::app()->modules[$event_type['class_name']])) {
+				$list[$event_type['id']] = $event_type['name'];
+			}
+		}
+
+		$this->assertEquals($list, EventType::model()->getActiveList());
 	}
 }

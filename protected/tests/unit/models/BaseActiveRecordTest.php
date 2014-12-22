@@ -43,13 +43,23 @@ class BaseActiveRecordTest extends CDbTestCase
 		$this->model = new Allergy;
 	}
 
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 */
-	protected function tearDown()
+	public function getShortModelNameDataProvider()
 	{
+		return array(
+			array('BaseActiveRecordTest_NonamespaceTestClass', 'BaseActiveRecordTest_NonamespaceTestClass'),
+			array('OEModule\BaseActiveRecordTest\models\BaseActiveRecordTest_NamespaceTestClass', 'BaseActiveRecordTest.NamespaceTestClass'),
+			array('OEModule\BaseActiveRecordTest\models\NamespaceTestClass', 'BaseActiveRecordTest.NamespaceTestClass'),
+		);
+	}
 
+	/**
+	 * @dataProvider getShortModelNameDataProvider
+	 */
+	public function testGetShortModelName($class_name, $short_name)
+	{
+		$class_file = __DIR__ . DIRECTORY_SEPARATOR . 'BaseActiveRecordTest' . DIRECTORY_SEPARATOR . preg_replace('/^.*\\\\/', '', $class_name) . '.php';
+		require_once($class_file);
+		$this->assertEquals($short_name, $class_name::getShortModelName());
 	}
 
 	/**
@@ -715,3 +725,4 @@ class RelationTestAssClass extends BaseActiveRecord
 	}
 
 }
+

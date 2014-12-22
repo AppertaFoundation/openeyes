@@ -43,4 +43,9 @@ return array(
 		'service_subspecialty_assignment_id' => null,
 		'name' => 'Support Services Firm'
 	),
+	'firm5' => array(
+		'id' => 5,
+		'service_subspecialty_assignment_id' => 3,
+		'name' => 'Blah'
+	),
 );

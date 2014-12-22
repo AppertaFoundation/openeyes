@@ -425,6 +425,17 @@ class Patient extends BaseActiveRecordVersioned
 		return trim(implode(' ',array($this->title, $this->first_name, $this->last_name)));
 	}
 
+	/**
+	 * get the Patient name according to HSCIC guidelines
+	 *
+	 * @return string
+	 */
+	public function getHSCICName($bold=false)
+	{
+		$last_name = $bold ? "<strong>".strtoupper($this->last_name)."</strong>" : strtoupper($this->last_name);
+		return trim(implode(' ',array($last_name . ",", $this->first_name, '('. $this->title . ')')));
+	}
+
 	public function getDisplayName()
 	{
 		return '<span class="patient-surname">'.strtoupper($this->last_name).'</span>, <span class="patient-name">'.$this->first_name.'</span>';
@@ -623,6 +634,32 @@ class Patient extends BaseActiveRecordVersioned
 		}
 	}
 
+	public function getEdl()
+	{
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		if ($episode && $disorder = $episode->diagnosis) {
+
+			if ($episode->eye->id == Eye::BOTH || $episode->eye->id == Eye::LEFT ) {
+				return  ucfirst(strtolower($disorder->term));
+			}
+			return 'No diagnosis';
+		}
+	}
+
+	public function getEdr()
+	{
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		if ($episode && $disorder = $episode->diagnosis) {
+
+			if ($episode->eye->id == Eye::BOTH || $episode->eye->id == Eye::RIGHT ) {
+				return  ucfirst(strtolower($disorder->term));
+			}
+			return 'No diagnosis';
+		}
+	}
+
 	public function getEps()
 	{
 		$episode = $this->getEpisodeForCurrentSubspecialty();
@@ -742,25 +779,37 @@ class Patient extends BaseActiveRecordVersioned
 	 */
 	public function setNoAllergies()
 	{
-		$transaction = Yii::app()->db->beginTransaction();
-		try {
-			foreach (PatientAllergyAssignment::model()->findAll('patient_id = ?', array($this->id)) as $paa) {
-				if (!$paa->delete()) {
-					throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
-				}
-				$this->audit('patient','remove-allergy');
-			}
-			$this->no_allergies_date = date('Y-m-d H:i:s');
-			if (!$this->save()) {
-				throw new Exception('Unable to set no allergy date:' .  print_r($this->getErrors(), true));
-			}
-			$this->audit('patient', 'set-noallergydate');
-			$transaction->commit();
+		if (!empty($this->allergyAssignments)) {
+			throw new Exception('Unable to set no allergy date as patient still has allergies assigned');
 		}
-		catch (Exception $e) {
-			$transaction->rollback();
-			throw $e;
+
+		$this->no_allergies_date = date('Y-m-d H:i:s');
+		if (!$this->save()) {
+			throw new Exception('Unable to set no allergy date:' .  print_r($this->getErrors(), true));
 		}
+
+		$this->audit('patient', 'set-noallergydate');
+	}
+
+
+	/**
+	 * marks the patient as having no family history
+	 *
+	 * @throws Exception
+	 */
+	public function setNoFamilyHistory()
+	{
+		if (!empty($this->familyHistory)) {
+			throw new Exception('Unable to set no family history date as patient still has family history assigned');
+		}
+
+		$this->no_family_history_date = date('Y-m-d H:i:s');
+
+		if (!$this->save()) {
+			throw new Exception('Unable to set no family history:' .  print_r($this->getErrors(), true));
+		}
+
+		$this->audit('patient', 'set-nofamilyhistorydate');
 	}
 
 	/*
@@ -1137,6 +1186,13 @@ class Patient extends BaseActiveRecordVersioned
 
 		if (!$fh->save()) {
 			throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+		}
+
+		if ($this->no_family_history_date) {
+			$this->no_family_history_date = null;
+			if (!$this->save()) {
+				throw new Exception('Could not remove no family history flag: ' . print_r($this->getErrors(), true));
+			};
 		}
 	}
 
