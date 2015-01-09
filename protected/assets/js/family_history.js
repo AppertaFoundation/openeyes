@@ -65,8 +65,7 @@ $(document).ready(function () {
 	});
 
 	$('button.btn_save_family_history').click(function() {
-
-		if($('#no_family_history').val() != '1') {
+		if (!$('#no_family_history').is(':checked')) {
 			if ($('#relative_id').val() == '') {
 				new OpenEyes.UI.Dialog.Alert({
 					content: "Please select a relative."
