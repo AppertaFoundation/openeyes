@@ -278,6 +278,7 @@ return array(
 				'title' => 'Reports',
 				'uri' => 'report',
 				'position' => 50,
+				'restricted' => array('Report'),
 			),
 			'logout' => array(
 				'title' => 'Logout',
