@@ -24,6 +24,12 @@ class AuthManager extends CDbAuthManager
 	public function __construct()
 	{
 		$this->registerRuleset('core', new AuthRules);
+
+	 	if (isset(Yii::app()->params['additional_rulesets'])) {
+			foreach (Yii::app()->params['additional_rulesets'] as $r) {
+				$this->registerRuleset($r['namespace'], new $r['class']);
+			}
+		}
 	}
 
 	/**

@@ -2,7 +2,7 @@
   <identifier>
     <use value="official"/>
     <label value="Organisation Code"/>
-    <system value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/o/org/organisation_code_de.asp"/>
+    <system value="http://example.com/practice_code"/>
     <value value="12345"/>
   </identifier>
   <telecom>

@@ -64,7 +64,7 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'selectRelativeID' => array('xpath' => "//*[@id='relative_id']"),
         'selectFamilySide' => array('xpath' => "//*[@id='side_id']"),
         'selectFamilyCondition' => array('xpath' => "//*[@id='condition_id']"),
-        'enterFamilyComments' => array('xpath' => "//*[@id='comments']"),
+        'enterFamilyComments' => array('xpath' => "//*[@id='add_family_history']//*[@id='comments']"),
         'saveFamilyHistory' => array('xpath' => "//*[@class='secondary small btn_save_family_history']"),
         'createNewEpisodeAddEvent' => array('xpath' => "//*[@class='box patient-info episode-links']//*[contains(text(),'Create episode / add event')]"),
         'addEpisodeButton' => array('xpath' => "//*[@id='add-episode']"),
@@ -79,7 +79,27 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         'removeOperationConfirmButton' => array('xpath' => "html/body/div[2]/div[2]/div/div[2]/button[1]"),
         'removeMedication' => array('xpath' => "//*[@id='medication_list']//*[contains(text(),'Delete')]"),
         'removeMedicationConfirmButton' => array('xpath' => "//*[contains(text(),'Remove medication')]"),
-        'datePicker' => array('xpath' => "//*[@class='ui-datepicker-title']")
+        'datePicker' => array('xpath' => "//*[@class='ui-datepicker-title']"),
+
+        'addSocialHistory' => array('xpath' => "//*[@id='btn-add_social_history']"),
+        'occupationType' => array('xpath' => "//*[@id='SocialHistory_occupation_id']"),
+        'occupationTypeOther' => array('xpath' => "//*[@id='SocialHistory_type_of_job']"),
+        'drivingStatus' => array('xpath' => "//*[@id='SocialHistory_driving_status_id']"),
+        'smokingStatus' => array('xpath' => "//*[@id='SocialHistory_smoking_status_id']"),
+        'accommodationStatus' => array('xpath' => "//*[@id='SocialHistory_accommodation_id']"),
+        'socialComments' => array ('xpath' => "//*[@id='SocialHistory_comments']"),
+        'carer' => array('xpath' => "//*[@id='SocialHistory_carer_id']"),
+        'alcoholIntake' => array ('xpath' => "//*[@id='SocialHistory_alcohol_intake']"),
+        'substanceMisuse' => array('xpath' => "//*[@id='SocialHistory_substance_misuse_id']"),
+        'saveSocialHistory' => array ('xpath' => "//*[@class='secondary small btn_save_social_history']"),
+
+
+
+
+
+
+
+
         );
 
     public function addOpthalmicDiagnosis ($diagnosis)
@@ -382,4 +402,65 @@ class PatientViewNewDiagnosis extends OpenEyesPage
         $this->getElement('removeMedicationConfirmButton')->click();
         $this->getSession()->wait(5000, 'window.$ && $.active == 0');
     }
+
+    public function addSocialHistory ()
+    {
+        $element = $this->getElement('addSocialHistory');
+        $this->scrollWindowToElement($element);
+        $element->click();
+        $this->getSession()->wait(5000, 'window.$ && $.active == 0');
+    }
+
+    public function occupationType ($occupation)
+    {
+        $this->getElement('occupationType')->selectOption($occupation);
+    }
+
+    public function occupationOtherType ($other)
+    {
+        $this->getElement('occupationTypeOther')->setValue($other);
+    }
+
+    public function drivingStatus ($status)
+    {
+        $this->getElement('drivingStatus')->selectOption($status);
+    }
+
+    public function smokingStatus ($status)
+    {
+        $this->getElement('smokingStatus')->selectOption($status);
+    }
+
+    public function accommodationStatus ($status)
+    {
+        $this->getElement('accommodationStatus')->selectOption($status);
+    }
+
+    public function socialComments ($comments)
+    {
+        $this->getElement('socialComments')->setValue($comments);
+    }
+    public function carerStatus ($carer)
+    {
+        $this->getElement('carer')->selectOption($carer);
+    }
+
+    public function alcoholIntake ($units)
+    {
+        $this->getElement('alcoholIntake')->setValue($units);
+    }
+
+    public function substanceMisuse ($substance)
+    {
+        $element = $this->getElement('substanceMisuse');
+        $this->scrollWindowToElement($element);
+        $element->selectOption($substance);
+    }
+
+    public function saveSocialHistory ()
+    {
+        $this->getElement('saveSocialHistory')->click();
+        $this->getSession()->wait(20000);
+    }
+
 }

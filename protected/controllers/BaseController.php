@@ -92,6 +92,12 @@ class BaseController extends Controller
 	{
 		$app = Yii::app();
 
+		foreach (SettingMetadata::model()->findAll() as $metadata) {
+			if (!$metadata->element_type) {
+				Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+			}
+		}
+
 		$this->setupAssetManager();
 
 		if ($app->params['ab_testing']) {

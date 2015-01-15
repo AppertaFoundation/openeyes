@@ -27,6 +27,7 @@
 // Styleguide 14.1
 .box {
 	&.content {
+		@extend %clearfix;
 		background: #dae6f1;
 		&.admin-content {
 			padding: 16px 0;

@@ -3,12 +3,13 @@
   <identifier>
     <use value="official"/>
     <label value="NHS Number"/>
-    <system value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp"/>
-    <value value="123456789"/>
+    <system value="http://example.com/nhs_num"/>
+    <value value="999999990"/>
   </identifier>
   <identifier>
     <label value="Hospital Number"/>
-    <value value="0123456"/>
+    <system value="http://example.com/hos_num"/>
+    <value value="9999990"/>
   </identifier>
   <name>
     <family value="Lister"/>
@@ -18,7 +19,6 @@
   <telecom>
     <system value="phone"/>
     <value value="01234 567890"/>
-    <use value="home"/>
   </telecom>
   <gender>
     <coding>

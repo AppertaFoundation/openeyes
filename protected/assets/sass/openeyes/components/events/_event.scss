@@ -17,15 +17,10 @@
 .event {
 	@include border-radius(0);
 	background: #fafafa;
-	border-style: solid;
-	border-width: 0 5px 5px;
 	margin: 0;
-	padding: 0 5px 10px 5px;
+	padding: 0;
 	@media print {
 		background: transparent;
-		border: 0;
-		margin: 0;
-		padding: 0;
 	}
 	&.column {
 		width: 85.4%;
@@ -36,6 +31,16 @@
 	.event-content {
 		background-position: right top;
 		background-repeat: no-repeat;
+		border-style: solid;
+		border-width: 5px;
+		/* This exists to support legacy event styles where border color
+		   was set on .event */
+		border-color: inherit;
+		padding: 5px 5px 10px 5px;
+		@media print {
+			border: 0;
+			padding: 0;
+		}
 		form {
 			margin: 0;
 		}
@@ -44,7 +49,6 @@
 		@extend .clearfix;
 		background: #eaddaf;
 		border-bottom: 5px solid #a29d8a;
-		margin: 0 -10px;
 		padding: 6px 10px 0 10px;
 		@media print {
 			display: none;

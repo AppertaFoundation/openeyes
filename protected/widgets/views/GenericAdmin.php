@@ -38,6 +38,7 @@
 	<?php }
 	if ($filters_ready) { ?>
 		<?= CHtml::beginForm() ?>
+
 		<table class="generic-admin">
 			<thead>
 				<tr>
@@ -60,7 +61,6 @@
 				</tr>
 			</thead>
 			<tbody>
-
 	<?php }
 }
 ?>

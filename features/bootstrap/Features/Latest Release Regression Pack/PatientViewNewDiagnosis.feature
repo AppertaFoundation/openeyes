@@ -1,6 +1,6 @@
 @diagnosis @regression
 Feature: Open Eyes Login and Patient Diagnosis Screen
-         Regression coverage of this event is approx 95%
+         Regression coverage of this event is approx 98%
 
   Scenario: Route 1: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
@@ -93,4 +93,52 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
     Then I remove the Medication
 
     And I Add a Family History of relative "4" side "3" condition "2" and comments "Family History Comments" and Save
+
+  Scenario: Route 4: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
+            Social History Tests
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
+    Then I search for hospital number "1009465"
+
+    Then I Add an Ophthalmic Diagnosis selection of "193570009"
+    And I select that it affects eye "Left"
+    And I select a Opthalmic Diagnosis date of day "18" month "6" year "2012"
+    Then I save the new Opthalmic Diagnosis
+
+    Then I Add an Systemic Diagnosis selection of "195967001"
+    And I select that it affects Systemic side "Left"
+    And I select a Systemic Diagnosis date of day "18" month "6" year "2012"
+
+    Then I save the new Systemic Diagnosis
+
+    Then I Add a Previous Operation of "1"
+    And I select that it affects Operation side "Left"
+    And I select a Previous Operation date of day "9" month "9" year "2012"
+    Then I save the new Previous Operation
+
+    Then I edit the CVI Status "4"
+    And I select a CVI Status date of day "18" month "6" year "2012"
+    Then I save the new CVI status
+
+    Then I Remove existing Allergy
+    Then I Add Allergy "5" and Save
+
+    And I Add a Family History of relative "1" side "1" condition "1" and comments "Family History Comments" and Save
+
+    Then I expand Social History
+    And I add an Occupation of "7"
+    And I add an Occupation Other type of "Nuclear Scientist"
+    And I select "Motor vehicle" for "Driving Status"
+    And I add a Smoking status of "2"
+    And I add an Accommodation status of "3"
+    Then I add Social Comments of "Test Social comments"
+    And I select a Carer status of "1"
+    Then I set an Alcohol intake of "100" units a week
+    And I select a Substance Misuse status of "1"
+    Then I Save the Social History
+
+
 

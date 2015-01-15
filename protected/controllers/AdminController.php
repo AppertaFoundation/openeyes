@@ -312,6 +312,26 @@ class AdminController extends BaseAdminController
 			));
 	}
 
+	public function actionUserFind()
+	{
+		$res = array();
+		if (Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
+			$criteria = new CDbCriteria;
+			$criteria->compare("LOWER(username)", strtolower($_REQUEST['search']),true, 'OR');
+			$criteria->compare("LOWER(first_name)",strtolower($_REQUEST['search']),true, 'OR');
+			$criteria->compare("LOWER(last_name)",strtolower($_REQUEST['search']),true, 'OR');
+			foreach (User::model()->findAll($criteria) as $user) {
+				$res[] = array(
+					'id' => $user->id,
+					'label' => $user->getFullName() . '(' . $user->username . ')',
+					'value' => $user->getFullName(),
+					'username' => $user->username,
+				);
+			}
+		}
+		echo CJSON::encode($res);
+	}
+
 	public function actionUsers($id=false)
 	{
 		Audit::add('admin-User','list');
@@ -1552,6 +1572,40 @@ class AdminController extends BaseAdminController
 		$tx->commit();
 
 		$this->redirect(array('/admin/episodeSummaries', 'subspecialty_id' => $subspecialty_id));
+	}
+
+
+	public function actionSettings()
+	{
+		$this->render('/admin/settings');
+	}
+
+	public function actionEditSetting()
+	{
+		if (!$metadata = SettingMetadata::model()->find('`key`=?',array(@$_GET['key']))) {
+			$this->redirect(array('/admin/settings'));
+		}
+
+		$errors = array();
+
+		foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {
+			if (@$_POST[$metadata->key]) {
+				if (!$setting = $metadata->getSetting($metadata->key,null,true)) {
+					$setting = new SettingInstallation;
+					$setting->key = $metadata->key;
+				}
+
+				$setting->value = @$_POST[$metadata->key];
+
+				if (!$setting->save()) {
+					$errors = $setting->errors;
+				} else {
+					$this->redirect(array('/admin/settings'));
+				}
+			}
+		}
+
+		$this->render('/admin/edit_setting',array('metadata' => $metadata, 'errors' => $errors));
 	}
 
 	public function actionSocialHistory()

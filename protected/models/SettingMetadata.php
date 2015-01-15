@@ -107,4 +107,114 @@ class SettingMetadata extends BaseActiveRecordVersioned
 			'criteria'=>$criteria,
 		));
 	}
+
+	protected function getSettingValue($model, $key, $condition_field, $condition_value, $element_type)
+	{
+		$criteria = new CDbcriteria;
+
+		if ($condition_field && $condition_value) {
+			$criteria->addCondition($condition_field.' = :'.$condition_field);
+			$criteria->params[':'.$condition_field] = $condition_value;
+		}
+
+		$criteria->addCondition('`key`=:key');
+		$criteria->params[':key'] = $key;
+
+		if ($element_type) {
+			$criteria->addCondition('element_type_id=:eti');
+			$criteria->params[':eti'] = $element_type->id;
+		} else {
+			$criteria->addCondition('element_type_id is null');
+		}
+
+		return $model::model()->find($criteria);
+	}
+
+	public function getSetting($key=null, $element_type=null, $return_object=false)
+	{
+		if (!$key) {
+			$key = $this->key;
+		}
+
+		if ($element_type) {
+			$metadata = SettingMetadata::model()->find('element_type_id=? and `key`=?',array($element_type->id,$key));
+		} else {
+			$metadata = SettingMetadata::model()->find('element_type_id is null and `key`=?',array($key));
+		}
+
+		if (!$metadata) {
+			return false;
+		}
+
+		$user_id = Yii::app()->session['user'] ? Yii::app()->session['user']->id : null;
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		$firm_id = $firm ? $firm->id : null;
+		$subspecialty_id = $firm ? $firm->subspecialtyID : null;
+		$specialty_id = $firm && $firm->specialty ? $firm->specialty->id : null;
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+		$site_id = $site ? $site->id : null;
+		$institution_id = $site ? $site->institution_id : null;
+
+		foreach (array(
+			'SettingUser' => 'user_id',
+			'SettingFirm' => 'firm_id',
+			'SettingSubspecialty' => 'subspecialty_id',
+			'SettingSpecialty' => 'specialty_id',
+			'SettingSite' => 'site_id',
+			'SettingInstitution' => 'institution_id',
+			'SettingInstallation' => null,
+			) as $class => $field) {
+
+			if ($field) {
+				if (${$field}) {
+					if ($setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {
+						if ($return_object) {
+							return $setting;
+						}
+						return $this->parseSetting($setting, $metadata);
+					}
+				}
+			} else {
+				if ($setting = $this->getSettingValue($class, $key, null, null, $element_type)) {
+					if ($return_object) {
+						return $setting;
+					}
+					return $this->parseSetting($setting, $metadata);
+				}
+			}
+		}
+
+		if ($return_object) {
+			return false;
+		}
+
+		return $metadata->default_value;
+	}
+
+	public function getSettingName($key=null)
+	{
+		if (!$key) {
+			$key = $this->key;
+		}
+
+		$value = $this->getSetting($key);
+
+		if ($data = @unserialize($this->data)) {
+			return $data[$value];
+		}
+
+		return $value;
+	}
+
+	public function parseSetting($setting, $metadata)
+	{
+		if (@$data = unserialize($metadata->data)) {
+			if (isset($data['model'])) {
+				$model = $data['model'];
+				return $model::model()->findByPk($setting->value);
+			}
+		}
+
+		return $setting->value;
+	}
 }

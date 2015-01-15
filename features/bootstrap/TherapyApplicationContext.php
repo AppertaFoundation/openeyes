@@ -188,6 +188,17 @@ class TherapyApplicationContext extends PageObjectContext
     }
 
     /**
+     * @Given /^I select a Right Patient has CNV of No PDT Route$/
+     */
+    public function iSelectARightPatientHasCnvOfNoPdtRoute()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+    }
+
+    /**
      * @Given /^I select a Right Angiogram Baseline Date of "([^"]*)"$/
      */
     public function iSelectARightAngiogramBaselineDateOf($date)
@@ -224,15 +235,14 @@ class TherapyApplicationContext extends PageObjectContext
     }
 
     /**
-     * @Given /^I select a Right Consultant of "([^"]*)"$/
+     * @Given /^I select an Intended Site of "([^"]*)"$/
      */
-    public function iSelectAConsultantOf($consultant)
+    public function iSelectAnIntendedSiteOf($site)
     {
         /**
          * @var TherapyApplication $TherapyApplication
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
-        $TherapyApplication->RightConsultantSelect($consultant);
     }
 
     /**
@@ -774,6 +784,30 @@ class TherapyApplicationContext extends PageObjectContext
          */
         $TherapyApplication = $this->getPage("TherapyApplication");
         $TherapyApplication->rightPatientLikelyToGainBenefit($comments);
+    }
+
+    /**
+     * @Given /^I select a Left Patient has a Venous Occlusion of Yes$/
+     */
+    public function iSelectALeftPatientHasAVenousOcclusionOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->leftPatientVenousOcclusionYes();
+    }
+
+    /**
+     * @Given /^I select a Left Patient has a CRVO of Yes$/
+     */
+    public function iSelectALeftPatientHasACrvoOfYes()
+    {
+        /**
+         * @var TherapyApplication $TherapyApplication
+         */
+        $TherapyApplication = $this->getPage("TherapyApplication");
+        $TherapyApplication->leftPatientCRVOYes();
     }
 
 

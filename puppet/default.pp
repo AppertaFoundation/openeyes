@@ -24,20 +24,20 @@ node default {
 		include dev::compass
 		include dev::security
 		notice("Running advanced xdebug config")
-    dev::xdebug::config { 'default':
-    	profiler_output_name => 'xdebug.log',
-    	remote_connect_back => 1,
-    	remote_enable => 1,
-    	remote_port => 9000
-    }
+		dev::xdebug::config { 'default':
+			profiler_output_name => 'xdebug.log',
+			remote_connect_back => 1,
+			remote_enable => 1,
+			remote_port => 9000
+		}
 	}
 
 	if $mode == 'ci' {
 		include dev::security
 		include dev::xdebug
 		notice("Running advanced xdebug config")
-    dev::xdebug::config { 'default':
-    	profiler_output_name => 'xdebug.log'
-    }
+		dev::xdebug::config { 'default':
+			profiler_output_name => 'xdebug.log'
+		}
 	}
 }

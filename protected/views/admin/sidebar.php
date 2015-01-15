@@ -1,4 +1,20 @@
 <div class="box admin">
+	<h2>System</h2>
+	<ul class="navigation admin">
+		<?php foreach (array(
+			'Settings' => '/admin/settings',
+		) as $title => $uri) {?>
+			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="selected"<?php }?>>
+				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?>
+					<?php echo CHtml::link($title,array($uri),array('class' => 'selected'))?>
+				<?php } else {?>
+					<?php echo CHtml::link($title,array($uri))?>
+				<?php }?>
+			</li>
+		<?php }?>
+	</ul>
+</div>
+<div class="box admin">
 	<h2>Core</h2>
 	<ul class="navigation admin">
 		<?php foreach (array(

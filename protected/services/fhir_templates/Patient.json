@@ -3,11 +3,12 @@
 		{
 			"use": "official",
 			"label": "NHS Number",
-			"system": {":match": "http://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp"},
+			"system": {":match": "{{system_uri_nhs_num}}"},
 			"value": {":subst": "nhs_num"}
 		},
 		{
-			"label": {":match": "Hospital Number"},
+			"label": "Hospital Number",
+			"system": {":match": "{{system_uri_hos_num}}"},
 			"value": {":subst": "hos_num"}
 		}
 	],
@@ -21,8 +22,7 @@
 	"telecom": [
 		{
 			"system": {":match": "phone"},
-			"value": {":subst": "primary_phone"},
-			"use": "home"
+			"value": {":subst": "primary_phone"}
 		}
 	],
 	"gender": {

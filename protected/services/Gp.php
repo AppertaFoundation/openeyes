@@ -28,4 +28,14 @@ class Gp extends Resource
 
 	public $primary_phone;
 	public $address = null;
+
+	static protected function getFhirTemplate()
+	{
+		return \DataTemplate::fromJsonFile(
+			__DIR__ . '/fhir_templates/Gp.json',
+			array(
+				'system_uri_gp_code' => \Yii::app()->params['fhir_system_uris']['gp_code'],
+			)
+		);
+	}
 }

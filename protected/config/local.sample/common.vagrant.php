@@ -102,7 +102,14 @@ $config = array(
 		//'log_events' => true,
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
-		'specialty_sort' => array(130, 'SUP')
+		'specialty_sort' => array(130, 'SUP'),
+		'fhir_system_uris' => array(
+			'nhs_num' => 'http://example.com/nhs_num',
+			'hos_num' => 'http://example.com/hos_num',
+			'gp_code' => 'http://example.com/gp_code',
+			'practice_code' => 'http://example.com/practice_code',
+			'cb_code' => 'http://example.com/cb_code',
+		),
 	),
 );
 

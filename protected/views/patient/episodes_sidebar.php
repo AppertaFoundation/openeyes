@@ -22,7 +22,7 @@
 extract($this->getEpisodes());
 $current_episode = @$this->current_episode;
 ?>
-<aside class="large-2 column sidebar episodes-and-events">
+<aside class="column sidebar episodes-and-events">
 
 	<?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) {?>
 		<button class="secondary small add-episode" type="button" id="add-episode">

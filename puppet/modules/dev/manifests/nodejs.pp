@@ -5,7 +5,7 @@ class dev::nodejs {
 		creates => '/home/vagrant/.nvm',
 		user => 'vagrant',
 		environment => 'HOME=/home/vagrant',
-		require => Package['curl']
+		require => Package['curl','git'] # nvm install script uses git to download nvm
 	}
 
 	exec { 'node-install':

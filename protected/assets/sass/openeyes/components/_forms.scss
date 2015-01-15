@@ -293,6 +293,10 @@ label {
 .generic-admin {
 	.reorder {
 		width: 2em;
+		input {
+			display: inline-block;
+			width: 40px;
+		}
 	}
 }
 

@@ -2,7 +2,7 @@
 <Practitioner xmlns="http://hl7.org/fhir">
   <identifier>
     <label value="General National Code"/>
-    <system value="http://www.datadictionary.nhs.uk/data_dictionary/attributes/g/general_medical_practitioner_ppd_code_de.asp"/>
+    <system value="http://example.com/gp_code"/>
     <value value="12345"/>
   </identifier>
   <name>

@@ -357,4 +357,138 @@ class PatientViewContext extends PageObjectContext
         $patientView->removeMedication();
     }
 
+    /**
+     * @Then /^I expand Social History$/
+     */
+    public function iExpandSocialHistory()
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->addSocialHistory();
+    }
+
+    /**
+     * @Given /^I add an Occupation of "([^"]*)"$/
+     */
+    public function iAddAnOccupationOf($occupation)
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->occupationType($occupation);
+    }
+
+    /**
+     * @Given /^I add an Occupation Other type of "([^"]*)"$/
+     */
+    public function iAddAnOccupationOtherTypeOf($other)
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->occupationOtherType($other);
+    }
+
+    /**
+     * @Then /^I add a Driving status of "([^"]*)"$/
+     */
+    public function iAddADrivingStatusOf($status)
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->drivingStatus($status);
+    }
+
+    /**
+     * @Given /^I add a Smoking status of "([^"]*)"$/
+     */
+    public function iAddASmokingStatusOf($status)
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->smokingStatus($status);
+    }
+
+    /**
+     * @Given /^I add an Accommodation status of "([^"]*)"$/
+     */
+    public function iAddAnAccommodationStatusOf($status)
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->accommodationStatus($status);
+    }
+
+    /**
+     * @Then /^I add Social Comments of "([^"]*)"$/
+     */
+    public function iAddSocialCommentsOf($comments)
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->socialComments($comments);
+    }
+
+    /**
+     * @Given /^I select a Carer status of "([^"]*)"$/
+     */
+    public function iSelectACarerStatusOf($carer)
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->carerStatus($carer);
+    }
+
+    /**
+     * @Given /^I select a Substance Misuse status of "([^"]*)"$/
+     */
+    public function iSelectASubstanceMisuseStatusOf($substance)
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->substanceMisuse($substance);
+    }
+
+
+
+    /**
+     * @Then /^I set an Alcohol intake of "([^"]*)" units a week$/
+     */
+    public function iSetAnAlcoholIntakeOfUnitsAWeek($units)
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->alcoholIntake($units);
+    }
+
+    /**
+     * @Then /^I Save the Social History$/
+     */
+    public function iSaveTheSocialHistory()
+    {
+        /**
+         * @var PatientViewNewDiagnosis $patientView
+         */
+        $patientView = $this->getPage('PatientViewNewDiagnosis');
+        $patientView->saveSocialHistory();
+    }
+
 }

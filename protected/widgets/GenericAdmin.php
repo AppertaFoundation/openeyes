@@ -16,6 +16,7 @@ class GenericAdmin extends BaseCWidget
 	public $filters_ready;
 	public $get_row = false;
 	public $has_default = false;
+	public $data;
 
 	public function init()
 	{
@@ -26,9 +27,11 @@ class GenericAdmin extends BaseCWidget
 		}
 
 		if ($model::model()->hasAttribute('default')) {
-			foreach ($this->items as $item) {
-				if ($item->default) {
-					$this->has_default = true;
+			if (!empty($this->items)) {
+				foreach ($this->items as $item) {
+					if ($item->default) {
+						$this->has_default = true;
+					}
 				}
 			}
 		}

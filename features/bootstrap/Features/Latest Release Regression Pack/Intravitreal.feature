@@ -305,3 +305,80 @@ Feature: Create New Intravitreal Event
 
     Then I Save the Intravitreal injection
 
+  Scenario: Route 5: Login and create a New Intravitreal Event
+  Site 1:  Queens
+  Firm 1:  Anderson Cataract
+  Other complication and comment fields
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "1"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Cataract sidebar
+    And I add a New Event "Intravitreal"
+
+  #    Then I remove the Right Side
+    Then I select Add Left Side
+    Then I choose Right Anaesthetic Type of Topical
+    Then I choose Right Anaesthetic Type of LA
+
+    Then I choose Right Anaesthetic Delivery of Retrobulbar
+
+    And I choose Right Anaesthetic Agent "5"
+
+    Then I choose Left Anaesthetic Type of Topical
+    Then I choose Left Anaesthetic Type of LA
+
+    Then I choose Left Anaesthetic Delivery of Retrobulbar
+
+    And I choose Left Anaesthetic Agent "1"
+
+    Then I choose Right Pre Injection Antiseptic "1"
+    Then I choose Right Pre Injection Skin Cleanser "2"
+    And I tick the Right Pre Injection IOP Lowering Drops checkbox
+    Then I choose Right Pre Injection IOP Lowering Drops "1"
+    Then I choose Right Drug "7"
+    And I enter "2" number of Right injections
+    Then I enter Right batch number "123"
+
+    Then I choose Right Injection Given By "1"
+    And I enter a Right Injection time of "09:30"
+
+    Then I choose Left Pre Injection Antiseptic "1"
+    Then I choose Left Pre Injection Skin Cleanser "2"
+    And I tick the Left Pre Injection IOP Lowering Drops checkbox
+    Then I choose Left Pre Injection IOP Lowering Drops "1"
+    Then I choose Left Drug "7"
+    And I enter "2" number of Left injections
+    Then I enter Left batch number "123"
+
+    Then I choose Left Injection Given By "1"
+    And I enter a Left Injection time of "09:30"
+
+    Then I choose A Right Lens Status of "1"
+    And I choose Right Counting Fingers Checked Yes
+
+    And I choose Right IOP Needs to be Checked No
+    Then I choose Right Post Injection Drops "1"
+
+    Then I choose A Left Lens Status of "1"
+    And I choose Left Counting Fingers Checked Yes
+
+
+    And I choose Left IOP Needs to be Checked No
+    Then I choose Left Post Injection Drops "1"
+
+    And I select Right Complications "6"
+    And I select Left Complications "6"
+#    6 = Other and opens comment fields
+
+    Then I add Right Complications Comments of "Test Right complication comments"
+    Then I add Left Complications Comments of "Test Right complication comments"
+
+    Then I Save the Intravitreal injection and confirm it has been created successfully
+

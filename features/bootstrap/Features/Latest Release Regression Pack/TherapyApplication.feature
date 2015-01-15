@@ -35,7 +35,8 @@ Feature: Create New Therapy Application Event
 
     Then I select Right Myocardial infarction Yes
 
-    And I select a Right Consultant of "4"
+    And I select "Anderson Firm" for "Consultant"
+    And I select "Yes" for "Patient consents to share data"
 
     Then I select a Right Standard Intervention Exists of Yes
 
@@ -135,7 +136,8 @@ Feature: Create New Therapy Application Event
 
     Then I select Right Myocardial infarction Yes
 
-    And I select a Right Consultant of "4"
+    And I select "Anderson Firm" for "Consultant"
+    And I select "Yes" for "Patient consents to share data"
 
     Then I Save the Therapy Application and confirm it has been created successfully
 
@@ -170,7 +172,8 @@ Feature: Create New Therapy Application Event
 
     Then I select Right Myocardial infarction Yes
 
-    And I select a Right Consultant of "4"
+    And I select "Anderson Firm" for "Consultant"
+    And I select "Yes" for "Patient consents to share data"
 
     Then I select a Right Standard Intervention Exists of No
 
@@ -200,6 +203,51 @@ Feature: Create New Therapy Application Event
     And I select a Left Patient has Diabetic Macular Oedema of Yes
 
     Then I select a Left CRT>=400 of Yes
+
+    Then I Save the Therapy Application and confirm it has been created successfully
+
+  Scenario: Route 4: Login and create a new Therapy Application (Queens Site, Anderson Medical Retinal)
+  Right Diagnosis: (Scleritis)
+  Treatment: Lucentis
+  NON COMPLIANT
+
+  Left Diagnosis: (Capillary haemangioma of retina)
+  Treatment: Ozurdex
+  COMPLIANT
+
+    Given I am on the OpenEyes "master" homepage
+    And I enter login credentials "admin" and "admin"
+    And I select Site "1"
+    Then I select a firm of "4"
+
+    Then I search for hospital number "1009465"
+
+    Then I select the Latest Event
+
+    Then I expand the Medical Retinal sidebar
+    And I add a New Event "Therapy"
+
+    And I select a Right Side Diagnosis of "78370002"
+
+    Then I select a Right Treatment of "5"
+
+    And I select a Right Patient has CNV of No
+
+    Then I select a Right Patient has Macular Oedema of Yes
+
+    And I select a Right Patient has Diabetic Macular Oedema of Yes
+
+    Then I select a Right CRT>=400 of Yes
+
+    And I select a Left Side Diagnosis of "312935003"
+
+    Then I select a Left Treatment of "6"
+
+    And I select a Left Patient has a Venous Occlusion of Yes
+
+    And I select a Left Patient has a CRVO of Yes
+
+    And I select "Yes" for "Patient consents to share data"
 
     Then I Save the Therapy Application and confirm it has been created successfully
 

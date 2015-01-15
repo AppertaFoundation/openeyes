@@ -142,12 +142,12 @@
 					<label for="type_of_job"><?= CHtml::encode($social_history->getAttributeLabel('type_of_job')) ?>:</label>
 				</div>
 				<div class="<?php echo $form->columns('field');?>">
-					<?php echo CHtml::activeTextField($social_history, 'type_of_job')?>
+					<?php echo CHtml::activeTextField($social_history, 'type_of_job',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 				</div>
 			</div>
 			<div class="field-row row">
 				<div class="<?php echo $form->columns('label');?>">
-					<label for="driving_statuses"><?= CHtml::encode($social_history->getAttributeLabel('driving_statuses')) ?>:</label>
+					<label for="<?= CHtml::modelName($social_history) ?>_driving_statuses"><?= CHtml::encode($social_history->getAttributeLabel('driving_statuses')) ?>:</label>
 				</div>
 				<div class="<?php echo $form->columns('field');?>">
 					<input type="hidden" name="SocialHistory[driving_statuses]" value="" />
@@ -207,7 +207,7 @@
 					<label for="relative_id"><?= CHtml::encode($social_history->getAttributeLabel('alcohol_intake')) ?>:</label>
 				</div>
 				<div class="large-2 column">
-					<?php echo CHtml::activeTextField($social_history, 'alcohol_intake')?>
+					<?php echo CHtml::activeTextField($social_history, 'alcohol_intake',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 				</div>
 				<div class="large-3 column end">
 					<p>units/week</p>

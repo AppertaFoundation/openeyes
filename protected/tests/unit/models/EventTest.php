@@ -273,7 +273,7 @@ class EventTest extends CDbTestCase
 
 		$event = $this->event('event1');
 
-		$this->assertEquals(Yii::app()->basePath."/assets/events/event_{$event->id}_".(strtotime($event->last_modified_date)), $event->getImageDirectory());
+		$this->assertEquals(Yii::app()->basePath."/runtime/cache/events/event_{$event->id}_".(strtotime($event->last_modified_date)), $event->getImageDirectory());
 	}
 
 	public function testHasEventImage_False()

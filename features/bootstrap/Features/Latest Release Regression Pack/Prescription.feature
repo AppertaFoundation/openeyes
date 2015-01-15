@@ -13,7 +13,7 @@ Feature: Create New Prescription
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Prescription"
@@ -46,7 +46,7 @@ Feature: Create New Prescription
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Prescription"
@@ -68,7 +68,7 @@ Feature: Create New Prescription
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Cataract sidebar
     And I add a New Event "Prescription"
@@ -101,7 +101,7 @@ Feature: Create New Prescription
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Medical Retinal sidebar
     And I add a New Event "Prescription"
@@ -142,7 +142,7 @@ Feature: Create New Prescription
 
     Then I search for hospital number "1009465"
 
-    Then I select the Latest Event
+    Then I select Create or View Episodes and Events
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Prescription"

@@ -30,9 +30,9 @@ $(document).ready(function() {
 		e.preventDefault();
 
 		$(this).closest('tr').remove();
-
-		GenericAdmin_ReindexDefault();
 	});
+
+
 
 	function getNextKey() {
 		var keys = $('table.generic-admin tr').map(function(index, el) {
@@ -45,7 +45,6 @@ $(document).ready(function() {
 		}
 		return 0;
 	}
-
 
 	$('.generic-admin tbody').sortable({
 		helper: 'clone',
@@ -81,6 +80,7 @@ $(document).ready(function() {
 
 	$('.generic-admin-add').unbind('click').click(function(e) {
 		e.preventDefault();
+
 
 		var data = {
 			"key" : getNextKey()
