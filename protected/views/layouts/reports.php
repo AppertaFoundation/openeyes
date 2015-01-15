@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -17,48 +16,33 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-return array(
-	'episode1' => array(
-		'patient_id' => 1,
-		'firm_id' => 1,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-30 days')),
-		'end_date'=>null,
-		'created_date' => date('Y-m-d H:i:s'),
-		'disorder_id' => 1,
-		'eye_id' => 1,
-	),
-	'episode2' => array(
-		'patient_id' => 1,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'created_date' => date('Y-m-d H:i:s'),
-		'eye_id' => 3,
-		'disorder_id' => 2,
-	),
-	'episode3' => array(
-		'patient_id' => 2,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 2
-	),
-	'episode4' => array(
-		'patient_id' => 3,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 1,
-	),
-	'episode5' => array(
-		'patient_id' => 5,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 1,
-		'disorder_id' => 7,
-	),
-	'episode6' => array(
-		'patient_id' => 6,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 1,
-		'disorder_id' => 7,
-	),
-);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<?php $this->renderPartial('//base/head/_meta'); ?>
+	<?php $this->renderPartial('//base/head/_assets'); ?>
+	<?php $this->renderPartial('//base/head/_tracking'); ?>
+</head>
+<body class="open-eyes">
+	<?php $this->renderPartial('//base/_banner_watermark'); ?>
+	<?php $this->renderPartial('//base/_debug'); ?>
+	<div class="container main" role="main">
+		<?php $this->renderPartial('//base/_header'); ?>
+		<div class="container content">
+			<h1 class="badge admin">Reports</h1>
+			<div class="box content admin-content">
+				<div class="row">
+					<aside class="large-3 column sidebar admin">
+						<?php $this->renderPartial('//report/sidebar'); ?>
+					</aside>
+					<div class="large-9 column content admin">
+						<?php echo $content; ?>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php $this->renderPartial('//base/_footer'); ?>
+	</div>
+</body>
+</html>

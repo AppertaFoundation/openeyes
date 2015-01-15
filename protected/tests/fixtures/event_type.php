@@ -102,5 +102,12 @@ return array(
 		'class_name' => 'OphCiInheritExamination',
 		'support_services' => 0,
 		'parent_event_type_id' => 1002,
-	)
+	),
+	'event_type13' => array(
+		'id' => 1012,
+		'name' => 'Legacy letters',
+		'event_group_id' => 1,
+		'class_name' => 'OphLeEpatientletter',
+		'support_services' => 0,
+	),
 );

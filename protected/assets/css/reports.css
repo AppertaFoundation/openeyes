@@ -1,0 +1,149 @@
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+/* line 77, ../components/foundation/scss/foundation/components/_top-bar.scss */
+meta.foundation-mq-topbar {
+  font-family: "/all/";
+  width: 1230px;
+}
+
+/* line 19, ../sass/openeyes/components/reports/_boxes.scss */
+.box.reports {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #f3f3f3;
+  margin-bottom: 16px;
+  padding: 10px;
+  background: #f2f2f2;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: #fafafa;
+  margin: 0 0 0.75rem 0;
+}
+/* line 48, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.reports > :first-child {
+  margin-top: 0;
+}
+/* line 49, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.reports > :last-child {
+  margin-bottom: 0;
+}
+/* line 54, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.reports h1, .box.reports h2, .box.reports h3, .box.reports h4, .box.reports h5, .box.reports h6, .box.reports p {
+  color: #333333;
+}
+/* line 58, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.reports h1, .box.reports h2, .box.reports h3, .box.reports h4, .box.reports h5, .box.reports h6 {
+  line-height: 1;
+  margin-bottom: 0.625rem;
+}
+/* line 60, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.reports h1.subheader, .box.reports h2.subheader, .box.reports h3.subheader, .box.reports h4.subheader, .box.reports h5.subheader, .box.reports h6.subheader {
+  line-height: 1.4;
+}
+/* line 24, ../sass/openeyes/components/reports/_boxes.scss */
+.box.reports h2 {
+  margin-bottom: 12px;
+}
+/* line 28, ../sass/openeyes/components/reports/_boxes.scss */
+.box.reports .table-actions select {
+  width: auto;
+}
+/* line 32, ../sass/openeyes/components/reports/_boxes.scss */
+.box.reports .box-header {
+  margin: 0;
+}
+/* line 34, ../sass/openeyes/components/reports/_boxes.scss */
+.box.reports .box-header .box-title {
+  float: left;
+}
+/* line 38, ../sass/openeyes/components/reports/_boxes.scss */
+.box.reports .box-actions {
+  float: right;
+}
+@media print {
+  /* line 19, ../sass/openeyes/components/reports/_boxes.scss */
+  .box.reports {
+    border: 0;
+    padding: 0;
+  }
+}
+
+/* line 3, ../sass/openeyes/components/reports/_navigation.scss */
+.navigation.reports {
+  list-style-type: none;
+  margin: 0;
+}
+/* line 6, ../sass/openeyes/components/reports/_navigation.scss */
+.navigation.reports a {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  background: #fff;
+  display: block;
+  margin-bottom: 4px;
+  padding: 4px 8px;
+}
+/* line 12, ../sass/openeyes/components/reports/_navigation.scss */
+.navigation.reports a:hover {
+  background: #3665ff;
+  color: #fff;
+}
+/* line 16, ../sass/openeyes/components/reports/_navigation.scss */
+.navigation.reports a.selected {
+  background: #ccc;
+  color: #333;
+}
+/* line 22, ../sass/openeyes/components/reports/_navigation.scss */
+.navigation.reports li:last-child a {
+  margin: 0;
+}
+
+/* line 3, ../sass/openeyes/components/reports/_sidebar.scss */
+.sidebar.reports h2 {
+  border-bottom: 1px dotted #ccc;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+}
+@media print {
+  /* line 2, ../sass/openeyes/components/reports/_sidebar.scss */
+  .sidebar.reports {
+    display: none;
+  }
+}
+
+/* line 28, ../sass/reports.scss */
+.report-fields label {
+  display: inline-block;
+}
+/* line 31, ../sass/reports.scss */
+.report-fields input[type=radio] {
+  display: inline-block;
+}
+
+/* line 36, ../sass/reports.scss */
+.reportSummary {
+  margin-top: 2em;
+}
+
+/* line 41, ../sass/reports.scss */
+.lettersReport input[name="phrases[]"] {
+  width: 22em;
+  display: inline;
+}

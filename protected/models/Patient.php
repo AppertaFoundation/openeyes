@@ -177,9 +177,7 @@ class Patient extends BaseActiveRecordVersioned
 		$criteria->compare('hos_num',$this->hos_num,false);
 		$criteria->compare('nhs_num',$this->nhs_num,false);
 
-
 		return $this->count($criteria);
-
 	}
 
 	/**
