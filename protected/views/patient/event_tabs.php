@@ -28,3 +28,8 @@
 	</li>
 	<?php } ?>
 </ul>
+
+<?php //this needs adding to SASS?>
+<div class="button-bar left">
+	<span width="22px" height="24px" style="font-size:21px; color:#152250; vertical-align: middle; display:inline-block;">&nbsp;RIGHT</span>
+</div>
