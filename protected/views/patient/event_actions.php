@@ -18,7 +18,7 @@
  */
 ?>
 <div class="button-bar right">
-	<span style="font-size:21px; color:#152250;">LEFT</span>
+	<span style="font-size:21px; color:#152250;">LEFT&nbsp;</span>
 	<img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
 	<?php foreach ($this->event_actions as $action) { ?>
 		<?php echo $action->toHtml();?>
