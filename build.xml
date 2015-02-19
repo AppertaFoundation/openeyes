@@ -34,6 +34,9 @@
         <delete dir="${basedir}/build/logs"/>
         <delete dir="${basedir}/build/pdepend"/>
         <delete dir="${basedir}/build/phpdox"/>
+        <delete dir="${basedir}/protected/runtime"/>
+        <delete dir="${basedir}/cache"/>
+        <delete dir="${basedir}/protected/cache"/>
         <property name="clean.done" value="true"/>
     </target>
 
@@ -46,6 +49,9 @@
         <mkdir dir="${basedir}/build/logs"/>
         <mkdir dir="${basedir}/build/pdepend"/>
         <mkdir dir="${basedir}/build/phpdox"/>
+        <mkdir dir="${basedir}/protected/runtime"/>
+        <mkdir dir="${basedir}/cache"/>
+        <mkdir dir="${basedir}/protected/cache"/>
         <copy todir="${basedir}/protected/config/local/" overwrite="false">
             <fileset dir="/var/www/openeyes/protected/config/local/"/>
         </copy>
