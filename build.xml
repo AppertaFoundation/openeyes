@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OpenEyes" default="build">
 
-    <property name="toolsdir" value="${basedir}/bin"/>
+    <property name="toolsdir" value="${basedir}/bin/"/>
 
     <!-- Uncomment the following when the tools are in ${basedir}/vendor/bin -->
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
