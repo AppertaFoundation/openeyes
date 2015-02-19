@@ -35,7 +35,7 @@
 		<?php echo $form->textField($cb,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($cb,'code',array('autocomplete'=>Yii::app()->params['html_autocomplete']),null,array('field' => 2))?>
 		<?php echo $form->textField($address,'address1',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($address,'address2'array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($address,'address2', array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($address,'city'array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($address,'county'array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($address,'postcode'array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
