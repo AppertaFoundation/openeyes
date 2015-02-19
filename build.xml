@@ -60,7 +60,7 @@
         </apply>
     </target>
 
-    <!--<target name="phploc"
+    <target name="phploc"
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
         <exec executable="${toolsdir}phploc">
             <arg value="--count-tests" />
@@ -151,7 +151,7 @@
             <arg path="${basedir}/build/logs/pmd-cpd.xml" />
             <arg path="${basedir}/protected" />
         </exec>
-    </target>-->
+    </target>
 
     <target name="phpunit"
             depends="prepare"
