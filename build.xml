@@ -46,6 +46,9 @@
         <mkdir dir="${basedir}/build/logs"/>
         <mkdir dir="${basedir}/build/pdepend"/>
         <mkdir dir="${basedir}/build/phpdox"/>
+        <copy todir="${basedir}/protected/config/local/" overwrite="false">
+            <fileset dir="/var/www/openeyes/protected/config/local/"/>
+        </copy>
         <property name="prepare.done" value="true"/>
     </target>
 
