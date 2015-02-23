@@ -39,7 +39,7 @@
         <delete dir="${basedir}/protected/cache"/>
         <exec executable="/bin/bash">
             <arg value="-c" />
-            <arg value="sudo docker ps -a | grep 'days ago' | awk '{print $1}' | xargs --no-run-if-empty sudo docker rm"/>
+            <arg value="sudo docker ps -a | grep 'hours ago' | awk '{print $1}' | xargs --no-run-if-empty sudo docker rm"/>
         </exec>
         <property name="clean.done" value="true"/>
     </target>
@@ -62,7 +62,7 @@
         </copy>
         <exec executable="/bin/bash" failonerror="true">
             <arg value="-c" />
-            <arg value="${toolsdir}spin_up_docker_db.sh ${dockerName}" />
+            <arg value="${toolsdir}spin_up_docker_db.sh '${dockerName}'" />
         </exec>
         <property name="prepare.done" value="true"/>
     </target>
