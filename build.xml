@@ -7,11 +7,11 @@
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
 
     <target name="build"
-            depends="prepare,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
+            depends="prepare,composer,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
             description=""/>
 
     <target name="build-parallel"
-            depends="prepare,lint,tools-parallel,phpunit,phpdox"
+            depends="prepare,composer,lint,tools-parallel,phpunit,phpdox"
             description=""/>
 
     <target name="tools-parallel" description="Run tools in parallel">
@@ -39,7 +39,7 @@
         <delete dir="${basedir}/protected/cache"/>
         <exec executable="/bin/bash">
             <arg value="-c" />
-            <arg value="sudo docker ps -a | grep 'days ago' | awk '{print $1}' | xargs --no-run-if-empty docker rm"/>
+            <arg value="sudo docker ps -a | grep 'days ago' | awk '{print $1}' | xargs --no-run-if-empty sudo docker rm"/>
         </exec>
         <property name="clean.done" value="true"/>
     </target>
@@ -74,14 +74,14 @@
     </target>
 
     <target name="lint" description="Perform syntax check of sourcecode files">
-        <exec executable="php" failonerror="true">
+        <apply executable="php" failonerror="true">
             <arg value="-l" />
 
             <fileset dir="${basedir}/protected">
                 <include name="**/*.php" />
                 <modified />
             </fileset>
-        </exec>
+        </apply>
     </target>
 
     <target name="phploc"
