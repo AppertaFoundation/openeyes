@@ -55,12 +55,13 @@
         <mkdir dir="${basedir}/protected/runtime"/>
         <mkdir dir="${basedir}/cache"/>
         <mkdir dir="${basedir}/protected/cache"/>
+        <chmod file="${toolsdir}spin_up_docker_db.sh" perm="+x" />
         <copy todir="${basedir}/protected/config/local/" overwrite="false">
             <fileset dir="/var/www/openeyes/protected/config/local/"/>
         </copy>
         <exec executable="/bin/bash" failonerror="true">
             <arg value="-c" />
-            <arg value="${toolsdir}/spin_up_docker_db.sh ${dockerName}" />
+            <arg value="${toolsdir}spin_up_docker_db.sh ${dockerName}" />
         </exec>
         <property name="prepare.done" value="true"/>
     </target>
@@ -69,10 +70,6 @@
         <exec executable="composer" failonerror="true">
             <arg value="install" />
         </exec>
-    </target>
-
-    <target name="docker" description="Create a docker container for the DB to run in so tests can happen in parallel">
-
     </target>
 
     <target name="lint" description="Perform syntax check of sourcecode files">
