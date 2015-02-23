@@ -7,11 +7,11 @@
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
 
     <target name="build"
-            depends="prepare,composer,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
+            depends="prepare,composer,migrate,migrate-modules,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
             description=""/>
 
     <target name="build-parallel"
-            depends="prepare,composer,lint,tools-parallel,phpunit,phpdox"
+            depends="prepare,composer,migrate,migrate-modules,lint,tools-parallel,phpunit,phpdox"
             description=""/>
 
     <target name="tools-parallel" description="Run tools in parallel">
@@ -70,6 +70,18 @@
     <target name="composer" description="Install composer packages">
         <exec executable="composer" failonerror="true">
             <arg value="install" />
+        </exec>
+    </target>
+
+    <target name="migrate" description="Run Yii migrations">
+        <exec executable="php" failonerror="true">
+            <arg value="${basedir}/protected/yiic migrate --interactive=0" />
+        </exec>
+    </target>
+
+    <target name="migrate-modules" description="Run Yii migrations on modules">
+        <exec executable="php" failonerror="true">
+            <arg value="${basedir}/protected/yiic migratemodules --interactive=0" />
         </exec>
     </target>
 
