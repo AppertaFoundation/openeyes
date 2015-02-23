@@ -57,7 +57,7 @@
         <mkdir dir="${basedir}/cache"/>
         <mkdir dir="${basedir}/protected/cache"/>
         <chmod file="${toolsdir}spin_up_docker_db.sh" perm="+x" />
-        <copy todir="${basedir}/protected/config/local/" overwrite="false">
+        <copy todir="${basedir}/protected/config/local/">
             <fileset dir="/var/www/openeyes/protected/config/local/"/>
         </copy>
         <exec executable="/bin/bash" failonerror="true">
@@ -100,7 +100,7 @@
         </apply>
     </target>
 
-    <target name="phploc"
+    <target name="phploc,composer"
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
         <exec executable="${toolsdir}phploc">
             <arg value="--count-tests" />
@@ -109,7 +109,7 @@
     </target>
 
     <target name="phploc-ci"
-            depends="prepare"
+            depends="prepare,composer"
             description="Measure project size using PHPLOC and log result in CSV and XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${toolsdir}phploc">
             <arg value="--count-tests" />
@@ -122,7 +122,7 @@
     </target>
 
     <target name="pdepend"
-            depends="prepare"
+            depends="prepare,composer"
             description="Calculate software metrics using PHP_Depend and log result in XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${toolsdir}pdepend">
             <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
@@ -132,7 +132,7 @@
         </exec>
     </target>
 
-    <target name="phpmd"
+    <target name="phpmd,composer"
             description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="${toolsdir}phpmd">
             <arg path="${basedir}/protected" />
@@ -142,7 +142,7 @@
     </target>
 
     <target name="phpmd-ci"
-            depends="prepare"
+            depends="prepare,composer"
             description="Perform project mess detection using PHPMD and log result in XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${toolsdir}phpmd">
             <arg path="${basedir}/protected" />
@@ -153,7 +153,7 @@
         </exec>
     </target>
 
-    <target name="phpcs"
+    <target name="phpcs,composer"
             description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="${toolsdir}phpcs">
             <arg value="--standard=PSR2" />
@@ -164,7 +164,7 @@
     </target>
 
     <target name="phpcs-ci"
-            depends="prepare"
+            depends="prepare,composer"
             description="Find coding standard violations using PHP_CodeSniffer and log result in XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${toolsdir}phpcs" output="/dev/null">
             <arg value="--report=checkstyle" />
@@ -176,7 +176,7 @@
         </exec>
     </target>
 
-    <target name="phpcpd"
+    <target name="phpcpd,composer"
             description="Find duplicate code using PHPCPD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="${toolsdir}phpcpd">
             <arg path="${basedir}/src" />
@@ -184,7 +184,7 @@
     </target>
 
     <target name="phpcpd-ci"
-            depends="prepare"
+            depends="prepare,composer"
             description="Find duplicate code using PHPCPD and log result in XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${toolsdir}phpcpd">
             <arg value="--log-pmd" />
@@ -194,7 +194,7 @@
     </target>
 
     <target name="phpunit"
-            depends="prepare"
+            depends="prepare,composer,migrate,migrate-modules"
             description="Run unit tests with PHPUnit">
         <exec executable="${toolsdir}phpunit" failonerror="true">
             <arg value="--configuration"/>
