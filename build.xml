@@ -37,8 +37,9 @@
         <delete dir="${basedir}/protected/runtime"/>
         <delete dir="${basedir}/cache"/>
         <delete dir="${basedir}/protected/cache"/>
-        <exec executable="docker">
-            <arg value="ps -a | grep 'days ago' | awk '{print $1}' | xargs --no-run-if-empty docker rm"/>
+        <exec executable="/bin/bash">
+            <arg value="-c" />
+            <arg value="docker ps -a | grep 'days ago' | awk '{print $1}' | xargs --no-run-if-empty docker rm"/>
         </exec>
         <property name="clean.done" value="true"/>
     </target>
