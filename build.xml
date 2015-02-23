@@ -37,6 +37,9 @@
         <delete dir="${basedir}/protected/runtime"/>
         <delete dir="${basedir}/cache"/>
         <delete dir="${basedir}/protected/cache"/>
+        <exec executable="docker">
+            <arg value="ps -a | grep 'days ago' | awk '{print $1}' | xargs --no-run-if-empty docker rm"/>
+        </exec>
         <property name="clean.done" value="true"/>
     </target>
 
@@ -55,6 +58,10 @@
         <copy todir="${basedir}/protected/config/local/" overwrite="false">
             <fileset dir="/var/www/openeyes/protected/config/local/"/>
         </copy>
+        <exec executable="bin/bash" failonerror="true">
+            <arg value="-c" />
+            <arg value="${toolsdir}/spin_up_docker_db.sh ${dockerName}" />
+        </exec>
         <property name="prepare.done" value="true"/>
     </target>
 
@@ -65,10 +72,7 @@
     </target>
 
     <target name="docker" description="Create a docker container for the DB to run in so tests can happen in parallel">
-        <exec executable="bin/bash" failonerror="true">
-            <arg value="-c" />
-            <arg value="${toolsdir}/spin_up_docker_db.sh" />
-        </exec>
+
     </target>
 
     <target name="lint" description="Perform syntax check of sourcecode files">
