@@ -58,7 +58,7 @@
         <copy todir="${basedir}/protected/config/local/" overwrite="false">
             <fileset dir="/var/www/openeyes/protected/config/local/"/>
         </copy>
-        <exec executable="bin/bash" failonerror="true">
+        <exec executable="/bin/bash" failonerror="true">
             <arg value="-c" />
             <arg value="${toolsdir}/spin_up_docker_db.sh ${dockerName}" />
         </exec>
