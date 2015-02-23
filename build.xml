@@ -75,13 +75,17 @@
 
     <target name="migrate" description="Run Yii migrations">
         <exec executable="php" failonerror="true">
-            <arg value="${basedir}/protected/yiic migrate --interactive=0" />
+            <arg value="${basedir}/protected/yiic" />
+            <arg value="migrate" />
+            <arg value="--interactive=0" />
         </exec>
     </target>
 
     <target name="migrate-modules" description="Run Yii migrations on modules">
         <exec executable="php" failonerror="true">
-            <arg value="${basedir}/protected/yiic migratemodules --interactive=0" />
+            <arg value="${basedir}/protected/yiic" />
+            <arg value="migratemodules" />
+            <arg value="--interactive=0" />
         </exec>
     </target>
 
