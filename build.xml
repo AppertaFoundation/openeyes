@@ -58,15 +58,28 @@
         <property name="prepare.done" value="true"/>
     </target>
 
+    <target name="composer" description="Install composer packages">
+        <exec executable="composer" failonerror="true">
+            <arg value="install" />
+        </exec>
+    </target>
+
+    <target name="docker" description="Create a docker container for the DB to run in so tests can happen in parallel">
+        <exec executable="bin/bash" failonerror="true">
+            <arg value="-c" />
+            <arg value="${toolsdir}/spin_up_docker_db.sh" />
+        </exec>
+    </target>
+
     <target name="lint" description="Perform syntax check of sourcecode files">
-        <apply executable="php" failonerror="true">
+        <exec executable="php" failonerror="true">
             <arg value="-l" />
 
             <fileset dir="${basedir}/protected">
                 <include name="**/*.php" />
                 <modified />
             </fileset>
-        </apply>
+        </exec>
     </target>
 
     <target name="phploc"
