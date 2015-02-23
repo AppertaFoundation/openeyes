@@ -1,5 +1,6 @@
 {
-    "name" : "OpenEyes",
+    "name" : "openeys/openeyes",
+    "description": "Electronic Patient Record system for use in Ophthalmology clinics",
     "require-dev": {
         "behat/behat": "~2",
         "behat/mink":  "~1",
@@ -25,8 +26,7 @@
     },
     "config": {
         "bin-dir": "bin"
-    },
-    "autoload": {
+    },    "autoload": {
         "classmap": ["features/bootstrap/Pages/OpenEyesPage.php"]
     }
 }
