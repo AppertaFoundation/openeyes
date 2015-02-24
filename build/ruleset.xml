@@ -55,8 +55,11 @@
     </rule>
 
     <rule ref="Generic.WhiteSpace.DisallowTabIndent">
-        <severity>3</severity>
+        <severity>0</severity>
     </rule>
 
+    <rule ref="PEAR">
+        <exclude name="PEAR.WhiteSpace.ScopeIndent" />
+    </rule>
 
 </ruleset>
