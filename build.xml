@@ -100,7 +100,7 @@
         </apply>
     </target>
 
-    <target name="phploc,composer"
+    <target name="phploc"
             description="Measure project size using PHPLOC and print human readable output. Intended for usage on the command line.">
         <exec executable="${toolsdir}phploc">
             <arg value="--count-tests" />
@@ -132,7 +132,7 @@
         </exec>
     </target>
 
-    <target name="phpmd,composer"
+    <target name="phpmd"
             description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="${toolsdir}phpmd">
             <arg path="${basedir}/protected" />
@@ -176,7 +176,7 @@
         </exec>
     </target>
 
-    <target name="phpcpd,composer"
+    <target name="phpcpd"
             description="Find duplicate code using PHPCPD and print human readable output. Intended for usage on the command line before committing.">
         <exec executable="${toolsdir}phpcpd">
             <arg path="${basedir}/src" />
