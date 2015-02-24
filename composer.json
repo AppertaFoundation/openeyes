@@ -1,5 +1,5 @@
 {
-    "name" : "openeys/openeyes",
+    "name" : "openeyes/openeyes",
     "description": "Electronic Patient Record system for use in Ophthalmology clinics",
     "require-dev": {
         "behat/behat": "~2",
