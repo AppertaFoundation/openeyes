@@ -1,5 +1,5 @@
 module.exports = {
-	files: [
+	"files": [
 		'*.js',
 		'*.json',
 		'grunt/**/*.js',
@@ -8,8 +8,9 @@ module.exports = {
 		'protected/modules/**/assets/js/**/*.js',
 		'!protected/modules/**/assets/js/**/*.min.js'
 	],
-	options: {
-		jshintrc: ".jshintrc",
-		reporter: require('jshint-stylish')
+	"options": {
+		"jshintrc": ".jshintrc",
+		"reporter": require('jshint-stylish'),
+		"force": true
 	}
 };

@@ -7,12 +7,16 @@
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
 
     <target name="build"
-            depends="prepare,composer,migrate,migrate-modules,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
+            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
             description=""/>
 
     <target name="build-parallel"
-            depends="prepare,composer,migrate,migrate-modules,lint,tools-parallel,phpunit,phpdox"
+            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,tools-parallel,phpunit,phpdox"
             description=""/>
+
+    <target name="run-tests"
+            depends="prepare,composer,bower,docker,migrate,migrate-modules,lint,phpunit"
+            description="" />
 
     <target name="tools-parallel" description="Run tools in parallel">
         <parallel threadCount="2">
@@ -60,17 +64,37 @@
         <copy todir="${basedir}/protected/config/local/">
             <fileset dir="/var/www/openeyes/protected/config/local/"/>
         </copy>
+        <property name="prepare.done" value="true"/>
+    </target>
+
+    <target name="docker" description="Run up a docker container with the DB in it for unit testing against">
         <exec executable="/bin/bash" failonerror="true">
             <arg value="-c" />
             <arg value="${toolsdir}spin_up_docker_db.sh '${dockerName}'" />
         </exec>
-        <property name="prepare.done" value="true"/>
     </target>
 
     <target name="composer" description="Install composer packages">
         <exec executable="composer" failonerror="true">
             <arg value="install" />
         </exec>
+    </target>
+
+    <target name="npm" description="Install npm packages">
+        <exec executable="npm" failonerror="true">
+            <arg value="install" />
+        </exec>
+    </target>
+
+    <target name="bower" description="Install bower packages">
+        <exec executable="bower" failonerror="true">
+            <arg value="install" />
+            <arg value="--config.interactive=false" />
+        </exec>
+    </target>
+
+    <target name="grunt" description="Run grunt">
+        <exec executable="grunt" failonerror="true" />
     </target>
 
     <target name="migrate" description="Run Yii migrations">
@@ -138,6 +162,7 @@
             <arg path="${basedir}/protected" />
             <arg value="text" />
             <arg path="${basedir}/build/phpmd.xml" />
+            <arg value="--exclude=${basedir}/protected/tests/*,${basedir}/protected/migrations/*" />
         </exec>
     </target>
 
@@ -150,6 +175,7 @@
             <arg path="${basedir}/build/phpmd.xml" />
             <arg value="--reportfile" />
             <arg path="${basedir}/build/logs/pmd.xml" />
+            <arg value="--exclude=${basedir}/protected/tests/*,${basedir}/protected/migrations/*" />
         </exec>
     </target>
 
