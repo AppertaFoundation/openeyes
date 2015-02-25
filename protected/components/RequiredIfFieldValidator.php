@@ -44,7 +44,7 @@ class RequiredIfFieldValidator extends CValidator
 			$required = ($this->expand($object,$this->field) == $this->value);
 		}
 
-		if ($required && $this->isEmpty($object->$attribute, true)) {
+		if ($required && $this->isEmpty($object->$attribute,true)) {
 			$this->addError($object, $attribute, $this->message);
 		}
 	}
