@@ -3,7 +3,7 @@
 
 // change the following paths if necessary
 $dirname = dirname(__FILE__);
-$yiic= $dirname .'/../vendor/yiisoft/yii/framework/yiic.php';
+$yiic= $dirname .'/yii/framework/yiic.php';
 $config= $dirname .'/config/console.php';
 
 $n = 2;
@@ -11,8 +11,12 @@ while (!file_exists($yiic)) {
 	$yiic= $dirname .str_repeat('/..',$n++).'/yii/framework/yiic.php';
 
 	if ($n >= 15) {
-		echo "Couldn't find yiic.php.\n";
-		exit;
+		$yiic = $dirname .'/../vendor/yiisoft/yii/framework/yiic.php';
+		if(!file_exists($yiic)){
+			echo "Couldn't find yiic.php.\n";
+			exit;
+		}
+
 	}
 }
 
