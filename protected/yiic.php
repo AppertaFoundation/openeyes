@@ -6,6 +6,7 @@ $dirname = dirname(__FILE__);
 $yiic= $dirname .'/yii/framework/yiic.php';
 $config= $dirname .'/config/console.php';
 
+
 $n = 2;
 while (!file_exists($yiic)) {
 	$yiic= $dirname .str_repeat('/..',$n++).'/yii/framework/yiic.php';

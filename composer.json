@@ -36,12 +36,6 @@
     "sebastian/phpcpd": "*",
     "phpdocumentor/phpdocumentor": "2.*"
   },
-  "scripts": {
-    "post-install-cmd": [
-      "cp index.exmple.php index.php",
-      "cp .htaccess.sample .htaccess"
-    ]
-  },
   "config": {
     "bin-dir": "bin"
   },
