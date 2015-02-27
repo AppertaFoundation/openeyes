@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /**
  * OpenEyes
  *
@@ -15,12 +16,6 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/* line 77, ../components/foundation/scss/foundation/components/_top-bar.scss */
-meta.foundation-mq-topbar {
-  font-family: "/all/";
-  width: 1230px;
-}
-
 @media print {
   /* line 18, ../sass/openeyes/components/admin/_content.scss */
   .admin.content {
@@ -42,10 +37,8 @@ meta.foundation-mq-topbar {
 }
 /* line 6, ../sass/openeyes/components/admin/_navigation.scss */
 .navigation.admin a {
-  -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
+  -webkit-border-radius: 3px;
   border-radius: 3px;
   background: #fff;
   display: block;
