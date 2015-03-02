@@ -3,18 +3,20 @@
   "description": "Electronic Patient Record system for use in Ophthalmology clinics",
   "minimum-stability": "dev",
   "require": {
+    "openeyes/module-installer": "*",
     "yiisoft/yii": "1.1.14",
     "openeyes/oph-ci-examination": "dev-hotfix/composer",
-    "openeyes/oph-tr-operation-note": "dev-hotfix/composer",
-    "openeyes/oph-ci-phasing": "dev-hotfix/composer",
     "openeyes/oph-co-correspondence": "dev-hotfix/composer",
+    "openeyes/oph-ci-phasing": "dev-hotfix/composer",
     "openeyes/oph-co-therapy-application": "dev-hotfix/composer",
     "openeyes/oph-dr-prescription": "dev-hotfix/composer",
-    "openeyes/oph-tr-intravitreal-injection": "dev-hotfix/composer",
     "openeyes/oph-le-intravitreal-injection": "dev-hotfix/composer",
     "openeyes/oph-ou-anaesthetic-satisfaction-audit": "dev-hotfix/composer",
     "openeyes/oph-tr-consent": "dev-hotfix/composer",
-    "openeyes/oph-tr-operation-booking": "dev-hotfix/composer"
+    "openeyes/oph-tr-operation-note": "dev-hotfix/composer",
+    "openeyes/oph-tr-operation-booking": "dev-hotfix/composer",
+    "openeyes/oph-tr-intravitreal-injection": "dev-hotfix/composer",
+    "openeyes/oph-tr-laser": "dev-hotfix/composer"
   },
   "require-dev": {
     "behat/behat": "~2",
