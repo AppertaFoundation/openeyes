@@ -1,7 +1,7 @@
 class dev::bower {
 
 	exec { 'bower-install':
-		command => '/bin/bash -c "source /home/vagrant/.nvm/nvm.sh && npm install -g bower@1.2.7"',
+		command => '/bin/bash -c "source /home/vagrant/.nvm/nvm.sh && npm install -g bower"',
 		user => 'vagrant',
 		environment => 'HOME=/home/vagrant',
 		require => Exec['node-install']

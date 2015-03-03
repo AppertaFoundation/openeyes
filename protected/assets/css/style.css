@@ -16,73 +16,13 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
-/* ==========================================================================
-   HTML5 display definitions
-   ========================================================================== */
-/**
- * Correct `block` display not defined in IE 8/9.
- */
-/* line 11, ../components/foundation/scss/normalize.scss */
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-main,
-nav,
-section,
-summary {
-  display: block;
-}
-
-/**
- * Correct `inline-block` display not defined in IE 8/9.
- */
-/* line 30, ../components/foundation/scss/normalize.scss */
-audio,
-canvas,
-video {
-  display: inline-block;
-}
-
-/**
- * Prevent modern browsers from displaying `audio` without controls.
- * Remove excess height in iOS 5 devices.
- */
-/* line 41, ../components/foundation/scss/normalize.scss */
-audio:not([controls]) {
-  display: none;
-  height: 0;
-}
-
-/**
- * Address `[hidden]` styling not present in IE 8/9.
- * Hide the `template` element in IE, Safari, and Firefox < 22.
- */
-/* line 51, ../components/foundation/scss/normalize.scss */
-[hidden],
-template {
-  display: none;
-}
-
-/* line 56, ../components/foundation/scss/normalize.scss */
-script {
-  display: none !important;
-}
-
-/* ==========================================================================
-   Base
-   ========================================================================== */
+/*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 /**
  * 1. Set default font family to sans-serif.
  * 2. Prevent iOS text size adjust after orientation change, without disabling
  *    user zoom.
  */
-/* line 70, ../components/foundation/scss/normalize.scss */
+/* line 9, ../components/foundation/scss/normalize.scss */
 html {
   font-family: sans-serif;
   /* 1 */
@@ -95,128 +35,140 @@ html {
 /**
  * Remove default margin.
  */
-/* line 80, ../components/foundation/scss/normalize.scss */
+/* line 19, ../components/foundation/scss/normalize.scss */
 body {
   margin: 0;
 }
 
-/* ==========================================================================
-   Links
+/* HTML5 display definitions
+   ========================================================================== */
+/**
+ * Correct `block` display not defined for any HTML5 element in IE 8/9.
+ * Correct `block` display not defined for `details` or `summary` in IE 10/11
+ * and Firefox.
+ * Correct `block` display not defined for `main` in IE 11.
+ */
+/* line 33, ../components/foundation/scss/normalize.scss */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+
+/**
+ * 1. Correct `inline-block` display not defined in IE 8/9.
+ * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
+ */
+/* line 54, ../components/foundation/scss/normalize.scss */
+audio,
+canvas,
+progress,
+video {
+  display: inline-block;
+  /* 1 */
+  vertical-align: baseline;
+  /* 2 */
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+/* line 67, ../components/foundation/scss/normalize.scss */
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+/**
+ * Address `[hidden]` styling not present in IE 8/9/10.
+ * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
+ */
+/* line 77, ../components/foundation/scss/normalize.scss */
+[hidden],
+template {
+  display: none;
+}
+
+/* Links
    ========================================================================== */
 /**
  * Remove the gray background color from active links in IE 10.
  */
-/* line 92, ../components/foundation/scss/normalize.scss */
+/* line 89, ../components/foundation/scss/normalize.scss */
 a {
-  background: transparent;
-}
-
-/**
- * Address `outline` inconsistency between Chrome and other browsers.
- */
-/* line 100, ../components/foundation/scss/normalize.scss */
-a:focus {
-  outline: thin dotted;
+  background-color: transparent;
 }
 
 /**
  * Improve readability when focused and also mouse hovered in all browsers.
  */
-/* line 108, ../components/foundation/scss/normalize.scss */
+/* line 97, ../components/foundation/scss/normalize.scss */
 a:active,
 a:hover {
   outline: 0;
 }
 
-/* ==========================================================================
-   Typography
+/* Text-level semantics
    ========================================================================== */
 /**
- * Address variable `h1` font-size and margin within `section` and `article`
- * contexts in Firefox 4+, Safari 5, and Chrome.
+ * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
  */
-/* line 122, ../components/foundation/scss/normalize.scss */
-h1 {
-  font-size: 2em;
-  margin: 0.67em 0;
-}
-
-/**
- * Address styling not present in IE 8/9, Safari 5, and Chrome.
- */
-/* line 131, ../components/foundation/scss/normalize.scss */
+/* line 109, ../components/foundation/scss/normalize.scss */
 abbr[title] {
   border-bottom: 1px dotted;
 }
 
 /**
- * Address style set to `bolder` in Firefox 4+, Safari 5, and Chrome.
+ * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
  */
-/* line 139, ../components/foundation/scss/normalize.scss */
+/* line 117, ../components/foundation/scss/normalize.scss */
 b,
 strong {
   font-weight: bold;
 }
 
 /**
- * Address styling not present in Safari 5 and Chrome.
+ * Address styling not present in Safari and Chrome.
  */
-/* line 148, ../components/foundation/scss/normalize.scss */
+/* line 126, ../components/foundation/scss/normalize.scss */
 dfn {
   font-style: italic;
 }
 
 /**
- * Address differences between Firefox and other browsers.
+ * Address variable `h1` font-size and margin within `section` and `article`
+ * contexts in Firefox 4+, Safari, and Chrome.
  */
-/* line 156, ../components/foundation/scss/normalize.scss */
-hr {
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-  height: 0;
+/* line 135, ../components/foundation/scss/normalize.scss */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
 }
 
 /**
  * Address styling not present in IE 8/9.
  */
-/* line 166, ../components/foundation/scss/normalize.scss */
+/* line 144, ../components/foundation/scss/normalize.scss */
 mark {
   background: #ff0;
   color: #000;
 }
 
 /**
- * Correct font family set oddly in Safari 5 and Chrome.
- */
-/* line 175, ../components/foundation/scss/normalize.scss */
-code,
-kbd,
-pre,
-samp {
-  font-family: monospace, serif;
-  font-size: 1em;
-}
-
-/**
- * Improve readability of pre-formatted text in all browsers.
- */
-/* line 187, ../components/foundation/scss/normalize.scss */
-pre {
-  white-space: pre-wrap;
-}
-
-/**
- * Set consistent quote types.
- */
-/* line 195, ../components/foundation/scss/normalize.scss */
-q {
-  quotes: "\201C" "\201D" "\2018" "\2019";
-}
-
-/**
  * Address inconsistent and variable font size in all browsers.
  */
-/* line 203, ../components/foundation/scss/normalize.scss */
+/* line 153, ../components/foundation/scss/normalize.scss */
 small {
   font-size: 80%;
 }
@@ -224,7 +176,7 @@ small {
 /**
  * Prevent `sub` and `sup` affecting `line-height` in all browsers.
  */
-/* line 211, ../components/foundation/scss/normalize.scss */
+/* line 161, ../components/foundation/scss/normalize.scss */
 sub,
 sup {
   font-size: 75%;
@@ -233,106 +185,115 @@ sup {
   vertical-align: baseline;
 }
 
-/* line 219, ../components/foundation/scss/normalize.scss */
+/* line 169, ../components/foundation/scss/normalize.scss */
 sup {
   top: -0.5em;
 }
 
-/* line 223, ../components/foundation/scss/normalize.scss */
+/* line 173, ../components/foundation/scss/normalize.scss */
 sub {
   bottom: -0.25em;
 }
 
-/* ==========================================================================
-   Embedded content
+/* Embedded content
    ========================================================================== */
 /**
- * Remove border when inside `a` element in IE 8/9.
+ * Remove border when inside `a` element in IE 8/9/10.
  */
-/* line 235, ../components/foundation/scss/normalize.scss */
+/* line 184, ../components/foundation/scss/normalize.scss */
 img {
   border: 0;
 }
 
 /**
- * Correct overflow displayed oddly in IE 9.
+ * Correct overflow not hidden in IE 9/10/11.
  */
-/* line 243, ../components/foundation/scss/normalize.scss */
+/* line 192, ../components/foundation/scss/normalize.scss */
 svg:not(:root) {
   overflow: hidden;
 }
 
-/* ==========================================================================
-   Figures
+/* Grouping content
    ========================================================================== */
 /**
- * Address margin not present in IE 8/9 and Safari 5.
+ * Address margin not present in IE 8/9 and Safari.
  */
-/* line 255, ../components/foundation/scss/normalize.scss */
+/* line 203, ../components/foundation/scss/normalize.scss */
 figure {
-  margin: 0;
+  margin: 1em 40px;
 }
 
-/* ==========================================================================
-   Forms
+/**
+ * Address differences between Firefox and other browsers.
+ */
+/* line 211, ../components/foundation/scss/normalize.scss */
+hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+
+/**
+ * Contain overflow in all browsers.
+ */
+/* line 221, ../components/foundation/scss/normalize.scss */
+pre {
+  overflow: auto;
+}
+
+/**
+ * Address odd `em`-unit font size rendering in all browsers.
+ */
+/* line 229, ../components/foundation/scss/normalize.scss */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+/* Forms
    ========================================================================== */
 /**
- * Define consistent border, margin, and padding.
+ * Known limitation: by default, Chrome and Safari on OS X allow very limited
+ * styling of `select`, unless a `border` property is set.
  */
-/* line 267, ../components/foundation/scss/normalize.scss */
-fieldset {
-  border: 1px solid #c0c0c0;
-  margin: 0 2px;
-  padding: 0.35em 0.625em 0.75em;
-}
-
 /**
- * 1. Correct `color` not being inherited in IE 8/9.
- * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+ * 1. Correct color not being inherited.
+ *    Known issue: affects color of disabled elements.
+ * 2. Correct font properties not being inherited.
+ * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
  */
-/* line 278, ../components/foundation/scss/normalize.scss */
-legend {
-  border: 0;
-  /* 1 */
-  padding: 0;
-  /* 2 */
-}
-
-/**
- * 1. Correct font family not being inherited in all browsers.
- * 2. Correct font size not being inherited in all browsers.
- * 3. Address margins set differently in Firefox 4+, Safari 5, and Chrome.
- */
-/* line 289, ../components/foundation/scss/normalize.scss */
+/* line 252, ../components/foundation/scss/normalize.scss */
 button,
 input,
+optgroup,
 select,
 textarea {
-  font-family: inherit;
+  color: inherit;
   /* 1 */
-  font-size: 100%;
+  font: inherit;
   /* 2 */
   margin: 0;
   /* 3 */
 }
 
 /**
- * Address Firefox 4+ setting `line-height` on `input` using `!important` in
- * the UA stylesheet.
+ * Address `overflow` set to `hidden` in IE 8/9/10/11.
  */
-/* line 303, ../components/foundation/scss/normalize.scss */
-button,
-input {
-  line-height: normal;
+/* line 266, ../components/foundation/scss/normalize.scss */
+button {
+  overflow: visible;
 }
 
 /**
  * Address inconsistent `text-transform` inheritance for `button` and `select`.
  * All other form control elements do not inherit `text-transform` values.
- * Correct `button` style inheritance in Chrome, Safari 5+, and IE 8+.
- * Correct `select` style inheritance in Firefox 4+ and Opera.
+ * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
+ * Correct `select` style inheritance in Firefox.
  */
-/* line 315, ../components/foundation/scss/normalize.scss */
+/* line 277, ../components/foundation/scss/normalize.scss */
 button,
 select {
   text-transform: none;
@@ -345,7 +306,7 @@ select {
  * 3. Improve usability and consistency of cursor style between image-type
  *    `input` and others.
  */
-/* line 328, ../components/foundation/scss/normalize.scss */
+/* line 290, ../components/foundation/scss/normalize.scss */
 button,
 html input[type="button"],
 input[type="reset"],
@@ -359,17 +320,39 @@ input[type="submit"] {
 /**
  * Re-set default cursor for disabled elements.
  */
-/* line 340, ../components/foundation/scss/normalize.scss */
+/* line 302, ../components/foundation/scss/normalize.scss */
 button[disabled],
 html input[disabled] {
   cursor: default;
 }
 
 /**
- * 1. Address box sizing set to `content-box` in IE 8/9.
- * 2. Remove excess padding in IE 8/9.
+ * Remove inner padding and border in Firefox 4+.
  */
-/* line 350, ../components/foundation/scss/normalize.scss */
+/* line 311, ../components/foundation/scss/normalize.scss */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/**
+ * Address Firefox 4+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+/* line 322, ../components/foundation/scss/normalize.scss */
+input {
+  line-height: normal;
+}
+
+/**
+ * It's recommended that you don't attempt to style these elements.
+ * Firefox's implementation doesn't respect box-sizing, padding, or width.
+ *
+ * 1. Address box sizing set to `content-box` in IE 8/9/10.
+ * 2. Remove excess padding in IE 8/9/10.
+ */
+/* line 334, ../components/foundation/scss/normalize.scss */
 input[type="checkbox"],
 input[type="radio"] {
   box-sizing: border-box;
@@ -379,11 +362,22 @@ input[type="radio"] {
 }
 
 /**
- * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
- * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ * Fix the cursor style for Chrome's increment/decrement buttons. For certain
+ * `font-size` values of the `input`, it causes the cursor style of the
+ * decrement button to change from `default` to `text`.
+ */
+/* line 346, ../components/foundation/scss/normalize.scss */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
  *    (include `-moz` to future-proof).
  */
-/* line 362, ../components/foundation/scss/normalize.scss */
+/* line 357, ../components/foundation/scss/normalize.scss */
 input[type="search"] {
   -webkit-appearance: textfield;
   /* 1 */
@@ -394,47 +388,70 @@ input[type="search"] {
 }
 
 /**
- * Remove inner padding and search cancel button in Safari 5 and Chrome
- * on OS X.
+ * Remove inner padding and search cancel button in Safari and Chrome on OS X.
+ * Safari (but not Chrome) clips the cancel button when the search input has
+ * padding (and `textfield` appearance).
  */
-/* line 374, ../components/foundation/scss/normalize.scss */
+/* line 370, ../components/foundation/scss/normalize.scss */
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none;
 }
 
 /**
- * Remove inner padding and border in Firefox 4+.
+ * Define consistent border, margin, and padding.
  */
-/* line 383, ../components/foundation/scss/normalize.scss */
-button::-moz-focus-inner,
-input::-moz-focus-inner {
-  border: 0;
-  padding: 0;
+/* line 379, ../components/foundation/scss/normalize.scss */
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
 }
 
 /**
- * 1. Remove default vertical scrollbar in IE 8/9.
- * 2. Improve readability and alignment in all browsers.
+ * 1. Correct `color` not being inherited in IE 8/9/10/11.
+ * 2. Remove padding so people aren't caught out if they zero out fieldsets.
  */
-/* line 394, ../components/foundation/scss/normalize.scss */
-textarea {
-  overflow: auto;
+/* line 390, ../components/foundation/scss/normalize.scss */
+legend {
+  border: 0;
   /* 1 */
-  vertical-align: top;
+  padding: 0;
   /* 2 */
 }
 
-/* ==========================================================================
-   Tables
+/**
+ * Remove default vertical scrollbar in IE 8/9/10/11.
+ */
+/* line 399, ../components/foundation/scss/normalize.scss */
+textarea {
+  overflow: auto;
+}
+
+/**
+ * Don't inherit the `font-weight` (applied by a rule above).
+ * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
+ */
+/* line 408, ../components/foundation/scss/normalize.scss */
+optgroup {
+  font-weight: bold;
+}
+
+/* Tables
    ========================================================================== */
 /**
  * Remove most spacing between table cells.
  */
-/* line 407, ../components/foundation/scss/normalize.scss */
+/* line 419, ../components/foundation/scss/normalize.scss */
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+/* line 424, ../components/foundation/scss/normalize.scss */
+td,
+th {
+  padding: 0;
 }
 
 /* line 17, ../sass/openeyes/_placeholders.scss */
@@ -468,6 +485,781 @@ table {
   top: -9999px;
 }
 
+/* line 348, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-version {
+  font-family: "/5.5.1/";
+}
+
+/* line 352, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-mq-small {
+  font-family: "/all/";
+  width: 1230px;
+}
+
+/* line 357, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-mq-small-only {
+  font-family: "/all/";
+  width: 1230px;
+}
+
+/* line 362, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-mq-medium {
+  font-family: "/all/";
+  width: 1230px;
+}
+
+/* line 367, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-mq-medium-only {
+  font-family: "/all/";
+  width: 1230px;
+}
+
+/* line 372, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-mq-large {
+  font-family: "/all/";
+  width: 1230px;
+}
+
+/* line 377, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-mq-large-only {
+  font-family: "/all/";
+  width: 1230px;
+}
+
+/* line 382, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-mq-xlarge {
+  font-family: "/all and (min-width:1230px)/";
+  width: 1230px;
+}
+
+/* line 387, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-mq-xlarge-only {
+  font-family: "/all and (min-width:1230px) and (max-width:1230px)/";
+  width: 1230px;
+}
+
+/* line 392, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-mq-xxlarge {
+  font-family: "/all and (min-width:120.063em)/";
+  width: 120.063em;
+}
+
+/* line 397, ../components/foundation/scss/foundation/components/_global.scss */
+meta.foundation-data-attribute-namespace {
+  font-family: false;
+}
+
+/* line 404, ../components/foundation/scss/foundation/components/_global.scss */
+html, body {
+  height: 100%;
+}
+
+/* line 407, ../components/foundation/scss/foundation/components/_global.scss */
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 413, ../components/foundation/scss/foundation/components/_global.scss */
+html,
+body {
+  font-size: 100%;
+}
+
+/* line 417, ../components/foundation/scss/foundation/components/_global.scss */
+body {
+  background: #d4d1cd;
+  color: #222;
+  padding: 0;
+  margin: 0;
+  font-family: "Helvetica", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1.5;
+  position: relative;
+  cursor: auto;
+}
+
+/* line 430, ../components/foundation/scss/foundation/components/_global.scss */
+a:hover {
+  cursor: pointer;
+}
+
+/* line 433, ../components/foundation/scss/foundation/components/_global.scss */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* line 435, ../components/foundation/scss/foundation/components/_global.scss */
+img {
+  -ms-interpolation-mode: bicubic;
+}
+
+/* line 439, ../components/foundation/scss/foundation/components/_global.scss */
+#map_canvas img,
+#map_canvas embed,
+#map_canvas object,
+.map_canvas img,
+.map_canvas embed,
+.map_canvas object {
+  max-width: none !important;
+}
+
+/* line 446, ../components/foundation/scss/foundation/components/_global.scss */
+.left {
+  float: left !important;
+}
+
+/* line 447, ../components/foundation/scss/foundation/components/_global.scss */
+.right {
+  float: right !important;
+}
+
+/* line 172, ../components/foundation/scss/foundation/components/_global.scss */
+.clearfix:before, .footer:before, .box-header:before, .panel.user:before, .panel.episode .events-overview:before, .event .event-header:before, .element-header:before, .edit .optional-elements-header:before, .sub-element-header:before, .clearfix:after, .footer:after, .box-header:after, .panel.user:after, .panel.episode .events-overview:after, .event .event-header:after, .element-header:after, .edit .optional-elements-header:after, .sub-element-header:after {
+  content: " ";
+  display: table;
+}
+/* line 173, ../components/foundation/scss/foundation/components/_global.scss */
+.clearfix:after, .footer:after, .box-header:after, .panel.user:after, .panel.episode .events-overview:after, .event .event-header:after, .element-header:after, .edit .optional-elements-header:after, .sub-element-header:after {
+  clear: both;
+}
+
+/* line 451, ../components/foundation/scss/foundation/components/_global.scss */
+.hide {
+  display: none;
+}
+
+/* line 456, ../components/foundation/scss/foundation/components/_global.scss */
+.invisible {
+  visibility: hidden;
+}
+
+/* line 462, ../components/foundation/scss/foundation/components/_global.scss */
+.antialiased {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* line 465, ../components/foundation/scss/foundation/components/_global.scss */
+img {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* line 475, ../components/foundation/scss/foundation/components/_global.scss */
+textarea {
+  height: auto;
+  min-height: 50px;
+}
+
+/* line 478, ../components/foundation/scss/foundation/components/_global.scss */
+select {
+  width: 100%;
+}
+
+/* Accessibility - hides the forward slash */
+/* line 130, ../components/foundation/scss/foundation/components/_breadcrumbs.scss */
+[aria-label="breadcrumbs"] [aria-hidden="true"]:after {
+  content: "/";
+}
+
+/* line 155, ../components/foundation/scss/foundation/components/_type.scss */
+.text-left {
+  text-align: left !important;
+}
+
+/* line 156, ../components/foundation/scss/foundation/components/_type.scss */
+.text-right {
+  text-align: right !important;
+}
+
+/* line 157, ../components/foundation/scss/foundation/components/_type.scss */
+.text-center {
+  text-align: center !important;
+}
+
+/* line 158, ../components/foundation/scss/foundation/components/_type.scss */
+.text-justify {
+  text-align: justify !important;
+}
+
+@media all {
+  /* line 162, ../components/foundation/scss/foundation/components/_type.scss */
+  .small-only-text-left {
+    text-align: left !important;
+  }
+
+  /* line 163, ../components/foundation/scss/foundation/components/_type.scss */
+  .small-only-text-right {
+    text-align: right !important;
+  }
+
+  /* line 164, ../components/foundation/scss/foundation/components/_type.scss */
+  .small-only-text-center {
+    text-align: center !important;
+  }
+
+  /* line 165, ../components/foundation/scss/foundation/components/_type.scss */
+  .small-only-text-justify {
+    text-align: justify !important;
+  }
+}
+@media all {
+  /* line 162, ../components/foundation/scss/foundation/components/_type.scss */
+  .small-text-left {
+    text-align: left !important;
+  }
+
+  /* line 163, ../components/foundation/scss/foundation/components/_type.scss */
+  .small-text-right {
+    text-align: right !important;
+  }
+
+  /* line 164, ../components/foundation/scss/foundation/components/_type.scss */
+  .small-text-center {
+    text-align: center !important;
+  }
+
+  /* line 165, ../components/foundation/scss/foundation/components/_type.scss */
+  .small-text-justify {
+    text-align: justify !important;
+  }
+}
+@media all {
+  /* line 162, ../components/foundation/scss/foundation/components/_type.scss */
+  .medium-only-text-left {
+    text-align: left !important;
+  }
+
+  /* line 163, ../components/foundation/scss/foundation/components/_type.scss */
+  .medium-only-text-right {
+    text-align: right !important;
+  }
+
+  /* line 164, ../components/foundation/scss/foundation/components/_type.scss */
+  .medium-only-text-center {
+    text-align: center !important;
+  }
+
+  /* line 165, ../components/foundation/scss/foundation/components/_type.scss */
+  .medium-only-text-justify {
+    text-align: justify !important;
+  }
+}
+@media all {
+  /* line 162, ../components/foundation/scss/foundation/components/_type.scss */
+  .medium-text-left {
+    text-align: left !important;
+  }
+
+  /* line 163, ../components/foundation/scss/foundation/components/_type.scss */
+  .medium-text-right {
+    text-align: right !important;
+  }
+
+  /* line 164, ../components/foundation/scss/foundation/components/_type.scss */
+  .medium-text-center {
+    text-align: center !important;
+  }
+
+  /* line 165, ../components/foundation/scss/foundation/components/_type.scss */
+  .medium-text-justify {
+    text-align: justify !important;
+  }
+}
+@media all {
+  /* line 162, ../components/foundation/scss/foundation/components/_type.scss */
+  .large-only-text-left {
+    text-align: left !important;
+  }
+
+  /* line 163, ../components/foundation/scss/foundation/components/_type.scss */
+  .large-only-text-right {
+    text-align: right !important;
+  }
+
+  /* line 164, ../components/foundation/scss/foundation/components/_type.scss */
+  .large-only-text-center {
+    text-align: center !important;
+  }
+
+  /* line 165, ../components/foundation/scss/foundation/components/_type.scss */
+  .large-only-text-justify {
+    text-align: justify !important;
+  }
+}
+@media all {
+  /* line 162, ../components/foundation/scss/foundation/components/_type.scss */
+  .large-text-left {
+    text-align: left !important;
+  }
+
+  /* line 163, ../components/foundation/scss/foundation/components/_type.scss */
+  .large-text-right {
+    text-align: right !important;
+  }
+
+  /* line 164, ../components/foundation/scss/foundation/components/_type.scss */
+  .large-text-center {
+    text-align: center !important;
+  }
+
+  /* line 165, ../components/foundation/scss/foundation/components/_type.scss */
+  .large-text-justify {
+    text-align: justify !important;
+  }
+}
+@media all and (min-width: 1230px) and (max-width: 1230px) {
+  /* line 162, ../components/foundation/scss/foundation/components/_type.scss */
+  .xlarge-only-text-left {
+    text-align: left !important;
+  }
+
+  /* line 163, ../components/foundation/scss/foundation/components/_type.scss */
+  .xlarge-only-text-right {
+    text-align: right !important;
+  }
+
+  /* line 164, ../components/foundation/scss/foundation/components/_type.scss */
+  .xlarge-only-text-center {
+    text-align: center !important;
+  }
+
+  /* line 165, ../components/foundation/scss/foundation/components/_type.scss */
+  .xlarge-only-text-justify {
+    text-align: justify !important;
+  }
+}
+@media all and (min-width: 1230px) {
+  /* line 162, ../components/foundation/scss/foundation/components/_type.scss */
+  .xlarge-text-left {
+    text-align: left !important;
+  }
+
+  /* line 163, ../components/foundation/scss/foundation/components/_type.scss */
+  .xlarge-text-right {
+    text-align: right !important;
+  }
+
+  /* line 164, ../components/foundation/scss/foundation/components/_type.scss */
+  .xlarge-text-center {
+    text-align: center !important;
+  }
+
+  /* line 165, ../components/foundation/scss/foundation/components/_type.scss */
+  .xlarge-text-justify {
+    text-align: justify !important;
+  }
+}
+@media all and (min-width: 120.063em) and (max-width: 999999999999) {
+  /* line 162, ../components/foundation/scss/foundation/components/_type.scss */
+  .xxlarge-only-text-left {
+    text-align: left !important;
+  }
+
+  /* line 163, ../components/foundation/scss/foundation/components/_type.scss */
+  .xxlarge-only-text-right {
+    text-align: right !important;
+  }
+
+  /* line 164, ../components/foundation/scss/foundation/components/_type.scss */
+  .xxlarge-only-text-center {
+    text-align: center !important;
+  }
+
+  /* line 165, ../components/foundation/scss/foundation/components/_type.scss */
+  .xxlarge-only-text-justify {
+    text-align: justify !important;
+  }
+}
+@media all and (min-width: 120.063em) {
+  /* line 162, ../components/foundation/scss/foundation/components/_type.scss */
+  .xxlarge-text-left {
+    text-align: left !important;
+  }
+
+  /* line 163, ../components/foundation/scss/foundation/components/_type.scss */
+  .xxlarge-text-right {
+    text-align: right !important;
+  }
+
+  /* line 164, ../components/foundation/scss/foundation/components/_type.scss */
+  .xxlarge-text-center {
+    text-align: center !important;
+  }
+
+  /* line 165, ../components/foundation/scss/foundation/components/_type.scss */
+  .xxlarge-text-justify {
+    text-align: justify !important;
+  }
+}
+/* Typography resets */
+/* line 193, ../components/foundation/scss/foundation/components/_type.scss */
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+form,
+p,
+blockquote,
+th,
+td {
+  margin: 0;
+  padding: 0;
+}
+
+/* Default Link Styles */
+/* line 217, ../components/foundation/scss/foundation/components/_type.scss */
+a {
+  color: #0b59da;
+  text-decoration: none;
+  line-height: inherit;
+}
+/* line 222, ../components/foundation/scss/foundation/components/_type.scss */
+a:hover, a:focus {
+  color: #094dbb;
+}
+/* line 230, ../components/foundation/scss/foundation/components/_type.scss */
+a img {
+  border: none;
+}
+
+/* Default paragraph styles */
+/* line 234, ../components/foundation/scss/foundation/components/_type.scss */
+p {
+  font-family: inherit;
+  font-weight: normal;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  text-rendering: optimizeLegibility;
+}
+/* line 242, ../components/foundation/scss/foundation/components/_type.scss */
+p.lead {
+  font-size: 1.03125rem;
+  line-height: 1.6;
+}
+/* line 244, ../components/foundation/scss/foundation/components/_type.scss */
+p aside {
+  font-size: 0.875rem;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+/* Default header styles */
+/* line 252, ../components/foundation/scss/foundation/components/_type.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Helvetica", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  color: #333333;
+  text-rendering: optimizeLegibility;
+  margin-top: 2px;
+  margin-bottom: 0.5em;
+  line-height: 1.4;
+}
+/* line 262, ../components/foundation/scss/foundation/components/_type.scss */
+h1 small, h2 small, h3 small, h4 small, h5 small, h6 small {
+  font-size: 60%;
+  color: #7a7a7a;
+  line-height: 0;
+}
+
+/* line 269, ../components/foundation/scss/foundation/components/_type.scss */
+h1 {
+  font-size: 0.875rem;
+}
+
+/* line 270, ../components/foundation/scss/foundation/components/_type.scss */
+h2 {
+  font-size: 0.5625rem;
+}
+
+/* line 271, ../components/foundation/scss/foundation/components/_type.scss */
+h3 {
+  font-size: 0.75rem;
+}
+
+/* line 272, ../components/foundation/scss/foundation/components/_type.scss */
+h4 {
+  font-size: 0.6875rem;
+}
+
+/* line 273, ../components/foundation/scss/foundation/components/_type.scss */
+h5 {
+  font-size: 0.9375rem;
+}
+
+/* line 274, ../components/foundation/scss/foundation/components/_type.scss */
+h6 {
+  font-size: 1rem;
+}
+
+/* line 276, ../components/foundation/scss/foundation/components/_type.scss */
+.subheader {
+  line-height: 1.4;
+  color: #7a7a7a;
+  font-weight: normal;
+  margin-top: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* line 278, ../components/foundation/scss/foundation/components/_type.scss */
+hr {
+  border: solid #DDDDDD;
+  border-width: 1px 0 0;
+  clear: both;
+  margin: 1.25rem 0 1.1875rem;
+  height: 0;
+}
+
+/* Helpful Typography Defaults */
+/* line 287, ../components/foundation/scss/foundation/components/_type.scss */
+em,
+i {
+  font-style: italic;
+  line-height: inherit;
+}
+
+/* line 293, ../components/foundation/scss/foundation/components/_type.scss */
+strong,
+b {
+  font-weight: bold;
+  line-height: inherit;
+}
+
+/* line 299, ../components/foundation/scss/foundation/components/_type.scss */
+small {
+  font-size: 60%;
+  line-height: inherit;
+}
+
+/* line 304, ../components/foundation/scss/foundation/components/_type.scss */
+code {
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+  font-weight: normal;
+  color: #333333;
+  background-color: #f8f8f8;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #e0e0e0;
+  padding: 0.125rem 0.3125rem 0.0625rem;
+}
+
+/* Lists */
+/* line 316, ../components/foundation/scss/foundation/components/_type.scss */
+ul,
+ol,
+dl {
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  list-style-position: outside;
+  font-family: inherit;
+}
+
+/* line 326, ../components/foundation/scss/foundation/components/_type.scss */
+ul {
+  margin-left: 1.1rem;
+}
+/* line 328, ../components/foundation/scss/foundation/components/_type.scss */
+ul.no-bullet {
+  margin-left: 0;
+}
+/* line 331, ../components/foundation/scss/foundation/components/_type.scss */
+ul.no-bullet li ul,
+ul.no-bullet li ol {
+  margin-left: 1.25rem;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+/* Unordered Lists */
+/* line 344, ../components/foundation/scss/foundation/components/_type.scss */
+ul li ul,
+ul li ol {
+  margin-left: 1.25rem;
+  margin-bottom: 0;
+}
+/* line 353, ../components/foundation/scss/foundation/components/_type.scss */
+ul.square li ul, ul.circle li ul, ul.disc li ul {
+  list-style: inherit;
+}
+/* line 356, ../components/foundation/scss/foundation/components/_type.scss */
+ul.square {
+  list-style-type: square;
+  margin-left: 1.1rem;
+}
+/* line 357, ../components/foundation/scss/foundation/components/_type.scss */
+ul.circle {
+  list-style-type: circle;
+  margin-left: 1.1rem;
+}
+/* line 358, ../components/foundation/scss/foundation/components/_type.scss */
+ul.disc {
+  list-style-type: disc;
+  margin-left: 1.1rem;
+}
+/* line 359, ../components/foundation/scss/foundation/components/_type.scss */
+ul.no-bullet {
+  list-style: none;
+}
+
+/* Ordered Lists */
+/* line 363, ../components/foundation/scss/foundation/components/_type.scss */
+ol {
+  margin-left: 1.4rem;
+}
+/* line 366, ../components/foundation/scss/foundation/components/_type.scss */
+ol li ul,
+ol li ol {
+  margin-left: 1.25rem;
+  margin-bottom: 0;
+}
+
+/* Definition Lists */
+/* line 376, ../components/foundation/scss/foundation/components/_type.scss */
+dl dt {
+  margin-bottom: 0.3rem;
+  font-weight: bold;
+}
+/* line 380, ../components/foundation/scss/foundation/components/_type.scss */
+dl dd {
+  margin-bottom: 0.75rem;
+}
+
+/* Abbreviations */
+/* line 384, ../components/foundation/scss/foundation/components/_type.scss */
+abbr,
+acronym {
+  text-transform: uppercase;
+  font-size: 90%;
+  color: #222;
+  cursor: help;
+}
+
+/* line 391, ../components/foundation/scss/foundation/components/_type.scss */
+abbr {
+  text-transform: none;
+}
+/* line 393, ../components/foundation/scss/foundation/components/_type.scss */
+abbr[title] {
+  border-bottom: 1px dotted #DDDDDD;
+}
+
+/* Blockquotes */
+/* line 399, ../components/foundation/scss/foundation/components/_type.scss */
+blockquote {
+  margin: 0 0 16px;
+  padding: 0.5625rem 1.25rem 0 1.1875rem;
+  border-left: 1px solid #DDDDDD;
+}
+/* line 404, ../components/foundation/scss/foundation/components/_type.scss */
+blockquote cite {
+  display: block;
+  font-size: 0.8125rem;
+  color: #626262;
+}
+/* line 408, ../components/foundation/scss/foundation/components/_type.scss */
+blockquote cite:before {
+  content: "\2014 \0020";
+}
+/* line 412, ../components/foundation/scss/foundation/components/_type.scss */
+blockquote cite a,
+blockquote cite a:visited {
+  color: #626262;
+}
+
+/* line 418, ../components/foundation/scss/foundation/components/_type.scss */
+blockquote,
+blockquote p {
+  line-height: 1.2;
+  color: #7a7a7a;
+}
+
+/* Microformats */
+/* line 425, ../components/foundation/scss/foundation/components/_type.scss */
+.vcard {
+  display: inline-block;
+  margin: 0 0 1.25rem 0;
+  border: 1px solid #DDDDDD;
+  padding: 0.625rem 0.75rem;
+}
+/* line 431, ../components/foundation/scss/foundation/components/_type.scss */
+.vcard li {
+  margin: 0;
+  display: block;
+}
+/* line 435, ../components/foundation/scss/foundation/components/_type.scss */
+.vcard .fn {
+  font-weight: bold;
+  font-size: 0.9375rem;
+}
+
+/* line 442, ../components/foundation/scss/foundation/components/_type.scss */
+.vevent .summary {
+  font-weight: bold;
+}
+/* line 444, ../components/foundation/scss/foundation/components/_type.scss */
+.vevent abbr {
+  cursor: default;
+  text-decoration: none;
+  font-weight: bold;
+  border: none;
+  padding: 0 0.0625rem;
+}
+
+@media all {
+  /* line 455, ../components/foundation/scss/foundation/components/_type.scss */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.4;
+  }
+
+  /* line 456, ../components/foundation/scss/foundation/components/_type.scss */
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  /* line 457, ../components/foundation/scss/foundation/components/_type.scss */
+  h2 {
+    font-size: 1.1875rem;
+  }
+
+  /* line 458, ../components/foundation/scss/foundation/components/_type.scss */
+  h3 {
+    font-size: 1.0625rem;
+  }
+
+  /* line 459, ../components/foundation/scss/foundation/components/_type.scss */
+  h4 {
+    font-size: 1rem;
+  }
+
+  /* line 460, ../components/foundation/scss/foundation/components/_type.scss */
+  h5 {
+    font-size: 0.9375rem;
+  }
+
+  /* line 461, ../components/foundation/scss/foundation/components/_type.scss */
+  h6 {
+    font-size: 1rem;
+  }
+}
 /* line 17, ../sass/openeyes/components/_global.scss */
 html, body {
   background: #d4d1cd;
@@ -486,21 +1278,19 @@ html, body {
   margin-top: 0;
   margin-bottom: 0;
   max-width: 1230px;
-  *zoom: 1;
 }
-/* line 159, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 172, ../components/foundation/scss/foundation/components/_global.scss */
 .container:before, .container:after {
   content: " ";
   display: table;
 }
-/* line 160, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 173, ../components/foundation/scss/foundation/components/_global.scss */
 .container:after {
   clear: both;
 }
 
 /* line 18, ../sass/openeyes/components/containers/_main.scss */
 .container.main {
-  -webkit-border-radius: 5px;
   border-radius: 5px;
   background: #dae6f1 url('../img/_structure/gradient_bg.png?1424961798') 0 0 repeat-x;
   border: 2px solid #b3b0ae;
@@ -623,21 +1413,19 @@ span.error {
   margin-top: 0;
   margin-bottom: 0;
   max-width: 1230px;
-  *zoom: 1;
 }
-/* line 159, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 172, ../components/foundation/scss/foundation/components/_global.scss */
 .row:before, .row:after {
   content: " ";
   display: table;
 }
-/* line 160, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 173, ../components/foundation/scss/foundation/components/_global.scss */
 .row:after {
   clear: both;
 }
 /* line 4, ../sass/openeyes/components/_grid.scss */
 .row.collapse > .column,
 .row.collapse > .columns {
-  position: relative;
   padding-left: 0;
   padding-right: 0;
   float: left;
@@ -655,14 +1443,13 @@ span.error {
   margin-top: 0;
   margin-bottom: 0;
   max-width: none;
-  *zoom: 1;
 }
-/* line 159, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 172, ../components/foundation/scss/foundation/components/_global.scss */
 .row .row:before, .row .row:after {
   content: " ";
   display: table;
 }
-/* line 160, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 173, ../components/foundation/scss/foundation/components/_global.scss */
 .row .row:after {
   clear: both;
 }
@@ -671,14 +1458,13 @@ span.error {
   width: auto;
   margin: 0;
   max-width: none;
-  *zoom: 1;
 }
-/* line 159, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 172, ../components/foundation/scss/foundation/components/_global.scss */
 .row .row.collapse:before, .row .row.collapse:after {
   content: " ";
   display: table;
 }
-/* line 160, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 173, ../components/foundation/scss/foundation/components/_global.scss */
 .row .row.collapse:after {
   clear: both;
 }
@@ -686,7 +1472,6 @@ span.error {
 /* line 21, ../sass/openeyes/components/_grid.scss */
 .column,
 .columns {
-  position: relative;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
   width: 100%;
@@ -694,184 +1479,175 @@ span.error {
 }
 
 @media all {
-  /* line 147, ../components/foundation/scss/foundation/components/_grid.scss */
-  .column.large-centered,
-  .columns.large-centered {
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
+  .large-push-0 {
     position: relative;
-    margin-left: auto;
-    margin-right: auto;
-    float: none;
+    left: 0%;
+    right: auto;
   }
 
-  /* line 150, ../components/foundation/scss/foundation/components/_grid.scss */
-  .column.large-uncentered,
-  .columns.large-uncentered {
-    margin-left: 0;
-    margin-right: 0;
-    float: left;
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
+  .large-pull-0 {
+    position: relative;
+    right: 0%;
+    left: auto;
   }
 
-  /* line 157, ../components/foundation/scss/foundation/components/_grid.scss */
-  .column.large-uncentered.opposite,
-  .columns.large-uncentered.opposite {
-    float: right;
-  }
-
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-1 {
     position: relative;
     left: 8.33333%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-1 {
     position: relative;
     right: 8.33333%;
     left: auto;
   }
 
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-2 {
     position: relative;
     left: 16.66667%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-2 {
     position: relative;
     right: 16.66667%;
     left: auto;
   }
 
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-3 {
     position: relative;
     left: 25%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-3 {
     position: relative;
     right: 25%;
     left: auto;
   }
 
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-4 {
     position: relative;
     left: 33.33333%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-4 {
     position: relative;
     right: 33.33333%;
     left: auto;
   }
 
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-5 {
     position: relative;
     left: 41.66667%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-5 {
     position: relative;
     right: 41.66667%;
     left: auto;
   }
 
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-6 {
     position: relative;
     left: 50%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-6 {
     position: relative;
     right: 50%;
     left: auto;
   }
 
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-7 {
     position: relative;
     left: 58.33333%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-7 {
     position: relative;
     right: 58.33333%;
     left: auto;
   }
 
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-8 {
     position: relative;
     left: 66.66667%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-8 {
     position: relative;
     right: 66.66667%;
     left: auto;
   }
 
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-9 {
     position: relative;
     left: 75%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-9 {
     position: relative;
     right: 75%;
     left: auto;
   }
 
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-10 {
     position: relative;
     left: 83.33333%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-10 {
     position: relative;
     right: 83.33333%;
     left: auto;
   }
 
-  /* line 163, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 159, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-push-11 {
     position: relative;
     left: 91.66667%;
     right: auto;
   }
 
-  /* line 166, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 162, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-pull-11 {
     position: relative;
     right: 91.66667%;
     left: auto;
   }
 
-  /* line 171, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 167, ../components/foundation/scss/foundation/components/_grid.scss */
   .column,
   .columns {
     position: relative;
@@ -880,161 +1656,185 @@ span.error {
     float: left;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-1 {
-    position: relative;
     width: 8.33333%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-2 {
-    position: relative;
     width: 16.66667%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-3 {
-    position: relative;
     width: 25%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-4 {
-    position: relative;
     width: 33.33333%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-5 {
-    position: relative;
     width: 41.66667%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-6, .element-eye.left-eye, .element-eye.right-eye {
-    position: relative;
     width: 50%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-7 {
-    position: relative;
     width: 58.33333%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-8 {
-    position: relative;
     width: 66.66667%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-9 {
-    position: relative;
     width: 75%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-10 {
-    position: relative;
     width: 83.33333%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-11 {
-    position: relative;
     width: 91.66667%;
   }
 
-  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 172, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-12 {
-    position: relative;
     width: 100%;
   }
 
-  /* line 179, ../components/foundation/scss/foundation/components/_grid.scss */
-  [class*="column"] + [class*="column"]:last-child {
-    float: right;
-  }
-
-  /* line 180, ../components/foundation/scss/foundation/components/_grid.scss */
-  [class*="column"] + [class*="column"].end {
-    float: left;
-  }
-
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-0 {
-    position: relative;
     margin-left: 0% !important;
   }
 
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-1 {
-    position: relative;
     margin-left: 8.33333% !important;
   }
 
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-2 {
-    position: relative;
     margin-left: 16.66667% !important;
   }
 
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-3 {
-    position: relative;
     margin-left: 25% !important;
   }
 
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-4 {
-    position: relative;
     margin-left: 33.33333% !important;
   }
 
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-5 {
-    position: relative;
     margin-left: 41.66667% !important;
   }
 
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-6 {
-    position: relative;
     margin-left: 50% !important;
   }
 
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-7 {
-    position: relative;
     margin-left: 58.33333% !important;
   }
 
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-8 {
-    position: relative;
     margin-left: 66.66667% !important;
   }
 
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-9 {
-    position: relative;
     margin-left: 75% !important;
   }
 
-  /* line 184, ../components/foundation/scss/foundation/components/_grid.scss */
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
   .large-offset-10 {
-    position: relative;
     margin-left: 83.33333% !important;
   }
 
-  /* line 186, ../components/foundation/scss/foundation/components/_grid.scss */
-  .column.large-reset-order,
-  .columns.large-reset-order {
+  /* line 176, ../components/foundation/scss/foundation/components/_grid.scss */
+  .large-offset-11 {
+    margin-left: 91.66667% !important;
+  }
+
+  /* line 179, ../components/foundation/scss/foundation/components/_grid.scss */
+  .large-reset-order {
     margin-left: 0;
     margin-right: 0;
     left: auto;
     right: auto;
+    float: left;
+  }
+
+  /* line 187, ../components/foundation/scss/foundation/components/_grid.scss */
+  .column.large-centered,
+  .columns.large-centered {
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+  }
+
+  /* line 190, ../components/foundation/scss/foundation/components/_grid.scss */
+  .column.large-uncentered,
+  .columns.large-uncentered {
+    margin-left: 0;
+    margin-right: 0;
+    float: left;
+  }
+
+  /* line 198, ../components/foundation/scss/foundation/components/_grid.scss */
+  .column.large-centered:last-child,
+  .columns.large-centered:last-child {
+    float: none;
+  }
+
+  /* line 204, ../components/foundation/scss/foundation/components/_grid.scss */
+  .column.large-uncentered:last-child,
+  .columns.large-uncentered:last-child {
+    float: left;
+  }
+
+  /* line 209, ../components/foundation/scss/foundation/components/_grid.scss */
+  .column.large-uncentered.opposite,
+  .columns.large-uncentered.opposite {
+    float: right;
+  }
+
+  /* line 216, ../components/foundation/scss/foundation/components/_grid.scss */
+  .row.large-collapse > .column,
+  .row.large-collapse > .columns {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  /* line 219, ../components/foundation/scss/foundation/components/_grid.scss */
+  .row.large-collapse .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  /* line 222, ../components/foundation/scss/foundation/components/_grid.scss */
+  .row.large-uncollapse > .column,
+  .row.large-uncollapse > .columns {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
     float: left;
   }
 }
@@ -1065,14 +1865,14 @@ dl li {
   list-style: none;
   overflow: hidden;
 }
-/* line 37, ../components/foundation/scss/foundation/components/_inline-lists.scss */
+/* line 42, ../components/foundation/scss/foundation/components/_inline-lists.scss */
 .inline-list > li {
   list-style: none;
   float: left;
   margin-left: 1.375rem;
   display: block;
 }
-/* line 42, ../components/foundation/scss/foundation/components/_inline-lists.scss */
+/* line 47, ../components/foundation/scss/foundation/components/_inline-lists.scss */
 .inline-list > li > * {
   display: block;
 }
@@ -1082,41 +1882,59 @@ table {
   min-width: 100%;
   background: #edf4f9;
   margin-bottom: 10px;
-  border: solid 1px #ddd;
+  border: solid 1px #DDDDDD;
+  table-layout: auto;
 }
-/* line 50, ../components/foundation/scss/foundation/components/_tables.scss */
-table thead,
+/* line 69, ../components/foundation/scss/foundation/components/_tables.scss */
+table caption {
+  background: transparent;
+  color: #444444;
+  font-size: 1rem;
+  font-weight: bold;
+}
+/* line 78, ../components/foundation/scss/foundation/components/_tables.scss */
+table thead {
+  background: whitesmoke;
+}
+/* line 82, ../components/foundation/scss/foundation/components/_tables.scss */
+table thead tr th,
+table thead tr td {
+  padding: 8px 10px;
+  font-size: 0.6875rem;
+  font-weight: bold;
+  color: #444444;
+}
+/* line 92, ../components/foundation/scss/foundation/components/_tables.scss */
 table tfoot {
   background: whitesmoke;
 }
-/* line 55, ../components/foundation/scss/foundation/components/_tables.scss */
-table thead tr th,
-table thead tr td,
+/* line 96, ../components/foundation/scss/foundation/components/_tables.scss */
 table tfoot tr th,
 table tfoot tr td {
   padding: 8px 10px;
   font-size: 0.6875rem;
   font-weight: bold;
   color: #444444;
-  text-align: left;
 }
-/* line 67, ../components/foundation/scss/foundation/components/_tables.scss */
+/* line 107, ../components/foundation/scss/foundation/components/_tables.scss */
 table tr th,
 table tr td {
   padding: 10px;
   font-size: 0.875rem;
   color: #222;
+  text-align: left;
 }
-/* line 74, ../components/foundation/scss/foundation/components/_tables.scss */
+/* line 115, ../components/foundation/scss/foundation/components/_tables.scss */
 table tr.even, table tr.alt, table tr:nth-of-type(even) {
   background: #e1eef9;
 }
-/* line 79, ../components/foundation/scss/foundation/components/_tables.scss */
+/* line 120, ../components/foundation/scss/foundation/components/_tables.scss */
 table thead tr th,
 table tfoot tr th,
+table tfoot tr td,
+table tbody tr th,
 table tbody tr td,
-table tr td,
-table tfoot tr td {
+table tr td {
   display: table-cell;
   line-height: 1.125em;
 }
@@ -1340,7 +2158,7 @@ table.grid td:last-child {
 }
 /* line 364, ../sass/openeyes/components/_tables.scss */
 table.grid tfoot {
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #DDDDDD;
 }
 /* line 366, ../sass/openeyes/components/_tables.scss */
 table.grid tfoot tr {
@@ -1430,29 +2248,30 @@ table.grid tfoot tr {
   margin-bottom: 16px;
   padding: 8px 8px 6px 8px;
   background: #e2dfdb;
+  color: #333333;
   -moz-border-radius: 0 0 3px 3px;
   -webkit-border-radius: 0;
   border-radius: 0 0 3px 3px;
   margin: 1px 0 0 0;
 }
-/* line 48, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 55, ../components/foundation/scss/foundation/components/_panels.scss */
 .footer .help .panel > :first-child {
   margin-top: 0;
 }
-/* line 49, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 56, ../components/foundation/scss/foundation/components/_panels.scss */
 .footer .help .panel > :last-child {
   margin-bottom: 0;
 }
-/* line 54, ../components/foundation/scss/foundation/components/_panels.scss */
-.footer .help .panel h1, .footer .help .panel h2, .footer .help .panel h3, .footer .help .panel h4, .footer .help .panel h5, .footer .help .panel h6, .footer .help .panel p {
+/* line 61, ../components/foundation/scss/foundation/components/_panels.scss */
+.footer .help .panel h1, .footer .help .panel h2, .footer .help .panel h3, .footer .help .panel h4, .footer .help .panel h5, .footer .help .panel h6, .footer .help .panel p, .footer .help .panel li, .footer .help .panel dl {
   color: #333333;
 }
-/* line 58, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 68, ../components/foundation/scss/foundation/components/_panels.scss */
 .footer .help .panel h1, .footer .help .panel h2, .footer .help .panel h3, .footer .help .panel h4, .footer .help .panel h5, .footer .help .panel h6 {
   line-height: 1;
   margin-bottom: 0.625rem;
 }
-/* line 60, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 70, ../components/foundation/scss/foundation/components/_panels.scss */
 .footer .help .panel h1.subheader, .footer .help .panel h2.subheader, .footer .help .panel h3.subheader, .footer .help .panel h4.subheader, .footer .help .panel h5.subheader, .footer .help .panel h6.subheader {
   line-height: 1.4;
 }
@@ -1542,18 +2361,19 @@ label, .label {
   cursor: pointer;
   display: block;
   font-weight: 500;
+  line-height: 1.5;
   margin-bottom: 4px;
 }
 /* line 30, ../sass/openeyes/components/_forms.scss */
 label.right, .label.right {
-  float: none;
+  float: none !important;
   text-align: right;
   margin: 0;
 }
 /* line 34, ../sass/openeyes/components/_forms.scss */
 label.inline, .label.inline {
   margin: 0 0 0.9375rem 0;
-  padding: 0.59375rem 0;
+  padding: 0.53125rem 0;
   margin: 0;
   display: inline-block;
   padding: 0 10px 0 0;
@@ -1573,8 +2393,9 @@ label .required, .label .required {
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea {
   background-color: white;
   font-family: inherit;
-  border: 1px solid #6b8aaa;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-style: solid;
+  border-width: 1px;
+  border-color: #6b8aaa;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   color: rgba(0, 0, 0, 0.75);
   display: block;
@@ -1583,31 +2404,33 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   padding: 0.46875rem;
   height: 2.15625rem;
   width: 100%;
-  -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
-  -webkit-transition: -webkit-box-shadow 0.45s, border-color 0.45s ease-in-out;
-  -moz-transition: -moz-box-shadow 0.45s, border-color 0.45s ease-in-out;
   transition: box-shadow 0.45s, border-color 0.45s ease-in-out;
   padding: 4px 5px;
   margin: 0;
 }
-/* line 176, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 185, ../components/foundation/scss/foundation/components/_global.scss */
 input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, textarea:focus {
-  -webkit-box-shadow: 0 0 5px #19a8ea;
-  -moz-box-shadow: 0 0 5px #19a8ea;
   box-shadow: 0 0 5px #19a8ea;
   border-color: #19a8ea;
 }
-/* line 124, ../components/foundation/scss/foundation/components/_forms.scss */
+/* line 133, ../components/foundation/scss/foundation/components/_forms.scss */
 input[type="text"]:focus, input[type="password"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="month"]:focus, input[type="week"]:focus, input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="time"]:focus, input[type="url"]:focus, textarea:focus {
   background: white;
   border-color: #19a8ea;
   outline: none;
 }
-/* line 131, ../components/foundation/scss/foundation/components/_forms.scss */
-input[type="text"][disabled], input[type="password"][disabled], input[type="date"][disabled], input[type="datetime"][disabled], input[type="datetime-local"][disabled], input[type="month"][disabled], input[type="week"][disabled], input[type="email"][disabled], input[type="number"][disabled], input[type="search"][disabled], input[type="tel"][disabled], input[type="time"][disabled], input[type="url"][disabled], textarea[disabled] {
+/* line 139, ../components/foundation/scss/foundation/components/_forms.scss */
+input[type="text"]:disabled, input[type="password"]:disabled, input[type="date"]:disabled, input[type="datetime"]:disabled, input[type="datetime-local"]:disabled, input[type="month"]:disabled, input[type="week"]:disabled, input[type="email"]:disabled, input[type="number"]:disabled, input[type="search"]:disabled, input[type="tel"]:disabled, input[type="time"]:disabled, input[type="url"]:disabled, textarea:disabled {
   background-color: #dddddd;
+  cursor: default;
+}
+/* line 145, ../components/foundation/scss/foundation/components/_forms.scss */
+input[type="text"][disabled], input[type="text"][readonly], fieldset[disabled] input[type="text"], input[type="password"][disabled], input[type="password"][readonly], fieldset[disabled] input[type="password"], input[type="date"][disabled], input[type="date"][readonly], fieldset[disabled] input[type="date"], input[type="datetime"][disabled], input[type="datetime"][readonly], fieldset[disabled] input[type="datetime"], input[type="datetime-local"][disabled], input[type="datetime-local"][readonly], fieldset[disabled] input[type="datetime-local"], input[type="month"][disabled], input[type="month"][readonly], fieldset[disabled] input[type="month"], input[type="week"][disabled], input[type="week"][readonly], fieldset[disabled] input[type="week"], input[type="email"][disabled], input[type="email"][readonly], fieldset[disabled] input[type="email"], input[type="number"][disabled], input[type="number"][readonly], fieldset[disabled] input[type="number"], input[type="search"][disabled], input[type="search"][readonly], fieldset[disabled] input[type="search"], input[type="tel"][disabled], input[type="tel"][readonly], fieldset[disabled] input[type="tel"], input[type="time"][disabled], input[type="time"][readonly], fieldset[disabled] input[type="time"], input[type="url"][disabled], input[type="url"][readonly], fieldset[disabled] input[type="url"], textarea[disabled], textarea[readonly], fieldset[disabled] textarea {
+  background-color: #dddddd;
+  cursor: default;
 }
 /* line 56, ../sass/openeyes/components/_forms.scss */
 input[type="text"].inline, input[type="password"].inline, input[type="date"].inline, input[type="datetime"].inline, input[type="datetime-local"].inline, input[type="month"].inline, input[type="week"].inline, input[type="email"].inline, input[type="number"].inline, input[type="search"].inline, input[type="tel"].inline, input[type="time"].inline, input[type="url"].inline, textarea.inline {
@@ -1716,7 +2539,7 @@ small.error {
   font-weight: normal;
   font-style: italic;
   background: red;
-  color: #fff;
+  color: #FFFFFF;
 }
 
 /* Attach elements to the beginning or end of an input */
@@ -1881,7 +2704,7 @@ input[type="text"].large, input[type="password"].large, input[type="date"].large
 /* line 96, ../sass/openeyes/_mixins.scss */
 button, .button, input[type="submit"] {
   border-style: solid;
-  border-width: 0px;
+  border-width: 0;
   cursor: pointer;
   font-family: "Helvetica", Helvetica, Arial, sans-serif;
   font-weight: normal;
@@ -1890,6 +2713,9 @@ button, .button, input[type="submit"] {
   position: relative;
   text-decoration: none;
   text-align: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border-radius: 0;
   display: inline-block;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -1904,7 +2730,7 @@ button, .button, input[type="submit"] {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   border: 0;
   border-bottom: 2px solid #105dae;
-  color: #fff;
+  color: #FFFFFF;
   font-size: 1rem;
   letter-spacing: 1px;
   line-height: 1em;
@@ -2076,34 +2902,30 @@ button.button-icon.small.delete:hover .icon-button-small-trash-can, button.butto
 .button-group {
   list-style: none;
   margin: 0;
-  *zoom: 1;
+  left: 0;
 }
-/* line 159, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 172, ../components/foundation/scss/foundation/components/_global.scss */
 .button-group:before, .button-group:after {
   content: " ";
   display: table;
 }
-/* line 160, ../components/foundation/scss/foundation/components/_global.scss */
+/* line 173, ../components/foundation/scss/foundation/components/_global.scss */
 .button-group:after {
   clear: both;
 }
 /* line 275, ../sass/openeyes/components/_buttons.scss */
 .button-group > li {
-  margin: 0;
-  float: left;
+  margin: 0 -2px;
+  display: inline-block;
 }
-/* line 35, ../components/foundation/scss/foundation/components/_button-groups.scss */
+/* line 39, ../components/foundation/scss/foundation/components/_button-groups.scss */
 .button-group > li > button, .button-group > li .button {
-  border-right: 1px solid;
+  border-left: 1px solid;
   border-color: rgba(255, 255, 255, 0.5);
 }
-/* line 41, ../components/foundation/scss/foundation/components/_button-groups.scss */
-.button-group > li:last-child button, .button-group > li:last-child .button {
-  border-right: 0;
-}
-/* line 51, ../components/foundation/scss/foundation/components/_button-groups.scss */
-.button-group > li:first-child {
-  margin-left: 0;
+/* line 45, ../components/foundation/scss/foundation/components/_button-groups.scss */
+.button-group > li:first-child button, .button-group > li:first-child .button {
+  border-left: 0;
 }
 /* line 96, ../sass/openeyes/_mixins.scss */
 .button-group > li button, .button-group > li .button, .button-group > li input[type="submit"] {
@@ -2158,33 +2980,48 @@ button.disabled, button.inactive, .button.inactive, input[type="submit"].inactiv
   margin: 0;
   padding: 14px 0;
   list-style-type: none;
-  list-style-position: inside;
+  list-style-position: outside;
   font-family: "Helvetica", Helvetica, Arial, sans-serif;
   padding-top: 0;
 }
-/* line 54, ../components/foundation/scss/foundation/components/_side-nav.scss */
+/* line 70, ../components/foundation/scss/foundation/components/_side-nav.scss */
 .side-nav li {
   margin: 0 0 6px 0;
   font-size: 0.875rem;
+  font-weight: normal;
 }
-/* line 58, ../components/foundation/scss/foundation/components/_side-nav.scss */
-.side-nav li a {
+/* line 75, ../components/foundation/scss/foundation/components/_side-nav.scss */
+.side-nav li a:not(.button) {
   display: block;
   color: #0b59da;
+  margin: 0;
+  padding: 0.4375rem 0.875rem;
 }
-/* line 63, ../components/foundation/scss/foundation/components/_side-nav.scss */
-.side-nav li.active > a:first-child {
-  color: #4d4d4d;
+/* line 80, ../components/foundation/scss/foundation/components/_side-nav.scss */
+.side-nav li a:not(.button):hover, .side-nav li a:not(.button):focus {
+  background: rgba(0, 0, 0, 0.025);
+  color: #4487f6;
+}
+/* line 87, ../components/foundation/scss/foundation/components/_side-nav.scss */
+.side-nav li.active > a:first-child:not(.button) {
+  color: #4487f6;
   font-weight: normal;
   font-family: "Helvetica", Helvetica, Arial, sans-serif;
 }
-/* line 69, ../components/foundation/scss/foundation/components/_side-nav.scss */
+/* line 93, ../components/foundation/scss/foundation/components/_side-nav.scss */
 .side-nav li.divider {
   border-top: 1px solid;
   height: 0;
   padding: 0;
   list-style: none;
   border-top-color: white;
+}
+/* line 101, ../components/foundation/scss/foundation/components/_side-nav.scss */
+.side-nav li.heading {
+  color: #0b59da;
+  font-size: 0.875rem;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 /* line 32, ../sass/openeyes/components/_navigation.scss */
@@ -2226,52 +3063,57 @@ button.disabled, button.inactive, .button.inactive, input[type="submit"].inactiv
 /* line 38, ../sass/openeyes/components/_pagination.scss */
 ul.pagination {
   display: block;
-  height: 1.5rem;
+  min-height: 1.5rem;
   margin-left: -0.3125rem;
   height: auto;
   min-height: 1.5rem;
 }
-/* line 95, ../components/foundation/scss/foundation/components/_pagination.scss */
+/* line 104, ../components/foundation/scss/foundation/components/_pagination.scss */
 ul.pagination li {
   height: 1.5rem;
-  color: #222;
+  color: #222222;
   font-size: 0.875rem;
   margin-left: 0.3125rem;
 }
-/* line 101, ../components/foundation/scss/foundation/components/_pagination.scss */
-ul.pagination li a {
+/* line 110, ../components/foundation/scss/foundation/components/_pagination.scss */
+ul.pagination li a, ul.pagination li button {
   display: block;
   padding: 0.0625rem 0.625rem 0.0625rem;
-  color: #999;
-  -webkit-border-radius: 5px;
+  color: #999999;
+  background: none;
   border-radius: 5px;
+  font-weight: normal;
+  font-size: 1em;
+  line-height: inherit;
+  transition: background-color 300ms ease-out;
 }
-/* line 108, ../components/foundation/scss/foundation/components/_pagination.scss */
+/* line 122, ../components/foundation/scss/foundation/components/_pagination.scss */
 ul.pagination li:hover a,
-ul.pagination li a:focus {
+ul.pagination li a:focus, ul.pagination li:hover button,
+ul.pagination li button:focus {
   background: #e6e6e6;
 }
-/* line 47, ../components/foundation/scss/foundation/components/_pagination.scss */
-ul.pagination li.unavailable a {
-  cursor: default;
-  color: #999;
-}
 /* line 51, ../components/foundation/scss/foundation/components/_pagination.scss */
-ul.pagination li.unavailable:hover a, ul.pagination li.unavailable a:focus {
+ul.pagination li.unavailable a, ul.pagination li.unavailable button {
+  cursor: default;
+  color: #999999;
+}
+/* line 55, ../components/foundation/scss/foundation/components/_pagination.scss */
+ul.pagination li.unavailable:hover a, ul.pagination li.unavailable a:focus, ul.pagination li.unavailable:hover button, ul.pagination li.unavailable button:focus {
   background: transparent;
 }
-/* line 60, ../components/foundation/scss/foundation/components/_pagination.scss */
-ul.pagination li.current a {
+/* line 68, ../components/foundation/scss/foundation/components/_pagination.scss */
+ul.pagination li.current a, ul.pagination li.current button {
   background: #0b59da;
-  color: #fff;
+  color: #FFFFFF;
   font-weight: bold;
   cursor: default;
 }
-/* line 66, ../components/foundation/scss/foundation/components/_pagination.scss */
-ul.pagination li.current a:hover, ul.pagination li.current a:focus {
+/* line 74, ../components/foundation/scss/foundation/components/_pagination.scss */
+ul.pagination li.current a:hover, ul.pagination li.current a:focus, ul.pagination li.current button:hover, ul.pagination li.current button:focus {
   background: #0b59da;
 }
-/* line 119, ../components/foundation/scss/foundation/components/_pagination.scss */
+/* line 136, ../components/foundation/scss/foundation/components/_pagination.scss */
 ul.pagination li {
   float: left;
   display: block;
@@ -2355,7 +3197,7 @@ tfoot.pagination-container .pagination-view-all {
 .pagination-centered {
   text-align: center;
 }
-/* line 119, ../components/foundation/scss/foundation/components/_pagination.scss */
+/* line 136, ../components/foundation/scss/foundation/components/_pagination.scss */
 .pagination-centered ul.pagination li {
   float: none;
   display: inline-block;
@@ -2371,26 +3213,27 @@ tfoot.pagination-container .pagination-view-all {
   position: relative;
   padding: 9px 19px 9px 9px;
   font-size: 0.8125rem;
+  transition: opacity 300ms ease-out;
   background-color: #e2e2e2;
   border-color: #e5e5e5;
   color: black;
-  -webkit-border-radius: 5px;
   border-radius: 5px;
 }
 /* line 27, ../sass/openeyes/components/_alert-boxes.scss */
 .alert-box .close {
   font-size: 1.125rem;
   padding: 5px 4px 4px;
-  line-height: 0;
+  line-height: .9;
   position: absolute;
   top: 50%;
   margin-top: -0.5625rem;
   right: 0.3125rem;
   color: #333333;
   opacity: 0.3;
+  background: inherit;
   top: 1em;
 }
-/* line 86, ../components/foundation/scss/foundation/components/_alert-boxes.scss */
+/* line 96, ../components/foundation/scss/foundation/components/_alert-boxes.scss */
 .alert-box .close:hover, .alert-box .close:focus {
   opacity: 0.5;
 }
@@ -2609,29 +3452,30 @@ tfoot.pagination-container .pagination-view-all {
   margin-bottom: 16px;
   padding: 10px;
   background: #f2f2f2;
+  color: #333333;
   background: #fff;
   border-color: #d9d9d9;
   margin-top: 0;
   padding: 12px;
 }
-/* line 48, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 55, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.generic > :first-child {
   margin-top: 0;
 }
-/* line 49, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 56, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.generic > :last-child {
   margin-bottom: 0;
 }
-/* line 54, ../components/foundation/scss/foundation/components/_panels.scss */
-.box.generic h1, .box.generic h2, .box.generic h3, .box.generic h4, .box.generic h5, .box.generic h6, .box.generic p {
+/* line 61, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.generic h1, .box.generic h2, .box.generic h3, .box.generic h4, .box.generic h5, .box.generic h6, .box.generic p, .box.generic li, .box.generic dl {
   color: #333333;
 }
-/* line 58, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 68, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.generic h1, .box.generic h2, .box.generic h3, .box.generic h4, .box.generic h5, .box.generic h6 {
   line-height: 1;
   margin-bottom: 0.625rem;
 }
-/* line 60, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 70, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.generic h1.subheader, .box.generic h2.subheader, .box.generic h3.subheader, .box.generic h4.subheader, .box.generic h5.subheader, .box.generic h6.subheader {
   line-height: 1.4;
 }
@@ -3020,29 +3864,29 @@ tfoot.pagination-container .pagination-view-all {
   margin-bottom: 16px;
   padding: 10px;
   background: #f2f2f2;
-  -webkit-border-radius: 5px;
+  color: #333333;
   border-radius: 5px;
   border-color: #d8d8d8;
   margin-top: 0;
 }
-/* line 48, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 55, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel > :first-child {
   margin-top: 0;
 }
-/* line 49, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 56, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel > :last-child {
   margin-bottom: 0;
 }
-/* line 54, ../components/foundation/scss/foundation/components/_panels.scss */
-.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6, .panel p {
+/* line 61, ../components/foundation/scss/foundation/components/_panels.scss */
+.panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6, .panel p, .panel li, .panel dl {
   color: #333333;
 }
-/* line 58, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 68, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 {
   line-height: 1;
   margin-bottom: 0.625rem;
 }
-/* line 60, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 70, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel h1.subheader, .panel h2.subheader, .panel h3.subheader, .panel h4.subheader, .panel h5.subheader, .panel h6.subheader {
   line-height: 1.4;
 }
@@ -3083,6 +3927,7 @@ tfoot.pagination-container .pagination-view-all {
   margin-bottom: 16px;
   padding: 0 10px 5px 10px;
   background: #dae6f1;
+  color: #333333;
   -moz-border-radius: 0 0 5px 5px;
   -webkit-border-radius: 0;
   border-radius: 0 0 5px 5px;
@@ -3093,24 +3938,24 @@ tfoot.pagination-container .pagination-view-all {
   border-top: 0;
   margin: 0;
 }
-/* line 48, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 55, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel.user > :first-child {
   margin-top: 0;
 }
-/* line 49, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 56, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel.user > :last-child {
   margin-bottom: 0;
 }
-/* line 54, ../components/foundation/scss/foundation/components/_panels.scss */
-.panel.user h1, .panel.user h2, .panel.user h3, .panel.user h4, .panel.user h5, .panel.user h6, .panel.user p {
+/* line 61, ../components/foundation/scss/foundation/components/_panels.scss */
+.panel.user h1, .panel.user h2, .panel.user h3, .panel.user h4, .panel.user h5, .panel.user h6, .panel.user p, .panel.user li, .panel.user dl {
   color: #333333;
 }
-/* line 58, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 68, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel.user h1, .panel.user h2, .panel.user h3, .panel.user h4, .panel.user h5, .panel.user h6 {
   line-height: 1;
   margin-bottom: 0.625rem;
 }
-/* line 60, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 70, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel.user h1.subheader, .panel.user h2.subheader, .panel.user h3.subheader, .panel.user h4.subheader, .panel.user h5.subheader, .panel.user h6.subheader {
   line-height: 1.4;
 }
@@ -3216,6 +4061,7 @@ tfoot.pagination-container .pagination-view-all {
   margin-bottom: 16px;
   padding: 9px 10px;
   background: #f2f2f2;
+  color: #333333;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
@@ -3236,24 +4082,24 @@ tfoot.pagination-container .pagination-view-all {
   border-width: 0 2px 2px 2px;
   margin: 0;
 }
-/* line 48, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 55, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel.patient > :first-child {
   margin-top: 0;
 }
-/* line 49, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 56, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel.patient > :last-child {
   margin-bottom: 0;
 }
-/* line 54, ../components/foundation/scss/foundation/components/_panels.scss */
-.panel.patient h1, .panel.patient h2, .panel.patient h3, .panel.patient h4, .panel.patient h5, .panel.patient h6, .panel.patient p {
+/* line 61, ../components/foundation/scss/foundation/components/_panels.scss */
+.panel.patient h1, .panel.patient h2, .panel.patient h3, .panel.patient h4, .panel.patient h5, .panel.patient h6, .panel.patient p, .panel.patient li, .panel.patient dl {
   color: #333333;
 }
-/* line 58, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 68, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel.patient h1, .panel.patient h2, .panel.patient h3, .panel.patient h4, .panel.patient h5, .panel.patient h6 {
   line-height: 1;
   margin-bottom: 0.625rem;
 }
-/* line 60, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 70, ../components/foundation/scss/foundation/components/_panels.scss */
 .panel.patient h1.subheader, .panel.patient h2.subheader, .panel.patient h3.subheader, .panel.patient h4.subheader, .panel.patient h5.subheader, .panel.patient h6.subheader {
   line-height: 1.4;
 }
@@ -4209,7 +5055,6 @@ tfoot.pagination-container .pagination-view-all {
 }
 /* line 108, ../sass/openeyes/components/events/_elements.scss */
 .element-table th[scope="row"], .element-table td:first-child {
-  position: relative;
   width: 33.33333%;
   font-size: 0.8125rem;
   font-weight: normal;
