@@ -14,6 +14,7 @@ node default {
 	include core::openeyes
 	include core::composer
 
+
 	if $mode == 'dev' {
 		include dev::vim
 		include dev::xdebug
@@ -30,6 +31,7 @@ node default {
 			remote_enable => 1,
 			remote_port => 9000
 		}
+    include dev::ant
 	}
 
 	if $mode == 'ci' {

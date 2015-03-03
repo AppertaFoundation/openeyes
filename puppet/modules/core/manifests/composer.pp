@@ -18,7 +18,7 @@ class core::composer {
 	else{
 		exec { "download_composer":
 			cwd => '/var/www',
-			command => "/usr/bin/curl -sS https://getcomposer.org/installer | /usr/bin/php",
+			command => "/usr/bin/curl -sS https://getcomposer.org/installer | /usr/bin/php &&  cp composer.phar /usr/local/bin/composer",
 			creates => "/var/www/composer.phar",
 			require => Package['curl','git', 'php5-cli']
 		}
@@ -28,7 +28,7 @@ class core::composer {
 			command => "/var/www/composer.phar install --prefer-source --no-interaction --working-dir /var/www",
 			#command => "/var/www/composer.phar install --no-interaction",
       require => [Exec["download_composer"], Package['php5-curl', 'php5-cli']],
-			timeout => 600, # This can take a long time
+			timeout => 0, # This can take a long time
 		}
 	}
 }

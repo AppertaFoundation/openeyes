@@ -22,4 +22,9 @@ class dev::nodejs {
 		environment => 'HOME=/home/vagrant',
 		require => Exec['node-install']
 	}
+
+  file { '/etc/profile.d/source_node.sh':
+    ensure => present,
+    content => template('dev/node_source.erb')
+  }
 }
