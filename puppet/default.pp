@@ -1,7 +1,12 @@
 node default {
 
+  exec { 'apt-mirror':
+    command => "/bin/sed -i 's,us.archive.ubuntu.com/ubuntu,mirror.vorboss.net/ubuntu-archive,' /etc/apt/sources.list",
+  }
+
 	exec { 'apt-update':
 		command => '/usr/bin/apt-get update',
+    require => Exec['apt-mirror'],
 	}
 
 	include core::apache2
