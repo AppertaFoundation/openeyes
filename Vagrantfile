@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
 	end
 
 	config.vm.provider "virtualbox" do |v|
-		v.customize ["modifyvm", :id, "--memory", 2024]
+		v.customize ["modifyvm", :id, "--memory", 1024]
 	end
 
 	puts "Running OpenEyes install with mode: " + mode
