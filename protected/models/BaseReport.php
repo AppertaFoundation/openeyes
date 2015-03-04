@@ -1,5 +1,4 @@
-<?php
-/**
+<?php /**
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -16,23 +15,43 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<ul class="inline-list tabs event-actions">
-	<?php foreach ($this->event_tabs as $tab) { ?>
-	<li<?php if (@$tab['active']) { ?> class="selected"<?php } ?>>
-		<?php if (@$tab['href']) { ?>
-			<a href="<?php echo $tab['href'] ?>"><?php echo $tab['label'] ?></a>
-		<?php } else { //FIXME: don't select?>
-			<a href="#"><?php echo $tab['label'] ?></a>
-		<?php } ?>
-	</li>
-	<?php } ?>
-</ul>
 
-<?php //this needs adding to SASS and doing properly when we decide on a solution OEM-295
-if(($this->event->eventType->name=='Examination')) {
-?>
-<div class="button-bar left">
-	<span width="22px" height="24px" style="font-size:21px; color:#152250; vertical-align: middle; display:inline-block;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RIGHT</span>
-</div>
-<?php } ?>
+class BaseReport extends CModel
+{
+	public $view;
+
+	public function getView()
+	{
+		if ($this->view) {
+			return $this->view;
+		}
+
+		$model = CHtml::modelName($this);
+
+		if (strstr($model,'_')) {
+			$segments = explode('_',$model);
+
+			$model = array_pop(explode('_',$model));
+		}
+
+		return '_' . strtolower(preg_replace('/^Report/','',$model));
+	}
+
+	public function attributeNames()
+	{
+	}
+
+	protected function array2Csv(array $data)
+	{
+		if (count($data) == 0) {
+			return null;
+		}
+		ob_start();
+		$df = fopen("php://output", 'w');
+		foreach ($data as $row) {
+			fputcsv($df, $row);
+		}
+		fclose($df);
+		return ob_get_clean();
+	}
+}

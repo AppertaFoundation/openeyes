@@ -24,12 +24,16 @@ return array(
 		'start_date' => date('Y-m-d H:i:s', strtotime('-30 days')),
 		'end_date'=>null,
 		'created_date' => date('Y-m-d H:i:s'),
+		'disorder_id' => 1,
+		'eye_id' => 1,
 	),
 	'episode2' => array(
 		'patient_id' => 1,
 		'firm_id' => 2,
 		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-		'eye_id' => 3
+		'created_date' => date('Y-m-d H:i:s'),
+		'eye_id' => 3,
+		'disorder_id' => 2,
 	),
 	'episode3' => array(
 		'patient_id' => 2,
