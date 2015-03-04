@@ -1,32 +1,47 @@
 {
-    "name" : "openeyes/openeyes",
-    "description": "Electronic Patient Record system for use in Ophthalmology clinics",
-    "require-dev": {
-        "behat/behat": "~2",
-        "behat/mink":  "~1",
-
-        "behat/yii-extension":          "~1",
-        "behat/mink-extension":         "~1",
-        "behat/mink-goutte-driver":     "~1",
-        "behat/mink-selenium2-driver":  "~1",
-
-        "sensiolabs/behat-page-object-extension": "1.0.1",
-
-        "phpunit/phpunit": "3.7.*",
-        "phpunit/phpunit-selenium" : "1.3.*",
-        "phpunit/dbunit" : "1.2.*",
-        "phpunit/php-invoker" : "1.1.*",
-        "phpunit/phpunit-story" : "*",
-        "phploc/phploc": "*",
-        "pdepend/pdepend" : "2.0.4",
-        "phpmd/phpmd" : "@stable",
-        "squizlabs/php_codesniffer": "2.*",
-        "sebastian/phpcpd": "*",
-        "phpdocumentor/phpdocumentor": "2.*"
-    },
-    "config": {
-        "bin-dir": "bin"
-    },    "autoload": {
-        "classmap": ["features/bootstrap/Pages/OpenEyesPage.php"]
-    }
+  "name": "openeyes/openeyes",
+  "description": "Electronic Patient Record system for use in Ophthalmology clinics",
+  "minimum-stability": "dev",
+  "require": {
+    "openeyes/module-installer": "*",
+    "yiisoft/yii": "1.1.14",
+    "openeyes/oph-ci-examination": "dev-hotfix/composer",
+    "openeyes/oph-co-correspondence": "dev-hotfix/composer",
+    "openeyes/oph-ci-phasing": "dev-hotfix/composer",
+    "openeyes/oph-co-therapy-application": "dev-hotfix/composer",
+    "openeyes/oph-dr-prescription": "dev-hotfix/composer",
+    "openeyes/oph-le-intravitreal-injection": "dev-hotfix/composer",
+    "openeyes/oph-ou-anaesthetic-satisfaction-audit": "dev-hotfix/composer",
+    "openeyes/oph-tr-consent": "dev-hotfix/composer",
+    "openeyes/oph-tr-operation-note": "dev-hotfix/composer",
+    "openeyes/oph-tr-operation-booking": "dev-hotfix/composer",
+    "openeyes/oph-tr-intravitreal-injection": "dev-hotfix/composer",
+    "openeyes/oph-tr-laser": "dev-hotfix/composer"
+  },
+  "require-dev": {
+    "behat/behat": "~2",
+    "behat/mink": "~1",
+    "behat/yii-extension": "~1",
+    "behat/mink-extension": "~1",
+    "behat/mink-goutte-driver": "~1",
+    "behat/mink-selenium2-driver": "~1",
+    "sensiolabs/behat-page-object-extension": "1.0.1",
+    "phpunit/phpunit": "3.7.*",
+    "phpunit/phpunit-selenium": "1.3.*",
+    "phpunit/dbunit": "1.2.*",
+    "phpunit/php-invoker": "1.1.*",
+    "phpunit/phpunit-story": "*",
+    "phploc/phploc": "*",
+    "pdepend/pdepend": "2.0.4",
+    "phpmd/phpmd": "@stable",
+    "squizlabs/php_codesniffer": "2.*",
+    "sebastian/phpcpd": "*",
+    "phpdocumentor/phpdocumentor": "2.*"
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "autoload": {
+    "classmap": ["features/bootstrap/Pages/OpenEyesPage.php"]
+  }
 }

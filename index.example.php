@@ -17,10 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$yii=dirname(__FILE__).'/protected/yii/framework/yii.php';
-$config=dirname(__FILE__).'/protected/config/main.php';
-$common_config=dirname(__FILE__).'/protected/config/core/common.php';
-$local_common_config=dirname(__FILE__).'/protected/config/local/common.php';
+$dirname = dirname(__FILE__);
+
+$yii = $dirname .'/protected/yii/framework/yii.php';
+$config = $dirname .'/protected/config/main.php';
+$common_config = $dirname .'/protected/config/core/common.php';
+$local_common_config = $dirname .'/protected/config/local/common.php';
+
 
 foreach (array($common_config,$local_common_config) as $configfile) {
 	foreach (@file($configfile) as $line) {
@@ -32,6 +35,7 @@ foreach (array($common_config,$local_common_config) as $configfile) {
 
 if ($environment == 'dev') {
 	define('YII_DEBUG',true);
+	$yii = $dirname .'/vendor/yiisoft/yii/framework/yii.php';
 }
 
 // specify how many levels of call stack should be shown in each log message

@@ -2,6 +2,8 @@
 <project name="OpenEyes" default="build">
 
     <property name="toolsdir" value="${basedir}/bin/"/>
+    <property name="prefer" value="dist"/>
+    <property name="dockerName" value="docker"/>
 
     <!-- Uncomment the following when the tools are in ${basedir}/vendor/bin -->
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
@@ -12,6 +14,10 @@
 
     <target name="build-parallel"
             depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,tools-parallel,phpunit,phpdox"
+            description=""/>
+
+    <target name="develop"
+            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules"
             description=""/>
 
     <target name="run-tests"
@@ -61,13 +67,15 @@
         <mkdir dir="${basedir}/cache"/>
         <mkdir dir="${basedir}/protected/cache"/>
         <chmod file="${toolsdir}spin_up_docker_db.sh" perm="+x" />
-        <copy todir="${basedir}/protected/config/local/">
-            <fileset dir="/var/www/openeyes/protected/config/local/"/>
-        </copy>
         <property name="prepare.done" value="true"/>
     </target>
 
+    <!-- This task is used for creating a docker container with the DB in it so that unit tests which access it can
+    do so without conflicting with each other. For that purporse it should only be run as part of an automated build task-->
     <target name="docker" description="Run up a docker container with the DB in it for unit testing against">
+        <copy todir="${basedir}/protected/config/local/">
+            <fileset dir="/var/www/openeyes/protected/config/local/"/>
+        </copy>
         <exec executable="/bin/bash" failonerror="true">
             <arg value="-c" />
             <arg value="${toolsdir}spin_up_docker_db.sh '${dockerName}'" />
@@ -77,6 +85,7 @@
     <target name="composer" description="Install composer packages">
         <exec executable="composer" failonerror="true">
             <arg value="install" />
+            <arg value="--prefer-${prefer}" />
         </exec>
     </target>
 

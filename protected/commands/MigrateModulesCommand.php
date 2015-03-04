@@ -37,17 +37,20 @@ DESCRIPTION
 EOD;
 	}
 
-	public function actionUp($interactive = true, $connectionID = false, $testdata = false)
+	public function actionUp($interactive = true, $connectionID = false, $testdata = false, $composer = false)
 	{
 		$commandPath = Yii::getPathOfAlias('application.commands');
 		$modules = Yii::app()->modules;
+		$moduleDir = ($composer) ? 'composer.openeyes.' : 'application.modules.';
 		foreach ($modules as $module => $module_settings) {
-			if (is_dir(Yii::getPathOfAlias('application.modules.'.$module.'.migrations'))) {
+			var_dump($moduleDir.$module.'.migrations');
+			var_dump(Yii::getPathOfAlias($moduleDir.$module.'.migrations'));
+			if (is_dir(Yii::getPathOfAlias($moduleDir.$module.'.migrations'))) {
 				echo "Migrating $module:\n";
 				if(!$interactive) {
-					$args = array('yiic', 'oemigrate', '--interactive=0', '--migrationPath=application.modules.'.$module.'.migrations');
+					$args = array('yiic', 'oemigrate', '--interactive=0', '--migrationPath='.$moduleDir.$module.'.migrations');
 				} else {
-					$args = array('yiic', 'oemigrate', '--migrationPath=application.modules.'.$module.'.migrations');
+					$args = array('yiic', 'oemigrate', '--migrationPath='.$moduleDir.$module.'.migrations');
 				}
 				if($connectionID){
 					$args[] = '--connectionID=' . $connectionID;
