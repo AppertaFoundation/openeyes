@@ -1,7 +1,7 @@
 class dev::nodejs {
 
   exec { 'nvm-script':
-    command => '/usr/bin/curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh > /home/vagrant/installNvm.sh',
+    command => '/usr/bin/curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh > /home/vagrant/installNvm.sh && sed -i "s/--quiet//g" /home/vagrant/installNvm.sh',
     user => 'vagrant',
     environment => 'HOME=/home/vagrant'
   }
@@ -22,7 +22,7 @@ class dev::nodejs {
 	}
 
 	exec { 'npm-install-app-modules':
-		command => '/bin/bash -c "source /home/vagrant/.nvm/nvm.sh && npm install"',
+		command => '/bin/bash -c "source /home/vagrant/.nvm/nvm.sh && npm install" && exit 0',
 		user => 'vagrant',
 		cwd => '/var/www',
 		environment => 'HOME=/home/vagrant',
