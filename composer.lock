@@ -1197,34 +1197,41 @@
         },
         {
             "name": "fabpot/goutte",
-            "version": "dev-master",
+            "version": "1.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/Goutte.git",
-                "reference": "17131e3bcf29351bc6b7bc641eb6abc2126ad30c"
+                "reference": "794b196e76bdd37b5155cdecbad311f0a3b07625"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/Goutte/zipball/17131e3bcf29351bc6b7bc641eb6abc2126ad30c",
-                "reference": "17131e3bcf29351bc6b7bc641eb6abc2126ad30c",
+                "url": "https://api.github.com/repos/FriendsOfPHP/Goutte/zipball/794b196e76bdd37b5155cdecbad311f0a3b07625",
+                "reference": "794b196e76bdd37b5155cdecbad311f0a3b07625",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": ">=4,<6",
-                "php": ">=5.4.0",
+                "ext-curl": "*",
+                "guzzle/http": "~3.1",
+                "php": ">=5.3.0",
                 "symfony/browser-kit": "~2.1",
                 "symfony/css-selector": "~2.1",
-                "symfony/dom-crawler": "~2.1"
+                "symfony/dom-crawler": "~2.1",
+                "symfony/finder": "~2.1",
+                "symfony/process": "~2.1"
+            },
+            "require-dev": {
+                "guzzle/plugin-history": "~3.1",
+                "guzzle/plugin-mock": "~3.1"
             },
             "type": "application",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0-dev"
+                    "dev-master": "1.0-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Goutte\\": "Goutte"
+                "psr-0": {
+                    "Goutte": "."
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1238,105 +1245,90 @@
                 }
             ],
             "description": "A simple PHP Web Scraper",
-            "homepage": "https://github.com/FriendsOfPHP/Goutte",
+            "homepage": "https://github.com/fabpot/Goutte",
             "keywords": [
                 "scraper"
             ],
-            "time": "2015-03-02 14:15:10"
+            "time": "2014-10-09 15:52:51"
         },
         {
-            "name": "guzzlehttp/guzzle",
-            "version": "5.2.0",
+            "name": "guzzle/common",
+            "version": "v3.9.2",
+            "target-dir": "Guzzle/Common",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "475b29ccd411f2fa8a408e64576418728c032cfa"
+                "url": "https://github.com/Guzzle3/common.git",
+                "reference": "2e36af7cf2ce3ea1f2d7c2831843b883a8e7b7dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/475b29ccd411f2fa8a408e64576418728c032cfa",
-                "reference": "475b29ccd411f2fa8a408e64576418728c032cfa",
+                "url": "https://api.github.com/repos/Guzzle3/common/zipball/2e36af7cf2ce3ea1f2d7c2831843b883a8e7b7dc",
+                "reference": "2e36af7cf2ce3ea1f2d7c2831843b883a8e7b7dc",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/ringphp": "~1.0",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "ext-curl": "*",
-                "phpunit/phpunit": "~4.0",
-                "psr/log": "~1.0"
+                "php": ">=5.3.2",
+                "symfony/event-dispatcher": ">=2.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.0-dev"
+                    "dev-master": "3.7-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\": "src/"
+                "psr-0": {
+                    "Guzzle\\Common": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
-            "authors": [
-                {
-                    "name": "Michael Dowling",
-                    "email": "mtdowling@gmail.com",
-                    "homepage": "https://github.com/mtdowling"
-                }
-            ],
-            "description": "Guzzle is a PHP HTTP client library and framework for building RESTful web service clients",
+            "description": "Common libraries used by Guzzle",
             "homepage": "http://guzzlephp.org/",
             "keywords": [
-                "client",
-                "curl",
-                "framework",
-                "http",
-                "http client",
-                "rest",
-                "web service"
+                "collection",
+                "common",
+                "event",
+                "exception"
             ],
-            "time": "2015-01-28 01:03:29"
+            "abandoned": "guzzle/guzzle",
+            "time": "2014-08-11 04:32:36"
         },
         {
-            "name": "guzzlehttp/ringphp",
-            "version": "dev-master",
+            "name": "guzzle/http",
+            "version": "v3.9.2",
+            "target-dir": "Guzzle/Http",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/RingPHP.git",
-                "reference": "c2397220e1c89a84e4776af71e53eeb30193fd03"
+                "url": "https://github.com/Guzzle3/http.git",
+                "reference": "1e8dd1e2ba9dc42332396f39fbfab950b2301dc5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/RingPHP/zipball/c2397220e1c89a84e4776af71e53eeb30193fd03",
-                "reference": "c2397220e1c89a84e4776af71e53eeb30193fd03",
+                "url": "https://api.github.com/repos/Guzzle3/http/zipball/1e8dd1e2ba9dc42332396f39fbfab950b2301dc5",
+                "reference": "1e8dd1e2ba9dc42332396f39fbfab950b2301dc5",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/streams": "~3.0",
-                "php": ">=5.4.0",
-                "react/promise": "~2.0"
-            },
-            "require-dev": {
-                "ext-curl": "*",
-                "phpunit/phpunit": "~4.0"
+                "guzzle/common": "self.version",
+                "guzzle/parser": "self.version",
+                "guzzle/stream": "self.version",
+                "php": ">=5.3.2"
             },
             "suggest": {
-                "ext-curl": "Guzzle will use specific adapters if cURL is present"
+                "ext-curl": "*"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "3.7-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Ring\\": "src/"
+                "psr-0": {
+                    "Guzzle\\Http": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1350,58 +1342,116 @@
                     "homepage": "https://github.com/mtdowling"
                 }
             ],
-            "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
-            "time": "2015-02-26 22:31:51"
-        },
-        {
-            "name": "guzzlehttp/streams",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/guzzle/streams.git",
-                "reference": "d1f8a6c55f0f753cfd6f6755856473eb02cedb19"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/streams/zipball/d1f8a6c55f0f753cfd6f6755856473eb02cedb19",
-                "reference": "d1f8a6c55f0f753cfd6f6755856473eb02cedb19",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Stream\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Dowling",
-                    "email": "mtdowling@gmail.com",
-                    "homepage": "https://github.com/mtdowling"
-                }
-            ],
-            "description": "Provides a simple abstraction over streams of data",
+            "description": "HTTP libraries used by Guzzle",
             "homepage": "http://guzzlephp.org/",
             "keywords": [
                 "Guzzle",
+                "client",
+                "curl",
+                "http",
+                "http client"
+            ],
+            "abandoned": "guzzle/guzzle",
+            "time": "2014-08-11 04:32:36"
+        },
+        {
+            "name": "guzzle/parser",
+            "version": "v3.9.2",
+            "target-dir": "Guzzle/Parser",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Guzzle3/parser.git",
+                "reference": "6874d171318a8e93eb6d224cf85e4678490b625c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Guzzle3/parser/zipball/6874d171318a8e93eb6d224cf85e4678490b625c",
+                "reference": "6874d171318a8e93eb6d224cf85e4678490b625c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Guzzle\\Parser": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Interchangeable parsers used by Guzzle",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "URI Template",
+                "cookie",
+                "http",
+                "message",
+                "url"
+            ],
+            "abandoned": "guzzle/guzzle",
+            "time": "2014-02-05 18:29:46"
+        },
+        {
+            "name": "guzzle/stream",
+            "version": "v3.9.2",
+            "target-dir": "Guzzle/Stream",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Guzzle3/stream.git",
+                "reference": "60c7fed02e98d2c518dae8f97874c8f4622100f0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Guzzle3/stream/zipball/60c7fed02e98d2c518dae8f97874c8f4622100f0",
+                "reference": "60c7fed02e98d2c518dae8f97874c8f4622100f0",
+                "shasum": ""
+            },
+            "require": {
+                "guzzle/common": "self.version",
+                "php": ">=5.3.2"
+            },
+            "suggest": {
+                "guzzle/http": "To convert Guzzle request objects to PHP streams"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Guzzle\\Stream": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Guzzle stream wrapper component",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "Guzzle",
+                "component",
                 "stream"
             ],
-            "time": "2015-01-22 00:01:34"
+            "abandoned": "guzzle/guzzle",
+            "time": "2014-05-01 21:36:02"
         },
         {
             "name": "herrera-io/json",
@@ -3538,50 +3588,6 @@
             "time": "2015-02-05 09:32:11"
         },
         {
-            "name": "react/promise",
-            "version": "v2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/reactphp/promise.git",
-                "reference": "365fcee430dfa4ace1fbc75737ca60ceea7eeeef"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise/zipball/365fcee430dfa4ace1fbc75737ca60ceea7eeeef",
-                "reference": "365fcee430dfa4ace1fbc75737ca60ceea7eeeef",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "React\\Promise\\": "src/"
-                },
-                "files": [
-                    "src/functions_include.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jan Sorgalla",
-                    "email": "jsorgalla@googlemail.com"
-                }
-            ],
-            "description": "A lightweight implementation of CommonJS Promises/A for PHP",
-            "time": "2014-12-30 13:32:42"
-        },
-        {
             "name": "sebastian/finder-facade",
             "version": "1.1.0",
             "source": {
@@ -4322,29 +4328,29 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "dev-master",
+            "version": "2.7.x-dev",
             "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "b4ed26d71670ec501614e2ff7c4d10d884ea6b4d"
+                "reference": "d4ae276ad15d0ae17ae07bd8b7de1c5381217283"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/b4ed26d71670ec501614e2ff7c4d10d884ea6b4d",
-                "reference": "b4ed26d71670ec501614e2ff7c4d10d884ea6b4d",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/d4ae276ad15d0ae17ae07bd8b7de1c5381217283",
+                "reference": "d4ae276ad15d0ae17ae07bd8b7de1c5381217283",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "php": ">=5.3.9"
             },
             "require-dev": {
-                "symfony/phpunit-bridge": "~2.7|~3.0"
+                "symfony/phpunit-bridge": "~2.7|~3.0.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "2.7-dev"
                 }
             },
             "autoload": {
@@ -4368,7 +4374,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "http://symfony.com",
-            "time": "2015-02-21 13:23:59"
+            "time": "2015-02-18 10:38:04"
         },
         {
             "name": "symfony/finder",
@@ -4799,28 +4805,27 @@
         },
         {
             "name": "zendframework/zend-cache",
-            "version": "dev-develop",
+            "version": "2.2.9",
             "target-dir": "Zend/Cache",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendCache.git",
-                "reference": "beeeb16557f6d41f6637bd0d72ed8c85d98bb7af"
+                "reference": "dce54b69e26ec63e69fadc2fa6486a77d2a08453"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendCache/zipball/beeeb16557f6d41f6637bd0d72ed8c85d98bb7af",
-                "reference": "beeeb16557f6d41f6637bd0d72ed8c85d98bb7af",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendCache/zipball/dce54b69e26ec63e69fadc2fa6486a77d2a08453",
+                "reference": "dce54b69e26ec63e69fadc2fa6486a77d2a08453",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.23",
+                "php": ">=5.3.3",
                 "zendframework/zend-eventmanager": "self.version",
                 "zendframework/zend-servicemanager": "self.version",
                 "zendframework/zend-stdlib": "self.version"
             },
             "require-dev": {
-                "zendframework/zend-serializer": "self.version",
-                "zendframework/zend-session": "self.version"
+                "zendframework/zend-serializer": "self.version"
             },
             "suggest": {
                 "ext-apc": "APC >= 3.1.6 to use the APC storage adapter",
@@ -4851,36 +4856,28 @@
                 "cache",
                 "zf2"
             ],
-            "time": "2014-03-05 15:00:13"
+            "time": "2015-01-14 16:28:50"
         },
         {
             "name": "zendframework/zend-config",
-            "version": "dev-develop",
+            "version": "2.2.9",
             "target-dir": "Zend/Config",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendConfig.git",
-                "reference": "d24226d710773619b36f29d2980c90028524dae9"
+                "reference": "911090a3977ec209045a43965f9b336307eb87b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendConfig/zipball/d24226d710773619b36f29d2980c90028524dae9",
-                "reference": "d24226d710773619b36f29d2980c90028524dae9",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendConfig/zipball/911090a3977ec209045a43965f9b336307eb87b6",
+                "reference": "911090a3977ec209045a43965f9b336307eb87b6",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "zendframework/zend-stdlib": "self.version"
             },
-            "require-dev": {
-                "zendframework/zend-filter": "self.version",
-                "zendframework/zend-i18n": "self.version",
-                "zendframework/zend-json": "self.version",
-                "zendframework/zend-servicemanager": "self.version"
-            },
             "suggest": {
-                "zendframework/zend-filter": "Zend\\Filter component",
-                "zendframework/zend-i18n": "Zend\\I18n component",
                 "zendframework/zend-json": "Zend\\Json to use the Json reader or writer classes",
                 "zendframework/zend-servicemanager": "Zend\\ServiceManager for use with the Config Factory to retrieve reader and writer instances"
             },
@@ -4905,21 +4902,21 @@
                 "config",
                 "zf2"
             ],
-            "time": "2014-02-28 18:00:15"
+            "time": "2015-01-14 16:28:50"
         },
         {
             "name": "zendframework/zend-eventmanager",
-            "version": "dev-develop",
+            "version": "2.2.9",
             "target-dir": "Zend/EventManager",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendEventManager.git",
-                "reference": "e232aeeab9ae6545ac21c8fc2728d54297969658"
+                "reference": "1ef2e2a909f08bf0763dd70f607eef507a5e83c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendEventManager/zipball/e232aeeab9ae6545ac21c8fc2728d54297969658",
-                "reference": "e232aeeab9ae6545ac21c8fc2728d54297969658",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendEventManager/zipball/1ef2e2a909f08bf0763dd70f607eef507a5e83c2",
+                "reference": "1ef2e2a909f08bf0763dd70f607eef507a5e83c2",
                 "shasum": ""
             },
             "require": {
@@ -4946,21 +4943,21 @@
                 "eventmanager",
                 "zf2"
             ],
-            "time": "2014-01-04 13:01:02"
+            "time": "2015-01-14 16:28:50"
         },
         {
             "name": "zendframework/zend-filter",
-            "version": "dev-develop",
+            "version": "2.2.9",
             "target-dir": "Zend/Filter",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendFilter.git",
-                "reference": "c878eb757c53057a9cd2c7af391eec69ab4bca61"
+                "reference": "639f7de845243180b9ec370852982c6bd0ab8610"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendFilter/zipball/c878eb757c53057a9cd2c7af391eec69ab4bca61",
-                "reference": "c878eb757c53057a9cd2c7af391eec69ab4bca61",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendFilter/zipball/639f7de845243180b9ec370852982c6bd0ab8610",
+                "reference": "639f7de845243180b9ec370852982c6bd0ab8610",
                 "shasum": ""
             },
             "require": {
@@ -4997,44 +4994,32 @@
                 "filter",
                 "zf2"
             ],
-            "time": "2014-03-03 21:00:13"
+            "time": "2015-01-14 16:28:50"
         },
         {
             "name": "zendframework/zend-i18n",
-            "version": "dev-develop",
+            "version": "2.2.9",
             "target-dir": "Zend/I18n",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendI18n.git",
-                "reference": "13251099a4f48f1f638e4bfbba7192927009fdfa"
+                "reference": "6ab7e832644d724f629c403ee74cb38f36ea4139"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendI18n/zipball/13251099a4f48f1f638e4bfbba7192927009fdfa",
-                "reference": "13251099a4f48f1f638e4bfbba7192927009fdfa",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendI18n/zipball/6ab7e832644d724f629c403ee74cb38f36ea4139",
+                "reference": "6ab7e832644d724f629c403ee74cb38f36ea4139",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.23",
+                "php": ">=5.3.3",
                 "zendframework/zend-stdlib": "self.version"
-            },
-            "require-dev": {
-                "zendframework/zend-cache": "self.version",
-                "zendframework/zend-config": "self.version",
-                "zendframework/zend-eventmanager": "self.version",
-                "zendframework/zend-filter": "self.version",
-                "zendframework/zend-servicemanager": "self.version",
-                "zendframework/zend-validator": "self.version",
-                "zendframework/zend-view": "self.version"
             },
             "suggest": {
                 "ext-intl": "Required for most features of Zend\\I18n; included in default builds of PHP",
-                "zendframework/zend-cache": "Zend\\Cache component",
-                "zendframework/zend-config": "Zend\\Config component",
                 "zendframework/zend-eventmanager": "You should install this package to use the events in the translator",
                 "zendframework/zend-filter": "You should install this package to use the provided filters",
                 "zendframework/zend-resources": "Translation resources",
-                "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
                 "zendframework/zend-validator": "You should install this package to use the provided validators",
                 "zendframework/zend-view": "You should install this package to use the provided view helpers"
             },
@@ -5058,33 +5043,28 @@
                 "i18n",
                 "zf2"
             ],
-            "time": "2014-03-05 18:00:11"
+            "time": "2015-01-14 16:28:50"
         },
         {
             "name": "zendframework/zend-json",
-            "version": "dev-develop",
+            "version": "2.2.9",
             "target-dir": "Zend/Json",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendJson.git",
-                "reference": "980f02326d01a7eda055e9aaa253b53367ffac4b"
+                "reference": "7e8f73a88a96b1646527a54b34bd4e094b4a3174"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendJson/zipball/980f02326d01a7eda055e9aaa253b53367ffac4b",
-                "reference": "980f02326d01a7eda055e9aaa253b53367ffac4b",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendJson/zipball/7e8f73a88a96b1646527a54b34bd4e094b4a3174",
+                "reference": "7e8f73a88a96b1646527a54b34bd4e094b4a3174",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.23",
+                "php": ">=5.3.3",
                 "zendframework/zend-stdlib": "self.version"
             },
-            "require-dev": {
-                "zendframework/zend-http": "self.version",
-                "zendframework/zend-server": "self.version"
-            },
             "suggest": {
-                "zendframework/zend-http": "Zend\\Http component",
                 "zendframework/zend-server": "Zend\\Server component"
             },
             "type": "library",
@@ -5108,25 +5088,25 @@
                 "json",
                 "zf2"
             ],
-            "time": "2014-03-07 22:01:36"
+            "time": "2015-01-14 16:28:50"
         },
         {
             "name": "zendframework/zend-math",
-            "version": "dev-develop",
+            "version": "2.2.9",
             "target-dir": "Zend/Math",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendMath.git",
-                "reference": "a8155b519fd121886d922dd503d333a2f5e374de"
+                "reference": "c56bb1f8e1b9b2257fe0d2650dae6343e254a23a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendMath/zipball/a8155b519fd121886d922dd503d333a2f5e374de",
-                "reference": "a8155b519fd121886d922dd503d333a2f5e374de",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendMath/zipball/c56bb1f8e1b9b2257fe0d2650dae6343e254a23a",
+                "reference": "c56bb1f8e1b9b2257fe0d2650dae6343e254a23a",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.23"
+                "php": ">=5.3.3"
             },
             "suggest": {
                 "ext-bcmath": "If using the bcmath functionality",
@@ -5154,21 +5134,21 @@
                 "math",
                 "zf2"
             ],
-            "time": "2014-03-05 18:00:10"
+            "time": "2015-01-14 16:28:50"
         },
         {
             "name": "zendframework/zend-serializer",
-            "version": "dev-develop",
+            "version": "2.2.9",
             "target-dir": "Zend/Serializer",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendSerializer.git",
-                "reference": "10932f0886954b18c0be76839cb289f247637c86"
+                "reference": "70a1636ff11dbae69717c4f05e9642f344df6d04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendSerializer/zipball/10932f0886954b18c0be76839cb289f247637c86",
-                "reference": "10932f0886954b18c0be76839cb289f247637c86",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendSerializer/zipball/70a1636ff11dbae69717c4f05e9642f344df6d04",
+                "reference": "70a1636ff11dbae69717c4f05e9642f344df6d04",
                 "shasum": ""
             },
             "require": {
@@ -5176,9 +5156,6 @@
                 "zendframework/zend-json": "self.version",
                 "zendframework/zend-math": "self.version",
                 "zendframework/zend-stdlib": "self.version"
-            },
-            "require-dev": {
-                "zendframework/zend-servicemanager": "self.version"
             },
             "suggest": {
                 "zendframework/zend-servicemanager": "To support plugin manager support"
@@ -5204,28 +5181,25 @@
                 "serializer",
                 "zf2"
             ],
-            "time": "2014-01-02 17:00:55"
+            "time": "2015-01-14 16:28:50"
         },
         {
             "name": "zendframework/zend-servicemanager",
-            "version": "dev-develop",
+            "version": "2.2.9",
             "target-dir": "Zend/ServiceManager",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendServiceManager.git",
-                "reference": "4911c6c6f58d7058e351e6fe8ecff14666da1259"
+                "reference": "c2a806a3a56155c71d48ffb3286ff45194ec23da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendServiceManager/zipball/4911c6c6f58d7058e351e6fe8ecff14666da1259",
-                "reference": "4911c6c6f58d7058e351e6fe8ecff14666da1259",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendServiceManager/zipball/c2a806a3a56155c71d48ffb3286ff45194ec23da",
+                "reference": "c2a806a3a56155c71d48ffb3286ff45194ec23da",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "zendframework/zend-di": "self.version"
             },
             "suggest": {
                 "zendframework/zend-di": "Zend\\Di component"
@@ -5250,34 +5224,28 @@
                 "servicemanager",
                 "zf2"
             ],
-            "time": "2014-03-03 21:00:12"
+            "time": "2015-01-14 16:28:50"
         },
         {
             "name": "zendframework/zend-stdlib",
-            "version": "dev-develop",
+            "version": "2.2.9",
             "target-dir": "Zend/Stdlib",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendStdlib.git",
-                "reference": "3acce3d524c5c5b7e92c90b0c2763068c1efaf2c"
+                "reference": "b728adccf66e9182ff66229ae60bd08e0c1fc9f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/3acce3d524c5c5b7e92c90b0c2763068c1efaf2c",
-                "reference": "3acce3d524c5c5b7e92c90b0c2763068c1efaf2c",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/b728adccf66e9182ff66229ae60bd08e0c1fc9f2",
+                "reference": "b728adccf66e9182ff66229ae60bd08e0c1fc9f2",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.23"
-            },
-            "require-dev": {
-                "zendframework/zend-eventmanager": "self.version",
-                "zendframework/zend-serializer": "self.version",
-                "zendframework/zend-servicemanager": "self.version"
+                "php": ">=5.3.3"
             },
             "suggest": {
                 "zendframework/zend-eventmanager": "To support aggregate hydrator usage",
-                "zendframework/zend-serializer": "Zend\\Serializer component",
                 "zendframework/zend-servicemanager": "To support hydrator plugin manager usage"
             },
             "type": "library",
@@ -5300,7 +5268,7 @@
                 "stdlib",
                 "zf2"
             ],
-            "time": "2014-03-13 16:12:22"
+            "time": "2015-01-14 16:28:50"
         },
         {
             "name": "zetacomponents/base",
