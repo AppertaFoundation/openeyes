@@ -168,7 +168,7 @@
             <arg path="${basedir}/protected" />
             <arg value="text" />
             <arg path="${basedir}/build/phpmd.xml" />
-            <arg value="--exclude=${basedir}/protected/tests/*,${basedir}/protected/migrations/*" />
+            <arg value="--exclude ${basedir}/protected/tests/*,${basedir}/protected/migrations/*,${basedir}/protected/yii/*,${basedir}/protected/runtime/*" />
         </exec>
     </target>
 
@@ -181,7 +181,7 @@
             <arg path="${basedir}/build/phpmd.xml" />
             <arg value="--reportfile" />
             <arg path="${basedir}/build/logs/pmd.xml" />
-            <arg value="--exclude=${basedir}/protected/tests/*,${basedir}/protected/migrations/*" />
+            <arg value="--exclude ${basedir}/protected/tests/*,${basedir}/protected/migrations/*,${basedir}/protected/yii/*,${basedir}/protected/runtime/*"" />
         </exec>
     </target>
 
