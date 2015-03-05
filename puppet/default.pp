@@ -47,4 +47,9 @@ node default {
 			profiler_output_name => 'xdebug.log'
 		}
 	}
+
+	core::apache2::loadmodule{"rewrite": }
+
+	core::apache2::loadmodule{"version": }
+
 }

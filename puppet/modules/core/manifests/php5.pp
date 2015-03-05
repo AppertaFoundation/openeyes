@@ -40,6 +40,13 @@ class core::php5 {
 		notify  => Service['apache2']
 	}
 
+	package { 'php5-xsl' :
+		ensure => present,
+		require => [ Exec['apt-update'], Package['php5', 'php5-cli']],
+		notify => Service['apache2']
+	}
+
+
 	file {'/etc/php5/cli/conf.d/buffering_settings.ini':
 		ensure => present,
 		owner => root, group => root, mode => 444,

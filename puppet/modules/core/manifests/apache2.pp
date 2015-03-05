@@ -16,6 +16,21 @@ class core::apache2 {
 		 notify  => Service['apache2']
 	}
 
+       file { '/etc/apache2/mods-enabled/version.load':
+                 ensure => 'link',
+                 target => '/etc/apache2/mods-available/version.load',
+                 require => Package['apache2'],
+                 notify  => Service['apache2']
+        }
+
+
+	 define loadmodule () {
+	  exec { "/usr/sbin/a2enmod $name" :
+	  unless => "/bin/readlink -e /etc/apache2/mods-enabled/${name}.load",
+	  notify => Service[apache2]
+	}
+	}
+
 	file { 'default virtualhost':
 		path    => '/etc/apache2/sites-available/default',
 		ensure  => present,
@@ -40,3 +55,4 @@ class core::apache2 {
 		mode    => 644,
 	}
 }
+
