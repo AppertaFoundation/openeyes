@@ -43,8 +43,6 @@ EOD;
 		$modules = Yii::app()->modules;
 		$moduleDir = ($composer) ? 'composer.openeyes.' : 'application.modules.';
 		foreach ($modules as $module => $module_settings) {
-			var_dump($moduleDir.$module.'.migrations');
-			var_dump(Yii::getPathOfAlias($moduleDir.$module.'.migrations'));
 			if (is_dir(Yii::getPathOfAlias($moduleDir.$module.'.migrations'))) {
 				echo "Migrating $module:\n";
 				if(!$interactive) {
