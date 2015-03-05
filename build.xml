@@ -64,9 +64,6 @@
         <mkdir dir="${basedir}/cache"/>
         <mkdir dir="${basedir}/protected/cache"/>
         <chmod file="${toolsdir}spin_up_docker_db.sh" perm="+x" />
-        <copy todir="${basedir}/protected/config/local/" overwrite="false">
-            <fileset dir="/var/www/openeyes/protected/config/local/"/>
-        </copy>
         <move file="${basedir}/protected/config/local/common.sample.php" tofile="${basedir}/protected/config/local/common.php" overwrite="false" />
         <property name="prepare.done" value="true"/>
     </target>
