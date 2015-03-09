@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "84d1d049754d99f0c7869a98a7f2bd69",
+    "hash": "1c1ed74d3596577275a538697372fd1b",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -324,24 +324,17 @@
         },
         {
             "name": "openeyes/oph-tr-operationnote",
-            "version": "dev-master",
+            "version": "dev-feature/OE-5379",
             "source": {
                 "type": "git",
-                "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "fabbb2846c64ee591b9410c0fcde1d46a9bef5ea"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/fabbb2846c64ee591b9410c0fcde1d46a9bef5ea",
-                "reference": "fabbb2846c64ee591b9410c0fcde1d46a9bef5ea",
-                "shasum": ""
+                "url": "/Users/petergallagher/code/OphTrOperationnote",
+                "reference": "31654cd3d110aa11ddfc777bb5054587976852aa"
             },
             "require": {
                 "openeyes/eyedraw": "dev-master",
                 "openeyes/module-installer": "*"
             },
             "type": "openeyes-module",
-            "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
             "time": "2015-03-05 15:16:02"
         },
@@ -4328,29 +4321,29 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "2.7.x-dev",
+            "version": "dev-master",
             "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "d4ae276ad15d0ae17ae07bd8b7de1c5381217283"
+                "reference": "b4ed26d71670ec501614e2ff7c4d10d884ea6b4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/d4ae276ad15d0ae17ae07bd8b7de1c5381217283",
-                "reference": "d4ae276ad15d0ae17ae07bd8b7de1c5381217283",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/b4ed26d71670ec501614e2ff7c4d10d884ea6b4d",
+                "reference": "b4ed26d71670ec501614e2ff7c4d10d884ea6b4d",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.9"
+                "php": ">=5.5.9"
             },
             "require-dev": {
-                "symfony/phpunit-bridge": "~2.7|~3.0.0"
+                "symfony/phpunit-bridge": "~2.7|~3.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.7-dev"
+                    "dev-master": "3.0-dev"
                 }
             },
             "autoload": {
@@ -4374,7 +4367,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "http://symfony.com",
-            "time": "2015-02-18 10:38:04"
+            "time": "2015-02-21 13:23:59"
         },
         {
             "name": "symfony/finder",

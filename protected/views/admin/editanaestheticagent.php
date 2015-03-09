@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2011-2012
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,18 +13,27 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="button-bar right">
-	<?php //this needs adding to SASS and doing properly when we decide on a solution OEM-295
-	if(isset($this->event->eventType->name) && ($this->event->eventType->name === 'Examination')) {
-	?>
-	<span style="font-size:21px; color:#152250;">LEFT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-	<?php } ?>
-	<img class="loader" style="display: none;" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." />
-	<?php foreach ($this->event_actions as $action) { ?>
-		<?php echo $action->toHtml();?>
-	<?php } ?>
+<div class="box admin">
+	<div class="row">
+		<div class="large-8 column">
+			<h2>Anaesthetic Agents</h2>
+		</div>
+	</div>
+	<?php echo $this->renderPartial('//admin/_form_errors',array('errors'=>$errors))?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id'=>'adminform',
+		'enableAjaxValidation'=>false,
+		'layoutColumns'=>array(
+			'label' => 2,
+			'field' => 5
+		)
+	))?>
+	<?php echo $form->textField($agent,'name')?>
+	<?php echo $form->formActions(array('cancel-uri'=>'/admin/viewAnaestheticAgent'))?>
+	<?php $this->endWidget()?>
 </div>

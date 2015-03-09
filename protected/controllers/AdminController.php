@@ -1632,4 +1632,99 @@ class AdminController extends BaseAdminController
 	{
 		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('accommodation_id'), 'SocialHistoryAccommodation');
 	}
+
+	/**
+	 * Lists and allows editing of AnaestheticAgent records
+	 *
+	 * @throws Exception
+	 */
+	public function actionViewAnaestheticAgent()
+	{
+		$this->genericAdmin('Edit Previous Ophthalmic Surgery Choices', 'AnaestheticAgent');
+
+		/*Audit::add('admin', 'list', null, null, array('model'=>'AnaestheticAgent'));
+
+		$this->render('anaestheticagent');*/
+	}
+
+	public function actionAddAnaestheticAgent()
+	{
+		$agent = new AnaestheticAgent();
+		$errors = array();
+
+		if(Yii::app()->request->isPostRequest){
+			$agent->attributes = Yii::app()->request->getPost('AnaestheticAgent');
+
+			if(!$agent->validate()){
+				$errors = $agent->getErrors();
+			} else {
+				if(!$agent->save()){
+					throw new CHttpException(500, 'Unable to save Anaesthetic Agent: ' . $agent->name);
+				}
+
+				Audit::add('admin', 'add', $agent->id, null, array('model'=>'AnaestheticAgent'));
+				$this->redirect('/admin/viewAnaestheticAgent');
+			}
+		}
+
+		$this->render('/admin/editanaestheticagent', array(
+			'agent' => $agent,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionEditAnaestheticAgent($id)
+	{
+		$agent = AnaestheticAgent::model()->findByPk($id);
+		$errors = array();
+
+		if(!$agent){
+			throw new CHttpException(404, 'Anaesthetic Agent not found: ' . $id);
+		}
+
+		if(Yii::app()->request->isPostRequest){
+			$agent->attributes = Yii::app()->request->getPost('AnaestheticAgent');
+
+			if(!$agent->validate()){
+				$errors = $agent->getErrors();
+			} else {
+				if(!$agent->save()){
+					throw new CHttpException(500, 'Unable to save Anaesthetic Agent: ' . $agent->name);
+				}
+
+				Audit::add('admin', 'edit', $id, null, array('model'=>'AnaestheticAgent'));
+				$this->redirect('/admin/viewAnaestheticAgent');
+			}
+		}
+
+		Audit::add('admin', 'view', $id, null, array('model'=>'AnaestheticAgent'));
+		$this->render('/admin/editanaestheticagent', array(
+			'agent' => $agent,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionDeleteAnaestheticAgent($id)
+	{
+		$agent = AnaestheticAgent::model()->findByPk($id);
+
+		if(!$agent){
+			throw new CHttpException(404, 'Anaesthetic Agent not found: ' . $id);
+		}
+
+		if(Yii::app()->request->isPostRequest){
+			$agent->active = 0;
+			if(!$agent->save()){
+				throw new CHttpException(500, 'Unable to delete Anaesthetic Agent: ' . $agent->name);
+			}
+
+			Audit::add('admin', 'delete', $id, null, array('model'=>'AnaestheticAgent'));
+			$this->redirect('/admin/viewAnaestheticAgent');
+		}
+
+		Audit::add('admin', 'view', $id, null, array('model'=>'AnaestheticAgent'));
+		$this->render('/admin/deleteanaestheticagent', array(
+			'agent' => $agent,
+		));
+	}
 }
