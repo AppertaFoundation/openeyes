@@ -1640,7 +1640,7 @@ class AdminController extends BaseAdminController
 	 */
 	public function actionViewAnaestheticAgent()
 	{
-		$this->genericAdmin('Edit Previous Ophthalmic Surgery Choices', 'AnaestheticAgent');
+		$this->genericAdmin('Edit Anaesthetic Agents', 'AnaestheticAgent');
 
 		/*Audit::add('admin', 'list', null, null, array('model'=>'AnaestheticAgent'));
 
