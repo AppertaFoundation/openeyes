@@ -537,4 +537,23 @@ class BaseActiveRecord extends CActiveRecord
 	public function textWithLineBreaks($field) {
 		return str_replace("\n",'<br/>',CHtml::encode($this->$field));
 	}
+
+	/**
+	 * Sets the default admission time
+	 *
+	 * If there is no default admission time supplied it should be set before one hour before the start time, used for
+	 * sequences and sessions in OphTrOperationbooking.
+	 *
+	 * @param $admissionTime
+	 * @param $startTime
+	 * @return bool|string
+	 */
+	protected function setDefaultAdmissionTime($admissionTime, $startTime)
+	{
+		if($admissionTime !== '' && $admissionTime !== null){
+			return $admissionTime;
+		}
+
+		return date('H:i:s', strtotime($startTime . '- 1 hour'));
+	}
 }
