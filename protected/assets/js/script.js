@@ -60,6 +60,14 @@ $(document).ready(function(){
 		}
 	});
 
+	$(document).on('click', '.dropdown-toggle', function(e)
+	{
+		e.preventDefault();
+		var target = $(this).attr("data-dropdown");
+		$(target).toggle();
+		console.log("toggling "+target);
+	});
+
 	(function sidebarEventsToggle() {
 
 		var triggers = $('.sidebar.episodes-and-events .toggle-trigger');

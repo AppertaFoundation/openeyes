@@ -74,8 +74,25 @@ if (!Yii::app()->user->isGuest) {
 				<?php }?>
 				<?php echo CHtml::link($item['title'], Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/'))?>
 				</li>
+			       <?php if (Yii::app()->user->checkAccess('admin') && $item['title'] == 'Home') { ?>
+				<li class="dropdown"><a class="dropdown-toggle" data-dropdown="#admin-dropdown" data-target="#">Admin</a>
+					<ul class="dropdown-menu" role="menu" id="admin-dropdown" style="display:none">
+					<?php
+						$adminMenu = array(
+							array("title" => "Admin", "uri" => "admin"),
+							array("title" => "Report", "uri" => "report"),
+							array("title" => "Audit", "uri" => "audit"));
+
+					?>
+					<?php foreach ($adminMenu as $item) {?>
+						<li><?php echo CHtml::link($item['title'], Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/'))?>
+						 </li>
+					<? } ?>
+					</ul>
+				</li>
+				<?php } ?>
 			<?php }?>
-		</ul>
+		</ul>	
 		<div class="row">
 			<div class="large-3 column">
 				<div class="user-id">

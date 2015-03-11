@@ -16,6 +16,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+/* Accessibility - hides the forward slash */
+/* line 130, ../components/foundation/scss/foundation/components/_breadcrumbs.scss */
+[aria-label="breadcrumbs"] [aria-hidden="true"]:after {
+  content: "/";
+}
+
 @media print {
   /* line 18, ../sass/openeyes/components/admin/_content.scss */
   .admin.content {
@@ -78,29 +84,29 @@ table.generic-admin tr {
   margin-bottom: 16px;
   padding: 10px;
   background: #f2f2f2;
-  -webkit-border-radius: 5px;
+  color: #333333;
   border-radius: 5px;
   background: #fafafa;
   margin: 0 0 0.75rem 0;
 }
-/* line 48, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 55, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.admin > :first-child {
   margin-top: 0;
 }
-/* line 49, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 56, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.admin > :last-child {
   margin-bottom: 0;
 }
-/* line 54, ../components/foundation/scss/foundation/components/_panels.scss */
-.box.admin h1, .box.admin h2, .box.admin h3, .box.admin h4, .box.admin h5, .box.admin h6, .box.admin p {
+/* line 61, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.admin h1, .box.admin h2, .box.admin h3, .box.admin h4, .box.admin h5, .box.admin h6, .box.admin p, .box.admin li, .box.admin dl {
   color: #333333;
 }
-/* line 58, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 68, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.admin h1, .box.admin h2, .box.admin h3, .box.admin h4, .box.admin h5, .box.admin h6 {
   line-height: 1;
   margin-bottom: 0.625rem;
 }
-/* line 60, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 70, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.admin h1.subheader, .box.admin h2.subheader, .box.admin h3.subheader, .box.admin h4.subheader, .box.admin h5.subheader, .box.admin h6.subheader {
   line-height: 1.4;
 }
