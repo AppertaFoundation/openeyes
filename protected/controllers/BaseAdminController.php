@@ -151,7 +151,7 @@ class BaseAdminController extends BaseController
 									$errors[$i] = $error[0];
 								}
 							}
-							Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array('module' => $this->module->id, 'model' => $model::getShortModelName()));
+							Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array('module' => (is_object($this->module)) ? $this->module->id : 'core', 'model' => $model::getShortModelName()));
 						}
 
 						$items[] = $item;
@@ -161,13 +161,17 @@ class BaseAdminController extends BaseController
 					if (empty($errors)) {
 						$criteria = new CDbCriteria;
 
-						if ($items) $criteria->addNotInCondition('id', array_map(function ($i) { return $i->id; }, $items));
+						if ($items) {
+							$criteria->addNotInCondition('id', array_map(function ($i) {
+								return $i->id;
+							}, $items));
+						}
 						$this->addFilterCriteria($criteria, $options['filter_fields']);
 
 						$to_delete = $model::model()->findAll($criteria);
 						foreach ($to_delete as $item) {
 							if (!$item->delete()) throw new Exception("Unable to delete {$model}:{$item->primaryKey}");
-							Audit::add('admin', 'delete', $item->primaryKey, null, array('module' => $this->module->id, 'model' => $model::getShortModelName()));
+							Audit::add('admin', 'delete', $item->primaryKey, null, array('module' => (is_object($this->module)) ? $this->module->id : 'core', 'model' => $model::getShortModelName()));
 						}
 
 						$tx->commit();
