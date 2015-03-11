@@ -2,12 +2,6 @@
   "name": "openeyes/openeyes",
   "description": "Electronic Patient Record system for use in Ophthalmology clinics",
   "minimum-stability": "dev",
-  "repositories": [
-    {
-      "type":"git",
-      "url":"/Users/petergallagher/code/OphTrOperationnote"
-    }
-  ],
   "require": {
     "openeyes/module-installer": "*",
     "yiisoft/yii": "1.1.14",
@@ -19,7 +13,7 @@
     "openeyes/oph-le-intravitrealinjection": "dev-master",
     "openeyes/oph-ou-anaestheticsatisfactionaudit": "dev-master",
     "openeyes/oph-tr-consent": "dev-master",
-    "openeyes/oph-tr-operationnote": "dev-feature/OE-5379",
+    "openeyes/oph-tr-operationnote": "dev-master",
     "openeyes/oph-tr-operationbooking": "dev-master",
     "openeyes/oph-tr-intravitrealinjection": "dev-master",
     "openeyes/oph-tr-laser": "dev-master"
