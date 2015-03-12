@@ -9,11 +9,11 @@
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
 
     <target name="build"
-            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
+            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit"
             description=""/>
 
     <target name="build-parallel"
-            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,tools-parallel,phpunit,phpdox"
+            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,tools-parallel,phpunit"
             description=""/>
 
     <target name="develop"
