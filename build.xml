@@ -9,11 +9,11 @@
     <!-- <property name="toolsdir" value="${basedir}/vendor/bin/"/> -->
 
     <target name="build"
-            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,phpdox"
+            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit"
             description=""/>
 
     <target name="build-parallel"
-            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,tools-parallel,phpunit,phpdox"
+            depends="prepare,composer,npm,bower,grunt,migrate,migrate-modules,lint,tools-parallel,phpunit"
             description=""/>
 
     <target name="develop"
@@ -21,7 +21,7 @@
             description=""/>
 
     <target name="run-tests"
-            depends="prepare,composer,bower,docker,migrate,migrate-modules,lint,phpunit"
+            depends="prepare,composer,npm,bower,grunt,docker,migrate,migrate-modules,lint,phpunit"
             description="" />
 
     <target name="tools-parallel" description="Run tools in parallel">
@@ -229,15 +229,10 @@
     <target name="phpunit"
             depends="prepare,composer,migrate,migrate-modules"
             description="Run unit tests with PHPUnit">
-        <exec executable="${toolsdir}phpunit" failonerror="true">
+        <exec executable="${toolsdir}phpunit" failonerror="false">
             <arg value="--configuration"/>
             <arg path="${basedir}/protected/tests/phpunit_ci.xml"/>
         </exec>
     </target>
 
-    <target name="phpdox"
-            depends="phploc-ci,phpcs-ci,phpmd-ci"
-            description="Generate project documentation using phpDox">
-        <exec executable="${toolsdir}phpdox" dir="${basedir}/build"/>
-    </target>
 </project>

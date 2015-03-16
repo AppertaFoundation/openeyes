@@ -30,7 +30,7 @@
 </ul>
 
 <?php //this needs adding to SASS and doing properly when we decide on a solution OEM-295
-if(($this->event->eventType->name=='Examination')) {
+if(isset($this->event->eventType->name) && ($this->event->eventType->name === 'Examination')) {
 ?>
 <div class="button-bar left">
 	<span width="22px" height="24px" style="font-size:21px; color:#152250; vertical-align: middle; display:inline-block;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RIGHT</span>
