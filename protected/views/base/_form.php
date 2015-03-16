@@ -87,7 +87,7 @@ if (!Yii::app()->user->isGuest) {
 					<?php foreach ($adminMenu as $item) {?>
 						<li><?php echo CHtml::link($item['title'], Yii::app()->getBaseUrl() . '/' . ltrim($item['uri'], '/'))?>
 						 </li>
-					<? } ?>
+					<?php } ?>
 					</ul>
 				</li>
 				<?php } ?>
