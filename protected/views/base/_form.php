@@ -80,8 +80,8 @@ if (!Yii::app()->user->isGuest) {
 					<?php
 						$adminMenu = array(
 							array("title" => "Admin", "uri" => "admin"),
-							array("title" => "Report", "uri" => "report"),
-							array("title" => "Audit", "uri" => "audit"));
+							array("title" => "Audit", "uri" => "audit"),
+							array("title" => "Reports", "uri" => "report"));
 
 					?>
 					<?php foreach ($adminMenu as $item) {?>
