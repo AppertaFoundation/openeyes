@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c69b85380d61842bc9534bdab3d53d53",
+    "hash": "ca77b9966fc1a2b5140c0a2a23ff098f",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -347,16 +347,16 @@
         },
         {
             "name": "openeyes/patient-ticketing",
-            "version": "dev-master",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/PatientTicketing.git",
-                "reference": "7ff9efaf110d7e2dacc8019f393f68f914143525"
+                "reference": "bc0c71678fd2d768a98efe65e17fe5668845acbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/PatientTicketing/zipball/7ff9efaf110d7e2dacc8019f393f68f914143525",
-                "reference": "7ff9efaf110d7e2dacc8019f393f68f914143525",
+                "url": "https://api.github.com/repos/openeyes/PatientTicketing/zipball/bc0c71678fd2d768a98efe65e17fe5668845acbd",
+                "reference": "bc0c71678fd2d768a98efe65e17fe5668845acbd",
                 "shasum": ""
             },
             "require": {
@@ -4178,12 +4178,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "dd8ccc5976f8ae04f6f68109eacf068f2f25c1fa"
+                "reference": "5d856ee146167371cc7cbaffd80b7f1edeaa84f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/dd8ccc5976f8ae04f6f68109eacf068f2f25c1fa",
-                "reference": "dd8ccc5976f8ae04f6f68109eacf068f2f25c1fa",
+                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/5d856ee146167371cc7cbaffd80b7f1edeaa84f5",
+                "reference": "5d856ee146167371cc7cbaffd80b7f1edeaa84f5",
                 "shasum": ""
             },
             "require": {
@@ -4230,7 +4230,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "http://symfony.com",
-            "time": "2015-03-15 19:44:07"
+            "time": "2015-03-17 12:50:07"
         },
         {
             "name": "symfony/dom-crawler",
