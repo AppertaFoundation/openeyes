@@ -351,12 +351,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/PatientTicketing.git",
-                "reference": "bc0c71678fd2d768a98efe65e17fe5668845acbd"
+                "reference": "c02b1dafb3bd9e937fb59c1c60b2e86eec6cfab4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/PatientTicketing/zipball/bc0c71678fd2d768a98efe65e17fe5668845acbd",
-                "reference": "bc0c71678fd2d768a98efe65e17fe5668845acbd",
+                "url": "https://api.github.com/repos/openeyes/PatientTicketing/zipball/c02b1dafb3bd9e937fb59c1c60b2e86eec6cfab4",
+                "reference": "c02b1dafb3bd9e937fb59c1c60b2e86eec6cfab4",
                 "shasum": ""
             },
             "require": {
@@ -365,7 +365,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Provides a generic ticketing system to track patients through multiple pathways",
-            "time": "2015-03-13 10:53:04"
+            "time": "2015-03-17 13:24:58"
         },
         {
             "name": "yiisoft/yii",
