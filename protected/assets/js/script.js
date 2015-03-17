@@ -60,12 +60,9 @@ $(document).ready(function(){
 		}
 	});
 
-	$(document).on('click', '.dropdown-toggle', function(e)
+	$(document).on('hover', '.dropdown', function(e)
 	{
-		e.preventDefault();
-		var target = $(this).attr("data-dropdown");
-		$(target).toggle();
-		console.log("toggling "+target);
+		$(this).find('ul').slideToggle('medium');
 	});
 
 	(function sidebarEventsToggle() {

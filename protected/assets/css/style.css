@@ -2350,6 +2350,13 @@ table.grid tfoot tr {
   z-index: 1000;
   background-color: #cdd9e3;
   list-style-type: none;
+  margin-left:0px;
+}
+
+.dropdown-menu li
+{
+	padding:10px;
+	font-size:110%;
 }
 
 /* line 32, ../sass/openeyes/components/_forms.scss */
