@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ca77b9966fc1a2b5140c0a2a23ff098f",
+    "hash": "4b97e9f4520e7a2a7b445686267e4dde",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -104,16 +104,16 @@
         },
         {
             "name": "openeyes/oph-co-correspondence",
-            "version": "dev-master",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCoCorrespondence.git",
-                "reference": "0bb04f1d8a744e874b8fd56e045bf301ea34e07c"
+                "reference": "fde2b7ec9c23032992eb06268b449e911e5404e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/0bb04f1d8a744e874b8fd56e045bf301ea34e07c",
-                "reference": "0bb04f1d8a744e874b8fd56e045bf301ea34e07c",
+                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/fde2b7ec9c23032992eb06268b449e911e5404e4",
+                "reference": "fde2b7ec9c23032992eb06268b449e911e5404e4",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +122,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Correspondence module for OpenEyes, allows generation of letters",
-            "time": "2015-03-04 11:31:19"
+            "time": "2015-03-04 11:29:47"
         },
         {
             "name": "openeyes/oph-co-therapyapplication",
