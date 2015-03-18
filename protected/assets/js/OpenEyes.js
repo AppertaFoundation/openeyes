@@ -20,5 +20,5 @@
 	 * The Global OpenEyes namespace
 	 * @namespace OpenEyes
 	 */
-	exports.OpenEyes = {};
+	exports.OpenEyes = exports.OpenEyes || {};
 }(this));

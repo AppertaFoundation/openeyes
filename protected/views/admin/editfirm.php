@@ -16,7 +16,6 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <div class="box admin">
 	<h2><?php echo ($firm->id ? 'Edit' : 'Add')?> firm</h2>
@@ -54,4 +53,13 @@
 		<?php echo $form->formActions(); ;?>
 
 	<?php $this->endWidget()?>
+
+	<?php if($siteSecretaries): ?>
+		<?php echo $this->renderPartial('application.modules.OphCoCorrespondence.views.admin.secretary.edit', array(
+				'errors'=> array(),
+				'siteSecretaries' => $siteSecretaries
+			)
+		)
+		?>
+	<?php endif; ?>
 </div>
