@@ -58,9 +58,7 @@
         <mkdir dir="${basedir}/cache"/>
         <mkdir dir="${basedir}/protected/cache"/>
         <chmod file="${toolsdir}spin_up_docker_db.sh" perm="+x" />
-        <copy todir="${basedir}/protected/config/local/">
-            <fileset dir="/var/www/openeyes/protected/config/local/"/>
-        </copy>
+        <copy file="${basedir}/protected/config/local.sample/common.vagrant.php" tofile="${basedir}/protected/config/local/common.php" overwrite="false" />
         <property name="prepare.done" value="true"/>
     </target>
 
@@ -159,7 +157,7 @@
             <arg path="${basedir}/protected" />
             <arg value="text" />
             <arg path="${basedir}/build/phpmd.xml" />
-            <arg value="--exclude=${basedir}/protected/tests/*,${basedir}/protected/migrations/*" />
+            <arg value="--exclude ${basedir}/protected/tests/*,${basedir}/protected/migrations/*,${basedir}/protected/yii/*,${basedir}/protected/runtime/*" />
         </exec>
     </target>
 
@@ -172,7 +170,7 @@
             <arg path="${basedir}/build/phpmd.xml" />
             <arg value="--reportfile" />
             <arg path="${basedir}/build/logs/pmd.xml" />
-            <arg value="--exclude=${basedir}/protected/tests/*,${basedir}/protected/migrations/*" />
+            <arg value="--exclude ${basedir}/protected/tests/*,${basedir}/protected/migrations/*,${basedir}/protected/yii/*,${basedir}/protected/runtime/*" />
         </exec>
     </target>
 
