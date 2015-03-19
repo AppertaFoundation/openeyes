@@ -1,40 +1,41 @@
 class core::apache2 {
-	package { 'apache2':
-		ensure  => present,
-		require => Exec['apt-update'],
-	}
+  package { 'apache2':
+    ensure  => present,
+    require => Exec['apt-update'],
+  }
 
-	service { 'apache2':
-		ensure  => running,
-		require => Package['apache2'],
-	}
+  service { 'apache2':
+    ensure  => running,
+    require => Package['apache2'],
+  }
 
-	file { '/etc/apache2/mods-enabled/rewrite.load':
-		 ensure => 'link',
-		 target => '/etc/apache2/mods-available/rewrite.load',
-		 require => Package['apache2'],
-		 notify  => Service['apache2']
-	}
+  file { '/etc/apache2/mods-enabled/rewrite.load':
+    ensure  => 'link',
+    target  => '/etc/apache2/mods-available/rewrite.load',
+    require => Package['apache2'],
+    notify  => Service['apache2']
+  }
 
-       file { '/etc/apache2/mods-enabled/version.load':
-                 ensure => 'link',
-                 target => '/etc/apache2/mods-available/version.load',
-                 require => Package['apache2'],
-                 notify  => Service['apache2']
-        }
+  file { '/etc/apache2/mods-enabled/version.load':
+    ensure  => 'link',
+    target  => '/etc/apache2/mods-available/version.load',
+    require => Package['apache2'],
+    notify  => Service['apache2']
+  }
 
 
-	 define loadmodule () {
-	  exec { "/usr/sbin/a2enmod $name" :
-	  unless => "/bin/readlink -e /etc/apache2/mods-enabled/${name}.load",
-	  notify => Service[apache2]
-	}
-	}
+  define loadmodule () {
+    exec { "/usr/sbin/a2enmod $name" :
+      unless => "/bin/readlink -e /etc/apache2/mods-enabled/${name}.load",
+      require => Package['apache2'],
+      notify => Service[apache2]
+    }
+  }
 
-	file { 'default virtualhost':
-		path    => '/etc/apache2/sites-available/default',
-		ensure  => present,
-		content => "\
+  file { 'default virtualhost':
+    path    => '/etc/apache2/sites-available/default',
+    ensure  => present,
+    content => "\
 <VirtualHost *:80>
 	DocumentRoot /var/www
 	ServerName localhost
@@ -50,9 +51,9 @@ class core::apache2 {
 	ServerSignature Off
 	EnableSendfile Off
 </VirtualHost>",
-		require => Package['apache2'],
-		notify  => Service['apache2'],
-		mode    => 644,
-	}
+    require => Package['apache2'],
+    notify  => Service['apache2'],
+    mode    => 644,
+  }
 }
 

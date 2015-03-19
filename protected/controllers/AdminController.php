@@ -535,6 +535,7 @@ class AdminController extends BaseAdminController
 		if (isset(Yii::app()->modules['OphCoCorrespondence'])){
 			$firmSiteSecretaries = new FirmSiteSecretary();
 			$siteSecretaries = $firmSiteSecretaries->findSiteSecretaryForFirm($id);
+			$firmSiteSecretaries->firm_id = $id;
 			$siteSecretaries[] = $firmSiteSecretaries;
 		}
 
