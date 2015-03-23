@@ -208,4 +208,22 @@ class BaseController extends Controller
 		if (!$model) throw new CHttpException(404, "{$class_name} with PK '{$pk}' not found");
 		return $model;
 	}
+
+	/**
+	 * Renders data as JSON, turns off any to screen logging so output isn't broken
+	 *
+	 * @param $data
+	 */
+	protected function renderJSON($data)
+	{
+		header('Content-type: application/json');
+		echo CJSON::encode($data);
+
+		foreach (Yii::app()->log->routes as $route) {
+			if($route instanceof CWebLogRoute) {
+				$route->enabled = false; // disable any weblogroutes
+			}
+		}
+		Yii::app()->end();
+	}
 }

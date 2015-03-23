@@ -531,9 +531,18 @@ class AdminController extends BaseAdminController
 			Audit::add('admin-Firm','view',$id);
 		}
 
+		$siteSecretaries = array();
+		if (isset(Yii::app()->modules['OphCoCorrespondence'])){
+			$firmSiteSecretaries = new FirmSiteSecretary();
+			$siteSecretaries = $firmSiteSecretaries->findSiteSecretaryForFirm($id);
+			$firmSiteSecretaries->firm_id = $id;
+			$siteSecretaries[] = $firmSiteSecretaries;
+		}
+
 		$this->render('/admin/editfirm',array(
 			'firm' => $firm,
 			'errors' => @$errors,
+			'siteSecretaries' => $siteSecretaries
 		));
 	}
 
