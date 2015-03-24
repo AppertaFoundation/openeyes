@@ -109,53 +109,57 @@ class BaseAdminController extends BaseController
 					$j = 0;
 
 					foreach ((array) @$_POST['id'] as $i => $id) {
-						if ($id) {
-							$item = $model::model()->findByPk($id);
-							$new = false;
-						} else {
-							$item = new $model;
-							$new = true;
-						}
+                        if ($id) {
+                            $item = $model::model()->findByPk($id);
+                            $new = false;
+                        } else {
+                            $item = new $model;
+                            $new = true;
+                        }
 
-						$attributes = $item->getAttributes();
+                        if (!empty($_POST[$options['label_field']][$i]))
+                        {
+                            $attributes = $item->getAttributes();
 
-						$item->{$options['label_field']} = $_POST[$options['label_field']][$i];
-						$item->display_order = $j++;
+                            $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
+                            $item->display_order = $j++;
 
-						if (array_key_exists('active',$attributes)) {
-							$item->active = (isset($_POST['active'][$i]) || $item->isNewRecord)? 1 : 0;
-						}
+                            if (array_key_exists('active', $attributes)) {
+                                $item->active = (isset($_POST['active'][$i]) || $item->isNewRecord) ? 1 : 0;
+                            }
 
-						foreach ($options['extra_fields'] as $field) {
-							$name = $field['field'];
-							$item->$name = @$_POST[$name][$i];
-						}
+                            foreach ($options['extra_fields'] as $field) {
+                                $name = $field['field'];
+                                $item->$name = @$_POST[$name][$i];
+                            }
 
-						if ($item->hasAttribute('default')) {
-							if (isset($_POST['default']) && $_POST['default'] != 'NONE' && $_POST['default'] == $j) {
-								$item->default = 1;
-							} else {
-								$item->default = 0;
-							}
-						}
+                            if ($item->hasAttribute('default')) {
+                                if (isset($_POST['default']) && $_POST['default'] != 'NONE' && $_POST['default'] == $j) {
+                                    $item->default = 1;
+                                } else {
+                                    $item->default = 0;
+                                }
+                            }
 
-						foreach ($options['filter_fields'] as $field) {
-							$item->{$field['field']} = $field['value'];
-						}
+                            foreach ($options['filter_fields'] as $field) {
+                                $item->{$field['field']} = $field['value'];
+                            }
 
 
-						if ($new || $item->getAttributes() != $attributes) {
-							if (!$item->save()) {
-								$errors = $item->getErrors();
-								foreach ($errors as $error) {
-									$errors[$i] = $error[0];
-								}
-							}
-							Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array('module' => $this->module->id, 'model' => $model::getShortModelName()));
-						}
+                            if ($new || $item->getAttributes() != $attributes) {
+                                if (!$item->save()) {
+                                    $errors = $item->getErrors();
+                                    foreach ($errors as $error) {
+                                        $errors[$i] = $error[0];
+                                    }
+                                }
+                                Audit::add('admin', $new ? 'create' : 'update', $item->primaryKey, null, array('module' => $this->module->id, 'model' => $model::getShortModelName()));
+                            }
 
-						$items[] = $item;
-						$j++;
+                            $items[] = $item;
+                            $j++;
+
+                        }
 					}
 
 					if (empty($errors)) {
