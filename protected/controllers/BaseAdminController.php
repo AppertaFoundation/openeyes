@@ -117,10 +117,10 @@ class BaseAdminController extends BaseController
                             $new = true;
                         }
 
+
+                            $attributes = $item->getAttributes();
                         if (!empty($_POST[$options['label_field']][$i]))
                         {
-                            $attributes = $item->getAttributes();
-
                             $item->{$options['label_field']} = $_POST[$options['label_field']][$i];
                             $item->display_order = $j++;
 
