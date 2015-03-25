@@ -19,7 +19,26 @@
 
 ?>
 <div class="box admin">
-	<h2>Site</h2>
+	<div class="row">
+		<div class="large-8 column">
+			<h2>Sites</h2>
+		</div>
+		<div class="large-4 column">
+			<?php
+			$form = $this->beginWidget('BaseEventTypeCActiveForm',array(
+				'id' => 'searchform',
+				'enableAjaxValidation' => false,
+				'focus' => '#search',
+				'action' => Yii::app()->createUrl('/admin/sites'),
+			))?>
+				<div class="row">
+					<div class="large-12 column">
+						<input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
+					</div>
+				</div>
+			<?php $this->endWidget()?>
+		</div>
+	</div>
 	<form id="admin_institution_sites">
 		<table class="grid">
 			<thead>

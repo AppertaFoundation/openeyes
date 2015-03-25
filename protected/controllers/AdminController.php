@@ -853,6 +853,20 @@ class AdminController extends BaseAdminController
 		Audit::add('admin-Site','list');
 
 		$criteria = new CDbCriteria;
+                $criteria->join = "JOIN contact ON contact_id = contact.id"
+                        . " join address on address.contact_id = contact.id";
+
+               if (!empty($_REQUEST['search'])) {
+                       $criteria->compare("LOWER(name)", strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(short_name)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(remote_id)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(postcode)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(address1)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(address2)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(city)",strtolower($_REQUEST['search']),true, 'OR');
+                       $criteria->compare("LOWER(county)",strtolower($_REQUEST['search']),true, 'OR');
+               }
+
 		$pagination = $this->initPagination(Site::model(), $criteria);
 
 		$this->render('/admin/sites',array(
