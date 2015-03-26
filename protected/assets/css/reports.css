@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /**
  * OpenEyes
  *
@@ -15,10 +16,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/* line 77, ../components/foundation/scss/foundation/components/_top-bar.scss */
-meta.foundation-mq-topbar {
-  font-family: "/all/";
-  width: 1230px;
+/* Accessibility - hides the forward slash */
+/* line 130, ../components/foundation/scss/foundation/components/_breadcrumbs.scss */
+[aria-label="breadcrumbs"] [aria-hidden="true"]:after {
+  content: "/";
 }
 
 /* line 19, ../sass/openeyes/components/reports/_boxes.scss */
@@ -29,29 +30,29 @@ meta.foundation-mq-topbar {
   margin-bottom: 16px;
   padding: 10px;
   background: #f2f2f2;
-  -webkit-border-radius: 5px;
+  color: #333333;
   border-radius: 5px;
   background: #fafafa;
   margin: 0 0 0.75rem 0;
 }
-/* line 48, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 55, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.reports > :first-child {
   margin-top: 0;
 }
-/* line 49, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 56, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.reports > :last-child {
   margin-bottom: 0;
 }
-/* line 54, ../components/foundation/scss/foundation/components/_panels.scss */
-.box.reports h1, .box.reports h2, .box.reports h3, .box.reports h4, .box.reports h5, .box.reports h6, .box.reports p {
+/* line 61, ../components/foundation/scss/foundation/components/_panels.scss */
+.box.reports h1, .box.reports h2, .box.reports h3, .box.reports h4, .box.reports h5, .box.reports h6, .box.reports p, .box.reports li, .box.reports dl {
   color: #333333;
 }
-/* line 58, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 68, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.reports h1, .box.reports h2, .box.reports h3, .box.reports h4, .box.reports h5, .box.reports h6 {
   line-height: 1;
   margin-bottom: 0.625rem;
 }
-/* line 60, ../components/foundation/scss/foundation/components/_panels.scss */
+/* line 70, ../components/foundation/scss/foundation/components/_panels.scss */
 .box.reports h1.subheader, .box.reports h2.subheader, .box.reports h3.subheader, .box.reports h4.subheader, .box.reports h5.subheader, .box.reports h6.subheader {
   line-height: 1.4;
 }
@@ -90,10 +91,8 @@ meta.foundation-mq-topbar {
 }
 /* line 6, ../sass/openeyes/components/reports/_navigation.scss */
 .navigation.reports a {
-  -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
+  -webkit-border-radius: 3px;
   border-radius: 3px;
   background: #fff;
   display: block;
