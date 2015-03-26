@@ -5,7 +5,7 @@
   "require": {
     "openeyes/module-installer": "*",
     "yiisoft/yii": "1.1.14",
-    "openeyes/oph-ci-examination": "dev-master",
+    "openeyes/oph-ci-examination": "dev-develop",
     "openeyes/oph-co-correspondence": "dev-develop",
     "openeyes/oph-ci-phasing": "dev-master",
     "openeyes/oph-co-therapyapplication": "dev-master",
