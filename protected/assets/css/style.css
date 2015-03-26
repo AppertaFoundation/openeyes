@@ -4098,17 +4098,21 @@ button.disabled, button.inactive, .button.inactive, input[type="submit"].inactiv
   background: #1e55c1;
   color: white;
 }
-/* line 44, ../sass/openeyes/components/_navigation.scss */
+/* line 43, ../sass/openeyes/components/_navigation.scss */
+.navigation.user li[data-dropdown] > a::after {
+  content: "\0025BC";
+}
+/* line 48, ../sass/openeyes/components/_navigation.scss */
 .navigation.user a {
   background: #cdd9e3;
   padding: 6px 4px 2px 4px;
 }
-/* line 47, ../sass/openeyes/components/_navigation.scss */
+/* line 51, ../sass/openeyes/components/_navigation.scss */
 .navigation.user a:hover, .navigation.user a:focus {
   background: white;
 }
 @media screen {
-  /* line 53, ../sass/openeyes/components/_navigation.scss */
+  /* line 57, ../sass/openeyes/components/_navigation.scss */
   .stuck .navigation.user {
     display: none;
   }
@@ -4118,6 +4122,45 @@ button.disabled, button.inactive, .button.inactive, input[type="submit"].inactiv
   .navigation.user {
     display: none;
   }
+}
+/* line 64, ../sass/openeyes/components/_navigation.scss */
+.navigation.user .sub-menu-item {
+  position: absolute;
+  left: -9999px;
+  list-style: none;
+  margin-left: 0;
+  outline: none;
+  width: 100%;
+  max-height: none;
+  height: auto;
+  background: #FFFFFF;
+  border: solid 1px #cccccc;
+  font-size: 0.875rem;
+  z-index: 89;
+  max-width: 100px;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border-top: none;
+}
+/* line 73, ../components/foundation/scss/foundation/components/_dropdown.scss */
+.navigation.user .sub-menu-item > *:first-child {
+  margin-top: 0;
+}
+/* line 74, ../components/foundation/scss/foundation/components/_dropdown.scss */
+.navigation.user .sub-menu-item > *:last-child {
+  margin-bottom: 0;
+}
+/* line 70, ../sass/openeyes/components/_navigation.scss */
+.navigation.user .sub-menu-item li {
+  margin: 0;
+  padding: 0;
+}
+/* line 73, ../sass/openeyes/components/_navigation.scss */
+.navigation.user .sub-menu-item li a {
+  width: 100%;
+  display: block;
+  padding: 2px;
 }
 
 /* line 38, ../sass/openeyes/components/_pagination.scss */
