@@ -275,11 +275,31 @@ return array(
 				'uri' => '',
 				'position' => 1,
 			),
-			'reports' => array(
-				'title' => 'Reports',
-				'uri' => 'report',
-				'position' => 50,
-				'restricted' => array('Report'),
+			'admin' => array(
+				'title' => 'Admin',
+				'uri' => '#',
+				'position' => 2,
+				'restricted' => array('admin', 'Report'),
+				'sub' => array(
+					'admin' => array(
+						'title' => 'Admin',
+						'uri' => 'admin',
+						'position' => 1,
+						'restricted' => array('admin'),
+					),
+					'audit' => array(
+						'title' => 'Audit',
+						'uri' => 'audit',
+						'position' => 2,
+						'restricted' => array('admin'),
+					),
+					'reports' => array(
+						'title' => 'Reports',
+						'uri' => 'report',
+						'position' => 3,
+						'restricted' => array('Report'),
+					),
+				)
 			),
 			'logout' => array(
 				'title' => 'Logout',
