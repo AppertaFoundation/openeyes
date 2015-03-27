@@ -66,7 +66,7 @@
 ?>
 
 <?php foreach ($items as $i => $row) {
-	$this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model));
+	$this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order));
 }
 
 if (!$get_row && $filters_ready) {

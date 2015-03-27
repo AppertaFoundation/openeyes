@@ -24,7 +24,7 @@ if (!@$options['get_row']) {
 	<div class="box admin">
 		<h2><?php echo $title?></h2>
 <?php }
-$this->widget('GenericAdmin', array('model' => $model, 'items' => $items, 'errors' => $errors) + $options); ?>
+$this->widget('GenericAdmin', array_merge(array('model' => $model, 'items' => $items, 'errors' => $errors), $options)); ?>
 <?php	if (!@$options['get_row']) { ?>
 	</div>
 <?php }

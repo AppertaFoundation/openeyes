@@ -28,7 +28,9 @@ if (@$disabled) {
 	<td>
 		<?php
 		echo CHtml::hiddenField("id[{$i}]",$row->id, $html_options);
-		echo CHtml::hiddenField("display_order[{$i}]",$row->display_order ? $row->display_order : $i, $html_options);
+		if($display_order){
+			echo CHtml::hiddenField("display_order[{$i}]",$row->display_order ? $row->display_order : $i, $html_options);
+		}
 
 		if ($label_field_type) {
 			$this->render('application.widgets.views._generic_admin_' . $label_field_type, array(

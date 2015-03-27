@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,7 +17,6 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class ProcedureSelection extends BaseFieldWidget
 {
 	public $subsections;
@@ -50,8 +50,8 @@ class ProcedureSelection extends BaseFieldWidget
 			}
 		} else {
 			$this->selected_procedures = array();
-			if (isset($_POST['Procedures_'.$this->identifier]) && is_array($_POST['Procedures_'.$this->identifier])) {
-				foreach ($_POST['Procedures_'.$this->identifier] as $proc_id) {
+			if (isset($_POST['Procedures_' . $this->identifier]) && is_array($_POST['Procedures_' . $this->identifier])) {
+				foreach ($_POST['Procedures_' . $this->identifier] as $proc_id) {
 					$proc = Procedure::model()->findByPk($proc_id);
 					$this->selected_procedures[] = $proc;
 					if ($this->durations) {
@@ -63,7 +63,7 @@ class ProcedureSelection extends BaseFieldWidget
 
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-		if ($this->restrict_common == 'unbooked') {
+		if ($this->restrict_common === 'unbooked') {
 			$this->subsections = array();
 		} else {
 			$this->subsections = SubspecialtySubsection::model()->getList($subspecialty_id);
@@ -71,13 +71,15 @@ class ProcedureSelection extends BaseFieldWidget
 		$this->procedures = array();
 		$this->removed_stack = array();
 		if (empty($this->subsections)) {
-			foreach (Procedure::model()->getListBySubspecialty($subspecialty_id, $this->restrict_common) as $proc_id => $name) {
+			foreach (Procedure::model()->getListBySubspecialty($subspecialty_id,
+				$this->restrict_common) as $proc_id => $name) {
 				if (empty($_POST)) {
 					$found = false;
 					if ($this->selected_procedures) {
 						foreach ($this->selected_procedures as $procedure) {
 							if ($procedure->id == $proc_id) {
-								$found = true; break;
+								$found = true;
+								break;
 							}
 						}
 					}
@@ -87,7 +89,7 @@ class ProcedureSelection extends BaseFieldWidget
 						$this->removed_stack[] = "{id: $proc_id, name: '$name'}";
 					}
 				} else {
-					if (!@$_POST['Procedures_'.$this->identifier] || !in_array($proc_id,$_POST['Procedures_'.$this->identifier])) {
+					if (!@$_POST['Procedures_' . $this->identifier] || !in_array($proc_id, $_POST['Procedures_' . $this->identifier])) {
 						$this->procedures[$proc_id] = $name;
 					} else {
 						$this->removed_stack[] = "{id: $proc_id, name: '$name'}";
@@ -106,16 +108,16 @@ class ProcedureSelection extends BaseFieldWidget
 		$this->class = get_class($this->element);
 
 		if ($this->read_only) {
-			$this->render(get_class($this)."_readonly");
+			$this->render(get_class($this) . "_readonly");
 		} else {
 			$this->render(get_class($this));
 		}
 	}
 
-	public function render($view, $data=null, $return=false)
+	public function render($view, $data = null, $return = false)
 	{
 		if ($this->layout) {
-			$view .= '_'.$this->layout;
+			$view .= '_' . $this->layout;
 		}
 		parent::render($view, $data, $return);
 	}
