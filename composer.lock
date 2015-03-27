@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5ef9c22bfd4d56097f0e381ceec1eabf",
+    "hash": "7753a9c3e6a891412cf2e67eaea126e1",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -34,12 +34,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OpenEyesInstaller.git",
-                "reference": "df562f74396c2ee582a0369f3a6279a07e065731"
+                "reference": "90210c694b7d34bff52a4c1868a93bf3dbe5a1a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OpenEyesInstaller/zipball/df562f74396c2ee582a0369f3a6279a07e065731",
-                "reference": "df562f74396c2ee582a0369f3a6279a07e065731",
+                "url": "https://api.github.com/repos/openeyes/OpenEyesInstaller/zipball/90210c694b7d34bff52a4c1868a93bf3dbe5a1a9",
+                "reference": "90210c694b7d34bff52a4c1868a93bf3dbe5a1a9",
                 "shasum": ""
             },
             "require": {
@@ -56,7 +56,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "description": "Instlaler plugin for OpenEyes modules",
-            "time": "2015-03-02 16:06:49"
+            "time": "2015-03-27 10:47:09"
         },
         {
             "name": "openeyes/oph-ci-examination",
@@ -219,18 +219,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrConsent.git",
-                "reference": "a7cfc071e833e08cf05a68dd40c3c41abea3cebd"
+                "reference": "1d1bb8f855d0c9b5e44c3d8e27512e0e91822ecf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/a7cfc071e833e08cf05a68dd40c3c41abea3cebd",
-                "reference": "a7cfc071e833e08cf05a68dd40c3c41abea3cebd",
+                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/1d1bb8f855d0c9b5e44c3d8e27512e0e91822ecf",
+                "reference": "1d1bb8f855d0c9b5e44c3d8e27512e0e91822ecf",
                 "shasum": ""
             },
-            "type": "library",
+            "require": {
+                "openeyes/module-installer": "*"
+            },
+            "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Generates consent forms for scheduled and unscheduled operations",
-            "time": "2015-02-26 13:22:54"
+            "time": "2015-03-27 11:52:11"
         },
         {
             "name": "openeyes/oph-tr-intravitreal-injection",
@@ -324,16 +327,16 @@
         },
         {
             "name": "openeyes/oph-tr-operationnote",
-            "version": "dev-master",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "fabbb2846c64ee591b9410c0fcde1d46a9bef5ea"
+                "reference": "d49a04fd13cfb919f05ae362a67993ac64b1189e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/fabbb2846c64ee591b9410c0fcde1d46a9bef5ea",
-                "reference": "fabbb2846c64ee591b9410c0fcde1d46a9bef5ea",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/d49a04fd13cfb919f05ae362a67993ac64b1189e",
+                "reference": "d49a04fd13cfb919f05ae362a67993ac64b1189e",
                 "shasum": ""
             },
             "require": {
@@ -343,7 +346,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-03-05 15:16:02"
+            "time": "2015-03-27 10:44:36"
         },
         {
             "name": "openeyes/patient-ticketing",
