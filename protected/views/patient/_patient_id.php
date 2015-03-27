@@ -53,7 +53,7 @@
 			</span>
 
 			<?php
-			$widgets = Yii::app()->params['patient_summary_id_widgets']
+			$widgets = Yii::app()->params['patient_summary_id_widgets'];
 			if (is_array($widgets)) {
 				foreach ($widgets as $w) {
 					$this->widget($w['class'], array(
