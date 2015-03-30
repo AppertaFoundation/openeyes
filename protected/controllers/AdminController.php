@@ -337,10 +337,10 @@ class AdminController extends BaseAdminController
 		Audit::add('admin-User','list');
 
 		$criteria = new CDbCriteria;
-		if (!empty($_REQUEST['search'])) {
-			$criteria->compare("LOWER(username)", strtolower($_REQUEST['search']),true, 'OR');
-			$criteria->compare("LOWER(first_name)",strtolower($_REQUEST['search']),true, 'OR');
-			$criteria->compare("LOWER(last_name)",strtolower($_REQUEST['search']),true, 'OR');
+		if (!empty($_POST['search'])) {
+			$criteria->compare("LOWER(username)", strtolower($_POST['search']),true, 'OR');
+			$criteria->compare("LOWER(first_name)",strtolower($_POST['search']),true, 'OR');
+			$criteria->compare("LOWER(last_name)",strtolower($_POST['search']),true, 'OR');
 		}
 
 		$pagination = $this->initPagination(User::model(), $criteria);
@@ -472,19 +472,27 @@ class AdminController extends BaseAdminController
 		echo $result;
 	}
 
+	/**
+	 * @param bool $id
+	 * @throws Exception
+	 */
 	public function actionFirms($id=false)
 	{
 		Audit::add('admin-Firm','list');
-
-		$criteria = new CdbCriteria;
-		$pagination = $this->initPagination(Firm::model(), $criteria);
+		$search = new ModelSearch(Firm::model());
+		$search->addSearchItem('name');
+		$search->addSearchItem('pas_code');
 
 		$this->render('/admin/firms',array(
-			'firms' => Firm::model()->findAll($criteria),
-			'pagination' => $pagination,
+			'firms' => $search->retrieveResults(),
+			'pagination' => $search->initPagination(),
+			'search' => $search
 		));
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function actionAddFirm()
 	{
 		$firm = new Firm;
