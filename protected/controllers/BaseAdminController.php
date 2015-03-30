@@ -54,9 +54,22 @@ class BaseAdminController extends BaseController
 	}
 
 	/**
-	 * @param string $title
-	 * @param string $model
-	 * @param array $options
+	 * Allows generic CRUD operations on models
+	 *
+	 * @param string $title	The title of the form to be rendered
+	 * @param string $model The model for which we are generating a form
+	 * @param array $options An array of options that will configure how the form is generated.
+	 * 							label_field - Will set which field is displayed as a text input for the model
+	 * 							extra_fields - An array of arrays for which extra fields to render. Each array should contain
+	 *							an attribute of the model in assigned to field. Passing a type and model will allow
+	 * 							either a dropdown or search box for finding related objects eg:
+	 *							array(
+	 *								'field' => 'site_id',
+	 *								'type' => 'lookup',
+	 *								'model' => 'Site'
+	 *							),
+	 * 							filter_fields - Will allow you to filter results, expects an array the same as extra_fields
+	 *
 	 * @param integer $key - if provided will only generate a single row for a null instance of the $model (for ajax additions)
 	 *
 	 */
@@ -71,18 +84,21 @@ class BaseAdminController extends BaseController
 
 		$columns = $model::model()->metadata->columns;
 
-		foreach ($options['extra_fields'] as &$extra_field) {
-			switch ($extra_field['type']) {
+		foreach ($options['extra_fields'] as $extraKey => $extraField) {
+			switch ($extraField['type']) {
 				case 'lookup':
-					$extra_field['allow_null'] = $columns[$extra_field['field']]->allowNull;
+					$options['extra_fields'][$extraKey]['allow_null'] = $columns[$extraField['field']]->allowNull;
 					break;
 			}
 		}
 
-		foreach ($options['filter_fields'] as &$filter_field) {
-			$filter_field['value'] = @$_GET[$filter_field['field']];
+		foreach ($options['filter_fields'] as $filterKey => $filterField) {
+			$options['filter_fields'][$filterKey]['value'] = null;
+			if(isset($_GET[$filterField['field']])){
+				$options['filter_fields'][$filterKey]['value'] = $_GET[$filterField['field']];
+			}
 
-			if (!$filter_field['value'] && !$columns[$filter_field['field']]->allowNull) {
+			if ($options['filter_fields'][$filterKey]['value'] === null && !$columns[$filterField['field']]->allowNull) {
 				$options['filters_ready'] = false;
 			}
 		}
