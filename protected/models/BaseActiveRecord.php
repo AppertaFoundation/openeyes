@@ -50,6 +50,8 @@ class BaseActiveRecord extends CActiveRecord
 	// (whilst developing this feature, will allow other elements to continue to work)
 	protected $auto_update_relations = false;
 
+	protected $originalAttributes = array();
+
 	public function canAutocomplete()
 	{
 		return false;
@@ -441,6 +443,31 @@ class BaseActiveRecord extends CActiveRecord
 	}
 
 	/**
+	 * Stores the data in an array afterFind so when saving we can check if the value is dirty or not.
+	 */
+	protected function afterFind()
+	{
+		$this->originalAttributes = $this->getAttributes();
+		parent::afterFind();
+	}
+
+	/**
+	 * Checks if an attribute is dirty
+	 *
+	 * @param $attrName
+	 * @return bool
+	 */
+	public function isAttributeDirty($attrName)
+	{
+		if(!isset($this->originalAttributes[$attrName])){
+			return true;
+		}
+
+		return $this->getAttribute($attrName) !== $this->originalAttributes[$attrName];
+	}
+
+
+	/**
 	 * Returns a date field in NHS format
 	 *
 	 * @param string $attribute
@@ -454,6 +481,11 @@ class BaseActiveRecord extends CActiveRecord
 		}
 	}
 
+	/**
+	 * @param $attribute
+	 * @param string $empty_string
+	 * @return string
+	 */
 	public function NHSDateAsHTML($attribute, $empty_string = '-')
 	{
 		if ($value = $this->getAttribute($attribute)) {
@@ -461,6 +493,14 @@ class BaseActiveRecord extends CActiveRecord
 		}
 	}
 
+	/**
+	 * @param $target
+	 * @param $action
+	 * @param null $data
+	 * @param null $log_message
+	 * @param array $properties
+	 * @throws Exception
+	 */
 	public function audit($target, $action, $data=null, $log_message=null, $properties=array())
 	{
 		foreach (array('patient_id','episode_id','event_id','user_id','site_id','firm_id') as $field) {
@@ -472,6 +512,11 @@ class BaseActiveRecord extends CActiveRecord
 		Audit::add($target, $action, $data, $log_message, $properties);
 	}
 
+	/**
+	 * @param $object
+	 * @param array $params
+	 * @return mixed
+	 */
 	static public function cloneObject($object, $params=array()) {
 		$class = get_class($object);
 
@@ -496,7 +541,6 @@ class BaseActiveRecord extends CActiveRecord
 	 * @return bool
 	 * @throws Exception
 	 */
-
 	protected function beforeDelete()
 	{
 		if ($this->auto_update_relations) {
@@ -534,7 +578,12 @@ class BaseActiveRecord extends CActiveRecord
 		return parent::beforeDelete();
 	}
 
-	public function textWithLineBreaks($field) {
+	/**
+	 * @param $field
+	 * @return mixed
+	 */
+	public function textWithLineBreaks($field)
+	{
 		return str_replace("\n",'<br/>',CHtml::encode($this->$field));
 	}
 

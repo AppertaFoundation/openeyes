@@ -8,6 +8,10 @@
  */
 class UniqueSiteFirmValidator extends CValidator
 {
+	/**
+	 * @param CModel $object
+	 * @param string $attribute
+	 */
 	protected function validateAttribute($object, $attribute)
 	{
 
