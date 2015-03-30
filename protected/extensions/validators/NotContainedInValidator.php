@@ -27,6 +27,11 @@ class NotContainedInValidator extends CValidator
 	 */
 	protected function validateAttribute($object, $attribute)
 	{
+
+		if(!$object->isAttributeDirty($attribute)){
+			return;
+		}
+
 		if($this->model === null){
 			//currently unsupported
 			return;
@@ -51,7 +56,7 @@ class NotContainedInValidator extends CValidator
 	 */
 	protected function validateContainedInModel($value)
 	{
-		if(!class_exists($this->model) || is_subclass_of($this->model, 'BaseActiveRecord')){
+		if(!class_exists($this->model) || !is_subclass_of($this->model, 'BaseActiveRecord')){
 			return;
 		}
 		$instance = new $this->model;

@@ -50,6 +50,8 @@ class BaseActiveRecord extends CActiveRecord
 	// (whilst developing this feature, will allow other elements to continue to work)
 	protected $auto_update_relations = false;
 
+	protected $originalAttributes = array();
+
 	public function canAutocomplete()
 	{
 		return false;
@@ -439,6 +441,25 @@ class BaseActiveRecord extends CActiveRecord
 		}
 		parent::afterSave();
 	}
+
+	/**
+	 * Stores the data in an array afterFind so when saving we can check if the value is dirty or not.
+	 */
+	protected function afterFind()
+	{
+		$this->originalAttributes = $this->getAttributes();
+		parent::afterFind();
+	}
+
+	public function isAttributeDirty($attrName)
+	{
+		if(!isset($this->originalAttributes[$attrName])){
+			return true;
+		}
+
+		return $this->getAttribute($attrName) !== $this->originalAttributes[$attrName];
+	}
+
 
 	/**
 	 * Returns a date field in NHS format
