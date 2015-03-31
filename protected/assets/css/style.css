@@ -7018,3 +7018,33 @@ tfoot.pagination-container .pagination-view-all {
 .letter-logo {
   float: right;
 }
+
+/* line 2, ../sass/openeyes/components/_generic-search.scss */
+#generic-search-form > div {
+  display: flex;
+  flex-wrap: wrap;
+}
+/* line 5, ../sass/openeyes/components/_generic-search.scss */
+#generic-search-form > div div {
+  width: 25%;
+  padding-top: 5px;
+}
+/* line 8, ../sass/openeyes/components/_generic-search.scss */
+#generic-search-form > div div.submit-row {
+  align-self: flex-end;
+}
+/* line 11, ../sass/openeyes/components/_generic-search.scss */
+#generic-search-form > div div.single-search-field {
+  width: 50%;
+}
+/* line 15, ../sass/openeyes/components/_generic-search.scss */
+#generic-search-form > div div label {
+  width: 95%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* line 21, ../sass/openeyes/components/_generic-search.scss */
+#generic-search-form > div div input {
+  width: 95%;
+}
