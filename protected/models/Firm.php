@@ -101,9 +101,13 @@ class Firm extends BaseActiveRecordVersioned
 			'service_subspecialty_assignment_id' => 'Service Subspecialty Assignment',
 			'pas_code' => 'Pas Code',
 			'name' => 'Name',
+			'serviceSubspecialtyAssignment.subspecialty.name' => 'Subspeciality Name',
 		);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function behaviors()
 	{
 		return array(
@@ -177,6 +181,9 @@ class Firm extends BaseActiveRecordVersioned
 		return $result;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getListWithSpecialties()
 	{
 		$firms = Yii::app()->db->createCommand()
@@ -195,6 +202,9 @@ class Firm extends BaseActiveRecordVersioned
 		return $data;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getListWithSpecialtiesAndEmergency()
 	{
 		$list = array('NULL'=>'Emergency');
@@ -204,6 +214,9 @@ class Firm extends BaseActiveRecordVersioned
 		return $list;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getConsultantName()
 	{
 		if ($consultant = $this->consultant) {
@@ -212,11 +225,17 @@ class Firm extends BaseActiveRecordVersioned
 		return 'NO CONSULTANT';
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getReportDisplay()
 	{
 		return $this->getNameAndSubspecialty();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getNameAndSubspecialty()
 	{
 		if ($this->serviceSubspecialtyAssignment) {
@@ -226,6 +245,9 @@ class Firm extends BaseActiveRecordVersioned
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getNameAndSubspecialtyCode()
 	{
 		if ($this->serviceSubspecialtyAssignment) {
@@ -257,6 +279,9 @@ class Firm extends BaseActiveRecordVersioned
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function beforeSave()
 	{
 		if ($this->subspecialty_id) {
@@ -266,6 +291,9 @@ class Firm extends BaseActiveRecordVersioned
 		return parent::beforeSave();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getTreeName()
 	{
 		return $this->name.' '.$this->serviceSubspecialtyAssignment->subspecialty->ref_spec;

@@ -10,33 +10,46 @@
 
 <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	'id'=>'generic-search-form',
-	'enableAjaxValidation'=>false,
-	'layoutColumns' => array(
-		'label' => 10,
-		'field' => 5
-	)
+	'enableAjaxValidation'=>false
 ));?>
+	<div>
 	<?php foreach($search->getSearchItems() as $key => $value):
 		$name = 'search[' . $key . ']';
 		if(is_array($value)):
-			$comparePlaceholder = 'Search for ' . $search->getModel()->getAttributeLabel($key);
+			$comparePlaceholder = $search->getModel()->getAttributeLabel($key);
 			foreach($value as $searchKey => $searchValue):
 				if($searchKey === 'compare_to'):
 					foreach($searchValue as $compareTo):
 						$comparePlaceholder .= ', ' . $search->getModel()->getAttributeLabel($compareTo);
-						echo CHtml::hiddenField('search[' . $key . '][compare_to][]', $compareTo);
+						echo CHtml::hiddenField('search[' . $key . '][compare_to]['.$compareTo.']', $compareTo);
 					endforeach;
 				endif;
-			endforeach;
+			endforeach;?>
+			<div class="single-search-field">
+			<?php
+			$name .= '[value]';
 			echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
 				'autocomplete'=>Yii::app()->params['html_autocomplete'],
 				'placeholder' => $comparePlaceholder
+			));?>
+			</div>
+		<?php
+		else: ?>
+			<div>
+			<?php
+			echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
+				'autocomplete'=>Yii::app()->params['html_autocomplete'],
+				'placeholder' => $search->getModel()->getAttributeLabel($key)
 			));
-		else:
-			echo CHtml::label($search->getModel()->getAttributeLabel($key), Chtml::getIdByName($name));
-			echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array('autocomplete'=>Yii::app()->params['html_autocomplete']));
+			?>
+			</div>
+		<?php
 		endif;
 	endforeach;
 	?>
-	<?php echo $form->formActions(array('submit' => 'search', 'cancel' => false));?>
+		<div class="submit-row">
+			<button class="button small primary event-action" name="save" type="submit">Search</button>
+		</div>
+	</div>
+
 <?php $this->endWidget()?>

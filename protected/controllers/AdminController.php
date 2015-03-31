@@ -480,8 +480,14 @@ class AdminController extends BaseAdminController
 	{
 		Audit::add('admin-Firm','list');
 		$search = new ModelSearch(Firm::model());
-		$search->addSearchItem('name');
-		$search->addSearchItem('pas_code');
+		$search->addSearchItem('name', array(
+			'compare_to' => array(
+				'pas_code',
+				'consultant.first_name',
+				'consultant.last_name',
+				'serviceSubspecialtyAssignment.subspecialty.name'
+			)
+		));
 
 		$this->render('/admin/firms',array(
 			'firms' => $search->retrieveResults(),
