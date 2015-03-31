@@ -476,7 +476,7 @@ class AdminController extends BaseAdminController
 	 * @param bool $id
 	 * @throws Exception
 	 */
-	public function actionFirms($id=false)
+	public function actionFirms()
 	{
 		Audit::add('admin-Firm','list');
 		$search = new ModelSearch(Firm::model());
@@ -490,8 +490,8 @@ class AdminController extends BaseAdminController
 		));
 
 		$this->render('/admin/firms',array(
-			'firms' => $search->retrieveResults(),
 			'pagination' => $search->initPagination(),
+			'firms' => $search->retrieveResults(),
 			'search' => $search
 		));
 	}

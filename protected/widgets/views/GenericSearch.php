@@ -10,7 +10,8 @@
 
 <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	'id'=>'generic-search-form',
-	'enableAjaxValidation'=>false
+	'enableAjaxValidation'=>false,
+	'method' => 'get'
 ));?>
 	<div>
 	<?php foreach($search->getSearchItems() as $key => $value):
