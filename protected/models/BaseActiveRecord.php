@@ -466,6 +466,20 @@ class BaseActiveRecord extends CActiveRecord
 		return $this->getAttribute($attrName) !== $this->originalAttributes[$attrName];
 	}
 
+	/**
+	 * Gets the clean version of an attribute, returns empty string if there was no clean version.
+	 *
+	 * @param $attrName
+	 * @return string
+	 */
+	public function getCleanAttribute($attrName){
+		if(!isset($this->originalAttributes[$attrName])){
+			return '';
+		}
+
+		return $this->originalAttributes[$attrName];
+	}
+
 
 	/**
 	 * Returns a date field in NHS format
