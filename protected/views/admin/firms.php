@@ -35,6 +35,7 @@
 					<th>Name</th>
 					<th>Subspecialty</th>
 					<th>Consultant</th>
+					<th>Active</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -45,8 +46,9 @@
 						<td><?php echo $firm->id?></td>
 						<td><?php echo $firm->pas_code?></td>
 						<td><?php echo $firm->name?></td>
-						<td><?php echo $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None'?></td>
-						<td><?php echo $firm->consultant ? $firm->consultant->fullName : 'None'?></td>
+						<td><?php echo (($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None')?></td>
+						<td><?php echo (($firm->consultant) ? $firm->consultant->fullName : 'None')?></td>
+						<td><?php echo (($firm->active) ? 'Active' : 'Inactive')?></td>
 					</tr>
 				<?php }?>
 			</tbody>
