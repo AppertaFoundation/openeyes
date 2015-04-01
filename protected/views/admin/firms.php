@@ -22,6 +22,8 @@
 
 	<h2>Firms</h2>
 
+	<?php $this->widget('GenericSearch', array('search' => $search)); ?>
+
 	<form id="admin_firms">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 		<table class="grid">
