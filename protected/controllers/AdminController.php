@@ -482,6 +482,7 @@ class AdminController extends BaseAdminController
 		$search = new ModelSearch(Firm::model());
 		$search->addSearchItem('name', array(
 			'compare_to' => array(
+				'id',
 				'pas_code',
 				'consultant.first_name',
 				'consultant.last_name',
