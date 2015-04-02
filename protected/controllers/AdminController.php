@@ -481,6 +481,7 @@ class AdminController extends BaseAdminController
 		Audit::add('admin-Firm','list');
 		$search = new ModelSearch(Firm::model());
 		$search->addSearchItem('name', array(
+			'type' => 'compare',
 			'compare_to' => array(
 				'id',
 				'pas_code',
@@ -489,6 +490,7 @@ class AdminController extends BaseAdminController
 				'serviceSubspecialtyAssignment.subspecialty.name'
 			)
 		));
+		$search->addSearchItem('active', array('type' => 'boolean'));
 
 		$this->render('/admin/firms',array(
 			'pagination' => $search->initPagination(),

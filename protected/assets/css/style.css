@@ -7045,6 +7045,6 @@ tfoot.pagination-container .pagination-view-all {
   text-overflow: ellipsis;
 }
 /* line 21, ../sass/openeyes/components/_generic-search.scss */
-#generic-search-form > div div input {
+#generic-search-form > div div input[type=text], #generic-search-form > div div select {
   width: 95%;
 }

@@ -18,9 +18,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      input {
+      input[type=text], select {
         width: 95%;
       }
+
     }
   }
 }

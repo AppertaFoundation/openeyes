@@ -14,15 +14,20 @@
  * configuration. To make a model attribute searchable it needs to be added to the searchItems array.
  *
  * It is possible to assign an array of configuration options to this entry in searchItems which will change how the
- * database is queried. For example an array containing compare_to which has an array of other attributes of the model
- * will cause the query to be made against all attributes listed. eg:
+ * database is queried. For example an array containing type of compare and compare_to which has an array of other
+ * attributes of the model will cause the query to be made against all attributes listed. eg:
+ *
  * 	$search->addSearchItem('name', array(
+ * 		'type' => 'compare'
  * 		'compare_to' => array(
  * 			'pas_code',
  * 			'consultant.first_name',
  * 			'consultant.last_name',
  * 		)
  *	));
+ *
+ * If the type is set to boolean the user will be presented with a drop down to include all results or include only one
+ * or exclude only those results.
  *
  * As you can see this works with across relationships, however for clarity in output you need to add the labels to
  * the attributeLabels array of the model ModelSearch was instantiated with.

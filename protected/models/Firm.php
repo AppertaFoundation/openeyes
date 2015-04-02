@@ -102,6 +102,7 @@ class Firm extends BaseActiveRecordVersioned
 			'pas_code' => 'Pas Code',
 			'name' => 'Name',
 			'serviceSubspecialtyAssignment.subspecialty.name' => 'Subspeciality Name',
+			'active' => 'Active'
 		);
 	}
 
