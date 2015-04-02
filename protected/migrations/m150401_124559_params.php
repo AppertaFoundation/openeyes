@@ -2,23 +2,65 @@
 
 class m150401_124559_params extends CDbMigration
 {
+
 	public function up()
 	{
-		$this->createTable(
-			'param',
+		$settings = array(
 			array(
-				'id INT PRIMARY KEY NOT NULL AUTO_INCREMENT',
-				'param_key VARCHAR(255) NOT NULL',
-				'param_value VARCHAR(255) NOT NULL'
+				'key' => 'watermark',
+				'name' => 'User Banner',
+				'data' => '',
+				'default_value' => ''
 			),
-			'engine=innodb charset=utf8 collate=utf8_unicode_ci'
+			array(
+				'key' => 'watermark_admin',
+				'name' => 'Admin Banner',
+				'data' => '',
+				'default_value' => ''
+			),
+			array(
+				'key' => 'helpdesk_email',
+				'name' => 'Helpdesk Email',
+				'data' => '',
+				'default_value' => ''
+			),
+			array(
+				'key' => 'helpdesk_phone',
+				'name' => 'Helpdesk Phone',
+				'data' => '',
+				'default_value' => ''
+			),
+			array(
+				'key' => 'alerts_email',
+				'name' => 'Alerts Email',
+				'data' => '',
+				'default_value' => ''
+			),
+			array(
+				'key' => 'adminEmail',
+				'name' => 'Admin Email',
+				'data' => '',
+				'default_value' => ''
+			)
 		);
-		$this->createIndex('param_key_unq', 'param', 'param_key', true);
+		$this->insert('setting_field_type', array('name' => 'Text Field'));
+		$id = $this->getDbConnection()->createCommand('select id from setting_field_type where name ="Text Field"')->queryRow();
+		if(isset($id['id']) && $id['id']){
+			foreach ($settings as $setting) {
+				$setting['field_type_id'] = $id['id'];
+				$this->insert('setting_metadata', $setting);
+			}
+		}
+
 	}
 
 	public function down()
 	{
-		$this->dropTable('param');
+		$id = $this->getDbConnection()->createCommand('select id from setting_field_type where name ="Text Field"')->queryRow();
+		if(isset($id['id']) && $id['id']){
+			$this->delete('setting_metadata', 'field_type_id = "'.$id['id'].'"');
+		}
+		$this->delete('setting_field_type', 'name = "Text Field"');
 	}
 
 	/*
