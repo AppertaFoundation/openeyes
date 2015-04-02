@@ -98,10 +98,6 @@ class BaseController extends Controller
 			}
 		}
 
-		foreach (Param::model()->findAll() as $param) {
-			Yii::app()->params[$param->param_key] = $param->param_value;
-		}
-
 		$this->setupAssetManager();
 
 		if ($app->params['ab_testing']) {
