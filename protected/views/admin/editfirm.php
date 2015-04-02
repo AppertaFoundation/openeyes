@@ -18,45 +18,56 @@
  */
 ?>
 <div class="box admin">
-	<h2><?php echo ($firm->id ? 'Edit' : 'Add')?> firm</h2>
-	<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+	<h2><?php echo($firm->id ? 'Edit' : 'Add') ?> firm</h2>
+	<?php echo $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'adminform',
-		'enableAjaxValidation'=>false,
-		'focus'=>'#username',
+		'id' => 'adminform',
+		'enableAjaxValidation' => false,
+		'focus' => '#username',
 		'layoutColumns' => array(
 			'label' => 2,
 			'field' => 5
 		)
-	))?>
-		<?php echo $form->textField($firm,'pas_code',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
-		<?php echo $form->textField($firm,'name',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+	)) ?>
+	<?php echo $form->textField($firm, 'pas_code', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+	<?php echo $form->textField($firm, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
 
-		<div id="div_Firm_subspecialty_id" class="row field-row">
-			<div class="large-2 column">
-				<label for="Firm_subspecialty_id">Subspecialty:</label>
-			</div>
-			<div class="large-5 column end">
-				<?php echo CHtml::dropDownList('Firm[subspecialty_id]',$firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null,CHtml::listData(Subspecialty::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
-			</div>
+	<div id="div_Firm_subspecialty_id" class="row field-row">
+		<div class="large-2 column">
+			<label for="Firm_subspecialty_id">Subspecialty:</label>
 		</div>
-		<div id="div_Firm_consultant_id" class="row field-row">
-			<div class="large-2 column">
-				<label for="Firm_consultant_id">Consultant:</label>
-			</div>
-			<div class="large-5 column end">
-				<?php echo CHtml::dropDownList('Firm[consultant_id]',$firm->consultant_id,CHtml::listData(User::model()->findAll(array('order'=>'first_name,last_name')),'id','fullName'),array('empty'=>'- None -'))?>
-			</div>
+		<div class="large-5 column end">
+			<?php echo CHtml::dropDownList('Firm[subspecialty_id]',
+				$firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null,
+				CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
 		</div>
+	</div>
+	<div id="div_Firm_consultant_id" class="row field-row">
+		<div class="large-2 column">
+			<label for="Firm_consultant_id">Consultant:</label>
+		</div>
+		<div class="large-5 column end">
+			<?php echo CHtml::dropDownList('Firm[consultant_id]', $firm->consultant_id,
+				CHtml::listData(User::model()->findAll(array('order' => 'first_name,last_name')), 'id', 'fullName'), array('empty' => '- None -')) ?>
+		</div>
+	</div>
+	<div id="div_Firm_consultant_id" class="row field-row">
+		<div class="large-2 column">
+			<label for="Firm_active">Active:</label>
+		</div>
+		<div class="large-5 column end">
+			<?php echo CHtml::activeCheckBox($firm, 'active') ?>
+		</div>
+	</div>
 
-		<?php echo $form->formActions(); ;?>
+	<?php echo $form->formActions();; ?>
 
-	<?php $this->endWidget()?>
+	<?php $this->endWidget() ?>
 
-	<?php if($siteSecretaries): ?>
+	<?php if ($siteSecretaries): ?>
 		<?php echo $this->renderPartial('application.modules.OphCoCorrespondence.views.admin.secretary.edit', array(
-				'errors'=> array(),
+				'errors' => array(),
 				'siteSecretaries' => $siteSecretaries
 			)
 		)

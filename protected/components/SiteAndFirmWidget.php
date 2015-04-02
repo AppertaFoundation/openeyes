@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,7 +17,6 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class SiteAndFirmWidget extends CWidget
 {
 	public $title = 'Please confirm Site and Firm';
@@ -88,37 +88,44 @@ class SiteAndFirmWidget extends CWidget
 		$firms = array();
 		if ($preferred_firms = $user->preferred_firms) {
 			foreach ($preferred_firms as $preferred_firm) {
-				if (empty($user_firm_ids) || in_array($preferred_firm->id,$user_firm_ids)) {
-					if (!$this->subspecialty || ($preferred_firm->serviceSubspecialtyAssignment && $this->subspecialty->id == $preferred_firm->serviceSubspecialtyAssignment->subspecialty_id)) {
-						if ($preferred_firm->serviceSubspecialtyAssignment) {
-							$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name ({$preferred_firm->serviceSubspecialtyAssignment->subspecialty->name})";
-						} else {
-							$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name";
-						}
+				if (
+					$preferred_firm->active &&
+					(count($user_firm_ids) === 0 || in_array($preferred_firm->id, $user_firm_ids)) &&
+					(!$this->subspecialty || ($preferred_firm->serviceSubspecialtyAssignment && $this->subspecialty->id == $preferred_firm->serviceSubspecialtyAssignment->subspecialty_id))
+				) {
+					if ($preferred_firm->serviceSubspecialtyAssignment) {
+						$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name ({$preferred_firm->serviceSubspecialtyAssignment->subspecialty->name})";
+					} else {
+						$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name";
 					}
 				}
+
 			}
 		}
 
 		foreach ($this->controller->firms as $firm_id => $firm_label) {
-			if (empty($user_firm_ids) || in_array($firm_id,$user_firm_ids)) {
-				if (!isset($firms['Recent'][$firm_id])) {
-					$firm = Firm::model()->findByPk($firm_id);
-					if (!$this->subspecialty || ($firm->serviceSubspecialtyAssignment && $firm->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id)) {
-						if ($preferred_firms) {
-							$firms['Other'][$firm_id] = $firm_label;
-						} else {
-							$firms[$firm_id] = $firm_label;
-						}
+			if ((count($user_firm_ids) === 0 || in_array($firm_id,
+						$user_firm_ids)) && !isset($firms['Recent'][$firm_id])
+			) {
+				$firm = Firm::model()->findByPk($firm_id);
+				if ($firm->active &&
+					(!$this->subspecialty ||
+						($firm->serviceSubspecialtyAssignment && $firm->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id)
+					)
+				) {
+					if ($preferred_firms) {
+						$firms['Other'][$firm_id] = $firm_label;
+					} else {
+						$firms[$firm_id] = $firm_label;
 					}
 				}
 			}
 		}
 
 		$this->render('SiteAndFirmWidget', array(
-				'model' => $model,
-				'firms' => $firms,
-				'sites' => CHtml::listData($sites, 'id', 'short_name'),
+			'model' => $model,
+			'firms' => $firms,
+			'sites' => CHtml::listData($sites, 'id', 'short_name'),
 		));
 	}
 }
