@@ -1628,23 +1628,24 @@ class AdminController extends BaseAdminController
 
 		$errors = array();
 
-		foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {
-			if (@$_POST[$metadata->key]) {
-				if (!$setting = $metadata->getSetting($metadata->key,null,true)) {
-					$setting = new SettingInstallation;
-					$setting->key = $metadata->key;
-				}
+		if(Yii::app()->request->isPostRequest) {
+			foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {
+				if (@$_POST[$metadata->key]) {
+					if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
+						$setting = new SettingInstallation;
+						$setting->key = $metadata->key;
+					}
 
-				$setting->value = @$_POST[$metadata->key];
+					$setting->value = @$_POST[$metadata->key];
 
-				if (!$setting->save()) {
-					$errors = $setting->errors;
-				} else {
-					$this->redirect(array('/admin/settings'));
+					if (!$setting->save()) {
+						$errors = $setting->errors;
+					} else {
+						$this->redirect(array('/admin/settings'));
+					}
 				}
 			}
 		}
-
 		$this->render('/admin/edit_setting',array('metadata' => $metadata, 'errors' => $errors));
 	}
 
