@@ -27,6 +27,12 @@ $config = array(
 		'session' => array(
 			'timeout' => 86400
 		),
+		'mailer' => array(
+			// Setting the mailer mode to null will suppress email
+			//'mode' => null
+			// Mail can be diverted by setting the divert array
+			//'divert' => array('foo@example.org', 'bar@example.org')
+		),
 		/*
 		'cacheBuster' => array(
 			'time' => '2013062101',
@@ -94,7 +100,7 @@ $config = array(
 		//'log_events' => true,
 		'specialty_codes' => array(130),
 		//'default_site_code' => '',
-		'specialty_sort' => array(130, 'SUP')
+		'specialty_sort' => array(130, 'SUP'),
 	),
 );
 
