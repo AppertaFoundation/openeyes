@@ -19,20 +19,20 @@
 ?>
 <div class="admin box">
 
-	<h2>Firms</h2>
+	<h2><?php echo $admin->getModelName(); ?></h2>
 
 	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch())); ?>
 
-	<form id="admin_firms">
+	<form id="generic-admin-list">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 		<table class="grid">
 			<thead>
-			<tr>
-				<th><input type="checkbox" name="selectall" id="selectall" /></th>
-				<?php foreach($admin->getListFields() as $listItem):?>
-				<th><?php echo $admin->getModel()->getAttributeLabel($listItem);?></th>
-				<?php endforeach; ?>
-			</tr>
+				<tr>
+					<th><input type="checkbox" name="selectall" id="selectall" /></th>
+					<?php foreach($admin->getListFields() as $listItem):?>
+					<th><?php echo $admin->getModel()->getAttributeLabel($listItem);?></th>
+					<?php endforeach; ?>
+				</tr>
 			</thead>
 			<tbody>
 			<?php
@@ -40,21 +40,21 @@
 				<tr class="clickable" data-id="<?php echo $row->id?>" data-uri="admin/editFirm/<?php echo $row->id?>">
 					<td><input type="checkbox" name="firms[]" value="<?php echo $row->id?>" /></td>
 					<?php foreach($admin->getListFields() as $listItem):?>
-						<td><?php echo $row->getAttribute($listItem);?></td>
+						<td><?php echo $row->$listItem;?></td>
 					<?php endforeach; ?>
 				</tr>
 			<?php }?>
 			</tbody>
 			<tfoot class="pagination-container">
-			<tr>
-				<td colspan="6">
-					<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
-					<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
-					<?php echo $this->renderPartial('//admin/_pagination',array(
-						'pagination' => $admin->getSearch()->initPagination()
-					))?>
-				</td>
-			</tr>
+				<tr>
+					<td colspan="6">
+						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo $this->renderPartial('//admin/_pagination',array(
+							'pagination' => $admin->getSearch()->initPagination()
+						))?>
+					</td>
+				</tr>
 			</tfoot>
 		</table>
 	</form>

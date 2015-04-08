@@ -17,23 +17,34 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Class ProceduresController
+ */
 class ProceduresController extends BaseAdminController
 {
 	public $layout = 'admin';
 	public $items_per_page = 30;
 
+	/**
+	 * Lists procedures
+	 *
+	 * @throws CHttpException
+	 */
 	public function actionList()
 	{
 		$admin = new Admin(Procedure::model(), $this);
 		$admin->setListFields(array(
-			'term',
-			'snomed_code',
-			'default_duration',
-			'aliases'
+							'term',
+							'snomed_code',
+							'opcsCodes.name',
+							'default_duration',
+							'aliases',
+							'has_benefits',
+							'has_complications',
+							'active'
 		));
 		$admin->searchAll();
-		$admin->getSearch()->addSearchItem('active', array('type' => 'boolean'));
+		$admin->getSearch()->addActiveFilter();
 		$admin->listModel();
-
 	}
 }
