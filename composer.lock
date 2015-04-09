@@ -108,12 +108,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCoCorrespondence.git",
-                "reference": "80bd0fbb028b3bade3f9873b2dc469605fbc3a98"
+                "reference": "89baae6e559505edc80560982074afbab38d02aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/80bd0fbb028b3bade3f9873b2dc469605fbc3a98",
-                "reference": "80bd0fbb028b3bade3f9873b2dc469605fbc3a98",
+                "url": "https://api.github.com/repos/openeyes/OphCoCorrespondence/zipball/89baae6e559505edc80560982074afbab38d02aa",
+                "reference": "89baae6e559505edc80560982074afbab38d02aa",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +122,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Correspondence module for OpenEyes, allows generation of letters",
-            "time": "2015-03-23 16:36:29"
+            "time": "2015-04-08 15:39:33"
         },
         {
             "name": "openeyes/oph-co-therapyapplication",
