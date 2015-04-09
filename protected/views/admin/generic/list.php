@@ -37,21 +37,33 @@
 			<tbody>
 			<?php
 			foreach ($admin->getSearch()->retrieveResults() as $i => $row) {?>
-				<tr class="clickable" data-id="<?php echo $row->id?>" data-uri="admin/editFirm/<?php echo $row->id?>">
+				<tr class="clickable" data-id="<?php echo $row->id?>" data-uri="oeadmin/<?php echo $this->uniqueid ?>/<?php echo $row->id?>">
 					<td><input type="checkbox" name="firms[]" value="<?php echo $row->id?>" /></td>
 					<?php foreach($admin->getListFields() as $listItem):?>
-						<td><?php echo $row->$listItem;?></td>
+						<td>
+							<?php
+							if(gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
+								if($admin->attributeValue($row, $listItem)):
+								?><i class="fa fa-check"></i><?php
+								else:
+								?><i class="fa fa-times"></i><?php
+								endif;
+							else:
+								echo $admin->attributeValue($row, $listItem);
+							endif;
+							?>
+						</td>
 					<?php endforeach; ?>
 				</tr>
 			<?php }?>
 			</tbody>
 			<tfoot class="pagination-container">
 				<tr>
-					<td colspan="6">
+					<td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
 						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
 						<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
 						<?php echo $this->renderPartial('//admin/_pagination',array(
-							'pagination' => $admin->getSearch()->initPagination()
+							'pagination' => $admin->getPagination()
 						))?>
 					</td>
 				</tr>

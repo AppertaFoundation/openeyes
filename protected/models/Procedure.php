@@ -162,6 +162,11 @@ class Procedure extends BaseActiveRecordVersioned
 			->queryColumn();
 	}
 
+	/**
+	 * @param $subspecialtyId
+	 * @param bool $restrict
+	 * @return array
+	 */
 	public function getListBySubspecialty($subspecialtyId, $restrict = false)
 	{
 		$where = '';
@@ -187,6 +192,10 @@ class Procedure extends BaseActiveRecordVersioned
 		return $data;
 	}
 
+	/**
+	 * @param string $prop
+	 * @return mixed|null
+	 */
 	public function __get($prop)
 	{
 		$method = "get_".$prop;
@@ -195,6 +204,20 @@ class Procedure extends BaseActiveRecordVersioned
 		}
 
 		return parent::__get($prop);
+	}
+
+	/**
+	 * @param string $prop
+	 * @return bool
+	 */
+	public function __isset($prop)
+	{
+		$method = "get_".$prop;
+		if(method_exists($this, $method)){
+			return true;
+		}
+
+		return parent::__isset($prop);
 	}
 
 	/**

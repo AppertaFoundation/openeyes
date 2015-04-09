@@ -19,13 +19,12 @@
 
 // display pagination
 if(isset($pagination)){
-	$this->widget('CLinkPager', array(
+	$this->widget('LinkPager', array(
 		'pages' => $pagination,
 		'maxButtonCount' => 13,
 		'cssFile' => false,
 		'selectedPageCssClass' => 'current',
 		'hiddenPageCssClass' => 'unavailable',
-		'header' => @$header,
 		'footer' => @$footer,
 		'htmlOptions' => array(
 			'class' => 'pagination'

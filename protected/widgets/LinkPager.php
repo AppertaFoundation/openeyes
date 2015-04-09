@@ -1,5 +1,5 @@
 <?php
-/**
+ /**
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -18,34 +18,25 @@
  */
 
 /**
- * Class ProceduresController
+ * Extends CLinkPager to add a 'showing 1 to 100 of 187' line
  */
-class ProceduresController extends BaseAdminController
+class LinkPager extends CLinkPager
 {
-	public $layout = 'admin';
-	public $itemsPerPage = 100;
+	/**
+	 * Inits Pager
+	 */
+	public function init()
+	{
+		parent::init();
+		$this->setHeaderToShowing();
+	}
 
 	/**
-	 * Lists procedures
-	 *
-	 * @throws CHttpException
+	 * Sets the header to be our `showing...` string
 	 */
-	public function actionList()
+	protected function setHeaderToShowing()
 	{
-		$admin = new Admin(Procedure::model(), $this);
-		$admin->setListFields(array(
-							'term',
-							'snomed_code',
-							'opcsCodes.name',
-							'default_duration',
-							'aliases',
-							'has_benefits',
-							'has_complications',
-							'active'
-		));
-		$admin->searchAll();
-		$admin->getSearch()->addActiveFilter();
-		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-		$admin->listModel();
+		$page = $this->getCurrentPage() + 1; //0 indexed page so add one
+		$this->header = 'Showing '.$page.' to '.$this->pages->getPageSize() * $page . ' of '.$this->getItemCount();
 	}
 }
