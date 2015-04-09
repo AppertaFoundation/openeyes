@@ -95,7 +95,7 @@ class Procedure extends BaseActiveRecordVersioned
 			'term' => 'Term',
 			'short_format' => 'Short Format',
 			'default_duration' => 'Default Duration',
-			'opcsCodes'
+			'opcsCodes.name' => 'OPCS Code'
 		);
 	}
 

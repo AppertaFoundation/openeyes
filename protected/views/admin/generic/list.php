@@ -37,7 +37,7 @@
 			<tbody>
 			<?php
 			foreach ($admin->getSearch()->retrieveResults() as $i => $row) {?>
-				<tr class="clickable" data-id="<?php echo $row->id?>" data-uri="oeadmin/<?php echo $this->uniqueid ?>/<?php echo $row->id?>">
+				<tr class="clickable" data-id="<?php echo $row->id?>" data-uri="oeadmin/<?php echo $this->uniqueid ?>/edit/<?php echo $row->id?>">
 					<td><input type="checkbox" name="firms[]" value="<?php echo $row->id?>" /></td>
 					<?php foreach($admin->getListFields() as $listItem):?>
 						<td>

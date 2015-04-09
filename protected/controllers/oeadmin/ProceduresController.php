@@ -22,7 +22,14 @@
  */
 class ProceduresController extends BaseAdminController
 {
+	/**
+	 * @var string
+	 */
 	public $layout = 'admin';
+
+	/**
+	 * @var int
+	 */
 	public $itemsPerPage = 100;
 
 	/**

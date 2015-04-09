@@ -158,6 +158,8 @@ class ModelSearch
 	}
 
 	/**
+	 * Generates the required Criteria object for the search
+	 *
 	 * @param string $attr
 	 */
 	protected function generateCriteria($attr = 'search')
