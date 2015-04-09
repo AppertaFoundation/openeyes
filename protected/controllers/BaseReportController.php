@@ -88,9 +88,7 @@ class BaseReportController extends BaseController
 				$report_class = 'Report'.$_POST['report-name'];
 			}
 
-            print_r($_POST); exit;
-
-			$report = new $report_class;
+            $report = new $report_class;
 			$report->attributes = $_POST;
 
 			if (!$report->validate()) {
