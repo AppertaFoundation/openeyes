@@ -309,12 +309,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationbooking.git",
-                "reference": "a7c5357a8572673bdd5f2e9bec70b52a93cc3c4f"
+                "reference": "4e2d3686fb5bbf7a19566c727643b27c3ee96570"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/a7c5357a8572673bdd5f2e9bec70b52a93cc3c4f",
-                "reference": "a7c5357a8572673bdd5f2e9bec70b52a93cc3c4f",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/4e2d3686fb5bbf7a19566c727643b27c3ee96570",
+                "reference": "4e2d3686fb5bbf7a19566c727643b27c3ee96570",
                 "shasum": ""
             },
             "require": {
@@ -323,7 +323,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for booking operations in OpenEyes",
-            "time": "2015-03-11 11:27:48"
+            "time": "2015-04-09 14:41:54"
         },
         {
             "name": "openeyes/oph-tr-operationnote",
