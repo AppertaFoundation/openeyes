@@ -61,7 +61,14 @@ class SiteSubspecialtyDrug extends BaseActiveRecordVersioned
 	 */
 	public function relations()
 	{
-		return array();
+		return array(
+			/*
+			 * Could be useful to add relations into the connected objects as well (but not necessary at the moment)
+			 */
+			'sites' => array(self::BELONGS_TO, 'Site', 'site_id'),
+			'subspecialties' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+			'drugs' => array(self::BELONGS_TO, 'Drug', 'drug_id')
+		);
 	}
 
 }
