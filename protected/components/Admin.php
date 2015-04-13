@@ -26,19 +26,31 @@ class Admin
 	 * @var BaseActiveRecord
 	 */
 	protected $model;
+
 	/**
 	 * @var string
 	 */
 	protected $modelName;
+
 	/**
 	 * @var string
 	 */
 	protected $listTemplate = '//admin/generic/list';
 
 	/**
+	 * @var string
+	 */
+	protected $editTemplate = '//admin/generic/edit';
+
+	/**
 	 * @var array
 	 */
 	protected $listFields = array();
+
+	/**
+	 * @var array
+	 */
+	protected $editFields = array();
 
 	/**
 	 * @var BaseAdminController
@@ -49,6 +61,11 @@ class Admin
 	 * @var CPagination
 	 */
 	protected $pagination;
+
+	/**
+	 * @var int
+	 */
+	protected $modelId;
 
 	/**
 	 * @return BaseActiveRecord
@@ -150,6 +167,55 @@ class Admin
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getModelId()
+	{
+		return $this->modelId;
+	}
+
+	/**
+	 * @param int $modelId
+	 */
+	public function setModelId($modelId)
+	{
+		$this->modelId = $modelId;
+		$this->model = $this->model->findByPk($modelId);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getEditFields()
+	{
+		return $this->editFields;
+	}
+
+	/**
+	 * @param array $editFields
+	 */
+	public function setEditFields($editFields)
+	{
+		$this->editFields = $editFields;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEditTemplate()
+	{
+		return $this->editTemplate;
+	}
+
+	/**
+	 * @param string $editTemplate
+	 */
+	public function setEditTemplate($editTemplate)
+	{
+		$this->editTemplate = $editTemplate;
+	}
+
+	/**
 	 * @param BaseActiveRecord $model
 	 * @param BaseAdminController $controller
 	 */
@@ -173,6 +239,15 @@ class Admin
 		$this->audit('list');
 		$this->pagination = $this->getSearch()->initPagination();
 		$this->render($this->listTemplate, array('admin' => $this));
+	}
+
+	public function editModel()
+	{
+		$errorList = array();
+		if(Yii::app()->request->isPostRequest){
+			$this->model->attributes = Yii::app()->request->getPost($this->modelName);
+		}
+		$this->render($this->editTemplate, array('admin' => $this, 'errors' => $errorList));
 	}
 
 	/**

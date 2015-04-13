@@ -1,5 +1,5 @@
 <?php
-/**
+ /**
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -17,61 +17,43 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/**
- * Class ProceduresController
- */
-class ProceduresController extends BaseAdminController
-{
-	/**
-	 * @var string
-	 */
-	public $layout = 'admin';
+?>
 
-	/**
-	 * @var int
-	 */
-	public $itemsPerPage = 100;
+<div class="box admin">
+	<h2><?php echo($admin->getModel()->id ? 'Edit' : 'Add').' '. $admin->getModelName() ?></h2>
+	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+		'id' => 'adminform',
+		'enableAjaxValidation' => false,
+		'focus' => '#username',
+		'layoutColumns' => array(
+			'label' => 2,
+			'field' => 5
+		)
+	));
+	$autoComplete = array('autocomplete' => Yii::app()->params['html_autocomplete']);
+	?>
 
-	/**
-	 * Lists procedures
-	 *
-	 * @throws CHttpException
-	 */
-	public function actionList()
-	{
-		$admin = new Admin(Procedure::model(), $this);
-		$admin->setListFields(array(
-							'term',
-							'snomed_code',
-							'opcsCodes.name',
-							'default_duration',
-							'aliases',
-							'has_benefits',
-							'has_complications',
-							'active'
-		));
-		$admin->searchAll();
-		$admin->getSearch()->addActiveFilter();
-		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-		$admin->listModel();
-	}
-
-	public function actionEdit($id = false)
-	{
-		$admin = new Admin(Procedure::model(), $this);
-		if($id){
-			$admin->setModelId($id);
+	<?php foreach($admin->getEditFields() as $field => $type) {
+		if (is_array($type)) {
+			//TODO deal with array type
+			continue;
+		} else {
+			switch ($type) {
+				case 'checkbox':
+					echo $form->checkBox($admin->getModel(), $field, $autoComplete);
+					break;
+				case 'text':
+				default:
+					echo $form->textField($admin->getModel(), $field, $autoComplete);
+					break;
+			}
 		}
-		$admin->setEditFields(array(
-			'term' => 'text',
-			'short_format' => 'text',
-			'default_duration' => 'text',
-			'snomed_code' => 'text',
-			'snomed_term' => 'text',
-			'aliases' => 'text',
-			'unbooked' => 'checkbox',
-			'active' => 'checkbox',
-		));
-		$admin->editModel();
 	}
-}
+	?>
+
+	<?php echo $form->formActions(); ?>
+
+	<?php $this->endWidget() ?>
+</div>
