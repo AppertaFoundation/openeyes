@@ -20,7 +20,7 @@
 /**
  * Class ProceduresController
  */
-class ProceduresController extends BaseAdminController
+class ProcedureController extends BaseAdminController
 {
 	/**
 	 * @var string
@@ -71,6 +71,19 @@ class ProceduresController extends BaseAdminController
 			'aliases' => 'text',
 			'unbooked' => 'checkbox',
 			'active' => 'checkbox',
+			'opcsCodes' => array(
+				'widget' => 'MultiSelectList',
+				'relation_field_id' => 'id',
+				'label' => 'OPCS Code',
+				'options' => CHtml::encodeArray(CHtml::listData(
+					OPCSCode::model()->findAll(),
+					'id',
+					function($model)
+					{
+						return $model->name.': '.$model->description;
+					}
+				)),
+			)
 		));
 		$admin->editModel();
 	}

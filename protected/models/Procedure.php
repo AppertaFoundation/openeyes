@@ -33,6 +33,8 @@
  */
 class Procedure extends BaseActiveRecordVersioned
 {
+	protected $auto_update_relations = true;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Procedure the static model class
@@ -61,9 +63,7 @@ class Procedure extends BaseActiveRecordVersioned
 			array('term, short_format, default_duration', 'required'),
 			array('default_duration', 'numerical', 'integerOnly'=>true),
 			array('term, short_format', 'length', 'max'=>255),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, term, short_format, default_duration', 'safe', 'on'=>'search'),
+			array('id, term, short_format, default_duration, opcsCodes', 'safe'),
 		);
 	}
 

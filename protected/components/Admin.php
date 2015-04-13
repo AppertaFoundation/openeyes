@@ -228,6 +228,8 @@ class Admin
 	}
 
 	/**
+	 * Lists all the rows returned from the search in a table
+	 *
 	 * @throws CHttpException
 	 */
 	public function listModel()
@@ -241,13 +243,29 @@ class Admin
 		$this->render($this->listTemplate, array('admin' => $this));
 	}
 
+	/**
+	 * Edits the model, runs validation and renders the edit form.
+	 *
+	 * @throws CHttpException
+	 * @throws Exception
+	 */
 	public function editModel()
 	{
-		$errorList = array();
+		$errors = array();
 		if(Yii::app()->request->isPostRequest){
 			$this->model->attributes = Yii::app()->request->getPost($this->modelName);
+
+			if (!$this->model->validate()) {
+				$errors = $this->model->getErrors();
+			} else {
+				if (!$this->model->save()) {
+					throw new CHttpException(500, 'Unable to save firm: ' . print_r($this->model->getErrors(), true));
+				}
+				$this->audit('edit', $this->model->id);
+				$this->controller->redirect('/'.$this->controller->uniqueid.'/list');
+			}
 		}
-		$this->render($this->editTemplate, array('admin' => $this, 'errors' => $errorList));
+		$this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
 	}
 
 	/**
@@ -317,8 +335,8 @@ class Admin
 	 * @param $type
 	 * @throws Exception
 	 */
-	protected function audit($type)
+	protected function audit($type, $data = null)
 	{
-		Audit::add('admin-'.$this->modelName, $type);
+		Audit::add('admin-'.$this->modelName, $type, $data);
 	}
 }

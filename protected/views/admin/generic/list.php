@@ -38,7 +38,7 @@
 			<?php
 			foreach ($admin->getSearch()->retrieveResults() as $i => $row) {?>
 				<tr class="clickable" data-id="<?php echo $row->id?>" data-uri="<?php echo $this->uniqueid ?>/edit/<?php echo $row->id?>">
-					<td><input type="checkbox" name="<?php echo $this->modelName ?>[]" value="<?php echo $row->id?>" /></td>
+					<td><input type="checkbox" name="<?php echo $admin->getModelName(); ?>[]" value="<?php echo $row->id?>" /></td>
 					<?php foreach($admin->getListFields() as $listItem):?>
 						<td>
 							<?php

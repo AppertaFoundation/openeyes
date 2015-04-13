@@ -37,8 +37,31 @@
 
 	<?php foreach($admin->getEditFields() as $field => $type) {
 		if (is_array($type)) {
-			//TODO deal with array type
-			continue;
+			switch($type['widget']){
+				case 'MultiSelectList':
+					?>
+					<div class="field-row furtherfindings-multi-select">
+						<?php
+						echo $form->multiSelectList(
+							$admin->getModel(),
+							$admin->getModelName().'['.$field.']',
+							'opcsCodes',
+							$type['relation_field_id'],
+							$type['options'],
+							array(),
+							array(
+								'empty' => '-- Add --',
+								'label' => $type['label'],
+								'searchable' => true
+							),
+							false,
+							true
+						);
+						?>
+					</div>
+					<?php
+					break;
+			}
 		} else {
 			switch ($type) {
 				case 'checkbox':
