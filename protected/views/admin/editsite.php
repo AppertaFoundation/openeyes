@@ -39,6 +39,8 @@
 		<?php echo $form->textField($address,'city',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($address,'county',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->textField($address,'postcode',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($site,'telephone',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+		<?php echo $form->textField($site,'fax',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
 		<?php echo $form->dropDownList($address,'country_id','Country')?>
 		<?php echo $form->formActions(array('cancel-url' => '/admin/sites'));?>
 	<?php $this->endWidget()?>
