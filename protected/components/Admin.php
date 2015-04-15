@@ -51,6 +51,11 @@ class Admin
 	protected $pagination;
 
 	/**
+	 * @var ModelSearch
+	 */
+	protected $search;
+
+	/**
 	 * @return BaseActiveRecord
 	 */
 	public function getModel()
