@@ -37,8 +37,8 @@
 			<tbody>
 			<?php
 			foreach ($admin->getSearch()->retrieveResults() as $i => $row) {?>
-				<tr class="clickable" data-id="<?php echo $row->id?>" data-uri="oeadmin/<?php echo $this->uniqueid ?>/edit/<?php echo $row->id?>">
-					<td><input type="checkbox" name="firms[]" value="<?php echo $row->id?>" /></td>
+				<tr class="clickable" data-id="<?php echo $row->id?>" data-uri="<?php echo $this->uniqueid ?>/edit/<?php echo $row->id?>">
+					<td><input type="checkbox" name="<?php echo $admin->getModelName(); ?>[]" value="<?php echo $row->id?>" /></td>
 					<?php foreach($admin->getListFields() as $listItem):?>
 						<td>
 							<?php
@@ -60,8 +60,22 @@
 			<tfoot class="pagination-container">
 				<tr>
 					<td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
-						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
+						<?php echo EventAction::button(
+							'Add',
+							'add',
+							array(),
+							array('class' => 'small', 'data-uri' => '/'.$this->uniqueid.'/edit')
+						)->toHtml()?>
+						<?php echo EventAction::button(
+							'Delete',
+							'delete',
+							array(),
+							array(
+								'class' => 'small',
+								'data-uri' => '/'.$this->uniqueid.'/delete',
+								'data-object' => $admin->getModelName()
+							)
+						)->toHtml()?>
 						<?php echo $this->renderPartial('//admin/_pagination',array(
 							'pagination' => $admin->getPagination()
 						))?>
