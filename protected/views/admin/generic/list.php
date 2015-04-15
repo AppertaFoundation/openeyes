@@ -72,7 +72,7 @@
 							array(),
 							array(
 								'class' => 'small',
-								'data-uri' => '/'.$this->uniqueid.'/edit',
+								'data-uri' => '/'.$this->uniqueid.'/delete',
 								'data-object' => $admin->getModelName()
 							)
 						)->toHtml()?>

@@ -269,6 +269,26 @@ class Admin
 	}
 
 	/**
+	 * Deletes the models for which an array of IDs has been posted
+	 */
+	public function deleteModel()
+	{
+		$response = 1;
+		if(Yii::app()->request->isPostRequest){
+			$ids = Yii::app()->request->getPost($this->modelName);
+			foreach($ids as $id){
+				$model = $this->model->findByPk($id);
+				if($model){
+					if(!$model->delete()){
+						$response = 0;
+					}
+				}
+			}
+		}
+		echo $response;
+	}
+
+	/**
 	 * Sets up search on all listed elements
 	 */
 	public function searchAll()

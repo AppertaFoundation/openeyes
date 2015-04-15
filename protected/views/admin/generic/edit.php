@@ -45,12 +45,12 @@
 						echo $form->multiSelectList(
 							$admin->getModel(),
 							$admin->getModelName().'['.$field.']',
-							'opcsCodes',
+							$field,
 							$type['relation_field_id'],
 							$type['options'],
 							array(),
 							array(
-								'empty' => '-- Add --',
+								'empty' => '',
 								'label' => $type['label'],
 								'searchable' => true
 							),

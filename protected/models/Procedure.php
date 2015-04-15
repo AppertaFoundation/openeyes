@@ -63,7 +63,7 @@ class Procedure extends BaseActiveRecordVersioned
 			array('term, short_format, default_duration', 'required'),
 			array('default_duration', 'numerical', 'integerOnly'=>true),
 			array('term, short_format', 'length', 'max'=>255),
-			array('id, term, short_format, default_duration, opcsCodes', 'safe'),
+			array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, complications', 'safe'),
 		);
 	}
 
