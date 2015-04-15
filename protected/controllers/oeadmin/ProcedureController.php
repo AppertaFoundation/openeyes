@@ -20,7 +20,7 @@
 /**
  * Class ProceduresController
  */
-class ProceduresController extends BaseAdminController
+class ProcedureController extends BaseAdminController
 {
 	/**
 	 * @var string
@@ -54,5 +54,72 @@ class ProceduresController extends BaseAdminController
 		$admin->getSearch()->addActiveFilter();
 		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
 		$admin->listModel();
+	}
+
+	/**
+	 * Edits or adds a Procedure
+	 *
+	 * @param bool|int $id
+	 * @throws CHttpException
+	 */
+	public function actionEdit($id = false)
+	{
+		$admin = new Admin(Procedure::model(), $this);
+		if($id){
+			$admin->setModelId($id);
+		}
+		$admin->setEditFields(array(
+			'term' => 'text',
+			'short_format' => 'text',
+			'default_duration' => 'text',
+			'snomed_code' => 'text',
+			'snomed_term' => 'text',
+			'aliases' => 'text',
+			'unbooked' => 'checkbox',
+			'active' => 'checkbox',
+			'opcsCodes' => array(
+				'widget' => 'MultiSelectList',
+				'relation_field_id' => 'id',
+				'label' => 'OPCS Code',
+				'options' => CHtml::encodeArray(CHtml::listData(
+					OPCSCode::model()->findAll(),
+					'id',
+					function($model)
+					{
+						return $model->name.': '.$model->description;
+					}
+				)),
+			),
+			'benefits' => array(
+				'widget' => 'MultiSelectList',
+				'relation_field_id' => 'id',
+				'label' => 'Benefit',
+				'options' => CHtml::encodeArray(CHtml::listData(
+					Benefit::model()->findAll(),
+					'id',
+					'name'
+				)),
+			),
+			'complications' => array(
+				'widget' => 'MultiSelectList',
+				'relation_field_id' => 'id',
+				'label' => 'Complication',
+				'options' => CHtml::encodeArray(CHtml::listData(
+					Complication::model()->findAll(),
+					'id',
+					'name'
+				)),
+			)
+		));
+		$admin->editModel();
+	}
+
+	/**
+	 * Deletes rows for the model
+	 */
+	public function actionDelete()
+	{
+		$admin = new Admin(Procedure::model(), $this);
+		$admin->deleteModel();
 	}
 }

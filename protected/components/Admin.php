@@ -26,19 +26,31 @@ class Admin
 	 * @var BaseActiveRecord
 	 */
 	protected $model;
+
 	/**
 	 * @var string
 	 */
 	protected $modelName;
+
 	/**
 	 * @var string
 	 */
 	protected $listTemplate = '//admin/generic/list';
 
 	/**
+	 * @var string
+	 */
+	protected $editTemplate = '//admin/generic/edit';
+
+	/**
 	 * @var array
 	 */
 	protected $listFields = array();
+
+	/**
+	 * @var array
+	 */
+	protected $editFields = array();
 
 	/**
 	 * @var BaseAdminController
@@ -54,6 +66,11 @@ class Admin
 	 * @var ModelSearch
 	 */
 	protected $search;
+
+	/**
+	 * @var int
+	 */
+	protected $modelId;
 
 	/**
 	 * @return BaseActiveRecord
@@ -155,6 +172,55 @@ class Admin
 	}
 
 	/**
+	 * @return int
+	 */
+	public function getModelId()
+	{
+		return $this->modelId;
+	}
+
+	/**
+	 * @param int $modelId
+	 */
+	public function setModelId($modelId)
+	{
+		$this->modelId = $modelId;
+		$this->model = $this->model->findByPk($modelId);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getEditFields()
+	{
+		return $this->editFields;
+	}
+
+	/**
+	 * @param array $editFields
+	 */
+	public function setEditFields($editFields)
+	{
+		$this->editFields = $editFields;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEditTemplate()
+	{
+		return $this->editTemplate;
+	}
+
+	/**
+	 * @param string $editTemplate
+	 */
+	public function setEditTemplate($editTemplate)
+	{
+		$this->editTemplate = $editTemplate;
+	}
+
+	/**
 	 * @param BaseActiveRecord $model
 	 * @param BaseAdminController $controller
 	 */
@@ -167,6 +233,8 @@ class Admin
 	}
 
 	/**
+	 * Lists all the rows returned from the search in a table
+	 *
 	 * @throws CHttpException
 	 */
 	public function listModel()
@@ -178,6 +246,59 @@ class Admin
 		$this->audit('list');
 		$this->pagination = $this->getSearch()->initPagination();
 		$this->render($this->listTemplate, array('admin' => $this));
+	}
+
+	/**
+	 * Edits the model, runs validation and renders the edit form.
+	 *
+	 * @throws CHttpException
+	 * @throws Exception
+	 */
+	public function editModel()
+	{
+		$errors = array();
+		if(Yii::app()->request->isPostRequest){
+			$post = Yii::app()->request->getPost($this->modelName);
+			if(array_key_exists('id', $post) && $post['id']){
+				$this->model->attributes = $post;
+			} else {
+				$this->model = new $this->modelName;
+				$this->model->attributes = $post;
+			}
+
+			if (!$this->model->validate()) {
+				$errors = $this->model->getErrors();
+			} else {
+
+				if (!$this->model->save()) {
+					throw new CHttpException(500, 'Unable to save '.$this->modelName.': ' . print_r($this->model->getErrors(), true));
+				}
+
+				$this->audit('edit', $this->model->id);
+				$this->controller->redirect('/'.$this->controller->uniqueid.'/list');
+			}
+		}
+		$this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
+	}
+
+	/**
+	 * Deletes the models for which an array of IDs has been posted
+	 */
+	public function deleteModel()
+	{
+		$response = 1;
+		if(Yii::app()->request->isPostRequest){
+			$ids = Yii::app()->request->getPost($this->modelName);
+			foreach($ids as $id){
+				$model = $this->model->findByPk($id);
+				if($model){
+					if(!$model->delete()){
+						$response = 0;
+					}
+				}
+			}
+		}
+		echo $response;
 	}
 
 	/**
@@ -247,8 +368,8 @@ class Admin
 	 * @param $type
 	 * @throws Exception
 	 */
-	protected function audit($type)
+	protected function audit($type, $data = null)
 	{
-		Audit::add('admin-'.$this->modelName, $type);
+		Audit::add('admin-'.$this->modelName, $type, $data);
 	}
 }
