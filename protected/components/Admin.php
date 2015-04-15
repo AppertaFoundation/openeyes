@@ -63,6 +63,11 @@ class Admin
 	protected $pagination;
 
 	/**
+	 * @var ModelSearch
+	 */
+	protected $search;
+
+	/**
 	 * @var int
 	 */
 	protected $modelId;
