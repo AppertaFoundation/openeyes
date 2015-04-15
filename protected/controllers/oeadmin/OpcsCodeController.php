@@ -18,50 +18,66 @@
  */
 
 /**
- * This is the model class for table "opcs_code".
- *
- * The followings are the available columns in table 'opcs_code':
- * @property integer $id
- * @property string $name
- * @property string $description
+ * Class ProceduresController
  */
-class OPCSCode extends BaseActiveRecordVersioned
+class OpcsCodeController extends BaseAdminController
 {
 	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Period the static model class
+	 * @var string
 	 */
-	public static function model($className=__CLASS__)
+	public $layout = 'admin';
+
+	/**
+	 * @var int
+	 */
+	public $itemsPerPage = 100;
+
+	/**
+	 * Lists procedures
+	 *
+	 * @throws CHttpException
+	 */
+	public function actionList()
 	{
-		return parent::model($className);
+		$admin = new Admin(OPCSCode::model(), $this);
+		$admin->setListFields(array(
+							'id',
+							'name',
+							'description',
+							'active',
+		));
+		$admin->searchAll();
+		$admin->getSearch()->addActiveFilter();
+		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+		$admin->listModel();
 	}
 
 	/**
-	 * @return string the associated database table name
+	 * Edits or adds a Procedure
+	 *
+	 * @param bool|int $id
+	 * @throws CHttpException
 	 */
-	public function tableName()
+	public function actionEdit($id = false)
 	{
-		return 'opcs_code';
+		$admin = new Admin(OPCSCode::model(), $this);
+		if($id){
+			$admin->setModelId($id);
+		}
+		$admin->setEditFields(array(
+			'name' => 'text',
+			'description' => 'text',
+			'active' => 'checkbox',
+		));
+		$admin->editModel();
 	}
 
 	/**
-	 * @return array validation rules for model attributes.
+	 * Deletes rows for the model
 	 */
-	public function rules()
+	public function actionDelete()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('name, description', 'required'),
-			array('name, description, active', 'safe')
-		);
-	}
-
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array();
+		$admin = new Admin(OPCSCode::model(), $this);
+		$admin->deleteModel();
 	}
 }
