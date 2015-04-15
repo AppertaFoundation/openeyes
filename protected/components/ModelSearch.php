@@ -158,6 +158,8 @@ class ModelSearch
 	}
 
 	/**
+	 * Generates the required Criteria object for the search
+	 *
 	 * @param string $attr
 	 */
 	protected function generateCriteria($attr = 'search')
@@ -188,7 +190,8 @@ class ModelSearch
 	}
 
 	/**
-	 * Adds a comparison betwe
+	 * Adds a comparison between a search term and an attribute
+	 *
 	 * @param CDbCriteria $criteria
 	 * @param $attribute
 	 * @param $value
@@ -197,6 +200,11 @@ class ModelSearch
 	 */
 	protected function addCompare(CDbCriteria $criteria, $attribute, $value, $sensitive = false, $operator = 'AND')
 	{
+		if(method_exists($this->model, 'get_'.$attribute)){
+			//It's a magic method attribute, doesn't exist in the db has to be dealt with elsewhere
+			return;
+		}
+
 		$search = $attribute;
 		$search = $this->relationalAttribute($criteria, $attribute, $search);
 
@@ -232,6 +240,11 @@ class ModelSearch
 	public function retrieveResults()
 	{
 		return $this->model->findAll($this->criteria);
+	}
+
+	public function addActiveFilter()
+	{
+		$this->addSearchItem('active', array('type' => 'boolean'));
 	}
 
 	/**

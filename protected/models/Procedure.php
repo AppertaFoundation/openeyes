@@ -33,6 +33,8 @@
  */
 class Procedure extends BaseActiveRecordVersioned
 {
+	protected $auto_update_relations = true;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Procedure the static model class
@@ -61,9 +63,7 @@ class Procedure extends BaseActiveRecordVersioned
 			array('term, short_format, default_duration', 'required'),
 			array('default_duration', 'numerical', 'integerOnly'=>true),
 			array('term, short_format', 'length', 'max'=>255),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, term, short_format, default_duration', 'safe', 'on'=>'search'),
+			array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, complications', 'safe'),
 		);
 	}
 
@@ -78,7 +78,7 @@ class Procedure extends BaseActiveRecordVersioned
 			//'operations' => array(self::MANY_MANY, 'ElementOperation', 'operation_procedure_assignment(proc_id, operation_id)'),
 			'specialties' => array(self::MANY_MANY, 'Subspecialty', 'proc_subspecialty_assignment(proc_id, subspecialty_id)'),
 			'subspecialtySubsections' => array(self::MANY_MANY, 'SubspecialtySubsection', 'proc_subspecialty_subsection_assignment(proc_id, subspecialty_subsection_id)'),
-			//'opcsCodes' => array(self::MANY_MANY, 'OpcsCode', 'procedure_opcs_assignment(proc_id, opcs_code_id)'),
+			'opcsCodes' => array(self::MANY_MANY, 'OpcsCode', 'proc_opcs_assignment(proc_id, opcs_code_id)'),
 			'additional' => array(self::MANY_MANY, 'Procedure', 'procedure_additional(proc_id, additional_proc_id)'),
 			'benefits' => array(self::MANY_MANY, 'Benefit', 'procedure_benefit(proc_id, benefit_id)'),
 			'complications' => array(self::MANY_MANY, 'Complication', 'procedure_complication(proc_id, complication_id)'),
@@ -95,6 +95,7 @@ class Procedure extends BaseActiveRecordVersioned
 			'term' => 'Term',
 			'short_format' => 'Short Format',
 			'default_duration' => 'Default Duration',
+			'opcsCodes.name' => 'OPCS Code'
 		);
 	}
 
@@ -161,6 +162,11 @@ class Procedure extends BaseActiveRecordVersioned
 			->queryColumn();
 	}
 
+	/**
+	 * @param $subspecialtyId
+	 * @param bool $restrict
+	 * @return array
+	 */
 	public function getListBySubspecialty($subspecialtyId, $restrict = false)
 	{
 		$where = '';
@@ -185,4 +191,52 @@ class Procedure extends BaseActiveRecordVersioned
 
 		return $data;
 	}
+
+	/**
+	 * @param string $prop
+	 * @return mixed|null
+	 */
+	public function __get($prop)
+	{
+		$method = "get_".$prop;
+		if(method_exists($this, $method)){
+			return $this->$method();
+		}
+
+		return parent::__get($prop);
+	}
+
+	/**
+	 * @param string $prop
+	 * @return bool
+	 */
+	public function __isset($prop)
+	{
+		$method = "get_".$prop;
+		if(method_exists($this, $method)){
+			return true;
+		}
+
+		return parent::__isset($prop);
+	}
+
+	/**
+	 * @return bool
+	 * @codingStandardsIgnoreStart
+	 */
+	protected function get_has_benefits()
+	{
+		return count($this->benefits) > 0;
+	}
+	// @codingStandardsIgnoreEnd
+
+	/**
+	 * @return bool
+	 * @codingStandardsIgnoreStart
+	 */
+	protected function get_has_complications()
+	{
+		return count($this->complications) > 0;
+	}
+	// @codingStandardsIgnoreEnd
 }
