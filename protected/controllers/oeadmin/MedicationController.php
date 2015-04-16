@@ -66,7 +66,7 @@ class MedicationController extends BaseAdminController
 			'aliases' => 'text',
 			'external_source' => array(
 				'widget' => 'DropDownList',
-				'options' => CHtml::listData(MedicationDrug::model()->findAll(),
+				'options' => CHtml::listData(MedicationDrug::model()->findAll(new CDbCriteria(array('group' => 'external_source'))),
 					'external_source', 'external_source'),
 				'htmlOptions' => null,
 				'hidden' => false,
