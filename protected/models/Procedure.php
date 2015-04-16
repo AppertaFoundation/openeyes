@@ -63,7 +63,7 @@ class Procedure extends BaseActiveRecordVersioned
 			array('term, short_format, default_duration', 'required'),
 			array('default_duration', 'numerical', 'integerOnly'=>true, 'max' => 65535),
 			array('term, short_format, snomed_term', 'length', 'max'=>255),
-			array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, complications, snomed_code, snomed_term, aliases', 'safe'),
+			array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, complications, snomed_code, snomed_term, aliases, operationNotes', 'safe'),
 		);
 	}
 
@@ -160,6 +160,41 @@ class Procedure extends BaseActiveRecordVersioned
 			))
 			->order('term')
 			->queryColumn();
+	}
+
+	/**
+	 * Add relation to OphTrOperationnote_ProcedureListOperationElement if it exists
+	 */
+	protected function afterConstruct()
+	{
+		$this->addOpNoteElementRelation();
+
+		parent::afterConstruct();
+	}
+
+	/**
+	 * Add relation to OphTrOperationnote_ProcedureListOperationElement if it exists
+	 */
+	protected function afterFind()
+	{
+		$this->addOpNoteElementRelation();
+
+		parent::afterFind();
+	}
+
+	protected function addOpNoteElementRelation()
+	{
+
+		if(isset(Yii::app()->modules['OphTrOperationnote'])){
+			$this->metaData->addRelation(
+				'operationNotes',
+				array(
+					self::MANY_MANY,
+					'ElementType',
+					'ophtroperationnote_procedure_element(procedure_id, element_type_id)',
+				)
+			);
+		}
 	}
 
 	/**
