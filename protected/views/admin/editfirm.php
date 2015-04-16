@@ -65,7 +65,7 @@
 
 	<?php $this->endWidget() ?>
 
-	<?php if ($siteSecretaries): ?>
+	<?php if (isset($siteSecretaries) && $siteSecretaries): ?>
 		<?php echo $this->renderPartial('application.modules.OphCoCorrespondence.views.admin.secretary.edit', array(
 				'errors' => array(),
 				'siteSecretaries' => $siteSecretaries

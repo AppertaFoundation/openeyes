@@ -341,7 +341,7 @@ function selectSort(a, b) {
 		}
 
 		return (a.innerHTML > b.innerHTML) ? 1 : -1;
-};
+}
 
 var rootItem = null;
 

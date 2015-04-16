@@ -448,6 +448,9 @@ class BaseActiveRecord extends CActiveRecord
 	protected function afterFind()
 	{
 		$this->originalAttributes = $this->getAttributes();
+		if(isset($this->active)){
+			$this->active = (bool)$this->active;
+		}
 		parent::afterFind();
 	}
 
@@ -479,7 +482,6 @@ class BaseActiveRecord extends CActiveRecord
 
 		return $this->originalAttributes[$attrName];
 	}
-
 
 	/**
 	 * Returns a date field in NHS format
