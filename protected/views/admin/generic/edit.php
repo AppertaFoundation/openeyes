@@ -62,6 +62,16 @@
 					</div>
 					<?php
 					break;
+				case 'DropDownList':
+					$form->dropDownList(
+						$admin->getModel(),
+						$field,
+						$type['options'],
+						$type['htmlOptions'],
+						$type['hidden'],
+						$type['layoutColumns']
+					);
+					break;
 			}
 		} else {
 			switch ($type) {
