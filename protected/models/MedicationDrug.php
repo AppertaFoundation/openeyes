@@ -57,4 +57,18 @@ class MedicationDrug extends BaseActiveRecordVersioned {
 				array('name', 'required'),
 		);
 	}
+
+	/**
+	 * @return array list of attribute labels
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'name' => 'Name',
+			'external_code' => 'Code',
+			'external_source' => 'Source',
+			'aliases' => 'Aliases'
+		);
+
+	}
 }
