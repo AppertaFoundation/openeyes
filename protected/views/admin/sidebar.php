@@ -54,9 +54,10 @@
 	<h2>Procedure Management</h2>
 	<ul class="navigation admin">
 		<?php foreach (array(
-						'Procedures' => '/oeadmin/procedure/list',
+						'Procedures' => '/oeadmin/procedure/list'
 						'Benefits' => '/oeadmin/benefit/list',
 					    'Complications' => '/oeadmin/complication/list',
+						'OPCS Codes' => '/oeadmin/opcscode/list'
 					   ) as $title => $uri) {?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="selected"<?php }?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?>
