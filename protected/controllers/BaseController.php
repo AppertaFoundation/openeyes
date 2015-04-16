@@ -94,7 +94,9 @@ class BaseController extends Controller
 
 		foreach (SettingMetadata::model()->findAll() as $metadata) {
 			if (!$metadata->element_type) {
-				Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+				if(!isset(Yii::app()->params[$metadata->key])){
+					Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
+				}
 			}
 		}
 

@@ -38,6 +38,9 @@
 			<?php $this->endWidget()?>
 		</div>
 	</div>
+	<p>
+		Settings added here will be overridden by any settings in local config files. eg common.php or core.php
+	</p>
 	<form id="admin_settings">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
 		<table class="grid">
