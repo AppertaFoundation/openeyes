@@ -9,7 +9,7 @@
     "openeyes/oph-co-correspondence": "dev-develop",
     "openeyes/oph-ci-phasing": "dev-master",
     "openeyes/oph-co-therapyapplication": "dev-master",
-    "openeyes/oph-dr-prescription": "dev-master",
+    "openeyes/oph-dr-prescription": "dev-develop",
     "openeyes/oph-le-intravitrealinjection": "dev-master",
     "openeyes/oph-ou-anaestheticsatisfactionaudit": "dev-master",
     "openeyes/oph-tr-consent": "dev-master",
