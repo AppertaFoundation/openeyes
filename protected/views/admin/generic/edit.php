@@ -77,7 +77,7 @@
 	}
 	?>
 
-	<?php echo $form->formActions(); ?>
+	<?php echo $form->formActions(array('cancel-uri' => '/'.$this->uniqueid.'/list')); ?>
 
 	<?php $this->endWidget() ?>
 </div>
