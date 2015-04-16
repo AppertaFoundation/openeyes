@@ -258,14 +258,22 @@ class Admin
 	{
 		$errors = array();
 		if(Yii::app()->request->isPostRequest){
-			$this->model->attributes = Yii::app()->request->getPost($this->modelName);
+			$post = Yii::app()->request->getPost($this->modelName);
+			if(array_key_exists('id', $post) && $post['id']){
+				$this->model->attributes = $post;
+			} else {
+				$this->model = new $this->modelName;
+				$this->model->attributes = $post;
+			}
 
 			if (!$this->model->validate()) {
 				$errors = $this->model->getErrors();
 			} else {
+
 				if (!$this->model->save()) {
-					throw new CHttpException(500, 'Unable to save firm: ' . print_r($this->model->getErrors(), true));
+					throw new CHttpException(500, 'Unable to save '.$this->modelName.': ' . print_r($this->model->getErrors(), true));
 				}
+
 				$this->audit('edit', $this->model->id);
 				$this->controller->redirect('/'.$this->controller->uniqueid.'/list');
 			}

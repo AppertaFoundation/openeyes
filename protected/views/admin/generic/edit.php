@@ -33,6 +33,7 @@
 		)
 	));
 	$autoComplete = array('autocomplete' => Yii::app()->params['html_autocomplete']);
+	echo $form->hiddenInput($admin->getModel(), 'id');
 	?>
 
 	<?php foreach($admin->getEditFields() as $field => $type) {
