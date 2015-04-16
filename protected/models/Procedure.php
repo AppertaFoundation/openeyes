@@ -61,9 +61,9 @@ class Procedure extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('term, short_format, default_duration', 'required'),
-			array('default_duration', 'numerical', 'integerOnly'=>true),
-			array('term, short_format', 'length', 'max'=>255),
-			array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, complications', 'safe'),
+			array('default_duration', 'numerical', 'integerOnly'=>true, 'max' => 65535),
+			array('term, short_format, snomed_term', 'length', 'max'=>255),
+			array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, complications, snomed_code, snomed_term, aliases', 'safe'),
 		);
 	}
 
