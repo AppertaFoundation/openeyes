@@ -10,58 +10,73 @@
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
- * @link http://www.opencomplications.org.uk
- * @author OpenEyes <info@opencomplications.org.uk>
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
 /**
- * This is the model class for table "complication".
- *
- * The followings are the available columns in table 'complication':
- * @property integer $id
- * @property string $name
+ * Class ProceduresController
  */
-class Complication extends BaseActiveRecordVersioned
+class ComplicationController extends BaseAdminController
 {
 	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Complication the static model class
+	 * @var string
 	 */
-	public static function model($className=__CLASS__)
+	public $layout = 'admin';
+
+	/**
+	 * @var int
+	 */
+	public $itemsPerPage = 100;
+
+	/**
+	 * Lists procedures
+	 *
+	 * @throws CHttpException
+	 */
+	public function actionList()
 	{
-		return parent::model($className);
+		$admin = new Admin(Complication::model(), $this);
+		$admin->setListFields(array(
+							'id',
+							'name',
+							'active'
+		));
+		$admin->searchAll();
+		$admin->getSearch()->addActiveFilter();
+		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+		$admin->listModel();
 	}
 
 	/**
-	 * @return string the associated database table name
+	 * Edits or adds a Procedure
+	 *
+	 * @param bool|int $id
+	 * @throws CHttpException
 	 */
-	public function tableName()
+	public function actionEdit($id = false)
 	{
-		return 'complication';
-	}
-
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('name', 'required'),
-			array('name, active', 'safe')
+		$admin = new Admin(Complication::model(), $this);
+		if($id){
+			$admin->setModelId($id);
+		}
+		$admin->setEditFields(array(
+				'name' => 'text',
+				'active' => 'checkbox'
+			)
 		);
+		$admin->editModel();
 	}
 
 	/**
-	 * @return array relational rules.
+	 * Deletes rows for the model
 	 */
-	public function relations()
+	public function actionDelete()
 	{
-		return array(
-		);
+		$admin = new Admin(Complication::model(), $this);
+		$admin->deleteModel();
 	}
 }
