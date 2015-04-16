@@ -110,7 +110,6 @@ class ProcedureController extends BaseAdminController
 					'name'
 				)),
 			),
-
 		));
 		if(isset($admin->getModel()->operationNotes)){
 			$admin->setEditFields(array_merge(
@@ -121,7 +120,7 @@ class ProcedureController extends BaseAdminController
 						'relation_field_id' => 'id',
 						'label' => 'Operation Note Element',
 						'options' => CHtml::encodeArray(CHtml::listData(
-							ElementType::model()->findAll(),
+							ElementType::model()->findAllByAttributes(array('event_type_id' => 4)),
 							'id',
 							'name'
 						)),
