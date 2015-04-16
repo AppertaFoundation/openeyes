@@ -63,7 +63,7 @@ class Procedure extends BaseActiveRecordVersioned
 			array('term, short_format, default_duration', 'required'),
 			array('default_duration', 'numerical', 'integerOnly'=>true),
 			array('term, short_format', 'length', 'max'=>255),
-			array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, complications', 'safe'),
+			array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, complications, operationNotes', 'safe'),
 		);
 	}
 
@@ -160,6 +160,40 @@ class Procedure extends BaseActiveRecordVersioned
 			))
 			->order('term')
 			->queryColumn();
+	}
+
+	/**
+	 * Add relation to OphTrOperationnote_ProcedureListOperationElement if it exists
+	 */
+	protected function afterConstruct()
+	{
+		$this->addOpNoteElementRelation();
+
+		parent::afterConstruct();
+	}
+
+	/**
+	 * Add relation to OphTrOperationnote_ProcedureListOperationElement if it exists
+	 */
+	protected function afterFind()
+	{
+		$this->addOpNoteElementRelation();
+
+		parent::afterFind();
+	}
+
+	protected function addOpNoteElementRelation()
+	{
+		if(class_exists('OphTrOperationnote_ProcedureListOperationElement', false)){
+			$this->metaData->addRelation(
+				'operationNotes',
+				array(
+					self::MANY_MANY,
+					'ElementType',
+					'ophtroperationnote_procedure_element(procedure_id, element_type_id)',
+				)
+			);
+		}
 	}
 
 	/**

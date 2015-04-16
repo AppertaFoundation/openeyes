@@ -109,8 +109,26 @@ class ProcedureController extends BaseAdminController
 					'id',
 					'name'
 				)),
-			)
+			),
+
 		));
+		if(isset($admin->getModel()->operationNotes)){
+			$admin->setEditFields(array_merge(
+				$admin->getEditFields(),
+				array(
+					'operationNotes' => array(
+						'widget' => 'MultiSelectList',
+						'relation_field_id' => 'id',
+						'label' => 'Operation Note Element',
+						'options' => CHtml::encodeArray(CHtml::listData(
+							ElementType::model()->findAll(),
+							'id',
+							'name'
+						)),
+					)
+				)
+			));
+		}
 		$admin->editModel();
 	}
 
