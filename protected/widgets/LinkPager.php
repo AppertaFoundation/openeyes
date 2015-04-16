@@ -37,6 +37,14 @@ class LinkPager extends CLinkPager
 	protected function setHeaderToShowing()
 	{
 		$page = $this->getCurrentPage() + 1; //0 indexed page so add one
-		$this->header = 'Showing '.$page.' to '.$this->pages->getPageSize() * $page . ' of '.$this->getItemCount();
+		$to = $this->pages->getPageSize() * $page;
+		if($to > $this->getItemCount()){
+			$to = $this->getItemCount();
+		}
+		$from = $page;
+		if($page > 1){
+			$from = (($page - 1) * $this->pages->getPageSize()) + 1;
+		}
+		$this->header = 'Showing '.$from.' to '.$to. ' of '.$this->getItemCount();
 	}
 }
