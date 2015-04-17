@@ -74,7 +74,8 @@
 		<?php foreach (array(
 						   'Common Drugs List' => '/OphDrPrescription/admin/CommonDrugs',
 						   'Drug Sets' => '/OphDrPrescription/admin/DrugSets',
-						   'Medication List' => '/oeadmin/medication/list'
+						   'Medication List' => '/oeadmin/medication/list',
+						   'Formulary Drugs' => '/oeadmin/formularydrugs/list'
 					   ) as $title => $uri) { ?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)
 			) { ?> class="selected"<?php } ?>>
