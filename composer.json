@@ -12,7 +12,7 @@
     "openeyes/oph-dr-prescription": "dev-develop",
     "openeyes/oph-le-intravitrealinjection": "dev-master",
     "openeyes/oph-ou-anaestheticsatisfactionaudit": "dev-master",
-    "openeyes/oph-tr-consent": "dev-master",
+    "openeyes/oph-tr-consent": "dev-develop",
     "openeyes/oph-tr-operationnote": "dev-develop",
     "openeyes/oph-tr-operationbooking": "dev-develop",
     "openeyes/oph-tr-intravitrealinjection": "dev-master",
