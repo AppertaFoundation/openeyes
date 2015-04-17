@@ -49,7 +49,8 @@ class FormularyDrugsController extends BaseAdminController
 		$admin = new Admin(FormularyDrugs::model(), $this);
 		$admin->setListFields(array(
 			'name',
-			'type_id',
+			//'type_id',
+			'drug_type.name',
 			'aliases',
 			'active'
 		));
@@ -73,7 +74,13 @@ class FormularyDrugsController extends BaseAdminController
 		}
 		$admin->setEditFields(array(
 			'name' => 'text',
-			'type_id' => 'text',
+			'type_id' => array(
+				'widget' => 'DropDownList',
+				'options' => CHtml::listData(DrugType::model()->findAll(),'id', 'name'),
+				'htmlOptions' => null,
+				'hidden' => false,
+				'layoutColumns' => null
+			),
 			'aliases' => 'text',
 			'active' => 'checkbox'
 		));
@@ -88,5 +95,4 @@ class FormularyDrugsController extends BaseAdminController
 		$admin = new Admin(FormularyDrugs::model(), $this);
 		$admin->deleteModel();
 	}
-
 }

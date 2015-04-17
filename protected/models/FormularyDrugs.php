@@ -59,7 +59,7 @@ class FormularyDrugs extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
-			array('name, active', 'safe'),
+			array('name, type_id, aliases, active', 'safe'),
 		);
 	}
 
@@ -68,7 +68,10 @@ class FormularyDrugs extends BaseActiveRecordVersioned
 	 */
 	public function relations()
 	{
-		return array();
+		return array(
+			'drug_type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
+
+		);
 	}
 
 }
