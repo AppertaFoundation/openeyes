@@ -152,12 +152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
-                "reference": "a40e6f33f4b43d4ddeb2ec86c0017aac087a8959"
+                "reference": "cc0bb0e05c3c249a11e20e90b96886f78611120b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/a40e6f33f4b43d4ddeb2ec86c0017aac087a8959",
-                "reference": "a40e6f33f4b43d4ddeb2ec86c0017aac087a8959",
+                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/cc0bb0e05c3c249a11e20e90b96886f78611120b",
+                "reference": "cc0bb0e05c3c249a11e20e90b96886f78611120b",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
-            "time": "2015-04-16 15:32:01"
+            "time": "2015-04-17 09:12:37"
         },
         {
             "name": "openeyes/oph-le-intravitrealinjection",
