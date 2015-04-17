@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "42dde03c162614d2665c4113c1f49cac",
+    "hash": "7e42f2195f0e0127e71f2b769293ec22",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -215,16 +215,16 @@
         },
         {
             "name": "openeyes/oph-tr-consent",
-            "version": "dev-master",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrConsent.git",
-                "reference": "1d1bb8f855d0c9b5e44c3d8e27512e0e91822ecf"
+                "reference": "ca233260065aefd10bc8e6fbbfad02c47405bdb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/1d1bb8f855d0c9b5e44c3d8e27512e0e91822ecf",
-                "reference": "1d1bb8f855d0c9b5e44c3d8e27512e0e91822ecf",
+                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/ca233260065aefd10bc8e6fbbfad02c47405bdb1",
+                "reference": "ca233260065aefd10bc8e6fbbfad02c47405bdb1",
                 "shasum": ""
             },
             "require": {
@@ -233,7 +233,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Generates consent forms for scheduled and unscheduled operations",
-            "time": "2015-03-27 11:52:11"
+            "time": "2015-04-16 17:13:01"
         },
         {
             "name": "openeyes/oph-tr-intravitreal-injection",
