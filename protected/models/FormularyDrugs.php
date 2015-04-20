@@ -59,7 +59,9 @@ class FormularyDrugs extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
-			array('name, type_id, aliases, active', 'safe'),
+			array('name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active',
+				'safe'
+			),
 		);
 	}
 
@@ -73,5 +75,22 @@ class FormularyDrugs extends BaseActiveRecordVersioned
 
 		);
 	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'type_id' => 'Type',
+			'tallman' => 'Tall Man Name',
+			'form_id' => 'Form',
+			'default_route_id' => 'Default Route',
+			'default_frequency_id' => 'Default Frequency',
+			'default_duration_id' => 'Default Duration'
+		);
+	}
+
 
 }

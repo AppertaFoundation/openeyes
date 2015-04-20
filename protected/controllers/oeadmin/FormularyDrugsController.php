@@ -73,6 +73,7 @@ class FormularyDrugsController extends BaseAdminController
 			$admin->setModelId($id);
 		}
 		$admin->setEditFields(array(
+			//'id' => 'text',
 			'name' => 'text',
 			'type_id' => array(
 				'widget' => 'DropDownList',
@@ -82,6 +83,38 @@ class FormularyDrugsController extends BaseAdminController
 				'layoutColumns' => null
 			),
 			'aliases' => 'text',
+			'tallman' => 'text',
+			'form_id' => array(
+				'widget' => 'DropDownList',
+				'options' => CHtml::listData(DrugForm::model()->findAll(),'id', 'name'),
+				'htmlOptions' => null,
+				'hidden' => false,
+				'layoutColumns' => null
+			),
+			'dose_unit' => 'text',
+			'default_dose' => 'text',
+			'default_route_id' => array(
+				'widget' => 'DropDownList',
+				'options' => CHtml::listData(DrugRoute::model()->findAll(),'id', 'name'),
+				'htmlOptions' => null,
+				'hidden' => false,
+				'layoutColumns' => null
+			),
+			'default_frequency_id' => array(
+				'widget' => 'DropDownList',
+				'options' => CHtml::listData(DrugFrequency::model()->findAll(),'id', 'name'),
+				'htmlOptions' => null,
+				'hidden' => false,
+				'layoutColumns' => null
+			),
+			'default_duration_id' => array(
+				'widget' => 'DropDownList',
+				'options' => CHtml::listData(DrugDuration::model()->findAll(),'id', 'name'),
+				'htmlOptions' => null,
+				'hidden' => false,
+				'layoutColumns' => null
+			),
+			'preservative_free' => 'checkbox',
 			'active' => 'checkbox'
 		));
 		$admin->editModel();
