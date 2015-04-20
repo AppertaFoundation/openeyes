@@ -59,7 +59,8 @@ class FormularyDrugs extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
-			array('name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active',
+			array(
+				'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active',
 				'safe'
 			),
 		);
@@ -82,13 +83,14 @@ class FormularyDrugs extends BaseActiveRecordVersioned
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
+			//'id' => 'ID',
 			'type_id' => 'Type',
 			'tallman' => 'Tall Man Name',
 			'form_id' => 'Form',
 			'default_route_id' => 'Default Route',
 			'default_frequency_id' => 'Default Frequency',
-			'default_duration_id' => 'Default Duration'
+			'default_duration_id' => 'Default Duration',
+			'drug_type.name' => 'Type_ID'
 		);
 	}
 

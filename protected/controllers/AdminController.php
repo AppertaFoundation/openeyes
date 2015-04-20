@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,11 +17,11 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class AdminController extends BaseAdminController
 {
 	public $layout = 'admin';
 	public $items_per_page = 30;
+	public $display_order = 0;
 
 	public function actionIndex()
 	{
@@ -203,18 +204,20 @@ class AdminController extends BaseAdminController
 	public function actionDrugs()
 	{
 		$criteria = new CDbCriteria;
-		if (isset($_REQUEST['search'])) $criteria->compare('name', $_REQUEST['search'], true);
+		if (isset($_REQUEST['search'])) {
+			$criteria->compare('name', $_REQUEST['search'], true);
+		}
 		$pagination = $this->initPagination(Drug::model(), $criteria);
-		$this->render('/admin/drugs',array(
-				'drugs' => Drug::model()->findAll($criteria),
-				'pagination' => $pagination,
-			));
+		$this->render('/admin/drugs', array(
+			'drugs' => Drug::model()->findAll($criteria),
+			'pagination' => $pagination,
+		));
 	}
 
 	public function actionAddDrug()
 	{
 		return; //disabled OE-4474
-		$drug=new Drug('create');
+		$drug = new Drug('create');
 
 		if (!empty($_POST)) {
 
@@ -224,30 +227,29 @@ class AdminController extends BaseAdminController
 				$errors = $drug->getErrors();
 			} else {
 				if (!$drug->save()) {
-					throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+					throw new Exception("Unable to save drug: " . print_r($drug->getErrors(), true));
 				}
 
-				if(isset($_POST['allergies']))
-				{
+				if (isset($_POST['allergies'])) {
 					$posted_allergy_ids = $_POST['allergies'];
 
 					//add new allergy mappings
-					foreach($posted_allergy_ids as $asign){
+					foreach ($posted_allergy_ids as $asign) {
 						$allergy_assignment = new DrugAllergyAssignment();
-						$allergy_assignment->drug_id=$drug->id;
-						$allergy_assignment->allergy_id=$asign;
+						$allergy_assignment->drug_id = $drug->id;
+						$allergy_assignment->allergy_id = $asign;
 						$allergy_assignment->save();
 					}
 				}
 
-				$this->redirect('/admin/drugs/'.ceil($drug->id/$this->items_per_page));
+				$this->redirect('/admin/drugs/' . ceil($drug->id / $this->items_per_page));
 			}
 		}
 
-		$this->render('/admin/adddrug',array(
-				'drug' => $drug,
-				'errors' => @$errors,
-			));
+		$this->render('/admin/adddrug', array(
+			'drug' => $drug,
+			'errors' => @$errors,
+		));
 	}
 
 	public function actionEditDrug($id)
@@ -266,50 +268,50 @@ class AdminController extends BaseAdminController
 				$errors = $drug->getErrors();
 			} else {
 				if (!$drug->save()) {
-					throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+					throw new Exception("Unable to save drug: " . print_r($drug->getErrors(), true));
 				}
 
 				$posted_allergy_ids = array();
 
-				if(isset($_POST['allergies'])){
+				if (isset($_POST['allergies'])) {
 					$posted_allergy_ids = $_POST['allergies'];
 				}
 
-				$criteria=new CDbCriteria;
-				$criteria->compare('drug_id',$drug->id);
+				$criteria = new CDbCriteria;
+				$criteria->compare('drug_id', $drug->id);
 				$allergy_assignments = DrugAllergyAssignment::model()->findAll($criteria);
 
 				$allergy_assignment_ids = array();
-				foreach($allergy_assignments as $allergy_assignment){
-					$allergy_assignment_ids[]=$allergy_assignment->allergy_id;
+				foreach ($allergy_assignments as $allergy_assignment) {
+					$allergy_assignment_ids[] = $allergy_assignment->allergy_id;
 				}
 
-				$allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids,$posted_allergy_ids);
-				$posted_allergy_ids_to_assign =  array_diff($posted_allergy_ids , $allergy_assignment_ids);
+				$allergy_assignment_ids_to_delete = array_diff($allergy_assignment_ids, $posted_allergy_ids);
+				$posted_allergy_ids_to_assign = array_diff($posted_allergy_ids, $allergy_assignment_ids);
 
 				//add new allergy mappings
-				foreach($posted_allergy_ids_to_assign as $asign){
+				foreach ($posted_allergy_ids_to_assign as $asign) {
 					$allergy_assignment = new DrugAllergyAssignment();
-					$allergy_assignment->drug_id=$drug->id;
-					$allergy_assignment->allergy_id=$asign;
+					$allergy_assignment->drug_id = $drug->id;
+					$allergy_assignment->allergy_id = $asign;
 					$allergy_assignment->save();
 				}
 
 				//delete redundant allergy mappings
-				foreach($allergy_assignments as $asigned){
-					if(in_array($asigned->allergy_id,$allergy_assignment_ids_to_delete)){
+				foreach ($allergy_assignments as $asigned) {
+					if (in_array($asigned->allergy_id, $allergy_assignment_ids_to_delete)) {
 						$asigned->delete();
 					}
 				}
 
-				$this->redirect('/admin/drugs/'.ceil($drug->id/$this->items_per_page));
+				$this->redirect('/admin/drugs/' . ceil($drug->id / $this->items_per_page));
 			}
 		}
 
-		$this->render('/admin/editdrug',array(
-				'drug' => $drug,
-				'errors' => @$errors,
-			));
+		$this->render('/admin/editdrug', array(
+			'drug' => $drug,
+			'errors' => @$errors,
+		));
 	}
 
 	public function actionUserFind()
@@ -317,9 +319,9 @@ class AdminController extends BaseAdminController
 		$res = array();
 		if (Yii::app()->request->isAjaxRequest && !empty($_REQUEST['search'])) {
 			$criteria = new CDbCriteria;
-			$criteria->compare("LOWER(username)", strtolower($_REQUEST['search']),true, 'OR');
-			$criteria->compare("LOWER(first_name)",strtolower($_REQUEST['search']),true, 'OR');
-			$criteria->compare("LOWER(last_name)",strtolower($_REQUEST['search']),true, 'OR');
+			$criteria->compare("LOWER(username)", strtolower($_REQUEST['search']), true, 'OR');
+			$criteria->compare("LOWER(first_name)", strtolower($_REQUEST['search']), true, 'OR');
+			$criteria->compare("LOWER(last_name)", strtolower($_REQUEST['search']), true, 'OR');
 			foreach (User::model()->findAll($criteria) as $user) {
 				$res[] = array(
 					'id' => $user->id,
@@ -332,20 +334,20 @@ class AdminController extends BaseAdminController
 		echo CJSON::encode($res);
 	}
 
-	public function actionUsers($id=false)
+	public function actionUsers($id = false)
 	{
-		Audit::add('admin-User','list');
+		Audit::add('admin-User', 'list');
 
 		$criteria = new CDbCriteria;
 		if (!empty($_POST['search'])) {
-			$criteria->compare("LOWER(username)", strtolower($_POST['search']),true, 'OR');
-			$criteria->compare("LOWER(first_name)",strtolower($_POST['search']),true, 'OR');
-			$criteria->compare("LOWER(last_name)",strtolower($_POST['search']),true, 'OR');
+			$criteria->compare("LOWER(username)", strtolower($_POST['search']), true, 'OR');
+			$criteria->compare("LOWER(first_name)", strtolower($_POST['search']), true, 'OR');
+			$criteria->compare("LOWER(last_name)", strtolower($_POST['search']), true, 'OR');
 		}
 
 		$pagination = $this->initPagination(User::model(), $criteria);
 
-		$this->render('/admin/users',array(
+		$this->render('/admin/users', array(
 			'users' => User::model()->findAll($criteria),
 			'pagination' => $pagination,
 		));
@@ -357,30 +359,30 @@ class AdminController extends BaseAdminController
 		$request = Yii::app()->getRequest();
 
 		if ($request->getIsPostRequest()) {
-			$userAtt = $request->getPost( 'User');
+			$userAtt = $request->getPost('User');
 			$user->attributes = $userAtt;
 
 			if (!$user->validate()) {
 				$errors = $user->getErrors();
 			} else {
 				if (!$user->save()) {
-					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
+					throw new Exception("Unable to save user: " . print_r($user->getErrors(), true));
 				}
-				Audit::add('admin-User','add',$user->id);
+				Audit::add('admin-User', 'add', $user->id);
 
-				if(!isset($userAtt['roles'])){
-					$userAtt['roles']=array();
+				if (!isset($userAtt['roles'])) {
+					$userAtt['roles'] = array();
 				}
 
 				$user->saveRoles($userAtt['roles']);
 
-				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
+				$this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
 			}
 		}
 
 		$user->password = '';
 
-		$this->render('/admin/adduser',array(
+		$this->render('/admin/adduser', array(
 			'user' => $user,
 			'errors' => @$errors,
 		));
@@ -395,8 +397,8 @@ class AdminController extends BaseAdminController
 		$request = Yii::app()->getRequest();
 
 		if ($request->getIsPostRequest()) {
-			$userAtt = $request->getPost( 'User');
-			if(empty($userAtt['password'])){
+			$userAtt = $request->getPost('User');
+			if (empty($userAtt['password'])) {
 				unset($userAtt['password']);
 			}
 			$user->attributes = $userAtt;
@@ -405,7 +407,7 @@ class AdminController extends BaseAdminController
 				$errors = $user->getErrors();
 			} else {
 				if (!$user->save()) {
-					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
+					throw new Exception("Unable to save user: " . print_r($user->getErrors(), true));
 				}
 
 				if (!$contact = $user->contact) {
@@ -418,39 +420,40 @@ class AdminController extends BaseAdminController
 				$contact->qualifications = $user->qualifications;
 
 				if (!$contact->save()) {
-					throw new Exception("Unable to save user contact: ".print_r($contact->getErrors(),true));
+					throw new Exception("Unable to save user contact: " . print_r($contact->getErrors(), true));
 				}
 
 				if (!$user->contact) {
 					$user->contact_id = $contact->id;
 					if (!$user->save()) {
-						throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
+						throw new Exception("Unable to save user: " . print_r($user->getErrors(), true));
 					}
 				}
 
-				Audit::add('admin-User','edit',$user->id);
+				Audit::add('admin-User', 'edit', $user->id);
 
-				if(!isset($userAtt['roles'])){
-					$userAtt['roles']=array();
+				if (!isset($userAtt['roles'])) {
+					$userAtt['roles'] = array();
 				}
 
 				$user->saveRoles($userAtt['roles']);
 
-				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
+				$this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
 			}
 		} else {
-			Audit::add('admin-User','view',$id);
+			Audit::add('admin-User', 'view', $id);
 		}
 
 		$user->password = '';
 
-		$this->render('/admin/edituser',array(
+		$this->render('/admin/edituser', array(
 			'user' => $user,
 			'errors' => @$errors,
 		));
 	}
 
-	public function actionDeleteUsers() {
+	public function actionDeleteUsers()
+	{
 		$result = 1;
 
 		if (!empty($_POST['users'])) {
@@ -464,7 +467,7 @@ class AdminController extends BaseAdminController
 				}
 
 				if ($result) {
-					Audit::add('admin-User','delete');
+					Audit::add('admin-User', 'delete');
 				}
 			}
 		}
@@ -478,7 +481,7 @@ class AdminController extends BaseAdminController
 	 */
 	public function actionFirms()
 	{
-		Audit::add('admin-Firm','list');
+		Audit::add('admin-Firm', 'list');
 		$search = new ModelSearch(Firm::model());
 		$search->addSearchItem('name', array(
 			'type' => 'compare',
@@ -492,10 +495,32 @@ class AdminController extends BaseAdminController
 		));
 		$search->addSearchItem('active', array('type' => 'boolean'));
 
-		$this->render('/admin/firms',array(
+		if (isset($_GET['d']) && ($_GET['d'] == 0)) {
+			$this->display_order = 1;
+		}
+
+		$sort = "t.name";
+
+		if (isset($_GET['c']) != "") {
+
+			if ($_GET['c'] == "nm") {
+				$sort = "t.name";
+			} elseif ($_GET['c'] == "subsp") {
+				$sort = "t.service_subspecialty_assignment_id";
+			} elseif ($_GET['c'] == "con") {
+				$sort = "t.consultant_id";
+			} elseif ($_GET['c'] == "pac") {
+				$sort = "t.pas_code";
+			}
+		}
+
+
+		$this->render('/admin/firms', array(
 			'pagination' => $search->initPagination(),
+			'sort' => $search->colSort($sort),
 			'firms' => $search->retrieveResults(),
-			'search' => $search
+			'search' => $search,
+			'displayOrder' => $this->display_order
 		));
 	}
 
@@ -513,14 +538,14 @@ class AdminController extends BaseAdminController
 				$errors = $firm->getErrors();
 			} else {
 				if (!$firm->save()) {
-					throw new Exception("Unable to save firm: ".print_r($firm->getErrors(),true));
+					throw new Exception("Unable to save firm: " . print_r($firm->getErrors(), true));
 				}
-				Audit::add('admin-Firm','add',$firm->id);
-				$this->redirect('/admin/firms/'.ceil($firm->id/$this->items_per_page));
+				Audit::add('admin-Firm', 'add', $firm->id);
+				$this->redirect('/admin/firms/' . ceil($firm->id / $this->items_per_page));
 			}
 		}
 
-		$this->render('/admin/editfirm',array(
+		$this->render('/admin/editfirm', array(
 			'firm' => $firm,
 			'errors' => @$errors,
 		));
@@ -528,7 +553,7 @@ class AdminController extends BaseAdminController
 
 	public function actionEditFirm($id)
 	{
-		if (!$firm= Firm::model()->findByPk($id)) {
+		if (!$firm = Firm::model()->findByPk($id)) {
 			throw new Exception("Firm not found: $id");
 		}
 
@@ -539,24 +564,24 @@ class AdminController extends BaseAdminController
 				$errors = $firm->getErrors();
 			} else {
 				if (!$firm->save()) {
-					throw new Exception("Unable to save firm: ".print_r($firm->getErrors(),true));
+					throw new Exception("Unable to save firm: " . print_r($firm->getErrors(), true));
 				}
-				Audit::add('admin-Firm','edit',$firm->id);
-				$this->redirect('/admin/firms/'.ceil($firm->id/$this->items_per_page));
+				Audit::add('admin-Firm', 'edit', $firm->id);
+				$this->redirect('/admin/firms/' . ceil($firm->id / $this->items_per_page));
 			}
 		} else {
-			Audit::add('admin-Firm','view',$id);
+			Audit::add('admin-Firm', 'view', $id);
 		}
 
 		$siteSecretaries = array();
-		if (isset(Yii::app()->modules['OphCoCorrespondence'])){
+		if (isset(Yii::app()->modules['OphCoCorrespondence'])) {
 			$firmSiteSecretaries = new FirmSiteSecretary();
 			$siteSecretaries = $firmSiteSecretaries->findSiteSecretaryForFirm($id);
 			$firmSiteSecretaries->firm_id = $id;
 			$siteSecretaries[] = $firmSiteSecretaries;
 		}
 
-		$this->render('/admin/editfirm',array(
+		$this->render('/admin/editfirm', array(
 			'firm' => $firm,
 			'errors' => @$errors,
 			'siteSecretaries' => $siteSecretaries
@@ -567,29 +592,29 @@ class AdminController extends BaseAdminController
 	{
 		Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
 
-		if ($user = User::model()->find('username=?',array($_GET['username']))) {
+		if ($user = User::model()->find('username=?', array($_GET['username']))) {
 			echo $user->id;
 		} else {
 			echo "NOTFOUND";
 		}
 	}
 
-	public function actionContacts($id=false)
+	public function actionContacts($id = false)
 	{
 		$contacts = $this->searchContacts();
-		Audit::add('admin-Contact','list');
+		Audit::add('admin-Contact', 'list');
 
-		$this->render('/admin/contacts',array('contacts'=>@$contacts));
+		$this->render('/admin/contacts', array('contacts' => @$contacts));
 	}
 
-	public function actionContactlabels($id=false)
+	public function actionContactlabels($id = false)
 	{
-		Audit::add('admin-ContactLabel','list');
+		Audit::add('admin-ContactLabel', 'list');
 
 		$criteria = new CDbCriteria;
 		$pagination = $this->initPagination(ContactLabel::model(), $criteria);
 
-		$this->render('/admin/contactlabels',array(
+		$this->render('/admin/contactlabels', array(
 			'contactlabels' => ContactLabel::model()->findAll($criteria),
 			'pagination' => $pagination,
 		));
@@ -598,9 +623,9 @@ class AdminController extends BaseAdminController
 	public function searchContacts()
 	{
 		$criteria = new CDbCriteria;
-		Audit::add('admin-Contact','search',@$_GET['q']);
+		Audit::add('admin-Contact', 'search', @$_GET['q']);
 
-		$ex = explode(' ',@$_GET['q']);
+		$ex = explode(' ', @$_GET['q']);
 
 		if (empty($ex)) {
 			throw new Exception("Empty search query string, this shouldn't happen");
@@ -610,42 +635,44 @@ class AdminController extends BaseAdminController
 		$criteria->params[':blank'] = '';
 
 		if (count($ex) == 1) {
-			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$_GET['q']),false);
-			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$_GET['q']),false,'OR');
+			$criteria->addSearchCondition("lower(`t`.first_name)", strtolower(@$_GET['q']), false);
+			$criteria->addSearchCondition("lower(`t`.last_name)", strtolower(@$_GET['q']), false, 'OR');
 		} elseif (count($ex) == 2) {
-			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$ex[0]),false);
-			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$ex[1]),false);
+			$criteria->addSearchCondition("lower(`t`.first_name)", strtolower(@$ex[0]), false);
+			$criteria->addSearchCondition("lower(`t`.last_name)", strtolower(@$ex[1]), false);
 		} elseif (count($ex) >= 3) {
-			$criteria->addSearchCondition("lower(`t`.title)",strtolower(@$ex[0]),false);
-			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$ex[1]),false);
-			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$ex[2]),false);
+			$criteria->addSearchCondition("lower(`t`.title)", strtolower(@$ex[0]), false);
+			$criteria->addSearchCondition("lower(`t`.first_name)", strtolower(@$ex[1]), false);
+			$criteria->addSearchCondition("lower(`t`.last_name)", strtolower(@$ex[2]), false);
 		}
 
 		if (@$_GET['label']) {
-			$criteria->compare('contact_label_id',@$_GET['label']);
+			$criteria->compare('contact_label_id', @$_GET['label']);
 		}
 
 		$criteria->order = 'title, first_name, last_name';
-		$pagination = $this->initPagination(Contact::model() , $criteria);
+		$pagination = $this->initPagination(Contact::model(), $criteria);
 
 		$contacts = Contact::model()->findAll($criteria);
 
 		if (count($contacts) == 1) {
-			foreach ($contacts as $contact) {}
-			$this->redirect(array('/admin/editContact?contact_id='.$contact->id));
+			foreach ($contacts as $contact) {
+			}
+			$this->redirect(array('/admin/editContact?contact_id=' . $contact->id));
+
 			return;
 		}
 
 		return array(
 			'contacts' => $contacts,
-			'pagination' =>$pagination
+			'pagination' => $pagination
 		);
 	}
 
 	public function actionEditContact()
 	{
 		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
-			throw new Exception("Contact not found: ".@$_GET['contact_id']);
+			throw new Exception("Contact not found: " . @$_GET['contact_id']);
 		}
 
 		if (!empty($_POST)) {
@@ -655,16 +682,16 @@ class AdminController extends BaseAdminController
 				$errors = $contact->getErrors();
 			} else {
 				if (!$contact->save()) {
-					throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
+					throw new Exception("Unable to save contact: " . print_r($contact->getErrors(), true));
 				}
-				Audit::add('admin-Contact','edit',$contact->id);
-				$this->redirect('/admin/contacts?q='.$contact->fullName);
+				Audit::add('admin-Contact', 'edit', $contact->id);
+				$this->redirect('/admin/contacts?q=' . $contact->fullName);
 			}
 		} else {
-			Audit::add('admin-Contact','view',@$_GET['contact_id']);
+			Audit::add('admin-Contact', 'view', @$_GET['contact_id']);
 		}
 
-		$this->render('/admin/editcontact',array(
+		$this->render('/admin/editcontact', array(
 			'contact' => $contact,
 			'errors' => @$errors,
 		));
@@ -673,12 +700,12 @@ class AdminController extends BaseAdminController
 	public function actionContactLocation()
 	{
 		if (!$cl = ContactLocation::model()->findByPk(@$_GET['location_id'])) {
-			throw new Exception("ContactLocation not found: ".@$_GET['location_id']);
+			throw new Exception("ContactLocation not found: " . @$_GET['location_id']);
 		}
 
-		Audit::add('admin-ContactLocation','view',@$_GET['location_id']);
+		Audit::add('admin-ContactLocation', 'view', @$_GET['location_id']);
 
-		$this->render('/admin/contactlocation',array(
+		$this->render('/admin/contactlocation', array(
 			'location' => $cl,
 		));
 	}
@@ -686,20 +713,22 @@ class AdminController extends BaseAdminController
 	public function actionRemoveLocation()
 	{
 		if (!$cl = ContactLocation::model()->findByPk(@$_POST['location_id'])) {
-			throw new Exception("ContactLocation not found: ".@$_POST['location_id']);
+			throw new Exception("ContactLocation not found: " . @$_POST['location_id']);
 		}
 
-		if (count($cl->patients) >0) {
+		if (count($cl->patients) > 0) {
 			echo "0";
+
 			return;
 		}
 
 		if (!$cl->delete()) {
 			echo "-1";
+
 			return;
 		}
 
-		Audit::add('admin-ContactLocation','delete',@$_POST['location_id']);
+		Audit::add('admin-ContactLocation', 'delete', @$_POST['location_id']);
 
 		return "1";
 	}
@@ -707,7 +736,7 @@ class AdminController extends BaseAdminController
 	public function actionAddContactLocation()
 	{
 		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
-			throw new Exception("Contact not found: ".@$_GET['contact_id']);
+			throw new Exception("Contact not found: " . @$_GET['contact_id']);
 		}
 
 		$errors = array();
@@ -731,15 +760,15 @@ class AdminController extends BaseAdminController
 				}
 
 				if (!$cl->save()) {
-					$errors = array_merge($errors,$cl->getErrors());
+					$errors = array_merge($errors, $cl->getErrors());
 				} else {
-					Audit::add('admin-ContactLocation','add',$cl->id);
-					$this->redirect(array('/admin/editContact?contact_id='.$contact->id));
+					Audit::add('admin-ContactLocation', 'add', $cl->id);
+					$this->redirect(array('/admin/editContact?contact_id=' . $contact->id));
 				}
 			}
 		}
 
-		$this->render('/admin/addcontactlocation',array(
+		$this->render('/admin/addcontactlocation', array(
 			'contact' => $contact,
 			'errors' => $errors,
 			'sites' => $sites,
@@ -749,22 +778,22 @@ class AdminController extends BaseAdminController
 	public function actionGetInstitutionSites()
 	{
 		if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
-			throw new Exception("Institution not found: ".@$_GET['institution_id']);
+			throw new Exception("Institution not found: " . @$_GET['institution_id']);
 		}
 
-		Audit::add('admin-Institution>Site','view',@$_GET['institution_id']);
+		Audit::add('admin-Institution>Site', 'view', @$_GET['institution_id']);
 
-		echo json_encode(CHtml::listData($institution->sites,'id','name'));
+		echo json_encode(CHtml::listData($institution->sites, 'id', 'name'));
 	}
 
-	public function actionInstitutions($id=false)
+	public function actionInstitutions($id = false)
 	{
-		Audit::add('admin-Institution','list');
+		Audit::add('admin-Institution', 'list');
 
 		$criteria = new CDbCriteria;
 		$pagination = $this->initPagination(Institution::model(), $criteria);
 
-		$this->render('/admin/institutions',array(
+		$this->render('/admin/institutions', array(
 			'institutions' => Institution::model()->findAll($criteria),
 			'pagination' => $pagination,
 		));
@@ -792,34 +821,35 @@ class AdminController extends BaseAdminController
 
 			if (empty($errors)) {
 				if (!$institution->save()) {
-					throw new Exception("Unable to save institution: ".print_r($institution->getErrors(),true));
+					throw new Exception("Unable to save institution: " . print_r($institution->getErrors(), true));
 				}
 				if (!$address->save()) {
-					throw new Exception("Unable to save institution address: ".print_r($address->getErrors(),true));
+					throw new Exception("Unable to save institution address: " . print_r($address->getErrors(), true));
 				}
 				$institution->addAddress($address);
 
 				if (!$institution->contact->save()) {
-					throw new Exception("Institution contact could not be saved: " . print_r($institution->contact->getErrors(), true));
+					throw new Exception("Institution contact could not be saved: " . print_r($institution->contact->getErrors(),
+							true));
 				}
 
-				Audit::add('admin-Institution','add',$institution->id);
+				Audit::add('admin-Institution', 'add', $institution->id);
 
-				$this->redirect(array('/admin/editInstitution?institution_id='.$institution->id));
+				$this->redirect(array('/admin/editInstitution?institution_id=' . $institution->id));
 			}
 		}
 
-		$this->render('/admin/addinstitution',array(
-				'institution' => $institution,
-				'address' => $address,
-				'errors' => @$errors,
+		$this->render('/admin/addinstitution', array(
+			'institution' => $institution,
+			'address' => $address,
+			'errors' => @$errors,
 		));
 	}
 
 	public function actionEditInstitution()
 	{
 		if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
-			throw new Exception("Institution not found: ".@$_GET['institution_id']);
+			throw new Exception("Institution not found: " . @$_GET['institution_id']);
 		}
 
 		$errors = array();
@@ -844,49 +874,49 @@ class AdminController extends BaseAdminController
 
 			if (empty($errors)) {
 				if (!$institution->save()) {
-					throw new Exception("Unable to save institution: ".print_r($institution->getErrors(),true));
+					throw new Exception("Unable to save institution: " . print_r($institution->getErrors(), true));
 				}
 				if (!$address->save()) {
-					throw new Exception("Unable to save institution address: ".print_r($address->getErrors(),true));
+					throw new Exception("Unable to save institution address: " . print_r($address->getErrors(), true));
 				}
 
-				Audit::add('admin-Institution','edit',$institution->id);
+				Audit::add('admin-Institution', 'edit', $institution->id);
 
 				$this->redirect('/admin/institutions');
 			}
 		} else {
-			Audit::add('admin-Institution','view',@$_GET['institution_id']);
+			Audit::add('admin-Institution', 'view', @$_GET['institution_id']);
 		}
 
-		$this->render('/admin/editinstitution',array(
+		$this->render('/admin/editinstitution', array(
 			'institution' => $institution,
 			'address' => $address,
 			'errors' => $errors,
 		));
 	}
 
-	public function actionSites($id=false)
+	public function actionSites($id = false)
 	{
-		Audit::add('admin-Site','list');
+		Audit::add('admin-Site', 'list');
 
 		$criteria = new CDbCriteria;
-                $criteria->join = "JOIN contact ON contact_id = contact.id"
-                        . " join address on address.contact_id = contact.id";
+		$criteria->join = "JOIN contact ON contact_id = contact.id"
+			. " join address on address.contact_id = contact.id";
 
-               if (!empty($_REQUEST['search'])) {
-                       $criteria->compare("LOWER(name)", strtolower($_REQUEST['search']),true, 'OR');
-                       $criteria->compare("LOWER(short_name)",strtolower($_REQUEST['search']),true, 'OR');
-                       $criteria->compare("LOWER(remote_id)",strtolower($_REQUEST['search']),true, 'OR');
-                       $criteria->compare("LOWER(postcode)",strtolower($_REQUEST['search']),true, 'OR');
-                       $criteria->compare("LOWER(address1)",strtolower($_REQUEST['search']),true, 'OR');
-                       $criteria->compare("LOWER(address2)",strtolower($_REQUEST['search']),true, 'OR');
-                       $criteria->compare("LOWER(city)",strtolower($_REQUEST['search']),true, 'OR');
-                       $criteria->compare("LOWER(county)",strtolower($_REQUEST['search']),true, 'OR');
-               }
+		if (!empty($_REQUEST['search'])) {
+			$criteria->compare("LOWER(name)", strtolower($_REQUEST['search']), true, 'OR');
+			$criteria->compare("LOWER(short_name)", strtolower($_REQUEST['search']), true, 'OR');
+			$criteria->compare("LOWER(remote_id)", strtolower($_REQUEST['search']), true, 'OR');
+			$criteria->compare("LOWER(postcode)", strtolower($_REQUEST['search']), true, 'OR');
+			$criteria->compare("LOWER(address1)", strtolower($_REQUEST['search']), true, 'OR');
+			$criteria->compare("LOWER(address2)", strtolower($_REQUEST['search']), true, 'OR');
+			$criteria->compare("LOWER(city)", strtolower($_REQUEST['search']), true, 'OR');
+			$criteria->compare("LOWER(county)", strtolower($_REQUEST['search']), true, 'OR');
+		}
 
 		$pagination = $this->initPagination(Site::model(), $criteria);
 
-		$this->render('/admin/sites',array(
+		$this->render('/admin/sites', array(
 			'sites' => Site::model()->findAll($criteria),
 			'pagination' => $pagination,
 		));
@@ -895,7 +925,7 @@ class AdminController extends BaseAdminController
 	public function actionEditsite()
 	{
 		if (!$site = Site::model()->findByPk(@$_GET['site_id'])) {
-			throw new Exception("Site not found: ".@$_GET['site_id']);
+			throw new Exception("Site not found: " . @$_GET['site_id']);
 		}
 
 		$errors = array();
@@ -917,21 +947,21 @@ class AdminController extends BaseAdminController
 
 			if (empty($errors)) {
 				if (!$site->save()) {
-					throw new Exception("Unable to save site: ".print_r($site->getErrors(),true));
+					throw new Exception("Unable to save site: " . print_r($site->getErrors(), true));
 				}
 				if (!$address->save()) {
-					throw new Exception("Unable to save site address: ".print_r($address->getErrors(),true));
+					throw new Exception("Unable to save site address: " . print_r($address->getErrors(), true));
 				}
 
-				Audit::add('admin-Site','edit',$site->id);
+				Audit::add('admin-Site', 'edit', $site->id);
 
 				$this->redirect('/admin/sites');
 			}
 		} else {
-			Audit::add('admin-Site','view',@$_GET['site_id']);
+			Audit::add('admin-Site', 'view', @$_GET['site_id']);
 		}
 
-		$this->render('/admin/editsite',array(
+		$this->render('/admin/editsite', array(
 			'site' => $site,
 			'address' => $site->contact->address,
 			'errors' => $errors,
@@ -949,15 +979,15 @@ class AdminController extends BaseAdminController
 				$errors = $contact->getErrors();
 			} else {
 				if (!$contact->save()) {
-					throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
+					throw new Exception("Unable to save contact: " . print_r($contact->getErrors(), true));
 				}
-				Audit::add('admin-Contact','add',$contact->id);
+				Audit::add('admin-Contact', 'add', $contact->id);
 
-				$this->redirect(array('/admin/editContact?contact_id='.$contact->id));
+				$this->redirect(array('/admin/editContact?contact_id=' . $contact->id));
 			}
 		}
 
-		$this->render('/admin/addcontact',array(
+		$this->render('/admin/addcontact', array(
 			'contact' => $contact,
 			'errors' => @$errors,
 		));
@@ -974,14 +1004,14 @@ class AdminController extends BaseAdminController
 				$errors = $contactlabel->getErrors();
 			} else {
 				if (!$contactlabel->save()) {
-					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
+					throw new Exception("Unable to save contactlabel: " . print_r($contactlabel->getErrors(), true));
 				}
-				Audit::add('admin-ContactLabel','add',$contactlabel->id);
-				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
+				Audit::add('admin-ContactLabel', 'add', $contactlabel->id);
+				$this->redirect('/admin/contactlabels/' . ceil($contactlabel->id / $this->items_per_page));
 			}
 		}
 
-		$this->render('/admin/addcontactlabel',array(
+		$this->render('/admin/addcontactlabel', array(
 			'contactlabel' => $contactlabel,
 			'errors' => @$errors,
 		));
@@ -1000,17 +1030,17 @@ class AdminController extends BaseAdminController
 				$errors = $contactlabel->getErrors();
 			} else {
 				if (!$contactlabel->save()) {
-					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
+					throw new Exception("Unable to save contactlabel: " . print_r($contactlabel->getErrors(), true));
 				}
-				Audit::add('admin-ContactLabel','edit',$contactlabel->id);
+				Audit::add('admin-ContactLabel', 'edit', $contactlabel->id);
 
-				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
+				$this->redirect('/admin/contactlabels/' . ceil($contactlabel->id / $this->items_per_page));
 			}
 		} else {
-			Audit::add('admin-ContactLabel','view',$id);
+			Audit::add('admin-ContactLabel', 'view', $id);
 		}
 
-		$this->render('/admin/editcontactlabel',array(
+		$this->render('/admin/editcontactlabel', array(
 			'contactlabel' => $contactlabel,
 			'errors' => @$errors,
 		));
@@ -1019,17 +1049,17 @@ class AdminController extends BaseAdminController
 	public function actionDeleteContactLabel()
 	{
 		if (!$contactlabel = ContactLabel::model()->findByPk(@$_POST['contact_label_id'])) {
-			throw new Exception("ContactLabel not found: ".@$_POST['contact_label_id']);
+			throw new Exception("ContactLabel not found: " . @$_POST['contact_label_id']);
 		}
 
-		$count = Contact::model()->count('contact_label_id=?',array($contactlabel->id));
+		$count = Contact::model()->count('contact_label_id=?', array($contactlabel->id));
 
 		if ($count == 0) {
 			if (!$contactlabel->delete()) {
-				throw new Exception("Unable to delete ContactLabel: ".print_r($contactlabel->getErrors(),true));
+				throw new Exception("Unable to delete ContactLabel: " . print_r($contactlabel->getErrors(), true));
 			}
 
-			Audit::add('admin-ContactLabel','delete',@$_POST['contact_label_id']);
+			Audit::add('admin-ContactLabel', 'delete', @$_POST['contact_label_id']);
 		}
 
 		echo $count;
@@ -1037,7 +1067,7 @@ class AdminController extends BaseAdminController
 
 	public function actionDataSources()
 	{
-		Audit::add('admin-DataSource','list');
+		Audit::add('admin-DataSource', 'list');
 		$this->render('/admin/datasources');
 	}
 
@@ -1054,16 +1084,16 @@ class AdminController extends BaseAdminController
 				$errors = $source->getErrors();
 			} else {
 				if (!$source->save()) {
-					throw new Exception("Unable to save source: ".print_r($source->getErrors(),true));
+					throw new Exception("Unable to save source: " . print_r($source->getErrors(), true));
 				}
-				Audit::add('admin-DataSource','edit',$id);
-				$this->redirect('/admin/datasources/'.ceil($source->id/$this->items_per_page));
+				Audit::add('admin-DataSource', 'edit', $id);
+				$this->redirect('/admin/datasources/' . ceil($source->id / $this->items_per_page));
 			}
 		} else {
-			Audit::add('admin-DataSource','view',$id);
+			Audit::add('admin-DataSource', 'view', $id);
 		}
 
-		$this->render('/admin/editdatasource',array(
+		$this->render('/admin/editdatasource', array(
 			'source' => $source,
 			'errors' => @$errors,
 		));
@@ -1080,14 +1110,14 @@ class AdminController extends BaseAdminController
 				$errors = $source->getErrors();
 			} else {
 				if (!$source->save()) {
-					throw new Exception("Unable to save data source: ".print_r($source->getErrors(),true));
+					throw new Exception("Unable to save data source: " . print_r($source->getErrors(), true));
 				}
-				Audit::add('admin-DataSource','add',$source->id);
+				Audit::add('admin-DataSource', 'add', $source->id);
 				$this->redirect('/admin/datasources');
 			}
 		}
 
-		$this->render('/admin/editdatasource',array(
+		$this->render('/admin/editdatasource', array(
 			'source' => $source,
 			'errors' => @$errors,
 		));
@@ -1097,16 +1127,19 @@ class AdminController extends BaseAdminController
 	{
 		if (!empty($_POST['source'])) {
 			foreach ($_POST['source'] as $source_id) {
-				if (Institution::model()->find('source_id=?',array($source_id))) {
+				if (Institution::model()->find('source_id=?', array($source_id))) {
 					echo "0";
+
 					return;
 				}
-				if (Site::model()->find('source_id=?',array($source_id))) {
+				if (Site::model()->find('source_id=?', array($source_id))) {
 					echo "0";
+
 					return;
 				}
-				if (Person::model()->find('source_id=?',array($source_id))) {
+				if (Person::model()->find('source_id=?', array($source_id))) {
 					echo "0";
+
 					return;
 				}
 			}
@@ -1114,18 +1147,19 @@ class AdminController extends BaseAdminController
 			foreach ($_POST['source'] as $source_id) {
 				if ($source = ImportSource::model()->findByPk($source_id)) {
 					if (!$source->delete()) {
-						throw new Exception("Unable to delete import source: ".print_r($source->getErrors(),true));
+						throw new Exception("Unable to delete import source: " . print_r($source->getErrors(), true));
 					}
 				}
 			}
 
-			Audit::add('admin-DataSource','delete');
+			Audit::add('admin-DataSource', 'delete');
 		}
 
 		echo "1";
 	}
 
-	public function actionDeleteFirms() {
+	public function actionDeleteFirms()
+	{
 		$result = 1;
 
 		if (!empty($_POST['firms'])) {
@@ -1135,7 +1169,7 @@ class AdminController extends BaseAdminController
 					if (!$firm->delete()) {
 						$result = 0;
 					} else {
-						Audit::add('admin-Firm','delete',$firm_id);
+						Audit::add('admin-Firm', 'delete', $firm_id);
 					}
 				} catch (Exception $e) {
 					$result = 0;
@@ -1148,7 +1182,7 @@ class AdminController extends BaseAdminController
 
 	public function actionCommissioning_bodies()
 	{
-		Audit::add('admin-CommissioningBody','list');
+		Audit::add('admin-CommissioningBody', 'list');
 		$this->render('commissioning_bodies');
 	}
 
@@ -1156,7 +1190,7 @@ class AdminController extends BaseAdminController
 	{
 		if (isset($_GET['commissioning_body_id'])) {
 			if (!$cb = CommissioningBody::model()->findByPk(@$_GET['commissioning_body_id'])) {
-				throw new Exception("CommissioningBody not found: ".@$_GET['commissioning_body_id']);
+				throw new Exception("CommissioningBody not found: " . @$_GET['commissioning_body_id']);
 			}
 			if (!$address = $cb->contact->address) {
 				$address = new Address;
@@ -1187,7 +1221,8 @@ class AdminController extends BaseAdminController
 				if (!$contact = $cb->contact) {
 					$contact = new Contact;
 					if (!$contact->save()) {
-						throw new Exception("Unable to save contact for commissioning body: ".print_r($contact->getErrors(),true));
+						throw new Exception("Unable to save contact for commissioning body: " . print_r($contact->getErrors(),
+								true));
 					}
 				}
 
@@ -1202,24 +1237,25 @@ class AdminController extends BaseAdminController
 				}
 
 				if (!$cb->save()) {
-					throw new Exception("Unable to save CommissioningBody : ".print_r($cb->getErrors(),true));
+					throw new Exception("Unable to save CommissioningBody : " . print_r($cb->getErrors(), true));
 				}
 
 				$address->contact_id = $contact->id;
 
 				if (!$address->save()) {
-					throw new Exception("Unable to save CommissioningBody address: ".print_r($address->getErrors(),true));
+					throw new Exception("Unable to save CommissioningBody address: " . print_r($address->getErrors(),
+							true));
 				}
 
-				Audit::add('admin-CommissioningBody',$method,$cb->id);
+				Audit::add('admin-CommissioningBody', $method, $cb->id);
 
 				$this->redirect('/admin/commissioning_bodies');
 			}
 		} else {
-			Audit::add('admin-CommissioningBody','view',@$_GET['commissioning_body_id']);
+			Audit::add('admin-CommissioningBody', 'view', @$_GET['commissioning_body_id']);
 		}
 
-		$this->render('/admin/editCommissioningBody',array(
+		$this->render('/admin/editCommissioningBody', array(
 			'cb' => $cb,
 			'address' => $address,
 			'errors' => $errors,
@@ -1236,6 +1272,7 @@ class AdminController extends BaseAdminController
 		foreach (CommissioningBody::model()->findAllByPk(@$_POST['commissioning_body']) as $cb) {
 			if (!$cb->canDelete()) {
 				echo "0";
+
 				return;
 			}
 		}
@@ -1246,21 +1283,21 @@ class AdminController extends BaseAdminController
 	public function actionDeleteCommissioningBodies()
 	{
 		$criteria = new CDbCriteria;
-		$criteria->addInCondition('commissioning_body_id',@$_POST['commissioning_body']);
+		$criteria->addInCondition('commissioning_body_id', @$_POST['commissioning_body']);
 
 		foreach (CommissioningBodyService::model()->findAll($criteria) as $cbs) {
 			$cbs->commissioning_body_id = null;
 			if (!$cbs->save()) {
-				throw new Exception("Unable to save commissioning body service: ".print_r($cbs->getErrors(),true));
+				throw new Exception("Unable to save commissioning body service: " . print_r($cbs->getErrors(), true));
 			}
 		}
 
 		$criteria = new CDbCriteria;
-		$criteria->addInCondition('id',@$_POST['commissioning_body']);
+		$criteria->addInCondition('id', @$_POST['commissioning_body']);
 
 		if (CommissioningBody::model()->deleteAll($criteria)) {
 			echo "1";
-			Audit::add('admin-CommissioningBody','delete');
+			Audit::add('admin-CommissioningBody', 'delete');
 		} else {
 			echo "0";
 		}
@@ -1268,7 +1305,7 @@ class AdminController extends BaseAdminController
 
 	public function actionCommissioning_body_types()
 	{
-		Audit::add('admin-CommissioningBodyType','list');
+		Audit::add('admin-CommissioningBodyType', 'list');
 		$this->render('commissioning_body_types');
 	}
 
@@ -1276,7 +1313,7 @@ class AdminController extends BaseAdminController
 	{
 		if (isset($_GET['commissioning_body_type_id'])) {
 			if (!$cbt = CommissioningBodyType::model()->findByPk(@$_GET['commissioning_body_type_id'])) {
-				throw new Exception("CommissioningBody not found: ".@$_GET['commissioning_body_type_id']);
+				throw new Exception("CommissioningBody not found: " . @$_GET['commissioning_body_type_id']);
 			}
 		} else {
 			$cbt = new CommissioningBodyType;
@@ -1301,14 +1338,14 @@ class AdminController extends BaseAdminController
 				}
 
 				if (!$cbt->save()) {
-					throw new Exception("Unable to save CommissioningBodyType : ".print_r($cbt->getErrors(),true));
+					throw new Exception("Unable to save CommissioningBodyType : " . print_r($cbt->getErrors(), true));
 				}
-				Audit::add('admin-CommissioningBodyType',$method,$cbt->id);
+				Audit::add('admin-CommissioningBodyType', $method, $cbt->id);
 				$this->redirect('/admin/commissioning_body_types');
 			}
 		}
 
-		$this->render('/admin/editCommissioningBodyType',array(
+		$this->render('/admin/editCommissioningBodyType', array(
 			'cbt' => $cbt,
 			'errors' => $errors,
 		));
@@ -1322,11 +1359,12 @@ class AdminController extends BaseAdminController
 	public function actionVerifyDeleteCommissioningBodyTypes()
 	{
 		$criteria = new CDbCriteria;
-		$criteria->addInCondition('commissioning_body_type_id',@$_POST['commissioning_body_type']);
+		$criteria->addInCondition('commissioning_body_type_id', @$_POST['commissioning_body_type']);
 
 		foreach (CommissioningBody::model()->findAll($criteria) as $cb) {
 			if (!$cb->canDelete()) {
 				echo "0";
+
 				return;
 			}
 		}
@@ -1337,23 +1375,24 @@ class AdminController extends BaseAdminController
 	public function actionDeleteCommissioningBodyTypes()
 	{
 		$criteria = new CDbCriteria;
-		$criteria->addInCondition('id',@$_POST['commissioning_body_type']);
+		$criteria->addInCondition('id', @$_POST['commissioning_body_type']);
 
 		foreach (CommissioningBodyType::model()->findAll($criteria) as $cbt) {
 			if (!$cbt->delete()) {
 				echo "0";
+
 				return;
 			}
 		}
 
-		Audit::add('admin-CommissioningBodyType','delete');
+		Audit::add('admin-CommissioningBodyType', 'delete');
 
 		echo "1";
 	}
 
 	public function actionCommissioning_Body_Services()
 	{
-		Audit::add('admin-CommissioningBodyService','list');
+		Audit::add('admin-CommissioningBodyService', 'list');
 		$this->render('commissioning_body_services');
 	}
 
@@ -1364,7 +1403,7 @@ class AdminController extends BaseAdminController
 
 		if (isset($_GET['commissioning_body_service_id'])) {
 			if (!$cbs = CommissioningBodyService::model()->findByPk(@$_GET['commissioning_body_service_id'])) {
-				throw new Exception("CommissioningBody not found: ".@$_GET['commissioning_body_service_id']);
+				throw new Exception("CommissioningBody not found: " . @$_GET['commissioning_body_service_id']);
 			}
 			if ($cbs->contact && $cbs->contact->address) {
 				$address = $cbs->contact->address;
@@ -1392,7 +1431,7 @@ class AdminController extends BaseAdminController
 				if (!$address->id) {
 					$contact = new Contact;
 					if (!$contact->save()) {
-						throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
+						throw new Exception("Unable to save contact: " . print_r($contact->getErrors(), true));
 					}
 
 					$cbs->contact_id = $contact->id;
@@ -1409,20 +1448,21 @@ class AdminController extends BaseAdminController
 				}
 
 				if (!$cbs->save()) {
-					throw new Exception("Unable to save CommissioningBodyService: ".print_r($cbs->getErrors(),true));
+					throw new Exception("Unable to save CommissioningBodyService: " . print_r($cbs->getErrors(), true));
 				}
 
 				if (!$address->save()) {
-					throw new Exception("Unable to save CommissioningBodyService address: ".print_r($address->getErrors(),true));
+					throw new Exception("Unable to save CommissioningBodyService address: " . print_r($address->getErrors(),
+							true));
 				}
 
-				Audit::add('admin-CommissioningBodyService',$method,$cbs->id);
+				Audit::add('admin-CommissioningBodyService', $method, $cbs->id);
 
 				$this->redirect('/admin/commissioning_body_services');
 			}
 		}
 
-		$this->render('/admin/editCommissioningBodyService',array(
+		$this->render('/admin/editCommissioningBodyService', array(
 			'cbs' => $cbs,
 			'address' => $address,
 			'errors' => $errors,
@@ -1443,16 +1483,17 @@ class AdminController extends BaseAdminController
 	public function actionDeleteCommissioningBodyServices()
 	{
 		$criteria = new CDbCriteria;
-		$criteria->addInCondition('id',@$_POST['commissioning_body_service']);
+		$criteria->addInCondition('id', @$_POST['commissioning_body_service']);
 
 		foreach (CommissioningBodyService::model()->findAll($criteria) as $cbs) {
 			if (!$cbs->delete()) {
 				echo "0";
+
 				return;
 			}
 		}
 
-		Audit::add('admin-CommissioningBodyService','delete');
+		Audit::add('admin-CommissioningBodyService', 'delete');
 
 		echo "1";
 	}
@@ -1466,7 +1507,7 @@ class AdminController extends BaseAdminController
 	{
 		if (isset($_GET['commissioning_body_service_type_id'])) {
 			if (!$cbs = CommissioningBodyServiceType::model()->findByPk(@$_GET['commissioning_body_service_type_id'])) {
-				throw new Exception("CommissioningBodyServiceType not found: ".@$_GET['commissioning_body_service_type_id']);
+				throw new Exception("CommissioningBodyServiceType not found: " . @$_GET['commissioning_body_service_type_id']);
 			}
 		} else {
 			$cbs = new CommissioningBodyServiceType;
@@ -1491,16 +1532,17 @@ class AdminController extends BaseAdminController
 
 			if (empty($errors)) {
 				if (!$cbs->save()) {
-					throw new Exception("Unable to save CommissioningBodyServiceType: ".print_r($cbs->getErrors(),true));
+					throw new Exception("Unable to save CommissioningBodyServiceType: " . print_r($cbs->getErrors(),
+							true));
 				}
 
-				Audit::add('admin-CommissioningBodyServiceType',$method,$cbs->id);
+				Audit::add('admin-CommissioningBodyServiceType', $method, $cbs->id);
 
 				$this->redirect('/admin/commissioning_body_service_types');
 			}
 		}
 
-		$this->render('/admin/editCommissioningBodyServiceType',array(
+		$this->render('/admin/editCommissioningBodyServiceType', array(
 			'cbs' => $cbs,
 			'errors' => $errors,
 		));
@@ -1514,7 +1556,7 @@ class AdminController extends BaseAdminController
 	public function actionVerifyDeleteCommissioningBodyServiceTypes()
 	{
 		$criteria = new CDbCriteria;
-		$criteria->addInCondition('commissioning_body_service_type_id',@$_POST['commissioning_body_service_type']);
+		$criteria->addInCondition('commissioning_body_service_type_id', @$_POST['commissioning_body_service_type']);
 
 		if (CommissioningBodyService::model()->find($criteria)) {
 			echo "0";
@@ -1526,20 +1568,20 @@ class AdminController extends BaseAdminController
 	public function actionDeleteCommissioningBodyServiceTypes()
 	{
 		$criteria = new CDbCriteria;
-		$criteria->addInCondition('id',@$_POST['commissioning_body_service_type']);
+		$criteria->addInCondition('id', @$_POST['commissioning_body_service_type']);
 
 		if (!$er = CommissioningBodyServiceType::model()->deleteAll($criteria)) {
-			throw new Exception("Unable to delete CommissioningBodyServiceTypes: ".print_r($er->getErrors(),true));
+			throw new Exception("Unable to delete CommissioningBodyServiceTypes: " . print_r($er->getErrors(), true));
 		}
 
-		Audit::add('admin-CommissioningBodyServiceType','delete');
+		Audit::add('admin-CommissioningBodyServiceType', 'delete');
 
 		echo "1";
 	}
 
 	public function actionEventDeletionRequests()
 	{
-		$this->render('/admin/event_deletion_requests',array(
+		$this->render('/admin/event_deletion_requests', array(
 			'events' => Event::model()->findAll(array(
 				'order' => 'last_modified_date asc',
 				'condition' => 'delete_pending = 1',
@@ -1549,7 +1591,7 @@ class AdminController extends BaseAdminController
 
 	public function actionApproveEventDeletionRequest($id)
 	{
-		if (!$event = Event::model()->find('id=? and delete_pending=?',array($id,1))) {
+		if (!$event = Event::model()->find('id=? and delete_pending=?', array($id, 1))) {
 			throw new Exception("Event not found: $id");
 		}
 
@@ -1558,7 +1600,7 @@ class AdminController extends BaseAdminController
 
 		$event->softDelete();
 
-		$event->audit('event','delete-approved',serialize(array(
+		$event->audit('event', 'delete-approved', serialize(array(
 			'requested_by_user_id' => $requested_by_user_id,
 			'requested_by_datetime' => $requested_by_datetime,
 		)));
@@ -1568,7 +1610,7 @@ class AdminController extends BaseAdminController
 
 	public function actionRejectEventDeletionRequest($id)
 	{
-		if (!$event = Event::model()->find('id=? and delete_pending=?',array($id,1))) {
+		if (!$event = Event::model()->find('id=? and delete_pending=?', array($id, 1))) {
 			throw new Exception("Event not found: $id");
 		}
 
@@ -1579,10 +1621,10 @@ class AdminController extends BaseAdminController
 		$event->delete_reason = null;
 
 		if (!$event->save()) {
-			throw new Exception("Unable to reject deletion request for event: ".print_r($event->getErrors(),true));
+			throw new Exception("Unable to reject deletion request for event: " . print_r($event->getErrors(), true));
 		}
 
-		$event->audit('event','delete-rejected',serialize(array(
+		$event->audit('event', 'delete-rejected', serialize(array(
 			'requested_by_user_id' => $requested_by_user_id,
 			'requested_by_datetime' => $requested_by_datetime,
 		)));
@@ -1622,13 +1664,13 @@ class AdminController extends BaseAdminController
 
 	public function actionEditSetting()
 	{
-		if (!$metadata = SettingMetadata::model()->find('`key`=?',array(@$_GET['key']))) {
+		if (!$metadata = SettingMetadata::model()->find('`key`=?', array(@$_GET['key']))) {
 			$this->redirect(array('/admin/settings'));
 		}
 
 		$errors = array();
 
-		if(Yii::app()->request->isPostRequest) {
+		if (Yii::app()->request->isPostRequest) {
 			foreach (SettingMetadata::model()->findAll('element_type_id is null') as $metadata) {
 				if (@$_POST[$metadata->key]) {
 					if (!$setting = $metadata->getSetting($metadata->key, null, true)) {
@@ -1646,7 +1688,7 @@ class AdminController extends BaseAdminController
 				}
 			}
 		}
-		$this->render('/admin/edit_setting',array('metadata' => $metadata, 'errors' => $errors));
+		$this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors));
 	}
 
 	public function actionSocialHistory()
@@ -1661,17 +1703,20 @@ class AdminController extends BaseAdminController
 
 	public function actionSocialHistoryDrivingStatus()
 	{
-		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('driving_status_id'), 'SocialHistoryDrivingStatus');
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('driving_status_id'),
+			'SocialHistoryDrivingStatus');
 	}
 
 	public function actionSocialHistorySmokingStatus()
 	{
-		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('smoking_status_id'), 'SocialHistorySmokingStatus');
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('smoking_status_id'),
+			'SocialHistorySmokingStatus');
 	}
 
 	public function actionSocialHistoryAccommodation()
 	{
-		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('accommodation_id'), 'SocialHistoryAccommodation');
+		$this->genericAdmin(SocialHistory::model()->getAttributeLabel('accommodation_id'),
+			'SocialHistoryAccommodation');
 	}
 
 	/**
@@ -1693,17 +1738,17 @@ class AdminController extends BaseAdminController
 		$agent = new AnaestheticAgent();
 		$errors = array();
 
-		if(Yii::app()->request->isPostRequest){
+		if (Yii::app()->request->isPostRequest) {
 			$agent->attributes = Yii::app()->request->getPost('AnaestheticAgent');
 
-			if(!$agent->validate()){
+			if (!$agent->validate()) {
 				$errors = $agent->getErrors();
 			} else {
-				if(!$agent->save()){
+				if (!$agent->save()) {
 					throw new CHttpException(500, 'Unable to save Anaesthetic Agent: ' . $agent->name);
 				}
 
-				Audit::add('admin', 'add', $agent->id, null, array('model'=>'AnaestheticAgent'));
+				Audit::add('admin', 'add', $agent->id, null, array('model' => 'AnaestheticAgent'));
 				$this->redirect('/admin/viewAnaestheticAgent');
 			}
 		}
@@ -1719,26 +1764,26 @@ class AdminController extends BaseAdminController
 		$agent = AnaestheticAgent::model()->findByPk($id);
 		$errors = array();
 
-		if(!$agent){
+		if (!$agent) {
 			throw new CHttpException(404, 'Anaesthetic Agent not found: ' . $id);
 		}
 
-		if(Yii::app()->request->isPostRequest){
+		if (Yii::app()->request->isPostRequest) {
 			$agent->attributes = Yii::app()->request->getPost('AnaestheticAgent');
 
-			if(!$agent->validate()){
+			if (!$agent->validate()) {
 				$errors = $agent->getErrors();
 			} else {
-				if(!$agent->save()){
+				if (!$agent->save()) {
 					throw new CHttpException(500, 'Unable to save Anaesthetic Agent: ' . $agent->name);
 				}
 
-				Audit::add('admin', 'edit', $id, null, array('model'=>'AnaestheticAgent'));
+				Audit::add('admin', 'edit', $id, null, array('model' => 'AnaestheticAgent'));
 				$this->redirect('/admin/viewAnaestheticAgent');
 			}
 		}
 
-		Audit::add('admin', 'view', $id, null, array('model'=>'AnaestheticAgent'));
+		Audit::add('admin', 'view', $id, null, array('model' => 'AnaestheticAgent'));
 		$this->render('/admin/editanaestheticagent', array(
 			'agent' => $agent,
 			'errors' => $errors,
@@ -1749,21 +1794,21 @@ class AdminController extends BaseAdminController
 	{
 		$agent = AnaestheticAgent::model()->findByPk($id);
 
-		if(!$agent){
+		if (!$agent) {
 			throw new CHttpException(404, 'Anaesthetic Agent not found: ' . $id);
 		}
 
-		if(Yii::app()->request->isPostRequest){
+		if (Yii::app()->request->isPostRequest) {
 			$agent->active = 0;
-			if(!$agent->save()){
+			if (!$agent->save()) {
 				throw new CHttpException(500, 'Unable to delete Anaesthetic Agent: ' . $agent->name);
 			}
 
-			Audit::add('admin', 'delete', $id, null, array('model'=>'AnaestheticAgent'));
+			Audit::add('admin', 'delete', $id, null, array('model' => 'AnaestheticAgent'));
 			$this->redirect('/admin/viewAnaestheticAgent');
 		}
 
-		Audit::add('admin', 'view', $id, null, array('model'=>'AnaestheticAgent'));
+		Audit::add('admin', 'view', $id, null, array('model' => 'AnaestheticAgent'));
 		$this->render('/admin/deleteanaestheticagent', array(
 			'agent' => $agent,
 		));
