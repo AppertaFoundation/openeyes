@@ -72,11 +72,13 @@
 	<h2>Drugs</h2>
 	<ul class="navigation admin">
 		<?php foreach (array(
-						   'Common Drugs List' => '/OphDrPrescription/admin/CommonDrugs',
-						   'Drug Sets' => '/OphDrPrescription/admin/DrugSets',
-						   'Medication List' => '/oeadmin/medication/list',
-						   'Formulary Drugs' => '/oeadmin/formularyDrugs/list'
-					   ) as $title => $uri) { ?>
+						'Common Drugs List' => '/OphDrPrescription/admin/CommonDrugs',
+						'Drug Sets' => '/OphDrPrescription/admin/DrugSets',
+						'Medication List' => '/oeadmin/medication/list',
+						'Formulary Drugs' => '/oeadmin/formularyDrugs/list',
+						'Per Op Drugs' => '/OphTrOperationnote/admin/viewPostOpDrugs',
+						'Per Op Drug Mappings' => '/OphTrOperationnote/admin/postOpDrugMappings',
+					) as $title => $uri) { ?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)
 			) { ?> class="selected"<?php } ?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)) { ?>

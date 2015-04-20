@@ -43,7 +43,9 @@
 			<thead>
 				<tr>
 					<th>Order</th>
-					<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
+					<?php if(!in_array($label_field, array_keys($extra_fields))):?>
+						<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
+					<?php endif;?>
 					<?php foreach ($extra_fields as $field) {?>
 						<th>
 							<?php echo CHtml::hiddenField('_extra_fields[]',$field['field'])?>
