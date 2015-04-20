@@ -31,15 +31,16 @@ $(document).ready(function () {
 		$('#btn-add_family_history').attr('disabled',true);
 		$('#btn-add_family_history').addClass('disabled');
 	});
-	$('button.btn_cancel_family_history').click(function() {
+	$('button.btn_cancel_family_history').click(function(e) {
 		$('#add_family_history').slideToggle('fast');
 		$('#btn-add_family_history').attr('disabled',false);
 		$('#btn-add_family_history').removeClass('disabled');
+        OpenEyes.Form.reset($(e.target).closest('form'));
 		return false;
 	});
 
 	$(document).on('change', '#relative_id', function() {
-		if ($(this).find(':selected').data('other') == '1') {
+		if ($(this).find(':selected').data('other') === '1') {
 			// show the rel other
 			$('#family-history-o-rel-wrapper').show();
 		}
@@ -52,7 +53,7 @@ $(document).ready(function () {
 	});
 
 	$(document).on('change', '#condition_id', function() {
-		if ($(this).find(':selected').data('other') == '1') {
+		if ($(this).find(':selected').data('other') === '1') {
 			// show the condition other
 			$('#family-history-o-con-wrapper').show();
 		}
@@ -66,19 +67,19 @@ $(document).ready(function () {
 
 	$('button.btn_save_family_history').click(function() {
 		if (!$('#no_family_history').is(':checked')) {
-			if ($('#relative_id').val() == '') {
+			if ($('#relative_id').val() === '') {
 				new OpenEyes.UI.Dialog.Alert({
 					content: "Please select a relative."
 				}).open();
 				return false;
 			}
-			if ($('#side_id').val() == '') {
+			if ($('#side_id').val() === '') {
 				new OpenEyes.UI.Dialog.Alert({
 					content: "Please select a side."
 				}).open();
 				return false;
 			}
-			if ($('#condition_id').val() == '') {
+			if ($('#condition_id').val() === '') {
 				new OpenEyes.UI.Dialog.Alert({
 					content: "Please select a condition."
 				}).open();
@@ -135,7 +136,7 @@ $(document).ready(function () {
 			'type': 'GET',
 			'url': baseUrl+'/patient/removeFamilyHistory?patient_id=' + OE_patient_id + '&family_history_id='+$('#family_history_id').val(),
 			'success': function(html) {
-				if (html == 'success') {
+				if (html === 'success') {
 					$('a.removeFamilyHistory[rel="'+$('#family_history_id').val()+'"]').parent().parent().remove();
 					if($('.removeFamilyHistory').length == 0) {
 						$('#currentFamilyHistory').hide();
