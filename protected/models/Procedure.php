@@ -63,6 +63,7 @@ class Procedure extends BaseActiveRecordVersioned
 			array('term, short_format, default_duration', 'required'),
 			array('default_duration', 'numerical', 'integerOnly'=>true, 'max' => 65535),
 			array('term, short_format, snomed_term', 'length', 'max'=>255),
+			array('operationNotes', 'validateOpNotes'),
 			array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, complications, snomed_code, snomed_term, aliases, operationNotes', 'safe'),
 		);
 	}
@@ -225,6 +226,13 @@ class Procedure extends BaseActiveRecordVersioned
 		}
 
 		return $data;
+	}
+
+	public function validateOpNotes($attribute,$params)
+	{
+		if(count($this->$attribute) > 1){
+			$this->addError($attribute, 'Only one Operation Note element per Procedure');
+		}
 	}
 
 	/**
