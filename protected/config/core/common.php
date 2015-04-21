@@ -236,8 +236,6 @@ return array(
 		'ab_testing' => false,
 		'auth_source' => 'BASIC', // Options are BASIC or LDAP.
 		// This is used in contact page
-		'alerts_email' => 'alerts@example.com',
-		'adminEmail' => 'webmaster@example.com',
 		'ldap_server' => '',
 		'ldap_port' => '',
 		'ldap_admin_dn' => '',
@@ -251,10 +249,6 @@ return array(
 		'ldap_update_email' => true,
 		'environment' => 'dev',
 		'watermark' => '',
-		'watermark_admin' => 'You are logged in as admin. So this is OpenEyes Goldenrod Edition',
-		'watermark_description' => '',
-		'helpdesk_email' => 'helpdesk@example.com',
-		'helpdesk_phone' => '12345678',
 		'google_analytics_account' => '',
 		'local_users' => array(),
 		'log_events' => true,

@@ -50,6 +50,44 @@
 		<?php }?>
 	</ul>
 </div>
+<div class="box admin">
+	<h2>Procedure Management</h2>
+	<ul class="navigation admin">
+		<?php foreach (array(
+						'Procedures' => '/oeadmin/procedure/list',
+						'Benefits' => '/oeadmin/benefit/list',
+					    'Complications' => '/oeadmin/complication/list',
+						'OPCS Codes' => '/oeadmin/opcsCode/list'
+					   ) as $title => $uri) {?>
+			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="selected"<?php }?>>
+				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?>
+					<?php echo CHtml::link($title,array($uri),array('class' => 'selected'))?>
+				<?php } else {?>
+					<?php echo CHtml::link($title,array($uri))?>
+				<?php }?>
+			</li>
+		<?php }?>
+</div>
+<div class="box admin">
+	<h2>Drugs</h2>
+	<ul class="navigation admin">
+		<?php foreach (array(
+						   'Common Drugs List' => '/OphDrPrescription/admin/CommonDrugs',
+						   'Drug Sets' => '/OphDrPrescription/admin/DrugSets',
+						   'Medication List' => '/oeadmin/medication/list',
+						   'Formulary Drugs' => '/oeadmin/formularyDrugs/list'
+					   ) as $title => $uri) { ?>
+			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)
+			) { ?> class="selected"<?php } ?>>
+				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)) { ?>
+					<?php echo CHtml::link($title, array($uri), array('class' => 'selected')) ?>
+				<?php } else { ?>
+					<?php echo CHtml::link($title, array($uri)) ?>
+				<?php } ?>
+			</li>
+		<?php } ?>
+</div>
+
 <?php foreach (ModuleAdmin::getAll() as $module => $items) {?>
 	<div class="admin box">
 		<h2><?php echo $module?></h2>

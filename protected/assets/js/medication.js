@@ -28,9 +28,10 @@ $(document).ready(function () {
 		);
 	}
 
-	function closeForms() {
+	function closeForms(e) {
 		$('.medication_form').slideUp('fast');
 		$('#medication_add').attr('disabled',false).removeClass('disabled');
+        OpenEyes.Form.reset($(e.target).closest('form'));
 	}
 
 	function selectMedication(id, name, type) {

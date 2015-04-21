@@ -9,7 +9,7 @@ default:
         SensioLabs\Behat\PageObjectExtension\Extension: ~
 
         Behat\YiiExtension\Extension:
-            framework_script: protected/yii/framework/yii.php
+            framework_script: vendor/yiisoft/yii/framework/yii.php
             config_script:    protected/config/main.php
 
         Behat\MinkExtension\Extension:

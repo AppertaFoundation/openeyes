@@ -52,6 +52,8 @@ class OPCSCode extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('name, description', 'required'),
+			array('name, description, active', 'safe')
 		);
 	}
 
