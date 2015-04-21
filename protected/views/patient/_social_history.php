@@ -292,6 +292,7 @@
 			event.preventDefault();
 			toggleAdd.slideToggle('fast');
 			btnAdd.attr('disabled', false).removeClass('disabled');
+			OpenEyes.Form.reset($(e.target).closest('form'));
 		});
 
 	});
