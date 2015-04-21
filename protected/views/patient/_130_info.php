@@ -111,11 +111,12 @@
 		$('#btn-edit_oph_info').attr('disabled',true);
 		$('#btn-edit_oph_info').addClass('disabled');
 	});
-	$('button.btn_cancel_oph_info').click(function() {
+	$('button.btn_cancel_oph_info').click(function(e) {
 		$('#edit_oph_info').slideToggle('fast');
 		$('#btn-edit_oph_info').attr('disabled',false);
 		$('#btn-edit_oph_info').removeClass('disabled');
 		$('#oph_info_errors').html('').hide();
+		OpenEyes.Form.reset($(e.target).closest('form'));
 		return false;
 	});
 	handleButton($('button.btn_save_oph_info'), function () {

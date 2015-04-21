@@ -35,10 +35,11 @@ $(document).ready(function () {
 		$('#btn-add_allergy').attr('disabled',true);
 		$('#btn-add_allergy').addClass('disabled');
 	});
-	$('button.btn_cancel_allergy').click(function() {
+	$('button.btn_cancel_allergy').click(function(e) {
 		$('#add_allergy').slideToggle('fast');
 		$('#btn-add_allergy').attr('disabled',false);
 		$('#btn-add_allergy').removeClass('disabled');
+        OpenEyes.Form.reset($(e.target).closest('form'));
 		return false;
 	});
 	$('button.btn_save_allergy').click(function() {
