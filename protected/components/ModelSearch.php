@@ -237,12 +237,15 @@ class ModelSearch
 	 */
 	public function colSort($sort = "")
 	{
+		$order = $this->request->getParam('d');
 
-		if (isset($_GET['d']) && ($_GET['d'] == 1)) {
+		if ($order == 1)
+		{
 			$sort = $sort . ' DESC';
 		}
 
-		if (isset($sort)) {
+		if (isset($sort))
+		{
 			$this->criteria->order = $sort;
 		}
 	}
