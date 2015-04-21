@@ -574,18 +574,6 @@ class AdminController extends BaseAdminController
 		}
 	}
 
-	public function actionLookupContact()
-	{
-
-		Yii::app()->event->dispatch('lookup_contact', array('nick_name' => $_GET['nick_name']));
-
-		if ($contact = Contact::model()->find('nick_name=?',array($_GET['nick_name']))) {
-			echo $contact->id;
-		} else {
-			echo "NOTFOUND";
-		}
-	}
-
 	public function actionContacts($id=false)
 	{
 		$contacts = $this->searchContacts();
