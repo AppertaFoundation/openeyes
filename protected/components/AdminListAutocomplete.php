@@ -25,6 +25,8 @@ class AdminListAutocomplete extends Admin
 	 */
 	protected $filterFields = array();
 
+	protected $customDeleteURL;
+
 
 	public function setFilterFields($filters)
 	{
@@ -34,6 +36,16 @@ class AdminListAutocomplete extends Admin
 	public function getFilterFields()
 	{
 		return $this->filterFields;
+	}
+
+	public function setCustomDeleteURL($deleteURL)
+	{
+		$this->customDeleteURL = $deleteURL;
+	}
+
+	public function getCustomDeleteURL()
+	{
+		return $this->customDeleteURL;
 	}
 
 	public function __construct($model, $admin)

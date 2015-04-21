@@ -29,19 +29,16 @@
 		<table class="grid">
 			<thead>
 			<tr>
-				<th><input type="checkbox" name="selectall" id="selectall"/></th>
 				<?php foreach ($admin->getListFields() as $listItem): ?>
 					<th><?php echo $admin->getModel()->getAttributeLabel($listItem); ?></th>
 				<?php endforeach; ?>
+				<th>Action</th>
 			</tr>
 			</thead>
 			<tbody>
 			<?php
 			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
-				<tr class="clickable" data-id="<?php echo $row->id ?>"
-					data-uri="<?php echo $this->uniqueid ?>/edit/<?php echo $row->id ?>">
-					<td><input type="checkbox" name="<?php echo $admin->getModelName(); ?>[]"
-							   value="<?php echo $row->id ?>"/></td>
+				<tr>
 					<?php foreach ($admin->getListFields() as $listItem): ?>
 						<td>
 							<?php
@@ -57,6 +54,9 @@
 							?>
 						</td>
 					<?php endforeach; ?>
+					<td>
+						<a OnCLick="DeleteItem('<?php echo $admin->getCustomDeleteURL(); ?>','<?php echo $row->id; ?>')">Delete</a>
+					</td>
 				</tr>
 			<?php } ?>
 			</tbody>
