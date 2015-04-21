@@ -331,12 +331,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "24a5c869e75bc8242911a733008a84543644af24"
+                "reference": "a94fe84cb2816a33007ee2ff1eb6473f87238443"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/24a5c869e75bc8242911a733008a84543644af24",
-                "reference": "24a5c869e75bc8242911a733008a84543644af24",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/a94fe84cb2816a33007ee2ff1eb6473f87238443",
+                "reference": "a94fe84cb2816a33007ee2ff1eb6473f87238443",
                 "shasum": ""
             },
             "require": {
@@ -346,7 +346,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-04-08 14:01:20"
+            "time": "2015-04-21 09:56:06"
         },
         {
             "name": "openeyes/patient-ticketing",
