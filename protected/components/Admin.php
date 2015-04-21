@@ -236,6 +236,7 @@ class Admin
 		$this->setModel($model);
 		$this->controller = $controller;
 		$this->search = new ModelSearch($this->model);
+		$this->request = $request = Yii::app()->getRequest();
 
 	}
 
@@ -250,14 +251,20 @@ class Admin
 			throw new CHttpException(500, 'Nothing to list');
 		}
 
+		$order = $this->request->getParam('d');
+		$col = $this->request->getParam('c');
 
-		if (isset($_GET['d']) && ($_GET['d'] == 0)) {
+		if ($order == 0) {
 			$this->display_order = 1;
 		}
 
-		$sort = 't.id';
-		if (isset($_GET['c']) != "") {
-			$sort = 't.' . $_GET['c'];
+		if (isset($col) != "") {
+			if (strpos($col, '.') !== FALSE)
+				$sort = $col;
+			else
+				$sort = 't.'.$col;
+		}else{
+			$sort = 't.id';
 		}
 
 		$this->audit('list');

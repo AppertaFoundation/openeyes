@@ -239,6 +239,11 @@ class ModelSearch
 	{
 		$order = $this->request->getParam('d');
 
+		foreach ($this->getModel()->relations() as $key=>$val)
+		{
+			$this->criteria->with = $key;
+		}
+
 		if ($order == 1)
 		{
 			$sort = $sort . ' DESC';
