@@ -61,7 +61,9 @@ class Address extends BaseActiveRecordVersioned
 	 */
 	public function rules()
 	{
-		return array(
+
+        return array(
+			array('address1, city, postcode', 'required'),
 			array('address1, address2, city, county', 'length', 'max' => 255),
 			array('postcode', 'length', 'max' => 10),
 			array('email', 'length', 'max' => 255),

@@ -78,7 +78,7 @@ class Site extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
+			array('name, short_name, remote_id, telephone', 'required'),
 			array('name', 'length', 'max'=>255),
 			array('institution_id, name, remote_id, short_name, fax, telephone, contact_id, replyto_contact_id, source_id','safe'),
 			// The following rule is used by search().
