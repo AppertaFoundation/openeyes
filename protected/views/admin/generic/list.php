@@ -22,9 +22,6 @@
 	<h2><?php echo $admin->getModelName(); ?></h2>
 
 	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch())); ?>
-	<?php
-	//var_dump($admin->getListFields());
-	?>
 	<form id="generic-admin-list">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
 		<table class="grid">
