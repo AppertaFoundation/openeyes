@@ -86,7 +86,7 @@ class Admin
 	 * @var int
 	 *
 	 */
-	public $display_order = 0;
+	public $displayOrder = 0;
 
 
 	/**
@@ -265,7 +265,7 @@ class Admin
 		$col = $this->request->getParam('c');
 
 		if ($order == 0) {
-			$this->display_order = 1;
+			$this->displayOrder = 1;
 		}
 
 		if (isset($col) != "") {
@@ -280,7 +280,7 @@ class Admin
 		$this->audit('list');
 		$this->sort = $this->getSearch()->colSort($sort);
 		$this->pagination = $this->getSearch()->initPagination();
-		$this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->display_order));
+		$this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder));
 	}
 
 	/**
