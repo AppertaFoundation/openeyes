@@ -25,43 +25,44 @@
 	<?php $this->widget('GenericSearch', array('search' => $search)); ?>
 
 	<form id="admin_firms">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
 		<table class="grid">
 			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<th>ID</th>
-					<th>PAS code</th>
-					<th>Name</th>
-					<th>Subspecialty</th>
-					<th>Consultant</th>
-					<th>Active</th>
-				</tr>
+			<tr>
+				<th><input type="checkbox" name="selectall" id="selectall"/></th>
+				<th>ID</th>
+				<th><a href="firms?c=pac&d=<?php echo $displayOrder; ?>">PAS code</a></th>
+				<th><a href="firms?c=nm&d=<?php echo $displayOrder; ?>">Name</a></th>
+				<th><a href="firms?c=subsp&d=<?php echo $displayOrder; ?>">Subspecialty</a></th>
+				<th><a href="firms?c=con&d=<?php echo $displayOrder; ?>">Consultant</a></th>
+				<th>Active</th>
+			</tr>
 			</thead>
 			<tbody>
-				<?php
-				foreach ($firms as $i => $firm) {?>
-					<tr class="clickable" data-id="<?php echo $firm->id?>" data-uri="admin/editFirm/<?php echo $firm->id?>">
-						<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
-						<td><?php echo $firm->id?></td>
-						<td><?php echo $firm->pas_code?></td>
-						<td><?php echo $firm->name?></td>
-						<td><?php echo (($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None')?></td>
-						<td><?php echo (($firm->consultant) ? $firm->consultant->fullName : 'None')?></td>
-						<td><?php echo (($firm->active) ? 'Active' : 'Inactive')?></td>
-					</tr>
-				<?php }?>
+			<?php
+			foreach ($firms as $i => $firm) { ?>
+				<tr class="clickable" data-id="<?php echo $firm->id ?>"
+					data-uri="admin/editFirm/<?php echo $firm->id ?>">
+					<td><input type="checkbox" name="firms[]" value="<?php echo $firm->id ?>"/></td>
+					<td><?php echo $firm->id ?></td>
+					<td><?php echo $firm->pas_code ?></td>
+					<td><?php echo $firm->name ?></td>
+					<td><?php echo(($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None') ?></td>
+					<td><?php echo(($firm->consultant) ? $firm->consultant->fullName : 'None') ?></td>
+					<td><?php echo(($firm->active) ? 'Active' : 'Inactive') ?></td>
+				</tr>
+			<?php } ?>
 			</tbody>
 			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="6">
-						<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml()?>
-						<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml()?>
-						<?php echo $this->renderPartial('_pagination',array(
-							'pagination' => $pagination
-						))?>
-					</td>
-				</tr>
+			<tr>
+				<td colspan="6">
+					<?php echo EventAction::button('Add', 'add', array(), array('class' => 'small'))->toHtml() ?>
+					<?php echo EventAction::button('Delete', 'delete', array(), array('class' => 'small'))->toHtml() ?>
+					<?php echo $this->renderPartial('_pagination', array(
+						'pagination' => $pagination
+					)) ?>
+				</td>
+			</tr>
 			</tfoot>
 		</table>
 	</form>
