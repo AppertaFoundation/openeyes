@@ -22,31 +22,34 @@
 	<h2><?php echo $admin->getModelName(); ?></h2>
 
 	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch())); ?>
-
 	<form id="generic-admin-list">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
+		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
 		<table class="grid">
 			<thead>
-				<tr>
-					<th><input type="checkbox" name="selectall" id="selectall" /></th>
-					<?php foreach($admin->getListFields() as $listItem):?>
-					<th><?php echo $admin->getModel()->getAttributeLabel($listItem);?></th>
-					<?php endforeach; ?>
-				</tr>
+			<tr>
+				<th><input type="checkbox" name="selectall" id="selectall"/></th>
+				<?php foreach ($admin->getListFields() as $listItem): ?>
+					<th>
+						<a href="?c=<?php echo $listItem; ?>&d=<?php echo $displayOrder; ?>"><?php echo $admin->getModel()->getAttributeLabel($listItem); ?></a>
+					</th>
+				<?php endforeach; ?>
+			</tr>
 			</thead>
 			<tbody>
 			<?php
-			foreach ($admin->getSearch()->retrieveResults() as $i => $row) {?>
-				<tr class="clickable" data-id="<?php echo $row->id?>" data-uri="<?php echo $this->uniqueid ?>/edit/<?php echo $row->id?>">
-					<td><input type="checkbox" name="<?php echo $admin->getModelName(); ?>[]" value="<?php echo $row->id?>" /></td>
-					<?php foreach($admin->getListFields() as $listItem):?>
+			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
+				<tr class="clickable" data-id="<?php echo $row->id ?>"
+					data-uri="<?php echo $this->uniqueid ?>/edit/<?php echo $row->id ?>">
+					<td><input type="checkbox" name="<?php echo $admin->getModelName(); ?>[]"
+							   value="<?php echo $row->id ?>"/></td>
+					<?php foreach ($admin->getListFields() as $listItem): ?>
 						<td>
 							<?php
-							if(gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
-								if($admin->attributeValue($row, $listItem)):
-								?><i class="fa fa-check"></i><?php
+							if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
+								if ($admin->attributeValue($row, $listItem)):
+									?><i class="fa fa-check"></i><?php
 								else:
-								?><i class="fa fa-times"></i><?php
+									?><i class="fa fa-times"></i><?php
 								endif;
 							else:
 								echo $admin->attributeValue($row, $listItem);
@@ -55,32 +58,32 @@
 						</td>
 					<?php endforeach; ?>
 				</tr>
-			<?php }?>
+			<?php } ?>
 			</tbody>
 			<tfoot class="pagination-container">
-				<tr>
-					<td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
-						<?php echo EventAction::button(
-							'Add',
-							'add',
-							array(),
-							array('class' => 'small', 'data-uri' => '/'.$this->uniqueid.'/edit')
-						)->toHtml()?>
-						<?php echo EventAction::button(
-							'Delete',
-							'delete',
-							array(),
-							array(
-								'class' => 'small',
-								'data-uri' => '/'.$this->uniqueid.'/delete',
-								'data-object' => $admin->getModelName()
-							)
-						)->toHtml()?>
-						<?php echo $this->renderPartial('//admin/_pagination',array(
-							'pagination' => $admin->getPagination()
-						))?>
-					</td>
-				</tr>
+			<tr>
+				<td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
+					<?php echo EventAction::button(
+						'Add',
+						'add',
+						array(),
+						array('class' => 'small', 'data-uri' => '/' . $this->uniqueid . '/edit')
+					)->toHtml() ?>
+					<?php echo EventAction::button(
+						'Delete',
+						'delete',
+						array(),
+						array(
+							'class' => 'small',
+							'data-uri' => '/' . $this->uniqueid . '/delete',
+							'data-object' => $admin->getModelName()
+						)
+					)->toHtml() ?>
+					<?php echo $this->renderPartial('//admin/_pagination', array(
+						'pagination' => $admin->getPagination()
+					)) ?>
+				</td>
+			</tr>
 			</tfoot>
 		</table>
 	</form>
