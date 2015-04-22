@@ -164,8 +164,13 @@ class ModelSearch
 	 */
 	protected function generateCriteria($attr = 'search')
 	{
-		$search = $this->request->getParam($attr);
-		$sensitive = $this->request->getParam('case_sensitive', false);
+		if (is_array($attr)) {
+			$search = $attr;
+			$sensitive = false;
+		} else {
+			$search = $this->request->getParam($attr);
+			$sensitive = $this->request->getParam('case_sensitive', false);
+		}
 
 		if(is_array($search)){
 			foreach($search as $key => $value){
@@ -270,6 +275,11 @@ class ModelSearch
 	public function addSearchItem($key, $search = '')
 	{
 		$this->searchItems[$key] = $search;
+	}
+
+	public function initSearch($searchInput)
+	{
+		$this->generateCriteria($searchInput);
 	}
 
 	/**
