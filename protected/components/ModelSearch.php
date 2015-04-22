@@ -172,6 +172,11 @@ class ModelSearch
 				if(!is_array($value)){
 					$this->addCompare($this->criteria, $key, $value, $sensitive);
 				} else {
+					if ($key == 'filterid') {
+						foreach ($value as $fieldName => $fieldValue) {
+							$this->addCompare($this->criteria, $fieldName, $fieldValue, $sensitive, 'AND', true);
+						}
+					}
 					if(!isset($value['value'])){
 						//no value provided to search against
 						continue;
@@ -198,7 +203,14 @@ class ModelSearch
 	 * @param bool $sensitive
 	 * @param string $operator
 	 */
-	protected function addCompare(CDbCriteria $criteria, $attribute, $value, $sensitive = false, $operator = 'AND')
+	protected function addCompare(
+		CDbCriteria $criteria,
+		$attribute,
+		$value,
+		$sensitive = false,
+		$operator = 'AND',
+		$exactmatch = false
+	)
 	{
 		if(method_exists($this->model, 'get_'.$attribute)){
 			//It's a magic method attribute, doesn't exist in the db has to be dealt with elsewhere
@@ -208,9 +220,11 @@ class ModelSearch
 		$search = $attribute;
 		$search = $this->relationalAttribute($criteria, $attribute, $search);
 
-		if($value !== '' ){
+		if ($value !== '') {
 			if ($sensitive) {
 				$criteria->compare('LOWER(' . $search . ')', strtolower($value), true, $operator);
+			} elseif ($exactmatch) {
+				$criteria->compare($search, $value, false, $operator);
 			} else {
 				$criteria->compare($search, $value, true, $operator);
 			}

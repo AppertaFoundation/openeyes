@@ -22,54 +22,105 @@
 
 	<h2><?php echo $admin->getModelName(); ?></h2>
 
-	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch())); ?>
-
 	<form id="generic-admin-list">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-		<table class="grid">
-			<thead>
-			<tr>
-				<?php foreach ($admin->getListFields() as $listItem): ?>
-					<th><?php echo $admin->getModel()->getAttributeLabel($listItem); ?></th>
-				<?php endforeach; ?>
-				<th>Action</th>
-			</tr>
-			</thead>
-			<tbody>
+		<?php
+
+		if (is_array($admin->getFilterFields())) {
+			foreach ($admin->getFilterFields() as $field => $params) { ?>
+				<div class="large-2 column"><label
+						for="<?php echo $params['dropDownName'] ?>"><?php echo $params['label']; ?>:</label></div>
+				<div class="large-4 column">
+					<?php
+					$searchParams = $this->request->getParam("search");
+					if ($searchParams["filterid"][$params['dropDownName']]["value"] != "") {
+						$selectedValue = $searchParams["filterid"][$params['dropDownName']]["value"];
+					} else {
+						$selectedValue = $params['defaultValue'];
+					}
+					echo CHtml::dropDownList("search[filterid][" . $params['dropDownName'] . "][value]", $selectedValue,
+						CHtml::listData($params['listModel']->findAll(), $params['listIdField'],
+							$params['listDisplayField']),
+						array('class' => 'filterfieldselect'));
+					?>
+				</div>
 			<?php
-			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
+			}
+		}
+		?>
+		<div class="row field-row">
+			<table class="grid">
+				<thead>
 				<tr>
 					<?php foreach ($admin->getListFields() as $listItem): ?>
-						<td>
-							<?php
-							if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
-								if ($admin->attributeValue($row, $listItem)):
-									?><i class="fa fa-check"></i><?php
-								else:
-									?><i class="fa fa-times"></i><?php
-								endif;
-							else:
-								echo $admin->attributeValue($row, $listItem);
-							endif;
-							?>
-						</td>
+						<th><?php echo $admin->getModel()->getAttributeLabel($listItem); ?></th>
 					<?php endforeach; ?>
-					<td>
-						<a OnCLick="DeleteItem('<?php echo $admin->getCustomDeleteURL(); ?>','<?php echo $row->id; ?>')">Delete</a>
+					<th>Action</th>
+				</tr>
+				</thead>
+				<tbody>
+				<?php
+				foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
+					<tr>
+						<?php foreach ($admin->getListFields() as $listItem): ?>
+							<td>
+								<?php
+								if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
+									if ($admin->attributeValue($row, $listItem)):
+										?><i class="fa fa-check"></i><?php
+									else:
+										?><i class="fa fa-times"></i><?php
+									endif;
+								else:
+									echo $admin->attributeValue($row, $listItem);
+								endif;
+								?>
+							</td>
+						<?php endforeach; ?>
+						<td>
+							<a OnCLick="deleteItem('<?php echo $row->id; ?>','<?php echo $admin->getCustomDeleteURL(); ?>')">Delete</a>
+						</td>
+					</tr>
+				<?php } ?>
+				</tbody>
+				<tfoot class="pagination-container">
+				<tr>
+					<td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
+						<?php
+						$acFieldData = $admin->getAutocompleteField();
+						if ($acFieldData) {
+							//var_dump($acFieldData["jsonURL"]);
+							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+								'name' => $acFieldData["fieldName"],
+								'id' => 'autocomplete_' . $acFieldData["fieldName"],
+								'source' => "js:function(request, response) {
+										$.getJSON('" . $acFieldData["jsonURL"] . "', {
+											term : request.term
+										}, response);
+									}",
+								'options' => array(
+									'select' => "js:function(event, ui) {
+											addItem(ui.item.id, '" . $admin->getCustomSaveURL() . "');
+											$(this).val('');
+											return false;
+										}",
+								),
+								'htmlOptions' => array(
+									'placeholder' => $acFieldData['placeholder'],
+								)
+							));
+						}
+						?>
+						<?php echo $this->renderPartial('//admin/_pagination', array(
+							'pagination' => $admin->getPagination()
+						)) ?>
 					</td>
 				</tr>
-			<?php } ?>
-			</tbody>
-			<tfoot class="pagination-container">
-			<tr>
-				<td colspan="<?php echo count($admin->getListFields()) + 1; ?>">
-					Autocomplete will come here
-					<?php echo $this->renderPartial('//admin/_pagination', array(
-						'pagination' => $admin->getPagination()
-					)) ?>
-				</td>
-			</tr>
-			</tfoot>
-		</table>
+				</tfoot>
+			</table>
+		</div>
 	</form>
 </div>
+<?php
+Yii::app()->assetManager->registerScriptFile("js/oeadmin/listAutocomplete.js", CClientScript::POS_HEAD);
+?>

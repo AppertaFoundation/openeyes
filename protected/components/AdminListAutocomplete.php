@@ -19,35 +19,94 @@
  */
 class AdminListAutocomplete extends Admin
 {
+	/**
+	 * @var string
+	 */
+	protected $customDeleteURL;
+
+	/**
+	 * @var string
+	 */
+	protected $customSaveURL;
+
+	/**
+	 * @var array
+	 */
+	protected $autocompleteField = array();
 
 	/**
 	 * @var array
 	 */
 	protected $filterFields = array();
 
-	protected $customDeleteURL;
-
-
+	/**
+	 * @param $filters
+	 */
 	public function setFilterFields($filters)
 	{
-		$this->filteFields = $filters;
+		$this->filterFields = $filters;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getFilterFields()
 	{
 		return $this->filterFields;
 	}
 
+	/**
+	 * @param $acdata
+	 */
+	public function setAutocompleteField($acdata)
+	{
+		$this->autocompleteField = $acdata;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAutocompleteField()
+	{
+		return $this->autocompleteField;
+	}
+
+	/**
+	 * @param $deleteURL
+	 */
 	public function setCustomDeleteURL($deleteURL)
 	{
 		$this->customDeleteURL = $deleteURL;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getCustomDeleteURL()
 	{
 		return $this->customDeleteURL;
 	}
 
+	/**
+	 * @param $saveURL
+	 */
+	public function setCustomSaveURL($saveURL)
+	{
+		$this->customSaveURL = $saveURL;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomSaveURL()
+	{
+		return $this->customSaveURL;
+	}
+
+	/**
+	 * @param BaseActiveRecord $model
+	 * @param BaseAdminController $admin
+	 */
 	public function __construct($model, $admin)
 	{
 		parent::__construct($model, $admin);
