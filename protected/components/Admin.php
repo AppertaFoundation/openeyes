@@ -73,6 +73,16 @@ class Admin
 	protected $modelId;
 
 	/**
+	 * @var string
+	 */
+	protected $customSaveURL;
+
+	/**
+	 * @var string
+	 */
+	protected $customCancelURL;
+
+	/**
 	 * @return BaseActiveRecord
 	 */
 	public function getModel()
@@ -353,6 +363,38 @@ class Admin
 		}
 
 		return '';
+	}
+
+	/**
+	 * @param $saveURL
+	 */
+	public function setCustomSaveURL($saveURL)
+	{
+		$this->customSaveURL = $saveURL;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomSaveURL()
+	{
+		return $this->customSaveURL;
+	}
+
+	/**
+	 * @param $cancelURL
+	 */
+	public function setCustomCancelURL($cancelURL)
+	{
+		$this->customCancelURL = $cancelURL;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomCancelURL()
+	{
+		return $this->customCancelURL;
 	}
 
 	/**
