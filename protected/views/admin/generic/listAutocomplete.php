@@ -89,7 +89,6 @@
 						<?php
 						$acFieldData = $admin->getAutocompleteField();
 						if ($acFieldData) {
-							//var_dump($acFieldData["jsonURL"]);
 							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								'name' => $acFieldData["fieldName"],
 								'id' => 'autocomplete_' . $acFieldData["fieldName"],
