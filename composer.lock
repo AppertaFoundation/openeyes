@@ -152,12 +152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
-                "reference": "9b0e217c17f6f8fa796a9c9b66bec3a357436ab4"
+                "reference": "b917a4acea99ee512db4d307c92826b33befb32d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/9b0e217c17f6f8fa796a9c9b66bec3a357436ab4",
-                "reference": "9b0e217c17f6f8fa796a9c9b66bec3a357436ab4",
+                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/b917a4acea99ee512db4d307c92826b33befb32d",
+                "reference": "b917a4acea99ee512db4d307c92826b33befb32d",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
-            "time": "2015-04-22 11:05:52"
+            "time": "2015-04-23 10:24:52"
         },
         {
             "name": "openeyes/oph-le-intravitrealinjection",
@@ -3940,16 +3940,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.3.0",
+            "version": "2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "5046b0e01c416fc2b06df961d0673c85bcdc896c"
+                "reference": "f3100143e94bbeeaa4f1cd7c6389c3733d3d1ce1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/5046b0e01c416fc2b06df961d0673c85bcdc896c",
-                "reference": "5046b0e01c416fc2b06df961d0673c85bcdc896c",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/f3100143e94bbeeaa4f1cd7c6389c3733d3d1ce1",
+                "reference": "f3100143e94bbeeaa4f1cd7c6389c3733d3d1ce1",
                 "shasum": ""
             },
             "require": {
@@ -4010,7 +4010,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2015-03-04 02:07:03"
+            "time": "2015-04-23 03:40:59"
         },
         {
             "name": "symfony/browser-kit",
@@ -4126,12 +4126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "32f19477d488649a77227d57a7f5775b17cb336b"
+                "reference": "9f7a193bb99947d8b226f4ef3917135b7209a975"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/32f19477d488649a77227d57a7f5775b17cb336b",
-                "reference": "32f19477d488649a77227d57a7f5775b17cb336b",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/9f7a193bb99947d8b226f4ef3917135b7209a975",
+                "reference": "9f7a193bb99947d8b226f4ef3917135b7209a975",
                 "shasum": ""
             },
             "require": {
@@ -4175,7 +4175,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-11 08:55:16"
+            "time": "2015-04-22 09:30:19"
         },
         {
             "name": "symfony/css-selector",
