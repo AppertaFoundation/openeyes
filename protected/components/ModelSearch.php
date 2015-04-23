@@ -17,14 +17,14 @@
  * database is queried. For example an array containing type of compare and compare_to which has an array of other
  * attributes of the model will cause the query to be made against all attributes listed. eg:
  *
- *    $search->addSearchItem('name', array(
- *        'type' => 'compare'
- *        'compare_to' => array(
- *            'pas_code',
- *            'consultant.first_name',
- *            'consultant.last_name',
- *        )
- *    ));
+ * 	$search->addSearchItem('name', array(
+ * 		'type' => 'compare'
+ * 		'compare_to' => array(
+ * 			'pas_code',
+ * 			'consultant.first_name',
+ * 			'consultant.last_name',
+ * 		)
+ *	));
  *
  * If the type is set to boolean the user will be presented with a drop down to include all results or include only one
  * or exclude only those results.
@@ -164,22 +164,33 @@ class ModelSearch
 	 */
 	protected function generateCriteria($attr = 'search')
 	{
-		$search = $this->request->getParam($attr);
-		$sensitive = $this->request->getParam('case_sensitive', false);
+		if (is_array($attr)) {
+			$search = $attr;
+			$sensitive = false;
+		} else {
+			$search = $this->request->getParam($attr);
+			$sensitive = $this->request->getParam('case_sensitive', false);
+		}
 
-		if (is_array($search)) {
-			foreach ($search as $key => $value) {
-				if (!is_array($value)) {
+		if(is_array($search)){
+			foreach($search as $key => $value){
+				if(!is_array($value)){
 					$this->addCompare($this->criteria, $key, $value, $sensitive);
 				} else {
-					if (!isset($value['value'])) {
+					if ($key == 'filterid') {
+						foreach ($value as $fieldName => $fieldValue) {
+							$this->addCompare($this->criteria, $fieldName, $fieldValue, $sensitive, 'AND', true);
+						}
+					}
+					if(!isset($value['value'])){
 						//no value provided to search against
 						continue;
 					}
 					$searchTerm = $value['value'];
 					$this->addCompare($this->criteria, $key, $searchTerm, $sensitive);
-					if (array_key_exists('compare_to', $value) && is_array($value['compare_to'])) {
-						foreach ($value['compare_to'] as $compareTo) {
+					if(array_key_exists('compare_to', $value) && is_array($value['compare_to'])){
+						foreach($value['compare_to'] as $compareTo)
+						{
 							$this->addCompare($this->criteria, $compareTo, $searchTerm, $sensitive, 'OR');
 						}
 					}
@@ -197,9 +208,9 @@ class ModelSearch
 	 * @param bool $sensitive
 	 * @param string $operator
 	 */
-	protected function addCompare(CDbCriteria $criteria, $attribute, $value, $sensitive = false, $operator = 'AND')
+	protected function addCompare(CDbCriteria $criteria, $attribute, $value, $sensitive = false, $operator = 'AND',$exactmatch = false)
 	{
-		if (method_exists($this->model, 'get_' . $attribute)) {
+		if(method_exists($this->model, 'get_'.$attribute)){
 			//It's a magic method attribute, doesn't exist in the db has to be dealt with elsewhere
 			return;
 		}
@@ -207,9 +218,11 @@ class ModelSearch
 		$search = $attribute;
 		$search = $this->relationalAttribute($criteria, $attribute, $search);
 
-		if ($value !== '') {
+		if($value !== '' ){
 			if ($sensitive) {
 				$criteria->compare('LOWER(' . $search . ')', strtolower($value), true, $operator);
+			} elseif ($exactmatch) {
+				$criteria->compare($search, $value, false, $operator);
 			} else {
 				$criteria->compare($search, $value, true, $operator);
 			}
@@ -237,12 +250,20 @@ class ModelSearch
 	 */
 	public function colSort($sort = "")
 	{
+		$order = $this->request->getParam('d');
 
-		if (isset($_GET['d']) && ($_GET['d'] == 1)) {
+		foreach ($this->getModel()->relations() as $key=>$val)
+		{
+			$this->criteria->with = $key;
+		}
+
+		if ($order == 1)
+		{
 			$sort = $sort . ' DESC';
 		}
 
-		if (isset($sort)) {
+		if (isset($sort))
+		{
 			$this->criteria->order = $sort;
 		}
 	}
@@ -273,6 +294,11 @@ class ModelSearch
 		$this->searchItems[$key] = $search;
 	}
 
+	public function initSearch($searchInput)
+	{
+		$this->generateCriteria($searchInput);
+	}
+
 	/**
 	 * Retrieves the search term supplied by the user for a given attribute if there was one.
 	 *
@@ -282,7 +308,7 @@ class ModelSearch
 	 */
 	public function getSearchTermForAttribute($attribute, $default = '')
 	{
-		if (array_key_exists($attribute, $this->searchTerms)) {
+		if(array_key_exists($attribute, $this->searchTerms)){
 			return $this->searchTerms[$attribute];
 		}
 

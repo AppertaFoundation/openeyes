@@ -55,9 +55,11 @@ class FormularyDrugsController extends BaseAdminController
 			'active'
 		));
 		$admin->searchAll();
+		$admin->setModelDisplayName('Formulary Drugs');
 		$admin->getSearch()->addActiveFilter();
 		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
 		$admin->listModel();
+
 	}
 
 	/**
@@ -71,7 +73,10 @@ class FormularyDrugsController extends BaseAdminController
 		$admin = new Admin(FormularyDrugs::model(), $this);
 		if ($id) {
 			$admin->setModelId($id);
+
 		}
+		$admin->setModelDisplayName('Formulary Drugs');
+
 		$admin->setEditFields(array(
 			//'id' => 'text',
 			'name' => 'text',

@@ -19,12 +19,9 @@
 ?>
 <div class="admin box">
 
-	<h2><?php echo $admin->getModelName(); ?></h2>
+	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
 
 	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch())); ?>
-	<?php
-	//var_dump($admin->getListFields());
-	?>
 	<form id="generic-admin-list">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
 		<table class="grid">
@@ -33,7 +30,7 @@
 				<th><input type="checkbox" name="selectall" id="selectall"/></th>
 				<?php foreach ($admin->getListFields() as $listItem): ?>
 					<th>
-						<a href="?c=<?php echo $admin->getModel()->getAttributeLabel($listItem); ?>&d=<?php echo $displayOrder; ?>"><?php echo $admin->getModel()->getAttributeLabel($listItem); ?></a>
+						<a href="?c=<?php echo $listItem; ?>&d=<?php echo $displayOrder; ?>"><?php echo $admin->getModel()->getAttributeLabel($listItem); ?></a>
 					</th>
 				<?php endforeach; ?>
 			</tr>

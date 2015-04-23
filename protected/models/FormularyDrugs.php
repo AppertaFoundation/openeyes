@@ -85,14 +85,13 @@ class FormularyDrugs extends BaseActiveRecordVersioned
 	public function attributeLabels()
 	{
 		return array(
-			//'id' => 'ID',
 			'type_id' => 'Type',
 			'tallman' => 'Tall Man Name',
 			'form_id' => 'Form',
 			'default_route_id' => 'Default Route',
 			'default_frequency_id' => 'Default Frequency',
 			'default_duration_id' => 'Default Duration',
-			'drug_type.name' => 'Type_ID'
+			'drug_type.name' => 'Type'
 		);
 	}
 
