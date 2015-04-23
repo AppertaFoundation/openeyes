@@ -74,8 +74,8 @@ class FormularyDrugs extends BaseActiveRecordVersioned
 	public function relations()
 	{
 		return array(
-			'drug_type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
 			'allergy_warnings' => array(self::MANY_MANY, 'Drug', 'drug_allergy_assignment(drug_id,allergy_id)'),
+			'drug_type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
 		);
 	}
 
