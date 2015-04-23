@@ -35,6 +35,11 @@ class Admin
 	/**
 	 * @var string
 	 */
+	protected $modelDisplayName;
+
+	/**
+	 * @var string
+	 */
 	protected $listTemplate = '//admin/generic/list';
 
 	/**
@@ -122,6 +127,26 @@ class Admin
 	public function setModelName($modelName)
 	{
 		$this->modelName = $modelName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getModelDisplayName()
+	{
+		if (isset($this->modelDisplayName)) {
+			return $this->modelDisplayName;
+		} else {
+			return $this->modelName;
+		}
+	}
+
+	/**
+	 * @param string $modelName
+	 */
+	public function setModelDisplayName($displayName)
+	{
+		$this->modelDisplayName = $displayName;
 	}
 
 	/**

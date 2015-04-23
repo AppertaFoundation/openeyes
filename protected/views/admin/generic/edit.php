@@ -20,7 +20,7 @@
 ?>
 
 <div class="box admin">
-	<h2><?php echo($admin->getModel()->id ? 'Edit' : 'Add').' '. $admin->getModelName() ?></h2>
+	<h2><?php echo ($admin->getModel()->id ? 'Edit' : 'Add') . ' ' . $admin->getModelDisplayName() ?></h2>
 	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
 	<?php
 	if ($admin->getCustomSaveURL() != "") {

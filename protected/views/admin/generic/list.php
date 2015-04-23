@@ -19,7 +19,7 @@
 ?>
 <div class="admin box">
 
-	<h2><?php echo $admin->getModelName(); ?></h2>
+	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
 
 	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch())); ?>
 	<form id="generic-admin-list">
