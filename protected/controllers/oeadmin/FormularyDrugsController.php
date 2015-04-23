@@ -120,7 +120,17 @@ class FormularyDrugsController extends BaseAdminController
 				'layoutColumns' => null
 			),
 			'preservative_free' => 'checkbox',
-			'active' => 'checkbox'
+			'active' => 'checkbox',
+			'allergy_warnings' => array(
+				'widget' => 'MultiSelectList',
+				'relation_field_id' => 'id',
+				'label' => 'Allergy Warnings',
+				'options' => CHtml::encodeArray(CHtml::listData(
+					Allergy::model()->findAll(),
+					'id',
+					'name'
+				)),
+			)
 		));
 		$admin->editModel();
 	}
