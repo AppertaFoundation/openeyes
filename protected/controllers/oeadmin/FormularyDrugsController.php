@@ -55,7 +55,7 @@ class FormularyDrugsController extends BaseAdminController
 			'active'
 		));
 		$admin->searchAll();
-		$admin->setModelName('Formulary Drugs');
+		$admin->setModelDisplayName('Formulary Drugs');
 		$admin->getSearch()->addActiveFilter();
 		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
 		$admin->listModel();
@@ -75,7 +75,7 @@ class FormularyDrugsController extends BaseAdminController
 			$admin->setModelId($id);
 
 		}
-		$admin->setModelName('Formulary Drugs');
+		$admin->setModelDisplayName('Formulary Drugs');
 
 		$admin->setEditFields(array(
 			//'id' => 'text',
@@ -120,7 +120,17 @@ class FormularyDrugsController extends BaseAdminController
 				'layoutColumns' => null
 			),
 			'preservative_free' => 'checkbox',
-			'active' => 'checkbox'
+			'active' => 'checkbox',
+			'allergy_warnings' => array(
+				'widget' => 'MultiSelectList',
+				'relation_field_id' => 'id',
+				'label' => 'Allergy Warnings',
+				'options' => CHtml::encodeArray(CHtml::listData(
+					Allergy::model()->findAll(),
+					'id',
+					'name'
+				)),
+			)
 		));
 		$admin->editModel();
 	}

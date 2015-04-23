@@ -22,6 +22,13 @@ class AdminController extends BaseAdminController
 	public $layout = 'admin';
 	public $items_per_page = 30;
 
+	/**
+	 * @var int
+	 *
+	 */
+	public $displayOrder = 0;
+
+
 	public function actionIndex()
 	{
 		$this->redirect(array('/admin/users'));
@@ -495,7 +502,8 @@ class AdminController extends BaseAdminController
 		$this->render('/admin/firms',array(
 			'pagination' => $search->initPagination(),
 			'firms' => $search->retrieveResults(),
-			'search' => $search
+			'search' => $search,
+			'displayOrder' => $this->displayOrder,
 		));
 	}
 

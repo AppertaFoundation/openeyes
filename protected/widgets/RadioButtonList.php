@@ -29,7 +29,7 @@ class RadioButtonList extends SelectionWidget
 		parent::init();
 
 		if (empty($_POST)) {
-			if ($this->selected_item) {
+			if ($this->selected_item !== null) {
 				$this->value = $this->selected_item;
 			} else if (isset($this->element->{$this->field})) {
 				$this->value = $this->element->{$this->field};
