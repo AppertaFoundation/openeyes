@@ -72,8 +72,8 @@
 	<h2>Drugs</h2>
 	<ul class="navigation admin">
 		<?php foreach (array(
-						   'Common Drugs List' => '/OphDrPrescription/admin/CommonDrugs',
-						   'Drug Sets' => '/OphDrPrescription/admin/DrugSets',
+						   'Common Drugs List' => '/OphDrPrescription/commonDrugAdmin/list',
+						   'Drug Sets' => '/OphDrPrescription/DrugSetAdmin/DrugSets',
 						   'Medication List' => '/oeadmin/medication/list',
 						   'Formulary Drugs' => '/oeadmin/formularyDrugs/list'
 					   ) as $title => $uri) { ?>
