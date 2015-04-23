@@ -89,6 +89,9 @@
 				case 'checkbox':
 					echo $form->checkBox($admin->getModel(), $field, $autoComplete);
 					break;
+				case 'label':
+					echo $form->textField($admin->getModel(), $field, array('readonly'=>true));
+					break;
 				case 'text':
 				default:
 					echo $form->textField($admin->getModel(), $field, $autoComplete);
