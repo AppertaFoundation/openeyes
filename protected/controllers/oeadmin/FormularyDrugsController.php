@@ -78,7 +78,7 @@ class FormularyDrugsController extends BaseAdminController
 		$admin->setModelDisplayName('Formulary Drugs');
 
 		$admin->setEditFields(array(
-			//'id' => 'text',
+			'id' => 'label',
 			'name' => 'text',
 			'type_id' => array(
 				'widget' => 'DropDownList',
