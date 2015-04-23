@@ -32,6 +32,8 @@ class CommonSystemicDisorderController extends BaseAdminController
 		$admin->setCustomDeleteURL('/oeadmin/CommonSystemicDisorder/delete');
 		$admin->setCustomSaveURL('/oeadmin/CommonSystemicDisorder/add');
 
+		$admin->setModelDisplayName('Common Systemic Disorders');
+
 		$admin->setAutocompleteField(
 			array(
 				'fieldName' => 'disorder_id',
