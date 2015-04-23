@@ -42,7 +42,6 @@ function addItem(itemId, saveURL) {
             saveParams += "&" + fieldName + "=" + $(this).val();
         });
 
-        console.log(saveParams);
         $.ajax({
                 url: saveURL + "?" + saveParams,
                 error: function () {

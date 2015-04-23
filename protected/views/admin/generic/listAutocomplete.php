@@ -111,6 +111,7 @@
 							));
 						}
 						?>
+						<b>Select from list to add new</b>
 						<?php echo $this->renderPartial('//admin/_pagination', array(
 							'pagination' => $admin->getPagination()
 						)) ?>
