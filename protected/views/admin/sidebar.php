@@ -105,6 +105,22 @@
 			</li>
 		<?php } ?>
 </div>
+<div class="box admin">
+	<h2>Consent</h2>
+	<ul class="navigation admin">
+		<?php foreach (array(
+						   'Leaflets' => '/oeadmin/Leaflets/list',
+					   ) as $title => $uri) { ?>
+			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)
+			) { ?> class="selected"<?php } ?>>
+				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)) { ?>
+					<?php echo CHtml::link($title, array($uri), array('class' => 'selected')) ?>
+				<?php } else { ?>
+					<?php echo CHtml::link($title, array($uri)) ?>
+				<?php } ?>
+			</li>
+		<?php } ?>
+</div>
 
 <?php foreach (ModuleAdmin::getAll() as $module => $items) {?>
 	<div class="admin box">
