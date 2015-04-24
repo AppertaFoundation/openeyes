@@ -5928,7 +5928,7 @@ tfoot.pagination-container .pagination-view-all {
     -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     position: fixed;
-    top: 39px;
+      top: 74px;
     z-index: 199;
   }
 }
