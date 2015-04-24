@@ -72,8 +72,9 @@
 	<h2>Drugs</h2>
 	<ul class="navigation admin">
 		<?php foreach (array(
-						   'Common Drugs List' => '/OphDrPrescription/commonDrugAdmin/list',
-						   'Drug Sets' => '/OphDrPrescription/DrugSetAdmin/DrugSets',
+						'Common Drugs List' => '/OphDrPrescription/commonDrugAdmin/list',
+						'Drug Sets' => '/OphDrPrescription/DrugSetAdmin/DrugSets',
+						'Common Medications List ' => '/oeadmin/commonMedications/list',
 						'Medication List' => '/oeadmin/medication/list',
 						'Formulary Drugs' => '/oeadmin/formularyDrugs/list',
 						'Per Op Drugs' => '/OphTrOperationnote/admin/viewPostOpDrugs',
