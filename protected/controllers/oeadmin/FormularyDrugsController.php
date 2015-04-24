@@ -76,7 +76,7 @@ class FormularyDrugsController extends BaseAdminController
 
 		}
 		$admin->setModelDisplayName('Formulary Drugs');
-
+		$criteria = new CDbCriteria();
 		$admin->setEditFields(array(
 			'id' => 'label',
 			'name' => 'text',
@@ -126,7 +126,7 @@ class FormularyDrugsController extends BaseAdminController
 				'relation_field_id' => 'id',
 				'label' => 'Allergy Warnings',
 				'options' => CHtml::encodeArray(CHtml::listData(
-					Allergy::model()->findAll(),
+					Allergy::model()->findAll($criteria->condition = "name != 'Other'"),
 					'id',
 					'name'
 				)),
