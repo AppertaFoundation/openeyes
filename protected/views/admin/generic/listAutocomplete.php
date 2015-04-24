@@ -20,7 +20,7 @@
 ?>
 <div class="admin box">
 
-	<h2><?php echo $admin->getModelName(); ?></h2>
+	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
 
 	<form id="generic-admin-list">
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>

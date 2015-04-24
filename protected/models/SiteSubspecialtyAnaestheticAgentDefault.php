@@ -60,6 +60,10 @@ class SiteSubspecialtyAnaestheticAgentDefault extends BaseActiveRecordVersioned
 	 */
 	public function relations()
 	{
-		return array();
+		return array(
+			'sites' => array(self::BELONGS_TO, 'Site', 'site_id'),
+			'subspecialties' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+			'agents' => array(self::BELONGS_TO, 'AnaestheticAgent', 'anaesthetic_agent_id')
+		);
 	}
 }
