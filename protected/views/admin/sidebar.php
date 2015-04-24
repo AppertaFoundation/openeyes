@@ -95,8 +95,7 @@
 		<?php foreach (array(
 						   'Common Systemic Disorders' => '/oeadmin/CommonSystemicDisorder/list',
 					   ) as $title => $uri) { ?>
-			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)
-			) { ?> class="selected"<?php } ?>>
+			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)) { ?> class="selected"<?php } ?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)) { ?>
 					<?php echo CHtml::link($title, array($uri), array('class' => 'selected')) ?>
 				<?php } else { ?>
