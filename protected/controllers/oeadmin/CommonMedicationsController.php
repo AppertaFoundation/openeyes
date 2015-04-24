@@ -39,7 +39,7 @@ class CommonMedicationsController extends BaseAdminController
 			array(
 				'fieldName' => 'medication_id',
 				'jsonURL' => '/oeadmin/CommonMedications/search',
-				'placeholder' => 'search for common medications drug/s'
+				'placeholder' => 'search for medication drug'
 			)
 		);
 		$admin->listModel();
