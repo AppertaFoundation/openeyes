@@ -76,7 +76,13 @@ class FormularyDrugsController extends BaseAdminController
 
 		}
 		$admin->setModelDisplayName('Formulary Drugs');
+		$allergy_data  = Allergy::model()->findAll();
 
+		foreach ($allergy_data as $key => $val) {
+			if($val->name == "Other"){
+				unset($allergy_data[$key]);
+			}
+		}
 		$admin->setEditFields(array(
 			'id' => 'label',
 			'name' => 'text',
@@ -126,7 +132,7 @@ class FormularyDrugsController extends BaseAdminController
 				'relation_field_id' => 'id',
 				'label' => 'Allergy Warnings',
 				'options' => CHtml::encodeArray(CHtml::listData(
-					Allergy::model()->findAll(),
+					$allergy_data,
 					'id',
 					'name'
 				)),
