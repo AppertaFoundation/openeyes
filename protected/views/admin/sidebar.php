@@ -73,6 +73,7 @@
 	<ul class="navigation admin">
 		<?php foreach (array(
 						'Common Drugs List' => '/OphDrPrescription/admin/CommonDrugs',
+						'Common Medications List ' => '/oeadmin/commonMedications/list',
 						'Drug Sets' => '/OphDrPrescription/admin/DrugSets',
 						'Medication List' => '/oeadmin/medication/list',
 						'Formulary Drugs' => '/oeadmin/formularyDrugs/list',
