@@ -72,8 +72,9 @@
 	<h2>Drugs</h2>
 	<ul class="navigation admin">
 		<?php foreach (array(
-						'Common Drugs List' => '/OphDrPrescription/admin/CommonDrugs',
-						'Drug Sets' => '/OphDrPrescription/admin/DrugSets',
+						'Common Drugs List' => '/OphDrPrescription/commonDrugAdmin/list',
+						'Drug Sets' => '/OphDrPrescription/DrugSetAdmin/DrugSets',
+						'Common Medications List ' => '/oeadmin/commonMedications/list',
 						'Medication List' => '/oeadmin/medication/list',
 						'Formulary Drugs' => '/oeadmin/formularyDrugs/list',
 						'Per Op Drugs' => '/OphTrOperationnote/admin/viewPostOpDrugs',
@@ -109,6 +110,22 @@
 	<ul class="navigation admin">
 		<?php foreach (array(
 						   'Leaflets' => '/oeadmin/Leaflets/list',
+					   ) as $title => $uri) { ?>
+			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)
+			) { ?> class="selected"<?php } ?>>
+				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)) { ?>
+					<?php echo CHtml::link($title, array($uri), array('class' => 'selected')) ?>
+				<?php } else { ?>
+					<?php echo CHtml::link($title, array($uri)) ?>
+				<?php } ?>
+			</li>
+		<?php } ?>
+</div>
+<div class="box admin">
+	<h2>Operation Notes</h2>
+	<ul class="navigation admin">
+		<?php foreach (array(
+						   'Anaesthetic Agent Defaults' => '/oeadmin/AnaestheticAgentDefaults/list',
 					   ) as $title => $uri) { ?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)
 			) { ?> class="selected"<?php } ?>>
