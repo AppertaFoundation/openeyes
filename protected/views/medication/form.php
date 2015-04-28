@@ -34,7 +34,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 			<div class="field-row data-value" id="medication_drug_name"><?= CHtml::encode($medication->getDrugLabel()) ?></div>
 
 			<div class="field-row">
-				<?= CHtml::dropDownList('drug_select','', Drug::model()->listBySubspecialty($firm->getSubspecialtyID()), array('empty' => '- Select -'))?>
+				<?= CHtml::dropDownList('drug_select','', Drug::model()->listBySubspecialtyWithCommonMedications($firm->getSubspecialtyID()), array('empty' => '- Select -'))?>
 			</div>
 
 			<div class="field-row">
