@@ -152,12 +152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
-                "reference": "a09b1362f2fe6cc5f52e70eb4a9102229d89738d"
+                "reference": "a0d0e4a1ab16e1ce8e9a8d62545404305942a008"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/a09b1362f2fe6cc5f52e70eb4a9102229d89738d",
-                "reference": "a09b1362f2fe6cc5f52e70eb4a9102229d89738d",
+                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/a0d0e4a1ab16e1ce8e9a8d62545404305942a008",
+                "reference": "a0d0e4a1ab16e1ce8e9a8d62545404305942a008",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
-            "time": "2015-04-24 15:26:41"
+            "time": "2015-04-27 15:36:48"
         },
         {
             "name": "openeyes/oph-le-intravitrealinjection",
@@ -219,12 +219,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrConsent.git",
-                "reference": "ca233260065aefd10bc8e6fbbfad02c47405bdb1"
+                "reference": "98a57f726db638ec665090e12d2949e863988b88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/ca233260065aefd10bc8e6fbbfad02c47405bdb1",
-                "reference": "ca233260065aefd10bc8e6fbbfad02c47405bdb1",
+                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/98a57f726db638ec665090e12d2949e863988b88",
+                "reference": "98a57f726db638ec665090e12d2949e863988b88",
                 "shasum": ""
             },
             "require": {
@@ -233,7 +233,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Generates consent forms for scheduled and unscheduled operations",
-            "time": "2015-04-16 17:13:01"
+            "time": "2015-04-28 13:49:31"
         },
         {
             "name": "openeyes/oph-tr-intravitreal-injection",
