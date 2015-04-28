@@ -55,13 +55,13 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
 
 		if (isset($search['filterid']['firm_id']['value']) && $search['filterid']['firm_id']['value'] > 0) {
 			$excludeSubspecialty = true;
-			$exludeFirm = false;
+			$excludeFirm = false;
 			$admin = new AdminListAutocomplete(OphTrConsent_Leaflet_Firm::model(), $this);
 			$admin->setCustomDeleteURL('/oeadmin/LeafletSubspecialtyFirm/deleteFirm');
 
 		} else {
 			$excludeSubspecialty = false;
-			$exludeFirm = true;
+			$excludeFirm = true;
 			$admin = new AdminListAutocomplete(OphTrConsent_Leaflet_Subspecialty::model(), $this);
 			$admin->setCustomDeleteURL('/oeadmin/LeafletSubspecialtyFirm/deleteSubspecialty');
 		}
@@ -98,7 +98,7 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
 					'emptyLabel' => '-- All --',
 					'dependsOnFilterName' => 'subspecialty_id',
 					'dependsOnDbFieldName' => 'service_subspecialty_assignment_id',
-					'excludeSearch' => $exludeFirm
+					'excludeSearch' => $excludeFirm
 				)
 			)
 		);
