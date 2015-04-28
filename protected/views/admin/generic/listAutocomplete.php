@@ -46,6 +46,9 @@
 							'order' => $params['listDisplayField'],
 							'params' => array(':paramID' => $selectedValue[$params['dependsOnFilterName']])
 						);
+						if (isset($params['dependsOnJoinedTable'])) {
+							$filterQuery = array_merge($filterQuery, array('with' => $params['dependsOnJoinedTable']));
+						}
 					} else {
 						$filterQuery = array('order' => $params['listDisplayField']);
 					}
