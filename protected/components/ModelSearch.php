@@ -179,7 +179,9 @@ class ModelSearch
 				} else {
 					if ($key == 'filterid') {
 						foreach ($value as $fieldName => $fieldValue) {
-							$this->addCompare($this->criteria, $fieldName, $fieldValue, $sensitive, 'AND', true);
+							if ($fieldValue > 0) {
+								$this->addCompare($this->criteria, $fieldName, $fieldValue, $sensitive, 'AND', true);
+							}
 						}
 					}
 					if(!isset($value['value'])){

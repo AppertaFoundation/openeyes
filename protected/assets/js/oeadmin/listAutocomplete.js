@@ -6,6 +6,11 @@ $(document).ready(
                 $(this).closest('form').submit();
             }
         );
+        $('.excluded').change(
+            function () {
+                $(this).closest('form').submit();
+            }
+        );
     }
 );
 

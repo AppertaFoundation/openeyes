@@ -33,15 +33,41 @@
 				<div class="large-4 column">
 					<?php
 					$searchParams = $this->request->getParam("search");
-					if ($searchParams["filterid"][$params['dropDownName']]["value"] != "") {
-						$selectedValue = $searchParams["filterid"][$params['dropDownName']]["value"];
+					if (isset($searchParams["filterid"][$params['dropDownName']]["value"]) && $searchParams["filterid"][$params['dropDownName']]["value"] != "") {
+						$selectedValue[$params['dropDownName']] = $searchParams["filterid"][$params['dropDownName']]["value"];
 					} else {
-						$selectedValue = $params['defaultValue'];
+						$selectedValue[$params['dropDownName']] = $params['defaultValue'];
 					}
-					echo CHtml::dropDownList("search[filterid][" . $params['dropDownName'] . "][value]", $selectedValue,
-						CHtml::listData($params['listModel']->findAll(), $params['listIdField'],
+					if (!isset($params['emptyLabel'])) {
+						$params['emptyLabel'] = '-- Please select --';
+					}
+					if (isset($params['dependsOnFilterName'])) {
+						$filterQuery = array(
+							'condition' => $params['dependsOnDbFieldName'] . '=:paramID',
+							'order' => $params['listDisplayField'],
+							'params' => array(':paramID' => $selectedValue[$params['dependsOnFilterName']])
+						);
+					} else {
+						$filterQuery = array('order' => $params['listDisplayField']);
+					}
+
+					// for some functions we need to exclude fields from search
+					if (isset($params['excludeSearch']) && $params['excludeSearch']) {
+						$fieldName = $params['dropDownName'];
+						$htmlClass = 'excluded';
+					} else {
+						$fieldName = "search[filterid][" . $params['dropDownName'] . "][value]";
+						$htmlClass = 'filterfieldselect';
+					}
+					echo CHtml::dropDownList($fieldName,
+						$selectedValue[$params['dropDownName']],
+						CHtml::listData($params['listModel']->findAll($filterQuery),
+							$params['listIdField'],
 							$params['listDisplayField']),
-						array('class' => 'filterfieldselect'));
+						array(
+							'class' => $htmlClass,
+							'empty' => $params['emptyLabel']
+						));
 					?>
 				</div>
 			<?php
