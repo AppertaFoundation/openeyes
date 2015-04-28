@@ -25,26 +25,32 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
 		$search = $this->request->getParam("search");
 		$session = new CHttpSession;
 		$session->open();
-		if ($this->request->getParam("firm_id") > 0 &&
+		$firmId = $this->request->getParam("firm_id");
+		$subspecialtyId = $this->request->getParam("subspecialty_id");
+		if ($firmId > 0 &&
 			(isset($search['filterid']['subspecialty_id']['value']) && $search['filterid']['subspecialty_id']['value'] > 0)
 		) {
 			$session['lastSubspecialtyId'] = $search['filterid']['subspecialty_id']['value'];
-			$this->redirect('/oeadmin/LeafletSubspecialtyFirm/list?search[filterid][firm_id][value]=' . $this->request->getParam("firm_id") . '&subspecialty_id=' . $search['filterid']['subspecialty_id']['value']);
+			$this->redirect('/oeadmin/LeafletSubspecialtyFirm/list?search[filterid][firm_id][value]=' . $firmId . '&subspecialty_id=' . $search['filterid']['subspecialty_id']['value']);
 		}
 
 		$lastSubspecialtyId = $session['lastSubspecialtyId'];
 		// check if it's been already set
 		if (!($lastSubspecialtyId > 0)) {
-			$session['lastSubspecialtyId'] = $search['filterid']['subspecialty_id']['value'];
+			if (isset($search['filterid']['subspecialty_id']['value'])) {
+				$session['lastSubspecialtyId'] = $search['filterid']['subspecialty_id']['value'];
+			} else {
+				$session['lastSubspecialtyId'] = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
+			}
 		}
 		// || ($this->request->getParam("subspecialty_id")!=$session['lastSubspecialtyId'] && $search['filterid']['firm_id']['value']=="")
-		if (($this->request->getParam("subspecialty_id") > 0
-				&& $this->request->getParam("subspecialty_id") != $session['lastSubspecialtyId']
+		if (($subspecialtyId > 0
+				&& $subspecialtyId != $session['lastSubspecialtyId']
 				&& isset($search['filterid']['firm_id']['value']))
-			|| ($this->request->getParam("subspecialty_id") == $session['lastSubspecialtyId'] && $search['filterid']['firm_id']['value'] == "")
+			|| ($subspecialtyId == $session['lastSubspecialtyId'] && $search['filterid']['firm_id']['value'] == "")
 		) {
 			$session['lastSubspecialtyId'] = "";
-			$this->redirect('/oeadmin/LeafletSubspecialtyFirm/list?search[filterid][subspecialty_id][value]=' . $this->request->getParam("subspecialty_id"));
+			$this->redirect('/oeadmin/LeafletSubspecialtyFirm/list?search[filterid][subspecialty_id][value]=' . $subspecialtyId);
 		}
 
 		if (isset($search['filterid']['firm_id']['value']) && $search['filterid']['firm_id']['value'] > 0) {
@@ -66,8 +72,8 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
 		));
 		$admin->setCustomSaveURL('/oeadmin/LeafletSubspecialtyFirm/add');
 		$admin->setModelDisplayName('Leaflet-Firm Assignment');
-		if ($this->request->getParam("subspecialty_id") > 0) {
-			$defaultSubspecialty = $this->request->getParam("subspecialty_id");
+		if ($subspecialtyId > 0) {
+			$defaultSubspecialty = $subspecialtyId;
 		} else {
 			$defaultSubspecialty = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
 		}
