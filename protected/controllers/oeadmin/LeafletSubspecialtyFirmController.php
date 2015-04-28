@@ -71,7 +71,7 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
 			'leaflet.name'
 		));
 		$admin->setCustomSaveURL('/oeadmin/LeafletSubspecialtyFirm/add');
-		$admin->setModelDisplayName('Leaflet-Firm Assignment');
+		$admin->setModelDisplayName('Leaflet-Subspecialty-Firm Assignment');
 		if ($subspecialtyId > 0) {
 			$defaultSubspecialty = $subspecialtyId;
 		} else {

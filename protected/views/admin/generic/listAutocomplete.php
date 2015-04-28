@@ -23,7 +23,6 @@
 	<h2><?php echo $admin->getModelName(); ?></h2>
 
 	<form id="generic-admin-list">
-		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
 		<?php
 
 		if (is_array($admin->getFilterFields())) {
