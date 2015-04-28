@@ -110,6 +110,7 @@
 	<ul class="navigation admin">
 		<?php foreach (array(
 						   'Leaflets' => '/oeadmin/Leaflets/list',
+						   'Leaflet Subspecialty and Firm Assignment' => '/oeadmin/LeafletSubspecialtyFirm/list',
 					   ) as $title => $uri) { ?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//', '', $uri)
 			) { ?> class="selected"<?php } ?>>
