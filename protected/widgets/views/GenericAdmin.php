@@ -43,7 +43,7 @@
 			<thead>
 				<tr>
 					<th>Order</th>
-					<?php if(!in_array($label_field, array_keys($extra_fields))):?>
+					<?php if(!in_array($label_field, array_keys($extra_fields), true)):?>
 						<th><?= $model::model()->getAttributeLabel($label_field) ?></th>
 					<?php endif;?>
 					<?php foreach ($extra_fields as $field) {?>
