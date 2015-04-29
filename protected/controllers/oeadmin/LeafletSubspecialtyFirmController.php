@@ -77,6 +77,7 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
 		} else {
 			$defaultSubspecialty = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
 		}
+
 		$admin->setFilterFields(
 			array(
 				array(
@@ -97,7 +98,8 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
 					'listDisplayField' => 'name',
 					'emptyLabel' => '-- All --',
 					'dependsOnFilterName' => 'subspecialty_id',
-					'dependsOnDbFieldName' => 'service_subspecialty_assignment_id',
+					'dependsOnDbFieldName' => 'subspecialty_id',
+					'dependsOnJoinedTable' => 'serviceSubspecialtyAssignment',
 					'excludeSearch' => $excludeFirm
 				)
 			)

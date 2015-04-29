@@ -219,12 +219,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrConsent.git",
-                "reference": "98a57f726db638ec665090e12d2949e863988b88"
+                "reference": "a5994092405d110ea0da068d5dbfb8e70001086e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/98a57f726db638ec665090e12d2949e863988b88",
-                "reference": "98a57f726db638ec665090e12d2949e863988b88",
+                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/a5994092405d110ea0da068d5dbfb8e70001086e",
+                "reference": "a5994092405d110ea0da068d5dbfb8e70001086e",
                 "shasum": ""
             },
             "require": {
@@ -233,7 +233,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Generates consent forms for scheduled and unscheduled operations",
-            "time": "2015-04-28 13:49:31"
+            "time": "2015-04-29 10:24:52"
         },
         {
             "name": "openeyes/oph-tr-intravitreal-injection",
@@ -3942,16 +3942,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.3.1",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "f3100143e94bbeeaa4f1cd7c6389c3733d3d1ce1"
+                "reference": "e96d8579fbed0c95ecf2a0501ec4f307a4aa6404"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/f3100143e94bbeeaa4f1cd7c6389c3733d3d1ce1",
-                "reference": "f3100143e94bbeeaa4f1cd7c6389c3733d3d1ce1",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/e96d8579fbed0c95ecf2a0501ec4f307a4aa6404",
+                "reference": "e96d8579fbed0c95ecf2a0501ec4f307a4aa6404",
                 "shasum": ""
             },
             "require": {
@@ -4012,7 +4012,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2015-04-23 03:40:59"
+            "time": "2015-04-28 23:28:20"
         },
         {
             "name": "symfony/browser-kit",
