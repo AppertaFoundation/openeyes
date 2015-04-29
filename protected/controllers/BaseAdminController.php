@@ -81,6 +81,7 @@ class BaseAdminController extends BaseController
 			'extra_fields' => array(),
 			'filter_fields' => array(),
 			'filters_ready' => true,
+			'label_extra_field' => false,
 		), $options);
 
 		$columns = $model::model()->metadata->columns;
@@ -90,6 +91,9 @@ class BaseAdminController extends BaseController
 				case 'lookup':
 					$options['extra_fields'][$extraKey]['allow_null'] = $columns[$extraField['field']]->allowNull;
 					break;
+			}
+			if($extraField['field'] === $options['label_field']){
+				$options['label_extra_field'] = true;
 			}
 		}
 

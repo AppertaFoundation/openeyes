@@ -29,7 +29,7 @@ if (@$disabled) {
 			echo CHtml::hiddenField("display_order[{$i}]",$row->display_order ? $row->display_order : $i, $html_options);
 		} ?>
 	</td>
-	<?php if(!in_array($label_field, array_keys($extra_fields), true)):?>
+	<?php if(!$label_extra_field):?>
 	<td>
 		<?php
 			if ($label_field_type) {
