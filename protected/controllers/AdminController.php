@@ -786,8 +786,8 @@ class AdminController extends BaseAdminController
 
 
 		$this->render('/admin/institutions',array(
-			'institutions' => $search->retrieveResults(),
 			'pagination' => $search->initPagination(),
+			'institutions' => $search->retrieveResults(),
 			'search' => $search,
 		));
 	}
