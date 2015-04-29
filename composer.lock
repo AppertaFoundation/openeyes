@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c3b8ec94b466c2ac3ca362cecdcbba2d",
+    "hash": "ff59f3a33c53390204f4819ff01770d0",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -60,16 +60,16 @@
         },
         {
             "name": "openeyes/oph-ci-examination",
-            "version": "dev-release/v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "18f07213dc3dcb7f7a9b6035cc7dd5425c5bbdda"
+                "reference": "7a710b4216bb44366da84f0412aedaf7732deb15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/18f07213dc3dcb7f7a9b6035cc7dd5425c5bbdda",
-                "reference": "18f07213dc3dcb7f7a9b6035cc7dd5425c5bbdda",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/7a710b4216bb44366da84f0412aedaf7732deb15",
+                "reference": "7a710b4216bb44366da84f0412aedaf7732deb15",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-03-25 16:39:00"
+            "time": "2015-04-23 16:26:33"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -104,7 +104,7 @@
         },
         {
             "name": "openeyes/oph-co-correspondence",
-            "version": "dev-release/v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCoCorrespondence.git",
@@ -148,16 +148,16 @@
         },
         {
             "name": "openeyes/oph-dr-prescription",
-            "version": "dev-release/v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
-                "reference": "a40e6f33f4b43d4ddeb2ec86c0017aac087a8959"
+                "reference": "a0d0e4a1ab16e1ce8e9a8d62545404305942a008"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/a40e6f33f4b43d4ddeb2ec86c0017aac087a8959",
-                "reference": "a40e6f33f4b43d4ddeb2ec86c0017aac087a8959",
+                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/a0d0e4a1ab16e1ce8e9a8d62545404305942a008",
+                "reference": "a0d0e4a1ab16e1ce8e9a8d62545404305942a008",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
-            "time": "2015-04-16 15:32:01"
+            "time": "2015-04-27 15:36:48"
         },
         {
             "name": "openeyes/oph-le-intravitrealinjection",
@@ -215,16 +215,16 @@
         },
         {
             "name": "openeyes/oph-tr-consent",
-            "version": "dev-release/v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrConsent.git",
-                "reference": "ca233260065aefd10bc8e6fbbfad02c47405bdb1"
+                "reference": "a5994092405d110ea0da068d5dbfb8e70001086e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/ca233260065aefd10bc8e6fbbfad02c47405bdb1",
-                "reference": "ca233260065aefd10bc8e6fbbfad02c47405bdb1",
+                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/a5994092405d110ea0da068d5dbfb8e70001086e",
+                "reference": "a5994092405d110ea0da068d5dbfb8e70001086e",
                 "shasum": ""
             },
             "require": {
@@ -233,7 +233,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Generates consent forms for scheduled and unscheduled operations",
-            "time": "2015-04-16 17:13:01"
+            "time": "2015-04-29 10:24:52"
         },
         {
             "name": "openeyes/oph-tr-intravitreal-injection",
@@ -260,16 +260,16 @@
         },
         {
             "name": "openeyes/oph-tr-intravitrealinjection",
-            "version": "dev-master",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrIntravitrealinjection.git",
-                "reference": "1df7a9fce3f3162f21085e935aefc52f2a6557ad"
+                "reference": "679f51cbd9f19a357c1f81e5260de9711a783666"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrIntravitrealinjection/zipball/1df7a9fce3f3162f21085e935aefc52f2a6557ad",
-                "reference": "1df7a9fce3f3162f21085e935aefc52f2a6557ad",
+                "url": "https://api.github.com/repos/openeyes/OphTrIntravitrealinjection/zipball/679f51cbd9f19a357c1f81e5260de9711a783666",
+                "reference": "679f51cbd9f19a357c1f81e5260de9711a783666",
                 "shasum": ""
             },
             "require": {
@@ -279,7 +279,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Records intravitreal injection events for patients within OpenEyes",
-            "time": "2015-03-05 15:21:26"
+            "time": "2015-03-17 12:34:26"
         },
         {
             "name": "openeyes/oph-tr-laser",
@@ -305,16 +305,16 @@
         },
         {
             "name": "openeyes/oph-tr-operationbooking",
-            "version": "dev-release/v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationbooking.git",
-                "reference": "928977ac97b64feb5a7c2d997828eb066b542711"
+                "reference": "feac97eccb13a6e9cadd7c1b7ef3f73105ed9c99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/928977ac97b64feb5a7c2d997828eb066b542711",
-                "reference": "928977ac97b64feb5a7c2d997828eb066b542711",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/feac97eccb13a6e9cadd7c1b7ef3f73105ed9c99",
+                "reference": "feac97eccb13a6e9cadd7c1b7ef3f73105ed9c99",
                 "shasum": ""
             },
             "require": {
@@ -323,20 +323,20 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for booking operations in OpenEyes",
-            "time": "2015-04-14 12:54:59"
+            "time": "2015-04-28 15:17:17"
         },
         {
             "name": "openeyes/oph-tr-operationnote",
-            "version": "dev-release/v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "24a5c869e75bc8242911a733008a84543644af24"
+                "reference": "a94fe84cb2816a33007ee2ff1eb6473f87238443"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/24a5c869e75bc8242911a733008a84543644af24",
-                "reference": "24a5c869e75bc8242911a733008a84543644af24",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/a94fe84cb2816a33007ee2ff1eb6473f87238443",
+                "reference": "a94fe84cb2816a33007ee2ff1eb6473f87238443",
                 "shasum": ""
             },
             "require": {
@@ -346,11 +346,11 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-04-08 14:01:20"
+            "time": "2015-04-21 09:56:06"
         },
         {
             "name": "openeyes/patient-ticketing",
-            "version": "dev-release/v1.10",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/PatientTicketing.git",
@@ -1979,12 +1979,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "03fc68ca1419c7e16050e96c15c7f7e1f2fc26ff"
+                "reference": "d84ba2cb20186688230a5a11f76a70e97fe2f886"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/03fc68ca1419c7e16050e96c15c7f7e1f2fc26ff",
-                "reference": "03fc68ca1419c7e16050e96c15c7f7e1f2fc26ff",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/d84ba2cb20186688230a5a11f76a70e97fe2f886",
+                "reference": "d84ba2cb20186688230a5a11f76a70e97fe2f886",
                 "shasum": ""
             },
             "require": {
@@ -1998,6 +1998,7 @@
                 "aws/aws-sdk-php": "~2.4, >2.4.8",
                 "doctrine/couchdb": "~1.0@dev",
                 "graylog2/gelf-php": "~1.0",
+                "php-console/php-console": "~3.1, >3.1.2",
                 "phpunit/phpunit": "~4.0",
                 "raven/raven": "~0.5",
                 "ruflin/elastica": "0.90.*",
@@ -2010,6 +2011,7 @@
                 "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
                 "ext-mongo": "Allow sending log messages to a MongoDB server",
                 "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "php-console/php-console": "Allow sending log messages to Google Chrome",
                 "raven/raven": "Allow sending log messages to a Sentry server",
                 "rollbar/rollbar": "Allow sending log messages to Rollbar",
                 "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
@@ -2044,7 +2046,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2015-04-15 18:23:25"
+            "time": "2015-04-25 10:55:55"
         },
         {
             "name": "nikic/php-parser",
@@ -3940,16 +3942,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.3.0",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "5046b0e01c416fc2b06df961d0673c85bcdc896c"
+                "reference": "e96d8579fbed0c95ecf2a0501ec4f307a4aa6404"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/5046b0e01c416fc2b06df961d0673c85bcdc896c",
-                "reference": "5046b0e01c416fc2b06df961d0673c85bcdc896c",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/e96d8579fbed0c95ecf2a0501ec4f307a4aa6404",
+                "reference": "e96d8579fbed0c95ecf2a0501ec4f307a4aa6404",
                 "shasum": ""
             },
             "require": {
@@ -4010,21 +4012,20 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2015-03-04 02:07:03"
+            "time": "2015-04-28 23:28:20"
         },
         {
             "name": "symfony/browser-kit",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/BrowserKit",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/BrowserKit.git",
-                "reference": "e7ac73ecdd97f5b114152eb670607e96db7a2e17"
+                "reference": "bf40356a60dc8ffceab31b434cc715943f469204"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/BrowserKit/zipball/e7ac73ecdd97f5b114152eb670607e96db7a2e17",
-                "reference": "e7ac73ecdd97f5b114152eb670607e96db7a2e17",
+                "url": "https://api.github.com/repos/symfony/BrowserKit/zipball/bf40356a60dc8ffceab31b434cc715943f469204",
+                "reference": "bf40356a60dc8ffceab31b434cc715943f469204",
                 "shasum": ""
             },
             "require": {
@@ -4046,7 +4047,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\BrowserKit\\": ""
                 }
             },
@@ -4066,21 +4067,20 @@
             ],
             "description": "Symfony BrowserKit Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-10 08:56:33"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/config",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/Config",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
-                "reference": "c9a779b0f02f0fdf41cc4decc4fb451005365086"
+                "reference": "b9a3893998ddb7a6e84088ac21a0540c4fa51627"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/c9a779b0f02f0fdf41cc4decc4fb451005365086",
-                "reference": "c9a779b0f02f0fdf41cc4decc4fb451005365086",
+                "url": "https://api.github.com/repos/symfony/Config/zipball/b9a3893998ddb7a6e84088ac21a0540c4fa51627",
+                "reference": "b9a3893998ddb7a6e84088ac21a0540c4fa51627",
                 "shasum": ""
             },
             "require": {
@@ -4097,7 +4097,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Config\\": ""
                 }
             },
@@ -4117,21 +4117,20 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-11 08:55:16"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/console",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "32f19477d488649a77227d57a7f5775b17cb336b"
+                "reference": "36194c12ded9b0dc2b5d719ad626257b5bbc2d96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/32f19477d488649a77227d57a7f5775b17cb336b",
-                "reference": "32f19477d488649a77227d57a7f5775b17cb336b",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/36194c12ded9b0dc2b5d719ad626257b5bbc2d96",
+                "reference": "36194c12ded9b0dc2b5d719ad626257b5bbc2d96",
                 "shasum": ""
             },
             "require": {
@@ -4155,7 +4154,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Console\\": ""
                 }
             },
@@ -4175,21 +4174,20 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-11 08:55:16"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/css-selector",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/CssSelector",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/CssSelector.git",
-                "reference": "c315f95be51278f548d36664d51a8425e19e2cda"
+                "reference": "33703308af68a86b937b750968473e1eb4f95c42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/CssSelector/zipball/c315f95be51278f548d36664d51a8425e19e2cda",
-                "reference": "c315f95be51278f548d36664d51a8425e19e2cda",
+                "url": "https://api.github.com/repos/symfony/CssSelector/zipball/33703308af68a86b937b750968473e1eb4f95c42",
+                "reference": "33703308af68a86b937b750968473e1eb4f95c42",
                 "shasum": ""
             },
             "require": {
@@ -4205,7 +4203,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\CssSelector\\": ""
                 }
             },
@@ -4229,21 +4227,20 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-10 08:56:33"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/dependency-injection",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/DependencyInjection",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "ae47d9690326b0e970598a8f5b6710ece8f5fee4"
+                "reference": "a4898461d50868c52a6a1326768bfa27f6493e7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/ae47d9690326b0e970598a8f5b6710ece8f5fee4",
-                "reference": "ae47d9690326b0e970598a8f5b6710ece8f5fee4",
+                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/a4898461d50868c52a6a1326768bfa27f6493e7c",
+                "reference": "a4898461d50868c52a6a1326768bfa27f6493e7c",
                 "shasum": ""
             },
             "require": {
@@ -4270,7 +4267,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\DependencyInjection\\": ""
                 }
             },
@@ -4290,21 +4287,20 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-10 08:56:33"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/dom-crawler",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/DomCrawler",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DomCrawler.git",
-                "reference": "c7bd5b7d8444175f04e4278fa220fd3470c851fe"
+                "reference": "c0beeb21688e1c0854cac8f15b601a0863f3b724"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/c7bd5b7d8444175f04e4278fa220fd3470c851fe",
-                "reference": "c7bd5b7d8444175f04e4278fa220fd3470c851fe",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/c0beeb21688e1c0854cac8f15b601a0863f3b724",
+                "reference": "c0beeb21688e1c0854cac8f15b601a0863f3b724",
                 "shasum": ""
             },
             "require": {
@@ -4324,7 +4320,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\DomCrawler\\": ""
                 }
             },
@@ -4344,21 +4340,20 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-10 08:56:33"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/event-dispatcher",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/EventDispatcher",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "15bbd5beed94cca89ffcce18fb76eeac38937240"
+                "reference": "44bde9645703fe92da9f5dd2755298f7c2c6fa92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/15bbd5beed94cca89ffcce18fb76eeac38937240",
-                "reference": "15bbd5beed94cca89ffcce18fb76eeac38937240",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/44bde9645703fe92da9f5dd2755298f7c2c6fa92",
+                "reference": "44bde9645703fe92da9f5dd2755298f7c2c6fa92",
                 "shasum": ""
             },
             "require": {
@@ -4383,7 +4378,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\EventDispatcher\\": ""
                 }
             },
@@ -4403,21 +4398,20 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-10 08:56:33"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/filesystem",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "59a58a369bafa7c2ded4e0b08d726482be7a7e6b"
+                "reference": "41b7d35d812653a54fd931a6c8cf139767a95abb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/59a58a369bafa7c2ded4e0b08d726482be7a7e6b",
-                "reference": "59a58a369bafa7c2ded4e0b08d726482be7a7e6b",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/41b7d35d812653a54fd931a6c8cf139767a95abb",
+                "reference": "41b7d35d812653a54fd931a6c8cf139767a95abb",
                 "shasum": ""
             },
             "require": {
@@ -4433,7 +4427,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Filesystem\\": ""
                 }
             },
@@ -4453,21 +4447,20 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-10 08:56:33"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/finder",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "ad159e0da47e9ffe719bafdc004159ad6e395567"
+                "reference": "60e1a3c4699ac84b5d0acb4333b6b5cca3900af1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/ad159e0da47e9ffe719bafdc004159ad6e395567",
-                "reference": "ad159e0da47e9ffe719bafdc004159ad6e395567",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/60e1a3c4699ac84b5d0acb4333b6b5cca3900af1",
+                "reference": "60e1a3c4699ac84b5d0acb4333b6b5cca3900af1",
                 "shasum": ""
             },
             "require": {
@@ -4483,7 +4476,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Finder\\": ""
                 }
             },
@@ -4503,21 +4496,20 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-10 08:56:33"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/process",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "5c73c03223e922c3c5f2c4128984e82a44089bbc"
+                "reference": "8382bc54f1d83ee36fb3983bb1b6b307d238622b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/5c73c03223e922c3c5f2c4128984e82a44089bbc",
-                "reference": "5c73c03223e922c3c5f2c4128984e82a44089bbc",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/8382bc54f1d83ee36fb3983bb1b6b307d238622b",
+                "reference": "8382bc54f1d83ee36fb3983bb1b6b307d238622b",
                 "shasum": ""
             },
             "require": {
@@ -4533,7 +4525,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Process\\": ""
                 }
             },
@@ -4553,21 +4545,20 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-10 08:56:33"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/stopwatch",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/Stopwatch",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Stopwatch.git",
-                "reference": "e91464c343fd51f6720aca125ae4050c3d937d30"
+                "reference": "20c8903372e2a924421d93d55928be80c617cf3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/e91464c343fd51f6720aca125ae4050c3d937d30",
-                "reference": "e91464c343fd51f6720aca125ae4050c3d937d30",
+                "url": "https://api.github.com/repos/symfony/Stopwatch/zipball/20c8903372e2a924421d93d55928be80c617cf3a",
+                "reference": "20c8903372e2a924421d93d55928be80c617cf3a",
                 "shasum": ""
             },
             "require": {
@@ -4583,7 +4574,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Stopwatch\\": ""
                 }
             },
@@ -4603,21 +4594,20 @@
             ],
             "description": "Symfony Stopwatch Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-10 08:56:33"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/translation",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/Translation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "5ec0e1b1fb095fc938705cbf52790742b118c287"
+                "reference": "543bba114b9d6140368d8cdd3c23fc07749f8393"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/5ec0e1b1fb095fc938705cbf52790742b118c287",
-                "reference": "5ec0e1b1fb095fc938705cbf52790742b118c287",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/543bba114b9d6140368d8cdd3c23fc07749f8393",
+                "reference": "543bba114b9d6140368d8cdd3c23fc07749f8393",
                 "shasum": ""
             },
             "require": {
@@ -4645,7 +4635,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Translation\\": ""
                 }
             },
@@ -4665,21 +4655,20 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-15 21:38:10"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "symfony/validator",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/Validator",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "9663b595bffb5828471843cc37991e848313204a"
+                "reference": "c29cda6a497b8bfc1870de31c16c35393715ff53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/9663b595bffb5828471843cc37991e848313204a",
-                "reference": "9663b595bffb5828471843cc37991e848313204a",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/c29cda6a497b8bfc1870de31c16c35393715ff53",
+                "reference": "c29cda6a497b8bfc1870de31c16c35393715ff53",
                 "shasum": ""
             },
             "require": {
@@ -4716,7 +4705,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Validator\\": ""
                 }
             },
@@ -4736,21 +4725,20 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-11 08:55:16"
+            "time": "2015-04-24 15:39:02"
         },
         {
             "name": "symfony/yaml",
             "version": "2.8.x-dev",
-            "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "fdded56dde4ca9efce6322887bf5eaa7bb0aae3e"
+                "reference": "4ededb1d00dc2c65fcd16ae3dafc785f92b3f95f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/fdded56dde4ca9efce6322887bf5eaa7bb0aae3e",
-                "reference": "fdded56dde4ca9efce6322887bf5eaa7bb0aae3e",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/4ededb1d00dc2c65fcd16ae3dafc785f92b3f95f",
+                "reference": "4ededb1d00dc2c65fcd16ae3dafc785f92b3f95f",
                 "shasum": ""
             },
             "require": {
@@ -4766,7 +4754,7 @@
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Yaml\\": ""
                 }
             },
@@ -4786,7 +4774,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-10 08:56:33"
+            "time": "2015-04-24 07:03:44"
         },
         {
             "name": "theseer/fdomdocument",

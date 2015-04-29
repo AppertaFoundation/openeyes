@@ -81,6 +81,7 @@ class BaseAdminController extends BaseController
 			'extra_fields' => array(),
 			'filter_fields' => array(),
 			'filters_ready' => true,
+			'label_extra_field' => false,
 		), $options);
 
 		$columns = $model::model()->metadata->columns;
@@ -90,6 +91,9 @@ class BaseAdminController extends BaseController
 				case 'lookup':
 					$options['extra_fields'][$extraKey]['allow_null'] = $columns[$extraField['field']]->allowNull;
 					break;
+			}
+			if($extraField['field'] === $options['label_field']){
+				$options['label_extra_field'] = true;
 			}
 		}
 
@@ -133,13 +137,12 @@ class BaseAdminController extends BaseController
 							$new = true;
 						}
 
-
 						$attributes = $item->getAttributes();
 						if (!empty($_POST[$options['label_field']][$i])) {
 							$item->{$options['label_field']} = $_POST[$options['label_field']][$i];
 							if ($item->hasAttribute('display_order')) {
 								$options['display_order'] = true;
-								$item->display_order = $j++;
+								$item->display_order = $j + 1;
 							}
 
 							if (array_key_exists('active', $attributes)) {
@@ -152,7 +155,7 @@ class BaseAdminController extends BaseController
 							}
 
 							if ($item->hasAttribute('default')) {
-								if (isset($_POST['default']) && $_POST['default'] != 'NONE' && $_POST['default'] == $j) {
+								if (isset($_POST['default']) && $_POST['default'] !== 'NONE' && $_POST['default'] == $j) {
 									$item->default = 1;
 								} else {
 									$item->default = 0;
@@ -162,7 +165,6 @@ class BaseAdminController extends BaseController
 							foreach ($options['filter_fields'] as $field) {
 								$item->{$field['field']} = $field['value'];
 							}
-
 
 							if ($new || $item->getAttributes() != $attributes) {
 								if (!$item->save()) {

@@ -197,12 +197,8 @@ $(document).ready(function(){
 		window.patientTicketChanged = true;
 	});
 
-	$("#event-content").on("change", function (e) {
-		window.formHasChanged = true;
-	});
-
-	$('#patient-summary-form-container').on("change", function (e) {
-		window.formHasChanged = true;
+	$("#event-content, #patient-summary-form-container").on("change", function (e) {
+		OpenEyes.Form.edit($(e.target).closest('form'));
 	});
 
 	//if the save button is on page

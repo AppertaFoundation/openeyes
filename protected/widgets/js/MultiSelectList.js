@@ -51,6 +51,8 @@ $(document).ready(function () {
             var removeAll = container.find('.remove-all');
             var options = container.data('options');
 
+            $('#' + fieldName.replace('[', '_').replace(']', '_') + 'empty_hidden').remove();
+
             var attrs = {};
             $(selected[0].attributes).each(function () {
                 attrs[this.nodeName] = this.nodeValue;
@@ -149,6 +151,11 @@ $(document).ready(function () {
         if (!selections.children().length) {
             selections.add(removeAll).addClass('hide');
             noSelectionsMsg.removeClass('hide');
+            var container = select.closest('.multi-select');
+            var inputField = container.find('.multi-select-list-name');
+            var fieldName = inputField.attr('name').match(/\[MultiSelectList_(.*?)\]$/)[1];
+            var inp_str = '<input id="' + fieldName.replace('[', '_').replace(']', '_') + 'empty_hidden" type="hidden" name="' + fieldName + '"/>';
+            container.append(inp_str);
         }
 
         if ($(this).hasClass('linked-fields')) {

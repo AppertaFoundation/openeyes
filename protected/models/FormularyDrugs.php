@@ -33,6 +33,8 @@
  */
 class FormularyDrugs extends BaseActiveRecordVersioned
 {
+	protected $auto_update_relations = true;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Benefit the static model class
@@ -59,7 +61,10 @@ class FormularyDrugs extends BaseActiveRecordVersioned
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
-			array('name, type_id, aliases, active', 'safe'),
+			array(
+				'name, aliases, tallman, type_id, form_id, dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id, preservative_free, active, allergy_warnings',
+				'safe'
+			),
 		);
 	}
 
@@ -69,9 +74,26 @@ class FormularyDrugs extends BaseActiveRecordVersioned
 	public function relations()
 	{
 		return array(
+			'allergy_warnings' => array(self::MANY_MANY, 'Drug', 'drug_allergy_assignment(drug_id,allergy_id)'),
 			'drug_type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
-
 		);
 	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'type_id' => 'Type',
+			'tallman' => 'Tall Man Name',
+			'form_id' => 'Form',
+			'default_route_id' => 'Default Route',
+			'default_frequency_id' => 'Default Frequency',
+			'default_duration_id' => 'Default Duration',
+			'drug_type.name' => 'Type'
+		);
+	}
+
 
 }

@@ -24,16 +24,16 @@ if (@$disabled) {
 <tr class="<?= @$row_class ?>" data-row="<?= $i ?>" style="<?= @$row_style ?>">
 	<td class="reorder">
 		<span>&uarr;&darr;</span>
-	</td>
-	<td>
-		<?php
-		echo CHtml::hiddenField("id[{$i}]",$row->id, $html_options);
+		<?php echo CHtml::hiddenField("id[{$i}]",$row->id, $html_options);
 		if($display_order){
 			echo CHtml::hiddenField("display_order[{$i}]",$row->display_order ? $row->display_order : $i, $html_options);
-		}
-
-		if ($label_field_type) {
-			$this->render('application.widgets.views._generic_admin_' . $label_field_type, array(
+		} ?>
+	</td>
+	<?php if(!$label_extra_field):?>
+	<td>
+		<?php
+			if ($label_field_type) {
+				$this->render('application.widgets.views._generic_admin_' . $label_field_type, array(
 					'row' => $row,
 					'params' => array(
 						'relation' => $label_relation,
@@ -41,16 +41,18 @@ if (@$disabled) {
 						'model' => $label_field_model,
 						'allow_null' => false
 					),
-					'i' => $i));
-		} else {
-			echo CHtml::textField("{$label_field}[{$i}]",$row->{$label_field},$html_options);
-		}?>
-		<?php if (isset($errors[$i])) {?>
-			<span class="error">
-				<?php echo $errors[$i]?>
-			</span>
-		<?php }?>
+					'i' => $i
+				));
+			} else {
+				echo CHtml::textField("{$label_field}[{$i}]", $row->{$label_field}, $html_options);
+			}?>
+			<?php if (isset($errors[$i])) { ?>
+				<span class="error">
+				<?php echo $errors[$i] ?>
+				</span>
+			<?php }?>
 	</td>
+	<?php endif;?>
 	<?php foreach ($extra_fields as $field) {?>
 		<td>
 			<?php $this->render('_generic_admin_'.$field['type'],array('row' => $row, 'params' => $field, 'i' => $i))?>

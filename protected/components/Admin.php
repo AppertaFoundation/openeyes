@@ -35,6 +35,11 @@ class Admin
 	/**
 	 * @var string
 	 */
+	protected $modelDisplayName;
+
+	/**
+	 * @var string
+	 */
 	protected $listTemplate = '//admin/generic/list';
 
 	/**
@@ -73,6 +78,23 @@ class Admin
 	protected $modelId;
 
 	/**
+	 * @var string
+	 */
+	protected $customSaveURL;
+
+	/**
+	 * @var string
+	 */
+	protected $customCancelURL;
+
+	/**
+	 * @var int
+	 *
+	 */
+	public $displayOrder = 0;
+
+
+	/**
 	 * @return BaseActiveRecord
 	 */
 	public function getModel()
@@ -86,7 +108,7 @@ class Admin
 	public function setModel(BaseActiveRecord $model)
 	{
 		$this->model = $model;
-		if(!$this->modelName) {
+		if (!$this->modelName) {
 			$this->modelName = get_class($model);
 		}
 	}
@@ -105,6 +127,26 @@ class Admin
 	public function setModelName($modelName)
 	{
 		$this->modelName = $modelName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getModelDisplayName()
+	{
+		if (isset($this->modelDisplayName)) {
+			return $this->modelDisplayName;
+		} else {
+			return $this->modelName;
+		}
+	}
+
+	/**
+	 * @param string $modelName
+	 */
+	public function setModelDisplayName($displayName)
+	{
+		$this->modelDisplayName = $displayName;
 	}
 
 	/**
@@ -229,6 +271,7 @@ class Admin
 		$this->setModel($model);
 		$this->controller = $controller;
 		$this->search = new ModelSearch($this->model);
+		$this->request = $request = Yii::app()->getRequest();
 
 	}
 
@@ -239,13 +282,30 @@ class Admin
 	 */
 	public function listModel()
 	{
-		if(!$this->model){
+		if (!$this->model) {
 			throw new CHttpException(500, 'Nothing to list');
 		}
 
+		$order = $this->request->getParam('d');
+		$col = $this->request->getParam('c');
+
+		if ($order == 0) {
+			$this->displayOrder = 1;
+		}
+
+		if (isset($col) != "") {
+			if (strpos($col, '.') !== FALSE)
+				$sort = $col;
+			else
+				$sort = 't.'.$col;
+		}else{
+			$sort = 't.id';
+		}
+
 		$this->audit('list');
+		$this->sort = $this->getSearch()->colSort($sort);
 		$this->pagination = $this->getSearch()->initPagination();
-		$this->render($this->listTemplate, array('admin' => $this));
+		$this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder));
 	}
 
 	/**
@@ -257,9 +317,9 @@ class Admin
 	public function editModel()
 	{
 		$errors = array();
-		if(Yii::app()->request->isPostRequest){
+		if (Yii::app()->request->isPostRequest) {
 			$post = Yii::app()->request->getPost($this->modelName);
-			if(array_key_exists('id', $post) && $post['id']){
+			if (array_key_exists('id', $post) && $post['id']) {
 				$this->model->attributes = $post;
 			} else {
 				$this->model = new $this->modelName;
@@ -271,11 +331,12 @@ class Admin
 			} else {
 
 				if (!$this->model->save()) {
-					throw new CHttpException(500, 'Unable to save '.$this->modelName.': ' . print_r($this->model->getErrors(), true));
+					throw new CHttpException(500,
+						'Unable to save ' . $this->modelName . ': ' . print_r($this->model->getErrors(), true));
 				}
 
 				$this->audit('edit', $this->model->id);
-				$this->controller->redirect('/'.$this->controller->uniqueid.'/list');
+				$this->controller->redirect('/' . $this->controller->uniqueid . '/list');
 			}
 		}
 		$this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
@@ -287,12 +348,12 @@ class Admin
 	public function deleteModel()
 	{
 		$response = 1;
-		if(Yii::app()->request->isPostRequest){
+		if (Yii::app()->request->isPostRequest) {
 			$ids = Yii::app()->request->getPost($this->modelName);
-			foreach($ids as $id){
+			foreach ($ids as $id) {
 				$model = $this->model->findByPk($id);
-				if($model){
-					if(!$model->delete()){
+				if ($model) {
+					if (!$model->delete()) {
 						$response = 0;
 					}
 				}
@@ -308,12 +369,12 @@ class Admin
 	{
 		$searchArray = array('type' => 'compare', 'compare_to' => array());
 		$searchFirst = '';
-		foreach($this->listFields as $field){
-			if(method_exists($this->model, 'get_'.$field)){
+		foreach ($this->listFields as $field) {
+			if (method_exists($this->model, 'get_' . $field)) {
 				//we don't currently support searching on magic attributes not from the DB so continue
 				continue;
 			}
-			if($searchFirst === ''){
+			if ($searchFirst === '') {
 				$searchFirst = $field;
 			} else {
 				$searchArray['compare_to'][] = $field;
@@ -329,22 +390,22 @@ class Admin
 	 */
 	public function attributeValue($row, $attribute)
 	{
-		if(isset($row->$attribute)){
+		if (isset($row->$attribute)) {
 			return $row->$attribute;
 		}
 
-		if(strpos($attribute, '.')){
+		if (strpos($attribute, '.')) {
 			$splitAttribute = explode('.', $attribute);
 			$relationTable = $splitAttribute[0];
-			if(isset($row->$relationTable->$splitAttribute[1])){
+			if (isset($row->$relationTable->$splitAttribute[1])) {
 				return $row->$relationTable->$splitAttribute[1];
 			}
 
-			if(is_array($row->$relationTable)){
+			if (is_array($row->$relationTable)) {
 				$manyResult = array();
-				foreach($row->$relationTable as $relationResult){
-					if(isset($relationResult->$splitAttribute[1])){
-						$manyResult[] =  $relationResult->$splitAttribute[1];
+				foreach ($row->$relationTable as $relationResult) {
+					if (isset($relationResult->$splitAttribute[1])) {
+						$manyResult[] = $relationResult->$splitAttribute[1];
 					}
 				}
 
@@ -353,6 +414,38 @@ class Admin
 		}
 
 		return '';
+	}
+
+	/**
+	 * @param $saveURL
+	 */
+	public function setCustomSaveURL($saveURL)
+	{
+		$this->customSaveURL = $saveURL;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomSaveURL()
+	{
+		return $this->customSaveURL;
+	}
+
+	/**
+	 * @param $cancelURL
+	 */
+	public function setCustomCancelURL($cancelURL)
+	{
+		$this->customCancelURL = $cancelURL;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomCancelURL()
+	{
+		return $this->customCancelURL;
 	}
 
 	/**
@@ -370,6 +463,6 @@ class Admin
 	 */
 	protected function audit($type, $data = null)
 	{
-		Audit::add('admin-'.$this->modelName, $type, $data);
+		Audit::add('admin-' . $this->modelName, $type, $data);
 	}
 }

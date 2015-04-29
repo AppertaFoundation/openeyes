@@ -164,14 +164,26 @@ class ModelSearch
 	 */
 	protected function generateCriteria($attr = 'search')
 	{
-		$search = $this->request->getParam($attr);
-		$sensitive = $this->request->getParam('case_sensitive', false);
+		if (is_array($attr)) {
+			$search = $attr;
+			$sensitive = false;
+		} else {
+			$search = $this->request->getParam($attr);
+			$sensitive = $this->request->getParam('case_sensitive', false);
+		}
 
 		if(is_array($search)){
 			foreach($search as $key => $value){
 				if(!is_array($value)){
 					$this->addCompare($this->criteria, $key, $value, $sensitive);
 				} else {
+					if ($key == 'filterid') {
+						foreach ($value as $fieldName => $fieldValue) {
+							if ($fieldValue > 0) {
+								$this->addCompare($this->criteria, $fieldName, $fieldValue, $sensitive, 'AND', true);
+							}
+						}
+					}
 					if(!isset($value['value'])){
 						//no value provided to search against
 						continue;
@@ -198,7 +210,7 @@ class ModelSearch
 	 * @param bool $sensitive
 	 * @param string $operator
 	 */
-	protected function addCompare(CDbCriteria $criteria, $attribute, $value, $sensitive = false, $operator = 'AND')
+	protected function addCompare(CDbCriteria $criteria, $attribute, $value, $sensitive = false, $operator = 'AND',$exactmatch = false)
 	{
 		if(method_exists($this->model, 'get_'.$attribute)){
 			//It's a magic method attribute, doesn't exist in the db has to be dealt with elsewhere
@@ -211,6 +223,8 @@ class ModelSearch
 		if($value !== '' ){
 			if ($sensitive) {
 				$criteria->compare('LOWER(' . $search . ')', strtolower($value), true, $operator);
+			} elseif ($exactmatch) {
+				$criteria->compare($search, $value, false, $operator);
 			} else {
 				$criteria->compare($search, $value, true, $operator);
 			}
@@ -229,7 +243,31 @@ class ModelSearch
 		$pagination = new CPagination($itemsCount);
 		$pagination->pageSize = $this->itemsPerPage;
 		$pagination->applyLimit($this->criteria);
+
 		return $pagination;
+	}
+
+	/**
+	 * @param string $sort
+	 */
+	public function colSort($sort = "")
+	{
+		$order = $this->request->getParam('d');
+
+		foreach ($this->getModel()->relations() as $key=>$val)
+		{
+			$this->criteria->with = $key;
+		}
+
+		if ($order == 1)
+		{
+			$sort = $sort . ' DESC';
+		}
+
+		if (isset($sort))
+		{
+			$this->criteria->order = $sort;
+		}
 	}
 
 	/**
@@ -256,6 +294,11 @@ class ModelSearch
 	public function addSearchItem($key, $search = '')
 	{
 		$this->searchItems[$key] = $search;
+	}
+
+	public function initSearch($searchInput)
+	{
+		$this->generateCriteria($searchInput);
 	}
 
 	/**

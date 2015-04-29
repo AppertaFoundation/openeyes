@@ -164,10 +164,11 @@
 		$('#btn-add_previous_operation').attr('disabled',true);
 		$('#btn-add_previous_operation').addClass('disabled');
 	});
-	$('button.btn_cancel_previous_operation').click(function() {
+	$('button.btn_cancel_previous_operation').click(function(e) {
 		$('#add_previous_operation').slideToggle('fast');
 		$('#btn-add_previous_operation').attr('disabled',false);
 		$('#btn-add_previous_operation').removeClass('disabled');
+		OpenEyes.Form.reset($(e.target).closest('form'));
 		return false;
 	});
 	$('#common_previous_operation').change(function() {

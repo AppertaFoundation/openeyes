@@ -18,6 +18,7 @@ class GenericAdmin extends BaseCWidget
 	public $has_default = false;
 	public $data;
 	public $display_order;
+	public $label_extra_field;
 
 	public function init()
 	{

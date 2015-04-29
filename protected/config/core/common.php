@@ -67,6 +67,9 @@ return array(
 		'authManager' => array(
 			'class' => 'AuthManager',
 			'connectionID' => 'db',
+			'assignmentTable'=>'authassignment',
+			'itemTable'=>'authitem',
+			'itemChildTable'=>'authitemchild',
 		),
 		'cache' => array(
 			'class' => 'system.caching.CFileCache',

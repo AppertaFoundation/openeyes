@@ -20,13 +20,19 @@
 ?>
 
 <div class="box admin">
-	<h2><?php echo($admin->getModel()->id ? 'Edit' : 'Add').' '. $admin->getModelName() ?></h2>
+	<h2><?php echo ($admin->getModel()->id ? 'Edit' : 'Add') . ' ' . $admin->getModelDisplayName() ?></h2>
 	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
 	<?php
+	if ($admin->getCustomSaveURL() != "") {
+		$formAction = $admin->getCustomSaveURL();
+	} else {
+		$formAction = '#';
+	}
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id' => 'adminform',
 		'enableAjaxValidation' => false,
 		'focus' => '#username',
+		'action' => $formAction,
 		'layoutColumns' => array(
 			'label' => 2,
 			'field' => 5
@@ -72,11 +78,19 @@
 						$type['layoutColumns']
 					);
 					break;
+				case 'CustomView':
+					// arguments: (string) viewName, (array) viewArguments
+					$this->renderPartial($type['viewName'],
+						$type['viewArguments']);
+					break;
 			}
 		} else {
 			switch ($type) {
 				case 'checkbox':
 					echo $form->checkBox($admin->getModel(), $field, $autoComplete);
+					break;
+				case 'label':
+					echo $form->textField($admin->getModel(), $field, array('readonly'=>true));
 					break;
 				case 'text':
 				default:
@@ -87,7 +101,14 @@
 	}
 	?>
 
-	<?php echo $form->formActions(array('cancel-uri' => '/'.$this->uniqueid.'/list')); ?>
+	<?php
+	if ($admin->getCustomCancelURL() != "") {
+		echo $form->formActions(array('cancel-uri' => $admin->getCustomCancelURL()));
+	} else {
+		echo $form->formActions(array('cancel-uri' => '/' . $this->uniqueid . '/list'));
+	}
+
+	?>
 
 	<?php $this->endWidget() ?>
 </div>

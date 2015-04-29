@@ -22,6 +22,13 @@ class AdminController extends BaseAdminController
 	public $layout = 'admin';
 	public $items_per_page = 30;
 
+	/**
+	 * @var int
+	 *
+	 */
+	public $displayOrder = 0;
+
+
 	public function actionIndex()
 	{
 		$this->redirect(array('/admin/users'));
@@ -495,7 +502,8 @@ class AdminController extends BaseAdminController
 		$this->render('/admin/firms',array(
 			'pagination' => $search->initPagination(),
 			'firms' => $search->retrieveResults(),
-			'search' => $search
+			'search' => $search,
+			'displayOrder' => $this->displayOrder,
 		));
 	}
 
@@ -642,13 +650,18 @@ class AdminController extends BaseAdminController
 		);
 	}
 
-	public function actionEditContact()
+	public function actionEditContact($id = Null)
 	{
-		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
-			throw new Exception("Contact not found: ".@$_GET['contact_id']);
+
+		if($id == null){
+			$id = @$_GET['contact_id'];
 		}
 
-		if (!empty($_POST)) {
+		if (!$contact = Contact::model()->findByPk($id)) {
+			throw new Exception("Contact not found: " . $id);
+		}
+
+        if (!empty($_POST)) {
 			$contact->attributes = $_POST['Contact'];
 
 			if (!$contact->validate()) {
@@ -661,7 +674,7 @@ class AdminController extends BaseAdminController
 				$this->redirect('/admin/contacts?q='.$contact->fullName);
 			}
 		} else {
-			Audit::add('admin-Contact','view',@$_GET['contact_id']);
+			Audit::add('admin-Contact','view',$id);
 		}
 
 		$this->render('/admin/editcontact',array(
@@ -761,12 +774,21 @@ class AdminController extends BaseAdminController
 	{
 		Audit::add('admin-Institution','list');
 
-		$criteria = new CDbCriteria;
-		$pagination = $this->initPagination(Institution::model(), $criteria);
+		$search = new ModelSearch(Institution::model());
+		$search->addSearchItem('name', array(
+			'type' => 'compare',
+			'compare_to' => array(
+				'remote_id',
+				'short_name'
+			)
+		));
+		$search->addSearchItem('active', array('type' => 'boolean'));
+
 
 		$this->render('/admin/institutions',array(
-			'institutions' => Institution::model()->findAll($criteria),
-			'pagination' => $pagination,
+			'pagination' => $search->initPagination(),
+			'institutions' => $search->retrieveResults(),
+			'search' => $search,
 		));
 	}
 
@@ -889,6 +911,67 @@ class AdminController extends BaseAdminController
 		$this->render('/admin/sites',array(
 			'sites' => Site::model()->findAll($criteria),
 			'pagination' => $pagination,
+		));
+	}
+
+	public function actionAddSite()
+	{
+		$errors = array();
+		$site =	new Site;
+		$contact = new Contact;
+		$address = new Address;
+
+		/*
+		 * Set default blank contact to fulfill the current relationship with a site
+		 */
+
+		$contact->nick_name = 'NULL';
+		$contact->primary_phone = 'NULL';
+		$contact->title = NULL;
+		$contact->first_name = '';
+		$contact->last_name = '';
+		$contact->qualifications = NULL;
+
+		$contact->save();
+
+		$site->contact_id = $contact->id;
+		$address->contact_id = $contact->id;
+
+        if(!empty($_POST)){
+
+			$site->attributes = $_POST['Site'];
+
+            if (!$site->validate()) {
+				$errors = $site->getErrors();
+            }
+
+			$address->attributes = $_POST['Address'];
+
+			if(!$address->validate()) {
+				$errors = array_merge($errors, $address->getErrors());
+			}
+
+			if(!$errors){
+				if (!$site->save()) {
+					throw new Exception("Unable to save contact: ".print_r($site->getErrors(),true));
+				}
+
+				if (!$address->save()) {
+					throw new Exception("Unable to save address: ".print_r($address->getErrors(), true));
+				}
+
+				Audit::add('admin-Site','add',$site->id);
+
+				$this->redirect(array('/admin/editSite?site_id='.$site->id));
+			}
+		}
+
+
+        $this->render('/admin/addsite',array(
+			'site' => $site,
+			'errors' => $errors,
+			'address' => $address,
+			'contact' => $contact
 		));
 	}
 

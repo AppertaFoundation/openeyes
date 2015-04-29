@@ -144,10 +144,11 @@
 			$('#btn-add_new_systemic_diagnosis').attr('disabled',true);
 			$('#btn-add_new_systemic_diagnosis').addClass('disabled');
 		});
-		$('button.btn_cancel_systemic_diagnosis').click(function() {
+		$('button.btn_cancel_systemic_diagnosis').click(function(e) {
 			$('#add_new_systemic_diagnosis').slideToggle('fast');
 			$('#btn-add_new_systemic_diagnosis').attr('disabled',false);
 			$('#btn-add_new_systemic_diagnosis').removeClass('disabled');
+			OpenEyes.Form.reset($(e.target).closest('form'));
 			return false;
 		});
 		$('button.btn_save_systemic_diagnosis').click(function() {
