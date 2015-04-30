@@ -199,6 +199,16 @@ class ModelSearch
 				}
 			}
 		}
+
+		$order = $this->request->getParam('d');
+		$sortColumn = $this->request->getParam('c');
+		if ($sortColumn) {
+			$this->relationalAttribute($this->criteria, $sortColumn, $attr);
+			if ($order) {
+				$sortColumn .= ' DESC';
+			}
+			$this->criteria->order = $sortColumn;
+		}
 	}
 
 	/**
@@ -247,28 +257,6 @@ class ModelSearch
 		return $pagination;
 	}
 
-	/**
-	 * @param string $sort
-	 */
-	public function colSort($sort = "")
-	{
-		$order = $this->request->getParam('d');
-
-		foreach ($this->getModel()->relations() as $key=>$val)
-		{
-			$this->criteria->with = $key;
-		}
-
-		if ($order == 1)
-		{
-			$sort = $sort . ' DESC';
-		}
-
-		if (isset($sort))
-		{
-			$this->criteria->order = $sort;
-		}
-	}
 
 	/**
 	 * Performs the query that has been generated.
@@ -296,6 +284,9 @@ class ModelSearch
 		$this->searchItems[$key] = $search;
 	}
 
+	/**
+	 * @param $searchInput
+	 */
 	public function initSearch($searchInput)
 	{
 		$this->generateCriteria($searchInput);
@@ -343,6 +334,7 @@ class ModelSearch
 				}
 				$relationshipArray[] = $relationshipString;
 			}
+
 			$search .= '.' . array_shift($relationship);
 
 			$criteria->together = true;
