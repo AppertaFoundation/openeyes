@@ -25,3 +25,5 @@
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.FieldImages.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.Form.js')?>
 <?php $assetManager->registerScriptFile('js/script.js')?>
+<?php $assetManager->registerScriptFile('components/foundation/js/foundation.min.js');?>
+<?php $assetManager->registerScriptFile('components/foundation/js/foundation/foundation.dropdown.js');?>
