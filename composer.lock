@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "18f07213dc3dcb7f7a9b6035cc7dd5425c5bbdda"
+                "reference": "7a710b4216bb44366da84f0412aedaf7732deb15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/18f07213dc3dcb7f7a9b6035cc7dd5425c5bbdda",
-                "reference": "18f07213dc3dcb7f7a9b6035cc7dd5425c5bbdda",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/7a710b4216bb44366da84f0412aedaf7732deb15",
+                "reference": "7a710b4216bb44366da84f0412aedaf7732deb15",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-03-25 16:39:00"
+            "time": "2015-04-23 16:26:33"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -152,12 +152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphDrPrescription.git",
-                "reference": "a40e6f33f4b43d4ddeb2ec86c0017aac087a8959"
+                "reference": "a0d0e4a1ab16e1ce8e9a8d62545404305942a008"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/a40e6f33f4b43d4ddeb2ec86c0017aac087a8959",
-                "reference": "a40e6f33f4b43d4ddeb2ec86c0017aac087a8959",
+                "url": "https://api.github.com/repos/openeyes/OphDrPrescription/zipball/a0d0e4a1ab16e1ce8e9a8d62545404305942a008",
+                "reference": "a0d0e4a1ab16e1ce8e9a8d62545404305942a008",
                 "shasum": ""
             },
             "require": {
@@ -166,7 +166,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
-            "time": "2015-04-16 15:32:01"
+            "time": "2015-04-27 15:36:48"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -241,12 +241,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrConsent.git",
-                "reference": "ca233260065aefd10bc8e6fbbfad02c47405bdb1"
+                "reference": "a5994092405d110ea0da068d5dbfb8e70001086e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/ca233260065aefd10bc8e6fbbfad02c47405bdb1",
-                "reference": "ca233260065aefd10bc8e6fbbfad02c47405bdb1",
+                "url": "https://api.github.com/repos/openeyes/OphTrConsent/zipball/a5994092405d110ea0da068d5dbfb8e70001086e",
+                "reference": "a5994092405d110ea0da068d5dbfb8e70001086e",
                 "shasum": ""
             },
             "require": {
@@ -255,7 +255,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Generates consent forms for scheduled and unscheduled operations",
-            "time": "2015-04-16 17:13:01"
+            "time": "2015-04-29 10:24:52"
         },
         {
             "name": "openeyes/oph-tr-intravitreal-injection",
@@ -331,12 +331,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationbooking.git",
-                "reference": "928977ac97b64feb5a7c2d997828eb066b542711"
+                "reference": "feac97eccb13a6e9cadd7c1b7ef3f73105ed9c99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/928977ac97b64feb5a7c2d997828eb066b542711",
-                "reference": "928977ac97b64feb5a7c2d997828eb066b542711",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationbooking/zipball/feac97eccb13a6e9cadd7c1b7ef3f73105ed9c99",
+                "reference": "feac97eccb13a6e9cadd7c1b7ef3f73105ed9c99",
                 "shasum": ""
             },
             "require": {
@@ -345,7 +345,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for booking operations in OpenEyes",
-            "time": "2015-04-14 12:54:59"
+            "time": "2015-04-28 15:17:17"
         },
         {
             "name": "openeyes/oph-tr-operationnote",
@@ -353,12 +353,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "24a5c869e75bc8242911a733008a84543644af24"
+                "reference": "a94fe84cb2816a33007ee2ff1eb6473f87238443"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/24a5c869e75bc8242911a733008a84543644af24",
-                "reference": "24a5c869e75bc8242911a733008a84543644af24",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/a94fe84cb2816a33007ee2ff1eb6473f87238443",
+                "reference": "a94fe84cb2816a33007ee2ff1eb6473f87238443",
                 "shasum": ""
             },
             "require": {
@@ -368,7 +368,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-04-08 14:01:20"
+            "time": "2015-04-21 09:56:06"
         },
         {
             "name": "openeyes/patient-ticketing",
