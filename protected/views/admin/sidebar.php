@@ -1,3 +1,8 @@
+<div class="box admin">
+	<div class="box_admin_header box_admin_header_all">
+		<h2>Admin</h2>
+	</div>
+</div>
 <?php foreach (Yii::app()->params['admin_structure'] as $adminBoxTitle => $adminBoxElements) { ?>
 	<div class="box admin">
 		<div class="box_admin_header">
@@ -19,7 +24,14 @@
 					if ($uri) { ?>
 						<li<?php if (Yii::app()->getController()->request->requestUri == $uri) { ?> class="selected"<?php } ?>>
 							<?php if (Yii::app()->getController()->request->requestUri == $uri) { ?>
-								<?php echo CHtml::link($title, array($uri), array('class' => 'selected')) ?>
+								<script type="text/javascript">
+									$(document).ready(function () {
+											$('#<?php echo str_replace(' ','_',$title) ?>').closest('.box_admin_elements').show();
+										}
+									);
+								</script>
+								<?php echo CHtml::link($title, array($uri),
+									array('class' => 'selected', 'id' => str_replace(' ', '_', $title))); ?>
 							<?php } else { ?>
 								<?php echo CHtml::link($title, array($uri)) ?>
 							<?php } ?>
@@ -43,7 +55,14 @@
 					$action = array_pop($e) ?>
 					<li<?php if (Yii::app()->getController()->action->id == $action) { ?> class="selected"<?php } ?>>
 						<?php if (Yii::app()->getController()->action->id == $action) { ?>
-							<?php echo CHtml::link($item, array($uri), array('class' => 'selected')) ?>
+							<script type="text/javascript">
+								$(document).ready(function () {
+										$('#<?php echo str_replace(' ','_',$title) ?>').closest('.box_admin_elements').show();
+									}
+								);
+							</script>
+							<?php echo CHtml::link($item, array($uri),
+								array('class' => 'selected', 'id' => str_replace(' ', '_', $title))) ?>
 						<?php } else { ?>
 							<?php echo CHtml::link($item, array($uri)) ?>
 						<?php } ?>

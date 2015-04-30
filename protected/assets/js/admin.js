@@ -263,4 +263,9 @@ $(document).ready(function () {
     $('.box_admin_header').bind("click", function () {
         $(this).next('.box_admin_elements').toggle();
     });
+
+    // admin menu collapse_all
+    $('.box_admin_header_all').bind("click", function () {
+        $('.box_admin_elements').toggle();
+    });
 });
