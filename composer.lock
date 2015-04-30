@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ff59f3a33c53390204f4819ff01770d0",
+    "hash": "6a5468f4293a4ac6a1a07ca0deba2bac",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -167,6 +167,28 @@
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
             "time": "2015-04-27 15:36:48"
+        },
+        {
+            "name": "openeyes/oph-in-visualfields",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/openeyes/OphInVisualfields.git",
+                "reference": "81995c7cfca3b189c261b2c28d8b51ac62241c77"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/openeyes/OphInVisualfields/zipball/81995c7cfca3b189c261b2c28d8b51ac62241c77",
+                "reference": "81995c7cfca3b189c261b2c28d8b51ac62241c77",
+                "shasum": ""
+            },
+            "require": {
+                "openeyes/module-installer": "*"
+            },
+            "type": "openeyes-module",
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Module capable of communicating with Visual Fields machine to import images",
+            "time": "2015-04-21 15:01:39"
         },
         {
             "name": "openeyes/oph-le-intravitrealinjection",
@@ -1237,16 +1259,16 @@
         },
         {
             "name": "erusev/parsedown",
-            "version": "1.5.2",
+            "version": "1.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "468d1e3da8bde049debee7f484a4f9c4b26b41ba"
+                "reference": "b9e5228e92e5f5c17d7774cfb2de8e5e8362de1a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/468d1e3da8bde049debee7f484a4f9c4b26b41ba",
-                "reference": "468d1e3da8bde049debee7f484a4f9c4b26b41ba",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/b9e5228e92e5f5c17d7774cfb2de8e5e8362de1a",
+                "reference": "b9e5228e92e5f5c17d7774cfb2de8e5e8362de1a",
                 "shasum": ""
             },
             "type": "library",
@@ -1272,7 +1294,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2015-03-18 18:44:57"
+            "time": "2015-04-29 20:22:24"
         },
         {
             "name": "fabpot/goutte",
@@ -4822,12 +4844,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "7d5fe0fbd442f6bfc526260eb14ed99ea2a561f5"
+                "reference": "f012ea296af1f4937376621c4f50282fc02415e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/7d5fe0fbd442f6bfc526260eb14ed99ea2a561f5",
-                "reference": "7d5fe0fbd442f6bfc526260eb14ed99ea2a561f5",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/f012ea296af1f4937376621c4f50282fc02415e3",
+                "reference": "f012ea296af1f4937376621c4f50282fc02415e3",
                 "shasum": ""
             },
             "require": {
@@ -4871,7 +4893,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-04-19 08:35:47"
+            "time": "2015-04-29 13:28:48"
         },
         {
             "name": "zendframework/zend-cache",
@@ -5471,6 +5493,7 @@
         "openeyes/oph-tr-intravitrealinjection": 20,
         "openeyes/oph-tr-laser": 20,
         "openeyes/patient-ticketing": 20,
+        "openeyes/oph-in-visualfields": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": false,
