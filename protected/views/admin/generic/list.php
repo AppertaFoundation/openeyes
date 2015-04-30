@@ -30,7 +30,7 @@
 				<th><input type="checkbox" name="selectall" id="selectall"/></th>
 				<?php foreach ($admin->getListFields() as $listItem): ?>
 					<th>
-						<?php if (!preg_match('/^has_(.*)/', $listItem)) { ?>
+						<?php if (!preg_match('/^has_(.*)/', $listItem) && ($listItem != 'active')) { ?>
 						<a href="?<?php
 						$newQuery = preg_replace('/c=(.*)\&d=(.*)/', '', Yii::app()->request->getQueryString());
 						if ($newQuery != "") {
