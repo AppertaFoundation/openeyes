@@ -23,10 +23,6 @@ class MenuHelper {
 
 	public function render()
 	{
-		$assetManager = Yii::app()->getAssetManager();
-		$assetManager->registerScriptFile('components/foundation/js/foundation.min.js');
-		$assetManager->registerScriptFile('components/foundation/js/foundation/foundation.dropdown.js');
-
 		return Yii::app()->controller->renderPartial(
 			'//base/_menu',
 			array(
