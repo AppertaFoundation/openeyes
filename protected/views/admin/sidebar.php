@@ -22,8 +22,11 @@
 						}
 					}
 					if ($uri) { ?>
-						<li<?php if (Yii::app()->getController()->request->requestUri == $uri) { ?> class="selected"<?php } ?>>
-							<?php if (Yii::app()->getController()->request->requestUri == $uri) { ?>
+						<li<?php
+						$requestUriArray = explode('?', Yii::app()->getController()->request->requestUri);
+						$requestUri = $requestUriArray[0];
+						if ($requestUri == $uri) { ?> class="selected"<?php } ?>>
+							<?php if ($requestUri == $uri) { ?>
 								<script type="text/javascript">
 									$(document).ready(function () {
 											$('#<?php echo str_replace(' ','_',$title) ?>').closest('.box_admin_elements').show();
@@ -53,8 +56,8 @@
 				<?php foreach ($items as $item => $uri) {
 					$e = explode('/', $uri);
 					$action = array_pop($e) ?>
-					<li<?php if (Yii::app()->getController()->action->id == $action) { ?> class="selected"<?php } ?>>
-						<?php if (Yii::app()->getController()->action->id == $action) { ?>
+					<li<?php if ($requestUri == $uri) { ?> class="selected"<?php } ?>>
+						<?php if ($requestUri == $uri) { ?>
 							<script type="text/javascript">
 								$(document).ready(function () {
 										$('#<?php echo str_replace(' ','_',$title) ?>').closest('.box_admin_elements').show();
