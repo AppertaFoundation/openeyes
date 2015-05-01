@@ -117,7 +117,7 @@
 						<?php
 						$acFieldData = $admin->getAutocompleteField();
 						if ($acFieldData) {
-							if ($acFieldData["allowBlankSearch"]) {
+							if (isset($acFieldData["allowBlankSearch"]) && $acFieldData["allowBlankSearch"] == 1) {
 								$minLength = "0";
 								$triggerSearch = "$('#autocomplete_" . $acFieldData["fieldName"] . "').autocomplete('search','')";
 							} else {
