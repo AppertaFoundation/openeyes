@@ -287,23 +287,12 @@ class Admin
 		}
 
 		$order = $this->request->getParam('d');
-		$col = $this->request->getParam('c');
 
 		if ($order == 0) {
 			$this->displayOrder = 1;
 		}
 
-		if (isset($col) != "") {
-			if (strpos($col, '.') !== FALSE)
-				$sort = $col;
-			else
-				$sort = 't.'.$col;
-		}else{
-			$sort = 't.id';
-		}
-
 		$this->audit('list');
-		$this->sort = $this->getSearch()->colSort($sort);
 		$this->pagination = $this->getSearch()->initPagination();
 		$this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder));
 	}

@@ -136,6 +136,41 @@ class Drug extends BaseActiveRecordVersioned
 	}
 
 	/**
+	 * @param $subspecialty_id
+	 * @return array
+	 */
+	public function listBySubspecialtyWithCommonMedications($subspecialty_id)
+	{
+		$criteria = new CDbCriteria;
+		$criteria->compare('subspecialty_id', $subspecialty_id);
+		$drugs = Drug::model()->with('subspecialtyAssignments')->findAll($criteria);
+		$common_medication_drugs = CommonMedications::model()->with('medication_drug')->findAll();
+
+		$return = array();
+
+		foreach ($drugs as $drug) {
+			$return[] = array(
+				'label' => $drug->name,
+				'value' => $drug->name,
+				'id' => $drug->id,
+			);
+		}
+
+		foreach ($common_medication_drugs as $common_medication_drug) {
+
+			$return[] = array(
+				'label' => $common_medication_drug->medication_drug->name,
+				'value' => $common_medication_drug->medication_drug->name,
+				'id' => $common_medication_drug->medication_drug->id . '@@M',
+			);
+		}
+
+		asort($return);
+
+		return CHtml::listData($return, 'id', 'label');
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getDefaults()

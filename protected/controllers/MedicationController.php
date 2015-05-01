@@ -98,7 +98,10 @@ class MedicationController extends BaseController
 
 	public function actionDrugDefaults($drug_id)
 	{
-		echo json_encode($this->fetchModel('Drug', $drug_id)->getDefaults());
+		if (strpos($drug_id,'@@M') === false) {
+			echo json_encode($this->fetchModel('Drug', $drug_id)->getDefaults());
+		}
+
 	}
 
 	public function actionDrugRouteOptions($route_id)
@@ -114,13 +117,14 @@ class MedicationController extends BaseController
 
 	public function actionSave()
 	{
-		if(@$_POST['MedicationAdherence']){
+		if (@$_POST['MedicationAdherence']) {
 			$patient = $this->fetchModel('Patient', @$_POST['patient_id']);
 
-			$medication_adherence = MedicationAdherence::model()->find('patient_id=:patient_id', array(':patient_id'=>$patient->id ));
-			if(!$medication_adherence) {
-				$medication_adherence= new MedicationAdherence();
-				$medication_adherence->patient_id=$patient->id;
+			$medication_adherence = MedicationAdherence::model()->find('patient_id=:patient_id',
+				array(':patient_id' => $patient->id));
+			if (!$medication_adherence) {
+				$medication_adherence = new MedicationAdherence();
+				$medication_adherence->patient_id = $patient->id;
 			}
 			$medication_adherence->medication_adherence_level_id = $_POST['MedicationAdherence']['level'];
 			$medication_adherence->comments = $_POST['MedicationAdherence']['comments'];
@@ -131,17 +135,28 @@ class MedicationController extends BaseController
 				header('HTTP/1.1 422');
 				echo json_encode($medication_adherence->errors);
 			}
-		}
-		else
-		{
+		} else {
 			$patient = $this->fetchModel('Patient', @$_POST['patient_id']);
 			$medication = $this->fetchModel('Medication', @$_POST['medication_id'], true);
 
 			$medication->patient_id = $patient->id;
 
-			if (!@$_POST['dose']) $_POST['dose'] = null;
-			if (!@$_POST['end_date']) $_POST['end_date'] = null;
-			$medication->attributes = $_POST;
+			if (!@$_POST['dose']) {
+				$_POST['dose'] = null;
+			}
+			if (!@$_POST['end_date']) {
+				$_POST['end_date'] = null;
+			}
+
+			$post_data = $_POST;
+
+			if (strpos($post_data['drug_id'], '@@M') !== false) {
+				$post_data['drug_id'] = null;
+				$medication_data = explode("@@M", $_POST['drug_id']);
+				$post_data['medication_drug_id'] = $medication_data[0];
+			}
+
+			$medication->attributes = $post_data;
 
 			if ($medication->save()) {
 				$this->renderPartial('lists', array("patient" => $patient));

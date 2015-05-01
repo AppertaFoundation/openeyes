@@ -21,6 +21,8 @@
 <div class="admin box">
 	<h2>Institution</h2>
 
+	<?php $this->widget('GenericSearch', array('search' => $search)); ?>
+
 	<form id="admin_institutions">
 		<table class="grid">
 			<thead>

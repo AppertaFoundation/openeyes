@@ -51,6 +51,9 @@ class OEConfig
 			if (file_exists($config_path.$config_level."/$environment.php")) {
 				$configs[$config_level][] = include $config_path.$config_level."/$environment.php";
 			}
+			if (file_exists($config_path . $config_level . "/admin.php")) {
+				$configs[$config_level][] = include $config_path . $config_level . "/admin.php";
+			}
 			foreach ($configs[$config_level] as $config) {
 				if (isset($config['modules'])) {
 					$active_modules = CMap::mergeArray($active_modules, $config['modules']);

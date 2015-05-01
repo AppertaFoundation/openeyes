@@ -774,12 +774,21 @@ class AdminController extends BaseAdminController
 	{
 		Audit::add('admin-Institution','list');
 
-		$criteria = new CDbCriteria;
-		$pagination = $this->initPagination(Institution::model(), $criteria);
+		$search = new ModelSearch(Institution::model());
+		$search->addSearchItem('name', array(
+			'type' => 'compare',
+			'compare_to' => array(
+				'remote_id',
+				'short_name'
+			)
+		));
+		$search->addSearchItem('active', array('type' => 'boolean'));
+
 
 		$this->render('/admin/institutions',array(
-			'institutions' => Institution::model()->findAll($criteria),
-			'pagination' => $pagination,
+			'pagination' => $search->initPagination(),
+			'institutions' => $search->retrieveResults(),
+			'search' => $search,
 		));
 	}
 

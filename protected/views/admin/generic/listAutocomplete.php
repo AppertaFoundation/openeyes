@@ -20,7 +20,7 @@
 ?>
 <div class="admin box">
 
-	<h2><?php echo $admin->getModelName(); ?></h2>
+	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
 
 	<form id="generic-admin-list">
 		<?php
