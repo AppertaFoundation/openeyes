@@ -117,7 +117,8 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
 		$admin->setAutocompleteField(
 			array(
 				'fieldName' => 'leaflet_id',
-				'jsonURL' => '/oeadmin/LeafletFirm/search',
+				'allowBlankSearch' => 1,
+				'jsonURL' => '/oeadmin/LeafletSubspecialtyFirm/search',
 				'placeholder' => 'search for leaflets'
 			)
 		);
@@ -206,7 +207,8 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
 	{
 		if (Yii::app()->request->isAjaxRequest) {
 			$criteria = new CDbCriteria();
-			if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
+			if (isset($_GET['term'])) {
+				$term = $_GET['term'];
 				$criteria->addCondition(array('LOWER(name) LIKE :term'),
 					'OR');
 				$params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
