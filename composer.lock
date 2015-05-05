@@ -607,12 +607,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/minkphp/Mink.git",
-                "reference": "1ccdea1f492e118c32e06caebe5eb3c8e4bdcc17"
+                "reference": "9975a1c31c70c84f1e13bdb0203225c362c15458"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/minkphp/Mink/zipball/1ccdea1f492e118c32e06caebe5eb3c8e4bdcc17",
-                "reference": "1ccdea1f492e118c32e06caebe5eb3c8e4bdcc17",
+                "url": "https://api.github.com/repos/minkphp/Mink/zipball/9975a1c31c70c84f1e13bdb0203225c362c15458",
+                "reference": "9975a1c31c70c84f1e13bdb0203225c362c15458",
                 "shasum": ""
             },
             "require": {
@@ -654,7 +654,7 @@
                 "testing",
                 "web"
             ],
-            "time": "2015-03-22 18:49:46"
+            "time": "2015-05-01 07:58:29"
         },
         {
             "name": "behat/mink-browserkit-driver",
@@ -1822,12 +1822,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "8fc5eb9da5306966e748a166781e9294e369c7a5"
+                "reference": "363186a46c1187df048158945ea429cc5247ad77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/8fc5eb9da5306966e748a166781e9294e369c7a5",
-                "reference": "8fc5eb9da5306966e748a166781e9294e369c7a5",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/363186a46c1187df048158945ea429cc5247ad77",
+                "reference": "363186a46c1187df048158945ea429cc5247ad77",
                 "shasum": ""
             },
             "require": {
@@ -1884,7 +1884,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2015-04-17 09:43:25"
+            "time": "2015-05-01 09:53:28"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -2001,12 +2001,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "d84ba2cb20186688230a5a11f76a70e97fe2f886"
+                "reference": "1065abe1f7fcc0546c25f0730ce2ce290360898d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/d84ba2cb20186688230a5a11f76a70e97fe2f886",
-                "reference": "d84ba2cb20186688230a5a11f76a70e97fe2f886",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/1065abe1f7fcc0546c25f0730ce2ce290360898d",
+                "reference": "1065abe1f7fcc0546c25f0730ce2ce290360898d",
                 "shasum": ""
             },
             "require": {
@@ -2068,7 +2068,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2015-04-25 10:55:55"
+            "time": "2015-04-30 17:29:05"
         },
         {
             "name": "nikic/php-parser",
@@ -5431,12 +5431,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zetacomponents/Document.git",
-                "reference": "599350cb6a05c0219ef2544873011a718d2ef9e6"
+                "reference": "0daf49aff981f175e2d2332735c5c1a3e91f8447"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zetacomponents/Document/zipball/599350cb6a05c0219ef2544873011a718d2ef9e6",
-                "reference": "599350cb6a05c0219ef2544873011a718d2ef9e6",
+                "url": "https://api.github.com/repos/zetacomponents/Document/zipball/0daf49aff981f175e2d2332735c5c1a3e91f8447",
+                "reference": "0daf49aff981f175e2d2332735c5c1a3e91f8447",
                 "shasum": ""
             },
             "require": {
@@ -5474,7 +5474,7 @@
             ],
             "description": "The Document components provides a general conversion framework for different semantic document markup languages like XHTML, Docbook, RST and similar.",
             "homepage": "https://github.com/zetacomponents",
-            "time": "2014-10-21 13:38:46"
+            "time": "2015-04-30 21:28:59"
         }
     ],
     "aliases": [],

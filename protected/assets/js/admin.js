@@ -258,4 +258,14 @@ $(document).ready(function () {
         e.preventDefault();
         window.location.href = baseUrl + '/admin/settings';
     });
+
+    // admin menu collapse
+    $('.box_admin_header').bind("click", function () {
+        $(this).next('.box_admin_elements').toggle();
+    });
+
+    // admin menu collapse_all
+    $('.box_admin_header_all').bind("click", function () {
+        $('.box_admin_elements').toggle();
+    });
 });

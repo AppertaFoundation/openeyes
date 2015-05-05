@@ -1636,6 +1636,24 @@ table.generic-admin tr {
   }
 }
 
+/* line 48, ../sass/openeyes/components/admin/_boxes.scss */
+.box_admin_header:hover {
+    background: #e1eef9;
+    cursor: pointer;
+}
+
+/* line 53, ../sass/openeyes/components/admin/_boxes.scss */
+.box_admin_header h2 {
+    background: url("../img/_elements/icons/showhide/show.png") no-repeat right center;
+    padding-left: 1px;
+}
+
+/* line 58, ../sass/openeyes/components/admin/_boxes.scss */
+.box_admin_elements {
+    display: none;
+    overflow: hidden;
+}
+
 /* line 19, ../sass/openeyes/components/admin/_treeview.scss */
 .admin .treeview ul {
   margin-top: 0;

@@ -44,3 +44,18 @@
 		}
 	}
 }
+
+.box_admin_header:hover {
+  background: #e1eef9;
+  cursor: pointer;
+}
+
+.box_admin_header h2 {
+  background: url('../img/_elements/icons/showhide/show.png') no-repeat right center;
+  padding-left: 1px;
+}
+
+.box_admin_elements {
+  display: none;
+  overflow: hidden;
+}
