@@ -117,6 +117,13 @@
 						<?php
 						$acFieldData = $admin->getAutocompleteField();
 						if ($acFieldData) {
+							if (isset($acFieldData["allowBlankSearch"]) && $acFieldData["allowBlankSearch"] == 1) {
+								$minLength = "0";
+								$triggerSearch = "$('#autocomplete_" . $acFieldData["fieldName"] . "').autocomplete('search','')";
+							} else {
+								$minLength = 1;
+								$triggerSearch = "";
+							}
 							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								'name' => $acFieldData["fieldName"],
 								'id' => 'autocomplete_' . $acFieldData["fieldName"],
@@ -131,11 +138,15 @@
 											$(this).val('');
 											return false;
 										}",
+									'minLength' => $minLength
 								),
 								'htmlOptions' => array(
 									'placeholder' => $acFieldData['placeholder'],
+									'onFocus' => $triggerSearch
 								)
 							));
+
+
 						}
 						?>
 						<b>Select from list to add new</b>
