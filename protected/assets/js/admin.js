@@ -271,19 +271,19 @@ $(document).ready(function () {
 
     if($("input:radio[name='User[is_doctor]']:checked").val() == 1) {
         $('#div_User_registration_code').show();
-        $('#div_User_grade').show();
+        $('#div_User_doctor_grade_id').show();
     }else{
         $('#div_User_registration_code').hide();
-        $('#div_User_grade').hide();
+        $('#div_User_doctor_grade_id').hide();
     }
 
     $("input[name='User[is_doctor]']").click(function(){
         if($("input:radio[name='User[is_doctor]']:checked").val() == 1){
             $('#div_User_registration_code').show();
-            $('#div_User_grade').show();
+            $('#div_User_doctor_grade_id').show();
         }else{
             $('#div_User_registration_code').hide();
-            $('#div_User_grade').hide();
+            $('#div_User_doctor_grade_id').hide();
             $("#User_registration_code").val(null);
             $("#User_grade").val(null).change();
         }
