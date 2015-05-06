@@ -103,12 +103,4 @@ class DoctorGrade extends BaseActiveRecordVersioned
 			'criteria'=>$criteria,
 		));
 	}
-
-//	public static function getList($firm)
-//	{
-//		return CHtml::listData(MedicationDrug::model()->findAll(array(
-//			'join' => 'JOIN medication_drug md ON md.id = t.medication_id',
-//			'order' => 'term',
-//		)), 'id', 'term');
-//	}
 }
