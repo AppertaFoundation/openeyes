@@ -284,6 +284,8 @@ $(document).ready(function () {
         }else{
             $('#div_User_registration_code').hide();
             $('#div_User_grade').hide();
+            $("#User_registration_code").val(null);
+            $("#User_grade").val(null).change();
         }
     });
 
