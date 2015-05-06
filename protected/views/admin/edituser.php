@@ -41,7 +41,11 @@
 		<?php echo $form->radioBoolean($user,'active')?>
 		<?php echo $form->radioBoolean($user,'global_firm_rights')?>
 		<?php echo $form->radioBoolean($user,'is_doctor')?>
-		<?php echo $form->passwordField($user,'password',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+
+	    <?php echo $form->textField($user,'registration_code',array('autocomplete'=>Yii::app()->params['html_autocomplete']))?>
+	    <?php echo $form->dropDownList($user,'grade', CHtml::listData(DoctorGrade::model()->findAll(array('order' => 'id')), 'id', 'grade'));?>
+
+		<?php echo $form->passwordField($user,'password',array('autocomplete'=>Yii::app()->params['html_autocomplete']),array('empty' => '', array('empty' => '- None -')))?>
 		<?php echo $form->passwordConfirmField($user,'Confirm','User[password_repeat]')?>
 		<?php echo $form->multiSelectList($user, 'User[roles]', 'roles', 'name', CHtml::listData(Yii::app()->authManager->getRoles(), 'name', 'name'), array(), array('label' => 'Roles', 'empty' => '-- Add --'), false, false, null, false, false, array(), 'AuthItem');?>
 		<?php echo $form->formActions(); ;?>
