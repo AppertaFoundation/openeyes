@@ -28,7 +28,7 @@ if ($this->isHiddenInUI($element)) {
 }
 ?>
 
-<?php if ($element->elementType->name != "") { ?>
+<?php if (!preg_match('/\[\-(.*)\-\]/', $element->elementType->name)) { ?>
 <section
 	class="<?php echo implode(' ', $section_classes);?>"
 	data-element-type-id="<?php echo $element->elementType->id?>"
