@@ -123,7 +123,7 @@ class User extends BaseActiveRecordVersioned
 			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 6),
 			'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'condition' => 'firmSelections.active = 1', 'order' => 'name asc'),
 			'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
-			'grade' => array(self::BELONGS_TO, 'doctor_grade', 'doctor_grade_id'),
+			'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
 		);
 	}
 
