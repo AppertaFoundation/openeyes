@@ -58,6 +58,11 @@ class Admin
 	protected $editFields = array();
 
 	/**
+	 * @var array
+	 */
+	protected $unsortableColumns = array('active');
+
+	/**
 	 * @var BaseAdminController
 	 */
 	protected $controller;
@@ -263,6 +268,38 @@ class Admin
 	}
 
 	/**
+	 * @param $saveURL
+	 */
+	public function setCustomSaveURL($saveURL)
+	{
+		$this->customSaveURL = $saveURL;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomSaveURL()
+	{
+		return $this->customSaveURL;
+	}
+
+	/**
+	 * @param $cancelURL
+	 */
+	public function setCustomCancelURL($cancelURL)
+	{
+		$this->customCancelURL = $cancelURL;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCustomCancelURL()
+	{
+		return $this->customCancelURL;
+	}
+
+	/**
 	 * @param BaseActiveRecord $model
 	 * @param BaseAdminController $controller
 	 */
@@ -272,7 +309,8 @@ class Admin
 		$this->controller = $controller;
 		$this->search = new ModelSearch($this->model);
 		$this->request = $request = Yii::app()->getRequest();
-
+		$this->assetManager = Yii::app()->getAssetManager();
+		$this->assetManager->registerScriptFile('js/oeadmin/OpenEyes.admin.js');
 	}
 
 	/**
@@ -292,6 +330,7 @@ class Admin
 			$this->displayOrder = 1;
 		}
 
+		$this->assetManager->registerScriptFile('js/oeadmin/list.js');
 		$this->audit('list');
 		$this->pagination = $this->getSearch()->initPagination();
 		$this->render($this->listTemplate, array('admin' => $this, 'displayOrder' => $this->displayOrder));
@@ -352,6 +391,43 @@ class Admin
 	}
 
 	/**
+	 * Saves the display_order
+	 *
+	 * @throws CHttpException
+	 */
+	public function sortModel()
+	{
+		if(!$this->model->hasAttribute('display_order')){
+			throw new CHttpException(400, 'This object cannot be ordered');
+		}
+
+		if (Yii::app()->request->isPostRequest) {
+			$post = Yii::app()->request->getPost($this->modelName);
+			$page = Yii::app()->request->getPost('page');
+			if(!array_key_exists('display_order', $post) || !is_array($post['display_order'])){
+				throw new CHttpException(400, 'No objects to order were provided');
+			}
+
+			foreach($post['display_order'] as $displayOrder => $id){
+				$model = $this->model->findByPk($id);
+				if(!$model){
+					throw new CHttpException(400, 'Object to be ordered not found');
+				}
+				//Add one because display_order not zero indexed.
+				//Times by page number to get correct order across pages.
+				$model->display_order = ($displayOrder + 1) * $page;
+				if (!$model->validate()) {
+					throw new CHttpException(400, 'Order was invalid');
+				}
+				if (!$model->save()) {
+					throw new CHttpException(500, 'Unable to save order');
+				}
+			}
+			$this->audit('sort');
+		}
+	}
+
+	/**
 	 * Sets up search on all listed elements
 	 */
 	public function searchAll()
@@ -406,35 +482,44 @@ class Admin
 	}
 
 	/**
-	 * @param $saveURL
+	 * Returns wether a given column is sortable or not.
+	 *
+	 * @param $attribute
+	 * @return bool
 	 */
-	public function setCustomSaveURL($saveURL)
+	public function isSortableColumn($attribute)
 	{
-		$this->customSaveURL = $saveURL;
+		if(in_array('display_order', $this->listFields, true)){
+			return false;
+		}
+
+		if(strpos($attribute, 'has_') === 0){
+			return false;
+		}
+
+		if(in_array($attribute, $this->unsortableColumns, true)){
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
+	 * Takes the current URL, sets two values in it and returns it
+	 *
+	 * @param $attribute
+	 * @param $order
+	 * @param $queryString
 	 * @return string
 	 */
-	public function getCustomSaveURL()
+	public function sortQuery($attribute, $order, $queryString)
 	{
-		return $this->customSaveURL;
-	}
+		$queryArray = array();
+		parse_str($queryString, $queryArray);
+		$queryArray['c'] = $attribute;
+		$queryArray['d'] = $order;
 
-	/**
-	 * @param $cancelURL
-	 */
-	public function setCustomCancelURL($cancelURL)
-	{
-		$this->customCancelURL = $cancelURL;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getCustomCancelURL()
-	{
-		return $this->customCancelURL;
+		return http_build_query($queryArray);
 	}
 
 	/**

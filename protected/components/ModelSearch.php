@@ -153,7 +153,7 @@ class ModelSearch
 		$this->model = $model;
 		$this->criteria = new CDbCriteria();
 		$this->criteria->with = array();
-		$this->request = $request = Yii::app()->getRequest();
+		$this->request = Yii::app()->getRequest();
 		$this->generateCriteria();
 	}
 
@@ -200,15 +200,20 @@ class ModelSearch
 			}
 		}
 
-		$order = $this->request->getParam('d');
-		$sortColumn = $this->request->getParam('c');
-		if ($sortColumn) {
-			$this->relationalAttribute($this->criteria, $sortColumn, $attr);
-			if ($order) {
-				$sortColumn .= ' DESC';
+		if($this->model->hasAttribute('display_order')){
+			$this->criteria->order = 'display_order asc';
+		} else {
+			$order = $this->request->getParam('d');
+			$sortColumn = $this->request->getParam('c');
+			if ($sortColumn) {
+				$this->relationalAttribute($this->criteria, $sortColumn, $attr);
+				if ($order) {
+					$sortColumn .= ' DESC';
+				}
+				$this->criteria->order = $sortColumn;
 			}
-			$this->criteria->order = $sortColumn;
 		}
+
 	}
 
 	/**

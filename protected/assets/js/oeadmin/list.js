@@ -1,4 +1,3 @@
-<?php
 /**
  * OpenEyes
  *
@@ -17,12 +16,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class GenericSearch extends BaseCWidget
-{
-	public $search;
-
-	public function init()
-	{
-
-	}
-}
+$(document).ready(function(){
+    OpenEyes.Admin.cacheList($('#generic-admin-list .sortable'));
+    $('#generic-admin-list .sortable').sortable({
+        stop: OpenEyes.Admin.saveSorted
+    });
+});
