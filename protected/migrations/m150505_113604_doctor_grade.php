@@ -3,13 +3,13 @@
 class m150505_113604_doctor_grade extends CDbMigration
 {
 	private $grades = array(
-		array('id'=> 1, 'grade' => 'Consultant'),
-		array('id'=> 2, 'grade' => 'Associate specialist'),
-		array('id'=> 3, 'grade' => 'Trust doctor'),
-		array('id'=> 4, 'grade' => 'Fellow'),
-		array('id'=> 5, 'grade' => 'Specialist Registrar'),
-		array('id'=> 6, 'grade' => 'Senior House Officer'),
-		array('id'=> 7, 'grade' => 'House officer'),
+		array('display_order'=> 1, 'grade' => 'Consultant'),
+		array('display_order'=> 2, 'grade' => 'Associate specialist'),
+		array('display_order'=> 3, 'grade' => 'Trust doctor'),
+		array('display_order'=> 4, 'grade' => 'Fellow'),
+		array('display_order'=> 5, 'grade' => 'Specialist Registrar'),
+		array('display_order'=> 6, 'grade' => 'Senior House Officer'),
+		array('display_order'=> 7, 'grade' => 'House officer'),
 	);
 
 	public function up()
@@ -17,12 +17,13 @@ class m150505_113604_doctor_grade extends CDbMigration
 		$this->createTable(
 			'doctor_grade',
 			array(
-				'id' => 'int(3) not null',
-				'grade' => 'varchar(100) not null',
+				'id' => 'pk',
+				'grade' => 'varchar(250) not null',
+				'display_order' => 'int(3) not null',
 			)
 		);
 
-		$this->createIndex('doctor_grade_unique_id', 'doctor_grade', 'id', true);
+		$this->createIndex('doctor_grade_unique_id', 'doctor_grade', 'display_order', true);
 		$this->createIndex('doctor_grade_unique_grade', 'doctor_grade', 'grade', true);
 
 		foreach ($this->grades as $grade) {

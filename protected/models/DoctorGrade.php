@@ -58,7 +58,7 @@ class DoctorGrade extends BaseActiveRecordVersioned
 			array('grade', 'length', 'max'=>250),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, grade, registration_code', 'safe'),
+			array('id, grade, display_order', 'safe'),
 		);
 	}
 
@@ -83,24 +83,5 @@ class DoctorGrade extends BaseActiveRecordVersioned
 			'id' => 'ID',
 			'grade' => 'Grade',
 		);
-	}
-
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('grade',$this->medication_id,true);
-
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
-		));
 	}
 }
