@@ -74,7 +74,7 @@ class User extends BaseActiveRecordVersioned
 			// Added for uniqueness of username
 			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
 			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
-			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms,grade, registration_code', 'safe'),
+			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, password, is_clinical, is_consultant, is_surgeon, has_selected_firms,doctor_grade_id, registration_code', 'safe'),
 		);
 
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
@@ -173,7 +173,7 @@ class User extends BaseActiveRecordVersioned
 			'is_consultant' => 'Consultant',
 			'is_clinical' => 'Clinically trained',
 			'is_surgeon' => 'Surgeon',
-			'doctor_grade_id' => 'Grade',
+			'doctor_grade_id' => 'Grade'
 		);
 	}
 
