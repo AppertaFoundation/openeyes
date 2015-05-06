@@ -70,7 +70,7 @@ class DoctorGrade extends BaseActiveRecordVersioned
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'user_grade' => array(self::BELONGS_TO, 'UserGrade', 'grade'),
+			'user_grade' => array(self::BELONGS_TO, 'User', 'grade'),
 		);
 	}
 
