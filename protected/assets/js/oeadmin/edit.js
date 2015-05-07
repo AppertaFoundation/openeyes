@@ -17,9 +17,5 @@
  */
 
 $(document).ready(function(){
-    var $genericLists = $('#generic-admin-list .sortable, #generic-admin-sublist .sortable');
-    OpenEyes.Admin.cacheList($genericLists);
-    $genericLists.sortable({
-        stop: OpenEyes.Admin.saveSorted
-    });
+    OpenEyes.Admin.shortCodeSelect($('#shortcode'), $('#LetterString_body'));
 });

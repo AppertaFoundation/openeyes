@@ -30,6 +30,24 @@
         listCache = $list.html();
     };
 
+    Admin.shortCodeSelect = function($shortCode, $textArea)
+    {
+        var cursorPos = 0,
+            current = '';
+
+        $textArea.on('blur', function(){
+            cursorPos = $(this).prop('selectionEnd');
+        });
+
+        $shortCode.on('change', function(){
+            if ($(this).val() !== '') {
+                current = $textArea.val();
+                $textArea.val(current.substring(0,cursorPos) + '[' + $(this).val() + ']' + current.substring(cursorPos,current.length));
+                $(this).val('');
+            }
+        });
+    };
+
     Admin.saveSorted = function(event, ui){
         var $form = ui.item.closest('form');
         $.ajax({

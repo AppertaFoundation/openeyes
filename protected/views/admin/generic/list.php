@@ -22,23 +22,31 @@
 if(!isset($displayOrder)){
 	$displayOrder = 0;
 }
+if(!isset($uniqueid)){
+	$uniqueid = $this->uniqueid;;
+}
 ?>
 <div class="admin box">
-
+	<?php if(!$admin->isSubList()):?>
 	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
-
+	<?php endif;?>
 	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch())); ?>
+	<?php if($admin->isSubList()):?>
+	<div id="generic-admin-sublist">
+	<?php else: ?>
 	<form id="generic-admin-list">
+	<?php endif;?>
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
 		<input type="hidden" name="page" value="<?php echo Yii::app()->request->getParam('page', 1) ?>"/>
 		<table class="grid">
 			<thead>
 			<tr>
 				<th><input type="checkbox" name="selectall" id="selectall"/></th>
-				<?php foreach ($admin->getListFields() as $listItem): ?>
+				<?php
+				foreach ($admin->getListFields() as $listItem): ?>
 					<th>
 						<?php if($admin->isSortableColumn($listItem)):?>
-							<a href="/<?php echo $this->uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder, Yii::app()->request->getQueryString()) ?>">
+							<a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery($listItem, $displayOrder, Yii::app()->request->getQueryString()) ?>">
 						<?php endif;?>
 							<?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
 						<?php if($admin->isSortableColumn($listItem)):?>
@@ -52,9 +60,9 @@ if(!isset($displayOrder)){
 			<?php
 			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
 				<tr class="clickable" data-id="<?php echo $row->id ?>"
-					data-uri="<?php echo $this->uniqueid ?>/edit/<?php echo $row->id ?>">
+					data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>">
 					<td>
-						<input type="checkbox" name="<?php echo $admin->getModelName(); ?>[]" value="<?php echo $row->id ?>"/>
+						<input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
 					</td>
 					<?php foreach ($admin->getListFields() as $listItem): ?>
 						<td>
@@ -85,7 +93,7 @@ if(!isset($displayOrder)){
 						'Add',
 						'add',
 						array(),
-						array('class' => 'small', 'data-uri' => '/' . $this->uniqueid . '/edit')
+						array('class' => 'small', 'data-uri' => '/' . $uniqueid . '/edit')
 					)->toHtml() ?>
 					<?php echo EventAction::button(
 						'Delete',
@@ -93,7 +101,7 @@ if(!isset($displayOrder)){
 						array(),
 						array(
 							'class' => 'small',
-							'data-uri' => '/' . $this->uniqueid . '/delete',
+							'data-uri' => '/' . $uniqueid . '/delete',
 							'data-object' => $admin->getModelName()
 						)
 					)->toHtml() ?>
@@ -104,7 +112,7 @@ if(!isset($displayOrder)){
 						array(
 							'class' => 'small',
 							'style' => 'display:none;',
-							'data-uri' => '/' . $this->uniqueid . '/sort',
+							'data-uri' => '/' . $uniqueid . '/sort',
 							'data-object' => $admin->getModelName()
 						)
 					)->toHtml() ?>
@@ -115,5 +123,9 @@ if(!isset($displayOrder)){
 			</tr>
 			</tfoot>
 		</table>
+	<?php if($admin->isSubList()):?>
+	</div>
+	<?php else: ?>
 	</form>
+	<?php endif;?>
 </div>

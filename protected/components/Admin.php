@@ -307,7 +307,7 @@ class Admin
 	/**
 	 * @return boolean
 	 */
-	public function isIsSubList()
+	public function isSubList()
 	{
 		return $this->isSubList;
 	}
@@ -397,6 +397,7 @@ class Admin
 	 */
 	public function editModel()
 	{
+		$this->assetManager->registerScriptFile('js/oeadmin/edit.js');
 		$errors = array();
 		if (Yii::app()->request->isPostRequest) {
 			$post = Yii::app()->request->getPost($this->modelName);
@@ -430,15 +431,18 @@ class Admin
 	{
 		$response = 1;
 		if (Yii::app()->request->isPostRequest) {
-			$ids = Yii::app()->request->getPost($this->modelName);
-			foreach ($ids as $id) {
-				$model = $this->model->findByPk($id);
-				if ($model) {
-					if (!$model->delete()) {
-						$response = 0;
+			$post = Yii::app()->request->getPost($this->modelName);
+			if(is_array($post['id'])){
+				foreach ($post['id'] as $id) {
+					$model = $this->model->findByPk($id);
+					if ($model) {
+						if (!$model->delete()) {
+							$response = 0;
+						}
 					}
 				}
 			}
+
 		}
 		echo $response;
 	}
@@ -585,6 +589,12 @@ class Admin
 		$relatedAdmin = new Admin($relatedModel, $this->controller);
 		$relatedAdmin->setListFields($listFields);
 		$relatedAdmin->setIsSubList(true);
+		$relationField = $this->relationFieldFromRelation($relation);
+		if($relationField){
+			$criteria = $relatedAdmin->getSearch()->getCriteria();
+			$criteria->addCondition($relationField.' = '.$this->model->id);
+		}
+
 		return $relatedAdmin;
 	}
 
@@ -595,18 +605,20 @@ class Admin
 	 */
 	protected function relationClassFromRelation($relation)
 	{
-		$relations = $this->model->relations();
-		if(!array_key_exists($relation, $relations)){
-			throw new CException('Relation does not exist');
-		}
-
-		$relationDefinition = $relations[$relation];
+		$relationDefinition = $this->getRelationDefnition($relation);
 		$relationClass = $relationDefinition[1];
 		if(!class_exists($relationClass)){
 			throw new CException('Relation model does not exist');
 		}
 
 		return new $relationClass();
+	}
+
+	protected function relationFieldFromRelation($relation)
+	{
+		$relationDefinition = $this->getRelationDefnition($relation);
+
+		return $relationDefinition[2];
 	}
 
 	/**
@@ -625,5 +637,22 @@ class Admin
 	protected function audit($type, $data = null)
 	{
 		Audit::add('admin-' . $this->modelName, $type, $data);
+	}
+
+	/**
+	 * @param $relation
+	 * @return mixed
+	 * @throws CException
+	 */
+	protected function getRelationDefnition($relation)
+	{
+		$relations = $this->model->relations();
+		if (!array_key_exists($relation, $relations)) {
+			throw new CException('Relation does not exist');
+		}
+
+		$relationDefinition = $relations[$relation];
+
+		return $relationDefinition;
 	}
 }

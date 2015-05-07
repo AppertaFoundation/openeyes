@@ -105,8 +105,8 @@ $(document).ready(function () {
         }
 
         $form = $('#admin_' + object);
-        if($('#generic-admin-list').length){
-            $form = $('#generic-admin-list');
+        if($('#generic-admin-list, #generic-admin-form').length){
+            $form = $('#generic-admin-list, #generic-admin-form');
         }
         serializedForm = $form.serialize();
         if (serializedForm.length === 0) {

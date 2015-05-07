@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
+$assetManager = Yii::app()->getAssetManager();
 ?>
 
 <div class="box admin">
@@ -29,7 +29,7 @@
 		$formAction = '#';
 	}
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id' => 'adminform',
+		'id' => 'generic-admin-form',
 		'enableAjaxValidation' => false,
 		'focus' => '#username',
 		'action' => $formAction,
@@ -80,14 +80,17 @@
 					break;
 				case 'CustomView':
 					// arguments: (string) viewName, (array) viewArguments
-					$this->renderPartial($type['viewName'],
-						$type['viewArguments']);
+					$this->renderPartial($type['viewName'], $type['viewArguments']);
 					break;
 				case 'RelationList':
-					$this->renderPartial('//admin/generic/list', array(
-						'admin' => $admin->generateAdminForRelationList($type['relation'], $type['listFields']),
-					));
-					break;
+					if(isset($admin->getModel()->id)){
+						$assetManager->registerScriptFile('js/oeadmin/list.js');
+						$this->renderPartial('//admin/generic/list', array(
+							'admin' => $admin->generateAdminForRelationList($type['relation'], $type['listFields']),
+							'uniqueid' => $type['action']
+						));
+						break;
+					}
 			}
 		} else {
 			switch ($type) {
@@ -96,6 +99,9 @@
 					break;
 				case 'label':
 					echo $form->textField($admin->getModel(), $field, array('readonly'=>true));
+					break;
+				case 'textarea':
+					echo $form->textArea($admin->getModel(), $field);
 					break;
 				case 'text':
 				default:
