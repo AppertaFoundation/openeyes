@@ -1,0 +1,1 @@
+../vendor/phpdocumentor/phpdocumentor/bin/phpdoc.php

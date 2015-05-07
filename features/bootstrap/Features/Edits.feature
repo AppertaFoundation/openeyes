@@ -16,7 +16,7 @@ Feature: These tests set up Events, Edit and Delete them.
     And I add a New Event "Satisfaction"
 
     Then I select an Anaesthetist "no"
-    And I select Satisfaction levels of Pain "2" Nausea "3"
+    #And I select Satisfaction levels of Pain "2" Nausea "3"
 
     And I tick the Vomited checkbox
 
@@ -43,7 +43,7 @@ Feature: These tests set up Events, Edit and Delete them.
     And I edit the Last Event
 
     Then I select an Anaesthetist "non"
-    And I select Satisfaction levels of Pain "4" Nausea "1"
+    #And I select Satisfaction levels of Pain "4" Nausea "1"
 
     And I untick the Vomited checkbox
 
@@ -68,7 +68,7 @@ Feature: These tests set up Events, Edit and Delete them.
     Then I select the Latest Event
 
     And I delete the Last Event
-
+  @Route_2A
   Scenario: Route 2A: Login and create a new Consent Form
 
     Given I am on the OpenEyes "master" homepage
@@ -82,7 +82,7 @@ Feature: These tests set up Events, Edit and Delete them.
 
     Then I expand the Glaucoma sidebar
     And I add a New Event "Consent"
-    Then I select Unbooked Procedures
+    #Then I select Unbooked Procedures
     Then I select Add Consent Form
     And I choose Type "1"
 
@@ -204,7 +204,7 @@ Scenario: Route 3A: Login and create a Phasing Event
     Then I select the Latest Event
 
     And I delete the Last Event
-
+  @Route_4A
   Scenario: Route 4A: Login and fill in a Correspondence
 
     Given I am on the OpenEyes "master" homepage
@@ -221,9 +221,11 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I select Site ID "1"
     And I select Address Target "Gp1"
-    Then I choose a Macro of "site1"
+    #Then I choose a Macro of "site1"
 
-    And I select Clinic Date "7"
+    #And I select Clinic Date "7"
+    
+    Then I fill the Correspondence Body "You are dead sir"
 
     And I choose CC Target "Patient19434"
 
@@ -247,7 +249,7 @@ Scenario: Route 3A: Login and create a Phasing Event
     Then I select Site ID "2"
     And I select Address Target "Patient19434"
 
-    And I select Clinic Date "11"
+    #And I select Clinic Date "11"
 
     And I choose CC Target "Gp1"
 
@@ -268,6 +270,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     And I delete the Last Event
 
+  @Route_5A
   Scenario: Route 5A: Login and create a New Intravitreal Event
 
     Given I am on the OpenEyes "master" homepage
@@ -403,6 +406,7 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     And I delete the Last Event
 
+  @Route_6A
   Scenario: Route 6A: Login and create a new Examination Event: Site 1:Queens, Firm:1 Anderson Cataract
 
     Given I am on the OpenEyes "master" homepage
@@ -423,17 +427,17 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I choose to expand the Visual Function section
 
-    Then I select a Left RAPD
+    #Then I select a Left RAPD
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    Then I select a Right RAPD
+    #Then I select a Right RAPD
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
     And I choose A Left Colour Vision Value of "8"
     And I choose a Right Colour Vision of "2"
-    And I choose A Right Colour Vision Value of "4"
+    #And I choose A Right Colour Vision Value of "2"
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "2"
