@@ -64,12 +64,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphCiExamination.git",
-                "reference": "fc2a08a3613f7ed06cab6c60146d1d59f0c94737"
+                "reference": "2be754edf7ace81a4fe6fdf90611490c1991cc8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/fc2a08a3613f7ed06cab6c60146d1d59f0c94737",
-                "reference": "fc2a08a3613f7ed06cab6c60146d1d59f0c94737",
+                "url": "https://api.github.com/repos/openeyes/OphCiExamination/zipball/2be754edf7ace81a4fe6fdf90611490c1991cc8d",
+                "reference": "2be754edf7ace81a4fe6fdf90611490c1991cc8d",
                 "shasum": ""
             },
             "require": {
@@ -78,7 +78,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Examination module for OpenEyes",
-            "time": "2015-05-06 09:50:28"
+            "time": "2015-05-07 14:13:08"
         },
         {
             "name": "openeyes/oph-ci-phasing",
@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphInBiometry.git",
-                "reference": "ffbd0910f2663c970ebf92091d4e5cbbcce0abfd"
+                "reference": "1ca368458c9aff3ed2d53777e920e3bd02db63e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/ffbd0910f2663c970ebf92091d4e5cbbcce0abfd",
-                "reference": "ffbd0910f2663c970ebf92091d4e5cbbcce0abfd",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/1ca368458c9aff3ed2d53777e920e3bd02db63e9",
+                "reference": "1ca368458c9aff3ed2d53777e920e3bd02db63e9",
                 "shasum": ""
             },
             "require": {
@@ -188,7 +188,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Biometry module for OpenEyes",
-            "time": "2015-05-07 10:01:16"
+            "time": "2015-05-07 14:28:06"
         },
         {
             "name": "openeyes/oph-in-visualfields",
