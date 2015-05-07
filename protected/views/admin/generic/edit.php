@@ -83,6 +83,11 @@
 					$this->renderPartial($type['viewName'],
 						$type['viewArguments']);
 					break;
+				case 'RelationList':
+					$this->renderPartial('//admin/generic/list', array(
+						'admin' => $admin->generateAdminForRelationList($type['relation'], $type['listFields']),
+					));
+					break;
 			}
 		} else {
 			switch ($type) {
@@ -102,7 +107,7 @@
 	?>
 
 	<?php
-	if ($admin->getCustomCancelURL() != "") {
+	if ($admin->getCustomCancelURL() != '') {
 		echo $form->formActions(array('cancel-uri' => $admin->getCustomCancelURL()));
 	} else {
 		echo $form->formActions(array('cancel-uri' => '/' . $this->uniqueid . '/list'));

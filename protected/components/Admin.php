@@ -93,6 +93,11 @@ class Admin
 	protected $customCancelURL;
 
 	/**
+	 * @var bool
+	 */
+	protected $isSubList = false;
+
+	/**
 	 * @var int
 	 *
 	 */
@@ -300,6 +305,54 @@ class Admin
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function isIsSubList()
+	{
+		return $this->isSubList;
+	}
+
+	/**
+	 * @param boolean $isSubList
+	 */
+	public function setIsSubList($isSubList)
+	{
+		$this->isSubList = $isSubList;
+	}
+
+	/**
+	 * @return BaseAdminController
+	 */
+	public function getController()
+	{
+		return $this->controller;
+	}
+
+	/**
+	 * @param BaseAdminController $controller
+	 */
+	public function setController($controller)
+	{
+		$this->controller = $controller;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getUnsortableColumns()
+	{
+		return $this->unsortableColumns;
+	}
+
+	/**
+	 * @param array $unsortableColumns
+	 */
+	public function setUnsortableColumns($unsortableColumns)
+	{
+		$this->unsortableColumns = $unsortableColumns;
+	}
+
+	/**
 	 * @param BaseActiveRecord $model
 	 * @param BaseAdminController $controller
 	 */
@@ -489,6 +542,10 @@ class Admin
 	 */
 	public function isSortableColumn($attribute)
 	{
+		if($this->isSubList){
+			return false;
+		}
+
 		if(in_array('display_order', $this->listFields, true)){
 			return false;
 		}
@@ -520,6 +577,36 @@ class Admin
 		$queryArray['d'] = $order;
 
 		return http_build_query($queryArray);
+	}
+
+	public function generateAdminForRelationList($relation, array $listFields)
+	{
+		$relatedModel = $this->relationClassFromRelation($relation);
+		$relatedAdmin = new Admin($relatedModel, $this->controller);
+		$relatedAdmin->setListFields($listFields);
+		$relatedAdmin->setIsSubList(true);
+		return $relatedAdmin;
+	}
+
+	/**
+	 * @param $relation
+	 * @return BaseActiveRecord
+	 * @throws CException
+	 */
+	protected function relationClassFromRelation($relation)
+	{
+		$relations = $this->model->relations();
+		if(!array_key_exists($relation, $relations)){
+			throw new CException('Relation does not exist');
+		}
+
+		$relationDefinition = $relations[$relation];
+		$relationClass = $relationDefinition[1];
+		if(!class_exists($relationClass)){
+			throw new CException('Relation model does not exist');
+		}
+
+		return new $relationClass();
 	}
 
 	/**

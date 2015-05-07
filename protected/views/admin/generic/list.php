@@ -17,6 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+
+<?php
+if(!isset($displayOrder)){
+	$displayOrder = 0;
+}
+?>
 <div class="admin box">
 
 	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
