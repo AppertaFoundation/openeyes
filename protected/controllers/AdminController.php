@@ -411,6 +411,10 @@ class AdminController extends BaseAdminController
 			if (!$user->validate()) {
 				$errors = $user->getErrors();
 			} else {
+
+				if($user->is_doctor != 1)
+					$user->doctor_grade_id = '';
+
 				if (!$user->save()) {
 					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
 				}
@@ -431,8 +435,7 @@ class AdminController extends BaseAdminController
 				if (!$user->contact) {
 					$user->contact_id = $contact->id;
 
-					if($user->is_doctor == 0)
-						$user->grade = "null";
+
 
 					if (!$user->save()) {
 						throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
