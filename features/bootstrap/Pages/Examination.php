@@ -1620,6 +1620,7 @@ class Examination extends OpenEyesPage
     public function rightColourVisionValue ($value)
     {
         $this->getElement('rightColourVisionValue')->selectOption($value);
+        //$this->getElement('rightColourVisionValue')->select 
     }
 
 }
