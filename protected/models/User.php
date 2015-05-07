@@ -78,20 +78,63 @@ class User extends BaseActiveRecordVersioned
 		);
 
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
-			return array_merge(
-				$commonRules,
-				array(
-					array('username', 'match', 'pattern' => '/^[\w|\.\-_\+@]+$/', 'message' => 'Only letters, numbers and underscores are allowed for usernames.'),
-					array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
-					array('username, password, first_name, last_name', 'length', 'max' => 40),
-					array('password', 'length', 'min' => 5, 'message' => 'Passwords must be at least 6 characters long.'),
-					array('email', 'length', 'max' => 80),
-					array('email', 'email'),
-					array('salt', 'length', 'max' => 10),
-					// Added for password comparison functionality
-					array('password_repeat', 'safe'),
-				)
-			);
+
+			$user = Yii::app()->request->getPost('User');
+
+			if($user['is_doctor']){
+
+				return array_merge(
+					$commonRules,
+					array(
+						array(
+							'username',
+							'match',
+							'pattern' => '/^[\w|\.\-_\+@]+$/',
+							'message' => 'Only letters, numbers and underscores are allowed for usernames.'
+						),
+						array('username, email, first_name, last_name, active, global_firm_rights, doctor_grade_id', 'required'),
+						array('username, password, first_name, last_name', 'length', 'max' => 40),
+						array(
+							'password',
+							'length',
+							'min' => 5,
+							'message' => 'Passwords must be at least 6 characters long.'
+						),
+						array('email', 'length', 'max' => 80),
+						array('email', 'email'),
+						array('salt', 'length', 'max' => 10),
+						// Added for password comparison functionality
+						array('password_repeat', 'safe'),
+					)
+				);
+
+			}else {
+
+				return array_merge(
+					$commonRules,
+					array(
+						array(
+							'username',
+							'match',
+							'pattern' => '/^[\w|\.\-_\+@]+$/',
+							'message' => 'Only letters, numbers and underscores are allowed for usernames.'
+						),
+						array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
+						array('username, password, first_name, last_name', 'length', 'max' => 40),
+						array(
+							'password',
+							'length',
+							'min' => 5,
+							'message' => 'Passwords must be at least 6 characters long.'
+						),
+						array('email', 'length', 'max' => 80),
+						array('email', 'email'),
+						array('salt', 'length', 'max' => 10),
+						// Added for password comparison functionality
+						array('password_repeat', 'safe'),
+					)
+				);
+			}
 		} elseif (Yii::app()->params['auth_source'] == 'LDAP') {
 			return array_merge(
 				$commonRules,
