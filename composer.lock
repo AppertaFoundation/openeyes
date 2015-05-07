@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6a5468f4293a4ac6a1a07ca0deba2bac",
+    "hash": "bd7c809fa65a9e47c55c31e244f7d007",
     "packages": [
         {
             "name": "openeyes/eyedraw",
@@ -167,6 +167,28 @@
             "notification-url": "https://packagist.org/downloads/",
             "description": "Module for generating prescriptions in OpenEyes",
             "time": "2015-04-27 15:36:48"
+        },
+        {
+            "name": "openeyes/oph-in-biometry",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/openeyes/OphInBiometry.git",
+                "reference": "ffbd0910f2663c970ebf92091d4e5cbbcce0abfd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/ffbd0910f2663c970ebf92091d4e5cbbcce0abfd",
+                "reference": "ffbd0910f2663c970ebf92091d4e5cbbcce0abfd",
+                "shasum": ""
+            },
+            "require": {
+                "openeyes/module-installer": "*"
+            },
+            "type": "openeyes-module",
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Biometry module for OpenEyes",
+            "time": "2015-05-07 10:01:16"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -4378,12 +4400,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "44bde9645703fe92da9f5dd2755298f7c2c6fa92"
+                "reference": "aced82e3cd15d40e5fadebec5dae9fb1ae666596"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/44bde9645703fe92da9f5dd2755298f7c2c6fa92",
-                "reference": "44bde9645703fe92da9f5dd2755298f7c2c6fa92",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/aced82e3cd15d40e5fadebec5dae9fb1ae666596",
+                "reference": "aced82e3cd15d40e5fadebec5dae9fb1ae666596",
                 "shasum": ""
             },
             "require": {
@@ -4428,7 +4450,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "http://symfony.com",
-            "time": "2015-04-24 07:03:44"
+            "time": "2015-05-05 20:46:18"
         },
         {
             "name": "symfony/filesystem",
@@ -5502,6 +5524,7 @@
         "openeyes/oph-tr-laser": 20,
         "openeyes/patient-ticketing": 20,
         "openeyes/oph-in-visualfields": 20,
+        "openeyes/oph-in-biometry": 20,
         "phpmd/phpmd": 0
     },
     "prefer-stable": false,

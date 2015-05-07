@@ -18,7 +18,8 @@
     "openeyes/oph-tr-intravitrealinjection": "dev-develop",
     "openeyes/oph-tr-laser": "dev-master",
     "openeyes/patient-ticketing": "dev-develop",
-    "openeyes/oph-in-visualfields": "dev-master"
+    "openeyes/oph-in-visualfields": "dev-master",
+    "openeyes/oph-in-biometry": "dev-develop"
   },
   "require-dev": {
     "behat/behat": "~2",
