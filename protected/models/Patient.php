@@ -135,6 +135,14 @@ class Patient extends BaseActiveRecordVersioned
 				'alias' => 'patient_allergies',
 				'order' => 'patient_allergies.name'),
 			'allergyAssignments' => array(self::HAS_MANY, 'PatientAllergyAssignment', 'patient_id'),
+			'risks' => array(
+				self::MANY_MANY,
+				'Risk',
+				'patient_risk_assignment(patient_id, risk_id)',
+				'alias' => 'patient_risks',
+				'order' => 'patient_risks.name'
+			),
+			'riskAssignments' => array(self::HAS_MANY, 'PatientRiskAssignment', 'patient_id'),
 			'secondarydiagnoses' => array(self::HAS_MANY, 'SecondaryDiagnosis', 'patient_id'),
 			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
 			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'CASE WHEN Date IS NULL THEN 1 ELSE 0 END, Date'),
@@ -382,6 +390,17 @@ class Patient extends BaseActiveRecordVersioned
 	{
 		return ($this->no_allergies_date || $this->allergies);
 	}
+
+	/**
+	 * returns true if the risk status of the patient is known (has risks, or no known risks) false otherwise.
+	 *
+	 * @return bool
+	 */
+	public function hasRiskStatus()
+	{
+		return ($this->no_risks_date || $this->risks);
+	}
+
 	/**
 		* @return boolean Is patient deceased?
 		*/
@@ -787,6 +806,92 @@ class Patient extends BaseActiveRecordVersioned
 		}
 
 		$this->audit('patient', 'set-noallergydate');
+	}
+
+	/**
+	 * returns a standard risk string for the patient
+	 *
+	 * @return string
+	 */
+	public function getRiskString()
+	{
+		if (!$this->hasRiskStatus()) {
+			return 'Patient risk status is not known';
+		}
+		if ($this->no_risks_date) {
+			return 'Patient has no known risks (as of ' . Helper::convertDate2NHS($this->no_risks_date) . ')';
+		}
+
+		$risks = array();
+		foreach ($this->risks as $risk) {
+			$risks[] = $risk->name;
+		}
+
+		return 'Patient has risks: ' . implode(', ', $risks);
+	}
+
+	/**
+	 * adds a risk to the patient
+	 *
+	 * @param Risk $risk
+	 * @param string $other
+	 * @throws Exception
+	 */
+	public function addRisk(Risk $risk, $other = null, $comments = null)
+	{
+		if ($risk->name == 'Other') {
+			if (!$other) {
+				throw new Exception("No 'other' risk specified");
+			}
+		} else {
+			if (PatientRiskAssignment::model()->exists('patient_id=? and risk_id=?', array($this->id, $risk->id))) {
+				throw new Exception("Patient is already assigned risk '{$risk->name}'");
+			}
+		}
+
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			$pra = new PatientRiskAssignment;
+			$pra->patient_id = $this->id;
+			$pra->risk_id = $risk->id;
+			$pra->comments = $comments;
+			$pra->other = $other;
+			if (!$pra->save()) {
+				throw new Exception('Unable to add patient risk assignment: ' . print_r($pra->getErrors(), true));
+			}
+
+			$this->audit('patient', 'add-risk');
+			if ($this->no_risks_date) {
+				$this->no_risks_date = null;
+				if (!$this->save()) {
+					throw new Exception('Could not remove no risk flag: ' . print_r($this->getErrors(), true));
+				};
+			}
+			$this->audit('patient', 'remove-noriskdate');
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
+		}
+	}
+
+	/**
+	 * marks the patient as having no allergies as of now
+	 *
+	 * @throws Exception
+	 */
+	public function setNoRisks()
+	{
+		if (!empty($this->riskAssignments)) {
+			throw new Exception('Unable to set no risk date as patient still has risks assigned');
+		}
+
+		$this->no_risks_date = date('Y-m-d H:i:s');
+		if (!$this->save()) {
+			throw new Exception('Unable to set no risk date:' . print_r($this->getErrors(), true));
+		}
+
+		$this->audit('patient', 'set-noriskdate');
 	}
 
 
@@ -1410,6 +1515,16 @@ class Patient extends BaseActiveRecordVersioned
 						'short_msg' => 'Allergies',
 						'long_msg' => 'Patient has allergies',
 						'details' => implode(', ', $allergies)
+					);
+				}
+				if ($this->riskAssignments) {
+					foreach ($this->riskAssignments as $ra) {
+						$risks[] = $ra->name;
+					}
+					$this->_clinical_warnings[] = array(
+						'short_msg' => 'Risks',
+						'long_msg' => 'Patient has risks',
+						'details' => implode(', ', $risks)
 					);
 				}
 			}
