@@ -19,68 +19,91 @@
 
 ?>
 
-<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-	'id'=>'generic-search-form',
-	'enableAjaxValidation'=>false,
-	'method' => 'get',
-	'action' => '#'
-));?>
-	<div>
-	<?php foreach($search->getSearchItems() as $key => $value):
-		$name = 'search[' . $key . ']';
-		if(is_array($value)):
-			$type = isset($value['type']) ? $value['type'] : 'compare';
-			switch ($type){
-				case 'compare':
-					$comparePlaceholder = $search->getModel()->getAttributeLabel($key);
-					foreach($value as $searchKey => $searchValue):
-						if($searchKey === 'compare_to'):
-							foreach($searchValue as $compareTo):
-								$comparePlaceholder .= ', ' . $search->getModel()->getAttributeLabel($compareTo);
-								echo CHtml::hiddenField('search[' . $key . '][compare_to]['.$compareTo.']', $compareTo);
-							endforeach;
-						endif;
-					endforeach;?>
-					<div class="single-search-field">
-						<?php
-						$name .= '[value]';
-						echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
-							'autocomplete'=>Yii::app()->params['html_autocomplete'],
-							'placeholder' => $comparePlaceholder
-						));?>
-					</div>
-					<?php break;
-				case 'boolean':
-						?>
-						<div>
-						<?php
-						echo CHtml::dropDownList($name, $search->getSearchTermForAttribute($key), array(
-							'' => 'All',
-							'1' => 'Only ' . $search->getModel()->getAttributeLabel($key),
-							'0' => 'Exclude ' . $search->getModel()->getAttributeLabel($key)
-						));
-						?>
+<?php
+if($search->getSearchItems() && is_array($search->getSearchItems())):
+	if(isset($subList) && $subList):
+		?><div id="generic-search-form"><?php
+	else:
+		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'generic-search-form',
+			'enableAjaxValidation'=>false,
+			'method' => 'get',
+			'action' => '#'
+		));
+	endif;?>
+		<div>
+		<?php foreach($search->getSearchItems() as $key => $value):
+			$name = 'search[' . $key . ']';
+			if(is_array($value)):
+				$type = isset($value['type']) ? $value['type'] : 'compare';
+				$default = isset($value['default']) ? $value['default'] : '';
+				switch ($type){
+					case 'compare':
+						$comparePlaceholder = $search->getModel()->getAttributeLabel($key);
+						foreach($value as $searchKey => $searchValue):
+							if($searchKey === 'compare_to'):
+								foreach($searchValue as $compareTo):
+									$comparePlaceholder .= ', ' . $search->getModel()->getAttributeLabel($compareTo);
+									echo CHtml::hiddenField('search[' . $key . '][compare_to]['.$compareTo.']', $compareTo);
+								endforeach;
+							endif;
+						endforeach;?>
+						<div class="single-search-field">
+							<?php
+							$name .= '[value]';
+							echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
+								'autocomplete'=>Yii::app()->params['html_autocomplete'],
+								'placeholder' => $comparePlaceholder
+							));?>
 						</div>
-						<?php
-					break;
-
-			}
-		else: ?>
-			<div>
+						<?php break;
+					case 'boolean':
+							?>
+							<div>
+							<?php
+							echo CHtml::dropDownList($name, $search->getSearchTermForAttribute($key), array(
+								'' => 'All',
+								'1' => 'Only ' . $search->getModel()->getAttributeLabel($key),
+								'0' => 'Exclude ' . $search->getModel()->getAttributeLabel($key)
+							));
+							?>
+							</div>
+							<?php
+						break;
+					case 'dropdown':
+							?>
+							<div>
+								<?php
+								echo CHtml::dropDownList($name, $search->getSearchTermForAttribute($key, $default), $value['options'], array('empty' => '- Select -'));
+								echo CHtml::hiddenField('search[exact]['.$key.']', true)
+								?>
+							</div>
+							<?php
+						break;
+				}
+			else: ?>
+				<div>
+				<?php
+				echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
+					'autocomplete'=>Yii::app()->params['html_autocomplete'],
+					'placeholder' => $search->getModel()->getAttributeLabel($key)
+				));
+				?>
+				</div>
 			<?php
-			echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
-				'autocomplete'=>Yii::app()->params['html_autocomplete'],
-				'placeholder' => $search->getModel()->getAttributeLabel($key)
-			));
-			?>
+			endif;
+		endforeach;
+		?>
+			<div class="submit-row">
+				<button class="button small primary event-action" name="save" formmethod="get" type="submit">Search</button>
 			</div>
-		<?php
-		endif;
-	endforeach;
-	?>
-		<div class="submit-row">
-			<button class="button small primary event-action" name="save" type="submit">Search</button>
 		</div>
-	</div>
 
-<?php $this->endWidget()?>
+	<?php
+	if(isset($subList) && $subList):
+		?></div><?php
+	else:
+		$this->endWidget();
+	endif;
+endif;
+?>
