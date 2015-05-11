@@ -33,6 +33,7 @@ if(!isset($uniqueid)){
 	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>
 
 	<?php
+	$returnUri = '';
 	if($admin->isSubList()):?>
 	<div id="generic-admin-sublist">
 		<?php
@@ -74,7 +75,7 @@ if(!isset($uniqueid)){
 			<?php
 			foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
 				<tr class="clickable" data-id="<?php echo $row->id ?>"
-					data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>">
+					data-uri="<?php echo $uniqueid ?>/edit/<?php echo $row->id ?>?returnUri=<?=$returnUri?>">
 					<td>
 						<input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
 					</td>
@@ -93,7 +94,7 @@ if(!isset($uniqueid)){
 							<?php
 							else:
 								echo $admin->attributeValue($row, $listItem);
-							endif;
+							endif
 							?>
 						</td>
 					<?php endforeach; ?>
@@ -109,7 +110,7 @@ if(!isset($uniqueid)){
 						array(),
 						array(
 							'class' => 'small',
-							'data-uri' => '/' . $uniqueid . '/edit',
+							'data-uri' => '/' . $uniqueid . '/edit?returnUri=<?=$returnUri?>',
 							'formmethod' => 'get'
 						)
 					)->toHtml() ?>
@@ -119,7 +120,7 @@ if(!isset($uniqueid)){
 						array(),
 						array(
 							'class' => 'small',
-							'data-uri' => '/' . $uniqueid . '/delete',
+							'data-uri' => '/' . $uniqueid . '/delete?returnUri=<?=$returnUri?>',
 							'data-object' => $admin->getModelName()
 						)
 					)->toHtml() ?>

@@ -123,7 +123,7 @@ $assetManager = Yii::app()->getAssetManager();
 	if ($admin->getCustomCancelURL() != '') {
 		echo $form->formActions(array('cancel-uri' => $admin->getCustomCancelURL()));
 	} else {
-		echo $form->formActions(array('cancel-uri' => '/' . $this->uniqueid . '/list'));
+		echo $form->formActions(array('cancel-uri' => (Yii::app()->request->getParam('returnUri'))? Yii::app()->request->getParam('returnUri') : '/' . $this->uniqueid . '/list'));
 	}
 
 	?>
