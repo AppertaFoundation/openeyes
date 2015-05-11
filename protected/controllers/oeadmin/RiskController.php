@@ -18,9 +18,9 @@
  */
 
 /**
- * Class BenefitController
+ * Class RiskController
  */
-class BenefitController extends BaseAdminController
+class RiskController extends BaseAdminController
 {
 	/**
 	 * @var string
@@ -39,11 +39,11 @@ class BenefitController extends BaseAdminController
 	 */
 	public function actionList()
 	{
-		$admin = new Admin(Benefit::model(), $this);
+		$admin = new Admin(Risk::model(), $this);
 		$admin->setListFields(array(
-							'id',
-							'name',
-							'active'
+			'id',
+			'name',
+			'active'
 		));
 		$admin->searchAll();
 		$admin->getSearch()->addActiveFilter();
@@ -59,8 +59,8 @@ class BenefitController extends BaseAdminController
 	 */
 	public function actionEdit($id = false)
 	{
-		$admin = new Admin(Benefit::model(), $this);
-		if($id){
+		$admin = new Admin(Risk::model(), $this);
+		if ($id) {
 			$admin->setModelId($id);
 		}
 		$admin->setEditFields(array(
@@ -75,7 +75,7 @@ class BenefitController extends BaseAdminController
 	 */
 	public function actionDelete()
 	{
-		$admin = new Admin(Benefit::model(), $this);
+		$admin = new Admin(Risk::model(), $this);
 		$admin->deleteModel();
 	}
 }
