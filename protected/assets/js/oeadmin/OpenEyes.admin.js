@@ -68,7 +68,8 @@
         var $searchItems,
             defaultString;
 
-        $searchItems = $(':input[name^="search"], :input[name^="default"]');
+        $searchItems = $(':input[name^="search"], :input[name^="default"]').not('[name*="compare_to"]').not('[name*="\\[value\\]"]');
+
         defaultString = $searchItems.serialize().replace(/search%5B/g, 'default%5B');
         if($('#returnUri').val()){
             defaultString += '&returnUri=' + $('#returnUri').val();

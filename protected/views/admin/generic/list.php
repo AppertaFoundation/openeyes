@@ -43,10 +43,10 @@ if(!isset($uniqueid)){
 			<input type="hidden" name="default[<?=$key?>]" value="<?=$value?>" />
 		<?php
 			endforeach;
-			$returnUri = $admin->generateReturnUrl(Yii::app()->request->requestUri);
-		?><input type="hidden" name="returnUri" id="returnUri" value="<?=$returnUri ?>" /><?
 		endif;
+		$returnUri = $admin->generateReturnUrl(Yii::app()->request->requestUri);
 		?>
+		<input type="hidden" name="returnUri" id="returnUri" value="<?=$returnUri ?>" />
 
 	<?php else: ?>
 	<form id="generic-admin-list">
@@ -110,7 +110,7 @@ if(!isset($uniqueid)){
 						array(),
 						array(
 							'class' => 'small',
-							'data-uri' => '/' . $uniqueid . '/edit?returnUri=<?=$returnUri?>',
+							'data-uri' => '/' . $uniqueid . '/edit',
 							'formmethod' => 'get'
 						)
 					)->toHtml() ?>
@@ -120,7 +120,7 @@ if(!isset($uniqueid)){
 						array(),
 						array(
 							'class' => 'small',
-							'data-uri' => '/' . $uniqueid . '/delete?returnUri=<?=$returnUri?>',
+							'data-uri' => '/' . $uniqueid . '/delete',
 							'data-object' => $admin->getModelName()
 						)
 					)->toHtml() ?>
