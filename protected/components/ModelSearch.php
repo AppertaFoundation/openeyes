@@ -180,8 +180,12 @@ class ModelSearch
 
 		if(is_array($search)){
 			foreach($search as $key => $value){
+				if($key === 'exact'){
+					continue;
+				}
+				$exactMatch = (isset($search['exact'][$key]) && $search['exact'][$key]);
 				if(!is_array($value)){
-					$this->addCompare($this->criteria, $key, $value, $sensitive);
+					$this->addCompare($this->criteria, $key, $value, $sensitive, 'AND', $exactMatch);
 				} else {
 					if ($key === 'filterid') {
 						foreach ($value as $fieldName => $fieldValue) {
@@ -195,11 +199,11 @@ class ModelSearch
 						continue;
 					}
 					$searchTerm = $value['value'];
-					$this->addCompare($this->criteria, $key, $searchTerm, $sensitive);
+					$this->addCompare($this->criteria, $key, $searchTerm, $sensitive, 'AND', $exactMatch);
 					if(array_key_exists('compare_to', $value) && is_array($value['compare_to'])){
 						foreach($value['compare_to'] as $compareTo)
 						{
-							$this->addCompare($this->criteria, $compareTo, $searchTerm, $sensitive, 'OR');
+							$this->addCompare($this->criteria, $compareTo, $searchTerm, $sensitive, 'OR', $exactMatch);
 						}
 					}
 				}

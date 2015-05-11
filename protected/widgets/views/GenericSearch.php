@@ -75,6 +75,7 @@ if($search->getSearchItems() && is_array($search->getSearchItems())):
 							<div>
 								<?php
 								echo CHtml::dropDownList($name, $search->getSearchTermForAttribute($key, $default), $value['options'], array('empty' => '- Select -'));
+								echo CHtml::hiddenField('search[exact]['.$key.']', true)
 								?>
 							</div>
 							<?php
