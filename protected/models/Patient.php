@@ -813,7 +813,7 @@ class Patient extends BaseActiveRecordVersioned
 	 *
 	 * @return string
 	 */
-	public function getRiskString()
+	public function getRisksString()
 	{
 		if (!$this->hasRiskStatus()) {
 			return 'Patient risk status is not known';
