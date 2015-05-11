@@ -21,29 +21,20 @@ class PostOpDrugMappingsController extends BaseAdminController
 {
 
 	public function actionList()
-	{   // Use Model OphTrOperationnote_PostopSiteSubspecialtyDrug
-		//site_id, subspeciality_id, drug_id, display_order, default
-
-	$test =	OphTrOperationnote_PostopSiteSubspecialtyDrug::model()->findAll();
-
-	//	var_dump($test);die;
-
+	{
 		$admin = new AdminListAutocomplete(OphTrOperationnote_PostopSiteSubspecialtyDrug::model(), $this);
 
 		$admin->setListFields(array(
 			'id',
-			//'agents.name',
-			'sites.name',
-			//'subspecialties',
-			//'drug_id',
-			//'postopdrugs.name',
-			//'postopdrugs.name',
 			'postopdrugs.name',
+			'default',
 		));
 
 		$admin->setCustomDeleteURL('/oeadmin/PostOpDrugMappings/delete');
 		$admin->setCustomSaveURL('/oeadmin/PostOpDrugMappings/add');
-		$admin->setModelDisplayName('Operation Note Anaesthetic Agent Defaults');
+		$admin->setCustomSetDefaultURL('/oeadmin/PostOpDrugMappings/setDefault');
+		$admin->setCustomRemoveDefaultURL('/oeadmin/PostOpDrugMappings/RemoveDefault');
+		$admin->setModelDisplayName('Per-operative Drugs Mapping');
 		$admin->setFilterFields(
 			array(
 				array(
@@ -106,6 +97,44 @@ class PostOpDrugMappingsController extends BaseAdminController
 
 	}
 
+	public function actionSetDefault($itemId)
+	{
+		/*
+ 		* We make sure to not allow deleting directly with the URL, user must come from the commondrugs list page
+ 		*/
+		if (!Yii::app()->request->isAjaxRequest) {
+			$this->render("errorpage", array("errorMessage" => "notajaxcall"));
+		} else {
+			if ($leafletSubspecialy = OphTrOperationnote_PostopSiteSubspecialtyDrug::model()->findByPk($itemId)) {
+				$leafletSubspecialy->default = 1;
+				$leafletSubspecialy->save();
+				echo "success";
+			} else {
+				$this->render("errorpage", array("errormessage" => "recordmissing"));
+			}
+		}
+
+	}
+
+	public function actionRemoveDefault($itemId)
+	{
+		/*
+ 		* We make sure to not allow deleting directly with the URL, user must come from the commondrugs list page
+ 		*/
+		if (!Yii::app()->request->isAjaxRequest) {
+			$this->render("errorpage", array("errorMessage" => "notajaxcall"));
+		} else {
+			if ($leafletSubspecialy = OphTrOperationnote_PostopSiteSubspecialtyDrug::model()->findByPk($itemId)) {
+				$leafletSubspecialy->default = 0;
+				$leafletSubspecialy->save();
+				echo "success";
+			} else {
+				$this->render("errorpage", array("errormessage" => "recordmissing"));
+			}
+		}
+
+	}
+
 	public function actionAdd()
 	{
 
@@ -119,19 +148,29 @@ class PostOpDrugMappingsController extends BaseAdminController
 			if (!is_numeric($subspecialtyId) || !is_numeric($siteId) || !is_numeric($drugId)) {
 				echo "error";
 			} else {
+				//Check Op Drug exist with same site and subspecialty
+				$count = OphTrOperationnote_PostopSiteSubspecialtyDrug::model()->countByAttributes(array(
+					'subspecialty_id'=> $subspecialtyId,
+					'site_id' => $siteId,
+					'drug_id' => $drugId
+				));
 
-				$newONPSS = new OphTrOperationnote_PostopSiteSubspecialtyDrug();
+				if($count == 0) {
 
-				$newONPSS->subspecialty_id = $subspecialtyId;
-				$newONPSS->site_id = $siteId;
-				$newONPSS->drug_id = $drugId;
+					$newONPSS = new OphTrOperationnote_PostopSiteSubspecialtyDrug();
 
-				if ($newONPSS->save()) {
+					$newONPSS->subspecialty_id = $subspecialtyId;
+					$newONPSS->site_id = $siteId;
+					$newONPSS->drug_id = $drugId;
+
+					if ($newONPSS->save()) {
 						echo "success";
-				} else {
-					echo "error";
+					} else {
+						echo "error";
+					}
+				}else{
+					echo "error :: record exit";
 				}
-
 			}
 		}
 	}
