@@ -23,7 +23,7 @@ $assetManager = Yii::app()->getAssetManager();
 	<h2><?php echo ($admin->getModel()->id ? 'Edit' : 'Add') . ' ' . $admin->getModelDisplayName() ?></h2>
 	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
 	<?php
-	if ($admin->getCustomSaveURL() != "") {
+	if ($admin->getCustomSaveURL() !== '') {
 		$formAction = $admin->getCustomSaveURL();
 	} else {
 		$formAction = '#';
@@ -40,6 +40,9 @@ $assetManager = Yii::app()->getAssetManager();
 	));
 	$autoComplete = array('autocomplete' => Yii::app()->params['html_autocomplete']);
 	echo $form->hiddenInput($admin->getModel(), 'id');
+	if(Yii::app()->request->getParam('returnUri')){
+		echo CHTML::hiddenField('returnUriEdit', Yii::app()->request->getParam('returnUri'));
+	}
 	?>
 
 	<?php foreach($admin->getEditFields() as $field => $type) {
@@ -85,8 +88,12 @@ $assetManager = Yii::app()->getAssetManager();
 				case 'RelationList':
 					if(isset($admin->getModel()->id)){
 						$assetManager->registerScriptFile('js/oeadmin/list.js');
+						$subAdmin = $admin->generateAdminForRelationList($type['relation'], $type['listFields']);
+						if(isset($type['search'])){
+							$subAdmin->getSearch()->setSearchItems($type['search']);
+						}
 						$this->renderPartial('//admin/generic/list', array(
-							'admin' => $admin->generateAdminForRelationList($type['relation'], $type['listFields']),
+							'admin' => $subAdmin,
 							'uniqueid' => $type['action']
 						));
 						break;

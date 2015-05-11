@@ -143,6 +143,12 @@ class ModelSearch
 	public function setSearchItems($searchItems)
 	{
 		$this->searchItems = $searchItems;
+		foreach($this->searchItems as $searchTerm => $searchItem){
+			if(is_array($searchItem) && array_key_exists('default', $searchItem) && !array_key_exists($searchTerm, $this->searchTerms)){
+				$criteria = $this->getCriteria();
+				$criteria->addCondition($searchTerm.' = '.$searchItem['default']);
+			}
+		}
 	}
 
 	/**
@@ -160,7 +166,7 @@ class ModelSearch
 	/**
 	 * Generates the required Criteria object for the search
 	 *
-	 * @param string $attr
+	 * @param string|array $attr
 	 */
 	protected function generateCriteria($attr = 'search')
 	{
@@ -282,11 +288,15 @@ class ModelSearch
 	 * Add a search item
 	 *
 	 * @param $key
-	 * @param string $search
+	 * @param string|array $search
 	 */
 	public function addSearchItem($key, $search = '')
 	{
 		$this->searchItems[$key] = $search;
+		if(is_array($search) && array_key_exists('default', $search) && !array_key_exists($key, $this->searchTerms)){
+			$criteria = $this->getCriteria();
+			$criteria->addCondition($key.' = '.$search['default']);
+		}
 	}
 
 	/**

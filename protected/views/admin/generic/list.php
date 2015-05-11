@@ -23,20 +23,34 @@ if(!isset($displayOrder)){
 	$displayOrder = 0;
 }
 if(!isset($uniqueid)){
-	$uniqueid = $this->uniqueid;;
+	$uniqueid = $this->uniqueid;
 }
 ?>
 <div class="admin box">
 	<?php if(!$admin->isSubList()):?>
 	<h2><?php echo $admin->getModelDisplayName(); ?></h2>
 	<?php endif;?>
-	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch())); ?>
-	<?php if($admin->isSubList()):?>
+	<?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>
+
+	<?php
+	if($admin->isSubList()):?>
 	<div id="generic-admin-sublist">
+		<?php
+		if($admin->getSubListParent() && is_array($admin->getSubListParent())):
+			foreach($admin->getSubListParent() as $key => $value):
+		?>
+			<input type="hidden" name="default[<?=$key?>]" value="<?=$value?>" />
+		<?php
+			endforeach;
+			$returnUri = $admin->generateReturnUrl(Yii::app()->request->requestUri);
+		?><input type="hidden" name="returnUri" id="returnUri" value="<?=$returnUri ?>" /><?
+		endif;
+		?>
+
 	<?php else: ?>
 	<form id="generic-admin-list">
-	<?php endif;?>
 		<input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+	<?php endif;?>
 		<input type="hidden" name="page" value="<?php echo Yii::app()->request->getParam('page', 1) ?>"/>
 		<table class="grid">
 			<thead>
@@ -93,7 +107,11 @@ if(!isset($uniqueid)){
 						'Add',
 						'add',
 						array(),
-						array('class' => 'small', 'data-uri' => '/' . $uniqueid . '/edit')
+						array(
+							'class' => 'small',
+							'data-uri' => '/' . $uniqueid . '/edit',
+							'formmethod' => 'get'
+						)
 					)->toHtml() ?>
 					<?php echo EventAction::button(
 						'Delete',

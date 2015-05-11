@@ -103,6 +103,32 @@ class Admin
 	 */
 	public $displayOrder = 0;
 
+	/**
+	 * @var array
+	 */
+	protected $filterFields = array();
+
+	/**
+	 * Contains key value of parent object relation for a sublist
+	 * @var array
+	 */
+	protected $subListParent = array();
+
+	/**
+	 * @param $filters
+	 */
+	public function setFilterFields($filters)
+	{
+		$this->filterFields = $filters;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getFilterFields()
+	{
+		return $this->filterFields;
+	}
 
 	/**
 	 * @return BaseActiveRecord
@@ -353,6 +379,22 @@ class Admin
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getSubListParent()
+	{
+		return $this->subListParent;
+	}
+
+	/**
+	 * @param array $subListParent
+	 */
+	public function setSubListParent($subListParent)
+	{
+		$this->subListParent = $subListParent;
+	}
+
+	/**
 	 * @param BaseActiveRecord $model
 	 * @param BaseAdminController $controller
 	 */
@@ -418,7 +460,18 @@ class Admin
 				}
 
 				$this->audit('edit', $this->model->id);
-				$this->controller->redirect('/' . $this->controller->uniqueid . '/list');
+				$return = '/' . $this->controller->uniqueid . '/list';
+				if(Yii::app()->request->getPost('returnUriEdit')){
+					$return = urldecode(Yii::app()->request->getPost('returnUriEdit'));
+				}
+				$this->controller->redirect($return);
+			}
+		} else {
+			$defaults = Yii::app()->request->getParam('default', array());
+			foreach($defaults as $key => $defaultValue){
+				if($this->model->hasAttribute($key)){
+					$this->model->$key = $defaultValue;
+				}
 			}
 		}
 		$this->render($this->editTemplate, array('admin' => $this, 'errors' => $errors));
@@ -432,18 +485,16 @@ class Admin
 		$response = 1;
 		if (Yii::app()->request->isPostRequest) {
 			$post = Yii::app()->request->getPost($this->modelName);
-			if(is_array($post['id'])){
+			if(array_key_exists('id', $post) && is_array($post['id'])){
 				foreach ($post['id'] as $id) {
 					$model = $this->model->findByPk($id);
-					if ($model) {
-						if (!$model->delete()) {
-							$response = 0;
-						}
+					if ($model && !$model->delete()) {
+						$response = 0;
 					}
 				}
 			}
-
 		}
+
 		echo $response;
 	}
 
@@ -593,6 +644,7 @@ class Admin
 		if($relationField){
 			$criteria = $relatedAdmin->getSearch()->getCriteria();
 			$criteria->addCondition($relationField.' = '.$this->model->id);
+			$relatedAdmin->setSubListParent(array($relationField => $this->model->id));
 		}
 
 		return $relatedAdmin;
@@ -654,5 +706,22 @@ class Admin
 		$relationDefinition = $relations[$relation];
 
 		return $relationDefinition;
+	}
+
+	/**
+	 * @return string
+	 */
+	function generateReturnUrl($requestUri)
+	{
+
+		$split = explode('?', $requestUri);
+		if (count($split) > 1) {
+			$queryArray = array();
+			parse_str($split[1], $queryArray);
+			unset($queryArray['returnUri']);
+			$split[1] = urlencode(http_build_query($queryArray));
+		}
+		$returnUri = implode('?', $split);
+		return $returnUri;
 	}
 }

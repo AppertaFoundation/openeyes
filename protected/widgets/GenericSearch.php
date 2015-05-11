@@ -20,6 +20,7 @@
 class GenericSearch extends BaseCWidget
 {
 	public $search;
+	public $subList;
 
 	public function init()
 	{

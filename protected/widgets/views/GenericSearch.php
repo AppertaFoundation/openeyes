@@ -21,17 +21,22 @@
 
 <?php
 if($search->getSearchItems() && is_array($search->getSearchItems())):
-	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id'=>'generic-search-form',
-		'enableAjaxValidation'=>false,
-		'method' => 'get',
-		'action' => '#'
-	));?>
+	if(isset($subList) && $subList):
+		?><div id="generic-search-form"><?php
+	else:
+		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'generic-search-form',
+			'enableAjaxValidation'=>false,
+			'method' => 'get',
+			'action' => '#'
+		));
+	endif;?>
 		<div>
 		<?php foreach($search->getSearchItems() as $key => $value):
 			$name = 'search[' . $key . ']';
 			if(is_array($value)):
 				$type = isset($value['type']) ? $value['type'] : 'compare';
+				$default = isset($value['default']) ? $value['default'] : '';
 				switch ($type){
 					case 'compare':
 						$comparePlaceholder = $search->getModel()->getAttributeLabel($key);
@@ -65,7 +70,15 @@ if($search->getSearchItems() && is_array($search->getSearchItems())):
 							</div>
 							<?php
 						break;
-
+					case 'dropdown':
+							?>
+							<div>
+								<?php
+								echo CHtml::dropDownList($name, $search->getSearchTermForAttribute($key, $default), $value['options'], array('empty' => '- Select -'));
+								?>
+							</div>
+							<?php
+						break;
 				}
 			else: ?>
 				<div>
@@ -81,10 +94,15 @@ if($search->getSearchItems() && is_array($search->getSearchItems())):
 		endforeach;
 		?>
 			<div class="submit-row">
-				<button class="button small primary event-action" name="save" type="submit">Search</button>
+				<button class="button small primary event-action" name="save" formmethod="get" type="submit">Search</button>
 			</div>
 		</div>
 
-	<?php $this->endWidget();
+	<?php
+	if(isset($subList) && $subList):
+		?></div><?php
+	else:
+		$this->endWidget();
+	endif;
 endif;
 ?>

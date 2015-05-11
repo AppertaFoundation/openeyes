@@ -64,6 +64,36 @@
         });
     };
 
+    Admin.setSubListSearchToDefault = function() {
+        var $searchItems,
+            defaultString;
+
+        $searchItems = $(':input[name^="search"], :input[name^="default"]');
+        defaultString = $searchItems.serialize().replace(/search%5B/g, 'default%5B');
+        if($('#returnUri').val()){
+            defaultString += '&returnUri=' + $('#returnUri').val();
+        }
+        if(defaultString){
+            $('#et_add').data('uri', $('#et_add').data('uri') + '?' + defaultString);
+        }
+    };
+
+    Admin.init = function(){
+        $('button[type="submit"]').on('click', function(){
+            //Remove CSRF token if the form is going to be get
+            var $form = $(this).closest('form');
+            if($(this).attr('formmethod') === 'get' || $form.attr('method') === 'get'){
+                $form.find('input[name="YII_CSRF_TOKEN"]').remove();
+            }
+        });
+
+        Admin.setSubListSearchToDefault();
+    };
+
     exports.Admin = Admin;
 
 }(this.OpenEyes || {}));
+
+$(document).ready(function(){
+    OpenEyes.Admin.init();
+});
