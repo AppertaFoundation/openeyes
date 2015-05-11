@@ -56,7 +56,7 @@ return array(
 				'Medication List' => '/oeadmin/medication/list',
 				'Formulary Drugs' => '/oeadmin/formularyDrugs/list',
 				'Per Op Drugs' => array('OphTrOperationnote' => '/OphTrOperationnote/admin/viewPostOpDrugs'),
-				'Per Op Drug Mappings' => array('OphTrOperationnote' => '/OphTrOperationnote/admin/postOpDrugMappings'),
+				'Per Op Drug Mappings' => array('OphTrOperationnote' => '/oeadmin/PostOpDrugMappings/list'),
 			),
 			'Disorders' => array(
 				'Common Ophthalmic Disorder Groups' => '/admin/editcommonophthalmicdisordergroups',
