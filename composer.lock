@@ -375,12 +375,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "a94fe84cb2816a33007ee2ff1eb6473f87238443"
+                "reference": "a45b2c1396929b6c30c2250bc2322092022ba30c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/a94fe84cb2816a33007ee2ff1eb6473f87238443",
-                "reference": "a94fe84cb2816a33007ee2ff1eb6473f87238443",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/a45b2c1396929b6c30c2250bc2322092022ba30c",
+                "reference": "a45b2c1396929b6c30c2250bc2322092022ba30c",
                 "shasum": ""
             },
             "require": {
@@ -390,7 +390,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-04-21 09:56:06"
+            "time": "2015-05-11 15:26:45"
         },
         {
             "name": "openeyes/patient-ticketing",
@@ -2031,12 +2031,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "72123e3d6c7bf8f1454fe12deb69db2f783dd220"
+                "reference": "bf2bff61743f20a13dc46ff1e3bbd0f19c997d2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/72123e3d6c7bf8f1454fe12deb69db2f783dd220",
-                "reference": "72123e3d6c7bf8f1454fe12deb69db2f783dd220",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bf2bff61743f20a13dc46ff1e3bbd0f19c997d2b",
+                "reference": "bf2bff61743f20a13dc46ff1e3bbd0f19c997d2b",
                 "shasum": ""
             },
             "require": {
@@ -2098,7 +2098,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2015-05-09 17:17:49"
+            "time": "2015-05-11 14:51:05"
         },
         {
             "name": "nikic/php-parser",
