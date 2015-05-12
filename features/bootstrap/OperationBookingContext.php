@@ -91,6 +91,91 @@ class OperationBookingContext extends PageObjectContext
         $operationBooking = $this->getPage('OperationBooking');
         $operationBooking->consultantNo();
     }
+    
+    
+    /**
+     * @Given /^I select No for Any other doctor to do$/
+     */
+    public function iSelectNoForAnyOtherDoctorToDo()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->otherdoctorNo();
+    }
+    
+    /**
+     * @Given /^I select No for Does the patient require pre-op assessment by an anaesthetist$/
+     */
+    public function iSelectNoForDoesThePatientRequirePreOpAssessmentByAnAnaesthetist()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->preopassessmentNo();
+    }
+    
+    /**
+     * @Given /^I select a Anaesthetic type Topical$/
+     */
+    public function iSelectAAnaestheticTypeTopical()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->AnaestheticTypeTopical();
+    }
+    
+    /**
+     * @Given /^I select Patient preference for Anaesthetic choice$/
+     */
+    public function iSelectPatientPreferenceForAnaestheticChoice()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->AnaestheticchoicePatientpreference();
+    }
+    
+    /**
+     * @Given /^I select No for Patient needs to stop medication$/
+     */
+    public function iSelectNoForPatientNeedsToStopMedication()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->stopmedicationNo();
+    }
+    
+    /**
+     * @Given /^I select Yes for Admission discussed with patient$/
+     */
+    public function iSelectYesForAdmissionDiscussedWithPatient()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->admissiondiscussedYes();
+    }
+    
+    /**
+     * @Given /^I select As soon as possible for Schedule options$/
+     */
+    public function iSelectAsSoonAsPossibleForScheduleOptions()
+    {
+        /**
+         * @var OperationBooking $operationBooking
+         */
+        $operationBooking = $this->getPage('OperationBooking');
+        $operationBooking->scheduleOptASAP();
+    }
 
     /**
      * @Given /^I select a Anaesthetic type "([^"]*)"$/
