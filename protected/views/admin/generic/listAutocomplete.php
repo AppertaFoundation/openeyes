@@ -93,20 +93,36 @@
 						<?php foreach ($admin->getListFields() as $listItem): ?>
 							<td>
 								<?php
-								if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
+								if($listItem == "default")
+								{
 									if ($admin->attributeValue($row, $listItem)):
 										?><i class="fa fa-check"></i><?php
 									else:
 										?><i class="fa fa-times"></i><?php
 									endif;
-								else:
-									echo $admin->attributeValue($row, $listItem);
-								endif;
+								}
+								else
+								{
+									if (gettype($admin->attributeValue($row, $listItem)) === 'boolean'):
+										if ($admin->attributeValue($row, $listItem)):
+											?><i class="fa fa-check"></i><?php
+										else:
+											?><i class="fa fa-times"></i><?php
+										endif;
+									else:
+										echo $admin->attributeValue($row, $listItem);
+									endif;
+								}
 								?>
 							</td>
 						<?php endforeach; ?>
 						<td>
 							<a OnCLick="deleteItem('<?php echo $row->id; ?>','<?php echo $admin->getCustomDeleteURL(); ?>')">Delete</a>
+							<?php if($listItem == "default")
+							  { ?>
+								&nbsp;&nbsp;|&nbsp;&nbsp;<a OnCLick="setDefaultItem('<?php echo $row->id; ?>','<?php echo $admin->getCustomSetDefaultURL(); ?>')">Set Default</a>
+								&nbsp;&nbsp;|&nbsp;&nbsp;<a OnCLick="removeDefaultItem('<?php echo $row->id; ?>','<?php echo $admin->getCustomRemoveDefaultURL(); ?>')">Remove Default</a>
+						<?php } ?>
 						</td>
 					</tr>
 				<?php } ?>
