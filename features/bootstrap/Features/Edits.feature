@@ -427,17 +427,14 @@ Scenario: Route 3A: Login and create a Phasing Event
 
     Then I choose to expand the Visual Function section
 
-    #Then I select a Left RAPD
     And I add Left RAPD comments of "Left RAPD Automation test comments"
 
-    #Then I select a Right RAPD
     And I add Right RAPD comments of "Left RAPD Automation test comments"
 
     Then I choose to expand the Colour Vision section
     And I choose a Left Colour Vision of "1"
     And I choose A Left Colour Vision Value of "8"
     And I choose a Right Colour Vision of "2"
-    #And I choose A Right Colour Vision Value of "2"
 
     Then I choose to expand the Visual Acuity section
     And I select a Visual Acuity of "2"
@@ -668,6 +665,7 @@ Scenario: Route 3A: Login and create a Phasing Event
     And I select OK to Duplicate procedure if requested
 
     And I select an Available theatre slot date
+
     And I select an Available session time
 
     Then I confirm the operation slot
