@@ -189,7 +189,7 @@ class PostOpDrugMappingsController extends BaseAdminController
 			$criteria->select = 'id, name';
 			$criteria->params = $params;
 
-			$results = Ophtroperationnote_PostopDrug::model()->active()->findAll($criteria);
+			$results = OphTrOperationnote_PostopDrug::model()->active()->findAll($criteria);
 
 			$return = array();
 			foreach ($results as $resultRow) {
