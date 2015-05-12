@@ -56,7 +56,7 @@ class Risk extends BaseActiveRecordVersioned
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'safe'),
+			array('name, active', 'safe'),
 			array('name', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
