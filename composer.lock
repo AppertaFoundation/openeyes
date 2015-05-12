@@ -174,12 +174,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphInBiometry.git",
-                "reference": "8331ce60d5b0a39431c3755274136770ab155426"
+                "reference": "c44c0d689c0ff345c4abd14a705620ed6b6b0688"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/8331ce60d5b0a39431c3755274136770ab155426",
-                "reference": "8331ce60d5b0a39431c3755274136770ab155426",
+                "url": "https://api.github.com/repos/openeyes/OphInBiometry/zipball/c44c0d689c0ff345c4abd14a705620ed6b6b0688",
+                "reference": "c44c0d689c0ff345c4abd14a705620ed6b6b0688",
                 "shasum": ""
             },
             "require": {
@@ -188,7 +188,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Biometry module for OpenEyes",
-            "time": "2015-05-08 09:51:03"
+            "time": "2015-05-12 14:52:57"
         },
         {
             "name": "openeyes/oph-in-visualfields",
@@ -375,12 +375,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/openeyes/OphTrOperationnote.git",
-                "reference": "a45b2c1396929b6c30c2250bc2322092022ba30c"
+                "reference": "30f6d06c8c7b62058d1f6f4ce320a20a6575743c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/a45b2c1396929b6c30c2250bc2322092022ba30c",
-                "reference": "a45b2c1396929b6c30c2250bc2322092022ba30c",
+                "url": "https://api.github.com/repos/openeyes/OphTrOperationnote/zipball/30f6d06c8c7b62058d1f6f4ce320a20a6575743c",
+                "reference": "30f6d06c8c7b62058d1f6f4ce320a20a6575743c",
                 "shasum": ""
             },
             "require": {
@@ -390,7 +390,7 @@
             "type": "openeyes-module",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Operation note module for OpenEyes",
-            "time": "2015-05-11 15:26:45"
+            "time": "2015-05-12 10:58:23"
         },
         {
             "name": "openeyes/patient-ticketing",
@@ -2511,12 +2511,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "d1da796ba5565789a623052eb9f2cf59d57fec60"
+                "reference": "ae15da2ce234d3ffe5d7fafcdad19c7f1acf3568"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/d1da796ba5565789a623052eb9f2cf59d57fec60",
-                "reference": "d1da796ba5565789a623052eb9f2cf59d57fec60",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/ae15da2ce234d3ffe5d7fafcdad19c7f1acf3568",
+                "reference": "ae15da2ce234d3ffe5d7fafcdad19c7f1acf3568",
                 "shasum": ""
             },
             "require": {
@@ -2526,7 +2526,6 @@
                 "phpunit/phpunit": "~4.0"
             },
             "suggest": {
-                "dflydev/markdown": "~1.0",
                 "erusev/parsedown": "~1.0",
                 "league/commonmark": "*"
             },
@@ -2553,7 +2552,7 @@
                     "email": "mike.vanriel@naenius.com"
                 }
             ],
-            "time": "2015-02-27 09:28:18"
+            "time": "2015-05-12 07:21:12"
         },
         {
             "name": "phpdocumentor/template-abstract",
