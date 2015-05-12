@@ -143,6 +143,12 @@ class ModelSearch
 	public function setSearchItems($searchItems)
 	{
 		$this->searchItems = $searchItems;
+		foreach($this->searchItems as $searchTerm => $searchItem){
+			if(is_array($searchItem) && array_key_exists('default', $searchItem) && !array_key_exists($searchTerm, $this->searchTerms)){
+				$criteria = $this->getCriteria();
+				$criteria->addCondition($searchTerm.' = '.$searchItem['default']);
+			}
+		}
 	}
 
 	/**
@@ -153,14 +159,14 @@ class ModelSearch
 		$this->model = $model;
 		$this->criteria = new CDbCriteria();
 		$this->criteria->with = array();
-		$this->request = $request = Yii::app()->getRequest();
+		$this->request = Yii::app()->getRequest();
 		$this->generateCriteria();
 	}
 
 	/**
 	 * Generates the required Criteria object for the search
 	 *
-	 * @param string $attr
+	 * @param string|array $attr
 	 */
 	protected function generateCriteria($attr = 'search')
 	{
@@ -174,10 +180,14 @@ class ModelSearch
 
 		if(is_array($search)){
 			foreach($search as $key => $value){
+				if($key === 'exact'){
+					continue;
+				}
+				$exactMatch = (isset($search['exact'][$key]) && $search['exact'][$key]);
 				if(!is_array($value)){
-					$this->addCompare($this->criteria, $key, $value, $sensitive);
+					$this->addCompare($this->criteria, $key, $value, $sensitive, 'AND', $exactMatch);
 				} else {
-					if ($key == 'filterid') {
+					if ($key === 'filterid') {
 						foreach ($value as $fieldName => $fieldValue) {
 							if ($fieldValue > 0) {
 								$this->addCompare($this->criteria, $fieldName, $fieldValue, $sensitive, 'AND', true);
@@ -189,26 +199,31 @@ class ModelSearch
 						continue;
 					}
 					$searchTerm = $value['value'];
-					$this->addCompare($this->criteria, $key, $searchTerm, $sensitive);
+					$this->addCompare($this->criteria, $key, $searchTerm, $sensitive, 'AND', $exactMatch);
 					if(array_key_exists('compare_to', $value) && is_array($value['compare_to'])){
 						foreach($value['compare_to'] as $compareTo)
 						{
-							$this->addCompare($this->criteria, $compareTo, $searchTerm, $sensitive, 'OR');
+							$this->addCompare($this->criteria, $compareTo, $searchTerm, $sensitive, 'OR', $exactMatch);
 						}
 					}
 				}
 			}
 		}
 
-		$order = $this->request->getParam('d');
-		$sortColumn = $this->request->getParam('c');
-		if ($sortColumn) {
-			$this->relationalAttribute($this->criteria, $sortColumn, $attr);
-			if ($order) {
-				$sortColumn .= ' DESC';
+		if($this->model->hasAttribute('display_order')){
+			$this->criteria->order = 'display_order asc';
+		} else {
+			$order = $this->request->getParam('d');
+			$sortColumn = $this->request->getParam('c');
+			if ($sortColumn) {
+				$this->relationalAttribute($this->criteria, $sortColumn, $attr);
+				if ($order) {
+					$sortColumn .= ' DESC';
+				}
+				$this->criteria->order = $sortColumn;
 			}
-			$this->criteria->order = $sortColumn;
 		}
+
 	}
 
 	/**
@@ -277,11 +292,15 @@ class ModelSearch
 	 * Add a search item
 	 *
 	 * @param $key
-	 * @param string $search
+	 * @param string|array $search
 	 */
 	public function addSearchItem($key, $search = '')
 	{
 		$this->searchItems[$key] = $search;
+		if(is_array($search) && array_key_exists('default', $search) && !array_key_exists($key, $this->searchTerms)){
+			$criteria = $this->getCriteria();
+			$criteria->addCondition($key.' = '.$search['default']);
+		}
 	}
 
 	/**

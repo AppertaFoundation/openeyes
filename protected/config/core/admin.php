@@ -41,7 +41,8 @@ return array(
 				'Previous Ophthalmic Surgery' => '/admin/editpreviousoperation',
 				'Social History' => '/admin/socialhistory',
 				'Findings' => '/admin/managefindings',
-				'Anaesthetic Agent' => '/admin/viewAnaestheticAgent'
+				'Anaesthetic Agent' => '/admin/viewAnaestheticAgent',
+				'Risks' => '/oeadmin/risk/list'
 			),
 			'Procedure Management' => array(
 				'Procedures' => '/oeadmin/procedure/list',

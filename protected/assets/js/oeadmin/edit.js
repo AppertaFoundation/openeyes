@@ -1,4 +1,3 @@
-<?php
 /**
  * OpenEyes
  *
@@ -17,65 +16,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/**
- * Class BenefitController
- */
-class BenefitController extends BaseAdminController
-{
-	/**
-	 * @var string
-	 */
-	public $layout = 'admin';
-
-	/**
-	 * @var int
-	 */
-	public $itemsPerPage = 100;
-
-	/**
-	 * Lists procedures
-	 *
-	 * @throws CHttpException
-	 */
-	public function actionList()
-	{
-		$admin = new Admin(Benefit::model(), $this);
-		$admin->setListFields(array(
-							'id',
-							'name',
-							'active'
-		));
-		$admin->searchAll();
-		$admin->getSearch()->addActiveFilter();
-		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-		$admin->listModel();
-	}
-
-	/**
-	 * Edits or adds a Procedure
-	 *
-	 * @param bool|int $id
-	 * @throws CHttpException
-	 */
-	public function actionEdit($id = false)
-	{
-		$admin = new Admin(Benefit::model(), $this);
-		if($id){
-			$admin->setModelId($id);
-		}
-		$admin->setEditFields(array(
-			'name' => 'text',
-			'active' => 'checkbox'
-		));
-		$admin->editModel();
-	}
-
-	/**
-	 * Deletes rows for the model
-	 */
-	public function actionDelete()
-	{
-		$admin = new Admin(Benefit::model(), $this);
-		$admin->deleteModel();
-	}
-}
+$(document).ready(function(){
+    OpenEyes.Admin.shortCodeSelect($('#shortcode'), $('#LetterString_body'));
+});

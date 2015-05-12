@@ -16,20 +16,20 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
+$assetManager = Yii::app()->getAssetManager();
 ?>
 
 <div class="box admin">
 	<h2><?php echo ($admin->getModel()->id ? 'Edit' : 'Add') . ' ' . $admin->getModelDisplayName() ?></h2>
 	<?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
 	<?php
-	if ($admin->getCustomSaveURL() != "") {
+	if ($admin->getCustomSaveURL() !== '') {
 		$formAction = $admin->getCustomSaveURL();
 	} else {
 		$formAction = '#';
 	}
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-		'id' => 'adminform',
+		'id' => 'generic-admin-form',
 		'enableAjaxValidation' => false,
 		'focus' => '#username',
 		'action' => $formAction,
@@ -40,6 +40,9 @@
 	));
 	$autoComplete = array('autocomplete' => Yii::app()->params['html_autocomplete']);
 	echo $form->hiddenInput($admin->getModel(), 'id');
+	if(Yii::app()->request->getParam('returnUri')){
+		echo CHTML::hiddenField('returnUriEdit', Yii::app()->request->getParam('returnUri'));
+	}
 	?>
 
 	<?php foreach($admin->getEditFields() as $field => $type) {
@@ -80,9 +83,21 @@
 					break;
 				case 'CustomView':
 					// arguments: (string) viewName, (array) viewArguments
-					$this->renderPartial($type['viewName'],
-						$type['viewArguments']);
+					$this->renderPartial($type['viewName'], $type['viewArguments']);
 					break;
+				case 'RelationList':
+					if(isset($admin->getModel()->id)){
+						$assetManager->registerScriptFile('js/oeadmin/list.js');
+						$subAdmin = $admin->generateAdminForRelationList($type['relation'], $type['listFields']);
+						if(isset($type['search'])){
+							$subAdmin->getSearch()->setSearchItems($type['search']);
+						}
+						$this->renderPartial('//admin/generic/list', array(
+							'admin' => $subAdmin,
+							'uniqueid' => $type['action']
+						));
+						break;
+					}
 			}
 		} else {
 			switch ($type) {
@@ -91,6 +106,9 @@
 					break;
 				case 'label':
 					echo $form->textField($admin->getModel(), $field, array('readonly'=>true));
+					break;
+				case 'textarea':
+					echo $form->textArea($admin->getModel(), $field);
 					break;
 				case 'text':
 				default:
@@ -102,10 +120,10 @@
 	?>
 
 	<?php
-	if ($admin->getCustomCancelURL() != "") {
+	if ($admin->getCustomCancelURL() != '') {
 		echo $form->formActions(array('cancel-uri' => $admin->getCustomCancelURL()));
 	} else {
-		echo $form->formActions(array('cancel-uri' => '/' . $this->uniqueid . '/list'));
+		echo $form->formActions(array('cancel-uri' => (Yii::app()->request->getParam('returnUri'))? Yii::app()->request->getParam('returnUri') : '/' . $this->uniqueid . '/list'));
 	}
 
 	?>

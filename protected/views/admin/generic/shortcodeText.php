@@ -1,5 +1,5 @@
 <?php
-/**
+ /**
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -16,66 +16,27 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
+<div id="div_LetterString_name" class="row field-row">
+	<div class="large-2 column">
+		<label for="LetterString_name">Body:</label>
+	</div>
+	<div class="large-5 column end">
+		<?php echo  CHtml::activeTextArea($model, 'body')?>
+	</div>
+</div>
+<div class="row field-row">
+	<div class="large-8 large-offset-2 column">
+		<div class="row field-row">
+			<div class="large-3 column">
+				<label for="shortcode">
+					Add shortcode:
+				</label>
+			</div>
+			<div class="large-6 column end">
+				<?php echo CHtml::dropDownList('shortcode','',CHtml::listData(PatientShortcode::model()->findAll(array('order' => 'description asc')),'code','description'),array('empty' => '- Select -'))?>
+			</div>
+		</div>
+	</div>
+</div>
 
-/**
- * Class BenefitController
- */
-class BenefitController extends BaseAdminController
-{
-	/**
-	 * @var string
-	 */
-	public $layout = 'admin';
-
-	/**
-	 * @var int
-	 */
-	public $itemsPerPage = 100;
-
-	/**
-	 * Lists procedures
-	 *
-	 * @throws CHttpException
-	 */
-	public function actionList()
-	{
-		$admin = new Admin(Benefit::model(), $this);
-		$admin->setListFields(array(
-							'id',
-							'name',
-							'active'
-		));
-		$admin->searchAll();
-		$admin->getSearch()->addActiveFilter();
-		$admin->getSearch()->setItemsPerPage($this->itemsPerPage);
-		$admin->listModel();
-	}
-
-	/**
-	 * Edits or adds a Procedure
-	 *
-	 * @param bool|int $id
-	 * @throws CHttpException
-	 */
-	public function actionEdit($id = false)
-	{
-		$admin = new Admin(Benefit::model(), $this);
-		if($id){
-			$admin->setModelId($id);
-		}
-		$admin->setEditFields(array(
-			'name' => 'text',
-			'active' => 'checkbox'
-		));
-		$admin->editModel();
-	}
-
-	/**
-	 * Deletes rows for the model
-	 */
-	public function actionDelete()
-	{
-		$admin = new Admin(Benefit::model(), $this);
-		$admin->deleteModel();
-	}
-}
